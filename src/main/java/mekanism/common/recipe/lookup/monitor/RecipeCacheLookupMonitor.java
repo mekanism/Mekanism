@@ -12,7 +12,7 @@ import mekanism.common.recipe.lookup.IRecipeLookupHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class RecipeCacheLookupMonitor<RECIPE extends MekanismRecipe> implements ICachedRecipeHolder<RECIPE>, IContentsListener {
+public class RecipeCacheLookupMonitor<RECIPE extends MekanismRecipe<?>> implements ICachedRecipeHolder<RECIPE>, IContentsListener {
 
     private final IRecipeLookupHandler<RECIPE> handler;
     protected final int cacheIndex;

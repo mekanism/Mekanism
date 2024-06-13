@@ -11,7 +11,9 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +28,7 @@ import org.jetbrains.annotations.NotNull;
  * @apiNote Combiners and Combining Factories can process this recipe type.
  */
 @NothingNullByDefault
-public abstract class CombinerRecipe extends MekanismRecipe implements BiPredicate<@NotNull ItemStack, @NotNull ItemStack> {
+public abstract class CombinerRecipe extends MekanismRecipe<RecipeInput> implements BiPredicate<@NotNull ItemStack, @NotNull ItemStack> {
 
     private static final Holder<Item> COMBINER = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "combiner"));
 
@@ -42,6 +44,30 @@ public abstract class CombinerRecipe extends MekanismRecipe implements BiPredica
      * Gets the secondary input ingredient.
      */
     public abstract ItemStackIngredient getExtraInput();
+
+    @NotNull
+    @Override
+    public ItemStack assemble(RecipeInput input, HolderLookup.Provider provider) {
+        if (!isIncomplete() && input.size() == 2) {
+            ItemStack mainInput = input.getItem(0);
+            ItemStack extraInput = input.getItem(1);
+            if (test(mainInput, extraInput)) {
+                return getOutput(mainInput, extraInput);
+            }
+        }
+        return ItemStack.EMPTY;
+    }
+
+    @Override
+    public boolean matches(RecipeInput input, Level level) {
+        //Don't match incomplete recipes or ones that don't match
+        return !isIncomplete() && input.size() == 2 && test(input.getItem(0), input.getItem(1));
+    }
+
+    @Override
+    public boolean canCraftInDimensions(int width, int height) {
+        return width * height > 1;
+    }
 
     /**
      * Gets a new output based on the given inputs.

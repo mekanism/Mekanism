@@ -54,6 +54,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
@@ -170,7 +171,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
 
     @NotNull
     @Override
-    public MekanismRecipeType<ItemStackToFluidRecipe, IInputRecipeCache> getRecipeType() {
+    public MekanismRecipeType<SingleRecipeInput, ItemStackToFluidRecipe, IInputRecipeCache> getRecipeType() {
         //TODO - V11: See comment in NutritionalLiquifierIRecipe. Note if either containsRecipe and findFirstRecipe get called a null pointer will occur
         return null;
     }

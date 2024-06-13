@@ -12,6 +12,7 @@ import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.lookup.cache.IInputRecipeCache;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,8 +31,8 @@ public class FluidTanksBuilder {
         return new BaseFluidTankCreator(tankCreators);
     }
 
-    public <RECIPE extends MekanismRecipe, INPUT_CACHE extends IInputRecipeCache> FluidTanksBuilder addBasic(int capacity,
-          IMekanismRecipeTypeProvider<RECIPE, INPUT_CACHE> recipeType, ContainsRecipe<INPUT_CACHE, FluidStack> containsRecipe) {
+    public <VANILLA_INPUT extends RecipeInput, RECIPE extends MekanismRecipe<VANILLA_INPUT>, INPUT_CACHE extends IInputRecipeCache> FluidTanksBuilder addBasic(int capacity,
+          IMekanismRecipeTypeProvider<VANILLA_INPUT, RECIPE, INPUT_CACHE> recipeType, ContainsRecipe<INPUT_CACHE, FluidStack> containsRecipe) {
         return addBasic(capacity, fluid -> containsRecipe.check(recipeType.getInputCache(), null, fluid));
     }
 

@@ -319,7 +319,7 @@ public class MekanismEmi implements EmiPlugin {
         ), Mekanism.rl("info/module_installation")));
     }
 
-    public static <RECIPE extends MekanismRecipe, TYPE extends IRecipeViewerRecipeType<RECIPE> & IMekanismRecipeTypeProvider<RECIPE, ?>> void addCategoryAndRecipes(
+    public static <RECIPE extends MekanismRecipe<?>, TYPE extends IRecipeViewerRecipeType<RECIPE> & IMekanismRecipeTypeProvider<?, RECIPE, ?>> void addCategoryAndRecipes(
           EmiRegistry registry, TYPE recipeType, BiFunction<MekanismEmiRecipeCategory, RecipeHolder<RECIPE>, MekanismEmiRecipe<RECIPE>> recipeCreator) {
         MekanismEmiRecipeCategory category = addCategory(registry, recipeType);
         for (RecipeHolder<RECIPE> recipe : recipeType.getRecipes(registry.getRecipeManager(), null)) {

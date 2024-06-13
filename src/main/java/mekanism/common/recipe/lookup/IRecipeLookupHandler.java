@@ -10,7 +10,7 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface IRecipeLookupHandler<RECIPE extends MekanismRecipe> extends IContentsListener {
+public interface IRecipeLookupHandler<RECIPE extends MekanismRecipe<?>> extends IContentsListener {
 
     /**
      * @return The world for this {@link IRecipeLookupHandler}.
@@ -22,7 +22,7 @@ public interface IRecipeLookupHandler<RECIPE extends MekanismRecipe> extends ICo
      * @return The recipe type this {@link IRecipeLookupHandler} handles.
      */
     @NotNull
-    IMekanismRecipeTypeProvider<RECIPE, ?> getRecipeType();
+    IMekanismRecipeTypeProvider<?, RECIPE, ?> getRecipeType();
 
     @Nullable
     default IRecipeViewerRecipeType<RECIPE> recipeViewerType() {
@@ -84,11 +84,11 @@ public interface IRecipeLookupHandler<RECIPE extends MekanismRecipe> extends ICo
      * would just make the class definitions a lot messier with very long generics that can be folded away into the helper interfaces we use anyway ofr actual lookup
      * purposes.
      */
-    interface IRecipeTypedLookupHandler<RECIPE extends MekanismRecipe, INPUT_CACHE extends IInputRecipeCache> extends IRecipeLookupHandler<RECIPE> {
+    interface IRecipeTypedLookupHandler<RECIPE extends MekanismRecipe<?>, INPUT_CACHE extends IInputRecipeCache> extends IRecipeLookupHandler<RECIPE> {
 
         @NotNull
         @Override
-        IMekanismRecipeTypeProvider<RECIPE, INPUT_CACHE> getRecipeType();
+        IMekanismRecipeTypeProvider<?, RECIPE, INPUT_CACHE> getRecipeType();
     }
 
     interface ConstantUsageRecipeLookupHandler {

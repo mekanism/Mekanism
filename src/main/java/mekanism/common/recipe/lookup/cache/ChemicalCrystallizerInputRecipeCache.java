@@ -28,7 +28,7 @@ public class ChemicalCrystallizerInputRecipeCache extends AbstractInputRecipeCac
     private final Map<ChemicalType, ChemicalInputCache<?, ?, ChemicalCrystallizerRecipe>> typeBasedCache = new EnumMap<>(ChemicalType.class);
     private final Map<ChemicalType, Set<ChemicalCrystallizerRecipe>> typeBasedComplexRecipes = new EnumMap<>(ChemicalType.class);
 
-    public ChemicalCrystallizerInputRecipeCache(MekanismRecipeType<ChemicalCrystallizerRecipe, ?> recipeType) {
+    public ChemicalCrystallizerInputRecipeCache(MekanismRecipeType<?, ChemicalCrystallizerRecipe, ?> recipeType) {
         super(recipeType);
         for (ChemicalType chemicalType : EnumUtils.CHEMICAL_TYPES) {
             typeBasedCache.put(chemicalType, new ChemicalInputCache<>());

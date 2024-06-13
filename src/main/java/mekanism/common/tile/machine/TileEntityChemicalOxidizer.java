@@ -45,6 +45,7 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -127,7 +128,7 @@ public class TileEntityChemicalOxidizer extends TileEntityProgressMachine<ItemSt
 
     @NotNull
     @Override
-    public IMekanismRecipeTypeProvider<ItemStackToGasRecipe, SingleItem<ItemStackToGasRecipe>> getRecipeType() {
+    public IMekanismRecipeTypeProvider<SingleRecipeInput, ItemStackToGasRecipe, SingleItem<ItemStackToGasRecipe>> getRecipeType() {
         return MekanismRecipeType.OXIDIZING;
     }
 

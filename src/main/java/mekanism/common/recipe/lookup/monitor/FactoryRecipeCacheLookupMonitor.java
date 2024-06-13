@@ -4,7 +4,7 @@ import mekanism.api.recipes.MekanismRecipe;
 import mekanism.common.recipe.lookup.IRecipeLookupHandler;
 import org.jetbrains.annotations.NotNull;
 
-public class FactoryRecipeCacheLookupMonitor<RECIPE extends MekanismRecipe> extends RecipeCacheLookupMonitor<RECIPE> {
+public class FactoryRecipeCacheLookupMonitor<RECIPE extends MekanismRecipe<?>> extends RecipeCacheLookupMonitor<RECIPE> {
 
     private final Runnable setSortingNeeded;
 

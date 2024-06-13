@@ -48,59 +48,59 @@ public class RecipeViewerRecipeType {
     public static final VanillaRVRecipeType<CraftingRecipe> VANILLA_CRAFTING = new VanillaRVRecipeType<>(RecipeType.CRAFTING, CraftingRecipe.class, Items.CRAFTING_TABLE, MekanismBlocks.FORMULAIC_ASSEMBLICATOR, MekanismItems.ROBIT);
     public static final VanillaRVRecipeType<SmeltingRecipe> VANILLA_SMELTING = new VanillaRVRecipeType<>(RecipeType.SMELTING, SmeltingRecipe.class, Items.FURNACE, MekanismBlocks.ENERGIZED_SMELTER, MekanismItems.ROBIT);
 
-    public static final RVRecipeTypeWrapper<ItemStackToItemStackRecipe, ?> CRUSHING = new RVRecipeTypeWrapper<>(MekanismRecipeType.CRUSHING, ItemStackToItemStackRecipe.class, -28, -16, 144, 54, MekanismBlocks.CRUSHER);
-    public static final RVRecipeTypeWrapper<ItemStackToItemStackRecipe, ?> ENRICHING = new RVRecipeTypeWrapper<>(MekanismRecipeType.ENRICHING, ItemStackToItemStackRecipe.class, -28, -16, 144, 54, MekanismBlocks.ENRICHMENT_CHAMBER);
-    public static final RVRecipeTypeWrapper<ItemStackToItemStackRecipe, ?> SMELTING = new RVRecipeTypeWrapper<>(MekanismRecipeType.SMELTING, ItemStackToItemStackRecipe.class, -28, -16, 144, 54, MekanismBlocks.ENERGIZED_SMELTER, MekanismItems.ROBIT);
+    public static final RVRecipeTypeWrapper<?, ItemStackToItemStackRecipe, ?> CRUSHING = new RVRecipeTypeWrapper<>(MekanismRecipeType.CRUSHING, ItemStackToItemStackRecipe.class, -28, -16, 144, 54, MekanismBlocks.CRUSHER);
+    public static final RVRecipeTypeWrapper<?, ItemStackToItemStackRecipe, ?> ENRICHING = new RVRecipeTypeWrapper<>(MekanismRecipeType.ENRICHING, ItemStackToItemStackRecipe.class, -28, -16, 144, 54, MekanismBlocks.ENRICHMENT_CHAMBER);
+    public static final RVRecipeTypeWrapper<?, ItemStackToItemStackRecipe, ?> SMELTING = new RVRecipeTypeWrapper<>(MekanismRecipeType.SMELTING, ItemStackToItemStackRecipe.class, -28, -16, 144, 54, MekanismBlocks.ENERGIZED_SMELTER, MekanismItems.ROBIT);
 
-    public static final RVRecipeTypeWrapper<ChemicalInfuserRecipe, ?> CHEMICAL_INFUSING = new RVRecipeTypeWrapper<>(MekanismRecipeType.CHEMICAL_INFUSING, ChemicalInfuserRecipe.class, -3, -3, 170, 80, MekanismBlocks.CHEMICAL_INFUSER);
+    public static final RVRecipeTypeWrapper<?, ChemicalInfuserRecipe, ?> CHEMICAL_INFUSING = new RVRecipeTypeWrapper<>(MekanismRecipeType.CHEMICAL_INFUSING, ChemicalInfuserRecipe.class, -3, -3, 170, 80, MekanismBlocks.CHEMICAL_INFUSER);
 
-    public static final RVRecipeTypeWrapper<CombinerRecipe, ?> COMBINING = new RVRecipeTypeWrapper<>(MekanismRecipeType.COMBINING, CombinerRecipe.class, -28, -16, 144, 54, MekanismBlocks.COMBINER);
+    public static final RVRecipeTypeWrapper<?, CombinerRecipe, ?> COMBINING = new RVRecipeTypeWrapper<>(MekanismRecipeType.COMBINING, CombinerRecipe.class, -28, -16, 144, 54, MekanismBlocks.COMBINER);
 
-    public static final RVRecipeTypeWrapper<ElectrolysisRecipe, ?> SEPARATING = new RVRecipeTypeWrapper<>(MekanismRecipeType.SEPARATING, ElectrolysisRecipe.class, -4, -9, 167, 62, MekanismBlocks.ELECTROLYTIC_SEPARATOR);
+    public static final RVRecipeTypeWrapper<?, ElectrolysisRecipe, ?> SEPARATING = new RVRecipeTypeWrapper<>(MekanismRecipeType.SEPARATING, ElectrolysisRecipe.class, -4, -9, 167, 62, MekanismBlocks.ELECTROLYTIC_SEPARATOR);
 
-    public static final RVRecipeTypeWrapper<FluidSlurryToSlurryRecipe, ?> WASHING = new RVRecipeTypeWrapper<>(MekanismRecipeType.WASHING, FluidSlurryToSlurryRecipe.class, -7, -13, 162, 60, MekanismBlocks.CHEMICAL_WASHER);
+    public static final RVRecipeTypeWrapper<?, FluidSlurryToSlurryRecipe, ?> WASHING = new RVRecipeTypeWrapper<>(MekanismRecipeType.WASHING, FluidSlurryToSlurryRecipe.class, -7, -13, 162, 60, MekanismBlocks.CHEMICAL_WASHER);
 
-    public static final RVRecipeTypeWrapper<FluidToFluidRecipe, ?> EVAPORATING = new RVRecipeTypeWrapper<>(MekanismRecipeType.EVAPORATING, FluidToFluidRecipe.class, -3, -12, 170, 62, MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER, MekanismBlocks.THERMAL_EVAPORATION_VALVE, MekanismBlocks.THERMAL_EVAPORATION_BLOCK);
+    public static final RVRecipeTypeWrapper<?, FluidToFluidRecipe, ?> EVAPORATING = new RVRecipeTypeWrapper<>(MekanismRecipeType.EVAPORATING, FluidToFluidRecipe.class, -3, -12, 170, 62, MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER, MekanismBlocks.THERMAL_EVAPORATION_VALVE, MekanismBlocks.THERMAL_EVAPORATION_BLOCK);
 
-    public static final RVRecipeTypeWrapper<GasToGasRecipe, ?> ACTIVATING = new RVRecipeTypeWrapper<>(MekanismRecipeType.ACTIVATING, GasToGasRecipe.class, -4, -13, 168, 60, MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR);
-    public static final RVRecipeTypeWrapper<GasToGasRecipe, ?> CENTRIFUGING = new RVRecipeTypeWrapper<>(MekanismRecipeType.CENTRIFUGING, GasToGasRecipe.class, -4, -13, 168, 60, MekanismBlocks.ISOTOPIC_CENTRIFUGE);
+    public static final RVRecipeTypeWrapper<?, GasToGasRecipe, ?> ACTIVATING = new RVRecipeTypeWrapper<>(MekanismRecipeType.ACTIVATING, GasToGasRecipe.class, -4, -13, 168, 60, MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR);
+    public static final RVRecipeTypeWrapper<?, GasToGasRecipe, ?> CENTRIFUGING = new RVRecipeTypeWrapper<>(MekanismRecipeType.CENTRIFUGING, GasToGasRecipe.class, -4, -13, 168, 60, MekanismBlocks.ISOTOPIC_CENTRIFUGE);
 
-    public static final RVRecipeTypeWrapper<ChemicalCrystallizerRecipe, ?> CRYSTALLIZING = new RVRecipeTypeWrapper<>(MekanismRecipeType.CRYSTALLIZING, ChemicalCrystallizerRecipe.class, -5, -3, 147, 79, MekanismBlocks.CHEMICAL_CRYSTALLIZER);
+    public static final RVRecipeTypeWrapper<?, ChemicalCrystallizerRecipe, ?> CRYSTALLIZING = new RVRecipeTypeWrapper<>(MekanismRecipeType.CRYSTALLIZING, ChemicalCrystallizerRecipe.class, -5, -3, 147, 79, MekanismBlocks.CHEMICAL_CRYSTALLIZER);
 
     //Note: This previously had a lang key for a shorter string. Though ideally especially due to translations we will eventually instead just make the text scale
     //TODO - 1.20.4: Re-evaluate ^^
-    public static final RVRecipeTypeWrapper<ChemicalDissolutionRecipe, ?> DISSOLUTION = new RVRecipeTypeWrapper<>(MekanismRecipeType.DISSOLUTION, ChemicalDissolutionRecipe.class, -3, -3, 170, 79, MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER);
+    public static final RVRecipeTypeWrapper<?, ChemicalDissolutionRecipe, ?> DISSOLUTION = new RVRecipeTypeWrapper<>(MekanismRecipeType.DISSOLUTION, ChemicalDissolutionRecipe.class, -3, -3, 170, 79, MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER);
 
-    public static final RVRecipeTypeWrapper<ItemStackGasToItemStackRecipe, ?> COMPRESSING = new RVRecipeTypeWrapper<>(MekanismRecipeType.COMPRESSING, ItemStackGasToItemStackRecipe.class, -28, -16, 144, 54, MekanismBlocks.OSMIUM_COMPRESSOR);
-    public static final RVRecipeTypeWrapper<ItemStackGasToItemStackRecipe, ?> PURIFYING = new RVRecipeTypeWrapper<>(MekanismRecipeType.PURIFYING, ItemStackGasToItemStackRecipe.class, -28, -16, 144, 54, MekanismBlocks.PURIFICATION_CHAMBER);
-    public static final RVRecipeTypeWrapper<ItemStackGasToItemStackRecipe, ?> INJECTING = new RVRecipeTypeWrapper<>(MekanismRecipeType.INJECTING, ItemStackGasToItemStackRecipe.class, -28, -16, 144, 54, MekanismBlocks.CHEMICAL_INJECTION_CHAMBER);
+    public static final RVRecipeTypeWrapper<?, ItemStackGasToItemStackRecipe, ?> COMPRESSING = new RVRecipeTypeWrapper<>(MekanismRecipeType.COMPRESSING, ItemStackGasToItemStackRecipe.class, -28, -16, 144, 54, MekanismBlocks.OSMIUM_COMPRESSOR);
+    public static final RVRecipeTypeWrapper<?, ItemStackGasToItemStackRecipe, ?> PURIFYING = new RVRecipeTypeWrapper<>(MekanismRecipeType.PURIFYING, ItemStackGasToItemStackRecipe.class, -28, -16, 144, 54, MekanismBlocks.PURIFICATION_CHAMBER);
+    public static final RVRecipeTypeWrapper<?, ItemStackGasToItemStackRecipe, ?> INJECTING = new RVRecipeTypeWrapper<>(MekanismRecipeType.INJECTING, ItemStackGasToItemStackRecipe.class, -28, -16, 144, 54, MekanismBlocks.CHEMICAL_INJECTION_CHAMBER);
 
-    public static final RVRecipeTypeWrapper<NucleosynthesizingRecipe, ?> NUCLEOSYNTHESIZING = new RVRecipeTypeWrapper<>(MekanismRecipeType.NUCLEOSYNTHESIZING, NucleosynthesizingRecipe.class, -6, -18, 182, 80, MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER);
+    public static final RVRecipeTypeWrapper<?, NucleosynthesizingRecipe, ?> NUCLEOSYNTHESIZING = new RVRecipeTypeWrapper<>(MekanismRecipeType.NUCLEOSYNTHESIZING, NucleosynthesizingRecipe.class, -6, -18, 182, 80, MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER);
 
     //TODO: Decide if we want to make it so all mekanism energy supporting blocks that have gui's are added as catalysts?
-    public static final SimpleRVRecipeType<ItemStackToEnergyRecipe, ?> ENERGY_CONVERSION = new SimpleRVRecipeType<>(MekanismRecipeType.ENERGY_CONVERSION, ItemStackToEnergyRecipe.class, MekanismLang.CONVERSION_ENERGY, MekanismUtils.getResource(ResourceType.GUI, "energy.png"), -20, -12, 132, 62, MekanismBlocks.BASIC_ENERGY_CUBE, MekanismBlocks.ADVANCED_ENERGY_CUBE, MekanismBlocks.ELITE_ENERGY_CUBE, MekanismBlocks.ULTIMATE_ENERGY_CUBE);
+    public static final SimpleRVRecipeType<?, ItemStackToEnergyRecipe, ?> ENERGY_CONVERSION = new SimpleRVRecipeType<>(MekanismRecipeType.ENERGY_CONVERSION, ItemStackToEnergyRecipe.class, MekanismLang.CONVERSION_ENERGY, MekanismUtils.getResource(ResourceType.GUI, "energy.png"), -20, -12, 132, 62, MekanismBlocks.BASIC_ENERGY_CUBE, MekanismBlocks.ADVANCED_ENERGY_CUBE, MekanismBlocks.ELITE_ENERGY_CUBE, MekanismBlocks.ULTIMATE_ENERGY_CUBE);
 
-    public static final SimpleRVRecipeType<ItemStackToGasRecipe, ?> GAS_CONVERSION = new SimpleRVRecipeType<>(MekanismRecipeType.GAS_CONVERSION, ItemStackToGasRecipe.class, MekanismLang.CONVERSION_GAS, MekanismUtils.getResource(ResourceType.GUI, "gases.png"), -20, -12, 132, 62, MekanismBlocks.PURIFICATION_CHAMBER, MekanismBlocks.OSMIUM_COMPRESSOR, MekanismBlocks.CHEMICAL_INJECTION_CHAMBER, MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER, MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER);
-    public static final RVRecipeTypeWrapper<ItemStackToGasRecipe, ?> OXIDIZING = new RVRecipeTypeWrapper<>(MekanismRecipeType.OXIDIZING, ItemStackToGasRecipe.class, -20, -12, 132, 62, MekanismBlocks.CHEMICAL_OXIDIZER);
+    public static final SimpleRVRecipeType<?, ItemStackToGasRecipe, ?> GAS_CONVERSION = new SimpleRVRecipeType<>(MekanismRecipeType.GAS_CONVERSION, ItemStackToGasRecipe.class, MekanismLang.CONVERSION_GAS, MekanismUtils.getResource(ResourceType.GUI, "gases.png"), -20, -12, 132, 62, MekanismBlocks.PURIFICATION_CHAMBER, MekanismBlocks.OSMIUM_COMPRESSOR, MekanismBlocks.CHEMICAL_INJECTION_CHAMBER, MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER, MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER);
+    public static final RVRecipeTypeWrapper<?, ItemStackToGasRecipe, ?> OXIDIZING = new RVRecipeTypeWrapper<>(MekanismRecipeType.OXIDIZING, ItemStackToGasRecipe.class, -20, -12, 132, 62, MekanismBlocks.CHEMICAL_OXIDIZER);
 
-    public static final SimpleRVRecipeType<ItemStackToInfuseTypeRecipe, ?> INFUSION_CONVERSION = new SimpleRVRecipeType<>(MekanismRecipeType.INFUSION_CONVERSION, ItemStackToInfuseTypeRecipe.class, MekanismLang.CONVERSION_INFUSION, MekanismUtils.getResource(ResourceType.GUI, "infuse_types.png"), -20, -12, 132, 62, MekanismBlocks.METALLURGIC_INFUSER);
+    public static final SimpleRVRecipeType<?, ItemStackToInfuseTypeRecipe, ?> INFUSION_CONVERSION = new SimpleRVRecipeType<>(MekanismRecipeType.INFUSION_CONVERSION, ItemStackToInfuseTypeRecipe.class, MekanismLang.CONVERSION_INFUSION, MekanismUtils.getResource(ResourceType.GUI, "infuse_types.png"), -20, -12, 132, 62, MekanismBlocks.METALLURGIC_INFUSER);
 
-    public static final RVRecipeTypeWrapper<ItemStackToPigmentRecipe, ?> PIGMENT_EXTRACTING = new RVRecipeTypeWrapper<>(MekanismRecipeType.PIGMENT_EXTRACTING, ItemStackToPigmentRecipe.class, -20, -12, 132, 62, MekanismBlocks.PIGMENT_EXTRACTOR);
+    public static final RVRecipeTypeWrapper<?, ItemStackToPigmentRecipe, ?> PIGMENT_EXTRACTING = new RVRecipeTypeWrapper<>(MekanismRecipeType.PIGMENT_EXTRACTING, ItemStackToPigmentRecipe.class, -20, -12, 132, 62, MekanismBlocks.PIGMENT_EXTRACTOR);
 
-    public static final RVRecipeTypeWrapper<PigmentMixingRecipe, ?> PIGMENT_MIXING = new RVRecipeTypeWrapper<>(MekanismRecipeType.PIGMENT_MIXING, PigmentMixingRecipe.class, -3, -3, 170, 80, MekanismBlocks.PIGMENT_MIXER);
+    public static final RVRecipeTypeWrapper<?, PigmentMixingRecipe, ?> PIGMENT_MIXING = new RVRecipeTypeWrapper<>(MekanismRecipeType.PIGMENT_MIXING, PigmentMixingRecipe.class, -3, -3, 170, 80, MekanismBlocks.PIGMENT_MIXER);
 
-    public static final RVRecipeTypeWrapper<MetallurgicInfuserRecipe, ?> METALLURGIC_INFUSING = new RVRecipeTypeWrapper<>(MekanismRecipeType.METALLURGIC_INFUSING, MetallurgicInfuserRecipe.class, -5, -16, 166, 54, MekanismBlocks.METALLURGIC_INFUSER);
+    public static final RVRecipeTypeWrapper<?, MetallurgicInfuserRecipe, ?> METALLURGIC_INFUSING = new RVRecipeTypeWrapper<>(MekanismRecipeType.METALLURGIC_INFUSING, MetallurgicInfuserRecipe.class, -5, -16, 166, 54, MekanismBlocks.METALLURGIC_INFUSER);
 
-    public static final RVRecipeTypeWrapper<PaintingRecipe, ?> PAINTING = new RVRecipeTypeWrapper<>(MekanismRecipeType.PAINTING, PaintingRecipe.class, -25, -13, 146, 60, MekanismBlocks.PAINTING_MACHINE);
+    public static final RVRecipeTypeWrapper<?, PaintingRecipe, ?> PAINTING = new RVRecipeTypeWrapper<>(MekanismRecipeType.PAINTING, PaintingRecipe.class, -25, -13, 146, 60, MekanismBlocks.PAINTING_MACHINE);
 
     //Note: This previously had a lang key for a shorter string. Though ideally especially due to translations we will eventually instead just make the text scale
     //TODO - 1.20.4: Re-evaluate ^^
-    public static final RVRecipeTypeWrapper<PressurizedReactionRecipe, ?> REACTION = new RVRecipeTypeWrapper<>(MekanismRecipeType.REACTION, PressurizedReactionRecipe.class, -3, -10, 170, 60, MekanismBlocks.PRESSURIZED_REACTION_CHAMBER);
+    public static final RVRecipeTypeWrapper<?, PressurizedReactionRecipe, ?> REACTION = new RVRecipeTypeWrapper<>(MekanismRecipeType.REACTION, PressurizedReactionRecipe.class, -3, -10, 170, 60, MekanismBlocks.PRESSURIZED_REACTION_CHAMBER);
 
     public static final FakeRVRecipeType<RotaryRecipe> CONDENSENTRATING = new FakeRVRecipeType<>(Mekanism.rl("condensentrating"), MekanismBlocks.ROTARY_CONDENSENTRATOR, MekanismLang.CONDENSENTRATING, RotaryRecipe.class, -3, -12, 170, 64);
     public static final FakeRVRecipeType<RotaryRecipe> DECONDENSENTRATING = new FakeRVRecipeType<>(Mekanism.rl("decondensentrating"), MekanismBlocks.ROTARY_CONDENSENTRATOR, MekanismLang.DECONDENSENTRATING, RotaryRecipe.class, -3, -12, 170, 64);
 
-    public static final RVRecipeTypeWrapper<SawmillRecipe, ?> SAWING = new RVRecipeTypeWrapper<>(MekanismRecipeType.SAWING, SawmillRecipe.class, -28, -16, 144, 54, MekanismBlocks.PRECISION_SAWMILL);
+    public static final RVRecipeTypeWrapper<?, SawmillRecipe, ?> SAWING = new RVRecipeTypeWrapper<>(MekanismRecipeType.SAWING, SawmillRecipe.class, -28, -16, 144, 54, MekanismBlocks.PRECISION_SAWMILL);
 
     public static final FakeRVRecipeType<BoilerRecipeViewerRecipe> BOILER = new FakeRVRecipeType<>(MekanismBlocks.BOILER_CASING.getId(), MekanismUtils.getResource(ResourceType.GUI, "heat.png"), MekanismLang.BOILER, BoilerRecipeViewerRecipe.class, -6, -13, 180, 60, MekanismBlocks.BOILER_CASING, MekanismBlocks.BOILER_VALVE, MekanismBlocks.PRESSURE_DISPERSER, MekanismBlocks.SUPERHEATING_ELEMENT);
     public static final FakeRVRecipeType<SPSRecipeViewerRecipe> SPS = new FakeRVRecipeType<>(MekanismBlocks.SPS_CASING.getId(), MekanismItems.ANTIMATTER_PELLET, MekanismLang.SPS, SPSRecipeViewerRecipe.class, -3, -12, 168, 74, false, MekanismBlocks.SPS_CASING, MekanismBlocks.SPS_PORT, MekanismBlocks.SUPERCHARGED_COIL);

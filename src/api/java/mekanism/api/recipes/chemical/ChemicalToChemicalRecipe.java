@@ -7,6 +7,8 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
+import mekanism.api.recipes.vanilla_input.SingleChemicalRecipeInput;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,10 +23,16 @@ import org.jetbrains.annotations.NotNull;
  */
 @NothingNullByDefault
 public abstract class ChemicalToChemicalRecipe<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-      INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK, ?>> extends MekanismRecipe implements Predicate<@NotNull STACK> {
+      INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK, ?>> extends MekanismRecipe<SingleChemicalRecipeInput<CHEMICAL, STACK>> implements Predicate<@NotNull STACK> {
 
     @Override
     public abstract boolean test(STACK chemicalStack);
+
+    @Override
+    public boolean matches(SingleChemicalRecipeInput<CHEMICAL, STACK> input, Level level) {
+        //Don't match incomplete recipes or ones that don't match
+        return !isIncomplete() && test(input.chemical());
+    }
 
     /**
      * Gets the input ingredient.

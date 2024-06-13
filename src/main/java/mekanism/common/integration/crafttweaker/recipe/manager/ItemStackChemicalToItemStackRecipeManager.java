@@ -38,7 +38,7 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<CHEMICAL extends
       INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK, ?>, RECIPE extends ItemStackChemicalToItemStackRecipe<CHEMICAL, STACK, INGREDIENT>>
       extends MekanismRecipeManager<RECIPE> {
 
-    protected ItemStackChemicalToItemStackRecipeManager(IMekanismRecipeTypeProvider<RECIPE, ?> recipeType) {
+    protected ItemStackChemicalToItemStackRecipeManager(IMekanismRecipeTypeProvider<?, RECIPE, ?> recipeType) {
         super(recipeType);
     }
 

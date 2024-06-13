@@ -8,6 +8,8 @@ import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
  * </ul>
  */
 @NothingNullByDefault
-public abstract class ItemStackToItemStackRecipe extends MekanismRecipe implements Predicate<@NotNull ItemStack> {
+public abstract class ItemStackToItemStackRecipe extends MekanismRecipe<SingleRecipeInput> implements Predicate<@NotNull ItemStack> {
 
     protected final RecipeType<ItemStackToItemStackRecipe> recipeType;
 
@@ -34,6 +36,21 @@ public abstract class ItemStackToItemStackRecipe extends MekanismRecipe implemen
 
     @Override
     public abstract boolean test(ItemStack input);
+
+    @NotNull
+    @Override
+    public ItemStack assemble(SingleRecipeInput input, HolderLookup.Provider provider) {
+        if (!isIncomplete() && test(input.item())) {
+            return getOutput(input.item());
+        }
+        return ItemStack.EMPTY;
+    }
+
+    @Override
+    public boolean matches(SingleRecipeInput input, Level level) {
+        //Don't match incomplete recipes or ones that don't match
+        return !isIncomplete() && test(input.item());
+    }
 
     /**
      * Gets the input ingredient.

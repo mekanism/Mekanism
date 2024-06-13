@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Helper expansion of {@link IRecipeLookupHandler} for easily implementing contains and find recipe lookups for recipes that takes three inputs.
  */
-public interface ITripleRecipeLookupHandler<INPUT_A, INPUT_B, INPUT_C, RECIPE extends MekanismRecipe & TriPredicate<INPUT_A, INPUT_B, INPUT_C>,
+public interface ITripleRecipeLookupHandler<INPUT_A, INPUT_B, INPUT_C, RECIPE extends MekanismRecipe<?> & TriPredicate<INPUT_A, INPUT_B, INPUT_C>,
       INPUT_CACHE extends TripleInputRecipeCache<INPUT_A, ?, INPUT_B, ?, INPUT_C, ?, RECIPE, ?, ?, ?>> extends IRecipeTypedLookupHandler<RECIPE, INPUT_CACHE> {
 
     /**
@@ -140,7 +140,7 @@ public interface ITripleRecipeLookupHandler<INPUT_A, INPUT_B, INPUT_C, RECIPE ex
      * based helper interfaces.
      */
     interface ObjectObjectChemicalRecipeLookupHandler<INPUT_A, INPUT_B, CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-          RECIPE extends MekanismRecipe & TriPredicate<INPUT_A, INPUT_B, STACK>, INPUT_CACHE extends TripleInputRecipeCache<INPUT_A, ?, INPUT_B, ?, STACK, ?, RECIPE, ?, ?, ?>>
+          RECIPE extends MekanismRecipe<?> & TriPredicate<INPUT_A, INPUT_B, STACK>, INPUT_CACHE extends TripleInputRecipeCache<INPUT_A, ?, INPUT_B, ?, STACK, ?, RECIPE, ?, ?, ?>>
           extends ITripleRecipeLookupHandler<INPUT_A, INPUT_B, STACK, RECIPE, INPUT_CACHE> {
 
         /**
@@ -162,7 +162,7 @@ public interface ITripleRecipeLookupHandler<INPUT_A, INPUT_B, INPUT_C, RECIPE ex
     /**
      * Helper interface to make the generics that we have to pass to {@link ITripleRecipeLookupHandler} not as messy.
      */
-    interface ItemFluidChemicalRecipeLookupHandler<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, RECIPE extends MekanismRecipe &
+    interface ItemFluidChemicalRecipeLookupHandler<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, RECIPE extends MekanismRecipe<?> &
           TriPredicate<ItemStack, FluidStack, STACK>> extends ObjectObjectChemicalRecipeLookupHandler<ItemStack, FluidStack, CHEMICAL, STACK, RECIPE,
           ItemFluidChemical<CHEMICAL, STACK, RECIPE>> {
     }

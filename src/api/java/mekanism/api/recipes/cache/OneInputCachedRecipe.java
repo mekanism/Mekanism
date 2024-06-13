@@ -33,7 +33,7 @@ import org.jetbrains.annotations.Nullable;
  * Base class to help implement handling of recipes with one input.
  */
 @NothingNullByDefault
-public class OneInputCachedRecipe<INPUT, OUTPUT, RECIPE extends MekanismRecipe & Predicate<INPUT>> extends CachedRecipe<RECIPE> {
+public class OneInputCachedRecipe<INPUT, OUTPUT, RECIPE extends MekanismRecipe<?> & Predicate<INPUT>> extends CachedRecipe<RECIPE> {
 
     private final IInputHandler<INPUT> inputHandler;
     private final IOutputHandler<OUTPUT> outputHandler;

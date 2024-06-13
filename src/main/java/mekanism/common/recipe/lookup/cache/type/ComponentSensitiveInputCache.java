@@ -15,7 +15,7 @@ import mekanism.api.recipes.ingredients.InputIngredient;
  * Extended input cache that implements the backend handling to allow for both the basic key based input lookup that {@link BaseInputCache} provides, and also a more
  * advanced mapping that is Data Component based.
  */
-public abstract class ComponentSensitiveInputCache<KEY, INPUT, INGREDIENT extends InputIngredient<INPUT>, RECIPE extends MekanismRecipe>
+public abstract class ComponentSensitiveInputCache<KEY, INPUT, INGREDIENT extends InputIngredient<INPUT>, RECIPE extends MekanismRecipe<?>>
       extends BaseInputCache<KEY, INPUT, INGREDIENT, RECIPE> {
 
     /**

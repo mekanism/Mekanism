@@ -24,7 +24,7 @@ import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
  * Base class to help implement handling of Mekanism recipes.
  */
 @NothingNullByDefault
-public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
+public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?>> {
 
     /**
      * Internal recipe object this cached recipe acts on.

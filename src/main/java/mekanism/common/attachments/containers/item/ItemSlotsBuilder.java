@@ -46,6 +46,7 @@ import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import mekanism.common.tile.machine.TileEntityFormulaicAssemblicator;
 import mekanism.common.tile.machine.TileEntityOredictionificator;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
@@ -236,8 +237,8 @@ public class ItemSlotsBuilder {
         return addSlot((type, attachedTo, containerIndex) -> new ComponentBackedInventorySlot(attachedTo, containerIndex, BasicInventorySlot.notExternal, BasicInventorySlot.alwaysTrueBi, isItemValid));
     }
 
-    public <RECIPE extends MekanismRecipe, INPUT_CACHE extends IInputRecipeCache> ItemSlotsBuilder addInput(IMekanismRecipeTypeProvider<RECIPE, INPUT_CACHE> recipeType,
-          ContainsRecipe<INPUT_CACHE, ItemStack> containsRecipe) {
+    public <VANILLA_INPUT extends RecipeInput, RECIPE extends MekanismRecipe<VANILLA_INPUT>, INPUT_CACHE extends IInputRecipeCache> ItemSlotsBuilder addInput(
+          IMekanismRecipeTypeProvider<VANILLA_INPUT, RECIPE, INPUT_CACHE> recipeType, ContainsRecipe<INPUT_CACHE, ItemStack> containsRecipe) {
         return addInput(stack -> containsRecipe.check(recipeType.getInputCache(), null, stack));
     }
 

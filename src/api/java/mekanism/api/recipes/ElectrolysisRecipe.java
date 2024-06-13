@@ -8,12 +8,14 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
+import mekanism.api.recipes.vanilla_input.SingleFluidRecipeInput;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Contract;
@@ -29,7 +31,7 @@ import org.jetbrains.annotations.NotNull;
  * @apiNote Electrolytic Separators can process this recipe type.
  */
 @NothingNullByDefault
-public abstract class ElectrolysisRecipe extends MekanismRecipe implements Predicate<@NotNull FluidStack> {
+public abstract class ElectrolysisRecipe extends MekanismRecipe<SingleFluidRecipeInput> implements Predicate<@NotNull FluidStack> {
 
     private static final Holder<Item> ELECTROLYTIC_SEPARATOR = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "electrolytic_separator"));
 
@@ -47,6 +49,12 @@ public abstract class ElectrolysisRecipe extends MekanismRecipe implements Predi
 
     @Override
     public abstract boolean test(FluidStack fluidStack);
+
+    @Override
+    public boolean matches(SingleFluidRecipeInput input, Level level) {
+        //Don't match incomplete recipes or ones that don't match
+        return !isIncomplete() && test(input.fluid());
+    }
 
     /**
      * Gets a new output based on the given input.

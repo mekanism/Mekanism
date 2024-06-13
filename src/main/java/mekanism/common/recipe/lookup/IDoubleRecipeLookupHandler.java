@@ -19,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Helper expansion of {@link IRecipeLookupHandler} for easily implementing contains and find recipe lookups for recipes that takes two inputs.
  */
-public interface IDoubleRecipeLookupHandler<INPUT_A, INPUT_B, RECIPE extends MekanismRecipe & BiPredicate<INPUT_A, INPUT_B>,
+public interface IDoubleRecipeLookupHandler<INPUT_A, INPUT_B, RECIPE extends MekanismRecipe<?> & BiPredicate<INPUT_A, INPUT_B>,
       INPUT_CACHE extends DoubleInputRecipeCache<INPUT_A, ?, INPUT_B, ?, RECIPE, ?, ?>> extends IRecipeTypedLookupHandler<RECIPE, INPUT_CACHE> {
 
     /**
@@ -103,7 +103,7 @@ public interface IDoubleRecipeLookupHandler<INPUT_A, INPUT_B, RECIPE extends Mek
     /**
      * Helper interface to make the generics that we have to pass to {@link IDoubleRecipeLookupHandler} not as messy.
      */
-    interface DoubleItemRecipeLookupHandler<RECIPE extends MekanismRecipe & BiPredicate<ItemStack, ItemStack>> extends
+    interface DoubleItemRecipeLookupHandler<RECIPE extends MekanismRecipe<?> & BiPredicate<ItemStack, ItemStack>> extends
           IDoubleRecipeLookupHandler<ItemStack, ItemStack, RECIPE, DoubleItem<RECIPE>> {
     }
 
@@ -111,7 +111,7 @@ public interface IDoubleRecipeLookupHandler<INPUT_A, INPUT_B, RECIPE extends Mek
      * Helper interface to make the generics that we have to pass to {@link IDoubleRecipeLookupHandler} not as messy, and reduce the duplicate code in the other chemical
      * based helper interfaces.
      */
-    interface ObjectChemicalRecipeLookupHandler<INPUT, CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, RECIPE extends MekanismRecipe &
+    interface ObjectChemicalRecipeLookupHandler<INPUT, CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, RECIPE extends MekanismRecipe<?> &
           BiPredicate<INPUT, STACK>, INPUT_CACHE extends DoubleInputRecipeCache<INPUT, ?, STACK, ?, RECIPE, ?, ?>> extends
           IDoubleRecipeLookupHandler<INPUT, STACK, RECIPE, INPUT_CACHE> {
 
@@ -134,14 +134,14 @@ public interface IDoubleRecipeLookupHandler<INPUT_A, INPUT_B, RECIPE extends Mek
     /**
      * Helper interface to make the generics that we have to pass to {@link IDoubleRecipeLookupHandler} not as messy.
      */
-    interface ItemChemicalRecipeLookupHandler<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, RECIPE extends MekanismRecipe &
+    interface ItemChemicalRecipeLookupHandler<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, RECIPE extends MekanismRecipe<?> &
           BiPredicate<ItemStack, STACK>> extends ObjectChemicalRecipeLookupHandler<ItemStack, CHEMICAL, STACK, RECIPE, ItemChemical<CHEMICAL, STACK, RECIPE>> {
     }
 
     /**
      * Helper interface to make the generics that we have to pass to {@link IDoubleRecipeLookupHandler} not as messy.
      */
-    interface FluidChemicalRecipeLookupHandler<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, RECIPE extends MekanismRecipe &
+    interface FluidChemicalRecipeLookupHandler<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, RECIPE extends MekanismRecipe<?> &
           BiPredicate<FluidStack, STACK>> extends ObjectChemicalRecipeLookupHandler<FluidStack, CHEMICAL, STACK, RECIPE, FluidChemical<CHEMICAL, STACK, RECIPE>> {
     }
 }

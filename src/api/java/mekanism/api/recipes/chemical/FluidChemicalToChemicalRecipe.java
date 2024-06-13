@@ -8,6 +8,8 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
+import mekanism.api.recipes.vanilla_input.SingleFluidChemicalRecipeInput;
+import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -25,10 +27,17 @@ import org.jetbrains.annotations.NotNull;
  */
 @NothingNullByDefault
 public abstract class FluidChemicalToChemicalRecipe<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-      INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK, ?>> extends MekanismRecipe implements BiPredicate<@NotNull FluidStack, @NotNull STACK> {
+      INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK, ?>> extends MekanismRecipe<SingleFluidChemicalRecipeInput<CHEMICAL, STACK>>
+      implements BiPredicate<@NotNull FluidStack, @NotNull STACK> {
 
     @Override
     public abstract boolean test(FluidStack fluidStack, STACK chemicalStack);
+
+    @Override
+    public boolean matches(SingleFluidChemicalRecipeInput<CHEMICAL, STACK> input, Level level) {
+        //Don't match incomplete recipes or ones that don't match
+        return !isIncomplete() && test(input.fluid(), input.chemical());
+    }
 
     /**
      * Gets the input fluid ingredient.

@@ -17,7 +17,7 @@ import org.openzen.zencode.java.ZenCodeType;
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_GAS_TO_GAS)
 public abstract class GasToGasRecipeManager extends MekanismRecipeManager<GasToGasRecipe> {
 
-    protected GasToGasRecipeManager(IMekanismRecipeTypeProvider<GasToGasRecipe, ?> recipeType) {
+    protected GasToGasRecipeManager(IMekanismRecipeTypeProvider<?, GasToGasRecipe, ?> recipeType) {
         super(recipeType);
     }
 

@@ -7,12 +7,13 @@ import mekanism.api.recipes.MekanismRecipe;
 import mekanism.common.recipe.lookup.cache.IInputRecipeCache;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface IMekanismRecipeTypeProvider<RECIPE extends MekanismRecipe, INPUT_CACHE extends IInputRecipeCache> {
+public interface IMekanismRecipeTypeProvider<VANILLA_INPUT extends RecipeInput, RECIPE extends MekanismRecipe<VANILLA_INPUT>, INPUT_CACHE extends IInputRecipeCache> {
 
     /**
      * Gets the registry name of the element represented by this provider.
@@ -23,7 +24,7 @@ public interface IMekanismRecipeTypeProvider<RECIPE extends MekanismRecipe, INPU
         return getRecipeType().getRegistryName();
     }
 
-    MekanismRecipeType<RECIPE, INPUT_CACHE> getRecipeType();
+    MekanismRecipeType<VANILLA_INPUT, RECIPE, INPUT_CACHE> getRecipeType();
 
     default INPUT_CACHE getInputCache() {
         return getRecipeType().getInputCache();

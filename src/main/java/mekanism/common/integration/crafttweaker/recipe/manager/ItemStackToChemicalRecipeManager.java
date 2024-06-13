@@ -16,7 +16,7 @@ import org.openzen.zencode.java.ZenCodeType;
 public abstract class ItemStackToChemicalRecipeManager<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
       CRT_STACK extends ICrTChemicalStack<CHEMICAL, STACK, CRT_STACK>, RECIPE extends ItemStackToChemicalRecipe<CHEMICAL, STACK>> extends MekanismRecipeManager<RECIPE> {
 
-    protected ItemStackToChemicalRecipeManager(IMekanismRecipeTypeProvider<RECIPE, ?> recipeType) {
+    protected ItemStackToChemicalRecipeManager(IMekanismRecipeTypeProvider<?, RECIPE, ?> recipeType) {
         super(recipeType);
     }
 

@@ -8,8 +8,10 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import mekanism.api.recipes.vanilla_input.SingleItemChemicalRecipeInput;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -26,7 +28,8 @@ import org.jetbrains.annotations.NotNull;
  */
 @NothingNullByDefault
 public abstract class ItemStackChemicalToItemStackRecipe<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-      INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK, ?>> extends MekanismRecipe implements BiPredicate<@NotNull ItemStack, @NotNull STACK> {
+      INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK, ?>> extends MekanismRecipe<SingleItemChemicalRecipeInput<CHEMICAL, STACK>>
+      implements BiPredicate<@NotNull ItemStack, @NotNull STACK> {
 
     /**
      * Gets the input item ingredient.
@@ -59,6 +62,21 @@ public abstract class ItemStackChemicalToItemStackRecipe<CHEMICAL extends Chemic
 
     @Override
     public abstract boolean test(ItemStack itemStack, STACK gasStack);
+
+    @NotNull
+    @Override
+    public ItemStack assemble(SingleItemChemicalRecipeInput<CHEMICAL, STACK> input, HolderLookup.Provider provider) {
+        if (!isIncomplete() && test(input.item(), input.chemical())) {
+            return getOutput(input.item(), input.chemical());
+        }
+        return ItemStack.EMPTY;
+    }
+
+    @Override
+    public boolean matches(SingleItemChemicalRecipeInput<CHEMICAL, STACK> input, Level level) {
+        //Don't match incomplete recipes or ones that don't match
+        return !isIncomplete() && test(input.item(), input.chemical());
+    }
 
     /**
      * For JEI, gets the output representations to display.

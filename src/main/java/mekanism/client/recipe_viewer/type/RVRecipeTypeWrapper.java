@@ -11,16 +11,17 @@ import mekanism.common.recipe.lookup.cache.IInputRecipeCache;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeInput;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public record RVRecipeTypeWrapper<RECIPE extends MekanismRecipe, INPUT_CACHE extends IInputRecipeCache>(
-      ResourceLocation id, IItemProvider item, Class<? extends RECIPE> recipeClass, IMekanismRecipeTypeProvider<RECIPE, INPUT_CACHE> vanillaProvider,
+public record RVRecipeTypeWrapper<VANILLA_INPUT extends RecipeInput, RECIPE extends MekanismRecipe<VANILLA_INPUT>, INPUT_CACHE extends IInputRecipeCache>(
+      ResourceLocation id, IItemProvider item, Class<? extends RECIPE> recipeClass, IMekanismRecipeTypeProvider<VANILLA_INPUT, RECIPE, INPUT_CACHE> vanillaProvider,
       int xOffset, int yOffset, int width, int height, List<IItemProvider> workstations
-) implements IRecipeViewerRecipeType<RECIPE>, IMekanismRecipeTypeProvider<RECIPE, INPUT_CACHE> {
+) implements IRecipeViewerRecipeType<RECIPE>, IMekanismRecipeTypeProvider<VANILLA_INPUT, RECIPE, INPUT_CACHE> {
 
-    public RVRecipeTypeWrapper(IMekanismRecipeTypeProvider<RECIPE, INPUT_CACHE> vanillaProvider, Class<? extends RECIPE> recipeClass, int xOffset, int yOffset,
-          int width, int height, IItemProvider icon, IItemProvider... altWorkstations) {
+    public RVRecipeTypeWrapper(IMekanismRecipeTypeProvider<VANILLA_INPUT, RECIPE, INPUT_CACHE> vanillaProvider, Class<? extends RECIPE> recipeClass,
+          int xOffset, int yOffset, int width, int height, IItemProvider icon, IItemProvider... altWorkstations) {
         this(vanillaProvider.getRegistryName(), icon, recipeClass, vanillaProvider, xOffset, yOffset, width, height, List.of(altWorkstations));
     }
 
@@ -55,7 +56,7 @@ public record RVRecipeTypeWrapper<RECIPE extends MekanismRecipe, INPUT_CACHE ext
     }
 
     @Override
-    public MekanismRecipeType<RECIPE, INPUT_CACHE> getRecipeType() {
+    public MekanismRecipeType<VANILLA_INPUT, RECIPE, INPUT_CACHE> getRecipeType() {
         return vanillaProvider.getRecipeType();
     }
 }

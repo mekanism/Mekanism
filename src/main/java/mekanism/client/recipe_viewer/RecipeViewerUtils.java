@@ -102,7 +102,7 @@ public class RecipeViewerUtils {
             return getStacksFor(chemicals, null);
         }
         ChemicalType chemicalType = ChemicalType.getTypeFor(ingredient);
-        return getStacksFor(chemicals, (IMekanismRecipeTypeProvider<? extends ItemStackToChemicalRecipe<CHEMICAL, ?>, ?>)  switch (chemicalType) {
+        return getStacksFor(chemicals, (IMekanismRecipeTypeProvider<?, ? extends ItemStackToChemicalRecipe<CHEMICAL, ?>, ?>)  switch (chemicalType) {
             case GAS -> MekanismRecipeType.GAS_CONVERSION;
             case INFUSION -> MekanismRecipeType.INFUSION_CONVERSION;
             default -> null;
@@ -110,7 +110,7 @@ public class RecipeViewerUtils {
     }
 
     private static <CHEMICAL extends Chemical<CHEMICAL>> List<ItemStack> getStacksFor(Set<CHEMICAL> supportedTypes,
-          @Nullable IMekanismRecipeTypeProvider<? extends ItemStackToChemicalRecipe<CHEMICAL, ?>, ?> recipeType) {
+          @Nullable IMekanismRecipeTypeProvider<?, ? extends ItemStackToChemicalRecipe<CHEMICAL, ?>, ?> recipeType) {
         List<ItemStack> stacks = new ArrayList<>();
         //Always include the chemical tank of the type to portray that we accept items
         for (CHEMICAL type : supportedTypes) {

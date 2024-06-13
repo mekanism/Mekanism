@@ -12,6 +12,7 @@ import mekanism.common.attachments.containers.creator.BaseContainerCreator;
 import mekanism.common.attachments.containers.creator.IBasicContainerCreator;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.lookup.cache.IInputRecipeCache;
+import net.minecraft.world.item.crafting.RecipeInput;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class ChemicalTanksBuilder<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
@@ -25,8 +26,8 @@ public abstract class ChemicalTanksBuilder<CHEMICAL extends Chemical<CHEMICAL>, 
     public abstract BaseContainerCreator<?, TANK> build();
 
     @SuppressWarnings("unchecked")
-    public <RECIPE extends MekanismRecipe, INPUT_CACHE extends IInputRecipeCache> BUILDER addBasic(long capacity,
-          IMekanismRecipeTypeProvider<RECIPE, INPUT_CACHE> recipeType, ContainsRecipe<INPUT_CACHE, STACK> containsRecipe) {
+    public <VANILLA_INPUT extends RecipeInput, RECIPE extends MekanismRecipe<VANILLA_INPUT>, INPUT_CACHE extends IInputRecipeCache> BUILDER addBasic(long capacity,
+          IMekanismRecipeTypeProvider<VANILLA_INPUT, RECIPE, INPUT_CACHE> recipeType, ContainsRecipe<INPUT_CACHE, STACK> containsRecipe) {
         return addBasic(capacity, chemical -> containsRecipe.check(recipeType.getInputCache(), null, (STACK) chemical.getStack(1)));
     }
 

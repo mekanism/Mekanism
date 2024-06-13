@@ -7,6 +7,7 @@ import mekanism.common.recipe.lookup.cache.IInputRecipeCache;
 import mekanism.common.registration.MekanismDeferredRegister;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeType;
 
 public class RecipeTypeDeferredRegister extends MekanismDeferredRegister<RecipeType<?>> {
@@ -15,8 +16,8 @@ public class RecipeTypeDeferredRegister extends MekanismDeferredRegister<RecipeT
         super(Registries.RECIPE_TYPE, modid, RecipeTypeRegistryObject::new);
     }
 
-    public <RECIPE extends MekanismRecipe, INPUT_CACHE extends IInputRecipeCache> RecipeTypeRegistryObject<RECIPE, INPUT_CACHE> registerMek(String name,
-          Function<ResourceLocation, ? extends MekanismRecipeType<RECIPE, INPUT_CACHE>> func) {
-        return (RecipeTypeRegistryObject<RECIPE, INPUT_CACHE>) super.register(name, func);
+    public <VANILLA_INPUT extends RecipeInput, RECIPE extends MekanismRecipe<VANILLA_INPUT>, INPUT_CACHE extends IInputRecipeCache>
+    RecipeTypeRegistryObject<VANILLA_INPUT, RECIPE, INPUT_CACHE> registerMek(String name, Function<ResourceLocation, ? extends MekanismRecipeType<VANILLA_INPUT, RECIPE, INPUT_CACHE>> func) {
+        return (RecipeTypeRegistryObject<VANILLA_INPUT, RECIPE, INPUT_CACHE>) super.register(name, func);
     }
 }

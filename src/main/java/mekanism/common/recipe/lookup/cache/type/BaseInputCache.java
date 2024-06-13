@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Base input cache that implements the backend handling and lookup of a single basic key based input.
  */
-public abstract class BaseInputCache<KEY, INPUT, INGREDIENT extends InputIngredient<INPUT>, RECIPE extends MekanismRecipe>
+public abstract class BaseInputCache<KEY, INPUT, INGREDIENT extends InputIngredient<INPUT>, RECIPE extends MekanismRecipe<?>>
       implements IInputCache<INPUT, INGREDIENT, RECIPE> {
 
     /**

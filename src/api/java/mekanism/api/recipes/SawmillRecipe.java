@@ -12,6 +12,8 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
+import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -26,13 +28,19 @@ import org.jetbrains.annotations.NotNull;
  * @apiNote Precision Sawmills and Sawing Factories can process this recipe type.
  */
 @NothingNullByDefault
-public abstract class SawmillRecipe extends MekanismRecipe implements Predicate<@NotNull ItemStack> {
+public abstract class SawmillRecipe extends MekanismRecipe<SingleRecipeInput> implements Predicate<@NotNull ItemStack> {
 
     protected static final RandomSource RANDOM = RandomSource.create();
     private static final Holder<Item> PRECISION_SAWMILL = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "precision_sawmill"));
 
     @Override
     public abstract boolean test(ItemStack stack);
+
+    @Override
+    public boolean matches(SingleRecipeInput input, Level level) {
+        //Don't match incomplete recipes or ones that don't match
+        return !isIncomplete() && test(input.item());
+    }
 
     /**
      * Gets a new chance output based on the given input.

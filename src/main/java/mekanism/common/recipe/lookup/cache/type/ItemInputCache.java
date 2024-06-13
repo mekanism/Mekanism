@@ -9,7 +9,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.crafting.CompoundIngredient;
 import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 
-public class ItemInputCache<RECIPE extends MekanismRecipe> extends ComponentSensitiveInputCache<Item, ItemStack, ItemStackIngredient, RECIPE> {
+public class ItemInputCache<RECIPE extends MekanismRecipe<?>> extends ComponentSensitiveInputCache<Item, ItemStack, ItemStackIngredient, RECIPE> {
 
     public ItemInputCache() {
         super(ItemStackLinkedSet.TYPE_AND_TAG);

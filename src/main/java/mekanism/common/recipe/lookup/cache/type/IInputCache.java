@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
  * Base interface describing how a specific input type is cached to allow for quick lookup of recipes by input both for finding the recipes and checking if any even exist
  * with the given input.
  */
-public interface IInputCache<INPUT, INGREDIENT extends InputIngredient<INPUT>, RECIPE extends MekanismRecipe> {
+public interface IInputCache<INPUT, INGREDIENT extends InputIngredient<INPUT>, RECIPE extends MekanismRecipe<?>> {
 
     /**
      * Checks if this {@link IInputCache} knows about the given input.

@@ -40,7 +40,8 @@ public class RecipeRegistryHelper {
         register(registry, RecipeViewerRecipeType.DECONDENSENTRATING, decondensentratorRecipes);
     }
 
-    public static <RECIPE extends MekanismRecipe> void register(IRecipeRegistration registry, IRecipeViewerRecipeType<RECIPE> recipeType, IMekanismRecipeTypeProvider<RECIPE, ?> type) {
+    public static <RECIPE extends MekanismRecipe<?>> void register(IRecipeRegistration registry, IRecipeViewerRecipeType<RECIPE> recipeType,
+          IMekanismRecipeTypeProvider<?, RECIPE, ?> type) {
         registry.addRecipes(MekanismJEI.holderRecipeType(recipeType), type.getRecipes(null));
     }
 

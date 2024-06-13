@@ -1,24 +1,16 @@
 package mekanism.api.recipes;
 
-import mekanism.api.inventory.IgnoredIInventory;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.item.crafting.RecipeInput;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * Base class for helping wrap our recipes into IRecipes.
  */
-public abstract class MekanismRecipe implements Recipe<IgnoredIInventory> {//TODO: Should we make implementations override equals and hashcode?
-
-    @Override
-    public boolean matches(@NotNull IgnoredIInventory inv, @NotNull Level world) {
-        //TODO - 1.21: Decide if we ever want to make use of this method, as with the changes in 1.21 to allow for extending RecipeInput
-        // instead of Container, we potentially could implement this even for things that don't use items
-        //Default to not being able to match incomplete recipes though
-        return !isIncomplete();
-    }
+public abstract class MekanismRecipe<INPUT extends RecipeInput> implements Recipe<INPUT> {
+    //TODO: Should we make implementations override equals and hashcode?
 
     @Override
     public boolean isSpecial() {
@@ -33,7 +25,7 @@ public abstract class MekanismRecipe implements Recipe<IgnoredIInventory> {//TOD
 
     @NotNull
     @Override
-    public ItemStack assemble(@NotNull IgnoredIInventory inv, @NotNull HolderLookup.Provider provider) {
+    public ItemStack assemble(@NotNull INPUT input, @NotNull HolderLookup.Provider provider) {
         return ItemStack.EMPTY;
     }
 

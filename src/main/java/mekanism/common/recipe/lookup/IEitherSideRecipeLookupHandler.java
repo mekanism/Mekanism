@@ -18,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
  * Helper expansion of {@link IRecipeLookupHandler} for easily implementing contains and find recipe lookups for recipes that takes two inputs of the same type that are
  * valid in either slot/tank.
  */
-public interface IEitherSideRecipeLookupHandler<INPUT, RECIPE extends MekanismRecipe & BiPredicate<INPUT, INPUT>,
+public interface IEitherSideRecipeLookupHandler<INPUT, RECIPE extends MekanismRecipe<?> & BiPredicate<INPUT, INPUT>,
       INPUT_CACHE extends EitherSideInputRecipeCache<INPUT, ?, RECIPE, ?>> extends IRecipeTypedLookupHandler<RECIPE, INPUT_CACHE> {
 
     /**

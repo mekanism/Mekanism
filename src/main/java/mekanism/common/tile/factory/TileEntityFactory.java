@@ -73,7 +73,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends TileEntityConfigurableMachine implements IRecipeLookupHandler<RECIPE> {
+public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extends TileEntityConfigurableMachine implements IRecipeLookupHandler<RECIPE> {
 
     /**
      * How many ticks it takes, by default, to run an operation.
@@ -729,7 +729,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
                               @Nullable IInventorySlot secondaryOutputSlot) {
     }
 
-    private static class RecipeProcessInfo<RECIPE extends MekanismRecipe> {
+    private static class RecipeProcessInfo<RECIPE extends MekanismRecipe<?>> {
 
         private final List<ProcessInfo> processes = new ArrayList<>();
         @Nullable

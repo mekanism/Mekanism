@@ -18,14 +18,14 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Basic implementation for {@link IInputRecipeCache} for handling recipes with a single input.
  */
-public abstract class SingleInputRecipeCache<INPUT, INGREDIENT extends InputIngredient<INPUT>, RECIPE extends MekanismRecipe & Predicate<INPUT>,
+public abstract class SingleInputRecipeCache<INPUT, INGREDIENT extends InputIngredient<INPUT>, RECIPE extends MekanismRecipe<?> & Predicate<INPUT>,
       CACHE extends IInputCache<INPUT, INGREDIENT, RECIPE>> extends AbstractInputRecipeCache<RECIPE> {
 
     private final Set<RECIPE> complexRecipes = new HashSet<>();
     private final Function<RECIPE, INGREDIENT> inputExtractor;
     private final CACHE cache;
 
-    protected SingleInputRecipeCache(MekanismRecipeType<RECIPE, ?> recipeType, Function<RECIPE, INGREDIENT> inputExtractor, CACHE cache) {
+    protected SingleInputRecipeCache(MekanismRecipeType<?, RECIPE, ?> recipeType, Function<RECIPE, INGREDIENT> inputExtractor, CACHE cache) {
         super(recipeType);
         this.inputExtractor = inputExtractor;
         this.cache = cache;
@@ -174,7 +174,7 @@ public abstract class SingleInputRecipeCache<INPUT, INGREDIENT extends InputIngr
     }
 
     @FunctionalInterface
-    public interface CheckRecipeType<INPUT, RECIPE extends MekanismRecipe & Predicate<INPUT>, DATA_1, DATA_2> {
+    public interface CheckRecipeType<INPUT, RECIPE extends MekanismRecipe<?> & Predicate<INPUT>, DATA_1, DATA_2> {
 
         boolean testType(RECIPE recipe, INPUT input, DATA_1 data1, DATA_2 data2);
     }

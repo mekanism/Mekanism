@@ -16,7 +16,7 @@ import org.openzen.zencode.java.ZenCodeType;
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_FLUID_TO_FLUID)
 public abstract class FluidToFluidRecipeManager extends MekanismRecipeManager<FluidToFluidRecipe> {
 
-    protected FluidToFluidRecipeManager(IMekanismRecipeTypeProvider<FluidToFluidRecipe, ?> recipeType) {
+    protected FluidToFluidRecipeManager(IMekanismRecipeTypeProvider<?, FluidToFluidRecipe, ?> recipeType) {
         super(recipeType);
     }
 

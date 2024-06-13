@@ -18,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Helper expansion of {@link IRecipeLookupHandler} for easily implementing contains and find recipe lookups for recipes that take a single input using the input cache.
  */
-public interface ISingleRecipeLookupHandler<INPUT, RECIPE extends MekanismRecipe & Predicate<INPUT>, INPUT_CACHE extends SingleInputRecipeCache<INPUT, ?, RECIPE, ?>>
+public interface ISingleRecipeLookupHandler<INPUT, RECIPE extends MekanismRecipe<?> & Predicate<INPUT>, INPUT_CACHE extends SingleInputRecipeCache<INPUT, ?, RECIPE, ?>>
       extends IRecipeTypedLookupHandler<RECIPE, INPUT_CACHE> {
 
     /**
@@ -59,19 +59,19 @@ public interface ISingleRecipeLookupHandler<INPUT, RECIPE extends MekanismRecipe
     /**
      * Helper interface to make the generics that we have to pass to {@link ISingleRecipeLookupHandler} not as messy.
      */
-    interface ItemRecipeLookupHandler<RECIPE extends MekanismRecipe & Predicate<ItemStack>> extends ISingleRecipeLookupHandler<ItemStack, RECIPE, SingleItem<RECIPE>> {
+    interface ItemRecipeLookupHandler<RECIPE extends MekanismRecipe<?> & Predicate<ItemStack>> extends ISingleRecipeLookupHandler<ItemStack, RECIPE, SingleItem<RECIPE>> {
     }
 
     /**
      * Helper interface to make the generics that we have to pass to {@link ISingleRecipeLookupHandler} not as messy.
      */
-    interface FluidRecipeLookupHandler<RECIPE extends MekanismRecipe & Predicate<FluidStack>> extends ISingleRecipeLookupHandler<FluidStack, RECIPE, SingleFluid<RECIPE>> {
+    interface FluidRecipeLookupHandler<RECIPE extends MekanismRecipe<?> & Predicate<FluidStack>> extends ISingleRecipeLookupHandler<FluidStack, RECIPE, SingleFluid<RECIPE>> {
     }
 
     /**
      * Helper interface to make the generics that we have to pass to {@link ISingleRecipeLookupHandler} not as messy.
      */
-    interface ChemicalRecipeLookupHandler<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, RECIPE extends MekanismRecipe & Predicate<STACK>>
+    interface ChemicalRecipeLookupHandler<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, RECIPE extends MekanismRecipe<?> & Predicate<STACK>>
           extends ISingleRecipeLookupHandler<STACK, RECIPE, SingleChemical<CHEMICAL, STACK, RECIPE>> {
 
         /**

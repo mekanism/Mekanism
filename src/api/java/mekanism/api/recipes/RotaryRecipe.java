@@ -4,14 +4,16 @@ import java.util.List;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.recipes.ingredients.GasStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
+import mekanism.api.recipes.ingredients.GasStackIngredient;
+import mekanism.api.recipes.vanilla_input.RotaryRecipeInput;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Contract;
@@ -29,7 +31,7 @@ import org.jetbrains.annotations.Contract;
  * Condensentrating.
  */
 @NothingNullByDefault
-public abstract class RotaryRecipe extends MekanismRecipe {
+public abstract class RotaryRecipe extends MekanismRecipe<RotaryRecipeInput> {
 
     private static final Holder<Item> ROTARY_CONDENSENTRATOR = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "rotary_condensentrator"));
 
@@ -60,6 +62,12 @@ public abstract class RotaryRecipe extends MekanismRecipe {
      * @return {@code true} if the input is valid for this recipe.
      */
     public abstract boolean test(GasStack gasStack);
+
+    @Override
+    public boolean matches(RotaryRecipeInput input, Level level) {
+        //Don't match incomplete recipes or ones that don't match
+        return !isIncomplete() && input.input().map(this::test, this::test);
+    }
 
     /**
      * Gets the fluid input ingredient.

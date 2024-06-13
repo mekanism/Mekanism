@@ -30,7 +30,7 @@ public abstract class ChemicalChemicalToChemicalRecipeManager<CHEMICAL extends C
       INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK, ?>, CRT_STACK extends ICrTChemicalStack<CHEMICAL, STACK, CRT_STACK>,
       RECIPE extends ChemicalChemicalToChemicalRecipe<CHEMICAL, STACK, INGREDIENT>> extends MekanismRecipeManager<RECIPE> {
 
-    protected ChemicalChemicalToChemicalRecipeManager(IMekanismRecipeTypeProvider<RECIPE, ?> recipeType) {
+    protected ChemicalChemicalToChemicalRecipeManager(IMekanismRecipeTypeProvider<?, RECIPE, ?> recipeType) {
         super(recipeType);
     }
 

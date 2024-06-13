@@ -46,6 +46,7 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -133,7 +134,7 @@ public class TileEntityPigmentExtractor extends TileEntityProgressMachine<ItemSt
 
     @NotNull
     @Override
-    public IMekanismRecipeTypeProvider<ItemStackToPigmentRecipe, SingleItem<ItemStackToPigmentRecipe>> getRecipeType() {
+    public IMekanismRecipeTypeProvider<SingleRecipeInput, ItemStackToPigmentRecipe, SingleItem<ItemStackToPigmentRecipe>> getRecipeType() {
         return MekanismRecipeType.PIGMENT_EXTRACTING;
     }
 

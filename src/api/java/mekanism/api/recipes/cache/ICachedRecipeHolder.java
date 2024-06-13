@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Interface for helping implement objects that can handle cached recipes.
  */
-public interface ICachedRecipeHolder<RECIPE extends MekanismRecipe> {
+public interface ICachedRecipeHolder<RECIPE extends MekanismRecipe<?>> {
 
     /**
      * Gets an updated cache for a given cacheIndex if needed.

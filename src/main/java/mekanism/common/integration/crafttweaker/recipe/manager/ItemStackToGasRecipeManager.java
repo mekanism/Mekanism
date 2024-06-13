@@ -18,7 +18,7 @@ import org.openzen.zencode.java.ZenCodeType;
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_ITEM_STACK_TO_GAS)
 public abstract class ItemStackToGasRecipeManager extends ItemStackToChemicalRecipeManager<Gas, GasStack, ICrTGasStack, ItemStackToGasRecipe> {
 
-    protected ItemStackToGasRecipeManager(IMekanismRecipeTypeProvider<ItemStackToGasRecipe, ?> recipeType) {
+    protected ItemStackToGasRecipeManager(IMekanismRecipeTypeProvider<?, ItemStackToGasRecipe, ?> recipeType) {
         super(recipeType);
     }
 

@@ -7,12 +7,15 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.merged.BoxedChemicalStack;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
+import mekanism.api.recipes.vanilla_input.SingleBoxedChemicalInput;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -25,7 +28,7 @@ import org.jetbrains.annotations.NotNull;
  * @apiNote Chemical Crystallizers can process this recipe type.
  */
 @NothingNullByDefault
-public abstract class ChemicalCrystallizerRecipe extends MekanismRecipe implements Predicate<@NotNull BoxedChemicalStack> {
+public abstract class ChemicalCrystallizerRecipe extends MekanismRecipe<SingleBoxedChemicalInput> implements Predicate<@NotNull BoxedChemicalStack> {
 
     private static final Holder<Item> CHEMICAL_CRYSTALLIZER = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "chemical_crystallizer"));
 
@@ -49,6 +52,21 @@ public abstract class ChemicalCrystallizerRecipe extends MekanismRecipe implemen
      * @return Representation of the output, <strong>MUST NOT</strong> be modified.
      */
     public abstract List<ItemStack> getOutputDefinition();
+
+    @NotNull
+    @Override
+    public ItemStack assemble(SingleBoxedChemicalInput input, HolderLookup.Provider provider) {
+        if (!isIncomplete() && test(input.chemical())) {
+            return getOutput(input.chemical());
+        }
+        return ItemStack.EMPTY;
+    }
+
+    @Override
+    public boolean matches(SingleBoxedChemicalInput input, Level level) {
+        //Don't match incomplete recipes or ones that don't match
+        return !isIncomplete() && test(input.chemical());
+    }
 
     @Override
     public abstract boolean test(BoxedChemicalStack chemicalStack);

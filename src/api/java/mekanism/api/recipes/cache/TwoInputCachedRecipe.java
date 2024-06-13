@@ -29,7 +29,7 @@ import org.jetbrains.annotations.Nullable;
  * Base class to help implement handling of recipes with two inputs.
  */
 @NothingNullByDefault
-public class TwoInputCachedRecipe<INPUT_A, INPUT_B, OUTPUT, RECIPE extends MekanismRecipe & BiPredicate<INPUT_A, INPUT_B>> extends CachedRecipe<RECIPE> {
+public class TwoInputCachedRecipe<INPUT_A, INPUT_B, OUTPUT, RECIPE extends MekanismRecipe<?> & BiPredicate<INPUT_A, INPUT_B>> extends CachedRecipe<RECIPE> {
 
     private final IInputHandler<INPUT_A> inputHandler;
     private final IInputHandler<INPUT_B> secondaryInputHandler;

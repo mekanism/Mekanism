@@ -25,7 +25,7 @@ public class RotaryInputRecipeCache extends AbstractInputRecipeCache<RotaryRecip
     private final Set<RotaryRecipe> complexGasInputRecipes = new HashSet<>();
     private final Set<RotaryRecipe> complexFluidInputRecipes = new HashSet<>();
 
-    public RotaryInputRecipeCache(MekanismRecipeType<RotaryRecipe, ?> recipeType) {
+    public RotaryInputRecipeCache(MekanismRecipeType<?, RotaryRecipe, ?> recipeType) {
         super(recipeType);
     }
 

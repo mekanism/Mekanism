@@ -17,7 +17,7 @@ import org.openzen.zencode.java.ZenCodeType;
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_ITEM_STACK_TO_INFUSE_TYPE)
 public abstract class ItemStackToInfuseTypeRecipeManager extends ItemStackToChemicalRecipeManager<InfuseType, InfusionStack, ICrTInfusionStack, ItemStackToInfuseTypeRecipe> {
 
-    protected ItemStackToInfuseTypeRecipeManager(IMekanismRecipeTypeProvider<ItemStackToInfuseTypeRecipe, ?> recipeType) {
+    protected ItemStackToInfuseTypeRecipeManager(IMekanismRecipeTypeProvider<?, ItemStackToInfuseTypeRecipe, ?> recipeType) {
         super(recipeType);
     }
 
