@@ -15,6 +15,33 @@ world by using tier installers.
 After using Mekanism for a while, players can obtain a near-indestructible suit of Refined Obsidian Armor, receive five 
 ingots for each ore mined, fly with hydrogen-powered jetpacks, and have cute robotic friends following them around while they mine. :)
 
+# Alpha Status #
+
+Mekanism for 1.21 is currently in an alpha state. There may be crashes or game-breaking bugs, as well as,
+the potential for us making breaking changes where APIs may change slightly or how data is saved to the world
+changes. For this reason we do not recommend including Mekanism in any "large" packs that players may expect
+things to work properly/upgrade safely from one version to the next.
+
+We have not yet had the chance to go through and fully integrate with all of vanilla's new features,
+recipes, blocks, entities, or even things like the tickrate command. Additionally, there is a handful
+of things that we haven't finished porting yet.
+
+## Known Bugs/Things that aren't done being ported yet ##
+- Options in the Module Tweaker that have side effects don't current have those side effects displayed
+- Resistive Heaters do not keep their set Energy Usage when breaking and placing again
+- Bins forget if they are locked and what they are locked too if broken and placed
+- When breaking and placing blocks that have fluid item input slots, they do not persist whether the item was actively being drained or whether it was being filled
+- The QIO Dashboard does not persist items stored in crafting windows when broken
+- The Portable QIO Dashboard's Crafting windows do not work at all. DO NOT TRY TO USE THEM
+- The Gravitational Modulation Unit does not currently provide flight
+- Probably many more things as we have done barely any testing so far
+
+## Configuration ##
+- The GitHub Wiki docs on the json recipe syntax has not been updated to the changes we have made yet.
+
+## API ##
+There are no more planned breaking changes to the API, but that doesn't mean we won't take advantage of it being alpha to make breaks if it is needed in order to implement other missing things properly.
+
 # Discord #
 
 Mekanism has a [discord server](https://discord.gg/nmSjMGc) where you can chat with other Mekanism users and the developers. Join us!
