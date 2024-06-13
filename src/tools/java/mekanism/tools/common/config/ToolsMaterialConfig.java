@@ -37,8 +37,10 @@ public class ToolsMaterialConfig extends BaseMekanismConfig {
 
     ToolsMaterialConfig() {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
-        builder.comment("Mekanism Tools Material Config. This config is a startup early, and requires a game restart to take effect.").push("tools-materials");
+        builder.comment("Mekanism Tools Startup Config. This config is loaded on early, and requires a game restart to take effect, and is not synced automatically between "
+                        + "client and server. It is highly recommended to ensure you are using the same values for this config on the server and client.").push("startup");
 
+        builder.comment("Startup material configs").push("materials");
         wood = new VanillaPaxelMaterialCreator(this, builder, new WoodPaxelMaterialDefaults());
         stone = new VanillaPaxelMaterialCreator(this, builder, new StonePaxelMaterialDefaults());
         iron = new VanillaPaxelMaterialCreator(this, builder, new IronPaxelMaterialDefaults());

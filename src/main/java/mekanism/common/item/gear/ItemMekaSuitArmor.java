@@ -40,7 +40,6 @@ import mekanism.common.capabilities.fluid.item.FluidTankSpec;
 import mekanism.common.capabilities.laser.item.LaserDissipationHandler;
 import mekanism.common.capabilities.radiation.item.RadiationShieldingHandler;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.ModuleContainer;
@@ -48,7 +47,6 @@ import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.content.gear.mekasuit.ModuleElytraUnit;
 import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
 import mekanism.common.item.interfaces.IJetpackItem;
-import mekanism.common.lib.attribute.AttributeCache;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.registries.MekanismArmorMaterials;
 import mekanism.common.registries.MekanismDataMapTypes;
@@ -100,8 +98,8 @@ import org.jetbrains.annotations.Nullable;
 public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContainerItem, IJetpackItem, ICustomCreativeTabContents, IAttachmentAware {
 
     private static final AttributeModifier CREATIVE_FLIGHT_MODIFIER = new AttributeModifier(Mekanism.rl("mekasuit_gravitational_modulation"), 1D, Operation.ADD_VALUE);
+    private static final ItemAttributeModifiers.Entry CREATIVE_FLIGHT = new ItemAttributeModifiers.Entry(NeoForgeMod.CREATIVE_FLIGHT, CREATIVE_FLIGHT_MODIFIER, EquipmentSlotGroup.CHEST);
 
-    private final AttributeCache attributeCacheWithFlight;
     //TODO: Expand this system so that modules can maybe define needed tanks?
     private final List<ChemicalTankSpec<Gas>> gasTankSpecs = new ArrayList<>();
     private final List<ChemicalTankSpec<Gas>> gasTankSpecsView = Collections.unmodifiableList(gasTankSpecs);
@@ -116,7 +114,6 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         super(MekanismArmorMaterials.MEKASUIT, armorType, IModuleHelper.INSTANCE.applyModuleContainerProperties(
               properties.rarity(Rarity.EPIC).setNoRepair().stacksTo(1)
         ));
-        CachedIntValue armorConfig;
         switch (armorType) {
             case HELMET -> {
                 fluidTankSpecs.add(FluidTankSpec.createFillOnly(MekanismConfig.gear.mekaSuitNutritionalTransferRate, MekanismConfig.gear.mekaSuitNutritionalMaxStorage,
@@ -124,7 +121,6 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                 absorption = 0.15F;
                 laserDissipation = 0.15;
                 laserRefraction = 0.2;
-                armorConfig = MekanismConfig.gear.mekaSuitHelmetArmor;
             }
             case CHESTPLATE -> {
                 gasTankSpecs.add(ChemicalTankSpec.createFillOnly(MekanismConfig.gear.mekaSuitJetpackTransferRate, stack -> {
@@ -135,25 +131,19 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                 absorption = 0.4F;
                 laserDissipation = 0.3;
                 laserRefraction = 0.4;
-                armorConfig = MekanismConfig.gear.mekaSuitBodyArmorArmor;
             }
             case LEGGINGS -> {
                 absorption = 0.3F;
                 laserDissipation = 0.1875;
                 laserRefraction = 0.25;
-                armorConfig = MekanismConfig.gear.mekaSuitPantsArmor;
             }
             case BOOTS -> {
                 absorption = 0.15F;
                 laserDissipation = 0.1125;
                 laserRefraction = 0.15;
-                armorConfig = MekanismConfig.gear.mekaSuitBootsArmor;
             }
             default -> throw new IllegalArgumentException("Unknown Equipment Slot Type");
         }
-        this.attributeCacheWithFlight = new AttributeCache(builder -> {
-            builder.add(new ItemAttributeModifiers.Entry(NeoForgeMod.CREATIVE_FLIGHT, CREATIVE_FLIGHT_MODIFIER, EquipmentSlotGroup.CHEST));
-        }, armorConfig, MekanismConfig.gear.mekaSuitToughness, MekanismConfig.gear.mekaSuitKnockbackResistance);
     }
 
     @Override
@@ -416,7 +406,8 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     @Override
     public ItemAttributeModifiers getAttributeModifiers(@NotNull ItemStack stack) {
         if (getEquipmentSlot() == EquipmentSlot.CHEST && CommonPlayerTickHandler.isGravitationalModulationReady(stack)) {
-            return attributeCacheWithFlight.get();
+            //TODO - 1.21: Figure out how to get flight working again:
+            // CREATIVE_FLIGHT
         }
         return super.getAttributeModifiers(stack);
     }

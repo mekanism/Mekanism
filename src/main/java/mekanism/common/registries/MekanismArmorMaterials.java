@@ -27,30 +27,29 @@ public class MekanismArmorMaterials {
     public static final MekanismDeferredHolder<ArmorMaterial, ArmorMaterial> SCUBA_GEAR = registerBaseSpecial("scuba_gear");
     public static final MekanismDeferredHolder<ArmorMaterial, ArmorMaterial> FREE_RUNNERS = registerBaseSpecial("free_runners");
     public static final MekanismDeferredHolder<ArmorMaterial, ArmorMaterial> ARMORED_FREE_RUNNERS = ARMOR_MATERIALS.register("armored_free_runners", () -> new ArmorMaterial(
-          Map.of(ArmorItem.Type.BOOTS, MekanismConfig.gear.armoredFreeRunnerArmor.getOrDefault()),
+          Map.of(ArmorItem.Type.BOOTS, MekanismConfig.startup.armoredFreeRunnerArmor.get()),
           0, SoundEvents.ARMOR_EQUIP_GENERIC, () -> Ingredient.EMPTY, Collections.emptyList(),
-          MekanismConfig.gear.armoredFreeRunnerToughness.getOrDefault(),
-          MekanismConfig.gear.armoredFreeRunnerKnockbackResistance.getOrDefault()
+          MekanismConfig.startup.armoredFreeRunnerToughness.get(),
+          MekanismConfig.startup.armoredFreeRunnerKnockbackResistance.get()
     ));
     public static final MekanismDeferredHolder<ArmorMaterial, ArmorMaterial> JETPACK = registerBaseSpecial("jetpack");
     public static final MekanismDeferredHolder<ArmorMaterial, ArmorMaterial> ARMORED_JETPACK = ARMOR_MATERIALS.register("armored_jetpack", () -> new ArmorMaterial(
-          Map.of(ArmorItem.Type.CHESTPLATE, MekanismConfig.gear.armoredJetpackArmor.getOrDefault()),
+          Map.of(ArmorItem.Type.CHESTPLATE, MekanismConfig.startup.armoredJetpackArmor.get()),
           0, SoundEvents.ARMOR_EQUIP_GENERIC, () -> Ingredient.EMPTY, Collections.emptyList(),
-          MekanismConfig.gear.armoredJetpackToughness.getOrDefault(),
-          MekanismConfig.gear.armoredJetpackKnockbackResistance.getOrDefault()
+          MekanismConfig.startup.armoredJetpackToughness.get(),
+          MekanismConfig.startup.armoredJetpackKnockbackResistance.get()
     ));
     // This is unused for the most part; toughness / damage reduction is handled manually, though it can fall back to netherite values
-    //TODO - 1.21: Figure out how to get the configs working again
     public static final MekanismDeferredHolder<ArmorMaterial, ArmorMaterial> MEKASUIT = ARMOR_MATERIALS.register("mekasuit", () -> new ArmorMaterial(
           Map.of(
-                ArmorItem.Type.BOOTS, MekanismConfig.gear.mekaSuitBootsArmor.getOrDefault(),
-                ArmorItem.Type.LEGGINGS, MekanismConfig.gear.mekaSuitPantsArmor.getOrDefault(),
-                ArmorItem.Type.CHESTPLATE, MekanismConfig.gear.mekaSuitBodyArmorArmor.getOrDefault(),
-                ArmorItem.Type.HELMET, MekanismConfig.gear.mekaSuitHelmetArmor.getOrDefault()
+                ArmorItem.Type.BOOTS, MekanismConfig.startup.mekaSuitBootsArmor.get(),
+                ArmorItem.Type.LEGGINGS, MekanismConfig.startup.mekaSuitPantsArmor.get(),
+                ArmorItem.Type.CHESTPLATE, MekanismConfig.startup.mekaSuitBodyArmorArmor.get(),
+                ArmorItem.Type.HELMET, MekanismConfig.startup.mekaSuitHelmetArmor.get()
           ),
           0, SoundEvents.ARMOR_EQUIP_GENERIC, () -> Ingredient.EMPTY, Collections.emptyList(),
-          MekanismConfig.gear.mekaSuitToughness.getOrDefault(),
-          MekanismConfig.gear.mekaSuitKnockbackResistance.getOrDefault()
+          MekanismConfig.startup.mekaSuitToughness.get(),
+          MekanismConfig.startup.mekaSuitKnockbackResistance.get()
     ));
 
     private static MekanismDeferredHolder<ArmorMaterial, ArmorMaterial> registerBaseSpecial(String name) {

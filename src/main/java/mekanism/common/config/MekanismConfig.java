@@ -11,6 +11,7 @@ public class MekanismConfig {
     public static final CommonConfig common = new CommonConfig();
     public static final GeneralConfig general = new GeneralConfig();
     public static final GearConfig gear = new GearConfig();
+    public static final MekanismStartupConfig startup = new MekanismStartupConfig();
     public static final StorageConfig storage = new StorageConfig();
     public static final TierConfig tiers = new TierConfig();
     public static final UsageConfig usage = new UsageConfig();
@@ -21,6 +22,7 @@ public class MekanismConfig {
         MekanismConfigHelper.registerConfig(modContainer, common);
         MekanismConfigHelper.registerConfig(modContainer, general);
         MekanismConfigHelper.registerConfig(modContainer, gear);
+        MekanismConfigHelper.registerConfig(modContainer, startup);
         MekanismConfigHelper.registerConfig(modContainer, storage);
         MekanismConfigHelper.registerConfig(modContainer, tiers);
         MekanismConfigHelper.registerConfig(modContainer, usage);
