@@ -14,10 +14,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class EnergyContainersBuilder {
 
-    private static final IBasicContainerCreator<? extends ComponentBackedEnergyContainer> MEKASUIT = (type, attachedTo, containerIndex) -> new ComponentBackedNoClampEnergyContainer(attachedTo, containerIndex, BasicEnergyContainer.manualOnly,
-          BasicEnergyContainer.alwaysTrue,
-          () -> ModuleEnergyUnit.getChargeRate(attachedTo, MekanismConfig.gear.mekaSuitBaseChargeRate.get()),
-          () -> ModuleEnergyUnit.getEnergyCapacity(attachedTo, MekanismConfig.gear.mekaSuitBaseEnergyCapacity.get())
+    private static final IBasicContainerCreator<? extends ComponentBackedEnergyContainer> MEKASUIT = (type, attachedTo, containerIndex) -> new ComponentBackedNoClampEnergyContainer(
+          attachedTo, containerIndex, BasicEnergyContainer.manualOnly, BasicEnergyContainer.alwaysTrue,
+          () -> ModuleEnergyUnit.getChargeRate(attachedTo, MekanismConfig.gear.mekaSuitBaseChargeRate),
+          () -> ModuleEnergyUnit.getEnergyCapacity(attachedTo, MekanismConfig.gear.mekaSuitBaseEnergyCapacity)
     );
 
     public static EnergyContainersBuilder builder() {

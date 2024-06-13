@@ -6,14 +6,6 @@
     },
     "vertex": "mekanism:rendertype_mekasuit",
     "fragment": "mekanism:rendertype_mekasuit",
-    "attributes": [
-        "Position",
-        "Color",
-        "UV0",
-        "UV1",
-        "UV2",
-        "Normal"
-    ],
     "samplers": [
         { "name": "Sampler0" },
         { "name": "Sampler1" },

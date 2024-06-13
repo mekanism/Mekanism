@@ -78,7 +78,12 @@ public class ComponentBackedFluidTank extends ComponentBackedContainer<FluidStac
         return capacity.getAsInt();
     }
 
-    protected int getRate(@Nullable AutomationType automationType) {
+    protected int getInsertRate(@Nullable AutomationType automationType) {
+        //Allow unknown or manual interaction to bypass rate limit for the item
+        return automationType == null || automationType == AutomationType.MANUAL ? Integer.MAX_VALUE : rate.getAsInt();
+    }
+
+    protected int getExtractRate(@Nullable AutomationType automationType) {
         //Allow unknown or manual interaction to bypass rate limit for the item
         return automationType == null || automationType == AutomationType.MANUAL ? Integer.MAX_VALUE : rate.getAsInt();
     }
@@ -93,7 +98,7 @@ public class ComponentBackedFluidTank extends ComponentBackedContainer<FluidStac
         }
         AttachedFluids attachedFluids = getAttached();
         FluidStack stored = getContents(attachedFluids);
-        int needed = Math.min(getRate(automationType), getNeeded(stored));
+        int needed = Math.min(getInsertRate(automationType), getNeeded(stored));
         if (needed <= 0) {
             //Fail if we are a full tank or our rate is zero
             return stack;
@@ -128,7 +133,7 @@ public class ComponentBackedFluidTank extends ComponentBackedContainer<FluidStac
         }
         //Note: While we technically could just return the stack itself if we are removing all that we have, it would require a lot more checks
         // We also are limiting it by the rate this tank has
-        int size = Math.min(Math.min(getRate(automationType), stored.getAmount()), amount);
+        int size = Math.min(Math.min(getExtractRate(automationType), stored.getAmount()), amount);
         FluidStack ret = stored.copyWithAmount(size);
         if (!ret.isEmpty() && action.execute()) {
             //Note: We let setStack handle updating the backing holding stack
@@ -174,9 +179,11 @@ public class ComponentBackedFluidTank extends ComponentBackedContainer<FluidStac
             return 0;
         } else if (amount > 0) {
             //Cap adding amount at how much we need, so that we don't risk integer overflow
-            amount = Math.min(Math.min(amount, getNeeded(stored)), getRate(null));
+            //If we are increasing the stack's size, use the insert rate
+            amount = Math.min(Math.min(amount, getNeeded(stored)), getInsertRate(null));
         } else if (amount < 0) {
-            amount = Math.max(amount, -getRate(null));
+            //If we are decreasing the stack's size, use the extract rate
+            amount = Math.max(amount, -getExtractRate(null));
         }
         int newSize = setStackSize(attachedFluids, stored,current + amount, action);
         return newSize - current;

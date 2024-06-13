@@ -9,6 +9,7 @@ import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.FloatingLongSupplier;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.registries.MekanismModules;
 import net.minecraft.world.item.ItemStack;
@@ -16,20 +17,20 @@ import net.minecraft.world.item.ItemStack;
 @ParametersAreNotNullByDefault
 public class ModuleEnergyUnit implements ICustomModule<ModuleEnergyUnit> {
 
-    public static FloatingLong getEnergyCapacity(ItemStack stack, FloatingLong base) {
+    public static FloatingLong getEnergyCapacity(ItemStack stack, FloatingLongSupplier base) {
         return getEnergyValue(stack, base);
     }
 
-    public static FloatingLong getChargeRate(ItemStack stack, FloatingLong base) {
+    public static FloatingLong getChargeRate(ItemStack stack, FloatingLongSupplier base) {
         return getEnergyValue(stack, base);
     }
 
-    private static FloatingLong getEnergyValue(ItemStack stack, FloatingLong base) {
+    private static FloatingLong getEnergyValue(ItemStack stack, FloatingLongSupplier base) {
         IModule<ModuleEnergyUnit> module = IModuleHelper.INSTANCE.getModule(stack, MekanismModules.ENERGY_UNIT);
         if (module == null) {
-            return base;
+            return base.get();
         }
-        return base.multiply(Math.pow(2, module.getInstalledCount()));
+        return base.get().multiply(Math.pow(2, module.getInstalledCount()));
     }
 
     @Override

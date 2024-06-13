@@ -79,7 +79,12 @@ public abstract class ComponentBackedChemicalTank<CHEMICAL extends Chemical<CHEM
         return attributeValidator == null ? IChemicalTank.super.getAttributeValidator() : attributeValidator;
     }
 
-    protected long getRate(@Nullable AutomationType automationType) {
+    protected long getInsertRate(@Nullable AutomationType automationType) {
+        //Allow unknown or manual interaction to bypass rate limit for the item
+        return automationType == null || automationType == AutomationType.MANUAL ? Long.MAX_VALUE : rate.getAsLong();
+    }
+
+    protected long getExtractRate(@Nullable AutomationType automationType) {
         //Allow unknown or manual interaction to bypass rate limit for the item
         return automationType == null || automationType == AutomationType.MANUAL ? Long.MAX_VALUE : rate.getAsLong();
     }
@@ -104,7 +109,7 @@ public abstract class ComponentBackedChemicalTank<CHEMICAL extends Chemical<CHEM
         }
         ATTACHED attachedChemicals = getAttached();
         STACK stored = getContents(attachedChemicals);
-        long needed = Math.min(getRate(automationType), getNeeded(stored));
+        long needed = Math.min(getInsertRate(automationType), getNeeded(stored));
         if (needed <= 0) {
             //Fail if we are a full tank or our rate is zero
             return stack;
@@ -139,7 +144,7 @@ public abstract class ComponentBackedChemicalTank<CHEMICAL extends Chemical<CHEM
         }
         //Note: While we technically could just return the stack itself if we are removing all that we have, it would require a lot more checks
         // We also are limiting it by the rate this tank has
-        long size = Math.min(Math.min(getRate(automationType), stored.getAmount()), amount);
+        long size = Math.min(Math.min(getExtractRate(automationType), stored.getAmount()), amount);
         if (size == 0) {
             return getEmptyStack();
         }
@@ -188,9 +193,11 @@ public abstract class ComponentBackedChemicalTank<CHEMICAL extends Chemical<CHEM
             return 0;
         } else if (amount > 0) {
             //Cap adding amount at how much we need, so that we don't risk integer overflow
-            amount = Math.min(Math.min(amount, getNeeded(stored)), getRate(null));
+            //If we are increasing the stack's size, use the insert rate
+            amount = Math.min(Math.min(amount, getNeeded(stored)), getInsertRate(null));
         } else if (amount < 0) {
-            amount = Math.max(amount, -getRate(null));
+            //If we are decreasing the stack's size, use the extract rate
+            amount = Math.max(amount, -getExtractRate(null));
         }
         long newSize = setStackSize(attachedChemicals, stored, current + amount, action);
         return newSize - current;

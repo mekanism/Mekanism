@@ -23,15 +23,28 @@ import org.jetbrains.annotations.VisibleForTesting;
 @NothingNullByDefault
 public class FloatingLong extends Number implements Comparable<FloatingLong> {
 
+    //we don't lose accuracy due to using a double, and because for some reason it seems like
+    // the codecs occasionally have issues being parsed
     public static final Codec<FloatingLong> CODEC = new PrimitiveCodec<>() {
         @Override
         public <T> DataResult<FloatingLong> read(DynamicOps<T> ops, T input) {
-            return ops.getNumberValue(input).flatMap(number -> fromNumber(number, true));
+            return ops.getStringValue(input).flatMap(number -> {
+                try {
+                    return DataResult.success(parseFloatingLong(number, true));
+                } catch (NumberFormatException e) {
+                    return DataResult.error(e::getMessage);
+                }
+            });
         }
 
         @Override
         public <T> T write(DynamicOps<T> ops, FloatingLong value) {
-            return ops.createNumeric(value);
+            return ops.createString(value.toString());
+        }
+
+        @Override
+        public String toString() {
+            return "FloatingLong";
         }
     };
     public static final Codec<FloatingLong> NONZERO_CODEC = CODEC.validate(f -> {
@@ -45,7 +58,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
           // as in general it will still provide an improvement
           ByteBufCodecs.VAR_LONG, FloatingLong::getValue,
           ByteBufCodecs.SHORT, FloatingLong::getDecimal,
-          FloatingLong::create
+          FloatingLong::createConst
     );
     private static final DecimalFormat df = new DecimalFormat("0.0000", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
 
@@ -1206,27 +1219,6 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
         }
         short decimal = parseDecimal(string, index);
         return isConstant ? createConst(value, decimal) : create(value, decimal);
-    }
-
-    private static DataResult<FloatingLong> fromNumber(Number number, boolean isConstant) {
-        if (number instanceof Integer || number instanceof Long || number instanceof Short || number instanceof Byte || number instanceof BigInteger) {
-            long longValue = number.longValue();
-            if (longValue < 0) {
-                return DataResult.error(() -> "Number must be positive");
-            }
-            return DataResult.success(isConstant ? createConst(longValue, (short) 0) : create(longValue, (short) 0));
-        } else if (number instanceof BigDecimal decimal) {
-            try {
-                long longValue = decimal.longValueExact();
-                return DataResult.success(isConstant ? createConst(longValue, (short) 0) : create(longValue, (short) 0));
-            } catch (ArithmeticException ignored) {
-            }
-        }
-        try {
-            return DataResult.success(parseFloatingLong(number.toString(), isConstant));
-        } catch (NumberFormatException e) {
-            return DataResult.error(e::getMessage);
-        }
     }
 
     /**

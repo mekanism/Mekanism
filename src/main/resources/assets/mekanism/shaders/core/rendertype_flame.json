@@ -6,11 +6,6 @@
     },
     "vertex": "mekanism:rendertype_flame",
     "fragment": "mekanism:rendertype_flame",
-    "attributes": [
-        "Position",
-        "Color",
-        "UV0"
-    ],
     "samplers": [
         { "name": "Sampler0" }
     ],

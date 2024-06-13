@@ -81,7 +81,6 @@ public class MekanismRenderType extends RenderType {
               .setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
               .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
               .createCompositeState(true);
-        //TODO - 1.21: Check the shader implementation that it doesn't need things to change
         return create("mek_flame", DefaultVertexFormat.POSITION_TEX_COLOR, Mode.QUADS, 256, true, false, state);
     });
 
@@ -110,7 +109,6 @@ public class MekanismRenderType extends RenderType {
               .setTransparencyState(LIGHTNING_TRANSPARENCY)
               .setOutputState(RenderType.TRANSLUCENT_TARGET)
               .createCompositeState(true);
-        //TODO - 1.21: Check the shader implementation that it doesn't need things to change
         return create("mek_sps", DefaultVertexFormat.POSITION_TEX_COLOR, Mode.QUADS, 256, true, true, state);
     });
 }

@@ -1275,7 +1275,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         }
         ItemStack stack = ItemAtomicDisassembler.fullyChargedStack();
         if (getSilkTouch()) {
-            //TODO - 1.21: Test this works properly, and see if we should do it somehow via enchantment effects instead?
             stack.enchant(level.registryAccess().registryOrThrow(Registries.ENCHANTMENT).getHolderOrThrow(Enchantments.SILK_TOUCH), 1);
         }
         MekFakePlayer dummy = MekFakePlayer.setupFakePlayer(level, this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ());

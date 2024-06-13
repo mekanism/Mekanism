@@ -65,7 +65,7 @@ public class BoxedChemical implements IHasTextComponent {
      */
     public static BoxedChemical box(Chemical<?> chemical) {
         if (chemical.isEmptyType()) {
-            //TODO - 1.21: Do we care that this can lose the type of chemical as it uses a single instance that always has a type of gas?
+            //TODO: Do we care that this can lose the type of chemical as it uses a single instance that always has a type of gas?
             return EMPTY;
         }
         return new BoxedChemical(ChemicalType.getTypeFor(chemical), chemical);

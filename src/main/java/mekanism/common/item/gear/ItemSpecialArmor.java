@@ -12,7 +12,6 @@ import org.jetbrains.annotations.NotNull;
 
 public abstract class ItemSpecialArmor extends ArmorItem implements ICapabilityAware {
 
-    //TODO - 1.21: Override getDefaultAttributeModifiers for the ones that actually have config based stuff??
     protected ItemSpecialArmor(Holder<ArmorMaterial> material, ArmorItem.Type armorType, Properties properties) {
         super(material, armorType, properties);
     }

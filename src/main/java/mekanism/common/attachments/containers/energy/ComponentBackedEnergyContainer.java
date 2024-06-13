@@ -73,7 +73,12 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Flo
         super.setContents(attachedEnergy, clampEnergy(energy));
     }
 
-    protected FloatingLong getRate(@Nullable AutomationType automationType) {
+    protected FloatingLong getInsertRate(@Nullable AutomationType automationType) {
+        //Allow unknown or manual interaction to bypass rate limit for the item
+        return automationType == null || automationType == AutomationType.MANUAL ? FloatingLong.MAX_VALUE : rate.get();
+    }
+
+    protected FloatingLong getExtractRate(@Nullable AutomationType automationType) {
         //Allow unknown or manual interaction to bypass rate limit for the item
         return automationType == null || automationType == AutomationType.MANUAL ? FloatingLong.MAX_VALUE : rate.get();
     }
@@ -85,7 +90,7 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Flo
         }
         AttachedEnergy attachedEnergy = getAttached();
         FloatingLong stored = getContents(attachedEnergy);
-        FloatingLong needed = getRate(automationType).min(getNeeded(stored));
+        FloatingLong needed = getInsertRate(automationType).min(getNeeded(stored));
         if (needed.isZero()) {
             //Fail if we are a full container or our rate is zero
             return amount;
@@ -109,7 +114,7 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Flo
         if (stored.isZero() || !canExtract.test(automationType)) {
             return FloatingLong.ZERO;
         }
-        FloatingLong ret = getRate(automationType).min(stored).min(amount).copy();
+        FloatingLong ret = getExtractRate(automationType).min(stored).min(amount).copy();
         if (!ret.isZero() && action.execute()) {
             //Note: this also will mark that the contents changed
             setContents(attachedEnergy, stored.subtract(ret));

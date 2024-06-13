@@ -41,7 +41,6 @@ import org.joml.Vector3f;
 public abstract class RenderTransmitterBase<TRANSMITTER extends TileEntityTransmitter> extends MekanismTileEntityRenderer<TRANSMITTER> {
 
     public static final ResourceLocation MODEL_LOCATION = MekanismUtils.getResource(ResourceType.MODEL, "transmitter_contents.obj");
-    //TODO - 1.21: Test this
     private static final ModelResourceLocation MODEL_VARIANT = ModelResourceLocation.standalone(MODEL_LOCATION);
     private static final IGeometryBakingContext contentsConfiguration = StandaloneGeometryBakingContext.builder()
           .withGui3d(false)

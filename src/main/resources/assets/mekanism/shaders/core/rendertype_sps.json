@@ -6,11 +6,6 @@
     },
     "vertex": "mekanism:rendertype_sps",
     "fragment": "mekanism:rendertype_sps",
-    "attributes": [
-        "Position",
-        "Color",
-        "UV0"
-    ],
     "samplers": [
         { "name": "Sampler0" }
     ],

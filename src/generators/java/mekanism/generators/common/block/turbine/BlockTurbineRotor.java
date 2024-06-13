@@ -46,6 +46,7 @@ public class BlockTurbineRotor extends BlockTileModel<TileEntityTurbineRotor, Bl
                     if (!player.isCreative()) {
                         stack.shrink(1);
                     }
+                    return ItemInteractionResult.CONSUME;
                 }
             }
         } else if (stack.isEmpty()) {
@@ -54,6 +55,7 @@ public class BlockTurbineRotor extends BlockTileModel<TileEntityTurbineRotor, Bl
                     player.setItemInHand(hand, GeneratorsItems.TURBINE_BLADE.getItemStack());
                     player.getInventory().setChanged();
                 }
+                return ItemInteractionResult.CONSUME;
             }
         } else if (stack.getItem() instanceof ItemTurbineBlade) {
             if (stack.getCount() < stack.getMaxStackSize()) {
@@ -62,6 +64,7 @@ public class BlockTurbineRotor extends BlockTileModel<TileEntityTurbineRotor, Bl
                         stack.grow(1);
                         player.getInventory().setChanged();
                     }
+                    return ItemInteractionResult.CONSUME;
                 }
             }
         }

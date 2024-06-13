@@ -77,7 +77,6 @@ public class BaseModelCache {
     protected JSONModelData registerJSONAndBake(ResourceLocation rl) {
         ModelManager modelManager = Minecraft.getInstance().getModelManager();
         ModelBakery modelBakery = modelManager.getModelBakery();
-        //TODO - 1.21: Test this
         ModelResourceLocation mrl = ModelResourceLocation.standalone(rl);
         ModelBaker baker = modelBakery.new ModelBakerImpl(
               (modelLoc, material) -> material.sprite(),
