@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import mekanism.client.RobitSpriteUploader;
 import mekanism.client.model.MekanismModelCache;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.entity.RenderRobit.RobitModelWrapper;
 import mekanism.common.Mekanism;
 import mekanism.common.entity.EntityRobit;
@@ -16,7 +17,6 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FastColor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -61,10 +61,10 @@ public class RenderRobit extends MobRenderer<EntityRobit, RobitModelWrapper> {
                 matrix.mulPose(Axis.XP.rotationDegrees(180));
                 matrix.translate(-0.5, -1.5, -0.5);
                 PoseStack.Pose last = matrix.last();
-                int red = FastColor.ARGB32.red(color);
-                int green = FastColor.ARGB32.green(color);
-                int blue = FastColor.ARGB32.blue(color);
-                int alpha = FastColor.ARGB32.alpha(color);
+                float red = MekanismRenderer.getRed(color);
+                float green = MekanismRenderer.getGreen(color);
+                float blue = MekanismRenderer.getBlue(color);
+                float alpha = MekanismRenderer.getAlpha(color);
                 for (BakedQuad quad : model.getQuads(null, null, robit.level().random, robit.getModelData(), null)) {
                     builder.putBulkData(last, quad, red, green, blue, alpha, light, overlayLight, false);
                 }
