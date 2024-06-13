@@ -247,9 +247,9 @@ public class MekanismTagProvider extends BaseTagProvider {
 
     private void addWrenches() {
         //Note: We don't add wrenches to the vanilla tools tag as that is for a different style of tool and used for things like breaking pots
-        getItemBuilder(Tags.Items.TOOLS).add(MekanismTags.Items.TOOLS_WRENCHES);
-        addToTag(MekanismTags.Items.TOOLS_WRENCHES, MekanismItems.CONFIGURATOR);
-        getItemBuilder(MekanismTags.Items.CONFIGURATORS).add(MekanismTags.Items.TOOLS_WRENCHES);
+        getItemBuilder(Tags.Items.TOOLS).add(MekanismTags.Items.TOOLS_WRENCH);
+        addToTag(MekanismTags.Items.TOOLS_WRENCH, MekanismItems.CONFIGURATOR);
+        getItemBuilder(MekanismTags.Items.CONFIGURATORS).add(MekanismTags.Items.TOOLS_WRENCH);
     }
 
     private void addArmor() {

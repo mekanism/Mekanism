@@ -1,7 +1,7 @@
 {
   "type": "mekanism:reaction",
   "duration": 400,
-  "energy_required": 200,
+  "energy_required": "200",
   "fluid_input": {
     "amount": 200,
     "tag": "minecraft:water"

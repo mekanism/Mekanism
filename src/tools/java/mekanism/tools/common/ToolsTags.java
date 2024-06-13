@@ -39,7 +39,7 @@ public class ToolsTags {
         private Items() {
         }
 
-        public static final TagKey<Item> TOOLS_PAXELS = commonTag("tools/paxels");
+        public static final TagKey<Item> TOOLS_PAXEL = commonTag("tools/paxel");
 
         private static TagKey<Item> commonTag(String name) {
             return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", name));

@@ -1,4 +1,4 @@
-// 1.21 Release Candidate 1	2024-06-12T21:56:05.4746043	Recipes
+// 1.21	2024-06-13T13:08:29.982425	Recipes
 eb6f6e61d04d73c24e8af0f611cf0e73c680f657 data/mekanismgenerators/recipe/activating/tritium.json
 942aa804aff4b3d03b5fc9f0408322a929f53ed5 data/mekanismgenerators/recipe/chemical_infusing/fusion_fuel.json
 6d1e381f6dc10f151aac465a334266e0b0a41379 data/mekanismgenerators/recipe/electromagnetic_coil.json
@@ -27,7 +27,7 @@ f65020ea9990103bfd0b1cedf4977317cf1342bc data/mekanismgenerators/recipe/rotary/f
 d4de27bd035a1c38788b6a418343070932a7878f data/mekanismgenerators/recipe/rotary/tritium.json
 4117bf4cb63cf145a41d236cdd1a1a48e115d36f data/mekanismgenerators/recipe/rotational_complex.json
 4c68b1285189434705a34c116b0fc8f2ac942cc8 data/mekanismgenerators/recipe/saturating_condenser.json
-d885133ca73c83e9488d18ee0e3f9e6f1d1c4eaf data/mekanismgenerators/recipe/separator/heavy_water.json
+3bf57273eb28dedee32f497aa43f041d3e213050 data/mekanismgenerators/recipe/separator/heavy_water.json
 1a920af0a2b06c6ead2eb18077ffcfcd579af722 data/mekanismgenerators/recipe/solar_panel.json
 4ca932789f0d86b805294e90e325cd22ad66b732 data/mekanismgenerators/recipe/turbine/blade.json
 248956741f2bacbd0f7c405390b1cc1a5e966106 data/mekanismgenerators/recipe/turbine/casing.json

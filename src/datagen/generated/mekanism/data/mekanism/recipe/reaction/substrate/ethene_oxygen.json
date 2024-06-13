@@ -1,7 +1,7 @@
 {
   "type": "mekanism:reaction",
   "duration": 60,
-  "energy_required": 1000,
+  "energy_required": "1000",
   "fluid_input": {
     "amount": 50,
     "tag": "c:ethene"

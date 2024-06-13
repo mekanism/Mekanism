@@ -68,7 +68,7 @@ public class MekanismTags {
         }
 
         public static final TagKey<Item> CONFIGURATORS = tag("configurators");
-        public static final TagKey<Item> TOOLS_WRENCHES = commonTag("tools/wrenches");
+        public static final TagKey<Item> TOOLS_WRENCH = commonTag("tools/wrench");
         public static final TagKey<Item> PERSONAL_STORAGE = tag("personal_storage");
 
         public static final TagKey<Item> RODS_PLASTIC = commonTag("rods/plastic");

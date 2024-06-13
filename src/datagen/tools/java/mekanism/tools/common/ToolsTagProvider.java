@@ -78,13 +78,13 @@ public class ToolsTagProvider extends BaseTagProvider {
     }
 
     private void addPaxels() {
-        getItemBuilder(ItemTags.BREAKS_DECORATED_POTS).add(ToolsTags.Items.TOOLS_PAXELS);
-        getItemBuilder(ItemTags.SHARP_WEAPON_ENCHANTABLE).add(ToolsTags.Items.TOOLS_PAXELS);
-        getItemBuilder(ItemTags.MINING_ENCHANTABLE).add(ToolsTags.Items.TOOLS_PAXELS);
-        getItemBuilder(ItemTags.MINING_LOOT_ENCHANTABLE).add(ToolsTags.Items.TOOLS_PAXELS);
-        getItemBuilder(ItemTags.DURABILITY_ENCHANTABLE).add(ToolsTags.Items.TOOLS_PAXELS);
-        getItemBuilder(Tags.Items.TOOLS).add(ToolsTags.Items.TOOLS_PAXELS);
-        addToTag(ToolsTags.Items.TOOLS_PAXELS,
+        getItemBuilder(ItemTags.BREAKS_DECORATED_POTS).add(ToolsTags.Items.TOOLS_PAXEL);
+        getItemBuilder(ItemTags.SHARP_WEAPON_ENCHANTABLE).add(ToolsTags.Items.TOOLS_PAXEL);
+        getItemBuilder(ItemTags.MINING_ENCHANTABLE).add(ToolsTags.Items.TOOLS_PAXEL);
+        getItemBuilder(ItemTags.MINING_LOOT_ENCHANTABLE).add(ToolsTags.Items.TOOLS_PAXEL);
+        getItemBuilder(ItemTags.DURABILITY_ENCHANTABLE).add(ToolsTags.Items.TOOLS_PAXEL);
+        getItemBuilder(Tags.Items.TOOLS).add(ToolsTags.Items.TOOLS_PAXEL);
+        addToTag(ToolsTags.Items.TOOLS_PAXEL,
               //Vanilla Paxels
               ToolsItems.WOOD_PAXEL,
               ToolsItems.STONE_PAXEL,

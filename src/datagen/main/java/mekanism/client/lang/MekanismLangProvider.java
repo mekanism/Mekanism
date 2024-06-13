@@ -90,7 +90,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
 
     private void addTags() {
         addTag(MekanismTags.Items.CONFIGURATORS, "Configurators");
-        addTag(MekanismTags.Items.TOOLS_WRENCHES, "Wrenches");
+        addTag(MekanismTags.Items.TOOLS_WRENCH, "Wrenches");
         addTag(MekanismTags.Items.PERSONAL_STORAGE, "Personal Storage");
 
         addTag(MekanismTags.Items.RODS_PLASTIC, "Plastic Rods");
