@@ -5,6 +5,7 @@ import mekanism.common.capabilities.ICapabilityAware;
 import mekanism.common.capabilities.radiation.item.RadiationShieldingHandler;
 import mekanism.common.integration.gender.GenderCapabilityHelper;
 import mekanism.common.registries.MekanismArmorMaterials;
+import net.minecraft.core.Holder;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
@@ -45,7 +46,7 @@ public class ItemHazmatSuitArmor extends ArmorItem implements ICapabilityAware {
     }
 
     @Override
-    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-        return isEnchantable(stack) && super.canApplyAtEnchantingTable(stack, enchantment);
+    public boolean isPrimaryItemFor(ItemStack stack, Holder<Enchantment> enchantment) {
+        return isEnchantable(stack) && super.isPrimaryItemFor(stack, enchantment);
     }
 }

@@ -28,8 +28,8 @@ public abstract class ItemSpecialArmor extends ArmorItem implements ICapabilityA
     }
 
     @Override
-    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-        return isEnchantable(stack) && super.canApplyAtEnchantingTable(stack, enchantment);
+    public boolean isPrimaryItemFor(ItemStack stack, Holder<Enchantment> enchantment) {
+        return isEnchantable(stack) && super.isPrimaryItemFor(stack, enchantment);
     }
 
     @Override

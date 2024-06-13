@@ -61,6 +61,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup.RegistryLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -233,8 +234,8 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
 
     @NotNull
     @Override
-    public ItemEnchantments getAllEnchantments(@NotNull ItemStack stack) {
-        ItemEnchantments enchantments = super.getAllEnchantments(stack);
+    public ItemEnchantments getAllEnchantments(@NotNull ItemStack stack, RegistryLookup<Enchantment> lookup) {
+        ItemEnchantments enchantments = super.getAllEnchantments(stack, lookup);
         IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainer(stack);
         if (container != null) {
             ItemEnchantments moduleEnchantments = container.moduleBasedEnchantments();

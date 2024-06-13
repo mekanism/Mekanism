@@ -27,6 +27,7 @@ import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
+import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -209,7 +210,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IGasItem
     }
 
     @Override
-    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
+    public boolean isPrimaryItemFor(ItemStack stack, Holder<Enchantment> enchantment) {
         return false;
     }
 

@@ -1,6 +1,7 @@
 package mekanism.common.item.gear;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -17,6 +18,8 @@ import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.core.Holder;
+import net.minecraft.core.Holder.Reference;
+import net.minecraft.core.HolderLookup.RegistryLookup;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -74,11 +77,10 @@ public class ItemElectricBow extends BowItem implements IItemHUDProvider, ICusto
     }
 
     @Override
-    public boolean canApplyAtEnchantingTable(@NotNull ItemStack stack, @NotNull Enchantment enchantment) {
+    public boolean isPrimaryItemFor(@NotNull ItemStack stack, @NotNull Holder<Enchantment> enchantment) {
         //Note: This stops application of it via enchanted books while in survival. We don't override isBookEnchantable as we don't care
         // if someone enchants it in creative and would rather not stop players from enchanting with books that have flame and power on them
-        //TODO - 1.21: Re-enable after https://github.com/neoforged/NeoForge/pull/1089
-        return /*enchantment != Enchantments.FLAME &&*/ super.canApplyAtEnchantingTable(stack, enchantment);
+        return !enchantment.is(Enchantments.FLAME) && super.isPrimaryItemFor(stack, enchantment);
     }
 
     @Override
@@ -93,14 +95,19 @@ public class ItemElectricBow extends BowItem implements IItemHUDProvider, ICusto
 
     @NotNull
     @Override
-    public ItemEnchantments getAllEnchantments(@NotNull ItemStack stack) {
-        ItemEnchantments enchantments = super.getAllEnchantments(stack);
-        //TODO - 1.21: Re-enable after https://github.com/neoforged/NeoForge/pull/1089
-        /*if (getMode(stack) && enchantments.getLevel(Enchantments.FLAME) == 0) {
-            ItemEnchantments.Mutable mutable = new ItemEnchantments.Mutable(enchantments);
-            mutable.set(Enchantments.FLAME, 1);
-            return mutable.toImmutable();
-        }*/
+    public ItemEnchantments getAllEnchantments(@NotNull ItemStack stack, @NotNull RegistryLookup<Enchantment> lookup) {
+        ItemEnchantments enchantments = super.getAllEnchantments(stack, lookup);
+        if (getMode(stack)) {
+            Optional<Reference<Enchantment>> enchantment = lookup.get(Enchantments.FLAME);
+            if (enchantment.isPresent()) {
+                Holder<Enchantment> flame = enchantment.get();
+                if (enchantments.getLevel(flame) == 0){
+                    ItemEnchantments.Mutable mutable = new ItemEnchantments.Mutable(enchantments);
+                    mutable.set(flame, 1);
+                    return mutable.toImmutable();
+                }
+            }
+        }
         return enchantments;
     }
 

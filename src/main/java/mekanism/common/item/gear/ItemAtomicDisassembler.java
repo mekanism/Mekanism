@@ -45,6 +45,7 @@ import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -292,7 +293,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     }
 
     @Override
-    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
+    public boolean isPrimaryItemFor(ItemStack stack, Holder<Enchantment> enchantment) {
         return false;
     }
 

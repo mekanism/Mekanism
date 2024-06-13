@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
 import mekanism.api.IIncrementalEnum;
@@ -22,6 +23,8 @@ import mekanism.common.registries.MekanismArmorMaterials;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.Holder;
+import net.minecraft.core.Holder.Reference;
+import net.minecraft.core.HolderLookup.RegistryLookup;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -103,15 +106,18 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
 
     @NotNull
     @Override
-    public ItemEnchantments getAllEnchantments(@NotNull ItemStack stack) {
-        ItemEnchantments enchantments = super.getAllEnchantments(stack);
-        //TODO - 1.21: Re-enable after https://github.com/neoforged/NeoForge/pull/1089
-        /*int fakeLevel = getFakeEnchantmentLevel(stack, Enchantments.SOUL_SPEED);
-        if (enchantments.getLevel(Enchantments.SOUL_SPEED) < fakeLevel) {
-            ItemEnchantments.Mutable mutable = new ItemEnchantments.Mutable(enchantments);
-            mutable.set(Enchantments.SOUL_SPEED, fakeLevel);
-            return mutable.toImmutable();
-        }*/
+    public ItemEnchantments getAllEnchantments(@NotNull ItemStack stack, @NotNull RegistryLookup<Enchantment> lookup) {
+        ItemEnchantments enchantments = super.getAllEnchantments(stack, lookup);
+        Optional<Reference<Enchantment>> enchantment = lookup.get(Enchantments.SOUL_SPEED);
+        if (enchantment.isPresent()) {
+            Holder<Enchantment> soulSpeed = enchantment.get();
+            int fakeLevel = getFakeEnchantmentLevel(stack, soulSpeed);
+            if (enchantments.getLevel(soulSpeed) < fakeLevel) {
+                ItemEnchantments.Mutable mutable = new ItemEnchantments.Mutable(enchantments);
+                mutable.set(soulSpeed, fakeLevel);
+                return mutable.toImmutable();
+            }
+        }
         return enchantments;
     }
 

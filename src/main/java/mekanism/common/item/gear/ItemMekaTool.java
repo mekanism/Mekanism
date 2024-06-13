@@ -46,6 +46,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup.RegistryLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -175,8 +176,8 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
 
     @NotNull
     @Override
-    public ItemEnchantments getAllEnchantments(@NotNull ItemStack stack) {
-        ItemEnchantments enchantments = super.getAllEnchantments(stack);
+    public ItemEnchantments getAllEnchantments(@NotNull ItemStack stack, RegistryLookup<Enchantment> lookup) {
+        ItemEnchantments enchantments = super.getAllEnchantments(stack, lookup);
         IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainer(stack);
         if (container != null) {
             ItemEnchantments moduleEnchantments = container.moduleBasedEnchantments();
@@ -456,7 +457,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
     }
 
     @Override
-    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
+    public boolean isPrimaryItemFor(ItemStack stack, Holder<Enchantment> enchantment) {
         return false;
     }
 
