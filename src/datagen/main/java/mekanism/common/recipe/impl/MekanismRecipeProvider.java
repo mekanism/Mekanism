@@ -22,7 +22,6 @@ import mekanism.common.recipe.builder.ExtendedShapelessRecipeBuilder;
 import mekanism.common.recipe.builder.MekDataShapedRecipeBuilder;
 import mekanism.common.recipe.compat.AE2RecipeProvider;
 import mekanism.common.recipe.compat.BiomesOPlentyRecipeProvider;
-import mekanism.common.recipe.compat.FarmersDelightRecipeProvider;
 import mekanism.common.recipe.pattern.Pattern;
 import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.recipe.pattern.RecipePattern.DoubleLine;
@@ -86,7 +85,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //Mod Compat Recipe providers
         checkCompat("ae2", AE2RecipeProvider::new);
         checkCompat("biomesoplenty", BiomesOPlentyRecipeProvider::new);
-        checkCompat("farmersdelight", FarmersDelightRecipeProvider::new);
+        //checkCompat("farmersdelight", FarmersDelightRecipeProvider::new);
     }
 
     private void checkCompat(String modid, Function<String, ISubRecipeProvider> providerCreator) {

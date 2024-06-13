@@ -43,7 +43,7 @@ public class CommonPlayerTracker {
     public void onPlayerLoginEvent(PlayerLoggedInEvent event) {
         Player player = event.getEntity();
         if (!player.level().isClientSide) {
-            //player.sendSystemMessage(ALPHA_WARNING);
+            player.sendSystemMessage(ALPHA_WARNING);
             MekanismCriteriaTriggers.LOGGED_IN.value().trigger((ServerPlayer) player);
         }
     }
