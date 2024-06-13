@@ -1,6 +1,6 @@
 ![Mekanism Logo](logo.png)
 
-# Mekanism for Minecraft 1.20 #
+# Mekanism for Minecraft 1.21 #
 
 Mekanism is an independent Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, 
 armor, and weapons. You can find more detail on the features on the [**Official Wiki**](https://wiki.aidancbrady.com/wiki/Mekanism).
@@ -27,7 +27,7 @@ recipes, blocks, entities, or even things like the tickrate command. Additionall
 of things that we haven't finished porting yet.
 
 ## Known Bugs/Things that aren't done being ported yet ##
-- Options in the Module Tweaker that have side effects don't current have those side effects displayed
+- Options in the Module Tweaker that have side effects don't currently have those side effects displayed
 - Resistive Heaters do not keep their set Energy Usage when breaking and placing again
 - Bins forget if they are locked and what they are locked too if broken and placed
 - When breaking and placing blocks that have fluid item input slots, they do not persist whether the item was actively being drained or whether it was being filled
@@ -54,7 +54,7 @@ If you would like to help translate Mekanism, you can do so through [Crowdin](ht
 
 Mekanism is licensed under the MIT license. You may use it in modpacks, reviews, or any other form as long as you abide by the terms below. 
 
-Copyright 2017-2023 Aidan C. Brady
+Copyright 2017-2024 Aidan C. Brady
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
