@@ -11,8 +11,8 @@
               "add": false,
               "count": {
                 "type": "minecraft:uniform",
-                "max": 2.0,
-                "min": 0.0
+                "max": 1.0,
+                "min": -1.0
               },
               "function": "minecraft:set_count"
             },
@@ -22,13 +22,14 @@
                 "max": 1.0,
                 "min": 0.0
               },
-              "function": "minecraft:looting_enchant"
+              "enchantment": "minecraft:looting",
+              "function": "minecraft:enchanted_count_increase"
             }
           ],
-          "name": "minecraft:arrow"
+          "name": "minecraft:coal"
         }
       ],
-      "name": "arrows",
+      "name": "coal",
       "rolls": 1.0
     },
     {
@@ -52,7 +53,8 @@
                 "max": 1.0,
                 "min": 0.0
               },
-              "function": "minecraft:looting_enchant"
+              "enchantment": "minecraft:looting",
+              "function": "minecraft:enchanted_count_increase"
             }
           ],
           "name": "minecraft:bone"
@@ -66,41 +68,27 @@
       "conditions": [
         {
           "condition": "minecraft:killed_by_player"
+        },
+        {
+          "condition": "minecraft:random_chance_with_enchanted_bonus",
+          "enchanted_chance": {
+            "type": "minecraft:linear",
+            "base": 0.060000002,
+            "per_level_above_first": 0.01
+          },
+          "enchantment": "minecraft:looting",
+          "unenchanted_chance": 0.05
         }
       ],
       "entries": [
         {
           "type": "minecraft:item",
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "type": "minecraft:uniform",
-                "max": 1.0,
-                "min": 0.0
-              },
-              "function": "minecraft:set_count"
-            },
-            {
-              "count": {
-                "type": "minecraft:uniform",
-                "max": 1.0,
-                "min": 0.0
-              },
-              "function": "minecraft:looting_enchant",
-              "limit": 1
-            },
-            {
-              "function": "minecraft:set_potion",
-              "id": "minecraft:slowness"
-            }
-          ],
-          "name": "minecraft:tipped_arrow"
+          "name": "minecraft:wither_skeleton_skull"
         }
       ],
-      "name": "tipped_arrows",
+      "name": "skulls",
       "rolls": 1.0
     }
   ],
-  "random_sequence": "mekanismadditions:entities/baby_stray"
+  "random_sequence": "mekanismadditions:entities/baby_wither_skeleton"
 }

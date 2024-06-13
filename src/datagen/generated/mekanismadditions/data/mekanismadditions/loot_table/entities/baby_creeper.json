@@ -22,7 +22,8 @@
                 "max": 1.0,
                 "min": 0.0
               },
-              "function": "minecraft:looting_enchant"
+              "enchantment": "minecraft:looting",
+              "function": "minecraft:enchanted_count_increase"
             }
           ],
           "name": "minecraft:gunpowder"
@@ -36,7 +37,7 @@
       "conditions": [
         {
           "condition": "minecraft:entity_properties",
-          "entity": "killer",
+          "entity": "attacker",
           "predicate": {
             "type": "#minecraft:skeletons"
           }
@@ -46,7 +47,7 @@
         {
           "type": "minecraft:tag",
           "expand": true,
-          "name": "minecraft:music_discs"
+          "name": "minecraft:creeper_drop_music_discs"
         }
       ],
       "name": "music_discs",

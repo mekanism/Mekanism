@@ -16,7 +16,7 @@
                     "predicates": {
                       "minecraft:enchantments": [
                         {
-                          "enchantment": "minecraft:silk_touch",
+                          "enchantments": "minecraft:silk_touch",
                           "levels": {
                             "min": 1
                           }
@@ -26,7 +26,7 @@
                   }
                 }
               ],
-              "name": "mekanism:deepslate_uranium_ore"
+              "name": "mekanism:tin_ore"
             },
             {
               "type": "minecraft:item",
@@ -40,7 +40,7 @@
                   "function": "minecraft:explosion_decay"
                 }
               ],
-              "name": "mekanism:raw_uranium"
+              "name": "mekanism:raw_tin"
             }
           ]
         }
@@ -49,5 +49,5 @@
       "rolls": 1.0
     }
   ],
-  "random_sequence": "mekanism:blocks/deepslate_uranium_ore"
+  "random_sequence": "mekanism:blocks/tin_ore"
 }

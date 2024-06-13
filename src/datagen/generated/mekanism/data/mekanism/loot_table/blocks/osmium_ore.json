@@ -16,7 +16,7 @@
                     "predicates": {
                       "minecraft:enchantments": [
                         {
-                          "enchantment": "minecraft:silk_touch",
+                          "enchantments": "minecraft:silk_touch",
                           "levels": {
                             "min": 1
                           }
@@ -26,20 +26,11 @@
                   }
                 }
               ],
-              "name": "mekanism:fluorite_ore"
+              "name": "mekanism:osmium_ore"
             },
             {
               "type": "minecraft:item",
               "functions": [
-                {
-                  "add": false,
-                  "count": {
-                    "type": "minecraft:uniform",
-                    "max": 4.0,
-                    "min": 2.0
-                  },
-                  "function": "minecraft:set_count"
-                },
                 {
                   "enchantment": "minecraft:fortune",
                   "formula": "minecraft:ore_drops",
@@ -49,7 +40,7 @@
                   "function": "minecraft:explosion_decay"
                 }
               ],
-              "name": "mekanism:fluorite_gem"
+              "name": "mekanism:raw_osmium"
             }
           ]
         }
@@ -58,5 +49,5 @@
       "rolls": 1.0
     }
   ],
-  "random_sequence": "mekanism:blocks/fluorite_ore"
+  "random_sequence": "mekanism:blocks/osmium_ore"
 }

@@ -16,7 +16,7 @@
                     "predicates": {
                       "minecraft:enchantments": [
                         {
-                          "enchantment": "minecraft:silk_touch",
+                          "enchantments": "minecraft:silk_touch",
                           "levels": {
                             "min": 1
                           }
@@ -26,7 +26,7 @@
                   }
                 }
               ],
-              "name": "mekanism:deepslate_tin_ore"
+              "name": "mekanism:lead_ore"
             },
             {
               "type": "minecraft:item",
@@ -40,7 +40,7 @@
                   "function": "minecraft:explosion_decay"
                 }
               ],
-              "name": "mekanism:raw_tin"
+              "name": "mekanism:raw_lead"
             }
           ]
         }
@@ -49,5 +49,5 @@
       "rolls": 1.0
     }
   ],
-  "random_sequence": "mekanism:blocks/deepslate_tin_ore"
+  "random_sequence": "mekanism:blocks/lead_ore"
 }

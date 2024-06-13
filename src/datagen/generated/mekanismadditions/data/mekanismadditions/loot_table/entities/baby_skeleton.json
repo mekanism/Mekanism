@@ -11,8 +11,8 @@
               "add": false,
               "count": {
                 "type": "minecraft:uniform",
-                "max": 1.0,
-                "min": -1.0
+                "max": 2.0,
+                "min": 0.0
               },
               "function": "minecraft:set_count"
             },
@@ -22,13 +22,14 @@
                 "max": 1.0,
                 "min": 0.0
               },
-              "function": "minecraft:looting_enchant"
+              "enchantment": "minecraft:looting",
+              "function": "minecraft:enchanted_count_increase"
             }
           ],
-          "name": "minecraft:coal"
+          "name": "minecraft:arrow"
         }
       ],
-      "name": "coal",
+      "name": "arrows",
       "rolls": 1.0
     },
     {
@@ -52,7 +53,8 @@
                 "max": 1.0,
                 "min": 0.0
               },
-              "function": "minecraft:looting_enchant"
+              "enchantment": "minecraft:looting",
+              "function": "minecraft:enchanted_count_increase"
             }
           ],
           "name": "minecraft:bone"
@@ -60,28 +62,7 @@
       ],
       "name": "bones",
       "rolls": 1.0
-    },
-    {
-      "bonus_rolls": 0.0,
-      "conditions": [
-        {
-          "condition": "minecraft:killed_by_player"
-        },
-        {
-          "chance": 0.05,
-          "condition": "minecraft:random_chance_with_looting",
-          "looting_multiplier": 0.01
-        }
-      ],
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:wither_skeleton_skull"
-        }
-      ],
-      "name": "skulls",
-      "rolls": 1.0
     }
   ],
-  "random_sequence": "mekanismadditions:entities/baby_wither_skeleton"
+  "random_sequence": "mekanismadditions:entities/baby_skeleton"
 }
