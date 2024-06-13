@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.text.IHasTranslationKey;
 import mekanism.client.integration.MekanismAliases;
 import mekanism.common.Mekanism;
 import mekanism.common.content.blocktype.FactoryType;
@@ -22,8 +23,10 @@ import mekanism.common.util.StorageUtils;
 import net.minecraft.Util;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 
 @NothingNullByDefault
@@ -58,9 +61,9 @@ public class MekanismEmiAliasProvider extends BaseEmiAliasProvider {
         addAliases(MekanismItems.MODULE_RADIATION_SHIELDING, MekanismAliases.RADIATION_PROTECTION);
         addAliases(MekanismItems.MODULE_ENERGY, MekanismAliases.ENERGY_STORAGE);
 
-        addAliases(MekanismItems.MODULE_FORTUNE, Enchantments.FORTUNE::getDescriptionId);
-        addAliases(MekanismItems.MODULE_ATTACK_AMPLIFICATION, MekanismAliases.UNIT_DAMAGE, Enchantments.SHARPNESS::getDescriptionId);
-        addAliases(MekanismItems.MODULE_EXCAVATION_ESCALATION, MekanismAliases.UNIT_DIG_SPEED, Enchantments.EFFICIENCY::getDescriptionId);
+        addAliases(MekanismItems.MODULE_FORTUNE, getTranslationKey(Enchantments.FORTUNE));
+        addAliases(MekanismItems.MODULE_ATTACK_AMPLIFICATION, MekanismAliases.UNIT_DAMAGE, getTranslationKey(Enchantments.SHARPNESS));
+        addAliases(MekanismItems.MODULE_EXCAVATION_ESCALATION, MekanismAliases.UNIT_DIG_SPEED, getTranslationKey(Enchantments.EFFICIENCY));
         addAliases(MekanismItems.MODULE_BLASTING, MekanismAliases.TOOL_HAMMER, MekanismAliases.UNIT_AOE, MekanismAliases.UNIT_AOE_LONG);
         addAliases(MekanismItems.MODULE_FARMING, MekanismAliases.TOOL_AXE, MekanismAliases.TOOL_HOE, MekanismAliases.TOOL_SHOVEL);
 
@@ -70,10 +73,14 @@ public class MekanismEmiAliasProvider extends BaseEmiAliasProvider {
         addAliases(MekanismItems.MODULE_GRAVITATIONAL_MODULATING, MekanismAliases.CREATIVE_FLIGHT);
         addAliases(MekanismItems.MODULE_CHARGE_DISTRIBUTION, MekanismAliases.ITEM_CHARGER);
         addAliases(MekanismItems.MODULE_HYDRAULIC_PROPULSION, MekanismAliases.AUTO_STEP, MekanismAliases.STEP_ASSIST, MobEffects.JUMP.value()::getDescriptionId);
-        addAliases(MekanismItems.MODULE_HYDROSTATIC_REPULSOR, MekanismAliases.UNIT_HYDROSTATIC_SPEED, Enchantments.DEPTH_STRIDER::getDescriptionId);
-        addAliases(MekanismItems.MODULE_MOTORIZED_SERVO, Enchantments.SWIFT_SNEAK::getDescriptionId);
+        addAliases(MekanismItems.MODULE_HYDROSTATIC_REPULSOR, MekanismAliases.UNIT_HYDROSTATIC_SPEED, getTranslationKey(Enchantments.DEPTH_STRIDER));
+        addAliases(MekanismItems.MODULE_MOTORIZED_SERVO, getTranslationKey(Enchantments.SWIFT_SNEAK));
         addAliases(MekanismItems.MODULE_LOCOMOTIVE_BOOSTING, MobEffects.MOVEMENT_SPEED.value()::getDescriptionId);
-        addAliases(MekanismItems.MODULE_SOUL_SURFER, Enchantments.SOUL_SPEED::getDescriptionId);
+        addAliases(MekanismItems.MODULE_SOUL_SURFER, getTranslationKey(Enchantments.SOUL_SPEED));
+    }
+
+    private IHasTranslationKey getTranslationKey(ResourceKey<Enchantment> enchantmentKey) {
+        return () -> Util.makeDescriptionId("enchantment", enchantmentKey.location());
     }
 
     private void addFactoryAliases() {
