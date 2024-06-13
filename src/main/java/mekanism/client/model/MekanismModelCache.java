@@ -57,7 +57,7 @@ public class MekanismModelCache extends BaseModelCache {
     public void onBake(BakingCompleted evt) {
         super.onBake(evt);
         callbacks.forEach(Runnable::run);
-        BASE_ROBIT = getBakedModel(evt, new ModelResourceLocation(Mekanism.rl("robit"), "inventory"));
+        BASE_ROBIT = getBakedModel(evt, ModelResourceLocation.inventory(Mekanism.rl("robit")));
         //Clear old robit skin caches
         //Note: We don't clear the cached models as the old JSONModelDatas should be able to properly handle reloading,
         // and we only clear the skin cache in case the skin no longer has a custom model (even though this is highly unlikely)

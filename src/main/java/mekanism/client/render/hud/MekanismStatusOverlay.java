@@ -5,6 +5,7 @@ import mekanism.client.gui.GuiUtils;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.lib.Color;
 import net.minecraft.SharedConstants;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -30,7 +31,7 @@ public class MekanismStatusOverlay implements LayeredDraw.Layer {
     }
 
     @Override
-    public void render(@NotNull GuiGraphics graphics, float partialTicks) {
+    public void render(@NotNull GuiGraphics graphics, @NotNull DeltaTracker delta) {
         Minecraft minecraft = Minecraft.getInstance();
         if (modeSwitchTimer > 1 && minecraft.player != null) {
             ItemStack stack = minecraft.player.getMainHandItem();

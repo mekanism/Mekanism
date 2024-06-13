@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.SequencedCollection;
 import java.util.SequencedMap;
 import mekanism.api.SerializationConstants;
@@ -23,7 +24,9 @@ import mekanism.api.providers.IModuleDataProvider;
 import mekanism.common.lib.codec.SequencedCollectionCodec;
 import mekanism.common.lib.collection.EmptySequencedMap;
 import mekanism.common.registries.MekanismDataComponents;
+import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -105,8 +108,9 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
     }
 
     @Override
-    public <MODULE extends ICustomModule<MODULE>> ModuleContainer replaceModuleConfig(ItemStack stack, ModuleData<MODULE> type, ModuleConfig<?> config) {
-        return replaceModuleConfig(stack, type, config, false);
+    public <MODULE extends ICustomModule<MODULE>> ModuleContainer replaceModuleConfig(HolderLookup.Provider provider, ItemStack stack, ModuleData<MODULE> type,
+          ModuleConfig<?> config) {
+        return replaceModuleConfig(provider, stack, type, config, false);
     }
 
     /**
@@ -122,7 +126,8 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
      *                                  given type.
      * @throws IllegalArgumentException If fromPacket is true, and the config does not represent a value that is valid for the module.
      */
-    public <MODULE extends ICustomModule<MODULE>> ModuleContainer replaceModuleConfig(ItemStack stack, ModuleData<MODULE> type, ModuleConfig<?> config, boolean fromPacket) {
+    public <MODULE extends ICustomModule<MODULE>> ModuleContainer replaceModuleConfig(HolderLookup.Provider provider, ItemStack stack, ModuleData<MODULE> type,
+          ModuleConfig<?> config, boolean fromPacket) {
         Module<MODULE> module = get(type);
         if (module == null) {
             throw new IllegalArgumentException("Module container does not contain any modules of type " + type.getRegistryName());
@@ -132,7 +137,7 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
                 return this;//State matches no change needed
             }
             //Toggle the enabled state including any side effects changing that config may have
-            return toggleEnabled(stack, type, module);
+            return toggleEnabled(provider, stack, type, module);
         } else if (config.name().equals(ModuleConfig.HANDLES_MODE_CHANGE_KEY)) {
             if (module.handlesModeChangeRaw() == (boolean) config.get()) {
                 return this;//State matches no change needed
@@ -154,34 +159,35 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
         return updateContainer(stack, copiedModules, null);
     }
 
-    <MODULE extends ICustomModule<MODULE>> ModuleContainer toggleEnabled(ItemStack stack, ModuleData<MODULE> type) {
+    <MODULE extends ICustomModule<MODULE>> ModuleContainer toggleEnabled(HolderLookup.Provider provider, ItemStack stack, ModuleData<MODULE> type) {
         Module<MODULE> module = get(type);
         if (module == null) {
             throw new IllegalArgumentException("Module container does not contain any modules of type " + type.getRegistryName());
         }
-        return toggleEnabled(stack, type, module);
+        return toggleEnabled(provider, stack, type, module);
     }
 
-    private <MODULE extends ICustomModule<MODULE>> ModuleContainer toggleEnabled(ItemStack stack, ModuleData<MODULE> type, Module<MODULE> module) {
+    private <MODULE extends ICustomModule<MODULE>> ModuleContainer toggleEnabled(HolderLookup.Provider provider, ItemStack stack, ModuleData<MODULE> type,
+          Module<MODULE> module) {
         boolean setEnabled = !module.isEnabled();
         module = module.withReplacedConfig(module.<Boolean>getConfigOrThrow(ModuleConfig.ENABLED_KEY).with(setEnabled));
 
-        ItemEnchantments.Mutable adjustedEnchantments = updateEnchantment(module, null);
+        ItemEnchantments.Mutable adjustedEnchantments = updateEnchantment(provider, module, null);
         SequencedMap<ModuleData<?>, Module<?>> copiedModules = new LinkedHashMap<>(typedModules);
         copiedModules.put(type, module);
 
         //If we are becoming enabled, and we handle mode change or have some exclusivity flags
         // then we will need to recheck other installed modules
         if (setEnabled) {
-            adjustedEnchantments = disableOtherExclusives(type, module, copiedModules, adjustedEnchantments);
+            adjustedEnchantments = disableOtherExclusives(provider, type, module, copiedModules, adjustedEnchantments);
         }
 
         return updateContainer(stack, copiedModules, adjustedEnchantments);
     }
 
     @Nullable
-    private <MODULE extends ICustomModule<MODULE>> ItemEnchantments.Mutable disableOtherExclusives(ModuleData<MODULE> type, Module<MODULE> module,
-          SequencedMap<ModuleData<?>, Module<?>> copiedModules, @Nullable ItemEnchantments.Mutable adjustedEnchantments) {
+    private <MODULE extends ICustomModule<MODULE>> ItemEnchantments.Mutable disableOtherExclusives(HolderLookup.Provider provider, ModuleData<MODULE> type,
+          Module<MODULE> module, SequencedMap<ModuleData<?>, Module<?>> copiedModules, @Nullable ItemEnchantments.Mutable adjustedEnchantments) {
         boolean handlesModeChange = module.handlesModeChange();
         int exclusiveFlags = type.getExclusiveFlags();
         if (handlesModeChange || exclusiveFlags != 0) {
@@ -195,7 +201,7 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
                         otherModule = otherModule.withReplacedConfig(disabledConfig);
                         copiedModules.put(otherType, otherModule);
                         //And adjust the current enchantments if necessary
-                        adjustedEnchantments = updateEnchantment(otherModule, adjustedEnchantments);
+                        adjustedEnchantments = updateEnchantment(provider, otherModule, adjustedEnchantments);
                     }
                     //TODO - 1.21: Figure out if we need to check against the original other module before it is disabled
                     // which is what previously happened or if checking it here is fine
@@ -215,13 +221,14 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
     }
 
     @Nullable
-    private <MODULE extends ICustomModule<MODULE>> ItemEnchantments.Mutable updateEnchantment(Module<MODULE> module, @Nullable ItemEnchantments.Mutable adjustedEnchantments) {
+    private <MODULE extends ICustomModule<MODULE>> ItemEnchantments.Mutable updateEnchantment(HolderLookup.Provider provider, Module<MODULE> module,
+          @Nullable ItemEnchantments.Mutable adjustedEnchantments) {
         if (module.getCustomInstance() instanceof EnchantmentAwareModule<?> enchantmentBased) {
-            Enchantment enchantment = enchantmentBased.enchantment();
+            Optional<Reference<Enchantment>> enchantment = provider.lookupOrThrow(Registries.ENCHANTMENT).get(enchantmentBased.enchantment());
             int level = getEnchantmentLevel(module);
-            if (enchantments.getLevel(enchantment) != level) {
+            if (enchantment.isPresent() && enchantments.getLevel(enchantment.get()) != level) {
                 adjustedEnchantments = new ItemEnchantments.Mutable(enchantments);
-                adjustedEnchantments.set(enchantment, level);
+                adjustedEnchantments.set(enchantment.get(), level);
             }
         }
         return adjustedEnchantments;
@@ -291,9 +298,9 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
         SequencedMap<ModuleData<?>, Module<?>> copiedModules = new LinkedHashMap<>(typedModules);
         copiedModules.put(type, module);
         //Update what the enchantment level is at after the installation
-        ItemEnchantments.Mutable adjustedEnchantments = updateEnchantment(module, null);
+        ItemEnchantments.Mutable adjustedEnchantments = updateEnchantment(provider, module, null);
         //Disable any other modules that are exclusive in regard to the newly installed module
-        adjustedEnchantments = disableOtherExclusives(type, module, copiedModules, adjustedEnchantments);
+        adjustedEnchantments = disableOtherExclusives(provider, type, module, copiedModules, adjustedEnchantments);
 
         ModuleContainer replacedContainer = updateContainer(stack, copiedModules, adjustedEnchantments);
         //Call the added method on the new module instance with the new container
@@ -318,17 +325,17 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
                 copiedModules.remove(type);
                 //Remove any corresponding enchantment
                 if (module.getCustomInstance() instanceof EnchantmentAwareModule<?> enchantmentBased) {
-                    Enchantment enchantment = enchantmentBased.enchantment();
-                    if (enchantments.getLevel(enchantment) != 0) {
+                    Optional<Reference<Enchantment>> enchantment = provider.lookupOrThrow(Registries.ENCHANTMENT).get(enchantmentBased.enchantment());
+                    if (enchantment.isPresent() && enchantments.getLevel(enchantment.get()) != 0) {
                         adjustedEnchantments = new ItemEnchantments.Mutable(enchantments);
-                        adjustedEnchantments.set(enchantment, 0);
+                        adjustedEnchantments.set(enchantment.get(), 0);
                     }
                 }
             } else {//update the module with the new installed count
                 module = module.withReplacedInstallCount(provider, installed);
                 copiedModules.put(type, module);
                 //Update the level of any corresponding enchantment
-                adjustedEnchantments = updateEnchantment(module, null);
+                adjustedEnchantments = updateEnchantment(provider, module, null);
             }
             ModuleContainer replacedContainer = updateContainer(stack, copiedModules, adjustedEnchantments);
             module.getCustomInstance().onRemoved(module, replacedContainer, stack, wasLast);

@@ -31,7 +31,7 @@ import org.jetbrains.annotations.NotNull;
 @NothingNullByDefault
 public abstract class MetallurgicInfuserRecipe extends ItemStackChemicalToItemStackRecipe<InfuseType, InfusionStack, InfusionStackIngredient> {
 
-    private static final Holder<Item> METALLURGIC_INFUSER = DeferredHolder.create(Registries.ITEM, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "metallurgic_infuser"));
+    private static final Holder<Item> METALLURGIC_INFUSER = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "metallurgic_infuser"));
 
     @Override
     public abstract ItemStackIngredient getItemInput();

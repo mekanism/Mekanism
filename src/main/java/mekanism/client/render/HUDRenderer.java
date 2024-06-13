@@ -18,6 +18,7 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.StorageUtils;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -47,7 +48,7 @@ public class HUDRenderer {
     private float prevRotationYaw;
     private float prevRotationPitch;
 
-    public void renderHUD(Minecraft minecraft, GuiGraphics guiGraphics, Font font, float partialTick, int screenWidth, int screenHeight, int maxTextHeight,
+    public void renderHUD(Minecraft minecraft, GuiGraphics guiGraphics, Font font, DeltaTracker delta, int screenWidth, int screenHeight, int maxTextHeight,
           boolean reverseHud) {
         Player player = minecraft.player;
         update(minecraft.level, player);
@@ -61,7 +62,7 @@ public class HUDRenderer {
         float pitchJitter = -absSqrt(player.getXRot() - prevRotationPitch);
         pose.translate(yawJitter, pitchJitter, 0);
         if (MekanismConfig.client.hudCompassEnabled.get()) {
-            renderCompass(player, font, guiGraphics, partialTick, screenWidth, screenHeight, maxTextHeight, reverseHud, color);
+            renderCompass(player, font, guiGraphics, delta, screenWidth, screenHeight, maxTextHeight, reverseHud, color);
         }
 
         renderMekaSuitEnergyIcons(player, font, guiGraphics, color);
@@ -150,8 +151,8 @@ public class HUDRenderer {
         guiGraphics.drawString(font, element.getText(), iconRight ? x : x + 18, y + 5, element.getColor(), false);
     }
 
-    private void renderCompass(Player player, Font font, GuiGraphics guiGraphics, float partialTick, int screenWidth, int screenHeight, int maxTextHeight, boolean reverseHud,
-          int color) {
+    private void renderCompass(Player player, Font font, GuiGraphics guiGraphics, DeltaTracker delta, int screenWidth, int screenHeight, int maxTextHeight,
+          boolean reverseHud, int color) {
         //Reversed hud causes the compass to render on the right side of the screen
         int posX = reverseHud ? screenWidth - 125 : 25;
         //Pin the compass above the bottom of the screen and also above the text hud that may render below it
@@ -167,7 +168,7 @@ public class HUDRenderer {
         GuiUtils.drawString(guiGraphics, font, coords, -font.width(coords) / 2F, -4, color, false);
         pose.popPose();
 
-        float angle = 180 - player.getViewYRot(partialTick);
+        float angle = 180 - player.getViewYRot(delta.getGameTimeDeltaPartialTick(false));
         pose.mulPose(Axis.XP.rotationDegrees(-60));
         pose.mulPose(Axis.ZP.rotationDegrees(angle));
         RenderSystem.enableBlend();

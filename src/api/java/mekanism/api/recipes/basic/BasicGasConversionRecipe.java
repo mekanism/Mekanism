@@ -17,7 +17,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 @NothingNullByDefault
 public class BasicGasConversionRecipe extends BasicItemStackToGasRecipe {
 
-    private static final Holder<Item> CREATIVE_CHEMICAL_TANK = DeferredHolder.create(Registries.ITEM, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "creative_chemical_tank"));
+    private static final Holder<Item> CREATIVE_CHEMICAL_TANK = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "creative_chemical_tank"));
 
     public BasicGasConversionRecipe(ItemStackIngredient input, GasStack output) {
         super(input, output, MekanismRecipeTypes.TYPE_GAS_CONVERSION.value());

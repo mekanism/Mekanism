@@ -89,15 +89,15 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
         return MekanismConfig.client.energyColor.get();
     }
 
-    private int getFakeEnchantmentLevel(@NotNull ItemStack stack, @NotNull Enchantment enchantment) {
-        if (enchantment == Enchantments.SOUL_SPEED && getMode(stack) == FreeRunnerMode.NORMAL) {
+    private int getFakeEnchantmentLevel(@NotNull ItemStack stack, @NotNull Holder<Enchantment> enchantment) {
+        if (enchantment.is(Enchantments.SOUL_SPEED) && getMode(stack) == FreeRunnerMode.NORMAL) {
             return 1;
         }
         return 0;
     }
 
     @Override
-    public int getEnchantmentLevel(@NotNull ItemStack stack, @NotNull Enchantment enchantment) {
+    public int getEnchantmentLevel(@NotNull ItemStack stack, @NotNull Holder<Enchantment> enchantment) {
         return Math.max(getFakeEnchantmentLevel(stack, enchantment), super.getEnchantmentLevel(stack, enchantment));
     }
 
@@ -105,12 +105,13 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
     @Override
     public ItemEnchantments getAllEnchantments(@NotNull ItemStack stack) {
         ItemEnchantments enchantments = super.getAllEnchantments(stack);
-        int fakeLevel = getFakeEnchantmentLevel(stack, Enchantments.SOUL_SPEED);
+        //TODO - 1.21: Re-enable after https://github.com/neoforged/NeoForge/pull/1089
+        /*int fakeLevel = getFakeEnchantmentLevel(stack, Enchantments.SOUL_SPEED);
         if (enchantments.getLevel(Enchantments.SOUL_SPEED) < fakeLevel) {
             ItemEnchantments.Mutable mutable = new ItemEnchantments.Mutable(enchantments);
             mutable.set(Enchantments.SOUL_SPEED, fakeLevel);
             return mutable.toImmutable();
-        }
+        }*/
         return enchantments;
     }
 

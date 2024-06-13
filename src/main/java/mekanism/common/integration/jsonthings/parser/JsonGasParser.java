@@ -44,7 +44,7 @@ public class JsonGasParser extends SimpleJsonChemicalParser<Gas, GasBuilder, Jso
             CoolantData coolantData = new CoolantData();
             coolant.key("thermal_enthalpy", thermalEnthalpy -> thermalEnthalpy.doubleValue().handle(enthalpy -> coolantData.thermalEnthalpy = enthalpy))
                   .key("conductivity", conductivity -> conductivity.doubleValue().handle(c -> coolantData.conductivity = c))
-                  .key(hasCooledGas ? "cooled_gas" : "heated_gas", gas -> gas.string().map(ResourceLocation::new).handle(g -> coolantData.gas = g));
+                  .key(hasCooledGas ? "cooled_gas" : "heated_gas", gas -> gas.string().map(ResourceLocation::parse).handle(g -> coolantData.gas = g));
             if (hasCooledGas) {
                 builder.with(new GasAttributes.HeatedCoolant(new LazyGasProvider(coolantData.gas), coolantData.thermalEnthalpy, coolantData.conductivity));
             } else {

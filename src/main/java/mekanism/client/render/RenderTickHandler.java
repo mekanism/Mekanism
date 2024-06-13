@@ -157,7 +157,7 @@ public class RenderTickHandler {
                 MultiBufferSource.BufferSource renderer = minecraft.renderBuffers().bufferSource();
                 PoseStack poseStack = event.getPoseStack();
                 int renderTick = event.getRenderTick();
-                float partialTick = event.getPartialTick();
+                float partialTick = event.getPartialTick().getGameTimeDeltaPartialTick(false);
                 ProfilerFiller profiler = minecraft.getProfiler();
                 profiler.push(ProfilerConstants.DELAYED);
                 if (transparentRenderers.size() == 1) {
@@ -183,7 +183,7 @@ public class RenderTickHandler {
             }
         } else if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_PARTICLES && boltRenderer.hasBoltsToRender()) {
             MultiBufferSource.BufferSource renderer = minecraft.renderBuffers().bufferSource();
-            boltRenderer.render(event.getPartialTick(), event.getPoseStack(), renderer, event.getCamera().getPosition());
+            boltRenderer.render(event.getPartialTick().getGameTimeDeltaPartialTick(false), event.getPoseStack(), renderer, event.getCamera().getPosition());
             renderer.endBatch(MekanismRenderType.MEK_LIGHTNING);
         }
     }
@@ -228,6 +228,7 @@ public class RenderTickHandler {
         if (minecraft.player != null && minecraft.player.level() != null && !minecraft.isPaused() && minecraft.gameMode != null) {
             Player player = minecraft.player;
             Level world = minecraft.player.level();
+            float partialTicks = minecraft.getTimer().getGameTimeDeltaPartialTick(false);
             //Traverse active jetpacks and do animations
             for (UUID uuid : Mekanism.playerState.getActiveJetpacks()) {
                 Player p = world.getPlayerByUUID(uuid);
@@ -241,9 +242,9 @@ public class RenderTickHandler {
                         xRot = 20;
                         playerPos = playerPos.translate(0, 0.125, 0);
                     } else {
-                        float f = p.getSwimAmount(minecraft.getPartialTick());
+                        float f = p.getSwimAmount(partialTicks);
                         if (p.isFallFlying()) {
-                            float f1 = (float) p.getFallFlyingTicks() + minecraft.getPartialTick();
+                            float f1 = (float) p.getFallFlyingTicks() + partialTicks;
                             float f2 = Mth.clamp(f1 * f1 / 100.0F, 0.0F, 1.0F);
                             xRot = f2 * (-90.0F - p.getXRot());
                         } else {
@@ -311,7 +312,7 @@ public class RenderTickHandler {
         boolean rightHanded = MekanismUtils.isRightArm(player, hand);
         if (minecraft.player == player && minecraft.options.getCameraType().isFirstPerson()) {
             flameVec = new Pos3D(1, 1, 1)
-                  .multiply(player.getViewVector(minecraft.getPartialTick()))
+                  .multiply(player.getViewVector(minecraft.getTimer().getGameTimeDeltaPartialTick(false)))
                   .yRot(rightHanded ? 15 : -15)
                   .translate(0, player.getEyeHeight() - 0.1, 0);
         } else {
@@ -365,7 +366,7 @@ public class RenderTickHandler {
                         Lazy<VertexConsumer> lineConsumer = Lazy.of(() -> renderer.getBuffer(RenderType.lines()));
                         for (Entry<BlockPos, BlockState> block : blocks.entrySet()) {
                             BlockPos blastingTarget = block.getKey();
-                            if (!pos.equals(blastingTarget) && !ClientHooks.onDrawHighlight(levelRenderer, info, rayTraceResult, event.getPartialTick(), matrix, renderer)) {
+                            if (!pos.equals(blastingTarget) && !ClientHooks.onDrawHighlight(levelRenderer, info, rayTraceResult, event.getDeltaTracker(), matrix, renderer)) {
                                 levelRenderer.renderHitOutline(matrix, lineConsumer.get(), player, renderView.x, renderView.y, renderView.z, blastingTarget, block.getValue());
                             }
                         }
@@ -404,7 +405,7 @@ public class RenderTickHandler {
                                 if (wireFrameRenderer.isCombined()) {
                                     renderQuadsWireFrame(actualState, buffer, matrix, world.random);
                                 }
-                                wireFrameRenderer.renderWireFrame(tile, event.getPartialTick(), matrix, buffer);
+                                wireFrameRenderer.renderWireFrame(tile, event.getDeltaTracker().getGameTimeDeltaPartialTick(false), matrix, buffer);
                                 matrix.popPose();
                                 shouldCancel = true;
                             }
@@ -490,10 +491,14 @@ public class RenderTickHandler {
             poseNormal.transform(line.nX(), line.nY(), line.nZ(), normal);
 
             pose.transform(line.x1(), line.y1(), line.z1(), 1F, pos);
-            buffer.vertex(pos.x, pos.y, pos.z).color(0, 0, 0, 102).normal(normal.x, normal.y, normal.z).endVertex();
+            buffer.addVertex(pos.x, pos.y, pos.z)
+                  .setColor(0, 0, 0, 102)
+                  .setNormal(normal.x, normal.y, normal.z);
 
             pose.transform(line.x2(), line.y2(), line.z2(), 1F, pos);
-            buffer.vertex(pos.x, pos.y, pos.z).color(0, 0, 0, 102).normal(normal.x, normal.y, normal.z).endVertex();
+            buffer.addVertex(pos.x, pos.y, pos.z)
+                  .setColor(0, 0, 0, 102)
+                  .setNormal(normal.x, normal.y, normal.z);
         }
     }
 

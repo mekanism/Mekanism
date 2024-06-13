@@ -11,7 +11,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
-import java.util.function.Function;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
@@ -104,7 +103,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
@@ -122,14 +120,13 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.pathfinder.PathType;
-import net.minecraft.world.level.portal.PortalInfo;
+import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.client.model.data.ModelProperty;
 import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.common.util.ITeleporter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -413,22 +410,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
             ServerLevel newWorld = ((ServerLevel) this.level()).getServer().getLevel(event.getTargetDimension());
             if (newWorld != null) {
                 Vec3 destination = event.getTarget();
-                changeDimension(newWorld, new ITeleporter() {
-                    @Override
-                    public Entity placeEntity(Entity entity, ServerLevel currentWorld, ServerLevel destWorld, float yaw, Function<Boolean, Entity> repositionEntity) {
-                        return repositionEntity.apply(false);
-                    }
-
-                    @Override
-                    public PortalInfo getPortalInfo(Entity entity, ServerLevel destWorld, Function<ServerLevel, PortalInfo> defaultPortalInfo) {
-                        return new PortalInfo(destination, Vec3.ZERO, entity.getYRot(), entity.getXRot());
-                    }
-
-                    @Override
-                    public boolean playTeleportSound(ServerPlayer player, ServerLevel sourceWorld, ServerLevel destWorld) {
-                        return false;
-                    }
-                });
+                changeDimension(new DimensionTransition(newWorld, destination, Vec3.ZERO, getYRot(), getXRot(), DimensionTransition.DO_NOTHING));
             }
         }
     }

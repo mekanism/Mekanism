@@ -11,6 +11,7 @@ import mekanism.api.gear.ModuleData;
 import mekanism.api.gear.ModuleData.ModuleDataBuilder;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.registration.MekanismDeferredRegister;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.enchantment.Enchantment;
 
 public class ModuleDeferredRegister extends MekanismDeferredRegister<ModuleData<?>> {
@@ -33,9 +34,9 @@ public class ModuleDeferredRegister extends MekanismDeferredRegister<ModuleData<
     }
 
     //Do not use this method if you have any config options
-    public ModuleRegistryObject<SimpleEnchantmentAwareModule> registerEnchantBased(String name, Supplier<Enchantment> enchantment, IItemProvider itemProvider,
+    public ModuleRegistryObject<SimpleEnchantmentAwareModule> registerEnchantBased(String name, ResourceKey<Enchantment> enchantment, IItemProvider itemProvider,
           UnaryOperator<ModuleDataBuilder<SimpleEnchantmentAwareModule>> builderModifier) {
-        return registerInstanced(name, () -> new SimpleEnchantmentAwareModule(enchantment.get()), itemProvider, builderModifier);
+        return registerInstanced(name, () -> new SimpleEnchantmentAwareModule(enchantment), itemProvider, builderModifier);
     }
 
     //Do not use this method if you have any config options
@@ -48,6 +49,6 @@ public class ModuleDeferredRegister extends MekanismDeferredRegister<ModuleData<
         return (ModuleRegistryObject<MODULE>) register(name, () -> new ModuleData<>(builder.get()));
     }
 
-    public record SimpleEnchantmentAwareModule(Enchantment enchantment) implements EnchantmentAwareModule<SimpleEnchantmentAwareModule> {
+    public record SimpleEnchantmentAwareModule(ResourceKey<Enchantment> enchantment) implements EnchantmentAwareModule<SimpleEnchantmentAwareModule> {
     }
 }

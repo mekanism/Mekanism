@@ -27,7 +27,7 @@ import org.jetbrains.annotations.Contract;
 @NothingNullByDefault
 public abstract class ItemStackToInfuseTypeRecipe extends ItemStackToChemicalRecipe<InfuseType, InfusionStack> {
 
-    private static final Holder<Item> METALLURGIC_INFUSER = DeferredHolder.create(Registries.ITEM, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "metallurgic_infuser"));
+    private static final Holder<Item> METALLURGIC_INFUSER = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "metallurgic_infuser"));
 
     @Override
     public abstract boolean test(ItemStack itemStack);

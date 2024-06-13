@@ -27,8 +27,8 @@ public class TransmitterModel implements IUnbakedGeometry<TransmitterModel> {
 
     @Override
     public BakedModel bake(IGeometryBakingContext owner, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
-          ItemOverrides overrides, ResourceLocation modelLocation) {
-        return new TransmitterBakedModel(internal, glass, owner, baker, spriteGetter, modelTransform, overrides, modelLocation);
+          ItemOverrides overrides) {
+        return new TransmitterBakedModel(internal, glass, owner, baker, spriteGetter, modelTransform, overrides);
     }
 
     @Override

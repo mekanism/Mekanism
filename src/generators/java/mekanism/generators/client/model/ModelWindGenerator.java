@@ -150,12 +150,12 @@ public class ModelWindGenerator extends MekanismJavaModel {
         setRotation(bladeCap, 0F, 0F, baseRotation);
         setRotation(bladeCenter, 0F, 0F, baseRotation);
 
-        renderToBuffer(matrix, getVertexConsumer(renderer, RENDER_TYPE, hasEffect), light, overlayLight, 1, 1, 1, 1);
+        renderToBuffer(matrix, getVertexConsumer(renderer, RENDER_TYPE, hasEffect), light, overlayLight, 0xFFFFFFFF);
     }
 
     @Override
-    public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int light, int overlayLight, float red, float green, float blue, float alpha) {
-        renderPartsToBuffer(parts, poseStack, vertexConsumer, light, overlayLight, red, green, blue, alpha);
+    public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int light, int overlayLight, int color) {
+        renderPartsToBuffer(parts, poseStack, vertexConsumer, light, overlayLight, color);
     }
 
     public void renderWireFrame(PoseStack matrix, VertexConsumer vertexBuilder, double angle) {

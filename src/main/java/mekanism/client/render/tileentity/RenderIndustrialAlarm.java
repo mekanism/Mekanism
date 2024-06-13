@@ -60,7 +60,7 @@ public class RenderIndustrialAlarm extends ModelTileEntityRenderer<TileEntityInd
                         poseStack.mulPose(Axis.ZP.rotationDegrees(90));
                     }
                 }
-                model.render(poseStack, buffer, LightTexture.FULL_BRIGHT, overlayLight, 1, 1, 1, 1, rot);
+                model.render(poseStack, buffer, LightTexture.FULL_BRIGHT, overlayLight, 0xFFFFFFFF, rot);
                 poseStack.popPose();
             }
 

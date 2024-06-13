@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class BabyEndermanEyesLayer extends EyesLayer<EntityBabyEnderman, ModelBabyEnderman> {
 
-    private static final RenderType RENDER_TYPE = RenderType.eyes(new ResourceLocation("textures/entity/enderman/enderman_eyes.png"));
+    private static final RenderType RENDER_TYPE = RenderType.eyes(ResourceLocation.withDefaultNamespace("textures/entity/enderman/enderman_eyes.png"));
 
     public BabyEndermanEyesLayer(RenderLayerParent<EntityBabyEnderman, ModelBabyEnderman> renderer) {
         super(renderer);

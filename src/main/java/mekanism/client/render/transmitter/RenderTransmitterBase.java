@@ -27,6 +27,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BlockModelRotation;
 import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
@@ -40,6 +41,8 @@ import org.joml.Vector3f;
 public abstract class RenderTransmitterBase<TRANSMITTER extends TileEntityTransmitter> extends MekanismTileEntityRenderer<TRANSMITTER> {
 
     public static final ResourceLocation MODEL_LOCATION = MekanismUtils.getResource(ResourceType.MODEL, "transmitter_contents.obj");
+    //TODO - 1.21: Test this
+    private static final ModelResourceLocation MODEL_VARIANT = ModelResourceLocation.standalone(MODEL_LOCATION);
     private static final IGeometryBakingContext contentsConfiguration = StandaloneGeometryBakingContext.builder()
           .withGui3d(false)
           .withUseBlockLight(false)
@@ -58,12 +61,12 @@ public abstract class RenderTransmitterBase<TRANSMITTER extends TileEntityTransm
         if (modelQuads == null) {
             ModelBaker baker = Minecraft.getInstance().getModelManager().getModelBakery().new ModelBakerImpl(
                   (modelLoc, material) -> material.sprite(),
-                  MODEL_LOCATION
+                  MODEL_VARIANT
             );
             //Note: We get model and then bake as we use different parameters and are caching after modifying
             List<BakedQuad> bakedQuads = MekanismModelCache.INSTANCE.TRANSMITTER_CONTENTS.getModel()
                   .bake(new VisibleModelConfiguration(contentsConfiguration, modelData.visible), baker, material -> modelData.icon,
-                        BlockModelRotation.X0_Y0, ItemOverrides.EMPTY, MODEL_LOCATION)
+                        BlockModelRotation.X0_Y0, ItemOverrides.EMPTY)
                   .getQuads(null, null, world.getRandom(), ModelData.EMPTY, null);
             List<Quad> unpackedQuads = QuadUtils.unpack(bakedQuads);
             for (Quad unpackedQuad : unpackedQuads) {

@@ -89,13 +89,12 @@ public class ModelArmoredFreeRunners extends ModelFreeRunners {
     }
 
     @Override
-    protected void renderLeg(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int light, int overlayLight, float red, float green, float blue,
-          float alpha, boolean left) {
-        super.renderLeg(poseStack, vertexConsumer, light, overlayLight, red, green, blue, alpha, left);
+    protected void renderLeg(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int light, int overlayLight, int color, boolean left) {
+        super.renderLeg(poseStack, vertexConsumer, light, overlayLight, color, left);
         if (left) {
-            renderPartsToBuffer(litLeftParts, poseStack, vertexConsumer, LightTexture.FULL_BRIGHT, overlayLight, red, green, blue, alpha);
+            renderPartsToBuffer(litLeftParts, poseStack, vertexConsumer, LightTexture.FULL_BRIGHT, overlayLight, color);
         } else {
-            renderPartsToBuffer(litRightParts, poseStack, vertexConsumer, LightTexture.FULL_BRIGHT, overlayLight, red, green, blue, alpha);
+            renderPartsToBuffer(litRightParts, poseStack, vertexConsumer, LightTexture.FULL_BRIGHT, overlayLight, color);
         }
     }
 }

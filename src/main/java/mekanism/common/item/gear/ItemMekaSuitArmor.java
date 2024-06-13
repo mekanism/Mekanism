@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.function.Consumer;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
@@ -27,6 +26,7 @@ import mekanism.client.key.MekKeyHandler;
 import mekanism.client.key.MekanismKeyHandler;
 import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.CommonPlayerTickHandler;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.attachments.IAttachmentAware;
 import mekanism.common.attachments.containers.ContainerType;
@@ -49,7 +49,6 @@ import mekanism.common.content.gear.mekasuit.ModuleElytraUnit;
 import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
 import mekanism.common.item.interfaces.IJetpackItem;
 import mekanism.common.lib.attribute.AttributeCache;
-import mekanism.common.lib.attribute.IAttributeRefresher;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.registries.MekanismArmorMaterials;
 import mekanism.common.registries.MekanismDataMapTypes;
@@ -75,7 +74,6 @@ import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.player.Inventory;
@@ -98,12 +96,10 @@ import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContainerItem, IJetpackItem, IAttributeRefresher, ICustomCreativeTabContents,
-      IAttachmentAware {
+public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContainerItem, IJetpackItem, ICustomCreativeTabContents, IAttachmentAware {
 
-    private static final AttributeModifier CREATIVE_FLIGHT_MODIFIER = new AttributeModifier(UUID.fromString("018e6622-7fc7-7334-af44-9f13564edb84"), "mekasuit_gravitational_modulation", 1D, Operation.ADD_VALUE);
+    private static final AttributeModifier CREATIVE_FLIGHT_MODIFIER = new AttributeModifier(Mekanism.rl("mekasuit_gravitational_modulation"), 1D, Operation.ADD_VALUE);
 
-    private final AttributeCache attributeCache;
     private final AttributeCache attributeCacheWithFlight;
     //TODO: Expand this system so that modules can maybe define needed tanks?
     private final List<ChemicalTankSpec<Gas>> gasTankSpecs = new ArrayList<>();
@@ -154,14 +150,8 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
             }
             default -> throw new IllegalArgumentException("Unknown Equipment Slot Type");
         }
-        this.attributeCache = new AttributeCache(this, armorConfig, MekanismConfig.gear.mekaSuitToughness, MekanismConfig.gear.mekaSuitKnockbackResistance);
         this.attributeCacheWithFlight = new AttributeCache(builder -> {
-            this.addToBuilder(builder);
-            builder.add(new ItemAttributeModifiers.Entry(
-                  NeoForgeMod.CREATIVE_FLIGHT,
-                  CREATIVE_FLIGHT_MODIFIER,
-                  EquipmentSlotGroup.CHEST
-            ));
+            builder.add(new ItemAttributeModifiers.Entry(NeoForgeMod.CREATIVE_FLIGHT, CREATIVE_FLIGHT_MODIFIER, EquipmentSlotGroup.CHEST));
         }, armorConfig, MekanismConfig.gear.mekaSuitToughness, MekanismConfig.gear.mekaSuitKnockbackResistance);
     }
 
@@ -171,7 +161,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     @Override
-    public <T extends LivingEntity> int damageItem(ItemStack stack, int amount, T entity, Runnable onBroken) {
+    public <T extends LivingEntity> int damageItem(@NotNull ItemStack stack, int amount, T entity, @NotNull Consumer<Item> onBroken) {
         // safety check
         return 0;
     }
@@ -234,7 +224,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     @Override
-    public int getEnchantmentLevel(ItemStack stack, Enchantment enchantment) {
+    public int getEnchantmentLevel(ItemStack stack, Holder<Enchantment> enchantment) {
         //Enchantments in our data
         IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainer(stack);
         int moduleLevel = container == null ? 0 : container.getModuleEnchantmentLevel(enchantment);
@@ -251,7 +241,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
             if (!moduleEnchantments.isEmpty()) {
                 ItemEnchantments.Mutable mutable = new ItemEnchantments.Mutable(enchantments);
                 for (Object2IntMap.Entry<Holder<Enchantment>> entry : moduleEnchantments.entrySet()) {
-                    mutable.upgrade(entry.getKey().value(), entry.getIntValue());
+                    mutable.upgrade(entry.getKey(), entry.getIntValue());
                 }
                 return mutable.toImmutable();
             }
@@ -427,28 +417,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         if (getEquipmentSlot() == EquipmentSlot.CHEST && CommonPlayerTickHandler.isGravitationalModulationReady(stack)) {
             return attributeCacheWithFlight.get();
         }
-        return attributeCache.get();
-    }
-
-    @Override
-    public void addToBuilder(List<ItemAttributeModifiers.Entry> builder) {
-        UUID modifier = ARMOR_MODIFIER_UUID_PER_TYPE.get(getType());
-        EquipmentSlotGroup group = EquipmentSlotGroup.bySlot(getEquipmentSlot());
-        builder.add(new ItemAttributeModifiers.Entry(
-              Attributes.ARMOR,
-              new AttributeModifier(modifier, "Armor modifier", getDefense(), Operation.ADD_VALUE),
-              group
-        ));
-        builder.add(new ItemAttributeModifiers.Entry(
-              Attributes.ARMOR_TOUGHNESS,
-              new AttributeModifier(modifier, "Armor toughness", getToughness(), Operation.ADD_VALUE),
-              group
-        ));
-        builder.add(new ItemAttributeModifiers.Entry(
-              Attributes.KNOCKBACK_RESISTANCE,
-              new AttributeModifier(modifier, "Armor knockback resistance", getMaterial().value().knockbackResistance(), Operation.ADD_VALUE),
-              group
-        ));
+        return super.getAttributeModifiers(stack);
     }
 
     @Override

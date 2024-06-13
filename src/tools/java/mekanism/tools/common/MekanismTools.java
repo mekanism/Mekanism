@@ -47,7 +47,7 @@ public class MekanismTools implements IModModule {
     }
 
     public static ResourceLocation rl(String path) {
-        return new ResourceLocation(MekanismTools.MODID, path);
+        return ResourceLocation.fromNamespaceAndPath(MekanismTools.MODID, path);
     }
 
     private void onConfigLoad(ModConfigEvent configEvent) {

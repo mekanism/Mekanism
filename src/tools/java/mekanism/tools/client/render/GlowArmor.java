@@ -23,10 +23,10 @@ public class GlowArmor extends Model {
     }
 
     @Override
-    public void renderToBuffer(@NotNull PoseStack matrix, @NotNull VertexConsumer vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
+    public void renderToBuffer(@NotNull PoseStack matrix, @NotNull VertexConsumer vertexBuilder, int light, int overlayLight, int color) {
         if (base != null) {
             //Make it render at full brightness
-            base.renderToBuffer(matrix, vertexBuilder, LightTexture.FULL_BRIGHT, overlayLight, red, green, blue, alpha);
+            base.renderToBuffer(matrix, vertexBuilder, LightTexture.FULL_BRIGHT, overlayLight, color);
         }
     }
 }

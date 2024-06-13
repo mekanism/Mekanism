@@ -12,6 +12,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.curios.CuriosIntegration;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.tags.MekanismTags;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -50,7 +51,7 @@ public class MekanismHUD implements LayeredDraw.Layer {
     }
 
     @Override
-    public void render(@NotNull GuiGraphics graphics, float partialTicks) {
+    public void render(@NotNull GuiGraphics graphics, @NotNull DeltaTracker delta) {
         Minecraft minecraft = Minecraft.getInstance();
         Player player = minecraft.player;
         if (player != null && !player.isSpectator() && MekanismConfig.client.enableHUD.get()) {
@@ -122,7 +123,7 @@ public class MekanismHUD implements LayeredDraw.Layer {
             }
 
             if (player.getItemBySlot(EquipmentSlot.HEAD).is(MekanismTags.Items.MEKASUIT_HUD_RENDERER)) {
-                hudRenderer.renderHUD(minecraft, graphics, font, partialTicks, graphics.guiWidth(), graphics.guiHeight(), maxTextHeight, reverseHud);
+                hudRenderer.renderHUD(minecraft, graphics, font, delta, graphics.guiWidth(), graphics.guiHeight(), maxTextHeight, reverseHud);
             }
         }
     }

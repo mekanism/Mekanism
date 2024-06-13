@@ -132,9 +132,8 @@ public class BoltRenderer {
             for (int i = bounds.start(); i < bounds.end(); i++) {
                 for (Vec3 v : renderQuads.get(i).getVecs()) {
                     Vec3 shiftedVertex = cameraPos == null ? v : v.subtract(cameraPos);
-                    buffer.vertex(matrix, (float) shiftedVertex.x, (float) shiftedVertex.y, (float) shiftedVertex.z)
-                          .color(bolt.getColor().r(), bolt.getColor().g(), bolt.getColor().b(), bolt.getColor().a())
-                          .endVertex();
+                    buffer.addVertex(matrix, (float) shiftedVertex.x, (float) shiftedVertex.y, (float) shiftedVertex.z)
+                          .setColor(bolt.getColor().r(), bolt.getColor().g(), bolt.getColor().b(), bolt.getColor().a());
                 }
             }
         }

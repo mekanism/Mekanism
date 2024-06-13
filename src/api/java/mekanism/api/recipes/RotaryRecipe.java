@@ -31,7 +31,7 @@ import org.jetbrains.annotations.Contract;
 @NothingNullByDefault
 public abstract class RotaryRecipe extends MekanismRecipe {
 
-    private static final Holder<Item> ROTARY_CONDENSENTRATOR = DeferredHolder.create(Registries.ITEM, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "rotary_condensentrator"));
+    private static final Holder<Item> ROTARY_CONDENSENTRATOR = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "rotary_condensentrator"));
 
     /**
      * @return {@code true} if this recipe knows how to convert a gas to a fluid.

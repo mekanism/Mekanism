@@ -259,7 +259,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
         }
         CrTExampleBuilder<?> exampleBuilder = new CrTExampleBuilder<>(this, fileName);
         examples.put(fileName, exampleBuilder);
-        existingFileHelper.trackGenerated(new ResourceLocation(modid, fileName), PackType.SERVER_DATA, ".zs", "scripts");
+        existingFileHelper.trackGenerated(ResourceLocation.fromNamespaceAndPath(modid, fileName), PackType.SERVER_DATA, ".zs", "scripts");
         return exampleBuilder;
     }
 
@@ -271,7 +271,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
         PathProvider pathProvider = output.createPathProvider(Target.DATA_PACK, "scripts");
         List<CompletableFuture<?>> list = new ArrayList<>(examples.size());
         for (Entry<String, CrTExampleBuilder<?>> entry : examples.entrySet()) {
-            Path path = pathProvider.file(new ResourceLocation(modid, entry.getKey()), "zs");
+            Path path = pathProvider.file(ResourceLocation.fromNamespaceAndPath(modid, entry.getKey()), "zs");
             list.add(MekanismDataGenerator.save(cache, stream -> stream.write(entry.getValue().build().getBytes(StandardCharsets.UTF_8)), path));
         }
         return CompletableFuture.allOf(list.toArray(new CompletableFuture[0]));

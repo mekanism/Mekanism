@@ -49,7 +49,7 @@ public class MekanismDefense implements IModModule {
     }
 
     public static ResourceLocation rl(String path) {
-        return new ResourceLocation(MekanismDefense.MODID, path);
+        return ResourceLocation.fromNamespaceAndPath(MekanismDefense.MODID, path);
     }
 
     public void commonSetup(FMLCommonSetupEvent event) {

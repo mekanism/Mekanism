@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Vector3f;
 
 public interface QuadTransformation {
 
@@ -43,11 +44,11 @@ public interface QuadTransformation {
         return new AmbientShadeTransformation(ambientOcclusion, shade);
     }
 
-    static QuadTransformation translate(double xTranslation, double yTranslation, double zTranslation) {
-        return translate(new Vec3(xTranslation, yTranslation, zTranslation));
+    static QuadTransformation translate(float xTranslation, float yTranslation, float zTranslation) {
+        return translate(new Vector3f(xTranslation, yTranslation, zTranslation));
     }
 
-    static QuadTransformation translate(Vec3 translation) {
+    static QuadTransformation translate(Vector3f translation) {
         return new TranslationTransformation(translation);
     }
 
@@ -248,7 +249,7 @@ public interface QuadTransformation {
         @Override
         public boolean transform(Quad quad) {
             for (Vertex v : quad.getVertices()) {
-                v.pos(round(quaternion.rotate(v.getPos().subtract(0.5, 0.5, 0.5)).add(0.5, 0.5, 0.5)));
+                v.pos(round(quaternion.rotate(v.getPosD().subtract(0.5, 0.5, 0.5)).add(0.5, 0.5, 0.5)));
                 v.normal(round(quaternion.rotate(v.getNormalD()).normalize()));
             }
             return true;
@@ -274,16 +275,16 @@ public interface QuadTransformation {
 
     class TranslationTransformation implements QuadTransformation {
 
-        private final Vec3 translation;
+        private final Vector3f translation;
 
-        protected TranslationTransformation(Vec3 translation) {
+        protected TranslationTransformation(Vector3f translation) {
             this.translation = translation;
         }
 
         @Override
         public boolean transform(Quad quad) {
             for (Vertex v : quad.getVertices()) {
-                v.pos(v.getPos().add(translation));
+                v.getPos().add(translation);
             }
             return true;
         }

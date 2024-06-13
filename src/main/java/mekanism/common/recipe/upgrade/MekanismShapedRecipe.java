@@ -10,8 +10,8 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.recipe.WrappedShapedRecipe;
 import mekanism.common.registries.MekanismRecipeSerializersInternal;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 
@@ -28,14 +28,14 @@ public class MekanismShapedRecipe extends WrappedShapedRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer inv, HolderLookup.Provider provider) {
+    public ItemStack assemble(CraftingInput inv, HolderLookup.Provider provider) {
         ItemStack resultItem = getResultItem(provider);
         if (resultItem.isEmpty()) {
             return ItemStack.EMPTY;
         }
         ItemStack toReturn = resultItem.copy();
         List<ItemStack> componentInputs = new ArrayList<>();
-        for (int i = 0; i < inv.getContainerSize(); i++) {
+        for (int i = 0; i < inv.size(); i++) {
             ItemStack stack = inv.getItem(i);
             if (!stack.isEmpty() && !stack.isComponentsPatchEmpty()) {
                 componentInputs.add(stack);

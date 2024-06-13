@@ -19,7 +19,7 @@ public class GasBuilder extends ChemicalBuilder<Gas, GasBuilder> {
      * @return A builder for creating a {@link Gas}.
      */
     public static GasBuilder builder() {
-        return builder(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "liquid/liquid"));
+        return builder(ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "liquid/liquid"));
     }
 
     /**

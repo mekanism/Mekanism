@@ -84,7 +84,7 @@ public class ModelTurbine extends MekanismJavaModel {
     public void render(@NotNull PoseStack matrix, VertexConsumer buffer, int light, int overlayLight, int index) {
         matrix.pushPose();
         matrix.mulPose(Axis.YP.rotationDegrees(index * 5));
-        renderToBuffer(matrix, buffer, light, overlayLight, 1, 1, 1, 1);
+        renderToBuffer(matrix, buffer, light, overlayLight, 0xFFFFFFFF);
         float scale = index * 0.5F;
         float adjustedScale = scale / 16;
         renderBlade(matrix, buffer, light, overlayLight, bladeWest, scale, adjustedScale, -0.25, 0);
@@ -95,9 +95,8 @@ public class ModelTurbine extends MekanismJavaModel {
     }
 
     @Override
-    public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int light, int overlayLight, float red, float green, float blue,
-          float alpha) {
-        renderPartsToBuffer(parts, poseStack, vertexConsumer, light, overlayLight, red, green, blue, alpha);
+    public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int light, int overlayLight, int color) {
+        renderPartsToBuffer(parts, poseStack, vertexConsumer, light, overlayLight, color);
     }
 
     private void renderBlade(@NotNull PoseStack matrix, @NotNull VertexConsumer vertexBuilder, int light, int overlayLight, ModelPart blade, float scaleX,
@@ -106,7 +105,7 @@ public class ModelTurbine extends MekanismJavaModel {
         matrix.translate(transX, 0, transZ);
         matrix.scale(1 + scaleX, 1, 1 + scaleZ);
         matrix.translate(-transX, 0, -transZ);
-        blade.render(matrix, vertexBuilder, light, overlayLight, 1, 1, 1, 1);
+        blade.render(matrix, vertexBuilder, light, overlayLight, 0xFFFFFFFF);
         matrix.popPose();
     }
 }

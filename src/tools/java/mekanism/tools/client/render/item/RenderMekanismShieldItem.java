@@ -62,11 +62,11 @@ public class RenderMekanismShieldItem extends MekanismISTER {
         BannerPatternLayers bannerPattern = stack.getOrDefault(DataComponents.BANNER_PATTERNS, BannerPatternLayers.EMPTY);
         DyeColor color = stack.get(DataComponents.BASE_COLOR);
         if (!bannerPattern.layers().isEmpty() || color != null) {
-            shieldModel.handle().render(matrix, buffer, light, overlayLight, 1, 1, 1, 1);
+            shieldModel.handle().render(matrix, buffer, light, overlayLight, 0xFFFFFFFF);
             BannerRenderer.renderPatterns(matrix, renderer, light, overlayLight, shieldModel.plate(), material, false,
                   Objects.requireNonNullElse(color, DyeColor.WHITE), bannerPattern, stack.hasFoil());
         } else {
-            shieldModel.renderToBuffer(matrix, buffer, light, overlayLight, 1, 1, 1, 1);
+            shieldModel.renderToBuffer(matrix, buffer, light, overlayLight, 0xFFFFFFFF);
         }
         matrix.popPose();
     }

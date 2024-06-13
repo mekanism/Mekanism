@@ -163,7 +163,7 @@ public class MekanismTags {
         public static final TagKey<Item> COLORABLE_BANNERS = tag("colorable/banners");
 
         private static TagKey<Item> commonTag(String name) {
-            return ItemTags.create(new ResourceLocation("c", name));
+            return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", name));
         }
 
         private static TagKey<Item> tag(String name) {
@@ -217,7 +217,7 @@ public class MekanismTags {
         public static final TagKey<Block> STORAGE_BLOCKS_FLUORITE = commonTag("storage_blocks/fluorite");
 
         private static TagKey<Block> commonTag(String name) {
-            return BlockTags.create(new ResourceLocation("c", name));
+            return BlockTags.create(ResourceLocation.fromNamespaceAndPath("c", name));
         }
 
         private static TagKey<Block> tag(String name) {
@@ -275,7 +275,7 @@ public class MekanismTags {
         public static final TagKey<Fluid> NUTRITIONAL_PASTE = commonTag("nutritional_paste");
 
         private static TagKey<Fluid> commonTag(String name) {
-            return FluidTags.create(new ResourceLocation("c", name));
+            return FluidTags.create(ResourceLocation.fromNamespaceAndPath("c", name));
         }
     }
 

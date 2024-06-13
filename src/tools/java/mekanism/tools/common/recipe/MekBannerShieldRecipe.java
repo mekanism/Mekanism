@@ -4,10 +4,10 @@ import mekanism.tools.common.item.ItemMekanismShield;
 import mekanism.tools.common.registries.ToolsRecipeSerializers;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.BannerItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
@@ -21,10 +21,10 @@ public class MekBannerShieldRecipe extends CustomRecipe {
     }
 
     @Override
-    public boolean matches(CraftingContainer inv, @NotNull Level world) {
+    public boolean matches(CraftingInput inv, @NotNull Level world) {
         ItemStack shieldStack = ItemStack.EMPTY;
         ItemStack bannerStack = ItemStack.EMPTY;
-        for (int i = 0; i < inv.getContainerSize(); ++i) {
+        for (int i = 0; i < inv.size(); ++i) {
             ItemStack stackInSlot = inv.getItem(i);
             if (!stackInSlot.isEmpty()) {
                 if (stackInSlot.getItem() instanceof BannerItem) {
@@ -49,10 +49,10 @@ public class MekBannerShieldRecipe extends CustomRecipe {
 
     @NotNull
     @Override
-    public ItemStack assemble(CraftingContainer inv, @NotNull HolderLookup.Provider provider) {
+    public ItemStack assemble(CraftingInput inv, @NotNull HolderLookup.Provider provider) {
         ItemStack bannerStack = ItemStack.EMPTY;
         ItemStack shieldStack = ItemStack.EMPTY;
-        for (int i = 0; i < inv.getContainerSize(); ++i) {
+        for (int i = 0; i < inv.size(); ++i) {
             ItemStack stackInSlot = inv.getItem(i);
             if (!stackInSlot.isEmpty()) {
                 if (stackInSlot.getItem() instanceof BannerItem) {

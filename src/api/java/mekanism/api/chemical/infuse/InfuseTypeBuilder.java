@@ -19,7 +19,7 @@ public class InfuseTypeBuilder extends ChemicalBuilder<InfuseType, InfuseTypeBui
      * @return A builder for creating an {@link InfuseType}.
      */
     public static InfuseTypeBuilder builder() {
-        return builder(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "infuse_type/base"));
+        return builder(ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "infuse_type/base"));
     }
 
     /**

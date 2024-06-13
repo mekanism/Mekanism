@@ -121,14 +121,14 @@ public class ModelJetpack extends MekanismJavaModel {
     }
 
     public void render(@NotNull PoseStack poseStack, @NotNull MultiBufferSource renderer, int light, int overlayLight, boolean hasEffect) {
-        renderToBuffer(poseStack, getVertexConsumer(renderer, frameRenderType, hasEffect), light, overlayLight, 1, 1, 1, 1);
-        renderPartsToBuffer(wingParts, poseStack, getVertexConsumer(renderer, wingRenderType, hasEffect), LightTexture.FULL_BRIGHT, overlayLight, 1, 1, 1, 0.2F);
+        renderToBuffer(poseStack, getVertexConsumer(renderer, frameRenderType, hasEffect), light, overlayLight, 0xFFFFFFFF);
+        renderPartsToBuffer(wingParts, poseStack, getVertexConsumer(renderer, wingRenderType, hasEffect), LightTexture.FULL_BRIGHT, overlayLight, 0x33FFFFFF);
     }
 
     @Override
-    public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int light, int overlayLight, float red, float green, float blue, float alpha) {
-        renderPartsToBuffer(parts, poseStack, vertexConsumer, light, overlayLight, red, green, blue, alpha);
-        renderPartsToBuffer(litParts, poseStack, vertexConsumer, LightTexture.FULL_BRIGHT, overlayLight, red, green, blue, alpha);
+    public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int light, int overlayLight, int color) {
+        renderPartsToBuffer(parts, poseStack, vertexConsumer, light, overlayLight, color);
+        renderPartsToBuffer(litParts, poseStack, vertexConsumer, LightTexture.FULL_BRIGHT, overlayLight, color);
     }
 
     protected static ModelPartData thrusterLeft(float fuelZ) {

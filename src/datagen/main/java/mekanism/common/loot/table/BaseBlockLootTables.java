@@ -28,12 +28,15 @@ import mekanism.common.util.RegistryUtils;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
@@ -68,9 +71,9 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
     //Note: We use an array set as we never expect this to have more than a few elements (in reality it only ever has one)
     private final Set<Block> toSkip = new ReferenceArraySet<>();
 
-    protected BaseBlockLootTables() {
+    protected BaseBlockLootTables(HolderLookup.Provider provider) {
         //Note: We manually handle explosion resistance on a case by case basis dynamically
-        super(Collections.emptySet(), FeatureFlags.VANILLA_SET);
+        super(Collections.emptySet(), FeatureFlags.VANILLA_SET, provider);
     }
 
     @Override
@@ -98,15 +101,17 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
     }
 
     protected LootTable.Builder createOreDrop(Block block, ItemLike item) {
+        HolderLookup.RegistryLookup<Enchantment> registrylookup = this.registries.lookupOrThrow(Registries.ENCHANTMENT);
         return createSilkTouchDispatchTable(block, applyExplosionDecay(block, LootItem.lootTableItem(item.asItem())
-              .apply(ApplyBonusCount.addOreBonusCount(Enchantments.FORTUNE))
+              .apply(ApplyBonusCount.addOreBonusCount(registrylookup.getOrThrow(Enchantments.FORTUNE)))
         ));
     }
 
     protected LootTable.Builder droppingWithFortuneOrRandomly(Block block, ItemLike item, UniformGenerator range) {
+        HolderLookup.RegistryLookup<Enchantment> registrylookup = this.registries.lookupOrThrow(Registries.ENCHANTMENT);
         return createSilkTouchDispatchTable(block, applyExplosionDecay(block, LootItem.lootTableItem(item.asItem())
               .apply(SetItemCountFunction.setCount(range))
-              .apply(ApplyBonusCount.addOreBonusCount(Enchantments.FORTUNE))
+              .apply(ApplyBonusCount.addOreBonusCount(registrylookup.getOrThrow(Enchantments.FORTUNE)))
         ));
     }
 
@@ -297,8 +302,9 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
      * Like vanilla's {@link BlockLootSubProvider#createSilkTouchDispatchTable(Block, LootPoolEntryContainer.Builder)} except with a named pool
      */
     @NotNull
-    protected static LootTable.Builder createSilkTouchDispatchTable(@NotNull Block block, @NotNull LootPoolEntryContainer.Builder<?> builder) {
-        return createSelfDropDispatchTable(block, HAS_SILK_TOUCH, builder);
+    @Override
+    protected LootTable.Builder createSilkTouchDispatchTable(@NotNull Block block, @NotNull LootPoolEntryContainer.Builder<?> builder) {
+        return createSelfDropDispatchTable(block, hasSilkTouch(), builder);
     }
 
     /**

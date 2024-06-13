@@ -8,6 +8,7 @@ import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.StorageUtils;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.LayeredDraw;
@@ -24,7 +25,7 @@ public class MekaSuitEnergyLevel implements LayeredDraw.Layer {
     }
 
     @Override
-    public void render(@NotNull GuiGraphics graphics, float partialTicks) {
+    public void render(@NotNull GuiGraphics graphics, @NotNull DeltaTracker delta) {
         Minecraft minecraft = Minecraft.getInstance();
         FloatingLong capacity = FloatingLong.ZERO, stored = FloatingLong.ZERO;
         for (ItemStack stack : minecraft.player.getArmorSlots()) {

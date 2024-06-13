@@ -15,6 +15,7 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
@@ -50,23 +51,22 @@ public class ModelIndustrialAlarm extends MekanismJavaModel {
     }
 
     @Override
-    public void renderToBuffer(@NotNull PoseStack matrix, @NotNull VertexConsumer vertexBuilder, int light, int overlayLight, float red, float green, float blue,
-          float alpha) {
-        render(matrix, vertexBuilder, LightTexture.FULL_BRIGHT, overlayLight, red, green, blue, alpha, 0);
+    public void renderToBuffer(@NotNull PoseStack matrix, @NotNull VertexConsumer vertexBuilder, int light, int overlayLight, int color) {
+        render(matrix, vertexBuilder, LightTexture.FULL_BRIGHT, overlayLight, color, 0);
     }
 
     public RenderType getRenderType() {
         return RENDER_TYPE;
     }
 
-    public void render(@NotNull PoseStack matrix, @NotNull VertexConsumer vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha,
-          float rotation) {
+    public void render(@NotNull PoseStack matrix, @NotNull VertexConsumer vertexBuilder, int light, int overlayLight, int color, float rotation) {
         float yRot = rotation * Mth.DEG_TO_RAD;
         setRotation(aura, 0, yRot, 0);
         setRotation(bulb, 0, yRot, 0);
         float bulbAlpha = 0.3F + (Math.abs(((rotation * 2) % 360) - 180F) / 180F) * 0.7F;
-        bulb.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, bulbAlpha);
-        lightBox.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        aura.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, bulbAlpha);
+        int bulbColor = FastColor.ARGB32.color(FastColor.as8BitChannel(bulbAlpha), color);
+        bulb.render(matrix, vertexBuilder, light, overlayLight, bulbColor);
+        lightBox.render(matrix, vertexBuilder, light, overlayLight, color);
+        aura.render(matrix, vertexBuilder, light, overlayLight, bulbColor);
     }
 }

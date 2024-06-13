@@ -10,21 +10,13 @@ public class EntityBabySkeleton extends Skeleton {
 
     public EntityBabySkeleton(EntityType<EntityBabySkeleton> type, Level world) {
         super(type, world);
+        this.xpReward = (int) (this.xpReward * 2.5);
         AdditionsEntityTypes.setupBabyModifiers(this);
     }
 
     @Override
     public boolean isBaby() {
         return true;
-    }
-
-    @Override
-    public int getExperienceReward() {
-        int oldXp = xpReward;
-        xpReward = (int) (xpReward * 2.5F);
-        int reward = super.getExperienceReward();
-        xpReward = oldXp;
-        return reward;
     }
 
     @Override

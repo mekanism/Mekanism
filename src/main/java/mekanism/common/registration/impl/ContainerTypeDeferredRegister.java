@@ -32,7 +32,7 @@ public class ContainerTypeDeferredRegister extends MekanismDeferredRegister<Menu
     }
 
     private <CONTAINER extends AbstractContainerMenu> ContainerTypeRegistryObject<CONTAINER> createHolder(String name) {
-        return new ContainerTypeRegistryObject<>(new ResourceLocation(getNamespace(), name));
+        return new ContainerTypeRegistryObject<>(ResourceLocation.fromNamespaceAndPath(getNamespace(), name));
     }
 
     public <TILE extends TileEntityMekanism> ContainerTypeRegistryObject<MekanismTileContainer<TILE>> register(INamedEntry nameProvider, Class<TILE> tileClass) {

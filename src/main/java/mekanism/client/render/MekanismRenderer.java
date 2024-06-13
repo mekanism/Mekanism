@@ -256,7 +256,7 @@ public class MekanismRenderer {
     }
 
     public static float getPartialTick() {
-        return Minecraft.getInstance().getFrameTime();
+        return Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false);
     }
 
     public static void rotate(PoseStack matrix, Direction facing, float north, float south, float west, float east) {

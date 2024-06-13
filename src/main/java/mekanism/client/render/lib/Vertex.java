@@ -15,7 +15,7 @@ public class Vertex {
 
     private final Map<VertexFormatElement, int[]> miscData;
 
-    private Vec3 pos;
+    private Vector3f pos;
     private Vector3f normal;
 
     //Store int representations of the colors so that we don't go between ints and doubles when unpacking and repacking a vertex
@@ -32,15 +32,15 @@ public class Vertex {
         this.miscData = new HashMap<>();
     }
 
-    public Vertex(Vec3 pos, Vector3f normal, Color color, float texU, float texV, int overlayU, int overlayV, int lightU, int lightV) {
+    public Vertex(Vector3f pos, Vector3f normal, Color color, float texU, float texV, int overlayU, int overlayV, int lightU, int lightV) {
         this(pos, normal, color.r(), color.g(), color.b(), color.a(), texU, texV, overlayU, overlayV, lightU, lightV);
     }
 
-    public Vertex(Vec3 pos, Vector3f normal, int red, int green, int blue, int alpha, float texU, float texV, int overlayU, int overlayV, int lightU, int lightV) {
+    public Vertex(Vector3f pos, Vector3f normal, int red, int green, int blue, int alpha, float texU, float texV, int overlayU, int overlayV, int lightU, int lightV) {
         this(pos, normal, red, green, blue, alpha, texU, texV, overlayU, overlayV, lightU, lightV, new HashMap<>());
     }
 
-    public Vertex(Vec3 pos, Vector3f normal, int red, int green, int blue, int alpha, float texU, float texV, int overlayU, int overlayV, int lightU, int lightV,
+    public Vertex(Vector3f pos, Vector3f normal, int red, int green, int blue, int alpha, float texU, float texV, int overlayU, int overlayV, int lightU, int lightV,
           Map<VertexFormatElement, int[]> miscData) {
         this.pos = pos;
         this.normal = normal;
@@ -57,25 +57,29 @@ public class Vertex {
         this.miscData = miscData;
     }
 
-    public static Vertex create(Vec3 pos, Vector3f normal, Color color, TextureAtlasSprite sprite, float texU, float texV, int overlayU, int overlayV, int lightU,
+    public static Vertex create(Vector3f pos, Vector3f normal, Color color, TextureAtlasSprite sprite, float texU, float texV, int overlayU, int overlayV, int lightU,
           int lightV) {
         return new Vertex(pos, normal, color, sprite.getU(texU), sprite.getV(texV), overlayU, overlayV, lightU, lightV);
     }
 
-    public static Vertex create(Vec3 pos, Vector3f normal, Color color, TextureAtlasSprite sprite, float texU, float texV, int lightU, int lightV) {
+    public static Vertex create(Vector3f pos, Vector3f normal, Color color, TextureAtlasSprite sprite, float texU, float texV, int lightU, int lightV) {
         return create(pos, normal, color, sprite, texU, texV, OverlayTexture.NO_WHITE_U, OverlayTexture.WHITE_OVERLAY_V, lightU, lightV);
     }
 
-    public static Vertex create(Vec3 pos, Vector3f normal, Color color, TextureAtlasSprite sprite, float u, float v) {
+    public static Vertex create(Vector3f pos, Vector3f normal, Color color, TextureAtlasSprite sprite, float u, float v) {
         return create(pos, normal, color, sprite, u, v, 0, 0);
     }
 
-    public static Vertex create(Vec3 pos, Vector3f normal, TextureAtlasSprite sprite, float u, float v) {
+    public static Vertex create(Vector3f pos, Vector3f normal, TextureAtlasSprite sprite, float u, float v) {
         return create(pos, normal, Color.WHITE, sprite, u, v);
     }
 
-    public Vec3 getPos() {
+    public Vector3f getPos() {
         return pos;
+    }
+
+    public Vec3 getPosD() {
+        return new Vec3(pos);
     }
 
     public Vector3f getNormal() {
@@ -122,9 +126,13 @@ public class Vertex {
         return this;
     }
 
-    public Vertex pos(Vec3 pos) {
+    public Vertex pos(Vector3f pos) {
         this.pos = pos;
         return this;
+    }
+
+    public Vertex pos(Vec3 pos) {
+        return pos(pos.toVector3f());
     }
 
     public Vertex normal(float x, float y, float z) {
@@ -188,15 +196,14 @@ public class Vertex {
     }
 
     public void write(VertexConsumer consumer) {
-        consumer.vertex(pos.x, pos.y, pos.z);
-        consumer.color(red, green, blue, alpha);
-        consumer.uv(texU, texV);
-        consumer.overlayCoords(overlayU, overlayV);
-        consumer.uv2(lightU, lightV);
-        consumer.normal(normal.x(), normal.y(), normal.z());
+        consumer.addVertex(pos.x, pos.y, pos.z);
+        consumer.setColor(red, green, blue, alpha);
+        consumer.setUv(texU, texV);
+        consumer.setUv1(overlayU, overlayV);
+        consumer.setUv2(lightU, lightV);
+        consumer.setNormal(normal.x(), normal.y(), normal.z());
         for (Map.Entry<VertexFormatElement, int[]> entry : miscData.entrySet()) {
             consumer.misc(entry.getKey(), entry.getValue());
         }
-        consumer.endVertex();
     }
 }

@@ -166,7 +166,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
     }
 
     @Override
-    public int getEnchantmentLevel(ItemStack stack, Enchantment enchantment) {
+    public int getEnchantmentLevel(ItemStack stack, Holder<Enchantment> enchantment) {
         //Enchantments in our data
         IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainer(stack);
         int moduleLevel = container == null ? 0 : container.getModuleEnchantmentLevel(enchantment);
@@ -183,7 +183,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
             if (!moduleEnchantments.isEmpty()) {
                 ItemEnchantments.Mutable mutable = new ItemEnchantments.Mutable(enchantments);
                 for (Object2IntMap.Entry<Holder<Enchantment>> entry : moduleEnchantments.entrySet()) {
-                    mutable.upgrade(entry.getKey().value(), entry.getIntValue());
+                    mutable.upgrade(entry.getKey(), entry.getIntValue());
                 }
                 return mutable.toImmutable();
             }
@@ -361,12 +361,12 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
                         ImmutableList.Builder<ItemAttributeModifiers.Entry> builder = ImmutableList.builder();
                         builder.add(new ItemAttributeModifiers.Entry(
                               Attributes.ATTACK_DAMAGE,
-                              new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", MekanismConfig.gear.mekaToolBaseDamage.get() + bonusDamage, Operation.ADD_VALUE),
+                              new AttributeModifier(BASE_ATTACK_DAMAGE_ID, MekanismConfig.gear.mekaToolBaseDamage.get() + bonusDamage, Operation.ADD_VALUE),
                               EquipmentSlotGroup.MAINHAND
                         ));
                         builder.add(new ItemAttributeModifiers.Entry(
                               Attributes.ATTACK_SPEED,
-                              new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", MekanismConfig.gear.mekaToolAttackSpeed.get(), Operation.ADD_VALUE),
+                              new AttributeModifier(BASE_ATTACK_SPEED_ID, MekanismConfig.gear.mekaToolAttackSpeed.get(), Operation.ADD_VALUE),
                               EquipmentSlotGroup.MAINHAND
                         ));
                         return new ItemAttributeModifiers(builder.build(), true);
@@ -380,12 +380,12 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
         return attributeCaches.computeIfAbsent(unitDamage, damage -> new AttributeCache(builder -> {
             builder.add(new ItemAttributeModifiers.Entry(
                   Attributes.ATTACK_DAMAGE,
-                  new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", MekanismConfig.gear.mekaToolBaseDamage.get() + damage, Operation.ADD_VALUE),
+                  new AttributeModifier(BASE_ATTACK_DAMAGE_ID, MekanismConfig.gear.mekaToolBaseDamage.get() + damage, Operation.ADD_VALUE),
                   EquipmentSlotGroup.MAINHAND
             ));
             builder.add(new ItemAttributeModifiers.Entry(
                   Attributes.ATTACK_SPEED,
-                  new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", MekanismConfig.gear.mekaToolAttackSpeed.get(), Operation.ADD_VALUE),
+                  new AttributeModifier(BASE_ATTACK_SPEED_ID, MekanismConfig.gear.mekaToolAttackSpeed.get(), Operation.ADD_VALUE),
                   EquipmentSlotGroup.MAINHAND
             ));
         }, MekanismConfig.gear.mekaToolBaseDamage, MekanismConfig.gear.mekaToolAttackSpeed)).get();

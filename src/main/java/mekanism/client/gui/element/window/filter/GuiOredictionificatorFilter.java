@@ -96,7 +96,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilter<Oredictionificato
             filterSaveFailed(MekanismLang.OREDICTIONIFICATOR_FILTER_INVALID_PATH);
             return false;
         }
-        ResourceLocation filterLocation = new ResourceLocation(modid, newFilter);
+        ResourceLocation filterLocation = ResourceLocation.fromNamespaceAndPath(modid, newFilter);
         if (filter.hasFilter() && filter.filterMatches(filterLocation)) {
             filterSaveFailed(MekanismLang.TAG_FILTER_SAME_TAG);
         } else if (TileEntityOredictionificator.isValidTarget(filterLocation)) {

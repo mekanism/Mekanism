@@ -28,7 +28,7 @@ import org.jetbrains.annotations.NotNull;
 @NothingNullByDefault
 public abstract class NucleosynthesizingRecipe extends ItemStackGasToItemStackRecipe {
 
-    private static final Holder<Item> ANTIPROTONIC_NUCLEOSYNTHESIZER = DeferredHolder.create(Registries.ITEM, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "antiprotonic_nucleosynthesizer"));
+    private static final Holder<Item> ANTIPROTONIC_NUCLEOSYNTHESIZER = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "antiprotonic_nucleosynthesizer"));
 
     public NucleosynthesizingRecipe() {
         super(MekanismRecipeTypes.TYPE_NUCLEOSYNTHESIZING.value());

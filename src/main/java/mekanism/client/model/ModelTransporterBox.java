@@ -40,15 +40,15 @@ public class ModelTransporterBox extends MekanismJavaModel {
         box = BOX.getFromRoot(root);
     }
 
-    public void render(@NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, int light, int overlayLight, float x, float y, float z, EnumColor color) {
+    public void render(@NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, int overlayLight, float x, float y, float z, EnumColor color) {
         matrix.pushPose();
         matrix.translate(x, y, z);
-        renderToBuffer(matrix, renderer.getBuffer(RENDER_TYPE), LightTexture.FULL_BRIGHT, overlayLight, color.getColor(0), color.getColor(1), color.getColor(2), 1);
+        renderToBuffer(matrix, renderer.getBuffer(RENDER_TYPE), LightTexture.FULL_BRIGHT, overlayLight, color.getPackedColor());
         matrix.popPose();
     }
 
     @Override
-    public void renderToBuffer(@NotNull PoseStack matrix, @NotNull VertexConsumer vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
-        box.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+    public void renderToBuffer(@NotNull PoseStack matrix, @NotNull VertexConsumer vertexBuilder, int light, int overlayLight, int color) {
+        box.render(matrix, vertexBuilder, light, overlayLight, 0xFFFFFFFF);
     }
 }

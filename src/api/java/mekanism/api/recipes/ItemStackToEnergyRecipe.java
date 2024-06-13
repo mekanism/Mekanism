@@ -25,7 +25,7 @@ import org.jetbrains.annotations.NotNull;
 @NothingNullByDefault
 public abstract class ItemStackToEnergyRecipe extends MekanismRecipe implements Predicate<@NotNull ItemStack> {
 
-    private static final Holder<Item> ENERGY_TABLET = DeferredHolder.create(Registries.ITEM, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "energy_tablet"));
+    private static final Holder<Item> ENERGY_TABLET = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "energy_tablet"));
 
     @Override
     public abstract boolean test(ItemStack itemStack);

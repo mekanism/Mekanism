@@ -16,6 +16,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -45,8 +46,7 @@ public class RenderRobit extends MobRenderer<EntityRobit, RobitModelWrapper> {
         }
 
         @Override
-        public void renderToBuffer(@NotNull PoseStack matrix, @NotNull VertexConsumer builder, int light, int overlayLight, float red, float green, float blue,
-              float alpha) {
+        public void renderToBuffer(@NotNull PoseStack matrix, @NotNull VertexConsumer builder, int light, int overlayLight, int color) {
             if (robit == null) {
                 //Setup didn't happen right
                 return;
@@ -61,6 +61,10 @@ public class RenderRobit extends MobRenderer<EntityRobit, RobitModelWrapper> {
                 matrix.mulPose(Axis.XP.rotationDegrees(180));
                 matrix.translate(-0.5, -1.5, -0.5);
                 PoseStack.Pose last = matrix.last();
+                int red = FastColor.ARGB32.red(color);
+                int green = FastColor.ARGB32.green(color);
+                int blue = FastColor.ARGB32.blue(color);
+                int alpha = FastColor.ARGB32.alpha(color);
                 for (BakedQuad quad : model.getQuads(null, null, robit.level().random, robit.getModelData(), null)) {
                     builder.putBulkData(last, quad, red, green, blue, alpha, light, overlayLight, false);
                 }

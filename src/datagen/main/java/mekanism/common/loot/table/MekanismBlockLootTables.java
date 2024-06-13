@@ -5,10 +5,15 @@ import mekanism.common.registries.MekanismItems;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.resource.ore.OreType;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 
 public class MekanismBlockLootTables extends BaseBlockLootTables {
+
+    public MekanismBlockLootTables(HolderLookup.Provider provider) {
+        super(provider);
+    }
 
     @Override
     protected void generate() {

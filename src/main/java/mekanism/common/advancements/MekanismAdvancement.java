@@ -17,8 +17,8 @@ public record MekanismAdvancement(ResourceLocation name, String title, String de
     }
 
     public MekanismAdvancement {
-        title = Util.makeDescriptionId("advancements", new ResourceLocation(name.getNamespace(), title + ".title"));
-        description = Util.makeDescriptionId("advancements", new ResourceLocation(name.getNamespace(), description + ".description"));
+        title = Util.makeDescriptionId("advancements", name.withPath(title + ".title"));
+        description = Util.makeDescriptionId("advancements", name.withPath(description + ".description"));
     }
 
     public Component translateTitle() {

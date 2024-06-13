@@ -19,7 +19,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 @NothingNullByDefault
 public class BasicCentrifugingRecipe extends BasicGasToGasRecipe {
 
-    private static final Holder<Item> ISOTOPIC_CENTRIFUGE = DeferredHolder.create(Registries.ITEM, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "isotopic_centrifuge"));
+    private static final Holder<Item> ISOTOPIC_CENTRIFUGE = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "isotopic_centrifuge"));
 
     public BasicCentrifugingRecipe(GasStackIngredient input, GasStack output) {
         super(input, output, MekanismRecipeTypes.TYPE_CENTRIFUGING.value());

@@ -43,6 +43,7 @@ import mekanism.common.network.to_client.PacketLightningRender.LightningPreset;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -94,14 +95,14 @@ public record ModuleVeinMiningUnit(boolean extended, ExcavationRange excavationR
     public <MODE extends IRadialMode> boolean setMode(IModule<ModuleVeinMiningUnit> module, Player player, IModuleContainer moduleContainer, ItemStack stack, RadialData<MODE> radialData, MODE mode) {
         if (radialData == RADIAL_DATA && MekanismConfig.gear.mekaToolExtendedMining.get()) {
             if (extended == (mode != RADIAL_MODES.trueMode())) {
-                toggleExtended(module, moduleContainer, stack);
+                toggleExtended(module, moduleContainer, stack, player.level().registryAccess());
             }
         }
         return false;
     }
 
-    private void toggleExtended(IModule<ModuleVeinMiningUnit> module, IModuleContainer moduleContainer, ItemStack stack) {
-        moduleContainer.replaceModuleConfig(stack, module.getData(), module.<Boolean>getConfigOrThrow(EXTENDED_MODE).with(!extended));
+    private void toggleExtended(IModule<ModuleVeinMiningUnit> module, IModuleContainer moduleContainer, ItemStack stack, HolderLookup.Provider provider) {
+        moduleContainer.replaceModuleConfig(provider, stack, module.getData(), module.<Boolean>getConfigOrThrow(EXTENDED_MODE).with(!extended));
     }
 
     @Override
@@ -119,7 +120,7 @@ public record ModuleVeinMiningUnit(boolean extended, ExcavationRange excavationR
             if (displayChangeMessage) {
                 player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.MODULE_MODE_CHANGE.translate(MekanismLang.MODULE_EXTENDED_MODE, EnumColor.INDIGO, !extended)));
             }
-            toggleExtended(module, moduleContainer, stack);
+            toggleExtended(module, moduleContainer, stack, player.level().registryAccess());
         }
     }
 

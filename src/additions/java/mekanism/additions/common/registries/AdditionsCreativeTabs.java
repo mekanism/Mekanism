@@ -19,7 +19,7 @@ public class AdditionsCreativeTabs {
 
     public static final MekanismDeferredHolder<CreativeModeTab, CreativeModeTab> ADDITIONS = CREATIVE_TABS.registerMain(AdditionsLang.MEKANISM_ADDITIONS,
           AdditionsItems.BALLOONS.get(EnumColor.BRIGHT_GREEN), builder ->
-                builder.withBackgroundLocation(MekanismAdditions.rl("textures/gui/creative_tab.png"))
+                builder.backgroundTexture(MekanismAdditions.rl("textures/gui/creative_tab.png"))
                       .withSearchBar(65)//Allow our tabs to be searchable for convenience purposes
                       .withTabsBefore(MekanismCreativeTabs.MEKANISM.getKey())
                       .displayItems((displayParameters, output) -> {

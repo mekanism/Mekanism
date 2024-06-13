@@ -83,7 +83,7 @@ public record ModuleBlastingUnit(BlastRadius blastRadius) implements ICustomModu
         if (radialData == getRadialData(module)) {
             BlastRadius newMode = (BlastRadius) mode;
             if (blastRadius != newMode) {
-                moduleContainer.replaceModuleConfig(stack, module.getData(), module.<BlastRadius>getConfigOrThrow(BLAST_RADIUS).with(newMode));
+                moduleContainer.replaceModuleConfig(player.level().registryAccess(), stack, module.getData(), module.<BlastRadius>getConfigOrThrow(BLAST_RADIUS).with(newMode));
             }
         }
         return false;

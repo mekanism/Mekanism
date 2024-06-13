@@ -156,7 +156,7 @@ public class MekanismDatapackRegistryProvider extends BaseDatapackRegistryProvid
                           Mekanism.rl("allay2")
                     ),
                     Mekanism.rl("item/robit_allay"),
-                    new ResourceLocation("husbandry/allay_deliver_item_to_player")
+                    ResourceLocation.withDefaultNamespace("husbandry/allay_deliver_item_to_player")
               ));
               for (Map.Entry<RobitPrideSkinData, ResourceKey<RobitSkin>> entry : MekanismRobitSkins.PRIDE_SKINS.entrySet()) {
                   ResourceKey<RobitSkin> key = entry.getValue();

@@ -30,7 +30,7 @@ public class ItemNutritionalPasteBucket extends BucketItem implements ICapabilit
     }
 
     @Override
-    public int getUseDuration(@NotNull ItemStack stack) {
+    public int getUseDuration(@NotNull ItemStack stack, @NotNull LivingEntity entity) {
         return 32;
     }
 

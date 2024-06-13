@@ -5,8 +5,8 @@ import mekanism.api.math.MathUtils;
 import mekanism.common.recipe.WrappedShapedRecipe;
 import mekanism.tools.common.registries.ToolsRecipeSerializers;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 
@@ -23,7 +23,7 @@ public class PaxelRecipe extends WrappedShapedRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer inv, HolderLookup.Provider provider) {
+    public ItemStack assemble(CraftingInput inv, HolderLookup.Provider provider) {
         ItemStack resultItem = getResultItem(provider);
         if (resultItem.isEmpty()) {
             return ItemStack.EMPTY;
@@ -35,7 +35,7 @@ public class PaxelRecipe extends WrappedShapedRecipe {
         }
         int totalDurability = 0;
         int totalMaxDurability = 0;
-        for (int i = 0; i < inv.getContainerSize(); i++) {
+        for (int i = 0; i < inv.size(); i++) {
             ItemStack stack = inv.getItem(i);
             //Note: We check if the item for the stack is damageable rather than if the stack is damageable
             // so that if an item has the unbreakable flag on it, we still can take the percentage durability

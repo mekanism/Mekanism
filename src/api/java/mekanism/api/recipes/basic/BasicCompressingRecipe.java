@@ -17,7 +17,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 @NothingNullByDefault
 public class BasicCompressingRecipe extends BasicItemStackGasToItemStackRecipe {
 
-    private static final Holder<Item> OSMIUM_COMPRESSOR = DeferredHolder.create(Registries.ITEM, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "osmium_compressor"));
+    private static final Holder<Item> OSMIUM_COMPRESSOR = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "osmium_compressor"));
 
     public BasicCompressingRecipe(ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output) {
         super(itemInput, gasInput, output, MekanismRecipeTypes.TYPE_COMPRESSING.value());

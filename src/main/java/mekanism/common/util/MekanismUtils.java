@@ -62,12 +62,9 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.CraftingContainer;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -480,20 +477,47 @@ public final class MekanismUtils {
         return UnitDisplayUtils.getDisplayShort(tempKelvin, MekanismConfig.common.tempUnit.get(), shift);
     }
 
-    public static CraftingContainer getDummyCraftingInv() {
-        AbstractContainerMenu tempContainer = new AbstractContainerMenu(MenuType.CRAFTING, 1) {
-            @NotNull
-            @Override
-            public ItemStack quickMoveStack(@NotNull Player player, int slotID) {
-                return ItemStack.EMPTY;
+    /**
+     * Converts a list of slots into a simple crafting input.
+     *
+     * @param resize True to clamp the stacks to a size of one.
+     */
+    public static CraftingInput getCraftingInput(int width, int height, List<ItemStack> slots, boolean resize) {
+        if (width * height != slots.size()) {
+            throw new IllegalStateException("Expected there to be a slot for every index in a " + width + " by " + height + " grid.");
+        }
+        List<ItemStack> stacks = new ArrayList<>(slots.size());
+        for (ItemStack slot : slots) {
+            //Note: copyWithCount returns EMPTY if the stack is empty, so we can skip checking
+            if (resize) {
+                stacks.add(slot.copyWithCount(1));
+            } else {
+                stacks.add(slot.copy());
             }
+        }
+        return CraftingInput.of(width, height, stacks);
+    }
 
-            @Override
-            public boolean stillValid(@NotNull Player player) {
-                return false;
+    /**
+     * Converts a list of slots into a simple crafting input.
+     *
+     * @param resize True to clamp the stacks to a size of one.
+     */
+    public static CraftingInput getCraftingInputSlots(int width, int height, List<IInventorySlot> slots, boolean resize) {
+        if (width * height != slots.size()) {
+            throw new IllegalStateException("Expected there to be a slot for every index in a " + width + " by " + height + " grid.");
+        }
+        List<ItemStack> stacks = new ArrayList<>(slots.size());
+        for (IInventorySlot slot : slots) {
+            ItemStack stack = slot.getStack();
+            //Note: copyWithCount returns EMPTY if the stack is empty, so we can skip checking
+            if (resize) {
+                stacks.add(stack.copyWithCount(1));
+            } else {
+                stacks.add(stack.copy());
             }
-        };
-        return new TransientCraftingContainer(tempContainer, 3, 3);
+        }
+        return CraftingInput.of(width, height, stacks);
     }
 
     /**

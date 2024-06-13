@@ -59,11 +59,11 @@ import mekanism.common.registration.impl.RecipeTypeRegistryObject;
 import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
@@ -254,10 +254,11 @@ public class MekanismRecipeType<RECIPE extends MekanismRecipe, INPUT_CACHE exten
     /**
      * Helper for getting a recipe from a world's recipe manager.
      */
-    public static <C extends Container, RECIPE_TYPE extends Recipe<C>> Optional<RecipeHolder<RECIPE_TYPE>> getRecipeFor(RecipeType<RECIPE_TYPE> recipeType, C inventory, Level level) {
+    public static <I extends RecipeInput, RECIPE_TYPE extends Recipe<I>> Optional<RecipeHolder<RECIPE_TYPE>> getRecipeFor(RecipeType<RECIPE_TYPE> recipeType, I input,
+          Level level) {
         //Only allow looking up complete recipes or special recipes as we only use this method for vanilla recipe types
         // and special recipes return that they are not complete
-        return level.getRecipeManager().getRecipeFor(recipeType, inventory, level)
+        return level.getRecipeManager().getRecipeFor(recipeType, input, level)
               .filter(recipe -> recipe.value().isSpecial() || !recipe.value().isIncomplete());
     }
 

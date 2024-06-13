@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public class RenderBabyEnderman extends MobRenderer<EntityBabyEnderman, ModelBabyEnderman> {
 
-    private static final ResourceLocation ENDERMAN_TEXTURES = new ResourceLocation("textures/entity/enderman/enderman.png");
+    private static final ResourceLocation ENDERMAN_TEXTURES = ResourceLocation.withDefaultNamespace("textures/entity/enderman/enderman.png");
     private final RandomSource random = RandomSource.create();
 
     public RenderBabyEnderman(EntityRendererProvider.Context context) {

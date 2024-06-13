@@ -29,6 +29,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -199,7 +200,7 @@ public class EntityFlame extends Projectile implements IEntityWithComplexSpawn {
         ItemStack stack = item.getItem();
         if (!stack.isEmpty()) {//This probably should never be empty but validate it in case
             Level level = level();
-            Optional<RecipeHolder<SmeltingRecipe>> recipe = MekanismRecipeType.getRecipeFor(RecipeType.SMELTING, new SimpleContainer(stack), level);
+            Optional<RecipeHolder<SmeltingRecipe>> recipe = MekanismRecipeType.getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput(stack), level);
             if (recipe.isPresent()) {
                 ItemStack result = recipe.get().value().getResultItem(level.registryAccess());
                 item.setItem(result.copyWithCount(result.getCount() * stack.getCount()));
@@ -222,7 +223,7 @@ public class EntityFlame extends Projectile implements IEntityWithComplexSpawn {
         }
         Optional<RecipeHolder<SmeltingRecipe>> recipe;
         try {
-            recipe = MekanismRecipeType.getRecipeFor(RecipeType.SMELTING, new SimpleContainer(stack), level());
+            recipe = MekanismRecipeType.getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput(stack), level());
         } catch (Exception e) {
             return;
         }

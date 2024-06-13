@@ -103,7 +103,7 @@ public class ComputerHelpProvider implements DataProvider {
 
     @NotNull
     private <DATA> CompletableFuture<?> makeJson(CachedOutput output, HolderLookup.Provider lookupProvider, DATA helpData, Codec<DATA> codec, String path) {
-        return DataProvider.saveStable(output, lookupProvider, codec, helpData, this.pathProvider.json(new ResourceLocation(this.modid, path)));
+        return DataProvider.saveStable(output, lookupProvider, codec, helpData, this.pathProvider.json(ResourceLocation.fromNamespaceAndPath(this.modid, path)));
     }
 
     @NotNull
@@ -117,13 +117,13 @@ public class ComputerHelpProvider implements DataProvider {
                     YamlHelper.dump(writer, frontMatterNode, YAML_OPTIONS);
                     writer.write("---\n");
                 }
-            }, this.pathProvider.file(new ResourceLocation(this.modid, "jekyll"), "md")).join();
+            }, this.pathProvider.file(ResourceLocation.fromNamespaceAndPath(this.modid, "jekyll"), "md")).join();
         });
     }
 
     @NotNull
     private CompletableFuture<?> makeMethodsCsv(CachedOutput pOutput, Map<Class<?>, List<MethodHelpData>> helpData) {
-        return saveCSV(pOutput, this.pathProvider.file(new ResourceLocation(this.modid, "methods"), "csv"), METHOD_CSV_HEADERS, output -> {
+        return saveCSV(pOutput, this.pathProvider.file(ResourceLocation.fromNamespaceAndPath(this.modid, "methods"), "csv"), METHOD_CSV_HEADERS, output -> {
             //NB: list is used as the IOException will be captured in saveCSV
             List<Map.Entry<String, List<MethodHelpData>>> friendlyList = helpData.entrySet().stream()
                   .map(entry -> Map.entry(getFriendlyName(entry.getKey()), entry.getValue()))
@@ -149,7 +149,7 @@ public class ComputerHelpProvider implements DataProvider {
     @NotNull
     private CompletableFuture<?> makeEnumsCsv(CachedOutput pOutput, Map<Class<?>, List<String>> enumValues) {
         //gather the enums into a sorted map
-        return saveCSV(pOutput, this.pathProvider.file(new ResourceLocation(this.modid, "enums"), "csv"), ENUM_CSV_HEADERS, csvOutput -> {
+        return saveCSV(pOutput, this.pathProvider.file(ResourceLocation.fromNamespaceAndPath(this.modid, "enums"), "csv"), ENUM_CSV_HEADERS, csvOutput -> {
             for (Entry<Class<?>, List<String>> entry : enumValues.entrySet()) {
                 Class<?> clazz = entry.getKey();
                 List<String> values = entry.getValue();

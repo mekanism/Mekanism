@@ -17,7 +17,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 
 @NothingNullByDefault
-public record FormulaAttachment(List<ItemStack> inventory, boolean invalid) {
+public record FormulaAttachment(List<ItemStack> inventory, boolean invalid) {//TODO - 1.21: Do we want an empty variant of this?
 
     public static final Codec<FormulaAttachment> CODEC = RecordCodecBuilder.create(instance -> instance.group(
           ItemStack.OPTIONAL_CODEC.listOf(9, 9).fieldOf(SerializationConstants.ITEMS).forGetter(FormulaAttachment::inventory),
@@ -42,8 +42,8 @@ public record FormulaAttachment(List<ItemStack> inventory, boolean invalid) {
     }
 
     public static FormulaAttachment create(RecipeFormula formula) {
-        List<ItemStack> stacks = new ArrayList<>(formula.input.size());
-        for (ItemStack stack : formula.input) {
+        List<ItemStack> stacks = new ArrayList<>(formula.craftingInput.size());
+        for (ItemStack stack : formula.craftingInput.items()) {
             stacks.add(stack.copy());
         }
         return new FormulaAttachment(stacks, false);

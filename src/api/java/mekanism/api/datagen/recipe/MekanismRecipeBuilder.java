@@ -94,7 +94,7 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
                   .requirements(AdvancementRequirements.Strategy.OR);
             //If there is a way to "unlock" this recipe then add an advancement with the criteria
             this.criteria.forEach(advancementBuilder::addCriterion);
-            advancementHolder = advancementBuilder.build(new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath()));
+            advancementHolder = advancementBuilder.build(id.withPrefix("recipes/"));
         }
         recipeOutput.accept(id, asRecipe(), advancementHolder, conditions.toArray(new ICondition[0]));
     }

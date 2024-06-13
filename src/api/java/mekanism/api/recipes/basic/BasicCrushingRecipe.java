@@ -16,7 +16,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 @NothingNullByDefault
 public class BasicCrushingRecipe extends BasicItemStackToItemStackRecipe {
 
-    private static final Holder<Item> CRUSHER = DeferredHolder.create(Registries.ITEM, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "crusher"));
+    private static final Holder<Item> CRUSHER = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "crusher"));
 
     public BasicCrushingRecipe(ItemStackIngredient input, ItemStack output) {
         super(input, output, MekanismRecipeTypes.TYPE_CRUSHING.value());

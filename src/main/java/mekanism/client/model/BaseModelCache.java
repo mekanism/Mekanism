@@ -16,6 +16,7 @@ import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelManager;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -42,7 +43,7 @@ public class BaseModelCache {
     }
 
     private ResourceLocation rl(String path) {
-        return new ResourceLocation(modid, path);
+        return ResourceLocation.fromNamespaceAndPath(modid, path);
     }
 
     public void onBake(BakingCompleted evt) {
@@ -76,15 +77,17 @@ public class BaseModelCache {
     protected JSONModelData registerJSONAndBake(ResourceLocation rl) {
         ModelManager modelManager = Minecraft.getInstance().getModelManager();
         ModelBakery modelBakery = modelManager.getModelBakery();
+        //TODO - 1.21: Test this
+        ModelResourceLocation mrl = ModelResourceLocation.standalone(rl);
         ModelBaker baker = modelBakery.new ModelBakerImpl(
               (modelLoc, material) -> material.sprite(),
-              rl
+              mrl
         );
         //Register the model
         JSONModelData data = registerJSON(rl);
         //Manually run the JsonModelData#reload logic
         data.bakedModel = baker.bake(rl, BlockModelRotation.X0_Y0, Material::sprite);
-        if (modelBakery.getModel(rl) instanceof BlockModel blockModel) {
+        if (getUnbakedModel(modelBakery, mrl) instanceof BlockModel blockModel) {
             data.model = blockModel.customData.getCustomGeometry();
         }
         return data;
@@ -96,10 +99,18 @@ public class BaseModelCache {
         return data;
     }
 
-    public static BakedModel getBakedModel(BakingCompleted evt, ResourceLocation rl) {
+    private static UnbakedModel getUnbakedModel(ModelBakery modelBakery, ModelResourceLocation rl) {
+        UnbakedModel unbakedModel = modelBakery.topLevelModels.get(rl);
+        if (unbakedModel == null) {
+            return modelBakery.getModel(rl.id());
+        }
+        return unbakedModel;
+    }
+
+    public static BakedModel getBakedModel(BakingCompleted evt, ModelResourceLocation rl) {
         BakedModel bakedModel = evt.getModels().get(rl);
         if (bakedModel == null) {
-            Mekanism.logger.error("Baked model doesn't exist: {}", rl.toString());
+            Mekanism.logger.error("Baked model doesn't exist: {}", rl);
             return evt.getModelManager().getMissingModel();
         }
         return bakedModel;
@@ -110,10 +121,12 @@ public class BaseModelCache {
         protected IUnbakedGeometry<?> model;
 
         protected final ResourceLocation rl;
+        protected final ModelResourceLocation mrl;
         private final Map<IGeometryBakingContext, BakedModel> bakedMap = new Object2ObjectOpenHashMap<>();
 
         protected MekanismModelData(ResourceLocation rl) {
             this.rl = rl;
+            this.mrl = ModelResourceLocation.standalone(rl);
         }
 
         protected void reload(BakingCompleted evt) {
@@ -128,9 +141,9 @@ public class BaseModelCache {
             if (bakedModel == null) {
                 ModelBaker baker = Minecraft.getInstance().getModelManager().getModelBakery().new ModelBakerImpl(
                       (modelLoc, material) -> material.sprite(),
-                      rl
+                      mrl
                 );
-                bakedModel = model.bake(config, baker, Material::sprite, BlockModelRotation.X0_Y0, ItemOverrides.EMPTY, rl);
+                bakedModel = model.bake(config, baker, Material::sprite, BlockModelRotation.X0_Y0, ItemOverrides.EMPTY);
                 bakedMap.put(config, bakedModel);
             }
             return bakedModel;
@@ -174,16 +187,15 @@ public class BaseModelCache {
         @Override
         protected void reload(BakingCompleted evt) {
             super.reload(evt);
-            bakedModel = BaseModelCache.getBakedModel(evt, rl);
-            UnbakedModel unbaked = evt.getModelBakery().getModel(rl);
-            if (unbaked instanceof BlockModel blockModel) {
+            bakedModel = BaseModelCache.getBakedModel(evt, mrl);
+            if (BaseModelCache.getUnbakedModel(evt.getModelBakery(), mrl) instanceof BlockModel blockModel) {
                 model = blockModel.customData.getCustomGeometry();
             }
         }
 
         @Override
         protected void setup(RegisterAdditional event) {
-            event.register(rl);
+            event.register(mrl);
         }
 
         public List<BakedQuad> getQuads(RandomSource random) {

@@ -24,7 +24,7 @@ public final class DataMapTypeRegister {
     private final List<DataMapType<?, ?>> types = new ArrayList<>();
 
     public <R, T> DataMapType<R, T> register(String name, ResourceKey<Registry<R>> registryKey, Codec<T> codec, UnaryOperator<DataMapType.Builder<T, R>> builder) {
-        final DataMapType<R, T> type = builder.apply(DataMapType.builder(new ResourceLocation(namespace, name), registryKey, codec)).build();
+        final DataMapType<R, T> type = builder.apply(DataMapType.builder(ResourceLocation.fromNamespaceAndPath(namespace, name), registryKey, codec)).build();
         this.types.add(type);
         return type;
     }

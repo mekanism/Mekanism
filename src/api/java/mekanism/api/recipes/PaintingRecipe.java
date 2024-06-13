@@ -31,7 +31,7 @@ import org.jetbrains.annotations.NotNull;
 @NothingNullByDefault
 public abstract class PaintingRecipe extends ItemStackChemicalToItemStackRecipe<Pigment, PigmentStack, PigmentStackIngredient> {
 
-    private static final Holder<Item> PAINTING_MACHINE = DeferredHolder.create(Registries.ITEM, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "painting_machine"));
+    private static final Holder<Item> PAINTING_MACHINE = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "painting_machine"));
 
     @Override
     public abstract ItemStackIngredient getItemInput();

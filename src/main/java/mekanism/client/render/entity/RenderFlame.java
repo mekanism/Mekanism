@@ -46,12 +46,20 @@ public class RenderFlame extends EntityRenderer<EntityFlame> {
         VertexConsumer builder = renderer.getBuffer(MekanismRenderType.FLAME.apply(getTextureLocation(flame)));
         for (int j = 0; j < 4; j++) {
             matrix.mulPose(Axis.XP.rotationDegrees(90));
-            builder.normal(matrix.last(), 0, 0, scale);
+            builder.setNormal(matrix.last(), 0, 0, scale);
             Matrix4f matrix4f = matrix.last().pose();
-            builder.vertex(matrix4f, -8, -2, 0).color(0xFF, 0xFF, 0xFF, alphaColor).uv(0, 0).endVertex();
-            builder.vertex(matrix4f, 8, -2, 0).color(0xFF, 0xFF, 0xFF, alphaColor).uv(0.5F, 0).endVertex();
-            builder.vertex(matrix4f, 8, 2, 0).color(0xFF, 0xFF, 0xFF, alphaColor).uv(0.5F, f5).endVertex();
-            builder.vertex(matrix4f, -8, 2, 0).color(0xFF, 0xFF, 0xFF, alphaColor).uv(0, f5).endVertex();
+            builder.addVertex(matrix4f, -8, -2, 0)
+                  .setUv(0, 0)
+                  .setColor(0xFF, 0xFF, 0xFF, alphaColor);
+            builder.addVertex(matrix4f, 8, -2, 0)
+                  .setUv(0.5F, 0)
+                  .setColor(0xFF, 0xFF, 0xFF, alphaColor);
+            builder.addVertex(matrix4f, 8, 2, 0)
+                  .setUv(0.5F, f5)
+                  .setColor(0xFF, 0xFF, 0xFF, alphaColor);
+            builder.addVertex(matrix4f, -8, 2, 0)
+                  .setUv(0, f5)
+                  .setColor(0xFF, 0xFF, 0xFF, alphaColor);
         }
         matrix.popPose();
     }

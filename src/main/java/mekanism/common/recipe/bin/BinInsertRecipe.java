@@ -17,6 +17,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.ItemCraftedEvent;
@@ -30,11 +31,11 @@ public class BinInsertRecipe extends BinRecipe {
     }
 
     @Override
-    public boolean matches(CraftingContainer inv, Level world) {
+    public boolean matches(CraftingInput inv, Level world) {
         ItemStack binStack = ItemStack.EMPTY;
         ItemStack foundType = ItemStack.EMPTY;
         //Note: We don't use inv#getItems as that may do unnecessary copies depending on impl
-        for (int i = 0, slots = inv.getContainerSize(); i < slots; ++i) {
+        for (int i = 0, slots = inv.size(); i < slots; ++i) {
             ItemStack stackInSlot = inv.getItem(i);
             if (!stackInSlot.isEmpty()) {
                 if (stackInSlot.getItem() instanceof ItemBlockBin) {
@@ -63,12 +64,12 @@ public class BinInsertRecipe extends BinRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer inv, HolderLookup.Provider provider) {
+    public ItemStack assemble(CraftingInput inv, HolderLookup.Provider provider) {
         ItemStack binStack = ItemStack.EMPTY;
         ItemStack foundType = ItemStack.EMPTY;
         List<ItemStack> foundItems = new ArrayList<>();
         //Note: We don't use inv#getItems as that may do unnecessary copies depending on impl
-        for (int i = 0, slots = inv.getContainerSize(); i < slots; ++i) {
+        for (int i = 0, slots = inv.size(); i < slots; ++i) {
             ItemStack stackInSlot = inv.getItem(i);
             if (!stackInSlot.isEmpty()) {
                 if (stackInSlot.getItem() instanceof ItemBlockBin) {
@@ -120,8 +121,8 @@ public class BinInsertRecipe extends BinRecipe {
     }
 
     @Override
-    public NonNullList<ItemStack> getRemainingItems(CraftingContainer inv) {
-        int slots = inv.getContainerSize();
+    public NonNullList<ItemStack> getRemainingItems(CraftingInput inv) {
+        int slots = inv.size();
         NonNullList<ItemStack> remainingItems = NonNullList.withSize(slots, ItemStack.EMPTY);
         ItemStack binStack = ItemStack.EMPTY;
         ItemStack foundType = ItemStack.EMPTY;

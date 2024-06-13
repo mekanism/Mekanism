@@ -43,8 +43,8 @@ public class BlockPlasticTransparent extends BlockPlastic {
     }
 
     @Override
-    public float[] getBeaconColorMultiplier(@NotNull BlockState state, @NotNull LevelReader world, @NotNull BlockPos pos, @NotNull BlockPos beaconPos) {
-        return getColor().getRgbCodeFloat();
+    public Integer getBeaconColorMultiplier(@NotNull BlockState state, @NotNull LevelReader world, @NotNull BlockPos pos, @NotNull BlockPos beaconPos) {
+        return getColor().getPackedColor();
     }
 
     public static boolean isSideInvisible(@NotNull IColoredBlock block, @NotNull BlockState state, @NotNull BlockState adjacentBlockState, @NotNull Direction side) {

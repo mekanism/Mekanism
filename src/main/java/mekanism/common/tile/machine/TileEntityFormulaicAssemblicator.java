@@ -64,8 +64,8 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -79,8 +79,6 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     private static final NonNullList<ItemStack> EMPTY_LIST = NonNullList.create();
 
     private static final int BASE_TICKS_REQUIRED = 2 * SharedConstants.TICKS_PER_SECOND;
-
-    private final CraftingContainer dummyInv = MekanismUtils.getDummyCraftingInv();
 
     private int ticksRequired = BASE_TICKS_REQUIRED;
     private int operatingTicks;
@@ -314,18 +312,16 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                 }
             } else {
                 //Should always be 9 for the size
-                for (int i = 0; i < craftingGridSlots.size(); i++) {
-                    dummyInv.setItem(i, craftingGridSlots.get(i).getStack().copyWithCount(1));
-                }
+                CraftingInput craftingInput = MekanismUtils.getCraftingInputSlots(3, 3, craftingGridSlots, true);
                 lastRemainingItems = EMPTY_LIST;
-                if (cachedRecipe == null || !cachedRecipe.value().matches(dummyInv, level)) {
-                    cachedRecipe = MekanismRecipeType.getRecipeFor(RecipeType.CRAFTING, dummyInv, level).orElse(null);
+                if (cachedRecipe == null || !cachedRecipe.value().matches(craftingInput, level)) {
+                    cachedRecipe = MekanismRecipeType.getRecipeFor(RecipeType.CRAFTING, craftingInput, level).orElse(null);
                 }
                 if (cachedRecipe == null) {
                     lastOutputStack = ItemStack.EMPTY;
                 } else {
-                    lastOutputStack = cachedRecipe.value().assemble(dummyInv, level.registryAccess());
-                    lastRemainingItems = cachedRecipe.value().getRemainingItems(dummyInv);
+                    lastOutputStack = cachedRecipe.value().assemble(craftingInput, level.registryAccess());
+                    lastRemainingItems = cachedRecipe.value().getRemainingItems(craftingInput);
                 }
                 isRecipe = !lastOutputStack.isEmpty();
             }
@@ -743,14 +739,14 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         }));
         for (int i = 0; i < 9; i++) {
             int index = i;
-            container.track(SyncableItemStack.create(() -> formula == null ? ItemStack.EMPTY : formula.input.get(index), stack -> {
+            container.track(SyncableItemStack.create(() -> formula == null ? ItemStack.EMPTY : formula.getInputStack(index), stack -> {
                 if (!stack.isEmpty() && formula == null && isRemote()) {
                     //If we are on the client (which we should be when setting anyway) and we don't have a formula yet
                     // but should, then create an empty formula. Also make sure it isn't just us trying to clear the formula slot
                     formula = new RecipeFormula();
                 }
                 if (formula != null) {
-                    formula.setStack(getLevel(), index, stack);
+                    formula = formula.withStack(getLevel(), index, stack);
                 }
             }));
         }

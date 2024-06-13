@@ -133,13 +133,13 @@ public class ModelScubaMask extends MekanismJavaModel {
     }
 
     public void render(@NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, int light, int overlayLight, boolean hasEffect) {
-        renderToBuffer(matrix, getVertexConsumer(renderer, RENDER_TYPE, hasEffect), light, overlayLight, 1, 1, 1, 1);
-        renderPartsToBuffer(glass, matrix, getVertexConsumer(renderer, GLASS_RENDER_TYPE, hasEffect), LightTexture.FULL_BRIGHT, overlayLight, 1, 1, 1, 0.3F);
+        renderToBuffer(matrix, getVertexConsumer(renderer, RENDER_TYPE, hasEffect), light, overlayLight, 0xFFFFFFFF);
+        renderPartsToBuffer(glass, matrix, getVertexConsumer(renderer, GLASS_RENDER_TYPE, hasEffect), LightTexture.FULL_BRIGHT, overlayLight, 0x4CFFFFFF);
     }
 
     @Override
-    public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int light, int overlayLight, float red, float green, float blue, float alpha) {
-        renderPartsToBuffer(parts, poseStack, vertexConsumer, light, overlayLight, red, green, blue, alpha);
-        renderPartsToBuffer(litParts, poseStack, vertexConsumer, LightTexture.FULL_BRIGHT, overlayLight, red, green, blue, alpha);
+    public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int light, int overlayLight, int color) {
+        renderPartsToBuffer(parts, poseStack, vertexConsumer, light, overlayLight, color);
+        renderPartsToBuffer(litParts, poseStack, vertexConsumer, LightTexture.FULL_BRIGHT, overlayLight, color);
     }
 }

@@ -2,7 +2,6 @@ package mekanism.additions.common.registries;
 
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.entity.EntityBalloon;
 import mekanism.additions.common.entity.EntityObsidianTNT;
@@ -14,6 +13,7 @@ import mekanism.additions.common.entity.baby.EntityBabyWitherSkeleton;
 import mekanism.common.registration.MekanismDeferredHolder;
 import mekanism.common.registration.impl.EntityTypeDeferredRegister;
 import net.minecraft.SharedConstants;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityAttachment;
 import net.minecraft.world.entity.EntityDimensions;
@@ -36,8 +36,8 @@ public class AdditionsEntityTypes {
     private AdditionsEntityTypes() {
     }
 
-    //COPY of Zombie SPEED_MODIFIER_BABY_UUID and SPEED_MODIFIER_BABY
-    private static final AttributeModifier BABY_SPEED_BOOST_MODIFIER = new AttributeModifier(UUID.fromString("B9766B59-9566-4402-BC1F-2EE2A276D836"), "Baby speed boost", 0.5D, Operation.ADD_MULTIPLIED_BASE);
+    //COPY of Zombie SPEED_MODIFIER_BABY_ID and SPEED_MODIFIER_BABY
+    private static final AttributeModifier BABY_SPEED_BOOST_MODIFIER = new AttributeModifier(ResourceLocation.withDefaultNamespace("baby"), 0.5D, Operation.ADD_MULTIPLIED_BASE);
 
     public static final EntityTypeDeferredRegister ENTITY_TYPES = new EntityTypeDeferredRegister(MekanismAdditions.MODID);
 

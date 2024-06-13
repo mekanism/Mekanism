@@ -5,6 +5,7 @@ import mekanism.api.gear.EnchantmentAwareModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.common.config.MekanismConfig;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -23,7 +24,7 @@ public record ModuleHydrostaticRepulsorUnit(boolean swimBoost) implements Enchan
 
     @NotNull
     @Override
-    public Enchantment enchantment() {
+    public ResourceKey<Enchantment> enchantment() {
         return Enchantments.DEPTH_STRIDER;
     }
 

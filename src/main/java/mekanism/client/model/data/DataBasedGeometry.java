@@ -38,22 +38,22 @@ public class DataBasedGeometry implements IUnbakedGeometry<DataBasedGeometry> {
 
     //TODO - 1.20.4: Should/can we somehow override UnbakedModel#getDependencies??
     @Override
-    public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides, ResourceLocation modelLocation) {
+    public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides) {
         Objects.requireNonNull(unbakedModel, "Unbaked model should not be null");
         BakedModel bakedModel;
         if (unbakedModel instanceof BlockModel unbakedBlock) {
-            bakedModel = unbakedBlock.bake(baker, unbakedBlock, spriteGetter, modelState, modelLocation, context.useBlockLight());
+            bakedModel = unbakedBlock.bake(baker, unbakedBlock, spriteGetter, modelState, context.useBlockLight());
         } else {
-            bakedModel = unbakedModel.bake(baker, spriteGetter, modelState, modelLocation);
+            bakedModel = unbakedModel.bake(baker, spriteGetter, modelState);
         }
         Objects.requireNonNull(bakedModel, "Baked model should not be null");
         Map<ModelProperty<Void>, BakedModel> propertyBasedBakedModels = new HashMap<>(propertyBasedUnbakedModels.size());
         for (Map.Entry<ModelProperty<Void>, UnbakedModel> entry : propertyBasedUnbakedModels.entrySet()) {
             BakedModel baked;
             if (entry.getValue() instanceof BlockModel unbakedBlock) {
-                baked = unbakedBlock.bake(baker, unbakedBlock, spriteGetter, modelState, modelLocation, context.useBlockLight());
+                baked = unbakedBlock.bake(baker, unbakedBlock, spriteGetter, modelState, context.useBlockLight());
             } else {
-                baked = entry.getValue().bake(baker, spriteGetter, modelState, modelLocation);
+                baked = entry.getValue().bake(baker, spriteGetter, modelState);
             }
             Objects.requireNonNull(baked, "Baked model should not be null");
             propertyBasedBakedModels.put(entry.getKey(), baked);

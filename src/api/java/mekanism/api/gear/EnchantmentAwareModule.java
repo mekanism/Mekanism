@@ -1,6 +1,7 @@
 package mekanism.api.gear;
 
 import mekanism.api.annotations.NothingNullByDefault;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.enchantment.Enchantment;
 
 /**
@@ -20,7 +21,7 @@ public interface EnchantmentAwareModule<MODULE extends EnchantmentAwareModule<MO
      *
      * @return The enchantment that this module provides.
      */
-    Enchantment enchantment();
+    ResourceKey<Enchantment> enchantment();
 
     /**
      * Gets the target enchantment level for this module.

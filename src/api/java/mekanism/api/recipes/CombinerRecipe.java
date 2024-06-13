@@ -28,7 +28,7 @@ import org.jetbrains.annotations.NotNull;
 @NothingNullByDefault
 public abstract class CombinerRecipe extends MekanismRecipe implements BiPredicate<@NotNull ItemStack, @NotNull ItemStack> {
 
-    private static final Holder<Item> COMBINER = DeferredHolder.create(Registries.ITEM, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "combiner"));
+    private static final Holder<Item> COMBINER = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "combiner"));
 
     @Override
     public abstract boolean test(ItemStack input, ItemStack extra);

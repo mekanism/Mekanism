@@ -24,9 +24,9 @@ public class MekanismShaders {
 
     @SubscribeEvent
     public static void shaderRegistry(RegisterShadersEvent event) throws IOException {
-        registerShader(event, Mekanism.rl("rendertype_flame"), DefaultVertexFormat.POSITION_COLOR_TEX, FLAME);
+        registerShader(event, Mekanism.rl("rendertype_flame"), DefaultVertexFormat.POSITION_TEX_COLOR, FLAME);
         registerShader(event, Mekanism.rl("rendertype_mekasuit"), DefaultVertexFormat.NEW_ENTITY, MEKASUIT);
-        registerShader(event, Mekanism.rl("rendertype_sps"), DefaultVertexFormat.POSITION_COLOR_TEX, SPS);
+        registerShader(event, Mekanism.rl("rendertype_sps"), DefaultVertexFormat.POSITION_TEX_COLOR, SPS);
     }
 
     private static void registerShader(RegisterShadersEvent event, ResourceLocation shaderLocation, VertexFormat vertexFormat, ShaderTracker tracker) throws IOException {

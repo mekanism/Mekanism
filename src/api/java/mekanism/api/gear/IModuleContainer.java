@@ -8,6 +8,8 @@ import mekanism.api.MekanismIMC.ModuleContainerTarget;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.gear.config.ModuleConfig;
 import mekanism.api.providers.IModuleDataProvider;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -44,16 +46,18 @@ public interface IModuleContainer {
     /**
      * Helper to replace the given config for the installed module of the given type.
      *
-     * @param stack  The stack the container is stored on.
-     * @param type   Module type to replace the config for.
-     * @param config Config to replace.
+     * @param provider Holder lookup provider so that we can lookup enchantments if applicable.
+     * @param stack    The stack the container is stored on.
+     * @param type     Module type to replace the config for.
+     * @param config   Config to replace.
      *
      * @return New immutable module container with the config using the replaced value.
      *
      * @throws IllegalStateException If no module of the given type is installed, or there is no config with the same name is not found installed on the module of the
      *                               given type.
      */
-    <MODULE extends ICustomModule<MODULE>> IModuleContainer replaceModuleConfig(ItemStack stack, ModuleData<MODULE> type, ModuleConfig<?> config);
+    <MODULE extends ICustomModule<MODULE>> IModuleContainer replaceModuleConfig(HolderLookup.Provider provider, ItemStack stack, ModuleData<MODULE> type,
+          ModuleConfig<?> config);
 
     /**
      * {@return all the enchantments provided by installed modules}
@@ -63,7 +67,7 @@ public interface IModuleContainer {
     /**
      * {@return the level provided by modules for the given enchantment, or zero if the enchantment isn't provided by any modules}
      */
-    default int getModuleEnchantmentLevel(Enchantment enchantment) {
+    default int getModuleEnchantmentLevel(Holder<Enchantment> enchantment) {
         return moduleBasedEnchantments().getLevel(enchantment);
     }
 

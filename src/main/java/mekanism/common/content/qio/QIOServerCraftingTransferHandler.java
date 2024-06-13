@@ -37,8 +37,8 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import org.jetbrains.annotations.Nullable;
 
@@ -141,10 +141,7 @@ public class QIOServerCraftingTransferHandler {
                 return;
             }
         }
-        CraftingContainer dummy = MekanismUtils.getDummyCraftingInv();
-        for (int slot = 0; slot < 9; slot++) {
-            dummy.setItem(slot, recipeToTest.get(slot).copyWithCount(1));
-        }
+        CraftingInput dummy = MekanismUtils.getCraftingInput(3, 3, recipeToTest, true);
         if (!recipe.matches(dummy, player.level())) {
             Mekanism.logger.warn("Received transfer request from: {}, but source items aren't valid for the requested recipe: {}.", player, recipeID);
         } else if (!hasRoomToShuffle()) {

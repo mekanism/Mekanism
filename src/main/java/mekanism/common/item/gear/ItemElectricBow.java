@@ -2,6 +2,7 @@ package mekanism.common.item.gear;
 
 import java.util.List;
 import java.util.function.Consumer;
+import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.energy.IEnergyContainer;
@@ -15,28 +16,23 @@ import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCrea
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
-import net.minecraft.SharedConstants;
+import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.stats.Stats;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.AbstractArrow;
-import net.minecraft.world.item.ArrowItem;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.event.EventHooks;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemElectricBow extends BowItem implements IItemHUDProvider, ICustomCreativeTabContents, IAttachmentBasedModeItem<Boolean> {
@@ -52,86 +48,44 @@ public class ItemElectricBow extends BowItem implements IItemHUDProvider, ICusto
     }
 
     @Override
-    public void releaseUsing(@NotNull ItemStack stack, @NotNull Level world, @NotNull LivingEntity entityLiving, int timeLeft) {
-        if (entityLiving instanceof Player player) {
-            //Vanilla diff - Get the energy container and validate we have enough energy, because if something went wrong, then we can exit early
-            IEnergyContainer energyContainer = null;
-            FloatingLong energyNeeded = FloatingLong.ZERO;
-            if (!player.isCreative()) {
-                energyContainer = StorageUtils.getEnergyContainer(stack, 0);
-                energyNeeded = getMode(stack) ? MekanismConfig.gear.electricBowEnergyUsageFire.get() : MekanismConfig.gear.electricBowEnergyUsage.get();
-                if (energyContainer == null || energyContainer.extract(energyNeeded, Action.SIMULATE, AutomationType.MANUAL).smallerThan(energyNeeded)) {
-                    return;
-                }
-            }
-            boolean infinity = player.isCreative() || stack.getEnchantmentLevel(Enchantments.INFINITY) > 0;
-            ItemStack ammo = player.getProjectile(stack);
-            int charge = EventHooks.onArrowLoose(stack, world, player, getUseDuration(stack) - timeLeft, !ammo.isEmpty() || infinity);
-            if (charge < 0) {
+    public void releaseUsing(@NotNull ItemStack bow, @NotNull Level world, @NotNull LivingEntity entity, int timeLeft) {
+        if (entity instanceof Player player && !player.isCreative()) {
+            IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(bow, 0);
+            FloatingLong energyNeeded = getMode(bow) ? MekanismConfig.gear.electricBowEnergyUsageFire.get() : MekanismConfig.gear.electricBowEnergyUsage.get();
+            if (energyContainer == null || energyContainer.extract(energyNeeded, Action.SIMULATE, AutomationType.MANUAL).smallerThan(energyNeeded)) {
                 return;
             }
-            if (!ammo.isEmpty() || infinity) {
-                float velocity = getPowerForTime(charge);
-                if (velocity < 0.1) {
-                    return;
-                }
-                if (ammo.isEmpty()) {
-                    ammo = new ItemStack(Items.ARROW);
-                }
-                boolean noConsume = player.isCreative() || (ammo.getItem() instanceof ArrowItem arrow && arrow.isInfinite(ammo, stack, player));
-                if (!world.isClientSide) {
-                    ArrowItem arrowitem = (ArrowItem) (ammo.getItem() instanceof ArrowItem ? ammo.getItem() : Items.ARROW);
-                    AbstractArrow arrowEntity = arrowitem.createArrow(world, ammo, player);
-                    arrowEntity = customArrow(arrowEntity, ammo);
-                    arrowEntity.shootFromRotation(player, player.getXRot(), player.getYRot(), 0, 3 * velocity, 1);
-                    if (velocity == 1) {
-                        arrowEntity.setCritArrow(true);
-                    }
-                    int power = stack.getEnchantmentLevel(Enchantments.POWER);
-                    if (power > 0) {
-                        arrowEntity.setBaseDamage(arrowEntity.getBaseDamage() + 0.5 * power + 0.5);
-                    }
-                    int punch = stack.getEnchantmentLevel(Enchantments.PUNCH);
-                    if (punch > 0) {
-                        arrowEntity.setKnockback(punch);
-                    }
-                    if (stack.getEnchantmentLevel(Enchantments.FLAME) > 0) {
-                        arrowEntity.setRemainingFireTicks(5 * SharedConstants.TICKS_PER_SECOND);
-                    }
-                    //Vanilla diff - Instead of damaging the item we remove energy from it
-                    if (energyContainer != null) {
-                        energyContainer.extract(energyNeeded, Action.EXECUTE, AutomationType.MANUAL);
-                    }
-                    if (noConsume || player.isCreative() && (ammo.getItem() == Items.SPECTRAL_ARROW || ammo.getItem() == Items.TIPPED_ARROW)) {
-                        arrowEntity.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
-                    }
-                    world.addFreshEntity(arrowEntity);
-                }
-                world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ARROW_SHOOT, SoundSource.PLAYERS, 1,
-                      1.0F / (world.random.nextFloat() * 0.4F + 1.2F) + velocity * 0.5F);
-                if (!noConsume && !player.isCreative()) {
-                    ammo.shrink(1);
-                    if (ammo.isEmpty()) {
-                        player.getInventory().removeItem(ammo);
-                    }
-                }
-                player.awardStat(Stats.ITEM_USED.get(this));
+        }
+        super.releaseUsing(bow, world, entity, timeLeft);
+    }
+
+    @Override
+    protected void shoot(@NotNull ServerLevel world, @NotNull LivingEntity entity, @NotNull InteractionHand hand, @NotNull ItemStack bow,
+          @NotNull List<ItemStack> potentialAmmo, float velocity, float inaccuracy, boolean critical, @Nullable LivingEntity target) {
+        super.shoot(world, entity, hand, bow, potentialAmmo, velocity, inaccuracy, critical, target);
+        if (entity instanceof Player player && !player.isCreative() && !potentialAmmo.isEmpty()) {
+            IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(bow, 0);
+            if (energyContainer != null) {
+                //Use energy
+                FloatingLong energyNeeded = getMode(bow) ? MekanismConfig.gear.electricBowEnergyUsageFire.get() : MekanismConfig.gear.electricBowEnergyUsage.get();
+                energyContainer.extract(energyNeeded, Action.EXECUTE, AutomationType.MANUAL);
             }
         }
     }
 
     @Override
-    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
+    public boolean canApplyAtEnchantingTable(@NotNull ItemStack stack, @NotNull Enchantment enchantment) {
         //Note: This stops application of it via enchanted books while in survival. We don't override isBookEnchantable as we don't care
         // if someone enchants it in creative and would rather not stop players from enchanting with books that have flame and power on them
-        return enchantment != Enchantments.FLAME && super.canApplyAtEnchantingTable(stack, enchantment);
+        //TODO - 1.21: Re-enable after https://github.com/neoforged/NeoForge/pull/1089
+        return /*enchantment != Enchantments.FLAME &&*/ super.canApplyAtEnchantingTable(stack, enchantment);
     }
 
     @Override
-    public int getEnchantmentLevel(ItemStack stack, Enchantment enchantment) {
+    public int getEnchantmentLevel(@NotNull ItemStack stack, @NotNull Holder<Enchantment> enchantment) {
         if (stack.isEmpty()) {
             return 0;
-        } else if (enchantment == Enchantments.FLAME && getMode(stack)) {
+        } else if (enchantment.is(Enchantments.FLAME) && getMode(stack)) {
             return Math.max(1, super.getEnchantmentLevel(stack, enchantment));
         }
         return super.getEnchantmentLevel(stack, enchantment);
@@ -141,11 +95,12 @@ public class ItemElectricBow extends BowItem implements IItemHUDProvider, ICusto
     @Override
     public ItemEnchantments getAllEnchantments(@NotNull ItemStack stack) {
         ItemEnchantments enchantments = super.getAllEnchantments(stack);
-        if (getMode(stack) && enchantments.getLevel(Enchantments.FLAME) == 0) {
+        //TODO - 1.21: Re-enable after https://github.com/neoforged/NeoForge/pull/1089
+        /*if (getMode(stack) && enchantments.getLevel(Enchantments.FLAME) == 0) {
             ItemEnchantments.Mutable mutable = new ItemEnchantments.Mutable(enchantments);
             mutable.set(Enchantments.FLAME, 1);
             return mutable.toImmutable();
-        }
+        }*/
         return enchantments;
     }
 

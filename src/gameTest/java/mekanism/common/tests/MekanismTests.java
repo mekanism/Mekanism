@@ -45,6 +45,6 @@ public class MekanismTests {
     }
 
     public static ResourceLocation rl(String path) {
-        return new ResourceLocation(MODID, path);
+        return ResourceLocation.fromNamespaceAndPath(MODID, path);
     }
 }

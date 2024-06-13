@@ -75,7 +75,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IGasItem
     }
 
     @Override
-    public int getUseDuration(@NotNull ItemStack stack) {
+    public int getUseDuration(@NotNull ItemStack stack, @NotNull LivingEntity entity) {
         //Note: This is the same value as tridents and shields use. Technically we would be fine with them using it forever, but this is fine
         // while we could base this on how much gas is stored in the flamethrower, then if something is filling it while using, then it will be wrong
         //Secondary note: When this does run out the use animation briefly resets so the item renders slightly different for a second,

@@ -39,6 +39,6 @@ public abstract class BaseSoundProvider extends SoundDefinitionsProvider {
 
     protected void addSoundEvent(SoundEventRegistryObject<?> soundEventRO, String path, UnaryOperator<SoundDefinition> definitionModifier,
           UnaryOperator<SoundDefinition.Sound> soundModifier) {
-        add(soundEventRO.get(), definitionModifier.apply(definition()).with(soundModifier.apply(sound(new ResourceLocation(modid, path)))));
+        add(soundEventRO.get(), definitionModifier.apply(definition()).with(soundModifier.apply(sound(ResourceLocation.fromNamespaceAndPath(modid, path)))));
     }
 }

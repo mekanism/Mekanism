@@ -19,7 +19,7 @@ public class PigmentBuilder extends ChemicalBuilder<Pigment, PigmentBuilder> {
      * @return A builder for creating a {@link Pigment}.
      */
     public static PigmentBuilder builder() {
-        return builder(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "pigment/base"));
+        return builder(ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "pigment/base"));
     }
 
     /**

@@ -26,7 +26,7 @@ import org.jetbrains.annotations.Contract;
 @NothingNullByDefault
 public abstract class PigmentMixingRecipe extends ChemicalChemicalToChemicalRecipe<Pigment, PigmentStack, PigmentStackIngredient> {
 
-    private static final Holder<Item> PIGMENT_MIXER = DeferredHolder.create(Registries.ITEM, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "pigment_mixer"));
+    private static final Holder<Item> PIGMENT_MIXER = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "pigment_mixer"));
 
     @Override
     public abstract boolean test(PigmentStack input1, PigmentStack input2);

@@ -17,7 +17,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 @NothingNullByDefault
 public class BasicPurifyingRecipe extends BasicItemStackGasToItemStackRecipe {
 
-    private static final Holder<Item> PURIFICATION_CHAMBER = DeferredHolder.create(Registries.ITEM, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "purification_chamber"));
+    private static final Holder<Item> PURIFICATION_CHAMBER = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "purification_chamber"));
 
     public BasicPurifyingRecipe(ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output) {
         super(itemInput, gasInput, output, MekanismRecipeTypes.TYPE_PURIFYING.value());

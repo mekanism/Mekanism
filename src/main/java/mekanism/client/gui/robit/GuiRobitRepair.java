@@ -21,10 +21,10 @@ import org.jetbrains.annotations.NotNull;
 public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements ContainerListener {
 
     //Use the vanilla anvil's gui texture
-    private static final ResourceLocation TEXT_FIELD_SPRITE = new ResourceLocation("container/anvil/text_field");
-    private static final ResourceLocation TEXT_FIELD_DISABLED_SPRITE = new ResourceLocation("container/anvil/text_field_disabled");
-    private static final ResourceLocation ERROR_SPRITE = new ResourceLocation("container/anvil/error");
-    private static final ResourceLocation ANVIL_LOCATION = new ResourceLocation("textures/gui/container/anvil.png");
+    private static final ResourceLocation TEXT_FIELD_SPRITE = ResourceLocation.withDefaultNamespace("container/anvil/text_field");
+    private static final ResourceLocation TEXT_FIELD_DISABLED_SPRITE = ResourceLocation.withDefaultNamespace("container/anvil/text_field_disabled");
+    private static final ResourceLocation ERROR_SPRITE = ResourceLocation.withDefaultNamespace("container/anvil/error");
+    private static final ResourceLocation ANVIL_LOCATION = ResourceLocation.withDefaultNamespace("textures/gui/container/anvil.png");
     private final Player player;
     private GuiTextField itemNameField;
 

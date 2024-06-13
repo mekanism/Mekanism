@@ -248,8 +248,7 @@ public class GuiRadialSelector extends Screen {
     private void drawTorus(GuiGraphics guiGraphics, float startAngle, float sizeAngle, float inner, float outer, float red, float green, float blue, float alpha) {
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
         //Note: We still use the tesselator as that is what GuiGraphics#innerBlit does, and we also need to be able to use a custom vertex mode
-        BufferBuilder vertexBuffer = Tesselator.getInstance().getBuilder();
-        vertexBuffer.begin(Mode.TRIANGLE_STRIP, DefaultVertexFormat.POSITION_COLOR);
+        BufferBuilder vertexBuffer = Tesselator.getInstance().begin(Mode.TRIANGLE_STRIP, DefaultVertexFormat.POSITION_COLOR);
         Matrix4f matrix4f = guiGraphics.pose().last().pose();
         float draws = DRAWS * (sizeAngle / 360F);
         for (int i = 0; i <= draws; i++) {
@@ -257,10 +256,12 @@ public class GuiRadialSelector extends Screen {
             float angle = Mth.DEG_TO_RAD * degrees;
             float cos = Mth.cos(angle);
             float sin = Mth.sin(angle);
-            vertexBuffer.vertex(matrix4f, outer * cos, outer * sin, 0).color(red, green, blue, alpha).endVertex();
-            vertexBuffer.vertex(matrix4f, inner * cos, inner * sin, 0).color(red, green, blue, alpha).endVertex();
+            vertexBuffer.addVertex(matrix4f, outer * cos, outer * sin, 0)
+                  .setColor(red, green, blue, alpha);
+            vertexBuffer.addVertex(matrix4f, inner * cos, inner * sin, 0)
+                  .setColor(red, green, blue, alpha);
         }
-        BufferUploader.drawWithShader(vertexBuffer.end());
+        BufferUploader.drawWithShader(vertexBuffer.buildOrThrow());
     }
 
     @Nullable

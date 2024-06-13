@@ -48,8 +48,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class FluidDeferredRegister {
 
-    private static final ResourceLocation OVERLAY = new ResourceLocation("block/water_overlay");
-    private static final ResourceLocation RENDER_OVERLAY = new ResourceLocation("misc/underwater");
+    private static final ResourceLocation OVERLAY = ResourceLocation.withDefaultNamespace("block/water_overlay");
+    private static final ResourceLocation RENDER_OVERLAY = ResourceLocation.withDefaultNamespace("misc/underwater");
     private static final ResourceLocation LIQUID = Mekanism.rl("liquid/liquid");
     private static final ResourceLocation LIQUID_FLOW = Mekanism.rl("liquid/liquid_flow");
     //Copy of/based off of vanilla's lava/water bucket dispense behavior
@@ -123,7 +123,7 @@ public class FluidDeferredRegister {
         });
 
         //TODO: Ideally we wouldn't have to create holders for these suppliers and instead could just somehow use the actual registered ones
-        ResourceLocation baseKey = new ResourceLocation(fluidRegister.getNamespace(), name);
+        ResourceLocation baseKey = ResourceLocation.fromNamespaceAndPath(fluidRegister.getNamespace(), name);
         BaseFlowingFluid.Properties fluidProperties = new BaseFlowingFluid.Properties(
               fluidType,
               DeferredHolder.create(Registries.FLUID, baseKey),

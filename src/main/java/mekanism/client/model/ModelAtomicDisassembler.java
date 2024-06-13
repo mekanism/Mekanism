@@ -97,12 +97,12 @@ public class ModelAtomicDisassembler extends MekanismJavaModel {
     }
 
     public void render(@NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, int light, int overlayLight, boolean hasEffect) {
-        renderToBuffer(matrix, getVertexConsumer(renderer, RENDER_TYPE, hasEffect), light, overlayLight, 1, 1, 1, 1);
-        renderPartsToBuffer(bladeParts, matrix, getVertexConsumer(renderer, BLADE_RENDER_TYPE, hasEffect), LightTexture.FULL_BRIGHT, overlayLight, 1, 1, 1, 0.75F);
+        renderToBuffer(matrix, getVertexConsumer(renderer, RENDER_TYPE, hasEffect), light, overlayLight, 0xFFFFFFFF);
+        renderPartsToBuffer(bladeParts, matrix, getVertexConsumer(renderer, BLADE_RENDER_TYPE, hasEffect), LightTexture.FULL_BRIGHT, overlayLight, 0xBFFFFFFF);
     }
 
     @Override
-    public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int light, int overlayLight, float red, float green, float blue, float alpha) {
-        renderPartsToBuffer(parts, poseStack, vertexConsumer, light, overlayLight, red, green, blue, alpha);
+    public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int light, int overlayLight, int color) {
+        renderPartsToBuffer(parts, poseStack, vertexConsumer, light, overlayLight, color);
     }
 }

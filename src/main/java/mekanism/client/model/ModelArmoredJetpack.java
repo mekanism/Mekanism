@@ -76,12 +76,12 @@ public class ModelArmoredJetpack extends ModelJetpack {
     }
 
     @Override
-    public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int light, int overlayLight, float red, float green, float blue, float alpha) {
-        super.renderToBuffer(poseStack, vertexConsumer, light, overlayLight, red, green, blue, alpha);
+    public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int light, int overlayLight, int color) {
+        super.renderToBuffer(poseStack, vertexConsumer, light, overlayLight, color);
         poseStack.pushPose();
         poseStack.translate(0, 0, -0.0625);
-        renderPartsToBuffer(armoredParts, poseStack, vertexConsumer, light, overlayLight, red, green, blue, alpha);
-        renderPartsToBuffer(armoredLights, poseStack, vertexConsumer, LightTexture.FULL_BRIGHT, overlayLight, red, green, blue, alpha);
+        renderPartsToBuffer(armoredParts, poseStack, vertexConsumer, light, overlayLight, color);
+        renderPartsToBuffer(armoredLights, poseStack, vertexConsumer, LightTexture.FULL_BRIGHT, overlayLight, color);
         poseStack.popPose();
     }
 }

@@ -9,7 +9,7 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 public record MekanismGenderArmor(boolean coversBreasts, boolean alwaysHidesBreasts, float physicsResistance, float tightness, boolean armorStandsCopySettings) implements IGenderArmor {
 
-    private static final ItemCapability<IGenderArmor, Void> GENDER_ARMOR_CAPABILITY = ItemCapability.createVoid(new ResourceLocation(MekanismHooks.WILDFIRE_GENDER_MOD_ID, "gender_armor"), IGenderArmor.class);
+    private static final ItemCapability<IGenderArmor, Void> GENDER_ARMOR_CAPABILITY = ItemCapability.createVoid(ResourceLocation.fromNamespaceAndPath(MekanismHooks.WILDFIRE_GENDER_MOD_ID, "gender_armor"), IGenderArmor.class);
     public static final MekanismGenderArmor OPEN_FRONT = new MekanismGenderArmor(false, false, 0, 0, false);
     public static final MekanismGenderArmor HIDES_BREASTS = new MekanismGenderArmor(true, true, 0, 0, false);
     static final MekanismGenderArmor HAZMAT = new MekanismGenderArmor(0.5F, 0.25F, false);

@@ -42,7 +42,7 @@ public class AdditionsTags {
         public static final TagKey<Item> PLASTIC_BLOCKS_TRANSPARENT = tag("plastic_blocks/transparent");
 
         private static TagKey<Item> commonTag(String name) {
-            return ItemTags.create(new ResourceLocation("c", name));
+            return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", name));
         }
 
         private static TagKey<Item> tag(String name) {
@@ -75,7 +75,7 @@ public class AdditionsTags {
         public static final TagKey<Block> PLASTIC_BLOCKS_TRANSPARENT = tag("plastic_blocks/transparent");
 
         private static TagKey<Block> commonTag(String name) {
-            return BlockTags.create(new ResourceLocation("c", name));
+            return BlockTags.create(ResourceLocation.fromNamespaceAndPath("c", name));
         }
 
         private static TagKey<Block> tag(String name) {
@@ -104,7 +104,7 @@ public class AdditionsTags {
         public static final TagKey<EntityType<?>> ENDERMEN = commonTag("endermen");
 
         private static TagKey<EntityType<?>> commonTag(String name) {
-            return TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation("c", name));
+            return TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath("c", name));
         }
     }
 }

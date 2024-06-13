@@ -19,7 +19,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 @NothingNullByDefault
 public class BasicActivatingRecipe extends BasicGasToGasRecipe {
 
-    private static final Holder<Item> SOLAR_NEUTRON_ACTIVATOR = DeferredHolder.create(Registries.ITEM, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "solar_neutron_activator"));
+    private static final Holder<Item> SOLAR_NEUTRON_ACTIVATOR = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "solar_neutron_activator"));
 
     public BasicActivatingRecipe(GasStackIngredient input, GasStack output) {
         super(input, output, MekanismRecipeTypes.TYPE_ACTIVATING.value());

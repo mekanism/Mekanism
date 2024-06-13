@@ -16,7 +16,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 @NothingNullByDefault
 public class BasicSmeltingRecipe extends BasicItemStackToItemStackRecipe implements IBasicItemStackOutput {
 
-    private static final Holder<Item> ENERGIZED_SMELTER = DeferredHolder.create(Registries.ITEM, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "energized_smelter"));
+    private static final Holder<Item> ENERGIZED_SMELTER = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "energized_smelter"));
 
     public BasicSmeltingRecipe(ItemStackIngredient input, ItemStack output) {
         super(input, output, MekanismRecipeTypes.TYPE_SMELTING.value());

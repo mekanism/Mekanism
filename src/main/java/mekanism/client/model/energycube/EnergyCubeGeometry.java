@@ -43,7 +43,7 @@ public class EnergyCubeGeometry implements IUnbakedGeometry<EnergyCubeGeometry> 
 
     @Override
     public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState,
-          ItemOverrides overrides, ResourceLocation modelLocation) {
+          ItemOverrides overrides) {
         TextureAtlasSprite particle = spriteGetter.apply(context.getMaterial("particle"));
 
         ResourceLocation renderTypeHint = context.getRenderTypeHint();
@@ -54,32 +54,32 @@ public class EnergyCubeGeometry implements IUnbakedGeometry<EnergyCubeGeometry> 
             modelState = new SimpleModelState(modelState.getRotation().compose(rootTransform), modelState.isUvLocked());
         }
         Function<String, TextureAtlasSprite> rawSpriteGetter = spriteGetter.compose(context::getMaterial);
-        FaceData frame = bakeElement(rawSpriteGetter, modelState, modelLocation, this.frame);
-        Map<RelativeSide, FaceData> leds = bakeElements(rawSpriteGetter, modelState, modelLocation, this.leds);
-        Map<RelativeSide, FaceData> ports = bakeElements(rawSpriteGetter, modelState, modelLocation, this.ports);
+        FaceData frame = bakeElement(rawSpriteGetter, modelState, this.frame);
+        Map<RelativeSide, FaceData> leds = bakeElements(rawSpriteGetter, modelState, this.leds);
+        Map<RelativeSide, FaceData> ports = bakeElements(rawSpriteGetter, modelState, this.ports);
         return new EnergyCubeBakedModel(context.useAmbientOcclusion(), context.useBlockLight(), context.isGui3d(), context.getTransforms(), overrides, particle, frame, leds, ports,
               renderTypes);
     }
 
     private Map<RelativeSide, FaceData> bakeElements(Function<String, TextureAtlasSprite> spriteGetter, ModelState modelState,
-          ResourceLocation modelLocation, Map<RelativeSide, List<BlockElement>> sideBasedElements) {
+          Map<RelativeSide, List<BlockElement>> sideBasedElements) {
         Map<RelativeSide, FaceData> sideBasedFaceData = new EnumMap<>(RelativeSide.class);
         for (Map.Entry<RelativeSide, List<BlockElement>> entry : sideBasedElements.entrySet()) {
-            FaceData faceData = bakeElement(spriteGetter, modelState, modelLocation, entry.getValue());
+            FaceData faceData = bakeElement(spriteGetter, modelState, entry.getValue());
             sideBasedFaceData.put(entry.getKey(), faceData);
         }
         return sideBasedFaceData;
     }
 
-    private FaceData bakeElement(Function<String, TextureAtlasSprite> spriteGetter, ModelState modelState, ResourceLocation modelLocation, List<BlockElement> elements) {
+    private FaceData bakeElement(Function<String, TextureAtlasSprite> spriteGetter, ModelState modelState, List<BlockElement> elements) {
         FaceData data = new FaceData();
         for (BlockElement element : elements) {
             for (Entry<Direction, BlockElementFace> faceEntry : element.faces.entrySet()) {
                 BlockElementFace face = faceEntry.getValue();
-                TextureAtlasSprite sprite = spriteGetter.apply(face.texture);
+                TextureAtlasSprite sprite = spriteGetter.apply(face.texture());
                 //noinspection ConstantConditions (can be null)
-                Direction direction = face.cullForDirection == null ? null : modelState.getRotation().rotateTransform(face.cullForDirection);
-                data.addFace(direction, BlockModel.bakeFace(element, face, sprite, faceEntry.getKey(), modelState, modelLocation));
+                Direction direction = face.cullForDirection() == null ? null : modelState.getRotation().rotateTransform(face.cullForDirection());
+                data.addFace(direction, BlockModel.bakeFace(element, face, sprite, faceEntry.getKey(), modelState));
             }
         }
         return data;

@@ -47,10 +47,8 @@ public class BlockOre extends Block implements IHasDescription {
     }
 
     @Override
-    public int getExpDrop(BlockState state, LevelReader reader, RandomSource random, BlockPos pos, int fortune, int silkTouch) {
-        if (ore.getMaxExp() > 0 && silkTouch == 0) {
-            return Mth.nextInt(random, ore.getMinExp(), ore.getMaxExp());
-        }
-        return super.getExpDrop(state, reader, random, pos, fortune, silkTouch);
+    public int getExpDrop(BlockState state, LevelReader reader, RandomSource random, BlockPos pos) {
+        //Note: If min exp = max exp = 0, then this will just return zero, similar to what super does
+        return Mth.nextInt(random, ore.getMinExp(), ore.getMaxExp());
     }
 }

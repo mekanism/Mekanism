@@ -24,6 +24,7 @@ import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.DistanceManager;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.neoforged.neoforge.event.level.ChunkEvent;
 import net.neoforged.testframework.DynamicTest;
@@ -188,7 +189,12 @@ public class TransmitterNetworkTest {
                             helper.fail("Error loading chunk", relativePos);
                         } else {
                             //And ensure we schedule it based on the status (in general this should be ChunkStatus.FULL)
-                            chunkMap.schedule(holder, ChunkLevel.generationStatus(holder.getTicketLevel()));
+                            ChunkStatus chunkStatus = ChunkLevel.generationStatus(holder.getTicketLevel());
+                            if (chunkStatus == null) {
+                                helper.fail("Error getting chunk status", relativePos);
+                            } else {
+                                chunkMap.scheduleGenerationTask(chunkStatus, absolutePos);
+                            }
                         }
                     } else {
                         //If it is currently loaded, queue it for unload

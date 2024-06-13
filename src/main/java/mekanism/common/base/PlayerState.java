@@ -7,6 +7,7 @@ import mekanism.api.functions.ToFloatFunction;
 import mekanism.client.sound.PlayerSound.SoundType;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.CommonPlayerTickHandler;
+import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.network.PacketUtils;
@@ -15,6 +16,7 @@ import mekanism.common.network.to_server.PacketGearStateUpdate;
 import mekanism.common.network.to_server.PacketGearStateUpdate.GearType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -27,8 +29,8 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 public class PlayerState {
 
-    private static final UUID STEP_ASSIST_MODIFIER_UUID = UUID.fromString("026E638A-570D-48F2-BA91-3E86BBB26576");
-    private static final UUID SWIM_BOOST_MODIFIER_UUID = UUID.fromString("B8BEEC12-741C-47C3-A74D-AA00F0D2ACF0");
+    private static final ResourceLocation STEP_ASSIST_MODIFIER_ID = Mekanism.rl("step_assist");
+    private static final ResourceLocation SWIM_BOOST_MODIFIER_ID = Mekanism.rl("swim_boost");
 
     private final Set<UUID> activeJetpacks = new ObjectOpenHashSet<>();
     private final Set<UUID> activeScubaMasks = new ObjectOpenHashSet<>();
@@ -148,7 +150,7 @@ public class PlayerState {
     // ----------------------
 
     public void updateStepAssist(Player player) {
-        updateAttribute(player, Attributes.STEP_HEIGHT, STEP_ASSIST_MODIFIER_UUID, "Step Assist", CommonPlayerTickHandler::getStepBoost);
+        updateAttribute(player, Attributes.STEP_HEIGHT, STEP_ASSIST_MODIFIER_ID,  CommonPlayerTickHandler::getStepBoost);
     }
 
     // ----------------------
@@ -158,14 +160,14 @@ public class PlayerState {
     // ----------------------
 
     public void updateSwimBoost(Player player) {
-        updateAttribute(player, NeoForgeMod.SWIM_SPEED, SWIM_BOOST_MODIFIER_UUID, "Swim Boost", CommonPlayerTickHandler::getSwimBoost);
+        updateAttribute(player, NeoForgeMod.SWIM_SPEED, SWIM_BOOST_MODIFIER_ID, CommonPlayerTickHandler::getSwimBoost);
     }
 
     //Note: The attributes that currently use this cannot be converted to just being attributes on the items, as they can be disabled based on the player state
-    private void updateAttribute(Player player, Holder<Attribute> attribute, UUID uuid, String name, ToFloatFunction<Player> additionalSupplier) {
+    private void updateAttribute(Player player, Holder<Attribute> attribute, ResourceLocation id, ToFloatFunction<Player> additionalSupplier) {
         AttributeInstance attributeInstance = player.getAttribute(attribute);
         if (attributeInstance != null) {
-            AttributeModifier existing = attributeInstance.getModifier(uuid);
+            AttributeModifier existing = attributeInstance.getModifier(id);
             float additional = additionalSupplier.applyAsFloat(player);
             if (existing != null) {
                 if (existing.amount() == additional) {
@@ -174,11 +176,11 @@ public class PlayerState {
                     return;
                 }
                 //Otherwise, remove the no longer valid value, so we can add it again properly
-                attributeInstance.removeModifier(uuid);
+                attributeInstance.removeModifier(id);
             }
             if (additional > 0) {
                 //If we should have the attribute, but we don't have it set yet, or our stored amount was different, update
-                attributeInstance.addTransientModifier(new AttributeModifier(uuid, name, additional, Operation.ADD_VALUE));
+                attributeInstance.addTransientModifier(new AttributeModifier(id, additional, Operation.ADD_VALUE));
             }
         }
     }

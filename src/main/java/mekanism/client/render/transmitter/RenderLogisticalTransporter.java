@@ -69,9 +69,9 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
 
     public static void onStitch(TextureAtlas map) {
         cachedOverlays.clear();
-        gunpowderIcon = map.getSprite(new ResourceLocation("minecraft", "item/gunpowder"));
-        torchOffIcon = map.getSprite(new ResourceLocation("minecraft", "block/redstone_torch_off"));
-        torchOnIcon = map.getSprite(new ResourceLocation("minecraft", "block/redstone_torch"));
+        gunpowderIcon = map.getSprite(ResourceLocation.withDefaultNamespace("item/gunpowder"));
+        torchOffIcon = map.getSprite(ResourceLocation.withDefaultNamespace("block/redstone_torch_off"));
+        torchOnIcon = map.getSprite(ResourceLocation.withDefaultNamespace("block/redstone_torch"));
     }
 
     @Override
@@ -95,7 +95,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                     itemRenderer.renderAsStack(matrix, renderer, stack.itemStack, light);
                     matrix.popPose();
                     if (stack.color != null) {
-                        modelBox.render(matrix, renderer, LightTexture.FULL_BRIGHT, overlayLight, stackPos[0], stackPos[1], stackPos[2], stack.color);
+                        modelBox.render(matrix, renderer, overlayLight, stackPos[0], stackPos[1], stackPos[2], stack.color);
                     }
                 }
                 matrix.popPose();

@@ -30,7 +30,7 @@ import org.jetbrains.annotations.Contract;
 @NothingNullByDefault
 public abstract class FluidSlurryToSlurryRecipe extends FluidChemicalToChemicalRecipe<Slurry, SlurryStack, SlurryStackIngredient> {
 
-    private static final Holder<Item> CHEMICAL_WASHER = DeferredHolder.create(Registries.ITEM, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "chemical_washer"));
+    private static final Holder<Item> CHEMICAL_WASHER = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "chemical_washer"));
 
     @Override
     public abstract boolean test(FluidStack fluidStack, SlurryStack chemicalStack);

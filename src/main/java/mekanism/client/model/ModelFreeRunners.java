@@ -62,25 +62,24 @@ public class ModelFreeRunners extends MekanismJavaModel {
     }
 
     public void render(@NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, int light, int overlayLight, boolean hasEffect) {
-        renderToBuffer(matrix, getVertexConsumer(renderer, RENDER_TYPE, hasEffect), light, overlayLight, 1, 1, 1, 1);
+        renderToBuffer(matrix, getVertexConsumer(renderer, RENDER_TYPE, hasEffect), light, overlayLight, 0xFFFFFFFF);
     }
 
     @Override
-    public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int light, int overlayLight, float red, float green, float blue, float alpha) {
-        renderLeg(poseStack, vertexConsumer, light, overlayLight, red, green, blue, alpha, true);
-        renderLeg(poseStack, vertexConsumer, light, overlayLight, red, green, blue, alpha, false);
+    public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int light, int overlayLight, int color) {
+        renderLeg(poseStack, vertexConsumer, light, overlayLight, color, true);
+        renderLeg(poseStack, vertexConsumer, light, overlayLight, color, false);
     }
 
     public void renderLeg(@NotNull PoseStack poseStack, @NotNull MultiBufferSource renderer, int light, int overlayLight, boolean hasEffect, boolean left) {
-        renderLeg(poseStack, getVertexConsumer(renderer, RENDER_TYPE, hasEffect), light, overlayLight, 1, 1, 1, 1, left);
+        renderLeg(poseStack, getVertexConsumer(renderer, RENDER_TYPE, hasEffect), light, overlayLight, 0xFFFFFFFF, left);
     }
 
-    protected void renderLeg(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int light, int overlayLight, float red, float green, float blue,
-          float alpha, boolean left) {
+    protected void renderLeg(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int light, int overlayLight, int color, boolean left) {
         if (left) {
-            renderPartsToBuffer(leftParts, poseStack, vertexConsumer, light, overlayLight, red, green, blue, alpha);
+            renderPartsToBuffer(leftParts, poseStack, vertexConsumer, light, overlayLight, color);
         } else {
-            renderPartsToBuffer(rightParts, poseStack, vertexConsumer, light, overlayLight, red, green, blue, alpha);
+            renderPartsToBuffer(rightParts, poseStack, vertexConsumer, light, overlayLight, color);
         }
     }
 }

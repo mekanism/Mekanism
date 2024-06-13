@@ -16,27 +16,27 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.ChunkRenderTypeSet;
 import net.neoforged.neoforge.client.model.BakedModelWrapper;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 
 //TODO: Eventually make use of this if we figure out a way to not have coolant rendering make this invisible
 @NothingNullByDefault
 public class FuelAssemblyBakedModel extends BakedModelWrapper<BakedModel> {
 
     private static final Color GLOW_ARGB = Color.rgbad(0.466, 0.882, 0.929, 0.6);
-    private static final Vec3 NORTH_EAST = new Vec3(0.95, 0.125, 0.05);
-    private static final Vec3 SOUTH_WEST = new Vec3(0.05, 0.125, 0.95);
+    private static final Vector3f NORTH_EAST = new Vector3f(0.95F, 0.125F, 0.05F);
+    private static final Vector3f SOUTH_WEST = new Vector3f(0.05F, 0.125F, 0.95F);
 
     private final Map<Direction, List<BakedQuad>> cachedGlows = new EnumMap<>(Direction.class);
     @Nullable
     private ChunkRenderTypeSet renderTypes;
-    private final double height;
+    private final float height;
 
-    public FuelAssemblyBakedModel(BakedModel original, double height) {
+    public FuelAssemblyBakedModel(BakedModel original, float height) {
         super(original);
         this.height = height;
     }
@@ -53,7 +53,7 @@ public class FuelAssemblyBakedModel extends BakedModelWrapper<BakedModel> {
                 //TODO: Eventually we may want to make the glow component be part of the json so resource packs can customize it more
                 List<BakedQuad> allQuads = cachedGlows.get(side);
                 if (allQuads == null) {
-                    Vec3 startPos = switch (side) {
+                    Vector3f startPos = switch (side) {
                         case NORTH, EAST -> NORTH_EAST;
                         case SOUTH, WEST -> SOUTH_WEST;
                         default -> throw new IllegalStateException("Unexpected face");
@@ -62,7 +62,7 @@ public class FuelAssemblyBakedModel extends BakedModelWrapper<BakedModel> {
                           .light(LightTexture.FULL_BLOCK, LightTexture.FULL_SKY)
                           .uv(0, 0, 16, 16)
                           .color(GLOW_ARGB)
-                          .rect(startPos, 0.9, height, 1);
+                          .rect(startPos, 0.9F, height, 1);
                     allQuads = List.of(quadBuilder.build().bake());
                     cachedGlows.put(side, allQuads);
                 }

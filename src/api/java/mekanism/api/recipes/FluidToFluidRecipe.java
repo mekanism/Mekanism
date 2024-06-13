@@ -26,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
 @NothingNullByDefault
 public abstract class FluidToFluidRecipe extends MekanismRecipe implements Predicate<@NotNull FluidStack> {
 
-    private static final Holder<Item> THERMAL_EVAPORATION_CONTROLLER = DeferredHolder.create(Registries.ITEM, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "thermal_evaporation_controller"));
+    private static final Holder<Item> THERMAL_EVAPORATION_CONTROLLER = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "thermal_evaporation_controller"));
 
     @Override
     public abstract boolean test(FluidStack fluidStack);

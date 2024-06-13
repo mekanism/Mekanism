@@ -34,7 +34,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class AdditionsTagProvider extends BaseTagProvider {
 
-    private static final TagKey<Block> FRAMEABLE = BlockTags.create(new ResourceLocation("framedblocks", "frameable"));
+    private static final TagKey<Block> FRAMEABLE = BlockTags.create(ResourceLocation.fromNamespaceAndPath("framedblocks", "frameable"));
 
     public AdditionsTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
         super(output, lookupProvider, MekanismAdditions.MODID, existingFileHelper);

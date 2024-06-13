@@ -85,13 +85,12 @@ public record ModuleExcavationEscalationUnit(ExcavationMode excavationMode) impl
         if (radialData == getRadialData(module)) {
             ExcavationMode newMode = (ExcavationMode) mode;
             if (excavationMode != newMode) {
-                moduleContainer.replaceModuleConfig(stack, module.getData(), module.<ExcavationMode>getConfigOrThrow(EXCAVATION_MODE).with(newMode));
+                moduleContainer.replaceModuleConfig(player.level().registryAccess(), stack, module.getData(), module.<ExcavationMode>getConfigOrThrow(EXCAVATION_MODE).with(newMode));
             }
         }
         return false;
     }
 
-    @Nullable
     @Override
     public Component getModeScrollComponent(IModule<ModuleExcavationEscalationUnit> module, ItemStack stack) {
         return MekanismLang.GENERIC_WITH_PARENTHESIS.translateColored(EnumColor.INDIGO, excavationMode.sliceName(), EnumColor.AQUA, excavationMode.getEfficiency());
@@ -104,7 +103,7 @@ public record ModuleExcavationEscalationUnit(ExcavationMode excavationMode) impl
             if (displayChangeMessage) {
                 module.displayModeChange(player, MekanismLang.MODULE_EFFICIENCY.translate(), newMode);
             }
-            moduleContainer.replaceModuleConfig(stack, module.getData(), module.<ExcavationMode>getConfigOrThrow(EXCAVATION_MODE).with(newMode));
+            moduleContainer.replaceModuleConfig(player.level().registryAccess(), stack, module.getData(), module.<ExcavationMode>getConfigOrThrow(EXCAVATION_MODE).with(newMode));
         }
     }
 

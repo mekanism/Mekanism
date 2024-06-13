@@ -31,7 +31,7 @@ import org.jetbrains.annotations.NotNull;
 @NothingNullByDefault
 public abstract class ElectrolysisRecipe extends MekanismRecipe implements Predicate<@NotNull FluidStack> {
 
-    private static final Holder<Item> ELECTROLYTIC_SEPARATOR = DeferredHolder.create(Registries.ITEM, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "electrolytic_separator"));
+    private static final Holder<Item> ELECTROLYTIC_SEPARATOR = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "electrolytic_separator"));
 
     /**
      * Gets the input ingredient.

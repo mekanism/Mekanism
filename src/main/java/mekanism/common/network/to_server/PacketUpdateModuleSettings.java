@@ -14,6 +14,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
@@ -40,12 +41,13 @@ public record PacketUpdateModuleSettings(int slotId, ModuleConfigTarget<?> targe
 
     @Override
     public void handle(IPayloadContext context) {
-        ItemStack stack = context.player().getInventory().getItem(slotId);
+        Player player = context.player();
+        ItemStack stack = player.getInventory().getItem(slotId);
         ModuleContainer container = ModuleHelper.get().getModuleContainer(stack);
         //Validate the container still has the container, and it didn't end up somehow getting removed by the time the server received the packet
         if (container != null && container.has(target.moduleType())) {
             try {
-                container.replaceModuleConfig(stack, target.moduleType(), target.config(), true);
+                container.replaceModuleConfig(player.level().registryAccess(), stack, target.moduleType(), target.config(), true);
             } catch (IllegalArgumentException | IllegalStateException e) {
                 //If the packet is invalid, for example if a config got sent setting to an enum value that is not in range
                 // or if a module config with the given name couldn't be found

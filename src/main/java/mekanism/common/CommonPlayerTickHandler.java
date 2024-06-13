@@ -38,9 +38,9 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -323,8 +323,9 @@ public class CommonPlayerTickHandler {
 
         //Gyroscopic stabilization check
         if (IModuleHelper.INSTANCE.isEnabled(player.getItemBySlot(EquipmentSlot.LEGS), MekanismModules.GYROSCOPIC_STABILIZATION_UNIT)) {
-            if (player.isEyeInFluidType(NeoForgeMod.WATER_TYPE.value()) && !EnchantmentHelper.hasAquaAffinity(player)) {
-                speed *= 5.0F;
+            if (player.isEyeInFluidType(NeoForgeMod.WATER_TYPE.value())) {
+                //TODO - 1.21: Is there a way we can instead get the attribute to just be equal to one?
+                speed /= (float) player.getAttributeValue(Attributes.SUBMERGED_MINING_SPEED);
             }
 
             if (!player.onGround()) {

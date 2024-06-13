@@ -17,7 +17,7 @@ public record MekaSuitAbsorption(float absorption) {
      * The ID of the data map.
      * @see net.neoforged.neoforge.registries.RegistryManager#getDataMap(ResourceKey, ResourceLocation)
      */
-    public static final ResourceLocation ID = new ResourceLocation(MekanismAPI.MEKANISM_MODID, "mekasuit_absorption");
+    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "mekasuit_absorption");
 
     public static final Codec<MekaSuitAbsorption> CODEC = Codec.floatRange(0, 1)
             .xmap(MekaSuitAbsorption::new, MekaSuitAbsorption::absorption);

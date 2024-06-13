@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public class RenderBabyCreeper extends MobRenderer<EntityBabyCreeper, ModelBabyCreeper> {
 
-    private static final ResourceLocation CREEPER_TEXTURES = new ResourceLocation("textures/entity/creeper/creeper.png");
+    private static final ResourceLocation CREEPER_TEXTURES = ResourceLocation.withDefaultNamespace("textures/entity/creeper/creeper.png");
 
     public RenderBabyCreeper(EntityRendererProvider.Context context) {
         super(context, new ModelBabyCreeper(context.getModelSet().bakeLayer(ModelBabyCreeper.CREEPER_LAYER)), 0.5F);

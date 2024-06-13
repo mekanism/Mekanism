@@ -26,7 +26,7 @@ public class SlurryBuilder extends ChemicalBuilder<Slurry, SlurryBuilder> {
      * @return A builder for creating a {@link Slurry}.
      */
     public static SlurryBuilder clean() {
-        return builder(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "slurry/clean"));
+        return builder(ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "slurry/clean"));
     }
 
     /**
@@ -35,7 +35,7 @@ public class SlurryBuilder extends ChemicalBuilder<Slurry, SlurryBuilder> {
      * @return A builder for creating a {@link Slurry}.
      */
     public static SlurryBuilder dirty() {
-        return builder(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "slurry/dirty"));
+        return builder(ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "slurry/dirty"));
     }
 
     /**

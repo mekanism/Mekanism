@@ -41,10 +41,9 @@ public abstract class MekanismJavaModel extends Model {
         model.zRot = z;
     }
 
-    protected static void renderPartsToBuffer(List<ModelPart> parts, PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int light, int overlayLight,
-          float red, float green, float blue, float alpha) {
+    protected static void renderPartsToBuffer(List<ModelPart> parts, PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int light, int overlayLight, int argb) {
         for (ModelPart part : parts) {
-            part.render(poseStack, vertexConsumer, light, overlayLight, red, green, blue, alpha);
+            part.render(poseStack, vertexConsumer, light, overlayLight, argb);
         }
     }
 

@@ -283,7 +283,7 @@ public class Mekanism {
     }
 
     public static ResourceLocation rl(String path) {
-        return new ResourceLocation(Mekanism.MODID, path);
+        return ResourceLocation.fromNamespaceAndPath(Mekanism.MODID, path);
     }
 
     private void setRecipeCacheManager(ReloadListener manager) {

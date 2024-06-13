@@ -16,7 +16,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 @NothingNullByDefault
 public class BasicEnrichingRecipe extends BasicItemStackToItemStackRecipe implements IBasicItemStackOutput {
 
-    private static final Holder<Item> ENRICHMENT_CHAMBER = DeferredHolder.create(Registries.ITEM, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "enrichment_chamber"));
+    private static final Holder<Item> ENRICHMENT_CHAMBER = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "enrichment_chamber"));
 
     public BasicEnrichingRecipe(ItemStackIngredient input, ItemStack output) {
         super(input, output, MekanismRecipeTypes.TYPE_ENRICHING.value());

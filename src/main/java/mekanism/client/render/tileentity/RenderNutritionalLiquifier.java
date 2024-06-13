@@ -242,30 +242,26 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
                 vector3f.add(f, f1, f2);
             }
 
-            float f7 = this.getU0();
-            float f8 = this.getU1();
-            float f5 = this.getV0();
-            float f6 = this.getV1();
-            buffer.vertex(matrix, vectors[0].x(), vectors[0].y(), vectors[0].z())
-                  .uv(f8, f6)
-                  .color(0xFF, 0xFF, 0xFF, 0xFF)
-                  .uv2(light)
-                  .endVertex();
-            buffer.vertex(matrix, vectors[1].x(), vectors[1].y(), vectors[1].z())
-                  .uv(f8, f5)
-                  .color(0xFF, 0xFF, 0xFF, 0xFF)
-                  .uv2(light)
-                  .endVertex();
-            buffer.vertex(matrix, vectors[2].x(), vectors[2].y(), vectors[2].z())
-                  .uv(f7, f5)
-                  .color(0xFF, 0xFF, 0xFF, 0xFF)
-                  .uv2(light)
-                  .endVertex();
-            buffer.vertex(matrix, vectors[3].x(), vectors[3].y(), vectors[3].z())
-                  .uv(f7, f6)
-                  .color(0xFF, 0xFF, 0xFF, 0xFF)
-                  .uv2(light)
-                  .endVertex();
+            float minU = this.getU0();
+            float maxU = this.getU1();
+            float minV = this.getV0();
+            float maxV = this.getV1();
+            buffer.addVertex(matrix, vectors[0].x(), vectors[0].y(), vectors[0].z())
+                  .setUv(maxU, maxV)
+                  .setColor(0xFF, 0xFF, 0xFF, 0xFF)
+                  .setLight(light);
+            buffer.addVertex(matrix, vectors[1].x(), vectors[1].y(), vectors[1].z())
+                  .setUv(maxU, minV)
+                  .setColor(0xFF, 0xFF, 0xFF, 0xFF)
+                  .setLight(light);
+            buffer.addVertex(matrix, vectors[2].x(), vectors[2].y(), vectors[2].z())
+                  .setUv(minU, minV)
+                  .setColor(0xFF, 0xFF, 0xFF, 0xFF)
+                  .setLight(light);
+            buffer.addVertex(matrix, vectors[3].x(), vectors[3].y(), vectors[3].z())
+                  .setUv(minU, maxV)
+                  .setColor(0xFF, 0xFF, 0xFF, 0xFF)
+                  .setLight(light);
         }
 
         protected float getU0() {

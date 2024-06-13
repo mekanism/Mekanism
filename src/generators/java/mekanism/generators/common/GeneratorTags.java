@@ -24,7 +24,7 @@ public class GeneratorTags {
         public static final TagKey<Fluid> TRITIUM = commonTag("tritium");
 
         private static TagKey<Fluid> commonTag(String name) {
-            return FluidTags.create(new ResourceLocation("c", name));
+            return FluidTags.create(ResourceLocation.fromNamespaceAndPath("c", name));
         }
     }
 

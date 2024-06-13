@@ -49,7 +49,7 @@ public class MekanismAPI {
     public static final Logger logger = LogUtils.getLogger();
 
     private static ResourceLocation rl(String path) {
-        return new ResourceLocation(MEKANISM_MODID, path);
+        return ResourceLocation.fromNamespaceAndPath(MEKANISM_MODID, path);
     }
 
     private static <T> ResourceKey<Registry<T>> registryKey(@SuppressWarnings("unused") Class<T> compileTimeTypeValidator, String path) {

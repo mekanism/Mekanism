@@ -98,7 +98,7 @@ public class MekanismGenerators implements IModModule {
     }
 
     public static ResourceLocation rl(String path) {
-        return new ResourceLocation(MekanismGenerators.MODID, path);
+        return ResourceLocation.fromNamespaceAndPath(MekanismGenerators.MODID, path);
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {

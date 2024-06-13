@@ -27,7 +27,7 @@ import org.jetbrains.annotations.NotNull;
 @NothingNullByDefault
 public abstract class ChemicalCrystallizerRecipe extends MekanismRecipe implements Predicate<@NotNull BoxedChemicalStack> {
 
-    private static final Holder<Item> CHEMICAL_CRYSTALLIZER = DeferredHolder.create(Registries.ITEM, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "chemical_crystallizer"));
+    private static final Holder<Item> CHEMICAL_CRYSTALLIZER = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "chemical_crystallizer"));
 
     /**
      * Gets the output based on the given input.

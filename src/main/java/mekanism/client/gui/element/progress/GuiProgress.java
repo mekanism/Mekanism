@@ -171,25 +171,39 @@ public class GuiProgress extends GuiTexturedElement implements IRecipeViewerReci
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShaderTexture(0, resource);
-        RenderSystem.setShader(GameRenderer::getPositionColorTexShader);
+        RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
 
-        //Note: We still use the tesselator as that is what the position_color_tex GuiGraphics#innerBlit does
-        BufferBuilder builder = Tesselator.getInstance().getBuilder();
-        builder.begin(Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX);
+        BufferBuilder builder = Tesselator.getInstance().begin(Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
 
         if (type.isVertical()) {
-            builder.vertex(matrix, x, y2, 0).color(redTo, greenTo, blueTo, alphaTo).uv(minU, maxV).endVertex();
-            builder.vertex(matrix, x2, y2, 0).color(redTo, greenTo, blueTo, alphaTo).uv(maxU, maxV).endVertex();
-            builder.vertex(matrix, x2, y, 0).color(redFrom, greenFrom, blueFrom, alphaFrom).uv(maxU, minV).endVertex();
-            builder.vertex(matrix, x, y, 0).color(redFrom, greenFrom, blueFrom, alphaFrom).uv(minU, minV).endVertex();
+            builder.addVertex(matrix, x, y2, 0)
+                  .setUv(minU, maxV)
+                  .setColor(redTo, greenTo, blueTo, alphaTo);
+            builder.addVertex(matrix, x2, y2, 0)
+                  .setUv(maxU, maxV)
+                  .setColor(redTo, greenTo, blueTo, alphaTo);
+            builder.addVertex(matrix, x2, y, 0)
+                  .setUv(maxU, minV)
+                  .setColor(redFrom, greenFrom, blueFrom, alphaFrom);
+            builder.addVertex(matrix, x, y, 0)
+                  .setUv(minU, minV)
+                  .setColor(redFrom, greenFrom, blueFrom, alphaFrom);
         } else {
-            builder.vertex(matrix, x, y2, 0).color(redFrom, greenFrom, blueFrom, alphaFrom).uv(minU, maxV).endVertex();
-            builder.vertex(matrix, x2, y2, 0).color(redTo, greenTo, blueTo, alphaTo).uv(maxU, maxV).endVertex();
-            builder.vertex(matrix, x2, y, 0).color(redTo, greenTo, blueTo, alphaTo).uv(maxU, minV).endVertex();
-            builder.vertex(matrix, x, y, 0).color(redFrom, greenFrom, blueFrom, alphaFrom).uv(minU, minV).endVertex();
+            builder.addVertex(matrix, x, y2, 0)
+                  .setUv(minU, maxV)
+                  .setColor(redFrom, greenFrom, blueFrom, alphaFrom);
+            builder.addVertex(matrix, x2, y2, 0)
+                  .setUv(maxU, maxV)
+                  .setColor(redTo, greenTo, blueTo, alphaTo);
+            builder.addVertex(matrix, x2, y, 0)
+                  .setUv(maxU, minV)
+                  .setColor(redTo, greenTo, blueTo, alphaTo);
+            builder.addVertex(matrix, x, y, 0)
+                  .setUv(minU, minV)
+                  .setColor(redFrom, greenFrom, blueFrom, alphaFrom);
         }
 
-        BufferUploader.drawWithShader(builder.end());
+        BufferUploader.drawWithShader(builder.buildOrThrow());
         //Reset blit and fill gradient states
         RenderSystem.disableBlend();
     }

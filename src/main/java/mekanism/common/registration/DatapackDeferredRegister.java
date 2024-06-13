@@ -52,6 +52,6 @@ public class DatapackDeferredRegister<T> extends DeferredMapCodecRegister<T> {
     }
 
     public ResourceKey<T> dataKey(String name) {
-        return ResourceKey.create(datapackRegistryName, new ResourceLocation(getNamespace(), name));
+        return ResourceKey.create(datapackRegistryName, ResourceLocation.fromNamespaceAndPath(getNamespace(), name));
     }
 }

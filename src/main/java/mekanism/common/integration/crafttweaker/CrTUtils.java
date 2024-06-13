@@ -67,7 +67,7 @@ public class CrTUtils {
      * @return Resource location in CraftTweaker's domain.
      */
     public static ResourceLocation rl(String path) {
-        return new ResourceLocation(MekanismHooks.CRAFTTWEAKER_MOD_ID, path);
+        return ResourceLocation.fromNamespaceAndPath(MekanismHooks.CRAFTTWEAKER_MOD_ID, path);
     }
 
     /**

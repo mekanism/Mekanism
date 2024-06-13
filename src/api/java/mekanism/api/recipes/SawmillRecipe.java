@@ -29,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
 public abstract class SawmillRecipe extends MekanismRecipe implements Predicate<@NotNull ItemStack> {
 
     protected static final RandomSource RANDOM = RandomSource.create();
-    private static final Holder<Item> PRECISION_SAWMILL = DeferredHolder.create(Registries.ITEM, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "precision_sawmill"));
+    private static final Holder<Item> PRECISION_SAWMILL = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "precision_sawmill"));
 
     @Override
     public abstract boolean test(ItemStack stack);

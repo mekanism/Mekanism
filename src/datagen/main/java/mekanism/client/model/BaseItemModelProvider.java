@@ -59,7 +59,7 @@ public abstract class BaseItemModelProvider extends ItemModelProvider {
         for (Holder<Item> holder : register.getBucketEntries()) {
             //Note: We expect this to always be the case
             if (holder.value() instanceof BucketItem bucket) {
-                withExistingParent(RegistryUtils.getPath(bucket), new ResourceLocation(NeoForgeVersion.MOD_ID, "item/bucket"))
+                withExistingParent(RegistryUtils.getPath(bucket), ResourceLocation.fromNamespaceAndPath(NeoForgeVersion.MOD_ID, "item/bucket"))
                       .customLoader(DynamicFluidContainerModelBuilder::begin)
                       .fluid(bucket.content);
             }
@@ -106,7 +106,7 @@ public abstract class BaseItemModelProvider extends ItemModelProvider {
             String trimId = trimModelData.name(armorItem.getMaterial());
             ItemModelBuilder override = withExistingParent(builder.getLocation().withSuffix("_" + trimId + "_trim").getPath(), "item/generated")
                   .texture("layer0", texture)
-                  .texture("layer1", new ResourceLocation("trims/items/" + armorItem.getType().getName() + "_trim_" + trimId));
+                  .texture("layer1", ResourceLocation.withDefaultNamespace("trims/items/" + armorItem.getType().getName() + "_trim_" + trimId));
             builder.override()
                   .predicate(ItemModelGenerators.TRIM_TYPE_PREDICATE_ID, trimModelData.itemModelIndex())
                   .model(override);

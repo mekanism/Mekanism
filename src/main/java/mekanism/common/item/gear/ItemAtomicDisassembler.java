@@ -232,12 +232,12 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
         ImmutableList.Builder<ItemAttributeModifiers.Entry> builder = ImmutableList.builder();
         builder.add(new ItemAttributeModifiers.Entry(
               Attributes.ATTACK_DAMAGE,
-              new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", damage, Operation.ADD_VALUE),
+              new AttributeModifier(BASE_ATTACK_DAMAGE_ID, damage, Operation.ADD_VALUE),
               EquipmentSlotGroup.MAINHAND
         ));
         builder.add(new ItemAttributeModifiers.Entry(
               Attributes.ATTACK_SPEED,
-              new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", MekanismConfig.gear.disassemblerAttackSpeed.get(), Operation.ADD_VALUE),
+              new AttributeModifier(BASE_ATTACK_SPEED_ID, MekanismConfig.gear.disassemblerAttackSpeed.get(), Operation.ADD_VALUE),
               EquipmentSlotGroup.MAINHAND
         ));
         return new ItemAttributeModifiers(builder.build(), true);
@@ -247,12 +247,12 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     public void addToBuilder(List<ItemAttributeModifiers.Entry> builder) {
         builder.add(new ItemAttributeModifiers.Entry(
               Attributes.ATTACK_DAMAGE,
-              new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", MekanismConfig.gear.disassemblerMaxDamage.get(), Operation.ADD_VALUE),
+              new AttributeModifier(BASE_ATTACK_DAMAGE_ID, MekanismConfig.gear.disassemblerMaxDamage.get(), Operation.ADD_VALUE),
               EquipmentSlotGroup.MAINHAND
         ));
         builder.add(new ItemAttributeModifiers.Entry(
               Attributes.ATTACK_SPEED,
-              new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", MekanismConfig.gear.disassemblerAttackSpeed.get(), Operation.ADD_VALUE),
+              new AttributeModifier(BASE_ATTACK_SPEED_ID, MekanismConfig.gear.disassemblerAttackSpeed.get(), Operation.ADD_VALUE),
               EquipmentSlotGroup.MAINHAND
         ));
     }

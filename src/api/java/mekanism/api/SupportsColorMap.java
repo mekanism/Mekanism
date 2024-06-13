@@ -1,5 +1,7 @@
 package mekanism.api;
 
+import net.minecraft.util.FastColor;
+
 /**
  * @since 10.4.0
  */
@@ -15,6 +17,28 @@ public interface SupportsColorMap {
     default float getColor(int index) {
         return getRgbCode()[index] / 255F;
     }
+
+    /**
+     * Gets the packed color representation of this object with the given alpha value.
+     *
+     * @param alpha Alpha value to use when packing the color between zero and 255
+     *
+     * @return the packed color
+     *
+     * @since 10.6.0
+     */
+    default int getPackedColor(int alpha) {
+        return FastColor.ARGB32.color(alpha, getPackedColor());
+    }
+
+    /**
+     * Gets the fully opaque packed color representation of this object.
+     *
+     * @return the packed color
+     *
+     * @since 10.6.0
+     */
+    int getPackedColor();
 
     /**
      * Gets the red, green and blue color value, as an integer(range: 0 - 255).

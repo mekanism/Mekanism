@@ -38,7 +38,7 @@ public class BlockPlasticTransparentSlab extends BlockPlasticSlab {
     }
 
     @Override
-    public float[] getBeaconColorMultiplier(@NotNull BlockState state, @NotNull LevelReader world, @NotNull BlockPos pos, @NotNull BlockPos beaconPos) {
-        return getColor().getRgbCodeFloat();
+    public Integer getBeaconColorMultiplier(@NotNull BlockState state, @NotNull LevelReader world, @NotNull BlockPos pos, @NotNull BlockPos beaconPos) {
+        return getColor().getPackedColor();
     }
 }

@@ -74,7 +74,7 @@ public abstract class BaseEmiAliasProvider implements DataProvider {
         bootstrapEmi();
         return this.registries.thenCompose(lookupProvider -> {
             addAliases(lookupProvider);
-            Path path = pathProvider.json(new ResourceLocation(MekanismHooks.EMI_MOD_ID, modid));
+            Path path = pathProvider.json(ResourceLocation.fromNamespaceAndPath(MekanismHooks.EMI_MOD_ID, modid));
             return DataProvider.saveStable(cachedOutput, lookupProvider, AliasInfo.LIST_CODEC, data.elements(), path);
         });
     }

@@ -11,9 +11,9 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
@@ -75,8 +75,8 @@ public class ClearConfigurationRecipe extends CustomRecipe {
     }
 
     @Override
-    public boolean matches(CraftingContainer container, Level level) {
-        ItemStack target = getTargetStack(container);
+    public boolean matches(CraftingInput input, Level level) {
+        ItemStack target = getTargetStack(input);
         if (target.isEmpty()) {
             //If we didn't find a singular block item our recipe can't possibly match
             return false;
@@ -91,8 +91,8 @@ public class ClearConfigurationRecipe extends CustomRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer container, HolderLookup.Provider provider) {
-        ItemStack target = getTargetStack(container);
+    public ItemStack assemble(CraftingInput input, HolderLookup.Provider provider) {
+        ItemStack target = getTargetStack(input);
         if (target.isEmpty()) {
             //If we didn't find a singular block item our recipe can't possibly match
             return ItemStack.EMPTY;
@@ -114,11 +114,11 @@ public class ClearConfigurationRecipe extends CustomRecipe {
         }
     }
 
-    private ItemStack getTargetStack(CraftingContainer container) {
+    private ItemStack getTargetStack(CraftingInput input) {
         ItemStack target = ItemStack.EMPTY;
         //Note: We don't use inv#getItems as that may do unnecessary copies depending on impl
-        for (int i = 0, slots = container.getContainerSize(); i < slots; ++i) {
-            ItemStack stackInSlot = container.getItem(i);
+        for (int i = 0, slots = input.size(); i < slots; ++i) {
+            ItemStack stackInSlot = input.getItem(i);
             if (!stackInSlot.isEmpty()) {
                 if (stackInSlot.isComponentsPatchEmpty()) {
                     //We currently only want to target block items that have at least one component

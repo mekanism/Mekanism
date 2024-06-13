@@ -145,10 +145,14 @@ public class GuiColorWindow extends GuiWindow {
     private void drawGradient(GuiGraphics guiGraphics, int x, int y, int width, int height, Color tl, Color tr, Color bl, Color br) {
         VertexConsumer buffer = guiGraphics.bufferSource().getBuffer(RenderType.gui());
         Matrix4f matrix4f = guiGraphics.pose().last().pose();
-        buffer.vertex(matrix4f, x, y + height, 0).color(bl.r(), bl.g(), bl.b(), bl.a()).endVertex();
-        buffer.vertex(matrix4f, x + width, y + height, 0).color(br.r(), br.g(), br.b(), br.a()).endVertex();
-        buffer.vertex(matrix4f, x + width, y, 0).color(tr.r(), tr.g(), tr.b(), tr.a()).endVertex();
-        buffer.vertex(matrix4f, x, y, 0).color(tl.r(), tl.g(), tl.b(), tl.a()).endVertex();
+        buffer.addVertex(matrix4f, x, y + height, 0)
+              .setColor(bl.r(), bl.g(), bl.b(), bl.a());
+        buffer.addVertex(matrix4f, x + width, y + height, 0)
+              .setColor(br.r(), br.g(), br.b(), br.a());
+        buffer.addVertex(matrix4f, x + width, y, 0)
+              .setColor(tr.r(), tr.g(), tr.b(), tr.a());
+        buffer.addVertex(matrix4f, x, y, 0)
+              .setColor(tl.r(), tl.g(), tl.b(), tl.a());
         //Note: This technically should probably be flushIfUnmanaged, but I believe we are always unmanaged here, so it is not worth ATing the method to call it
         guiGraphics.flush();
     }

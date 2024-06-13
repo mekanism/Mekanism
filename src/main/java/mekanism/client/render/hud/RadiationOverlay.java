@@ -6,6 +6,7 @@ import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.LayeredDraw;
@@ -27,7 +28,7 @@ public class RadiationOverlay implements LayeredDraw.Layer {
     }
 
     @Override
-    public void render(@NotNull GuiGraphics graphics, float partialTicks) {
+    public void render(@NotNull GuiGraphics graphics, @NotNull DeltaTracker delta) {
         Player player = Minecraft.getInstance().player;
         if (player != null && IRadiationManager.INSTANCE.isRadiationEnabled() && MekanismUtils.isPlayingMode(player)) {
             double radiation = player.getData(MekanismAttachmentTypes.RADIATION);

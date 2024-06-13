@@ -23,7 +23,7 @@ public class JsonSlurryParser extends JsonChemicalParser<Slurry, SlurryBuilder, 
         JsonSlurryBuilder builder = new JsonSlurryBuilder(this, key);
         parseCommon(data, builder)
               .ifKey("clean", val -> val.bool().handle(builder::clean))
-              .ifKey("ore", val -> val.string().map(ResourceLocation::new).handle(builder::ore))
+              .ifKey("ore", val -> val.string().map(ResourceLocation::parse).handle(builder::ore))
         ;
         builderModification.accept(builder);
         return builder;

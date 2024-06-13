@@ -84,6 +84,7 @@ import net.minecraft.core.SectionPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -489,7 +490,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
                         // the block, so we check if we can mine it
                         if (inverse == (matchingFilter == null) && canMine(state, pos)) {
                             //If we can, then validate we can fit the drops and try to see if we can replace it properly as well
-                            List<ItemStack> drops = getDrops(state, pos);
+                            List<ItemStack> drops = getDrops((ServerLevel) level, state, pos);
                             if (canInsert(drops)) {
                                 CommonWorldTickHandler.fallbackItemCollector = overflowCollector;
                                 if (setReplace(state, pos, matchingFilter)) {
@@ -1268,15 +1269,15 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         NBTUtils.setIntIfPresent(tag, SerializationConstants.MAX, this::setMaxY);
     }
 
-    private List<ItemStack> getDrops(BlockState state, BlockPos pos) {
+    private List<ItemStack> getDrops(ServerLevel level, BlockState state, BlockPos pos) {
         if (state.isAir()) {
             return Collections.emptyList();
         }
         ItemStack stack = ItemAtomicDisassembler.fullyChargedStack();
         if (getSilkTouch()) {
-            stack.enchant(Enchantments.SILK_TOUCH, 1);
+            //TODO - 1.21: Test this works properly, and see if we should do it somehow via enchantment effects instead?
+            stack.enchant(level.registryAccess().registryOrThrow(Registries.ENCHANTMENT).getHolderOrThrow(Enchantments.SILK_TOUCH), 1);
         }
-        ServerLevel level = (ServerLevel) getWorldNN();
         MekFakePlayer dummy = MekFakePlayer.setupFakePlayer(level, this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ());
         dummy.setEmulatingUUID(getOwnerUUID());//pretend to be the owner
         List<ItemStack> drops = WorldUtils.getDrops(state, level, pos, WorldUtils.getTileEntity(level, pos), dummy, stack);

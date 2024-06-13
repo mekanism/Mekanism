@@ -12,6 +12,7 @@ import net.minecraft.network.chat.TextColor;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ByIdMap;
+import net.minecraft.util.FastColor;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.material.MapColor;
@@ -72,15 +73,16 @@ public enum EnumColor implements IIncrementalEnum<EnumColor>, SupportsColorMap, 
      * The color code that will be displayed
      */
     public final String code;
-
-    private int[] rgbCode;
-    private TextColor color;
     private final ILangEntry langEntry;
     private final String englishName;
     private final String registryPrefix;
     @Nullable
     private final DyeColor dyeColor;
     private final MapColor mapColor;
+
+    private TextColor color;
+    private int[] rgbCode;
+    private int argb;
 
     EnumColor(String s, ILangEntry langEntry, String englishName, String registryPrefix, int[] rgbCode, DyeColor dyeColor) {
         this(s, langEntry, englishName, registryPrefix, rgbCode, dyeColor.getMapColor(), dyeColor);
@@ -176,7 +178,13 @@ public enum EnumColor implements IIncrementalEnum<EnumColor>, SupportsColorMap, 
     @Override
     public void setColorFromAtlas(int[] color) {
         rgbCode = color;
-        this.color = TextColor.fromRgb(rgbCode[0] << 16 | rgbCode[1] << 8 | rgbCode[2]);
+        this.argb = FastColor.ARGB32.color(rgbCode[0], rgbCode[1], rgbCode[2]);
+        this.color = TextColor.fromRgb(this.argb);
+    }
+
+    @Override
+    public int getPackedColor() {
+        return argb;
     }
 
     /**

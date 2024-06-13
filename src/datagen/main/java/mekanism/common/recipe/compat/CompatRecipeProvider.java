@@ -52,7 +52,7 @@ public abstract class CompatRecipeProvider implements ISubRecipeProvider {
     }
 
     protected ResourceLocation rl(String path) {
-        return new ResourceLocation(modid, path);
+        return ResourceLocation.fromNamespaceAndPath(modid, path);
     }
 
     protected TagKey<Item> tag(String path) {

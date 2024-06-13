@@ -22,7 +22,7 @@ public class CachedOredictionificatorConfigValue extends CachedMapConfigValue<St
           Supplier<Map<String, List<String>>> defaults) {
         return new CachedOredictionificatorConfigValue(config, builder.defineListAllowEmpty(path,
               () -> encodeStatic(defaults.get(), CachedOredictionificatorConfigValue::encodeStatic),
-              o -> o instanceof String string && ResourceLocation.isValidResourceLocation(string.toLowerCase(Locale.ROOT))));
+              o -> o instanceof String string && ResourceLocation.tryParse(string.toLowerCase(Locale.ROOT)) != null));
     }
 
     @Override
@@ -46,7 +46,7 @@ public class CachedOredictionificatorConfigValue extends CachedMapConfigValue<St
         for (String path : values) {
             try {
                 //Try to create a resource location from it to ensure all characters are valid
-                ResourceLocation rl = new ResourceLocation(namespace, path.toLowerCase(Locale.ROOT));
+                ResourceLocation rl = ResourceLocation.fromNamespaceAndPath(namespace, path.toLowerCase(Locale.ROOT));
                 // if they are, add it
                 adder.accept(rl.toString());
             } catch (ResourceLocationException ignored) {

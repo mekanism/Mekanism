@@ -8,6 +8,7 @@ import net.minecraft.network.chat.TextColor;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ByIdMap;
+import net.minecraft.util.FastColor;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.material.MapColor;
 import org.jetbrains.annotations.NotNull;
@@ -41,6 +42,7 @@ public enum BaseTier implements StringRepresentable, SupportsColorMap {
     private final MapColor mapColor;
     private TextColor textColor;
     private int[] rgbCode;
+    private int argb;
 
     BaseTier(String name, int[] rgbCode, MapColor mapColor) {
         this.name = name;
@@ -71,6 +73,11 @@ public enum BaseTier implements StringRepresentable, SupportsColorMap {
         return mapColor;
     }
 
+    @Override
+    public int getPackedColor() {
+        return argb;
+    }
+
     /**
      * {@inheritDoc}
      *
@@ -90,7 +97,8 @@ public enum BaseTier implements StringRepresentable, SupportsColorMap {
     @Override
     public void setColorFromAtlas(int[] color) {
         this.rgbCode = color;
-        this.textColor = TextColor.fromRgb(rgbCode[0] << 16 | rgbCode[1] << 8 | rgbCode[2]);
+        this.argb = FastColor.ARGB32.color(rgbCode[0], rgbCode[1], rgbCode[2]);
+        this.textColor = TextColor.fromRgb(argb);
     }
 
     /**

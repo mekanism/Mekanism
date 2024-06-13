@@ -26,7 +26,7 @@ public class ToolsTags {
         public static final TagKey<Block> INCORRECT_FOR_STEEL_TOOL = tag("incorrect_for_steel_tool");
 
         private static TagKey<Block> commonTag(String name) {
-            return BlockTags.create(new ResourceLocation("c", name));
+            return BlockTags.create(ResourceLocation.fromNamespaceAndPath("c", name));
         }
 
         private static TagKey<Block> tag(String name) {
@@ -42,7 +42,7 @@ public class ToolsTags {
         public static final TagKey<Item> TOOLS_PAXELS = commonTag("tools/paxels");
 
         private static TagKey<Item> commonTag(String name) {
-            return ItemTags.create(new ResourceLocation("c", name));
+            return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", name));
         }
     }
 }

@@ -52,7 +52,7 @@ public abstract class JsonChemicalParser<CHEMICAL extends Chemical<CHEMICAL>, BU
 
     protected ObjValue parseCommon(JsonObject data, THING_BUILDER builder) {
         return JParse.begin(data)
-              .ifKey("texture", val -> val.string().map(ResourceLocation::new).handle(builder::texture))
+              .ifKey("texture", val -> val.string().map(ResourceLocation::parse).handle(builder::texture))
               .ifKey("tint", val -> processColor(val, builder::tint))
               .ifKey("color_representation", val -> processColor(val, builder::colorRepresentation))
               .ifKey("hidden", val -> val.bool().handle(builder::hidden))

@@ -37,7 +37,7 @@ import org.jetbrains.annotations.NotNull;
 @NothingNullByDefault
 public abstract class PressurizedReactionRecipe extends MekanismRecipe implements TriPredicate<@NotNull ItemStack, @NotNull FluidStack, @NotNull GasStack> {
 
-    private static final Holder<Item> PRESSURIZED_REACTION_CHAMBER = DeferredHolder.create(Registries.ITEM, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "pressurized_reaction_chamber"));
+    private static final Holder<Item> PRESSURIZED_REACTION_CHAMBER = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "pressurized_reaction_chamber"));
 
     /**
      * Gets the item input ingredient.

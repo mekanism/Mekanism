@@ -111,7 +111,7 @@ public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFor
     protected ItemStack checkValidity(int slotIndex) {
         int i = slotIndex - 21;
         if (i >= 0 && tile.hasValidFormula()) {
-            ItemStack stack = tile.formula.input.get(i);
+            ItemStack stack = tile.formula.getInputStack(i);
             if (!stack.isEmpty()) {
                 Slot slot = menu.slots.get(slotIndex);
                 //Only render the "correct" item in the gui slot if we don't already have that item there

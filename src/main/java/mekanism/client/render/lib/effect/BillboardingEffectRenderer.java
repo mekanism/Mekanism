@@ -75,10 +75,18 @@ public class BillboardingEffectRenderer {
 
         poseStack.pushPose();
         Matrix4f matrix = poseStack.last().pose();
-        buffer.vertex(matrix, vertexPos[0].x(), vertexPos[0].y(), vertexPos[0].z()).color(color[0], color[1], color[2], color[3]).uv(minU, maxV).endVertex();
-        buffer.vertex(matrix, vertexPos[1].x(), vertexPos[1].y(), vertexPos[1].z()).color(color[0], color[1], color[2], color[3]).uv(maxU, maxV).endVertex();
-        buffer.vertex(matrix, vertexPos[2].x(), vertexPos[2].y(), vertexPos[2].z()).color(color[0], color[1], color[2], color[3]).uv(maxU, minV).endVertex();
-        buffer.vertex(matrix, vertexPos[3].x(), vertexPos[3].y(), vertexPos[3].z()).color(color[0], color[1], color[2], color[3]).uv(minU, minV).endVertex();
+        buffer.addVertex(matrix, vertexPos[0].x(), vertexPos[0].y(), vertexPos[0].z())
+              .setUv(minU, maxV)
+              .setColor(color[0], color[1], color[2], color[3]);
+        buffer.addVertex(matrix, vertexPos[1].x(), vertexPos[1].y(), vertexPos[1].z())
+              .setUv(maxU, maxV)
+              .setColor(color[0], color[1], color[2], color[3]);
+        buffer.addVertex(matrix, vertexPos[2].x(), vertexPos[2].y(), vertexPos[2].z())
+              .setUv(maxU, minV)
+              .setColor(color[0], color[1], color[2], color[3]);
+        buffer.addVertex(matrix, vertexPos[3].x(), vertexPos[3].y(), vertexPos[3].z())
+              .setUv(minU, minV)
+              .setColor(color[0], color[1], color[2], color[3]);
         poseStack.popPose();
     }
 }

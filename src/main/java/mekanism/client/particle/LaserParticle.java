@@ -94,7 +94,10 @@ public class LaserParticle extends TextureSheetParticle {
     }
 
     private void addVertex(VertexConsumer vertexBuilder, Vector3f pos, float u, float v, int light) {
-        vertexBuilder.vertex(pos.x(), pos.y(), pos.z()).uv(u, v).color(rCol, gCol, bCol, alpha).uv2(light).endVertex();
+        vertexBuilder.addVertex(pos.x(), pos.y(), pos.z())
+              .setUv(u, v)
+              .setColor(rCol, gCol, bCol, alpha)
+              .setLight(light);
     }
 
     @NotNull

@@ -36,12 +36,11 @@ import mekanism.common.inventory.container.slot.MainInventorySlot;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.qio.PacketQIOFillCraftingWindow;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
@@ -103,17 +102,17 @@ public class QIOCraftingTransferHandler {
         //Note: This variable is only used for when doTransfer is false
         byte nonEmptyCraftingSlots = 0;
         if (action.simulate()) {
-            CraftingContainer dummy = MekanismUtils.getDummyCraftingInv();
+            List<ItemStack> dummy = new ArrayList<>(9);
             for (int slot = 0; slot < 9; slot++) {
-                IInventorySlot inputSlot = craftingWindow.getInputSlot(slot);
-                if (!inputSlot.isEmpty()) {
-                    //Copy it in case any recipe does weird things and tries to mutate the stack
-                    dummy.setItem(slot, inputSlot.getStack().copyWithCount(1));
+                ItemStack inputStack = craftingWindow.getInputSlot(slot).getStack();
+                //Copy it in case any recipe does weird things and tries to mutate the stack
+                dummy.add(inputStack.copyWithCount(1));
+                if (!inputStack.isEmpty()) {
                     //Count how many crafting slots are not empty
                     nonEmptyCraftingSlots++;
                 }
             }
-            if (recipeHelper.recipe().matches(dummy, recipeHelper.player().level())) {
+            if (recipeHelper.recipe().matches(CraftingInput.of(3, 3, dummy), recipeHelper.player().level())) {
                 //If we are not transferring things, and the crafting window's contents already matches the given recipe,
                 // then we can just early exit knowing that we have something that will work. If we are transferring items
                 // then we need to actually do all the checks as we may be transferring more items if maxTransfer is true,

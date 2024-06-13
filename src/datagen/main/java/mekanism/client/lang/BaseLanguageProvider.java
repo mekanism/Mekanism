@@ -121,7 +121,7 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
     }
 
     protected void addAlias(String path, String translation) {
-        add(Util.makeDescriptionId("alias", new ResourceLocation(modid, path)), translation);
+        add(Util.makeDescriptionId("alias", ResourceLocation.fromNamespaceAndPath(modid, path)), translation);
     }
 
     @Override

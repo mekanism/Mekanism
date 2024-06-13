@@ -14,7 +14,6 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Vec3i;
-import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.model.pipeline.QuadBakingVertexConsumer;
 import org.joml.Vector3f;
 
@@ -41,13 +40,14 @@ public class Quad {
     }
 
     public Quad(BakedQuad quad) {
-        vertices = new Vertex[4];
         side = quad.getDirection();
         sprite = quad.getSprite();
         tintIndex = quad.getTintIndex();
         shade = quad.isShade();
         hasAmbientOcclusion = quad.hasAmbientOcclusion();
-        new BakedQuadUnpacker().putBulkData(new PoseStack().last(), quad, 1, 1, 1, 1, 0, OverlayTexture.NO_OVERLAY, true);
+        BakedQuadUnpacker unpacker = new BakedQuadUnpacker();
+        unpacker.putBulkData(new PoseStack().last(), quad, 1, 1, 1, 1, 0, OverlayTexture.NO_OVERLAY, true);
+        vertices = unpacker.getVertices();
     }
 
     public TextureAtlasSprite getTexture() {
@@ -109,7 +109,7 @@ public class Quad {
     }
 
     public BakedQuad bake() {
-        QuadBakingVertexConsumer.Buffered quadBaker = new QuadBakingVertexConsumer.Buffered();
+        QuadBakingVertexConsumer quadBaker = new QuadBakingVertexConsumer();
         quadBaker.setSprite(sprite);
         quadBaker.setDirection(side);
         quadBaker.setTintIndex(tintIndex);
@@ -118,7 +118,7 @@ public class Quad {
         for (Vertex vertex : vertices) {
             vertex.write(quadBaker);
         }
-        return quadBaker.getQuad();
+        return quadBaker.bakeQuad();
     }
 
     public Quad copy() {
@@ -138,68 +138,64 @@ public class Quad {
     }
 
     @NothingNullByDefault
-    private class BakedQuadUnpacker implements VertexConsumer {
+    private static class BakedQuadUnpacker implements VertexConsumer {
 
-        private Vertex vertex = new Vertex();
+        private final Vertex[] vertices = new Vertex[4];
+        private boolean building = false;
         private int vertexIndex = 0;
 
-        @Override
-        public VertexConsumer vertex(double x, double y, double z) {
-            vertex.pos(new Vec3(x, y, z));
-            return this;
-        }
-
-        @Override
-        public VertexConsumer color(int red, int green, int blue, int alpha) {
-            vertex.color(red, green, blue, alpha);
-            return this;
-        }
-
-        @Override
-        public VertexConsumer uv(float u, float v) {
-            vertex.texRaw(u, v);
-            return this;
-        }
-
-        @Override
-        public VertexConsumer overlayCoords(int u, int v) {
-            vertex.overlay(u, v);
-            return this;
-        }
-
-        @Override
-        public VertexConsumer uv2(int u, int v) {
-            vertex.lightRaw(u, v);
-            return this;
-        }
-
-        @Override
-        public VertexConsumer normal(float x, float y, float z) {
-            vertex.normal(x, y, z);
-            return this;
-        }
-
-        @Override
-        public void endVertex() {
-            if (vertexIndex != vertices.length) {
-                vertices[vertexIndex++] = vertex;
-                vertex = new Vertex();
+        public Vertex[] getVertices() {
+            if (!building || ++vertexIndex != 4) {
+                throw new IllegalStateException("Not enough vertices available. Vertices in buffer: " + vertexIndex);
             }
+            return vertices;
         }
 
         @Override
-        public void defaultColor(int red, int green, int blue, int alpha) {
-            //We don't support having a default color
+        public VertexConsumer addVertex(float x, float y, float z) {
+            if (building) {
+                if (++vertexIndex > 4) {
+                    throw new IllegalStateException("Expected quad export after fourth vertex");
+                }
+            }
+            building = true;
+            vertices[vertexIndex] = new Vertex().pos(new Vector3f(x, y, z));
+            return this;
         }
 
         @Override
-        public void unsetDefaultColor() {
-            //We don't support having a default color
+        public VertexConsumer setColor(int red, int green, int blue, int alpha) {
+            vertices[vertexIndex].color(red, green, blue, alpha);
+            return this;
+        }
+
+        @Override
+        public VertexConsumer setUv(float u, float v) {
+            vertices[vertexIndex].texRaw(u, v);
+            return this;
+        }
+
+        @Override
+        public VertexConsumer setUv1(int u, int v) {
+            vertices[vertexIndex].overlay(u, v);
+            return this;
+        }
+
+        @Override
+        public VertexConsumer setUv2(int u, int v) {
+            vertices[vertexIndex].lightRaw(u, v);
+            return this;
+        }
+
+        @Override
+        public VertexConsumer setNormal(float x, float y, float z) {
+            vertices[vertexIndex].normal(x, y, z);
+            return this;
         }
 
         @Override
         public VertexConsumer misc(VertexFormatElement element, int... rawData) {
-            vertex.misc(element, Arrays.copyOf(rawData, rawData.length));
+            vertices[vertexIndex].misc(element, Arrays.copyOf(rawData, rawData.length));
             return this;
         }
     }
@@ -210,7 +206,7 @@ public class Quad {
         private final Direction side;
         private Color color = Color.WHITE;
 
-        private Vec3 vec1, vec2, vec3, vec4;
+        private Vector3f vec1, vec2, vec3, vec4;
 
         private float minU, minV, maxU, maxV;
         private int lightU, lightV;
@@ -273,7 +269,7 @@ public class Quad {
             return this;
         }
 
-        public Builder pos(Vec3 tl, Vec3 bl, Vec3 br, Vec3 tr) {
+        public Builder pos(Vector3f tl, Vector3f bl, Vector3f br, Vector3f tr) {
             this.vec1 = tl;
             this.vec2 = bl;
             this.vec3 = br;
@@ -281,30 +277,33 @@ public class Quad {
             return this;
         }
 
-        public Builder rect(Vec3 start, double width, double height) {
+        public Builder rect(Vector3f start, float width, float height) {
             return rect(start, width, height, 1F / 16F); // default to 1/16 scale
         }
 
         // start = bottom left
-        public Builder rect(Vec3 start, double width, double height, double scale) {
-            start = start.scale(scale);
-            Vec3 end;
+        public Builder rect(Vector3f start, float width, float height, float scale) {
+            start = start.mul(scale, scale, scale, new Vector3f());
+            Vector3f end;
             if (side.getAxis().isHorizontal()) {
                 Vec3i normal = side.getNormal();
-                end = start.add(normal.getZ() * width * scale, 0, normal.getX() * width * scale);
+                end = start.add(normal.getZ() * width * scale, 0, normal.getX() * width * scale, new Vector3f());
                 if (side.getAxis() == Axis.X) {
                     //Wind vertices in a different order so that it faces the correct direction
-                    return pos(start, start.add(0, height * scale, 0), end.add(0, height * scale, 0), end);
+                    return pos(start, start.add(0, height * scale, 0, new Vector3f()),
+                          end.add(0, height * scale, 0, new Vector3f()), end);
                 }
             } else {
-                end = start.add(width * scale, 0, 0);
+                end = new Vector3f(start.x + width * scale, start.y, start.z);
             }
-            return pos(start.add(0, height * scale, 0), start, end, end.add(0, height * scale, 0));
+            return pos(start.add(0, height * scale, 0, new Vector3f()), start,
+                  end, end.add(0, height * scale, 0, new Vector3f()));
         }
 
         public Quad build() {
             Vertex[] vertices = new Vertex[4];
-            Vector3f normal = vec3.subtract(vec2).cross(vec1.subtract(vec2)).normalize().toVector3f();
+            //Note: We don't need to create a new Vector3f for the cross multiplication, as it will just mutate the new one we used for the first subtraction
+            Vector3f normal = vec3.sub(vec2, new Vector3f()).cross(vec1.sub(vec2,  new Vector3f())).normalize();
             vertices[0] = Vertex.create(vec1, normal, color, texture, minU, minV).light(lightU, lightV);
             vertices[1] = Vertex.create(vec2, normal, color, texture, minU, maxV).light(lightU, lightV);
             vertices[2] = Vertex.create(vec3, normal, color, texture, maxU, maxV).light(lightU, lightV);

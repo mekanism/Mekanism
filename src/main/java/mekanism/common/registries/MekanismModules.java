@@ -95,8 +95,8 @@ public class MekanismModules {
     public static final ModuleRegistryObject<ModuleShearingUnit> SHEARING_UNIT = MODULES.registerInstanced("shearing_unit", ModuleShearingUnit::new,
           () -> MekanismItems.MODULE_SHEARING.asItem(), builder -> builder.exclusive(ExclusiveFlag.INTERACT_ENTITY, ExclusiveFlag.INTERACT_BLOCK));
     public static final ModuleRegistryObject<SimpleEnchantmentAwareModule> SILK_TOUCH_UNIT = MODULES.registerEnchantBased("silk_touch_unit",
-          () -> Enchantments.SILK_TOUCH, () -> MekanismItems.MODULE_SILK_TOUCH.asItem(), builder -> builder.exclusive(ExclusiveFlag.OVERRIDE_DROPS));
-    public static final ModuleRegistryObject<SimpleEnchantmentAwareModule> FORTUNE_UNIT = MODULES.registerEnchantBased("fortune_unit", () -> Enchantments.FORTUNE,
+          Enchantments.SILK_TOUCH, () -> MekanismItems.MODULE_SILK_TOUCH.asItem(), builder -> builder.exclusive(ExclusiveFlag.OVERRIDE_DROPS));
+    public static final ModuleRegistryObject<SimpleEnchantmentAwareModule> FORTUNE_UNIT = MODULES.registerEnchantBased("fortune_unit", Enchantments.FORTUNE,
           () -> MekanismItems.MODULE_FORTUNE.asItem(), builder -> builder.maxStackSize(3).exclusive(ExclusiveFlag.OVERRIDE_DROPS));
     public static final ModuleRegistryObject<ModuleBlastingUnit> BLASTING_UNIT = MODULES.register("blasting_unit", ModuleBlastingUnit::new,
           () -> MekanismItems.MODULE_BLASTING.asItem(), builder -> builder.maxStackSize(4).handlesModeChange().rendersHUD()
@@ -199,7 +199,7 @@ public class MekanismModules {
                 )
     );
     public static final ModuleRegistryObject<SimpleEnchantmentAwareModule> MOTORIZED_SERVO_UNIT = MODULES.registerEnchantBased("motorized_servo_unit",
-          () -> Enchantments.SWIFT_SNEAK, () -> MekanismItems.MODULE_MOTORIZED_SERVO.asItem(), builder -> builder.maxStackSize(5));
+          Enchantments.SWIFT_SNEAK, () -> MekanismItems.MODULE_MOTORIZED_SERVO.asItem(), builder -> builder.maxStackSize(5));
 
     //Boots
     public static final ModuleRegistryObject<ModuleHydraulicPropulsionUnit> HYDRAULIC_PROPULSION_UNIT = MODULES.register("hydraulic_propulsion_unit",
@@ -223,7 +223,7 @@ public class MekanismModules {
                 )
     );
     public static final ModuleRegistryObject<SimpleEnchantmentAwareModule> FROST_WALKER_UNIT = MODULES.registerEnchantBased("frost_walker_unit",
-          () -> Enchantments.FROST_WALKER, () -> MekanismItems.MODULE_FROST_WALKER.asItem(), builder -> builder.maxStackSize(2));
+          Enchantments.FROST_WALKER, () -> MekanismItems.MODULE_FROST_WALKER.asItem(), builder -> builder.maxStackSize(2));
     public static final ModuleRegistryObject<SimpleEnchantmentAwareModule> SOUL_SURFER_UNIT = MODULES.registerEnchantBased("soul_surfer_unit",
-          () -> Enchantments.SOUL_SPEED, () -> MekanismItems.MODULE_SOUL_SURFER.asItem(), builder -> builder.maxStackSize(3));
+          Enchantments.SOUL_SPEED, () -> MekanismItems.MODULE_SOUL_SURFER.asItem(), builder -> builder.maxStackSize(3));
 }
