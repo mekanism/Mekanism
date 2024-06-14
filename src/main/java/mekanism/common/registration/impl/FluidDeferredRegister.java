@@ -1,14 +1,20 @@
 package mekanism.common.registration.impl;
 
+import com.mojang.blaze3d.shaders.FogShape;
+import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.Collection;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IChemicalConstant;
 import mekanism.common.registration.MekanismDeferredRegister;
 import net.minecraft.Util;
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.dispenser.BlockSource;
@@ -45,11 +51,12 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 
 public class FluidDeferredRegister {
 
     private static final ResourceLocation OVERLAY = ResourceLocation.withDefaultNamespace("block/water_overlay");
-    private static final ResourceLocation RENDER_OVERLAY = ResourceLocation.withDefaultNamespace("misc/underwater");
+    private static final ResourceLocation RENDER_OVERLAY = ResourceLocation.withDefaultNamespace("textures/misc/underwater.png");
     private static final ResourceLocation LIQUID = Mekanism.rl("liquid/liquid");
     private static final ResourceLocation LIQUID_FLOW = Mekanism.rl("liquid/liquid_flow");
     //Copy of/based off of vanilla's lava/water bucket dispense behavior
@@ -279,11 +286,13 @@ public class FluidDeferredRegister {
         @Override
         public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
             consumer.accept(new IClientFluidTypeExtensions() {
+                @NotNull
                 @Override
                 public ResourceLocation getStillTexture() {
                     return stillTexture;
                 }
 
+                @NotNull
                 @Override
                 public ResourceLocation getFlowingTexture() {
                     return flowingTexture;
@@ -298,6 +307,28 @@ public class FluidDeferredRegister {
                 @Override
                 public ResourceLocation getRenderOverlayTexture(Minecraft mc) {
                     return renderOverlayTexture;
+                }
+
+                @NotNull
+                @Override
+                public Vector3f modifyFogColor(@NotNull Camera camera, float partialTick, @NotNull ClientLevel level, int renderDistance, float darkenWorldAmount,
+                      @NotNull Vector3f fluidFogColor) {
+                    return new Vector3f(MekanismRenderer.getRed(color), MekanismRenderer.getGreen(color), MekanismRenderer.getBlue(color));
+                }
+
+                @Override
+                public void modifyFogRender(@NotNull Camera camera, @NotNull FogRenderer.FogMode mode, float renderDistance, float partialTick, float nearDistance,
+                      float farDistance, @NotNull FogShape shape) {
+                    //Copy of logic for water except always treating it as if it was a player who has no water vision
+                    // and does not take the biome's closer water fog into account
+                    farDistance = 24F;
+                    if (farDistance > renderDistance) {
+                        farDistance = renderDistance;
+                        shape = FogShape.CYLINDER;
+                    }
+                    RenderSystem.setShaderFogStart(-8);
+                    RenderSystem.setShaderFogEnd(farDistance);
+                    RenderSystem.setShaderFogShape(shape);
                 }
 
                 @Override
