@@ -56,7 +56,7 @@ public interface IModuleContainer {
      * @throws IllegalStateException If no module of the given type is installed, or there is no config with the same name is not found installed on the module of the
      *                               given type.
      */
-    <MODULE extends ICustomModule<MODULE>> IModuleContainer replaceModuleConfig(HolderLookup.Provider provider, ItemStack stack, ModuleData<MODULE> type,
+    <MODULE extends ICustomModule<MODULE>> IModuleContainer replaceModuleConfig(HolderLookup.Provider provider, ItemStack stack, IModuleDataProvider<MODULE> type,
           ModuleConfig<?> config);
 
     /**

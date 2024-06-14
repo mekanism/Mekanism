@@ -108,9 +108,9 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
     }
 
     @Override
-    public <MODULE extends ICustomModule<MODULE>> ModuleContainer replaceModuleConfig(HolderLookup.Provider provider, ItemStack stack, ModuleData<MODULE> type,
+    public <MODULE extends ICustomModule<MODULE>> ModuleContainer replaceModuleConfig(HolderLookup.Provider provider, ItemStack stack, IModuleDataProvider<MODULE> type,
           ModuleConfig<?> config) {
-        return replaceModuleConfig(provider, stack, type, config, false);
+        return replaceModuleConfig(provider, stack, type.getModuleData(), config, false);
     }
 
     /**

@@ -51,11 +51,11 @@ public class GuiColorWindow extends GuiWindow {
     private float value = 0.5F;
     private float alpha = 1;
 
-    public GuiColorWindow(IGuiWrapper gui, int x, int y, boolean handlesAlpha, Consumer<Color> callback) {
-        this(gui, x, y, handlesAlpha, callback, null, null, null);
+    public GuiColorWindow(IGuiWrapper gui, int x, int y, boolean handlesAlpha, Color initialColor, Consumer<Color> callback) {
+        this(gui, x, y, handlesAlpha, initialColor, callback, null, null, null);
     }
 
-    public GuiColorWindow(IGuiWrapper gui, int x, int y, boolean handlesAlpha, Consumer<Color> callback, @Nullable Supplier<LivingEntity> armorPreview,
+    public GuiColorWindow(IGuiWrapper gui, int x, int y, boolean handlesAlpha, Color initialColor, Consumer<Color> callback, @Nullable Supplier<LivingEntity> armorPreview,
           @Nullable Consumer<Color> updatePreviewColor, @Nullable Runnable previewReset) {
         super(gui, x, y, (handlesAlpha ? 184 : 158) + (armorPreview == null ? 0 : 83), handlesAlpha ? 152 : 140, WindowType.COLOR);
         interactionStrategy = InteractionStrategy.NONE;
@@ -95,7 +95,7 @@ public class GuiColorWindow extends GuiWindow {
             addChild(new GuiEntityPreview(gui, relativeX + 155 + extraWidth, relativeY + 17, 80, height - 24, armorPreview));
         }
 
-        setColor(Color.rgbi(128, 70, 70));
+        setColor(initialColor);
     }
 
     @Override
