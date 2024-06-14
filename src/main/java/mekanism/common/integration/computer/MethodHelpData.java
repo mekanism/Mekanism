@@ -158,6 +158,22 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
             }
             return Returns.NOTHING;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            } else if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            Returns other = (Returns) o;
+            return javaType == other.javaType && type.equals(other.type) && Objects.equals(values, other.values) && Arrays.equals(javaExtra, other.javaExtra);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(javaType, type, Arrays.hashCode(javaExtra), values);
+        }
     }
 
 }

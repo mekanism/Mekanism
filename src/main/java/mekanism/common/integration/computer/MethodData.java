@@ -1,5 +1,7 @@
 package mekanism.common.integration.computer;
 
+import java.util.Arrays;
+import java.util.Objects;
 import mekanism.common.integration.computer.ComputerMethodFactory.ComputerFunctionCaller;
 import net.neoforged.fml.ModList;
 import org.jetbrains.annotations.Nullable;
@@ -25,6 +27,26 @@ public record MethodData<T>(String name, MethodRestriction restriction, String[]
             }
         }
         return true;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        } else if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        MethodData<?> other = (MethodData<?>) o;
+        return threadSafe == other.threadSafe && requiresPublicSecurity == other.requiresPublicSecurity && restriction == other.restriction && returnType == other.returnType &&
+               name.equals(other.name) && Arrays.equals(requiredMods, other.requiredMods) && Arrays.equals(argClasses, other.argClasses) &&
+               Arrays.equals(argumentNames, other.argumentNames) && Arrays.equals(returnExtra, other.returnExtra) &&
+               Objects.equals(methodDescription, other.methodDescription) && handler.equals(other.handler);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, restriction, Arrays.hashCode(requiredMods), threadSafe, Arrays.hashCode(argumentNames), Arrays.hashCode(argClasses), returnType,
+              Arrays.hashCode(returnExtra), handler, methodDescription, requiresPublicSecurity);
     }
 
     public static <T> Builder<T> builder(String methodName, ComputerFunctionCaller<T> handler) {

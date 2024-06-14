@@ -7,7 +7,7 @@ public record QuickHash(Object... objs) {
     @Override
     public int hashCode() {
         //TODO: Cache the hashcode?
-        return Arrays.hashCode(objs);
+        return Arrays.deepHashCode(objs);
     }
 
     @Override

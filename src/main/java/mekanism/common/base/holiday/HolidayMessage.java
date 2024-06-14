@@ -1,6 +1,7 @@
 package mekanism.common.base.holiday;
 
 import java.util.Arrays;
+import java.util.Objects;
 import net.minecraft.network.chat.Component;
 
 record HolidayMessage(Component themedLines, Component... lines) {
@@ -15,8 +16,6 @@ record HolidayMessage(Component themedLines, Component... lines) {
 
     @Override
     public int hashCode() {
-        int result = themedLines.hashCode();
-        result = 31 * result + Arrays.hashCode(lines);
-        return result;
+        return Objects.hash(themedLines, Arrays.hashCode(lines));
     }
 }

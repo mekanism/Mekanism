@@ -17,6 +17,7 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import mekanism.common.integration.crafttweaker.example.BaseCrTExampleProvider;
 import mekanism.common.integration.crafttweaker.example.CrTExampleBuilder;
 import mekanism.common.integration.crafttweaker.recipe.manager.MekanismRecipeManager;
@@ -408,9 +409,7 @@ public class CrTExampleRecipeComponentBuilder<BUILDER_TYPE extends CrTExampleBui
 
         @Override
         public int hashCode() {
-            int result = method.hashCode();
-            result = 31 * result + Arrays.hashCode(params);
-            return result;
+            return Objects.hash(method, Arrays.deepHashCode(params));
         }
     }
 }

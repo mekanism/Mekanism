@@ -2,9 +2,11 @@ package mekanism.common.integration.computer;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 import mekanism.api.SerializationConstants;
 import mekanism.common.util.MekCodecs;
 
@@ -37,6 +39,22 @@ public record TableType(String description, String humanName, Map<String, FieldT
                     MekCodecs.optionalClassArrayCodec("javaExtra").forGetter(FieldType::javaExtra)
               ).apply(instance, FieldType::new)
         );
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            } else if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            FieldType other = (FieldType) o;
+            return javaType == other.javaType && type.equals(other.type) && description.equals(other.description) && Arrays.equals(javaExtra, other.javaExtra);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(javaType, description, type, Arrays.hashCode(javaExtra));
+        }
     }
 
     public static class Builder {

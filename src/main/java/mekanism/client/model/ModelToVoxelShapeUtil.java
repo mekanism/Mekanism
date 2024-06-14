@@ -10,8 +10,10 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 //TODO: JavaDoc - contains client side methods to help convert models to VoxelShapes
@@ -119,6 +121,22 @@ public class ModelToVoxelShapeUtil {
                 elements += childElement.size();
             }
             return new ChildData(childElements, elements);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            } else if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            ChildData other = (ChildData) o;
+            return totalElements == other.totalElements && Arrays.equals(childElements, other.childElements);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(Arrays.hashCode(childElements), totalElements);
         }
     }
 }
