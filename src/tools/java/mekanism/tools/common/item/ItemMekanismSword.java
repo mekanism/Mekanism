@@ -13,8 +13,7 @@ import org.jetbrains.annotations.NotNull;
 public class ItemMekanismSword extends SwordItem {
 
     public ItemMekanismSword(MaterialCreator material, Item.Properties properties) {
-        //TODO - 1.21: Ensure the patch to neo that adds a float variant gets added back in
-        super(material, properties.attributes(createAttributes(material, (int) material.getSwordDamage(), material.getSwordAtkSpeed())));
+        super(material, properties.attributes(createAttributes(material, material.getSwordDamage(), material.getSwordAtkSpeed())));
     }
 
     @Override
