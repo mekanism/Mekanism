@@ -5,15 +5,14 @@ import java.util.function.Predicate;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
+import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.attachments.containers.ComponentBackedContainer;
 import mekanism.common.attachments.containers.ContainerType;
-import mekanism.common.util.NBTUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -203,21 +202,13 @@ public class ComponentBackedInventorySlot extends ComponentBackedContainer<ItemS
         CompoundTag nbt = new CompoundTag();
         ItemStack current = getStack();
         if (!current.isEmpty()) {
-            nbt.put(SerializationConstants.ITEM, current.save(provider));
-            if (getCount() > current.getMaxStackSize()) {
-                nbt.putInt(SerializationConstants.SIZE_OVERRIDE, getCount());
-            }
+            nbt.put(SerializationConstants.ITEM, SerializerHelper.saveOversized(provider, current));
         }
         return nbt;
     }
 
     @Override
     public void deserializeNBT(Provider provider, CompoundTag nbt) {
-        ItemStack stack = ItemStack.EMPTY;
-        if (nbt.contains(SerializationConstants.ITEM, Tag.TAG_COMPOUND)) {
-            stack = ItemStack.parseOptional(provider, nbt.getCompound(SerializationConstants.ITEM));
-            NBTUtils.setIntIfPresent(nbt, SerializationConstants.SIZE_OVERRIDE, stack::setCount);
-        }
-        setStack(stack);
+        setStack(SerializerHelper.parseOversizedOptional(provider, nbt.getCompound(SerializationConstants.ITEM)));
     }
 }

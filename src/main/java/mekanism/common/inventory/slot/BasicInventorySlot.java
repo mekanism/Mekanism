@@ -8,6 +8,7 @@ import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
+import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
@@ -15,10 +16,8 @@ import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.warning.ISupportsWarning;
-import mekanism.common.util.NBTUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -333,23 +332,15 @@ public class BasicInventorySlot implements IInventorySlot {
     public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag nbt = new CompoundTag();
         if (!isEmpty()) {
-            nbt.put(SerializationConstants.ITEM, current.save(provider));
-            if (getCount() > current.getMaxStackSize()) {
-                nbt.putInt(SerializationConstants.SIZE_OVERRIDE, getCount());
-            }
+            nbt.put(SerializationConstants.ITEM, SerializerHelper.saveOversized(provider, current));
         }
         return nbt;
     }
 
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        ItemStack stack = ItemStack.EMPTY;
-        if (nbt.contains(SerializationConstants.ITEM, Tag.TAG_COMPOUND)) {
-            stack = ItemStack.parseOptional(provider, nbt.getCompound(SerializationConstants.ITEM));
-            NBTUtils.setIntIfPresent(nbt, SerializationConstants.SIZE_OVERRIDE, stack::setCount);
-        }
         //Set the stack in an unchecked way so that if it is no longer valid, we don't end up
         // crashing due to the stack not being valid
-        setStackUnchecked(stack);
+        setStackUnchecked(SerializerHelper.parseOversizedOptional(provider, nbt.getCompound(SerializationConstants.ITEM)));
     }
 }

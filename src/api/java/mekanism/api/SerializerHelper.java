@@ -15,6 +15,14 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.Util;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderLookup.Provider;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
+import net.minecraft.util.ExtraCodecs;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 //TODO - 1.21: Update the wiki docs to fix the syntax
@@ -39,6 +47,48 @@ public class SerializerHelper {
         final Function<Long, DataResult<Long>> checker = Codec.checkRange(1L, Long.MAX_VALUE);
         return Codec.LONG.flatXmap(checker, checker);
     });
+
+    /**
+     * Custom codec to allow serializing an item stack without the upper bounds.
+     *
+     * @since 10.6.1
+     */
+    public static final Codec<ItemStack> OVERSIZED_ITEM_CODEC = Codec.lazyInitialized(() -> RecordCodecBuilder.create(instance -> instance.group(
+          ItemStack.ITEM_NON_AIR_CODEC.fieldOf(SerializationConstants.ID).forGetter(ItemStack::getItemHolder),
+          ExtraCodecs.POSITIVE_INT.fieldOf(SerializationConstants.COUNT).orElse(1).forGetter(ItemStack::getCount),
+          DataComponentPatch.CODEC.optionalFieldOf(SerializationConstants.COMPONENTS, DataComponentPatch.EMPTY).forGetter(ItemStack::getComponentsPatch)
+    ).apply(instance, ItemStack::new)));
+
+    /**
+     * Helper similar to {@link ItemStack#save(Provider)} but with support for oversized stacks.
+     *
+     * @since 10.6.1
+     */
+    public static Tag saveOversized(HolderLookup.Provider registryAccess, ItemStack stack) {
+        if (stack.isEmpty()) {
+            throw new IllegalStateException("Cannot encode empty ItemStack");
+        }
+        return OVERSIZED_ITEM_CODEC.encodeStart(registryAccess.createSerializationContext(NbtOps.INSTANCE), stack).getOrThrow();
+    }
+
+    /**
+     * Helper similar to {@link ItemStack#parse(Provider, Tag)} but with support for oversized stacks.
+     *
+     * @since 10.6.1
+     */
+    public static Optional<ItemStack> parseOversized(HolderLookup.Provider pLookupProvider, Tag pTag) {
+        return OVERSIZED_ITEM_CODEC.parse(pLookupProvider.createSerializationContext(NbtOps.INSTANCE), pTag)
+              .resultOrPartial(p_330102_ -> MekanismAPI.logger.error("Tried to load invalid item: '{}'", p_330102_));
+    }
+
+    /**
+     * Helper similar to {@link ItemStack#parseOptional(Provider, CompoundTag)} but with support for oversized stacks.
+     *
+     * @since 10.6.1
+     */
+    public static ItemStack parseOversizedOptional(HolderLookup.Provider pLookupProvider, CompoundTag tag) {
+        return tag.isEmpty() ? ItemStack.EMPTY : parseOversized(pLookupProvider, tag).orElse(ItemStack.EMPTY);
+    }
 
     /**
      * Generate a RecordCodecBuilder which is required only if the 'primary' is present. If this field is present, it will be returned regardless. Does not eat errors

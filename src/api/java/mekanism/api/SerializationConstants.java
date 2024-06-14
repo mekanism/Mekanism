@@ -260,7 +260,6 @@ public final class SerializationConstants {
     public static final String SILK_TOUCH = "silk_touch";
     public static final String SINGLE_ITEM = "single_item";
     public static final String SIZE = "size";
-    public static final String SIZE_OVERRIDE = "size_override";
     public static final String SLOT = "slot";
     public static final String SLURRY_TANKS = "slurry_tanks";
     public static final String SORTING = "sorting";

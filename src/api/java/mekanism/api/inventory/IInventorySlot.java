@@ -4,10 +4,10 @@ import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
+import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.util.INBTSerializable;
@@ -297,12 +297,7 @@ public interface IInventorySlot extends INBTSerializable<CompoundTag>, IContents
     default CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag nbt = new CompoundTag();
         if (!isEmpty()) {
-            ItemStack current = getStack();
-            Tag stackTag = current.save(provider);
-            nbt.put(SerializationConstants.ITEM, stackTag);
-            if (getCount() > current.getMaxStackSize()) {
-                nbt.putInt(SerializationConstants.SIZE_OVERRIDE, getCount());
-            }
+            nbt.put(SerializationConstants.ITEM, SerializerHelper.saveOversized(provider, getStack()));
         }
         return nbt;
     }
