@@ -26,7 +26,6 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -271,13 +270,6 @@ public abstract class BlockMekanism extends Block {
                 }
             }
         }
-    }
-
-    protected InteractionResult genericClientActivated(BlockEntity blockEntity) {
-        if (Attribute.has(this, AttributeGui.class)) {
-            return InteractionResult.SUCCESS;
-        }
-        return InteractionResult.PASS;
     }
 
     protected ItemInteractionResult genericClientActivated(ItemStack stack, BlockEntity blockEntity) {

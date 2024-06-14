@@ -43,4 +43,11 @@ public class BlockStructuralGlass<TILE extends TileEntityStructuralMultiblock> e
         }
         return tile.onActivate(player, hand, stack);
     }
+
+    @NotNull
+    @Override
+    protected InteractionResult useWithoutItem(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hit) {
+        //We handle opening the gui via useItemOn
+        return InteractionResult.PASS;
+    }
 }

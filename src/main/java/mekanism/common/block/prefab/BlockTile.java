@@ -3,6 +3,7 @@ package mekanism.common.block.prefab;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import mekanism.common.block.attribute.Attribute;
+import mekanism.common.block.attribute.AttributeGui;
 import mekanism.common.block.attribute.AttributeParticleFX;
 import mekanism.common.block.attribute.AttributeParticleFX.Particle;
 import mekanism.common.block.attribute.Attributes.AttributeRedstoneEmitter;
@@ -68,7 +69,7 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
         if (tile == null) {
             return InteractionResult.PASS;
         } else if (world.isClientSide) {
-            return genericClientActivated(tile);
+            return Attribute.has(this, AttributeGui.class) ? InteractionResult.SUCCESS : InteractionResult.PASS;
         }
         return tile.openGui(player);
     }
