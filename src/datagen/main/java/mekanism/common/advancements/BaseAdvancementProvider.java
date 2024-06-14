@@ -17,6 +17,7 @@ import net.minecraft.advancements.critereon.InventoryChangeTrigger.TriggerInstan
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
@@ -33,13 +34,15 @@ public abstract class BaseAdvancementProvider implements DataProvider {
     private final CompletableFuture<HolderLookup.Provider> registries;
     private final PackOutput.PathProvider pathProvider;
     private final ExistingFileHelper existingFileHelper;
+    private final String advancementFolder;
     private final String modid;
 
     public BaseAdvancementProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider, ExistingFileHelper existingFileHelper, String modid) {
         this.modid = modid;
         this.registries = provider;
         this.existingFileHelper = existingFileHelper;
-        this.pathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, "advancements");
+        this.advancementFolder = Registries.elementsDirPath(Registries.ADVANCEMENT);
+        this.pathProvider = output.createRegistryElementsPathProvider(Registries.ADVANCEMENT);
     }
 
     @NotNull
@@ -55,11 +58,11 @@ public abstract class BaseAdvancementProvider implements DataProvider {
             List<CompletableFuture<?>> futures = new ArrayList<>();
             registerAdvancements(advancement -> {
                 ResourceLocation id = advancement.id();
-                if (existingFileHelper.exists(id, PackType.SERVER_DATA, ".json", "advancements")) {
+                if (existingFileHelper.exists(id, PackType.SERVER_DATA, ".json", advancementFolder)) {
                     throw new IllegalStateException("Duplicate advancement " + id);
                 }
                 Path path = this.pathProvider.json(id);
-                existingFileHelper.trackGenerated(id, PackType.SERVER_DATA, ".json", "advancements");
+                existingFileHelper.trackGenerated(id, PackType.SERVER_DATA, ".json", advancementFolder);
                 futures.add(DataProvider.saveStable(cache, lookupProvider, Advancement.CODEC, advancement.value(), path));
             });
             return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
