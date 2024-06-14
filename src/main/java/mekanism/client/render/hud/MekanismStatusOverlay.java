@@ -13,6 +13,7 @@ import net.minecraft.client.gui.LayeredDraw;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.GameType;
 import org.jetbrains.annotations.NotNull;
 
 public class MekanismStatusOverlay implements LayeredDraw.Layer {
@@ -33,7 +34,7 @@ public class MekanismStatusOverlay implements LayeredDraw.Layer {
     @Override
     public void render(@NotNull GuiGraphics graphics, @NotNull DeltaTracker delta) {
         Minecraft minecraft = Minecraft.getInstance();
-        if (modeSwitchTimer > 1 && minecraft.player != null) {
+        if (modeSwitchTimer > 1 && minecraft.player != null && minecraft.gameMode.getPlayerMode() != GameType.SPECTATOR) {
             ItemStack stack = minecraft.player.getMainHandItem();
             if (IModeItem.isModeItem(stack, EquipmentSlot.MAINHAND)) {
                 Component scrollTextComponent = ((IModeItem) stack.getItem()).getScrollTextComponent(stack);
