@@ -31,6 +31,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -247,6 +248,7 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
                       center.z() + 0.6 * random.nextFloat() - 0.3, 1, 0, 0, 0, 0);
             }
         }
+        level().gameEvent(GameEvent.ENTITY_DAMAGE, position(), GameEvent.Context.of(this));
         discard();
     }
 

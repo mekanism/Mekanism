@@ -23,6 +23,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DispenserBlock;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
@@ -53,6 +54,7 @@ public class ItemBalloon extends Item {
                 return InteractionResultHolder.fail(stack);
             }
             world.addFreshEntity(balloon);
+            world.gameEvent(player, GameEvent.ENTITY_PLACE, pos);
         }
         if (!player.isCreative()) {
             stack.shrink(1);
@@ -102,6 +104,7 @@ public class ItemBalloon extends Item {
                     }
                     world.addFreshEntity(balloon);
                     stack.shrink(1);
+                    world.gameEvent(player, GameEvent.ENTITY_PLACE, pos);
                 }
                 return InteractionResult.SUCCESS;
             }
@@ -114,10 +117,11 @@ public class ItemBalloon extends Item {
     @Override
     public InteractionResult interactLivingEntity(@NotNull ItemStack stack, Player player, @NotNull LivingEntity entity, @NotNull InteractionHand hand) {
         if (player.isShiftKeyDown()) {
-            if (!player.level().isClientSide) {
+            Level level = player.level();
+            if (!level.isClientSide) {
                 AABB bound = new AABB(entity.getX() - 0.2, entity.getY() - 0.5, entity.getZ() - 0.2,
                       entity.getX() + 0.2, entity.getY() + entity.getBbHeight() + 4, entity.getZ() + 0.2);
-                List<EntityBalloon> balloonsNear = player.level().getEntitiesOfClass(EntityBalloon.class, bound);
+                List<EntityBalloon> balloonsNear = level.getEntitiesOfClass(EntityBalloon.class, bound);
                 for (EntityBalloon balloon : balloonsNear) {
                     if (balloon.latchedEntity == entity) {
                         return InteractionResult.SUCCESS;
@@ -127,8 +131,9 @@ public class ItemBalloon extends Item {
                 if (balloon == null) {
                     return InteractionResult.FAIL;
                 }
-                player.level().addFreshEntity(balloon);
+                level.addFreshEntity(balloon);
                 stack.shrink(1);
+                level.gameEvent(player, GameEvent.ENTITY_PLACE, balloon.position());
             }
             return InteractionResult.SUCCESS;
         }

@@ -3,6 +3,8 @@ package mekanism.additions.common;
 import mekanism.additions.client.AdditionsClient;
 import mekanism.additions.common.block.BlockObsidianTNT;
 import mekanism.additions.common.config.MekanismAdditionsConfig;
+import mekanism.additions.common.entity.EntityBalloon;
+import mekanism.additions.common.item.ItemBalloon;
 import mekanism.additions.common.registries.AdditionsBiomeModifierSerializers;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.additions.common.registries.AdditionsCreativeTabs;
@@ -16,13 +18,17 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IModModule;
 import mekanism.common.config.MekanismModConfig;
 import mekanism.common.lib.Version;
+import mekanism.common.registration.impl.ItemRegistryObject;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Position;
 import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
@@ -113,6 +119,26 @@ public class MekanismAdditions implements IModModule {
                     return super.execute(source, stack);
                 }
             });
+            DefaultDispenseItemBehavior balloonBehavior = new DefaultDispenseItemBehavior() {
+                @NotNull
+                @Override
+                protected ItemStack execute(@NotNull BlockSource source, @NotNull ItemStack stack) {
+                    ServerLevel level = source.level();
+                    Position position = DispenserBlock.getDispensePosition(source, 1, new Vec3(-0.5, -3.5, -0.5));
+                    EntityBalloon balloon = EntityBalloon.create(level, position.x(), position.y(), position.z(), ((ItemBalloon) stack.getItem()).getColor());
+                    if (balloon == null) {
+                        //Otherwise, if something went very wrong, eject it as a normal item
+                        return super.execute(source, stack);
+                    }
+                    stack.shrink(1);
+                    level.addFreshEntity(balloon);
+                    level.gameEvent(null, GameEvent.ENTITY_PLACE, new Vec3(position.x(), position.y(), position.z()));
+                    return stack;
+                }
+            };
+            for (ItemRegistryObject<ItemBalloon> balloon : AdditionsItems.BALLOONS.values()) {
+                DispenserBlock.registerBehavior(balloon, balloonBehavior);
+            }
         });
         Mekanism.logger.info("Loaded 'Mekanism: Additions' module.");
     }
