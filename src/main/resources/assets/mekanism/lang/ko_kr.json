@@ -951,6 +951,7 @@
   "filter.mekanism.oredictionificator.unsupported_tag": "미지원 태그",
   "filter.mekanism.select.title": "새 필터 생성",
   "filter.mekanism.sorter.max_less_than_min": "최대량 < 최소량",
+  "filter.mekanism.sorter.over_sized": "최대: %1$s",
   "filter.mekanism.sorter.size_missing": "최대량 / 최소량",
   "filter.mekanism.sorter.size_mode": "수량 모드",
   "filter.mekanism.sorter.size_mode.conflict": "수량 모드 - 현재 단일 아이템 모드가 켜져 있어 효과가 없습니다.",
