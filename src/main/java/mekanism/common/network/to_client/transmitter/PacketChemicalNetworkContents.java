@@ -19,7 +19,7 @@ public record PacketChemicalNetworkContents(UUID networkID, BoxedChemical chemic
     public static final CustomPacketPayload.Type<PacketChemicalNetworkContents> TYPE = new CustomPacketPayload.Type<>(Mekanism.rl("chemical_network"));
     public static final StreamCodec<RegistryFriendlyByteBuf, PacketChemicalNetworkContents> STREAM_CODEC = StreamCodec.composite(
           UUIDUtil.STREAM_CODEC, PacketChemicalNetworkContents::networkID,
-          BoxedChemical.STREAM_CODEC, PacketChemicalNetworkContents::chemical,
+          BoxedChemical.OPTIONAL_STREAM_CODEC, PacketChemicalNetworkContents::chemical,
           PacketChemicalNetworkContents::new
     );
 
