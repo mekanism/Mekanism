@@ -145,6 +145,7 @@ public class MekanismTagProvider extends BaseTagProvider {
         addEntitiesToTag(EntityTypeTags.IGNORES_POISON_AND_REGEN, MekanismEntityTypes.ROBIT);
         addEntitiesToTag(EntityTypeTags.IMMUNE_TO_INFESTED, MekanismEntityTypes.ROBIT);
         addEntitiesToTag(EntityTypeTags.IMMUNE_TO_OOZING, MekanismEntityTypes.ROBIT);
+        addEntitiesToTag(EntityTypeTags.FALL_DAMAGE_IMMUNE, MekanismEntityTypes.ROBIT);
         //Robit's are not scary, they are friends!
         addEntitiesToTag(EntityTypeTags.NOT_SCARY_FOR_PUFFERFISH, MekanismEntityTypes.ROBIT);
         addEntitiesToTag(EntityTypeTags.ILLAGER_FRIENDS, MekanismEntityTypes.ROBIT);
@@ -504,8 +505,14 @@ public class MekanismTagProvider extends BaseTagProvider {
     private void addDamageTypes() {
         addToTag(Tags.DamageTypes.IS_ENVIRONMENT, MekanismDamageTypes.RADIATION);
         addToTag(DamageTypeTags.BYPASSES_ARMOR, MekanismDamageTypes.RADIATION);
+        addToTag(DamageTypeTags.BYPASSES_RESISTANCE, MekanismDamageTypes.RADIATION);
+        addToTag(DamageTypeTags.BYPASSES_SHIELD, MekanismDamageTypes.RADIATION);
         addToTag(DamageTypeTags.BYPASSES_WOLF_ARMOR, MekanismDamageTypes.RADIATION);
         addToTag(DamageTypeTags.BYPASSES_COOLDOWN, MekanismDamageTypes.LASER);
+        addToTag(DamageTypeTags.BURNS_ARMOR_STANDS, MekanismDamageTypes.LASER);
+        addToTag(DamageTypeTags.PANIC_CAUSES, MekanismDamageTypes.LASER);
+        addToTag(DamageTypeTags.NO_KNOCKBACK, MekanismDamageTypes.LASER, MekanismDamageTypes.RADIATION);
+        addToTag(DamageTypeTags.PANIC_ENVIRONMENTAL_CAUSES, MekanismDamageTypes.RADIATION);
         getDamageTypeBuilder(MekanismTags.DamageTypes.IS_PREVENTABLE_MAGIC).add(DamageTypes.MAGIC, DamageTypes.INDIRECT_MAGIC);
 
         addToTag(MekanismTags.DamageTypes.MEKASUIT_ALWAYS_SUPPORTED, DamageTypes.FALLING_ANVIL, DamageTypes.CACTUS, DamageTypes.CRAMMING,

@@ -98,7 +98,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.TicketType;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
@@ -536,10 +535,6 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         }
         amount = getDamageAfterArmorAbsorb(damageSource, amount);
         amount = getDamageAfterMagicAbsorb(damageSource, amount);
-        if (damageSource.is(DamageTypeTags.IS_FALL)) {
-            //Half the "potential" damage the Robit can take from falling
-            amount /= 2;
-        }
         energyContainer.extract(FloatingLong.create(1_000 * amount), Action.EXECUTE, AutomationType.INTERNAL);
         getCombatTracker().recordDamage(damageSource, amount);
     }

@@ -1,4 +1,4 @@
-// 1.21	2024-06-14T14:26:01.8687419	Tags: mekanism
+// 1.21	2024-06-15T14:51:14.0969834	Tags: mekanism
 8a89da3b810e00ad44b7ee4d062a88db6298c8fe data/create/tags/fluid/no_infinite_draining.json
 b881c0bb158879ac88758c2b0562b422271e6397 data/c/tags/block/barrels.json
 adb3ecfd3180c123cdc984320eab5ce930bdc5be data/c/tags/block/barrels/personal.json
@@ -261,10 +261,17 @@ d38d7e371e2b8bbf34fb9050178a8db980f242fe data/minecraft/tags/block/needs_stone_t
 eb49540974a606ef95d77f140b9b9bdd083e1549 data/minecraft/tags/block/replaceable.json
 b79a9a1e0ddcf1344df98002024bc070480b51d7 data/minecraft/tags/block/sculk_replaceable.json
 126bb288e656325f718c704f6e9d414c37adbc2a data/minecraft/tags/block/snaps_goat_horn.json
+b1755f575eaf88f8b903d525d0f11aad3467e94c data/minecraft/tags/damage_type/burns_armor_stands.json
 87b902979fae3b74fea0244d63fdc6b8cd2ecd0d data/minecraft/tags/damage_type/bypasses_armor.json
 b1755f575eaf88f8b903d525d0f11aad3467e94c data/minecraft/tags/damage_type/bypasses_cooldown.json
+87b902979fae3b74fea0244d63fdc6b8cd2ecd0d data/minecraft/tags/damage_type/bypasses_resistance.json
+87b902979fae3b74fea0244d63fdc6b8cd2ecd0d data/minecraft/tags/damage_type/bypasses_shield.json
 87b902979fae3b74fea0244d63fdc6b8cd2ecd0d data/minecraft/tags/damage_type/bypasses_wolf_armor.json
+608fa6a0eb351686fe8844b0c18155858317425d data/minecraft/tags/damage_type/no_knockback.json
+b1755f575eaf88f8b903d525d0f11aad3467e94c data/minecraft/tags/damage_type/panic_causes.json
+87b902979fae3b74fea0244d63fdc6b8cd2ecd0d data/minecraft/tags/damage_type/panic_environmental_causes.json
 903060898e7790a3059ae8734191a498ce75e0cb data/minecraft/tags/entity_type/can_breathe_under_water.json
+903060898e7790a3059ae8734191a498ce75e0cb data/minecraft/tags/entity_type/fall_damage_immune.json
 903060898e7790a3059ae8734191a498ce75e0cb data/minecraft/tags/entity_type/freeze_immune_entity_types.json
 903060898e7790a3059ae8734191a498ce75e0cb data/minecraft/tags/entity_type/ignores_poison_and_regen.json
 903060898e7790a3059ae8734191a498ce75e0cb data/minecraft/tags/entity_type/illager_friends.json
