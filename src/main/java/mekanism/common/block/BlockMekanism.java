@@ -13,6 +13,7 @@ import mekanism.common.block.attribute.Attributes.AttributeComparator;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFluidLoggable;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.lib.radiation.Meltdown.MeltdownExplosion;
 import mekanism.common.lib.security.ISecurityTile;
@@ -85,9 +86,11 @@ public abstract class BlockMekanism extends Block {
     @Override
     public ItemStack getCloneItemStack(@NotNull BlockState state, @NotNull HitResult target, @NotNull LevelReader world, @NotNull BlockPos pos, @NotNull Player player) {
         ItemStack stack = super.getCloneItemStack(state, target, world, pos, player);
-        TileEntityUpdateable tile = WorldUtils.getTileEntity(TileEntityUpdateable.class, world, pos);
-        if (tile != null) {
-            stack.applyComponents(tile.collectComponents());
+        if (MekanismConfig.common.copyBlockData.get()) {
+            TileEntityUpdateable tile = WorldUtils.getTileEntity(TileEntityUpdateable.class, world, pos);
+            if (tile != null) {
+                stack.applyComponents(tile.collectComponents());
+            }
         }
         return stack;
     }
