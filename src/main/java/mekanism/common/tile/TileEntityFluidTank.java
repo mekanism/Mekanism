@@ -84,6 +84,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
 
     public TileEntityFluidTank(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
+        delaySupplier = NO_DELAY;
     }
 
     @Override

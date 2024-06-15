@@ -56,6 +56,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
 
     public TileEntityBin(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
+        delaySupplier = NO_DELAY;
     }
 
     @Override

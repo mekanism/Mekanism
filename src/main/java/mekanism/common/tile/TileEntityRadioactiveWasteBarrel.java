@@ -51,6 +51,7 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
 
     public TileEntityRadioactiveWasteBarrel(BlockPos pos, BlockState state) {
         super(MekanismBlocks.RADIOACTIVE_WASTE_BARREL, pos, state);
+        delaySupplier = NO_DELAY;
     }
 
     @NotNull
