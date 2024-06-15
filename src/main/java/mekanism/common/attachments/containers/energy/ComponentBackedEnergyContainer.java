@@ -8,6 +8,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.math.Unsigned;
 import mekanism.common.attachments.containers.ComponentBackedContainer;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.util.NBTUtils;
@@ -55,12 +56,12 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Lon
      * @apiNote Try to minimize the number of calls to this method so that we don't have to look up the data component multiple times.
      */
     @Override
-    public long getEnergy() {
+    public @Unsigned long getEnergy() {
         return getContents(getAttached());
     }
 
     @Override
-    public void setEnergy(long energy) {
+    public void setEnergy(@Unsigned long energy) {
         setContents(getAttached(), energy);
     }
 
@@ -80,7 +81,7 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Lon
     }
 
     @Override
-    public long insert(long amount, Action action, AutomationType automationType) {
+    public @Unsigned long insert(@Unsigned long amount, Action action, AutomationType automationType) {
         if (amount == 0L || !canInsert.test(automationType)) {
             return amount;
         }
@@ -101,7 +102,7 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Lon
     }
 
     @Override
-    public long extract(long amount, Action action, AutomationType automationType) {
+    public @Unsigned long extract(@Unsigned long amount, Action action, AutomationType automationType) {
         if (amount == 0) {
             return 0L;
         }
@@ -123,7 +124,7 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Lon
     }
 
     @Override
-    public long getMaxEnergy() {
+    public @Unsigned long getMaxEnergy() {
         return maxEnergy.getAsLong();
     }
 

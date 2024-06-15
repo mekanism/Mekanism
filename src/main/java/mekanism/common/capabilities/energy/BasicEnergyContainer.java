@@ -10,7 +10,7 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.ConstantPredicates;
-import mekanism.api.math.FloatingLong;
+import mekanism.api.math.Unsigned;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -68,7 +68,7 @@ public class BasicEnergyContainer implements IEnergyContainer {
     }
 
     @Override
-    public long getEnergy() {
+    public @Unsigned long getEnergy() {
         return stored;
     }
 
@@ -77,7 +77,7 @@ public class BasicEnergyContainer implements IEnergyContainer {
     }
 
     @Override
-    public void setEnergy(long energy) {
+    public void setEnergy(@Unsigned long energy) {
         energy = clampEnergy(energy);
         if (stored != energy) {
             stored = energy;
@@ -114,7 +114,7 @@ public class BasicEnergyContainer implements IEnergyContainer {
     }
 
     @Override
-    public long insert(long amount, Action action, AutomationType automationType) {
+    public @Unsigned long insert(@Unsigned long amount, Action action, AutomationType automationType) {
         if (amount == 0L || !canInsert.test(automationType)) {
             return amount;
         }
@@ -134,7 +134,7 @@ public class BasicEnergyContainer implements IEnergyContainer {
     }
 
     @Override
-    public long extract(long amount, Action action, AutomationType automationType) {
+    public @Unsigned long extract(@Unsigned long amount, Action action, AutomationType automationType) {
         if (isEmpty() || amount == 0L || !canExtract.test(automationType)) {
             return 0L;
         }
@@ -158,7 +158,7 @@ public class BasicEnergyContainer implements IEnergyContainer {
     }
 
     @Override
-    public long getMaxEnergy() {
+    public @Unsigned long getMaxEnergy() {
         return maxEnergy;
     }
 

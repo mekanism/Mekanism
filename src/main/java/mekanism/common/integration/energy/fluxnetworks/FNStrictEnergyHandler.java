@@ -4,6 +4,7 @@ import mekanism.api.Action;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.Unsigned;
 import mekanism.common.util.UnitDisplayUtils.EnergyUnit;
 import org.jetbrains.annotations.NotNull;
 import sonar.fluxnetworks.api.energy.IFNEnergyStorage;
@@ -25,32 +26,32 @@ public class FNStrictEnergyHandler implements IStrictEnergyHandler {
     }
 
     @Override
-    public long getEnergy(int container) {
+    public @Unsigned long getEnergy(int container) {
         return container == 0 ? EnergyUnit.FORGE_ENERGY.convertFrom(storage.getEnergyStoredL()) : FloatingLong.ZERO;
     }
 
     @Override
-    public void setEnergy(int container, long energy) {
+    public void setEnergy(int container, @Unsigned long energy) {
         //Not implemented or directly needed
     }
 
     @Override
-    public long getMaxEnergy(int container) {
+    public @Unsigned long getMaxEnergy(int container) {
         return container == 0 ? EnergyUnit.FORGE_ENERGY.convertFrom(storage.getMaxEnergyStoredL()) : FloatingLong.ZERO;
     }
 
     @Override
-    public long getNeededEnergy(int container) {
+    public @Unsigned long getNeededEnergy(int container) {
         return container == 0 ? EnergyUnit.FORGE_ENERGY.convertFrom(Math.max(0, storage.getMaxEnergyStoredL() - storage.getEnergyStoredL())) : FloatingLong.ZERO;
     }
 
     @Override
-    public long insertEnergy(int container, long amount, @NotNull Action action) {
+    public @Unsigned long insertEnergy(int container, @Unsigned long amount, @NotNull Action action) {
         return container == 0 ? insertEnergy(amount, action) : amount;
     }
 
     @Override
-    public long insertEnergy(long amount, Action action) {
+    public @Unsigned long insertEnergy(@Unsigned long amount, Action action) {
         if (storage.canReceive()) {
             long toInsert = EnergyUnit.FORGE_ENERGY.convertToAsLong(amount);
             if (toInsert > 0) {
@@ -65,12 +66,12 @@ public class FNStrictEnergyHandler implements IStrictEnergyHandler {
     }
 
     @Override
-    public long extractEnergy(int container, long amount, @NotNull Action action) {
+    public @Unsigned long extractEnergy(int container, @Unsigned long amount, @NotNull Action action) {
         return container == 0 ? extractEnergy(amount, action) : FloatingLong.ZERO;
     }
 
     @Override
-    public long extractEnergy(long amount, Action action) {
+    public @Unsigned long extractEnergy(@Unsigned long amount, Action action) {
         if (storage.canExtract()) {
             long toExtract = EnergyUnit.FORGE_ENERGY.convertToAsLong(amount);
             if (toExtract > 0) {

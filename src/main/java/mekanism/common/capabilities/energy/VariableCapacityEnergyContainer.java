@@ -5,8 +5,8 @@ import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
+import mekanism.api.math.Unsigned;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,7 +40,7 @@ public class VariableCapacityEnergyContainer extends BasicEnergyContainer {
     }
 
     @Override
-    public FloatingLong getMaxEnergy() {
+    public @Unsigned long getMaxEnergy() {
         return maxEnergy.get();
     }
 }

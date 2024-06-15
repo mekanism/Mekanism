@@ -6,6 +6,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.LongTransferUtils;
+import mekanism.api.math.Unsigned;
 import net.minecraft.core.Direction;
 import org.jetbrains.annotations.Nullable;
 
@@ -58,13 +59,13 @@ public interface IMekanismStrictEnergyHandler extends ISidedStrictEnergyHandler,
     }
 
     @Override
-    default long getEnergy(int container, @Nullable Direction side) {
+    default @Unsigned long getEnergy(int container, @Nullable Direction side) {
         IEnergyContainer energyContainer = getEnergyContainer(container, side);
         return energyContainer == null ? 0L : energyContainer.getEnergy();
     }
 
     @Override
-    default void setEnergy(int container, long energy, @Nullable Direction side) {
+    default void setEnergy(int container, @Unsigned long energy, @Nullable Direction side) {
         IEnergyContainer energyContainer = getEnergyContainer(container, side);
         if (energyContainer != null) {
             energyContainer.setEnergy(energy);
@@ -72,13 +73,13 @@ public interface IMekanismStrictEnergyHandler extends ISidedStrictEnergyHandler,
     }
 
     @Override
-    default long getMaxEnergy(int container, @Nullable Direction side) {
+    default @Unsigned long getMaxEnergy(int container, @Nullable Direction side) {
         IEnergyContainer energyContainer = getEnergyContainer(container, side);
         return energyContainer == null ? 0L : energyContainer.getMaxEnergy();
     }
 
     @Override
-    default long getNeededEnergy(int container, @Nullable Direction side) {
+    default @Unsigned long getNeededEnergy(int container, @Nullable Direction side) {
         IEnergyContainer energyContainer = getEnergyContainer(container, side);
         return energyContainer == null ? 0L : energyContainer.getNeeded();
     }
@@ -86,11 +87,11 @@ public interface IMekanismStrictEnergyHandler extends ISidedStrictEnergyHandler,
     /**
      * {@inheritDoc}
      *
-     * @implNote Any overrides to this should also override {@link ISidedStrictEnergyHandler#insertEnergy(long, Direction, Action)} as it bypasses calling this method in order to skip
-     * looking up the containers for every sub operation.
+     * @implNote Any overrides to this should also override {@link ISidedStrictEnergyHandler#insertEnergy(long, Direction, Action)} as it bypasses calling this method in
+     * order to skip looking up the containers for every sub operation.
      */
     @Override
-    default long insertEnergy(int container, long amount, @Nullable Direction side, Action action) {
+    default @Unsigned long insertEnergy(int container, @Unsigned long amount, @Nullable Direction side, Action action) {
         IEnergyContainer energyContainer = getEnergyContainer(container, side);
         return energyContainer == null ? amount : energyContainer.insert(amount, action, AutomationType.handler(side));
     }
@@ -98,22 +99,22 @@ public interface IMekanismStrictEnergyHandler extends ISidedStrictEnergyHandler,
     /**
      * {@inheritDoc}
      *
-     * @implNote Any overrides to this should also override {@link ISidedStrictEnergyHandler#extractEnergy(long, Direction, Action)} as it bypasses calling this method in order to skip
-     * looking up the containers for every sub operation.
+     * @implNote Any overrides to this should also override {@link ISidedStrictEnergyHandler#extractEnergy(long, Direction, Action)} as it bypasses calling this method in
+     * order to skip looking up the containers for every sub operation.
      */
     @Override
-    default long extractEnergy(int container, long amount, @Nullable Direction side, Action action) {
+    default @Unsigned long extractEnergy(int container, @Unsigned long amount, @Nullable Direction side, Action action) {
         IEnergyContainer energyContainer = getEnergyContainer(container, side);
         return energyContainer == null ? 0L : energyContainer.extract(amount, action, AutomationType.handler(side));
     }
 
     @Override
-    default long insertEnergy(long amount, @Nullable Direction side, Action action) {
+    default @Unsigned long insertEnergy(@Unsigned long amount, @Nullable Direction side, Action action) {
         return LongTransferUtils.insert(amount, side, this::getEnergyContainers, action, AutomationType.handler(side));
     }
 
     @Override
-    default long extractEnergy(long amount, @Nullable Direction side, Action action) {
+    default @Unsigned long extractEnergy(@Unsigned long amount, @Nullable Direction side, Action action) {
         return LongTransferUtils.extract(amount, side, this::getEnergyContainers, action, AutomationType.handler(side));
     }
 }

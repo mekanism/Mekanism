@@ -6,7 +6,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.math.FloatingLong;
+import mekanism.api.math.Unsigned;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.neoforged.neoforge.common.util.INBTSerializable;
@@ -21,6 +21,7 @@ public interface IEnergyContainer extends INBTSerializable<CompoundTag>, IConten
      *
      * @return Energy in this container.
      */
+    @Unsigned
     long getEnergy();
 
     /**
@@ -31,7 +32,7 @@ public interface IEnergyContainer extends INBTSerializable<CompoundTag>, IConten
      * @throws RuntimeException if the handler is called in a way that the handler was not expecting. Such as if it was not expecting this to be called at all.
      * @implNote If the internal amount does get updated make sure to call {@link #onContentsChanged()}
      */
-    void setEnergy(long energy);
+    void setEnergy(@Unsigned long energy);
 
     /**
      * <p>
@@ -47,7 +48,7 @@ public interface IEnergyContainer extends INBTSerializable<CompoundTag>, IConten
      *
      * @implNote If the internal amount does get updated make sure to call {@link #onContentsChanged()}.
      */
-    default long insert(long amount, Action action, AutomationType automationType) {
+    default @Unsigned long insert(@Unsigned long amount, Action action, AutomationType automationType) {
         if (amount == 0) {
             //"Fail quick" if the given amount is empty
             return amount;
@@ -81,7 +82,7 @@ public interface IEnergyContainer extends INBTSerializable<CompoundTag>, IConten
      *
      * @implNote If the internal amount does get updated make sure to call {@link #onContentsChanged()}.
      */
-    default long extract(long amount, Action action, AutomationType automationType) {
+    default @Unsigned long extract(@Unsigned long amount, Action action, AutomationType automationType) {
         if (isEmpty() || amount == 0) {
             return 0;
         }
@@ -98,7 +99,7 @@ public interface IEnergyContainer extends INBTSerializable<CompoundTag>, IConten
      *
      * @return The maximum amount of energy allowed in this {@link IEnergyContainer}.
      */
-    long getMaxEnergy();
+    @Unsigned long getMaxEnergy();
 
     /**
      * Convenience method for checking if this container is empty.
@@ -121,7 +122,7 @@ public interface IEnergyContainer extends INBTSerializable<CompoundTag>, IConten
      *
      * @return Amount of energy needed
      */
-    default long getNeeded() {
+    default @Unsigned long getNeeded() {
         return getMaxEnergy() - getEnergy();
     }
 

@@ -9,6 +9,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.Unsigned;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.tier.InductionProviderTier;
 import mekanism.common.tile.multiblock.TileEntityInductionCell;
@@ -150,7 +151,7 @@ public class MatrixEnergyContainer implements IEnergyContainer {
      * @return The energy post queue when this container next actually updates/saves to disk
      */
     @Override
-    public FloatingLong getEnergy() {
+    public @Unsigned long getEnergy() {
         return cachedTotal.add(queuedInput).subtract(queuedOutput);
     }
 
@@ -197,7 +198,7 @@ public class MatrixEnergyContainer implements IEnergyContainer {
     }
 
     @Override
-    public FloatingLong getMaxEnergy() {
+    public @Unsigned long getMaxEnergy() {
         return storageCap;
     }
 

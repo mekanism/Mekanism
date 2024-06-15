@@ -36,6 +36,7 @@ import mekanism.api.heat.IHeatHandler;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.math.MathUtils;
+import mekanism.api.math.Unsigned;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.security.IBlockSecurityUtils;
@@ -96,7 +97,6 @@ import mekanism.common.inventory.container.ITrackableContainer;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableEnum;
-import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.container.sync.SyncableFluidStack;
 import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.inventory.container.sync.chemical.SyncableGasStack;
@@ -1431,12 +1431,12 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Override
-    public long insertEnergy(int container, long amount, @Nullable Direction side, @NotNull Action action) {
+    public @Unsigned long insertEnergy(int container, @Unsigned long amount, @Nullable Direction side, @NotNull Action action) {
         return trackLastEnergy(amount, action, IMekanismStrictEnergyHandler.super.insertEnergy(container, amount, side, action));
     }
 
     @Override
-    public long insertEnergy(long amount, @Nullable Direction side, @NotNull Action action) {
+    public @Unsigned long insertEnergy(@Unsigned long amount, @Nullable Direction side, @NotNull Action action) {
         //Note: Super bypasses calling insertEnergy(int container, ...) so we need to override it here as well
         return trackLastEnergy(amount, action, IMekanismStrictEnergyHandler.super.insertEnergy(amount, side, action));
     }

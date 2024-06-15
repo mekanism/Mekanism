@@ -3,6 +3,7 @@ package mekanism.api.energy;
 import mekanism.api.Action;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.LongTransferUtils;
+import mekanism.api.math.Unsigned;
 import net.minecraft.core.Direction;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -50,10 +51,10 @@ public interface ISidedStrictEnergyHandler extends IStrictEnergyHandler {
      *
      * @return Energy in a given container. 0 if the container has no energy stored.
      */
-    long getEnergy(int container, @Nullable Direction side);
+    @Unsigned long getEnergy(int container, @Nullable Direction side);
 
     @Override
-    default long getEnergy(int container) {
+    default @Unsigned long getEnergy(int container) {
         return getEnergy(container, getEnergySideFor());
     }
 
@@ -68,10 +69,10 @@ public interface ISidedStrictEnergyHandler extends IStrictEnergyHandler {
      *
      * @throws RuntimeException if the handler is called in a way that the handler was not expecting. Such as if it was not expecting this to be called at all.
      **/
-    void setEnergy(int container, long energy, @Nullable Direction side);
+    void setEnergy(int container, @Unsigned long energy, @Nullable Direction side);
 
     @Override
-    default void setEnergy(int container, long energy) {
+    default void setEnergy(int container, @Unsigned long energy) {
         setEnergy(container, energy, getEnergySideFor());
     }
 
@@ -85,10 +86,10 @@ public interface ISidedStrictEnergyHandler extends IStrictEnergyHandler {
      *
      * @return The maximum energy that can be stored in the container.
      */
-    long getMaxEnergy(int container, @Nullable Direction side);
+    @Unsigned long getMaxEnergy(int container, @Nullable Direction side);
 
     @Override
-    default long getMaxEnergy(int container) {
+    default @Unsigned long getMaxEnergy(int container) {
         return getMaxEnergy(container, getEnergySideFor());
     }
 
@@ -102,10 +103,10 @@ public interface ISidedStrictEnergyHandler extends IStrictEnergyHandler {
      *
      * @return The energy needed to fill the container.
      */
-    long getNeededEnergy(int container, @Nullable Direction side);
+    @Unsigned long getNeededEnergy(int container, @Nullable Direction side);
 
     @Override
-    default long getNeededEnergy(int container) {
+    default @Unsigned long getNeededEnergy(int container) {
         return getNeededEnergy(container, getEnergySideFor());
     }
 
@@ -124,10 +125,10 @@ public interface ISidedStrictEnergyHandler extends IStrictEnergyHandler {
      *
      * @return The remaining energy that was not inserted (if the entire amount is accepted, then return 0).
      */
-    long insertEnergy(int container, long amount, @Nullable Direction side, Action action);
+    @Unsigned long insertEnergy(int container, @Unsigned long amount, @Nullable Direction side, Action action);
 
     @Override
-    default long insertEnergy(int container, long amount, Action action) {
+    default @Unsigned long insertEnergy(int container, @Unsigned long amount, Action action) {
         return insertEnergy(container, amount, getEnergySideFor(), action);
     }
 
@@ -146,10 +147,10 @@ public interface ISidedStrictEnergyHandler extends IStrictEnergyHandler {
      *
      * @return Energy extracted from the container, must be 0 if no energy can be extracted.
      */
-    long extractEnergy(int container, long amount, @Nullable Direction side, Action action);
+    @Unsigned long extractEnergy(int container, @Unsigned long amount, @Nullable Direction side, Action action);
 
     @Override
-    default long extractEnergy(int container, long amount, Action action) {
+    default @Unsigned long extractEnergy(int container, @Unsigned long amount, Action action) {
         return extractEnergy(container, amount, getEnergySideFor(), action);
     }
 
@@ -171,7 +172,7 @@ public interface ISidedStrictEnergyHandler extends IStrictEnergyHandler {
      * inserting into any empty containers.
      * @apiNote It is not guaranteed that the default implementation will be how this {@link IStrictEnergyHandler} ends up distributing the insertion.
      */
-    default long insertEnergy(long amount, @Nullable Direction side, Action action) {
+    default @Unsigned long insertEnergy(@Unsigned long amount, @Nullable Direction side, Action action) {
         return LongTransferUtils.insert(amount, side, action, this::getEnergyContainerCount, this::getEnergy, this::insertEnergy);
     }
 
@@ -192,7 +193,7 @@ public interface ISidedStrictEnergyHandler extends IStrictEnergyHandler {
      * @implNote The default implementation of this method, extracts across all containers to try and reach the desired amount to extract.
      * @apiNote It is not guaranteed that the default implementation will be how this {@link IStrictEnergyHandler} ends up distributing the extraction.
      */
-    default long extractEnergy(long amount, @Nullable Direction side, Action action) {
+    default @Unsigned long extractEnergy(@Unsigned long amount, @Nullable Direction side, Action action) {
         return LongTransferUtils.extract(amount, side, action, this::getEnergyContainerCount, this::extractEnergy);
     }
 }
