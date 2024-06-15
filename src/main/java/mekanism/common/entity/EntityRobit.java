@@ -724,6 +724,11 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     }
 
     public ContainerLevelAccess getWorldPosCallable() {
+        if (level().isClientSide) {
+            //Note: Mojang just uses a null level access for containers on the client side. We mirror this here so that
+            // we don't play multiple sounds when taking items out of the robit's repair screen
+            return ContainerLevelAccess.NULL;
+        }
         return new ContainerLevelAccess() {
             @NotNull
             @Override

@@ -324,6 +324,10 @@ public class GuiTextField extends GuiElement {
         textField.setTextColorUneditable(color);
     }
 
+    public void setBordered(boolean bordered) {
+        textField.setBordered(bordered);
+    }
+
     public void setEditable(boolean enabled) {
         textField.setEditable(enabled);
     }
