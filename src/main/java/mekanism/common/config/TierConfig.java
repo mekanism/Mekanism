@@ -5,6 +5,7 @@ import mekanism.common.config.value.CachedDoubleValue;
 import mekanism.common.config.value.CachedFloatingLongValue;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.config.value.CachedLongValue;
+import mekanism.common.config.value.CachedUnsignedLongValue;
 import mekanism.common.tier.BinTier;
 import mekanism.common.tier.CableTier;
 import mekanism.common.tier.ChemicalTankTier;
@@ -112,7 +113,7 @@ public class TierConfig extends BaseMekanismConfig {
         }
         for (InductionProviderTier tier : EnumUtils.INDUCTION_PROVIDER_TIERS) {
             String tierName = tier.getBaseTier().getSimpleName();
-            CachedFloatingLongValue outputReference = CachedFloatingLongValue.define(this, builder, "Maximum number of Joules " + tierName + " induction providers can output or accept.",
+            CachedUnsignedLongValue outputReference = CachedUnsignedLongValue.define(this, builder, "Maximum number of Joules " + tierName + " induction providers can output or accept.",
                   tierName.toLowerCase(Locale.ROOT) + "Output", tier.getBaseOutput(), CachedFloatingLongValue.POSITIVE);
             tier.setConfigReference(outputReference);
         }

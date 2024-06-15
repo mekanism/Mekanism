@@ -1,5 +1,6 @@
 package mekanism.api.energy;
 
+import com.google.common.primitives.UnsignedLongs;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
@@ -56,7 +57,7 @@ public interface IEnergyContainer extends INBTSerializable<CompoundTag>, IConten
             //Fail if we are a full container
             return amount;
         }
-        long toAdd = Math.min(amount, needed);
+        long toAdd = UnsignedLongs.min(amount, needed);
         if (toAdd != 0 && action.execute()) {
             //If we want to actually insert the energy, then update the current energy
             // Note: this also will mark that the contents changed
@@ -84,7 +85,7 @@ public interface IEnergyContainer extends INBTSerializable<CompoundTag>, IConten
         if (isEmpty() || amount == 0) {
             return 0;
         }
-        long ret = Math.min(getEnergy(), amount);
+        long ret = UnsignedLongs.min(getEnergy(), amount);
         if (ret != 0 && action.execute()) {
             // Note: this also will mark that the contents changed
             setEnergy(getEnergy() - ret);

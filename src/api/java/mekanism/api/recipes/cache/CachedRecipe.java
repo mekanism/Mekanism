@@ -432,7 +432,7 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?>> {
             if (energyPerTick != 0L) {
                 //Make sure we don't have any integer overflow in calculating how much we have room for
                 //TODO: Evaluate moving this check to after checking if inputs are empty, as those may be a cheaper check
-                int operations = (int) (storedEnergy.getAsLong() / (energyPerTick));
+                int operations = (int) Long.divideUnsigned(storedEnergy.getAsLong(), energyPerTick);
                 //Update the max amount we can perform from our energy (we apply this at the end so that we can see if we have a reduced
                 // operation count due to energy
                 tracker.maxForEnergy = operations;

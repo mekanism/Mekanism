@@ -1,5 +1,6 @@
 package mekanism.api.recipes.basic;
 
+import com.google.common.base.Preconditions;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -43,7 +44,9 @@ public class BasicPressurizedReactionRecipe extends PressurizedReactionRecipe {
         this.inputSolid = Objects.requireNonNull(inputSolid, "Item input cannot be null.");
         this.inputFluid = Objects.requireNonNull(inputFluid, "Fluid input cannot be null.");
         this.inputGas = Objects.requireNonNull(inputGas, "Gas input cannot be null.");
+        Preconditions.checkArgument(energyRequired >= 0, "Energy required must not be negative");
         this.energyRequired = energyRequired;
+
         if (duration <= 0) {
             throw new IllegalArgumentException("Duration must be positive.");
         }

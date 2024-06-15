@@ -1,11 +1,9 @@
 package mekanism.common.tier;
 
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
-import mekanism.common.config.value.CachedFloatingLongValue;
-import mekanism.common.config.value.CachedLongValue;
+import mekanism.common.config.value.CachedUnsignedLongValue;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -18,7 +16,7 @@ public enum InductionProviderTier implements ITier {
     private final long baseOutput;
     private final BaseTier baseTier;
     @Nullable
-    private CachedLongValue outputReference;
+    private CachedUnsignedLongValue outputReference;
 
     InductionProviderTier(BaseTier tier, long out) {
         baseOutput = out;
@@ -41,7 +39,7 @@ public enum InductionProviderTier implements ITier {
     /**
      * ONLY CALL THIS FROM TierConfig. It is used to give the InductionProviderTier a reference to the actual config value object
      */
-    public void setConfigReference(CachedLongValue outputReference) {
+    public void setConfigReference(CachedUnsignedLongValue outputReference) {
         this.outputReference = outputReference;
     }
 }

@@ -1,5 +1,6 @@
 package mekanism.common.block.attribute;
 
+import com.google.common.primitives.UnsignedLongs;
 import java.util.function.LongSupplier;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
@@ -32,6 +33,6 @@ public class AttributeEnergy implements Attribute {
     }
 
     public long getStorage() {
-        return Math.max(getConfigStorage(), getUsage());
+        return UnsignedLongs.max(getConfigStorage(), getUsage());
     }
 }

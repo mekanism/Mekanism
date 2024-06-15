@@ -1,5 +1,6 @@
 package mekanism.common.util.text;
 
+import com.google.common.primitives.UnsignedLongs;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;
@@ -35,7 +36,7 @@ public class EnergyDisplay implements IHasTextComponent {
 
     @Override
     public Component getTextComponent() {
-        if (energy == Long.MAX_VALUE) {
+        if (energy == UnsignedLongs.MAX_VALUE) {
             return MekanismLang.INFINITE.translate();
         } else if (max == 0L) {
             return MekanismUtils.getEnergyDisplayShort(energy);

@@ -1,5 +1,6 @@
 package mekanism.common.capabilities.energy;
 
+import com.google.common.primitives.UnsignedLongs;
 import java.util.Objects;
 import java.util.function.Predicate;
 import mekanism.api.Action;
@@ -91,11 +92,11 @@ public class BasicEnergyContainer implements IEnergyContainer {
      *
      * @return The rate this tank can insert/extract at.
      *
-     * @implNote By default, this returns {@link Long#MAX_VALUE} to not actually limit the container's rate. By default, this is also ignored for direct setting
+     * @implNote By default, this returns {@link UnsignedLongs#MAX_VALUE} to not actually limit the container's rate. By default, this is also ignored for direct setting
      * of the stack/stack size
      */
     protected long getInsertRate(@Nullable AutomationType automationType) {
-        return Long.MAX_VALUE;
+        return UnsignedLongs.MAX_VALUE;
     }
 
     /**
@@ -105,11 +106,11 @@ public class BasicEnergyContainer implements IEnergyContainer {
      *
      * @return The rate this tank can insert/extract at.
      *
-     * @implNote By default, this returns {@link Long#MAX_VALUE} to not actually limit the container's rate. By default, this is also ignored for direct setting
+     * @implNote By default, this returns {@link UnsignedLongs#MAX_VALUE} to not actually limit the container's rate. By default, this is also ignored for direct setting
      * of the stack/stack size
      */
     protected long getExtractRate(@Nullable AutomationType automationType) {
-        return FLong.MAX_VALUE;
+        return UnsignedLongs.MAX_VALUE;
     }
 
     @Override
@@ -117,12 +118,12 @@ public class BasicEnergyContainer implements IEnergyContainer {
         if (amount == 0L || !canInsert.test(automationType)) {
             return amount;
         }
-        long needed = Math.min(getInsertRate(automationType), getNeeded());
+        long needed = UnsignedLongs.min(getInsertRate(automationType), getNeeded());
         if (needed == 0L) {
             //Fail if we are a full container or our rate is zero
             return amount;
         }
-        long toAdd = Math.min(amount, needed);
+        long toAdd = UnsignedLongs.min(amount, needed);
         if (toAdd != 0 && action.execute()) {
             //If we want to actually insert the energy, then update the current energy
             // Note: this also will mark that the contents changed
@@ -137,7 +138,7 @@ public class BasicEnergyContainer implements IEnergyContainer {
         if (isEmpty() || amount == 0L || !canExtract.test(automationType)) {
             return 0L;
         }
-        long ret = Math.min(getExtractRate(automationType), Math.min(getEnergy(), amount));
+        long ret = UnsignedLongs.min(getExtractRate(automationType), getEnergy(), amount);
         if (ret != 0L && action.execute()) {
             //Note: this also will mark that the contents changed
             stored -= ret;

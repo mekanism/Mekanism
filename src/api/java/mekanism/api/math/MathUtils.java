@@ -1,5 +1,8 @@
 package mekanism.api.math;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.math.MathContext;
 import java.util.List;
 
 public class MathUtils {
@@ -135,5 +138,22 @@ public class MathUtils {
             return elements.get(Math.floorMod(index, elements.size()));
         }
         return elements.get(index % elements.size());
+    }
+
+    //Copied from UnsignedLong
+    public static BigInteger unsignedLongToBigIntegerValue(long value) {
+        BigInteger bigInt = BigInteger.valueOf(value & UNSIGNED_MASK);
+        if (value < 0) {
+            bigInt = bigInt.setBit(Long.SIZE - 1);
+        }
+        return bigInt;
+    }
+
+    public static BigDecimal unsignedLongToBigDecimal(long value) {
+        return new BigDecimal(unsignedLongToBigIntegerValue(value));
+    }
+
+    public static double uLongDivideDouble(long dividend, long divisor) {
+        return unsignedLongToBigDecimal(dividend).divide(unsignedLongToBigDecimal(divisor), MathContext.DECIMAL64).doubleValue();
     }
 }

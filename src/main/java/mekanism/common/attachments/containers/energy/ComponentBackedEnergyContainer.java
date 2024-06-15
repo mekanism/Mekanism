@@ -1,5 +1,6 @@
 package mekanism.common.attachments.containers.energy;
 
+import com.google.common.primitives.UnsignedLongs;
 import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import mekanism.api.Action;
@@ -7,7 +8,6 @@ import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.math.FloatingLong;
 import mekanism.common.attachments.containers.ComponentBackedContainer;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.util.NBTUtils;
@@ -66,17 +66,17 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Lon
 
     @Override
     protected void setContents(AttachedEnergy attachedEnergy, Long energy) {
-        super.setContents(attachedEnergy, Math.min(energy, getMaxEnergy()));
+        super.setContents(attachedEnergy, UnsignedLongs.min(energy, getMaxEnergy()));
     }
 
     protected long getInsertRate(@Nullable AutomationType automationType) {
         //Allow unknown or manual interaction to bypass rate limit for the item
-        return automationType == null || automationType == AutomationType.MANUAL ? Long.MAX_VALUE : rate.getAsLong();
+        return automationType == null || automationType == AutomationType.MANUAL ? UnsignedLongs.MAX_VALUE : rate.getAsLong();
     }
 
     protected long getExtractRate(@Nullable AutomationType automationType) {
         //Allow unknown or manual interaction to bypass rate limit for the item
-        return automationType == null || automationType == AutomationType.MANUAL ? Long.MAX_VALUE : rate.getAsLong();
+        return automationType == null || automationType == AutomationType.MANUAL ? UnsignedLongs.MAX_VALUE : rate.getAsLong();
     }
 
     @Override
@@ -86,12 +86,12 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Lon
         }
         AttachedEnergy attachedEnergy = getAttached();
         long stored = getContents(attachedEnergy);
-        long needed = Math.min(getInsertRate(automationType), getNeeded(stored));
+        long needed = UnsignedLongs.min(getInsertRate(automationType), getNeeded(stored));
         if (needed == 0L) {
             //Fail if we are a full container or our rate is zero
             return amount;
         }
-        long toAdd = Math.min(amount, needed);
+        long toAdd = UnsignedLongs.min(amount, needed);
         if (toAdd != 0L && action.execute()) {
             //If we want to actually insert the energy, then update the current energy
             // Note: this also will mark that the contents changed
@@ -110,7 +110,7 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Lon
         if (stored == 0L || !canExtract.test(automationType)) {
             return 0L;
         }
-        long ret = Math.min(getExtractRate(automationType), Math.min(stored, amount));
+        long ret = UnsignedLongs.min(getExtractRate(automationType), stored, amount);
         if (ret != 0L && action.execute()) {
             //Note: this also will mark that the contents changed
             setContents(attachedEnergy, stored - ret);
