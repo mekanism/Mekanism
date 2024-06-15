@@ -34,7 +34,7 @@ public class MekanismStatusOverlay implements LayeredDraw.Layer {
     @Override
     public void render(@NotNull GuiGraphics graphics, @NotNull DeltaTracker delta) {
         Minecraft minecraft = Minecraft.getInstance();
-        if (modeSwitchTimer > 1 && minecraft.player != null && minecraft.gameMode.getPlayerMode() != GameType.SPECTATOR) {
+        if (modeSwitchTimer > 1 && minecraft.player != null && minecraft.gameMode.getPlayerMode() != GameType.SPECTATOR && !minecraft.options.hideGui) {
             ItemStack stack = minecraft.player.getMainHandItem();
             if (IModeItem.isModeItem(stack, EquipmentSlot.MAINHAND)) {
                 Component scrollTextComponent = ((IModeItem) stack.getItem()).getScrollTextComponent(stack);

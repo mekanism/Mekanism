@@ -26,11 +26,11 @@ public class MekaSuitEnergyLevel implements LayeredDraw.Layer {
 
     @Override
     public void render(@NotNull GuiGraphics graphics, @NotNull DeltaTracker delta) {
-        if (!Minecraft.getInstance().gameMode.canHurtPlayer()) {
-            //Copy of vanilla check for if the armor level can render
+        Minecraft minecraft = Minecraft.getInstance();
+        if (!minecraft.gameMode.canHurtPlayer() || minecraft.options.hideGui) {
+            //canHurtPlayer is a copy of vanilla check for if the armor level can render
             return;
         }
-        Minecraft minecraft = Minecraft.getInstance();
         FloatingLong capacity = FloatingLong.ZERO, stored = FloatingLong.ZERO;
         for (ItemStack stack : minecraft.player.getArmorSlots()) {
             if (stack.getItem() instanceof ItemMekaSuitArmor) {
