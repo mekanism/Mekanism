@@ -1,5 +1,6 @@
 package mekanism.api.math;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
 
@@ -13,6 +14,7 @@ import java.lang.annotation.Target;
  * @see com.google.common.primitives.UnsignedLongs#max(long...)
  * @see com.google.common.primitives.UnsignedLongs#min(long...)
  */
+@Documented
 @Target(ElementType.TYPE_USE)
 public @interface Unsigned {
 }
