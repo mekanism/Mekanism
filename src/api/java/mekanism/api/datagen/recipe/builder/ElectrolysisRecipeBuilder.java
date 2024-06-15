@@ -14,7 +14,7 @@ public class ElectrolysisRecipeBuilder extends MekanismRecipeBuilder<Electrolysi
     private final FluidStackIngredient input;
     private final GasStack leftGasOutput;
     private final GasStack rightGasOutput;
-    private FloatingLong energyMultiplier = FloatingLong.ONE;
+    private long energyMultiplier = 1;
 
     protected ElectrolysisRecipeBuilder(FluidStackIngredient input, GasStack leftGasOutput, GasStack rightGasOutput) {
         this.input = input;
@@ -41,8 +41,8 @@ public class ElectrolysisRecipeBuilder extends MekanismRecipeBuilder<Electrolysi
      *
      * @param multiplier Multiplier to the energy cost in relation to the configured hydrogen separating energy cost. This value must be greater than or equal to one.
      */
-    public ElectrolysisRecipeBuilder energyMultiplier(FloatingLong multiplier) {
-        if (multiplier.smallerThan(FloatingLong.ONE)) {
+    public ElectrolysisRecipeBuilder energyMultiplier(long multiplier) {
+        if (multiplier < 1) {
             throw new IllegalArgumentException("Energy multiplier must be greater than or equal to one");
         }
         this.energyMultiplier = multiplier;

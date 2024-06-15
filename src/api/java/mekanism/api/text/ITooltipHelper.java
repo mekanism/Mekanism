@@ -14,7 +14,7 @@ public interface ITooltipHelper {
 
     ITooltipHelper INSTANCE = ServiceLoader.load(ITooltipHelper.class).findFirst().orElseThrow(() -> new IllegalStateException("No valid ServiceImpl for ITooltipHelper found"));
 
-    Component getEnergyPerMBDisplayShort(FloatingLong energy);
+    Component getEnergyPerMBDisplayShort(long energy);
 
     Component getRadioactivityDisplayShort(double radioactivity);
 

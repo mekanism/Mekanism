@@ -17,7 +17,7 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Pres
     private final ItemStackIngredient inputSolid;
     private final FluidStackIngredient inputFluid;
     private final GasStackIngredient inputGas;
-    private FloatingLong energyRequired = FloatingLong.ZERO;
+    private long energyRequired = 0;
     private final int duration;
     private final ItemStack outputItem;
     private final GasStack outputGas;
@@ -98,7 +98,7 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Pres
      *
      * @param energyRequired How much "extra" energy this recipe requires, compared to the base energy requirements of the machine performing the recipe.
      */
-    public PressurizedReactionRecipeBuilder energyRequired(FloatingLong energyRequired) {
+    public PressurizedReactionRecipeBuilder energyRequired(long energyRequired) {
         this.energyRequired = energyRequired;
         return this;
     }

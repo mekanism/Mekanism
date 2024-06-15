@@ -7,8 +7,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
-import mekanism.api.math.FloatingLong;
-import mekanism.api.math.FloatingLongTransferUtils;
+import mekanism.api.math.LongTransferUtils;
 import mekanism.common.attachments.containers.ContainerType;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
@@ -42,7 +41,7 @@ public class EnergyRecipeData implements RecipeUpgradeData<EnergyRecipeData> {
             return false;
         }
         for (IEnergyContainer energyContainer : this.energyContainers) {
-            if (!energyContainer.isEmpty() && !insertManualIntoOutputContainer(outputHandler, energyContainer.getEnergy()).isZero()) {
+            if (!energyContainer.isEmpty() && insertManualIntoOutputContainer(outputHandler, energyContainer.getEnergy()) != 0) {
                 //If we have a remainder, stop trying to insert as our upgraded item's buffer is just full
                 break;
             }
@@ -50,8 +49,8 @@ public class EnergyRecipeData implements RecipeUpgradeData<EnergyRecipeData> {
         return true;
     }
 
-    private FloatingLong insertManualIntoOutputContainer(IMekanismStrictEnergyHandler outputHandler, FloatingLong energy) {
+    private long insertManualIntoOutputContainer(IMekanismStrictEnergyHandler outputHandler, long energy) {
         //Insert into the output using manual as the automation type
-        return FloatingLongTransferUtils.insert(energy, null, outputHandler::getEnergyContainers, Action.EXECUTE, AutomationType.MANUAL);
+        return LongTransferUtils.insert(energy, null, outputHandler::getEnergyContainers, Action.EXECUTE, AutomationType.MANUAL);
     }
 }

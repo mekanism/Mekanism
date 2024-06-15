@@ -1429,15 +1429,13 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return energyHandlerManager != null ? energyHandlerManager.getContainers(side) : Collections.emptyList();
     }
 
-    @NotNull
     @Override
-    public FloatingLong insertEnergy(int container, @NotNull FloatingLong amount, @Nullable Direction side, @NotNull Action action) {
+    public long insertEnergy(int container, long amount, @Nullable Direction side, @NotNull Action action) {
         return trackLastEnergy(amount, action, IMekanismStrictEnergyHandler.super.insertEnergy(container, amount, side, action));
     }
 
-    @NotNull
     @Override
-    public FloatingLong insertEnergy(@NotNull FloatingLong amount, @Nullable Direction side, @NotNull Action action) {
+    public long insertEnergy(long amount, @Nullable Direction side, @NotNull Action action) {
         //Note: Super bypasses calling insertEnergy(int container, ...) so we need to override it here as well
         return trackLastEnergy(amount, action, IMekanismStrictEnergyHandler.super.insertEnergy(amount, side, action));
     }

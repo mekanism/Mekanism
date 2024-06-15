@@ -5,8 +5,7 @@ import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.math.FloatingLong;
-import mekanism.api.math.FloatingLongTransferUtils;
+import mekanism.api.math.LongTransferUtils;
 import net.minecraft.core.Direction;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,7 +17,7 @@ public interface IMekanismStrictEnergyHandler extends ISidedStrictEnergyHandler,
      *
      * @return True if we are actually capable of handling energy.
      *
-     * @apiNote If for some reason you are comparing to {@link IMekanismStrictEnergyHandler} without having gotten the object via the strict energy handler capability,
+     * @apiNote If for some reason you are comparing to {@link IMekanismStrictEnergyHandler} without having retrieved the object via the strict energy handler capability,
      * then you must call this method to make sure that it really can handle energy. As most mekanism tiles have this class in their hierarchy.
      * @implNote If this returns false the capability should not be exposed AND methods should turn reasonable defaults for not doing anything.
      */
@@ -59,13 +58,13 @@ public interface IMekanismStrictEnergyHandler extends ISidedStrictEnergyHandler,
     }
 
     @Override
-    default FloatingLong getEnergy(int container, @Nullable Direction side) {
+    default long getEnergy(int container, @Nullable Direction side) {
         IEnergyContainer energyContainer = getEnergyContainer(container, side);
-        return energyContainer == null ? FloatingLong.ZERO : energyContainer.getEnergy();
+        return energyContainer == null ? 0L : energyContainer.getEnergy();
     }
 
     @Override
-    default void setEnergy(int container, FloatingLong energy, @Nullable Direction side) {
+    default void setEnergy(int container, long energy, @Nullable Direction side) {
         IEnergyContainer energyContainer = getEnergyContainer(container, side);
         if (energyContainer != null) {
             energyContainer.setEnergy(energy);
@@ -73,25 +72,25 @@ public interface IMekanismStrictEnergyHandler extends ISidedStrictEnergyHandler,
     }
 
     @Override
-    default FloatingLong getMaxEnergy(int container, @Nullable Direction side) {
+    default long getMaxEnergy(int container, @Nullable Direction side) {
         IEnergyContainer energyContainer = getEnergyContainer(container, side);
-        return energyContainer == null ? FloatingLong.ZERO : energyContainer.getMaxEnergy();
+        return energyContainer == null ? 0L : energyContainer.getMaxEnergy();
     }
 
     @Override
-    default FloatingLong getNeededEnergy(int container, @Nullable Direction side) {
+    default long getNeededEnergy(int container, @Nullable Direction side) {
         IEnergyContainer energyContainer = getEnergyContainer(container, side);
-        return energyContainer == null ? FloatingLong.ZERO : energyContainer.getNeeded();
+        return energyContainer == null ? 0L : energyContainer.getNeeded();
     }
 
     /**
      * {@inheritDoc}
      *
-     * @implNote Any overrides to this should also override {@link #insertEnergy(FloatingLong, Direction, Action)} as it bypasses calling this method in order to skip
+     * @implNote Any overrides to this should also override {@link ISidedStrictEnergyHandler#insertEnergy(long, Direction, Action)} as it bypasses calling this method in order to skip
      * looking up the containers for every sub operation.
      */
     @Override
-    default FloatingLong insertEnergy(int container, FloatingLong amount, @Nullable Direction side, Action action) {
+    default long insertEnergy(int container, long amount, @Nullable Direction side, Action action) {
         IEnergyContainer energyContainer = getEnergyContainer(container, side);
         return energyContainer == null ? amount : energyContainer.insert(amount, action, AutomationType.handler(side));
     }
@@ -99,22 +98,22 @@ public interface IMekanismStrictEnergyHandler extends ISidedStrictEnergyHandler,
     /**
      * {@inheritDoc}
      *
-     * @implNote Any overrides to this should also override {@link #extractEnergy(FloatingLong, Direction, Action)} as it bypasses calling this method in order to skip
+     * @implNote Any overrides to this should also override {@link ISidedStrictEnergyHandler#extractEnergy(long, Direction, Action)} as it bypasses calling this method in order to skip
      * looking up the containers for every sub operation.
      */
     @Override
-    default FloatingLong extractEnergy(int container, FloatingLong amount, @Nullable Direction side, Action action) {
+    default long extractEnergy(int container, long amount, @Nullable Direction side, Action action) {
         IEnergyContainer energyContainer = getEnergyContainer(container, side);
-        return energyContainer == null ? FloatingLong.ZERO : energyContainer.extract(amount, action, AutomationType.handler(side));
+        return energyContainer == null ? 0L : energyContainer.extract(amount, action, AutomationType.handler(side));
     }
 
     @Override
-    default FloatingLong insertEnergy(FloatingLong amount, @Nullable Direction side, Action action) {
-        return FloatingLongTransferUtils.insert(amount, side, this::getEnergyContainers, action, AutomationType.handler(side));
+    default long insertEnergy(long amount, @Nullable Direction side, Action action) {
+        return LongTransferUtils.insert(amount, side, this::getEnergyContainers, action, AutomationType.handler(side));
     }
 
     @Override
-    default FloatingLong extractEnergy(FloatingLong amount, @Nullable Direction side, Action action) {
-        return FloatingLongTransferUtils.extract(amount, side, this::getEnergyContainers, action, AutomationType.handler(side));
+    default long extractEnergy(long amount, @Nullable Direction side, Action action) {
+        return LongTransferUtils.extract(amount, side, this::getEnergyContainers, action, AutomationType.handler(side));
     }
 }

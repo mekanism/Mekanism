@@ -6,8 +6,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
-import mekanism.api.math.FloatingLong;
-import mekanism.api.math.FloatingLongTransferUtils;
+import mekanism.api.math.LongTransferUtils;
 import mekanism.common.attachments.containers.ComponentBackedHandler;
 import mekanism.common.attachments.containers.ContainerType;
 import net.minecraft.core.Direction;
@@ -15,7 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class ComponentBackedEnergyHandler extends ComponentBackedHandler<FloatingLong, IEnergyContainer, AttachedEnergy> implements IMekanismStrictEnergyHandler {
+public class ComponentBackedEnergyHandler extends ComponentBackedHandler<Long, IEnergyContainer, AttachedEnergy> implements IMekanismStrictEnergyHandler {
 
     public ComponentBackedEnergyHandler(ItemStack attachedTo, int totalContainers) {
         super(attachedTo, totalContainers);
@@ -43,17 +42,17 @@ public class ComponentBackedEnergyHandler extends ComponentBackedHandler<Floatin
     }
 
     @Override
-    public FloatingLong getEnergy(int container, @Nullable Direction side) {
+    public long getEnergy(int container, @Nullable Direction side) {
         return getContents(container);
     }
 
     @Override
-    public FloatingLong insertEnergy(FloatingLong amount, @Nullable Direction side, Action action) {
-        return FloatingLongTransferUtils.insert(amount, action, AutomationType.handler(side), size(), this);
+    public long insertEnergy(long amount, @Nullable Direction side, Action action) {
+        return LongTransferUtils.insert(amount, action, AutomationType.handler(side), size(), this);
     }
 
     @Override
-    public FloatingLong extractEnergy(FloatingLong amount, @Nullable Direction side, Action action) {
-        return FloatingLongTransferUtils.extract(amount, action, AutomationType.handler(side), size(), this);
+    public long extractEnergy(long amount, @Nullable Direction side, Action action) {
+        return LongTransferUtils.extract(amount, action, AutomationType.handler(side), size(), this);
     }
 }

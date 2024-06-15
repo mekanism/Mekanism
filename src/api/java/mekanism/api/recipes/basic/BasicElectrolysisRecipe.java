@@ -19,7 +19,7 @@ public class BasicElectrolysisRecipe extends ElectrolysisRecipe {
     protected final FluidStackIngredient input;
     protected final GasStack leftGasOutput;
     protected final GasStack rightGasOutput;
-    protected final FloatingLong energyMultiplier;
+    protected final long energyMultiplier;
 
     /**
      * @param input            Input.
@@ -27,10 +27,10 @@ public class BasicElectrolysisRecipe extends ElectrolysisRecipe {
      * @param leftGasOutput    Left output.
      * @param rightGasOutput   Right output.
      */
-    public BasicElectrolysisRecipe(FluidStackIngredient input, FloatingLong energyMultiplier, GasStack leftGasOutput, GasStack rightGasOutput) {
+    public BasicElectrolysisRecipe(FluidStackIngredient input, long energyMultiplier, GasStack leftGasOutput, GasStack rightGasOutput) {
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
-        this.energyMultiplier = Objects.requireNonNull(energyMultiplier, "Energy multiplier cannot be null.").copyAsConst();
-        if (energyMultiplier.smallerThan(FloatingLong.ONE)) {
+        this.energyMultiplier = energyMultiplier;
+        if (energyMultiplier < 1) {
             throw new IllegalArgumentException("Energy multiplier must be at least one.");
         }
         Objects.requireNonNull(leftGasOutput, "Left output cannot be null");
@@ -66,7 +66,7 @@ public class BasicElectrolysisRecipe extends ElectrolysisRecipe {
     }
 
     @Override
-    public FloatingLong getEnergyMultiplier() {
+    public long getEnergyMultiplier() {
         return energyMultiplier;
     }
 

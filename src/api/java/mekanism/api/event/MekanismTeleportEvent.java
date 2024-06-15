@@ -173,7 +173,7 @@ public class MekanismTeleportEvent extends EntityTeleportEvent {
      */
     public static class Teleporter extends GlobalTeleport {
 
-        private final FloatingLong energyCost;
+        private final long energyCost;
 
         /**
          * @param entity          The entity that is teleporting.
@@ -181,15 +181,15 @@ public class MekanismTeleportEvent extends EntityTeleportEvent {
          * @param targetDimension Destination dimension.
          * @param energyCost      The energy cost to perform the teleportation.
          */
-        public Teleporter(Entity entity, BlockPos teleporterPos, ResourceKey<Level> targetDimension, FloatingLong energyCost) {
+        public Teleporter(Entity entity, BlockPos teleporterPos, ResourceKey<Level> targetDimension, long energyCost) {
             super(entity, teleporterPos.getX() + 0.5, teleporterPos.getY(), teleporterPos.getZ() + 0.5, targetDimension);
-            this.energyCost = energyCost.copyAsConst();
+            this.energyCost = energyCost;
         }
 
         /**
          * @return The amount of energy the teleportation will cost
          */
-        public FloatingLong getEnergyCost() {
+        public long getEnergyCost() {
             return energyCost;
         }
     }
@@ -220,7 +220,7 @@ public class MekanismTeleportEvent extends EntityTeleportEvent {
          * @param portableTeleporter Portable Teleporter used for teleportation.
          * @param energyCost         The energy cost to perform the teleportation.
          */
-        public PortableTeleporter(Player player, BlockPos teleporterPos, ResourceKey<Level> targetDimension, ItemStack portableTeleporter, FloatingLong energyCost) {
+        public PortableTeleporter(Player player, BlockPos teleporterPos, ResourceKey<Level> targetDimension, ItemStack portableTeleporter, long energyCost) {
             super(player, teleporterPos, targetDimension, energyCost);
             this.portableTeleporter = portableTeleporter;
         }

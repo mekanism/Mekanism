@@ -143,23 +143,23 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
     }
 
     @Override
-    public boolean hasEnoughEnergy(ItemStack stack, FloatingLong cost) {
+    public boolean hasEnoughEnergy(ItemStack stack, long cost) {
         return cost.isZero() || getContainerEnergy(stack).greaterOrEqual(cost);
     }
 
     @Override
-    public boolean canUseEnergy(LivingEntity wearer, ItemStack stack, FloatingLong energy) {
+    public boolean canUseEnergy(LivingEntity wearer, ItemStack stack, long energy) {
         //Note: This is subtly different than how useEnergy does it so that we can get to useEnergy when in creative
         return canUseEnergy(wearer, stack, energy, false);
     }
 
     @Override
-    public boolean canUseEnergy(LivingEntity wearer, ItemStack stack, FloatingLong energy, boolean ignoreCreative) {
+    public boolean canUseEnergy(LivingEntity wearer, ItemStack stack, long energy, boolean ignoreCreative) {
         return canUseEnergy(wearer, getEnergyContainer(stack), energy, ignoreCreative);
     }
 
     @Override
-    public boolean canUseEnergy(LivingEntity wearer, @Nullable IEnergyContainer energyContainer, FloatingLong energy, boolean ignoreCreative) {
+    public boolean canUseEnergy(LivingEntity wearer, @Nullable IEnergyContainer energyContainer, long energy, boolean ignoreCreative) {
         if (energyContainer != null && !wearer.isSpectator()) {
             //Don't check spectators in general
             if (!ignoreCreative || !(wearer instanceof Player player) || !player.isCreative()) {
@@ -170,17 +170,17 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
     }
 
     @Override
-    public FloatingLong useEnergy(LivingEntity wearer, ItemStack stack, FloatingLong energy) {
+    public long useEnergy(LivingEntity wearer, ItemStack stack, long energy) {
         return useEnergy(wearer, stack, energy, true);
     }
 
     @Override
-    public FloatingLong useEnergy(LivingEntity wearer, ItemStack stack, FloatingLong energy, boolean freeCreative) {
+    public long useEnergy(LivingEntity wearer, ItemStack stack, long energy, boolean freeCreative) {
         return useEnergy(wearer, getEnergyContainer(stack), energy, freeCreative);
     }
 
     @Override
-    public FloatingLong useEnergy(LivingEntity wearer, @Nullable IEnergyContainer energyContainer, FloatingLong energy, boolean freeCreative) {
+    public long useEnergy(LivingEntity wearer, @Nullable IEnergyContainer energyContainer, long energy, boolean freeCreative) {
         if (energyContainer != null) {
             //Use from spectators if this is called due to the various edge cases that exist for when things are calculated manually
             if (!freeCreative || !(wearer instanceof Player player) || MekanismUtils.isPlayingMode(player)) {

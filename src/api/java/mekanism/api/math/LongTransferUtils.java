@@ -11,14 +11,17 @@ import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.container.ContainerInteraction;
 import mekanism.api.container.InContainerGetter;
+import mekanism.api.container.InContainerGetterLong;
+import mekanism.api.container.LongContainerInteraction;
+import mekanism.api.container.LongToLongContainerInteraction;
 import mekanism.api.energy.IEnergyContainer;
 import net.minecraft.core.Direction;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class FloatingLongTransferUtils {
+public class LongTransferUtils {
 
-    private FloatingLongTransferUtils() {
+    private LongTransferUtils() {
     }
 
     /**
@@ -26,11 +29,11 @@ public class FloatingLongTransferUtils {
      *
      * @since 10.5.13
      */
-    public static FloatingLong insert(FloatingLong stack, @Nullable Direction side, Action action, ToIntFunction<@Nullable Direction> containerCount,
-          InContainerGetter<FloatingLong> inContainerGetter, ContainerInteraction<FloatingLong> insert) {
-        if (stack.isZero()) {
+    public static long insert(long stack, @Nullable Direction side, Action action, ToIntFunction<@Nullable Direction> containerCount,
+          InContainerGetterLong inContainerGetter, LongToLongContainerInteraction insert) {
+        if (stack == 0L) {
             //Short circuit if no energy is trying to be inserted
-            return FloatingLong.ZERO;
+            return 0L;
         }
         int containers = containerCount.applyAsInt(side);
         if (containers == 0) {
@@ -38,28 +41,28 @@ public class FloatingLongTransferUtils {
         } else if (containers == 1) {
             return insert.interact(0, stack, side, action);
         }
-        FloatingLong toInsert = stack;
+        long toInsert = stack;
         //Start by trying to insert into the containers that are not empty
         IntList emptyContainers = new IntArrayList();
         for (int container = 0; container < containers; container++) {
-            FloatingLong inContainer = inContainerGetter.getStored(container, side);
-            if (inContainer.isZero()) {
+            long inContainer = inContainerGetter.getStored(container, side);
+            if (inContainer == 0L) {
                 emptyContainers.add(container);
             } else {
-                FloatingLong remainder = insert.interact(container, toInsert, side, action);
-                if (remainder.isZero()) {
+                long remainder = insert.interact(container, toInsert, side, action);
+                if (remainder == 0L) {
                     //If we have no remainder, return that we fit it all
-                    return FloatingLong.ZERO;
+                    return 0L;
                 }
                 //Update what we have left to insert, to be the amount we were unable to insert
                 toInsert = remainder;
             }
         }
         for (int container : emptyContainers) {
-            FloatingLong remainder = insert.interact(container, toInsert, side, action);
-            if (remainder.isZero()) {
+            long remainder = insert.interact(container, toInsert, side, action);
+            if (remainder == 0L) {
                 //If we have no remainder, return that we fit it all
-                return FloatingLong.ZERO;
+                return 0L;
             }
             //Update what we have left to insert, to be the amount we were unable to insert
             toInsert = remainder;
@@ -72,11 +75,11 @@ public class FloatingLongTransferUtils {
      *
      * @since 10.5.13
      */
-    public static FloatingLong insert(FloatingLong stack, @Nullable Direction side, Function<@Nullable Direction, List<IEnergyContainer>> energyContainerSupplier,
+    public static long insert(long stack, @Nullable Direction side, Function<@Nullable Direction, List<IEnergyContainer>> energyContainerSupplier,
           Action action, AutomationType automationType) {
-        if (stack.isZero()) {
+        if (stack == 0L) {
             //Short circuit if no energy is trying to be inserted
-            return FloatingLong.ZERO;
+            return 0L;
         }
         List<IEnergyContainer> energyContainers = energyContainerSupplier.apply(side);
         return insert(stack, action, automationType, energyContainers.size(), energyContainers);
@@ -87,37 +90,37 @@ public class FloatingLongTransferUtils {
      *
      * @since 10.6.0
      */
-    public static FloatingLong insert(FloatingLong stack, Action action, AutomationType automationType, int size, Iterable<IEnergyContainer> energyContainers) {
-        if (stack.isZero()) {
+    public static long insert(long stack, Action action, AutomationType automationType, int size, Iterable<IEnergyContainer> energyContainers) {
+        if (stack == 0L) {
             //Short circuit if no energy is trying to be inserted
-            return FloatingLong.ZERO;
+            return 0L;
         } else if (size == 0) {
             return stack;
         } else if (size == 1) {
             return energyContainers.iterator().next().insert(stack, action, automationType);
         }
-        FloatingLong toInsert = stack;
+        long toInsert = stack;
         //Start by trying to insert into the containers that are not empty
         List<IEnergyContainer> emptyContainers = new ArrayList<>();
         for (IEnergyContainer energyContainer : energyContainers) {
-            FloatingLong inContainer = energyContainer.getEnergy();
-            if (inContainer.isZero()) {
+            long inContainer = energyContainer.getEnergy();
+            if (inContainer == 0L) {
                 emptyContainers.add(energyContainer);
             } else {
-                FloatingLong remainder = energyContainer.insert(toInsert, action, automationType);
-                if (remainder.isZero()) {
+                long remainder = energyContainer.insert(toInsert, action, automationType);
+                if (remainder == 0L) {
                     //If we have no remainder, return that we fit it all
-                    return FloatingLong.ZERO;
+                    return 0L;
                 }
                 //Update what we have left to insert, to be the amount we were unable to insert
                 toInsert = remainder;
             }
         }
         for (IEnergyContainer container : emptyContainers) {
-            FloatingLong remainder = container.insert(toInsert, action, automationType);
-            if (remainder.isZero()) {
+            long remainder = container.insert(toInsert, action, automationType);
+            if (remainder == 0L) {
                 //If we have no remainder, return that we fit it all
-                return FloatingLong.ZERO;
+                return 0L;
             }
             //Update what we have left to insert, to be the amount we were unable to insert
             toInsert = remainder;
@@ -130,31 +133,31 @@ public class FloatingLongTransferUtils {
      *
      * @since 10.5.13
      */
-    public static FloatingLong extract(FloatingLong amount, @Nullable Direction side, Action action, ToIntFunction<@Nullable Direction> containerCount,
-          ContainerInteraction<FloatingLong> extract) {
-        if (amount.isZero()) {
+    public static long extract(long amount, @Nullable Direction side, Action action, ToIntFunction<@Nullable Direction> containerCount,
+          LongToLongContainerInteraction extract) {
+        if (amount == 0L) {
             //Short circuit if no energy is trying to be extracted
-            return FloatingLong.ZERO;
+            return 0L;
         }
         int containers = containerCount.applyAsInt(side);
         if (containers == 0) {
-            return FloatingLong.ZERO;
+            return 0L;
         } else if (containers == 1) {
             return extract.interact(0, amount, side, action);
         }
-        FloatingLong extracted = FloatingLong.ZERO;
-        FloatingLong toExtract = amount.copy();
+        long extracted = 0;
+        long toExtract = amount;
         for (int container = 0; container < containers; container++) {
-            FloatingLong drained = extract.interact(container, toExtract, side, action);
-            if (!drained.isZero()) {
+            long drained = extract.interact(container, toExtract, side, action);
+            if (drained != 0L) {
                 //If we were able to extract something, do so
-                if (extracted.isZero()) {
+                if (extracted == 0L) {
                     extracted = drained;
                 } else {
-                    extracted = extracted.plusEqual(drained);
+                    extracted += drained;
                 }
-                toExtract = toExtract.minusEqual(drained);
-                if (toExtract.isZero()) {
+                toExtract -= drained;
+                if (toExtract == 0L) {
                     //If we are done extracting break and return the amount extracted
                     break;
                 }
@@ -169,11 +172,11 @@ public class FloatingLongTransferUtils {
      *
      * @since 10.5.13
      */
-    public static FloatingLong extract(FloatingLong amount, @Nullable Direction side, Function<@Nullable Direction, List<IEnergyContainer>> energyContainerSupplier,
+    public static long extract(long amount, @Nullable Direction side, Function<@Nullable Direction, List<IEnergyContainer>> energyContainerSupplier,
           Action action, AutomationType automationType) {
-        if (amount.isZero()) {
+        if (amount == 0L) {
             //Short circuit if no energy is trying to be extracted
-            return FloatingLong.ZERO;
+            return 0L;
         }
         List<IEnergyContainer> energyContainers = energyContainerSupplier.apply(side);
         return extract(amount, action, automationType, energyContainers.size(), energyContainers);
@@ -184,26 +187,26 @@ public class FloatingLongTransferUtils {
      *
      * @since 10.6.0
      */
-    public static FloatingLong extract(FloatingLong amount, Action action, AutomationType automationType, int size, Iterable<IEnergyContainer> energyContainers) {
-        if (amount.isZero() || size == 0) {
+    public static long extract(long amount, Action action, AutomationType automationType, int size, Iterable<IEnergyContainer> energyContainers) {
+        if (amount == 0L || size == 0) {
             //Short circuit if no energy is trying to be extracted
-            return FloatingLong.ZERO;
+            return 0L;
         } else if (size == 1) {
             return energyContainers.iterator().next().extract(amount, action, automationType);
         }
-        FloatingLong extracted = FloatingLong.ZERO;
-        FloatingLong toExtract = amount.copy();
+        long extracted = 0;
+        long toExtract = amount;
         for (IEnergyContainer energyContainer : energyContainers) {
-            FloatingLong drained = energyContainer.extract(toExtract, action, automationType);
-            if (!drained.isZero()) {
+            long drained = energyContainer.extract(toExtract, action, automationType);
+            if (drained != 0L) {
                 //If we were able to extract something, do so
-                if (extracted.isZero()) {
+                if (extracted == 0L) {
                     extracted = drained;
                 } else {
-                    extracted = extracted.plusEqual(drained);
+                    extracted += drained;
                 }
-                toExtract = toExtract.minusEqual(drained);
-                if (toExtract.isZero()) {
+                toExtract -= drained;
+                if (toExtract == 0L) {
                     //If we are done extracting break and return the amount extracted
                     break;
                 }

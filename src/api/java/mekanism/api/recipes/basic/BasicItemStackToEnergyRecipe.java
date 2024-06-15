@@ -15,20 +15,18 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 public class BasicItemStackToEnergyRecipe extends ItemStackToEnergyRecipe {
 
     protected final ItemStackIngredient input;
-    protected final FloatingLong output;
+    protected final long output;
 
     /**
      * @param input  Input.
      * @param output Output, must be greater than zero.
      */
-    public BasicItemStackToEnergyRecipe(ItemStackIngredient input, FloatingLong output) {
+    public BasicItemStackToEnergyRecipe(ItemStackIngredient input, long output) {
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
-        Objects.requireNonNull(output, "Output cannot be null.");
-        if (output.isZero()) {
+        if (output == 0) {
             throw new IllegalArgumentException("Output must be greater than zero.");
         }
-        //Ensure that the floating long we are storing is immutable
-        this.output = output.copyAsConst();
+        this.output = output;
     }
 
     @Override
@@ -42,7 +40,7 @@ public class BasicItemStackToEnergyRecipe extends ItemStackToEnergyRecipe {
     }
 
     @Override
-    public FloatingLong getOutput(ItemStack input) {
+    public long getOutput(ItemStack input) {
         return output;
     }
 
@@ -53,12 +51,12 @@ public class BasicItemStackToEnergyRecipe extends ItemStackToEnergyRecipe {
      *
      * @since 10.6.0
      */
-    public FloatingLong getOutputRaw() {
+    public long getOutputRaw() {
         return output;
     }
 
     @Override
-    public List<FloatingLong> getOutputDefinition() {
+    public List<Long> getOutputDefinition() {
         return Collections.singletonList(output);
     }
 

@@ -14,7 +14,7 @@ import net.minecraft.network.chat.Component;
 public class TooltipHelper implements ITooltipHelper {
 
     @Override
-    public Component getEnergyPerMBDisplayShort(FloatingLong energy) {
+    public Component getEnergyPerMBDisplayShort(long energy) {
         return MekanismLang.GENERIC_PER_MB.translate(MekanismUtils.getEnergyDisplayShort(energy));
     }
 

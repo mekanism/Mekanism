@@ -73,7 +73,7 @@ public abstract class ElectrolysisRecipe extends MekanismRecipe<SingleFluidRecip
     /**
      * Gets the multiplier to the energy cost in relation to the configured hydrogen separating energy cost.
      */
-    public abstract FloatingLong getEnergyMultiplier();
+    public abstract long getEnergyMultiplier();
 
     @Override
     public boolean isIncomplete() {
