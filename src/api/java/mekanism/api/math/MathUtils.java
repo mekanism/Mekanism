@@ -141,7 +141,7 @@ public class MathUtils {
     }
 
     //Copied from UnsignedLong
-    public static BigInteger unsignedLongToBigIntegerValue(long value) {
+    public static BigInteger unsignedLongToBigIntegerValue(@Unsigned long value) {
         BigInteger bigInt = BigInteger.valueOf(value & UNSIGNED_MASK);
         if (value < 0) {
             bigInt = bigInt.setBit(Long.SIZE - 1);
@@ -149,11 +149,15 @@ public class MathUtils {
         return bigInt;
     }
 
-    public static BigDecimal unsignedLongToBigDecimal(long value) {
+    public static BigDecimal unsignedLongToBigDecimal(@Unsigned long value) {
         return new BigDecimal(unsignedLongToBigIntegerValue(value));
     }
 
-    public static double uLongDivideDouble(long dividend, long divisor) {
+    public static double uLongDivideDouble(@Unsigned long dividend, @Unsigned long divisor) {
+        if (dividend >= 0 && divisor > 0) {
+            //within signed long range
+            return (double) dividend / divisor;
+        }
         return unsignedLongToBigDecimal(dividend).divide(unsignedLongToBigDecimal(divisor), MathContext.DECIMAL64).doubleValue();
     }
 }
