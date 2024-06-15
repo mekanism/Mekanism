@@ -48,9 +48,6 @@
   "block.mekanism.basic_smelting_factory": "Oinarrizko Urtze Fabrika",
   "block.mekanism.basic_thermodynamic_conductor": "Oinarrizko Eroale Termodinamikoa",
   "block.mekanism.basic_universal_cable": "Oinarrizko Kable Orokora",
-  "block.mekanism.block_bronze": "Brontzezko Blokea",
-  "block.mekanism.block_charcoal": "Egur-ikatzezko Blokea",
-  "block.mekanism.block_fluorite": "Fluritazko Blokea",
   "key.mekanism.description": "Deskribapena Erakutsi",
   "key.mekanism.details": "Xehetasunak Erakutsi"
 }
