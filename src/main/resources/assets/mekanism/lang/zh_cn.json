@@ -724,7 +724,7 @@
   "fluid_container.mekanism.empty": "倒空",
   "fluid_container.mekanism.fill": "填充",
   "free_runner.mekanism.disabled": "禁用",
-  "free_runner.mekanism.safety": "安全性",
+  "free_runner.mekanism.safety": "安全",
   "free_runner.mekanism.mode_change": "自由助跑器模式更改为：%1$s",
   "free_runner.mekanism.normal": "正常",
   "frequency.mekanism.delete_confirm": "是否确实要删除此频率？该操作是无法撤销的。",
