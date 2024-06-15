@@ -7,18 +7,23 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.BiFunction;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import mekanism.client.integration.emi.MekanismEmiAliasProvider;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.crafttweaker.MekanismCrTExampleProvider;
 import mekanism.common.integration.projecte.MekanismCustomConversions;
 import mekanism.common.lib.FieldReflectionHelper;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
@@ -49,6 +54,12 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
         ModList modList = ModList.get();
         Set<String> pathsToSkip = new HashSet<>();
         List<String> fakeProviders = new ArrayList<>();
+        if (modList.isLoaded(MekanismHooks.EMI_MOD_ID)) {
+            gen.addProvider(event.includeClient(), new MekanismEmiAliasProvider(output, lookupProvider));
+        } else {
+            pathsToSkip.add("emi/aliases");
+            fakeProviders.add("EMI Alias Provider: mekanism");
+        }
         if (modList.isLoaded(MekanismHooks.PROJECTE_MOD_ID)) {
             gen.addProvider(event.includeServer(), new MekanismCustomConversions(output, lookupProvider));
         } else {
@@ -65,6 +76,24 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
         //Data generator to help with persisting data when porting across MC versions when optional deps aren't updated yet
         // DO NOT ADD OTHERS AFTER THIS ONE
         gen.addProvider(true, new PersistingDisabledProvidersProvider(output, disabledCompats, pathsToSkip, fakeProviders));
+    }
+
+    public static void addDisabledEmiProvider(GatherDataEvent event, CompletableFuture<HolderLookup.Provider> lookupProvider, String modid,
+          Supplier<BiFunction<PackOutput, CompletableFuture<Provider>, DataProvider>> providerFunction) {
+        DataGenerator gen = event.getGenerator();
+        PackOutput output = gen.getPackOutput();
+        ModList modList = ModList.get();
+        Set<String> pathsToSkip = new HashSet<>();
+        List<String> fakeProviders = new ArrayList<>();
+        if (modList.isLoaded(MekanismHooks.EMI_MOD_ID)) {
+            gen.addProvider(event.includeClient(), providerFunction.get().apply(output, lookupProvider));
+        } else {
+            pathsToSkip.add("emi/aliases");
+            fakeProviders.add("EMI Alias Provider: " + modid);
+        }
+        //Data generator to help with persisting data when porting across MC versions when optional deps aren't updated yet
+        // DO NOT ADD OTHERS AFTER THIS ONE
+        gen.addProvider(true, new PersistingDisabledProvidersProvider(output, Collections.emptySet(), pathsToSkip, fakeProviders));
     }
 
     private final Set<String> compatRecipesToSkip;
