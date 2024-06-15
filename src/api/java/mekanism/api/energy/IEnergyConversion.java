@@ -2,6 +2,8 @@ package mekanism.api.energy;
 
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.MathUtils;
+import mekanism.api.math.Unsigned;
 import mekanism.api.text.IHasTranslationKey;
 
 /**
@@ -20,44 +22,14 @@ public interface IEnergyConversion extends IHasTranslationKey {
     boolean isEnabled();
 
     /**
-     * Helper that accepts a long to convert energy of the type represented by this conversion to Joules.
-     *
-     * @param energy Amount of energy. (Units matching this conversion, will attempt to modify this object)
-     *
-     * @return Joules.
-     *
-     * @implNote This method will short circuit for zero or negative values as Joules are always positive.
-     */
-    default FloatingLong convertFrom(long energy) {
-        if (energy <= 0) {
-            //Short circuit if energy is zero to avoid having to create any additional objects
-            return FloatingLong.ZERO;
-        }
-        return convertInPlaceFrom(FloatingLong.create(energy));
-    }
-
-    /**
      * Converts energy of the type represented by this conversion to Joules.
      *
-     * @param energy Amount of energy. (Units matching this conversion, this object will not be modified)
+     * @param energy Amount of energy in 'other' type. (Units matching this conversion)
      *
-     * @return Joules.
-     *
-     * @implNote This method will return a new FloatingLong.
+     * @return Joules (unsigned).
      */
-    FloatingLong convertFrom(FloatingLong energy);
-
-    /**
-     * Converts energy of the type represented by this conversion to Joules.
-     *
-     * @param energy Amount of energy. (Units matching this conversion, will attempt to modify this object)
-     *
-     * @return Joules.
-     *
-     * @implNote This method will attempt to modify the passed in FloatingLong and return it.
-     * @apiNote It is recommended to set this to itself to reduce the chance of accidental calls if calling this on a constant {@link FloatingLong}.
-     */
-    FloatingLong convertInPlaceFrom(FloatingLong energy);
+    @Unsigned
+    long convertFrom(long energy);
 
     /**
      * Helper that converts Joules to the energy of the type represented by this conversion and returns it as an int.
@@ -66,8 +38,8 @@ public interface IEnergyConversion extends IHasTranslationKey {
      *
      * @return Amount of energy clamped to an int. (Units matching this conversion)
      */
-    default int convertToAsInt(FloatingLong joules) {
-        return convertTo(joules).intValue();
+    default int convertToAsInt(@Unsigned long joules) {
+        return MathUtils.clampUnsignedToInt(convertTo(joules));
     }
 
     /**
@@ -77,8 +49,8 @@ public interface IEnergyConversion extends IHasTranslationKey {
      *
      * @return Amount of energy clamped to a long. (Units matching this conversion)
      */
-    default long convertToAsLong(FloatingLong joules) {
-        return convertTo(joules).longValue();
+    default long convertToAsLong(@Unsigned long joules) {
+        return MathUtils.clampUnsignedToLong(convertTo(joules));
     }
 
     /**
@@ -87,20 +59,7 @@ public interface IEnergyConversion extends IHasTranslationKey {
      * @param joules Joules. (This object will not be modified)
      *
      * @return Amount of energy. (Units matching this conversion)
-     *
-     * @implNote This method will return a new FloatingLong.
      */
-    FloatingLong convertTo(FloatingLong joules);
-
-    /**
-     * Converts Joules to the energy of the type represented by this conversion.
-     *
-     * @param joules Joules. (Will attempt to modify this object)
-     *
-     * @return Amount of energy. (Units matching this conversion)
-     *
-     * @implNote This method will attempt to modify the passed in FloatingLong and return it.
-     * @apiNote It is recommended to set this to itself to reduce the chance of accidental calls if calling this on a constant {@link FloatingLong}.
-     */
-    FloatingLong convertInPlaceTo(FloatingLong joules);
+    @Unsigned
+    long convertTo(@Unsigned long joules);
 }

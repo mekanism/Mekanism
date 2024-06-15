@@ -10,15 +10,15 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyConversion;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.math.FloatingLongSupplier;
 import mekanism.api.math.MathUtils;
+import mekanism.api.math.Unsigned;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.ILangEntry;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.config.listener.ConfigBasedCachedFLSupplier;
-import mekanism.common.config.value.CachedFloatingLongValue;
+import mekanism.common.config.listener.ConfigBasedCachedSupplier;
+import mekanism.common.config.value.CachedDoubleValue;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -137,34 +137,24 @@ public class UnitDisplayUtils {
     public enum EnergyUnit implements IDisableableEnum<EnergyUnit>, IEnergyConversion {
         JOULES(MekanismLang.ENERGY_JOULES, MekanismLang.ENERGY_JOULES_PLURAL, MekanismLang.ENERGY_JOULES_SHORT, "j", null, ConstantPredicates.ALWAYS_TRUE) {
             @Override
-            protected FloatingLong getConversion() {
+            protected double getConversion() {
                 //Unused but override it anyway
-                return FloatingLong.ONE;
+                return 1D;
             }
 
             @Override
-            protected FloatingLong getInverseConversion() {
+            protected double getInverseConversion() {
                 //Unused but override it anyway
-                return FloatingLong.ONE;
+                return 1D;
             }
 
             @Override
-            public FloatingLong convertFrom(FloatingLong joules) {
+            public @Unsigned long convertFrom(@Unsigned long joules) {
                 return joules;
             }
 
             @Override
-            public FloatingLong convertInPlaceFrom(FloatingLong joules) {
-                return joules;
-            }
-
-            @Override
-            public FloatingLong convertTo(FloatingLong joules) {
-                return joules;
-            }
-
-            @Override
-            public FloatingLong convertInPlaceTo(FloatingLong joules) {
+            public @Unsigned long convertTo(@Unsigned long joules) {
                 return joules;
             }
         },
@@ -175,8 +165,8 @@ public class UnitDisplayUtils {
         public static final IntFunction<EnergyUnit> BY_ID = ByIdMap.continuous(EnergyUnit::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
         public static final StreamCodec<ByteBuf, EnergyUnit> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, EnergyUnit::ordinal);
 
-        private final Supplier<CachedFloatingLongValue> conversion;
-        private final Supplier<FloatingLongSupplier> inverseConversion;
+        private final Supplier<CachedDoubleValue> conversion;
+        private final Supplier<Supplier<Double>> inverseConversion;
         private final BooleanSupplier checkEnabled;
         private final ILangEntry singularLangEntry;
         private final ILangEntry pluralLangEntry;
@@ -186,7 +176,7 @@ public class UnitDisplayUtils {
         //Note: We ignore improper nulls as they only are null for joules which overrides the various use places
         @SuppressWarnings("ConstantConditions")
         EnergyUnit(ILangEntry singularLangEntry, ILangEntry pluralLangEntry, ILangEntry shortLangEntry, String tabName,
-              @Nullable Supplier<CachedFloatingLongValue> conversionRate, BooleanSupplier checkEnabled) {
+              @Nullable Supplier<CachedDoubleValue> conversionRate, BooleanSupplier checkEnabled) {
             this.singularLangEntry = singularLangEntry;
             this.pluralLangEntry = pluralLangEntry;
             this.shortLangEntry = shortLangEntry;
@@ -199,46 +189,32 @@ public class UnitDisplayUtils {
                 //Cache the inverse as multiplication for floating longs is more consistently fast compared to division
                 //Note: We also cache the creation of our cache so that when MC is not initialized we can still create
                 // this enum without having initialization errors. Use case: Unit tests
-                inverseConversion = Lazy.of(() -> new ConfigBasedCachedFLSupplier(() -> FloatingLong.ONE.divide(getConversion()), this.conversion.get()));
+                inverseConversion = Lazy.of(() -> new ConfigBasedCachedSupplier<Double>(() -> 1D / getConversion(), this.conversion.get()));
             }
         }
 
-        protected FloatingLong getConversion() {
+        protected double getConversion() {
             //Note: Use default value if called before configs are loaded. In general this should never happen,
             // but third party mods may just call it regardless
             return conversion.get().getOrDefault();
         }
 
-        protected FloatingLong getInverseConversion() {
+        protected double getInverseConversion() {
             return inverseConversion.get().get();
         }
 
         @Override
-        public FloatingLong convertFrom(FloatingLong energy) {
-            return energy.multiply(getConversion());
+        public @Unsigned long convertFrom(@Unsigned long energy) {
+            return (long) (energy * getConversion());
         }
 
         @Override
-        public FloatingLong convertInPlaceFrom(FloatingLong energy) {
-            return energy.timesEqual(getConversion());
-        }
-
-        @Override
-        public FloatingLong convertTo(FloatingLong joules) {
-            if (joules.isZero()) {
+        public @Unsigned long convertTo(@Unsigned long joules) {
+            if (joules == 0) {
                 //Short circuit if energy is zero to avoid having to create any additional objects
-                return FloatingLong.ZERO;
+                return 0L;
             }
-            return joules.multiply(getInverseConversion());
-        }
-
-        @Override
-        public FloatingLong convertInPlaceTo(FloatingLong joules) {
-            if (joules.isZero()) {
-                //Short circuit if energy is zero to avoid having to create any additional objects
-                return joules;
-            }
-            return joules.timesEqual(getInverseConversion());
+            return (long) (joules * getInverseConversion());
         }
 
         @Override

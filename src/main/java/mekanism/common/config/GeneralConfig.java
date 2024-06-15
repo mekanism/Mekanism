@@ -75,7 +75,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedBooleanValue prefilledSlurryTanks;
     //Energy Conversion
     public final CachedBooleanValue blacklistForge;
-    public final CachedFloatingLongValue forgeConversionRate;
+    public final CachedDoubleValue forgeConversionRate;
     public final CachedBooleanValue blacklistFluxNetworks;
     public final CachedFloatingLongValue FROM_H2;
     public final CachedFloatingLongValue maxEnergyPerSteam;
