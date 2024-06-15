@@ -271,7 +271,7 @@ runs {
         if (hasProperty('forge_force_ansi')) {
             //Force ansi if declared as a gradle variable, as the auto detection doesn't detect IntelliJ properly
             // or eclipse's plugin that adds support for ansi escape in console
-            jvmArguments.add("-Dterminal.ansi=${property('forge_force_ansi')}")
+            systemProperties.put('terminal.ansi', (String) property('forge_force_ansi'))
         }
 
         modSources.add((SourceSet[]) [sourceSets.main, sourceSets.api])
@@ -380,8 +380,8 @@ dependencies {
     //We use https://github.com/jqwik-team/jqwik to allow for implementing property based testing
     testImplementation("net.jqwik:jqwik:${jqwik_version}")
 
-    compileOnly("mezz.jei:jei-${previous_minecraft_version}-common-api:${jei_version}")
-    compileOnly("mezz.jei:jei-${previous_minecraft_version}-neoforge-api:${jei_version}")
+    compileOnly("mezz.jei:jei-${previous_minor_minecraft_version}-common-api:${jei_version}")
+    compileOnly("mezz.jei:jei-${previous_minor_minecraft_version}-neoforge-api:${jei_version}")
     if (recipe_viewer == 'jei' || recipe_viewer == 'hybrid') {
         //TODO: Re-enable when JEI updates
         //localRuntime("mezz.jei:jei-${previous_minor_minecraft_version}-neoforge:${jei_version}")
@@ -412,8 +412,7 @@ dependencies {
         transitive = false
     }*/
     compileOnly("curse.maven:jade-api-324717:${jade_api_id}")
-    //TODO: Re-enable when Jade updates
-    //localRuntime("curse.maven:jade-324717:${jade_id}")
+    localRuntime("curse.maven:jade-324717:${jade_id}")
     compileOnly("mcp.mobius.waila:wthit-api:neo-${wthit_version}")
 
     def crt = "com.blamejared.crafttweaker:CraftTweaker-neoforge-${previous_minor_minecraft_version}:${crafttweaker_version}"
@@ -441,10 +440,9 @@ dependencies {
     //Dependencies for data generators for mod compat reference
     //TODO: Switch back to datagenMainImplementation when it updated
     datagenMainCompileOnly("appeng:appliedenergistics2-neoforge:${ae2_version}")
-    //datagenMainRuntimeOnly("com.github.glitchfiend:GlitchCore-neoforge:${previous_minor_minecraft_version}-${glitchcore_version}")
-    //datagenMainRuntimeOnly("com.github.glitchfiend:TerraBlender-neoforge:${previous_minor_minecraft_version}-${terrablender_version}")
-    //TODO: Switch back to datagenMainImplementation when it updated
-    datagenMainCompileOnly("com.github.glitchfiend:BiomesOPlenty-neoforge:${previous_minor_minecraft_version}-${biomesoplenty_version}")
+    datagenMainRuntimeOnly("com.github.glitchfiend:GlitchCore-neoforge:${minecraft_version}-${glitchcore_version}")
+    datagenMainRuntimeOnly("com.github.glitchfiend:TerraBlender-neoforge:${minecraft_version}-${terrablender_version}")
+    datagenMainImplementation("com.github.glitchfiend:BiomesOPlenty-neoforge:${minecraft_version}-${biomesoplenty_version}")
     //TODO - 1.20.2: Switch back to datagenMainImplementation
     datagenMainCompileOnly("curse.maven:farmers-delight-398521:${farmers_delight_id}")
     //TODO - 1.20.2: Re-enable after projecte is updated
