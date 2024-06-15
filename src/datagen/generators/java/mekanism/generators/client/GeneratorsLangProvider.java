@@ -161,6 +161,7 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
         add(GeneratorsLang.TURBINE_INVALID_BAD_COMPLEX, "Couldn't form, found improperly placed Rotational Complex at %1$s. Complex must be centered above Turbine Rotors.");
         add(GeneratorsLang.TURBINE_INVALID_BAD_ROTOR, "Couldn't form, found invalid Turbine Rotor at %1$s. Turbine Rotors must be centered below Rotational Complex.");
         add(GeneratorsLang.TURBINE_INVALID_BAD_ROTORS, "Couldn't form, invalid Turbine Rotor arrangement.");
+        add(GeneratorsLang.TURBINE_INVALID_NO_BLADES, "Couldn't form, no blades are present on the Turbine Rotor.");
         add(GeneratorsLang.TURBINE_INVALID_CONDENSER_BELOW_COMPLEX, "Couldn't form, found improperly placed Saturating Condenser at %1$s. Saturating Condensers must be above Pressure Disperser layer.");
         add(GeneratorsLang.TURBINE_INVALID_EVEN_LENGTH, "Couldn't form, width and length of structure must be odd.");
         add(GeneratorsLang.TURBINE_INVALID_MALFORMED_COILS, "Couldn't form, Electromagnetic Coil arrangement is malformed. Coils must be connected to Rotational Complex and adjacently connected.");
@@ -170,6 +171,7 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
         add(GeneratorsLang.TURBINE_INVALID_ROTORS_NOT_CONTIGUOUS, "Couldn't form, rotors are invalid (non-contiguous).");
         add(GeneratorsLang.TURBINE_INVALID_TOO_NARROW, "Couldn't form, structure is too narrow to support turbine size.");
         add(GeneratorsLang.TURBINE_INVALID_VENT_BELOW_COMPLEX, "Couldn't form, found a Turbine Vent below Pressure Disperser layer. Vents must be at or above vertical position of disperser layer.");
+        add(GeneratorsLang.TURBINE_INVALID_MISSING_VENTS, "Couldn't form, no Turbine Vents present.");
         add(GeneratorsLang.TURBINE_INVALID_MISSING_COILS, "Couldn't form, no Electromagnetic Coils present.");
         add(GeneratorsLang.TURBINE_INVALID_MISSING_DISPERSERS, "Couldn't form, no Pressure Dispersers present.");
 

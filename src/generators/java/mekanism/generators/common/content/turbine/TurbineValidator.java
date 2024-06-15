@@ -163,6 +163,8 @@ public class TurbineValidator extends CuboidStructureValidator<TurbineMultiblock
         // If there are any rotors left over, they are in the wrong place in the structure
         if (!turbines.isEmpty()) {
             return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_BAD_ROTORS);
+        } else if (blades == 0) {
+            return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_NO_BLADES);
         }
 
         // Update the structure with number of blades found on rotors
@@ -184,6 +186,9 @@ public class TurbineValidator extends CuboidStructureValidator<TurbineMultiblock
                 }
                 ventData.add(new VentData(coord, getSide(coord)));
             }
+        }
+        if (ventData.isEmpty()) {
+            return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_MISSING_VENTS);
         }
         structure.updateVentData(ventData);
         structure.lowerVolume = structure.length() * structure.width() * turbineHeight;

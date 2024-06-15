@@ -52,6 +52,7 @@ public enum GeneratorsLang implements ILangEntry {
     TURBINE_INVALID_BAD_COMPLEX("turbine", "invalid_bad_complex"),
     TURBINE_INVALID_BAD_ROTOR("turbine", "invalid_bad_rotor"),
     TURBINE_INVALID_BAD_ROTORS("turbine", "invalid_bad_rotors"),
+    TURBINE_INVALID_NO_BLADES("turbine", "invalid_missing_blades"),
     TURBINE_INVALID_CONDENSER_BELOW_COMPLEX("turbine", "invalid_condenser_below_complex"),
     TURBINE_INVALID_EVEN_LENGTH("turbine", "invalid_even_length"),
     TURBINE_INVALID_MALFORMED_COILS("turbine", "invalid_malformed_coils"),
@@ -61,6 +62,7 @@ public enum GeneratorsLang implements ILangEntry {
     TURBINE_INVALID_ROTORS_NOT_CONTIGUOUS("turbine", "invalid_rotors_not_contiguous"),
     TURBINE_INVALID_TOO_NARROW("turbine", "invalid_too_narrow"),
     TURBINE_INVALID_VENT_BELOW_COMPLEX("turbine", "invalid_vent_below_complex"),
+    TURBINE_INVALID_MISSING_VENTS("turbine", "invalid_missing_vents"),
     TURBINE_INVALID_MISSING_COILS("turbine", "invalid_missing_coils"),
     TURBINE_INVALID_MISSING_DISPERSERS("turbine", "invalid_missing_dispersers"),
 
