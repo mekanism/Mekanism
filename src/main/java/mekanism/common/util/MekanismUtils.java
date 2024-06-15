@@ -297,9 +297,9 @@ public final class MekanismUtils {
      *
      * @return required energy per tick
      */
-    public static FloatingLong getEnergyPerTick(IUpgradeTile tile, FloatingLong def) {
+    public static long getEnergyPerTick(IUpgradeTile tile, long def) {
         if (tile.supportsUpgrades()) {
-            return def.multiply(Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), 2 * fractionUpgrades(tile, Upgrade.SPEED) - fractionUpgrades(tile, Upgrade.ENERGY)));
+            return (long) (def * (Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), 2 * fractionUpgrades(tile, Upgrade.SPEED) - fractionUpgrades(tile, Upgrade.ENERGY))));
         }
         return def;
     }
@@ -329,9 +329,9 @@ public final class MekanismUtils {
      *
      * @return max energy
      */
-    public static FloatingLong getMaxEnergy(IUpgradeTile tile, FloatingLong def) {
+    public static long getMaxEnergy(IUpgradeTile tile, long def) {
         if (tile.supportsUpgrades()) {
-            return def.multiply(Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), fractionUpgrades(tile, Upgrade.ENERGY)));
+            return (long) (def * (Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), fractionUpgrades(tile, Upgrade.ENERGY))));
         }
         return def;
     }
@@ -438,7 +438,7 @@ public final class MekanismUtils {
         }
     }
 
-    public static Component getEnergyDisplayShort(FloatingLong energy) {
+    public static Component getEnergyDisplayShort(long energy) {
         EnergyUnit configured = EnergyUnit.getConfigured();
         return UnitDisplayUtils.getDisplayShort(configured.convertTo(energy), configured);
     }

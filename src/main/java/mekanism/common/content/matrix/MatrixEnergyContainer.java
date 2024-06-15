@@ -26,14 +26,14 @@ public class MatrixEnergyContainer implements IEnergyContainer {
 
     //TODO: Eventually we could look into extending FloatingLong to have a "BigInt" styled implementation that is used by the class
     // at the very least for keeping track of the cached values and rates
-    private FloatingLong queuedOutput = FloatingLong.ZERO;
-    private FloatingLong queuedInput = FloatingLong.ZERO;
-    private FloatingLong lastOutput = FloatingLong.ZERO;
-    private FloatingLong lastInput = FloatingLong.ZERO;
+    private long queuedOutput = 0L;
+    private long queuedInput = 0L;
+    private long lastOutput = 0L;
+    private long lastInput = 0L;
 
-    private FloatingLong cachedTotal = FloatingLong.ZERO;
-    private FloatingLong transferCap = FloatingLong.ZERO;
-    private FloatingLong storageCap = FloatingLong.ZERO;
+    private long cachedTotal = 0L;
+    private long transferCap = 0L;
+    private long storageCap = 0L;
 
     private final MatrixMultiblockData multiblock;
 
@@ -45,13 +45,13 @@ public class MatrixEnergyContainer implements IEnergyContainer {
         //As we already have the two different variables just pass them instead of accessing world to get tile again
         MachineEnergyContainer<TileEntityInductionCell> energyContainer = cell.getEnergyContainer();
         cells.put(pos, energyContainer);
-        storageCap = storageCap.plusEqual(energyContainer.getMaxEnergy());
-        cachedTotal = cachedTotal.plusEqual(energyContainer.getEnergy());
+        storageCap = storageCap + (energyContainer.getMaxEnergy());
+        cachedTotal = cachedTotal + (energyContainer.getEnergy());
     }
 
     public void addProvider(BlockPos pos, TileEntityInductionProvider provider) {
         providers.put(pos, provider.tier);
-        transferCap = transferCap.plusEqual(provider.tier.getOutput());
+        transferCap = transferCap + (provider.tier.getOutput());
     }
 
     //TODO: I believe this is needed or at least will be after we eventually rewrite some of the multiblock system

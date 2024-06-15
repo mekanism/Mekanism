@@ -17,21 +17,21 @@ public class MinerEnergyContainer extends MachineEnergyContainer<TileEntityDigit
         return new MinerEnergyContainer(electricBlock.getStorage(), electricBlock.getUsage(), tile, listener);
     }
 
-    private FloatingLong minerEnergyPerTick;
+    private long minerEnergyPerTick;
 
-    private MinerEnergyContainer(FloatingLong maxEnergy, FloatingLong energyPerTick, TileEntityDigitalMiner tile, @Nullable IContentsListener listener) {
+    private MinerEnergyContainer(long maxEnergy, long energyPerTick, TileEntityDigitalMiner tile, @Nullable IContentsListener listener) {
         super(maxEnergy, energyPerTick, notExternal, alwaysTrue, tile, listener);
         this.minerEnergyPerTick = getBaseEnergyPerTick();
     }
 
     @Override
-    public void setEnergyPerTick(FloatingLong energyPerTick) {
+    public void setEnergyPerTick(long energyPerTick) {
         super.setEnergyPerTick(energyPerTick);
         this.minerEnergyPerTick = energyPerTick;
     }
 
     @Override
-    public FloatingLong getEnergyPerTick() {
+    public long getEnergyPerTick() {
         return minerEnergyPerTick;
     }
 
@@ -45,7 +45,7 @@ public class MinerEnergyContainer extends MachineEnergyContainer<TileEntityDigit
     public void updateMinerEnergyPerTick() {
         minerEnergyPerTick = super.getEnergyPerTick();
         if (tile.getSilkTouch()) {
-            minerEnergyPerTick = minerEnergyPerTick.multiply(MekanismConfig.general.minerSilkMultiplier.get());
+            minerEnergyPerTick = minerEnergyPerTick * (MekanismConfig.general.minerSilkMultiplier.get());
         }
         //Ranges are difference between max and default
         double radiusRange = MekanismConfig.general.minerMaxRadius.get() - TileEntityDigitalMiner.DEFAULT_RADIUS;
@@ -71,6 +71,6 @@ public class MinerEnergyContainer extends MachineEnergyContainer<TileEntityDigit
         } else {
             heightCost = Math.max((tile.getMaxY() - tile.getMinY() - TileEntityDigitalMiner.DEFAULT_HEIGHT_RANGE) / heightRange, 0);
         }
-        minerEnergyPerTick = minerEnergyPerTick.multiply((1 + radiusCost) * (1 + heightCost));
+        minerEnergyPerTick = (long) (minerEnergyPerTick * ((1 + radiusCost) * (1 + heightCost)));
     }
 }

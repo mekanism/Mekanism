@@ -7,7 +7,7 @@ import mekanism.api.math.FloatingLong;
 import mekanism.common.lib.distribution.SplitInfo;
 import mekanism.common.lib.distribution.Target;
 
-public class EnergyAcceptorTarget extends Target<IStrictEnergyHandler, FloatingLong, FloatingLong> {
+public class EnergyAcceptorTarget extends Target<IStrictEnergyHandler, Long, Long> {
 
     public EnergyAcceptorTarget() {
     }
@@ -21,12 +21,12 @@ public class EnergyAcceptorTarget extends Target<IStrictEnergyHandler, FloatingL
     }
 
     @Override
-    protected void acceptAmount(IStrictEnergyHandler handler, SplitInfo<FloatingLong> splitInfo, FloatingLong amount) {
-        splitInfo.send(amount.subtract(handler.insertEnergy(amount, Action.EXECUTE)));
+    protected void acceptAmount(IStrictEnergyHandler handler, SplitInfo<Long> splitInfo, Long amount) {
+        splitInfo.send(amount - (handler.insertEnergy(amount, Action.EXECUTE)));
     }
 
     @Override
-    protected FloatingLong simulate(IStrictEnergyHandler handler, FloatingLong energyToSend) {
-        return energyToSend.subtract(handler.insertEnergy(energyToSend, Action.SIMULATE));
+    protected Long simulate(IStrictEnergyHandler handler, Long energyToSend) {
+        return energyToSend - (handler.insertEnergy(energyToSend, Action.SIMULATE));
     }
 }

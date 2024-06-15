@@ -309,8 +309,8 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     }
 
     private void addEnergyTransferHandler(Map<TransmissionType, Consumer<?>> typesToEject, List<Runnable> transferHandlers, int expected) {
-        FloatingLong toSend = storedEnergy.extract(storedEnergy.getMaxEnergy(), Action.SIMULATE, AutomationType.INTERNAL);
-        if (!toSend.isZero()) {
+        long toSend = storedEnergy.extract(storedEnergy.getMaxEnergy(), Action.SIMULATE, AutomationType.INTERNAL);
+        if (toSend != 0L) {
             SendingEnergyAcceptorTarget target = new SendingEnergyAcceptorTarget(expected, storedEnergy, toSend);
             typesToEject.put(TransmissionType.ENERGY, target);
             transferHandlers.add(target);
@@ -339,9 +339,9 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     private static class SendingEnergyAcceptorTarget extends EnergyAcceptorTarget implements Runnable, Consumer<IStrictEnergyHandler> {
 
         private final IEnergyContainer storedEnergy;
-        private final FloatingLong toSend;
+        private final long toSend;
 
-        public SendingEnergyAcceptorTarget(int expectedSize, IEnergyContainer storedEnergy, FloatingLong toSend) {
+        public SendingEnergyAcceptorTarget(int expectedSize, IEnergyContainer storedEnergy, long toSend) {
             super(expectedSize);
             this.storedEnergy = storedEnergy;
             this.toSend = toSend;
@@ -350,7 +350,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         @Override
         public void run() {
             if (getHandlerCount() > 0) {
-                storedEnergy.extract(EmitUtils.sendToAcceptors(this, toSend), Action.EXECUTE, AutomationType.INTERNAL);
+                storedEnergy.extract(EmitUtils.sendToAcceptors(this, toSend, toSend), Action.EXECUTE, AutomationType.INTERNAL);
             }
         }
 

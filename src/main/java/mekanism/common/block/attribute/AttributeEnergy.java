@@ -1,5 +1,6 @@
 package mekanism.common.block.attribute;
 
+import java.util.function.LongSupplier;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
 import org.jetbrains.annotations.NotNull;
@@ -9,11 +10,11 @@ import org.jetbrains.annotations.Nullable;
 // if the config updates it doesn't require a server restart (or chunk reload to take effect
 public class AttributeEnergy implements Attribute {
 
-    private FloatingLongSupplier energyUsage = () -> FloatingLong.ZERO;
+    private LongSupplier energyUsage = () -> 0L;
     // 2 operations (20 secs) worth of ticks * usage
-    private FloatingLongSupplier energyStorage = () -> energyUsage.get().multiply(400);
+    private LongSupplier energyStorage = () -> energyUsage.getAsLong() * (400);
 
-    public AttributeEnergy(@Nullable FloatingLongSupplier energyUsage, @Nullable FloatingLongSupplier energyStorage) {
+    public AttributeEnergy(@Nullable LongSupplier energyUsage, @Nullable LongSupplier energyStorage) {
         if (energyUsage != null) {
             this.energyUsage = energyUsage;
         }
@@ -22,18 +23,15 @@ public class AttributeEnergy implements Attribute {
         }
     }
 
-    @NotNull
-    public FloatingLong getUsage() {
-        return energyUsage.get();
+    public long getUsage() {
+        return energyUsage.getAsLong();
     }
 
-    @NotNull
-    public FloatingLong getConfigStorage() {
-        return energyStorage.get();
+    public long getConfigStorage() {
+        return energyStorage.getAsLong();
     }
 
-    @NotNull
-    public FloatingLong getStorage() {
-        return getConfigStorage().max(getUsage());
+    public long getStorage() {
+        return Math.max(getConfigStorage(), getUsage());
     }
 }
