@@ -666,7 +666,7 @@ def changeLogResolver = { ->
         generatedChangelog = 'Warning: Mekanism is currently in alpha, and is not recommended for widespread use in modpacks. There are likely to be game breaking bugs, ' +
                 'and updating from one alpha to the next may cause various mekanism blocks to disappear/void their contents. While we will try to not have this happen/keep ' +
                 'it to a minimum make sure to make backups. You can read more about the alpha state of this project [here](https://github.com/mekanism/Mekanism#alpha-status).' +
-                "<br> $generatedChangelog"
+                "\n\n$generatedChangelog"
     }
     resolvedChangelog = generatedChangelog
     return generatedChangelog
