@@ -183,5 +183,6 @@
   "item.mekanismtools.steel_sword": "钢剑",
   "item.mekanismtools.stone_paxel": "石镐尖斧",
   "item.mekanismtools.wood_paxel": "木镐尖斧",
+  "tag.item.c.tools.paxel": "镐尖斧",
   "tooltip.mekanismtools.hp": "剩余耐久：%1$s"
 }
