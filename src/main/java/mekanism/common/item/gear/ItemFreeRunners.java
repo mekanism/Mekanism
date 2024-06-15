@@ -132,6 +132,7 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
 
     public enum FreeRunnerMode implements IIncrementalEnum<FreeRunnerMode>, IHasTextComponent {
         NORMAL(MekanismLang.FREE_RUNNER_NORMAL, EnumColor.DARK_GREEN),
+        SAFETY(MekanismLang.FREE_RUNNER_SAFETY,EnumColor.ORANGE),
         DISABLED(MekanismLang.FREE_RUNNER_DISABLED, EnumColor.DARK_RED);
 
         private static final FreeRunnerMode[] MODES = values();
