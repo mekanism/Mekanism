@@ -220,7 +220,7 @@
   "alias.mekanism.qio.dashboard.grid": "QIO 조합 그리드",
   "alias.mekanism.qio.dashboard.terminal": "QIO 조합 터미널",
   "alias.mekanism.qio.dashboard.wireless": "무선 QIO 조합 터미널",
-  "alias.mekanism.qio.drive.bay": "QIO 드라이브 영역",
+  "alias.mekanism.qio.drive.bay": "QIO 드라이브 저장소",
   "alias.mekanism.qio.drive.cell": "아이템 셀",
   "alias.mekanism.qio.drive.disk": "아이템 디스크",
   "alias.mekanism.qio.full": "양자 아이템 조직화",
