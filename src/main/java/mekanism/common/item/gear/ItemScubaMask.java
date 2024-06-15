@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 public class ItemScubaMask extends ItemSpecialArmor {
 
     public ItemScubaMask(Properties properties) {
-        super(MekanismArmorMaterials.SCUBA_GEAR, ArmorItem.Type.HELMET, properties.rarity(Rarity.RARE).setNoRepair());
+        super(MekanismArmorMaterials.SCUBA_GEAR, ArmorItem.Type.HELMET, properties.rarity(Rarity.RARE).setNoRepair().stacksTo(1));
     }
 
     @Override

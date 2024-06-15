@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 public class ItemHazmatSuitArmor extends ArmorItem implements ICapabilityAware {
 
     public ItemHazmatSuitArmor(Type armorType, Properties properties) {
-        super(MekanismArmorMaterials.HAZMAT, armorType, properties.rarity(Rarity.UNCOMMON));
+        super(MekanismArmorMaterials.HAZMAT, armorType, properties.rarity(Rarity.UNCOMMON).stacksTo(1));
     }
 
     public static double getShieldingByArmor(Type type) {
