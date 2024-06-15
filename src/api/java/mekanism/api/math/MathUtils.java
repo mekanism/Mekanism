@@ -70,7 +70,7 @@ public class MathUtils {
      *
      * @return an int clamped to {@link Integer#MAX_VALUE}
      */
-    public static int clampUnsignedToInt(long l) {
+    public static int clampUnsignedToInt(@Unsigned long l) {
         if (l < 0 || l > Integer.MAX_VALUE) {
             return Integer.MAX_VALUE;
         }
@@ -84,14 +84,14 @@ public class MathUtils {
      *
      * @return an int clamped to {@link Integer#MAX_VALUE}
      */
-    public static long clampUnsignedToLong(long l) {
+    public static long clampUnsignedToLong(@Unsigned long l) {
         return l < 0 ? Long.MAX_VALUE : l;
     }
 
     /**
      * Converts an unsigned long to a double, using the same math as in Guava's UnsignedLong class
      */
-    public static float unsignedLongToFloat(long l) {
+    public static float unsignedLongToFloat(@Unsigned long l) {
         float fValue = (float) (l & UNSIGNED_MASK);
         if (l < 0) {
             fValue += 0x1.0p63F;
@@ -102,7 +102,7 @@ public class MathUtils {
     /**
      * Converts an unsigned long to a double, using the same math as in Guava's UnsignedLong class
      */
-    public static double unsignedLongToDouble(long l) {
+    public static double unsignedLongToDouble(@Unsigned long l) {
         double dValue = (double) (l & UNSIGNED_MASK);
         if (l < 0) {
             dValue += 0x1.0p63;
