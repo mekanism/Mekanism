@@ -24,8 +24,8 @@ import mekanism.common.tier.PipeTier;
 import mekanism.common.tier.TransporterTier;
 import mekanism.common.tier.TubeTier;
 import mekanism.common.tile.qio.TileEntityQIODriveArray.DriveStatus;
-import mekanism.common.util.UnitDisplayUtils.FloatingLongMeasurementUnit;
 import mekanism.common.util.UnitDisplayUtils.MeasurementUnit;
+import mekanism.common.util.UnitDisplayUtils.ULongMeasurementUnit;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ArmorItem;
@@ -68,9 +68,9 @@ public class EnumUtils {
     public static final MeasurementUnit[] MEASUREMENT_UNITS = MeasurementUnit.values();
 
     /**
-     * Cached value of {@link FloatingLongMeasurementUnit#values()}. DO NOT MODIFY THIS LIST.
+     * Cached value of {@link ULongMeasurementUnit#values()}. DO NOT MODIFY THIS LIST.
      */
-    public static final FloatingLongMeasurementUnit[] FLOATING_LONG_MEASUREMENT_UNITS = FloatingLongMeasurementUnit.values();
+    public static final ULongMeasurementUnit[] ULONG_MEASUREMENT_UNITS = ULongMeasurementUnit.values();
 
     /**
      * Cached value of {@link TransmissionType#values()}. DO NOT MODIFY THIS LIST.

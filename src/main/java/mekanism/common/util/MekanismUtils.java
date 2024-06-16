@@ -25,6 +25,7 @@ import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
+import mekanism.api.math.Unsigned;
 import mekanism.api.text.EnumColor;
 import mekanism.client.MekanismClient;
 import mekanism.common.Mekanism;
@@ -438,7 +439,7 @@ public final class MekanismUtils {
         }
     }
 
-    public static Component getEnergyDisplayShort(long energy) {
+    public static Component getEnergyDisplayShort(@Unsigned long energy) {
         EnergyUnit configured = EnergyUnit.getConfigured();
         return UnitDisplayUtils.getDisplayShort(configured.convertTo(energy), configured);
     }
@@ -450,7 +451,7 @@ public final class MekanismUtils {
      *
      * @return energy converted to joules
      */
-    public static FloatingLong convertToJoules(FloatingLong energy) {
+    public static @Unsigned long convertToJoules(@Unsigned long energy) {
         return EnergyUnit.getConfigured().convertFrom(energy);
     }
 

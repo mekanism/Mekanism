@@ -10,7 +10,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyConversion;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.math.MathUtils;
+import mekanism.api.math.ULong;
 import mekanism.api.math.Unsigned;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.ILangEntry;
@@ -37,31 +37,32 @@ public class UnitDisplayUtils {
     /**
      * Displays the unit as text. Does not handle negative numbers, as {@link FloatingLong} does not have a concept of negatives
      */
-    public static Component getDisplay(FloatingLong value, EnergyUnit unit, int decimalPlaces, boolean isShort) {
+    public static Component getDisplay(@Unsigned long value, EnergyUnit unit, int decimalPlaces, boolean isShort) {
         ILangEntry label = unit.pluralLangEntry;
         if (isShort) {
             label = unit.shortLangEntry;
-        } else if (value.equals(FloatingLong.ONE)) {
+        } else if (value == 1) {
             label = unit.singularLangEntry;
         }
-        if (value.isZero()) {
+        if (value == 0) {
             return TextComponentUtil.build(value + " ", label);
         }
-        for (int i = 0; i < EnumUtils.FLOATING_LONG_MEASUREMENT_UNITS.length; i++) {
-            FloatingLongMeasurementUnit lowerMeasure = EnumUtils.FLOATING_LONG_MEASUREMENT_UNITS[i];
+        for (int i = 0; i < EnumUtils.ULONG_MEASUREMENT_UNITS.length; i++) {
+            ULongMeasurementUnit lowerMeasure = EnumUtils.ULONG_MEASUREMENT_UNITS[i];
             if ((i == 0 && lowerMeasure.below(value)) ||
-                i + 1 >= EnumUtils.FLOATING_LONG_MEASUREMENT_UNITS.length ||
-                (lowerMeasure.aboveEqual(value) && EnumUtils.FLOATING_LONG_MEASUREMENT_UNITS[i + 1].below(value))) {
+                i + 1 >= EnumUtils.ULONG_MEASUREMENT_UNITS.length ||
+                (lowerMeasure.aboveEqual(value) && EnumUtils.ULONG_MEASUREMENT_UNITS[i + 1].below(value))) {
                 //First element and it is below it (no more unit abbreviations before),
                 // or last element (no more unit abbreviations past),
                 // or we are within the bounds between this one and the next one
-                return TextComponentUtil.build(lowerMeasure.process(value).toString(decimalPlaces) + " " + lowerMeasure.getName(isShort), label);
+                double rounded = roundDecimals(false, lowerMeasure.process(value), decimalPlaces);
+                return TextComponentUtil.build(rounded + " " + lowerMeasure.getName(isShort), label);
             }
         }
-        return TextComponentUtil.build(value.toString(decimalPlaces), label);
+        return TextComponentUtil.build(Long.toUnsignedString(value), label);
     }
 
-    public static Component getDisplayShort(FloatingLong value, EnergyUnit unit) {
+    public static Component getDisplayShort(@Unsigned long value, EnergyUnit unit) {
         return getDisplay(value, unit, 2, true);
     }
 
@@ -447,6 +448,59 @@ public class UnitDisplayUtils {
 
         public boolean below(FloatingLong d) {
             return d.smallerThan(value);
+        }
+    }
+
+    /**
+     * Metric system of measurement.
+     */
+    public enum ULongMeasurementUnit {
+        BASE("", "", 1L),
+        KILO("Kilo", "k", 1_000L),
+        MEGA("Mega", "M", 1_000_000L),
+        GIGA("Giga", "G", 1_000_000_000L),
+        TERA("Tera", "T", 1_000_000_000_000L),
+        PETA("Peta", "P", 1_000_000_000_000_000L),
+        EXA("Exa", "E", 1_000_000_000_000_000_000L);
+
+        /**
+         * long name for the unit
+         */
+        private final String name;
+
+        /**
+         * short unit version of the unit
+         */
+        private final String symbol;
+
+        /**
+         * Point by which a number is considered to be of this unit
+         */
+        private final @Unsigned long value;
+
+        ULongMeasurementUnit(String name, String symbol, @Unsigned long value) {
+            this.name = name;
+            this.symbol = symbol;
+            this.value = value;
+        }
+
+        public String getName(boolean getShort) {
+            if (getShort) {
+                return symbol;
+            }
+            return name;
+        }
+
+        public double process(@Unsigned long d) {
+            return ULong.divide(d, value);
+        }
+
+        public boolean aboveEqual(@Unsigned long d) {
+            return ULong.gte(d, value);
+        }
+
+        public boolean below(@Unsigned long d) {
+            return ULong.lt(d, value);
         }
     }
 }
