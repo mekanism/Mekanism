@@ -1,4 +1,6 @@
 {
+  "advancements.mekanism.alarm.title": "Woop woop woop!",
+  "advancements.mekanism.chemical_tank.title": "Inhalare nerecomandată",
   "alias.mekanism.qe.tesseract": "Tesseract",
   "assemblicator.mekanism.auto_mode_toggle": "Modul Automat: %1$s",
   "assemblicator.mekanism.craft_available": "Creează Obiectele Disponibile",
@@ -1029,6 +1031,7 @@
   "sps.mekanism.sps": "Schimbător Supercritic de Fază",
   "status.mekanism.ok": "Toate OK",
   "tab.mekanism.main": "Principal",
+  "tag.item.c.tools.wrench": "Chei",
   "teleporter.mekanism.needs_energy": "Necesită energie",
   "teleporter.mekanism.no_frame": "Nicio Ramă",
   "teleporter.mekanism.no_link": "Fără legătură",
