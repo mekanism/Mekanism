@@ -188,6 +188,8 @@ public class MekanismDataComponents {
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<FloatingLong>> MIN_THRESHOLD = DATA_COMPONENTS.registerFloatingLong("min_threshold");
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<FloatingLong>> MAX_THRESHOLD = DATA_COMPONENTS.registerFloatingLong("max_threshold");
 
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<FloatingLong>> ENERGY_USAGE = DATA_COMPONENTS.registerFloatingLong("energy_usage");
+
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Long>> LONG_AMOUNT = DATA_COMPONENTS.registerNonNegativeLong("long_amount");
     //Note: We can't directly use ItemStack as it needs to override equals and hashcode, but as our only use case converts it to a HashedItem, we just use that
     // We don't add this by default to the redstone adapter, so that the default state is there is no target set

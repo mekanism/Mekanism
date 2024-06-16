@@ -3,8 +3,8 @@ package mekanism.common.tile.machine;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.SerializationConstants;
 import mekanism.api.RelativeSide;
+import mekanism.api.SerializationConstants;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
@@ -29,13 +29,16 @@ import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
@@ -44,6 +47,8 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     public static final double HEAT_CAPACITY = 100;
     public static final double INVERSE_CONDUCTION_COEFFICIENT = 5;
     public static final double INVERSE_INSULATION_COEFFICIENT = 10;
+    //TODO: Eventually make this into a config at some point?
+    public static final FloatingLong BASE_USAGE = FloatingLong.createConst(100);
 
     private float soundScale = 1;
     private double lastEnvironmentLoss;
@@ -172,6 +177,20 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
         super.handleUpdateTag(tag, provider);
         NBTUtils.setFloatIfPresent(tag, SerializationConstants.SOUND_SCALE, value -> soundScale = value);
+    }
+
+    @Override
+    protected void collectImplicitComponents(@NotNull DataComponentMap.Builder builder) {
+        //Note: We copy the energy usage before handling super, in case it is necessary in order to set the proper value on the item
+        builder.set(MekanismDataComponents.ENERGY_USAGE, energyContainer.getEnergyPerTick());
+        super.collectImplicitComponents(builder);
+    }
+
+    @Override
+    protected void applyImplicitComponents(@NotNull BlockEntity.DataComponentInput input) {
+        //Apply the usage before processing the stored data as it changes the buffer of the energy container
+        energyContainer.updateEnergyUsage(input.getOrDefault(MekanismDataComponents.ENERGY_USAGE, BASE_USAGE));
+        super.applyImplicitComponents(input);
     }
 
     //Methods relating to IComputerTile

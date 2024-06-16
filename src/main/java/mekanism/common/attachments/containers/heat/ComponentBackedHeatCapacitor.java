@@ -92,11 +92,7 @@ public class ComponentBackedHeatCapacitor extends ComponentBackedContainer<HeatC
     @Override
     public void setHeat(double heat) {
         AttachedHeat attachedHeat = getAttached();
-        if (!attachedHeat.isEmpty()) {
-            HeatCapacitorData stored = getContents(attachedHeat);
-            setContents(attachedHeat, new HeatCapacitorData(heat, stored.capacity()));
-        }
-        //TODO - 1.21: Else initialize to whatever the default size is meant to be?
+        setContents(attachedHeat, getContents(attachedHeat).withHeat(heat));
     }
 
     @Override//TODO - 1.21: Re-evaluate this override

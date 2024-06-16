@@ -28,8 +28,8 @@ of things that we haven't finished porting yet.
 
 ## Known Bugs/Things that aren't done being ported yet ##
 - Options in the Module Tweaker that have side effects don't currently have those side effects displayed
-- Resistive Heaters do not keep their set Energy Usage when breaking and placing again
-- Bins forget if they are locked and what they are locked too if broken and placed
+- Fixed (Upcoming 10.6.2): Resistive Heaters do not keep their set Energy Usage when breaking and placing again
+- Fixed (Upcoming 10.6.2): Bins forget if they are locked and what they are locked too if broken and placed
 - When breaking and placing blocks that have fluid item input slots, they do not persist whether the item was actively being drained or whether it was being filled
 - The QIO Dashboard does not persist items stored in crafting windows when broken
 - The Portable QIO Dashboard's Crafting windows do not work at all. DO NOT TRY TO USE THEM

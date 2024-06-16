@@ -18,4 +18,11 @@ public record HeatCapacitorData(double heat, double capacity) {
           ByteBufCodecs.DOUBLE, HeatCapacitorData::capacity,
           HeatCapacitorData::new
     );
+
+    public HeatCapacitorData withHeat(double heat) {
+        if (this.heat == heat) {
+            return this;
+        }
+        return new HeatCapacitorData(heat, capacity);
+    }
 }

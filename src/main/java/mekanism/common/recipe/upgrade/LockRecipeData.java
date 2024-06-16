@@ -12,8 +12,8 @@ public class LockRecipeData implements RecipeUpgradeData<LockRecipeData> {
 
     private final ItemStack lock;
 
-    LockRecipeData(ComponentBackedBinInventorySlot slot) {
-        this.lock = slot.getLockStack();
+    LockRecipeData(ItemStack lockStack) {
+        this.lock = lockStack;
     }
 
     @Nullable

@@ -22,6 +22,13 @@ public record LockData(ItemStack lock) {
         lock = lock.copy();
     }
 
+    public static LockData create(ItemStack lock) {
+        if (lock.isEmpty()) {
+            return EMPTY;
+        }
+        return new LockData(lock.copyWithCount(1));
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

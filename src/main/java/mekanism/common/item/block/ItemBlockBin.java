@@ -44,8 +44,9 @@ public class ItemBlockBin extends ItemBlockTooltip<BlockBin> implements IDroppab
                     tooltip.add(MekanismLang.ITEM_AMOUNT.translateColored(EnumColor.PURPLE, EnumColor.GRAY, TextUtils.format(slot.getCount())));
                 }
             }
-            if (slot.isLocked()) {
-                tooltip.add(MekanismLang.LOCKED.translateColored(EnumColor.AQUA, EnumColor.GRAY, slot.getLockStack()));
+            ItemStack lockStack = slot.getLockStack();
+            if (!lockStack.isEmpty()) {
+                tooltip.add(MekanismLang.LOCKED.translateColored(EnumColor.AQUA, EnumColor.GRAY, lockStack));
             }
             if (tier == BinTier.CREATIVE) {
                 tooltip.add(MekanismLang.CAPACITY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, MekanismLang.INFINITE));
