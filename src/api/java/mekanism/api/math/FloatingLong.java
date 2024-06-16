@@ -217,7 +217,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     /**
      * @return the unsigned long representing the whole number value of this {@link FloatingLong}
      */
-    public long getValue() {
+    public @Unsigned long getValue() {
         return value;
     }
 

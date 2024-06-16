@@ -6,6 +6,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.Unsigned;
 import mekanism.common.content.network.distribution.EnergyAcceptorTarget;
 import mekanism.common.integration.energy.BlockEnergyCapabilityCache;
 
@@ -18,7 +19,7 @@ public final class CableUtils {
         emit(targets, energyContainer, energyContainer.getMaxEnergy());
     }
 
-    public static void emit(Collection<BlockEnergyCapabilityCache> targets, IEnergyContainer energyContainer, FloatingLong maxOutput) {
+    public static void emit(Collection<BlockEnergyCapabilityCache> targets, IEnergyContainer energyContainer, @Unsigned long maxOutput) {
         if (!energyContainer.isEmpty() && !maxOutput.isZero()) {
             energyContainer.extract(emit(targets, energyContainer.extract(maxOutput, Action.SIMULATE, AutomationType.INTERNAL)), Action.EXECUTE, AutomationType.INTERNAL);
         }
@@ -32,9 +33,9 @@ public final class CableUtils {
      *
      * @return the amount of energy emitted
      */
-    public static FloatingLong emit(Collection<BlockEnergyCapabilityCache> targets, FloatingLong energyToSend) {
+    public static @Unsigned long emit(Collection<BlockEnergyCapabilityCache> targets, @Unsigned long energyToSend) {
         if (energyToSend.isZero() || targets.isEmpty()) {
-            return FloatingLong.ZERO;
+            return 0;
         }
         EnergyAcceptorTarget target = new EnergyAcceptorTarget(targets.size());
         for (BlockEnergyCapabilityCache capability : targets) {
@@ -44,8 +45,8 @@ public final class CableUtils {
             }
         }
         if (target.getHandlerCount() > 0) {
-            return EmitUtils.sendToAcceptors(target, energyToSend);
+            return EmitUtils.sendToAcceptors(target, energyToSend, energyToSend);
         }
-        return FloatingLong.ZERO;
+        return 0;
     }
 }

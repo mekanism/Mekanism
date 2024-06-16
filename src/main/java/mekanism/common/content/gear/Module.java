@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.LongSupplier;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.MekanismAPI;
@@ -21,7 +22,8 @@ import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.gear.config.ModuleConfig;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.math.FloatingLongSupplier;
+import mekanism.api.math.ULong;
+import mekanism.api.math.Unsigned;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.common.MekanismLang;
@@ -132,19 +134,19 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
     }
 
     @Override
-    public FloatingLong getContainerEnergy(ItemStack stack) {
+    public @Unsigned long getContainerEnergy(ItemStack stack) {
         IEnergyContainer energyContainer = getEnergyContainer(stack);
-        return energyContainer == null ? FloatingLong.ZERO : energyContainer.getEnergy();
+        return energyContainer == null ? 0L : energyContainer.getEnergy();
     }
 
     @Override
-    public boolean hasEnoughEnergy(ItemStack stack, FloatingLongSupplier energySupplier) {
-        return hasEnoughEnergy(stack, energySupplier.get());
+    public boolean hasEnoughEnergy(ItemStack stack, LongSupplier energySupplier) {
+        return hasEnoughEnergy(stack, energySupplier.getAsLong());
     }
 
     @Override
-    public boolean hasEnoughEnergy(ItemStack stack, long cost) {
-        return cost.isZero() || getContainerEnergy(stack).greaterOrEqual(cost);
+    public boolean hasEnoughEnergy(ItemStack stack, @Unsigned long cost) {
+        return cost == 0L || ULong.gte(getContainerEnergy(stack), cost);
     }
 
     @Override
@@ -154,40 +156,40 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
     }
 
     @Override
-    public boolean canUseEnergy(LivingEntity wearer, ItemStack stack, long energy, boolean ignoreCreative) {
+    public boolean canUseEnergy(LivingEntity wearer, ItemStack stack, @Unsigned long energy, boolean ignoreCreative) {
         return canUseEnergy(wearer, getEnergyContainer(stack), energy, ignoreCreative);
     }
 
     @Override
-    public boolean canUseEnergy(LivingEntity wearer, @Nullable IEnergyContainer energyContainer, long energy, boolean ignoreCreative) {
+    public boolean canUseEnergy(LivingEntity wearer, @Nullable IEnergyContainer energyContainer, @Unsigned long energy, boolean ignoreCreative) {
         if (energyContainer != null && !wearer.isSpectator()) {
             //Don't check spectators in general
             if (!ignoreCreative || !(wearer instanceof Player player) || !player.isCreative()) {
-                return energyContainer.extract(energy, Action.SIMULATE, AutomationType.MANUAL).equals(energy);
+                return energyContainer.extract(energy, Action.SIMULATE, AutomationType.MANUAL) == energy;
             }
         }
         return false;
     }
 
     @Override
-    public long useEnergy(LivingEntity wearer, ItemStack stack, long energy) {
+    public @Unsigned long useEnergy(LivingEntity wearer, ItemStack stack, @Unsigned long energy) {
         return useEnergy(wearer, stack, energy, true);
     }
 
     @Override
-    public long useEnergy(LivingEntity wearer, ItemStack stack, long energy, boolean freeCreative) {
+    public @Unsigned long useEnergy(LivingEntity wearer, ItemStack stack, @Unsigned long energy, boolean freeCreative) {
         return useEnergy(wearer, getEnergyContainer(stack), energy, freeCreative);
     }
 
     @Override
-    public long useEnergy(LivingEntity wearer, @Nullable IEnergyContainer energyContainer, long energy, boolean freeCreative) {
+    public @Unsigned long useEnergy(LivingEntity wearer, @Nullable IEnergyContainer energyContainer, @Unsigned long energy, boolean freeCreative) {
         if (energyContainer != null) {
             //Use from spectators if this is called due to the various edge cases that exist for when things are calculated manually
             if (!freeCreative || !(wearer instanceof Player player) || MekanismUtils.isPlayingMode(player)) {
                 return energyContainer.extract(energy, Action.EXECUTE, AutomationType.MANUAL);
             }
         }
-        return FloatingLong.ZERO;
+        return 0L;
     }
 
     @Override

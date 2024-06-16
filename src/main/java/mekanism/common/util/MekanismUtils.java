@@ -25,6 +25,7 @@ import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
+import mekanism.api.math.ULong;
 import mekanism.api.math.Unsigned;
 import mekanism.api.text.EnumColor;
 import mekanism.client.MekanismClient;
@@ -119,6 +120,12 @@ public final class MekanismUtils {
 
     public static void logExpectedZero(FloatingLong actual) {
         if (!actual.isZero()) {
+            Mekanism.logger.error("Energy value changed by a different amount ({}) than requested (zero).", actual, new Exception());
+        }
+    }
+
+    public static void logExpectedZero(long actual) {
+        if (actual != 0L) {
             Mekanism.logger.error("Energy value changed by a different amount ({}) than requested (zero).", actual, new Exception());
         }
     }
@@ -219,8 +226,8 @@ public final class MekanismUtils {
 
     public static float getScale(float prevScale, IEnergyContainer container) {
         float targetScale;
-        FloatingLong stored = container.getEnergy();
-        FloatingLong capacity = container.getMaxEnergy();
+        @Unsigned long stored = container.getEnergy();
+        @Unsigned long capacity = container.getMaxEnergy();
         if (capacity.isZero()) {
             targetScale = 0;
         } else {
@@ -345,8 +352,8 @@ public final class MekanismUtils {
      *
      * @return max energy
      */
-    public static FloatingLong getMaxEnergy(int energyUpgrades, FloatingLong def) {
-        return def.multiply(Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), energyUpgrades / (double) Upgrade.ENERGY.getMax()));
+    public static @Unsigned long getMaxEnergy(int energyUpgrades, @Unsigned long def) {
+        return (long) (def * (Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), energyUpgrades / (double) Upgrade.ENERGY.getMax())));
     }
 
     /**
@@ -462,7 +469,7 @@ public final class MekanismUtils {
      *
      * @return energy converted to configured unit
      */
-    public static FloatingLong convertToDisplay(FloatingLong energy) {
+    public static @Unsigned long convertToDisplay(@Unsigned long energy) {
         return EnergyUnit.getConfigured().convertTo(energy);
     }
 
@@ -633,8 +640,8 @@ public final class MekanismUtils {
      *
      * @return A redstone level based on the percentage of the amount stored.
      */
-    public static int redstoneLevelFromContents(long amount, long capacity) {
-        double fractionFull = capacity == 0 ? 0 : amount / (double) capacity;
+    public static int redstoneLevelFromContents(@Unsigned long amount, @Unsigned long capacity) {
+        double fractionFull = capacity == 0 ? 0 : ULong.divide(amount, capacity);
         return Mth.floor((float) (fractionFull * 14.0F)) + (fractionFull > 0 ? 1 : 0);
     }
 
@@ -763,13 +770,13 @@ public final class MekanismUtils {
         return fluidsIn;
     }
 
-    public static void veinMineArea(IEnergyContainer energyContainer, FloatingLong energyRequired, FloatingLong baseBlastEnergy, FloatingLong baseVeinEnergy,
+    public static void veinMineArea(IEnergyContainer energyContainer, @Unsigned long energyRequired, @Unsigned long baseBlastEnergy, @Unsigned long baseVeinEnergy,
           Level world, BlockPos pos, ServerPlayer player, ItemStack stack, Item usedTool, Object2IntMap<BlockPos> found, BlastEnergyFunction blastEnergy,
           VeinEnergyFunction veinEnergy) {
-        FloatingLong energyUsed = FloatingLong.ZERO;
-        FloatingLong energyAvailable = energyContainer.getEnergy();
+        @Unsigned long energyUsed = 0L;
+        @Unsigned long energyAvailable = energyContainer.getEnergy();
         //Subtract from our available energy the amount that we will require to break the target block
-        energyAvailable = energyAvailable.subtract(energyRequired);
+        energyAvailable = energyAvailable - energyRequired;
         Stat<Item> itemStat = Stats.ITEM_USED.get(usedTool);
         for (Object2IntMap.Entry<BlockPos> foundEntry : found.object2IntEntrySet()) {
             BlockPos foundPos = foundEntry.getKey();
@@ -785,8 +792,8 @@ public final class MekanismUtils {
                 continue;
             }
             int distance = foundEntry.getIntValue();
-            FloatingLong destroyEnergy = distance == 0 ? blastEnergy.calc(baseBlastEnergy, hardness) : veinEnergy.calc(baseVeinEnergy, hardness, distance, targetState);
-            if (energyUsed.add(destroyEnergy).greaterThan(energyAvailable)) {
+            @Unsigned long destroyEnergy = distance == 0 ? blastEnergy.calc(baseBlastEnergy, hardness) : veinEnergy.calc(baseVeinEnergy, hardness, distance, targetState);
+            if (ULong.gte(energyUsed + destroyEnergy, energyAvailable)) {
                 //If we don't have energy to break the block continue
                 //Note: We do not break as given the energy scales with hardness, so it is possible we still have energy to break another block
                 // Given we validate the blocks are the same but their block states may be different thus making them have different
@@ -868,12 +875,14 @@ public final class MekanismUtils {
     @FunctionalInterface
     public interface BlastEnergyFunction {
 
-        FloatingLong calc(FloatingLong baseBlastEnergy, float hardness);
+        @Unsigned
+        long calc(@Unsigned long baseBlastEnergy, float hardness);
     }
 
     @FunctionalInterface
     public interface VeinEnergyFunction {
 
-        FloatingLong calc(FloatingLong baseVeinEnergy, float hardness, int distance, BlockState state);
+        @Unsigned
+        long calc(@Unsigned long baseVeinEnergy, float hardness, int distance, BlockState state);
     }
 }

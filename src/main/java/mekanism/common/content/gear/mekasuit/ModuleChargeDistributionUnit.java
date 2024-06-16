@@ -1,5 +1,6 @@
 package mekanism.common.content.gear.mekasuit;
 
+import com.google.common.primitives.UnsignedLongs;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
@@ -9,6 +10,8 @@ import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.ULong;
+import mekanism.api.math.Unsigned;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.network.distribution.EnergySaveTarget;
@@ -56,14 +59,15 @@ public record ModuleChargeDistributionUnit(boolean chargeSuit, boolean chargeInv
         }
         if (saveTarget.getHandlerCount() > 1) {
             //If we only have one handler we can skip charging as it will all just go back into the chest piece
-            EmitUtils.sendToAcceptors(saveTarget, saveTarget.getStored());
+            @Unsigned long stored = saveTarget.getStored();
+            EmitUtils.sendToAcceptors(saveTarget, stored, stored);
             saveTarget.save();
         }
     }
 
     private void chargeInventory(IEnergyContainer energyContainer, Player player) {
         //Only try to charge up to how much energy we actually have stored
-        FloatingLong toCharge = MekanismConfig.gear.mekaSuitInventoryChargeRate.get().min(energyContainer.getEnergy());
+        @Unsigned long toCharge = UnsignedLongs.min(MekanismConfig.gear.mekaSuitInventoryChargeRate.get(), energyContainer.getEnergy());
         if (toCharge.isZero()) {
             return;
         }
@@ -96,17 +100,17 @@ public record ModuleChargeDistributionUnit(boolean chargeSuit, boolean chargeInv
     }
 
     /** return rejects */
-    private FloatingLong charge(IEnergyContainer energyContainer, ItemStack stack, FloatingLong amount) {
-        if (!stack.isEmpty() && !amount.isZero()) {
+    private @Unsigned long charge(IEnergyContainer energyContainer, ItemStack stack, @Unsigned long amount) {
+        if (!stack.isEmpty() && amount != 0L) {
             IStrictEnergyHandler handler = EnergyCompatUtils.getStrictEnergyHandler(stack);
             if (handler != null) {
-                FloatingLong remaining = handler.insertEnergy(amount, Action.SIMULATE);
-                if (remaining.smallerThan(amount)) {
+                @Unsigned long remaining = handler.insertEnergy(amount, Action.SIMULATE);
+                if (ULong.lt(remaining, amount)) {
                     //If we can actually insert any energy into
-                    FloatingLong toExtract = amount.subtract(remaining);
-                    FloatingLong extracted = energyContainer.extract(toExtract, Action.EXECUTE, AutomationType.MANUAL);
-                    FloatingLong inserted = handler.insertEnergy(extracted, Action.EXECUTE);
-                    return inserted.plusEqual(remaining);
+                    @Unsigned long toExtract = amount - remaining;
+                    @Unsigned long extracted = energyContainer.extract(toExtract, Action.EXECUTE, AutomationType.MANUAL);
+                    @Unsigned long inserted = handler.insertEnergy(extracted, Action.EXECUTE);
+                    return inserted + remaining;
                 }
             }
         }

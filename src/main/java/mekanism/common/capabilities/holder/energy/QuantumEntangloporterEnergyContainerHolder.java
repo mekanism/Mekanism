@@ -15,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class QuantumEntangloporterEnergyContainerHolder extends QuantumEntangloporterConfigHolder<IEnergyContainer> implements IEnergyContainerHolder {
 
-    private final Lazy<List<IEnergyContainer>> clientContainer = Lazy.of(() -> Collections.singletonList(BasicEnergyContainer.create(MekanismConfig.general.entangloporterEnergyBuffer.get(), null)));
+    private final Lazy<List<IEnergyContainer>> clientContainer = Lazy.of(() -> Collections.singletonList(BasicEnergyContainer.create(MekanismConfig.general.entangloporterEnergyBuffer.getAsLong(), null)));
 
     public QuantumEntangloporterEnergyContainerHolder(TileEntityQuantumEntangloporter entangloporter) {
         super(entangloporter);

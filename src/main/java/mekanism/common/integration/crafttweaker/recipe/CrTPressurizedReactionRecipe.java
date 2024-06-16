@@ -54,8 +54,8 @@ public class CrTPressurizedReactionRecipe {
      */
     @ZenCodeType.Method
     @ZenCodeType.Getter("energyRequired")
-    public static FloatingLong getEnergyRequired(PressurizedReactionRecipe _this) {
-        return _this.getEnergyRequired().copyAsConst();
+    public static long getEnergyRequired(PressurizedReactionRecipe _this) {
+        return _this.getEnergyRequired();
     }
 
     /**

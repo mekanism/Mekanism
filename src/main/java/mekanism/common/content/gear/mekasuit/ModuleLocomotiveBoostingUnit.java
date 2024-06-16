@@ -46,7 +46,7 @@ public record ModuleLocomotiveBoostingUnit(SprintBoost sprintBoost) implements I
     @Override
     public void tickServer(IModule<ModuleLocomotiveBoostingUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player) {
         if (tick(module, stack, player)) {
-            module.useEnergy(player, stack, MekanismConfig.gear.mekaSuitEnergyUsageSprintBoost.get().multiply(sprintBoost.getBoost() / 0.1F));
+            module.useEnergy(player, stack, MekanismConfig.gear.mekaSuitEnergyUsageSprintBoost.get() * sprintBoost.getBoost() / 0.1F);
         }
     }
 
@@ -74,7 +74,7 @@ public record ModuleLocomotiveBoostingUnit(SprintBoost sprintBoost) implements I
     public boolean canFunction(IModule<ModuleLocomotiveBoostingUnit> module, ItemStack stack, Player player) {
         //Don't allow boosting unit to work when flying with the elytra, a jetpack should be used instead
         return !player.isFallFlying() && player.isSprinting() && module.canUseEnergy(player, stack,
-              MekanismConfig.gear.mekaSuitEnergyUsageSprintBoost.get().multiply(sprintBoost.getBoost() / 0.1F));
+              MekanismConfig.gear.mekaSuitEnergyUsageSprintBoost.get() * sprintBoost.getBoost() / 0.1F);
     }
 
     @NothingNullByDefault

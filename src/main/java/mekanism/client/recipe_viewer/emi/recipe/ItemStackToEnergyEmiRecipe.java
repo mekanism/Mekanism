@@ -1,8 +1,10 @@
 package mekanism.client.recipe_viewer.emi.recipe;
 
+import com.google.common.primitives.UnsignedLongs;
 import dev.emi.emi.api.widget.WidgetHolder;
 import java.util.List;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.Unsigned;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiEnergyGauge;
@@ -30,36 +32,34 @@ public class ItemStackToEnergyEmiRecipe extends MekanismEmiHolderRecipe<ItemStac
     }
 
     private IEnergyInfoHandler getEnergyInfoHandler() {
-        List<FloatingLong> outputDefinition = recipe.getOutputDefinition();
+        List<Long> outputDefinition = recipe.getOutputDefinition();
         if (outputDefinition.size() > 1) {
-            FloatingLong maxEnergy = FloatingLong.ZERO;
-            for (FloatingLong floatingLong : outputDefinition) {
-                if (floatingLong.greaterThan(maxEnergy)) {
-                    maxEnergy = floatingLong;
-                }
+            @Unsigned long maxEnergy = 0;
+            for (Long floatingLong : outputDefinition) {
+                maxEnergy = UnsignedLongs.max(maxEnergy, floatingLong);
             }
-            FloatingLong finalMaxEnergy = maxEnergy;
+            @Unsigned long finalMaxEnergy = maxEnergy;
             return new IEnergyInfoHandler() {
                 @Override
-                public FloatingLong getEnergy() {
+                public @Unsigned long getEnergy() {
                     return RecipeViewerUtils.getCurrent(outputDefinition);
                 }
 
                 @Override
-                public FloatingLong getMaxEnergy() {
+                public @Unsigned long getMaxEnergy() {
                     return finalMaxEnergy;
                 }
             };
         }
-        FloatingLong energy = outputDefinition.isEmpty() ? FloatingLong.ZERO : outputDefinition.getFirst();
+        @Unsigned long energy = outputDefinition.isEmpty() ? 0L : outputDefinition.getFirst();
         return new IEnergyInfoHandler() {
             @Override
-            public FloatingLong getEnergy() {
+            public @Unsigned long getEnergy() {
                 return energy;
             }
 
             @Override
-            public FloatingLong getMaxEnergy() {
+            public @Unsigned long getMaxEnergy() {
                 return energy;
             }
         };

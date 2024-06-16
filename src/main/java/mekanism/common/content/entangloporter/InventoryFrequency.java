@@ -88,7 +88,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
           ExtraCodecs.NON_EMPTY_STRING.fieldOf(SerializationConstants.NAME).forGetter(Frequency::getName),
           UUIDUtil.CODEC.optionalFieldOf(SerializationConstants.OWNER_UUID).forGetter(freq -> Optional.ofNullable(freq.getOwner())),
           SecurityMode.CODEC.fieldOf(SerializationConstants.SECURITY_MODE).forGetter(Frequency::getSecurity),
-          FloatingLong.CODEC.fieldOf(SerializationConstants.ENERGY).forGetter(freq -> freq.storedEnergy.getEnergy()),
+          Codec.LONG.fieldOf(SerializationConstants.ENERGY).forGetter(freq -> freq.storedEnergy.getEnergy()),
           FluidStack.OPTIONAL_CODEC.fieldOf(SerializationConstants.FLUID).forGetter(freq -> freq.storedFluid.getFluid()),
           GasStack.OPTIONAL_CODEC.fieldOf(SerializationConstants.GAS).forGetter(freq -> freq.storedGas.getStack()),
           InfusionStack.OPTIONAL_CODEC.fieldOf(SerializationConstants.INFUSE_TYPE).forGetter(freq -> freq.storedInfusion.getStack()),
@@ -112,7 +112,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     }));
     public static final StreamCodec<RegistryFriendlyByteBuf, InventoryFrequency> STREAM_CODEC = PacketUtils.composite(
           baseStreamCodec(InventoryFrequency::new), Function.identity(),
-          FloatingLong.STREAM_CODEC, freq -> freq.storedEnergy.getEnergy(),
+          ByteBufCodecs.VAR_LONG, freq -> freq.storedEnergy.getEnergy(),
           FluidStack.OPTIONAL_STREAM_CODEC, freq -> freq.storedFluid.getFluid(),
           GasStack.OPTIONAL_STREAM_CODEC, freq -> freq.storedGas.getStack(),
           InfusionStack.OPTIONAL_STREAM_CODEC, freq -> freq.storedInfusion.getStack(),
@@ -174,7 +174,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         pigmentTanks = Collections.singletonList(storedPigment = ChemicalTankBuilder.PIGMENT.create(MekanismConfig.general.entangloporterChemicalBuffer.get(), this));
         slurryTanks = Collections.singletonList(storedSlurry = ChemicalTankBuilder.SLURRY.create(MekanismConfig.general.entangloporterChemicalBuffer.get(), this));
         inventorySlots = Collections.singletonList(storedItem = EntangloporterInventorySlot.create(this));
-        energyContainers = Collections.singletonList(storedEnergy = BasicEnergyContainer.create(MekanismConfig.general.entangloporterEnergyBuffer.get(), this));
+        energyContainers = Collections.singletonList(storedEnergy = BasicEnergyContainer.create(MekanismConfig.general.entangloporterEnergyBuffer.getAsLong(), this));
         heatCapacitors = Collections.singletonList(storedHeat = BasicHeatCapacitor.create(HeatAPI.DEFAULT_HEAT_CAPACITY, HeatAPI.DEFAULT_INVERSE_CONDUCTION,
               1_000, null, this));
     }

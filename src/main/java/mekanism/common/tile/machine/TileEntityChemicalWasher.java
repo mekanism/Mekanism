@@ -10,6 +10,7 @@ import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.Unsigned;
 import mekanism.api.recipes.FluidSlurryToSlurryRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
@@ -42,6 +43,7 @@ import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
+import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
@@ -85,7 +87,7 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidSlurr
                                                                                         "getSlurryOutputFilledPercentage"}, docPlaceholder = "output slurry tank")
     public ISlurryTank outputTank;
 
-    private FloatingLong clientEnergyUsed = FloatingLong.ZERO;
+    private @Unsigned long clientEnergyUsed = 0L;
     private int baselineMaxOperations = 1;
 
     private final IOutputHandler<@NotNull SlurryStack> outputHandler;
@@ -170,7 +172,7 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidSlurr
 
     @NotNull
     @ComputerMethod(nameOverride = "getEnergyUsage", methodDescription = ComputerConstants.DESCRIPTION_GET_ENERGY_USAGE)
-    public FloatingLong getEnergyUsed() {
+    public @Unsigned long getEnergyUsed() {
         return clientEnergyUsed;
     }
 
@@ -228,6 +230,6 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidSlurr
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableFloatingLong.create(this::getEnergyUsed, value -> clientEnergyUsed = value));
+        container.track(SyncableLong.create(this::getEnergyUsed, value -> clientEnergyUsed = value));
     }
 }

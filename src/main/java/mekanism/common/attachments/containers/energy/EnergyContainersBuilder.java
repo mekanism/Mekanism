@@ -2,9 +2,11 @@ package mekanism.common.attachments.containers.energy;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.math.FloatingLongSupplier;
+import mekanism.api.math.Unsigned;
 import mekanism.common.attachments.containers.creator.BaseContainerCreator;
 import mekanism.common.attachments.containers.creator.IBasicContainerCreator;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
@@ -37,13 +39,13 @@ public class EnergyContainersBuilder {
         return addContainer(MEKASUIT);
     }
 
-    public EnergyContainersBuilder addBasic(FloatingLongSupplier rate, FloatingLongSupplier maxEnergy) {
+    public EnergyContainersBuilder addBasic(@Unsigned LongSupplier rate, @Unsigned LongSupplier maxEnergy) {
         return addContainer((type, attachedTo, containerIndex) -> new ComponentBackedEnergyContainer(attachedTo, containerIndex, BasicEnergyContainer.manualOnly,
               BasicEnergyContainer.alwaysTrue, rate, maxEnergy));
     }
 
-    public EnergyContainersBuilder addBasic(Predicate<@NotNull AutomationType> canExtract, Predicate<@NotNull AutomationType> canInsert, FloatingLongSupplier rate,
-          FloatingLongSupplier maxEnergy) {
+    public EnergyContainersBuilder addBasic(Predicate<@NotNull AutomationType> canExtract, Predicate<@NotNull AutomationType> canInsert, @Unsigned LongSupplier rate,
+          @Unsigned LongSupplier maxEnergy) {
         return addContainer((type, attachedTo, containerIndex) -> new ComponentBackedEnergyContainer(attachedTo, containerIndex, canExtract, canInsert, rate, maxEnergy));
     }
 

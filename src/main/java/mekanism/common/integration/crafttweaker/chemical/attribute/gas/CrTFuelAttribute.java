@@ -48,7 +48,7 @@ public class CrTFuelAttribute {
      */
     @ZenCodeType.Method
     @ZenCodeType.Getter("energyPerTick")
-    public static FloatingLong getEnergyPerTick(GasAttributes.Fuel _this) {
+    public static long getEnergyPerTick(GasAttributes.Fuel _this) {
         return _this.getEnergyPerTick();
     }
 }

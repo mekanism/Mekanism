@@ -1,35 +1,26 @@
 package mekanism.common.config.value;
 
+import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
+import mekanism.api.math.Unsigned;
 import mekanism.common.config.IMekanismConfig;
 import net.minecraft.Util;
 import net.neoforged.neoforge.common.ModConfigSpec.Builder;
 import net.neoforged.neoforge.common.ModConfigSpec.ConfigValue;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * A cached value implementation for representing Unsigned Longs as Strings. We use strings so that we can validate the data as well as allow us to represent
  * unsigned numbers properly.
  */
-public class CachedUnsignedLongValue extends CachedResolvableConfigValue<Long, String> implements Supplier<Long> {
+public class CachedUnsignedLongValue extends CachedResolvableConfigValue<Long, String> implements LongSupplier {
 
     //will reject negatives
     public static final Predicate<Object> VALIDATOR = object -> tryGetValue(object) != null;
-
-    //public static final Predicate<Object> ENERGY_CONVERSION = Util.make(() -> {
-    //    FloatingLong max = FloatingLong.ONE.divide(FloatingLong.createConst(0, (short) 1)).copyAsConst();//Inverse of min positive value
-    //    return greaterZeroLessThan(max);
-    //});
-//
-    //public static Predicate<Object> greaterZeroLessThan(FloatingLong max) {
-    //    return object -> {
-    //        FloatingLong value = tryGetValue(object);
-    //        return value != null && value.greaterThan(FloatingLong.ZERO) && value.smallerOrEqual(max);
-    //    };
-    //}
 
     @Nullable
     private static Long tryGetValue(Object object) {
@@ -75,5 +66,10 @@ public class CachedUnsignedLongValue extends CachedResolvableConfigValue<Long, S
     @Override
     protected String encode(Long value) {
         return Long.toUnsignedString(value);
+    }
+
+    @Override
+    public long getAsLong() {
+        return get();
     }
 }

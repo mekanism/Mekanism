@@ -62,6 +62,11 @@ public class DataComponentDeferredRegister extends MekanismDeferredRegister<Data
               .networkSynchronized(ByteBufCodecs.VAR_LONG));
     }
 
+    public MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Long>> registerUnsignedLong(String name) {
+        return simple(name, builder -> builder.persistent(Codec.LONG)
+              .networkSynchronized(ByteBufCodecs.VAR_LONG));
+    }
+
     public MekanismDeferredHolder<DataComponentType<?>, DataComponentType<FloatingLong>> registerFloatingLong(String name) {
         return simple(name, builder -> builder.persistent(FloatingLong.CODEC)
               .networkSynchronized(FloatingLong.STREAM_CODEC));

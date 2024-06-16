@@ -23,6 +23,7 @@ import mekanism.api.event.MekanismTeleportEvent;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.Unsigned;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
@@ -52,6 +53,7 @@ import mekanism.common.entity.ai.RobitAIPickup;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.container.sync.SyncableInt;
+import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
@@ -159,8 +161,8 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
           RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
     );
 
-    public static final FloatingLong MAX_ENERGY = FloatingLong.createConst(100_000);
-    private static final FloatingLong DISTANCE_MULTIPLIER = FloatingLong.createConst(1.5);
+    public static final @Unsigned long MAX_ENERGY = 100_000L;
+    private static final double DISTANCE_MULTIPLIER = 1.5D;
     //TODO: Note the robit smelts at double normal speed, we may want to make this configurable
     //TODO: Allow for upgrades in the robit?
     private static final int ticksRequired = 100;
@@ -283,8 +285,8 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         builder.define(SKIN, MekanismRobitSkins.BASE);
     }
 
-    private FloatingLong getRoundedTravelEnergy() {
-        return DISTANCE_MULTIPLIER.multiply(Math.sqrt(distanceToSqr(xo, yo, zo)));
+    private @Unsigned long getRoundedTravelEnergy() {
+        return (long) Math.ceil(DISTANCE_MULTIPLIER * Math.sqrt(distanceToSqr(xo, yo, zo)));
     }
 
     @Override
@@ -540,7 +542,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
             //Half the "potential" damage the Robit can take from falling
             amount /= 2;
         }
-        energyContainer.extract(FloatingLong.create(1_000 * amount), Action.EXECUTE, AutomationType.INTERNAL);
+        energyContainer.extract((long) (1_000 * (double) amount), Action.EXECUTE, AutomationType.INTERNAL);
         getCombatTracker().recordDamage(damageSource, amount);
     }
 
@@ -721,7 +723,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     public void addContainerTrackers(MekanismContainer container) {
         MenuType<?> containerType = container.getType();
         if (containerType == MekanismContainerTypes.MAIN_ROBIT.get()) {
-            container.track(SyncableFloatingLong.create(energyContainer::getEnergy, energyContainer::setEnergy));
+            container.track(SyncableLong.create(energyContainer::getEnergy, energyContainer::setEnergy));
         } else if (containerType == MekanismContainerTypes.SMELTING_ROBIT.get()) {
             container.track(SyncableInt.create(() -> progress, value -> progress = value));
             container.trackArray(trackedErrors);

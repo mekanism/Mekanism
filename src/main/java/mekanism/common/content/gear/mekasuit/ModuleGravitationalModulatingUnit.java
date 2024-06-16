@@ -28,7 +28,7 @@ import net.minecraft.world.phys.Vec3;
 public record ModuleGravitationalModulatingUnit(SprintBoost speedBoost) implements ICustomModule<ModuleGravitationalModulatingUnit> {
 
     private static final ConfigBasedCachedFLSupplier BOOST_USAGE = new ConfigBasedCachedFLSupplier(
-          () -> MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation.get().multiply(4),
+          () -> MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation.get() * 4,
           MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation
     );
     private static final ResourceLocation icon = MekanismUtils.getResource(ResourceType.GUI_HUD, "gravitational_modulation_unit.png");

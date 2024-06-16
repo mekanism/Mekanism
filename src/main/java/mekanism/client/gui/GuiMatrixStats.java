@@ -1,7 +1,7 @@
 package mekanism.client.gui;
 
 import java.util.List;
-import mekanism.api.math.FloatingLong;
+import mekanism.api.math.Unsigned;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.bar.GuiVerticalRateBar;
 import mekanism.client.gui.element.gauge.GaugeType;
@@ -32,12 +32,12 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, E
         addRenderableWidget(new GuiMatrixTab(this, tile, MatrixTab.MAIN));
         addRenderableWidget(new GuiEnergyGauge(new IEnergyInfoHandler() {
             @Override
-            public FloatingLong getEnergy() {
+            public @Unsigned long getEnergy() {
                 return tile.getMultiblock().getEnergy();
             }
 
             @Override
-            public FloatingLong getMaxEnergy() {
+            public @Unsigned long getMaxEnergy() {
                 return tile.getMultiblock().getStorageCap();
             }
         }, GaugeType.STANDARD, this, 6, 13));

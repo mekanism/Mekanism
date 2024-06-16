@@ -36,7 +36,7 @@ public class DynamicStrictEnergyHandler extends DynamicHandler<IEnergyContainer>
     @Override
     public @Unsigned long extractEnergy(int container, @Unsigned long amount, @Nullable Direction side, Action action) {
         //If we can extract from a specific side, try to. Otherwise exit
-        return canExtract.test(side) ? IMekanismStrictEnergyHandler.super.extractEnergy(container, amount, side, action) : FloatingLong.ZERO;
+        return canExtract.test(side) ? IMekanismStrictEnergyHandler.super.extractEnergy(container, amount, side, action) : 0L;
     }
 
     @Override
@@ -48,6 +48,6 @@ public class DynamicStrictEnergyHandler extends DynamicHandler<IEnergyContainer>
     @Override
     public @Unsigned long extractEnergy(@Unsigned long amount, @Nullable Direction side, Action action) {
         //If we can extract from a specific side, try to. Otherwise exit
-        return canExtract.test(side) ? IMekanismStrictEnergyHandler.super.extractEnergy(amount, side, action) : FloatingLong.ZERO;
+        return canExtract.test(side) ? IMekanismStrictEnergyHandler.super.extractEnergy(amount, side, action) : 0L;
     }
 }

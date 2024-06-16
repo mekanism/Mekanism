@@ -10,6 +10,7 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.Unsigned;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe.PressurizedReactionRecipeOutput;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -88,7 +89,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
                                                                                         "getOutputGasFilledPercentage"}, docPlaceholder = "gas output")
     public IGasTank outputGasTank;
 
-    private FloatingLong recipeEnergyRequired = FloatingLong.ZERO;
+    private @Unsigned long recipeEnergyRequired = 0;
     private final IOutputHandler<@NotNull PressurizedReactionRecipeOutput> outputHandler;
     private final IInputHandler<@NotNull ItemStack> itemInputHandler;
     private final IInputHandler<@NotNull FluidStack> fluidInputHandler;
@@ -190,7 +191,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
         return sendUpdatePacket;
     }
 
-    public FloatingLong getRecipeEnergyRequired() {
+    public @Unsigned long getRecipeEnergyRequired() {
         return recipeEnergyRequired;
     }
 
@@ -230,8 +231,9 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
 
     //Methods relating to IComputerTile
     @ComputerMethod(methodDescription = ComputerConstants.DESCRIPTION_GET_ENERGY_USAGE)
-    FloatingLong getEnergyUsage() {
-        return getActive() ? energyContainer.getEnergyPerTick() : FloatingLong.ZERO;
+    @Unsigned
+    long getEnergyUsage() {
+        return getActive() ? energyContainer.getEnergyPerTick() : 0;
     }
     //End methods IComputerTile
 }

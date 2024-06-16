@@ -1,17 +1,20 @@
 package mekanism.common.lib.distribution;
 
-public class LongSplitInfo extends SplitInfo<Long> {
+import mekanism.api.math.ULong;
+import mekanism.api.math.Unsigned;
 
-    private long amountToSplit;
-    private long amountPerTarget;
-    private long sentSoFar;
-    private long remainder;
+public class LongSplitInfo extends SplitInfo<@Unsigned Long> {
 
-    public LongSplitInfo(long amountToSplit, int totalTargets) {
+    private @Unsigned long amountToSplit;
+    private @Unsigned long amountPerTarget;
+    private @Unsigned long sentSoFar;
+    private @Unsigned long remainder;
+
+    public LongSplitInfo(@Unsigned long amountToSplit, int totalTargets) {
         super(totalTargets);
         this.amountToSplit = amountToSplit;
-        amountPerTarget = toSplitAmong == 0 ? 0 : amountToSplit / toSplitAmong;
-        remainder = toSplitAmong == 0 ? 0 : amountToSplit % toSplitAmong;
+        amountPerTarget = toSplitAmong == 0 ? 0 : Long.divideUnsigned(amountToSplit, toSplitAmong);
+        remainder = toSplitAmong == 0 ? 0 : Long.remainderUnsigned(amountToSplit, toSplitAmong);
     }
 
     @Override
@@ -33,8 +36,8 @@ public class LongSplitInfo extends SplitInfo<Long> {
         // full per side split
         if (amountNeeded != amountPerTarget && toSplitAmong != 0) {
             long amountPerLast = amountPerTarget;
-            amountPerTarget = amountToSplit / toSplitAmong;
-            remainder = amountToSplit % toSplitAmong;
+            amountPerTarget = Long.divideUnsigned(amountToSplit, toSplitAmong);
+            remainder = Long.remainderUnsigned(amountToSplit, toSplitAmong);
             if (!amountPerChanged && amountPerTarget != amountPerLast) {
                 amountPerChanged = true;
             }
@@ -48,7 +51,7 @@ public class LongSplitInfo extends SplitInfo<Long> {
 
     @Override
     public Long getRemainderAmount() {
-        if (toSplitAmong != 0 && remainder > 0) {
+        if (toSplitAmong != 0 && remainder != 0) {
             //If we have a remainder, be willing to provide a single unit as the remainder
             // so that we split the remainder more evenly across the targets.
             return amountPerTarget + 1;

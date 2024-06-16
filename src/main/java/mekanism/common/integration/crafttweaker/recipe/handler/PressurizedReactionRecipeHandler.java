@@ -45,7 +45,7 @@ public class PressurizedReactionRecipeHandler extends MekanismRecipeHandler<Pres
         // if there is only a single output, which means we can safely skip the other
         return buildCommandString(manager, recipeHolder, recipe.getInputSolid(), recipe.getInputFluid(), recipe.getInputGas(), recipe.getDuration(),
               itemOutput.isEmpty() ? SKIP_OPTIONAL_PARAM : itemOutput, gasOutput.isEmpty() ? SKIP_OPTIONAL_PARAM : gasOutput,
-              recipe.getEnergyRequired().isZero() ? SKIP_OPTIONAL_PARAM : recipe.getEnergyRequired()
+              recipe.getEnergyRequired() == 0L ? SKIP_OPTIONAL_PARAM : recipe.getEnergyRequired()
         );
     }
 

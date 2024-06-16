@@ -43,7 +43,7 @@ public record ModuleMagneticAttractionUnit(Range range) implements ICustomModule
     public void tickServer(IModule<ModuleMagneticAttractionUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player) {
         if (range != Range.OFF) {
             float size = 4 + range.getRange();
-            FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsageItemAttraction.get().multiply(range.getRange());
+            FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsageItemAttraction.get() * range.getRange();
             boolean free = usage.isZero() || player.isCreative();
             IEnergyContainer energyContainer = free ? null : module.getEnergyContainer(stack);
             if (free || (energyContainer != null && energyContainer.getEnergy().greaterOrEqual(usage))) {
@@ -55,7 +55,7 @@ public record ModuleMagneticAttractionUnit(Range range) implements ICustomModule
                     if (item.distanceTo(player) > 0.001) {
                         if (free) {
                             pullItem(player, item);
-                        } else if (module.useEnergy(player, energyContainer, usage, true).isZero()) {
+                        } else if (module.useEnergy(player, energyContainer, usage, true) == 0L) {
                             //If we can't actually extract energy, exit
                             break;
                         } else {

@@ -1,6 +1,7 @@
 package mekanism.common.capabilities.energy;
 
 import java.util.Objects;
+import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
@@ -13,17 +14,17 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class VariableCapacityEnergyContainer extends BasicEnergyContainer {
 
-    public static VariableCapacityEnergyContainer input(FloatingLongSupplier maxEnergy, @Nullable IContentsListener listener) {
+    public static VariableCapacityEnergyContainer input(@Unsigned LongSupplier maxEnergy, @Nullable IContentsListener listener) {
         Objects.requireNonNull(maxEnergy, "Max energy supplier cannot be null");
         return new VariableCapacityEnergyContainer(maxEnergy, notExternal, alwaysTrue, listener);
     }
 
-    public static VariableCapacityEnergyContainer output(FloatingLongSupplier maxEnergy, @Nullable IContentsListener listener) {
+    public static VariableCapacityEnergyContainer output(@Unsigned LongSupplier maxEnergy, @Nullable IContentsListener listener) {
         Objects.requireNonNull(maxEnergy, "Max energy supplier cannot be null");
         return new VariableCapacityEnergyContainer(maxEnergy, alwaysTrue, internalOnly, listener);
     }
 
-    public static VariableCapacityEnergyContainer create(FloatingLongSupplier maxEnergy, Predicate<@NotNull AutomationType> canExtract,
+    public static VariableCapacityEnergyContainer create(@Unsigned LongSupplier maxEnergy, Predicate<@NotNull AutomationType> canExtract,
           Predicate<@NotNull AutomationType> canInsert, @Nullable IContentsListener listener) {
         Objects.requireNonNull(maxEnergy, "Max energy supplier cannot be null");
         Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
@@ -31,16 +32,16 @@ public class VariableCapacityEnergyContainer extends BasicEnergyContainer {
         return new VariableCapacityEnergyContainer(maxEnergy, canExtract, canInsert, listener);
     }
 
-    private final FloatingLongSupplier maxEnergy;
+    private final @Unsigned LongSupplier maxEnergy;
 
-    protected VariableCapacityEnergyContainer(FloatingLongSupplier maxEnergy, Predicate<@NotNull AutomationType> canExtract, Predicate<@NotNull AutomationType> canInsert,
+    protected VariableCapacityEnergyContainer(@Unsigned LongSupplier maxEnergy, Predicate<@NotNull AutomationType> canExtract, Predicate<@NotNull AutomationType> canInsert,
           @Nullable IContentsListener listener) {
-        super(maxEnergy.get(), canExtract, canInsert, listener);
+        super(maxEnergy.getAsLong(), canExtract, canInsert, listener);
         this.maxEnergy = maxEnergy;
     }
 
     @Override
     public @Unsigned long getMaxEnergy() {
-        return maxEnergy.get();
+        return maxEnergy.getAsLong();
     }
 }

@@ -17,6 +17,7 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.Unsigned;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -39,6 +40,7 @@ import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.container.sync.SyncableInt;
+import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FactoryInputInventorySlot;
 import mekanism.common.lib.inventory.HashedItem;
@@ -99,7 +101,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
     private int ticksRequired = BASE_TICKS_REQUIRED;
     private boolean sorting;
     private boolean sortingNeeded = true;
-    private FloatingLong lastUsage = FloatingLong.ZERO;
+    private @Unsigned long lastUsage = 0L;
 
     /**
      * This machine's factory type.
@@ -241,7 +243,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
 
         //Copy this so that if it changes we still have the original amount. Don't bother making it a constant though as this way
         // we can then use minusEqual instead of subtract to remove an extra copy call
-        FloatingLong prev = energyContainer.getEnergy().copy();
+        @Unsigned long prev = energyContainer.getEnergy();
         for (int i = 0; i < recipeCacheLookupMonitors.length; i++) {
             if (!recipeCacheLookupMonitors[i].updateAndProcess()) {
                 //If we don't have a recipe in that slot make sure that our active state for that position is false
@@ -259,7 +261,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
         }
         setActive(isActive);
         //If none of the recipes are actively processing don't bother with any subtraction
-        lastUsage = isActive ? prev.minusEqual(energyContainer.getEnergy()) : FloatingLong.ZERO;
+        lastUsage = isActive ? prev - energyContainer.getEnergy() : 0L;
         return sendUpdatePacket;
     }
 
@@ -367,9 +369,8 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
         return sorting;
     }
 
-    @NotNull
     @ComputerMethod(nameOverride = "getEnergyUsage", methodDescription = ComputerConstants.DESCRIPTION_GET_ENERGY_USAGE)
-    public FloatingLong getLastUsage() {
+    public @Unsigned long getLastUsage() {
         return lastUsage;
     }
 
@@ -455,7 +456,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
         super.addContainerTrackers(container);
         container.trackArray(progress);
         errorTracker.track(container);
-        container.track(SyncableFloatingLong.create(this::getLastUsage, value -> lastUsage = value));
+        container.track(SyncableLong.create(this::getLastUsage, value -> lastUsage = value));
         container.track(SyncableBoolean.create(this::isSorting, value -> sorting = value));
         container.track(SyncableInt.create(this::getTicksRequired, value -> ticksRequired = value));
     }

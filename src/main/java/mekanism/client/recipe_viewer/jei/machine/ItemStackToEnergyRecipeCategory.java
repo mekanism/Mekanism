@@ -3,6 +3,7 @@ package mekanism.client.recipe_viewer.jei.machine;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.Unsigned;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.element.gauge.GaugeType;
@@ -62,7 +63,7 @@ public class ItemStackToEnergyRecipeCategory extends HolderRecipeCategory<ItemSt
     @Override
     public List<Component> getTooltipStrings(RecipeHolder<ItemStackToEnergyRecipe> recipeHolder, IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY) {
         if (gauge.isMouseOver(mouseX, mouseY)) {
-            FloatingLong energy = getOutputEnergy(recipeHolder, recipeSlotsView);
+            @Unsigned long energy = getOutputEnergy(recipeHolder, recipeSlotsView);
             if (!energy.isZero()) {
                 //Manually add the tooltip showing the amounts if the mouse is over the energy gauge
                 Component energyOutput = EnergyDisplay.of(energy).getTextComponent();
@@ -75,11 +76,11 @@ public class ItemStackToEnergyRecipeCategory extends HolderRecipeCategory<ItemSt
         return Collections.emptyList();
     }
 
-    private FloatingLong getOutputEnergy(RecipeHolder<ItemStackToEnergyRecipe> recipeHolder, IRecipeSlotsView recipeSlotsView) {
+    private @Unsigned long getOutputEnergy(RecipeHolder<ItemStackToEnergyRecipe> recipeHolder, IRecipeSlotsView recipeSlotsView) {
         ItemStack displayedIngredient = getDisplayedStack(recipeSlotsView, INPUT, VanillaTypes.ITEM_STACK, ItemStack.EMPTY);
         if (displayedIngredient.isEmpty()) {
             //Shouldn't happen but if it does just return no energy known so nothing will really show
-            return FloatingLong.ZERO;
+            return 0L;
         }
         return recipeHolder.value().getOutput(displayedIngredient);
     }

@@ -13,6 +13,7 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.Unsigned;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
@@ -105,7 +106,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
     private final IInputHandler<@NotNull FluidStack> fluidInputHandler;
     private final IInputHandler<@NotNull GasStack> gasInputHandler;
 
-    private FloatingLong clientEnergyUsed = FloatingLong.ZERO;
+    private @Unsigned long clientEnergyUsed = 0;
     private int baselineMaxOperations = 1;
 
     private MachineEnergyContainer<TileEntityRotaryCondensentrator> energyContainer;
@@ -230,7 +231,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
 
     @NotNull
     @ComputerMethod(nameOverride = "getEnergyUsage", methodDescription = ComputerConstants.DESCRIPTION_GET_ENERGY_USAGE)
-    public FloatingLong getEnergyUsed() {
+    public @Unsigned long getEnergyUsed() {
         return clientEnergyUsed;
     }
 

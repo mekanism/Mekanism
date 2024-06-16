@@ -38,11 +38,11 @@ public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends Bas
     }
 
     protected final TILE tile;
-    private final long baseEnergyPerTick;
-    private long currentMaxEnergy;
-    protected long currentEnergyPerTick;
+    private final @Unsigned long baseEnergyPerTick;
+    private @Unsigned long currentMaxEnergy;
+    protected @Unsigned long currentEnergyPerTick;
 
-    protected MachineEnergyContainer(long maxEnergy, long energyPerTick, Predicate<@NotNull AutomationType> canExtract,
+    protected MachineEnergyContainer(@Unsigned long maxEnergy, long energyPerTick, Predicate<@NotNull AutomationType> canExtract,
           Predicate<@NotNull AutomationType> canInsert, TILE tile, @Nullable IContentsListener listener) {
         super(maxEnergy, canExtract, canInsert, listener);
         this.baseEnergyPerTick = energyPerTick;
@@ -64,21 +64,21 @@ public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends Bas
         return super.getMaxEnergy();
     }
 
-    public void setMaxEnergy(long maxEnergy) {
+    public void setMaxEnergy(@Unsigned long maxEnergy) {
         this.currentMaxEnergy = maxEnergy;
         //Clamp the energy
         setEnergy(getEnergy());
     }
 
-    public long getEnergyPerTick() {
+    public @Unsigned long getEnergyPerTick() {
         return currentEnergyPerTick;
     }
 
-    public long getBaseEnergyPerTick() {
+    public @Unsigned long getBaseEnergyPerTick() {
         return baseEnergyPerTick;
     }
 
-    public void setEnergyPerTick(long energyPerTick) {
+    public void setEnergyPerTick(@Unsigned long energyPerTick) {
         this.currentEnergyPerTick = energyPerTick;
     }
 

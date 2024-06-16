@@ -7,6 +7,7 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.Unsigned;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.energy.ResistiveHeaterEnergyContainer;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
@@ -27,6 +28,7 @@ import mekanism.common.integration.computer.computercraft.ComputerConstants;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
+import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -48,7 +50,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     private float soundScale = 1;
     private double lastEnvironmentLoss;
     private double lastTransferLoss;
-    private FloatingLong clientEnergyUsed = FloatingLong.ZERO;
+    private @Unsigned long clientEnergyUsed = 0;
 
     private ResistiveHeaterEnergyContainer energyContainer;
     @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature", docPlaceholder = "heater")
@@ -88,7 +90,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     protected boolean onUpdateServer() {
         boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.fillContainerOrConvert();
-        FloatingLong toUse = FloatingLong.ZERO;
+        @Unsigned long toUse = 0;
         if (canFunction()) {
             toUse = energyContainer.extract(energyContainer.getEnergyPerTick(), Action.SIMULATE, AutomationType.INTERNAL);
             if (!toUse.isZero()) {
@@ -111,7 +113,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
 
     @NotNull
     @ComputerMethod
-    public FloatingLong getEnergyUsed() {
+    public @Unsigned long getEnergyUsed() {
         return clientEnergyUsed;
     }
 
@@ -157,7 +159,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
         super.addContainerTrackers(container);
         container.track(SyncableDouble.create(this::getLastTransferLoss, value -> lastTransferLoss = value));
         container.track(SyncableDouble.create(this::getLastEnvironmentLoss, value -> lastEnvironmentLoss = value));
-        container.track(SyncableFloatingLong.create(this::getEnergyUsed, value -> clientEnergyUsed = value));
+        container.track(SyncableLong.create(this::getEnergyUsed, value -> clientEnergyUsed = value));
     }
 
     @NotNull
@@ -176,7 +178,8 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
 
     //Methods relating to IComputerTile
     @ComputerMethod(methodDescription = ComputerConstants.DESCRIPTION_GET_ENERGY_USAGE)
-    FloatingLong getEnergyUsage() {
+    @Unsigned
+    long getEnergyUsage() {
         return energyContainer.getEnergyPerTick();
     }
 

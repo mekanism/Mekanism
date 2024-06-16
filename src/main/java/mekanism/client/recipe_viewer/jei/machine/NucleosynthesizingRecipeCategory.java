@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.Unsigned;
 import mekanism.api.recipes.NucleosynthesizingRecipe;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.bar.GuiDynamicHorizontalRateBar;
@@ -50,12 +51,12 @@ public class NucleosynthesizingRecipeCategory extends HolderRecipeCategory<Nucle
         gasInput = addElement(GuiGasGauge.getDummy(GaugeType.SMALL_MED.with(DataType.INPUT), this, 5, 18));
         addElement(new GuiEnergyGauge(new IEnergyInfoHandler() {
             @Override
-            public FloatingLong getEnergy() {
+            public @Unsigned long getEnergy() {
                 return FloatingLong.ONE;
             }
 
             @Override
-            public FloatingLong getMaxEnergy() {
+            public @Unsigned long getMaxEnergy() {
                 return FloatingLong.ONE;
             }
         }, GaugeType.SMALL_MED, this, 172, 18));

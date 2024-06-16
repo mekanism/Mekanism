@@ -83,7 +83,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
         energySlot.drainContainer();
         fuelSlot.fillTank();
 
-        if (!fuelTank.isEmpty() && canFunction() && getEnergyContainer().insert(generationRate, Action.SIMULATE, AutomationType.INTERNAL).isZero()) {
+        if (!fuelTank.isEmpty() && canFunction() && getEnergyContainer().insert(generationRate, Action.SIMULATE, AutomationType.INTERNAL) == 0L) {
             setActive(true);
             if (!fuelTank.isEmpty()) {
                 Fuel fuel = fuelTank.getType().get(Fuel.class);

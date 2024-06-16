@@ -33,8 +33,8 @@ public class CrTElectrolysisRecipe {
      */
     @ZenCodeType.Method
     @ZenCodeType.Getter("energyMultiplier")
-    public static FloatingLong getEnergyMultiplier(ElectrolysisRecipe _this) {
-        return _this.getEnergyMultiplier().copyAsConst();
+    public static long getEnergyMultiplier(ElectrolysisRecipe _this) {
+        return _this.getEnergyMultiplier();
     }
 
     /**

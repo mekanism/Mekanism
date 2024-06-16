@@ -21,7 +21,7 @@ public class ComponentBackedResistiveEnergyContainer extends ComponentBackedEner
 
     public static ComponentBackedResistiveEnergyContainer create(ContainerType<?, ?, ?> ignored, ItemStack attachedTo, int containerIndex) {
         AttributeEnergy attributeEnergy = Objects.requireNonNull(MekanismBlockTypes.RESISTIVE_HEATER.get(AttributeEnergy.class));
-        return new ComponentBackedResistiveEnergyContainer(attachedTo, containerIndex, () -> attributeEnergy.getStorage().multiply(0.005),
+        return new ComponentBackedResistiveEnergyContainer(attachedTo, containerIndex, () -> attributeEnergy.getStorage() * 0.005,
               attributeEnergy::getStorage, attributeEnergy.getUsage());
     }
 

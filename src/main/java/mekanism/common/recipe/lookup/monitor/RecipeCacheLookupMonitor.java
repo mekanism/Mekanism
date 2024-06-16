@@ -3,6 +3,7 @@ package mekanism.common.recipe.lookup.monitor;
 import mekanism.api.IContentsListener;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.Unsigned;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ICachedRecipeHolder;
@@ -52,16 +53,16 @@ public class RecipeCacheLookupMonitor<RECIPE extends MekanismRecipe<?>> implemen
     /**
      * Helper that wraps {@link #updateAndProcess()} inside of a brief check to calculate how much energy actually got used.
      */
-    public FloatingLong updateAndProcess(IEnergyContainer energyContainer) {
+    public @Unsigned long updateAndProcess(IEnergyContainer energyContainer) {
         //Copy this so that if it changes we still have the original amount. Don't bother making it a constant though as this way
         // we can then use minusEqual instead of subtract to remove an extra copy call
-        FloatingLong prev = energyContainer.getEnergy().copy();
+        @Unsigned long prev = energyContainer.getEnergy();
         if (updateAndProcess()) {
             //Update amount of energy that actually got used, as if we are "near" full we may not have performed our max number of operations
-            return prev.minusEqual(energyContainer.getEnergy());
+            return prev - energyContainer.getEnergy();
         }
         //If we don't have a cached recipe so didn't process anything at all just return zero
-        return FloatingLong.ZERO;
+        return 0L;
     }
 
     public boolean updateAndProcess() {

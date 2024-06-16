@@ -1,5 +1,6 @@
 package mekanism.common.tile.laser;
 
+import com.google.common.primitives.UnsignedLongs;
 import java.util.Comparator;
 import java.util.List;
 import mekanism.api.Action;
@@ -9,6 +10,7 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.lasers.ILaserDissipation;
 import mekanism.api.lasers.ILaserReceptor;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.Unsigned;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.base.MekFakePlayer;
@@ -412,8 +414,8 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
         level.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, hitPos, Block.getId(state));
     }
 
-    protected FloatingLong toFire() {
-        return FloatingLong.MAX_VALUE;
+    protected @Unsigned long toFire() {
+        return UnsignedLongs.MAX_VALUE;
     }
 
     @Override

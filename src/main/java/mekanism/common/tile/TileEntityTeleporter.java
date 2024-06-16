@@ -1,5 +1,6 @@
 package mekanism.common.tile;
 
+import com.google.common.primitives.UnsignedLongs;
 import it.unimi.dsi.fastutil.longs.Long2ObjectArrayMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
@@ -19,6 +20,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.event.MekanismTeleportEvent;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.Unsigned;
 import mekanism.api.security.SecurityMode;
 import mekanism.api.text.EnumColor;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
@@ -265,7 +267,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
             }
         }
         List<Entity> toTeleport = getToTeleport(sameDimension, targetWorld);
-        FloatingLong sum = FloatingLong.ZERO;
+        @Unsigned long sum = 0;
         for (Entity entity : toTeleport) {
             sum = sum.plusEqual(calculateEnergyCost(entity, targetWorld, closestCoords));
         }
@@ -322,7 +324,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
                 teleporter.teleDelay = 5;
                 //Calculate energy cost before teleporting the entity, as after teleporting it
                 // the cost will be negligible due to being on top of the destination
-                FloatingLong energyCost = calculateEnergyCost(entity, teleWorld, teleportInfo.closest);
+                @Unsigned long energyCost = calculateEnergyCost(entity, teleWorld, teleportInfo.closest);
 
                 MekanismTeleportEvent.Teleporter event = new MekanismTeleportEvent.Teleporter(entity, teleporterTargetPos, teleWorld.dimension(), energyCost);
                 if (NeoForge.EVENT_BUS.post(event).isCanceled()) {
@@ -444,7 +446,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
      * @apiNote Only call from the server side
      */
     @Nullable
-    public static FloatingLong calculateEnergyCost(Entity entity, GlobalPos pos) {
+    public static @Unsigned long calculateEnergyCost(Entity entity, GlobalPos pos) {
         MinecraftServer currentServer = entity.getServer();
         if (currentServer != null) {
             Level targetWorld = currentServer.getLevel(pos.dimension());
@@ -452,16 +454,16 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
                 return calculateEnergyCost(entity, targetWorld, pos);
             }
         }
-        return null;
+        return UnsignedLongs.MAX_VALUE;
     }
 
     @NotNull
-    public static FloatingLong calculateEnergyCost(Entity entity, Level targetWorld, GlobalPos coords) {
-        FloatingLong energyCost = MekanismConfig.usage.teleporterBase.get();
+    public static @Unsigned long calculateEnergyCost(Entity entity, Level targetWorld, GlobalPos coords) {
+        @Unsigned long energyCost = MekanismConfig.usage.teleporterBase.get();
         boolean sameDimension = entity.level().dimension() == coords.dimension();
         BlockPos pos = coords.pos();
         if (sameDimension) {
-            energyCost = energyCost.add(MekanismConfig.usage.teleporterDistance.get().multiply(Math.sqrt(entity.distanceToSqr(pos.getX(), pos.getY(), pos.getZ()))));
+            energyCost = (long) ((energyCost + MekanismConfig.usage.teleporterDistance.get()) * (Math.sqrt(entity.distanceToSqr(pos.getX(), pos.getY(), pos.getZ()))));
         } else {
             double currentScale = entity.level().dimensionType().coordinateScale();
             double targetScale = targetWorld.dimensionType().coordinateScale();

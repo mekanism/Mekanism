@@ -54,7 +54,7 @@ public class ProxyStrictEnergyHandler extends ProxyHandler implements IStrictEne
 
     @Override
     public @Unsigned long extractEnergy(int container, @Unsigned long amount, Action action) {
-        return readOnlyExtract() ? FloatingLong.ZERO : energyHandler.extractEnergy(container, amount, side, action);
+        return readOnlyExtract() ? 0L : energyHandler.extractEnergy(container, amount, side, action);
     }
 
     @Override
@@ -64,6 +64,6 @@ public class ProxyStrictEnergyHandler extends ProxyHandler implements IStrictEne
 
     @Override
     public @Unsigned long extractEnergy(@Unsigned long amount, Action action) {
-        return readOnlyExtract() ? FloatingLong.ZERO : energyHandler.extractEnergy(amount, side, action);
+        return readOnlyExtract() ? 0L : energyHandler.extractEnergy(amount, side, action);
     }
 }

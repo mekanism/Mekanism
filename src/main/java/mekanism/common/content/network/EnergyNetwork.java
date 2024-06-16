@@ -11,6 +11,8 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.ULong;
+import mekanism.api.math.Unsigned;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
@@ -26,16 +28,16 @@ import net.neoforged.neoforge.common.NeoForge;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, EnergyNetwork, FloatingLong, UniversalCable> implements IMekanismStrictEnergyHandler {
+public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, EnergyNetwork, @Unsigned Long, UniversalCable> implements IMekanismStrictEnergyHandler {
 
     private final List<IEnergyContainer> energyContainers;
     public final VariableCapacityEnergyContainer energyContainer;
-    private FloatingLong prevTransferAmount = FloatingLong.ZERO;
-    private FloatingLong floatingLongCapacity = FloatingLong.ZERO;
+    private @Unsigned long prevTransferAmount = 0L;
+    private @Unsigned long floatingLongCapacity = 0L;
 
     public EnergyNetwork(UUID networkID) {
         super(networkID);
-        energyContainer = VariableCapacityEnergyContainer.create(this::getCapacityAsFloatingLong, BasicEnergyContainer.alwaysTrue, BasicEnergyContainer.alwaysTrue, this);
+        energyContainer = VariableCapacityEnergyContainer.create(this::getCapacityAsUnsignedLong, BasicEnergyContainer.alwaysTrue, BasicEnergyContainer.alwaysTrue, this);
         energyContainers = Collections.singletonList(energyContainer);
     }
 
@@ -46,8 +48,8 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
 
     @Override
     protected void forceScaleUpdate() {
-        if (!energyContainer.isEmpty() && !energyContainer.getMaxEnergy().isZero()) {
-            currentScale = Math.min(1, energyContainer.getEnergy().divide(energyContainer.getMaxEnergy()).floatValue());
+        if (!energyContainer.isEmpty() && energyContainer.getMaxEnergy() != 0L) {
+            currentScale = (float) Math.min(1, ULong.divide(energyContainer.getEnergy(), energyContainer.getMaxEnergy()));
         } else {
             currentScale = 0;
         }
@@ -55,15 +57,15 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
 
     @Override
     public List<UniversalCable> adoptTransmittersAndAcceptorsFrom(EnergyNetwork net) {
-        FloatingLong oldCapacity = getCapacityAsFloatingLong();
+        @Unsigned long oldCapacity = getCapacityAsUnsignedLong();
         List<UniversalCable> transmittersToUpdate = super.adoptTransmittersAndAcceptorsFrom(net);
         //Merge the energy scales
-        FloatingLong ourScale = currentScale == 0 ? FloatingLong.ZERO : oldCapacity.multiply(currentScale);
-        FloatingLong theirScale = net.currentScale == 0 ? FloatingLong.ZERO : net.getCapacityAsFloatingLong().multiply(net.currentScale);
-        FloatingLong capacity = getCapacityAsFloatingLong();
-        currentScale = Math.min(1, capacity.isZero() ? 0 : ourScale.add(theirScale).divide(getCapacityAsFloatingLong()).floatValue());
+        @Unsigned long ourScale = currentScale == 0 ? 0L : (long) (oldCapacity * currentScale);
+        @Unsigned long theirScale = net.currentScale == 0 ? 0L : (long) (net.getCapacityAsUnsignedLong() * net.currentScale);
+        @Unsigned long capacity = getCapacityAsUnsignedLong();
+        currentScale = (float) Math.min(1, capacity == 0L ? 0D : ULong.divide(ourScale + theirScale, getCapacityAsUnsignedLong()));
         if (!isRemote() && !net.energyContainer.isEmpty()) {
-            energyContainer.setEnergy(energyContainer.getEnergy().add(net.getBuffer()));
+            energyContainer.setEnergy(energyContainer.getEnergy() + net.getBuffer());
             net.energyContainer.setEmpty();
         }
         return transmittersToUpdate;
@@ -71,23 +73,23 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
 
     @NotNull
     @Override
-    public FloatingLong getBuffer() {
+    public @Unsigned Long getBuffer() {
         return energyContainer.getEnergy();
     }
 
     @Override
     public void absorbBuffer(UniversalCable transmitter) {
-        FloatingLong energy = transmitter.releaseShare();
-        if (!energy.isZero()) {
-            energyContainer.setEnergy(energyContainer.getEnergy().add(energy));
+        @Unsigned long energy = transmitter.releaseShare();
+        if (energy != 0L) {
+            energyContainer.setEnergy(energyContainer.getEnergy() + energy);
         }
     }
 
     @Override
     public void clampBuffer() {
         if (!energyContainer.isEmpty()) {
-            FloatingLong capacity = getCapacityAsFloatingLong();
-            if (energyContainer.getEnergy().greaterThan(capacity)) {
+            @Unsigned long capacity = getCapacityAsUnsignedLong();
+            if (ULong.gt(energyContainer.getEnergy(), capacity)) {
                 energyContainer.setEnergy(capacity);
             }
         }
@@ -95,24 +97,23 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
 
     @Override
     protected synchronized void updateCapacity(UniversalCable transmitter) {
-        floatingLongCapacity = floatingLongCapacity.plusEqual(transmitter.getCapacityAsFloatingLong());
-        capacity = floatingLongCapacity.longValue();
+        floatingLongCapacity += transmitter.getCapacityAsUnsignedLong();
+        capacity = ULong.clampToSigned(floatingLongCapacity);
     }
 
     @Override
     public synchronized void updateCapacity() {
-        FloatingLong sum = FloatingLong.ZERO;
+        @Unsigned long sum = 0L;
         for (UniversalCable transmitter : getTransmitters()) {
-            sum = sum.plusEqual(transmitter.getCapacityAsFloatingLong());
+            sum += transmitter.getCapacityAsUnsignedLong();
         }
-        if (!floatingLongCapacity.equals(sum)) {
+        if (floatingLongCapacity != sum) {
             floatingLongCapacity = sum;
-            capacity = floatingLongCapacity.longValue();
+            capacity = ULong.clampToSigned(floatingLongCapacity);
         }
     }
 
-    @NotNull
-    public FloatingLong getCapacityAsFloatingLong() {
+    public @Unsigned long getCapacityAsUnsignedLong() {
         return floatingLongCapacity;
     }
 
@@ -121,22 +122,23 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
         super.updateSaveShares(triggerTransmitter);
         if (!isEmpty()) {
             EnergyTransmitterSaveTarget saveTarget = new EnergyTransmitterSaveTarget(getTransmitters());
-            EmitUtils.sendToAcceptors(saveTarget, energyContainer.getEnergy().copy());
+            @Unsigned long energy = energyContainer.getEnergy();
+            EmitUtils.sendToAcceptors(saveTarget, energy, energy);
             saveTarget.save();
         }
     }
 
-    private FloatingLong tickEmit(FloatingLong energyToSend) {
+    private @Unsigned long tickEmit(@Unsigned long energyToSend) {
         Collection<Map<Direction, IStrictEnergyHandler>> acceptorValues = acceptorCache.getAcceptorValues();
         EnergyAcceptorTarget target = new EnergyAcceptorTarget(acceptorValues.size() * 2);
         for (Map<Direction, IStrictEnergyHandler> acceptors : acceptorValues) {
             for (IStrictEnergyHandler acceptor : acceptors.values()) {
-                if (acceptor.insertEnergy(energyToSend, Action.SIMULATE).smallerThan(energyToSend)) {
+                if (ULong.lt(acceptor.insertEnergy(energyToSend, Action.SIMULATE), energyToSend)) {
                     target.addHandler(acceptor);
                 }
             }
         }
-        return EmitUtils.sendToAcceptors(target, energyToSend.copy());
+        return EmitUtils.sendToAcceptors(target, energyToSend, energyToSend);
     }
 
     @Override
@@ -152,7 +154,7 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
             needsUpdate = false;
         }
         if (energyContainer.isEmpty()) {
-            prevTransferAmount = FloatingLong.ZERO;
+            prevTransferAmount = 0L;
         } else {
             prevTransferAmount = tickEmit(energyContainer.getEnergy());
             energyContainer.extract(prevTransferAmount, Action.EXECUTE, AutomationType.INTERNAL);
@@ -163,9 +165,9 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
     protected float computeContentScale() {
         float scale = (float) energyContainer.getEnergy().divideToLevel(energyContainer.getMaxEnergy());
         float ret = Math.max(currentScale, scale);
-        if (!prevTransferAmount.isZero() && ret < 1) {
+        if (prevTransferAmount != 0 && ret < 1) {
             ret = Math.min(1, ret + 0.02F);
-        } else if (prevTransferAmount.isZero() && ret > 0) {
+        } else if (prevTransferAmount == 0L && ret > 0) {
             ret = Math.max(scale, ret - 0.02F);
         }
         return ret;
@@ -188,7 +190,7 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
 
     @Override
     public Object getNetworkReaderCapacity() {
-        return getCapacityAsFloatingLong();
+        return getCapacityAsUnsignedLong();
     }
 
     @NotNull

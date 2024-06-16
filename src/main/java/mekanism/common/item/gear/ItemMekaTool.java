@@ -22,6 +22,7 @@ import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.Unsigned;
 import mekanism.api.text.EnumColor;
 import mekanism.client.key.MekKeyHandler;
 import mekanism.client.key.MekanismKeyHandler;
@@ -149,12 +150,12 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
         return false;
     }
 
-    public static FloatingLong getDestroyEnergy(IModuleContainer container, float hardness, boolean silk) {
+    public static @Unsigned long getDestroyEnergy(IModuleContainer container, float hardness, boolean silk) {
         return getDestroyEnergy(getDestroyEnergy(container, silk), hardness);
     }
 
-    private static FloatingLong getDestroyEnergy(IModuleContainer container, boolean silk) {
-        FloatingLong destroyEnergy = getDestroyEnergy(silk);
+    private static @Unsigned long getDestroyEnergy(IModuleContainer container, boolean silk) {
+        @Unsigned long destroyEnergy = getDestroyEnergy(silk);
         IModule<ModuleExcavationEscalationUnit> module = container.getIfEnabled(MekanismModules.EXCAVATION_ESCALATION_UNIT);
         float efficiency = module == null ? MekanismConfig.gear.mekaToolBaseEfficiency.get() : module.getCustomInstance().getEfficiency();
         return destroyEnergy.multiply(efficiency);
@@ -323,20 +324,20 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
         return blocks.entrySet().stream().collect(Collectors.toMap(Entry::getKey, be -> 0, (l, r) -> l, Object2IntArrayMap::new));
     }
 
-    private static FloatingLong getDestroyEnergy(boolean silk) {
+    private static @Unsigned long getDestroyEnergy(boolean silk) {
         return silk ? MekanismConfig.gear.mekaToolEnergyUsageSilk.get() : MekanismConfig.gear.mekaToolEnergyUsage.get();
     }
 
-    public static FloatingLong getDestroyEnergy(ItemStack itemStack, float hardness, boolean silk) {
+    public static @Unsigned long getDestroyEnergy(ItemStack itemStack, float hardness, boolean silk) {
         return getDestroyEnergy(getDestroyEnergy(itemStack, silk), hardness);
     }
 
-    private static FloatingLong getDestroyEnergy(FloatingLong baseDestroyEnergy, float hardness) {
+    private static @Unsigned long getDestroyEnergy(@Unsigned long baseDestroyEnergy, float hardness) {
         return hardness == 0 ? baseDestroyEnergy.divide(2) : baseDestroyEnergy;
     }
 
-    private static FloatingLong getDestroyEnergy(ItemStack itemStack, boolean silk) {
-        FloatingLong destroyEnergy = getDestroyEnergy(silk);
+    private static @Unsigned long getDestroyEnergy(ItemStack itemStack, boolean silk) {
+        @Unsigned long destroyEnergy = getDestroyEnergy(silk);
         IModule<ModuleExcavationEscalationUnit> module = IModuleHelper.INSTANCE.getIfEnabled(itemStack, MekanismModules.EXCAVATION_ESCALATION_UNIT);
         float efficiency = module == null ? MekanismConfig.gear.mekaToolBaseEfficiency.get() : module.getCustomInstance().getEfficiency();
         return destroyEnergy.multiply(efficiency);
@@ -352,7 +353,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
             if (unitDamage > 0) {
                 FloatingLong energyCost = MekanismConfig.gear.mekaToolEnergyUsageWeapon.get().multiply(unitDamage / 4D);
                 IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
-                FloatingLong energy = energyContainer == null ? FloatingLong.ZERO : energyContainer.getEnergy();
+                @Unsigned long energy = energyContainer == null ? 0L : energyContainer.getEnergy();
                 if (energy.smallerThan(energyCost)) {
                     //If we don't have enough power use it at a reduced power level (this will be false the majority of the time)
                     double bonusDamage = unitDamage * energy.divideToLevel(energyCost);

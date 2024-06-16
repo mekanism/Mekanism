@@ -7,6 +7,8 @@ import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.ULong;
+import mekanism.api.math.Unsigned;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.MekanismUtils;
@@ -34,10 +36,10 @@ public record ModuleInhalationPurificationUnit(boolean beneficialEffects, boolea
     public void tickClient(IModule<ModuleInhalationPurificationUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player) {
         //Messy rough estimate version of tickServer so that the timer actually properly updates
         if (!player.isSpectator()) {
-            FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsagePotionTick.get();
-            boolean free = usage.isZero() || player.isCreative();
-            FloatingLong energy = free ? FloatingLong.ZERO : module.getContainerEnergy(stack).copy();
-            if (free || energy.greaterOrEqual(usage)) {
+            @Unsigned long usage = MekanismConfig.gear.mekaSuitEnergyUsagePotionTick.get();
+            boolean free = usage == 0L || player.isCreative();
+            @Unsigned long energy = free ? 0L : module.getContainerEnergy(stack);
+            if (free || ULong.gte(energy, usage)) {
                 //Gather all the active effects that we can handle, so that we have them in their own list and
                 // don't run into any issues related to CMEs
                 List<MobEffectInstance> effects = player.getActiveEffects().stream().filter(this::canHandle).toList();
@@ -45,9 +47,9 @@ public record ModuleInhalationPurificationUnit(boolean beneficialEffects, boolea
                     if (free) {
                         speedupEffect(player, effect);
                     } else {
-                        energy = energy.minusEqual(usage);
+                        energy -= usage;
                         speedupEffect(player, effect);
-                        if (energy.smallerThan(usage)) {
+                        if (ULong.lt(energy, usage)) {
                             //If after using energy, our remaining energy is now smaller than how much we need to use, exit
                             break;
                         }
@@ -59,8 +61,8 @@ public record ModuleInhalationPurificationUnit(boolean beneficialEffects, boolea
 
     @Override
     public void tickServer(IModule<ModuleInhalationPurificationUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player) {
-        FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsagePotionTick.get();
-        boolean free = usage.isZero() || player.isCreative();
+        @Unsigned long usage = MekanismConfig.gear.mekaSuitEnergyUsagePotionTick.get();
+        boolean free = usage == 0L || player.isCreative();
         IEnergyContainer energyContainer = free ? null : module.getEnergyContainer(stack);
         if (free || (energyContainer != null && energyContainer.getEnergy().greaterOrEqual(usage))) {
             //Gather all the active effects that we can handle, so that we have them in their own list and
@@ -69,7 +71,7 @@ public record ModuleInhalationPurificationUnit(boolean beneficialEffects, boolea
             for (MobEffectInstance effect : effects) {
                 if (free) {
                     speedupEffect(player, effect);
-                } else if (module.useEnergy(player, energyContainer, usage, true).isZero()) {
+                } else if (module.useEnergy(player, energyContainer, usage, true) == 0L) {
                     //If we can't actually extract energy, exit
                     break;
                 } else {

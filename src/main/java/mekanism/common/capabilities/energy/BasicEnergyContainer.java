@@ -26,33 +26,33 @@ public class BasicEnergyContainer implements IEnergyContainer {
     public static final Predicate<@NotNull AutomationType> manualOnly = automationType -> automationType == AutomationType.MANUAL;
     public static final Predicate<@NotNull AutomationType> notExternal = automationType -> automationType != AutomationType.EXTERNAL;
 
-    public static BasicEnergyContainer create(long maxEnergy, @Nullable IContentsListener listener) {
+    public static BasicEnergyContainer create(@Unsigned long maxEnergy, @Nullable IContentsListener listener) {
         return new BasicEnergyContainer(maxEnergy, alwaysTrue, alwaysTrue, listener);
     }
 
-    public static BasicEnergyContainer input(long maxEnergy, @Nullable IContentsListener listener) {
+    public static BasicEnergyContainer input(@Unsigned long maxEnergy, @Nullable IContentsListener listener) {
         return new BasicEnergyContainer(maxEnergy, notExternal, alwaysTrue, listener);
     }
 
-    public static BasicEnergyContainer output(long maxEnergy, @Nullable IContentsListener listener) {
+    public static BasicEnergyContainer output(@Unsigned long maxEnergy, @Nullable IContentsListener listener) {
         return new BasicEnergyContainer(maxEnergy, alwaysTrue, internalOnly, listener);
     }
 
-    public static BasicEnergyContainer create(long maxEnergy, Predicate<@NotNull AutomationType> canExtract, Predicate<@NotNull AutomationType> canInsert,
+    public static BasicEnergyContainer create(@Unsigned long maxEnergy, Predicate<@NotNull AutomationType> canExtract, Predicate<@NotNull AutomationType> canInsert,
           @Nullable IContentsListener listener) {
         Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
         Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
         return new BasicEnergyContainer(maxEnergy, canExtract, canInsert, listener);
     }
 
-    private long stored = 0L;
+    private @Unsigned long stored = 0L;
     protected final Predicate<@NotNull AutomationType> canExtract;
     protected final Predicate<@NotNull AutomationType> canInsert;
-    private final long maxEnergy;
+    private final @Unsigned long maxEnergy;
     @Nullable
     private final IContentsListener listener;
 
-    protected BasicEnergyContainer(long maxEnergy, Predicate<@NotNull AutomationType> canExtract, Predicate<@NotNull AutomationType> canInsert,
+    protected BasicEnergyContainer(@Unsigned long maxEnergy, Predicate<@NotNull AutomationType> canExtract, Predicate<@NotNull AutomationType> canInsert,
           @Nullable IContentsListener listener) {
         this.maxEnergy = maxEnergy;
         this.canExtract = canExtract;
@@ -95,7 +95,7 @@ public class BasicEnergyContainer implements IEnergyContainer {
      * @implNote By default, this returns {@link UnsignedLongs#MAX_VALUE} to not actually limit the container's rate. By default, this is also ignored for direct setting
      * of the stack/stack size
      */
-    protected long getInsertRate(@Nullable AutomationType automationType) {
+    protected @Unsigned long getInsertRate(@Nullable AutomationType automationType) {
         return UnsignedLongs.MAX_VALUE;
     }
 
@@ -109,7 +109,7 @@ public class BasicEnergyContainer implements IEnergyContainer {
      * @implNote By default, this returns {@link UnsignedLongs#MAX_VALUE} to not actually limit the container's rate. By default, this is also ignored for direct setting
      * of the stack/stack size
      */
-    protected long getExtractRate(@Nullable AutomationType automationType) {
+    protected @Unsigned long getExtractRate(@Nullable AutomationType automationType) {
         return UnsignedLongs.MAX_VALUE;
     }
 

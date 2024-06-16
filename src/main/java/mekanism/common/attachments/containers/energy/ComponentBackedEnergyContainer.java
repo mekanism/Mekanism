@@ -23,11 +23,11 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Lon
 
     private final Predicate<@NotNull AutomationType> canExtract;
     private final Predicate<@NotNull AutomationType> canInsert;
-    private final LongSupplier maxEnergy;
-    private final LongSupplier rate;
+    private final @Unsigned LongSupplier maxEnergy;
+    private final @Unsigned LongSupplier rate;
 
     public ComponentBackedEnergyContainer(ItemStack attachedTo, int containerIndex, Predicate<@NotNull AutomationType> canExtract,
-          Predicate<@NotNull AutomationType> canInsert, LongSupplier rate, LongSupplier maxEnergy) {
+          Predicate<@NotNull AutomationType> canInsert, @Unsigned LongSupplier rate, @Unsigned LongSupplier maxEnergy) {
         super(attachedTo, containerIndex);
         this.canExtract = canExtract;
         this.canInsert = canInsert;

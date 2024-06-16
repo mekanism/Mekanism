@@ -3,6 +3,7 @@ package mekanism.common.content.matrix;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.Unsigned;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
@@ -32,18 +33,18 @@ public class MatrixMultiblockData extends MultiblockData {
     private final MatrixEnergyContainer energyContainer;
 
     @ContainerSync(getter = "getLastOutput")
-    private FloatingLong clientLastOutput = FloatingLong.ZERO;
+    private @Unsigned long clientLastOutput = 0L;
     @ContainerSync(getter = "getLastInput")
-    private FloatingLong clientLastInput = FloatingLong.ZERO;
+    private @Unsigned long clientLastInput = 0L;
 
     @ContainerSync(getter = "getEnergy")
-    private FloatingLong clientEnergy = FloatingLong.ZERO;
+    private @Unsigned long clientEnergy = 0L;
 
     @ContainerSync(tags = STATS_TAB, getter = "getTransferCap")
-    private FloatingLong clientMaxTransfer = FloatingLong.ZERO;
+    private @Unsigned long clientMaxTransfer = 0L;
 
     @ContainerSync(getter = "getStorageCap")
-    private FloatingLong clientMaxEnergy = FloatingLong.ZERO;
+    private @Unsigned long clientMaxEnergy = 0L;
 
     @ContainerSync(tags = STATS_TAB, getter = "getProviderCount")
     private int clientProviders;
@@ -89,7 +90,7 @@ public class MatrixMultiblockData extends MultiblockData {
         return energyContainer;
     }
 
-    public FloatingLong getEnergy() {
+    public @Unsigned long getEnergy() {
         return isRemote() ? clientEnergy : energyContainer.getEnergy();
     }
 
@@ -129,22 +130,22 @@ public class MatrixMultiblockData extends MultiblockData {
         }
     }
 
-    public FloatingLong getStorageCap() {
+    public @Unsigned long getStorageCap() {
         return isRemote() ? clientMaxEnergy : energyContainer.getMaxEnergy();
     }
 
     @ComputerMethod
-    public FloatingLong getTransferCap() {
+    public @Unsigned long getTransferCap() {
         return isRemote() ? clientMaxTransfer : energyContainer.getMaxTransfer();
     }
 
     @ComputerMethod
-    public FloatingLong getLastInput() {
+    public @Unsigned long getLastInput() {
         return isRemote() ? clientLastInput : energyContainer.getLastInput();
     }
 
     @ComputerMethod
-    public FloatingLong getLastOutput() {
+    public @Unsigned long getLastOutput() {
         return isRemote() ? clientLastOutput : energyContainer.getLastOutput();
     }
 

@@ -2,11 +2,13 @@ package mekanism.common.item.block;
 
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.Upgrade;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
+import mekanism.api.math.Unsigned;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.client.key.MekKeyHandler;
@@ -161,17 +163,17 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
         if (attributeEnergy == null) {
             throw new IllegalStateException("Expected block " + RegistryUtils.getName(block) + " to have the energy attribute");
         }
-        FloatingLongSupplier maxEnergy = attributeEnergy::getStorage;
+        @Unsigned LongSupplier maxEnergy = attributeEnergy::getStorage;
         if (Attribute.matches(block, AttributeUpgradeSupport.class, attribute -> attribute.supportedUpgrades().contains(Upgrade.ENERGY))) {
             return builder.addContainer((type, attachedTo, containerIndex) -> {
                 //If our block supports energy upgrades, make a more dynamically updating cache for our item's max energy
-                FloatingLongSupplier capacity = new UpgradeBasedFloatingLongCache(attachedTo, maxEnergy);
+                @Unsigned LongSupplier capacity = new UpgradeBasedUnsignedLongCache(attachedTo, maxEnergy);
                 return new ComponentBackedNoClampEnergyContainer(attachedTo, containerIndex, BasicEnergyContainer.manualOnly, getEnergyCapInsertPredicate(),
-                      () -> capacity.get().multiply(0.005), capacity);
+                      () -> (long) (capacity.getAsLong() * (0.005)), capacity);
             });
         }
         //If we don't support energy upgrades, our max energy isn't dependent on another attachment, we can safely clamp to the config values
-        return builder.addBasic(BasicEnergyContainer.manualOnly, getEnergyCapInsertPredicate(), () -> maxEnergy.get().multiply(0.005), maxEnergy);
+        return builder.addBasic(BasicEnergyContainer.manualOnly, getEnergyCapInsertPredicate(), () -> (long) (maxEnergy.getAsLong() * 0.005), maxEnergy);
     }
 
     @Override
@@ -192,31 +194,30 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
         }
     }
 
-    private static class UpgradeBasedFloatingLongCache implements FloatingLongSupplier {
+    private static class UpgradeBasedUnsignedLongCache implements @Unsigned LongSupplier {
 
         //TODO: Eventually fix this, ideally we want this to update the overall cached value if this changes because of the config
         // for how much energy a machine can store changes
-        private final FloatingLongSupplier baseStorage;
+        private final @Unsigned LongSupplier baseStorage;
         private final ItemStack stack;
         private int lastInstalled;
-        private FloatingLong value;
+        private @Unsigned long value;
 
-        private UpgradeBasedFloatingLongCache(ItemStack stack, FloatingLongSupplier baseStorage) {
+        private UpgradeBasedUnsignedLongCache(ItemStack stack, @Unsigned LongSupplier baseStorage) {
             this.stack = stack;
             UpgradeAware upgradeAware = this.stack.getOrDefault(MekanismDataComponents.UPGRADES, UpgradeAware.EMPTY);
             this.lastInstalled = upgradeAware.getUpgradeCount(Upgrade.ENERGY);
             this.baseStorage = baseStorage;
-            this.value = MekanismUtils.getMaxEnergy(this.lastInstalled, this.baseStorage.get());
+            this.value = MekanismUtils.getMaxEnergy(this.lastInstalled, this.baseStorage.getAsLong());
         }
 
-        @NotNull
         @Override
-        public FloatingLong get() {
+        public @Unsigned long getAsLong() {
             UpgradeAware upgradeAware = stack.getOrDefault(MekanismDataComponents.UPGRADES, UpgradeAware.EMPTY);
             int installed = upgradeAware.getUpgradeCount(Upgrade.ENERGY);
             if (installed != lastInstalled) {
                 lastInstalled = installed;
-                value = MekanismUtils.getMaxEnergy(this.lastInstalled, baseStorage.get());
+                value = MekanismUtils.getMaxEnergy(this.lastInstalled, baseStorage.getAsLong());
             }
             return value;
         }

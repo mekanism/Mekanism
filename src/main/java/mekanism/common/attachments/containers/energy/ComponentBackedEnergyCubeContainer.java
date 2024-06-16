@@ -4,6 +4,7 @@ import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.Unsigned;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.item.block.ItemBlockEnergyCube;
@@ -28,12 +29,12 @@ public class ComponentBackedEnergyCubeContainer extends ComponentBackedEnergyCon
     }
 
     @Override
-    public FloatingLong insert(FloatingLong amount, Action action, AutomationType automationType) {
+    public @Unsigned long insert(@Unsigned long amount, Action action, AutomationType automationType) {
         return super.insert(amount, action.combine(!isCreative), automationType);
     }
 
     @Override
-    public FloatingLong extract(FloatingLong amount, Action action, AutomationType automationType) {
+    public @Unsigned long extract(@Unsigned long amount, Action action, AutomationType automationType) {
         return super.extract(amount, action.combine(!isCreative), automationType);
     }
 }

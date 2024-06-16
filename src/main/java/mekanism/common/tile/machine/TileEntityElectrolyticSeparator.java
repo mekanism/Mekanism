@@ -10,8 +10,10 @@ import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
+import mekanism.api.functions.LongObjectToLongFunction;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
+import mekanism.api.math.Unsigned;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.ElectrolysisRecipe.ElectrolysisRecipeOutput;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -96,8 +98,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     public static final long MAX_GAS = 2_400;
     public static final int MAX_FLUID = 24_000;
     private static final int BASE_DUMP_RATE = 8;
-    private static final BiFunction<FloatingLong, TileEntityElectrolyticSeparator, FloatingLong> BASE_ENERGY_CALCULATOR =
-          (base, tile) -> base.multiply(tile.getRecipeEnergyMultiplier());
+    private static final LongObjectToLongFunction<TileEntityElectrolyticSeparator> BASE_ENERGY_CALCULATOR =
+          (base, tile) -> base * (tile.getRecipeEnergyMultiplier());
 
     /**
      * This separator's water slot.
@@ -121,8 +123,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     public GasMode dumpLeft = GasMode.IDLE;
     @SyntheticComputerMethod(getter = "getRightOutputDumpingMode")
     public GasMode dumpRight = GasMode.IDLE;
-    private FloatingLong clientEnergyUsed = FloatingLong.ZERO;
-    private FloatingLong recipeEnergyMultiplier = FloatingLong.ONE;
+    private @Unsigned long clientEnergyUsed = 1L;
+    private @Unsigned long recipeEnergyMultiplier = 1L;
     private int baselineMaxOperations = 1;
     private long dumpRate = BASE_DUMP_RATE;
 
@@ -217,7 +219,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     @Override
     public void onCachedRecipeChanged(@Nullable CachedRecipe<ElectrolysisRecipe> cachedRecipe, int cacheIndex) {
         super.onCachedRecipeChanged(cachedRecipe, cacheIndex);
-        recipeEnergyMultiplier = cachedRecipe == null ? FloatingLong.ONE : cachedRecipe.getRecipe().getEnergyMultiplier();
+        recipeEnergyMultiplier = cachedRecipe == null ? 1L : cachedRecipe.getRecipe().getEnergyMultiplier();
         energyContainer.updateEnergyPerTick();
     }
 
@@ -269,13 +271,12 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
         return super.canFunction() && (dumpLeft != GasMode.DUMPING_EXCESS || dumpRight != GasMode.DUMPING_EXCESS || !atDumpingExcessTarget(leftTank) || !atDumpingExcessTarget(rightTank));
     }
 
-    public FloatingLong getRecipeEnergyMultiplier() {
+    public @Unsigned long getRecipeEnergyMultiplier() {
         return recipeEnergyMultiplier;
     }
-
-    @NotNull
+    
     @ComputerMethod(nameOverride = "getEnergyUsage", methodDescription = ComputerConstants.DESCRIPTION_GET_ENERGY_USAGE)
-    public FloatingLong getEnergyUsed() {
+    public @Unsigned long getEnergyUsed() {
         return clientEnergyUsed;
     }
 

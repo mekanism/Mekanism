@@ -63,7 +63,7 @@ public class CCComputerHelper extends BaseComputerHelper {
         }
     }
 
-    @Override
+    @Override//todo unsigned
     public long getLong(int param) throws ComputerException {
         try {
             return arguments.getLong(param);

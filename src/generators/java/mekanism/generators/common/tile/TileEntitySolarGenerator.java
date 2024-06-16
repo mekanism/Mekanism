@@ -68,7 +68,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         // since under the new rules, we can still generate power when it's raining, albeit at a
         // significant penalty.
         seesSun = checkCanSeeSun();
-        if (seesSun && canFunction() && !getEnergyContainer().getNeeded().isZero()) {
+        if (seesSun && canFunction() && getEnergyContainer().getNeeded() != 0L) {
             setActive(true);
             FloatingLong production = getProduction();
             lastProductionAmount = production.subtract(getEnergyContainer().insert(production, Action.EXECUTE, AutomationType.INTERNAL));

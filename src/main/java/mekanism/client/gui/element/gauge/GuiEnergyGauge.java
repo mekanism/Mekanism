@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.Unsigned;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
@@ -19,12 +20,12 @@ public class GuiEnergyGauge extends GuiGauge<Void> {
     public GuiEnergyGauge(IEnergyContainer container, GaugeType type, IGuiWrapper gui, int x, int y) {
         this(new IEnergyInfoHandler() {
             @Override
-            public FloatingLong getEnergy() {
+            public @Unsigned long getEnergy() {
                 return container.getEnergy();
             }
 
             @Override
-            public FloatingLong getMaxEnergy() {
+            public @Unsigned long getMaxEnergy() {
                 return container.getMaxEnergy();
             }
         }, type, gui, x, y);
@@ -78,7 +79,7 @@ public class GuiEnergyGauge extends GuiGauge<Void> {
     public List<Component> getTooltipText() {
         if (dummy) {
             return Collections.emptyList();
-        } else if (infoHandler.getEnergy().isZero()) {
+        } else if (infoHandler.getEnergy() == 0) {
             return Collections.singletonList(MekanismLang.EMPTY.translate());
         }
         return Collections.singletonList(EnergyDisplay.of(infoHandler.getEnergy(), infoHandler.getMaxEnergy()).getTextComponent());
@@ -86,8 +87,9 @@ public class GuiEnergyGauge extends GuiGauge<Void> {
 
     public interface IEnergyInfoHandler {
 
-        FloatingLong getEnergy();
+        @Unsigned
+        long getEnergy();
 
-        FloatingLong getMaxEnergy();
+        @Unsigned long getMaxEnergy();
     }
 }
