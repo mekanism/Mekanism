@@ -20,6 +20,7 @@
               "function": "minecraft:copy_components",
               "include": [
                 "mekanism:auto",
+                "mekanism:color",
                 "mekanism:filters",
                 "mekanism:owner",
                 "mekanism:qio_frequency",

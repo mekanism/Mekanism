@@ -14,6 +14,7 @@
             {
               "function": "minecraft:copy_components",
               "include": [
+                "mekanism:color",
                 "mekanism:insert_into_frequency",
                 "mekanism:owner",
                 "mekanism:qio_frequency",
