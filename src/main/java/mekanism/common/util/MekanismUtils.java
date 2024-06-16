@@ -482,7 +482,7 @@ public final class MekanismUtils {
      *
      * @param resize True to clamp the stacks to a size of one.
      */
-    public static CraftingInput getCraftingInput(int width, int height, List<ItemStack> slots, boolean resize) {
+    public static CraftingInput.Positioned getCraftingInput(int width, int height, List<ItemStack> slots, boolean resize) {
         if (width * height != slots.size()) {
             throw new IllegalStateException("Expected there to be a slot for every index in a " + width + " by " + height + " grid.");
         }
@@ -495,7 +495,7 @@ public final class MekanismUtils {
                 stacks.add(slot.copy());
             }
         }
-        return CraftingInput.of(width, height, stacks);
+        return CraftingInput.ofPositioned(width, height, stacks);
     }
 
     /**
@@ -503,7 +503,7 @@ public final class MekanismUtils {
      *
      * @param resize True to clamp the stacks to a size of one.
      */
-    public static CraftingInput getCraftingInputSlots(int width, int height, List<IInventorySlot> slots, boolean resize) {
+    public static CraftingInput.Positioned getCraftingInputSlots(int width, int height, List<IInventorySlot> slots, boolean resize) {
         if (width * height != slots.size()) {
             throw new IllegalStateException("Expected there to be a slot for every index in a " + width + " by " + height + " grid.");
         }
@@ -517,7 +517,7 @@ public final class MekanismUtils {
                 stacks.add(stack.copy());
             }
         }
-        return CraftingInput.of(width, height, stacks);
+        return CraftingInput.ofPositioned(width, height, stacks);
     }
 
     /**

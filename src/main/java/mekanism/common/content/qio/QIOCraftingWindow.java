@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.IntFunction;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
@@ -79,6 +80,16 @@ public class QIOCraftingWindow implements IContentsListener {
         outputSlot = CraftingWindowOutputInventorySlot.create(this);
     }
 
+    public QIOCraftingWindow(IQIOCraftingWindowHolder holder, byte windowIndex, IntFunction<IContentsListener> inputSaveListener) {
+        this.windowIndex = windowIndex;
+        this.holder = holder;
+        this.windowData = WINDOWS[windowIndex];
+        for (int slotIndex = 0; slotIndex < 9; slotIndex++) {
+            inputSlots[slotIndex] = CraftingWindowInventorySlot.input(this, inputSaveListener.apply(slotIndex));
+        }
+        outputSlot = CraftingWindowOutputInventorySlot.create(this);
+    }
+
     public SelectedWindowData getWindowData() {
         return windowData;
     }
@@ -138,7 +149,7 @@ public class QIOCraftingWindow implements IContentsListener {
      */
     private void updateOutputSlot(@NotNull Level world) {
         if (world.getServer() != null) {
-            CraftingInput craftingInput = asCraftingInput();
+            CraftingInput craftingInput = asCraftingInput().input();
             if (craftingInput.isEmpty()) {
                 //If there is no input, then set the output to empty as there can't be a matching recipe
                 if (!outputSlot.isEmpty()) {
@@ -322,8 +333,8 @@ public class QIOCraftingWindow implements IContentsListener {
             return;
         }
         Level world = holder.getLevel();
-        CraftingInput initialCraftingInput = asCraftingInput();
-        if (!validateAndUnlockRecipe(world, player, initialCraftingInput)) {
+        CraftingInput.Positioned craftingInput = asCraftingInput();
+        if (!validateAndUnlockRecipe(world, player, craftingInput.input())) {
             //If the recipe isn't valid, fail
             return;
         }
@@ -343,7 +354,7 @@ public class QIOCraftingWindow implements IContentsListener {
         replacementHelper.reset();
         boolean recheckOutput = false;
         LastInsertTarget lastInsertTarget = new LastInsertTarget();
-        NonNullList<ItemStack> remaining = lastRecipe.value().getRemainingItems(initialCraftingInput);
+        NonNullList<ItemStack> remaining = lastRecipe.value().getRemainingItems(craftingInput.input());
         for (; crafted < maxToCraft; crafted += amountPerCraft) {
             if (recheckOutput && changedWhileCrafting) {
                 //If our inputs changed while crafting, and we are supposed to recheck the output,
@@ -378,7 +389,8 @@ public class QIOCraftingWindow implements IContentsListener {
                 //We also need to make sure to update the remaining items as even though the recipe still outputs the same result
                 // the remaining items may have changed such as durability of a container item, and we want to make sure to use
                 // the proper remaining stacks
-                remaining = lastRecipe.value().getRemainingItems(asCraftingInput());
+                craftingInput = asCraftingInput();
+                remaining = lastRecipe.value().getRemainingItems(craftingInput.input());
             }
             //Simulate insertion into hotbar and then main inventory, allowing for inserting into empty slots,
             // as we just want to do a quick general check to see if there is room for the result, we will do
@@ -404,8 +416,9 @@ public class QIOCraftingWindow implements IContentsListener {
             }
             boolean stopCrafting = false;
             //Update slots with remaining contents
-            for (int index = 0; index < remaining.size(); index++) {
-                ItemStack remainder = remaining.get(index);
+            for (int subIndex = 0, size = remaining.size(); subIndex < size; subIndex++) {
+                ItemStack remainder = remaining.get(subIndex);
+                int index = getIndexFromRemaining(craftingInput, subIndex);
                 IInventorySlot inputSlot = inputSlots[index];
                 if (inputSlot.getCount() > 1) {
                     //If the input slot contains an item that is stacked, reduce the size of it by one
@@ -463,6 +476,14 @@ public class QIOCraftingWindow implements IContentsListener {
         craftingFinished(world);
     }
 
+    private static int getIndexFromRemaining(CraftingInput.Positioned craftingInput, int subIndex) {
+        int width = craftingInput.input().width();
+        int height = craftingInput.input().height();
+        int row = craftingInput.top() + (subIndex / width) % height;
+        int column = craftingInput.left() + subIndex % width;
+        return 3 * row + column;
+    }
+
     @NotNull
     public ItemStack performCraft(@NotNull Player player, @NotNull ItemStack result, int amountCrafted) {
         //TODO - 1.18: Given we don't fire a crafting event and even if we did things would likely not work properly,
@@ -475,27 +496,28 @@ public class QIOCraftingWindow implements IContentsListener {
             return ItemStack.EMPTY;
         }
         Level world = holder.getLevel();
-        CraftingInput initialCraftingInput = asCraftingInput();
-        if (!validateAndUnlockRecipe(world, player, initialCraftingInput)) {
+        CraftingInput.Positioned craftingInput = asCraftingInput();
+        if (!validateAndUnlockRecipe(world, player, craftingInput.input())) {
             //If the recipe isn't valid, fail
             return ItemStack.EMPTY;
         }
         QIOFrequency frequency = holder.getFrequency();
         //Mark that we are crafting so changes to the slots below don't force a bunch of recalculations to take place
         craftingStarted(player);
-        //Craft the result
+        //Craft the result, note the result stack should always be a new instance by the time this method is called
         result.onCraftedBy(world, player, amountCrafted);
         //Note: We don't fire a crafting event as we don't want to allow for people to modify the output
         // stack or more importantly the input inventory during crafting
         //TODO: If this ends up causing major issues with some weird way another mod ends up doing crafting
         // we can evaluate how we want to handle it then/try to integrate support for firing it.
         //BasicEventHooks.firePlayerCraftingEvent(player, result, craftingInventory);
-        NonNullList<ItemStack> remaining = lastRecipe.value().getRemainingItems(initialCraftingInput);
+        NonNullList<ItemStack> remaining = lastRecipe.value().getRemainingItems(craftingInput.input());
         remainderHelper.reset();
         replacementHelper.reset();
         //Update slots with remaining contents
-        for (int index = 0; index < remaining.size(); index++) {
-            ItemStack remainder = remaining.get(index);
+        for (int subIndex = 0, size = remaining.size(); subIndex < size; subIndex++) {
+            ItemStack remainder = remaining.get(subIndex);
+            int index = getIndexFromRemaining(craftingInput, subIndex);
             IInventorySlot inputSlot = inputSlots[index];
             if (inputSlot.getCount() > 1) {
                 //If the input slot contains an item that is stacked, reduce the size of it by one
@@ -625,7 +647,7 @@ public class QIOCraftingWindow implements IContentsListener {
         }
     }
 
-    private CraftingInput asCraftingInput() {
+    private CraftingInput.Positioned asCraftingInput() {
         List<ItemStack> items = new ArrayList<>(9);
         for (IInventorySlot inputSlot : inputSlots) {
             //Note: We copy this as we don't want to allow someone trying to interact with the stack directly
@@ -633,7 +655,7 @@ public class QIOCraftingWindow implements IContentsListener {
             // We also copy it to a count of one, to validate that no mods are trying to do stupid stacked recipe input based hacks
             items.add(inputSlot.getStack().copyWithCount(1));
         }
-        return CraftingInput.of(3, 3, items);
+        return CraftingInput.ofPositioned(3, 3, items);
     }
 
     private class RemainderHelper {

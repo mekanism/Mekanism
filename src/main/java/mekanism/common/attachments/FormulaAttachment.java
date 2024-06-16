@@ -2,7 +2,6 @@ package mekanism.common.attachments;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -42,22 +41,15 @@ public record FormulaAttachment(List<ItemStack> inventory, boolean invalid) {//T
     }
 
     public static FormulaAttachment create(RecipeFormula formula) {
-        List<ItemStack> stacks = new ArrayList<>(formula.craftingInput.size());
-        for (ItemStack stack : formula.craftingInput.items()) {
-            stacks.add(stack.copy());
-        }
-        return new FormulaAttachment(stacks, false);
+        return new FormulaAttachment(formula.getCopy(true), false);
     }
 
     public FormulaAttachment asInvalid() {
         if (invalid) {
             return this;
         }
-        List<ItemStack> stacks = new ArrayList<>(inventory.size());
-        for (ItemStack stack : inventory) {
-            stacks.add(stack.copy());
-        }
-        return new FormulaAttachment(stacks, true);
+        //Note: We don't have to copy the inventory as FormulaAttachment is immutable, so nothing should be mutating the backing stacks
+        return new FormulaAttachment(inventory, true);
     }
 
     public boolean isEmpty() {
@@ -65,7 +57,7 @@ public record FormulaAttachment(List<ItemStack> inventory, boolean invalid) {//T
     }
 
     public boolean hasItems() {
-        return inventory.stream().anyMatch(slot -> !slot.isEmpty());
+        return inventory.stream().anyMatch(stack -> !stack.isEmpty());
     }
 
     @Override

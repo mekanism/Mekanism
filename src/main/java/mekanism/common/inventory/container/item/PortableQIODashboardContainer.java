@@ -1,7 +1,7 @@
 package mekanism.common.inventory.container.item;
 
 import mekanism.api.security.IItemSecurityUtils;
-import mekanism.common.attachments.qio.PortableQIODashboardInventory;
+import mekanism.common.content.qio.PortableQIODashboardInventory;
 import mekanism.common.content.qio.IQIOCraftingWindowHolder;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.inventory.container.slot.HotBarSlot;

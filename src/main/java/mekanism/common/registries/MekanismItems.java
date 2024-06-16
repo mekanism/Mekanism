@@ -129,8 +129,7 @@ public class MekanismItems {
                 .addBasicExtractable(MekanismConfig.gear.canteenTransferRate, MekanismConfig.gear.canteenMaxStorage,
                       fluid -> fluid.is(MekanismFluids.NUTRITIONAL_PASTE.getFluid()))
                 .build(), MekanismConfig.gear);
-    public static final ItemRegistryObject<ItemPortableQIODashboard> PORTABLE_QIO_DASHBOARD = ITEMS.registerItem("portable_qio_dashboard", ItemPortableQIODashboard::new)
-          .addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder().addQIODashboardSlots().build());
+    public static final ItemRegistryObject<ItemPortableQIODashboard> PORTABLE_QIO_DASHBOARD = ITEMS.registerItem("portable_qio_dashboard", ItemPortableQIODashboard::new);
     // QIO Drives
     public static final ItemRegistryObject<ItemQIODrive> BASE_QIO_DRIVE = registerQIODrive(QIODriveTier.BASE);
     public static final ItemRegistryObject<ItemQIODrive> HYPER_DENSE_QIO_DRIVE = registerQIODrive(QIODriveTier.HYPER_DENSE);

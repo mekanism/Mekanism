@@ -30,6 +30,7 @@ import mekanism.common.attachments.containers.fluid.AttachedFluids;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.MultiTypeCapability;
 import mekanism.common.content.oredictionificator.OredictionificatorItemFilter;
+import mekanism.common.content.qio.IQIOCraftingWindowHolder;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
@@ -80,11 +81,18 @@ public class ItemSlotsBuilder {
     private static final IBasicContainerCreator<ComponentBackedInventorySlot> FORMULA_SLOT_CREATOR = (type, attachedTo, containerIndex) -> new ComponentBackedInventorySlot(attachedTo,
           containerIndex, BasicInventorySlot.alwaysTrueBi, BasicInventorySlot.alwaysTrueBi, TileEntityFormulaicAssemblicator.FORMULA_SLOT_VALIDATOR);
 
-    //QOP drive slot
+    //QIO drive slot
     //Note: As we don't have to update the presence of a drive or remove it from the frequency we can make do with just using a basic slot
     //TODO - 1.20.4: Evaluate if copy the notExternal is correct or do we want this to have some other checks
     private static final IBasicContainerCreator<ComponentBackedInventorySlot> QIO_DRIVE_SLOT_CREATOR = (type, attachedTo, containerIndex) -> new ComponentBackedInventorySlot(attachedTo,
           containerIndex, BasicInventorySlot.notExternal, BasicInventorySlot.notExternal, QIODriveSlot.IS_QIO_ITEM);
+
+    //QIO Dashboard Crafting WINDOW
+    private static final IBasicContainerCreator<ComponentBackedInventorySlot> QIO_DASHBOARD_INPUT_SLOT_CREATOR = (type, attachedTo, containerIndex) -> new ComponentBackedInventorySlot(attachedTo,
+          containerIndex, BasicInventorySlot.notExternal, BasicInventorySlot.alwaysTrueBi, BasicInventorySlot.alwaysTrue);
+    //Note: We don't allow external means to modify this slot as it truthfully only exists to make logic easier
+    private static final IBasicContainerCreator<ComponentBackedInventorySlot> QIO_DASHBOARD_OUTPUT_SLOT_CREATOR = (type, attachedTo, containerIndex) -> new ComponentBackedInventorySlot(attachedTo,
+          containerIndex, BasicInventorySlot.internalOnly, BasicInventorySlot.internalOnly, BasicInventorySlot.alwaysTrue);
 
     //EnergyInventorySlot
     //Note: As energy is untyped we don't have to do extra checks about what is currently stored or not on the attached stack
@@ -169,8 +177,10 @@ public class ItemSlotsBuilder {
     }
 
     public ItemSlotsBuilder addQIODashboardSlots() {
-        //TODO - 1.21: IMPLEMENT Figure out how to do this
-        //new PortableQIODashboardInventory(null, stack).getSlots()
+        for (byte window = 0; window < IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS; window++) {
+            addSlots(9, QIO_DASHBOARD_INPUT_SLOT_CREATOR);
+            addSlot(QIO_DASHBOARD_OUTPUT_SLOT_CREATOR);
+        }
         return this;
     }
 

@@ -1,8 +1,12 @@
 package mekanism.common.tile.qio;
 
+import java.util.ArrayList;
+import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.CommonWorldTickHandler;
+import mekanism.common.attachments.containers.item.AttachedItems;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.content.qio.IQIOCraftingWindowHolder;
@@ -12,6 +16,8 @@ import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
+import mekanism.common.inventory.slot.BasicInventorySlot;
+import mekanism.common.inventory.slot.CraftingWindowOutputInventorySlot;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.NBTUtils;
@@ -63,6 +69,47 @@ public class TileEntityQIODashboard extends TileEntityQIOComponent implements IQ
             builder.addSlot(craftingWindow.getOutputSlot());
         }
         return builder.build();
+    }
+
+    @Override
+    public void applyInventorySlots(BlockEntity.DataComponentInput input, List<IInventorySlot> slots, AttachedItems attachedItems) {
+        List<ItemStack> stacks = attachedItems.containers();
+        int size = stacks.size();
+        if (size == slots.size()) {
+            for (int i = 0; i < size; i++) {
+                IInventorySlot slot = slots.get(i);
+                if (slot instanceof CraftingWindowOutputInventorySlot) {
+                    slot.setEmpty();
+                } else {
+                    ItemStack stack = stacks.get(i).copy();
+                    if (slot instanceof BasicInventorySlot basicSlot) {
+                        basicSlot.setStackUnchecked(stack);
+                    } else {
+                        slot.setStack(stack);
+                    }
+                }
+            }
+        }
+    }
+
+    @Nullable
+    @Override
+    public AttachedItems collectInventorySlots(DataComponentMap.Builder builder, List<IInventorySlot> slots) {
+        boolean hasNonEmpty = false;
+        List<ItemStack> stacks = new ArrayList<>(slots.size());
+        for (IInventorySlot slot : slots) {
+            ItemStack stack;
+            if (slot instanceof CraftingWindowOutputInventorySlot) {
+                stack = ItemStack.EMPTY;
+            } else {
+                stack = slot.getStack().copy();
+            }
+            stacks.add(stack);
+            if (!stack.isEmpty()) {
+                hasNonEmpty = true;
+            }
+        }
+        return hasNonEmpty ? new AttachedItems(stacks) : null;
     }
 
     @Override

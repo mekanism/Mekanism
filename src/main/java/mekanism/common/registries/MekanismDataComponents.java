@@ -285,7 +285,6 @@ public class MekanismDataComponents {
         return null;
     }
 
-    //TODO - 1.21: Re-evaluate this, and if we are keeping it add the default variant to the things it should be on
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<PortableDashboardContents>> QIO_DASHBOARD = DATA_COMPONENTS.simple("qio_dashboard",
           builder -> builder.persistent(PortableDashboardContents.CODEC)
                 .networkSynchronized(PortableDashboardContents.STREAM_CODEC)

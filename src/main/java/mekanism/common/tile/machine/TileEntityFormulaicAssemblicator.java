@@ -312,7 +312,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                 }
             } else {
                 //Should always be 9 for the size
-                CraftingInput craftingInput = MekanismUtils.getCraftingInputSlots(3, 3, craftingGridSlots, true);
+                CraftingInput craftingInput = MekanismUtils.getCraftingInputSlots(3, 3, craftingGridSlots, true).input();
                 lastRemainingItems = EMPTY_LIST;
                 if (cachedRecipe == null || !cachedRecipe.value().matches(craftingInput, level)) {
                     cachedRecipe = MekanismRecipeType.getRecipeFor(RecipeType.CRAFTING, craftingInput, level).orElse(null);
@@ -321,6 +321,8 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                     lastOutputStack = ItemStack.EMPTY;
                 } else {
                     lastOutputStack = cachedRecipe.value().assemble(craftingInput, level.registryAccess());
+                    //Note: Because we don't currently do any replacement of remaining items, we don't need to keep track of where the recipe
+                    // was positioned for purposes of replacing things with the remaining items
                     lastRemainingItems = cachedRecipe.value().getRemainingItems(craftingInput);
                 }
                 isRecipe = !lastOutputStack.isEmpty();
@@ -731,7 +733,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                 if (formula == null && isRemote()) {
                     //If we are on the client (which we should be when setting anyway) and we don't have a formula yet
                     // but should, then create an empty formula
-                    formula = new RecipeFormula();
+                    formula = RecipeFormula.EMPTY;
                 }
             } else {
                 formula = null;
@@ -743,7 +745,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                 if (!stack.isEmpty() && formula == null && isRemote()) {
                     //If we are on the client (which we should be when setting anyway) and we don't have a formula yet
                     // but should, then create an empty formula. Also make sure it isn't just us trying to clear the formula slot
-                    formula = new RecipeFormula();
+                    formula = RecipeFormula.EMPTY;
                 }
                 if (formula != null) {
                     formula = formula.withStack(getLevel(), index, stack);
