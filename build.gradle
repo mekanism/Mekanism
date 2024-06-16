@@ -658,7 +658,7 @@ def changeLogResolver = { ->
     if (releaseNotesFile.exists()) {
         //Add any version specific changelog stuff
         def releaseNotes = releaseNotesFile.text
-        generatedChangelog = "$releaseNotes\n\n $generatedChangelog"
+        generatedChangelog = "$releaseNotes\n\n$generatedChangelog"
     }
 
     if (release_type == 'alpha') {
