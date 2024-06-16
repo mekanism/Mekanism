@@ -68,9 +68,9 @@ public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFor
               (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.STOCK_CONTROL_BUTTON, ((GuiFormulaicAssemblicator) element.gui()).tile)),
               MekanismLang.STOCK_CONTROL.translate(OnOff.ON), MekanismLang.STOCK_CONTROL.translate(OnOff.OFF)));
         fillEmptyButton = addRenderableWidget(new ToggleButton(this, 44, 75, 16, 16, getButtonLocation("empty"),
-              getButtonLocation("fill"), () -> tile.formula == null, (element, mouseX, mouseY) -> {
+              getButtonLocation("fill"), () -> tile.formula.isEmpty(), (element, mouseX, mouseY) -> {
             TileEntityFormulaicAssemblicator tile = ((GuiFormulaicAssemblicator) element.gui()).tile;
-            GuiInteraction interaction = tile.formula == null ? GuiInteraction.EMPTY_GRID : GuiInteraction.FILL_GRID;
+            GuiInteraction interaction = tile.formula.isEmpty() ? GuiInteraction.EMPTY_GRID : GuiInteraction.FILL_GRID;
             return PacketUtils.sendToServer(new PacketGuiInteract(interaction, tile));
         }, MekanismLang.EMPTY_ASSEMBLICATOR.translate(), MekanismLang.FILL_ASSEMBLICATOR.translate()));
         craftSingleButton = addRenderableWidget(new MekanismImageButton(this, 71, 75, 16, getButtonLocation("craft_single"),
@@ -136,8 +136,7 @@ public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFor
         if (!tile.hasValidFormula()) {
             ItemStack stack = tile.getFormulaSlot().getStack();
             if (!stack.isEmpty() && stack.getItem() instanceof ItemCraftingFormula) {
-                FormulaAttachment existingFormula = stack.get(MekanismDataComponents.FORMULA_HOLDER);
-                return existingFormula == null || !existingFormula.isEmpty();
+                return stack.getOrDefault(MekanismDataComponents.FORMULA_HOLDER, FormulaAttachment.EMPTY).isEmpty();
             }
         }
         return false;

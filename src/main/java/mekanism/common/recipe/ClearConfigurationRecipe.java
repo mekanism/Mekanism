@@ -58,6 +58,7 @@ public class ClearConfigurationRecipe extends CustomRecipe {
         set.add(MekanismDataComponents.STABILIZER_CHUNKS);
         set.add(MekanismDataComponents.FILTER_AWARE);
         set.add(MekanismDataComponents.CONFIGURATION_DATA);
+        set.add(MekanismDataComponents.FORMULA_HOLDER);
 
         set.add(MekanismDataComponents.ATTACHED_HEAT);
         //TODO: Do we want to clear frequencies?

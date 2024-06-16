@@ -4,7 +4,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
@@ -25,14 +24,12 @@ import org.jetbrains.annotations.NotNull;
 public class ItemCraftingFormula extends Item {
 
     public ItemCraftingFormula(Properties properties) {
-        super(properties);
+        super(properties.component(MekanismDataComponents.FORMULA_HOLDER, FormulaAttachment.EMPTY));
     }
 
     @Override
     public void appendHoverText(@NotNull ItemStack itemStack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-        Map<HashedItem, Integer> stacks = FormulaAttachment.existingFormula(itemStack)
-              .stream().flatMap(attachment -> attachment.inventory().stream())
-              .filter(stack -> !stack.isEmpty())
+        Map<HashedItem, Integer> stacks = itemStack.getOrDefault(MekanismDataComponents.FORMULA_HOLDER, FormulaAttachment.EMPTY).nonEmptyItems()
               .collect(Collectors.toMap(HashedItem::raw, ItemStack::getCount, Integer::sum, LinkedHashMap::new));
         if (!stacks.isEmpty()) {
             tooltip.add(MekanismLang.INGREDIENTS.translateColored(EnumColor.GRAY));
@@ -48,7 +45,7 @@ public class ItemCraftingFormula extends Item {
         ItemStack stack = player.getItemInHand(hand);
         if (player.isShiftKeyDown()) {
             if (!world.isClientSide) {
-                stack.remove(MekanismDataComponents.FORMULA_HOLDER);
+                stack.set(MekanismDataComponents.FORMULA_HOLDER, FormulaAttachment.EMPTY);
             }
             return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
         }
@@ -58,10 +55,8 @@ public class ItemCraftingFormula extends Item {
     @NotNull
     @Override
     public Component getName(@NotNull ItemStack stack) {
-        Optional<FormulaAttachment> formulaAttachment = FormulaAttachment.existingFormula(stack)
-              .filter(FormulaAttachment::hasItems);
-        if (formulaAttachment.isPresent()) {
-            FormulaAttachment attachment = formulaAttachment.get();
+        FormulaAttachment attachment = stack.getOrDefault(MekanismDataComponents.FORMULA_HOLDER, FormulaAttachment.EMPTY);
+        if (attachment.hasItems()) {
             if (attachment.invalid()) {
                 return TextComponentUtil.build(super.getName(stack), " ", EnumColor.DARK_RED, MekanismLang.INVALID);
             }
