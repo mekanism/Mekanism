@@ -681,7 +681,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      * @throws ArithmeticException if {@code toDivide} is zero.
      */
     public long divideToLong(FloatingLong toDivide) {
-        return MathUtils.clampUnsignedToLong(divideToUnsignedLong(toDivide));
+        return ULong.clampToSigned(divideToUnsignedLong(toDivide));
     }
 
     /**
@@ -695,7 +695,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      * @throws ArithmeticException if {@code toDivide} is zero.
      */
     public int divideToInt(FloatingLong toDivide) {
-        return MathUtils.clampUnsignedToInt(divideToLong(toDivide));
+        return ULong.clampToInt(divideToLong(toDivide));
     }
 
     /**
@@ -1104,7 +1104,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      */
     @Override
     public int intValue() {
-        return MathUtils.clampUnsignedToInt(value);
+        return ULong.clampToInt(value);
     }
 
     /**
@@ -1114,7 +1114,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      */
     @Override
     public long longValue() {
-        return MathUtils.clampUnsignedToLong(value);
+        return ULong.clampToSigned(value);
     }
 
     /**
@@ -1124,7 +1124,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      */
     @Override
     public float floatValue() {
-        return MathUtils.unsignedLongToFloat(value) + decimal / (float) SINGLE_UNIT;
+        return ULong.toFloat(value) + decimal / (float) SINGLE_UNIT;
     }
 
     /**
@@ -1134,7 +1134,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      */
     @Override
     public double doubleValue() {
-        return MathUtils.unsignedLongToDouble(value) + decimal / (double) SINGLE_UNIT;
+        return ULong.toDouble(value) + decimal / (double) SINGLE_UNIT;
     }
 
     /**

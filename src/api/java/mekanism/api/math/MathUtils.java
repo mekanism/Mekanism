@@ -1,8 +1,5 @@
 package mekanism.api.math;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.math.MathContext;
 import java.util.List;
 
 public class MathUtils {
@@ -10,7 +7,7 @@ public class MathUtils {
     private MathUtils() {
     }
 
-    private static final long UNSIGNED_MASK = 0x7FFFFFFFFFFFFFFFL;
+    static final long UNSIGNED_MASK = 0x7FFFFFFFFFFFFFFFL;
 
     /**
      * Clamp a double to int without using{@link Math#min(double, double)} due to double representation issues. Primary use: power systems that use int, where Mek uses
@@ -64,53 +61,6 @@ public class MathUtils {
     }
 
     /**
-     * Clamp an unsigned long to int
-     *
-     * @param l unsigned long to clamp
-     *
-     * @return an int clamped to {@link Integer#MAX_VALUE}
-     */
-    public static int clampUnsignedToInt(@Unsigned long l) {
-        if (l < 0 || l > Integer.MAX_VALUE) {
-            return Integer.MAX_VALUE;
-        }
-        return (int) l;
-    }
-
-    /**
-     * Clamp an unsigned long to int
-     *
-     * @param l unsigned long to clamp
-     *
-     * @return an int clamped to {@link Integer#MAX_VALUE}
-     */
-    public static long clampUnsignedToLong(@Unsigned long l) {
-        return l < 0 ? Long.MAX_VALUE : l;
-    }
-
-    /**
-     * Converts an unsigned long to a double, using the same math as in Guava's UnsignedLong class
-     */
-    public static float unsignedLongToFloat(@Unsigned long l) {
-        float fValue = (float) (l & UNSIGNED_MASK);
-        if (l < 0) {
-            fValue += 0x1.0p63F;
-        }
-        return fValue;
-    }
-
-    /**
-     * Converts an unsigned long to a double, using the same math as in Guava's UnsignedLong class
-     */
-    public static double unsignedLongToDouble(@Unsigned long l) {
-        double dValue = (double) (l & UNSIGNED_MASK);
-        if (l < 0) {
-            dValue += 0x1.0p63;
-        }
-        return dValue;
-    }
-
-    /**
      * Gets an element in an array by index, taking the mod (or floored mod if negative).
      *
      * @param elements Elements.
@@ -138,26 +88,5 @@ public class MathUtils {
             return elements.get(Math.floorMod(index, elements.size()));
         }
         return elements.get(index % elements.size());
-    }
-
-    //Copied from UnsignedLong
-    public static BigInteger unsignedLongToBigIntegerValue(@Unsigned long value) {
-        BigInteger bigInt = BigInteger.valueOf(value & UNSIGNED_MASK);
-        if (value < 0) {
-            bigInt = bigInt.setBit(Long.SIZE - 1);
-        }
-        return bigInt;
-    }
-
-    public static BigDecimal unsignedLongToBigDecimal(@Unsigned long value) {
-        return new BigDecimal(unsignedLongToBigIntegerValue(value));
-    }
-
-    public static double uLongDivideDouble(@Unsigned long dividend, @Unsigned long divisor) {
-        if (dividend >= 0 && divisor > 0) {
-            //within signed long range
-            return (double) dividend / divisor;
-        }
-        return unsignedLongToBigDecimal(dividend).divide(unsignedLongToBigDecimal(divisor), MathContext.DECIMAL64).doubleValue();
     }
 }

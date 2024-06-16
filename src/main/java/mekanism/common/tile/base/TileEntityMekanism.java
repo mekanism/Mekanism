@@ -35,7 +35,7 @@ import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
-import mekanism.api.math.MathUtils;
+import mekanism.api.math.ULong;
 import mekanism.api.math.Unsigned;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.radiation.IRadiationManager;
@@ -1739,7 +1739,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             stored += energyContainer.getEnergy();
             max += energyContainer.getMaxEnergy();
         }
-        return max == 0L ? 1D : MathUtils.uLongDivideDouble(stored, max);
+        return max == 0L ? 1D : ULong.divide(stored, max);
     }
 
     @ComputerMethod(restriction = MethodRestriction.REDSTONE_CONTROL, requiresPublicSecurity = true)

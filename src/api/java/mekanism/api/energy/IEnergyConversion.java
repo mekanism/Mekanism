@@ -1,8 +1,7 @@
 package mekanism.api.energy;
 
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.math.FloatingLong;
-import mekanism.api.math.MathUtils;
+import mekanism.api.math.ULong;
 import mekanism.api.math.Unsigned;
 import mekanism.api.text.IHasTranslationKey;
 
@@ -39,7 +38,7 @@ public interface IEnergyConversion extends IHasTranslationKey {
      * @return Amount of energy clamped to an int. (Units matching this conversion)
      */
     default int convertToAsInt(@Unsigned long joules) {
-        return MathUtils.clampUnsignedToInt(convertTo(joules));
+        return ULong.clampToInt(convertTo(joules));
     }
 
     /**
@@ -50,7 +49,7 @@ public interface IEnergyConversion extends IHasTranslationKey {
      * @return Amount of energy clamped to a long. (Units matching this conversion)
      */
     default long convertToAsLong(@Unsigned long joules) {
-        return MathUtils.clampUnsignedToLong(convertTo(joules));
+        return ULong.clampToSigned(convertTo(joules));
     }
 
     /**
