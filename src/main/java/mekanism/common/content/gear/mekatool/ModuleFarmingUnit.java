@@ -14,6 +14,7 @@ import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.Unsigned;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.config.MekanismConfig;
@@ -198,8 +199,8 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
     }
 
     private InteractionResult useAOE(UseOnContext context, Lazy<BlockState> lazyClickedState, IEnergyContainer energyContainer, int diameter, ToolAction action,
-          SoundEvent sound, int particle, FloatingLong energyUsage, IToolAOEData toolAOEData) {
-        FloatingLong energy = energyContainer.getEnergy();
+          SoundEvent sound, int particle, @Unsigned long energyUsage, IToolAOEData toolAOEData) {
+        @Unsigned long energy = energyContainer.getEnergy();
         if (energy.smallerThan(energyUsage)) {
             //Fail if we don't have enough energy or using the item failed
             return InteractionResult.FAIL;

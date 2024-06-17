@@ -127,7 +127,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
         return lastEnvironmentLoss;
     }
 
-    public void setEnergyUsageFromPacket(FloatingLong floatingLong) {
+    public void setEnergyUsageFromPacket(@Unsigned long floatingLong) {
         energyContainer.updateEnergyUsage(floatingLong);
         markForSave();
     }
@@ -184,7 +184,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     }
 
     @ComputerMethod(requiresPublicSecurity = true)
-    void setEnergyUsage(FloatingLong usage) throws ComputerException {
+    void setEnergyUsage(@Unsigned long usage) throws ComputerException {
         validateSecurityIsPublic();
         setEnergyUsageFromPacket(usage);
     }

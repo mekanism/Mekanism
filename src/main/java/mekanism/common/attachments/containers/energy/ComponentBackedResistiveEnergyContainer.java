@@ -1,6 +1,7 @@
 package mekanism.common.attachments.containers.energy;
 
 import java.util.Objects;
+import java.util.function.LongSupplier;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.FloatingLong;
@@ -21,18 +22,18 @@ public class ComponentBackedResistiveEnergyContainer extends ComponentBackedEner
 
     public static ComponentBackedResistiveEnergyContainer create(ContainerType<?, ?, ?> ignored, ItemStack attachedTo, int containerIndex) {
         AttributeEnergy attributeEnergy = Objects.requireNonNull(MekanismBlockTypes.RESISTIVE_HEATER.get(AttributeEnergy.class));
-        return new ComponentBackedResistiveEnergyContainer(attachedTo, containerIndex, () -> attributeEnergy.getStorage() * 0.005,
+        return new ComponentBackedResistiveEnergyContainer(attachedTo, containerIndex, () -> (long) (attributeEnergy.getStorage() * 0.005),
               attributeEnergy::getStorage, attributeEnergy.getUsage());
     }
 
-    private FloatingLong currentMaxEnergy;
-    private FloatingLong energyPerTick;
+    private @Unsigned long currentMaxEnergy;
+    private @Unsigned long energyPerTick;
 
-    private ComponentBackedResistiveEnergyContainer(ItemStack attachedTo, int containerIndex, FloatingLongSupplier rate, FloatingLongSupplier capacity,
-          FloatingLong baseEnergyPerTick) {
+    private ComponentBackedResistiveEnergyContainer(ItemStack attachedTo, int containerIndex, @Unsigned LongSupplier rate, @Unsigned LongSupplier capacity,
+          @Unsigned long baseEnergyPerTick) {
         super(attachedTo, containerIndex, BasicEnergyContainer.manualOnly, BasicEnergyContainer.alwaysTrue, rate, capacity);
         this.currentMaxEnergy = super.getMaxEnergy();
-        this.energyPerTick = baseEnergyPerTick.copyAsConst();
+        this.energyPerTick = baseEnergyPerTick;
     }
 
     @Override
@@ -40,9 +41,9 @@ public class ComponentBackedResistiveEnergyContainer extends ComponentBackedEner
         return currentMaxEnergy;
     }
 
-    private void updateEnergyUsage(FloatingLong energyUsage) {
+    private void updateEnergyUsage(@Unsigned long energyUsage) {
         energyPerTick = energyUsage;
-        this.currentMaxEnergy = energyUsage.multiply(ResistiveHeaterEnergyContainer.USAGE_MULTIPLIER).copyAsConst();
+        this.currentMaxEnergy = energyUsage * ResistiveHeaterEnergyContainer.USAGE_MULTIPLIER;
         //Clamp the energy
         setEnergy(getEnergy());
     }
@@ -50,13 +51,14 @@ public class ComponentBackedResistiveEnergyContainer extends ComponentBackedEner
     @Override
     public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag nbt = super.serializeNBT(provider);
-        nbt.putString(SerializationConstants.ENERGY_USAGE, energyPerTick.toString());
+        nbt.putLong(SerializationConstants.ENERGY_USAGE, energyPerTick);
         return nbt;
     }
 
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        NBTUtils.setFloatingLongIfPresent(nbt, SerializationConstants.ENERGY_USAGE, this::updateEnergyUsage);
+        NBTUtils.setFloatingLongIfPresent(nbt, SerializationConstants.ENERGY_USAGE, energyUsage -> updateEnergyUsage(energyUsage.longValue()));//todo 1.22 - backcompat
+        NBTUtils.setLongIfPresent(nbt, SerializationConstants.ENERGY_USAGE, this::updateEnergyUsage);
         super.deserializeNBT(provider, nbt);
     }
 }

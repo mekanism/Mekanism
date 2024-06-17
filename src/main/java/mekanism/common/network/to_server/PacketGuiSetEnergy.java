@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.function.BiConsumer;
 import java.util.function.IntFunction;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.Unsigned;
 import mekanism.common.Mekanism;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.network.PacketUtils;
@@ -18,13 +19,13 @@ import net.minecraft.util.ByIdMap;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-public record PacketGuiSetEnergy(GuiEnergyValue interaction, BlockPos pos, FloatingLong value) implements IMekanismPacket {
+public record PacketGuiSetEnergy(GuiEnergyValue interaction, BlockPos pos, @Unsigned long value) implements IMekanismPacket {
 
     public static final CustomPacketPayload.Type<PacketGuiSetEnergy> TYPE = new CustomPacketPayload.Type<>(Mekanism.rl("set_energy"));
     public static final StreamCodec<ByteBuf, PacketGuiSetEnergy> STREAM_CODEC = StreamCodec.composite(
           GuiEnergyValue.STREAM_CODEC, PacketGuiSetEnergy::interaction,
           BlockPos.STREAM_CODEC, PacketGuiSetEnergy::pos,
-          FloatingLong.STREAM_CODEC, PacketGuiSetEnergy::value,
+          ByteBufCodecs.VAR_LONG, PacketGuiSetEnergy::value,
           PacketGuiSetEnergy::new
     );
 
@@ -61,13 +62,13 @@ public record PacketGuiSetEnergy(GuiEnergyValue interaction, BlockPos pos, Float
         public static final IntFunction<GuiEnergyValue> BY_ID = ByIdMap.continuous(GuiEnergyValue::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
         public static final StreamCodec<ByteBuf, GuiEnergyValue> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, GuiEnergyValue::ordinal);
 
-        private final BiConsumer<TileEntityMekanism, FloatingLong> consumerForTile;
+        private final BiConsumer<TileEntityMekanism, @Unsigned Long> consumerForTile;
 
-        GuiEnergyValue(BiConsumer<TileEntityMekanism, FloatingLong> consumerForTile) {
+        GuiEnergyValue(BiConsumer<TileEntityMekanism, @Unsigned Long> consumerForTile) {
             this.consumerForTile = consumerForTile;
         }
 
-        public void consume(TileEntityMekanism tile, FloatingLong value) {
+        public void consume(TileEntityMekanism tile, @Unsigned long value) {
             consumerForTile.accept(tile, value);
         }
     }

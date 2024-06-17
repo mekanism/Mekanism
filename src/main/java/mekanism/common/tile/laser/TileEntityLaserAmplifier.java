@@ -267,13 +267,13 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     }
 
     @ComputerMethod(requiresPublicSecurity = true)
-    void setMinThreshold(FloatingLong threshold) throws ComputerException {
+    void setMinThreshold(@Unsigned long threshold) throws ComputerException {
         validateSecurityIsPublic();
         setMinThresholdFromPacket(threshold);
     }
 
     @ComputerMethod(requiresPublicSecurity = true)
-    void setMaxThreshold(FloatingLong threshold) throws ComputerException {
+    void setMaxThreshold(@Unsigned long threshold) throws ComputerException {
         validateSecurityIsPublic();
         setMaxThresholdFromPacket(threshold);
     }

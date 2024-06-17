@@ -16,6 +16,7 @@ import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
+import mekanism.api.math.Unsigned;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.chemical.multiblock.MultiblockChemicalTankBuilder;
 import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
@@ -481,9 +482,9 @@ public class FusionReactorMultiblockData extends MultiblockData {
                (energyPerFusionFuel * burnRatio * (plasmaCaseConductivity + k + caseAirConductivity) - plasmaCaseConductivity * (k + caseAirConductivity));
     }
 
-    public FloatingLong getPassiveGeneration(boolean active, boolean current) {
+    public @Unsigned long getPassiveGeneration(boolean active, boolean current) {
         double temperature = current ? getLastCaseTemp() : getMaxCasingTemperature(active);
-        return FloatingLong.create(MekanismGeneratorsConfig.generators.fusionThermocoupleEfficiency.get() *
+        return (long) (MekanismGeneratorsConfig.generators.fusionThermocoupleEfficiency.get() *
                                    MekanismGeneratorsConfig.generators.fusionCasingThermalConductivity.get() * temperature);
     }
 
@@ -510,12 +511,14 @@ public class FusionReactorMultiblockData extends MultiblockData {
     }
 
     @ComputerMethod
-    FloatingLong getPassiveGeneration(boolean active) {
+    @Unsigned
+    long getPassiveGeneration(boolean active) {
         return getPassiveGeneration(active, false);
     }
 
     @ComputerMethod
-    FloatingLong getProductionRate() {
+    @Unsigned
+    long getProductionRate() {
         return getPassiveGeneration(false, true);
     }
     //End computer related methods

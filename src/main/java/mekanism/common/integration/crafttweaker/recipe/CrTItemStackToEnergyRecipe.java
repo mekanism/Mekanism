@@ -32,7 +32,7 @@ public class CrTItemStackToEnergyRecipe {
      */
     @ZenCodeType.Method
     @ZenCodeType.Getter("outputs")
-    public static List<FloatingLong> getOutput(ItemStackToEnergyRecipe _this) {
-        return CrTUtils.convert(_this.getOutputDefinition(), FloatingLong::copyAsConst);
+    public static List<Long> getOutput(ItemStackToEnergyRecipe _this) {
+        return _this.getOutputDefinition();
     }
 }

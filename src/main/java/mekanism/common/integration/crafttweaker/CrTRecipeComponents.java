@@ -52,10 +52,10 @@ public class CrTRecipeComponents {
           new TypeToken<>() {},
           RecipeComponentEqualityCheckers::areNumbersEqual
     );
-    public static final IRecipeComponent<FloatingLong> ENERGY = IRecipeComponent.simple(
+    public static final IRecipeComponent<Long> ENERGY = IRecipeComponent.simple(
           Mekanism.rl("energy"),
           new TypeToken<>() {},
-          FloatingLong::equals
+          Long::equals
     );
 
     public static final PairedRecipeComponent<IIngredientWithAmount, IItemStack> ITEM = new PairedRecipeComponent<>(

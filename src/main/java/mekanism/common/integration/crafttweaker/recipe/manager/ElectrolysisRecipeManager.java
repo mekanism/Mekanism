@@ -3,6 +3,7 @@ package mekanism.common.integration.crafttweaker.recipe.manager;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.fluid.CTFluidIngredient;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.Unsigned;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.basic.BasicElectrolysisRecipe;
 import mekanism.common.integration.crafttweaker.CrTConstants;
@@ -33,7 +34,7 @@ public class ElectrolysisRecipeManager extends MekanismRecipeManager<Electrolysi
      *                         greater than or equal to one.
      */
     @ZenCodeType.Method
-    public void addRecipe(String name, CTFluidIngredient input, ICrTGasStack leftGasOutput, ICrTGasStack rightGasOutput, FloatingLong energyMultiplier) {
+    public void addRecipe(String name, CTFluidIngredient input, ICrTGasStack leftGasOutput, ICrTGasStack rightGasOutput, @Unsigned long energyMultiplier) {
         addRecipe(name, makeRecipe(input, leftGasOutput, rightGasOutput, energyMultiplier));
     }
 
@@ -62,11 +63,11 @@ public class ElectrolysisRecipeManager extends MekanismRecipeManager<Electrolysi
      * @param energyMultiplier Value representing the multiplier to the energy cost in relation to the configured hydrogen separating energy cost. Will be validated to be
      *                         greater than or equal to one.
      */
-    public final ElectrolysisRecipe makeRecipe(CTFluidIngredient input, ICrTGasStack leftGasOutput, ICrTGasStack rightGasOutput, FloatingLong energyMultiplier) {
+    public final ElectrolysisRecipe makeRecipe(CTFluidIngredient input, ICrTGasStack leftGasOutput, ICrTGasStack rightGasOutput, @Unsigned long energyMultiplier) {
         if (energyMultiplier.smallerThan(FloatingLong.ONE)) {
             throw new IllegalArgumentException("Energy multiplier must be at least one! Multiplier: " + energyMultiplier);
         }
-        return new BasicElectrolysisRecipe(CrTUtils.fromCrT(input), energyMultiplier.copyAsConst(), getAndValidateNotEmpty(leftGasOutput),
+        return new BasicElectrolysisRecipe(CrTUtils.fromCrT(input), energyMultiplier, getAndValidateNotEmpty(leftGasOutput),
               getAndValidateNotEmpty(rightGasOutput));
     }
 

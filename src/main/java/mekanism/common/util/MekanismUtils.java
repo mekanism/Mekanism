@@ -118,12 +118,6 @@ public final class MekanismUtils {
         }
     }
 
-    public static void logExpectedZero(FloatingLong actual) {
-        if (!actual.isZero()) {
-            Mekanism.logger.error("Energy value changed by a different amount ({}) than requested (zero).", actual, new Exception());
-        }
-    }
-
     public static void logExpectedZero(long actual) {
         if (actual != 0L) {
             Mekanism.logger.error("Energy value changed by a different amount ({}) than requested (zero).", actual, new Exception());
@@ -642,22 +636,7 @@ public final class MekanismUtils {
      */
     public static int redstoneLevelFromContents(@Unsigned long amount, @Unsigned long capacity) {
         double fractionFull = capacity == 0 ? 0 : ULong.divide(amount, capacity);
-        return Mth.floor((float) (fractionFull * 14.0F)) + (fractionFull > 0 ? 1 : 0);
-    }
-
-    /**
-     * Calculates the redstone level based on the percentage of amount stored.
-     *
-     * @param amount   Amount currently stored
-     * @param capacity Total amount that can be stored.
-     *
-     * @return A redstone level based on the percentage of the amount stored.
-     */
-    public static int redstoneLevelFromContents(FloatingLong amount, FloatingLong capacity) {
-        if (capacity.isZero() || amount.isZero()) {
-            return 0;
-        }
-        return 1 + amount.divide(capacity).multiply(14).intValue();
+        return Mth.floor(fractionFull * 14.0D) + (fractionFull > 0 ? 1 : 0);
     }
 
     /**

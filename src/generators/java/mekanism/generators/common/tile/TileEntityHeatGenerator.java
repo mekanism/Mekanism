@@ -8,6 +8,7 @@ import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.Unsigned;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
@@ -134,7 +135,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
         return sendUpdatePacket;
     }
 
-    private FloatingLong getBoost() {
+    private double getBoost() {
         if (level == null) {
             return FloatingLong.ZERO;
         }
@@ -198,7 +199,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
     }
 
     @Override
-    public FloatingLong getProductionRate() {
+    public @Unsigned long getProductionRate() {
         return producingEnergy;
     }
 

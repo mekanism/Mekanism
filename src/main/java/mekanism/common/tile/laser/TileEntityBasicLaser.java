@@ -378,8 +378,8 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
         return damageBlocked;
     }
 
-    private float getEnergyScale(FloatingLong energy) {
-        return Math.min(energy.divide(MekanismConfig.usage.laser.get()).divide(10).floatValue(), 0.6F);
+    private float getEnergyScale(@Unsigned long energy) {
+        return (float) Math.min(ULong.divide(energy, MekanismConfig.usage.laser.get()) / 10F, 0.6D);
     }
 
     private void sendLaserDataToPlayers(LaserParticleData data, Vec3 from) {

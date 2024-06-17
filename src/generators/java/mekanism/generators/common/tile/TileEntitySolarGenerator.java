@@ -6,6 +6,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
+import mekanism.api.math.Unsigned;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
@@ -95,7 +96,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         return solarCheck.canSeeSun();
     }
 
-    public FloatingLong getProduction() {
+    public @Unsigned long getProduction() {
         if (level == null || solarCheck == null) {
             return FloatingLong.ZERO;
         }
@@ -117,12 +118,12 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         return new RelativeSide[]{RelativeSide.BOTTOM};
     }
 
-    protected FloatingLong getConfiguredMax() {
+    protected @Unsigned long getConfiguredMax() {
         return MekanismGeneratorsConfig.generators.solarGeneration.get();
     }
 
     @Override
-    public FloatingLong getProductionRate() {
+    public @Unsigned long getProductionRate() {
         return lastProductionAmount;
     }
 

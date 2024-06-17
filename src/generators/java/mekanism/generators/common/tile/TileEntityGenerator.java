@@ -6,6 +6,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
+import mekanism.api.math.Unsigned;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
@@ -80,7 +81,7 @@ public abstract class TileEntityGenerator extends TileEntityMekanism {
     }
 
     @ComputerMethod
-    public FloatingLong getMaxOutput() {
+    public @Unsigned long getMaxOutput() {
         return maxOutput;
     }
 
@@ -97,5 +98,5 @@ public abstract class TileEntityGenerator extends TileEntityMekanism {
     }
 
     @ComputerMethod(methodDescription = "Get the amount of energy produced by this generator in the last tick.")
-    abstract FloatingLong getProductionRate();
+    abstract @Unsigned long getProductionRate();
 }

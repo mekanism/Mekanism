@@ -9,6 +9,7 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasBuilder;
 import mekanism.api.chemical.gas.attribute.GasAttributes;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.Unsigned;
 import mekanism.common.integration.LazyGasProvider;
 import mekanism.common.integration.jsonthings.builder.JsonGasBuilder;
 import mekanism.common.lib.radiation.RadiationManager;
@@ -74,10 +75,10 @@ public class JsonGasParser extends SimpleJsonChemicalParser<Gas, GasBuilder, Jso
 
     private static class FuelData {
 
-        private FloatingLong energyDensity = FloatingLong.ZERO;
+        private @Unsigned long energyDensity = 0;
         private int burnTicks;
 
-        private void setEnergyDensity(FloatingLong energyDensity) {
+        private void setEnergyDensity(@Unsigned long energyDensity) {
             this.energyDensity = energyDensity;
         }
     }

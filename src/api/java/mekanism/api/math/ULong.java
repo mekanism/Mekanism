@@ -202,4 +202,23 @@ public class ULong {
     public static @Unsigned long max(@Unsigned long a, @Unsigned long b, @Unsigned long c) {
         return max(max(a, b), c);
     }
+
+    /**
+     * Internal helper to determine if the result of unsigned long multiplication will overflow.
+     */
+    private static boolean multiplyLongsWillOverFlow(long a, long b) {
+        return (a != 0 && b != 0 && Long.compareUnsigned(b, Long.divideUnsigned(-1, a)) > 0);
+    }
+
+    /**
+     * Multiply two longs and clamp if they overflow.
+     */
+    public static long multiply(long a, long b) {
+        if (a == 0 || b == 0) {
+            return 0;
+        } else if (multiplyLongsWillOverFlow(a, b)) {
+            return MAX_VALUE;
+        }
+        return a * b;
+    }
 }

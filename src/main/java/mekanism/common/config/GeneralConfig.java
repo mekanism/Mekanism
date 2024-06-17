@@ -78,7 +78,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedDoubleValue forgeConversionRate;
     public final CachedBooleanValue blacklistFluxNetworks;
     public final CachedFloatingLongValue FROM_H2;
-    public final CachedFloatingLongValue maxEnergyPerSteam;
+    public final CachedUnsignedLongValue maxEnergyPerSteam;
     //Radiation
     public final CachedBooleanValue radiationEnabled;
     public final CachedIntValue radiationChunkCheckRadius;

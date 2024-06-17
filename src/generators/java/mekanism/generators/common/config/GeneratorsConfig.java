@@ -51,7 +51,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
     public final CachedIntValue turbineBladesPerCoil;
     public final CachedDoubleValue turbineVentGasFlow;
     public final CachedDoubleValue turbineDisperserGasFlow;
-    public final CachedFloatingLongValue turbineEnergyCapacityPerVolume;
+    public final CachedUnsignedLongValue turbineEnergyCapacityPerVolume;
     public final CachedLongValue turbineGasPerTank;
     public final CachedIntValue condenserRate;
 
