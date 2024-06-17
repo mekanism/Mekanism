@@ -1,11 +1,11 @@
 package mekanism.api.energy;
 
-import com.google.common.primitives.UnsignedLongs;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.math.ULong;
 import mekanism.api.math.Unsigned;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -58,7 +58,7 @@ public interface IEnergyContainer extends INBTSerializable<CompoundTag>, IConten
             //Fail if we are a full container
             return amount;
         }
-        long toAdd = UnsignedLongs.min(amount, needed);
+        long toAdd = ULong.min(amount, needed);
         if (toAdd != 0 && action.execute()) {
             //If we want to actually insert the energy, then update the current energy
             // Note: this also will mark that the contents changed
@@ -86,7 +86,7 @@ public interface IEnergyContainer extends INBTSerializable<CompoundTag>, IConten
         if (isEmpty() || amount == 0) {
             return 0;
         }
-        long ret = UnsignedLongs.min(getEnergy(), amount);
+        long ret = ULong.min(getEnergy(), amount);
         if (ret != 0 && action.execute()) {
             // Note: this also will mark that the contents changed
             setEnergy(getEnergy() - ret);

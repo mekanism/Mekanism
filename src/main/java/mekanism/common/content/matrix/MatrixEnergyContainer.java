@@ -1,6 +1,5 @@
 package mekanism.common.content.matrix;
 
-import com.google.common.primitives.UnsignedLongs;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Map;
@@ -9,7 +8,6 @@ import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.math.ULong;
 import mekanism.api.math.Unsigned;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
@@ -169,7 +167,7 @@ public class MatrixEnergyContainer implements IEnergyContainer {
         if (amount == 0L || !multiblock.isFormed()) {
             return amount;
         }
-        @Unsigned long toAdd = UnsignedLongs.min(amount, getRemainingInput(), getNeeded());
+        @Unsigned long toAdd = ULong.min(amount, getRemainingInput(), getNeeded());
         if (toAdd == 0L) {
             //Exit if we don't actually have anything to add, either due to how much we need
             // or due to the remaining rate limit
@@ -191,7 +189,7 @@ public class MatrixEnergyContainer implements IEnergyContainer {
         // as we want to be as accurate as possible with the values we return
         // It is possible that the energy we have stored is a lot less than the amount we
         // can output at once such as if the matrix is almost empty.
-        amount = UnsignedLongs.min(amount, getRemainingOutput(), getEnergy());
+        amount = ULong.min(amount, getRemainingOutput(), getEnergy());
         if (amount != 0L && action.execute()) {
             //Increase how much we are outputting by the amount we accepted
             queuedOutput = queuedOutput.plusEqual(amount);

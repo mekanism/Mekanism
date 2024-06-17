@@ -1,6 +1,5 @@
 package mekanism.common.attachments.containers.item;
 
-import com.google.common.primitives.UnsignedLongs;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -18,7 +17,6 @@ import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.merged.MergedChemicalTank;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.math.ULong;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.security.IItemSecurityUtils;
@@ -114,12 +112,12 @@ public class ItemSlotsBuilder {
         }
         //Inversion of the insert check
         IStrictEnergyHandler itemEnergyHandler = EnergyCompatUtils.getStrictEnergyHandler(stack);
-        return itemEnergyHandler == null || itemEnergyHandler.insertEnergy(UnsignedLongs.MAX_VALUE, Action.SIMULATE) == UnsignedLongs.MAX_VALUE;
+        return itemEnergyHandler == null || itemEnergyHandler.insertEnergy(ULong.MAX_VALUE, Action.SIMULATE) == ULong.MAX_VALUE;
     };
     private static final BiPredicate<@NotNull ItemStack, @NotNull AutomationType> DRAIN_ENERGY_SLOT_CAN_INSERT = (stack, automationType) -> {
         IStrictEnergyHandler itemEnergyHandler = EnergyCompatUtils.getStrictEnergyHandler(stack);
         //if we can accept any energy that is currently stored in the container, then we allow inserting the item
-        return itemEnergyHandler != null && ULong.lt(itemEnergyHandler.insertEnergy(UnsignedLongs.MAX_VALUE, Action.SIMULATE), UnsignedLongs.MAX_VALUE);
+        return itemEnergyHandler != null && ULong.lt(itemEnergyHandler.insertEnergy(ULong.MAX_VALUE, Action.SIMULATE), ULong.MAX_VALUE);
     };
     private static final IBasicContainerCreator<ComponentBackedInventorySlot> DRAIN_ENERGY_SLOT_CREATOR = (type, attachedTo, containerIndex) -> new ComponentBackedInventorySlot(attachedTo,
           containerIndex, DRAIN_ENERGY_SLOT_CAN_EXTRACT, DRAIN_ENERGY_SLOT_CAN_INSERT, EnergyInventorySlot.DRAIN_VALIDATOR);

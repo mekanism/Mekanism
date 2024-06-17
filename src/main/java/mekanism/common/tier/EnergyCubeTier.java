@@ -1,13 +1,11 @@
 package mekanism.common.tier;
 
-import com.google.common.primitives.UnsignedLongs;
 import java.util.Locale;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.math.FloatingLong;
+import mekanism.api.math.ULong;
 import mekanism.api.math.Unsigned;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
-import mekanism.common.config.value.CachedFloatingLongValue;
 import mekanism.common.config.value.CachedUnsignedLongValue;
 import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.Nullable;
@@ -18,7 +16,7 @@ public enum EnergyCubeTier implements ITier, StringRepresentable {
     ADVANCED(BaseTier.ADVANCED, 16_000_000L, 16_000L),
     ELITE(BaseTier.ELITE, 64_000_000L, 64_000L),
     ULTIMATE(BaseTier.ULTIMATE, 256_000_000L, 256_000L),
-    CREATIVE(BaseTier.CREATIVE, UnsignedLongs.MAX_VALUE, UnsignedLongs.MAX_VALUE);
+    CREATIVE(BaseTier.CREATIVE, ULong.MAX_VALUE, ULong.MAX_VALUE);
 
     private final @Unsigned long baseMaxEnergy;
     private final @Unsigned long baseOutput;

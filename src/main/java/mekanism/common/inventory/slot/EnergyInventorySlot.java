@@ -1,6 +1,5 @@
 package mekanism.common.inventory.slot;
 
-import com.google.common.primitives.UnsignedLongs;
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -103,7 +102,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
         IStrictEnergyHandler itemEnergyHandler = EnergyCompatUtils.getStrictEnergyHandler(stack);
         //If we can extract any energy we are valid. Note: We can't just use FloatingLong.ONE as depending on conversion rates
         // that might be less than a single unit and thus can't be extracted
-        return itemEnergyHandler != null && itemEnergyHandler.extractEnergy(UnsignedLongs.MAX_VALUE, Action.SIMULATE) != 0L;
+        return itemEnergyHandler != null && itemEnergyHandler.extractEnergy(ULong.MAX_VALUE, Action.SIMULATE) != 0L;
     }
 
     private final Supplier<@Nullable Level> worldSupplier;

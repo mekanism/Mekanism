@@ -1,10 +1,7 @@
 package mekanism.common.block.attribute;
 
-import com.google.common.primitives.UnsignedLongs;
 import java.util.function.LongSupplier;
-import mekanism.api.math.FloatingLong;
-import mekanism.api.math.FloatingLongSupplier;
-import org.jetbrains.annotations.NotNull;
+import mekanism.api.math.ULong;
 import org.jetbrains.annotations.Nullable;
 
 //TODO: Eventually we may want to make these suppliers be used more like suppliers in that:
@@ -33,6 +30,6 @@ public class AttributeEnergy implements Attribute {
     }
 
     public long getStorage() {
-        return UnsignedLongs.max(getConfigStorage(), getUsage());
+        return ULong.max(getConfigStorage(), getUsage());
     }
 }

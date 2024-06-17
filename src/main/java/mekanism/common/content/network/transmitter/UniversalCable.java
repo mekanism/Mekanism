@@ -1,6 +1,5 @@
 package mekanism.common.content.network.transmitter;
 
-import com.google.common.primitives.UnsignedLongs;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -12,7 +11,6 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.math.ULong;
 import mekanism.api.math.Unsigned;
 import mekanism.api.providers.IBlockProvider;
@@ -82,9 +80,9 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
 
     private @Unsigned long getAvailablePull() {
         if (hasTransmitterNetwork()) {
-            return UnsignedLongs.min(getCapacityAsUnsignedLong(), getTransmitterNetwork().energyContainer.getNeeded());
+            return ULong.min(getCapacityAsUnsignedLong(), getTransmitterNetwork().energyContainer.getNeeded());
         }
-        return UnsignedLongs.min(getCapacityAsUnsignedLong(), buffer.getNeeded());
+        return ULong.min(getCapacityAsUnsignedLong(), buffer.getNeeded());
     }
 
     @NotNull

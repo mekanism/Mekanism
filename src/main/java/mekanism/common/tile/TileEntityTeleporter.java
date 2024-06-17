@@ -1,6 +1,5 @@
 package mekanism.common.tile;
 
-import com.google.common.primitives.UnsignedLongs;
 import it.unimi.dsi.fastutil.longs.Long2ObjectArrayMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
@@ -19,7 +18,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.event.MekanismTeleportEvent;
-import mekanism.api.math.FloatingLong;
+import mekanism.api.math.ULong;
 import mekanism.api.math.Unsigned;
 import mekanism.api.security.SecurityMode;
 import mekanism.api.text.EnumColor;
@@ -454,7 +453,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
                 return calculateEnergyCost(entity, targetWorld, pos);
             }
         }
-        return UnsignedLongs.MAX_VALUE;
+        return ULong.MAX_VALUE;
     }
 
     @NotNull

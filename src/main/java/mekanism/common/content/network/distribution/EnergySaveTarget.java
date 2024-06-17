@@ -1,9 +1,9 @@
 package mekanism.common.content.network.distribution;
 
-import com.google.common.primitives.UnsignedLongs;
 import java.util.Collection;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.math.ULong;
 import mekanism.api.math.Unsigned;
 import mekanism.common.lib.distribution.SplitInfo;
 import mekanism.common.lib.distribution.Target;
@@ -60,7 +60,7 @@ public class EnergySaveTarget<HANDLER extends EnergySaveTarget.SaveHandler> exte
             if (neededEnergy == 0L) {
                 splitInfo.send(0L);
             } else {
-                amount = UnsignedLongs.min(amount, neededEnergy);
+                amount = ULong.min(amount, neededEnergy);
                 neededEnergy -= amount;
                 splitInfo.send(amount);
             }
@@ -70,7 +70,7 @@ public class EnergySaveTarget<HANDLER extends EnergySaveTarget.SaveHandler> exte
             if (neededEnergy == 0L) {
                 return 0L;
             }
-            return UnsignedLongs.min(energyToSend, neededEnergy);
+            return ULong.min(energyToSend, neededEnergy);
         }
 
         protected final void save() {

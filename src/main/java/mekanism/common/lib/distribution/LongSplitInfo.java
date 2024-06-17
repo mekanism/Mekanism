@@ -13,8 +13,8 @@ public class LongSplitInfo extends SplitInfo<@Unsigned Long> {
     public LongSplitInfo(@Unsigned long amountToSplit, int totalTargets) {
         super(totalTargets);
         this.amountToSplit = amountToSplit;
-        amountPerTarget = toSplitAmong == 0 ? 0 : Long.divideUnsigned(amountToSplit, toSplitAmong);
-        remainder = toSplitAmong == 0 ? 0 : Long.remainderUnsigned(amountToSplit, toSplitAmong);
+        amountPerTarget = toSplitAmong == 0 ? 0 : ULong.divideLong(amountToSplit, toSplitAmong);
+        remainder = toSplitAmong == 0 ? 0 : ULong.remainder(amountToSplit, toSplitAmong);
     }
 
     @Override
@@ -36,8 +36,8 @@ public class LongSplitInfo extends SplitInfo<@Unsigned Long> {
         // full per side split
         if (amountNeeded != amountPerTarget && toSplitAmong != 0) {
             long amountPerLast = amountPerTarget;
-            amountPerTarget = Long.divideUnsigned(amountToSplit, toSplitAmong);
-            remainder = Long.remainderUnsigned(amountToSplit, toSplitAmong);
+            amountPerTarget = ULong.divideLong(amountToSplit, toSplitAmong);
+            remainder = ULong.remainder(amountToSplit, toSplitAmong);
             if (!amountPerChanged && amountPerTarget != amountPerLast) {
                 amountPerChanged = true;
             }

@@ -1,6 +1,5 @@
 package mekanism.common.lib.multiblock;
 
-import com.google.common.primitives.UnsignedLongs;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,6 +28,7 @@ import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
+import mekanism.api.math.ULong;
 import mekanism.common.capabilities.chemical.dynamic.IGasTracker;
 import mekanism.common.capabilities.chemical.dynamic.IInfusionTracker;
 import mekanism.common.capabilities.chemical.dynamic.IPigmentTracker;
@@ -252,7 +252,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
         }
         if (shouldCap(CacheSubstance.ENERGY)) {
             for (IEnergyContainer container : getEnergyContainers(null)) {
-                container.setEnergy(UnsignedLongs.min(container.getEnergy(), container.getMaxEnergy()));
+                container.setEnergy(ULong.min(container.getEnergy(), container.getMaxEnergy()));
             }
         }
         updateEjectors(world);

@@ -1,9 +1,8 @@
 package mekanism.client.recipe_viewer.emi.recipe;
 
-import com.google.common.primitives.UnsignedLongs;
 import dev.emi.emi.api.widget.WidgetHolder;
 import java.util.List;
-import mekanism.api.math.FloatingLong;
+import mekanism.api.math.ULong;
 import mekanism.api.math.Unsigned;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
 import mekanism.client.gui.element.gauge.GaugeType;
@@ -36,7 +35,7 @@ public class ItemStackToEnergyEmiRecipe extends MekanismEmiHolderRecipe<ItemStac
         if (outputDefinition.size() > 1) {
             @Unsigned long maxEnergy = 0;
             for (Long floatingLong : outputDefinition) {
-                maxEnergy = UnsignedLongs.max(maxEnergy, floatingLong);
+                maxEnergy = ULong.max(maxEnergy, floatingLong);
             }
             @Unsigned long finalMaxEnergy = maxEnergy;
             return new IEnergyInfoHandler() {

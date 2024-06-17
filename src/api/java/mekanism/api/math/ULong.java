@@ -7,6 +7,8 @@ import java.math.MathContext;
 @SuppressWarnings("unused")
 public class ULong {
 
+    public static final @Unsigned long MAX_VALUE = -1L; // Equivalent to 2^64 - 1
+
     //Copied from UnsignedLong
     public static BigInteger toBigInteger(@Unsigned long value) {
         BigInteger bigInt = BigInteger.valueOf(value & MathUtils.UNSIGNED_MASK);
@@ -36,6 +38,32 @@ public class ULong {
             return (double) dividend / divisor;
         }
         return toBigDecimal(dividend).divide(toBigDecimal(divisor), MathContext.DECIMAL64).doubleValue();
+    }
+
+    /**
+     * Returns the unsigned quotient of dividing the first argument by the second where each argument and the result is interpreted as an unsigned value.
+     *
+     * @param dividend the value to be divided
+     * @param divisor  the value doing the dividing
+     *
+     * @return the unsigned quotient of the first argument divided by the second argument
+     */
+    public static long divideLong(long dividend, long divisor) {
+        return Long.divideUnsigned(dividend, divisor);
+    }
+
+    /**
+     * Returns the unsigned remainder from dividing the first argument by the second where each argument and the result is interpreted as an unsigned value.
+     *
+     * @param dividend the value to be divided
+     * @param divisor  the value doing the dividing
+     *
+     * @return the unsigned remainder of the first argument divided by the second argument
+     *
+     * @see #divideLong
+     */
+    public static long remainder(long dividend, long divisor) {
+        return Long.remainderUnsigned(dividend, divisor);
     }
 
     /**
@@ -123,5 +151,55 @@ public class ULong {
      */
     public static boolean gte(@Unsigned long lhs, @Unsigned long rhs) {
         return Long.compareUnsigned(lhs, rhs) >= 0;
+    }
+
+    /**
+     * Returns the smallest of two {@code @Unsigned long} values. That is, the result is the argument closer to 0.
+     *
+     * @param a an argument.
+     * @param b another argument.
+     *
+     * @return the smallest of {@code a} and {@code b}.
+     */
+    public static @Unsigned long min(@Unsigned long a, @Unsigned long b) {
+        return lte(a, b) ? a : b;
+    }
+
+    /**
+     * Returns the smallest of three {@code @Unsigned long} values. That is, the result is the argument closer to 0.
+     *
+     * @param a an argument.
+     * @param b another argument.
+     * @param c another argument.
+     *
+     * @return the smallest of {@code a}, {@code b} and {@code c}.
+     */
+    public static @Unsigned long min(@Unsigned long a, @Unsigned long b, @Unsigned long c) {
+        return min(min(a, b), c);
+    }
+
+    /**
+     * Returns the greatest of two {@code long} values. That is, the result is the argument closer to the value of {@link #MAX_VALUE}.
+     *
+     * @param a an argument.
+     * @param b another argument.
+     *
+     * @return the largest of {@code a} and {@code b}.
+     */
+    public static @Unsigned long max(@Unsigned long a, @Unsigned long b) {
+        return gte(a, b) ? a : b;
+    }
+
+    /**
+     * Returns the greatest of three {@code long} values. That is, the result is the argument closer to the value of {@link #MAX_VALUE}.
+     *
+     * @param a an argument.
+     * @param b another argument.
+     * @param c another argument.
+     *
+     * @return the largest of {@code a} and {@code b} and {@code c}.
+     */
+    public static @Unsigned long max(@Unsigned long a, @Unsigned long b, @Unsigned long c) {
+        return max(max(a, b), c);
     }
 }

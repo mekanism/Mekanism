@@ -1,6 +1,5 @@
 package mekanism.common.content.gear.shared;
 
-import com.google.common.primitives.UnsignedLongs;
 import java.util.function.LongSupplier;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
@@ -10,8 +9,7 @@ import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
-import mekanism.api.math.FloatingLong;
-import mekanism.api.math.FloatingLongSupplier;
+import mekanism.api.math.ULong;
 import mekanism.api.math.Unsigned;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.registries.MekanismModules;
@@ -44,7 +42,7 @@ public class ModuleEnergyUnit implements ICustomModule<ModuleEnergyUnit> {
         IStrictEnergyHandler energyHandlerItem = Capabilities.STRICT_ENERGY.getCapability(stack);
         if (energyHandlerItem instanceof IMekanismStrictEnergyHandler energyHandler) {
             for (IEnergyContainer energyContainer : energyHandler.getEnergyContainers(null)) {
-                energyContainer.setEnergy(UnsignedLongs.min(energyContainer.getEnergy(), energyContainer.getMaxEnergy()));
+                energyContainer.setEnergy(ULong.min(energyContainer.getEnergy(), energyContainer.getMaxEnergy()));
             }
         }
     }

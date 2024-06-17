@@ -20,7 +20,6 @@ import mekanism.api.IDisableableEnum;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.ConstantPredicates;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.math.ULong;
 import mekanism.api.math.Unsigned;
 import mekanism.api.radial.IRadialDataHelper;
@@ -194,7 +193,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     }
 
     private static @Unsigned long getDestroyEnergy(@Unsigned long baseDestroyEnergy, float hardness) {
-        return hardness == 0 ? Long.divideUnsigned(baseDestroyEnergy, 2) : baseDestroyEnergy;
+        return hardness == 0 ? ULong.divideLong(baseDestroyEnergy, 2) : baseDestroyEnergy;
     }
 
     private @Unsigned long getDestroyEnergy(ItemStack itemStack) {

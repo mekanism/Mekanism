@@ -1,6 +1,5 @@
 package mekanism.common.tile.laser;
 
-import com.google.common.primitives.UnsignedLongs;
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
 import java.util.Locale;
@@ -24,7 +23,6 @@ import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableEnum;
-import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.registries.MekanismBlocks;
@@ -88,7 +86,7 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
 
     @Override
     protected @Unsigned long toFire() {
-        return shouldFire() ? UnsignedLongs.min(super.toFire(), maxThreshold) : 0L;
+        return shouldFire() ? ULong.min(super.toFire(), maxThreshold) : 0L;
     }
 
     @Override

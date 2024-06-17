@@ -11,8 +11,8 @@ import java.lang.annotation.Target;
  * @see Long#divideUnsigned(long, long)
  * @see Long#compareUnsigned(long, long)
  * @see Long#toUnsignedString(long)
- * @see com.google.common.primitives.UnsignedLongs#max(long...)
- * @see com.google.common.primitives.UnsignedLongs#min(long...)
+ * @see ULong#max(long, long)
+ * @see ULong#min(long, long)
  */
 @Documented
 @Target(ElementType.TYPE_USE)

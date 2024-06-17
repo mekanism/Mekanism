@@ -1,6 +1,5 @@
 package mekanism.common.content.gear.mekasuit;
 
-import com.google.common.primitives.UnsignedLongs;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
@@ -9,7 +8,6 @@ import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.math.ULong;
 import mekanism.api.math.Unsigned;
 import mekanism.common.Mekanism;
@@ -67,7 +65,7 @@ public record ModuleChargeDistributionUnit(boolean chargeSuit, boolean chargeInv
 
     private void chargeInventory(IEnergyContainer energyContainer, Player player) {
         //Only try to charge up to how much energy we actually have stored
-        @Unsigned long toCharge = UnsignedLongs.min(MekanismConfig.gear.mekaSuitInventoryChargeRate.get(), energyContainer.getEnergy());
+        @Unsigned long toCharge = ULong.min(MekanismConfig.gear.mekaSuitInventoryChargeRate.get(), energyContainer.getEnergy());
         if (toCharge.isZero()) {
             return;
         }

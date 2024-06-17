@@ -6,8 +6,7 @@ import java.util.function.LongSupplier;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.attribute.ChemicalAttribute;
 import mekanism.api.chemical.gas.Gas;
-import mekanism.api.math.FloatingLong;
-import mekanism.api.math.FloatingLongSupplier;
+import mekanism.api.math.ULong;
 import mekanism.api.providers.IGasProvider;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.text.APILang;
@@ -237,7 +236,7 @@ public class GasAttributes {
                 //Single tick, no division necessary
                 return energyDensity.getAsLong();
             }
-            return Long.divideUnsigned(energyDensity.getAsLong(), ticks);
+            return ULong.divideLong(energyDensity.getAsLong(), ticks);
         }
 
         @Override
