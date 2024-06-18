@@ -1,8 +1,11 @@
 package mekanism.common.content.network.transmitter;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import mekanism.api.Chunk3D;
@@ -25,11 +28,17 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -64,6 +73,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
                                                 ConnectionType.NORMAL};
     private final AbstractAcceptorCache<ACCEPTOR, ?> acceptorCache;
     public byte currentTransmitterConnections = 0x00;
+    private Block[] facades = {null, null, null, null, null, null};
 
     private final TileEntityTransmitter transmitterTile;
     private final Set<TransmissionType> supportedTransmissionTypes;
@@ -120,6 +130,22 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
             connectionTypes[index] = type;
             getTransmitterTile().sideChanged(side, old, type);
         }
+    }
+
+    public @Nullable Block getFacade(@NotNull Direction side) {
+        return facades[side.ordinal()];
+    }
+
+    public void setFacade(@NotNull Direction side, @Nullable Block facade) {
+        facades[side.ordinal()] = facade;
+    }
+
+    public List<Block> getFacades() {
+        return Arrays.stream(facades).filter(Objects::nonNull).toList();
+    }
+
+    public void clearFacades() {
+        facades = new Block[]{null, null, null, null, null, null};
     }
 
     @Override
@@ -409,6 +435,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         updateTag.putByte(SerializationConstants.CURRENT_CONNECTIONS, currentTransmitterConnections);
         updateTag.putByte(SerializationConstants.CURRENT_ACCEPTORS, acceptorCache.currentAcceptorConnections);
         updateTag.putIntArray(SerializationConstants.CONNECTION, getRawConnections());
+        addFacadesTag(updateTag);
         //Transmitter
         if (hasTransmitterNetwork()) {
             updateTag.putUUID(SerializationConstants.NETWORK, getTransmitterNetwork().getUUID());
@@ -420,6 +447,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         NBTUtils.setByteIfPresent(tag, SerializationConstants.CURRENT_CONNECTIONS, connections -> currentTransmitterConnections = connections);
         NBTUtils.setByteIfPresent(tag, SerializationConstants.CURRENT_ACCEPTORS, acceptors -> acceptorCache.currentAcceptorConnections = acceptors);
         readRawConnections(tag);
+        readFacades(tag);
         //Transmitter
         NBTUtils.setUUIDIfPresentElse(tag, SerializationConstants.NETWORK, networkID -> {
             if (hasTransmitterNetwork() && getTransmitterNetwork().getUUID().equals(networkID)) {
@@ -452,6 +480,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         NBTUtils.setByteIfPresent(nbtTags, SerializationConstants.CURRENT_CONNECTIONS, connections -> currentTransmitterConnections = connections);
         NBTUtils.setByteIfPresent(nbtTags, SerializationConstants.CURRENT_ACCEPTORS, acceptors -> acceptorCache.currentAcceptorConnections = acceptors);
         readRawConnections(nbtTags);
+        readFacades(nbtTags);
     }
 
     @NotNull
@@ -460,6 +489,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         nbtTags.putByte(SerializationConstants.CURRENT_CONNECTIONS, currentTransmitterConnections);
         nbtTags.putByte(SerializationConstants.CURRENT_ACCEPTORS, acceptorCache.currentAcceptorConnections);
         nbtTags.putIntArray(SerializationConstants.CONNECTION, getRawConnections());
+        addFacadesTag(nbtTags);
         return nbtTags;
     }
 
@@ -477,6 +507,41 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
             for (int i = 0; i < raw.length && i < EnumUtils.DIRECTIONS.length; i++) {
                 setConnectionTypeRaw(EnumUtils.DIRECTIONS[i], ConnectionType.BY_ID.apply(raw[i]));
             }
+        }
+    }
+
+    private void addFacadesTag(CompoundTag nbtTags) {
+        ListTag facades = new ListTag();
+        boolean empty = true;
+        for (Block facade : this.facades) {
+            if (facade != null) {
+                empty = false;
+                facades.add(StringTag.valueOf(BuiltInRegistries.BLOCK.getKey(facade).toString()));
+            } else {
+                facades.add(StringTag.valueOf(""));
+            }
+        }
+        if (!empty) {
+            nbtTags.put(SerializationConstants.FACADES, facades);
+        }
+    }
+
+    private void readFacades(CompoundTag nbtTags) {
+        if (nbtTags.contains(SerializationConstants.FACADES)) {
+            ListTag facades = nbtTags.getList(SerializationConstants.FACADES, Tag.TAG_STRING);
+            for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
+                String id = facades.getString(i);
+                if (!id.isEmpty()) {
+                    Block block = BuiltInRegistries.BLOCK.get(ResourceLocation.parse(id));
+                    if (block != Blocks.AIR) {
+                        this.facades[i] = block;
+                        continue;
+                    }
+                }
+                this.facades[i] = null;
+            }
+        } else {
+            clearFacades();
         }
     }
 

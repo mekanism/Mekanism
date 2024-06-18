@@ -1,6 +1,9 @@
 package mekanism.client.render.obj;
 
 import java.util.function.Function;
+import appeng.client.render.cablebus.CableBusModel;
+import appeng.client.render.cablebus.FacadeBuilder;
+import mekanism.common.Mekanism;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
@@ -28,7 +31,13 @@ public class TransmitterModel implements IUnbakedGeometry<TransmitterModel> {
     @Override
     public BakedModel bake(IGeometryBakingContext owner, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
           ItemOverrides overrides) {
-        return new TransmitterBakedModel(internal, glass, owner, baker, spriteGetter, modelTransform, overrides);
+        if (Mekanism.hooks.AE2Loaded) {
+            BakedModel facadeModel = baker.bake(CableBusModel.TRANSLUCENT_FACADE_MODEL, modelTransform, spriteGetter);
+            FacadeBuilder facadeBuilder = new FacadeBuilder(baker, facadeModel);
+            return new TransmitterBakedModel(internal, glass, owner, baker, spriteGetter, modelTransform, overrides, facadeBuilder);
+        } else {
+            return new TransmitterBakedModel(internal, glass, owner, baker, spriteGetter, modelTransform, overrides, null);
+        }
     }
 
     @Override

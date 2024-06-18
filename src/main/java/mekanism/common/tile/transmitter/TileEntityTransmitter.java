@@ -3,6 +3,7 @@ package mekanism.common.tile.transmitter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
+import appeng.client.render.cablebus.CableBusRenderState;
 import mekanism.api.IAlloyInteraction;
 import mekanism.api.IConfigurable;
 import mekanism.api.providers.IBlockProvider;
@@ -18,6 +19,7 @@ import mekanism.common.block.states.TransmitterType;
 import mekanism.common.block.states.TransmitterType.Size;
 import mekanism.common.block.transmitter.BlockLargeTransmitter;
 import mekanism.common.block.transmitter.BlockSmallTransmitter;
+import mekanism.common.block.transmitter.BlockTransmitter;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.proxy.ProxyConfigurable;
 import mekanism.common.capabilities.proxy.ProxyConfigurable.ISidedConfigurable;
@@ -25,6 +27,7 @@ import mekanism.common.capabilities.resolver.BasicSidedCapabilityResolver;
 import mekanism.common.content.network.transmitter.BufferedTransmitter;
 import mekanism.common.content.network.transmitter.IUpgradeableTransmitter;
 import mekanism.common.content.network.transmitter.Transmitter;
+import mekanism.common.integration.ae2.AE2Integration;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.lib.transmitter.DynamicBufferedNetwork;
 import mekanism.common.lib.transmitter.DynamicNetwork;
@@ -45,6 +48,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
@@ -283,6 +287,16 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
         return getTransmitter().onRightClick(player, side);
     }
 
+    @Override
+    public void blockRemoved() {
+        super.blockRemoved();
+        if (Mekanism.hooks.AE2Loaded) {
+            for (Block facade : getTransmitter().getFacades()) {
+                Block.popResource(getWorldNN(), worldPosition, AE2Integration.getFacadeItem(facade));
+            }
+        }
+    }
+
     public List<VoxelShape> getCollisionBoxes() {
         List<VoxelShape> list = new ArrayList<>();
         boolean isSmall = getTransmitterType().getSize() == Size.SMALL;
@@ -296,6 +310,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
                 }
             }
         }
+        list.addAll(BlockTransmitter.getFacadeShapes(this));
         //Center position
         list.add(isSmall ? BlockSmallTransmitter.CENTER : BlockLargeTransmitter.CENTER);
         return list;
@@ -306,7 +321,11 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
     public ModelData getModelData() {
         TransmitterModelData data = initModelData();
         updateModelData(data);
-        return ModelData.builder().with(TRANSMITTER_PROPERTY, data).build();
+        ModelData.Builder builder = ModelData.builder().with(TRANSMITTER_PROPERTY, data);
+        if (Mekanism.hooks.AE2Loaded) {
+            builder.with(CableBusRenderState.PROPERTY, AE2Integration.getFacadeRenderData(this, level));
+        }
+        return builder.build();
     }
 
     protected void updateModelData(TransmitterModelData modelData) {

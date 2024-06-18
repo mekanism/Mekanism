@@ -421,13 +421,7 @@ public class WorldUtils {
     public static void dismantleBlock(BlockState state, Level world, BlockPos pos, @Nullable BlockEntity tile, @Nullable Entity entity, ItemStack tool) {
         if (world instanceof ServerLevel level) {
             if (entity instanceof Player player) {
-                for (ItemStack dropStack : getDrops(state, level, pos, tile, entity, tool)) {
-                    if (player.addItem(dropStack)) {
-                        world.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.2F, (world.random.nextFloat() - world.random.nextFloat()) * 1.4F + 2.0F);
-                    } else {
-                        player.drop(dropStack, false);
-                    }
-                }
+                tryGivePlayer(world, player, getDrops(state, level, pos, tile, entity, tool));
             } else {
                 for (ItemEntity drop : getDrops(state, level, pos, tile, entity, tool, true)) {
                     if (!drop.getItem().isEmpty()) {
@@ -488,6 +482,26 @@ public class WorldUtils {
             }
         }
         return result;
+	}
+
+    /**
+     * Adds the stacks to the player inventory or drops them if there is no space.
+     */
+    public static void tryGivePlayer(Level world, Player player, Iterable<ItemStack> stacks) {
+        for (ItemStack dropStack : stacks) {
+            tryGivePlayer(world, player, dropStack);
+        }
+    }
+
+    /**
+     * Adds the stack to the player inventory or drops it if there is no space.
+     */
+    public static void tryGivePlayer(Level world, Player player, ItemStack stack) {
+        if (player.addItem(stack)) {
+            world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.2F, (world.random.nextFloat() - world.random.nextFloat()) * 1.4F + 2.0F);
+        } else {
+            player.drop(stack, false);
+        }
     }
 
     /**

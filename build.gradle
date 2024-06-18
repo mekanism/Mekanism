@@ -425,6 +425,7 @@ dependencies {
     //localRuntime(jeiTweaker)
 
     compileOnly("dev.gigaherz.jsonthings:JsonThings-${previous_minecraft_version}:${json_things_version}")
+    implementation("appeng:appliedenergistics2-neoforge:${ae2_version}")
 
     //Mods we have dependencies on but don't bother loading into the dev environment
     //compileOnly("curse.maven:projecte-api-226410:${projecte_api_id}")
@@ -438,8 +439,6 @@ dependencies {
     compileOnly("curse.maven:female-gender-forge-481655:${wildfire_gender_mod_id}")
 
     //Dependencies for data generators for mod compat reference
-    //TODO: Switch back to datagenMainImplementation when it updated
-    datagenMainCompileOnly("appeng:appliedenergistics2-neoforge:${ae2_version}")
     datagenMainRuntimeOnly("com.github.glitchfiend:GlitchCore-neoforge:${minecraft_version}-${glitchcore_version}")
     datagenMainRuntimeOnly("com.github.glitchfiend:TerraBlender-neoforge:${minecraft_version}-${terrablender_version}")
     datagenMainImplementation("com.github.glitchfiend:BiomesOPlenty-neoforge:${minecraft_version}-${biomesoplenty_version}")

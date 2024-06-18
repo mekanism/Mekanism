@@ -1,5 +1,9 @@
 package mekanism.client.render.obj;
 
+import appeng.block.networking.CableBusBlock;
+import appeng.client.render.cablebus.CableBusRenderState;
+import appeng.client.render.cablebus.FacadeBuilder;
+import appeng.client.render.cablebus.FacadeRenderState;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -10,14 +14,19 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.EnumMap;
+import java.util.Map;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.model.data.TransmitterModelData;
 import mekanism.client.render.obj.TransmitterModelConfiguration.IconStatus;
+import mekanism.common.Mekanism;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EnumUtils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -25,15 +34,18 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.ChunkRenderTypeSet;
 import net.neoforged.neoforge.client.model.BakedModelWrapper;
 import net.neoforged.neoforge.client.model.SimpleModelState;
 import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.client.model.data.ModelProperty;
 import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
 import net.neoforged.neoforge.client.model.obj.ObjModel;
 import org.jetbrains.annotations.NotNull;
@@ -46,6 +58,7 @@ public class TransmitterBakedModel extends BakedModelWrapper<BakedModel> {
 
     private static final ChunkRenderTypeSet CUTOUT = ChunkRenderTypeSet.of(RenderType.cutout());
     private static final ChunkRenderTypeSet FULL = ChunkRenderTypeSet.of(RenderType.cutout(), RenderType.translucent());
+    private static final ModelProperty<FacadeData> FACADE_DATA = new ModelProperty<>();
 
     private final IGeometryBakingContext owner;
     private final ModelBaker baker;
@@ -55,6 +68,9 @@ public class TransmitterBakedModel extends BakedModelWrapper<BakedModel> {
     private final LoadingCache<SidedConnection, List<BakedQuad>> internalPartsCache;
     @Nullable
     private final LoadingCache<SidedConnection, List<BakedQuad>> glassPartsCache;
+    //If AE2 is installed this is a FacadeBuilder but if not it cannot be class-loaded
+    @Nullable
+    private final Object facadeBuilder;
     //TODO: Debate making transmitter models actually have cleanup code and have them also add listeners for opaque transmitters so that when the config
     // changes then these update accordingly
     private final LoadingCache<TransmitterDataKey, List<BakedQuad>> cache = CacheBuilder.newBuilder().build(new CacheLoader<>() {
@@ -70,12 +86,17 @@ public class TransmitterBakedModel extends BakedModelWrapper<BakedModel> {
                 SidedConnection sidedConnection = new SidedConnection(side, connectionType, iconStatus);
                 quads.addAll(partsCache.getUnchecked(sidedConnection));
             }
+            if (facadeBuilder != null && key.facadeData != null) {
+                CableBusRenderState renderState = (CableBusRenderState) key.facadeRenderState;
+                ((FacadeBuilder) facadeBuilder).getFacadeMesh(renderState, () -> key.rand, key.facadeData.level, key.facadeData.facadeData, null).
+                        forEach(view -> quads.add(view.toBlockBakedQuad()));
+            }
             return quads;
         }
     });
 
     public TransmitterBakedModel(ObjModel internal, @Nullable ObjModel glass, IGeometryBakingContext owner, ModelBaker baker,
-          Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ItemOverrides overrides) {
+          Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ItemOverrides overrides, @Nullable Object facadeBuilder) {
         //We define our baked variant to be how the item is. As we should always have model data when we have a state
         super(internal.bake(new VisibleModelConfiguration(owner, Arrays.stream(EnumUtils.DIRECTIONS).map(side -> getPartName(side, ConnectionType.NONE)).toList()),
               baker, spriteGetter, modelTransform, overrides));
@@ -86,6 +107,31 @@ public class TransmitterBakedModel extends BakedModelWrapper<BakedModel> {
         this.overrides = overrides;
         this.internalPartsCache = CacheBuilder.newBuilder().build(createPartCacheLoader(internal));
         this.glassPartsCache = glass == null ? null : CacheBuilder.newBuilder().build(createPartCacheLoader(glass));
+        this.facadeBuilder = facadeBuilder;
+    }
+
+    @Override
+    public ModelData getModelData(BlockAndTintGetter level, BlockPos pos, BlockState state, ModelData modelData) {
+        if (Mekanism.hooks.AE2Loaded) {
+            CableBusRenderState renderState = modelData.get(CableBusRenderState.PROPERTY);
+            if (renderState != null && !renderState.getFacades().isEmpty()) {
+                BlockRenderDispatcher dispatcher = Minecraft.getInstance().getBlockRenderer();
+                EnumMap<Direction, ModelData> facadeModelData = new EnumMap<>(Direction.class);
+                for (Map.Entry<Direction, FacadeRenderState> entry : renderState.getFacades().entrySet()) {
+                    Direction side = entry.getKey();
+                    CableBusBlock.RENDERING_FACADE_DIRECTION.set(side);
+                    try {
+                        BlockState facadeState = entry.getValue().getSourceBlock();
+                        BakedModel model = dispatcher.getBlockModel(facadeState);
+                        facadeModelData.put(side, model.getModelData(level, pos, facadeState, modelData));
+                    } finally {
+                        CableBusBlock.RENDERING_FACADE_DIRECTION.remove();
+                    }
+                }
+                return super.getModelData(level, pos, state, modelData.derive().with(FACADE_DATA, new FacadeData(facadeModelData, level, pos)).build());
+            }
+        }
+        return super.getModelData(level, pos, state, modelData);
     }
 
     @Override
@@ -107,7 +153,15 @@ public class TransmitterBakedModel extends BakedModelWrapper<BakedModel> {
                 //Skip rendering the glass if we don't actually have any glass, or we don't have a color for it
                 return Collections.emptyList();
             }
-            return cache.getUnchecked(new TransmitterDataKey(data, renderGlass));
+            List<BakedQuad> quads;
+            FacadeData facadeData = extraData.get(FACADE_DATA);
+            if (facadeData != null) {
+                CableBusRenderState renderState = extraData.get(CableBusRenderState.PROPERTY);
+                quads = cache.getUnchecked(new TransmitterDataKey(data, renderGlass, renderState, facadeData, rand));
+            } else {
+                quads = cache.getUnchecked(new TransmitterDataKey(data, renderGlass, null, null, null));
+            }
+            return quads;
         }
         //Fallback to our "default" model arrangement. The item variant uses this
         return super.getQuads(state, null, rand, extraData, renderType);
@@ -168,16 +222,36 @@ public class TransmitterBakedModel extends BakedModelWrapper<BakedModel> {
     private record SidedConnection(Direction side, ConnectionType connection, IconStatus status) {
     }
 
+    private record FacadeData(EnumMap<Direction, ModelData> facadeData, BlockAndTintGetter level, BlockPos pos) {
+    }
+
     private static class TransmitterDataKey {
 
         private final TransmitterModelData data;
         private final boolean renderGlass;
+        //Actually null or a CableBusRenderState, but it can only be class-loaded when AE2 is actually loaded
+        @Nullable
+        private final Object facadeRenderState;
+        //Just required for loading and not for the hash as facades are already in the renderState
+        @Nullable
+        private final FacadeData facadeData;
+        //Also only for loading facades
+        @Nullable
+        private final RandomSource rand;
         private final int hash;
 
-        public TransmitterDataKey(TransmitterModelData data, boolean renderGlass) {
+        public TransmitterDataKey(TransmitterModelData data, boolean renderGlass, @Nullable Object facadeRenderState, @Nullable FacadeData facadeData, @Nullable RandomSource rand) {
             this.data = data;
             this.renderGlass = renderGlass;
-            this.hash = Objects.hash(this.data.getConnectionsMap(), this.renderGlass);
+            this.facadeRenderState = facadeRenderState;
+            this.facadeData = facadeData;
+            this.rand = rand;
+            if (facadeRenderState == null) {
+                this.hash = Objects.hash(this.data.getConnectionsMap(), this.renderGlass);
+            } else {
+                CableBusRenderState state = (CableBusRenderState) facadeRenderState;
+                this.hash = Objects.hash(this.data.getConnectionsMap(), this.renderGlass, state.getAttachments(), state.getFacades(), state.getPos());
+            }
         }
 
         @Override
@@ -192,7 +266,7 @@ public class TransmitterBakedModel extends BakedModelWrapper<BakedModel> {
             }
             //Note: We don't compare data directly as if we aren't rendering glass it not being colored is irrelevant
             // and if we are rendering glass, it will always be colored as we short circuit when it isn't colored
-            return obj instanceof TransmitterDataKey other && renderGlass == other.renderGlass && data.getConnectionsMap().equals(other.data.getConnectionsMap());
+            return obj instanceof TransmitterDataKey other && renderGlass == other.renderGlass && data.getConnectionsMap().equals(other.data.getConnectionsMap()) && Objects.equals(facadeData, other.facadeData);
         }
     }
 }
