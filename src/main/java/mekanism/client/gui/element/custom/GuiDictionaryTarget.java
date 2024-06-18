@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
 import mekanism.api.chemical.ChemicalStack;
@@ -27,6 +28,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.TagCache;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
@@ -34,12 +36,14 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.item.alchemy.PotionContents;
-import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.capabilities.ItemCapability;
@@ -161,11 +165,15 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
                         tags.put(DictionaryTagType.MOB_EFFECT, List.copyOf(effectTags));
                     }
                     //Get any attribute tags
-                    ItemAttributeModifiers modifiers = itemStack.get(DataComponents.ATTRIBUTE_MODIFIERS);
-                    if (modifiers != null && !modifiers.modifiers().isEmpty()) {
+                    Set<Holder<Attribute>> attributes = new HashSet<>();
+                    BiConsumer<Holder<Attribute>, AttributeModifier> attributeCollector = (holder, modifier) -> attributes.add(holder);
+                    for (EquipmentSlot slotType : EnumUtils.EQUIPMENT_SLOT_TYPES) {
+                        itemStack.forEachModifier(slotType, attributeCollector);
+                    }
+                    if (!attributes.isEmpty()) {
                         //Only add them though if it has any attributes at all
-                        tags.put(DictionaryTagType.ATTRIBUTE, TagCache.getTagsAsStrings(modifiers.modifiers().stream()
-                              .flatMap(attribute -> attribute.attribute().tags())
+                        tags.put(DictionaryTagType.ATTRIBUTE, TagCache.getTagsAsStrings(attributes.stream()
+                              .flatMap(Holder::tags)
                               .distinct()
                         ));
                     }
