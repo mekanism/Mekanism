@@ -20,7 +20,7 @@ plugins {
     id('eclipse')
     id('idea')
     id('maven-publish')
-    id('net.neoforged.gradle.userdev') version('7.0.153')//https://projects.neoforged.net/neoforged/neogradle
+    id('net.neoforged.moddev')
 }
 
 tasks.named('wrapper', Wrapper).configure {
@@ -71,7 +71,6 @@ sourceSets {
         compileClasspath += api.output
     }
     gameTest {
-        runs.modIdentifier = 'mekanismtests'
         compileClasspath += api.output
     }
 }
@@ -83,6 +82,7 @@ configurations {
     extendConfigurations(compileOnly, apiCompileOnly, testCompileOnly)
     extendConfigurations(runtimeOnly, apiRuntimeOnly)
     extendConfigurations(localRuntime, apiLocalRuntime)
+    gameTestRuntimeClasspath.extendsFrom runtimeClasspath
     datagenNonMod
 }
 
@@ -96,7 +96,6 @@ setupExtraSourceSets(sourceSets.gameTest, false)
 // based on the primary added source set
 for (String name : secondaryModules) {
     def sourceSet = sourceSets.create(name)
-    sourceSet.runs.modIdentifier = name
     sourceSet.resources {
         //Add the generated module resources
         srcDirs += ["src/datagen/generated/mekanism${name}"]
@@ -155,11 +154,13 @@ SourceSet setupExtraSourceSet(SourceSet baseSourceSet, String extra) {
     extraSourceSet.resources.srcDirs = ["src/${extra}/${name}/resources"]
     extraSourceSet.compileClasspath += project.sourceSets.api.output
     extraSourceSet.compileClasspath += project.sourceSets.main.output
+    extraSourceSet.runtimeClasspath += project.sourceSets.main.runtimeClasspath
     if (baseSourceSet != project.sourceSets.main) {
         //If the base sourceSet is main it already is the extra source set and has a reference to the base one from before this if statement
         extraSourceSet.compileClasspath += getExtraSourceSet(project.sourceSets.main, extra).get().output
         extraSourceSet.compileClasspath += baseSourceSet.output
-        extraSourceSet.runs.modIdentifier = name
+        extraSourceSet.runtimeClasspath += baseSourceSet.runtimeClasspath
+        neoForge.mods.maybeCreate(name).modSourceSets.add(extraSourceSet)
     }
     return extraSourceSet
 }
@@ -189,7 +190,7 @@ def setupTasks(SourceSet sourceSet) {
     tasks.named(sourceSet.processResourcesTaskName, ProcessResources).configure { ProcessResources process ->
         process.setGroup('process resources')
         process.duplicatesStrategy(DuplicatesStrategy.FAIL)
-        var versionProperties = ['version': mod_version, 'mc_version': minecraft_version_range, 'forge_version': forge_version_range, 'loader_version': loader_version_range]
+        var versionProperties = ['file': ['jarVersion': mod_version], 'mc_version': minecraft_version_range, 'forge_version': forge_version_range, 'loader_version': loader_version_range]
         //Mark the properties as inputs so that when they change things update
         process.inputs.properties(versionProperties)
         process.filesMatching('META-INF/neoforge.mods.toml') { expand(versionProperties) }
@@ -235,75 +236,98 @@ java {
     withSourcesJar()
 }
 
-minecraft.accessTransformers.files(
-        file('src/main/resources/META-INF/accesstransformer.cfg'),
-        file('src/additions/resources/META-INF/accesstransformer.cfg'),
-        //Dev time only ATs so the file name doesn't have to match accesstransformer.cfg
-        file('src/datagen/main/resources/META-INF/datagen_ats.cfg'),
-        file('src/gameTest/resources/META-INF/gametest_ats.cfg')
-)
+neoForge {
+    version = forge_version
 
-runs {
-    configureEach {
-        if (hasProperty('forge_force_ansi')) {
-            //Force ansi if declared as a gradle variable, as the auto detection doesn't detect IntelliJ properly
-            // or eclipse's plugin that adds support for ansi escape in console
-            systemProperties.put('terminal.ansi', (String) property('forge_force_ansi'))
+    mods {
+        mekanism {
+            modSourceSets = [sourceSets.api, sourceSets.main, sourceSets.datagenMain]
         }
-
-        modSources.add((SourceSet[]) [sourceSets.main, sourceSets.api])
-
-        for (String name : secondaryModules) {
-            modSources.add((SourceSet) sourceSets.named(name).get())
-        }
-
-        //if the selected toolchain is a JBR, enable DCEVM
-        if (javaToolchains.launcherFor(java.toolchain).map { it.metadata.vendor }.getOrElse('').contains('JetBrains')) {
-            jvmArguments.add('-XX:+AllowEnhancedClassRedefinition')
+        mekanismtests {
+            modSourceSets = [sourceSets.gameTest]
         }
     }
-    //Note: To enable logging into the client account, set the neogradle.subsystems.devLogin.conventionForRun property to true in your gradle user home
-    // https://github.com/neoforged/NeoGradle?tab=readme-ov-file#per-run-configuration
-    client {
+    for (String name : secondaryModules) {
+        mods.maybeCreate(name).modSourceSets.add(sourceSets.named(name))
     }
-    clientAlt {
-        configure('client')
-        //Force disable devLogin for clientAlt regardless of if it is enabled via gradle properties for the main gradle run
-        devLogin.enabled(false)
-        if (!(findProperty('neogradle.subsystems.devLogin.conventionForRun') ?: false)) {
-            //If the property is missing or set to false (so the normal runClient task would use Dev as the name),
-            // change the name of the alt client type so that it doesn't conflict with the main dev one
-            programArguments.addAll((String[]) ['--username', 'AltDev'])
+
+    accessTransformers = [
+            'src/main/resources/META-INF/accesstransformer.cfg',
+            'src/additions/resources/META-INF/accesstransformer.cfg',
+            //Dev time only ATs so the file name doesn't have to match accesstransformer.cfg
+            'src/datagen/main/resources/META-INF/datagen_ats.cfg',
+            'src/gameTest/resources/META-INF/gametest_ats.cfg',
+    ]
+
+    runs {
+        configureEach {
+            if (hasProperty('forge_force_ansi')) {
+                //Force ansi if declared as a gradle variable, as the auto detection doesn't detect IntelliJ properly
+                // or eclipse's plugin that adds support for ansi escape in console
+                systemProperties.put('terminal.ansi', (String) property('forge_force_ansi'))
+            }
+
+            mods.add(neoForge.mods.named("mekanism"))
+            for (String name : secondaryModules) {
+                mods.add(neoForge.mods.named(name))
+            }
+
+            //if the selected toolchain is a JBR, enable DCEVM
+            if (javaToolchains.launcherFor(java.toolchain).map { it.metadata.vendor }.getOrElse('').contains('JetBrains')) {
+                jvmArguments.addAll('-XX:+IgnoreUnrecognizedVMOptions', '-XX:+AllowEnhancedClassRedefinition')
+            }
+        }
+        //Note: To enable logging into the client account, set the enable_devlogin property to true in your gradle user home
+        client {
+            client()
+            if (enable_devlogin) {
+                mainClass = "net.covers1624.devlogin.DevLogin"
+                programArguments.addAll('--launch_target', 'cpw.mods.bootstraplauncher.BootstrapLauncher')
+            }
+        }
+        clientAlt {
+            client()
+            // If dev login is enabled, this run is changed to use the default local username
+            if (!enable_devlogin) {
+                programArguments.addAll('--username', 'AltDev')
+            }
+        }
+        server {
+            server()
+        }
+        gameTestServer {
+            type = "gameTestServer"
+            sourceSet = sourceSets.gameTest
+            mods = neoForge.mods
+        }
+        gameTestClient {
+            client()
+            sourceSet = sourceSets.gameTest
+            mods = neoForge.mods
+        }
+        data {
+            data()
+            programArguments.addAll('--all', '--output', file('src/datagen/generated/').absolutePath,
+                                    '--mod', 'mekanism', '--existing', file('src/main/resources/').absolutePath)
+
+            sourceSet = sourceSets.datagenMain
+            mods.add(neoForge.mods.named("mekanism"))
+
+            for (String name : secondaryModules) {
+                println("Adding $name")
+                mods.add(neoForge.mods.named(name))
+                programArguments.addAll('--mod', "mekanism${name}", '--existing', file("src/${name}/resources/").absolutePath)
+            }
         }
     }
-    server {
-    }
-    gameTestServer {
-        modSources.add((SourceSet) sourceSets.gameTest)
-    }
-    gameTestClient {
-        configure('client')
-        modSources.add((SourceSet) sourceSets.gameTest)
-    }
-    junit {
-        unitTestSources.add((SourceSet) sourceSets.test)
-    }
-    data {
-        programArguments.addAll((String[]) ['--all', '--output', file('src/datagen/generated/').absolutePath,
-                                            '--mod', 'mekanism', '--existing', file('src/main/resources/').absolutePath])
 
-        modSources.add((SourceSet) sourceSets.datagenMain)
-
-        for (String name : secondaryModules) {
-            modSources.add(getExtraSourceSet(name, 'datagen').get())
-            programArguments.addAll((String[]) ['--mod', "mekanism${name}", '--existing', file("src/${name}/resources/").absolutePath])
-        }
-
-        dependencies {
-            runtime(configurations.datagenNonMod)
-        }
+    unitTest {
+        enable()
+        testedMod = mods.named("mekanism")
     }
 }
+
+configurations.dataAdditionalRuntimeClasspath.extendsFrom configurations.datagenNonMod
 
 static void exclusiveRepo(RepositoryHandler handler, String url, String... groups) {
     exclusiveRepo(handler, url, filter -> {
@@ -342,13 +366,10 @@ repositories { RepositoryHandler handler ->
 }
 
 tasks.named('test').configure {
-    //Disable builtin test task as we use and build uses testJunit so there is no point in having it also attempt to run an empty test task
-    enabled(false)
+    useJUnitPlatform()
 }
 
 dependencies {
-    implementation("net.neoforged:neoforge:${forge_version}")
-
     compileOnly(project(':annotation-processor'))
     localRuntime(project(':annotation-processor'))
     annotationProcessor(project(':annotation-processor'))
@@ -426,6 +447,11 @@ dependencies {
     //datagenMainRuntimeOnly("curse.maven:projecte-226410:${projecte_id}")
 
     datagenNonMod("com.thiakil:yaml-ops:${yamlops_version}")
+
+    // Enable dev login in clientAlt run
+    if (enable_devlogin) {
+        runtimeOnly "net.covers1624:DevLogin:0.1.0.4"
+    }
 }
 
 def getManifestAttributes(String title) {

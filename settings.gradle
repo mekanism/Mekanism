@@ -1,10 +1,8 @@
+
 pluginManagement {
-    repositories {
-        gradlePluginPortal()
-        maven {
-            name = "NeoForge"
-            url = "https://maven.neoforged.net/releases/"
-        }
+    plugins {
+        //https://projects.neoforged.net/neoforged/moddevgradle
+        id('net.neoforged.moddev') version('1.0.11')
     }
 }
 

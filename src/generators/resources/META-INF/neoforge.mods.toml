@@ -5,7 +5,7 @@ license="MIT"
 
 [[mods]]
     modId="mekanismgenerators"
-    version="${version}"
+    version="${file.jarVersion}"
     displayName="Mekanism: Generators"
     displayURL="https://aidancbrady.com/mekanism/"
     authors="Aidancbrady, Thommy101, Thiakil, pupnewfster, dizzyd"
@@ -16,6 +16,6 @@ license="MIT"
 [[dependencies.mekanismgenerators]]
     modId="mekanism"
     type="required"
-    versionRange="[${version}]"
+    versionRange="[${file.jarVersion}]"
     ordering="AFTER"
     side="BOTH"
