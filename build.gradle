@@ -328,7 +328,7 @@ repositories { RepositoryHandler handler ->
         filter.includeGroup('org.openzen.zencode')
     })
     exclusiveRepo(handler, 'https://maven.terraformersmc.com/', 'dev.emi')
-    exclusiveRepo(handler, 'https://maven.theillusivec4.top/', 'top.theillusivec4.curios')
+    exclusiveRepo(handler, 'https://maven.octo-studios.com/releases/', 'top.theillusivec4.curios')
     exclusiveRepo(handler, 'https://maven.tterrag.com/', 'team.chisel.ctm')
     exclusiveRepo(handler, 'https://squiddev.cc/maven/', 'cc.tweaked', 'org.squiddev')
     exclusiveRepo(handler, 'https://dogforce-games.com/maven/', 'dev.gigaherz.jsonthings')
