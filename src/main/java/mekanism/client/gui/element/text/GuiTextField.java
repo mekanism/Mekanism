@@ -203,6 +203,7 @@ public class GuiTextField extends GuiElement {
 
     //TODO - 1.21: Figure out why Guis with text fields seem to still have issues with https://github.com/emilyploszaj/emi/issues/480 when other ones don't
     // and it doesn't seem related to any of the code inside this draw background block
+    // There is also an issue if enough gui windows are open, where EMI then renders the tooltip behind the third crafting window, which might be related
     @Override
     public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);

@@ -53,6 +53,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     public static final ResourceLocation BASE_BACKGROUND = MekanismUtils.getResource(ResourceType.GUI, "base.png");
     public static final ResourceLocation SHADOW = MekanismUtils.getResource(ResourceType.GUI, "shadow.png");
     public static final ResourceLocation BLUR = MekanismUtils.getResource(ResourceType.GUI, "blur.png");
+    private static final int EXTRA_Z_OFFSET = -500;
     //TODO: Look into defaulting this to true
     protected boolean dynamicSlots;
     protected boolean initialFocusSet;
@@ -323,7 +324,6 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
 
     @Override
     protected void renderLabels(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        //PoseStack modelViewStack = RenderSystem.getModelViewStack();
         //Note: We intentionally don't push the modelViewStack, see notes further down in this method for more details
         //TODO - 1.20: Figure this out as some transforms and hacks may be unnecessary now
         PoseStack pose = guiGraphics.pose();
@@ -379,20 +379,34 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         //TODO - 1.20: Can we remove these transforms that are around the tooltip rendering
         // No, we maybe could remove from the tooltip element portion but definitely not from the stack rendering/parent renderTooltip method
         pose.translate(-leftPos, -topPos, 0);
-        //modelViewStack.translate(-leftPos, -topPos, 0);
-        //RenderSystem.applyModelViewMatrix();
         if (tooltipElement != null) {
             tooltipElement.renderToolTip(guiGraphics, mouseX, mouseY);
         }
         renderTooltip(guiGraphics, mouseX, mouseY);
         pose.translate(leftPos, topPos, 0);
-        //modelViewStack.translate(leftPos, topPos, 0);
 
         // IMPORTANT: additional hacky translation so held items render okay. re-evaluate as discussed above
         // Note: It is important that we don't wrap our adjustments to the modelViewStack in so that we can
         // have the adjustments to the z-value persist into the vanilla methods
         //TODO - 1.20: Is this necessary (used to happen to the model view stack)
         pose.translate(0, 0, 200);
+    }
+
+    /**
+     * @implNote Copy of super, but adjusts the z value for tooltip rendering
+     */
+    @Override
+    public final void renderWithTooltip(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        render(graphics, mouseX, mouseY, partialTick);
+        if (deferredTooltipRendering != null) {
+            PoseStack pose = graphics.pose();
+            pose.pushPose();
+            //Note: extra z offset comes from the offset we do in render
+            pose.translate(0, 0, EXTRA_Z_OFFSET + maxZOffset);
+            graphics.renderTooltip(font, deferredTooltipRendering.tooltip(), deferredTooltipRendering.positioner(), mouseX, mouseY);
+            clearTooltipForNextRenderPass();
+            pose.popPose();
+        }
     }
 
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
@@ -684,7 +698,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         pose.pushPose();
         // shift back a whole lot so we can stack more windows
         //TODO - 1.20: Validate this, used to translate the modelViewStack
-        pose.translate(0, 0, -500);
+        pose.translate(0, 0, EXTRA_Z_OFFSET);
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
         pose.popPose();
     }
