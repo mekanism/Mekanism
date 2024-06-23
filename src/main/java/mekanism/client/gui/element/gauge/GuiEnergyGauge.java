@@ -56,7 +56,7 @@ public class GuiEnergyGauge extends GuiGauge<Void> {
         if (dummy) {
             return height - 2;
         }
-        if (infoHandler.getEnergy().isZero()) {
+        if (infoHandler.getEnergy() == 0L) {
             return 0;
         } else if (infoHandler.getEnergy().equals(Long.MAX_VALUE)) {
             return height - 2;

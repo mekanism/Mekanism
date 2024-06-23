@@ -44,7 +44,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
         return new EnergyInventorySlot(energyContainer, worldSupplier, stack -> {
             //Allow extraction if something went horribly wrong, and we are not an energy container item or no longer have any energy left to give,
             // or we are no longer a valid conversion, this might happen after a reload for example
-            return !fillInsertCheck(stack) && getPotentialConversion(worldSupplier.get(), stack).isZero();
+            return !fillInsertCheck(stack) && getPotentialConversion(worldSupplier.get(), stack) == 0L;
         }, stack -> {
             if (fillInsertCheck(stack)) {
                 return true;
@@ -81,7 +81,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
                 return false;
             }
             long storedEnergy = energyContainer.getEnergy();
-            if (storedEnergy.isZero()) {
+            if (storedEnergy == 0L) {
                 //If the energy container is empty, accept the energy item as long as it is not full
                 for (int container = 0; container < itemEnergyHandler.getEnergyContainerCount(); container++) {
                     if (itemEnergyHandler.getNeededEnergy(container) != 0L) {

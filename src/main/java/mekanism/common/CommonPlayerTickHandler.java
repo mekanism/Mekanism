@@ -231,7 +231,7 @@ public class CommonPlayerTickHandler {
             float amount = fallDamage * absorption;
             long energyRequirement = info.energyCost.getAsLong().multiply(amount);
             float ratioAbsorbed;
-            if (energyRequirement.isZero()) {
+            if (energyRequirement == 0L) {
                 //No energy is actually needed to absorb the damage, either because of the config
                 // or how small the amount to absorb is
                 ratioAbsorbed = absorption;

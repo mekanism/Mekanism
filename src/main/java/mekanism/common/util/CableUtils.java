@@ -33,7 +33,7 @@ public final class CableUtils {
      * @return the amount of energy emitted
      */
     public static long emit(Collection<BlockEnergyCapabilityCache> targets, long energyToSend) {
-        if (energyToSend.isZero() || targets.isEmpty()) {
+        if (energyToSend == 0L || targets.isEmpty()) {
             return 0;
         }
         EnergyAcceptorTarget target = new EnergyAcceptorTarget(targets.size());

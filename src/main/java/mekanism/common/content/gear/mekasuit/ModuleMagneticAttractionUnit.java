@@ -44,7 +44,7 @@ public record ModuleMagneticAttractionUnit(Range range) implements ICustomModule
         if (range != Range.OFF) {
             float size = 4 + range.getRange();
             long usage = (long) Math.ceil(MekanismConfig.gear.mekaSuitEnergyUsageItemAttraction.get() * range.getRange());
-            boolean free = usage.isZero() || player.isCreative();
+            boolean free = usage == 0L || player.isCreative();
             IEnergyContainer energyContainer = free ? null : module.getEnergyContainer(stack);
             if (free || (energyContainer != null && energyContainer.getEnergy().greaterOrEqual(usage))) {
                 //If the energy cost is free, or we have enough energy for at least one pull grab all the items that can be picked up.

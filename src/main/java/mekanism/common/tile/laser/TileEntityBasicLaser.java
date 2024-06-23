@@ -157,7 +157,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                                     }
                                     //Remove however much energy we were able to block
                                     remainingEnergy = remainingEnergy.minusEqual(energyPerDamage.multiply(damageBlocked));
-                                    if (remainingEnergy.isZero()) {
+                                    if (remainingEnergy == 0L) {
                                         //If we absorbed it all then update the position the laser is going to and break
                                         to = from.adjustPosition(direction, entity);
                                         break;
@@ -188,7 +188,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                             //If we will dissipate any energy, cap the dissipation amount at one
                             dissipationPercent = Math.min(dissipationPercent, 1);
                             remainingEnergy = remainingEnergy.timesEqual(FloatingLong.create(1 - dissipationPercent));
-                            if (remainingEnergy.isZero()) {
+                            if (remainingEnergy == 0L) {
                                 //If we dissipated it all then update the position the laser is going to and break
                                 to = from.adjustPosition(direction, entity);
                                 break;
@@ -247,7 +247,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                                 }
                             }
                             remainingEnergy = remainingEnergy.minusEqual(energyPerDamage.multiply(damage));
-                            if (remainingEnergy.isZero()) {
+                            if (remainingEnergy == 0L) {
                                 //Update the position that the laser is going to
                                 to = from.adjustPosition(direction, entity);
                                 break;
@@ -272,7 +272,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
             //Tell the clients to render the laser
             sendLaserDataToPlayers(new LaserParticleData(direction, to.distance(from), laserEnergyScale), from);
 
-            if (remainingEnergy.isZero() || result.getType() == Type.MISS) {
+            if (remainingEnergy == 0L || result.getType() == Type.MISS) {
                 //If all the energy was spent on damaging entities or if we aren't actively digging a block,
                 // then reset any digging progress we may have
                 digging = null;

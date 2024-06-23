@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.LongSupplier;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.chemical.gas.Gas;
@@ -543,13 +544,13 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         return module.getCustomInstance().getDamageAbsorbInfo(module, damageSource);
     }
 
-    private static float absorbDamage(EnergyUsageInfo usageInfo, float amount, float absorption, float currentAbsorbed, FloatingLongSupplier energyCost) {
+    private static float absorbDamage(EnergyUsageInfo usageInfo, float amount, float absorption, float currentAbsorbed, LongSupplier energyCost) {
         //Cap the amount that we can absorb to how much we have left to absorb
         absorption = Math.min(1 - currentAbsorbed, absorption);
         float toAbsorb = amount * absorption;
         if (toAbsorb > 0) {
-            long usage = energyCost.get().multiply(toAbsorb);
-            if (usage.isZero()) {
+            long usage = energyCost.getAsLong().multiply(toAbsorb);
+            if (usage == 0L) {
                 //No energy is actually needed to absorb the damage, either because of the config
                 // or how small the amount to absorb is
                 return absorption;

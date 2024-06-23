@@ -219,7 +219,7 @@ public class MekanismJEI implements IModPlugin {
             int containers = energyHandlerItem.getEnergyContainerCount();
             for (int container = 0; container < containers; container++) {
                 long neededEnergy = energyHandlerItem.getNeededEnergy(container);
-                if (neededEnergy.isZero()) {
+                if (neededEnergy == 0L) {
                     component = addInterpretation(component, "filled");
                 } else if (containers > 1) {
                     component = addInterpretation(component, "empty");

@@ -163,7 +163,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
                 if (operatingTicks >= ticksRequired) {
                     operatingTicks = 0;
                     if (suck()) {
-                        if (clientEnergyUsed.isZero()) {
+                        if (clientEnergyUsed == 0L) {
                             //If it didn't already have an active type (hasn't used energy this tick), then extract energy
                             clientEnergyUsed = energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
                         }

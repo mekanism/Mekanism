@@ -38,6 +38,7 @@ import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.slot.FluidFuelInventorySlot;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.level.block.state.BlockState;
@@ -142,13 +143,13 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
         }
         long boost;
         long passiveLavaAmount = MekanismGeneratorsConfig.generators.heatGenerationLava.get();
-        if (passiveLavaAmount.isZero()) {
+        if (passiveLavaAmount == 0L) {
             //If neighboring lava blocks produce no energy, don't bother checking the sides for them
             boost = 0L;
         } else {
             //Otherwise, calculate boost to apply from lava
             //Only check and add loaded neighbors to the which sides have lava on them
-            BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
+            MutableBlockPos mutable = new MutableBlockPos();
             int lavaSides = 0;
             for (Direction dir : EnumUtils.DIRECTIONS) {
                 //Only check and add loaded neighbors to the which sides have lava on them

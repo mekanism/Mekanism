@@ -125,7 +125,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
     }
 
     private long getToUse() {
-        if (generationRate.isZero() || fuelTank.isEmpty()) {
+        if (generationRate == 0L || fuelTank.isEmpty()) {
             return 0;
         }
         long max = (long) Math.ceil(256 * (fuelTank.getStored() / (double) fuelTank.getCapacity()));

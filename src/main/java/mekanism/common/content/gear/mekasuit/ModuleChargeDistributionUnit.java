@@ -65,7 +65,7 @@ public record ModuleChargeDistributionUnit(boolean chargeSuit, boolean chargeInv
     private void chargeInventory(IEnergyContainer energyContainer, Player player) {
         //Only try to charge up to how much energy we actually have stored
         long toCharge = Math.min(MekanismConfig.gear.mekaSuitInventoryChargeRate.get(), energyContainer.getEnergy());
-        if (toCharge.isZero()) {
+        if (toCharge == 0L) {
             return;
         }
         // first try to charge mainhand/offhand item
@@ -77,7 +77,7 @@ public record ModuleChargeDistributionUnit(boolean chargeSuit, boolean chargeInv
             for (ItemStack stack : player.getInventory().items) {
                 if (stack != mainHand && stack != offHand) {
                     toCharge = charge(energyContainer, stack, toCharge);
-                    if (toCharge.isZero()) {
+                    if (toCharge == 0L) {
                         return;
                     }
                 }
@@ -87,7 +87,7 @@ public record ModuleChargeDistributionUnit(boolean chargeSuit, boolean chargeInv
                 if (handler != null) {
                     for (int slot = 0, slots = handler.getSlots(); slot < slots; slot++) {
                         toCharge = charge(energyContainer, handler.getStackInSlot(slot), toCharge);
-                        if (toCharge.isZero()) {
+                        if (toCharge == 0L) {
                             return;
                         }
                     }

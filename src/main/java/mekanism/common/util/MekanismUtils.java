@@ -221,7 +221,7 @@ public final class MekanismUtils {
         float targetScale;
         long stored = container.getEnergy();
         long capacity = container.getMaxEnergy();
-        if (capacity.isZero()) {
+        if (capacity == 0L) {
             targetScale = 0;
         } else {
             targetScale = stored.divide(capacity).floatValue();

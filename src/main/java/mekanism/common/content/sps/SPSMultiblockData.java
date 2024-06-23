@@ -215,7 +215,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     }
 
     private static int getCoilLevel(long energy) {
-        if (energy.isZero()) {
+        if (energy == 0L) {
             return 0;
         }
         return 1 + Math.max(0, (int) ((Math.log10(energy.doubleValue()) - 3) * 1.8));

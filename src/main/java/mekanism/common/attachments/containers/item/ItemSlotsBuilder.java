@@ -91,7 +91,7 @@ public class ItemSlotsBuilder {
     private static final BiPredicate<@NotNull ItemStack, @NotNull AutomationType> FILL_CONVERT_ENERGY_SLOT_CAN_EXTRACT = (stack, automationType) ->
           //Allow extraction if something went horribly wrong, and we are not an energy container item or no longer have any energy left to give,
           // or we are no longer a valid conversion, this might happen after a reload for example
-          automationType == AutomationType.MANUAL || !EnergyInventorySlot.fillInsertCheck(stack) && EnergyInventorySlot.getPotentialConversion(null, stack).isZero();
+          automationType == AutomationType.MANUAL || !EnergyInventorySlot.fillInsertCheck(stack) && EnergyInventorySlot.getPotentialConversion(null, stack) == 0L;
     private static final BiPredicate<@NotNull ItemStack, @NotNull AutomationType> FILL_CONVERT_ENERGY_SLOT_CAN_INSERT = (stack, automationType) -> {
         if (EnergyInventorySlot.fillInsertCheck(stack)) {
             return true;
