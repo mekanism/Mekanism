@@ -324,7 +324,6 @@ public class CommonPlayerTickHandler {
         //Gyroscopic stabilization check
         if (IModuleHelper.INSTANCE.isEnabled(player.getItemBySlot(EquipmentSlot.LEGS), MekanismModules.GYROSCOPIC_STABILIZATION_UNIT)) {
             if (player.isEyeInFluidType(NeoForgeMod.WATER_TYPE.value())) {
-                //TODO - 1.21: Is there a way we can instead get the attribute to just be equal to one?
                 speed /= (float) player.getAttributeValue(Attributes.SUBMERGED_MINING_SPEED);
             }
 
