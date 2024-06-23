@@ -53,7 +53,6 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     public static final ResourceLocation BASE_BACKGROUND = MekanismUtils.getResource(ResourceType.GUI, "base.png");
     public static final ResourceLocation SHADOW = MekanismUtils.getResource(ResourceType.GUI, "shadow.png");
     public static final ResourceLocation BLUR = MekanismUtils.getResource(ResourceType.GUI, "blur.png");
-    private static final int EXTRA_Z_OFFSET = -500;
     //TODO: Look into defaulting this to true
     protected boolean dynamicSlots;
     protected boolean initialFocusSet;
@@ -324,11 +323,10 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
 
     @Override
     protected void renderLabels(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        //Note: We intentionally don't push the modelViewStack, see notes further down in this method for more details
-        //TODO - 1.20: Figure this out as some transforms and hacks may be unnecessary now
         PoseStack pose = guiGraphics.pose();
-        //TODO - 1.20: Re-evaluate?? this always was against the pose but what is it for
-        pose.translate(0, 0, 300);
+        pose.pushPose();
+        //Shift forward as far as tooltips get shifted so that we don't risk intersecting the rendered items
+        pose.translate(0, 0, 400);
         for (GuiEventListener c : children()) {
             if (c instanceof GuiElement element) {
                 element.onDrawBackground(guiGraphics, mouseX, mouseY, MekanismRenderer.getPartialTick());
@@ -363,33 +361,25 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
             }
             pose.popPose();
         }
+        pose.popPose();
         // then render tooltips, translating above max z offset to prevent clashing
+        // It is IMPORTANT that we do this to ensure any delayed rendering we do the for the tooltip happens above the other things
+        // and so that we let the translation leak out into the super method so that the carried item renders at the correct z level
+        pose.translate(0, 0, maxZOffset);
+
+        pose.pushPose();
+        //Note: Because we are doing this from renderLabels instead of as part of a render override,
+        // we need to unshift back to the position the other methods expect to be called from
+        pose.translate(-leftPos, -topPos, 0);
         GuiElement tooltipElement = getWindowHovering(mouseX, mouseY);
         if (tooltipElement == null) {
             tooltipElement = (GuiElement) GuiUtils.findChild(children(), mouseX, mouseY, (child, x, y) -> child instanceof GuiElement && child.isMouseOver(x, y));
         }
-
-        // translate forwards using RenderSystem. this should never have to happen as we do all the necessary translations with MatrixStacks,
-        // but Minecraft has decided to not fully adopt MatrixStacks for many crucial ContainerScreen render operations. should be re-evaluated
-        // when mc updates related logic on their end (IMPORTANT)
-        //TODO - 1.20: Is this necessary used to occur on the model view stack
-        pose.translate(0, 0, maxZOffset);
-
-        // render tooltips
-        //TODO - 1.20: Can we remove these transforms that are around the tooltip rendering
-        // No, we maybe could remove from the tooltip element portion but definitely not from the stack rendering/parent renderTooltip method
-        pose.translate(-leftPos, -topPos, 0);
         if (tooltipElement != null) {
             tooltipElement.renderToolTip(guiGraphics, mouseX, mouseY);
         }
         renderTooltip(guiGraphics, mouseX, mouseY);
-        pose.translate(leftPos, topPos, 0);
-
-        // IMPORTANT: additional hacky translation so held items render okay. re-evaluate as discussed above
-        // Note: It is important that we don't wrap our adjustments to the modelViewStack in so that we can
-        // have the adjustments to the z-value persist into the vanilla methods
-        //TODO - 1.20: Is this necessary (used to happen to the model view stack)
-        pose.translate(0, 0, 200);
+        pose.popPose();
     }
 
     /**
@@ -397,16 +387,18 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
      */
     @Override
     public final void renderWithTooltip(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        //Note: We wrap super with a push and pop, so that when we intentionally don't pop our changes in renderLabels
+        // then we make sure to clean them up here
+        PoseStack pose = graphics.pose();
+        pose.pushPose();
         render(graphics, mouseX, mouseY, partialTick);
         if (deferredTooltipRendering != null) {
-            PoseStack pose = graphics.pose();
-            pose.pushPose();
-            //Note: extra z offset comes from the offset we do in render
-            pose.translate(0, 0, EXTRA_Z_OFFSET + maxZOffset);
+            //Note: render has a pop at the end of it in vanilla, so we have to apply the deferred tooltip rendering again
+            pose.translate(0, 0, maxZOffset);
             graphics.renderTooltip(font, deferredTooltipRendering.tooltip(), deferredTooltipRendering.positioner(), mouseX, mouseY);
             clearTooltipForNextRenderPass();
-            pose.popPose();
         }
+        pose.popPose();
     }
 
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
@@ -688,19 +680,6 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     public Font getFont() {
         //In theory font is never null here, but we validate it in case we are called before init finishes happening
         return font == null ? minecraft.font : font;
-    }
-
-    //TODO - 1.20: Test this and everything else relating to the switch to guigraphics
-    // My guess is we may be able to remove the model view stack hacks??
-    @Override
-    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        PoseStack pose = guiGraphics.pose();
-        pose.pushPose();
-        // shift back a whole lot so we can stack more windows
-        //TODO - 1.20: Validate this, used to translate the modelViewStack
-        pose.translate(0, 0, EXTRA_Z_OFFSET);
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
-        pose.popPose();
     }
 
     @Override

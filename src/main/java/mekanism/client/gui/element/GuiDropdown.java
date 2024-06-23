@@ -1,6 +1,5 @@
 package mekanism.client.gui.element;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -72,11 +71,6 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
     @Override
     public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
-        PoseStack pose = guiGraphics.pose();
-        pose.pushPose();
-        //TODO: Figure out why we need a translation of 1 to fix the text intersecting for the dictionary but it works just fine
-        // for the QIO item viewer
-        pose.translate(0, 0, 1);
         renderBackgroundTexture(guiGraphics, getResource(), GuiInnerScreen.SCREEN_SIZE, GuiInnerScreen.SCREEN_SIZE);
 
         int index = getHoveredIndex(mouseX, mouseY);
@@ -97,7 +91,6 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
                 }
             }
         }
-        pose.popPose();
     }
 
     @NotNull

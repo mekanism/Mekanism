@@ -142,6 +142,7 @@ public class GuiTextField extends GuiElement {
 
     public GuiTextField setBackground(BackgroundType backgroundType) {
         this.backgroundType = backgroundType;
+        this.textField.setBordered(backgroundType == BackgroundType.DEFAULT);
         return this;
     }
 
@@ -323,10 +324,6 @@ public class GuiTextField extends GuiElement {
 
     public void setTextColorUneditable(int color) {
         textField.setTextColorUneditable(color);
-    }
-
-    public void setBordered(boolean bordered) {
-        textField.setBordered(bordered);
     }
 
     public void setEditable(boolean enabled) {

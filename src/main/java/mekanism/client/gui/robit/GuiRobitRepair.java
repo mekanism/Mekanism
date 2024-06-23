@@ -42,7 +42,6 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements Co
         itemNameField.setCanLoseFocus(false);
         itemNameField.setTextColor(-1);
         itemNameField.setTextColorUneditable(-1);
-        itemNameField.setBordered(false);
         itemNameField.setBackground(BackgroundType.NONE);
         itemNameField.setMaxLength(50);
         itemNameField.setResponder(this::onNameChanged);
