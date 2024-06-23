@@ -144,7 +144,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
             long energyRequired = getDestroyEnergy(container, 0, container.hasEnabled(MekanismModules.SILK_TOUCH_UNIT));
             long energyAvailable = energyContainer.getEnergy();
             //If we don't have enough energy to break at full speed check if the reduced speed could actually mine
-            return energyRequired.smallerOrEqual(energyAvailable) || !energyAvailable.divide(energyRequired).isZero();
+            return energyRequired.smallerOrEqual(energyAvailable) || (energyAvailable / energyRequired) != 0;
         }
         return false;
     }
@@ -243,7 +243,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
         long energyAvailable = energyContainer.extract(energyRequired, Action.SIMULATE, AutomationType.MANUAL);
         if (energyAvailable.smallerThan(energyRequired)) {
             //If we can't extract all the energy we need to break it go at base speed reduced by how much we actually have available
-            return MekanismConfig.gear.mekaToolBaseEfficiency.get() * energyAvailable.divide(energyRequired).floatValue();
+            return (float) (MekanismConfig.gear.mekaToolBaseEfficiency.get() * ((double) energyAvailable / energyRequired));
         }
         IModule<ModuleExcavationEscalationUnit> module = getEnabledModule(stack, MekanismModules.EXCAVATION_ESCALATION_UNIT);
         return module == null ? MekanismConfig.gear.mekaToolBaseEfficiency.get() : module.getCustomInstance().getEfficiency();
@@ -332,7 +332,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
     }
 
     private static long getDestroyEnergy(long baseDestroyEnergy, float hardness) {
-        return hardness == 0 ? baseDestroyEnergy.divide(2) : baseDestroyEnergy;
+        return hardness == 0 ? (baseDestroyEnergy / 2) : baseDestroyEnergy;
     }
 
     private static long getDestroyEnergy(ItemStack itemStack, boolean silk) {

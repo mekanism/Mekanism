@@ -224,7 +224,7 @@ public final class MekanismUtils {
         if (capacity == 0L) {
             targetScale = 0;
         } else {
-            targetScale = stored.divide(capacity).floatValue();
+            targetScale = (float) ((double) stored / capacity);
         }
         return getScale(prevScale, targetScale, container.isEmpty(), stored == capacity);
     }

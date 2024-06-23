@@ -102,12 +102,12 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
                 //Clamp the height limits as the logical bounds of the world
                 int minY = Math.max(MekanismGeneratorsConfig.generators.windGenerationMinY.get(), level.getMinBuildHeight());
                 int maxY = Math.min(MekanismGeneratorsConfig.generators.windGenerationMaxY.get(), level.dimensionType().logicalHeight());
-                float clampedY = Math.min(maxY, Math.max(minY, top.getY()));
+                int clampedY = Math.min(maxY, Math.max(minY, top.getY()));
                 long minG = MekanismGeneratorsConfig.generators.windGenerationMin.get();
                 long maxG = MekanismGeneratorsConfig.generators.windGenerationMax.get();
-                long slope = maxG.subtract(minG).divide(maxY - minY);
-                long toGen = minG.add(slope.multiply(clampedY - minY));
-                return toGen.divide(minG);
+                long slope = (maxG - minG) / (maxY - minY);
+                long toGen = minG + (slope * (clampedY - minY));
+                return (toGen / minG);
             }
         }
         return 0L;

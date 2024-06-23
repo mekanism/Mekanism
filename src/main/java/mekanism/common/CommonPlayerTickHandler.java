@@ -229,14 +229,14 @@ public class CommonPlayerTickHandler {
         if (info != null && info.container != null) {
             float absorption = info.damageRatio.getAsFloat();
             float amount = fallDamage * absorption;
-            long energyRequirement = info.energyCost.getAsLong().multiply(amount);
+            long energyRequirement = (long) Math.ceil(info.energyCost.getAsLong() * amount);
             float ratioAbsorbed;
             if (energyRequirement == 0L) {
                 //No energy is actually needed to absorb the damage, either because of the config
                 // or how small the amount to absorb is
                 ratioAbsorbed = absorption;
             } else {
-                ratioAbsorbed = absorption * info.container.extract(energyRequirement, Action.EXECUTE, AutomationType.MANUAL).divide(amount).floatValue();
+                ratioAbsorbed = absorption * (info.container.extract(energyRequirement, Action.EXECUTE, AutomationType.MANUAL) / amount);
             }
             if (ratioAbsorbed > 0) {
                 float damageRemaining = fallDamage * Math.max(0, 1 - ratioAbsorbed);

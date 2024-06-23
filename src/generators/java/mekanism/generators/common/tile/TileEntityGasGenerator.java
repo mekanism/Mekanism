@@ -10,6 +10,7 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.attribute.GasAttributes.Fuel;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.MathUtils;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.chemical.variable.VariableCapacityChemicalTankBuilder.VariableCapacityGasTank;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
@@ -130,7 +131,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
         }
         long max = (long) Math.ceil(256 * (fuelTank.getStored() / (double) fuelTank.getCapacity()));
         max = Math.min(maxBurnTicks * fuelTank.getStored() + burnTicks, max);
-        max = Math.min(getEnergyContainer().getNeeded().divide(generationRate).intValue(), max);
+        max = Math.min((long) (getEnergyContainer().getNeeded() / (double) generationRate), max);
         return max;
     }
 

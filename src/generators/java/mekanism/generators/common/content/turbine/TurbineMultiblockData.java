@@ -142,20 +142,20 @@ public class TurbineMultiblockData extends MultiblockData {
 
         long energyNeeded = energyContainer.getNeeded();
         if (stored > 0 && energyNeeded != 0L) {
-            double energyMultiplier = MekanismConfig.general.maxEnergyPerSteam.get().divide(TurbineValidator.MAX_BLADES)
-                  .multiply(Math.min(blades, coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get()));
-            if (energyMultiplier.isZero()) {
+            double energyMultiplier = (MekanismConfig.general.maxEnergyPerSteam.get() / (double) TurbineValidator.MAX_BLADES)
+                                      * (Math.min(blades, coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get()));
+            if (energyMultiplier == 0) {//todo epsilon check?
                 clientFlow = 0;
             } else {
                 double rate = lowerVolume * (getDispersers() * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get());
                 rate = Math.min(rate, vents * MekanismGeneratorsConfig.generators.turbineVentGasFlow.get());
                 double proportion = stored / (double) getSteamCapacity();
                 double origRate = rate;
-                rate = Math.min(Math.min(stored, rate), energyNeeded.divide(energyMultiplier).doubleValue()) * proportion;
+                rate = Math.min(Math.min(stored, rate), (energyNeeded / energyMultiplier)) * proportion;
                 clientFlow = MathUtils.clampToLong(rate);
                 if (clientFlow > 0) {
                     flowRate = rate / origRate;
-                    energyContainer.insert(energyMultiplier.multiply(rate), Action.EXECUTE, AutomationType.INTERNAL);
+                    energyContainer.insert(MathUtils.clampToLong(energyMultiplier * rate), Action.EXECUTE, AutomationType.INTERNAL);
                     gasTank.shrinkStack(clientFlow, Action.EXECUTE);
                     ventTank.setStack(new FluidStack(Fluids.WATER, Math.min(MathUtils.clampToInt(rate), condensers * MekanismGeneratorsConfig.generators.condenserRate.get())));
                 }

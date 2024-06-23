@@ -139,7 +139,7 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
     }
 
     public double getProcessRate() {
-        return clientEnergyUsed.divide(energyContainer.getEnergyPerTick()).doubleValue();
+        return (double) clientEnergyUsed / energyContainer.getEnergyPerTick();
     }
 
     @ComputerMethod(nameOverride = "getEnergyUsage", methodDescription = ComputerConstants.DESCRIPTION_GET_ENERGY_USAGE)

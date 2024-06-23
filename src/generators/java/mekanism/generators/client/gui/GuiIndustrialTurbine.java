@@ -100,9 +100,9 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
             TurbineMultiblockData multiblock = tile.getMultiblock();
             if (multiblock.isFormed()) {
                 storing = EnergyDisplay.of(multiblock.energyContainer);
-                producing = EnergyDisplay.of(MekanismConfig.general.maxEnergyPerSteam.get().divide(TurbineValidator.MAX_BLADES)
-                      .multiply(multiblock.clientFlow * Math.min(multiblock.blades,
-                            multiblock.coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get())));
+                producing = EnergyDisplay.of((long) ((MekanismConfig.general.maxEnergyPerSteam.get() / (double) TurbineValidator.MAX_BLADES)
+                                                     * (multiblock.clientFlow * Math.min(multiblock.blades,
+                      multiblock.coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get()))));
             } else {
                 storing = EnergyDisplay.ZERO;
                 producing = EnergyDisplay.ZERO;

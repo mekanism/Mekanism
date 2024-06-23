@@ -9,6 +9,7 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.lasers.ILaserDissipation;
 import mekanism.api.lasers.ILaserReceptor;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.MathUtils;
 import mekanism.api.math.ULong;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
@@ -134,8 +135,8 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                         continue;
                     }
                     boolean updateEnergyScale = false;
-                    long value = remainingEnergy.divide(energyPerDamage);
-                    float damage = value.floatValue();
+                    long value = (remainingEnergy / energyPerDamage);
+                    float damage = (float) value;
                     float health = 0;
                     if (entity instanceof LivingEntity livingEntity) {
                         //If the entity is a living entity check if they are blocking with a shield and then allow
@@ -215,8 +216,8 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                         }
                         if (updateDamage) {
                             //Update the damage we are actually going to try and do to the entity as the amount of energy being used changed
-                            value = remainingEnergy.divide(energyPerDamage);
-                            damage = value.floatValue();
+                            value = (remainingEnergy / energyPerDamage);
+                            damage = (float) value;
                         }
                         health = livingEntity.getHealth();
                     }
@@ -224,7 +225,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                         //If the damage is more than zero, which should be all cases except for when we are refracting all the energy past the entity
                         // set the entity on fire if it is not damage immune and try to damage it
                         if (!entity.fireImmune()) {
-                            entity.setRemainingFireTicks(value.intValue());
+                            entity.setRemainingFireTicks(MathUtils.clampToInt(value));
                         }
                         int totemTimesUsed = -1;
                         if (entity instanceof ServerPlayer player) {

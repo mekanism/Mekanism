@@ -130,7 +130,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
                 long energyRequired = getDestroyEnergy(stack, 0);
                 long energyAvailable = energyContainer.getEnergy();
                 //If we don't have enough energy to break at full speed check if the reduced speed could actually mine
-                return energyRequired.smallerOrEqual(energyAvailable) || !energyAvailable.divide(energyRequired).isZero();
+                return energyRequired.smallerOrEqual(energyAvailable) || (energyAvailable / energyRequired) != 0;
             }
         }
         return false;
@@ -159,7 +159,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
         long energyAvailable = energyContainer.extract(energyRequired, Action.SIMULATE, AutomationType.MANUAL);
         if (energyAvailable.smallerThan(energyRequired)) {
             //If we can't extract all the energy we need to break it go at base speed reduced by how much we actually have available
-            return DisassemblerMode.NORMAL.getEfficiency() * energyAvailable.divide(energyRequired).floatValue();
+            return (float) (DisassemblerMode.NORMAL.getEfficiency() * (energyAvailable / (double) energyRequired));
         }
         return getMode(stack).getEfficiency();
     }
