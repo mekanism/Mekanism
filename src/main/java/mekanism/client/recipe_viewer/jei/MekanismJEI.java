@@ -279,7 +279,7 @@ public class MekanismJEI implements IModPlugin {
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void registerIngredientType(IModIngredientRegistration registration,
           Registry<CHEMICAL> registry, IIngredientType<STACK> ingredientType, ChemicalStackHelper<CHEMICAL, STACK> stackHelper) {
         List<STACK> types = registry.stream()
-              .filter(chemical -> !chemical.isEmptyType() && !chemical.isHidden())
+              .filter(chemical -> !chemical.isEmptyType())//Don't add the empty type. We will allow JEI to filter out any that are hidden from recipe viewers
               .map(chemical -> ChemicalUtil.<CHEMICAL, STACK>withAmount(chemical, FluidType.BUCKET_VOLUME))
               .toList();
         stackHelper.setColorHelper(registration.getColorHelper());

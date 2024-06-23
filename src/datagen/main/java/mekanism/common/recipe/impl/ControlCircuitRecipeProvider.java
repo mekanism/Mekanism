@@ -1,5 +1,6 @@
 package mekanism.common.recipe.impl;
 
+import mekanism.api.MekanismAPITags;
 import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBuilder;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
@@ -26,7 +27,7 @@ class ControlCircuitRecipeProvider implements ISubRecipeProvider {
         String basePath = "control_circuit/";
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               IngredientCreatorAccess.item().from(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM)),
-              IngredientCreatorAccess.infusionStack().from(MekanismTags.InfuseTypes.REDSTONE, 20),
+              IngredientCreatorAccess.infusionStack().from(MekanismAPITags.InfuseTypes.REDSTONE, 20),
               MekanismItems.BASIC_CONTROL_CIRCUIT.getItemStack()
         ).build(consumer, Mekanism.rl(basePath + "basic"));
         addCircuitUpgradeRecipe(consumer, MekanismItems.ADVANCED_CONTROL_CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC, MekanismTags.Items.ALLOYS_INFUSED, basePath, "advanced");

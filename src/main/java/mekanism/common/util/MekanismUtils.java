@@ -18,6 +18,7 @@ import java.util.UUID;
 import java.util.function.Supplier;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
+import mekanism.api.MekanismAPITags;
 import mekanism.api.Upgrade;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
@@ -567,7 +568,7 @@ public final class MekanismUtils {
 
     public static boolean shouldSpeedUpEffect(MobEffectInstance effectInstance) {
         //Only allow speeding up effects that can be sped up by milk. Also validate it isn't blacklisted by the modpack
-        return effectInstance.getCures().contains(EffectCures.MILK) && !effectInstance.getEffect().getDelegate().is(MekanismTags.MobEffects.SPEED_UP_BLACKLIST);
+        return effectInstance.getCures().contains(EffectCures.MILK) && !effectInstance.getEffect().getDelegate().is(MekanismAPITags.MobEffects.SPEED_UP_BLACKLIST);
     }
 
     /**

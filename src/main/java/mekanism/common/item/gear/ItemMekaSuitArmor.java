@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
+import mekanism.api.MekanismAPITags;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
@@ -54,7 +55,6 @@ import mekanism.common.registries.MekanismDataMapTypes;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismModules;
-import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
@@ -488,7 +488,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                 if (absorbRatio == null) {
                     //If we haven't looked up yet if we can absorb the damage type and if we can't
                     // stop checking if the armor is able to
-                    if (source.is(Tags.DamageTypes.IS_TECHNICAL) || !source.is(MekanismTags.DamageTypes.MEKASUIT_ALWAYS_SUPPORTED) && source.is(DamageTypeTags.BYPASSES_ARMOR)) {
+                    if (source.is(Tags.DamageTypes.IS_TECHNICAL) || !source.is(MekanismAPITags.DamageTypes.MEKASUIT_ALWAYS_SUPPORTED) && source.is(DamageTypeTags.BYPASSES_ARMOR)) {
                         break;
                     }
                     // Next lookup the ratio at which we can absorb the given damage type from the data map

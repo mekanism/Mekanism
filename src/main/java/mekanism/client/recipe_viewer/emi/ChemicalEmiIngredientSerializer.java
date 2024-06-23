@@ -39,7 +39,7 @@ public class ChemicalEmiIngredientSerializer<CHEMICAL extends Chemical<CHEMICAL>
 
     void addEmiStacks(EmiRegistry emiRegistry) {
         for (CHEMICAL chemical : registry) {
-            if (!chemical.isHidden()) {
+            if (!chemical.isEmptyType()) {//Don't add the empty type. We will allow EMI to filter out any that are hidden from recipe viewers
                 emiRegistry.addEmiStack(stackCreator.create(chemical, 1));
             }
         }

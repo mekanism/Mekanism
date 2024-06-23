@@ -44,10 +44,6 @@ public abstract class ChemicalEmiStack<CHEMICAL extends Chemical<CHEMICAL>> exte
         this.amount = amount;
     }
 
-    public boolean isHidden() {
-        return chemical.isHidden();
-    }
-
     protected abstract ChemicalEmiStack<CHEMICAL> construct(CHEMICAL chemical, long amount);
 
     @Override

@@ -10,7 +10,6 @@ import mekanism.common.integration.crafttweaker.CrTConstants;
 
 @ZenRegister
 @NativeMethod(name = "isEmptyType", parameters = {}, getterName = "empty")
-@NativeMethod(name = "isHidden", parameters = {}, getterName = "hidden")
 @NativeMethod(name = "getTint", parameters = {}, getterName = "tint")
 @NativeMethod(name = "getColorRepresentation", parameters = {}, getterName = "colorRepresentation")
 @NativeMethod(name = "getAttributes", parameters = {}, getterName = "attributes")

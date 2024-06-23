@@ -4,6 +4,7 @@ import com.google.common.collect.Table.Cell;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import mekanism.api.MekanismAPITags;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.Mekanism;
@@ -125,7 +126,7 @@ public class MekanismTagProvider extends BaseTagProvider {
         addToTag(ItemTags.CLUSTER_MAX_HARVESTABLES, MekanismItems.ATOMIC_DISASSEMBLER, MekanismItems.MEKA_TOOL);
         addToTag(ItemTags.FREEZE_IMMUNE_WEARABLES, MekanismItems.MEKASUIT_HELMET, MekanismItems.MEKASUIT_BODYARMOR, MekanismItems.MEKASUIT_PANTS, MekanismItems.MEKASUIT_BOOTS);
         addToTag(BlockTags.SCULK_REPLACEABLE, MekanismBlocks.SALT_BLOCK);
-        getMobEffectBuilder(MekanismTags.MobEffects.SPEED_UP_BLACKLIST);
+        getMobEffectBuilder(MekanismAPITags.MobEffects.SPEED_UP_BLACKLIST);
 
         getBlockBuilder(MekanismTags.Blocks.FARMING_OVERRIDE).add(
               Blocks.PINK_PETALS
@@ -513,9 +514,9 @@ public class MekanismTagProvider extends BaseTagProvider {
         addToTag(DamageTypeTags.PANIC_CAUSES, MekanismDamageTypes.LASER);
         addToTag(DamageTypeTags.NO_KNOCKBACK, MekanismDamageTypes.LASER, MekanismDamageTypes.RADIATION);
         addToTag(DamageTypeTags.PANIC_ENVIRONMENTAL_CAUSES, MekanismDamageTypes.RADIATION);
-        getDamageTypeBuilder(MekanismTags.DamageTypes.IS_PREVENTABLE_MAGIC).add(DamageTypes.MAGIC, DamageTypes.INDIRECT_MAGIC);
+        getDamageTypeBuilder(MekanismAPITags.DamageTypes.IS_PREVENTABLE_MAGIC).add(DamageTypes.MAGIC, DamageTypes.INDIRECT_MAGIC);
 
-        addToTag(MekanismTags.DamageTypes.MEKASUIT_ALWAYS_SUPPORTED, DamageTypes.FALLING_ANVIL, DamageTypes.CACTUS, DamageTypes.CRAMMING,
+        addToTag(MekanismAPITags.DamageTypes.MEKASUIT_ALWAYS_SUPPORTED, DamageTypes.FALLING_ANVIL, DamageTypes.CACTUS, DamageTypes.CRAMMING,
                 DamageTypes.DRAGON_BREATH, DamageTypes.DRY_OUT, DamageTypes.FALL, DamageTypes.FALLING_BLOCK, DamageTypes.FLY_INTO_WALL, DamageTypes.GENERIC,
                 DamageTypes.HOT_FLOOR, DamageTypes.IN_FIRE, DamageTypes.IN_WALL, DamageTypes.LAVA, DamageTypes.LIGHTNING_BOLT, DamageTypes.ON_FIRE,
                 DamageTypes.SWEET_BERRY_BUSH, DamageTypes.WITHER, DamageTypes.FREEZE, DamageTypes.FALLING_STALACTITE, DamageTypes.STALAGMITE, DamageTypes.SONIC_BOOM);
@@ -553,12 +554,12 @@ public class MekanismTagProvider extends BaseTagProvider {
 
     private void addGasTags() {
         addToTag(MekanismTags.Gases.WATER_VAPOR, MekanismGases.WATER_VAPOR, MekanismGases.STEAM);
-        addToTag(MekanismTags.Gases.WASTE_BARREL_DECAY_BLACKLIST, MekanismGases.PLUTONIUM, MekanismGases.POLONIUM);
+        addToTag(MekanismAPITags.Gases.WASTE_BARREL_DECAY_BLACKLIST, MekanismGases.PLUTONIUM, MekanismGases.POLONIUM);
     }
 
     private void addSlurryTags(SlurryRegistryObject<?, ?>... slurryRegistryObjects) {
-        IntrinsicMekanismTagBuilder<Slurry> dirtyTagBuilder = getSlurryBuilder(MekanismTags.Slurries.DIRTY);
-        IntrinsicMekanismTagBuilder<Slurry> cleanTagBuilder = getSlurryBuilder(MekanismTags.Slurries.CLEAN);
+        IntrinsicMekanismTagBuilder<Slurry> dirtyTagBuilder = getSlurryBuilder(MekanismAPITags.Slurries.DIRTY);
+        IntrinsicMekanismTagBuilder<Slurry> cleanTagBuilder = getSlurryBuilder(MekanismAPITags.Slurries.CLEAN);
         for (SlurryRegistryObject<?, ?> slurryRO : slurryRegistryObjects) {
             dirtyTagBuilder.add(slurryRO.getDirtySlurry());
             cleanTagBuilder.add(slurryRO.getCleanSlurry());
@@ -571,14 +572,14 @@ public class MekanismTagProvider extends BaseTagProvider {
     }
 
     private void addInfuseTags() {
-        addToTag(MekanismTags.InfuseTypes.CARBON, MekanismInfuseTypes.CARBON);
-        addToTag(MekanismTags.InfuseTypes.REDSTONE, MekanismInfuseTypes.REDSTONE);
-        addToTag(MekanismTags.InfuseTypes.DIAMOND, MekanismInfuseTypes.DIAMOND);
-        addToTag(MekanismTags.InfuseTypes.REFINED_OBSIDIAN, MekanismInfuseTypes.REFINED_OBSIDIAN);
-        addToTag(MekanismTags.InfuseTypes.GOLD, MekanismInfuseTypes.GOLD);
-        addToTag(MekanismTags.InfuseTypes.TIN, MekanismInfuseTypes.TIN);
-        addToTag(MekanismTags.InfuseTypes.FUNGI, MekanismInfuseTypes.FUNGI);
-        addToTag(MekanismTags.InfuseTypes.BIO, MekanismInfuseTypes.BIO);
+        addToTag(MekanismAPITags.InfuseTypes.CARBON, MekanismInfuseTypes.CARBON);
+        addToTag(MekanismAPITags.InfuseTypes.REDSTONE, MekanismInfuseTypes.REDSTONE);
+        addToTag(MekanismAPITags.InfuseTypes.DIAMOND, MekanismInfuseTypes.DIAMOND);
+        addToTag(MekanismAPITags.InfuseTypes.REFINED_OBSIDIAN, MekanismInfuseTypes.REFINED_OBSIDIAN);
+        addToTag(MekanismAPITags.InfuseTypes.GOLD, MekanismInfuseTypes.GOLD);
+        addToTag(MekanismAPITags.InfuseTypes.TIN, MekanismInfuseTypes.TIN);
+        addToTag(MekanismAPITags.InfuseTypes.FUNGI, MekanismInfuseTypes.FUNGI);
+        addToTag(MekanismAPITags.InfuseTypes.BIO, MekanismInfuseTypes.BIO);
     }
 
     private void addHarvestRequirements() {

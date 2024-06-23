@@ -1,10 +1,11 @@
 package mekanism.common;
 
+import java.util.concurrent.CompletableFuture;
+import mekanism.api.MekanismAPITags;
 import mekanism.api.datamaps.MekaSuitAbsorption;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismDataMapTypes;
 import mekanism.common.registries.MekanismGameEvents;
-import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.damagesource.DamageTypes;
@@ -12,8 +13,6 @@ import net.neoforged.neoforge.common.data.DataMapProvider;
 import net.neoforged.neoforge.registries.datamaps.builtin.FurnaceFuel;
 import net.neoforged.neoforge.registries.datamaps.builtin.NeoForgeDataMaps;
 import net.neoforged.neoforge.registries.datamaps.builtin.VibrationFrequency;
-
-import java.util.concurrent.CompletableFuture;
 
 public class MekanismDataMapsProvider extends DataMapProvider {
 
@@ -40,7 +39,7 @@ public class MekanismDataMapsProvider extends DataMapProvider {
 
         builder(MekanismDataMapTypes.MEKA_SUIT_ABSORPTION)
                 .add(DamageTypes.SONIC_BOOM, new MekaSuitAbsorption(0.75f), false)
-                .add(MekanismTags.DamageTypes.MEKASUIT_ALWAYS_SUPPORTED, new MekaSuitAbsorption(1f), false)
+                .add(MekanismAPITags.DamageTypes.MEKASUIT_ALWAYS_SUPPORTED, new MekaSuitAbsorption(1f), false)
         ;
     }
 }

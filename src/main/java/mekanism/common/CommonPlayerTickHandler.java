@@ -5,6 +5,7 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
+import mekanism.api.MekanismAPITags;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.FloatSupplier;
@@ -28,7 +29,6 @@ import mekanism.common.item.interfaces.IJetpackItem.JetpackMode;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.registries.MekanismGameEvents;
 import mekanism.common.registries.MekanismModules;
-import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
@@ -172,7 +172,7 @@ public class CommonPlayerTickHandler {
             return;
         }
         //Gas Mask checks
-        if (event.getSource().is(MekanismTags.DamageTypes.IS_PREVENTABLE_MAGIC)) {
+        if (event.getSource().is(MekanismAPITags.DamageTypes.IS_PREVENTABLE_MAGIC)) {
             ItemStack headStack = entity.getItemBySlot(EquipmentSlot.HEAD);
             if (!headStack.isEmpty() && headStack.getItem() instanceof ItemScubaMask) {
                 ItemStack chestStack = entity.getItemBySlot(EquipmentSlot.CHEST);

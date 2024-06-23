@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismAPITags;
 import mekanism.api.chemical.ChemicalType;
 import mekanism.api.chemical.merged.BoxedChemicalStack;
 import mekanism.api.chemical.merged.MergedChemicalTank.Current;
@@ -25,7 +26,6 @@ import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
-import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.machine.TileEntityChemicalCrystallizer;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.Holder;
@@ -89,7 +89,7 @@ public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemi
             if (prevSlurry != inputSlurry) {
                 prevSlurry = inputSlurry;
                 iterStacks.clear();
-                if (!prevSlurry.isEmptyType() && !prevSlurry.is(MekanismTags.Slurries.DIRTY)) {
+                if (!prevSlurry.isEmptyType() && !prevSlurry.is(MekanismAPITags.Slurries.DIRTY)) {
                     TagKey<Item> oreTag = prevSlurry.getOreTag();
                     if (oreTag != null) {
                         for (Holder<Item> ore : BuiltInRegistries.ITEM.getTagOrEmpty(oreTag)) {

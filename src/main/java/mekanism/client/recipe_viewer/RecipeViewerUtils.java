@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.SequencedSet;
 import java.util.Set;
 import java.util.stream.Collectors;
+import mekanism.api.MekanismAPITags;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalType;
@@ -27,7 +28,6 @@ import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.impl.NutritionalLiquifierIRecipe;
 import mekanism.common.registries.MekanismFluids;
-import mekanism.common.tags.MekanismTags;
 import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.RegistryUtils;
@@ -156,7 +156,7 @@ public class RecipeViewerUtils {
         SequencedSet<Named<Item>> tags = new LinkedHashSet<>();
         for (SlurryStack slurryStack : ingredient.getRepresentations()) {
             Slurry slurry = slurryStack.getChemical();
-            if (!slurry.is(MekanismTags.Slurries.DIRTY)) {
+            if (!slurry.is(MekanismAPITags.Slurries.DIRTY)) {
                 TagKey<Item> oreTag = slurry.getOreTag();
                 if (oreTag != null) {
                     BuiltInRegistries.ITEM.getTag(oreTag).ifPresent(tags::add);

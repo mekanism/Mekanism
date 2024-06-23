@@ -2,6 +2,7 @@ package mekanism.common.registries;
 
 import java.util.function.BooleanSupplier;
 import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismAPITags;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.Mekanism;
@@ -23,12 +24,15 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.FluidUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.CreativeModeTab.ItemDisplayParameters;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 
 public class MekanismCreativeTabs {
@@ -41,37 +45,38 @@ public class MekanismCreativeTabs {
                     CreativeTabDeferredRegister.addToDisplay(MekanismItems.ITEMS, output);
                     CreativeTabDeferredRegister.addToDisplay(MekanismBlocks.BLOCKS, output);
                     CreativeTabDeferredRegister.addToDisplay(MekanismFluids.FLUIDS, output);
-                    addFilledTanks(output, true);
+                    addFilledTanks(displayParameters, output, true);
                 })
     );
 
-    private static void addFilledTanks(CreativeModeTab.Output output, boolean chemical) {
+    private static void addFilledTanks(ItemDisplayParameters parameters, CreativeModeTab.Output output, boolean chemical) {
         if (MekanismConfig.general.isLoaded()) {
             //Fluid Tanks
             if (MekanismConfig.general.prefilledFluidTanks.get()) {
-                for (Fluid fluid : BuiltInRegistries.FLUID) {
-                    if (fluid.isSource(fluid.defaultFluidState())) {//Only add sources
-                        output.accept(FluidUtils.getFilledVariant(MekanismBlocks.CREATIVE_FLUID_TANK, fluid));
-                    }
-                }
+                parameters.holders().lookupOrThrow(Registries.FLUID)
+                      //Only add sources and fluids that aren't hidden
+                      .filterElements(fluid -> fluid != Fluids.EMPTY && fluid.isSource(fluid.defaultFluidState()))
+                      .listElements()
+                      .filter(holder -> !holder.is(Tags.Fluids.HIDDEN_FROM_RECIPE_VIEWERS))
+                      .forEach(holder -> output.accept(FluidUtils.getFilledVariant(MekanismBlocks.CREATIVE_FLUID_TANK, holder.value())));
             }
             if (chemical) {
                 //Chemical Tanks
-                addFilled(MekanismConfig.general.prefilledGasTanks, MekanismAPI.GAS_REGISTRY, output);
-                addFilled(MekanismConfig.general.prefilledInfusionTanks, MekanismAPI.INFUSE_TYPE_REGISTRY, output);
-                addFilled(MekanismConfig.general.prefilledPigmentTanks, MekanismAPI.PIGMENT_REGISTRY, output);
-                addFilled(MekanismConfig.general.prefilledSlurryTanks, MekanismAPI.SLURRY_REGISTRY, output);
+                addFilled(MekanismConfig.general.prefilledGasTanks, MekanismAPI.GAS_REGISTRY_NAME, parameters, output, MekanismAPITags.Gases.HIDDEN_FROM_RECIPE_VIEWERS);
+                addFilled(MekanismConfig.general.prefilledInfusionTanks, MekanismAPI.INFUSE_TYPE_REGISTRY_NAME, parameters, output, MekanismAPITags.InfuseTypes.HIDDEN_FROM_RECIPE_VIEWERS);
+                addFilled(MekanismConfig.general.prefilledPigmentTanks, MekanismAPI.PIGMENT_REGISTRY_NAME, parameters, output, MekanismAPITags.Pigments.HIDDEN_FROM_RECIPE_VIEWERS);
+                addFilled(MekanismConfig.general.prefilledSlurryTanks, MekanismAPI.SLURRY_REGISTRY_NAME, parameters, output, MekanismAPITags.Slurries.HIDDEN_FROM_RECIPE_VIEWERS);
             }
         }
     }
 
-    private static <CHEMICAL extends Chemical<CHEMICAL>> void addFilled(BooleanSupplier shouldAdd, Registry<CHEMICAL> registry, CreativeModeTab.Output tabOutput) {
+    private static <CHEMICAL extends Chemical<CHEMICAL>> void addFilled(BooleanSupplier shouldAdd, ResourceKey<? extends Registry<CHEMICAL>> registryName,
+          ItemDisplayParameters parameters, CreativeModeTab.Output tabOutput, TagKey<CHEMICAL> hiddenTag) {
         if (shouldAdd.getAsBoolean()) {
-            for (CHEMICAL type : registry) {
-                if (!type.isHidden()) {
-                    tabOutput.accept(ChemicalUtil.getFilledVariant(MekanismBlocks.CREATIVE_CHEMICAL_TANK, type));
-                }
-            }
+            parameters.holders().lookupOrThrow(registryName)
+                  .listElements()
+                  .filter(holder -> !holder.is(hiddenTag) && !holder.is(MekanismAPI.EMPTY_CHEMICAL_NAME))
+                  .forEach(holder -> tabOutput.accept(ChemicalUtil.getFilledVariant(MekanismBlocks.CREATIVE_CHEMICAL_TANK, holder.value())));
         }
     }
 
@@ -132,7 +137,7 @@ public class MekanismCreativeTabs {
                   MekanismBlocks.CREATIVE_FLUID_TANK
             );
             CreativeTabDeferredRegister.addToDisplay(MekanismFluids.FLUIDS, event);
-            addFilledTanks(event, false);
+            addFilledTanks(event.getParameters(), event, false);
         } else if (tabKey == CreativeModeTabs.COMBAT) {
             CreativeTabDeferredRegister.addToDisplay(event, MekanismItems.ATOMIC_DISASSEMBLER, MekanismItems.FLAMETHROWER, MekanismItems.ELECTRIC_BOW,
                   MekanismItems.MEKA_TOOL, MekanismItems.MEKASUIT_HELMET, MekanismItems.MEKASUIT_BODYARMOR, MekanismItems.MEKASUIT_PANTS, MekanismItems.MEKASUIT_BOOTS,

@@ -1,6 +1,7 @@
 package mekanism.common.content.gear.mekasuit;
 
 import java.util.List;
+import mekanism.api.MekanismAPITags;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.gear.ICustomModule;
@@ -8,7 +9,6 @@ import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -86,7 +86,7 @@ public record ModuleInhalationPurificationUnit(boolean beneficialEffects, boolea
     @Nullable
     @Override
     public ModuleDamageAbsorbInfo getDamageAbsorbInfo(IModule<ModuleInhalationPurificationUnit> module, DamageSource damageSource) {
-        return damageSource.is(MekanismTags.DamageTypes.IS_PREVENTABLE_MAGIC) ? INHALATION_ABSORB_INFO : null;
+        return damageSource.is(MekanismAPITags.DamageTypes.IS_PREVENTABLE_MAGIC) ? INHALATION_ABSORB_INFO : null;
     }
 
     private void speedupEffect(Player player, MobEffectInstance effect) {

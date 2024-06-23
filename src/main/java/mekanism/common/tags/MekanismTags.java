@@ -7,8 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.infuse.InfuseType;
-import mekanism.api.chemical.slurry.Slurry;
 import mekanism.common.Mekanism;
 import mekanism.common.resource.BlockResourceInfo;
 import mekanism.common.resource.IResource;
@@ -22,8 +20,6 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.damagesource.DamageType;
-import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
@@ -237,19 +233,6 @@ public class MekanismTags {
         }
     }
 
-    public static class DamageTypes {
-
-        private DamageTypes() {
-        }
-
-        public static final TagKey<DamageType> MEKASUIT_ALWAYS_SUPPORTED = tag("mekasuit_always_supported");
-        public static final TagKey<DamageType> IS_PREVENTABLE_MAGIC = tag("is_preventable_magic");
-
-        private static TagKey<DamageType> tag(String name) {
-            return TagKey.create(Registries.DAMAGE_TYPE, Mekanism.rl(name));
-        }
-    }
-
     public static class Fluids {
 
         private Fluids() {
@@ -279,62 +262,15 @@ public class MekanismTags {
         }
     }
 
-    //TODO - 1.21: Do we want to do a hidden from recipe viewers tag instead of a method on the chemical to be in line
-    // with the common tags for blocks, items, and fluids? Probably, https://github.com/emilyploszaj/emi/issues/545
     public static class Gases {
 
         private Gases() {
         }
 
         public static final TagKey<Gas> WATER_VAPOR = tag("water_vapor");
-        public static final TagKey<Gas> WASTE_BARREL_DECAY_BLACKLIST = tag("waste_barrel_decay_blacklist");
 
         private static TagKey<Gas> tag(String name) {
             return TagKey.create(MekanismAPI.GAS_REGISTRY_NAME, Mekanism.rl(name));
-        }
-    }
-
-    public static class InfuseTypes {
-
-        private InfuseTypes() {
-        }
-
-        public static final TagKey<InfuseType> CARBON = tag("carbon");
-        public static final TagKey<InfuseType> REDSTONE = tag("redstone");
-        public static final TagKey<InfuseType> DIAMOND = tag("diamond");
-        public static final TagKey<InfuseType> REFINED_OBSIDIAN = tag("refined_obsidian");
-        public static final TagKey<InfuseType> BIO = tag("bio");
-        public static final TagKey<InfuseType> FUNGI = tag("fungi");
-        public static final TagKey<InfuseType> GOLD = tag("gold");
-        public static final TagKey<InfuseType> TIN = tag("tin");
-
-        private static TagKey<InfuseType> tag(String name) {
-            return TagKey.create(MekanismAPI.INFUSE_TYPE_REGISTRY_NAME, Mekanism.rl(name));
-        }
-    }
-
-    public static class Slurries {
-
-        private Slurries() {
-        }
-
-        public static final TagKey<Slurry> DIRTY = tag("dirty");
-        public static final TagKey<Slurry> CLEAN = tag("clean");
-
-        private static TagKey<Slurry> tag(String name) {
-            return TagKey.create(MekanismAPI.SLURRY_REGISTRY_NAME, Mekanism.rl(name));
-        }
-    }
-
-    public static class MobEffects {
-
-        private MobEffects() {
-        }
-
-        public static final TagKey<MobEffect> SPEED_UP_BLACKLIST = tag("speed_up_blacklist");
-
-        private static TagKey<MobEffect> tag(String name) {
-            return TagKey.create(Registries.MOB_EFFECT, Mekanism.rl(name));
         }
     }
 }

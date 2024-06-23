@@ -1,5 +1,6 @@
 package mekanism.common.recipe.impl;
 
+import mekanism.api.MekanismAPITags;
 import mekanism.api.datagen.recipe.builder.ChemicalChemicalToChemicalRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ChemicalCrystallizerRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ChemicalDissolutionRecipeBuilder;
@@ -59,7 +60,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         //Iron -> enriched iron
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               IngredientCreatorAccess.item().from(Tags.Items.INGOTS_IRON),
-              IngredientCreatorAccess.infusionStack().from(MekanismTags.InfuseTypes.CARBON, 10),
+              IngredientCreatorAccess.infusionStack().from(MekanismAPITags.InfuseTypes.CARBON, 10),
               MekanismItems.ENRICHED_IRON.getItemStack()
         ).build(consumer, Mekanism.rl(basePath + "iron/enriched"));
         addNetheriteProcessingRecipes(consumer, basePath + "netherite/");
@@ -400,7 +401,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         //Netherite scrap to netherite dust
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               IngredientCreatorAccess.item().from(Items.NETHERITE_SCRAP, 4),
-              IngredientCreatorAccess.infusionStack().from(MekanismTags.InfuseTypes.GOLD, 40),
+              IngredientCreatorAccess.infusionStack().from(MekanismAPITags.InfuseTypes.GOLD, 40),
               MekanismItems.NETHERITE_DUST.getItemStack()
         ).build(consumer, Mekanism.rl(basePath + "scrap_to_dust"));
         //Netherite Dust to Netherite Ingot
@@ -425,7 +426,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         //from infusing
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               IngredientCreatorAccess.item().from(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.COPPER), 3),
-              IngredientCreatorAccess.infusionStack().from(MekanismTags.InfuseTypes.TIN, 10),
+              IngredientCreatorAccess.infusionStack().from(MekanismAPITags.InfuseTypes.TIN, 10),
               MekanismItems.BRONZE_DUST.getItemStack(4)
         ).build(consumer, Mekanism.rl(basePath + "dust/from_infusing"));
         //from ingot
@@ -444,7 +445,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         //from infusing
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               IngredientCreatorAccess.item().from(Tags.Items.INGOTS_COPPER, 3),
-              IngredientCreatorAccess.infusionStack().from(MekanismTags.InfuseTypes.TIN, 10),
+              IngredientCreatorAccess.infusionStack().from(MekanismAPITags.InfuseTypes.TIN, 10),
               MekanismItems.BRONZE_INGOT.getItemStack(4)
         ).build(consumer, Mekanism.rl(basePath + "ingot/from_infusing"));
         //from nuggets
@@ -511,7 +512,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         //from obsidian dust
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               IngredientCreatorAccess.item().from(MekanismTags.Items.DUSTS_OBSIDIAN),
-              IngredientCreatorAccess.infusionStack().from(MekanismTags.InfuseTypes.DIAMOND, 10),
+              IngredientCreatorAccess.infusionStack().from(MekanismAPITags.InfuseTypes.DIAMOND, 10),
               MekanismItems.REFINED_OBSIDIAN_DUST.getItemStack()
         ).build(consumer, Mekanism.rl(basePath + "dust/from_obsidian_dust"));
         //Ingot
@@ -551,7 +552,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         //Enriched iron -> dust
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               IngredientCreatorAccess.item().from(MekanismItems.ENRICHED_IRON),
-              IngredientCreatorAccess.infusionStack().from(MekanismTags.InfuseTypes.CARBON, 10),
+              IngredientCreatorAccess.infusionStack().from(MekanismAPITags.InfuseTypes.CARBON, 10),
               MekanismItems.STEEL_DUST.getItemStack()
         ).build(consumer, Mekanism.rl(basePath + "enriched_iron_to_dust"));
         //Ingot -> dust

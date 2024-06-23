@@ -34,7 +34,7 @@ public class MekanismAPI {
     /**
      * The version of the api classes - may not always match the mod's version
      */
-    public static final String API_VERSION = "10.6.1";
+    public static final String API_VERSION = "10.6.2";
     /**
      * Mekanism's Mod ID
      */
@@ -244,17 +244,17 @@ public class MekanismAPI {
     /**
      * Empty Gas instance.
      */
-    public static final Gas EMPTY_GAS = new Gas(GasBuilder.builder().hidden());
+    public static final Gas EMPTY_GAS = new Gas(GasBuilder.builder());
     /**
      * Empty Infuse Type instance.
      */
-    public static final InfuseType EMPTY_INFUSE_TYPE = new InfuseType(InfuseTypeBuilder.builder().hidden());
+    public static final InfuseType EMPTY_INFUSE_TYPE = new InfuseType(InfuseTypeBuilder.builder());
     /**
      * Empty Pigment instance.
      */
-    public static final Pigment EMPTY_PIGMENT = new Pigment(PigmentBuilder.builder().hidden());
+    public static final Pigment EMPTY_PIGMENT = new Pigment(PigmentBuilder.builder());
     /**
      * Empty Slurry instance.
      */
-    public static final Slurry EMPTY_SLURRY = new Slurry(SlurryBuilder.clean().hidden());
+    public static final Slurry EMPTY_SLURRY = new Slurry(SlurryBuilder.clean());
 }

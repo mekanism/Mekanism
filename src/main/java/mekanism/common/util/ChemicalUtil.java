@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
+import mekanism.api.MekanismAPITags;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -40,7 +41,6 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.MultiTypeCapability;
 import mekanism.common.content.network.distribution.ChemicalHandlerTarget;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.tags.MekanismTags;
 import mekanism.common.tier.ChemicalTankTier;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
@@ -269,7 +269,7 @@ public class ChemicalUtil {
     public static void addChemicalDataToTooltip(List<Component> tooltips, Chemical<?> chemical, boolean advanced) {
         if (!chemical.isEmptyType()) {
             addAttributeTooltips(tooltips, chemical);
-            if (chemical instanceof Gas gas && gas.is(MekanismTags.Gases.WASTE_BARREL_DECAY_BLACKLIST)) {
+            if (chemical instanceof Gas gas && gas.is(MekanismAPITags.Gases.WASTE_BARREL_DECAY_BLACKLIST)) {
                 tooltips.add(MekanismLang.DECAY_IMMUNE.translateColored(EnumColor.AQUA));
             }
             if (advanced) {

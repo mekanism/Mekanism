@@ -3,6 +3,7 @@ package mekanism.client.lang;
 import com.google.common.collect.Table.Cell;
 import java.util.Map;
 import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismAPITags;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.gear.config.ModuleConfig;
 import mekanism.api.providers.IItemProvider;
@@ -204,19 +205,19 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         addTag(MekanismTags.Fluids.NUTRITIONAL_PASTE, "Nutritional Paste");
 
         addTag(MekanismTags.Gases.WATER_VAPOR, "Water Vapor");
-        addTag(MekanismTags.Gases.WASTE_BARREL_DECAY_BLACKLIST, "Waste Barrel Does Not Decay");
+        addTag(MekanismAPITags.Gases.WASTE_BARREL_DECAY_BLACKLIST, "Waste Barrel Does Not Decay");
 
-        addTag(MekanismTags.InfuseTypes.CARBON, "Carbon");
-        addTag(MekanismTags.InfuseTypes.REDSTONE, "Redstone");
-        addTag(MekanismTags.InfuseTypes.DIAMOND, "Diamond");
-        addTag(MekanismTags.InfuseTypes.REFINED_OBSIDIAN, "Refined Obsidian");
-        addTag(MekanismTags.InfuseTypes.BIO, "Bio");
-        addTag(MekanismTags.InfuseTypes.FUNGI, "Fungi");
-        addTag(MekanismTags.InfuseTypes.GOLD, "Gold");
-        addTag(MekanismTags.InfuseTypes.TIN, "Tin");
+        addTag(MekanismAPITags.InfuseTypes.CARBON, "Carbon");
+        addTag(MekanismAPITags.InfuseTypes.REDSTONE, "Redstone");
+        addTag(MekanismAPITags.InfuseTypes.DIAMOND, "Diamond");
+        addTag(MekanismAPITags.InfuseTypes.REFINED_OBSIDIAN, "Refined Obsidian");
+        addTag(MekanismAPITags.InfuseTypes.BIO, "Bio");
+        addTag(MekanismAPITags.InfuseTypes.FUNGI, "Fungi");
+        addTag(MekanismAPITags.InfuseTypes.GOLD, "Gold");
+        addTag(MekanismAPITags.InfuseTypes.TIN, "Tin");
 
-        addTag(MekanismTags.Slurries.DIRTY, "Dirty Slurry");
-        addTag(MekanismTags.Slurries.CLEAN, "Clean Slurry");
+        addTag(MekanismAPITags.Slurries.DIRTY, "Dirty Slurry");
+        addTag(MekanismAPITags.Slurries.CLEAN, "Clean Slurry");
     }
 
     private void addItems() {
