@@ -108,10 +108,8 @@ public abstract class RenderData {
         }
 
         public Builder<DATA_TYPE> of(MultiblockData multiblock) {
-            return location(Objects.requireNonNull(multiblock.renderLocation, "Render location may not be null."))
-                  .height(multiblock.height() - 2)
-                  .length(multiblock.length())
-                  .width(multiblock.width());
+            return location(Objects.requireNonNull(multiblock.renderLocation, "Render location may not be null.").offset(1, 0, 1))
+                  .dimensions(multiblock.width() - 2, multiblock.height() - 2, multiblock.length() - 2);
         }
 
         public DATA_TYPE build() {
