@@ -37,6 +37,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.RegistryOps;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -83,7 +84,7 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
           installedData -> installedData.configStreamCodecs().map(installedData::create, Module::getConfigs)
     );
 
-    private final Map<String, ModuleConfig<?>> configItemsByName = new HashMap<>();
+    private final Map<ResourceLocation, ModuleConfig<?>> configItemsByName = new HashMap<>();
     private final List<ModuleConfig<?>> configItems;
 
     private final ModuleData<MODULE> data;
@@ -197,7 +198,7 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
 
     @Nullable
     @Override
-    public <TYPE> ModuleConfig<TYPE> getConfig(String name) {
+    public <TYPE> ModuleConfig<TYPE> getConfig(ResourceLocation name) {
         //TODO - 1.20.5: Do we want to allow passing in the type to validate that the type is correct?
         return (ModuleConfig<TYPE>) configItemsByName.get(name);
     }

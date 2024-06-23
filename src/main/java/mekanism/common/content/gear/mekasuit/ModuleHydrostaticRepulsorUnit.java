@@ -4,8 +4,10 @@ import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.gear.EnchantmentAwareModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
+import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -15,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 @ParametersAreNotNullByDefault
 public record ModuleHydrostaticRepulsorUnit(boolean swimBoost) implements EnchantmentAwareModule<ModuleHydrostaticRepulsorUnit> {
 
-    public static final String SWIM_BOOST = "swim_boost";
+    public static final ResourceLocation SWIM_BOOST = Mekanism.rl("swim_boost");
     public static final int BOOST_STACKS = 4;
 
     public ModuleHydrostaticRepulsorUnit(IModule<ModuleHydrostaticRepulsorUnit> module) {

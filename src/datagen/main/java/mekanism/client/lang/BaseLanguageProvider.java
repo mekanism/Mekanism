@@ -69,6 +69,10 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
         add(key.value().getDescriptionId(), value);
     }
 
+    protected void addModuleConfig(ResourceLocation configKey, String value) {
+        add("module." + configKey.getNamespace() + "." + configKey.getPath(), value);
+    }
+
     protected void addModuleConfig(String configKey, String value) {
         add("module." + modid + "." + configKey, value);
     }

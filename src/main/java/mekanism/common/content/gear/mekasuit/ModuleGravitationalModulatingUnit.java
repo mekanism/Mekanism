@@ -33,7 +33,7 @@ public record ModuleGravitationalModulatingUnit(SprintBoost speedBoost) implemen
     );
     private static final ResourceLocation icon = MekanismUtils.getResource(ResourceType.GUI_HUD, "gravitational_modulation_unit.png");
     private static final Vec3 BOOST_VEC = new Vec3(0, 0, 1);
-    public static final String SPEED_BOOST = "speed_boost";
+    public static final ResourceLocation SPEED_BOOST = Mekanism.rl("speed_boost");
 
     public ModuleGravitationalModulatingUnit(IModule<ModuleGravitationalModulatingUnit> module) {
         this(module.<SprintBoost>getConfigOrThrow(SPEED_BOOST).get());

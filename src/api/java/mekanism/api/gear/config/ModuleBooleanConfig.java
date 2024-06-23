@@ -8,6 +8,7 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Immutable class representing a boolean module config (name and boolean value).
@@ -27,7 +28,7 @@ public class ModuleBooleanConfig extends ModuleConfig<Boolean> {
      * Stream codec for encoding and decoding boolean module configs over the network.
      */
     public static final StreamCodec<ByteBuf, ModuleBooleanConfig> STREAM_CODEC = StreamCodec.composite(
-          ByteBufCodecs.STRING_UTF8, ModuleConfig::name,
+          ResourceLocation.STREAM_CODEC, ModuleConfig::name,
           ByteBufCodecs.BOOL, ModuleConfig::get,
           ModuleBooleanConfig::new
     );
@@ -38,19 +39,19 @@ public class ModuleBooleanConfig extends ModuleConfig<Boolean> {
      * @param name   Name of the config option.
      * @param value  Value of the config option.
      */
-    public static ModuleBooleanConfig create(String name, boolean value) {
+    public static ModuleBooleanConfig create(ResourceLocation name, boolean value) {
         return new ModuleBooleanConfig(name, value);
     }
 
     private final boolean value;
 
-    protected ModuleBooleanConfig(String name, boolean value) {
+    protected ModuleBooleanConfig(ResourceLocation name, boolean value) {
         super(name);
         this.value = value;
     }
 
     @Override
-    public StreamCodec<ByteBuf, ModuleConfig<Boolean>> namedStreamCodec(String name) {
+    public StreamCodec<ByteBuf, ModuleConfig<Boolean>> namedStreamCodec(ResourceLocation name) {
         return ByteBufCodecs.BOOL.map(val -> new ModuleBooleanConfig(name, val), ModuleConfig::get);
     }
 

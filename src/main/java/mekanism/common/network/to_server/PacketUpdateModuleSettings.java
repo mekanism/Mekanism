@@ -14,6 +14,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -64,7 +65,7 @@ public record PacketUpdateModuleSettings(int slotId, ModuleConfigTarget<?> targe
         private static ModuleConfigTarget<?> decode(RegistryFriendlyByteBuf buffer) {
             ModuleData<?> moduleType = REGISTRY_CODEC.decode(buffer);
             int installed = buffer.readVarInt();
-            String name = buffer.readUtf();
+            ResourceLocation name = ResourceLocation.STREAM_CODEC.decode(buffer);
             ModuleConfig<?> defaultConfig = moduleType.getNamedConfig(installed, name);
             if (defaultConfig == null) {
                 throw new DecoderException("Unknown config " + name + " for module type: " + moduleType + " with " + installed + " modules installed");
@@ -75,7 +76,7 @@ public record PacketUpdateModuleSettings(int slotId, ModuleConfigTarget<?> targe
         private void encode(RegistryFriendlyByteBuf buffer) {
             REGISTRY_CODEC.encode(buffer, moduleType);
             buffer.writeVarInt(installed);
-            buffer.writeUtf(config.name());
+            ResourceLocation.STREAM_CODEC.encode(buffer, config.name());
             config.namedStreamCodec(config.name()).encode(buffer, config);
         }
     }

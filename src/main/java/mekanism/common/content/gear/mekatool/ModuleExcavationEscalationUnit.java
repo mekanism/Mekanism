@@ -40,7 +40,7 @@ import org.jetbrains.annotations.Nullable;
 @ParametersAreNotNullByDefault
 public record ModuleExcavationEscalationUnit(ExcavationMode excavationMode) implements ICustomModule<ModuleExcavationEscalationUnit> {
 
-    public static final String EXCAVATION_MODE = "efficiency";
+    public static final ResourceLocation EXCAVATION_MODE = Mekanism.rl("efficiency");
 
     private static final ResourceLocation RADIAL_ID = Mekanism.rl("excavation_mode");
     private static final Int2ObjectMap<Lazy<NestedRadialMode>> RADIAL_DATAS = Util.make(() -> {
