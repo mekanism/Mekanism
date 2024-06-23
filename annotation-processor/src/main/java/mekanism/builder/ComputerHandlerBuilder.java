@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
@@ -256,7 +257,7 @@ public class ComputerHandlerBuilder {
                       .orElse(null);
                 if (unformattedDescription != null) {
                     //format it
-                    methodDescription = String.format(unformattedDescription, docPlaceholder);
+                    methodDescription = String.format(Locale.ROOT, unformattedDescription, docPlaceholder);
                 }
             }
 

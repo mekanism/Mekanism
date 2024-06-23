@@ -1,6 +1,7 @@
 package mekanism.common.item.gear;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Consumer;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
@@ -97,7 +98,7 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IJetp
                 stored = gasHandlerItem.getChemicalInTank(0);
                 capacity = gasHandlerItem.getTankCapacity(0);
             }
-            list.add(MekanismLang.JETPACK_STORED.translateColored(EnumColor.DARK_GRAY, EnumColor.ORANGE, stored.getAmount(), String.format("%.0f", 100.0 * stored.getAmount() / capacity)));
+            list.add(MekanismLang.JETPACK_STORED.translateColored(EnumColor.DARK_GRAY, EnumColor.ORANGE, stored.getAmount(), String.format(Locale.ROOT, "%.0f", 100.0 * stored.getAmount() / capacity)));
         }
     }
 

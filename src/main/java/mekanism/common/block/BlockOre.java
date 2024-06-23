@@ -8,14 +8,17 @@ import mekanism.common.resource.ore.OreType;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class BlockOre extends Block implements IHasDescription {
 
@@ -47,8 +50,9 @@ public class BlockOre extends Block implements IHasDescription {
     }
 
     @Override
-    public int getExpDrop(BlockState state, LevelReader reader, RandomSource random, BlockPos pos) {
+    public int getExpDrop(@NotNull BlockState state, @NotNull LevelAccessor level, @NotNull BlockPos pos, @Nullable BlockEntity blockEntity, @Nullable Entity breaker,
+          @NotNull ItemStack tool) {
         //Note: If min exp = max exp = 0, then this will just return zero, similar to what super does
-        return Mth.nextInt(random, ore.getMinExp(), ore.getMaxExp());
+        return Mth.nextInt(level.getRandom(), ore.getMinExp(), ore.getMaxExp());
     }
 }

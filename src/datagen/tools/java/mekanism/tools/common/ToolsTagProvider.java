@@ -166,7 +166,7 @@ public class ToolsTagProvider extends BaseTagProvider {
               ToolsItems.REFINED_OBSIDIAN_SHIELD,
               ToolsItems.STEEL_SHIELD
         };
-        addToTag(Tags.Items.TOOLS_SHIELDS, shields);
+        addToTag(Tags.Items.TOOLS_SHIELD, shields);
         addToTag(ItemTags.DURABILITY_ENCHANTABLE, shields);
     }
 

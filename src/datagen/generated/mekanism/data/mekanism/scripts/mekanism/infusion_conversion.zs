@@ -2,7 +2,7 @@
 
 // <recipetype:mekanism:infusion_conversion>.addRecipe(name as string, input as IIngredientWithAmount, output as ICrTInfusionStack)
 
-<recipetype:mekanism:infusion_conversion>.addRecipe("infusion_conversion/gold/from_ingot", <tag:items:c:ingots/gold>, <infuse_type:mekanism:gold> * 10);
+<recipetype:mekanism:infusion_conversion>.addRecipe("infusion_conversion/gold/from_ingot", <tag:item:c:ingots/gold>, <infuse_type:mekanism:gold> * 10);
 
 //Removes the Infusion Conversion Recipe that allows converting Bio Fuel into the Bio Infuse Type.
 

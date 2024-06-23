@@ -2,10 +2,12 @@ package mekanism.common.integration.crafttweaker.recipe.manager;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.fluid.CTFluidIngredient;
+import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.recipes.FluidSlurryToSlurryRecipe;
 import mekanism.api.recipes.basic.BasicFluidSlurryToSlurryRecipe;
 import mekanism.api.recipes.ingredients.SlurryStackIngredient;
+import mekanism.api.recipes.vanilla_input.SingleFluidChemicalRecipeInput;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTSlurryStack;
@@ -15,9 +17,9 @@ import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_FLUID_SLURRY_TO_SLURRY)
-public abstract class FluidSlurryToSlurryRecipeManager extends MekanismRecipeManager<FluidSlurryToSlurryRecipe> {
+public abstract class FluidSlurryToSlurryRecipeManager extends MekanismRecipeManager<SingleFluidChemicalRecipeInput<Slurry, SlurryStack>, FluidSlurryToSlurryRecipe> {
 
-    protected FluidSlurryToSlurryRecipeManager(IMekanismRecipeTypeProvider<?, FluidSlurryToSlurryRecipe, ?> recipeType) {
+    protected FluidSlurryToSlurryRecipeManager(IMekanismRecipeTypeProvider<SingleFluidChemicalRecipeInput<Slurry, SlurryStack>, FluidSlurryToSlurryRecipe, ?> recipeType) {
         super(recipeType);
     }
 

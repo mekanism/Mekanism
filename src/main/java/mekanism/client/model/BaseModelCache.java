@@ -86,7 +86,7 @@ public class BaseModelCache {
         JSONModelData data = registerJSON(rl);
         //Manually run the JsonModelData#reload logic
         data.bakedModel = baker.bake(rl, BlockModelRotation.X0_Y0, Material::sprite);
-        if (getUnbakedModel(modelBakery, mrl) instanceof BlockModel blockModel) {
+        if (getUnbakedModel(modelBakery, baker, mrl) instanceof BlockModel blockModel) {
             data.model = blockModel.customData.getCustomGeometry();
         }
         return data;
@@ -98,8 +98,8 @@ public class BaseModelCache {
         return data;
     }
 
-    private static UnbakedModel getUnbakedModel(ModelBakery modelBakery, ModelResourceLocation rl) {
-        UnbakedModel unbakedModel = modelBakery.topLevelModels.get(rl);
+    private static UnbakedModel getUnbakedModel(ModelBakery modelBakery, ModelBaker baker, ModelResourceLocation rl) {
+        UnbakedModel unbakedModel = baker.getTopLevelModel(rl);
         if (unbakedModel == null) {
             return modelBakery.getModel(rl.id());
         }
@@ -187,7 +187,11 @@ public class BaseModelCache {
         protected void reload(BakingCompleted evt) {
             super.reload(evt);
             bakedModel = BaseModelCache.getBakedModel(evt, mrl);
-            if (BaseModelCache.getUnbakedModel(evt.getModelBakery(), mrl) instanceof BlockModel blockModel) {
+            ModelBaker baker = evt.getModelBakery().new ModelBakerImpl(
+                  (modelLoc, material) -> material.sprite(),
+                  mrl
+            );
+            if (BaseModelCache.getUnbakedModel(evt.getModelBakery(), baker, mrl) instanceof BlockModel blockModel) {
                 model = blockModel.customData.getCustomGeometry();
             }
         }

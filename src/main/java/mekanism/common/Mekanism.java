@@ -58,6 +58,7 @@ import mekanism.common.item.loot.MekanismLootFunctions;
 import mekanism.common.item.predicate.MekanismItemPredicates;
 import mekanism.common.lib.MekAnnotationScanner;
 import mekanism.common.lib.Version;
+import mekanism.common.item.interfaces.IHasConditionalAttributes;
 import mekanism.common.lib.frequency.FrequencyManager;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
@@ -127,6 +128,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.common.world.chunk.RegisterTicketControllersEvent;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.TagsUpdatedEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
@@ -198,6 +200,7 @@ public class Mekanism {
         NeoForge.EVENT_BUS.addListener(this::onEnergyTransferred);
         NeoForge.EVENT_BUS.addListener(this::onChemicalTransferred);
         NeoForge.EVENT_BUS.addListener(this::onLiquidTransferred);
+        NeoForge.EVENT_BUS.addListener(this::onModifyItemAttributes);
         NeoForge.EVENT_BUS.addListener(this::onWorldLoad);
         NeoForge.EVENT_BUS.addListener(this::onWorldUnload);
         NeoForge.EVENT_BUS.addListener(this::registerCommands);
@@ -431,6 +434,12 @@ public class Mekanism {
         UUID networkID = event.network.getUUID();
         PacketUtils.log("Sending type '{}' update message for fluid network with id {}", RegistryUtils.getName(event.fluidType.getFluid()), networkID);
         PacketUtils.sendToAllTracking(event.network, new PacketNetworkScale(event.network), new PacketFluidNetworkContents(networkID, event.fluidType));
+    }
+
+    private void onModifyItemAttributes(ItemAttributeModifierEvent event) {
+        if (event.getItemStack().getItem() instanceof IHasConditionalAttributes item) {
+            item.adjustAttributes(event);
+        }
     }
 
     private void onConfigLoad(ModConfigEvent configEvent) {

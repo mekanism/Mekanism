@@ -5,6 +5,7 @@ import com.blamejared.crafttweaker.api.fluid.CTFluidIngredient;
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
 import mekanism.api.recipes.FluidToFluidRecipe;
 import mekanism.api.recipes.basic.BasicFluidToFluidRecipe;
+import mekanism.api.recipes.vanilla_input.SingleFluidRecipeInput;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
@@ -14,9 +15,9 @@ import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_FLUID_TO_FLUID)
-public abstract class FluidToFluidRecipeManager extends MekanismRecipeManager<FluidToFluidRecipe> {
+public abstract class FluidToFluidRecipeManager extends MekanismRecipeManager<SingleFluidRecipeInput, FluidToFluidRecipe> {
 
-    protected FluidToFluidRecipeManager(IMekanismRecipeTypeProvider<?, FluidToFluidRecipe, ?> recipeType) {
+    protected FluidToFluidRecipeManager(IMekanismRecipeTypeProvider<SingleFluidRecipeInput, FluidToFluidRecipe, ?> recipeType) {
         super(recipeType);
     }
 

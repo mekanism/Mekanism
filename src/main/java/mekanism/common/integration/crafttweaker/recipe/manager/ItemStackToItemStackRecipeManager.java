@@ -13,13 +13,14 @@ import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_ITEM_STACK_TO_ITEM_STACK)
-public abstract class ItemStackToItemStackRecipeManager extends MekanismRecipeManager<ItemStackToItemStackRecipe> {
+public abstract class ItemStackToItemStackRecipeManager extends MekanismRecipeManager<SingleRecipeInput, ItemStackToItemStackRecipe> {
 
-    protected ItemStackToItemStackRecipeManager(IMekanismRecipeTypeProvider<?, ItemStackToItemStackRecipe, ?> recipeType) {
+    protected ItemStackToItemStackRecipeManager(IMekanismRecipeTypeProvider<SingleRecipeInput, ItemStackToItemStackRecipe, ?> recipeType) {
         super(recipeType);
     }
 

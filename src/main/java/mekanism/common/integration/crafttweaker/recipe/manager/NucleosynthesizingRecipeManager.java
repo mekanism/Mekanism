@@ -4,9 +4,12 @@ import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.util.ItemStackUtil;
+import mekanism.api.chemical.gas.Gas;
+import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.NucleosynthesizingRecipe;
 import mekanism.api.recipes.basic.BasicNucleosynthesizingRecipe;
 import mekanism.api.recipes.ingredients.GasStackIngredient;
+import mekanism.api.recipes.vanilla_input.SingleItemChemicalRecipeInput;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -14,7 +17,7 @@ import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_NUCLEOSYNTHESIZING)
-public class NucleosynthesizingRecipeManager extends MekanismRecipeManager<NucleosynthesizingRecipe> {
+public class NucleosynthesizingRecipeManager extends MekanismRecipeManager<SingleItemChemicalRecipeInput<Gas, GasStack>, NucleosynthesizingRecipe> {
 
     public static final NucleosynthesizingRecipeManager INSTANCE = new NucleosynthesizingRecipeManager();
 

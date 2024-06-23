@@ -13,11 +13,12 @@ import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_SAWING)
-public class SawmillRecipeManager extends MekanismRecipeManager<SawmillRecipe> {
+public class SawmillRecipeManager extends MekanismRecipeManager<SingleRecipeInput, SawmillRecipe> {
 
     public static final SawmillRecipeManager INSTANCE = new SawmillRecipeManager();
 

@@ -11,13 +11,14 @@ import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTInfusionStack;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_ITEM_STACK_TO_INFUSE_TYPE)
 public abstract class ItemStackToInfuseTypeRecipeManager extends ItemStackToChemicalRecipeManager<InfuseType, InfusionStack, ICrTInfusionStack, ItemStackToInfuseTypeRecipe> {
 
-    protected ItemStackToInfuseTypeRecipeManager(IMekanismRecipeTypeProvider<?, ItemStackToInfuseTypeRecipe, ?> recipeType) {
+    protected ItemStackToInfuseTypeRecipeManager(IMekanismRecipeTypeProvider<SingleRecipeInput, ItemStackToInfuseTypeRecipe, ?> recipeType) {
         super(recipeType);
     }
 

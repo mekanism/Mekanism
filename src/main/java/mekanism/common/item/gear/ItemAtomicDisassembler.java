@@ -1,6 +1,5 @@
 package mekanism.common.item.gear;
 
-import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -35,9 +34,8 @@ import mekanism.common.content.gear.mekatool.ModuleExcavationEscalationUnit.Exca
 import mekanism.common.content.gear.mekatool.ModuleVeinMiningUnit;
 import mekanism.common.item.ItemEnergized;
 import mekanism.common.item.gear.ItemAtomicDisassembler.DisassemblerMode;
+import mekanism.common.item.interfaces.IHasConditionalAttributes;
 import mekanism.common.item.interfaces.IItemHUDProvider;
-import mekanism.common.lib.attribute.AttributeCache;
-import mekanism.common.lib.attribute.IAttributeRefresher;
 import mekanism.common.lib.radial.IRadialModeItem;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismItems;
@@ -67,7 +65,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.component.Tool;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
@@ -76,10 +73,11 @@ import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.common.ToolAction;
 import net.neoforged.neoforge.common.ToolActions;
 import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import net.neoforged.neoforge.registries.holdersets.AnyHolderSet;
 import org.jetbrains.annotations.NotNull;
 
-public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDProvider, IRadialModeItem<DisassemblerMode>, IAttributeRefresher {
+public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDProvider, IRadialModeItem<DisassemblerMode>, IHasConditionalAttributes {
 
     //All basic dig actions except shears
     public static final Set<ToolAction> ALWAYS_SUPPORTED_ACTIONS = Set.of(ToolActions.AXE_DIG, ToolActions.HOE_DIG, ToolActions.SHOVEL_DIG, ToolActions.PICKAXE_DIG,
@@ -94,8 +92,6 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
         return StorageUtils.getFilledEnergyVariant(MekanismItems.ATOMIC_DISASSEMBLER);
     }
 
-    private final AttributeCache attributeCache;
-
     public ItemAtomicDisassembler(Properties properties) {
         super(properties.rarity(Rarity.RARE).setNoRepair().stacksTo(1)
               .component(MekanismDataComponents.DISASSEMBLER_MODE, DisassemblerMode.NORMAL)
@@ -104,7 +100,6 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
                     new Tool.Rule(new AnyHolderSet<>(BuiltInRegistries.BLOCK.asLookup()), Optional.empty(), Optional.of(true))
               ), 1, 0))
         );
-        this.attributeCache = new AttributeCache(this, MekanismConfig.gear.disassemblerMaxDamage, MekanismConfig.gear.disassemblerAttackSpeed);
     }
 
     @Override
@@ -215,47 +210,23 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
         return LAZY_RADIAL_DATA.get();
     }
 
-    @NotNull
     @Override
-    public ItemAttributeModifiers getAttributeModifiers(@NotNull ItemStack stack) {
+    public void adjustAttributes(ItemAttributeModifierEvent event) {
+        ItemStack stack = event.getItemStack();
         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
         FloatingLong energy = energyContainer == null ? FloatingLong.ZERO : energyContainer.getEnergy();
         FloatingLong energyCost = MekanismConfig.gear.disassemblerEnergyUsageWeapon.get();
-        if (energy.greaterOrEqual(energyCost)) {
-            //If we have enough energy to act at full damage, use the cached multimap rather than creating a new one
-            // This will be the case the vast majority of the time
-            return attributeCache.get();
+        double damage = MekanismConfig.gear.disassemblerMaxDamage.get();
+        double attackSpeed = MekanismConfig.gear.disassemblerAttackSpeed.get();
+        if (!energy.greaterOrEqual(energyCost)) {
+            //If we don't have enough power use it at a reduced power level
+            int minDamage = MekanismConfig.gear.disassemblerMinDamage.get();
+            int damageDifference = MekanismConfig.gear.disassemblerMaxDamage.get() - minDamage;
+            damage = minDamage + damageDifference * energy.divideToLevel(energyCost);
         }
-        //If we don't have enough power use it at a reduced power level
-        int minDamage = MekanismConfig.gear.disassemblerMinDamage.get();
-        int damageDifference = MekanismConfig.gear.disassemblerMaxDamage.get() - minDamage;
-        double damage = minDamage + damageDifference * energy.divideToLevel(energyCost);
-        ImmutableList.Builder<ItemAttributeModifiers.Entry> builder = ImmutableList.builder();
-        builder.add(new ItemAttributeModifiers.Entry(
-              Attributes.ATTACK_DAMAGE,
-              new AttributeModifier(BASE_ATTACK_DAMAGE_ID, damage, Operation.ADD_VALUE),
-              EquipmentSlotGroup.MAINHAND
-        ));
-        builder.add(new ItemAttributeModifiers.Entry(
-              Attributes.ATTACK_SPEED,
-              new AttributeModifier(BASE_ATTACK_SPEED_ID, MekanismConfig.gear.disassemblerAttackSpeed.get(), Operation.ADD_VALUE),
-              EquipmentSlotGroup.MAINHAND
-        ));
-        return new ItemAttributeModifiers(builder.build(), true);
-    }
-
-    @Override
-    public void addToBuilder(List<ItemAttributeModifiers.Entry> builder) {
-        builder.add(new ItemAttributeModifiers.Entry(
-              Attributes.ATTACK_DAMAGE,
-              new AttributeModifier(BASE_ATTACK_DAMAGE_ID, MekanismConfig.gear.disassemblerMaxDamage.get(), Operation.ADD_VALUE),
-              EquipmentSlotGroup.MAINHAND
-        ));
-        builder.add(new ItemAttributeModifiers.Entry(
-              Attributes.ATTACK_SPEED,
-              new AttributeModifier(BASE_ATTACK_SPEED_ID, MekanismConfig.gear.disassemblerAttackSpeed.get(), Operation.ADD_VALUE),
-              EquipmentSlotGroup.MAINHAND
-        ));
+        //Replace any existing value that might have been set via NBT, as we want to tbe the ones handling the scaling based on the config
+        event.replaceModifier(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_ID, damage, Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND);
+        event.replaceModifier(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_ID, attackSpeed, Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND);
     }
 
     @Override

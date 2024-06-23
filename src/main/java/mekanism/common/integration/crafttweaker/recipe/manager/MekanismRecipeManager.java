@@ -18,17 +18,18 @@ import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER)
-public abstract class MekanismRecipeManager<RECIPE extends MekanismRecipe<?>> implements IRecipeManager<RECIPE> {
+public abstract class MekanismRecipeManager<INPUT extends RecipeInput, RECIPE extends MekanismRecipe<INPUT>> implements IRecipeManager<RECIPE> {
 
-    private final IMekanismRecipeTypeProvider<?, RECIPE, ?> recipeType;
+    private final IMekanismRecipeTypeProvider<INPUT, RECIPE, ?> recipeType;
 
-    protected MekanismRecipeManager(IMekanismRecipeTypeProvider<?, RECIPE, ?> recipeType) {
+    protected MekanismRecipeManager(IMekanismRecipeTypeProvider<INPUT, RECIPE, ?> recipeType) {
         this.recipeType = recipeType;
     }
 

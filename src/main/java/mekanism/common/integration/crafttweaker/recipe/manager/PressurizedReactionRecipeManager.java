@@ -10,6 +10,7 @@ import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.basic.BasicPressurizedReactionRecipe;
 import mekanism.api.recipes.ingredients.GasStackIngredient;
+import mekanism.api.recipes.vanilla_input.ReactionRecipeInput;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTGasStack;
@@ -20,7 +21,7 @@ import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_REACTION)
-public class PressurizedReactionRecipeManager extends MekanismRecipeManager<PressurizedReactionRecipe> {
+public class PressurizedReactionRecipeManager extends MekanismRecipeManager<ReactionRecipeInput, PressurizedReactionRecipe> {
 
     //TODO: If https://github.com/ZenCodeLang/ZenCode/issues/31 gets fixed switch the addRecipe methods in this class to using ZC optional
     public static final PressurizedReactionRecipeManager INSTANCE = new PressurizedReactionRecipeManager();

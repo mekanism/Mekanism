@@ -17,8 +17,8 @@
 //An alternate implementation of the above recipe are shown commented below. This implementation makes use of implicit casting to allow easier calling:
 // <recipetype:mekanism:sawing>.addRecipe("sawing/melon_to_seeds", <item:minecraft:melon_slice>, <item:minecraft:melon_seeds>);
 
-<recipetype:mekanism:sawing>.addRecipe("sawing/leaves", (<tag:items:minecraft:leaves>) * 15, <item:mekanism:sawdust> % 0.5);
-<recipetype:mekanism:sawing>.addRecipe("sawing/saplings", (<tag:items:minecraft:saplings>) * 5, <item:mekanism:sawdust>, 0.75);
+<recipetype:mekanism:sawing>.addRecipe("sawing/leaves", (<tag:item:minecraft:leaves>) * 15, <item:mekanism:sawdust> % 0.5);
+<recipetype:mekanism:sawing>.addRecipe("sawing/saplings", (<tag:item:minecraft:saplings>) * 5, <item:mekanism:sawdust>, 0.75);
 <recipetype:mekanism:sawing>.addRecipe("sawing/shield", <item:minecraft:shield>, <item:minecraft:oak_planks> * 4 % 1.5);
 <recipetype:mekanism:sawing>.addRecipe("sawing/workbench", <item:minecraft:crafting_table>, <item:minecraft:oak_planks> * 5, <item:mekanism:sawdust> % 0.25);
 <recipetype:mekanism:sawing>.addRecipe("sawing/book", <item:minecraft:book>, <item:minecraft:paper> * 3, <item:minecraft:leather> * 6, 1.0);

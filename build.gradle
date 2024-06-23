@@ -328,7 +328,7 @@ repositories { RepositoryHandler handler ->
         filter.includeGroup('org.openzen.zencode')
     })
     exclusiveRepo(handler, 'https://maven.terraformersmc.com/', 'dev.emi')
-    exclusiveRepo(handler, 'https://maven.theillusivec4.top/', 'top.theillusivec4.curios')
+    exclusiveRepo(handler, 'https://maven.octo-studios.com/releases/', 'top.theillusivec4.curios')
     exclusiveRepo(handler, 'https://maven.tterrag.com/', 'team.chisel.ctm')
     exclusiveRepo(handler, 'https://squiddev.cc/maven/', 'cc.tweaked', 'org.squiddev')
     exclusiveRepo(handler, 'https://dogforce-games.com/maven/', 'dev.gigaherz.jsonthings')
@@ -360,45 +360,35 @@ dependencies {
     //We use https://github.com/jqwik-team/jqwik to allow for implementing property based testing
     testImplementation("net.jqwik:jqwik:${jqwik_version}")
 
-    compileOnly("mezz.jei:jei-${previous_minor_minecraft_version}-common-api:${jei_version}")
-    compileOnly("mezz.jei:jei-${previous_minor_minecraft_version}-neoforge-api:${jei_version}")
+    compileOnly("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
+    compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
     if (recipe_viewer == 'jei' || recipe_viewer == 'hybrid') {
-        //TODO: Re-enable when JEI updates
-        //localRuntime("mezz.jei:jei-${previous_minor_minecraft_version}-neoforge:${jei_version}")
+        localRuntime("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
     }
 
-    compileOnly("dev.emi:emi-neoforge:${emi_version}+${previous_minor_minecraft_version}:api")
-    def emi = "dev.emi:emi-neoforge:${emi_version}+${previous_minor_minecraft_version}"
+    compileOnly("dev.emi:emi-neoforge:${emi_version}+${minecraft_version}:api")
+    def emi = "dev.emi:emi-neoforge:${emi_version}+${minecraft_version}"
     //TODO: Re-evaluate (https://github.com/emilyploszaj/emi/issues/537) might allow us to not have to do this
     //Compile against full emi in datagen
     datagenMainCompileOnly(emi)
-    //TODO: Re-enable when EMI updates
-    /*if (recipe_viewer == 'emi' || recipe_viewer == 'hybrid') {
+    if (recipe_viewer == 'emi' || recipe_viewer == 'hybrid') {
         localRuntime(emi)
     } else {
         //We still need it to load in datagen regardless of if we are using emi or a different viewer so that we can access EMI related objects
         datagenMainRuntimeOnly(emi)
-    }*/
-
-    //TODO: Re-enable once an update is released for the current MC version
-    //localRuntime("team.chisel.ctm:CTM:${minecraft_version}-${ctm_version}")
-
-    //TODO: Remove having to specify these as non transitive once https://github.com/McJtyMods/TheOneProbe/issues/548 is fixed
-    compileOnly("mcjty.theoneprobe:theoneprobe:${top_version}:api") {
-        transitive = false
     }
-    //TODO: Re-enable once it doesn't cause connection issues on servers
-    /*localRuntime("mcjty.theoneprobe:theoneprobe:${top_version}") {
-        transitive = false
-    }*/
+
+    localRuntime("team.chisel.ctm:CTM:${minecraft_version}-${ctm_version}")
+
+    compileOnly("mcjty.theoneprobe:theoneprobe:${top_version}:api")
+    localRuntime("mcjty.theoneprobe:theoneprobe:${top_version}")
     compileOnly("curse.maven:jade-api-324717:${jade_api_id}")
     localRuntime("curse.maven:jade-324717:${jade_id}")
     compileOnly("mcp.mobius.waila:wthit-api:neo-${wthit_version}")
 
-    def crt = "com.blamejared.crafttweaker:CraftTweaker-neoforge-${previous_minor_minecraft_version}:${crafttweaker_version}"
+    def crt = "com.blamejared.crafttweaker:CraftTweaker-neoforge-${minecraft_version}:${crafttweaker_version}"
     compileOnly(crt)
-    //TODO: Re-enable when CrT updates
-    //localRuntime(crt)
+    localRuntime(crt)
     def jeiTweaker = "com.blamejared.jeitweaker:JeiTweaker-forge-1.20.1:${jeitweaker_version}"
     compileOnly(jeiTweaker)
     //TODO: Re-enable when it updates
@@ -418,13 +408,12 @@ dependencies {
     compileOnly("curse.maven:female-gender-forge-481655:${wildfire_gender_mod_id}")
 
     //Dependencies for data generators for mod compat reference
-    //TODO: Switch back to datagenMainImplementation when it updated
-    datagenMainCompileOnly("appeng:appliedenergistics2-neoforge:${ae2_version}")
+    datagenMainImplementation("appeng:appliedenergistics2-neoforge:${ae2_version}")
     datagenMainRuntimeOnly("com.github.glitchfiend:GlitchCore-neoforge:${minecraft_version}-${glitchcore_version}")
     datagenMainRuntimeOnly("com.github.glitchfiend:TerraBlender-neoforge:${minecraft_version}-${terrablender_version}")
     datagenMainImplementation("com.github.glitchfiend:BiomesOPlenty-neoforge:${minecraft_version}-${biomesoplenty_version}")
-    //TODO - 1.20.2: Switch back to datagenMainImplementation
-    datagenMainCompileOnly("curse.maven:farmers-delight-398521:${farmers_delight_id}")
+    //TODO: Re-enable and implement after it is updated
+    //datagenMainImplementation("curse.maven:farmers-delight-398521:${farmers_delight_id}")
     //TODO - 1.20.2: Re-enable after projecte is updated
     //datagenMainRuntimeOnly("curse.maven:projecte-226410:${projecte_id}")
 

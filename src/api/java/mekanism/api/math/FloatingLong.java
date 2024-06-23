@@ -880,7 +880,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      */
     public double divideToLevel(FloatingLong toDivide) {
         //TODO: Optimize out creating another object
-        return toDivide.isZero() || greaterThan(toDivide) ? 1 : divide(toDivide).doubleValue();
+        return toDivide.isZero() || greaterOrEqual(toDivide) ? 1 : divide(toDivide).doubleValue();
     }
 
     /**

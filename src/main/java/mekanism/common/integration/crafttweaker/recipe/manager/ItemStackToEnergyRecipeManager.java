@@ -9,13 +9,14 @@ import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_ITEM_STACK_TO_ENERGY)
-public abstract class ItemStackToEnergyRecipeManager extends MekanismRecipeManager<ItemStackToEnergyRecipe> {
+public abstract class ItemStackToEnergyRecipeManager extends MekanismRecipeManager<SingleRecipeInput, ItemStackToEnergyRecipe> {
 
-    protected ItemStackToEnergyRecipeManager(IMekanismRecipeTypeProvider<?, ItemStackToEnergyRecipe, ?> recipeType) {
+    protected ItemStackToEnergyRecipeManager(IMekanismRecipeTypeProvider<SingleRecipeInput, ItemStackToEnergyRecipe, ?> recipeType) {
         super(recipeType);
     }
 

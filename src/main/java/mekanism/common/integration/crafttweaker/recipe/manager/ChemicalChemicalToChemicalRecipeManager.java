@@ -15,6 +15,7 @@ import mekanism.api.recipes.chemical.ChemicalChemicalToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.GasStackIngredient;
 import mekanism.api.recipes.ingredients.PigmentStackIngredient;
+import mekanism.api.recipes.vanilla_input.BiChemicalRecipeInput;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
@@ -28,9 +29,9 @@ import org.openzen.zencode.java.ZenCodeType;
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_CHEMICAL_CHEMICAL_TO_CHEMICAL)
 public abstract class ChemicalChemicalToChemicalRecipeManager<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
       INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK, ?>, CRT_STACK extends ICrTChemicalStack<CHEMICAL, STACK, CRT_STACK>,
-      RECIPE extends ChemicalChemicalToChemicalRecipe<CHEMICAL, STACK, INGREDIENT>> extends MekanismRecipeManager<RECIPE> {
+      RECIPE extends ChemicalChemicalToChemicalRecipe<CHEMICAL, STACK, INGREDIENT>> extends MekanismRecipeManager<BiChemicalRecipeInput<CHEMICAL, STACK>, RECIPE> {
 
-    protected ChemicalChemicalToChemicalRecipeManager(IMekanismRecipeTypeProvider<?, RECIPE, ?> recipeType) {
+    protected ChemicalChemicalToChemicalRecipeManager(IMekanismRecipeTypeProvider<BiChemicalRecipeInput<CHEMICAL, STACK>, RECIPE, ?> recipeType) {
         super(recipeType);
     }
 
