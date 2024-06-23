@@ -240,7 +240,7 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
                 //Skip the source position as we manually handled it before the loop
                 continue;
             }
-            long nextEnergyUsed = energyUsed.add(energyUsage);
+            long nextEnergyUsed = energyUsed + energyUsage;
             if (nextEnergyUsed.greaterThan(energy)) {
                 break;
             }

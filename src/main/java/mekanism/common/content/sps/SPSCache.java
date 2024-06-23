@@ -21,7 +21,7 @@ public class SPSCache extends MultiblockCache<SPSMultiblockData> {
         progress += ((SPSCache) mergeCache).progress;
         inputProcessed += ((SPSCache) mergeCache).inputProcessed;
         couldOperate |= ((SPSCache) mergeCache).couldOperate;
-        receivedEnergy = receivedEnergy.add(((SPSCache) mergeCache).receivedEnergy);
+        receivedEnergy = receivedEnergy + ((SPSCache) mergeCache).receivedEnergy;
         lastProcessed = Math.max(lastProcessed, ((SPSCache) mergeCache).lastProcessed);
     }
 

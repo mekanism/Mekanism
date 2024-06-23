@@ -461,7 +461,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         boolean sameDimension = entity.level().dimension() == coords.dimension();
         BlockPos pos = coords.pos();
         if (sameDimension) {
-            energyCost = (long) ((energyCost + MekanismConfig.usage.teleporterDistance.get()) * (Math.sqrt(entity.distanceToSqr(pos.getX(), pos.getY(), pos.getZ()))));
+            energyCost = (long) ((energyCost + MekanismConfig.usage.teleporterDistance.get()) * Math.ceil(Math.sqrt(entity.distanceToSqr(pos.getX(), pos.getY(), pos.getZ()))));
         } else {
             double currentScale = entity.level().dimensionType().coordinateScale();
             double targetScale = targetWorld.dimensionType().coordinateScale();
@@ -484,8 +484,8 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
                 zDifference = entity.getZ() - pos.getZ() * inverseScale;
             }
             double distance = Mth.length(xDifference, yDifference, zDifference);
-            energyCost = energyCost.add(MekanismConfig.usage.teleporterDimensionPenalty.get())
-                  .plusEqual(MekanismConfig.usage.teleporterDistance.get().multiply(distance));
+            energyCost = (energyCost + MekanismConfig.usage.teleporterDimensionPenalty.get())
+                         + (MekanismConfig.usage.teleporterDistance.get() * (long) Math.ceil(distance));
         }
         //Factor the number of passengers of this entity into the teleportation energy cost
         Set<Entity> passengers = new HashSet<>();
