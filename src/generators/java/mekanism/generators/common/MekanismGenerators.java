@@ -53,7 +53,7 @@ public class MekanismGenerators implements IModModule {
 
     public static final String MODID = "mekanismgenerators";
     private static final ConfigBasedCachedLongSupplier ETHENE_ENERGY_DENSITY = new ConfigBasedCachedLongSupplier(() -> {
-        long energy = MekanismGeneratorsConfig.generators.bioGeneration.get().multiply(2)
+        long energy = Math.multiplyExact(MekanismGeneratorsConfig.generators.bioGeneration.get(), 2)
               .timesEqual(MekanismGeneratorsConfig.generators.etheneDensityMultiplier.get());
         return energy + MekanismConfig.general.FROM_H2.get();
     }, MekanismConfig.general.FROM_H2, MekanismGeneratorsConfig.generators.bioGeneration, MekanismGeneratorsConfig.generators.etheneDensityMultiplier);

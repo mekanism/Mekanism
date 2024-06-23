@@ -66,7 +66,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
             setActive(canFunction() && currentMultiplier != 0L);
         }
         if (currentMultiplier != 0L && canFunction() && getEnergyContainer().getNeeded() != 0L) {
-            getEnergyContainer().insert(MekanismGeneratorsConfig.generators.windGenerationMin.get().multiply(currentMultiplier), Action.EXECUTE, AutomationType.INTERNAL);
+            getEnergyContainer().insert(Math.multiplyExact(MekanismGeneratorsConfig.generators.windGenerationMin.get(), currentMultiplier), Action.EXECUTE, AutomationType.INTERNAL);
         }
         return sendUpdatePacket;
     }
@@ -158,7 +158,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     //Methods relating to IComputerTile
     @Override
     long getProductionRate() {
-        return getActive() ? MekanismGeneratorsConfig.generators.windGenerationMin.get().multiply(getCurrentMultiplier()) : 0L;
+        return getActive() ? Math.multiplyExact(MekanismGeneratorsConfig.generators.windGenerationMin.get(), getCurrentMultiplier()) : 0L;
     }
     //End methods IComputerTile
 }

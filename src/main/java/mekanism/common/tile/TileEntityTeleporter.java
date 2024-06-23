@@ -491,7 +491,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         Set<Entity> passengers = new HashSet<>();
         fillIndirectPassengers(entity, sameDimension, targetWorld, passengers);
         int passengerCount = passengers.size();
-        return passengerCount > 0 ? energyCost.multiply(passengerCount) : energyCost;
+        return passengerCount > 0 ? Math.multiplyExact(energyCost, passengerCount) : energyCost;
     }
 
     private static void fillIndirectPassengers(Entity base, boolean sameDimension, Level targetDimension, Set<Entity> passengers) {

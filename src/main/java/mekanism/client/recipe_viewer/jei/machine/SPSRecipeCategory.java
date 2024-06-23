@@ -35,7 +35,7 @@ public class SPSRecipeCategory extends BaseRecipeCategory<SPSRecipeViewerRecipe>
             List<Component> list = new ArrayList<>();
             list.add(MekanismLang.STATUS.translate(MekanismLang.ACTIVE));
             list.add(MekanismLang.SPS_ENERGY_INPUT.translate(EnergyDisplay.of(
-                  MekanismConfig.general.spsEnergyPerInput.get().multiply(MekanismConfig.general.spsInputPerAntimatter.get()))));
+                  Math.multiplyExact(MekanismConfig.general.spsEnergyPerInput.get(), MekanismConfig.general.spsInputPerAntimatter.get()))));
             list.add(MekanismLang.PROCESS_RATE_MB.translate(1.0));
             return list;
         }));
