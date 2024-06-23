@@ -234,7 +234,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
             nextMode();
         }
 
-        FloatingLong clientEnergyUsed = FloatingLong.ZERO;
+        long clientEnergyUsed = 0L;
         if (autoMode && formula != null && ((getControlType() == RedstoneControl.PULSE && pulseOperations > 0) || canFunction())) {
             boolean canOperate = true;
             if (!isRecipe) {
@@ -250,7 +250,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                         }
                     }
                 } else {
-                    FloatingLong energyPerTick = energyContainer.getEnergyPerTick();
+                    long energyPerTick = energyContainer.getEnergyPerTick();
                     if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL).equals(energyPerTick)) {
                         clientEnergyUsed = energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
                         operatingTicks++;

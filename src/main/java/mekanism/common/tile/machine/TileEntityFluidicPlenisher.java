@@ -126,9 +126,9 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.fillContainerOrConvert();
         inputSlot.fillTank(outputSlot);
-        FloatingLong clientEnergyUsed = FloatingLong.ZERO;
+        long clientEnergyUsed = 0L;
         if (canFunction() && !fluidTank.isEmpty()) {
-            FloatingLong energyPerTick = energyContainer.getEnergyPerTick();
+            long energyPerTick = energyContainer.getEnergyPerTick();
             if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL).equals(energyPerTick)) {
                 if (!finishedCalc) {
                     clientEnergyUsed = energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);

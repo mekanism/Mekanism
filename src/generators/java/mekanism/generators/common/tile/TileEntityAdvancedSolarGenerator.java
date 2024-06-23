@@ -78,7 +78,7 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
         if (level == null || solarCheck == null) {
             //Note: We assume if solarCheck is null then solarChecks will be filled with null, and if it isn't
             // then it won't be as they get initialized at the same time
-            return FloatingLong.ZERO;
+            return 0;
         }
         float brightness = getBrightnessMultiplier(level);
         //Calculate the generation multiplier of all the solar panels together

@@ -26,7 +26,7 @@ public class ForgeStrictEnergyHandler implements IStrictEnergyHandler {
 
     @Override
     public long getEnergy(int container) {
-        return container == 0 ? EnergyUnit.FORGE_ENERGY.convertFrom(storage.getEnergyStored()) : FloatingLong.ZERO;
+        return container == 0 ? EnergyUnit.FORGE_ENERGY.convertFrom(storage.getEnergyStored()) : 0L;
     }
 
     @Override
@@ -36,12 +36,12 @@ public class ForgeStrictEnergyHandler implements IStrictEnergyHandler {
 
     @Override
     public long getMaxEnergy(int container) {
-        return container == 0 ? EnergyUnit.FORGE_ENERGY.convertFrom(storage.getMaxEnergyStored()) : FloatingLong.ZERO;
+        return container == 0 ? EnergyUnit.FORGE_ENERGY.convertFrom(storage.getMaxEnergyStored()) : 0L;
     }
 
     @Override
     public long getNeededEnergy(int container) {
-        return container == 0 ? EnergyUnit.FORGE_ENERGY.convertFrom(Math.max(0, storage.getMaxEnergyStored() - storage.getEnergyStored())) : FloatingLong.ZERO;
+        return container == 0 ? EnergyUnit.FORGE_ENERGY.convertFrom(Math.max(0, storage.getMaxEnergyStored() - storage.getEnergyStored())) : 0L;
     }
 
     @Override
@@ -66,7 +66,7 @@ public class ForgeStrictEnergyHandler implements IStrictEnergyHandler {
 
     @Override
     public long extractEnergy(int container, long amount, @NotNull Action action) {
-        return container == 0 ? extractEnergy(amount, action) : FloatingLong.ZERO;
+        return container == 0 ? extractEnergy(amount, action) : 0L;
     }
 
     @Override
@@ -78,6 +78,6 @@ public class ForgeStrictEnergyHandler implements IStrictEnergyHandler {
                 return EnergyUnit.FORGE_ENERGY.convertFrom(extracted);
             }
         }
-        return FloatingLong.ZERO;
+        return 0L;
     }
 }

@@ -153,8 +153,8 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
     }
 
     private InteractionResult dowseCampfire(UseOnContext context, Lazy<BlockState> lazyClickedState, IEnergyContainer energyContainer) {
-        FloatingLong energy = energyContainer.getEnergy();
-        FloatingLong energyUsage = MekanismConfig.gear.mekaToolEnergyUsageShovel.get();
+        long energy = energyContainer.getEnergy();
+        long energyUsage = MekanismConfig.gear.mekaToolEnergyUsageShovel.get();
         if (energy.smallerThan(energyUsage)) {
             //Fail if we don't have enough energy or using the item failed
             return InteractionResult.FAIL;
@@ -234,13 +234,13 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
         Direction side = context.getClickedFace();
         toolAOEData.persistData(world, pos, clickedState, side);
         //Note: We don't need to copy this as we add to it in a non modifying way
-        FloatingLong energyUsed = energyUsage;
+        long energyUsed = energyUsage;
         for (BlockPos newPos : toolAOEData.getTargetPositions(pos, side, (diameter - 1) / 2)) {
             if (pos.equals(newPos)) {
                 //Skip the source position as we manually handled it before the loop
                 continue;
             }
-            FloatingLong nextEnergyUsed = energyUsed.add(energyUsage);
+            long nextEnergyUsed = energyUsed.add(energyUsage);
             if (nextEnergyUsed.greaterThan(energy)) {
                 break;
             }

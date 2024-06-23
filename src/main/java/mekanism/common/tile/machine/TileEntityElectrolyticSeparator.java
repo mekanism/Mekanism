@@ -49,6 +49,7 @@ import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
+import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.chemical.GasInventorySlot;
@@ -376,7 +377,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
         super.addContainerTrackers(container);
         container.track(SyncableEnum.create(GasMode.BY_ID, GasMode.IDLE, () -> dumpLeft, value -> dumpLeft = value));
         container.track(SyncableEnum.create(GasMode.BY_ID, GasMode.IDLE, () -> dumpRight, value -> dumpRight = value));
-        container.track(SyncableFloatingLong.create(this::getEnergyUsed, value -> clientEnergyUsed = value));
+        container.track(SyncableLong.create(this::getEnergyUsed, value -> clientEnergyUsed = value));
     }
 
     //Methods relating to IComputerTile

@@ -72,7 +72,7 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
         boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.fillContainerOrConvert();
         if (canFunction()) {
-            FloatingLong energyPerTick = energyContainer.getEnergyPerTick();
+            long energyPerTick = energyContainer.getEnergyPerTick();
             if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL).equals(energyPerTick)) {
                 setActive(true);
                 energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);

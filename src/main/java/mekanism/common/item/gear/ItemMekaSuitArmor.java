@@ -548,7 +548,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         absorption = Math.min(1 - currentAbsorbed, absorption);
         float toAbsorb = amount * absorption;
         if (toAbsorb > 0) {
-            FloatingLong usage = energyCost.get().multiply(toAbsorb);
+            long usage = energyCost.get().multiply(toAbsorb);
             if (usage.isZero()) {
                 //No energy is actually needed to absorb the damage, either because of the config
                 // or how small the amount to absorb is
@@ -564,7 +564,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                 // then we calculate what ratio we are able to block
                 float absorbedPercent = usageInfo.energyAvailable.divide(usage).floatValue();
                 usageInfo.energyUsed = usageInfo.energyUsed.plusEqual(usageInfo.energyAvailable);
-                usageInfo.energyAvailable = FloatingLong.ZERO;
+                usageInfo.energyAvailable = 0L;
                 return absorption * absorbedPercent;
             }
         }

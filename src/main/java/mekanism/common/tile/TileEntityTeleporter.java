@@ -452,7 +452,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
                 return calculateEnergyCost(entity, targetWorld, pos);
             }
         }
-        return Long.MAX_VALUE;
+        return -1;
     }
 
     @NotNull

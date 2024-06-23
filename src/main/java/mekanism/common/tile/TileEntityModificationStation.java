@@ -85,7 +85,7 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
     protected boolean onUpdateServer() {
         boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.fillContainerOrConvert();
-        FloatingLong clientEnergyUsed = FloatingLong.ZERO;
+        long clientEnergyUsed = 0L;
         if (canFunction()) {
             boolean operated = false;
             if (energyContainer.getEnergy().greaterOrEqual(energyContainer.getEnergyPerTick()) && !moduleSlot.isEmpty() && !containerSlot.isEmpty()) {

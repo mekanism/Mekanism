@@ -103,11 +103,11 @@ public class TileEntityChargepad extends TileEntityMekanism {
         if (energyHandler == null) {
             return false;
         }
-        FloatingLong energyToGive = energyContainer.getEnergyPerTick();
-        FloatingLong simulatedRemainder = energyHandler.insertEnergy(energyToGive, Action.SIMULATE);
+        long energyToGive = energyContainer.getEnergyPerTick();
+        long simulatedRemainder = energyHandler.insertEnergy(energyToGive, Action.SIMULATE);
         if (simulatedRemainder.smallerThan(energyToGive)) {
             //We are able to fit at least some energy from our container into the item
-            FloatingLong extractedEnergy = energyContainer.extract(energyToGive.subtract(simulatedRemainder), Action.EXECUTE, AutomationType.INTERNAL);
+            long extractedEnergy = energyContainer.extract(energyToGive.subtract(simulatedRemainder), Action.EXECUTE, AutomationType.INTERNAL);
             if (!extractedEnergy.isZero()) {
                 //If we were able to actually extract it from our energy container, then insert it into the item
                 MekanismUtils.logExpectedZero(energyHandler.insertEnergy(extractedEnergy, Action.EXECUTE));

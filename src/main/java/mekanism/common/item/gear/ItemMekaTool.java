@@ -141,8 +141,8 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
         if (energyContainer != null) {
             //Note: We use a hardness of zero here as that will get the minimum potential destroy energy required
             // as that is the best guess we can currently give whether the corresponding dig action is supported
-            FloatingLong energyRequired = getDestroyEnergy(container, 0, container.hasEnabled(MekanismModules.SILK_TOUCH_UNIT));
-            FloatingLong energyAvailable = energyContainer.getEnergy();
+            long energyRequired = getDestroyEnergy(container, 0, container.hasEnabled(MekanismModules.SILK_TOUCH_UNIT));
+            long energyAvailable = energyContainer.getEnergy();
             //If we don't have enough energy to break at full speed check if the reduced speed could actually mine
             return energyRequired.smallerOrEqual(energyAvailable) || !energyAvailable.divide(energyRequired).isZero();
         }
@@ -239,8 +239,8 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
             return 0;
         }
         //Use raw hardness to get the best guess of if it is zero or not
-        FloatingLong energyRequired = getDestroyEnergy(stack, state.destroySpeed, isModuleEnabled(stack, MekanismModules.SILK_TOUCH_UNIT));
-        FloatingLong energyAvailable = energyContainer.extract(energyRequired, Action.SIMULATE, AutomationType.MANUAL);
+        long energyRequired = getDestroyEnergy(stack, state.destroySpeed, isModuleEnabled(stack, MekanismModules.SILK_TOUCH_UNIT));
+        long energyAvailable = energyContainer.extract(energyRequired, Action.SIMULATE, AutomationType.MANUAL);
         if (energyAvailable.smallerThan(energyRequired)) {
             //If we can't extract all the energy we need to break it go at base speed reduced by how much we actually have available
             return MekanismConfig.gear.mekaToolBaseEfficiency.get() * energyAvailable.divide(energyRequired).floatValue();
@@ -254,8 +254,8 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
         if (energyContainer != null) {
             boolean silk = isModuleEnabled(stack, MekanismModules.SILK_TOUCH_UNIT);
-            FloatingLong modDestroyEnergy = getDestroyEnergy(stack, silk);
-            FloatingLong energyRequired = getDestroyEnergy(modDestroyEnergy, state.getDestroySpeed(world, pos));
+            long modDestroyEnergy = getDestroyEnergy(stack, silk);
+            long energyRequired = getDestroyEnergy(modDestroyEnergy, state.getDestroySpeed(world, pos));
             energyContainer.extract(energyRequired, Action.EXECUTE, AutomationType.MANUAL);
             //AOE/vein mining handling
             if (!world.isClientSide && entity instanceof ServerPlayer player && !player.isCreative() &&
@@ -269,7 +269,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
                 Object2IntMap<BlockPos> veinedBlocks = getVeinedBlocks(world, stack, blocks, oreTracker);
                 if (!veinedBlocks.isEmpty()) {
                     //Don't include bonus energy required by efficiency modules when calculating energy of vein mining targets
-                    FloatingLong baseDestroyEnergy = getDestroyEnergy(silk);
+                    long baseDestroyEnergy = getDestroyEnergy(silk);
                     MekanismUtils.veinMineArea(energyContainer, energyRequired, modDestroyEnergy, baseDestroyEnergy, world, pos, player, stack, this, veinedBlocks,
                           ItemMekaTool::getDestroyEnergy, (base, hardness, distance, bs) -> getDestroyEnergy(base, hardness)
                                 .multiply(0.5 * Math.pow(distance, bs.is(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE) ? 1.5 : 2)));
@@ -350,7 +350,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
         if (attackAmplificationUnit != null) {
             unitDamage = attackAmplificationUnit.getCustomInstance().getDamage();
             if (unitDamage > 0) {
-                FloatingLong energyCost = MekanismConfig.gear.mekaToolEnergyUsageWeapon.get().multiply(unitDamage / 4D);
+                long energyCost = MekanismConfig.gear.mekaToolEnergyUsageWeapon.get().multiply(unitDamage / 4D);
                 IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
                 long energy = energyContainer == null ? 0L : energyContainer.getEnergy();
                 if (energy.smallerThan(energyCost)) {
@@ -410,7 +410,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
                             return InteractionResultHolder.pass(stack);
                         }
                         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
-                        FloatingLong energyNeeded = MekanismConfig.gear.mekaToolEnergyUsageTeleport.get().multiply(distance / 10D);
+                        long energyNeeded = MekanismConfig.gear.mekaToolEnergyUsageTeleport.get().multiply(distance / 10D);
                         if (energyContainer == null || energyContainer.getEnergy().smallerThan(energyNeeded)) {
                             return InteractionResultHolder.fail(stack);
                         }

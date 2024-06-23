@@ -180,14 +180,14 @@ public class MekanismEmi implements EmiPlugin {
         if (energyHandlerItem != null) {
             int containers = energyHandlerItem.getEnergyContainerCount();
             if (containers == 1) {
-                FloatingLong neededEnergy = energyHandlerItem.getNeededEnergy(0);
+                long neededEnergy = energyHandlerItem.getNeededEnergy(0);
                 if (neededEnergy.isZero()) {
                     representation.add("filled");
                 }
             } else if (containers > 1) {
                 StringBuilder component = new StringBuilder();
                 for (int container = 0; container < containers; container++) {
-                    FloatingLong neededEnergy = energyHandlerItem.getNeededEnergy(container);
+                    long neededEnergy = energyHandlerItem.getNeededEnergy(container);
                     if (neededEnergy.isZero()) {
                         component.append("filled");
                     } else {

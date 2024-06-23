@@ -59,8 +59,8 @@ public class PortableTeleporterContainer extends FrequencyItemContainer<Teleport
                         } else {
                             GlobalPos coords = freq.getClosestCoords(GlobalPos.of(getLevel().dimension(), inv.player.blockPosition()));
                             if (coords != null) {
-                                FloatingLong energyNeeded = TileEntityTeleporter.calculateEnergyCost(inv.player, coords);
-                                if (energyNeeded != null && energyContainer.extract(energyNeeded, Action.SIMULATE, AutomationType.MANUAL).smallerThan(energyNeeded)) {
+                                long energyNeeded = TileEntityTeleporter.calculateEnergyCost(inv.player, coords);
+                                if (energyNeeded != -1 && energyContainer.extract(energyNeeded, Action.SIMULATE, AutomationType.MANUAL).smallerThan(energyNeeded)) {
                                     status = 4;
                                 }
                             }

@@ -288,7 +288,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
         public static final CacheSubstance<IMekanismStrictEnergyHandler, IEnergyContainer> ENERGY = new CacheSubstance<>(ContainerType.ENERGY) {
             @Override
             protected void defaultPrefab(MultiblockCache<?> cache) {
-                cache.energyContainers.add(BasicEnergyContainer.create(FloatingLong.MAX_VALUE, cache));
+                cache.energyContainers.add(BasicEnergyContainer.create(Long.MAX_VALUE, cache));
             }
 
             @Override

@@ -9,6 +9,8 @@ import mekanism.common.command.builders.BuildCommand;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.MekanismModConfig;
 import mekanism.common.config.listener.ConfigBasedCachedFLSupplier;
+import mekanism.common.config.listener.ConfigBasedCachedLongSupplier;
+import mekanism.common.config.listener.ConfigBasedCachedSupplier;
 import mekanism.common.lib.Version;
 import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.recipe.ClearConfigurationRecipe;
@@ -50,8 +52,8 @@ import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
 public class MekanismGenerators implements IModModule {
 
     public static final String MODID = "mekanismgenerators";
-    private static final ConfigBasedCachedFLSupplier ETHENE_ENERGY_DENSITY = new ConfigBasedCachedFLSupplier(() -> {
-        FloatingLong energy = MekanismGeneratorsConfig.generators.bioGeneration.get().multiply(2)
+    private static final ConfigBasedCachedLongSupplier ETHENE_ENERGY_DENSITY = new ConfigBasedCachedLongSupplier(() -> {
+        long energy = MekanismGeneratorsConfig.generators.bioGeneration.get().multiply(2)
               .timesEqual(MekanismGeneratorsConfig.generators.etheneDensityMultiplier.get());
         return energy.plusEqual(MekanismConfig.general.FROM_H2.get());
     }, MekanismConfig.general.FROM_H2, MekanismGeneratorsConfig.generators.bioGeneration, MekanismGeneratorsConfig.generators.etheneDensityMultiplier);

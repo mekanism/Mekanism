@@ -58,7 +58,7 @@ public class GuiEnergyGauge extends GuiGauge<Void> {
         }
         if (infoHandler.getEnergy().isZero()) {
             return 0;
-        } else if (infoHandler.getEnergy().equals(FloatingLong.MAX_VALUE)) {
+        } else if (infoHandler.getEnergy().equals(Long.MAX_VALUE)) {
             return height - 2;
         }
         return Math.max(1, (int) ((height - 2) * infoHandler.getEnergy().divideToLevel(infoHandler.getMaxEnergy())));

@@ -51,12 +51,12 @@ public class NucleosynthesizingRecipeCategory extends HolderRecipeCategory<Nucle
         addElement(new GuiEnergyGauge(new IEnergyInfoHandler() {
             @Override
             public long getEnergy() {
-                return FloatingLong.ONE;
+                return 1L;
             }
 
             @Override
             public long getMaxEnergy() {
-                return FloatingLong.ONE;
+                return 1L;
             }
         }, GaugeType.SMALL_MED, this, 172, 18));
         rateBar = addElement(new GuiDynamicHorizontalRateBar(this, getBarProgressTimer(), 5, 88, 183,

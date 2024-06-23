@@ -50,7 +50,7 @@ public class ElectrolysisRecipeManager extends MekanismRecipeManager<Electrolysi
     @ZenCodeType.Method
     public void addRecipe(String name, CTFluidIngredient input, ICrTGasStack leftGasOutput, ICrTGasStack rightGasOutput) {
         //TODO: If https://github.com/ZenCodeLang/ZenCode/issues/31 gets fixed, merge this back with the other addRecipe method using a ZC Optional
-        addRecipe(name, makeRecipe(input, leftGasOutput, rightGasOutput, FloatingLong.ONE));
+        addRecipe(name, makeRecipe(input, leftGasOutput, rightGasOutput, 1L));
     }
 
     /**
@@ -63,7 +63,7 @@ public class ElectrolysisRecipeManager extends MekanismRecipeManager<Electrolysi
      *                         greater than or equal to one.
      */
     public final ElectrolysisRecipe makeRecipe(CTFluidIngredient input, ICrTGasStack leftGasOutput, ICrTGasStack rightGasOutput, long energyMultiplier) {
-        if (energyMultiplier.smallerThan(FloatingLong.ONE)) {
+        if (energyMultiplier < 1L) {
             throw new IllegalArgumentException("Energy multiplier must be at least one! Multiplier: " + energyMultiplier);
         }
         return new BasicElectrolysisRecipe(CrTUtils.fromCrT(input), energyMultiplier, getAndValidateNotEmpty(leftGasOutput),

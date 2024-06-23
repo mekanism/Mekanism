@@ -89,7 +89,7 @@ public class PressurizedReactionRecipeHandler extends MekanismRecipeHandler<Pres
                   recipe.getOrThrowSingle(BuiltinRecipeComponents.Processing.TIME),
                   outputItem,
                   outputGas,
-                  CrTUtils.getSingleIfPresent(recipe, CrTRecipeComponents.ENERGY).orElse(FloatingLong.ZERO)
+                  CrTUtils.getSingleIfPresent(recipe, CrTRecipeComponents.ENERGY).orElse(0L)
             ));
         }
         return Optional.empty();

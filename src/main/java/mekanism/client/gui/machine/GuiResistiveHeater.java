@@ -67,7 +67,7 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
         if (!energyUsageField.getText().isEmpty()) {
             try {
                 PacketUtils.sendToServer(new PacketGuiSetEnergy(GuiEnergyValue.ENERGY_USAGE, tile.getBlockPos(),
-                      MekanismUtils.convertToJoules(FloatingLong.parseFloatingLong(energyUsageField.getText()))));
+                      MekanismUtils.convertToJoules(Math.max(0, Long.parseLong(energyUsageField.getText())))));
             } catch (NumberFormatException ignored) {
             }
             energyUsageField.setText("");

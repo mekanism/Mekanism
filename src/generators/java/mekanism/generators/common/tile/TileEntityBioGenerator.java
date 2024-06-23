@@ -115,7 +115,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
     //Methods relating to IComputerTile
     @Override
     long getProductionRate() {
-        return getActive() ? MekanismGeneratorsConfig.generators.bioGeneration.get() : FloatingLong.ZERO;
+        return getActive() ? MekanismGeneratorsConfig.generators.bioGeneration.get() : 0L;
     }
     //End methods IComputerTile
 }

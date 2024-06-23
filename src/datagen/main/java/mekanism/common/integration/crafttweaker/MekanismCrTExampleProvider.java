@@ -220,7 +220,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .addExample("separator/sulfur_trioxide", IngredientCreatorAccess.fluid().from(MekanismTags.Fluids.SULFUR_TRIOXIDE, 2), MekanismGases.OXYGEN.getStack(1),
                     MekanismGases.SULFUR_DIOXIDE.getStack(2))
               .addExample("separator/sulfuric_acid", IngredientCreatorAccess.fluid().from(MekanismTags.Fluids.SULFURIC_ACID, 1), MekanismGases.WATER_VAPOR.getStack(1),
-                    MekanismGases.SULFUR_TRIOXIDE.getStack(1), FloatingLong.createConst(1.5))
+                    MekanismGases.SULFUR_TRIOXIDE.getStack(1), 1.5D)
               .end()
               .comment("Removes the Separating Recipe for separating Brine into Sodium and Chlorine.")
               .blankLine()

@@ -28,7 +28,7 @@ public class ModuleNutritionalInjectionUnit implements ICustomModule<ModuleNutri
 
     @Override
     public void tickServer(IModule<ModuleNutritionalInjectionUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player) {
-        FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsageNutritionalInjection.get();
+        long usage = MekanismConfig.gear.mekaSuitEnergyUsageNutritionalInjection.get();
         if (MekanismUtils.isPlayingMode(player) && player.canEat(false)) {
             //Check if we can use a single iteration of it
             IFluidHandlerItem handler = Capabilities.FLUID.getCapability(stack);

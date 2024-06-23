@@ -3,6 +3,7 @@ package mekanism.api.chemical.gas.attribute;
 import java.util.List;
 import java.util.function.IntSupplier;
 import java.util.function.LongSupplier;
+import java.util.function.Supplier;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.attribute.ChemicalAttribute;
 import mekanism.api.chemical.gas.Gas;

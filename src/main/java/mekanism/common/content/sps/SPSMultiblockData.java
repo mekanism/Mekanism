@@ -125,7 +125,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
             ChemicalUtil.emit(getActiveOutputs(gasOutputTargets), outputTank);
         }
         lastReceivedEnergy = receivedEnergy;
-        receivedEnergy = FloatingLong.ZERO;
+        receivedEnergy = 0L;
         lastProcessed = processed;
 
         kill(world);
@@ -149,7 +149,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     public void readUpdateTag(CompoundTag tag, HolderLookup.Provider provider) {
         super.readUpdateTag(tag, provider);
         coilData.read(tag);
-        lastReceivedEnergy = FloatingLong.parseFloatingLong(tag.getString(SerializationConstants.ENERGY_USAGE));
+        lastReceivedEnergy = tag.getLong(SerializationConstants.ENERGY_USAGE);
         lastProcessed = tag.getDouble(SerializationConstants.LAST_PROCESSED);
     }
 
@@ -157,7 +157,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     public void writeUpdateTag(CompoundTag tag, HolderLookup.Provider provider) {
         super.writeUpdateTag(tag, provider);
         coilData.write(tag);
-        tag.putString(SerializationConstants.ENERGY_USAGE, lastReceivedEnergy.toString());
+        tag.putLong(SerializationConstants.ENERGY_USAGE, lastReceivedEnergy);
         tag.putDouble(SerializationConstants.LAST_PROCESSED, lastProcessed);
     }
 

@@ -140,9 +140,9 @@ public class TurbineMultiblockData extends MultiblockData {
         long stored = gasTank.getStored();
         double flowRate = 0;
 
-        FloatingLong energyNeeded = energyContainer.getNeeded();
+        long energyNeeded = energyContainer.getNeeded();
         if (stored > 0 && !energyNeeded.isZero()) {
-            FloatingLong energyMultiplier = MekanismConfig.general.maxEnergyPerSteam.get().divide(TurbineValidator.MAX_BLADES)
+            double energyMultiplier = MekanismConfig.general.maxEnergyPerSteam.get().divide(TurbineValidator.MAX_BLADES)
                   .multiply(Math.min(blades, coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get()));
             if (energyMultiplier.isZero()) {
                 clientFlow = 0;

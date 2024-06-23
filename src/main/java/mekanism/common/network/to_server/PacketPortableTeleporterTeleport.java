@@ -62,7 +62,7 @@ public record PacketPortableTeleporterTeleport(InteractionHand currentHand, Freq
                 Level teleWorld = server == null ? null : server.getLevel(coords.dimension());
                 TileEntityTeleporter teleporter = WorldUtils.getTileEntity(TileEntityTeleporter.class, teleWorld, coords.pos());
                 if (teleporter != null) {
-                    FloatingLong energyCost;
+                    long energyCost;
                     Runnable energyExtraction = null;
                     if (!player.isCreative()) {
                         energyCost = TileEntityTeleporter.calculateEnergyCost(player, teleWorld, coords);
@@ -72,7 +72,7 @@ public record PacketPortableTeleporterTeleport(InteractionHand currentHand, Freq
                         }
                         energyExtraction = () -> energyContainer.extract(energyCost, Action.EXECUTE, AutomationType.MANUAL);
                     } else {
-                        energyCost = FloatingLong.ZERO;
+                        energyCost = 0L;
                     }
                     //TODO: Figure out what this try catch is meant to be catching as I don't see much of a reason for it to exist
                     try {

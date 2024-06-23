@@ -51,6 +51,7 @@ import mekanism.common.integration.energy.BlockEnergyCapabilityCache;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
+import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.lib.chunkloading.IChunkLoader;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
@@ -290,9 +291,9 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         container.track(SyncableDouble.create(this::getLastEnvironmentLoss, value -> lastEnvironmentLoss = value));
         //Note: We have to manually sync the energy container as we don't sync it in super and don't even always have one
         trackLastEnergy(container);
-        container.track(SyncableFloatingLong.create(() -> {
+        container.track(SyncableLong.create(() -> {
             List<IEnergyContainer> energyContainers = getEnergyContainers(null);
-            return energyContainers.isEmpty() ? FloatingLong.ZERO : energyContainers.getFirst().getEnergy();
+            return energyContainers.isEmpty() ? 0L : energyContainers.getFirst().getEnergy();
         }, energy -> {
             List<IEnergyContainer> energyContainers = getEnergyContainers(null);
             if (!energyContainers.isEmpty()) {

@@ -3,6 +3,7 @@ package mekanism.common;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.function.LongSupplier;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.chemical.gas.GasStack;
@@ -228,7 +229,7 @@ public class CommonPlayerTickHandler {
         if (info != null && info.container != null) {
             float absorption = info.damageRatio.getAsFloat();
             float amount = fallDamage * absorption;
-            FloatingLong energyRequirement = info.energyCost.get().multiply(amount);
+            long energyRequirement = info.energyCost.getAsLong().multiply(amount);
             float ratioAbsorbed;
             if (energyRequirement.isZero()) {
                 //No energy is actually needed to absorb the damage, either because of the config
@@ -257,7 +258,7 @@ public class CommonPlayerTickHandler {
             IModule<ModuleHydraulicPropulsionUnit> propulsionModule = IModuleHelper.INSTANCE.getIfEnabled(boots, MekanismModules.HYDRAULIC_PROPULSION_UNIT);
             if (propulsionModule != null && Mekanism.keyMap.has(player.getUUID(), KeySync.BOOST)) {
                 float boost = propulsionModule.getCustomInstance().getBoost();
-                FloatingLong usage = MekanismConfig.gear.mekaSuitBaseJumpEnergyUsage.get() * boost / 0.1F;
+                long usage = (long) Math.ceil(MekanismConfig.gear.mekaSuitBaseJumpEnergyUsage.get() * boost / 0.1F);
                 if (propulsionModule.canUseEnergy(player, boots, usage)) {
                     // if we're sprinting with the boost module, limit the height
                     ItemStack legs = player.getItemBySlot(EquipmentSlot.LEGS);
@@ -292,7 +293,7 @@ public class CommonPlayerTickHandler {
         return null;
     }
 
-    private record FallEnergyInfo(@Nullable IEnergyContainer container, FloatSupplier damageRatio, FloatingLongSupplier energyCost) {
+    private record FallEnergyInfo(@Nullable IEnergyContainer container, FloatSupplier damageRatio, LongSupplier energyCost) {
     }
 
     @SubscribeEvent

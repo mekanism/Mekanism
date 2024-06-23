@@ -70,11 +70,11 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         seesSun = checkCanSeeSun();
         if (seesSun && canFunction() && getEnergyContainer().getNeeded() != 0L) {
             setActive(true);
-            FloatingLong production = getProduction();
+            long production = getProduction();
             lastProductionAmount = production.subtract(getEnergyContainer().insert(production, Action.EXECUTE, AutomationType.INTERNAL));
         } else {
             setActive(false);
-            lastProductionAmount = FloatingLong.ZERO;
+            lastProductionAmount = 0L;
         }
         return sendUpdatePacket;
     }
@@ -97,7 +97,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
 
     public long getProduction() {
         if (level == null || solarCheck == null) {
-            return FloatingLong.ZERO;
+            return 0L;
         }
         float brightness = getBrightnessMultiplier(level);
         //Production is a function of the peak possible output in this biome and sun's current brightness

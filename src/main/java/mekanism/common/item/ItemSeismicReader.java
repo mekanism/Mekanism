@@ -58,7 +58,7 @@ public class ItemSeismicReader extends ItemEnergized {
         } else {
             if (!player.isCreative()) {
                 IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
-                FloatingLong energyUsage = MekanismConfig.gear.seismicReaderEnergyUsage.get();
+                long energyUsage = MekanismConfig.gear.seismicReaderEnergyUsage.get();
                 if (energyContainer == null || energyContainer.extract(energyUsage, Action.SIMULATE, AutomationType.MANUAL).smallerThan(energyUsage)) {
                     player.sendSystemMessage(MekanismUtils.logFormat(EnumColor.RED, MekanismLang.NEEDS_ENERGY));
                     return InteractionResultHolder.consume(stack);

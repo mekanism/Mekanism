@@ -22,7 +22,7 @@ public class ElectrolysisRecipeHandler extends MekanismRecipeHandler<Electrolysi
     public String dumpToCommandString(IRecipeManager<? super ElectrolysisRecipe> manager, RegistryAccess registryAccess, RecipeHolder<ElectrolysisRecipe> recipeHolder) {
         ElectrolysisRecipe recipe = recipeHolder.value();
         return buildCommandString(manager, recipeHolder, recipe.getInput(), recipe.getOutputDefinition(),
-              recipe.getEnergyMultiplier().equals(FloatingLong.ONE) ? SKIP_OPTIONAL_PARAM : recipe.getEnergyMultiplier());
+              recipe.getEnergyMultiplier() == 1L ? SKIP_OPTIONAL_PARAM : recipe.getEnergyMultiplier());
     }
 
     @Override
@@ -45,7 +45,7 @@ public class ElectrolysisRecipeHandler extends MekanismRecipeHandler<Electrolysi
                   recipe.getOrThrowSingle(CrTRecipeComponents.FLUID.input()),
                   output.a(),
                   output.b(),
-                  CrTUtils.getSingleIfPresent(recipe, CrTRecipeComponents.ENERGY).orElse(FloatingLong.ONE)
+                  CrTUtils.getSingleIfPresent(recipe, CrTRecipeComponents.ENERGY).orElse(1L)
             ));
         }
         return Optional.empty();

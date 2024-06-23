@@ -57,7 +57,7 @@ public record ModuleElectrolyticBreathingUnit(boolean fillHeld) implements ICust
             productionRate = getMaxRate(module) / 2;
         }
         if (productionRate > 0) {
-            FloatingLong usage = MekanismConfig.general.FROM_H2.get().multiply(2);
+            long usage = MekanismConfig.general.FROM_H2.get().multiply(2);
             int maxRate = Math.min(productionRate, module.getContainerEnergy(stack).divideToInt(usage));
             long hydrogenUsed = 0;
             GasStack hydrogenStack = MekanismGases.HYDROGEN.getStack(maxRate * 2L);

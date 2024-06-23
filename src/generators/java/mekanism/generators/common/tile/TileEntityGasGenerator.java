@@ -95,7 +95,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
             }
 
             long toUse = getToUse();
-            FloatingLong toUseGeneration = generationRate.multiply(toUse);
+            long toUseGeneration = generationRate.multiply(toUse);
             updateMaxOutputRaw(MekanismConfig.general.FROM_H2.get().max(toUseGeneration));
 
             long total = burnTicks + fuelTank.getStored() * maxBurnTicks;
@@ -120,7 +120,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
     private void reset() {
         burnTicks = 0;
         maxBurnTicks = 0;
-        generationRate = FloatingLong.ZERO;
+        generationRate = 0L;
         updateMaxOutputRaw(MekanismConfig.general.FROM_H2.get());
     }
 

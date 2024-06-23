@@ -167,7 +167,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
         int recipeDuration;
         if (cachedRecipe == null) {
             recipeDuration = BASE_DURATION;
-            recipeEnergyRequired = FloatingLong.ZERO;
+            recipeEnergyRequired = 0L;
         } else {
             PressurizedReactionRecipe recipe = cachedRecipe.getRecipe();
             recipeDuration = recipe.getDuration();

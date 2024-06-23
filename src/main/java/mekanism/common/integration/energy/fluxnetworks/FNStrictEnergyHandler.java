@@ -26,7 +26,7 @@ public class FNStrictEnergyHandler implements IStrictEnergyHandler {
 
     @Override
     public long getEnergy(int container) {
-        return container == 0 ? EnergyUnit.FORGE_ENERGY.convertFrom(storage.getEnergyStoredL()) : FloatingLong.ZERO;
+        return container == 0 ? EnergyUnit.FORGE_ENERGY.convertFrom(storage.getEnergyStoredL()) : 0L;
     }
 
     @Override
@@ -36,12 +36,12 @@ public class FNStrictEnergyHandler implements IStrictEnergyHandler {
 
     @Override
     public long getMaxEnergy(int container) {
-        return container == 0 ? EnergyUnit.FORGE_ENERGY.convertFrom(storage.getMaxEnergyStoredL()) : FloatingLong.ZERO;
+        return container == 0 ? EnergyUnit.FORGE_ENERGY.convertFrom(storage.getMaxEnergyStoredL()) : 0L;
     }
 
     @Override
     public long getNeededEnergy(int container) {
-        return container == 0 ? EnergyUnit.FORGE_ENERGY.convertFrom(Math.max(0, storage.getMaxEnergyStoredL() - storage.getEnergyStoredL())) : FloatingLong.ZERO;
+        return container == 0 ? EnergyUnit.FORGE_ENERGY.convertFrom(Math.max(0, storage.getMaxEnergyStoredL() - storage.getEnergyStoredL())) : 0L;
     }
 
     @Override
@@ -52,7 +52,7 @@ public class FNStrictEnergyHandler implements IStrictEnergyHandler {
     @Override
     public long insertEnergy(long amount, Action action) {
         if (storage.canReceive()) {
-            long toInsert = EnergyUnit.FORGE_ENERGY.convertToAsLong(amount);
+            long toInsert = EnergyUnit.FORGE_ENERGY.convertTo(amount);
             if (toInsert > 0) {
                 long inserted = storage.receiveEnergyL(toInsert, action.simulate());
                 if (inserted > 0) {
@@ -66,18 +66,18 @@ public class FNStrictEnergyHandler implements IStrictEnergyHandler {
 
     @Override
     public long extractEnergy(int container, long amount, @NotNull Action action) {
-        return container == 0 ? extractEnergy(amount, action) : FloatingLong.ZERO;
+        return container == 0 ? extractEnergy(amount, action) : 0L;
     }
 
     @Override
     public long extractEnergy(long amount, Action action) {
         if (storage.canExtract()) {
-            long toExtract = EnergyUnit.FORGE_ENERGY.convertToAsLong(amount);
+            long toExtract = EnergyUnit.FORGE_ENERGY.convertTo(amount);
             if (toExtract > 0) {
                 long extracted = storage.extractEnergyL(toExtract, action.simulate());
                 return EnergyUnit.FORGE_ENERGY.convertFrom(extracted);
             }
         }
-        return FloatingLong.ZERO;
+        return 0L;
     }
 }

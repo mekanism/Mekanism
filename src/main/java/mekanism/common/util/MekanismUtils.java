@@ -300,7 +300,7 @@ public final class MekanismUtils {
      */
     public static long getEnergyPerTick(IUpgradeTile tile, long def) {
         if (tile.supportsUpgrades()) {
-            return (long) (def * (Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), 2 * fractionUpgrades(tile, Upgrade.SPEED) - fractionUpgrades(tile, Upgrade.ENERGY))));
+            return (long) Math.ceil(def * (Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), 2 * fractionUpgrades(tile, Upgrade.SPEED) - fractionUpgrades(tile, Upgrade.ENERGY))));
         }
         return def;
     }

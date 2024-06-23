@@ -13,6 +13,7 @@ import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
+import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
@@ -102,14 +103,14 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
                 int minY = Math.max(MekanismGeneratorsConfig.generators.windGenerationMinY.get(), level.getMinBuildHeight());
                 int maxY = Math.min(MekanismGeneratorsConfig.generators.windGenerationMaxY.get(), level.dimensionType().logicalHeight());
                 float clampedY = Math.min(maxY, Math.max(minY, top.getY()));
-                FloatingLong minG = MekanismGeneratorsConfig.generators.windGenerationMin.get();
-                FloatingLong maxG = MekanismGeneratorsConfig.generators.windGenerationMax.get();
-                FloatingLong slope = maxG.subtract(minG).divide(maxY - minY);
-                FloatingLong toGen = minG.add(slope.multiply(clampedY - minY));
+                long minG = MekanismGeneratorsConfig.generators.windGenerationMin.get();
+                long maxG = MekanismGeneratorsConfig.generators.windGenerationMax.get();
+                long slope = maxG.subtract(minG).divide(maxY - minY);
+                long toGen = minG.add(slope.multiply(clampedY - minY));
                 return toGen.divide(minG);
             }
         }
-        return FloatingLong.ZERO;
+        return 0L;
     }
 
     @Override
@@ -150,14 +151,14 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableFloatingLong.create(this::getCurrentMultiplier, value -> currentMultiplier = value));
+        container.track(SyncableLong.create(this::getCurrentMultiplier, value -> currentMultiplier = value));
         container.track(SyncableBoolean.create(this::isBlacklistDimension, value -> isBlacklistDimension = value));
     }
 
     //Methods relating to IComputerTile
     @Override
     long getProductionRate() {
-        return getActive() ? MekanismGeneratorsConfig.generators.windGenerationMin.get().multiply(getCurrentMultiplier()) : FloatingLong.ZERO;
+        return getActive() ? MekanismGeneratorsConfig.generators.windGenerationMin.get().multiply(getCurrentMultiplier()) : 0L;
     }
     //End methods IComputerTile
 }

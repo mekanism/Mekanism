@@ -149,9 +149,9 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.fillContainerOrConvert();
         inputSlot.drainTank(outputSlot);
-        FloatingLong clientEnergyUsed = FloatingLong.ZERO;
+        long clientEnergyUsed = 0L;
         if (canFunction() && (fluidTank.isEmpty() || estimateIncrementAmount() <= fluidTank.getNeeded())) {
-            FloatingLong energyPerTick = energyContainer.getEnergyPerTick();
+            long energyPerTick = energyContainer.getEnergyPerTick();
             if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL).equals(energyPerTick)) {
                 if (!activeType.isEmpty()) {
                     //If we have an active type of fluid, use energy. This can cause there to be ticks where there isn't actually

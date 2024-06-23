@@ -55,7 +55,7 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
             if (stack.getItem() instanceof ItemMekaTool) {
                 //Only require energy if we are installed on a Meka-Tool and can thus calculate the energy required to break the block "safely"
                 // Note: We assume hardness is zero like the default is for tripwires as we don't have the target block in our current context
-                FloatingLong cost = ItemMekaTool.getDestroyEnergy(container, 0, container.hasEnabled(MekanismModules.SILK_TOUCH_UNIT));
+                long cost = ItemMekaTool.getDestroyEnergy(container, 0, container.hasEnabled(MekanismModules.SILK_TOUCH_UNIT));
                 return module.hasEnoughEnergy(stack, cost);
             }
             //Note: If for some reason we are installed on something that is not the Meka-Tool don't stop the action from being enabled
@@ -73,7 +73,7 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
     @Override
     public InteractionResult onInteract(IModule<ModuleShearingUnit> module, Player player, LivingEntity entity, InteractionHand hand, IModuleContainer moduleContainer, ItemStack stack) {
         if (entity instanceof IShearable) {
-            FloatingLong cost = MekanismConfig.gear.mekaToolEnergyUsageShearEntity.get();
+            long cost = MekanismConfig.gear.mekaToolEnergyUsageShearEntity.get();
             IEnergyContainer energyContainer = module.getEnergyContainer(stack);
             if (cost.isZero() || energyContainer != null && energyContainer.getEnergy().greaterOrEqual(cost) &&
                                  shearEntity(energyContainer, entity, player, stack, entity.level(), entity.blockPosition())) {
@@ -117,7 +117,7 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
 
     //Modified copy of ShearsDispenseItemBehavior#tryShearLivingEntity to work with IForgeShearable
     private boolean tryShearLivingEntity(@Nullable IEnergyContainer energyContainer, ServerLevel world, BlockPos pos, ItemStack stack) {
-        FloatingLong cost = MekanismConfig.gear.mekaToolEnergyUsageShearEntity.get();
+        long cost = MekanismConfig.gear.mekaToolEnergyUsageShearEntity.get();
         if (cost.isZero() || energyContainer != null && energyContainer.getEnergy().greaterOrEqual(MekanismConfig.gear.mekaToolEnergyUsageShearEntity.get())) {
             for (LivingEntity entity : world.getEntitiesOfClass(LivingEntity.class, new AABB(pos), SHEARABLE)) {
                 if (shearEntity(energyContainer, entity, null, stack, world, pos)) {
