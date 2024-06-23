@@ -56,8 +56,8 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
     //Default configs this is 510 compared to the previous 500
     private static final ConfigBasedCachedLongSupplier MAX_PRODUCTION = new ConfigBasedCachedLongSupplier(() -> {
         long passiveMax = MekanismGeneratorsConfig.generators.heatGenerationLava.get().multiply(EnumUtils.DIRECTIONS.length + 1);
-        passiveMax = passiveMax.plusEqual(MekanismGeneratorsConfig.generators.heatGenerationNether.get());
-        return passiveMax.plusEqual(MekanismGeneratorsConfig.generators.heatGeneration.get());
+        passiveMax += MekanismGeneratorsConfig.generators.heatGenerationNether.get();
+        return passiveMax + MekanismGeneratorsConfig.generators.heatGeneration.get();
     }, MekanismGeneratorsConfig.generators.heatGeneration, MekanismGeneratorsConfig.generators.heatGenerationLava, MekanismGeneratorsConfig.generators.heatGenerationNether);
 
     /**
@@ -165,7 +165,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
             boost = passiveLavaAmount.multiply(lavaSides);
         }
         if (level.dimensionType().ultraWarm()) {
-            boost = boost.plusEqual(MekanismGeneratorsConfig.generators.heatGenerationNether.get());
+            boost += MekanismGeneratorsConfig.generators.heatGenerationNether.get();
         }
         return boost;
     }

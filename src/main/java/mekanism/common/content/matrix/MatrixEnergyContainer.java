@@ -195,7 +195,7 @@ public class MatrixEnergyContainer implements IEnergyContainer {
         amount = Math.min(Math.min(amount, b), c);
         if (amount != 0L && action.execute()) {
             //Increase how much we are outputting by the amount we accepted
-            queuedOutput = queuedOutput.plusEqual(amount);
+            queuedOutput += amount;
         }
         return amount;
     }

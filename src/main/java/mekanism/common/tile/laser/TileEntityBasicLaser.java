@@ -293,7 +293,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                     BlockState hitState = level.getBlockState(hitPos);
                     float hardness = hitState.getDestroySpeed(level, hitPos);
                     if (hardness >= 0) {
-                        diggingProgress = diggingProgress.plusEqual(remainingEnergy);
+                        diggingProgress += remainingEnergy;
                         if (diggingProgress.compareTo(MekanismConfig.general.laserEnergyNeededPerHardness.get().multiply(hardness)) >= 0) {
                             if (MekanismConfig.general.aestheticWorldDamage.get()) {
                                 withFakePlayer((ServerLevel) level, to.x(), to.y(), to.z(), hitPos, hitState, result.getDirection());

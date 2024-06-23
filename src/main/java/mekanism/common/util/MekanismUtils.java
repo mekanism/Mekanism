@@ -798,7 +798,7 @@ public final class MekanismUtils {
                 block.playerDestroy(world, player, foundPos, targetState, tileEntity, stack);
                 player.awardStat(itemStat);
                 //Mark that we used that portion of the energy
-                energyUsed = energyUsed.plusEqual(destroyEnergy);
+                energyUsed += destroyEnergy;
             }
         }
         energyContainer.extract(energyUsed, Action.EXECUTE, AutomationType.MANUAL);

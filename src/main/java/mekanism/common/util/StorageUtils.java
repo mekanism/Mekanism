@@ -300,7 +300,7 @@ public class StorageUtils {
     public static long getStoredEnergyFromAttachment(ItemStack stack) {
         long energy = 0;
         for (IEnergyContainer energyContainer : ContainerType.ENERGY.getAttachmentContainersIfPresent(stack)) {
-            energy = energy.plusEqual(energyContainer.getEnergy());
+            energy += energyContainer.getEnergy();
         }
         return energy;
     }

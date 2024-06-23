@@ -206,7 +206,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     }
 
     public void supplyCoilEnergy(TileEntitySPSPort tile, long energy) {
-        receivedEnergy = receivedEnergy.plusEqual(energy);
+        receivedEnergy += energy;
         coilData.coilMap.get(tile.getBlockPos()).receiveEnergy(energy);
     }
 

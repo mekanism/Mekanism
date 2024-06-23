@@ -55,7 +55,7 @@ public class MekanismGenerators implements IModModule {
     private static final ConfigBasedCachedLongSupplier ETHENE_ENERGY_DENSITY = new ConfigBasedCachedLongSupplier(() -> {
         long energy = MekanismGeneratorsConfig.generators.bioGeneration.get().multiply(2)
               .timesEqual(MekanismGeneratorsConfig.generators.etheneDensityMultiplier.get());
-        return energy.plusEqual(MekanismConfig.general.FROM_H2.get());
+        return energy + MekanismConfig.general.FROM_H2.get();
     }, MekanismConfig.general.FROM_H2, MekanismGeneratorsConfig.generators.bioGeneration, MekanismGeneratorsConfig.generators.etheneDensityMultiplier);
 
     public static MekanismGenerators instance;
