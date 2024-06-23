@@ -10,7 +10,6 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.math.Unsigned;
 import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
@@ -75,7 +74,7 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<GasToG
                                                                                         "getOutputFilledPercentage"}, docPlaceholder = "output tank")
     public IGasTank outputTank;
 
-    private @Unsigned long clientEnergyUsed = 0L;
+    private long clientEnergyUsed = 0L;
     private int baselineMaxOperations = 1;
 
     private final IOutputHandler<@NotNull GasStack> outputHandler;
@@ -149,7 +148,7 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<GasToG
 
     @NotNull
     @ComputerMethod(nameOverride = "getEnergyUsage", methodDescription = ComputerConstants.DESCRIPTION_GET_ENERGY_USAGE)
-    public @Unsigned long getEnergyUsed() {
+    public long getEnergyUsed() {
         return clientEnergyUsed;
     }
 

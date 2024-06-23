@@ -12,7 +12,6 @@ import mekanism.common.config.value.CachedFloatingLongValue;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.config.value.CachedLongValue;
 import mekanism.common.config.value.CachedOredictionificatorConfigValue;
-import mekanism.common.config.value.CachedUnsignedLongValue;
 import mekanism.common.content.evaporation.EvaporationMultiblockData;
 import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tier.EnergyCubeTier;
@@ -78,7 +77,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedDoubleValue forgeConversionRate;
     public final CachedBooleanValue blacklistFluxNetworks;
     public final CachedFloatingLongValue FROM_H2;
-    public final CachedUnsignedLongValue maxEnergyPerSteam;
+    public final CachedLongValue maxEnergyPerSteam;
     //Radiation
     public final CachedBooleanValue radiationEnabled;
     public final CachedIntValue radiationChunkCheckRadius;
@@ -105,7 +104,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedIntValue pumpHeavyWaterAmount;
     public final CachedIntValue maxPlenisherNodes;
     //Quantum Entangloporter
-    public final CachedUnsignedLongValue entangloporterEnergyBuffer;
+    public final CachedLongValue entangloporterEnergyBuffer;
     public final CachedIntValue entangloporterFluidBuffer;
     public final CachedLongValue entangloporterChemicalBuffer;
     //Security
@@ -271,8 +270,8 @@ public class GeneralConfig extends BaseMekanismConfig {
         builder.pop();
 
         builder.comment("Quantum Entangloporter Settings").push(ENTANGLOPORTER_CATEGORY);
-        entangloporterEnergyBuffer = CachedUnsignedLongValue.define(this, builder, "Maximum energy buffer (Mekanism Joules) of an Entangoloporter frequency - i.e. the maximum transfer per tick per frequency. Default is ultimate tier energy cube capacity.",
-              "energyBuffer", EnergyCubeTier.ULTIMATE.getBaseMaxEnergy(), true, CachedUnsignedLongValue.VALIDATOR);
+        entangloporterEnergyBuffer = CachedLongValue.wrap(this, builder.comment("Maximum energy buffer (Mekanism Joules) of an Entangoloporter frequency - i.e. the maximum transfer per tick per frequency. Default is ultimate tier energy cube capacity.").worldRestart()
+              .defineInRange("energyBuffer", EnergyCubeTier.ULTIMATE.getBaseMaxEnergy(), 0, Long.MAX_VALUE));
         entangloporterFluidBuffer = CachedIntValue.wrap(this, builder.comment("Maximum fluid buffer (mb) of an Entangoloporter frequency - i.e. the maximum transfer per tick per frequency. Default is ultimate tier tank capacity.")
               .worldRestart()
               .defineInRange("fluidBuffer", FluidTankTier.ULTIMATE.getBaseStorage(), 1, Integer.MAX_VALUE));

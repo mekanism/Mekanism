@@ -6,7 +6,6 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
-import mekanism.api.math.Unsigned;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
@@ -26,22 +25,22 @@ public class ComponentBackedResistiveEnergyContainer extends ComponentBackedEner
               attributeEnergy::getStorage, attributeEnergy.getUsage());
     }
 
-    private @Unsigned long currentMaxEnergy;
-    private @Unsigned long energyPerTick;
+    private long currentMaxEnergy;
+    private long energyPerTick;
 
-    private ComponentBackedResistiveEnergyContainer(ItemStack attachedTo, int containerIndex, @Unsigned LongSupplier rate, @Unsigned LongSupplier capacity,
-          @Unsigned long baseEnergyPerTick) {
+    private ComponentBackedResistiveEnergyContainer(ItemStack attachedTo, int containerIndex, LongSupplier rate, LongSupplier capacity,
+          long baseEnergyPerTick) {
         super(attachedTo, containerIndex, BasicEnergyContainer.manualOnly, BasicEnergyContainer.alwaysTrue, rate, capacity);
         this.currentMaxEnergy = super.getMaxEnergy();
         this.energyPerTick = baseEnergyPerTick;
     }
 
     @Override
-    public @Unsigned long getMaxEnergy() {
+    public long getMaxEnergy() {
         return currentMaxEnergy;
     }
 
-    private void updateEnergyUsage(@Unsigned long energyUsage) {
+    private void updateEnergyUsage(long energyUsage) {
         energyPerTick = energyUsage;
         this.currentMaxEnergy = energyUsage * ResistiveHeaterEnergyContainer.USAGE_MULTIPLIER;
         //Clamp the energy

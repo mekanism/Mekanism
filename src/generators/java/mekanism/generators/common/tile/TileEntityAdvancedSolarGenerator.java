@@ -3,7 +3,6 @@ package mekanism.generators.common.tile;
 import mekanism.api.IEvaporationSolar;
 import mekanism.api.RelativeSide;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.math.Unsigned;
 import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
@@ -26,7 +25,7 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
     }
 
     @Override
-    protected @Unsigned long getConfiguredMax() {
+    protected long getConfiguredMax() {
         return MekanismGeneratorsConfig.generators.advancedSolarGeneration.get();
     }
 
@@ -75,7 +74,7 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
     }
 
     @Override
-    public @Unsigned long getProduction() {
+    public long getProduction() {
         if (level == null || solarCheck == null) {
             //Note: We assume if solarCheck is null then solarChecks will be filled with null, and if it isn't
             // then it won't be as they get initialized at the same time

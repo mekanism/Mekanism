@@ -6,7 +6,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import mekanism.api.SerializationConstants;
 import mekanism.api.math.ULong;
-import mekanism.api.math.Unsigned;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -27,10 +26,10 @@ public class EnergyElement extends LookingAtElement {
           EnergyElement::new
     );
 
-    protected final @Unsigned long energy;
-    protected final @Unsigned long maxEnergy;
+    protected final long energy;
+    protected final long maxEnergy;
 
-    public EnergyElement(@Unsigned long energy, @Unsigned long maxEnergy) {
+    public EnergyElement(long energy, long maxEnergy) {
         super(0xFF000000, 0xFFFFFF);
         this.energy = energy;
         this.maxEnergy = maxEnergy;
@@ -38,17 +37,17 @@ public class EnergyElement extends LookingAtElement {
 
     @Override
     public int getScaledLevel(int level) {
-        if (energy == ULong.MAX_VALUE) {
+        if (energy == Long.MAX_VALUE) {
             return level;
         }
         return (int) (level * energy.divideToLevel(maxEnergy));
     }
 
-    public @Unsigned long getEnergy() {
+    public long getEnergy() {
         return energy;
     }
 
-    public @Unsigned long getMaxEnergy() {
+    public long getMaxEnergy() {
         return maxEnergy;
     }
 

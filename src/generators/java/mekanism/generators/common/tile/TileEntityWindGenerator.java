@@ -5,7 +5,6 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.math.Unsigned;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
@@ -30,7 +29,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     private static final float SPEED = 32F;
 
     private double angle;
-    private @Unsigned long currentMultiplier = 0;
+    private long currentMultiplier = 0;
     private boolean isBlacklistDimension;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy item slot")
     EnergyInventorySlot energySlot;
@@ -94,7 +93,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     /**
      * Determines the current output multiplier, taking sky visibility and height into account.
      **/
-    private @Unsigned long getMultiplier() {
+    private long getMultiplier() {
         if (level != null) {
             BlockPos top = getBlockPos().above(4);
             if (level.getFluidState(top).isEmpty() && level.canSeeSky(top)) {
@@ -125,7 +124,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
         }
     }
 
-    public @Unsigned long getCurrentMultiplier() {
+    public long getCurrentMultiplier() {
         return currentMultiplier;
     }
 
@@ -157,7 +156,6 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 
     //Methods relating to IComputerTile
     @Override
-    @Unsigned
     long getProductionRate() {
         return getActive() ? MekanismGeneratorsConfig.generators.windGenerationMin.get().multiply(getCurrentMultiplier()) : FloatingLong.ZERO;
     }

@@ -21,7 +21,6 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.math.ULong;
-import mekanism.api.math.Unsigned;
 import mekanism.api.radial.IRadialDataHelper;
 import mekanism.api.radial.RadialData;
 import mekanism.api.radial.mode.IRadialMode;
@@ -128,8 +127,8 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
             if (energyContainer != null) {
                 //Note: We use a hardness of zero here as that will get the minimum potential destroy energy required
                 // as that is the best guess we can currently give whether the corresponding dig action is supported
-                @Unsigned long energyRequired = getDestroyEnergy(stack, 0);
-                @Unsigned long energyAvailable = energyContainer.getEnergy();
+                long energyRequired = getDestroyEnergy(stack, 0);
+                long energyAvailable = energyContainer.getEnergy();
                 //If we don't have enough energy to break at full speed check if the reduced speed could actually mine
                 return energyRequired.smallerOrEqual(energyAvailable) || !energyAvailable.divide(energyRequired).isZero();
             }
@@ -156,8 +155,8 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
             return 0;
         }
         //Use raw hardness to get the best guess of if it is zero or not
-        @Unsigned long energyRequired = getDestroyEnergy(stack, state.destroySpeed);
-        @Unsigned long energyAvailable = energyContainer.extract(energyRequired, Action.SIMULATE, AutomationType.MANUAL);
+        long energyRequired = getDestroyEnergy(stack, state.destroySpeed);
+        long energyAvailable = energyContainer.extract(energyRequired, Action.SIMULATE, AutomationType.MANUAL);
         if (energyAvailable.smallerThan(energyRequired)) {
             //If we can't extract all the energy we need to break it go at base speed reduced by how much we actually have available
             return DisassemblerMode.NORMAL.getEfficiency() * energyAvailable.divide(energyRequired).floatValue();
@@ -169,12 +168,12 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     public boolean mineBlock(@NotNull ItemStack stack, @NotNull Level world, @NotNull BlockState state, @NotNull BlockPos pos, @NotNull LivingEntity entity) {
         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
         if (energyContainer != null) {
-            @Unsigned long baseDestroyEnergy = getDestroyEnergy(stack);
-            @Unsigned long energyRequired = getDestroyEnergy(baseDestroyEnergy, state.getDestroySpeed(world, pos));
+            long baseDestroyEnergy = getDestroyEnergy(stack);
+            long energyRequired = getDestroyEnergy(baseDestroyEnergy, state.getDestroySpeed(world, pos));
             energyContainer.extract(energyRequired, Action.EXECUTE, AutomationType.MANUAL);
             //Vein mining handling
             if (!world.isClientSide && entity instanceof ServerPlayer player && !player.isCreative() && getMode(stack) == DisassemblerMode.VEIN &&
-                ULong.gte(energyContainer.extract(energyRequired, Action.SIMULATE, AutomationType.MANUAL), energyRequired)) {
+                energyContainer.extract(energyRequired, Action.SIMULATE, AutomationType.MANUAL) == energyRequired) {
                 // Only allow mining things that are considered an ore
                 if (ModuleVeinMiningUnit.canVeinBlock(state) && state.is(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE)) {
                     Object2IntMap<BlockPos> found = ModuleVeinMiningUnit.findPositions(world, Map.of(pos, state), 0,
@@ -188,15 +187,15 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
         return true;
     }
 
-    private @Unsigned long getDestroyEnergy(ItemStack itemStack, float hardness) {
+    private long getDestroyEnergy(ItemStack itemStack, float hardness) {
         return getDestroyEnergy(getDestroyEnergy(itemStack), hardness);
     }
 
-    private static @Unsigned long getDestroyEnergy(@Unsigned long baseDestroyEnergy, float hardness) {
-        return hardness == 0 ? ULong.divideLong(baseDestroyEnergy, 2) : baseDestroyEnergy;
+    private static long getDestroyEnergy(long baseDestroyEnergy, float hardness) {
+        return hardness == 0 ? (baseDestroyEnergy / 2) : baseDestroyEnergy;
     }
 
-    private @Unsigned long getDestroyEnergy(ItemStack itemStack) {
+    private long getDestroyEnergy(ItemStack itemStack) {
         return MekanismConfig.gear.disassemblerEnergyUsage.get() * getMode(itemStack).getEfficiency();
     }
 
@@ -220,9 +219,9 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     @Override
     public ItemAttributeModifiers getAttributeModifiers(@NotNull ItemStack stack) {
         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
-        @Unsigned long energy = energyContainer == null ? 0L : energyContainer.getEnergy();
-        @Unsigned long energyCost = MekanismConfig.gear.disassemblerEnergyUsageWeapon.get();
-        if (ULong.gte(energy, energyCost)) {
+        long energy = energyContainer == null ? 0L : energyContainer.getEnergy();
+        long energyCost = MekanismConfig.gear.disassemblerEnergyUsageWeapon.get();
+        if (energy >= energyCost) {
             //If we have enough energy to act at full damage, use the cached multimap rather than creating a new one
             // This will be the case the vast majority of the time
             return attributeCache.get();

@@ -6,7 +6,6 @@ import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.math.Unsigned;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
@@ -115,7 +114,6 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
 
     //Methods relating to IComputerTile
     @Override
-    @Unsigned
     long getProductionRate() {
         return getActive() ? MekanismGeneratorsConfig.generators.bioGeneration.get() : FloatingLong.ZERO;
     }

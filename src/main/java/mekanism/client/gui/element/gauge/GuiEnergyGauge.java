@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.List;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.math.Unsigned;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
@@ -20,12 +19,12 @@ public class GuiEnergyGauge extends GuiGauge<Void> {
     public GuiEnergyGauge(IEnergyContainer container, GaugeType type, IGuiWrapper gui, int x, int y) {
         this(new IEnergyInfoHandler() {
             @Override
-            public @Unsigned long getEnergy() {
+            public long getEnergy() {
                 return container.getEnergy();
             }
 
             @Override
-            public @Unsigned long getMaxEnergy() {
+            public long getMaxEnergy() {
                 return container.getMaxEnergy();
             }
         }, type, gui, x, y);
@@ -87,9 +86,8 @@ public class GuiEnergyGauge extends GuiGauge<Void> {
 
     public interface IEnergyInfoHandler {
 
-        @Unsigned
         long getEnergy();
 
-        @Unsigned long getMaxEnergy();
+        long getMaxEnergy();
     }
 }

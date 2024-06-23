@@ -6,7 +6,6 @@ import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.math.FloatingLongSupplier;
-import mekanism.api.math.Unsigned;
 import mekanism.common.attachments.containers.creator.BaseContainerCreator;
 import mekanism.common.attachments.containers.creator.IBasicContainerCreator;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
@@ -39,13 +38,13 @@ public class EnergyContainersBuilder {
         return addContainer(MEKASUIT);
     }
 
-    public EnergyContainersBuilder addBasic(@Unsigned LongSupplier rate, @Unsigned LongSupplier maxEnergy) {
+    public EnergyContainersBuilder addBasic(LongSupplier rate, LongSupplier maxEnergy) {
         return addContainer((type, attachedTo, containerIndex) -> new ComponentBackedEnergyContainer(attachedTo, containerIndex, BasicEnergyContainer.manualOnly,
               BasicEnergyContainer.alwaysTrue, rate, maxEnergy));
     }
 
-    public EnergyContainersBuilder addBasic(Predicate<@NotNull AutomationType> canExtract, Predicate<@NotNull AutomationType> canInsert, @Unsigned LongSupplier rate,
-          @Unsigned LongSupplier maxEnergy) {
+    public EnergyContainersBuilder addBasic(Predicate<@NotNull AutomationType> canExtract, Predicate<@NotNull AutomationType> canInsert, LongSupplier rate,
+          LongSupplier maxEnergy) {
         return addContainer((type, attachedTo, containerIndex) -> new ComponentBackedEnergyContainer(attachedTo, containerIndex, canExtract, canInsert, rate, maxEnergy));
     }
 

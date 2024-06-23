@@ -13,7 +13,6 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
-import mekanism.api.math.Unsigned;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -248,7 +247,6 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
 
     //Methods relating to IComputerTile
     @ComputerMethod(methodDescription = ComputerConstants.DESCRIPTION_GET_ENERGY_USAGE)
-    @Unsigned
     long getEnergyUsage() {
         return getActive() ? energyContainer.getEnergyPerTick() : 0;
     }

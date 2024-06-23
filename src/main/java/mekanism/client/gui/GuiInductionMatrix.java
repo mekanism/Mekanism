@@ -1,7 +1,6 @@
 package mekanism.client.gui;
 
 import java.util.List;
-import mekanism.api.math.Unsigned;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.GuiInnerScreen;
@@ -50,12 +49,12 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
         addRenderableWidget(new GuiMatrixTab(this, tile, MatrixTab.STAT));
         addRenderableWidget(new GuiEnergyGauge(new IEnergyInfoHandler() {
             @Override
-            public @Unsigned long getEnergy() {
+            public long getEnergy() {
                 return tile.getMultiblock().getEnergy();
             }
 
             @Override
-            public @Unsigned long getMaxEnergy() {
+            public long getMaxEnergy() {
                 return tile.getMultiblock().getStorageCap();
             }
         }, GaugeType.MEDIUM, this, 7, 16, 34, 56));

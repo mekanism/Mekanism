@@ -7,7 +7,6 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.math.Unsigned;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.energy.ResistiveHeaterEnergyContainer;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
@@ -50,7 +49,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     private float soundScale = 1;
     private double lastEnvironmentLoss;
     private double lastTransferLoss;
-    private @Unsigned long clientEnergyUsed = 0;
+    private long clientEnergyUsed = 0;
 
     private ResistiveHeaterEnergyContainer energyContainer;
     @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature", docPlaceholder = "heater")
@@ -90,7 +89,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     protected boolean onUpdateServer() {
         boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.fillContainerOrConvert();
-        @Unsigned long toUse = 0;
+        long toUse = 0;
         if (canFunction()) {
             toUse = energyContainer.extract(energyContainer.getEnergyPerTick(), Action.SIMULATE, AutomationType.INTERNAL);
             if (!toUse.isZero()) {
@@ -113,7 +112,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
 
     @NotNull
     @ComputerMethod
-    public @Unsigned long getEnergyUsed() {
+    public long getEnergyUsed() {
         return clientEnergyUsed;
     }
 
@@ -127,7 +126,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
         return lastEnvironmentLoss;
     }
 
-    public void setEnergyUsageFromPacket(@Unsigned long floatingLong) {
+    public void setEnergyUsageFromPacket(long floatingLong) {
         energyContainer.updateEnergyUsage(floatingLong);
         markForSave();
     }
@@ -178,13 +177,12 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
 
     //Methods relating to IComputerTile
     @ComputerMethod(methodDescription = ComputerConstants.DESCRIPTION_GET_ENERGY_USAGE)
-    @Unsigned
     long getEnergyUsage() {
         return energyContainer.getEnergyPerTick();
     }
 
     @ComputerMethod(requiresPublicSecurity = true)
-    void setEnergyUsage(@Unsigned long usage) throws ComputerException {
+    void setEnergyUsage(long usage) throws ComputerException {
         validateSecurityIsPublic();
         setEnergyUsageFromPacket(usage);
     }

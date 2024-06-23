@@ -10,7 +10,6 @@ import mekanism.common.config.value.CachedFloatingLongValue;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.config.value.CachedLongValue;
 import mekanism.common.config.value.CachedResourceLocationListValue;
-import mekanism.common.config.value.CachedUnsignedLongValue;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
 import mekanism.generators.common.content.fusion.FusionReactorMultiblockData;
 import net.minecraft.SharedConstants;
@@ -51,7 +50,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
     public final CachedIntValue turbineBladesPerCoil;
     public final CachedDoubleValue turbineVentGasFlow;
     public final CachedDoubleValue turbineDisperserGasFlow;
-    public final CachedUnsignedLongValue turbineEnergyCapacityPerVolume;
+    public final CachedLongValue turbineEnergyCapacityPerVolume;
     public final CachedLongValue turbineGasPerTank;
     public final CachedIntValue condenserRate;
 
@@ -83,7 +82,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
     public final CachedDoubleValue fusionCasingThermalConductivity;
     public final CachedDoubleValue fusionWaterHeatingRatio;
     public final CachedLongValue fusionFuelCapacity;
-    public final CachedUnsignedLongValue fusionEnergyCapacity;
+    public final CachedLongValue fusionEnergyCapacity;
     public final CachedIntValue fusionWaterPerInjection;
     public final CachedLongValue fusionSteamPerInjection;
 

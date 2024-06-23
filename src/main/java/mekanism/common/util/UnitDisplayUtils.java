@@ -10,8 +10,6 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyConversion;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.math.ULong;
-import mekanism.api.math.Unsigned;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.ILangEntry;
 import mekanism.api.text.TextComponentUtil;
@@ -37,7 +35,7 @@ public class UnitDisplayUtils {
     /**
      * Displays the unit as text. Does not handle negative numbers, as {@link FloatingLong} does not have a concept of negatives
      */
-    public static Component getDisplay(@Unsigned long value, EnergyUnit unit, int decimalPlaces, boolean isShort) {
+    public static Component getDisplay(long value, EnergyUnit unit, int decimalPlaces, boolean isShort) {
         ILangEntry label = unit.pluralLangEntry;
         if (isShort) {
             label = unit.shortLangEntry;
@@ -47,11 +45,11 @@ public class UnitDisplayUtils {
         if (value == 0) {
             return TextComponentUtil.build(value + " ", label);
         }
-        for (int i = 0; i < EnumUtils.ULONG_MEASUREMENT_UNITS.length; i++) {
-            ULongMeasurementUnit lowerMeasure = EnumUtils.ULONG_MEASUREMENT_UNITS[i];
+        for (int i = 0; i < EnumUtils.LONG_MEASUREMENT_UNITS.length; i++) {
+            LongMeasurementUnit lowerMeasure = EnumUtils.LONG_MEASUREMENT_UNITS[i];
             if ((i == 0 && lowerMeasure.below(value)) ||
-                i + 1 >= EnumUtils.ULONG_MEASUREMENT_UNITS.length ||
-                (lowerMeasure.aboveEqual(value) && EnumUtils.ULONG_MEASUREMENT_UNITS[i + 1].below(value))) {
+                i + 1 >= EnumUtils.LONG_MEASUREMENT_UNITS.length ||
+                (lowerMeasure.aboveEqual(value) && EnumUtils.LONG_MEASUREMENT_UNITS[i + 1].below(value))) {
                 //First element and it is below it (no more unit abbreviations before),
                 // or last element (no more unit abbreviations past),
                 // or we are within the bounds between this one and the next one
@@ -59,10 +57,10 @@ public class UnitDisplayUtils {
                 return TextComponentUtil.build(rounded + " " + lowerMeasure.getName(isShort), label);
             }
         }
-        return TextComponentUtil.build(Long.toUnsignedString(value), label);
+        return TextComponentUtil.build(Long.toString(value), label);
     }
 
-    public static Component getDisplayShort(@Unsigned long value, EnergyUnit unit) {
+    public static Component getDisplayShort(long value, EnergyUnit unit) {
         return getDisplay(value, unit, 2, true);
     }
 
@@ -150,12 +148,12 @@ public class UnitDisplayUtils {
             }
 
             @Override
-            public @Unsigned long convertFrom(@Unsigned long joules) {
+            public long convertFrom(long joules) {
                 return joules;
             }
 
             @Override
-            public @Unsigned long convertTo(@Unsigned long joules) {
+            public long convertTo(long joules) {
                 return joules;
             }
         },
@@ -205,12 +203,12 @@ public class UnitDisplayUtils {
         }
 
         @Override
-        public @Unsigned long convertFrom(@Unsigned long energy) {
+        public long convertFrom(long energy) {
             return (long) (energy * getConversion());
         }
 
         @Override
-        public @Unsigned long convertTo(@Unsigned long joules) {
+        public long convertTo(long joules) {
             if (joules == 0) {
                 //Short circuit if energy is zero to avoid having to create any additional objects
                 return 0L;
@@ -454,7 +452,7 @@ public class UnitDisplayUtils {
     /**
      * Metric system of measurement.
      */
-    public enum ULongMeasurementUnit {
+    public enum LongMeasurementUnit {
         BASE("", "", 1L),
         KILO("Kilo", "k", 1_000L),
         MEGA("Mega", "M", 1_000_000L),
@@ -476,9 +474,9 @@ public class UnitDisplayUtils {
         /**
          * Point by which a number is considered to be of this unit
          */
-        private final @Unsigned long value;
+        private final long value;
 
-        ULongMeasurementUnit(String name, String symbol, @Unsigned long value) {
+        LongMeasurementUnit(String name, String symbol, long value) {
             this.name = name;
             this.symbol = symbol;
             this.value = value;
@@ -491,16 +489,16 @@ public class UnitDisplayUtils {
             return name;
         }
 
-        public double process(@Unsigned long d) {
-            return ULong.divide(d, value);
+        public double process(long d) {
+            return ((double) d / value);
         }
 
-        public boolean aboveEqual(@Unsigned long d) {
-            return ULong.gte(d, value);
+        public boolean aboveEqual(long d) {
+            return d >= value;
         }
 
-        public boolean below(@Unsigned long d) {
-            return ULong.lt(d, value);
+        public boolean below(long d) {
+            return d < value;
         }
     }
 }

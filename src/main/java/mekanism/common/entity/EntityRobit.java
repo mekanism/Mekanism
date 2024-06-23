@@ -23,7 +23,6 @@ import mekanism.api.event.MekanismTeleportEvent;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.math.Unsigned;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
@@ -161,7 +160,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
           RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
     );
 
-    public static final @Unsigned long MAX_ENERGY = 100_000L;
+    public static final long MAX_ENERGY = 100_000L;
     private static final double DISTANCE_MULTIPLIER = 1.5D;
     //TODO: Note the robit smelts at double normal speed, we may want to make this configurable
     //TODO: Allow for upgrades in the robit?
@@ -285,7 +284,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         builder.define(SKIN, MekanismRobitSkins.BASE);
     }
 
-    private @Unsigned long getRoundedTravelEnergy() {
+    private long getRoundedTravelEnergy() {
         return (long) Math.ceil(DISTANCE_MULTIPLIER * Math.sqrt(distanceToSqr(xo, yo, zo)));
     }
 

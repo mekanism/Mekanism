@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.List;
 import mekanism.api.SerializationConstants;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.math.Unsigned;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.block.states.BlockStateHelper;
@@ -128,20 +127,17 @@ public class TileEntityUniversalCable extends TileEntityTransmitter implements I
     }
 
     @ComputerMethod
-    @Unsigned
     long getBuffer() {
         return getTransmitter().getBufferWithFallback();
     }
 
     @ComputerMethod
-    @Unsigned
     long getCapacity() {
         UniversalCable cable = getTransmitter();
-        return cable.hasTransmitterNetwork() ? cable.getTransmitterNetwork().getCapacityAsUnsignedLong() : cable.getCapacityAsUnsignedLong();
+        return cable.hasTransmitterNetwork() ? cable.getTransmitterNetwork().getCapacity() : cable.getCapacity();
     }
 
     @ComputerMethod
-    @Unsigned
     long getNeeded() {
         return getCapacity() - getBuffer();
     }

@@ -11,7 +11,6 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.ULong;
-import mekanism.api.math.Unsigned;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
@@ -31,7 +30,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
     /**
      * Gets the energy from ItemStack conversion, ignoring the size of the item stack.
      */
-    public static @Unsigned long getPotentialConversion(@Nullable Level world, ItemStack itemStack) {
+    public static long getPotentialConversion(@Nullable Level world, ItemStack itemStack) {
         ItemStackToEnergyRecipe foundRecipe = MekanismRecipeType.ENERGY_CONVERSION.getInputCache().findTypeBasedRecipe(world, itemStack);
         return foundRecipe == null ? 0L : foundRecipe.getOutput(itemStack);
     }
@@ -81,7 +80,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
             if (itemEnergyHandler == null) {
                 return false;
             }
-            @Unsigned long storedEnergy = energyContainer.getEnergy();
+            long storedEnergy = energyContainer.getEnergy();
             if (storedEnergy.isZero()) {
                 //If the energy container is empty, accept the energy item as long as it is not full
                 for (int container = 0; container < itemEnergyHandler.getEnergyContainerCount(); container++) {
@@ -93,7 +92,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
                 return false;
             }
             //Otherwise, if we can accept any energy that is currently stored in the container, then we allow inserting the item
-            return ULong.lt(itemEnergyHandler.insertEnergy(storedEnergy, Action.SIMULATE), storedEnergy);
+            return itemEnergyHandler.insertEnergy(storedEnergy, Action.SIMULATE) < storedEnergy;
         };
         return new EnergyInventorySlot(energyContainer, insertPredicate.negate(), insertPredicate, EnergyInventorySlot.DRAIN_VALIDATOR, listener, x, y);
     }
@@ -102,7 +101,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
         IStrictEnergyHandler itemEnergyHandler = EnergyCompatUtils.getStrictEnergyHandler(stack);
         //If we can extract any energy we are valid. Note: We can't just use FloatingLong.ONE as depending on conversion rates
         // that might be less than a single unit and thus can't be extracted
-        return itemEnergyHandler != null && itemEnergyHandler.extractEnergy(ULong.MAX_VALUE, Action.SIMULATE) != 0L;
+        return itemEnergyHandler != null && itemEnergyHandler.extractEnergy(Long.MAX_VALUE, Action.SIMULATE) != 0L;
     }
 
     private final Supplier<@Nullable Level> worldSupplier;
@@ -134,7 +133,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
                 if (foundRecipe != null) {
                     ItemStack itemInput = foundRecipe.getInput().getMatchingInstance(current);
                     if (!itemInput.isEmpty()) {
-                        @Unsigned long output = foundRecipe.getOutput(itemInput);
+                        long output = foundRecipe.getOutput(itemInput);
                         //Note: We use manual as the automation type to bypass our container's rate limit insertion checks
                         if (!output.isZero() && energyContainer.insert(output, Action.SIMULATE, AutomationType.MANUAL) == 0L) {
                             //If we can accept it all, then add it and decrease our input

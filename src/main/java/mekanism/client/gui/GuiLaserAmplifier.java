@@ -71,7 +71,7 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
             // we parse it as a floating long, ideally we could skip the big decimal side of things
             text = new BigDecimal(text).toPlainString();
         }
-        return Long.parseUnsignedLong(text);
+        return Math.max(0L, Long.parseLong(text));
     }
 
     private void setMinThreshold() {

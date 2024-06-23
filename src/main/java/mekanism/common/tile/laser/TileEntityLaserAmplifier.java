@@ -10,7 +10,6 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.ULong;
-import mekanism.api.math.Unsigned;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
@@ -44,8 +43,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements IHasMode {
 
-    private @Unsigned long minThreshold = 0L;
-    private @Unsigned long maxThreshold = MekanismConfig.storage.laserAmplifier.get();
+    private long minThreshold = 0L;
+    private long maxThreshold = MekanismConfig.storage.laserAmplifier.get();
     private int ticks = 0;
     private int delay = 0;
     private boolean emittingRedstone;
@@ -85,8 +84,8 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     }
 
     @Override
-    protected @Unsigned long toFire() {
-        return shouldFire() ? ULong.min(super.toFire(), maxThreshold) : 0L;
+    protected long toFire() {
+        return shouldFire() ? Math.min(super.toFire(), maxThreshold) : 0L;
     }
 
     @Override
@@ -128,24 +127,24 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
         setChanged();
     }
 
-    public void setMinThresholdFromPacket(@Unsigned long target) {
+    public void setMinThresholdFromPacket(long target) {
         if (updateMinThreshold(target)) {
             markForSave();
         }
     }
 
-    public void setMaxThresholdFromPacket(@Unsigned long target) {
+    public void setMaxThresholdFromPacket(long target) {
         if (updateMaxThreshold(target)) {
             markForSave();
         }
     }
 
-    private boolean updateMinThreshold(@Unsigned long target) {
-        @Unsigned long threshold = getThreshold(target);
+    private boolean updateMinThreshold(long target) {
+        long threshold = getThreshold(target);
         if (minThreshold != threshold) {
             minThreshold = threshold;
             //If the min threshold is greater than the max threshold, update max threshold
-            if (ULong.gt(minThreshold, maxThreshold)) {
+            if (minThreshold > maxThreshold) {
                 maxThreshold = minThreshold;
             }
             return true;
@@ -153,13 +152,13 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
         return false;
     }
 
-    private boolean updateMaxThreshold(@Unsigned long target) {
+    private boolean updateMaxThreshold(long target) {
         //Cap threshold at max energy capacity
-        @Unsigned long threshold = getThreshold(target);
+        long threshold = getThreshold(target);
         if (maxThreshold != threshold) {
             maxThreshold = threshold;
             //If the max threshold is smaller than the min threshold, update min threshold
-            if (ULong.lt(maxThreshold, minThreshold)) {
+            if (maxThreshold < minThreshold) {
                 minThreshold = maxThreshold;
             }
             return true;
@@ -167,9 +166,9 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
         return false;
     }
 
-    private @Unsigned long getThreshold(@Unsigned long target) {
-        @Unsigned long maxEnergy = energyContainer.getMaxEnergy();
-        return ULong.lte(target, maxEnergy) ? target : maxEnergy;
+    private long getThreshold(long target) {
+        long maxEnergy = energyContainer.getMaxEnergy();
+        return (target <= maxEnergy) ? target : maxEnergy;
     }
 
     @Override
@@ -229,12 +228,12 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     }
 
     @ComputerMethod
-    public @Unsigned long getMinThreshold() {
+    public long getMinThreshold() {
         return minThreshold;
     }
 
     @ComputerMethod
-    public @Unsigned long getMaxThreshold() {
+    public long getMaxThreshold() {
         return maxThreshold;
     }
 
@@ -267,13 +266,13 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     }
 
     @ComputerMethod(requiresPublicSecurity = true)
-    void setMinThreshold(@Unsigned long threshold) throws ComputerException {
+    void setMinThreshold(long threshold) throws ComputerException {
         validateSecurityIsPublic();
         setMinThresholdFromPacket(threshold);
     }
 
     @ComputerMethod(requiresPublicSecurity = true)
-    void setMaxThreshold(@Unsigned long threshold) throws ComputerException {
+    void setMaxThreshold(long threshold) throws ComputerException {
         validateSecurityIsPublic();
         setMaxThresholdFromPacket(threshold);
     }

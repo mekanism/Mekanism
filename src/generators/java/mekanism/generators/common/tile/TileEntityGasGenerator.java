@@ -10,7 +10,6 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.attribute.GasAttributes.Fuel;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.math.Unsigned;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.chemical.variable.VariableCapacityChemicalTankBuilder.VariableCapacityGasTank;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
@@ -47,7 +46,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
     public VariableCapacityGasTank fuelTank;
     private long burnTicks;
     private int maxBurnTicks;
-    private @Unsigned long generationRate = 0;
+    private long generationRate = 0;
     private double gasUsedLastTick;
 
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFuelItem", docPlaceholder = "fuel item slot")
@@ -135,7 +134,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
         return max;
     }
 
-    public @Unsigned long getGenerationRate() {
+    public long getGenerationRate() {
         return generationRate;
     }
 
@@ -169,7 +168,6 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
 
     //Methods relating to IComputerTile
     @Override
-    @Unsigned
     long getProductionRate() {
         return getGenerationRate().multiply(getUsed()).multiply(getMaxBurnTicks());
     }

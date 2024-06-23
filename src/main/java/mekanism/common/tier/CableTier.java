@@ -1,12 +1,9 @@
 package mekanism.common.tier;
 
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.math.FloatingLong;
-import mekanism.api.math.Unsigned;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
-import mekanism.common.config.value.CachedFloatingLongValue;
-import mekanism.common.config.value.CachedUnsignedLongValue;
+import mekanism.common.config.value.CachedLongValue;
 import mekanism.common.util.EnumUtils;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,12 +14,12 @@ public enum CableTier implements ITier {
     ELITE(BaseTier.ELITE, 1_024_000L),
     ULTIMATE(BaseTier.ULTIMATE, 8_192_000L);
 
-    private final @Unsigned long baseCapacity;
+    private final long baseCapacity;
     private final BaseTier baseTier;
     @Nullable
-    private CachedUnsignedLongValue capacityReference;
+    private CachedLongValue capacityReference;
 
-    CableTier(BaseTier tier, @Unsigned long capacity) {
+    CableTier(BaseTier tier, long capacity) {
         baseCapacity = capacity;
         baseTier = tier;
     }
@@ -41,18 +38,18 @@ public enum CableTier implements ITier {
         return baseTier;
     }
 
-    public @Unsigned long getCableCapacity() {
+    public long getCableCapacity() {
         return capacityReference == null ? getBaseCapacity() : capacityReference.getOrDefault();
     }
 
-    public @Unsigned long getBaseCapacity() {
+    public long getBaseCapacity() {
         return baseCapacity;
     }
 
     /**
      * ONLY CALL THIS FROM TierConfig. It is used to give the CableTier a reference to the actual config value object
      */
-    public void setConfigReference(CachedUnsignedLongValue capacityReference) {
+    public void setConfigReference(CachedLongValue capacityReference) {
         this.capacityReference = capacityReference;
     }
 }

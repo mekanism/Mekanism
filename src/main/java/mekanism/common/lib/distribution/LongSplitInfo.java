@@ -1,20 +1,19 @@
 package mekanism.common.lib.distribution;
 
 import mekanism.api.math.ULong;
-import mekanism.api.math.Unsigned;
 
-public class LongSplitInfo extends SplitInfo<@Unsigned Long> {
+public class LongSplitInfo extends SplitInfo<Long> {
 
-    private @Unsigned long amountToSplit;
-    private @Unsigned long amountPerTarget;
-    private @Unsigned long sentSoFar;
-    private @Unsigned long remainder;
+    private long amountToSplit;
+    private long amountPerTarget;
+    private long sentSoFar;
+    private long remainder;
 
-    public LongSplitInfo(@Unsigned long amountToSplit, int totalTargets) {
+    public LongSplitInfo(long amountToSplit, int totalTargets) {
         super(totalTargets);
         this.amountToSplit = amountToSplit;
-        amountPerTarget = toSplitAmong == 0 ? 0 : ULong.divideLong(amountToSplit, toSplitAmong);
-        remainder = toSplitAmong == 0 ? 0 : ULong.remainder(amountToSplit, toSplitAmong);
+        amountPerTarget = toSplitAmong == 0 ? 0 : (amountToSplit / toSplitAmong);
+        remainder = toSplitAmong == 0 ? 0 : (amountToSplit % toSplitAmong);
     }
 
     @Override
@@ -36,8 +35,8 @@ public class LongSplitInfo extends SplitInfo<@Unsigned Long> {
         // full per side split
         if (amountNeeded != amountPerTarget && toSplitAmong != 0) {
             long amountPerLast = amountPerTarget;
-            amountPerTarget = ULong.divideLong(amountToSplit, toSplitAmong);
-            remainder = ULong.remainder(amountToSplit, toSplitAmong);
+            amountPerTarget = (amountToSplit / toSplitAmong);
+            remainder = amountToSplit % toSplitAmong;
             if (!amountPerChanged && amountPerTarget != amountPerLast) {
                 amountPerChanged = true;
             }

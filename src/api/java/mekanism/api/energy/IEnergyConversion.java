@@ -1,8 +1,7 @@
 package mekanism.api.energy;
 
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.math.ULong;
-import mekanism.api.math.Unsigned;
+import mekanism.api.math.MathUtils;
 import mekanism.api.text.IHasTranslationKey;
 
 /**
@@ -27,38 +26,37 @@ public interface IEnergyConversion extends IHasTranslationKey {
      *
      * @return Joules (unsigned).
      */
-    @Unsigned
     long convertFrom(long energy);
 
     /**
      * Helper that converts Joules to the energy of the type represented by this conversion and returns it as an int.
      *
-     * @param joules Joules. (This object will not be modified)
+     * @param joules Joules.
      *
      * @return Amount of energy clamped to an int. (Units matching this conversion)
      */
-    default int convertToAsInt(@Unsigned long joules) {
-        return ULong.clampToInt(convertTo(joules));
+    default int convertToAsInt(long joules) {
+        return MathUtils.clampToInt(convertTo(joules));
     }
 
     /**
      * Helper that converts Joules to the energy of the type represented by this conversion and returns it as a long.
      *
-     * @param joules Joules. (This object will not be modified)
+     * @param joules Joules.
      *
      * @return Amount of energy clamped to a long. (Units matching this conversion)
      */
-    default long convertToAsLong(@Unsigned long joules) {
-        return ULong.clampToSigned(convertTo(joules));
+    @Deprecated(forRemoval = true)
+    default long convertToAsLong(long joules) {
+        return convertTo(joules);
     }
 
     /**
      * Converts Joules to the energy of the type represented by this conversion.
      *
-     * @param joules Joules. (This object will not be modified)
+     * @param joules Joules.
      *
      * @return Amount of energy. (Units matching this conversion)
      */
-    @Unsigned
-    long convertTo(@Unsigned long joules);
+    long convertTo(long joules);
 }

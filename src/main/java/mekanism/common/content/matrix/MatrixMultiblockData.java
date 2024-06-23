@@ -3,7 +3,6 @@ package mekanism.common.content.matrix;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.math.Unsigned;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
@@ -33,18 +32,18 @@ public class MatrixMultiblockData extends MultiblockData {
     private final MatrixEnergyContainer energyContainer;
 
     @ContainerSync(getter = "getLastOutput")
-    private @Unsigned long clientLastOutput = 0L;
+    private long clientLastOutput = 0L;
     @ContainerSync(getter = "getLastInput")
-    private @Unsigned long clientLastInput = 0L;
+    private long clientLastInput = 0L;
 
     @ContainerSync(getter = "getEnergy")
-    private @Unsigned long clientEnergy = 0L;
+    private long clientEnergy = 0L;
 
     @ContainerSync(tags = STATS_TAB, getter = "getTransferCap")
-    private @Unsigned long clientMaxTransfer = 0L;
+    private long clientMaxTransfer = 0L;
 
     @ContainerSync(getter = "getStorageCap")
-    private @Unsigned long clientMaxEnergy = 0L;
+    private long clientMaxEnergy = 0L;
 
     @ContainerSync(tags = STATS_TAB, getter = "getProviderCount")
     private int clientProviders;
@@ -90,7 +89,7 @@ public class MatrixMultiblockData extends MultiblockData {
         return energyContainer;
     }
 
-    public @Unsigned long getEnergy() {
+    public long getEnergy() {
         return isRemote() ? clientEnergy : energyContainer.getEnergy();
     }
 
@@ -130,22 +129,22 @@ public class MatrixMultiblockData extends MultiblockData {
         }
     }
 
-    public @Unsigned long getStorageCap() {
+    public long getStorageCap() {
         return isRemote() ? clientMaxEnergy : energyContainer.getMaxEnergy();
     }
 
     @ComputerMethod
-    public @Unsigned long getTransferCap() {
+    public long getTransferCap() {
         return isRemote() ? clientMaxTransfer : energyContainer.getMaxTransfer();
     }
 
     @ComputerMethod
-    public @Unsigned long getLastInput() {
+    public long getLastInput() {
         return isRemote() ? clientLastInput : energyContainer.getLastInput();
     }
 
     @ComputerMethod
-    public @Unsigned long getLastOutput() {
+    public long getLastOutput() {
         return isRemote() ? clientLastOutput : energyContainer.getLastOutput();
     }
 

@@ -236,7 +236,7 @@ public class GasAttributes {
                 //Single tick, no division necessary
                 return energyDensity.getAsLong();
             }
-            return ULong.divideLong(energyDensity.getAsLong(), ticks);
+            return (energyDensity.getAsLong() / ticks);
         }
 
         @Override

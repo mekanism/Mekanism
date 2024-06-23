@@ -6,7 +6,6 @@ import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
-import mekanism.api.math.Unsigned;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,12 +13,12 @@ import org.jetbrains.annotations.NotNull;
 public class ComponentBackedNoClampEnergyContainer extends ComponentBackedEnergyContainer {
 
     public ComponentBackedNoClampEnergyContainer(ItemStack attachedTo, int containerIndex, Predicate<@NotNull AutomationType> canExtract,
-          Predicate<@NotNull AutomationType> canInsert, @Unsigned LongSupplier rate, @Unsigned LongSupplier maxEnergy) {
+          Predicate<@NotNull AutomationType> canInsert, LongSupplier rate, LongSupplier maxEnergy) {
         super(attachedTo, containerIndex, canExtract, canInsert, rate, maxEnergy);
     }
 
     @Override
-    protected @Unsigned long clampEnergy(@Unsigned long energy) {
+    protected long clampEnergy(long energy) {
         //Don't clamp the energy
         return energy;
     }

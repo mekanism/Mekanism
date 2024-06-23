@@ -10,7 +10,6 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.math.ULong;
-import mekanism.api.math.Unsigned;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -26,33 +25,33 @@ public class BasicEnergyContainer implements IEnergyContainer {
     public static final Predicate<@NotNull AutomationType> manualOnly = automationType -> automationType == AutomationType.MANUAL;
     public static final Predicate<@NotNull AutomationType> notExternal = automationType -> automationType != AutomationType.EXTERNAL;
 
-    public static BasicEnergyContainer create(@Unsigned long maxEnergy, @Nullable IContentsListener listener) {
+    public static BasicEnergyContainer create(long maxEnergy, @Nullable IContentsListener listener) {
         return new BasicEnergyContainer(maxEnergy, alwaysTrue, alwaysTrue, listener);
     }
 
-    public static BasicEnergyContainer input(@Unsigned long maxEnergy, @Nullable IContentsListener listener) {
+    public static BasicEnergyContainer input(long maxEnergy, @Nullable IContentsListener listener) {
         return new BasicEnergyContainer(maxEnergy, notExternal, alwaysTrue, listener);
     }
 
-    public static BasicEnergyContainer output(@Unsigned long maxEnergy, @Nullable IContentsListener listener) {
+    public static BasicEnergyContainer output(long maxEnergy, @Nullable IContentsListener listener) {
         return new BasicEnergyContainer(maxEnergy, alwaysTrue, internalOnly, listener);
     }
 
-    public static BasicEnergyContainer create(@Unsigned long maxEnergy, Predicate<@NotNull AutomationType> canExtract, Predicate<@NotNull AutomationType> canInsert,
+    public static BasicEnergyContainer create(long maxEnergy, Predicate<@NotNull AutomationType> canExtract, Predicate<@NotNull AutomationType> canInsert,
           @Nullable IContentsListener listener) {
         Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
         Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
         return new BasicEnergyContainer(maxEnergy, canExtract, canInsert, listener);
     }
 
-    private @Unsigned long stored = 0L;
+    private long stored = 0L;
     protected final Predicate<@NotNull AutomationType> canExtract;
     protected final Predicate<@NotNull AutomationType> canInsert;
-    private final @Unsigned long maxEnergy;
+    private final long maxEnergy;
     @Nullable
     private final IContentsListener listener;
 
-    protected BasicEnergyContainer(@Unsigned long maxEnergy, Predicate<@NotNull AutomationType> canExtract, Predicate<@NotNull AutomationType> canInsert,
+    protected BasicEnergyContainer(long maxEnergy, Predicate<@NotNull AutomationType> canExtract, Predicate<@NotNull AutomationType> canInsert,
           @Nullable IContentsListener listener) {
         this.maxEnergy = maxEnergy;
         this.canExtract = canExtract;
@@ -68,7 +67,7 @@ public class BasicEnergyContainer implements IEnergyContainer {
     }
 
     @Override
-    public @Unsigned long getEnergy() {
+    public long getEnergy() {
         return stored;
     }
 
@@ -77,7 +76,7 @@ public class BasicEnergyContainer implements IEnergyContainer {
     }
 
     @Override
-    public void setEnergy(@Unsigned long energy) {
+    public void setEnergy(long energy) {
         energy = clampEnergy(energy);
         if (stored != energy) {
             stored = energy;
@@ -92,11 +91,11 @@ public class BasicEnergyContainer implements IEnergyContainer {
      *
      * @return The rate this tank can insert/extract at.
      *
-     * @implNote By default, this returns {@link ULong#MAX_VALUE} to not actually limit the container's rate. By default, this is also ignored for direct setting
+     * @implNote By default, this returns {@link Long#MAX_VALUE} to not actually limit the container's rate. By default, this is also ignored for direct setting
      * of the stack/stack size
      */
-    protected @Unsigned long getInsertRate(@Nullable AutomationType automationType) {
-        return ULong.MAX_VALUE;
+    protected long getInsertRate(@Nullable AutomationType automationType) {
+        return Long.MAX_VALUE;
     }
 
     /**
@@ -106,25 +105,25 @@ public class BasicEnergyContainer implements IEnergyContainer {
      *
      * @return The rate this tank can insert/extract at.
      *
-     * @implNote By default, this returns {@link ULong#MAX_VALUE} to not actually limit the container's rate. By default, this is also ignored for direct setting
+     * @implNote By default, this returns {@link Long#MAX_VALUE} to not actually limit the container's rate. By default, this is also ignored for direct setting
      * of the stack/stack size
      */
-    protected @Unsigned long getExtractRate(@Nullable AutomationType automationType) {
-        return ULong.MAX_VALUE;
+    protected long getExtractRate(@Nullable AutomationType automationType) {
+        return Long.MAX_VALUE;
     }
 
     @Override
-    public @Unsigned long insert(@Unsigned long amount, Action action, AutomationType automationType) {
-        if (amount == 0L || !canInsert.test(automationType)) {
+    public long insert(long amount, Action action, AutomationType automationType) {
+        if (amount <= 0L || !canInsert.test(automationType)) {
             return amount;
         }
-        long needed = ULong.min(getInsertRate(automationType), getNeeded());
-        if (needed == 0L) {
+        long needed = Math.min(getInsertRate(automationType), getNeeded());
+        if (needed <= 0L) {
             //Fail if we are a full container or our rate is zero
             return amount;
         }
-        long toAdd = ULong.min(amount, needed);
-        if (toAdd != 0 && action.execute()) {
+        long toAdd = Math.min(amount, needed);
+        if (toAdd > 0 && action.execute()) {
             //If we want to actually insert the energy, then update the current energy
             // Note: this also will mark that the contents changed
             stored += toAdd;
@@ -134,11 +133,13 @@ public class BasicEnergyContainer implements IEnergyContainer {
     }
 
     @Override
-    public @Unsigned long extract(@Unsigned long amount, Action action, AutomationType automationType) {
+    public long extract(long amount, Action action, AutomationType automationType) {
         if (isEmpty() || amount == 0L || !canExtract.test(automationType)) {
             return 0L;
         }
-        long ret = ULong.min(getExtractRate(automationType), getEnergy(), amount);
+        long a = getExtractRate(automationType);
+        long b = getEnergy();
+        long ret = Math.min(Math.min(a, b), amount);
         if (ret != 0L && action.execute()) {
             //Note: this also will mark that the contents changed
             stored -= ret;
@@ -158,7 +159,7 @@ public class BasicEnergyContainer implements IEnergyContainer {
     }
 
     @Override
-    public @Unsigned long getMaxEnergy() {
+    public long getMaxEnergy() {
         return maxEnergy;
     }
 

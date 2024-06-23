@@ -15,7 +15,6 @@ import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
 import mekanism.api.math.ULong;
-import mekanism.api.math.Unsigned;
 import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.config.MekanismConfig;
@@ -71,7 +70,7 @@ public class TurbineMultiblockData extends MultiblockData {
     @ContainerSync
     @SyntheticComputerMethod(getter = "getDumpingMode")
     public GasMode dumpMode = GasMode.IDLE;
-    private @Unsigned long energyCapacity = 0;
+    private long energyCapacity = 0;
 
     @ContainerSync
     @SyntheticComputerMethod(getter = "getBlades")
@@ -238,7 +237,7 @@ public class TurbineMultiblockData extends MultiblockData {
         return lowerVolume * MekanismGeneratorsConfig.generators.turbineGasPerTank.get();
     }
 
-    public @Unsigned long getEnergyCapacity() {
+    public long getEnergyCapacity() {
         return energyCapacity;
     }
 
@@ -246,7 +245,7 @@ public class TurbineMultiblockData extends MultiblockData {
     public void setVolume(int volume) {
         if (getVolume() != volume) {
             super.setVolume(volume);
-            energyCapacity = ULong.multiply(MekanismGeneratorsConfig.generators.turbineEnergyCapacityPerVolume.get(), volume);
+            energyCapacity = Math.multiplyExact(MekanismGeneratorsConfig.generators.turbineEnergyCapacityPerVolume.get(), volume);
         }
     }
 
@@ -256,15 +255,15 @@ public class TurbineMultiblockData extends MultiblockData {
     }
 
     @ComputerMethod
-    public @Unsigned long getProductionRate() {
-        double energyMultiplier = ULong.divide(MekanismConfig.general.maxEnergyPerSteam.get(), TurbineValidator.MAX_BLADES)
+    public long getProductionRate() {
+        double energyMultiplier = ((double) MekanismConfig.general.maxEnergyPerSteam.get() / TurbineValidator.MAX_BLADES)
                                   * (Math.min(blades, coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get()));
         return (long) (energyMultiplier * clientFlow);
     }
 
     @ComputerMethod
-    public @Unsigned long getMaxProduction() {
-        double energyMultiplier = ULong.divide(MekanismConfig.general.maxEnergyPerSteam.get(), TurbineValidator.MAX_BLADES)
+    public long getMaxProduction() {
+        double energyMultiplier = ((double) MekanismConfig.general.maxEnergyPerSteam.get() / TurbineValidator.MAX_BLADES)
                                   * (Math.min(blades, coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get()));
         double rate = lowerVolume * (getDispersers() * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get());
         rate = Math.min(rate, vents * MekanismGeneratorsConfig.generators.turbineVentGasFlow.get());

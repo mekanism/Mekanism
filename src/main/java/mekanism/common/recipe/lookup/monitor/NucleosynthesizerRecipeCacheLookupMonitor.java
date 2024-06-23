@@ -2,7 +2,6 @@ package mekanism.common.recipe.lookup.monitor;
 
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.math.Unsigned;
 import mekanism.api.recipes.NucleosynthesizingRecipe;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.recipe.lookup.IRecipeLookupHandler;
@@ -14,7 +13,7 @@ public class NucleosynthesizerRecipeCacheLookupMonitor extends RecipeCacheLookup
     }
 
     @Override
-    public @Unsigned long updateAndProcess(IEnergyContainer energyContainer) {
+    public long updateAndProcess(IEnergyContainer energyContainer) {
         if (!(energyContainer instanceof MachineEnergyContainer<?> machineEnergyContainer)) {
             //Unknown energy container type just don't handle it
             return FloatingLong.ZERO;

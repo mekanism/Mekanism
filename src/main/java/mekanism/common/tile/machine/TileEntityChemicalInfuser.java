@@ -8,7 +8,6 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.math.Unsigned;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
@@ -78,7 +77,7 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalI
                                                                                         "getOutputFilledPercentage"}, docPlaceholder = "output (center) tank")
     public IGasTank centerTank;
 
-    private @Unsigned long clientEnergyUsed = 0L;
+    private long clientEnergyUsed = 0L;
     private int baselineMaxOperations = 1;
 
     private final IOutputHandler<@NotNull GasStack> outputHandler;
@@ -173,7 +172,7 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalI
     }
 
     @ComputerMethod(nameOverride = "getEnergyUsage", methodDescription = ComputerConstants.DESCRIPTION_GET_ENERGY_USAGE)
-    public @Unsigned long getEnergyUsed() {
+    public long getEnergyUsed() {
         return clientEnergyUsed;
     }
 

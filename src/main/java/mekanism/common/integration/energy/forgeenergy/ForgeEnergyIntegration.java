@@ -3,7 +3,6 @@ package mekanism.common.integration.energy.forgeenergy;
 import mekanism.api.Action;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.math.Unsigned;
 import mekanism.common.util.UnitDisplayUtils.EnergyUnit;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
@@ -21,15 +20,15 @@ public class ForgeEnergyIntegration implements IEnergyStorage {
             return 0;
         }
         Action action = Action.get(!simulate);
-        @Unsigned long toInsert = EnergyUnit.FORGE_ENERGY.convertFrom(maxReceive);
+        long toInsert = EnergyUnit.FORGE_ENERGY.convertFrom(maxReceive);
         if (action.execute()) {
             //Before we can actually execute it we need to simulate to calculate how much we can actually insert
-            @Unsigned long simulatedRemainder = handler.insertEnergy(toInsert, Action.SIMULATE);
+            long simulatedRemainder = handler.insertEnergy(toInsert, Action.SIMULATE);
             if (simulatedRemainder == toInsert) {
                 //Nothing can be inserted at all, just exit quickly
                 return 0;
             }
-            @Unsigned long simulatedInserted = toInsert - simulatedRemainder;
+            long simulatedInserted = toInsert - simulatedRemainder;
             //Convert how much we could insert back to FE so that it gets appropriately clamped so that for example 1.5 FE gets treated
             // as trying to insert 1 FE for how much we actually will accept, and then convert that clamped value to go back to Joules
             // so that we don't allow inserting a tiny bit of extra for "free" and end up creating power from nowhere
@@ -40,12 +39,12 @@ public class ForgeEnergyIntegration implements IEnergyStorage {
                 return 0;
             }
         }
-        @Unsigned long remainder = handler.insertEnergy(toInsert, action);
+        long remainder = handler.insertEnergy(toInsert, action);
         if (remainder == toInsert) {
             //Nothing can be inserted at all, just exit quickly
             return 0;
         }
-        @Unsigned long inserted = toInsert - remainder;
+        long inserted = toInsert - remainder;
         return EnergyUnit.FORGE_ENERGY.convertToAsInt(inserted);
     }
 
@@ -55,10 +54,10 @@ public class ForgeEnergyIntegration implements IEnergyStorage {
             return 0;
         }
         Action action = Action.get(!simulate);
-        @Unsigned long toExtract = EnergyUnit.FORGE_ENERGY.convertFrom(maxExtract);
+        long toExtract = EnergyUnit.FORGE_ENERGY.convertFrom(maxExtract);
         if (action.execute()) {
             //Before we can actually execute it we need to simulate to calculate how much we can actually extract in our other units
-            @Unsigned long simulatedExtracted = handler.extractEnergy(toExtract, Action.SIMULATE);
+            long simulatedExtracted = handler.extractEnergy(toExtract, Action.SIMULATE);
             //Convert how much we could extract back to FE so that it gets appropriately clamped so that for example 1.5 FE gets treated
             // as trying to extract 1 FE for how much we can actually provide, and then convert that clamped value to go back to Joules
             // so that we don't allow extracting a tiny bit into nowhere causing some power to be voided
@@ -70,11 +69,11 @@ public class ForgeEnergyIntegration implements IEnergyStorage {
                 return 0;
             }
         }
-        @Unsigned long extracted = handler.extractEnergy(toExtract, action);
+        long extracted = handler.extractEnergy(toExtract, action);
         return EnergyUnit.FORGE_ENERGY.convertToAsInt(extracted);
     }
 
-    private @Unsigned long convertToAndBack(@Unsigned long value) {
+    private long convertToAndBack(long value) {
         return EnergyUnit.FORGE_ENERGY.convertFrom(EnergyUnit.FORGE_ENERGY.convertToAsInt(value));
     }
 

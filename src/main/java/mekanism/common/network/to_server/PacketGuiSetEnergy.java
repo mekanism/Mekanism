@@ -4,7 +4,6 @@ import io.netty.buffer.ByteBuf;
 import java.util.function.BiConsumer;
 import java.util.function.IntFunction;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.math.Unsigned;
 import mekanism.common.Mekanism;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.network.PacketUtils;
@@ -19,7 +18,7 @@ import net.minecraft.util.ByIdMap;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-public record PacketGuiSetEnergy(GuiEnergyValue interaction, BlockPos pos, @Unsigned long value) implements IMekanismPacket {
+public record PacketGuiSetEnergy(GuiEnergyValue interaction, BlockPos pos, long value) implements IMekanismPacket {
 
     public static final CustomPacketPayload.Type<PacketGuiSetEnergy> TYPE = new CustomPacketPayload.Type<>(Mekanism.rl("set_energy"));
     public static final StreamCodec<ByteBuf, PacketGuiSetEnergy> STREAM_CODEC = StreamCodec.composite(
@@ -62,13 +61,13 @@ public record PacketGuiSetEnergy(GuiEnergyValue interaction, BlockPos pos, @Unsi
         public static final IntFunction<GuiEnergyValue> BY_ID = ByIdMap.continuous(GuiEnergyValue::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
         public static final StreamCodec<ByteBuf, GuiEnergyValue> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, GuiEnergyValue::ordinal);
 
-        private final BiConsumer<TileEntityMekanism, @Unsigned Long> consumerForTile;
+        private final BiConsumer<TileEntityMekanism, Long> consumerForTile;
 
-        GuiEnergyValue(BiConsumer<TileEntityMekanism, @Unsigned Long> consumerForTile) {
+        GuiEnergyValue(BiConsumer<TileEntityMekanism, Long> consumerForTile) {
             this.consumerForTile = consumerForTile;
         }
 
-        public void consume(TileEntityMekanism tile, @Unsigned long value) {
+        public void consume(TileEntityMekanism tile, long value) {
             consumerForTile.accept(tile, value);
         }
     }

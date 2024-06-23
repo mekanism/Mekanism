@@ -17,7 +17,6 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.math.Unsigned;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -101,7 +100,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
     private int ticksRequired = BASE_TICKS_REQUIRED;
     private boolean sorting;
     private boolean sortingNeeded = true;
-    private @Unsigned long lastUsage = 0L;
+    private long lastUsage = 0L;
 
     /**
      * This machine's factory type.
@@ -243,7 +242,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
 
         //Copy this so that if it changes we still have the original amount. Don't bother making it a constant though as this way
         // we can then use minusEqual instead of subtract to remove an extra copy call
-        @Unsigned long prev = energyContainer.getEnergy();
+        long prev = energyContainer.getEnergy();
         for (int i = 0; i < recipeCacheLookupMonitors.length; i++) {
             if (!recipeCacheLookupMonitors[i].updateAndProcess()) {
                 //If we don't have a recipe in that slot make sure that our active state for that position is false
@@ -370,7 +369,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
     }
 
     @ComputerMethod(nameOverride = "getEnergyUsage", methodDescription = ComputerConstants.DESCRIPTION_GET_ENERGY_USAGE)
-    public @Unsigned long getLastUsage() {
+    public long getLastUsage() {
         return lastUsage;
     }
 

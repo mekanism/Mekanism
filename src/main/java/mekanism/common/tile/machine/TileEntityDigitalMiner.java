@@ -26,7 +26,6 @@ import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.math.Unsigned;
 import mekanism.common.CommonWorldTickHandler;
 import mekanism.common.attachments.FilterAware;
 import mekanism.common.attachments.OverflowAware;
@@ -1287,7 +1286,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
 
     //Methods relating to IComputerTile
     @ComputerMethod(methodDescription = ComputerConstants.DESCRIPTION_GET_ENERGY_USAGE)
-    @Unsigned
     long getEnergyUsage() {
         return getActive() ? energyContainer.getEnergyPerTick() : 0L;
     }

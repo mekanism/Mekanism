@@ -5,7 +5,6 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.ISidedStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.math.Unsigned;
 import mekanism.common.capabilities.holder.IHolder;
 import net.minecraft.core.Direction;
 import org.jetbrains.annotations.Nullable;
@@ -26,44 +25,44 @@ public class ProxyStrictEnergyHandler extends ProxyHandler implements IStrictEne
     }
 
     @Override
-    public @Unsigned long getEnergy(int container) {
+    public long getEnergy(int container) {
         return energyHandler.getEnergy(container, side);
     }
 
     @Override
-    public void setEnergy(int container, @Unsigned long energy) {
+    public void setEnergy(int container, long energy) {
         if (!readOnly) {
             energyHandler.setEnergy(container, energy, side);
         }
     }
 
     @Override
-    public @Unsigned long getMaxEnergy(int container) {
+    public long getMaxEnergy(int container) {
         return energyHandler.getMaxEnergy(container, side);
     }
 
     @Override
-    public @Unsigned long getNeededEnergy(int container) {
+    public long getNeededEnergy(int container) {
         return energyHandler.getNeededEnergy(container, side);
     }
 
     @Override
-    public @Unsigned long insertEnergy(int container, @Unsigned long amount, Action action) {
+    public long insertEnergy(int container, long amount, Action action) {
         return readOnlyInsert() ? amount : energyHandler.insertEnergy(container, amount, side, action);
     }
 
     @Override
-    public @Unsigned long extractEnergy(int container, @Unsigned long amount, Action action) {
+    public long extractEnergy(int container, long amount, Action action) {
         return readOnlyExtract() ? 0L : energyHandler.extractEnergy(container, amount, side, action);
     }
 
     @Override
-    public @Unsigned long insertEnergy(@Unsigned long amount, Action action) {
+    public long insertEnergy(long amount, Action action) {
         return readOnlyInsert() ? amount : energyHandler.insertEnergy(amount, side, action);
     }
 
     @Override
-    public @Unsigned long extractEnergy(@Unsigned long amount, Action action) {
+    public long extractEnergy(long amount, Action action) {
         return readOnlyExtract() ? 0L : energyHandler.extractEnergy(amount, side, action);
     }
 }

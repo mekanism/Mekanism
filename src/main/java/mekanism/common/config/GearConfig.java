@@ -7,7 +7,6 @@ import mekanism.common.config.value.CachedFloatValue;
 import mekanism.common.config.value.CachedFloatingLongValue;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.config.value.CachedLongValue;
-import mekanism.common.config.value.CachedUnsignedLongValue;
 import net.minecraft.SharedConstants;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.neoforged.fml.config.ModConfig.Type;
@@ -35,8 +34,8 @@ public class GearConfig extends BaseMekanismConfig {
     private final ModConfigSpec configSpec;
 
     //Atomic Disassembler
-    public final CachedUnsignedLongValue disassemblerEnergyUsage;
-    public final CachedUnsignedLongValue disassemblerEnergyUsageWeapon;
+    public final CachedLongValue disassemblerEnergyUsage;
+    public final CachedLongValue disassemblerEnergyUsageWeapon;
     public final CachedIntValue disassemblerMiningCount;
     public final CachedBooleanValue disassemblerSlowMode;
     public final CachedBooleanValue disassemblerFastMode;
@@ -89,10 +88,10 @@ public class GearConfig extends BaseMekanismConfig {
     public final CachedIntValue canteenMaxStorage;
     public final CachedIntValue canteenTransferRate;
     //Meka-Tool
-    public final CachedUnsignedLongValue mekaToolEnergyUsageWeapon;
-    public final CachedUnsignedLongValue mekaToolEnergyUsageTeleport;
-    public final CachedUnsignedLongValue mekaToolEnergyUsage;
-    public final CachedUnsignedLongValue mekaToolEnergyUsageSilk;
+    public final CachedLongValue mekaToolEnergyUsageWeapon;
+    public final CachedLongValue mekaToolEnergyUsageTeleport;
+    public final CachedLongValue mekaToolEnergyUsage;
+    public final CachedLongValue mekaToolEnergyUsageSilk;
     public final CachedIntValue mekaToolMaxTeleportReach;
     public final CachedIntValue mekaToolBaseDamage;
     public final CachedDoubleValue mekaToolAttackSpeed;
@@ -105,22 +104,22 @@ public class GearConfig extends BaseMekanismConfig {
     public final CachedFloatingLongValue mekaToolEnergyUsageShearEntity;
     public final CachedBooleanValue mekaToolExtendedMining;
     //MekaSuit
-    public final CachedUnsignedLongValue mekaSuitBaseEnergyCapacity;
-    public final CachedUnsignedLongValue mekaSuitBaseChargeRate;
-    public final CachedUnsignedLongValue mekaSuitBaseJumpEnergyUsage;
-    public final CachedUnsignedLongValue mekaSuitElytraEnergyUsage;
-    public final CachedUnsignedLongValue mekaSuitEnergyUsagePotionTick;
-    public final CachedUnsignedLongValue mekaSuitEnergyUsageMagicReduce;
-    public final CachedUnsignedLongValue mekaSuitEnergyUsageFall;
-    public final CachedUnsignedLongValue mekaSuitEnergyUsageSprintBoost;
-    public final CachedUnsignedLongValue mekaSuitEnergyUsageGravitationalModulation;
-    public final CachedUnsignedLongValue mekaSuitInventoryChargeRate;
-    public final CachedUnsignedLongValue mekaSuitSolarRechargingRate;
-    public final CachedUnsignedLongValue mekaSuitEnergyUsageVisionEnhancement;
-    public final CachedUnsignedLongValue mekaSuitEnergyUsageHydrostaticRepulsion;
-    public final CachedUnsignedLongValue mekaSuitEnergyUsageNutritionalInjection;
-    public final CachedUnsignedLongValue mekaSuitEnergyUsageDamage;
-    public final CachedUnsignedLongValue mekaSuitEnergyUsageItemAttraction;
+    public final CachedLongValue mekaSuitBaseEnergyCapacity;
+    public final CachedLongValue mekaSuitBaseChargeRate;
+    public final CachedLongValue mekaSuitBaseJumpEnergyUsage;
+    public final CachedLongValue mekaSuitElytraEnergyUsage;
+    public final CachedLongValue mekaSuitEnergyUsagePotionTick;
+    public final CachedLongValue mekaSuitEnergyUsageMagicReduce;
+    public final CachedLongValue mekaSuitEnergyUsageFall;
+    public final CachedLongValue mekaSuitEnergyUsageSprintBoost;
+    public final CachedLongValue mekaSuitEnergyUsageGravitationalModulation;
+    public final CachedLongValue mekaSuitInventoryChargeRate;
+    public final CachedLongValue mekaSuitSolarRechargingRate;
+    public final CachedLongValue mekaSuitEnergyUsageVisionEnhancement;
+    public final CachedLongValue mekaSuitEnergyUsageHydrostaticRepulsion;
+    public final CachedLongValue mekaSuitEnergyUsageNutritionalInjection;
+    public final CachedLongValue mekaSuitEnergyUsageDamage;
+    public final CachedLongValue mekaSuitEnergyUsageItemAttraction;
     public final CachedBooleanValue mekaSuitGravitationalVibrations;
     public final CachedIntValue mekaSuitNutritionalMaxStorage;
     public final CachedIntValue mekaSuitNutritionalTransferRate;

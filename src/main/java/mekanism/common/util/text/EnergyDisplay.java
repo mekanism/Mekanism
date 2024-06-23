@@ -35,7 +35,7 @@ public class EnergyDisplay implements IHasTextComponent {
 
     @Override
     public Component getTextComponent() {
-        if (energy == ULong.MAX_VALUE) {
+        if (energy == Long.MAX_VALUE) {
             return MekanismLang.INFINITE.translate();
         } else if (max == 0L) {
             return MekanismUtils.getEnergyDisplayShort(energy);

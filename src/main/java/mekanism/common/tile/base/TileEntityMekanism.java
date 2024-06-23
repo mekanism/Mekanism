@@ -36,7 +36,6 @@ import mekanism.api.heat.IHeatHandler;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.math.ULong;
-import mekanism.api.math.Unsigned;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.security.IBlockSecurityUtils;
@@ -1431,12 +1430,12 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Override
-    public @Unsigned long insertEnergy(int container, @Unsigned long amount, @Nullable Direction side, @NotNull Action action) {
+    public long insertEnergy(int container, long amount, @Nullable Direction side, @NotNull Action action) {
         return trackLastEnergy(amount, action, IMekanismStrictEnergyHandler.super.insertEnergy(container, amount, side, action));
     }
 
     @Override
-    public @Unsigned long insertEnergy(@Unsigned long amount, @Nullable Direction side, @NotNull Action action) {
+    public long insertEnergy(long amount, @Nullable Direction side, @NotNull Action action) {
         //Note: Super bypasses calling insertEnergy(int container, ...) so we need to override it here as well
         return trackLastEnergy(amount, action, IMekanismStrictEnergyHandler.super.insertEnergy(amount, side, action));
     }
@@ -1739,7 +1738,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             stored += energyContainer.getEnergy();
             max += energyContainer.getMaxEnergy();
         }
-        return max == 0L ? 1D : ULong.divide(stored, max);
+        return max == 0L ? 1D : ((double) stored / max);
     }
 
     @ComputerMethod(restriction = MethodRestriction.REDSTONE_CONTROL, requiresPublicSecurity = true)

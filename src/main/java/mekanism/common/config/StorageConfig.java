@@ -2,7 +2,7 @@ package mekanism.common.config;
 
 import mekanism.api.math.FloatingLong;
 import mekanism.common.config.value.CachedFloatingLongValue;
-import mekanism.common.config.value.CachedUnsignedLongValue;
+import mekanism.common.config.value.CachedLongValue;
 import net.neoforged.fml.config.ModConfig.Type;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
@@ -33,7 +33,7 @@ public class StorageConfig extends BaseMekanismConfig {
     public final CachedFloatingLongValue pressurizedReactionBase;
     public final CachedFloatingLongValue fluidicPlenisher;
     public final CachedFloatingLongValue laser;
-    public final CachedUnsignedLongValue laserAmplifier;
+    public final CachedLongValue laserAmplifier;
     public final CachedFloatingLongValue laserTractorBeam;
     public final CachedFloatingLongValue formulaicAssemblicator;
     public final CachedFloatingLongValue teleporter;

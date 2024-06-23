@@ -6,7 +6,6 @@ import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.ULong;
-import mekanism.api.math.Unsigned;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.tile.machine.TileEntityResistiveHeater;
 import mekanism.common.util.NBTUtils;
@@ -25,7 +24,7 @@ public class ResistiveHeaterEnergyContainer extends MachineEnergyContainer<TileE
         return new ResistiveHeaterEnergyContainer(electricBlock.getStorage(), electricBlock.getUsage(), notExternal, alwaysTrue, tile, listener);
     }
 
-    private ResistiveHeaterEnergyContainer(@Unsigned long maxEnergy, @Unsigned long energyPerTick, Predicate<@NotNull AutomationType> canExtract,
+    private ResistiveHeaterEnergyContainer(long maxEnergy, long energyPerTick, Predicate<@NotNull AutomationType> canExtract,
           Predicate<@NotNull AutomationType> canInsert, TileEntityResistiveHeater tile, @Nullable IContentsListener listener) {
         super(maxEnergy, energyPerTick, canExtract, canInsert, tile, listener);
     }
@@ -35,9 +34,9 @@ public class ResistiveHeaterEnergyContainer extends MachineEnergyContainer<TileE
         return true;
     }
 
-    public void updateEnergyUsage(@Unsigned long energyUsage) {
+    public void updateEnergyUsage(long energyUsage) {
         currentEnergyPerTick = energyUsage;
-        setMaxEnergy(ULong.multiply(energyUsage, USAGE_MULTIPLIER));
+        setMaxEnergy(Math.multiplyExact(energyUsage, USAGE_MULTIPLIER));
     }
 
     @Override

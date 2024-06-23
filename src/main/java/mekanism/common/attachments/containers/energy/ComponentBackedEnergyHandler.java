@@ -7,7 +7,6 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.math.LongTransferUtils;
-import mekanism.api.math.Unsigned;
 import mekanism.common.attachments.containers.ComponentBackedHandler;
 import mekanism.common.attachments.containers.ContainerType;
 import net.minecraft.core.Direction;
@@ -43,17 +42,17 @@ public class ComponentBackedEnergyHandler extends ComponentBackedHandler<Long, I
     }
 
     @Override
-    public @Unsigned long getEnergy(int container, @Nullable Direction side) {
+    public long getEnergy(int container, @Nullable Direction side) {
         return getContents(container);
     }
 
     @Override
-    public @Unsigned long insertEnergy(@Unsigned long amount, @Nullable Direction side, Action action) {
+    public long insertEnergy(long amount, @Nullable Direction side, Action action) {
         return LongTransferUtils.insert(amount, action, AutomationType.handler(side), size(), this);
     }
 
     @Override
-    public @Unsigned long extractEnergy(@Unsigned long amount, @Nullable Direction side, Action action) {
+    public long extractEnergy(long amount, @Nullable Direction side, Action action) {
         return LongTransferUtils.extract(amount, action, AutomationType.handler(side), size(), this);
     }
 }

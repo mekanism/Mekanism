@@ -8,7 +8,6 @@ import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.math.Unsigned;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
@@ -64,7 +63,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
     @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getLava", "getLavaCapacity", "getLavaNeeded",
                                                                                      "getLavaFilledPercentage"}, docPlaceholder = "lava tank")
     public BasicFluidTank lavaTank;
-    private @Unsigned long producingEnergy = 0;
+    private long producingEnergy = 0;
     private double lastTransferLoss;
     private double lastEnvironmentLoss;
 
@@ -199,7 +198,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
     }
 
     @Override
-    public @Unsigned long getProductionRate() {
+    public long getProductionRate() {
         return producingEnergy;
     }
 

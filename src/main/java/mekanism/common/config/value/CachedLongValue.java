@@ -2,6 +2,7 @@ package mekanism.common.config.value;
 
 import java.util.function.LongSupplier;
 import mekanism.common.config.IMekanismConfig;
+import net.neoforged.neoforge.common.ModConfigSpec.Builder;
 import net.neoforged.neoforge.common.ModConfigSpec.ConfigValue;
 
 public class CachedLongValue extends CachedValue<Long> implements LongSupplier {
@@ -15,6 +16,11 @@ public class CachedLongValue extends CachedValue<Long> implements LongSupplier {
 
     public static CachedLongValue wrap(IMekanismConfig config, ConfigValue<Long> internal) {
         return new CachedLongValue(config, internal);
+    }
+
+    public static CachedLongValue defineUnsigned(IMekanismConfig config, Builder builder, String comment, String path, long defaultValue) {
+        return CachedLongValue.wrap(config, builder.comment(comment)
+              .defineInRange(path, defaultValue, 0, Long.MAX_VALUE));
     }
 
     public long getOrDefault() {

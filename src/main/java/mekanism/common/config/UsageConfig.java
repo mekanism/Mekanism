@@ -2,7 +2,7 @@ package mekanism.common.config;
 
 import mekanism.api.math.FloatingLong;
 import mekanism.common.config.value.CachedFloatingLongValue;
-import mekanism.common.config.value.CachedUnsignedLongValue;
+import mekanism.common.config.value.CachedLongValue;
 import net.neoforged.fml.config.ModConfig.Type;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
@@ -12,41 +12,41 @@ public class UsageConfig extends BaseMekanismConfig {
 
     private final ModConfigSpec configSpec;
 
-    public final CachedUnsignedLongValue enrichmentChamber;
-    public final CachedUnsignedLongValue osmiumCompressor;
-    public final CachedUnsignedLongValue combiner;
-    public final CachedUnsignedLongValue crusher;
-    public final CachedUnsignedLongValue metallurgicInfuser;
-    public final CachedUnsignedLongValue purificationChamber;
-    public final CachedUnsignedLongValue energizedSmelter;
-    public final CachedUnsignedLongValue digitalMiner;
-    public final CachedUnsignedLongValue electricPump;
-    public final CachedUnsignedLongValue chargePad;
-    public final CachedUnsignedLongValue rotaryCondensentrator;
-    public final CachedUnsignedLongValue chemicalOxidizer;
-    public final CachedUnsignedLongValue chemicalInfuser;
-    public final CachedUnsignedLongValue chemicalInjectionChamber;
-    public final CachedUnsignedLongValue precisionSawmill;
-    public final CachedUnsignedLongValue chemicalDissolutionChamber;
-    public final CachedUnsignedLongValue chemicalWasher;
-    public final CachedUnsignedLongValue chemicalCrystallizer;
-    public final CachedUnsignedLongValue seismicVibrator;
-    public final CachedUnsignedLongValue pressurizedReactionBase;
-    public final CachedUnsignedLongValue fluidicPlenisher;
-    public final CachedUnsignedLongValue laser;
-    public final CachedUnsignedLongValue formulaicAssemblicator;
-    public final CachedUnsignedLongValue modificationStation;
-    public final CachedUnsignedLongValue isotopicCentrifuge;
-    public final CachedUnsignedLongValue nutritionalLiquifier;
-    public final CachedUnsignedLongValue antiprotonicNucleosynthesizer;
-    public final CachedUnsignedLongValue pigmentExtractor;
-    public final CachedUnsignedLongValue pigmentMixer;
-    public final CachedUnsignedLongValue paintingMachine;
-    public final CachedUnsignedLongValue dimensionalStabilizer;
+    public final CachedLongValue enrichmentChamber;
+    public final CachedLongValue osmiumCompressor;
+    public final CachedLongValue combiner;
+    public final CachedLongValue crusher;
+    public final CachedLongValue metallurgicInfuser;
+    public final CachedLongValue purificationChamber;
+    public final CachedLongValue energizedSmelter;
+    public final CachedLongValue digitalMiner;
+    public final CachedLongValue electricPump;
+    public final CachedLongValue chargePad;
+    public final CachedLongValue rotaryCondensentrator;
+    public final CachedLongValue chemicalOxidizer;
+    public final CachedLongValue chemicalInfuser;
+    public final CachedLongValue chemicalInjectionChamber;
+    public final CachedLongValue precisionSawmill;
+    public final CachedLongValue chemicalDissolutionChamber;
+    public final CachedLongValue chemicalWasher;
+    public final CachedLongValue chemicalCrystallizer;
+    public final CachedLongValue seismicVibrator;
+    public final CachedLongValue pressurizedReactionBase;
+    public final CachedLongValue fluidicPlenisher;
+    public final CachedLongValue laser;
+    public final CachedLongValue formulaicAssemblicator;
+    public final CachedLongValue modificationStation;
+    public final CachedLongValue isotopicCentrifuge;
+    public final CachedLongValue nutritionalLiquifier;
+    public final CachedLongValue antiprotonicNucleosynthesizer;
+    public final CachedLongValue pigmentExtractor;
+    public final CachedLongValue pigmentMixer;
+    public final CachedLongValue paintingMachine;
+    public final CachedLongValue dimensionalStabilizer;
 
-    public final CachedUnsignedLongValue teleporterBase;
-    public final CachedUnsignedLongValue teleporterDistance;
-    public final CachedUnsignedLongValue teleporterDimensionPenalty;
+    public final CachedLongValue teleporterBase;
+    public final CachedLongValue teleporterDistance;
+    public final CachedLongValue teleporterDimensionPenalty;
 
     UsageConfig() {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();

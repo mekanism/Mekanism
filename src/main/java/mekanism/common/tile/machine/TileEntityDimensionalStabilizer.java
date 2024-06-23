@@ -11,7 +11,6 @@ import mekanism.api.RelativeSide;
 import mekanism.api.functions.LongObjectToLongFunction;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.ULong;
-import mekanism.api.math.Unsigned;
 import mekanism.common.attachments.StabilizedChunks;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.energy.FixedUsageEnergyContainer;
@@ -49,7 +48,7 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
     public static final int MAX_LOAD_DIAMETER = 2 * MAX_LOAD_RADIUS + 1;
     private static final String COMPUTER_RANGE_STR = "Range: [-" + MAX_LOAD_RADIUS + ", " + MAX_LOAD_RADIUS + "]";
     private static final String COMPUTER_RANGE_RAD = "Range: [1, " + MAX_LOAD_RADIUS + "]";
-    private static final LongObjectToLongFunction<TileEntityDimensionalStabilizer> BASE_ENERGY_CALCULATOR = (base, tile) -> ULong.multiply(base, tile.chunksLoaded);
+    private static final LongObjectToLongFunction<TileEntityDimensionalStabilizer> BASE_ENERGY_CALCULATOR = (base, tile) -> Math.multiplyExact(base, tile.chunksLoaded);
 
     private final ChunkLoader chunkLoaderComponent;
     private final boolean[][] loadingChunks;
@@ -92,7 +91,7 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
         energySlot.fillContainerOrConvert();
         //Only attempt to use power if chunk loading isn't disabled in the config
         if (MekanismConfig.general.allowChunkloading.get() && canFunction()) {
-            @Unsigned long energyPerTick = energyContainer.getEnergyPerTick();
+            long energyPerTick = energyContainer.getEnergyPerTick();
             if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL) == energyPerTick) {
                 energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
                 setActive(true);

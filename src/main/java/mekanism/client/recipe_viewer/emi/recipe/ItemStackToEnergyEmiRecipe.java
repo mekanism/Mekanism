@@ -3,7 +3,6 @@ package mekanism.client.recipe_viewer.emi.recipe;
 import dev.emi.emi.api.widget.WidgetHolder;
 import java.util.List;
 import mekanism.api.math.ULong;
-import mekanism.api.math.Unsigned;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiEnergyGauge;
@@ -33,32 +32,32 @@ public class ItemStackToEnergyEmiRecipe extends MekanismEmiHolderRecipe<ItemStac
     private IEnergyInfoHandler getEnergyInfoHandler() {
         List<Long> outputDefinition = recipe.getOutputDefinition();
         if (outputDefinition.size() > 1) {
-            @Unsigned long maxEnergy = 0;
+            long maxEnergy = 0;
             for (Long floatingLong : outputDefinition) {
-                maxEnergy = ULong.max(maxEnergy, floatingLong);
+                maxEnergy = Math.max(maxEnergy, floatingLong);
             }
-            @Unsigned long finalMaxEnergy = maxEnergy;
+            long finalMaxEnergy = maxEnergy;
             return new IEnergyInfoHandler() {
                 @Override
-                public @Unsigned long getEnergy() {
+                public long getEnergy() {
                     return RecipeViewerUtils.getCurrent(outputDefinition);
                 }
 
                 @Override
-                public @Unsigned long getMaxEnergy() {
+                public long getMaxEnergy() {
                     return finalMaxEnergy;
                 }
             };
         }
-        @Unsigned long energy = outputDefinition.isEmpty() ? 0L : outputDefinition.getFirst();
+        long energy = outputDefinition.isEmpty() ? 0L : outputDefinition.getFirst();
         return new IEnergyInfoHandler() {
             @Override
-            public @Unsigned long getEnergy() {
+            public long getEnergy() {
                 return energy;
             }
 
             @Override
-            public @Unsigned long getMaxEnergy() {
+            public long getMaxEnergy() {
                 return energy;
             }
         };

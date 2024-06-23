@@ -3,7 +3,6 @@ package mekanism.common.integration.crafttweaker.recipe.manager;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.math.Unsigned;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
 import mekanism.api.recipes.basic.BasicItemStackToEnergyRecipe;
 import mekanism.common.integration.crafttweaker.CrTConstants;
@@ -31,7 +30,7 @@ public abstract class ItemStackToEnergyRecipeManager extends MekanismRecipeManag
      * @param output Energy output, must be greater than zero.
      */
     @ZenCodeType.Method
-    public void addRecipe(String name, IIngredientWithAmount input, @Unsigned long output) {
+    public void addRecipe(String name, IIngredientWithAmount input, long output) {
         addRecipe(name, makeRecipe(input, output));
     }
 
@@ -41,14 +40,14 @@ public abstract class ItemStackToEnergyRecipeManager extends MekanismRecipeManag
      * @param input  {@link IIngredientWithAmount} representing the input of the recipe.
      * @param output Energy output. Will be validated as being greater than zero.
      */
-    public final ItemStackToEnergyRecipe makeRecipe(IIngredientWithAmount input, @Unsigned long output) {
+    public final ItemStackToEnergyRecipe makeRecipe(IIngredientWithAmount input, long output) {
         if (output.isZero()) {
             throw new IllegalArgumentException("Output must be greater than zero.");
         }
         return makeRecipeInternal(input, output.copyAsConst());
     }
 
-    protected abstract ItemStackToEnergyRecipe makeRecipeInternal(IIngredientWithAmount input, @Unsigned long output);
+    protected abstract ItemStackToEnergyRecipe makeRecipeInternal(IIngredientWithAmount input, long output);
 
     @Override
     protected String describeOutputs(ItemStackToEnergyRecipe recipe) {
@@ -66,7 +65,7 @@ public abstract class ItemStackToEnergyRecipeManager extends MekanismRecipeManag
         }
 
         @Override
-        protected ItemStackToEnergyRecipe makeRecipeInternal(IIngredientWithAmount input, @Unsigned long output) {
+        protected ItemStackToEnergyRecipe makeRecipeInternal(IIngredientWithAmount input, long output) {
             return new BasicItemStackToEnergyRecipe(CrTUtils.fromCrT(input), output);
         }
     }

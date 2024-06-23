@@ -5,7 +5,6 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.LongObjectToLongFunction;
-import mekanism.api.math.Unsigned;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.tile.base.TileEntityMekanism;
 import org.jetbrains.annotations.NotNull;
@@ -22,14 +21,14 @@ public class FixedUsageEnergyContainer<TILE extends TileEntityMekanism> extends 
 
     private final LongObjectToLongFunction<TILE> baseEnergyCalculator;
 
-    protected FixedUsageEnergyContainer(@Unsigned long maxEnergy, @Unsigned long energyPerTick, Predicate<@NotNull AutomationType> canExtract,
+    protected FixedUsageEnergyContainer(long maxEnergy, long energyPerTick, Predicate<@NotNull AutomationType> canExtract,
           Predicate<@NotNull AutomationType> canInsert, TILE tile, LongObjectToLongFunction<TILE> baseEnergyCalculator, @Nullable IContentsListener listener) {
         super(maxEnergy, energyPerTick, canExtract, canInsert, tile, listener);
         this.baseEnergyCalculator = baseEnergyCalculator;
     }
 
     @Override
-    public @Unsigned long getBaseEnergyPerTick() {
+    public long getBaseEnergyPerTick() {
         return baseEnergyCalculator.apply(super.getBaseEnergyPerTick(), tile);
     }
 

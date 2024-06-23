@@ -8,7 +8,6 @@ import mekanism.api.AutomationType;
 import mekanism.api.Upgrade;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
-import mekanism.api.math.Unsigned;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.client.key.MekKeyHandler;
@@ -163,11 +162,11 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
         if (attributeEnergy == null) {
             throw new IllegalStateException("Expected block " + RegistryUtils.getName(block) + " to have the energy attribute");
         }
-        @Unsigned LongSupplier maxEnergy = attributeEnergy::getStorage;
+        LongSupplier maxEnergy = attributeEnergy::getStorage;
         if (Attribute.matches(block, AttributeUpgradeSupport.class, attribute -> attribute.supportedUpgrades().contains(Upgrade.ENERGY))) {
             return builder.addContainer((type, attachedTo, containerIndex) -> {
                 //If our block supports energy upgrades, make a more dynamically updating cache for our item's max energy
-                @Unsigned LongSupplier capacity = new UpgradeBasedUnsignedLongCache(attachedTo, maxEnergy);
+                LongSupplier capacity = new UpgradeBasedUnsignedLongCache(attachedTo, maxEnergy);
                 return new ComponentBackedNoClampEnergyContainer(attachedTo, containerIndex, BasicEnergyContainer.manualOnly, getEnergyCapInsertPredicate(),
                       () -> (long) (capacity.getAsLong() * (0.005)), capacity);
             });
@@ -194,16 +193,16 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
         }
     }
 
-    private static class UpgradeBasedUnsignedLongCache implements @Unsigned LongSupplier {
+    private static class UpgradeBasedUnsignedLongCache implements LongSupplier {
 
         //TODO: Eventually fix this, ideally we want this to update the overall cached value if this changes because of the config
         // for how much energy a machine can store changes
-        private final @Unsigned LongSupplier baseStorage;
+        private final LongSupplier baseStorage;
         private final ItemStack stack;
         private int lastInstalled;
-        private @Unsigned long value;
+        private long value;
 
-        private UpgradeBasedUnsignedLongCache(ItemStack stack, @Unsigned LongSupplier baseStorage) {
+        private UpgradeBasedUnsignedLongCache(ItemStack stack, LongSupplier baseStorage) {
             this.stack = stack;
             UpgradeAware upgradeAware = this.stack.getOrDefault(MekanismDataComponents.UPGRADES, UpgradeAware.EMPTY);
             this.lastInstalled = upgradeAware.getUpgradeCount(Upgrade.ENERGY);
@@ -212,7 +211,7 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
         }
 
         @Override
-        public @Unsigned long getAsLong() {
+        public long getAsLong() {
             UpgradeAware upgradeAware = stack.getOrDefault(MekanismDataComponents.UPGRADES, UpgradeAware.EMPTY);
             int installed = upgradeAware.getUpgradeCount(Upgrade.ENERGY);
             if (installed != lastInstalled) {

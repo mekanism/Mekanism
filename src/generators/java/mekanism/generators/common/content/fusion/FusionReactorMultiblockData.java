@@ -17,7 +17,6 @@ import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
 import mekanism.api.math.ULong;
-import mekanism.api.math.Unsigned;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.chemical.multiblock.MultiblockChemicalTankBuilder;
 import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
@@ -193,11 +192,11 @@ public class FusionReactorMultiblockData extends MultiblockData {
         tag.putBoolean(SerializationConstants.BURNING, isBurning());
     }
 
-    public void addTemperatureFromEnergyInput(@Unsigned long energyAdded) {
+    public void addTemperatureFromEnergyInput(long energyAdded) {
         if (isBurning()) {
-            setPlasmaTemp(getPlasmaTemp() + ULong.divide(energyAdded, plasmaHeatCapacity));
+            setPlasmaTemp(getPlasmaTemp() + ((double) energyAdded / plasmaHeatCapacity));
         } else {
-            setPlasmaTemp(getPlasmaTemp() + ULong.divide(energyAdded, plasmaHeatCapacity) * 10);
+            setPlasmaTemp(getPlasmaTemp() + ((double) energyAdded / plasmaHeatCapacity) * 10);
         }
     }
 
@@ -483,7 +482,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
                (energyPerFusionFuel * burnRatio * (plasmaCaseConductivity + k + caseAirConductivity) - plasmaCaseConductivity * (k + caseAirConductivity));
     }
 
-    public @Unsigned long getPassiveGeneration(boolean active, boolean current) {
+    public long getPassiveGeneration(boolean active, boolean current) {
         double temperature = current ? getLastCaseTemp() : getMaxCasingTemperature(active);
         return (long) (MekanismGeneratorsConfig.generators.fusionThermocoupleEfficiency.get() *
                                    MekanismGeneratorsConfig.generators.fusionCasingThermalConductivity.get() * temperature);
@@ -512,13 +511,11 @@ public class FusionReactorMultiblockData extends MultiblockData {
     }
 
     @ComputerMethod
-    @Unsigned
     long getPassiveGeneration(boolean active) {
         return getPassiveGeneration(active, false);
     }
 
     @ComputerMethod
-    @Unsigned
     long getProductionRate() {
         return getPassiveGeneration(false, true);
     }

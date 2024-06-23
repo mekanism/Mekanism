@@ -31,7 +31,6 @@ import mekanism.api.chemical.merged.BoxedChemicalStack;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.math.Unsigned;
 import mekanism.api.recipes.ElectrolysisRecipe.ElectrolysisRecipeOutput;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe.PressurizedReactionRecipeOutput;
@@ -188,7 +187,7 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe<?>> im
         TypeData<IIngredientWithAmount, CTFluidIngredient, ChemicalStackIngredient<?, ?, ?>> inputs = new TypeData<>(ChemicalType::getTypeFor);
         TypeData<IItemStack, IFluidStack, ChemicalStack<?>> outputs = new TypeData<>(ChemicalType::getTypeFor);
         int duration = -1;
-        @Unsigned Long energy = null;// -1 here would mean max value
+        Long energy = null;// -1 here would mean max value
         for (Object data : importantData) {
             if (data instanceof List<?> dataList) {
                 if (dataList.size() != 1) {

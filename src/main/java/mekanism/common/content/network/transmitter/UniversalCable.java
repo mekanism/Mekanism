@@ -12,7 +12,6 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.math.ULong;
-import mekanism.api.math.Unsigned;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
@@ -32,19 +31,19 @@ import net.minecraft.nbt.Tag;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, EnergyNetwork, @Unsigned Long, UniversalCable> implements IMekanismStrictEnergyHandler,
+public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, EnergyNetwork, Long, UniversalCable> implements IMekanismStrictEnergyHandler,
       IUpgradeableTransmitter<UniversalCableUpgradeData> {
 
     public final CableTier tier;
 
     private final List<IEnergyContainer> energyContainers;
     public final BasicEnergyContainer buffer;
-    public @Unsigned long lastWrite = 0L;
+    public long lastWrite = 0L;
 
     public UniversalCable(IBlockProvider blockProvider, TileEntityTransmitter tile) {
         super(tile, TransmissionType.ENERGY);
         this.tier = Attribute.getTier(blockProvider, CableTier.class);
-        buffer = BasicEnergyContainer.create(getCapacityAsUnsignedLong(), BasicEnergyContainer.alwaysFalse, BasicEnergyContainer.alwaysTrue, this);
+        buffer = BasicEnergyContainer.create(getCapacity(), BasicEnergyContainer.alwaysFalse, BasicEnergyContainer.alwaysTrue, this);
         energyContainers = Collections.singletonList(buffer);
     }
 
@@ -68,21 +67,21 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
         Set<Direction> connections = getConnections(ConnectionType.PULL);
         if (!connections.isEmpty()) {
             for (IStrictEnergyHandler connectedAcceptor : getAcceptorCache().getConnectedAcceptors(connections)) {
-                @Unsigned long received = connectedAcceptor.extractEnergy(getAvailablePull(), Action.SIMULATE);
+                long received = connectedAcceptor.extractEnergy(getAvailablePull(), Action.SIMULATE);
                 if (received != 0L && takeEnergy(received, Action.SIMULATE) == 0L) {
                     //If we received some energy and are able to insert it all
-                    @Unsigned long remainder = takeEnergy(received, Action.EXECUTE);
+                    long remainder = takeEnergy(received, Action.EXECUTE);
                     connectedAcceptor.extractEnergy(received - remainder, Action.EXECUTE);
                 }
             }
         }
     }
 
-    private @Unsigned long getAvailablePull() {
+    private long getAvailablePull() {
         if (hasTransmitterNetwork()) {
-            return ULong.min(getCapacityAsUnsignedLong(), getTransmitterNetwork().energyContainer.getNeeded());
+            return Math.min(getCapacity(), getTransmitterNetwork().energyContainer.getNeeded());
         }
-        return ULong.min(getCapacityAsUnsignedLong(), buffer.getNeeded());
+        return Math.min(getCapacity(), buffer.getNeeded());
     }
 
     @NotNull
@@ -121,11 +120,7 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
     public void read(HolderLookup.Provider provider, @NotNull CompoundTag nbtTags) {
         super.read(provider, nbtTags);
         if (nbtTags.contains(SerializationConstants.ENERGY, Tag.TAG_STRING)) {
-            try {
-                lastWrite = Long.parseUnsignedLong(nbtTags.getString(SerializationConstants.ENERGY));
-            } catch (NumberFormatException e) {
-                lastWrite = 0L;
-            }
+            lastWrite = nbtTags.getLong(SerializationConstants.ENERGY);
         } else {
             lastWrite = 0L;
         }
@@ -142,7 +137,7 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
         if (lastWrite == 0L) {
             nbtTags.remove(SerializationConstants.ENERGY);
         } else {
-            nbtTags.putString(SerializationConstants.ENERGY, Long.toUnsignedString(lastWrite));
+            nbtTags.putLong(SerializationConstants.ENERGY, lastWrite);
         }
         return nbtTags;
     }
@@ -159,15 +154,15 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
 
     @NotNull
     @Override
-    public @Unsigned Long releaseShare() {
-        @Unsigned long energy = buffer.getEnergy();
+    public Long releaseShare() {
+        long energy = buffer.getEnergy();
         buffer.setEmpty();
         return energy;
     }
 
     @NotNull
     @Override
-    public @Unsigned Long getShare() {
+    public Long getShare() {
         return buffer.getEnergy();
     }
 
@@ -178,8 +173,8 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
 
     @NotNull
     @Override
-    public @Unsigned Long getBufferWithFallback() {
-        @Unsigned long buffer = getShare();
+    public Long getBufferWithFallback() {
+        long buffer = getShare();
         //If we don't have a buffer try falling back to the network's buffer
         if (buffer == 0L && hasTransmitterNetwork()) {
             return getTransmitterNetwork().getBuffer();
@@ -198,19 +193,15 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
         }
     }
 
-    public @Unsigned long getCapacityAsUnsignedLong() {
-        return tier.getCableCapacity();
-    }
-
     @Override
     public long getCapacity() {
-        return ULong.clampToSigned(getCapacityAsUnsignedLong());
+        return tier.getCableCapacity();
     }
 
     /**
      * @return remainder
      */
-    private @Unsigned long takeEnergy(@Unsigned long amount, Action action) {
+    private long takeEnergy(long amount, Action action) {
         if (hasTransmitterNetwork()) {
             return getTransmitterNetwork().energyContainer.insert(amount, action, AutomationType.INTERNAL);
         }

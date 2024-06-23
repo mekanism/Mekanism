@@ -6,7 +6,6 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.math.Unsigned;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -38,11 +37,11 @@ public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends Bas
     }
 
     protected final TILE tile;
-    private final @Unsigned long baseEnergyPerTick;
-    private @Unsigned long currentMaxEnergy;
-    protected @Unsigned long currentEnergyPerTick;
+    private final long baseEnergyPerTick;
+    private long currentMaxEnergy;
+    protected long currentEnergyPerTick;
 
-    protected MachineEnergyContainer(@Unsigned long maxEnergy, long energyPerTick, Predicate<@NotNull AutomationType> canExtract,
+    protected MachineEnergyContainer(long maxEnergy, long energyPerTick, Predicate<@NotNull AutomationType> canExtract,
           Predicate<@NotNull AutomationType> canInsert, TILE tile, @Nullable IContentsListener listener) {
         super(maxEnergy, canExtract, canInsert, listener);
         this.baseEnergyPerTick = energyPerTick;
@@ -56,7 +55,7 @@ public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends Bas
     }
 
     @Override
-    public @Unsigned long getMaxEnergy() {
+    public long getMaxEnergy() {
         return currentMaxEnergy;
     }
 
@@ -64,21 +63,21 @@ public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends Bas
         return super.getMaxEnergy();
     }
 
-    public void setMaxEnergy(@Unsigned long maxEnergy) {
+    public void setMaxEnergy(long maxEnergy) {
         this.currentMaxEnergy = maxEnergy;
         //Clamp the energy
         setEnergy(getEnergy());
     }
 
-    public @Unsigned long getEnergyPerTick() {
+    public long getEnergyPerTick() {
         return currentEnergyPerTick;
     }
 
-    public @Unsigned long getBaseEnergyPerTick() {
+    public long getBaseEnergyPerTick() {
         return baseEnergyPerTick;
     }
 
-    public void setEnergyPerTick(@Unsigned long energyPerTick) {
+    public void setEnergyPerTick(long energyPerTick) {
         this.currentEnergyPerTick = energyPerTick;
     }
 

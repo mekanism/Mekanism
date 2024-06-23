@@ -3,7 +3,6 @@ package mekanism.client.render.hud;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.ULong;
-import mekanism.api.math.Unsigned;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.element.bar.GuiBar;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
@@ -33,7 +32,7 @@ public class MekaSuitEnergyLevel implements LayeredDraw.Layer {
             return;
         }
         Minecraft minecraft = Minecraft.getInstance();
-        @Unsigned long capacity = 0L, stored = 0L;
+        long capacity = 0L, stored = 0L;
         for (ItemStack stack : minecraft.player.getArmorSlots()) {
             if (stack.getItem() instanceof ItemMekaSuitArmor) {
                 IEnergyContainer container = StorageUtils.getEnergyContainer(stack, 0);
@@ -46,7 +45,7 @@ public class MekaSuitEnergyLevel implements LayeredDraw.Layer {
         if (capacity != 0L) {
             int x = graphics.guiWidth() / 2 - 91;
             int y = graphics.guiHeight() - minecraft.gui.leftHeight + 2;
-            int length = (int) Math.round(ULong.divide(stored, capacity) * 79);
+            int length = (int) Math.round(((double) stored / capacity) * 79);
             GuiUtils.renderExtendedTexture(graphics, GuiBar.BAR, 2, 2, x, y, 81, 6);
             graphics.blit(POWER_BAR, x + 1, y + 1, length, 4, 0, 0, length, 4, 79, 4);
             minecraft.gui.leftHeight += 8;

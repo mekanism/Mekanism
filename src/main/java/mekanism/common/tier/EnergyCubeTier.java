@@ -2,11 +2,9 @@ package mekanism.common.tier;
 
 import java.util.Locale;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.math.ULong;
-import mekanism.api.math.Unsigned;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
-import mekanism.common.config.value.CachedUnsignedLongValue;
+import mekanism.common.config.value.CachedLongValue;
 import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,17 +14,17 @@ public enum EnergyCubeTier implements ITier, StringRepresentable {
     ADVANCED(BaseTier.ADVANCED, 16_000_000L, 16_000L),
     ELITE(BaseTier.ELITE, 64_000_000L, 64_000L),
     ULTIMATE(BaseTier.ULTIMATE, 256_000_000L, 256_000L),
-    CREATIVE(BaseTier.CREATIVE, ULong.MAX_VALUE, ULong.MAX_VALUE);
+    CREATIVE(BaseTier.CREATIVE, Long.MAX_VALUE, Long.MAX_VALUE);
 
-    private final @Unsigned long baseMaxEnergy;
-    private final @Unsigned long baseOutput;
+    private final long baseMaxEnergy;
+    private final long baseOutput;
     private final BaseTier baseTier;
     @Nullable
-    private CachedUnsignedLongValue storageReference;
+    private CachedLongValue storageReference;
     @Nullable
-    private CachedUnsignedLongValue outputReference;
+    private CachedLongValue outputReference;
 
-    EnergyCubeTier(BaseTier tier, @Unsigned long max, @Unsigned long out) {
+    EnergyCubeTier(BaseTier tier, long max, long out) {
         baseMaxEnergy = max;
         baseOutput = out;
         baseTier = tier;
@@ -42,26 +40,26 @@ public enum EnergyCubeTier implements ITier, StringRepresentable {
         return name().toLowerCase(Locale.ROOT);
     }
 
-    public @Unsigned long getMaxEnergy() {
+    public long getMaxEnergy() {
         return storageReference == null ? getBaseMaxEnergy() : storageReference.getOrDefault();
     }
 
-    public @Unsigned long getOutput() {
+    public long getOutput() {
         return outputReference == null ? getBaseOutput() : outputReference.getOrDefault();
     }
 
-    public @Unsigned long getBaseMaxEnergy() {
+    public long getBaseMaxEnergy() {
         return baseMaxEnergy;
     }
 
-    public @Unsigned long getBaseOutput() {
+    public long getBaseOutput() {
         return baseOutput;
     }
 
     /**
      * ONLY CALL THIS FROM TierConfig. It is used to give the EnergyCubeTier a reference to the actual config value object
      */
-    public void setConfigReference(CachedUnsignedLongValue storageReference, CachedUnsignedLongValue outputReference) {
+    public void setConfigReference(CachedLongValue storageReference, CachedLongValue outputReference) {
         this.storageReference = storageReference;
         this.outputReference = outputReference;
     }

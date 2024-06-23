@@ -8,7 +8,6 @@ import mekanism.api.chemical.pigment.IPigmentTank;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.math.Unsigned;
 import mekanism.api.recipes.PigmentMixingRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
@@ -82,7 +81,7 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<PigmentMixin
                                                                                         "getOutputFilledPercentage"}, docPlaceholder = "output pigment tank")
     public IPigmentTank outputTank;
 
-    private @Unsigned long clientEnergyUsed = 0;
+    private long clientEnergyUsed = 0;
     private int baselineMaxOperations = 1;
 
     private final IOutputHandler<@NotNull PigmentStack> outputHandler;
@@ -180,7 +179,7 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<PigmentMixin
 
     @NotNull
     @ComputerMethod(nameOverride = "getEnergyUsage", methodDescription = ComputerConstants.DESCRIPTION_GET_ENERGY_USAGE)
-    public @Unsigned long getEnergyUsed() {
+    public long getEnergyUsed() {
         return clientEnergyUsed;
     }
 

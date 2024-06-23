@@ -9,7 +9,6 @@ import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.math.ULong;
-import mekanism.api.math.Unsigned;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.network.distribution.EnergySaveTarget;
@@ -57,7 +56,7 @@ public record ModuleChargeDistributionUnit(boolean chargeSuit, boolean chargeInv
         }
         if (saveTarget.getHandlerCount() > 1) {
             //If we only have one handler we can skip charging as it will all just go back into the chest piece
-            @Unsigned long stored = saveTarget.getStored();
+            long stored = saveTarget.getStored();
             EmitUtils.sendToAcceptors(saveTarget, stored, stored);
             saveTarget.save();
         }
@@ -65,7 +64,7 @@ public record ModuleChargeDistributionUnit(boolean chargeSuit, boolean chargeInv
 
     private void chargeInventory(IEnergyContainer energyContainer, Player player) {
         //Only try to charge up to how much energy we actually have stored
-        @Unsigned long toCharge = ULong.min(MekanismConfig.gear.mekaSuitInventoryChargeRate.get(), energyContainer.getEnergy());
+        long toCharge = Math.min(MekanismConfig.gear.mekaSuitInventoryChargeRate.get(), energyContainer.getEnergy());
         if (toCharge.isZero()) {
             return;
         }
@@ -98,16 +97,16 @@ public record ModuleChargeDistributionUnit(boolean chargeSuit, boolean chargeInv
     }
 
     /** return rejects */
-    private @Unsigned long charge(IEnergyContainer energyContainer, ItemStack stack, @Unsigned long amount) {
+    private long charge(IEnergyContainer energyContainer, ItemStack stack, long amount) {
         if (!stack.isEmpty() && amount != 0L) {
             IStrictEnergyHandler handler = EnergyCompatUtils.getStrictEnergyHandler(stack);
             if (handler != null) {
-                @Unsigned long remaining = handler.insertEnergy(amount, Action.SIMULATE);
-                if (ULong.lt(remaining, amount)) {
+                long remaining = handler.insertEnergy(amount, Action.SIMULATE);
+                if (remaining < amount) {
                     //If we can actually insert any energy into
-                    @Unsigned long toExtract = amount - remaining;
-                    @Unsigned long extracted = energyContainer.extract(toExtract, Action.EXECUTE, AutomationType.MANUAL);
-                    @Unsigned long inserted = handler.insertEnergy(extracted, Action.EXECUTE);
+                    long toExtract = amount - remaining;
+                    long extracted = energyContainer.extract(toExtract, Action.EXECUTE, AutomationType.MANUAL);
+                    long inserted = handler.insertEnergy(extracted, Action.EXECUTE);
                     return inserted + remaining;
                 }
             }

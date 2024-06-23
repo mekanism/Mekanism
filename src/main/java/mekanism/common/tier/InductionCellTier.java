@@ -1,12 +1,9 @@
 package mekanism.common.tier;
 
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.math.FloatingLong;
-import mekanism.api.math.Unsigned;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
-import mekanism.common.config.value.CachedFloatingLongValue;
-import mekanism.common.config.value.CachedUnsignedLongValue;
+import mekanism.common.config.value.CachedLongValue;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -16,12 +13,12 @@ public enum InductionCellTier implements ITier {
     ELITE(BaseTier.ELITE, 512_000_000_000L),
     ULTIMATE(BaseTier.ULTIMATE, 4_000_000_000_000L);
 
-    private final @Unsigned long baseMaxEnergy;
+    private final long baseMaxEnergy;
     private final BaseTier baseTier;
     @Nullable
-    private CachedUnsignedLongValue storageReference;
+    private CachedLongValue storageReference;
 
-    InductionCellTier(BaseTier tier, @Unsigned long max) {
+    InductionCellTier(BaseTier tier, long max) {
         baseMaxEnergy = max;
         baseTier = tier;
     }
@@ -31,18 +28,18 @@ public enum InductionCellTier implements ITier {
         return baseTier;
     }
 
-    public @Unsigned long getMaxEnergy() {
+    public long getMaxEnergy() {
         return storageReference == null ? getBaseMaxEnergy() : storageReference.getOrDefault();
     }
 
-    public @Unsigned long getBaseMaxEnergy() {
+    public long getBaseMaxEnergy() {
         return baseMaxEnergy;
     }
 
     /**
      * ONLY CALL THIS FROM TierConfig. It is used to give the InductionCellTier a reference to the actual config value object
      */
-    public void setConfigReference(CachedUnsignedLongValue storageReference) {
+    public void setConfigReference(CachedLongValue storageReference) {
         this.storageReference = storageReference;
     }
 }

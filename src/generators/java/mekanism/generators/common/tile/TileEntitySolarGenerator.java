@@ -6,7 +6,6 @@ import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
-import mekanism.api.math.Unsigned;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
@@ -31,7 +30,7 @@ import org.jetbrains.annotations.Nullable;
 public class TileEntitySolarGenerator extends TileEntityGenerator {
 
     private boolean seesSun;
-    private @Unsigned long lastProductionAmount = 0;
+    private long lastProductionAmount = 0;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy item slot")
     EnergyInventorySlot energySlot;
     @Nullable
@@ -96,7 +95,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         return solarCheck.canSeeSun();
     }
 
-    public @Unsigned long getProduction() {
+    public long getProduction() {
         if (level == null || solarCheck == null) {
             return FloatingLong.ZERO;
         }
@@ -118,12 +117,12 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         return new RelativeSide[]{RelativeSide.BOTTOM};
     }
 
-    protected @Unsigned long getConfiguredMax() {
+    protected long getConfiguredMax() {
         return MekanismGeneratorsConfig.generators.solarGeneration.get();
     }
 
     @Override
-    public @Unsigned long getProductionRate() {
+    public long getProductionRate() {
         return lastProductionAmount;
     }
 

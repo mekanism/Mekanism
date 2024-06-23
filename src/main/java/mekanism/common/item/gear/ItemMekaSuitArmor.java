@@ -21,7 +21,6 @@ import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData.ExclusiveFlag;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
-import mekanism.api.math.Unsigned;
 import mekanism.api.text.EnumColor;
 import mekanism.client.key.MekKeyHandler;
 import mekanism.client.key.MekanismKeyHandler;
@@ -592,10 +591,10 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
 
     private static class EnergyUsageInfo {
 
-        private @Unsigned long energyAvailable;
-        private @Unsigned long energyUsed = 0;
+        private long energyAvailable;
+        private long energyUsed = 0;
 
-        public EnergyUsageInfo(@Unsigned long energyAvailable) {
+        public EnergyUsageInfo(long energyAvailable) {
             //Copy it so we can just use minusEquals without worry
             this.energyAvailable = energyAvailable;
         }

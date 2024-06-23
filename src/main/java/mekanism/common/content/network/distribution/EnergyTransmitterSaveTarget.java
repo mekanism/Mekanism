@@ -3,7 +3,6 @@ package mekanism.common.content.network.distribution;
 import java.util.Collection;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.math.Unsigned;
 import mekanism.common.content.network.distribution.EnergyTransmitterSaveTarget.CableSaveHandler;
 import mekanism.common.content.network.transmitter.UniversalCable;
 
@@ -19,12 +18,12 @@ public class EnergyTransmitterSaveTarget extends EnergySaveTarget<CableSaveHandl
         private final UniversalCable transmitter;
 
         public CableSaveHandler(UniversalCable transmitter) {
-            super(transmitter.getCapacityAsUnsignedLong());
+            super(transmitter.getCapacity());
             this.transmitter = transmitter;
         }
 
         @Override
-        protected void save(@Unsigned long currentStored) {
+        protected void save(long currentStored) {
             if (currentStored != 0L || transmitter.lastWrite != 0L) {
                 transmitter.lastWrite = currentStored;
                 transmitter.getTransmitterTile().markForSave();
@@ -32,7 +31,7 @@ public class EnergyTransmitterSaveTarget extends EnergySaveTarget<CableSaveHandl
         }
 
         @Override
-        protected @Unsigned long getStored() {
+        protected long getStored() {
             return transmitter.getShare();
         }
     }

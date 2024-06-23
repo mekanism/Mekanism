@@ -7,7 +7,6 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.math.Unsigned;
 import mekanism.api.recipes.NucleosynthesizingRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
@@ -88,7 +87,7 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy slot")
     EnergyInventorySlot energySlot;
 
-    private @Unsigned long clientEnergyUsed = 0L;
+    private long clientEnergyUsed = 0L;
 
     public TileEntityAntiprotonicNucleosynthesizer(BlockPos pos, BlockState state) {
         super(MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER, pos, state, TRACKED_ERROR_TYPES, BASE_DURATION);
@@ -144,7 +143,7 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
     }
 
     @ComputerMethod(nameOverride = "getEnergyUsage", methodDescription = ComputerConstants.DESCRIPTION_GET_ENERGY_USAGE)
-    public @Unsigned long getEnergyUsed() {
+    public long getEnergyUsed() {
         return clientEnergyUsed;
     }
 

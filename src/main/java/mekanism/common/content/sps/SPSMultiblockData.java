@@ -14,7 +14,6 @@ import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
-import mekanism.api.math.Unsigned;
 import mekanism.common.capabilities.chemical.multiblock.MultiblockChemicalTankBuilder;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
@@ -61,9 +60,9 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     @ContainerSync
     public int inputProcessed = 0;
 
-    public @Unsigned long receivedEnergy = 0;
+    public long receivedEnergy = 0;
     @ContainerSync
-    public @Unsigned long lastReceivedEnergy = 0;
+    public long lastReceivedEnergy = 0;
     @ContainerSync
     public double lastProcessed;
 
@@ -206,7 +205,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
         coilData.coilMap.put(portPos, new CoilData(portPos, side));
     }
 
-    public void supplyCoilEnergy(TileEntitySPSPort tile, @Unsigned long energy) {
+    public void supplyCoilEnergy(TileEntitySPSPort tile, long energy) {
         receivedEnergy = receivedEnergy.plusEqual(energy);
         coilData.coilMap.get(tile.getBlockPos()).receiveEnergy(energy);
     }
@@ -215,7 +214,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
         return !inputTank.isEmpty() && outputTank.getNeeded() > 0;
     }
 
-    private static int getCoilLevel(@Unsigned long energy) {
+    private static int getCoilLevel(long energy) {
         if (energy.isZero()) {
             return 0;
         }
@@ -301,7 +300,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
             this.side = side;
         }
 
-        private void receiveEnergy(@Unsigned long energy) {
+        private void receiveEnergy(long energy) {
             laserLevel += getCoilLevel(energy);
         }
 

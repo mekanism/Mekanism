@@ -9,7 +9,6 @@ import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.ULong;
-import mekanism.api.math.Unsigned;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.tier.InductionProviderTier;
 import mekanism.common.tile.multiblock.TileEntityInductionCell;
@@ -27,14 +26,14 @@ public class MatrixEnergyContainer implements IEnergyContainer {
 
     //TODO: Eventually we could look into extending FloatingLong to have a "BigInt" styled implementation that is used by the class
     // at the very least for keeping track of the cached values and rates
-    private @Unsigned long queuedOutput = 0L;
-    private @Unsigned long queuedInput = 0L;
-    private @Unsigned long lastOutput = 0L;
-    private @Unsigned long lastInput = 0L;
+    private long queuedOutput = 0L;
+    private long queuedInput = 0L;
+    private long lastOutput = 0L;
+    private long lastInput = 0L;
 
-    private @Unsigned long cachedTotal = 0L;
-    private @Unsigned long transferCap = 0L;
-    private @Unsigned long storageCap = 0L;
+    private long cachedTotal = 0L;
+    private long transferCap = 0L;
+    private long storageCap = 0L;
 
     private final MatrixMultiblockData multiblock;
 
@@ -112,12 +111,12 @@ public class MatrixEnergyContainer implements IEnergyContainer {
         queuedOutput = 0L;
     }
 
-    private void addEnergy(@Unsigned long energy) {
+    private void addEnergy(long energy) {
         cachedTotal += energy;
         for (IEnergyContainer container : cells.values()) {
             //Note: inserting into the cell's energy container handles marking the cell for saving if it changes
-            @Unsigned long remainder = container.insert(energy, Action.EXECUTE, AutomationType.INTERNAL);
-            if (ULong.lt(remainder, energy)) {
+            long remainder = container.insert(energy, Action.EXECUTE, AutomationType.INTERNAL);
+            if (remainder < energy) {
                 //Our cell accepted at least some energy
                 if (remainder == 0L) {
                     //Check less than equal rather than just equal in case something went wrong
@@ -129,11 +128,11 @@ public class MatrixEnergyContainer implements IEnergyContainer {
         }
     }
 
-    private void removeEnergy(@Unsigned long energy) {
+    private void removeEnergy(long energy) {
         cachedTotal -= energy;
         for (IEnergyContainer container : cells.values()) {
             //Note: extracting from the cell's energy container handles marking the cell for saving if it changes
-            @Unsigned long extracted = container.extract(energy, Action.EXECUTE, AutomationType.INTERNAL);
+            long extracted = container.extract(energy, Action.EXECUTE, AutomationType.INTERNAL);
             if (extracted != 0L) {
                 energy -= extracted;
                 if (energy == 0L) {
@@ -151,23 +150,25 @@ public class MatrixEnergyContainer implements IEnergyContainer {
      * @return The energy post queue when this container next actually updates/saves to disk
      */
     @Override
-    public @Unsigned long getEnergy() {
+    public long getEnergy() {
         return cachedTotal + queuedInput - queuedOutput;
     }
 
     @Override
-    public void setEnergy(@Unsigned long energy) {
+    public void setEnergy(long energy) {
         //Throws a RuntimeException as specified is allowed when something unexpected happens
         // As setEnergy is more meant to be used as an internal method
         throw new RuntimeException("Unexpected call to setEnergy. The matrix energy container does not support directly setting the energy.");
     }
 
     @Override
-    public @Unsigned long insert(@Unsigned long amount, Action action, AutomationType automationType) {
+    public long insert(long amount, Action action, AutomationType automationType) {
         if (amount == 0L || !multiblock.isFormed()) {
             return amount;
         }
-        @Unsigned long toAdd = ULong.min(amount, getRemainingInput(), getNeeded());
+        long b = getRemainingInput();
+        long c = getNeeded();
+        long toAdd = Math.min(Math.min(amount, b), c);
         if (toAdd == 0L) {
             //Exit if we don't actually have anything to add, either due to how much we need
             // or due to the remaining rate limit
@@ -181,7 +182,7 @@ public class MatrixEnergyContainer implements IEnergyContainer {
     }
 
     @Override
-    public @Unsigned long extract(@Unsigned long amount, Action action, AutomationType automationType) {
+    public long extract(long amount, Action action, AutomationType automationType) {
         if (isEmpty() || amount == 0L || !multiblock.isFormed()) {
             return 0L;
         }
@@ -189,7 +190,9 @@ public class MatrixEnergyContainer implements IEnergyContainer {
         // as we want to be as accurate as possible with the values we return
         // It is possible that the energy we have stored is a lot less than the amount we
         // can output at once such as if the matrix is almost empty.
-        amount = ULong.min(amount, getRemainingOutput(), getEnergy());
+        long b = getRemainingOutput();
+        long c = getEnergy();
+        amount = Math.min(Math.min(amount, b), c);
         if (amount != 0L && action.execute()) {
             //Increase how much we are outputting by the amount we accepted
             queuedOutput = queuedOutput.plusEqual(amount);
@@ -198,7 +201,7 @@ public class MatrixEnergyContainer implements IEnergyContainer {
     }
 
     @Override
-    public @Unsigned long getMaxEnergy() {
+    public long getMaxEnergy() {
         return storageCap;
     }
 
@@ -218,23 +221,23 @@ public class MatrixEnergyContainer implements IEnergyContainer {
 
     }
 
-    private @Unsigned long getRemainingInput() {
+    private long getRemainingInput() {
         return transferCap.subtract(queuedInput);
     }
 
-    private @Unsigned long getRemainingOutput() {
+    private long getRemainingOutput() {
         return transferCap.subtract(queuedOutput);
     }
 
-    public @Unsigned long getMaxTransfer() {
+    public long getMaxTransfer() {
         return transferCap;
     }
 
-    public @Unsigned long getLastInput() {
+    public long getLastInput() {
         return lastInput;
     }
 
-    public @Unsigned long getLastOutput() {
+    public long getLastOutput() {
         return lastOutput;
     }
 

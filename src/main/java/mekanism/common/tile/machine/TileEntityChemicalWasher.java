@@ -10,7 +10,6 @@ import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.math.Unsigned;
 import mekanism.api.recipes.FluidSlurryToSlurryRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
@@ -87,7 +86,7 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidSlurr
                                                                                         "getSlurryOutputFilledPercentage"}, docPlaceholder = "output slurry tank")
     public ISlurryTank outputTank;
 
-    private @Unsigned long clientEnergyUsed = 0L;
+    private long clientEnergyUsed = 0L;
     private int baselineMaxOperations = 1;
 
     private final IOutputHandler<@NotNull SlurryStack> outputHandler;
@@ -172,7 +171,7 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidSlurr
 
     @NotNull
     @ComputerMethod(nameOverride = "getEnergyUsage", methodDescription = ComputerConstants.DESCRIPTION_GET_ENERGY_USAGE)
-    public @Unsigned long getEnergyUsed() {
+    public long getEnergyUsed() {
         return clientEnergyUsed;
     }
 

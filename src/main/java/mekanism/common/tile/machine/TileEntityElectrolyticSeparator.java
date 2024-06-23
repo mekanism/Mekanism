@@ -13,7 +13,6 @@ import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.functions.LongObjectToLongFunction;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
-import mekanism.api.math.Unsigned;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.ElectrolysisRecipe.ElectrolysisRecipeOutput;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -123,8 +122,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     public GasMode dumpLeft = GasMode.IDLE;
     @SyntheticComputerMethod(getter = "getRightOutputDumpingMode")
     public GasMode dumpRight = GasMode.IDLE;
-    private @Unsigned long clientEnergyUsed = 1L;
-    private @Unsigned long recipeEnergyMultiplier = 1L;
+    private long clientEnergyUsed = 1L;
+    private long recipeEnergyMultiplier = 1L;
     private int baselineMaxOperations = 1;
     private long dumpRate = BASE_DUMP_RATE;
 
@@ -271,12 +270,12 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
         return super.canFunction() && (dumpLeft != GasMode.DUMPING_EXCESS || dumpRight != GasMode.DUMPING_EXCESS || !atDumpingExcessTarget(leftTank) || !atDumpingExcessTarget(rightTank));
     }
 
-    public @Unsigned long getRecipeEnergyMultiplier() {
+    public long getRecipeEnergyMultiplier() {
         return recipeEnergyMultiplier;
     }
     
     @ComputerMethod(nameOverride = "getEnergyUsage", methodDescription = ComputerConstants.DESCRIPTION_GET_ENERGY_USAGE)
-    public @Unsigned long getEnergyUsed() {
+    public long getEnergyUsed() {
         return clientEnergyUsed;
     }
 

@@ -20,7 +20,6 @@ import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
-import mekanism.api.math.Unsigned;
 import mekanism.api.providers.IGasProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
@@ -298,8 +297,8 @@ public class StorageUtils {
      * Gets the energy if one is stored from an item's container by checking the attachment. This is for cases when we may not actually have an energy handler provided as
      * a capability from our item, but it may have stored data in its container from when it was a block
      */
-    public static @Unsigned long getStoredEnergyFromAttachment(ItemStack stack) {
-        @Unsigned long energy = 0;
+    public static long getStoredEnergyFromAttachment(ItemStack stack) {
+        long energy = 0;
         for (IEnergyContainer energyContainer : ContainerType.ENERGY.getAttachmentContainersIfPresent(stack)) {
             energy = energy.plusEqual(energyContainer.getEnergy());
         }

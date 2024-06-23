@@ -10,7 +10,6 @@ import mekanism.api.lasers.ILaserDissipation;
 import mekanism.api.lasers.ILaserReceptor;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.ULong;
-import mekanism.api.math.Unsigned;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.base.MekFakePlayer;
@@ -71,8 +70,8 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     protected LaserEnergyContainer energyContainer;
     @SyntheticComputerMethod(getter = "getDiggingPos")
     private BlockPos digging;
-    private @Unsigned long diggingProgress = 0;
-    private @Unsigned long lastFired = 0;
+    private long diggingProgress = 0;
+    private long lastFired = 0;
 
     public TileEntityBasicLaser(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
@@ -378,8 +377,8 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
         return damageBlocked;
     }
 
-    private float getEnergyScale(@Unsigned long energy) {
-        return (float) Math.min(ULong.divide(energy, MekanismConfig.usage.laser.get()) / 10F, 0.6D);
+    private float getEnergyScale(long energy) {
+        return (float) Math.min(((double) energy / MekanismConfig.usage.laser.get()) / 10F, 0.6D);
     }
 
     private void sendLaserDataToPlayers(LaserParticleData data, Vec3 from) {
@@ -414,8 +413,8 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
         level.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, hitPos, Block.getId(state));
     }
 
-    protected @Unsigned long toFire() {
-        return ULong.MAX_VALUE;
+    protected long toFire() {
+        return Long.MAX_VALUE;
     }
 
     @Override

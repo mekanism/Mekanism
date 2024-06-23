@@ -7,7 +7,6 @@ import mekanism.api.chemical.pigment.IPigmentTank;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.math.Unsigned;
 import mekanism.api.recipes.PaintingRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
@@ -172,7 +171,6 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<Paintin
 
     //Methods relating to IComputerTile
     @ComputerMethod(methodDescription = ComputerConstants.DESCRIPTION_GET_ENERGY_USAGE)
-    @Unsigned
     long getEnergyUsage() {
         return getActive() ? energyContainer.getEnergyPerTick() : 0L;
     }

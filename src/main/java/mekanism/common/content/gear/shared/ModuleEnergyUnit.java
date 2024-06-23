@@ -10,7 +10,6 @@ import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.math.ULong;
-import mekanism.api.math.Unsigned;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.registries.MekanismModules;
 import net.minecraft.world.item.ItemStack;
@@ -18,15 +17,15 @@ import net.minecraft.world.item.ItemStack;
 @ParametersAreNotNullByDefault
 public class ModuleEnergyUnit implements ICustomModule<ModuleEnergyUnit> {
 
-    public static @Unsigned long getEnergyCapacity(ItemStack stack, @Unsigned LongSupplier base) {
+    public static long getEnergyCapacity(ItemStack stack, LongSupplier base) {
         return getEnergyValue(stack, base);
     }
 
-    public static @Unsigned long getChargeRate(ItemStack stack, @Unsigned LongSupplier base) {
+    public static long getChargeRate(ItemStack stack, LongSupplier base) {
         return getEnergyValue(stack, base);
     }
 
-    private static @Unsigned long getEnergyValue(ItemStack stack, @Unsigned LongSupplier base) {
+    private static long getEnergyValue(ItemStack stack, LongSupplier base) {
         IModule<ModuleEnergyUnit> module = IModuleHelper.INSTANCE.getModule(stack, MekanismModules.ENERGY_UNIT);
         if (module == null) {
             return base.getAsLong();
@@ -42,7 +41,7 @@ public class ModuleEnergyUnit implements ICustomModule<ModuleEnergyUnit> {
         IStrictEnergyHandler energyHandlerItem = Capabilities.STRICT_ENERGY.getCapability(stack);
         if (energyHandlerItem instanceof IMekanismStrictEnergyHandler energyHandler) {
             for (IEnergyContainer energyContainer : energyHandler.getEnergyContainers(null)) {
-                energyContainer.setEnergy(ULong.min(energyContainer.getEnergy(), energyContainer.getMaxEnergy()));
+                energyContainer.setEnergy(Math.min(energyContainer.getEnergy(), energyContainer.getMaxEnergy()));
             }
         }
     }

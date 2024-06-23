@@ -4,7 +4,6 @@ import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import mekanism.api.chemical.gas.attribute.GasAttributes;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.math.Unsigned;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -28,7 +27,7 @@ public class CrTFuelAttribute {
      * @return Attribute representing the stats a substance has as a fuel.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static GasAttributes.Fuel create(int burnTicks, @Unsigned long energyDensity) {
+    public static GasAttributes.Fuel create(int burnTicks, long energyDensity) {
         //Note: We don't allow suppliers from CrT as there is no real reason to allow them to change at runtime from the
         // context of CrT, the only real reason the values are suppliers is so that they can be adjusted via configs
         return new GasAttributes.Fuel(burnTicks, energyDensity);

@@ -8,7 +8,6 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.ULong;
-import mekanism.api.math.Unsigned;
 import mekanism.common.attachments.containers.ComponentBackedContainer;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.util.NBTUtils;
@@ -23,11 +22,11 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Lon
 
     private final Predicate<@NotNull AutomationType> canExtract;
     private final Predicate<@NotNull AutomationType> canInsert;
-    private final @Unsigned LongSupplier maxEnergy;
-    private final @Unsigned LongSupplier rate;
+    private final LongSupplier maxEnergy;
+    private final LongSupplier rate;
 
     public ComponentBackedEnergyContainer(ItemStack attachedTo, int containerIndex, Predicate<@NotNull AutomationType> canExtract,
-          Predicate<@NotNull AutomationType> canInsert, @Unsigned LongSupplier rate, @Unsigned LongSupplier maxEnergy) {
+          Predicate<@NotNull AutomationType> canInsert, LongSupplier rate, LongSupplier maxEnergy) {
         super(attachedTo, containerIndex);
         this.canExtract = canExtract;
         this.canInsert = canInsert;
@@ -56,44 +55,44 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Lon
      * @apiNote Try to minimize the number of calls to this method so that we don't have to look up the data component multiple times.
      */
     @Override
-    public @Unsigned long getEnergy() {
+    public long getEnergy() {
         return getContents(getAttached());
     }
 
     @Override
-    public void setEnergy(@Unsigned long energy) {
+    public void setEnergy(long energy) {
         setContents(getAttached(), energy);
     }
 
     @Override
     protected void setContents(AttachedEnergy attachedEnergy, Long energy) {
-        super.setContents(attachedEnergy, ULong.min(energy, getMaxEnergy()));
+        super.setContents(attachedEnergy, Math.min(energy, getMaxEnergy()));
     }
 
     protected long getInsertRate(@Nullable AutomationType automationType) {
         //Allow unknown or manual interaction to bypass rate limit for the item
-        return automationType == null || automationType == AutomationType.MANUAL ? ULong.MAX_VALUE : rate.getAsLong();
+        return automationType == null || automationType == AutomationType.MANUAL ? Long.MAX_VALUE : rate.getAsLong();
     }
 
     protected long getExtractRate(@Nullable AutomationType automationType) {
         //Allow unknown or manual interaction to bypass rate limit for the item
-        return automationType == null || automationType == AutomationType.MANUAL ? ULong.MAX_VALUE : rate.getAsLong();
+        return automationType == null || automationType == AutomationType.MANUAL ? Long.MAX_VALUE : rate.getAsLong();
     }
 
     @Override
-    public @Unsigned long insert(@Unsigned long amount, Action action, AutomationType automationType) {
-        if (amount == 0L || !canInsert.test(automationType)) {
+    public long insert(long amount, Action action, AutomationType automationType) {
+        if (amount <= 0L || !canInsert.test(automationType)) {
             return amount;
         }
         AttachedEnergy attachedEnergy = getAttached();
         long stored = getContents(attachedEnergy);
-        long needed = ULong.min(getInsertRate(automationType), getNeeded(stored));
-        if (needed == 0L) {
+        long needed = Math.min(getInsertRate(automationType), getNeeded(stored));
+        if (needed <= 0L) {
             //Fail if we are a full container or our rate is zero
             return amount;
         }
-        long toAdd = ULong.min(amount, needed);
-        if (toAdd != 0L && action.execute()) {
+        long toAdd = Math.min(amount, needed);
+        if (toAdd > 0L && action.execute()) {
             //If we want to actually insert the energy, then update the current energy
             // Note: this also will mark that the contents changed
             setContents(attachedEnergy, stored + toAdd);
@@ -102,7 +101,7 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Lon
     }
 
     @Override
-    public @Unsigned long extract(@Unsigned long amount, Action action, AutomationType automationType) {
+    public long extract(long amount, Action action, AutomationType automationType) {
         if (amount == 0) {
             return 0L;
         }
@@ -111,7 +110,8 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Lon
         if (stored == 0L || !canExtract.test(automationType)) {
             return 0L;
         }
-        long ret = ULong.min(getExtractRate(automationType), stored, amount);
+        long a = getExtractRate(automationType);
+        long ret = Math.min(Math.min(a, stored), amount);
         if (ret != 0L && action.execute()) {
             //Note: this also will mark that the contents changed
             setContents(attachedEnergy, stored - ret);
@@ -124,7 +124,7 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Lon
     }
 
     @Override
-    public @Unsigned long getMaxEnergy() {
+    public long getMaxEnergy() {
         return maxEnergy.getAsLong();
     }
 

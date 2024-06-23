@@ -135,7 +135,7 @@ public class LongTransferUtils {
      */
     public static long extract(long amount, @Nullable Direction side, Action action, ToIntFunction<@Nullable Direction> containerCount,
           LongToLongContainerInteraction extract) {
-        if (amount == 0L) {
+        if (amount <= 0L) {
             //Short circuit if no energy is trying to be extracted
             return 0L;
         }

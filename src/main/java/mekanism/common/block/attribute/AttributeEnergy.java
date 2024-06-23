@@ -30,6 +30,6 @@ public class AttributeEnergy implements Attribute {
     }
 
     public long getStorage() {
-        return ULong.max(getConfigStorage(), getUsage());
+        return Math.max(getConfigStorage(), getUsage());
     }
 }
