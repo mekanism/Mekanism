@@ -5,6 +5,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import mekanism.api.SerializationConstants;
+import mekanism.api.math.MathUtils;
 import mekanism.api.math.ULong;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.text.EnergyDisplay;
@@ -40,7 +41,7 @@ public class EnergyElement extends LookingAtElement {
         if (energy == Long.MAX_VALUE) {
             return level;
         }
-        return (int) (level * energy.divideToLevel(maxEnergy));
+        return (int) (level * MathUtils.divideToLevel(energy, maxEnergy));
     }
 
     public long getEnergy() {

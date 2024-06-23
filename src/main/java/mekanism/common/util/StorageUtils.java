@@ -335,7 +335,7 @@ public class StorageUtils {
 
     public static double getEnergyRatio(ItemStack stack) {
         IEnergyContainer container = getEnergyContainer(stack, 0);
-        return container == null ? 0 : container.getEnergy().divideToLevel(container.getMaxEnergy());
+        return container == null ? 0 : MathUtils.divideToLevel(container.getEnergy(), container.getMaxEnergy());
     }
 
     public static Component getEnergyPercent(ItemStack stack, boolean colorText) {
@@ -401,7 +401,7 @@ public class StorageUtils {
         if (energyHandlerItem != null) {
             int containers = energyHandlerItem.getEnergyContainerCount();
             for (int container = 0; container < containers; container++) {
-                bestRatio = Math.max(bestRatio, energyHandlerItem.getEnergy(container).divideToLevel(energyHandlerItem.getMaxEnergy(container)));
+                bestRatio = Math.max(bestRatio, MathUtils.divideToLevel(energyHandlerItem.getEnergy(container), energyHandlerItem.getMaxEnergy(container)));
             }
         }
         return 1 - bestRatio;

@@ -20,6 +20,7 @@ import mekanism.api.IDisableableEnum;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.ConstantPredicates;
+import mekanism.api.math.MathUtils;
 import mekanism.api.math.ULong;
 import mekanism.api.radial.IRadialDataHelper;
 import mekanism.api.radial.RadialData;
@@ -229,7 +230,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
         //If we don't have enough power use it at a reduced power level
         int minDamage = MekanismConfig.gear.disassemblerMinDamage.get();
         int damageDifference = MekanismConfig.gear.disassemblerMaxDamage.get() - minDamage;
-        double damage = minDamage + damageDifference * energy.divideToLevel(energyCost);
+        double damage = minDamage + damageDifference * MathUtils.divideToLevel(energy, energyCost);
         ImmutableList.Builder<ItemAttributeModifiers.Entry> builder = ImmutableList.builder();
         builder.add(new ItemAttributeModifiers.Entry(
               Attributes.ATTACK_DAMAGE,

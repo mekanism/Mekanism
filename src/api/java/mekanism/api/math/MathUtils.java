@@ -89,4 +89,18 @@ public class MathUtils {
         }
         return elements.get(index % elements.size());
     }
+
+    /**
+     * Divides numerator by the given toDivide and returns the result as a double. Additionally, if the value to divide by is zero, this returns {@code 1}
+     *
+     * @param numerator The numerator of the division.
+     * @param toDivide  The denominator of the division.
+     *
+     * @return A double representing the value of dividing numerator by toDivide, or {@code 1} if the given toDivide is {@code 0}.
+     *
+     * @implNote This caps the returned value at {@code 1}
+     */
+    public static double divideToLevel(double numerator, double toDivide) {
+        return toDivide == 0D || numerator > toDivide ? 1 : numerator / toDivide;
+    }
 }

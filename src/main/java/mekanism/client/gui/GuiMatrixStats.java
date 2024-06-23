@@ -1,6 +1,7 @@
 package mekanism.client.gui;
 
 import java.util.List;
+import mekanism.api.math.MathUtils;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.bar.GuiVerticalRateBar;
 import mekanism.client.gui.element.gauge.GaugeType;
@@ -49,7 +50,7 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, E
             @Override
             public double getLevel() {
                 MatrixMultiblockData multiblock = tile.getMultiblock();
-                return multiblock.isFormed() ? multiblock.getLastInput().divideToLevel(multiblock.getTransferCap()) : 0;
+                return multiblock.isFormed() ? MathUtils.divideToLevel(multiblock.getLastInput(), multiblock.getTransferCap()) : 0;
             }
         }, 30, 13));
         addRenderableWidget(new GuiVerticalRateBar(this, new IBarInfoHandler() {
@@ -64,7 +65,7 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, E
                 if (!multiblock.isFormed()) {
                     return 0;
                 }
-                return multiblock.getLastOutput().divideToLevel(multiblock.getTransferCap());
+                return MathUtils.divideToLevel(multiblock.getLastOutput(), multiblock.getTransferCap());
             }
         }, 38, 13));
         addRenderableWidget(new GuiEnergyTab(this, () -> {

@@ -22,6 +22,7 @@ import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.client.key.MekKeyHandler;
 import mekanism.client.key.MekanismKeyHandler;
@@ -355,7 +356,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
                 long energy = energyContainer == null ? 0L : energyContainer.getEnergy();
                 if (energy.smallerThan(energyCost)) {
                     //If we don't have enough power use it at a reduced power level (this will be false the majority of the time)
-                    double bonusDamage = unitDamage * energy.divideToLevel(energyCost);
+                    double bonusDamage = unitDamage * MathUtils.divideToLevel(energy, energyCost);
                     if (bonusDamage > 0) {
                         //If we actually have bonus damage (as we might not if we don't have any energy stored, and then
                         // we can just use the cache for as if there was no bonus damage)

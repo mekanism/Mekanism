@@ -2,6 +2,7 @@ package mekanism.generators.client.gui;
 
 import java.util.ArrayList;
 import java.util.List;
+import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiInnerScreen;
@@ -68,7 +69,7 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
             public double getLevel() {
                 TurbineMultiblockData multiblock = tile.getMultiblock();
                 if (multiblock.isFormed()) {
-                    return multiblock.energyContainer.getEnergy().divideToLevel(multiblock.energyContainer.getMaxEnergy());
+                    return MathUtils.divideToLevel(multiblock.energyContainer.getEnergy(), multiblock.energyContainer.getMaxEnergy());
                 }
                 return 1;
             }

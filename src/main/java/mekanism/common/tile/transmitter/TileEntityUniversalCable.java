@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import mekanism.api.SerializationConstants;
 import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.block.states.BlockStateHelper;
@@ -144,7 +145,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter implements I
 
     @ComputerMethod
     double getFilledPercentage() {
-        return getBuffer().divideToLevel(getCapacity());
+        return MathUtils.divideToLevel(getBuffer(), getCapacity());
     }
     //End methods IComputerTile
 }

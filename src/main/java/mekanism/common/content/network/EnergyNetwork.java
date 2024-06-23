@@ -11,6 +11,7 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.MathUtils;
 import mekanism.api.math.ULong;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
@@ -155,7 +156,7 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
 
     @Override
     protected float computeContentScale() {
-        float scale = (float) energyContainer.getEnergy().divideToLevel(energyContainer.getMaxEnergy());
+        float scale = (float) MathUtils.divideToLevel(energyContainer.getEnergy(), energyContainer.getMaxEnergy());
         float ret = Math.max(currentScale, scale);
         if (prevTransferAmount != 0 && ret < 1) {
             ret = Math.min(1, ret + 0.02F);

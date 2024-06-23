@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.MathUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
@@ -61,7 +62,7 @@ public class GuiEnergyGauge extends GuiGauge<Void> {
         } else if (infoHandler.getEnergy() == Long.MAX_VALUE) {
             return height - 2;
         }
-        return Math.max(1, (int) ((height - 2) * infoHandler.getEnergy().divideToLevel(infoHandler.getMaxEnergy())));
+        return Math.max(1, (int) ((height - 2) * MathUtils.divideToLevel(infoHandler.getEnergy(), infoHandler.getMaxEnergy())));
     }
 
     @Override
