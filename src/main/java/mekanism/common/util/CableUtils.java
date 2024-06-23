@@ -19,7 +19,7 @@ public final class CableUtils {
     }
 
     public static void emit(Collection<BlockEnergyCapabilityCache> targets, IEnergyContainer energyContainer, long maxOutput) {
-        if (!energyContainer.isEmpty() && !maxOutput.isZero()) {
+        if (!energyContainer.isEmpty() && maxOutput != 0L) {
             energyContainer.extract(emit(targets, energyContainer.extract(maxOutput, Action.SIMULATE, AutomationType.INTERNAL)), Action.EXECUTE, AutomationType.INTERNAL);
         }
     }

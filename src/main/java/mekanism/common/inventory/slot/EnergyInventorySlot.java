@@ -51,11 +51,11 @@ public class EnergyInventorySlot extends BasicInventorySlot {
             }
             //Note: We recheck about this being empty and that it is still valid as the conversion list might have changed, such as after a reload
             // Unlike with the chemical conversions, we don't check if the type is "valid" as we only have one "type" of energy.
-            return !getPotentialConversion(worldSupplier.get(), stack).isZero();
+            return getPotentialConversion(worldSupplier.get(), stack) != 0L;
         }, stack -> {
             //Note: we mark all energy handler items as valid and have a more restrictive insert check so that we allow full containers when they are done being filled
             // We also allow energy conversion of items that can be converted
-            return EnergyCompatUtils.hasStrictEnergyHandler(stack) || !getPotentialConversion(worldSupplier.get(), stack).isZero();
+            return EnergyCompatUtils.hasStrictEnergyHandler(stack) || getPotentialConversion(worldSupplier.get(), stack) != 0L;
         }, listener, x, y);
     }
 
@@ -135,7 +135,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
                     if (!itemInput.isEmpty()) {
                         long output = foundRecipe.getOutput(itemInput);
                         //Note: We use manual as the automation type to bypass our container's rate limit insertion checks
-                        if (!output.isZero() && energyContainer.insert(output, Action.SIMULATE, AutomationType.MANUAL) == 0L) {
+                        if (output != 0L && energyContainer.insert(output, Action.SIMULATE, AutomationType.MANUAL) == 0L) {
                             //If we can accept it all, then add it and decrease our input
                             MekanismUtils.logExpectedZero(energyContainer.insert(output, Action.EXECUTE, AutomationType.MANUAL));
                             int amountUsed = itemInput.getCount();
@@ -165,14 +165,14 @@ public class EnergyInventorySlot extends BasicInventorySlot {
         IStrictEnergyHandler itemEnergyHandler = EnergyCompatUtils.getStrictEnergyHandler(current);
         if (itemEnergyHandler != null) {
             long energyInItem = itemEnergyHandler.extractEnergy(energyContainer.getNeeded(), Action.SIMULATE);
-            if (!energyInItem.isZero()) {
+            if (energyInItem != 0L) {
                 //Simulate inserting energy from each container in the item into our container
                 long simulatedRemainder = energyContainer.insert(energyInItem, Action.SIMULATE, AutomationType.INTERNAL);
                 if (simulatedRemainder.smallerThan(energyInItem)) {
                     //If we were simulated that we could actually insert any, then
                     // extract up to as much energy as we were able to accept from the item
                     long extractedEnergy = itemEnergyHandler.extractEnergy(energyInItem.subtract(simulatedRemainder), Action.EXECUTE);
-                    if (!extractedEnergy.isZero()) {
+                    if (extractedEnergy != 0L) {
                         //If we were able to actually extract it from the item, then insert it into our energy container
                         MekanismUtils.logExpectedZero(energyContainer.insert(extractedEnergy, Action.EXECUTE, AutomationType.INTERNAL));
                         //and mark that we were able to transfer at least some of it
@@ -198,7 +198,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
                 if (simulatedRemainder.smallerThan(storedEnergy)) {
                     //We are able to fit at least some energy from our container into the item
                     long extractedEnergy = energyContainer.extract(storedEnergy.subtract(simulatedRemainder), Action.EXECUTE, AutomationType.INTERNAL);
-                    if (!extractedEnergy.isZero()) {
+                    if (extractedEnergy != 0L) {
                         //If we were able to actually extract it from our energy container, then insert it into the item
                         MekanismUtils.logExpectedZero(itemEnergyHandler.insertEnergy(extractedEnergy, Action.EXECUTE));
                         onContentsChanged();

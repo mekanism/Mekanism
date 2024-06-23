@@ -141,7 +141,7 @@ public class TurbineMultiblockData extends MultiblockData {
         double flowRate = 0;
 
         long energyNeeded = energyContainer.getNeeded();
-        if (stored > 0 && !energyNeeded.isZero()) {
+        if (stored > 0 && energyNeeded != 0L) {
             double energyMultiplier = MekanismConfig.general.maxEnergyPerSteam.get().divide(TurbineValidator.MAX_BLADES)
                   .multiply(Math.min(blades, coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get()));
             if (energyMultiplier.isZero()) {

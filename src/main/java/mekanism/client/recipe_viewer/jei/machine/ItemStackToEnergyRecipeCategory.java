@@ -53,7 +53,7 @@ public class ItemStackToEnergyRecipeCategory extends HolderRecipeCategory<ItemSt
     @Override
     protected void renderElements(RecipeHolder<ItemStackToEnergyRecipe> recipeHolder, IRecipeSlotsView recipeSlotView, GuiGraphics guiGraphics, int x, int y) {
         super.renderElements(recipeHolder, recipeSlotView, guiGraphics, x, y);
-        if (!getOutputEnergy(recipeHolder, recipeSlotView).isZero()) {
+        if (getOutputEnergy(recipeHolder, recipeSlotView) != 0L) {
             //Manually draw the contents of the recipe
             gauge.renderContents(guiGraphics);
         }
@@ -63,7 +63,7 @@ public class ItemStackToEnergyRecipeCategory extends HolderRecipeCategory<ItemSt
     public List<Component> getTooltipStrings(RecipeHolder<ItemStackToEnergyRecipe> recipeHolder, IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY) {
         if (gauge.isMouseOver(mouseX, mouseY)) {
             long energy = getOutputEnergy(recipeHolder, recipeSlotsView);
-            if (!energy.isZero()) {
+            if (energy != 0L) {
                 //Manually add the tooltip showing the amounts if the mouse is over the energy gauge
                 Component energyOutput = EnergyDisplay.of(energy).getTextComponent();
                 if (Minecraft.getInstance().options.advancedItemTooltips || Screen.hasShiftDown()) {

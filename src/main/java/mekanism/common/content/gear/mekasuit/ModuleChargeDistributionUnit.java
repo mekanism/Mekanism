@@ -73,7 +73,7 @@ public record ModuleChargeDistributionUnit(boolean chargeSuit, boolean chargeInv
         ItemStack offHand = player.getOffhandItem();
         toCharge = charge(energyContainer, mainHand, toCharge);
         toCharge = charge(energyContainer, offHand, toCharge);
-        if (!toCharge.isZero()) {
+        if (toCharge != 0L) {
             for (ItemStack stack : player.getInventory().items) {
                 if (stack != mainHand && stack != offHand) {
                     toCharge = charge(energyContainer, stack, toCharge);

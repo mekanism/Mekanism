@@ -68,7 +68,7 @@ public class RenderSPS extends MultiblockTileEntityRenderer<SPSMultiblockData, T
         float energyScale = getEnergyScale(multiblock.lastProcessed);
         int targetEffectCount = 0;
 
-        if (!minecraft.isPaused() && !multiblock.lastReceivedEnergy.isZero()) {
+        if (!minecraft.isPaused() && multiblock.lastReceivedEnergy != 0L) {
             if (rand.nextDouble() < getBoundedScale(energyScale, 0.01F, 0.4F)) {
                 CuboidSide side = Util.getRandom(CuboidSide.SIDES, rand);
                 Plane plane = Plane.getInnerCuboidPlane(multiblock.getBounds(), side);

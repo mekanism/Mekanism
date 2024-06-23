@@ -173,7 +173,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
                 }
             }
         }
-        usedEnergy = !clientEnergyUsed.isZero();
+        usedEnergy = clientEnergyUsed != 0L;
         if (!fluidTank.isEmpty()) {
             if (fluidHandlerAbove.isEmpty()) {
                 fluidHandlerAbove = List.of(Capabilities.FLUID.createCache((ServerLevel) level, worldPosition.above(), Direction.DOWN));

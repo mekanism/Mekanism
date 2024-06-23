@@ -150,7 +150,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
                 }
             }
         }
-        usedEnergy = !clientEnergyUsed.isZero();
+        usedEnergy = clientEnergyUsed != 0L;
         return sendUpdatePacket;
     }
 

@@ -92,12 +92,12 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
         long toUse = 0;
         if (canFunction()) {
             toUse = energyContainer.extract(energyContainer.getEnergyPerTick(), Action.SIMULATE, AutomationType.INTERNAL);
-            if (!toUse.isZero()) {
+            if (toUse != 0L) {
                 heatCapacitor.handleHeat(toUse.multiply(MekanismConfig.general.resistiveHeaterEfficiency.get()).doubleValue());
                 energyContainer.extract(toUse, Action.EXECUTE, AutomationType.INTERNAL);
             }
         }
-        setActive(!toUse.isZero());
+        setActive(toUse != 0L);
         clientEnergyUsed = toUse;
         HeatTransfer transfer = simulate();
         lastEnvironmentLoss = transfer.environmentTransfer();

@@ -105,7 +105,7 @@ public class MatrixMultiblockData extends MultiblockData {
         if (!energyOutputTargets.isEmpty() && !energyContainer.isEmpty()) {
             CableUtils.emit(getActiveOutputs(energyOutputTargets), energyContainer, energyContainer.getMaxTransfer());
         }
-        if (!getLastInput().isZero() || !getLastOutput().isZero()) {
+        if (getLastInput() != 0L || getLastOutput() != 0L) {
             // If the stored energy changed, update the comparator
             markDirtyComparator(world);
         }
