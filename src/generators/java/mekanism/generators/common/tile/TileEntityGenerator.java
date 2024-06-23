@@ -2,6 +2,7 @@ package mekanism.generators.common.tile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.LongSupplier;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.math.FloatingLong;
@@ -39,9 +40,9 @@ public abstract class TileEntityGenerator extends TileEntityMekanism {
     /**
      * Generator -- a block that produces energy. It has a certain amount of fuel it can store as well as an output rate.
      */
-    public TileEntityGenerator(IBlockProvider blockProvider, BlockPos pos, BlockState state, @NotNull FloatingLongSupplier maxOutput) {
+    public TileEntityGenerator(IBlockProvider blockProvider, BlockPos pos, BlockState state, @NotNull LongSupplier maxOutput) {
         super(blockProvider, pos, state);
-        updateMaxOutputRaw(maxOutput.get());
+        updateMaxOutputRaw(maxOutput.getAsLong());
     }
 
     protected RelativeSide[] getEnergySides() {

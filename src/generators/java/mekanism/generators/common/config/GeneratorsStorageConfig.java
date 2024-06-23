@@ -1,8 +1,7 @@
 package mekanism.generators.common.config;
 
-import mekanism.api.math.FloatingLong;
 import mekanism.common.config.BaseMekanismConfig;
-import mekanism.common.config.value.CachedFloatingLongValue;
+import mekanism.common.config.value.CachedLongValue;
 import net.neoforged.fml.config.ModConfig.Type;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
@@ -10,26 +9,26 @@ public class GeneratorsStorageConfig extends BaseMekanismConfig {
 
     private final ModConfigSpec configSpec;
 
-    public final CachedFloatingLongValue heatGenerator;
-    public final CachedFloatingLongValue bioGenerator;
-    public final CachedFloatingLongValue solarGenerator;
-    public final CachedFloatingLongValue advancedSolarGenerator;
-    public final CachedFloatingLongValue windGenerator;
+    public final CachedLongValue heatGenerator;
+    public final CachedLongValue bioGenerator;
+    public final CachedLongValue solarGenerator;
+    public final CachedLongValue advancedSolarGenerator;
+    public final CachedLongValue windGenerator;
 
     GeneratorsStorageConfig() {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
         builder.comment("Generator Energy Storage Config. This config is synced from server to client.").push("storage");
 
-        heatGenerator = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "heatGenerator",
-              FloatingLong.createConst(160_000));
-        bioGenerator = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "bioGenerator",
-              FloatingLong.createConst(160_000));
-        solarGenerator = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "solarGenerator",
-              FloatingLong.createConst(96_000));
-        advancedSolarGenerator = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "advancedSolarGenerator",
-              FloatingLong.createConst(200_000));
-        windGenerator = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "windGenerator",
-              FloatingLong.createConst(200_000));
+        heatGenerator = CachedLongValue.defineUnsigned(this, builder, "Base energy storage (Joules).", "heatGenerator",
+              160_000L, 1);
+        bioGenerator = CachedLongValue.defineUnsigned(this, builder, "Base energy storage (Joules).", "bioGenerator",
+              160_000L, 1);
+        solarGenerator = CachedLongValue.defineUnsigned(this, builder, "Base energy storage (Joules).", "solarGenerator",
+              96_000L, 1);
+        advancedSolarGenerator = CachedLongValue.defineUnsigned(this, builder, "Base energy storage (Joules).", "advancedSolarGenerator",
+              200_000L, 1);
+        windGenerator = CachedLongValue.defineUnsigned(this, builder, "Base energy storage (Joules).", "windGenerator",
+              200_000L, 1);
 
         builder.pop();
         configSpec = builder.build();

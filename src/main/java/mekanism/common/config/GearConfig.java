@@ -1,10 +1,8 @@
 package mekanism.common.config;
 
-import mekanism.api.math.FloatingLong;
 import mekanism.common.config.value.CachedBooleanValue;
 import mekanism.common.config.value.CachedDoubleValue;
 import mekanism.common.config.value.CachedFloatValue;
-import mekanism.common.config.value.CachedFloatingLongValue;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.config.value.CachedLongValue;
 import net.minecraft.SharedConstants;
@@ -43,17 +41,17 @@ public class GearConfig extends BaseMekanismConfig {
     public final CachedIntValue disassemblerMinDamage;
     public final CachedIntValue disassemblerMaxDamage;
     public final CachedDoubleValue disassemblerAttackSpeed;
-    public final CachedFloatingLongValue disassemblerMaxEnergy;
-    public final CachedFloatingLongValue disassemblerChargeRate;
+    public final CachedLongValue disassemblerMaxEnergy;
+    public final CachedLongValue disassemblerChargeRate;
     
     //Electric Bow
-    public final CachedFloatingLongValue electricBowMaxEnergy;
-    public final CachedFloatingLongValue electricBowChargeRate;
-    public final CachedFloatingLongValue electricBowEnergyUsage;
-    public final CachedFloatingLongValue electricBowEnergyUsageFire;
+    public final CachedLongValue electricBowMaxEnergy;
+    public final CachedLongValue electricBowChargeRate;
+    public final CachedLongValue electricBowEnergyUsage;
+    public final CachedLongValue electricBowEnergyUsageFire;
     //Energy Tablet
-    public final CachedFloatingLongValue tabletMaxEnergy;
-    public final CachedFloatingLongValue tabletChargeRate;
+    public final CachedLongValue tabletMaxEnergy;
+    public final CachedLongValue tabletChargeRate;
     //Gauge Dropper
     public final CachedIntValue gaugeDroppedTransferRate;
     public final CachedIntValue gaugeDropperCapacity;
@@ -62,28 +60,28 @@ public class GearConfig extends BaseMekanismConfig {
     public final CachedLongValue flamethrowerFillRate;
     public final CachedBooleanValue flamethrowerDestroyItems;
     //Free runner
-    public final CachedFloatingLongValue freeRunnerFallEnergyCost;
+    public final CachedLongValue freeRunnerFallEnergyCost;
     public final CachedFloatValue freeRunnerFallDamageRatio;
-    public final CachedFloatingLongValue freeRunnerMaxEnergy;
-    public final CachedFloatingLongValue freeRunnerChargeRate;
+    public final CachedLongValue freeRunnerMaxEnergy;
+    public final CachedLongValue freeRunnerChargeRate;
     //Jetpack
     public final CachedLongValue jetpackMaxGas;
     public final CachedLongValue jetpackFillRate;
     //Portable Teleporter
-    public final CachedFloatingLongValue portableTeleporterMaxEnergy;
-    public final CachedFloatingLongValue portableTeleporterChargeRate;
+    public final CachedLongValue portableTeleporterMaxEnergy;
+    public final CachedLongValue portableTeleporterChargeRate;
     public final CachedIntValue portableTeleporterDelay;
     //Network Reader
-    public final CachedFloatingLongValue networkReaderMaxEnergy;
-    public final CachedFloatingLongValue networkReaderChargeRate;
-    public final CachedFloatingLongValue networkReaderEnergyUsage;
+    public final CachedLongValue networkReaderMaxEnergy;
+    public final CachedLongValue networkReaderChargeRate;
+    public final CachedLongValue networkReaderEnergyUsage;
     //Scuba Tank
     public final CachedLongValue scubaMaxGas;
     public final CachedLongValue scubaFillRate;
     //Seismic Reader
-    public final CachedFloatingLongValue seismicReaderMaxEnergy;
-    public final CachedFloatingLongValue seismicReaderChargeRate;
-    public final CachedFloatingLongValue seismicReaderEnergyUsage;
+    public final CachedLongValue seismicReaderMaxEnergy;
+    public final CachedLongValue seismicReaderChargeRate;
+    public final CachedLongValue seismicReaderEnergyUsage;
     //Canteen
     public final CachedIntValue canteenMaxStorage;
     public final CachedIntValue canteenTransferRate;
@@ -96,12 +94,12 @@ public class GearConfig extends BaseMekanismConfig {
     public final CachedIntValue mekaToolBaseDamage;
     public final CachedDoubleValue mekaToolAttackSpeed;
     public final CachedFloatValue mekaToolBaseEfficiency;
-    public final CachedFloatingLongValue mekaToolBaseEnergyCapacity;
-    public final CachedFloatingLongValue mekaToolBaseChargeRate;
-    public final CachedFloatingLongValue mekaToolEnergyUsageHoe;
-    public final CachedFloatingLongValue mekaToolEnergyUsageShovel;
-    public final CachedFloatingLongValue mekaToolEnergyUsageAxe;
-    public final CachedFloatingLongValue mekaToolEnergyUsageShearEntity;
+    public final CachedLongValue mekaToolBaseEnergyCapacity;
+    public final CachedLongValue mekaToolBaseChargeRate;
+    public final CachedLongValue mekaToolEnergyUsageHoe;
+    public final CachedLongValue mekaToolEnergyUsageShovel;
+    public final CachedLongValue mekaToolEnergyUsageAxe;
+    public final CachedLongValue mekaToolEnergyUsageShearEntity;
     public final CachedBooleanValue mekaToolExtendedMining;
     //MekaSuit
     public final CachedLongValue mekaSuitBaseEnergyCapacity;
@@ -135,10 +133,10 @@ public class GearConfig extends BaseMekanismConfig {
         builder.comment("Gear Config. This config is synced from server to client.").push("gear");
 
         builder.comment("Atomic Disassembler Settings").push(DISASSEMBLER_CATEGORY);
-        disassemblerEnergyUsage = CachedFloatingLongValue.define(this, builder, "Base Energy (Joules) usage of the Atomic Disassembler. (Gets multiplied by speed factor)",
-              "energyUsage", FloatingLong.createConst(10));
-        disassemblerEnergyUsageWeapon = CachedFloatingLongValue.define(this, builder, "Cost in Joules of using the Atomic Disassembler as a weapon.",
-              "energyUsageWeapon", FloatingLong.createConst(2_000));
+        disassemblerEnergyUsage = CachedLongValue.defineUnsigned(this, builder, "Base Energy (Joules) usage of the Atomic Disassembler. (Gets multiplied by speed factor)",
+              "energyUsage", 1);
+        disassemblerEnergyUsageWeapon = CachedLongValue.defineUnsigned(this, builder, "Cost in Joules of using the Atomic Disassembler as a weapon.",
+              "energyUsageWeapon", 2_000);
         disassemblerMiningCount = CachedIntValue.wrap(this, builder.comment("The max Atomic Disassembler Vein Mining Block Count.")
               .defineInRange("miningCount", 128, 2, 1_000_000));
         disassemblerSlowMode = CachedBooleanValue.wrap(this, builder.comment("Enable the 'Slow' mode for the Atomic Disassembler.")
@@ -153,28 +151,28 @@ public class GearConfig extends BaseMekanismConfig {
               .defineInRange("maxDamage", 20, 1, 10_000));
         disassemblerAttackSpeed = CachedDoubleValue.wrap(this, builder.comment("Attack speed of the Atomic Disassembler.")
               .defineInRange("attackSpeed", -2.4, -Attributes.ATTACK_SPEED.value().getDefaultValue(), 100));
-        disassemblerMaxEnergy = CachedFloatingLongValue.define(this, builder, "Maximum amount (joules) of energy the Atomic Disassembler can contain.",
-              "maxEnergy", FloatingLong.createConst(1_000_000));
-        disassemblerChargeRate = CachedFloatingLongValue.define(this, builder, "Amount (joules) of energy the Atomic Disassembler can accept per tick.",
-              "chargeRate", FloatingLong.createConst(5_000));
+        disassemblerMaxEnergy = CachedLongValue.defineUnsigned(this, builder, "Maximum amount (joules) of energy the Atomic Disassembler can contain.",
+              "maxEnergy", 1_000_000);
+        disassemblerChargeRate = CachedLongValue.defineUnsigned(this, builder, "Amount (joules) of energy the Atomic Disassembler can accept per tick.",
+              "chargeRate", 5_000);
         builder.pop();
 
         builder.comment("Electric Bow Settings").push(ELECTRIC_BOW_CATEGORY);
-        electricBowMaxEnergy = CachedFloatingLongValue.define(this, builder, "Maximum amount (joules) of energy the Electric Bow can contain.",
-              "maxEnergy", FloatingLong.createConst(120_000));
-        electricBowChargeRate = CachedFloatingLongValue.define(this, builder, "Amount (joules) of energy the Electric Bow can accept per tick.",
-              "chargeRate", FloatingLong.createConst(600));
-        electricBowEnergyUsage = CachedFloatingLongValue.define(this, builder, "Cost in Joules of using the Electric Bow.",
-              "energyUsage", FloatingLong.createConst(120));
-        electricBowEnergyUsageFire = CachedFloatingLongValue.define(this, builder, "Cost in Joules of using the Electric Bow with flame mode active.",
-              "energyUsageFire", FloatingLong.createConst(1_200));
+        electricBowMaxEnergy = CachedLongValue.defineUnsigned(this, builder, "Maximum amount (joules) of energy the Electric Bow can contain.",
+              "maxEnergy", 120_000);
+        electricBowChargeRate = CachedLongValue.defineUnsigned(this, builder, "Amount (joules) of energy the Electric Bow can accept per tick.",
+              "chargeRate", 600);
+        electricBowEnergyUsage = CachedLongValue.defineUnsigned(this, builder, "Cost in Joules of using the Electric Bow.",
+              "energyUsage", 120);
+        electricBowEnergyUsageFire = CachedLongValue.defineUnsigned(this, builder, "Cost in Joules of using the Electric Bow with flame mode active.",
+              "energyUsageFire", 1_200);
         builder.pop();
 
         builder.comment("Energy Tablet Settings").push(ENERGY_TABLET_CATEGORY);
-        tabletMaxEnergy = CachedFloatingLongValue.define(this, builder, "Maximum amount (joules) of energy the Energy Tablet can contain.",
-              "maxEnergy", FloatingLong.createConst(1_000_000));
-        tabletChargeRate = CachedFloatingLongValue.define(this, builder, "Amount (joules) of energy the Energy Tablet can accept per tick.",
-              "chargeRate", FloatingLong.createConst(5_000));
+        tabletMaxEnergy = CachedLongValue.defineUnsigned(this, builder, "Maximum amount (joules) of energy the Energy Tablet can contain.",
+              "maxEnergy", 1_000_000);
+        tabletChargeRate = CachedLongValue.defineUnsigned(this, builder, "Amount (joules) of energy the Energy Tablet can accept per tick.",
+              "chargeRate", 5_000L);
         builder.pop();
 
         builder.comment("Gauge Dropper Settings").push(GAUGE_DROPPER_CATEGORY);
@@ -194,14 +192,14 @@ public class GearConfig extends BaseMekanismConfig {
         builder.pop();
 
         builder.comment("Free Runner Settings").push(FREE_RUNNER_CATEGORY);
-        freeRunnerFallEnergyCost = CachedFloatingLongValue.define(this, builder, "Energy cost/multiplier in Joules for reducing fall damage with free runners. Energy cost is: FallDamage * freeRunnerFallEnergyCost. (1 FallDamage is 1 half heart)",
-              "fallEnergyCost", FloatingLong.createConst(50));
+        freeRunnerFallEnergyCost = CachedLongValue.defineUnsigned(this, builder, "Energy cost/multiplier in Joules for reducing fall damage with free runners. Energy cost is: FallDamage * freeRunnerFallEnergyCost. (1 FallDamage is 1 half heart)",
+              "fallEnergyCost", 50L);
         freeRunnerFallDamageRatio = CachedFloatValue.wrap(this, builder.comment("Percent of damage taken from falling that can be absorbed by Free Runners when they have enough power.")
               .defineInRange("fallDamageReductionRatio", 1D, 0, 1));
-        freeRunnerMaxEnergy = CachedFloatingLongValue.define(this, builder, "Maximum amount (joules) of energy Free Runners can contain.",
-              "maxEnergy", FloatingLong.createConst(64_000));
-        freeRunnerChargeRate = CachedFloatingLongValue.define(this, builder, "Amount (joules) of energy the Free Runners can accept per tick.",
-              "chargeRate", FloatingLong.createConst(320));
+        freeRunnerMaxEnergy = CachedLongValue.defineUnsigned(this, builder, "Maximum amount (joules) of energy Free Runners can contain.",
+              "maxEnergy", 64_000L);
+        freeRunnerChargeRate = CachedLongValue.defineUnsigned(this, builder, "Amount (joules) of energy the Free Runners can accept per tick.",
+              "chargeRate", 320L);
         builder.pop();
 
         builder.comment("Jetpack Settings").push(JETPACK_CATEGORY);
@@ -212,19 +210,19 @@ public class GearConfig extends BaseMekanismConfig {
         builder.pop();
 
         builder.comment("Network Reader Settings").push(NETWORK_READER_CATEGORY);
-        networkReaderMaxEnergy = CachedFloatingLongValue.define(this, builder, "Maximum amount (joules) of energy the Network Reader can contain.",
-              "maxEnergy", FloatingLong.createConst(60_000));
-        networkReaderChargeRate = CachedFloatingLongValue.define(this, builder, "Amount (joules) of energy the Network Reader can accept per tick.",
-              "chargeRate", FloatingLong.createConst(300));
-        networkReaderEnergyUsage = CachedFloatingLongValue.define(this, builder, "Energy usage in joules for each network reading.",
-              "energyUsage", FloatingLong.createConst(400));
+        networkReaderMaxEnergy = CachedLongValue.defineUnsigned(this, builder, "Maximum amount (joules) of energy the Network Reader can contain.",
+              "maxEnergy", 60_000L);
+        networkReaderChargeRate = CachedLongValue.defineUnsigned(this, builder, "Amount (joules) of energy the Network Reader can accept per tick.",
+              "chargeRate", 300L);
+        networkReaderEnergyUsage = CachedLongValue.defineUnsigned(this, builder, "Energy usage in joules for each network reading.",
+              "energyUsage", 400L);
         builder.pop();
 
         builder.comment("Portable Teleporter Settings").push(PORTABLE_TELEPORTER_CATEGORY);
-        portableTeleporterMaxEnergy = CachedFloatingLongValue.define(this, builder, "Maximum amount (joules) of energy the Portable Teleporter can contain.",
-              "maxEnergy", FloatingLong.createConst(1_000_000));
-        portableTeleporterChargeRate = CachedFloatingLongValue.define(this, builder, "Amount (joules) of energy the Portable Teleporter can accept per tick.",
-              "chargeRate", FloatingLong.createConst(5_000));
+        portableTeleporterMaxEnergy = CachedLongValue.defineUnsigned(this, builder, "Maximum amount (joules) of energy the Portable Teleporter can contain.",
+              "maxEnergy", 1_000_000L);
+        portableTeleporterChargeRate = CachedLongValue.defineUnsigned(this, builder, "Amount (joules) of energy the Portable Teleporter can accept per tick.",
+              "chargeRate", 5_000L);
         portableTeleporterDelay = CachedIntValue.wrap(this, builder.comment("Delay in ticks before a player is teleported after clicking the Teleport button in the portable teleporter.")
               .defineInRange("delay", 0, 0, 5 * SharedConstants.TICKS_PER_MINUTE));
         builder.pop();
@@ -237,12 +235,12 @@ public class GearConfig extends BaseMekanismConfig {
         builder.pop();
 
         builder.comment("Seismic Reader Settings").push(SEISMIC_READER_CATEGORY);
-        seismicReaderMaxEnergy = CachedFloatingLongValue.define(this, builder, "Maximum amount (joules) of energy the Seismic Reader can contain.",
-              "maxEnergy", FloatingLong.createConst(12_000));
-        seismicReaderChargeRate = CachedFloatingLongValue.define(this, builder, "Amount (joules) of energy the Seismic Reader can accept per tick.",
-              "chargeRate", FloatingLong.createConst(60));
-        seismicReaderEnergyUsage = CachedFloatingLongValue.define(this, builder, "Energy usage in joules required to use the Seismic Reader.",
-              "energyUsage", FloatingLong.createConst(250));
+        seismicReaderMaxEnergy = CachedLongValue.defineUnsigned(this, builder, "Maximum amount (joules) of energy the Seismic Reader can contain.",
+              "maxEnergy", 12_000L);
+        seismicReaderChargeRate = CachedLongValue.defineUnsigned(this, builder, "Amount (joules) of energy the Seismic Reader can accept per tick.",
+              "chargeRate", 60L);
+        seismicReaderEnergyUsage = CachedLongValue.defineUnsigned(this, builder, "Energy usage in joules required to use the Seismic Reader.",
+              "energyUsage", 250L);
         builder.pop();
 
         builder.comment("Canteen Settings").push(CANTEEN_CATEGORY);
@@ -253,14 +251,14 @@ public class GearConfig extends BaseMekanismConfig {
         builder.pop();
 
         builder.comment("Meka-Tool Settings").push(MEKATOOL_CATEGORY);
-        mekaToolEnergyUsage = CachedFloatingLongValue.define(this, builder, "Base energy (Joules) usage of the Meka-Tool. (Gets multiplied by speed factor)",
-              "energyUsage", FloatingLong.createConst(10));
-        mekaToolEnergyUsageSilk = CachedFloatingLongValue.define(this, builder, "Silk touch energy (Joules) usage of the Meka-Tool. (Gets multiplied by speed factor)",
-              "energyUsageSilk", FloatingLong.createConst(100));
-        mekaToolEnergyUsageWeapon = CachedFloatingLongValue.define(this, builder, "Cost in Joules of using the Meka-Tool to deal 4 units of damage.",
-              "energyUsageWeapon", FloatingLong.createConst(2_000));
-        mekaToolEnergyUsageTeleport = CachedFloatingLongValue.define(this, builder, "Cost in Joules of using the Meka-Tool to teleport 10 blocks.",
-              "energyUsageTeleport", FloatingLong.createConst(1_000));
+        mekaToolEnergyUsage = CachedLongValue.defineUnsigned(this, builder, "Base energy (Joules) usage of the Meka-Tool. (Gets multiplied by speed factor)",
+              "energyUsage", 10L);
+        mekaToolEnergyUsageSilk = CachedLongValue.defineUnsigned(this, builder, "Silk touch energy (Joules) usage of the Meka-Tool. (Gets multiplied by speed factor)",
+              "energyUsageSilk", 100L);
+        mekaToolEnergyUsageWeapon = CachedLongValue.defineUnsigned(this, builder, "Cost in Joules of using the Meka-Tool to deal 4 units of damage.",
+              "energyUsageWeapon", 2_000L);
+        mekaToolEnergyUsageTeleport = CachedLongValue.defineUnsigned(this, builder, "Cost in Joules of using the Meka-Tool to teleport 10 blocks.",
+              "energyUsageTeleport", 1_000L);
         mekaToolMaxTeleportReach = CachedIntValue.wrap(this, builder.comment("Maximum distance a player can teleport with the Meka-Tool.")
               .defineInRange("maxTeleportReach", 100, 3, 1_024));
         mekaToolBaseDamage = CachedIntValue.wrap(this, builder.comment("Base bonus damage applied by the Meka-Tool without using any energy.")
@@ -269,55 +267,55 @@ public class GearConfig extends BaseMekanismConfig {
               .defineInRange("attackSpeed", -2.4, -Attributes.ATTACK_SPEED.value().getDefaultValue(), 100));
         mekaToolBaseEfficiency = CachedFloatValue.wrap(this, builder.comment("Efficiency of the Meka-Tool with energy but without any upgrades.")
               .defineInRange("baseEfficiency", 4, 0.1, 100));
-        mekaToolBaseEnergyCapacity = CachedFloatingLongValue.define(this, builder, "Energy capacity (Joules) of the Meka-Tool without any installed upgrades. Quadratically scaled by upgrades.",
-              "baseEnergyCapacity", FloatingLong.createConst(16_000_000));
-        mekaToolBaseChargeRate = CachedFloatingLongValue.define(this, builder, "Amount (joules) of energy the Meka-Tool can accept per tick. Quadratically scaled by upgrades.",
-              "chargeRate", FloatingLong.createConst(100_000));
-        mekaToolEnergyUsageHoe = CachedFloatingLongValue.define(this, builder, "Cost in Joules of using the Meka-Tool as a hoe.",
-              "energyUsageHoe", FloatingLong.createConst(10));
-        mekaToolEnergyUsageShovel = CachedFloatingLongValue.define(this, builder, "Cost in Joules of using the Meka-Tool as a shovel for making paths and dowsing campfires.",
-              "energyUsageShovel", FloatingLong.createConst(10));
-        mekaToolEnergyUsageAxe = CachedFloatingLongValue.define(this, builder, "Cost in Joules of using the Meka-Tool as an axe for stripping logs, scraping, or removing wax.",
-              "energyUsageAxe", FloatingLong.createConst(10));
-        mekaToolEnergyUsageShearEntity = CachedFloatingLongValue.define(this, builder, "Cost in Joules of using the Meka-Tool to shear entities.",
-              "energyUsageShearEntity", FloatingLong.createConst(10));
+        mekaToolBaseEnergyCapacity = CachedLongValue.defineUnsigned(this, builder, "Energy capacity (Joules) of the Meka-Tool without any installed upgrades. Quadratically scaled by upgrades.",
+              "baseEnergyCapacity", 16_000_000L);
+        mekaToolBaseChargeRate = CachedLongValue.defineUnsigned(this, builder, "Amount (joules) of energy the Meka-Tool can accept per tick. Quadratically scaled by upgrades.",
+              "chargeRate", 100_000L);
+        mekaToolEnergyUsageHoe = CachedLongValue.defineUnsigned(this, builder, "Cost in Joules of using the Meka-Tool as a hoe.",
+              "energyUsageHoe", 10L);
+        mekaToolEnergyUsageShovel = CachedLongValue.defineUnsigned(this, builder, "Cost in Joules of using the Meka-Tool as a shovel for making paths and dowsing campfires.",
+              "energyUsageShovel", 10L);
+        mekaToolEnergyUsageAxe = CachedLongValue.defineUnsigned(this, builder, "Cost in Joules of using the Meka-Tool as an axe for stripping logs, scraping, or removing wax.",
+              "energyUsageAxe", 10L);
+        mekaToolEnergyUsageShearEntity = CachedLongValue.defineUnsigned(this, builder, "Cost in Joules of using the Meka-Tool to shear entities.",
+              "energyUsageShearEntity", 10L);
         mekaToolExtendedMining = CachedBooleanValue.wrap(this, builder.comment("Enable the 'Extended Vein Mining' mode for the Meka-Tool. (Allows vein mining everything not just ores/logs)")
               .define("extendedMining", true));
         builder.pop();
 
         builder.comment("MekaSuit Settings").push(MEKASUIT_CATEGORY);
-        mekaSuitBaseEnergyCapacity = CachedFloatingLongValue.define(this, builder, "Energy capacity (Joules) of MekaSuit items without any installed upgrades. Quadratically scaled by upgrades.",
-              "baseEnergyCapacity", FloatingLong.createConst(16_000_000));
-        mekaSuitBaseChargeRate = CachedFloatingLongValue.define(this, builder, "Amount (joules) of energy the MekaSuit can accept per tick. Quadratically scaled by upgrades.",
-              "chargeRate", FloatingLong.createConst(100_000));
-        mekaSuitBaseJumpEnergyUsage = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) of MekaSuit when adding 0.1 to jump motion.",
-              "baseJumpEnergyUsage", FloatingLong.createConst(1_000));
-        mekaSuitElytraEnergyUsage = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) per second of the MekaSuit when flying with the Elytra Unit.",
-              "elytraEnergyUsage", FloatingLong.createConst(32_000));
-        mekaSuitEnergyUsagePotionTick = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) of MekaSuit when lessening a potion effect.",
-              "energyUsagePotionTick", FloatingLong.createConst(40_000));
-        mekaSuitEnergyUsageMagicReduce = CachedFloatingLongValue.define(this, builder, "Energy cost/multiplier in Joules for reducing magic damage via the inhalation purification unit. Energy cost is: MagicDamage * energyUsageMagicPrevent. (1 MagicDamage is 1 half heart).",
-              "energyUsageMagicReduce", FloatingLong.createConst(1_000));
-        mekaSuitEnergyUsageFall = CachedFloatingLongValue.define(this, builder, "Energy cost/multiplier in Joules for reducing fall damage with MekaSuit Boots. Energy cost is: FallDamage * freeRunnerFallEnergyCost. (1 FallDamage is 1 half heart)",
-              "energyUsageFall", FloatingLong.createConst(50));
-        mekaSuitEnergyUsageSprintBoost = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) of MekaSuit when adding 0.1 to sprint motion.",
-              "energyUsageSprintBoost", FloatingLong.createConst(100));
-        mekaSuitEnergyUsageGravitationalModulation = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) of MekaSuit per tick when flying via Gravitational Modulation.",
-              "energyUsageGravitationalModulation", FloatingLong.createConst(1_000));
-        mekaSuitInventoryChargeRate = CachedFloatingLongValue.define(this, builder, "Charge rate of inventory items (Joules) per tick.",
-              "inventoryChargeRate", FloatingLong.createConst(10_000));
-        mekaSuitSolarRechargingRate = CachedFloatingLongValue.define(this, builder, "Solar recharging rate (Joules) of helmet per tick, per upgrade installed.",
-              "solarRechargingRate", FloatingLong.createConst(500));
-        mekaSuitEnergyUsageVisionEnhancement = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) of MekaSuit per tick of using vision enhancement.",
-              "energyUsageVisionEnhancement", FloatingLong.createConst(500));
-        mekaSuitEnergyUsageHydrostaticRepulsion = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) of MekaSuit per tick of using hydrostatic repulsion.",
-              "energyUsageHydrostaticRepulsion", FloatingLong.createConst(500));
-        mekaSuitEnergyUsageNutritionalInjection = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) of MekaSuit per half-food of nutritional injection.",
-              "energyUsageNutritionalInjection", FloatingLong.createConst(20_000));
-        mekaSuitEnergyUsageDamage = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) of MekaSuit per unit of damage applied.",
-              "energyUsageDamage", FloatingLong.createConst(100_000));
-        mekaSuitEnergyUsageItemAttraction = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) of MekaSuit per tick of attracting a single item.",
-              "energyUsageItemAttraction", FloatingLong.createConst(250));
+        mekaSuitBaseEnergyCapacity = CachedLongValue.defineUnsigned(this, builder, "Energy capacity (Joules) of MekaSuit items without any installed upgrades. Quadratically scaled by upgrades.",
+              "baseEnergyCapacity", 16_000_000L);
+        mekaSuitBaseChargeRate = CachedLongValue.defineUnsigned(this, builder, "Amount (joules) of energy the MekaSuit can accept per tick. Quadratically scaled by upgrades.",
+              "chargeRate", 100_000L);
+        mekaSuitBaseJumpEnergyUsage = CachedLongValue.defineUnsigned(this, builder, "Energy usage (Joules) of MekaSuit when adding 0.1 to jump motion.",
+              "baseJumpEnergyUsage", 1_000L);
+        mekaSuitElytraEnergyUsage = CachedLongValue.defineUnsigned(this, builder, "Energy usage (Joules) per second of the MekaSuit when flying with the Elytra Unit.",
+              "elytraEnergyUsage", 32_000L);
+        mekaSuitEnergyUsagePotionTick = CachedLongValue.defineUnsigned(this, builder, "Energy usage (Joules) of MekaSuit when lessening a potion effect.",
+              "energyUsagePotionTick", 40_000L);
+        mekaSuitEnergyUsageMagicReduce = CachedLongValue.defineUnsigned(this, builder, "Energy cost/multiplier in Joules for reducing magic damage via the inhalation purification unit. Energy cost is: MagicDamage * energyUsageMagicPrevent. (1 MagicDamage is 1 half heart).",
+              "energyUsageMagicReduce", 1_000L);
+        mekaSuitEnergyUsageFall = CachedLongValue.defineUnsigned(this, builder, "Energy cost/multiplier in Joules for reducing fall damage with MekaSuit Boots. Energy cost is: FallDamage * freeRunnerFallEnergyCost. (1 FallDamage is 1 half heart)",
+              "energyUsageFall", 50L);
+        mekaSuitEnergyUsageSprintBoost = CachedLongValue.defineUnsigned(this, builder, "Energy usage (Joules) of MekaSuit when adding 0.1 to sprint motion.",
+              "energyUsageSprintBoost", 100L);
+        mekaSuitEnergyUsageGravitationalModulation = CachedLongValue.defineUnsigned(this, builder, "Energy usage (Joules) of MekaSuit per tick when flying via Gravitational Modulation.",
+              "energyUsageGravitationalModulation", 1_000L);
+        mekaSuitInventoryChargeRate = CachedLongValue.defineUnsigned(this, builder, "Charge rate of inventory items (Joules) per tick.",
+              "inventoryChargeRate", 10_000L);
+        mekaSuitSolarRechargingRate = CachedLongValue.defineUnsigned(this, builder, "Solar recharging rate (Joules) of helmet per tick, per upgrade installed.",
+              "solarRechargingRate", 500L);
+        mekaSuitEnergyUsageVisionEnhancement = CachedLongValue.defineUnsigned(this, builder, "Energy usage (Joules) of MekaSuit per tick of using vision enhancement.",
+              "energyUsageVisionEnhancement", 500L);
+        mekaSuitEnergyUsageHydrostaticRepulsion = CachedLongValue.defineUnsigned(this, builder, "Energy usage (Joules) of MekaSuit per tick of using hydrostatic repulsion.",
+              "energyUsageHydrostaticRepulsion", 500L);
+        mekaSuitEnergyUsageNutritionalInjection = CachedLongValue.defineUnsigned(this, builder, "Energy usage (Joules) of MekaSuit per half-food of nutritional injection.",
+              "energyUsageNutritionalInjection", 20_000L);
+        mekaSuitEnergyUsageDamage = CachedLongValue.defineUnsigned(this, builder, "Energy usage (Joules) of MekaSuit per unit of damage applied.",
+              "energyUsageDamage", 100_000L);
+        mekaSuitEnergyUsageItemAttraction = CachedLongValue.defineUnsigned(this, builder, "Energy usage (Joules) of MekaSuit per tick of attracting a single item.",
+              "energyUsageItemAttraction", 250L);
         mekaSuitGravitationalVibrations = CachedBooleanValue.wrap(this, builder.comment("Should the Gravitational Modulation unit give off vibrations when in use.")
               .define("gravitationalVibrations", true));
         mekaSuitNutritionalMaxStorage = CachedIntValue.wrap(this, builder.comment("Maximum amount of Nutritional Paste storable by the nutritional injection unit.")

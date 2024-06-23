@@ -1,7 +1,5 @@
 package mekanism.common.config;
 
-import mekanism.api.math.FloatingLong;
-import mekanism.common.config.value.CachedFloatingLongValue;
 import mekanism.common.config.value.CachedLongValue;
 import net.neoforged.fml.config.ModConfig.Type;
 import net.neoforged.neoforge.common.ModConfigSpec;
@@ -10,118 +8,118 @@ public class StorageConfig extends BaseMekanismConfig {
 
     private final ModConfigSpec configSpec;
 
-    public final CachedFloatingLongValue enrichmentChamber;
-    public final CachedFloatingLongValue osmiumCompressor;
-    public final CachedFloatingLongValue combiner;
-    public final CachedFloatingLongValue crusher;
-    public final CachedFloatingLongValue metallurgicInfuser;
-    public final CachedFloatingLongValue purificationChamber;
-    public final CachedFloatingLongValue energizedSmelter;
-    public final CachedFloatingLongValue digitalMiner;
-    public final CachedFloatingLongValue electricPump;
-    public final CachedFloatingLongValue chargePad;
-    public final CachedFloatingLongValue rotaryCondensentrator;
-    public final CachedFloatingLongValue chemicalOxidizer;
-    public final CachedFloatingLongValue chemicalInfuser;
-    public final CachedFloatingLongValue chemicalInjectionChamber;
-    public final CachedFloatingLongValue electrolyticSeparator;
-    public final CachedFloatingLongValue precisionSawmill;
-    public final CachedFloatingLongValue chemicalDissolutionChamber;
-    public final CachedFloatingLongValue chemicalWasher;
-    public final CachedFloatingLongValue chemicalCrystallizer;
-    public final CachedFloatingLongValue seismicVibrator;
-    public final CachedFloatingLongValue pressurizedReactionBase;
-    public final CachedFloatingLongValue fluidicPlenisher;
-    public final CachedFloatingLongValue laser;
+    public final CachedLongValue enrichmentChamber;
+    public final CachedLongValue osmiumCompressor;
+    public final CachedLongValue combiner;
+    public final CachedLongValue crusher;
+    public final CachedLongValue metallurgicInfuser;
+    public final CachedLongValue purificationChamber;
+    public final CachedLongValue energizedSmelter;
+    public final CachedLongValue digitalMiner;
+    public final CachedLongValue electricPump;
+    public final CachedLongValue chargePad;
+    public final CachedLongValue rotaryCondensentrator;
+    public final CachedLongValue chemicalOxidizer;
+    public final CachedLongValue chemicalInfuser;
+    public final CachedLongValue chemicalInjectionChamber;
+    public final CachedLongValue electrolyticSeparator;
+    public final CachedLongValue precisionSawmill;
+    public final CachedLongValue chemicalDissolutionChamber;
+    public final CachedLongValue chemicalWasher;
+    public final CachedLongValue chemicalCrystallizer;
+    public final CachedLongValue seismicVibrator;
+    public final CachedLongValue pressurizedReactionBase;
+    public final CachedLongValue fluidicPlenisher;
+    public final CachedLongValue laser;
     public final CachedLongValue laserAmplifier;
-    public final CachedFloatingLongValue laserTractorBeam;
-    public final CachedFloatingLongValue formulaicAssemblicator;
-    public final CachedFloatingLongValue teleporter;
-    public final CachedFloatingLongValue modificationStation;
-    public final CachedFloatingLongValue isotopicCentrifuge;
-    public final CachedFloatingLongValue nutritionalLiquifier;
-    public final CachedFloatingLongValue antiprotonicNucleosynthesizer;
-    public final CachedFloatingLongValue pigmentExtractor;
-    public final CachedFloatingLongValue pigmentMixer;
-    public final CachedFloatingLongValue paintingMachine;
-    public final CachedFloatingLongValue spsPort;
-    public final CachedFloatingLongValue dimensionalStabilizer;
+    public final CachedLongValue laserTractorBeam;
+    public final CachedLongValue formulaicAssemblicator;
+    public final CachedLongValue teleporter;
+    public final CachedLongValue modificationStation;
+    public final CachedLongValue isotopicCentrifuge;
+    public final CachedLongValue nutritionalLiquifier;
+    public final CachedLongValue antiprotonicNucleosynthesizer;
+    public final CachedLongValue pigmentExtractor;
+    public final CachedLongValue pigmentMixer;
+    public final CachedLongValue paintingMachine;
+    public final CachedLongValue spsPort;
+    public final CachedLongValue dimensionalStabilizer;
 
     StorageConfig() {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
         builder.comment("Machine Energy Storage Config. This config is synced from server to client.").push("storage");
 
-        enrichmentChamber = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "enrichmentChamber",
-              FloatingLong.createConst(20_000));
-        osmiumCompressor = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "osmiumCompressor",
-              FloatingLong.createConst(80_000));
-        combiner = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "combiner",
-              FloatingLong.createConst(40_000));
-        crusher = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "crusher",
-              FloatingLong.createConst(20_000));
-        metallurgicInfuser = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "metallurgicInfuser",
-              FloatingLong.createConst(20_000));
-        purificationChamber = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "purificationChamber",
-              FloatingLong.createConst(80_000));
-        energizedSmelter = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "energizedSmelter",
-              FloatingLong.createConst(20_000));
-        digitalMiner = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "digitalMiner",
-              FloatingLong.createConst(50_000));
-        electricPump = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "electricPump",
-              FloatingLong.createConst(40_000));
-        chargePad = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "chargePad", FloatingLong.createConst(2_048_000));
-        rotaryCondensentrator = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "rotaryCondensentrator",
-              FloatingLong.createConst(20_000));
-        chemicalOxidizer = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "chemicalOxidizer",
-              FloatingLong.createConst(80_000));
-        chemicalInfuser = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "chemicalInfuser",
-              FloatingLong.createConst(80_000));
-        chemicalInjectionChamber = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "chemicalInjectionChamber",
-              FloatingLong.createConst(160_000));
-        electrolyticSeparator = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "electrolyticSeparator",
-              FloatingLong.createConst(160_000));
-        precisionSawmill = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "precisionSawmill",
-              FloatingLong.createConst(20_000));
-        chemicalDissolutionChamber = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "chemicalDissolutionChamber",
-              FloatingLong.createConst(160_000));
-        chemicalWasher = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "chemicalWasher",
-              FloatingLong.createConst(80_000));
-        chemicalCrystallizer = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "chemicalCrystallizer",
-              FloatingLong.createConst(160_000));
-        seismicVibrator = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "seismicVibrator",
-              FloatingLong.createConst(20_000));
-        pressurizedReactionBase = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "pressurizedReactionBase",
-              FloatingLong.createConst(2_000));
-        fluidicPlenisher = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "fluidicPlenisher",
-              FloatingLong.createConst(40_000));
-        laser = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "laser",
-              FloatingLong.createConst(2_000_000));
-        laserAmplifier = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "laserAmplifier",
-              FloatingLong.createConst(5_000_000_000L));
-        laserTractorBeam = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "laserTractorBeam",
-              FloatingLong.createConst(5_000_000_000L));
-        formulaicAssemblicator = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "formulaicAssemblicator",
-              FloatingLong.createConst(40_000));
-        teleporter = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "teleporter",
-              FloatingLong.createConst(5_000_000));
-        modificationStation = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "modificationStation",
-              FloatingLong.createConst(40_000));
-        isotopicCentrifuge = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "isotopicCentrifuge",
-              FloatingLong.createConst(80_000));
-        nutritionalLiquifier = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "nutritionalLiquifier",
-              FloatingLong.createConst(40_000));
-        antiprotonicNucleosynthesizer = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules). Also defines max process rate.", "antiprotonicNucleosynthesizer",
-              FloatingLong.createConst(1_000_000_000));
-        pigmentExtractor = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "pigmentExtractor",
-              FloatingLong.createConst(40_000));
-        pigmentMixer = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "pigmentMixer",
-              FloatingLong.createConst(80_000));
-        paintingMachine = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "paintingMachine",
-              FloatingLong.createConst(40_000));
-        spsPort = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules). Also defines max output rate.", "spsPort",
-              FloatingLong.createConst(1_000_000_000));
-        dimensionalStabilizer = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "dimensionalStabilizer",
-              FloatingLong.createConst(40_000));
+        enrichmentChamber = CachedLongValue.defineUnsigned(this, builder, "Base energy storage (Joules).", "enrichmentChamber",
+              20_000L, 1);
+        osmiumCompressor = CachedLongValue.defineUnsigned(this, builder, "Base energy storage (Joules).", "osmiumCompressor",
+              80_000L, 1);
+        combiner = CachedLongValue.defineUnsigned(this, builder, "Base energy storage (Joules).", "combiner",
+              40_000L, 1);
+        crusher = CachedLongValue.defineUnsigned(this, builder, "Base energy storage (Joules).", "crusher",
+              20_000L, 1);
+        metallurgicInfuser = CachedLongValue.defineUnsigned(this, builder, "Base energy storage (Joules).", "metallurgicInfuser",
+              20_000L, 1);
+        purificationChamber = CachedLongValue.defineUnsigned(this, builder, "Base energy storage (Joules).", "purificationChamber",
+              80_000L, 1);
+        energizedSmelter = CachedLongValue.defineUnsigned(this, builder, "Base energy storage (Joules).", "energizedSmelter",
+              20_000L, 1);
+        digitalMiner = CachedLongValue.defineUnsigned(this, builder, "Base energy storage (Joules).", "digitalMiner",
+              50_000L, 1);
+        electricPump = CachedLongValue.defineUnsigned(this, builder, "Base energy storage (Joules).", "electricPump",
+              40_000L, 1);
+        chargePad = CachedLongValue.defineUnsigned(this, builder, "Base energy storage (Joules).", "chargePad", 2_048_000L, 1);
+        rotaryCondensentrator = CachedLongValue.defineUnsigned(this, builder, "Base energy storage (Joules).", "rotaryCondensentrator",
+              20_000L, 1);
+        chemicalOxidizer = CachedLongValue.defineUnsigned(this, builder, "Base energy storage (Joules).", "chemicalOxidizer",
+              80_000L, 1);
+        chemicalInfuser = CachedLongValue.defineUnsigned(this, builder, "Base energy storage (Joules).", "chemicalInfuser",
+              80_000L, 1);
+        chemicalInjectionChamber = CachedLongValue.defineUnsigned(this, builder, "Base energy storage (Joules).", "chemicalInjectionChamber",
+              160_000L, 1);
+        electrolyticSeparator = CachedLongValue.defineUnsigned(this, builder, "Base energy storage (Joules).", "electrolyticSeparator",
+              160_000L, 1);
+        precisionSawmill = CachedLongValue.defineUnsigned(this, builder, "Base energy storage (Joules).", "precisionSawmill",
+              20_000L, 1);
+        chemicalDissolutionChamber = CachedLongValue.defineUnsigned(this, builder, "Base energy storage (Joules).", "chemicalDissolutionChamber",
+              160_000L, 1);
+        chemicalWasher = CachedLongValue.defineUnsigned(this, builder, "Base energy storage (Joules).", "chemicalWasher",
+              80_000L, 1);
+        chemicalCrystallizer = CachedLongValue.defineUnsigned(this, builder, "Base energy storage (Joules).", "chemicalCrystallizer",
+              160_000L, 1);
+        seismicVibrator = CachedLongValue.defineUnsigned(this, builder, "Base energy storage (Joules).", "seismicVibrator",
+              20_000L, 1);
+        pressurizedReactionBase = CachedLongValue.defineUnsigned(this, builder, "Base energy storage (Joules).", "pressurizedReactionBase",
+              2_000L, 1);
+        fluidicPlenisher = CachedLongValue.defineUnsigned(this, builder, "Base energy storage (Joules).", "fluidicPlenisher",
+              40_000L, 1);
+        laser = CachedLongValue.defineUnsigned(this, builder, "Base energy storage (Joules).", "laser",
+              2_000_000L, 1);
+        laserAmplifier = CachedLongValue.defineUnsigned(this, builder, "Base energy storage (Joules).", "laserAmplifier",
+              5_000_000_000L, 1);
+        laserTractorBeam = CachedLongValue.defineUnsigned(this, builder, "Base energy storage (Joules).", "laserTractorBeam",
+              5_000_000_000L, 1);
+        formulaicAssemblicator = CachedLongValue.defineUnsigned(this, builder, "Base energy storage (Joules).", "formulaicAssemblicator",
+              40_000L, 1);
+        teleporter = CachedLongValue.defineUnsigned(this, builder, "Base energy storage (Joules).", "teleporter",
+              5_000_000L, 1);
+        modificationStation = CachedLongValue.defineUnsigned(this, builder, "Base energy storage (Joules).", "modificationStation",
+              40_000L, 1);
+        isotopicCentrifuge = CachedLongValue.defineUnsigned(this, builder, "Base energy storage (Joules).", "isotopicCentrifuge",
+              80_000L, 1);
+        nutritionalLiquifier = CachedLongValue.defineUnsigned(this, builder, "Base energy storage (Joules).", "nutritionalLiquifier",
+              40_000L, 1);
+        antiprotonicNucleosynthesizer = CachedLongValue.defineUnsigned(this, builder, "Base energy storage (Joules). Also defines max process rate.", "antiprotonicNucleosynthesizer",
+              1_000_000_000L, 1);
+        pigmentExtractor = CachedLongValue.defineUnsigned(this, builder, "Base energy storage (Joules).", "pigmentExtractor",
+              40_000L, 1);
+        pigmentMixer = CachedLongValue.defineUnsigned(this, builder, "Base energy storage (Joules).", "pigmentMixer",
+              80_000L, 1);
+        paintingMachine = CachedLongValue.defineUnsigned(this, builder, "Base energy storage (Joules).", "paintingMachine",
+              40_000L, 1);
+        spsPort = CachedLongValue.defineUnsigned(this, builder, "Base energy storage (Joules). Also defines max output rate.", "spsPort",
+              1_000_000_000L, 1);
+        dimensionalStabilizer = CachedLongValue.defineUnsigned(this, builder, "Base energy storage (Joules).", "dimensionalStabilizer",
+              40_000L, 1);
 
         builder.pop();
         configSpec = builder.build();

@@ -19,8 +19,16 @@ public class CachedLongValue extends CachedValue<Long> implements LongSupplier {
     }
 
     public static CachedLongValue defineUnsigned(IMekanismConfig config, Builder builder, String comment, String path, long defaultValue) {
+        return defineUnsigned(config, builder, comment, path, defaultValue, 0, Long.MAX_VALUE);
+    }
+
+    public static CachedLongValue defineUnsigned(IMekanismConfig config, Builder builder, String comment, String path, long defaultValue, long min) {
+        return defineUnsigned(config, builder, comment, path, defaultValue, min, Long.MAX_VALUE);
+    }
+
+    public static CachedLongValue defineUnsigned(IMekanismConfig config, Builder builder, String comment, String path, long defaultValue, long min, long max) {
         return CachedLongValue.wrap(config, builder.comment(comment)
-              .defineInRange(path, defaultValue, 0, Long.MAX_VALUE));
+              .defineInRange(path, defaultValue, min, max));
     }
 
     public long getOrDefault() {

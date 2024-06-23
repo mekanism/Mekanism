@@ -3,12 +3,10 @@ package mekanism.common.config;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import mekanism.api.math.FloatingLong;
 import mekanism.common.config.value.CachedBooleanValue;
 import mekanism.common.config.value.CachedConfigValue;
 import mekanism.common.config.value.CachedDoubleValue;
 import mekanism.common.config.value.CachedFloatValue;
-import mekanism.common.config.value.CachedFloatingLongValue;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.config.value.CachedLongValue;
 import mekanism.common.config.value.CachedOredictionificatorConfigValue;
@@ -76,7 +74,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedBooleanValue blacklistForge;
     public final CachedDoubleValue forgeConversionRate;
     public final CachedBooleanValue blacklistFluxNetworks;
-    public final CachedFloatingLongValue FROM_H2;
+    public final CachedLongValue FROM_H2;
     public final CachedLongValue maxEnergyPerSteam;
     //Radiation
     public final CachedBooleanValue radiationEnabled;
@@ -94,8 +92,8 @@ public class GeneralConfig extends BaseMekanismConfig {
     //Laser
     public final CachedBooleanValue aestheticWorldDamage;
     public final CachedIntValue laserRange;
-    public final CachedFloatingLongValue laserEnergyNeededPerHardness;
-    public final CachedFloatingLongValue laserEnergyPerDamage;
+    public final CachedLongValue laserEnergyNeededPerHardness;
+    public final CachedLongValue laserEnergyPerDamage;
     //Oredictionificator
     public final CachedOredictionificatorConfigValue validOredictionificatorFilters;
     //Pump
@@ -128,7 +126,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     //SPS
     public final CachedIntValue spsInputPerAntimatter;
     public final CachedLongValue spsOutputTankCapacity;
-    public final CachedFloatingLongValue spsEnergyPerInput;
+    public final CachedLongValue spsEnergyPerInput;
 
     GeneralConfig() {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
@@ -203,15 +201,14 @@ public class GeneralConfig extends BaseMekanismConfig {
         blacklistForge = CachedBooleanValue.wrap(this, builder.comment("Disables Forge Energy (FE,RF,IF,uF,CF) power integration. Requires world restart (server-side option in SMP).")
               .worldRestart()
               .define("blacklistForge", false));
-        forgeConversionRate = CachedFloatingLongValue.define(this, builder, "Conversion multiplier from Forge Energy to Joules (FE * feConversionRate = Joules)",
-              "feConversionRate", FloatingLong.createConst(2.5), CachedFloatingLongValue.ENERGY_CONVERSION);
+        forgeConversionRate = CachedDoubleValue.wrap(this, builder.comment("Conversion multiplier from Forge Energy to Joules (FE * feConversionRate = Joules)").defineInRange("feConversionRate", 2.5, 0.0001, 1 / 0.0001));
         blacklistFluxNetworks = CachedBooleanValue.wrap(this, builder.comment("Disables Flux Networks higher throughput Forge Energy (FE,RF,IF,uF,CF) power integration. Requires world restart (server-side option in SMP). Note: Disabling Forge Energy integration also disables this.")
               .worldRestart()
               .define("blacklistFluxNetworks", false));
-        FROM_H2 = CachedFloatingLongValue.define(this, builder, "How much energy is produced per mB of Hydrogen, also affects Electrolytic Separator usage, Ethene burn rate and Gas generator energy capacity.",
-              "HydrogenEnergyDensity", FloatingLong.createConst(200), CachedFloatingLongValue.POSITIVE);
-        maxEnergyPerSteam = CachedFloatingLongValue.define(this, builder, "Maximum Joules per mB of Steam. Also affects Thermoelectric Boiler.",
-              "maxEnergyPerSteam", FloatingLong.createConst(10));
+        FROM_H2 = CachedLongValue.defineUnsigned(this, builder, "How much energy is produced per mB of Hydrogen, also affects Electrolytic Separator usage, Ethene burn rate and Gas generator energy capacity.",
+              "HydrogenEnergyDensity", 200, 1);
+        maxEnergyPerSteam = CachedLongValue.defineUnsigned(this, builder, "Maximum Joules per mB of Steam. Also affects Thermoelectric Boiler.",
+              "maxEnergyPerSteam", 10);
         builder.pop();
 
         builder.comment("Radiation Settings").push(RADIATION_CATEGORY);
@@ -247,10 +244,10 @@ public class GeneralConfig extends BaseMekanismConfig {
               .define("aestheticWorldDamage", true));
         laserRange = CachedIntValue.wrap(this, builder.comment("How far (in blocks) a laser can travel.")
               .defineInRange("range", 64, 1, 1_024));
-        laserEnergyNeededPerHardness = CachedFloatingLongValue.define(this, builder, "Energy needed to destroy or attract blocks with a Laser (per block hardness level).",
-              "energyNeededPerHardness", FloatingLong.createConst(100_000));
-        laserEnergyPerDamage = CachedFloatingLongValue.define(this, builder, "Energy used per half heart of damage being transferred to entities.",
-              "energyPerDamage", FloatingLong.createConst(2_500), CachedFloatingLongValue.POSITIVE);
+        laserEnergyNeededPerHardness = CachedLongValue.defineUnsigned(this, builder, "Energy needed to destroy or attract blocks with a Laser (per block hardness level).",
+              "energyNeededPerHardness", 100_000);
+        laserEnergyPerDamage = CachedLongValue.defineUnsigned(this, builder, "Energy used per half heart of damage being transferred to entities.",
+              "energyPerDamage", 2_500, 1);
         builder.pop();
 
         builder.comment("Oredictionificator Settings").push(OREDICTIONIFICATOR_CATEGORY);
@@ -326,8 +323,8 @@ public class GeneralConfig extends BaseMekanismConfig {
               .defineInRange("inputPerAntimatter", 1_000, 1, Integer.MAX_VALUE));
         spsOutputTankCapacity = CachedLongValue.wrap(this, builder.comment("Amount of output gas (mB, antimatter) that the SPS can store.")
               .defineInRange("outputTankCapacity", FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE));
-        spsEnergyPerInput = CachedFloatingLongValue.define(this, builder, "Energy needed to process 1 mB of input (inputPerAntimatter * energyPerInput = energy to produce 1 mB of antimatter).",
-              "energyPerInput", FloatingLong.createConst(1_000_000));
+        spsEnergyPerInput = CachedLongValue.defineUnsigned(this, builder, "Energy needed to process 1 mB of input (inputPerAntimatter * energyPerInput = energy to produce 1 mB of antimatter).",
+              "energyPerInput", 1_000_000);
         builder.pop();
 
         builder.pop();
