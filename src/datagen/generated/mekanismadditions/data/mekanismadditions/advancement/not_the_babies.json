@@ -1,6 +1,20 @@
 {
   "parent": "mekanism:root",
   "criteria": {
+    "baby_bogged": {
+      "conditions": {
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "type": "mekanismadditions:baby_bogged"
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:player_killed_entity"
+    },
     "baby_creeper": {
       "conditions": {
         "entity": [
@@ -88,6 +102,7 @@
   },
   "requirements": [
     [
+      "baby_bogged",
       "baby_creeper",
       "baby_enderman",
       "baby_skeleton",

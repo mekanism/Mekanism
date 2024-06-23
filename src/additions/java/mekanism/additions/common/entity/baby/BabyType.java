@@ -6,6 +6,7 @@ import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.NotNull;
 
 public enum BabyType implements StringRepresentable {
+    BOGGED,
     CREEPER,
     ENDERMAN,
     SKELETON,

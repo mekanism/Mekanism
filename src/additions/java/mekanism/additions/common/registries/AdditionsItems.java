@@ -18,6 +18,7 @@ public class AdditionsItems {
 
     public static final ItemDeferredRegister ITEMS = new ItemDeferredRegister(MekanismAdditions.MODID);
 
+    public static final ItemRegistryObject<DeferredSpawnEggItem> BABY_BOGGED_SPAWN_EGG = ITEMS.registerSpawnEgg(AdditionsEntityTypes.BABY_BOGGED, 0x8FB85A, 0x1D3B06);
     public static final ItemRegistryObject<DeferredSpawnEggItem> BABY_CREEPER_SPAWN_EGG = ITEMS.registerSpawnEgg(AdditionsEntityTypes.BABY_CREEPER, 0x31E02F, 0x1E1E1E);
     public static final ItemRegistryObject<DeferredSpawnEggItem> BABY_ENDERMAN_SPAWN_EGG = ITEMS.registerSpawnEgg(AdditionsEntityTypes.BABY_ENDERMAN, 0x242424, 0x1E1E1E);
     public static final ItemRegistryObject<DeferredSpawnEggItem> BABY_SKELETON_SPAWN_EGG = ITEMS.registerSpawnEgg(AdditionsEntityTypes.BABY_SKELETON, 0xFFFFFF, 0x800080);

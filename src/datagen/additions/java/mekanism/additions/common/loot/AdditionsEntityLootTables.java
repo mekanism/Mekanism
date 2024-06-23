@@ -31,6 +31,18 @@ public class AdditionsEntityLootTables extends BaseEntityLootTables {
 
     @Override
     public void generate() {
+        //Copy of vanilla's bogged drops
+        add(AdditionsEntityTypes.BABY_BOGGED, skeletonDrops()
+              .withPool(LootPool.lootPool()
+                    .name("tipped_arrows")
+                    .setRolls(ConstantValue.exactly(1.0F))
+                    .add(LootItem.lootTableItem(Items.TIPPED_ARROW)
+                          .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 1.0F)))
+                          .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registries, UniformGenerator.between(0.0F, 1.0F)).setLimit(1))
+                          .apply(SetPotionFunction.setPotion(Potions.POISON))
+                    ).when(LootItemKilledByPlayerCondition.killedByPlayer())
+              )
+        );
         //Copy of vanilla's creeper drops
         add(AdditionsEntityTypes.BABY_CREEPER, LootTable.lootTable()
               .withPool(
@@ -67,9 +79,8 @@ public class AdditionsEntityLootTables extends BaseEntityLootTables {
                     .setRolls(ConstantValue.exactly(1))
                     .add(LootItem.lootTableItem(Items.TIPPED_ARROW)
                           .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 1.0F)))
-                          .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registries, UniformGenerator.between(0.0F, 1.0F))
-                                .setLimit(1)
-                          ).apply(SetPotionFunction.setPotion(Potions.SLOWNESS))
+                          .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registries, UniformGenerator.between(0.0F, 1.0F)).setLimit(1))
+                          .apply(SetPotionFunction.setPotion(Potions.SLOWNESS))
                     ).when(LootItemKilledByPlayerCondition.killedByPlayer())
               )
         );

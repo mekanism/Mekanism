@@ -1,6 +1,17 @@
 {
   "parent": "mekanism:root",
   "criteria": {
+    "baby_bogged": {
+      "conditions": {
+        "damage": {
+          "blocked": false,
+          "source_entity": {
+            "type": "mekanismadditions:baby_bogged"
+          }
+        }
+      },
+      "trigger": "minecraft:entity_hurt_player"
+    },
     "baby_creeper": {
       "conditions": {
         "damage": {
@@ -72,6 +83,9 @@
     }
   },
   "requirements": [
+    [
+      "baby_bogged"
+    ],
     [
       "baby_creeper"
     ],

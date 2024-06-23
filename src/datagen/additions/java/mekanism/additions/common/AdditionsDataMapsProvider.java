@@ -20,6 +20,7 @@ public class AdditionsDataMapsProvider extends DataMapProvider {
         //Add parrot sound imitations for baby mobs
         //Note: There is no imitation sound for endermen
         builder(NeoForgeDataMaps.PARROT_IMITATIONS)
+              .add(AdditionsEntityTypes.BABY_BOGGED, new ParrotImitation(SoundEvents.PARROT_IMITATE_BOGGED), false)
               .add(AdditionsEntityTypes.BABY_CREEPER, new ParrotImitation(SoundEvents.PARROT_IMITATE_CREEPER), false)
               .add(AdditionsEntityTypes.BABY_SKELETON, new ParrotImitation(SoundEvents.PARROT_IMITATE_SKELETON), false)
               .add(AdditionsEntityTypes.BABY_STRAY, new ParrotImitation(SoundEvents.PARROT_IMITATE_STRAY), false)

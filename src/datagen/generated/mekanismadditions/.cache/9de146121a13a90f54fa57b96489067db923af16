@@ -1,4 +1,4 @@
-// 1.21	2024-06-13T13:08:29.8014223	Tags: mekanismadditions
+// 1.21	2024-06-22T23:02:28.6389083	Tags: mekanismadditions
 56facda135aff10b73eb8fe66c50a57b81e2004f data/c/tags/block/dyed.json
 c0a3434189d007f164cd4c931b0a892a6837b5a1 data/c/tags/block/dyed/black.json
 64a804c0d747716198c47794e47fc07ff26cc005 data/c/tags/block/dyed/blue.json
@@ -26,6 +26,7 @@ d466c697d6cca4ab74f4320ea9ab404242d11aee data/c/tags/block/slabs/plastic/transpa
 20c68f9f2dd3ab1e769854666edbfb4767da2b0d data/c/tags/block/stairs/plastic.json
 c9004193eb0e4aa50fc6fbecbefbf257d580c5c0 data/c/tags/block/stairs/plastic/glow.json
 6e03d50a4f81d832be0a76fbfa1e6e6172f9ddfc data/c/tags/block/stairs/plastic/transparent.json
+59ebe8c8f355627fc70da64c2d7501989709aaa1 data/c/tags/entity_type/bogged.json
 0570abda1da17f7922ac2ccb84029fdcdc908df7 data/c/tags/entity_type/creepers.json
 accce4e237aa4181015012af78ba3738ca8464eb data/c/tags/entity_type/endermen.json
 fcc8f9ffab8b09b40067c488c2118f4409d6933b data/c/tags/item/dyed.json
@@ -82,7 +83,8 @@ e45a8082f976d0bb7eab6c111551cd0a80c2e02b data/minecraft/tags/block/impermeable.j
 bf113affffb3861c37792b9ea8bd1564e1af8d6a data/minecraft/tags/block/stairs.json
 7afa561c11ab95d25582819547b1d50d56b88ded data/minecraft/tags/entity_type/fall_damage_immune.json
 250f04137941705828e4ae8fd8e813f4bba0f081 data/minecraft/tags/entity_type/freeze_immune_entity_types.json
-a98f0ade149c90d9accb727d2d86948f01f4aa9e data/minecraft/tags/entity_type/skeletons.json
+87bb4a7ec27918172ca6c66f27681cfd91f9e699 data/minecraft/tags/entity_type/no_anger_from_wind_charge.json
+6dfec3264850363eaf8423124b38ca20748c91e4 data/minecraft/tags/entity_type/skeletons.json
 49c90df09fb9803707e99d724517e2eb441dbe57 data/minecraft/tags/item/fences.json
 6c72a079835fe22d3553edb0f05d066ca238eebe data/minecraft/tags/item/fence_gates.json
 0727994833549dd1ecb13bc6163a5bef159b1131 data/minecraft/tags/item/slabs.json

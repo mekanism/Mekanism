@@ -378,7 +378,8 @@ dependencies {
         datagenMainRuntimeOnly(emi)
     }
 
-    localRuntime("team.chisel.ctm:CTM:${minecraft_version}-${ctm_version}")
+    //TODO: Re-enable once it doesn't cause Datagen to fail
+    //localRuntime("team.chisel.ctm:CTM:${minecraft_version}-${ctm_version}")
 
     compileOnly("mcjty.theoneprobe:theoneprobe:${top_version}:api")
     localRuntime("mcjty.theoneprobe:theoneprobe:${top_version}")
@@ -678,7 +679,7 @@ if (System.getenv('CURSEFORGE_KEY') != null || project.hasProperty('curseforgeKe
                     //World gen
                     'biomes-o-plenty',
                     //Misc
-                    'applied-energistics-2', 'ctm', 'curios', 'dark-mode-everywhere', 'farmers-delight', 'female-gender-forge', 'flux-networks',
+                    'applied-energistics-2', 'ctm', 'curios-continuation', 'dark-mode-everywhere', 'female-gender-forge', 'flux-networks',
                     'json-things', 'perviaminvenire', 'projecte', 'recipe-stages'
             )
         }
@@ -750,7 +751,6 @@ if (System.getenv('MODRINTH_TOKEN') != null || project.hasProperty('modrinthToke
                 new ModDependency('XxWD5pD3', 'optional'),//AE2
                 new ModDependency('gu7yAYhd', 'optional'),//CC: Tweaked
                 new ModDependency('Xg35A4rS', 'optional'),//CraftTweaker
-                new ModDependency('vvuO3ImH', 'optional'),//Curios
                 new ModDependency('fRiHVvU7', 'optional'),//EMI
                 new ModDependency('R2OftAxM', 'optional'),//Farmer's Delight
                 new ModDependency('nvQzSEkH', 'optional'),//Jade

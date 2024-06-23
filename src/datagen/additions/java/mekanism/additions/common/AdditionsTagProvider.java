@@ -62,7 +62,10 @@ public class AdditionsTagProvider extends BaseTagProvider {
 
     private void addEntities() {
         addEntitiesToTag(EntityTypeTags.FALL_DAMAGE_IMMUNE, AdditionsEntityTypes.BALLOON);
-        addEntitiesToTag(EntityTypeTags.SKELETONS, AdditionsEntityTypes.BABY_SKELETON, AdditionsEntityTypes.BABY_STRAY, AdditionsEntityTypes.BABY_WITHER_SKELETON);
+        addEntitiesToTag(EntityTypeTags.SKELETONS, AdditionsEntityTypes.BABY_BOGGED, AdditionsEntityTypes.BABY_SKELETON, AdditionsEntityTypes.BABY_STRAY,
+              AdditionsEntityTypes.BABY_WITHER_SKELETON);
+        addEntitiesToTag(EntityTypeTags.NO_ANGER_FROM_WIND_CHARGE, AdditionsEntityTypes.BABY_BOGGED, AdditionsEntityTypes.BABY_SKELETON, AdditionsEntityTypes.BABY_STRAY);
+        getEntityTypeBuilder(AdditionsTags.Entities.BOGGED).add(EntityType.BOGGED, AdditionsEntityTypes.BABY_BOGGED.value());
         getEntityTypeBuilder(AdditionsTags.Entities.CREEPERS).add(EntityType.CREEPER, AdditionsEntityTypes.BABY_CREEPER.value());
         getEntityTypeBuilder(AdditionsTags.Entities.ENDERMEN).add(EntityType.ENDERMAN, AdditionsEntityTypes.BABY_ENDERMAN.value());
         addEntitiesToTag(EntityTypeTags.FREEZE_IMMUNE_ENTITY_TYPES, AdditionsEntityTypes.BABY_STRAY);

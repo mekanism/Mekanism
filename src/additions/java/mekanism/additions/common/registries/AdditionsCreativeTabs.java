@@ -42,8 +42,9 @@ public class AdditionsCreativeTabs {
         } else if (tabKey == CreativeModeTabs.COMBAT) {
             CreativeTabDeferredRegister.addToDisplay(event, AdditionsBlocks.OBSIDIAN_TNT);
         } else if (tabKey == CreativeModeTabs.SPAWN_EGGS) {
-            CreativeTabDeferredRegister.addToDisplay(event, AdditionsItems.BABY_CREEPER_SPAWN_EGG, AdditionsItems.BABY_ENDERMAN_SPAWN_EGG,
-                  AdditionsItems.BABY_SKELETON_SPAWN_EGG, AdditionsItems.BABY_STRAY_SPAWN_EGG, AdditionsItems.BABY_WITHER_SKELETON_SPAWN_EGG);
+            CreativeTabDeferredRegister.addToDisplay(event, AdditionsItems.BABY_BOGGED_SPAWN_EGG, AdditionsItems.BABY_CREEPER_SPAWN_EGG,
+                  AdditionsItems.BABY_ENDERMAN_SPAWN_EGG, AdditionsItems.BABY_SKELETON_SPAWN_EGG, AdditionsItems.BABY_STRAY_SPAWN_EGG,
+                  AdditionsItems.BABY_WITHER_SKELETON_SPAWN_EGG);
         }
     }
 

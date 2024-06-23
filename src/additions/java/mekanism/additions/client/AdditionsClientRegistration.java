@@ -21,6 +21,7 @@ import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.ItemRegistryObject;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
+import net.minecraft.client.renderer.entity.BoggedRenderer;
 import net.minecraft.client.renderer.entity.SkeletonRenderer;
 import net.minecraft.client.renderer.entity.StrayRenderer;
 import net.minecraft.client.renderer.entity.WitherSkeletonRenderer;
@@ -58,6 +59,7 @@ public class AdditionsClientRegistration {
         //Register entity rendering handlers
         event.registerEntityRenderer(AdditionsEntityTypes.OBSIDIAN_TNT.get(), RenderObsidianTNTPrimed::new);
         event.registerEntityRenderer(AdditionsEntityTypes.BALLOON.get(), RenderBalloon::new);
+        event.registerEntityRenderer(AdditionsEntityTypes.BABY_BOGGED.get(), BoggedRenderer::new);
         event.registerEntityRenderer(AdditionsEntityTypes.BABY_CREEPER.get(), RenderBabyCreeper::new);
         event.registerEntityRenderer(AdditionsEntityTypes.BABY_ENDERMAN.get(), RenderBabyEnderman::new);
         event.registerEntityRenderer(AdditionsEntityTypes.BABY_SKELETON.get(), SkeletonRenderer::new);
