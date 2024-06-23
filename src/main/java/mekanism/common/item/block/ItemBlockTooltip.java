@@ -122,14 +122,14 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
 
     protected void addTypeDetails(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         //Put this here so that energy cubes can skip rendering energy here
-        if (exposesEnergyCap()) {
+        if (exposesEnergyCapOrTooltips()) {
             StorageUtils.addStoredEnergy(stack, tooltip, false);
         }
     }
 
     @Override
     public boolean shouldCauseReequipAnimation(@NotNull ItemStack oldStack, @NotNull ItemStack newStack, boolean slotChanged) {
-        if (exposesEnergyCap()) {
+        if (exposesEnergyCapOrTooltips()) {
             //Ignore NBT for energized items causing re-equip animations
             //TODO: Only ignore the energy attachment?
             return slotChanged || oldStack.getItem() != newStack.getItem();
@@ -139,7 +139,7 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
 
     @Override
     public boolean shouldCauseBlockBreakReset(@NotNull ItemStack oldStack, @NotNull ItemStack newStack) {
-        if (exposesEnergyCap()) {
+        if (exposesEnergyCapOrTooltips()) {
             //Ignore NBT for energized items causing block break reset
             //TODO: Only ignore the energy attachment?
             return oldStack.getItem() != newStack.getItem();
@@ -152,6 +152,10 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
     }
 
     protected boolean exposesEnergyCap() {
+        return exposesEnergyCapOrTooltips();
+    }
+
+    protected boolean exposesEnergyCapOrTooltips() {
         return Attribute.has(getBlock(), AttributeEnergy.class);
     }
 

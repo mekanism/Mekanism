@@ -19,4 +19,10 @@ public class ItemBlockLaserTractorBeam extends ItemBlockTooltip<BlockTile<?, ?>>
         //Don't allow charging laser tractor beams inside of energy storage devices
         return BasicEnergyContainer.manualOnly;
     }
+
+    @Override
+    protected boolean exposesEnergyCap() {
+        //Don't allow charging laser amplifiers inside of energy storage devices
+        return false;
+    }
 }

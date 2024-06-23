@@ -27,4 +27,10 @@ public class ItemBlockLaserAmplifier extends ItemBlockTooltip<BlockTileModel<Til
         //Don't allow charging laser amplifiers inside of energy storage devices
         return BasicEnergyContainer.manualOnly;
     }
+
+    @Override
+    protected boolean exposesEnergyCap() {
+        //Don't allow charging laser amplifiers inside of energy storage devices
+        return false;
+    }
 }
