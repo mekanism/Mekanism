@@ -1,9 +1,12 @@
 package mekanism.additions.common.entity.baby;
 
 import mekanism.additions.common.registries.AdditionsEntityTypes;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.monster.Bogged;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 public class EntityBabyBogged extends Bogged {
 
@@ -16,5 +19,12 @@ public class EntityBabyBogged extends Bogged {
     @Override
     public boolean isBaby() {
         return true;
+    }
+
+    @NotNull
+    @Override
+    public EntityDimensions getDefaultDimensions(@NotNull Pose pose) {
+        //Note: We already have the age scale factored into the dimensions
+        return getType().getDimensions();
     }
 }

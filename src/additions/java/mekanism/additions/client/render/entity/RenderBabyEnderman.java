@@ -41,7 +41,8 @@ public class RenderBabyEnderman extends MobRenderer<EntityBabyEnderman, ModelBab
     @Override
     public Vec3 getRenderOffset(EntityBabyEnderman enderman, float partialTicks) {
         if (enderman.isCreepy()) {
-            return new Vec3(this.random.nextGaussian() * 0.02, 0, this.random.nextGaussian() * 0.02);
+            double offset = 0.02 * enderman.getScale();
+            return new Vec3(this.random.nextGaussian() * offset, 0, this.random.nextGaussian() * offset);
         }
         return super.getRenderOffset(enderman, partialTicks);
     }
