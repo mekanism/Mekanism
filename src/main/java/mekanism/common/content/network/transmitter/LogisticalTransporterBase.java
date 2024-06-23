@@ -253,7 +253,8 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
 
                 if (!deletes.isEmpty() || !needsSync.isEmpty()) {
                     //Notify clients, so that we send the information before we start clearing our lists
-                    PacketUtils.sendToAllTracking(PacketTransporterBatch.create(pos, deletes, needsSync), getTransmitterTile());
+                    //Note: We have to copy needsSync so that it still has values when we clear the pending sync packets
+                    PacketUtils.sendToAllTracking(PacketTransporterBatch.create(pos, deletes, new Int2ObjectOpenHashMap<>(needsSync)), getTransmitterTile());
                     // Now remove any entries from transit that have been deleted
                     OfInt ofInt = deletes.iterator();
                     while (ofInt.hasNext()) {
