@@ -73,7 +73,7 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
         energySlot.fillContainerOrConvert();
         if (canFunction()) {
             long energyPerTick = energyContainer.getEnergyPerTick();
-            if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL).equals(energyPerTick)) {
+            if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL) == energyPerTick) {
                 setActive(true);
                 energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
                 if (ticker % (2 * SharedConstants.TICKS_PER_SECOND) == 0) {//Every two seconds allow for a new vibration to be sent

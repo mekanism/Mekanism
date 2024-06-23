@@ -152,7 +152,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         long clientEnergyUsed = 0L;
         if (canFunction() && (fluidTank.isEmpty() || estimateIncrementAmount() <= fluidTank.getNeeded())) {
             long energyPerTick = energyContainer.getEnergyPerTick();
-            if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL).equals(energyPerTick)) {
+            if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL) == energyPerTick) {
                 if (!activeType.isEmpty()) {
                     //If we have an active type of fluid, use energy. This can cause there to be ticks where there isn't actually
                     // anything to suck that use energy, but those will balance out with the first set of ticks where it doesn't

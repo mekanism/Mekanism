@@ -118,7 +118,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
             }
         }
 
-        if (!receivedEnergy.equals(lastReceivedEnergy) || processed != lastProcessed) {
+        if (receivedEnergy != lastReceivedEnergy || processed != lastProcessed) {
             needsPacket = true;
         }
         if (!gasOutputTargets.isEmpty() && !outputTank.isEmpty()) {

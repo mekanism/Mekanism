@@ -93,7 +93,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
         boolean sendUpdatePacket = super.onUpdateServer();
         long firing = energyContainer.extract(toFire(), Action.SIMULATE, AutomationType.INTERNAL);
         if (firing != 0L) {
-            if (!firing.equals(lastFired) || !getActive()) {
+            if (firing != lastFired || !getActive()) {
                 setActive(true);
                 lastFired = firing;
                 sendUpdatePacket = true;

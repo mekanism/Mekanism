@@ -226,7 +226,7 @@ public final class MekanismUtils {
         } else {
             targetScale = stored.divide(capacity).floatValue();
         }
-        return getScale(prevScale, targetScale, container.isEmpty(), stored.equals(capacity));
+        return getScale(prevScale, targetScale, container.isEmpty(), stored == capacity);
     }
 
     public static float getScale(float prevScale, float targetScale, boolean empty, boolean full) {

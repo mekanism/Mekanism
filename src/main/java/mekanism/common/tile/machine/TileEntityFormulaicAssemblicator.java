@@ -251,7 +251,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                     }
                 } else {
                     long energyPerTick = energyContainer.getEnergyPerTick();
-                    if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL).equals(energyPerTick)) {
+                    if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL) == energyPerTick) {
                         clientEnergyUsed = energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
                         operatingTicks++;
                     }

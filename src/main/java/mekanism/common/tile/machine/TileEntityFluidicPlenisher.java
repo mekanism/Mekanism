@@ -129,7 +129,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         long clientEnergyUsed = 0L;
         if (canFunction() && !fluidTank.isEmpty()) {
             long energyPerTick = energyContainer.getEnergyPerTick();
-            if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL).equals(energyPerTick)) {
+            if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL) == energyPerTick) {
                 if (!finishedCalc) {
                     clientEnergyUsed = energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
                 }
