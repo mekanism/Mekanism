@@ -84,7 +84,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     private final LongSupplier chemicalEjectRate;
     private final IntSupplier fluidEjectRate;
     @Nullable
-    private final FloatingLongSupplier energyEjectRate;
+    private final LongSupplier energyEjectRate;
     @Nullable
     private Predicate<TransmissionType> canEject;
     @Nullable//TODO: At some point it would be nice to be able to generify this further
@@ -105,11 +105,11 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         this(tile, chemicalEjectRate, fluidEjectRate, null);
     }
 
-    public TileComponentEjector(TileEntityMekanism tile, FloatingLongSupplier energyEjectRate) {
+    public TileComponentEjector(TileEntityMekanism tile, LongSupplier energyEjectRate, boolean energyMarker) {
         this(tile, MekanismConfig.general.chemicalAutoEjectRate, MekanismConfig.general.fluidAutoEjectRate, energyEjectRate);
     }
 
-    public TileComponentEjector(TileEntityMekanism tile, LongSupplier chemicalEjectRate, IntSupplier fluidEjectRate, @Nullable FloatingLongSupplier energyEjectRate) {
+    public TileComponentEjector(TileEntityMekanism tile, LongSupplier chemicalEjectRate, IntSupplier fluidEjectRate, @Nullable LongSupplier energyEjectRate) {
         this.tile = tile;
         this.chemicalEjectRate = chemicalEjectRate;
         this.fluidEjectRate = fluidEjectRate;
@@ -238,7 +238,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                         }
                         caches.add(cache);
                     }
-                    CableUtils.emit(caches, container, energyEjectRate == null ? container.getMaxEnergy() : energyEjectRate.get());
+                    CableUtils.emit(caches, container, energyEjectRate == null ? container.getMaxEnergy() : energyEjectRate.getAsLong());
                 }
             }
         }
