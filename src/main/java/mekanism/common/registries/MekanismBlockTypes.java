@@ -5,6 +5,7 @@ import com.google.common.collect.Table;
 import java.util.function.Supplier;
 import mekanism.api.Upgrade;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.Unsigned;
 import mekanism.api.text.ILangEntry;
 import mekanism.api.tier.ITier;
 import mekanism.common.MekanismLang;
@@ -155,7 +156,7 @@ public class MekanismBlockTypes {
     private MekanismBlockTypes() {
     }
 
-    private static final FloatingLong RESISTIVE_HEATER_BASE_USAGE = FloatingLong.createConst(100);
+    private static final @Unsigned long RESISTIVE_HEATER_BASE_USAGE = 100;
 
     private static final Table<FactoryTier, FactoryType, Factory<?>> FACTORIES = HashBasedTable.create();
 

@@ -1,5 +1,9 @@
 package mekanism.api.math;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DynamicOps;
+import com.mojang.serialization.codecs.PrimitiveCodec;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
@@ -8,6 +12,41 @@ import java.math.MathContext;
 public class ULong {
 
     public static final @Unsigned long MAX_VALUE = -1L; // Equivalent to 2^64 - 1
+
+    public static final Codec<Long> CODEC = new PrimitiveCodec<Long>() {
+        @Override
+        public <T> DataResult<Long> read(DynamicOps<T> ops, T input) {
+            DataResult<String> stringValue = ops.getStringValue(input);
+            if (stringValue.isSuccess()) {
+                return stringValue.flatMap(number -> {
+                    try {
+                        return DataResult.success(Long.parseUnsignedLong(number));
+                    } catch (NumberFormatException e) {
+                        return DataResult.error(e::getMessage);
+                    }
+                });
+            } else {
+                return ops.getNumberValue(input).map(Number::longValue);
+            }
+        }
+
+        @Override
+        public <T> T write(DynamicOps<T> ops, Long value) {
+            long v = value;
+            if (v >= 0) {
+                //no overflow
+                return ops.createLong(v);
+            }
+            return ops.createString(Long.toUnsignedString(v));
+        }
+    };
+
+    public static final Codec<Long> NONZERO_CODEC = CODEC.validate(f -> {
+        if (f == 0L) {
+            return DataResult.error(() -> "Value must be greater than zero");
+        }
+        return DataResult.success(f);
+    });
 
     //Copied from UnsignedLong
     public static BigInteger toBigInteger(@Unsigned long value) {

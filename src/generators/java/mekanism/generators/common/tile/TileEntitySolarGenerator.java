@@ -31,7 +31,7 @@ import org.jetbrains.annotations.Nullable;
 public class TileEntitySolarGenerator extends TileEntityGenerator {
 
     private boolean seesSun;
-    private FloatingLong lastProductionAmount = FloatingLong.ZERO;
+    private @Unsigned long lastProductionAmount = 0;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy item slot")
     EnergyInventorySlot energySlot;
     @Nullable

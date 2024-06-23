@@ -47,7 +47,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
     public VariableCapacityGasTank fuelTank;
     private long burnTicks;
     private int maxBurnTicks;
-    private FloatingLong generationRate = FloatingLong.ZERO;
+    private @Unsigned long generationRate = 0;
     private double gasUsedLastTick;
 
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFuelItem", docPlaceholder = "fuel item slot")

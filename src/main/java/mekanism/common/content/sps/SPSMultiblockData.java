@@ -61,9 +61,9 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     @ContainerSync
     public int inputProcessed = 0;
 
-    public FloatingLong receivedEnergy = FloatingLong.ZERO;
+    public @Unsigned long receivedEnergy = 0;
     @ContainerSync
-    public FloatingLong lastReceivedEnergy = FloatingLong.ZERO;
+    public @Unsigned long lastReceivedEnergy = 0;
     @ContainerSync
     public double lastProcessed;
 

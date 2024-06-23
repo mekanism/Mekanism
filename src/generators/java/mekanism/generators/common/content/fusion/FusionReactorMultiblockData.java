@@ -16,6 +16,7 @@ import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
+import mekanism.api.math.ULong;
 import mekanism.api.math.Unsigned;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.chemical.multiblock.MultiblockChemicalTankBuilder;
@@ -71,7 +72,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
     private static final double burnTemperature = 100_000_000;
     private static final double burnRatio = 1;
     //Thermal characteristics
-    private static final double plasmaHeatCapacity = 100;
+    private static final long plasmaHeatCapacity = 100;
     private static final double caseHeatCapacity = 1;
     private static final double inverseInsulation = 100_000;
     //Heat transfer metrics
@@ -192,11 +193,11 @@ public class FusionReactorMultiblockData extends MultiblockData {
         tag.putBoolean(SerializationConstants.BURNING, isBurning());
     }
 
-    public void addTemperatureFromEnergyInput(FloatingLong energyAdded) {
+    public void addTemperatureFromEnergyInput(@Unsigned long energyAdded) {
         if (isBurning()) {
-            setPlasmaTemp(getPlasmaTemp() + energyAdded.divide(plasmaHeatCapacity).doubleValue());
+            setPlasmaTemp(getPlasmaTemp() + ULong.divide(energyAdded, plasmaHeatCapacity));
         } else {
-            setPlasmaTemp(getPlasmaTemp() + energyAdded.divide(plasmaHeatCapacity).multiply(10).doubleValue());
+            setPlasmaTemp(getPlasmaTemp() + ULong.divide(energyAdded, plasmaHeatCapacity) * 10);
         }
     }
 
@@ -353,7 +354,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
         double caseAirHeat = MekanismGeneratorsConfig.generators.fusionCasingThermalConductivity.get() * (lastCaseTemperature - biomeAmbientTemp);
         if (Math.abs(caseAirHeat) > HeatAPI.EPSILON) {
             heatCapacitor.handleHeat(-caseAirHeat);
-            energyContainer.insert(FloatingLong.create(caseAirHeat * MekanismGeneratorsConfig.generators.fusionThermocoupleEfficiency.get()), Action.EXECUTE, AutomationType.INTERNAL);
+            energyContainer.insert((long) (caseAirHeat * MekanismGeneratorsConfig.generators.fusionThermocoupleEfficiency.get()), Action.EXECUTE, AutomationType.INTERNAL);
         }
     }
 

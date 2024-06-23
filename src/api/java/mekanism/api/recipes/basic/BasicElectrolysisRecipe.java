@@ -19,7 +19,7 @@ public class BasicElectrolysisRecipe extends ElectrolysisRecipe {
     protected final FluidStackIngredient input;
     protected final GasStack leftGasOutput;
     protected final GasStack rightGasOutput;
-    protected final long energyMultiplier;
+    protected final long energyMultiplier;//todo double?
 
     /**
      * @param input            Input.

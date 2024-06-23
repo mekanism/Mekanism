@@ -6,6 +6,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
+import mekanism.api.math.ULong;
 import mekanism.api.math.Unsigned;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
@@ -16,6 +17,7 @@ import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.energy.BlockEnergyCapabilityCache;
 import mekanism.common.inventory.container.sync.ISyncableData;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
+import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.CableUtils;
 import net.minecraft.core.BlockPos;
@@ -32,7 +34,7 @@ public abstract class TileEntityGenerator extends TileEntityMekanism {
     /**
      * Output per tick this generator can transfer.
      */
-    private FloatingLong maxOutput;
+    private @Unsigned long maxOutput;
     private BasicEnergyContainer energyContainer;
 
     /**
@@ -85,12 +87,12 @@ public abstract class TileEntityGenerator extends TileEntityMekanism {
         return maxOutput;
     }
 
-    protected void updateMaxOutputRaw(FloatingLong maxOutput) {
-        this.maxOutput = maxOutput.multiply(2);
+    protected void updateMaxOutputRaw(@Unsigned long maxOutput) {
+        this.maxOutput = ULong.multiply(maxOutput, 2);
     }
 
     protected ISyncableData syncableMaxOutput() {
-        return SyncableFloatingLong.create(this::getMaxOutput, value -> maxOutput = value);
+        return SyncableLong.create(this::getMaxOutput, value -> maxOutput = value);
     }
 
     public BasicEnergyContainer getEnergyContainer() {

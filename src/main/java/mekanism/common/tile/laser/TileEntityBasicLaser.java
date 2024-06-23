@@ -71,8 +71,8 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     protected LaserEnergyContainer energyContainer;
     @SyntheticComputerMethod(getter = "getDiggingPos")
     private BlockPos digging;
-    private FloatingLong diggingProgress = FloatingLong.ZERO;
-    private FloatingLong lastFired = FloatingLong.ZERO;
+    private @Unsigned long diggingProgress = 0;
+    private @Unsigned long lastFired = 0;
 
     public TileEntityBasicLaser(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);

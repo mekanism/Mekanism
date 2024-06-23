@@ -2,6 +2,7 @@ package mekanism.common.content.sps;
 
 import mekanism.api.SerializationConstants;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.Unsigned;
 import mekanism.common.lib.multiblock.MultiblockCache;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.HolderLookup;
@@ -12,7 +13,7 @@ public class SPSCache extends MultiblockCache<SPSMultiblockData> {
     private double progress;
     private int inputProcessed;
     private boolean couldOperate;
-    private FloatingLong receivedEnergy = FloatingLong.ZERO;
+    private @Unsigned long receivedEnergy = 0;
     private double lastProcessed;
 
     @Override

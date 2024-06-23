@@ -64,7 +64,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
     @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getLava", "getLavaCapacity", "getLavaNeeded",
                                                                                      "getLavaFilledPercentage"}, docPlaceholder = "lava tank")
     public BasicFluidTank lavaTank;
-    private FloatingLong producingEnergy = FloatingLong.ZERO;
+    private @Unsigned long producingEnergy = 0;
     private double lastTransferLoss;
     private double lastEnvironmentLoss;
 

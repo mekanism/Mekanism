@@ -75,7 +75,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
                     IngredientCreatorAccess.fluid().from(MekanismTags.Fluids.HEAVY_WATER, 2),
                     GeneratorsGases.DEUTERIUM.getStack(2),
                     MekanismGases.OXYGEN.getStack(1)
-              ).energyMultiplier(FloatingLong.createConst(2))
+              ).energyMultiplier(2)
               .build(consumer, MekanismGenerators.rl(basePath + "heavy_water"));
     }
 
