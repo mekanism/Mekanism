@@ -1,8 +1,6 @@
 package mekanism.common.config.listener;
 
 import java.util.function.LongSupplier;
-import mekanism.api.functions.FloatSupplier;
-import mekanism.common.config.value.CachedFloatValue;
 import mekanism.common.config.value.CachedValue;
 import mekanism.common.config.value.CachedValue.IConfigValueInvalidationListener;
 
@@ -12,7 +10,7 @@ public class ConfigBasedCachedLongSupplier implements LongSupplier {
     private boolean resolved;
     private long cachedValue;
 
-    public ConfigBasedCachedLongSupplier(LongSupplier resolver, CachedFloatValue... dependantConfigValues) {
+    public ConfigBasedCachedLongSupplier(LongSupplier resolver, CachedValue<?>... dependantConfigValues) {
         this.resolver = resolver;
         IConfigValueInvalidationListener refreshListener = this::refresh;
         for (CachedValue<?> configValue : dependantConfigValues) {
