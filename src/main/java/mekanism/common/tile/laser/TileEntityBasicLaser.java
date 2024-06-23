@@ -187,7 +187,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                         if (dissipationPercent > 0) {
                             //If we will dissipate any energy, cap the dissipation amount at one
                             dissipationPercent = Math.min(dissipationPercent, 1);
-                            remainingEnergy = remainingEnergy.timesEqual(FloatingLong.create(1 - dissipationPercent));
+                            remainingEnergy = (long) (remainingEnergy * (1D - dissipationPercent));
                             if (remainingEnergy == 0L) {
                                 //If we dissipated it all then update the position the laser is going to and break
                                 to = from.adjustPosition(direction, entity);
