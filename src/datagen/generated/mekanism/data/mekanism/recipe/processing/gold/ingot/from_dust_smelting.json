@@ -4,7 +4,7 @@
   "cookingtime": 200,
   "experience": 0.5,
   "ingredient": {
-    "tag": "c:dusts/gold"
+    "item": "mekanism:dust_gold"
   },
   "result": {
     "count": 1,

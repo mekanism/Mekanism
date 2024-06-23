@@ -4,7 +4,7 @@
   "cookingtime": 100,
   "experience": 0.3,
   "ingredient": {
-    "tag": "c:dusts/tin"
+    "item": "mekanism:dust_tin"
   },
   "result": {
     "count": 1,

@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     {
-      "tag": "c:storage_blocks/bronze"
+      "item": "mekanism:block_bronze"
     }
   ],
   "result": {

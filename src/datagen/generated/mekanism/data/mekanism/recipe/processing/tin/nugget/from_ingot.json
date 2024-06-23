@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     {
-      "tag": "c:ingots/tin"
+      "item": "mekanism:ingot_tin"
     }
   ],
   "result": {

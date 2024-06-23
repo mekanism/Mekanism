@@ -1,6 +1,5 @@
 package mekanism.common.recipe.impl;
 
-import mekanism.api.providers.IItemProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.block.basic.BlockResource;
 import mekanism.common.recipe.ISubRecipeProvider;
@@ -29,15 +28,15 @@ class StorageRecipeProvider implements ISubRecipeProvider {
 
     private void addNuggetRecipes(RecipeOutput consumer) {
         String basePath = "nuggets/";
-        addNuggetRecipe(consumer, MekanismItems.BRONZE_NUGGET, MekanismTags.Items.INGOTS_BRONZE, basePath, "bronze");
-        addNuggetRecipe(consumer, MekanismItems.REFINED_GLOWSTONE_NUGGET, MekanismTags.Items.INGOTS_REFINED_GLOWSTONE, basePath, "refined_glowstone");
-        addNuggetRecipe(consumer, MekanismItems.REFINED_OBSIDIAN_NUGGET, MekanismTags.Items.INGOTS_REFINED_OBSIDIAN, basePath, "refined_obsidian");
-        addNuggetRecipe(consumer, MekanismItems.STEEL_NUGGET, MekanismTags.Items.INGOTS_STEEL, basePath, "steel");
+        addNuggetRecipe(consumer, MekanismItems.BRONZE_NUGGET, MekanismItems.BRONZE_INGOT, basePath, "bronze");
+        addNuggetRecipe(consumer, MekanismItems.REFINED_GLOWSTONE_NUGGET, MekanismItems.REFINED_GLOWSTONE_INGOT, basePath, "refined_glowstone");
+        addNuggetRecipe(consumer, MekanismItems.REFINED_OBSIDIAN_NUGGET, MekanismItems.REFINED_OBSIDIAN_INGOT, basePath, "refined_obsidian");
+        addNuggetRecipe(consumer, MekanismItems.STEEL_NUGGET, MekanismItems.STEEL_INGOT, basePath, "steel");
     }
 
-    private void addNuggetRecipe(RecipeOutput consumer, IItemProvider nugget, TagKey<Item> ingotTag, String basePath, String name) {
+    private void addNuggetRecipe(RecipeOutput consumer, ItemLike nugget, ItemLike ingot, String basePath, String name) {
         ExtendedShapelessRecipeBuilder.shapelessRecipe(nugget, 9)
-              .addIngredient(ingotTag)
+              .addIngredient(ingot)
               .build(consumer, Mekanism.rl(basePath + name));
     }
 

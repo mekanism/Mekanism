@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     {
-      "tag": "c:storage_blocks/charcoal"
+      "item": "mekanism:block_charcoal"
     }
   ],
   "result": {

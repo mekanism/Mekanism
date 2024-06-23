@@ -4,7 +4,7 @@
   "cookingtime": 100,
   "experience": 0.4,
   "ingredient": {
-    "tag": "c:dusts/steel"
+    "item": "mekanism:dust_steel"
   },
   "result": {
     "count": 1,

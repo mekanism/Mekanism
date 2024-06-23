@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     {
-      "tag": "c:storage_blocks/raw_uranium"
+      "item": "mekanism:block_raw_uranium"
     }
   ],
   "result": {

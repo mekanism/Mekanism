@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     {
-      "tag": "c:ingots/lead"
+      "item": "mekanism:ingot_lead"
     }
   ],
   "result": {

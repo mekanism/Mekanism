@@ -3,9 +3,14 @@
   "category": "misc",
   "cookingtime": 200,
   "experience": 0.6,
-  "ingredient": {
-    "tag": "c:ores/lead"
-  },
+  "ingredient": [
+    {
+      "item": "mekanism:lead_ore"
+    },
+    {
+      "item": "mekanism:deepslate_lead_ore"
+    }
+  ],
   "result": {
     "count": 1,
     "id": "mekanism:ingot_lead"

@@ -200,11 +200,11 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .build(consumer);
         //Bio Fuel
         ExtendedShapelessRecipeBuilder.shapelessRecipe(MekanismItems.BIO_FUEL, 9)
-              .addIngredient(MekanismTags.Items.FUELS_BLOCK_BIO)
+              .addIngredient(MekanismBlocks.BIO_FUEL_BLOCK)
               .build(consumer, Mekanism.rl("bio_fuel"));
         //Charcoal
         ExtendedShapelessRecipeBuilder.shapelessRecipe(Items.CHARCOAL, 9)
-              .addIngredient(MekanismTags.Items.STORAGE_BLOCKS_CHARCOAL)
+              .addIngredient(MekanismBlocks.CHARCOAL_BLOCK)
               .build(consumer, Mekanism.rl("charcoal"));
         //Chargepad
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CHARGEPAD)

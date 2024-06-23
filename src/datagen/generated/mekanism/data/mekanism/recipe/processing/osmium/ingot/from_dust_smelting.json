@@ -4,7 +4,7 @@
   "cookingtime": 200,
   "experience": 0.3,
   "ingredient": {
-    "tag": "c:dusts/osmium"
+    "item": "mekanism:dust_osmium"
   },
   "result": {
     "count": 1,
