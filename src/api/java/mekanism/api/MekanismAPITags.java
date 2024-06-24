@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.entity.EntityType;
 
 /**
  * Provides access to pre-existing tag keys for various functionality that we use tags for.
@@ -161,6 +162,32 @@ public class MekanismAPITags {
 
         private static TagKey<DamageType> tag(String name) {
             return TagKey.create(Registries.DAMAGE_TYPE, rl(name));
+        }
+    }
+
+    /**
+     * @since 10.6.3
+     */
+    public static class Entities {
+
+        private Entities() {
+        }
+
+        /**
+         * Represents any entity type that is immune to all Radiation.
+         */
+        public static final TagKey<EntityType<?>> RADIATION_IMMUNE = commonTag("radiation_immune");
+        /**
+         * Represents any entity type that is immune to Mekanism Radiation.
+         */
+        public static final TagKey<EntityType<?>> MEK_RADIATION_IMMUNE = tag("radiation_immune");
+
+        private static TagKey<EntityType<?>> commonTag(String name) {
+            return TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath("c", name));
+        }
+
+        private static TagKey<EntityType<?>> tag(String name) {
+            return TagKey.create(Registries.ENTITY_TYPE, rl(name));
         }
     }
 }

@@ -27,6 +27,7 @@ import mekanism.common.item.gear.ItemScubaTank;
 import mekanism.common.item.interfaces.IJetpackItem;
 import mekanism.common.item.interfaces.IJetpackItem.JetpackMode;
 import mekanism.common.lib.radiation.RadiationManager;
+import mekanism.common.registries.MekanismDamageTypes;
 import mekanism.common.registries.MekanismGameEvents;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.ChemicalUtil;
@@ -48,6 +49,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.common.damagesource.DamageContainer;
+import net.neoforged.neoforge.event.entity.EntityInvulnerabilityCheckEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEvent.LivingJumpEvent;
 import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
@@ -157,6 +159,16 @@ public class CommonPlayerTickHandler {
 
     public static boolean isGravitationalModulationOn(Player player) {
         return ModuleGravitationalModulatingUnit.shouldProcess(player) && isGravitationalModulationReady(player.getItemBySlot(EquipmentSlot.CHEST));
+    }
+
+    @SubscribeEvent
+    public void checkEntityInvulnerability(EntityInvulnerabilityCheckEvent event) {
+        if (!event.isInvulnerable() && event.getEntity() instanceof LivingEntity entity) {
+            if (event.getSource().is(MekanismDamageTypes.RADIATION.key())) {
+                //Note: As we only enter this block if it isn't invulnerable, there is no chance that this call makes it go from invulnerable to not
+                event.setInvulnerable(entity.getType().is(MekanismAPITags.Entities.MEK_RADIATION_IMMUNE));
+            }
+        }
     }
 
     @SubscribeEvent

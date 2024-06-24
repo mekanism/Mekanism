@@ -66,7 +66,6 @@ import mekanism.common.recipe.lookup.ISingleRecipeLookupHandler.ItemRecipeLookup
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleItem;
 import mekanism.common.recipe.lookup.monitor.RecipeCacheLookupMonitor;
 import mekanism.common.registries.MekanismContainerTypes;
-import mekanism.common.registries.MekanismDamageTypes;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismDataSerializers;
 import mekanism.common.registries.MekanismEntityTypes;
@@ -101,7 +100,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
@@ -520,11 +518,6 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         progress = nbtTags.getInt(SerializationConstants.PROGRESS);
         NBTUtils.setResourceKeyIfPresentElse(nbtTags, SerializationConstants.SKIN, MekanismAPI.ROBIT_SKIN_REGISTRY_NAME, skin -> setSkin(skin, null),
               () -> setSkin(MekanismRobitSkins.BASE, null));
-    }
-
-    @Override
-    public boolean isInvulnerableTo(@NotNull DamageSource source) {
-        return source.is(MekanismDamageTypes.RADIATION.key()) || super.isInvulnerableTo(source);
     }
 
     @Override
