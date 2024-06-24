@@ -1,4 +1,4 @@
-// 1.21	2024-06-22T11:52:06.255317	Tags: mekanismtools
+// 1.21	2024-06-24T15:51:01.1246426	Tags: mekanismtools
 13cf1fe06cf159d32d074144254a0d375f6b20e7 data/c/tags/block/mineable/paxel.json
 ed87013152d08e3cb23487f0ff0ae34466dec5d1 data/c/tags/item/tools.json
 c16ef9d24f9f676bc1bd0e4b6061fb5ac7e2455f data/c/tags/item/tools/paxel.json
@@ -17,6 +17,7 @@ fd8819751169c6f6051010b39b57d5081ca22086 data/minecraft/tags/item/enchantable/du
 ed87013152d08e3cb23487f0ff0ae34466dec5d1 data/minecraft/tags/item/enchantable/mining.json
 ed87013152d08e3cb23487f0ff0ae34466dec5d1 data/minecraft/tags/item/enchantable/mining_loot.json
 ed87013152d08e3cb23487f0ff0ae34466dec5d1 data/minecraft/tags/item/enchantable/sharp_weapon.json
+ed87013152d08e3cb23487f0ff0ae34466dec5d1 data/minecraft/tags/item/enchantable/weapon.json
 61aac4830507ca1aeaeffcbd3b2c6ffd2eb5b58c data/minecraft/tags/item/foot_armor.json
 4b2c0ee85fec7ddd4d5fd69eb7b305bd1d38c389 data/minecraft/tags/item/freeze_immune_wearables.json
 1a7d9b6b6074ff3c9b5bcf285768e9fdeb843a27 data/minecraft/tags/item/head_armor.json

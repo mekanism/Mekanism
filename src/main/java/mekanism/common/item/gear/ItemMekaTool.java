@@ -401,7 +401,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
                         }
                         player.resetFallDistance();
                         PacketUtils.sendToAllTracking(new PacketPortalFX(pos.above()), world, pos);
-                        world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0F, 1.0F);
+                        world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.PLAYER_TELEPORT, SoundSource.PLAYERS);
                         return InteractionResultHolder.success(stack);
                     }
                 }

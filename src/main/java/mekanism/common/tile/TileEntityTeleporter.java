@@ -61,9 +61,13 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.animal.Fox;
+import net.minecraft.world.entity.monster.Shulker;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -347,12 +351,19 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
                 }
                 energyContainer.extract(energyCost, Action.EXECUTE, AutomationType.INTERNAL);
                 if (teleportedEntity != null) {
+                    SoundEvent sound = switch (teleportedEntity) {
+                        case Player player -> SoundEvents.PLAYER_TELEPORT;
+                        case Fox fox -> SoundEvents.FOX_TELEPORT;
+                        case Shulker shulker -> SoundEvents.SHULKER_TELEPORT;
+                        //Fall back to enderman teleporting sound
+                        default -> SoundEvents.ENDERMAN_TELEPORT;
+                    };
                     if (level != teleportedEntity.level() || teleportedEntity.distanceToSqr(oldX, oldY, oldZ) >= 25) {
                         //If the entity teleported over 5 blocks, play the sound at both the destination and the source
-                        level.playSound(null, oldX, oldY, oldZ, SoundEvents.ENDERMAN_TELEPORT, entity.getSoundSource(), 1.0F, 1.0F);
+                        level.playSound(null, oldX, oldY, oldZ, sound, entity.getSoundSource());
                     }
-                    teleportedEntity.level().playSound(null, teleportedEntity.getX(), teleportedEntity.getY(), teleportedEntity.getZ(),
-                          SoundEvents.ENDERMAN_TELEPORT, teleportedEntity.getSoundSource(), 1.0F, 1.0F);
+                    teleportedEntity.level().playSound(null, teleportedEntity.getX(), teleportedEntity.getY(), teleportedEntity.getZ(), sound,
+                          teleportedEntity.getSoundSource());
                 }
             }
         }

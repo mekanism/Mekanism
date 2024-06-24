@@ -154,6 +154,8 @@ public class MekanismTagProvider extends BaseTagProvider {
         addEntitiesToTag(EntityTypeTags.IMMUNE_TO_INFESTED, MekanismEntityTypes.ROBIT);
         addEntitiesToTag(EntityTypeTags.IMMUNE_TO_OOZING, MekanismEntityTypes.ROBIT);
         addEntitiesToTag(EntityTypeTags.FALL_DAMAGE_IMMUNE, MekanismEntityTypes.ROBIT);
+        //Robit's don't need to breathe
+        addEntitiesToTag(EntityTypeTags.CAN_BREATHE_UNDER_WATER, MekanismEntityTypes.ROBIT);
         //Robit's are not scary, they are friends!
         addEntitiesToTag(EntityTypeTags.NOT_SCARY_FOR_PUFFERFISH, MekanismEntityTypes.ROBIT);
         addEntitiesToTag(EntityTypeTags.ILLAGER_FRIENDS, MekanismEntityTypes.ROBIT);
@@ -266,7 +268,7 @@ public class MekanismTagProvider extends BaseTagProvider {
         addToTag(ItemTags.CHEST_ARMOR, MekanismItems.HAZMAT_GOWN, MekanismItems.MEKASUIT_BODYARMOR);
         addToTag(ItemTags.LEG_ARMOR, MekanismItems.HAZMAT_PANTS, MekanismItems.MEKASUIT_PANTS);
         addToTag(ItemTags.FOOT_ARMOR, MekanismItems.HAZMAT_BOOTS, MekanismItems.MEKASUIT_BOOTS);
-        getItemBuilder(ItemTags.TRIMMABLE_ARMOR).remove(IItemProvider::getRegistryName,
+        getItemBuilder(ItemTags.TRIMMABLE_ARMOR).remove(
               MekanismItems.HAZMAT_MASK,
               MekanismItems.HAZMAT_GOWN,
               MekanismItems.HAZMAT_PANTS,
@@ -277,22 +279,17 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismItems.MEKASUIT_BOOTS
         );
         IItemProvider[] providers = {
-              MekanismItems.HAZMAT_MASK,
-              MekanismItems.HAZMAT_GOWN,
-              MekanismItems.HAZMAT_PANTS,
-              MekanismItems.HAZMAT_BOOTS,
               MekanismItems.MEKASUIT_HELMET,
               MekanismItems.MEKASUIT_BODYARMOR,
               MekanismItems.MEKASUIT_PANTS,
               MekanismItems.MEKASUIT_BOOTS
         };
-        getItemBuilder(ItemTags.TRIMMABLE_ARMOR).remove(IItemProvider::getRegistryName, providers);
         getItemBuilder(ItemTags.DURABILITY_ENCHANTABLE).remove(IItemProvider::getRegistryName, providers);
         getItemBuilder(ItemTags.EQUIPPABLE_ENCHANTABLE).remove(IItemProvider::getRegistryName, providers);
-        getItemBuilder(ItemTags.HEAD_ARMOR_ENCHANTABLE).remove(IItemProvider::getRegistryName, MekanismItems.HAZMAT_MASK, MekanismItems.MEKASUIT_HELMET);
-        getItemBuilder(ItemTags.CHEST_ARMOR_ENCHANTABLE).remove(IItemProvider::getRegistryName, MekanismItems.HAZMAT_GOWN, MekanismItems.MEKASUIT_BODYARMOR);
-        getItemBuilder(ItemTags.LEG_ARMOR_ENCHANTABLE).remove(IItemProvider::getRegistryName, MekanismItems.HAZMAT_PANTS, MekanismItems.MEKASUIT_PANTS);
-        getItemBuilder(ItemTags.FOOT_ARMOR_ENCHANTABLE).remove(IItemProvider::getRegistryName, MekanismItems.HAZMAT_BOOTS, MekanismItems.MEKASUIT_BOOTS);
+        getItemBuilder(ItemTags.HEAD_ARMOR_ENCHANTABLE).remove(MekanismItems.MEKASUIT_HELMET);
+        getItemBuilder(ItemTags.CHEST_ARMOR_ENCHANTABLE).remove(MekanismItems.MEKASUIT_BODYARMOR);
+        getItemBuilder(ItemTags.LEG_ARMOR_ENCHANTABLE).remove( MekanismItems.MEKASUIT_PANTS);
+        getItemBuilder(ItemTags.FOOT_ARMOR_ENCHANTABLE).remove(MekanismItems.MEKASUIT_BOOTS);
     }
 
     private void addRods() {
@@ -517,7 +514,7 @@ public class MekanismTagProvider extends BaseTagProvider {
         addToTag(DamageTypeTags.BYPASSES_SHIELD, MekanismDamageTypes.RADIATION);
         addToTag(DamageTypeTags.BYPASSES_WOLF_ARMOR, MekanismDamageTypes.RADIATION);
         addToTag(DamageTypeTags.BYPASSES_COOLDOWN, MekanismDamageTypes.LASER);
-        addToTag(DamageTypeTags.BURNS_ARMOR_STANDS, MekanismDamageTypes.LASER);
+        addToTag(DamageTypeTags.ALWAYS_KILLS_ARMOR_STANDS, MekanismDamageTypes.LASER);
         addToTag(DamageTypeTags.PANIC_CAUSES, MekanismDamageTypes.LASER);
         addToTag(DamageTypeTags.NO_KNOCKBACK, MekanismDamageTypes.LASER, MekanismDamageTypes.RADIATION);
         addToTag(DamageTypeTags.PANIC_ENVIRONMENTAL_CAUSES, MekanismDamageTypes.RADIATION);

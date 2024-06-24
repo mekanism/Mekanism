@@ -386,6 +386,8 @@ dependencies {
     compileOnly("curse.maven:jade-api-324717:${jade_api_id}")
     localRuntime("curse.maven:jade-324717:${jade_id}")
     compileOnly("mcp.mobius.waila:wthit-api:neo-${wthit_version}")
+    //localRuntime("mcp.mobius.waila:wthit:neo-${wthit_version}")
+    //localRuntime('lol.bai:badpackets:neo-0.8.1')
 
     def crt = "com.blamejared.crafttweaker:CraftTweaker-neoforge-${minecraft_version}:${crafttweaker_version}"
     compileOnly(crt)

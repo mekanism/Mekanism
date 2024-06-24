@@ -3,6 +3,7 @@ package mekanism.common.tag;
 import java.util.Collection;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagBuilder;
@@ -52,5 +53,10 @@ public class IntrinsicMekanismTagBuilder<TYPE> extends MekanismTagBuilder<TYPE, 
     @SafeVarargs
     public final IntrinsicMekanismTagBuilder<TYPE> remove(TYPE... elements) {
         return remove(this::getKey, elements);
+    }
+
+    @SafeVarargs
+    public final IntrinsicMekanismTagBuilder<TYPE> remove(Holder<TYPE>... elements) {
+        return remove(element -> getKey(element.value()), elements);
     }
 }
