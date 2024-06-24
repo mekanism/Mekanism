@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.Mekanism;
+import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -15,6 +16,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 public class MekanismDamageTypes {
@@ -66,7 +68,19 @@ public class MekanismDamageTypes {
         }
 
         public DamageSource source(RegistryAccess registryAccess) {
-            return new DamageSource(registryAccess.registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(key()));
+            return new DamageSource(holder(registryAccess));
+        }
+
+        public DamageSource source(Level level, Vec3 position) {
+            return source(level.registryAccess(), position);
+        }
+
+        public DamageSource source(RegistryAccess registryAccess, Vec3 position) {
+            return new DamageSource(holder(registryAccess), position);
+        }
+
+        private Holder<DamageType> holder(RegistryAccess registryAccess) {
+            return registryAccess.registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(key());
         }
     }
 }

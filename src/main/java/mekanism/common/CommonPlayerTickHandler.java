@@ -35,6 +35,7 @@ import mekanism.common.util.StorageUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -46,10 +47,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.NeoForgeMod;
-import net.neoforged.neoforge.event.entity.living.LivingAttackEvent;
+import net.neoforged.neoforge.common.damagesource.DamageContainer;
 import net.neoforged.neoforge.event.entity.living.LivingEvent.LivingJumpEvent;
 import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
-import net.neoforged.neoforge.event.entity.living.LivingHurtEvent;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.BreakSpeed;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import org.jetbrains.annotations.Nullable;
@@ -159,9 +160,12 @@ public class CommonPlayerTickHandler {
     }
 
     @SubscribeEvent
-    public void onEntityAttacked(LivingAttackEvent event) {
+    @SuppressWarnings("UnstableApiUsage")//Note: DamageContainer isn't actually unstable, they just forgot to unmark it before finalizing the PR
+    public void onEntityAttacked(LivingIncomingDamageEvent event) {
         LivingEntity entity = event.getEntity();
-        if (event.getAmount() <= 0 || !entity.isAlive()) {
+        DamageContainer damageContainer = event.getContainer();
+        float damage = damageContainer.getNewDamage();
+        if (damage <= 0 || !entity.isAlive()) {
             //If some mod does weird things and causes the damage value to be negative or zero then exit
             // as our logic assumes there is actually damage happening and can crash if someone tries to
             // use a negative number as the damage value. We also check to make sure that we don't do
@@ -171,8 +175,9 @@ public class CommonPlayerTickHandler {
             // entity can't take damage while dead
             return;
         }
+        DamageSource source = damageContainer.getSource();
         //Gas Mask checks
-        if (event.getSource().is(MekanismAPITags.DamageTypes.IS_PREVENTABLE_MAGIC)) {
+        if (source.is(MekanismAPITags.DamageTypes.IS_PREVENTABLE_MAGIC)) {
             ItemStack headStack = entity.getItemBySlot(EquipmentSlot.HEAD);
             if (!headStack.isEmpty() && headStack.getItem() instanceof ItemScubaMask) {
                 ItemStack chestStack = entity.getItemBySlot(EquipmentSlot.CHEST);
@@ -183,35 +188,16 @@ public class CommonPlayerTickHandler {
             }
         }
         if (entity instanceof Player player) {
-            if (ItemMekaSuitArmor.tryAbsorbAll(player, event.getSource(), event.getAmount())) {
-                event.setCanceled(true);
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public void onLivingHurt(LivingHurtEvent event) {
-        LivingEntity entity = event.getEntity();
-        if (event.getAmount() <= 0 || !entity.isAlive()) {
-            //If some mod does weird things and causes the damage value to be negative or zero then exit
-            // as our logic assumes there is actually damage happening and can crash if someone tries to
-            // use a negative number as the damage value. We also check to make sure that we don't do
-            // anything if the entity is dead as living attack is still fired when the entity is dead
-            // for things like fall damage if the entity dies before hitting the ground, and then energy
-            // would be depleted regardless if keep inventory is on even if no damage was stopped as the
-            // entity can't take damage while dead. While living hurt is not fired, we catch this case
-            // just in case anyway because it is a simple boolean check and there is no guarantee that
-            // other mods may not be firing the event manually even when the entity is dead
-            return;
-        }
-        if (entity instanceof Player player) {
-            float ratioAbsorbed = ItemMekaSuitArmor.getDamageAbsorbed(player, event.getSource(), event.getAmount());
+            //TODO - 1.21: Should we rewrite this to try and take advantage of the new reduction system? It would be kind of nice to move this to the
+            // spot that reduction from armor happens. Though then the base armor reduction will apply before our energy based reduction
+            // Is that fine? Maybe it is better, or maybe it is worse from a balance standpoint
+            float ratioAbsorbed = ItemMekaSuitArmor.getDamageAbsorbed(player, damageContainer.getSource(), damage);
             if (ratioAbsorbed > 0) {
-                float damageRemaining = event.getAmount() * Math.max(0, 1 - ratioAbsorbed);
+                float damageRemaining = damage * Math.max(0, 1 - ratioAbsorbed);
                 if (damageRemaining <= 0) {
                     event.setCanceled(true);
                 } else {
-                    event.setAmount(damageRemaining);
+                    damageContainer.setNewDamage(damageRemaining);
                 }
             }
         }

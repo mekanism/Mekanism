@@ -125,8 +125,8 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.client.model.data.ModelProperty;
-import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.damagesource.DamageContainer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -528,15 +528,11 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     }
 
     @Override
-    protected void actuallyHurt(@NotNull DamageSource damageSource, float amount) {
-        amount = CommonHooks.onLivingHurt(this, damageSource, amount);
-        if (amount <= 0) {
-            return;
-        }
-        amount = getDamageAfterArmorAbsorb(damageSource, amount);
-        amount = getDamageAfterMagicAbsorb(damageSource, amount);
-        energyContainer.extract(FloatingLong.create(1_000 * amount), Action.EXECUTE, AutomationType.INTERNAL);
-        getCombatTracker().recordDamage(damageSource, amount);
+    @SuppressWarnings("UnstableApiUsage")//Note: DamageContainer isn't actually unstable, they just forgot to unmark it before finalizing the PR
+    public void onDamageTaken(@NotNull DamageContainer damageContainer) {
+        energyContainer.extract(FloatingLong.create(1_000 * damageContainer.getNewDamage()), Action.EXECUTE, AutomationType.INTERNAL);
+        //Don't actually allow taking damage to reduce the robit's health
+        setHealth(getMaxHealth());
     }
 
     @Override

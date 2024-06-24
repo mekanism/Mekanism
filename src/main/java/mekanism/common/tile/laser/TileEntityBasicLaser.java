@@ -34,12 +34,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.stats.Stats;
-import net.minecraft.util.Mth;
-import net.minecraft.world.InteractionHand;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -58,8 +55,8 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.common.ToolActions;
-import net.neoforged.neoforge.event.entity.living.ShieldBlockEvent;
+import net.neoforged.neoforge.common.damagesource.DamageContainer;
+import net.neoforged.neoforge.event.entity.living.LivingShieldBlockEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import org.jetbrains.annotations.NotNull;
 
@@ -139,30 +136,22 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                         //If the entity is a living entity check if they are blocking with a shield and then allow
                         // the shield to cause some damage to be dissipated in exchange for durability
                         boolean updateDamage = false;
-                        if (livingEntity.isBlocking() && livingEntity.getUseItem().canPerformAction(ToolActions.SHIELD_BLOCK)) {
-                            Vec3 viewVector = livingEntity.getViewVector(1);
-                            Vec3 vectorTo = from.vectorTo(livingEntity.position()).normalize();
-                            vectorTo = new Vec3(vectorTo.x, 0, vectorTo.z);
-                            //Validate the player is facing the laser
-                            if (vectorTo.dot(viewVector) < 0) {
-                                //TODO - V11: Add a laser reflector capability that shields can implement to cause the laser beam to be reflected
-                                // maybe even implement this ability but don't add it to any of our things yet?
-                                float damageBlocked = damageShield(level, livingEntity, livingEntity.getUseItem(), damage, 2);
-                                if (damageBlocked > 0) {
-                                    if (livingEntity instanceof ServerPlayer player) {
-                                        //If the entity is a player trigger the advancement criteria for blocking a laser with a shield
-                                        MekanismCriteriaTriggers.BLOCK_LASER.value().trigger(player);
-                                    }
-                                    //Remove however much energy we were able to block
-                                    remainingEnergy = remainingEnergy.minusEqual(energyPerDamage.multiply(damageBlocked));
-                                    if (remainingEnergy.isZero()) {
-                                        //If we absorbed it all then update the position the laser is going to and break
-                                        to = from.adjustPosition(direction, entity);
-                                        break;
-                                    }
-                                    updateDamage = true;
-                                }
+                        //TODO - V11: Add a laser reflector capability that shields can implement to cause the laser beam to be reflected
+                        // maybe even implement this ability but don't add it to any of our things yet?
+                        float damageBlocked = damageShield(level, livingEntity, from, damage);
+                        if (damageBlocked > 0) {
+                            if (livingEntity instanceof ServerPlayer player) {
+                                //If the entity is a player trigger the advancement criteria for blocking a laser with a shield
+                                MekanismCriteriaTriggers.BLOCK_LASER.value().trigger(player);
                             }
+                            //Remove however much energy we were able to block
+                            remainingEnergy = remainingEnergy.minusEqual(energyPerDamage.multiply(damageBlocked));
+                            if (remainingEnergy.isZero()) {
+                                //If we absorbed it all then update the position the laser is going to and break
+                                to = from.adjustPosition(direction, entity);
+                                break;
+                            }
+                            updateDamage = true;
                         }
                         //After our shield checks see if the armor the entity is wearing can dissipate or refract lasers
                         double dissipationPercent = 0;
@@ -338,38 +327,29 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     }
 
     /**
-     * Based off of Player#hurtCurrentlyUsedShield
+     * @param from   Where the laser is firing from
+     * @param damage Damage to do
+     *
+     * @return The amount of damage that was blocked
      */
-    private float damageShield(Level level, LivingEntity livingEntity, ItemStack activeStack, float damage, int absorptionRatio) {
+    @SuppressWarnings("UnstableApiUsage")//Note: DamageContainer isn't actually unstable, they just forgot to unmark it before finalizing the PR
+    private float damageShield(Level level, LivingEntity livingEntity, Pos3D from, float damage) {
+        DamageSource source = MekanismDamageTypes.LASER.source(level, from);
         //Absorb part of the damage based on the given absorption ratio
-        float damageBlocked = damage;
-        float effectiveDamage = damage / absorptionRatio;
-        if (effectiveDamage >= 1) {
-            //Allow the shield to absorb sub single unit damage values for free
-            ShieldBlockEvent event = CommonHooks.onShieldBlock(livingEntity, MekanismDamageTypes.LASER.source(level), effectiveDamage);
-            if (event.isCanceled()) {
-                //Blocking was not allowed, return we didn't block any damage
-                return 0;
-            } else if (event.shieldTakesDamage()) {
-                //Only damage the shield if the shield isn't setup to block damage for free
-                int durabilityNeeded = 1 + Mth.floor(effectiveDamage);
-                int activeDurability = activeStack.getMaxDamage() - activeStack.getDamageValue();
-                InteractionHand hand = livingEntity.getUsedItemHand();
-                activeStack.hurtAndBreak(durabilityNeeded, livingEntity, LivingEntity.getSlotForHand(hand));
-                if (activeStack.isEmpty()) {
-                    if (hand == InteractionHand.MAIN_HAND) {
-                        livingEntity.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
-                    } else {
-                        livingEntity.setItemSlot(EquipmentSlot.OFFHAND, ItemStack.EMPTY);
-                    }
-                    livingEntity.stopUsingItem();
-                    livingEntity.playSound(SoundEvents.SHIELD_BREAK, 0.8F, 0.8F + 0.4F * level.random.nextFloat());
-                    //Durability needed to block damage - durability we had, is the left-over durability that would have been needed to block it all
-                    int unblockedDamage = (durabilityNeeded - activeDurability) * absorptionRatio;
-                    damageBlocked = Math.max(0, damage - unblockedDamage);
-                }
-            }
+        DamageContainer damageContainer = new DamageContainer(source, damage);
+        //Note: Even though we fire this even here manually, it doesn't cause issues with the damage pipeline
+        // as if we do block damage, then we won't end up firing the normal pipeline
+        LivingShieldBlockEvent event = CommonHooks.onDamageBlock(livingEntity, damageContainer, livingEntity.isDamageSourceBlocked(source));
+        if (event.isCanceled() || !event.getBlocked()) {
+            //Blocking was not allowed, return we didn't block any damage
+            return 0;
         }
+        float shieldDamage = event.shieldDamage();
+        if (shieldDamage > 0) {
+            //Only damage the shield if the shield isn't setup to block damage for free
+            livingEntity.hurtCurrentlyUsedShield(shieldDamage);
+        }
+        float damageBlocked = event.getBlockedDamage();
         if (livingEntity instanceof ServerPlayer player && damageBlocked > 0 && damageBlocked < 3.4028235E37F) {
             player.awardStat(Stats.DAMAGE_BLOCKED_BY_SHIELD, Math.round(damageBlocked * 10F));
         }
@@ -404,7 +384,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
         breakBlock(state, level, hitPos, tool);
     }
 
-    protected final void breakBlock(BlockState state, ServerLevel level, BlockPos hitPos,  ItemStack tool) {
+    protected final void breakBlock(BlockState state, ServerLevel level, BlockPos hitPos, ItemStack tool) {
         state.spawnAfterBreak(level, hitPos, tool, false);
         level.removeBlock(hitPos, false);
         //TODO: We may want to evaluate at some point doing this with our fake player so that it is fired as the "cause"?

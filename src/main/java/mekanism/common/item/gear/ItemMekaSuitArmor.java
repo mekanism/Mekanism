@@ -433,22 +433,6 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     public static float getDamageAbsorbed(Player player, DamageSource source, float amount) {
-        return getDamageAbsorbed(player, source, amount, null);
-    }
-
-    public static boolean tryAbsorbAll(Player player, DamageSource source, float amount) {
-        List<Runnable> energyUsageCallbacks = new ArrayList<>(4);
-        if (getDamageAbsorbed(player, source, amount, energyUsageCallbacks) >= 1) {
-            //If we can fully absorb it, actually use the energy from the various pieces and then return that we absorbed it all
-            for (Runnable energyUsageCallback : energyUsageCallbacks) {
-                energyUsageCallback.run();
-            }
-            return true;
-        }
-        return false;
-    }
-
-    private static float getDamageAbsorbed(Player player, DamageSource source, float amount, @Nullable List<Runnable> energyUseCallbacks) {
         if (amount <= 0) {
             return 0;
         }
@@ -525,13 +509,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         }
         for (FoundArmorDetails details : armorDetails) {
             //Use energy/or enqueue usage for each piece as needed
-            if (!details.usageInfo.energyUsed.isZero()) {
-                if (energyUseCallbacks == null) {
-                    details.energyContainer.extract(details.usageInfo.energyUsed, Action.EXECUTE, AutomationType.MANUAL);
-                } else {
-                    energyUseCallbacks.add(details);
-                }
-            }
+            details.drainEnergy();
         }
         return Math.min(ratioAbsorbed, 1);
     }
@@ -569,7 +547,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         return 0;
     }
 
-    private static class FoundArmorDetails implements Runnable {
+    private static class FoundArmorDetails {
 
         private final IEnergyContainer energyContainer;
         private final EnergyUsageInfo usageInfo;
@@ -581,8 +559,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
             this.armor = armor;
         }
 
-        @Override
-        public void run() {
+        public void drainEnergy() {
             energyContainer.extract(usageInfo.energyUsed, Action.EXECUTE, AutomationType.MANUAL);
         }
     }
