@@ -1,4 +1,4 @@
-package mekanism.tools.client.integration;
+package mekanism.tools.client.integration.emi;
 
 import java.util.concurrent.CompletableFuture;
 import mekanism.api.annotations.NothingNullByDefault;

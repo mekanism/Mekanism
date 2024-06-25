@@ -1,4 +1,4 @@
-package mekanism.generators.client.integration;
+package mekanism.generators.client.integration.emi;
 
 import dev.emi.emi.api.stack.EmiStack;
 import java.util.List;
@@ -8,6 +8,7 @@ import mekanism.client.integration.MekanismAliases;
 import mekanism.client.integration.emi.BaseEmiAliasProvider;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.ChemicalUtil;
+import mekanism.generators.client.integration.GeneratorsAliases;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsFluids;

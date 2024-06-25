@@ -1,6 +1,7 @@
-package mekanism.additions.client.integration;
+package mekanism.additions.client.integration.emi;
 
 import java.util.concurrent.CompletableFuture;
+import mekanism.additions.client.integration.AdditionsAliases;
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.additions.common.registries.AdditionsItems;
