@@ -50,6 +50,7 @@ public class ItemRobit extends ItemEnergized implements ICapabilityAware {
         super(properties.rarity(Rarity.RARE).stacksTo(1)
               .component(MekanismDataComponents.ROBIT_SKIN, MekanismRobitSkins.BASE)
               .component(MekanismDataComponents.SECURITY, SecurityMode.PUBLIC)
+              .component(MekanismDataComponents.DEFAULT_MANUALLY_SELECTED, false)
         );
     }
 
@@ -111,6 +112,7 @@ public class ItemRobit extends ItemEnergized implements ICapabilityAware {
                     robit.setSecurityMode(securityObject.getSecurityMode());
                 }
                 robit.setSkin(stack.getOrDefault(MekanismDataComponents.ROBIT_SKIN, MekanismRobitSkins.BASE), player);
+                robit.setDefaultSkinManuallySelected(stack.getOrDefault(MekanismDataComponents.DEFAULT_MANUALLY_SELECTED, false));
                 world.addFreshEntity(robit);
                 world.gameEvent(player, GameEvent.ENTITY_PLACE, robit.blockPosition());
                 stack.shrink(1);
@@ -130,7 +132,7 @@ public class ItemRobit extends ItemEnergized implements ICapabilityAware {
     @Override
     public void inventoryTick(@NotNull ItemStack stack, @NotNull Level level, @NotNull Entity entity, int slot, boolean isSelected) {
         super.inventoryTick(stack, level, entity, slot, isSelected);
-        if (!level.isClientSide && HolidayManager.hasRobitSkinsToday()) {
+        if (!level.isClientSide && HolidayManager.hasRobitSkinsToday() && !stack.getOrDefault(MekanismDataComponents.DEFAULT_MANUALLY_SELECTED, false)) {
             ResourceKey<RobitSkin> skin = stack.get(MekanismDataComponents.ROBIT_SKIN);
             if (skin == null || skin == MekanismRobitSkins.BASE) {
                 //Randomize the robit's skin

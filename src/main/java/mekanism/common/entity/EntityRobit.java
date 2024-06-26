@@ -147,6 +147,8 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     private static final EntityDataAccessor<SecurityMode> SECURITY = define(MekanismDataSerializers.SECURITY.value());
     private static final EntityDataAccessor<Boolean> FOLLOW = define(EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> DROP_PICKUP = define(EntityDataSerializers.BOOLEAN);
+    //Note: We sync the default skin part, so that pick item on the robit will properly persist this
+    private static final EntityDataAccessor<Boolean> DEFAULT_SKIN_MANUALLY_SELECTED = define(EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<ResourceKey<RobitSkin>> SKIN = define(MekanismDataSerializers.ROBIT_SKIN.value());
 
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
@@ -277,6 +279,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         builder.define(SECURITY, SecurityMode.PUBLIC);
         builder.define(FOLLOW, false);
         builder.define(DROP_PICKUP, false);
+        builder.define(DEFAULT_SKIN_MANUALLY_SELECTED, false);
         builder.define(SKIN, MekanismRobitSkins.BASE);
     }
 
@@ -347,7 +350,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
             energySlot.fillContainerOrConvert();
             recipeCacheLookupMonitor.updateAndProcess();
 
-            if (HolidayManager.hasRobitSkinsToday() && getSkin() == MekanismRobitSkins.BASE) {
+            if (!isDefaultSkinManuallySelected() && HolidayManager.hasRobitSkinsToday() && getSkin() == MekanismRobitSkins.BASE) {
                 //Randomize the robit's skin
                 setSkin(HolidayManager.getRandomBaseSkin(level().random), null);
             }
@@ -459,6 +462,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
             security.setOwnerUUID(getOwnerUUID());
             security.setSecurityMode(getSecurityMode());
         }
+        stack.set(MekanismDataComponents.DEFAULT_MANUALLY_SELECTED, isDefaultSkinManuallySelected());
         stack.set(MekanismDataComponents.ROBIT_SKIN, getSkin());
         return stack;
     }
@@ -668,7 +672,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     }
 
     @Override
-    public ItemStack getPickedResult(HitResult target) {
+    public ItemStack getPickedResult(@NotNull HitResult target) {
         return getItemVariant();
     }
 
@@ -729,6 +733,14 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         };
     }
 
+    public boolean isDefaultSkinManuallySelected() {
+        return entityData.get(DEFAULT_SKIN_MANUALLY_SELECTED);
+    }
+
+    public void setDefaultSkinManuallySelected(boolean value) {
+        entityData.set(DEFAULT_SKIN_MANUALLY_SELECTED, value);
+    }
+
     @NotNull
     @Override
     public ResourceKey<RobitSkin> getSkin() {
@@ -759,6 +771,9 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
             }
         }
         entityData.set(SKIN, skinKey);
+        if (skinKey == MekanismRobitSkins.BASE) {
+            setDefaultSkinManuallySelected(true);
+        }
         return true;
     }
 
