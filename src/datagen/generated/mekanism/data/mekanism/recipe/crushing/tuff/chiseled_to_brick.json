@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "count": 1,
+    "item": "minecraft:chiseled_tuff"
+  },
+  "output": {
+    "count": 1,
+    "id": "minecraft:tuff_bricks"
+  }
+}

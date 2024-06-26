@@ -489,7 +489,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.CIRCUIT, Pattern.STEEL_CASING, Pattern.CIRCUIT),
                     TripleLine.of(Pattern.STEEL, Pattern.CONSTANT, Pattern.STEEL))
               ).key(Pattern.CONSTANT, Tags.Items.CHESTS_WOODEN)
-              .key(Pattern.PREVIOUS, Blocks.CRAFTING_TABLE)
+              .key(Pattern.PREVIOUS, Blocks.CRAFTER)
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)

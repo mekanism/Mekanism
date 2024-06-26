@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "count": 1,
+    "item": "minecraft:tuff_brick_stairs"
+  },
+  "output": {
+    "count": 1,
+    "id": "minecraft:tuff_stairs"
+  }
+}

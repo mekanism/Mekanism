@@ -69,6 +69,7 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
     private void addEnrichingConversionRecipes(RecipeOutput consumer, String basePath) {
         addEnrichingMudConversionRecipes(consumer, basePath + "mud/");
         addEnrichingStoneConversionRecipes(consumer, basePath + "stone/");
+        addEnrichingTuffConversionRecipes(consumer, basePath + "tuff/");
         addEnrichingBlackstoneConversionRecipes(consumer, basePath + "blackstone/");
         addEnrichingDeepslateConversionRecipes(consumer, basePath + "deepslate/");
         addEnrichingQuartzRecipes(consumer, basePath + "quartz/");
@@ -155,6 +156,77 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
               IngredientCreatorAccess.item().from(Blocks.STONE_BRICKS),
               new ItemStack(Blocks.CHISELED_STONE_BRICKS)
         ).build(consumer, Mekanism.rl(basePath + "bricks_to_chiseled_bricks"));
+    }
+
+    private void addEnrichingTuffConversionRecipes(RecipeOutput consumer, String basePath) {
+        //Tuff -> Polished Tuff
+        ItemStackToItemStackRecipeBuilder.enriching(
+              IngredientCreatorAccess.item().from(Blocks.TUFF),
+              new ItemStack(Blocks.POLISHED_TUFF)
+        ).build(consumer, Mekanism.rl(basePath + "to_polished"));
+        //Tuff Stairs -> Polished Tuff Stairs
+        ItemStackToItemStackRecipeBuilder.enriching(
+              IngredientCreatorAccess.item().from(Blocks.TUFF_STAIRS),
+              new ItemStack(Blocks.POLISHED_TUFF_STAIRS)
+        ).build(consumer, Mekanism.rl(basePath + "stairs_to_polished"));
+        //Tuff Slabs -> Polished Tuff Slabs
+        ItemStackToItemStackRecipeBuilder.enriching(
+              IngredientCreatorAccess.item().from(Blocks.TUFF_SLAB),
+              new ItemStack(Blocks.POLISHED_TUFF_SLAB)
+        ).build(consumer, Mekanism.rl(basePath + "slabs_to_polished"));
+        //Tuff Walls -> Polished Tuff Walls
+        ItemStackToItemStackRecipeBuilder.enriching(
+              IngredientCreatorAccess.item().from(Blocks.TUFF_WALL),
+              new ItemStack(Blocks.POLISHED_TUFF_WALL)
+        ).build(consumer, Mekanism.rl(basePath + "wall_to_polished"));
+
+        //Polished Tuff -> Tuff Bricks
+        ItemStackToItemStackRecipeBuilder.enriching(
+              IngredientCreatorAccess.item().from(Blocks.POLISHED_TUFF),
+              new ItemStack(Blocks.TUFF_BRICKS)
+        ).build(consumer, Mekanism.rl(basePath + "polished_to_brick"));
+        //Polished Tuff Stairs -> Tuff Brick Stairs
+        ItemStackToItemStackRecipeBuilder.enriching(
+              IngredientCreatorAccess.item().from(Blocks.POLISHED_TUFF_STAIRS),
+              new ItemStack(Blocks.TUFF_BRICK_STAIRS)
+        ).build(consumer, Mekanism.rl(basePath + "polished_stairs_to_brick"));
+        //Polished Tuff Slabs -> Tuff Brick Slabs
+        ItemStackToItemStackRecipeBuilder.enriching(
+              IngredientCreatorAccess.item().from(Blocks.POLISHED_TUFF_SLAB),
+              new ItemStack(Blocks.TUFF_BRICK_SLAB)
+        ).build(consumer, Mekanism.rl(basePath + "polished_slabs_to_brick"));
+        //Polished Tuff Walls -> Tuff Brick Walls
+        ItemStackToItemStackRecipeBuilder.enriching(
+              IngredientCreatorAccess.item().from(Blocks.POLISHED_TUFF_WALL),
+              new ItemStack(Blocks.TUFF_BRICK_WALL)
+        ).build(consumer, Mekanism.rl(basePath + "polished_wall_to_brick"));
+
+        //Tuff Bricks -> Chiseled Tuff
+        ItemStackToItemStackRecipeBuilder.enriching(
+              IngredientCreatorAccess.item().from(Blocks.TUFF_BRICKS),
+              new ItemStack(Blocks.CHISELED_TUFF)
+        ).build(consumer, Mekanism.rl(basePath + "brick_to_chiseled"));
+
+        //Chiseled Tuff -> Tuff
+        ItemStackToItemStackRecipeBuilder.enriching(
+              IngredientCreatorAccess.item().from(Blocks.CHISELED_TUFF),
+              new ItemStack(Blocks.TUFF)
+        ).build(consumer, Mekanism.rl(basePath + "from_chiseled"));
+        //Tuff Brick Stairs -> Tuff Stairs
+        ItemStackToItemStackRecipeBuilder.enriching(
+              IngredientCreatorAccess.item().from(Blocks.TUFF_BRICK_STAIRS),
+              new ItemStack(Blocks.TUFF_STAIRS)
+        ).build(consumer, Mekanism.rl(basePath + "stairs_from_brick"));
+        //Tuff Brick Slabs -> Tuff Slabs
+        ItemStackToItemStackRecipeBuilder.enriching(
+              IngredientCreatorAccess.item().from(Blocks.TUFF_BRICK_SLAB),
+              new ItemStack(Blocks.TUFF_SLAB)
+        ).build(consumer, Mekanism.rl(basePath + "slab_from_brick"));
+        //Tuff Brick Walls -> Tuff Walls
+        ItemStackToItemStackRecipeBuilder.enriching(
+              IngredientCreatorAccess.item().from(Blocks.TUFF_BRICK_WALL),
+              new ItemStack(Blocks.TUFF_WALL)
+        ).build(consumer, Mekanism.rl(basePath + "wall_from_brick"));
     }
 
     private void addEnrichingDeepslateConversionRecipes(RecipeOutput consumer, String basePath) {

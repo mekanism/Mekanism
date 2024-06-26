@@ -9,7 +9,7 @@
       "tag": "c:circuits/basic"
     },
     "P": {
-      "item": "minecraft:crafting_table"
+      "item": "minecraft:crafter"
     },
     "S": {
       "tag": "c:ingots/steel"
