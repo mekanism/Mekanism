@@ -292,7 +292,7 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
                 //Nothing to actually install because we are already at the max stack size
                 return 0;
             }
-            module = module.withReplacedInstallCount(provider, module.getInstalledCount() + toInstall);
+            module = module.withReplacedInstallCount(module.getInstalledCount() + toInstall);
         }
         //Add the module to the list of tracked and known modules if necessary or replace the existing value
         SequencedMap<ModuleData<?>, Module<?>> copiedModules = new LinkedHashMap<>(typedModules);
@@ -332,7 +332,7 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
                     }
                 }
             } else {//update the module with the new installed count
-                module = module.withReplacedInstallCount(provider, installed);
+                module = module.withReplacedInstallCount(installed);
                 copiedModules.put(type, module);
                 //Update the level of any corresponding enchantment
                 adjustedEnchantments = updateEnchantment(provider, module, null);

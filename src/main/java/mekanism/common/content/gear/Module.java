@@ -28,15 +28,10 @@ import mekanism.common.MekanismLang;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.entity.LivingEntity;
@@ -217,12 +212,31 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
         return enabled;
     }
 
-    Module<MODULE> withReplacedInstallCount(HolderLookup.Provider provider, int installed) {
-        RegistryOps<Tag> registryOps = provider.createSerializationContext(NbtOps.INSTANCE);
-        //TODO: See if we can come up with a cleaner way to do this
-        CompoundTag tag = (CompoundTag) Module.CODEC.encodeStart(registryOps, this).getOrThrow();
-        tag.putInt(SerializationConstants.AMOUNT, installed);
-        return (Module<MODULE>) Module.CODEC.decode(registryOps, tag).getOrThrow().getFirst();
+    Module<MODULE> withReplacedInstallCount(int installed) {
+        List<ModuleConfig<?>> moduleConfigs = data.defaultConfigs(installed);
+        List<ModuleConfig<?>> copiedConfigs = new ArrayList<>(moduleConfigs.size());
+        for (ModuleConfig<?> moduleConfig : moduleConfigs) {
+            ResourceLocation name = moduleConfig.name();
+            ModuleConfig<?> existingConfig = configItemsByName.get(name);
+            if (existingConfig == null) {
+                copiedConfigs.add(moduleConfig);
+            } else if (moduleConfig.getClass() == existingConfig.getClass()) {
+                copiedConfigs.add(configWithValue(moduleConfig, existingConfig));
+            } else {
+                throw new IllegalStateException("Expected module config " + name + " to have the same class regardless of installed count.");
+            }
+        }
+        return new Module<>(data, installed, List.copyOf(copiedConfigs));
+    }
+
+    @SuppressWarnings("unchecked")
+    private <CONFIG> ModuleConfig<CONFIG> configWithValue(ModuleConfig<CONFIG> defaultConfig, ModuleConfig<?> existing) {
+        try {
+            return defaultConfig.with(((ModuleConfig<CONFIG>) existing).get());
+        } catch (IllegalArgumentException e) {
+            //If the existing value isn't valid for the new config, fallback to the default value
+            return defaultConfig;
+        }
     }
 
     Module<MODULE> withReplacedConfig(ModuleConfig<?> config) {
