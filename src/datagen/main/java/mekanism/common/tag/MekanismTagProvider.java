@@ -244,7 +244,8 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismBlocks.ULTIMATE_UNIVERSAL_CABLE
         );
         getBlockBuilder(MekanismTags.Blocks.CARDBOARD_BLACKLIST)
-              .add(Tags.Blocks.RELOCATION_NOT_SUPPORTED, BlockTags.BEDS, BlockTags.DOORS);
+              .add(Tags.Blocks.RELOCATION_NOT_SUPPORTED, BlockTags.BEDS, BlockTags.DOORS)
+              .add(Blocks.TRIAL_SPAWNER, Blocks.VAULT);
     }
 
     private void addTools() {
