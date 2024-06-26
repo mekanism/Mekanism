@@ -23,15 +23,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Validate Gradle Wrapper
+        uses: gradle/actions/wrapper-validation@v3
+
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           java-version: 21
           distribution: 'temurin'
 
-      - name: Build with Gradle
-        uses: gradle/gradle-build-action@v3
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
         with:
-          gradle-version: wrapper
-          arguments: :runGameTestServer
           cache-read-only: false
+
+      - name: Run Game Tests with Gradle
+        run: ./gradlew runGameTestServer
+
+      - name: Run Unit Tests with Gradle
+        run: ./gradlew testJunit

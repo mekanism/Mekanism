@@ -51,6 +51,8 @@ jobs:
             build/neoForm
             ~/.gradle
             .gradle
+      - name: Validate Gradle Wrapper
+        uses: gradle/actions/wrapper-validation@v3
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
@@ -58,12 +60,13 @@ jobs:
           distribution: 'temurin'
           settings-path: ${{ github.workspace }} # location for the settings.xml file
 
-      - name: Build with Gradle
-        uses: gradle/gradle-build-action@v3
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
         with:
-          arguments: build outputChangelog
-          gradle-version: wrapper
           cache-read-only: false
+
+      - name: Build with Gradle
+        run: ./gradlew build outputChangelog
         env:
           BUILD_NUMBER: ${{ github.run_number }}
           GIT_COMMIT: ${{ github.sha }}
@@ -78,7 +81,7 @@ jobs:
 
       - name: GH Release
         id: gh_release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: build/libs/!(MekanismDefense*).jar
           body_path: build/changelog.md
@@ -86,11 +89,7 @@ jobs:
           target_commitish: ${{ github.sha }}
 
       - name: Publish
-        uses: gradle/gradle-build-action@v3
-        with:
-          arguments: curseforge modrinth publish
-          gradle-version: wrapper
-          cache-read-only: false
+        run: ./gradlew curseforge modrinth publish
         env:
           CURSEFORGE_KEY: ${{ secrets.CURSEFORGE_KEY }}
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
