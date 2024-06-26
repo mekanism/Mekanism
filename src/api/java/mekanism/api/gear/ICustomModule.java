@@ -19,6 +19,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.neoforged.neoforge.common.ToolAction;
+import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -191,6 +192,17 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
      */
     default <MODE extends IRadialMode> boolean setMode(IModule<MODULE> module, Player player, IModuleContainer moduleContainer, ItemStack stack, RadialData<MODE> radialData, MODE mode) {
         return false;
+    }
+
+    /**
+     * Called when this module is enabled to modify the attributes of the item this module is installed on. (MekaSuit or Meka-Tool)
+     *
+     * @param module Module instance.
+     * @param event  Event that provides helper to use to modify the attributes on the stack.
+     *
+     * @since 10.6.3
+     */
+    default void adjustAttributes(IModule<MODULE> module, ItemAttributeModifierEvent event) {
     }
 
     /**

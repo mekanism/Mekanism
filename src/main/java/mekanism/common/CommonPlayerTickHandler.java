@@ -18,7 +18,6 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.IBlastingItem;
 import mekanism.common.content.gear.mekasuit.ModuleGravitationalModulatingUnit;
 import mekanism.common.content.gear.mekasuit.ModuleHydraulicPropulsionUnit;
-import mekanism.common.content.gear.mekasuit.ModuleHydrostaticRepulsorUnit;
 import mekanism.common.content.gear.mekasuit.ModuleLocomotiveBoostingUnit;
 import mekanism.common.item.gear.ItemFreeRunners;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
@@ -47,7 +46,6 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.common.damagesource.DamageContainer;
 import net.neoforged.neoforge.event.entity.EntityInvulnerabilityCheckEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEvent.LivingJumpEvent;
@@ -83,12 +81,6 @@ public class CommonPlayerTickHandler {
         return hydraulic != null ? hydraulic.getCustomInstance().getStepHeight() : 0F;
     }
 
-    public static float getSwimBoost(Player player) {
-        ItemStack legs = player.getItemBySlot(EquipmentSlot.LEGS);
-        IModule<ModuleHydrostaticRepulsorUnit> swimModule = IModuleHelper.INSTANCE.getIfEnabled(legs, MekanismModules.HYDROSTATIC_REPULSOR_UNIT);
-        return swimModule != null && swimModule.getCustomInstance().isSwimBoost(swimModule, legs, player) ? 1 : 0;
-    }
-
     @SubscribeEvent
     public void onTick(PlayerTickEvent.Post event) {
         if (!event.getEntity().level().isClientSide()) {
@@ -98,7 +90,6 @@ public class CommonPlayerTickHandler {
 
     private void tickEnd(Player player) {
         Mekanism.playerState.updateStepAssist(player);
-        Mekanism.playerState.updateSwimBoost(player);
         if (player instanceof ServerPlayer serverPlayer) {
             RadiationManager.get().tickServer(serverPlayer);
         }
@@ -147,13 +138,13 @@ public class CommonPlayerTickHandler {
         }
     }
 
-    public static boolean isGravitationalModulationReady(ItemStack stack) {
-        IModule<ModuleGravitationalModulatingUnit> module = IModuleHelper.INSTANCE.getIfEnabled(stack, MekanismModules.GRAVITATIONAL_MODULATING_UNIT);
-        return module != null && module.hasEnoughEnergy(stack, MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation);
-    }
-
     public static boolean isGravitationalModulationOn(Player player) {
-        return ModuleGravitationalModulatingUnit.shouldProcess(player) && isGravitationalModulationReady(player.getItemBySlot(EquipmentSlot.CHEST));
+        if (ModuleGravitationalModulatingUnit.shouldProcess(player)) {
+            ItemStack stack = player.getItemBySlot(EquipmentSlot.CHEST);
+            IModule<ModuleGravitationalModulatingUnit> module = IModuleHelper.INSTANCE.getIfEnabled(stack, MekanismModules.GRAVITATIONAL_MODULATING_UNIT);
+            return module != null && module.hasEnoughEnergy(stack, MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation);
+        }
+        return false;
     }
 
     @SubscribeEvent
@@ -333,14 +324,8 @@ public class CommonPlayerTickHandler {
         }
 
         //Gyroscopic stabilization check
-        if (IModuleHelper.INSTANCE.isEnabled(player.getItemBySlot(EquipmentSlot.LEGS), MekanismModules.GYROSCOPIC_STABILIZATION_UNIT)) {
-            if (player.isEyeInFluidType(NeoForgeMod.WATER_TYPE.value())) {
-                speed /= (float) player.getAttributeValue(Attributes.SUBMERGED_MINING_SPEED);
-            }
-
-            if (!player.onGround()) {
-                speed *= 5.0F;
-            }
+        if (!player.onGround() && IModuleHelper.INSTANCE.isEnabled(player.getItemBySlot(EquipmentSlot.LEGS), MekanismModules.GYROSCOPIC_STABILIZATION_UNIT)) {
+            speed *= 5.0F;
         }
 
         event.setNewSpeed(speed);

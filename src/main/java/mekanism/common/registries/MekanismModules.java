@@ -1,10 +1,12 @@
 package mekanism.common.registries;
 
+import java.util.function.UnaryOperator;
 import mekanism.api.gear.ModuleData.ExclusiveFlag;
 import mekanism.api.gear.config.ModuleBooleanConfig;
 import mekanism.api.gear.config.ModuleColorConfig;
 import mekanism.api.gear.config.ModuleEnumConfig;
 import mekanism.common.Mekanism;
+import mekanism.common.content.gear.mekasuit.GyroscopicStabilizationUnit;
 import mekanism.common.content.gear.mekasuit.ModuleChargeDistributionUnit;
 import mekanism.common.content.gear.mekasuit.ModuleDosimeterUnit;
 import mekanism.common.content.gear.mekasuit.ModuleElectrolyticBreathingUnit;
@@ -24,6 +26,8 @@ import mekanism.common.content.gear.mekasuit.ModuleMagneticAttractionUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMagneticAttractionUnit.Range;
 import mekanism.common.content.gear.mekasuit.ModuleNutritionalInjectionUnit;
 import mekanism.common.content.gear.mekasuit.ModuleVisionEnhancementUnit;
+import mekanism.common.content.gear.mekasuit.MotorizedServoUnit;
+import mekanism.common.content.gear.mekasuit.SoulSurferUnit;
 import mekanism.common.content.gear.mekatool.ModuleAttackAmplificationUnit;
 import mekanism.common.content.gear.mekatool.ModuleAttackAmplificationUnit.AttackDamage;
 import mekanism.common.content.gear.mekatool.ModuleBlastingUnit;
@@ -186,8 +190,8 @@ public class MekanismModules {
                       installed -> ModuleEnumConfig.streamCodec(SprintBoost.STREAM_CODEC, SprintBoost.class, installed + 1)
                 )
     );
-    public static final ModuleRegistryObject<?> GYROSCOPIC_STABILIZATION_UNIT = MODULES.registerMarker("gyroscopic_stabilization_unit",
-          () -> MekanismItems.MODULE_GYROSCOPIC_STABILIZATION.asItem());
+    public static final ModuleRegistryObject<GyroscopicStabilizationUnit> GYROSCOPIC_STABILIZATION_UNIT = MODULES.registerInstanced("gyroscopic_stabilization_unit",
+          GyroscopicStabilizationUnit::new, () -> MekanismItems.MODULE_GYROSCOPIC_STABILIZATION.asItem(), UnaryOperator.identity());
     public static final ModuleRegistryObject<ModuleHydrostaticRepulsorUnit> HYDROSTATIC_REPULSOR_UNIT = MODULES.register("hydrostatic_repulsor_unit",
           ModuleHydrostaticRepulsorUnit::new, () -> MekanismItems.MODULE_HYDROSTATIC_REPULSOR.asItem(), builder -> builder.maxStackSize(4)
                 .addInstalledCountConfig(
@@ -198,8 +202,8 @@ public class MekanismModules {
                       installed -> ModuleBooleanConfig.STREAM_CODEC
                 )
     );
-    public static final ModuleRegistryObject<SimpleEnchantmentAwareModule> MOTORIZED_SERVO_UNIT = MODULES.registerEnchantBased("motorized_servo_unit",
-          Enchantments.SWIFT_SNEAK, () -> MekanismItems.MODULE_MOTORIZED_SERVO.asItem(), builder -> builder.maxStackSize(5));
+    public static final ModuleRegistryObject<MotorizedServoUnit> MOTORIZED_SERVO_UNIT = MODULES.registerInstanced("motorized_servo_unit",
+          MotorizedServoUnit::new, () -> MekanismItems.MODULE_MOTORIZED_SERVO.asItem(), builder -> builder.maxStackSize(5));
 
     //Boots
     public static final ModuleRegistryObject<ModuleHydraulicPropulsionUnit> HYDRAULIC_PROPULSION_UNIT = MODULES.register("hydraulic_propulsion_unit",
@@ -224,6 +228,6 @@ public class MekanismModules {
     );
     public static final ModuleRegistryObject<SimpleEnchantmentAwareModule> FROST_WALKER_UNIT = MODULES.registerEnchantBased("frost_walker_unit",
           Enchantments.FROST_WALKER, () -> MekanismItems.MODULE_FROST_WALKER.asItem(), builder -> builder.maxStackSize(2));
-    public static final ModuleRegistryObject<SimpleEnchantmentAwareModule> SOUL_SURFER_UNIT = MODULES.registerEnchantBased("soul_surfer_unit",
-          Enchantments.SOUL_SPEED, () -> MekanismItems.MODULE_SOUL_SURFER.asItem(), builder -> builder.maxStackSize(3));
+    public static final ModuleRegistryObject<SoulSurferUnit> SOUL_SURFER_UNIT = MODULES.registerInstanced("soul_surfer_unit",
+          SoulSurferUnit::new, () -> MekanismItems.MODULE_SOUL_SURFER.asItem(), builder -> builder.maxStackSize(3));
 }

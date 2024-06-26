@@ -26,8 +26,6 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.key.MekKeyHandler;
 import mekanism.client.key.MekanismKeyHandler;
 import mekanism.client.render.RenderPropertiesProvider;
-import mekanism.common.CommonPlayerTickHandler;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.attachments.IAttachmentAware;
 import mekanism.common.attachments.containers.ContainerType;
@@ -47,7 +45,6 @@ import mekanism.common.content.gear.ModuleContainer;
 import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.content.gear.mekasuit.ModuleElytraUnit;
 import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
-import mekanism.common.item.interfaces.IHasConditionalAttributes;
 import mekanism.common.item.interfaces.IJetpackItem;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.registries.MekanismArmorMaterials;
@@ -70,10 +67,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.player.Inventory;
@@ -90,15 +84,11 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
-import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContainerItem, IJetpackItem, ICustomCreativeTabContents, IAttachmentAware, IHasConditionalAttributes {
-
-    private static final AttributeModifier CREATIVE_FLIGHT_MODIFIER = new AttributeModifier(Mekanism.rl("mekasuit_gravitational_modulation"), 1, Operation.ADD_VALUE);
+public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContainerItem, IJetpackItem, ICustomCreativeTabContents, IAttachmentAware {
 
     //TODO: Expand this system so that modules can maybe define needed tanks?
     private final List<ChemicalTankSpec<Gas>> gasTankSpecs = new ArrayList<>();
@@ -399,14 +389,6 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                 int amount = Mth.ceil(module.getCustomInstance().getThrustMultiplier());
                 gasHandlerItem.extractChemical(MekanismGases.HYDROGEN.getStack(amount), Action.EXECUTE);
             }
-        }
-    }
-
-    @Override
-    public void adjustAttributes(ItemAttributeModifierEvent event) {
-        //Test that our slot is correct as we only want to add the modifier to chest pieces, and not to say leggings when in the chest slot
-        if (EquipmentSlotGroup.CHEST.test(getEquipmentSlot()) && CommonPlayerTickHandler.isGravitationalModulationReady(event.getItemStack())) {
-            event.addModifier(NeoForgeMod.CREATIVE_FLIGHT, CREATIVE_FLIGHT_MODIFIER, EquipmentSlotGroup.CHEST);
         }
     }
 

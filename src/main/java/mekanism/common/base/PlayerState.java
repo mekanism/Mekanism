@@ -24,13 +24,11 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.LevelAccessor;
-import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 public class PlayerState {
 
     private static final ResourceLocation STEP_ASSIST_MODIFIER_ID = Mekanism.rl("step_assist");
-    private static final ResourceLocation SWIM_BOOST_MODIFIER_ID = Mekanism.rl("swim_boost");
 
     private final Set<UUID> activeJetpacks = new ObjectOpenHashSet<>();
     private final Set<UUID> activeScubaMasks = new ObjectOpenHashSet<>();
@@ -151,16 +149,6 @@ public class PlayerState {
 
     public void updateStepAssist(Player player) {
         updateAttribute(player, Attributes.STEP_HEIGHT, STEP_ASSIST_MODIFIER_ID,  CommonPlayerTickHandler::getStepBoost);
-    }
-
-    // ----------------------
-    //
-    // Swim boost state tracking
-    //
-    // ----------------------
-
-    public void updateSwimBoost(Player player) {
-        updateAttribute(player, NeoForgeMod.SWIM_SPEED, SWIM_BOOST_MODIFIER_ID, CommonPlayerTickHandler::getSwimBoost);
     }
 
     //Note: The attributes that currently use this cannot be converted to just being attributes on the items, as they can be disabled based on the player state

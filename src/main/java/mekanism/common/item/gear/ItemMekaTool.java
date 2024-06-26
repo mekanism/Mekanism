@@ -34,7 +34,6 @@ import mekanism.common.content.gear.mekatool.ModuleExcavationEscalationUnit;
 import mekanism.common.content.gear.mekatool.ModuleTeleportationUnit;
 import mekanism.common.content.gear.mekatool.ModuleVeinMiningUnit;
 import mekanism.common.item.ItemEnergized;
-import mekanism.common.item.interfaces.IHasConditionalAttributes;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.PacketPortalFX;
 import mekanism.common.registries.MekanismModules;
@@ -83,7 +82,7 @@ import net.neoforged.neoforge.registries.holdersets.AnyHolderSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ItemMekaTool extends ItemEnergized implements IRadialModuleContainerItem, IBlastingItem, IHasConditionalAttributes {
+public class ItemMekaTool extends ItemEnergized implements IRadialModuleContainerItem, IBlastingItem {
 
     private static final ResourceLocation RADIAL_ID = Mekanism.rl("meka_tool");
 
@@ -360,6 +359,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
         //Retrieve a cached map if we have enough energy to attack at the full damage value based on configured damage
         event.replaceModifier(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_ID, damage, Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND);
         event.replaceModifier(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_ID, attackSpeed, Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND);
+        IRadialModuleContainerItem.super.adjustAttributes(event);
     }
 
     @NotNull

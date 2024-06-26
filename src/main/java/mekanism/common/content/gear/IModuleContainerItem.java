@@ -11,16 +11,18 @@ import mekanism.api.providers.IModuleDataProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
+import mekanism.common.item.interfaces.IHasConditionalAttributes;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IModeItem;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface IModuleContainerItem extends IModeItem, IItemHUDProvider {
+public interface IModuleContainerItem extends IModeItem, IItemHUDProvider, IHasConditionalAttributes {
 
     @Nullable
     default IModuleContainer moduleContainer(ItemStack stack) {
@@ -29,6 +31,19 @@ public interface IModuleContainerItem extends IModeItem, IItemHUDProvider {
 
     default Collection<? extends IModule<?>> getModules(ItemStack stack) {
         return IModuleHelper.INSTANCE.getAllModules(stack);
+    }
+
+    @Override
+    default void adjustAttributes(ItemAttributeModifierEvent event) {
+        for (IModule<?> module : getModules(event.getItemStack())) {
+            if (module.isEnabled()) {
+                adjustAttributes(module, event);
+            }
+        }
+    }
+
+    private <MODULE extends ICustomModule<MODULE>> void adjustAttributes(IModule<MODULE> module, ItemAttributeModifierEvent event) {
+        module.getCustomInstance().adjustAttributes(module, event);
     }
 
     default boolean hasInstalledModules(ItemStack stack) {
