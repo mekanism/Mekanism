@@ -397,7 +397,7 @@ enums:
   - DISABLED
   - ACTIVATION
   - TEMPERATURE
-  - EXCESS_WASTE
+  - CRITICAL_WASTE_LEVEL
   - DAMAGED
   - DEPLETED
   mekanism.generators.common.tile.fission.TileEntityFissionReactorLogicAdapter$RedstoneStatus:

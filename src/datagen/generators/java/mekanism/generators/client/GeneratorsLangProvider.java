@@ -122,7 +122,7 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
         add(GeneratorsLang.REACTOR_LOGIC_OUTPUTTING, "Outputting");
         add(GeneratorsLang.REACTOR_LOGIC_ACTIVATION, "Activation");
         add(GeneratorsLang.REACTOR_LOGIC_TEMPERATURE, "High Temperature");
-        add(GeneratorsLang.REACTOR_LOGIC_EXCESS_WASTE, "Excess Waste");
+        add(GeneratorsLang.REACTOR_LOGIC_CRITICAL_WASTE_LEVEL, "Critical Waste Level");
         add(GeneratorsLang.REACTOR_LOGIC_DAMAGED, "Damage Critical");
         add(GeneratorsLang.REACTOR_LOGIC_POWERED, "Powered");
         add(GeneratorsLang.OUTPUT_RATE_SHORT, "Out: %1$s/t");
@@ -226,7 +226,7 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
         add(GeneratorsLang.DESCRIPTION_REACTOR_ACTIVATION, "Activate the reactor when powered, and deactivate when unpowered");
         add(GeneratorsLang.DESCRIPTION_REACTOR_TEMPERATURE, "Output when the reactor reaches dangerous temperatures");
         add(GeneratorsLang.DESCRIPTION_REACTOR_DAMAGED, "Output when the reactor reaches critical damage levels (100%+).");
-        add(GeneratorsLang.DESCRIPTION_REACTOR_EXCESS_WASTE, "Output when the reactor has excess waste");
+        add(GeneratorsLang.DESCRIPTION_REACTOR_CRITICAL_WASTE_LEVEL, "Output when the reactor has reached a critical level of waste (%1$s)");
         add(GeneratorsLang.DESCRIPTION_REACTOR_DEPLETED, "Output when the reactor has insufficient fuel to sustain a reaction");
         add(GeneratorsLang.DESCRIPTION_REACTOR_DISABLED, "Will not handle redstone");
         add(GeneratorsLang.DESCRIPTION_REACTOR_READY, "Output when the reactor has reached the required heat level to ignite");

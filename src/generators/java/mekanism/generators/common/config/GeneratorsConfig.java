@@ -74,6 +74,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
     public final CachedLongValue maxFuelPerAssembly;
     public final CachedIntValue fissionCooledCoolantPerTank;
     public final CachedLongValue fissionHeatedCoolantPerTank;
+    public final CachedDoubleValue fissionExcessWasteRatio;
 
     public final CachedLongValue hohlraumMaxGas;
     public final CachedLongValue hohlraumFillRate;
@@ -213,6 +214,8 @@ public class GeneratorsConfig extends BaseMekanismConfig {
               .defineInRange("cooledCoolantPerTank", 100 * FluidType.BUCKET_VOLUME, 1, Integer.MAX_VALUE / maxVolume));
         fissionHeatedCoolantPerTank = CachedLongValue.wrap(this, builder.comment("Amount of heated coolant (mB) that each block of the fission reactor contributes to the volume. Max = volume * heatedCoolantPerTank")
               .defineInRange("heatedCoolantPerTank", 1_000L * FluidType.BUCKET_VOLUME, 1_000, Long.MAX_VALUE / maxVolume));
+        fissionExcessWasteRatio = CachedDoubleValue.wrap(this, builder.comment("The percentage of waste in a fission reactor's output waste tank that is necessary to trigger the excess waste .")
+              .defineInRange("excessWaste", 0.9D, 0.001D, 1D));
         builder.pop();
 
         builder.pop();
