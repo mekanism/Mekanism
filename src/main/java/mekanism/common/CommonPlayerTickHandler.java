@@ -59,11 +59,6 @@ import org.jetbrains.annotations.Nullable;
 
 public class CommonPlayerTickHandler {
 
-    /**
-     * From {@link LivingEntity#calculateFallDamage(float, float)}, distance above this amount causes fall damage
-     */
-    private static final float MIN_FALL_HURT = 3.0F;
-
     public static boolean isOnGroundOrSleeping(Player player) {
         return player.onGround() || player.isSleeping() || player.getAbilities().flying;
     }
@@ -215,13 +210,22 @@ public class CommonPlayerTickHandler {
         }
     }
 
+    /**
+     * Based on the values and calculations that happen in {@link LivingEntity#calculateFallDamage(float, float)}
+     */
     @SubscribeEvent
     public void livingFall(LivingFallEvent event) {
-        float fallDamage = Math.max(event.getDistance() - MIN_FALL_HURT, 0);
-        if (fallDamage <= Mth.EPSILON) {
+        LivingEntity entity = event.getEntity();
+        float safeFallDistance = (float) entity.getAttributeValue(Attributes.SAFE_FALL_DISTANCE);
+        float fallDistance = Math.max(event.getDistance() - safeFallDistance, 0);
+        if (fallDistance <= Mth.EPSILON) {
             return;
         }
-        LivingEntity entity = event.getEntity();
+        double damageMultiplier = event.getDamageMultiplier() * entity.getAttributeValue(Attributes.FALL_DAMAGE_MULTIPLIER);
+        int fallDamage = Mth.ceil(fallDistance * damageMultiplier);
+        if (fallDamage <= 0) {//This may be the case for things like slime blocks that have a damage multiplier of zero
+            return;
+        }
         FallEnergyInfo info = getFallAbsorptionEnergyInfo(entity);
         if (info != null && info.container != null) {
             float absorption = info.damageRatio.getAsFloat();
@@ -233,16 +237,25 @@ public class CommonPlayerTickHandler {
                 // or how small the amount to absorb is
                 ratioAbsorbed = absorption;
             } else {
-                ratioAbsorbed = absorption * info.container.extract(energyRequirement, Action.EXECUTE, AutomationType.MANUAL).divide(amount).floatValue();
+                FloatingLong extracted = info.container.extract(energyRequirement, Action.EXECUTE, AutomationType.MANUAL);
+                ratioAbsorbed = absorption * extracted.divide(energyRequirement).floatValue();
             }
             if (ratioAbsorbed > 0) {
                 float damageRemaining = fallDamage * Math.max(0, 1 - ratioAbsorbed);
                 if (damageRemaining <= Mth.EPSILON) {
                     event.setCanceled(true);
-                    SoundType soundtype = entity.getBlockStateOn().getSoundType(entity.level(), entity.getOnPos(), entity);
-                    entity.playSound(soundtype.getStepSound(), soundtype.getVolume() * 0.15F, soundtype.getPitch());
+                    BlockPos posOn = entity.getOnPos();
+                    BlockState stateOn = entity.level().getBlockState(posOn);
+                    if (entity instanceof Player player) {
+                        player.playStepSound(posOn, stateOn);
+                    } else {
+                        //Fallback to default implementation
+                        SoundType soundtype = stateOn.getSoundType(entity.level(), posOn, entity);
+                        entity.playSound(soundtype.getStepSound(), soundtype.getVolume() * 0.15F, soundtype.getPitch());
+                    }
                 } else {
-                    event.setDistance(damageRemaining + MIN_FALL_HURT);
+                    float distanceRemaining = (float) (damageRemaining / damageMultiplier);
+                    event.setDistance(distanceRemaining + safeFallDistance);
                 }
             }
         }
