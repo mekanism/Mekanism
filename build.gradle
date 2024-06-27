@@ -6,13 +6,14 @@ import groovy.json.JsonSlurper
 import mekanism.AllJar
 import mekanism.MergeModuleResources
 import mekanism.OptimizePng
+import mekanism.OutputChangelog
 import net.darkhax.curseforgegradle.TaskPublishCurseForge
 import net.darkhax.curseforgegradle.UploadArtifact
 
 import java.util.function.Consumer
 
 plugins {
-    id('org.ajoberstar.grgit.service') version('5.2.2')
+    id('org.ajoberstar.grgit.service')//Version declared in buildSrc
     id('net.darkhax.curseforgegradle') version('1.1.24')
     id('com.modrinth.minotaur') version('2.8.7')
     id('java')
@@ -589,84 +590,31 @@ publishing {
     }
 }
 
-def resolvedChangelog = null
-
-//closure to generate the changelog once, and only when needed by CurseGradle or Modrinth
-def changeLogResolver = { ->
-    if (resolvedChangelog != null) {
-        logger.lifecycle('Using cached changelog')
-        return resolvedChangelog
-    }
-    def generatedChangelog = 'Unable to generate changelog :('
-    def currentCommit = System.getenv('GIT_COMMIT')
-    def prevCommit = System.getenv('GIT_PREVIOUS_SUCCESSFUL_COMMIT') ?: System.getenv('GIT_PREVIOUS_COMMIT')
-
-    if (currentCommit != null && prevCommit != null) {
-        generatedChangelog = ''
-        //Use the service to avoid eagerly instantiating the grgit instance, and only do so when we actually need it
-        // for usage in generating the changelog for either CF or Modrinth
-        grgitService.service.get().grgit.log {
-            range(prevCommit, currentCommit)
-        }.reverse().each { commit ->
-            //Use full message rather than short message to get any new lines, and trim it so that any trailing new lines
-            // get removed so that we don't end up with extra spaces
-            String message = commit.fullMessage.trim()
-            if (!message.startsWith('Merge branch') && !message.startsWith('Merge pull request') && !message.contains('[no-changelog]')) {
-                //Ignore Merges and PR Merges
-                message = message.replaceAll('#(\\d+)', { match ->//turn issues/prs into links (github currently supports prs being linked as issues)
-                    return "[${match[0]}](https://github.com/mekanism/Mekanism/issues/${match[1]})"
-                }).replaceAll('\\n', '  \n\t')//convert new lines that are part of a commit message into new lines and a tab
-                if (generatedChangelog != '') {
-                    //If this isn't the first commit prepend an extra newline
-                    generatedChangelog += '  \n'
-                }
-                generatedChangelog += "[${commit.getAbbreviatedId()}](https://github.com/mekanism/Mekanism/commit/${commit.id}) - ${message}"
-            }
-        }
-        logger.lifecycle('Changelog generated')
-    }
-
-    def releaseNotesFile = project.file("docs/release_${mod_version}.md")
-    if (releaseNotesFile.exists()) {
-        //Add any version specific changelog stuff
-        def releaseNotes = releaseNotesFile.text
-        generatedChangelog = "$releaseNotes\n\n$generatedChangelog"
-    }
-
-    if (release_type == 'alpha') {
-        //Add a warning at the top about what an alpha build means
-        generatedChangelog = 'Warning: Mekanism is currently in alpha, and is not recommended for widespread use in modpacks. There are likely to be game breaking bugs, ' +
-                'and updating from one alpha to the next may cause various mekanism blocks to disappear/void their contents. While we will try to not have this happen/keep ' +
-                'it to a minimum make sure to make backups. You can read more about the alpha state of this project [here](https://github.com/mekanism/Mekanism#alpha-status).' +
-                "\n\n$generatedChangelog"
-    }
-    resolvedChangelog = generatedChangelog
-    return generatedChangelog
+def outputChangelog = tasks.register('outputChangelog', OutputChangelog, grgitService.service)
+outputChangelog.configure { OutputChangelog out ->
+    out.releaseNotes.value(provider {
+        //If we have a file specified that exists for the mod version, then we want to use it
+        // otherwise we want to fall back to not having the value set
+        def file = layout.projectDirectory.file("docs/release_${mod_version}.md")
+        return file.asFile.exists() ? file : null
+    })
 }
-
-tasks.register('outputChangelog') {
-    //TODO: Can we make this compatible with the configuration cache?
-    notCompatibleWithConfigurationCache('Not yet compatible')
-    doLast {
-        project.file('build/changelog.md').text = changeLogResolver.call()
-    }
-}
-
-def mainCfUpload, additionsCfUpload, generatorsCfUpload, toolsCfUpload
 
 if (System.getenv('CURSEFORGE_KEY') != null || project.hasProperty('curseforgeKey')) {
     logger.lifecycle('Enabling Curseforge config')
     tasks.register('curseforge', TaskPublishCurseForge, { task ->
+        dependsOn(outputChangelog)
         setGroup('publishing')
         setDescription('Upload Mekanism to CurseForge')
         notCompatibleWithConfigurationCache('Not yet compatible')//TODO: Remove when possible
 
+        def changelog = outputChangelog.flatMap(c -> c.outputFile)
+        inputs.file(changelog)
+
         apiToken = System.getenv('CURSEFORGE_KEY') ?: project.findProperty('curseforgeKey')
 
-        def changelog = changeLogResolver.call()
-
         //Main Mekanism Project
-        mainCfUpload = task.upload(268560, jar) { main ->
+        def mainCfUpload = task.upload(268560, jar) { main ->
             setGenericCurseArtifactData(main, changelog)
             //Include the API jar as a secondary file to the main file
             withAdditionalFile(apiJar)
@@ -689,10 +637,10 @@ if (System.getenv('CURSEFORGE_KEY') != null || project.hasProperty('curseforgeKe
         }
 
         //Secondary modules/projects
-        additionsCfUpload = uploadSecondaryCurseProject(task, 345425, changelog, additionsJar)
-        //uploadSecondaryCurseProject(task, 376939, changelog, defenseJar)
-        generatorsCfUpload = uploadSecondaryCurseProject(task, 268566, changelog, generatorsJar)
-        toolsCfUpload = uploadSecondaryCurseProject(task, 268567, changelog, toolsJar)
+        def additionsCfUpload = uploadSecondaryCurseProject(task, 345425, changelog, additionsJar)
+        //def defenseCfUpload = uploadSecondaryCurseProject(task, 376939, changelog, defenseJar)
+        def generatorsCfUpload = uploadSecondaryCurseProject(task, 268566, changelog, generatorsJar)
+        def toolsCfUpload = uploadSecondaryCurseProject(task, 268567, changelog, toolsJar)
 
         doLast {
             //Note: Quiet is the level above warning but below error. We want these to show regardless of logging level
@@ -705,13 +653,13 @@ if (System.getenv('CURSEFORGE_KEY') != null || project.hasProperty('curseforgeKe
     })
 }
 
-void setGenericCurseArtifactData(UploadArtifact artifact, String changelog) {
+void setGenericCurseArtifactData(UploadArtifact artifact, Provider<RegularFile> changelog) {
     artifact.changelog = changelog
     artifact.changelogType = 'markdown'
     artifact.releaseType = "${release_type}"
 }
 
-UploadArtifact uploadSecondaryCurseProject(TaskPublishCurseForge task, long projectId, String changelog, TaskProvider<Jar> sourceSetJar) {
+UploadArtifact uploadSecondaryCurseProject(TaskPublishCurseForge task, long projectId, Provider<RegularFile> changelog, TaskProvider<Jar> sourceSetJar) {
     return task.upload(projectId, sourceSetJar) { artifact ->
         setGenericCurseArtifactData(artifact, changelog)
         addRequirement('mekanism')
@@ -725,7 +673,7 @@ if (System.getenv('MODRINTH_TOKEN') != null || project.hasProperty('modrinthToke
     def generatorsModrinth = createSecondaryModrinthUpload('generators', 'OFVYKsAk', generatorsJar)
     def toolsModrinth = createSecondaryModrinthUpload('tools', 'tqQpq1lt', toolsJar)
     tasks.named('modrinth').configure {
-        dependsOn(jar, apiJar)
+        dependsOn(jar, apiJar, outputChangelog)
         finalizedBy(additionsModrinth, /*defenseModrinth,*/ generatorsModrinth, toolsModrinth)
         notCompatibleWithConfigurationCache('Not yet compatible')//TODO: Remove when possible
     }
@@ -746,7 +694,7 @@ if (System.getenv('MODRINTH_TOKEN') != null || project.hasProperty('modrinthToke
         gameVersions.add("${minecraft_version}")
         loaders.add('neoforge')
         failSilently = true
-        changelog = changeLogResolver.call()
+        changelog.value(outputChangelog.flatMap(c -> c.outputFile).map(file -> file.asFile.text))
         uploadFile = jar
 
         additionalFiles.value([apiJar.get()])
