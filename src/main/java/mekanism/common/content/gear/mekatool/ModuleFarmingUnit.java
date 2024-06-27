@@ -37,6 +37,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionResult;
@@ -52,9 +53,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.IPlantable;
-import net.neoforged.neoforge.common.ToolAction;
-import net.neoforged.neoforge.common.ToolActions;
+import net.neoforged.neoforge.common.ItemAbilities;
+import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -91,9 +91,9 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
         Lazy<BlockState> lazyClickedState = Lazy.of(() -> context.getLevel().getBlockState(context.getClickedPos()));
         return MekanismUtils.performActions(
               //First try to use the disassembler as an axe
-              useAxeAOE(context, lazyClickedState, energyContainer, diameter, ToolActions.AXE_STRIP, SoundEvents.AXE_STRIP, -1),
-              () -> useAxeAOE(context, lazyClickedState, energyContainer, diameter, ToolActions.AXE_SCRAPE, SoundEvents.AXE_SCRAPE, LevelEvent.PARTICLES_SCRAPE),
-              () -> useAxeAOE(context, lazyClickedState, energyContainer, diameter, ToolActions.AXE_WAX_OFF, SoundEvents.AXE_WAX_OFF, LevelEvent.PARTICLES_WAX_OFF),
+              useAxeAOE(context, lazyClickedState, energyContainer, diameter, ItemAbilities.AXE_STRIP, SoundEvents.AXE_STRIP, -1),
+              () -> useAxeAOE(context, lazyClickedState, energyContainer, diameter, ItemAbilities.AXE_SCRAPE, SoundEvents.AXE_SCRAPE, LevelEvent.PARTICLES_SCRAPE),
+              () -> useAxeAOE(context, lazyClickedState, energyContainer, diameter, ItemAbilities.AXE_WAX_OFF, SoundEvents.AXE_WAX_OFF, LevelEvent.PARTICLES_WAX_OFF),
               //Then as a shovel
               () -> flattenAOE(context, lazyClickedState, energyContainer, diameter),
               () -> dowseCampfire(context, lazyClickedState, energyContainer),
@@ -103,18 +103,18 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
     }
 
     @Override
-    public boolean canPerformAction(IModule<ModuleFarmingUnit> module, IModuleContainer moduleContainer, ItemStack stack, ToolAction action) {
-        if (action == ToolActions.AXE_STRIP || action == ToolActions.AXE_SCRAPE || action == ToolActions.AXE_WAX_OFF) {
+    public boolean canPerformAction(IModule<ModuleFarmingUnit> module, IModuleContainer moduleContainer, ItemStack stack, ItemAbility action) {
+        if (action == ItemAbilities.AXE_STRIP || action == ItemAbilities.AXE_SCRAPE || action == ItemAbilities.AXE_WAX_OFF) {
             return module.hasEnoughEnergy(stack, MekanismConfig.gear.mekaToolEnergyUsageAxe);
-        } else if (action == ToolActions.SHOVEL_FLATTEN) {
+        } else if (action == ItemAbilities.SHOVEL_FLATTEN) {
             return module.hasEnoughEnergy(stack, MekanismConfig.gear.mekaToolEnergyUsageShovel);
-        } else if (action == ToolActions.HOE_TILL) {
+        } else if (action == ItemAbilities.HOE_TILL) {
             return module.hasEnoughEnergy(stack, MekanismConfig.gear.mekaToolEnergyUsageHoe);
         }
         //Note: In general when we get here there will be no tool actions known unless mods add more default tool actions
         // This is because we special case the known vanilla types above and the dig variants are already handled by the Meka-Tool itself before
         // it even checks the installed modules
-        return ToolActions.DEFAULT_AXE_ACTIONS.contains(action) || ToolActions.DEFAULT_SHOVEL_ACTIONS.contains(action) || ToolActions.DEFAULT_HOE_ACTIONS.contains(action);
+        return ItemAbilities.DEFAULT_AXE_ACTIONS.contains(action) || ItemAbilities.DEFAULT_SHOVEL_ACTIONS.contains(action) || ItemAbilities.DEFAULT_HOE_ACTIONS.contains(action);
     }
 
     @NothingNullByDefault
@@ -179,7 +179,7 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
     }
 
     private InteractionResult tillAOE(UseOnContext context, Lazy<BlockState> lazyClickedState, IEnergyContainer energyContainer, int diameter) {
-        return useAOE(context, lazyClickedState, energyContainer, diameter, ToolActions.HOE_TILL, SoundEvents.HOE_TILL, -1,
+        return useAOE(context, lazyClickedState, energyContainer, diameter, ItemAbilities.HOE_TILL, SoundEvents.HOE_TILL, -1,
               MekanismConfig.gear.mekaToolEnergyUsageHoe.get(), new HoeToolAOEData());
     }
 
@@ -189,17 +189,17 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
             //Don't allow flattening a block from underneath
             return InteractionResult.PASS;
         }
-        return useAOE(context, lazyClickedState, energyContainer, diameter, ToolActions.SHOVEL_FLATTEN, SoundEvents.SHOVEL_FLATTEN, -1,
+        return useAOE(context, lazyClickedState, energyContainer, diameter, ItemAbilities.SHOVEL_FLATTEN, SoundEvents.SHOVEL_FLATTEN, -1,
               MekanismConfig.gear.mekaToolEnergyUsageShovel.get(), new ShovelToolAOEData());
     }
 
-    private InteractionResult useAxeAOE(UseOnContext context, Lazy<BlockState> lazyClickedState, IEnergyContainer energyContainer, int diameter, ToolAction action,
+    private InteractionResult useAxeAOE(UseOnContext context, Lazy<BlockState> lazyClickedState, IEnergyContainer energyContainer, int diameter, ItemAbility action,
           SoundEvent sound, int particle) {
         return useAOE(context, lazyClickedState, energyContainer, diameter, action, sound, particle, MekanismConfig.gear.mekaToolEnergyUsageAxe.get(),
               new AxeToolAOEData());
     }
 
-    private InteractionResult useAOE(UseOnContext context, Lazy<BlockState> lazyClickedState, IEnergyContainer energyContainer, int diameter, ToolAction action,
+    private InteractionResult useAOE(UseOnContext context, Lazy<BlockState> lazyClickedState, IEnergyContainer energyContainer, int diameter, ItemAbility action,
           SoundEvent sound, int particle, FloatingLong energyUsage, IToolAOEData toolAOEData) {
         FloatingLong energy = energyContainer.getEnergy();
         if (energy.smallerThan(energyUsage)) {
@@ -326,7 +326,8 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
             }
             //Or it is a replaceable plant that is also not solid (such as tall grass)
             //Note: This may not be the most optimal way of checking this, but it gives a decent enough estimate of it
-            if (aboveState.is(MekanismTags.Blocks.FARMING_OVERRIDE) || aboveState.canBeReplaced() && aboveState.getBlock() instanceof IPlantable) {
+            //TODO - 1.21: Do we want to try and come up with a better tag or check for if it is a replaceable plant?
+            if (aboveState.is(MekanismTags.Blocks.FARMING_OVERRIDE) || aboveState.canBeReplaced() && aboveState.is(BlockTags.REPLACEABLE_BY_TREES)) {
                 return aboveState.getFluidState().isEmpty() && !aboveState.isSolidRender(level, abovePos);
             }
             return false;

@@ -75,8 +75,8 @@ import net.minecraft.world.level.block.state.BlockBehaviour.BlockStateBase;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.common.ToolAction;
 import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import net.neoforged.neoforge.registries.holdersets.AnyHolderSet;
 import org.jetbrains.annotations.NotNull;
@@ -111,7 +111,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
     }
 
     @Override
-    public boolean canPerformAction(ItemStack stack, ToolAction action) {
+    public boolean canPerformAction(ItemStack stack, ItemAbility action) {
         if (ItemAtomicDisassembler.ALWAYS_SUPPORTED_ACTIONS.contains(action)) {
             IModuleContainer container = moduleContainer(stack);
             return container != null && hasEnergyForDigAction(container, StorageUtils.getEnergyContainer(stack, 0));
@@ -127,7 +127,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
         return false;
     }
 
-    private <MODULE extends ICustomModule<MODULE>> boolean canPerformAction(IModule<MODULE> module, IModuleContainer moduleContainer, ItemStack stack, ToolAction action) {
+    private <MODULE extends ICustomModule<MODULE>> boolean canPerformAction(IModule<MODULE> module, IModuleContainer moduleContainer, ItemStack stack, ItemAbility action) {
         return module.getCustomInstance().canPerformAction(module, moduleContainer, stack, action);
     }
 
