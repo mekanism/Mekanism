@@ -4883,6 +4883,14 @@
       }
     },
     {
+      "description": "Get the contents of the filled container output slot.",
+      "methodName": "getContainerOutputItem",
+      "returns": {
+        "type": "Table (ItemStack)",
+        "java_type": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
       "description": "Get the contents of the energy slot.",
       "methodName": "getEnergyItem",
       "returns": {
@@ -4931,7 +4939,7 @@
       }
     },
     {
-      "description": "Get the contents of the filled container output slot.",
+      "description": "Get the contents of the output slot.",
       "methodName": "getOutputItem",
       "returns": {
         "type": "Table (ItemStack)",

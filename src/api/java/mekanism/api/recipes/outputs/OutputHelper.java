@@ -11,6 +11,7 @@ import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
 import mekanism.api.recipes.ElectrolysisRecipe.ElectrolysisRecipeOutput;
+import mekanism.api.recipes.ItemStackToFluidOptionalItemRecipe.FluidOptionalItemOutput;
 import mekanism.api.recipes.PressurizedReactionRecipe.PressurizedReactionRecipeOutput;
 import mekanism.api.recipes.SawmillRecipe.ChanceOutput;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker;
@@ -160,6 +161,40 @@ public class OutputHelper {
                 OutputHelper.calculateOperationsCanSupport(tracker, slotNotEnoughSpaceError, slot, toOutput.item());
                 if (tracker.shouldContinueChecking()) {
                     OutputHelper.calculateOperationsCanSupport(tracker, tankNotEnoughSpaceError, tank, toOutput.gas());
+                }
+            }
+        };
+    }
+
+    /**
+     * Wraps a fluid tank and an inventory slot an {@link IOutputHandler}.
+     *
+     * @param tank                    Tank to wrap.
+     * @param slot                    Slot to wrap.
+     * @param tankNotEnoughSpaceError The error to apply if the tank output causes the recipe to not be able to perform any operations.
+     * @param slotNotEnoughSpaceError The error to apply if the slot output causes the recipe to not be able to perform any operations.
+     *
+     * @since 10.6.3
+     */
+    public static IOutputHandler<@NotNull FluidOptionalItemOutput> getOutputHandler(IExtendedFluidTank tank, RecipeError tankNotEnoughSpaceError,
+          IInventorySlot slot, RecipeError slotNotEnoughSpaceError) {
+        Objects.requireNonNull(tank, "Tank cannot be null.");
+        Objects.requireNonNull(slot, "Slot cannot be null.");
+        Objects.requireNonNull(tankNotEnoughSpaceError, "Tank not enough space error cannot be null.");
+        Objects.requireNonNull(slotNotEnoughSpaceError, "Slot not enough space error cannot be null.");
+        return new IOutputHandler<>() {
+
+            @Override
+            public void handleOutput(FluidOptionalItemOutput toOutput, int operations) {
+                OutputHelper.handleOutput(tank, toOutput.fluid(), operations);
+                OutputHelper.handleOutput(slot, toOutput.optionalItem(), operations);
+            }
+
+            @Override
+            public void calculateOperationsCanSupport(OperationTracker tracker, FluidOptionalItemOutput toOutput) {
+                OutputHelper.calculateOperationsCanSupport(tracker, tankNotEnoughSpaceError, tank, toOutput.fluid());
+                if (tracker.shouldContinueChecking()) {
+                    OutputHelper.calculateOperationsCanSupport(tracker, slotNotEnoughSpaceError, slot, toOutput.optionalItem());
                 }
             }
         };

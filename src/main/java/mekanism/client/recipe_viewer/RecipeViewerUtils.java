@@ -15,7 +15,7 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalType;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
-import mekanism.api.recipes.ItemStackToFluidRecipe;
+import mekanism.api.recipes.ItemStackToFluidOptionalItemRecipe;
 import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.SlurryStackIngredient;
@@ -131,8 +131,8 @@ public class RecipeViewerUtils {
         return stacks;
     }
 
-    public static Map<ResourceLocation, ItemStackToFluidRecipe> getLiquificationRecipes() {
-        Map<ResourceLocation, ItemStackToFluidRecipe> liquification = new HashMap<>();
+    public static Map<ResourceLocation, ItemStackToFluidOptionalItemRecipe> getLiquificationRecipes() {
+        Map<ResourceLocation, ItemStackToFluidOptionalItemRecipe> liquification = new HashMap<>();
         //TODO: Do we want to loop creative tabs or something instead?
         // In theory recipe loaders should init the creative tabs before we are called so we wouldn't need to call
         // CreativeModeTab#buildContents, and in theory we only need to care about things in search so could use:
@@ -145,7 +145,11 @@ public class RecipeViewerUtils {
                 //Only display consuming foods that provide healing as otherwise no paste will be made
                 if (food != null && food.nutrition() > 0) {
                     ResourceLocation id = RecipeViewerUtils.synthetic(RegistryUtils.getName(stack.getItem()), "liquification", Mekanism.MODID);
-                    liquification.put(id, new NutritionalLiquifierIRecipe(IngredientCreatorAccess.item().from(stack), MekanismFluids.NUTRITIONAL_PASTE.getFluidStack(food.nutrition() * 50)));
+                    liquification.put(id, new NutritionalLiquifierIRecipe(
+                          IngredientCreatorAccess.item().from(stack),
+                          MekanismFluids.NUTRITIONAL_PASTE.getFluidStack(food.nutrition() * 50),
+                          food.usingConvertsTo().orElse(ItemStack.EMPTY)
+                    ));
                 }
             }
         }

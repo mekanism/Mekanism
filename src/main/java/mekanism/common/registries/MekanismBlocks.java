@@ -703,6 +703,7 @@ public class MekanismBlocks {
                       .build()
                 ).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
                       .addInput(TileEntityNutritionalLiquifier::isValidInput)
+                      .addOutput()
                       .addFluidDrainSlot(0)
                       .addOutput()
                       .addEnergy()

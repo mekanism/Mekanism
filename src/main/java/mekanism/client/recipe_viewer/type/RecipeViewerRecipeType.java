@@ -11,7 +11,7 @@ import mekanism.api.recipes.FluidToFluidRecipe;
 import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
-import mekanism.api.recipes.ItemStackToFluidRecipe;
+import mekanism.api.recipes.ItemStackToFluidOptionalItemRecipe;
 import mekanism.api.recipes.ItemStackToGasRecipe;
 import mekanism.api.recipes.ItemStackToInfuseTypeRecipe;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
@@ -105,5 +105,5 @@ public class RecipeViewerRecipeType {
     public static final FakeRVRecipeType<BoilerRecipeViewerRecipe> BOILER = new FakeRVRecipeType<>(MekanismBlocks.BOILER_CASING.getId(), MekanismUtils.getResource(ResourceType.GUI, "heat.png"), MekanismLang.BOILER, BoilerRecipeViewerRecipe.class, -6, -13, 180, 60, MekanismBlocks.BOILER_CASING, MekanismBlocks.BOILER_VALVE, MekanismBlocks.PRESSURE_DISPERSER, MekanismBlocks.SUPERHEATING_ELEMENT);
     public static final FakeRVRecipeType<SPSRecipeViewerRecipe> SPS = new FakeRVRecipeType<>(MekanismBlocks.SPS_CASING.getId(), MekanismItems.ANTIMATTER_PELLET, MekanismLang.SPS, SPSRecipeViewerRecipe.class, -3, -12, 168, 74, false, MekanismBlocks.SPS_CASING, MekanismBlocks.SPS_PORT, MekanismBlocks.SUPERCHARGED_COIL);
 
-    public static final FakeRVRecipeType<ItemStackToFluidRecipe> NUTRITIONAL_LIQUIFICATION = new FakeRVRecipeType<>(MekanismBlocks.NUTRITIONAL_LIQUIFIER, ItemStackToFluidRecipe.class, -20, -12, 132, 62);
+    public static final FakeRVRecipeType<ItemStackToFluidOptionalItemRecipe> NUTRITIONAL_LIQUIFICATION = new FakeRVRecipeType<>(MekanismBlocks.NUTRITIONAL_LIQUIFIER, ItemStackToFluidOptionalItemRecipe.class, -20, -12, 132, 62);
 }

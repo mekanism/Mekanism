@@ -1,6 +1,7 @@
 package mekanism.api.recipes;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
@@ -12,16 +13,21 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Base class for defining ItemStack to fluid recipes.
+ * Base class for defining ItemStack to fluid recipes with an optional item output.
  * <br>
  * Input: ItemStack
  * <br>
- * Output: FluidStack
+ * Output: FluidStack, Optional ItemStack
  *
- * @apiNote There is currently no types of ItemStack to FluidStack recipe type
+ * @apiNote There is currently only one type of ItemStack to FluidStack recipe type:
+ * <ul>
+ *     <li>Nutritional Liquification: These cannot currently be created, but are processed in the Nutritional Liquifier.</li>
+ * </ul>
+ *
+ * @since 10.6.3
  */
 @NothingNullByDefault
-public abstract class ItemStackToFluidRecipe extends MekanismRecipe<SingleRecipeInput> implements Predicate<@NotNull ItemStack> {
+public abstract class ItemStackToFluidOptionalItemRecipe extends MekanismRecipe<SingleRecipeInput> implements Predicate<@NotNull ItemStack> {
 
     @Override
     public abstract boolean test(ItemStack itemStack);
@@ -49,17 +55,38 @@ public abstract class ItemStackToFluidRecipe extends MekanismRecipe<SingleRecipe
      * @implNote The passed in input should <strong>NOT</strong> be modified.
      */
     @Contract(value = "_ -> new", pure = true)
-    public abstract FluidStack getOutput(ItemStack input);
+    public abstract FluidOptionalItemOutput getOutput(ItemStack input);
 
     /**
      * For JEI, gets the output representations to display.
      *
      * @return Representation of the output, <strong>MUST NOT</strong> be modified.
      */
-    public abstract List<FluidStack> getOutputDefinition();
+    public abstract List<FluidOptionalItemOutput> getOutputDefinition();
 
     @Override
     public boolean isIncomplete() {
         return getInput().hasNoMatchingInstances();
+    }
+
+    /**
+     * @apiNote Fluid must be present, but the item may be empty.
+     */
+    public record FluidOptionalItemOutput(FluidStack fluid, ItemStack optionalItem) {
+
+        public FluidOptionalItemOutput {
+            Objects.requireNonNull(fluid, "Fluid output cannot be null.");
+            Objects.requireNonNull(optionalItem, "Item output cannot be null.");
+            if (fluid.isEmpty()) {
+                throw new IllegalArgumentException("Fluid output cannot be empty.");
+            }
+        }
+
+        /**
+         * Copies the backing objects of this output object.
+         */
+        public FluidOptionalItemOutput copy() {
+            return new FluidOptionalItemOutput(fluid.copy(), optionalItem.copy());
+        }
     }
 }

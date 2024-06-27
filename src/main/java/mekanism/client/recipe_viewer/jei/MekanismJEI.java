@@ -38,7 +38,7 @@ import mekanism.client.recipe_viewer.jei.machine.FluidToFluidRecipeCategory;
 import mekanism.client.recipe_viewer.jei.machine.GasToGasRecipeCategory;
 import mekanism.client.recipe_viewer.jei.machine.ItemStackGasToItemStackRecipeCategory;
 import mekanism.client.recipe_viewer.jei.machine.ItemStackToEnergyRecipeCategory;
-import mekanism.client.recipe_viewer.jei.machine.ItemStackToFluidRecipeCategory;
+import mekanism.client.recipe_viewer.jei.machine.ItemStackToFluidOptionalItemRecipeCategory;
 import mekanism.client.recipe_viewer.jei.machine.ItemStackToGasRecipeCategory;
 import mekanism.client.recipe_viewer.jei.machine.ItemStackToInfuseTypeRecipeCategory;
 import mekanism.client.recipe_viewer.jei.machine.ItemStackToItemStackRecipeCategory;
@@ -309,7 +309,7 @@ public class MekanismJEI implements IModPlugin {
         registry.addRecipeCategories(new RotaryCondensentratorRecipeCategory(guiHelper, false));
 
         registry.addRecipeCategories(new ItemStackToGasRecipeCategory(guiHelper, RecipeViewerRecipeType.OXIDIZING, false));
-        registry.addRecipeCategories(new ItemStackToFluidRecipeCategory(guiHelper, RecipeViewerRecipeType.NUTRITIONAL_LIQUIFICATION, false));
+        registry.addRecipeCategories(new ItemStackToFluidOptionalItemRecipeCategory(guiHelper, RecipeViewerRecipeType.NUTRITIONAL_LIQUIFICATION, false));
 
         registry.addRecipeCategories(new GasToGasRecipeCategory(guiHelper, RecipeViewerRecipeType.ACTIVATING));
         registry.addRecipeCategories(new GasToGasRecipeCategory(guiHelper, RecipeViewerRecipeType.CENTRIFUGING));

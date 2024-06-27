@@ -391,8 +391,7 @@ dependencies {
 
     def crt = "com.blamejared.crafttweaker:CraftTweaker-neoforge-${minecraft_version}:${crafttweaker_version}"
     compileOnly(crt)
-    //TODO: Re-enable when it updates to neo changes
-    //localRuntime(crt)
+    localRuntime(crt)
     def jeiTweaker = "com.blamejared.jeitweaker:JeiTweaker-forge-1.20.1:${jeitweaker_version}"
     compileOnly(jeiTweaker)
     //TODO: Re-enable when it updates
