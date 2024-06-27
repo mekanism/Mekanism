@@ -645,6 +645,8 @@ def changeLogResolver = { ->
 }
 
 tasks.register('outputChangelog') {
+    //TODO: Can we make this compatible with the configuration cache?
+    notCompatibleWithConfigurationCache('Not yet compatible')
     doLast {
         project.file('build/changelog.md').text = changeLogResolver.call()
     }
