@@ -25,7 +25,6 @@
   "reactor.mekanismgenerators.fusion_reactor": "Fuzijski Reaktor",
   "reactor.mekanismgenerators.logic.activation": "Aktivacija",
   "reactor.mekanismgenerators.logic.damaged": "Kritična Poškodba",
-  "reactor.mekanismgenerators.logic.excess_waste": "Odvečni Odpadki",
   "reactor.mekanismgenerators.logic.powered": "Vključeno",
   "reactor.mekanismgenerators.logic.temperature": "Visoka Temperatura",
   "sound_event.mekanismgenerators.tile.generator.bio": "Bio-generator šumi",
