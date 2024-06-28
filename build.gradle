@@ -610,8 +610,14 @@ if (System.getenv('CURSEFORGE_KEY') != null || project.hasProperty('curseforgeKe
 
         def changelog = outputChangelog.flatMap(c -> c.outputFile)
         inputs.file(changelog)
+        inputs.property('release_type', release_type)
+        inputs.property('java_version', java_version)
+        inputs.property('minecraft_version', minecraft_version)
 
+        //debugMode.set(true)
+        disableVersionDetection()
         apiToken = System.getenv('CURSEFORGE_KEY') ?: project.findProperty('curseforgeKey')
+        //apiToken.set(project.providers.environmentVariable('CURSEFORGE_KEY').orElse(project.providers.gradleProperty('curseforgeKey')))
 
         //Main Mekanism Project
         def mainCfUpload = task.upload(268560, jar) { main ->
@@ -645,10 +651,12 @@ if (System.getenv('CURSEFORGE_KEY') != null || project.hasProperty('curseforgeKe
         doLast {
             //Note: Quiet is the level above warning but below error. We want these to show regardless of logging level
             // see: https://docs.gradle.org/current/userguide/logging.html
-            logger.quiet('https://www.curseforge.com/minecraft/mc-mods/mekanism/files/{}', mainCfUpload.curseFileId)
-            logger.quiet('https://www.curseforge.com/minecraft/mc-mods/mekanism-additions/files/{}', additionsCfUpload.curseFileId)
-            logger.quiet('https://www.curseforge.com/minecraft/mc-mods/mekanism-generators/files/{}', generatorsCfUpload.curseFileId)
-            logger.quiet('https://www.curseforge.com/minecraft/mc-mods/mekanism-tools/files/{}', toolsCfUpload.curseFileId)
+            //Note: We cast to object to be explicit, so that when we have CurseForgeGradle in debug mode and these are null
+            // then it can resolve which overload to use
+            logger.quiet('https://www.curseforge.com/minecraft/mc-mods/mekanism/files/{}', (Object) mainCfUpload.curseFileId)
+            logger.quiet('https://www.curseforge.com/minecraft/mc-mods/mekanism-additions/files/{}', (Object) additionsCfUpload.curseFileId)
+            logger.quiet('https://www.curseforge.com/minecraft/mc-mods/mekanism-generators/files/{}', (Object) generatorsCfUpload.curseFileId)
+            logger.quiet('https://www.curseforge.com/minecraft/mc-mods/mekanism-tools/files/{}', (Object) toolsCfUpload.curseFileId)
         }
     })
 }
@@ -656,7 +664,13 @@ if (System.getenv('CURSEFORGE_KEY') != null || project.hasProperty('curseforgeKe
 void setGenericCurseArtifactData(UploadArtifact artifact, Provider<RegularFile> changelog) {
     artifact.changelog = changelog
     artifact.changelogType = 'markdown'
-    artifact.releaseType = "${release_type}"
+    artifact.releaseType = release_type
+    //artifact.changelog.set(changelog.map(file -> file.asFile.text))
+    //artifact.changelogType.set('markdown')
+    //artifact.releaseType.set(release_type)
+    artifact.addModLoader('NeoForge')
+    artifact.addJavaVersion("Java ${java_version}")
+    artifact.addGameVersion(minecraft_version)
 }
 
 UploadArtifact uploadSecondaryCurseProject(TaskPublishCurseForge task, long projectId, Provider<RegularFile> changelog, TaskProvider<Jar> sourceSetJar) {
