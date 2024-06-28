@@ -7,14 +7,11 @@ import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.transmitter.BlockLargeTransmitter;
 import mekanism.common.tier.TransporterTier;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
-import net.minecraft.SharedConstants;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class ItemBlockLogisticalTransporter extends ItemBlockTransporter<TileEntityLogisticalTransporter> {
 
@@ -36,7 +33,7 @@ public class ItemBlockLogisticalTransporter extends ItemBlockTransporter<TileEnt
         int pull = tier.getPullAmount();
         float tickRate = context.tickRate();
         if (tickRate > 0) {
-            //TODO: Validate these calculations
+            //TODO - 1.21: Validate these calculations
             speed = (int) (speed / (100 / tickRate));
             pull = (int) (pull * tickRate / 10);
         } else {

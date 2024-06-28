@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import mekanism.common.lib.Color;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -25,7 +26,7 @@ public class BoltEffect {
     private int count = 1;
     private float size = 0.1F;
 
-    private int lifespan = 30;
+    private int lifespan = SharedConstants.TICKS_PER_SECOND + MekanismUtils.TICKS_PER_HALF_SECOND;
 
     private SpawnFunction spawnFunction = SpawnFunction.delay(3 * SharedConstants.TICKS_PER_SECOND);
     private FadeFunction fadeFunction = FadeFunction.fade(0.5F);

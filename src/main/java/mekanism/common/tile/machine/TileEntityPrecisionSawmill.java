@@ -38,6 +38,7 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.upgrade.SawmillUpgradeData;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
@@ -57,7 +58,7 @@ public class TileEntityPrecisionSawmill extends TileEntityProgressMachine<Sawmil
           NOT_ENOUGH_SPACE_SECONDARY_OUTPUT_ERROR,
           RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
     );
-    public static final int BASE_TICKS_REQUIRED = 200;
+    public static final int BASE_TICKS_REQUIRED = 10 * SharedConstants.TICKS_PER_SECOND;
 
     private final IOutputHandler<@NotNull ChanceOutput> outputHandler;
     private final IInputHandler<@NotNull ItemStack> inputHandler;

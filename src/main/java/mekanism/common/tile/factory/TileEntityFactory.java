@@ -59,6 +59,7 @@ import mekanism.common.upgrade.MachineUpgradeData;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.UpgradeUtils;
+import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
@@ -78,7 +79,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
     /**
      * How many ticks it takes, by default, to run an operation.
      */
-    protected static final int BASE_TICKS_REQUIRED = 200;
+    protected static final int BASE_TICKS_REQUIRED = 10 * SharedConstants.TICKS_PER_SECOND;
 
     protected FactoryRecipeCacheLookupMonitor<RECIPE>[] recipeCacheLookupMonitors;
     protected BooleanSupplier[] recheckAllRecipeErrors;

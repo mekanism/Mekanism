@@ -12,6 +12,7 @@ import mekanism.client.render.data.ValveRenderData;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.Direction;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.Nullable;
 
 public final class ModelRenderer {
@@ -19,7 +20,7 @@ public final class ModelRenderer {
     private ModelRenderer() {
     }
 
-    private static final int BLOCK_STAGES = 1_000;
+    private static final int BLOCK_STAGES = FluidType.BUCKET_VOLUME;
 
     private static final Map<RenderData, Int2ObjectMap<Model3D>> cachedCenterData = new Object2ObjectOpenHashMap<>();
     private static final Map<ValveRenderData, Float2ObjectMap<Model3D>> cachedValveFluids = new Object2ObjectOpenHashMap<>();

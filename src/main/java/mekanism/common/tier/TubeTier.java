@@ -4,12 +4,13 @@ import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
 import mekanism.common.config.value.CachedLongValue;
 import mekanism.common.util.EnumUtils;
+import net.neoforged.neoforge.fluids.FluidType;
 
 public enum TubeTier implements ITier {
-    BASIC(BaseTier.BASIC, 4_000, 750),
-    ADVANCED(BaseTier.ADVANCED, 16_000, 2_000),
-    ELITE(BaseTier.ELITE, 256_000, 64_000),
-    ULTIMATE(BaseTier.ULTIMATE, 1_024_000, 256_000);
+    BASIC(BaseTier.BASIC, 4 * FluidType.BUCKET_VOLUME, 750),
+    ADVANCED(BaseTier.ADVANCED, 16 * FluidType.BUCKET_VOLUME, 2 * FluidType.BUCKET_VOLUME),
+    ELITE(BaseTier.ELITE, 256 * FluidType.BUCKET_VOLUME, 64 * FluidType.BUCKET_VOLUME),
+    ULTIMATE(BaseTier.ULTIMATE, 1_024 * FluidType.BUCKET_VOLUME, 256 * FluidType.BUCKET_VOLUME);
 
     private final long baseCapacity;
     private final long basePull;

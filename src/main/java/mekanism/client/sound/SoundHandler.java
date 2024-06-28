@@ -291,7 +291,7 @@ public class SoundHandler {
 
         private final float originalVolume;
 
-        // Choose an interval between 60-80 ticks (3-4 seconds) to check for muffling changes. We do this
+        // Choose an interval between 20-40 ticks (1-2 seconds) to check for muffling changes. We do this
         // to ensure that not every tile sound tries to run on the same tick and thus create
         // uneven spikes of CPU usage
         private final int checkInterval = SharedConstants.TICKS_PER_SECOND + ThreadLocalRandom.current().nextInt(SharedConstants.TICKS_PER_SECOND);

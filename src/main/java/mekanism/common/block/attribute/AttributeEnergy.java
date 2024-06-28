@@ -2,6 +2,7 @@ package mekanism.common.block.attribute;
 
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
+import net.minecraft.SharedConstants;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -11,7 +12,7 @@ public class AttributeEnergy implements Attribute {
 
     private FloatingLongSupplier energyUsage = () -> FloatingLong.ZERO;
     // 2 operations (20 secs) worth of ticks * usage
-    private FloatingLongSupplier energyStorage = () -> energyUsage.get().multiply(400);
+    private FloatingLongSupplier energyStorage = () -> energyUsage.get().multiply(20 * SharedConstants.TICKS_PER_SECOND);
 
     public AttributeEnergy(@Nullable FloatingLongSupplier energyUsage, @Nullable FloatingLongSupplier energyStorage) {
         if (energyUsage != null) {

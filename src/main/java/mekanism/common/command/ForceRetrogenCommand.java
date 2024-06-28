@@ -50,7 +50,7 @@ public class ForceRetrogenCommand {
         int zStart = Math.min(start.z(), end.z());
         int zEnd = Math.max(start.z(), end.z());
         //TODO: Switch this to something like !World.isValidXZPosition (issue is it is private)
-        if (xStart < -30000000 || zStart < -30000000 || xEnd >= 30000000 || zEnd >= 30000000) {
+        if (xStart < -Level.MAX_LEVEL_SIZE || zStart < -Level.MAX_LEVEL_SIZE || xEnd >= Level.MAX_LEVEL_SIZE || zEnd >= Level.MAX_LEVEL_SIZE) {
             throw BlockPosArgument.ERROR_OUT_OF_WORLD.create();
         }
         int chunkXStart = SectionPos.blockToSectionCoord(xStart);

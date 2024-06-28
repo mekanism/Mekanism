@@ -48,6 +48,7 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
@@ -56,6 +57,7 @@ import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -69,8 +71,8 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
           NOT_ENOUGH_SPACE_ITEM_OUTPUT_ERROR,
           RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
     );
-    public static final int MAX_FLUID = 10_000;
-    public static final int BASE_TICKS_REQUIRED = 100;
+    public static final int MAX_FLUID = 10 * FluidType.BUCKET_VOLUME;
+    public static final int BASE_TICKS_REQUIRED = 5 * SharedConstants.TICKS_PER_SECOND;
 
     @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded",
                                                                                      "getOutputFilledPercentage"}, docPlaceholder = "output tank")
@@ -96,7 +98,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
     private float lastPasteScale;
 
     public TileEntityNutritionalLiquifier(BlockPos pos, BlockState state) {
-        super(MekanismBlocks.NUTRITIONAL_LIQUIFIER, pos, state, TRACKED_ERROR_TYPES, 100);
+        super(MekanismBlocks.NUTRITIONAL_LIQUIFIER, pos, state, TRACKED_ERROR_TYPES, BASE_TICKS_REQUIRED);
         configComponent.setupItemIOConfig(List.of(inputSlot, containerFillSlot), List.of(outputSlot, containerOutputSlot), energySlot, false);
         configComponent.setupOutputConfig(TransmissionType.FLUID, fluidTank, RelativeSide.RIGHT);
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);

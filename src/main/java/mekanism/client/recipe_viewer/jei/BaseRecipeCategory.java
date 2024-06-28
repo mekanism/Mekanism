@@ -210,14 +210,14 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
 
     protected IProgressInfoHandler getSimpleProgressTimer() {
         if (timer == null) {
-            timer = guiHelper.createTickTimer(SharedConstants.TICKS_PER_SECOND, 20, false);
+            timer = guiHelper.createTickTimer(SharedConstants.TICKS_PER_SECOND, SharedConstants.TICKS_PER_SECOND, false);
         }
-        return () -> timer.getValue() / 20D;
+        return () -> timer.getValue() / (double) SharedConstants.TICKS_PER_SECOND;
     }
 
     protected IBarInfoHandler getBarProgressTimer() {
         if (timer == null) {
-            timer = guiHelper.createTickTimer(SharedConstants.TICKS_PER_SECOND, 20, false);
+            timer = guiHelper.createTickTimer(SharedConstants.TICKS_PER_SECOND, SharedConstants.TICKS_PER_SECOND, false);
         }
         return new IBarInfoHandler() {
             @Override
@@ -227,7 +227,7 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
 
             @Override
             public double getLevel() {
-                return timer.getValue() / 20D;
+                return timer.getValue() / (double) SharedConstants.TICKS_PER_SECOND;
             }
         };
     }

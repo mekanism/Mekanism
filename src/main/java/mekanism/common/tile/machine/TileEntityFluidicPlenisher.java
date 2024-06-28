@@ -64,7 +64,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
      * How many ticks it takes to run an operation.
      */
     public static final int BASE_TICKS_REQUIRED = SharedConstants.TICKS_PER_SECOND;
-    public static final int MAX_FLUID = 10_000;
+    public static final int MAX_FLUID = 10 * FluidType.BUCKET_VOLUME;
 
     private final Set<BlockPos> activeNodes = new ObjectLinkedOpenHashSet<>();
     private final Set<BlockPos> usedNodes = new ObjectOpenHashSet<>();

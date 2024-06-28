@@ -2,7 +2,9 @@ package mekanism.common.lib.multiblock;
 
 import java.util.Collection;
 import mekanism.api.SerializationConstants;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -67,7 +69,7 @@ public interface IValveHandler {
         }
 
         public void onTransfer() {
-            activeTicks = 30;
+            activeTicks = SharedConstants.TICKS_PER_SECOND + MekanismUtils.TICKS_PER_HALF_SECOND;
         }
 
         @Override

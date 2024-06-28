@@ -27,6 +27,7 @@ import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
+import net.minecraft.SharedConstants;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
@@ -81,7 +82,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IGasItem
         // while we could base this on how much gas is stored in the flamethrower, then if something is filling it while using, then it will be wrong
         //Secondary note: When this does run out the use animation briefly resets so the item renders slightly different for a second,
         // but I don't think it is worth trying to fix given how long a use duration we have
-        return 72_000;
+        return 60 * SharedConstants.TICKS_PER_MINUTE;
     }
 
     @NotNull

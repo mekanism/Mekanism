@@ -162,7 +162,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     private static final FloatingLong DISTANCE_MULTIPLIER = FloatingLong.createConst(1.5);
     //TODO: Note the robit smelts at double normal speed, we may want to make this configurable
     //TODO: Allow for upgrades in the robit?
-    private static final int ticksRequired = 100;
+    private static final int ticksRequired = 5 * SharedConstants.TICKS_PER_SECOND;
 
     @Nullable
     private GlobalPos homeLocation;

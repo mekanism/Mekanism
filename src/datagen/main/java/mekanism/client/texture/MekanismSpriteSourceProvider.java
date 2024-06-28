@@ -33,7 +33,7 @@ public class MekanismSpriteSourceProvider extends BaseSpriteSourceProvider {
               Mekanism.rl("entity/armor/mekatool")
         );
 
-        //TODO - 1.20: Add javadocs stating that chemical resources now need to be added via sources???
+        //TODO - 1.21: Add javadocs stating that chemical resources now need to be added via sources???
         // is this even accurate? See if fluids need it as well. Chemicals potentially should use their own directory as well
         // just to simplify things? Or maybe we add manually and then also add a specific directory to make it easier for others
         addChemicalSprites(atlas);

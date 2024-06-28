@@ -131,9 +131,9 @@ public class GeneratorsConfig extends BaseMekanismConfig {
         turbineBladesPerCoil = CachedIntValue.wrap(this, builder.comment("The number of blades on each turbine coil per blade applied.")
               .defineInRange("turbineBladesPerCoil", 4, 1, 12));
         turbineVentGasFlow = CachedDoubleValue.wrap(this, builder.comment("The rate at which steam is vented into the turbine.")
-              .defineInRange("turbineVentGasFlow", 32_000D, 0.1, 1_024_000));
+              .defineInRange("turbineVentGasFlow", 32D * FluidType.BUCKET_VOLUME, 0.1, 1_024 * FluidType.BUCKET_VOLUME));
         turbineDisperserGasFlow = CachedDoubleValue.wrap(this, builder.comment("The rate at which steam is dispersed into the turbine.")
-              .defineInRange("turbineDisperserGasFlow", 1_280D, 0.1, 1_024_000));
+              .defineInRange("turbineDisperserGasFlow", 1_280D, 0.1, 1_024 * FluidType.BUCKET_VOLUME));
         turbineEnergyCapacityPerVolume = CachedFloatingLongValue.define(this, builder, "Amount of energy (J) that each block of the turbine contributes to the total energy capacity. Max = volume * energyCapacityPerVolume",
               "energyCapacityPerVolume", FloatingLong.createConst(16_000_000L), CachedFloatingLongValue.greaterZeroLessThan(FloatingLong.createConst(1_000_000_000_000L)));
         //Note: We use maxVolume as it still is a large number, and we have no reason to go higher even if some things we technically could
@@ -141,7 +141,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
         turbineGasPerTank = CachedLongValue.wrap(this, builder.comment("Amount of gas (mB) that each block of the turbine's steam cavity contributes to the volume. Max = volume * gasPerTank")
               .defineInRange("gasPerTank", 64L * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE / maxTurbine));
         condenserRate = CachedIntValue.wrap(this, builder.comment("The rate at which steam is condensed in the turbine.")
-              .defineInRange("condenserRate", 64_000, 1, 2_000_000));
+              .defineInRange("condenserRate", 64 * FluidType.BUCKET_VOLUME, 1, 2_000 * FluidType.BUCKET_VOLUME));
         builder.pop();
 
         builder.comment("Wind Generator Settings").push(WIND_CATEGORY);
