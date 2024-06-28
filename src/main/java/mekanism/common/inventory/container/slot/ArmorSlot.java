@@ -16,11 +16,19 @@ public class ArmorSlot extends InsertableSlot {
                                                                      InventoryMenu.EMPTY_ARMOR_SLOT_CHESTPLATE, InventoryMenu.EMPTY_ARMOR_SLOT_HELMET};
 
     private final EquipmentSlot slotType;
+    private final Player owner;
 
     public ArmorSlot(Inventory inventory, int index, int x, int y, EquipmentSlot slotType) {
         super(inventory, index, x, y);
         this.slotType = slotType;
+        this.owner = inventory.player;
         setBackground(InventoryMenu.BLOCK_ATLAS, ARMOR_SLOT_TEXTURES[this.slotType.getIndex()]);
+    }
+
+    @Override
+    public void setByPlayer(@NotNull ItemStack newStack, @NotNull ItemStack oldStack) {
+        this.owner.onEquipItem(slotType, oldStack, newStack);
+        super.setByPlayer(newStack, oldStack);
     }
 
     @Override
