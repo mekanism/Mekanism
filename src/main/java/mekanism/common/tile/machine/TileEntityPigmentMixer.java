@@ -2,6 +2,7 @@ package mekanism.common.tile.machine;
 
 import java.util.List;
 import mekanism.api.IContentsListener;
+import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.pigment.IPigmentTank;
@@ -119,6 +120,7 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<PigmentMixin
         }
 
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
+        configComponent.addDisabledSides(RelativeSide.TOP);
 
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM, TransmissionType.PIGMENT)
