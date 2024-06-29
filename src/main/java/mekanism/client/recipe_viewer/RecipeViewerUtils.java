@@ -19,27 +19,23 @@ import mekanism.api.recipes.ItemStackToFluidOptionalItemRecipe;
 import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.SlurryStackIngredient;
-import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.progress.IProgressInfoHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
-import mekanism.common.recipe.impl.NutritionalLiquifierIRecipe;
-import mekanism.common.registries.MekanismFluids;
 import mekanism.common.tier.ChemicalTankTier;
+import mekanism.common.tile.machine.TileEntityNutritionalLiquifier;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.HolderSet.Named;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.TimeUtil;
-import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -139,18 +135,9 @@ public class RecipeViewerUtils {
         // CreativeModeTabs.searchTab().getDisplayItems(). The bigger issue is how to come up with unique synthetic
         // names for the recipes as EMI requires they be unique. (Maybe index them?)
         for (Item item : BuiltInRegistries.ITEM) {
-            ItemStack stack = new ItemStack(item);
-            if (stack.has(DataComponents.FOOD)) {
-                FoodProperties food = stack.getFoodProperties(null);
-                //Only display consuming foods that provide healing as otherwise no paste will be made
-                if (food != null && food.nutrition() > 0) {
-                    ResourceLocation id = RecipeViewerUtils.synthetic(RegistryUtils.getName(stack.getItem()), "liquification", Mekanism.MODID);
-                    liquification.put(id, new NutritionalLiquifierIRecipe(
-                          IngredientCreatorAccess.item().from(stack),
-                          MekanismFluids.NUTRITIONAL_PASTE.getFluidStack(food.nutrition() * 50),
-                          food.usingConvertsTo().orElse(ItemStack.EMPTY)
-                    ));
-                }
+            ItemStackToFluidOptionalItemRecipe recipe = TileEntityNutritionalLiquifier.getRecipe(item.getDefaultInstance());
+            if (recipe != null) {
+                liquification.put(RecipeViewerUtils.synthetic(RegistryUtils.getName(item), "liquification", Mekanism.MODID), recipe);
             }
         }
         return liquification;

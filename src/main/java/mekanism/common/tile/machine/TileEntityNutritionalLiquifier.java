@@ -51,7 +51,6 @@ import mekanism.common.util.NBTUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
@@ -142,12 +141,9 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
     }
 
     public static boolean isValidInput(ItemStack stack) {
-        if (stack.has(DataComponents.FOOD)) {//Double-check the stack is food
-            FoodProperties food = stack.getFoodProperties(null);
-            //And only allow inserting foods that actually would provide paste
-            return food != null && food.nutrition() > 0;
-        }
-        return false;
+        FoodProperties food = stack.getFoodProperties(null);
+        //And only allow inserting foods that actually would provide paste
+        return food != null && food.nutrition() > 0;
     }
 
     @Override
@@ -191,8 +187,12 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
     @Nullable
     @Override
     public ItemStackToFluidOptionalItemRecipe getRecipe(int cacheIndex) {
-        ItemStack stack = inputHandler.getInput();
-        if (stack.isEmpty() || !stack.has(DataComponents.FOOD)) {
+        return getRecipe(inputHandler.getInput());
+    }
+
+    @Nullable
+    public static ItemStackToFluidOptionalItemRecipe getRecipe(ItemStack stack) {
+        if (stack.isEmpty()) {
             return null;
         }
         FoodProperties food = stack.getFoodProperties(null);
