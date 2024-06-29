@@ -20,7 +20,7 @@ plugins {
     id('eclipse')
     id('idea')
     id('maven-publish')
-    id('net.neoforged.gradle.userdev') version('7.0.151')//https://projects.neoforged.net/neoforged/neogradle
+    id('net.neoforged.gradle.userdev') version('7.0.152')//https://projects.neoforged.net/neoforged/neogradle
 }
 
 tasks.named('wrapper', Wrapper).configure {
@@ -412,7 +412,7 @@ dependencies {
     compileOnly("curse.maven:female-gender-forge-481655:${wildfire_gender_mod_id}")
 
     //Dependencies for data generators for mod compat reference
-    datagenMainImplementation("appeng:appliedenergistics2-neoforge:${ae2_version}")
+    datagenMainImplementation("appeng:appliedenergistics2:${ae2_version}")
     datagenMainRuntimeOnly("com.github.glitchfiend:GlitchCore-neoforge:${minecraft_version}-${glitchcore_version}")
     datagenMainRuntimeOnly("com.github.glitchfiend:TerraBlender-neoforge:${minecraft_version}-${terrablender_version}")
     datagenMainImplementation("com.github.glitchfiend:BiomesOPlenty-neoforge:${minecraft_version}-${biomesoplenty_version}")
