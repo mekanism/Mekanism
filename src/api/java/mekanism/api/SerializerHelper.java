@@ -60,6 +60,14 @@ public class SerializerHelper {
     ).apply(instance, ItemStack::new)));
 
     /**
+     * Custom codec to allow serializing an item stack without the upper bounds. Allows empty items
+     *
+     * @since 10.6.4
+     */
+    public static final Codec<ItemStack> OVERSIZED_ITEM_OPTIONAL_CODEC = ExtraCodecs.optionalEmptyMap(OVERSIZED_ITEM_CODEC)
+          .xmap(optional -> optional.orElse(ItemStack.EMPTY), stack -> stack.isEmpty() ? Optional.empty() : Optional.of(stack));
+
+    /**
      * Helper similar to {@link ItemStack#save(Provider)} but with support for oversized stacks.
      *
      * @since 10.6.1
