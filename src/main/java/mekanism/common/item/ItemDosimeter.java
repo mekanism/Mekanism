@@ -62,7 +62,7 @@ public class ItemDosimeter extends Item {
         player.sendSystemMessage(doseLangEntry.translateColored(EnumColor.GRAY, severityColor, UnitDisplayUtils.getDisplayShort(radiation, RadiationUnit.SV, 3)));
         if (MekanismConfig.common.enableDecayTimers.get() && radiation > RadiationManager.MIN_MAGNITUDE) {
             player.sendSystemMessage(MekanismLang.RADIATION_DECAY_TIME.translateColored(EnumColor.GRAY, severityColor,
-                  TextUtils.getHoursMinutes(RadiationManager.get().getDecayTime(radiation, false))));
+                  TextUtils.getHoursMinutes(player.level(), RadiationManager.get().getDecayTime(radiation, false))));
         }
     }
 }

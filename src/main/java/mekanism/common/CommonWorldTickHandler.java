@@ -178,14 +178,16 @@ public class CommonWorldTickHandler {
 
     @SubscribeEvent
     public void onTick(ServerTickEvent.Post event) {
-        FrequencyManager.tick();
-        RadiationManager.get().tickServer();
+        boolean tickingNormally = event.getServer().tickRateManager().runsNormally();
+        FrequencyManager.tick(tickingNormally);
+        RadiationManager.get().tickServer(tickingNormally);
     }
 
     @SubscribeEvent
     public void onTick(LevelTickEvent.Post event) {
         if (event.getLevel() instanceof ServerLevel world) {
             RadiationManager.get().tickServerWorld(world);
+            //Note: We flush the tag and recipe cache, and also perform retrogen, regardless of if the ticks are frozen or not
             if (flushTagAndRecipeCaches) {
                 //Loop all open containers and if it is a portable qio dashboard force refresh the window's recipes
                 for (ServerPlayer player : world.players()) {

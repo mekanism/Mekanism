@@ -33,7 +33,8 @@ public class ModuleGeigerUnit implements ICustomModule<ModuleGeigerUnit> {
             Component text = UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SV, 2);
             if (MekanismConfig.common.enableDecayTimers.get() && magnitude > RadiationManager.BASELINE) {
                 double maxMagnitude = RadiationManager.get().getClientMaxMagnitude();
-                text = MekanismLang.GENERIC_WITH_PARENTHESIS.translate(text, TextUtils.getHoursMinutes(RadiationManager.get().getDecayTime(maxMagnitude, true)));
+                text = MekanismLang.GENERIC_WITH_PARENTHESIS.translate(text, TextUtils.getHoursMinutes(player.level(),
+                      RadiationManager.get().getDecayTime(maxMagnitude, true)));
             }
             HUDColor color;
             if (magnitude <= RadiationManager.BASELINE) {

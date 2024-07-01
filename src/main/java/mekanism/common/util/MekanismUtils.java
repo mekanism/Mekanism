@@ -132,6 +132,11 @@ public final class MekanismUtils {
         return MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, messageColor, message);
     }
 
+    public static boolean isTickingNormally(@Nullable Level level) {
+        //Same as Minecraft#isLevelRunningNormally
+        return level == null || level.tickRateManager().runsNormally();
+    }
+
     @Nullable
     public static Player tryGetClientPlayer() {
         if (FMLEnvironment.dist.isClient()) {

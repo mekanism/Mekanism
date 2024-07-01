@@ -246,7 +246,7 @@ public class RenderTickHandler {
     public void tickEnd(ClientTickEvent.Post event) {
         //Note: We check that the game mode is not null as if it is that means the world is unloading, and we don't actually want to be rendering
         // as our data may be out of date or invalid. For example configs could unload while it is still unloading
-        if (minecraft.player != null && minecraft.player.level() != null && !minecraft.isPaused() && minecraft.gameMode != null) {
+        if (minecraft.player != null && minecraft.player.level() != null && minecraft.gameMode != null && MekanismRenderer.isRunningNormally()) {
             Player player = minecraft.player;
             Level world = minecraft.player.level();
             float partialTicks = minecraft.getTimer().getGameTimeDeltaPartialTick(false);

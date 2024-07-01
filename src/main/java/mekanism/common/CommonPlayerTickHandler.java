@@ -83,6 +83,7 @@ public class CommonPlayerTickHandler {
 
     @SubscribeEvent
     public void onTick(PlayerTickEvent.Post event) {
+        //Note: Player's can't be frozen with the tick rate manager, so we don't have to check it here
         if (!event.getEntity().level().isClientSide()) {
             tickEnd(event.getEntity());
         }

@@ -7,7 +7,11 @@ import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.transmitter.BlockLargeTransmitter;
 import mekanism.common.tier.TransporterTier;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.UnitDisplayUtils;
+import net.minecraft.SharedConstants;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.TickRateManager;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -29,18 +33,11 @@ public class ItemBlockLogisticalTransporter extends ItemBlockTransporter<TileEnt
     protected void addStats(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         super.addStats(stack, context, tooltip, flag);
         TransporterTier tier = getTier();
-        int speed = tier.getSpeed();
-        int pull = tier.getPullAmount();
-        float tickRate = context.tickRate();
-        if (tickRate > 0) {
-            //TODO - 1.21: Validate these calculations
-            speed = (int) (speed / (100 / tickRate));
-            pull = (int) (pull * tickRate / 10);
-        } else {
-            speed = 0;
-            pull = 0;
-        }
-        tooltip.add(MekanismLang.SPEED.translateColored(EnumColor.INDIGO, EnumColor.GRAY, speed));
-        tooltip.add(MekanismLang.PUMP_RATE.translateColored(EnumColor.INDIGO, EnumColor.GRAY, pull));
+        //Ensure no one somehow passes in invalid data
+        float tickRate = Math.max(context.tickRate(), TickRateManager.MIN_TICKRATE);
+        float speed = tier.getSpeed() / (5 * SharedConstants.TICKS_PER_SECOND / tickRate);
+        float pull = tier.getPullAmount() * tickRate / MekanismUtils.TICKS_PER_HALF_SECOND;
+        tooltip.add(MekanismLang.SPEED.translateColored(EnumColor.INDIGO, EnumColor.GRAY, UnitDisplayUtils.roundDecimals(speed)));
+        tooltip.add(MekanismLang.PUMP_RATE.translateColored(EnumColor.INDIGO, EnumColor.GRAY, UnitDisplayUtils.roundDecimals(pull)));
     }
 }

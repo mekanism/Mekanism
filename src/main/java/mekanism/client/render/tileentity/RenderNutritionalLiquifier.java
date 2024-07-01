@@ -96,7 +96,7 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
             if (active && Minecraft.getInstance().options.particles().get() != ParticleStatus.MINIMAL) {
                 //Render eating particles
                 PseudoParticleData pseudoParticles = particles.computeIfAbsent(tile, t -> new PseudoParticleData());
-                if (!Minecraft.getInstance().isPaused()) {
+                if (isTickingNormally(tile)) {
                     //Don't add particles if the game is paused
                     if (pseudoParticles.lastTick != tile.getLevel().getGameTime()) {
                         pseudoParticles.lastTick = tile.getLevel().getGameTime();

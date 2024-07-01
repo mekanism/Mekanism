@@ -90,6 +90,8 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
             ItemStack storedStack = binSlot.isLocked() ? binSlot.getLockStack() : binSlot.getStack();
             int binMaxSize = binSlot.getLimit(storedStack);
             if (binSlot.getCount() < binMaxSize) {
+                //TODO - 1.21: Make add ticks and removeTicks functional somehow when the game isn't ticking?
+                // at the very least make adding and removing, force sync an update packet if it isn't ticking
                 if (bin.addTicks == 0) {
                     if (!stack.isEmpty()) {
                         ItemStack remain = binSlot.insertItem(stack, Action.EXECUTE, AutomationType.MANUAL);

@@ -73,7 +73,7 @@ public class HUDRenderer {
 
     private void update(Level level, Player player) {
         // if we're just now rendering the HUD after a pause, reset the pitch/yaw trackers
-        if (lastTick == -1 || level.getGameTime() - lastTick > 1) {
+        if (lastTick == -1 || level.getGameTime() - lastTick > 1 || !level.tickRateManager().runsNormally()) {
             prevRotationYaw = player.getYRot();
             prevRotationPitch = player.getXRot();
         }

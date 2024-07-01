@@ -57,7 +57,8 @@ public class RenderSPS extends MultiblockTileEntityRenderer<SPSMultiblockData, T
         Vec3 center = Vec3.atLowerCornerOf(multiblock.getMinPos()).add(Vec3.atLowerCornerOf(multiblock.getMaxPos()))
               .add(new Vec3(1, 1, 1)).scale(0.5);
         Vec3 renderCenter = center.subtract(tile.getBlockPos().getX(), tile.getBlockPos().getY(), tile.getBlockPos().getZ());
-        if (!minecraft.isPaused()) {
+        boolean tickingNormally = isTickingNormally(tile);
+        if (tickingNormally) {
             for (CoilData data : multiblock.coilData.coilMap.values()) {
                 if (data.prevLevel > 0) {
                     bolts.update(data.coilPos.hashCode(), getBoltFromData(data, tile.getBlockPos(), renderCenter), partialTick);
@@ -68,7 +69,7 @@ public class RenderSPS extends MultiblockTileEntityRenderer<SPSMultiblockData, T
         float energyScale = getEnergyScale(multiblock.lastProcessed);
         int targetEffectCount = 0;
 
-        if (!minecraft.isPaused() && !multiblock.lastReceivedEnergy.isZero()) {
+        if (tickingNormally && !multiblock.lastReceivedEnergy.isZero()) {
             if (rand.nextDouble() < getBoundedScale(energyScale, 0.01F, 0.4F)) {
                 CuboidSide side = Util.getRandom(CuboidSide.SIDES, rand);
                 Plane plane = Plane.getInnerCuboidPlane(multiblock.getBounds(), side);

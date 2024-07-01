@@ -4,6 +4,8 @@ import java.text.NumberFormat;
 import mekanism.common.MekanismLang;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
+import net.minecraft.world.TickRateManager;
+import net.minecraft.world.level.Level;
 
 public final class TextUtils {
 
@@ -19,8 +21,14 @@ public final class TextUtils {
         return MekanismLang.GENERIC_PERCENT.translate(Math.round(ratio * 100));
     }
 
-    public static Component getHoursMinutes(int seconds) {
-        int minutes = Mth.ceil(seconds / 60.0);
+    public static Component getHoursMinutes(Level level, long ticks) {
+        return getHoursMinutes(level.tickRateManager(), ticks);
+    }
+
+    public static Component getHoursMinutes(TickRateManager tickRateManager, long ticks) {
+        //Ensure no one somehow passes in invalid data
+        float tickRate = Math.max(tickRateManager.tickrate(), TickRateManager.MIN_TICKRATE);
+        int minutes = Mth.ceil(ticks / (60.0 * tickRate));
         int hours = minutes / 60;
         return hours > 0 ? MekanismLang.GENERIC_HOURS_MINUTES.translate(hours, minutes % 60) : MekanismLang.GENERIC_MINUTES.translate(minutes);
     }

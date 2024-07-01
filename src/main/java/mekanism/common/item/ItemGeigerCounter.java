@@ -39,7 +39,7 @@ public class ItemGeigerCounter extends Item {
                       UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SVH, 3)));
                 if (MekanismConfig.common.enableDecayTimers.get() && magnitude > RadiationManager.BASELINE) {
                     player.sendSystemMessage(MekanismLang.RADIATION_DECAY_TIME.translateColored(EnumColor.GRAY,
-                          severityColor, TextUtils.getHoursMinutes(RadiationManager.get().getDecayTime(levelAndMaxMagnitude.maxMagnitude(), true))));
+                          severityColor, TextUtils.getHoursMinutes(world, RadiationManager.get().getDecayTime(levelAndMaxMagnitude.maxMagnitude(), true))));
                 }
                 CriteriaTriggers.USING_ITEM.trigger((ServerPlayer) player, stack);
             }

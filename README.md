@@ -22,9 +22,9 @@ the potential for us making breaking changes where APIs may change slightly or h
 changes. For this reason we do not recommend including Mekanism in any "large" packs that players may expect
 things to work properly/upgrade safely from one version to the next.
 
-We have not yet had the chance to go through and fully integrate with all of vanilla's new features,
-recipes, blocks, entities, or even things like the tickrate command. Additionally, there is a handful
-of things that we haven't finished porting yet.
+~~We have not yet had the chance to go through and fully integrate with all of vanilla's new features,
+recipes, blocks, entities, or even things like the tickrate command.~~ (Previous Sentence Fixed 10.6.4)
+Additionally, there is a handful of things that we haven't finished porting yet.
 
 ## Known Bugs/Things that aren't done being ported yet ##
 - Options in the Module Tweaker that have side effects don't currently have those side effects displayed

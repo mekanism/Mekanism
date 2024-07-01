@@ -255,6 +255,11 @@ public class MekanismRenderer {
         guiGraphics.fill(RenderType.guiOverlay(), x, y, guiGraphics.guiWidth(), guiGraphics.guiHeight(), color);
     }
 
+    public static boolean isRunningNormally() {
+        Minecraft minecraft = Minecraft.getInstance();
+        return !minecraft.isPaused() && MekanismUtils.isTickingNormally(minecraft.level);
+    }
+
     public static float getPartialTick() {
         return Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false);
     }
