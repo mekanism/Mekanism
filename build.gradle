@@ -398,7 +398,7 @@ dependencies {
     //TODO: Re-enable when it updates
     //localRuntime(jeiTweaker)
 
-    compileOnly("dev.gigaherz.jsonthings:JsonThings-${previous_minecraft_version}:${json_things_version}")
+    compileOnly("dev.gigaherz.jsonthings:JsonThings-${minecraft_version}:${json_things_version}")
 
     //Mods we have dependencies on but don't bother loading into the dev environment
     //compileOnly("curse.maven:projecte-api-226410:${projecte_api_id}")

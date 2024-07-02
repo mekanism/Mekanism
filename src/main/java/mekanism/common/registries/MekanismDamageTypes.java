@@ -80,7 +80,7 @@ public class MekanismDamageTypes {
         }
 
         private Holder<DamageType> holder(RegistryAccess registryAccess) {
-            return registryAccess.registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(key());
+            return registryAccess.holderOrThrow(key());
         }
     }
 }

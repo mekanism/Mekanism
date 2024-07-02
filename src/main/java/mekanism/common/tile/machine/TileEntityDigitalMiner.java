@@ -21,8 +21,8 @@ import java.util.function.Predicate;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.SerializationConstants;
 import mekanism.api.RelativeSide;
+import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.FloatingLong;
@@ -84,7 +84,6 @@ import net.minecraft.core.SectionPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -1275,7 +1274,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         }
         ItemStack stack = ItemAtomicDisassembler.fullyChargedStack();
         if (getSilkTouch()) {
-            stack.enchant(level.registryAccess().registryOrThrow(Registries.ENCHANTMENT).getHolderOrThrow(Enchantments.SILK_TOUCH), 1);
+            stack.enchant(level.holderOrThrow(Enchantments.SILK_TOUCH), 1);
         }
         MekFakePlayer dummy = MekFakePlayer.setupFakePlayer(level, this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ());
         dummy.setEmulatingUUID(getOwnerUUID());//pretend to be the owner
