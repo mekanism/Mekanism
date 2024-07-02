@@ -220,10 +220,6 @@ public record AttachedSideConfig(Map<TransmissionType, LightConfigInfo> configIn
             if (existingData == fallback) {
                 throw new IllegalStateException("Expected there to be a side config for " + transmissionType.getTransmission() + " but there wasn't");
             }
-            config = fallback.configInfo.get(transmissionType);
-            if (config.sideConfig.isEmpty()) {
-                throw new IllegalStateException("Expected there to be a side config for " + transmissionType.getTransmission() + " but there wasn't");
-            }
         }
         return config;
     }
