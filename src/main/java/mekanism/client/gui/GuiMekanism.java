@@ -362,6 +362,8 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
             pose.popPose();
         }
         pose.popPose();
+        //Additionally hacky offset to make it so that we render above items in higher z-levels for things like tooltips and held items
+        maxZOffset += 200;
         // then render tooltips, translating above max z offset to prevent clashing
         // It is IMPORTANT that we do this to ensure any delayed rendering we do the for the tooltip happens above the other things
         // and so that we let the translation leak out into the super method so that the carried item renders at the correct z level

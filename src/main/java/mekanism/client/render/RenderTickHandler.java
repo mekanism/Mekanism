@@ -152,8 +152,7 @@ public class RenderTickHandler {
             // Note: We will pop this in a listener at the lowest priority
             PoseStack pose = event.getGuiGraphics().pose();
             pose.pushPose();
-            //Note: We translate forward an extra 200, so that items rendered in a gui window don't overlap EMI based tooltips
-            pose.translate(0, 0, 200 + GuiMekanism.maxZOffset);
+            pose.translate(0, 0, GuiMekanism.maxZOffset);
         }
     }
 
