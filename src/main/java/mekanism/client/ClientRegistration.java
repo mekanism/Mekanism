@@ -151,6 +151,7 @@ import mekanism.common.block.attribute.Attribute;
 import mekanism.common.content.gear.shared.ModuleColorModulationUnit;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.item.ItemConfigurationCard;
+import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.item.block.ItemBlockCardboardBox;
 import mekanism.common.item.block.machine.ItemBlockFluidTank;
@@ -263,6 +264,15 @@ public class ClientRegistration {
             });
             ClientRegistrationUtil.setPropertyOverride(MekanismItems.CONFIGURATION_CARD, Mekanism.rl("encoded"),
                   (stack, world, entity, seed) -> ((ItemConfigurationCard) stack.getItem()).hasData(stack) ? 1 : 0);
+            ClientRegistrationUtil.setPropertyOverride(MekanismItems.CONFIGURATOR, Mekanism.rl("mode"), (stack, world, entity, seed) -> {
+                ItemConfigurator.ConfiguratorMode mode = ((ItemConfigurator) stack.getItem()).getMode(stack);
+                return switch (mode) {
+                    default -> 0;
+                    case EMPTY -> 1;
+                    case ROTATE -> 2;
+                    case WRENCH -> 3;
+                };
+            });
 
             ClientRegistrationUtil.setPropertyOverride(MekanismItems.ELECTRIC_BOW, Mekanism.rl("pull"),
                   (stack, world, entity, seed) -> entity != null && entity.getUseItem() == stack ? (stack.getUseDuration() - entity.getUseItemRemainingTicks()) / 20.0F : 0);
