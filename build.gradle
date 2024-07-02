@@ -335,7 +335,7 @@ repositories { RepositoryHandler handler ->
     exclusiveRepo(handler, 'https://dogforce-games.com/maven/', 'dev.gigaherz.jsonthings')
     exclusiveRepo(handler, 'https://maven2.bai.lol', 'lol.bai', 'mcp.mobius.waila')//WTHIT
     exclusiveRepo(handler, 'https://www.cursemaven.com', 'curse.maven')
-    exclusiveRepo(handler, 'https://modmaven.dev/', 'appeng', 'mcjty.theoneprobe')
+    exclusiveRepo(handler, 'https://modmaven.dev/', 'appeng', 'mcjty.theoneprobe', 'dev.technici4n')
     exclusiveRepo(handler, 'https://maven.minecraftforge.net/releases/', 'com.github.glitchfiend')
     exclusiveRepo(handler, 'https://maven.thiakil.com', 'com.thiakil', 'moze_intel')
     exclusiveRepo(handler, 'https://maven.parchmentmc.org/', 'org.parchmentmc.data')
@@ -404,6 +404,7 @@ dependencies {
     //compileOnly("curse.maven:projecte-api-226410:${projecte_api_id}")
     compileOnly('moze_intel:ProjectE-api:1.0.1')
     compileOnly("curse.maven:flux-networks-248020:${flux_networks_id}")
+    compileOnly("dev.technici4n:GrandPower:${grand_power_version}")
     compileOnly("top.theillusivec4.curios:curios-neoforge:${curios_version}:api")
     compileOnly("com.blamejared.recipestages:RecipeStages:${recipe_stages_version}")
     compileOnly("curse.maven:opencomputers2-437654:${oc2_id}")
@@ -638,7 +639,7 @@ if (System.getenv('CURSEFORGE_KEY') != null || project.hasProperty('curseforgeKe
                     'biomes-o-plenty',
                     //Misc
                     'applied-energistics-2', 'ctm', 'curios-continuation', 'dark-mode-everywhere', 'female-gender-forge', 'flux-networks',
-                    'json-things', 'perviaminvenire', 'projecte', 'recipe-stages'
+                    'grandpower', 'json-things', 'perviaminvenire', 'projecte', 'recipe-stages'
             )
         }
 
