@@ -537,6 +537,8 @@ tasks.register('optimizePng', OptimizePng) {
             inputFiles.from(fileTree(dir: dir, includes: pngPatterns))
         }
     }
+    //TODO: Make optimize png be fully compatible with the configuration cache?
+    notCompatibleWithConfigurationCache('Up to date check is not currently compatible with the configuration cache')
     outputs.upToDateWhen {
         //Validate that none of the files has changed size, as the odds that a file has the exact same size and has changed is very low for an image file
         //Note: This is from Chat-GPT, I don't understand why the any check isn't just always true (and thus this being different from returning always false)
