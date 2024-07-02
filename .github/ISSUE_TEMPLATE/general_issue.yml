@@ -41,10 +41,9 @@ body:
       label: Mekanism version
       description: What version of Mekanism are you using?
       options:
-        - 10.6.3 (Latest)
+        - 10.6.4 (Latest)
+        - 10.6.3
         - 10.6.2
-        - 10.6.1
-        - 10.6.0
         - Older
         - Current Dev Branch (Manually Compiled, specify git commit hash)
     validations:
