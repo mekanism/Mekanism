@@ -24,6 +24,7 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -75,6 +76,12 @@ public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerRecipeViewerR
             superHeatedCoolantTank.drawBarOverlay(guiGraphics);
             cooledCoolantTank.drawBarOverlay(guiGraphics);
         }
+    }
+
+    @Nullable
+    @Override
+    public ResourceLocation getRegistryName(@NotNull BoilerRecipeViewerRecipe recipe) {
+        return recipe.id();
     }
 
     @Override

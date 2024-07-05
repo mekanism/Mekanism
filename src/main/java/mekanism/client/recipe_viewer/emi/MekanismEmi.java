@@ -335,6 +335,14 @@ public class MekanismEmi implements EmiPlugin {
         }
     }
 
+    public static <RECIPE extends INamedRVRecipe> void addCategoryAndRecipes(EmiRegistry registry, IRecipeViewerRecipeType<RECIPE> recipeType,
+          BasicRecipeCreator<RECIPE> recipeCreator, List<RECIPE> recipes) {
+        MekanismEmiRecipeCategory category = addCategory(registry, recipeType);
+        for (RECIPE recipe : recipes) {
+            registry.addRecipe(recipeCreator.create(category, recipe.id(), recipe));
+        }
+    }
+
     private static MekanismEmiRecipeCategory addCategory(EmiRegistry registry, IRecipeViewerRecipeType<?> recipeType) {
         MekanismEmiRecipeCategory category = MekanismEmiRecipeCategory.create(recipeType);
         registry.addCategory(category);

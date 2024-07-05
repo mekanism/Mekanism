@@ -12,16 +12,21 @@ import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
+import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.client.recipe_viewer.jei.BaseRecipeCategory;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
+import mekanism.common.Mekanism;
 import mekanism.common.tile.component.config.DataType;
+import mekanism.common.util.RegistryUtils;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ItemStackToFluidOptionalItemRecipeCategory extends BaseRecipeCategory<ItemStackToFluidOptionalItemRecipe> {
 
@@ -55,5 +60,15 @@ public class ItemStackToFluidOptionalItemRecipeCategory extends BaseRecipeCatego
             initItem(builder, RecipeIngredientRole.OUTPUT, outputItem, itemOutputs)
                   .setSlotName(OUTPUT_ITEM);
         }
+    }
+
+    @Nullable
+    @Override
+    public ResourceLocation getRegistryName(@NotNull ItemStackToFluidOptionalItemRecipe recipe) {
+        List<@NotNull ItemStack> representations = recipe.getInput().getRepresentations();
+        if (representations.size() == 1) {
+            return RecipeViewerUtils.synthetic(RegistryUtils.getName(representations.getFirst().getItem()), "liquification", Mekanism.MODID);
+        }
+        return null;
     }
 }

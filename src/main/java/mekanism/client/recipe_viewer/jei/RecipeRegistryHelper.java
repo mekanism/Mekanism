@@ -25,19 +25,19 @@ public class RecipeRegistryHelper {
     }
 
     public static void registerCondensentrator(IRecipeRegistration registry) {
-        List<RotaryRecipe> condensentratorRecipes = new ArrayList<>();
-        List<RotaryRecipe> decondensentratorRecipes = new ArrayList<>();
+        List<RecipeHolder<RotaryRecipe>> condensentratorRecipes = new ArrayList<>();
+        List<RecipeHolder<RotaryRecipe>> decondensentratorRecipes = new ArrayList<>();
         for (RecipeHolder<RotaryRecipe> recipeHolder : MekanismRecipeType.ROTARY.getRecipes(null)) {
             RotaryRecipe recipe = recipeHolder.value();
             if (recipe.hasGasToFluid()) {
-                condensentratorRecipes.add(recipe);
+                condensentratorRecipes.add(recipeHolder);
             }
             if (recipe.hasFluidToGas()) {
-                decondensentratorRecipes.add(recipe);
+                decondensentratorRecipes.add(recipeHolder);
             }
         }
-        register(registry, RecipeViewerRecipeType.CONDENSENTRATING, condensentratorRecipes);
-        register(registry, RecipeViewerRecipeType.DECONDENSENTRATING, decondensentratorRecipes);
+        registry.addRecipes(MekanismJEI.holderRecipeType(RecipeViewerRecipeType.CONDENSENTRATING), condensentratorRecipes);
+        registry.addRecipes(MekanismJEI.holderRecipeType(RecipeViewerRecipeType.DECONDENSENTRATING), decondensentratorRecipes);
     }
 
     public static <RECIPE extends MekanismRecipe<?>> void register(IRecipeRegistration registry, IRecipeViewerRecipeType<RECIPE> recipeType,

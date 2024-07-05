@@ -21,7 +21,6 @@ import mekanism.api.recipes.NucleosynthesizingRecipe;
 import mekanism.api.recipes.PaintingRecipe;
 import mekanism.api.recipes.PigmentMixingRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe;
-import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.SawmillRecipe;
 import mekanism.client.recipe_viewer.recipe.BoilerRecipeViewerRecipe;
 import mekanism.client.recipe_viewer.recipe.SPSRecipeViewerRecipe;
@@ -97,8 +96,8 @@ public class RecipeViewerRecipeType {
     //TODO - 1.20.4: Re-evaluate ^^
     public static final RVRecipeTypeWrapper<?, PressurizedReactionRecipe, ?> REACTION = new RVRecipeTypeWrapper<>(MekanismRecipeType.REACTION, PressurizedReactionRecipe.class, -3, -10, 170, 60, MekanismBlocks.PRESSURIZED_REACTION_CHAMBER);
 
-    public static final FakeRVRecipeType<RotaryRecipe> CONDENSENTRATING = new FakeRVRecipeType<>(Mekanism.rl("condensentrating"), MekanismBlocks.ROTARY_CONDENSENTRATOR, MekanismLang.CONDENSENTRATING, RotaryRecipe.class, -3, -12, 170, 64);
-    public static final FakeRVRecipeType<RotaryRecipe> DECONDENSENTRATING = new FakeRVRecipeType<>(Mekanism.rl("decondensentrating"), MekanismBlocks.ROTARY_CONDENSENTRATOR, MekanismLang.DECONDENSENTRATING, RotaryRecipe.class, -3, -12, 170, 64);
+    public static final RotaryRVRecipeType CONDENSENTRATING = new RotaryRVRecipeType(Mekanism.rl("condensentrating"), MekanismLang.CONDENSENTRATING);
+    public static final RotaryRVRecipeType DECONDENSENTRATING = new RotaryRVRecipeType(Mekanism.rl("decondensentrating"), MekanismLang.DECONDENSENTRATING);
 
     public static final RVRecipeTypeWrapper<?, SawmillRecipe, ?> SAWING = new RVRecipeTypeWrapper<>(MekanismRecipeType.SAWING, SawmillRecipe.class, -28, -16, 144, 54, MekanismBlocks.PRECISION_SAWMILL);
 

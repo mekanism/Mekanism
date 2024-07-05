@@ -18,7 +18,6 @@ import mekanism.common.tier.FactoryTier;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -308,8 +307,8 @@ public class MekanismEmiDefaults extends BaseEmiDefaults {
         addRecipe(basePath + "plutonium_pellet/from_reaction");
         addRecipe(basePath + "polonium_pellet/from_reaction");
         addRecipe(basePath + "antimatter_pellet/from_gas");
-        for (ResourceLocation recipe : SPSRecipeViewerRecipe.getSPSRecipes().keySet()) {
-            addUncheckedRecipe(recipe);
+        for (SPSRecipeViewerRecipe recipe : SPSRecipeViewerRecipe.getSPSRecipes()) {
+            addUncheckedRecipe(recipe.id());
         }
     }
 }

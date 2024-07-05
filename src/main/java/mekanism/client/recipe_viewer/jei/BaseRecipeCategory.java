@@ -208,6 +208,10 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
         return icon;
     }
 
+    @Nullable
+    @Override
+    public abstract ResourceLocation getRegistryName(RECIPE recipe);
+
     protected IProgressInfoHandler getSimpleProgressTimer() {
         if (timer == null) {
             timer = guiHelper.createTickTimer(SharedConstants.TICKS_PER_SECOND, SharedConstants.TICKS_PER_SECOND, false);
