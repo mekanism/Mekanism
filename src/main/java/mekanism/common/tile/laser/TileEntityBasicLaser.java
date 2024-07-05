@@ -49,6 +49,7 @@ import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.TntBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
 import net.minecraft.world.phys.Vec3;
@@ -105,9 +106,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
 
             float laserEnergyScale = getEnergyScale(firing);
             FloatingLong remainingEnergy = firing.copy();
-            //TODO: Make the dimensions scale with laser size
-            // (so that the tractor beam can actually pickup items that are on the ground underneath it)
-            List<Entity> hitEntities = level.getEntitiesOfClass(Entity.class, Pos3D.getAABB(from, to));
+            List<Entity> hitEntities = level.getEntitiesOfClass(Entity.class, getLaserBox(direction, from, to, laserEnergyScale));
             if (hitEntities.isEmpty()) {
                 setEmittingRedstone(false);
             } else {
@@ -116,15 +115,19 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                 Pos3D finalFrom = from;
                 hitEntities.sort(Comparator.comparingDouble(entity -> entity.distanceToSqr(finalFrom)));
                 FloatingLong energyPerDamage = MekanismConfig.general.laserEnergyPerDamage.get();
+                AABB adjustedAABB = null;
                 for (Entity entity : hitEntities) {
-                    if (entity.isInvulnerableTo(MekanismDamageTypes.LASER.source(level))) {
+                    if (adjustedAABB != null && !entity.getBoundingBox().intersects(adjustedAABB)) {
+                        //If we have a smaller AABB than we started with, make sure the entity still is getting hit by the laser
+                        // before we do any processing related to behavior when hit
+                        continue;
+                    } else if (entity.isInvulnerableTo(MekanismDamageTypes.LASER.source(level))) {
                         //The entity can absorb all the energy because they are immune to the damage
                         remainingEnergy = FloatingLong.ZERO;
                         //Update the position that the laser is going to
                         to = from.adjustPosition(direction, entity);
                         break;
-                    }
-                    if (entity instanceof ItemEntity item && handleHitItem(item)) {
+                    } else if (entity instanceof ItemEntity item && handleHitItem(item)) {
                         //TODO: Allow the tractor beam to have an energy cost for pulling items?
                         continue;
                     }
@@ -252,6 +255,9 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                             laserEnergyScale = energyScale;
                             //Update the from position to be where the entity is
                             from = entityPos;
+                            //Mark we have a new AABB we have to check against, as the beam isn't as large anymore,
+                            // so it is possible some things no longer should be getting hit by it
+                            adjustedAABB = getLaserBox(direction, from, to, laserEnergyScale);
                         }
                     }
                 }
@@ -307,6 +313,16 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
         return sendUpdatePacket;
     }
 
+    private AABB getLaserBox(Direction direction, Vec3 from, Vec3 to, float energyScale) {
+        AABB aabb = new AABB(from, to);
+        double halfDiameter = energyScale / 2;
+        return switch (direction) {
+            case DOWN, UP -> aabb.inflate(halfDiameter, 0, halfDiameter);
+            case NORTH, SOUTH -> aabb.inflate(halfDiameter, halfDiameter, 0);
+            case WEST, EAST -> aabb.inflate(0, halfDiameter, halfDiameter);
+        };
+    }
+
     private void withFakePlayer(ServerLevel level, double x, double y, double z, BlockPos hitPos, BlockState hitState, Direction hitSide) {
         MekFakePlayer dummy = MekFakePlayer.setupFakePlayer(level, x, y, z);
         dummy.setEmulatingUUID(getOwnerUUID());//pretend to be the owner
@@ -356,6 +372,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     }
 
     private float getEnergyScale(FloatingLong energy) {
+        //Returned energy scale is between [0.1, 0.6]
         return Math.min(energy.divide(MekanismConfig.usage.laser.get()).divide(10).floatValue(), 0.6F);
     }
 
