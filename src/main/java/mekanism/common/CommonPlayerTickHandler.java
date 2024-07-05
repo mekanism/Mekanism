@@ -159,7 +159,6 @@ public class CommonPlayerTickHandler {
     }
 
     @SubscribeEvent
-    @SuppressWarnings("UnstableApiUsage")//Note: DamageContainer isn't actually unstable, they just forgot to unmark it before finalizing the PR
     public void onEntityAttacked(LivingIncomingDamageEvent event) {
         LivingEntity entity = event.getEntity();
         DamageContainer damageContainer = event.getContainer();

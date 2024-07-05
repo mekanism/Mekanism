@@ -525,7 +525,6 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     }
 
     @Override
-    @SuppressWarnings("UnstableApiUsage")//Note: DamageContainer isn't actually unstable, they just forgot to unmark it before finalizing the PR
     public void onDamageTaken(@NotNull DamageContainer damageContainer) {
         energyContainer.extract(FloatingLong.create(1_000 * damageContainer.getNewDamage()), Action.EXECUTE, AutomationType.INTERNAL);
         //Don't actually allow taking damage to reduce the robit's health

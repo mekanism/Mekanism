@@ -332,7 +332,6 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
      *
      * @return The amount of damage that was blocked
      */
-    @SuppressWarnings("UnstableApiUsage")//Note: DamageContainer isn't actually unstable, they just forgot to unmark it before finalizing the PR
     private float damageShield(Level level, LivingEntity livingEntity, Pos3D from, float damage) {
         DamageSource source = MekanismDamageTypes.LASER.source(level, from);
         //Absorb part of the damage based on the given absorption ratio
