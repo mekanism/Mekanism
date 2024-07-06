@@ -291,6 +291,8 @@
   "entity.mekanismadditions.baby_wither_skeleton": "Bébé Wither Squelette",
   "entity.mekanismadditions.balloon": "Ballon",
   "entity.mekanismadditions.obsidian_tnt": "TNT en obsidienne",
+  "fml.menu.mods.info.description.mekanismadditions": "Module additions pour Mekanism, contient des choses qui ne correspondent pas tout à fait aux autres modules",
+  "fml.menu.mods.info.displayname.mekanismadditions": "Mekanism: Additions",
   "item.mekanismadditions.aqua_balloon": "Ballon Aqua",
   "item.mekanismadditions.baby_creeper_spawn_egg": "Œuf d'apparition de bébé Creeper",
   "item.mekanismadditions.baby_enderman_spawn_egg": "Œuf d'apparition de bébé Enderman",
