@@ -39,10 +39,10 @@ import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.CommonHooks;
-import net.neoforged.neoforge.common.crafting.IShapedRecipe;
 import net.neoforged.neoforge.common.util.RecipeMatcher;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -827,7 +827,7 @@ public class QIOCraftingWindow implements IContentsListener {
                 }
                 //Ensure our remainder helper has been initialized as we will make use of it in validation
                 remainderHelper.updateInputsWithReplacement(index, used);
-                if (lastRecipe.value() instanceof IShapedRecipe<?> shapedRecipe) {
+                if (lastRecipe.value() instanceof ShapedRecipe shapedRecipe) {
                     //It is a shaped recipe, make use of this information to attempt to find the proper match
                     mapShapedRecipe(shapedRecipe, ingredients, index, used);
                 } else {
@@ -845,7 +845,7 @@ public class QIOCraftingWindow implements IContentsListener {
             return ItemStack.EMPTY;
         }
 
-        private void mapShapedRecipe(IShapedRecipe<?> shapedRecipe, NonNullList<Ingredient> ingredients, int index, ItemStack used) {
+        private void mapShapedRecipe(ShapedRecipe shapedRecipe, NonNullList<Ingredient> ingredients, int index, ItemStack used) {
             int recipeWidth = shapedRecipe.getWidth();
             int recipeHeight = shapedRecipe.getHeight();
             for (int columnStart = 0; columnStart <= 3 - recipeWidth; columnStart++) {
