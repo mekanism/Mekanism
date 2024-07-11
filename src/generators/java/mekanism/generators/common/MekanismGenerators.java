@@ -7,7 +7,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IModModule;
 import mekanism.common.command.builders.BuildCommand;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.config.MekanismModConfig;
 import mekanism.common.config.listener.ConfigBasedCachedFLSupplier;
 import mekanism.common.lib.Version;
 import mekanism.common.lib.multiblock.MultiblockManager;
@@ -41,8 +40,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
 
@@ -77,7 +74,7 @@ public class MekanismGenerators implements IModModule {
         versionNumber = new Version(modContainer);
         MekanismGeneratorsConfig.registerConfigs(modContainer);
         modEventBus.addListener(this::commonSetup);
-        modEventBus.addListener(this::onConfigLoad);
+        modEventBus.addListener(MekanismGeneratorsConfig::onConfigLoad);
         modEventBus.addListener(this::imcQueue);
 
         GeneratorsDataComponents.DATA_COMPONENTS.register(modEventBus);
@@ -137,15 +134,5 @@ public class MekanismGenerators implements IModModule {
     @Override
     public void resetClient() {
         TurbineMultiblockData.clientRotationMap.clear();
-    }
-
-    private void onConfigLoad(ModConfigEvent configEvent) {
-        //Note: We listen to both the initial load and the reload, to make sure that we fix any accidentally
-        // cached values from calls before the initial loading
-        ModConfig config = configEvent.getConfig();
-        //Make sure it is for the same modid as us
-        if (config.getModId().equals(MODID) && config instanceof MekanismModConfig mekConfig) {
-            mekConfig.clearCache(configEvent);
-        }
     }
 }

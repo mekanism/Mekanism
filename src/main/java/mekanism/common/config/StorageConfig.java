@@ -140,9 +140,4 @@ public class StorageConfig extends BaseMekanismConfig {
     public Type getConfigType() {
         return Type.SERVER;
     }
-
-    @Override
-    public boolean addToContainer() {
-        return false;
-    }
 }

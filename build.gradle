@@ -376,7 +376,10 @@ dependencies {
         localRuntime(emi)
     } else {
         //We still need it to load in datagen regardless of if we are using emi or a different viewer so that we can access EMI related objects
-        datagenMainRuntimeOnly(emi)
+        //TODO - 1.21: Make a PR to EMI to bootstrap in datagen, and more importantly be able to somehow provide the registry access context
+        // rather than it trying to grab it from Minecraft.getInstance().level as Minecraft.getInstance() is null in datagen
+        // As https://github.com/emilyploszaj/emi/pull/600 broke it
+        //datagenMainRuntimeOnly(emi)
     }
 
     //TODO: Re-enable once it doesn't cause Datagen to fail

@@ -59,11 +59,6 @@ public class WorldConfig extends BaseMekanismConfig {
         return Type.SERVER;
     }
 
-    @Override
-    public boolean addToContainer() {
-        return false;
-    }
-
     public OreVeinConfig getVeinConfig(OreVeinType oreVeinType) {
         return ores.get(oreVeinType.type()).veinConfigs.get(oreVeinType.index());
     }
@@ -126,7 +121,7 @@ public class WorldConfig extends BaseMekanismConfig {
             this.maxRadius = CachedIntValue.wrap(config, builder.comment("Extended variability (spread) for the radius in a vein of salt.")
                   .define("maxRadius", spread, o -> {
                       if (o instanceof Integer value && value >= 1 && value <= 4) {
-                          return value >= this.minRadius.get();
+                          return value >= this.minRadius.getOrDefault();
                       }
                       return false;
                   }));
