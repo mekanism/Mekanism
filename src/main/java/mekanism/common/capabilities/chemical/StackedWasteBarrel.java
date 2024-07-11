@@ -51,7 +51,8 @@ public class StackedWasteBarrel extends VariableCapacityChemicalTank<Gas, GasSta
     @Override
     public GasStack insert(GasStack stack, Action action, AutomationType automationType) {
         GasStack remainder = super.insert(stack, action, automationType);
-        if (!remainder.isEmpty()) {
+        //Ensure we have the same type of gas stored as we failed to insert, in which case we want to try to insert to the one above
+        if (!remainder.isEmpty() && GasStack.isSameChemical(stored, remainder)) {
             //If we have any leftover check if we can send it to the tank that is above
             TileEntityRadioactiveWasteBarrel tileAbove = WorldUtils.getTileEntity(TileEntityRadioactiveWasteBarrel.class, tile.getLevel(), tile.getBlockPos().above());
             if (tileAbove != null) {
