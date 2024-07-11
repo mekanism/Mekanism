@@ -183,5 +183,6 @@
   "item.mekanismtools.steel_sword": "Espada de Aço",
   "item.mekanismtools.stone_paxel": "Pacachado de Pedra",
   "item.mekanismtools.wood_paxel": "Pacachado de Madeira",
+  "tag.item.c.tools.paxel": "Pacachados",
   "tooltip.mekanismtools.hp": "Vida: %1$s"
 }
