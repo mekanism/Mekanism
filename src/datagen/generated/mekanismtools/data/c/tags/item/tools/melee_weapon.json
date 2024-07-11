@@ -1,0 +1,28 @@
+{
+  "values": [
+    "mekanismtools:wood_paxel",
+    "mekanismtools:stone_paxel",
+    "mekanismtools:iron_paxel",
+    "mekanismtools:diamond_paxel",
+    "mekanismtools:gold_paxel",
+    "mekanismtools:netherite_paxel",
+    "mekanismtools:bronze_axe",
+    "mekanismtools:bronze_sword",
+    "mekanismtools:bronze_paxel",
+    "mekanismtools:lapis_lazuli_axe",
+    "mekanismtools:lapis_lazuli_sword",
+    "mekanismtools:lapis_lazuli_paxel",
+    "mekanismtools:osmium_axe",
+    "mekanismtools:osmium_sword",
+    "mekanismtools:osmium_paxel",
+    "mekanismtools:refined_glowstone_axe",
+    "mekanismtools:refined_glowstone_sword",
+    "mekanismtools:refined_glowstone_paxel",
+    "mekanismtools:refined_obsidian_axe",
+    "mekanismtools:refined_obsidian_sword",
+    "mekanismtools:refined_obsidian_paxel",
+    "mekanismtools:steel_axe",
+    "mekanismtools:steel_sword",
+    "mekanismtools:steel_paxel"
+  ]
+}

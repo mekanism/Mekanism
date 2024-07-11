@@ -1,4 +1,4 @@
-// 1.21	2024-06-26T14:48:16.4025623	Tags: mekanism
+// 1.21	2024-07-11T11:19:59.3746963	Tags: mekanism
 8a89da3b810e00ad44b7ee4d062a88db6298c8fe data/create/tags/fluid/no_infinite_draining.json
 b881c0bb158879ac88758c2b0562b422271e6397 data/c/tags/block/barrels.json
 adb3ecfd3180c123cdc984320eab5ce930bdc5be data/c/tags/block/barrels/personal.json
@@ -193,6 +193,8 @@ f5cef9314ee390feebf4b2036219d1c3df23e351 data/c/tags/item/storage_blocks/steel.j
 8e745c5f7a6a8b0bc07f373181a241c6c2ea9a01 data/c/tags/item/storage_blocks/uranium.json
 85434dfa942bd02b48f061627d567bca91caf436 data/c/tags/item/tools.json
 98c2bd0ffddf16fb66fd75e274145f45ca022846 data/c/tags/item/tools/bow.json
+f6bbab17ecd58eef0855b7776fdc3f663ca1f3a3 data/c/tags/item/tools/mining_tool.json
+98c2bd0ffddf16fb66fd75e274145f45ca022846 data/c/tags/item/tools/ranged_weapon.json
 a0e1d0be802d6dafd3d9be7540058fffce14f805 data/c/tags/item/tools/wrench.json
 3c3e1e01636cabf5d70a709a28d1f495998f79c1 data/mekanism/tags/block/atomic_disassembler_ore.json
 382b94fafa1aac42ad852aae6d0a3ec124dbc6ff data/mekanism/tags/block/cardboard_blacklist.json
