@@ -3,6 +3,8 @@ package mekanism.common.config;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.BooleanSupplier;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.config.value.CachedBooleanValue;
 import mekanism.common.config.value.CachedConfigValue;
@@ -19,6 +21,7 @@ import mekanism.common.tier.FluidTankTier;
 import net.minecraft.SharedConstants;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.fml.config.ModConfig.Type;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.fluids.FluidType;
 
@@ -42,6 +45,8 @@ public class GeneralConfig extends BaseMekanismConfig {
     private static final String NUTRITIONAL_PASTE_CATEGORY = "nutritional_paste";
 
     private final ModConfigSpec configSpec;
+
+    public final BooleanSupplier enableAlphaWarning;
 
     public final CachedBooleanValue logPackets;
     public final CachedBooleanValue allowChunkloading;
@@ -134,6 +139,14 @@ public class GeneralConfig extends BaseMekanismConfig {
     GeneralConfig() {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
         builder.comment("General Config. This config is synced from server to client.").push("general");
+
+        //Note: We only enable this config option in dev mode
+        if (FMLEnvironment.production) {
+            enableAlphaWarning = ConstantPredicates.ALWAYS_TRUE;
+        } else {
+            enableAlphaWarning = CachedBooleanValue.wrap(this, builder.comment("Display Mekanism's alpha warning when joining the game if Mekanism is currently in alpha. Dev mode only setting.")
+                  .define("alphaWarning", true));
+        }
 
         logPackets = CachedBooleanValue.wrap(this, builder.comment("Log Mekanism packet names. Debug setting.")
               .define("logPackets", false));
