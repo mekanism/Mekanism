@@ -6,17 +6,15 @@ import mekanism.common.recipe.WrappedShapedRecipe;
 import mekanism.tools.common.registries.ToolsRecipeSerializers;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
-import net.minecraft.world.item.crafting.ShapedRecipePattern;
 
 @NothingNullByDefault
 public class PaxelRecipe extends WrappedShapedRecipe {
 
-    public PaxelRecipe(String group, CraftingBookCategory category, ShapedRecipePattern pattern, ItemStack result, boolean showNotification) {
-        super(group, category, pattern, result, showNotification);
+    public PaxelRecipe(ShapedRecipe internal) {
+        super(internal);
     }
 
     @Override

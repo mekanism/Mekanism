@@ -2,7 +2,6 @@ package mekanism.common.recipe.serializer;
 
 import com.mojang.datafixers.util.Function3;
 import com.mojang.datafixers.util.Function4;
-import com.mojang.datafixers.util.Function5;
 import com.mojang.datafixers.util.Function7;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
@@ -54,11 +53,9 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
-import net.minecraft.world.item.crafting.ShapedRecipePattern;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
@@ -67,10 +64,10 @@ public record MekanismRecipeSerializer<RECIPE extends Recipe<?>>(MapCodec<RECIPE
 
     private static final Codec<FloatingLong> FLOAT_LONG_AT_LEAST_ONE = FloatingLong.CODEC.validate(fl -> fl.smallerThan(FloatingLong.ONE) ? DataResult.error(() -> "Expected energyMultiplier to be at least one.") : DataResult.success(fl));
 
-    public static <RECIPE extends WrappedShapedRecipe> MekanismRecipeSerializer<RECIPE> wrapped(Function5<String, CraftingBookCategory, ShapedRecipePattern, ItemStack, Boolean, RECIPE> wrapper) {
+    public static <RECIPE extends WrappedShapedRecipe> MekanismRecipeSerializer<RECIPE> wrapped(Function<ShapedRecipe, RECIPE> wrapper) {
         return new MekanismRecipeSerializer<>(
-              RecipeSerializer.SHAPED_RECIPE.codec().xmap(shaped -> wrapper.apply(shaped.getGroup(), shaped.category(), shaped.pattern, shaped.result, shaped.showNotification()), Function.identity()),
-              RecipeSerializer.SHAPED_RECIPE.streamCodec().map(shaped -> wrapper.apply(shaped.getGroup(), shaped.category(), shaped.pattern, shaped.result, shaped.showNotification()), Function.identity())
+              RecipeSerializer.SHAPED_RECIPE.codec().xmap(wrapper, WrappedShapedRecipe::getInternal),
+              RecipeSerializer.SHAPED_RECIPE.streamCodec().map(wrapper, WrappedShapedRecipe::getInternal)
         );
     }
 

@@ -14,7 +14,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.ShapedRecipe;
@@ -102,16 +101,16 @@ public class ExtendedShapedRecipeBuilder extends BaseRecipeBuilder<ExtendedShape
 
     @Override
     protected Recipe<?> asRecipe() {
-        return wrapRecipe(
+        return wrapRecipe(new ShapedRecipe(
               Objects.requireNonNullElse(this.group, ""),
               RecipeBuilder.determineBookCategory(this.category),
               ShapedRecipePattern.of(this.key, this.pattern),
               new ItemStack(this.result, this.count),
               this.showNotification
-        );
+        ));
     }
 
-    protected Recipe<?> wrapRecipe(String group, CraftingBookCategory category, ShapedRecipePattern pattern, ItemStack result, boolean showNotification) {
-        return new ShapedRecipe(group, category, pattern, result, showNotification);
+    protected Recipe<?> wrapRecipe(ShapedRecipe recipe) {
+        return recipe;
     }
 }
