@@ -222,11 +222,11 @@ public class MatrixEnergyContainer implements IEnergyContainer {
     }
 
     private long getRemainingInput() {
-        return transferCap.subtract(queuedInput);
+        return transferCap - queuedInput;
     }
 
     private long getRemainingOutput() {
-        return transferCap.subtract(queuedOutput);
+        return transferCap - queuedOutput;
     }
 
     public long getMaxTransfer() {

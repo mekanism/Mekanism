@@ -57,7 +57,7 @@ public class FNStrictEnergyHandler implements IStrictEnergyHandler {
                 long inserted = storage.receiveEnergyL(toInsert, action.simulate());
                 if (inserted > 0) {
                     //Only bother converting back if any was inserted
-                    return amount.subtract(EnergyUnit.FORGE_ENERGY.convertFrom(inserted));
+                    return amount - EnergyUnit.FORGE_ENERGY.convertFrom(inserted);
                 }
             }
         }

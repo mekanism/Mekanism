@@ -96,7 +96,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
             double lastProgress = progress;
             final int inputPerAntimatter = MekanismConfig.general.spsInputPerAntimatter.get();
             long inputNeeded = (inputPerAntimatter - inputProcessed) + inputPerAntimatter * (outputTank.getNeeded() - 1);
-            double processable = receivedEnergy.doubleValue() / MekanismConfig.general.spsEnergyPerInput.get().doubleValue();
+            double processable = (double) receivedEnergy / MekanismConfig.general.spsEnergyPerInput.get();
             if (processable + progress >= inputNeeded) {
                 processed = process(inputNeeded);
                 progress = 0;
@@ -190,7 +190,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
         if (lastReceivedEnergy != 0L && couldOperate && world.getRandom().nextInt() % SharedConstants.TICKS_PER_SECOND == 0) {
             List<Entity> entitiesToDie = getLevel().getEntitiesOfClass(Entity.class, deathZone);
             for (Entity entity : entitiesToDie) {
-                entity.hurt(entity.damageSources().magic(), lastReceivedEnergy.floatValue() / 1_000F);
+                entity.hurt(entity.damageSources().magic(), lastReceivedEnergy / 1_000F);
             }
         }
     }
@@ -218,7 +218,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
         if (energy == 0L) {
             return 0;
         }
-        return 1 + Math.max(0, (int) ((Math.log10(energy.doubleValue()) - 3) * 1.8));
+        return 1 + Math.max(0, (int) ((Math.log10(energy) - 3) * 1.8));
     }
 
     @ComputerMethod

@@ -6,6 +6,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BooleanSupplier;
+import java.util.function.LongSupplier;
 import java.util.function.UnaryOperator;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.math.FloatingLong;
@@ -42,8 +43,8 @@ public class GuiEnergyTab extends GuiTexturedElement {
         infoHandler = handler;
     }
 
-    public GuiEnergyTab(IGuiWrapper gui, MachineEnergyContainer<?> energyContainer, FloatingLongSupplier lastEnergyUsed) {
-        this(gui, () -> List.of(MekanismLang.USING.translate(EnergyDisplay.of(lastEnergyUsed.get())),
+    public GuiEnergyTab(IGuiWrapper gui, MachineEnergyContainer<?> energyContainer, LongSupplier lastEnergyUsed) {
+        this(gui, () -> List.of(MekanismLang.USING.translate(EnergyDisplay.of(lastEnergyUsed.getAsLong())),
               MekanismLang.NEEDED.translate(EnergyDisplay.of(energyContainer.getNeeded()))));
     }
 

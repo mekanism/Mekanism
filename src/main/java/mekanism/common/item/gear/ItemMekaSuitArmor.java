@@ -559,7 +559,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                 //If we have more energy available than we need, increase how much energy we "used"
                 // and decrease how much we have available.
                 usageInfo.energyUsed += usage;
-                usageInfo.energyAvailable = usageInfo.energyAvailable.minusEqual(usage);
+                usageInfo.energyAvailable -= usage;
                 return absorption;
             } else if (usageInfo.energyAvailable != 0L) {
                 //Otherwise, if we have energy available but not as much as needed to fully absorb it

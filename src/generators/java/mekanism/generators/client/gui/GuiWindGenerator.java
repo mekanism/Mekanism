@@ -36,7 +36,8 @@ public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator, M
         addRenderableWidget(new GuiInnerScreen(this, 48, 21, 80, 44, () -> {
             List<Component> list = new ArrayList<>();
             list.add(EnergyDisplay.of(tile.getEnergyContainer()).getTextComponent());
-            list.add(GeneratorsLang.POWER.translate(MekanismUtils.convertToDisplay(Math.multiplyExact(MekanismGeneratorsConfig.generators.windGenerationMin.get(), tile.getCurrentMultiplier())).toString(2)));
+            long amount = MekanismUtils.convertToDisplay(Math.multiplyExact(MekanismGeneratorsConfig.generators.windGenerationMin.get(), tile.getCurrentMultiplier()));
+            list.add(GeneratorsLang.POWER.translate(Long.toString(amount)));
             list.add(GeneratorsLang.OUTPUT_RATE_SHORT.translate(EnergyDisplay.of(tile.getMaxOutput())));
             if (!tile.getActive()) {
                 ILangEntry reason = tile.isBlacklistDimension() ? GeneratorsLang.NO_WIND : GeneratorsLang.SKY_BLOCKED;

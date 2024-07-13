@@ -3,6 +3,7 @@ package mekanism.generators.common;
 import mekanism.api.MekanismIMC;
 import mekanism.api.chemical.gas.attribute.GasAttributes.Fuel;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.MathUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IModModule;
 import mekanism.common.command.builders.BuildCommand;
@@ -53,8 +54,8 @@ public class MekanismGenerators implements IModModule {
 
     public static final String MODID = "mekanismgenerators";
     private static final ConfigBasedCachedLongSupplier ETHENE_ENERGY_DENSITY = new ConfigBasedCachedLongSupplier(() -> {
-        long energy = Math.multiplyExact(MekanismGeneratorsConfig.generators.bioGeneration.get(), 2)
-              .timesEqual(MekanismGeneratorsConfig.generators.etheneDensityMultiplier.get());
+        long energy = MathUtils.clampToLong(Math.multiplyExact(MekanismGeneratorsConfig.generators.bioGeneration.get(), 2)
+                                            * (MekanismGeneratorsConfig.generators.etheneDensityMultiplier.get()));
         return energy + MekanismConfig.general.FROM_H2.get();
     }, MekanismConfig.general.FROM_H2, MekanismGeneratorsConfig.generators.bioGeneration, MekanismGeneratorsConfig.generators.etheneDensityMultiplier);
 

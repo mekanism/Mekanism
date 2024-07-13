@@ -1,5 +1,6 @@
 package mekanism.generators.common.tile;
 
+import java.util.function.LongSupplier;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
@@ -16,6 +17,7 @@ import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
+import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
@@ -41,7 +43,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         this(GeneratorsBlocks.SOLAR_GENERATOR, pos, state, MekanismGeneratorsConfig.generators.solarGeneration);
     }
 
-    protected TileEntitySolarGenerator(IBlockProvider blockProvider, BlockPos pos, BlockState state, @NotNull FloatingLongSupplier maxOutput) {
+    protected TileEntitySolarGenerator(IBlockProvider blockProvider, BlockPos pos, BlockState state, @NotNull LongSupplier maxOutput) {
         super(blockProvider, pos, state, maxOutput);
     }
 
@@ -72,7 +74,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         if (seesSun && canFunction() && getEnergyContainer().getNeeded() != 0L) {
             setActive(true);
             long production = getProduction();
-            lastProductionAmount = production.subtract(getEnergyContainer().insert(production, Action.EXECUTE, AutomationType.INTERNAL));
+            lastProductionAmount = production - getEnergyContainer().insert(production, Action.EXECUTE, AutomationType.INTERNAL);
         } else {
             setActive(false);
             lastProductionAmount = 0L;
@@ -132,7 +134,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         super.addContainerTrackers(container);
         container.track(SyncableBoolean.create(this::canSeeSun, value -> seesSun = value));
         container.track(syncableMaxOutput());
-        container.track(SyncableFloatingLong.create(this::getProductionRate, value -> lastProductionAmount = value));
+        container.track(SyncableLong.create(this::getProductionRate, value -> lastProductionAmount = value));
     }
 
     protected static class SolarCheck {

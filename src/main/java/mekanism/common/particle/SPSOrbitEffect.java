@@ -43,7 +43,7 @@ public class SPSOrbitEffect extends CustomEffect {
         if (super.tick() || !multiblock.isFormed()) {
             return true;
         }
-        speed = (float) Math.log10(multiblock.lastReceivedEnergy.doubleValue());
+        speed = (float) Math.log10(multiblock.lastReceivedEnergy);
         return false;
     }
 

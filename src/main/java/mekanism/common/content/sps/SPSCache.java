@@ -51,7 +51,9 @@ public class SPSCache extends MultiblockCache<SPSMultiblockData> {
         NBTUtils.setDoubleIfPresent(nbtTags, SerializationConstants.PROGRESS, val -> progress = val);
         NBTUtils.setIntIfPresent(nbtTags, SerializationConstants.PROCESSED, val -> inputProcessed = val);
         NBTUtils.setBooleanIfPresent(nbtTags, SerializationConstants.COULD_OPERATE, val -> couldOperate = val);
-        NBTUtils.setFloatingLongIfPresent(nbtTags, SerializationConstants.ENERGY_USAGE, val -> receivedEnergy = val);
+        //todo 1.22 backcompat
+        NBTUtils.setFloatingLongIfPresent(nbtTags, SerializationConstants.ENERGY_USAGE, val -> receivedEnergy = val.longValue());
+        NBTUtils.setLongIfPresent(nbtTags, SerializationConstants.ENERGY_USAGE, val -> receivedEnergy = val);
         NBTUtils.setDoubleIfPresent(nbtTags, SerializationConstants.LAST_PROCESSED, val -> lastProcessed = val);
     }
 
@@ -61,7 +63,7 @@ public class SPSCache extends MultiblockCache<SPSMultiblockData> {
         nbtTags.putDouble(SerializationConstants.PROGRESS, progress);
         nbtTags.putInt(SerializationConstants.PROCESSED, inputProcessed);
         nbtTags.putBoolean(SerializationConstants.COULD_OPERATE, couldOperate);
-        nbtTags.putString(SerializationConstants.ENERGY_USAGE, receivedEnergy.toString());
+        nbtTags.putLong(SerializationConstants.ENERGY_USAGE, receivedEnergy);
         nbtTags.putDouble(SerializationConstants.LAST_PROCESSED, lastProcessed);
     }
 }

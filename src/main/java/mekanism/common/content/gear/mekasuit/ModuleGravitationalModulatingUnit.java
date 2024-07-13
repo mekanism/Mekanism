@@ -12,7 +12,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.KeySync;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.config.listener.ConfigBasedCachedFLSupplier;
+import mekanism.common.config.listener.ConfigBasedCachedLongSupplier;
 import mekanism.common.content.gear.mekasuit.ModuleLocomotiveBoostingUnit.SprintBoost;
 import mekanism.common.registries.MekanismGameEvents;
 import mekanism.common.util.MekanismUtils;
@@ -27,7 +27,7 @@ import net.minecraft.world.phys.Vec3;
 @ParametersAreNotNullByDefault
 public record ModuleGravitationalModulatingUnit(SprintBoost speedBoost) implements ICustomModule<ModuleGravitationalModulatingUnit> {
 
-    private static final ConfigBasedCachedFLSupplier BOOST_USAGE = new ConfigBasedCachedFLSupplier(
+    private static final ConfigBasedCachedLongSupplier BOOST_USAGE = new ConfigBasedCachedLongSupplier(
           () -> MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation.get() * 4,
           MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation
     );
@@ -73,7 +73,7 @@ public record ModuleGravitationalModulatingUnit(SprintBoost speedBoost) implemen
             float boost = speedBoost.getBoost();
             if (boost > 0 && Mekanism.keyMap.has(player.getUUID(), KeySync.BOOST) && module.hasEnoughEnergy(stack, BOOST_USAGE)) {
                 player.moveRelative(boost, BOOST_VEC);
-                module.useEnergy(player, stack, BOOST_USAGE.get());
+                module.useEnergy(player, stack, BOOST_USAGE.getAsLong());
                 gravUnitGameEvent(player, MekanismGameEvents.GRAVITY_MODULATE_BOOSTED);
             } else {
                 module.useEnergy(player, stack, MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation.get());

@@ -10,6 +10,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyConversion;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.MathUtils;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.ILangEntry;
 import mekanism.api.text.TextComponentUtil;
@@ -204,7 +205,7 @@ public class UnitDisplayUtils {
 
         @Override
         public long convertFrom(long energy) {
-            return (long) (energy * getConversion());
+            return MathUtils.clampToLong(energy * getConversion());
         }
 
         @Override
@@ -213,7 +214,7 @@ public class UnitDisplayUtils {
                 //Short circuit if energy is zero to avoid having to create any additional objects
                 return 0L;
             }
-            return (long) (joules * getInverseConversion());
+            return MathUtils.clampToLong(joules * getInverseConversion());
         }
 
         @Override

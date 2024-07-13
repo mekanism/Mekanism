@@ -8,6 +8,7 @@ import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.MathUtils;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
@@ -30,6 +31,7 @@ import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
+import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
@@ -133,7 +135,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
         HeatTransfer loss = simulate();
         lastTransferLoss = loss.adjacentTransfer();
         lastEnvironmentLoss = loss.environmentTransfer();
-        producingEnergy = getEnergyContainer().getEnergy().subtract(prev);
+        producingEnergy = getEnergyContainer().getEnergy() - prev;
         return sendUpdatePacket;
     }
 
@@ -189,8 +191,8 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
         double carnotEfficiency = 1 - Math.min(ambientTemp, temp) / Math.max(ambientTemp, temp);
         double heatLost = THERMAL_EFFICIENCY * (temp - ambientTemp);
         heatCapacitor.handleHeat(-heatLost);
-        double energyFromHeat = Math.abs(heatLost) * carnotEfficiency;
-        getEnergyContainer().insert(energyFromHeat.min(MAX_PRODUCTION.get()), Action.EXECUTE, AutomationType.INTERNAL);
+        long energyFromHeat = MathUtils.clampToLong(Math.abs(heatLost) * carnotEfficiency);
+        getEnergyContainer().insert(Math.min(energyFromHeat, MAX_PRODUCTION.getAsLong()), Action.EXECUTE, AutomationType.INTERNAL);
         return super.simulate();
     }
 
@@ -228,7 +230,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableFloatingLong.create(this::getProductionRate, value -> producingEnergy = value));
+        container.track(SyncableLong.create(this::getProductionRate, value -> producingEnergy = value));
         container.track(SyncableDouble.create(this::getLastTransferLoss, value -> lastTransferLoss = value));
         container.track(SyncableDouble.create(this::getLastEnvironmentLoss, value -> lastEnvironmentLoss = value));
     }

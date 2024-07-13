@@ -27,6 +27,7 @@ import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.container.sync.SyncableInt;
+import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.chemical.GasInventorySlot;
 import mekanism.common.util.MekanismUtils;
@@ -97,7 +98,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
 
             long toUse = getToUse();
             long toUseGeneration = Math.multiplyExact(generationRate, toUse);
-            updateMaxOutputRaw(MekanismConfig.general.FROM_H2.get().max(toUseGeneration));
+            updateMaxOutputRaw(Math.max(MekanismConfig.general.FROM_H2.get(), toUseGeneration));
 
             long total = burnTicks + fuelTank.getStored() * maxBurnTicks;
             total -= toUse;
@@ -161,7 +162,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableFloatingLong.create(this::getGenerationRate, value -> generationRate = value));
+        container.track(SyncableLong.create(this::getGenerationRate, value -> generationRate = value));
         container.track(syncableMaxOutput());
         container.track(SyncableDouble.create(this::getUsed, value -> gasUsedLastTick = value));
         container.track(SyncableInt.create(this::getMaxBurnTicks, value -> maxBurnTicks = value));

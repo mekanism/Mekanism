@@ -30,7 +30,7 @@ public record FissionRecipeViewerRecipe(@Nullable GasStackIngredient inputCoolan
         //Note: The recipes below ignore thermal conductivity and just take enthalpy into account and it rounds the amount of coolant
         //TODO: Eventually we may want to try and improve on that but for now this should be fine
         Map<ResourceLocation, FissionRecipeViewerRecipe> recipes = new HashMap<>();
-        double energyPerFuel = MekanismGeneratorsConfig.generators.energyPerFissionFuel.get().doubleValue();
+        double energyPerFuel = MekanismGeneratorsConfig.generators.energyPerFissionFuel.get();
         //Special case water recipe
         long coolantAmount = Math.round(energyPerFuel * HeatUtils.getSteamEnergyEfficiency() / HeatUtils.getWaterThermalEnthalpy());
         recipes.put(RecipeViewerUtils.synthetic(MekanismGenerators.rl("water"), "fission"), new FissionRecipeViewerRecipe(null, IngredientCreatorAccess.gasStack().from(MekanismGases.FISSILE_FUEL, 1),

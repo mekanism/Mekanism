@@ -10,6 +10,7 @@ import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.MathUtils;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismGases;
@@ -58,7 +59,7 @@ public record ModuleElectrolyticBreathingUnit(boolean fillHeld) implements ICust
         }
         if (productionRate > 0) {
             long usage = Math.multiplyExact(MekanismConfig.general.FROM_H2.get(), 2);
-            int maxRate = Math.min(productionRate, module.getContainerEnergy(stack).divideToInt(usage));
+            int maxRate = MathUtils.clampToInt(Math.min(productionRate, module.getContainerEnergy(stack) / usage));
             long hydrogenUsed = 0;
             GasStack hydrogenStack = MekanismGases.HYDROGEN.getStack(maxRate * 2L);
             ItemStack chestStack = player.getItemBySlot(EquipmentSlot.CHEST);
