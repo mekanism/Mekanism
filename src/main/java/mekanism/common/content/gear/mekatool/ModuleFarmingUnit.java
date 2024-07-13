@@ -241,7 +241,7 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
                 continue;
             }
             long nextEnergyUsed = energyUsed + energyUsage;
-            if (nextEnergyUsed.greaterThan(energy)) {
+            if (nextEnergyUsed > energy) {
                 break;
             }
             //Check to make that the result we would get from modifying the other block is the same as the one we got on the initial block we interacted with

@@ -42,7 +42,7 @@ public class GuiDimensionalStabilizer extends GuiMekanismTile<TileEntityDimensio
         addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15))
               .warning(WarningType.NOT_ENOUGH_ENERGY, () -> {
                   MachineEnergyContainer<TileEntityDimensionalStabilizer> energyContainer = tile.getEnergyContainer();
-                  return energyContainer.getEnergyPerTick().greaterThan(energyContainer.getEnergy());
+                  return energyContainer.getEnergyPerTick() > energyContainer.getEnergy();
               });
         addRenderableWidget(new GuiVisualsTab(this, tile));
         addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::getActive));
