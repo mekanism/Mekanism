@@ -7,7 +7,6 @@ import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.math.ULong;
 import mekanism.common.attachments.containers.ComponentBackedContainer;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.util.NBTUtils;
@@ -64,9 +63,13 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Lon
         setContents(getAttached(), energy);
     }
 
+    protected long clampEnergy(long energy) {
+        return Math.min(energy, getMaxEnergy());
+    }
+
     @Override
     protected void setContents(AttachedEnergy attachedEnergy, Long energy) {
-        super.setContents(attachedEnergy, Math.min(energy, getMaxEnergy()));
+        super.setContents(attachedEnergy, clampEnergy(energy));
     }
 
     protected long getInsertRate(@Nullable AutomationType automationType) {
