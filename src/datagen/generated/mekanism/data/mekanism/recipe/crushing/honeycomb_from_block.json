@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "count": 1,
+    "item": "minecraft:honeycomb_block"
+  },
+  "output": {
+    "count": 4,
+    "id": "minecraft:honeycomb"
+  }
+}

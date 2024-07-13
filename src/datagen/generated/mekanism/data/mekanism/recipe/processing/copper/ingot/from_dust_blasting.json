@@ -4,7 +4,7 @@
   "cookingtime": 100,
   "experience": 0.35,
   "ingredient": {
-    "tag": "c:dusts/copper"
+    "item": "mekanism:dust_copper"
   },
   "result": {
     "count": 1,

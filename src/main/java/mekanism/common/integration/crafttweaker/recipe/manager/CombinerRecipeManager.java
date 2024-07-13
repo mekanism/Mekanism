@@ -9,11 +9,12 @@ import mekanism.api.recipes.basic.BasicCombinerRecipe;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.recipe.MekanismRecipeType;
+import net.minecraft.world.item.crafting.RecipeInput;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_COMBINING)
-public class CombinerRecipeManager extends MekanismRecipeManager<CombinerRecipe> {
+public class CombinerRecipeManager extends MekanismRecipeManager<RecipeInput, CombinerRecipe> {
 
     public static final CombinerRecipeManager INSTANCE = new CombinerRecipeManager();
 

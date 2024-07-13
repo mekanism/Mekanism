@@ -151,6 +151,8 @@ import mekanism.common.attachments.FormulaAttachment;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.content.gear.shared.ModuleColorModulationUnit;
 import mekanism.common.item.ItemConfigurationCard;
+import mekanism.common.item.ItemConfigurator;
+import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.item.block.machine.ItemBlockFluidTank;
 import mekanism.common.lib.FieldReflectionHelper;
 import mekanism.common.lib.radiation.RadiationManager;
@@ -246,18 +248,25 @@ public class ClientRegistration {
             ClientRegistrationUtil.setPropertyOverride(MekanismBlocks.CARDBOARD_BOX, Mekanism.rl("storage"),
                   (stack, world, entity, seed) -> stack.has(MekanismDataComponents.BLOCK_DATA) ? 1 : 0);
 
-            ClientRegistrationUtil.setPropertyOverride(MekanismItems.CRAFTING_FORMULA, Mekanism.rl("invalid"), (stack, world, entity, seed) ->
-                  FormulaAttachment.existingFormula(stack)
-                        .filter(attachment -> attachment.hasItems() && attachment.invalid())
-                        .isPresent() ? 1 : 0
-            );
-            ClientRegistrationUtil.setPropertyOverride(MekanismItems.CRAFTING_FORMULA, Mekanism.rl("encoded"), (stack, world, entity, seed) ->
-                  FormulaAttachment.existingFormula(stack)
-                        .filter(attachment -> attachment.hasItems() && !attachment.invalid())
-                        .isPresent() ? 1 : 0
-            );
+            ClientRegistrationUtil.setPropertyOverride(MekanismItems.CRAFTING_FORMULA, Mekanism.rl("invalid"), (stack, world, entity, seed) -> {
+                FormulaAttachment attachment = stack.getOrDefault(MekanismDataComponents.FORMULA_HOLDER, FormulaAttachment.EMPTY);
+                return attachment.hasItems() && attachment.invalid() ? 1 : 0;
+            });
+            ClientRegistrationUtil.setPropertyOverride(MekanismItems.CRAFTING_FORMULA, Mekanism.rl("encoded"), (stack, world, entity, seed) -> {
+                FormulaAttachment attachment = stack.getOrDefault(MekanismDataComponents.FORMULA_HOLDER, FormulaAttachment.EMPTY);
+                return attachment.hasItems() && !attachment.invalid() ? 1 : 0;
+            });
             ClientRegistrationUtil.setPropertyOverride(MekanismItems.CONFIGURATION_CARD, Mekanism.rl("encoded"),
                   (stack, world, entity, seed) -> ((ItemConfigurationCard) stack.getItem()).hasData(stack) ? 1 : 0);
+            ClientRegistrationUtil.setPropertyOverride(MekanismItems.CONFIGURATOR, Mekanism.rl("mode"), (stack, world, entity, seed) -> {
+                ConfiguratorMode mode = ((ItemConfigurator) stack.getItem()).getMode(stack);
+                return switch (mode) {
+                    default -> 0;
+                    case EMPTY -> 1;
+                    case ROTATE -> 2;
+                    case WRENCH -> 3;
+                };
+            });
 
             ClientRegistrationUtil.setPropertyOverride(MekanismItems.ELECTRIC_BOW, Mekanism.rl("pull"),
                   (stack, world, entity, seed) -> entity != null && entity.getUseItem() == stack ? (stack.getUseDuration(entity) - entity.getUseItemRemainingTicks()) / (float) SharedConstants.TICKS_PER_SECOND : 0);

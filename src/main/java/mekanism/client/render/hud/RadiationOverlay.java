@@ -18,7 +18,7 @@ public class RadiationOverlay implements LayeredDraw.Layer {
     public static final RadiationOverlay INSTANCE = new RadiationOverlay();
 
     private double prevRadiation = 0;
-    private long lastTick;
+    private int lastTick;
 
     private RadiationOverlay() {
     }
@@ -29,13 +29,14 @@ public class RadiationOverlay implements LayeredDraw.Layer {
 
     @Override
     public void render(@NotNull GuiGraphics graphics, @NotNull DeltaTracker delta) {
-        Player player = Minecraft.getInstance().player;
+        Minecraft minecraft = Minecraft.getInstance();
+        Player player = minecraft.player;
         if (player != null && IRadiationManager.INSTANCE.isRadiationEnabled() && MekanismUtils.isPlayingMode(player)) {
             double radiation = player.getData(MekanismAttachmentTypes.RADIATION);
             double severity = RadiationScale.getScaledDoseSeverity(radiation) * 0.8;
             //Only update the previous radiation level at most once a tick
-            if (lastTick != player.level().getGameTime()) {
-                lastTick = player.level().getGameTime();
+            if (lastTick != minecraft.gui.getGuiTicks()) {
+                lastTick = minecraft.gui.getGuiTicks();
                 if (prevRadiation < severity) {
                     prevRadiation = Math.min(severity, prevRadiation + 0.01);
                 }

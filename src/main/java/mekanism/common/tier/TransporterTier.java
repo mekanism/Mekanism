@@ -41,6 +41,7 @@ public enum TransporterTier implements ITier {
         return pullReference == null ? getBasePull() : pullReference.getOrDefault();
     }
 
+    //TODO - 1.21: Figure this out as speed is configured as per half second??
     public int getSpeed() {
         return speedReference == null ? getBaseSpeed() : speedReference.getOrDefault();
     }

@@ -49,6 +49,7 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.upgrade.AdvancedMachineUpgradeData;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StatUtils;
+import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -68,7 +69,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
           RecipeError.NOT_ENOUGH_OUTPUT_SPACE,
           RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
     );
-    public static final int BASE_TICKS_REQUIRED = 200;
+    public static final int BASE_TICKS_REQUIRED = 10 * SharedConstants.TICKS_PER_SECOND;
     public static final long MAX_GAS = 210;
 
     private final ChemicalUsageMultiplier gasUsageMultiplier;

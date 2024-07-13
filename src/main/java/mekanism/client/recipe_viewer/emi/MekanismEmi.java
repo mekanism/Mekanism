@@ -48,7 +48,7 @@ import mekanism.client.recipe_viewer.emi.recipe.FluidToFluidEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.GasToGasEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.ItemStackGasToItemStackEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.ItemStackToEnergyEmiRecipe;
-import mekanism.client.recipe_viewer.emi.recipe.ItemStackToFluidEmiRecipe;
+import mekanism.client.recipe_viewer.emi.recipe.ItemStackToFluidOptionalItemEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.ItemStackToGasEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.ItemStackToInfuseTypeEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.ItemStackToItemStackEmiRecipe;
@@ -282,7 +282,7 @@ public class MekanismEmi implements EmiPlugin {
 
         addCategoryAndRecipes(registry, RecipeViewerRecipeType.OXIDIZING, (category, recipeHolder) -> new ItemStackToGasEmiRecipe(category, recipeHolder, TileEntityChemicalOxidizer.BASE_TICKS_REQUIRED));
 
-        addCategoryAndRecipes(registry, RecipeViewerRecipeType.NUTRITIONAL_LIQUIFICATION, (category, id, recipe) -> new ItemStackToFluidEmiRecipe(category, id, recipe, TileEntityNutritionalLiquifier.BASE_TICKS_REQUIRED), RecipeViewerUtils.getLiquificationRecipes());
+        addCategoryAndRecipes(registry, RecipeViewerRecipeType.NUTRITIONAL_LIQUIFICATION, (category, id, recipe) -> new ItemStackToFluidOptionalItemEmiRecipe(category, id, recipe, TileEntityNutritionalLiquifier.BASE_TICKS_REQUIRED), RecipeViewerUtils.getLiquificationRecipes());
 
         addCategoryAndRecipes(registry, RecipeViewerRecipeType.ACTIVATING, GasToGasEmiRecipe::new);
         addCategoryAndRecipes(registry, RecipeViewerRecipeType.CENTRIFUGING, GasToGasEmiRecipe::new);
@@ -332,6 +332,14 @@ public class MekanismEmi implements EmiPlugin {
         MekanismEmiRecipeCategory category = addCategory(registry, recipeType);
         for (Map.Entry<ResourceLocation, RECIPE> entry : recipes.entrySet()) {
             registry.addRecipe(recipeCreator.create(category, entry.getKey(), entry.getValue()));
+        }
+    }
+
+    public static <RECIPE extends INamedRVRecipe> void addCategoryAndRecipes(EmiRegistry registry, IRecipeViewerRecipeType<RECIPE> recipeType,
+          BasicRecipeCreator<RECIPE> recipeCreator, List<RECIPE> recipes) {
+        MekanismEmiRecipeCategory category = addCategory(registry, recipeType);
+        for (RECIPE recipe : recipes) {
+            registry.addRecipe(recipeCreator.create(category, recipe.id(), recipe));
         }
     }
 

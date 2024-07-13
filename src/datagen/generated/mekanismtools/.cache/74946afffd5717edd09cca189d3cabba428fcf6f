@@ -1,8 +1,10 @@
-// 1.21	2024-06-14T14:26:02.2497393	Tags: mekanismtools
+// 1.21	2024-07-11T11:19:59.6296976	Tags: mekanismtools
 13cf1fe06cf159d32d074144254a0d375f6b20e7 data/c/tags/block/mineable/paxel.json
 ed87013152d08e3cb23487f0ff0ae34466dec5d1 data/c/tags/item/tools.json
+7991f1aacd6aa069b2d8cea3b4c757c39fab6cea data/c/tags/item/tools/melee_weapon.json
+e803e7c6cf8511602cd6292cf9a1d6c3bf0fa63c data/c/tags/item/tools/mining_tool.json
 c16ef9d24f9f676bc1bd0e4b6061fb5ac7e2455f data/c/tags/item/tools/paxel.json
-6e3b9e4ae09c24327f7264b4e22d031964f76244 data/c/tags/item/tools/shields.json
+6e3b9e4ae09c24327f7264b4e22d031964f76244 data/c/tags/item/tools/shield.json
 950a086f855d118e00d3fc9697663c7721c42db1 data/mekanismtools/tags/block/incorrect_for_bronze_tool.json
 b239e7b03736ed687b12fa515c9a1139f07cc1a8 data/mekanismtools/tags/block/incorrect_for_lapis_lazuli_tool.json
 950a086f855d118e00d3fc9697663c7721c42db1 data/mekanismtools/tags/block/incorrect_for_osmium_tool.json
@@ -17,6 +19,7 @@ fd8819751169c6f6051010b39b57d5081ca22086 data/minecraft/tags/item/enchantable/du
 ed87013152d08e3cb23487f0ff0ae34466dec5d1 data/minecraft/tags/item/enchantable/mining.json
 ed87013152d08e3cb23487f0ff0ae34466dec5d1 data/minecraft/tags/item/enchantable/mining_loot.json
 ed87013152d08e3cb23487f0ff0ae34466dec5d1 data/minecraft/tags/item/enchantable/sharp_weapon.json
+ed87013152d08e3cb23487f0ff0ae34466dec5d1 data/minecraft/tags/item/enchantable/weapon.json
 61aac4830507ca1aeaeffcbd3b2c6ffd2eb5b58c data/minecraft/tags/item/foot_armor.json
 4b2c0ee85fec7ddd4d5fd69eb7b305bd1d38c389 data/minecraft/tags/item/freeze_immune_wearables.json
 1a7d9b6b6074ff3c9b5bcf285768e9fdeb843a27 data/minecraft/tags/item/head_armor.json

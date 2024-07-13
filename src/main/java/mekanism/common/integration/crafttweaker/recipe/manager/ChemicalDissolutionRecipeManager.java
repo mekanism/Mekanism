@@ -2,9 +2,12 @@ package mekanism.common.integration.crafttweaker.recipe.manager;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
+import mekanism.api.chemical.gas.Gas;
+import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ChemicalDissolutionRecipe;
 import mekanism.api.recipes.basic.BasicChemicalDissolutionRecipe;
 import mekanism.api.recipes.ingredients.GasStackIngredient;
+import mekanism.api.recipes.vanilla_input.SingleItemChemicalRecipeInput;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
@@ -13,7 +16,7 @@ import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_DISSOLUTION)
-public class ChemicalDissolutionRecipeManager extends MekanismRecipeManager<ChemicalDissolutionRecipe> {
+public class ChemicalDissolutionRecipeManager extends MekanismRecipeManager<SingleItemChemicalRecipeInput<Gas, GasStack>, ChemicalDissolutionRecipe> {
 
     public static final ChemicalDissolutionRecipeManager INSTANCE = new ChemicalDissolutionRecipeManager();
 

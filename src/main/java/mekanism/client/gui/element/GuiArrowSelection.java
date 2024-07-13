@@ -1,5 +1,6 @@
 package mekanism.client.gui.element;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.Supplier;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
@@ -34,8 +35,13 @@ public class GuiArrowSelection extends GuiTexturedElement {
         if (component != null) {
             int tooltipX = mouseX + 5;
             int tooltipY = mouseY - 5;
+            PoseStack pose = guiGraphics.pose();
+            pose.pushPose();
+            //Mirror vanilla's tooltip rendering offset
+            pose.translate(0, 0, 400);
             GuiUtils.renderBackgroundTexture(guiGraphics, GuiInnerScreen.SCREEN, GuiInnerScreen.SCREEN_SIZE, GuiInnerScreen.SCREEN_SIZE, tooltipX - 3, tooltipY - 4, getStringWidth(component) + 6, 16, 256, 256);
             drawString(guiGraphics, component, tooltipX, tooltipY, screenTextColor());
+            pose.popPose();
         }
     }
 

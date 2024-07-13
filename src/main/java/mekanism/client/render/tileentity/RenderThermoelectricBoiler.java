@@ -46,7 +46,7 @@ public class RenderThermoelectricBoiler extends MultiblockTileEntityRenderer<Boi
                 }
                 RenderData data = RenderData.Builder.create(multiblock.steamTank.getStack())
                       .of(multiblock)
-                      .location(multiblock.upperRenderLocation)
+                      .location(multiblock.upperRenderLocation.offset(1, 0, 1))
                       .height(height)
                       .build();
                 renderObject(data, pos, matrix, buffer, overlayLight, multiblock.prevSteamScale);

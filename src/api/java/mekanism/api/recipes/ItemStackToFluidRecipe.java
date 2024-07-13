@@ -18,10 +18,7 @@ import org.jetbrains.annotations.NotNull;
  * <br>
  * Output: FluidStack
  *
- * @apiNote There is currently only one type of ItemStack to FluidStack recipe type:
- * <ul>
- *     <li>Nutritional Liquification: These cannot currently be created, but are processed in the Nutritional Liquifier.</li>
- * </ul>
+ * @apiNote There is currently no types of ItemStack to FluidStack recipe type
  */
 @NothingNullByDefault
 public abstract class ItemStackToFluidRecipe extends MekanismRecipe<SingleRecipeInput> implements Predicate<@NotNull ItemStack> {

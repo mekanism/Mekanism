@@ -77,6 +77,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -96,7 +97,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
      * The maximum amount of gas this block can store.
      */
     public static final long MAX_GAS = 2_400;
-    public static final int MAX_FLUID = 24_000;
+    public static final int MAX_FLUID = 24 * FluidType.BUCKET_VOLUME;
     private static final int BASE_DUMP_RATE = 8;
     private static final LongObjectToLongFunction<TileEntityElectrolyticSeparator> BASE_ENERGY_CALCULATOR =
           (base, tile) -> base * (tile.getRecipeEnergyMultiplier());

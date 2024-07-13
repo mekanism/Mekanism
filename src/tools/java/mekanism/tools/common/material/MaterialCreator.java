@@ -71,7 +71,7 @@ public class MaterialCreator implements BaseMekanismMaterial {
                 } else {
                     actualValue = (float) val;
                 }
-                float baseDamage = attackDamage.get();
+                float baseDamage = attackDamage.getOrDefault();
                 return actualValue >= -baseDamage && actualValue <= Float.MAX_VALUE - baseDamage;
             }
             return false;

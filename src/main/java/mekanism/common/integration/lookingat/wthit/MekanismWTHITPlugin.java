@@ -47,14 +47,17 @@ public class MekanismWTHITPlugin implements IWailaPlugin {
             public void onHandleTooltip(ITooltip tooltip, ICommonAccessor accessor, IPluginConfig config) {
                 if (tooltip.getLine(MEK_DATA) != null) {
                     //If we have mekanism data then clear out the default energy and fluid data as we handle that ourselves
+                    // Note: Setting adds it if it is not present, so only set it if it is present
                     if (tooltip.getLine(EnergyData.ID) != null) {
-                        //Setting adds it if it is not present, so only set it if it is present
                         tooltip.setLine(EnergyData.ID);
                     }
                     if (tooltip.getLine(FluidData.ID) != null) {
-                        //Setting adds it if it is not present, so only set it if it is present
                         tooltip.setLine(FluidData.ID);
                     }
+                    //TODO: Figure out how to remove the health bar for the robit from WTHIT
+                    /*if (accessor.getEntity() instanceof EntityRobit && tooltip.getLine(ID) != null) {
+                        tooltip.setLine(ID);
+                    }*/
                 }
             }
         });

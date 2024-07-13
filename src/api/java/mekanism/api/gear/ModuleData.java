@@ -176,7 +176,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModule
      * @since 10.6.0
      */
     @Nullable
-    public final ModuleConfig<?> getNamedConfig(int installed, String name) {
+    public final ModuleConfig<?> getNamedConfig(int installed, ResourceLocation name) {
         for (ModuleConfig<?> config : getConfigData(installed).configs()) {
             if (config.name().equals(name)) {
                 return config;
@@ -265,7 +265,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModule
                               List<StreamCodec<? super RegistryFriendlyByteBuf, ? extends ModuleConfig<?>>> streamCodecs) {
 
         private ConstructedConfigData construct() {
-            Set<String> uniqueNames = new HashSet<>(configs.size());
+            Set<ResourceLocation> uniqueNames = new HashSet<>(configs.size());
             for (ModuleConfig<?> config : configs) {
                 if (!uniqueNames.add(config.name())) {
                     throw new IllegalStateException("Duplicate module config name " + config.name());

@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     {
-      "tag": "c:storage_blocks/refined_obsidian"
+      "item": "mekanism:block_refined_obsidian"
     }
   ],
   "result": {

@@ -184,7 +184,7 @@ public class GearConfig extends BaseMekanismConfig {
 
         builder.comment("Flamethrower Settings").push(FLAMETHROWER_CATEGORY);
         flamethrowerMaxGas = CachedLongValue.wrap(this, builder.comment("Flamethrower Gas Tank capacity in mB.")
-              .defineInRange("maxGas", 24_000, 1, Long.MAX_VALUE));
+              .defineInRange("maxGas", 24 * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE));
         flamethrowerFillRate = CachedLongValue.wrap(this, builder.comment("Amount of hydrogen the Flamethrower can accept per tick.")
               .defineInRange("fillRate", 16, 1, Long.MAX_VALUE));
         flamethrowerDestroyItems = CachedBooleanValue.wrap(this, builder.comment("Determines whether or not the Flamethrower can destroy items if it fails to smelt them.")
@@ -204,7 +204,7 @@ public class GearConfig extends BaseMekanismConfig {
 
         builder.comment("Jetpack Settings").push(JETPACK_CATEGORY);
         jetpackMaxGas = CachedLongValue.wrap(this, builder.comment("Jetpack Gas Tank capacity in mB.")
-              .defineInRange("maxGas", 24_000, 1, Long.MAX_VALUE));
+              .defineInRange("maxGas", 24 * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE));
         jetpackFillRate = CachedLongValue.wrap(this, builder.comment("Amount of hydrogen the Jetpack can accept per tick.")
               .defineInRange("fillRate", 16, 1, Long.MAX_VALUE));
         builder.pop();
@@ -229,7 +229,7 @@ public class GearConfig extends BaseMekanismConfig {
 
         builder.comment("Scuba Tank Settings").push(SCUBA_TANK_CATEGORY);
         scubaMaxGas = CachedLongValue.wrap(this, builder.comment("Scuba Tank Gas Tank capacity in mB.")
-              .defineInRange("maxGas", 24_000, 1, Long.MAX_VALUE));
+              .defineInRange("maxGas", 24 * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE));
         scubaFillRate = CachedLongValue.wrap(this, builder.comment("Amount of oxygen the Scuba Tank Gas Tank can accept per tick.")
               .defineInRange("fillRate", 16, 1, Long.MAX_VALUE));
         builder.pop();
@@ -245,7 +245,7 @@ public class GearConfig extends BaseMekanismConfig {
 
         builder.comment("Canteen Settings").push(CANTEEN_CATEGORY);
         canteenMaxStorage = CachedIntValue.wrap(this, builder.comment("Maximum amount of Nutritional Paste storable by the Canteen.")
-              .defineInRange("maxStorage", 64_000, 1, Integer.MAX_VALUE));
+              .defineInRange("maxStorage", 64 * FluidType.BUCKET_VOLUME, 1, Integer.MAX_VALUE));
         canteenTransferRate = CachedIntValue.wrap(this, builder.comment("Rate at which Nutritional Paste can be transferred into a Canteen.")
               .defineInRange("transferRate", 128, 1, Integer.MAX_VALUE));
         builder.pop();
@@ -319,11 +319,11 @@ public class GearConfig extends BaseMekanismConfig {
         mekaSuitGravitationalVibrations = CachedBooleanValue.wrap(this, builder.comment("Should the Gravitational Modulation unit give off vibrations when in use.")
               .define("gravitationalVibrations", true));
         mekaSuitNutritionalMaxStorage = CachedIntValue.wrap(this, builder.comment("Maximum amount of Nutritional Paste storable by the nutritional injection unit.")
-              .defineInRange("nutritionalMaxStorage", 128_000, 1, Integer.MAX_VALUE));
+              .defineInRange("nutritionalMaxStorage", 128 * FluidType.BUCKET_VOLUME, 1, Integer.MAX_VALUE));
         mekaSuitNutritionalTransferRate = CachedIntValue.wrap(this, builder.comment("Rate at which Nutritional Paste can be transferred into the nutritional injection unit.")
               .defineInRange("nutritionalTransferRate", 256, 1, Integer.MAX_VALUE));
         mekaSuitJetpackMaxStorage = CachedLongValue.wrap(this, builder.comment("Maximum amount of Hydrogen storable per installed jetpack unit.")
-              .defineInRange("jetpackMaxStorage", 24_000, 1, Long.MAX_VALUE));
+              .defineInRange("jetpackMaxStorage", 24 * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE));
         mekaSuitJetpackTransferRate = CachedLongValue.wrap(this, builder.comment("Rate at which Hydrogen can be transferred into the jetpack unit.")
               .defineInRange("jetpackTransferRate", 256, 1, Long.MAX_VALUE));
         builder.push(MEKASUIT_DAMAGE_CATEGORY);
@@ -353,10 +353,5 @@ public class GearConfig extends BaseMekanismConfig {
     @Override
     public Type getConfigType() {
         return Type.SERVER;
-    }
-
-    @Override
-    public boolean addToContainer() {
-        return false;
     }
 }

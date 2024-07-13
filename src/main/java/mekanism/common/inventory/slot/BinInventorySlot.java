@@ -134,7 +134,7 @@ public class BinInventorySlot extends BasicInventorySlot {
     }
 
     /**
-     * For use by upgrade recipes, do not use this in place of {@link #setLocked(boolean)}
+     * For use by tier installers and parsing placement data, do not use this in place of {@link #setLocked(boolean)}
      */
     public void setLockStack(@NotNull ItemStack stack) {
         lockStack = stack.copyWithCount(1);
@@ -154,6 +154,8 @@ public class BinInventorySlot extends BasicInventorySlot {
 
     @Override
     public CompoundTag serializeNBT(HolderLookup.Provider provider) {
+        //Note: While we are able to store this extra data for saving and stuff, when converting to an item we need to have
+        // the tile copy the lock stack as a component
         CompoundTag nbt = super.serializeNBT(provider);
         if (isLocked()) {
             nbt.put(SerializationConstants.LOCK_STACK, lockStack.save(provider));

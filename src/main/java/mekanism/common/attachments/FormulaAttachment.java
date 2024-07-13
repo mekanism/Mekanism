@@ -2,22 +2,22 @@ package mekanism.common.attachments;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Stream;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.content.assemblicator.RecipeFormula;
-import mekanism.common.item.ItemCraftingFormula;
-import mekanism.common.registries.MekanismDataComponents;
+import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 
 @NothingNullByDefault
-public record FormulaAttachment(List<ItemStack> inventory, boolean invalid) {//TODO - 1.21: Do we want an empty variant of this?
+public record FormulaAttachment(List<ItemStack> inventory, boolean invalid) {
+
+    public static final FormulaAttachment EMPTY = new FormulaAttachment(NonNullList.withSize(9, ItemStack.EMPTY), false);
 
     public static final Codec<FormulaAttachment> CODEC = RecordCodecBuilder.create(instance -> instance.group(
           ItemStack.OPTIONAL_CODEC.listOf(9, 9).fieldOf(SerializationConstants.ITEMS).forGetter(FormulaAttachment::inventory),
@@ -34,38 +34,38 @@ public record FormulaAttachment(List<ItemStack> inventory, boolean invalid) {//T
         inventory = Collections.unmodifiableList(inventory);
     }
 
-    public static Optional<FormulaAttachment> existingFormula(ItemStack stack) {
-        if (!stack.isEmpty() && stack.getItem() instanceof ItemCraftingFormula) {
-            return Optional.ofNullable(stack.get(MekanismDataComponents.FORMULA_HOLDER));
-        }
-        return Optional.empty();
-    }
-
     public static FormulaAttachment create(RecipeFormula formula) {
-        List<ItemStack> stacks = new ArrayList<>(formula.craftingInput.size());
-        for (ItemStack stack : formula.craftingInput.items()) {
-            stacks.add(stack.copy());
-        }
-        return new FormulaAttachment(stacks, false);
+        return new FormulaAttachment(formula.getCopy(true), false);
     }
 
+    //TODO - 1.21: I don't think this gets set if in a player's inventory when a reload happens or they rejoin after recipes have changed
     public FormulaAttachment asInvalid() {
         if (invalid) {
             return this;
         }
-        List<ItemStack> stacks = new ArrayList<>(inventory.size());
-        for (ItemStack stack : inventory) {
-            stacks.add(stack.copy());
-        }
-        return new FormulaAttachment(stacks, true);
+        //Note: We don't have to copy the inventory as FormulaAttachment is immutable, so nothing should be mutating the backing stacks
+        return new FormulaAttachment(inventory, true);
     }
 
     public boolean isEmpty() {
+        if (this == EMPTY) {
+            return true;
+        }
         return inventory.stream().allMatch(ItemStack::isEmpty);
     }
 
+    public Stream<ItemStack> nonEmptyItems() {
+        if (this == EMPTY) {
+            return Stream.empty();
+        }
+        return inventory.stream().filter(stack -> !stack.isEmpty());
+    }
+
     public boolean hasItems() {
-        return inventory.stream().anyMatch(slot -> !slot.isEmpty());
+        if (this == EMPTY) {
+            return false;
+        }
+        return inventory.stream().anyMatch(stack -> !stack.isEmpty());
     }
 
     @Override

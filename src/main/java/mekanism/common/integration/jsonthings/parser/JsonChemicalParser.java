@@ -55,7 +55,6 @@ public abstract class JsonChemicalParser<CHEMICAL extends Chemical<CHEMICAL>, BU
               .ifKey("texture", val -> val.string().map(ResourceLocation::parse).handle(builder::texture))
               .ifKey("tint", val -> processColor(val, builder::tint))
               .ifKey("color_representation", val -> processColor(val, builder::colorRepresentation))
-              .ifKey("hidden", val -> val.bool().handle(builder::hidden))
               .ifKey("attributes", val -> processAttribute(builder, val.obj()));
     }
 

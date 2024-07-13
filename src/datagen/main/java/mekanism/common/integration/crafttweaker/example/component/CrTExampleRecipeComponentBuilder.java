@@ -33,7 +33,7 @@ public class CrTExampleRecipeComponentBuilder<BUILDER_TYPE extends CrTExampleBui
     private final List<RecipeExample> examples = new ArrayList<>();
     private final BUILDER_TYPE parent;
 
-    public CrTExampleRecipeComponentBuilder(BUILDER_TYPE parent, MekanismRecipeManager<?> recipeManager, String... methodNames) {
+    public CrTExampleRecipeComponentBuilder(BUILDER_TYPE parent, MekanismRecipeManager<?, ?> recipeManager, String... methodNames) {
         super(recipeManager);
         this.parent = parent;
         if (methodNames == null || methodNames.length == 0) {

@@ -25,6 +25,7 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         RecipeProviderUtil.addCrusherBioFuelRecipes(consumer, basePath + "biofuel/", mod -> mod.equals("minecraft") || mod.startsWith(Mekanism.MODID), null);
         addCrusherDewaxingRecipes(consumer, basePath + "dewax/");
         addCrusherStoneRecipes(consumer, basePath + "stone/");
+        addCrusherTuffRecipes(consumer, basePath + "tuff/");
         addCrusherDeepslateRecipes(consumer, basePath + "deepslate/");
         addCrusherBlackstoneRecipes(consumer, basePath + "blackstone/");
         addCrusherQuartzRecipes(consumer, basePath + "quartz/");
@@ -37,6 +38,11 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
               IngredientCreatorAccess.item().from(Blocks.DRIPSTONE_BLOCK),
               new ItemStack(Items.POINTED_DRIPSTONE, 4)
         ).build(consumer, Mekanism.rl(basePath + "pointed_dripstone_from_block"));
+        //Honecomb Block -> Honeycomb
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(Blocks.HONEYCOMB_BLOCK),
+              new ItemStack(Items.HONEYCOMB, 4)
+        ).build(consumer, Mekanism.rl(basePath + "honeycomb_from_block"));
         //Purpur Block -> Purpur Pillar
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(Blocks.PURPUR_PILLAR),
@@ -82,6 +88,11 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
               IngredientCreatorAccess.item().from(Tags.Items.RODS_BLAZE),
               new ItemStack(Items.BLAZE_POWDER, 4)
         ).build(consumer, Mekanism.rl(basePath + "blaze_rod"));
+        //Breeze Rod -> wind charge
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(Tags.Items.RODS_BREEZE),
+              new ItemStack(Items.WIND_CHARGE, 6)
+        ).build(consumer, Mekanism.rl(basePath + "breeze_rod"));
         //Bone -> bone meal
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(Items.BONE),
@@ -152,6 +163,77 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
               IngredientCreatorAccess.item().from(Blocks.CRACKED_STONE_BRICKS),
               new ItemStack(Blocks.STONE)
         ).build(consumer, Mekanism.rl(basePath + "from_cracked_bricks"));
+    }
+
+    private void addCrusherTuffRecipes(RecipeOutput consumer, String basePath) {
+        //Polished Tuff -> Tuff
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(Blocks.POLISHED_TUFF),
+              new ItemStack(Blocks.TUFF)
+        ).build(consumer, Mekanism.rl(basePath + "from_polished"));
+        //Polished Tuff Stairs -> Tuff Stairs
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(Blocks.POLISHED_TUFF_STAIRS),
+              new ItemStack(Blocks.TUFF_STAIRS)
+        ).build(consumer, Mekanism.rl(basePath + "stairs_from_polished"));
+        //Polished Tuff Slabs -> Tuff Slabs
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(Blocks.POLISHED_TUFF_SLAB),
+              new ItemStack(Blocks.TUFF_SLAB)
+        ).build(consumer, Mekanism.rl(basePath + "slabs_from_polished"));
+        //Polished Tuff Walls -> Tuff Walls
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(Blocks.POLISHED_TUFF_WALL),
+              new ItemStack(Blocks.TUFF_WALL)
+        ).build(consumer, Mekanism.rl(basePath + "wall_from_polished"));
+
+        //Tuff Bricks -> Polished Tuff
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(Blocks.TUFF_BRICKS),
+              new ItemStack(Blocks.POLISHED_TUFF)
+        ).build(consumer, Mekanism.rl(basePath + "bricks_to_polished"));
+        //Tuff Brick Stairs -> Polished Tuff Stairs
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(Blocks.TUFF_BRICK_STAIRS),
+              new ItemStack(Blocks.POLISHED_TUFF_STAIRS)
+        ).build(consumer, Mekanism.rl(basePath + "brick_stairs_to_polished"));
+        //Tuff Brick Slabs -> Polished Tuff Slabs
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(Blocks.TUFF_BRICK_SLAB),
+              new ItemStack(Blocks.POLISHED_TUFF_SLAB)
+        ).build(consumer, Mekanism.rl(basePath + "brick_slabs_to_polished"));
+        //Tuff Brick Walls -> Polished Tuff Walls
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(Blocks.TUFF_BRICK_WALL),
+              new ItemStack(Blocks.POLISHED_TUFF_WALL)
+        ).build(consumer, Mekanism.rl(basePath + "brick_wall_to_polished"));
+
+        //Chiseled Tuff -> Tuff Bricks
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(Blocks.CHISELED_TUFF),
+              new ItemStack(Blocks.TUFF_BRICKS)
+        ).build(consumer, Mekanism.rl(basePath + "chiseled_to_brick"));
+
+        //Chiseled Tuff -> Tuff
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(Blocks.TUFF),
+              new ItemStack(Blocks.CHISELED_TUFF)
+        ).build(consumer, Mekanism.rl(basePath + "to_chiseled"));
+        //Tuff Stairs -> Tuff Brick Stairs
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(Blocks.TUFF_BRICK_STAIRS),
+              new ItemStack(Blocks.TUFF_STAIRS)
+        ).build(consumer, Mekanism.rl(basePath + "stairs_to_brick"));
+        //Tuff Slabs -> Tuff Brick Slabs
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(Blocks.TUFF_BRICK_SLAB),
+              new ItemStack(Blocks.TUFF_SLAB)
+        ).build(consumer, Mekanism.rl(basePath + "slab_to_brick"));
+        //Tuff Walls -> Tuff Brick Walls
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(Blocks.TUFF_WALL),
+              new ItemStack(Blocks.TUFF_BRICK_WALL)
+        ).build(consumer, Mekanism.rl(basePath + "wall_to_brick"));
     }
 
     private void addCrusherDeepslateRecipes(RecipeOutput consumer, String basePath) {

@@ -3,12 +3,14 @@ package mekanism.generators.common;
 import java.util.concurrent.CompletableFuture;
 import mekanism.common.BasePackMetadataGenerator;
 import mekanism.common.MekanismDataGenerator;
+import mekanism.common.PersistingDisabledProvidersProvider;
 import mekanism.generators.client.GeneratorsBlockStateProvider;
-import mekanism.generators.client.integration.GeneratorsEmiAliasProvider;
 import mekanism.generators.client.GeneratorsItemModelProvider;
 import mekanism.generators.client.GeneratorsLangProvider;
 import mekanism.generators.client.GeneratorsSoundProvider;
 import mekanism.generators.client.GeneratorsSpriteSourceProvider;
+import mekanism.generators.client.integration.emi.GeneratorsEmiAliasProvider;
+import mekanism.generators.client.integration.emi.GeneratorsEmiDefaults;
 import mekanism.generators.common.loot.GeneratorsLootProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
@@ -38,11 +40,14 @@ public class GeneratorsDataGenerator {
         gen.addProvider(event.includeClient(), new GeneratorsSpriteSourceProvider(output, existingFileHelper, lookupProvider));
         gen.addProvider(event.includeClient(), new GeneratorsItemModelProvider(output, existingFileHelper));
         gen.addProvider(event.includeClient(), new GeneratorsBlockStateProvider(output, existingFileHelper));
-        gen.addProvider(event.includeClient(), new GeneratorsEmiAliasProvider(output, lookupProvider));
         //Server side data generators
         gen.addProvider(event.includeServer(), new GeneratorsTagProvider(output, lookupProvider, existingFileHelper));
         gen.addProvider(event.includeServer(), new GeneratorsLootProvider(output, lookupProvider));
         gen.addProvider(event.includeServer(), new GeneratorsRecipeProvider(output, lookupProvider, existingFileHelper));
         gen.addProvider(event.includeServer(), new GeneratorsAdvancementProvider(output, lookupProvider, existingFileHelper));
+        //Data generator to help with persisting data when porting across MC versions when optional deps aren't updated yet
+        // DO NOT ADD OTHERS AFTER THIS ONE
+        PersistingDisabledProvidersProvider.addDisabledEmiProvider(event, lookupProvider, MekanismGenerators.MODID, () -> GeneratorsEmiAliasProvider::new,
+              () -> GeneratorsEmiDefaults::new);
     }
 }

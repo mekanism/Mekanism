@@ -11,7 +11,7 @@ public class CrTExampleRemoveRecipesComponent extends CrTBaseExampleRecipeCompon
 
     private final List<ResourceLocation> recipesToRemove = new ArrayList<>();
 
-    public CrTExampleRemoveRecipesComponent(BaseCrTExampleProvider exampleProvider, MekanismRecipeManager<?> recipeManager, ResourceLocation... recipeNames) {
+    public CrTExampleRemoveRecipesComponent(BaseCrTExampleProvider exampleProvider, MekanismRecipeManager<?, ?> recipeManager, ResourceLocation... recipeNames) {
         super(recipeManager);
         if (recipeNames == null || recipeNames.length == 0) {
             throw new IllegalArgumentException("No recipes to remove specified.");

@@ -73,11 +73,13 @@ public class FrequencyManager<FREQ extends Frequency> {
         }
     }
 
-    public static void tick() {
+    public static void tick(boolean tickingNormally) {
         if (!loaded) {
             load();
         }
-        managers.forEach(FrequencyManager::tickSelf);
+        for (FrequencyManager<?> manager : managers) {
+            manager.tickSelf(tickingNormally);
+        }
     }
 
     public static void reset() {
@@ -179,10 +181,10 @@ public class FrequencyManager<FREQ extends Frequency> {
         return frequencyType;
     }
 
-    private void tickSelf() {
+    private void tickSelf(boolean tickingNormally) {
         boolean dirty = false;
         for (FREQ freq : frequencies.values()) {
-            dirty |= freq.tick();
+            dirty |= freq.tick(tickingNormally);
         }
         if (dirty) {
             markDirty();

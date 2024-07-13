@@ -142,6 +142,7 @@ public class GuiTextField extends GuiElement {
 
     public GuiTextField setBackground(BackgroundType backgroundType) {
         this.backgroundType = backgroundType;
+        this.textField.setBordered(backgroundType == BackgroundType.DEFAULT);
         return this;
     }
 
@@ -201,8 +202,6 @@ public class GuiTextField extends GuiElement {
         return super.isValidClickButton(button) && super.mouseClicked(mouseX, mouseY, button);
     }
 
-    //TODO - 1.21: Figure out why Guis with text fields seem to still have issues with https://github.com/emilyploszaj/emi/issues/480 when other ones don't
-    // and it doesn't seem related to any of the code inside this draw background block
     @Override
     public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);

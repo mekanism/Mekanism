@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     {
-      "tag": "c:ingots/refined_obsidian"
+      "item": "mekanism:ingot_refined_obsidian"
     }
   ],
   "result": {

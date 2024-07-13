@@ -4,7 +4,7 @@
   "cookingtime": 200,
   "experience": 0.3,
   "ingredient": {
-    "tag": "c:dusts/uranium"
+    "item": "mekanism:dust_uranium"
   },
   "result": {
     "count": 1,

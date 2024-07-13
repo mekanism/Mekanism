@@ -3,6 +3,8 @@ package mekanism.common.config;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.BooleanSupplier;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.config.value.CachedBooleanValue;
 import mekanism.common.config.value.CachedConfigValue;
 import mekanism.common.config.value.CachedDoubleValue;
@@ -17,6 +19,7 @@ import mekanism.common.tier.FluidTankTier;
 import net.minecraft.SharedConstants;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.fml.config.ModConfig.Type;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.fluids.FluidType;
 
@@ -40,6 +43,8 @@ public class GeneralConfig extends BaseMekanismConfig {
     private static final String NUTRITIONAL_PASTE_CATEGORY = "nutritional_paste";
 
     private final ModConfigSpec configSpec;
+
+    public final BooleanSupplier enableAlphaWarning;
 
     public final CachedBooleanValue logPackets;
     public final CachedBooleanValue allowChunkloading;
@@ -74,6 +79,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedBooleanValue blacklistForge;
     public final CachedDoubleValue forgeConversionRate;
     public final CachedBooleanValue blacklistFluxNetworks;
+    public final CachedBooleanValue blacklistGrandPower;
     public final CachedLongValue FROM_H2;
     public final CachedLongValue maxEnergyPerSteam;
     //Radiation
@@ -132,6 +138,14 @@ public class GeneralConfig extends BaseMekanismConfig {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
         builder.comment("General Config. This config is synced from server to client.").push("general");
 
+        //Note: We only enable this config option in dev mode
+        if (FMLEnvironment.production) {
+            enableAlphaWarning = ConstantPredicates.ALWAYS_TRUE;
+        } else {
+            enableAlphaWarning = CachedBooleanValue.wrap(this, builder.comment("Display Mekanism's alpha warning when joining the game if Mekanism is currently in alpha. Dev mode only setting.")
+                  .define("alphaWarning", true));
+        }
+
         logPackets = CachedBooleanValue.wrap(this, builder.comment("Log Mekanism packet names. Debug setting.")
               .define("logPackets", false));
         allowChunkloading = CachedBooleanValue.wrap(this, builder.comment("Disable to make the anchor upgrade not do anything.")
@@ -170,9 +184,9 @@ public class GeneralConfig extends BaseMekanismConfig {
         builder.comment("Dynamic Tank Settings").push(DYNAMIC_TANK);
         int maxVolume = 18 * 18 * 18;
         dynamicTankFluidPerTank = CachedIntValue.wrap(this, builder.comment("Amount of fluid (mB) that each block of the dynamic tank contributes to the volume. Max = volume * fluidPerTank")
-              .defineInRange("fluidPerTank", 350_000, 1, Integer.MAX_VALUE / maxVolume));
+              .defineInRange("fluidPerTank", 350 * FluidType.BUCKET_VOLUME, 1, Integer.MAX_VALUE / maxVolume));
         dynamicTankChemicalPerTank = CachedLongValue.wrap(this, builder.comment("Amount of chemical (mB) that each block of the dynamic tank contributes to the volume. Max = volume * chemicalPerTank")
-              .defineInRange("chemicalPerTank", 16_000_000, 1, Long.MAX_VALUE / maxVolume));
+              .defineInRange("chemicalPerTank", 16_000 * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE / maxVolume));
         builder.pop();
 
         builder.comment("Auto Eject Settings").push(EJECT_CATEGORY);
@@ -201,10 +215,13 @@ public class GeneralConfig extends BaseMekanismConfig {
         blacklistForge = CachedBooleanValue.wrap(this, builder.comment("Disables Forge Energy (FE,RF,IF,uF,CF) power integration. Requires world restart (server-side option in SMP).")
               .worldRestart()
               .define("blacklistForge", false));
-        forgeConversionRate = CachedDoubleValue.wrap(this, builder.comment("Conversion multiplier from Forge Energy to Joules (FE * feConversionRate = Joules)").defineInRange("feConversionRate", 2.5, 0.0001, 1 / 0.0001));
+        forgeConversionRate = CachedDoubleValue.wrap(this, builder.comment("Conversion multiplier from Forge Energy to Joules (FE * feConversionRate = Joules)").defineInRange("feConversionRate", 2.5, 0.0001, 1 / 0.0001 /* Inverse of min positive value */));
         blacklistFluxNetworks = CachedBooleanValue.wrap(this, builder.comment("Disables Flux Networks higher throughput Forge Energy (FE,RF,IF,uF,CF) power integration. Requires world restart (server-side option in SMP). Note: Disabling Forge Energy integration also disables this.")
               .worldRestart()
               .define("blacklistFluxNetworks", false));
+        blacklistGrandPower = CachedBooleanValue.wrap(this, builder.comment("Disables Grand Power higher throughput Forge Energy (FE,RF,IF,uF,CF) power integration. Requires world restart (server-side option in SMP). Note: Disabling Forge Energy integration also disables this.")
+              .worldRestart()
+              .define("blacklistGrandPower", false));
         FROM_H2 = CachedLongValue.defineUnsigned(this, builder, "How much energy is produced per mB of Hydrogen, also affects Electrolytic Separator usage, Ethene burn rate and Gas generator energy capacity.",
               "HydrogenEnergyDensity", 200, 1);
         maxEnergyPerSteam = CachedLongValue.defineUnsigned(this, builder, "Maximum Joules per mB of Steam. Also affects Thermoelectric Boiler.",
@@ -223,7 +240,7 @@ public class GeneralConfig extends BaseMekanismConfig {
         radiationNegativeEffectsMinSeverity = CachedDoubleValue.wrap(this, builder.comment("Defines the minimum severity radiation dosage severity (scale of 0 to 1) for which negative effects can take place. Set to 1 to disable negative effects completely.")
               .defineInRange("negativeEffectsMinSeverity", 0.1D, 0, 1));
         radioactiveWasteBarrelMaxGas = CachedLongValue.wrap(this, builder.comment("Amount of gas (mB) that can be stored in a Radioactive Waste Barrel.")
-              .defineInRange("radioactiveWasteBarrelMaxGas", 512_000, 1, Long.MAX_VALUE));
+              .defineInRange("radioactiveWasteBarrelMaxGas", 512 * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE));
         radioactiveWasteBarrelProcessTicks = CachedIntValue.wrap(this, builder.comment("Number of ticks required for radioactive gas stored in a Radioactive Waste Barrel to decay radioactiveWasteBarrelDecayAmount mB.")
               .defineInRange("radioactiveWasteBarrelProcessTicks", SharedConstants.TICKS_PER_SECOND, 1, Integer.MAX_VALUE));
         radioactiveWasteBarrelDecayAmount = CachedLongValue.wrap(this, builder.comment("Number of mB of gas that decay every radioactiveWasteBarrelProcessTicks ticks when stored in a Radioactive Waste Barrel. Set to zero to disable decay all together. (Gases in the mekanism:waste_barrel_decay_blacklist tag will not decay).")
@@ -320,7 +337,7 @@ public class GeneralConfig extends BaseMekanismConfig {
 
         builder.comment("SPS Settings").push(SPS_CATEGORY);
         spsInputPerAntimatter = CachedIntValue.wrap(this, builder.comment("How much input gas (polonium) in mB must be processed to make 1 mB of antimatter. Input tank capacity is 2x this value.")
-              .defineInRange("inputPerAntimatter", 1_000, 1, Integer.MAX_VALUE));
+              .defineInRange("inputPerAntimatter", FluidType.BUCKET_VOLUME, 1, Integer.MAX_VALUE));
         spsOutputTankCapacity = CachedLongValue.wrap(this, builder.comment("Amount of output gas (mB, antimatter) that the SPS can store.")
               .defineInRange("outputTankCapacity", FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE));
         spsEnergyPerInput = CachedLongValue.defineUnsigned(this, builder, "Energy needed to process 1 mB of input (inputPerAntimatter * energyPerInput = energy to produce 1 mB of antimatter).",

@@ -43,10 +43,12 @@ import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleItem;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
+import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -58,8 +60,8 @@ public class TileEntityChemicalOxidizer extends TileEntityProgressMachine<ItemSt
           RecipeError.NOT_ENOUGH_OUTPUT_SPACE,
           RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
     );
-    public static final long MAX_GAS = 10_000;
-    public static final int BASE_TICKS_REQUIRED = 100;
+    public static final long MAX_GAS = 10 * FluidType.BUCKET_VOLUME;
+    public static final int BASE_TICKS_REQUIRED = 5 * SharedConstants.TICKS_PER_SECOND;
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded",
                                                                                         "getOutputFilledPercentage"}, docPlaceholder = "output tank")

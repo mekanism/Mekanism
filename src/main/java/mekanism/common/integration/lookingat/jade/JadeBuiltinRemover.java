@@ -1,9 +1,11 @@
 package mekanism.common.integration.lookingat.jade;
 
 import mekanism.api.SerializationConstants;
+import mekanism.common.entity.EntityRobit;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import snownee.jade.api.Accessor;
+import snownee.jade.api.EntityAccessor;
 import snownee.jade.api.IComponentProvider;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.JadeIds;
@@ -24,6 +26,9 @@ public class JadeBuiltinRemover<ACCESSOR extends Accessor<?>> implements ICompon
         if (accessor.getServerData().contains(SerializationConstants.MEK_DATA, Tag.TAG_LIST)) {
             tooltip.remove(JadeIds.UNIVERSAL_ENERGY_STORAGE);
             tooltip.remove(JadeIds.UNIVERSAL_FLUID_STORAGE);
+            if (accessor instanceof EntityAccessor entityAccessor && entityAccessor.getEntity() instanceof EntityRobit) {
+                tooltip.remove(JadeIds.MC_ENTITY_HEALTH);
+            }
         }
     }
 

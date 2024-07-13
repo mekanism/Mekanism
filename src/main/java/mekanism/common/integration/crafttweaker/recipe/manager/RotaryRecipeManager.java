@@ -6,6 +6,7 @@ import com.blamejared.crafttweaker.api.fluid.IFluidStack;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.basic.BasicRotaryRecipe;
 import mekanism.api.recipes.ingredients.GasStackIngredient;
+import mekanism.api.recipes.vanilla_input.RotaryRecipeInput;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
@@ -14,7 +15,7 @@ import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_ROTARY)
-public class RotaryRecipeManager extends MekanismRecipeManager<RotaryRecipe> {
+public class RotaryRecipeManager extends MekanismRecipeManager<RotaryRecipeInput, RotaryRecipe> {
 
     public static final RotaryRecipeManager INSTANCE = new RotaryRecipeManager();
 

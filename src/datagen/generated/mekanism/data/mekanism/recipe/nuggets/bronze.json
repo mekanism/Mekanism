@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     {
-      "tag": "c:ingots/bronze"
+      "item": "mekanism:ingot_bronze"
     }
   ],
   "result": {

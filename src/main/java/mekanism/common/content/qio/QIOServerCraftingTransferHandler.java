@@ -141,7 +141,7 @@ public class QIOServerCraftingTransferHandler {
                 return;
             }
         }
-        CraftingInput dummy = MekanismUtils.getCraftingInput(3, 3, recipeToTest, true);
+        CraftingInput dummy = MekanismUtils.getCraftingInput(3, 3, recipeToTest, true).input();
         if (!recipe.matches(dummy, player.level())) {
             Mekanism.logger.warn("Received transfer request from: {}, but source items aren't valid for the requested recipe: {}.", player, recipeID);
         } else if (!hasRoomToShuffle()) {

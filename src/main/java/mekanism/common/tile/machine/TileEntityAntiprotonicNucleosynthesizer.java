@@ -50,9 +50,11 @@ import mekanism.common.recipe.lookup.monitor.RecipeCacheLookupMonitor;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
+import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -66,8 +68,8 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
           RecipeError.NOT_ENOUGH_OUTPUT_SPACE,
           RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
     );
-    private static final int BASE_DURATION = 400;
-    public static final long MAX_GAS = 10_000;
+    private static final int BASE_DURATION = 20 * SharedConstants.TICKS_PER_SECOND;
+    public static final long MAX_GAS = 10 * FluidType.BUCKET_VOLUME;
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getInputChemical", "getInputChemicalCapacity", "getInputChemicalNeeded",
                                                                                         "getInputChemicalFilledPercentage"}, docPlaceholder = "input gas tank")

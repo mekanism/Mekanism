@@ -5,6 +5,7 @@ import mekanism.api.IConfigurable;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.providers.IBlockProvider;
+import mekanism.common.attachments.LockData;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
@@ -17,6 +18,7 @@ import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.slot.BinInventorySlot;
 import mekanism.common.lib.inventory.HandlerTransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tier.BinTier;
 import mekanism.common.tile.base.CapabilityTileEntity;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -27,6 +29,7 @@ import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -35,6 +38,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -56,6 +60,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
 
     public TileEntityBin(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
+        delaySupplier = NO_DELAY;
     }
 
     @Override
@@ -74,10 +79,6 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
 
     public BinTier getTier() {
         return tier;
-    }
-
-    public int getItemCount() {
-        return binSlot.getCount();
     }
 
     public BinInventorySlot getBinSlot() {
@@ -186,6 +187,21 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
         super.handleUpdateTag(tag, provider);
         NBTUtils.setCompoundIfPresent(tag, SerializationConstants.ITEM, nbt -> binSlot.deserializeNBT(provider, nbt));
+    }
+
+    @Override
+    protected void collectImplicitComponents(@NotNull DataComponentMap.Builder builder) {
+        //Note: In theory doing this before super doesn't matter, but we want to make sure that the lock is set before
+        // setting the data on the item just for good measure
+        builder.set(MekanismDataComponents.LOCK, LockData.create(binSlot.getLockStack()));
+        super.collectImplicitComponents(builder);
+    }
+
+    @Override
+    protected void applyImplicitComponents(@NotNull BlockEntity.DataComponentInput input) {
+        //Apply the lock before processing the stored data
+        binSlot.setLockStack(input.getOrDefault(MekanismDataComponents.LOCK, LockData.EMPTY).lock());
+        super.applyImplicitComponents(input);
     }
 
     //Methods relating to IComputerTile

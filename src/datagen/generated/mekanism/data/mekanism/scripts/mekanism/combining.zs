@@ -6,8 +6,8 @@
 
 // <recipetype:mekanism:combining>.addRecipe(name as string, mainInput as IIngredientWithAmount, extraInput as IIngredientWithAmount, output as IItemStack)
 
-<recipetype:mekanism:combining>.addRecipe("combining/bookshelf", (<item:minecraft:book>) * 3, (<tag:items:minecraft:planks>) * 6, <item:minecraft:bookshelf>);
-<recipetype:mekanism:combining>.addRecipe("combining/dark_prismarine", (<item:minecraft:prismarine_shard>) * 8, <tag:items:c:dyes/black>, <item:minecraft:dark_prismarine>);
+<recipetype:mekanism:combining>.addRecipe("combining/bookshelf", (<item:minecraft:book>) * 3, (<tag:item:minecraft:planks>) * 6, <item:minecraft:bookshelf>);
+<recipetype:mekanism:combining>.addRecipe("combining/dark_prismarine", (<item:minecraft:prismarine_shard>) * 8, <tag:item:c:dyes/black>, <item:minecraft:dark_prismarine>);
 
 /*
  * Removes two Combining Recipes:

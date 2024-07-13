@@ -169,5 +169,6 @@
   "item.mekanismtools.steel_sword": "Sabie din oţel",
   "item.mekanismtools.stone_paxel": "Paxel de piatră",
   "item.mekanismtools.wood_paxel": "Paxel din lemn",
+  "tag.item.c.tools.paxel": "Paxeli",
   "tooltip.mekanismtools.hp": "HP: %1$s"
 }

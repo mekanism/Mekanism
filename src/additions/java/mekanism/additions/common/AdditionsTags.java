@@ -100,6 +100,7 @@ public class AdditionsTags {
         private Entities() {
         }
 
+        public static final TagKey<EntityType<?>> BOGGED = commonTag("bogged");
         public static final TagKey<EntityType<?>> CREEPERS = commonTag("creepers");
         public static final TagKey<EntityType<?>> ENDERMEN = commonTag("endermen");
 

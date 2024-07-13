@@ -1,6 +1,5 @@
 {
   "remove": [
-    "mekanism:hazmat_pants",
     "mekanism:mekasuit_pants"
   ],
   "values": []

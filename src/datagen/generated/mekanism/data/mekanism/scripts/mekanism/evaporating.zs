@@ -2,7 +2,7 @@
 
 // <recipetype:mekanism:evaporating>.addRecipe(name as string, input as CTFluidIngredient, output as IFluidStack)
 
-<recipetype:mekanism:evaporating>.addRecipe("evaporate_lithium", <tag:fluids:c:lithium> * 10, <fluid:mekanism:chlorine>);
+<recipetype:mekanism:evaporating>.addRecipe("evaporate_lithium", <tag:fluid:c:lithium> * 10, <fluid:mekanism:chlorine>);
 
 //Removes the Evaporating Recipe for producing Lithium from Brine.
 

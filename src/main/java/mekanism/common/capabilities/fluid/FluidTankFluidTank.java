@@ -57,7 +57,8 @@ public class FluidTankFluidTank extends BasicFluidTank {
         } else {
             remainder = super.insert(stack, action.combine(!isCreative), automationType);
         }
-        if (!remainder.isEmpty()) {
+        //Ensure we have the same type of fluid stored as we failed to insert, in which case we want to try to insert to the one above
+        if (!remainder.isEmpty() && FluidStack.isSameFluidSameComponents(stored, remainder)) {
             //If we have any leftover check if we can send it to the tank that is above
             TileEntityFluidTank tileAbove = WorldUtils.getTileEntity(TileEntityFluidTank.class, this.tile.getLevel(), this.tile.getBlockPos().above());
             if (tileAbove != null) {

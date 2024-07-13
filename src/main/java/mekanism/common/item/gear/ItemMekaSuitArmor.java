@@ -9,6 +9,7 @@ import java.util.function.Consumer;
 import java.util.function.LongSupplier;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
+import mekanism.api.MekanismAPITags;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
@@ -27,8 +28,6 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.key.MekKeyHandler;
 import mekanism.client.key.MekanismKeyHandler;
 import mekanism.client.render.RenderPropertiesProvider;
-import mekanism.common.CommonPlayerTickHandler;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.attachments.IAttachmentAware;
 import mekanism.common.attachments.containers.ContainerType;
@@ -55,7 +54,6 @@ import mekanism.common.registries.MekanismDataMapTypes;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismModules;
-import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
@@ -71,10 +69,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.player.Inventory;
@@ -84,7 +79,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.Level;
@@ -92,15 +86,11 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
-import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContainerItem, IJetpackItem, ICustomCreativeTabContents, IAttachmentAware {
-
-    private static final AttributeModifier CREATIVE_FLIGHT_MODIFIER = new AttributeModifier(Mekanism.rl("mekasuit_gravitational_modulation"), 1D, Operation.ADD_VALUE);
-    private static final ItemAttributeModifiers.Entry CREATIVE_FLIGHT = new ItemAttributeModifiers.Entry(NeoForgeMod.CREATIVE_FLIGHT, CREATIVE_FLIGHT_MODIFIER, EquipmentSlotGroup.CHEST);
 
     //TODO: Expand this system so that modules can maybe define needed tanks?
     private final List<ChemicalTankSpec<Gas>> gasTankSpecs = new ArrayList<>();
@@ -404,16 +394,6 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         }
     }
 
-    @NotNull
-    @Override
-    public ItemAttributeModifiers getAttributeModifiers(@NotNull ItemStack stack) {
-        if (getEquipmentSlot() == EquipmentSlot.CHEST && CommonPlayerTickHandler.isGravitationalModulationReady(stack)) {
-            //TODO - 1.21: Figure out how to get flight working again:
-            // CREATIVE_FLIGHT
-        }
-        return super.getAttributeModifiers(stack);
-    }
-
     @Override
     public int getDefense() {
         return getMaterial().value().getDefense(getType());
@@ -437,22 +417,6 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     public static float getDamageAbsorbed(Player player, DamageSource source, float amount) {
-        return getDamageAbsorbed(player, source, amount, null);
-    }
-
-    public static boolean tryAbsorbAll(Player player, DamageSource source, float amount) {
-        List<Runnable> energyUsageCallbacks = new ArrayList<>(4);
-        if (getDamageAbsorbed(player, source, amount, energyUsageCallbacks) >= 1) {
-            //If we can fully absorb it, actually use the energy from the various pieces and then return that we absorbed it all
-            for (Runnable energyUsageCallback : energyUsageCallbacks) {
-                energyUsageCallback.run();
-            }
-            return true;
-        }
-        return false;
-    }
-
-    private static float getDamageAbsorbed(Player player, DamageSource source, float amount, @Nullable List<Runnable> energyUseCallbacks) {
         if (amount <= 0) {
             return 0;
         }
@@ -492,7 +456,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                 if (absorbRatio == null) {
                     //If we haven't looked up yet if we can absorb the damage type and if we can't
                     // stop checking if the armor is able to
-                    if (source.is(Tags.DamageTypes.IS_TECHNICAL) || !source.is(MekanismTags.DamageTypes.MEKASUIT_ALWAYS_SUPPORTED) && source.is(DamageTypeTags.BYPASSES_ARMOR)) {
+                    if (source.is(Tags.DamageTypes.IS_TECHNICAL) || !source.is(MekanismAPITags.DamageTypes.MEKASUIT_ALWAYS_SUPPORTED) && source.is(DamageTypeTags.BYPASSES_ARMOR)) {
                         break;
                     }
                     // Next lookup the ratio at which we can absorb the given damage type from the data map
@@ -529,13 +493,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         }
         for (FoundArmorDetails details : armorDetails) {
             //Use energy/or enqueue usage for each piece as needed
-            if (details.usageInfo.energyUsed != 0L) {
-                if (energyUseCallbacks == null) {
-                    details.energyContainer.extract(details.usageInfo.energyUsed, Action.EXECUTE, AutomationType.MANUAL);
-                } else {
-                    energyUseCallbacks.add(details);
-                }
-            }
+            details.drainEnergy();
         }
         return Math.min(ratioAbsorbed, 1);
     }
@@ -573,7 +531,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         return 0;
     }
 
-    private static class FoundArmorDetails implements Runnable {
+    private static class FoundArmorDetails {
 
         private final IEnergyContainer energyContainer;
         private final EnergyUsageInfo usageInfo;
@@ -585,8 +543,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
             this.armor = armor;
         }
 
-        @Override
-        public void run() {
+        public void drainEnergy() {
             energyContainer.extract(usageInfo.energyUsed, Action.EXECUTE, AutomationType.MANUAL);
         }
     }

@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     {
-      "tag": "c:fuels/block/bio"
+      "item": "mekanism:block_bio_fuel"
     }
   ],
   "result": {

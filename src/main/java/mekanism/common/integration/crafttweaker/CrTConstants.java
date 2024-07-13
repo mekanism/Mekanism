@@ -67,6 +67,19 @@ public class CrTConstants {
     public static final String CLASS_PIGMENT_STACK_INGREDIENT = CLASS_CHEMICAL_STACK_INGREDIENT + ".PigmentStackIngredient";
     public static final String CLASS_SLURRY_STACK_INGREDIENT = CLASS_CHEMICAL_STACK_INGREDIENT + ".SlurryStackIngredient";
 
+    public static final String CLASS_VANILLA_INPUT_BI_CHEMICAL = "mods." + Mekanism.MODID + ".recipe.input.BiChemical";
+    public static final String CLASS_VANILLA_INPUT_CHEMICAL = "mods." + Mekanism.MODID + ".recipe.input.Chemical";
+    public static final String CLASS_VANILLA_INPUT_FLUID_CHEMICAL = "mods." + Mekanism.MODID + ".recipe.input.FluidChemical";
+    public static final String CLASS_VANILLA_INPUT_FLUID = "mods." + Mekanism.MODID + ".recipe.input.Fluid";
+    public static final String CLASS_VANILLA_INPUT_ITEM_CHEMICAL = "mods." + Mekanism.MODID + ".recipe.input.ItemChemical";
+    public static final String CLASS_VANILLA_INPUT_REACTION = "mods." + Mekanism.MODID + ".recipe.input.Reaction";
+    public static final String CLASS_VANILLA_INPUT_ROTARY = "mods." + Mekanism.MODID + ".recipe.input.Rotary";
+    public static final String CLASS_VANILLA_INPUT_SINGLE_BOXED = "mods." + Mekanism.MODID + ".recipe.input.SingleBoxedChemical";
+    public static final String CLASS_VANILLA_INPUT_SINGLE_CHEMICAL = "mods." + Mekanism.MODID + ".recipe.input.SingleChemical";
+    public static final String CLASS_VANILLA_INPUT_SINGLE_FLUID_CHEMICAL = "mods." + Mekanism.MODID + ".recipe.input.SingleFluidChemical";
+    public static final String CLASS_VANILLA_INPUT_SINGLE_FLUID = "mods." + Mekanism.MODID + ".recipe.input.SingleFluid";
+    public static final String CLASS_VANILLA_INPUT_SINGLE_ITEM_CHEMICAL = "mods." + Mekanism.MODID + ".recipe.input.SingleItemChemical";
+
     public static final String CLASS_RECIPE_MANAGER = "mods." + Mekanism.MODID + ".recipe.manager.MekanismRecipe";
     public static final String CLASS_RECIPE_MANAGER_ITEM_STACK_TO_ITEM_STACK = "mods." + Mekanism.MODID + ".recipe.manager.ItemStackToItemStack";
     public static final String CLASS_RECIPE_MANAGER_CRUSHING = CLASS_RECIPE_MANAGER_ITEM_STACK_TO_ITEM_STACK + ".Crushing";

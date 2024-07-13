@@ -22,18 +22,18 @@ the potential for us making breaking changes where APIs may change slightly or h
 changes. For this reason we do not recommend including Mekanism in any "large" packs that players may expect
 things to work properly/upgrade safely from one version to the next.
 
-We have not yet had the chance to go through and fully integrate with all of vanilla's new features,
-recipes, blocks, entities, or even things like the tickrate command. Additionally, there is a handful
-of things that we haven't finished porting yet.
+~~We have not yet had the chance to go through and fully integrate with all of vanilla's new features,
+recipes, blocks, entities, or even things like the tickrate command.~~ (Previous Sentence Fixed 10.6.4)
+Additionally, there is a handful of things that we haven't finished porting yet.
 
 ## Known Bugs/Things that aren't done being ported yet ##
 - Options in the Module Tweaker that have side effects don't currently have those side effects displayed
-- Resistive Heaters do not keep their set Energy Usage when breaking and placing again
-- Bins forget if they are locked and what they are locked too if broken and placed
 - When breaking and placing blocks that have fluid item input slots, they do not persist whether the item was actively being drained or whether it was being filled
-- The QIO Dashboard does not persist items stored in crafting windows when broken
-- The Portable QIO Dashboard's Crafting windows do not work at all. DO NOT TRY TO USE THEM
-- The Gravitational Modulation Unit does not currently provide flight
+- Fixed (10.6.2): The Gravitational Modulation Unit does not currently provide flight
+- Fixed (10.6.2): Resistive Heaters do not keep their set Energy Usage when breaking and placing again
+- Fixed (10.6.2): Bins forget if they are locked and what they are locked too if broken and placed
+- Fixed (10.6.2): The QIO Dashboard does not persist items stored in crafting windows when broken
+- Fixed (10.6.2): The Portable QIO Dashboard's Crafting windows do not work at all. DO NOT TRY TO USE THEM
 - Probably many more things as we have done barely any testing so far
 
 ## Configuration ##
@@ -86,7 +86,7 @@ dependencies {
 Add the following to your `gradle.properties` file (see [Maven](https://modmaven.dev/mekanism/Mekanism/) for the list of available versions):
 
 ```properties
-mekanism_version=1.21-10.6.0.44
+mekanism_version=1.21-10.6.5.52
 ```
 
 # Credits #

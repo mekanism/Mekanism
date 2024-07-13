@@ -30,6 +30,7 @@ import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.WorldUtils;
+import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -129,7 +130,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                                 //Insert failed; increment the backoff and calculate delay. Note that we cap retries
                                 // at a max of 40 ticks (2 seconds), which would be 4 consecutive retries
                                 delayCount++;
-                                delay = Math.min(40, (int) Math.exp(delayCount));
+                                delay = Math.min(2 * SharedConstants.TICKS_PER_SECOND, (int) Math.exp(delayCount));
                             } else {
                                 //If the insert succeeded, remove the inserted count and try again for another 10 ticks
                                 response.useAll();
@@ -253,7 +254,8 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
 
                 if (!deletes.isEmpty() || !needsSync.isEmpty()) {
                     //Notify clients, so that we send the information before we start clearing our lists
-                    PacketUtils.sendToAllTracking(PacketTransporterBatch.create(pos, deletes, needsSync), getTransmitterTile());
+                    //Note: We have to copy needsSync so that it still has values when we clear the pending sync packets
+                    PacketUtils.sendToAllTracking(PacketTransporterBatch.create(pos, deletes, new Int2ObjectOpenHashMap<>(needsSync)), getTransmitterTile());
                     // Now remove any entries from transit that have been deleted
                     OfInt ofInt = deletes.iterator();
                     while (ofInt.hasNext()) {

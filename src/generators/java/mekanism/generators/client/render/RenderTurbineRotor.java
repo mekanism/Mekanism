@@ -10,7 +10,6 @@ import mekanism.generators.client.model.ModelTurbine;
 import mekanism.generators.common.GeneratorsProfilerConstants;
 import mekanism.generators.common.content.turbine.TurbineMultiblockData;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
@@ -47,7 +46,7 @@ public class RenderTurbineRotor extends ModelTileEntityRenderer<TileEntityTurbin
             return;
         }
         int baseIndex = tile.getPosition() * 2;
-        if (!Minecraft.getInstance().isPaused()) {
+        if (isTickingNormally(tile)) {
             UUID multiblockUUID = tile.getMultiblockUUID();
             if (multiblockUUID != null && TurbineMultiblockData.clientRotationMap.containsKey(multiblockUUID)) {
                 float rotateSpeed = TurbineMultiblockData.clientRotationMap.getFloat(multiblockUUID) * BASE_SPEED;

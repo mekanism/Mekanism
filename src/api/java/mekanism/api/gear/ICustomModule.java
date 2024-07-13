@@ -19,7 +19,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
-import net.neoforged.neoforge.common.ToolAction;
+import net.neoforged.neoforge.common.ItemAbility;
+import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -195,6 +196,17 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
     }
 
     /**
+     * Called when this module is enabled to modify the attributes of the item this module is installed on. (MekaSuit or Meka-Tool)
+     *
+     * @param module Module instance.
+     * @param event  Event that provides helper to use to modify the attributes on the stack.
+     *
+     * @since 10.6.3
+     */
+    default void adjustAttributes(IModule<MODULE> module, ItemAttributeModifierEvent event) {
+    }
+
+    /**
      * Called when this module is added to an item.
      * <p>
      * Due to the way {@link net.minecraft.core.component.DataComponentType data components} work, the instance of the {@link ICustomModule} that this method gets called
@@ -274,14 +286,14 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
     }
 
     /**
-     * Called to check if this module allows the Meka-Tool to perform a specific {@link ToolAction}.
+     * Called to check if this module allows the Meka-Tool to perform a specific {@link net.neoforged.neoforge.common.ItemAbility}.
      *
      * @param module          Module instance.
      * @param moduleContainer The container this module is part of.
      * @param stack           The stack this module is installed on.
-     * @param action          Tool action to check.
+     * @param ability         Item ability to check.
      */
-    default boolean canPerformAction(IModule<MODULE> module, IModuleContainer moduleContainer, ItemStack stack, ToolAction action) {
+    default boolean canPerformAction(IModule<MODULE> module, IModuleContainer moduleContainer, ItemStack stack, ItemAbility ability) {
         return false;
     }
 

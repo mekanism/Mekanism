@@ -16,6 +16,7 @@ import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.TextComponentUtil;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.item.interfaces.IJetpackItem.JetpackMode;
@@ -24,6 +25,7 @@ import mekanism.common.util.StorageUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.player.Player;
@@ -32,9 +34,9 @@ import net.minecraft.world.item.ItemStack;
 @ParametersAreNotNullByDefault
 public record ModuleJetpackUnit(JetpackMode mode, ThrustMultiplier thrustMultiplier, ThrustMultiplier hoverThrustMultiplier) implements ICustomModule<ModuleJetpackUnit> {
 
-    public static final String JETPACK_MODE = "jetpack_mode";
-    public static final String JETPACK_MULT = "jetpack_mult";
-    public static final String JETPACK_HOVER_MULT = "jetpack_mult.hover";
+    public static final ResourceLocation JETPACK_MODE = Mekanism.rl("jetpack_mode");
+    public static final ResourceLocation JETPACK_MULT = Mekanism.rl("jetpack_mult");
+    public static final ResourceLocation JETPACK_HOVER_MULT = Mekanism.rl("jetpack_mult.hover");
 
     public ModuleJetpackUnit(IModule<ModuleJetpackUnit> module) {
         this(module.<JetpackMode>getConfigOrThrow(JETPACK_MODE).get(), module.<ThrustMultiplier>getConfigOrThrow(JETPACK_MULT).get(), module.<ThrustMultiplier>getConfigOrThrow(JETPACK_HOVER_MULT).get());

@@ -68,13 +68,6 @@ public abstract class JsonChemicalBuilder<CHEMICAL extends Chemical<CHEMICAL>, B
     }
 
     /**
-     * Marks that this chemical will be hidden in JEI, and not included in the preset of filled chemical tanks.
-     */
-    public THING_BUILDER hidden(boolean hidden) {
-        return hidden ? baseData(ChemicalBuilder::hidden) : self();
-    }
-
-    /**
      * Adds a {@link ChemicalAttribute} to the set of attributes this chemical has.
      *
      * @param attribute Attribute to add.

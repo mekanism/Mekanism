@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.function.LongSupplier;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
+import mekanism.api.MekanismAPITags;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.FloatSupplier;
@@ -18,7 +19,6 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.IBlastingItem;
 import mekanism.common.content.gear.mekasuit.ModuleGravitationalModulatingUnit;
 import mekanism.common.content.gear.mekasuit.ModuleHydraulicPropulsionUnit;
-import mekanism.common.content.gear.mekasuit.ModuleHydrostaticRepulsorUnit;
 import mekanism.common.content.gear.mekasuit.ModuleLocomotiveBoostingUnit;
 import mekanism.common.item.gear.ItemFreeRunners;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
@@ -27,15 +27,16 @@ import mekanism.common.item.gear.ItemScubaTank;
 import mekanism.common.item.interfaces.IJetpackItem;
 import mekanism.common.item.interfaces.IJetpackItem.JetpackMode;
 import mekanism.common.lib.radiation.RadiationManager;
+import mekanism.common.registries.MekanismDamageTypes;
 import mekanism.common.registries.MekanismGameEvents;
 import mekanism.common.registries.MekanismModules;
-import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -46,21 +47,16 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.common.NeoForgeMod;
-import net.neoforged.neoforge.event.entity.living.LivingAttackEvent;
+import net.neoforged.neoforge.common.damagesource.DamageContainer;
+import net.neoforged.neoforge.event.entity.EntityInvulnerabilityCheckEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEvent.LivingJumpEvent;
 import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
-import net.neoforged.neoforge.event.entity.living.LivingHurtEvent;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.BreakSpeed;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import org.jetbrains.annotations.Nullable;
 
 public class CommonPlayerTickHandler {
-
-    /**
-     * From {@link LivingEntity#calculateFallDamage(float, float)}, distance above this amount causes fall damage
-     */
-    private static final float MIN_FALL_HURT = 3.0F;
 
     public static boolean isOnGroundOrSleeping(Player player) {
         return player.onGround() || player.isSleeping() || player.getAbilities().flying;
@@ -86,14 +82,9 @@ public class CommonPlayerTickHandler {
         return hydraulic != null ? hydraulic.getCustomInstance().getStepHeight() : 0F;
     }
 
-    public static float getSwimBoost(Player player) {
-        ItemStack legs = player.getItemBySlot(EquipmentSlot.LEGS);
-        IModule<ModuleHydrostaticRepulsorUnit> swimModule = IModuleHelper.INSTANCE.getIfEnabled(legs, MekanismModules.HYDROSTATIC_REPULSOR_UNIT);
-        return swimModule != null && swimModule.getCustomInstance().isSwimBoost(swimModule, legs, player) ? 1 : 0;
-    }
-
     @SubscribeEvent
     public void onTick(PlayerTickEvent.Post event) {
+        //Note: Player's can't be frozen with the tick rate manager, so we don't have to check it here
         if (!event.getEntity().level().isClientSide()) {
             tickEnd(event.getEntity());
         }
@@ -101,7 +92,6 @@ public class CommonPlayerTickHandler {
 
     private void tickEnd(Player player) {
         Mekanism.playerState.updateStepAssist(player);
-        Mekanism.playerState.updateSwimBoost(player);
         if (player instanceof ServerPlayer serverPlayer) {
             RadiationManager.get().tickServer(serverPlayer);
         }
@@ -150,19 +140,31 @@ public class CommonPlayerTickHandler {
         }
     }
 
-    public static boolean isGravitationalModulationReady(ItemStack stack) {
-        IModule<ModuleGravitationalModulatingUnit> module = IModuleHelper.INSTANCE.getIfEnabled(stack, MekanismModules.GRAVITATIONAL_MODULATING_UNIT);
-        return module != null && module.hasEnoughEnergy(stack, MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation);
-    }
-
     public static boolean isGravitationalModulationOn(Player player) {
-        return ModuleGravitationalModulatingUnit.shouldProcess(player) && isGravitationalModulationReady(player.getItemBySlot(EquipmentSlot.CHEST));
+        if (ModuleGravitationalModulatingUnit.shouldProcess(player)) {
+            ItemStack stack = player.getItemBySlot(EquipmentSlot.CHEST);
+            IModule<ModuleGravitationalModulatingUnit> module = IModuleHelper.INSTANCE.getIfEnabled(stack, MekanismModules.GRAVITATIONAL_MODULATING_UNIT);
+            return module != null && module.hasEnoughEnergy(stack, MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation);
+        }
+        return false;
     }
 
     @SubscribeEvent
-    public void onEntityAttacked(LivingAttackEvent event) {
+    public void checkEntityInvulnerability(EntityInvulnerabilityCheckEvent event) {
+        if (!event.isInvulnerable() && event.getEntity() instanceof LivingEntity entity) {
+            if (event.getSource().is(MekanismDamageTypes.RADIATION.key())) {
+                //Note: As we only enter this block if it isn't invulnerable, there is no chance that this call makes it go from invulnerable to not
+                event.setInvulnerable(entity.getType().is(MekanismAPITags.Entities.MEK_RADIATION_IMMUNE));
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onEntityAttacked(LivingIncomingDamageEvent event) {
         LivingEntity entity = event.getEntity();
-        if (event.getAmount() <= 0 || !entity.isAlive()) {
+        DamageContainer damageContainer = event.getContainer();
+        float damage = damageContainer.getNewDamage();
+        if (damage <= 0 || !entity.isAlive()) {
             //If some mod does weird things and causes the damage value to be negative or zero then exit
             // as our logic assumes there is actually damage happening and can crash if someone tries to
             // use a negative number as the damage value. We also check to make sure that we don't do
@@ -172,8 +174,9 @@ public class CommonPlayerTickHandler {
             // entity can't take damage while dead
             return;
         }
+        DamageSource source = damageContainer.getSource();
         //Gas Mask checks
-        if (event.getSource().is(MekanismTags.DamageTypes.IS_PREVENTABLE_MAGIC)) {
+        if (source.is(MekanismAPITags.DamageTypes.IS_PREVENTABLE_MAGIC)) {
             ItemStack headStack = entity.getItemBySlot(EquipmentSlot.HEAD);
             if (!headStack.isEmpty() && headStack.getItem() instanceof ItemScubaMask) {
                 ItemStack chestStack = entity.getItemBySlot(EquipmentSlot.CHEST);
@@ -184,47 +187,37 @@ public class CommonPlayerTickHandler {
             }
         }
         if (entity instanceof Player player) {
-            if (ItemMekaSuitArmor.tryAbsorbAll(player, event.getSource(), event.getAmount())) {
-                event.setCanceled(true);
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public void onLivingHurt(LivingHurtEvent event) {
-        LivingEntity entity = event.getEntity();
-        if (event.getAmount() <= 0 || !entity.isAlive()) {
-            //If some mod does weird things and causes the damage value to be negative or zero then exit
-            // as our logic assumes there is actually damage happening and can crash if someone tries to
-            // use a negative number as the damage value. We also check to make sure that we don't do
-            // anything if the entity is dead as living attack is still fired when the entity is dead
-            // for things like fall damage if the entity dies before hitting the ground, and then energy
-            // would be depleted regardless if keep inventory is on even if no damage was stopped as the
-            // entity can't take damage while dead. While living hurt is not fired, we catch this case
-            // just in case anyway because it is a simple boolean check and there is no guarantee that
-            // other mods may not be firing the event manually even when the entity is dead
-            return;
-        }
-        if (entity instanceof Player player) {
-            float ratioAbsorbed = ItemMekaSuitArmor.getDamageAbsorbed(player, event.getSource(), event.getAmount());
+            //TODO - 1.21: Should we rewrite this to try and take advantage of the new reduction system? It would be kind of nice to move this to the
+            // spot that reduction from armor happens. Though then the base armor reduction will apply before our energy based reduction
+            // Is that fine? Maybe it is better, or maybe it is worse from a balance standpoint
+            float ratioAbsorbed = ItemMekaSuitArmor.getDamageAbsorbed(player, damageContainer.getSource(), damage);
             if (ratioAbsorbed > 0) {
-                float damageRemaining = event.getAmount() * Math.max(0, 1 - ratioAbsorbed);
+                float damageRemaining = damage * Math.max(0, 1 - ratioAbsorbed);
                 if (damageRemaining <= 0) {
                     event.setCanceled(true);
                 } else {
-                    event.setAmount(damageRemaining);
+                    damageContainer.setNewDamage(damageRemaining);
                 }
             }
         }
     }
 
+    /**
+     * Based on the values and calculations that happen in {@link LivingEntity#calculateFallDamage(float, float)}
+     */
     @SubscribeEvent
     public void livingFall(LivingFallEvent event) {
-        float fallDamage = Math.max(event.getDistance() - MIN_FALL_HURT, 0);
-        if (fallDamage <= Mth.EPSILON) {
+        LivingEntity entity = event.getEntity();
+        float safeFallDistance = (float) entity.getAttributeValue(Attributes.SAFE_FALL_DISTANCE);
+        float fallDistance = Math.max(event.getDistance() - safeFallDistance, 0);
+        if (fallDistance <= Mth.EPSILON) {
             return;
         }
-        LivingEntity entity = event.getEntity();
+        double damageMultiplier = event.getDamageMultiplier() * entity.getAttributeValue(Attributes.FALL_DAMAGE_MULTIPLIER);
+        int fallDamage = Mth.ceil(fallDistance * damageMultiplier);
+        if (fallDamage <= 0) {//This may be the case for things like slime blocks that have a damage multiplier of zero
+            return;
+        }
         FallEnergyInfo info = getFallAbsorptionEnergyInfo(entity);
         if (info != null && info.container != null) {
             float absorption = info.damageRatio.getAsFloat();
@@ -236,16 +229,25 @@ public class CommonPlayerTickHandler {
                 // or how small the amount to absorb is
                 ratioAbsorbed = absorption;
             } else {
-                ratioAbsorbed = absorption * (info.container.extract(energyRequirement, Action.EXECUTE, AutomationType.MANUAL) / amount);
+                long extracted = info.container.extract(energyRequirement, Action.EXECUTE, AutomationType.MANUAL);
+                ratioAbsorbed = (float) (absorption * ((double) extracted / energyRequirement));
             }
             if (ratioAbsorbed > 0) {
                 float damageRemaining = fallDamage * Math.max(0, 1 - ratioAbsorbed);
                 if (damageRemaining <= Mth.EPSILON) {
                     event.setCanceled(true);
-                    SoundType soundtype = entity.getBlockStateOn().getSoundType(entity.level(), entity.getOnPos(), entity);
-                    entity.playSound(soundtype.getStepSound(), soundtype.getVolume() * 0.15F, soundtype.getPitch());
+                    BlockPos posOn = entity.getOnPos();
+                    BlockState stateOn = entity.level().getBlockState(posOn);
+                    if (entity instanceof Player player) {
+                        player.playStepSound(posOn, stateOn);
+                    } else {
+                        //Fallback to default implementation
+                        SoundType soundtype = stateOn.getSoundType(entity.level(), posOn, entity);
+                        entity.playSound(soundtype.getStepSound(), soundtype.getVolume() * 0.15F, soundtype.getPitch());
+                    }
                 } else {
-                    event.setDistance(damageRemaining + MIN_FALL_HURT);
+                    float distanceRemaining = (float) (damageRemaining / damageMultiplier);
+                    event.setDistance(distanceRemaining + safeFallDistance);
                 }
             }
         }
@@ -323,15 +325,8 @@ public class CommonPlayerTickHandler {
         }
 
         //Gyroscopic stabilization check
-        if (IModuleHelper.INSTANCE.isEnabled(player.getItemBySlot(EquipmentSlot.LEGS), MekanismModules.GYROSCOPIC_STABILIZATION_UNIT)) {
-            if (player.isEyeInFluidType(NeoForgeMod.WATER_TYPE.value())) {
-                //TODO - 1.21: Is there a way we can instead get the attribute to just be equal to one?
-                speed /= (float) player.getAttributeValue(Attributes.SUBMERGED_MINING_SPEED);
-            }
-
-            if (!player.onGround()) {
-                speed *= 5.0F;
-            }
+        if (!player.onGround() && IModuleHelper.INSTANCE.isEnabled(player.getItemBySlot(EquipmentSlot.LEGS), MekanismModules.GYROSCOPIC_STABILIZATION_UNIT)) {
+            speed *= 5.0F;
         }
 
         event.setNewSpeed(speed);

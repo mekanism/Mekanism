@@ -6,6 +6,7 @@ import mekanism.common.util.NBTUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Mth;
 
 public class FissionReactorCache extends MultiblockCache<FissionReactorMultiblockData> {
 
@@ -40,7 +41,7 @@ public class FissionReactorCache extends MultiblockCache<FissionReactorMultibloc
     public void apply(HolderLookup.Provider provider, FissionReactorMultiblockData data) {
         super.apply(provider, data);
         data.reactorDamage = reactorDamage;
-        data.rateLimit = getRateLimit();
+        data.rateLimit = Mth.clamp(getRateLimit(), 0, data.getMaxBurnRate());
         data.burnRemaining = burnRemaining;
         data.partialWaste = partialWaste;
         //Update the force disabled state of it before setting it to active to make sure that we properly deny it being active,

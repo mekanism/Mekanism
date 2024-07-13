@@ -9,6 +9,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.Level.ExplosionInteraction;
 import net.minecraft.world.phys.HitResult;
@@ -20,6 +21,7 @@ public class EntityObsidianTNT extends PrimedTnt {
     public EntityObsidianTNT(EntityType<EntityObsidianTNT> type, Level world) {
         super(type, world);
         setFuse(MekanismAdditionsConfig.additions.obsidianTNTDelay.get());
+        setBlockState(AdditionsBlocks.OBSIDIAN_TNT.defaultState());
     }
 
     @Nullable
@@ -37,7 +39,6 @@ public class EntityObsidianTNT extends PrimedTnt {
         tnt.zo = z;
         tnt.owner = igniter;
         //End TNTEntity constructor
-        tnt.setFuse(MekanismAdditionsConfig.additions.obsidianTNTDelay.get());
         return tnt;
     }
 
@@ -56,7 +57,8 @@ public class EntityObsidianTNT extends PrimedTnt {
 
     @Override
     protected void explode() {
-        level().explode(this, getX(), getY() + (double) (getBbHeight() / 16.0F), getZ(), MekanismAdditionsConfig.additions.obsidianTNTBlastRadius.get(), ExplosionInteraction.TNT);
+        level().explode(this, Explosion.getDefaultDamageSource(level(), this), usedPortal ? USED_PORTAL_DAMAGE_CALCULATOR : null,
+              getX(), getY(0.0625), getZ(), MekanismAdditionsConfig.additions.obsidianTNTBlastRadius.get(), false, ExplosionInteraction.TNT);
     }
 
     @NotNull

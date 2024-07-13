@@ -5,6 +5,7 @@ import java.util.Map;
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.entity.EntityBalloon;
 import mekanism.additions.common.entity.EntityObsidianTNT;
+import mekanism.additions.common.entity.baby.EntityBabyBogged;
 import mekanism.additions.common.entity.baby.EntityBabyCreeper;
 import mekanism.additions.common.entity.baby.EntityBabyEnderman;
 import mekanism.additions.common.entity.baby.EntityBabySkeleton;
@@ -26,6 +27,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.AbstractSkeleton;
+import net.minecraft.world.entity.monster.Bogged;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.level.block.Block;
@@ -41,6 +43,7 @@ public class AdditionsEntityTypes {
 
     public static final EntityTypeDeferredRegister ENTITY_TYPES = new EntityTypeDeferredRegister(MekanismAdditions.MODID);
 
+    public static final MekanismDeferredHolder<EntityType<?>, EntityType<EntityBabyBogged>> BABY_BOGGED = ENTITY_TYPES.registerBasicMonster("baby_bogged", () -> baby(EntityBabyBogged::new, EntityType.BOGGED), Bogged::createAttributes);
     public static final MekanismDeferredHolder<EntityType<?>, EntityType<EntityBabyCreeper>> BABY_CREEPER = ENTITY_TYPES.registerBasicMonster("baby_creeper", () -> baby(EntityBabyCreeper::new, EntityType.CREEPER, 0.625F), Creeper::createAttributes);
     public static final MekanismDeferredHolder<EntityType<?>, EntityType<EntityBabyEnderman>> BABY_ENDERMAN = ENTITY_TYPES.registerBasicMonster("baby_enderman", () -> baby(EntityBabyEnderman::new, EntityType.ENDERMAN, 0.525F), EnderMan::createAttributes);
     public static final MekanismDeferredHolder<EntityType<?>, EntityType<EntityBabySkeleton>> BABY_SKELETON = ENTITY_TYPES.registerBasicMonster("baby_skeleton", () -> baby(EntityBabySkeleton::new, EntityType.SKELETON), AbstractSkeleton::createAttributes);

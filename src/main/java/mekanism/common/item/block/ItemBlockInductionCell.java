@@ -36,7 +36,7 @@ public class ItemBlockInductionCell extends ItemBlockTooltip<BlockTile<TileEntit
     }
 
     @Override
-    protected boolean exposesEnergyCap() {
+    protected boolean exposesEnergyCapOrTooltips() {
         return false;
     }
 }

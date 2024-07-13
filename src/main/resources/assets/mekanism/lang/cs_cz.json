@@ -932,6 +932,7 @@
   "sound_event.mekanism.tile.machine.antiprotonic_nucleosynthesizer": "Nukleosyntetizátor hučí",
   "sound_event.mekanism.tile.machine.industrial_alarm": "Zvuk alarmu",
   "sound_event.mekanism.tile.machine.laser": "Laser Hučí",
+  "tag.item.c.tools.wrench": "Montážní klíče",
   "temperature.mekanism.celsius.short": "C",
   "temperature.mekanism.fahrenheit.short": "F",
   "temperature.mekanism.kelvin.short": "K",

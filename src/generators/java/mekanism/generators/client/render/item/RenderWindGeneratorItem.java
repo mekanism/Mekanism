@@ -19,7 +19,7 @@ public class RenderWindGeneratorItem extends MekanismISTER {
 
     public static final RenderWindGeneratorItem RENDERER = new RenderWindGeneratorItem();
     private static final int SPEED = 16;
-    private static float lastTicksUpdated = 0;
+    private static int lastTicksUpdated = 0;
     private static int angle = 0;
     private ModelWindGenerator windGenerator;
 
@@ -31,14 +31,15 @@ public class RenderWindGeneratorItem extends MekanismISTER {
     @Override
     public void renderByItem(@NotNull ItemStack stack, @NotNull ItemDisplayContext displayContext, @NotNull PoseStack matrix, @NotNull MultiBufferSource renderer,
           int light, int overlayLight) {
-        float ticks = Minecraft.getInstance().levelRenderer.getTicks();
-        boolean paused = Minecraft.getInstance().isPaused();
-        if (!paused) {
+        Minecraft minecraft = Minecraft.getInstance();
+        boolean tickingNormally = MekanismRenderer.isRunningNormally();
+        if (tickingNormally) {
+            int ticks = Minecraft.getInstance().levelRenderer.getTicks();
             if (lastTicksUpdated != ticks) {
                 //Only update the angle if we are in a world and that world is not blacklisted
-                if (Minecraft.getInstance().level != null) {
+                if (minecraft.level != null) {
                     List<ResourceLocation> blacklistedDimensions = MekanismGeneratorsConfig.generators.windGenerationDimBlacklist.get();
-                    if (blacklistedDimensions.isEmpty() || !blacklistedDimensions.contains(Minecraft.getInstance().level.dimension().location())) {
+                    if (blacklistedDimensions.isEmpty() || !blacklistedDimensions.contains(minecraft.level.dimension().location())) {
                         angle = (angle + SPEED) % 360;
                     }
                 }
@@ -46,7 +47,7 @@ public class RenderWindGeneratorItem extends MekanismISTER {
             }
         }
         float renderAngle = angle;
-        if (!paused) {
+        if (tickingNormally) {
             renderAngle = (renderAngle + SPEED * MekanismRenderer.getPartialTick()) % 360;
         }
         matrix.pushPose();

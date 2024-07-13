@@ -153,6 +153,7 @@ public class MekanismDataComponents {
                 .networkSynchronized(RedstoneOutput.STREAM_CODEC)
     );
 
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> DEFAULT_MANUALLY_SELECTED = DATA_COMPONENTS.registerBoolean("default_manually_selected");
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> SCUBA_TANK_MODE = DATA_COMPONENTS.registerBoolean("scuba_tank_mode");
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> ELECTRIC_BOW_MODE = DATA_COMPONENTS.registerBoolean("electric_bow_mode");
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> BUCKET_MODE = DATA_COMPONENTS.registerBoolean("bucket_mode");
@@ -187,6 +188,8 @@ public class MekanismDataComponents {
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Integer>> DELAY = DATA_COMPONENTS.registerInt("delay");
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Long>> MIN_THRESHOLD = DATA_COMPONENTS.registerUnsignedLong("min_threshold");
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Long>> MAX_THRESHOLD = DATA_COMPONENTS.registerUnsignedLong("max_threshold");
+
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Long>> ENERGY_USAGE = DATA_COMPONENTS.registerUnsignedLong("energy_usage");
 
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Long>> LONG_AMOUNT = DATA_COMPONENTS.registerNonNegativeLong("long_amount");
     //Note: We can't directly use ItemStack as it needs to override equals and hashcode, but as our only use case converts it to a HashedItem, we just use that
@@ -283,7 +286,6 @@ public class MekanismDataComponents {
         return null;
     }
 
-    //TODO - 1.21: Re-evaluate this, and if we are keeping it add the default variant to the things it should be on
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<PortableDashboardContents>> QIO_DASHBOARD = DATA_COMPONENTS.simple("qio_dashboard",
           builder -> builder.persistent(PortableDashboardContents.CODEC)
                 .networkSynchronized(PortableDashboardContents.STREAM_CODEC)

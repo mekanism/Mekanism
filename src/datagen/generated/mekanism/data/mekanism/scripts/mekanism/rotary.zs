@@ -27,8 +27,8 @@ import mods.mekanism.api.ingredient.ChemicalStackIngredient.GasStackIngredient;
 //An alternate implementation of the above recipe are shown commented below. This implementation makes use of implicit casting to allow easier calling:
 // <recipetype:mekanism:rotary>.addRecipe("condensentrate_lithium", <gas:mekanism:lithium>, <fluid:mekanism:lithium>);
 
-<recipetype:mekanism:rotary>.addRecipe("decondensentrate_sulfur_dioxide", <tag:fluids:c:sulfur_dioxide> * 1, <gas:mekanism:sulfur_dioxide>);
-<recipetype:mekanism:rotary>.addRecipe("rotary_sulfur_trioxide", <tag:fluids:c:sulfur_trioxide> * 1, GasStackIngredient.from(<gas:mekanism:sulfur_trioxide>), <gas:mekanism:sulfur_trioxide>, <fluid:mekanism:sulfur_trioxide>);
+<recipetype:mekanism:rotary>.addRecipe("decondensentrate_sulfur_dioxide", <tag:fluid:c:sulfur_dioxide> * 1, <gas:mekanism:sulfur_dioxide>);
+<recipetype:mekanism:rotary>.addRecipe("rotary_sulfur_trioxide", <tag:fluid:c:sulfur_trioxide> * 1, GasStackIngredient.from(<gas:mekanism:sulfur_trioxide>), <gas:mekanism:sulfur_trioxide>, <fluid:mekanism:sulfur_trioxide>);
 //An alternate implementation of the above recipe are shown commented below. This implementation makes use of implicit casting to allow easier calling:
-// <recipetype:mekanism:rotary>.addRecipe("rotary_sulfur_trioxide", <tag:fluids:c:sulfur_trioxide> * 1, <gas:mekanism:sulfur_trioxide>, <gas:mekanism:sulfur_trioxide>, <fluid:mekanism:sulfur_trioxide>);
+// <recipetype:mekanism:rotary>.addRecipe("rotary_sulfur_trioxide", <tag:fluid:c:sulfur_trioxide> * 1, <gas:mekanism:sulfur_trioxide>, <gas:mekanism:sulfur_trioxide>, <fluid:mekanism:sulfur_trioxide>);
 

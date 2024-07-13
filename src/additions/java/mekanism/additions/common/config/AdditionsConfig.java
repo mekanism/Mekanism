@@ -49,6 +49,7 @@ public class AdditionsConfig extends BaseMekanismConfig {
               .defineInRange("VoicePort", 36_123, 1, 65_535));
 
         builder.comment("Config options regarding spawning of entities.").push("spawning");
+        addBabyTypeConfig(BabyType.BOGGED, builder, AdditionsEntityTypes.BABY_BOGGED, EntityType.BOGGED);
         addBabyTypeConfig(BabyType.CREEPER, builder, AdditionsEntityTypes.BABY_CREEPER, EntityType.CREEPER);
         addBabyTypeConfig(BabyType.ENDERMAN, builder, AdditionsEntityTypes.BABY_ENDERMAN, EntityType.ENDERMAN);
         addBabyTypeConfig(BabyType.SKELETON, builder, AdditionsEntityTypes.BABY_SKELETON, EntityType.SKELETON);

@@ -16,7 +16,6 @@ import mekanism.additions.common.registries.AdditionsStructureModifierSerializer
 import mekanism.additions.common.voice.VoiceServerManager;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IModModule;
-import mekanism.common.config.MekanismModConfig;
 import mekanism.common.lib.Version;
 import mekanism.common.registration.impl.ItemRegistryObject;
 import net.minecraft.core.BlockPos;
@@ -32,8 +31,6 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
@@ -67,7 +64,7 @@ public class MekanismAdditions implements IModModule {
         NeoForge.EVENT_BUS.addListener(this::serverStopping);
 
         modEventBus.addListener(this::commonSetup);
-        modEventBus.addListener(this::onConfigLoad);
+        modEventBus.addListener(MekanismAdditionsConfig::onConfigLoad);
         AdditionsDataComponents.DATA_COMPONENTS.register(modEventBus);
         AdditionsItems.ITEMS.register(modEventBus);
         AdditionsBlocks.BLOCKS.register(modEventBus);
@@ -156,14 +153,6 @@ public class MekanismAdditions implements IModModule {
         if (voiceManager != null) {
             voiceManager.stop();
             voiceManager = null;
-        }
-    }
-
-    private void onConfigLoad(ModConfigEvent configEvent) {
-        ModConfig config = configEvent.getConfig();
-        //Make sure it is for the same modid as us
-        if (config.getModId().equals(MODID) && config instanceof MekanismModConfig mekConfig) {
-            mekConfig.clearCache(configEvent);
         }
     }
 }

@@ -15,25 +15,32 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.listener.ConfigBasedCachedLongSupplier;
 import mekanism.common.content.gear.mekasuit.ModuleLocomotiveBoostingUnit.SprintBoost;
 import mekanism.common.registries.MekanismGameEvents;
+import mekanism.common.registries.MekanismItems;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EquipmentSlotGroup;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.common.NeoForgeMod;
+import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 
 @ParametersAreNotNullByDefault
 public record ModuleGravitationalModulatingUnit(SprintBoost speedBoost) implements ICustomModule<ModuleGravitationalModulatingUnit> {
 
+    private static final AttributeModifier CREATIVE_FLIGHT_MODIFIER = new AttributeModifier(Mekanism.rl("mekasuit_gravitational_modulation"), 1, Operation.ADD_VALUE);
     private static final ConfigBasedCachedLongSupplier BOOST_USAGE = new ConfigBasedCachedLongSupplier(
           () -> MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation.get() * 4,
           MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation
     );
     private static final ResourceLocation icon = MekanismUtils.getResource(ResourceType.GUI_HUD, "gravitational_modulation_unit.png");
     private static final Vec3 BOOST_VEC = new Vec3(0, 0, 1);
-    public static final String SPEED_BOOST = "speed_boost";
+    public static final ResourceLocation SPEED_BOOST = Mekanism.rl("speed_boost");
 
     public ModuleGravitationalModulatingUnit(IModule<ModuleGravitationalModulatingUnit> module) {
         this(module.<SprintBoost>getConfigOrThrow(SPEED_BOOST).get());
@@ -52,6 +59,14 @@ public record ModuleGravitationalModulatingUnit(SprintBoost speedBoost) implemen
     @Override
     public void changeMode(IModule<ModuleGravitationalModulatingUnit> module, Player player, IModuleContainer moduleContainer, ItemStack stack, int shift, boolean displayChangeMessage) {
         module.toggleEnabled(moduleContainer, stack, player, MekanismLang.MODULE_GRAVITATIONAL_MODULATION.translate());
+    }
+
+    @Override
+    public void adjustAttributes(IModule<ModuleGravitationalModulatingUnit> module, ItemAttributeModifierEvent event) {
+        ItemStack stack = event.getItemStack();
+        if (stack.is(MekanismItems.MEKASUIT_BODYARMOR) && module.hasEnoughEnergy(stack, MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation)) {
+            event.addModifier(NeoForgeMod.CREATIVE_FLIGHT, CREATIVE_FLIGHT_MODIFIER, EquipmentSlotGroup.CHEST);
+        }
     }
 
     @Override

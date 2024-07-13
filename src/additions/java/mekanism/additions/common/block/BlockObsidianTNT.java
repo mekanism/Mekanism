@@ -126,7 +126,7 @@ public class BlockObsidianTNT extends TntBlock implements IStateFluidLoggable {
         PrimedTnt tnt = EntityObsidianTNT.create(world, pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F, igniter);
         if (tnt != null) {
             world.addFreshEntity(tnt);
-            world.playSound(null, tnt.getX(), tnt.getY(), tnt.getZ(), SoundEvents.TNT_PRIMED, SoundSource.BLOCKS, 1.0F, 1.0F);
+            world.playSound(null, tnt.getX(), tnt.getY(), tnt.getZ(), SoundEvents.TNT_PRIMED, SoundSource.BLOCKS);
             return true;
         }
         return false;

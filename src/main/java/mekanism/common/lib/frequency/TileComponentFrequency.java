@@ -287,9 +287,13 @@ public class TileComponentFrequency implements ITileComponent {
     @Override
     public void addRemapEntries(List<DataComponentType<?>> remapEntries) {
         for (Map.Entry<FrequencyType<?>, FrequencyData> entry : nonSecurityFrequencies.entrySet()) {
-            DataComponentType<? extends FrequencyAware<?>> frequencyComponent = MekanismDataComponents.getFrequencyComponent(entry.getKey());
+            FrequencyType<?> type = entry.getKey();
+            DataComponentType<? extends FrequencyAware<?>> frequencyComponent = MekanismDataComponents.getFrequencyComponent(type);
             if (frequencyComponent != null && !remapEntries.contains(frequencyComponent)) {
                 remapEntries.add(frequencyComponent);
+            }
+            if (type == FrequencyType.QIO && !remapEntries.contains(MekanismDataComponents.COLOR.get())) {
+                remapEntries.add(MekanismDataComponents.COLOR.get());
             }
         }
     }
@@ -307,7 +311,9 @@ public class TileComponentFrequency implements ITileComponent {
             if (frequencyComponent != null) {
                 builder.set(frequencyComponent, new FrequencyAware<>((FREQ) frequencyData.selectedFrequency));
                 //TODO: Do we want to support multiple frequency types each having a colored frequency?
-                if (frequencyData.selectedFrequency instanceof IColorableFrequency colorableFrequency) {
+                // Currently we only really need the QIO to support it, as the other colorable frequency (teleporters)
+                // don't need the item to be aware of the color
+                if (type == FrequencyType.QIO && frequencyData.selectedFrequency instanceof IColorableFrequency colorableFrequency) {
                     builder.set(MekanismDataComponents.COLOR, colorableFrequency.getColor());
                 }
             }

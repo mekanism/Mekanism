@@ -4,30 +4,25 @@ import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
-import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.crafting.IShapedRecipe;
 
 @NothingNullByDefault
-public abstract class WrappedShapedRecipe implements CraftingRecipe, IShapedRecipe<CraftingInput> {
+public abstract class WrappedShapedRecipe extends ShapedRecipe {
 
     private final ShapedRecipe internal;
 
     protected WrappedShapedRecipe(ShapedRecipe internal) {
+        //Note: We override all uses and calls to pattern and result, so we can just pass null and empty to them
+        // Because pattern is AT'd to public however, we make use of it to pass it to super, in case another mod is querying the value
+        super(internal.getGroup(), internal.category(), internal.pattern, ItemStack.EMPTY, internal.showNotification());
         this.internal = internal;
     }
 
     public ShapedRecipe getInternal() {
         return internal;
-    }
-
-    @Override
-    public CraftingBookCategory category() {
-        return internal.category();
     }
 
     @Override
@@ -63,11 +58,6 @@ public abstract class WrappedShapedRecipe implements CraftingRecipe, IShapedReci
     @Override
     public boolean isSpecial() {
         return internal.isSpecial();
-    }
-
-    @Override
-    public String getGroup() {
-        return internal.getGroup();
     }
 
     @Override

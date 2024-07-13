@@ -11,6 +11,7 @@ import mekanism.api.gear.IModuleHelper;
 import mekanism.api.radial.RadialData;
 import mekanism.client.gui.GuiRadialSelector;
 import mekanism.client.key.MekKeyHandler;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.hud.MekanismStatusOverlay;
 import mekanism.client.render.lib.ScrollIncrementer;
 import mekanism.client.sound.GeigerSound;
@@ -127,6 +128,7 @@ public class ClientTickHandler {
     }
 
     public static void portableTeleport(Player player, InteractionHand hand, FrequencyIdentity identity) {
+        //TODO - 1.21: Handle and validate the delay takes place server side
         int delay = MekanismConfig.gear.portableTeleporterDelay.get();
         if (delay == 0) {
             PacketUtils.sendToServer(new PacketPortableTeleporterTeleport(hand, identity));
@@ -156,13 +158,16 @@ public class ClientTickHandler {
             shouldReset = false;
         }
 
-        if (minecraft.level != null && minecraft.player != null && !minecraft.isPaused()) {
-            HolidayManager.notify(Minecraft.getInstance().player);
+        if (minecraft.level != null && minecraft.player != null) {
+            boolean tickingNormally = MekanismRenderer.isRunningNormally();
+            HolidayManager.notify(minecraft.player);
 
             //Reboot player sounds if needed
             SoundHandler.restartSounds();
 
-            RadiationManager.get().tickClient(minecraft.player);
+            if (tickingNormally) {
+                RadiationManager.get().tickClient(minecraft.player);
+            }
 
             UUID playerUUID = minecraft.player.getUUID();
             // Update player's state for various items; this also automatically notifies server if something changed and
@@ -173,19 +178,22 @@ public class ClientTickHandler {
             Mekanism.playerState.setScubaMaskState(playerUUID, isScubaMaskOn(minecraft.player), true);
             Mekanism.playerState.setGravitationalModulationState(playerUUID, isGravitationalModulationOn(minecraft.player), true);
 
-            for (Iterator<Entry<Player, TeleportData>> iter = portableTeleports.entrySet().iterator(); iter.hasNext(); ) {
-                Entry<Player, TeleportData> entry = iter.next();
-                Player player = entry.getKey();
-                for (int i = 0; i < 100; i++) {
-                    double x = player.getX() + rand.nextDouble() - 0.5D;
-                    double y = player.getY() + rand.nextDouble() * 2 - 2D;
-                    double z = player.getZ() + rand.nextDouble() - 0.5D;
-                    minecraft.level.addParticle(ParticleTypes.PORTAL, x, y, z, 0, 1, 0);
-                }
-                TeleportData data = entry.getValue();
-                if (minecraft.level.getGameTime() == data.teleportTime) {
-                    PacketUtils.sendToServer(new PacketPortableTeleporterTeleport(data.hand, data.identity));
-                    iter.remove();
+            if (tickingNormally) {
+                //Note: If we aren't ticking normally we can skip adding the particles or checking if the time matches as we know the time hasn't changed
+                for (Iterator<Entry<Player, TeleportData>> iter = portableTeleports.entrySet().iterator(); iter.hasNext(); ) {
+                    Entry<Player, TeleportData> entry = iter.next();
+                    Player player = entry.getKey();
+                    for (int i = 0; i < 100; i++) {
+                        double x = player.getX() + rand.nextDouble() - 0.5D;
+                        double y = player.getY() + rand.nextDouble() * 2 - 2D;
+                        double z = player.getZ() + rand.nextDouble() - 0.5D;
+                        minecraft.level.addParticle(ParticleTypes.PORTAL, x, y, z, 0, 1, 0);
+                    }
+                    TeleportData data = entry.getValue();
+                    if (minecraft.level.getGameTime() == data.teleportTime) {
+                        PacketUtils.sendToServer(new PacketPortableTeleporterTeleport(data.hand, data.identity));
+                        iter.remove();
+                    }
                 }
             }
 
@@ -234,7 +242,7 @@ public class ClientTickHandler {
                 }
             }
 
-            if (MekanismConfig.client.enablePlayerSounds.get()) {
+            if (tickingNormally && MekanismConfig.client.enablePlayerSounds.get()) {
                 RadiationScale scale = RadiationManager.get().getClientScale();
                 if (scale != RadiationScale.NONE && !SoundHandler.radiationSoundMap.containsKey(scale)) {
                     GeigerSound sound = GeigerSound.create(minecraft.player, scale);

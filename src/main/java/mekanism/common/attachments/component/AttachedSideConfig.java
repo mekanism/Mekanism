@@ -103,7 +103,7 @@ public record AttachedSideConfig(Map<TransmissionType, LightConfigInfo> configIn
         Map<TransmissionType, LightConfigInfo> configInfo = new EnumMap<>(TransmissionType.class);
         configInfo.put(TransmissionType.ITEM, LightConfigInfo.TWO_INPUT_ITEM);
         configInfo.put(TransmissionType.PIGMENT, LightConfigInfo.TWO_INPUT_AND_OUT);
-        configInfo.put(TransmissionType.ENERGY, LightConfigInfo.INPUT_ONLY);
+        configInfo.put(TransmissionType.ENERGY, LightConfigInfo.INPUT_ONLY_NO_TOP);
         return new AttachedSideConfig(configInfo);
     });
 
@@ -220,10 +220,6 @@ public record AttachedSideConfig(Map<TransmissionType, LightConfigInfo> configIn
             if (existingData == fallback) {
                 throw new IllegalStateException("Expected there to be a side config for " + transmissionType.getTransmission() + " but there wasn't");
             }
-            config = fallback.configInfo.get(transmissionType);
-            if (config.sideConfig.isEmpty()) {
-                throw new IllegalStateException("Expected there to be a side config for " + transmissionType.getTransmission() + " but there wasn't");
-            }
         }
         return config;
     }
@@ -257,6 +253,7 @@ public record AttachedSideConfig(Map<TransmissionType, LightConfigInfo> configIn
         public static final LightConfigInfo RIGHT_OUTPUT = new LightConfigInfo(Map.of(RelativeSide.RIGHT, DataType.OUTPUT), true);
 
         public static final LightConfigInfo FRONT_OUT_EJECT_NO_TOP = without(FRONT_OUT_EJECT, RelativeSide.TOP);
+        public static final LightConfigInfo INPUT_ONLY_NO_TOP = without(INPUT_ONLY, RelativeSide.TOP);
 
         public static final LightConfigInfo INPUT_OUT_ALL = Util.make(() -> {
             Map<RelativeSide, DataType> sideConfig = new EnumMap<>(RelativeSide.class);

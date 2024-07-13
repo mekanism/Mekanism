@@ -478,8 +478,8 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
     }
 
     @Override
-    public boolean tick() {
-        boolean superDirty = super.tick();
+    public boolean tick(boolean tickingNormally) {
+        boolean superDirty = super.tick(tickingNormally);
 
         if (getSecurity() == SecurityMode.TRUSTED && !playersViewingItems.isEmpty()) {
             //TODO - 1.20.4: Only perform every so often?

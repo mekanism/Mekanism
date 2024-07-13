@@ -23,6 +23,7 @@ import mekanism.common.content.gear.Module;
 import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -38,7 +39,7 @@ public class GuiModuleScreen extends GuiScrollableElement {
 
     @Nullable
     private Module<?> currentModule;
-    private Map<String, MiniElement<?>> miniElements = new LinkedHashMap<>();
+    private Map<ResourceLocation, MiniElement<?>> miniElements = new LinkedHashMap<>();
     private int maxElements;
 
     public GuiModuleScreen(IGuiWrapper gui, int x, int y, Supplier<ItemStack> itemSupplier, Consumer<ModuleConfig<?>> saveCallback, ArmorPreview armorPreview) {
@@ -53,7 +54,7 @@ public class GuiModuleScreen extends GuiScrollableElement {
     }
 
     public void setModule(@Nullable Module<?> module) {
-        Map<String, MiniElement<?>> newElements = new LinkedHashMap<>();
+        Map<ResourceLocation, MiniElement<?>> newElements = new LinkedHashMap<>();
 
         if (module != null) {
             int startY = getStartY(module);
@@ -62,8 +63,8 @@ public class GuiModuleScreen extends GuiScrollableElement {
                     //Skip options that are force disabled by the config
                     continue;
                 }
-                Component description = TextComponentUtil.translate(Util.makeDescriptionId("module", module.getData().getRegistryName().withPath(configItem.name())));
-                String name = configItem.name();
+                Component description = TextComponentUtil.translate(Util.makeDescriptionId("module", configItem.name()));
+                ResourceLocation name = configItem.name();
                 MiniElement<?> element = switch (configItem) {
                     // Don't show the enabled option if this is enabled by default
                     case ModuleBooleanConfig config when !name.equals(ModuleConfig.ENABLED_KEY) || !module.getData().isNoDisable() ->

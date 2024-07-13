@@ -1,10 +1,13 @@
 package mekanism.additions.common.entity.baby;
 
 import mekanism.additions.common.registries.AdditionsEntityTypes;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.monster.Skeleton;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.LevelEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class EntityBabySkeleton extends Skeleton {
 
@@ -17,6 +20,13 @@ public class EntityBabySkeleton extends Skeleton {
     @Override
     public boolean isBaby() {
         return true;
+    }
+
+    @NotNull
+    @Override
+    public EntityDimensions getDefaultDimensions(@NotNull Pose pose) {
+        //Note: We already have the age scale factored into the dimensions
+        return getType().getDimensions();
     }
 
     @Override

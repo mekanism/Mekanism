@@ -8,7 +8,8 @@ import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.SlotType;
-import mekanism.client.recipe_viewer.jei.BaseRecipeCategory;
+import mekanism.client.recipe_viewer.RecipeViewerUtils;
+import mekanism.client.recipe_viewer.jei.HolderRecipeCategory;
 import mekanism.client.recipe_viewer.jei.MekanismJEI;
 import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -16,9 +17,11 @@ import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 
-public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory<RotaryRecipe> {
+public class RotaryCondensentratorRecipeCategory extends HolderRecipeCategory<RotaryRecipe> {
 
     private final boolean condensentrating;
     private final GuiGauge<?> gasGauge;
@@ -38,7 +41,8 @@ public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory<Rota
     }
 
     @Override
-    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RotaryRecipe recipe, @NotNull IFocusGroup focusGroup) {
+    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<RotaryRecipe> recipeHolder, @NotNull IFocusGroup focusGroup) {
+        RotaryRecipe recipe = recipeHolder.value();
         if (condensentrating) {
             if (recipe.hasGasToFluid()) {
                 initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.INPUT, gasGauge, recipe.getGasInput().getRepresentations());
@@ -48,5 +52,15 @@ public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory<Rota
             initFluid(builder, RecipeIngredientRole.INPUT, fluidGauge, recipe.getFluidInput().getRepresentations());
             initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, gasGauge, recipe.getGasOutputDefinition());
         }
+    }
+
+    @NotNull
+    @Override
+    public ResourceLocation getRegistryName(@NotNull RecipeHolder<RotaryRecipe> recipe) {
+        ResourceLocation baseId = super.getRegistryName(recipe);
+        if (condensentrating) {
+            return RecipeViewerUtils.synthetic(baseId, "condensentrating");
+        }
+        return RecipeViewerUtils.synthetic(baseId, "decondensentrating");
     }
 }

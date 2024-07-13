@@ -60,6 +60,7 @@ public class AdditionsLangProvider extends BaseLanguageProvider {
     }
 
     private void addItems() {
+        add(AdditionsItems.BABY_BOGGED_SPAWN_EGG, "Baby Bogged Spawn Egg");
         add(AdditionsItems.BABY_CREEPER_SPAWN_EGG, "Baby Creeper Spawn Egg");
         add(AdditionsItems.BABY_ENDERMAN_SPAWN_EGG, "Baby Enderman Spawn Egg");
         add(AdditionsItems.BABY_SKELETON_SPAWN_EGG, "Baby Skeleton Spawn Egg");
@@ -91,6 +92,7 @@ public class AdditionsLangProvider extends BaseLanguageProvider {
     }
 
     private void addEntities() {
+        addEntity(AdditionsEntityTypes.BABY_BOGGED, "Baby Bogged");
         addEntity(AdditionsEntityTypes.BABY_CREEPER, "Baby Creeper");
         addEntity(AdditionsEntityTypes.BABY_ENDERMAN, "Baby Enderman");
         addEntity(AdditionsEntityTypes.BABY_SKELETON, "Baby Skeleton");

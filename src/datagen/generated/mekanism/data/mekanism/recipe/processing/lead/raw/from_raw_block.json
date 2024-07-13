@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     {
-      "tag": "c:storage_blocks/raw_lead"
+      "item": "mekanism:block_raw_lead"
     }
   ],
   "result": {

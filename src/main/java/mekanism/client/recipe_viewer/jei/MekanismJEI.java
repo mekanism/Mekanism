@@ -38,7 +38,7 @@ import mekanism.client.recipe_viewer.jei.machine.FluidToFluidRecipeCategory;
 import mekanism.client.recipe_viewer.jei.machine.GasToGasRecipeCategory;
 import mekanism.client.recipe_viewer.jei.machine.ItemStackGasToItemStackRecipeCategory;
 import mekanism.client.recipe_viewer.jei.machine.ItemStackToEnergyRecipeCategory;
-import mekanism.client.recipe_viewer.jei.machine.ItemStackToFluidRecipeCategory;
+import mekanism.client.recipe_viewer.jei.machine.ItemStackToFluidOptionalItemRecipeCategory;
 import mekanism.client.recipe_viewer.jei.machine.ItemStackToGasRecipeCategory;
 import mekanism.client.recipe_viewer.jei.machine.ItemStackToInfuseTypeRecipeCategory;
 import mekanism.client.recipe_viewer.jei.machine.ItemStackToItemStackRecipeCategory;
@@ -279,7 +279,7 @@ public class MekanismJEI implements IModPlugin {
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void registerIngredientType(IModIngredientRegistration registration,
           Registry<CHEMICAL> registry, IIngredientType<STACK> ingredientType, ChemicalStackHelper<CHEMICAL, STACK> stackHelper) {
         List<STACK> types = registry.stream()
-              .filter(chemical -> !chemical.isEmptyType() && !chemical.isHidden())
+              .filter(chemical -> !chemical.isEmptyType())//Don't add the empty type. We will allow JEI to filter out any that are hidden from recipe viewers
               .map(chemical -> ChemicalUtil.<CHEMICAL, STACK>withAmount(chemical, FluidType.BUCKET_VOLUME))
               .toList();
         stackHelper.setColorHelper(registration.getColorHelper());
@@ -309,7 +309,7 @@ public class MekanismJEI implements IModPlugin {
         registry.addRecipeCategories(new RotaryCondensentratorRecipeCategory(guiHelper, false));
 
         registry.addRecipeCategories(new ItemStackToGasRecipeCategory(guiHelper, RecipeViewerRecipeType.OXIDIZING, false));
-        registry.addRecipeCategories(new ItemStackToFluidRecipeCategory(guiHelper, RecipeViewerRecipeType.NUTRITIONAL_LIQUIFICATION, false));
+        registry.addRecipeCategories(new ItemStackToFluidOptionalItemRecipeCategory(guiHelper, RecipeViewerRecipeType.NUTRITIONAL_LIQUIFICATION, false));
 
         registry.addRecipeCategories(new GasToGasRecipeCategory(guiHelper, RecipeViewerRecipeType.ACTIVATING));
         registry.addRecipeCategories(new GasToGasRecipeCategory(guiHelper, RecipeViewerRecipeType.CENTRIFUGING));

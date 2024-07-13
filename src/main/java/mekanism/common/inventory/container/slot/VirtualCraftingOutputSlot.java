@@ -161,4 +161,9 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
             tracker.accept(SyncableBoolean.create(() -> canCraft = craftingWindow.canViewRecipe(serverPlayer), value -> canCraft = value));
         }
     }
+
+    @Override
+    public boolean isFake() {
+        return true;
+    }
 }

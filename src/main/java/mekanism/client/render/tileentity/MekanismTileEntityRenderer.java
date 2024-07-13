@@ -12,6 +12,7 @@ import mekanism.client.render.data.FluidRenderData;
 import mekanism.client.render.data.RenderData;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.multiblock.IValveHandler.ValveData;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
@@ -39,6 +40,10 @@ public abstract class MekanismTileEntityRenderer<TILE extends BlockEntity> imple
     public int getViewDistance() {
         //Override and change the default range for TERs for mekanism tiles to the value defined in the config
         return MekanismConfig.client.terRange.get();
+    }
+
+    protected boolean isTickingNormally(TILE tile) {
+        return !Minecraft.getInstance().isPaused() && MekanismUtils.isTickingNormally(tile.getLevel());
     }
 
     @Override

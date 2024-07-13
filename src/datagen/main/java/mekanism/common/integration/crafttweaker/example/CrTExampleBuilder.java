@@ -56,17 +56,17 @@ public class CrTExampleBuilder<BUILDER_TYPE extends CrTExampleBuilder<BUILDER_TY
         return addComponent(new CrTExampleComment(comments));
     }
 
-    public CrTExampleRecipeComponentBuilder<BUILDER_TYPE> recipe(MekanismRecipeManager<?> recipeManager) {
+    public CrTExampleRecipeComponentBuilder<BUILDER_TYPE> recipe(MekanismRecipeManager<?, ?> recipeManager) {
         return recipe(recipeManager, "addRecipe");
     }
 
-    public CrTExampleRecipeComponentBuilder<BUILDER_TYPE> recipe(MekanismRecipeManager<?> recipeManager, String... methodNames) {
+    public CrTExampleRecipeComponentBuilder<BUILDER_TYPE> recipe(MekanismRecipeManager<?, ?> recipeManager, String... methodNames) {
         CrTExampleRecipeComponentBuilder<BUILDER_TYPE> recipeComponentBuilder = new CrTExampleRecipeComponentBuilder<>(self(), recipeManager, methodNames);
         contents.add(recipeComponentBuilder);
         return recipeComponentBuilder;
     }
 
-    public BUILDER_TYPE removeRecipes(MekanismRecipeManager<?> recipeManager, ResourceLocation... recipeNames) {
+    public BUILDER_TYPE removeRecipes(MekanismRecipeManager<?, ?> recipeManager, ResourceLocation... recipeNames) {
         return addComponent(new CrTExampleRemoveRecipesComponent(exampleProvider, recipeManager, recipeNames));
     }
 

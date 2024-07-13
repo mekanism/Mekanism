@@ -1,7 +1,7 @@
 package mekanism.common.block.attribute;
 
 import java.util.function.LongSupplier;
-import mekanism.api.math.ULong;
+import net.minecraft.SharedConstants;
 import org.jetbrains.annotations.Nullable;
 
 //TODO: Eventually we may want to make these suppliers be used more like suppliers in that:
@@ -10,7 +10,7 @@ public class AttributeEnergy implements Attribute {
 
     private LongSupplier energyUsage = () -> 0L;
     // 2 operations (20 secs) worth of ticks * usage
-    private LongSupplier energyStorage = () -> energyUsage.getAsLong() * (400);
+    private LongSupplier energyStorage = () -> energyUsage.getAsLong() * (20 * SharedConstants.TICKS_PER_SECOND);
 
     public AttributeEnergy(@Nullable LongSupplier energyUsage, @Nullable LongSupplier energyStorage) {
         if (energyUsage != null) {

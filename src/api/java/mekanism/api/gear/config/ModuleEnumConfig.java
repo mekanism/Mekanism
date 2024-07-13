@@ -10,8 +10,8 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.IHasTextComponent;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 import org.jetbrains.annotations.Nullable;
 
@@ -73,7 +73,7 @@ public class ModuleEnumConfig<TYPE extends Enum<TYPE> & IHasTextComponent> exten
      */
     public static <BUF extends ByteBuf, TYPE extends Enum<TYPE> & IHasTextComponent> StreamCodec<BUF, ModuleEnumConfig<TYPE>> streamCodec(StreamCodec<BUF, TYPE> enumCodec) {
         return StreamCodec.composite(
-              ByteBufCodecs.STRING_UTF8, ModuleConfig::name,
+              ResourceLocation.STREAM_CODEC, ModuleConfig::name,
               enumCodec, ModuleConfig::get,
               ModuleEnumConfig::new
         );
@@ -102,7 +102,7 @@ public class ModuleEnumConfig<TYPE extends Enum<TYPE> & IHasTextComponent> exten
             return streamCodec(enumCodec);
         }
         return StreamCodec.composite(
-              ByteBufCodecs.STRING_UTF8, ModuleConfig::name,
+              ResourceLocation.STREAM_CODEC, ModuleConfig::name,
               enumCodec, ModuleConfig::get,
               (name, value) -> new ModuleEnumConfig<>(name, value, enumConstants)
         );
@@ -115,7 +115,7 @@ public class ModuleEnumConfig<TYPE extends Enum<TYPE> & IHasTextComponent> exten
      * @param value  Value of the config option.
      * @param <TYPE> Type of the data stored by this config.
      */
-    public static <TYPE extends Enum<TYPE> & IHasTextComponent> ModuleEnumConfig<TYPE> create(String name, TYPE value) {
+    public static <TYPE extends Enum<TYPE> & IHasTextComponent> ModuleEnumConfig<TYPE> create(ResourceLocation name, TYPE value) {
         return new ModuleEnumConfig<>(name, value);
     }
 
@@ -127,9 +127,9 @@ public class ModuleEnumConfig<TYPE extends Enum<TYPE> & IHasTextComponent> exten
      * @param selectableCount The number of selectable elements.
      * @param <TYPE>          Type of the data stored by this config.
      *
-     * @implNote If selectedCount is equal to the number of elements in the enum, this acts as if {@link #create(String, Enum)} was called instead.
+     * @implNote If selectedCount is equal to the number of elements in the enum, this acts as if {@link #create(ResourceLocation, Enum)} was called instead.
      */
-    public static <TYPE extends Enum<TYPE> & IHasTextComponent> ModuleEnumConfig<TYPE> createBounded(String name, TYPE value, int selectableCount) {
+    public static <TYPE extends Enum<TYPE> & IHasTextComponent> ModuleEnumConfig<TYPE> createBounded(ResourceLocation name, TYPE value, int selectableCount) {
         if (selectableCount <= 0) {
             throw new IllegalArgumentException("Invalid selectableCount, there must be at least one element that is selectable.");
         } else if (value.ordinal() >= selectableCount) {
@@ -157,18 +157,18 @@ public class ModuleEnumConfig<TYPE extends Enum<TYPE> & IHasTextComponent> exten
     private final List<TYPE> enumConstants;
     private final TYPE value;
 
-    private ModuleEnumConfig(String name, TYPE value) {
+    private ModuleEnumConfig(ResourceLocation name, TYPE value) {
         this(name, value, List.of(value.getDeclaringClass().getEnumConstants()));
     }
 
-    private ModuleEnumConfig(String name, TYPE value, List<TYPE> enumConstants) {
+    private ModuleEnumConfig(ResourceLocation name, TYPE value, List<TYPE> enumConstants) {
         super(name);
         this.value = value;
         this.enumConstants = enumConstants;
     }
 
     @Override
-    public StreamCodec<FriendlyByteBuf, ModuleConfig<TYPE>> namedStreamCodec(String name) {
+    public StreamCodec<FriendlyByteBuf, ModuleConfig<TYPE>> namedStreamCodec(ResourceLocation name) {
         return NeoForgeStreamCodecs.enumCodec(value.getDeclaringClass()).map(
               value -> new ModuleEnumConfig<>(name, value, enumConstants),
               ModuleConfig::get

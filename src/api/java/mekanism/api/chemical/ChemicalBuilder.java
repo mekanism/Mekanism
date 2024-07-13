@@ -13,7 +13,6 @@ public class ChemicalBuilder<CHEMICAL extends Chemical<CHEMICAL>, BUILDER extend
     private final Map<Class<? extends ChemicalAttribute>, ChemicalAttribute> attributeMap = new Object2ObjectOpenHashMap<>();
     private final ResourceLocation texture;
     private int tint = 0xFFFFFF;
-    private boolean hidden;
 
     protected ChemicalBuilder(ResourceLocation texture) {
         this.texture = texture;
@@ -54,29 +53,12 @@ public class ChemicalBuilder<CHEMICAL extends Chemical<CHEMICAL>, BUILDER extend
     }
 
     /**
-     * Marks that this chemical will be hidden in JEI, and not included in the preset of filled chemical tanks.
-     */
-    public BUILDER hidden() {
-        this.hidden = true;
-        return self();
-    }
-
-    /**
      * Gets the tint to apply to this chemical when rendering.
      *
      * @return Tint in RRGGBB format.
      */
     public int getTint() {
         return tint;
-    }
-
-    /**
-     * Checks if this chemical should be hidden from JEI and not included in the preset of filled chemical tanks.
-     *
-     * @return {@code true} if it should be hidden.
-     */
-    public boolean isHidden() {
-        return hidden;
     }
 
     @SuppressWarnings("unchecked")

@@ -58,15 +58,6 @@ public abstract class CrTChemicalBuilder<CHEMICAL extends Chemical<CHEMICAL>, BU
     }
 
     /**
-     * Marks that this chemical will be hidden in JEI, and not included in the preset of filled chemical tanks.
-     */
-    @ZenCodeType.Method
-    public CRT_BUILDER hidden() {
-        getInternal().hidden();
-        return self();
-    }
-
-    /**
      * Create a chemical from this builder with the given name.
      *
      * @param name Registry name for the chemical.

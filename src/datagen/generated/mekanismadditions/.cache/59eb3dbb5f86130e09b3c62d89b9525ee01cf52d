@@ -1,4 +1,4 @@
-// 1.21	2024-06-13T13:08:29.8144225	Loot Tables
+// 1.21	2024-06-22T23:02:28.6309066	Loot Tables
 ebaa6ce2198087b82ee29bbae644670c6c9b02c6 data/mekanismadditions/loot_table/blocks/aqua_glow_panel.json
 64433f06f22aa8e7afe74713f5ae323ab205981d data/mekanismadditions/loot_table/blocks/aqua_plastic.json
 5bbcc78135e54027cc0dddceddd9dbe11dcc681a data/mekanismadditions/loot_table/blocks/aqua_plastic_fence.json
@@ -270,6 +270,7 @@ ca53334d21eed1baad4a48937f5edfdc8fe1e1bc data/mekanismadditions/loot_table/block
 55a1affcb9a090ad8a6a6a922ee5543e37ce3cb0 data/mekanismadditions/loot_table/blocks/yellow_plastic_transparent_stairs.json
 74f1be6237e71a392040c0a50cc601d72385cd2f data/mekanismadditions/loot_table/blocks/yellow_reinforced_plastic.json
 b330bdc6fc194a88bd69486ec40d5e922e2aa812 data/mekanismadditions/loot_table/blocks/yellow_slick_plastic.json
+6f4772ca614f0fa244a37ea3c44520a1ca9accc0 data/mekanismadditions/loot_table/entities/baby_bogged.json
 63acc76aa0fc44d72a666b0ecff6d7345214b51e data/mekanismadditions/loot_table/entities/baby_creeper.json
 de129a7638fd8e98dd17af90cf86af45dc7aaae8 data/mekanismadditions/loot_table/entities/baby_enderman.json
 d546880f496bd8be25fdb7582559af79909e5b36 data/mekanismadditions/loot_table/entities/baby_skeleton.json

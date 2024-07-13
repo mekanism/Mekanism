@@ -397,7 +397,7 @@ enums:
   - DISABLED
   - ACTIVATION
   - TEMPERATURE
-  - EXCESS_WASTE
+  - CRITICAL_WASTE_LEVEL
   - DAMAGED
   - DEPLETED
   mekanism.generators.common.tile.fission.TileEntityFissionReactorLogicAdapter$RedstoneStatus:
@@ -3343,6 +3343,11 @@ methods:
     returns:
       java_type: net.minecraft.world.item.ItemStack
       type: Table (ItemStack)
+  - description: Get the contents of the filled container output slot.
+    methodName: getContainerOutputItem
+    returns:
+      java_type: net.minecraft.world.item.ItemStack
+      type: Table (ItemStack)
   - description: Get the contents of the energy slot.
     methodName: getEnergyItem
     returns:
@@ -3373,7 +3378,7 @@ methods:
     returns:
       java_type: double
       type: Number (double)
-  - description: Get the contents of the filled container output slot.
+  - description: Get the contents of the output slot.
     methodName: getOutputItem
     returns:
       java_type: net.minecraft.world.item.ItemStack
@@ -4582,5 +4587,5 @@ methods:
     returns:
       java_type: boolean
       type: boolean
-version: 10.6.0
+version: 10.6.5
 ---

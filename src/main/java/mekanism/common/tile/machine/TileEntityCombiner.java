@@ -37,6 +37,7 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.upgrade.CombinerUpgradeData;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
@@ -55,7 +56,7 @@ public class TileEntityCombiner extends TileEntityProgressMachine<CombinerRecipe
           RecipeError.NOT_ENOUGH_OUTPUT_SPACE,
           RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
     );
-    public static final int BASE_TICKS_REQUIRED = 200;
+    public static final int BASE_TICKS_REQUIRED = 10 * SharedConstants.TICKS_PER_SECOND;
 
     private final IOutputHandler<@NotNull ItemStack> outputHandler;
     private final IInputHandler<@NotNull ItemStack> inputHandler;

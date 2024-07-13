@@ -33,6 +33,7 @@ public final class MekanismHooks {
     public static final String CURIOS_MODID = "curios";
     public static final String DARK_MODE_EVERYWHERE_MODID = "darkmodeeverywhere";
     public static final String FLUX_NETWORKS_MOD_ID = "fluxnetworks";
+    public static final String GRAND_POWER_MOD_ID = "grandpower";
     public static final String JEI_MOD_ID = "jei";
     public static final String EMI_MOD_ID = "emi";
     public static final String JEITWEAKER_MOD_ID = "jeitweaker";
@@ -49,6 +50,7 @@ public final class MekanismHooks {
     public final boolean DMELoaded;
     public final boolean EmiLoaded;
     public final boolean FluxNetworksLoaded;
+    public final boolean GrandPowerLoaded;
     public final boolean JEILoaded;
     public final boolean JsonThingsLoaded;
     public final boolean OC2Loaded;
@@ -67,6 +69,7 @@ public final class MekanismHooks {
         DMELoaded = loadedCheck.test(DARK_MODE_EVERYWHERE_MODID);
         EmiLoaded = loadedCheck.test(EMI_MOD_ID);
         FluxNetworksLoaded = loadedCheck.test(FLUX_NETWORKS_MOD_ID);
+        GrandPowerLoaded = loadedCheck.test(GRAND_POWER_MOD_ID);
         JEILoaded = loadedCheck.test(JEI_MOD_ID);
         JsonThingsLoaded = loadedCheck.test(JSON_THINGS_MOD_ID);
         OC2Loaded = loadedCheck.test(OC2_MOD_ID);

@@ -72,6 +72,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
     public final CachedLongValue maxFuelPerAssembly;
     public final CachedIntValue fissionCooledCoolantPerTank;
     public final CachedLongValue fissionHeatedCoolantPerTank;
+    public final CachedDoubleValue fissionExcessWasteRatio;
 
     public final CachedLongValue hohlraumMaxGas;
     public final CachedLongValue hohlraumFillRate;
@@ -112,7 +113,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
         heatTankCapacity = CachedIntValue.wrap(this, builder.comment("The capacity in mB of the fluid tank in the Heat Generator.")
               .defineInRange("tankCapacity", 24 * FluidType.BUCKET_VOLUME, 1, Integer.MAX_VALUE));
         heatGenerationFluidRate = CachedIntValue.wrap(this, builder.comment("The amount of lava in mB that gets consumed to transfer heatGeneration Joules to the Heat Generator.")
-              .define("heatGenerationFluidRate", 10, value -> value instanceof Integer i && i > 0 && i <= heatTankCapacity.get()));
+              .define("heatGenerationFluidRate", 10, value -> value instanceof Integer i && i > 0 && i <= heatTankCapacity.getOrDefault()));
         builder.pop();
 
         builder.comment("Gas-Burning Generator Settings").push(GAS_CATEGORY);
@@ -128,9 +129,9 @@ public class GeneratorsConfig extends BaseMekanismConfig {
         turbineBladesPerCoil = CachedIntValue.wrap(this, builder.comment("The number of blades on each turbine coil per blade applied.")
               .defineInRange("turbineBladesPerCoil", 4, 1, 12));
         turbineVentGasFlow = CachedDoubleValue.wrap(this, builder.comment("The rate at which steam is vented into the turbine.")
-              .defineInRange("turbineVentGasFlow", 32_000D, 0.1, 1_024_000));
+              .defineInRange("turbineVentGasFlow", 32D * FluidType.BUCKET_VOLUME, 0.1, 1_024 * FluidType.BUCKET_VOLUME));
         turbineDisperserGasFlow = CachedDoubleValue.wrap(this, builder.comment("The rate at which steam is dispersed into the turbine.")
-              .defineInRange("turbineDisperserGasFlow", 1_280D, 0.1, 1_024_000));
+              .defineInRange("turbineDisperserGasFlow", 1_280D, 0.1, 1_024 * FluidType.BUCKET_VOLUME));
         turbineEnergyCapacityPerVolume = CachedLongValue.defineUnsigned(this, builder, "Amount of energy (J) that each block of the turbine contributes to the total energy capacity. Max = volume * energyCapacityPerVolume",
               "energyCapacityPerVolume", 16_000_000L, 0, 1_000_000_000_000L);
         //Note: We use maxVolume as it still is a large number, and we have no reason to go higher even if some things we technically could
@@ -138,7 +139,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
         turbineGasPerTank = CachedLongValue.wrap(this, builder.comment("Amount of gas (mB) that each block of the turbine's steam cavity contributes to the volume. Max = volume * gasPerTank")
               .defineInRange("gasPerTank", 64L * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE / maxTurbine));
         condenserRate = CachedIntValue.wrap(this, builder.comment("The rate at which steam is condensed in the turbine.")
-              .defineInRange("condenserRate", 64_000, 1, 2_000_000));
+              .defineInRange("condenserRate", 64 * FluidType.BUCKET_VOLUME, 1, 2_000 * FluidType.BUCKET_VOLUME));
         builder.pop();
 
         builder.comment("Wind Generator Settings").push(WIND_CATEGORY);
@@ -152,7 +153,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
         //Note: We just require that the maxY is greater than the minY, nothing goes badly if it is set above the max y of the world though
         // as it is just used for range clamping
         windGenerationMaxY = CachedIntValue.wrap(this, builder.comment("The maximum Y value that affects the Wind Generators Power generation. This value gets clamped at the world's logical height.")
-              .define("maxY", DimensionType.MAX_Y, value -> value instanceof Integer && (Integer) value > windGenerationMinY.get()));
+              .define("maxY", DimensionType.MAX_Y, value -> value instanceof Integer && (Integer) value > windGenerationMinY.getOrDefault()));
         //Note: We cannot verify the dimension exists as dimensions are dynamic so may not actually exist when we are validating
         windGenerationDimBlacklist = CachedResourceLocationListValue.define(this, builder.comment("The list of dimension ids that the Wind Generator will not generate power in."),
               "windGenerationDimBlacklist", ConstantPredicates.alwaysTrue());
@@ -211,6 +212,8 @@ public class GeneratorsConfig extends BaseMekanismConfig {
               .defineInRange("cooledCoolantPerTank", 100 * FluidType.BUCKET_VOLUME, 1, Integer.MAX_VALUE / maxVolume));
         fissionHeatedCoolantPerTank = CachedLongValue.wrap(this, builder.comment("Amount of heated coolant (mB) that each block of the fission reactor contributes to the volume. Max = volume * heatedCoolantPerTank")
               .defineInRange("heatedCoolantPerTank", 1_000L * FluidType.BUCKET_VOLUME, 1_000, Long.MAX_VALUE / maxVolume));
+        fissionExcessWasteRatio = CachedDoubleValue.wrap(this, builder.comment("The percentage of waste in a fission reactor's output waste tank that is necessary to trigger the excess waste .")
+              .defineInRange("excessWaste", 0.9D, 0.001D, 1D));
         builder.pop();
 
         builder.pop();

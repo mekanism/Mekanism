@@ -19,7 +19,7 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
-import net.neoforged.neoforge.event.entity.SpawnPlacementRegisterEvent;
+import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
 import org.jetbrains.annotations.NotNull;
 
 public class EntityTypeDeferredRegister extends MekanismDeferredRegister<EntityType<?>> {
@@ -39,12 +39,12 @@ public class EntityTypeDeferredRegister extends MekanismDeferredRegister<EntityT
     public <ENTITY extends LivingEntity> MekanismDeferredHolder<EntityType<?>, EntityType<ENTITY>> registerBasicPlacement(String name,
           Supplier<EntityType.Builder<ENTITY>> builder, Supplier<AttributeSupplier.Builder> attributes, SpawnPlacements.SpawnPredicate<ENTITY> placementPredicate) {
         return register(name, builder, attributes, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, placementPredicate,
-              SpawnPlacementRegisterEvent.Operation.AND);
+              RegisterSpawnPlacementsEvent.Operation.AND);
     }
 
     public <ENTITY extends LivingEntity> MekanismDeferredHolder<EntityType<?>, EntityType<ENTITY>> register(String name, Supplier<EntityType.Builder<ENTITY>> builder,
           Supplier<AttributeSupplier.Builder> attributes, @Nullable SpawnPlacementType placementType, @Nullable Heightmap.Types heightmap,
-          SpawnPlacements.SpawnPredicate<ENTITY> placementPredicate, SpawnPlacementRegisterEvent.Operation placementOperation) {
+          SpawnPlacements.SpawnPredicate<ENTITY> placementPredicate, RegisterSpawnPlacementsEvent.Operation placementOperation) {
         MekanismDeferredHolder<EntityType<?>, EntityType<ENTITY>> entityTypeRO = register(name, builder, attributes);
         livingEntityPlacements.put(entityTypeRO, new SpawnPlacementData<>(placementType, heightmap, placementPredicate, placementOperation));
         return entityTypeRO;
@@ -81,7 +81,7 @@ public class EntityTypeDeferredRegister extends MekanismDeferredRegister<EntityT
         }
     }
 
-    private void registerPlacements(SpawnPlacementRegisterEvent event) {
+    private void registerPlacements(RegisterSpawnPlacementsEvent event) {
         if (livingEntityPlacements == null) {
             Mekanism.logger.error("Entity Placements have already been set. This should not happen.");
         } else {
@@ -96,9 +96,9 @@ public class EntityTypeDeferredRegister extends MekanismDeferredRegister<EntityT
 
     private record SpawnPlacementData<ENTITY extends LivingEntity>(@Nullable SpawnPlacementType placementType, @Nullable Heightmap.Types heightmap,
                                                                   SpawnPlacements.SpawnPredicate<ENTITY> predicate,
-                                                                  SpawnPlacementRegisterEvent.Operation operation) {
+                                                                   RegisterSpawnPlacementsEvent.Operation operation) {
 
-        private void register(SpawnPlacementRegisterEvent event, EntityType<?> entityType) {
+        private void register(RegisterSpawnPlacementsEvent event, EntityType<?> entityType) {
             event.register((EntityType<ENTITY>) entityType, placementType, heightmap, predicate, operation);
         }
     }

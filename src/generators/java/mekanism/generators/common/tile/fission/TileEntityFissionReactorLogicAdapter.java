@@ -7,6 +7,7 @@ import java.util.Locale;
 import java.util.function.IntFunction;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.ILangEntry;
@@ -15,9 +16,11 @@ import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.util.NBTUtils;
+import mekanism.common.util.text.TextUtils;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.base.IReactorLogic;
 import mekanism.generators.common.base.IReactorLogicMode;
+import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsDataComponents;
@@ -102,8 +105,9 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
                         return RedstoneStatus.OUTPUTTING;
                     }
                 }
-                case EXCESS_WASTE -> {
-                    if (multiblock.wasteTank.getNeeded() == 0) {
+                case CRITICAL_WASTE_LEVEL -> {
+                    long target = MathUtils.clampToLong(multiblock.wasteTank.getCapacity() * MekanismGeneratorsConfig.generators.fissionExcessWasteRatio.get());
+                    if (multiblock.wasteTank.getStored() >= target) {
                         return RedstoneStatus.OUTPUTTING;
                     }
                 }
@@ -191,7 +195,13 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
         DISABLED(GeneratorsLang.REACTOR_LOGIC_DISABLED, GeneratorsLang.DESCRIPTION_REACTOR_DISABLED, new ItemStack(Items.GUNPOWDER), EnumColor.DARK_GRAY),
         ACTIVATION(GeneratorsLang.REACTOR_LOGIC_ACTIVATION, GeneratorsLang.DESCRIPTION_REACTOR_ACTIVATION, new ItemStack(Items.FLINT_AND_STEEL), EnumColor.AQUA),
         TEMPERATURE(GeneratorsLang.REACTOR_LOGIC_TEMPERATURE, GeneratorsLang.DESCRIPTION_REACTOR_TEMPERATURE, new ItemStack(Items.REDSTONE), EnumColor.RED),
-        EXCESS_WASTE(GeneratorsLang.REACTOR_LOGIC_EXCESS_WASTE, GeneratorsLang.DESCRIPTION_REACTOR_EXCESS_WASTE, new ItemStack(Items.REDSTONE), EnumColor.RED),
+        CRITICAL_WASTE_LEVEL(GeneratorsLang.REACTOR_LOGIC_CRITICAL_WASTE_LEVEL, GeneratorsLang.DESCRIPTION_REACTOR_CRITICAL_WASTE_LEVEL, new ItemStack(Items.REDSTONE), EnumColor.RED) {
+            @NotNull
+            @Override
+            public Component getDescription() {
+                return description.translate(TextUtils.getPercent(MekanismGeneratorsConfig.generators.fissionExcessWasteRatio.get()));
+            }
+        },
         DAMAGED(GeneratorsLang.REACTOR_LOGIC_DAMAGED, GeneratorsLang.DESCRIPTION_REACTOR_DAMAGED, new ItemStack(Items.REDSTONE), EnumColor.RED),
         DEPLETED(GeneratorsLang.REACTOR_LOGIC_DEPLETED, GeneratorsLang.DESCRIPTION_REACTOR_DEPLETED, new ItemStack(Items.REDSTONE), EnumColor.RED);
 
@@ -200,7 +210,7 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
         public static final StreamCodec<ByteBuf, FissionReactorLogic> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, FissionReactorLogic::ordinal);
 
         private final ILangEntry name;
-        private final ILangEntry description;
+        protected final ILangEntry description;
         private final ItemStack renderStack;
         private final EnumColor color;
         private final String serializedName;

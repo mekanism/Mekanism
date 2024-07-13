@@ -5,6 +5,7 @@ import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.attachments.FrequencyAware;
+import mekanism.common.attachments.qio.PortableDashboardContents;
 import mekanism.common.capabilities.security.OwnerObject;
 import mekanism.common.capabilities.ICapabilityAware;
 import mekanism.common.content.qio.QIOFrequency;
@@ -40,7 +41,10 @@ import org.jetbrains.annotations.NotNull;
 public class ItemPortableQIODashboard extends Item implements IFrequencyItem, IGuiItem, IColoredItem, ICapabilityAware {
 
     public ItemPortableQIODashboard(Properties properties) {
-        super(properties.stacksTo(1).rarity(Rarity.RARE).component(MekanismDataComponents.INSERT_INTO_FREQUENCY, true));
+        super(properties.stacksTo(1).rarity(Rarity.RARE)
+              .component(MekanismDataComponents.INSERT_INTO_FREQUENCY, true)
+              .component(MekanismDataComponents.QIO_DASHBOARD, PortableDashboardContents.EMPTY)
+        );
     }
 
     @Override

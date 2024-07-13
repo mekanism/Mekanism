@@ -79,6 +79,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.ClientHooks;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
@@ -141,6 +142,25 @@ public class RenderTickHandler {
                     screen.switchingToRecipeViewer = true;
                 }
             }
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void renderPostHighest(ScreenEvent.Render.Post event) {
+        if (event.getScreen() instanceof GuiMekanism) {
+            //Translate forward how far we go, so that things like recipe viewers draw far enough forward
+            // Note: We will pop this in a listener at the lowest priority
+            PoseStack pose = event.getGuiGraphics().pose();
+            pose.pushPose();
+            pose.translate(0, 0, GuiMekanism.maxZOffset);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void renderPostLowest(ScreenEvent.Render.Post event) {
+        if (event.getScreen() instanceof GuiMekanism) {
+            //Matching pop to the push we did in renderPostHighest
+            event.getGuiGraphics().pose().popPose();
         }
     }
 
@@ -225,7 +245,7 @@ public class RenderTickHandler {
     public void tickEnd(ClientTickEvent.Post event) {
         //Note: We check that the game mode is not null as if it is that means the world is unloading, and we don't actually want to be rendering
         // as our data may be out of date or invalid. For example configs could unload while it is still unloading
-        if (minecraft.player != null && minecraft.player.level() != null && !minecraft.isPaused() && minecraft.gameMode != null) {
+        if (minecraft.player != null && minecraft.player.level() != null && minecraft.gameMode != null && MekanismRenderer.isRunningNormally()) {
             Player player = minecraft.player;
             Level world = minecraft.player.level();
             float partialTicks = minecraft.getTimer().getGameTimeDeltaPartialTick(false);

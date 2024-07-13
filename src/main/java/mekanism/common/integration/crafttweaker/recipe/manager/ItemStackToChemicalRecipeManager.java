@@ -9,14 +9,16 @@ import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_ITEM_STACK_TO_CHEMICAL)
 public abstract class ItemStackToChemicalRecipeManager<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-      CRT_STACK extends ICrTChemicalStack<CHEMICAL, STACK, CRT_STACK>, RECIPE extends ItemStackToChemicalRecipe<CHEMICAL, STACK>> extends MekanismRecipeManager<RECIPE> {
+      CRT_STACK extends ICrTChemicalStack<CHEMICAL, STACK, CRT_STACK>, RECIPE extends ItemStackToChemicalRecipe<CHEMICAL, STACK>>
+      extends MekanismRecipeManager<SingleRecipeInput, RECIPE> {
 
-    protected ItemStackToChemicalRecipeManager(IMekanismRecipeTypeProvider<?, RECIPE, ?> recipeType) {
+    protected ItemStackToChemicalRecipeManager(IMekanismRecipeTypeProvider<SingleRecipeInput, RECIPE, ?> recipeType) {
         super(recipeType);
     }
 

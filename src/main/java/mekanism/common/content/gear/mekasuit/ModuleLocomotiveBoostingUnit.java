@@ -13,11 +13,13 @@ import mekanism.api.gear.IModuleContainer;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.TextComponentUtil;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.player.Player;
@@ -27,7 +29,7 @@ import net.minecraft.world.phys.Vec3;
 @ParametersAreNotNullByDefault
 public record ModuleLocomotiveBoostingUnit(SprintBoost sprintBoost) implements ICustomModule<ModuleLocomotiveBoostingUnit> {
 
-    public static final String SPRINT_BOOST = "sprint_boost";
+    public static final ResourceLocation SPRINT_BOOST = Mekanism.rl("sprint_boost");
 
     public ModuleLocomotiveBoostingUnit(IModule<ModuleLocomotiveBoostingUnit> module) {
         this(module.<SprintBoost>getConfigOrThrow(SPRINT_BOOST).get());

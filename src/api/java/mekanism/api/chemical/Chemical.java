@@ -98,7 +98,6 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> implements I
     private final Map<Class<? extends ChemicalAttribute>, ChemicalAttribute> attributeMap;
 
     private final ResourceLocation iconLocation;
-    private final boolean hidden;
     private final int tint;
     private boolean isRadioactive;
     private boolean hasAttributesWithValidation;
@@ -111,7 +110,6 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> implements I
         this.attributeMap = new HashMap<>(builder.getAttributeMap());
         this.iconLocation = builder.getTexture();
         this.tint = builder.getTint();
-        this.hidden = builder.isHidden();
         this.isRadioactive = attributeMap.containsKey(Radiation.class);
         this.hasAttributesWithValidation = isRadioactive || attributeMap.values().stream().anyMatch(ChemicalAttribute::needsValidation);
     }
@@ -225,15 +223,6 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> implements I
      */
     public int getColorRepresentation() {
         return getTint();
-    }
-
-    /**
-     * Whether this chemical is hidden.
-     *
-     * @return if this chemical is hidden
-     */
-    public boolean isHidden() {
-        return hidden;
     }
 
     /**

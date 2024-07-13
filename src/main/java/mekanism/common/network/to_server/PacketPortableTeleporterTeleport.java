@@ -28,6 +28,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.portal.DimensionTransition;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
@@ -97,13 +98,12 @@ public record PacketPortableTeleporterTeleport(InteractionHand currentHand, Freq
                         double oldY = player.getY();
                         double oldZ = player.getZ();
                         Level oldWorld = player.level();
-                        TileEntityTeleporter.teleportEntityTo(player, teleWorld, event, false);
-                        TileEntityTeleporter.alignPlayer(player, event, teleporter);
+                        TileEntityTeleporter.teleportEntityTo(player, teleWorld, teleporter, event, false, DimensionTransition.DO_NOTHING);
                         if (player.level() != oldWorld || player.distanceToSqr(oldX, oldY, oldZ) >= 25) {
                             //If the player teleported over 5 blocks, play the sound at both the destination and the source
-                            oldWorld.playSound(null, oldX, oldY, oldZ, SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0F, 1.0F);
+                            oldWorld.playSound(null, oldX, oldY, oldZ, SoundEvents.PLAYER_TELEPORT, SoundSource.PLAYERS);
                         }
-                        player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0F, 1.0F);
+                        player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.PLAYER_TELEPORT, SoundSource.PLAYERS);
                         teleporter.sendTeleportParticles();
                     } catch (Exception ignored) {
                     }

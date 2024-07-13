@@ -22,7 +22,7 @@ public class MekanismStatusOverlay implements LayeredDraw.Layer {
     private static final int BASE_TIMER = 5 * SharedConstants.TICKS_PER_SECOND;
 
     private int modeSwitchTimer = 0;
-    private long lastTick;
+    private int lastTick;
 
     private MekanismStatusOverlay() {
     }
@@ -34,7 +34,7 @@ public class MekanismStatusOverlay implements LayeredDraw.Layer {
     @Override
     public void render(@NotNull GuiGraphics graphics, @NotNull DeltaTracker delta) {
         Minecraft minecraft = Minecraft.getInstance();
-        if (modeSwitchTimer > 1 && minecraft.player != null && minecraft.gameMode.getPlayerMode() != GameType.SPECTATOR) {
+        if (modeSwitchTimer > 1 && minecraft.player != null && minecraft.gameMode.getPlayerMode() != GameType.SPECTATOR && !minecraft.options.hideGui) {
             ItemStack stack = minecraft.player.getMainHandItem();
             if (IModeItem.isModeItem(stack, EquipmentSlot.MAINHAND)) {
                 Component scrollTextComponent = ((IModeItem) stack.getItem()).getScrollTextComponent(stack);
@@ -62,8 +62,8 @@ public class MekanismStatusOverlay implements LayeredDraw.Layer {
                 }
             }
             //Only decrement the switch timer once a tick
-            if (lastTick != minecraft.player.level().getGameTime()) {
-                lastTick = minecraft.player.level().getGameTime();
+            if (lastTick != minecraft.gui.getGuiTicks()) {
+                lastTick = minecraft.gui.getGuiTicks();
                 modeSwitchTimer--;
             }
         }

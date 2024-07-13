@@ -15,7 +15,9 @@ import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ItemStackToFluidRecipeCategory extends BaseRecipeCategory<ItemStackToFluidRecipe> {
 
@@ -34,5 +36,11 @@ public class ItemStackToFluidRecipeCategory extends BaseRecipeCategory<ItemStack
     public void setRecipe(@NotNull IRecipeLayoutBuilder builder, ItemStackToFluidRecipe recipe, @NotNull IFocusGroup focusGroup) {
         initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations());
         initFluid(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
+    }
+
+    @Nullable
+    @Override
+    public ResourceLocation getRegistryName(@NotNull ItemStackToFluidRecipe recipe) {
+        return null;
     }
 }

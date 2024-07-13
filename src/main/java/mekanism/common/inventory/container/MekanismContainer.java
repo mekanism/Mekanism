@@ -231,7 +231,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
             y += 18;
         }
         if (offhandOffset != -1) {
-            addSlot(new OffhandSlot(inv, 40, x, y + offhandOffset));
+            addSlot(new OffhandSlot(inv, 40, x, y + offhandOffset, inv.player));
         }
     }
 

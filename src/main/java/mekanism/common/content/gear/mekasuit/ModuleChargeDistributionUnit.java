@@ -17,6 +17,7 @@ import mekanism.common.integration.curios.CuriosIntegration;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.StorageUtils;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -24,8 +25,8 @@ import net.neoforged.neoforge.items.IItemHandler;
 @ParametersAreNotNullByDefault
 public record ModuleChargeDistributionUnit(boolean chargeSuit, boolean chargeInventory) implements ICustomModule<ModuleChargeDistributionUnit> {
 
-    public static final String CHARGE_SUIT = "charge_suit";
-    public static final String CHARGE_INVENTORY = "charge_inventory";
+    public static final ResourceLocation CHARGE_SUIT = Mekanism.rl("charge_suit");
+    public static final ResourceLocation CHARGE_INVENTORY = Mekanism.rl("charge_inventory");
 
     public ModuleChargeDistributionUnit(IModule<ModuleChargeDistributionUnit> module) {
         this(module.getBooleanConfigOrFalse(CHARGE_SUIT), module.getBooleanConfigOrFalse(CHARGE_INVENTORY));

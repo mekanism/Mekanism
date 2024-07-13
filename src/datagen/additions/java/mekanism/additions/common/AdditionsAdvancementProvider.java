@@ -47,7 +47,9 @@ public class AdditionsAdvancementProvider extends BaseAdvancementProvider {
               .save(consumer);
         advancement(AdditionsAdvancements.HURT_BY_BABIES)
               .display(Items.CREEPER_HEAD, null, AdvancementType.GOAL, true, true, true)
-              .andCriteria(damagedCriterion(AdditionsEntityTypes.BABY_CREEPER),
+              .andCriteria(
+                    damagedCriterion(AdditionsEntityTypes.BABY_BOGGED),
+                    damagedCriterion(AdditionsEntityTypes.BABY_CREEPER),
                     damagedCriterion(AdditionsEntityTypes.BABY_ENDERMAN),
                     damagedCriterion(AdditionsEntityTypes.BABY_SKELETON),
                     damagedCriterion(AdditionsEntityTypes.BABY_STRAY),
@@ -55,7 +57,9 @@ public class AdditionsAdvancementProvider extends BaseAdvancementProvider {
               ).save(consumer);
         advancement(AdditionsAdvancements.NOT_THE_BABIES)
               .display(Items.WITHER_SKELETON_SKULL, AdvancementType.GOAL, false)
-              .orCriteria(killCriterion(AdditionsEntityTypes.BABY_CREEPER),
+              .orCriteria(
+                    killCriterion(AdditionsEntityTypes.BABY_BOGGED),
+                    killCriterion(AdditionsEntityTypes.BABY_CREEPER),
                     killCriterion(AdditionsEntityTypes.BABY_ENDERMAN),
                     killCriterion(AdditionsEntityTypes.BABY_SKELETON),
                     killCriterion(AdditionsEntityTypes.BABY_STRAY),

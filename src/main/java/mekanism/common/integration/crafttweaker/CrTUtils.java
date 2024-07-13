@@ -15,6 +15,7 @@ import com.blamejared.crafttweaker.natives.ingredient.ExpandSizedFluidIngredient
 import com.blamejared.crafttweaker.natives.ingredient.ExpandSizedIngredient;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.function.Function;
 import mekanism.api.MekanismAPI;
@@ -172,7 +173,7 @@ public class CrTUtils {
             return Optional.empty();
         }
         if (values.size() != 1) {
-            final String message = String.format(
+            final String message = String.format(Locale.ROOT,
                   "Expected a list with a single element for %s, but got %d-sized list: %s",
                   component.getCommandString(),
                   values.size(),
@@ -194,7 +195,7 @@ public class CrTUtils {
     public static <C> UnaryTypePair<C> getPair(IDecomposedRecipe recipe, IRecipeComponent<C> component) {
         List<C> list = recipe.getOrThrow(component);
         if (list.size() != 2) {
-            final String message = String.format(
+            final String message = String.format(Locale.ROOT,
                   "Expected a list with two elements element for %s, but got %d-sized list: %s",
                   component.getCommandString(),
                   list.size(),

@@ -23,7 +23,9 @@ import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class FissionReactorRecipeCategory extends BaseRecipeCategory<FissionRecipeViewerRecipe> {
 
@@ -58,5 +60,11 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<FissionReci
         initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.INPUT, fuelTank, recipe.fuel().getRepresentations());
         initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, heatedCoolantTank, Collections.singletonList(recipe.outputCoolant()));
         initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, wasteTank, Collections.singletonList(recipe.waste()));
+    }
+
+    @Nullable
+    @Override
+    public ResourceLocation getRegistryName(@NotNull FissionRecipeViewerRecipe recipe) {
+        return recipe.id();
     }
 }

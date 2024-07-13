@@ -4,12 +4,15 @@ import mekanism.additions.common.registries.AdditionsEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.monster.Stray;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Blocks;
+import org.jetbrains.annotations.NotNull;
 
 public class EntityBabyStray extends Stray {
 
@@ -38,5 +41,12 @@ public class EntityBabyStray extends Stray {
     @Override
     public boolean isBaby() {
         return true;
+    }
+
+    @NotNull
+    @Override
+    public EntityDimensions getDefaultDimensions(@NotNull Pose pose) {
+        //Note: We already have the age scale factored into the dimensions
+        return getType().getDimensions();
     }
 }

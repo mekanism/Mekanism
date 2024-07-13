@@ -3,10 +3,18 @@ package mekanism
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import org.gradle.api.DefaultTask
-import org.gradle.api.file.*
+import org.gradle.api.file.Directory
+import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.FileCollection
+import org.gradle.api.file.ProjectLayout
+import org.gradle.api.file.RegularFile
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Provider
-import org.gradle.api.tasks.*
+import org.gradle.api.tasks.InputFiles
+import org.gradle.api.tasks.Internal
+import org.gradle.api.tasks.OutputDirectory
+import org.gradle.api.tasks.OutputFile
+import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.util.PatternFilterable
 
 import javax.inject.Inject

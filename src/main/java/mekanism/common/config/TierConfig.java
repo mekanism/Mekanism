@@ -167,9 +167,9 @@ public class TierConfig extends BaseMekanismConfig {
         builder.comment("Logistical Transporters").push(ITEMS_CATEGORY);
         for (TransporterTier tier : EnumUtils.TRANSPORTER_TIERS) {
             String tierName = tier.getBaseTier().getSimpleName();
-            CachedIntValue pullReference = CachedIntValue.wrap(this, builder.comment("Item throughput rate of " + tierName + " logistical transporters in items/half second.")
+            CachedIntValue pullReference = CachedIntValue.wrap(this, builder.comment("Item throughput rate of " + tierName + " logistical transporters in items/half second. This value assumes a target tick rate of 20 ticks per second.")
                   .defineInRange(tierName.toLowerCase(Locale.ROOT) + "PullAmount", tier.getBasePull(), 1, Integer.MAX_VALUE));
-            CachedIntValue speedReference = CachedIntValue.wrap(this, builder.comment("Five times the travel speed in m/s of " + tierName + " logistical transporter.")
+            CachedIntValue speedReference = CachedIntValue.wrap(this, builder.comment("Five times the travel speed in m/s of " + tierName + " logistical transporter. This value assumes a target tick rate of 20 ticks per second.")
                   .defineInRange(tierName.toLowerCase(Locale.ROOT) + "Speed", tier.getBaseSpeed(), 1, Integer.MAX_VALUE));
             tier.setConfigReference(pullReference, speedReference);
         }
@@ -204,10 +204,5 @@ public class TierConfig extends BaseMekanismConfig {
     @Override
     public Type getConfigType() {
         return Type.SERVER;
-    }
-
-    @Override
-    public boolean addToContainer() {
-        return false;
     }
 }

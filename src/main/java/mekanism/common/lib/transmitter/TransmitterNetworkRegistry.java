@@ -129,8 +129,10 @@ public class TransmitterNetworkRegistry {
         removeInvalidTransmitters();
         assignOrphans();
         commitChanges();
-        for (DynamicNetwork<?, ?, ?> net : networks) {
-            net.onUpdate();
+        if (event.getServer().tickRateManager().runsNormally()) {
+            for (DynamicNetwork<?, ?, ?> net : networks) {
+                net.onUpdate();
+            }
         }
     }
 

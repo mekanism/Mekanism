@@ -1,6 +1,5 @@
 {
   "remove": [
-    "mekanism:hazmat_mask",
     "mekanism:mekasuit_helmet"
   ],
   "values": []

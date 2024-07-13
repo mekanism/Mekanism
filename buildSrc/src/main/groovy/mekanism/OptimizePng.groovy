@@ -40,7 +40,7 @@ class OptimizePng extends DefaultTask {
             }
             long newSize = file.length()
             if (newSize < size) {
-                System.out.format('Reduced File size of %s from %d bytes to %d bytes (reduced by %.2f%%)\n',
+                System.out.format(Locale.ROOT, 'Reduced File size of %s from %d bytes to %d bytes (reduced by %.2f%%)\n',
                         file, size, newSize, ((double) (size - newSize)) / ((double) size) * 100.0)
             }
         }

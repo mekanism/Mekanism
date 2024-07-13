@@ -4,7 +4,7 @@
   "cookingtime": 100,
   "experience": 1.0,
   "ingredient": {
-    "tag": "c:dusts/netherite"
+    "item": "mekanism:dust_netherite"
   },
   "result": {
     "count": 1,

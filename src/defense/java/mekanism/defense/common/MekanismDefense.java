@@ -2,7 +2,6 @@ package mekanism.defense.common;
 
 import mekanism.common.Mekanism;
 import mekanism.common.base.IModModule;
-import mekanism.common.config.MekanismModConfig;
 import mekanism.common.lib.Version;
 import mekanism.defense.common.config.MekanismDefenseConfig;
 import mekanism.defense.common.registries.DefenseBlocks;
@@ -14,8 +13,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
@@ -40,7 +37,7 @@ public class MekanismDefense implements IModModule {
         NeoForge.EVENT_BUS.addListener(this::serverStopped);
 
         modEventBus.addListener(this::commonSetup);
-        modEventBus.addListener(this::onConfigLoad);
+        modEventBus.addListener(MekanismDefenseConfig::onConfigLoad);
         DefenseItems.ITEMS.register(modEventBus);
         DefenseBlocks.BLOCKS.register(modEventBus);
         DefenseCreativeTabs.CREATIVE_TABS.register(modEventBus);
@@ -72,15 +69,5 @@ public class MekanismDefense implements IModModule {
 
     @Override
     public void resetClient() {
-    }
-
-    private void onConfigLoad(ModConfigEvent configEvent) {
-        //Note: We listen to both the initial load and the reload, to make sure that we fix any accidentally
-        // cached values from calls before the initial loading
-        ModConfig config = configEvent.getConfig();
-        //Make sure it is for the same modid as us
-        if (config.getModId().equals(MODID) && config instanceof MekanismModConfig mekConfig) {
-            mekConfig.clearCache(configEvent);
-        }
     }
 }

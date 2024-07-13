@@ -11,7 +11,7 @@ import mekanism.api.recipes.FluidToFluidRecipe;
 import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
-import mekanism.api.recipes.ItemStackToFluidRecipe;
+import mekanism.api.recipes.ItemStackToFluidOptionalItemRecipe;
 import mekanism.api.recipes.ItemStackToGasRecipe;
 import mekanism.api.recipes.ItemStackToInfuseTypeRecipe;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
@@ -21,7 +21,6 @@ import mekanism.api.recipes.NucleosynthesizingRecipe;
 import mekanism.api.recipes.PaintingRecipe;
 import mekanism.api.recipes.PigmentMixingRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe;
-import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.SawmillRecipe;
 import mekanism.client.recipe_viewer.recipe.BoilerRecipeViewerRecipe;
 import mekanism.client.recipe_viewer.recipe.SPSRecipeViewerRecipe;
@@ -97,13 +96,13 @@ public class RecipeViewerRecipeType {
     //TODO - 1.20.4: Re-evaluate ^^
     public static final RVRecipeTypeWrapper<?, PressurizedReactionRecipe, ?> REACTION = new RVRecipeTypeWrapper<>(MekanismRecipeType.REACTION, PressurizedReactionRecipe.class, -3, -10, 170, 60, MekanismBlocks.PRESSURIZED_REACTION_CHAMBER);
 
-    public static final FakeRVRecipeType<RotaryRecipe> CONDENSENTRATING = new FakeRVRecipeType<>(Mekanism.rl("condensentrating"), MekanismBlocks.ROTARY_CONDENSENTRATOR, MekanismLang.CONDENSENTRATING, RotaryRecipe.class, -3, -12, 170, 64);
-    public static final FakeRVRecipeType<RotaryRecipe> DECONDENSENTRATING = new FakeRVRecipeType<>(Mekanism.rl("decondensentrating"), MekanismBlocks.ROTARY_CONDENSENTRATOR, MekanismLang.DECONDENSENTRATING, RotaryRecipe.class, -3, -12, 170, 64);
+    public static final RotaryRVRecipeType CONDENSENTRATING = new RotaryRVRecipeType(Mekanism.rl("condensentrating"), MekanismLang.CONDENSENTRATING);
+    public static final RotaryRVRecipeType DECONDENSENTRATING = new RotaryRVRecipeType(Mekanism.rl("decondensentrating"), MekanismLang.DECONDENSENTRATING);
 
     public static final RVRecipeTypeWrapper<?, SawmillRecipe, ?> SAWING = new RVRecipeTypeWrapper<>(MekanismRecipeType.SAWING, SawmillRecipe.class, -28, -16, 144, 54, MekanismBlocks.PRECISION_SAWMILL);
 
     public static final FakeRVRecipeType<BoilerRecipeViewerRecipe> BOILER = new FakeRVRecipeType<>(MekanismBlocks.BOILER_CASING.getId(), MekanismUtils.getResource(ResourceType.GUI, "heat.png"), MekanismLang.BOILER, BoilerRecipeViewerRecipe.class, -6, -13, 180, 60, MekanismBlocks.BOILER_CASING, MekanismBlocks.BOILER_VALVE, MekanismBlocks.PRESSURE_DISPERSER, MekanismBlocks.SUPERHEATING_ELEMENT);
     public static final FakeRVRecipeType<SPSRecipeViewerRecipe> SPS = new FakeRVRecipeType<>(MekanismBlocks.SPS_CASING.getId(), MekanismItems.ANTIMATTER_PELLET, MekanismLang.SPS, SPSRecipeViewerRecipe.class, -3, -12, 168, 74, false, MekanismBlocks.SPS_CASING, MekanismBlocks.SPS_PORT, MekanismBlocks.SUPERCHARGED_COIL);
 
-    public static final FakeRVRecipeType<ItemStackToFluidRecipe> NUTRITIONAL_LIQUIFICATION = new FakeRVRecipeType<>(MekanismBlocks.NUTRITIONAL_LIQUIFIER, ItemStackToFluidRecipe.class, -20, -12, 132, 62);
+    public static final FakeRVRecipeType<ItemStackToFluidOptionalItemRecipe> NUTRITIONAL_LIQUIFICATION = new FakeRVRecipeType<>(MekanismBlocks.NUTRITIONAL_LIQUIFIER, ItemStackToFluidOptionalItemRecipe.class, -20, -12, 132, 62);
 }

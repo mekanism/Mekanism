@@ -23,6 +23,7 @@ import mekanism.api.event.MekanismTeleportEvent;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.MathUtils;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
@@ -67,7 +68,6 @@ import mekanism.common.recipe.lookup.ISingleRecipeLookupHandler.ItemRecipeLookup
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleItem;
 import mekanism.common.recipe.lookup.monitor.RecipeCacheLookupMonitor;
 import mekanism.common.registries.MekanismContainerTypes;
-import mekanism.common.registries.MekanismDamageTypes;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismDataSerializers;
 import mekanism.common.registries.MekanismEntityTypes;
@@ -99,11 +99,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.TicketType;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
@@ -127,8 +125,8 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.client.model.data.ModelProperty;
-import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.damagesource.DamageContainer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -151,6 +149,8 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     private static final EntityDataAccessor<SecurityMode> SECURITY = define(MekanismDataSerializers.SECURITY.value());
     private static final EntityDataAccessor<Boolean> FOLLOW = define(EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> DROP_PICKUP = define(EntityDataSerializers.BOOLEAN);
+    //Note: We sync the default skin part, so that pick item on the robit will properly persist this
+    private static final EntityDataAccessor<Boolean> DEFAULT_SKIN_MANUALLY_SELECTED = define(EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<ResourceKey<RobitSkin>> SKIN = define(MekanismDataSerializers.ROBIT_SKIN.value());
 
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
@@ -164,7 +164,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     private static final double DISTANCE_MULTIPLIER = 1.5D;
     //TODO: Note the robit smelts at double normal speed, we may want to make this configurable
     //TODO: Allow for upgrades in the robit?
-    private static final int ticksRequired = 100;
+    private static final int ticksRequired = 5 * SharedConstants.TICKS_PER_SECOND;
 
     @Nullable
     private GlobalPos homeLocation;
@@ -281,6 +281,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         builder.define(SECURITY, SecurityMode.PUBLIC);
         builder.define(FOLLOW, false);
         builder.define(DROP_PICKUP, false);
+        builder.define(DEFAULT_SKIN_MANUALLY_SELECTED, false);
         builder.define(SKIN, MekanismRobitSkins.BASE);
     }
 
@@ -289,14 +290,14 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     }
 
     @Override
-    public void onRemovedFromWorld() {
+    public void onRemovedFromLevel() {
         if (level() != null && !level().isClientSide && getFollowing() && getOwner() != null) {
             //If this robit is currently following its owner and is being removed from the world (due to chunk unloading)
             // register a ticket that loads the chunk for a second, so that it has time to have its following check run again
             // (as it runs every 10 ticks, half a second), and then teleport to the owner.
             ((ServerLevel) level()).getChunkSource().addRegionTicket(ROBIT_CHUNK_UNLOAD, new ChunkPos(blockPosition()), 2, getId());
         }
-        super.onRemovedFromWorld();
+        super.onRemovedFromLevel();
     }
 
     @Override
@@ -351,7 +352,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
             energySlot.fillContainerOrConvert();
             recipeCacheLookupMonitor.updateAndProcess();
 
-            if (HolidayManager.hasRobitSkinsToday() && getSkin() == MekanismRobitSkins.BASE) {
+            if (!isDefaultSkinManuallySelected() && HolidayManager.hasRobitSkinsToday() && getSkin() == MekanismRobitSkins.BASE) {
                 //Randomize the robit's skin
                 setSkin(HolidayManager.getRandomBaseSkin(level().random), null);
             }
@@ -463,6 +464,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
             security.setOwnerUUID(getOwnerUUID());
             security.setSecurityMode(getSecurityMode());
         }
+        stack.set(MekanismDataComponents.DEFAULT_MANUALLY_SELECTED, isDefaultSkinManuallySelected());
         stack.set(MekanismDataComponents.ROBIT_SKIN, getSkin());
         return stack;
     }
@@ -525,24 +527,10 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     }
 
     @Override
-    public boolean isInvulnerableTo(@NotNull DamageSource source) {
-        return source.is(MekanismDamageTypes.RADIATION.key()) || super.isInvulnerableTo(source);
-    }
-
-    @Override
-    protected void actuallyHurt(@NotNull DamageSource damageSource, float amount) {
-        amount = CommonHooks.onLivingHurt(this, damageSource, amount);
-        if (amount <= 0) {
-            return;
-        }
-        amount = getDamageAfterArmorAbsorb(damageSource, amount);
-        amount = getDamageAfterMagicAbsorb(damageSource, amount);
-        if (damageSource.is(DamageTypeTags.IS_FALL)) {
-            //Half the "potential" damage the Robit can take from falling
-            amount /= 2;
-        }
-        energyContainer.extract((long) (1_000 * (double) amount), Action.EXECUTE, AutomationType.INTERNAL);
-        getCombatTracker().recordDamage(damageSource, amount);
+    public void onDamageTaken(@NotNull DamageContainer damageContainer) {
+        energyContainer.extract(MathUtils.clampToLong(1_000D * damageContainer.getNewDamage()), Action.EXECUTE, AutomationType.INTERNAL);
+        //Don't actually allow taking damage to reduce the robit's health
+        setHealth(getMaxHealth());
     }
 
     @Override
@@ -685,7 +673,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     }
 
     @Override
-    public ItemStack getPickedResult(HitResult target) {
+    public ItemStack getPickedResult(@NotNull HitResult target) {
         return getItemVariant();
     }
 
@@ -730,6 +718,11 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     }
 
     public ContainerLevelAccess getWorldPosCallable() {
+        if (level().isClientSide) {
+            //Note: Mojang just uses a null level access for containers on the client side. We mirror this here so that
+            // we don't play multiple sounds when taking items out of the robit's repair screen
+            return ContainerLevelAccess.NULL;
+        }
         return new ContainerLevelAccess() {
             @NotNull
             @Override
@@ -739,6 +732,14 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
                 return Optional.ofNullable(worldBlockPosTBiFunction.apply(level(), blockPosition()));
             }
         };
+    }
+
+    public boolean isDefaultSkinManuallySelected() {
+        return entityData.get(DEFAULT_SKIN_MANUALLY_SELECTED);
+    }
+
+    public void setDefaultSkinManuallySelected(boolean value) {
+        entityData.set(DEFAULT_SKIN_MANUALLY_SELECTED, value);
     }
 
     @NotNull
@@ -771,6 +772,9 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
             }
         }
         entityData.set(SKIN, skinKey);
+        if (skinKey == MekanismRobitSkins.BASE) {
+            setDefaultSkinManuallySelected(true);
+        }
         return true;
     }
 

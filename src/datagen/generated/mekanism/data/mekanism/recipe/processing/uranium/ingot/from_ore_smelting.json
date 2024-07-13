@@ -3,9 +3,14 @@
   "category": "misc",
   "cookingtime": 200,
   "experience": 0.6,
-  "ingredient": {
-    "tag": "c:ores/uranium"
-  },
+  "ingredient": [
+    {
+      "item": "mekanism:uranium_ore"
+    },
+    {
+      "item": "mekanism:deepslate_uranium_ore"
+    }
+  ],
   "result": {
     "count": 1,
     "id": "mekanism:ingot_uranium"

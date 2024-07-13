@@ -5,6 +5,7 @@ import com.blamejared.crafttweaker.api.fluid.CTFluidIngredient;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.basic.BasicElectrolysisRecipe;
+import mekanism.api.recipes.vanilla_input.SingleFluidRecipeInput;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTGasStack;
@@ -14,7 +15,7 @@ import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_SEPARATING)
-public class ElectrolysisRecipeManager extends MekanismRecipeManager<ElectrolysisRecipe> {
+public class ElectrolysisRecipeManager extends MekanismRecipeManager<SingleFluidRecipeInput, ElectrolysisRecipe> {
 
     public static final ElectrolysisRecipeManager INSTANCE = new ElectrolysisRecipeManager();
 

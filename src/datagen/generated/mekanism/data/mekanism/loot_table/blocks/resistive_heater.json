@@ -14,6 +14,7 @@
             {
               "function": "minecraft:copy_components",
               "include": [
+                "mekanism:energy_usage",
                 "mekanism:owner",
                 "mekanism:redstone_control",
                 "mekanism:security",

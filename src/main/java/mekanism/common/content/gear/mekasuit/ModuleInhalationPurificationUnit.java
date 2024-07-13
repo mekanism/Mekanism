@@ -1,16 +1,17 @@
 package mekanism.common.content.gear.mekasuit;
 
 import java.util.List;
+import mekanism.api.MekanismAPITags;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.math.ULong;
+import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
@@ -23,9 +24,9 @@ public record ModuleInhalationPurificationUnit(boolean beneficialEffects, boolea
     private static final ModuleDamageAbsorbInfo INHALATION_ABSORB_INFO = new ModuleDamageAbsorbInfo(MekanismConfig.gear.mekaSuitMagicDamageRatio,
           MekanismConfig.gear.mekaSuitEnergyUsageMagicReduce);
 
-    public static final String BENEFICIAL_EFFECTS = "purification.beneficial";
-    public static final String NEUTRAL_EFFECTS = "purification.neutral";
-    public static final String HARMFUL_EFFECTS = "purification.harmful";
+    public static final ResourceLocation BENEFICIAL_EFFECTS = Mekanism.rl("purification.beneficial");
+    public static final ResourceLocation NEUTRAL_EFFECTS = Mekanism.rl("purification.neutral");
+    public static final ResourceLocation HARMFUL_EFFECTS = Mekanism.rl("purification.harmful");
 
     public ModuleInhalationPurificationUnit(IModule<ModuleInhalationPurificationUnit> module) {
         this(module.getBooleanConfigOrFalse(BENEFICIAL_EFFECTS), module.getBooleanConfigOrFalse(NEUTRAL_EFFECTS), module.getBooleanConfigOrFalse(HARMFUL_EFFECTS));
@@ -87,7 +88,7 @@ public record ModuleInhalationPurificationUnit(boolean beneficialEffects, boolea
     @Nullable
     @Override
     public ModuleDamageAbsorbInfo getDamageAbsorbInfo(IModule<ModuleInhalationPurificationUnit> module, DamageSource damageSource) {
-        return damageSource.is(MekanismTags.DamageTypes.IS_PREVENTABLE_MAGIC) ? INHALATION_ABSORB_INFO : null;
+        return damageSource.is(MekanismAPITags.DamageTypes.IS_PREVENTABLE_MAGIC) ? INHALATION_ABSORB_INFO : null;
     }
 
     private void speedupEffect(Player player, MobEffectInstance effect) {

@@ -133,7 +133,11 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
             case LOCK -> {
                 ComponentBackedBinInventorySlot slot = BinInventorySlot.getForStack(stack);
                 //If there is no inventory, or it isn't locked just skip
-                yield slot == null || !slot.isLocked() ? null : new LockRecipeData(slot);
+                if (slot == null) {
+                    yield null;
+                }
+                ItemStack lockStack = slot.getLockStack();
+                yield lockStack.isEmpty() ? null : new LockRecipeData(lockStack);
             }
             case SECURITY -> {
                 UUID ownerUUID = IItemSecurityUtils.INSTANCE.getOwnerUUID(stack);

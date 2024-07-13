@@ -4,7 +4,7 @@
   "cookingtime": 200,
   "experience": 0.6,
   "ingredient": {
-    "tag": "c:raw_materials/uranium"
+    "item": "mekanism:raw_uranium"
   },
   "result": {
     "count": 1,

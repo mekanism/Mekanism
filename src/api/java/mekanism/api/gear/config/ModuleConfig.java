@@ -4,11 +4,13 @@ import com.mojang.datafixers.Products.P1;
 import com.mojang.serialization.codecs.RecordCodecBuilder.Instance;
 import com.mojang.serialization.codecs.RecordCodecBuilder.Mu;
 import java.util.Objects;
+import java.util.function.Function;
+import mekanism.api.MekanismAPI;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.util.ExtraCodecs;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Immutable class representing a module config (name and value).
@@ -22,39 +24,47 @@ import net.minecraft.util.ExtraCodecs;
 @NothingNullByDefault
 public abstract class ModuleConfig<DATA> {
 
+    private static ResourceLocation rl(String path) {
+        return ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, path);
+    }
+
     /**
      * Constant representing the module config for enabled state.
      */
-    public static final String ENABLED_KEY = "enabled";
+    public static final ResourceLocation ENABLED_KEY = rl("enabled");
     /**
      * Constant representing the module config for if a handling of mode change state.
      */
-    public static final String HANDLES_MODE_CHANGE_KEY = "handle_mode_change";
+    public static final ResourceLocation HANDLES_MODE_CHANGE_KEY = rl("handle_mode_change");
     /**
      * Constant representing the module config for whether the module should render on the HUD.
      */
-    public static final String RENDER_HUD_KEY = "render_hud";
+    public static final ResourceLocation RENDER_HUD_KEY = rl("render_hud");
 
     /**
      * Helper method to get the base part of a codec that contains all the parts necessary by this parent class.
      */
-    protected static <DATA, CONFIG extends ModuleConfig<DATA>> P1<Mu<CONFIG>, String> baseCodec(Instance<CONFIG> instance) {
-        return instance.group(ExtraCodecs.NON_EMPTY_STRING.fieldOf(SerializationConstants.NAME).forGetter(ModuleConfig::name));
+    protected static <DATA, CONFIG extends ModuleConfig<DATA>> P1<Mu<CONFIG>, ResourceLocation> baseCodec(Instance<CONFIG> instance) {
+        //TODO - 1.21: In a couple builds remove this hacky way to make old modules load
+        // Note: This legacy method only supports mekanism configs and not modded configs, as there is no clean way to know what namespace it should actually be in
+        return instance.group(ResourceLocation.CODEC.xmap(rl -> rl.getNamespace().equals("minecraft") ? rl(rl.getPath()) : rl, Function.identity())
+              .fieldOf(SerializationConstants.NAME).forGetter(ModuleConfig::name));
+        //return instance.group(ResourceLocation.CODEC.fieldOf(SerializationConstants.NAME).forGetter(ModuleConfig::name));
     }
 
     //TODO: Do we want to make module configs be a registry or something rather than being named?
     // It probably won't make that much difference as it still would need to keep track of the
     // "config type" which would basically just be a named registry object
-    private final String name;
+    private final ResourceLocation name;
 
-    protected ModuleConfig(String name) {
+    protected ModuleConfig(ResourceLocation name) {
         this.name = Objects.requireNonNull(name, "Name cannot be null.");
     }
 
     /**
      * {@return the name of this config option, should be unique}
      */
-    public final String name() {
+    public final ResourceLocation name() {
         return name;
     }
 
@@ -63,7 +73,7 @@ public abstract class ModuleConfig<DATA> {
      *
      * @param name Name to use during config decoding.
      */
-    public abstract StreamCodec<? super RegistryFriendlyByteBuf, ModuleConfig<DATA>> namedStreamCodec(String name);
+    public abstract StreamCodec<? super RegistryFriendlyByteBuf, ModuleConfig<DATA>> namedStreamCodec(ResourceLocation name);
 
     /**
      * {@return the value of this config option}
@@ -87,7 +97,7 @@ public abstract class ModuleConfig<DATA> {
      *
      * @return {@code false}, unless overridden to conditionally disable.
      *
-     * @apiNote When overriding, make sure to also override {@link #get()}, {@link #with(Object)}, {@link #namedStreamCodec(String)}, and use a custom codec and stream
+     * @apiNote When overriding, make sure to also override {@link #get()}, {@link #with(Object)}, {@link #namedStreamCodec(ResourceLocation)}, and use a custom codec and stream
      * codec when adding the config to the module data.
      */
     public boolean isConfigDisabled() {

@@ -4,6 +4,7 @@ import com.google.common.collect.Table.Cell;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import mekanism.api.MekanismAPITags;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.Mekanism;
@@ -38,6 +39,7 @@ import net.minecraft.tags.GameEventTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -125,7 +127,7 @@ public class MekanismTagProvider extends BaseTagProvider {
         addToTag(ItemTags.CLUSTER_MAX_HARVESTABLES, MekanismItems.ATOMIC_DISASSEMBLER, MekanismItems.MEKA_TOOL);
         addToTag(ItemTags.FREEZE_IMMUNE_WEARABLES, MekanismItems.MEKASUIT_HELMET, MekanismItems.MEKASUIT_BODYARMOR, MekanismItems.MEKASUIT_PANTS, MekanismItems.MEKASUIT_BOOTS);
         addToTag(BlockTags.SCULK_REPLACEABLE, MekanismBlocks.SALT_BLOCK);
-        getMobEffectBuilder(MekanismTags.MobEffects.SPEED_UP_BLACKLIST);
+        getMobEffectBuilder(MekanismAPITags.MobEffects.SPEED_UP_BLACKLIST);
 
         getBlockBuilder(MekanismTags.Blocks.FARMING_OVERRIDE).add(
               Blocks.PINK_PETALS
@@ -139,12 +141,21 @@ public class MekanismTagProvider extends BaseTagProvider {
         addEntitiesToTag(EntityTypeTags.IMPACT_PROJECTILES, MekanismEntityTypes.FLAME);
         addEntitiesToTag(PVI_COMPAT, MekanismEntityTypes.ROBIT);
 
+        addEntitiesToTag(MekanismAPITags.Entities.RADIATION_IMMUNE, MekanismEntityTypes.ROBIT);
+        getEntityTypeBuilder(MekanismAPITags.Entities.MEK_RADIATION_IMMUNE).add(MekanismAPITags.Entities.RADIATION_IMMUNE).add(
+              EntityType.IRON_GOLEM,
+              EntityType.SNOW_GOLEM
+        );
+
         addEntitiesToTag(EntityTypeTags.POWDER_SNOW_WALKABLE_MOBS, MekanismEntityTypes.ROBIT);
         addEntitiesToTag(EntityTypeTags.FREEZE_IMMUNE_ENTITY_TYPES, MekanismEntityTypes.ROBIT);
         addEntitiesToTag(EntityTypeTags.CAN_BREATHE_UNDER_WATER, MekanismEntityTypes.ROBIT);
         addEntitiesToTag(EntityTypeTags.IGNORES_POISON_AND_REGEN, MekanismEntityTypes.ROBIT);
         addEntitiesToTag(EntityTypeTags.IMMUNE_TO_INFESTED, MekanismEntityTypes.ROBIT);
         addEntitiesToTag(EntityTypeTags.IMMUNE_TO_OOZING, MekanismEntityTypes.ROBIT);
+        addEntitiesToTag(EntityTypeTags.FALL_DAMAGE_IMMUNE, MekanismEntityTypes.ROBIT);
+        //Robit's don't need to breathe
+        addEntitiesToTag(EntityTypeTags.CAN_BREATHE_UNDER_WATER, MekanismEntityTypes.ROBIT);
         //Robit's are not scary, they are friends!
         addEntitiesToTag(EntityTypeTags.NOT_SCARY_FOR_PUFFERFISH, MekanismEntityTypes.ROBIT);
         addEntitiesToTag(EntityTypeTags.ILLAGER_FRIENDS, MekanismEntityTypes.ROBIT);
@@ -233,13 +244,16 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismBlocks.ULTIMATE_UNIVERSAL_CABLE
         );
         getBlockBuilder(MekanismTags.Blocks.CARDBOARD_BLACKLIST)
-              .add(Tags.Blocks.RELOCATION_NOT_SUPPORTED, BlockTags.BEDS, BlockTags.DOORS);
+              .add(Tags.Blocks.RELOCATION_NOT_SUPPORTED, BlockTags.BEDS, BlockTags.DOORS)
+              .add(Blocks.TRIAL_SPAWNER, Blocks.VAULT);
     }
 
     private void addTools() {
         addWrenches();
         addToTag(ItemTags.BREAKS_DECORATED_POTS, MekanismItems.ATOMIC_DISASSEMBLER, MekanismItems.MEKA_TOOL);
-        addToTag(Tags.Items.TOOLS_BOWS, MekanismItems.ELECTRIC_BOW);
+        addToTag(Tags.Items.MINING_TOOL_TOOLS , MekanismItems.ATOMIC_DISASSEMBLER, MekanismItems.MEKA_TOOL);
+        addToTag(Tags.Items.TOOLS_BOW, MekanismItems.ELECTRIC_BOW);
+        addToTag(Tags.Items.RANGED_WEAPON_TOOLS, MekanismItems.ELECTRIC_BOW);
         addToTag(ItemTags.BOW_ENCHANTABLE, MekanismItems.ELECTRIC_BOW);
         addToTag(ItemTags.DURABILITY_ENCHANTABLE, MekanismItems.HDPE_REINFORCED_ELYTRA);
         addToTag(ItemTags.EQUIPPABLE_ENCHANTABLE, MekanismItems.HDPE_REINFORCED_ELYTRA);
@@ -257,7 +271,7 @@ public class MekanismTagProvider extends BaseTagProvider {
         addToTag(ItemTags.CHEST_ARMOR, MekanismItems.HAZMAT_GOWN, MekanismItems.MEKASUIT_BODYARMOR);
         addToTag(ItemTags.LEG_ARMOR, MekanismItems.HAZMAT_PANTS, MekanismItems.MEKASUIT_PANTS);
         addToTag(ItemTags.FOOT_ARMOR, MekanismItems.HAZMAT_BOOTS, MekanismItems.MEKASUIT_BOOTS);
-        getItemBuilder(ItemTags.TRIMMABLE_ARMOR).remove(IItemProvider::getRegistryName,
+        getItemBuilder(ItemTags.TRIMMABLE_ARMOR).remove(
               MekanismItems.HAZMAT_MASK,
               MekanismItems.HAZMAT_GOWN,
               MekanismItems.HAZMAT_PANTS,
@@ -268,22 +282,17 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismItems.MEKASUIT_BOOTS
         );
         IItemProvider[] providers = {
-              MekanismItems.HAZMAT_MASK,
-              MekanismItems.HAZMAT_GOWN,
-              MekanismItems.HAZMAT_PANTS,
-              MekanismItems.HAZMAT_BOOTS,
               MekanismItems.MEKASUIT_HELMET,
               MekanismItems.MEKASUIT_BODYARMOR,
               MekanismItems.MEKASUIT_PANTS,
               MekanismItems.MEKASUIT_BOOTS
         };
-        getItemBuilder(ItemTags.TRIMMABLE_ARMOR).remove(IItemProvider::getRegistryName, providers);
         getItemBuilder(ItemTags.DURABILITY_ENCHANTABLE).remove(IItemProvider::getRegistryName, providers);
         getItemBuilder(ItemTags.EQUIPPABLE_ENCHANTABLE).remove(IItemProvider::getRegistryName, providers);
-        getItemBuilder(ItemTags.HEAD_ARMOR_ENCHANTABLE).remove(IItemProvider::getRegistryName, MekanismItems.HAZMAT_MASK, MekanismItems.MEKASUIT_HELMET);
-        getItemBuilder(ItemTags.CHEST_ARMOR_ENCHANTABLE).remove(IItemProvider::getRegistryName, MekanismItems.HAZMAT_GOWN, MekanismItems.MEKASUIT_BODYARMOR);
-        getItemBuilder(ItemTags.LEG_ARMOR_ENCHANTABLE).remove(IItemProvider::getRegistryName, MekanismItems.HAZMAT_PANTS, MekanismItems.MEKASUIT_PANTS);
-        getItemBuilder(ItemTags.FOOT_ARMOR_ENCHANTABLE).remove(IItemProvider::getRegistryName, MekanismItems.HAZMAT_BOOTS, MekanismItems.MEKASUIT_BOOTS);
+        getItemBuilder(ItemTags.HEAD_ARMOR_ENCHANTABLE).remove(MekanismItems.MEKASUIT_HELMET);
+        getItemBuilder(ItemTags.CHEST_ARMOR_ENCHANTABLE).remove(MekanismItems.MEKASUIT_BODYARMOR);
+        getItemBuilder(ItemTags.LEG_ARMOR_ENCHANTABLE).remove( MekanismItems.MEKASUIT_PANTS);
+        getItemBuilder(ItemTags.FOOT_ARMOR_ENCHANTABLE).remove(MekanismItems.MEKASUIT_BOOTS);
     }
 
     private void addRods() {
@@ -504,14 +513,20 @@ public class MekanismTagProvider extends BaseTagProvider {
     private void addDamageTypes() {
         addToTag(Tags.DamageTypes.IS_ENVIRONMENT, MekanismDamageTypes.RADIATION);
         addToTag(DamageTypeTags.BYPASSES_ARMOR, MekanismDamageTypes.RADIATION);
+        addToTag(DamageTypeTags.BYPASSES_RESISTANCE, MekanismDamageTypes.RADIATION);
+        addToTag(DamageTypeTags.BYPASSES_SHIELD, MekanismDamageTypes.RADIATION);
         addToTag(DamageTypeTags.BYPASSES_WOLF_ARMOR, MekanismDamageTypes.RADIATION);
         addToTag(DamageTypeTags.BYPASSES_COOLDOWN, MekanismDamageTypes.LASER);
-        getDamageTypeBuilder(MekanismTags.DamageTypes.IS_PREVENTABLE_MAGIC).add(DamageTypes.MAGIC, DamageTypes.INDIRECT_MAGIC);
+        addToTag(DamageTypeTags.ALWAYS_KILLS_ARMOR_STANDS, MekanismDamageTypes.LASER);
+        addToTag(DamageTypeTags.PANIC_CAUSES, MekanismDamageTypes.LASER);
+        addToTag(DamageTypeTags.NO_KNOCKBACK, MekanismDamageTypes.LASER, MekanismDamageTypes.RADIATION);
+        addToTag(DamageTypeTags.PANIC_ENVIRONMENTAL_CAUSES, MekanismDamageTypes.RADIATION);
+        getDamageTypeBuilder(MekanismAPITags.DamageTypes.IS_PREVENTABLE_MAGIC).add(DamageTypes.MAGIC, DamageTypes.INDIRECT_MAGIC);
 
-        addToTag(MekanismTags.DamageTypes.MEKASUIT_ALWAYS_SUPPORTED, DamageTypes.FALLING_ANVIL, DamageTypes.CACTUS, DamageTypes.CRAMMING,
-                DamageTypes.DRAGON_BREATH, DamageTypes.DRY_OUT, DamageTypes.FALL, DamageTypes.FALLING_BLOCK, DamageTypes.FLY_INTO_WALL, DamageTypes.GENERIC,
-                DamageTypes.HOT_FLOOR, DamageTypes.IN_FIRE, DamageTypes.IN_WALL, DamageTypes.LAVA, DamageTypes.LIGHTNING_BOLT, DamageTypes.ON_FIRE,
-                DamageTypes.SWEET_BERRY_BUSH, DamageTypes.WITHER, DamageTypes.FREEZE, DamageTypes.FALLING_STALACTITE, DamageTypes.STALAGMITE, DamageTypes.SONIC_BOOM);
+        addToTag(MekanismAPITags.DamageTypes.MEKASUIT_ALWAYS_SUPPORTED, DamageTypes.FALLING_ANVIL, DamageTypes.CACTUS, DamageTypes.CRAMMING,
+              DamageTypes.DRAGON_BREATH, DamageTypes.DRY_OUT, DamageTypes.FALL, DamageTypes.FALLING_BLOCK, DamageTypes.FLY_INTO_WALL, DamageTypes.GENERIC,
+              DamageTypes.HOT_FLOOR, DamageTypes.IN_FIRE, DamageTypes.IN_WALL, DamageTypes.LAVA, DamageTypes.LIGHTNING_BOLT, DamageTypes.ON_FIRE,
+              DamageTypes.SWEET_BERRY_BUSH, DamageTypes.WITHER, DamageTypes.FREEZE, DamageTypes.FALLING_STALACTITE, DamageTypes.STALAGMITE, DamageTypes.SONIC_BOOM);
     }
 
     private void addFluids() {
@@ -546,12 +561,12 @@ public class MekanismTagProvider extends BaseTagProvider {
 
     private void addGasTags() {
         addToTag(MekanismTags.Gases.WATER_VAPOR, MekanismGases.WATER_VAPOR, MekanismGases.STEAM);
-        addToTag(MekanismTags.Gases.WASTE_BARREL_DECAY_BLACKLIST, MekanismGases.PLUTONIUM, MekanismGases.POLONIUM);
+        addToTag(MekanismAPITags.Gases.WASTE_BARREL_DECAY_BLACKLIST, MekanismGases.PLUTONIUM, MekanismGases.POLONIUM);
     }
 
     private void addSlurryTags(SlurryRegistryObject<?, ?>... slurryRegistryObjects) {
-        IntrinsicMekanismTagBuilder<Slurry> dirtyTagBuilder = getSlurryBuilder(MekanismTags.Slurries.DIRTY);
-        IntrinsicMekanismTagBuilder<Slurry> cleanTagBuilder = getSlurryBuilder(MekanismTags.Slurries.CLEAN);
+        IntrinsicMekanismTagBuilder<Slurry> dirtyTagBuilder = getSlurryBuilder(MekanismAPITags.Slurries.DIRTY);
+        IntrinsicMekanismTagBuilder<Slurry> cleanTagBuilder = getSlurryBuilder(MekanismAPITags.Slurries.CLEAN);
         for (SlurryRegistryObject<?, ?> slurryRO : slurryRegistryObjects) {
             dirtyTagBuilder.add(slurryRO.getDirtySlurry());
             cleanTagBuilder.add(slurryRO.getCleanSlurry());
@@ -564,14 +579,14 @@ public class MekanismTagProvider extends BaseTagProvider {
     }
 
     private void addInfuseTags() {
-        addToTag(MekanismTags.InfuseTypes.CARBON, MekanismInfuseTypes.CARBON);
-        addToTag(MekanismTags.InfuseTypes.REDSTONE, MekanismInfuseTypes.REDSTONE);
-        addToTag(MekanismTags.InfuseTypes.DIAMOND, MekanismInfuseTypes.DIAMOND);
-        addToTag(MekanismTags.InfuseTypes.REFINED_OBSIDIAN, MekanismInfuseTypes.REFINED_OBSIDIAN);
-        addToTag(MekanismTags.InfuseTypes.GOLD, MekanismInfuseTypes.GOLD);
-        addToTag(MekanismTags.InfuseTypes.TIN, MekanismInfuseTypes.TIN);
-        addToTag(MekanismTags.InfuseTypes.FUNGI, MekanismInfuseTypes.FUNGI);
-        addToTag(MekanismTags.InfuseTypes.BIO, MekanismInfuseTypes.BIO);
+        addToTag(MekanismAPITags.InfuseTypes.CARBON, MekanismInfuseTypes.CARBON);
+        addToTag(MekanismAPITags.InfuseTypes.REDSTONE, MekanismInfuseTypes.REDSTONE);
+        addToTag(MekanismAPITags.InfuseTypes.DIAMOND, MekanismInfuseTypes.DIAMOND);
+        addToTag(MekanismAPITags.InfuseTypes.REFINED_OBSIDIAN, MekanismInfuseTypes.REFINED_OBSIDIAN);
+        addToTag(MekanismAPITags.InfuseTypes.GOLD, MekanismInfuseTypes.GOLD);
+        addToTag(MekanismAPITags.InfuseTypes.TIN, MekanismInfuseTypes.TIN);
+        addToTag(MekanismAPITags.InfuseTypes.FUNGI, MekanismInfuseTypes.FUNGI);
+        addToTag(MekanismAPITags.InfuseTypes.BIO, MekanismInfuseTypes.BIO);
     }
 
     private void addHarvestRequirements() {

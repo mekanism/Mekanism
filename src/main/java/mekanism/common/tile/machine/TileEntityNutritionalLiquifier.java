@@ -1,13 +1,13 @@
 package mekanism.common.tile.machine;
 
-import java.util.Collections;
 import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.recipes.ItemStackToFluidRecipe;
+import mekanism.api.recipes.ItemStackToFluidOptionalItemRecipe;
+import mekanism.api.recipes.ItemStackToFluidOptionalItemRecipe.FluidOptionalItemOutput;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.api.recipes.cache.OneInputCachedRecipe;
@@ -48,43 +48,47 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<ItemStackToFluidRecipe> {
+public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<ItemStackToFluidOptionalItemRecipe> {
 
+    public static final RecipeError NOT_ENOUGH_SPACE_ITEM_OUTPUT_ERROR = RecipeError.create();
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
           RecipeError.NOT_ENOUGH_ENERGY,
           RecipeError.NOT_ENOUGH_INPUT,
           RecipeError.NOT_ENOUGH_OUTPUT_SPACE,
+          NOT_ENOUGH_SPACE_ITEM_OUTPUT_ERROR,
           RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
     );
-    public static final int MAX_FLUID = 10_000;
-    public static final int BASE_TICKS_REQUIRED = 100;
+    public static final int MAX_FLUID = 10 * FluidType.BUCKET_VOLUME;
+    public static final int BASE_TICKS_REQUIRED = 5 * SharedConstants.TICKS_PER_SECOND;
 
     @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded",
                                                                                      "getOutputFilledPercentage"}, docPlaceholder = "output tank")
     public IExtendedFluidTank fluidTank;
 
-    private final IOutputHandler<@NotNull FluidStack> outputHandler;
+    private final IOutputHandler<@NotNull FluidOptionalItemOutput> outputHandler;
     private final IInputHandler<@NotNull ItemStack> inputHandler;
 
     private MachineEnergyContainer<TileEntityNutritionalLiquifier> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInput", docPlaceholder = "input slot")
     InputInventorySlot inputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem", docPlaceholder = "output slot")
+    OutputInventorySlot outputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getContainerFillItem", docPlaceholder = "fillable container slot")
     FluidInventorySlot containerFillSlot;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem", docPlaceholder = "filled container output slot")
-    OutputInventorySlot outputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getContainerOutputItem", docPlaceholder = "filled container output slot")
+    OutputInventorySlot containerOutputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy slot")
     EnergyInventorySlot energySlot;
 
@@ -93,8 +97,8 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
     private float lastPasteScale;
 
     public TileEntityNutritionalLiquifier(BlockPos pos, BlockState state) {
-        super(MekanismBlocks.NUTRITIONAL_LIQUIFIER, pos, state, TRACKED_ERROR_TYPES, 100);
-        configComponent.setupItemIOConfig(List.of(inputSlot, containerFillSlot), Collections.singletonList(outputSlot), energySlot, false);
+        super(MekanismBlocks.NUTRITIONAL_LIQUIFIER, pos, state, TRACKED_ERROR_TYPES, BASE_TICKS_REQUIRED);
+        configComponent.setupItemIOConfig(List.of(inputSlot, containerFillSlot), List.of(outputSlot, containerOutputSlot), energySlot, false);
         configComponent.setupOutputConfig(TransmissionType.FLUID, fluidTank, RelativeSide.RIGHT);
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
 
@@ -102,7 +106,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
         ejectorComponent.setOutputData(configComponent, TransmissionType.FLUID);
 
         inputHandler = InputHelper.getInputHandler(inputSlot, RecipeError.NOT_ENOUGH_INPUT);
-        outputHandler = OutputHelper.getOutputHandler(fluidTank, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
+        outputHandler = OutputHelper.getOutputHandler(fluidTank, RecipeError.NOT_ENOUGH_OUTPUT_SPACE, outputSlot, NOT_ENOUGH_SPACE_ITEM_OUTPUT_ERROR);
     }
 
     @NotNull
@@ -127,27 +131,26 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
         builder.addSlot(inputSlot = InputInventorySlot.at(TileEntityNutritionalLiquifier::isValidInput, recipeCacheListener, 26, 36)
         ).tracksWarnings(slot -> slot.warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(RecipeError.NOT_ENOUGH_INPUT)));
+        builder.addSlot(outputSlot = OutputInventorySlot.at(listener, 110, 36))
+              .tracksWarnings(slot -> slot.warning(WarningType.NO_SPACE_IN_OUTPUT, getWarningCheck(NOT_ENOUGH_SPACE_ITEM_OUTPUT_ERROR)));
         builder.addSlot(containerFillSlot = FluidInventorySlot.drain(fluidTank, listener, 155, 25));
-        builder.addSlot(outputSlot = OutputInventorySlot.at(listener, 155, 56));
+        builder.addSlot(containerOutputSlot = OutputInventorySlot.at(listener, 155, 56));
         builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, listener, 155, 5));
         containerFillSlot.setSlotOverlay(SlotOverlay.PLUS);
         return builder.build();
     }
 
     public static boolean isValidInput(ItemStack stack) {
-        if (stack.has(DataComponents.FOOD)) {//Double-check the stack is food
-            FoodProperties food = stack.getFoodProperties(null);
-            //And only allow inserting foods that actually would provide paste
-            return food != null && food.nutrition() > 0;
-        }
-        return false;
+        FoodProperties food = stack.getFoodProperties(null);
+        //And only allow inserting foods that actually would provide paste
+        return food != null && food.nutrition() > 0;
     }
 
     @Override
     protected boolean onUpdateServer() {
         boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.fillContainerOrConvert();
-        containerFillSlot.drainTank(outputSlot);
+        containerFillSlot.drainTank(containerOutputSlot);
         recipeCacheLookupMonitor.updateAndProcess();
         float pasteScale = MekanismUtils.getScale(lastPasteScale, fluidTank);
         if (MekanismUtils.scaleChanged(pasteScale, lastPasteScale)) {
@@ -171,21 +174,25 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
 
     @NotNull
     @Override
-    public MekanismRecipeType<SingleRecipeInput, ItemStackToFluidRecipe, IInputRecipeCache> getRecipeType() {
+    public MekanismRecipeType<SingleRecipeInput, ItemStackToFluidOptionalItemRecipe, IInputRecipeCache> getRecipeType() {
         //TODO - V11: See comment in NutritionalLiquifierIRecipe. Note if either containsRecipe and findFirstRecipe get called a null pointer will occur
         return null;
     }
 
     @Override
-    public IRecipeViewerRecipeType<ItemStackToFluidRecipe> recipeViewerType() {
+    public IRecipeViewerRecipeType<ItemStackToFluidOptionalItemRecipe> recipeViewerType() {
         return RecipeViewerRecipeType.NUTRITIONAL_LIQUIFICATION;
     }
 
     @Nullable
     @Override
-    public ItemStackToFluidRecipe getRecipe(int cacheIndex) {
-        ItemStack stack = inputHandler.getInput();
-        if (stack.isEmpty() || !stack.has(DataComponents.FOOD)) {
+    public ItemStackToFluidOptionalItemRecipe getRecipe(int cacheIndex) {
+        return getRecipe(inputHandler.getInput());
+    }
+
+    @Nullable
+    public static ItemStackToFluidOptionalItemRecipe getRecipe(ItemStack stack) {
+        if (stack.isEmpty()) {
             return null;
         }
         FoodProperties food = stack.getFoodProperties(null);
@@ -193,14 +200,17 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
             //If the food provides no healing don't allow consuming it as it won't provide any paste
             return null;
         }
-        return new NutritionalLiquifierIRecipe(IngredientCreatorAccess.item().from(stack, 1),
-              MekanismFluids.NUTRITIONAL_PASTE.getFluidStack(food.nutrition() * 50));
+        return new NutritionalLiquifierIRecipe(
+              IngredientCreatorAccess.item().from(stack, 1),
+              MekanismFluids.NUTRITIONAL_PASTE.getFluidStack(food.nutrition() * 50),
+              food.usingConvertsTo().orElse(ItemStack.EMPTY)
+        );
     }
 
     @NotNull
     @Override
-    public CachedRecipe<ItemStackToFluidRecipe> createNewCachedRecipe(@NotNull ItemStackToFluidRecipe recipe, int cacheIndex) {
-        return OneInputCachedRecipe.itemToFluid(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
+    public CachedRecipe<ItemStackToFluidOptionalItemRecipe> createNewCachedRecipe(@NotNull ItemStackToFluidOptionalItemRecipe recipe, int cacheIndex) {
+        return OneInputCachedRecipe.itemToFluidOptionalItem(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
               .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(this::canFunction)
               .setActive(this::setActive)
@@ -229,11 +239,9 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
     public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
         CompoundTag updateTag = super.getReducedUpdateTag(provider);
         updateTag.put(SerializationConstants.FLUID, fluidTank.serializeNBT(provider));
-        CompoundTag item = new CompoundTag();
         if (lastPasteItem != null) {
-            lastPasteItem.getInternalStack().save(provider, item);
+            updateTag.put(SerializationConstants.ITEM, lastPasteItem.internalToNBT(provider));
         }
-        updateTag.put(SerializationConstants.ITEM, item);
         return updateTag;
     }
 
@@ -241,13 +249,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
     public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
         super.handleUpdateTag(tag, provider);
         NBTUtils.setCompoundIfPresent(tag, SerializationConstants.FLUID, nbt -> fluidTank.deserializeNBT(provider, nbt));
-        NBTUtils.setCompoundIfPresent(tag, SerializationConstants.ITEM, nbt -> {
-            if (nbt.isEmpty()) {
-                lastPasteItem = null;
-            } else {
-                lastPasteItem = HashedItem.raw(ItemStack.parseOptional(provider, nbt));
-            }
-        });
+        NBTUtils.setItemStackOrEmpty(provider, tag, SerializationConstants.ITEM, stack -> lastPasteItem = stack.isEmpty() ? null : HashedItem.raw(stack));
     }
 
     //Methods relating to IComputerTile

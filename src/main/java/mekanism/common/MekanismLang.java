@@ -1,12 +1,7 @@
 package mekanism.common;
 
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.gear.config.ModuleConfig;
 import mekanism.api.text.ILangEntry;
-import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
-import mekanism.common.content.gear.mekasuit.ModuleLocomotiveBoostingUnit;
-import mekanism.common.content.gear.mekatool.ModuleExcavationEscalationUnit;
-import mekanism.common.content.gear.mekatool.ModuleVeinMiningUnit;
 import net.minecraft.Util;
 import net.minecraft.world.entity.EquipmentSlot;
 
@@ -839,7 +834,7 @@ public enum MekanismLang implements ILangEntry {
 
     //Modules
     REMOVE_ALL_MODULES_TOOLTIP("gui", "modification.remove.tooltip"),
-    MODULE_ENABLED("module", ModuleConfig.ENABLED_KEY),
+    MODULE_ENABLED("module", "enabled"),
     MODULE_ENABLED_LOWER("module", "enabled_lower"),
     MODULE_DISABLED_LOWER("module", "disabled_lower"),
     MODULE_DAMAGE("module", "damage"),
@@ -850,13 +845,13 @@ public enum MekanismLang implements ILangEntry {
     MODULE_STACKABLE("module", "stackable"),
     MODULE_EXCLUSIVE("module", "exclusive"),
     MODULE_MODE("module", "mode"),
-    MODULE_SPRINT_BOOST("module", ModuleLocomotiveBoostingUnit.SPRINT_BOOST),
-    MODULE_EXTENDED_MODE("module", ModuleVeinMiningUnit.EXTENDED_MODE),
+    MODULE_SPRINT_BOOST("module", "sprint_boost"),
+    MODULE_EXTENDED_MODE("module", "extended_mode"),
     MODULE_EXTENDED_ENABLED("module", "extended_enabled"),
     MODULE_BLASTING_ENABLED("module", "blasting_enabled"),
     MODULE_BLAST_AREA("module", "blast_area"),
-    MODULE_EFFICIENCY("module", ModuleExcavationEscalationUnit.EXCAVATION_MODE),
-    MODULE_JETPACK_MODE("module", ModuleJetpackUnit.JETPACK_MODE),
+    MODULE_EFFICIENCY("module", "efficiency"),
+    MODULE_JETPACK_MODE("module", "jetpack_mode"),
     MODULE_GRAVITATIONAL_MODULATION("module", "gravitational_modulation"),
     MODULE_MAGNETIC_ATTRACTION("module", "magnetic_attraction"),
     MODULE_MODE_CHANGE("module", "mode_change"),

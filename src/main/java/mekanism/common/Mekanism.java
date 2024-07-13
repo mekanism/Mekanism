@@ -28,7 +28,6 @@ import mekanism.common.command.builders.Builders.MatrixBuilder;
 import mekanism.common.command.builders.Builders.SPSBuilder;
 import mekanism.common.command.builders.Builders.TankBuilder;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.config.MekanismModConfig;
 import mekanism.common.content.boiler.BoilerMultiblockData;
 import mekanism.common.content.boiler.BoilerValidator;
 import mekanism.common.content.evaporation.EvaporationMultiblockData;
@@ -54,6 +53,7 @@ import mekanism.common.integration.MekanismHooks;
 import mekanism.common.item.block.machine.ItemBlockFluidTank.BasicCauldronInteraction;
 import mekanism.common.item.block.machine.ItemBlockFluidTank.BasicDrainCauldronInteraction;
 import mekanism.common.item.block.machine.ItemBlockFluidTank.FluidTankItemDispenseBehavior;
+import mekanism.common.item.interfaces.IHasConditionalAttributes;
 import mekanism.common.item.loot.MekanismLootFunctions;
 import mekanism.common.item.predicate.MekanismItemPredicates;
 import mekanism.common.lib.MekAnnotationScanner;
@@ -118,8 +118,6 @@ import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
 import net.neoforged.fml.event.lifecycle.InterModProcessEvent;
@@ -127,6 +125,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.common.world.chunk.RegisterTicketControllersEvent;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.TagsUpdatedEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
@@ -198,6 +197,7 @@ public class Mekanism {
         NeoForge.EVENT_BUS.addListener(this::onEnergyTransferred);
         NeoForge.EVENT_BUS.addListener(this::onChemicalTransferred);
         NeoForge.EVENT_BUS.addListener(this::onLiquidTransferred);
+        NeoForge.EVENT_BUS.addListener(this::onModifyItemAttributes);
         NeoForge.EVENT_BUS.addListener(this::onWorldLoad);
         NeoForge.EVENT_BUS.addListener(this::onWorldUnload);
         NeoForge.EVENT_BUS.addListener(this::registerCommands);
@@ -208,7 +208,7 @@ public class Mekanism {
         modEventBus.addListener(Capabilities::registerCapabilities);
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::registerChunkTicketControllers);
-        modEventBus.addListener(this::onConfigLoad);
+        modEventBus.addListener(MekanismConfig::onConfigLoad);
         modEventBus.addListener(this::imcQueue);
         modEventBus.addListener(this::imcHandle);
         MekanismItems.ITEMS.register(modEventBus);
@@ -433,13 +433,9 @@ public class Mekanism {
         PacketUtils.sendToAllTracking(event.network, new PacketNetworkScale(event.network), new PacketFluidNetworkContents(networkID, event.fluidType));
     }
 
-    private void onConfigLoad(ModConfigEvent configEvent) {
-        //Note: We listen to both the initial load and the reload, to make sure that we fix any accidentally
-        // cached values from calls before the initial loading
-        ModConfig config = configEvent.getConfig();
-        //Make sure it is for the same modid as us
-        if (config.getModId().equals(MODID) && config instanceof MekanismModConfig mekConfig) {
-            mekConfig.clearCache(configEvent);
+    private void onModifyItemAttributes(ItemAttributeModifierEvent event) {
+        if (event.getItemStack().getItem() instanceof IHasConditionalAttributes item) {
+            item.adjustAttributes(event);
         }
     }
 

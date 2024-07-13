@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "count": 1,
+    "tag": "c:rods/breeze"
+  },
+  "output": {
+    "count": 6,
+    "id": "minecraft:wind_charge"
+  }
+}

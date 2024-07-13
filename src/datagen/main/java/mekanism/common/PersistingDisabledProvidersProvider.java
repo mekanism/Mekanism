@@ -7,13 +7,17 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import mekanism.client.integration.emi.MekanismEmiAliasProvider;
+import mekanism.client.integration.emi.MekanismEmiDefaults;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.crafttweaker.MekanismCrTExampleProvider;
 import mekanism.common.integration.projecte.MekanismCustomConversions;
@@ -49,6 +53,15 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
         ModList modList = ModList.get();
         Set<String> pathsToSkip = new HashSet<>();
         List<String> fakeProviders = new ArrayList<>();
+        if (modList.isLoaded(MekanismHooks.EMI_MOD_ID)) {
+            gen.addProvider(event.includeClient(), new MekanismEmiAliasProvider(output, lookupProvider));
+            gen.addProvider(event.includeClient(), new MekanismEmiDefaults(output, existingFileHelper, lookupProvider));
+        } else {
+            pathsToSkip.add("emi/aliases");
+            pathsToSkip.add("emi/recipes/defaults");
+            fakeProviders.add("EMI Alias Provider: mekanism");
+            fakeProviders.add("EMI Default Recipe Provider: mekanism");
+        }
         if (modList.isLoaded(MekanismHooks.PROJECTE_MOD_ID)) {
             gen.addProvider(event.includeServer(), new MekanismCustomConversions(output, lookupProvider));
         } else {
@@ -65,6 +78,27 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
         //Data generator to help with persisting data when porting across MC versions when optional deps aren't updated yet
         // DO NOT ADD OTHERS AFTER THIS ONE
         gen.addProvider(true, new PersistingDisabledProvidersProvider(output, disabledCompats, pathsToSkip, fakeProviders));
+    }
+
+    public static void addDisabledEmiProvider(GatherDataEvent event, CompletableFuture<HolderLookup.Provider> lookupProvider, String modid,
+          Supplier<SimpleProvider> aliasProviderFunction, Supplier<ExistingFileProvider> defaultsProviderFunction) {
+        DataGenerator gen = event.getGenerator();
+        PackOutput output = gen.getPackOutput();
+        ModList modList = ModList.get();
+        Set<String> pathsToSkip = new HashSet<>();
+        List<String> fakeProviders = new ArrayList<>();
+        if (modList.isLoaded(MekanismHooks.EMI_MOD_ID)) {
+            gen.addProvider(event.includeClient(), aliasProviderFunction.get().create(output, lookupProvider));
+            gen.addProvider(event.includeClient(), defaultsProviderFunction.get().create(output, event.getExistingFileHelper(), lookupProvider));
+        } else {
+            pathsToSkip.add("emi/aliases");
+            pathsToSkip.add("emi/recipes/defaults");
+            fakeProviders.add("EMI Alias Provider: " + modid);
+            fakeProviders.add("EMI Default Recipe Provider: " + modid);
+        }
+        //Data generator to help with persisting data when porting across MC versions when optional deps aren't updated yet
+        // DO NOT ADD OTHERS AFTER THIS ONE
+        gen.addProvider(true, new PersistingDisabledProvidersProvider(output, Collections.emptySet(), pathsToSkip, fakeProviders));
     }
 
     private final Set<String> compatRecipesToSkip;
@@ -164,5 +198,17 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
     private static Path getProviderCachePath(Path cacheDir, String providerName) {
         //Copy of HashCache#getProviderCachePath
         return cacheDir.resolve(Hashing.sha1().hashString(providerName, StandardCharsets.UTF_8).toString());
+    }
+
+    @FunctionalInterface
+    public interface SimpleProvider {
+
+        DataProvider create(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries);
+    }
+
+    @FunctionalInterface
+    public interface ExistingFileProvider {
+
+        DataProvider create(PackOutput packOutput, ExistingFileHelper existingFileHelper, CompletableFuture<HolderLookup.Provider> registries);
     }
 }

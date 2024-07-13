@@ -1,9 +1,6 @@
 package mekanism.common.item.gear;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableList.Builder;
-import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2BooleanArrayMap;
@@ -39,7 +36,6 @@ import mekanism.common.content.gear.mekatool.ModuleExcavationEscalationUnit;
 import mekanism.common.content.gear.mekatool.ModuleTeleportationUnit;
 import mekanism.common.content.gear.mekatool.ModuleVeinMiningUnit;
 import mekanism.common.item.ItemEnergized;
-import mekanism.common.lib.attribute.AttributeCache;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.PacketPortalFX;
 import mekanism.common.registries.MekanismModules;
@@ -71,7 +67,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.component.Tool;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -82,8 +77,9 @@ import net.minecraft.world.level.block.state.BlockBehaviour.BlockStateBase;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.common.ToolAction;
+import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import net.neoforged.neoforge.registries.holdersets.AnyHolderSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -92,10 +88,8 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
 
     private static final ResourceLocation RADIAL_ID = Mekanism.rl("meka_tool");
 
-    private final Int2ObjectMap<AttributeCache> attributeCaches = new Int2ObjectArrayMap<>(ModuleAttackAmplificationUnit.AttackDamage.values().length);
-
     public ItemMekaTool(Properties properties) {
-        super(IModuleHelper.INSTANCE.applyModuleContainerProperties(properties.rarity(Rarity.EPIC).setNoRepair()
+        super(IModuleHelper.INSTANCE.applyModuleContainerProperties(properties.rarity(Rarity.EPIC).setNoRepair().stacksTo(1)
               .component(DataComponents.TOOL, new Tool(List.of(
                     Tool.Rule.deniesDrops(MekanismTags.Blocks.INCORRECT_FOR_MEKA_TOOL),
                     new Tool.Rule(new AnyHolderSet<>(BuiltInRegistries.BLOCK.asLookup()), Optional.empty(), Optional.of(true))
@@ -119,7 +113,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
     }
 
     @Override
-    public boolean canPerformAction(ItemStack stack, ToolAction action) {
+    public boolean canPerformAction(ItemStack stack, ItemAbility action) {
         if (ItemAtomicDisassembler.ALWAYS_SUPPORTED_ACTIONS.contains(action)) {
             IModuleContainer container = moduleContainer(stack);
             return container != null && hasEnergyForDigAction(container, StorageUtils.getEnergyContainer(stack, 0));
@@ -135,7 +129,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
         return false;
     }
 
-    private <MODULE extends ICustomModule<MODULE>> boolean canPerformAction(IModule<MODULE> module, IModuleContainer moduleContainer, ItemStack stack, ToolAction action) {
+    private <MODULE extends ICustomModule<MODULE>> boolean canPerformAction(IModule<MODULE> module, IModuleContainer moduleContainer, ItemStack stack, ItemAbility action) {
         return module.getCustomInstance().canPerformAction(module, moduleContainer, stack, action);
     }
 
@@ -346,54 +340,30 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
         return MathUtils.clampToLong(destroyEnergy * efficiency);
     }
 
-    @NotNull
     @Override
-    public ItemAttributeModifiers getAttributeModifiers(@NotNull ItemStack stack) {
-        int unitDamage = 0;
+    public void adjustAttributes(ItemAttributeModifierEvent event) {
+        ItemStack stack = event.getItemStack();
+        double damage = MekanismConfig.gear.mekaToolBaseDamage.get();
+        double attackSpeed = MekanismConfig.gear.mekaToolAttackSpeed.get();
         IModule<ModuleAttackAmplificationUnit> attackAmplificationUnit = getEnabledModule(stack, MekanismModules.ATTACK_AMPLIFICATION_UNIT);
         if (attackAmplificationUnit != null) {
-            unitDamage = attackAmplificationUnit.getCustomInstance().getDamage();
+            int unitDamage = attackAmplificationUnit.getCustomInstance().getDamage();
             if (unitDamage > 0) {
                 long energyCost = MathUtils.clampToLong(MekanismConfig.gear.mekaToolEnergyUsageWeapon.get() * (unitDamage / 4D));
                 IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
                 long energy = energyContainer == null ? 0L : energyContainer.getEnergy();
                 if (energy < energyCost) {
                     //If we don't have enough power use it at a reduced power level (this will be false the majority of the time)
-                    double bonusDamage = unitDamage * MathUtils.divideToLevel(energy, energyCost);
-                    if (bonusDamage > 0) {
-                        //If we actually have bonus damage (as we might not if we don't have any energy stored, and then
-                        // we can just use the cache for as if there was no bonus damage)
-                        Builder<ItemAttributeModifiers.Entry> builder = ImmutableList.builder();
-                        builder.add(new ItemAttributeModifiers.Entry(
-                              Attributes.ATTACK_DAMAGE,
-                              new AttributeModifier(BASE_ATTACK_DAMAGE_ID, MekanismConfig.gear.mekaToolBaseDamage.get() + bonusDamage, Operation.ADD_VALUE),
-                              EquipmentSlotGroup.MAINHAND
-                        ));
-                        builder.add(new ItemAttributeModifiers.Entry(
-                              Attributes.ATTACK_SPEED,
-                              new AttributeModifier(BASE_ATTACK_SPEED_ID, MekanismConfig.gear.mekaToolAttackSpeed.get(), Operation.ADD_VALUE),
-                              EquipmentSlotGroup.MAINHAND
-                        ));
-                        return new ItemAttributeModifiers(builder.build(), true);
-                    }
-                    //Use cached attribute map for just doing the base damage
-                    unitDamage = 0;
+                    damage += unitDamage * MathUtils.divideToLevel(energy, energyCost);
+                } else {
+                    damage += unitDamage;
                 }
             }
         }
         //Retrieve a cached map if we have enough energy to attack at the full damage value based on configured damage
-        return attributeCaches.computeIfAbsent(unitDamage, damage -> new AttributeCache(builder -> {
-            builder.add(new ItemAttributeModifiers.Entry(
-                  Attributes.ATTACK_DAMAGE,
-                  new AttributeModifier(BASE_ATTACK_DAMAGE_ID, MekanismConfig.gear.mekaToolBaseDamage.get() + damage, Operation.ADD_VALUE),
-                  EquipmentSlotGroup.MAINHAND
-            ));
-            builder.add(new ItemAttributeModifiers.Entry(
-                  Attributes.ATTACK_SPEED,
-                  new AttributeModifier(BASE_ATTACK_SPEED_ID, MekanismConfig.gear.mekaToolAttackSpeed.get(), Operation.ADD_VALUE),
-                  EquipmentSlotGroup.MAINHAND
-            ));
-        }, MekanismConfig.gear.mekaToolBaseDamage, MekanismConfig.gear.mekaToolAttackSpeed)).get();
+        event.replaceModifier(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_ID, damage, Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND);
+        event.replaceModifier(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_ID, attackSpeed, Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND);
+        IRadialModuleContainerItem.super.adjustAttributes(event);
     }
 
     @NotNull
@@ -435,7 +405,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
                         }
                         player.resetFallDistance();
                         PacketUtils.sendToAllTracking(new PacketPortalFX(pos.above()), world, pos);
-                        world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0F, 1.0F);
+                        world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.PLAYER_TELEPORT, SoundSource.PLAYERS);
                         return InteractionResultHolder.success(stack);
                     }
                 }

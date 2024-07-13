@@ -3,12 +3,13 @@ package mekanism.common.tier;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
 import mekanism.common.config.value.CachedIntValue;
+import net.neoforged.neoforge.fluids.FluidType;
 
 public enum FluidTankTier implements ITier {
-    BASIC(BaseTier.BASIC, 32_000, 1_000),
-    ADVANCED(BaseTier.ADVANCED, 64_000, 4_000),
-    ELITE(BaseTier.ELITE, 128_000, 16_000),
-    ULTIMATE(BaseTier.ULTIMATE, 256_000, 64_000),
+    BASIC(BaseTier.BASIC, 32 * FluidType.BUCKET_VOLUME, 1 * FluidType.BUCKET_VOLUME),
+    ADVANCED(BaseTier.ADVANCED, 64 * FluidType.BUCKET_VOLUME, 4 * FluidType.BUCKET_VOLUME),
+    ELITE(BaseTier.ELITE, 128 * FluidType.BUCKET_VOLUME, 16 * FluidType.BUCKET_VOLUME),
+    ULTIMATE(BaseTier.ULTIMATE, 256 * FluidType.BUCKET_VOLUME, 64 * FluidType.BUCKET_VOLUME),
     CREATIVE(BaseTier.CREATIVE, Integer.MAX_VALUE, Integer.MAX_VALUE / 2);
 
     private final int baseStorage;

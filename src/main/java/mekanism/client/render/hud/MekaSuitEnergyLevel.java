@@ -1,8 +1,6 @@
 package mekanism.client.render.hud;
 
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.math.FloatingLong;
-import mekanism.api.math.ULong;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.element.bar.GuiBar;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
@@ -27,11 +25,11 @@ public class MekaSuitEnergyLevel implements LayeredDraw.Layer {
 
     @Override
     public void render(@NotNull GuiGraphics graphics, @NotNull DeltaTracker delta) {
-        if (!Minecraft.getInstance().gameMode.canHurtPlayer()) {
-            //Copy of vanilla check for if the armor level can render
+        Minecraft minecraft = Minecraft.getInstance();
+        if (!minecraft.gameMode.canHurtPlayer() || minecraft.options.hideGui) {
+            //canHurtPlayer is a copy of vanilla check for if the armor level can render
             return;
         }
-        Minecraft minecraft = Minecraft.getInstance();
         long capacity = 0L, stored = 0L;
         for (ItemStack stack : minecraft.player.getArmorSlots()) {
             if (stack.getItem() instanceof ItemMekaSuitArmor) {

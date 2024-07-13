@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     {
-      "tag": "c:ingots/steel"
+      "item": "mekanism:ingot_steel"
     }
   ],
   "result": {

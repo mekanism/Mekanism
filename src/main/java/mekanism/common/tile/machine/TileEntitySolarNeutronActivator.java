@@ -50,6 +50,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biome.Precipitation;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -60,7 +61,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Gas
           RecipeError.NOT_ENOUGH_OUTPUT_SPACE,
           RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
     );
-    public static final long MAX_GAS = 10_000;
+    public static final long MAX_GAS = 10 * FluidType.BUCKET_VOLUME;
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getInput", "getInputCapacity", "getInputNeeded",
                                                                                         "getInputFilledPercentage"}, docPlaceholder = "input tank")

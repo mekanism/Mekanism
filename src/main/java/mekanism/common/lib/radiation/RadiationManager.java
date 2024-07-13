@@ -163,20 +163,20 @@ public class RadiationManager implements IRadiationManager {
     }
 
     /**
-     * Calculates approximately how long in seconds radiation will take to decay
+     * Calculates approximately how long in ticks radiation will take to decay
      *
      * @param magnitude Magnitude
      * @param source    {@code true} for if it is a {@link IRadiationSource} or an {@link IRadiationEntity} decaying
      */
-    public int getDecayTime(double magnitude, boolean source) {
+    public long getDecayTime(double magnitude, boolean source) {
         double decayRate = source ? MekanismConfig.general.radiationSourceDecayRate.get() : MekanismConfig.general.radiationTargetDecayRate.get();
-        int seconds = 0;
+        long ticks = 0;
         double localMagnitude = magnitude;
         while (localMagnitude > RadiationManager.MIN_MAGNITUDE) {
             localMagnitude *= decayRate;
-            seconds++;
+            ticks += SharedConstants.TICKS_PER_SECOND;
         }
-        return seconds;
+        return ticks;
     }
 
     @Override
@@ -449,8 +449,8 @@ public class RadiationManager implements IRadiationManager {
     }
 
     public void tickServerWorld(ServerLevel world) {
-        // terminate early if we're disabled
-        if (!isRadiationEnabled()) {
+        // terminate early if we're disabled or the world isn't ticking
+        if (!isRadiationEnabled() || !world.tickRateManager().runsNormally()) {
             return;
         }
         if (!loaded) {
@@ -473,7 +473,7 @@ public class RadiationManager implements IRadiationManager {
         }
     }
 
-    public void tickServer() {
+    public void tickServer(boolean tickingNormally) {
         // terminate early if we're disabled or there is no radiation spots
         if (!isRadiationEnabled() || radiationTable.isEmpty()) {
             return;
@@ -482,10 +482,14 @@ public class RadiationManager implements IRadiationManager {
         if (RAND.nextInt(SharedConstants.TICKS_PER_SECOND) == 0) {
             Collection<RadiationSource> sources = radiationTable.values();
             if (!sources.isEmpty()) {
-                // remove if source gets too low
-                sources.removeIf(RadiationSource::decay);
-                //Mark dirty regardless if we have any sources as magnitude changes or radiation sources change
-                markDirty();
+                //Note: We have to wait until here to check if we are ticking normally, so that we still sync the radiation
+                // near the player if they are walking around while ticks are frozen
+                if (tickingNormally) {
+                    // remove if source gets too low
+                    sources.removeIf(RadiationSource::decay);
+                    //Mark dirty regardless if we have any sources as magnitude changes or radiation sources change
+                    markDirty();
+                }
                 //Update radiation levels for any players where it has changed
                 updateClientRadiationForAll();
             }
@@ -528,7 +532,10 @@ public class RadiationManager implements IRadiationManager {
     @SubscribeEvent
     public void onLivingTick(EntityTickEvent.Post event) {
         Level world = event.getEntity().level();
-        if (!world.isClientSide() && event.getEntity() instanceof LivingEntity living && !(living instanceof Player)) {
+        if (!world.isClientSide() && event.getEntity() instanceof LivingEntity living && !(living instanceof Player) && !world.tickRateManager().isEntityFrozen(living)) {
+            //If it is a living entity that isn't a player, and the tick rate manager is functioning
+            // and the entity is frozen (doesn't have a player as a passenger), then we need to update
+            // the radiation level of the entity
             updateEntityRadiation(living);
         }
     }

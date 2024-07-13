@@ -571,7 +571,9 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     public final void renderShifted(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         //Copy of super.render, except doesn't update the tooltip for the next render pass, as we handle that via renderTooltip
         if (this.visible) {
-            this.isHovered = mouseX >= this.getX() && mouseY >= this.getY() && mouseX < this.getX() + this.width && mouseY < this.getY() + this.height;
+            //TODO - 1.21: Do we need to add support for guiGraphics.containsPointInScissor(mouseX, mouseY) to more places where we do adhoc mouse over checks?
+            this.isHovered = guiGraphics.containsPointInScissor(mouseX, mouseY) && mouseX >= this.getX() && mouseY >= this.getY() &&
+                             mouseX < this.getX() + this.width && mouseY < this.getY() + this.height;
             renderWidget(guiGraphics, mouseX, mouseY, partialTicks);
         }
     }

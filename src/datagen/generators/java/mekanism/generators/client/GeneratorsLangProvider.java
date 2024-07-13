@@ -122,7 +122,7 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
         add(GeneratorsLang.REACTOR_LOGIC_OUTPUTTING, "Outputting");
         add(GeneratorsLang.REACTOR_LOGIC_ACTIVATION, "Activation");
         add(GeneratorsLang.REACTOR_LOGIC_TEMPERATURE, "High Temperature");
-        add(GeneratorsLang.REACTOR_LOGIC_EXCESS_WASTE, "Excess Waste");
+        add(GeneratorsLang.REACTOR_LOGIC_CRITICAL_WASTE_LEVEL, "Critical Waste Level");
         add(GeneratorsLang.REACTOR_LOGIC_DAMAGED, "Damage Critical");
         add(GeneratorsLang.REACTOR_LOGIC_POWERED, "Powered");
         add(GeneratorsLang.OUTPUT_RATE_SHORT, "Out: %1$s/t");
@@ -161,6 +161,7 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
         add(GeneratorsLang.TURBINE_INVALID_BAD_COMPLEX, "Couldn't form, found improperly placed Rotational Complex at %1$s. Complex must be centered above Turbine Rotors.");
         add(GeneratorsLang.TURBINE_INVALID_BAD_ROTOR, "Couldn't form, found invalid Turbine Rotor at %1$s. Turbine Rotors must be centered below Rotational Complex.");
         add(GeneratorsLang.TURBINE_INVALID_BAD_ROTORS, "Couldn't form, invalid Turbine Rotor arrangement.");
+        add(GeneratorsLang.TURBINE_INVALID_NO_BLADES, "Couldn't form, no blades are present on the Turbine Rotor.");
         add(GeneratorsLang.TURBINE_INVALID_CONDENSER_BELOW_COMPLEX, "Couldn't form, found improperly placed Saturating Condenser at %1$s. Saturating Condensers must be above Pressure Disperser layer.");
         add(GeneratorsLang.TURBINE_INVALID_EVEN_LENGTH, "Couldn't form, width and length of structure must be odd.");
         add(GeneratorsLang.TURBINE_INVALID_MALFORMED_COILS, "Couldn't form, Electromagnetic Coil arrangement is malformed. Coils must be connected to Rotational Complex and adjacently connected.");
@@ -170,6 +171,7 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
         add(GeneratorsLang.TURBINE_INVALID_ROTORS_NOT_CONTIGUOUS, "Couldn't form, rotors are invalid (non-contiguous).");
         add(GeneratorsLang.TURBINE_INVALID_TOO_NARROW, "Couldn't form, structure is too narrow to support turbine size.");
         add(GeneratorsLang.TURBINE_INVALID_VENT_BELOW_COMPLEX, "Couldn't form, found a Turbine Vent below Pressure Disperser layer. Vents must be at or above vertical position of disperser layer.");
+        add(GeneratorsLang.TURBINE_INVALID_MISSING_VENTS, "Couldn't form, no Turbine Vents present.");
         add(GeneratorsLang.TURBINE_INVALID_MISSING_COILS, "Couldn't form, no Electromagnetic Coils present.");
         add(GeneratorsLang.TURBINE_INVALID_MISSING_DISPERSERS, "Couldn't form, no Pressure Dispersers present.");
 
@@ -224,7 +226,7 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
         add(GeneratorsLang.DESCRIPTION_REACTOR_ACTIVATION, "Activate the reactor when powered, and deactivate when unpowered");
         add(GeneratorsLang.DESCRIPTION_REACTOR_TEMPERATURE, "Output when the reactor reaches dangerous temperatures");
         add(GeneratorsLang.DESCRIPTION_REACTOR_DAMAGED, "Output when the reactor reaches critical damage levels (100%+).");
-        add(GeneratorsLang.DESCRIPTION_REACTOR_EXCESS_WASTE, "Output when the reactor has excess waste");
+        add(GeneratorsLang.DESCRIPTION_REACTOR_CRITICAL_WASTE_LEVEL, "Output when the reactor has reached a critical level of waste (%1$s)");
         add(GeneratorsLang.DESCRIPTION_REACTOR_DEPLETED, "Output when the reactor has insufficient fuel to sustain a reaction");
         add(GeneratorsLang.DESCRIPTION_REACTOR_DISABLED, "Will not handle redstone");
         add(GeneratorsLang.DESCRIPTION_REACTOR_READY, "Output when the reactor has reached the required heat level to ignite");

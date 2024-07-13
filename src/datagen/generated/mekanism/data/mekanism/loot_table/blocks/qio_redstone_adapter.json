@@ -19,6 +19,7 @@
             {
               "function": "minecraft:copy_components",
               "include": [
+                "mekanism:color",
                 "mekanism:fuzzy",
                 "mekanism:inverse",
                 "mekanism:item_target",

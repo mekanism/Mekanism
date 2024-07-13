@@ -5,6 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.SerializationConstants;
+import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.attachments.containers.IAttachedContainers;
 import net.minecraft.core.NonNullList;
@@ -18,7 +19,7 @@ public record AttachedItems(List<ItemStack> containers) implements IAttachedCont
     public static final AttachedItems EMPTY = new AttachedItems(Collections.emptyList());
 
     public static final Codec<AttachedItems> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          ItemStack.OPTIONAL_CODEC.listOf().fieldOf(SerializationConstants.ITEMS).forGetter(AttachedItems::containers)
+          SerializerHelper.OVERSIZED_ITEM_OPTIONAL_CODEC.listOf().fieldOf(SerializationConstants.ITEMS).forGetter(AttachedItems::containers)
     ).apply(instance, AttachedItems::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, AttachedItems> STREAM_CODEC = ItemStack.OPTIONAL_LIST_STREAM_CODEC
           .map(AttachedItems::new, AttachedItems::containers);

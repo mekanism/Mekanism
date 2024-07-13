@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     {
-      "tag": "c:storage_blocks/osmium"
+      "item": "mekanism:block_osmium"
     }
   ],
   "result": {

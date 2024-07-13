@@ -13,9 +13,11 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.render.RenderPropertiesProvider;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.gear.ItemFreeRunners.FreeRunnerMode;
+import mekanism.common.item.interfaces.IHasConditionalAttributes;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IModeItem.IAttachmentBasedModeItem;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
@@ -32,7 +34,11 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
@@ -44,16 +50,22 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
+import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import org.jetbrains.annotations.NotNull;
 
-public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvider, ICustomCreativeTabContents, IAttachmentBasedModeItem<FreeRunnerMode> {
+public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvider, ICustomCreativeTabContents, IAttachmentBasedModeItem<FreeRunnerMode>,
+      IHasConditionalAttributes {
+
+    private static final AttributeModifier MOVEMENT_EFFICIENCY = new AttributeModifier(Mekanism.rl("free_runners"), 1, Operation.ADD_VALUE);
 
     public ItemFreeRunners(Properties properties) {
         this(MekanismArmorMaterials.FREE_RUNNERS, properties);
     }
 
     public ItemFreeRunners(Holder<ArmorMaterial> material, Properties properties) {
-        super(material, ArmorItem.Type.BOOTS, properties.rarity(Rarity.RARE).setNoRepair().component(MekanismDataComponents.FREE_RUNNER_MODE, FreeRunnerMode.NORMAL));
+        super(material, ArmorItem.Type.BOOTS, properties.rarity(Rarity.RARE).setNoRepair().stacksTo(1)
+              .component(MekanismDataComponents.FREE_RUNNER_MODE, FreeRunnerMode.NORMAL)
+        );
     }
 
     @Override
@@ -152,6 +164,13 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
     @Override
     public boolean supportsSlotType(ItemStack stack, @NotNull EquipmentSlot slotType) {
         return slotType == getEquipmentSlot();
+    }
+
+    @Override
+    public void adjustAttributes(ItemAttributeModifierEvent event) {
+        if (getMode(event.getItemStack()) == FreeRunnerMode.NORMAL) {
+            event.addModifier(Attributes.MOVEMENT_EFFICIENCY, MOVEMENT_EFFICIENCY, EquipmentSlotGroup.FEET);
+        }
     }
 
     @NothingNullByDefault

@@ -558,13 +558,14 @@ Multiblock (formed),getMaxPos,,Table (BlockPos),,false,
 Multiblock (formed),getMinPos,,Table (BlockPos),,false,
 Multiblock (formed),getWidth,,Number (int),,false,
 Nutritional Liquifier,getContainerFillItem,,Table (ItemStack),,false,Get the contents of the fillable container slot.
+Nutritional Liquifier,getContainerOutputItem,,Table (ItemStack),,false,Get the contents of the filled container output slot.
 Nutritional Liquifier,getEnergyItem,,Table (ItemStack),,false,Get the contents of the energy slot.
 Nutritional Liquifier,getEnergyUsage,,Number (FloatingLong),,false,Get the energy used in the last tick by the machine
 Nutritional Liquifier,getInput,,Table (ItemStack),,false,Get the contents of the input slot.
 Nutritional Liquifier,getOutput,,Table (FluidStack),,false,Get the contents of the output tank.
 Nutritional Liquifier,getOutputCapacity,,Number (int),,false,Get the capacity of the output tank.
 Nutritional Liquifier,getOutputFilledPercentage,,Number (double),,false,Get the filled percentage of the output tank.
-Nutritional Liquifier,getOutputItem,,Table (ItemStack),,false,Get the contents of the filled container output slot.
+Nutritional Liquifier,getOutputItem,,Table (ItemStack),,false,Get the contents of the output slot.
 Nutritional Liquifier,getOutputNeeded,,Number (int),,false,Get the amount needed to fill the output tank.
 Oredictionificator,addFilter,filter: Table (OredictionificatorItemFilter),boolean,,true,
 Oredictionificator,getFilters,,List (Table (OredictionificatorItemFilter)),,false,

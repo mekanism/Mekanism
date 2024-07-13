@@ -26,7 +26,6 @@ import mekanism.common.lib.collection.EmptySequencedMap;
 import mekanism.common.registries.MekanismDataComponents;
 import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -224,7 +223,7 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
     private <MODULE extends ICustomModule<MODULE>> ItemEnchantments.Mutable updateEnchantment(HolderLookup.Provider provider, Module<MODULE> module,
           @Nullable ItemEnchantments.Mutable adjustedEnchantments) {
         if (module.getCustomInstance() instanceof EnchantmentAwareModule<?> enchantmentBased) {
-            Optional<Reference<Enchantment>> enchantment = provider.lookupOrThrow(Registries.ENCHANTMENT).get(enchantmentBased.enchantment());
+            Optional<Reference<Enchantment>> enchantment = provider.holder(enchantmentBased.enchantment());
             int level = getEnchantmentLevel(module);
             if (enchantment.isPresent() && enchantments.getLevel(enchantment.get()) != level) {
                 adjustedEnchantments = new ItemEnchantments.Mutable(enchantments);
@@ -292,7 +291,7 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
                 //Nothing to actually install because we are already at the max stack size
                 return 0;
             }
-            module = module.withReplacedInstallCount(provider, module.getInstalledCount() + toInstall);
+            module = module.withReplacedInstallCount(module.getInstalledCount() + toInstall);
         }
         //Add the module to the list of tracked and known modules if necessary or replace the existing value
         SequencedMap<ModuleData<?>, Module<?>> copiedModules = new LinkedHashMap<>(typedModules);
@@ -325,14 +324,14 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
                 copiedModules.remove(type);
                 //Remove any corresponding enchantment
                 if (module.getCustomInstance() instanceof EnchantmentAwareModule<?> enchantmentBased) {
-                    Optional<Reference<Enchantment>> enchantment = provider.lookupOrThrow(Registries.ENCHANTMENT).get(enchantmentBased.enchantment());
+                    Optional<Reference<Enchantment>> enchantment = provider.holder(enchantmentBased.enchantment());
                     if (enchantment.isPresent() && enchantments.getLevel(enchantment.get()) != 0) {
                         adjustedEnchantments = new ItemEnchantments.Mutable(enchantments);
                         adjustedEnchantments.set(enchantment.get(), 0);
                     }
                 }
             } else {//update the module with the new installed count
-                module = module.withReplacedInstallCount(provider, installed);
+                module = module.withReplacedInstallCount(installed);
                 copiedModules.put(type, module);
                 //Update the level of any corresponding enchantment
                 adjustedEnchantments = updateEnchantment(provider, module, null);

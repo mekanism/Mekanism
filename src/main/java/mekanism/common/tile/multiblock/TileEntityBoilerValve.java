@@ -45,6 +45,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
 
     public TileEntityBoilerValve(BlockPos pos, BlockState state) {
         super(MekanismBlocks.BOILER_VALVE, pos, state);
+        delaySupplier = NO_DELAY;
     }
 
     @NotNull

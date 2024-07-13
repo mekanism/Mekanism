@@ -73,14 +73,9 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
     }
 
     /**
-     * Gets the "bottom" stack for the bin, this is the stack that can be extracted/interacted with directly.
-     *
-     * @return The "bottom" stack for the bin
-     *
-     * @apiNote The returned stack can be safely modified.
+     * @see BinInventorySlot#getBottomStack()
      */
     public ItemStack getBottomStack() {
-        //TODO - 1.21: ??
         ItemStack current = getStack();
         if (current.isEmpty()) {
             return ItemStack.EMPTY;
@@ -89,37 +84,11 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
     }
 
     /**
-     * Modifies the lock state of the slot.
+     * For use by upgrade recipes
      *
-     * @param lock if the slot should be locked
-     *
-     * @return if the lock state was modified
+     * @see BinInventorySlot#setLockStack(ItemStack)
      */
-    public boolean setLocked(boolean lock) {//TODO - 1.21: ??
-        // Don't lock if:
-        // - We are a creative bin
-        // - We already have the same state as the one we're supposed to switch to
-        // - We were asked to lock, but we're empty
-        if (isCreative || isLocked() == lock) {
-            return false;
-        } else if (lock) {
-            ItemStack current = getStack();
-            if (current.isEmpty()) {
-                return false;
-            }
-            setStack(current);
-        } else {
-            setLockStack(ItemStack.EMPTY);
-        }
-        return true;
-    }
-
-    /**
-     * For use by upgrade recipes, do not use this in place of {@link #setLocked(boolean)}
-     */
-    public void setLockStack(@NotNull ItemStack stack) {//TODO - 1.21: ??
-        //Note: This doesn't support the case where one backing stack may have multiple bin slots. If we ever support that case
-        // we will need to adjust how this works
+    public void setLockStack(@NotNull ItemStack stack) {
         if (stack.isEmpty()) {
             attachedTo.remove(MekanismDataComponents.LOCK);
         } else {
@@ -127,18 +96,8 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
         }
     }
 
-    public boolean isLocked() {//TODO - 1.21: ??
-        return !getLockStack().isEmpty();
-    }
-
-    public ItemStack getRenderStack() {//TODO - 1.21: ??
-        ItemStack lockStack = getLockStack();
-        return lockStack.isEmpty() ? getStack() : lockStack;
-    }
-
-    public ItemStack getLockStack() {//TODO - 1.21: ??
-        LockData lockData = attachedTo.get(MekanismDataComponents.LOCK);
-        return lockData == null ? ItemStack.EMPTY : lockData.lock();
+    public ItemStack getLockStack() {
+        return attachedTo.getOrDefault(MekanismDataComponents.LOCK, LockData.EMPTY).lock();
     }
 
     @Override

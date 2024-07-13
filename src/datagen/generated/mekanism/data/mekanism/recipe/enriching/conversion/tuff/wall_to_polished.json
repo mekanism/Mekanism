@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "count": 1,
+    "item": "minecraft:tuff_wall"
+  },
+  "output": {
+    "count": 1,
+    "id": "minecraft:polished_tuff_wall"
+  }
+}

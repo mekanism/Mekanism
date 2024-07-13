@@ -1,7 +1,5 @@
 package mekanism.common.world.height;
 
-import java.util.function.IntSupplier;
-import java.util.function.Supplier;
 import mekanism.common.config.IMekanismConfig;
 import mekanism.common.config.value.CachedEnumValue;
 import mekanism.common.config.value.CachedIntValue;
@@ -11,7 +9,7 @@ import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.common.ModConfigSpec.ConfigValue;
 import org.jetbrains.annotations.Nullable;
 
-public record ConfigurableVerticalAnchor(Supplier<AnchorType> anchorType, IntSupplier value) {
+public record ConfigurableVerticalAnchor(CachedEnumValue<AnchorType> anchorType, CachedIntValue value) {
 
     public static ConfigurableVerticalAnchor create(IMekanismConfig config, ModConfigSpec.Builder builder, String path, String comment, OreAnchor defaultAnchor,
           @Nullable ConfigurableVerticalAnchor minAnchor) {
@@ -27,7 +25,7 @@ public record ConfigurableVerticalAnchor(Supplier<AnchorType> anchorType, IntSup
         } else {
             value = valueBuilder.define("value", defaultAnchor.value(), o -> {
                 if (o instanceof Integer v) {
-                    return minAnchor.anchorType.get() != type.get() || v >= minAnchor.value.getAsInt();
+                    return minAnchor.anchorType.getOrDefault() != type.getOrDefault() || v >= minAnchor.value.getOrDefault();
                 }
                 return false;
             });

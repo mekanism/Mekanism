@@ -6,6 +6,7 @@ import com.blamejared.crafttweaker.api.util.ItemStackUtil;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.basic.BasicChemicalCrystallizerRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
+import mekanism.api.recipes.vanilla_input.SingleBoxedChemicalInput;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -13,7 +14,7 @@ import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_CRYSTALLIZING)
-public class ChemicalCrystallizerRecipeManager extends MekanismRecipeManager<ChemicalCrystallizerRecipe> {
+public class ChemicalCrystallizerRecipeManager extends MekanismRecipeManager<SingleBoxedChemicalInput, ChemicalCrystallizerRecipe> {
 
     public static final ChemicalCrystallizerRecipeManager INSTANCE = new ChemicalCrystallizerRecipeManager();
 

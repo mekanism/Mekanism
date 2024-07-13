@@ -415,6 +415,8 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
                 heatedCoolantTank.insert(MekanismGases.STEAM.getStack(lastBoilRate), Action.EXECUTE, AutomationType.INTERNAL);
                 caseCoolantHeat = lastBoilRate * HeatUtils.getWaterThermalEnthalpy() / HeatUtils.getSteamEnergyEfficiency();
                 heatCapacitor.handleHeat(-caseCoolantHeat);
+            } else {
+                lastBoilRate = 0;
             }
         } else if (!gasCoolantTank.isEmpty()) {
             CooledCoolant coolantType = gasCoolantTank.getStack().get(CooledCoolant.class);
@@ -427,7 +429,11 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
                     caseCoolantHeat = lastBoilRate * coolantType.getThermalEnthalpy();
                     heatCapacitor.handleHeat(-caseCoolantHeat);
                 }
+            } else {
+                lastBoilRate = 0;
             }
+        } else {
+            lastBoilRate = 0;
         }
     }
 

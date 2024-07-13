@@ -12,6 +12,7 @@ import mcp.mobius.waila.api.ITooltipComponent;
 import mekanism.common.integration.lookingat.ILookingAtElement;
 import mekanism.common.integration.lookingat.LookingAtElement;
 import mekanism.common.integration.lookingat.TextElement;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -77,7 +78,7 @@ public class WTHITTooltipRenderer implements IBlockComponentProvider, IEntityCom
         }
 
         @Override
-        public void render(GuiGraphics guiGraphics, int x, int y, float delta) {
+        public void render(GuiGraphics guiGraphics, int x, int y, DeltaTracker delta) {
             if (text != null) {
                 LookingAtElement.renderScaledText(Minecraft.getInstance(), guiGraphics, x + 4, y + 3, 0xFFFFFF, 92, text);
                 y += 13;

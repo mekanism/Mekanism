@@ -155,9 +155,10 @@ public class IngredientCreatorAccess {
             for (Map.Entry<DataComponentType<?>, Optional<?>> entry : patch.entrySet()) {
                 Optional<?> value = entry.getValue();
                 //Note: We only add if the value is added, we don't check ones that have been removed from default, as that isn't easily feasible
+                //noinspection OptionalIsPresent - Capturing lambda
                 if (value.isPresent()) {
                     //noinspection rawtypes,unchecked
-                    builder.expect((DataComponentType) entry.getKey(), value);
+                    builder.expect((DataComponentType) entry.getKey(), value.get());
                 }
             }
             return builder.build();

@@ -3,11 +3,6 @@
   "pools": [
     {
       "bonus_rolls": 0.0,
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
-      ],
       "entries": [
         {
           "type": "minecraft:item",
@@ -19,10 +14,12 @@
             {
               "function": "minecraft:copy_components",
               "include": [
+                "mekanism:color",
                 "mekanism:insert_into_frequency",
                 "mekanism:owner",
                 "mekanism:qio_frequency",
-                "mekanism:security"
+                "mekanism:security",
+                "mekanism:items"
               ],
               "source": "block_entity"
             }

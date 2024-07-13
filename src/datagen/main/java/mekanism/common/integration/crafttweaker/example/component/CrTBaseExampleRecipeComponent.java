@@ -8,7 +8,7 @@ public abstract class CrTBaseExampleRecipeComponent implements ICrTExampleCompon
 
     protected final ResourceLocation recipeType;
 
-    public CrTBaseExampleRecipeComponent(MekanismRecipeManager<?> recipeManager) {
+    public CrTBaseExampleRecipeComponent(MekanismRecipeManager<?, ?> recipeManager) {
         Objects.requireNonNull(recipeManager, "Recipe manager cannot be null.");
         this.recipeType = recipeManager.getBracketResourceLocation();
     }

@@ -16,6 +16,7 @@ import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
 import mekanism.common.registration.impl.SoundEventRegistryObject;
 import mekanism.common.tile.interfaces.ITileSound;
 import mekanism.common.tile.interfaces.IUpgradeTile;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
@@ -30,6 +31,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.api.distmarker.Dist;
@@ -291,7 +293,7 @@ public class SoundHandler {
 
         private final float originalVolume;
 
-        // Choose an interval between 60-80 ticks (3-4 seconds) to check for muffling changes. We do this
+        // Choose an interval between 20-40 ticks (1-2 seconds) to check for muffling changes. We do this
         // to ensure that not every tile sound tries to run on the same tick and thus create
         // uneven spikes of CPU usage
         private final int checkInterval = SharedConstants.TICKS_PER_SECOND + ThreadLocalRandom.current().nextInt(SharedConstants.TICKS_PER_SECOND);
@@ -312,7 +314,11 @@ public class SoundHandler {
         @Override
         public void tick() {
             // Every configured interval, see if we need to adjust muffling
-            if (Minecraft.getInstance().level.getGameTime() % checkInterval == 0) {
+            Level level = Minecraft.getInstance().level;
+            if (!MekanismUtils.isTickingNormally(level)) {
+                //Mute it similar to how the minecart sound handling is
+                volume = 0;
+            } else if (level.getGameTime() % checkInterval == 0) {
                 if (!isClientPlayerInRange(this)) {
                     //If the player is not in range of hearing this sound anymore; go ahead and shutdown
                     stop();

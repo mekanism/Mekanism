@@ -4,7 +4,6 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import java.util.function.Supplier;
 import mekanism.api.Upgrade;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.text.ILangEntry;
 import mekanism.api.tier.ITier;
 import mekanism.common.MekanismLang;
@@ -154,8 +153,6 @@ public class MekanismBlockTypes {
 
     private MekanismBlockTypes() {
     }
-
-    private static final long RESISTIVE_HEATER_BASE_USAGE = 100;
 
     private static final Table<FactoryTier, FactoryType, Factory<?>> FACTORIES = HashBasedTable.create();
 
@@ -446,7 +443,7 @@ public class MekanismBlockTypes {
     public static final Machine<TileEntityResistiveHeater> RESISTIVE_HEATER = MachineBuilder
           .createMachine(() -> MekanismTileEntityTypes.RESISTIVE_HEATER, MekanismLang.DESCRIPTION_RESISTIVE_HEATER)
           .withGui(() -> MekanismContainerTypes.RESISTIVE_HEATER)
-          .withEnergyConfig(() -> RESISTIVE_HEATER_BASE_USAGE, null)
+          .withEnergyConfig(() -> TileEntityResistiveHeater.BASE_USAGE, null)
           .without(AttributeComparator.class)
           .withCustomShape(BlockShapes.RESISTIVE_HEATER)
           .withSound(MekanismSounds.RESISTIVE_HEATER)

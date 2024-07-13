@@ -4,8 +4,10 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 import mekanism.common.tag.BaseTagProvider;
 import mekanism.common.tag.IntrinsicMekanismTagBuilder;
+import mekanism.tools.common.item.ItemMekanismAxe;
 import mekanism.tools.common.item.ItemMekanismPaxel;
 import mekanism.tools.common.item.ItemMekanismPickaxe;
+import mekanism.tools.common.item.ItemMekanismSword;
 import mekanism.tools.common.registries.ToolsItems;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
@@ -60,6 +62,8 @@ public class ToolsTagProvider extends BaseTagProvider {
         getBlockBuilder(ToolsTags.Blocks.INCORRECT_FOR_REFINED_OBSIDIAN_TOOL).add(BlockTags.INCORRECT_FOR_NETHERITE_TOOL);
         getBlockBuilder(ToolsTags.Blocks.INCORRECT_FOR_STEEL_TOOL).add(BlockTags.INCORRECT_FOR_DIAMOND_TOOL);
         createTag(getItemBuilder(ItemTags.CLUSTER_MAX_HARVESTABLES), item -> item instanceof ItemMekanismPickaxe || item instanceof ItemMekanismPaxel);
+        createTag(getItemBuilder(Tags.Items.MINING_TOOL_TOOLS), item -> item instanceof ItemMekanismPickaxe || item instanceof ItemMekanismPaxel);
+        createTag(getItemBuilder(Tags.Items.MELEE_WEAPON_TOOLS), item -> item instanceof ItemMekanismSword || item instanceof ItemMekanismAxe || item instanceof ItemMekanismPaxel);
     }
 
     private void addToolTags() {
@@ -79,6 +83,7 @@ public class ToolsTagProvider extends BaseTagProvider {
 
     private void addPaxels() {
         getItemBuilder(ItemTags.BREAKS_DECORATED_POTS).add(ToolsTags.Items.TOOLS_PAXEL);
+        getItemBuilder(ItemTags.WEAPON_ENCHANTABLE).add(ToolsTags.Items.TOOLS_PAXEL);
         getItemBuilder(ItemTags.SHARP_WEAPON_ENCHANTABLE).add(ToolsTags.Items.TOOLS_PAXEL);
         getItemBuilder(ItemTags.MINING_ENCHANTABLE).add(ToolsTags.Items.TOOLS_PAXEL);
         getItemBuilder(ItemTags.MINING_LOOT_ENCHANTABLE).add(ToolsTags.Items.TOOLS_PAXEL);
@@ -166,7 +171,7 @@ public class ToolsTagProvider extends BaseTagProvider {
               ToolsItems.REFINED_OBSIDIAN_SHIELD,
               ToolsItems.STEEL_SHIELD
         };
-        addToTag(Tags.Items.TOOLS_SHIELDS, shields);
+        addToTag(Tags.Items.TOOLS_SHIELD, shields);
         addToTag(ItemTags.DURABILITY_ENCHANTABLE, shields);
     }
 

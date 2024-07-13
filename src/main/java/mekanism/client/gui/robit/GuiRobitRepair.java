@@ -45,8 +45,8 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements Co
         itemNameField.setBackground(BackgroundType.NONE);
         itemNameField.setMaxLength(50);
         itemNameField.setResponder(this::onNameChanged);
+        itemNameField.setEditable(menu.getSlot(0).hasItem());
         setInitialFocus(itemNameField);
-        itemNameField.setEditable(false);
         menu.removeSlotListener(this);
         menu.addSlotListener(this);
     }
@@ -64,8 +64,9 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements Co
             if (slot.hasItem() && !slot.getItem().has(DataComponents.CUSTOM_NAME) && newText.equals(slot.getItem().getHoverName().getString())) {
                 newText = "";
             }
-            menu.setItemName(newText);
-            getMinecraft().player.connection.send(new ServerboundRenameItemPacket(newText));
+            if (menu.setItemName(newText)) {
+                getMinecraft().player.connection.send(new ServerboundRenameItemPacket(newText));
+            }
         }
     }
 
@@ -81,21 +82,20 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements Co
         int maximumCost = menu.getCost();
         if (maximumCost > 0) {
             int k = 0x80FF20;
-            boolean flag = true;
             Component component = MekanismLang.REPAIR_COST.translate(maximumCost);
-            if (maximumCost >= 40 && !getMinecraft().player.isCreative()) {
+            if (maximumCost >= 40 && !getMinecraft().player.getAbilities().instabuild) {
                 component = MekanismLang.REPAIR_EXPENSIVE.translate();
                 k = 0xFF6060;
             } else {
                 Slot slot = menu.getSlot(2);
                 if (!slot.hasItem()) {
-                    flag = false;
+                    component = null;
                 } else if (!slot.mayPickup(player)) {
                     k = 0xFF6060;
                 }
             }
 
-            if (flag) {
+            if (component != null) {
                 int width = imageWidth - 8 - getStringWidth(component) - 2;
                 guiGraphics.fill(width - 2, 67, imageWidth - 8, 79, 0x4F000000);
                 guiGraphics.drawString(getFont(), component, width, 69, k);

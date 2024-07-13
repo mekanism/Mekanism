@@ -99,7 +99,7 @@ public abstract class PlayerSound extends AbstractTickableSoundInstance {
             return;
         }
 
-        if (shouldPlaySound(player)) {
+        if (shouldPlaySound(player) && player.level().tickRateManager().runsNormally()) {
             if (volume < 1.0F) {
                 // If we weren't max volume, start fading up
                 volume = Math.min(1.0F, volume + fadeUpStep);

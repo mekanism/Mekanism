@@ -71,7 +71,9 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
           IRadialDataHelper.INSTANCE.dataForEnum(Mekanism.rl("configurator_mode"), ConfiguratorMode.class));
 
     public ItemConfigurator(Properties properties) {
-        super(properties.rarity(Rarity.UNCOMMON).component(MekanismDataComponents.CONFIGURATOR_MODE, ConfiguratorMode.CONFIGURATE_ITEMS));
+        super(properties.rarity(Rarity.UNCOMMON).stacksTo(1)
+              .component(MekanismDataComponents.CONFIGURATOR_MODE, ConfiguratorMode.CONFIGURATE_ITEMS)
+        );
     }
 
     @Override

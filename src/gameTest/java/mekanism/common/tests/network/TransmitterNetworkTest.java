@@ -156,7 +156,7 @@ public class TransmitterNetworkTest {
         @Nullable
         private ChunkPos absolutePos;
         private long absPos;
-        private boolean isLoaded;
+        private boolean isLoaded = true;
 
         public ChunkData(int x, int y) {
             this.relativePos = new ChunkPos(x, y);
@@ -186,8 +186,8 @@ public class TransmitterNetworkTest {
                         if (holder == null) {//Should never happen unless start value was unloaded
                             helper.fail("Error loading chunk", relativePos);
                         } else {
-                            //And force all updates to run to make the chunk have the scheduling we want it to
-                            distanceManager.runAllUpdates(chunkMap);
+                            //And ensure we schedule it to be updated by the distance manager
+                            distanceManager.chunksToUpdateFutures.add(holder);
                         }
                     } else {
                         //If it is currently loaded, queue it for unload

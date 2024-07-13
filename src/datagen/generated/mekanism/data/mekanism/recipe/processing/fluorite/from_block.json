@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     {
-      "tag": "c:storage_blocks/fluorite"
+      "item": "mekanism:block_fluorite"
     }
   ],
   "result": {

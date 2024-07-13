@@ -15,6 +15,7 @@ import mekanism.api.gear.IModuleContainer;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.TextComponentUtil;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.to_client.PacketLightningRender;
@@ -22,6 +23,7 @@ import mekanism.common.network.to_client.PacketLightningRender.LightningPreset;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -33,7 +35,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 @ParametersAreNotNullByDefault
 public record ModuleMagneticAttractionUnit(Range range) implements ICustomModule<ModuleMagneticAttractionUnit> {
 
-    public static final String RANGE = "range";
+    public static final ResourceLocation RANGE = Mekanism.rl("range");
 
     public ModuleMagneticAttractionUnit(IModule<ModuleMagneticAttractionUnit> module) {
         this(module.<Range>getConfigOrThrow(RANGE).get());

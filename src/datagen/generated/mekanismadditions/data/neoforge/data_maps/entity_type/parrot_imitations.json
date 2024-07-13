@@ -1,5 +1,8 @@
 {
   "values": {
+    "mekanismadditions:baby_bogged": {
+      "sound": "minecraft:entity.parrot.imitate.bogged"
+    },
     "mekanismadditions:baby_creeper": {
       "sound": "minecraft:entity.parrot.imitate.creeper"
     },

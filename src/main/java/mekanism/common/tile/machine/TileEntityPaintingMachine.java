@@ -44,9 +44,11 @@ import mekanism.common.recipe.lookup.cache.InputRecipeCache.ItemChemical;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
+import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -60,8 +62,8 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<Paintin
           RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
     );
 
-    public static final long MAX_PIGMENT = 15_000;
-    public static final int BASE_TICKS_REQUIRED = 200;
+    public static final long MAX_PIGMENT = 15 * FluidType.BUCKET_VOLUME;
+    public static final int BASE_TICKS_REQUIRED = 10 * SharedConstants.TICKS_PER_SECOND;
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getPigmentInput", "getPigmentInputCapacity", "getPigmentInputNeeded",
                                                                                         "getPigmentInputFilledPercentage"}, docPlaceholder = "pigment tank")

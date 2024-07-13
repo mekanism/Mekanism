@@ -38,7 +38,7 @@ import org.jetbrains.annotations.Nullable;
 @ParametersAreNotNullByDefault
 public record ModuleBlastingUnit(BlastRadius blastRadius) implements ICustomModule<ModuleBlastingUnit> {
 
-    public static final String BLAST_RADIUS = "blast_radius";
+    public static final ResourceLocation BLAST_RADIUS = Mekanism.rl("blast_radius");
 
     private static final ResourceLocation RADIAL_ID = Mekanism.rl("blasting_mode");
     private static final Int2ObjectMap<Lazy<NestedRadialMode>> RADIAL_DATAS = Util.make(() -> {

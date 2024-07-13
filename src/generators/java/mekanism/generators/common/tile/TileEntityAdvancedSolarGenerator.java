@@ -5,8 +5,10 @@ import mekanism.api.RelativeSide;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
 import mekanism.common.tile.interfaces.IBoundingBlock;
+import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
+import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
@@ -102,7 +104,7 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
         public AdvancedSolarCheck(Level world, BlockPos pos) {
             super(world, pos);
             //Recheck between every 10-30 ticks, to not end up checking each position each tick
-            recheckFrequency = Mth.nextInt(world.random, 10, 30);
+            recheckFrequency = Mth.nextInt(world.random, MekanismUtils.TICKS_PER_HALF_SECOND, MekanismUtils.TICKS_PER_HALF_SECOND + SharedConstants.TICKS_PER_SECOND);
         }
 
         @Override

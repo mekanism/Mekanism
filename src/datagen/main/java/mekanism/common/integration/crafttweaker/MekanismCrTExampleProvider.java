@@ -3,6 +3,7 @@ package mekanism.common.integration.crafttweaker;
 import com.blamejared.crafttweaker.api.bracket.CommandStringDisplayable;
 import java.util.Locale;
 import java.util.function.Function;
+import mekanism.api.MekanismAPITags;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.slurry.Slurry;
@@ -152,7 +153,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .recipe(ChemicalCrystallizerRecipeManager.INSTANCE)
               .addExample("osmium_ingotification", IngredientCreatorAccess.gasStack().from(MekanismGases.OSMIUM, 200),
                     MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM).getItemStack())
-              .addExample("gold_infusion_to_gold", IngredientCreatorAccess.infusionStack().from(MekanismTags.InfuseTypes.GOLD, 9), new ItemStack(Items.GOLD_NUGGET))
+              .addExample("gold_infusion_to_gold", IngredientCreatorAccess.infusionStack().from(MekanismAPITags.InfuseTypes.GOLD, 9), new ItemStack(Items.GOLD_NUGGET))
               .end()
               .comment("Removes two Crystallizing Recipes:",
                     "1) The recipe for producing Lithium Dust.",

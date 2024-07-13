@@ -13,6 +13,8 @@ import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.ElectrolysisRecipe.ElectrolysisRecipeOutput;
 import mekanism.api.recipes.FluidToFluidRecipe;
+import mekanism.api.recipes.ItemStackToFluidOptionalItemRecipe;
+import mekanism.api.recipes.ItemStackToFluidOptionalItemRecipe.FluidOptionalItemOutput;
 import mekanism.api.recipes.ItemStackToFluidRecipe;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.MekanismRecipe;
@@ -34,6 +36,9 @@ import org.jetbrains.annotations.Nullable;
  */
 @NothingNullByDefault
 public class OneInputCachedRecipe<INPUT, OUTPUT, RECIPE extends MekanismRecipe<?> & Predicate<INPUT>> extends CachedRecipe<RECIPE> {
+
+    private static final Predicate<ElectrolysisRecipeOutput> SEPARATOR_OUTPUT_EMPTY = output -> output.left().isEmpty() || output.right().isEmpty();
+    private static final Predicate<FluidOptionalItemOutput> FLUID_OPTIONAL_ITEM_OUTPUT_EMPTY = output -> output.fluid().isEmpty();
 
     private final IInputHandler<INPUT> inputHandler;
     private final IOutputHandler<OUTPUT> outputHandler;
@@ -108,7 +113,7 @@ public class OneInputCachedRecipe<INPUT, OUTPUT, RECIPE extends MekanismRecipe<?
     public static OneInputCachedRecipe<@NotNull FluidStack, @NotNull ElectrolysisRecipeOutput, ElectrolysisRecipe> separating(ElectrolysisRecipe recipe,
           BooleanSupplier recheckAllErrors, IInputHandler<@NotNull FluidStack> inputHandler, IOutputHandler<@NotNull ElectrolysisRecipeOutput> outputHandler) {
         return new OneInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, outputHandler, recipe::getInput, recipe::getOutput, ConstantPredicates.FLUID_EMPTY,
-              ConstantPredicates.alwaysFalse());
+              SEPARATOR_OUTPUT_EMPTY);
     }
 
     /**
@@ -154,6 +159,24 @@ public class OneInputCachedRecipe<INPUT, OUTPUT, RECIPE extends MekanismRecipe<?
           BooleanSupplier recheckAllErrors, IInputHandler<@NotNull ItemStack> inputHandler, IOutputHandler<@NotNull FluidStack> outputHandler) {
         return new OneInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, outputHandler, recipe::getInput, recipe::getOutput, ConstantPredicates.ITEM_EMPTY,
               ConstantPredicates.FLUID_EMPTY);
+    }
+
+    /**
+     * Base implementation for handling ItemStack to Fluid with optional Item Recipes.
+     *
+     * @param recipe           Recipe.
+     * @param recheckAllErrors Returns {@code true} if processing should be continued even if an error is hit in order to gather all the errors. It is recommended to not
+     *                         do this every tick or if there is no one viewing recipes.
+     * @param inputHandler     Input handler.
+     * @param outputHandler    Output handler.
+     *
+     * @since 10.6.3
+     */
+    public static OneInputCachedRecipe<@NotNull ItemStack, @NotNull FluidOptionalItemOutput, ItemStackToFluidOptionalItemRecipe> itemToFluidOptionalItem(
+          ItemStackToFluidOptionalItemRecipe recipe, BooleanSupplier recheckAllErrors, IInputHandler<@NotNull ItemStack> inputHandler,
+          IOutputHandler<@NotNull FluidOptionalItemOutput> outputHandler) {
+        return new OneInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, outputHandler, recipe::getInput, recipe::getOutput, ConstantPredicates.ITEM_EMPTY,
+              FLUID_OPTIONAL_ITEM_OUTPUT_EMPTY);
     }
 
     /**

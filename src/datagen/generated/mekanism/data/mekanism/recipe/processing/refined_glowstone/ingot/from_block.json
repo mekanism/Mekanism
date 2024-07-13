@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     {
-      "tag": "c:storage_blocks/refined_glowstone"
+      "item": "mekanism:block_refined_glowstone"
     }
   ],
   "result": {

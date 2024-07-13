@@ -10,6 +10,7 @@
             {
               "function": "minecraft:copy_components",
               "include": [
+                "mekanism:lock",
                 "mekanism:items"
               ],
               "source": "block_entity"

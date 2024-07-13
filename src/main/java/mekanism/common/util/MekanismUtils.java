@@ -18,6 +18,7 @@ import java.util.UUID;
 import java.util.function.Supplier;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
+import mekanism.api.MekanismAPITags;
 import mekanism.api.Upgrade;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
@@ -60,6 +61,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -129,6 +131,11 @@ public final class MekanismUtils {
 
     public static Component logFormat(EnumColor messageColor, Object message) {
         return MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, messageColor, message);
+    }
+
+    public static boolean isTickingNormally(@Nullable Level level) {
+        //Same as Minecraft#isLevelRunningNormally
+        return level == null || level.tickRateManager().runsNormally();
     }
 
     @Nullable
@@ -483,7 +490,7 @@ public final class MekanismUtils {
      *
      * @param resize True to clamp the stacks to a size of one.
      */
-    public static CraftingInput getCraftingInput(int width, int height, List<ItemStack> slots, boolean resize) {
+    public static CraftingInput.Positioned getCraftingInput(int width, int height, List<ItemStack> slots, boolean resize) {
         if (width * height != slots.size()) {
             throw new IllegalStateException("Expected there to be a slot for every index in a " + width + " by " + height + " grid.");
         }
@@ -496,7 +503,7 @@ public final class MekanismUtils {
                 stacks.add(slot.copy());
             }
         }
-        return CraftingInput.of(width, height, stacks);
+        return CraftingInput.ofPositioned(width, height, stacks);
     }
 
     /**
@@ -504,7 +511,7 @@ public final class MekanismUtils {
      *
      * @param resize True to clamp the stacks to a size of one.
      */
-    public static CraftingInput getCraftingInputSlots(int width, int height, List<IInventorySlot> slots, boolean resize) {
+    public static CraftingInput.Positioned getCraftingInputSlots(int width, int height, List<IInventorySlot> slots, boolean resize) {
         if (width * height != slots.size()) {
             throw new IllegalStateException("Expected there to be a slot for every index in a " + width + " by " + height + " grid.");
         }
@@ -518,7 +525,7 @@ public final class MekanismUtils {
                 stacks.add(stack.copy());
             }
         }
-        return CraftingInput.of(width, height, stacks);
+        return CraftingInput.ofPositioned(width, height, stacks);
     }
 
     /**
@@ -568,11 +575,11 @@ public final class MekanismUtils {
 
     public static boolean shouldSpeedUpEffect(MobEffectInstance effectInstance) {
         //Only allow speeding up effects that can be sped up by milk. Also validate it isn't blacklisted by the modpack
-        return effectInstance.getCures().contains(EffectCures.MILK) && !effectInstance.getEffect().getDelegate().is(MekanismTags.MobEffects.SPEED_UP_BLACKLIST);
+        return effectInstance.getCures().contains(EffectCures.MILK) && !effectInstance.getEffect().getDelegate().is(MekanismAPITags.MobEffects.SPEED_UP_BLACKLIST);
     }
 
     /**
-     * Copy of LivingEntity#onEffectUpdated(MobEffectInstance, boolean, Entity) due to not being able to AT the method as it is protected.
+     * Copy of {@link LivingEntity#onEffectUpdated(MobEffectInstance, boolean, Entity)} due to not being able to AT the method as it is protected.
      */
     private static void onChangedPotionEffect(LivingEntity entity, MobEffectInstance effectInstance, boolean reapply) {
         entity.effectsDirty = true;

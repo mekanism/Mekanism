@@ -52,7 +52,7 @@ public class FusionReactorValidator extends CuboidStructureValidator<FusionReact
         } else if (!isControllerPos && controller) {
             //When the controller is potentially outside the multiblock we need to make sure to not allow ignoring the failure
             // as otherwise we may allow duplicate controllers
-            return FormationResult.fail(MekanismLang.MULTIBLOCK_INVALID_CONTROLLER_CONFLICT, true);
+            return FormationResult.fail(MekanismLang.MULTIBLOCK_INVALID_CONTROLLER_CONFLICT, pos, true);
         }
         return super.validateFrame(ctx, pos, state, type, needsFrame);
     }

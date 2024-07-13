@@ -1,6 +1,7 @@
 package mekanism.generators.common;
 
 import java.util.concurrent.CompletableFuture;
+import mekanism.api.MekanismAPITags;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.datagen.recipe.builder.ChemicalChemicalToChemicalRecipeBuilder;
@@ -269,7 +270,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
         //Hohlraum
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               IngredientCreatorAccess.item().from(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.GOLD), 4),
-              IngredientCreatorAccess.infusionStack().from(MekanismTags.InfuseTypes.CARBON, 10),
+              IngredientCreatorAccess.infusionStack().from(MekanismAPITags.InfuseTypes.CARBON, 10),
               GeneratorsItems.HOHLRAUM.getItemStack()
         ).build(consumer);
         //Laser Focus Matrix

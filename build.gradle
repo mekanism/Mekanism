@@ -6,21 +6,21 @@ import groovy.json.JsonSlurper
 import mekanism.AllJar
 import mekanism.MergeModuleResources
 import mekanism.OptimizePng
+import mekanism.OutputChangelog
 import net.darkhax.curseforgegradle.TaskPublishCurseForge
 import net.darkhax.curseforgegradle.UploadArtifact
-import net.neoforged.gradle.dsl.common.runs.run.Run
 
 import java.util.function.Consumer
 
 plugins {
-    id('org.ajoberstar.grgit.service') version('5.2.2')
+    id('org.ajoberstar.grgit.service')//Version declared in buildSrc
     id('net.darkhax.curseforgegradle') version('1.1.24')
     id('com.modrinth.minotaur') version('2.8.7')
     id('java')
     id('eclipse')
     id('idea')
     id('maven-publish')
-    id('net.neoforged.gradle.userdev') version('7.0.142')//https://projects.neoforged.net/neoforged/neogradle
+    id('net.neoforged.gradle.userdev') version('7.0.153')//https://projects.neoforged.net/neoforged/neogradle
 }
 
 tasks.named('wrapper', Wrapper).configure {
@@ -243,35 +243,12 @@ minecraft.accessTransformers.files(
         file('src/gameTest/resources/META-INF/gametest_ats.cfg')
 )
 
-static void setupClientAcc(Run run) {
-    //The below if statements are to add args to your gradle.properties file in user home
-    // (DO NOT add them directly to the gradle.properties file for this project)
-    // Setting the below properties allows use of your normal Minecraft account in the
-    // dev environment including having your skin load. Each property also has a comment
-    // explaining what information to set the value to/format it expects
-    // One thing to note is because of the caching that goes on, after changing these
-    // variables, you need to refresh the project and rerun genIntellijRuns/genEclipseRuns
-    if (run.project.hasProperty('mc_uuid')) {
-        //Your uuid without any dashes in the middle
-        run.programArguments.addAll('--uuid', (String) run.project.property('mc_uuid'))
-    }
-    if (run.project.hasProperty('mc_username')) {
-        //Your username/display name, this is the name that shows up in chat
-        // Note: This is not your email, even if you have a Mojang account
-        run.programArguments.addAll('--username', (String) run.project.property('mc_username'))
-    }
-    if (run.project.hasProperty('mc_accessToken')) {
-        //Your access token, you can find it in your '.minecraft/launcher_accounts.json' file
-        run.programArguments.addAll('--accessToken', (String) run.project.property('mc_accessToken'))
-    }
-}
-
 runs {
     configureEach {
         if (hasProperty('forge_force_ansi')) {
             //Force ansi if declared as a gradle variable, as the auto detection doesn't detect IntelliJ properly
             // or eclipse's plugin that adds support for ansi escape in console
-            jvmArguments.add("-Dterminal.ansi=${property('forge_force_ansi')}")
+            systemProperties.put('terminal.ansi', (String) property('forge_force_ansi'))
         }
 
         modSources.add((SourceSet[]) [sourceSets.main, sourceSets.api])
@@ -285,11 +262,16 @@ runs {
             jvmArguments.add('-XX:+AllowEnhancedClassRedefinition')
         }
     }
-    client { Run run -> setupClientAcc(run) }
+    //Note: To enable logging into the client account, set the neogradle.subsystems.devLogin.conventionForRun property to true in your gradle user home
+    // https://github.com/neoforged/NeoGradle?tab=readme-ov-file#per-run-configuration
+    client {
+    }
     clientAlt {
         configure('client')
-        if (!project.hasProperty('mc_username')) {
-            //If the property is missing (so the normal runClient task would use Dev as the name),
+        //Force disable devLogin for clientAlt regardless of if it is enabled via gradle properties for the main gradle run
+        devLogin.enabled(false)
+        if (!(findProperty('neogradle.subsystems.devLogin.conventionForRun') ?: false)) {
+            //If the property is missing or set to false (so the normal runClient task would use Dev as the name),
             // change the name of the alt client type so that it doesn't conflict with the main dev one
             programArguments.addAll((String[]) ['--username', 'AltDev'])
         }
@@ -299,9 +281,8 @@ runs {
     gameTestServer {
         modSources.add((SourceSet) sourceSets.gameTest)
     }
-    gameTestClient { Run run ->
+    gameTestClient {
         configure('client')
-        setupClientAcc(run)
         modSources.add((SourceSet) sourceSets.gameTest)
     }
     junit {
@@ -348,13 +329,13 @@ repositories { RepositoryHandler handler ->
         filter.includeGroup('org.openzen.zencode')
     })
     exclusiveRepo(handler, 'https://maven.terraformersmc.com/', 'dev.emi')
-    exclusiveRepo(handler, 'https://maven.theillusivec4.top/', 'top.theillusivec4.curios')
+    exclusiveRepo(handler, 'https://maven.octo-studios.com/releases/', 'top.theillusivec4.curios')
     exclusiveRepo(handler, 'https://maven.tterrag.com/', 'team.chisel.ctm')
     exclusiveRepo(handler, 'https://squiddev.cc/maven/', 'cc.tweaked', 'org.squiddev')
     exclusiveRepo(handler, 'https://dogforce-games.com/maven/', 'dev.gigaherz.jsonthings')
     exclusiveRepo(handler, 'https://maven2.bai.lol', 'lol.bai', 'mcp.mobius.waila')//WTHIT
     exclusiveRepo(handler, 'https://www.cursemaven.com', 'curse.maven')
-    exclusiveRepo(handler, 'https://modmaven.dev/', 'appeng', 'mcjty.theoneprobe')
+    exclusiveRepo(handler, 'https://modmaven.dev/', 'appeng', 'mcjty.theoneprobe', 'dev.technici4n')
     exclusiveRepo(handler, 'https://maven.minecraftforge.net/releases/', 'com.github.glitchfiend')
     exclusiveRepo(handler, 'https://maven.thiakil.com', 'com.thiakil', 'moze_intel')
     exclusiveRepo(handler, 'https://maven.parchmentmc.org/', 'org.parchmentmc.data')
@@ -380,73 +361,67 @@ dependencies {
     //We use https://github.com/jqwik-team/jqwik to allow for implementing property based testing
     testImplementation("net.jqwik:jqwik:${jqwik_version}")
 
-    compileOnly("mezz.jei:jei-${previous_minecraft_version}-common-api:${jei_version}")
-    compileOnly("mezz.jei:jei-${previous_minecraft_version}-neoforge-api:${jei_version}")
+    compileOnly("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
+    compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
     if (recipe_viewer == 'jei' || recipe_viewer == 'hybrid') {
-        //TODO: Re-enable when JEI updates
-        //localRuntime("mezz.jei:jei-${previous_minor_minecraft_version}-neoforge:${jei_version}")
+        localRuntime("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
     }
 
-    compileOnly("dev.emi:emi-neoforge:${emi_version}+${previous_minor_minecraft_version}:api")
-    def emi = "dev.emi:emi-neoforge:${emi_version}+${previous_minor_minecraft_version}"
+    compileOnly("dev.emi:emi-neoforge:${emi_version}+${minecraft_version}:api")
+    def emi = "dev.emi:emi-neoforge:${emi_version}+${minecraft_version}"
     //TODO: Re-evaluate (https://github.com/emilyploszaj/emi/issues/537) might allow us to not have to do this
     //Compile against full emi in datagen
     datagenMainCompileOnly(emi)
-    //TODO: Re-enable when EMI updates
-    /*if (recipe_viewer == 'emi' || recipe_viewer == 'hybrid') {
+    if (recipe_viewer == 'emi' || recipe_viewer == 'hybrid') {
         localRuntime(emi)
     } else {
         //We still need it to load in datagen regardless of if we are using emi or a different viewer so that we can access EMI related objects
-        datagenMainRuntimeOnly(emi)
-    }*/
+        //TODO - 1.21: Make a PR to EMI to bootstrap in datagen, and more importantly be able to somehow provide the registry access context
+        // rather than it trying to grab it from Minecraft.getInstance().level as Minecraft.getInstance() is null in datagen
+        // As https://github.com/emilyploszaj/emi/pull/600 broke it
+        //datagenMainRuntimeOnly(emi)
+    }
 
-    //TODO: Re-enable once an update is released for the current MC version
+    //TODO: Re-enable once it doesn't cause Datagen to fail
     //localRuntime("team.chisel.ctm:CTM:${minecraft_version}-${ctm_version}")
 
-    //TODO: Remove having to specify these as non transitive once https://github.com/McJtyMods/TheOneProbe/issues/548 is fixed
-    compileOnly("mcjty.theoneprobe:theoneprobe:${top_version}:api") {
-        transitive = false
-    }
-    //TODO: Re-enable once it doesn't cause connection issues on servers
-    /*localRuntime("mcjty.theoneprobe:theoneprobe:${top_version}") {
-        transitive = false
-    }*/
+    compileOnly("mcjty.theoneprobe:theoneprobe:${top_version}:api")
+    localRuntime("mcjty.theoneprobe:theoneprobe:${top_version}")
     compileOnly("curse.maven:jade-api-324717:${jade_api_id}")
-    //TODO: Re-enable when Jade updates
-    //localRuntime("curse.maven:jade-324717:${jade_id}")
+    localRuntime("curse.maven:jade-324717:${jade_id}")
     compileOnly("mcp.mobius.waila:wthit-api:neo-${wthit_version}")
+    //localRuntime("mcp.mobius.waila:wthit:neo-${wthit_version}")
+    //localRuntime('lol.bai:badpackets:neo-0.8.1')
 
-    def crt = "com.blamejared.crafttweaker:CraftTweaker-neoforge-${previous_minor_minecraft_version}:${crafttweaker_version}"
+    def crt = "com.blamejared.crafttweaker:CraftTweaker-neoforge-${minecraft_version}:${crafttweaker_version}"
     compileOnly(crt)
-    //TODO: Re-enable when CrT updates
-    //localRuntime(crt)
+    localRuntime(crt)
     def jeiTweaker = "com.blamejared.jeitweaker:JeiTweaker-forge-1.20.1:${jeitweaker_version}"
     compileOnly(jeiTweaker)
     //TODO: Re-enable when it updates
     //localRuntime(jeiTweaker)
 
-    compileOnly("dev.gigaherz.jsonthings:JsonThings-${previous_minecraft_version}:${json_things_version}")
+    compileOnly("dev.gigaherz.jsonthings:JsonThings-${minecraft_version}:${json_things_version}")
 
     //Mods we have dependencies on but don't bother loading into the dev environment
     //compileOnly("curse.maven:projecte-api-226410:${projecte_api_id}")
     compileOnly('moze_intel:ProjectE-api:1.0.1')
     compileOnly("curse.maven:flux-networks-248020:${flux_networks_id}")
+    compileOnly("dev.technici4n:GrandPower:${grand_power_version}")
     compileOnly("top.theillusivec4.curios:curios-neoforge:${curios_version}:api")
     compileOnly("com.blamejared.recipestages:RecipeStages:${recipe_stages_version}")
     compileOnly("curse.maven:opencomputers2-437654:${oc2_id}")
-    compileOnly("cc.tweaked:cc-tweaked-${previous_minor_minecraft_version}-forge-api:${cc_tweaked_version}")
+    compileOnly("cc.tweaked:cc-tweaked-${minecraft_version}-forge-api:${cc_tweaked_version}")
     //localRuntime("cc.tweaked:cc-tweaked-${minecraft_version}-forge:${cc_tweaked_version}")
     compileOnly("curse.maven:female-gender-forge-481655:${wildfire_gender_mod_id}")
 
     //Dependencies for data generators for mod compat reference
-    //TODO: Switch back to datagenMainImplementation when it updated
-    datagenMainCompileOnly("appeng:appliedenergistics2-neoforge:${ae2_version}")
-    //datagenMainRuntimeOnly("com.github.glitchfiend:GlitchCore-neoforge:${previous_minor_minecraft_version}-${glitchcore_version}")
-    //datagenMainRuntimeOnly("com.github.glitchfiend:TerraBlender-neoforge:${previous_minor_minecraft_version}-${terrablender_version}")
-    //TODO: Switch back to datagenMainImplementation when it updated
-    datagenMainCompileOnly("com.github.glitchfiend:BiomesOPlenty-neoforge:${previous_minor_minecraft_version}-${biomesoplenty_version}")
-    //TODO - 1.20.2: Switch back to datagenMainImplementation
-    datagenMainCompileOnly("curse.maven:farmers-delight-398521:${farmers_delight_id}")
+    datagenMainImplementation("appeng:appliedenergistics2:${ae2_version}")
+    datagenMainRuntimeOnly("com.github.glitchfiend:GlitchCore-neoforge:${minecraft_version}-${glitchcore_version}")
+    datagenMainRuntimeOnly("com.github.glitchfiend:TerraBlender-neoforge:${minecraft_version}-${terrablender_version}")
+    datagenMainImplementation("com.github.glitchfiend:BiomesOPlenty-neoforge:${minecraft_version}-${biomesoplenty_version}")
+    //TODO: Re-enable and implement after it is updated
+    //datagenMainImplementation("curse.maven:farmers-delight-398521:${farmers_delight_id}")
     //TODO - 1.20.2: Re-enable after projecte is updated
     //datagenMainRuntimeOnly("curse.maven:projecte-226410:${projecte_id}")
 
@@ -565,6 +540,8 @@ tasks.register('optimizePng', OptimizePng) {
             inputFiles.from(fileTree(dir: dir, includes: pngPatterns))
         }
     }
+    //TODO: Make optimize png be fully compatible with the configuration cache?
+    notCompatibleWithConfigurationCache('Up to date check is not currently compatible with the configuration cache')
     outputs.upToDateWhen {
         //Validate that none of the files has changed size, as the odds that a file has the exact same size and has changed is very low for an image file
         //Note: This is from Chat-GPT, I don't understand why the any check isn't just always true (and thus this being different from returning always false)
@@ -619,82 +596,37 @@ publishing {
     }
 }
 
-def resolvedChangelog = null
-
-//closure to generate the changelog once, and only when needed by CurseGradle or Modrinth
-def changeLogResolver = { ->
-    if (resolvedChangelog != null) {
-        logger.lifecycle('Using cached changelog')
-        return resolvedChangelog
-    }
-    def generatedChangelog = 'Unable to generate changelog :('
-    def currentCommit = System.getenv('GIT_COMMIT')
-    def prevCommit = System.getenv('GIT_PREVIOUS_SUCCESSFUL_COMMIT') ?: System.getenv('GIT_PREVIOUS_COMMIT')
-
-    if (currentCommit != null && prevCommit != null) {
-        generatedChangelog = ''
-        //Use the service to avoid eagerly instantiating the grgit instance, and only do so when we actually need it
-        // for usage in generating the changelog for either CF or Modrinth
-        grgitService.service.get().grgit.log {
-            range(prevCommit, currentCommit)
-        }.reverse().each { commit ->
-            //Use full message rather than short message to get any new lines, and trim it so that any trailing new lines
-            // get removed so that we don't end up with extra spaces
-            String message = commit.fullMessage.trim()
-            if (!message.startsWith('Merge branch') && !message.startsWith('Merge pull request') && !message.contains('[no-changelog]')) {
-                //Ignore Merges and PR Merges
-                message = message.replaceAll('#(\\d+)', { match ->//turn issues/prs into links (github currently supports prs being linked as issues)
-                    return "[${match[0]}](https://github.com/mekanism/Mekanism/issues/${match[1]})"
-                }).replaceAll('\\n', '  \n\t')//convert new lines that are part of a commit message into new lines and a tab
-                if (generatedChangelog != '') {
-                    //If this isn't the first commit prepend an extra newline
-                    generatedChangelog += '  \n'
-                }
-                generatedChangelog += "[${commit.getAbbreviatedId()}](https://github.com/mekanism/Mekanism/commit/${commit.id}) - ${message}"
-            }
-        }
-        logger.lifecycle('Changelog generated')
-    }
-
-    def releaseNotesFile = project.file("docs/release_${mod_version}.md")
-    if (releaseNotesFile.exists()) {
-        //Add any version specific changelog stuff
-        def releaseNotes = releaseNotesFile.text
-        generatedChangelog = "$releaseNotes\n\n $generatedChangelog"
-    }
-
-    if (release_type == 'alpha') {
-        //Add a warning at the top about what an alpha build means
-        generatedChangelog = 'Warning: Mekanism is currently in alpha, and is not recommended for widespread use in modpacks. There are likely to be game breaking bugs, ' +
-                'and updating from one alpha to the next may cause various mekanism blocks to disappear/void their contents. While we will try to not have this happen/keep ' +
-                'it to a minimum make sure to make backups. You can read more about the alpha state of this project [here](https://github.com/mekanism/Mekanism#alpha-status).' +
-                "<br> $generatedChangelog"
-    }
-    resolvedChangelog = generatedChangelog
-    return generatedChangelog
+def outputChangelog = tasks.register('outputChangelog', OutputChangelog, grgitService.service)
+outputChangelog.configure { OutputChangelog out ->
+    out.releaseNotes.value(provider {
+        //If we have a file specified that exists for the mod version, then we want to use it
+        // otherwise we want to fall back to not having the value set
+        def file = layout.projectDirectory.file("docs/release_${mod_version}.md")
+        return file.asFile.exists() ? file : null
+    })
 }
-
-tasks.register('outputChangelog') {
-    doLast {
-        project.file('build/changelog.md').text = changeLogResolver.call()
-    }
-}
-
-def mainCfUpload, additionsCfUpload, generatorsCfUpload, toolsCfUpload
 
 if (System.getenv('CURSEFORGE_KEY') != null || project.hasProperty('curseforgeKey')) {
     logger.lifecycle('Enabling Curseforge config')
     tasks.register('curseforge', TaskPublishCurseForge, { task ->
+        dependsOn(outputChangelog)
         setGroup('publishing')
         setDescription('Upload Mekanism to CurseForge')
         notCompatibleWithConfigurationCache('Not yet compatible')//TODO: Remove when possible
 
-        apiToken = System.getenv('CURSEFORGE_KEY') ?: project.findProperty('curseforgeKey')
+        def changelog = outputChangelog.flatMap(c -> c.outputFile)
+        inputs.file(changelog)
+        inputs.property('release_type', release_type)
+        inputs.property('java_version', java_version)
+        inputs.property('minecraft_version', minecraft_version)
 
-        def changelog = changeLogResolver.call()
+        //debugMode.set(true)
+        disableVersionDetection()
+        apiToken = System.getenv('CURSEFORGE_KEY') ?: project.findProperty('curseforgeKey')
+        //apiToken.set(project.providers.environmentVariable('CURSEFORGE_KEY').orElse(project.providers.gradleProperty('curseforgeKey')))
 
         //Main Mekanism Project
-        mainCfUpload = task.upload(268560, jar) { main ->
+        def mainCfUpload = task.upload(268560, jar) { main ->
             setGenericCurseArtifactData(main, changelog)
             //Include the API jar as a secondary file to the main file
             withAdditionalFile(apiJar)
@@ -711,35 +643,43 @@ if (System.getenv('CURSEFORGE_KEY') != null || project.hasProperty('curseforgeKe
                     //World gen
                     'biomes-o-plenty',
                     //Misc
-                    'applied-energistics-2', 'ctm', 'curios', 'dark-mode-everywhere', 'farmers-delight', 'female-gender-forge', 'flux-networks',
-                    'json-things', 'perviaminvenire', 'projecte', 'recipe-stages'
+                    'applied-energistics-2', 'ctm', 'curios-continuation', 'dark-mode-everywhere', 'female-gender-forge', 'flux-networks',
+                    'grandpower', 'json-things', 'perviaminvenire', 'projecte', 'recipe-stages'
             )
         }
 
         //Secondary modules/projects
-        additionsCfUpload = uploadSecondaryCurseProject(task, 345425, changelog, additionsJar)
-        //uploadSecondaryCurseProject(task, 376939, changelog, defenseJar)
-        generatorsCfUpload = uploadSecondaryCurseProject(task, 268566, changelog, generatorsJar)
-        toolsCfUpload = uploadSecondaryCurseProject(task, 268567, changelog, toolsJar)
+        def additionsCfUpload = uploadSecondaryCurseProject(task, 345425, changelog, additionsJar)
+        //def defenseCfUpload = uploadSecondaryCurseProject(task, 376939, changelog, defenseJar)
+        def generatorsCfUpload = uploadSecondaryCurseProject(task, 268566, changelog, generatorsJar)
+        def toolsCfUpload = uploadSecondaryCurseProject(task, 268567, changelog, toolsJar)
 
         doLast {
             //Note: Quiet is the level above warning but below error. We want these to show regardless of logging level
             // see: https://docs.gradle.org/current/userguide/logging.html
-            logger.quiet('https://www.curseforge.com/minecraft/mc-mods/mekanism/files/{}', mainCfUpload.curseFileId)
-            logger.quiet('https://www.curseforge.com/minecraft/mc-mods/mekanism-additions/files/{}', additionsCfUpload.curseFileId)
-            logger.quiet('https://www.curseforge.com/minecraft/mc-mods/mekanism-generators/files/{}', generatorsCfUpload.curseFileId)
-            logger.quiet('https://www.curseforge.com/minecraft/mc-mods/mekanism-tools/files/{}', toolsCfUpload.curseFileId)
+            //Note: We cast to object to be explicit, so that when we have CurseForgeGradle in debug mode and these are null
+            // then it can resolve which overload to use
+            logger.quiet('https://www.curseforge.com/minecraft/mc-mods/mekanism/files/{}', (Object) mainCfUpload.curseFileId)
+            logger.quiet('https://www.curseforge.com/minecraft/mc-mods/mekanism-additions/files/{}', (Object) additionsCfUpload.curseFileId)
+            logger.quiet('https://www.curseforge.com/minecraft/mc-mods/mekanism-generators/files/{}', (Object) generatorsCfUpload.curseFileId)
+            logger.quiet('https://www.curseforge.com/minecraft/mc-mods/mekanism-tools/files/{}', (Object) toolsCfUpload.curseFileId)
         }
     })
 }
 
-void setGenericCurseArtifactData(UploadArtifact artifact, String changelog) {
+void setGenericCurseArtifactData(UploadArtifact artifact, Provider<RegularFile> changelog) {
     artifact.changelog = changelog
     artifact.changelogType = 'markdown'
-    artifact.releaseType = "${release_type}"
+    artifact.releaseType = release_type
+    //artifact.changelog.set(changelog.map(file -> file.asFile.text))
+    //artifact.changelogType.set('markdown')
+    //artifact.releaseType.set(release_type)
+    artifact.addModLoader('NeoForge')
+    artifact.addJavaVersion("Java ${java_version}")
+    artifact.addGameVersion(minecraft_version)
 }
 
-UploadArtifact uploadSecondaryCurseProject(TaskPublishCurseForge task, long projectId, String changelog, TaskProvider<Jar> sourceSetJar) {
+UploadArtifact uploadSecondaryCurseProject(TaskPublishCurseForge task, long projectId, Provider<RegularFile> changelog, TaskProvider<Jar> sourceSetJar) {
     return task.upload(projectId, sourceSetJar) { artifact ->
         setGenericCurseArtifactData(artifact, changelog)
         addRequirement('mekanism')
@@ -753,7 +693,7 @@ if (System.getenv('MODRINTH_TOKEN') != null || project.hasProperty('modrinthToke
     def generatorsModrinth = createSecondaryModrinthUpload('generators', 'OFVYKsAk', generatorsJar)
     def toolsModrinth = createSecondaryModrinthUpload('tools', 'tqQpq1lt', toolsJar)
     tasks.named('modrinth').configure {
-        dependsOn(jar, apiJar)
+        dependsOn(jar, apiJar, outputChangelog)
         finalizedBy(additionsModrinth, /*defenseModrinth,*/ generatorsModrinth, toolsModrinth)
         notCompatibleWithConfigurationCache('Not yet compatible')//TODO: Remove when possible
     }
@@ -774,7 +714,7 @@ if (System.getenv('MODRINTH_TOKEN') != null || project.hasProperty('modrinthToke
         gameVersions.add("${minecraft_version}")
         loaders.add('neoforge')
         failSilently = true
-        changelog = changeLogResolver.call()
+        changelog.value(outputChangelog.flatMap(c -> c.outputFile).map(file -> file.asFile.text))
         uploadFile = jar
 
         additionalFiles.value([apiJar.get()])
@@ -783,7 +723,6 @@ if (System.getenv('MODRINTH_TOKEN') != null || project.hasProperty('modrinthToke
                 new ModDependency('XxWD5pD3', 'optional'),//AE2
                 new ModDependency('gu7yAYhd', 'optional'),//CC: Tweaked
                 new ModDependency('Xg35A4rS', 'optional'),//CraftTweaker
-                new ModDependency('vvuO3ImH', 'optional'),//Curios
                 new ModDependency('fRiHVvU7', 'optional'),//EMI
                 new ModDependency('R2OftAxM', 'optional'),//Farmer's Delight
                 new ModDependency('nvQzSEkH', 'optional'),//Jade

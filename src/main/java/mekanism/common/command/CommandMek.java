@@ -22,6 +22,7 @@ import net.minecraft.commands.arguments.coordinates.Vec3Argument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.phys.Vec3;
@@ -74,6 +75,8 @@ public class CommandMek {
                       rules.getRule(GameRules.RULE_WEATHER_CYCLE).set(false, server);
                       rules.getRule(GameRules.RULE_MOBGRIEFING).set(false, server);
                       source.getLevel().setDayTime(2_000);
+                      //Act as if /weather clear was ran
+                      source.getLevel().setWeatherParameters(ServerLevel.RAIN_DELAY.sample(server.overworld().getRandom()), 0, false, false);
                       source.sendSuccess(() -> MekanismLang.COMMAND_TEST_RULES.translateColored(EnumColor.GRAY), true);
                       return 0;
                   });

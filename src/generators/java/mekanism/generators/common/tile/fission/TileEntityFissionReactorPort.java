@@ -49,6 +49,7 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
 
     public TileEntityFissionReactorPort(BlockPos pos, BlockState state) {
         super(GeneratorsBlocks.FISSION_REACTOR_PORT, pos, state);
+        delaySupplier = NO_DELAY;
     }
 
     @Nullable

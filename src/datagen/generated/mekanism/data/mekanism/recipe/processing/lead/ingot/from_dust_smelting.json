@@ -4,7 +4,7 @@
   "cookingtime": 200,
   "experience": 0.3,
   "ingredient": {
-    "tag": "c:dusts/lead"
+    "item": "mekanism:dust_lead"
   },
   "result": {
     "count": 1,

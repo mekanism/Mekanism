@@ -4,7 +4,7 @@
   "cookingtime": 100,
   "experience": 0.35,
   "ingredient": {
-    "tag": "c:dusts/bronze"
+    "item": "mekanism:dust_bronze"
   },
   "result": {
     "count": 1,

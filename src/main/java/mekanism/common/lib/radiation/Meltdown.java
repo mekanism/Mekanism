@@ -9,6 +9,7 @@ import java.util.UUID;
 import mekanism.api.SerializationConstants;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
+import net.minecraft.SharedConstants;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -30,7 +31,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class Meltdown {
 
-    private static final int DURATION = 100;
+    private static final int DURATION = 5 * SharedConstants.TICKS_PER_SECOND;
 
     private final BlockPos minPos, maxPos;
     private final double magnitude, chance;

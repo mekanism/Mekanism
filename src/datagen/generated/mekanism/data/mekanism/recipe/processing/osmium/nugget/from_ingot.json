@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     {
-      "tag": "c:ingots/osmium"
+      "item": "mekanism:ingot_osmium"
     }
   ],
   "result": {

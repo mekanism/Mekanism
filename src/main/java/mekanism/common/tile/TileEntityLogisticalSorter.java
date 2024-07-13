@@ -34,6 +34,7 @@ import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.TransporterUtils;
+import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -194,7 +195,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
             if (!isFullyMuffled()) {
                 SoundHandler.startTileSound(soundEvent.get(), getSoundCategory(), getInitialVolume(), level.getRandom(), getSoundPos(), false);
             }
-            nextSound = level.getGameTime() + 20L * (level.random.nextInt(5, 15));
+            nextSound = level.getGameTime() + (long) SharedConstants.TICKS_PER_SECOND * level.random.nextInt(5, 15);
         }
     }
 

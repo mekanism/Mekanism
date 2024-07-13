@@ -2,7 +2,6 @@ package mekanism.tools.common;
 
 import mekanism.common.Mekanism;
 import mekanism.common.base.IModModule;
-import mekanism.common.config.MekanismModConfig;
 import mekanism.common.lib.Version;
 import mekanism.tools.common.config.MekanismToolsConfig;
 import mekanism.tools.common.registries.ToolsArmorMaterials;
@@ -13,8 +12,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 
@@ -39,7 +36,7 @@ public class MekanismTools implements IModModule {
         NeoForge.EVENT_BUS.addListener(MobEquipmentHelper::onLivingSpecialSpawn);
 
         modEventBus.addListener(this::commonSetup);
-        modEventBus.addListener(this::onConfigLoad);
+        modEventBus.addListener(MekanismToolsConfig::onConfigLoad);
         ToolsArmorMaterials.ARMOR_MATERIALS.register(modEventBus);
         ToolsItems.ITEMS.register(modEventBus);
         ToolsCreativeTabs.CREATIVE_TABS.register(modEventBus);
@@ -48,16 +45,6 @@ public class MekanismTools implements IModModule {
 
     public static ResourceLocation rl(String path) {
         return ResourceLocation.fromNamespaceAndPath(MekanismTools.MODID, path);
-    }
-
-    private void onConfigLoad(ModConfigEvent configEvent) {
-        //Note: We listen to both the initial load and the reload, to make sure that we fix any accidentally
-        // cached values from calls before the initial loading
-        ModConfig config = configEvent.getConfig();
-        //Make sure it is for the same modid as us
-        if (config.getModId().equals(MODID) && config instanceof MekanismModConfig mekConfig) {
-            mekConfig.clearCache(configEvent);
-        }
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {

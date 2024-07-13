@@ -37,8 +37,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.common.IShearable;
-import net.neoforged.neoforge.common.ToolAction;
-import net.neoforged.neoforge.common.ToolActions;
+import net.neoforged.neoforge.common.ItemAbilities;
+import net.neoforged.neoforge.common.ItemAbility;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -50,8 +50,8 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
     private static final Predicate<Entity> SHEARABLE = entity -> !entity.isSpectator() && entity instanceof IShearable;
 
     @Override
-    public boolean canPerformAction(IModule<ModuleShearingUnit> module, IModuleContainer container, ItemStack stack, ToolAction action) {
-        if (action == ToolActions.SHEARS_DISARM) {
+    public boolean canPerformAction(IModule<ModuleShearingUnit> module, IModuleContainer container, ItemStack stack, ItemAbility action) {
+        if (action == ItemAbilities.SHEARS_DISARM) {
             if (stack.getItem() instanceof ItemMekaTool) {
                 //Only require energy if we are installed on a Meka-Tool and can thus calculate the energy required to break the block "safely"
                 // Note: We assume hardness is zero like the default is for tripwires as we don't have the target block in our current context
@@ -61,12 +61,12 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
             //Note: If for some reason we are installed on something that is not the Meka-Tool don't stop the action from being enabled
             // as it may not actually require energy
             return true;
-        } else if (action == ToolActions.SHEARS_DIG) {
+        } else if (action == ItemAbilities.SHEARS_DIG) {
             //Note: If for some reason we are installed on something that is not the Meka-Tool don't stop the action from being enabled
             // as it may not actually require energy
             return !(stack.getItem() instanceof ItemMekaTool) || ItemMekaTool.hasEnergyForDigAction(container, module.getEnergyContainer(stack));
         }
-        return ToolActions.DEFAULT_SHEARS_ACTIONS.contains(action);
+        return ItemAbilities.DEFAULT_SHEARS_ACTIONS.contains(action);
     }
 
     @NotNull

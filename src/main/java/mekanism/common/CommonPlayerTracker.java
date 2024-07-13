@@ -5,6 +5,7 @@ import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.block.BlockMekanism;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.network.to_client.player_data.PacketPlayerData;
 import mekanism.common.network.to_client.player_data.PacketResetPlayerClient;
@@ -43,7 +44,9 @@ public class CommonPlayerTracker {
     public void onPlayerLoginEvent(PlayerLoggedInEvent event) {
         Player player = event.getEntity();
         if (!player.level().isClientSide) {
-            player.sendSystemMessage(ALPHA_WARNING);
+            if (MekanismConfig.general.enableAlphaWarning.getAsBoolean()) {
+                player.sendSystemMessage(ALPHA_WARNING);
+            }
             MekanismCriteriaTriggers.LOGGED_IN.value().trigger((ServerPlayer) player);
         }
     }

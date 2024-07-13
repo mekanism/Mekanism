@@ -6,7 +6,6 @@ import mekanism.additions.client.model.ModelBabyCreeper;
 import mekanism.additions.client.render.entity.RenderBabyCreeper;
 import mekanism.additions.client.render.entity.RenderBabyEnderman;
 import mekanism.additions.client.render.entity.RenderBalloon;
-import mekanism.additions.client.render.entity.RenderObsidianTNTPrimed;
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.item.ItemBalloon;
 import mekanism.additions.common.item.ItemWalkieTalkie.WalkieData;
@@ -21,8 +20,10 @@ import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.ItemRegistryObject;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
+import net.minecraft.client.renderer.entity.BoggedRenderer;
 import net.minecraft.client.renderer.entity.SkeletonRenderer;
 import net.minecraft.client.renderer.entity.StrayRenderer;
+import net.minecraft.client.renderer.entity.TntRenderer;
 import net.minecraft.client.renderer.entity.WitherSkeletonRenderer;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -56,8 +57,9 @@ public class AdditionsClientRegistration {
     @SubscribeEvent
     public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         //Register entity rendering handlers
-        event.registerEntityRenderer(AdditionsEntityTypes.OBSIDIAN_TNT.get(), RenderObsidianTNTPrimed::new);
+        event.registerEntityRenderer(AdditionsEntityTypes.OBSIDIAN_TNT.get(), TntRenderer::new);
         event.registerEntityRenderer(AdditionsEntityTypes.BALLOON.get(), RenderBalloon::new);
+        event.registerEntityRenderer(AdditionsEntityTypes.BABY_BOGGED.get(), BoggedRenderer::new);
         event.registerEntityRenderer(AdditionsEntityTypes.BABY_CREEPER.get(), RenderBabyCreeper::new);
         event.registerEntityRenderer(AdditionsEntityTypes.BABY_ENDERMAN.get(), RenderBabyEnderman::new);
         event.registerEntityRenderer(AdditionsEntityTypes.BABY_SKELETON.get(), SkeletonRenderer::new);
