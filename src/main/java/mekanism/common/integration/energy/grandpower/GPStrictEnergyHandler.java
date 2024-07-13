@@ -25,39 +25,39 @@ public class GPStrictEnergyHandler implements IStrictEnergyHandler {
     }
 
     @Override
-    public FloatingLong getEnergy(int container) {
-        return container == 0 ? EnergyUnit.FORGE_ENERGY.convertFrom(storage.getAmount()) : FloatingLong.ZERO;
+    public long getEnergy(int container) {
+        return container == 0 ? EnergyUnit.FORGE_ENERGY.convertFrom(storage.getAmount()) : 0;
     }
 
     @Override
-    public void setEnergy(int container, FloatingLong energy) {
+    public void setEnergy(int container, long energy) {
         //Not implemented or directly needed
     }
 
     @Override
-    public FloatingLong getMaxEnergy(int container) {
-        return container == 0 ? EnergyUnit.FORGE_ENERGY.convertFrom(storage.getCapacity()) : FloatingLong.ZERO;
+    public long getMaxEnergy(int container) {
+        return container == 0 ? EnergyUnit.FORGE_ENERGY.convertFrom(storage.getCapacity()) : 0;
     }
 
     @Override
-    public FloatingLong getNeededEnergy(int container) {
-        return container == 0 ? EnergyUnit.FORGE_ENERGY.convertFrom(Math.max(0, storage.getCapacity() - storage.getAmount())) : FloatingLong.ZERO;
+    public long getNeededEnergy(int container) {
+        return container == 0 ? EnergyUnit.FORGE_ENERGY.convertFrom(Math.max(0, storage.getCapacity() - storage.getAmount())) : 0;
     }
 
     @Override
-    public FloatingLong insertEnergy(int container, FloatingLong amount, @NotNull Action action) {
+    public long insertEnergy(int container, long amount, @NotNull Action action) {
         return container == 0 ? insertEnergy(amount, action) : amount;
     }
 
     @Override
-    public FloatingLong insertEnergy(FloatingLong amount, Action action) {
+    public long insertEnergy(long amount, Action action) {
         if (storage.canReceive()) {
-            long toInsert = EnergyUnit.FORGE_ENERGY.convertToAsLong(amount);
+            long toInsert = EnergyUnit.FORGE_ENERGY.convertTo(amount);
             if (toInsert > 0) {
                 long inserted = storage.receive(toInsert, action.simulate());
                 if (inserted > 0) {
                     //Only bother converting back if any was inserted
-                    return amount.subtract(EnergyUnit.FORGE_ENERGY.convertFrom(inserted));
+                    return amount - EnergyUnit.FORGE_ENERGY.convertFrom(inserted);
                 }
             }
         }
@@ -65,19 +65,19 @@ public class GPStrictEnergyHandler implements IStrictEnergyHandler {
     }
 
     @Override
-    public FloatingLong extractEnergy(int container, FloatingLong amount, @NotNull Action action) {
-        return container == 0 ? extractEnergy(amount, action) : FloatingLong.ZERO;
+    public long extractEnergy(int container, long amount, @NotNull Action action) {
+        return container == 0 ? extractEnergy(amount, action) : 0;
     }
 
     @Override
-    public FloatingLong extractEnergy(FloatingLong amount, Action action) {
+    public long extractEnergy(long amount, Action action) {
         if (storage.canExtract()) {
-            long toExtract = EnergyUnit.FORGE_ENERGY.convertToAsLong(amount);
+            long toExtract = EnergyUnit.FORGE_ENERGY.convertTo(amount);
             if (toExtract > 0) {
                 long extracted = storage.extract(toExtract, action.simulate());
                 return EnergyUnit.FORGE_ENERGY.convertFrom(extracted);
             }
         }
-        return FloatingLong.ZERO;
+        return 0;
     }
 }
