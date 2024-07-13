@@ -88,7 +88,7 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
         long clientEnergyUsed = 0L;
         if (canFunction()) {
             boolean operated = false;
-            if (energyContainer.getEnergy().greaterOrEqual(energyContainer.getEnergyPerTick()) && !moduleSlot.isEmpty() && !containerSlot.isEmpty()) {
+            if (energyContainer.getEnergy() >= energyContainer.getEnergyPerTick() && !moduleSlot.isEmpty() && !containerSlot.isEmpty()) {
                 ModuleData<?> data = ((IModuleItem) moduleSlot.getStack().getItem()).getModuleData();
                 ItemStack stack = containerSlot.getStack();
                 ModuleContainer container = ModuleHelper.get().getModuleContainer(stack);

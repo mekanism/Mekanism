@@ -63,7 +63,7 @@ public record ModuleInhalationPurificationUnit(boolean beneficialEffects, boolea
         long usage = MekanismConfig.gear.mekaSuitEnergyUsagePotionTick.get();
         boolean free = usage == 0L || player.isCreative();
         IEnergyContainer energyContainer = free ? null : module.getEnergyContainer(stack);
-        if (free || (energyContainer != null && energyContainer.getEnergy().greaterOrEqual(usage))) {
+        if (free || (energyContainer != null && energyContainer.getEnergy() >= usage)) {
             //Gather all the active effects that we can handle, so that we have them in their own list and
             // don't run into any issues related to CMEs
             List<MobEffectInstance> effects = player.getActiveEffects().stream().filter(this::canHandle).toList();

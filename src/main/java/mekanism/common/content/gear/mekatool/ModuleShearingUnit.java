@@ -75,7 +75,7 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
         if (entity instanceof IShearable) {
             long cost = MekanismConfig.gear.mekaToolEnergyUsageShearEntity.get();
             IEnergyContainer energyContainer = module.getEnergyContainer(stack);
-            if (cost == 0L || energyContainer != null && energyContainer.getEnergy().greaterOrEqual(cost) &&
+            if (cost == 0L || energyContainer != null && energyContainer.getEnergy() >= cost &&
                               shearEntity(energyContainer, entity, player, stack, entity.level(), entity.blockPosition())) {
                 return InteractionResult.SUCCESS;
             }
@@ -118,7 +118,7 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
     //Modified copy of ShearsDispenseItemBehavior#tryShearLivingEntity to work with IForgeShearable
     private boolean tryShearLivingEntity(@Nullable IEnergyContainer energyContainer, ServerLevel world, BlockPos pos, ItemStack stack) {
         long cost = MekanismConfig.gear.mekaToolEnergyUsageShearEntity.get();
-        if (cost == 0L || energyContainer != null && energyContainer.getEnergy().greaterOrEqual(MekanismConfig.gear.mekaToolEnergyUsageShearEntity.get())) {
+        if (cost == 0L || energyContainer != null && energyContainer.getEnergy() >= MekanismConfig.gear.mekaToolEnergyUsageShearEntity.get()) {
             for (LivingEntity entity : world.getEntitiesOfClass(LivingEntity.class, new AABB(pos), SHEARABLE)) {
                 if (shearEntity(energyContainer, entity, null, stack, world, pos)) {
                     return true;
