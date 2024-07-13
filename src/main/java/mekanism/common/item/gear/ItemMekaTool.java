@@ -146,7 +146,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
             long energyRequired = getDestroyEnergy(container, 0, container.hasEnabled(MekanismModules.SILK_TOUCH_UNIT));
             long energyAvailable = energyContainer.getEnergy();
             //If we don't have enough energy to break at full speed check if the reduced speed could actually mine
-            return energyRequired.smallerOrEqual(energyAvailable) || (energyAvailable / energyRequired) != 0;
+            return energyRequired <= energyAvailable || (energyAvailable / energyRequired) != 0;
         }
         return false;
     }
