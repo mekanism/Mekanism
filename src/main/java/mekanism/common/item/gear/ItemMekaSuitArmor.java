@@ -22,6 +22,7 @@ import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData.ExclusiveFlag;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
+import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.client.key.MekKeyHandler;
 import mekanism.client.key.MekanismKeyHandler;
@@ -549,7 +550,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         absorption = Math.min(1 - currentAbsorbed, absorption);
         float toAbsorb = amount * absorption;
         if (toAbsorb > 0) {
-            long usage = energyCost.getAsLong().multiply(toAbsorb);
+            long usage = MathUtils.clampToLong(energyCost.getAsLong() * toAbsorb);
             if (usage == 0L) {
                 //No energy is actually needed to absorb the damage, either because of the config
                 // or how small the amount to absorb is

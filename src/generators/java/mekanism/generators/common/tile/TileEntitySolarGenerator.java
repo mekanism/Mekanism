@@ -6,6 +6,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
+import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
@@ -84,7 +85,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
             return;
         }
         solarCheck = new SolarCheck(level, worldPosition);
-        updateMaxOutputRaw(getConfiguredMax().multiply(solarCheck.getPeakMultiplier()));
+        updateMaxOutputRaw(MathUtils.clampToLong(getConfiguredMax() * solarCheck.getPeakMultiplier()));
     }
 
     protected boolean checkCanSeeSun() {
@@ -101,7 +102,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         }
         float brightness = getBrightnessMultiplier(level);
         //Production is a function of the peak possible output in this biome and sun's current brightness
-        return getConfiguredMax().multiply(brightness * solarCheck.getGenerationMultiplier());
+        return MathUtils.clampToLong(getConfiguredMax() * (brightness * solarCheck.getGenerationMultiplier()));
     }
 
     protected float getBrightnessMultiplier(@NotNull Level world) {

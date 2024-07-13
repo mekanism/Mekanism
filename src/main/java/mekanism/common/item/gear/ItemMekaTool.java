@@ -159,7 +159,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
         long destroyEnergy = getDestroyEnergy(silk);
         IModule<ModuleExcavationEscalationUnit> module = container.getIfEnabled(MekanismModules.EXCAVATION_ESCALATION_UNIT);
         float efficiency = module == null ? MekanismConfig.gear.mekaToolBaseEfficiency.get() : module.getCustomInstance().getEfficiency();
-        return destroyEnergy.multiply(efficiency);
+        return MathUtils.clampToLong(destroyEnergy * efficiency);
     }
 
     @Override
@@ -273,8 +273,10 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
                     //Don't include bonus energy required by efficiency modules when calculating energy of vein mining targets
                     long baseDestroyEnergy = getDestroyEnergy(silk);
                     MekanismUtils.veinMineArea(energyContainer, energyRequired, modDestroyEnergy, baseDestroyEnergy, world, pos, player, stack, this, veinedBlocks,
-                          ItemMekaTool::getDestroyEnergy, (base, hardness, distance, bs) -> getDestroyEnergy(base, hardness)
-                                .multiply(0.5 * Math.pow(distance, bs.is(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE) ? 1.5 : 2)));
+                          ItemMekaTool::getDestroyEnergy, (base, hardness, distance, bs) -> {
+                              double multiplier = 0.5 * Math.pow(distance, bs.is(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE) ? 1.5 : 2);
+                              return MathUtils.clampToLong(getDestroyEnergy(base, hardness) * multiplier);
+                          });
                 }
             }
         }
@@ -294,7 +296,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
                     //Try to extract full energy, even if we have a lower damage amount this is fine as that just means
                     // we don't have enough energy, but we will remove as much as we can, which is how much corresponds
                     // to the amount of damage we will actually do
-                    energyContainer.extract(MekanismConfig.gear.mekaToolEnergyUsageWeapon.get().multiply(unitDamage / 4D), Action.EXECUTE, AutomationType.MANUAL);
+                    energyContainer.extract(MathUtils.clampToLong(MekanismConfig.gear.mekaToolEnergyUsageWeapon.get() * (unitDamage / 4D)), Action.EXECUTE, AutomationType.MANUAL);
                 }
             }
         }
@@ -341,7 +343,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
         long destroyEnergy = getDestroyEnergy(silk);
         IModule<ModuleExcavationEscalationUnit> module = IModuleHelper.INSTANCE.getIfEnabled(itemStack, MekanismModules.EXCAVATION_ESCALATION_UNIT);
         float efficiency = module == null ? MekanismConfig.gear.mekaToolBaseEfficiency.get() : module.getCustomInstance().getEfficiency();
-        return destroyEnergy.multiply(efficiency);
+        return MathUtils.clampToLong(destroyEnergy * efficiency);
     }
 
     @NotNull
@@ -352,7 +354,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
         if (attackAmplificationUnit != null) {
             unitDamage = attackAmplificationUnit.getCustomInstance().getDamage();
             if (unitDamage > 0) {
-                long energyCost = MekanismConfig.gear.mekaToolEnergyUsageWeapon.get().multiply(unitDamage / 4D);
+                long energyCost = MathUtils.clampToLong(MekanismConfig.gear.mekaToolEnergyUsageWeapon.get() * (unitDamage / 4D));
                 IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
                 long energy = energyContainer == null ? 0L : energyContainer.getEnergy();
                 if (energy < energyCost) {
@@ -412,7 +414,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
                             return InteractionResultHolder.pass(stack);
                         }
                         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
-                        long energyNeeded = MekanismConfig.gear.mekaToolEnergyUsageTeleport.get().multiply(distance / 10D);
+                        long energyNeeded = MathUtils.clampToLong(MekanismConfig.gear.mekaToolEnergyUsageTeleport.get() * (distance / 10D));
                         if (energyContainer == null || energyContainer.getEnergy() < energyNeeded) {
                             return InteractionResultHolder.fail(stack);
                         }

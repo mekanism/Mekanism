@@ -3,6 +3,7 @@ package mekanism.generators.common.tile;
 import mekanism.api.IEvaporationSolar;
 import mekanism.api.RelativeSide;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.MathUtils;
 import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
@@ -49,7 +50,7 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
             }
             totalPeak += solarChecks[i].getPeakMultiplier();
         }
-        updateMaxOutputRaw(getConfiguredMax().multiply(totalPeak / 9));
+        updateMaxOutputRaw(MathUtils.clampToLong(getConfiguredMax() * (totalPeak / 9)));
     }
 
     @Override
@@ -90,7 +91,7 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
         }
         generationMultiplier /= solarChecks.length + 1;
         //Production is a function of the peak possible output in this biome and sun's current brightness
-        return getConfiguredMax().multiply(brightness * generationMultiplier);
+        return MathUtils.clampToLong(getConfiguredMax() * (brightness * generationMultiplier));
     }
 
     private static class AdvancedSolarCheck extends SolarCheck {

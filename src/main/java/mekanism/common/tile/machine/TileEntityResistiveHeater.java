@@ -93,7 +93,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
         if (canFunction()) {
             toUse = energyContainer.extract(energyContainer.getEnergyPerTick(), Action.SIMULATE, AutomationType.INTERNAL);
             if (toUse != 0L) {
-                heatCapacitor.handleHeat(toUse.multiply(MekanismConfig.general.resistiveHeaterEfficiency.get()).doubleValue());
+                heatCapacitor.handleHeat(toUse * MekanismConfig.general.resistiveHeaterEfficiency.get());
                 energyContainer.extract(toUse, Action.EXECUTE, AutomationType.INTERNAL);
             }
         }
@@ -110,7 +110,6 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
         return sendUpdatePacket;
     }
 
-    @NotNull
     @ComputerMethod
     public long getEnergyUsed() {
         return clientEnergyUsed;
@@ -143,14 +142,16 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     @Override
     public CompoundTag getConfigurationData(HolderLookup.Provider provider, Player player) {
         CompoundTag data = super.getConfigurationData(provider, player);
-        data.putString(SerializationConstants.ENERGY_USAGE, energyContainer.getEnergyPerTick().toString());
+        data.putLong(SerializationConstants.ENERGY_USAGE, energyContainer.getEnergyPerTick());
         return data;
     }
 
     @Override
     public void setConfigurationData(HolderLookup.Provider provider, Player player, CompoundTag data) {
         super.setConfigurationData(provider, player, data);
-        NBTUtils.setFloatingLongIfPresent(data, SerializationConstants.ENERGY_USAGE, energyContainer::updateEnergyUsage);
+        //todo 1.22 backcompat
+        NBTUtils.setFloatingLongIfPresent(data, SerializationConstants.ENERGY_USAGE, energyUsage -> energyContainer.updateEnergyUsage(energyUsage.longValue()));
+        NBTUtils.setLongIfPresent(data, SerializationConstants.ENERGY_USAGE, energyContainer::updateEnergyUsage);
     }
 
     @Override
