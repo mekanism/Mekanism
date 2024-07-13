@@ -67,7 +67,7 @@ public record PacketPortableTeleporterTeleport(InteractionHand currentHand, Freq
                     if (!player.isCreative()) {
                         energyCost = TileEntityTeleporter.calculateEnergyCost(player, teleWorld, coords);
                         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
-                        if (energyContainer == null || energyContainer.extract(energyCost, Action.SIMULATE, AutomationType.MANUAL).smallerThan(energyCost)) {
+                        if (energyContainer == null || energyContainer.extract(energyCost, Action.SIMULATE, AutomationType.MANUAL) < energyCost) {
                             return;
                         }
                         energyExtraction = () -> energyContainer.extract(energyCost, Action.EXECUTE, AutomationType.MANUAL);

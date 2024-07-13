@@ -75,7 +75,7 @@ public record ModuleInhalationPurificationUnit(boolean beneficialEffects, boolea
                     break;
                 } else {
                     speedupEffect(player, effect);
-                    if (energyContainer.getEnergy().smallerThan(usage)) {
+                    if (energyContainer.getEnergy() < usage) {
                         //If after using energy, our remaining energy is now smaller than how much we need to use, exit
                         break;
                     }

@@ -155,7 +155,7 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
     private InteractionResult dowseCampfire(UseOnContext context, Lazy<BlockState> lazyClickedState, IEnergyContainer energyContainer) {
         long energy = energyContainer.getEnergy();
         long energyUsage = MekanismConfig.gear.mekaToolEnergyUsageShovel.get();
-        if (energy.smallerThan(energyUsage)) {
+        if (energy < energyUsage) {
             //Fail if we don't have enough energy or using the item failed
             return InteractionResult.FAIL;
         }
@@ -200,7 +200,7 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
     private InteractionResult useAOE(UseOnContext context, Lazy<BlockState> lazyClickedState, IEnergyContainer energyContainer, int diameter, ToolAction action,
           SoundEvent sound, int particle, long energyUsage, IToolAOEData toolAOEData) {
         long energy = energyContainer.getEnergy();
-        if (energy.smallerThan(energyUsage)) {
+        if (energy < energyUsage) {
             //Fail if we don't have enough energy or using the item failed
             return InteractionResult.FAIL;
         }

@@ -1,6 +1,7 @@
 package mekanism.common.item.gear;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableList.Builder;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
@@ -242,7 +243,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
         //Use raw hardness to get the best guess of if it is zero or not
         long energyRequired = getDestroyEnergy(stack, state.destroySpeed, isModuleEnabled(stack, MekanismModules.SILK_TOUCH_UNIT));
         long energyAvailable = energyContainer.extract(energyRequired, Action.SIMULATE, AutomationType.MANUAL);
-        if (energyAvailable.smallerThan(energyRequired)) {
+        if (energyAvailable < energyRequired) {
             //If we can't extract all the energy we need to break it go at base speed reduced by how much we actually have available
             return (float) (MekanismConfig.gear.mekaToolBaseEfficiency.get() * ((double) energyAvailable / energyRequired));
         }
@@ -354,13 +355,13 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
                 long energyCost = MekanismConfig.gear.mekaToolEnergyUsageWeapon.get().multiply(unitDamage / 4D);
                 IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
                 long energy = energyContainer == null ? 0L : energyContainer.getEnergy();
-                if (energy.smallerThan(energyCost)) {
+                if (energy < energyCost) {
                     //If we don't have enough power use it at a reduced power level (this will be false the majority of the time)
                     double bonusDamage = unitDamage * MathUtils.divideToLevel(energy, energyCost);
                     if (bonusDamage > 0) {
                         //If we actually have bonus damage (as we might not if we don't have any energy stored, and then
                         // we can just use the cache for as if there was no bonus damage)
-                        ImmutableList.Builder<ItemAttributeModifiers.Entry> builder = ImmutableList.builder();
+                        Builder<ItemAttributeModifiers.Entry> builder = ImmutableList.builder();
                         builder.add(new ItemAttributeModifiers.Entry(
                               Attributes.ATTACK_DAMAGE,
                               new AttributeModifier(BASE_ATTACK_DAMAGE_ID, MekanismConfig.gear.mekaToolBaseDamage.get() + bonusDamage, Operation.ADD_VALUE),
@@ -412,7 +413,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
                         }
                         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
                         long energyNeeded = MekanismConfig.gear.mekaToolEnergyUsageTeleport.get().multiply(distance / 10D);
-                        if (energyContainer == null || energyContainer.getEnergy().smallerThan(energyNeeded)) {
+                        if (energyContainer == null || energyContainer.getEnergy() < energyNeeded) {
                             return InteractionResultHolder.fail(stack);
                         }
                         double targetX = pos.getX() + 0.5;

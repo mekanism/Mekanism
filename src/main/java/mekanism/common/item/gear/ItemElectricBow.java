@@ -55,7 +55,7 @@ public class ItemElectricBow extends BowItem implements IItemHUDProvider, ICusto
         if (entity instanceof Player player && !player.isCreative()) {
             IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(bow, 0);
             long energyNeeded = getMode(bow) ? MekanismConfig.gear.electricBowEnergyUsageFire.get() : MekanismConfig.gear.electricBowEnergyUsage.get();
-            if (energyContainer == null || energyContainer.extract(energyNeeded, Action.SIMULATE, AutomationType.MANUAL).smallerThan(energyNeeded)) {
+            if (energyContainer == null || energyContainer.extract(energyNeeded, Action.SIMULATE, AutomationType.MANUAL) < energyNeeded) {
                 return;
             }
         }

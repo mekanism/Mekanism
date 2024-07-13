@@ -168,7 +168,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
             if (energyInItem != 0L) {
                 //Simulate inserting energy from each container in the item into our container
                 long simulatedRemainder = energyContainer.insert(energyInItem, Action.SIMULATE, AutomationType.INTERNAL);
-                if (simulatedRemainder.smallerThan(energyInItem)) {
+                if (simulatedRemainder < energyInItem) {
                     //If we were simulated that we could actually insert any, then
                     // extract up to as much energy as we were able to accept from the item
                     long extractedEnergy = itemEnergyHandler.extractEnergy(energyInItem.subtract(simulatedRemainder), Action.EXECUTE);
@@ -195,7 +195,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
             if (itemEnergyHandler != null) {
                 long storedEnergy = energyContainer.getEnergy();
                 long simulatedRemainder = itemEnergyHandler.insertEnergy(storedEnergy, Action.SIMULATE);
-                if (simulatedRemainder.smallerThan(storedEnergy)) {
+                if (simulatedRemainder < storedEnergy) {
                     //We are able to fit at least some energy from our container into the item
                     long extractedEnergy = energyContainer.extract(storedEnergy.subtract(simulatedRemainder), Action.EXECUTE, AutomationType.INTERNAL);
                     if (extractedEnergy != 0L) {

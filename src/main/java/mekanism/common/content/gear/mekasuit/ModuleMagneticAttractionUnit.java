@@ -60,7 +60,7 @@ public record ModuleMagneticAttractionUnit(Range range) implements ICustomModule
                             break;
                         } else {
                             pullItem(player, item);
-                            if (energyContainer.getEnergy().smallerThan(usage)) {
+                            if (energyContainer.getEnergy() < usage) {
                                 //If after using energy, our energy is now smaller than how much we need to use, exit
                                 break;
                             }

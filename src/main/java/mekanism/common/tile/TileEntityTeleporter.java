@@ -269,7 +269,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         for (Entity entity : toTeleport) {
             sum += calculateEnergyCost(entity, targetWorld, closestCoords);
         }
-        if (energyContainer.extract(sum, Action.SIMULATE, AutomationType.INTERNAL).smallerThan(sum)) {
+        if (energyContainer.extract(sum, Action.SIMULATE, AutomationType.INTERNAL) < sum) {
             return NOT_ENOUGH_ENERGY;
         }
         return new TeleportInfo((byte) 1, closestCoords, toTeleport);

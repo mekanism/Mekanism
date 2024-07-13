@@ -158,7 +158,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
         //Use raw hardness to get the best guess of if it is zero or not
         long energyRequired = getDestroyEnergy(stack, state.destroySpeed);
         long energyAvailable = energyContainer.extract(energyRequired, Action.SIMULATE, AutomationType.MANUAL);
-        if (energyAvailable.smallerThan(energyRequired)) {
+        if (energyAvailable < energyRequired) {
             //If we can't extract all the energy we need to break it go at base speed reduced by how much we actually have available
             return (float) (DisassemblerMode.NORMAL.getEfficiency() * (energyAvailable / (double) energyRequired));
         }

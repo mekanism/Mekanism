@@ -61,7 +61,7 @@ public class ItemNetworkReader extends ItemEnergized {
                 if (!player.isCreative()) {
                     long energyPerUse = MekanismConfig.gear.networkReaderEnergyUsage.get();
                     IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(context.getItemInHand(), 0);
-                    if (energyContainer == null || energyContainer.extract(energyPerUse, Action.SIMULATE, AutomationType.MANUAL).smallerThan(energyPerUse)) {
+                    if (energyContainer == null || energyContainer.extract(energyPerUse, Action.SIMULATE, AutomationType.MANUAL) < energyPerUse) {
                         return InteractionResult.FAIL;
                     }
                     energyContainer.extract(energyPerUse, Action.EXECUTE, AutomationType.MANUAL);
