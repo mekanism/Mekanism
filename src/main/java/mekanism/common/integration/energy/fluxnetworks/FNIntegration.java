@@ -2,7 +2,6 @@ package mekanism.common.integration.energy.fluxnetworks;
 
 import mekanism.api.Action;
 import mekanism.api.energy.IStrictEnergyHandler;
-import mekanism.api.math.FloatingLong;
 import mekanism.common.util.UnitDisplayUtils.EnergyUnit;
 import sonar.fluxnetworks.api.energy.IFNEnergyStorage;
 
@@ -45,7 +44,7 @@ public class FNIntegration implements IFNEnergyStorage {
             return 0;
         }
         long inserted = toInsert - remainder;
-        return EnergyUnit.FORGE_ENERGY.convertToAsLong(inserted);
+        return EnergyUnit.FORGE_ENERGY.convertTo(inserted);
     }
 
     @Override
@@ -70,18 +69,18 @@ public class FNIntegration implements IFNEnergyStorage {
             }
         }
         long extracted = handler.extractEnergy(toExtract, action);
-        return EnergyUnit.FORGE_ENERGY.convertToAsLong(extracted);
+        return EnergyUnit.FORGE_ENERGY.convertTo(extracted);
     }
 
     private long convertToAndBack(long value) {
-        return EnergyUnit.FORGE_ENERGY.convertFrom(EnergyUnit.FORGE_ENERGY.convertToAsLong(value));
+        return EnergyUnit.FORGE_ENERGY.convertFrom(EnergyUnit.FORGE_ENERGY.convertTo(value));
     }
 
     @Override
     public long getEnergyStoredL() {
         long energy = 0;
         for (int container = 0, containers = handler.getEnergyContainerCount(); container < containers; container++) {
-            long total = EnergyUnit.FORGE_ENERGY.convertToAsLong(handler.getEnergy(container));
+            long total = EnergyUnit.FORGE_ENERGY.convertTo(handler.getEnergy(container));
             if (total > Long.MAX_VALUE - energy) {
                 //Ensure we don't overflow
                 return Long.MAX_VALUE;
@@ -95,7 +94,7 @@ public class FNIntegration implements IFNEnergyStorage {
     public long getMaxEnergyStoredL() {
         long maxEnergy = 0;
         for (int container = 0, containers = handler.getEnergyContainerCount(); container < containers; container++) {
-            long max = EnergyUnit.FORGE_ENERGY.convertToAsLong(handler.getMaxEnergy(container));
+            long max = EnergyUnit.FORGE_ENERGY.convertTo(handler.getMaxEnergy(container));
             if (max > Long.MAX_VALUE - maxEnergy) {
                 //Ensure we don't overflow
                 return Long.MAX_VALUE;
