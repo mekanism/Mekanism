@@ -42,6 +42,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
@@ -144,7 +145,7 @@ public class TurbineMultiblockData extends MultiblockData {
         if (stored > 0 && energyNeeded != 0L) {
             double energyMultiplier = (MekanismConfig.general.maxEnergyPerSteam.get() / (double) TurbineValidator.MAX_BLADES)
                                       * (Math.min(blades, coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get()));
-            if (energyMultiplier == 0) {//todo epsilon check?
+            if (energyMultiplier < Mth.EPSILON) {
                 clientFlow = 0;
             } else {
                 double rate = lowerVolume * (getDispersers() * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get());
@@ -258,7 +259,7 @@ public class TurbineMultiblockData extends MultiblockData {
     public long getProductionRate() {
         double energyMultiplier = ((double) MekanismConfig.general.maxEnergyPerSteam.get() / TurbineValidator.MAX_BLADES)
                                   * (Math.min(blades, coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get()));
-        return (long) (energyMultiplier * clientFlow);
+        return MathUtils.clampToLong(energyMultiplier * clientFlow);
     }
 
     @ComputerMethod
@@ -267,7 +268,7 @@ public class TurbineMultiblockData extends MultiblockData {
                                   * (Math.min(blades, coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get()));
         double rate = lowerVolume * (getDispersers() * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get());
         rate = Math.min(rate, vents * MekanismGeneratorsConfig.generators.turbineVentGasFlow.get());
-        return (long) (energyMultiplier * rate);
+        return MathUtils.clampToLong(energyMultiplier * rate);
     }
 
     @ComputerMethod

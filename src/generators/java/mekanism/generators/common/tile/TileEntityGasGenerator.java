@@ -132,7 +132,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
         }
         long max = (long) Math.ceil(256 * (fuelTank.getStored() / (double) fuelTank.getCapacity()));
         max = Math.min(maxBurnTicks * fuelTank.getStored() + burnTicks, max);
-        max = Math.min((long) (getEnergyContainer().getNeeded() / (double) generationRate), max);
+        max = Math.min(MathUtils.clampToLong(getEnergyContainer().getNeeded() / (double) generationRate), max);
         return max;
     }
 
