@@ -31,7 +31,7 @@ public class ItemStackToEnergyEmiRecipe extends MekanismEmiHolderRecipe<ItemStac
         long[] outputDefinition = recipe.getOutputDefinition();
         if (outputDefinition.length > 1) {
             long maxEnergy = 0;
-            for (Long floatingLong : outputDefinition) {
+            for (long floatingLong : outputDefinition) {
                 maxEnergy = Math.max(maxEnergy, floatingLong);
             }
             long finalMaxEnergy = maxEnergy;
