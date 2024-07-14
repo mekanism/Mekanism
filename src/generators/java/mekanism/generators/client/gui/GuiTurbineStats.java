@@ -37,9 +37,11 @@ public class GuiTurbineStats extends GuiMekanismTile<TileEntityTurbineCasing, Em
             TurbineMultiblockData multiblock = tile.getMultiblock();
             if (multiblock.isFormed()) {
                 storing = EnergyDisplay.of(multiblock.energyContainer);
-                producing = EnergyDisplay.of((long) ((MekanismConfig.general.maxEnergyPerSteam.get() / (double) TurbineValidator.MAX_BLADES)
-                                                     * (multiblock.clientFlow * Math.min(multiblock.blades,
-                      multiblock.coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get()))));
+
+                double steamPerBlade = MekanismConfig.general.maxEnergyPerSteam.get() / (double) TurbineValidator.MAX_BLADES;
+                int bladeCount = Math.min(multiblock.blades, multiblock.coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get());
+                long producingLong = (long) (steamPerBlade * (multiblock.clientFlow * bladeCount));
+                producing = EnergyDisplay.of(producingLong);
             } else {
                 storing = EnergyDisplay.ZERO;
                 producing = EnergyDisplay.ZERO;
