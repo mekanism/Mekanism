@@ -1,9 +1,6 @@
 package mekanism.api.math;
 
 public class ULong {
-
-    public static final long MAX_VALUE = -1L; // Equivalent to 2^64 - 1
-
     /**
      * Clamp an unsigned long to int
      *
