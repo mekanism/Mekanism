@@ -200,8 +200,10 @@ public class GasAttributes {
         public Fuel(int burnTicks, long energyDensity) {
             if (burnTicks <= 0) {
                 throw new IllegalArgumentException("Fuel attributes must burn for at least one tick! Burn Ticks: " + burnTicks);
-            } else if (energyDensity == 0) {
+            } else if (energyDensity <= 0) {
                 throw new IllegalArgumentException("Fuel attributes must have an energy density greater than zero!");
+            } else if (energyDensity / burnTicks == 0L) {
+                throw new IllegalArgumentException("Energy density per tick must be greater than zero! (integer division)");
             }
             this.burnTicks = () -> burnTicks;
             this.energyDensity = () -> energyDensity;
