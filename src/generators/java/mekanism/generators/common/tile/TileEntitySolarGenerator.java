@@ -29,6 +29,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class TileEntitySolarGenerator extends TileEntityGenerator {
 
+    private static final RelativeSide[] ENERGY_SIDES = {RelativeSide.BOTTOM};
     private boolean seesSun;
     private FloatingLong lastProductionAmount = FloatingLong.ZERO;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy item slot")
@@ -114,7 +115,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
 
     @Override
     protected RelativeSide[] getEnergySides() {
-        return new RelativeSide[]{RelativeSide.BOTTOM};
+        return ENERGY_SIDES;
     }
 
     protected FloatingLong getConfiguredMax() {

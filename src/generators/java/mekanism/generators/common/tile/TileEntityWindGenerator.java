@@ -27,6 +27,7 @@ import org.jetbrains.annotations.NotNull;
 public class TileEntityWindGenerator extends TileEntityGenerator implements IBoundingBlock {
 
     private static final float SPEED = 32F;
+    private static final RelativeSide[] ENERGY_SIDES = {RelativeSide.FRONT, RelativeSide.BOTTOM};
 
     private double angle;
     private FloatingLong currentMultiplier = FloatingLong.ZERO;
@@ -48,7 +49,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 
     @Override
     protected RelativeSide[] getEnergySides() {
-        return new RelativeSide[]{RelativeSide.FRONT, RelativeSide.BOTTOM};
+        return ENERGY_SIDES;
     }
 
     @Override

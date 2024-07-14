@@ -26,6 +26,8 @@ import org.jetbrains.annotations.Nullable;
 
 public abstract class TileEntityGenerator extends TileEntityMekanism {
 
+    private static final RelativeSide[] ENERGY_SIDES = {RelativeSide.FRONT};
+
     @Nullable
     private List<BlockEnergyCapabilityCache> outputCaches;
     /**
@@ -43,7 +45,7 @@ public abstract class TileEntityGenerator extends TileEntityMekanism {
     }
 
     protected RelativeSide[] getEnergySides() {
-        return new RelativeSide[]{RelativeSide.FRONT};
+        return ENERGY_SIDES;
     }
 
     @NotNull
@@ -63,7 +65,7 @@ public abstract class TileEntityGenerator extends TileEntityMekanism {
                 Direction direction = getDirection();
                 RelativeSide[] energySides = getEnergySides();
                 outputCaches = new ArrayList<>(energySides.length);
-                for (RelativeSide energySide : getEnergySides()) {
+                for (RelativeSide energySide : energySides) {
                     Direction side = energySide.getDirection(direction);
                     outputCaches.add(BlockEnergyCapabilityCache.create((ServerLevel) level, worldPosition.relative(side), side.getOpposite()));
                 }

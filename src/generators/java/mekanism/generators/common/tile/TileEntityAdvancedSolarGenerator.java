@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator implements IBoundingBlock, IEvaporationSolar {
 
+    private static final RelativeSide[] ENERGY_SIDES = {RelativeSide.FRONT, RelativeSide.BOTTOM};
     private final SolarCheck[] solarChecks = new SolarCheck[8];
 
     public TileEntityAdvancedSolarGenerator(BlockPos pos, BlockState state) {
@@ -23,7 +24,7 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
 
     @Override
     protected RelativeSide[] getEnergySides() {
-        return new RelativeSide[]{RelativeSide.FRONT, RelativeSide.BOTTOM};
+        return ENERGY_SIDES;
     }
 
     @Override
