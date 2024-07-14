@@ -133,7 +133,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
         turbineDisperserGasFlow = CachedDoubleValue.wrap(this, builder.comment("The rate at which steam is dispersed into the turbine.")
               .defineInRange("turbineDisperserGasFlow", 1_280D, 0.1, 1_024 * FluidType.BUCKET_VOLUME));
         turbineEnergyCapacityPerVolume = CachedLongValue.defineUnsigned(this, builder, "Amount of energy (J) that each block of the turbine contributes to the total energy capacity. Max = volume * energyCapacityPerVolume",
-              "energyCapacityPerVolume", 16_000_000L, 0, 1_000_000_000_000L);
+              "energyCapacityPerVolume", 16_000_000L, 1L, 1_000_000_000_000L);
         //Note: We use maxVolume as it still is a large number, and we have no reason to go higher even if some things we technically could
         int maxTurbine = 17 * 17 * 18;
         turbineGasPerTank = CachedLongValue.wrap(this, builder.comment("Amount of gas (mB) that each block of the turbine's steam cavity contributes to the volume. Max = volume * gasPerTank")
