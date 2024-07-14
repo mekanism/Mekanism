@@ -4,6 +4,7 @@ import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import java.util.List;
+import java.util.stream.LongStream;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
 import mekanism.common.integration.crafttweaker.CrTConstants;
@@ -33,6 +34,6 @@ public class CrTItemStackToEnergyRecipe {
     @ZenCodeType.Method
     @ZenCodeType.Getter("outputs")
     public static List<Long> getOutput(ItemStackToEnergyRecipe _this) {
-        return _this.getOutputDefinition();
+        return LongStream.of(_this.getOutputDefinition()).boxed().toList();
     }
 }

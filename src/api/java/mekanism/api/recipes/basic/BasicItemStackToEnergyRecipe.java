@@ -1,10 +1,8 @@
 package mekanism.api.recipes.basic;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
@@ -56,8 +54,8 @@ public class BasicItemStackToEnergyRecipe extends ItemStackToEnergyRecipe {
     }
 
     @Override
-    public List<Long> getOutputDefinition() {
-        return Collections.singletonList(output);
+    public long[] getOutputDefinition() {
+        return new long[]{output};
     }
 
     @Override

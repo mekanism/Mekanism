@@ -52,7 +52,7 @@ public abstract class ItemStackToEnergyRecipeManager extends MekanismRecipeManag
 
     @Override
     protected String describeOutputs(ItemStackToEnergyRecipe recipe) {
-        return CrTUtils.describeOutputs(recipe.getOutputDefinition(), fl -> fl);
+        return CrTUtils.describeOutputs(recipe.getOutputDefinition());
     }
 
     @ZenRegister

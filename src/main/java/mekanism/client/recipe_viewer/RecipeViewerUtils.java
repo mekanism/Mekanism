@@ -90,6 +90,14 @@ public class RecipeViewerUtils {
         return (int) (System.currentTimeMillis() / TimeUtil.MILLISECONDS_PER_SECOND % elements.size());
     }
 
+    public static long getCurrent(long[] elements) {
+        return elements[getIndex(elements)];
+    }
+
+    public static <T> int getIndex(long[] elements) {
+        return (int) (System.currentTimeMillis() / TimeUtil.MILLISECONDS_PER_SECOND % elements.length);
+    }
+
     @SuppressWarnings("unchecked")
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> List<ItemStack> getStacksFor(
           ChemicalStackIngredient<CHEMICAL, STACK, ?> ingredient, boolean displayConversions) {

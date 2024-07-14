@@ -147,6 +147,14 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe<?>> im
             //Outputs sometimes are as lists, try wrapping them into a single element
             // eventually we may want to try listing them all somehow?
             return convertParam(list.getFirst());
+        } else if (param instanceof long[] longs) {
+            if (longs.length == 0) {
+                //Shouldn't happen
+                return "Invalid (output) array, no outputs";
+            }
+            //Outputs sometimes are as arrays, try wrapping them into a single element
+            // eventually we may want to try listing them all somehow?
+            return convertParam(longs[0]);
         } else if (param instanceof ElectrolysisRecipeOutput output) {
             return convertParam(output.left()) + ", " + convertParam(output.right());
         }
@@ -196,6 +204,13 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe<?>> im
                 }
                 //Update data to be the element
                 data = dataList.getFirst();
+            } else if (data instanceof long[] longs) {
+                if (longs.length != 1) {
+                    //Failed, output arrays must be of length one or handled manually instead of using this helper
+                    return Optional.empty();
+                }
+                //Update data to be the element
+                data = longs[0];
             }
             if (data instanceof ItemStackIngredient ingredient) {
                 inputs.addItem(CrTUtils.toCrT(ingredient));

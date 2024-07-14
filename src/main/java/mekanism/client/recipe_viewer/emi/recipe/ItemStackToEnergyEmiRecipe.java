@@ -1,8 +1,6 @@
 package mekanism.client.recipe_viewer.emi.recipe;
 
 import dev.emi.emi.api.widget.WidgetHolder;
-import java.util.List;
-import mekanism.api.math.ULong;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiEnergyGauge;
@@ -30,8 +28,8 @@ public class ItemStackToEnergyEmiRecipe extends MekanismEmiHolderRecipe<ItemStac
     }
 
     private IEnergyInfoHandler getEnergyInfoHandler() {
-        List<Long> outputDefinition = recipe.getOutputDefinition();
-        if (outputDefinition.size() > 1) {
+        long[] outputDefinition = recipe.getOutputDefinition();
+        if (outputDefinition.length > 1) {
             long maxEnergy = 0;
             for (Long floatingLong : outputDefinition) {
                 maxEnergy = Math.max(maxEnergy, floatingLong);
@@ -49,7 +47,7 @@ public class ItemStackToEnergyEmiRecipe extends MekanismEmiHolderRecipe<ItemStac
                 }
             };
         }
-        long energy = outputDefinition.isEmpty() ? 0L : outputDefinition.getFirst();
+        long energy = outputDefinition.length == 0 ? 0L : outputDefinition[0];
         return new IEnergyInfoHandler() {
             @Override
             public long getEnergy() {

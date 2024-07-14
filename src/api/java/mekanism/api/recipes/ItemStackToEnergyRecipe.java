@@ -1,10 +1,8 @@
 package mekanism.api.recipes;
 
-import java.util.List;
 import java.util.function.Predicate;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
@@ -61,7 +59,7 @@ public abstract class ItemStackToEnergyRecipe extends MekanismRecipe<SingleRecip
      *
      * @return Representation of the output, <strong>MUST NOT</strong> be modified.
      */
-    public abstract List<Long> getOutputDefinition();
+    public abstract long[] getOutputDefinition();
 
     @Override
     public boolean isIncomplete() {
