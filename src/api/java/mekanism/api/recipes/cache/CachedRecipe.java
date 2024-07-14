@@ -410,7 +410,7 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?>> {
             // modify the source value, if we do the check here manually as well, then we can skip creating unnecessary objects
             useEnergy.accept(energy);
         } else {
-            useEnergy.accept(energy * operations);
+            useEnergy.accept(Math.multiplyExact(energy, operations));
         }
     }
 
