@@ -31,7 +31,7 @@ public class LongTransferUtils {
      */
     public static long insert(long stack, @Nullable Direction side, Action action, ToIntFunction<@Nullable Direction> containerCount,
           InContainerGetterLong inContainerGetter, LongToLongContainerInteraction insert) {
-        if (stack == 0L) {
+        if (stack <= 0L) {
             //Short circuit if no energy is trying to be inserted
             return 0L;
         }
@@ -49,7 +49,7 @@ public class LongTransferUtils {
             if (inContainer == 0L) {
                 emptyContainers.add(container);
             } else {
-                long remainder = insert.interact(container, toInsert, side, action);
+                long remainder = Math.max(0, insert.interact(container, toInsert, side, action));
                 if (remainder == 0L) {
                     //If we have no remainder, return that we fit it all
                     return 0L;
@@ -59,7 +59,7 @@ public class LongTransferUtils {
             }
         }
         for (int container : emptyContainers) {
-            long remainder = insert.interact(container, toInsert, side, action);
+            long remainder = Math.max(0, insert.interact(container, toInsert, side, action));
             if (remainder == 0L) {
                 //If we have no remainder, return that we fit it all
                 return 0L;
@@ -77,7 +77,7 @@ public class LongTransferUtils {
      */
     public static long insert(long stack, @Nullable Direction side, Function<@Nullable Direction, List<IEnergyContainer>> energyContainerSupplier,
           Action action, AutomationType automationType) {
-        if (stack == 0L) {
+        if (stack <= 0L) {
             //Short circuit if no energy is trying to be inserted
             return 0L;
         }
@@ -90,13 +90,13 @@ public class LongTransferUtils {
      *
      * @since 10.6.0
      */
-    public static long insert(long stack, Action action, AutomationType automationType, int size, Iterable<IEnergyContainer> energyContainers) {
-        if (stack == 0L) {
+    public static long insert(long stack, Action action, AutomationType automationType, int containerCount, Iterable<IEnergyContainer> energyContainers) {
+        if (stack <= 0L) {
             //Short circuit if no energy is trying to be inserted
             return 0L;
-        } else if (size == 0) {
+        } else if (containerCount == 0) {
             return stack;
-        } else if (size == 1) {
+        } else if (containerCount == 1) {
             return energyContainers.iterator().next().insert(stack, action, automationType);
         }
         long toInsert = stack;
@@ -107,7 +107,7 @@ public class LongTransferUtils {
             if (inContainer == 0L) {
                 emptyContainers.add(energyContainer);
             } else {
-                long remainder = energyContainer.insert(toInsert, action, automationType);
+                long remainder = Math.max(0, energyContainer.insert(toInsert, action, automationType));
                 if (remainder == 0L) {
                     //If we have no remainder, return that we fit it all
                     return 0L;
@@ -117,7 +117,7 @@ public class LongTransferUtils {
             }
         }
         for (IEnergyContainer container : emptyContainers) {
-            long remainder = container.insert(toInsert, action, automationType);
+            long remainder = Math.max(0, container.insert(toInsert, action, automationType));
             if (remainder == 0L) {
                 //If we have no remainder, return that we fit it all
                 return 0L;
@@ -148,7 +148,7 @@ public class LongTransferUtils {
         long extracted = 0;
         long toExtract = amount;
         for (int container = 0; container < containers; container++) {
-            long drained = extract.interact(container, toExtract, side, action);
+            long drained = Math.max(0, extract.interact(container, toExtract, side, action));
             if (drained != 0L) {
                 //If we were able to extract something, do so
                 if (extracted == 0L) {
@@ -187,17 +187,17 @@ public class LongTransferUtils {
      *
      * @since 10.6.0
      */
-    public static long extract(long amount, Action action, AutomationType automationType, int size, Iterable<IEnergyContainer> energyContainers) {
-        if (amount == 0L || size == 0) {
+    public static long extract(long amount, Action action, AutomationType automationType, int containerCount, Iterable<IEnergyContainer> energyContainers) {
+        if (amount <= 0L || containerCount == 0) {
             //Short circuit if no energy is trying to be extracted
             return 0L;
-        } else if (size == 1) {
+        } else if (containerCount == 1) {
             return energyContainers.iterator().next().extract(amount, action, automationType);
         }
         long extracted = 0;
         long toExtract = amount;
         for (IEnergyContainer energyContainer : energyContainers) {
-            long drained = energyContainer.extract(toExtract, action, automationType);
+            long drained = Math.max(0, energyContainer.extract(toExtract, action, automationType));
             if (drained != 0L) {
                 //If we were able to extract something, do so
                 if (extracted == 0L) {
