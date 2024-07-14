@@ -64,7 +64,7 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 
-    private long parseUnsignedLong(GuiTextField textField) {
+    private long parseUnsignedLong(GuiTextField textField) throws NumberFormatException {
         String text = textField.getText();
         if (text.contains("E")) {
             //TODO: Improve how we handle scientific notation, we currently create a big decimal and then
