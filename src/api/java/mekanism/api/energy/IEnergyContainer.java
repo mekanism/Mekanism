@@ -5,7 +5,6 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.math.ULong;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.neoforged.neoforge.common.util.INBTSerializable;
@@ -80,7 +79,7 @@ public interface IEnergyContainer extends INBTSerializable<CompoundTag>, IConten
      * @implNote If the internal amount does get updated make sure to call {@link #onContentsChanged()}.
      */
     default long extract(long amount, Action action, AutomationType automationType) {
-        if (isEmpty() || amount == 0) {
+        if (isEmpty() || amount <= 0) {
             return 0;
         }
         long ret = Math.min(getEnergy(), amount);
