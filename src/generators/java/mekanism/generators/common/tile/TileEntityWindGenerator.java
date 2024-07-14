@@ -5,6 +5,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.MathUtils;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
@@ -12,6 +13,7 @@ import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
+import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
@@ -30,7 +32,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     private static final float SPEED = 32F;
 
     private double angle;
-    private long currentMultiplier = 0;
+    private double currentMultiplier = 0;
     private boolean isBlacklistDimension;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy item slot")
     EnergyInventorySlot energySlot;
@@ -66,9 +68,13 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
             setActive(canFunction() && currentMultiplier != 0L);
         }
         if (currentMultiplier != 0L && canFunction() && getEnergyContainer().getNeeded() != 0L) {
-            getEnergyContainer().insert(Math.multiplyExact(MekanismGeneratorsConfig.generators.windGenerationMin.get(), currentMultiplier), Action.EXECUTE, AutomationType.INTERNAL);
+            getEnergyContainer().insert(getCurrentGeneration(), Action.EXECUTE, AutomationType.INTERNAL);
         }
         return sendUpdatePacket;
+    }
+
+    public long getCurrentGeneration() {
+        return MathUtils.clampToLong(MekanismGeneratorsConfig.generators.windGenerationMin.get() * currentMultiplier);
     }
 
     @Override
@@ -94,7 +100,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     /**
      * Determines the current output multiplier, taking sky visibility and height into account.
      **/
-    private long getMultiplier() {
+    private double getMultiplier() {
         if (level != null) {
             BlockPos top = getBlockPos().above(4);
             if (level.getFluidState(top).isEmpty() && level.canSeeSky(top)) {
@@ -105,8 +111,8 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
                 int clampedY = Math.min(maxY, Math.max(minY, top.getY()));
                 long minG = MekanismGeneratorsConfig.generators.windGenerationMin.get();
                 long maxG = MekanismGeneratorsConfig.generators.windGenerationMax.get();
-                long slope = (maxG - minG) / (maxY - minY);
-                long toGen = minG + (slope * (clampedY - minY));
+                double slope = ((double) (maxG - minG)) / (maxY - minY);
+                double toGen = minG + (slope * (clampedY - minY));
                 return (toGen / minG);
             }
         }
@@ -125,7 +131,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
         }
     }
 
-    public long getCurrentMultiplier() {
+    public double getCurrentMultiplier() {
         return currentMultiplier;
     }
 
@@ -151,14 +157,14 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableLong.create(this::getCurrentMultiplier, value -> currentMultiplier = value));
+        container.track(SyncableDouble.create(this::getCurrentMultiplier, value -> currentMultiplier = value));
         container.track(SyncableBoolean.create(this::isBlacklistDimension, value -> isBlacklistDimension = value));
     }
 
     //Methods relating to IComputerTile
     @Override
     long getProductionRate() {
-        return getActive() ? Math.multiplyExact(MekanismGeneratorsConfig.generators.windGenerationMin.get(), getCurrentMultiplier()) : 0L;
+        return getActive() ? getCurrentGeneration() : 0L;
     }
     //End methods IComputerTile
 }

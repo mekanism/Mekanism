@@ -36,7 +36,7 @@ public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator, M
         addRenderableWidget(new GuiInnerScreen(this, 48, 21, 80, 44, () -> {
             List<Component> list = new ArrayList<>();
             list.add(EnergyDisplay.of(tile.getEnergyContainer()).getTextComponent());
-            long amount = MekanismUtils.convertToDisplay(Math.multiplyExact(MekanismGeneratorsConfig.generators.windGenerationMin.get(), tile.getCurrentMultiplier()));
+            long amount = tile.getCurrentGeneration();
             list.add(GeneratorsLang.POWER.translate(Long.toString(amount)));
             list.add(GeneratorsLang.OUTPUT_RATE_SHORT.translate(EnergyDisplay.of(tile.getMaxOutput())));
             if (!tile.getActive()) {
@@ -45,9 +45,10 @@ public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator, M
             }
             return list;
         }));
-        addRenderableWidget(new GuiEnergyTab(this, () -> List.of(GeneratorsLang.PRODUCING_AMOUNT.translate(
-                    tile.getActive() ? EnergyDisplay.of(Math.multiplyExact(MekanismGeneratorsConfig.generators.windGenerationMin.get(), tile.getCurrentMultiplier())) : EnergyDisplay.ZERO),
-              MekanismLang.MAX_OUTPUT.translate(EnergyDisplay.of(tile.getMaxOutput())))));
+        addRenderableWidget(new GuiEnergyTab(this, () -> List.of(
+              GeneratorsLang.PRODUCING_AMOUNT.translate(tile.getActive() ? EnergyDisplay.of(tile.getCurrentGeneration()) : EnergyDisplay.ZERO),
+              MekanismLang.MAX_OUTPUT.translate(EnergyDisplay.of(tile.getMaxOutput())))
+        ));
         addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
         addRenderableWidget(new GuiStateTexture(this, 18, 35, tile::getActive, MekanismGenerators.rl(ResourceType.GUI.getPrefix() + "wind_on.png"),
               MekanismGenerators.rl(ResourceType.GUI.getPrefix() + "wind_off.png")));
