@@ -23,7 +23,7 @@ public class BasicItemStackToEnergyRecipe extends ItemStackToEnergyRecipe {
      */
     public BasicItemStackToEnergyRecipe(ItemStackIngredient input, long output) {
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
-        if (output == 0) {
+        if (output <= 0) {
             throw new IllegalArgumentException("Output must be greater than zero.");
         }
         this.output = output;
