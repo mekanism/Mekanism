@@ -8,6 +8,7 @@ import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.MathUtils;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
@@ -41,20 +42,20 @@ public class ModuleSolarRechargingUnit implements ICustomModule<ModuleSolarRecha
                 // on the scaling factor. Also note that we only use rainfall as a proxy if it CAN rain; some dimensions
                 // (like the End) have rainfall set, but can't actually support rain.
                 float humidityEff = needsRainCheck ? -0.3F * b.getModifiedClimateSettings().downfall() : 0.0F;
-                long peakOutput = (long) (MekanismConfig.gear.mekaSuitSolarRechargingRate.get() * 1.0D + tempEff + humidityEff);
+                long peakOutput = MathUtils.clampToLong(MekanismConfig.gear.mekaSuitSolarRechargingRate.get() * (1.0D + tempEff + humidityEff));
 
                 //Get the brightness of the sun; note that there are some implementations that depend on the base
                 // brightness function which doesn't take into account the fact that rain can't occur in some biomes.
                 float brightness = WorldUtils.getSunBrightness(player.level(), 1.0F);
 
                 //Production is a function of the peak possible output in this biome and sun's current brightness
-                long production = (long) (peakOutput * brightness);
+                double production = peakOutput * brightness;
                 //If the generator is in a biome where it can rain, and it's raining penalize production by 80%
                 if (needsRainCheck && (player.level().isRaining() || player.level().isThundering())) {
-                    production = (long) (production * RAIN_MULTIPLIER);
+                    production = production * RAIN_MULTIPLIER;
                 }
                 //Multiply actual production based on how many modules are installed
-                energyContainer.insert(production * module.getInstalledCount(), Action.EXECUTE, AutomationType.MANUAL);
+                energyContainer.insert(MathUtils.clampToLong(production * module.getInstalledCount()), Action.EXECUTE, AutomationType.MANUAL);
             }
         }
     }

@@ -14,6 +14,7 @@ import mekanism.api.gear.IModuleContainer;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
+import mekanism.api.math.MathUtils;
 import mekanism.common.config.listener.ConfigBasedCachedFloatSupplier;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.FluidInDetails;
@@ -88,7 +89,7 @@ public class ModuleGeothermalGeneratorUnit implements ICustomModule<ModuleGeothe
                     highestScaledDegrees = 200;
                 }
                 //Insert energy
-                long rate = (long) (MekanismGeneratorsConfig.gear.mekaSuitGeothermalChargingRate.get() * module.getInstalledCount() * highestScaledDegrees);
+                long rate = MathUtils.clampToLong(MekanismGeneratorsConfig.gear.mekaSuitGeothermalChargingRate.get() * module.getInstalledCount() * highestScaledDegrees);
                 energyContainer.insert(rate, Action.EXECUTE, AutomationType.MANUAL);
             }
         }
