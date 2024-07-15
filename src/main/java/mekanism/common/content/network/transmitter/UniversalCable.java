@@ -119,11 +119,7 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
     @Override
     public void read(HolderLookup.Provider provider, @NotNull CompoundTag nbtTags) {
         super.read(provider, nbtTags);
-        if (nbtTags.contains(SerializationConstants.ENERGY, Tag.TAG_STRING)) {
-            lastWrite = nbtTags.getLong(SerializationConstants.ENERGY);
-        } else {
-            lastWrite = 0L;
-        }
+        lastWrite = nbtTags.getLong(SerializationConstants.ENERGY);
         buffer.setEnergy(lastWrite);
     }
 
