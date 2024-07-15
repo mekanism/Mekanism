@@ -8,7 +8,6 @@ import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.math.ULong;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.tier.InductionProviderTier;
 import mekanism.common.tile.multiblock.TileEntityInductionCell;
@@ -97,7 +96,7 @@ public class MatrixEnergyContainer implements IEnergyContainer {
             }
             invalidPositions.clear();
         }
-        int compare = Long.compareUnsigned(queuedInput, queuedOutput);
+        int compare = Long.compare(queuedInput, queuedOutput);
         if (compare < 0) {
             //queuedInput is smaller - we are removing energy
             removeEnergy(queuedOutput - queuedInput);
