@@ -13,7 +13,6 @@ import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
-import mekanism.api.math.FloatingLong;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.attachments.containers.ContainerType;
@@ -173,7 +172,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
                 }
             }
         }
-        usedEnergy = clientEnergyUsed != 0L;
+        usedEnergy = clientEnergyUsed > 0L;
         if (!fluidTank.isEmpty()) {
             if (fluidHandlerAbove.isEmpty()) {
                 fluidHandlerAbove = List.of(Capabilities.FLUID.createCache((ServerLevel) level, worldPosition.above(), Direction.DOWN));

@@ -24,9 +24,7 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
-import mekanism.api.math.ULong;
 import mekanism.api.text.EnumColor;
 import mekanism.client.MekanismClient;
 import mekanism.common.Mekanism;
@@ -444,6 +442,10 @@ public final class MekanismUtils {
                 tooltip.add(MekanismLang.MODE.translateColored(EnumColor.INDIGO, EnumColor.GRAY, identity.securityMode()));
             }
         }
+    }
+
+    public static long calculateUsage(long capacity) {
+        return Math.max((long) (0.005 * capacity), 1);
     }
 
     public static Component getEnergyDisplayShort(long energy) {

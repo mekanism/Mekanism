@@ -1,13 +1,11 @@
 package mekanism.common.util;
 
-import mekanism.api.math.FloatingLong;
-import mekanism.common.lib.distribution.FloatingLongSplitInfo;
 import mekanism.common.lib.distribution.IntegerSplitInfo;
 import mekanism.common.lib.distribution.LongSplitInfo;
 import mekanism.common.lib.distribution.SplitInfo;
 import mekanism.common.lib.distribution.Target;
 
-public class EmitUtils {
+public class EmitUtils {//TODO: Make things work with primitives more directly rather than having to do the boxing and unboxing
 
     private EmitUtils() {
     }
@@ -73,16 +71,5 @@ public class EmitUtils {
      */
     public static <HANDLER, EXTRA, TARGET extends Target<HANDLER, Long, EXTRA>> long sendToAcceptors(TARGET availableTargets, long amountToSplit, EXTRA toSend) {
         return sendToAcceptors(availableTargets, new LongSplitInfo(amountToSplit, availableTargets.getHandlerCount()), toSend);
-    }
-
-    /**
-     * @param availableTargets The EnergyAcceptorWrapper targets to send energy fairly to.
-     * @param amountToSplit    The amount of energy to attempt to send
-     *
-     * @return The amount that actually got sent
-     */
-    //todo remove?
-    public static <HANDLER, TARGET extends Target<HANDLER, FloatingLong, FloatingLong>> FloatingLong sendToAcceptors(TARGET availableTargets, FloatingLong amountToSplit) {
-        return sendToAcceptors(availableTargets, new FloatingLongSplitInfo(amountToSplit, availableTargets.getHandlerCount()), amountToSplit);
     }
 }

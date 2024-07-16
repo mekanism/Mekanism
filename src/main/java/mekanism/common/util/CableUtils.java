@@ -5,7 +5,6 @@ import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IStrictEnergyHandler;
-import mekanism.api.math.FloatingLong;
 import mekanism.common.content.network.distribution.EnergyAcceptorTarget;
 import mekanism.common.integration.energy.BlockEnergyCapabilityCache;
 
@@ -19,7 +18,7 @@ public final class CableUtils {
     }
 
     public static void emit(Collection<BlockEnergyCapabilityCache> targets, IEnergyContainer energyContainer, long maxOutput) {
-        if (!energyContainer.isEmpty() && maxOutput != 0L) {
+        if (!energyContainer.isEmpty() && maxOutput > 0L) {
             energyContainer.extract(emit(targets, energyContainer.extract(maxOutput, Action.SIMULATE, AutomationType.INTERNAL)), Action.EXECUTE, AutomationType.INTERNAL);
         }
     }
@@ -33,7 +32,7 @@ public final class CableUtils {
      * @return the amount of energy emitted
      */
     public static long emit(Collection<BlockEnergyCapabilityCache> targets, long energyToSend) {
-        if (energyToSend == 0L || targets.isEmpty()) {
+        if (energyToSend <= 0L || targets.isEmpty()) {
             return 0;
         }
         EnergyAcceptorTarget target = new EnergyAcceptorTarget(targets.size());

@@ -9,10 +9,9 @@ import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IConfigurable;
 import mekanism.api.IContentsListener;
-import mekanism.api.SerializationConstants;
 import mekanism.api.RelativeSide;
+import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
-import mekanism.api.math.FloatingLong;
 import mekanism.common.MekanismLang;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
@@ -150,7 +149,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
                 }
             }
         }
-        usedEnergy = clientEnergyUsed != 0L;
+        usedEnergy = clientEnergyUsed > 0L;
         return sendUpdatePacket;
     }
 

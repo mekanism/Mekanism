@@ -21,8 +21,6 @@ import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData.ExclusiveFlag;
-import mekanism.api.math.FloatingLong;
-import mekanism.api.math.FloatingLongSupplier;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.client.key.MekKeyHandler;
@@ -519,7 +517,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                 usageInfo.energyUsed += usage;
                 usageInfo.energyAvailable -= usage;
                 return absorption;
-            } else if (usageInfo.energyAvailable != 0L) {
+            } else if (usageInfo.energyAvailable > 0L) {
                 //Otherwise, if we have energy available but not as much as needed to fully absorb it
                 // then we calculate what ratio we are able to block
                 float absorbedPercent = (float) (usageInfo.energyAvailable / (double) usage);

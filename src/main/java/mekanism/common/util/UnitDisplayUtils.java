@@ -58,7 +58,7 @@ public class UnitDisplayUtils {
                 return TextComponentUtil.build(rounded + " " + lowerMeasure.getName(isShort), label);
             }
         }
-        return TextComponentUtil.build(Long.toString(value), label);
+        return TextComponentUtil.build(value, label);
     }
 
     public static Component getDisplayShort(long value, EnergyUnit unit) {
@@ -393,60 +393,6 @@ public class UnitDisplayUtils {
                 return TextComponentUtil.getString(rounded + name + unit.getSymbol());
             }
             return TextComponentUtil.build(rounded + " " + name, unit.getLabel());
-        }
-    }
-
-    /**
-     * Metric system of measurement.
-     */
-    public enum FloatingLongMeasurementUnit {
-        MILLI("Milli", "m", FloatingLong.createConst(.001)),
-        BASE("", "", FloatingLong.ONE),
-        KILO("Kilo", "k", FloatingLong.createConst(1_000)),
-        MEGA("Mega", "M", FloatingLong.createConst(1_000_000)),
-        GIGA("Giga", "G", FloatingLong.createConst(1_000_000_000)),
-        TERA("Tera", "T", FloatingLong.createConst(1_000_000_000_000L)),
-        PETA("Peta", "P", FloatingLong.createConst(1_000_000_000_000_000L)),
-        EXA("Exa", "E", FloatingLong.createConst(1_000_000_000_000_000_000L));
-
-        /**
-         * long name for the unit
-         */
-        private final String name;
-
-        /**
-         * short unit version of the unit
-         */
-        private final String symbol;
-
-        /**
-         * Point by which a number is considered to be of this unit
-         */
-        private final FloatingLong value;
-
-        FloatingLongMeasurementUnit(String name, String symbol, FloatingLong value) {
-            this.name = name;
-            this.symbol = symbol;
-            this.value = value;
-        }
-
-        public String getName(boolean getShort) {
-            if (getShort) {
-                return symbol;
-            }
-            return name;
-        }
-
-        public FloatingLong process(FloatingLong d) {
-            return d.divide(value);
-        }
-
-        public boolean aboveEqual(FloatingLong d) {
-            return d.greaterOrEqual(value);
-        }
-
-        public boolean below(FloatingLong d) {
-            return d.smallerThan(value);
         }
     }
 

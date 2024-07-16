@@ -4,12 +4,12 @@ import java.util.function.LongSupplier;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.math.MathUtils;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.ResistiveHeaterEnergyContainer;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.machine.TileEntityResistiveHeater;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -35,7 +35,7 @@ public class ComponentBackedResistiveEnergyContainer extends ComponentBackedEner
     }
 
     private long getRate() {
-        return Math.max(MathUtils.clampToLong(getMaxEnergy() * 0.005D), 1L);
+        return MekanismUtils.calculateUsage(getMaxEnergy());
     }
 
     @Override

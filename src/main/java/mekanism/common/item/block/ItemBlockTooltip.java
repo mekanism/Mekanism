@@ -6,8 +6,6 @@ import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.Upgrade;
-import mekanism.api.math.FloatingLong;
-import mekanism.api.math.FloatingLongSupplier;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.client.key.MekKeyHandler;
@@ -172,11 +170,11 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
                 //If our block supports energy upgrades, make a more dynamically updating cache for our item's max energy
                 LongSupplier capacity = new UpgradeBasedUnsignedLongCache(attachedTo, maxEnergy);
                 return new ComponentBackedNoClampEnergyContainer(attachedTo, containerIndex, BasicEnergyContainer.manualOnly, getEnergyCapInsertPredicate(),
-                      () -> Math.max((long) (capacity.getAsLong() * (0.005)), 1), capacity);
+                      () -> MekanismUtils.calculateUsage(capacity.getAsLong()), capacity);
             });
         }
         //If we don't support energy upgrades, our max energy isn't dependent on another attachment, we can safely clamp to the config values
-        return builder.addBasic(BasicEnergyContainer.manualOnly, getEnergyCapInsertPredicate(), () -> Math.max((long) (maxEnergy.getAsLong() * 0.005), 1), maxEnergy);
+        return builder.addBasic(BasicEnergyContainer.manualOnly, getEnergyCapInsertPredicate(), () -> MekanismUtils.calculateUsage(maxEnergy.getAsLong()), maxEnergy);
     }
 
     @Override

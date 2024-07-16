@@ -3,11 +3,10 @@ package mekanism.common.tile;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.SerializationConstants;
 import mekanism.api.RelativeSide;
+import mekanism.api.SerializationConstants;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData;
-import mekanism.api.math.FloatingLong;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
@@ -113,7 +112,7 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
                 operatingTicks = 0;
             }
         }
-        usedEnergy = clientEnergyUsed != 0L;
+        usedEnergy = clientEnergyUsed > 0L;
         return sendUpdatePacket;
     }
 

@@ -5,7 +5,6 @@ import java.util.Objects;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.GasStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
@@ -22,6 +21,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 /**
  * Input: ItemStack
@@ -59,6 +59,7 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe<ReactionR
     /**
      * Gets the amount of "extra" energy this recipe requires, compared to the base energy requirements of the machine performing the recipe.
      */
+    @Range(from = 0, to = Long.MAX_VALUE)
     public abstract long getEnergyRequired();
 
     /**

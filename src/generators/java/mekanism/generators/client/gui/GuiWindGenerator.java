@@ -16,7 +16,6 @@ import mekanism.common.util.text.EnergyDisplay;
 import mekanism.generators.client.gui.element.GuiStateTexture;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.MekanismGenerators;
-import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.tile.TileEntityWindGenerator;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -37,7 +36,7 @@ public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator, M
             List<Component> list = new ArrayList<>();
             list.add(EnergyDisplay.of(tile.getEnergyContainer()).getTextComponent());
             long amount = tile.getCurrentGeneration();
-            list.add(GeneratorsLang.POWER.translate(Long.toString(amount)));
+            list.add(GeneratorsLang.POWER.translate(MekanismUtils.convertToDisplay(amount)));
             list.add(GeneratorsLang.OUTPUT_RATE_SHORT.translate(EnergyDisplay.of(tile.getMaxOutput())));
             if (!tile.getActive()) {
                 ILangEntry reason = tile.isBlacklistDimension() ? GeneratorsLang.NO_WIND : GeneratorsLang.SKY_BLOCKED;

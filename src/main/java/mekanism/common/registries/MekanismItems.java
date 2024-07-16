@@ -4,7 +4,6 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import java.util.Locale;
 import mekanism.api.Upgrade;
-import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.api.tier.AlloyTier;
@@ -66,6 +65,7 @@ import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tier.QIODriveTier;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
@@ -90,7 +90,7 @@ public class MekanismItems {
                 .addOutput()
                 .build()
           ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainersBuilder.builder()
-                .addBasic(() -> MathUtils.clampToLong(EntityRobit.MAX_ENERGY * 0.005), () -> EntityRobit.MAX_ENERGY)
+                .addBasic(() -> MekanismUtils.calculateUsage(EntityRobit.MAX_ENERGY), () -> EntityRobit.MAX_ENERGY)
                 .build()
           );
     public static final ItemRegistryObject<ItemEnergized> ENERGY_TABLET = ITEMS.register("energy_tablet", () -> new ItemEnergized(new Item.Properties().rarity(Rarity.UNCOMMON)))

@@ -1,7 +1,5 @@
 package mekanism.common.lib.distribution;
 
-import mekanism.api.math.ULong;
-
 public class LongSplitInfo extends SplitInfo<Long> {
 
     private long amountToSplit;
@@ -12,8 +10,8 @@ public class LongSplitInfo extends SplitInfo<Long> {
     public LongSplitInfo(long amountToSplit, int totalTargets) {
         super(totalTargets);
         this.amountToSplit = amountToSplit;
-        amountPerTarget = toSplitAmong == 0 ? 0 : (amountToSplit / toSplitAmong);
-        remainder = toSplitAmong == 0 ? 0 : (amountToSplit % toSplitAmong);
+        amountPerTarget = toSplitAmong == 0 ? 0 : amountToSplit / toSplitAmong;
+        remainder = toSplitAmong == 0 ? 0 : amountToSplit % toSplitAmong;
     }
 
     @Override
@@ -35,7 +33,7 @@ public class LongSplitInfo extends SplitInfo<Long> {
         // full per side split
         if (amountNeeded != amountPerTarget && toSplitAmong != 0) {
             long amountPerLast = amountPerTarget;
-            amountPerTarget = (amountToSplit / toSplitAmong);
+            amountPerTarget = amountToSplit / toSplitAmong;
             remainder = amountToSplit % toSplitAmong;
             if (!amountPerChanged && amountPerTarget != amountPerLast) {
                 amountPerChanged = true;
@@ -50,7 +48,7 @@ public class LongSplitInfo extends SplitInfo<Long> {
 
     @Override
     public Long getRemainderAmount() {
-        if (toSplitAmong != 0 && remainder != 0) {
+        if (toSplitAmong != 0 && remainder > 0) {
             //If we have a remainder, be willing to provide a single unit as the remainder
             // so that we split the remainder more evenly across the targets.
             return amountPerTarget + 1;

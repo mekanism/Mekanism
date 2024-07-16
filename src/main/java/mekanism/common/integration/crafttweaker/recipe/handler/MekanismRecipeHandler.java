@@ -195,7 +195,7 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe<?>> im
         TypeData<IIngredientWithAmount, CTFluidIngredient, ChemicalStackIngredient<?, ?, ?>> inputs = new TypeData<>(ChemicalType::getTypeFor);
         TypeData<IItemStack, IFluidStack, ChemicalStack<?>> outputs = new TypeData<>(ChemicalType::getTypeFor);
         int duration = -1;
-        long energy = -1;// -1 here would mean max value
+        long energy = -1;
         for (Object data : importantData) {
             if (data instanceof List<?> dataList) {
                 if (dataList.size() != 1) {

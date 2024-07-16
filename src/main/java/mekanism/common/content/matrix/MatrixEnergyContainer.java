@@ -97,11 +97,10 @@ public class MatrixEnergyContainer implements IEnergyContainer {
             }
             invalidPositions.clear();
         }
-        int compare = Long.compare(queuedInput, queuedOutput);
-        if (compare < 0) {
+        if (queuedInput < queuedOutput) {
             //queuedInput is smaller - we are removing energy
             removeEnergy(queuedOutput - queuedInput);
-        } else if (compare > 0) {
+        } else if (queuedInput > queuedOutput) {
             //queuedInput is larger - we are adding energy
             addEnergy(queuedInput - queuedOutput);
         }
@@ -189,7 +188,7 @@ public class MatrixEnergyContainer implements IEnergyContainer {
         // It is possible that the energy we have stored is a lot less than the amount we
         // can output at once such as if the matrix is almost empty.
         amount = Math.min(Math.min(amount, getRemainingOutput()), getEnergy());
-        if (amount != 0L && action.execute()) {
+        if (amount > 0L && action.execute()) {
             //Increase how much we are outputting by the amount we accepted
             queuedOutput += amount;
         }

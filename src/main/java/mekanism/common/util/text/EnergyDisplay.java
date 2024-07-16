@@ -2,7 +2,6 @@ package mekanism.common.util.text;
 
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.math.ULong;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.common.MekanismLang;
 import mekanism.common.util.MekanismUtils;
@@ -17,8 +16,8 @@ public class EnergyDisplay implements IHasTextComponent {
     private final long max;
 
     private EnergyDisplay(long energy, long max) {
-        this.energy = energy;
-        this.max = max;
+        this.energy = Math.max(0, energy);
+        this.max = Math.max(0, max);
     }
 
     public static EnergyDisplay of(IEnergyContainer container) {

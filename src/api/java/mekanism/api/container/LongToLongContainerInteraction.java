@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Helper to define generalized container interactions for use in our batch container utils. Mainly used for chemicals.
  *
- * @since 10.6.5
+ * @since 10.6.6
  */
 @FunctionalInterface
 public interface LongToLongContainerInteraction {

@@ -2,7 +2,6 @@ package mekanism.common.recipe.lookup.monitor;
 
 import mekanism.api.IContentsListener;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ICachedRecipeHolder;
@@ -58,7 +57,7 @@ public class RecipeCacheLookupMonitor<RECIPE extends MekanismRecipe<?>> implemen
         long prev = energyContainer.getEnergy();
         if (updateAndProcess()) {
             //Update amount of energy that actually got used, as if we are "near" full we may not have performed our max number of operations
-            return prev - energyContainer.getEnergy();
+            return Math.max(0, prev - energyContainer.getEnergy());
         }
         //If we don't have a cached recipe so didn't process anything at all just return zero
         return 0L;

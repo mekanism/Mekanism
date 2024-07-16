@@ -1,8 +1,7 @@
 package mekanism.generators.client.gui;
 
-import static mekanism.api.math.MathUtils.*;
-
 import java.util.List;
+import mekanism.api.math.MathUtils;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.gauge.GaugeType;
@@ -29,7 +28,7 @@ public class GuiGasGenerator extends GuiMekanismTile<TileEntityGasGenerator, Mek
     protected void addGuiElements() {
         super.addGuiElements();
         addRenderableWidget(new GuiEnergyTab(this, () -> {
-            long productionAmount = clampToLong(tile.getGenerationRate() * tile.getUsed() * tile.getMaxBurnTicks());
+            long productionAmount = MathUtils.clampToLong(tile.getGenerationRate() * tile.getUsed() * tile.getMaxBurnTicks());
             return List.of(
                   GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(productionAmount)),
                   MekanismLang.MAX_OUTPUT.translate(EnergyDisplay.of(tile.getMaxOutput())));

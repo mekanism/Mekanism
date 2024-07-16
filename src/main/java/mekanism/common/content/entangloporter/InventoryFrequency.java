@@ -14,8 +14,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.SerializationConstants;
 import mekanism.api.RelativeSide;
+import mekanism.api.SerializationConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -39,7 +39,6 @@ import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.capabilities.chemical.dynamic.IGasTracker;
 import mekanism.common.capabilities.chemical.dynamic.IInfusionTracker;
@@ -311,7 +310,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
 
     private void addEnergyTransferHandler(Map<TransmissionType, Consumer<?>> typesToEject, List<Runnable> transferHandlers, int expected) {
         long toSend = storedEnergy.extract(storedEnergy.getMaxEnergy(), Action.SIMULATE, AutomationType.INTERNAL);
-        if (toSend != 0L) {
+        if (toSend > 0L) {
             SendingEnergyAcceptorTarget target = new SendingEnergyAcceptorTarget(expected, storedEnergy, toSend);
             typesToEject.put(TransmissionType.ENERGY, target);
             transferHandlers.add(target);

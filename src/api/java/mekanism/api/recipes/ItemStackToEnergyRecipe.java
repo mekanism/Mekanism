@@ -14,6 +14,7 @@ import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 /**
  * Input: ItemStack
@@ -52,6 +53,7 @@ public abstract class ItemStackToEnergyRecipe extends MekanismRecipe<SingleRecip
      * outputs where things like NBT may be different.
      * @implNote The passed in input should <strong>NOT</strong> be modified.
      */
+    @Range(from = 1, to = Long.MAX_VALUE)
     public abstract long getOutput(ItemStack input);
 
     /**

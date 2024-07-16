@@ -99,6 +99,8 @@ public class MathUtils {
      * @return A double representing the value of dividing numerator by toDivide, or {@code 1} if the given toDivide is {@code 0}.
      *
      * @implNote This caps the returned value at {@code 1}
+     *
+     * @since 10.6.6
      */
     public static double divideToLevel(double numerator, double toDivide) {
         return toDivide == 0D || numerator > toDivide ? 1 : numerator / toDivide;
@@ -111,6 +113,8 @@ public class MathUtils {
      * @param y the second value
      *
      * @return the result or max long if it overflows
+     *
+     * @since 10.6.6
      */
     public static long addClamped(long x, long y) {
         long r = x + y;

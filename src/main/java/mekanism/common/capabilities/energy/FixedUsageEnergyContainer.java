@@ -29,7 +29,7 @@ public class FixedUsageEnergyContainer<TILE extends TileEntityMekanism> extends 
 
     @Override
     public long getBaseEnergyPerTick() {
-        return baseEnergyCalculator.apply(super.getBaseEnergyPerTick(), tile);
+        return baseEnergyCalculator.applyAsLong(super.getBaseEnergyPerTick(), tile);
     }
 
     @Override

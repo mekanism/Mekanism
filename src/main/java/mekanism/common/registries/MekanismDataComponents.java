@@ -3,7 +3,6 @@ package mekanism.common.registries;
 import java.util.UUID;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.robit.RobitSkin;
 import mekanism.api.security.SecurityMode;
 import mekanism.api.text.EnumColor;
@@ -186,10 +185,10 @@ public class MekanismDataComponents {
     );
 
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Integer>> DELAY = DATA_COMPONENTS.registerInt("delay");
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Long>> MIN_THRESHOLD = DATA_COMPONENTS.registerUnsignedLong("min_threshold");
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Long>> MAX_THRESHOLD = DATA_COMPONENTS.registerUnsignedLong("max_threshold");
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Long>> MIN_THRESHOLD = DATA_COMPONENTS.registerNonNegativeLong("min_threshold");
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Long>> MAX_THRESHOLD = DATA_COMPONENTS.registerNonNegativeLong("max_threshold");
 
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Long>> ENERGY_USAGE = DATA_COMPONENTS.registerUnsignedLong("energy_usage");
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Long>> ENERGY_USAGE = DATA_COMPONENTS.registerNonNegativeLong("energy_usage");
 
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Long>> LONG_AMOUNT = DATA_COMPONENTS.registerNonNegativeLong("long_amount");
     //Note: We can't directly use ItemStack as it needs to override equals and hashcode, but as our only use case converts it to a HashedItem, we just use that

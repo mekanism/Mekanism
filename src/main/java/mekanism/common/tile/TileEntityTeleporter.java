@@ -18,7 +18,6 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.event.MekanismTeleportEvent;
-import mekanism.api.math.ULong;
 import mekanism.api.security.SecurityMode;
 import mekanism.api.text.EnumColor;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
@@ -271,7 +270,13 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         List<Entity> toTeleport = getToTeleport(sameDimension, targetWorld);
         long sum = 0;
         for (Entity entity : toTeleport) {
-            sum += calculateEnergyCost(entity, targetWorld, closestCoords);
+            long cost = calculateEnergyCost(entity, targetWorld, closestCoords);
+            long r = sum + cost;
+            // HD 2-12 Overflow iff both arguments have the opposite sign of the result
+            if (((sum ^ r) & (cost ^ r)) < 0) {
+                return NOT_ENOUGH_ENERGY;
+            }
+            sum = r;
         }
         if (energyContainer.extract(sum, Action.SIMULATE, AutomationType.INTERNAL) < sum) {
             return NOT_ENOUGH_ENERGY;
@@ -442,9 +447,10 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     }
 
     /**
+     * @return energy cost or -1 if invalid.
+     *
      * @apiNote Only call from the server side
      */
-    @Nullable
     public static long calculateEnergyCost(Entity entity, GlobalPos pos) {
         MinecraftServer currentServer = entity.getServer();
         if (currentServer != null) {
@@ -456,7 +462,6 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         return -1;
     }
 
-    @NotNull
     public static long calculateEnergyCost(Entity entity, Level targetWorld, GlobalPos coords) {
         long energyCost = MekanismConfig.usage.teleporterBase.get();
         boolean sameDimension = entity.level().dimension() == coords.dimension();

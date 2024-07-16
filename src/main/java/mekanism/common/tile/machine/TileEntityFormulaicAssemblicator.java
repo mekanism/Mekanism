@@ -17,7 +17,6 @@ import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.api.math.FloatingLong;
 import mekanism.common.CommonWorldTickHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.attachments.FormulaAttachment;
@@ -262,7 +261,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         } else {
             operatingTicks = 0;
         }
-        usedEnergy = clientEnergyUsed != 0L;
+        usedEnergy = clientEnergyUsed > 0L;
         return sendUpdatePacket;
     }
 

@@ -9,10 +9,7 @@ import java.util.function.ToIntFunction;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.container.ContainerInteraction;
-import mekanism.api.container.InContainerGetter;
 import mekanism.api.container.InContainerGetterLong;
-import mekanism.api.container.LongContainerInteraction;
 import mekanism.api.container.LongToLongContainerInteraction;
 import mekanism.api.energy.IEnergyContainer;
 import net.minecraft.core.Direction;
@@ -49,8 +46,8 @@ public class LongTransferUtils {
             if (inContainer == 0L) {
                 emptyContainers.add(container);
             } else {
-                long remainder = Math.max(0, insert.interact(container, toInsert, side, action));
-                if (remainder == 0L) {
+                long remainder = insert.interact(container, toInsert, side, action);
+                if (remainder <= 0L) {
                     //If we have no remainder, return that we fit it all
                     return 0L;
                 }
@@ -59,8 +56,8 @@ public class LongTransferUtils {
             }
         }
         for (int container : emptyContainers) {
-            long remainder = Math.max(0, insert.interact(container, toInsert, side, action));
-            if (remainder == 0L) {
+            long remainder = insert.interact(container, toInsert, side, action);
+            if (remainder <= 0L) {
                 //If we have no remainder, return that we fit it all
                 return 0L;
             }
@@ -107,8 +104,8 @@ public class LongTransferUtils {
             if (inContainer == 0L) {
                 emptyContainers.add(energyContainer);
             } else {
-                long remainder = Math.max(0, energyContainer.insert(toInsert, action, automationType));
-                if (remainder == 0L) {
+                long remainder = energyContainer.insert(toInsert, action, automationType);
+                if (remainder <= 0L) {
                     //If we have no remainder, return that we fit it all
                     return 0L;
                 }
@@ -117,8 +114,8 @@ public class LongTransferUtils {
             }
         }
         for (IEnergyContainer container : emptyContainers) {
-            long remainder = Math.max(0, container.insert(toInsert, action, automationType));
-            if (remainder == 0L) {
+            long remainder = container.insert(toInsert, action, automationType);
+            if (remainder <= 0L) {
                 //If we have no remainder, return that we fit it all
                 return 0L;
             }
@@ -148,8 +145,8 @@ public class LongTransferUtils {
         long extracted = 0;
         long toExtract = amount;
         for (int container = 0; container < containers; container++) {
-            long drained = Math.max(0, extract.interact(container, toExtract, side, action));
-            if (drained != 0L) {
+            long drained = extract.interact(container, toExtract, side, action);
+            if (drained > 0L) {
                 //If we were able to extract something, do so
                 if (extracted == 0L) {
                     extracted = drained;
@@ -197,8 +194,8 @@ public class LongTransferUtils {
         long extracted = 0;
         long toExtract = amount;
         for (IEnergyContainer energyContainer : energyContainers) {
-            long drained = Math.max(0, energyContainer.extract(toExtract, action, automationType));
-            if (drained != 0L) {
+            long drained = energyContainer.extract(toExtract, action, automationType);
+            if (drained > 0L) {
                 //If we were able to extract something, do so
                 if (extracted == 0L) {
                     extracted = drained;

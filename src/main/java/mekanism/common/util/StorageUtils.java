@@ -18,7 +18,6 @@ import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.heat.IHeatCapacitor;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IGasProvider;
 import mekanism.api.text.EnumColor;
@@ -300,7 +299,7 @@ public class StorageUtils {
     public static long getStoredEnergyFromAttachment(ItemStack stack) {
         long energy = 0;
         for (IEnergyContainer energyContainer : ContainerType.ENERGY.getAttachmentContainersIfPresent(stack)) {
-            energy += energyContainer.getEnergy();
+            energy = MathUtils.addClamped(energy, energyContainer.getEnergy());
         }
         return energy;
     }
@@ -489,7 +488,7 @@ public class StorageUtils {
         for (int i = 0; i < toAdd.size(); i++) {
             IEnergyContainer container = containers.get(i);
             IEnergyContainer mergeContainer = toAdd.get(i);
-            container.setEnergy(container.getEnergy() + mergeContainer.getEnergy());
+            container.setEnergy(MathUtils.addClamped(container.getEnergy(), mergeContainer.getEnergy()));
         }
     }
 

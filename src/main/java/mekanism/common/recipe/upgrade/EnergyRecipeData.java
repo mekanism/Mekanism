@@ -41,7 +41,7 @@ public class EnergyRecipeData implements RecipeUpgradeData<EnergyRecipeData> {
             return false;
         }
         for (IEnergyContainer energyContainer : this.energyContainers) {
-            if (!energyContainer.isEmpty() && insertManualIntoOutputContainer(outputHandler, energyContainer.getEnergy()) != 0) {
+            if (!energyContainer.isEmpty() && insertManualIntoOutputContainer(outputHandler, energyContainer.getEnergy()) > 0) {
                 //If we have a remainder, stop trying to insert as our upgraded item's buffer is just full
                 break;
             }
