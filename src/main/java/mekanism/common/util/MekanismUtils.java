@@ -305,7 +305,7 @@ public final class MekanismUtils {
      */
     public static long getEnergyPerTick(IUpgradeTile tile, long def) {
         if (tile.supportsUpgrades()) {
-            return (long) Math.ceil(def * (Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), 2 * fractionUpgrades(tile, Upgrade.SPEED) - fractionUpgrades(tile, Upgrade.ENERGY))));
+            return MathUtils.clampToLong(Math.ceil(def * (Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), 2 * fractionUpgrades(tile, Upgrade.SPEED) - fractionUpgrades(tile, Upgrade.ENERGY)))));
         }
         return def;
     }
@@ -337,7 +337,7 @@ public final class MekanismUtils {
      */
     public static long getMaxEnergy(IUpgradeTile tile, long def) {
         if (tile.supportsUpgrades()) {
-            return (long) (def * (Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), fractionUpgrades(tile, Upgrade.ENERGY))));
+            return MathUtils.clampToLong(def * (Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), fractionUpgrades(tile, Upgrade.ENERGY))));
         }
         return def;
     }
@@ -351,7 +351,7 @@ public final class MekanismUtils {
      * @return max energy
      */
     public static long getMaxEnergy(int energyUpgrades, long def) {
-        return (long) (def * (Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), energyUpgrades / (double) Upgrade.ENERGY.getMax())));
+        return MathUtils.clampToLong(def * (Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), energyUpgrades / (double) Upgrade.ENERGY.getMax())));
     }
 
     /**

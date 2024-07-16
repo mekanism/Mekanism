@@ -165,8 +165,7 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     }
 
     private long getThreshold(long target) {
-        long maxEnergy = energyContainer.getMaxEnergy();
-        return (target <= maxEnergy) ? target : maxEnergy;
+        return Math.min(target, energyContainer.getMaxEnergy());
     }
 
     @Override

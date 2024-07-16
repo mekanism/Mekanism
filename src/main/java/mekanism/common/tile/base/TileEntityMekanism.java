@@ -35,6 +35,7 @@ import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
+import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.security.IBlockSecurityUtils;
@@ -1723,7 +1724,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         long total = 0;
         List<IEnergyContainer> energyContainers = getEnergyContainers(null);
         for (IEnergyContainer energyContainer : energyContainers) {
-            total += getter.applyAsLong(energyContainer);
+            total = MathUtils.addClamped(total, getter.applyAsLong(energyContainer));
         }
         return total;
     }
@@ -1734,10 +1735,10 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         long max = 0;
         List<IEnergyContainer> energyContainers = getEnergyContainers(null);
         for (IEnergyContainer energyContainer : energyContainers) {
-            stored += energyContainer.getEnergy();
-            max += energyContainer.getMaxEnergy();
+            stored = MathUtils.addClamped(stored, energyContainer.getEnergy());
+            max = MathUtils.addClamped(max, energyContainer.getMaxEnergy());
         }
-        return max == 0L ? 1D : ((double) stored / max);
+        return MathUtils.divideToLevel(stored, max);
     }
 
     @ComputerMethod(restriction = MethodRestriction.REDSTONE_CONTROL, requiresPublicSecurity = true)

@@ -21,8 +21,6 @@ import org.jetbrains.annotations.Nullable;
 
 public class ChemicalTankSpec<CHEMICAL extends Chemical<CHEMICAL>> extends GenericTankSpec<CHEMICAL> {
 
-    private static final LongSupplier EMPTY = () -> 0;
-
     private final LongSupplier rate;
     private final LongSupplier capacity;
     @Nullable
@@ -39,7 +37,7 @@ public class ChemicalTankSpec<CHEMICAL extends Chemical<CHEMICAL>> extends Gener
     private ChemicalTankSpec(LongSupplier rate, ToLongFunction<ItemStack> stackBasedCapacity, BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> canExtract,
           TriPredicate<@NotNull CHEMICAL, @NotNull AutomationType, @NotNull ItemStack> canInsert, Predicate<@NotNull CHEMICAL> isValid,
           @Nullable ChemicalAttributeValidator validator, Predicate<@NotNull ItemStack> supportsStack) {
-        this(rate, EMPTY, stackBasedCapacity, canExtract, canInsert, isValid, validator, supportsStack);
+        this(rate, ConstantPredicates.ZERO_LONG, stackBasedCapacity, canExtract, canInsert, isValid, validator, supportsStack);
     }
 
     private ChemicalTankSpec(LongSupplier rate, LongSupplier capacity, @Nullable ToLongFunction<ItemStack> stackBasedCapacity,

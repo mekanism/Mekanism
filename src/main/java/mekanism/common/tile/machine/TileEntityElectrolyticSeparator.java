@@ -96,8 +96,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     public static final long MAX_GAS = 2_400;
     public static final int MAX_FLUID = 24 * FluidType.BUCKET_VOLUME;
     private static final int BASE_DUMP_RATE = 8;
-    private static final LongObjectToLongFunction<TileEntityElectrolyticSeparator> BASE_ENERGY_CALCULATOR =
-          (base, tile) -> base * (tile.getRecipeEnergyMultiplier());
+    private static final LongObjectToLongFunction<TileEntityElectrolyticSeparator> BASE_ENERGY_CALCULATOR = (base, tile) -> base * tile.getRecipeEnergyMultiplier();
 
     /**
      * This separator's water slot.

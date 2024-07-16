@@ -5,6 +5,7 @@ import mekanism.common.config.value.CachedDoubleValue;
 import mekanism.common.config.value.CachedFloatValue;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.config.value.CachedLongValue;
+import mekanism.common.content.gear.mekasuit.ModuleGravitationalModulatingUnit;
 import net.minecraft.SharedConstants;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.neoforged.fml.config.ModConfig.Type;
@@ -301,7 +302,7 @@ public class GearConfig extends BaseMekanismConfig {
         mekaSuitEnergyUsageSprintBoost = CachedLongValue.defineUnsigned(this, builder, "Energy usage (Joules) of MekaSuit when adding 0.1 to sprint motion.",
               "energyUsageSprintBoost", 100L);
         mekaSuitEnergyUsageGravitationalModulation = CachedLongValue.defineUnsigned(this, builder, "Energy usage (Joules) of MekaSuit per tick when flying via Gravitational Modulation.",
-              "energyUsageGravitationalModulation", 1_000L);
+              "energyUsageGravitationalModulation", 1_000L, 0, Long.MAX_VALUE / ModuleGravitationalModulatingUnit.BOOST_ENERGY_MULTIPLIER);
         mekaSuitInventoryChargeRate = CachedLongValue.defineUnsigned(this, builder, "Charge rate of inventory items (Joules) per tick.",
               "inventoryChargeRate", 10_000L);
         mekaSuitSolarRechargingRate = CachedLongValue.defineUnsigned(this, builder, "Solar recharging rate (Joules) of helmet per tick, per upgrade installed.",

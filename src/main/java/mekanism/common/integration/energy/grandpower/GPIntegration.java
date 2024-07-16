@@ -114,7 +114,7 @@ public class GPIntegration implements ILongEnergyStorage {
         // accuracy to other mods of if we may be able to extract given we are predicate based
         // instead of having strict can receive checks
         for (int container = 0, containers = handler.getEnergyContainerCount(); container < containers; container++) {
-            if (handler.getEnergy(container) != 0) {
+            if (handler.getEnergy(container) > 0) {
                 return false;
             }
         }

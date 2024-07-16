@@ -15,6 +15,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 @NothingNullByDefault
 public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Long, AttachedEnergy> implements IEnergyContainer {
@@ -40,7 +41,7 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Lon
 
     @Override
     protected boolean isEmpty(Long value) {
-        return value == 0L;
+        return value <= 0L;
     }
 
     @Override
@@ -72,11 +73,13 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Lon
         super.setContents(attachedEnergy, clampEnergy(energy));
     }
 
+    @Range(from = 0, to = Long.MAX_VALUE)
     protected long getInsertRate(@Nullable AutomationType automationType) {
         //Allow unknown or manual interaction to bypass rate limit for the item
         return automationType == null || automationType == AutomationType.MANUAL ? Long.MAX_VALUE : rate.getAsLong();
     }
 
+    @Range(from = 0, to = Long.MAX_VALUE)
     protected long getExtractRate(@Nullable AutomationType automationType) {
         //Allow unknown or manual interaction to bypass rate limit for the item
         return automationType == null || automationType == AutomationType.MANUAL ? Long.MAX_VALUE : rate.getAsLong();
@@ -90,12 +93,12 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Lon
         AttachedEnergy attachedEnergy = getAttached();
         long stored = getContents(attachedEnergy);
         long needed = Math.min(getInsertRate(automationType), getNeeded(stored));
-        if (needed <= 0L) {
+        if (needed == 0L) {
             //Fail if we are a full container or our rate is zero
             return amount;
         }
         long toAdd = Math.min(amount, needed);
-        if (toAdd > 0L && action.execute()) {
+        if (action.execute()) {
             //If we want to actually insert the energy, then update the current energy
             // Note: this also will mark that the contents changed
             setContents(attachedEnergy, stored + toAdd);
@@ -105,7 +108,7 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Lon
 
     @Override
     public long extract(long amount, Action action, AutomationType automationType) {
-        if (amount == 0) {
+        if (amount <= 0) {
             return 0L;
         }
         AttachedEnergy attachedEnergy = getAttached();
@@ -113,16 +116,16 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Lon
         if (stored == 0L || !canExtract.test(automationType)) {
             return 0L;
         }
-        long a = getExtractRate(automationType);
-        long ret = Math.min(Math.min(a, stored), amount);
-        if (ret != 0L && action.execute()) {
+        long ret = Math.min(Math.min(getExtractRate(automationType), stored), amount);
+        if (ret > 0L && action.execute()) {
             //Note: this also will mark that the contents changed
             setContents(attachedEnergy, stored - ret);
         }
         return ret;
     }
 
-    protected long getNeeded(long stored) {
+    @Range(from = 0, to = Long.MAX_VALUE)
+    protected long getNeeded(@Range(from = 0, to = Long.MAX_VALUE) long stored) {
         return getMaxEnergy() - stored;
     }
 
@@ -135,7 +138,7 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Lon
     public CompoundTag serializeNBT(Provider provider) {
         CompoundTag nbt = new CompoundTag();
         long stored = getEnergy();
-        if (stored != 0L) {
+        if (stored > 0L) {
             nbt.putLong(SerializationConstants.STORED, stored);
         }
         return nbt;

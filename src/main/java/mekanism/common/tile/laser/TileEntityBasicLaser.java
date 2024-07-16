@@ -43,7 +43,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ClipContext;
-import net.minecraft.world.level.ClipContext.Fluid;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LevelEvent;
@@ -89,7 +88,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     protected boolean onUpdateServer() {
         boolean sendUpdatePacket = super.onUpdateServer();
         long firing = energyContainer.extract(toFire(), Action.SIMULATE, AutomationType.INTERNAL);
-        if (firing != 0L) {
+        if (firing > 0L) {
             if (firing != lastFired || !getActive()) {
                 setActive(true);
                 lastFired = firing;
@@ -100,7 +99,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
             Level level = getWorldNN();
             Pos3D from = Pos3D.create(this).centre().translate(direction, 0.501);
             Pos3D to = from.translate(direction, MekanismConfig.general.laserRange.get() - 0.002);
-            BlockHitResult result = level.clip(new ClipContext(from, to, ClipContext.Block.OUTLINE, Fluid.NONE, CollisionContext.empty()));
+            BlockHitResult result = level.clip(new ClipContext(from, to, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, CollisionContext.empty()));
             if (result.getType() != Type.MISS) {
                 to = new Pos3D(result.getLocation());
             }
@@ -288,7 +287,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                     float hardness = hitState.getDestroySpeed(level, hitPos);
                     if (hardness >= 0) {
                         diggingProgress += remainingEnergy;
-                        if (diggingProgress >= MekanismConfig.general.laserEnergyNeededPerHardness.get() * hardness) {
+                        if (diggingProgress >= hardness * MekanismConfig.general.laserEnergyNeededPerHardness.get()) {
                             if (MekanismConfig.general.aestheticWorldDamage.get()) {
                                 withFakePlayer((ServerLevel) level, to.x(), to.y(), to.z(), hitPos, hitState, result.getDirection());
                             }

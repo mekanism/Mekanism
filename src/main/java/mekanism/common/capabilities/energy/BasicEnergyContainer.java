@@ -15,6 +15,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 @NothingNullByDefault
 public class BasicEnergyContainer implements IEnergyContainer {
@@ -95,6 +96,7 @@ public class BasicEnergyContainer implements IEnergyContainer {
      * @implNote By default, this returns {@link Long#MAX_VALUE} to not actually limit the container's rate. By default, this is also ignored for direct setting
      * of the stack/stack size
      */
+    @Range(from = 0, to = Long.MAX_VALUE)
     protected long getInsertRate(@Nullable AutomationType automationType) {
         return Long.MAX_VALUE;
     }
@@ -109,6 +111,7 @@ public class BasicEnergyContainer implements IEnergyContainer {
      * @implNote By default, this returns {@link Long#MAX_VALUE} to not actually limit the container's rate. By default, this is also ignored for direct setting
      * of the stack/stack size
      */
+    @Range(from = 0, to = Long.MAX_VALUE)
     protected long getExtractRate(@Nullable AutomationType automationType) {
         return Long.MAX_VALUE;
     }
@@ -119,12 +122,12 @@ public class BasicEnergyContainer implements IEnergyContainer {
             return amount;
         }
         long needed = Math.min(getInsertRate(automationType), getNeeded());
-        if (needed <= 0L) {
+        if (needed == 0L) {
             //Fail if we are a full container or our rate is zero
             return amount;
         }
         long toAdd = Math.min(amount, needed);
-        if (toAdd > 0 && action.execute()) {
+        if (action.execute()) {
             //If we want to actually insert the energy, then update the current energy
             // Note: this also will mark that the contents changed
             stored += toAdd;
@@ -135,13 +138,11 @@ public class BasicEnergyContainer implements IEnergyContainer {
 
     @Override
     public long extract(long amount, Action action, AutomationType automationType) {
-        if (isEmpty() || amount == 0L || !canExtract.test(automationType)) {
+        if (isEmpty() || amount <= 0L || !canExtract.test(automationType)) {
             return 0L;
         }
-        long a = getExtractRate(automationType);
-        long b = getEnergy();
-        long ret = Math.min(Math.min(a, b), amount);
-        if (ret != 0L && action.execute()) {
+        long ret = Math.min(Math.min(getExtractRate(automationType), getEnergy()), amount);
+        if (ret > 0L && action.execute()) {
             //Note: this also will mark that the contents changed
             stored -= ret;
             onContentsChanged();

@@ -78,13 +78,13 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?>> {
      *
      * @implNote Defaults to not requiring any energy.
      */
-    private LongSupplier perTickEnergy = () -> 0L;
+    private LongSupplier perTickEnergy = ConstantPredicates.ZERO_LONG;
     /**
      * Gets the energy currently stored in the machine/object executing this {@link CachedRecipe}.
      *
      * @implNote Defaults to returning no energy stored.
      */
-    private LongSupplier storedEnergy = () -> 0L;
+    private LongSupplier storedEnergy = ConstantPredicates.ZERO_LONG;
     /**
      * Called to consume energy.
      *

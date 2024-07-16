@@ -552,7 +552,6 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         private long energyUsed = 0;
 
         public EnergyUsageInfo(long energyAvailable) {
-            //Copy it so we can just use minusEquals without worry
             this.energyAvailable = energyAvailable;
         }
     }

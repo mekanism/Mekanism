@@ -65,12 +65,9 @@ public interface IMekanismStrictEnergyHandler extends ISidedStrictEnergyHandler,
 
     @Override
     default void setEnergy(int container, long energy, @Nullable Direction side) {
-        if (energy < 0) {
-            energy = 0;
-        }
         IEnergyContainer energyContainer = getEnergyContainer(container, side);
         if (energyContainer != null) {
-            energyContainer.setEnergy(energy);
+            energyContainer.setEnergy(Math.max(0, energy));
         }
     }
 

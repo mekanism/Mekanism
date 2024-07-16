@@ -12,6 +12,7 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.FloatSupplier;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleHelper;
+import mekanism.api.math.MathUtils;
 import mekanism.common.base.KeySync;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.IBlastingItem;
@@ -220,7 +221,7 @@ public class CommonPlayerTickHandler {
         if (info != null && info.container != null) {
             float absorption = info.damageRatio.getAsFloat();
             float amount = fallDamage * absorption;
-            long energyRequirement = (long) Math.ceil(info.energyCost.getAsLong() * amount);
+            long energyRequirement = MathUtils.clampToLong(Math.ceil(info.energyCost.getAsLong() * amount));
             float ratioAbsorbed;
             if (energyRequirement == 0L) {
                 //No energy is actually needed to absorb the damage, either because of the config
@@ -258,7 +259,7 @@ public class CommonPlayerTickHandler {
             IModule<ModuleHydraulicPropulsionUnit> propulsionModule = IModuleHelper.INSTANCE.getIfEnabled(boots, MekanismModules.HYDRAULIC_PROPULSION_UNIT);
             if (propulsionModule != null && Mekanism.keyMap.has(player.getUUID(), KeySync.BOOST)) {
                 float boost = propulsionModule.getCustomInstance().getBoost();
-                long usage = (long) Math.ceil(MekanismConfig.gear.mekaSuitBaseJumpEnergyUsage.get() * boost / 0.1F);
+                long usage = MathUtils.clampToLong(Math.ceil(MekanismConfig.gear.mekaSuitBaseJumpEnergyUsage.get() * boost / 0.1F));
                 if (propulsionModule.canUseEnergy(player, boots, usage)) {
                     // if we're sprinting with the boost module, limit the height
                     ItemStack legs = player.getItemBySlot(EquipmentSlot.LEGS);

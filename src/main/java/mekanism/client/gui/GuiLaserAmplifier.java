@@ -63,7 +63,7 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 
-    private long parseUnsignedLong(GuiTextField textField) throws NumberFormatException {
+    private long parseLong(GuiTextField textField) throws NumberFormatException {
         String text = textField.getText();
         if (text.contains("E")) {
             //TODO: Improve how we handle scientific notation, we currently create a big decimal and then
@@ -77,7 +77,7 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
         if (!minField.getText().isEmpty()) {
             try {
                 PacketUtils.sendToServer(new PacketGuiSetEnergy(GuiEnergyValue.MIN_THRESHOLD, tile.getBlockPos(),
-                      MekanismUtils.convertToJoules(parseUnsignedLong(minField))));
+                      MekanismUtils.convertToJoules(parseLong(minField))));
             } catch (NumberFormatException ignored) {
             }
             minField.setText("");
@@ -88,7 +88,7 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
         if (!maxField.getText().isEmpty()) {
             try {
                 PacketUtils.sendToServer(new PacketGuiSetEnergy(GuiEnergyValue.MAX_THRESHOLD, tile.getBlockPos(),
-                      MekanismUtils.convertToJoules(parseUnsignedLong(maxField))));
+                      MekanismUtils.convertToJoules(parseLong(maxField))));
             } catch (NumberFormatException ignored) {
             }
             maxField.setText("");

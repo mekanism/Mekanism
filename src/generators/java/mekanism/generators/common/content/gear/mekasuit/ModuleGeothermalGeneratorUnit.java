@@ -3,11 +3,11 @@ package mekanism.generators.common.content.gear.mekasuit;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import java.util.Map;
-import java.util.function.LongSupplier;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
@@ -35,12 +35,11 @@ public class ModuleGeothermalGeneratorUnit implements ICustomModule<ModuleGeothe
         int maxSize = 8;
         //Based on the max size of the module
         Int2ObjectMap<ModuleDamageAbsorbInfo> map = new Int2ObjectArrayMap<>(maxSize);
-        LongSupplier NO_COST = () -> 0L;
         for (int count = 1; count <= maxSize; count++) {
             //Scale the amount absorbed by how many modules are installed out of the possible number installed
             float ratio = count / (float) maxSize;
             map.put(count, new ModuleDamageAbsorbInfo(new ConfigBasedCachedFloatSupplier(() -> MekanismGeneratorsConfig.gear.mekaSuitHeatDamageReductionRatio.get() * ratio,
-                  MekanismGeneratorsConfig.gear.mekaSuitHeatDamageReductionRatio), NO_COST));
+                  MekanismGeneratorsConfig.gear.mekaSuitHeatDamageReductionRatio), ConstantPredicates.ZERO_LONG));
         }
         return map;
     });

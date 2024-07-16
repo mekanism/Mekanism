@@ -66,7 +66,7 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
         if (!connections.isEmpty()) {
             for (IStrictEnergyHandler connectedAcceptor : getAcceptorCache().getConnectedAcceptors(connections)) {
                 long received = connectedAcceptor.extractEnergy(getAvailablePull(), Action.SIMULATE);
-                if (received != 0L && takeEnergy(received, Action.SIMULATE) == 0L) {
+                if (received > 0L && takeEnergy(received, Action.SIMULATE) == 0L) {
                     //If we received some energy and are able to insert it all
                     long remainder = takeEnergy(received, Action.EXECUTE);
                     connectedAcceptor.extractEnergy(received - remainder, Action.EXECUTE);

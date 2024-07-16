@@ -3,6 +3,7 @@ package mekanism.common.content.network.distribution;
 import java.util.Collection;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.math.MathUtils;
 import mekanism.common.lib.distribution.SplitInfo;
 import mekanism.common.lib.distribution.Target;
 
@@ -38,7 +39,7 @@ public class EnergySaveTarget<HANDLER extends EnergySaveTarget.SaveHandler> exte
     public long getStored() {
         long total = 0;
         for (HANDLER handler : handlers) {
-            total += handler.getStored();
+            total = MathUtils.addClamped(total, handler.getStored());
         }
         return total;
     }

@@ -10,6 +10,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import org.jetbrains.annotations.Range;
 
 @NothingNullByDefault
 public interface IEnergyContainer extends INBTSerializable<CompoundTag>, IContentsListener {
@@ -19,6 +20,7 @@ public interface IEnergyContainer extends INBTSerializable<CompoundTag>, IConten
      *
      * @return Energy in this container.
      */
+    @Range(from = 0, to = Long.MAX_VALUE)
     long getEnergy();
 
     /**
@@ -29,7 +31,7 @@ public interface IEnergyContainer extends INBTSerializable<CompoundTag>, IConten
      * @throws RuntimeException if the handler is called in a way that the handler was not expecting. Such as if it was not expecting this to be called at all.
      * @implNote If the internal amount does get updated make sure to call {@link #onContentsChanged()}
      */
-    void setEnergy(long energy);
+    void setEnergy(@Range(from = 0, to = Long.MAX_VALUE) long energy);
 
     /**
      * <p>
@@ -45,7 +47,8 @@ public interface IEnergyContainer extends INBTSerializable<CompoundTag>, IConten
      *
      * @implNote If the internal amount does get updated make sure to call {@link #onContentsChanged()}.
      */
-    default long insert(long amount, Action action, AutomationType automationType) {
+    @Range(from = 0, to = Long.MAX_VALUE)
+    default long insert(@Range(from = 0, to = Long.MAX_VALUE) long amount, Action action, AutomationType automationType) {
         if (amount <= 0) {
             //"Fail quick" if the given amount is empty
             return amount;
@@ -56,7 +59,7 @@ public interface IEnergyContainer extends INBTSerializable<CompoundTag>, IConten
             return amount;
         }
         long toAdd = Math.min(amount, needed);
-        if (toAdd != 0 && action.execute()) {
+        if (action.execute()) {
             //If we want to actually insert the energy, then update the current energy
             // Note: this also will mark that the contents changed
             setEnergy(getEnergy() + toAdd);
@@ -78,7 +81,8 @@ public interface IEnergyContainer extends INBTSerializable<CompoundTag>, IConten
      *
      * @implNote If the internal amount does get updated make sure to call {@link #onContentsChanged()}.
      */
-    default long extract(long amount, Action action, AutomationType automationType) {
+    @Range(from = 0, to = Long.MAX_VALUE)
+    default long extract(@Range(from = 0, to = Long.MAX_VALUE) long amount, Action action, AutomationType automationType) {
         if (isEmpty() || amount <= 0) {
             return 0;
         }
@@ -118,6 +122,7 @@ public interface IEnergyContainer extends INBTSerializable<CompoundTag>, IConten
      *
      * @return Amount of energy needed
      */
+    @Range(from = 0, to = Long.MAX_VALUE)
     default long getNeeded() {
         return getMaxEnergy() - getEnergy();
     }

@@ -64,7 +64,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
             currentMultiplier = getMultiplier();
             setActive(canFunction() && currentMultiplier != 0L);
         }
-        if (currentMultiplier != 0L && canFunction() && getEnergyContainer().getNeeded() != 0L) {
+        if (currentMultiplier != 0L && canFunction() && getEnergyContainer().getNeeded() > 0L) {
             getEnergyContainer().insert(getCurrentGeneration(), Action.EXECUTE, AutomationType.INTERNAL);
         }
         return sendUpdatePacket;

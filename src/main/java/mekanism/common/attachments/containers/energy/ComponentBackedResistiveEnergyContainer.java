@@ -1,9 +1,9 @@
 package mekanism.common.attachments.containers.energy;
 
-import java.util.function.LongSupplier;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.ResistiveHeaterEnergyContainer;
@@ -19,14 +19,12 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class ComponentBackedResistiveEnergyContainer extends ComponentBackedEnergyContainer {
 
-    private static final LongSupplier SUPPLIES_ZERO = () -> 0L;
-
     public static ComponentBackedResistiveEnergyContainer create(ContainerType<?, ?, ?> ignored, ItemStack attachedTo, int containerIndex) {
         return new ComponentBackedResistiveEnergyContainer(attachedTo, containerIndex);
     }
 
     private ComponentBackedResistiveEnergyContainer(ItemStack attachedTo, int containerIndex) {
-        super(attachedTo, containerIndex, BasicEnergyContainer.manualOnly, BasicEnergyContainer.alwaysTrue, SUPPLIES_ZERO, SUPPLIES_ZERO);
+        super(attachedTo, containerIndex, BasicEnergyContainer.manualOnly, BasicEnergyContainer.alwaysTrue, ConstantPredicates.ZERO_LONG, ConstantPredicates.ZERO_LONG);
     }
 
     @Override

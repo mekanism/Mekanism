@@ -71,6 +71,6 @@ public class MinerEnergyContainer extends MachineEnergyContainer<TileEntityDigit
         } else {
             heightCost = Math.max((tile.getMaxY() - tile.getMinY() - TileEntityDigitalMiner.DEFAULT_HEIGHT_RANGE) / heightRange, 0);
         }
-        minerEnergyPerTick = MathUtils.clampToLong(minerEnergyPerTick * ((1 + radiusCost) * (1 + heightCost)));
+        minerEnergyPerTick = MathUtils.clampToLong(minerEnergyPerTick * (1 + radiusCost) * (1 + heightCost));
     }
 }
