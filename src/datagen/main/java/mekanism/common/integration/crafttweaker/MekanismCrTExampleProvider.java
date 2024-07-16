@@ -214,13 +214,13 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .comment("Adds two Separating Recipes that do the following:",
                     "1) Adds a recipe that separates 2 mB of Liquid Sulfur Trioxide into 1 mB of Oxygen and 2 mB of Sulfur Dioxide.",
                     "2) Adds a recipe that separates 1 mB of Liquid Sulfur Acid into 1 mB of Water Vapor and 1 mB of Sulfur Trioxide, "
-                    + "using one and a half times as much energy as it takes to separate Oxygen and Hydrogen from Water."
+                    + "using twice as much energy as it takes to separate Oxygen and Hydrogen from Water."
               ).blankLine()
               .recipe(ElectrolysisRecipeManager.INSTANCE)
               .addExample("separator/sulfur_trioxide", IngredientCreatorAccess.fluid().from(MekanismTags.Fluids.SULFUR_TRIOXIDE, 2), MekanismGases.OXYGEN.getStack(1),
                     MekanismGases.SULFUR_DIOXIDE.getStack(2))
               .addExample("separator/sulfuric_acid", IngredientCreatorAccess.fluid().from(MekanismTags.Fluids.SULFURIC_ACID, 1), MekanismGases.WATER_VAPOR.getStack(1),
-                    MekanismGases.SULFUR_TRIOXIDE.getStack(1), 1.5D)
+                    MekanismGases.SULFUR_TRIOXIDE.getStack(1), 2L)
               .end()
               .comment("Removes the Separating Recipe for separating Brine into Sodium and Chlorine.")
               .blankLine()

@@ -5,14 +5,14 @@
       "methodName": "feToJoules",
       "params": [
         {
-          "type": "Number (FloatingLong)",
-          "java_type": "mekanism.api.math.FloatingLong",
+          "type": "Number (long)",
+          "java_type": "long",
           "name": "fe"
         }
       ],
       "returns": {
-        "type": "Number (FloatingLong)",
-        "java_type": "mekanism.api.math.FloatingLong"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -20,14 +20,14 @@
       "methodName": "joulesToFE",
       "params": [
         {
-          "type": "Number (FloatingLong)",
-          "java_type": "mekanism.api.math.FloatingLong",
+          "type": "Number (long)",
+          "java_type": "long",
           "name": "joules"
         }
       ],
       "returns": {
-        "type": "Number (FloatingLong)",
-        "java_type": "mekanism.api.math.FloatingLong"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     }
   ],
@@ -216,8 +216,8 @@
       "description": "Get the energy used in the last tick by the machine",
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "Number (FloatingLong)",
-        "java_type": "mekanism.api.math.FloatingLong"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -589,8 +589,8 @@
       "description": "Get the energy used in the last tick by the machine",
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "Number (FloatingLong)",
-        "java_type": "mekanism.api.math.FloatingLong"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -655,8 +655,8 @@
       "description": "Get the energy used in the last tick by the machine",
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "Number (FloatingLong)",
-        "java_type": "mekanism.api.math.FloatingLong"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -761,8 +761,8 @@
       "description": "Get the energy used in the last tick by the machine",
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "Number (FloatingLong)",
-        "java_type": "mekanism.api.math.FloatingLong"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -899,8 +899,8 @@
       "description": "Get the energy used in the last tick by the machine",
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "Number (FloatingLong)",
-        "java_type": "mekanism.api.math.FloatingLong"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -1045,8 +1045,8 @@
       "description": "Get the energy used in the last tick by the machine",
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "Number (FloatingLong)",
-        "java_type": "mekanism.api.math.FloatingLong"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -1183,8 +1183,8 @@
       "description": "Get the energy used in the last tick by the machine",
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "Number (FloatingLong)",
-        "java_type": "mekanism.api.math.FloatingLong"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -1327,8 +1327,8 @@
       "description": "Get the energy used in the last tick by the machine",
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "Number (FloatingLong)",
-        "java_type": "mekanism.api.math.FloatingLong"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -1398,8 +1398,8 @@
       "description": "Get the energy used in the last tick by the machine",
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "Number (FloatingLong)",
-        "java_type": "mekanism.api.math.FloatingLong"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -1902,8 +1902,8 @@
       "description": "Get the energy used in the last tick by the machine",
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "Number (FloatingLong)",
-        "java_type": "mekanism.api.math.FloatingLong"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -2006,8 +2006,8 @@
       "description": "Get the energy used in the last tick by the machine",
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "Number (FloatingLong)",
-        "java_type": "mekanism.api.math.FloatingLong"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -2206,8 +2206,8 @@
       "description": "Get the energy used in the last tick by the machine",
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "Number (FloatingLong)",
-        "java_type": "mekanism.api.math.FloatingLong"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -3408,8 +3408,8 @@
         }
       ],
       "returns": {
-        "type": "Number (FloatingLong)",
-        "java_type": "mekanism.api.math.FloatingLong"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -3422,8 +3422,8 @@
     {
       "methodName": "getProductionRate",
       "returns": {
-        "type": "Number (FloatingLong)",
-        "java_type": "mekanism.api.math.FloatingLong"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -3630,16 +3630,16 @@
     {
       "methodName": "getMaxOutput",
       "returns": {
-        "type": "Number (FloatingLong)",
-        "java_type": "mekanism.api.math.FloatingLong"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
       "description": "Get the amount of energy produced by this generator in the last tick.",
       "methodName": "getProductionRate",
       "returns": {
-        "type": "Number (FloatingLong)",
-        "java_type": "mekanism.api.math.FloatingLong"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     }
   ],
@@ -3664,8 +3664,8 @@
       "methodName": "getEnergy",
       "restriction": "ENERGY",
       "returns": {
-        "type": "Number (FloatingLong)",
-        "java_type": "mekanism.api.math.FloatingLong"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -3680,16 +3680,16 @@
       "methodName": "getEnergyNeeded",
       "restriction": "ENERGY",
       "returns": {
-        "type": "Number (FloatingLong)",
-        "java_type": "mekanism.api.math.FloatingLong"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
       "methodName": "getMaxEnergy",
       "restriction": "ENERGY",
       "returns": {
-        "type": "Number (FloatingLong)",
-        "java_type": "mekanism.api.math.FloatingLong"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -3811,15 +3811,15 @@
     {
       "methodName": "getLastInput",
       "returns": {
-        "type": "Number (FloatingLong)",
-        "java_type": "mekanism.api.math.FloatingLong"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
       "methodName": "getLastOutput",
       "returns": {
-        "type": "Number (FloatingLong)",
-        "java_type": "mekanism.api.math.FloatingLong"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -3833,8 +3833,8 @@
     {
       "methodName": "getTransferCap",
       "returns": {
-        "type": "Number (FloatingLong)",
-        "java_type": "mekanism.api.math.FloatingLong"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     }
   ],
@@ -3922,8 +3922,8 @@
     {
       "methodName": "getMaxProduction",
       "returns": {
-        "type": "Number (FloatingLong)",
-        "java_type": "mekanism.api.math.FloatingLong"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -3936,8 +3936,8 @@
     {
       "methodName": "getProductionRate",
       "returns": {
-        "type": "Number (FloatingLong)",
-        "java_type": "mekanism.api.math.FloatingLong"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -4006,8 +4006,8 @@
       "description": "Get the energy used in the last tick by the machine",
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "Number (FloatingLong)",
-        "java_type": "mekanism.api.math.FloatingLong"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -4111,15 +4111,15 @@
     {
       "methodName": "getMaxThreshold",
       "returns": {
-        "type": "Number (FloatingLong)",
-        "java_type": "mekanism.api.math.FloatingLong"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
       "methodName": "getMinThreshold",
       "returns": {
-        "type": "Number (FloatingLong)",
-        "java_type": "mekanism.api.math.FloatingLong"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -4144,8 +4144,8 @@
       "methodName": "setMaxThreshold",
       "params": [
         {
-          "type": "Number (FloatingLong)",
-          "java_type": "mekanism.api.math.FloatingLong",
+          "type": "Number (long)",
+          "java_type": "long",
           "name": "threshold"
         }
       ],
@@ -4155,8 +4155,8 @@
       "methodName": "setMinThreshold",
       "params": [
         {
-          "type": "Number (FloatingLong)",
-          "java_type": "mekanism.api.math.FloatingLong",
+          "type": "Number (long)",
+          "java_type": "long",
           "name": "threshold"
         }
       ],
@@ -4692,8 +4692,8 @@
       "description": "Get the energy used in the last tick by the machine",
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "Number (FloatingLong)",
-        "java_type": "mekanism.api.math.FloatingLong"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -4902,8 +4902,8 @@
       "description": "Get the energy used in the last tick by the machine",
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "Number (FloatingLong)",
-        "java_type": "mekanism.api.math.FloatingLong"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -5026,8 +5026,8 @@
       "description": "Get the energy used in the last tick by the machine",
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "Number (FloatingLong)",
-        "java_type": "mekanism.api.math.FloatingLong"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -5100,8 +5100,8 @@
       "description": "Get the energy used in the last tick by the machine",
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "Number (FloatingLong)",
-        "java_type": "mekanism.api.math.FloatingLong"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -5166,8 +5166,8 @@
       "description": "Get the energy used in the last tick by the machine",
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "Number (FloatingLong)",
-        "java_type": "mekanism.api.math.FloatingLong"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -5304,8 +5304,8 @@
       "description": "Get the energy used in the last tick by the machine",
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "Number (FloatingLong)",
-        "java_type": "mekanism.api.math.FloatingLong"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -5346,8 +5346,8 @@
       "description": "Get the energy used in the last tick by the machine",
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "Number (FloatingLong)",
-        "java_type": "mekanism.api.math.FloatingLong"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -6171,15 +6171,15 @@
       "description": "Get the energy used in the last tick by the machine",
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "Number (FloatingLong)",
-        "java_type": "mekanism.api.math.FloatingLong"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
       "methodName": "getEnergyUsed",
       "returns": {
-        "type": "Number (FloatingLong)",
-        "java_type": "mekanism.api.math.FloatingLong"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -6208,8 +6208,8 @@
       "methodName": "setEnergyUsage",
       "params": [
         {
-          "type": "Number (FloatingLong)",
-          "java_type": "mekanism.api.math.FloatingLong",
+          "type": "Number (long)",
+          "java_type": "long",
           "name": "usage"
         }
       ],
@@ -6229,8 +6229,8 @@
       "description": "Get the energy used in the last tick by the machine",
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "Number (FloatingLong)",
-        "java_type": "mekanism.api.math.FloatingLong"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -6888,15 +6888,15 @@
     {
       "methodName": "getBuffer",
       "returns": {
-        "type": "Number (FloatingLong)",
-        "java_type": "mekanism.api.math.FloatingLong"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
       "methodName": "getCapacity",
       "returns": {
-        "type": "Number (FloatingLong)",
-        "java_type": "mekanism.api.math.FloatingLong"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -6909,8 +6909,8 @@
     {
       "methodName": "getNeeded",
       "returns": {
-        "type": "Number (FloatingLong)",
-        "java_type": "mekanism.api.math.FloatingLong"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     }
   ],
