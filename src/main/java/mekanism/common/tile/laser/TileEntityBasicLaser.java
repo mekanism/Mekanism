@@ -8,9 +8,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.lasers.ILaserDissipation;
 import mekanism.api.lasers.ILaserReceptor;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
-import mekanism.api.math.ULong;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.base.MekFakePlayer;
@@ -418,9 +416,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     @Override
     public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
         super.loadAdditional(nbt, provider);
-        //todo: 1.22 backcompat
-        NBTUtils.setFloatingLongIfPresent(nbt, SerializationConstants.LAST_FIRED, value -> lastFired = value.longValue());
-        NBTUtils.setLongIfPresent(nbt, SerializationConstants.LAST_FIRED, value -> lastFired = value);
+        NBTUtils.setLegacyEnergyIfPresent(nbt, SerializationConstants.LAST_FIRED, value -> lastFired = value);
     }
 
     @Override

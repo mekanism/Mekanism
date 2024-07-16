@@ -143,7 +143,6 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Lon
 
     @Override
     public void deserializeNBT(Provider provider, CompoundTag nbt) {
-        NBTUtils.setFloatingLongIfPresent(nbt, SerializationConstants.STORED, v -> this.setEnergy(v.longValue()));//TODO 1.22 - backcompat
-        NBTUtils.setLongIfPresent(nbt, SerializationConstants.STORED, this::setEnergy);
+        NBTUtils.setLegacyEnergyIfPresent(nbt, SerializationConstants.STORED, this::setEnergy);
     }
 }

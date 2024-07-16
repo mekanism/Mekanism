@@ -18,8 +18,6 @@ import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.merged.BoxedChemical;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.SlurryStack;
-import mekanism.api.math.FloatingLong;
-import mekanism.api.math.FloatingLongConsumer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
@@ -203,12 +201,28 @@ public class NBTUtils {
         }
     }
 
-    public static void setFloatingLongIfPresent(CompoundTag nbt, String key, FloatingLongConsumer setter) {
-        if (nbt.contains(key, Tag.TAG_STRING)) {
+    //TODO - 1.22: Replace with using setLongIfPresent
+    public static void setLegacyEnergyIfPresent(CompoundTag nbt, String key, LongConsumer setter) {
+        if (nbt.contains(key, Tag.TAG_LONG)) {
+            setter.accept(nbt.getLong(key));
+        } else if (nbt.contains(key, Tag.TAG_STRING)) {
             try {
-                setter.accept(FloatingLong.parseFloatingLong(nbt.getString(key)));
+                //Copy of legacy logic from floating long parsing
+                String string = nbt.getString(key);
+                long value;
+                int index = string.indexOf('.');
+                if (index == -1) {
+                    value = Long.parseUnsignedLong(string);
+                } else {
+                    value = Long.parseUnsignedLong(string.substring(0, index));
+                }
+                if (value < 0) {
+                    //Clamp unsigned to signed
+                    value = Long.MAX_VALUE;
+                }
+                setter.accept(value);
             } catch (NumberFormatException e) {
-                setter.accept(FloatingLong.ZERO);
+                setter.accept(0);
             }
         }
     }

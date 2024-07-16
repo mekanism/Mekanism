@@ -8,8 +8,6 @@ import mekanism.api.IContentsListener;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.math.FloatingLong;
-import mekanism.api.math.ULong;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
@@ -174,13 +172,8 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     @Override
     public void readSustainedData(HolderLookup.Provider provider, @NotNull CompoundTag data) {
         super.readSustainedData(provider, data);
-        //todo 1.21: backcompat
-        NBTUtils.setFloatingLongIfPresent(data, SerializationConstants.MIN, v -> this.updateMinThreshold(v.getValue()));
-        NBTUtils.setFloatingLongIfPresent(data, SerializationConstants.MAX, v -> this.updateMaxThreshold(v.getValue()));
-
-        NBTUtils.setLongIfPresent(data, SerializationConstants.MIN, this::updateMinThreshold);
-        NBTUtils.setLongIfPresent(data, SerializationConstants.MAX, this::updateMaxThreshold);
-
+        NBTUtils.setLegacyEnergyIfPresent(data, SerializationConstants.MIN, this::updateMinThreshold);
+        NBTUtils.setLegacyEnergyIfPresent(data, SerializationConstants.MAX, this::updateMaxThreshold);
         NBTUtils.setIntIfPresent(data, SerializationConstants.TIME, value -> delay = value);
         NBTUtils.setEnumIfPresent(data, SerializationConstants.OUTPUT_MODE, RedstoneOutput.BY_ID, mode -> outputMode = mode);
     }

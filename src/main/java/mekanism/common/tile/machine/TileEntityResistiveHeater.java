@@ -6,7 +6,6 @@ import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
-import mekanism.api.math.FloatingLong;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.energy.ResistiveHeaterEnergyContainer;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
@@ -26,7 +25,6 @@ import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.integration.computer.computercraft.ComputerConstants;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableDouble;
-import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.registries.MekanismBlocks;
@@ -154,9 +152,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     @Override
     public void setConfigurationData(HolderLookup.Provider provider, Player player, CompoundTag data) {
         super.setConfigurationData(provider, player, data);
-        //todo 1.22 backcompat
-        NBTUtils.setFloatingLongIfPresent(data, SerializationConstants.ENERGY_USAGE, energyUsage -> energyContainer.updateEnergyUsage(energyUsage.longValue()));
-        NBTUtils.setLongIfPresent(data, SerializationConstants.ENERGY_USAGE, energyContainer::updateEnergyUsage);
+        NBTUtils.setLegacyEnergyIfPresent(data, SerializationConstants.ENERGY_USAGE, energyContainer::updateEnergyUsage);
     }
 
     @Override
