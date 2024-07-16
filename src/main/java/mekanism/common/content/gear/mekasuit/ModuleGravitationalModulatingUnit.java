@@ -33,7 +33,7 @@ import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 @ParametersAreNotNullByDefault
 public record ModuleGravitationalModulatingUnit(SprintBoost speedBoost) implements ICustomModule<ModuleGravitationalModulatingUnit> {
 
-    public static int BOOST_ENERGY_MULTIPLIER = 4;
+    public static final int BOOST_ENERGY_MULTIPLIER = 4;
 
     private static final AttributeModifier CREATIVE_FLIGHT_MODIFIER = new AttributeModifier(Mekanism.rl("mekasuit_gravitational_modulation"), 1, Operation.ADD_VALUE);
     private static final ConfigBasedCachedLongSupplier BOOST_USAGE = new ConfigBasedCachedLongSupplier(
