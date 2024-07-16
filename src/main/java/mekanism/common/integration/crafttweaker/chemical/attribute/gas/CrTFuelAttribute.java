@@ -3,7 +3,6 @@ package mekanism.common.integration.crafttweaker.chemical.attribute.gas;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import mekanism.api.chemical.gas.attribute.GasAttributes;
-import mekanism.api.math.FloatingLong;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import org.openzen.zencode.java.ZenCodeType;
 

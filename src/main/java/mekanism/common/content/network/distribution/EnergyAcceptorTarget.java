@@ -3,7 +3,6 @@ package mekanism.common.content.network.distribution;
 import java.util.Collection;
 import mekanism.api.Action;
 import mekanism.api.energy.IStrictEnergyHandler;
-import mekanism.api.math.FloatingLong;
 import mekanism.common.lib.distribution.SplitInfo;
 import mekanism.common.lib.distribution.Target;
 

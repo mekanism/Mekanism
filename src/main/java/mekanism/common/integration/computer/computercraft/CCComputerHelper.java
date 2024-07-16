@@ -4,7 +4,6 @@ import dan200.computercraft.api.lua.IArguments;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.MethodResult;
 import java.util.Map;
-import mekanism.api.math.FloatingLong;
 import mekanism.common.integration.computer.BaseComputerHelper;
 import mekanism.common.integration.computer.ComputerException;
 import org.jetbrains.annotations.NotNull;
@@ -94,23 +93,6 @@ public class CCComputerHelper extends BaseComputerHelper {
     public double getDouble(int param) throws ComputerException {
         try {
             return arguments.getDouble(param);
-        } catch (LuaException e) {
-            throw new ComputerException(e);
-        }
-    }
-
-    @Override
-    public FloatingLong getFloatingLong(int param) throws ComputerException {
-        try {
-            Object opt = arguments.get(param);
-            if (opt instanceof String s) {
-                return FloatingLong.parseFloatingLong(s);
-            }
-            double finiteDouble = arguments.getFiniteDouble(param);
-            if (finiteDouble < 0) {
-                return FloatingLong.ZERO;
-            }
-            return FloatingLong.createConst(finiteDouble);
         } catch (LuaException e) {
             throw new ComputerException(e);
         }

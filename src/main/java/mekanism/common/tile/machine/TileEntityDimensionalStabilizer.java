@@ -2,15 +2,12 @@ package mekanism.common.tile.machine;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.function.BiFunction;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.SerializationConstants;
 import mekanism.api.RelativeSide;
+import mekanism.api.SerializationConstants;
 import mekanism.api.functions.LongObjectToLongFunction;
-import mekanism.api.math.FloatingLong;
-import mekanism.api.math.ULong;
 import mekanism.common.attachments.StabilizedChunks;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.energy.FixedUsageEnergyContainer;

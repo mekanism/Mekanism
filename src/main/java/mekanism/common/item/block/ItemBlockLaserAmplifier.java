@@ -2,7 +2,6 @@ package mekanism.common.item.block;
 
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
-import mekanism.api.math.FloatingLong;
 import mekanism.common.block.prefab.BlockTile.BlockTileModel;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.content.blocktype.BlockTypeTile;

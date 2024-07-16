@@ -2,7 +2,6 @@ package mekanism.common.tile.prefab;
 
 import java.util.List;
 import mekanism.api.IContentsListener;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;

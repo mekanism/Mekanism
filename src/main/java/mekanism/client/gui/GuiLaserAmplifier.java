@@ -1,7 +1,6 @@
 package mekanism.client.gui;
 
 import java.math.BigDecimal;
-import mekanism.api.math.FloatingLong;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiEnergyGauge;
 import mekanism.client.gui.element.tab.GuiAmplifierTab;

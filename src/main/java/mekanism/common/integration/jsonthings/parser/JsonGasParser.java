@@ -8,7 +8,6 @@ import mekanism.api.chemical.ChemicalType;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasBuilder;
 import mekanism.api.chemical.gas.attribute.GasAttributes;
-import mekanism.api.math.FloatingLong;
 import mekanism.common.integration.LazyGasProvider;
 import mekanism.common.integration.jsonthings.builder.JsonGasBuilder;
 import mekanism.common.lib.radiation.RadiationManager;

@@ -1,7 +1,6 @@
 package mekanism.common.integration.computer;
 
 import java.util.Locale;
-import mekanism.api.math.FloatingLong;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.util.UnitDisplayUtils.EnergyUnit;
 

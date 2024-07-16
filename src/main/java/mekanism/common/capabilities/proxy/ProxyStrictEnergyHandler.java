@@ -4,7 +4,6 @@ import mekanism.api.Action;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.ISidedStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
-import mekanism.api.math.FloatingLong;
 import mekanism.common.capabilities.holder.IHolder;
 import net.minecraft.core.Direction;
 import org.jetbrains.annotations.Nullable;

@@ -1,7 +1,6 @@
 package mekanism.api.text;
 
 import java.util.ServiceLoader;
-import mekanism.api.math.FloatingLong;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus.Internal;
 

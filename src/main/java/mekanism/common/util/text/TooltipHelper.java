@@ -1,6 +1,5 @@
 package mekanism.common.util.text;
 
-import mekanism.api.math.FloatingLong;
 import mekanism.api.text.ITooltipHelper;
 import mekanism.common.MekanismLang;
 import mekanism.common.util.MekanismUtils;

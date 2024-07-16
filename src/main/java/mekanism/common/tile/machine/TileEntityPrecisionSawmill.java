@@ -3,7 +3,6 @@ package mekanism.common.tile.machine;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.IContentsListener;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.SawmillRecipe;
 import mekanism.api.recipes.SawmillRecipe.ChanceOutput;
 import mekanism.api.recipes.cache.CachedRecipe;

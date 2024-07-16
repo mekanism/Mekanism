@@ -21,8 +21,6 @@ import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.gear.config.ModuleConfig;
-import mekanism.api.math.FloatingLong;
-import mekanism.api.math.ULong;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.common.MekanismLang;

@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.math.FloatingLong;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.util.MekCodecs;
@@ -67,7 +66,7 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
         if (Frequency.class.isAssignableFrom(clazz) || clazz == GlobalPos.class || Vec3i.class.isAssignableFrom(clazz) || clazz == FluidStack.class || clazz == ItemStack.class || clazz == BlockState.class || ChemicalStack.class.isAssignableFrom(clazz) || IFilter.class.isAssignableFrom(clazz)) {
             return "Table (" + clazz.getSimpleName() + ")";
         }
-        if (clazz == int.class || clazz == long.class || clazz == float.class || clazz == double.class || clazz == FloatingLong.class || Number.class.isAssignableFrom(clazz)) {
+        if (clazz == int.class || clazz == long.class || clazz == float.class || clazz == double.class || Number.class.isAssignableFrom(clazz)) {
             if (ClassUtils.isPrimitiveWrapper(clazz)) {
                 clazz = Objects.requireNonNull(ClassUtils.wrapperToPrimitive(clazz), clazz::getName);
             }

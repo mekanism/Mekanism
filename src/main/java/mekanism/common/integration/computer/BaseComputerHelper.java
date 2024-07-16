@@ -11,7 +11,6 @@ import java.util.UUID;
 import java.util.function.Function;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.security.SecurityMode;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
@@ -107,23 +106,6 @@ public abstract class BaseComputerHelper {
 
     public abstract double getDouble(int param) throws ComputerException;
 
-    /**
-     * Get a Floating Long from a positive double value (finite if supported by computer platform)
-     *
-     * @param param parameter index
-     *
-     * @return constant Floating Long or FloatingLong.ZERO
-     *
-     * @throws ComputerException if the param index does not exist or param is the wrong type.
-     */
-    public FloatingLong getFloatingLong(int param) throws ComputerException {
-        double finiteDouble = getDouble(param);
-        if (finiteDouble < 0) {
-            return FloatingLong.ZERO;
-        }
-        return FloatingLong.createConst(finiteDouble);
-    }
-
     @NotNull
     public abstract String getString(int param) throws ComputerException;
 
@@ -202,15 +184,6 @@ public abstract class BaseComputerHelper {
      */
     public Object voidResult() {
         return null;
-    }
-
-    public Object convert(@Nullable FloatingLong result) {
-        if (result == null) {
-            return 0;
-        } else if (result.getDecimal() == 0 && result.getValue() >= 0) {
-            return result.longValue();
-        }
-        return result.doubleValue();
     }
 
     public Object convert(int i) {

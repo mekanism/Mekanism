@@ -3,7 +3,6 @@ package mekanism.common.content.blocktype;
 import java.util.function.LongSupplier;
 import java.util.function.Supplier;
 import mekanism.api.Upgrade;
-import mekanism.api.math.FloatingLongSupplier;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.block.attribute.Attribute.TileAttribute;
 import mekanism.common.block.attribute.AttributeEnergy;

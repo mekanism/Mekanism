@@ -1,7 +1,5 @@
 package mekanism.common.lib;
 
-import mekanism.api.math.FloatingLong;
-
 public class LastEnergyTracker {
 
     private long lastEnergyReceived = 0L;

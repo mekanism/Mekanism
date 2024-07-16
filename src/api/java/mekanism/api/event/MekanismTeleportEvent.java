@@ -2,7 +2,6 @@ package mekanism.api.event;
 
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.robit.IRobit;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;

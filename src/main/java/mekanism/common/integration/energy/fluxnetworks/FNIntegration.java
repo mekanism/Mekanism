@@ -107,7 +107,6 @@ public class FNIntegration implements IFNEnergyStorage {
     @Override
     public boolean canExtract() {
         //Mark that we can receive energy if we can insert energy
-        //todo: is this right? shouldn't it be only if 1 FE works, this is in joules
         if (handler.extractEnergy(1, Action.SIMULATE) != 0L) {
             return true;
         }

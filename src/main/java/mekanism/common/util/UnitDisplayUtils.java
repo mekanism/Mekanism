@@ -9,7 +9,6 @@ import mekanism.api.IIncrementalEnum;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyConversion;
 import mekanism.api.functions.ConstantPredicates;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.ILangEntry;
@@ -34,7 +33,7 @@ public class UnitDisplayUtils {
     // That would improve how well this handles en_ud as currently the order of the number and the unit is not reversed and the unit is not upside down
 
     /**
-     * Displays the unit as text. Does not handle negative numbers, as {@link FloatingLong} does not have a concept of negatives
+     * Displays the unit as text. Does not handle negative numbers, as {@link mekanism.api.math.FloatingLong} does not have a concept of negatives
      */
     public static Component getDisplay(long value, EnergyUnit unit, int decimalPlaces, boolean isShort) {
         ILangEntry label = unit.pluralLangEntry;

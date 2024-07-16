@@ -15,7 +15,6 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.SlurryStack;
-import mekanism.api.math.FloatingLong;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.slot.ArmorSlot;
 import mekanism.common.inventory.container.slot.HotBarSlot;
@@ -33,7 +32,6 @@ import mekanism.common.inventory.container.sync.SyncableByteArray;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.container.sync.SyncableFloat;
-import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.container.sync.SyncableFluidStack;
 import mekanism.common.inventory.container.sync.SyncableFrequency;
 import mekanism.common.inventory.container.sync.SyncableInt;
@@ -562,8 +560,6 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         ISyncableData data = getTrackedData(property);
         if (data instanceof SyncableShort syncable) {
             syncable.set(value);
-        } else if (data instanceof SyncableFloatingLong syncable) {
-            syncable.setDecimal(value);
         }
     }
 
@@ -647,13 +643,6 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
             case SyncableList<?> syncable -> syncable.set(getLevel().registryAccess(), value);
             case SyncableCollection<?, ?> syncable -> syncable.set(getLevel().registryAccess(), value);
             case null, default -> Mekanism.logger.error("Unknown byte value type: {}, please report", data == null ? null : data.getClass().getName());
-        }
-    }
-
-    public void handleWindowProperty(short property, @NotNull FloatingLong value) {
-        ISyncableData data = getTrackedData(property);
-        if (data instanceof SyncableFloatingLong syncable) {
-            syncable.set(value);
         }
     }
 

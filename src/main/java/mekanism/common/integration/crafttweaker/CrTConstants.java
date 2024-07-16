@@ -60,7 +60,6 @@ public class CrTConstants {
     public static final String CLASS_PIGMENT_INGREDIENT = CLASS_CHEMICAL_INGREDIENT + ".PigmentIngredient";
     public static final String CLASS_SLURRY_INGREDIENT = CLASS_CHEMICAL_INGREDIENT + ".SlurryIngredient";
 
-    public static final String CLASS_FLOATING_LONG = "mods." + Mekanism.MODID + ".api.FloatingLong";
     public static final String CLASS_CHEMICAL_STACK_INGREDIENT = "mods." + Mekanism.MODID + ".api.ingredient.ChemicalStackIngredient";
     public static final String CLASS_GAS_STACK_INGREDIENT = CLASS_CHEMICAL_STACK_INGREDIENT + ".GasStackIngredient";
     public static final String CLASS_INFUSION_STACK_INGREDIENT = CLASS_CHEMICAL_STACK_INGREDIENT + ".InfusionStackIngredient";

@@ -8,7 +8,6 @@ import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
-import mekanism.api.math.FloatingLong;
 import mekanism.common.capabilities.DynamicHandler;
 import net.minecraft.core.Direction;
 import org.jetbrains.annotations.Nullable;

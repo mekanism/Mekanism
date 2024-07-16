@@ -3,7 +3,6 @@ package mekanism.client.recipe_viewer.jei.machine;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.NucleosynthesizingRecipe;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.bar.GuiDynamicHorizontalRateBar;

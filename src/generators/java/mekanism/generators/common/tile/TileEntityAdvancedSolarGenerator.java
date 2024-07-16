@@ -2,7 +2,6 @@ package mekanism.generators.common.tile;
 
 import mekanism.api.IEvaporationSolar;
 import mekanism.api.RelativeSide;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
 import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.util.MekanismUtils;

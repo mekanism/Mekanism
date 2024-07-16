@@ -3,7 +3,6 @@ package mekanism.client.gui.element.gauge;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;

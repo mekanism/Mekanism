@@ -2,7 +2,6 @@ package mekanism.client.recipe_viewer.jei.machine;
 
 import java.util.Collections;
 import java.util.List;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.element.gauge.GaugeType;

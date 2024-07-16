@@ -1,7 +1,6 @@
 package mekanism.common.content.sps;
 
 import mekanism.api.SerializationConstants;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
 import mekanism.common.lib.multiblock.MultiblockCache;
 import mekanism.common.util.NBTUtils;

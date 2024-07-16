@@ -30,7 +30,6 @@ import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.merged.BoxedChemicalStack;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.SlurryStack;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ElectrolysisRecipe.ElectrolysisRecipeOutput;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe.PressurizedReactionRecipeOutput;
@@ -117,14 +116,6 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe<?>> im
             return new CrTSlurryStack(stack).getCommandString();
         } else if (param instanceof BoxedChemicalStack stack) {
             return convertParam(stack.getChemicalStack());
-        } else if (param instanceof FloatingLong fl) {
-            //Note: Handled via implicit casts
-            if (fl.getDecimal() == 0) {
-                //No decimal, don't bother printing it
-                return fl.toString(0);
-            }
-            //Trim any trailing zeros rather than printing them out
-            return fl.toString().replaceAll("0*$", "");
         } else if (param instanceof Number || param instanceof Boolean) {//Handle integers and the like
             return param.toString();
         } else if (param instanceof ItemStackIngredient ingredient) {
