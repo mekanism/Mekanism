@@ -24,7 +24,7 @@ public interface IEnergyConversion extends IHasTranslationKey {
      *
      * @param energy Amount of energy in 'other' type. (Units matching this conversion)
      *
-     * @return Joules (unsigned).
+     * @return Joules.
      */
     long convertFrom(long energy);
 

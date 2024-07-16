@@ -38,7 +38,7 @@ public class ModuleNutritionalInjectionUnit implements ICustomModule<ModuleNutri
                 int needed = Math.min(20 - player.getFoodData().getFoodLevel(), contained / MekanismConfig.general.nutritionalPasteMBPerFood.get());
                 int toFeed = Math.min(MathUtils.clampToInt(module.getContainerEnergy(stack) / usage), needed);
                 if (toFeed > 0) {
-                    module.useEnergy(player, stack, Math.multiplyExact(usage, toFeed));
+                    module.useEnergy(player, stack, usage * toFeed);
                     handler.drain(MekanismFluids.NUTRITIONAL_PASTE.getFluidStack(toFeed * MekanismConfig.general.nutritionalPasteMBPerFood.get()), FluidAction.EXECUTE);
                     player.getFoodData().eat(needed, MekanismConfig.general.nutritionalPasteSaturation.get());
                 }

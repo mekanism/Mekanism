@@ -35,7 +35,7 @@ public record ModuleGravitationalModulatingUnit(SprintBoost speedBoost) implemen
 
     private static final AttributeModifier CREATIVE_FLIGHT_MODIFIER = new AttributeModifier(Mekanism.rl("mekasuit_gravitational_modulation"), 1, Operation.ADD_VALUE);
     private static final ConfigBasedCachedLongSupplier BOOST_USAGE = new ConfigBasedCachedLongSupplier(
-          () -> MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation.get() * 4,
+          () -> Math.multiplyExact(4, MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation.get()),
           MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation
     );
     private static final ResourceLocation icon = MekanismUtils.getResource(ResourceType.GUI_HUD, "gravitational_modulation_unit.png");

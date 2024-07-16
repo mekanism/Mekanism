@@ -42,7 +42,7 @@ public abstract class ItemStackToEnergyRecipeManager extends MekanismRecipeManag
      * @param output Energy output. Will be validated as being greater than zero.
      */
     public final ItemStackToEnergyRecipe makeRecipe(IIngredientWithAmount input, long output) {
-        if (output == 0L) {
+        if (output <= 0L) {
             throw new IllegalArgumentException("Output must be greater than zero.");
         }
         return makeRecipeInternal(input, output);

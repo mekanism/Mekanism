@@ -286,7 +286,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     }
 
     private long getRoundedTravelEnergy() {
-        return (long) Math.ceil(DISTANCE_MULTIPLIER * Math.sqrt(distanceToSqr(xo, yo, zo)));
+        return MathUtils.clampToLong(Math.ceil(DISTANCE_MULTIPLIER * Math.sqrt(distanceToSqr(xo, yo, zo))));
     }
 
     @Override

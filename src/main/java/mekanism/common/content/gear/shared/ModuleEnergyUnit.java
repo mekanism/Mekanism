@@ -9,6 +9,7 @@ import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
+import mekanism.api.math.MathUtils;
 import mekanism.api.math.ULong;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.registries.MekanismModules;
@@ -30,7 +31,7 @@ public class ModuleEnergyUnit implements ICustomModule<ModuleEnergyUnit> {
         if (module == null) {
             return base.getAsLong();
         }
-        return (long) (base.getAsLong() * Math.pow(2, module.getInstalledCount()));
+        return MathUtils.clampToLong(base.getAsLong() * Math.pow(2, module.getInstalledCount()));
     }
 
     @Override

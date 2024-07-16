@@ -3,6 +3,7 @@ package mekanism.common.capabilities.energy;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.MathUtils;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
@@ -45,7 +46,7 @@ public class MinerEnergyContainer extends MachineEnergyContainer<TileEntityDigit
     public void updateMinerEnergyPerTick() {
         minerEnergyPerTick = super.getEnergyPerTick();
         if (tile.getSilkTouch()) {
-            minerEnergyPerTick = minerEnergyPerTick * (MekanismConfig.general.minerSilkMultiplier.get());
+            minerEnergyPerTick = Math.multiplyExact(minerEnergyPerTick, MekanismConfig.general.minerSilkMultiplier.get());
         }
         //Ranges are difference between max and default
         double radiusRange = MekanismConfig.general.minerMaxRadius.get() - TileEntityDigitalMiner.DEFAULT_RADIUS;
@@ -71,6 +72,6 @@ public class MinerEnergyContainer extends MachineEnergyContainer<TileEntityDigit
         } else {
             heightCost = Math.max((tile.getMaxY() - tile.getMinY() - TileEntityDigitalMiner.DEFAULT_HEIGHT_RANGE) / heightRange, 0);
         }
-        minerEnergyPerTick = (long) (minerEnergyPerTick * ((1 + radiusCost) * (1 + heightCost)));
+        minerEnergyPerTick = MathUtils.clampToLong(minerEnergyPerTick * ((1 + radiusCost) * (1 + heightCost)));
     }
 }

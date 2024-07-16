@@ -99,7 +99,7 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Pres
      * @param energyRequired How much "extra" energy this recipe requires, compared to the base energy requirements of the machine performing the recipe.
      */
     public PressurizedReactionRecipeBuilder energyRequired(long energyRequired) {
-        if (energyRequired <= 0) {
+        if (energyRequired < 0) {
             throw new IllegalArgumentException("This reaction recipe must have a positive or zero energy requirement.");
         }
         this.energyRequired = energyRequired;

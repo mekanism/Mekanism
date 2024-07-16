@@ -50,7 +50,7 @@ public class ModuleGeothermalGeneratorUnit implements ICustomModule<ModuleGeothe
     @Override
     public void tickServer(IModule<ModuleGeothermalGeneratorUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player) {
         IEnergyContainer energyContainer = module.getEnergyContainer(stack);
-        if (energyContainer != null && energyContainer.getNeeded() != 0L) {
+        if (energyContainer != null && energyContainer.getNeeded() > 0L) {
             double highestScaledDegrees = 0;
             double legHeight = player.isCrouching() ? 0.6 : 0.7;
             Map<FluidType, FluidInDetails> fluidsIn = MekanismUtils.getFluidsIn(player, legHeight, (bb, data) -> new AABB(bb.minX, bb.minY, bb.minZ, bb.maxX,
@@ -89,7 +89,7 @@ public class ModuleGeothermalGeneratorUnit implements ICustomModule<ModuleGeothe
                     highestScaledDegrees = 200;
                 }
                 //Insert energy
-                long rate = MathUtils.clampToLong(MekanismGeneratorsConfig.gear.mekaSuitGeothermalChargingRate.get() * module.getInstalledCount() * highestScaledDegrees);
+                long rate = MathUtils.clampToLong(Math.multiplyExact(MekanismGeneratorsConfig.gear.mekaSuitGeothermalChargingRate.get(), module.getInstalledCount()) * highestScaledDegrees);
                 energyContainer.insert(rate, Action.EXECUTE, AutomationType.MANUAL);
             }
         }

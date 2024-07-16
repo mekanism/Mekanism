@@ -1,5 +1,6 @@
 package mekanism.common.capabilities.energy;
 
+import com.google.common.base.Preconditions;
 import java.util.Objects;
 import java.util.function.Predicate;
 import mekanism.api.Action;
@@ -77,6 +78,7 @@ public class BasicEnergyContainer implements IEnergyContainer {
 
     @Override
     public void setEnergy(long energy) {
+        Preconditions.checkArgument(energy >= 0, "Energy cannot be negative");
         energy = clampEnergy(energy);
         if (stored != energy) {
             stored = energy;

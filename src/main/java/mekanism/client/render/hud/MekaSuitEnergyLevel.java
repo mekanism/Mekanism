@@ -1,6 +1,7 @@
 package mekanism.client.render.hud;
 
 import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.math.MathUtils;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.element.bar.GuiBar;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
@@ -35,8 +36,8 @@ public class MekaSuitEnergyLevel implements LayeredDraw.Layer {
             if (stack.getItem() instanceof ItemMekaSuitArmor) {
                 IEnergyContainer container = StorageUtils.getEnergyContainer(stack, 0);
                 if (container != null) {
-                    capacity += container.getMaxEnergy();
-                    stored += container.getEnergy();
+                    capacity = MathUtils.addClamped(capacity, container.getMaxEnergy());
+                    stored = MathUtils.addClamped(stored, container.getEnergy());
                 }
             }
         }

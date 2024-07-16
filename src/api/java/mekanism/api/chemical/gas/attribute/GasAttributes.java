@@ -7,6 +7,7 @@ import java.util.function.Supplier;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.attribute.ChemicalAttribute;
 import mekanism.api.chemical.gas.Gas;
+import mekanism.api.math.MathUtils;
 import mekanism.api.math.ULong;
 import mekanism.api.providers.IGasProvider;
 import mekanism.api.radiation.IRadiationManager;
@@ -117,7 +118,7 @@ public class GasAttributes {
             ITooltipHelper tooltipHelper = ITooltipHelper.INSTANCE;
             list.add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_EFFICIENCY.translateColored(EnumColor.GRAY, EnumColor.INDIGO, tooltipHelper.getPercent(conductivity)));
             list.add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_ENTHALPY.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
-                  tooltipHelper.getEnergyPerMBDisplayShort((long) thermalEnthalpy)));
+                  tooltipHelper.getEnergyPerMBDisplayShort(MathUtils.clampToLong(thermalEnthalpy))));
             return list;
         }
     }
@@ -239,7 +240,7 @@ public class GasAttributes {
                 //Single tick, no division necessary
                 return energyDensity.getAsLong();
             }
-            return (energyDensity.getAsLong() / ticks);
+            return energyDensity.getAsLong() / ticks;
         }
 
         @Override

@@ -115,7 +115,7 @@ public class FNIntegration implements IFNEnergyStorage {
         // accuracy to other mods of if we may be able to extract given we are predicate based
         // instead of having strict can receive checks
         for (int container = 0, containers = handler.getEnergyContainerCount(); container < containers; container++) {
-            if (handler.getEnergy(container) != 0L) {
+            if (handler.getEnergy(container) > 0L) {
                 return false;
             }
         }
@@ -125,15 +125,14 @@ public class FNIntegration implements IFNEnergyStorage {
     @Override
     public boolean canReceive() {
         //Mark that we can receive energy if we can insert energy
-        //todo: is this right? shouldn't it be only if 1 FE works, this is in joules
-        if (handler.insertEnergy(1, Action.SIMULATE) == 1) {
+        if (handler.insertEnergy(1, Action.SIMULATE) == 0) {
             return true;
         }
         //Or all our containers are full. This isn't fully accurate but will give the best
         // accuracy to other mods of if we may be able to receive given we are predicate based
         // instead of having strict can receive checks
         for (int container = 0, containers = handler.getEnergyContainerCount(); container < containers; container++) {
-            if (handler.getNeededEnergy(container) != 0L) {
+            if (handler.getNeededEnergy(container) > 0L) {
                 return false;
             }
         }

@@ -103,4 +103,21 @@ public class MathUtils {
     public static double divideToLevel(double numerator, double toDivide) {
         return toDivide == 0D || numerator > toDivide ? 1 : numerator / toDivide;
     }
+
+    /**
+     * Like {@link Math#addExact(long, long)} but clamps to max long instead of throwing
+     *
+     * @param x the first value
+     * @param y the second value
+     *
+     * @return the result or max long if it overflows
+     */
+    public static long addClamped(long x, long y) {
+        long r = x + y;
+        // HD 2-12 Overflow iff both arguments have the opposite sign of the result
+        if (((x ^ r) & (y ^ r)) < 0) {
+            return Long.MAX_VALUE;
+        }
+        return r;
+    }
 }

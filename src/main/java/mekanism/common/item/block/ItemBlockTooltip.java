@@ -172,11 +172,11 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
                 //If our block supports energy upgrades, make a more dynamically updating cache for our item's max energy
                 LongSupplier capacity = new UpgradeBasedUnsignedLongCache(attachedTo, maxEnergy);
                 return new ComponentBackedNoClampEnergyContainer(attachedTo, containerIndex, BasicEnergyContainer.manualOnly, getEnergyCapInsertPredicate(),
-                      () -> (long) (capacity.getAsLong() * (0.005)), capacity);
+                      () -> Math.max((long) (capacity.getAsLong() * (0.005)), 1), capacity);
             });
         }
         //If we don't support energy upgrades, our max energy isn't dependent on another attachment, we can safely clamp to the config values
-        return builder.addBasic(BasicEnergyContainer.manualOnly, getEnergyCapInsertPredicate(), () -> (long) (maxEnergy.getAsLong() * 0.005), maxEnergy);
+        return builder.addBasic(BasicEnergyContainer.manualOnly, getEnergyCapInsertPredicate(), () -> Math.max((long) (maxEnergy.getAsLong() * 0.005), 1), maxEnergy);
     }
 
     @Override

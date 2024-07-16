@@ -2,6 +2,7 @@ package mekanism.common.content.sps;
 
 import mekanism.api.SerializationConstants;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.MathUtils;
 import mekanism.common.lib.multiblock.MultiblockCache;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.HolderLookup;
@@ -18,11 +19,12 @@ public class SPSCache extends MultiblockCache<SPSMultiblockData> {
     @Override
     public void merge(MultiblockCache<SPSMultiblockData> mergeCache, RejectContents rejectContents) {
         super.merge(mergeCache, rejectContents);
-        progress += ((SPSCache) mergeCache).progress;
-        inputProcessed += ((SPSCache) mergeCache).inputProcessed;
-        couldOperate |= ((SPSCache) mergeCache).couldOperate;
-        receivedEnergy = receivedEnergy + ((SPSCache) mergeCache).receivedEnergy;
-        lastProcessed = Math.max(lastProcessed, ((SPSCache) mergeCache).lastProcessed);
+        SPSCache spsMergeCache = (SPSCache) mergeCache;
+        progress += spsMergeCache.progress;
+        inputProcessed += spsMergeCache.inputProcessed;
+        couldOperate |= spsMergeCache.couldOperate;
+        receivedEnergy = MathUtils.addClamped(receivedEnergy, spsMergeCache.receivedEnergy);
+        lastProcessed = Math.max(lastProcessed, spsMergeCache.lastProcessed);
     }
 
     @Override

@@ -195,7 +195,7 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe<?>> im
         TypeData<IIngredientWithAmount, CTFluidIngredient, ChemicalStackIngredient<?, ?, ?>> inputs = new TypeData<>(ChemicalType::getTypeFor);
         TypeData<IItemStack, IFluidStack, ChemicalStack<?>> outputs = new TypeData<>(ChemicalType::getTypeFor);
         int duration = -1;
-        Long energy = null;// -1 here would mean max value
+        long energy = -1;// -1 here would mean max value
         for (Object data : importantData) {
             if (data instanceof List<?> dataList) {
                 if (dataList.size() != 1) {
@@ -243,7 +243,7 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe<?>> im
                 }
                 duration = i;
             } else if (data instanceof Long l) {
-                if (energy != null) {
+                if (energy != -1) {
                     //Fail if we have multiple energy values specified
                     return Optional.empty();
                 }
@@ -264,7 +264,7 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe<?>> im
         if (duration != -1) {
             builder.with(BuiltinRecipeComponents.Processing.TIME, duration);
         }
-        if (energy != null) {
+        if (energy != -1) {
             builder.with(CrTRecipeComponents.ENERGY, energy);
         }
         return Optional.of(builder.build());

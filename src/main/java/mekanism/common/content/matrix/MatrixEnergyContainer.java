@@ -8,6 +8,7 @@ import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.math.MathUtils;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.tier.InductionProviderTier;
 import mekanism.common.tile.multiblock.TileEntityInductionCell;
@@ -44,13 +45,13 @@ public class MatrixEnergyContainer implements IEnergyContainer {
         //As we already have the two different variables just pass them instead of accessing world to get tile again
         MachineEnergyContainer<TileEntityInductionCell> energyContainer = cell.getEnergyContainer();
         cells.put(pos, energyContainer);
-        storageCap = storageCap + (energyContainer.getMaxEnergy());
-        cachedTotal = cachedTotal + (energyContainer.getEnergy());
+        storageCap = MathUtils.addClamped(storageCap, energyContainer.getMaxEnergy());
+        cachedTotal = MathUtils.addClamped(cachedTotal, energyContainer.getEnergy());
     }
 
     public void addProvider(BlockPos pos, TileEntityInductionProvider provider) {
         providers.put(pos, provider.tier);
-        transferCap = transferCap + (provider.tier.getOutput());
+        transferCap = MathUtils.addClamped(transferCap, provider.tier.getOutput());
     }
 
     //TODO: I believe this is needed or at least will be after we eventually rewrite some of the multiblock system
@@ -132,7 +133,7 @@ public class MatrixEnergyContainer implements IEnergyContainer {
         for (IEnergyContainer container : cells.values()) {
             //Note: extracting from the cell's energy container handles marking the cell for saving if it changes
             long extracted = container.extract(energy, Action.EXECUTE, AutomationType.INTERNAL);
-            if (extracted != 0L) {
+            if (extracted > 0L) {
                 energy -= extracted;
                 if (energy == 0L) {
                     //Check less than equal rather than just equal in case something went wrong
@@ -162,12 +163,10 @@ public class MatrixEnergyContainer implements IEnergyContainer {
 
     @Override
     public long insert(long amount, Action action, AutomationType automationType) {
-        if (amount == 0L || !multiblock.isFormed()) {
+        if (amount <= 0L || !multiblock.isFormed()) {
             return amount;
         }
-        long b = getRemainingInput();
-        long c = getNeeded();
-        long toAdd = Math.min(Math.min(amount, b), c);
+        long toAdd = Math.min(Math.min(amount, getRemainingInput()), getNeeded());
         if (toAdd == 0L) {
             //Exit if we don't actually have anything to add, either due to how much we need
             // or due to the remaining rate limit
@@ -182,16 +181,14 @@ public class MatrixEnergyContainer implements IEnergyContainer {
 
     @Override
     public long extract(long amount, Action action, AutomationType automationType) {
-        if (isEmpty() || amount == 0L || !multiblock.isFormed()) {
+        if (isEmpty() || amount <= 0L || !multiblock.isFormed()) {
             return 0L;
         }
         //We limit it overall by the amount we can extract plus how much energy we have
         // as we want to be as accurate as possible with the values we return
         // It is possible that the energy we have stored is a lot less than the amount we
         // can output at once such as if the matrix is almost empty.
-        long b = getRemainingOutput();
-        long c = getEnergy();
-        amount = Math.min(Math.min(amount, b), c);
+        amount = Math.min(Math.min(amount, getRemainingOutput()), getEnergy());
         if (amount != 0L && action.execute()) {
             //Increase how much we are outputting by the amount we accepted
             queuedOutput += amount;

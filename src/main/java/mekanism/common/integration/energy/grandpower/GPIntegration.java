@@ -124,14 +124,14 @@ public class GPIntegration implements ILongEnergyStorage {
     @Override
     public boolean canReceive() {
         //Mark that we can receive energy if we can insert energy
-        if (handler.insertEnergy(1, Action.SIMULATE) != 0) {
+        if (handler.insertEnergy(1, Action.SIMULATE) == 0) {
             return true;
         }
         //Or all our containers are full. This isn't fully accurate but will give the best
         // accuracy to other mods of if we may be able to receive given we are predicate based
         // instead of having strict can receive checks
         for (int container = 0, containers = handler.getEnergyContainerCount(); container < containers; container++) {
-            if (handler.getNeededEnergy(container) != 0) {
+            if (handler.getNeededEnergy(container) > 0) {
                 return false;
             }
         }

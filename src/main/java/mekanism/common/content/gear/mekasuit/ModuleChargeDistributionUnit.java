@@ -74,7 +74,7 @@ public record ModuleChargeDistributionUnit(boolean chargeSuit, boolean chargeInv
         ItemStack offHand = player.getOffhandItem();
         toCharge = charge(energyContainer, mainHand, toCharge);
         toCharge = charge(energyContainer, offHand, toCharge);
-        if (toCharge != 0L) {
+        if (toCharge > 0L) {
             for (ItemStack stack : player.getInventory().items) {
                 if (stack != mainHand && stack != offHand) {
                     toCharge = charge(energyContainer, stack, toCharge);
@@ -99,7 +99,7 @@ public record ModuleChargeDistributionUnit(boolean chargeSuit, boolean chargeInv
 
     /** return rejects */
     private long charge(IEnergyContainer energyContainer, ItemStack stack, long amount) {
-        if (!stack.isEmpty() && amount != 0L) {
+        if (!stack.isEmpty() && amount > 0L) {
             IStrictEnergyHandler handler = EnergyCompatUtils.getStrictEnergyHandler(stack);
             if (handler != null) {
                 long remaining = handler.insertEnergy(amount, Action.SIMULATE);

@@ -7,6 +7,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.SerializationConstants;
+import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.attachments.containers.IAttachedContainers;
@@ -20,7 +21,7 @@ public record AttachedEnergy(List<Long> containers) implements IAttachedContaine
     public static final AttachedEnergy EMPTY = new AttachedEnergy(Collections.emptyList());
 
     public static final Codec<AttachedEnergy> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          Codec.LONG.listOf().fieldOf(SerializationConstants.ENERGY_CONTAINERS).forGetter(AttachedEnergy::containers)
+          SerializerHelper.POSITIVE_LONG_CODEC.listOf().fieldOf(SerializationConstants.ENERGY_CONTAINERS).forGetter(AttachedEnergy::containers)
     ).apply(instance, AttachedEnergy::new));
     public static final StreamCodec<ByteBuf, AttachedEnergy> STREAM_CODEC =
           ByteBufCodecs.VAR_LONG.<List<Long>>apply(ByteBufCodecs.collection(NonNullList::createWithCapacity))

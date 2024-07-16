@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Helper to define a generalized way to get the contents of a container.
  *
- * @since 10.5.13
+ * @since 10.6.5
  */
 @FunctionalInterface
 public interface InContainerGetterLong {

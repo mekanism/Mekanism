@@ -92,7 +92,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
         boolean needsPacket = super.tick(world);
         double processed = 0;
         couldOperate = canOperate();
-        if (couldOperate && receivedEnergy != 0L) {
+        if (couldOperate && receivedEnergy > 0L) {
             double lastProgress = progress;
             final int inputPerAntimatter = MekanismConfig.general.spsInputPerAntimatter.get();
             long inputNeeded = (inputPerAntimatter - inputProcessed) + inputPerAntimatter * (outputTank.getNeeded() - 1);
@@ -187,7 +187,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     }
 
     private void kill(Level world) {
-        if (lastReceivedEnergy != 0L && couldOperate && world.getRandom().nextInt() % SharedConstants.TICKS_PER_SECOND == 0) {
+        if (lastReceivedEnergy > 0L && couldOperate && world.getRandom().nextInt() % SharedConstants.TICKS_PER_SECOND == 0) {
             List<Entity> entitiesToDie = getLevel().getEntitiesOfClass(Entity.class, deathZone);
             for (Entity entity : entitiesToDie) {
                 entity.hurt(entity.damageSources().magic(), lastReceivedEnergy / 1_000F);
@@ -206,7 +206,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     }
 
     public void supplyCoilEnergy(TileEntitySPSPort tile, long energy) {
-        receivedEnergy += energy;
+        receivedEnergy = MathUtils.addClamped(receivedEnergy, energy);
         coilData.coilMap.get(tile.getBlockPos()).receiveEnergy(energy);
     }
 
