@@ -60,7 +60,7 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
         long ourScale = currentScale == 0 ? 0L : (long) (oldCapacity * currentScale);
         long theirScale = net.currentScale == 0 ? 0L : (long) (net.getCapacity() * net.currentScale);
         long capacity = getCapacity();
-        currentScale = (float) Math.min(1, capacity == 0L ? 0D : (ourScale + (double) theirScale / getCapacity()));
+        currentScale = (float) Math.min(1, capacity == 0L ? 0D : (ourScale + theirScale) / (double) capacity);
         if (!isRemote() && !net.energyContainer.isEmpty()) {
             energyContainer.setEnergy(MathUtils.addClamped(energyContainer.getEnergy(), net.getBuffer()));
             net.energyContainer.setEmpty();
@@ -89,22 +89,6 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
             if (energyContainer.getEnergy() > capacity) {
                 energyContainer.setEnergy(capacity);
             }
-        }
-    }
-
-    @Override
-    protected synchronized void updateCapacity(UniversalCable transmitter) {
-        capacity += transmitter.getCapacity();
-    }
-
-    @Override
-    public synchronized void updateCapacity() {
-        long sum = 0L;
-        for (UniversalCable transmitter : getTransmitters()) {
-            sum = MathUtils.addClamped(sum, transmitter.getCapacity());
-        }
-        if (capacity != sum) {
-            capacity = sum;
         }
     }
 
