@@ -124,4 +124,30 @@ public class MathUtils {
         }
         return r;
     }
+
+    /**
+     * Like {@link Math#multiplyExact(long, long)} but clamps to max long instead of throwing
+     *
+     * @param x the first value. should be positive
+     * @param y the second value. should be positive
+     *
+     * @return the result or max long if it overflows
+     *
+     * @since 10.6.6
+     */
+    public static long multiplyClamped(long x, long y) {
+        long r = x * y;
+        long ax = Math.abs(x);
+        long ay = Math.abs(y);
+        if (((ax | ay) >>> 31 != 0)) {
+            // Some bits greater than 2^31 that might cause overflow
+            // Check the result using the divide operator
+            // and check for the special case of Long.MIN_VALUE * -1
+            if (((y != 0) && (r / y != x)) ||
+                (x == Long.MIN_VALUE && y == -1)) {
+                return Long.MAX_VALUE;
+            }
+        }
+        return r;
+    }
 }

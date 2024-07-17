@@ -132,7 +132,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                         continue;
                     }
                     boolean updateEnergyScale = false;
-                    long value = (remainingEnergy / energyPerDamage);
+                    double value = ((double) remainingEnergy / energyPerDamage);
                     float damage = (float) value;
                     float health = 0;
                     if (entity instanceof LivingEntity livingEntity) {
@@ -191,7 +191,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                         if (refractionPercent > 0) {
                             //If we will refract any energy, cap the refraction amount at one
                             refractionPercent = Math.min(refractionPercent, 1);
-                            long refractedEnergy = MathUtils.clampToLong(remainingEnergy * refractionPercent);
+                            double refractedEnergy = remainingEnergy * refractionPercent;
                             //Don't actually use the refracted energy from our remaining energy
                             // but lower the damage values to not include the energy that is being refracted
                             // and mark that we don't actually need to update the damage values (as we just did so here)
@@ -205,7 +205,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                         }
                         if (updateDamage) {
                             //Update the damage we are actually going to try and do to the entity as the amount of energy being used changed
-                            value = (remainingEnergy / energyPerDamage);
+                            value = ((double) remainingEnergy / energyPerDamage);
                             damage = (float) value;
                         }
                         health = livingEntity.getHealth();

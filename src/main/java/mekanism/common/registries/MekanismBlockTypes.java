@@ -4,6 +4,7 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import java.util.function.Supplier;
 import mekanism.api.Upgrade;
+import mekanism.api.math.MathUtils;
 import mekanism.api.text.ILangEntry;
 import mekanism.api.tier.ITier;
 import mekanism.common.MekanismLang;
@@ -316,7 +317,7 @@ public class MekanismBlockTypes {
           .createMachine(() -> MekanismTileEntityTypes.ELECTROLYTIC_SEPARATOR, MekanismLang.DESCRIPTION_ELECTROLYTIC_SEPARATOR)
           .withGui(() -> MekanismContainerTypes.ELECTROLYTIC_SEPARATOR)
           .withSound(MekanismSounds.ELECTROLYTIC_SEPARATOR)
-          .withEnergyConfig(() -> Math.multiplyExact(MekanismConfig.general.FROM_H2.get(), 2), MekanismConfig.storage.electrolyticSeparator)
+          .withEnergyConfig(() -> MathUtils.multiplyClamped(MekanismConfig.general.FROM_H2.get(), 2), MekanismConfig.storage.electrolyticSeparator)
           .withSideConfig(TransmissionType.FLUID, TransmissionType.GAS, TransmissionType.ITEM, TransmissionType.ENERGY)
           .withCustomShape(BlockShapes.ELECTROLYTIC_SEPARATOR)
           .withComputerSupport("electrolyticSeparator")

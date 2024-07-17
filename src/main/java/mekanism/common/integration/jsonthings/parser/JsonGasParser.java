@@ -56,7 +56,6 @@ public class JsonGasParser extends SimpleJsonChemicalParser<Gas, GasBuilder, Jso
                   .key("energy_density", energyDensity -> energyDensity
                         .ifString(string -> string.map(Long::parseLong).handle(fuelData::setEnergyDensity))
                         .ifLong(l -> l.min(1).handle(fuelData::setEnergyDensity))
-                        .ifDouble(d -> d.min(0.0001).map(x -> (long) x).handle(fuelData::setEnergyDensity))
                         .typeError()
                   );
             builder.with(new GasAttributes.Fuel(fuelData.burnTicks, fuelData.energyDensity));

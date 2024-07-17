@@ -210,7 +210,7 @@ public class UnitDisplayUtils {
         @Override
         public long convertTo(long joules) {
             if (joules == 0) {
-                //Short circuit if energy is zero to avoid having to create any additional objects
+                //Short circuit if energy is zero to avoid floating point maths
                 return 0L;
             }
             return MathUtils.clampToLong(joules * getInverseConversion());

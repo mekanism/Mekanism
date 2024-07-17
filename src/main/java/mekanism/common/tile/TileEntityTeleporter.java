@@ -18,6 +18,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.event.MekanismTeleportEvent;
+import mekanism.api.math.MathUtils;
 import mekanism.api.security.SecurityMode;
 import mekanism.api.text.EnumColor;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
@@ -467,7 +468,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         boolean sameDimension = entity.level().dimension() == coords.dimension();
         BlockPos pos = coords.pos();
         if (sameDimension) {
-            energyCost = (long) ((energyCost + MekanismConfig.usage.teleporterDistance.get()) * Math.ceil(Math.sqrt(entity.distanceToSqr(pos.getX(), pos.getY(), pos.getZ()))));
+            energyCost = energyCost + Math.round(MekanismConfig.usage.teleporterDistance.get() * Math.sqrt(entity.distanceToSqr(pos.getX(), pos.getY(), pos.getZ())));
         } else {
             double currentScale = entity.level().dimensionType().coordinateScale();
             double targetScale = targetWorld.dimensionType().coordinateScale();
@@ -491,13 +492,13 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
             }
             double distance = Mth.length(xDifference, yDifference, zDifference);
             energyCost = (energyCost + MekanismConfig.usage.teleporterDimensionPenalty.get())
-                         + (MekanismConfig.usage.teleporterDistance.get() * (long) Math.ceil(distance));
+                         + Math.round(MekanismConfig.usage.teleporterDistance.get() * distance);
         }
         //Factor the number of passengers of this entity into the teleportation energy cost
         Set<Entity> passengers = new HashSet<>();
         fillIndirectPassengers(entity, sameDimension, targetWorld, passengers);
         int passengerCount = passengers.size();
-        return passengerCount > 0 ? Math.multiplyExact(energyCost, passengerCount) : energyCost;
+        return passengerCount > 0 ? MathUtils.multiplyClamped(energyCost, 1 + passengerCount) : energyCost;
     }
 
     private static void fillIndirectPassengers(Entity base, boolean sameDimension, Level targetDimension, Set<Entity> passengers) {

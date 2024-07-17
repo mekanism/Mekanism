@@ -176,7 +176,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
                           Reference2BooleanMaps.singleton(state.getBlock(), true));
                     MekanismUtils.veinMineArea(energyContainer, energyRequired, 0L, baseDestroyEnergy, world, pos, player, stack, this, found,
                           (base, hardness) -> 0L,
-                          (base, hardness, distance, bs) -> (long) (getDestroyEnergy(base, hardness) * (0.5 * Math.pow(distance, 1.5))));
+                          (base, hardness, distance, bs) -> MathUtils.clampToLong(getDestroyEnergy(base, hardness) * (0.5 * Math.pow(distance, 1.5))));
                 }
             }
         }
@@ -188,11 +188,11 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     }
 
     private static long getDestroyEnergy(long baseDestroyEnergy, float hardness) {
-        return hardness == 0 ? (baseDestroyEnergy / 2) : baseDestroyEnergy;
+        return hardness == 0 ? Math.max(baseDestroyEnergy / 2, 1) : baseDestroyEnergy;
     }
 
     private long getDestroyEnergy(ItemStack itemStack) {
-        return Math.multiplyExact(MekanismConfig.gear.disassemblerEnergyUsage.get(), getMode(itemStack).getEfficiency());
+        return MathUtils.multiplyClamped(MekanismConfig.gear.disassemblerEnergyUsage.get(), getMode(itemStack).getEfficiency());
     }
 
     @Override

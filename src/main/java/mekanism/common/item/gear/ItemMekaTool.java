@@ -50,6 +50,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -138,7 +139,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
             long energyRequired = getDestroyEnergy(container, 0, container.hasEnabled(MekanismModules.SILK_TOUCH_UNIT));
             long energyAvailable = energyContainer.getEnergy();
             //If we don't have enough energy to break at full speed check if the reduced speed could actually mine
-            return energyRequired <= energyAvailable || (energyAvailable / energyRequired) != 0;
+            return energyRequired <= energyAvailable || ((double) energyAvailable / energyRequired) > Mth.EPSILON;
         }
         return false;
     }
@@ -328,7 +329,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
     }
 
     private static long getDestroyEnergy(long baseDestroyEnergy, float hardness) {
-        return hardness == 0 ? (baseDestroyEnergy / 2) : baseDestroyEnergy;
+        return hardness == 0 ? Math.max(baseDestroyEnergy / 2, 1) : baseDestroyEnergy;
     }
 
     private static long getDestroyEnergy(ItemStack itemStack, boolean silk) {
