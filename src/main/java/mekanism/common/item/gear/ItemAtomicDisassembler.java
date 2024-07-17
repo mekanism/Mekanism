@@ -176,7 +176,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
                           Reference2BooleanMaps.singleton(state.getBlock(), true));
                     MekanismUtils.veinMineArea(energyContainer, energyRequired, 0L, baseDestroyEnergy, world, pos, player, stack, this, found,
                           (base, hardness) -> 0L,
-                          (base, hardness, distance, bs) -> MathUtils.clampToLong(getDestroyEnergy(base, hardness) * (0.5 * Math.pow(distance, 1.5))));
+                          (base, hardness, distance, bs) -> MathUtils.ceilToLong(getDestroyEnergy(base, hardness) * (0.5 * Math.pow(distance, 1.5))));
                 }
             }
         }

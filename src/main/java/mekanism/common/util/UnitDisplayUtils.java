@@ -33,7 +33,7 @@ public class UnitDisplayUtils {
     // That would improve how well this handles en_ud as currently the order of the number and the unit is not reversed and the unit is not upside down
 
     /**
-     * Displays the unit as text. Does not handle negative numbers, as {@link mekanism.api.math.FloatingLong} does not have a concept of negatives
+     * Displays the unit as text.
      */
     public static Component getDisplay(long value, EnergyUnit unit, int decimalPlaces, boolean isShort) {
         ILangEntry label = unit.pluralLangEntry;
@@ -45,6 +45,10 @@ public class UnitDisplayUtils {
         if (value == 0) {
             return TextComponentUtil.build(value + " ", label);
         }
+        boolean negative = value < 0;
+        if (negative) {
+            value = Math.abs(value);
+        }
         for (int i = 0; i < EnumUtils.LONG_MEASUREMENT_UNITS.length; i++) {
             LongMeasurementUnit lowerMeasure = EnumUtils.LONG_MEASUREMENT_UNITS[i];
             if ((i == 0 && lowerMeasure.below(value)) ||
@@ -53,7 +57,7 @@ public class UnitDisplayUtils {
                 //First element and it is below it (no more unit abbreviations before),
                 // or last element (no more unit abbreviations past),
                 // or we are within the bounds between this one and the next one
-                double rounded = roundDecimals(false, lowerMeasure.process(value), decimalPlaces);
+                double rounded = roundDecimals(negative, lowerMeasure.process(value), decimalPlaces);
                 return TextComponentUtil.build(rounded + " " + lowerMeasure.getName(isShort), label);
             }
         }
@@ -398,7 +402,7 @@ public class UnitDisplayUtils {
     /**
      * Metric system of measurement.
      */
-    public enum LongMeasurementUnit {
+    public enum LongMeasurementUnit {//TODO: Evaluate if we should just use MeasurementUnit instead? How much does the accuracy matter
         BASE("", "", 1L),
         KILO("Kilo", "k", 1_000L),
         MEGA("Mega", "M", 1_000_000L),

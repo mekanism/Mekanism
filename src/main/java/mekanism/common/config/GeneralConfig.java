@@ -222,8 +222,8 @@ public class GeneralConfig extends BaseMekanismConfig {
         blacklistGrandPower = CachedBooleanValue.wrap(this, builder.comment("Disables Grand Power higher throughput Forge Energy (FE,RF,IF,uF,CF) power integration. Requires world restart (server-side option in SMP). Note: Disabling Forge Energy integration also disables this.")
               .worldRestart()
               .define("blacklistGrandPower", false));
-        FROM_H2 = CachedLongValue.definedMin(this, builder, "How much energy is produced per mB of Hydrogen, also affects Electrolytic Separator usage, Ethene burn rate and Gas generator energy capacity.",
-              "HydrogenEnergyDensity", 200, 1);
+        FROM_H2 = CachedLongValue.define(this, builder, "How much energy is produced per mB of Hydrogen, also affects Electrolytic Separator usage, Ethene burn rate and Gas generator energy capacity.",
+              "HydrogenEnergyDensity", 200, 1, Long.MAX_VALUE / 100_000);
         maxEnergyPerSteam = CachedLongValue.definePositive(this, builder, "Maximum Joules per mB of Steam. Also affects Thermoelectric Boiler.",
               "maxEnergyPerSteam", 10);
         builder.pop();

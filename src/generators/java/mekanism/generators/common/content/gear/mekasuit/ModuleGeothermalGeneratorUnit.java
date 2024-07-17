@@ -86,7 +86,7 @@ public class ModuleGeothermalGeneratorUnit implements ICustomModule<ModuleGeothe
                     highestScaledDegrees = 200;
                 }
                 //Insert energy
-                long rate = MathUtils.clampToLong(Math.multiplyExact(MekanismGeneratorsConfig.gear.mekaSuitGeothermalChargingRate.get(), module.getInstalledCount()) * highestScaledDegrees);
+                long rate = MathUtils.clampToLong(module.getInstalledCount() * MekanismGeneratorsConfig.gear.mekaSuitGeothermalChargingRate.get() * highestScaledDegrees);
                 energyContainer.insert(rate, Action.EXECUTE, AutomationType.MANUAL);
             }
         }

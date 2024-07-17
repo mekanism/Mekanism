@@ -61,6 +61,19 @@ public class MathUtils {
     }
 
     /**
+     * Combination of {@link #clampToLong(double)} and {@link Math#ceil(double)} to ceil and then clamp to a long.
+     *
+     * @param d double to ceil and then clamp
+     *
+     * @return a long clamped to {@link Long#MAX_VALUE}
+     *
+     * @since 10.6.6
+     */
+    public static long ceilToLong(double d) {
+        return clampToLong(Math.ceil(d));
+    }
+
+    /**
      * Gets an element in an array by index, taking the mod (or floored mod if negative).
      *
      * @param elements Elements.
@@ -136,6 +149,7 @@ public class MathUtils {
      * @since 10.6.6
      */
     public static long multiplyClamped(long x, long y) {
+        //TODO: Re-evaluate usages of this and addClamped, and try to make it so that we don't have it possible for things to overflow instead
         long r = x * y;
         long ax = Math.abs(x);
         long ay = Math.abs(y);

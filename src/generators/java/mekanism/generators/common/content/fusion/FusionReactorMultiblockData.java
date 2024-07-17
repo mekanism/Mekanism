@@ -318,7 +318,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
     private long burnFuel() {
         long fuelBurned = MathUtils.clampToLong(Mth.clamp((lastPlasmaTemperature - burnTemperature) * burnRatio, 0, fuelTank.getStored()));
         MekanismUtils.logMismatchedStackSize(fuelTank.shrinkStack(fuelBurned, Action.EXECUTE), fuelBurned);
-        setPlasmaTemp(getPlasmaTemp() + (Math.multiplyExact(MekanismGeneratorsConfig.generators.energyPerFusionFuel.get(), fuelBurned) / (double) plasmaHeatCapacity));
+        setPlasmaTemp(getPlasmaTemp() + (MathUtils.multiplyClamped(MekanismGeneratorsConfig.generators.energyPerFusionFuel.get(), fuelBurned) / (double) plasmaHeatCapacity));
         return fuelBurned;
     }
 
@@ -467,7 +467,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
     public double getMaxCasingTemperature(boolean active) {
         double k = active ? MekanismGeneratorsConfig.generators.fusionWaterHeatingRatio.get() : 0;
         long injectionRate = Math.max(this.injectionRate, lastBurned);
-        return Math.multiplyExact(MekanismGeneratorsConfig.generators.energyPerFusionFuel.get(), injectionRate)
+        return MathUtils.multiplyClamped(MekanismGeneratorsConfig.generators.energyPerFusionFuel.get(), injectionRate)
                / (k + MekanismGeneratorsConfig.generators.fusionCasingThermalConductivity.get());
     }
 

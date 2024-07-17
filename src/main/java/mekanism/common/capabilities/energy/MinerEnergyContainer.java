@@ -45,7 +45,7 @@ public class MinerEnergyContainer extends MachineEnergyContainer<TileEntityDigit
     public void updateMinerEnergyPerTick() {
         minerEnergyPerTick = super.getEnergyPerTick();
         if (tile.getSilkTouch()) {
-            minerEnergyPerTick = Math.multiplyExact(minerEnergyPerTick, MekanismConfig.general.minerSilkMultiplier.get());
+            minerEnergyPerTick = MathUtils.multiplyClamped(minerEnergyPerTick, MekanismConfig.general.minerSilkMultiplier.get());
         }
         //Ranges are difference between max and default
         double radiusRange = MekanismConfig.general.minerMaxRadius.get() - TileEntityDigitalMiner.DEFAULT_RADIUS;
@@ -71,6 +71,6 @@ public class MinerEnergyContainer extends MachineEnergyContainer<TileEntityDigit
         } else {
             heightCost = Math.max((tile.getMaxY() - tile.getMinY() - TileEntityDigitalMiner.DEFAULT_HEIGHT_RANGE) / heightRange, 0);
         }
-        minerEnergyPerTick = MathUtils.clampToLong(minerEnergyPerTick * (1 + radiusCost) * (1 + heightCost));
+        minerEnergyPerTick = MathUtils.ceilToLong(minerEnergyPerTick * (1 + radiusCost) * (1 + heightCost));
     }
 }

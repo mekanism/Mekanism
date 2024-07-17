@@ -4,6 +4,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
+import mekanism.api.math.MathUtils;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.ResistiveHeaterEnergyContainer;
@@ -29,7 +30,7 @@ public class ComponentBackedResistiveEnergyContainer extends ComponentBackedEner
 
     @Override
     public long getMaxEnergy() {
-        return Math.multiplyExact(getEnergyPerTick(), ResistiveHeaterEnergyContainer.USAGE_MULTIPLIER);
+        return MathUtils.multiplyClamped(getEnergyPerTick(), ResistiveHeaterEnergyContainer.USAGE_MULTIPLIER);
     }
 
     private long getRate() {

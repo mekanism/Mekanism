@@ -45,7 +45,7 @@ public record ModuleMagneticAttractionUnit(Range range) implements ICustomModule
     public void tickServer(IModule<ModuleMagneticAttractionUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player) {
         if (range != Range.OFF) {
             float size = 4 + range.getRange();
-            long usage = MathUtils.clampToLong(Math.ceil(MekanismConfig.gear.mekaSuitEnergyUsageItemAttraction.get() * range.getRange()));
+            long usage = MathUtils.ceilToLong(MekanismConfig.gear.mekaSuitEnergyUsageItemAttraction.get() * range.getRange());
             boolean free = usage == 0L || player.isCreative();
             IEnergyContainer energyContainer = free ? null : module.getEnergyContainer(stack);
             if (free || (energyContainer != null && energyContainer.getEnergy() >= usage)) {

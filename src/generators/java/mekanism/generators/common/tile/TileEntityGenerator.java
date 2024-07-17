@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.function.LongSupplier;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
+import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
@@ -84,7 +85,7 @@ public abstract class TileEntityGenerator extends TileEntityMekanism {
     }
 
     protected void updateMaxOutputRaw(long maxOutput) {
-        this.maxOutput = Math.multiplyExact(maxOutput, 2);
+        this.maxOutput = MathUtils.multiplyClamped(maxOutput, 2);
     }
 
     protected ISyncableData syncableMaxOutput() {

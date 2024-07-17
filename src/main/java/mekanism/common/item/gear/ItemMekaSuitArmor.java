@@ -506,7 +506,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         absorption = Math.min(1 - currentAbsorbed, absorption);
         float toAbsorb = amount * absorption;
         if (toAbsorb > 0) {
-            long usage = MathUtils.clampToLong(Math.ceil(energyCost.getAsLong() * toAbsorb));
+            long usage = MathUtils.ceilToLong(energyCost.getAsLong() * toAbsorb);
             if (usage == 0L) {
                 //No energy is actually needed to absorb the damage, either because of the config
                 // or how small the amount to absorb is

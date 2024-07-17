@@ -12,7 +12,7 @@ public class AttributeEnergy implements Attribute {
 
     private LongSupplier energyUsage = ConstantPredicates.ZERO_LONG;
     // 2 operations (20 secs) worth of ticks * usage
-    private LongSupplier energyStorage = () -> MathUtils.multiplyClamped(energyUsage.getAsLong(), (20 * SharedConstants.TICKS_PER_SECOND));
+    private LongSupplier energyStorage = () -> MathUtils.multiplyClamped(energyUsage.getAsLong(), 20 * SharedConstants.TICKS_PER_SECOND);
 
     public AttributeEnergy(@Nullable LongSupplier energyUsage, @Nullable LongSupplier energyStorage) {
         if (energyUsage != null) {

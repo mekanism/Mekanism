@@ -243,7 +243,7 @@ public class TurbineMultiblockData extends MultiblockData {
     public void setVolume(int volume) {
         if (getVolume() != volume) {
             super.setVolume(volume);
-            energyCapacity = Math.multiplyExact(MekanismGeneratorsConfig.generators.turbineEnergyCapacityPerVolume.get(), volume);
+            energyCapacity = volume * MekanismGeneratorsConfig.generators.turbineEnergyCapacityPerVolume.get();
         }
     }
 

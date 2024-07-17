@@ -268,7 +268,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
                     MekanismUtils.veinMineArea(energyContainer, energyRequired, modDestroyEnergy, baseDestroyEnergy, world, pos, player, stack, this, veinedBlocks,
                           ItemMekaTool::getDestroyEnergy, (base, hardness, distance, bs) -> {
                               double multiplier = 0.5 * Math.pow(distance, bs.is(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE) ? 1.5 : 2);
-                              return MathUtils.clampToLong(getDestroyEnergy(base, hardness) * multiplier);
+                              return MathUtils.ceilToLong(getDestroyEnergy(base, hardness) * multiplier);
                           });
                 }
             }
@@ -383,7 +383,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
                             return InteractionResultHolder.pass(stack);
                         }
                         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
-                        long energyNeeded = MathUtils.clampToLong(MekanismConfig.gear.mekaToolEnergyUsageTeleport.get() * (distance / 10D));
+                        long energyNeeded = MathUtils.ceilToLong(MekanismConfig.gear.mekaToolEnergyUsageTeleport.get() * (distance / 10D));
                         if (energyContainer == null || energyContainer.getEnergy() < energyNeeded) {
                             return InteractionResultHolder.fail(stack);
                         }

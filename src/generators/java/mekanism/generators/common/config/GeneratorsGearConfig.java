@@ -23,7 +23,7 @@ public class GeneratorsGearConfig extends BaseMekanismConfig {
 
         builder.comment("MekaSuit Settings").push(MEKASUIT_CATEGORY);
         mekaSuitGeothermalChargingRate = CachedLongValue.wrap(this, builder.comment("Geothermal charging rate (Joules) of pants per tick, per degree above ambient, per upgrade installed. This value scales down based on how much of the MekaSuit Pants is submerged. Fire is treated as having a temperature of ~200K above ambient, lava has a temperature of 1,000K above ambient.")
-              .defineInRange("geothermalChargingRate", 10L, 0, Long.MAX_VALUE));
+              .defineInRange("geothermalChargingRate", 10L, 0, Long.MAX_VALUE / 8));
         builder.push(MEKASUIT_DAMAGE_CATEGORY);
         mekaSuitHeatDamageReductionRatio = CachedFloatValue.wrap(this, builder.comment("Percent of heat damage negated by MekaSuit Pants with maximum geothermal generator units installed. This number scales down linearly based on how many units are actually installed.")
               .defineInRange("heatDamageReductionRatio", 0.8, 0, 1));

@@ -317,7 +317,7 @@ public class MekanismBlockTypes {
           .createMachine(() -> MekanismTileEntityTypes.ELECTROLYTIC_SEPARATOR, MekanismLang.DESCRIPTION_ELECTROLYTIC_SEPARATOR)
           .withGui(() -> MekanismContainerTypes.ELECTROLYTIC_SEPARATOR)
           .withSound(MekanismSounds.ELECTROLYTIC_SEPARATOR)
-          .withEnergyConfig(() -> MathUtils.multiplyClamped(MekanismConfig.general.FROM_H2.get(), 2), MekanismConfig.storage.electrolyticSeparator)
+          .withEnergyConfig(() -> 2 * MekanismConfig.general.FROM_H2.get(), MekanismConfig.storage.electrolyticSeparator)
           .withSideConfig(TransmissionType.FLUID, TransmissionType.GAS, TransmissionType.ITEM, TransmissionType.ENERGY)
           .withCustomShape(BlockShapes.ELECTROLYTIC_SEPARATOR)
           .withComputerSupport("electrolyticSeparator")

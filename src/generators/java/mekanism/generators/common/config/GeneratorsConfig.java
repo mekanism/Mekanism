@@ -8,6 +8,7 @@ import mekanism.common.config.value.CachedFloatValue;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.config.value.CachedLongValue;
 import mekanism.common.config.value.CachedResourceLocationListValue;
+import mekanism.common.util.EnumUtils;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
 import mekanism.generators.common.content.fusion.FusionReactorMultiblockData;
 import net.minecraft.SharedConstants;
@@ -106,8 +107,8 @@ public class GeneratorsConfig extends BaseMekanismConfig {
         builder.comment("Heat Generator Settings").push(HEAT_CATEGORY);
         heatGeneration = CachedLongValue.definePositive(this, builder, "Amount of energy in Joules the Heat Generator produces per tick. heatGeneration + heatGenerationLava * lavaSides + heatGenerationNether. Note: lavaSides is how many sides are adjacent to lava, this includes the block itself if it is lava logged allowing for a max of 7 \"sides\".",
               "heatGeneration", 200L);
-        heatGenerationLava = CachedLongValue.definePositive(this, builder, "Multiplier of effectiveness of Lava that is adjacent to the Heat Generator.",
-              "heatGenerationLava", 30L);
+        heatGenerationLava = CachedLongValue.define(this, builder, "Multiplier of effectiveness of Lava that is adjacent to the Heat Generator.",
+              "heatGenerationLava", 30L, 0, Long.MAX_VALUE / (EnumUtils.DIRECTIONS.length + 1));
         heatGenerationNether = CachedLongValue.definePositive(this, builder, "Add this amount of Joules to the energy produced by a heat generator if it is in an 'ultrawarm' dimension, in vanilla this is just the Nether.",
               "heatGenerationNether", 100L);
         heatTankCapacity = CachedIntValue.wrap(this, builder.comment("The capacity in mB of the fluid tank in the Heat Generator.")
