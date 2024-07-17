@@ -453,7 +453,7 @@ public final class MekanismUtils {
 
     public static Component getEnergyDisplayShort(long energy) {
         EnergyUnit configured = EnergyUnit.getConfigured();
-        return UnitDisplayUtils.getDisplayShort(configured.convertTo(energy), configured);
+        return UnitDisplayUtils.getDisplayShort(configured.convertToDouble(energy), configured);
     }
 
     /**
@@ -465,17 +465,6 @@ public final class MekanismUtils {
      */
     public static long convertToJoules(long energy) {
         return EnergyUnit.getConfigured().convertFrom(energy);
-    }
-
-    /**
-     * Convert from joules to the unit defined in the configuration.
-     *
-     * @param energy - energy to convert
-     *
-     * @return energy converted to configured unit
-     */
-    public static long convertToDisplay(long energy) {
-        return EnergyUnit.getConfigured().convertTo(energy);
     }
 
     /**

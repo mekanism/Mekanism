@@ -31,40 +31,8 @@ public class UnitDisplayUtils {
     //TODO: Maybe at some point improve on the ITextComponents the two getDisplay methods build, and have them have better translation keys with formats
     // That would improve how well this handles en_ud as currently the order of the number and the unit is not reversed and the unit is not upside down
 
-    /**
-     * Displays the unit as text.
-     */
-    public static Component getDisplay(long value, EnergyUnit unit, int decimalPlaces, boolean isShort) {
-        ILangEntry label = unit.pluralLangEntry;
-        if (isShort) {
-            label = unit.shortLangEntry;
-        } else if (value == 1) {
-            label = unit.singularLangEntry;
-        }
-        if (value == 0) {
-            return TextComponentUtil.build(value + " ", label);
-        }
-        boolean negative = value < 0;
-        if (negative) {
-            value = Math.abs(value);
-        }
-        for (int i = 0; i < EnumUtils.LONG_MEASUREMENT_UNITS.length; i++) {
-            LongMeasurementUnit lowerMeasure = EnumUtils.LONG_MEASUREMENT_UNITS[i];
-            if ((i == 0 && lowerMeasure.below(value)) ||
-                i + 1 >= EnumUtils.LONG_MEASUREMENT_UNITS.length ||
-                (lowerMeasure.aboveEqual(value) && EnumUtils.LONG_MEASUREMENT_UNITS[i + 1].below(value))) {
-                //First element and it is below it (no more unit abbreviations before),
-                // or last element (no more unit abbreviations past),
-                // or we are within the bounds between this one and the next one
-                double rounded = roundDecimals(negative, lowerMeasure.process(value), decimalPlaces);
-                return TextComponentUtil.build(rounded + " " + lowerMeasure.getName(isShort), label);
-            }
-        }
-        return TextComponentUtil.build(value, label);
-    }
-
-    public static Component getDisplayShort(long value, EnergyUnit unit) {
-        return getDisplay(value, unit, 2, true);
+    public static Component getDisplayShort(double value, EnergyUnit unit) {
+        return getDisplayBase(value, unit, 2, true, true);
     }
 
     public static Component getDisplay(double temp, TemperatureUnit unit, int decimalPlaces, boolean shift, boolean isShort, boolean spaceBetweenSymbol) {
@@ -74,11 +42,14 @@ public class UnitDisplayUtils {
     private static Component getDisplayBase(double value, Unit unit, int decimalPlaces, boolean isShort, boolean spaceBetweenSymbol) {
         if (value == 0) {
             if (isShort) {
-                String spaceStr = spaceBetweenSymbol ? " " : "";
-                return TextComponentUtil.getString(value + spaceStr + unit.getSymbol());
+                if (spaceBetweenSymbol) {
+                    return TextComponentUtil.build(value + " ", unit.getSymbol(false));
+                }
+                return TextComponentUtil.build(value, unit.getSymbol(false));
             }
-            return TextComponentUtil.build(value, unit.getLabel());
+            return TextComponentUtil.build(value, unit.getLabel(false));
         }
+        boolean singular = Mth.equal(value, 1);
         boolean negative = value < 0;
         if (negative) {
             value = Math.abs(value);
@@ -91,11 +62,11 @@ public class UnitDisplayUtils {
                 //First element and it is below it (no more unit abbreviations before),
                 // or last element (no more unit abbreviations past),
                 // or we are within the bounds between this one and the next one
-                return lowerMeasure.getDisplay(value, unit, decimalPlaces, isShort, spaceBetweenSymbol, negative);
+                return lowerMeasure.getDisplay(value, unit, decimalPlaces, isShort, spaceBetweenSymbol, negative, singular);
             }
         }
         //Fallback, should never be reached as should have been captured by the check in the loop
-        return EnumUtils.MEASUREMENT_UNITS[EnumUtils.MEASUREMENT_UNITS.length - 1].getDisplay(value, unit, decimalPlaces, isShort, spaceBetweenSymbol, negative);
+        return EnumUtils.MEASUREMENT_UNITS[EnumUtils.MEASUREMENT_UNITS.length - 1].getDisplay(value, unit, decimalPlaces, isShort, spaceBetweenSymbol, negative, singular);
     }
 
     public static Component getDisplayShort(double value, TemperatureUnit unit) {
@@ -130,13 +101,13 @@ public class UnitDisplayUtils {
 
     private interface Unit {
 
-        String getSymbol();
+        Object getSymbol(boolean singular);
 
-        ILangEntry getLabel();
+        ILangEntry getLabel(boolean singular);
     }
 
     @NothingNullByDefault
-    public enum EnergyUnit implements IDisableableEnum<EnergyUnit>, IEnergyConversion {
+    public enum EnergyUnit implements IDisableableEnum<EnergyUnit>, IEnergyConversion, Unit {
         JOULES(MekanismLang.ENERGY_JOULES, MekanismLang.ENERGY_JOULES_PLURAL, MekanismLang.ENERGY_JOULES_SHORT, "j", null, ConstantPredicates.ALWAYS_TRUE) {
             @Override
             protected double getConversion() {
@@ -185,6 +156,16 @@ public class UnitDisplayUtils {
             this.conversion = conversionRate;
         }
 
+        @Override
+        public ILangEntry getSymbol(boolean singular) {
+            return shortLangEntry;
+        }
+
+        @Override
+        public ILangEntry getLabel(boolean singular) {
+            return singular ? singularLangEntry : pluralLangEntry;
+        }
+
         protected double getConversion() {
             //Note: Use default value if called before configs are loaded. In general this should never happen,
             // but third party mods may just call it regardless
@@ -198,11 +179,15 @@ public class UnitDisplayUtils {
 
         @Override
         public long convertTo(long joules) {
+            return MathUtils.clampToLong(convertToDouble(joules));
+        }
+
+        public double convertToDouble(long joules) {
             if (joules == 0) {
                 //Short circuit if energy is zero to avoid floating point math
-                return 0L;
+                return 0;
             }
-            return MathUtils.clampToLong(joules / getConversion());
+            return joules / getConversion();
         }
 
         @Override
@@ -273,12 +258,12 @@ public class UnitDisplayUtils {
         }
 
         @Override
-        public String getSymbol() {
+        public String getSymbol(boolean singular) {
             return symbol;
         }
 
         @Override
-        public ILangEntry getLabel() {
+        public ILangEntry getLabel(boolean singular) {
             return langEntry;
         }
 
@@ -308,12 +293,12 @@ public class UnitDisplayUtils {
         }
 
         @Override
-        public String getSymbol() {
+        public String getSymbol(boolean singular) {
             return symbol;
         }
 
         @Override
-        public ILangEntry getLabel() {
+        public ILangEntry getLabel(boolean singular) {
             return MekanismLang.ERROR;
         }
     }
@@ -377,69 +362,16 @@ public class UnitDisplayUtils {
             return d < value;
         }
 
-        private Component getDisplay(double value, Unit unit, int decimalPlaces, boolean isShort, boolean spaceBetweenSymbol, boolean negative) {
+        private Component getDisplay(double value, Unit unit, int decimalPlaces, boolean isShort, boolean spaceBetweenSymbol, boolean negative, boolean singular) {
             double rounded = roundDecimals(negative, process(value), decimalPlaces);
             String name = getName(isShort);
+            if (spaceBetweenSymbol || !isShort) {
+                name = " " + name;
+            }
             if (isShort) {
-                if (spaceBetweenSymbol) {
-                    name = " " + name;
-                }
-                return TextComponentUtil.getString(rounded + name + unit.getSymbol());
+                return TextComponentUtil.build(rounded + name, unit.getSymbol(singular));
             }
-            return TextComponentUtil.build(rounded + " " + name, unit.getLabel());
-        }
-    }
-
-    /**
-     * Metric system of measurement.
-     */
-    public enum LongMeasurementUnit {//TODO: Evaluate if we should just use MeasurementUnit instead? How much does the accuracy matter
-        BASE("", "", 1L),
-        KILO("Kilo", "k", 1_000L),
-        MEGA("Mega", "M", 1_000_000L),
-        GIGA("Giga", "G", 1_000_000_000L),
-        TERA("Tera", "T", 1_000_000_000_000L),
-        PETA("Peta", "P", 1_000_000_000_000_000L),
-        EXA("Exa", "E", 1_000_000_000_000_000_000L);
-
-        /**
-         * long name for the unit
-         */
-        private final String name;
-
-        /**
-         * short unit version of the unit
-         */
-        private final String symbol;
-
-        /**
-         * Point by which a number is considered to be of this unit
-         */
-        private final long value;
-
-        LongMeasurementUnit(String name, String symbol, long value) {
-            this.name = name;
-            this.symbol = symbol;
-            this.value = value;
-        }
-
-        public String getName(boolean getShort) {
-            if (getShort) {
-                return symbol;
-            }
-            return name;
-        }
-
-        public double process(long d) {
-            return ((double) d / value);
-        }
-
-        public boolean aboveEqual(long d) {
-            return d >= value;
-        }
-
-        public boolean below(long d) {
-            return d < value;
+            return TextComponentUtil.build(rounded + name, unit.getLabel(singular));
         }
     }
 }

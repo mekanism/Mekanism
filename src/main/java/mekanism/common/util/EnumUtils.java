@@ -25,7 +25,6 @@ import mekanism.common.tier.TransporterTier;
 import mekanism.common.tier.TubeTier;
 import mekanism.common.tile.qio.TileEntityQIODriveArray.DriveStatus;
 import mekanism.common.util.UnitDisplayUtils.MeasurementUnit;
-import mekanism.common.util.UnitDisplayUtils.LongMeasurementUnit;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ArmorItem;
@@ -66,11 +65,6 @@ public class EnumUtils {
      * Cached value of {@link MeasurementUnit#values()}. DO NOT MODIFY THIS LIST.
      */
     public static final MeasurementUnit[] MEASUREMENT_UNITS = MeasurementUnit.values();
-
-    /**
-     * Cached value of {@link LongMeasurementUnit#values()}. DO NOT MODIFY THIS LIST.
-     */
-    public static final LongMeasurementUnit[] LONG_MEASUREMENT_UNITS = LongMeasurementUnit.values();
 
     /**
      * Cached value of {@link TransmissionType#values()}. DO NOT MODIFY THIS LIST.
