@@ -52,15 +52,37 @@ public class FNStrictEnergyHandler implements IStrictEnergyHandler {
     public long insertEnergy(long amount, Action action) {
         if (storage.canReceive()) {
             long toInsert = EnergyUnit.FORGE_ENERGY.convertTo(amount);
-            if (toInsert > 0) {
-                long inserted = storage.receiveEnergyL(toInsert, action.simulate());
-                if (inserted > 0) {
-                    //Only bother converting back if any was inserted
-                    return amount - EnergyUnit.FORGE_ENERGY.convertFrom(inserted);
+            if (toInsert == 0) {
+                return amount;
+            }
+            if (action.execute()) {
+                //Before we can actually execute it we need to simulate to calculate how much we can actually insert
+                long simulatedInserted = storage.receiveEnergyL(toInsert, true);
+                if (simulatedInserted == 0) {
+                    //Nothing can be inserted at all, just exit quickly
+                    return amount;
                 }
+                //Convert how much we could insert back to Joules so that it gets appropriately clamped so that for example 2 FE gets treated
+                // as trying to insert 0 J for how much we actually will accept, and then convert that clamped value to go back to FE
+                // so that we don't allow inserting a tiny bit of extra for "free" and end up creating power from nowhere
+                toInsert = convertFromAndBack(simulatedInserted);
+                if (toInsert == 0L) {
+                    //If converting back and forth between Joules and FE causes us to be clamped at zero, that means we can't accept anything or could only
+                    // accept a partial amount; we need to exit early returning that we couldn't insert anything
+                    return amount;
+                }
+            }
+            long inserted = storage.receiveEnergyL(toInsert, action.simulate());
+            if (inserted > 0) {
+                //Only bother converting back if any was inserted
+                return amount - EnergyUnit.FORGE_ENERGY.convertFrom(inserted);
             }
         }
         return amount;
+    }
+
+    private long convertFromAndBack(long value) {
+        return EnergyUnit.FORGE_ENERGY.convertTo(EnergyUnit.FORGE_ENERGY.convertFrom(value));
     }
 
     @Override
@@ -72,10 +94,25 @@ public class FNStrictEnergyHandler implements IStrictEnergyHandler {
     public long extractEnergy(long amount, Action action) {
         if (storage.canExtract()) {
             long toExtract = EnergyUnit.FORGE_ENERGY.convertTo(amount);
-            if (toExtract > 0) {
-                long extracted = storage.extractEnergyL(toExtract, action.simulate());
-                return EnergyUnit.FORGE_ENERGY.convertFrom(extracted);
+            if (toExtract == 0) {
+                return 0L;
             }
+            if (action.execute()) {
+                //Before we can actually execute it we need to simulate to calculate how much we can actually extract in our other units
+                long simulatedExtracted = storage.extractEnergyL(toExtract, true);
+                //Convert how much we could extract back to Joules so that it gets appropriately clamped so that for example 1 Joule gets treated
+                // as trying to extract 0 FE for how much we can actually provide, and then convert that clamped value to go back to Joules
+                // so that we don't allow extracting a tiny bit into nowhere causing some power to be voided
+                // This is important as otherwise if we can have 1.5 Joules extracted, we will reduce our amount by 1.5 Joules but the caller will only receive 1 Joule
+                toExtract = convertFromAndBack(simulatedExtracted);
+                if (toExtract == 0L) {
+                    //If converting back and forth between Joules and FE causes us to be clamped at zero, that means we can't provide anything or could only
+                    // provide a partial amount; we need to exit early returning that nothing could be extracted
+                    return 0;
+                }
+            }
+            long extracted = storage.extractEnergyL(toExtract, action.simulate());
+            return EnergyUnit.FORGE_ENERGY.convertFrom(extracted);
         }
         return 0L;
     }

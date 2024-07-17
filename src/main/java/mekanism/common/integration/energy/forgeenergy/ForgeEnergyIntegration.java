@@ -20,6 +20,9 @@ public class ForgeEnergyIntegration implements IEnergyStorage {
         }
         Action action = Action.get(!simulate);
         long toInsert = EnergyUnit.FORGE_ENERGY.convertFrom(maxReceive);
+        if (toInsert == 0) {
+            return 0;
+        }
         if (action.execute()) {
             //Before we can actually execute it we need to simulate to calculate how much we can actually insert
             long simulatedRemainder = handler.insertEnergy(toInsert, Action.SIMULATE);
@@ -54,6 +57,9 @@ public class ForgeEnergyIntegration implements IEnergyStorage {
         }
         Action action = Action.get(!simulate);
         long toExtract = EnergyUnit.FORGE_ENERGY.convertFrom(maxExtract);
+        if (toExtract == 0) {
+            return 0;
+        }
         if (action.execute()) {
             //Before we can actually execute it we need to simulate to calculate how much we can actually extract in our other units
             long simulatedExtracted = handler.extractEnergy(toExtract, Action.SIMULATE);

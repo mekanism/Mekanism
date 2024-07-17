@@ -15,13 +15,11 @@ import mekanism.api.text.ILangEntry;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.config.listener.ConfigBasedCachedSupplier;
 import mekanism.common.config.value.CachedDoubleValue;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ByIdMap;
-import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -146,12 +144,6 @@ public class UnitDisplayUtils {
             }
 
             @Override
-            protected double getInverseConversion() {
-                //Unused but override it anyway
-                return 1D;
-            }
-
-            @Override
             public long convertFrom(long joules) {
                 return joules;
             }
@@ -169,7 +161,6 @@ public class UnitDisplayUtils {
         public static final StreamCodec<ByteBuf, EnergyUnit> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, EnergyUnit::ordinal);
 
         private final Supplier<CachedDoubleValue> conversion;
-        private final Supplier<Supplier<Double>> inverseConversion;
         private final BooleanSupplier checkEnabled;
         private final ILangEntry singularLangEntry;
         private final ILangEntry pluralLangEntry;
@@ -186,24 +177,12 @@ public class UnitDisplayUtils {
             this.checkEnabled = checkEnabled;
             this.tabName = tabName;
             this.conversion = conversionRate;
-            if (this.conversion == null) {
-                this.inverseConversion = null;
-            } else {
-                //Cache the inverse as multiplication for floating longs is more consistently fast compared to division
-                //Note: We also cache the creation of our cache so that when MC is not initialized we can still create
-                // this enum without having initialization errors. Use case: Unit tests
-                inverseConversion = Lazy.of(() -> new ConfigBasedCachedSupplier<Double>(() -> 1D / getConversion(), this.conversion.get()));
-            }
         }
 
         protected double getConversion() {
             //Note: Use default value if called before configs are loaded. In general this should never happen,
             // but third party mods may just call it regardless
             return conversion.get().getOrDefault();
-        }
-
-        protected double getInverseConversion() {
-            return inverseConversion.get().get();
         }
 
         @Override
@@ -214,10 +193,10 @@ public class UnitDisplayUtils {
         @Override
         public long convertTo(long joules) {
             if (joules == 0) {
-                //Short circuit if energy is zero to avoid floating point maths
+                //Short circuit if energy is zero to avoid floating point math
                 return 0L;
             }
-            return MathUtils.clampToLong(joules * getInverseConversion());
+            return MathUtils.clampToLong(joules / getConversion());
         }
 
         @Override
