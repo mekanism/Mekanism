@@ -2,6 +2,7 @@ package mekanism.common.block.attribute;
 
 import java.util.function.LongSupplier;
 import mekanism.api.functions.ConstantPredicates;
+import mekanism.api.math.MathUtils;
 import net.minecraft.SharedConstants;
 import org.jetbrains.annotations.Nullable;
 
@@ -11,7 +12,7 @@ public class AttributeEnergy implements Attribute {
 
     private LongSupplier energyUsage = ConstantPredicates.ZERO_LONG;
     // 2 operations (20 secs) worth of ticks * usage
-    private LongSupplier energyStorage = () -> energyUsage.getAsLong() * (20 * SharedConstants.TICKS_PER_SECOND);
+    private LongSupplier energyStorage = () -> MathUtils.multiplyClamped(energyUsage.getAsLong(), (20 * SharedConstants.TICKS_PER_SECOND));
 
     public AttributeEnergy(@Nullable LongSupplier energyUsage, @Nullable LongSupplier energyStorage) {
         if (energyUsage != null) {
