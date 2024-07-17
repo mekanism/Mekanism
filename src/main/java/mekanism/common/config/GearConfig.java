@@ -135,7 +135,7 @@ public class GearConfig extends BaseMekanismConfig {
 
         builder.comment("Atomic Disassembler Settings").push(DISASSEMBLER_CATEGORY);
         disassemblerEnergyUsage = CachedLongValue.definePositive(this, builder, "Base Energy (Joules) usage of the Atomic Disassembler. (Gets multiplied by speed factor)",
-              "energyUsage", 1);
+              "energyUsage", 10);
         disassemblerEnergyUsageWeapon = CachedLongValue.definePositive(this, builder, "Cost in Joules of using the Atomic Disassembler as a weapon.",
               "energyUsageWeapon", 2_000);
         disassemblerMiningCount = CachedIntValue.wrap(this, builder.comment("The max Atomic Disassembler Vein Mining Block Count.")
