@@ -5,7 +5,7 @@ license="MIT"
 
 [[mods]]
     modId="mekanismdefense"
-    version="${version}"
+    version="${file.jarVersion}"
     displayName="Mekanism: Defense"
     displayURL="https://aidancbrady.com/mekanism/"
     authors="Aidancbrady, Thommy101, Thiakil, pupnewfster, dizzyd"
@@ -16,6 +16,6 @@ license="MIT"
 [[dependencies.mekanismdefense]]
     modId="mekanism"
     type="required"
-    versionRange="[${version}]"
+    versionRange="[${file.jarVersion}]"
     ordering="AFTER"
     side="BOTH"
