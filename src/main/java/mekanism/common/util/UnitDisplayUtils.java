@@ -20,6 +20,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ByIdMap;
+import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -144,6 +145,11 @@ public class UnitDisplayUtils {
             }
 
             @Override
+            public boolean isOneToOne() {
+                return true;
+            }
+
+            @Override
             public long convertFrom(long joules) {
                 return joules;
             }
@@ -197,6 +203,12 @@ public class UnitDisplayUtils {
                 return 0L;
             }
             return MathUtils.clampToLong(joules / getConversion());
+        }
+
+        @Override
+        public boolean isOneToOne() {
+            //Use Mth.equal to compare against epsilon
+            return Mth.equal(1, getConversion());
         }
 
         @Override

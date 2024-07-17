@@ -50,12 +50,12 @@ public class ForgeStrictEnergyHandler implements IStrictEnergyHandler {
 
     @Override
     public long insertEnergy(long amount, Action action) {
-        if (storage.canReceive()) {
+        if (storage.canReceive() && amount > 0) {
             int toInsert = EnergyUnit.FORGE_ENERGY.convertToAsInt(amount);
             if (toInsert == 0) {
                 return amount;
             }
-            if (action.execute()) {
+            if (action.execute() && !EnergyUnit.FORGE_ENERGY.isOneToOne()) {
                 //Before we can actually execute it we need to simulate to calculate how much we can actually insert
                 long simulatedInserted = storage.receiveEnergy(toInsert, true);
                 if (simulatedInserted == 0) {
@@ -92,12 +92,12 @@ public class ForgeStrictEnergyHandler implements IStrictEnergyHandler {
 
     @Override
     public long extractEnergy(long amount, Action action) {
-        if (storage.canExtract()) {
+        if (storage.canExtract() && amount > 0) {
             int toExtract = EnergyUnit.FORGE_ENERGY.convertToAsInt(amount);
             if (toExtract == 0) {
                 return 0;
             }
-            if (action.execute()) {
+            if (action.execute() && !EnergyUnit.FORGE_ENERGY.isOneToOne()) {
                 //Before we can actually execute it we need to simulate to calculate how much we can actually extract in our other units
                 long simulatedExtracted = storage.extractEnergy(toExtract, true);
                 //Convert how much we could extract back to Joules so that it gets appropriately clamped so that for example 1 Joule gets treated

@@ -182,10 +182,53 @@ public class EnergyConversionTest {
               //Validate behavior for when the conversion is 1:1
               .thenExecute(() -> MekanismConfig.general.forgeConversionRate.set(1))
 
+              // WRAPPING STRICT ENERGY TO FORGE ENERGY
 
+              .thenMap(() -> BasicEnergyContainer.create(capacity, null))
+              .thenExecute(container -> {
+                  IEnergyStorage handler = helper.createForgeWrappedStrictEnergyHandler(container);
+                  int accepted = handler.receiveEnergy(100, false);
+                  helper.assertValueEqual(accepted, 100, "accepted energy");
+                  helper.assertValueEqual(handler.getEnergyStored(), 100, "stored energy");
+                  helper.assertValueEqual(container.getEnergy(), 100L, "raw stored energy");
 
-              //TODO: Implement me
-              //TODO: Tests for when we are > max int
+                  int extracted = handler.extractEnergy(100, false);
+                  helper.assertValueEqual(extracted, 100, "extracted energy");
+                  helper.assertValueEqual(handler.getEnergyStored(), 0, "stored energy");
+                  helper.assertValueEqual(container.getEnergy(), 0L, "raw stored energy");
+              })
+              //Test having more energy than fits in an int
+              .thenMap(() -> BasicEnergyContainer.create(4_000_000_000L, null))
+              .thenExecute(container -> {
+                  container.setEnergy(3_000_000_000L);
+                  IEnergyStorage handler = helper.createForgeWrappedStrictEnergyHandler(container);
+                  helper.assertValueEqual(handler.getEnergyStored(), Integer.MAX_VALUE, "stored energy");
+                  int accepted = handler.receiveEnergy(100, false);
+                  helper.assertValueEqual(accepted, 100, "accepted energy");
+                  helper.assertValueEqual(handler.getEnergyStored(), Integer.MAX_VALUE, "stored energy");
+                  helper.assertValueEqual(container.getEnergy(), 3_000_000_100L, "raw stored energy");
+
+                  int extracted = handler.extractEnergy(100, false);
+                  helper.assertValueEqual(extracted, 100, "extracted energy");
+                  helper.assertValueEqual(handler.getEnergyStored(), Integer.MAX_VALUE, "stored energy");
+                  helper.assertValueEqual(container.getEnergy(), 3_000_000_000L, "raw stored energy");
+              })
+
+              // WRAPPING FORGE ENERGY TO STRICT ENERGY
+
+              .thenMap(() -> new EnergyStorage(capacity))
+              .thenExecute(container -> {
+                  IStrictEnergyHandler handler = new ForgeStrictEnergyHandler(container);
+                  long remainder = handler.insertEnergy(100, Action.EXECUTE);
+                  helper.assertValueEqual(remainder, 0L, "remaining inserted energy");
+                  helper.assertValueEqual(handler.getEnergy(0), 100L, "stored energy");
+                  helper.assertValueEqual(container.getEnergyStored(), 100, "raw stored energy");
+
+                  long extracted = handler.extractEnergy(100, Action.EXECUTE);
+                  helper.assertValueEqual(extracted, 100L, "extracted energy");
+                  helper.assertValueEqual(handler.getEnergy(0), 0L, "stored energy");
+                  helper.assertValueEqual(container.getEnergyStored(), 0, "raw stored energy");
+              })
 
               //Reset to default config so that we make sure it is at the value we expect and no saving happens
               .thenExecute(() -> MekanismConfig.general.forgeConversionRate.set(defaultConversion))

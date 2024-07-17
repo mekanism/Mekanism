@@ -59,4 +59,11 @@ public interface IEnergyConversion extends IHasTranslationKey {
      * @return Amount of energy. (Units matching this conversion)
      */
     long convertTo(long joules);
+
+    /**
+     * {@return if this conversion is one to one with joules}
+     *
+     * @since 10.6.6
+     */
+    boolean isOneToOne();
 }

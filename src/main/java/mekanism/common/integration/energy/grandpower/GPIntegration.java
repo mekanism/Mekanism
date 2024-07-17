@@ -23,7 +23,7 @@ public class GPIntegration implements ILongEnergyStorage {
         if (toInsert == 0) {
             return 0;
         }
-        if (action.execute()) {
+        if (action.execute() && !EnergyUnit.FORGE_ENERGY.isOneToOne()) {
             //Before we can actually execute it we need to simulate to calculate how much we can actually insert
             long simulatedRemainder = handler.insertEnergy(toInsert, Action.SIMULATE);
             if (simulatedRemainder == toInsert) {
@@ -60,7 +60,7 @@ public class GPIntegration implements ILongEnergyStorage {
         if (toExtract == 0) {
             return 0;
         }
-        if (action.execute()) {
+        if (action.execute() && !EnergyUnit.FORGE_ENERGY.isOneToOne()) {
             //Before we can actually execute it we need to simulate to calculate how much we can actually extract in our other units
             long simulatedExtracted = handler.extractEnergy(toExtract, Action.SIMULATE);
             //Convert how much we could extract back to FE so that it gets appropriately clamped so that for example 1.5 FE gets treated
