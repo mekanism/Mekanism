@@ -50,72 +50,72 @@ public class UsageConfig extends BaseMekanismConfig {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
         builder.comment("Machine Energy Usage Config. This config is synced from server to client.").push("usage");
 
-        enrichmentChamber = CachedLongValue.defineUnsigned(this, builder, "Energy per operation tick (Joules).", "enrichmentChamber",
+        enrichmentChamber = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "enrichmentChamber",
               50L);
-        osmiumCompressor = CachedLongValue.defineUnsigned(this, builder, "Energy per operation tick (Joules).", "osmiumCompressor",
+        osmiumCompressor = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "osmiumCompressor",
               100L);
-        combiner = CachedLongValue.defineUnsigned(this, builder, "Energy per operation tick (Joules).", "combiner", 50L);
-        crusher = CachedLongValue.defineUnsigned(this, builder, "Energy per operation tick (Joules).", "crusher", 50L);
-        metallurgicInfuser = CachedLongValue.defineUnsigned(this, builder, "Energy per operation tick (Joules).", "metallurgicInfuser",
+        combiner = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "combiner", 50L);
+        crusher = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "crusher", 50L);
+        metallurgicInfuser = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "metallurgicInfuser",
               50L);
-        purificationChamber = CachedLongValue.defineUnsigned(this, builder, "Energy per operation tick (Joules).", "purificationChamber",
+        purificationChamber = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "purificationChamber",
               200L);
-        energizedSmelter = CachedLongValue.defineUnsigned(this, builder, "Energy per operation tick (Joules).", "energizedSmelter",
+        energizedSmelter = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "energizedSmelter",
               50L);
-        digitalMiner = CachedLongValue.defineUnsigned(this, builder, "Energy per operation tick (Joules).", "digitalMiner",
+        digitalMiner = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "digitalMiner",
               1_000L);
-        electricPump = CachedLongValue.defineUnsigned(this, builder, "Energy per operation tick (Joules).", "electricPump",
+        electricPump = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "electricPump",
               100L);
-        chargePad = CachedLongValue.defineUnsigned(this, builder, "Energy that can be transferred at once per charge operation (Joules).", "chargePad",
+        chargePad = CachedLongValue.definePositive(this, builder, "Energy that can be transferred at once per charge operation (Joules).", "chargePad",
               1_024_000L);
-        rotaryCondensentrator = CachedLongValue.defineUnsigned(this, builder, "Energy per operation tick (Joules).", "rotaryCondensentrator",
+        rotaryCondensentrator = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "rotaryCondensentrator",
               50L);
-        chemicalOxidizer = CachedLongValue.defineUnsigned(this, builder, "Energy per operation tick (Joules).", "chemicalOxidizer",
+        chemicalOxidizer = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "chemicalOxidizer",
               200L);
-        chemicalInfuser = CachedLongValue.defineUnsigned(this, builder, "Energy per operation tick (Joules).", "chemicalInfuser",
+        chemicalInfuser = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "chemicalInfuser",
               200L);
-        chemicalInjectionChamber = CachedLongValue.defineUnsigned(this, builder, "Energy per operation tick (Joules).", "chemicalInjectionChamber",
+        chemicalInjectionChamber = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "chemicalInjectionChamber",
               400L);
-        precisionSawmill = CachedLongValue.defineUnsigned(this, builder, "Energy per operation tick (Joules).", "precisionSawmill",
+        precisionSawmill = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "precisionSawmill",
               50L);
-        chemicalDissolutionChamber = CachedLongValue.defineUnsigned(this, builder, "Energy per operation tick (Joules).", "chemicalDissolutionChamber",
+        chemicalDissolutionChamber = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "chemicalDissolutionChamber",
               400L);
-        chemicalWasher = CachedLongValue.defineUnsigned(this, builder, "Energy per operation tick (Joules).", "chemicalWasher",
+        chemicalWasher = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "chemicalWasher",
               200L);
-        chemicalCrystallizer = CachedLongValue.defineUnsigned(this, builder, "Energy per operation tick (Joules).", "chemicalCrystallizer",
+        chemicalCrystallizer = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "chemicalCrystallizer",
               400L);
-        seismicVibrator = CachedLongValue.defineUnsigned(this, builder, "Energy per operation tick (Joules).", "seismicVibrator",
+        seismicVibrator = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "seismicVibrator",
               50L);
-        pressurizedReactionBase = CachedLongValue.defineUnsigned(this, builder, "Energy per operation tick (Joules).", "pressurizedReactionBase",
+        pressurizedReactionBase = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "pressurizedReactionBase",
               5L);
-        fluidicPlenisher = CachedLongValue.defineUnsigned(this, builder, "Energy per operation tick (Joules).", "fluidicPlenisher",
+        fluidicPlenisher = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "fluidicPlenisher",
               100L);
-        laser = CachedLongValue.defineUnsigned(this, builder, "Energy per operation tick (Joules).", "laser", 10_000L);
-        formulaicAssemblicator = CachedLongValue.defineUnsigned(this, builder, "Energy per operation tick (Joules).", "formulaicAssemblicator",
+        laser = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "laser", 10_000L);
+        formulaicAssemblicator = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "formulaicAssemblicator",
               100L);
-        modificationStation = CachedLongValue.defineUnsigned(this, builder, "Energy per operation tick (Joules).", "modificationStation",
+        modificationStation = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "modificationStation",
               400L);
-        isotopicCentrifuge = CachedLongValue.defineUnsigned(this, builder, "Energy per operation tick (Joules).", "isotopicCentrifuge",
+        isotopicCentrifuge = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "isotopicCentrifuge",
               200L);
-        nutritionalLiquifier = CachedLongValue.defineUnsigned(this, builder, "Energy per operation tick (Joules).", "nutritionalLiquifier",
+        nutritionalLiquifier = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "nutritionalLiquifier",
               200L);
-        antiprotonicNucleosynthesizer = CachedLongValue.defineUnsigned(this, builder, "Energy per operation tick (Joules).", "antiprotonicNucleosynthesizer",
+        antiprotonicNucleosynthesizer = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "antiprotonicNucleosynthesizer",
               100_000L);
-        pigmentExtractor = CachedLongValue.defineUnsigned(this, builder, "Energy per operation tick (Joules).", "pigmentExtractor",
+        pigmentExtractor = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "pigmentExtractor",
               200L);
-        pigmentMixer = CachedLongValue.defineUnsigned(this, builder, "Energy per operation tick (Joules).", "pigmentMixer",
+        pigmentMixer = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "pigmentMixer",
               200L);
-        paintingMachine = CachedLongValue.defineUnsigned(this, builder, "Energy per operation tick (Joules).", "paintingMachine",
+        paintingMachine = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "paintingMachine",
               100L);
-        dimensionalStabilizer = CachedLongValue.defineUnsigned(this, builder, "Energy per chunk per tick (Joules).", "dimensionalStabilizer",
+        dimensionalStabilizer = CachedLongValue.definePositive(this, builder, "Energy per chunk per tick (Joules).", "dimensionalStabilizer",
               5_000L);
 
         builder.comment("Teleporter").push(TELEPORTER_CATEGORY);
 
-        teleporterBase = CachedLongValue.defineUnsigned(this, builder, "Base Joules cost for a teleportation.", "teleporterBase", 1_000L);
-        teleporterDistance = CachedLongValue.defineUnsigned(this, builder, "Joules per unit of distance travelled during teleportation - sqrt(xDiff^2 + yDiff^2 + zDiff^2).",
+        teleporterBase = CachedLongValue.definePositive(this, builder, "Base Joules cost for a teleportation.", "teleporterBase", 1_000L);
+        teleporterDistance = CachedLongValue.definePositive(this, builder, "Joules per unit of distance travelled during teleportation - sqrt(xDiff^2 + yDiff^2 + zDiff^2).",
               "teleporterDistance", 10L);
-        teleporterDimensionPenalty = CachedLongValue.defineUnsigned(this, builder, "Flat additional cost for interdimensional teleportation. Distance is still taken into account minimizing energy cost based on dimension scales.",
+        teleporterDimensionPenalty = CachedLongValue.definePositive(this, builder, "Flat additional cost for interdimensional teleportation. Distance is still taken into account minimizing energy cost based on dimension scales.",
               "teleporterDimensionPenalty", 10_000L);
 
         builder.pop();

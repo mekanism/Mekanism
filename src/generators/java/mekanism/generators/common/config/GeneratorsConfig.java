@@ -89,26 +89,26 @@ public class GeneratorsConfig extends BaseMekanismConfig {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
         builder.comment("Mekanism Generators Config. This config is synced between server and client.").push("generators");
 
-        energyPerFusionFuel = CachedLongValue.defineUnsigned(this, builder, "Affects the Injection Rate, Max Temp, and Ignition Temp.",
+        energyPerFusionFuel = CachedLongValue.definePositive(this, builder, "Affects the Injection Rate, Max Temp, and Ignition Temp.",
               "energyPerFusionFuel", 10_000_000L);
-        solarGeneration = CachedLongValue.defineUnsigned(this, builder, "Peak output for the Solar Generator. Note: It can go higher than this value in some extreme environments.",
+        solarGeneration = CachedLongValue.definePositive(this, builder, "Peak output for the Solar Generator. Note: It can go higher than this value in some extreme environments.",
               "solarGeneration", 50L);
-        advancedSolarGeneration = CachedLongValue.defineUnsigned(this, builder, "Peak output for the Advanced Solar Generator. Note: It can go higher than this value in some extreme environments.",
+        advancedSolarGeneration = CachedLongValue.definePositive(this, builder, "Peak output for the Advanced Solar Generator. Note: It can go higher than this value in some extreme environments.",
               "advancedSolarGeneration", 300L);
 
         builder.comment("Bio Generator Settings").push(BIO_CATEGORY);
-        bioGeneration = CachedLongValue.defineUnsigned(this, builder, "Amount of energy in Joules the Bio Generator produces per tick.",
+        bioGeneration = CachedLongValue.definePositive(this, builder, "Amount of energy in Joules the Bio Generator produces per tick.",
               "bioGeneration", 350L);
         bioTankCapacity = CachedIntValue.wrap(this, builder.comment("The capacity in mB of the fluid tank in the Bio Generator.")
               .defineInRange("tankCapacity", 24 * FluidType.BUCKET_VOLUME, 1, Integer.MAX_VALUE));
         builder.pop();
 
         builder.comment("Heat Generator Settings").push(HEAT_CATEGORY);
-        heatGeneration = CachedLongValue.defineUnsigned(this, builder, "Amount of energy in Joules the Heat Generator produces per tick. heatGeneration + heatGenerationLava * lavaSides + heatGenerationNether. Note: lavaSides is how many sides are adjacent to lava, this includes the block itself if it is lava logged allowing for a max of 7 \"sides\".",
+        heatGeneration = CachedLongValue.definePositive(this, builder, "Amount of energy in Joules the Heat Generator produces per tick. heatGeneration + heatGenerationLava * lavaSides + heatGenerationNether. Note: lavaSides is how many sides are adjacent to lava, this includes the block itself if it is lava logged allowing for a max of 7 \"sides\".",
               "heatGeneration", 200L);
-        heatGenerationLava = CachedLongValue.defineUnsigned(this, builder, "Multiplier of effectiveness of Lava that is adjacent to the Heat Generator.",
+        heatGenerationLava = CachedLongValue.definePositive(this, builder, "Multiplier of effectiveness of Lava that is adjacent to the Heat Generator.",
               "heatGenerationLava", 30L);
-        heatGenerationNether = CachedLongValue.defineUnsigned(this, builder, "Add this amount of Joules to the energy produced by a heat generator if it is in an 'ultrawarm' dimension, in vanilla this is just the Nether.",
+        heatGenerationNether = CachedLongValue.definePositive(this, builder, "Add this amount of Joules to the energy produced by a heat generator if it is in an 'ultrawarm' dimension, in vanilla this is just the Nether.",
               "heatGenerationNether", 100L);
         heatTankCapacity = CachedIntValue.wrap(this, builder.comment("The capacity in mB of the fluid tank in the Heat Generator.")
               .defineInRange("tankCapacity", 24 * FluidType.BUCKET_VOLUME, 1, Integer.MAX_VALUE));
@@ -132,7 +132,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
               .defineInRange("turbineVentGasFlow", 32D * FluidType.BUCKET_VOLUME, 0.1, 1_024 * FluidType.BUCKET_VOLUME));
         turbineDisperserGasFlow = CachedDoubleValue.wrap(this, builder.comment("The rate at which steam is dispersed into the turbine.")
               .defineInRange("turbineDisperserGasFlow", 1_280D, 0.1, 1_024 * FluidType.BUCKET_VOLUME));
-        turbineEnergyCapacityPerVolume = CachedLongValue.defineUnsigned(this, builder, "Amount of energy (J) that each block of the turbine contributes to the total energy capacity. Max = volume * energyCapacityPerVolume",
+        turbineEnergyCapacityPerVolume = CachedLongValue.define(this, builder, "Amount of energy (J) that each block of the turbine contributes to the total energy capacity. Max = volume * energyCapacityPerVolume",
               "energyCapacityPerVolume", 16_000_000L, 1L, 1_000_000_000_000L);
         //Note: We use maxVolume as it still is a large number, and we have no reason to go higher even if some things we technically could
         int maxTurbine = 17 * 17 * 18;
@@ -143,10 +143,10 @@ public class GeneratorsConfig extends BaseMekanismConfig {
         builder.pop();
 
         builder.comment("Wind Generator Settings").push(WIND_CATEGORY);
-        windGenerationMin = CachedLongValue.defineUnsigned(this, builder, "Minimum base generation value of the Wind Generator.",
+        windGenerationMin = CachedLongValue.definePositive(this, builder, "Minimum base generation value of the Wind Generator.",
               "windGenerationMin", 60L);
         //TODO: Should this be capped by the min generator?
-        windGenerationMax = CachedLongValue.defineUnsigned(this, builder, "Maximum base generation value of the Wind Generator.",
+        windGenerationMax = CachedLongValue.definePositive(this, builder, "Maximum base generation value of the Wind Generator.",
               "generationMax", 480L);
         windGenerationMinY = CachedIntValue.wrap(this, builder.comment("The minimum Y value that affects the Wind Generators Power generation. This value gets clamped at the world's min height.")
               .defineInRange("minY", 24, DimensionType.MIN_Y, DimensionType.MAX_Y - 1));
@@ -168,7 +168,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
               .defineInRange("waterHeatingRatio", 0.3D, 0D, 1D));
         fusionFuelCapacity = CachedLongValue.wrap(this, builder.comment("Amount of fuel (mB) that the fusion reactor can store.")
               .defineInRange("fuelCapacity", FluidType.BUCKET_VOLUME, 2, 1_000L * FluidType.BUCKET_VOLUME));
-        fusionEnergyCapacity = CachedLongValue.defineUnsigned(this, builder, "Amount of energy (J) the fusion reactor can store.",
+        fusionEnergyCapacity = CachedLongValue.define(this, builder, "Amount of energy (J) the fusion reactor can store.",
               "energyCapacity", 1_000_000_000, 1, Long.MAX_VALUE);
         int baseMaxWater = 1_000 * FluidType.BUCKET_VOLUME;
         fusionWaterPerInjection = CachedIntValue.wrap(this, builder.comment("Amount of water (mB) per injection rate that the fusion reactor can store. Max = injectionRate * waterPerInjection")
@@ -185,7 +185,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
         builder.pop();
 
         builder.comment("Fission Reactor Settings").push(FISSION_CATEGORY);
-        energyPerFissionFuel = CachedLongValue.defineUnsigned(this, builder, "Amount of energy created (in heat) from each whole mB of fission fuel.",
+        energyPerFissionFuel = CachedLongValue.definePositive(this, builder, "Amount of energy created (in heat) from each whole mB of fission fuel.",
               "energyPerFissionFuel", 1_000_000L);
         fissionCasingHeatCapacity = CachedDoubleValue.wrap(this, builder.comment("The heat capacity added to a Fission Reactor by a single casing block. Increase to require more energy to raise the reactor temperature.")
               .defineInRange("casingHeatCapacity", 1_000D, 1, 1_000_000));

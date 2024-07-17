@@ -222,9 +222,9 @@ public class GeneralConfig extends BaseMekanismConfig {
         blacklistGrandPower = CachedBooleanValue.wrap(this, builder.comment("Disables Grand Power higher throughput Forge Energy (FE,RF,IF,uF,CF) power integration. Requires world restart (server-side option in SMP). Note: Disabling Forge Energy integration also disables this.")
               .worldRestart()
               .define("blacklistGrandPower", false));
-        FROM_H2 = CachedLongValue.defineUnsigned(this, builder, "How much energy is produced per mB of Hydrogen, also affects Electrolytic Separator usage, Ethene burn rate and Gas generator energy capacity.",
+        FROM_H2 = CachedLongValue.definedMin(this, builder, "How much energy is produced per mB of Hydrogen, also affects Electrolytic Separator usage, Ethene burn rate and Gas generator energy capacity.",
               "HydrogenEnergyDensity", 200, 1);
-        maxEnergyPerSteam = CachedLongValue.defineUnsigned(this, builder, "Maximum Joules per mB of Steam. Also affects Thermoelectric Boiler.",
+        maxEnergyPerSteam = CachedLongValue.definePositive(this, builder, "Maximum Joules per mB of Steam. Also affects Thermoelectric Boiler.",
               "maxEnergyPerSteam", 10);
         builder.pop();
 
@@ -261,9 +261,9 @@ public class GeneralConfig extends BaseMekanismConfig {
               .define("aestheticWorldDamage", true));
         laserRange = CachedIntValue.wrap(this, builder.comment("How far (in blocks) a laser can travel.")
               .defineInRange("range", 64, 1, 1_024));
-        laserEnergyNeededPerHardness = CachedLongValue.defineUnsigned(this, builder, "Energy needed to destroy or attract blocks with a Laser (per block hardness level).",
+        laserEnergyNeededPerHardness = CachedLongValue.definePositive(this, builder, "Energy needed to destroy or attract blocks with a Laser (per block hardness level).",
               "energyNeededPerHardness", 100_000);
-        laserEnergyPerDamage = CachedLongValue.defineUnsigned(this, builder, "Energy used per half heart of damage being transferred to entities.",
+        laserEnergyPerDamage = CachedLongValue.definedMin(this, builder, "Energy used per half heart of damage being transferred to entities.",
               "energyPerDamage", 2_500, 1);
         builder.pop();
 
@@ -340,7 +340,7 @@ public class GeneralConfig extends BaseMekanismConfig {
               .defineInRange("inputPerAntimatter", FluidType.BUCKET_VOLUME, 1, Integer.MAX_VALUE));
         spsOutputTankCapacity = CachedLongValue.wrap(this, builder.comment("Amount of output gas (mB, antimatter) that the SPS can store.")
               .defineInRange("outputTankCapacity", FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE));
-        spsEnergyPerInput = CachedLongValue.defineUnsigned(this, builder, "Energy needed to process 1 mB of input (inputPerAntimatter * energyPerInput = energy to produce 1 mB of antimatter).",
+        spsEnergyPerInput = CachedLongValue.definePositive(this, builder, "Energy needed to process 1 mB of input (inputPerAntimatter * energyPerInput = energy to produce 1 mB of antimatter).",
               "energyPerInput", 1_000_000);
         builder.pop();
 
