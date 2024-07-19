@@ -60,27 +60,15 @@ public class SerializerHelper {
                     if (index == -1) {
                         value = Long.parseUnsignedLong(number);
                     } else {
-                        value = Long.parseUnsignedLong(number.substring(0, index));
+                        value = Long.parseUnsignedLong(number, 0, index, 10);
                     }
                     if (value < 0) {
                         //Clamp unsigned to positive.
                         value = Long.MAX_VALUE;
                     }
-                    if (value == 0) {
+                    if (value == 0 && index != -1) {
                         //If we are at zero, see if we should ceil the decimal
-                        if (index == -1) {
-                            return DataResult.success(0L);
-                        }
-                        String decimalAsString = number.substring(index + 1);
-                        int numberDigits = decimalAsString.length();
-                        if (numberDigits < 4) {
-                            //We need to pad it on the right with zeros
-                            decimalAsString += "0".repeat(Math.max(0, 4 - numberDigits));
-                        } else if (numberDigits > 4) {
-                            //We need to trim it to make sure it will be in range of a short
-                            decimalAsString = decimalAsString.substring(0, 4);
-                        }
-                        if (Short.parseShort(decimalAsString) > 0) {
+                        if (Long.parseLong(number, index + 1, number.length(), 10) > 0) {
                             return DataResult.success(1L);
                         }
                     }
@@ -93,7 +81,7 @@ public class SerializerHelper {
 
         @Override
         public <T> T write(DynamicOps<T> ops, Long value) {
-            return ops.createString(value.toString());
+            return ops.createLong(value);
         }
 
         @Override
