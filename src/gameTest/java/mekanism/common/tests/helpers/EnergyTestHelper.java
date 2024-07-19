@@ -10,7 +10,6 @@ import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.integration.energy.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.integration.energy.forgeenergy.ForgeStrictEnergyHandler;
 import net.minecraft.core.Direction;
-import net.minecraft.gametest.framework.GameTestAssertException;
 import net.minecraft.gametest.framework.GameTestInfo;
 import net.neoforged.neoforge.energy.EnergyStorage;
 import net.neoforged.neoforge.energy.IEnergyStorage;

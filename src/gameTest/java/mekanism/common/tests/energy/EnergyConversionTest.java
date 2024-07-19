@@ -48,6 +48,16 @@ public class EnergyConversionTest {
                   helper.assertValueEqual(joulesContainer.getEnergy(), (long) JOULES_CAPACITY, "stored energy (joules)");
               })
 
+              //Test against a small empty container, accepting minimal amount
+              .thenMap(() -> BasicEnergyContainer.create(JOULES_CAPACITY, null))
+              .thenExecute(joulesContainer -> {
+                  IEnergyStorage feHandler = helper.createForgeWrappedStrictEnergyHandler(joulesContainer);
+                  int accepted = feHandler.receiveEnergy(1, false);
+                  helper.assertValueEqual(accepted, 1, "accepted energy");
+                  helper.assertValueEqual(feHandler.getEnergyStored(), 0, "stored energy");
+                  helper.assertValueEqual(joulesContainer.getEnergy(), 2L, "raw stored energy");
+              })
+
               //Test against a small full container
               .thenExecute(() -> {
                   IEnergyContainer joulesContainer = BasicEnergyContainer.create(JOULES_CAPACITY, null);
@@ -96,26 +106,27 @@ public class EnergyConversionTest {
                   helper.assertValueEqual(accepted, 1, "accepted energy (fe)");
               })
 
-              //Test extracting against a small nearly empty container
-              .thenMap(() -> helper.createForgeWrappedStrictEnergyHandler(2, JOULES_CAPACITY))
-              .thenExecute(handler -> {//There shouldn't be enough to get a single unit out
-                  int extracted = handler.extractEnergy(JOULES_CAPACITY, false);
-                  helper.assertValueEqual(extracted, 0, "extracted energy");
+              //Test extracting against a small nearly empty container (less than conversion rate)
+              //There shouldn't be enough to get a single unit out
+              .thenExecute(() -> {
+                  IEnergyContainer joulesContainer = BasicEnergyContainer.create(JOULES_CAPACITY, null);
+                  joulesContainer.setEnergy(2);
+                  var feHandler = helper.createForgeWrappedStrictEnergyHandler(joulesContainer);
+
+                  int extracted = feHandler.extractEnergy(JOULES_CAPACITY, false);
+                  helper.assertValueEqual(extracted, 0, "extracted energy (fe)");
+                  helper.assertValueEqual(joulesContainer.getEnergy(), 2, "stored energy (joules)");
               })
+
               //Test inserting against a sub one sized container
-              .thenMap(() -> helper.createForgeWrappedStrictEnergyHandler(0, 2))
-              .thenExecute(handler -> {//There shouldn't be any room for it
-                  int accepted = handler.receiveEnergy(JOULES_CAPACITY, false);
-                  helper.assertValueEqual(accepted, 0, "accepted energy");
-              })
-              //Test against a small empty container
-              .thenMap(() -> BasicEnergyContainer.create(JOULES_CAPACITY, null))
-              .thenExecute(container -> {
-                  IEnergyStorage handler = helper.createForgeWrappedStrictEnergyHandler(container);
-                  int accepted = handler.receiveEnergy(1, false);
-                  helper.assertValueEqual(accepted, 0, "accepted energy");
-                  helper.assertValueEqual(handler.getEnergyStored(), 0, "stored energy");
-                  helper.assertValueEqual(container.getEnergy(), 0L, "raw stored energy");
+              .thenExecute(() -> {//There shouldn't be any room for it
+                  IEnergyContainer joulesContainer = BasicEnergyContainer.create(2, null);
+                  joulesContainer.setEnergy(0);
+                  var feHandler = helper.createForgeWrappedStrictEnergyHandler(joulesContainer);
+
+                  int accepted = feHandler.receiveEnergy(JOULES_CAPACITY, false);
+                  helper.assertValueEqual(accepted, 0, "accepted energy (fe)");
+                  helper.assertValueEqual(joulesContainer.getEnergy(), 0, "stored energy (joules)");
               })
 
               // WRAPPING FORGE ENERGY TO STRICT ENERGY
