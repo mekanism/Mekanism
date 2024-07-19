@@ -10,6 +10,7 @@ import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.integration.energy.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.integration.energy.forgeenergy.ForgeStrictEnergyHandler;
 import net.minecraft.core.Direction;
+import net.minecraft.gametest.framework.GameTestAssertException;
 import net.minecraft.gametest.framework.GameTestInfo;
 import net.neoforged.neoforge.energy.EnergyStorage;
 import net.neoforged.neoforge.energy.IEnergyStorage;
@@ -22,8 +23,8 @@ public class EnergyTestHelper extends MekGameTestHelper {
         super(info);
     }
 
-    public IEnergyStorage createForgeWrappedStrictEnergyHandler(long energy, long capacity) {
-        IEnergyContainer container = BasicEnergyContainer.create(capacity, null);
+    public IEnergyStorage createForgeWrappedStrictEnergyHandler(long energy, long capacityJoules) {
+        IEnergyContainer container = BasicEnergyContainer.create(capacityJoules, null);
         container.setEnergy(energy);
         return createForgeWrappedStrictEnergyHandler(container);
     }
@@ -42,7 +43,7 @@ public class EnergyTestHelper extends MekGameTestHelper {
         });
     }
 
-    public IStrictEnergyHandler createStrictForgeEnergyHandler(int energy, int capacity) {
-        return new ForgeStrictEnergyHandler(new EnergyStorage(capacity, capacity, capacity, energy));
+    public IStrictEnergyHandler createStrictForgeEnergyHandler(int energy, int capacityFE) {
+        return new ForgeStrictEnergyHandler(new EnergyStorage(capacityFE, capacityFE, capacityFE, energy));
     }
 }
