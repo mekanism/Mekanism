@@ -81,8 +81,14 @@ public class FNStrictEnergyHandler implements IStrictEnergyHandler {
         return amount;
     }
 
-    private long convertFromAndBack(long value) {
-        return EnergyUnit.FORGE_ENERGY.convertTo(EnergyUnit.FORGE_ENERGY.convertFrom(value));
+    private long convertFromAndBack(long fe) {
+        long joules = EnergyUnit.FORGE_ENERGY.convertFrom(fe);
+        long result = EnergyUnit.FORGE_ENERGY.convertTo(joules);
+        double conversion = 1 / EnergyUnit.FORGE_ENERGY.getConversion();
+        if (conversion >= 1 && result % conversion > 0) {
+            return EnergyUnit.FORGE_ENERGY.convertTo(joules - 1);
+        }
+        return result;
     }
 
     @Override

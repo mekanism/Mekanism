@@ -78,8 +78,13 @@ public class FNIntegration implements IFNEnergyStorage {
         return EnergyUnit.FORGE_ENERGY.convertTo(extracted);
     }
 
-    private long convertToAndBack(long value) {
-        return EnergyUnit.FORGE_ENERGY.convertFrom(EnergyUnit.FORGE_ENERGY.convertTo(value));
+    private long convertToAndBack(long joules) {
+        long fe = EnergyUnit.FORGE_ENERGY.convertTo(joules);
+        long result = EnergyUnit.FORGE_ENERGY.convertFrom(fe);
+        if (EnergyUnit.FORGE_ENERGY.getConversion() >= 1 && result % EnergyUnit.FORGE_ENERGY.getConversion() > 0) {
+            return EnergyUnit.FORGE_ENERGY.convertFrom(fe - 1);
+        }
+        return result;
     }
 
     @Override

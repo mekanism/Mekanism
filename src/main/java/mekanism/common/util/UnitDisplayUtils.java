@@ -110,7 +110,7 @@ public class UnitDisplayUtils {
     public enum EnergyUnit implements IDisableableEnum<EnergyUnit>, IEnergyConversion, Unit {
         JOULES(MekanismLang.ENERGY_JOULES, MekanismLang.ENERGY_JOULES_PLURAL, MekanismLang.ENERGY_JOULES_SHORT, "j", null, ConstantPredicates.ALWAYS_TRUE) {
             @Override
-            protected double getConversion() {
+            public double getConversion() {
                 //Unused but override it anyway
                 return 1D;
             }
@@ -166,7 +166,8 @@ public class UnitDisplayUtils {
             return singular ? singularLangEntry : pluralLangEntry;
         }
 
-        protected double getConversion() {
+        @Override
+        public double getConversion() {
             //Note: Use default value if called before configs are loaded. In general this should never happen,
             // but third party mods may just call it regardless
             return conversion.get().getOrDefault();
@@ -174,11 +175,22 @@ public class UnitDisplayUtils {
 
         @Override
         public long convertFrom(long energy) {
+            double remainder = energy % (1 / getConversion());
+            if (remainder > 0) {
+                //energy -= Mth.ceil(remainder);
+            }
             return MathUtils.clampToLong(energy * getConversion());
         }
 
         @Override
         public long convertTo(long joules) {
+            double remainder = joules % getConversion();
+            if (remainder > 0) {
+                //TODO: Remainder 0.5
+                //We need 3 -> 1.2 => 0
+                //We need 998 -> 399.2 => 399
+                //joules -= Mth.ceil(remainder);
+            }
             return MathUtils.clampToLong(convertToDouble(joules));
         }
 

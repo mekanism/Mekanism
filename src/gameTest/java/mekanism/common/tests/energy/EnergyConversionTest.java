@@ -48,21 +48,21 @@ public class EnergyConversionTest {
                   helper.assertValueEqual(joulesContainer.getEnergy(), (long) JOULES_CAPACITY, "stored energy (joules)");
               })
 
-              //Test against a small empty container, accepting minimal amount
+              //Test against a small empty container, rejecting sub-unit values
               .thenMap(() -> BasicEnergyContainer.create(JOULES_CAPACITY, null))
               .thenExecute(joulesContainer -> {
                   IEnergyStorage feHandler = helper.createForgeWrappedStrictEnergyHandler(joulesContainer);
                   int accepted = feHandler.receiveEnergy(1, false);
-                  helper.assertValueEqual(accepted, 1, "accepted energy");
+                  helper.assertValueEqual(accepted, 0, "accepted energy");
                   helper.assertValueEqual(feHandler.getEnergyStored(), 0, "stored energy");
-                  helper.assertValueEqual(joulesContainer.getEnergy(), 2L, "raw stored energy");
+                  helper.assertValueEqual(joulesContainer.getEnergy(), 0L, "raw stored energy");
               })
 
               //Test against a small full container
               .thenExecute(() -> {
                   IEnergyContainer joulesContainer = BasicEnergyContainer.create(JOULES_CAPACITY, null);
                   joulesContainer.setEnergy(JOULES_CAPACITY);
-                  var feHandler = helper.createForgeWrappedStrictEnergyHandler(joulesContainer);
+                  IEnergyStorage feHandler = helper.createForgeWrappedStrictEnergyHandler(joulesContainer);
 
                   //try to insert to full container
                   int accepted = feHandler.receiveEnergy(JOULES_CAPACITY, false);
@@ -80,10 +80,11 @@ public class EnergyConversionTest {
               .thenExecute(() -> {
                   IEnergyContainer joulesContainer = BasicEnergyContainer.create(JOULES_CAPACITY, null);
                   joulesContainer.setEnergy(JOULES_CAPACITY - 2);
-                  var feHandler = helper.createForgeWrappedStrictEnergyHandler(joulesContainer);
+                  IEnergyStorage feHandler = helper.createForgeWrappedStrictEnergyHandler(joulesContainer);
 
                   //sanity check
                   //Note: Needed energy should be 1 even though we can't accept it
+
                   helper.assertValueEqual(feHandler.getEnergyStored(), FE_CAPACITY - 1, "stored energy");
                   helper.assertValueEqual(feHandler.getMaxEnergyStored(), FE_CAPACITY, "max energy");
 
@@ -97,14 +98,14 @@ public class EnergyConversionTest {
               .thenExecute(() -> {
                   IEnergyContainer joulesContainer = BasicEnergyContainer.create(1000, null);
                   joulesContainer.setEnergy(997);
-                  var feHandler = helper.createForgeWrappedStrictEnergyHandler(joulesContainer);
+                  IEnergyStorage feHandler = helper.createForgeWrappedStrictEnergyHandler(joulesContainer);
 
-                  //sanity check. TODO should this round up?? its 398.8
+                  //sanity check.
                   helper.assertValueEqual(feHandler.getEnergyStored(), 398, "stored energy");
 
                   int accepted = feHandler.receiveEnergy(1000, false);
-                  helper.assertValueEqual(999L, joulesContainer.getEnergy(), "stored joules after insert");
-                  helper.assertValueEqual(accepted, 1, "accepted energy (fe)");
+                  helper.assertValueEqual(joulesContainer.getEnergy(), 997L, "stored joules after insert");
+                  helper.assertValueEqual(accepted, 0, "accepted energy (fe)");
               })
 
               //Test extracting against a small nearly empty container (less than conversion rate)
@@ -112,7 +113,7 @@ public class EnergyConversionTest {
               .thenExecute(() -> {
                   IEnergyContainer joulesContainer = BasicEnergyContainer.create(JOULES_CAPACITY, null);
                   joulesContainer.setEnergy(2);
-                  var feHandler = helper.createForgeWrappedStrictEnergyHandler(joulesContainer);
+                  IEnergyStorage feHandler = helper.createForgeWrappedStrictEnergyHandler(joulesContainer);
 
                   int extracted = feHandler.extractEnergy(JOULES_CAPACITY, false);
                   helper.assertValueEqual(extracted, 0, "extracted energy (fe)");
@@ -124,7 +125,7 @@ public class EnergyConversionTest {
               .thenExecute(() -> {
                   IEnergyContainer joulesContainer = BasicEnergyContainer.create(2, null);
                   joulesContainer.setEnergy(0);
-                  var feHandler = helper.createForgeWrappedStrictEnergyHandler(joulesContainer);
+                  IEnergyStorage feHandler = helper.createForgeWrappedStrictEnergyHandler(joulesContainer);
 
                   int accepted = feHandler.receiveEnergy(JOULES_CAPACITY, false);
                   helper.assertValueEqual(accepted, 0, "accepted energy (fe)");
@@ -136,7 +137,7 @@ public class EnergyConversionTest {
               //Test against a small empty container, filling to max capacity
               .thenExecute(() -> {
                   EnergyStorage feContainer = new EnergyStorage(FE_CAPACITY, FE_CAPACITY, FE_CAPACITY, 0);
-                  var joulesHandler = new ForgeStrictEnergyHandler(feContainer);
+                  IStrictEnergyHandler joulesHandler = new ForgeStrictEnergyHandler(feContainer);
 
                   long extractedJoules = joulesHandler.extractEnergy(FE_CAPACITY, Action.EXECUTE);
                   helper.assertValueEqual(extractedJoules, 0L, "extracted energy (joules) from empty");

@@ -66,4 +66,6 @@ public interface IEnergyConversion extends IHasTranslationKey {
      * @since 10.6.6
      */
     boolean isOneToOne();
+
+    double getConversion();
 }
