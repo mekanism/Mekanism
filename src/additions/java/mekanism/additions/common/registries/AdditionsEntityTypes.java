@@ -38,8 +38,10 @@ public class AdditionsEntityTypes {
     private AdditionsEntityTypes() {
     }
 
-    //COPY of Zombie SPEED_MODIFIER_BABY_ID and SPEED_MODIFIER_BABY
-    private static final AttributeModifier BABY_SPEED_BOOST_MODIFIER = new AttributeModifier(ResourceLocation.withDefaultNamespace("baby"), 0.5D, Operation.ADD_MULTIPLIED_BASE);
+    //Opposite of Zombie SPEED_MODIFIER_BABY_ID and SPEED_MODIFIER_BABY
+    private static final AttributeModifier BABY_SPEED_NERF_MODIFIER = new AttributeModifier(ResourceLocation.withDefaultNamespace("baby"), -0.5D, Operation.ADD_MULTIPLIED_BASE);
+    private static final AttributeModifier BABY_HEALTH_NERF_MODIFIER = new AttributeModifier(ResourceLocation.withDefaultNamespace("baby_health"), -0.5D, Operation.ADD_MULTIPLIED_TOTAL);
+    private static final AttributeModifier BABY_ATTACK_NERF_MODIFIER = new AttributeModifier(ResourceLocation.withDefaultNamespace("baby_attack"), -0.75D, Operation.ADD_MULTIPLIED_TOTAL);
 
     public static final EntityTypeDeferredRegister ENTITY_TYPES = new EntityTypeDeferredRegister(MekanismAdditions.MODID);
 
@@ -66,7 +68,15 @@ public class AdditionsEntityTypes {
         if (!entity.level().isClientSide) {
             AttributeInstance attributeInstance = entity.getAttribute(Attributes.MOVEMENT_SPEED);
             if (attributeInstance != null) {
-                attributeInstance.addPermanentModifier(BABY_SPEED_BOOST_MODIFIER);
+                attributeInstance.addPermanentModifier(BABY_SPEED_NERF_MODIFIER);
+            }
+            attributeInstance = entity.getAttribute(Attributes.MAX_HEALTH);
+            if (attributeInstance != null) {
+                attributeInstance.addPermanentModifier(BABY_HEALTH_NERF_MODIFIER);
+            }
+            attributeInstance = entity.getAttribute(Attributes.ATTACK_DAMAGE);
+            if (attributeInstance != null) {
+                attributeInstance.addPermanentModifier(BABY_ATTACK_NERF_MODIFIER);
             }
         }
     }
