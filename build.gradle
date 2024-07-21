@@ -20,12 +20,12 @@ plugins {
     id('eclipse')
     id('idea')
     id('maven-publish')
-    id('net.neoforged.gradle.userdev') version('7.0.153')//https://projects.neoforged.net/neoforged/neogradle
+    id('net.neoforged.gradle.userdev') version('7.0.155')//https://projects.neoforged.net/neoforged/neogradle
 }
 
 tasks.named('wrapper', Wrapper).configure {
     //Define wrapper values here so as to not have to always do so when updating gradlew.properties
-    gradleVersion = '8.8'
+    gradleVersion = '8.9'
     distributionType = Wrapper.DistributionType.ALL
 }
 
@@ -382,8 +382,7 @@ dependencies {
         //datagenMainRuntimeOnly(emi)
     }
 
-    //TODO: Re-enable once it doesn't cause Datagen to fail
-    //localRuntime("team.chisel.ctm:CTM:${minecraft_version}-${ctm_version}")
+    localRuntime("team.chisel.ctm:CTM:${minecraft_version}-${ctm_version}")
 
     compileOnly("mcjty.theoneprobe:theoneprobe:${top_version}:api")
     localRuntime("mcjty.theoneprobe:theoneprobe:${top_version}")
