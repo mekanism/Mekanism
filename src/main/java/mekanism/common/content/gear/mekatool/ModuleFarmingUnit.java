@@ -45,7 +45,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -95,7 +94,7 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
               () -> useAxeAOE(context, lazyClickedState, energyContainer, diameter, ItemAbilities.AXE_WAX_OFF, SoundEvents.AXE_WAX_OFF, LevelEvent.PARTICLES_WAX_OFF),
               //Then as a shovel
               () -> flattenAOE(context, lazyClickedState, energyContainer, diameter),
-              () -> dowseCampfire(context, lazyClickedState, energyContainer),
+              () -> douseBlock(context, lazyClickedState, energyContainer, diameter),
               //Finally, as a hoe
               () -> tillAOE(context, lazyClickedState, energyContainer, diameter)
         );
@@ -153,33 +152,14 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
         }
     }
 
-    private InteractionResult dowseCampfire(UseOnContext context, Lazy<BlockState> lazyClickedState, IEnergyContainer energyContainer) {
-        long energy = energyContainer.getEnergy();
-        long energyUsage = MekanismConfig.gear.mekaToolEnergyUsageShovel.get();
-        if (energy < energyUsage) {
-            //Fail if we don't have enough energy or using the item failed
-            return InteractionResult.FAIL;
-        }
-        BlockState clickedState = lazyClickedState.get();
-        if (clickedState.getBlock() instanceof CampfireBlock && clickedState.getValue(CampfireBlock.LIT)) {
-            Level world = context.getLevel();
-            BlockPos pos = context.getClickedPos();
-            if (!world.isClientSide()) {
-                world.levelEvent(null, LevelEvent.SOUND_EXTINGUISH_FIRE, pos, 0);
-            }
-            CampfireBlock.dowse(context.getPlayer(), world, pos, clickedState);
-            if (!world.isClientSide()) {
-                world.setBlock(pos, clickedState.setValue(CampfireBlock.LIT, Boolean.FALSE), Block.UPDATE_ALL_IMMEDIATE);
-                energyContainer.extract(energyUsage, Action.EXECUTE, AutomationType.MANUAL);
-            }
-            return InteractionResult.sidedSuccess(world.isClientSide);
-        }
-        return InteractionResult.PASS;
+    private InteractionResult douseBlock(UseOnContext context, Lazy<BlockState> lazyClickedState, IEnergyContainer energyContainer, int diameter) {
+        return useAOE(context, lazyClickedState, energyContainer, diameter, ItemAbilities.SHOVEL_DOUSE, null, LevelEvent.SOUND_EXTINGUISH_FIRE,
+              MekanismConfig.gear.mekaToolEnergyUsageShovel.get(), new SimpleToolAOEData());
     }
 
     private InteractionResult tillAOE(UseOnContext context, Lazy<BlockState> lazyClickedState, IEnergyContainer energyContainer, int diameter) {
         return useAOE(context, lazyClickedState, energyContainer, diameter, ItemAbilities.HOE_TILL, SoundEvents.HOE_TILL, -1,
-              MekanismConfig.gear.mekaToolEnergyUsageHoe.get(), new HoeToolAOEData());
+              MekanismConfig.gear.mekaToolEnergyUsageHoe.get(), new SimpleToolAOEData());
     }
 
     private InteractionResult flattenAOE(UseOnContext context, Lazy<BlockState> lazyClickedState, IEnergyContainer energyContainer, int diameter) {
@@ -199,7 +179,7 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
     }
 
     private InteractionResult useAOE(UseOnContext context, Lazy<BlockState> lazyClickedState, IEnergyContainer energyContainer, int diameter, ItemAbility action,
-          SoundEvent sound, int particle, long energyUsage, IToolAOEData toolAOEData) {
+          @Nullable SoundEvent sound, int particle, long energyUsage, IToolAOEData toolAOEData) {
         long energy = energyContainer.getEnergy();
         if (energy < energyUsage) {
             //Fail if we don't have enough energy or using the item failed
@@ -228,7 +208,9 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
             CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(player, pos, context.getItemInHand());
         }
         world.setBlock(pos, modifiedState, Block.UPDATE_ALL_IMMEDIATE);
-        world.playSound(null, pos, sound, SoundSource.BLOCKS, 1.0F, 1.0F);
+        if (sound != null) {
+            world.playSound(null, pos, sound, SoundSource.BLOCKS, 1.0F, 1.0F);
+        }
         if (particle != -1) {
             world.levelEvent(null, particle, pos, 0);
         }
@@ -265,7 +247,9 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
                 state.getToolModifiedState(adjustedContext, action, false);
                 //Replace the block. Note it just directly sets it (in the same way the normal tools do).
                 world.setBlock(newPos, modifiedState, Block.UPDATE_ALL_IMMEDIATE);
-                world.playSound(null, newPos, sound, SoundSource.BLOCKS, 1.0F, 1.0F);
+                if (sound != null) {
+                    world.playSound(null, newPos, sound, SoundSource.BLOCKS, 1.0F, 1.0F);
+                }
                 if (particle != -1) {
                     world.levelEvent(null, particle, newPos, 0);
                 }
@@ -302,7 +286,7 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
         }
     }
 
-    private static class HoeToolAOEData extends FlatToolAOEData {
+    private static class SimpleToolAOEData extends FlatToolAOEData {
 
         @Override
         public boolean isValid(Level level, BlockPos pos, BlockState state) {

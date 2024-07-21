@@ -28,7 +28,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -96,13 +95,12 @@ public class ItemMekanismPaxel extends DiggerItem {
                 //We can flatten the item as a shovel
                 world.playSound(player, blockpos, SoundEvents.SHOVEL_FLATTEN, SoundSource.BLOCKS, 1.0F, 1.0F);
                 resultToSet = foundResult;
-            } else if (blockstate.getBlock() instanceof CampfireBlock && blockstate.getValue(CampfireBlock.LIT)) {
+            } else {
+                resultToSet = blockstate.getToolModifiedState(context, ItemAbilities.SHOVEL_DOUSE, false);
                 //We can use the paxel as a shovel to extinguish a campfire
-                if (!world.isClientSide) {
+                if (resultToSet != null && !world.isClientSide) {
                     world.levelEvent(null, LevelEvent.SOUND_EXTINGUISH_FIRE, blockpos, 0);
                 }
-                CampfireBlock.dowse(player, world, blockpos, blockstate);
-                resultToSet = blockstate.setValue(CampfireBlock.LIT, false);
             }
             if (resultToSet == null) {
                 return InteractionResult.PASS;
