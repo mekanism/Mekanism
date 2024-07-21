@@ -15,6 +15,7 @@ import mekanism.client.integration.MekanismAliases;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.advancements.MekanismAdvancements;
+import mekanism.common.config.MekanismConfigTranslations;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.content.gear.mekasuit.ModuleChargeDistributionUnit;
 import mekanism.common.content.gear.mekasuit.ModuleElectrolyticBreathingUnit;
@@ -69,6 +70,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
 
     @Override
     protected void addTranslations() {
+        addConfigs(MekanismConfigTranslations.values());
         addTags();
         addItems();
         addBlocks();

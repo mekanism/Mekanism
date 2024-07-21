@@ -88,9 +88,9 @@ public class GeneratorsConfig extends BaseMekanismConfig {
 
     GeneratorsConfig() {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
-        builder.comment("Mekanism Generators Config. This config is synced between server and client.").push("generators");
+        GeneratorsConfigTranslations.SERVER_TOP_LEVEL.applyToBuilder(builder).push("generators");
 
-        energyPerFusionFuel = CachedLongValue.definePositive(this, builder, "Affects the Injection Rate, Max Temp, and Ignition Temp.",
+        energyPerFusionFuel = CachedLongValue.definePositive(this, builder, GeneratorsConfigTranslations.SERVER_ENERGY_PER_DT,
               "energyPerFusionFuel", 10_000_000L);
         solarGeneration = CachedLongValue.definePositive(this, builder, "Peak output for the Solar Generator. Note: It can go higher than this value in some extreme environments.",
               "solarGeneration", 50L);

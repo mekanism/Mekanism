@@ -13,6 +13,7 @@ import mekanism.common.advancements.MekanismAdvancement;
 import mekanism.common.base.IModModule;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeGui;
+import mekanism.common.config.IConfigTranslation;
 import mekanism.common.registration.impl.FluidRegistryObject;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.Util;
@@ -116,6 +117,12 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
     protected void add(MekanismAdvancement advancement, String title, String description) {
         add(advancement.title(), title);
         add(advancement.description(), description);
+    }
+
+    protected void addConfigs(IConfigTranslation... translations) {
+        for (IConfigTranslation translation : translations) {
+            add(translation, translation.translation());
+        }
     }
 
     protected void addAliases(IAliasedTranslation... translations) {

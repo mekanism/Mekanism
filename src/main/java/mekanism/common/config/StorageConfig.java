@@ -49,76 +49,76 @@ public class StorageConfig extends BaseMekanismConfig {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
         builder.comment("Machine Energy Storage Config. This config is synced from server to client.").push("storage");
 
-        enrichmentChamber = CachedLongValue.definedMin(this, builder, "Base energy storage (Joules).", "enrichmentChamber",
+        enrichmentChamber = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.BASE_ENERGY_STORAGE_JOULES, "enrichmentChamber",
               20_000L, 1);
-        osmiumCompressor = CachedLongValue.definedMin(this, builder, "Base energy storage (Joules).", "osmiumCompressor",
+        osmiumCompressor = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.BASE_ENERGY_STORAGE_JOULES, "osmiumCompressor",
               80_000L, 1);
-        combiner = CachedLongValue.definedMin(this, builder, "Base energy storage (Joules).", "combiner",
+        combiner = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.BASE_ENERGY_STORAGE_JOULES, "combiner",
               40_000L, 1);
-        crusher = CachedLongValue.definedMin(this, builder, "Base energy storage (Joules).", "crusher",
+        crusher = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.BASE_ENERGY_STORAGE_JOULES, "crusher",
               20_000L, 1);
-        metallurgicInfuser = CachedLongValue.definedMin(this, builder, "Base energy storage (Joules).", "metallurgicInfuser",
+        metallurgicInfuser = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.BASE_ENERGY_STORAGE_JOULES, "metallurgicInfuser",
               20_000L, 1);
-        purificationChamber = CachedLongValue.definedMin(this, builder, "Base energy storage (Joules).", "purificationChamber",
+        purificationChamber = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.BASE_ENERGY_STORAGE_JOULES, "purificationChamber",
               80_000L, 1);
-        energizedSmelter = CachedLongValue.definedMin(this, builder, "Base energy storage (Joules).", "energizedSmelter",
+        energizedSmelter = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.BASE_ENERGY_STORAGE_JOULES, "energizedSmelter",
               20_000L, 1);
-        digitalMiner = CachedLongValue.definedMin(this, builder, "Base energy storage (Joules).", "digitalMiner",
+        digitalMiner = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.BASE_ENERGY_STORAGE_JOULES, "digitalMiner",
               50_000L, 1);
-        electricPump = CachedLongValue.definedMin(this, builder, "Base energy storage (Joules).", "electricPump",
+        electricPump = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.BASE_ENERGY_STORAGE_JOULES, "electricPump",
               40_000L, 1);
-        chargePad = CachedLongValue.definedMin(this, builder, "Base energy storage (Joules).", "chargePad", 2_048_000L, 1);
-        rotaryCondensentrator = CachedLongValue.definedMin(this, builder, "Base energy storage (Joules).", "rotaryCondensentrator",
+        chargePad = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.BASE_ENERGY_STORAGE_JOULES, "chargePad", 2_048_000L, 1);
+        rotaryCondensentrator = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.BASE_ENERGY_STORAGE_JOULES, "rotaryCondensentrator",
               20_000L, 1);
-        chemicalOxidizer = CachedLongValue.definedMin(this, builder, "Base energy storage (Joules).", "chemicalOxidizer",
+        chemicalOxidizer = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.BASE_ENERGY_STORAGE_JOULES, "chemicalOxidizer",
               80_000L, 1);
-        chemicalInfuser = CachedLongValue.definedMin(this, builder, "Base energy storage (Joules).", "chemicalInfuser",
+        chemicalInfuser = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.BASE_ENERGY_STORAGE_JOULES, "chemicalInfuser",
               80_000L, 1);
-        chemicalInjectionChamber = CachedLongValue.definedMin(this, builder, "Base energy storage (Joules).", "chemicalInjectionChamber",
+        chemicalInjectionChamber = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.BASE_ENERGY_STORAGE_JOULES, "chemicalInjectionChamber",
               160_000L, 1);
-        electrolyticSeparator = CachedLongValue.definedMin(this, builder, "Base energy storage (Joules).", "electrolyticSeparator",
+        electrolyticSeparator = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.BASE_ENERGY_STORAGE_JOULES, "electrolyticSeparator",
               160_000L, 1);
-        precisionSawmill = CachedLongValue.definedMin(this, builder, "Base energy storage (Joules).", "precisionSawmill",
+        precisionSawmill = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.BASE_ENERGY_STORAGE_JOULES, "precisionSawmill",
               20_000L, 1);
-        chemicalDissolutionChamber = CachedLongValue.definedMin(this, builder, "Base energy storage (Joules).", "chemicalDissolutionChamber",
+        chemicalDissolutionChamber = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.BASE_ENERGY_STORAGE_JOULES, "chemicalDissolutionChamber",
               160_000L, 1);
-        chemicalWasher = CachedLongValue.definedMin(this, builder, "Base energy storage (Joules).", "chemicalWasher",
+        chemicalWasher = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.BASE_ENERGY_STORAGE_JOULES, "chemicalWasher",
               80_000L, 1);
-        chemicalCrystallizer = CachedLongValue.definedMin(this, builder, "Base energy storage (Joules).", "chemicalCrystallizer",
+        chemicalCrystallizer = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.BASE_ENERGY_STORAGE_JOULES, "chemicalCrystallizer",
               160_000L, 1);
-        seismicVibrator = CachedLongValue.definedMin(this, builder, "Base energy storage (Joules).", "seismicVibrator",
+        seismicVibrator = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.BASE_ENERGY_STORAGE_JOULES, "seismicVibrator",
               20_000L, 1);
-        pressurizedReactionBase = CachedLongValue.definedMin(this, builder, "Base energy storage (Joules).", "pressurizedReactionBase",
+        pressurizedReactionBase = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.BASE_ENERGY_STORAGE_JOULES, "pressurizedReactionBase",
               2_000L, 1);
-        fluidicPlenisher = CachedLongValue.definedMin(this, builder, "Base energy storage (Joules).", "fluidicPlenisher",
+        fluidicPlenisher = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.BASE_ENERGY_STORAGE_JOULES, "fluidicPlenisher",
               40_000L, 1);
-        laser = CachedLongValue.definedMin(this, builder, "Base energy storage (Joules).", "laser",
+        laser = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.BASE_ENERGY_STORAGE_JOULES, "laser",
               2_000_000L, 1);
-        laserAmplifier = CachedLongValue.definedMin(this, builder, "Base energy storage (Joules).", "laserAmplifier",
+        laserAmplifier = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.BASE_ENERGY_STORAGE_JOULES, "laserAmplifier",
               5_000_000_000L, 1);
-        laserTractorBeam = CachedLongValue.definedMin(this, builder, "Base energy storage (Joules).", "laserTractorBeam",
+        laserTractorBeam = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.BASE_ENERGY_STORAGE_JOULES, "laserTractorBeam",
               5_000_000_000L, 1);
-        formulaicAssemblicator = CachedLongValue.definedMin(this, builder, "Base energy storage (Joules).", "formulaicAssemblicator",
+        formulaicAssemblicator = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.BASE_ENERGY_STORAGE_JOULES, "formulaicAssemblicator",
               40_000L, 1);
-        teleporter = CachedLongValue.definedMin(this, builder, "Base energy storage (Joules).", "teleporter",
+        teleporter = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.BASE_ENERGY_STORAGE_JOULES, "teleporter",
               5_000_000L, 1);
-        modificationStation = CachedLongValue.definedMin(this, builder, "Base energy storage (Joules).", "modificationStation",
+        modificationStation = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.BASE_ENERGY_STORAGE_JOULES, "modificationStation",
               40_000L, 1);
-        isotopicCentrifuge = CachedLongValue.definedMin(this, builder, "Base energy storage (Joules).", "isotopicCentrifuge",
+        isotopicCentrifuge = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.BASE_ENERGY_STORAGE_JOULES, "isotopicCentrifuge",
               80_000L, 1);
-        nutritionalLiquifier = CachedLongValue.definedMin(this, builder, "Base energy storage (Joules).", "nutritionalLiquifier",
+        nutritionalLiquifier = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.BASE_ENERGY_STORAGE_JOULES, "nutritionalLiquifier",
               40_000L, 1);
         antiprotonicNucleosynthesizer = CachedLongValue.definedMin(this, builder, "Base energy storage (Joules). Also defines max process rate.", "antiprotonicNucleosynthesizer",
               1_000_000_000L, 1);
-        pigmentExtractor = CachedLongValue.definedMin(this, builder, "Base energy storage (Joules).", "pigmentExtractor",
+        pigmentExtractor = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.BASE_ENERGY_STORAGE_JOULES, "pigmentExtractor",
               40_000L, 1);
-        pigmentMixer = CachedLongValue.definedMin(this, builder, "Base energy storage (Joules).", "pigmentMixer",
+        pigmentMixer = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.BASE_ENERGY_STORAGE_JOULES, "pigmentMixer",
               80_000L, 1);
-        paintingMachine = CachedLongValue.definedMin(this, builder, "Base energy storage (Joules).", "paintingMachine",
+        paintingMachine = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.BASE_ENERGY_STORAGE_JOULES, "paintingMachine",
               40_000L, 1);
         spsPort = CachedLongValue.definedMin(this, builder, "Base energy storage (Joules). Also defines max output rate.", "spsPort",
               1_000_000_000L, 1);
-        dimensionalStabilizer = CachedLongValue.definedMin(this, builder, "Base energy storage (Joules).", "dimensionalStabilizer",
+        dimensionalStabilizer = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.BASE_ENERGY_STORAGE_JOULES, "dimensionalStabilizer",
               40_000L, 1);
 
         builder.pop();

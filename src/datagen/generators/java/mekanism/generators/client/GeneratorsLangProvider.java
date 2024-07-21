@@ -6,6 +6,7 @@ import mekanism.generators.common.GeneratorTags;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.advancements.GeneratorsAdvancements;
+import mekanism.generators.common.config.GeneratorsConfigTranslations;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.registries.GeneratorsChemicals;
@@ -22,6 +23,7 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
 
     @Override
     protected void addTranslations() {
+        addConfigs(GeneratorsConfigTranslations.values());
         addTags();
         addItems();
         addBlocks();

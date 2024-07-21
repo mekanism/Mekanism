@@ -1,6 +1,7 @@
 package mekanism.generators.common.config;
 
 import mekanism.common.config.BaseMekanismConfig;
+import mekanism.common.config.MekanismConfigTranslations;
 import mekanism.common.config.value.CachedLongValue;
 import net.neoforged.fml.config.ModConfig.Type;
 import net.neoforged.neoforge.common.ModConfigSpec;
@@ -17,17 +18,17 @@ public class GeneratorsStorageConfig extends BaseMekanismConfig {
 
     GeneratorsStorageConfig() {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
-        builder.comment("Generator Energy Storage Config. This config is synced from server to client.").push("storage");
+        GeneratorsConfigTranslations.STORAGE_TOP_LEVEL.applyToBuilder(builder).push("storage");
 
-        heatGenerator = CachedLongValue.definedMin(this, builder, "Base energy storage (Joules).", "heatGenerator",
+        heatGenerator = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.BASE_ENERGY_STORAGE_JOULES, "heatGenerator",
               160_000L, 1);
-        bioGenerator = CachedLongValue.definedMin(this, builder, "Base energy storage (Joules).", "bioGenerator",
+        bioGenerator = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.BASE_ENERGY_STORAGE_JOULES, "bioGenerator",
               160_000L, 1);
-        solarGenerator = CachedLongValue.definedMin(this, builder, "Base energy storage (Joules).", "solarGenerator",
+        solarGenerator = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.BASE_ENERGY_STORAGE_JOULES, "solarGenerator",
               96_000L, 1);
-        advancedSolarGenerator = CachedLongValue.definedMin(this, builder, "Base energy storage (Joules).", "advancedSolarGenerator",
+        advancedSolarGenerator = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.BASE_ENERGY_STORAGE_JOULES, "advancedSolarGenerator",
               200_000L, 1);
-        windGenerator = CachedLongValue.definedMin(this, builder, "Base energy storage (Joules).", "windGenerator",
+        windGenerator = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.BASE_ENERGY_STORAGE_JOULES, "windGenerator",
               200_000L, 1);
 
         builder.pop();

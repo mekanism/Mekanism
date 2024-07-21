@@ -6,6 +6,9 @@ import mekanism.additions.common.AdditionsLang;
 import mekanism.additions.common.AdditionsTags;
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.advancements.AdditionsAdvancements;
+import mekanism.additions.common.config.AdditionsConfigTranslations;
+import mekanism.additions.common.config.AdditionsConfigTranslations.BabySpawnTranslations;
+import mekanism.additions.common.entity.baby.BabyType;
 import mekanism.additions.common.item.ItemBalloon;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
@@ -25,6 +28,7 @@ public class AdditionsLangProvider extends BaseLanguageProvider {
 
     @Override
     protected void addTranslations() {
+        addConfigs();
         addTags();
         addItems();
         addBlocks();
@@ -33,6 +37,15 @@ public class AdditionsLangProvider extends BaseLanguageProvider {
         addAdvancements();
         addMisc();
         addAliases(AdditionsAliases.values());
+    }
+
+    private void addConfigs() {
+        addConfigs(AdditionsConfigTranslations.values());
+        for (BabyType type : BabyType.values()) {
+            BabySpawnTranslations translations = BabySpawnTranslations.create("baby " + type.getSerializedName().replace('_', ' '));
+            addConfigs(translations.topLevel(), translations.shouldSpawn(), translations.weight(), translations.minSize(), translations.maxSize(),
+                  translations.costPerEntity(), translations.maxCost(), translations.biomeBlacklist(), translations.structureBlacklist());
+        }
     }
 
     private void addTags() {

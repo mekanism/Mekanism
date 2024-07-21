@@ -13,10 +13,9 @@ public class AdditionsClientConfig extends BaseMekanismConfig {
 
     AdditionsClientConfig() {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
-        builder.comment("Mekanism Additions Client Config. This config only exists on the client.").push("additions-client");
+        AdditionsConfigTranslations.CLIENT_TOP_LEVEL.applyToBuilder(builder).push("additions-client");
 
-        voiceKeyIsToggle = CachedBooleanValue.wrap(this, builder.comment("If the voice server is enabled and voiceKeyIsToggle is also enabled, the voice key will "
-                                                                         + "act as a toggle instead of requiring to be held while talking.")
+        voiceKeyIsToggle = CachedBooleanValue.wrap(this, AdditionsConfigTranslations.CLIENT_VOICE_KEY_TOGGLE.applyToBuilder(builder)
               .define("voiceKeyIsToggle", false));
         builder.pop();
         configSpec = builder.build();
