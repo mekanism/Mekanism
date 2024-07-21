@@ -156,8 +156,7 @@ public class AdditionsTagProvider extends BaseTagProvider {
             DyeColor dyeColor = entry.getKey().getDyeColor();
             if (dyeColor != null) {
                 addToTags(Tags.Items.DYED, Tags.Blocks.DYED, entry.getValue());
-                TagKey<Item> dyedColor = ItemTags.create(Tags.Items.DYED.location().withSuffix("/" + dyeColor.getName()));
-                addToTags(dyedColor, BlockTags.create(dyedColor.location()), entry.getValue());
+                addToTags(dyeColor.getDyedTag(), BlockTags.create(dyeColor.getDyedTag().location()), entry.getValue());
             }
         }
     }
@@ -168,7 +167,7 @@ public class AdditionsTagProvider extends BaseTagProvider {
             DyeColor dyeColor = entry.getKey().getDyeColor();
             if (dyeColor != null) {
                 addToTag(Tags.Items.DYED, entry.getValue());
-                addToTag(ItemTags.create(Tags.Items.DYED.location().withSuffix("/" + dyeColor.getName())), entry.getValue());
+                addToTag(dyeColor.getDyedTag(), entry.getValue());
             }
         }
     }

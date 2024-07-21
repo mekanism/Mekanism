@@ -10,6 +10,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.registries.MekanismPigments;
 import mekanism.common.tags.MekanismTags;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
@@ -18,7 +19,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.BannerBlock;
 import net.minecraft.world.level.block.Blocks;
-import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.crafting.IntersectionIngredient;
 
 public class PigmentExtractingRecipeProvider implements ISubRecipeProvider {
@@ -37,22 +37,12 @@ public class PigmentExtractingRecipeProvider implements ISubRecipeProvider {
     private static final Map<EnumColor, TagKey<Item>> DYED_TAGS = new EnumMap<>(EnumColor.class);
 
     static {
-        DYED_TAGS.put(EnumColor.WHITE, Tags.Items.DYED_WHITE);
-        DYED_TAGS.put(EnumColor.ORANGE, Tags.Items.DYED_ORANGE);
-        DYED_TAGS.put(EnumColor.PINK, Tags.Items.DYED_MAGENTA);
-        DYED_TAGS.put(EnumColor.INDIGO, Tags.Items.DYED_LIGHT_BLUE);
-        DYED_TAGS.put(EnumColor.YELLOW, Tags.Items.DYED_YELLOW);
-        DYED_TAGS.put(EnumColor.BRIGHT_GREEN, Tags.Items.DYED_LIME);
-        DYED_TAGS.put(EnumColor.BRIGHT_PINK, Tags.Items.DYED_PINK);
-        DYED_TAGS.put(EnumColor.DARK_GRAY, Tags.Items.DYED_GRAY);
-        DYED_TAGS.put(EnumColor.GRAY, Tags.Items.DYED_LIGHT_GRAY);
-        DYED_TAGS.put(EnumColor.DARK_AQUA, Tags.Items.DYED_CYAN);
-        DYED_TAGS.put(EnumColor.PURPLE, Tags.Items.DYED_PURPLE);
-        DYED_TAGS.put(EnumColor.DARK_BLUE, Tags.Items.DYED_BLUE);
-        DYED_TAGS.put(EnumColor.BROWN, Tags.Items.DYED_BROWN);
-        DYED_TAGS.put(EnumColor.DARK_GREEN, Tags.Items.DYED_GREEN);
-        DYED_TAGS.put(EnumColor.RED, Tags.Items.DYED_RED);
-        DYED_TAGS.put(EnumColor.BLACK, Tags.Items.DYED_BLACK);
+        for (EnumColor color : EnumUtils.COLORS) {
+            DyeColor dyeColor = color.getDyeColor();
+            if (dyeColor != null) {
+                DYED_TAGS.put(color, dyeColor.getDyedTag());
+            }
+        }
     }
 
     @Override
