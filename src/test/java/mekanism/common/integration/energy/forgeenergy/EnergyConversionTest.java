@@ -18,17 +18,17 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @DisplayName("Forge Energy conversion")
-public class EnergyConversionTest {
+class EnergyConversionTest {
 
-    final double CONVERSION_RATE = 2.5;
-    final double INVERSE_CONVERSION = 1 / CONVERSION_RATE;
-    int JOULES_CAPACITY = 1_000;
-    int FE_CAPACITY = 400; // capacity / CONVERSION_RATE
+    private final double CONVERSION_RATE = 2.5;
+    private final double INVERSE_CONVERSION = 1 / CONVERSION_RATE;
+    private final int JOULES_CAPACITY = 1_000;
+    private final int FE_CAPACITY = 400; // capacity / CONVERSION_RATE
 
     // WRAPPING STRICT ENERGY TO FORGE ENERGY
 
-    //Test against a small empty container
     @Test
+    @DisplayName("Test wrapping J to FE against a small empty container")
     void testJoulesAsFESmallEmptyToFull() {
         IEnergyContainer joulesContainer = BasicEnergyContainer.create(JOULES_CAPACITY, null);
         IEnergyStorage feHandler = createForgeWrappedStrictEnergyHandler(joulesContainer, CONVERSION_RATE);
@@ -45,8 +45,8 @@ public class EnergyConversionTest {
         assertValueEqual(joulesContainer.getEnergy(), (long) JOULES_CAPACITY, "stored energy (joules)");
     }
 
-    //Test against a small empty container, rejecting sub-unit values
     @Test
+    @DisplayName("Test wrapping J to FE against a small empty container, rejecting sub-unit values")
     void testJoulesAsFESmallEmptySubUnit() {
         var joulesContainer = BasicEnergyContainer.create(JOULES_CAPACITY, null);
 
@@ -57,8 +57,8 @@ public class EnergyConversionTest {
         assertValueEqual(joulesContainer.getEnergy(), 0L, "raw stored energy");
     }
 
-    //Test against a small full container
     @Test
+    @DisplayName("Test wrapping J to FE against a small full container")
     void testJoulesAsFESmallFull() {
         IEnergyContainer joulesContainer = BasicEnergyContainer.create(JOULES_CAPACITY, null);
         joulesContainer.setEnergy(JOULES_CAPACITY);
@@ -75,10 +75,10 @@ public class EnergyConversionTest {
         assertValueEqual(joulesContainer.getEnergy(), 0L, "stored energy (joules)");
     }
 
-    //Test inserting against a small nearly full container (which cant fit full conversion)
-    //There shouldn't be any room for it
     @Test
+    @DisplayName("Test wrapping J to FE inserting against a small nearly full container (which cant fit full conversion)")
     void testJoulesAsFENearlyFullNoAccept() {
+        //Note: There shouldn't be any room for it
         IEnergyContainer joulesContainer = BasicEnergyContainer.create(JOULES_CAPACITY, null);
         joulesContainer.setEnergy(JOULES_CAPACITY - 2);
         IEnergyStorage feHandler = createForgeWrappedStrictEnergyHandler(joulesContainer, CONVERSION_RATE);
@@ -94,10 +94,10 @@ public class EnergyConversionTest {
         assertValueEqual(joulesContainer.getEnergy(), (long) JOULES_CAPACITY - 2, "joules contents");
     }
 
-    //Test inserting against a small nearly full container (with enough for just over the conversion rate)
-    //There should be a partial store
     @Test
+    @DisplayName("Test wrapping J to FE inserting against a small nearly full container (with enough for just over the conversion rate)")
     void testJoulesAsFEFullContainerPartialStore() {
+        //Note: There should be a partial store
         IEnergyContainer joulesContainer = BasicEnergyContainer.create(1000, null);
         joulesContainer.setEnergy(997);
         IEnergyStorage feHandler = createForgeWrappedStrictEnergyHandler(joulesContainer, CONVERSION_RATE);
@@ -110,10 +110,10 @@ public class EnergyConversionTest {
         assertValueEqual(accepted, 0, "accepted energy (fe)");
     }
 
-    //Test extracting against a small nearly empty container (less than conversion rate)
-    //There shouldn't be enough to get a single unit out
     @Test
+    @DisplayName("Test wrapping J to FE extracting against a small nearly empty container (less than conversion rate)")
     void testJoulesAsFEExtractNotEnough() {
+        //Note: There shouldn't be enough to get a single unit out
         IEnergyContainer joulesContainer = BasicEnergyContainer.create(JOULES_CAPACITY, null);
         joulesContainer.setEnergy(2);
         IEnergyStorage feHandler = createForgeWrappedStrictEnergyHandler(joulesContainer, CONVERSION_RATE);
@@ -123,10 +123,10 @@ public class EnergyConversionTest {
         assertValueEqual(joulesContainer.getEnergy(), 2L, "stored energy (joules)");
     }
 
-    //Test inserting against a small nearly full container (with enough for two full and one partial unit 8J)
-    //There should be a partial store
     @Test
+    @DisplayName("Test wrapping J to FE inserting against a small nearly full container (with enough for two full and one partial unit 8J)")
     void testJoulesAsFEInsertPartialStore() {
+        //Note: There should be a partial store
         IEnergyContainer joulesContainer = BasicEnergyContainer.create(1000, null);
         joulesContainer.setEnergy(992);
         IEnergyStorage feHandler = createForgeWrappedStrictEnergyHandler(joulesContainer, CONVERSION_RATE);
@@ -139,10 +139,10 @@ public class EnergyConversionTest {
         assertValueEqual(accepted, 2, "accepted energy (fe)");
     }
 
-    //Test inserting against a small empty container with an uneven insert
-    //There should be a partial store
     @Test
+    @DisplayName("Test wrapping J to FE inserting against a small empty container with an uneven insert")
     void testJoulesAsFEEmptyContainerPartialStore() {
+        //Note: There should be a partial store
         IEnergyContainer joulesContainer = BasicEnergyContainer.create(1000, null);
         IEnergyStorage feHandler = createForgeWrappedStrictEnergyHandler(joulesContainer, CONVERSION_RATE);
 
@@ -154,10 +154,10 @@ public class EnergyConversionTest {
         assertValueEqual(accepted, 2, "accepted energy (fe)");
     }
 
-    //Test extracting against a small nearly empty container (2.5x conversion)
-    //There should be enough to get 2 converted units out
     @Test
+    @DisplayName("Test wrapping J to FE extracting against a small nearly empty container (2.5x conversion)")
     void testJoulesAsFEExtractPartial() {
+        //Note: There should be enough to get 2 converted units out
         IEnergyContainer joulesContainer = BasicEnergyContainer.create(JOULES_CAPACITY, null);
         joulesContainer.setEnergy(8);
         IEnergyStorage feHandler = createForgeWrappedStrictEnergyHandler(joulesContainer, CONVERSION_RATE);
@@ -167,10 +167,10 @@ public class EnergyConversionTest {
         assertValueEqual(joulesContainer.getEnergy(), 3L, "stored energy (joules)");
     }
 
-    //Test inserting against a sub one sized container
-    //There shouldn't be any room for it
     @Test
+    @DisplayName("Test wrapping J to FE inserting against a sub one sized container")
     void testJoulesAsFECantFit() {
+        //Note: There shouldn't be any room for it
         IEnergyContainer joulesContainer = BasicEnergyContainer.create(2, null);
         joulesContainer.setEnergy(0);
         IEnergyStorage feHandler = createForgeWrappedStrictEnergyHandler(joulesContainer, CONVERSION_RATE);
@@ -182,8 +182,8 @@ public class EnergyConversionTest {
 
     // WRAPPING FORGE ENERGY TO STRICT ENERGY
 
-    //Test against a small empty container, filling to max capacity
     @Test
+    @DisplayName("Test wrapping FE to J against a small empty container, filling to max capacity")
     void testFEAsJoulesFillToMax() {
         EnergyStorage feContainer = new EnergyStorage(FE_CAPACITY, FE_CAPACITY, FE_CAPACITY, 0);
         IStrictEnergyHandler joulesHandler = new ForgeStrictEnergyHandler(feContainer, getConverter(CONVERSION_RATE));
@@ -197,8 +197,8 @@ public class EnergyConversionTest {
         assertValueEqual(joulesHandler.getEnergy(0), (long) JOULES_CAPACITY, "stored energy");
     }
 
-    //Test against a small full container
     @Test
+    @DisplayName("Test wrapping FE to J against a small full container")
     void testFEAsJoules() {
         EnergyStorage feStorage = new EnergyStorage(JOULES_CAPACITY, JOULES_CAPACITY, JOULES_CAPACITY, JOULES_CAPACITY);
         IStrictEnergyHandler handler = new ForgeStrictEnergyHandler(feStorage, getConverter(CONVERSION_RATE));
@@ -214,8 +214,8 @@ public class EnergyConversionTest {
 
     // WRAPPING STRICT ENERGY TO FORGE ENERGY
 
-    //Test against a small empty container
     @Test
+    @DisplayName("Test wrapping J to FE (inverse conversion) against a small empty container")
     void testJoulesAsFE1() {
         IEnergyContainer container = BasicEnergyContainer.create(JOULES_CAPACITY, null);
         container.setEnergy(0);
@@ -228,9 +228,9 @@ public class EnergyConversionTest {
         assertValueEqual(accepted, JOULES_CAPACITY, "accepted energy");
         assertValueEqual(handler.getEnergyStored(), JOULES_CAPACITY, "stored energy");
     }
-    //Test against a small full container
 
     @Test
+    @DisplayName("Test wrapping J to FE (inverse conversion) against a small full container")
     void testJoulesAsFE2() {
         IEnergyContainer container = BasicEnergyContainer.create(JOULES_CAPACITY, null);
         container.setEnergy(JOULES_CAPACITY);
@@ -244,8 +244,8 @@ public class EnergyConversionTest {
 
     // WRAPPING FORGE ENERGY TO STRICT ENERGY
 
-    //Test against a small empty container
     @Test
+    @DisplayName("Test wrapping FE to J (inverse conversion) against a small empty container")
     void testFEAsJoules3() {
         var handler = createStrictForgeEnergyHandler(0, JOULES_CAPACITY, INVERSE_CONVERSION);
         long extracted = handler.extractEnergy(JOULES_CAPACITY, Action.EXECUTE);
@@ -255,8 +255,8 @@ public class EnergyConversionTest {
         assertValueEqual(handler.getEnergy(0), (long) FE_CAPACITY, "stored energy");
     }
 
-    //Test against a small full container
     @Test
+    @DisplayName("Test wrapping FE to J (inverse conversion) against a small full container")
     void testFEAsJoules4() {
         var handler = createStrictForgeEnergyHandler(JOULES_CAPACITY, JOULES_CAPACITY, INVERSE_CONVERSION);
         long remainder = handler.insertEnergy(JOULES_CAPACITY, Action.EXECUTE);
@@ -266,8 +266,8 @@ public class EnergyConversionTest {
         assertValueEqual(handler.getEnergy(0), 0L, "stored energy");
     }
 
-    //Test inserting against a small nearly full container
     @Test
+    @DisplayName("Test wrapping FE to J (inverse conversion) inserting against a small nearly full container")
     void testFEAsJoules5() {
         var handler = createStrictForgeEnergyHandler(JOULES_CAPACITY - 2, JOULES_CAPACITY, INVERSE_CONVERSION);//There shouldn't be any room for it
         long remainder = handler.insertEnergy(JOULES_CAPACITY, Action.EXECUTE);
@@ -277,24 +277,24 @@ public class EnergyConversionTest {
         assertValueEqual(handler.getMaxEnergy(0), (long) FE_CAPACITY, "max energy");
     }
 
-    //Test extracting against a small nearly empty container
     @Test
+    @DisplayName("Test wrapping FE to J (inverse conversion) extracting against a small nearly empty container")
     void testFEAsJoules6() {
         var handler = createStrictForgeEnergyHandler(2, JOULES_CAPACITY, INVERSE_CONVERSION);//There shouldn't be enough to get a single unit out
         long extracted = handler.extractEnergy(JOULES_CAPACITY, Action.EXECUTE);
         assertValueEqual(extracted, 0L, "extracted energy");
     }
 
-    //Test inserting against a sub one sized container
     @Test
+    @DisplayName("Test wrapping FE to J (inverse conversion) inserting against a sub one sized container")
     void testFEAsJoules7() {
         var handler = createStrictForgeEnergyHandler(0, 2, INVERSE_CONVERSION);//There shouldn't be any room for it
         long remainder = handler.insertEnergy(JOULES_CAPACITY, Action.EXECUTE);
         assertValueEqual(remainder, (long) JOULES_CAPACITY, "remaining inserted energy");
     }
 
-    //Test against a small empty container
     @Test
+    @DisplayName("Test wrapping FE to J (inverse conversion) against a small empty container")
     void testFEAsJoules8() {
         var container = new EnergyStorage(JOULES_CAPACITY);
         IStrictEnergyHandler handler = new ForgeStrictEnergyHandler(container, getConverter(INVERSE_CONVERSION));
@@ -309,6 +309,7 @@ public class EnergyConversionTest {
     // WRAPPING STRICT ENERGY TO FORGE ENERGY
 
     @Test
+    @DisplayName("Test wrapping J to FE (1:1)")
     void testJoulesAsFE9() {
         var container = BasicEnergyContainer.create(JOULES_CAPACITY, null);
         IEnergyStorage handler = createForgeWrappedStrictEnergyHandler(container, 1D);
@@ -323,8 +324,8 @@ public class EnergyConversionTest {
         assertValueEqual(container.getEnergy(), 0L, "raw stored energy");
     }
 
-    //Test having more energy than fits in an int
     @Test
+    @DisplayName("Test wrapping J to FE (1:1) having more energy than fits in an int")
     void testJoulesAsFE10() {
         var container = BasicEnergyContainer.create(4_000_000_000L, null);
         container.setEnergy(3_000_000_000L);
@@ -344,6 +345,7 @@ public class EnergyConversionTest {
     // WRAPPING FORGE ENERGY TO STRICT ENERGY
 
     @Test
+    @DisplayName("Test wrapping FE to J (1:1)")
     void testFEAsJoules11() {
         var container = new EnergyStorage(JOULES_CAPACITY);
         IStrictEnergyHandler handler = new ForgeStrictEnergyHandler(container, getConverter(1D));
@@ -361,6 +363,7 @@ public class EnergyConversionTest {
     private IEnergyStorage createForgeWrappedStrictEnergyHandler(IEnergyContainer container, double conversionRate) {
         List<IEnergyContainer> containers = Collections.singletonList(container);
         return new ForgeEnergyIntegration(new IMekanismStrictEnergyHandler() {
+            @NotNull
             @Override
             public List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
                 return containers;
