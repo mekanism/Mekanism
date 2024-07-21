@@ -82,8 +82,10 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
         ItemInteractionResult wrenchResult = bin.tryWrench(state, player, stack).getInteractionResult();
         if (wrenchResult.result() != InteractionResult.PASS) {
             return wrenchResult;
+        } else if (hit.getDirection() != bin.getDirection()) {
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
-        if (stack.isEmpty() && player.isShiftKeyDown() && hit.getDirection() == bin.getDirection()) {
+        if (stack.isEmpty() && player.isShiftKeyDown()) {
             return bin.toggleLock() ? ItemInteractionResult.sidedSuccess(world.isClientSide) : ItemInteractionResult.FAIL;
         } else if (!world.isClientSide) {
             BinInventorySlot binSlot = bin.getBinSlot();
