@@ -30,8 +30,6 @@ public class EnergyConversionTest {
     //Test against a small empty container
     @Test
     void testJoulesAsFESmallEmptyToFull() {
-        Assertions.fail("test");
-
         IEnergyContainer joulesContainer = BasicEnergyContainer.create(JOULES_CAPACITY, null);
         IEnergyStorage feHandler = createForgeWrappedStrictEnergyHandler(joulesContainer, CONVERSION_RATE);
 
