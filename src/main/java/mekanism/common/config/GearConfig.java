@@ -101,6 +101,7 @@ public class GearConfig extends BaseMekanismConfig {
     public final CachedLongValue mekaToolEnergyUsageShovel;
     public final CachedLongValue mekaToolEnergyUsageAxe;
     public final CachedLongValue mekaToolEnergyUsageShearEntity;
+    public final CachedLongValue mekaToolEnergyUsageShearTrim;
     public final CachedBooleanValue mekaToolExtendedMining;
     //MekaSuit
     public final CachedLongValue mekaSuitBaseEnergyCapacity;
@@ -280,6 +281,8 @@ public class GearConfig extends BaseMekanismConfig {
               "energyUsageAxe", 10L);
         mekaToolEnergyUsageShearEntity = CachedLongValue.definePositive(this, builder, "Cost in Joules of using the Meka-Tool to shear entities.",
               "energyUsageShearEntity", 10L);
+        mekaToolEnergyUsageShearTrim = CachedLongValue.definePositive(this, builder, "Cost in Joules of using the Meka-Tool to carefully shear and trim blocks.",
+              "energyUsageShearTrim", 10L);
         mekaToolExtendedMining = CachedBooleanValue.wrap(this, builder.comment("Enable the 'Extended Vein Mining' mode for the Meka-Tool. (Allows vein mining everything not just ores/logs)")
               .define("extendedMining", true));
         builder.pop();
