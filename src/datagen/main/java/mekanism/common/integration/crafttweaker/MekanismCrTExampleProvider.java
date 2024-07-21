@@ -7,7 +7,6 @@ import mekanism.api.MekanismAPITags;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.slurry.Slurry;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.api.text.EnumColor;
@@ -215,13 +214,13 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .comment("Adds two Separating Recipes that do the following:",
                     "1) Adds a recipe that separates 2 mB of Liquid Sulfur Trioxide into 1 mB of Oxygen and 2 mB of Sulfur Dioxide.",
                     "2) Adds a recipe that separates 1 mB of Liquid Sulfur Acid into 1 mB of Water Vapor and 1 mB of Sulfur Trioxide, "
-                    + "using one and a half times as much energy as it takes to separate Oxygen and Hydrogen from Water."
+                    + "using twice as much energy as it takes to separate Oxygen and Hydrogen from Water."
               ).blankLine()
               .recipe(ElectrolysisRecipeManager.INSTANCE)
               .addExample("separator/sulfur_trioxide", IngredientCreatorAccess.fluid().from(MekanismTags.Fluids.SULFUR_TRIOXIDE, 2), MekanismGases.OXYGEN.getStack(1),
                     MekanismGases.SULFUR_DIOXIDE.getStack(2))
               .addExample("separator/sulfuric_acid", IngredientCreatorAccess.fluid().from(MekanismTags.Fluids.SULFURIC_ACID, 1), MekanismGases.WATER_VAPOR.getStack(1),
-                    MekanismGases.SULFUR_TRIOXIDE.getStack(1), FloatingLong.createConst(1.5))
+                    MekanismGases.SULFUR_TRIOXIDE.getStack(1), 2L)
               .end()
               .comment("Removes the Separating Recipe for separating Brine into Sodium and Chlorine.")
               .blankLine()
@@ -329,7 +328,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .comment("Adds an Energy Conversion Recipe that allows converting Redstone Ore into 45 kJ of power.")
               .blankLine()
               .recipe(EnergyConversionRecipeManager.INSTANCE)
-              .addExample("redstone_ore_to_power", IngredientCreatorAccess.item().from(Tags.Items.ORES_REDSTONE), FloatingLong.createConst(45_000))
+              .addExample("redstone_ore_to_power", IngredientCreatorAccess.item().from(Tags.Items.ORES_REDSTONE), 45_000L)
               .end()
               .comment("Removes the Energy Conversion Recipe that allows converting Redstone Blocks into Power.")
               .blankLine()
@@ -438,16 +437,16 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               ).blankLine()
               .recipe(PressurizedReactionRecipeManager.INSTANCE)
               .addExample("reaction/sawdust", IngredientCreatorAccess.item().from(MekanismTags.Items.DUSTS_WOOD), IngredientCreatorAccess.fluid().from(FluidTags.WATER, 350),
-                    IngredientCreatorAccess.gasStack().from(MekanismGases.HYDROGEN_CHLORIDE, 50), 45, new ItemStack(Items.PAPER, 2), FloatingLong.createConst(25))
+                    IngredientCreatorAccess.gasStack().from(MekanismGases.HYDROGEN_CHLORIDE, 50), 45, new ItemStack(Items.PAPER, 2), 25L)
               .addExample("reaction/sand", IngredientCreatorAccess.item().from(Tags.Items.SANDS), IngredientCreatorAccess.fluid().from(MekanismTags.Fluids.CHLORINE, 100),
                     IngredientCreatorAccess.gasStack().from(MekanismGases.HYDROGEN, 100), 300, MekanismBlocks.SALT_BLOCK.getItemStack())
               .addExample("reaction/wooden_buttons", IngredientCreatorAccess.item().from(ItemTags.WOODEN_BUTTONS, 8), IngredientCreatorAccess.fluid().from(FluidTags.WATER, 25),
                     IngredientCreatorAccess.gasStack().from(MekanismGases.OXYGEN, 25), 37, MekanismGases.HYDROGEN.getStack(25))
               .addExample("reaction/wooden_pressure_plates", IngredientCreatorAccess.item().from(ItemTags.WOODEN_PRESSURE_PLATES, 8), IngredientCreatorAccess.fluid().from(FluidTags.WATER, 50),
-                    IngredientCreatorAccess.gasStack().from(MekanismGases.OXYGEN, 50), 74, MekanismGases.HYDROGEN.getStack(50), FloatingLong.createConst(100))
+                    IngredientCreatorAccess.gasStack().from(MekanismGases.OXYGEN, 50), 74, MekanismGases.HYDROGEN.getStack(50), 100L)
               .addExample("reaction/wooden_fences", IngredientCreatorAccess.item().from(ItemTags.WOODEN_FENCES, 20), IngredientCreatorAccess.fluid().from(FluidTags.WATER, 400),
                     IngredientCreatorAccess.gasStack().from(MekanismGases.OXYGEN, 400), 600, MekanismItems.CHARCOAL_DUST.getItemStack(), MekanismGases.HYDROGEN.getStack(400),
-                    FloatingLong.createConst(300))
+                    300L)
               .addExample("reaction/boat", IngredientCreatorAccess.item().from(ItemTags.BOATS, 4), IngredientCreatorAccess.fluid().from(FluidTags.WATER, 400),
                     IngredientCreatorAccess.gasStack().from(MekanismGases.OXYGEN, 400), 600, MekanismItems.CHARCOAL_DUST.getItemStack(), MekanismGases.HYDROGEN.getStack(400))
               .end()

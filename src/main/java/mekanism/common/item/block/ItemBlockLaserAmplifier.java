@@ -2,7 +2,6 @@ package mekanism.common.item.block;
 
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
-import mekanism.api.math.FloatingLong;
 import mekanism.common.block.prefab.BlockTile.BlockTileModel;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.content.blocktype.BlockTypeTile;
@@ -18,7 +17,7 @@ public class ItemBlockLaserAmplifier extends ItemBlockTooltip<BlockTileModel<Til
         super(block, true, properties
               .component(MekanismDataComponents.REDSTONE_OUTPUT, RedstoneOutput.OFF)
               .component(MekanismDataComponents.DELAY, 0)
-              .component(MekanismDataComponents.MIN_THRESHOLD, FloatingLong.ZERO)
+              .component(MekanismDataComponents.MIN_THRESHOLD, 0L)
         );
     }
 

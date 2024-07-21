@@ -7,7 +7,6 @@ import mekanism.api.AutomationType;
 import mekanism.api.MekanismAPI;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.heat.IHeatHandler;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
 import mekanism.api.text.TextComponentUtil;
@@ -59,9 +58,9 @@ public class ItemNetworkReader extends ItemEnergized {
             BlockEntity tile = WorldUtils.getTileEntity(world, pos);
             if (tile != null) {
                 if (!player.isCreative()) {
-                    FloatingLong energyPerUse = MekanismConfig.gear.networkReaderEnergyUsage.get();
+                    long energyPerUse = MekanismConfig.gear.networkReaderEnergyUsage.get();
                     IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(context.getItemInHand(), 0);
-                    if (energyContainer == null || energyContainer.extract(energyPerUse, Action.SIMULATE, AutomationType.MANUAL).smallerThan(energyPerUse)) {
+                    if (energyContainer == null || energyContainer.extract(energyPerUse, Action.SIMULATE, AutomationType.MANUAL) < energyPerUse) {
                         return InteractionResult.FAIL;
                     }
                     energyContainer.extract(energyPerUse, Action.EXECUTE, AutomationType.MANUAL);

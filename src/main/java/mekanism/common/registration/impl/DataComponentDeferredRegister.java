@@ -6,7 +6,6 @@ import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.math.FloatingLong;
 import mekanism.common.attachments.FrequencyAware;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.FrequencyType;
@@ -58,13 +57,8 @@ public class DataComponentDeferredRegister extends MekanismDeferredRegister<Data
     }
 
     public MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Long>> registerNonNegativeLong(String name) {
-        return simple(name, builder -> builder.persistent(SerializerHelper.POSITIVE_NONZERO_LONG_CODEC)
+        return simple(name, builder -> builder.persistent(SerializerHelper.POSITIVE_LONG_CODEC_LEGACY)
               .networkSynchronized(ByteBufCodecs.VAR_LONG));
-    }
-
-    public MekanismDeferredHolder<DataComponentType<?>, DataComponentType<FloatingLong>> registerFloatingLong(String name) {
-        return simple(name, builder -> builder.persistent(FloatingLong.CODEC)
-              .networkSynchronized(FloatingLong.STREAM_CODEC));
     }
 
     public MekanismDeferredHolder<DataComponentType<?>, DataComponentType<UUID>> registerUUID(String name) {

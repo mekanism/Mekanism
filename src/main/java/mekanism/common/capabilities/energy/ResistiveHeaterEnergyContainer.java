@@ -5,7 +5,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.math.FloatingLong;
+import mekanism.api.math.MathUtils;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.tile.machine.TileEntityResistiveHeater;
 import mekanism.common.util.NBTUtils;
@@ -25,7 +25,7 @@ public class ResistiveHeaterEnergyContainer extends MachineEnergyContainer<TileE
         return new ResistiveHeaterEnergyContainer(electricBlock.getStorage(), electricBlock.getUsage(), notExternal, alwaysTrue, tile, listener);
     }
 
-    private ResistiveHeaterEnergyContainer(FloatingLong maxEnergy, FloatingLong energyPerTick, Predicate<@NotNull AutomationType> canExtract,
+    private ResistiveHeaterEnergyContainer(long maxEnergy, long energyPerTick, Predicate<@NotNull AutomationType> canExtract,
           Predicate<@NotNull AutomationType> canInsert, TileEntityResistiveHeater tile, @Nullable IContentsListener listener) {
         super(maxEnergy, energyPerTick, canExtract, canInsert, tile, listener);
     }
@@ -35,21 +35,21 @@ public class ResistiveHeaterEnergyContainer extends MachineEnergyContainer<TileE
         return true;
     }
 
-    public void updateEnergyUsage(FloatingLong energyUsage) {
+    public void updateEnergyUsage(long energyUsage) {
         currentEnergyPerTick = energyUsage;
-        setMaxEnergy(energyUsage.multiply(USAGE_MULTIPLIER));
+        setMaxEnergy(MathUtils.multiplyClamped(energyUsage, USAGE_MULTIPLIER));
     }
 
     @Override
     public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag nbt = super.serializeNBT(provider);
-        nbt.putString(SerializationConstants.ENERGY_USAGE, getEnergyPerTick().toString());
+        nbt.putLong(SerializationConstants.ENERGY_USAGE, getEnergyPerTick());
         return nbt;
     }
 
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        NBTUtils.setFloatingLongIfPresent(nbt, SerializationConstants.ENERGY_USAGE, this::updateEnergyUsage);
+        NBTUtils.setLegacyEnergyIfPresent(nbt, SerializationConstants.ENERGY_USAGE, this::updateEnergyUsage);
         super.deserializeNBT(provider, nbt);
     }
 }

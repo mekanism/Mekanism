@@ -5,7 +5,6 @@ import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
 import mekanism.api.fluid.IExtendedFluidTank;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ItemStackToFluidOptionalItemRecipe;
 import mekanism.api.recipes.ItemStackToFluidOptionalItemRecipe.FluidOptionalItemOutput;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -254,8 +253,8 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
 
     //Methods relating to IComputerTile
     @ComputerMethod(methodDescription = ComputerConstants.DESCRIPTION_GET_ENERGY_USAGE)
-    public FloatingLong getEnergyUsage() {
-        return getActive() ? energyContainer.getEnergyPerTick() : FloatingLong.ZERO;
+    public long getEnergyUsage() {
+        return getActive() ? energyContainer.getEnergyPerTick() : 0L;
     }
     //End methods IComputerTile
 }

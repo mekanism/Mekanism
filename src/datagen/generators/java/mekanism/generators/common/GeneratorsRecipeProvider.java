@@ -9,7 +9,6 @@ import mekanism.api.datagen.recipe.builder.ElectrolysisRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.GasToGasRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.RotaryRecipeBuilder;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IFluidProvider;
 import mekanism.api.providers.IGasProvider;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
@@ -76,7 +75,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
                     IngredientCreatorAccess.fluid().from(MekanismTags.Fluids.HEAVY_WATER, 2),
                     GeneratorsGases.DEUTERIUM.getStack(2),
                     MekanismGases.OXYGEN.getStack(1)
-              ).energyMultiplier(FloatingLong.createConst(2))
+              ).energyMultiplier(2)
               .build(consumer, MekanismGenerators.rl(basePath + "heavy_water"));
     }
 

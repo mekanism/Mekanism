@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.LongSupplier;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.MekanismAPITags;
@@ -20,8 +21,7 @@ import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData.ExclusiveFlag;
-import mekanism.api.math.FloatingLong;
-import mekanism.api.math.FloatingLongSupplier;
+import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.client.key.MekKeyHandler;
 import mekanism.client.key.MekanismKeyHandler;
@@ -501,28 +501,28 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         return module.getCustomInstance().getDamageAbsorbInfo(module, damageSource);
     }
 
-    private static float absorbDamage(EnergyUsageInfo usageInfo, float amount, float absorption, float currentAbsorbed, FloatingLongSupplier energyCost) {
+    private static float absorbDamage(EnergyUsageInfo usageInfo, float amount, float absorption, float currentAbsorbed, LongSupplier energyCost) {
         //Cap the amount that we can absorb to how much we have left to absorb
         absorption = Math.min(1 - currentAbsorbed, absorption);
         float toAbsorb = amount * absorption;
         if (toAbsorb > 0) {
-            FloatingLong usage = energyCost.get().multiply(toAbsorb);
-            if (usage.isZero()) {
+            long usage = MathUtils.ceilToLong(energyCost.getAsLong() * toAbsorb);
+            if (usage == 0L) {
                 //No energy is actually needed to absorb the damage, either because of the config
                 // or how small the amount to absorb is
                 return absorption;
-            } else if (usageInfo.energyAvailable.greaterOrEqual(usage)) {
+            } else if (usageInfo.energyAvailable >= usage) {
                 //If we have more energy available than we need, increase how much energy we "used"
                 // and decrease how much we have available.
-                usageInfo.energyUsed = usageInfo.energyUsed.plusEqual(usage);
-                usageInfo.energyAvailable = usageInfo.energyAvailable.minusEqual(usage);
+                usageInfo.energyUsed += usage;
+                usageInfo.energyAvailable -= usage;
                 return absorption;
-            } else if (!usageInfo.energyAvailable.isZero()) {
+            } else if (usageInfo.energyAvailable > 0L) {
                 //Otherwise, if we have energy available but not as much as needed to fully absorb it
                 // then we calculate what ratio we are able to block
-                float absorbedPercent = usageInfo.energyAvailable.divide(usage).floatValue();
-                usageInfo.energyUsed = usageInfo.energyUsed.plusEqual(usageInfo.energyAvailable);
-                usageInfo.energyAvailable = FloatingLong.ZERO;
+                float absorbedPercent = (float) (usageInfo.energyAvailable / (double) usage);
+                usageInfo.energyUsed += usageInfo.energyAvailable;
+                usageInfo.energyAvailable = 0L;
                 return absorption * absorbedPercent;
             }
         }
@@ -548,12 +548,11 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
 
     private static class EnergyUsageInfo {
 
-        private FloatingLong energyAvailable;
-        private FloatingLong energyUsed = FloatingLong.ZERO;
+        private long energyAvailable;
+        private long energyUsed = 0;
 
-        public EnergyUsageInfo(FloatingLong energyAvailable) {
-            //Copy it so we can just use minusEquals without worry
-            this.energyAvailable = energyAvailable.copy();
+        public EnergyUsageInfo(long energyAvailable) {
+            this.energyAvailable = energyAvailable;
         }
     }
 }

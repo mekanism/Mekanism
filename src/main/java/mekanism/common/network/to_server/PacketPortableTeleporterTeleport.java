@@ -5,7 +5,6 @@ import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.event.MekanismTeleportEvent;
-import mekanism.api.math.FloatingLong;
 import mekanism.common.Mekanism;
 import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.item.ItemPortableTeleporter;
@@ -63,17 +62,17 @@ public record PacketPortableTeleporterTeleport(InteractionHand currentHand, Freq
                 Level teleWorld = server == null ? null : server.getLevel(coords.dimension());
                 TileEntityTeleporter teleporter = WorldUtils.getTileEntity(TileEntityTeleporter.class, teleWorld, coords.pos());
                 if (teleporter != null) {
-                    FloatingLong energyCost;
+                    long energyCost;
                     Runnable energyExtraction = null;
                     if (!player.isCreative()) {
                         energyCost = TileEntityTeleporter.calculateEnergyCost(player, teleWorld, coords);
                         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
-                        if (energyContainer == null || energyContainer.extract(energyCost, Action.SIMULATE, AutomationType.MANUAL).smallerThan(energyCost)) {
+                        if (energyContainer == null || energyContainer.extract(energyCost, Action.SIMULATE, AutomationType.MANUAL) < energyCost) {
                             return;
                         }
                         energyExtraction = () -> energyContainer.extract(energyCost, Action.EXECUTE, AutomationType.MANUAL);
                     } else {
-                        energyCost = FloatingLong.ZERO;
+                        energyCost = 0L;
                     }
                     //TODO: Figure out what this try catch is meant to be catching as I don't see much of a reason for it to exist
                     try {

@@ -2,13 +2,13 @@ package mekanism.common.tile.machine;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.function.BiFunction;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.SerializationConstants;
 import mekanism.api.RelativeSide;
-import mekanism.api.math.FloatingLong;
+import mekanism.api.SerializationConstants;
+import mekanism.api.functions.LongObjectToLongFunction;
+import mekanism.api.math.MathUtils;
 import mekanism.common.attachments.StabilizedChunks;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.energy.FixedUsageEnergyContainer;
@@ -46,7 +46,7 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
     public static final int MAX_LOAD_DIAMETER = 2 * MAX_LOAD_RADIUS + 1;
     private static final String COMPUTER_RANGE_STR = "Range: [-" + MAX_LOAD_RADIUS + ", " + MAX_LOAD_RADIUS + "]";
     private static final String COMPUTER_RANGE_RAD = "Range: [1, " + MAX_LOAD_RADIUS + "]";
-    private static final BiFunction<FloatingLong, TileEntityDimensionalStabilizer, FloatingLong> BASE_ENERGY_CALCULATOR = (base, tile) -> base.multiply(tile.chunksLoaded);
+    private static final LongObjectToLongFunction<TileEntityDimensionalStabilizer> BASE_ENERGY_CALCULATOR = (base, tile) -> MathUtils.multiplyClamped(base, tile.chunksLoaded);
 
     private final ChunkLoader chunkLoaderComponent;
     private final boolean[][] loadingChunks;
@@ -89,8 +89,8 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
         energySlot.fillContainerOrConvert();
         //Only attempt to use power if chunk loading isn't disabled in the config
         if (MekanismConfig.general.allowChunkloading.get() && canFunction()) {
-            FloatingLong energyPerTick = energyContainer.getEnergyPerTick();
-            if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL).equals(energyPerTick)) {
+            long energyPerTick = energyContainer.getEnergyPerTick();
+            if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL) == energyPerTick) {
                 energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
                 setActive(true);
             } else {

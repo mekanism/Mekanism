@@ -3,7 +3,6 @@ package mekanism.api.datagen.recipe.builder;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.basic.BasicPressurizedReactionRecipe;
 import mekanism.api.recipes.ingredients.GasStackIngredient;
@@ -17,7 +16,7 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Pres
     private final ItemStackIngredient inputSolid;
     private final FluidStackIngredient inputFluid;
     private final GasStackIngredient inputGas;
-    private FloatingLong energyRequired = FloatingLong.ZERO;
+    private long energyRequired = 0;
     private final int duration;
     private final ItemStack outputItem;
     private final GasStack outputGas;
@@ -98,7 +97,10 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Pres
      *
      * @param energyRequired How much "extra" energy this recipe requires, compared to the base energy requirements of the machine performing the recipe.
      */
-    public PressurizedReactionRecipeBuilder energyRequired(FloatingLong energyRequired) {
+    public PressurizedReactionRecipeBuilder energyRequired(long energyRequired) {
+        if (energyRequired < 0) {
+            throw new IllegalArgumentException("This reaction recipe must have a positive or zero energy requirement.");
+        }
         this.energyRequired = energyRequired;
         return this;
     }

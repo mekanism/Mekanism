@@ -25,7 +25,6 @@ import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.api.math.FloatingLong;
 import mekanism.common.CommonWorldTickHandler;
 import mekanism.common.attachments.FilterAware;
 import mekanism.common.attachments.OverflowAware;
@@ -245,8 +244,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
 
         //Note: If we have any overflow don't function or use any energy until the overflow has been dealt with
         if (!hasOverflow && canFunction() && running && searcher.state == State.FINISHED && !oresToMine.isEmpty()) {
-            FloatingLong energyPerTick = energyContainer.getEnergyPerTick();
-            if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL).equals(energyPerTick)) {
+            long energyPerTick = energyContainer.getEnergyPerTick();
+            if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL) == energyPerTick) {
                 setActive(true);
                 if (delay > 0) {
                     delay--;
@@ -1285,8 +1284,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
 
     //Methods relating to IComputerTile
     @ComputerMethod(methodDescription = ComputerConstants.DESCRIPTION_GET_ENERGY_USAGE)
-    FloatingLong getEnergyUsage() {
-        return getActive() ? energyContainer.getEnergyPerTick() : FloatingLong.ZERO;
+    long getEnergyUsage() {
+        return getActive() ? energyContainer.getEnergyPerTick() : 0L;
     }
 
     @ComputerMethod(methodDescription = "Get the size of the Miner's internal inventory")

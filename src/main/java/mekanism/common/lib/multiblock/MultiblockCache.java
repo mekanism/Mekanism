@@ -20,7 +20,6 @@ import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.heat.IMekanismHeatHandler;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
-import mekanism.api.math.FloatingLong;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.chemical.dynamic.IGasTracker;
 import mekanism.common.capabilities.chemical.dynamic.IInfusionTracker;
@@ -288,7 +287,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
         public static final CacheSubstance<IMekanismStrictEnergyHandler, IEnergyContainer> ENERGY = new CacheSubstance<>(ContainerType.ENERGY) {
             @Override
             protected void defaultPrefab(MultiblockCache<?> cache) {
-                cache.energyContainers.add(BasicEnergyContainer.create(FloatingLong.MAX_VALUE, cache));
+                cache.energyContainers.add(BasicEnergyContainer.create(Long.MAX_VALUE, cache));
             }
 
             @Override

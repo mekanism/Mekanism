@@ -1,7 +1,6 @@
 package mekanism.client.recipe_viewer.emi.recipe;
 
 import dev.emi.emi.api.widget.WidgetHolder;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.NucleosynthesizingRecipe;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.bar.GuiDynamicHorizontalRateBar;
@@ -38,13 +37,13 @@ public class NucleosynthesizingEmiRecipe extends MekanismEmiHolderRecipe<Nucleos
         initTank(widgetHolder, GuiGasGauge.getDummy(GaugeType.SMALL_MED.with(DataType.INPUT), this, 5, 18), input(1));
         addElement(widgetHolder, new GuiEnergyGauge(new IEnergyInfoHandler() {
             @Override
-            public FloatingLong getEnergy() {
-                return FloatingLong.ONE;
+            public long getEnergy() {
+                return 1L;
             }
 
             @Override
-            public FloatingLong getMaxEnergy() {
-                return FloatingLong.ONE;
+            public long getMaxEnergy() {
+                return 1L;
             }
         }, GaugeType.SMALL_MED, this, 172, 18));
         addElement(widgetHolder, new GuiDynamicHorizontalRateBar(this, RecipeViewerUtils.barProgressHandler(recipe.getDuration()),

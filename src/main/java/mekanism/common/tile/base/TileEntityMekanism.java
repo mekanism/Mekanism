@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
+import java.util.function.ToLongFunction;
 import mekanism.api.Action;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.IContentsListener;
@@ -35,7 +35,7 @@ import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
-import mekanism.api.math.FloatingLong;
+import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.security.IBlockSecurityUtils;
@@ -96,8 +96,8 @@ import mekanism.common.inventory.container.ITrackableContainer;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableEnum;
-import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.container.sync.SyncableFluidStack;
+import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.inventory.container.sync.chemical.SyncableGasStack;
 import mekanism.common.inventory.container.sync.chemical.SyncableInfusionStack;
 import mekanism.common.inventory.container.sync.chemical.SyncablePigmentStack;
@@ -664,7 +664,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
         //Set that we received zero energy so if it is a different tick than we last had,
         // and we don't actually receive anything then we will properly update it to zero
-        tile.lastEnergyTracker.received(level.getGameTime(), FloatingLong.ZERO);
+        tile.lastEnergyTracker.received(level.getGameTime(), 0L);
         //Only update the comparator state if we support comparators and need to update comparators
         if (tile.supportsComparator() && tile.updateComparators && !state.isAir()) {
             int newRedstoneLevel = tile.getRedstoneLevel();
@@ -961,18 +961,18 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             for (IEnergyContainer energyContainer : energyContainers) {
                 if (energyContainer instanceof MachineEnergyContainer<?> machineEnergy) {
                     if (supportsUpgrades() || machineEnergy.adjustableRates()) {
-                        container.track(SyncableFloatingLong.create(machineEnergy::getMaxEnergy, machineEnergy::setMaxEnergy));
-                        container.track(SyncableFloatingLong.create(machineEnergy::getEnergyPerTick, machineEnergy::setEnergyPerTick));
+                        container.track(SyncableLong.create(machineEnergy::getMaxEnergy, machineEnergy::setMaxEnergy));
+                        container.track(SyncableLong.create(machineEnergy::getEnergyPerTick, machineEnergy::setEnergyPerTick));
                     }
                 }
                 //Ensure energy is synced after the max energy adjustment is synced so that the client doesn't try to clamp what the energy is to the max value
-                container.track(SyncableFloatingLong.create(energyContainer::getEnergy, energyContainer::setEnergy));
+                container.track(SyncableLong.create(energyContainer::getEnergy, energyContainer::setEnergy));
             }
         }
     }
 
     protected void trackLastEnergy(MekanismContainer container) {
-        container.track(SyncableFloatingLong.create(lastEnergyTracker::getLastEnergyReceived, lastEnergyTracker::setLastEnergyReceived));
+        container.track(SyncableLong.create(lastEnergyTracker::getLastEnergyReceived, lastEnergyTracker::setLastEnergyReceived));
     }
 
     @NotNull
@@ -1429,37 +1429,35 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return energyHandlerManager != null ? energyHandlerManager.getContainers(side) : Collections.emptyList();
     }
 
-    @NotNull
     @Override
-    public FloatingLong insertEnergy(int container, @NotNull FloatingLong amount, @Nullable Direction side, @NotNull Action action) {
+    public long insertEnergy(int container, long amount, @Nullable Direction side, @NotNull Action action) {
         return trackLastEnergy(amount, action, IMekanismStrictEnergyHandler.super.insertEnergy(container, amount, side, action));
     }
 
-    @NotNull
     @Override
-    public FloatingLong insertEnergy(@NotNull FloatingLong amount, @Nullable Direction side, @NotNull Action action) {
+    public long insertEnergy(long amount, @Nullable Direction side, @NotNull Action action) {
         //Note: Super bypasses calling insertEnergy(int container, ...) so we need to override it here as well
         return trackLastEnergy(amount, action, IMekanismStrictEnergyHandler.super.insertEnergy(amount, side, action));
     }
 
-    private FloatingLong trackLastEnergy(@NotNull FloatingLong amount, @NotNull Action action, @NotNull FloatingLong remainder) {
+    private long trackLastEnergy(long amount, @NotNull Action action, long remainder) {
         if (action.execute()) {
             //If for some reason we don't have a level fall back to zero
-            lastEnergyTracker.received(level == null ? 0 : level.getGameTime(), remainder.isZero() ? amount : amount.subtract(remainder));
+            lastEnergyTracker.received(level == null ? 0 : level.getGameTime(), amount - remainder);
         }
         return remainder;
     }
 
-    public final FloatingLong getInputRate() {
+    public final long getInputRate() {
         return lastEnergyTracker.getLastEnergyReceived();
     }
 
     public void applyEnergyContainers(BlockEntity.DataComponentInput input, List<IEnergyContainer> containers, AttachedEnergy attachedEnergy) {
-        List<FloatingLong> stored = attachedEnergy.containers();
+        List<Long> stored = attachedEnergy.containers();
         int size = stored.size();
         if (size == containers.size()) {
             for (int i = 0; i < size; i++) {
-                containers.get(i).setEnergy(stored.get(i).copyAsConst());
+                containers.get(i).setEnergy(stored.get(i));
             }
         }
     }
@@ -1467,9 +1465,9 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Nullable
     public AttachedEnergy collectEnergyContainers(DataComponentMap.Builder builder, List<IEnergyContainer> containers) {
         boolean hasNonEmpty = false;
-        List<FloatingLong> stored = new ArrayList<>(containers.size());
+        List<Long> stored = new ArrayList<>(containers.size());
         for (IEnergyContainer container : containers) {
-            stored.add(container.getEnergy().copyAsConst());
+            stored.add(container.getEnergy());
             if (!container.isEmpty()) {
                 hasNonEmpty = true;
             }
@@ -1708,39 +1706,39 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     // probably make use of our synthetic computer method wrapper to just add extra methods so then have it basically create
     // getEnergy, getEnergyFE for us with us only having to define getEnergy
     @ComputerMethod(nameOverride = "getEnergy", restriction = MethodRestriction.ENERGY)
-    FloatingLong getTotalEnergy() {
+    long getTotalEnergy() {
         return getTotalEnergy(IEnergyContainer::getEnergy);
     }
 
     @ComputerMethod(nameOverride = "getMaxEnergy", restriction = MethodRestriction.ENERGY)
-    FloatingLong getTotalMaxEnergy() {
+    long getTotalMaxEnergy() {
         return getTotalEnergy(IEnergyContainer::getMaxEnergy);
     }
 
     @ComputerMethod(nameOverride = "getEnergyNeeded", restriction = MethodRestriction.ENERGY)
-    FloatingLong getTotalEnergyNeeded() {
+    long getTotalEnergyNeeded() {
         return getTotalEnergy(IEnergyContainer::getNeeded);
     }
 
-    private FloatingLong getTotalEnergy(Function<IEnergyContainer, FloatingLong> getter) {
-        FloatingLong total = FloatingLong.ZERO;
+    private long getTotalEnergy(ToLongFunction<IEnergyContainer> getter) {
+        long total = 0;
         List<IEnergyContainer> energyContainers = getEnergyContainers(null);
         for (IEnergyContainer energyContainer : energyContainers) {
-            total = total.plusEqual(getter.apply(energyContainer));
+            total = MathUtils.addClamped(total, getter.applyAsLong(energyContainer));
         }
         return total;
     }
 
     @ComputerMethod(nameOverride = "getEnergyFilledPercentage", restriction = MethodRestriction.ENERGY)
     double getTotalEnergyFilledPercentage() {
-        FloatingLong stored = FloatingLong.ZERO;
-        FloatingLong max = FloatingLong.ZERO;
+        long stored = 0;
+        long max = 0;
         List<IEnergyContainer> energyContainers = getEnergyContainers(null);
         for (IEnergyContainer energyContainer : energyContainers) {
-            stored = stored.plusEqual(energyContainer.getEnergy());
-            max = max.plusEqual(energyContainer.getMaxEnergy());
+            stored = MathUtils.addClamped(stored, energyContainer.getEnergy());
+            max = MathUtils.addClamped(max, energyContainer.getMaxEnergy());
         }
-        return stored.divideToLevel(max);
+        return MathUtils.divideToLevel(stored, max);
     }
 
     @ComputerMethod(restriction = MethodRestriction.REDSTONE_CONTROL, requiresPublicSecurity = true)

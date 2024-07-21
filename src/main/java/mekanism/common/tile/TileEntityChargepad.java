@@ -7,7 +7,6 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.energy.IStrictEnergyHandler;
-import mekanism.api.math.FloatingLong;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
@@ -103,12 +102,12 @@ public class TileEntityChargepad extends TileEntityMekanism {
         if (energyHandler == null) {
             return false;
         }
-        FloatingLong energyToGive = energyContainer.getEnergyPerTick();
-        FloatingLong simulatedRemainder = energyHandler.insertEnergy(energyToGive, Action.SIMULATE);
-        if (simulatedRemainder.smallerThan(energyToGive)) {
+        long energyToGive = energyContainer.getEnergyPerTick();
+        long simulatedRemainder = energyHandler.insertEnergy(energyToGive, Action.SIMULATE);
+        if (simulatedRemainder < energyToGive) {
             //We are able to fit at least some energy from our container into the item
-            FloatingLong extractedEnergy = energyContainer.extract(energyToGive.subtract(simulatedRemainder), Action.EXECUTE, AutomationType.INTERNAL);
-            if (!extractedEnergy.isZero()) {
+            long extractedEnergy = energyContainer.extract(energyToGive - simulatedRemainder, Action.EXECUTE, AutomationType.INTERNAL);
+            if (extractedEnergy > 0L) {
                 //If we were able to actually extract it from our energy container, then insert it into the item
                 MekanismUtils.logExpectedZero(energyHandler.insertEnergy(extractedEnergy, Action.EXECUTE));
                 return true;

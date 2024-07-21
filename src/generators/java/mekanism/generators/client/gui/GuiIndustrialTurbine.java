@@ -2,6 +2,7 @@ package mekanism.generators.client.gui;
 
 import java.util.ArrayList;
 import java.util.List;
+import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiInnerScreen;
@@ -68,7 +69,7 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
             public double getLevel() {
                 TurbineMultiblockData multiblock = tile.getMultiblock();
                 if (multiblock.isFormed()) {
-                    return multiblock.energyContainer.getEnergy().divideToLevel(multiblock.energyContainer.getMaxEnergy());
+                    return MathUtils.divideToLevel(multiblock.energyContainer.getEnergy(), multiblock.energyContainer.getMaxEnergy());
                 }
                 return 1;
             }
@@ -100,9 +101,10 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
             TurbineMultiblockData multiblock = tile.getMultiblock();
             if (multiblock.isFormed()) {
                 storing = EnergyDisplay.of(multiblock.energyContainer);
-                producing = EnergyDisplay.of(MekanismConfig.general.maxEnergyPerSteam.get().divide(TurbineValidator.MAX_BLADES)
-                      .multiply(multiblock.clientFlow * Math.min(multiblock.blades,
-                            multiblock.coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get())));
+                double steamPerBlade = MekanismConfig.general.maxEnergyPerSteam.get() / (double) TurbineValidator.MAX_BLADES;
+                int bladesSupported = multiblock.coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get();
+                int generationLimiter = Math.min(multiblock.blades, bladesSupported);
+                producing = EnergyDisplay.of(MathUtils.clampToLong(steamPerBlade * (multiblock.clientFlow * generationLimiter)));
             } else {
                 storing = EnergyDisplay.ZERO;
                 producing = EnergyDisplay.ZERO;

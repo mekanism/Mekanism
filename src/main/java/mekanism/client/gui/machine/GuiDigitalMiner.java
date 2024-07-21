@@ -60,7 +60,7 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
         addRenderableWidget(new GuiInnerScreen(this, 7, 19, 77, 69, () -> {
             List<Component> list = new ArrayList<>();
             ILangEntry runningType;
-            if (tile.getEnergyContainer().getEnergyPerTick().greaterThan(tile.getEnergyContainer().getMaxEnergy())) {
+            if (tile.getEnergyContainer().getEnergyPerTick() > tile.getEnergyContainer().getMaxEnergy()) {
                 runningType = MekanismLang.MINER_LOW_POWER;
             } else if (tile.isRunning()) {
                 runningType = MekanismLang.MINER_RUNNING;
@@ -84,7 +84,7 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
         addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 157, 39, 47))
               .warning(WarningType.NOT_ENOUGH_ENERGY, () -> {
                   MinerEnergyContainer energyContainer = tile.getEnergyContainer();
-                  return energyContainer.getEnergyPerTick().greaterThan(energyContainer.getEnergy());
+                  return energyContainer.getEnergyPerTick() > energyContainer.getEnergy();
               });
         addRenderableWidget(new GuiVisualsTab(this, tile));
         addRenderableWidget(new GuiSlot(SlotType.DIGITAL, this, 64, 21).setRenderAboveSlots().validity(() -> tile.missingStack)

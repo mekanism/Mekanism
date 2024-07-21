@@ -3,7 +3,7 @@ package mekanism.client.gui.element.gauge;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.math.FloatingLong;
+import mekanism.api.math.MathUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
@@ -19,12 +19,12 @@ public class GuiEnergyGauge extends GuiGauge<Void> {
     public GuiEnergyGauge(IEnergyContainer container, GaugeType type, IGuiWrapper gui, int x, int y) {
         this(new IEnergyInfoHandler() {
             @Override
-            public FloatingLong getEnergy() {
+            public long getEnergy() {
                 return container.getEnergy();
             }
 
             @Override
-            public FloatingLong getMaxEnergy() {
+            public long getMaxEnergy() {
                 return container.getMaxEnergy();
             }
         }, type, gui, x, y);
@@ -56,12 +56,12 @@ public class GuiEnergyGauge extends GuiGauge<Void> {
         if (dummy) {
             return height - 2;
         }
-        if (infoHandler.getEnergy().isZero()) {
+        if (infoHandler.getEnergy() == 0L) {
             return 0;
-        } else if (infoHandler.getEnergy().equals(FloatingLong.MAX_VALUE)) {
+        } else if (infoHandler.getEnergy() == Long.MAX_VALUE) {
             return height - 2;
         }
-        return Math.max(1, (int) ((height - 2) * infoHandler.getEnergy().divideToLevel(infoHandler.getMaxEnergy())));
+        return Math.max(1, (int) ((height - 2) * MathUtils.divideToLevel(infoHandler.getEnergy(), infoHandler.getMaxEnergy())));
     }
 
     @Override
@@ -78,7 +78,7 @@ public class GuiEnergyGauge extends GuiGauge<Void> {
     public List<Component> getTooltipText() {
         if (dummy) {
             return Collections.emptyList();
-        } else if (infoHandler.getEnergy().isZero()) {
+        } else if (infoHandler.getEnergy() == 0) {
             return Collections.singletonList(MekanismLang.EMPTY.translate());
         }
         return Collections.singletonList(EnergyDisplay.of(infoHandler.getEnergy(), infoHandler.getMaxEnergy()).getTextComponent());
@@ -86,8 +86,8 @@ public class GuiEnergyGauge extends GuiGauge<Void> {
 
     public interface IEnergyInfoHandler {
 
-        FloatingLong getEnergy();
+        long getEnergy();
 
-        FloatingLong getMaxEnergy();
+        long getMaxEnergy();
     }
 }

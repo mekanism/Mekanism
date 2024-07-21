@@ -14,7 +14,6 @@ import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.heat.IHeatCapacitor;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.chemical.multiblock.MultiblockChemicalTankBuilder;
@@ -70,7 +69,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
     private static final double burnTemperature = 100_000_000;
     private static final double burnRatio = 1;
     //Thermal characteristics
-    private static final double plasmaHeatCapacity = 100;
+    private static final long plasmaHeatCapacity = 100;
     private static final double caseHeatCapacity = 1;
     private static final double inverseInsulation = 100_000;
     //Heat transfer metrics
@@ -191,11 +190,11 @@ public class FusionReactorMultiblockData extends MultiblockData {
         tag.putBoolean(SerializationConstants.BURNING, isBurning());
     }
 
-    public void addTemperatureFromEnergyInput(FloatingLong energyAdded) {
+    public void addTemperatureFromEnergyInput(long energyAdded) {
         if (isBurning()) {
-            setPlasmaTemp(getPlasmaTemp() + energyAdded.divide(plasmaHeatCapacity).doubleValue());
+            setPlasmaTemp(getPlasmaTemp() + ((double) energyAdded / plasmaHeatCapacity));
         } else {
-            setPlasmaTemp(getPlasmaTemp() + energyAdded.divide(plasmaHeatCapacity).multiply(10).doubleValue());
+            setPlasmaTemp(getPlasmaTemp() + ((double) energyAdded / plasmaHeatCapacity) * 10);
         }
     }
 
@@ -319,7 +318,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
     private long burnFuel() {
         long fuelBurned = MathUtils.clampToLong(Mth.clamp((lastPlasmaTemperature - burnTemperature) * burnRatio, 0, fuelTank.getStored()));
         MekanismUtils.logMismatchedStackSize(fuelTank.shrinkStack(fuelBurned, Action.EXECUTE), fuelBurned);
-        setPlasmaTemp(getPlasmaTemp() + MekanismGeneratorsConfig.generators.energyPerFusionFuel.get().multiply(fuelBurned).divide(plasmaHeatCapacity).doubleValue());
+        setPlasmaTemp(getPlasmaTemp() + (MathUtils.multiplyClamped(MekanismGeneratorsConfig.generators.energyPerFusionFuel.get(), fuelBurned) / (double) plasmaHeatCapacity));
         return fuelBurned;
     }
 
@@ -352,7 +351,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
         double caseAirHeat = MekanismGeneratorsConfig.generators.fusionCasingThermalConductivity.get() * (lastCaseTemperature - biomeAmbientTemp);
         if (Math.abs(caseAirHeat) > HeatAPI.EPSILON) {
             heatCapacitor.handleHeat(-caseAirHeat);
-            energyContainer.insert(FloatingLong.create(caseAirHeat * MekanismGeneratorsConfig.generators.fusionThermocoupleEfficiency.get()), Action.EXECUTE, AutomationType.INTERNAL);
+            energyContainer.insert(MathUtils.clampToLong(caseAirHeat * MekanismGeneratorsConfig.generators.fusionThermocoupleEfficiency.get()), Action.EXECUTE, AutomationType.INTERNAL);
         }
     }
 
@@ -450,7 +449,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
         double k = active ? MekanismGeneratorsConfig.generators.fusionWaterHeatingRatio.get() : 0;
         double caseAirConductivity = MekanismGeneratorsConfig.generators.fusionCasingThermalConductivity.get();
         double aMin = burnTemperature * burnRatio * plasmaCaseConductivity * (k + caseAirConductivity) /
-                      (MekanismGeneratorsConfig.generators.energyPerFusionFuel.get().doubleValue() * burnRatio * (plasmaCaseConductivity + k + caseAirConductivity) -
+                      (MekanismGeneratorsConfig.generators.energyPerFusionFuel.get() * burnRatio * (plasmaCaseConductivity + k + caseAirConductivity) -
                        plasmaCaseConductivity * (k + caseAirConductivity));
         return 2 * Mth.ceil(aMin / 2D);
     }
@@ -460,7 +459,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
         double k = active ? MekanismGeneratorsConfig.generators.fusionWaterHeatingRatio.get() : 0;
         double caseAirConductivity = MekanismGeneratorsConfig.generators.fusionCasingThermalConductivity.get();
         long injectionRate = Math.max(this.injectionRate, lastBurned);
-        return injectionRate * MekanismGeneratorsConfig.generators.energyPerFusionFuel.get().doubleValue() / plasmaCaseConductivity *
+        return injectionRate * MekanismGeneratorsConfig.generators.energyPerFusionFuel.get() / plasmaCaseConductivity *
                (plasmaCaseConductivity + k + caseAirConductivity) / (k + caseAirConductivity);
     }
 
@@ -468,22 +467,22 @@ public class FusionReactorMultiblockData extends MultiblockData {
     public double getMaxCasingTemperature(boolean active) {
         double k = active ? MekanismGeneratorsConfig.generators.fusionWaterHeatingRatio.get() : 0;
         long injectionRate = Math.max(this.injectionRate, lastBurned);
-        return MekanismGeneratorsConfig.generators.energyPerFusionFuel.get().multiply(injectionRate)
-              .divide(k + MekanismGeneratorsConfig.generators.fusionCasingThermalConductivity.get()).doubleValue();
+        return MathUtils.multiplyClamped(MekanismGeneratorsConfig.generators.energyPerFusionFuel.get(), injectionRate)
+               / (k + MekanismGeneratorsConfig.generators.fusionCasingThermalConductivity.get());
     }
 
     @ComputerMethod(methodDescription = "true -> water cooled, false -> air cooled")
     public double getIgnitionTemperature(boolean active) {
         double k = active ? MekanismGeneratorsConfig.generators.fusionWaterHeatingRatio.get() : 0;
         double caseAirConductivity = MekanismGeneratorsConfig.generators.fusionCasingThermalConductivity.get();
-        double energyPerFusionFuel = MekanismGeneratorsConfig.generators.energyPerFusionFuel.get().doubleValue();
+        double energyPerFusionFuel = MekanismGeneratorsConfig.generators.energyPerFusionFuel.get();
         return burnTemperature * energyPerFusionFuel * burnRatio * (plasmaCaseConductivity + k + caseAirConductivity) /
                (energyPerFusionFuel * burnRatio * (plasmaCaseConductivity + k + caseAirConductivity) - plasmaCaseConductivity * (k + caseAirConductivity));
     }
 
-    public FloatingLong getPassiveGeneration(boolean active, boolean current) {
+    public long getPassiveGeneration(boolean active, boolean current) {
         double temperature = current ? getLastCaseTemp() : getMaxCasingTemperature(active);
-        return FloatingLong.create(MekanismGeneratorsConfig.generators.fusionThermocoupleEfficiency.get() *
+        return MathUtils.clampToLong(MekanismGeneratorsConfig.generators.fusionThermocoupleEfficiency.get() *
                                    MekanismGeneratorsConfig.generators.fusionCasingThermalConductivity.get() * temperature);
     }
 
@@ -510,12 +509,12 @@ public class FusionReactorMultiblockData extends MultiblockData {
     }
 
     @ComputerMethod
-    FloatingLong getPassiveGeneration(boolean active) {
+    long getPassiveGeneration(boolean active) {
         return getPassiveGeneration(active, false);
     }
 
     @ComputerMethod
-    FloatingLong getProductionRate() {
+    long getProductionRate() {
         return getPassiveGeneration(false, true);
     }
     //End computer related methods

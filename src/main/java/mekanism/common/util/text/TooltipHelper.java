@@ -1,6 +1,5 @@
 package mekanism.common.util.text;
 
-import mekanism.api.math.FloatingLong;
 import mekanism.api.text.ITooltipHelper;
 import mekanism.common.MekanismLang;
 import mekanism.common.util.MekanismUtils;
@@ -14,7 +13,7 @@ import net.minecraft.network.chat.Component;
 public class TooltipHelper implements ITooltipHelper {
 
     @Override
-    public Component getEnergyPerMBDisplayShort(FloatingLong energy) {
+    public Component getEnergyPerMBDisplayShort(long energy) {
         return MekanismLang.GENERIC_PER_MB.translate(MekanismUtils.getEnergyDisplayShort(energy));
     }
 

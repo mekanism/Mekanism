@@ -3,7 +3,6 @@ package mekanism.client.recipe_viewer.jei.machine;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.NucleosynthesizingRecipe;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.bar.GuiDynamicHorizontalRateBar;
@@ -50,13 +49,13 @@ public class NucleosynthesizingRecipeCategory extends HolderRecipeCategory<Nucle
         gasInput = addElement(GuiGasGauge.getDummy(GaugeType.SMALL_MED.with(DataType.INPUT), this, 5, 18));
         addElement(new GuiEnergyGauge(new IEnergyInfoHandler() {
             @Override
-            public FloatingLong getEnergy() {
-                return FloatingLong.ONE;
+            public long getEnergy() {
+                return 1L;
             }
 
             @Override
-            public FloatingLong getMaxEnergy() {
-                return FloatingLong.ONE;
+            public long getMaxEnergy() {
+                return 1L;
             }
         }, GaugeType.SMALL_MED, this, 172, 18));
         rateBar = addElement(new GuiDynamicHorizontalRateBar(this, getBarProgressTimer(), 5, 88, 183,

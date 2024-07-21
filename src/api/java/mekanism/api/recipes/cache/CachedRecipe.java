@@ -9,14 +9,14 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
+import java.util.function.LongConsumer;
+import java.util.function.LongSupplier;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.ConstantPredicates;
-import mekanism.api.math.FloatingLong;
-import mekanism.api.math.FloatingLongConsumer;
-import mekanism.api.math.FloatingLongSupplier;
+import mekanism.api.math.MathUtils;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 
@@ -78,19 +78,19 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?>> {
      *
      * @implNote Defaults to not requiring any energy.
      */
-    private FloatingLongSupplier perTickEnergy = () -> FloatingLong.ZERO;
+    private LongSupplier perTickEnergy = ConstantPredicates.ZERO_LONG;
     /**
      * Gets the energy currently stored in the machine/object executing this {@link CachedRecipe}.
      *
      * @implNote Defaults to returning no energy stored.
      */
-    private FloatingLongSupplier storedEnergy = () -> FloatingLong.ZERO;
+    private LongSupplier storedEnergy = ConstantPredicates.ZERO_LONG;
     /**
      * Called to consume energy.
      *
      * @implNote Defaults to doing nothing.
      */
-    private FloatingLongConsumer useEnergy = energy -> {
+    private LongConsumer useEnergy = energy -> {
     };
 
     /**
@@ -171,7 +171,7 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?>> {
      *
      * @apiNote If this method is not used, this {@link CachedRecipe} defaults to not requiring or using any energy.
      */
-    public CachedRecipe<RECIPE> setEnergyRequirements(FloatingLongSupplier perTickEnergy, IEnergyContainer energyContainer) {
+    public CachedRecipe<RECIPE> setEnergyRequirements(LongSupplier perTickEnergy, IEnergyContainer energyContainer) {
         //TODO: Re-evaluate if we want to change this to a system similar to the InputHandler, so that we can simulate extracting energy
         // from our container, it likely is not worth it as if we make the assumption we can extract all stored energy it cuts down on
         // processing. If we move the energy requirement checks to after checking about inputs it may become worthwhile
@@ -403,13 +403,13 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?>> {
      * @param operations Number of operations being performed.
      */
     protected void useEnergy(int operations) {
-        FloatingLong energy = perTickEnergy.get();
+        long energy = perTickEnergy.getAsLong();
         if (operations == 1) {
             //While floating long will short circuit any calculations if multiplied by one given we require making a copy to ensure we don't
             // modify the source value, if we do the check here manually as well, then we can skip creating unnecessary objects
             useEnergy.accept(energy);
         } else {
-            useEnergy.accept(energy.multiply(operations));
+            useEnergy.accept(energy * operations);
         }
     }
 
@@ -425,12 +425,11 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?>> {
      */
     protected void calculateOperationsThisTick(OperationTracker tracker) {
         if (tracker.shouldContinueChecking()) {
-            FloatingLong energyPerTick = perTickEnergy.get();
+            long energyPerTick = perTickEnergy.getAsLong();
             //If we don't have an energy requirement return what we were told the max is
-            if (!energyPerTick.isZero()) {
+            if (energyPerTick != 0L) {
                 //Make sure we don't have any integer overflow in calculating how much we have room for
-                //TODO: Evaluate moving this check to after checking if inputs are empty, as those may be a cheaper check
-                int operations = storedEnergy.get().divideToInt(energyPerTick);
+                int operations = MathUtils.clampToInt(storedEnergy.getAsLong() / energyPerTick);
                 //Update the max amount we can perform from our energy (we apply this at the end so that we can see if we have a reduced
                 // operation count due to energy
                 tracker.maxForEnergy = operations;

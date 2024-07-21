@@ -13,7 +13,6 @@ import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
-import mekanism.api.math.FloatingLong;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.attachments.containers.ContainerType;
@@ -149,10 +148,10 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.fillContainerOrConvert();
         inputSlot.drainTank(outputSlot);
-        FloatingLong clientEnergyUsed = FloatingLong.ZERO;
+        long clientEnergyUsed = 0L;
         if (canFunction() && (fluidTank.isEmpty() || estimateIncrementAmount() <= fluidTank.getNeeded())) {
-            FloatingLong energyPerTick = energyContainer.getEnergyPerTick();
-            if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL).equals(energyPerTick)) {
+            long energyPerTick = energyContainer.getEnergyPerTick();
+            if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL) == energyPerTick) {
                 if (!activeType.isEmpty()) {
                     //If we have an active type of fluid, use energy. This can cause there to be ticks where there isn't actually
                     // anything to suck that use energy, but those will balance out with the first set of ticks where it doesn't
@@ -163,7 +162,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
                 if (operatingTicks >= ticksRequired) {
                     operatingTicks = 0;
                     if (suck()) {
-                        if (clientEnergyUsed.isZero()) {
+                        if (clientEnergyUsed == 0L) {
                             //If it didn't already have an active type (hasn't used energy this tick), then extract energy
                             clientEnergyUsed = energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
                         }
@@ -173,7 +172,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
                 }
             }
         }
-        usedEnergy = !clientEnergyUsed.isZero();
+        usedEnergy = clientEnergyUsed > 0L;
         if (!fluidTank.isEmpty()) {
             if (fluidHandlerAbove.isEmpty()) {
                 fluidHandlerAbove = List.of(Capabilities.FLUID.createCache((ServerLevel) level, worldPosition.above(), Direction.DOWN));

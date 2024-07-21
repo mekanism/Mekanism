@@ -9,7 +9,7 @@ import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
-import mekanism.api.math.FloatingLong;
+import mekanism.api.math.MathUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
@@ -59,8 +59,8 @@ public record ModuleElectrolyticBreathingUnit(boolean fillHeld) implements ICust
             productionRate = getMaxRate(module) / 2;
         }
         if (productionRate > 0) {
-            FloatingLong usage = MekanismConfig.general.FROM_H2.get().multiply(2);
-            int maxRate = Math.min(productionRate, module.getContainerEnergy(stack).divideToInt(usage));
+            long usage = 2 * MekanismConfig.general.FROM_H2.get();
+            int maxRate = MathUtils.clampToInt(Math.min(productionRate, module.getContainerEnergy(stack) / usage));
             long hydrogenUsed = 0;
             GasStack hydrogenStack = MekanismGases.HYDROGEN.getStack(maxRate * 2L);
             ItemStack chestStack = player.getItemBySlot(EquipmentSlot.CHEST);
@@ -80,7 +80,7 @@ public record ModuleElectrolyticBreathingUnit(boolean fillHeld) implements ICust
             }
             int oxygenUsed = Math.min(maxRate, player.getMaxAirSupply() - player.getAirSupply());
             long used = Math.max(Mth.ceil(hydrogenUsed / 2D), oxygenUsed);
-            module.useEnergy(player, stack, usage.multiply(used));
+            module.useEnergy(player, stack, MathUtils.multiplyClamped(usage, used));
             player.setAirSupply(player.getAirSupply() + oxygenUsed);
         }
     }

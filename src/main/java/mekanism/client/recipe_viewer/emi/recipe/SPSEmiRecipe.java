@@ -3,6 +3,7 @@ package mekanism.client.recipe_viewer.emi.recipe;
 import dev.emi.emi.api.widget.WidgetHolder;
 import java.util.ArrayList;
 import java.util.List;
+import mekanism.api.math.MathUtils;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.bar.GuiDynamicHorizontalRateBar;
 import mekanism.client.gui.element.gauge.GaugeType;
@@ -33,7 +34,7 @@ public class SPSEmiRecipe extends MekanismEmiRecipe<SPSRecipeViewerRecipe> {
             List<Component> list = new ArrayList<>();
             list.add(MekanismLang.STATUS.translate(MekanismLang.ACTIVE));
             list.add(MekanismLang.SPS_ENERGY_INPUT.translate(EnergyDisplay.of(
-                  MekanismConfig.general.spsEnergyPerInput.get().multiply(MekanismConfig.general.spsInputPerAntimatter.get()))));
+                  MathUtils.multiplyClamped(MekanismConfig.general.spsEnergyPerInput.get(), MekanismConfig.general.spsInputPerAntimatter.get()))));
             list.add(MekanismLang.PROCESS_RATE_MB.translate(1.0));
             return list;
         }));

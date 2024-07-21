@@ -7,7 +7,7 @@ public class MathUtils {
     private MathUtils() {
     }
 
-    private static final long UNSIGNED_MASK = 0x7FFFFFFFFFFFFFFFL;
+    static final long UNSIGNED_MASK = 0x7FFFFFFFFFFFFFFFL;
 
     /**
      * Clamp a double to int without using{@link Math#min(double, double)} due to double representation issues. Primary use: power systems that use int, where Mek uses
@@ -61,50 +61,16 @@ public class MathUtils {
     }
 
     /**
-     * Clamp an unsigned long to int
+     * Combination of {@link #clampToLong(double)} and {@link Math#ceil(double)} to ceil and then clamp to a long.
      *
-     * @param l unsigned long to clamp
+     * @param d double to ceil and then clamp
      *
-     * @return an int clamped to {@link Integer#MAX_VALUE}
-     */
-    public static int clampUnsignedToInt(long l) {
-        if (l < 0 || l > Integer.MAX_VALUE) {
-            return Integer.MAX_VALUE;
-        }
-        return (int) l;
-    }
-
-    /**
-     * Clamp an unsigned long to int
+     * @return a long clamped to {@link Long#MAX_VALUE}
      *
-     * @param l unsigned long to clamp
-     *
-     * @return an int clamped to {@link Integer#MAX_VALUE}
+     * @since 10.6.6
      */
-    public static long clampUnsignedToLong(long l) {
-        return l < 0 ? Long.MAX_VALUE : l;
-    }
-
-    /**
-     * Converts an unsigned long to a double, using the same math as in Guava's UnsignedLong class
-     */
-    public static float unsignedLongToFloat(long l) {
-        float fValue = (float) (l & UNSIGNED_MASK);
-        if (l < 0) {
-            fValue += 0x1.0p63F;
-        }
-        return fValue;
-    }
-
-    /**
-     * Converts an unsigned long to a double, using the same math as in Guava's UnsignedLong class
-     */
-    public static double unsignedLongToDouble(long l) {
-        double dValue = (double) (l & UNSIGNED_MASK);
-        if (l < 0) {
-            dValue += 0x1.0p63;
-        }
-        return dValue;
+    public static long ceilToLong(double d) {
+        return clampToLong(Math.ceil(d));
     }
 
     /**
@@ -135,5 +101,67 @@ public class MathUtils {
             return elements.get(Math.floorMod(index, elements.size()));
         }
         return elements.get(index % elements.size());
+    }
+
+    /**
+     * Divides numerator by the given toDivide and returns the result as a double. Additionally, if the value to divide by is zero, this returns {@code 1}
+     *
+     * @param numerator The numerator of the division.
+     * @param toDivide  The denominator of the division.
+     *
+     * @return A double representing the value of dividing numerator by toDivide, or {@code 1} if the given toDivide is {@code 0}.
+     *
+     * @implNote This caps the returned value at {@code 1}
+     *
+     * @since 10.6.6
+     */
+    public static double divideToLevel(double numerator, double toDivide) {
+        return toDivide == 0D || numerator > toDivide ? 1 : numerator / toDivide;
+    }
+
+    /**
+     * Like {@link Math#addExact(long, long)} but clamps to max long instead of throwing
+     *
+     * @param x the first value
+     * @param y the second value
+     *
+     * @return the result or max long if it overflows
+     *
+     * @since 10.6.6
+     */
+    public static long addClamped(long x, long y) {
+        long r = x + y;
+        // HD 2-12 Overflow iff both arguments have the opposite sign of the result
+        if (((x ^ r) & (y ^ r)) < 0) {
+            return Long.MAX_VALUE;
+        }
+        return r;
+    }
+
+    /**
+     * Like {@link Math#multiplyExact(long, long)} but clamps to max long instead of throwing
+     *
+     * @param x the first value. should be positive
+     * @param y the second value. should be positive
+     *
+     * @return the result or max long if it overflows
+     *
+     * @since 10.6.6
+     */
+    public static long multiplyClamped(long x, long y) {
+        //TODO: Re-evaluate usages of this and addClamped, and try to make it so that we don't have it possible for things to overflow instead
+        long r = x * y;
+        long ax = Math.abs(x);
+        long ay = Math.abs(y);
+        if (((ax | ay) >>> 31 != 0)) {
+            // Some bits greater than 2^31 that might cause overflow
+            // Check the result using the divide operator
+            // and check for the special case of Long.MIN_VALUE * -1
+            if (((y != 0) && (r / y != x)) ||
+                (x == Long.MIN_VALUE && y == -1)) {
+                return Long.MAX_VALUE;
+            }
+        }
+        return r;
     }
 }

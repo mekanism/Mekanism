@@ -9,7 +9,7 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.attribute.GasAttributes.Fuel;
-import mekanism.api.math.FloatingLong;
+import mekanism.api.math.MathUtils;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.chemical.variable.VariableCapacityChemicalTankBuilder.VariableCapacityGasTank;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
@@ -24,8 +24,8 @@ import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.sync.SyncableDouble;
-import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.container.sync.SyncableInt;
+import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.chemical.GasInventorySlot;
 import mekanism.common.util.MekanismUtils;
@@ -46,7 +46,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
     public VariableCapacityGasTank fuelTank;
     private long burnTicks;
     private int maxBurnTicks;
-    private FloatingLong generationRate = FloatingLong.ZERO;
+    private long generationRate = 0;
     private double gasUsedLastTick;
 
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFuelItem", docPlaceholder = "fuel item slot")
@@ -83,7 +83,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
         energySlot.drainContainer();
         fuelSlot.fillTank();
 
-        if (!fuelTank.isEmpty() && canFunction() && getEnergyContainer().insert(generationRate, Action.SIMULATE, AutomationType.INTERNAL).isZero()) {
+        if (!fuelTank.isEmpty() && canFunction() && getEnergyContainer().insert(generationRate, Action.SIMULATE, AutomationType.INTERNAL) == 0L) {
             setActive(true);
             if (!fuelTank.isEmpty()) {
                 Fuel fuel = fuelTank.getType().get(Fuel.class);
@@ -95,8 +95,8 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
             }
 
             long toUse = getToUse();
-            FloatingLong toUseGeneration = generationRate.multiply(toUse);
-            updateMaxOutputRaw(MekanismConfig.general.FROM_H2.get().max(toUseGeneration));
+            long toUseGeneration = MathUtils.multiplyClamped(generationRate, toUse);
+            updateMaxOutputRaw(Math.max(MekanismConfig.general.FROM_H2.get(), toUseGeneration));
 
             long total = burnTicks + fuelTank.getStored() * maxBurnTicks;
             total -= toUse;
@@ -120,21 +120,21 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
     private void reset() {
         burnTicks = 0;
         maxBurnTicks = 0;
-        generationRate = FloatingLong.ZERO;
+        generationRate = 0L;
         updateMaxOutputRaw(MekanismConfig.general.FROM_H2.get());
     }
 
     private long getToUse() {
-        if (generationRate.isZero() || fuelTank.isEmpty()) {
+        if (generationRate == 0L || fuelTank.isEmpty()) {
             return 0;
         }
         long max = (long) Math.ceil(256 * (fuelTank.getStored() / (double) fuelTank.getCapacity()));
         max = Math.min(maxBurnTicks * fuelTank.getStored() + burnTicks, max);
-        max = Math.min(getEnergyContainer().getNeeded().divide(generationRate).intValue(), max);
+        max = Math.min(MathUtils.clampToLong(getEnergyContainer().getNeeded() / (double) generationRate), max);
         return max;
     }
 
-    public FloatingLong getGenerationRate() {
+    public long getGenerationRate() {
         return generationRate;
     }
 
@@ -160,7 +160,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableFloatingLong.create(this::getGenerationRate, value -> generationRate = value));
+        container.track(SyncableLong.create(this::getGenerationRate, value -> generationRate = value));
         container.track(syncableMaxOutput());
         container.track(SyncableDouble.create(this::getUsed, value -> gasUsedLastTick = value));
         container.track(SyncableInt.create(this::getMaxBurnTicks, value -> maxBurnTicks = value));
@@ -168,8 +168,8 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
 
     //Methods relating to IComputerTile
     @Override
-    FloatingLong getProductionRate() {
-        return getGenerationRate().multiply(getUsed()).multiply(getMaxBurnTicks());
+    long getProductionRate() {
+        return MathUtils.clampToLong(getGenerationRate() * getUsed() * getMaxBurnTicks());
     }
     //End methods IComputerTile
 

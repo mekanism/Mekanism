@@ -27,7 +27,6 @@ import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.energy.IStrictEnergyHandler;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.recipes.MekanismRecipe;
@@ -180,15 +179,15 @@ public class MekanismEmi implements EmiPlugin {
         if (energyHandlerItem != null) {
             int containers = energyHandlerItem.getEnergyContainerCount();
             if (containers == 1) {
-                FloatingLong neededEnergy = energyHandlerItem.getNeededEnergy(0);
-                if (neededEnergy.isZero()) {
+                long neededEnergy = energyHandlerItem.getNeededEnergy(0);
+                if (neededEnergy == 0L) {
                     representation.add("filled");
                 }
             } else if (containers > 1) {
                 StringBuilder component = new StringBuilder();
                 for (int container = 0; container < containers; container++) {
-                    FloatingLong neededEnergy = energyHandlerItem.getNeededEnergy(container);
-                    if (neededEnergy.isZero()) {
+                    long neededEnergy = energyHandlerItem.getNeededEnergy(container);
+                    if (neededEnergy == 0L) {
                         component.append("filled");
                     } else {
                         component.append("empty");

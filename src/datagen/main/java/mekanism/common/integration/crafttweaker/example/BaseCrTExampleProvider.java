@@ -32,7 +32,6 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.SlurryStack;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.GasStackIngredient;
@@ -107,20 +106,6 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
                   return null;
               }
         );
-        addSupportedConversion(FloatingLong.class, FloatingLong.class, (imports, fl) -> {
-            String path = imports.addImport(CrTConstants.CLASS_FLOATING_LONG);
-            if (fl.getDecimal() == 0 && fl.getValue() > Integer.MAX_VALUE) {
-                return path + ".createFromUnsigned(" + fl + ")";
-            }
-            return path + ".create(" + fl + ")";
-        }, (imports, fl) -> {
-            if (fl.getDecimal() == 0) {
-                //No decimal, don't bother printing it
-                return fl.toString(0);
-            }
-            //Trim any trailing zeros rather than printing them out
-            return fl.toString().replaceAll("0*$", "");
-        });
         addSupportedConversion(IIngredientWithAmount.class, ItemStackIngredient.class, (imports, ingredient) -> CrTUtils.toCrT(ingredient).getCommandString());
         addSupportedConversion(CTFluidIngredient.class, FluidStackIngredient.class, (imports, ingredient) -> CrTUtils.toCrT(ingredient).getCommandString());
         addSupportedChemical(GasStack.class, ICrTGasStack.class, GasStackIngredient.class, CrTConstants.CLASS_GAS_STACK_INGREDIENT, CrTGasStack::new,

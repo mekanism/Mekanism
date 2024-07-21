@@ -1,8 +1,6 @@
 package mekanism.client.recipe_viewer.emi.recipe;
 
 import dev.emi.emi.api.widget.WidgetHolder;
-import java.util.List;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiEnergyGauge;
@@ -30,36 +28,34 @@ public class ItemStackToEnergyEmiRecipe extends MekanismEmiHolderRecipe<ItemStac
     }
 
     private IEnergyInfoHandler getEnergyInfoHandler() {
-        List<FloatingLong> outputDefinition = recipe.getOutputDefinition();
-        if (outputDefinition.size() > 1) {
-            FloatingLong maxEnergy = FloatingLong.ZERO;
-            for (FloatingLong floatingLong : outputDefinition) {
-                if (floatingLong.greaterThan(maxEnergy)) {
-                    maxEnergy = floatingLong;
-                }
+        long[] outputDefinition = recipe.getOutputDefinition();
+        if (outputDefinition.length > 1) {
+            long maxEnergy = 0;
+            for (long val : outputDefinition) {
+                maxEnergy = Math.max(maxEnergy, val);
             }
-            FloatingLong finalMaxEnergy = maxEnergy;
+            long finalMaxEnergy = maxEnergy;
             return new IEnergyInfoHandler() {
                 @Override
-                public FloatingLong getEnergy() {
+                public long getEnergy() {
                     return RecipeViewerUtils.getCurrent(outputDefinition);
                 }
 
                 @Override
-                public FloatingLong getMaxEnergy() {
+                public long getMaxEnergy() {
                     return finalMaxEnergy;
                 }
             };
         }
-        FloatingLong energy = outputDefinition.isEmpty() ? FloatingLong.ZERO : outputDefinition.getFirst();
+        long energy = outputDefinition.length == 0 ? 0L : outputDefinition[0];
         return new IEnergyInfoHandler() {
             @Override
-            public FloatingLong getEnergy() {
+            public long getEnergy() {
                 return energy;
             }
 
             @Override
-            public FloatingLong getMaxEnergy() {
+            public long getMaxEnergy() {
                 return energy;
             }
         };

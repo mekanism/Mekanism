@@ -3,11 +3,11 @@ package mekanism.common.content.network.distribution;
 import java.util.Collection;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.math.FloatingLong;
+import mekanism.api.math.MathUtils;
 import mekanism.common.lib.distribution.SplitInfo;
 import mekanism.common.lib.distribution.Target;
 
-public class EnergySaveTarget<HANDLER extends EnergySaveTarget.SaveHandler> extends Target<HANDLER, FloatingLong, FloatingLong> {
+public class EnergySaveTarget<HANDLER extends EnergySaveTarget.SaveHandler> extends Target<HANDLER, Long, Long> {
 
     public EnergySaveTarget() {
     }
@@ -21,12 +21,12 @@ public class EnergySaveTarget<HANDLER extends EnergySaveTarget.SaveHandler> exte
     }
 
     @Override
-    protected void acceptAmount(HANDLER handler, SplitInfo<FloatingLong> splitInfo, FloatingLong amount) {
+    protected void acceptAmount(HANDLER handler, SplitInfo<Long> splitInfo, Long amount) {
         handler.acceptAmount(splitInfo, amount);
     }
 
     @Override
-    protected FloatingLong simulate(HANDLER handler, FloatingLong energyToSend) {
+    protected Long simulate(HANDLER handler, Long energyToSend) {
         return handler.simulate(energyToSend);
     }
 
@@ -36,10 +36,10 @@ public class EnergySaveTarget<HANDLER extends EnergySaveTarget.SaveHandler> exte
         }
     }
 
-    public FloatingLong getStored() {
-        FloatingLong total = FloatingLong.ZERO;
+    public long getStored() {
+        long total = 0;
         for (HANDLER handler : handlers) {
-            total = total.plusEqual(handler.getStored());
+            total = MathUtils.addClamped(total, handler.getStored());
         }
         return total;
     }
@@ -47,38 +47,38 @@ public class EnergySaveTarget<HANDLER extends EnergySaveTarget.SaveHandler> exte
     @NothingNullByDefault
     public abstract static class SaveHandler {
 
-        private final FloatingLong maxEnergy;
-        private FloatingLong neededEnergy;
+        private final long maxEnergy;
+        private long neededEnergy;
 
-        protected SaveHandler(FloatingLong maxEnergy) {
+        protected SaveHandler(long maxEnergy) {
             this.maxEnergy = maxEnergy;
-            this.neededEnergy = this.maxEnergy.copy();
+            this.neededEnergy = this.maxEnergy;
         }
 
-        protected void acceptAmount(SplitInfo<FloatingLong> splitInfo, FloatingLong amount) {
-            if (neededEnergy.isZero()) {
-                splitInfo.send(FloatingLong.ZERO);
+        protected void acceptAmount(SplitInfo<Long> splitInfo, long amount) {
+            if (neededEnergy <= 0L) {
+                splitInfo.send(0L);
             } else {
-                amount = amount.min(neededEnergy);
-                neededEnergy = neededEnergy.minusEqual(amount);
+                amount = Math.min(amount, neededEnergy);
+                neededEnergy -= amount;
                 splitInfo.send(amount);
             }
         }
 
-        protected FloatingLong simulate(FloatingLong energyToSend) {
-            if (neededEnergy.isZero()) {
-                return FloatingLong.ZERO;
+        protected long simulate(long energyToSend) {
+            if (neededEnergy <= 0L || energyToSend <= 0L) {
+                return 0L;
             }
-            return energyToSend.min(neededEnergy).copy();
+            return Math.min(energyToSend, neededEnergy);
         }
 
         protected final void save() {
-            save(maxEnergy.subtract(neededEnergy));
+            save(maxEnergy - neededEnergy);
         }
 
-        protected abstract void save(FloatingLong currentStored);
+        protected abstract void save(long currentStored);
 
-        protected abstract FloatingLong getStored();
+        protected abstract long getStored();
     }
 
     @NothingNullByDefault
@@ -92,12 +92,12 @@ public class EnergySaveTarget<HANDLER extends EnergySaveTarget.SaveHandler> exte
         }
 
         @Override
-        protected void save(FloatingLong currentStored) {
+        protected void save(long currentStored) {
             delegate.setEnergy(currentStored);
         }
 
         @Override
-        protected FloatingLong getStored() {
+        protected long getStored() {
             return delegate.getEnergy();
         }
     }

@@ -9,21 +9,17 @@ import mekanism.api.IIncrementalEnum;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyConversion;
 import mekanism.api.functions.ConstantPredicates;
-import mekanism.api.math.FloatingLong;
-import mekanism.api.math.FloatingLongSupplier;
-import mekanism.api.math.MathUtils;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.ILangEntry;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.config.listener.ConfigBasedCachedFLSupplier;
-import mekanism.common.config.value.CachedFloatingLongValue;
+import mekanism.common.config.value.CachedDoubleValue;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ByIdMap;
-import net.neoforged.neoforge.common.util.Lazy;
+import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,35 +30,8 @@ public class UnitDisplayUtils {
     //TODO: Maybe at some point improve on the ITextComponents the two getDisplay methods build, and have them have better translation keys with formats
     // That would improve how well this handles en_ud as currently the order of the number and the unit is not reversed and the unit is not upside down
 
-    /**
-     * Displays the unit as text. Does not handle negative numbers, as {@link FloatingLong} does not have a concept of negatives
-     */
-    public static Component getDisplay(FloatingLong value, EnergyUnit unit, int decimalPlaces, boolean isShort) {
-        ILangEntry label = unit.pluralLangEntry;
-        if (isShort) {
-            label = unit.shortLangEntry;
-        } else if (value.equals(FloatingLong.ONE)) {
-            label = unit.singularLangEntry;
-        }
-        if (value.isZero()) {
-            return TextComponentUtil.build(value + " ", label);
-        }
-        for (int i = 0; i < EnumUtils.FLOATING_LONG_MEASUREMENT_UNITS.length; i++) {
-            FloatingLongMeasurementUnit lowerMeasure = EnumUtils.FLOATING_LONG_MEASUREMENT_UNITS[i];
-            if ((i == 0 && lowerMeasure.below(value)) ||
-                i + 1 >= EnumUtils.FLOATING_LONG_MEASUREMENT_UNITS.length ||
-                (lowerMeasure.aboveEqual(value) && EnumUtils.FLOATING_LONG_MEASUREMENT_UNITS[i + 1].below(value))) {
-                //First element and it is below it (no more unit abbreviations before),
-                // or last element (no more unit abbreviations past),
-                // or we are within the bounds between this one and the next one
-                return TextComponentUtil.build(lowerMeasure.process(value).toString(decimalPlaces) + " " + lowerMeasure.getName(isShort), label);
-            }
-        }
-        return TextComponentUtil.build(value.toString(decimalPlaces), label);
-    }
-
-    public static Component getDisplayShort(FloatingLong value, EnergyUnit unit) {
-        return getDisplay(value, unit, 2, true);
+    public static Component getDisplayShort(double value, EnergyUnit unit) {
+        return getDisplayBase(value, unit, 2, true, true);
     }
 
     public static Component getDisplay(double temp, TemperatureUnit unit, int decimalPlaces, boolean shift, boolean isShort, boolean spaceBetweenSymbol) {
@@ -72,11 +41,14 @@ public class UnitDisplayUtils {
     private static Component getDisplayBase(double value, Unit unit, int decimalPlaces, boolean isShort, boolean spaceBetweenSymbol) {
         if (value == 0) {
             if (isShort) {
-                String spaceStr = spaceBetweenSymbol ? " " : "";
-                return TextComponentUtil.getString(value + spaceStr + unit.getSymbol());
+                if (spaceBetweenSymbol) {
+                    return TextComponentUtil.build(value + " ", unit.getSymbol(false));
+                }
+                return TextComponentUtil.build(value, unit.getSymbol(false));
             }
-            return TextComponentUtil.build(value, unit.getLabel());
+            return TextComponentUtil.build(value, unit.getLabel(false));
         }
+        boolean singular = Mth.equal(value, 1);
         boolean negative = value < 0;
         if (negative) {
             value = Math.abs(value);
@@ -89,11 +61,11 @@ public class UnitDisplayUtils {
                 //First element and it is below it (no more unit abbreviations before),
                 // or last element (no more unit abbreviations past),
                 // or we are within the bounds between this one and the next one
-                return lowerMeasure.getDisplay(value, unit, decimalPlaces, isShort, spaceBetweenSymbol, negative);
+                return lowerMeasure.getDisplay(value, unit, decimalPlaces, isShort, spaceBetweenSymbol, negative, singular);
             }
         }
         //Fallback, should never be reached as should have been captured by the check in the loop
-        return EnumUtils.MEASUREMENT_UNITS[EnumUtils.MEASUREMENT_UNITS.length - 1].getDisplay(value, unit, decimalPlaces, isShort, spaceBetweenSymbol, negative);
+        return EnumUtils.MEASUREMENT_UNITS[EnumUtils.MEASUREMENT_UNITS.length - 1].getDisplay(value, unit, decimalPlaces, isShort, spaceBetweenSymbol, negative, singular);
     }
 
     public static Component getDisplayShort(double value, TemperatureUnit unit) {
@@ -128,43 +100,32 @@ public class UnitDisplayUtils {
 
     private interface Unit {
 
-        String getSymbol();
+        Object getSymbol(boolean singular);
 
-        ILangEntry getLabel();
+        ILangEntry getLabel(boolean singular);
     }
 
     @NothingNullByDefault
-    public enum EnergyUnit implements IDisableableEnum<EnergyUnit>, IEnergyConversion {
+    public enum EnergyUnit implements IDisableableEnum<EnergyUnit>, IEnergyConversion, Unit, IHasTranslationKey {
         JOULES(MekanismLang.ENERGY_JOULES, MekanismLang.ENERGY_JOULES_PLURAL, MekanismLang.ENERGY_JOULES_SHORT, "j", null, ConstantPredicates.ALWAYS_TRUE) {
             @Override
-            protected FloatingLong getConversion() {
+            public double getConversion() {
                 //Unused but override it anyway
-                return FloatingLong.ONE;
+                return 1D;
             }
 
             @Override
-            protected FloatingLong getInverseConversion() {
-                //Unused but override it anyway
-                return FloatingLong.ONE;
+            public boolean isOneToOne() {
+                return true;
             }
 
             @Override
-            public FloatingLong convertFrom(FloatingLong joules) {
+            public long convertFrom(long joules) {
                 return joules;
             }
 
             @Override
-            public FloatingLong convertInPlaceFrom(FloatingLong joules) {
-                return joules;
-            }
-
-            @Override
-            public FloatingLong convertTo(FloatingLong joules) {
-                return joules;
-            }
-
-            @Override
-            public FloatingLong convertInPlaceTo(FloatingLong joules) {
+            public long convertTo(long joules) {
                 return joules;
             }
         },
@@ -175,8 +136,7 @@ public class UnitDisplayUtils {
         public static final IntFunction<EnergyUnit> BY_ID = ByIdMap.continuous(EnergyUnit::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
         public static final StreamCodec<ByteBuf, EnergyUnit> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, EnergyUnit::ordinal);
 
-        private final Supplier<CachedFloatingLongValue> conversion;
-        private final Supplier<FloatingLongSupplier> inverseConversion;
+        private final Supplier<CachedDoubleValue> conversion;
         private final BooleanSupplier checkEnabled;
         private final ILangEntry singularLangEntry;
         private final ILangEntry pluralLangEntry;
@@ -186,59 +146,30 @@ public class UnitDisplayUtils {
         //Note: We ignore improper nulls as they only are null for joules which overrides the various use places
         @SuppressWarnings("ConstantConditions")
         EnergyUnit(ILangEntry singularLangEntry, ILangEntry pluralLangEntry, ILangEntry shortLangEntry, String tabName,
-              @Nullable Supplier<CachedFloatingLongValue> conversionRate, BooleanSupplier checkEnabled) {
+              @Nullable Supplier<CachedDoubleValue> conversionRate, BooleanSupplier checkEnabled) {
             this.singularLangEntry = singularLangEntry;
             this.pluralLangEntry = pluralLangEntry;
             this.shortLangEntry = shortLangEntry;
             this.checkEnabled = checkEnabled;
             this.tabName = tabName;
             this.conversion = conversionRate;
-            if (this.conversion == null) {
-                this.inverseConversion = null;
-            } else {
-                //Cache the inverse as multiplication for floating longs is more consistently fast compared to division
-                //Note: We also cache the creation of our cache so that when MC is not initialized we can still create
-                // this enum without having initialization errors. Use case: Unit tests
-                inverseConversion = Lazy.of(() -> new ConfigBasedCachedFLSupplier(() -> FloatingLong.ONE.divide(getConversion()), this.conversion.get()));
-            }
         }
 
-        protected FloatingLong getConversion() {
+        @Override
+        public ILangEntry getSymbol(boolean singular) {
+            return shortLangEntry;
+        }
+
+        @Override
+        public ILangEntry getLabel(boolean singular) {
+            return singular ? singularLangEntry : pluralLangEntry;
+        }
+
+        @Override
+        public double getConversion() {
             //Note: Use default value if called before configs are loaded. In general this should never happen,
             // but third party mods may just call it regardless
             return conversion.get().getOrDefault();
-        }
-
-        protected FloatingLong getInverseConversion() {
-            return inverseConversion.get().get();
-        }
-
-        @Override
-        public FloatingLong convertFrom(FloatingLong energy) {
-            return energy.multiply(getConversion());
-        }
-
-        @Override
-        public FloatingLong convertInPlaceFrom(FloatingLong energy) {
-            return energy.timesEqual(getConversion());
-        }
-
-        @Override
-        public FloatingLong convertTo(FloatingLong joules) {
-            if (joules.isZero()) {
-                //Short circuit if energy is zero to avoid having to create any additional objects
-                return FloatingLong.ZERO;
-            }
-            return joules.multiply(getInverseConversion());
-        }
-
-        @Override
-        public FloatingLong convertInPlaceTo(FloatingLong joules) {
-            if (joules.isZero()) {
-                //Short circuit if energy is zero to avoid having to create any additional objects
-                return joules;
-            }
-            return joules.timesEqual(getInverseConversion());
         }
 
         @Override
@@ -303,12 +234,12 @@ public class UnitDisplayUtils {
         }
 
         @Override
-        public String getSymbol() {
+        public String getSymbol(boolean singular) {
             return symbol;
         }
 
         @Override
-        public ILangEntry getLabel() {
+        public ILangEntry getLabel(boolean singular) {
             return langEntry;
         }
 
@@ -338,12 +269,12 @@ public class UnitDisplayUtils {
         }
 
         @Override
-        public String getSymbol() {
+        public String getSymbol(boolean singular) {
             return symbol;
         }
 
         @Override
-        public ILangEntry getLabel() {
+        public ILangEntry getLabel(boolean singular) {
             return MekanismLang.ERROR;
         }
     }
@@ -407,70 +338,16 @@ public class UnitDisplayUtils {
             return d < value;
         }
 
-        private Component getDisplay(double value, Unit unit, int decimalPlaces, boolean isShort, boolean spaceBetweenSymbol, boolean negative) {
+        private Component getDisplay(double value, Unit unit, int decimalPlaces, boolean isShort, boolean spaceBetweenSymbol, boolean negative, boolean singular) {
             double rounded = roundDecimals(negative, process(value), decimalPlaces);
             String name = getName(isShort);
+            if (spaceBetweenSymbol || !isShort) {
+                name = " " + name;
+            }
             if (isShort) {
-                if (spaceBetweenSymbol) {
-                    name = " " + name;
-                }
-                return TextComponentUtil.getString(rounded + name + unit.getSymbol());
+                return TextComponentUtil.build(rounded + name, unit.getSymbol(singular));
             }
-            return TextComponentUtil.build(rounded + " " + name, unit.getLabel());
-        }
-    }
-
-    /**
-     * Metric system of measurement.
-     */
-    public enum FloatingLongMeasurementUnit {
-        MILLI("Milli", "m", FloatingLong.createConst(.001)),
-        BASE("", "", FloatingLong.ONE),
-        KILO("Kilo", "k", FloatingLong.createConst(1_000)),
-        MEGA("Mega", "M", FloatingLong.createConst(1_000_000)),
-        GIGA("Giga", "G", FloatingLong.createConst(1_000_000_000)),
-        TERA("Tera", "T", FloatingLong.createConst(1_000_000_000_000L)),
-        PETA("Peta", "P", FloatingLong.createConst(1_000_000_000_000_000L)),
-        EXA("Exa", "E", FloatingLong.createConst(1_000_000_000_000_000_000L));
-
-        /**
-         * long name for the unit
-         */
-        private final String name;
-
-        /**
-         * short unit version of the unit
-         */
-        private final String symbol;
-
-        /**
-         * Point by which a number is considered to be of this unit
-         */
-        private final FloatingLong value;
-
-        FloatingLongMeasurementUnit(String name, String symbol, FloatingLong value) {
-            this.name = name;
-            this.symbol = symbol;
-            this.value = value;
-        }
-
-        public String getName(boolean getShort) {
-            if (getShort) {
-                return symbol;
-            }
-            return name;
-        }
-
-        public FloatingLong process(FloatingLong d) {
-            return d.divide(value);
-        }
-
-        public boolean aboveEqual(FloatingLong d) {
-            return d.greaterOrEqual(value);
-        }
-
-        public boolean below(FloatingLong d) {
-            return d.smallerThan(value);
+            return TextComponentUtil.build(rounded + name, unit.getLabel(singular));
         }
     }
 }

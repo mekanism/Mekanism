@@ -8,7 +8,6 @@ import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.pigment.IPigmentTank;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.PigmentMixingRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
@@ -35,7 +34,7 @@ import mekanism.common.integration.computer.computercraft.ComputerConstants;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
-import mekanism.common.inventory.container.sync.SyncableFloatingLong;
+import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.chemical.PigmentInventorySlot;
 import mekanism.common.lib.transmitter.TransmissionType;
@@ -82,7 +81,7 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<PigmentMixin
                                                                                         "getOutputFilledPercentage"}, docPlaceholder = "output pigment tank")
     public IPigmentTank outputTank;
 
-    private FloatingLong clientEnergyUsed = FloatingLong.ZERO;
+    private long clientEnergyUsed = 0;
     private int baselineMaxOperations = 1;
 
     private final IOutputHandler<@NotNull PigmentStack> outputHandler;
@@ -181,7 +180,7 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<PigmentMixin
 
     @NotNull
     @ComputerMethod(nameOverride = "getEnergyUsage", methodDescription = ComputerConstants.DESCRIPTION_GET_ENERGY_USAGE)
-    public FloatingLong getEnergyUsed() {
+    public long getEnergyUsed() {
         return clientEnergyUsed;
     }
 
@@ -229,6 +228,6 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<PigmentMixin
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableFloatingLong.create(this::getEnergyUsed, value -> clientEnergyUsed = value));
+        container.track(SyncableLong.create(this::getEnergyUsed, value -> clientEnergyUsed = value));
     }
 }

@@ -251,7 +251,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
         }
         if (shouldCap(CacheSubstance.ENERGY)) {
             for (IEnergyContainer container : getEnergyContainers(null)) {
-                container.setEnergy(container.getEnergy().min(container.getMaxEnergy()));
+                container.setEnergy(Math.min(container.getEnergy(), container.getMaxEnergy()));
             }
         }
         updateEjectors(world);

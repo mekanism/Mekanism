@@ -4,30 +4,32 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import mekanism.api.SerializationConstants;
-import mekanism.api.math.FloatingLong;
+import mekanism.api.SerializerHelper;
+import mekanism.api.math.MathUtils;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 
 public class EnergyElement extends LookingAtElement {
 
     public static final MapCodec<EnergyElement> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-          FloatingLong.CODEC.fieldOf(SerializationConstants.ENERGY).forGetter(EnergyElement::getEnergy),
-          FloatingLong.CODEC.fieldOf(SerializationConstants.MAX).forGetter(EnergyElement::getMaxEnergy)
+          SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(SerializationConstants.ENERGY).forGetter(EnergyElement::getEnergy),
+          SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(SerializationConstants.MAX).forGetter(EnergyElement::getMaxEnergy)
     ).apply(instance, EnergyElement::new));
     public static final StreamCodec<ByteBuf, EnergyElement> STREAM_CODEC = StreamCodec.composite(
-          FloatingLong.STREAM_CODEC, EnergyElement::getEnergy,
-          FloatingLong.STREAM_CODEC, EnergyElement::getMaxEnergy,
+          ByteBufCodecs.VAR_LONG, EnergyElement::getEnergy,
+          ByteBufCodecs.VAR_LONG, EnergyElement::getMaxEnergy,
           EnergyElement::new
     );
 
-    protected final FloatingLong energy;
-    protected final FloatingLong maxEnergy;
+    protected final long energy;
+    protected final long maxEnergy;
 
-    public EnergyElement(FloatingLong energy, FloatingLong maxEnergy) {
+    public EnergyElement(long energy, long maxEnergy) {
         super(0xFF000000, 0xFFFFFF);
         this.energy = energy;
         this.maxEnergy = maxEnergy;
@@ -35,17 +37,17 @@ public class EnergyElement extends LookingAtElement {
 
     @Override
     public int getScaledLevel(int level) {
-        if (energy.equals(FloatingLong.MAX_VALUE)) {
+        if (energy == Long.MAX_VALUE) {
             return level;
         }
-        return (int) (level * energy.divideToLevel(maxEnergy));
+        return (int) (level * MathUtils.divideToLevel(energy, maxEnergy));
     }
 
-    public FloatingLong getEnergy() {
+    public long getEnergy() {
         return energy;
     }
 
-    public FloatingLong getMaxEnergy() {
+    public long getMaxEnergy() {
         return maxEnergy;
     }
 

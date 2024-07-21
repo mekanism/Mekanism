@@ -17,7 +17,6 @@ import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.api.math.FloatingLong;
 import mekanism.common.CommonWorldTickHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.attachments.FormulaAttachment;
@@ -234,7 +233,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
             nextMode();
         }
 
-        FloatingLong clientEnergyUsed = FloatingLong.ZERO;
+        long clientEnergyUsed = 0L;
         if (autoMode && !formula.isEmpty() && ((getControlType() == RedstoneControl.PULSE && pulseOperations > 0) || canFunction())) {
             boolean canOperate = true;
             if (!isRecipe) {
@@ -250,8 +249,8 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                         }
                     }
                 } else {
-                    FloatingLong energyPerTick = energyContainer.getEnergyPerTick();
-                    if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL).equals(energyPerTick)) {
+                    long energyPerTick = energyContainer.getEnergyPerTick();
+                    if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL) == energyPerTick) {
                         clientEnergyUsed = energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
                         operatingTicks++;
                     }
@@ -262,7 +261,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         } else {
             operatingTicks = 0;
         }
-        usedEnergy = !clientEnergyUsed.isZero();
+        usedEnergy = clientEnergyUsed > 0L;
         return sendUpdatePacket;
     }
 

@@ -12,7 +12,7 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
-import mekanism.api.math.FloatingLong;
+import mekanism.api.math.MathUtils;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.Mekanism;
@@ -45,10 +45,10 @@ public record ModuleMagneticAttractionUnit(Range range) implements ICustomModule
     public void tickServer(IModule<ModuleMagneticAttractionUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player) {
         if (range != Range.OFF) {
             float size = 4 + range.getRange();
-            FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsageItemAttraction.get().multiply(range.getRange());
-            boolean free = usage.isZero() || player.isCreative();
+            long usage = MathUtils.ceilToLong(MekanismConfig.gear.mekaSuitEnergyUsageItemAttraction.get() * range.getRange());
+            boolean free = usage == 0L || player.isCreative();
             IEnergyContainer energyContainer = free ? null : module.getEnergyContainer(stack);
-            if (free || (energyContainer != null && energyContainer.getEnergy().greaterOrEqual(usage))) {
+            if (free || (energyContainer != null && energyContainer.getEnergy() >= usage)) {
                 //If the energy cost is free, or we have enough energy for at least one pull grab all the items that can be picked up.
                 //Note: We check distance afterwards so that we aren't having to calculate a bunch of distances when we may run out
                 // of energy, and calculating distance is a bit more expensive than just checking if it can be picked up
@@ -57,12 +57,12 @@ public record ModuleMagneticAttractionUnit(Range range) implements ICustomModule
                     if (item.distanceTo(player) > 0.001) {
                         if (free) {
                             pullItem(player, item);
-                        } else if (module.useEnergy(player, energyContainer, usage, true).isZero()) {
+                        } else if (module.useEnergy(player, energyContainer, usage, true) == 0L) {
                             //If we can't actually extract energy, exit
                             break;
                         } else {
                             pullItem(player, item);
-                            if (energyContainer.getEnergy().smallerThan(usage)) {
+                            if (energyContainer.getEnergy() < usage) {
                                 //If after using energy, our energy is now smaller than how much we need to use, exit
                                 break;
                             }

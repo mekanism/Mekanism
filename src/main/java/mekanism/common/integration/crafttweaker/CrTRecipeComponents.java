@@ -24,7 +24,6 @@ import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.GasStackIngredient;
 import mekanism.api.recipes.ingredients.InfusionStackIngredient;
@@ -52,10 +51,10 @@ public class CrTRecipeComponents {
           new TypeToken<>() {},
           RecipeComponentEqualityCheckers::areNumbersEqual
     );
-    public static final IRecipeComponent<FloatingLong> ENERGY = IRecipeComponent.simple(
+    public static final IRecipeComponent<Long> ENERGY = IRecipeComponent.simple(
           Mekanism.rl("energy"),
           new TypeToken<>() {},
-          FloatingLong::equals
+          Long::equals
     );
 
     public static final PairedRecipeComponent<IIngredientWithAmount, IItemStack> ITEM = new PairedRecipeComponent<>(

@@ -2,7 +2,6 @@ package mekanism.common.config;
 
 import java.util.Locale;
 import mekanism.common.config.value.CachedDoubleValue;
-import mekanism.common.config.value.CachedFloatingLongValue;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.config.value.CachedLongValue;
 import mekanism.common.tier.BinTier;
@@ -54,12 +53,10 @@ public class TierConfig extends BaseMekanismConfig {
         builder.comment("Energy Cubes").push(ENERGY_CUBE_CATEGORY);
         for (EnergyCubeTier tier : EnumUtils.ENERGY_CUBE_TIERS) {
             String tierName = tier.getBaseTier().getSimpleName();
-            CachedFloatingLongValue storageReference = CachedFloatingLongValue.define(this, builder,
-                  "Maximum number of Joules " + tierName + " energy cubes can store.", tierName.toLowerCase(Locale.ROOT) + "Storage", tier.getBaseMaxEnergy(),
-                  CachedFloatingLongValue.POSITIVE);
-            CachedFloatingLongValue outputReference = CachedFloatingLongValue.define(this, builder,
-                  "Output rate in Joules of " + tierName + " energy cubes.", tierName.toLowerCase(Locale.ROOT) + "Output", tier.getBaseOutput(),
-                  CachedFloatingLongValue.POSITIVE);
+            CachedLongValue storageReference = CachedLongValue.wrap(this, builder.comment("Maximum number of Joules " + tierName + " energy cubes can store.")
+                  .defineInRange(tierName.toLowerCase(Locale.ROOT) + "Storage", tier.getBaseMaxEnergy(), 1, Long.MAX_VALUE));
+            CachedLongValue outputReference = CachedLongValue.wrap(this, builder.comment("Output rate in Joules of " + tierName + " energy cubes.")
+                  .defineInRange(tierName.toLowerCase(Locale.ROOT) + "Output", tier.getBaseOutput(), 1, Long.MAX_VALUE));
             tier.setConfigReference(storageReference, outputReference);
         }
         builder.pop();
@@ -106,14 +103,14 @@ public class TierConfig extends BaseMekanismConfig {
         builder.comment("Induction").push(INDUCTION_CATEGORY);
         for (InductionCellTier tier : EnumUtils.INDUCTION_CELL_TIERS) {
             String tierName = tier.getBaseTier().getSimpleName();
-            CachedFloatingLongValue storageReference = CachedFloatingLongValue.define(this, builder, "Maximum number of Joules " + tierName + " induction cells can store.",
-                  tierName.toLowerCase(Locale.ROOT) + "Storage", tier.getBaseMaxEnergy(), CachedFloatingLongValue.POSITIVE);
+            CachedLongValue storageReference = CachedLongValue.wrap(this, builder.comment("Maximum number of Joules " + tierName + " induction cells can store.")
+                  .defineInRange(tierName.toLowerCase(Locale.ROOT) + "Storage", tier.getBaseMaxEnergy(), 1, Long.MAX_VALUE));
             tier.setConfigReference(storageReference);
         }
         for (InductionProviderTier tier : EnumUtils.INDUCTION_PROVIDER_TIERS) {
             String tierName = tier.getBaseTier().getSimpleName();
-            CachedFloatingLongValue outputReference = CachedFloatingLongValue.define(this, builder, "Maximum number of Joules " + tierName + " induction providers can output or accept.",
-                  tierName.toLowerCase(Locale.ROOT) + "Output", tier.getBaseOutput(), CachedFloatingLongValue.POSITIVE);
+            CachedLongValue outputReference = CachedLongValue.wrap(this, builder.comment("Maximum number of Joules " + tierName + " induction providers can output or accept.")
+                  .defineInRange(tierName.toLowerCase(Locale.ROOT) + "Output", tier.getBaseOutput(), 1, Long.MAX_VALUE));
             tier.setConfigReference(outputReference);
         }
         builder.pop();
@@ -133,8 +130,8 @@ public class TierConfig extends BaseMekanismConfig {
         builder.comment("Universal Cables").push(ENERGY_CATEGORY);
         for (CableTier tier : EnumUtils.CABLE_TIERS) {
             String tierName = tier.getBaseTier().getSimpleName();
-            CachedFloatingLongValue capacityReference = CachedFloatingLongValue.define(this, builder, "Internal buffer in Joules of each " + tierName + " universal cable.",
-                  tierName.toLowerCase(Locale.ROOT) + "Capacity", tier.getBaseCapacity(), CachedFloatingLongValue.POSITIVE);
+            CachedLongValue capacityReference = CachedLongValue.wrap(this, builder.comment("Internal buffer in Joules of each " + tierName + " universal cable.")
+                  .defineInRange(tierName.toLowerCase(Locale.ROOT) + "Capacity", tier.getBaseCapacity(), 1, Long.MAX_VALUE));
             tier.setConfigReference(capacityReference);
         }
         builder.pop();

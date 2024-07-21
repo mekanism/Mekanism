@@ -2,7 +2,6 @@ package mekanism.common.recipe.impl;
 
 import java.util.List;
 import mekanism.api.datagen.recipe.builder.PressurizedReactionRecipeBuilder;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.BaseRecipeProvider;
@@ -138,7 +137,7 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
                     IngredientCreatorAccess.gasStack().from(MekanismGases.OXYGEN, 10),
                     60,
                     MekanismItems.HDPE_PELLET.getItemStack()
-              ).energyRequired(FloatingLong.createConst(1_000))
+              ).energyRequired(1_000)
               .build(consumer, Mekanism.rl(basePath + "ethene_oxygen"));
         //Water + ethene
         PressurizedReactionRecipeBuilder.reaction(
@@ -148,7 +147,7 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
                     400,
                     MekanismItems.SUBSTRATE.getItemStack(8),
                     MekanismGases.OXYGEN.getStack(10)
-              ).energyRequired(FloatingLong.createConst(200))
+              ).energyRequired(200)
               .build(consumer, Mekanism.rl(basePath + "water_ethene"));
         //Water + hydrogen
         PressurizedReactionRecipeBuilder.reaction(

@@ -1,8 +1,8 @@
 package mekanism.api.energy;
 
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.math.FloatingLong;
-import mekanism.api.text.IHasTranslationKey;
+import mekanism.api.math.MathUtils;
+import net.minecraft.util.Mth;
 
 /**
  * Represents a conversion between Joules and another energy type (it is valid for this other type to also be Joules).
@@ -10,7 +10,7 @@ import mekanism.api.text.IHasTranslationKey;
  * @since 10.3.4
  */
 @NothingNullByDefault
-public interface IEnergyConversion extends IHasTranslationKey {
+public interface IEnergyConversion {
 
     /**
      * Checks whether this energy conversion is currently usable, or if it is disabled in the config or missing required mods.
@@ -20,87 +20,82 @@ public interface IEnergyConversion extends IHasTranslationKey {
     boolean isEnabled();
 
     /**
-     * Helper that accepts a long to convert energy of the type represented by this conversion to Joules.
+     * Converts energy of the type represented by this conversion to Joules.
      *
-     * @param energy Amount of energy. (Units matching this conversion, will attempt to modify this object)
+     * @param energy Amount of energy in 'other' type. (Units matching this conversion)
      *
      * @return Joules.
-     *
-     * @implNote This method will short circuit for zero or negative values as Joules are always positive.
      */
-    default FloatingLong convertFrom(long energy) {
-        if (energy <= 0) {
-            //Short circuit if energy is zero to avoid having to create any additional objects
-            return FloatingLong.ZERO;
-        }
-        return convertInPlaceFrom(FloatingLong.create(energy));
+    default long convertFrom(long energy) {
+        return MathUtils.clampToLong(energy * getConversion());
     }
-
-    /**
-     * Converts energy of the type represented by this conversion to Joules.
-     *
-     * @param energy Amount of energy. (Units matching this conversion, this object will not be modified)
-     *
-     * @return Joules.
-     *
-     * @implNote This method will return a new FloatingLong.
-     */
-    FloatingLong convertFrom(FloatingLong energy);
-
-    /**
-     * Converts energy of the type represented by this conversion to Joules.
-     *
-     * @param energy Amount of energy. (Units matching this conversion, will attempt to modify this object)
-     *
-     * @return Joules.
-     *
-     * @implNote This method will attempt to modify the passed in FloatingLong and return it.
-     * @apiNote It is recommended to set this to itself to reduce the chance of accidental calls if calling this on a constant {@link FloatingLong}.
-     */
-    FloatingLong convertInPlaceFrom(FloatingLong energy);
 
     /**
      * Helper that converts Joules to the energy of the type represented by this conversion and returns it as an int.
      *
-     * @param joules Joules. (This object will not be modified)
+     * @param joules Joules.
      *
      * @return Amount of energy clamped to an int. (Units matching this conversion)
      */
-    default int convertToAsInt(FloatingLong joules) {
-        return convertTo(joules).intValue();
+    default int convertToAsInt(long joules) {
+        return MathUtils.clampToInt(convertTo(joules));
     }
 
     /**
      * Helper that converts Joules to the energy of the type represented by this conversion and returns it as a long.
      *
-     * @param joules Joules. (This object will not be modified)
+     * @param joules Joules.
      *
      * @return Amount of energy clamped to a long. (Units matching this conversion)
      */
-    default long convertToAsLong(FloatingLong joules) {
-        return convertTo(joules).longValue();
+    @Deprecated(forRemoval = true)
+    default long convertToAsLong(long joules) {
+        return convertTo(joules);
     }
 
     /**
      * Converts Joules to the energy of the type represented by this conversion.
      *
-     * @param joules Joules. (This object will not be modified)
+     * @param joules Joules.
      *
      * @return Amount of energy. (Units matching this conversion)
-     *
-     * @implNote This method will return a new FloatingLong.
      */
-    FloatingLong convertTo(FloatingLong joules);
+    default long convertTo(long joules) {
+        return MathUtils.clampToLong(convertToDouble(joules));
+    }
 
     /**
      * Converts Joules to the energy of the type represented by this conversion.
      *
-     * @param joules Joules. (Will attempt to modify this object)
+     * @param joules Joules.
      *
      * @return Amount of energy. (Units matching this conversion)
      *
-     * @implNote This method will attempt to modify the passed in FloatingLong and return it.
-     * @apiNote It is recommended to set this to itself to reduce the chance of accidental calls if calling this on a constant {@link FloatingLong}.
+     * @since 10.6.6
      */
-    FloatingLong convertInPlaceTo(FloatingLong joules);
+    default double convertToDouble(long joules) {
+        if (joules == 0) {
+            //Short circuit if energy is zero to avoid floating point math
+            return 0;
+        }
+        return joules / getConversion();
+    }
+
+    /**
+     * {@return if this conversion is one to one with joules}
+     *
+     * @since 10.6.6
+     */
+    default boolean isOneToOne() {
+        //Use Mth.equal to compare against epsilon
+        return Mth.equal(1, getConversion());
+    }
+
+    /**
+     *
+     * {@return the conversion rate to how many of this unit is equal to one Joule}
+     *
+     * @since 10.6.6
+     */
+    double getConversion();
 }

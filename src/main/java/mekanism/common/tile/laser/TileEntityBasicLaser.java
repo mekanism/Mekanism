@@ -8,7 +8,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.lasers.ILaserDissipation;
 import mekanism.api.lasers.ILaserReceptor;
-import mekanism.api.math.FloatingLong;
+import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.base.MekFakePlayer;
@@ -67,8 +67,8 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     protected LaserEnergyContainer energyContainer;
     @SyntheticComputerMethod(getter = "getDiggingPos")
     private BlockPos digging;
-    private FloatingLong diggingProgress = FloatingLong.ZERO;
-    private FloatingLong lastFired = FloatingLong.ZERO;
+    private long diggingProgress = 0;
+    private long lastFired = 0;
 
     public TileEntityBasicLaser(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
@@ -87,9 +87,9 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     @Override
     protected boolean onUpdateServer() {
         boolean sendUpdatePacket = super.onUpdateServer();
-        FloatingLong firing = energyContainer.extract(toFire(), Action.SIMULATE, AutomationType.INTERNAL);
-        if (!firing.isZero()) {
-            if (!firing.equals(lastFired) || !getActive()) {
+        long firing = energyContainer.extract(toFire(), Action.SIMULATE, AutomationType.INTERNAL);
+        if (firing > 0L) {
+            if (firing != lastFired || !getActive()) {
                 setActive(true);
                 lastFired = firing;
                 sendUpdatePacket = true;
@@ -105,7 +105,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
             }
 
             float laserEnergyScale = getEnergyScale(firing);
-            FloatingLong remainingEnergy = firing.copy();
+            long remainingEnergy = firing;
             List<Entity> hitEntities = level.getEntitiesOfClass(Entity.class, getLaserBox(direction, from, to, laserEnergyScale));
             if (hitEntities.isEmpty()) {
                 setEmittingRedstone(false);
@@ -114,7 +114,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                 //Sort the entities in order of which one is closest to the laser
                 Pos3D finalFrom = from;
                 hitEntities.sort(Comparator.comparingDouble(entity -> entity.distanceToSqr(finalFrom)));
-                FloatingLong energyPerDamage = MekanismConfig.general.laserEnergyPerDamage.get();
+                long energyPerDamage = MekanismConfig.general.laserEnergyPerDamage.get();
                 AABB adjustedAABB = null;
                 for (Entity entity : hitEntities) {
                     if (adjustedAABB != null && !entity.getBoundingBox().intersects(adjustedAABB)) {
@@ -123,7 +123,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                         continue;
                     } else if (entity.isInvulnerableTo(MekanismDamageTypes.LASER.source(level))) {
                         //The entity can absorb all the energy because they are immune to the damage
-                        remainingEnergy = FloatingLong.ZERO;
+                        remainingEnergy = 0L;
                         //Update the position that the laser is going to
                         to = from.adjustPosition(direction, entity);
                         break;
@@ -132,8 +132,8 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                         continue;
                     }
                     boolean updateEnergyScale = false;
-                    FloatingLong value = remainingEnergy.divide(energyPerDamage);
-                    float damage = value.floatValue();
+                    double value = ((double) remainingEnergy / energyPerDamage);
+                    float damage = (float) value;
                     float health = 0;
                     if (entity instanceof LivingEntity livingEntity) {
                         //If the entity is a living entity check if they are blocking with a shield and then allow
@@ -148,8 +148,8 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                                 MekanismCriteriaTriggers.BLOCK_LASER.value().trigger(player);
                             }
                             //Remove however much energy we were able to block
-                            remainingEnergy = remainingEnergy.minusEqual(energyPerDamage.multiply(damageBlocked));
-                            if (remainingEnergy.isZero()) {
+                            remainingEnergy -= MathUtils.clampToLong(energyPerDamage * damageBlocked);
+                            if (remainingEnergy == 0L) {
                                 //If we absorbed it all then update the position the laser is going to and break
                                 to = from.adjustPosition(direction, entity);
                                 break;
@@ -177,8 +177,8 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                         if (dissipationPercent > 0) {
                             //If we will dissipate any energy, cap the dissipation amount at one
                             dissipationPercent = Math.min(dissipationPercent, 1);
-                            remainingEnergy = remainingEnergy.timesEqual(FloatingLong.create(1 - dissipationPercent));
-                            if (remainingEnergy.isZero()) {
+                            remainingEnergy = (long) (remainingEnergy * (1D - dissipationPercent));
+                            if (remainingEnergy == 0L) {
                                 //If we dissipated it all then update the position the laser is going to and break
                                 to = from.adjustPosition(direction, entity);
                                 break;
@@ -191,12 +191,12 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                         if (refractionPercent > 0) {
                             //If we will refract any energy, cap the refraction amount at one
                             refractionPercent = Math.min(refractionPercent, 1);
-                            FloatingLong refractedEnergy = remainingEnergy.multiply(FloatingLong.create(refractionPercent));
+                            double refractedEnergy = remainingEnergy * refractionPercent;
                             //Don't actually use the refracted energy from our remaining energy
                             // but lower the damage values to not include the energy that is being refracted
                             // and mark that we don't actually need to update the damage values (as we just did so here)
-                            value = remainingEnergy.subtract(refractedEnergy).divide(energyPerDamage);
-                            damage = value.floatValue();
+                            value = (remainingEnergy - refractedEnergy) / energyPerDamage;
+                            damage = (float) value;
                             updateDamage = false;
                             //Mark the energy scale should be checked for updates as if some energy got dissipated above, and
                             // we end up refracting all the remaining energy we won't do any damage and not get through the
@@ -205,8 +205,8 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                         }
                         if (updateDamage) {
                             //Update the damage we are actually going to try and do to the entity as the amount of energy being used changed
-                            value = remainingEnergy.divide(energyPerDamage);
-                            damage = value.floatValue();
+                            value = ((double) remainingEnergy / energyPerDamage);
+                            damage = (float) value;
                         }
                         health = livingEntity.getHealth();
                     }
@@ -214,7 +214,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                         //If the damage is more than zero, which should be all cases except for when we are refracting all the energy past the entity
                         // set the entity on fire if it is not damage immune and try to damage it
                         if (!entity.fireImmune()) {
-                            entity.setRemainingFireTicks(value.intValue());
+                            entity.setRemainingFireTicks(MathUtils.clampToInt(value));
                         }
                         int totemTimesUsed = -1;
                         if (entity instanceof ServerPlayer player) {
@@ -236,8 +236,8 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                                     MekanismCriteriaTriggers.DAMAGE.value().trigger(player, MekanismDamageTypes.LASER, hardcoreTotem);
                                 }
                             }
-                            remainingEnergy = remainingEnergy.minusEqual(energyPerDamage.multiply(damage));
-                            if (remainingEnergy.isZero()) {
+                            remainingEnergy -= MathUtils.clampToLong(energyPerDamage * damage);
+                            if (remainingEnergy == 0L) {
                                 //Update the position that the laser is going to
                                 to = from.adjustPosition(direction, entity);
                                 break;
@@ -265,17 +265,17 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
             //Tell the clients to render the laser
             sendLaserDataToPlayers(new LaserParticleData(direction, to.distance(from), laserEnergyScale), from);
 
-            if (remainingEnergy.isZero() || result.getType() == Type.MISS) {
+            if (remainingEnergy == 0L || result.getType() == Type.MISS) {
                 //If all the energy was spent on damaging entities or if we aren't actively digging a block,
                 // then reset any digging progress we may have
                 digging = null;
-                diggingProgress = FloatingLong.ZERO;
+                diggingProgress = 0L;
             } else {
                 //Otherwise, we still have energy left that we can use
                 BlockPos hitPos = result.getBlockPos();
                 if (!hitPos.equals(digging)) {
                     digging = result.getType() == Type.MISS ? null : hitPos;
-                    diggingProgress = FloatingLong.ZERO;
+                    diggingProgress = 0L;
                 }
                 ILaserReceptor laserReceptor = WorldUtils.getCapability(level, Capabilities.LASER_RECEPTOR, hitPos, result.getDirection());
                 if (laserReceptor != null && !laserReceptor.canLasersDig()) {
@@ -286,12 +286,12 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                     BlockState hitState = level.getBlockState(hitPos);
                     float hardness = hitState.getDestroySpeed(level, hitPos);
                     if (hardness >= 0) {
-                        diggingProgress = diggingProgress.plusEqual(remainingEnergy);
-                        if (diggingProgress.compareTo(MekanismConfig.general.laserEnergyNeededPerHardness.get().multiply(hardness)) >= 0) {
+                        diggingProgress += remainingEnergy;
+                        if (diggingProgress >= hardness * MekanismConfig.general.laserEnergyNeededPerHardness.get()) {
                             if (MekanismConfig.general.aestheticWorldDamage.get()) {
                                 withFakePlayer((ServerLevel) level, to.x(), to.y(), to.z(), hitPos, hitState, result.getDirection());
                             }
-                            diggingProgress = FloatingLong.ZERO;
+                            diggingProgress = 0L;
                         } else {
                             //Note: If this has a significant network performance, we could instead convert this to a start/stop packet
                             PacketUtils.sendToAllTracking(new PacketHitBlockEffect(result), this);
@@ -302,11 +302,11 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
             energyContainer.extract(firing, Action.EXECUTE, AutomationType.INTERNAL);
         } else if (getActive()) {
             setActive(false);
-            if (!diggingProgress.isZero()) {
-                diggingProgress = FloatingLong.ZERO;
+            if (diggingProgress != 0L) {
+                diggingProgress = 0L;
             }
-            if (!lastFired.isZero()) {
-                lastFired = FloatingLong.ZERO;
+            if (lastFired != 0L) {
+                lastFired = 0L;
                 sendUpdatePacket = true;
             }
         }
@@ -371,9 +371,9 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
         return damageBlocked;
     }
 
-    private float getEnergyScale(FloatingLong energy) {
+    private float getEnergyScale(long energy) {
         //Returned energy scale is between [0.1, 0.6]
-        return Math.min(energy.divide(MekanismConfig.usage.laser.get()).divide(10).floatValue(), 0.6F);
+        return (float) Math.min(((double) energy / MekanismConfig.usage.laser.get()) / 10D, 0.6D);
     }
 
     private void sendLaserDataToPlayers(LaserParticleData data, Vec3 from) {
@@ -408,20 +408,20 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
         level.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, hitPos, Block.getId(state));
     }
 
-    protected FloatingLong toFire() {
-        return FloatingLong.MAX_VALUE;
+    protected long toFire() {
+        return Long.MAX_VALUE;
     }
 
     @Override
     public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
         super.loadAdditional(nbt, provider);
-        NBTUtils.setFloatingLongIfPresent(nbt, SerializationConstants.LAST_FIRED, value -> lastFired = value);
+        NBTUtils.setLegacyEnergyIfPresent(nbt, SerializationConstants.LAST_FIRED, value -> lastFired = value);
     }
 
     @Override
     public void saveAdditional(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
         super.saveAdditional(nbtTags, provider);
-        nbtTags.putString(SerializationConstants.LAST_FIRED, lastFired.toString());
+        nbtTags.putLong(SerializationConstants.LAST_FIRED, lastFired);
     }
 
     @Override
@@ -435,14 +435,14 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     @Override
     public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
         CompoundTag updateTag = super.getReducedUpdateTag(provider);
-        updateTag.putString(SerializationConstants.LAST_FIRED, lastFired.toString());
+        updateTag.putLong(SerializationConstants.LAST_FIRED, lastFired);
         return updateTag;
     }
 
     @Override
     public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
         super.handleUpdateTag(tag, provider);
-        NBTUtils.setFloatingLongIfPresent(tag, SerializationConstants.LAST_FIRED, fired -> lastFired = fired);
+        NBTUtils.setLongIfPresent(tag, SerializationConstants.LAST_FIRED, fired -> lastFired = fired);
     }
 
     public LaserEnergyContainer getEnergyContainer() {

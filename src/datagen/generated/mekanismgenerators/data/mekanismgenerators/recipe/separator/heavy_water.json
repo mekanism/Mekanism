@@ -1,6 +1,6 @@
 {
   "type": "mekanism:separating",
-  "energy_multiplier": "2",
+  "energy_multiplier": 2,
   "input": {
     "amount": 2,
     "tag": "c:heavy_water"

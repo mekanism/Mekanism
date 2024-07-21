@@ -5,12 +5,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 import mekanism.api.functions.ConstantPredicates;
-import mekanism.api.math.FloatingLong;
 import mekanism.common.config.value.CachedBooleanValue;
 import mekanism.common.config.value.CachedConfigValue;
 import mekanism.common.config.value.CachedDoubleValue;
 import mekanism.common.config.value.CachedFloatValue;
-import mekanism.common.config.value.CachedFloatingLongValue;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.config.value.CachedLongValue;
 import mekanism.common.config.value.CachedOredictionificatorConfigValue;
@@ -79,11 +77,11 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedBooleanValue prefilledSlurryTanks;
     //Energy Conversion
     public final CachedBooleanValue blacklistForge;
-    public final CachedFloatingLongValue forgeConversionRate;
+    public final CachedDoubleValue forgeConversionRate;
     public final CachedBooleanValue blacklistFluxNetworks;
     public final CachedBooleanValue blacklistGrandPower;
-    public final CachedFloatingLongValue FROM_H2;
-    public final CachedFloatingLongValue maxEnergyPerSteam;
+    public final CachedLongValue FROM_H2;
+    public final CachedLongValue maxEnergyPerSteam;
     //Radiation
     public final CachedBooleanValue radiationEnabled;
     public final CachedIntValue radiationChunkCheckRadius;
@@ -100,8 +98,8 @@ public class GeneralConfig extends BaseMekanismConfig {
     //Laser
     public final CachedBooleanValue aestheticWorldDamage;
     public final CachedIntValue laserRange;
-    public final CachedFloatingLongValue laserEnergyNeededPerHardness;
-    public final CachedFloatingLongValue laserEnergyPerDamage;
+    public final CachedLongValue laserEnergyNeededPerHardness;
+    public final CachedLongValue laserEnergyPerDamage;
     //Oredictionificator
     public final CachedOredictionificatorConfigValue validOredictionificatorFilters;
     //Pump
@@ -110,7 +108,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedIntValue pumpHeavyWaterAmount;
     public final CachedIntValue maxPlenisherNodes;
     //Quantum Entangloporter
-    public final CachedFloatingLongValue entangloporterEnergyBuffer;
+    public final CachedLongValue entangloporterEnergyBuffer;
     public final CachedIntValue entangloporterFluidBuffer;
     public final CachedLongValue entangloporterChemicalBuffer;
     //Security
@@ -134,7 +132,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     //SPS
     public final CachedIntValue spsInputPerAntimatter;
     public final CachedLongValue spsOutputTankCapacity;
-    public final CachedFloatingLongValue spsEnergyPerInput;
+    public final CachedLongValue spsEnergyPerInput;
 
     GeneralConfig() {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
@@ -217,18 +215,18 @@ public class GeneralConfig extends BaseMekanismConfig {
         blacklistForge = CachedBooleanValue.wrap(this, builder.comment("Disables Forge Energy (FE,RF,IF,uF,CF) power integration. Requires world restart (server-side option in SMP).")
               .worldRestart()
               .define("blacklistForge", false));
-        forgeConversionRate = CachedFloatingLongValue.define(this, builder, "Conversion multiplier from Forge Energy to Joules (FE * feConversionRate = Joules)",
-              "feConversionRate", FloatingLong.createConst(2.5), CachedFloatingLongValue.ENERGY_CONVERSION);
+        forgeConversionRate = CachedDoubleValue.wrap(this, builder.comment("Conversion multiplier from Forge Energy to Joules (FE * feConversionRate = Joules)")
+              .defineInRange("feConversionRate", 2.5, 0.0001, 10_000 /* Inverse of min positive value */));
         blacklistFluxNetworks = CachedBooleanValue.wrap(this, builder.comment("Disables Flux Networks higher throughput Forge Energy (FE,RF,IF,uF,CF) power integration. Requires world restart (server-side option in SMP). Note: Disabling Forge Energy integration also disables this.")
               .worldRestart()
               .define("blacklistFluxNetworks", false));
         blacklistGrandPower = CachedBooleanValue.wrap(this, builder.comment("Disables Grand Power higher throughput Forge Energy (FE,RF,IF,uF,CF) power integration. Requires world restart (server-side option in SMP). Note: Disabling Forge Energy integration also disables this.")
               .worldRestart()
               .define("blacklistGrandPower", false));
-        FROM_H2 = CachedFloatingLongValue.define(this, builder, "How much energy is produced per mB of Hydrogen, also affects Electrolytic Separator usage, Ethene burn rate and Gas generator energy capacity.",
-              "HydrogenEnergyDensity", FloatingLong.createConst(200), CachedFloatingLongValue.POSITIVE);
-        maxEnergyPerSteam = CachedFloatingLongValue.define(this, builder, "Maximum Joules per mB of Steam. Also affects Thermoelectric Boiler.",
-              "maxEnergyPerSteam", FloatingLong.createConst(10));
+        FROM_H2 = CachedLongValue.define(this, builder, "How much energy is produced per mB of Hydrogen, also affects Electrolytic Separator usage, Ethene burn rate and Gas generator energy capacity.",
+              "HydrogenEnergyDensity", 200, 1, Long.MAX_VALUE / 100_000);
+        maxEnergyPerSteam = CachedLongValue.definePositive(this, builder, "Maximum Joules per mB of Steam. Also affects Thermoelectric Boiler.",
+              "maxEnergyPerSteam", 10);
         builder.pop();
 
         builder.comment("Radiation Settings").push(RADIATION_CATEGORY);
@@ -264,10 +262,10 @@ public class GeneralConfig extends BaseMekanismConfig {
               .define("aestheticWorldDamage", true));
         laserRange = CachedIntValue.wrap(this, builder.comment("How far (in blocks) a laser can travel.")
               .defineInRange("range", 64, 1, 1_024));
-        laserEnergyNeededPerHardness = CachedFloatingLongValue.define(this, builder, "Energy needed to destroy or attract blocks with a Laser (per block hardness level).",
-              "energyNeededPerHardness", FloatingLong.createConst(100_000));
-        laserEnergyPerDamage = CachedFloatingLongValue.define(this, builder, "Energy used per half heart of damage being transferred to entities.",
-              "energyPerDamage", FloatingLong.createConst(2_500), CachedFloatingLongValue.POSITIVE);
+        laserEnergyNeededPerHardness = CachedLongValue.definePositive(this, builder, "Energy needed to destroy or attract blocks with a Laser (per block hardness level).",
+              "energyNeededPerHardness", 100_000);
+        laserEnergyPerDamage = CachedLongValue.definedMin(this, builder, "Energy used per half heart of damage being transferred to entities.",
+              "energyPerDamage", 2_500, 1);
         builder.pop();
 
         builder.comment("Oredictionificator Settings").push(OREDICTIONIFICATOR_CATEGORY);
@@ -287,8 +285,9 @@ public class GeneralConfig extends BaseMekanismConfig {
         builder.pop();
 
         builder.comment("Quantum Entangloporter Settings").push(ENTANGLOPORTER_CATEGORY);
-        entangloporterEnergyBuffer = CachedFloatingLongValue.define(this, builder, "Maximum energy buffer (Mekanism Joules) of an Entangoloporter frequency - i.e. the maximum transfer per tick per frequency. Default is ultimate tier energy cube capacity.",
-              "energyBuffer", EnergyCubeTier.ULTIMATE.getBaseMaxEnergy(), true, CachedFloatingLongValue.POSITIVE);
+        entangloporterEnergyBuffer = CachedLongValue.wrap(this, builder.comment("Maximum energy buffer (Mekanism Joules) of an Entangoloporter frequency - i.e. the maximum transfer per tick per frequency. Default is ultimate tier energy cube capacity.")
+              .worldRestart()
+              .defineInRange("energyBuffer", EnergyCubeTier.ULTIMATE.getBaseMaxEnergy(), 1, Long.MAX_VALUE));
         entangloporterFluidBuffer = CachedIntValue.wrap(this, builder.comment("Maximum fluid buffer (mb) of an Entangoloporter frequency - i.e. the maximum transfer per tick per frequency. Default is ultimate tier tank capacity.")
               .worldRestart()
               .defineInRange("fluidBuffer", FluidTankTier.ULTIMATE.getBaseStorage(), 1, Integer.MAX_VALUE));
@@ -343,8 +342,8 @@ public class GeneralConfig extends BaseMekanismConfig {
               .defineInRange("inputPerAntimatter", FluidType.BUCKET_VOLUME, 1, Integer.MAX_VALUE));
         spsOutputTankCapacity = CachedLongValue.wrap(this, builder.comment("Amount of output gas (mB, antimatter) that the SPS can store.")
               .defineInRange("outputTankCapacity", FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE));
-        spsEnergyPerInput = CachedFloatingLongValue.define(this, builder, "Energy needed to process 1 mB of input (inputPerAntimatter * energyPerInput = energy to produce 1 mB of antimatter).",
-              "energyPerInput", FloatingLong.createConst(1_000_000));
+        spsEnergyPerInput = CachedLongValue.definePositive(this, builder, "Energy needed to process 1 mB of input (inputPerAntimatter * energyPerInput = energy to produce 1 mB of antimatter).",
+              "energyPerInput", 1_000_000);
         builder.pop();
 
         builder.pop();

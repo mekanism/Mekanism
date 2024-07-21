@@ -12,7 +12,6 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IExtendedFluidTank;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
 import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
@@ -41,13 +40,13 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TurbineMultiblockData extends MultiblockData {
@@ -69,7 +68,7 @@ public class TurbineMultiblockData extends MultiblockData {
     @ContainerSync
     @SyntheticComputerMethod(getter = "getDumpingMode")
     public GasMode dumpMode = GasMode.IDLE;
-    private FloatingLong energyCapacity = FloatingLong.ZERO;
+    private long energyCapacity = 0;
 
     @ContainerSync
     @SyntheticComputerMethod(getter = "getBlades")
@@ -139,22 +138,22 @@ public class TurbineMultiblockData extends MultiblockData {
         long stored = gasTank.getStored();
         double flowRate = 0;
 
-        FloatingLong energyNeeded = energyContainer.getNeeded();
-        if (stored > 0 && !energyNeeded.isZero()) {
-            FloatingLong energyMultiplier = MekanismConfig.general.maxEnergyPerSteam.get().divide(TurbineValidator.MAX_BLADES)
-                  .multiply(Math.min(blades, coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get()));
-            if (energyMultiplier.isZero()) {
+        long energyNeeded = energyContainer.getNeeded();
+        if (stored > 0 && energyNeeded > 0L) {
+            double energyMultiplier = (MekanismConfig.general.maxEnergyPerSteam.get() / (double) TurbineValidator.MAX_BLADES)
+                                      * (Math.min(blades, coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get()));
+            if (energyMultiplier < Mth.EPSILON) {
                 clientFlow = 0;
             } else {
                 double rate = lowerVolume * (getDispersers() * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get());
                 rate = Math.min(rate, vents * MekanismGeneratorsConfig.generators.turbineVentGasFlow.get());
                 double proportion = stored / (double) getSteamCapacity();
                 double origRate = rate;
-                rate = Math.min(Math.min(stored, rate), energyNeeded.divide(energyMultiplier).doubleValue()) * proportion;
+                rate = Math.min(Math.min(stored, rate), (energyNeeded / energyMultiplier)) * proportion;
                 clientFlow = MathUtils.clampToLong(rate);
                 if (clientFlow > 0) {
                     flowRate = rate / origRate;
-                    energyContainer.insert(energyMultiplier.multiply(rate), Action.EXECUTE, AutomationType.INTERNAL);
+                    energyContainer.insert(MathUtils.clampToLong(energyMultiplier * rate), Action.EXECUTE, AutomationType.INTERNAL);
                     gasTank.shrinkStack(clientFlow, Action.EXECUTE);
                     ventTank.setStack(new FluidStack(Fluids.WATER, Math.min(MathUtils.clampToInt(rate), condensers * MekanismGeneratorsConfig.generators.condenserRate.get())));
                 }
@@ -236,8 +235,7 @@ public class TurbineMultiblockData extends MultiblockData {
         return lowerVolume * MekanismGeneratorsConfig.generators.turbineGasPerTank.get();
     }
 
-    @NotNull
-    public FloatingLong getEnergyCapacity() {
+    public long getEnergyCapacity() {
         return energyCapacity;
     }
 
@@ -245,7 +243,7 @@ public class TurbineMultiblockData extends MultiblockData {
     public void setVolume(int volume) {
         if (getVolume() != volume) {
             super.setVolume(volume);
-            energyCapacity = MekanismGeneratorsConfig.generators.turbineEnergyCapacityPerVolume.get().multiply(volume).copyAsConst();
+            energyCapacity = volume * MekanismGeneratorsConfig.generators.turbineEnergyCapacityPerVolume.get();
         }
     }
 
@@ -255,19 +253,19 @@ public class TurbineMultiblockData extends MultiblockData {
     }
 
     @ComputerMethod
-    public FloatingLong getProductionRate() {
-        FloatingLong energyMultiplier = MekanismConfig.general.maxEnergyPerSteam.get().divide(TurbineValidator.MAX_BLADES)
-              .multiply(Math.min(blades, coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get()));
-        return energyMultiplier.multiply(clientFlow);
+    public long getProductionRate() {
+        double energyMultiplier = ((double) MekanismConfig.general.maxEnergyPerSteam.get() / TurbineValidator.MAX_BLADES)
+                                  * (Math.min(blades, coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get()));
+        return MathUtils.clampToLong(energyMultiplier * clientFlow);
     }
 
     @ComputerMethod
-    public FloatingLong getMaxProduction() {
-        FloatingLong energyMultiplier = MekanismConfig.general.maxEnergyPerSteam.get().divide(TurbineValidator.MAX_BLADES)
-              .multiply(Math.min(blades, coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get()));
+    public long getMaxProduction() {
+        double energyMultiplier = ((double) MekanismConfig.general.maxEnergyPerSteam.get() / TurbineValidator.MAX_BLADES)
+                                  * (Math.min(blades, coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get()));
         double rate = lowerVolume * (getDispersers() * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get());
         rate = Math.min(rate, vents * MekanismGeneratorsConfig.generators.turbineVentGasFlow.get());
-        return energyMultiplier.multiply(rate);
+        return MathUtils.clampToLong(energyMultiplier * rate);
     }
 
     @ComputerMethod

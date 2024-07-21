@@ -1,7 +1,6 @@
 package mekanism.client.gui;
 
 import java.math.BigDecimal;
-import mekanism.api.math.FloatingLong;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiEnergyGauge;
 import mekanism.client.gui.element.tab.GuiAmplifierTab;
@@ -64,21 +63,21 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 
-    private FloatingLong parseFloatingLong(GuiTextField textField) {
+    private long parseLong(GuiTextField textField) throws NumberFormatException {
         String text = textField.getText();
         if (text.contains("E")) {
             //TODO: Improve how we handle scientific notation, we currently create a big decimal and then
             // we parse it as a floating long, ideally we could skip the big decimal side of things
             text = new BigDecimal(text).toPlainString();
         }
-        return FloatingLong.parseFloatingLong(text);
+        return Math.max(0L, Long.parseLong(text));
     }
 
     private void setMinThreshold() {
         if (!minField.getText().isEmpty()) {
             try {
                 PacketUtils.sendToServer(new PacketGuiSetEnergy(GuiEnergyValue.MIN_THRESHOLD, tile.getBlockPos(),
-                      MekanismUtils.convertToJoules(parseFloatingLong(minField))));
+                      MekanismUtils.convertToJoules(parseLong(minField))));
             } catch (NumberFormatException ignored) {
             }
             minField.setText("");
@@ -89,7 +88,7 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
         if (!maxField.getText().isEmpty()) {
             try {
                 PacketUtils.sendToServer(new PacketGuiSetEnergy(GuiEnergyValue.MAX_THRESHOLD, tile.getBlockPos(),
-                      MekanismUtils.convertToJoules(parseFloatingLong(maxField))));
+                      MekanismUtils.convertToJoules(parseLong(maxField))));
             } catch (NumberFormatException ignored) {
             }
             maxField.setText("");

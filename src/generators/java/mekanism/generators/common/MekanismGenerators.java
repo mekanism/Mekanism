@@ -2,12 +2,12 @@ package mekanism.generators.common;
 
 import mekanism.api.MekanismIMC;
 import mekanism.api.chemical.gas.attribute.GasAttributes.Fuel;
-import mekanism.api.math.FloatingLong;
+import mekanism.api.math.MathUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IModModule;
 import mekanism.common.command.builders.BuildCommand;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.config.listener.ConfigBasedCachedFLSupplier;
+import mekanism.common.config.listener.ConfigBasedCachedLongSupplier;
 import mekanism.common.lib.Version;
 import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.recipe.ClearConfigurationRecipe;
@@ -47,10 +47,11 @@ import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
 public class MekanismGenerators implements IModModule {
 
     public static final String MODID = "mekanismgenerators";
-    private static final ConfigBasedCachedFLSupplier ETHENE_ENERGY_DENSITY = new ConfigBasedCachedFLSupplier(() -> {
-        FloatingLong energy = MekanismGeneratorsConfig.generators.bioGeneration.get().multiply(2)
-              .timesEqual(MekanismGeneratorsConfig.generators.etheneDensityMultiplier.get());
-        return energy.plusEqual(MekanismConfig.general.FROM_H2.get());
+    private static final ConfigBasedCachedLongSupplier ETHENE_ENERGY_DENSITY = new ConfigBasedCachedLongSupplier(() -> {
+        long bioGeneration = MekanismGeneratorsConfig.generators.bioGeneration.get();
+        double etheneDensity = MekanismGeneratorsConfig.generators.etheneDensityMultiplier.get();
+        long energy = MathUtils.clampToLong(MathUtils.multiplyClamped(bioGeneration, 2) * etheneDensity);
+        return energy + MekanismConfig.general.FROM_H2.get();
     }, MekanismConfig.general.FROM_H2, MekanismGeneratorsConfig.generators.bioGeneration, MekanismGeneratorsConfig.generators.etheneDensityMultiplier);
 
     public static MekanismGenerators instance;

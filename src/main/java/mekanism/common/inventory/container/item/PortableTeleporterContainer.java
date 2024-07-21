@@ -3,7 +3,6 @@ package mekanism.common.inventory.container.item;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.math.FloatingLong;
 import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.inventory.container.IEmptyContainer;
 import mekanism.common.inventory.container.sync.SyncableByte;
@@ -59,8 +58,8 @@ public class PortableTeleporterContainer extends FrequencyItemContainer<Teleport
                         } else {
                             GlobalPos coords = freq.getClosestCoords(GlobalPos.of(getLevel().dimension(), inv.player.blockPosition()));
                             if (coords != null) {
-                                FloatingLong energyNeeded = TileEntityTeleporter.calculateEnergyCost(inv.player, coords);
-                                if (energyNeeded != null && energyContainer.extract(energyNeeded, Action.SIMULATE, AutomationType.MANUAL).smallerThan(energyNeeded)) {
+                                long energyNeeded = TileEntityTeleporter.calculateEnergyCost(inv.player, coords);
+                                if (energyNeeded != -1 && energyContainer.extract(energyNeeded, Action.SIMULATE, AutomationType.MANUAL) < energyNeeded) {
                                     status = 4;
                                 }
                             }

@@ -2,9 +2,9 @@ package mekanism.api.gear;
 
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.LongSupplier;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.FloatSupplier;
-import mekanism.api.math.FloatingLongSupplier;
 import mekanism.api.radial.RadialData;
 import mekanism.api.radial.mode.IRadialMode;
 import mekanism.api.radial.mode.NestedRadialMode;
@@ -331,7 +331,7 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
      * @param absorptionRatio Ratio of damage this module can absorb up to, returns a value between zero and one.
      * @param energyCost      Energy cost per point of damage reduced.
      */
-    record ModuleDamageAbsorbInfo(@NotNull FloatSupplier absorptionRatio, @NotNull FloatingLongSupplier energyCost) {
+    record ModuleDamageAbsorbInfo(@NotNull FloatSupplier absorptionRatio, @NotNull LongSupplier energyCost) {
 
         /**
          * @param absorptionRatio Ratio of damage this module can absorb up to, returns a value between zero and one.

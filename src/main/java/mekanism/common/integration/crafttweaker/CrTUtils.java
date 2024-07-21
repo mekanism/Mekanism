@@ -238,6 +238,27 @@ public class CrTUtils {
     }
 
     /**
+     * Helper method for describing the outputs of a recipe that may have multiple outputs.
+     */
+    public static String describeOutputs(long[] outputs) {
+        int size = outputs.length;
+        if (size == 0) {
+            return "";
+        } else if (size == 1) {
+            return Long.toString(outputs[0]);
+        }
+        //Note: This isn't the best way to describe multiple outputs, but it is probably as close as we can get
+        StringBuilder description = new StringBuilder();
+        for (int i = 0; i < size; i++) {
+            if (i > 0) {
+                description.append(", or ");
+            }
+            description.append(outputs[i]);
+        }
+        return description.toString();
+    }
+
+    /**
      * Helper to convert a CraftTweaker type tag to a regular tag and validate it exists
      */
     public static <TYPE> TagKey<TYPE> validateTagAndGet(KnownTag<TYPE> tag) {

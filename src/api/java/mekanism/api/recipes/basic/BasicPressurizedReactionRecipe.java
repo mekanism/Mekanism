@@ -1,11 +1,11 @@
 package mekanism.api.recipes.basic;
 
+import com.google.common.base.Preconditions;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.ingredients.GasStackIngredient;
@@ -22,7 +22,7 @@ public class BasicPressurizedReactionRecipe extends PressurizedReactionRecipe {
     protected final ItemStackIngredient inputSolid;
     protected final FluidStackIngredient inputFluid;
     protected final GasStackIngredient inputGas;
-    protected final FloatingLong energyRequired;
+    protected final long energyRequired;
     protected final int duration;
     protected final ItemStack outputItem;
     protected final GasStack outputGas;
@@ -39,11 +39,13 @@ public class BasicPressurizedReactionRecipe extends PressurizedReactionRecipe {
      * @apiNote At least one output must not be empty.
      */
     public BasicPressurizedReactionRecipe(ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, GasStackIngredient inputGas,
-          FloatingLong energyRequired, int duration, ItemStack outputItem, GasStack outputGas) {
+          long energyRequired, int duration, ItemStack outputItem, GasStack outputGas) {
         this.inputSolid = Objects.requireNonNull(inputSolid, "Item input cannot be null.");
         this.inputFluid = Objects.requireNonNull(inputFluid, "Fluid input cannot be null.");
         this.inputGas = Objects.requireNonNull(inputGas, "Gas input cannot be null.");
-        this.energyRequired = Objects.requireNonNull(energyRequired, "Required energy cannot be null.").copyAsConst();
+        Preconditions.checkArgument(energyRequired >= 0, "Energy required must not be negative");
+        this.energyRequired = energyRequired;
+
         if (duration <= 0) {
             throw new IllegalArgumentException("Duration must be positive.");
         }
@@ -73,7 +75,7 @@ public class BasicPressurizedReactionRecipe extends PressurizedReactionRecipe {
     }
 
     @Override
-    public FloatingLong getEnergyRequired() {
+    public long getEnergyRequired() {
         return energyRequired;
     }
 

@@ -2,10 +2,10 @@ package mekanism.generators.common.tile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.LongSupplier;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
-import mekanism.api.math.FloatingLong;
-import mekanism.api.math.FloatingLongSupplier;
+import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
@@ -14,7 +14,7 @@ import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.energy.BlockEnergyCapabilityCache;
 import mekanism.common.inventory.container.sync.ISyncableData;
-import mekanism.common.inventory.container.sync.SyncableFloatingLong;
+import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.CableUtils;
 import net.minecraft.core.BlockPos;
@@ -33,15 +33,15 @@ public abstract class TileEntityGenerator extends TileEntityMekanism {
     /**
      * Output per tick this generator can transfer.
      */
-    private FloatingLong maxOutput;
+    private long maxOutput;
     private BasicEnergyContainer energyContainer;
 
     /**
      * Generator -- a block that produces energy. It has a certain amount of fuel it can store as well as an output rate.
      */
-    public TileEntityGenerator(IBlockProvider blockProvider, BlockPos pos, BlockState state, @NotNull FloatingLongSupplier maxOutput) {
+    public TileEntityGenerator(IBlockProvider blockProvider, BlockPos pos, BlockState state, @NotNull LongSupplier maxOutput) {
         super(blockProvider, pos, state);
-        updateMaxOutputRaw(maxOutput.get());
+        updateMaxOutputRaw(maxOutput.getAsLong());
     }
 
     protected RelativeSide[] getEnergySides() {
@@ -82,16 +82,16 @@ public abstract class TileEntityGenerator extends TileEntityMekanism {
     }
 
     @ComputerMethod
-    public FloatingLong getMaxOutput() {
+    public long getMaxOutput() {
         return maxOutput;
     }
 
-    protected void updateMaxOutputRaw(FloatingLong maxOutput) {
-        this.maxOutput = maxOutput.multiply(2);
+    protected void updateMaxOutputRaw(long maxOutput) {
+        this.maxOutput = MathUtils.multiplyClamped(maxOutput, 2);
     }
 
     protected ISyncableData syncableMaxOutput() {
-        return SyncableFloatingLong.create(this::getMaxOutput, value -> maxOutput = value);
+        return SyncableLong.create(this::getMaxOutput, value -> maxOutput = value);
     }
 
     public BasicEnergyContainer getEnergyContainer() {
@@ -99,5 +99,5 @@ public abstract class TileEntityGenerator extends TileEntityMekanism {
     }
 
     @ComputerMethod(methodDescription = "Get the amount of energy produced by this generator in the last tick.")
-    abstract FloatingLong getProductionRate();
+    abstract long getProductionRate();
 }

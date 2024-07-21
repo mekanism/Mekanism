@@ -7,7 +7,6 @@ import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
@@ -54,8 +53,8 @@ public class ItemElectricBow extends BowItem implements IItemHUDProvider, ICusto
     public void releaseUsing(@NotNull ItemStack bow, @NotNull Level world, @NotNull LivingEntity entity, int timeLeft) {
         if (entity instanceof Player player && !player.isCreative()) {
             IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(bow, 0);
-            FloatingLong energyNeeded = getMode(bow) ? MekanismConfig.gear.electricBowEnergyUsageFire.get() : MekanismConfig.gear.electricBowEnergyUsage.get();
-            if (energyContainer == null || energyContainer.extract(energyNeeded, Action.SIMULATE, AutomationType.MANUAL).smallerThan(energyNeeded)) {
+            long energyNeeded = getMode(bow) ? MekanismConfig.gear.electricBowEnergyUsageFire.get() : MekanismConfig.gear.electricBowEnergyUsage.get();
+            if (energyContainer == null || energyContainer.extract(energyNeeded, Action.SIMULATE, AutomationType.MANUAL) < energyNeeded) {
                 return;
             }
         }
@@ -70,7 +69,7 @@ public class ItemElectricBow extends BowItem implements IItemHUDProvider, ICusto
             IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(bow, 0);
             if (energyContainer != null) {
                 //Use energy
-                FloatingLong energyNeeded = getMode(bow) ? MekanismConfig.gear.electricBowEnergyUsageFire.get() : MekanismConfig.gear.electricBowEnergyUsage.get();
+                long energyNeeded = getMode(bow) ? MekanismConfig.gear.electricBowEnergyUsageFire.get() : MekanismConfig.gear.electricBowEnergyUsage.get();
                 energyContainer.extract(energyNeeded, Action.EXECUTE, AutomationType.MANUAL);
             }
         }

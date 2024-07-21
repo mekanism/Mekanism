@@ -1,34 +1,32 @@
 package mekanism.common.lib;
 
-import mekanism.api.math.FloatingLong;
-
 public class LastEnergyTracker {
 
-    private FloatingLong lastEnergyReceived = FloatingLong.ZERO;
-    private FloatingLong currentEnergyReceived = FloatingLong.ZERO;
+    private long lastEnergyReceived = 0L;
+    private long currentEnergyReceived = 0L;
     private long currentGameTime;
 
-    public void received(long gameTime, FloatingLong amount) {
+    public void received(long gameTime, long amount) {
         if (currentGameTime == gameTime) {
             //If we are doing the current tick then increment it
-            currentEnergyReceived = currentEnergyReceived.plusEqual(amount);
+            currentEnergyReceived += amount;
         } else {
             //If we aren't then store it in the amount for the last tick
             // update what the current game time is and set the current energy to the amount we received
             lastEnergyReceived = currentEnergyReceived;
             currentGameTime = gameTime;
-            currentEnergyReceived = amount != FloatingLong.ZERO ? amount.copy() : FloatingLong.ZERO;
+            currentEnergyReceived = amount;
         }
     }
 
-    public FloatingLong getLastEnergyReceived() {
+    public long getLastEnergyReceived() {
         return lastEnergyReceived;
     }
 
     /**
      * @apiNote For use in syncing to client
      */
-    public void setLastEnergyReceived(FloatingLong lastEnergyReceived) {
+    public void setLastEnergyReceived(long lastEnergyReceived) {
         this.lastEnergyReceived = lastEnergyReceived;
     }
 }

@@ -17,7 +17,6 @@ import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.merged.MergedChemicalTank;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.common.attachments.FilterAware;
@@ -99,18 +98,18 @@ public class ItemSlotsBuilder {
     private static final BiPredicate<@NotNull ItemStack, @NotNull AutomationType> FILL_CONVERT_ENERGY_SLOT_CAN_EXTRACT = (stack, automationType) ->
           //Allow extraction if something went horribly wrong, and we are not an energy container item or no longer have any energy left to give,
           // or we are no longer a valid conversion, this might happen after a reload for example
-          automationType == AutomationType.MANUAL || !EnergyInventorySlot.fillInsertCheck(stack) && EnergyInventorySlot.getPotentialConversion(null, stack).isZero();
+          automationType == AutomationType.MANUAL || !EnergyInventorySlot.fillInsertCheck(stack) && EnergyInventorySlot.getPotentialConversion(null, stack) == 0L;
     private static final BiPredicate<@NotNull ItemStack, @NotNull AutomationType> FILL_CONVERT_ENERGY_SLOT_CAN_INSERT = (stack, automationType) -> {
         if (EnergyInventorySlot.fillInsertCheck(stack)) {
             return true;
         }
         //Note: We recheck about this being empty and that it is still valid as the conversion list might have changed, such as after a reload
         // Unlike with the chemical conversions, we don't check if the type is "valid" as we only have one "type" of energy.
-        return !EnergyInventorySlot.getPotentialConversion(null, stack).isZero();
+        return EnergyInventorySlot.getPotentialConversion(null, stack) > 0L;
     };
     //Note: we mark all energy handler items as valid and have a more restrictive insert check so that we allow full containers when they are done being filled
     // We also allow energy conversion of items that can be converted
-    private static final Predicate<ItemStack> FILL_CONVERT_ENERGY_SLOT_VALIDATOR = stack -> EnergyCompatUtils.hasStrictEnergyHandler(stack) || !EnergyInventorySlot.getPotentialConversion(null, stack).isZero();
+    private static final Predicate<ItemStack> FILL_CONVERT_ENERGY_SLOT_VALIDATOR = stack -> EnergyCompatUtils.hasStrictEnergyHandler(stack) || EnergyInventorySlot.getPotentialConversion(null, stack) > 0L;
     private static final IBasicContainerCreator<ComponentBackedInventorySlot> FILL_CONVERT_ENERGY_SLOT_CREATOR = (type, attachedTo, containerIndex) -> new ComponentBackedInventorySlot(attachedTo,
           containerIndex, FILL_CONVERT_ENERGY_SLOT_CAN_EXTRACT, FILL_CONVERT_ENERGY_SLOT_CAN_INSERT, FILL_CONVERT_ENERGY_SLOT_VALIDATOR);
 
@@ -120,12 +119,12 @@ public class ItemSlotsBuilder {
         }
         //Inversion of the insert check
         IStrictEnergyHandler itemEnergyHandler = EnergyCompatUtils.getStrictEnergyHandler(stack);
-        return itemEnergyHandler == null || itemEnergyHandler.insertEnergy(FloatingLong.MAX_VALUE, Action.SIMULATE).equals(FloatingLong.MAX_VALUE);
+        return itemEnergyHandler == null || itemEnergyHandler.insertEnergy(Long.MAX_VALUE, Action.SIMULATE) == Long.MAX_VALUE;
     };
     private static final BiPredicate<@NotNull ItemStack, @NotNull AutomationType> DRAIN_ENERGY_SLOT_CAN_INSERT = (stack, automationType) -> {
         IStrictEnergyHandler itemEnergyHandler = EnergyCompatUtils.getStrictEnergyHandler(stack);
         //if we can accept any energy that is currently stored in the container, then we allow inserting the item
-        return itemEnergyHandler != null && itemEnergyHandler.insertEnergy(FloatingLong.MAX_VALUE, Action.SIMULATE).smallerThan(FloatingLong.MAX_VALUE);
+        return itemEnergyHandler != null && itemEnergyHandler.insertEnergy(Long.MAX_VALUE, Action.SIMULATE) < Long.MAX_VALUE;
     };
     private static final IBasicContainerCreator<ComponentBackedInventorySlot> DRAIN_ENERGY_SLOT_CREATOR = (type, attachedTo, containerIndex) -> new ComponentBackedInventorySlot(attachedTo,
           containerIndex, DRAIN_ENERGY_SLOT_CAN_EXTRACT, DRAIN_ENERGY_SLOT_CAN_INSERT, EnergyInventorySlot.DRAIN_VALIDATOR);

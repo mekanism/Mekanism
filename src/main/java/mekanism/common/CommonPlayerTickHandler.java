@@ -3,6 +3,7 @@ package mekanism.common;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.function.LongSupplier;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.MekanismAPITags;
@@ -11,8 +12,7 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.FloatSupplier;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleHelper;
-import mekanism.api.math.FloatingLong;
-import mekanism.api.math.FloatingLongSupplier;
+import mekanism.api.math.MathUtils;
 import mekanism.common.base.KeySync;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.IBlastingItem;
@@ -221,15 +221,15 @@ public class CommonPlayerTickHandler {
         if (info != null && info.container != null) {
             float absorption = info.damageRatio.getAsFloat();
             float amount = fallDamage * absorption;
-            FloatingLong energyRequirement = info.energyCost.get().multiply(amount);
+            long energyRequirement = MathUtils.ceilToLong(info.energyCost.getAsLong() * amount);
             float ratioAbsorbed;
-            if (energyRequirement.isZero()) {
+            if (energyRequirement == 0L) {
                 //No energy is actually needed to absorb the damage, either because of the config
                 // or how small the amount to absorb is
                 ratioAbsorbed = absorption;
             } else {
-                FloatingLong extracted = info.container.extract(energyRequirement, Action.EXECUTE, AutomationType.MANUAL);
-                ratioAbsorbed = absorption * extracted.divide(energyRequirement).floatValue();
+                long extracted = info.container.extract(energyRequirement, Action.EXECUTE, AutomationType.MANUAL);
+                ratioAbsorbed = (float) (absorption * ((double) extracted / energyRequirement));
             }
             if (ratioAbsorbed > 0) {
                 float damageRemaining = fallDamage * Math.max(0, 1 - ratioAbsorbed);
@@ -259,7 +259,7 @@ public class CommonPlayerTickHandler {
             IModule<ModuleHydraulicPropulsionUnit> propulsionModule = IModuleHelper.INSTANCE.getIfEnabled(boots, MekanismModules.HYDRAULIC_PROPULSION_UNIT);
             if (propulsionModule != null && Mekanism.keyMap.has(player.getUUID(), KeySync.BOOST)) {
                 float boost = propulsionModule.getCustomInstance().getBoost();
-                FloatingLong usage = MekanismConfig.gear.mekaSuitBaseJumpEnergyUsage.get().multiply(boost / 0.1F);
+                long usage = MathUtils.ceilToLong(MekanismConfig.gear.mekaSuitBaseJumpEnergyUsage.get() * boost / 0.1F);
                 if (propulsionModule.canUseEnergy(player, boots, usage)) {
                     // if we're sprinting with the boost module, limit the height
                     ItemStack legs = player.getItemBySlot(EquipmentSlot.LEGS);
@@ -294,7 +294,7 @@ public class CommonPlayerTickHandler {
         return null;
     }
 
-    private record FallEnergyInfo(@Nullable IEnergyContainer container, FloatSupplier damageRatio, FloatingLongSupplier energyCost) {
+    private record FallEnergyInfo(@Nullable IEnergyContainer container, FloatSupplier damageRatio, LongSupplier energyCost) {
     }
 
     @SubscribeEvent

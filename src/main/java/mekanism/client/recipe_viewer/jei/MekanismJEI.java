@@ -19,7 +19,6 @@ import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.energy.IStrictEnergyHandler;
-import mekanism.api.math.FloatingLong;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.robit.GuiRobitRepair;
 import mekanism.client.recipe_viewer.RecipeViewerUtils;
@@ -218,8 +217,8 @@ public class MekanismJEI implements IModPlugin {
             String component = "";
             int containers = energyHandlerItem.getEnergyContainerCount();
             for (int container = 0; container < containers; container++) {
-                FloatingLong neededEnergy = energyHandlerItem.getNeededEnergy(container);
-                if (neededEnergy.isZero()) {
+                long neededEnergy = energyHandlerItem.getNeededEnergy(container);
+                if (neededEnergy == 0L) {
                     component = addInterpretation(component, "filled");
                 } else if (containers > 1) {
                     component = addInterpretation(component, "empty");

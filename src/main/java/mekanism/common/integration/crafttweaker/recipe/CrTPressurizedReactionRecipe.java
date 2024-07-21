@@ -6,7 +6,6 @@ import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import java.util.List;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.ingredients.GasStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
@@ -54,8 +53,8 @@ public class CrTPressurizedReactionRecipe {
      */
     @ZenCodeType.Method
     @ZenCodeType.Getter("energyRequired")
-    public static FloatingLong getEnergyRequired(PressurizedReactionRecipe _this) {
-        return _this.getEnergyRequired().copyAsConst();
+    public static long getEnergyRequired(PressurizedReactionRecipe _this) {
+        return _this.getEnergyRequired();
     }
 
     /**

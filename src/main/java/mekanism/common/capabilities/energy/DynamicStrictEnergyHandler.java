@@ -8,7 +8,6 @@ import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
-import mekanism.api.math.FloatingLong;
 import mekanism.common.capabilities.DynamicHandler;
 import net.minecraft.core.Direction;
 import org.jetbrains.annotations.Nullable;
@@ -27,26 +26,26 @@ public class DynamicStrictEnergyHandler extends DynamicHandler<IEnergyContainer>
     }
 
     @Override
-    public FloatingLong insertEnergy(int container, FloatingLong amount, @Nullable Direction side, Action action) {
+    public long insertEnergy(int container, long amount, @Nullable Direction side, Action action) {
         //If we can insert into the specific side, try to. Otherwise exit
         return canInsert.test(side) ? IMekanismStrictEnergyHandler.super.insertEnergy(container, amount, side, action) : amount;
     }
 
     @Override
-    public FloatingLong extractEnergy(int container, FloatingLong amount, @Nullable Direction side, Action action) {
+    public long extractEnergy(int container, long amount, @Nullable Direction side, Action action) {
         //If we can extract from a specific side, try to. Otherwise exit
-        return canExtract.test(side) ? IMekanismStrictEnergyHandler.super.extractEnergy(container, amount, side, action) : FloatingLong.ZERO;
+        return canExtract.test(side) ? IMekanismStrictEnergyHandler.super.extractEnergy(container, amount, side, action) : 0L;
     }
 
     @Override
-    public FloatingLong insertEnergy(FloatingLong amount, @Nullable Direction side, Action action) {
+    public long insertEnergy(long amount, @Nullable Direction side, Action action) {
         //If we can insert into the specific side, try to. Otherwise exit
         return canInsert.test(side) ? IMekanismStrictEnergyHandler.super.insertEnergy(amount, side, action) : amount;
     }
 
     @Override
-    public FloatingLong extractEnergy(FloatingLong amount, @Nullable Direction side, Action action) {
+    public long extractEnergy(long amount, @Nullable Direction side, Action action) {
         //If we can extract from a specific side, try to. Otherwise exit
-        return canExtract.test(side) ? IMekanismStrictEnergyHandler.super.extractEnergy(amount, side, action) : FloatingLong.ZERO;
+        return canExtract.test(side) ? IMekanismStrictEnergyHandler.super.extractEnergy(amount, side, action) : 0L;
     }
 }

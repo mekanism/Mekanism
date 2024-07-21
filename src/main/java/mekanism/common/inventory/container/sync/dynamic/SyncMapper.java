@@ -30,7 +30,6 @@ import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.heat.IHeatCapacitor;
-import mekanism.api.math.FloatingLong;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.capabilities.merged.MergedTank;
@@ -77,7 +76,7 @@ public class SyncMapper extends BaseAnnotationScanner {
               SpecialPropertyData.create(SlurryStack.class, IChemicalTank::getStack, IChemicalTank::setStackUnchecked)
         ));
         specialProperties.add(new SpecialPropertyHandler<>(IEnergyContainer.class,
-              SpecialPropertyData.create(FloatingLong.class, IEnergyContainer::getEnergy, IEnergyContainer::setEnergy)
+              SpecialPropertyData.create(Long.TYPE, IEnergyContainer::getEnergy, IEnergyContainer::setEnergy)
         ));
         specialProperties.add(new SpecialPropertyHandler<>(BasicHeatCapacitor.class,
               SpecialPropertyData.create(Double.TYPE, BasicHeatCapacitor::getHeatCapacity, BasicHeatCapacitor::setHeatCapacityFromPacket),

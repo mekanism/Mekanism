@@ -9,7 +9,6 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.SlurryStack;
-import mekanism.api.math.FloatingLong;
 import mekanism.common.inventory.container.sync.ISyncableData;
 import mekanism.common.inventory.container.sync.SyncableBlockPos;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
@@ -17,7 +16,6 @@ import mekanism.common.inventory.container.sync.SyncableByte;
 import mekanism.common.inventory.container.sync.SyncableByteArray;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableFloat;
-import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.container.sync.SyncableFluidStack;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.container.sync.SyncableItemStack;
@@ -57,8 +55,7 @@ public enum PropertyType {
     INFUSION_STACK(InfusionStack.class, InfusionStack.EMPTY, (getter, setter) -> SyncableInfusionStack.create(() -> (InfusionStack) getter.get(), setter::accept), () -> InfusionStackPropertyData.STREAM_CODEC),
     PIGMENT_STACK(PigmentStack.class, PigmentStack.EMPTY, (getter, setter) -> SyncablePigmentStack.create(() -> (PigmentStack) getter.get(), setter::accept), () -> PigmentStackPropertyData.STREAM_CODEC),
     SLURRY_STACK(SlurryStack.class, SlurryStack.EMPTY, (getter, setter) -> SyncableSlurryStack.create(() -> (SlurryStack) getter.get(), setter::accept), () -> SlurryStackPropertyData.STREAM_CODEC),
-    BLOCK_POS(BlockPos.class, null, (getter, setter) -> SyncableBlockPos.create(() -> (BlockPos) getter.get(), setter::accept), () -> BlockPosPropertyData.STREAM_CODEC),
-    FLOATING_LONG(FloatingLong.class, FloatingLong.ZERO, (getter, setter) -> SyncableFloatingLong.create(() -> (FloatingLong) getter.get(), setter::accept), () -> FloatingLongPropertyData.STREAM_CODEC);
+    BLOCK_POS(BlockPos.class, null, (getter, setter) -> SyncableBlockPos.create(() -> (BlockPos) getter.get(), setter::accept), () -> BlockPosPropertyData.STREAM_CODEC);
 
     public static final IntFunction<PropertyType> BY_ID = ByIdMap.continuous(PropertyType::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
     public static final StreamCodec<ByteBuf, PropertyType> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, PropertyType::ordinal);

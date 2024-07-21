@@ -12,7 +12,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.KeySync;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.config.listener.ConfigBasedCachedFLSupplier;
+import mekanism.common.config.listener.ConfigBasedCachedLongSupplier;
 import mekanism.common.content.gear.mekasuit.ModuleLocomotiveBoostingUnit.SprintBoost;
 import mekanism.common.registries.MekanismGameEvents;
 import mekanism.common.registries.MekanismItems;
@@ -33,9 +33,11 @@ import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 @ParametersAreNotNullByDefault
 public record ModuleGravitationalModulatingUnit(SprintBoost speedBoost) implements ICustomModule<ModuleGravitationalModulatingUnit> {
 
+    public static final int BOOST_ENERGY_MULTIPLIER = 4;
+
     private static final AttributeModifier CREATIVE_FLIGHT_MODIFIER = new AttributeModifier(Mekanism.rl("mekasuit_gravitational_modulation"), 1, Operation.ADD_VALUE);
-    private static final ConfigBasedCachedFLSupplier BOOST_USAGE = new ConfigBasedCachedFLSupplier(
-          () -> MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation.get().multiply(4),
+    private static final ConfigBasedCachedLongSupplier BOOST_USAGE = new ConfigBasedCachedLongSupplier(
+          () -> BOOST_ENERGY_MULTIPLIER * MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation.get(),
           MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation
     );
     private static final ResourceLocation icon = MekanismUtils.getResource(ResourceType.GUI_HUD, "gravitational_modulation_unit.png");
@@ -88,7 +90,7 @@ public record ModuleGravitationalModulatingUnit(SprintBoost speedBoost) implemen
             float boost = speedBoost.getBoost();
             if (boost > 0 && Mekanism.keyMap.has(player.getUUID(), KeySync.BOOST) && module.hasEnoughEnergy(stack, BOOST_USAGE)) {
                 player.moveRelative(boost, BOOST_VEC);
-                module.useEnergy(player, stack, BOOST_USAGE.get());
+                module.useEnergy(player, stack, BOOST_USAGE.getAsLong());
                 gravUnitGameEvent(player, MekanismGameEvents.GRAVITY_MODULATE_BOOSTED);
             } else {
                 module.useEnergy(player, stack, MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation.get());

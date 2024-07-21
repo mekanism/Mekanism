@@ -8,7 +8,6 @@ import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
-import mekanism.api.math.FloatingLong;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.network.distribution.EnergySaveTarget;
@@ -57,15 +56,16 @@ public record ModuleChargeDistributionUnit(boolean chargeSuit, boolean chargeInv
         }
         if (saveTarget.getHandlerCount() > 1) {
             //If we only have one handler we can skip charging as it will all just go back into the chest piece
-            EmitUtils.sendToAcceptors(saveTarget, saveTarget.getStored());
+            long stored = saveTarget.getStored();
+            EmitUtils.sendToAcceptors(saveTarget, stored, stored);
             saveTarget.save();
         }
     }
 
     private void chargeInventory(IEnergyContainer energyContainer, Player player) {
         //Only try to charge up to how much energy we actually have stored
-        FloatingLong toCharge = MekanismConfig.gear.mekaSuitInventoryChargeRate.get().min(energyContainer.getEnergy());
-        if (toCharge.isZero()) {
+        long toCharge = Math.min(MekanismConfig.gear.mekaSuitInventoryChargeRate.get(), energyContainer.getEnergy());
+        if (toCharge == 0L) {
             return;
         }
         // first try to charge mainhand/offhand item
@@ -73,11 +73,11 @@ public record ModuleChargeDistributionUnit(boolean chargeSuit, boolean chargeInv
         ItemStack offHand = player.getOffhandItem();
         toCharge = charge(energyContainer, mainHand, toCharge);
         toCharge = charge(energyContainer, offHand, toCharge);
-        if (!toCharge.isZero()) {
+        if (toCharge > 0L) {
             for (ItemStack stack : player.getInventory().items) {
                 if (stack != mainHand && stack != offHand) {
                     toCharge = charge(energyContainer, stack, toCharge);
-                    if (toCharge.isZero()) {
+                    if (toCharge == 0L) {
                         return;
                     }
                 }
@@ -87,7 +87,7 @@ public record ModuleChargeDistributionUnit(boolean chargeSuit, boolean chargeInv
                 if (handler != null) {
                     for (int slot = 0, slots = handler.getSlots(); slot < slots; slot++) {
                         toCharge = charge(energyContainer, handler.getStackInSlot(slot), toCharge);
-                        if (toCharge.isZero()) {
+                        if (toCharge == 0L) {
                             return;
                         }
                     }
@@ -97,17 +97,17 @@ public record ModuleChargeDistributionUnit(boolean chargeSuit, boolean chargeInv
     }
 
     /** return rejects */
-    private FloatingLong charge(IEnergyContainer energyContainer, ItemStack stack, FloatingLong amount) {
-        if (!stack.isEmpty() && !amount.isZero()) {
+    private long charge(IEnergyContainer energyContainer, ItemStack stack, long amount) {
+        if (!stack.isEmpty() && amount > 0L) {
             IStrictEnergyHandler handler = EnergyCompatUtils.getStrictEnergyHandler(stack);
             if (handler != null) {
-                FloatingLong remaining = handler.insertEnergy(amount, Action.SIMULATE);
-                if (remaining.smallerThan(amount)) {
+                long remaining = handler.insertEnergy(amount, Action.SIMULATE);
+                if (remaining < amount) {
                     //If we can actually insert any energy into
-                    FloatingLong toExtract = amount.subtract(remaining);
-                    FloatingLong extracted = energyContainer.extract(toExtract, Action.EXECUTE, AutomationType.MANUAL);
-                    FloatingLong inserted = handler.insertEnergy(extracted, Action.EXECUTE);
-                    return inserted.plusEqual(remaining);
+                    long toExtract = amount - remaining;
+                    long extracted = energyContainer.extract(toExtract, Action.EXECUTE, AutomationType.MANUAL);
+                    long inserted = handler.insertEnergy(extracted, Action.EXECUTE);
+                    return inserted + remaining;
                 }
             }
         }

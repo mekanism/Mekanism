@@ -8,7 +8,6 @@ import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import java.util.List;
 import java.util.Optional;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe.PressurizedReactionRecipeOutput;
 import mekanism.common.integration.crafttweaker.CrTRecipeComponents;
@@ -45,7 +44,7 @@ public class PressurizedReactionRecipeHandler extends MekanismRecipeHandler<Pres
         // if there is only a single output, which means we can safely skip the other
         return buildCommandString(manager, recipeHolder, recipe.getInputSolid(), recipe.getInputFluid(), recipe.getInputGas(), recipe.getDuration(),
               itemOutput.isEmpty() ? SKIP_OPTIONAL_PARAM : itemOutput, gasOutput.isEmpty() ? SKIP_OPTIONAL_PARAM : gasOutput,
-              recipe.getEnergyRequired().isZero() ? SKIP_OPTIONAL_PARAM : recipe.getEnergyRequired()
+              recipe.getEnergyRequired() == 0L ? SKIP_OPTIONAL_PARAM : recipe.getEnergyRequired()
         );
     }
 
@@ -89,7 +88,7 @@ public class PressurizedReactionRecipeHandler extends MekanismRecipeHandler<Pres
                   recipe.getOrThrowSingle(BuiltinRecipeComponents.Processing.TIME),
                   outputItem,
                   outputGas,
-                  CrTUtils.getSingleIfPresent(recipe, CrTRecipeComponents.ENERGY).orElse(FloatingLong.ZERO)
+                  CrTUtils.getSingleIfPresent(recipe, CrTRecipeComponents.ENERGY).orElse(0L)
             ));
         }
         return Optional.empty();

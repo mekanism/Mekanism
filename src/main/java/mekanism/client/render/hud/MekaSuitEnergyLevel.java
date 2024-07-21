@@ -1,7 +1,7 @@
 package mekanism.client.render.hud;
 
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.math.FloatingLong;
+import mekanism.api.math.MathUtils;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.element.bar.GuiBar;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
@@ -31,20 +31,20 @@ public class MekaSuitEnergyLevel implements LayeredDraw.Layer {
             //canHurtPlayer is a copy of vanilla check for if the armor level can render
             return;
         }
-        FloatingLong capacity = FloatingLong.ZERO, stored = FloatingLong.ZERO;
+        long capacity = 0L, stored = 0L;
         for (ItemStack stack : minecraft.player.getArmorSlots()) {
             if (stack.getItem() instanceof ItemMekaSuitArmor) {
                 IEnergyContainer container = StorageUtils.getEnergyContainer(stack, 0);
                 if (container != null) {
-                    capacity = capacity.plusEqual(container.getMaxEnergy());
-                    stored = stored.plusEqual(container.getEnergy());
+                    capacity = MathUtils.addClamped(capacity, container.getMaxEnergy());
+                    stored = MathUtils.addClamped(stored, container.getEnergy());
                 }
             }
         }
-        if (!capacity.isZero()) {
+        if (capacity != 0L) {
             int x = graphics.guiWidth() / 2 - 91;
             int y = graphics.guiHeight() - minecraft.gui.leftHeight + 2;
-            int length = (int) Math.round(stored.divide(capacity).doubleValue() * 79);
+            int length = (int) Math.round(((double) stored / capacity) * 79);
             GuiUtils.renderExtendedTexture(graphics, GuiBar.BAR, 2, 2, x, y, 81, 6);
             graphics.blit(POWER_BAR, x + 1, y + 1, length, 4, 0, 0, length, 4, 79, 4);
             minecraft.gui.leftHeight += 8;

@@ -2,7 +2,6 @@ package mekanism.common.content.network.distribution;
 
 import java.util.Collection;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.math.FloatingLong;
 import mekanism.common.content.network.distribution.EnergyTransmitterSaveTarget.CableSaveHandler;
 import mekanism.common.content.network.transmitter.UniversalCable;
 
@@ -18,20 +17,20 @@ public class EnergyTransmitterSaveTarget extends EnergySaveTarget<CableSaveHandl
         private final UniversalCable transmitter;
 
         public CableSaveHandler(UniversalCable transmitter) {
-            super(transmitter.getCapacityAsFloatingLong());
+            super(transmitter.getCapacity());
             this.transmitter = transmitter;
         }
 
         @Override
-        protected void save(FloatingLong currentStored) {
-            if (!currentStored.isZero() || !transmitter.lastWrite.isZero()) {
+        protected void save(long currentStored) {
+            if (currentStored != 0L || transmitter.lastWrite != 0L) {
                 transmitter.lastWrite = currentStored;
                 transmitter.getTransmitterTile().markForSave();
             }
         }
 
         @Override
-        protected FloatingLong getStored() {
+        protected long getStored() {
             return transmitter.getShare();
         }
     }

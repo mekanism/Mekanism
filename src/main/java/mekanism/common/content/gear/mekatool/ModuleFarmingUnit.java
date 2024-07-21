@@ -13,7 +13,6 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.Mekanism;
@@ -155,9 +154,9 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
     }
 
     private InteractionResult dowseCampfire(UseOnContext context, Lazy<BlockState> lazyClickedState, IEnergyContainer energyContainer) {
-        FloatingLong energy = energyContainer.getEnergy();
-        FloatingLong energyUsage = MekanismConfig.gear.mekaToolEnergyUsageShovel.get();
-        if (energy.smallerThan(energyUsage)) {
+        long energy = energyContainer.getEnergy();
+        long energyUsage = MekanismConfig.gear.mekaToolEnergyUsageShovel.get();
+        if (energy < energyUsage) {
             //Fail if we don't have enough energy or using the item failed
             return InteractionResult.FAIL;
         }
@@ -200,9 +199,9 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
     }
 
     private InteractionResult useAOE(UseOnContext context, Lazy<BlockState> lazyClickedState, IEnergyContainer energyContainer, int diameter, ItemAbility action,
-          SoundEvent sound, int particle, FloatingLong energyUsage, IToolAOEData toolAOEData) {
-        FloatingLong energy = energyContainer.getEnergy();
-        if (energy.smallerThan(energyUsage)) {
+          SoundEvent sound, int particle, long energyUsage, IToolAOEData toolAOEData) {
+        long energy = energyContainer.getEnergy();
+        if (energy < energyUsage) {
             //Fail if we don't have enough energy or using the item failed
             return InteractionResult.FAIL;
         }
@@ -236,14 +235,14 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
         Direction side = context.getClickedFace();
         toolAOEData.persistData(world, pos, clickedState, side);
         //Note: We don't need to copy this as we add to it in a non modifying way
-        FloatingLong energyUsed = energyUsage;
+        long energyUsed = energyUsage;
         for (BlockPos newPos : toolAOEData.getTargetPositions(pos, side, (diameter - 1) / 2)) {
             if (pos.equals(newPos)) {
                 //Skip the source position as we manually handled it before the loop
                 continue;
             }
-            FloatingLong nextEnergyUsed = energyUsed.add(energyUsage);
-            if (nextEnergyUsed.greaterThan(energy)) {
+            long nextEnergyUsed = energyUsed + energyUsage;
+            if (nextEnergyUsed > energy) {
                 break;
             }
             //Check to make that the result we would get from modifying the other block is the same as the one we got on the initial block we interacted with

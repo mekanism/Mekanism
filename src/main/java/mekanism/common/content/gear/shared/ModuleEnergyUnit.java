@@ -1,5 +1,6 @@
 package mekanism.common.content.gear.shared;
 
+import java.util.function.LongSupplier;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
@@ -8,8 +9,7 @@ import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
-import mekanism.api.math.FloatingLong;
-import mekanism.api.math.FloatingLongSupplier;
+import mekanism.api.math.MathUtils;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.registries.MekanismModules;
 import net.minecraft.world.item.ItemStack;
@@ -17,20 +17,20 @@ import net.minecraft.world.item.ItemStack;
 @ParametersAreNotNullByDefault
 public class ModuleEnergyUnit implements ICustomModule<ModuleEnergyUnit> {
 
-    public static FloatingLong getEnergyCapacity(ItemStack stack, FloatingLongSupplier base) {
+    public static long getEnergyCapacity(ItemStack stack, LongSupplier base) {
         return getEnergyValue(stack, base);
     }
 
-    public static FloatingLong getChargeRate(ItemStack stack, FloatingLongSupplier base) {
+    public static long getChargeRate(ItemStack stack, LongSupplier base) {
         return getEnergyValue(stack, base);
     }
 
-    private static FloatingLong getEnergyValue(ItemStack stack, FloatingLongSupplier base) {
+    private static long getEnergyValue(ItemStack stack, LongSupplier base) {
         IModule<ModuleEnergyUnit> module = IModuleHelper.INSTANCE.getModule(stack, MekanismModules.ENERGY_UNIT);
         if (module == null) {
-            return base.get();
+            return base.getAsLong();
         }
-        return base.get().multiply(Math.pow(2, module.getInstalledCount()));
+        return MathUtils.clampToLong(base.getAsLong() * Math.pow(2, module.getInstalledCount()));
     }
 
     @Override
@@ -41,7 +41,7 @@ public class ModuleEnergyUnit implements ICustomModule<ModuleEnergyUnit> {
         IStrictEnergyHandler energyHandlerItem = Capabilities.STRICT_ENERGY.getCapability(stack);
         if (energyHandlerItem instanceof IMekanismStrictEnergyHandler energyHandler) {
             for (IEnergyContainer energyContainer : energyHandler.getEnergyContainers(null)) {
-                energyContainer.setEnergy(energyContainer.getEnergy().min(energyContainer.getMaxEnergy()));
+                energyContainer.setEnergy(Math.min(energyContainer.getEnergy(), energyContainer.getMaxEnergy()));
             }
         }
     }

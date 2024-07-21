@@ -1,7 +1,7 @@
 package mekanism.common.content.sps;
 
 import mekanism.api.SerializationConstants;
-import mekanism.api.math.FloatingLong;
+import mekanism.api.math.MathUtils;
 import mekanism.common.lib.multiblock.MultiblockCache;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.HolderLookup;
@@ -12,17 +12,18 @@ public class SPSCache extends MultiblockCache<SPSMultiblockData> {
     private double progress;
     private int inputProcessed;
     private boolean couldOperate;
-    private FloatingLong receivedEnergy = FloatingLong.ZERO;
+    private long receivedEnergy = 0;
     private double lastProcessed;
 
     @Override
     public void merge(MultiblockCache<SPSMultiblockData> mergeCache, RejectContents rejectContents) {
         super.merge(mergeCache, rejectContents);
-        progress += ((SPSCache) mergeCache).progress;
-        inputProcessed += ((SPSCache) mergeCache).inputProcessed;
-        couldOperate |= ((SPSCache) mergeCache).couldOperate;
-        receivedEnergy = receivedEnergy.add(((SPSCache) mergeCache).receivedEnergy);
-        lastProcessed = Math.max(lastProcessed, ((SPSCache) mergeCache).lastProcessed);
+        SPSCache spsMergeCache = (SPSCache) mergeCache;
+        progress += spsMergeCache.progress;
+        inputProcessed += spsMergeCache.inputProcessed;
+        couldOperate |= spsMergeCache.couldOperate;
+        receivedEnergy = MathUtils.addClamped(receivedEnergy, spsMergeCache.receivedEnergy);
+        lastProcessed = Math.max(lastProcessed, spsMergeCache.lastProcessed);
     }
 
     @Override
@@ -51,7 +52,7 @@ public class SPSCache extends MultiblockCache<SPSMultiblockData> {
         NBTUtils.setDoubleIfPresent(nbtTags, SerializationConstants.PROGRESS, val -> progress = val);
         NBTUtils.setIntIfPresent(nbtTags, SerializationConstants.PROCESSED, val -> inputProcessed = val);
         NBTUtils.setBooleanIfPresent(nbtTags, SerializationConstants.COULD_OPERATE, val -> couldOperate = val);
-        NBTUtils.setFloatingLongIfPresent(nbtTags, SerializationConstants.ENERGY_USAGE, val -> receivedEnergy = val);
+        NBTUtils.setLegacyEnergyIfPresent(nbtTags, SerializationConstants.ENERGY_USAGE, val -> receivedEnergy = val);
         NBTUtils.setDoubleIfPresent(nbtTags, SerializationConstants.LAST_PROCESSED, val -> lastProcessed = val);
     }
 
@@ -61,7 +62,7 @@ public class SPSCache extends MultiblockCache<SPSMultiblockData> {
         nbtTags.putDouble(SerializationConstants.PROGRESS, progress);
         nbtTags.putInt(SerializationConstants.PROCESSED, inputProcessed);
         nbtTags.putBoolean(SerializationConstants.COULD_OPERATE, couldOperate);
-        nbtTags.putString(SerializationConstants.ENERGY_USAGE, receivedEnergy.toString());
+        nbtTags.putLong(SerializationConstants.ENERGY_USAGE, receivedEnergy);
         nbtTags.putDouble(SerializationConstants.LAST_PROCESSED, lastProcessed);
     }
 }

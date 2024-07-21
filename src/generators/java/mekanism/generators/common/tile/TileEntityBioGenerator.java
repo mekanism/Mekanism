@@ -5,7 +5,6 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
-import mekanism.api.math.FloatingLong;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
@@ -73,7 +72,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
         energySlot.drainContainer();
         fuelSlot.fillOrBurn();
         if (canFunction() && !bioFuelTank.isEmpty() &&
-            getEnergyContainer().insert(MekanismGeneratorsConfig.generators.bioGeneration.get(), Action.SIMULATE, AutomationType.INTERNAL).isZero()) {
+            getEnergyContainer().insert(MekanismGeneratorsConfig.generators.bioGeneration.get(), Action.SIMULATE, AutomationType.INTERNAL) == 0L) {
             setActive(true);
             MekanismUtils.logMismatchedStackSize(bioFuelTank.shrinkStack(1, Action.EXECUTE), 1);
             getEnergyContainer().insert(MekanismGeneratorsConfig.generators.bioGeneration.get(), Action.EXECUTE, AutomationType.INTERNAL);
@@ -114,8 +113,8 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
 
     //Methods relating to IComputerTile
     @Override
-    FloatingLong getProductionRate() {
-        return getActive() ? MekanismGeneratorsConfig.generators.bioGeneration.get() : FloatingLong.ZERO;
+    long getProductionRate() {
+        return getActive() ? MekanismGeneratorsConfig.generators.bioGeneration.get() : 0L;
     }
     //End methods IComputerTile
 }

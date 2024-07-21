@@ -6,7 +6,6 @@ import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.util.ItemStackUtil;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.basic.BasicPressurizedReactionRecipe;
 import mekanism.api.recipes.ingredients.GasStackIngredient;
@@ -44,7 +43,7 @@ public class PressurizedReactionRecipeManager extends MekanismRecipeManager<Reac
      */
     @ZenCodeType.Method
     public void addRecipe(String name, IIngredientWithAmount inputSolid, CTFluidIngredient inputFluid, GasStackIngredient inputGas, int duration, IItemStack outputItem,
-          FloatingLong energyRequired) {
+          long energyRequired) {
         addRecipe(name, inputSolid, inputFluid, inputGas, duration, getAndValidateNotEmpty(outputItem), GasStack.EMPTY, energyRequired);
     }
 
@@ -63,7 +62,7 @@ public class PressurizedReactionRecipeManager extends MekanismRecipeManager<Reac
      */
     @ZenCodeType.Method
     public void addRecipe(String name, IIngredientWithAmount inputSolid, CTFluidIngredient inputFluid, GasStackIngredient inputGas, int duration, IItemStack outputItem) {
-        addRecipe(name, inputSolid, inputFluid, inputGas, duration, getAndValidateNotEmpty(outputItem), GasStack.EMPTY, FloatingLong.ZERO);
+        addRecipe(name, inputSolid, inputFluid, inputGas, duration, getAndValidateNotEmpty(outputItem), GasStack.EMPTY, 0);
     }
 
     /**
@@ -80,7 +79,7 @@ public class PressurizedReactionRecipeManager extends MekanismRecipeManager<Reac
      */
     @ZenCodeType.Method
     public void addRecipe(String name, IIngredientWithAmount inputSolid, CTFluidIngredient inputFluid, GasStackIngredient inputGas, int duration, ICrTGasStack outputGas,
-          FloatingLong energyRequired) {
+          long energyRequired) {
         addRecipe(name, inputSolid, inputFluid, inputGas, duration, ItemStack.EMPTY, getAndValidateNotEmpty(outputGas), energyRequired);
     }
 
@@ -99,7 +98,7 @@ public class PressurizedReactionRecipeManager extends MekanismRecipeManager<Reac
      */
     @ZenCodeType.Method
     public void addRecipe(String name, IIngredientWithAmount inputSolid, CTFluidIngredient inputFluid, GasStackIngredient inputGas, int duration, ICrTGasStack outputGas) {
-        addRecipe(name, inputSolid, inputFluid, inputGas, duration, ItemStack.EMPTY, getAndValidateNotEmpty(outputGas), FloatingLong.ZERO);
+        addRecipe(name, inputSolid, inputFluid, inputGas, duration, ItemStack.EMPTY, getAndValidateNotEmpty(outputGas), 0);
     }
 
     /**
@@ -117,7 +116,7 @@ public class PressurizedReactionRecipeManager extends MekanismRecipeManager<Reac
      */
     @ZenCodeType.Method
     public void addRecipe(String name, IIngredientWithAmount inputSolid, CTFluidIngredient inputFluid, GasStackIngredient inputGas, int duration, IItemStack outputItem,
-          ICrTGasStack outputGas, FloatingLong energyRequired) {
+          ICrTGasStack outputGas, long energyRequired) {
         addRecipe(name, inputSolid, inputFluid, inputGas, duration, getAndValidateNotEmpty(outputItem), getAndValidateNotEmpty(outputGas), energyRequired);
     }
 
@@ -138,11 +137,11 @@ public class PressurizedReactionRecipeManager extends MekanismRecipeManager<Reac
     @ZenCodeType.Method
     public void addRecipe(String name, IIngredientWithAmount inputSolid, CTFluidIngredient inputFluid, GasStackIngredient inputGas, int duration, IItemStack outputItem,
           ICrTGasStack outputGas) {
-        addRecipe(name, inputSolid, inputFluid, inputGas, duration, getAndValidateNotEmpty(outputItem), getAndValidateNotEmpty(outputGas), FloatingLong.ZERO);
+        addRecipe(name, inputSolid, inputFluid, inputGas, duration, getAndValidateNotEmpty(outputItem), getAndValidateNotEmpty(outputGas), 0);
     }
 
     private void addRecipe(String name, IIngredientWithAmount inputSolid, CTFluidIngredient inputFluid, GasStackIngredient inputGas, int duration, ItemStack outputItem,
-          GasStack outputGas, FloatingLong energyRequired) {
+          GasStack outputGas, long energyRequired) {
         addRecipe(name, makeRecipe(inputSolid, inputFluid, inputGas, duration, outputItem, outputGas, energyRequired));
     }
 
@@ -159,11 +158,11 @@ public class PressurizedReactionRecipeManager extends MekanismRecipeManager<Reac
      *                       recipe.
      */
     public PressurizedReactionRecipe makeRecipe(IIngredientWithAmount inputSolid, CTFluidIngredient inputFluid, GasStackIngredient inputGas,
-          int duration, ItemStack outputItem, GasStack outputGas, FloatingLong energyRequired) {
+          int duration, ItemStack outputItem, GasStack outputGas, long energyRequired) {
         if (duration <= 0) {
             throw new IllegalArgumentException("Duration must be positive! Duration: " + duration);
         }
-        return new BasicPressurizedReactionRecipe(CrTUtils.fromCrT(inputSolid), CrTUtils.fromCrT(inputFluid), inputGas, energyRequired.copyAsConst(), duration,
+        return new BasicPressurizedReactionRecipe(CrTUtils.fromCrT(inputSolid), CrTUtils.fromCrT(inputFluid), inputGas, energyRequired, duration,
               outputItem, outputGas);
     }
 

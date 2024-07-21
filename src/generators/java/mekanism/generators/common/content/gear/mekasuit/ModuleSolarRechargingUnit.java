@@ -7,7 +7,7 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
-import mekanism.api.math.FloatingLong;
+import mekanism.api.math.MathUtils;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
@@ -19,12 +19,12 @@ import net.minecraft.world.level.biome.Biome.Precipitation;
 @ParametersAreNotNullByDefault
 public class ModuleSolarRechargingUnit implements ICustomModule<ModuleSolarRechargingUnit> {
 
-    private static final FloatingLong RAIN_MULTIPLIER = FloatingLong.createConst(0.2);
+    private static final double RAIN_MULTIPLIER = 0.2D;
 
     @Override
     public void tickServer(IModule<ModuleSolarRechargingUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player) {
         IEnergyContainer energyContainer = module.getEnergyContainer(stack);
-        if (energyContainer != null && !energyContainer.getNeeded().isZero()) {
+        if (energyContainer != null && energyContainer.getNeeded() > 0L) {
             //Use the position that is roughly where the solar panel is
             BlockPos pos = BlockPos.containing(player.getX(), player.getEyeY() + 0.2, player.getZ());
             //Based on how TileEntitySolarGenerator and the rest of our solar things do energy calculations
@@ -41,20 +41,20 @@ public class ModuleSolarRechargingUnit implements ICustomModule<ModuleSolarRecha
                 // on the scaling factor. Also note that we only use rainfall as a proxy if it CAN rain; some dimensions
                 // (like the End) have rainfall set, but can't actually support rain.
                 float humidityEff = needsRainCheck ? -0.3F * b.getModifiedClimateSettings().downfall() : 0.0F;
-                FloatingLong peakOutput = MekanismConfig.gear.mekaSuitSolarRechargingRate.get().multiply(1.0F + tempEff + humidityEff);
+                double peakOutput = MekanismConfig.gear.mekaSuitSolarRechargingRate.get() * (1.0D + tempEff + humidityEff);
 
                 //Get the brightness of the sun; note that there are some implementations that depend on the base
                 // brightness function which doesn't take into account the fact that rain can't occur in some biomes.
                 float brightness = WorldUtils.getSunBrightness(player.level(), 1.0F);
 
                 //Production is a function of the peak possible output in this biome and sun's current brightness
-                FloatingLong production = peakOutput.multiply(brightness);
+                double production = peakOutput * brightness;
                 //If the generator is in a biome where it can rain, and it's raining penalize production by 80%
                 if (needsRainCheck && (player.level().isRaining() || player.level().isThundering())) {
-                    production = production.timesEqual(RAIN_MULTIPLIER);
+                    production *= RAIN_MULTIPLIER;
                 }
                 //Multiply actual production based on how many modules are installed
-                energyContainer.insert(production.multiply(module.getInstalledCount()), Action.EXECUTE, AutomationType.MANUAL);
+                energyContainer.insert(MathUtils.clampToLong(production * module.getInstalledCount()), Action.EXECUTE, AutomationType.MANUAL);
             }
         }
     }

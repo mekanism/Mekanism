@@ -1,6 +1,7 @@
 package mekanism.client.gui.item;
 
 import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.math.MathUtils;
 import mekanism.client.ClientTickHandler;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
@@ -49,7 +50,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
             @Override
             public double getLevel() {
                 IEnergyContainer container = StorageUtils.getEnergyContainer(menu.getStack(), 0);
-                return container == null ? 0 : container.getEnergy().divideToLevel(container.getMaxEnergy());
+                return container == null ? 0 : MathUtils.divideToLevel(container.getEnergy(), container.getMaxEnergy());
             }
         }, 158, 26));
         teleportButton = addRenderableWidget(new TranslationButton(this, 42, 147, 92, 20, MekanismLang.BUTTON_TELEPORT, (element, mouseX, mouseY) -> {

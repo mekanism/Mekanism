@@ -14,8 +14,9 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.SerializationConstants;
 import mekanism.api.RelativeSide;
+import mekanism.api.SerializationConstants;
+import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalTankBuilder;
@@ -38,7 +39,6 @@ import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.capabilities.chemical.dynamic.IGasTracker;
 import mekanism.common.capabilities.chemical.dynamic.IInfusionTracker;
@@ -88,7 +88,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
           ExtraCodecs.NON_EMPTY_STRING.fieldOf(SerializationConstants.NAME).forGetter(Frequency::getName),
           UUIDUtil.CODEC.optionalFieldOf(SerializationConstants.OWNER_UUID).forGetter(freq -> Optional.ofNullable(freq.getOwner())),
           SecurityMode.CODEC.fieldOf(SerializationConstants.SECURITY_MODE).forGetter(Frequency::getSecurity),
-          FloatingLong.CODEC.fieldOf(SerializationConstants.ENERGY).forGetter(freq -> freq.storedEnergy.getEnergy()),
+          SerializerHelper.POSITIVE_LONG_CODEC_LEGACY.fieldOf(SerializationConstants.ENERGY).forGetter(freq -> freq.storedEnergy.getEnergy()),
           FluidStack.OPTIONAL_CODEC.fieldOf(SerializationConstants.FLUID).forGetter(freq -> freq.storedFluid.getFluid()),
           GasStack.OPTIONAL_CODEC.fieldOf(SerializationConstants.GAS).forGetter(freq -> freq.storedGas.getStack()),
           InfusionStack.OPTIONAL_CODEC.fieldOf(SerializationConstants.INFUSE_TYPE).forGetter(freq -> freq.storedInfusion.getStack()),
@@ -112,7 +112,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     }));
     public static final StreamCodec<RegistryFriendlyByteBuf, InventoryFrequency> STREAM_CODEC = PacketUtils.composite(
           baseStreamCodec(InventoryFrequency::new), Function.identity(),
-          FloatingLong.STREAM_CODEC, freq -> freq.storedEnergy.getEnergy(),
+          ByteBufCodecs.VAR_LONG, freq -> freq.storedEnergy.getEnergy(),
           FluidStack.OPTIONAL_STREAM_CODEC, freq -> freq.storedFluid.getFluid(),
           GasStack.OPTIONAL_STREAM_CODEC, freq -> freq.storedGas.getStack(),
           InfusionStack.OPTIONAL_STREAM_CODEC, freq -> freq.storedInfusion.getStack(),
@@ -174,7 +174,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         pigmentTanks = Collections.singletonList(storedPigment = ChemicalTankBuilder.PIGMENT.create(MekanismConfig.general.entangloporterChemicalBuffer.get(), this));
         slurryTanks = Collections.singletonList(storedSlurry = ChemicalTankBuilder.SLURRY.create(MekanismConfig.general.entangloporterChemicalBuffer.get(), this));
         inventorySlots = Collections.singletonList(storedItem = EntangloporterInventorySlot.create(this));
-        energyContainers = Collections.singletonList(storedEnergy = BasicEnergyContainer.create(MekanismConfig.general.entangloporterEnergyBuffer.get(), this));
+        energyContainers = Collections.singletonList(storedEnergy = BasicEnergyContainer.create(MekanismConfig.general.entangloporterEnergyBuffer.getAsLong(), this));
         heatCapacitors = Collections.singletonList(storedHeat = BasicHeatCapacitor.create(HeatAPI.DEFAULT_HEAT_CAPACITY, HeatAPI.DEFAULT_INVERSE_CONDUCTION,
               1_000, null, this));
     }
@@ -309,8 +309,8 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     }
 
     private void addEnergyTransferHandler(Map<TransmissionType, Consumer<?>> typesToEject, List<Runnable> transferHandlers, int expected) {
-        FloatingLong toSend = storedEnergy.extract(storedEnergy.getMaxEnergy(), Action.SIMULATE, AutomationType.INTERNAL);
-        if (!toSend.isZero()) {
+        long toSend = storedEnergy.extract(storedEnergy.getMaxEnergy(), Action.SIMULATE, AutomationType.INTERNAL);
+        if (toSend > 0L) {
             SendingEnergyAcceptorTarget target = new SendingEnergyAcceptorTarget(expected, storedEnergy, toSend);
             typesToEject.put(TransmissionType.ENERGY, target);
             transferHandlers.add(target);
@@ -339,9 +339,9 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     private static class SendingEnergyAcceptorTarget extends EnergyAcceptorTarget implements Runnable, Consumer<IStrictEnergyHandler> {
 
         private final IEnergyContainer storedEnergy;
-        private final FloatingLong toSend;
+        private final long toSend;
 
-        public SendingEnergyAcceptorTarget(int expectedSize, IEnergyContainer storedEnergy, FloatingLong toSend) {
+        public SendingEnergyAcceptorTarget(int expectedSize, IEnergyContainer storedEnergy, long toSend) {
             super(expectedSize);
             this.storedEnergy = storedEnergy;
             this.toSend = toSend;
@@ -350,7 +350,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         @Override
         public void run() {
             if (getHandlerCount() > 0) {
-                storedEnergy.extract(EmitUtils.sendToAcceptors(this, toSend), Action.EXECUTE, AutomationType.INTERNAL);
+                storedEnergy.extract(EmitUtils.sendToAcceptors(this, toSend, toSend), Action.EXECUTE, AutomationType.INTERNAL);
             }
         }
 

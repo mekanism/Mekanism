@@ -2,7 +2,6 @@ package mekanism.common.integration.crafttweaker.recipe.manager;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.fluid.CTFluidIngredient;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.basic.BasicElectrolysisRecipe;
 import mekanism.api.recipes.vanilla_input.SingleFluidRecipeInput;
@@ -34,7 +33,7 @@ public class ElectrolysisRecipeManager extends MekanismRecipeManager<SingleFluid
      *                         greater than or equal to one.
      */
     @ZenCodeType.Method
-    public void addRecipe(String name, CTFluidIngredient input, ICrTGasStack leftGasOutput, ICrTGasStack rightGasOutput, FloatingLong energyMultiplier) {
+    public void addRecipe(String name, CTFluidIngredient input, ICrTGasStack leftGasOutput, ICrTGasStack rightGasOutput, long energyMultiplier) {
         addRecipe(name, makeRecipe(input, leftGasOutput, rightGasOutput, energyMultiplier));
     }
 
@@ -51,7 +50,7 @@ public class ElectrolysisRecipeManager extends MekanismRecipeManager<SingleFluid
     @ZenCodeType.Method
     public void addRecipe(String name, CTFluidIngredient input, ICrTGasStack leftGasOutput, ICrTGasStack rightGasOutput) {
         //TODO: If https://github.com/ZenCodeLang/ZenCode/issues/31 gets fixed, merge this back with the other addRecipe method using a ZC Optional
-        addRecipe(name, makeRecipe(input, leftGasOutput, rightGasOutput, FloatingLong.ONE));
+        addRecipe(name, makeRecipe(input, leftGasOutput, rightGasOutput, 1L));
     }
 
     /**
@@ -63,11 +62,11 @@ public class ElectrolysisRecipeManager extends MekanismRecipeManager<SingleFluid
      * @param energyMultiplier Value representing the multiplier to the energy cost in relation to the configured hydrogen separating energy cost. Will be validated to be
      *                         greater than or equal to one.
      */
-    public final ElectrolysisRecipe makeRecipe(CTFluidIngredient input, ICrTGasStack leftGasOutput, ICrTGasStack rightGasOutput, FloatingLong energyMultiplier) {
-        if (energyMultiplier.smallerThan(FloatingLong.ONE)) {
+    public final ElectrolysisRecipe makeRecipe(CTFluidIngredient input, ICrTGasStack leftGasOutput, ICrTGasStack rightGasOutput, long energyMultiplier) {
+        if (energyMultiplier < 1L) {
             throw new IllegalArgumentException("Energy multiplier must be at least one! Multiplier: " + energyMultiplier);
         }
-        return new BasicElectrolysisRecipe(CrTUtils.fromCrT(input), energyMultiplier.copyAsConst(), getAndValidateNotEmpty(leftGasOutput),
+        return new BasicElectrolysisRecipe(CrTUtils.fromCrT(input), energyMultiplier, getAndValidateNotEmpty(leftGasOutput),
               getAndValidateNotEmpty(rightGasOutput));
     }
 

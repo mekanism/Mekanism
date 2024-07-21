@@ -3,11 +3,10 @@ package mekanism.common.tile;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.SerializationConstants;
 import mekanism.api.RelativeSide;
+import mekanism.api.SerializationConstants;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData;
-import mekanism.api.math.FloatingLong;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
@@ -85,10 +84,10 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
     protected boolean onUpdateServer() {
         boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.fillContainerOrConvert();
-        FloatingLong clientEnergyUsed = FloatingLong.ZERO;
+        long clientEnergyUsed = 0L;
         if (canFunction()) {
             boolean operated = false;
-            if (energyContainer.getEnergy().greaterOrEqual(energyContainer.getEnergyPerTick()) && !moduleSlot.isEmpty() && !containerSlot.isEmpty()) {
+            if (energyContainer.getEnergy() >= energyContainer.getEnergyPerTick() && !moduleSlot.isEmpty() && !containerSlot.isEmpty()) {
                 ModuleData<?> data = ((IModuleItem) moduleSlot.getStack().getItem()).getModuleData();
                 ItemStack stack = containerSlot.getStack();
                 ModuleContainer container = ModuleHelper.get().getModuleContainer(stack);
@@ -113,7 +112,7 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
                 operatingTicks = 0;
             }
         }
-        usedEnergy = !clientEnergyUsed.isZero();
+        usedEnergy = clientEnergyUsed > 0L;
         return sendUpdatePacket;
     }
 

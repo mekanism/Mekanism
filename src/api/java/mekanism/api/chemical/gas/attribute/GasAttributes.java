@@ -2,11 +2,11 @@ package mekanism.api.chemical.gas.attribute;
 
 import java.util.List;
 import java.util.function.IntSupplier;
+import java.util.function.LongSupplier;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.attribute.ChemicalAttribute;
 import mekanism.api.chemical.gas.Gas;
-import mekanism.api.math.FloatingLong;
-import mekanism.api.math.FloatingLongSupplier;
+import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IGasProvider;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.text.APILang;
@@ -116,7 +116,7 @@ public class GasAttributes {
             ITooltipHelper tooltipHelper = ITooltipHelper.INSTANCE;
             list.add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_EFFICIENCY.translateColored(EnumColor.GRAY, EnumColor.INDIGO, tooltipHelper.getPercent(conductivity)));
             list.add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_ENTHALPY.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
-                  tooltipHelper.getEnergyPerMBDisplayShort(FloatingLong.createConst(thermalEnthalpy))));
+                  tooltipHelper.getEnergyPerMBDisplayShort(MathUtils.clampToLong(thermalEnthalpy))));
             return list;
         }
     }
@@ -188,7 +188,7 @@ public class GasAttributes {
     public static class Fuel extends ChemicalAttribute {
 
         private final IntSupplier burnTicks;
-        private final FloatingLongSupplier energyDensity;
+        private final LongSupplier energyDensity;
 
         /**
          * @param burnTicks     The number of ticks one mB of fuel can be burned for before being depleted; must be greater than zero.
@@ -196,11 +196,13 @@ public class GasAttributes {
          *
          * @since 10.4.0
          */
-        public Fuel(int burnTicks, FloatingLong energyDensity) {
+        public Fuel(int burnTicks, long energyDensity) {
             if (burnTicks <= 0) {
                 throw new IllegalArgumentException("Fuel attributes must burn for at least one tick! Burn Ticks: " + burnTicks);
-            } else if (energyDensity.isZero()) {
+            } else if (energyDensity <= 0) {
                 throw new IllegalArgumentException("Fuel attributes must have an energy density greater than zero!");
+            } else if (energyDensity / burnTicks == 0L) {
+                throw new IllegalArgumentException("Energy density per tick must be greater than zero! (integer division)");
             }
             this.burnTicks = () -> burnTicks;
             this.energyDensity = () -> energyDensity;
@@ -211,7 +213,7 @@ public class GasAttributes {
          *                      zero.
          * @param energyDensity Supplier for the energy density of one mB of fuel. The supplier should return values be greater than zero.
          */
-        public Fuel(IntSupplier burnTicks, FloatingLongSupplier energyDensity) {
+        public Fuel(IntSupplier burnTicks, LongSupplier energyDensity) {
             this.burnTicks = burnTicks;
             this.energyDensity = energyDensity;
         }
@@ -226,17 +228,17 @@ public class GasAttributes {
         /**
          * Gets the amount of energy produced per tick of this fuel.
          */
-        public FloatingLong getEnergyPerTick() {
+        public long getEnergyPerTick() {
             int ticks = getBurnTicks();
             //If we have less than one tick, the density is invalid
             if (ticks < 1) {
                 MekanismAPI.logger.warn("Invalid tick count ({}) for Fuel attribute, this number should be at least 1.", ticks);
-                return FloatingLong.ZERO;
+                return 0;
             } else if (ticks == 1) {
                 //Single tick, no division necessary
-                return energyDensity.get();
+                return energyDensity.getAsLong();
             }
-            return energyDensity.get().divide(ticks);
+            return energyDensity.getAsLong() / ticks;
         }
 
         @Override
@@ -245,7 +247,7 @@ public class GasAttributes {
             ITooltipHelper tooltipHelper = ITooltipHelper.INSTANCE;
             list.add(APILang.CHEMICAL_ATTRIBUTE_FUEL_BURN_TICKS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, tooltipHelper.getFormattedNumber(getBurnTicks())));
             list.add(APILang.CHEMICAL_ATTRIBUTE_FUEL_ENERGY_DENSITY.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
-                  tooltipHelper.getEnergyPerMBDisplayShort(energyDensity.get())));
+                  tooltipHelper.getEnergyPerMBDisplayShort(energyDensity.getAsLong())));
             return list;
         }
     }

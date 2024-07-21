@@ -2,7 +2,6 @@ package mekanism.client.recipe_viewer.jei.machine;
 
 import java.util.Collections;
 import java.util.List;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.element.gauge.GaugeType;
@@ -53,7 +52,7 @@ public class ItemStackToEnergyRecipeCategory extends HolderRecipeCategory<ItemSt
     @Override
     protected void renderElements(RecipeHolder<ItemStackToEnergyRecipe> recipeHolder, IRecipeSlotsView recipeSlotView, GuiGraphics guiGraphics, int x, int y) {
         super.renderElements(recipeHolder, recipeSlotView, guiGraphics, x, y);
-        if (!getOutputEnergy(recipeHolder, recipeSlotView).isZero()) {
+        if (getOutputEnergy(recipeHolder, recipeSlotView) != 0L) {
             //Manually draw the contents of the recipe
             gauge.renderContents(guiGraphics);
         }
@@ -62,8 +61,8 @@ public class ItemStackToEnergyRecipeCategory extends HolderRecipeCategory<ItemSt
     @Override
     public List<Component> getTooltipStrings(RecipeHolder<ItemStackToEnergyRecipe> recipeHolder, IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY) {
         if (gauge.isMouseOver(mouseX, mouseY)) {
-            FloatingLong energy = getOutputEnergy(recipeHolder, recipeSlotsView);
-            if (!energy.isZero()) {
+            long energy = getOutputEnergy(recipeHolder, recipeSlotsView);
+            if (energy != 0L) {
                 //Manually add the tooltip showing the amounts if the mouse is over the energy gauge
                 Component energyOutput = EnergyDisplay.of(energy).getTextComponent();
                 if (Minecraft.getInstance().options.advancedItemTooltips || Screen.hasShiftDown()) {
@@ -75,11 +74,11 @@ public class ItemStackToEnergyRecipeCategory extends HolderRecipeCategory<ItemSt
         return Collections.emptyList();
     }
 
-    private FloatingLong getOutputEnergy(RecipeHolder<ItemStackToEnergyRecipe> recipeHolder, IRecipeSlotsView recipeSlotsView) {
+    private long getOutputEnergy(RecipeHolder<ItemStackToEnergyRecipe> recipeHolder, IRecipeSlotsView recipeSlotsView) {
         ItemStack displayedIngredient = getDisplayedStack(recipeSlotsView, INPUT, VanillaTypes.ITEM_STACK, ItemStack.EMPTY);
         if (displayedIngredient.isEmpty()) {
             //Shouldn't happen but if it does just return no energy known so nothing will really show
-            return FloatingLong.ZERO;
+            return 0L;
         }
         return recipeHolder.value().getOutput(displayedIngredient);
     }

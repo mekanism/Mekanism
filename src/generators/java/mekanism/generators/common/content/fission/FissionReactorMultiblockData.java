@@ -455,7 +455,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         storedFuel -= toBurn;
         fuelTank.setStackSize((long) storedFuel, Action.EXECUTE);
         burnRemaining = storedFuel % 1;
-        heatCapacitor.handleHeat(toBurn * MekanismGeneratorsConfig.generators.energyPerFissionFuel.get().doubleValue());
+        heatCapacitor.handleHeat(toBurn * MekanismGeneratorsConfig.generators.energyPerFissionFuel.get());
         // handle waste
         partialWaste += toBurn;
         long newWaste = Mth.lfloor(partialWaste);

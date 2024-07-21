@@ -30,7 +30,6 @@ import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.merged.BoxedChemicalStack;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.SlurryStack;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ElectrolysisRecipe.ElectrolysisRecipeOutput;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe.PressurizedReactionRecipeOutput;
@@ -117,14 +116,6 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe<?>> im
             return new CrTSlurryStack(stack).getCommandString();
         } else if (param instanceof BoxedChemicalStack stack) {
             return convertParam(stack.getChemicalStack());
-        } else if (param instanceof FloatingLong fl) {
-            //Note: Handled via implicit casts
-            if (fl.getDecimal() == 0) {
-                //No decimal, don't bother printing it
-                return fl.toString(0);
-            }
-            //Trim any trailing zeros rather than printing them out
-            return fl.toString().replaceAll("0*$", "");
         } else if (param instanceof Number || param instanceof Boolean) {//Handle integers and the like
             return param.toString();
         } else if (param instanceof ItemStackIngredient ingredient) {
@@ -147,6 +138,14 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe<?>> im
             //Outputs sometimes are as lists, try wrapping them into a single element
             // eventually we may want to try listing them all somehow?
             return convertParam(list.getFirst());
+        } else if (param instanceof long[] longs) {
+            if (longs.length == 0) {
+                //Shouldn't happen
+                return "Invalid (output) array, no outputs";
+            }
+            //Outputs sometimes are as arrays, try wrapping them into a single element
+            // eventually we may want to try listing them all somehow?
+            return convertParam(longs[0]);
         } else if (param instanceof ElectrolysisRecipeOutput output) {
             return convertParam(output.left()) + ", " + convertParam(output.right());
         }
@@ -187,7 +186,7 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe<?>> im
         TypeData<IIngredientWithAmount, CTFluidIngredient, ChemicalStackIngredient<?, ?, ?>> inputs = new TypeData<>(ChemicalType::getTypeFor);
         TypeData<IItemStack, IFluidStack, ChemicalStack<?>> outputs = new TypeData<>(ChemicalType::getTypeFor);
         int duration = -1;
-        FloatingLong energy = null;
+        long energy = -1;
         for (Object data : importantData) {
             if (data instanceof List<?> dataList) {
                 if (dataList.size() != 1) {
@@ -196,6 +195,13 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe<?>> im
                 }
                 //Update data to be the element
                 data = dataList.getFirst();
+            } else if (data instanceof long[] longs) {
+                if (longs.length != 1) {
+                    //Failed, output arrays must be of length one or handled manually instead of using this helper
+                    return Optional.empty();
+                }
+                //Update data to be the element
+                data = longs[0];
             }
             if (data instanceof ItemStackIngredient ingredient) {
                 inputs.addItem(CrTUtils.toCrT(ingredient));
@@ -227,12 +233,12 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe<?>> im
                     return Optional.empty();
                 }
                 duration = i;
-            } else if (data instanceof FloatingLong fl) {
-                if (energy != null) {
+            } else if (data instanceof Long l) {
+                if (energy != -1) {
                     //Fail if we have multiple energy values specified
                     return Optional.empty();
                 }
-                energy = fl;
+                energy = l;
             } else {
                 //Fail if we have important data we don't know how to handle
                 return Optional.empty();
@@ -249,7 +255,7 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe<?>> im
         if (duration != -1) {
             builder.with(BuiltinRecipeComponents.Processing.TIME, duration);
         }
-        if (energy != null) {
+        if (energy != -1) {
             builder.with(CrTRecipeComponents.ENERGY, energy);
         }
         return Optional.of(builder.build());

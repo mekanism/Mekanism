@@ -18,7 +18,6 @@ import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.heat.IHeatCapacitor;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IGasProvider;
 import mekanism.api.text.EnumColor;
@@ -297,10 +296,10 @@ public class StorageUtils {
      * Gets the energy if one is stored from an item's container by checking the attachment. This is for cases when we may not actually have an energy handler provided as
      * a capability from our item, but it may have stored data in its container from when it was a block
      */
-    public static FloatingLong getStoredEnergyFromAttachment(ItemStack stack) {
-        FloatingLong energy = FloatingLong.ZERO;
+    public static long getStoredEnergyFromAttachment(ItemStack stack) {
+        long energy = 0;
         for (IEnergyContainer energyContainer : ContainerType.ENERGY.getAttachmentContainersIfPresent(stack)) {
-            energy = energy.plusEqual(energyContainer.getEnergy());
+            energy = MathUtils.addClamped(energy, energyContainer.getEnergy());
         }
         return energy;
     }
@@ -335,7 +334,7 @@ public class StorageUtils {
 
     public static double getEnergyRatio(ItemStack stack) {
         IEnergyContainer container = getEnergyContainer(stack, 0);
-        return container == null ? 0 : container.getEnergy().divideToLevel(container.getMaxEnergy());
+        return container == null ? 0 : MathUtils.divideToLevel(container.getEnergy(), container.getMaxEnergy());
     }
 
     public static Component getEnergyPercent(ItemStack stack, boolean colorText) {
@@ -401,7 +400,7 @@ public class StorageUtils {
         if (energyHandlerItem != null) {
             int containers = energyHandlerItem.getEnergyContainerCount();
             for (int container = 0; container < containers; container++) {
-                bestRatio = Math.max(bestRatio, energyHandlerItem.getEnergy(container).divideToLevel(energyHandlerItem.getMaxEnergy(container)));
+                bestRatio = Math.max(bestRatio, MathUtils.divideToLevel(energyHandlerItem.getEnergy(container), energyHandlerItem.getMaxEnergy(container)));
             }
         }
         return 1 - bestRatio;
@@ -489,7 +488,7 @@ public class StorageUtils {
         for (int i = 0; i < toAdd.size(); i++) {
             IEnergyContainer container = containers.get(i);
             IEnergyContainer mergeContainer = toAdd.get(i);
-            container.setEnergy(container.getEnergy().add(mergeContainer.getEnergy()));
+            container.setEnergy(MathUtils.addClamped(container.getEnergy(), mergeContainer.getEnergy()));
         }
     }
 

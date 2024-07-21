@@ -8,7 +8,6 @@ import mekanism.api.chemical.ChemicalType;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasBuilder;
 import mekanism.api.chemical.gas.attribute.GasAttributes;
-import mekanism.api.math.FloatingLong;
 import mekanism.common.integration.LazyGasProvider;
 import mekanism.common.integration.jsonthings.builder.JsonGasBuilder;
 import mekanism.common.lib.radiation.RadiationManager;
@@ -55,9 +54,8 @@ public class JsonGasParser extends SimpleJsonChemicalParser<Gas, GasBuilder, Jso
             attribute.obj()
                   .key("burn_ticks", burnTicks -> burnTicks.intValue().min(1).handle(ticks -> fuelData.burnTicks = ticks))
                   .key("energy_density", energyDensity -> energyDensity
-                        .ifString(string -> string.map(density -> FloatingLong.parseFloatingLong(density, true)).handle(fuelData::setEnergyDensity))
-                        .ifLong(l -> l.min(1).map(FloatingLong::createConst).handle(fuelData::setEnergyDensity))
-                        .ifDouble(d -> d.min(0.0001).map(FloatingLong::createConst).handle(fuelData::setEnergyDensity))
+                        .ifString(string -> string.map(Long::parseLong).handle(fuelData::setEnergyDensity))
+                        .ifLong(l -> l.min(1).handle(fuelData::setEnergyDensity))
                         .typeError()
                   );
             builder.with(new GasAttributes.Fuel(fuelData.burnTicks, fuelData.energyDensity));
@@ -74,10 +72,10 @@ public class JsonGasParser extends SimpleJsonChemicalParser<Gas, GasBuilder, Jso
 
     private static class FuelData {
 
-        private FloatingLong energyDensity = FloatingLong.ZERO;
+        private long energyDensity = 0;
         private int burnTicks;
 
-        private void setEnergyDensity(FloatingLong energyDensity) {
+        private void setEnergyDensity(long energyDensity) {
             this.energyDensity = energyDensity;
         }
     }

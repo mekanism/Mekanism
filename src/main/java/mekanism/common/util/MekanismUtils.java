@@ -24,7 +24,6 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.client.MekanismClient;
@@ -118,8 +117,8 @@ public final class MekanismUtils {
         }
     }
 
-    public static void logExpectedZero(FloatingLong actual) {
-        if (!actual.isZero()) {
+    public static void logExpectedZero(long actual) {
+        if (actual != 0L) {
             Mekanism.logger.error("Energy value changed by a different amount ({}) than requested (zero).", actual, new Exception());
         }
     }
@@ -225,14 +224,14 @@ public final class MekanismUtils {
 
     public static float getScale(float prevScale, IEnergyContainer container) {
         float targetScale;
-        FloatingLong stored = container.getEnergy();
-        FloatingLong capacity = container.getMaxEnergy();
-        if (capacity.isZero()) {
+        long stored = container.getEnergy();
+        long capacity = container.getMaxEnergy();
+        if (capacity == 0L) {
             targetScale = 0;
         } else {
-            targetScale = stored.divide(capacity).floatValue();
+            targetScale = (float) ((double) stored / capacity);
         }
-        return getScale(prevScale, targetScale, container.isEmpty(), stored.equals(capacity));
+        return getScale(prevScale, targetScale, container.isEmpty(), stored == capacity);
     }
 
     public static float getScale(float prevScale, float targetScale, boolean empty, boolean full) {
@@ -304,9 +303,12 @@ public final class MekanismUtils {
      *
      * @return required energy per tick
      */
-    public static FloatingLong getEnergyPerTick(IUpgradeTile tile, FloatingLong def) {
+    public static long getEnergyPerTick(IUpgradeTile tile, long def) {
         if (tile.supportsUpgrades()) {
-            return def.multiply(Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), 2 * fractionUpgrades(tile, Upgrade.SPEED) - fractionUpgrades(tile, Upgrade.ENERGY)));
+            return MathUtils.ceilToLong(def * Math.pow(
+                  MekanismConfig.general.maxUpgradeMultiplier.get(),
+                  2 * fractionUpgrades(tile, Upgrade.SPEED) - fractionUpgrades(tile, Upgrade.ENERGY)
+            ));
         }
         return def;
     }
@@ -336,9 +338,9 @@ public final class MekanismUtils {
      *
      * @return max energy
      */
-    public static FloatingLong getMaxEnergy(IUpgradeTile tile, FloatingLong def) {
+    public static long getMaxEnergy(IUpgradeTile tile, long def) {
         if (tile.supportsUpgrades()) {
-            return def.multiply(Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), fractionUpgrades(tile, Upgrade.ENERGY)));
+            return MathUtils.clampToLong(def * (Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), fractionUpgrades(tile, Upgrade.ENERGY))));
         }
         return def;
     }
@@ -351,8 +353,8 @@ public final class MekanismUtils {
      *
      * @return max energy
      */
-    public static FloatingLong getMaxEnergy(int energyUpgrades, FloatingLong def) {
-        return def.multiply(Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), energyUpgrades / (double) Upgrade.ENERGY.getMax()));
+    public static long getMaxEnergy(int energyUpgrades, long def) {
+        return MathUtils.clampToLong(def * (Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), energyUpgrades / (double) Upgrade.ENERGY.getMax())));
     }
 
     /**
@@ -445,9 +447,13 @@ public final class MekanismUtils {
         }
     }
 
-    public static Component getEnergyDisplayShort(FloatingLong energy) {
+    public static long calculateUsage(long capacity) {
+        return Math.max((long) (0.005 * capacity), 1);
+    }
+
+    public static Component getEnergyDisplayShort(long energy) {
         EnergyUnit configured = EnergyUnit.getConfigured();
-        return UnitDisplayUtils.getDisplayShort(configured.convertTo(energy), configured);
+        return UnitDisplayUtils.getDisplayShort(configured.convertToDouble(energy), configured);
     }
 
     /**
@@ -457,19 +463,8 @@ public final class MekanismUtils {
      *
      * @return energy converted to joules
      */
-    public static FloatingLong convertToJoules(FloatingLong energy) {
+    public static long convertToJoules(long energy) {
         return EnergyUnit.getConfigured().convertFrom(energy);
-    }
-
-    /**
-     * Convert from joules to the unit defined in the configuration.
-     *
-     * @param energy - energy to convert
-     *
-     * @return energy converted to configured unit
-     */
-    public static FloatingLong convertToDisplay(FloatingLong energy) {
-        return EnergyUnit.getConfigured().convertTo(energy);
     }
 
     /**
@@ -640,23 +635,8 @@ public final class MekanismUtils {
      * @return A redstone level based on the percentage of the amount stored.
      */
     public static int redstoneLevelFromContents(long amount, long capacity) {
-        double fractionFull = capacity == 0 ? 0 : amount / (double) capacity;
-        return Mth.floor((float) (fractionFull * 14.0F)) + (fractionFull > 0 ? 1 : 0);
-    }
-
-    /**
-     * Calculates the redstone level based on the percentage of amount stored.
-     *
-     * @param amount   Amount currently stored
-     * @param capacity Total amount that can be stored.
-     *
-     * @return A redstone level based on the percentage of the amount stored.
-     */
-    public static int redstoneLevelFromContents(FloatingLong amount, FloatingLong capacity) {
-        if (capacity.isZero() || amount.isZero()) {
-            return 0;
-        }
-        return 1 + amount.divide(capacity).multiply(14).intValue();
+        double fractionFull = capacity == 0 ? 0 : ((double) amount / capacity);
+        return Mth.floor(fractionFull * 14.0D) + (fractionFull > 0 ? 1 : 0);
     }
 
     /**
@@ -769,13 +749,13 @@ public final class MekanismUtils {
         return fluidsIn;
     }
 
-    public static void veinMineArea(IEnergyContainer energyContainer, FloatingLong energyRequired, FloatingLong baseBlastEnergy, FloatingLong baseVeinEnergy,
+    public static void veinMineArea(IEnergyContainer energyContainer, long energyRequired, long baseBlastEnergy, long baseVeinEnergy,
           Level world, BlockPos pos, ServerPlayer player, ItemStack stack, Item usedTool, Object2IntMap<BlockPos> found, BlastEnergyFunction blastEnergy,
           VeinEnergyFunction veinEnergy) {
-        FloatingLong energyUsed = FloatingLong.ZERO;
-        FloatingLong energyAvailable = energyContainer.getEnergy();
+        long energyUsed = 0L;
+        long energyAvailable = energyContainer.getEnergy();
         //Subtract from our available energy the amount that we will require to break the target block
-        energyAvailable = energyAvailable.subtract(energyRequired);
+        energyAvailable = energyAvailable - energyRequired;
         Stat<Item> itemStat = Stats.ITEM_USED.get(usedTool);
         for (Object2IntMap.Entry<BlockPos> foundEntry : found.object2IntEntrySet()) {
             BlockPos foundPos = foundEntry.getKey();
@@ -791,8 +771,8 @@ public final class MekanismUtils {
                 continue;
             }
             int distance = foundEntry.getIntValue();
-            FloatingLong destroyEnergy = distance == 0 ? blastEnergy.calc(baseBlastEnergy, hardness) : veinEnergy.calc(baseVeinEnergy, hardness, distance, targetState);
-            if (energyUsed.add(destroyEnergy).greaterThan(energyAvailable)) {
+            long destroyEnergy = distance == 0 ? blastEnergy.calc(baseBlastEnergy, hardness) : veinEnergy.calc(baseVeinEnergy, hardness, distance, targetState);
+            if (energyUsed + destroyEnergy >= energyAvailable) {
                 //If we don't have energy to break the block continue
                 //Note: We do not break as given the energy scales with hardness, so it is possible we still have energy to break another block
                 // Given we validate the blocks are the same but their block states may be different thus making them have different
@@ -819,7 +799,7 @@ public final class MekanismUtils {
                 block.playerDestroy(world, player, foundPos, targetState, tileEntity, stack);
                 player.awardStat(itemStat);
                 //Mark that we used that portion of the energy
-                energyUsed = energyUsed.plusEqual(destroyEnergy);
+                energyUsed += destroyEnergy;
             }
         }
         energyContainer.extract(energyUsed, Action.EXECUTE, AutomationType.MANUAL);
@@ -874,12 +854,12 @@ public final class MekanismUtils {
     @FunctionalInterface
     public interface BlastEnergyFunction {
 
-        FloatingLong calc(FloatingLong baseBlastEnergy, float hardness);
+        long calc(long baseBlastEnergy, float hardness);
     }
 
     @FunctionalInterface
     public interface VeinEnergyFunction {
 
-        FloatingLong calc(FloatingLong baseVeinEnergy, float hardness, int distance, BlockState state);
+        long calc(long baseVeinEnergy, float hardness, int distance, BlockState state);
     }
 }
