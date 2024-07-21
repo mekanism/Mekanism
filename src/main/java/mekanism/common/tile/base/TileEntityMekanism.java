@@ -840,6 +840,12 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         if (supportsRedstone()) {
             setControlType(input.getOrDefault(MekanismDataComponents.REDSTONE_CONTROL, getControlType()));
         }
+        if (supportsUpgrades()) {
+            //Recalculate upgrades after applying components
+            for (Upgrade upgrade : getSupportedUpgrade()) {
+                recalculateUpgrades(upgrade);
+            }
+        }
     }
 
     @Override
