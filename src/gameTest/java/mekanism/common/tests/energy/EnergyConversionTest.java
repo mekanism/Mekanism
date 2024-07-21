@@ -120,6 +120,47 @@ public class EnergyConversionTest {
                   helper.assertValueEqual(joulesContainer.getEnergy(), 2L, "stored energy (joules)");
               })
 
+              //Test inserting against a small nearly full container (with enough for two full and one partial unit 8J)
+              //There should be a partial store
+              .thenExecute(() -> {
+                  IEnergyContainer joulesContainer = BasicEnergyContainer.create(1000, null);
+                  joulesContainer.setEnergy(992);
+                  IEnergyStorage feHandler = helper.createForgeWrappedStrictEnergyHandler(joulesContainer);
+
+                  //sanity check.
+                  helper.assertValueEqual(feHandler.getEnergyStored(), 396, "stored energy");
+
+                  int accepted = feHandler.receiveEnergy(1000, false);
+                  helper.assertValueEqual(joulesContainer.getEnergy(), 997L, "stored joules after insert");
+                  helper.assertValueEqual(accepted, 2, "accepted energy (fe)");
+              })
+
+              //Test inserting against a small empty container with an uneven insert
+              //There should be a partial store
+              .thenExecute(() -> {
+                  IEnergyContainer joulesContainer = BasicEnergyContainer.create(1000, null);
+                  IEnergyStorage feHandler = helper.createForgeWrappedStrictEnergyHandler(joulesContainer);
+
+                  //sanity check.
+                  helper.assertValueEqual(feHandler.getEnergyStored(), 0, "stored energy (fe)");
+
+                  int accepted = feHandler.receiveEnergy(3, false);
+                  helper.assertValueEqual(joulesContainer.getEnergy(), 7L, "stored joules after insert");
+                  helper.assertValueEqual(accepted, 2, "accepted energy (fe)");
+              })
+
+              //Test extracting against a small nearly empty container (2.5x conversion)
+              //There should be enough to get 2 converted units out
+              .thenExecute(() -> {
+                  IEnergyContainer joulesContainer = BasicEnergyContainer.create(JOULES_CAPACITY, null);
+                  joulesContainer.setEnergy(8);
+                  IEnergyStorage feHandler = helper.createForgeWrappedStrictEnergyHandler(joulesContainer);
+
+                  int extracted = feHandler.extractEnergy(JOULES_CAPACITY, false);
+                  helper.assertValueEqual(extracted, 2, "extracted energy (fe)");
+                  helper.assertValueEqual(joulesContainer.getEnergy(), 2L, "stored energy (joules)");
+              })
+
               //Test inserting against a sub one sized container
               //There shouldn't be any room for it
               .thenExecute(() -> {
