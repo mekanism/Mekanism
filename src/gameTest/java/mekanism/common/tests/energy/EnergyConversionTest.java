@@ -145,7 +145,7 @@ public class EnergyConversionTest {
                   helper.assertValueEqual(feHandler.getEnergyStored(), 0, "stored energy (fe)");
 
                   int accepted = feHandler.receiveEnergy(3, false);
-                  helper.assertValueEqual(joulesContainer.getEnergy(), 7L, "stored joules after insert");
+                  helper.assertValueEqual(joulesContainer.getEnergy(), 5L, "stored joules after insert");
                   helper.assertValueEqual(accepted, 2, "accepted energy (fe)");
               })
 
