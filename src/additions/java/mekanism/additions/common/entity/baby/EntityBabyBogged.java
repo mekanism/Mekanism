@@ -5,8 +5,11 @@ import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.monster.Bogged;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class EntityBabyBogged extends Bogged {
 
@@ -26,5 +29,12 @@ public class EntityBabyBogged extends Bogged {
     public EntityDimensions getDefaultDimensions(@NotNull Pose pose) {
         //Note: We already have the age scale factored into the dimensions
         return getType().getDimensions();
+    }
+    
+    @Override
+    protected AbstractArrow getArrow(ItemStack arrow, float velocity, @Nullable ItemStack weapon) {
+        AbstractArrow projectile = super.getArrow(arrow, velocity, weapon);
+        projectile.setBaseDamage(projectile.getBaseDamage() * 0.25);
+        return projectile;
     }
 }

@@ -5,9 +5,12 @@ import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.monster.Skeleton;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.LevelEvent;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class EntityBabySkeleton extends Skeleton {
 
@@ -35,5 +38,12 @@ public class EntityBabySkeleton extends Skeleton {
         if (!this.isSilent()) {
             level().levelEvent(null, LevelEvent.SOUND_SKELETON_TO_STRAY, this.blockPosition(), 0);
         }
+    }
+
+    @Override
+    protected AbstractArrow getArrow(ItemStack arrow, float velocity, @Nullable ItemStack weapon) {
+        AbstractArrow projectile = super.getArrow(arrow, velocity, weapon);
+        projectile.setBaseDamage(projectile.getBaseDamage() * 0.25);
+        return projectile;
     }
 }
