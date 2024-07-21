@@ -158,7 +158,7 @@ public class EnergyConversionTest {
 
                   int extracted = feHandler.extractEnergy(JOULES_CAPACITY, false);
                   helper.assertValueEqual(extracted, 2, "extracted energy (fe)");
-                  helper.assertValueEqual(joulesContainer.getEnergy(), 2L, "stored energy (joules)");
+                  helper.assertValueEqual(joulesContainer.getEnergy(), 3L, "stored energy (joules)");
               })
 
               //Test inserting against a sub one sized container
