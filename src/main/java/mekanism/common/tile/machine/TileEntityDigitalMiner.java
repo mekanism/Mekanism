@@ -78,6 +78,7 @@ import mekanism.common.util.UpgradeUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.Vec3i;
@@ -92,6 +93,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -1273,7 +1275,11 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         }
         ItemStack stack = ItemAtomicDisassembler.fullyChargedStack();
         if (getSilkTouch()) {
-            stack.enchant(level.holderOrThrow(Enchantments.SILK_TOUCH), 1);
+            Optional<Reference<Enchantment>> silkTouch = level.holder(Enchantments.SILK_TOUCH);
+            //noinspection OptionalIsPresent - Capturing lambda
+            if (silkTouch.isPresent()) {
+                stack.enchant(silkTouch.get(), 1);
+            }
         }
         MekFakePlayer dummy = MekFakePlayer.setupFakePlayer(level, this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ());
         dummy.setEmulatingUUID(getOwnerUUID());//pretend to be the owner
