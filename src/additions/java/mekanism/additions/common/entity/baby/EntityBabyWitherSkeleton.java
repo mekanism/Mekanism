@@ -33,7 +33,7 @@ public class EntityBabyWitherSkeleton extends WitherSkeleton {
     }
 
     @Override
-    protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance difficulty) {
+    protected void populateDefaultEquipmentSlots(@NotNull RandomSource random, @NotNull DifficultyInstance difficulty) {
         super.populateDefaultEquipmentSlots(random, difficulty);
         for (EquipmentSlot slot : EquipmentSlot.values()) {
             if (slot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR) {

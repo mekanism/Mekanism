@@ -1,5 +1,6 @@
 package mekanism.additions.common.entity.baby;
 
+import mekanism.additions.common.config.MekanismAdditionsConfig;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
@@ -34,15 +35,16 @@ public class EntityBabyBogged extends Bogged {
         return getType().getDimensions();
     }
 
+    @NotNull
     @Override
-    protected AbstractArrow getArrow(ItemStack arrow, float velocity, @Nullable ItemStack weapon) {
+    protected AbstractArrow getArrow(@NotNull ItemStack arrow, float velocity, @Nullable ItemStack weapon) {
         AbstractArrow projectile = super.getArrow(arrow, velocity, weapon);
-        projectile.setBaseDamage(projectile.getBaseDamage() * 0.25);
+        projectile.setBaseDamage(projectile.getBaseDamage() * MekanismAdditionsConfig.additions.babyArrowDamageMultiplier.get());
         return projectile;
     }
 
     @Override
-    protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance difficulty) {
+    protected void populateDefaultEquipmentSlots(@NotNull RandomSource random, @NotNull DifficultyInstance difficulty) {
         super.populateDefaultEquipmentSlots(random, difficulty);
         for (EquipmentSlot slot : EquipmentSlot.values()) {
             if (slot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR) {

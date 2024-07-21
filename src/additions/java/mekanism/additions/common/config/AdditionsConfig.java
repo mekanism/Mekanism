@@ -30,6 +30,7 @@ public class AdditionsConfig extends BaseMekanismConfig {
 
     public final CachedIntValue obsidianTNTDelay;
     public final CachedFloatValue obsidianTNTBlastRadius;
+    public final CachedDoubleValue babyArrowDamageMultiplier;
     public final CachedBooleanValue voiceServerEnabled;
     public final CachedIntValue voicePort;
     private final Map<BabyType, SpawnConfig> spawnConfigs = new EnumMap<>(BabyType.class);
@@ -42,6 +43,9 @@ public class AdditionsConfig extends BaseMekanismConfig {
               .defineInRange("obsidianTNTDelay", 5 * SharedConstants.TICKS_PER_SECOND, 0, Integer.MAX_VALUE));
         obsidianTNTBlastRadius = CachedFloatValue.wrap(this, builder.comment("Radius of the explosion of Obsidian TNT.")
               .defineInRange("obsidianTNTBlastRadius", 12, 0.1, 1_000));
+
+        babyArrowDamageMultiplier = CachedDoubleValue.wrap(this, builder.comment("Damage multiplier of arrows shot by baby mobs.")
+              .defineInRange("babyArrowDamageMultiplier", 0.25, 0.1, 10));
 
         voiceServerEnabled = CachedBooleanValue.wrap(this, builder.comment("Enables the voice server for Walkie Talkies.").worldRestart()
               .define("voiceServerEnabled", false));
