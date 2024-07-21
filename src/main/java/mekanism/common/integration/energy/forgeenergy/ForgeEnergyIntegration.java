@@ -1,16 +1,25 @@
 package mekanism.common.integration.energy.forgeenergy;
 
 import mekanism.api.Action;
+import mekanism.api.energy.IEnergyConversion;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.common.util.UnitDisplayUtils.EnergyUnit;
 import net.neoforged.neoforge.energy.IEnergyStorage;
+import org.jetbrains.annotations.VisibleForTesting;
 
 public class ForgeEnergyIntegration implements IEnergyStorage {
 
     private final IStrictEnergyHandler handler;
+    private final IEnergyConversion converter;
 
     public ForgeEnergyIntegration(IStrictEnergyHandler handler) {
+        this(handler, EnergyUnit.FORGE_ENERGY);
+    }
+
+    @VisibleForTesting
+    ForgeEnergyIntegration(IStrictEnergyHandler handler, IEnergyConversion converter) {
         this.handler = handler;
+        this.converter = converter;
     }
 
     @Override
@@ -19,11 +28,11 @@ public class ForgeEnergyIntegration implements IEnergyStorage {
             return 0;
         }
         Action action = Action.get(!simulate);
-        long toInsert = EnergyUnit.FORGE_ENERGY.convertFrom(maxReceive);
+        long toInsert = converter.convertFrom(maxReceive);
         if (toInsert == 0) {
             return 0;
         }
-        if (action.execute() && !EnergyUnit.FORGE_ENERGY.isOneToOne()) {
+        if (action.execute() && !converter.isOneToOne()) {
             //Before we can actually execute it we need to simulate to calculate how much we can actually insert
             long simulatedRemainder = handler.insertEnergy(toInsert, Action.SIMULATE);
             if (simulatedRemainder == toInsert) {
@@ -47,7 +56,7 @@ public class ForgeEnergyIntegration implements IEnergyStorage {
             return 0;
         }
         long inserted = toInsert - remainder;
-        return EnergyUnit.FORGE_ENERGY.convertToAsInt(inserted);
+        return converter.convertToAsInt(inserted);
     }
 
     @Override
@@ -56,11 +65,11 @@ public class ForgeEnergyIntegration implements IEnergyStorage {
             return 0;
         }
         Action action = Action.get(!simulate);
-        long toExtract = EnergyUnit.FORGE_ENERGY.convertFrom(maxExtract);
+        long toExtract = converter.convertFrom(maxExtract);
         if (toExtract == 0) {
             return 0;
         }
-        if (action.execute() && !EnergyUnit.FORGE_ENERGY.isOneToOne()) {
+        if (action.execute() && !converter.isOneToOne()) {
             //Before we can actually execute it we need to simulate to calculate how much we can actually extract in our other units
             long simulatedExtracted = handler.extractEnergy(toExtract, Action.SIMULATE);
             //Convert how much we could extract back to FE so that it gets appropriately clamped so that for example 1.5 FE gets treated
@@ -75,14 +84,14 @@ public class ForgeEnergyIntegration implements IEnergyStorage {
             }
         }
         long extracted = handler.extractEnergy(toExtract, action);
-        return EnergyUnit.FORGE_ENERGY.convertToAsInt(extracted);
+        return converter.convertToAsInt(extracted);
     }
 
     private long convertToAndBack(long joules) {
-        int fe = EnergyUnit.FORGE_ENERGY.convertToAsInt(joules);
-        long result = EnergyUnit.FORGE_ENERGY.convertFrom(fe);
-        if (EnergyUnit.FORGE_ENERGY.getConversion() >= 1 && result % EnergyUnit.FORGE_ENERGY.getConversion() > 0) {
-            return EnergyUnit.FORGE_ENERGY.convertFrom(fe - 1);
+        int fe = converter.convertToAsInt(joules);
+        long result = converter.convertFrom(fe);
+        if (converter.getConversion() >= 1 && result % converter.getConversion() > 0) {
+            return converter.convertFrom(fe - 1);
         }
         return result;
     }
@@ -91,7 +100,7 @@ public class ForgeEnergyIntegration implements IEnergyStorage {
     public int getEnergyStored() {
         int energy = 0;
         for (int container = 0, containers = handler.getEnergyContainerCount(); container < containers; container++) {
-            int total = EnergyUnit.FORGE_ENERGY.convertToAsInt(handler.getEnergy(container));
+            int total = converter.convertToAsInt(handler.getEnergy(container));
             if (total > Integer.MAX_VALUE - energy) {
                 //Ensure we don't overflow
                 return Integer.MAX_VALUE;
@@ -105,7 +114,7 @@ public class ForgeEnergyIntegration implements IEnergyStorage {
     public int getMaxEnergyStored() {
         int maxEnergy = 0;
         for (int container = 0, containers = handler.getEnergyContainerCount(); container < containers; container++) {
-            int max = EnergyUnit.FORGE_ENERGY.convertToAsInt(handler.getMaxEnergy(container));
+            int max = converter.convertToAsInt(handler.getMaxEnergy(container));
             if (max > Integer.MAX_VALUE - maxEnergy) {
                 //Ensure we don't overflow
                 return Integer.MAX_VALUE;

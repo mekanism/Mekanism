@@ -2,7 +2,7 @@ package mekanism.api.energy;
 
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.MathUtils;
-import mekanism.api.text.IHasTranslationKey;
+import net.minecraft.util.Mth;
 
 /**
  * Represents a conversion between Joules and another energy type (it is valid for this other type to also be Joules).
@@ -10,7 +10,7 @@ import mekanism.api.text.IHasTranslationKey;
  * @since 10.3.4
  */
 @NothingNullByDefault
-public interface IEnergyConversion extends IHasTranslationKey {
+public interface IEnergyConversion {
 
     /**
      * Checks whether this energy conversion is currently usable, or if it is disabled in the config or missing required mods.
@@ -19,14 +19,9 @@ public interface IEnergyConversion extends IHasTranslationKey {
      */
     boolean isEnabled();
 
-    /**
-     * Converts energy of the type represented by this conversion to Joules.
-     *
-     * @param energy Amount of energy in 'other' type. (Units matching this conversion)
-     *
-     * @return Joules.
-     */
-    long convertFrom(long energy);
+    default long convertFrom(long energy) {
+        return MathUtils.clampToLong(energy * getConversion());
+    }
 
     /**
      * Helper that converts Joules to the energy of the type represented by this conversion and returns it as an int.
@@ -51,21 +46,22 @@ public interface IEnergyConversion extends IHasTranslationKey {
         return convertTo(joules);
     }
 
-    /**
-     * Converts Joules to the energy of the type represented by this conversion.
-     *
-     * @param joules Joules.
-     *
-     * @return Amount of energy. (Units matching this conversion)
-     */
-    long convertTo(long joules);
+    default long convertTo(long joules) {
+        return MathUtils.clampToLong(convertToDouble(joules));
+    }
 
-    /**
-     * {@return if this conversion is one to one with joules}
-     *
-     * @since 10.6.6
-     */
-    boolean isOneToOne();
+    default double convertToDouble(long joules) {
+        if (joules == 0) {
+            //Short circuit if energy is zero to avoid floating point math
+            return 0;
+        }
+        return joules / getConversion();
+    }
+
+    default boolean isOneToOne() {
+        //Use Mth.equal to compare against epsilon
+        return Mth.equal(1, getConversion());
+    }
 
     /**
      *

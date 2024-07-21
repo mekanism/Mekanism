@@ -9,7 +9,6 @@ import mekanism.api.IIncrementalEnum;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyConversion;
 import mekanism.api.functions.ConstantPredicates;
-import mekanism.api.math.MathUtils;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.ILangEntry;
 import mekanism.api.text.TextComponentUtil;
@@ -107,7 +106,7 @@ public class UnitDisplayUtils {
     }
 
     @NothingNullByDefault
-    public enum EnergyUnit implements IDisableableEnum<EnergyUnit>, IEnergyConversion, Unit {
+    public enum EnergyUnit implements IDisableableEnum<EnergyUnit>, IEnergyConversion, Unit, IHasTranslationKey {
         JOULES(MekanismLang.ENERGY_JOULES, MekanismLang.ENERGY_JOULES_PLURAL, MekanismLang.ENERGY_JOULES_SHORT, "j", null, ConstantPredicates.ALWAYS_TRUE) {
             @Override
             public double getConversion() {
@@ -171,30 +170,6 @@ public class UnitDisplayUtils {
             //Note: Use default value if called before configs are loaded. In general this should never happen,
             // but third party mods may just call it regardless
             return conversion.get().getOrDefault();
-        }
-
-        @Override
-        public long convertFrom(long energy) {
-            return MathUtils.clampToLong(energy * getConversion());
-        }
-
-        @Override
-        public long convertTo(long joules) {
-            return MathUtils.clampToLong(convertToDouble(joules));
-        }
-
-        public double convertToDouble(long joules) {
-            if (joules == 0) {
-                //Short circuit if energy is zero to avoid floating point math
-                return 0;
-            }
-            return joules / getConversion();
-        }
-
-        @Override
-        public boolean isOneToOne() {
-            //Use Mth.equal to compare against epsilon
-            return Mth.equal(1, getConversion());
         }
 
         @Override
