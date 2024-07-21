@@ -26,6 +26,8 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
@@ -34,18 +36,16 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.CampfireBlock;
-import net.minecraft.world.level.block.CandleBlock;
-import net.minecraft.world.level.block.CandleCakeBlock;
 import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.TntBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.HitResult.Type;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.common.ItemAbilities;
+import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.BlockSnapshot;
 import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
@@ -163,15 +163,17 @@ public class EntityFlame extends Projectile implements IEntityWithComplexSpawn {
             } else if (mode == FlamethrowerMode.INFERNO) {
                 Entity owner = getOwner();
                 BlockPos sidePos = hitPos.relative(hitSide);
-                if (CampfireBlock.canLight(hitState) || CandleBlock.canLight(hitState) || CandleCakeBlock.canLight(hitState)) {
-                    tryPlace(owner, hitPos, hitSide, hitState.setValue(BlockStateProperties.LIT, true));
-                } else if (BaseFireBlock.canBePlacedAt(level(), sidePos, hitSide)) {
-                    tryPlace(owner, sidePos, hitSide, BaseFireBlock.getState(level(), sidePos));
-                } else if (hitState.isFlammable(level(), hitPos, hitSide)) {
-                    //TODO: Is there some event we should/can be firing here?
-                    hitState.onCaughtFire(level(), hitPos, hitSide, owner instanceof LivingEntity livingEntity ? livingEntity : null);
-                    if (hitState.getBlock() instanceof TntBlock) {
-                        level().removeBlock(hitPos, false);
+                UseOnContext igniterContext = new UseOnContext(level(), owner instanceof Player player ? player : null,
+                      InteractionHand.MAIN_HAND, new ItemStack(Items.FIRE_CHARGE), blockRayTrace);
+                if (!tryModify(owner, hitPos, hitSide, hitState, igniterContext, ItemAbilities.FIRESTARTER_LIGHT)) {
+                    if (BaseFireBlock.canBePlacedAt(level(), sidePos, hitSide)) {
+                        tryPlace(owner, sidePos, hitSide, BaseFireBlock.getState(level(), sidePos));
+                    } else if (hitState.isFlammable(level(), hitPos, hitSide)) {
+                        //TODO: Is there some event we should/can be firing here?
+                        hitState.onCaughtFire(level(), hitPos, hitSide, owner instanceof LivingEntity livingEntity ? livingEntity : null);
+                        if (hitState.getBlock() instanceof TntBlock) {
+                            level().removeBlock(hitPos, false);
+                        }
                     }
                 }
             }
@@ -181,6 +183,21 @@ public class EntityFlame extends Projectile implements IEntityWithComplexSpawn {
             playSound(SoundEvents.FIRE_EXTINGUISH, 1.0F, 1.0F);
         }
         discard();
+    }
+
+    private boolean tryModify(@Nullable Entity shooter, BlockPos pos, Direction hitSide, BlockState state, UseOnContext context, ItemAbility ability) {
+        BlockSnapshot blockSnapshot = BlockSnapshot.create(level().dimension(), level(), pos);
+        BlockState modifiedState = state.getToolModifiedState(context, ability, false);
+        if (modifiedState != null) {
+            level().setBlockAndUpdate(pos, modifiedState);
+        }
+        if (modifiedState == null || EventHooks.onBlockPlace(shooter, blockSnapshot, hitSide)) {
+            level().restoringBlockSnapshots = true;
+            blockSnapshot.restore(blockSnapshot.getFlags() | Block.UPDATE_CLIENTS);
+            level().restoringBlockSnapshots = false;
+            return false;
+        }
+        return true;
     }
 
     private boolean tryPlace(@Nullable Entity shooter, BlockPos pos, Direction hitSide, BlockState newState) {
