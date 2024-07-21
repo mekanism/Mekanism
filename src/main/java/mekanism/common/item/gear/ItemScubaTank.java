@@ -1,12 +1,10 @@
 package mekanism.common.item.gear;
 
 import java.util.List;
-import java.util.function.Consumer;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.providers.IGasProvider;
 import mekanism.api.text.EnumColor;
-import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.item.interfaces.IItemHUDProvider;
@@ -24,18 +22,12 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemScubaTank extends ItemGasArmor implements IItemHUDProvider, IAttachmentBasedModeItem<Boolean> {
 
     public ItemScubaTank(Properties properties) {
         super(MekanismArmorMaterials.SCUBA_GEAR, ArmorItem.Type.CHESTPLATE, properties.component(MekanismDataComponents.SCUBA_TANK_MODE, false));
-    }
-
-    @Override
-    public void initializeClient(@NotNull Consumer<IClientItemExtensions> consumer) {
-        consumer.accept(RenderPropertiesProvider.scubaTank());
     }
 
     @Override

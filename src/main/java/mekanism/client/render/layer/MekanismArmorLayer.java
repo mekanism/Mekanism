@@ -37,7 +37,7 @@ public class MekanismArmorLayer<T extends LivingEntity, M extends HumanoidModel<
         ItemStack stack = entity.getItemBySlot(slot);
         Item item = stack.getItem();
         if (item instanceof ArmorItem armorItem && armorItem.getEquipmentSlot() == slot && IClientItemExtensions.of(item) instanceof ISpecialGear specialGear) {
-            ICustomArmor model = specialGear.getGearModel(armorItem.getType());
+            ICustomArmor model = specialGear.gearModel();
             A coreModel = slot == EquipmentSlot.LEGS ? innerModel : outerModel;
             getParentModel().copyPropertiesTo(coreModel);
             setPartVisibility(coreModel, slot);

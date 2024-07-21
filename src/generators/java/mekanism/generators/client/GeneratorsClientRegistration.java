@@ -4,6 +4,7 @@ import mekanism.api.gear.IModuleHelper;
 import mekanism.client.ClientRegistration;
 import mekanism.client.ClientRegistrationUtil;
 import mekanism.client.model.baked.ExtensionBakedModel.TransformedBakedModel;
+import mekanism.client.render.RenderPropertiesProvider.MekRenderProperties;
 import mekanism.client.render.lib.QuadTransformation;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.generators.client.gui.GuiBioGenerator;
@@ -49,13 +50,13 @@ import net.minecraft.world.level.material.Fluid;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.TextureAtlasStitchedEvent;
+import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 
 @EventBusSubscriber(modid = MekanismGenerators.MODID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
 public class GeneratorsClientRegistration {
@@ -145,5 +146,12 @@ public class GeneratorsClientRegistration {
         RenderBioGenerator.resetCachedModels();
         RenderFissionReactor.resetCachedModels();
         GeneratorsSpecialColors.GUI_OBJECTS.parse(MekanismGenerators.rl("textures/colormap/gui_objects.png"));
+    }
+
+    @SubscribeEvent
+    public static void registerClientExtensions(RegisterClientExtensionsEvent event) {
+        event.registerItem(new MekRenderProperties(RenderWindGeneratorItem.RENDERER), GeneratorsBlocks.WIND_GENERATOR.asItem());
+        ClientRegistrationUtil.registerBlockExtensions(event, GeneratorsBlocks.BLOCKS);
+        ClientRegistrationUtil.registerFluidExtensions(event, GeneratorsFluids.FLUIDS);
     }
 }

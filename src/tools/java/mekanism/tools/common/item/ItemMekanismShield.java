@@ -1,8 +1,6 @@
 package mekanism.tools.common.item;
 
 import java.util.List;
-import java.util.function.Consumer;
-import mekanism.tools.client.render.ToolsRenderPropertiesProvider;
 import mekanism.tools.common.material.BaseMekanismMaterial;
 import mekanism.tools.common.util.ToolsUtils;
 import net.minecraft.core.component.DataComponents;
@@ -14,7 +12,6 @@ import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.entity.BannerPatternLayers;
-import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemMekanismShield extends ShieldItem {
@@ -24,11 +21,6 @@ public class ItemMekanismShield extends ShieldItem {
     public ItemMekanismShield(BaseMekanismMaterial material, Item.Properties properties) {
         super(properties.durability(material.getShieldDurability()).component(DataComponents.BANNER_PATTERNS, BannerPatternLayers.EMPTY));
         this.tier = material;
-    }
-
-    @Override
-    public void initializeClient(@NotNull Consumer<IClientItemExtensions> consumer) {
-        consumer.accept(ToolsRenderPropertiesProvider.shield());
     }
 
     @Override

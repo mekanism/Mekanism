@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.function.Consumer;
 import mekanism.api.RelativeSide;
 import mekanism.api.text.EnumColor;
-import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.MekanismLang;
 import mekanism.common.attachments.component.AttachedEjector;
 import mekanism.common.attachments.component.AttachedSideConfig;
@@ -30,7 +29,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.ItemLike;
-import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> implements ICustomCreativeTabContents {
@@ -63,11 +61,6 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> imple
               .component(MekanismDataComponents.EJECTOR, AttachedEjector.DEFAULT)
               .component(MekanismDataComponents.SIDE_CONFIG, SIDE_CONFIG)
         );
-    }
-
-    @Override
-    public void initializeClient(@NotNull Consumer<IClientItemExtensions> consumer) {
-        consumer.accept(RenderPropertiesProvider.energyCube());
     }
 
     @NotNull

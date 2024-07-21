@@ -26,7 +26,6 @@ import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.blocktype.Generator;
 import mekanism.generators.common.item.ItemBlockFissionLogicAdapter;
 import mekanism.generators.common.item.ItemBlockFusionLogicAdapter;
-import mekanism.generators.common.item.generator.ItemBlockWindGenerator;
 import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
 import mekanism.generators.common.tile.TileEntityBioGenerator;
 import mekanism.generators.common.tile.TileEntityGasGenerator;
@@ -105,7 +104,7 @@ public class GeneratorsBlocks {
     public static final BlockRegistryObject<BlockTileModel<TileEntityAdvancedSolarGenerator, Generator<TileEntityAdvancedSolarGenerator>>, ItemBlockTooltip<BlockTileModel<TileEntityAdvancedSolarGenerator, Generator<TileEntityAdvancedSolarGenerator>>>> ADVANCED_SOLAR_GENERATOR =
           BLOCKS.registerDetails("advanced_solar_generator", () -> new BlockTileModel<>(GeneratorsBlockTypes.ADVANCED_SOLAR_GENERATOR, properties -> properties.mapColor(MapColor.COLOR_BLUE)))
                 .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder().addEnergy().build()));
-    public static final BlockRegistryObject<BlockTileModel<TileEntityWindGenerator, Generator<TileEntityWindGenerator>>, ItemBlockWindGenerator> WIND_GENERATOR = BLOCKS.register("wind_generator", () -> new BlockTileModel<>(GeneratorsBlockTypes.WIND_GENERATOR, properties -> properties.mapColor(MapColor.METAL)), ItemBlockWindGenerator::new)
+    public static final BlockRegistryObject<BlockTileModel<TileEntityWindGenerator, Generator<TileEntityWindGenerator>>, ItemBlockTooltip<BlockTileModel<TileEntityWindGenerator, Generator<TileEntityWindGenerator>>>> WIND_GENERATOR = BLOCKS.registerDetails("wind_generator", () -> new BlockTileModel<>(GeneratorsBlockTypes.WIND_GENERATOR, properties -> properties.mapColor(MapColor.METAL)))
           .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder().addEnergy().build()));
 
     public static final BlockRegistryObject<BlockTurbineRotor, ItemBlockTooltip<BlockTurbineRotor>> TURBINE_ROTOR = registerTooltipBlock("turbine_rotor", BlockTurbineRotor::new);

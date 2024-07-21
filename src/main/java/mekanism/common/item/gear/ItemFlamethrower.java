@@ -13,7 +13,6 @@ import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.ILangEntry;
-import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.entity.EntityFlame;
@@ -49,7 +48,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemFlamethrower extends Item implements IItemHUDProvider, IGasItem, ICustomCreativeTabContents, IAttachmentBasedModeItem<FlamethrowerMode> {
@@ -58,11 +56,6 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IGasItem
         super(properties.stacksTo(1).rarity(Rarity.RARE).setNoRepair()
               .component(MekanismDataComponents.FLAMETHROWER_MODE, FlamethrowerMode.COMBAT)
         );
-    }
-
-    @Override
-    public void initializeClient(@NotNull Consumer<IClientItemExtensions> consumer) {
-        consumer.accept(RenderPropertiesProvider.flamethrower());
     }
 
     @Override

@@ -25,7 +25,6 @@ import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.client.key.MekKeyHandler;
 import mekanism.client.key.MekanismKeyHandler;
-import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.MekanismLang;
 import mekanism.common.attachments.IAttachmentAware;
 import mekanism.common.attachments.containers.ContainerType;
@@ -83,7 +82,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -134,11 +132,6 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
             }
             default -> throw new IllegalArgumentException("Unknown Equipment Slot Type");
         }
-    }
-
-    @Override
-    public void initializeClient(@NotNull Consumer<IClientItemExtensions> consumer) {
-        consumer.accept(RenderPropertiesProvider.mekaSuit());
     }
 
     @Override

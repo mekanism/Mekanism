@@ -1,20 +1,7 @@
 package mekanism.client.render;
 
-import mekanism.client.render.armor.FreeRunnerArmor;
 import mekanism.client.render.armor.ICustomArmor;
 import mekanism.client.render.armor.ISpecialGear;
-import mekanism.client.render.armor.JetpackArmor;
-import mekanism.client.render.armor.MekaSuitArmor;
-import mekanism.client.render.armor.ScubaMaskArmor;
-import mekanism.client.render.armor.ScubaTankArmor;
-import mekanism.client.render.item.block.RenderEnergyCubeItem;
-import mekanism.client.render.item.block.RenderFluidTankItem;
-import mekanism.client.render.item.gear.RenderAtomicDisassembler;
-import mekanism.client.render.item.gear.RenderFlameThrower;
-import mekanism.client.render.item.gear.RenderFreeRunners;
-import mekanism.client.render.item.gear.RenderJetpack;
-import mekanism.client.render.item.gear.RenderScubaMask;
-import mekanism.client.render.item.gear.RenderScubaTank;
 import mekanism.common.block.BlockBounding;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleEngine;
@@ -23,7 +10,6 @@ import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
-import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -38,62 +24,6 @@ import org.jetbrains.annotations.NotNull;
 public class RenderPropertiesProvider {
 
     private RenderPropertiesProvider() {
-    }
-
-    public static IClientItemExtensions energyCube() {
-        return new MekRenderProperties(RenderEnergyCubeItem.RENDERER);
-    }
-
-    public static IClientItemExtensions fluidTank() {
-        return new MekRenderProperties(RenderFluidTankItem.RENDERER);
-    }
-
-    public static IClientItemExtensions armoredJetpack() {
-        return new MekCustomArmorRenderProperties(RenderJetpack.ARMORED_RENDERER, JetpackArmor.ARMORED_JETPACK);
-    }
-
-    public static IClientItemExtensions jetpack() {
-        return new MekCustomArmorRenderProperties(RenderJetpack.RENDERER, JetpackArmor.JETPACK);
-    }
-
-    public static IClientItemExtensions disassembler() {
-        return new MekRenderProperties(RenderAtomicDisassembler.RENDERER);
-    }
-
-    public static IClientItemExtensions flamethrower() {
-        return new MekRenderProperties(RenderFlameThrower.RENDERER);
-    }
-
-    public static IClientItemExtensions armoredFreeRunners() {
-        return new MekCustomArmorRenderProperties(RenderFreeRunners.ARMORED_RENDERER, FreeRunnerArmor.ARMORED_FREE_RUNNERS);
-    }
-
-    public static IClientItemExtensions freeRunners() {
-        return new MekCustomArmorRenderProperties(RenderFreeRunners.RENDERER, FreeRunnerArmor.FREE_RUNNERS);
-    }
-
-    public static IClientItemExtensions scubaMask() {
-        return new MekCustomArmorRenderProperties(RenderScubaMask.RENDERER, ScubaMaskArmor.SCUBA_MASK);
-    }
-
-    public static IClientItemExtensions scubaTank() {
-        return new MekCustomArmorRenderProperties(RenderScubaTank.RENDERER, ScubaTankArmor.SCUBA_TANK);
-    }
-
-    public static IClientItemExtensions mekaSuit() {
-        return MEKA_SUIT;
-    }
-
-    private static final ISpecialGear MEKA_SUIT = type -> switch (type) {
-        case HELMET -> MekaSuitArmor.HELMET;
-        case CHESTPLATE -> MekaSuitArmor.BODYARMOR;
-        case LEGGINGS -> MekaSuitArmor.PANTS;
-        case BOOTS -> MekaSuitArmor.BOOTS;
-        default -> throw new IllegalStateException("No model present for registered meka suit piece of type " + type);
-    };
-
-    public static IClientBlockExtensions particles() {
-        return PARTICLE_HANDLER;
     }
 
     public static IClientBlockExtensions boundingParticles() {
@@ -133,6 +63,7 @@ public class RenderPropertiesProvider {
 
     public record MekRenderProperties(BlockEntityWithoutLevelRenderer renderer) implements IClientItemExtensions {
 
+        @NotNull
         @Override
         public BlockEntityWithoutLevelRenderer getCustomRenderer() {
             return renderer;
@@ -141,19 +72,14 @@ public class RenderPropertiesProvider {
 
     public record MekCustomArmorRenderProperties(BlockEntityWithoutLevelRenderer renderer, ICustomArmor gearModel) implements ISpecialGear {
 
+        @NotNull
         @Override
         public BlockEntityWithoutLevelRenderer getCustomRenderer() {
             return renderer;
         }
-
-        @NotNull
-        @Override
-        public ICustomArmor getGearModel(ArmorItem.Type type) {
-            return gearModel;
-        }
     }
 
-    private static final IClientBlockExtensions PARTICLE_HANDLER = new IClientBlockExtensions() {
+    public static final IClientBlockExtensions PARTICLE_HANDLER = new IClientBlockExtensions() {
         @Override
         public boolean addDestroyEffects(BlockState state, Level Level, BlockPos pos, ParticleEngine manager) {
             //Copy of ParticleManager#addBlockDestroyEffects, but removes the minimum number of particles each voxel shape produces

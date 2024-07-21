@@ -1,5 +1,7 @@
 package mekanism.client;
 
+import com.mojang.blaze3d.shaders.FogShape;
+import com.mojang.blaze3d.systems.RenderSystem;
 import java.lang.ref.WeakReference;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.providers.IItemProvider;
@@ -7,21 +9,29 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.gui.machine.GuiAdvancedElectricMachine;
 import mekanism.client.gui.machine.GuiElectricMachine;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.RenderPropertiesProvider;
+import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.item.interfaces.IColoredItem;
+import mekanism.common.registration.impl.BlockDeferredRegister;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.registration.impl.FluidDeferredRegister;
+import mekanism.common.registration.impl.FluidDeferredRegister.MekanismFluidType;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.prefab.TileEntityElectricMachine;
+import net.minecraft.client.Camera;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.gui.screens.MenuScreens.ScreenConstructor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.item.ItemProperties;
@@ -40,9 +50,15 @@ import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
+import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.model.DynamicFluidContainerModel;
+import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 
 public class ClientRegistrationUtil {
 
@@ -177,5 +193,77 @@ public class ClientRegistrationUtil {
 
     public static void registerIColoredItemHandler(RegisterColorHandlersEvent.Item event, IItemProvider... items) {
         registerItemColorHandler(event, COLORED_ITEM_COLOR, items);
+    }
+
+    public static void registerItemExtensions(RegisterClientExtensionsEvent event, IClientItemExtensions extension, IItemProvider... items) {
+        for (IItemProvider item : items) {
+            event.registerItem(extension, item.asItem());
+        }
+    }
+
+    public static void registerBlockExtensions(RegisterClientExtensionsEvent event, BlockDeferredRegister allBlocks) {
+        for (DeferredHolder<Block, ? extends Block> primaryEntry : allBlocks.getPrimaryEntries()) {
+            if (primaryEntry.get() instanceof BlockMekanism) {
+                event.registerBlock(RenderPropertiesProvider.PARTICLE_HANDLER, primaryEntry.get());
+            }
+        }
+    }
+
+    public static void registerFluidExtensions(RegisterClientExtensionsEvent event, FluidDeferredRegister allFluids) {
+        for (DeferredHolder<FluidType, ? extends FluidType> fluidTypeEntry : allFluids.getFluidTypeEntries()) {
+            if (fluidTypeEntry.get() instanceof MekanismFluidType fluidType) {
+                event.registerFluidType(new IClientFluidTypeExtensions() {
+                    @NotNull
+                    @Override
+                    public ResourceLocation getStillTexture() {
+                        return fluidType.stillTexture;
+                    }
+
+                    @NotNull
+                    @Override
+                    public ResourceLocation getFlowingTexture() {
+                        return fluidType.flowingTexture;
+                    }
+
+                    @Override
+                    public ResourceLocation getOverlayTexture() {
+                        return fluidType.overlayTexture;
+                    }
+
+                    @Nullable
+                    @Override
+                    public ResourceLocation getRenderOverlayTexture(Minecraft mc) {
+                        return fluidType.renderOverlayTexture;
+                    }
+
+                    @NotNull
+                    @Override
+                    public Vector3f modifyFogColor(@NotNull Camera camera, float partialTick, @NotNull ClientLevel level, int renderDistance, float darkenWorldAmount,
+                          @NotNull Vector3f fluidFogColor) {
+                        return new Vector3f(MekanismRenderer.getRed(getTintColor()), MekanismRenderer.getGreen(getTintColor()), MekanismRenderer.getBlue(getTintColor()));
+                    }
+
+                    @Override
+                    public void modifyFogRender(@NotNull Camera camera, @NotNull FogRenderer.FogMode mode, float renderDistance, float partialTick, float nearDistance,
+                          float farDistance, @NotNull FogShape shape) {
+                        //Copy of logic for water except always treating it as if it was a player who has no water vision
+                        // and does not take the biome's closer water fog into account
+                        farDistance = 24F;
+                        if (farDistance > renderDistance) {
+                            farDistance = renderDistance;
+                            shape = FogShape.CYLINDER;
+                        }
+                        RenderSystem.setShaderFogStart(-8);
+                        RenderSystem.setShaderFogEnd(farDistance);
+                        RenderSystem.setShaderFogShape(shape);
+                    }
+
+                    @Override
+                    public int getTintColor() {
+                        return fluidType.color;
+                    }
+                }, fluidType);
+            }
+        }
     }
 }

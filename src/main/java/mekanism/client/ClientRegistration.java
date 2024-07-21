@@ -102,9 +102,13 @@ import mekanism.client.particle.LaserParticle;
 import mekanism.client.particle.RadiationParticle;
 import mekanism.client.particle.ScubaBubbleParticle;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.RenderPropertiesProvider;
+import mekanism.client.render.RenderPropertiesProvider.MekCustomArmorRenderProperties;
+import mekanism.client.render.RenderPropertiesProvider.MekRenderProperties;
 import mekanism.client.render.RenderTickHandler;
 import mekanism.client.render.armor.FreeRunnerArmor;
 import mekanism.client.render.armor.JetpackArmor;
+import mekanism.client.render.armor.MekaSuitArmor;
 import mekanism.client.render.armor.ScubaMaskArmor;
 import mekanism.client.render.armor.ScubaTankArmor;
 import mekanism.client.render.entity.RenderFlame;
@@ -116,6 +120,7 @@ import mekanism.client.render.hud.RadiationOverlay;
 import mekanism.client.render.item.MekaSuitBarDecorator;
 import mekanism.client.render.item.TransmitterTypeDecorator;
 import mekanism.client.render.item.block.RenderEnergyCubeItem;
+import mekanism.client.render.item.block.RenderFluidTankItem;
 import mekanism.client.render.item.gear.RenderAtomicDisassembler;
 import mekanism.client.render.item.gear.RenderFlameThrower;
 import mekanism.client.render.item.gear.RenderFreeRunners;
@@ -212,6 +217,7 @@ import net.neoforged.neoforge.client.event.RegisterItemDecorationsEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
+import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.client.model.SeparateTransformsModel;
 import net.neoforged.neoforge.common.NeoForge;
@@ -587,6 +593,32 @@ public class ClientRegistration {
               MekanismBlocks.ELITE_PRESSURIZED_TUBE, MekanismBlocks.ULTIMATE_PRESSURIZED_TUBE, MekanismBlocks.BASIC_THERMODYNAMIC_CONDUCTOR,
               MekanismBlocks.ADVANCED_THERMODYNAMIC_CONDUCTOR, MekanismBlocks.ELITE_THERMODYNAMIC_CONDUCTOR, MekanismBlocks.ULTIMATE_THERMODYNAMIC_CONDUCTOR,
               MekanismBlocks.BASIC_UNIVERSAL_CABLE, MekanismBlocks.ADVANCED_UNIVERSAL_CABLE, MekanismBlocks.ELITE_UNIVERSAL_CABLE, MekanismBlocks.ULTIMATE_UNIVERSAL_CABLE);
+    }
+
+    @SubscribeEvent
+    public static void registerClientExtensions(RegisterClientExtensionsEvent event) {
+        event.registerItem(new MekCustomArmorRenderProperties(RenderJetpack.ARMORED_RENDERER, JetpackArmor.ARMORED_JETPACK), MekanismItems.ARMORED_JETPACK.get());
+        event.registerItem(new MekCustomArmorRenderProperties(RenderJetpack.RENDERER, JetpackArmor.JETPACK), MekanismItems.JETPACK.get());
+        event.registerItem(new MekCustomArmorRenderProperties(RenderFreeRunners.ARMORED_RENDERER, FreeRunnerArmor.ARMORED_FREE_RUNNERS), MekanismItems.ARMORED_FREE_RUNNERS.get());
+        event.registerItem(new MekCustomArmorRenderProperties(RenderFreeRunners.RENDERER, FreeRunnerArmor.FREE_RUNNERS), MekanismItems.FREE_RUNNERS.get());
+        event.registerItem(new MekCustomArmorRenderProperties(RenderScubaMask.RENDERER, ScubaMaskArmor.SCUBA_MASK), MekanismItems.SCUBA_MASK.get());
+        event.registerItem(new MekCustomArmorRenderProperties(RenderScubaTank.RENDERER, ScubaTankArmor.SCUBA_TANK), MekanismItems.SCUBA_TANK.get());
+        event.registerItem(new MekRenderProperties(RenderAtomicDisassembler.RENDERER), MekanismItems.ATOMIC_DISASSEMBLER.get());
+        event.registerItem(new MekRenderProperties(RenderFlameThrower.RENDERER), MekanismItems.FLAMETHROWER.get());
+
+        event.registerItem(MekaSuitArmor.HELMET, MekanismItems.MEKASUIT_HELMET.get());
+        event.registerItem(MekaSuitArmor.BODYARMOR, MekanismItems.MEKASUIT_BODYARMOR.get());
+        event.registerItem(MekaSuitArmor.PANTS, MekanismItems.MEKASUIT_PANTS.get());
+        event.registerItem(MekaSuitArmor.BOOTS, MekanismItems.MEKASUIT_BOOTS.get());
+
+        ClientRegistrationUtil.registerItemExtensions(event, new MekRenderProperties(RenderEnergyCubeItem.RENDERER), MekanismBlocks.BASIC_ENERGY_CUBE,
+              MekanismBlocks.ADVANCED_ENERGY_CUBE, MekanismBlocks.ELITE_ENERGY_CUBE, MekanismBlocks.ULTIMATE_ENERGY_CUBE, MekanismBlocks.CREATIVE_ENERGY_CUBE);
+        ClientRegistrationUtil.registerItemExtensions(event, new MekRenderProperties(RenderFluidTankItem.RENDERER), MekanismBlocks.BASIC_FLUID_TANK,
+              MekanismBlocks.ADVANCED_FLUID_TANK, MekanismBlocks.ELITE_FLUID_TANK, MekanismBlocks.ULTIMATE_FLUID_TANK, MekanismBlocks.CREATIVE_FLUID_TANK);
+
+        event.registerBlock(RenderPropertiesProvider.boundingParticles(), MekanismBlocks.BOUNDING_BLOCK.getBlock());
+        ClientRegistrationUtil.registerBlockExtensions(event, MekanismBlocks.BLOCKS);
+        ClientRegistrationUtil.registerFluidExtensions(event, MekanismFluids.FLUIDS);
     }
 
     @SubscribeEvent

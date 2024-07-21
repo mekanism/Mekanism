@@ -1,8 +1,6 @@
 package mekanism.common.block;
 
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFluidLoggable;
@@ -40,7 +38,6 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.client.extensions.common.IClientBlockExtensions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -66,11 +63,6 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
               .strength(3.5F, 4.8F).requiresCorrectToolForDrops().dynamicShape().noOcclusion()
               .isViewBlocking(BlockStateHelper.NEVER_PREDICATE).pushReaction(PushReaction.BLOCK)));
         registerDefaultState(BlockStateHelper.getDefaultState(stateDefinition.any()));
-    }
-
-    @Override
-    public void initializeClient(Consumer<IClientBlockExtensions> consumer) {
-        consumer.accept(RenderPropertiesProvider.boundingParticles());
     }
 
     @Override

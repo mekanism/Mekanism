@@ -12,7 +12,6 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.ILangEntry;
-import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
@@ -49,7 +48,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
-import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import org.jetbrains.annotations.NotNull;
 
@@ -66,11 +64,6 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
         super(material, ArmorItem.Type.BOOTS, properties.rarity(Rarity.RARE).setNoRepair().stacksTo(1)
               .component(MekanismDataComponents.FREE_RUNNER_MODE, FreeRunnerMode.NORMAL)
         );
-    }
-
-    @Override
-    public void initializeClient(@NotNull Consumer<IClientItemExtensions> consumer) {
-        consumer.accept(RenderPropertiesProvider.freeRunners());
     }
 
     @Override

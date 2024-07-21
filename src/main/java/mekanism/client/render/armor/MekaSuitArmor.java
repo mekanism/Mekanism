@@ -74,7 +74,7 @@ import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class MekaSuitArmor implements ICustomArmor {
+public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
 
     private static final String LED_TAG = "led";
     private static final String INACTIVE_TAG = "inactive_";
@@ -216,6 +216,12 @@ public class MekaSuitArmor implements ICustomArmor {
             quads = QuadUtils.transformBakedQuads(quads, transform);
         }
         return quads;
+    }
+
+    @NotNull
+    @Override
+    public ICustomArmor gearModel() {
+        return this;
     }
 
     public enum ModelPos {

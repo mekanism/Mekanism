@@ -33,7 +33,7 @@ public class CuriosIntegration {
     private static void registerRenderers(ItemLike... items) {
         for (ItemLike item : items) {
             if (item.asItem() instanceof ArmorItem armor && IClientItemExtensions.of(armor) instanceof ISpecialGear gear) {
-                ICustomArmor customArmor = gear.getGearModel(armor.getType());
+                ICustomArmor customArmor = gear.gearModel();
                 CuriosRendererRegistry.register(armor, () -> new MekanismCurioRenderer(customArmor));
             } else {
                 Mekanism.logger.warn("Attempted to register Curios renderer for non-special gear item: {}.", RegistryUtils.getName(item.asItem()));

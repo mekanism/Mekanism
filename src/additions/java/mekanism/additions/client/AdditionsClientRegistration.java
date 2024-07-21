@@ -34,6 +34,7 @@ import net.neoforged.neoforge.client.event.ModelEvent.BakingCompleted;
 import net.neoforged.neoforge.client.event.ModelEvent.RegisterAdditional;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 
 @EventBusSubscriber(modid = MekanismAdditions.MODID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
 public class AdditionsClientRegistration {
@@ -72,6 +73,11 @@ public class AdditionsClientRegistration {
         event.registerLayerDefinition(ModelBabyCreeper.CREEPER_LAYER, () -> ModelBabyCreeper.createBodyLayer(CubeDeformation.NONE));
         //Note: Use 1 instead of 2 for size
         event.registerLayerDefinition(ModelBabyCreeper.ARMOR_LAYER, () -> ModelBabyCreeper.createBodyLayer(new CubeDeformation(1)));
+    }
+
+    @SubscribeEvent
+    public static void registerClientExtensions(RegisterClientExtensionsEvent event) {
+        ClientRegistrationUtil.registerBlockExtensions(event, AdditionsBlocks.BLOCKS);
     }
 
     @SubscribeEvent

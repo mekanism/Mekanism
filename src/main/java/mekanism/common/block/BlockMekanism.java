@@ -1,9 +1,7 @@
 package mekanism.common.block;
 
-import java.util.function.Consumer;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.security.IBlockSecurityUtils;
-import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeGui;
 import mekanism.common.block.attribute.AttributeHasBounding;
@@ -48,7 +46,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.HitResult;
-import net.neoforged.neoforge.client.extensions.common.IClientBlockExtensions;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -58,11 +55,6 @@ public abstract class BlockMekanism extends Block {
     protected BlockMekanism(BlockBehaviour.Properties properties) {
         super(BlockStateHelper.applyLightLevelAdjustments(properties));
         registerDefaultState(BlockStateHelper.getDefaultState(stateDefinition.any()));
-    }
-
-    @Override
-    public void initializeClient(Consumer<IClientBlockExtensions> consumer) {
-        consumer.accept(RenderPropertiesProvider.particles());
     }
 
     @Nullable
