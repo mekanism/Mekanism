@@ -36,6 +36,7 @@ public abstract class Target<HANDLER, TYPE extends Number & Comparable<TYPE>, EX
     protected Target(Collection<HANDLER> allHandlers) {
         this.handlers = Collections.unmodifiableCollection(allHandlers);
         this.needed = new ArrayList<>(allHandlers.size() / 2);
+        this.handlerCount = allHandlers.size();
     }
 
     protected Target(int expectedSize) {
