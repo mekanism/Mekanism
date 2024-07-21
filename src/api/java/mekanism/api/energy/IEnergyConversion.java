@@ -67,5 +67,11 @@ public interface IEnergyConversion extends IHasTranslationKey {
      */
     boolean isOneToOne();
 
+    /**
+     *
+     * {@return the conversion rate to how many of this unit is equal to one Joule}
+     *
+     * @since 10.6.6
+     */
     double getConversion();
 }

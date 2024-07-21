@@ -175,22 +175,11 @@ public class UnitDisplayUtils {
 
         @Override
         public long convertFrom(long energy) {
-            double remainder = energy % (1 / getConversion());
-            if (remainder > 0) {
-                //energy -= Mth.ceil(remainder);
-            }
             return MathUtils.clampToLong(energy * getConversion());
         }
 
         @Override
         public long convertTo(long joules) {
-            double remainder = joules % getConversion();
-            if (remainder > 0) {
-                //TODO: Remainder 0.5
-                //We need 3 -> 1.2 => 0
-                //We need 998 -> 399.2 => 399
-                //joules -= Mth.ceil(remainder);
-            }
             return MathUtils.clampToLong(convertToDouble(joules));
         }
 
