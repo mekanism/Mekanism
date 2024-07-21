@@ -19,6 +19,13 @@ public interface IEnergyConversion {
      */
     boolean isEnabled();
 
+    /**
+     * Converts energy of the type represented by this conversion to Joules.
+     *
+     * @param energy Amount of energy in 'other' type. (Units matching this conversion)
+     *
+     * @return Joules.
+     */
     default long convertFrom(long energy) {
         return MathUtils.clampToLong(energy * getConversion());
     }
@@ -46,10 +53,26 @@ public interface IEnergyConversion {
         return convertTo(joules);
     }
 
+    /**
+     * Converts Joules to the energy of the type represented by this conversion.
+     *
+     * @param joules Joules.
+     *
+     * @return Amount of energy. (Units matching this conversion)
+     */
     default long convertTo(long joules) {
         return MathUtils.clampToLong(convertToDouble(joules));
     }
 
+    /**
+     * Converts Joules to the energy of the type represented by this conversion.
+     *
+     * @param joules Joules.
+     *
+     * @return Amount of energy. (Units matching this conversion)
+     *
+     * @since 10.6.6
+     */
     default double convertToDouble(long joules) {
         if (joules == 0) {
             //Short circuit if energy is zero to avoid floating point math
@@ -58,6 +81,11 @@ public interface IEnergyConversion {
         return joules / getConversion();
     }
 
+    /**
+     * {@return if this conversion is one to one with joules}
+     *
+     * @since 10.6.6
+     */
     default boolean isOneToOne() {
         //Use Mth.equal to compare against epsilon
         return Mth.equal(1, getConversion());
