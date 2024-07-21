@@ -4,11 +4,14 @@ import mekanism.additions.common.registries.AdditionsEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.monster.Stray;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Blocks;
@@ -48,5 +51,15 @@ public class EntityBabyStray extends Stray {
     public EntityDimensions getDefaultDimensions(@NotNull Pose pose) {
         //Note: We already have the age scale factored into the dimensions
         return getType().getDimensions();
+    }
+
+    @Override
+    protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance difficulty) {
+        super.populateDefaultEquipmentSlots(random, difficulty);
+        for (EquipmentSlot slot : EquipmentSlot.values()) {
+            if (slot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR) {
+                this.setItemSlot(slot, ItemStack.EMPTY);
+            }
+        }
     }
 }

@@ -1,8 +1,11 @@
 package mekanism.additions.common.entity.baby;
 
 import mekanism.additions.common.registries.AdditionsEntityTypes;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.monster.Bogged;
 import net.minecraft.world.entity.projectile.AbstractArrow;
@@ -30,11 +33,21 @@ public class EntityBabyBogged extends Bogged {
         //Note: We already have the age scale factored into the dimensions
         return getType().getDimensions();
     }
-    
+
     @Override
     protected AbstractArrow getArrow(ItemStack arrow, float velocity, @Nullable ItemStack weapon) {
         AbstractArrow projectile = super.getArrow(arrow, velocity, weapon);
         projectile.setBaseDamage(projectile.getBaseDamage() * 0.25);
         return projectile;
+    }
+
+    @Override
+    protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance difficulty) {
+        super.populateDefaultEquipmentSlots(random, difficulty);
+        for (EquipmentSlot slot : EquipmentSlot.values()) {
+            if (slot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR) {
+                this.setItemSlot(slot, ItemStack.EMPTY);
+            }
+        }
     }
 }
