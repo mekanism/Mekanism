@@ -105,7 +105,7 @@ public class AdditionsConfig extends BaseMekanismConfig {
                   .define("shouldSpawn", true));
             this.weightPercentage = CachedDoubleValue.wrap(config, builder.comment("The multiplier for weight of " + name + " spawns, compared to the adult mob.")
                   .worldRestart()
-                  .defineInRange("weightPercentage", 0.5, 0, 100));
+                  .defineInRange("weightPercentage", 0.05, 0, 100));
             this.minSizePercentage = CachedDoubleValue.wrap(config, builder.comment("The multiplier for minimum group size of " + name + " spawns, compared to the adult mob.")
                   .worldRestart()
                   .defineInRange("minSizePercentage", 0.5, 0, 100));
