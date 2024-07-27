@@ -5,12 +5,16 @@ import java.util.List;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.recipe.RecipeProviderUtil;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.conditions.AndCondition;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import net.neoforged.neoforge.common.conditions.ModLoadedCondition;
@@ -58,5 +62,17 @@ public abstract class CompatRecipeProvider implements ISubRecipeProvider {
 
     protected TagKey<Item> tag(String path) {
         return ItemTags.create(rl(path));
+    }
+
+    protected Holder<Item> foreignItem(HolderLookup.Provider registries, ResourceLocation id) {
+        return registries.lookupOrThrow(Registries.ITEM).getOrThrow(ResourceKey.create(Registries.ITEM, id));
+    }
+
+    protected ItemStack foreignItemStack(HolderLookup.Provider registries, ResourceLocation id, int count) {
+        return new ItemStack(foreignItem(registries, id), count);
+    }
+
+    protected ItemStack foreignItemStack(HolderLookup.Provider registries, ResourceLocation id) {
+        return foreignItemStack(registries, id, 1);
     }
 }

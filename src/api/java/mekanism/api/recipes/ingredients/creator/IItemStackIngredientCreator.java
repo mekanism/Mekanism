@@ -4,7 +4,11 @@ import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentPredicate;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -194,5 +198,9 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
      */
     default ItemStackIngredient from(SizedIngredient ingredient) {
         return ItemStackIngredient.of(ingredient);
+    }
+
+    default ItemStackIngredient from(HolderLookup.Provider registries, ResourceLocation itemId) {
+        return fromHolder(registries.lookupOrThrow(Registries.ITEM).getOrThrow(ResourceKey.create(Registries.ITEM, itemId)));
     }
 }
