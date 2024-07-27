@@ -12,6 +12,7 @@ import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tags.MekanismTags;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -21,7 +22,7 @@ import net.minecraft.world.level.ItemLike;
 class StorageRecipeProvider implements ISubRecipeProvider {
 
     @Override
-    public void addRecipes(RecipeOutput consumer) {
+    public void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
         addNuggetRecipes(consumer);
         addStorageBlockRecipes(consumer);
     }

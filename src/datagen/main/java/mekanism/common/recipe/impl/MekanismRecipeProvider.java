@@ -101,12 +101,12 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
     }
 
     @Override
-    protected void addRecipes(RecipeOutput consumer) {
+    protected void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
         addMiscRecipes(consumer);
         addGearModuleRecipes(consumer);
         addLateGameRecipes(consumer);
         for (ISubRecipeProvider compatProvider : compatProviders) {
-            compatProvider.addRecipes(consumer);
+            compatProvider.addRecipes(consumer, registries);
         }
     }
 

@@ -56,7 +56,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
     }
 
     @Override
-    protected void addRecipes(RecipeOutput consumer) {
+    protected void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
         addGeneratorRecipes(consumer);
         addFissionReactorRecipes(consumer);
         addFusionReactorRecipes(consumer);

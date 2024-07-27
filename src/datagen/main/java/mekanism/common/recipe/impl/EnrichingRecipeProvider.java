@@ -11,6 +11,7 @@ import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.RegistryUtils;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
@@ -23,7 +24,7 @@ import net.neoforged.neoforge.common.Tags;
 class EnrichingRecipeProvider implements ISubRecipeProvider {
 
     @Override
-    public void addRecipes(RecipeOutput consumer) {
+    public void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
         String basePath = "enriching/";
         addEnrichingConversionRecipes(consumer, basePath + "conversion/");
         addEnrichingDeoxidizingRecipes(consumer, basePath + "deoxidizing/");

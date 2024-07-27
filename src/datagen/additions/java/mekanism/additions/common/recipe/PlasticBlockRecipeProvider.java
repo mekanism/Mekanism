@@ -27,6 +27,7 @@ import mekanism.common.registries.MekanismPigments;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
@@ -60,7 +61,7 @@ public class PlasticBlockRecipeProvider implements ISubRecipeProvider {
           TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY));
 
     @Override
-    public void addRecipes(RecipeOutput consumer) {
+    public void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
         String basePath = "plastic/";
         registerPlasticBlocks(consumer, basePath);
         registerPlasticGlow(consumer, basePath);

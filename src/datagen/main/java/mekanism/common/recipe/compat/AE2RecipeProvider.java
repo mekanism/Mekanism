@@ -6,6 +6,7 @@ import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
@@ -19,7 +20,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
     }
 
     @Override
-    protected void registerRecipes(RecipeOutput consumer, String basePath) {
+    protected void registerRecipes(RecipeOutput consumer, String basePath, HolderLookup.Provider registries) {
         //Certus Crystal -> Certus Dust
         ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(ItemTags.create(Tags.Items.GEMS.location().withSuffix("/certus_quartz"))),

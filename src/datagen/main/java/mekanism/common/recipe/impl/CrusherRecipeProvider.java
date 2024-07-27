@@ -8,6 +8,7 @@ import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.recipe.RecipeProviderUtil;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.util.RegistryUtils;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.HoneycombItem;
@@ -20,7 +21,7 @@ import net.neoforged.neoforge.common.Tags;
 class CrusherRecipeProvider implements ISubRecipeProvider {
 
     @Override
-    public void addRecipes(RecipeOutput consumer) {
+    public void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
         String basePath = "crushing/";
         RecipeProviderUtil.addCrusherBioFuelRecipes(consumer, basePath + "biofuel/", mod -> mod.equals("minecraft") || mod.startsWith(Mekanism.MODID), null);
         addCrusherDewaxingRecipes(consumer, basePath + "dewax/");

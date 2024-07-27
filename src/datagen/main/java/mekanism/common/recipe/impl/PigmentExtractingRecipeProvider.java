@@ -11,6 +11,7 @@ import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.registries.MekanismPigments;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.EnumUtils;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
@@ -46,7 +47,7 @@ public class PigmentExtractingRecipeProvider implements ISubRecipeProvider {
     }
 
     @Override
-    public void addRecipes(RecipeOutput consumer) {
+    public void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
         String basePath = "pigment_extracting/";
         addExtractionRecipes(consumer, basePath);
         addFlowerExtractionRecipes(consumer, basePath);

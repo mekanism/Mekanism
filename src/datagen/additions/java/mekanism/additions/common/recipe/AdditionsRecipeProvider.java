@@ -60,7 +60,7 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
     }
 
     @Override
-    protected void addRecipes(RecipeOutput consumer) {
+    protected void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
         ExtendedShapedRecipeBuilder.shapedRecipe(AdditionsItems.WALKIE_TALKIE)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.EMPTY, Pattern.EMPTY, Pattern.OSMIUM),

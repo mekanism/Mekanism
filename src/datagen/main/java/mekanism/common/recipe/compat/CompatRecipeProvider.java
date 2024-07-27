@@ -5,6 +5,7 @@ import java.util.List;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.recipe.RecipeProviderUtil;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
@@ -38,14 +39,14 @@ public abstract class CompatRecipeProvider implements ISubRecipeProvider {
     }
 
     @Override
-    public final void addRecipes(RecipeOutput consumer) {
+    public final void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
         String basePath = getBasePath();
-        registerRecipes(consumer, basePath);
+        registerRecipes(consumer, basePath, registries);
         //Check if there are any biofuel recipes that should be added for the mod
         RecipeProviderUtil.addCrusherBioFuelRecipes(consumer, basePath + "biofuel/", mod -> mod.equals(modid), allModsLoaded);
     }
 
-    protected abstract void registerRecipes(RecipeOutput consumer, String basePath);
+    protected abstract void registerRecipes(RecipeOutput consumer, String basePath, HolderLookup.Provider registries);
 
     protected String getBasePath() {
         return "compat/" + modid + "/";
