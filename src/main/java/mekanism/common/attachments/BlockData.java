@@ -44,7 +44,7 @@ public record BlockData(BlockState blockState, @Nullable CompoundTag blockEntity
           CompoundTag.CODEC.optionalFieldOf(SerializationConstants.BLOCK_ENTITY_TAG).forGetter(data -> Optional.ofNullable(data.blockEntityTag))
     ).apply(instance, (state, tag) -> new BlockData(state, tag.orElse(null))));
     public static final StreamCodec<ByteBuf, BlockData> STREAM_CODEC = StreamCodec.composite(
-          ByteBufCodecs.fromCodecTrusted(BlockState.CODEC), BlockData::blockState,
+          ByteBufCodecs.idMapper(Block.BLOCK_STATE_REGISTRY), BlockData::blockState,
           ByteBufCodecs.optional(ByteBufCodecs.TRUSTED_COMPOUND_TAG), data -> Optional.ofNullable(data.blockEntityTag()),
           (state, tag) -> new BlockData(state, tag.orElse(null))
     );
