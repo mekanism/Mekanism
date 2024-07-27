@@ -1,11 +1,15 @@
 package mekanism.common.inventory.container.item;
 
 import mekanism.api.security.IItemSecurityUtils;
-import mekanism.common.content.qio.PortableQIODashboardInventory;
 import mekanism.common.content.qio.IQIOCraftingWindowHolder;
+import mekanism.common.content.qio.PortableQIODashboardInventory;
+import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
+import mekanism.common.inventory.container.item.MekanismItemContainer.IItemContainerTracker;
 import mekanism.common.inventory.container.slot.HotBarSlot;
+import mekanism.common.inventory.container.sync.SyncableFrequency;
 import mekanism.common.inventory.container.sync.SyncableItemStack;
+import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.PacketItemGuiInteract;
 import mekanism.common.network.to_server.PacketItemGuiInteract.ItemGuiInteraction;
@@ -18,16 +22,22 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class PortableQIODashboardContainer extends QIOItemViewerContainer {
 
     protected final InteractionHand hand;
     protected ItemStack stack;
+    private QIOFrequency freq;
 
     private PortableQIODashboardContainer(int id, Inventory inv, InteractionHand hand, ItemStack stack, boolean remote, IQIOCraftingWindowHolder craftingWindowHolder) {
         super(MekanismContainerTypes.PORTABLE_QIO_DASHBOARD, id, inv, remote, craftingWindowHolder);
         this.hand = hand;
         this.stack = stack;
+        if (!stack.isEmpty()) {
+            //It shouldn't be empty but validate it just in case
+            addContainerTrackers();
+        }
         addSlotsAndOpen();
     }
 
@@ -48,6 +58,31 @@ public class PortableQIODashboardContainer extends QIOItemViewerContainer {
         PortableQIODashboardContainer container = new PortableQIODashboardContainer(containerId, inv, hand, stack, true, craftingWindowHolder);
         sync(container);
         return container;
+    }
+
+    @Override
+    protected void sync(QIOItemViewerContainer container) {
+        super.sync(container);
+        if (container instanceof PortableQIODashboardContainer portable) {
+            freq = portable.freq;
+        }
+    }
+
+    @Nullable
+    @Override
+    public QIOFrequency getFrequency() {
+        if (craftingWindowHolder instanceof PortableQIODashboardInventory inventory && inventory.getLevel() != null && inventory.getLevel().isClientSide) {
+            //If we are on the client side, use our local stored frequency
+            return freq;
+        }
+        return super.getFrequency();
+    }
+
+    protected void addContainerTrackers() {
+        if (stack.getItem() instanceof IItemContainerTracker containerTracker) {
+            containerTracker.addContainerTrackers(this, stack);
+        }
+        track(SyncableFrequency.create(FrequencyType.QIO, this::getFrequency, f -> freq = f));
     }
 
     @Override
