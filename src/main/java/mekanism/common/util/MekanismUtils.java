@@ -18,6 +18,7 @@ import java.util.UUID;
 import java.util.function.Supplier;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
+import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.Upgrade;
 import mekanism.api.chemical.IChemicalTank;
@@ -113,13 +114,19 @@ public final class MekanismUtils {
     // possible, and also ideally would use our normal logger instead of the API logger
     public static void logMismatchedStackSize(long actual, long expected) {
         if (expected != actual) {
-            Mekanism.logger.error("Stack size changed by a different amount ({}) than requested ({}).", actual, expected, new Exception());
+            Mekanism.logger.error("Stack size changed by a different amount ({}) than requested ({}).", actual, expected);
+            if (MekanismAPI.debug) {
+                Mekanism.logger.error("Location ", new Exception());
+            }
         }
     }
 
     public static void logExpectedZero(long actual) {
         if (actual != 0L) {
-            Mekanism.logger.error("Energy value changed by a different amount ({}) than requested (zero).", actual, new Exception());
+            Mekanism.logger.error("Energy value changed by a different amount ({}) than requested (zero).", actual);
+            if (MekanismAPI.debug) {
+                Mekanism.logger.error("Location ", new Exception());
+            }
         }
     }
 
