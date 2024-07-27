@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:oxidizing",
+  "input": {
+    "count": 1,
+    "tag": "mekanism:enriched/redstone"
+  },
+  "output": {
+    "amount": 80,
+    "chemical_type": "infuse_type",
+    "id": "mekanism:redstone"
+  }
+}

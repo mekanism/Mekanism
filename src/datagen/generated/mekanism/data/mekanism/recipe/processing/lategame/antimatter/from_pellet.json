@@ -6,6 +6,7 @@
   },
   "output": {
     "amount": 1000,
+    "chemical_type": "gas",
     "id": "mekanism:antimatter"
   }
 }

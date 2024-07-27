@@ -38,20 +38,4 @@ public abstract class ItemStackToGasRecipeManager extends ItemStackToChemicalRec
             return new BasicGasConversionRecipe(CrTUtils.fromCrT(input), output);
         }
     }
-
-    @ZenRegister
-    @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_OXIDIZING)
-    public static class ChemicalOxidizerRecipeManager extends ItemStackToGasRecipeManager {
-
-        public static final ChemicalOxidizerRecipeManager INSTANCE = new ChemicalOxidizerRecipeManager();
-
-        private ChemicalOxidizerRecipeManager() {
-            super(MekanismRecipeType.OXIDIZING);
-        }
-
-        @Override
-        protected ItemStackToGasRecipe makeRecipe(IIngredientWithAmount input, GasStack output) {
-            return new BasicChemicalOxidizerRecipe(CrTUtils.fromCrT(input), output);
-        }
-    }
 }

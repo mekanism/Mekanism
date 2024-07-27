@@ -9,6 +9,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.datagen.recipe.builder.ChemicalCrystallizerRecipeBuilder;
+import mekanism.api.datagen.recipe.builder.ChemicalOxidizerRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.GasToGasRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.PressurizedReactionRecipeBuilder;
@@ -1660,7 +1661,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "antimatter_pellet/from_gas"));
 
         //back to antimatter
-        ItemStackToChemicalRecipeBuilder.oxidizing(
+        ChemicalOxidizerRecipeBuilder.oxidizing(
               IngredientCreatorAccess.item().from(MekanismTags.Items.PELLETS_ANTIMATTER),
               MekanismGases.ANTIMATTER.getStack(1_000)
         ).build(consumer, Mekanism.rl(basePath + "antimatter/from_pellet"));

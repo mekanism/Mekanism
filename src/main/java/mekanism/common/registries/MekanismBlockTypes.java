@@ -284,14 +284,14 @@ public class MekanismBlockTypes {
           .build();
     // Chemical Oxidizer
     public static final Machine<TileEntityChemicalOxidizer> CHEMICAL_OXIDIZER = MachineBuilder
-          .createMachine(() -> MekanismTileEntityTypes.CHEMICAL_OXIDIZER, MekanismLang.DESCRIPTION_CHEMICAL_OXIDIZER)
-          .withGui(() -> MekanismContainerTypes.CHEMICAL_OXIDIZER)
-          .withSound(MekanismSounds.CHEMICAL_OXIDIZER)
-          .withEnergyConfig(MekanismConfig.usage.chemicalOxidizer, MekanismConfig.storage.chemicalOxidizer)
-          .withSideConfig(TransmissionType.ITEM, TransmissionType.GAS, TransmissionType.ENERGY)
-          .withCustomShape(BlockShapes.CHEMICAL_OXIDIZER)
-          .withComputerSupport("chemicalOxidizer")
-          .build();
+            .createMachine(() -> MekanismTileEntityTypes.CHEMICAL_OXIDIZER, MekanismLang.DESCRIPTION_CHEMICAL_OXIDIZER)
+            .withGui(() -> MekanismContainerTypes.CHEMICAL_OXIDIZER)
+            .withSound(MekanismSounds.CHEMICAL_OXIDIZER)
+            .withEnergyConfig(MekanismConfig.usage.chemicalOxidizer, MekanismConfig.storage.chemicalOxidizer)
+            .withSideConfig(TransmissionType.ITEM, TransmissionType.GAS, TransmissionType.INFUSION, TransmissionType.PIGMENT, TransmissionType.SLURRY, TransmissionType.ENERGY)
+            .withCustomShape(BlockShapes.CHEMICAL_OXIDIZER)
+            .withComputerSupport("chemicalOxidizer")
+            .build();
     // Chemical Washer
     public static final Machine<TileEntityChemicalWasher> CHEMICAL_WASHER = MachineBuilder
           .createMachine(() -> MekanismTileEntityTypes.CHEMICAL_WASHER, MekanismLang.DESCRIPTION_CHEMICAL_WASHER)

@@ -6,6 +6,7 @@
   },
   "output": {
     "amount": 15,
+    "chemical_type": "gas",
     "id": "mekanism:brine"
   }
 }

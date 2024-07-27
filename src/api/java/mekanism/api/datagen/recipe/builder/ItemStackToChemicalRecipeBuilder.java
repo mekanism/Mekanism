@@ -45,19 +45,6 @@ public class ItemStackToChemicalRecipeBuilder<CHEMICAL extends Chemical<CHEMICAL
     }
 
     /**
-     * Creates an Oxidizing recipe builder.
-     *
-     * @param input  Input.
-     * @param output Output.
-     */
-    public static ItemStackToChemicalRecipeBuilder<Gas, GasStack> oxidizing(ItemStackIngredient input, GasStack output) {
-        if (output.isEmpty()) {
-            throw new IllegalArgumentException("This oxidizing recipe requires a non empty gas output.");
-        }
-        return new ItemStackToChemicalRecipeBuilder<>(input, output, BasicChemicalOxidizerRecipe::new);
-    }
-
-    /**
      * Creates an Infusion Conversion recipe builder.
      *
      * @param input  Input.

@@ -30,6 +30,7 @@ import mekanism.client.recipe_viewer.jei.machine.BoilerRecipeCategory;
 import mekanism.client.recipe_viewer.jei.machine.ChemicalCrystallizerRecipeCategory;
 import mekanism.client.recipe_viewer.jei.machine.ChemicalDissolutionRecipeCategory;
 import mekanism.client.recipe_viewer.jei.machine.ChemicalInfuserRecipeCategory;
+import mekanism.client.recipe_viewer.jei.machine.ChemicalOxidizerRecipeCategory;
 import mekanism.client.recipe_viewer.jei.machine.CombinerRecipeCategory;
 import mekanism.client.recipe_viewer.jei.machine.ElectrolysisRecipeCategory;
 import mekanism.client.recipe_viewer.jei.machine.FluidSlurryToSlurryRecipeCategory;
@@ -294,6 +295,7 @@ public class MekanismJEI implements IModPlugin {
 
         registry.addRecipeCategories(new ChemicalCrystallizerRecipeCategory(guiHelper, RecipeViewerRecipeType.CRYSTALLIZING));
         registry.addRecipeCategories(new ChemicalDissolutionRecipeCategory(guiHelper, RecipeViewerRecipeType.DISSOLUTION));
+        registry.addRecipeCategories(new ChemicalOxidizerRecipeCategory(guiHelper, RecipeViewerRecipeType.OXIDIZING));
         registry.addRecipeCategories(new ChemicalInfuserRecipeCategory(guiHelper, RecipeViewerRecipeType.CHEMICAL_INFUSING));
         registry.addRecipeCategories(new FluidSlurryToSlurryRecipeCategory(guiHelper, RecipeViewerRecipeType.WASHING));
         registry.addRecipeCategories(new ElectrolysisRecipeCategory(guiHelper, RecipeViewerRecipeType.SEPARATING));
@@ -307,7 +309,6 @@ public class MekanismJEI implements IModPlugin {
         registry.addRecipeCategories(new RotaryCondensentratorRecipeCategory(guiHelper, true));
         registry.addRecipeCategories(new RotaryCondensentratorRecipeCategory(guiHelper, false));
 
-        registry.addRecipeCategories(new ItemStackToGasRecipeCategory(guiHelper, RecipeViewerRecipeType.OXIDIZING, false));
         registry.addRecipeCategories(new ItemStackToFluidOptionalItemRecipeCategory(guiHelper, RecipeViewerRecipeType.NUTRITIONAL_LIQUIFICATION, false));
 
         registry.addRecipeCategories(new GasToGasRecipeCategory(guiHelper, RecipeViewerRecipeType.ACTIVATING));

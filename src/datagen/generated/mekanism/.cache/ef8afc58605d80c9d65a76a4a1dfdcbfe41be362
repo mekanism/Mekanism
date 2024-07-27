@@ -1,4 +1,4 @@
-// 1.21	2024-07-16T12:03:46.8456979	CraftTweaker Examples: mekanism
+// 1.21	2024-07-26T21:01:34.8945058	CraftTweaker Examples: mekanism
 719e73bbdf4fab3516676ed64917ab3ec66fea29 data/mekanism/scripts/mekanism/activating.zs
 b9e81fc33aabdf1967b14270c7b5e8e491577758 data/mekanism/scripts/mekanism/centrifuging.zs
 7da55452ead769f44c65aa528195f219c102e6fd data/mekanism/scripts/mekanism/chemical_infusing.zs
@@ -17,7 +17,7 @@ a32cff363e6cde8ab65b4d872a5387cdd4a40807 data/mekanism/scripts/mekanism/energy_c
 806f9f3b182475f0501a12e699bef9c5440b2f3e data/mekanism/scripts/mekanism/jeitweaker_integration.zs
 336e3c82a965d0d2d602f3f6a115c842ec66d1fa data/mekanism/scripts/mekanism/metallurgic_infusing.zs
 0aa051a94717b7dd6a6862d6cb823d087d641ff5 data/mekanism/scripts/mekanism/nucleosynthesizing.zs
-5173e5640aa89ab5645e8cfcec63184bd1936d95 data/mekanism/scripts/mekanism/oxidizing.zs
+6479169651ff51a2168744e05ebb2ea67d3b4ebd data/mekanism/scripts/mekanism/oxidizing.zs
 2b80ff07f7b0f88e499f6e051523158920927cdf data/mekanism/scripts/mekanism/painting.zs
 e15856cf5c9f684e969470e251501af50e6038eb data/mekanism/scripts/mekanism/pigment_extracting.zs
 ebf2bc7d007d01ac890170d366a0192c350b2765 data/mekanism/scripts/mekanism/pigment_mixing.zs

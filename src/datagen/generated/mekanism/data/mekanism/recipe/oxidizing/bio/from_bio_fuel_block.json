@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:oxidizing",
+  "input": {
+    "count": 1,
+    "tag": "c:fuels/block/bio"
+  },
+  "output": {
+    "amount": 45,
+    "chemical_type": "infuse_type",
+    "id": "mekanism:bio"
+  }
+}

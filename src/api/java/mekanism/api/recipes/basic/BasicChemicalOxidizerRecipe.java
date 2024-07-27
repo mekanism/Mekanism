@@ -1,41 +1,67 @@
 package mekanism.api.recipes.basic;
 
-import mekanism.api.MekanismAPI;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.merged.BoxedChemicalStack;
+import mekanism.api.recipes.ChemicalOxidizerRecipe;
 import mekanism.api.recipes.MekanismRecipeSerializers;
-import mekanism.api.recipes.MekanismRecipeTypes;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import net.minecraft.core.Holder;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.neoforged.neoforge.registries.DeferredHolder;
 
 @NothingNullByDefault
-public class BasicChemicalOxidizerRecipe extends BasicItemStackToGasRecipe {
+public class BasicChemicalOxidizerRecipe extends ChemicalOxidizerRecipe {
 
-    private static final Holder<Item> CHEMICAL_OXIDIZER = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "chemical_oxidizer"));
+    protected final ItemStackIngredient input;
+    protected final BoxedChemicalStack output;
 
-    public BasicChemicalOxidizerRecipe(ItemStackIngredient input, GasStack output) {
-        super(input, output, MekanismRecipeTypes.TYPE_OXIDIZING.value());
+    /**
+     * @param input     Input.
+     * @param output    Output.
+     */
+    public BasicChemicalOxidizerRecipe(ItemStackIngredient input, ChemicalStack<?> output) {
+        this.input = Objects.requireNonNull(input, "Input cannot be null.");
+        Objects.requireNonNull(output, "Output cannot be null.");
+        if (output.isEmpty()) {
+            throw new IllegalArgumentException("Output cannot be empty.");
+        }
+        this.output = BoxedChemicalStack.box(output.copy());
+    }
+
+    @Override
+    public ItemStackIngredient getInput() {
+        return input;
+    }
+
+    @Override
+    public BoxedChemicalStack getOutput(ItemStack input) {
+        return output.copy();
+    }
+
+    @Override
+    public boolean test(ItemStack itemStack) {
+        return input.test(itemStack);
+    }
+
+    @Override
+    public List<BoxedChemicalStack> getOutputDefinition() {
+        return Collections.singletonList(output);
+    }
+
+    /**
+     * For Serializer usage only. Do not modify the returned stack!
+     *
+     * @return the uncopied output definition
+     */
+    public BoxedChemicalStack getOutputRaw() {
+        return output;
     }
 
     @Override
     public RecipeSerializer<BasicChemicalOxidizerRecipe> getSerializer() {
-        return MekanismRecipeSerializers.OXIDIZING.value();
+        return MekanismRecipeSerializers.OXIDIZING.get();
     }
-
-    @Override
-    public String getGroup() {
-        return "chemical_oxidizer";
-    }
-
-    @Override
-    public ItemStack getToastSymbol() {
-        return new ItemStack(CHEMICAL_OXIDIZER);
-    }
-
 }
