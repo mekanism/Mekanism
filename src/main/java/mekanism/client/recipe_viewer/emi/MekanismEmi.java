@@ -39,6 +39,7 @@ import mekanism.client.recipe_viewer.emi.ChemicalEmiStack.SlurryEmiStack;
 import mekanism.client.recipe_viewer.emi.recipe.BoilerEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.ChemicalCrystallizerEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.ChemicalDissolutionEmiRecipe;
+import mekanism.client.recipe_viewer.emi.recipe.ChemicalOxidizerEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.ChemicalInfuserEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.CombinerEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.ElectrolysisEmiRecipe;
@@ -251,6 +252,7 @@ public class MekanismEmi implements EmiPlugin {
     private void addCategories(EmiRegistry registry) {
         addCategoryAndRecipes(registry, RecipeViewerRecipeType.CRYSTALLIZING, ChemicalCrystallizerEmiRecipe::new);
         addCategoryAndRecipes(registry, RecipeViewerRecipeType.DISSOLUTION, ChemicalDissolutionEmiRecipe::new);
+        addCategoryAndRecipes(registry, RecipeViewerRecipeType.OXIDIZING, ChemicalOxidizerEmiRecipe::new);
         addCategoryAndRecipes(registry, RecipeViewerRecipeType.CHEMICAL_INFUSING, ChemicalInfuserEmiRecipe::new);
         addCategoryAndRecipes(registry, RecipeViewerRecipeType.WASHING, FluidSlurryToSlurryEmiRecipe::new);
         addCategoryAndRecipes(registry, RecipeViewerRecipeType.SEPARATING, ElectrolysisEmiRecipe::new);
@@ -278,8 +280,6 @@ public class MekanismEmi implements EmiPlugin {
                 registry.addRecipe(new RotaryEmiRecipe(decondensentratingCategory, recipeHolder.id(), recipeHolder, false));
             }
         }
-
-        addCategoryAndRecipes(registry, RecipeViewerRecipeType.OXIDIZING, (category, recipeHolder) -> new ItemStackToGasEmiRecipe(category, recipeHolder, TileEntityChemicalOxidizer.BASE_TICKS_REQUIRED));
 
         addCategoryAndRecipes(registry, RecipeViewerRecipeType.NUTRITIONAL_LIQUIFICATION, (category, id, recipe) -> new ItemStackToFluidOptionalItemEmiRecipe(category, id, recipe, TileEntityNutritionalLiquifier.BASE_TICKS_REQUIRED), RecipeViewerUtils.getLiquificationRecipes());
 

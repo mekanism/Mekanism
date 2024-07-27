@@ -98,6 +98,7 @@ public class CrTConstants {
     public static final String CLASS_RECIPE_MANAGER_CENTRIFUGING = CLASS_RECIPE_MANAGER_GAS_TO_GAS + ".Centrifuging";
     public static final String CLASS_RECIPE_MANAGER_CRYSTALLIZING = "mods." + Mekanism.MODID + ".recipe.manager.Crystallizing";
     public static final String CLASS_RECIPE_MANAGER_DISSOLUTION = "mods." + Mekanism.MODID + ".recipe.manager.Dissolution";
+    public static final String CLASS_RECIPE_MANAGER_OXIDIZING = "mods." + Mekanism.MODID + ".recipe.manager.Oxidizing";
     public static final String CLASS_RECIPE_MANAGER_ITEM_STACK_CHEMICAL_TO_ITEM_STACK = "mods." + Mekanism.MODID + ".recipe.manager.ItemStackChemicalToItemStack";
     public static final String CLASS_RECIPE_MANAGER_COMPRESSING = CLASS_RECIPE_MANAGER_ITEM_STACK_CHEMICAL_TO_ITEM_STACK + ".Compressing";
     public static final String CLASS_RECIPE_MANAGER_PURIFYING = CLASS_RECIPE_MANAGER_ITEM_STACK_CHEMICAL_TO_ITEM_STACK + ".Purifying";
@@ -110,7 +111,6 @@ public class CrTConstants {
     public static final String CLASS_RECIPE_MANAGER_ITEM_STACK_TO_CHEMICAL = "mods." + Mekanism.MODID + ".recipe.manager.ItemStackToChemical";
     public static final String CLASS_RECIPE_MANAGER_ITEM_STACK_TO_GAS = CLASS_RECIPE_MANAGER_ITEM_STACK_TO_CHEMICAL + ".Gas";
     public static final String CLASS_RECIPE_MANAGER_GAS_CONVERSION = CLASS_RECIPE_MANAGER_ITEM_STACK_TO_GAS + ".GasConversion";
-    public static final String CLASS_RECIPE_MANAGER_OXIDIZING = CLASS_RECIPE_MANAGER_ITEM_STACK_TO_GAS + ".Oxidizing";
     public static final String CLASS_RECIPE_MANAGER_ITEM_STACK_TO_INFUSE_TYPE = CLASS_RECIPE_MANAGER_ITEM_STACK_TO_CHEMICAL + ".InfuseType";
     public static final String CLASS_RECIPE_MANAGER_INFUSION_CONVERSION = CLASS_RECIPE_MANAGER_ITEM_STACK_TO_INFUSE_TYPE + ".InfusionConversion";
     public static final String CLASS_RECIPE_MANAGER_ITEM_STACK_TO_PIGMENT = CLASS_RECIPE_MANAGER_ITEM_STACK_TO_CHEMICAL + ".Pigment";

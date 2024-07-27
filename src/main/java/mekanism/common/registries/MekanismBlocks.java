@@ -473,16 +473,31 @@ public class MekanismBlocks {
                       .component(MekanismDataComponents.EJECTOR, AttachedEjector.DEFAULT)
                       .component(MekanismDataComponents.SIDE_CONFIG, AttachedSideConfig.OXIDIZING)
                 )
-          ).forItemHolder(holder -> holder
-                .addAttachmentOnlyContainers(ContainerType.GAS, () -> GasTanksBuilder.builder()
-                      .addBasic(TileEntityChemicalOxidizer.MAX_GAS)
-                      .build()
-                ).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
-                      .addInput(MekanismRecipeType.OXIDIZING, SingleInputRecipeCache::containsInput)
-                      .addGasDrainSlot(0)
-                      .addEnergy()
-                      .build()
-                )
+          ).forItemHolder(holder -> {
+                      final LongSupplier capacitySupplier = () -> TileEntityChemicalOxidizer.MAX_CHEMICAL;
+                      final MergedTankCreator mergedTankCreator = new MergedTankCreator(
+                              (type, attachedTo, containerIndex) -> new ComponentBackedGasTank(attachedTo, containerIndex, ChemicalTankBuilder.GAS.alwaysTrueBi, ChemicalTankBuilder.GAS.alwaysTrueBi,
+                                      ChemicalTankBuilder.GAS.alwaysTrue, MekanismConfig.general.chemicalItemFillRate, capacitySupplier, null),
+                              (type, attachedTo, containerIndex) -> new ComponentBackedInfusionTank(attachedTo, containerIndex, ChemicalTankBuilder.INFUSION.alwaysTrueBi, ChemicalTankBuilder.INFUSION.alwaysTrueBi,
+                                      ChemicalTankBuilder.INFUSION.alwaysTrue, MekanismConfig.general.chemicalItemFillRate, capacitySupplier, null),
+                              (type, attachedTo, containerIndex) -> new ComponentBackedPigmentTank(attachedTo, containerIndex, ChemicalTankBuilder.PIGMENT.alwaysTrueBi, ChemicalTankBuilder.PIGMENT.alwaysTrueBi,
+                                      ChemicalTankBuilder.PIGMENT.alwaysTrue, MekanismConfig.general.chemicalItemFillRate, capacitySupplier, null),
+                              (type, attachedTo, containerIndex) -> new ComponentBackedSlurryTank(attachedTo, containerIndex, ChemicalTankBuilder.SLURRY.alwaysTrueBi, ChemicalTankBuilder.SLURRY.alwaysTrueBi,
+                                      ChemicalTankBuilder.SLURRY.alwaysTrue, MekanismConfig.general.chemicalItemFillRate, capacitySupplier, null)
+                      );
+                      holder.addAttachmentOnlyContainers(ContainerType.GAS, () -> GasTanksBuilder.builder()
+                                      .addTank(mergedTankCreator)
+                                      .build()
+                              ).addAttachmentOnlyContainers(ContainerType.INFUSION, () -> InfusionTanksBuilder.builder().addTank(mergedTankCreator).build())
+                              .addAttachmentOnlyContainers(ContainerType.PIGMENT, () -> PigmentTanksBuilder.builder().addTank(mergedTankCreator).build())
+                              .addAttachmentOnlyContainers(ContainerType.SLURRY, () -> SlurryTanksBuilder.builder().addTank(mergedTankCreator).build())
+                              .addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
+                                      .addInput(MekanismRecipeType.OXIDIZING, SingleInputRecipeCache::containsInput)
+                                      .addMergedChemicalDrainSlot(1, 0, 0, 0)
+                                      .addEnergy()
+                                      .build()
+                              );
+                  }
           );
     public static final BlockRegistryObject<BlockTileModel<TileEntityChemicalInfuser, Machine<TileEntityChemicalInfuser>>, ItemBlockTooltip<BlockTileModel<TileEntityChemicalInfuser, Machine<TileEntityChemicalInfuser>>>> CHEMICAL_INFUSER =
           BLOCKS.register("chemical_infuser", () -> new BlockTileModel<>(MekanismBlockTypes.CHEMICAL_INFUSER, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())),

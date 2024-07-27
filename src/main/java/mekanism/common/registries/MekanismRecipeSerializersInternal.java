@@ -76,6 +76,8 @@ public class MekanismRecipeSerializersInternal {
 
         MekanismRecipeSerializers.DISSOLUTION = RECIPE_SERIALIZERS.register("dissolution", () -> MekanismRecipeSerializer.dissolution(BasicChemicalDissolutionRecipe::new));
 
+        MekanismRecipeSerializers.OXIDIZING = RECIPE_SERIALIZERS.register("oxidizing", () -> MekanismRecipeSerializer.oxidizing(BasicChemicalOxidizerRecipe::new));
+
         MekanismRecipeSerializers.COMPRESSING = RECIPE_SERIALIZERS.register("compressing", () -> MekanismRecipeSerializer.itemChemicalToItem(BasicCompressingRecipe::new, IngredientCreatorAccess.gasStack()));
         MekanismRecipeSerializers.PURIFYING = RECIPE_SERIALIZERS.register("purifying", () -> MekanismRecipeSerializer.itemChemicalToItem(BasicPurifyingRecipe::new, IngredientCreatorAccess.gasStack()));
         MekanismRecipeSerializers.INJECTING = RECIPE_SERIALIZERS.register("injecting", () -> MekanismRecipeSerializer.itemChemicalToItem(BasicInjectingRecipe::new, IngredientCreatorAccess.gasStack()));
@@ -85,7 +87,6 @@ public class MekanismRecipeSerializersInternal {
         MekanismRecipeSerializers.ENERGY_CONVERSION = RECIPE_SERIALIZERS.register("energy_conversion", () -> MekanismRecipeSerializer.itemToEnergy(BasicItemStackToEnergyRecipe::new));
 
         MekanismRecipeSerializers.GAS_CONVERSION = RECIPE_SERIALIZERS.register("gas_conversion", () -> MekanismRecipeSerializer.itemToChemical(BasicGasConversionRecipe::new, GasStack.MAP_CODEC, GasStack.STREAM_CODEC));
-        MekanismRecipeSerializers.OXIDIZING = RECIPE_SERIALIZERS.register("oxidizing", () -> MekanismRecipeSerializer.itemToChemical(BasicChemicalOxidizerRecipe::new, GasStack.MAP_CODEC, GasStack.STREAM_CODEC));
 
         MekanismRecipeSerializers.INFUSION_CONVERSION = RECIPE_SERIALIZERS.register("infusion_conversion", () -> MekanismRecipeSerializer.itemToChemical(BasicItemStackToInfuseTypeRecipe::new, InfusionStack.MAP_CODEC, InfusionStack.STREAM_CODEC));
 

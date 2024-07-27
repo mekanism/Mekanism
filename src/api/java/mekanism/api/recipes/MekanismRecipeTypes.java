@@ -54,7 +54,7 @@ public class MekanismRecipeTypes {
     public static final DeferredHolder<RecipeType<?>, RecipeType<NucleosynthesizingRecipe>> TYPE_NUCLEOSYNTHESIZING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_NUCLEOSYNTHESIZING);
     public static final DeferredHolder<RecipeType<?>, RecipeType<ItemStackToEnergyRecipe>> TYPE_ENERGY_CONVERSION = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_ENERGY_CONVERSION);
     public static final DeferredHolder<RecipeType<?>, RecipeType<ItemStackToGasRecipe>> TYPE_GAS_CONVERSION = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_GAS_CONVERSION);
-    public static final DeferredHolder<RecipeType<?>, RecipeType<ItemStackToGasRecipe>> TYPE_OXIDIZING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_OXIDIZING);
+    public static final DeferredHolder<RecipeType<?>, RecipeType<ChemicalOxidizerRecipe>> TYPE_OXIDIZING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_OXIDIZING);
     public static final DeferredHolder<RecipeType<?>, RecipeType<ItemStackToInfuseTypeRecipe>> TYPE_INFUSION_CONVERSION = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_INFUSION_CONVERSION);
     public static final DeferredHolder<RecipeType<?>, RecipeType<ItemStackToPigmentRecipe>> TYPE_PIGMENT_EXTRACTING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_PIGMENT_EXTRACTING);
     public static final DeferredHolder<RecipeType<?>, RecipeType<PigmentMixingRecipe>> TYPE_PIGMENT_MIXING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_PIGMENT_MIXING);

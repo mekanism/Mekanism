@@ -6,6 +6,7 @@
   },
   "output": {
     "amount": 250,
+    "chemical_type": "gas",
     "id": "mekanism:uranium_oxide"
   }
 }

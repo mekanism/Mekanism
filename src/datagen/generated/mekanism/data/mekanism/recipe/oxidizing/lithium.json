@@ -6,6 +6,7 @@
   },
   "output": {
     "amount": 100,
+    "chemical_type": "gas",
     "id": "mekanism:lithium"
   }
 }

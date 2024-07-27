@@ -16,6 +16,7 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.merged.BoxedChemicalStack;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.recipes.ChemicalDissolutionRecipe;
+import mekanism.api.recipes.ChemicalOxidizerRecipe;
 import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.FluidSlurryToSlurryRecipe;
@@ -25,6 +26,7 @@ import mekanism.api.recipes.ItemStackToEnergyRecipe;
 import mekanism.api.recipes.NucleosynthesizingRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.basic.BasicChemicalDissolutionRecipe;
+import mekanism.api.recipes.basic.BasicChemicalOxidizerRecipe;
 import mekanism.api.recipes.basic.BasicCombinerRecipe;
 import mekanism.api.recipes.basic.BasicElectrolysisRecipe;
 import mekanism.api.recipes.basic.BasicFluidSlurryToSlurryRecipe;
@@ -178,6 +180,17 @@ public record MekanismRecipeSerializer<RECIPE extends Recipe<?>>(MapCodec<RECIPE
               IngredientCreatorAccess.gasStack().streamCodec(), BasicChemicalDissolutionRecipe::getGasInput,
               BoxedChemicalStack.STREAM_CODEC, BasicChemicalDissolutionRecipe::getOutputRaw,
               (item, gas, output) -> factory.apply(item, gas, output.getChemicalStack())
+        ));
+    }
+
+    public static MekanismRecipeSerializer<BasicChemicalOxidizerRecipe> oxidizing(BiFunction<ItemStackIngredient, ChemicalStack<?>, BasicChemicalOxidizerRecipe> factory) {
+        return new MekanismRecipeSerializer<>(RecordCodecBuilder.mapCodec(instance -> instance.group(
+                ItemStackIngredient.CODEC.fieldOf(SerializationConstants.INPUT).forGetter(ChemicalOxidizerRecipe::getInput),
+                ChemicalStack.BOXED_CODEC.fieldOf(SerializationConstants.OUTPUT).forGetter(r -> r.getOutputRaw().getChemicalStack())
+        ).apply(instance, factory)), StreamCodec.composite(
+                ItemStackIngredient.STREAM_CODEC, BasicChemicalOxidizerRecipe::getInput,
+                BoxedChemicalStack.STREAM_CODEC, BasicChemicalOxidizerRecipe::getOutputRaw,
+                (item, output) -> factory.apply(item, output.getChemicalStack())
         ));
     }
 

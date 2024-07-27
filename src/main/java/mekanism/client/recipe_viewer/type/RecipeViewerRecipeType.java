@@ -4,6 +4,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.ChemicalDissolutionRecipe;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
+import mekanism.api.recipes.ChemicalOxidizerRecipe;
 import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.FluidSlurryToSlurryRecipe;
@@ -70,6 +71,8 @@ public class RecipeViewerRecipeType {
     //TODO - 1.20.4: Re-evaluate ^^
     public static final RVRecipeTypeWrapper<?, ChemicalDissolutionRecipe, ?> DISSOLUTION = new RVRecipeTypeWrapper<>(MekanismRecipeType.DISSOLUTION, ChemicalDissolutionRecipe.class, -3, -3, 170, 79, MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER);
 
+    public static final RVRecipeTypeWrapper<?, ChemicalOxidizerRecipe, ?> OXIDIZING = new RVRecipeTypeWrapper<>(MekanismRecipeType.OXIDIZING, ChemicalOxidizerRecipe.class, -20, -12, 132, 62, MekanismBlocks.CHEMICAL_OXIDIZER);
+
     public static final RVRecipeTypeWrapper<?, ItemStackGasToItemStackRecipe, ?> COMPRESSING = new RVRecipeTypeWrapper<>(MekanismRecipeType.COMPRESSING, ItemStackGasToItemStackRecipe.class, -28, -16, 144, 54, MekanismBlocks.OSMIUM_COMPRESSOR);
     public static final RVRecipeTypeWrapper<?, ItemStackGasToItemStackRecipe, ?> PURIFYING = new RVRecipeTypeWrapper<>(MekanismRecipeType.PURIFYING, ItemStackGasToItemStackRecipe.class, -28, -16, 144, 54, MekanismBlocks.PURIFICATION_CHAMBER);
     public static final RVRecipeTypeWrapper<?, ItemStackGasToItemStackRecipe, ?> INJECTING = new RVRecipeTypeWrapper<>(MekanismRecipeType.INJECTING, ItemStackGasToItemStackRecipe.class, -28, -16, 144, 54, MekanismBlocks.CHEMICAL_INJECTION_CHAMBER);
@@ -80,7 +83,6 @@ public class RecipeViewerRecipeType {
     public static final SimpleRVRecipeType<?, ItemStackToEnergyRecipe, ?> ENERGY_CONVERSION = new SimpleRVRecipeType<>(MekanismRecipeType.ENERGY_CONVERSION, ItemStackToEnergyRecipe.class, MekanismLang.CONVERSION_ENERGY, MekanismUtils.getResource(ResourceType.GUI, "energy.png"), -20, -12, 132, 62, MekanismBlocks.BASIC_ENERGY_CUBE, MekanismBlocks.ADVANCED_ENERGY_CUBE, MekanismBlocks.ELITE_ENERGY_CUBE, MekanismBlocks.ULTIMATE_ENERGY_CUBE);
 
     public static final SimpleRVRecipeType<?, ItemStackToGasRecipe, ?> GAS_CONVERSION = new SimpleRVRecipeType<>(MekanismRecipeType.GAS_CONVERSION, ItemStackToGasRecipe.class, MekanismLang.CONVERSION_GAS, MekanismUtils.getResource(ResourceType.GUI, "gases.png"), -20, -12, 132, 62, MekanismBlocks.PURIFICATION_CHAMBER, MekanismBlocks.OSMIUM_COMPRESSOR, MekanismBlocks.CHEMICAL_INJECTION_CHAMBER, MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER, MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER);
-    public static final RVRecipeTypeWrapper<?, ItemStackToGasRecipe, ?> OXIDIZING = new RVRecipeTypeWrapper<>(MekanismRecipeType.OXIDIZING, ItemStackToGasRecipe.class, -20, -12, 132, 62, MekanismBlocks.CHEMICAL_OXIDIZER);
 
     public static final SimpleRVRecipeType<?, ItemStackToInfuseTypeRecipe, ?> INFUSION_CONVERSION = new SimpleRVRecipeType<>(MekanismRecipeType.INFUSION_CONVERSION, ItemStackToInfuseTypeRecipe.class, MekanismLang.CONVERSION_INFUSION, MekanismUtils.getResource(ResourceType.GUI, "infuse_types.png"), -20, -12, 132, 62, MekanismBlocks.METALLURGIC_INFUSER);
 
