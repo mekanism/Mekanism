@@ -212,7 +212,10 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainer(stack);
         if (container != null) {
             ItemEnchantments moduleEnchantments = container.moduleBasedEnchantments();
-            if (!moduleEnchantments.isEmpty()) {
+            if (enchantments.isEmpty()) {
+                //Skip copying if there are no builtin enchantments
+                return moduleEnchantments;
+            } else if (!moduleEnchantments.isEmpty()) {
                 ItemEnchantments.Mutable mutable = new ItemEnchantments.Mutable(enchantments);
                 for (Object2IntMap.Entry<Holder<Enchantment>> entry : moduleEnchantments.entrySet()) {
                     mutable.upgrade(entry.getKey(), entry.getIntValue());

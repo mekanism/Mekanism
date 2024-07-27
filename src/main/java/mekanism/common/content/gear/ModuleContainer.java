@@ -226,7 +226,9 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
             Optional<Reference<Enchantment>> enchantment = provider.holder(enchantmentBased.enchantment());
             int level = getEnchantmentLevel(module);
             if (enchantment.isPresent() && enchantments.getLevel(enchantment.get()) != level) {
-                adjustedEnchantments = new ItemEnchantments.Mutable(enchantments);
+                if (adjustedEnchantments == null) {
+                    adjustedEnchantments = new ItemEnchantments.Mutable(enchantments);
+                }
                 adjustedEnchantments.set(enchantment.get(), level);
             }
         }
