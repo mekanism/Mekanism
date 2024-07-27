@@ -1,5 +1,6 @@
 package mekanism.common.recipe.compat;
 
+import appeng.api.ids.AEItemIds;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
@@ -10,6 +11,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.common.Tags;
 
 @ParametersAreNotNullByDefault
@@ -48,6 +50,27 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     AEBlocks.SKY_STONE_BLOCK.stack(1)
               ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "sky_stone_dust_to_sky_stone"));
+
+        //Ender Pearl -> Ender Dust
+        ItemStackToItemStackRecipeBuilder.crushing(
+                    IngredientCreatorAccess.item().from(Items.ENDER_PEARL),
+                    foreignItemStack(registries, AEItemIds.ENDER_DUST)
+              ).addCondition(modLoaded)
+              .build(consumer, Mekanism.rl(basePath + "ender_pearl_to_dust"));
+
+        //Sand -> Silicon
+        ItemStackToItemStackRecipeBuilder.crushing(
+                    IngredientCreatorAccess.item().from(Tags.Items.SANDS),
+                    foreignItemStack(registries, AEItemIds.SILICON)
+              ).addCondition(modLoaded)
+              .build(consumer, Mekanism.rl(basePath + "sand_to_silicon"));
+
+        //Certus Dust to Silicon
+        ItemStackToItemStackRecipeBuilder.enriching(
+                    IngredientCreatorAccess.item().from(registries, AEItemIds.CERTUS_QUARTZ_DUST),
+                    foreignItemStack(registries, AEItemIds.SILICON, 2)
+              ).addCondition(modLoaded)
+              .build(consumer, Mekanism.rl(basePath + "certus_quartz_dust_to_silicon"));
 
         addDecorativeRecipes(consumer, basePath + "decorative/");
     }

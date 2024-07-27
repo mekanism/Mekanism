@@ -1,0 +1,17 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "ae2"
+    }
+  ],
+  "type": "mekanism:enriching",
+  "input": {
+    "count": 1,
+    "item": "ae2:certus_quartz_dust"
+  },
+  "output": {
+    "count": 2,
+    "id": "ae2:silicon"
+  }
+}

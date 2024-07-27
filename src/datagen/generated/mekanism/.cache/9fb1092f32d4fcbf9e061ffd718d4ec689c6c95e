@@ -1,4 +1,4 @@
-// 1.21	2024-07-27T15:20:10.8890626	Recipes
+// 1.21	2024-07-27T16:03:12.7844048	Recipes
 0fc9e539372429b3e5df0dc0595978c4fc45d201 data/mekanism/recipe/antiprotonic_nucleosynthesizer.json
 6d20b08ca1cc993d4c39a761361dce522fe45a7a data/mekanism/recipe/atomic_disassembler.json
 00928ea6e8b57d257c773343c0dc0d337c9d4f5f data/mekanism/recipe/bin/advanced.json
@@ -83,6 +83,7 @@ a812d79273c9f2569f478a08cd36487364ced81c data/mekanism/recipe/combining/wax/waxe
 88baf9c50e4aaa9e69b09bf5f3b7718943ebc474 data/mekanism/recipe/combining/wax/waxed_weathered_cut_copper_slab.json
 bde1863a2a9abafcd780ecad44c7d878b62b801f data/mekanism/recipe/combining/wax/waxed_weathered_cut_copper_stairs.json
 1718d4c754231ce59c69d15eecf464841cfdcdd8 data/mekanism/recipe/compat/ae2/certus_crystal_to_dust.json
+be6762ac8b98cd6b14d0973c27e2ffaffc400361 data/mekanism/recipe/compat/ae2/certus_quartz_dust_to_silicon.json
 88b0314f727209a3429e601fb48e4864097d81d6 data/mekanism/recipe/compat/ae2/decorative/certus_quartz/crushing/block_to_chiseled_block.json
 d36a310d07035444d25e5c0b08cabbb2c0a15d3c data/mekanism/recipe/compat/ae2/decorative/certus_quartz/crushing/chiseled_block_to_pillar.json
 06f13b20295a31f3b74eb011458a2545dbb5c12f data/mekanism/recipe/compat/ae2/decorative/certus_quartz/crushing/chiseled_slab_to_pillar_slab.json
@@ -132,7 +133,9 @@ bf968a9a6ad692d198deb630c9d18a76253f8228 data/mekanism/recipe/compat/ae2/decorat
 0bd6923d17076df08bfacdfaf90c78006563faa6 data/mekanism/recipe/compat/ae2/decorative/sky_stone/enriching/smooth_wall_to_brick_wall.json
 7e6f641662ba559e507af9ce754cca14eac15a9a data/mekanism/recipe/compat/ae2/decorative/sky_stone/enriching/stairs_to_smooth_stairs.json
 dbeebf4be3c6cff5274bc00d1e4e403a0a1770f0 data/mekanism/recipe/compat/ae2/decorative/sky_stone/enriching/wall_to_smooth_wall.json
+e5b6aed38f8592958e8e8c80e4ea901f1cd73015 data/mekanism/recipe/compat/ae2/ender_pearl_to_dust.json
 823a3e76e4ba979a72a19c99d2a889fe7eec4cc9 data/mekanism/recipe/compat/ae2/fluix_crystal_to_dust.json
+d114c75e5271110e1b492a4420edb70073153a29 data/mekanism/recipe/compat/ae2/sand_to_silicon.json
 b4b99913b86c9fcf6dff1abf7b2c3a31d3756b68 data/mekanism/recipe/compat/ae2/sky_stone_dust_to_sky_stone.json
 e80d4d620c6682327cf89c7869bdd6cf4a3896e2 data/mekanism/recipe/compat/ae2/sky_stone_to_dust.json
 f619f801ea61c801661d595b9c08ca3c6928866b data/mekanism/recipe/compat/biomesoplenty/biofuel/barley.json
