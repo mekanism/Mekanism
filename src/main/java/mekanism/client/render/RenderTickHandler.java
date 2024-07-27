@@ -245,7 +245,6 @@ public class RenderTickHandler {
         //Note: We check that the game mode is not null as if it is that means the world is unloading, and we don't actually want to be rendering
         // as our data may be out of date or invalid. For example configs could unload while it is still unloading
         if (minecraft.player != null && minecraft.player.level() != null && minecraft.gameMode != null && MekanismRenderer.isRunningNormally()) {
-            Player player = minecraft.player;
             Level world = minecraft.player.level();
             float partialTicks = minecraft.getTimer().getGameTimeDeltaPartialTick(false);
             //Traverse active jetpacks and do animations
@@ -253,6 +252,7 @@ public class RenderTickHandler {
                 Player p = world.getPlayerByUUID(uuid);
                 if (p != null) {
                     Pos3D playerPos = new Pos3D(p).translate(0, p.getEyeHeight(), 0);
+                    //TODO - 1.21: Figure out why this is incorrect for other clients when they are hovering
                     Vec3 playerMotion = p.getDeltaMovement();
                     float random = (world.random.nextFloat() - 0.5F) * 0.1F;
                     //This positioning code is somewhat cursed, but it seems to be mostly working and entity pose code seems cursed in general
@@ -272,7 +272,7 @@ public class RenderTickHandler {
                         }
                         xRot = -xRot;
                         Pos3D eyeAdjustments;
-                        if (p.isFallFlying() && (p != player || !minecraft.options.getCameraType().isFirstPerson())) {
+                        if (p.isFallFlying() && (p != minecraft.player || !minecraft.options.getCameraType().isFirstPerson())) {
                             eyeAdjustments = new Pos3D(0, p.getEyeHeight(Pose.STANDING), 0).xRot(xRot).yRot(p.yBodyRot);
                         } else if (p.isVisuallySwimming()) {
                             eyeAdjustments = new Pos3D(0, p.getEyeHeight(), 0).xRot(xRot).yRot(p.yBodyRot).translate(0, 0.5, 0);
@@ -304,9 +304,9 @@ public class RenderTickHandler {
                 //Traverse players and do animations for idle flamethrowers
                 for (Player p : world.players()) {
                     if (!p.swinging) {
-                        if (player.isUsingItem()) {
-                            InteractionHand usedHand = player.getUsedItemHand();
-                            if (!(player.getItemInHand(usedHand).getItem() instanceof ItemFlamethrower)) {
+                        if (p.isUsingItem()) {
+                            InteractionHand usedHand = p.getUsedItemHand();
+                            if (!(p.getItemInHand(usedHand).getItem() instanceof ItemFlamethrower)) {
                                 //If we the used item isn't a flamethrower, grab the other hand's item for checks
                                 // if it was an active flamethrower we just skip adding the idle particles
                                 tryAddIdleFlamethrowerParticles(minecraft, p, usedHand == InteractionHand.MAIN_HAND ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND);
