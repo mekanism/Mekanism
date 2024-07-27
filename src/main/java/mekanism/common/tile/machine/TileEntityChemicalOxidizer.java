@@ -73,6 +73,8 @@ public class TileEntityChemicalOxidizer extends TileEntityProgressMachine<Chemic
     public static final long MAX_CHEMICAL = 10 * FluidType.BUCKET_VOLUME;
     public static final int BASE_TICKS_REQUIRED = 5 * SharedConstants.TICKS_PER_SECOND;
 
+    //@WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded",
+     //                                                                                   "getOutputFilledPercentage"}, docPlaceholder = "output tank")
     public MergedChemicalTank outputTank;
 
     private final BoxedChemicalOutputHandler outputHandler;
