@@ -24,6 +24,7 @@ import net.minecraft.core.GlobalPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -135,7 +136,7 @@ public class TransporterStack {
             NBTUtils.writeEnum(nbtTags, SerializationConstants.PATH_TYPE, pathType);
         }
         if (!itemStack.isEmpty()) {
-            itemStack.save(provider, nbtTags);
+            nbtTags.put(SerializationConstants.ITEM, itemStack.save(provider));
         }
     }
 
@@ -146,7 +147,11 @@ public class TransporterStack {
         NBTUtils.setEnumIfPresent(nbtTags, SerializationConstants.IDLE_DIR, Direction::from3DDataValue, dir -> idleDir = dir);
         NBTUtils.setBlockPosIfPresent(nbtTags, SerializationConstants.HOME_LOCATION, coord -> homeLocation = coord);
         NBTUtils.setEnumIfPresent(nbtTags, SerializationConstants.PATH_TYPE, Path.BY_ID, type -> pathType = type);
-        itemStack = ItemStack.parseOptional(provider, nbtTags);
+        if (nbtTags.contains(SerializationConstants.ITEM, Tag.TAG_COMPOUND)) {
+            itemStack = ItemStack.parseOptional(provider, nbtTags.getCompound(SerializationConstants.ITEM));
+        } else {//TODO - 1.22: Remove this legacy way of loading data
+            itemStack = ItemStack.parseOptional(provider, nbtTags);
+        }
     }
 
     private void setPath(Level world, @NotNull List<BlockPos> path, @NotNull Path type, boolean updateFlowing) {
