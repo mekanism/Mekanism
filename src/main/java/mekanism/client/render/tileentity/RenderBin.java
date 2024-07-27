@@ -58,10 +58,6 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
             Optional<BlockState> blockState = WorldUtils.getBlockState(world, coverPos);
             if (blockState.isEmpty() || !blockState.get().canOcclude() || !blockState.get().isFaceSturdy(world, coverPos, facing.getOpposite())) {
                 matrix.pushPose();
-                //TODO: Come up with a better way to do this hack? Basically we adjust the normals so that the lighting
-                // isn't screwy when it tries to apply the diffuse lighting as we aren't able to disable diffuse lighting
-                // ourselves so need to trick it
-                matrix.last().normal().set(FAKE_NORMALS);
                 switch (facing) {
                     case NORTH -> {
                         matrix.translate(0.71, 0.8, -0.0001);
@@ -82,6 +78,10 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
                 matrix.scale(scale, scale, 0.0001F);
                 matrix.translate(8, -8, 8);
                 matrix.scale(16, 16, 16);
+                //TODO: Come up with a better way to do this hack? Basically we adjust the normals so that the lighting
+                // isn't screwy when it tries to apply the diffuse lighting as we aren't able to disable diffuse lighting
+                // ourselves so need to trick it
+                matrix.last().normal().set(FAKE_NORMALS);
                 //Calculate lighting based on the light at the block the bin is facing
                 light = LevelRenderer.getLightColor(world, tile.getBlockPos().relative(facing));
                 Minecraft.getInstance().getItemRenderer().renderStatic(binSlot.getRenderStack(), ItemDisplayContext.GUI, light, overlayLight, matrix, renderer, world,
