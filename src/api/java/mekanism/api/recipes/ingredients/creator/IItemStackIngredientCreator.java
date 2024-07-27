@@ -200,6 +200,16 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
         return ItemStackIngredient.of(ingredient);
     }
 
+    /**
+     * Creates an Item Stack Ingredient from a holder lookup given the item's id.
+     *
+     * @param registries Holder lookup to find the item in.
+     * @param itemId     Item ID of the item to look up.
+     *
+     * @throws NullPointerException  if the given registries or item id are null.
+     * @throws IllegalStateException if the item does not exist.
+     * @since 10.6.7
+     */
     default ItemStackIngredient from(HolderLookup.Provider registries, ResourceLocation itemId) {
         return fromHolder(registries.lookupOrThrow(Registries.ITEM).getOrThrow(ResourceKey.create(Registries.ITEM, itemId)));
     }
