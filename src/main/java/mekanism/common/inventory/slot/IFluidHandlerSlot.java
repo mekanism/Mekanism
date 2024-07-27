@@ -128,6 +128,10 @@ public interface IFluidHandlerSlot extends IInventorySlot {
                     //Fill the stack, note our stack is a copy so this is how we simulate to get the proper "container" item,
                     // and it does not actually matter that we are directly executing on the item
                     int toDrain = fluidHandlerItem.fill(fluidInTank, FluidAction.EXECUTE);
+                    if (toDrain == 0) {
+                        //If we cannot actually fill the item then just exit early
+                        return;
+                    }
                     if (getCount() == 1) {
                         IFluidHandlerItem containerCap = Capabilities.FLUID.getCapability(fluidHandlerItem.getContainer());
                         if (containerCap != null && containerCap.fill(fluidInTank, FluidAction.SIMULATE) > 0) {
