@@ -210,6 +210,21 @@ class EnergyConversionTest {
         assertValueEqual(handler.getEnergy(0), (long) (CONVERSION_RATE * JOULES_CAPACITY) - JOULES_CAPACITY, "stored energy");
     }
 
+    @Test
+    @DisplayName("Test wrapping FE to J against a small nearly full container with 1 rf missing")
+    void testFEAsJoulesNearlyFull() {
+        //simulates BasicInventorySlot
+        EnergyStorage feStorage = new EnergyStorage(FE_CAPACITY, FE_CAPACITY, FE_CAPACITY, FE_CAPACITY - 1);
+        IStrictEnergyHandler handler = new ForgeStrictEnergyHandler(feStorage, getConverter(CONVERSION_RATE));
+
+        long storedEnergy = JOULES_CAPACITY;
+        long simulatedRemainder = handler.insertEnergy(storedEnergy, Action.SIMULATE);
+        long executedRemainder = handler.insertEnergy(storedEnergy, Action.EXECUTE);
+        Assertions.assertEquals(simulatedRemainder, executedRemainder, "simulate and execute should be the same");
+
+        Assertions.assertEquals(storedEnergy, simulatedRemainder, "expected conversion fail due to floating point remainder");
+    }
+
     //Validate behavior for when the conversion is the inverse of the default
 
     // WRAPPING STRICT ENERGY TO FORGE ENERGY
