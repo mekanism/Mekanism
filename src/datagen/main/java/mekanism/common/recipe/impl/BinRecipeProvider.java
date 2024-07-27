@@ -16,6 +16,7 @@ import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismRecipeSerializersInternal;
 import mekanism.common.tags.MekanismTags;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.SpecialRecipeBuilder;
 import net.minecraft.tags.TagKey;
@@ -29,7 +30,7 @@ class BinRecipeProvider implements ISubRecipeProvider {
           TripleLine.of(Pattern.COBBLESTONE, Pattern.COBBLESTONE, Pattern.COBBLESTONE));
 
     @Override
-    public void addRecipes(RecipeOutput consumer) {
+    public void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
         //Special recipes (bins)
         SpecialRecipeBuilder.special(BinInsertRecipe::new).save(consumer, MekanismRecipeSerializersInternal.BIN_INSERT.getId());
         SpecialRecipeBuilder.special(BinExtractRecipe::new).save(consumer, MekanismRecipeSerializersInternal.BIN_EXTRACT.getId());

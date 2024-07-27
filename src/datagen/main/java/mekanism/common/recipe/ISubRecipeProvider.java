@@ -1,5 +1,6 @@
 package mekanism.common.recipe;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 
 /**
@@ -7,5 +8,5 @@ import net.minecraft.data.recipes.RecipeOutput;
  */
 public interface ISubRecipeProvider {
 
-    void addRecipes(RecipeOutput output);
+    void addRecipes(RecipeOutput output, HolderLookup.Provider registries);
 }

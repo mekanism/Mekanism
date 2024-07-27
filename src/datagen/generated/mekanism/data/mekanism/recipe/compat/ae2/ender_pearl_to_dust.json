@@ -1,0 +1,17 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "ae2"
+    }
+  ],
+  "type": "mekanism:crushing",
+  "input": {
+    "count": 1,
+    "item": "minecraft:ender_pearl"
+  },
+  "output": {
+    "count": 1,
+    "id": "ae2:ender_dust"
+  }
+}

@@ -33,10 +33,12 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public abstract class BaseRecipeProvider extends RecipeProvider {
 
+    private final CompletableFuture<HolderLookup.Provider> registriesFuture;
     private final ExistingFileHelper existingFileHelper;
 
-    protected BaseRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider, ExistingFileHelper existingFileHelper) {
-        super(output, provider);
+    protected BaseRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture, ExistingFileHelper existingFileHelper) {
+        super(output, registriesFuture);
+        this.registriesFuture = registriesFuture;
         this.existingFileHelper = existingFileHelper;
     }
 
@@ -56,14 +58,15 @@ public abstract class BaseRecipeProvider extends RecipeProvider {
 
     @Override
     protected final void buildRecipes(RecipeOutput output) {
+        HolderLookup.Provider registries = registriesFuture.resultNow();
         WrapperRecipeOutput trackingConsumer = new WrapperRecipeOutput(output, existingFileHelper);
-        addRecipes(trackingConsumer);
+        addRecipes(trackingConsumer, registries);
         for (ISubRecipeProvider subRecipeProvider : getSubRecipeProviders()) {
-            subRecipeProvider.addRecipes(trackingConsumer);
+            subRecipeProvider.addRecipes(trackingConsumer, registries);
         }
     }
 
-    protected abstract void addRecipes(RecipeOutput output);
+    protected abstract void addRecipes(RecipeOutput output, HolderLookup.Provider registries);
 
     /**
      * Gets all the sub/offloaded recipe providers that this recipe provider has.

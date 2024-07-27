@@ -12,6 +12,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.recipe.RecipeProviderUtil;
 import mekanism.common.recipe.impl.PigmentExtractingRecipeProvider;
 import mekanism.common.registries.MekanismPigments;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -27,7 +28,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
     }
 
     @Override
-    protected void registerRecipes(RecipeOutput consumer, String basePath) {
+    protected void registerRecipes(RecipeOutput consumer, String basePath, HolderLookup.Provider registries) {
         addDyeRecipes(consumer, basePath);
         addPrecisionSawmillRecipes(consumer, basePath + "sawing/");
         addSandRecipes(consumer, basePath + "sandstone_to_sand/");

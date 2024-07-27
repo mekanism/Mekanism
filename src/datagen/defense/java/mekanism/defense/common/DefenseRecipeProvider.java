@@ -16,6 +16,6 @@ public class DefenseRecipeProvider extends BaseRecipeProvider {
     }
 
     @Override
-    protected void addRecipes(RecipeOutput consumer) {
+    protected void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
     }
 }

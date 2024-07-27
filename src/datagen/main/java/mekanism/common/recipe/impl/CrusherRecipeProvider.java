@@ -8,6 +8,7 @@ import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.recipe.RecipeProviderUtil;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.util.RegistryUtils;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.HoneycombItem;
@@ -20,7 +21,7 @@ import net.neoforged.neoforge.common.Tags;
 class CrusherRecipeProvider implements ISubRecipeProvider {
 
     @Override
-    public void addRecipes(RecipeOutput consumer) {
+    public void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
         String basePath = "crushing/";
         RecipeProviderUtil.addCrusherBioFuelRecipes(consumer, basePath + "biofuel/", mod -> mod.equals("minecraft") || mod.startsWith(Mekanism.MODID), null);
         addCrusherDewaxingRecipes(consumer, basePath + "dewax/");
@@ -94,10 +95,16 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
               new ItemStack(Items.WIND_CHARGE, 6)
         ).build(consumer, Mekanism.rl(basePath + "breeze_rod"));
         //Bone -> bone meal
+        final int BONEMEAL_FROM_BONE = 6;
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(Items.BONE),
-              new ItemStack(Items.BONE_MEAL, 6)
+              new ItemStack(Items.BONE_MEAL, BONEMEAL_FROM_BONE)
         ).build(consumer, Mekanism.rl(basePath + "bone"));
+        //Bone block -> bone meal
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(Blocks.BONE_BLOCK),
+              new ItemStack(Items.BONE_MEAL, BONEMEAL_FROM_BONE * 3)//vanilla is 3 bone's worth
+        ).build(consumer, Mekanism.rl(basePath + "bone_block"));
         //Red Sandstone -> Sand
         RecipeProviderUtil.addSandStoneToSandRecipe(consumer, basePath + "red_sandstone_to_sand", null, Blocks.RED_SAND, Tags.Items.SANDSTONE_RED_BLOCKS);
         //Sandstone -> Sand
