@@ -101,7 +101,7 @@ public class MekanismRenderType {
               .setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
               .setTransparencyState(RenderType.LIGHTNING_TRANSPARENCY)
               .setOutputState(RenderType.TRANSLUCENT_TARGET)
-              .createCompositeState(true);
-        return RenderType.create("mek_sps", DefaultVertexFormat.POSITION_TEX_COLOR, Mode.QUADS, 256, true, true, state);
+              .createCompositeState(false);
+        return RenderType.create("mek_sps", DefaultVertexFormat.POSITION_TEX_COLOR, Mode.QUADS, 1_536, false, true, state);
     });
 }

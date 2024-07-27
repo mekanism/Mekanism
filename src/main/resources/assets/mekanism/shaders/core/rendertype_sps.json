@@ -1,9 +1,4 @@
 {
-    "blend": {
-        "func": "add",
-        "srcrgb": "srcalpha",
-        "dstrgb": "1-srcalpha"
-    },
     "vertex": "mekanism:rendertype_sps",
     "fragment": "mekanism:rendertype_sps",
     "samplers": [

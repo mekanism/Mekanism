@@ -15,7 +15,7 @@ in vec2 texCoord0;
 out vec4 fragColor;
 
 void main() {
-    //Merge of position_color_tex and rendertype_lightning
+    //Merge of position_tex_color and rendertype_lightning
     vec4 color = texture(Sampler0, texCoord0) * vertexColor;
     if (color.a < 0.1) {
         discard;
