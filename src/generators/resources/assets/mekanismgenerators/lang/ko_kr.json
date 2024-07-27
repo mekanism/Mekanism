@@ -10,8 +10,6 @@
   "alias.mekanismgenerators.fusion_fuel": "핵융합 연료",
   "alias.mekanismgenerators.gbg.ethene": "에테인 발전기",
   "alias.mekanismgenerators.gbg.ethylene": "에틸렌 발전기",
-  "alias.mekanismgenerators.multiblock.fission": "원자로 멀티블럭 구성요소",
-  "alias.mekanismgenerators.multiblock.fusion": "핵융합로 멀티블럭 구성요소",
   "alias.mekanismgenerators.multiblock.turbine": "터빈 멀티블럭 구성요소",
   "block.mekanismgenerators.advanced_solar_generator": "고급 태양열 발전기",
   "block.mekanismgenerators.bio_generator": "바이오연료 발전기",
