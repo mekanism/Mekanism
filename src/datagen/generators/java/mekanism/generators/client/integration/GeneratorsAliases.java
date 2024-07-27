@@ -11,8 +11,8 @@ public enum GeneratorsAliases implements IAliasedTranslation {
     GBG_ETHYLENE("gbg.ethylene", "Ethylene Generator"),
     GBG_ETHENE("gbg.ethene", "Ethene Generator"),
     //Multiblock
-    FISSION_COMPONENT("multiblock.fission", "Fission Multiblock Component"),
-    FUSION_COMPONENT("multiblock.fusion", "Fusion Multiblock Component"),
+    FISSION_COMPONENT("multiblock.fission", "Fission Reactor Multiblock Component"),
+    FUSION_COMPONENT("multiblock.fusion", "Fusion Reactor Multiblock Component"),
     TURBINE_COMPONENT("multiblock.turbine", "Turbine Multiblock Component"),
     ;
 
