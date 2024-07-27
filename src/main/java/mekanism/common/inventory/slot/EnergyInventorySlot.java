@@ -10,6 +10,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
+import mekanism.common.Mekanism;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -169,13 +170,19 @@ public class EnergyInventorySlot extends BasicInventorySlot {
                 if (simulatedRemainder < energyInItem) {
                     //If we were simulated that we could actually insert any, then
                     // extract up to as much energy as we were able to accept from the item
-                    long extractedEnergy = itemEnergyHandler.extractEnergy(energyInItem - simulatedRemainder, Action.EXECUTE);
-                    if (extractedEnergy > 0L) {
-                        //If we were able to actually extract it from the item, then insert it into our energy container
-                        MekanismUtils.logExpectedZero(energyContainer.insert(extractedEnergy, Action.EXECUTE, AutomationType.INTERNAL));
-                        //and mark that we were able to transfer at least some of it
-                        onContentsChanged();
-                        return true;
+                    long toPull = energyInItem - simulatedRemainder;
+                    simulatedRemainder = energyContainer.insert(toPull, Action.SIMULATE, AutomationType.INTERNAL);
+                    if (simulatedRemainder == 0L) {
+                        long extractedEnergy = itemEnergyHandler.extractEnergy(toPull, Action.EXECUTE);
+                        if (extractedEnergy > 0L) {
+                            //If we were able to actually extract it from the item, then insert it into our energy container
+                            MekanismUtils.logExpectedZero(energyContainer.insert(extractedEnergy, Action.EXECUTE, AutomationType.INTERNAL));
+                            //and mark that we were able to transfer at least some of it
+                            onContentsChanged();
+                            return true;
+                        }
+                    } else {
+                        Mekanism.logger.error("EnergyInventorySlot#fillContainerFromItem: Simulation after extraction calculation had a remainder. Tried pulling {}, remainder {}", toPull, simulatedRemainder);
                     }
                 }
             }
@@ -195,11 +202,17 @@ public class EnergyInventorySlot extends BasicInventorySlot {
                 long simulatedRemainder = itemEnergyHandler.insertEnergy(storedEnergy, Action.SIMULATE);
                 if (simulatedRemainder < storedEnergy) {
                     //We are able to fit at least some energy from our container into the item
-                    long extractedEnergy = energyContainer.extract(storedEnergy - simulatedRemainder, Action.EXECUTE, AutomationType.INTERNAL);
-                    if (extractedEnergy > 0L) {
-                        //If we were able to actually extract it from our energy container, then insert it into the item
-                        MekanismUtils.logExpectedZero(itemEnergyHandler.insertEnergy(extractedEnergy, Action.EXECUTE));
-                        onContentsChanged();
+                    long toOffer = storedEnergy - simulatedRemainder;
+                    simulatedRemainder = itemEnergyHandler.insertEnergy(toOffer, Action.SIMULATE);
+                    if (simulatedRemainder == 0L) {
+                        long extractedEnergy = energyContainer.extract(toOffer, Action.EXECUTE, AutomationType.INTERNAL);
+                        if (extractedEnergy > 0L) {
+                            //If we were able to actually extract it from our energy container, then insert it into the item
+                            MekanismUtils.logExpectedZero(itemEnergyHandler.insertEnergy(extractedEnergy, Action.EXECUTE));
+                            onContentsChanged();
+                        }
+                    } else {
+                        Mekanism.logger.error("EnergyInventorySlot#drainContainer: Simulation after insertion calculation had a remainder. Offered {}, remainder {}", toOffer, simulatedRemainder);
                     }
                 }
             }
