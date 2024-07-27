@@ -1,4 +1,4 @@
-// 1.21	2024-06-13T13:08:29.9684215	Tags: mekanismgenerators
+// 1.21	2024-07-27T11:17:53.1246619	Tags: mekanismgenerators
 51c625436874fdd2506b20267e03dabf44c090b0 data/create/tags/fluid/no_infinite_draining.json
 f30d0458accef4b51831b90f9039c05d00276e48 data/c/tags/block/relocation_not_supported.json
 bcd21ce2046a3b918a45281848276b4479c761dd data/c/tags/fluid/bioethanol.json
@@ -15,4 +15,5 @@ e7f3de2230470165a4e2f84ad01e7a005ad81e2f data/mekanism/tags/mekanism/gas/tritium
 974b8e28094a061f02f670ce4f597cb76f95255f data/minecraft/tags/block/impermeable.json
 0e8259a96fd81c042f2427e5b5a9b4ff39138b10 data/minecraft/tags/block/mineable/pickaxe.json
 c8217fe7b5f69c23b0511f1a203c7d525a9f9f22 data/minecraft/tags/block/replaceable.json
+ccd9605ecef9c81a43859b05258ee25950d77670 data/minecraft/tags/block/snow_layer_cannot_survive_on.json
 1fcda8d5db3dac92eb2d3bd6339ec5b91b0c888e data/neoforge/tags/block/enderman_place_on_blacklist.json

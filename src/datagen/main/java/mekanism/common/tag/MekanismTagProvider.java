@@ -135,6 +135,37 @@ public class MekanismTagProvider extends BaseTagProvider {
         addToTag(BlockTags.CAMEL_SAND_STEP_SOUND_BLOCKS, MekanismBlocks.SALT_BLOCK);
 
         addToTags(Tags.Items.HIDDEN_FROM_RECIPE_VIEWERS, Tags.Blocks.HIDDEN_FROM_RECIPE_VIEWERS, MekanismBlocks.BOUNDING_BLOCK);
+
+        addToTag(BlockTags.SNOW_LAYER_CANNOT_SURVIVE_ON,
+              MekanismBlocks.STRUCTURAL_GLASS,
+
+              MekanismBlocks.BOILER_CASING,
+              MekanismBlocks.BOILER_VALVE,
+              MekanismBlocks.PRESSURE_DISPERSER,
+              MekanismBlocks.SUPERHEATING_ELEMENT,
+
+              MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER,
+              MekanismBlocks.THERMAL_EVAPORATION_BLOCK,
+              MekanismBlocks.THERMAL_EVAPORATION_VALVE,
+
+              MekanismBlocks.INDUCTION_CASING,
+              MekanismBlocks.INDUCTION_PORT,
+              MekanismBlocks.BASIC_INDUCTION_CELL,
+              MekanismBlocks.BASIC_INDUCTION_PROVIDER,
+              MekanismBlocks.ADVANCED_INDUCTION_CELL,
+              MekanismBlocks.ADVANCED_INDUCTION_PROVIDER,
+              MekanismBlocks.ELITE_INDUCTION_CELL,
+              MekanismBlocks.ELITE_INDUCTION_PROVIDER,
+              MekanismBlocks.ULTIMATE_INDUCTION_CELL,
+              MekanismBlocks.ULTIMATE_INDUCTION_PROVIDER,
+
+              MekanismBlocks.SPS_CASING,
+              MekanismBlocks.SPS_PORT,
+              MekanismBlocks.SUPERCHARGED_COIL,
+
+              MekanismBlocks.DYNAMIC_TANK,
+              MekanismBlocks.DYNAMIC_VALVE
+        );
     }
 
     private void addEntities() {
@@ -251,7 +282,7 @@ public class MekanismTagProvider extends BaseTagProvider {
     private void addTools() {
         addWrenches();
         addToTag(ItemTags.BREAKS_DECORATED_POTS, MekanismItems.ATOMIC_DISASSEMBLER, MekanismItems.MEKA_TOOL);
-        addToTag(Tags.Items.MINING_TOOL_TOOLS , MekanismItems.ATOMIC_DISASSEMBLER, MekanismItems.MEKA_TOOL);
+        addToTag(Tags.Items.MINING_TOOL_TOOLS, MekanismItems.ATOMIC_DISASSEMBLER, MekanismItems.MEKA_TOOL);
         addToTag(Tags.Items.TOOLS_BOW, MekanismItems.ELECTRIC_BOW);
         addToTag(Tags.Items.RANGED_WEAPON_TOOLS, MekanismItems.ELECTRIC_BOW);
         addToTag(ItemTags.BOW_ENCHANTABLE, MekanismItems.ELECTRIC_BOW);
@@ -291,7 +322,7 @@ public class MekanismTagProvider extends BaseTagProvider {
         getItemBuilder(ItemTags.EQUIPPABLE_ENCHANTABLE).remove(IItemProvider::getRegistryName, providers);
         getItemBuilder(ItemTags.HEAD_ARMOR_ENCHANTABLE).remove(MekanismItems.MEKASUIT_HELMET);
         getItemBuilder(ItemTags.CHEST_ARMOR_ENCHANTABLE).remove(MekanismItems.MEKASUIT_BODYARMOR);
-        getItemBuilder(ItemTags.LEG_ARMOR_ENCHANTABLE).remove( MekanismItems.MEKASUIT_PANTS);
+        getItemBuilder(ItemTags.LEG_ARMOR_ENCHANTABLE).remove(MekanismItems.MEKASUIT_PANTS);
         getItemBuilder(ItemTags.FOOT_ARMOR_ENCHANTABLE).remove(MekanismItems.MEKASUIT_BOOTS);
     }
 

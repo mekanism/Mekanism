@@ -1,4 +1,4 @@
-// 1.21	2024-07-11T11:19:59.3746963	Tags: mekanism
+// 1.21	2024-07-27T11:17:52.1652458	Tags: mekanism
 8a89da3b810e00ad44b7ee4d062a88db6298c8fe data/create/tags/fluid/no_infinite_draining.json
 b881c0bb158879ac88758c2b0562b422271e6397 data/c/tags/block/barrels.json
 adb3ecfd3180c123cdc984320eab5ce930bdc5be data/c/tags/block/barrels/personal.json
@@ -265,6 +265,7 @@ d38d7e371e2b8bbf34fb9050178a8db980f242fe data/minecraft/tags/block/needs_stone_t
 eb49540974a606ef95d77f140b9b9bdd083e1549 data/minecraft/tags/block/replaceable.json
 b79a9a1e0ddcf1344df98002024bc070480b51d7 data/minecraft/tags/block/sculk_replaceable.json
 126bb288e656325f718c704f6e9d414c37adbc2a data/minecraft/tags/block/snaps_goat_horn.json
+77057c97184a9efc4bf336a1947832a6362b3761 data/minecraft/tags/block/snow_layer_cannot_survive_on.json
 b1755f575eaf88f8b903d525d0f11aad3467e94c data/minecraft/tags/damage_type/always_kills_armor_stands.json
 87b902979fae3b74fea0244d63fdc6b8cd2ecd0d data/minecraft/tags/damage_type/bypasses_armor.json
 b1755f575eaf88f8b903d525d0f11aad3467e94c data/minecraft/tags/damage_type/bypasses_cooldown.json

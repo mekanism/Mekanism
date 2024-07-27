@@ -34,6 +34,29 @@ public class GeneratorsTagProvider extends BaseTagProvider {
         addGases();
         addHarvestRequirements();
         addToTag(BlockTags.IMPERMEABLE, GeneratorsBlocks.REACTOR_GLASS);
+
+        addToTag(BlockTags.SNOW_LAYER_CANNOT_SURVIVE_ON,
+              GeneratorsBlocks.REACTOR_GLASS,
+
+              GeneratorsBlocks.FISSION_REACTOR_CASING,
+              GeneratorsBlocks.FISSION_REACTOR_PORT,
+              GeneratorsBlocks.FISSION_REACTOR_LOGIC_ADAPTER,
+              GeneratorsBlocks.FISSION_FUEL_ASSEMBLY,
+              GeneratorsBlocks.CONTROL_ROD_ASSEMBLY,
+
+              GeneratorsBlocks.TURBINE_CASING,
+              GeneratorsBlocks.TURBINE_VENT,
+              GeneratorsBlocks.TURBINE_VALVE,
+              GeneratorsBlocks.TURBINE_ROTOR,
+              GeneratorsBlocks.SATURATING_CONDENSER,
+              GeneratorsBlocks.ELECTROMAGNETIC_COIL,
+              GeneratorsBlocks.ROTATIONAL_COMPLEX,
+
+              GeneratorsBlocks.FUSION_REACTOR_CONTROLLER,
+              GeneratorsBlocks.FUSION_REACTOR_FRAME,
+              GeneratorsBlocks.FUSION_REACTOR_PORT,
+              GeneratorsBlocks.FUSION_REACTOR_LOGIC_ADAPTER,
+              GeneratorsBlocks.LASER_FOCUS_MATRIX);
     }
 
     private void addBoxBlacklist() {

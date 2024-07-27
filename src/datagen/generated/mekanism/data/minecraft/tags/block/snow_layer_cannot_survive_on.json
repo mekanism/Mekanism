@@ -1,0 +1,27 @@
+{
+  "values": [
+    "mekanism:structural_glass",
+    "mekanism:boiler_casing",
+    "mekanism:boiler_valve",
+    "mekanism:pressure_disperser",
+    "mekanism:superheating_element",
+    "mekanism:thermal_evaporation_controller",
+    "mekanism:thermal_evaporation_block",
+    "mekanism:thermal_evaporation_valve",
+    "mekanism:induction_casing",
+    "mekanism:induction_port",
+    "mekanism:basic_induction_cell",
+    "mekanism:basic_induction_provider",
+    "mekanism:advanced_induction_cell",
+    "mekanism:advanced_induction_provider",
+    "mekanism:elite_induction_cell",
+    "mekanism:elite_induction_provider",
+    "mekanism:ultimate_induction_cell",
+    "mekanism:ultimate_induction_provider",
+    "mekanism:sps_casing",
+    "mekanism:sps_port",
+    "mekanism:supercharged_coil",
+    "mekanism:dynamic_tank",
+    "mekanism:dynamic_valve"
+  ]
+}
