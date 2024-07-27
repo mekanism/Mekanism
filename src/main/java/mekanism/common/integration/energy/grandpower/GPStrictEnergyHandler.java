@@ -55,7 +55,7 @@ public class GPStrictEnergyHandler implements IStrictEnergyHandler {
             if (toInsert == 0) {
                 return amount;
             }
-            if (action.execute() && !EnergyUnit.FORGE_ENERGY.isOneToOne()) {
+            if (!EnergyUnit.FORGE_ENERGY.isOneToOne()) {
                 //Before we can actually execute it we need to simulate to calculate how much we can actually insert
                 long simulatedInserted = storage.receive(toInsert, true);
                 if (simulatedInserted == 0) {
@@ -103,7 +103,7 @@ public class GPStrictEnergyHandler implements IStrictEnergyHandler {
             if (toExtract == 0) {
                 return 0;
             }
-            if (action.execute() && !EnergyUnit.FORGE_ENERGY.isOneToOne()) {
+            if (!EnergyUnit.FORGE_ENERGY.isOneToOne()) {
                 //Before we can actually execute it we need to simulate to calculate how much we can actually extract in our other units
                 long simulatedExtracted = storage.extract(toExtract, true);
                 //Convert how much we could extract back to Joules so that it gets appropriately clamped so that for example 1 Joule gets treated
