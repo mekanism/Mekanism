@@ -26,7 +26,6 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.util.FakePlayer;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemBlockPersonalStorage<BLOCK extends BlockPersonalStorage<?, ?>> extends ItemBlockTooltip<BLOCK> implements IDroppableContents, IGuiItem {
@@ -65,7 +64,7 @@ public class ItemBlockPersonalStorage<BLOCK extends BlockPersonalStorage<?, ?>> 
     protected boolean canPlace(@NotNull BlockPlaceContext context, @NotNull BlockState state) {
         Player player = context.getPlayer();
         //Only allow placing if there is no player, it is a fake player, or the player is sneaking
-        return (player == null || player instanceof FakePlayer || player.isShiftKeyDown()) && super.canPlace(context, state);
+        return (player == null || player.isFakePlayer() || player.isShiftKeyDown()) && super.canPlace(context, state);
     }
 
     @Override

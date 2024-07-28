@@ -78,7 +78,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.util.FakePlayer;
 import net.neoforged.neoforge.entity.PartEntity;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
@@ -410,7 +409,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
                 //Force re-apply any passengers so that players don't get "stuck" outside what they may be riding
                 ((ServerChunkCache) entity.level().getChunkSource()).broadcast(entity, new ClientboundSetPassengersPacket(entity));
                 Entity controller = entity.getControllingPassenger();
-                if (controller != entity && controller instanceof ServerPlayer player && !(controller instanceof FakePlayer)) {
+                if (controller != entity && controller instanceof ServerPlayer player && !player.isFakePlayer()) {
                     if (player.connection != null) {
                         //Force sync the fact that the vehicle moved to the client that is controlling it
                         // so that it makes sure to use the correct positions when sending move packets
@@ -419,7 +418,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
                     }
                 }
             }
-            if (persistMovement && entity instanceof ServerPlayer player && !(player instanceof FakePlayer)) {
+            if (persistMovement && entity instanceof ServerPlayer player && !player.isFakePlayer()) {
                 player.setDeltaMovement(deltaMovement);
                 //Force sync the delta movement to the client so that they don't stop moving due to the teleport and movement being client sided
                 PacketDistributor.sendToPlayer(player, new PacketSetDeltaMovement(deltaMovement));
