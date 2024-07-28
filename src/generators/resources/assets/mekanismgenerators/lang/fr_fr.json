@@ -10,8 +10,6 @@
   "alias.mekanismgenerators.fusion_fuel": "Carburant de fusion",
   "alias.mekanismgenerators.gbg.ethene": "Générateur à l'Ethène",
   "alias.mekanismgenerators.gbg.ethylene": "Générateur à l'Ethylène",
-  "alias.mekanismgenerators.multiblock.fission": "Composant du multi-bloc de réacteur à fission",
-  "alias.mekanismgenerators.multiblock.fusion": "Composant du multi-bloc de réacteur à fusion",
   "alias.mekanismgenerators.multiblock.turbine": "Composant du multi-bloc de turbine",
   "block.mekanismgenerators.advanced_solar_generator": "Panneau solaire avancé",
   "block.mekanismgenerators.bio_generator": "Bio-Générateur",

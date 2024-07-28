@@ -3,8 +3,6 @@
   "alias.mekanismgenerators.fusion_fuel": "Combustibil de fuziune",
   "alias.mekanismgenerators.gbg.ethene": "Generator de etenă",
   "alias.mekanismgenerators.gbg.ethylene": "Generator de etilenă",
-  "alias.mekanismgenerators.multiblock.fission": "Componentă Multibloc pentru Reactorul de Fisiune",
-  "alias.mekanismgenerators.multiblock.fusion": "Componentă Multibloc pentru Reactorul de Fuziune",
   "alias.mekanismgenerators.multiblock.turbine": "Componentă Multibloc pentru Turbină",
   "block.mekanismgenerators.advanced_solar_generator": "Generator solar avansat",
   "block.mekanismgenerators.bio_generator": "Bio-generator",
