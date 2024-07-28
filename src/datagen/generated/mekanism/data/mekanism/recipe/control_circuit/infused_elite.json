@@ -1,0 +1,15 @@
+{
+  "type": "mekanism:metallurgic_infusing",
+  "chemical_input": {
+    "amount": 30,
+    "tag": "mekanism:diamond"
+  },
+  "item_input": {
+    "count": 1,
+    "tag": "c:circuits/advanced"
+  },
+  "output": {
+    "count": 1,
+    "id": "mekanism:elite_control_circuit"
+  }
+}

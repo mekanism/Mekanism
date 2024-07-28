@@ -1,6 +1,7 @@
 package mekanism.common.recipe.impl;
 
 import mekanism.api.MekanismAPITags;
+import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBuilder;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
@@ -35,6 +36,11 @@ class ControlCircuitRecipeProvider implements ISubRecipeProvider {
         addCircuitUpgradeRecipe(consumer, MekanismItems.ADVANCED_CONTROL_CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC, MekanismTags.Items.ALLOYS_INFUSED, basePath, "advanced");
         addCircuitUpgradeRecipe(consumer, MekanismItems.ELITE_CONTROL_CIRCUIT, MekanismTags.Items.CIRCUITS_ADVANCED, MekanismTags.Items.ALLOYS_REINFORCED, basePath, "elite");
         addCircuitUpgradeRecipe(consumer, MekanismItems.ULTIMATE_CONTROL_CIRCUIT, MekanismTags.Items.CIRCUITS_ELITE, MekanismTags.Items.ALLOYS_ATOMIC, basePath, "ultimate");
+
+        //infusion variants that save on the base ingots needed and half an alloy
+        addCircuitInfusionUpgrade(consumer, MekanismItems.ADVANCED_CONTROL_CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC, MekanismAPITags.InfuseTypes.REDSTONE, 10, basePath, "advanced");
+        addCircuitInfusionUpgrade(consumer, MekanismItems.ELITE_CONTROL_CIRCUIT, MekanismTags.Items.CIRCUITS_ADVANCED, MekanismAPITags.InfuseTypes.DIAMOND, 20, basePath, "elite");
+        addCircuitInfusionUpgrade(consumer, MekanismItems.ULTIMATE_CONTROL_CIRCUIT, MekanismTags.Items.CIRCUITS_ELITE, MekanismAPITags.InfuseTypes.REFINED_OBSIDIAN, 40, basePath, "ultimate");
     }
 
     private void addCircuitUpgradeRecipe(RecipeOutput consumer, IItemProvider output, TagKey<Item> circuitTag, TagKey<Item> alloyTag, String basePath,
@@ -44,5 +50,13 @@ class ControlCircuitRecipeProvider implements ISubRecipeProvider {
               .key(Pattern.CIRCUIT, circuitTag)
               .key(Pattern.ALLOY, alloyTag)
               .build(consumer, Mekanism.rl(basePath + name));
+    }
+
+    private void addCircuitInfusionUpgrade(RecipeOutput consumer, IItemProvider output, TagKey<Item> circuitTag, TagKey<InfuseType> infusionType, int singleAlloyAmount, String basePath, String name) {
+        ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
+              IngredientCreatorAccess.item().from(circuitTag),
+              IngredientCreatorAccess.infusionStack().from(infusionType, (int) (singleAlloyAmount * 1.5F)),
+              output.getItemStack()
+        ).build(consumer, Mekanism.rl(basePath + "infused_" + name));
     }
 }

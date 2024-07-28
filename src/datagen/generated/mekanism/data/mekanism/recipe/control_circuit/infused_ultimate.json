@@ -1,0 +1,15 @@
+{
+  "type": "mekanism:metallurgic_infusing",
+  "chemical_input": {
+    "amount": 60,
+    "tag": "mekanism:refined_obsidian"
+  },
+  "item_input": {
+    "count": 1,
+    "tag": "c:circuits/elite"
+  },
+  "output": {
+    "count": 1,
+    "id": "mekanism:ultimate_control_circuit"
+  }
+}
