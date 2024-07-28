@@ -10,6 +10,8 @@
   "alias.mekanismgenerators.fusion_fuel": "核融合燃料",
   "alias.mekanismgenerators.gbg.ethene": "エテン発電機",
   "alias.mekanismgenerators.gbg.ethylene": "エチレン発電機",
+  "alias.mekanismgenerators.multiblock.fission": "核分裂炉マルチブロックコンポーネント",
+  "alias.mekanismgenerators.multiblock.fusion": "核融合炉マルチブロックコンポーネント",
   "alias.mekanismgenerators.multiblock.turbine": "タービンマルチブロックコンポーネント",
   "block.mekanismgenerators.advanced_solar_generator": "発展型太陽光発電機",
   "block.mekanismgenerators.bio_generator": "バイオ発電機",
