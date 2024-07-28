@@ -10,6 +10,8 @@
   "alias.mekanismgenerators.fusion_fuel": "Füzyon Yakıtı",
   "alias.mekanismgenerators.gbg.ethene": "Eten Jeneratörü",
   "alias.mekanismgenerators.gbg.ethylene": "Etilen Jeneratörü",
+  "alias.mekanismgenerators.multiblock.fission": "Fisyon Reaktörü Multiblok Bileşeni",
+  "alias.mekanismgenerators.multiblock.fusion": "Füzyon Reaktörü Multiblok Bileşeni",
   "alias.mekanismgenerators.multiblock.turbine": "Türbin Multiblok Bileşeni",
   "block.mekanismgenerators.advanced_solar_generator": "Gelişmiş Güneş Jeneratör",
   "block.mekanismgenerators.bio_generator": "Biyo-Jeneratör",
