@@ -1,0 +1,22 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "farmersdelight"
+    }
+  ],
+  "type": "mekanism:sawing",
+  "input": {
+    "count": 1,
+    "item": "minecraft:chicken"
+  },
+  "main_output": {
+    "count": 2,
+    "id": "farmersdelight:chicken_cuts"
+  },
+  "secondary_chance": 1.0,
+  "secondary_output": {
+    "count": 1,
+    "id": "minecraft:bone_meal"
+  }
+}

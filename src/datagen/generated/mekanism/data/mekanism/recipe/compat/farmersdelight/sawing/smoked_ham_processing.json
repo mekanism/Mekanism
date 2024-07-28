@@ -1,0 +1,22 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "farmersdelight"
+    }
+  ],
+  "type": "mekanism:sawing",
+  "input": {
+    "count": 1,
+    "item": "farmersdelight:smoked_ham"
+  },
+  "main_output": {
+    "count": 2,
+    "id": "minecraft:cooked_porkchop"
+  },
+  "secondary_chance": 1.0,
+  "secondary_output": {
+    "count": 1,
+    "id": "minecraft:bone"
+  }
+}

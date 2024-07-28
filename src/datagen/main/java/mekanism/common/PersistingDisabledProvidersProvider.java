@@ -178,10 +178,10 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
         if (pathsToSkip.stream().anyMatch(stringPath::contains)) {
             return true;
         }
-        int compatIndex = stringPath.indexOf("/recipes/compat/");
+        int compatIndex = stringPath.indexOf("/recipe/compat/");
         if (compatIndex != -1) {
             //Compat recipes
-            String compatPath = stringPath.substring(compatIndex + "/recipes/compat/".length());
+            String compatPath = stringPath.substring(compatIndex + "/recipe/compat/".length());
             //Mekanism.logger.info("Evaluating compat path: {}", compatPath);
             return compatRecipesToSkip.stream().anyMatch(compatPath::startsWith);
         }
