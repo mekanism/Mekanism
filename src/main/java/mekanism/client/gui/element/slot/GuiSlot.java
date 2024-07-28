@@ -28,11 +28,9 @@ import mekanism.common.tile.interfaces.ISideConfiguration;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -97,12 +95,13 @@ public class GuiSlot extends GuiTexturedElement implements IRecipeViewerGhostTar
     }
 
     public GuiSlot click(IClickable onClick) {
-        //Use default click sound
-        return click(onClick, SoundEvents.UI_BUTTON_CLICK);
+        //Use default click sound and default volume from SimpleSoundInstance.forUI
+        return click(onClick, 0.25F, BUTTON_CLICK_SOUND);
     }
 
-    public GuiSlot click(IClickable onClick, @Nullable Holder<SoundEvent> clickSound) {
+    public GuiSlot click(IClickable onClick, float clickVolume, @Nullable Supplier<SoundEvent> clickSound) {
         this.clickSound = clickSound;
+        this.clickVolume = clickVolume;
         this.onClick = onClick;
         return this;
     }

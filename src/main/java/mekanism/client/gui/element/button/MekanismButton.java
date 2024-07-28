@@ -6,7 +6,6 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import net.minecraft.client.gui.navigation.CommonInputs;
 import net.minecraft.network.chat.Component;
-import net.minecraft.sounds.SoundEvents;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -30,7 +29,7 @@ public class MekanismButton extends GuiElement {
         super(gui, x, y, width, height, text);
         this.onLeftClick = Objects.requireNonNull(onLeftClick, "Buttons must have a left click behavior");
         this.onRightClick = onRightClick;
-        this.clickSound = SoundEvents.UI_BUTTON_CLICK;
+        this.clickSound = BUTTON_CLICK_SOUND;
         setButtonBackground(ButtonBackground.DEFAULT);
     }
 

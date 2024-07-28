@@ -10,7 +10,6 @@ import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import net.minecraft.network.chat.Component;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -62,6 +61,6 @@ public abstract class GuiItemStackFilter<FILTER extends IItemStackFilter<FILTER>
 
     protected void setFilterStackWithSound(@NotNull ItemStack stack) {
         setFilterStack(stack);
-        playClickSound(SoundEvents.UI_BUTTON_CLICK);
+        playClickSound(BUTTON_CLICK_SOUND);
     }
 }

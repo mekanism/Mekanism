@@ -21,7 +21,8 @@ public class GuiDigitalIconToggle<TYPE extends Enum<TYPE> & IToggleEnum<TYPE>> e
         this.typeSupplier = typeSupplier;
         this.typeSetter = typeSetter;
         this.options = enumClass.getEnumConstants();
-        this.clickSound = MekanismSounds.BEEP;
+        this.clickSound = MekanismSounds.BEEP_ON;
+        this.clickVolume = 1.0F;
         tooltip(() -> Collections.singletonList(this.typeSupplier.get().getTooltip()));
     }
 

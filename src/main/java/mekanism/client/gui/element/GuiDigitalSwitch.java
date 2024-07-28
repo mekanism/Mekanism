@@ -26,7 +26,8 @@ public class GuiDigitalSwitch extends GuiTexturedElement {
         this.icon = icon;
         this.stateSupplier = stateSupplier;
         this.onToggle = onToggle;
-        this.clickSound = MekanismSounds.BEEP;
+        this.clickSound = () -> this.stateSupplier.getAsBoolean() ? MekanismSounds.BEEP_OFF.get() : MekanismSounds.BEEP_ON.get();
+        this.clickVolume = 1.0F;
     }
 
     @Override

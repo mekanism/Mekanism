@@ -54,7 +54,8 @@ public final class MekanismSounds {
     public static final SoundEventRegistryObject<SoundEvent> GEIGER_ELEVATED = SOUND_EVENTS.register("item.geiger_elevated");
     public static final SoundEventRegistryObject<SoundEvent> GEIGER_FAST = SOUND_EVENTS.register("item.geiger_fast");
 
-    public static final SoundEventRegistryObject<SoundEvent> BEEP = SOUND_EVENTS.register("gui.digital_beep");
+    public static final SoundEventRegistryObject<SoundEvent> BEEP_ON = SOUND_EVENTS.register("gui.digital_beep_on");
+    public static final SoundEventRegistryObject<SoundEvent> BEEP_OFF = SOUND_EVENTS.register("gui.digital_beep_off");
 
     public static final SoundEventRegistryObject<SoundEvent> CHRISTMAS1 = SOUND_EVENTS.register("tile.christmas.1");
     public static final SoundEventRegistryObject<SoundEvent> CHRISTMAS2 = SOUND_EVENTS.register("tile.christmas.2");

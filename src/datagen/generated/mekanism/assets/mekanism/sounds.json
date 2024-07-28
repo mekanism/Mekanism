@@ -1,8 +1,16 @@
 {
-  "gui.digital_beep": {
+  "gui.digital_beep_off": {
     "sounds": [
       {
-        "name": "mekanism:gui/beep",
+        "name": "mekanism:gui/beep_off",
+        "pitch": 0.8
+      }
+    ]
+  },
+  "gui.digital_beep_on": {
+    "sounds": [
+      {
+        "name": "mekanism:gui/beep_on",
         "pitch": 0.8
       }
     ]

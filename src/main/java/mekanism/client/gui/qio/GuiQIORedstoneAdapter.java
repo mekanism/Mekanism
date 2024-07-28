@@ -54,9 +54,9 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
                 return true;
             }
             return false;
-        }, MekanismSounds.BEEP).setGhostHandler((IGhostItemConsumer) ingredient -> {
+        }, 1.0F, () -> hasShiftDown() ? MekanismSounds.BEEP_OFF.get() : MekanismSounds.BEEP_ON.get()).setGhostHandler((IGhostItemConsumer) ingredient -> {
             updateStack((ItemStack) ingredient);
-            minecraft.getSoundManager().play(SimpleSoundInstance.forUI(MekanismSounds.BEEP, 1.0F));
+            minecraft.getSoundManager().play(SimpleSoundInstance.forUI(MekanismSounds.BEEP_ON.get(), 1.0F, 1.0F));
         });
         addRenderableWidget(new ToggleButton(this, 9, 64, 14, tile::isInverted,
               (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.INVERSE_BUTTON, ((GuiQIORedstoneAdapter) element.gui()).tile))))

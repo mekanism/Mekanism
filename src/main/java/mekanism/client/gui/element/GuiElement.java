@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.GuiUtils;
@@ -35,10 +36,10 @@ import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.sounds.SoundManager;
-import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -49,6 +50,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     private static final int BUTTON_TEX_X = 200, BUTTON_TEX_Y = 60, BUTTON_INDIVIDUAL_TEX_Y = BUTTON_TEX_Y / 3;
     public static final ResourceLocation WARNING_BACKGROUND_TEXTURE = MekanismUtils.getResource(ResourceType.GUI, "warning_background.png");
     public static final ResourceLocation WARNING_TEXTURE = MekanismUtils.getResource(ResourceType.GUI, "warning.png");
+    protected static Supplier<SoundEvent> BUTTON_CLICK_SOUND = SoundEvents.UI_BUTTON_CLICK::value;
 
     public static final Minecraft minecraft = Minecraft.getInstance();
 
@@ -63,7 +65,9 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
 
     private IGuiWrapper guiObj;
     @Nullable
-    protected Holder<SoundEvent> clickSound;
+    protected Supplier<SoundEvent> clickSound;
+    //Default to the value from SimpleSoundInstance.forUI
+    protected float clickVolume = 0.25F;
     protected int relativeX;
     protected int relativeY;
     public boolean isOverlay;
@@ -653,16 +657,18 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     @Override
     public void playDownSound(@NotNull SoundManager soundHandler) {
         if (clickSound != null) {
-            playClickSound(soundHandler, clickSound);
+            playClickSound(soundHandler, clickSound, clickVolume);
         }
     }
 
-    protected static void playClickSound(Holder<SoundEvent> sound) {
-        playClickSound(minecraft.getSoundManager(), sound);
+    protected static void playClickSound(Supplier<SoundEvent> sound) {
+        //Default to the value from SimpleSoundInstance.forUI
+        playClickSound(minecraft.getSoundManager(), sound, 0.25F);
     }
 
-    private static void playClickSound(@NotNull SoundManager soundHandler, @NotNull Holder<SoundEvent> sound) {
-        soundHandler.play(SimpleSoundInstance.forUI(sound, 1.0F));
+    private static void playClickSound(@NotNull SoundManager soundHandler, @NotNull Supplier<SoundEvent> sound, float clickVolume) {
+
+        soundHandler.play(SimpleSoundInstance.forUI(sound.get(), 1.0F, clickVolume));
     }
 
     protected void drawTiledSprite(GuiGraphics guiGraphics, int xPosition, int yPosition, int yOffset, int desiredWidth, int desiredHeight, TextureAtlasSprite sprite,

@@ -8,7 +8,6 @@ import mekanism.common.tile.interfaces.IHasDumpButton;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,7 +19,7 @@ public class GuiDumpButton<TILE extends BlockEntity & IHasDumpButton> extends Gu
     public GuiDumpButton(IGuiWrapper gui, TILE tile, int x, int y) {
         super(MekanismUtils.getResource(ResourceType.GUI, "dump.png"), gui, x, y, 21, 10);
         this.tile = tile;
-        this.clickSound = SoundEvents.UI_BUTTON_CLICK;
+        this.clickSound = BUTTON_CLICK_SOUND;
     }
 
     @Override

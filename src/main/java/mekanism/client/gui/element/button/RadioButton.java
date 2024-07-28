@@ -26,7 +26,8 @@ public class RadioButton extends MekanismButton {
         this.toggled = toggled;
         this.toggledComponent = TooltipUtils.create(toggledComponent);
         this.altComponent = TooltipUtils.create(altComponent);
-        this.clickSound = MekanismSounds.BEEP;
+        this.clickSound = () -> this.toggled.getAsBoolean() ? MekanismSounds.BEEP_OFF.get() : MekanismSounds.BEEP_ON.get();
+        this.clickVolume = 1.0F;
     }
 
     @Override

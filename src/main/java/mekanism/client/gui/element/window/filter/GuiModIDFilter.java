@@ -18,7 +18,6 @@ import mekanism.common.util.text.InputValidator;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
@@ -131,7 +130,7 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
             success = true;
         }
         if (click) {
-            playClickSound(SoundEvents.UI_BUTTON_CLICK);
+            playClickSound(BUTTON_CLICK_SOUND);
         }
         return success;
     }

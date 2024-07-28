@@ -34,7 +34,6 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -227,7 +226,7 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
         }
         //Update the list being viewed
         tagSetter.accept(tags.keySet());
-        playClickSound(SoundEvents.UI_BUTTON_CLICK);
+        playClickSound(BUTTON_CLICK_SOUND);
     }
 
     private <STACK extends ChemicalStack<?>, HANDLER extends IChemicalHandler<?, STACK>> void addChemicalTags(DictionaryTagType tagType, ItemStack stack,
