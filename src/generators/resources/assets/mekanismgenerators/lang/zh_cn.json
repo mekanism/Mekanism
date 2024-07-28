@@ -10,6 +10,8 @@
   "alias.mekanismgenerators.fusion_fuel": "聚变燃料",
   "alias.mekanismgenerators.gbg.ethene": "乙烯生成机",
   "alias.mekanismgenerators.gbg.ethylene": "乙烯生成机",
+  "alias.mekanismgenerators.multiblock.fission": "裂变反应堆多方块组件",
+  "alias.mekanismgenerators.multiblock.fusion": "聚变反应堆多方块组件",
   "alias.mekanismgenerators.multiblock.turbine": "涡轮发电机多方块组件",
   "block.mekanismgenerators.advanced_solar_generator": "高级太阳能发电机",
   "block.mekanismgenerators.bio_generator": "生物能发电机",
