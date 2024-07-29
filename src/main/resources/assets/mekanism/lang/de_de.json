@@ -1624,6 +1624,7 @@
   "status.mekanism.format": "Status: %1$s",
   "status.mekanism.ok": "Alles OK",
   "tab.mekanism.main": "Kern",
+  "tag.item.c.tools.wrench": "Schraubenschlüssel",
   "teleporter.mekanism.needs_energy": "Benötigt Energie",
   "teleporter.mekanism.no_frame": "Kein Rahmen",
   "teleporter.mekanism.no_link": "Keine Verknüpfung",
