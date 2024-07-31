@@ -1477,6 +1477,7 @@
   "qio.mekanism.sort_name": "Name",
   "qio.mekanism.sort_name_desc": "Gegenstände nach Namen sortieren.",
   "qio.mekanism.stored_count": "Gespeicherte Anzahl: %1$s",
+  "qio.mekanism.transfer.to_frequency": "Beim Halten der Umschalttaste auf die Frequenz verschieben",
   "qio.mekanism.trigger_count": "Auslöseranzahl:",
   "qio.mekanism.types": "Typen",
   "qio.mekanism.types_detail": "Typen: %1$s / %2$s",
