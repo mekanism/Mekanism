@@ -40,15 +40,19 @@ public class AdditionsConfig extends BaseMekanismConfig {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
         AdditionsConfigTranslations.SERVER_TOP_LEVEL.applyToBuilder(builder).push("additions");
 
+        AdditionsConfigTranslations.SERVER_OBSIDIAN_TNT.applyToBuilder(builder).push("obsidian_tnt");
         obsidianTNTDelay = CachedIntValue.wrap(this, AdditionsConfigTranslations.SERVER_OBSIDIAN_DELAY.applyToBuilder(builder)
-              .defineInRange("obsidianTNTDelay", 5 * SharedConstants.TICKS_PER_SECOND, 0, Integer.MAX_VALUE));
+              .defineInRange("delay", 5 * SharedConstants.TICKS_PER_SECOND, 0, Integer.MAX_VALUE));
         obsidianTNTBlastRadius = CachedFloatValue.wrap(this, AdditionsConfigTranslations.SERVER_OBSIDIAN_RADIUS.applyToBuilder(builder)
-              .defineInRange("obsidianTNTBlastRadius", 12, 0.1, 1_000));
+              .defineInRange("blast_radius", 12, 0.1, 1_000));
+        builder.pop();
 
+        AdditionsConfigTranslations.SERVER_VOICE.applyToBuilder(builder).push("voice_server");
         voiceServerEnabled = CachedBooleanValue.wrap(this, AdditionsConfigTranslations.SERVER_VOICE_ENABLED.applyToBuilder(builder)
-              .worldRestart() .define("voiceServerEnabled", false));
+              .worldRestart() .define("enabled", false));
         voicePort = CachedIntValue.wrap(this, AdditionsConfigTranslations.SERVER_VOICE_PORT.applyToBuilder(builder)
               .defineInRange("VoicePort", 36_123, 1, 65_535));
+        builder.pop();
 
         babyArrowDamageMultiplier = CachedDoubleValue.wrap(this, AdditionsConfigTranslations.SERVER_BABY_ARROW_DAMAGE.applyToBuilder(builder)
               .defineInRange("babyArrowDamageMultiplier", 0.25, 0.1, 10));
@@ -91,9 +95,9 @@ public class AdditionsConfig extends BaseMekanismConfig {
     public static class SpawnConfig {
 
         public final CachedBooleanValue shouldSpawn;
-        public final CachedDoubleValue weightPercentage;
         public final CachedDoubleValue minSizePercentage;
         public final CachedDoubleValue maxSizePercentage;
+        public final CachedDoubleValue weightPercentage;
         public final CachedDoubleValue spawnCostPerEntityPercentage;
         public final CachedDoubleValue maxSpawnCostPercentage;
         public final CachedResourceLocationListValue biomeBlackList;
@@ -110,15 +114,15 @@ public class AdditionsConfig extends BaseMekanismConfig {
             this.shouldSpawn = CachedBooleanValue.wrap(config, translations.shouldSpawn().applyToBuilder(builder)
                   .worldRestart()
                   .define("shouldSpawn", true));
-            this.weightPercentage = CachedDoubleValue.wrap(config, translations.weight().applyToBuilder(builder)
-                  .worldRestart()
-                  .defineInRange("weightPercentage", 0.05, 0, 100));
             this.minSizePercentage = CachedDoubleValue.wrap(config, translations.minSize().applyToBuilder(builder)
                   .worldRestart()
                   .defineInRange("minSizePercentage", 0.5, 0, 100));
             this.maxSizePercentage = CachedDoubleValue.wrap(config, translations.maxSize().applyToBuilder(builder)
                   .worldRestart()
                   .defineInRange("maxSizePercentage", 0.5, 0, 100));
+            this.weightPercentage = CachedDoubleValue.wrap(config, translations.weight().applyToBuilder(builder)
+                  .worldRestart()
+                  .defineInRange("weightPercentage", 0.05, 0, 100));
             this.spawnCostPerEntityPercentage = CachedDoubleValue.wrap(config, translations.costPerEntity().applyToBuilder(builder)
                   .worldRestart()
                   .defineInRange("spawnCostPerEntityPercentage", 1D, 0, 100));

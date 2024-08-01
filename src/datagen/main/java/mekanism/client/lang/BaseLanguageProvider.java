@@ -121,7 +121,8 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
 
     protected void addConfigs(IConfigTranslation... translations) {
         for (IConfigTranslation translation : translations) {
-            add(translation, translation.translation());
+            add(translation, translation.title());
+            add(translation.getTranslationKey() + ".tooltip", translation.tooltip());
         }
     }
 

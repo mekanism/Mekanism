@@ -8,15 +8,17 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
     //SERVER_TOP_LEVEL("server", "Mekanism Defense Config. This config is synced between server and client."),
 
 
-    BASE_ENERGY_STORAGE_JOULES("storage.energy.base", "Base energy storage (Joules)."),
+    BASE_ENERGY_STORAGE_JOULES("storage.energy.base", "Base energy storage", "Base energy storage (Joules)."),
     ;
 
     private final String key;
-    private final String translation;
+    private final String title;
+    private final String tooltip;
 
-    MekanismConfigTranslations(String path, String translation) {
+    MekanismConfigTranslations(String path, String title, String tooltip) {
         this.key = Util.makeDescriptionId("configuration", Mekanism.rl(path));
-        this.translation = translation;
+        this.title = title;
+        this.tooltip = tooltip;
     }
 
     @NotNull
@@ -26,8 +28,13 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
     }
 
     @Override
-    public String translation() {
-        return translation;
+    public String title() {
+        return title;
+    }
+
+    @Override
+    public String tooltip() {
+        return tooltip;
     }
 
 

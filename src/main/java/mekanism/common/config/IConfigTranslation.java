@@ -5,12 +5,14 @@ import net.neoforged.neoforge.common.ModConfigSpec;
 
 public interface IConfigTranslation extends IHasTranslationKey {
 
-    String translation();
+    String title();
+
+    String tooltip();
 
     default ModConfigSpec.Builder applyToBuilder(ModConfigSpec.Builder builder) {
-        return builder.translation(getTranslationKey()).comment(translation());
+        return builder.translation(getTranslationKey()).comment(tooltip());
     }
 
-    record ConfigTranslation(String getTranslationKey, String translation) implements IConfigTranslation {
+    record ConfigTranslation(String getTranslationKey, String title, String tooltip) implements IConfigTranslation {
     }
 }

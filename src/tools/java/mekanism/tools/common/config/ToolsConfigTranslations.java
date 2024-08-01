@@ -10,11 +10,13 @@ public enum ToolsConfigTranslations implements IConfigTranslation {
     ;
 
     private final String key;
-    private final String translation;
+    private final String title;
+    private final String tooltip;
 
-    ToolsConfigTranslations(String path, String translation) {
+    ToolsConfigTranslations(String path, String title, String tooltip) {
         this.key = Util.makeDescriptionId("configuration", MekanismTools.rl(path));
-        this.translation = translation;
+        this.title = title;
+        this.tooltip = tooltip;
     }
 
     @NotNull
@@ -24,8 +26,13 @@ public enum ToolsConfigTranslations implements IConfigTranslation {
     }
 
     @Override
-    public String translation() {
-        return translation;
+    public String title() {
+        return title;
+    }
+
+    @Override
+    public String tooltip() {
+        return tooltip;
     }
 
 
