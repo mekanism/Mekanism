@@ -1,5 +1,7 @@
 package mekanism.common.config;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import mekanism.common.Mekanism;
@@ -37,5 +39,9 @@ public class MekanismConfig {
 
     public static void onConfigLoad(ModConfigEvent configEvent) {
         MekanismConfigHelper.onConfigLoad(configEvent, Mekanism.MODID, KNOWN_CONFIGS);
+    }
+
+    public static Collection<IMekanismConfig> getConfigs() {
+        return Collections.unmodifiableCollection(KNOWN_CONFIGS.values());
     }
 }

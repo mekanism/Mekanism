@@ -9,6 +9,7 @@ import mekanism.tools.common.MekanismTools;
 import mekanism.tools.common.ToolsLang;
 import mekanism.tools.common.ToolsTags;
 import mekanism.tools.common.advancements.ToolsAdvancements;
+import mekanism.tools.common.config.MekanismToolsConfig;
 import mekanism.tools.common.config.ToolsConfigTranslations;
 import mekanism.tools.common.registries.ToolsItems;
 import net.minecraft.data.PackOutput;
@@ -21,6 +22,7 @@ public class ToolsLangProvider extends BaseLanguageProvider {
 
     @Override
     protected void addTranslations() {
+        addConfigs(MekanismToolsConfig.getConfigs());
         addConfigs(ToolsConfigTranslations.values());
         addTags();
         addItems();

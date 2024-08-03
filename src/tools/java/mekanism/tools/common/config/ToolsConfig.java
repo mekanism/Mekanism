@@ -49,6 +49,11 @@ public class ToolsConfig extends BaseMekanismConfig {
     }
 
     @Override
+    public String getTranslation() {
+        return "General Config";
+    }
+
+    @Override
     public ModConfigSpec getConfigSpec() {
         return configSpec;
     }

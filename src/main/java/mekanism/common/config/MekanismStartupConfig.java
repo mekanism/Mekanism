@@ -83,6 +83,11 @@ public class MekanismStartupConfig extends BaseMekanismConfig {
     }
 
     @Override
+    public String getTranslation() {
+        return "Startup Config";
+    }
+
+    @Override
     public ModConfigSpec getConfigSpec() {
         return configSpec;
     }

@@ -151,6 +151,11 @@ public class ClientConfig extends BaseMekanismConfig {
     }
 
     @Override
+    public String getTranslation() {
+        return "Client Config";
+    }
+
+    @Override
     public ModConfigSpec getConfigSpec() {
         return configSpec;
     }

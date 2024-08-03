@@ -8,6 +8,7 @@ import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.advancements.AdditionsAdvancements;
 import mekanism.additions.common.config.AdditionsConfigTranslations;
 import mekanism.additions.common.config.AdditionsConfigTranslations.BabySpawnTranslations;
+import mekanism.additions.common.config.MekanismAdditionsConfig;
 import mekanism.additions.common.entity.baby.BabyType;
 import mekanism.additions.common.item.ItemBalloon;
 import mekanism.additions.common.registries.AdditionsBlocks;
@@ -40,6 +41,7 @@ public class AdditionsLangProvider extends BaseLanguageProvider {
     }
 
     private void addConfigs() {
+        addConfigs(MekanismAdditionsConfig.getConfigs());
         addConfigs(AdditionsConfigTranslations.values());
         for (BabyType type : BabyType.values()) {
             BabySpawnTranslations translations = BabySpawnTranslations.create("baby " + type.getSerializedName().replace('_', ' '));

@@ -64,6 +64,11 @@ public class ToolsMaterialConfig extends BaseMekanismConfig {
     }
 
     @Override
+    public String getTranslation() {
+        return "Material Config";
+    }
+
+    @Override
     public ModConfigSpec getConfigSpec() {
         return configSpec;
     }

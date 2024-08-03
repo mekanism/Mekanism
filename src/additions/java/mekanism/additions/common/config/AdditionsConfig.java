@@ -38,7 +38,6 @@ public class AdditionsConfig extends BaseMekanismConfig {
 
     AdditionsConfig() {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
-        AdditionsConfigTranslations.SERVER_TOP_LEVEL.applyToBuilder(builder).push("additions");
 
         AdditionsConfigTranslations.SERVER_OBSIDIAN_TNT.applyToBuilder(builder).push("obsidian_tnt");
         obsidianTNTDelay = CachedIntValue.wrap(this, AdditionsConfigTranslations.SERVER_OBSIDIAN_DELAY.applyToBuilder(builder)
@@ -54,8 +53,9 @@ public class AdditionsConfig extends BaseMekanismConfig {
               .defineInRange("VoicePort", 36_123, 1, 65_535));
         builder.pop();
 
+        AdditionsConfigTranslations.SERVER_BABY.applyToBuilder(builder).push("baby_mobs");
         babyArrowDamageMultiplier = CachedDoubleValue.wrap(this, AdditionsConfigTranslations.SERVER_BABY_ARROW_DAMAGE.applyToBuilder(builder)
-              .defineInRange("babyArrowDamageMultiplier", 0.25, 0.1, 10));
+              .defineInRange("arrowDamageMultiplier", 0.25, 0.1, 10));
 
         AdditionsConfigTranslations.SERVER_BABY_SPAWNING.applyToBuilder(builder).push("spawning");
         addBabyTypeConfig(BabyType.BOGGED, builder, AdditionsEntityTypes.BABY_BOGGED, EntityType.BOGGED);
@@ -65,6 +65,7 @@ public class AdditionsConfig extends BaseMekanismConfig {
         addBabyTypeConfig(BabyType.STRAY, builder, AdditionsEntityTypes.BABY_STRAY, EntityType.STRAY);
         addBabyTypeConfig(BabyType.WITHER_SKELETON, builder, AdditionsEntityTypes.BABY_WITHER_SKELETON, EntityType.WITHER_SKELETON);
         builder.pop(2);
+
         configSpec = builder.build();
     }
 
@@ -76,6 +77,11 @@ public class AdditionsConfig extends BaseMekanismConfig {
     @Override
     public String getFileName() {
         return "additions";
+    }
+
+    @Override
+    public String getTranslation() {
+        return "General Config";
     }
 
     @Override

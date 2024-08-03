@@ -183,6 +183,13 @@
   "item.mekanismtools.steel_sword": "pɹoʍS ꞁǝǝʇS",
   "item.mekanismtools.stone_paxel": "ꞁǝxɐԀ ǝuoʇS",
   "item.mekanismtools.wood_paxel": "ꞁǝxɐԀ pooM",
+  "mekanismtools.configuration.section.mekanism.tools.client.toml": "ᵷᴉɟuoƆ ʇuǝᴉꞁƆ",
+  "mekanismtools.configuration.section.mekanism.tools.client.toml.title": "ᵷᴉɟuoƆ ʇuǝᴉꞁƆ - sꞁoo⟘ :ɯsᴉuɐʞǝW",
+  "mekanismtools.configuration.section.mekanism.tools.materials.startup.toml": "ᵷᴉɟuoƆ ꞁɐᴉɹǝʇɐW",
+  "mekanismtools.configuration.section.mekanism.tools.materials.startup.toml.title": "ᵷᴉɟuoƆ ꞁɐᴉɹǝʇɐW - sꞁoo⟘ :ɯsᴉuɐʞǝW",
+  "mekanismtools.configuration.section.mekanism.tools.toml": "ᵷᴉɟuoƆ ꞁɐɹǝuǝ⅁",
+  "mekanismtools.configuration.section.mekanism.tools.toml.title": "ᵷᴉɟuoƆ ꞁɐɹǝuǝ⅁ - sꞁoo⟘ :ɯsᴉuɐʞǝW",
+  "mekanismtools.configuration.title": "ᵷᴉɟuoƆ sꞁoo⟘ :ɯsᴉuɐʞǝW",
   "tag.item.c.tools.paxel": "sꞁǝxɐԀ",
   "tooltip.mekanismtools.hp": "%s :ԀH"
 }

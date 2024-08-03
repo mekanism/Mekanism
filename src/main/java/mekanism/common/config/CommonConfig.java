@@ -40,6 +40,11 @@ public class CommonConfig extends BaseMekanismConfig {
     }
 
     @Override
+    public String getTranslation() {
+        return "Common Config";
+    }
+
+    @Override
     public ModConfigSpec getConfigSpec() {
         return configSpec;
     }

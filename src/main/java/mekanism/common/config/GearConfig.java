@@ -350,6 +350,11 @@ public class GearConfig extends BaseMekanismConfig {
     }
 
     @Override
+    public String getTranslation() {
+        return "Gear Config";
+    }
+
+    @Override
     public ModConfigSpec getConfigSpec() {
         return configSpec;
     }

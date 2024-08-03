@@ -197,6 +197,11 @@ public class TierConfig extends BaseMekanismConfig {
     }
 
     @Override
+    public String getTranslation() {
+        return "Tier Config";
+    }
+
+    @Override
     public ModConfigSpec getConfigSpec() {
         return configSpec;
     }

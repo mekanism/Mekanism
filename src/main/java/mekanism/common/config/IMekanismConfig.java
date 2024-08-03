@@ -8,6 +8,8 @@ public interface IMekanismConfig {
 
     String getFileName();
 
+    String getTranslation();
+
     ModConfigSpec getConfigSpec();
 
     default boolean isLoaded() {

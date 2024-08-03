@@ -41,6 +41,11 @@ public class GeneratorsStorageConfig extends BaseMekanismConfig {
     }
 
     @Override
+    public String getTranslation() {
+        return "Storage Config";
+    }
+
+    @Override
     public ModConfigSpec getConfigSpec() {
         return configSpec;
     }

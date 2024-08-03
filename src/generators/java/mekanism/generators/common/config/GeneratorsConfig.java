@@ -227,6 +227,11 @@ public class GeneratorsConfig extends BaseMekanismConfig {
     }
 
     @Override
+    public String getTranslation() {
+        return "General Config";
+    }
+
+    @Override
     public ModConfigSpec getConfigSpec() {
         return configSpec;
     }

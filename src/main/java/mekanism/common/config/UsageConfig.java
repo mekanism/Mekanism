@@ -129,6 +129,12 @@ public class UsageConfig extends BaseMekanismConfig {
         return "machine-usage";
     }
 
+
+    @Override
+    public String getTranslation() {
+        return "Usage Config";
+    }
+
     @Override
     public ModConfigSpec getConfigSpec() {
         return configSpec;

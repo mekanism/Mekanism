@@ -130,6 +130,12 @@ public class StorageConfig extends BaseMekanismConfig {
         return "machine-storage";
     }
 
+
+    @Override
+    public String getTranslation() {
+        return "Storage Config";
+    }
+
     @Override
     public ModConfigSpec getConfigSpec() {
         return configSpec;

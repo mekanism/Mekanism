@@ -50,6 +50,11 @@ public class WorldConfig extends BaseMekanismConfig {
     }
 
     @Override
+    public String getTranslation() {
+        return "World Config";
+    }
+
+    @Override
     public ModConfigSpec getConfigSpec() {
         return configSpec;
     }

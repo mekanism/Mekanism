@@ -6,13 +6,11 @@ import net.minecraft.Util;
 import org.jetbrains.annotations.NotNull;
 
 public enum AdditionsConfigTranslations implements IConfigTranslation {
-    CLIENT_TOP_LEVEL("client", "Mekanism Additions Client Config", "Mekanism Additions Client Config. This config only exists on the client"),
-
+    //Client Config
     CLIENT_VOICE_KEY_TOGGLE("client.voice_key_is_toggle", "Voice Key is Toggle",
           "If the voice server is enabled and voiceKeyIsToggle is also enabled, the voice key will act as a toggle instead of requiring to be held while talking."),
 
-    SERVER_TOP_LEVEL("server", "Mekanism Additions Config", "Mekanism Additions Config. This config is synced between server and client."),
-
+    //Server config
     SERVER_OBSIDIAN_TNT("server.obsidian_tnt", "Obsidian TNT", "Settings for configuring Obsidian TNT"),
     SERVER_OBSIDIAN_DELAY("server.obsidian_tnt.delay", "Fuse Time", "Fuse time for Obsidian TNT."),
     SERVER_OBSIDIAN_RADIUS("server.obsidian_tnt.radius", "Radius", "Radius of the explosion of Obsidian TNT."),
@@ -21,6 +19,7 @@ public enum AdditionsConfigTranslations implements IConfigTranslation {
     SERVER_VOICE_ENABLED("server.voice.enabled", "Enabled", "Enables the voice server for Walkie Talkies."),
     SERVER_VOICE_PORT("server.voice.port", "TCP Port", "TCP port for the Voice server to listen on."),
 
+    SERVER_BABY("server.baby", "Baby Mobs", "Settings for configuring values relating to baby mobs"),
     SERVER_BABY_ARROW_DAMAGE("server.baby.arrow_damage_multiplier", "Arrow Damage Multiplier", "Damage multiplier of arrows shot by baby mobs."),
     SERVER_BABY_SPAWNING("server.baby.spawning", "Entity Spawning", "Config options regarding spawning of entities."),
 

@@ -183,6 +183,13 @@
   "item.mekanismtools.steel_sword": "Steel Sword",
   "item.mekanismtools.stone_paxel": "Stone Paxel",
   "item.mekanismtools.wood_paxel": "Wood Paxel",
+  "mekanismtools.configuration.section.mekanism.tools.client.toml": "Client Config",
+  "mekanismtools.configuration.section.mekanism.tools.client.toml.title": "Mekanism: Tools - Client Config",
+  "mekanismtools.configuration.section.mekanism.tools.materials.startup.toml": "Material Config",
+  "mekanismtools.configuration.section.mekanism.tools.materials.startup.toml.title": "Mekanism: Tools - Material Config",
+  "mekanismtools.configuration.section.mekanism.tools.toml": "General Config",
+  "mekanismtools.configuration.section.mekanism.tools.toml.title": "Mekanism: Tools - General Config",
+  "mekanismtools.configuration.title": "Mekanism: Tools Config",
   "tag.item.c.tools.paxel": "Paxels",
   "tooltip.mekanismtools.hp": "HP: %1$s"
 }

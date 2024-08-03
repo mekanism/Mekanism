@@ -346,6 +346,12 @@ public class GeneralConfig extends BaseMekanismConfig {
         return "general";
     }
 
+
+    @Override
+    public String getTranslation() {
+        return "General Config";
+    }
+
     @Override
     public ModConfigSpec getConfigSpec() {
         return configSpec;

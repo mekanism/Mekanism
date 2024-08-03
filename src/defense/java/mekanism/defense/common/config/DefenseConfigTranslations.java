@@ -6,7 +6,6 @@ import net.minecraft.Util;
 import org.jetbrains.annotations.NotNull;
 
 public enum DefenseConfigTranslations implements IConfigTranslation {
-    SERVER_TOP_LEVEL("server", "Mekanism Defense Config", "Mekanism Defense Config. This config is synced between server and client."),
     ;
 
     private final String key;
