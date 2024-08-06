@@ -8,18 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 import mekanism.api.IContentsListener;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.chemical.infuse.IInfusionTank;
-import mekanism.api.chemical.infuse.InfuseType;
-import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.api.chemical.pigment.IPigmentTank;
-import mekanism.api.chemical.pigment.Pigment;
-import mekanism.api.chemical.pigment.PigmentStack;
-import mekanism.api.chemical.slurry.ISlurryTank;
-import mekanism.api.chemical.slurry.Slurry;
-import mekanism.api.chemical.slurry.SlurryStack;
+import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
@@ -64,11 +53,8 @@ import mekanism.common.tile.component.config.slot.IProxiedSlotInfo.EnergyProxy;
 import mekanism.common.tile.component.config.slot.IProxiedSlotInfo.FluidProxy;
 import mekanism.common.tile.component.config.slot.IProxiedSlotInfo.GasProxy;
 import mekanism.common.tile.component.config.slot.IProxiedSlotInfo.HeatProxy;
-import mekanism.common.tile.component.config.slot.IProxiedSlotInfo.InfusionProxy;
 import mekanism.common.tile.component.config.slot.IProxiedSlotInfo.InventoryProxy;
-import mekanism.common.tile.component.config.slot.IProxiedSlotInfo.PigmentProxy;
 import mekanism.common.tile.component.config.slot.IProxiedSlotInfo.ProxySlotInfoCreator;
-import mekanism.common.tile.component.config.slot.IProxiedSlotInfo.SlurryProxy;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import net.minecraft.core.BlockPos;
@@ -95,10 +81,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
 
         setupConfig(TransmissionType.ITEM, InventoryProxy::new, () -> hasFrequency() ? getFreq().getInventorySlots(null) : Collections.emptyList());
         setupConfig(TransmissionType.FLUID, FluidProxy::new, () -> hasFrequency() ? getFreq().getFluidTanks(null) : Collections.emptyList());
-        setupConfig(TransmissionType.GAS, GasProxy::new, () -> hasFrequency() ? getFreq().getGasTanks(null) : Collections.emptyList());
-        setupConfig(TransmissionType.INFUSION, InfusionProxy::new, () -> hasFrequency() ? getFreq().getInfusionTanks(null) : Collections.emptyList());
-        setupConfig(TransmissionType.PIGMENT, PigmentProxy::new, () -> hasFrequency() ? getFreq().getPigmentTanks(null) : Collections.emptyList());
-        setupConfig(TransmissionType.SLURRY, SlurryProxy::new, () -> hasFrequency() ? getFreq().getSlurryTanks(null) : Collections.emptyList());
+        setupConfig(TransmissionType.CHEMICAL, GasProxy::new, () -> hasFrequency() ? getFreq().getChemicalTanks(null) : Collections.emptyList());
         setupConfig(TransmissionType.ENERGY, EnergyProxy::new, () -> hasFrequency() ? getFreq().getEnergyContainers(null) : Collections.emptyList());
 
         ConfigInfo heatConfig = configComponent.getConfig(TransmissionType.HEAT);
@@ -130,26 +113,8 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
 
     @NotNull
     @Override
-    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks(IContentsListener listener) {
-        return new QuantumEntangloporterChemicalTankHolder<>(this, TransmissionType.GAS, InventoryFrequency::getGasTanks);
-    }
-
-    @NotNull
-    @Override
-    public IChemicalTankHolder<InfuseType, InfusionStack, IInfusionTank> getInitialInfusionTanks(IContentsListener listener) {
-        return new QuantumEntangloporterChemicalTankHolder<>(this, TransmissionType.INFUSION, InventoryFrequency::getInfusionTanks);
-    }
-
-    @NotNull
-    @Override
-    public IChemicalTankHolder<Pigment, PigmentStack, IPigmentTank> getInitialPigmentTanks(IContentsListener listener) {
-        return new QuantumEntangloporterChemicalTankHolder<>(this, TransmissionType.PIGMENT, InventoryFrequency::getPigmentTanks);
-    }
-
-    @NotNull
-    @Override
-    public IChemicalTankHolder<Slurry, SlurryStack, ISlurryTank> getInitialSlurryTanks(IContentsListener listener) {
-        return new QuantumEntangloporterChemicalTankHolder<>(this, TransmissionType.SLURRY, InventoryFrequency::getSlurryTanks);
+    public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener) {
+        return new QuantumEntangloporterChemicalTankHolder(this, TransmissionType.CHEMICAL, InventoryFrequency::getChemicalTanks);
     }
 
     @NotNull
@@ -244,10 +209,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         if (cache == null) {
             IMultiTypeCapability<HANDLER, ?> capability = (IMultiTypeCapability<HANDLER, ?>) switch (transmissionType) {
                 case FLUID -> Capabilities.FLUID;
-                case GAS -> Capabilities.GAS;
-                case INFUSION -> Capabilities.INFUSION;
-                case PIGMENT -> Capabilities.PIGMENT;
-                case SLURRY -> Capabilities.SLURRY;
+                case CHEMICAL -> Capabilities.CHEMICAL;
                 default -> null;
             };
             if (capability != null) {
@@ -348,28 +310,10 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         return getFrequency().getFluidTanks(null).getFirst();
     }
 
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getBufferGas", "getBufferGasCapacity", "getBufferGasNeeded",
-                                                                                        "getBufferGasFilledPercentage"}, docPlaceholder = "gas buffer")
-    IGasTank getBufferGasTank() throws ComputerException {
-        return getFrequency().getGasTanks(null).getFirst();
-    }
-
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getBufferInfuseType", "getBufferInfuseTypeCapacity", "getBufferInfuseTypeNeeded",
-                                                                                        "getBufferInfuseTypeFilledPercentage"}, docPlaceholder = "infusion buffer")
-    IInfusionTank getBufferInfuseTypeTank() throws ComputerException {
-        return getFrequency().getInfusionTanks(null).getFirst();
-    }
-
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getBufferPigment", "getBufferPigmentCapacity", "getBufferPigmentNeeded",
-                                                                                        "getBufferPigmentFilledPercentage"}, docPlaceholder = "pigment buffer")
-    IPigmentTank getBufferPigmentTank() throws ComputerException {
-        return getFrequency().getPigmentTanks(null).getFirst();
-    }
-
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getBufferSlurry", "getBufferSlurryCapacity", "getBufferSlurryNeeded",
-                                                                                        "getBufferSlurryFilledPercentage"}, docPlaceholder = "slurry buffer")
-    ISlurryTank getBufferSlurryTank() throws ComputerException {
-        return getFrequency().getSlurryTanks(null).getFirst();
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getBufferChemical", "getBufferChemicalCapacity", "getBufferChemicalNeeded",
+                                                                                        "getBufferChemicalFilledPercentage"}, docPlaceholder = "chemical buffer")
+    IChemicalTank getBufferChemicalTank() throws ComputerException {
+        return getFrequency().getChemicalTanks(null).getFirst();
     }
 
     @ComputerMethod(methodDescription = "Requires a frequency to be selected")

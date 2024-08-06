@@ -36,8 +36,8 @@ public class GasToGasRecipeHandler extends MekanismRecipeHandler<GasToGasRecipe>
     public Optional<GasToGasRecipe> recompose(IRecipeManager<? super GasToGasRecipe> m, RegistryAccess registryAccess, IDecomposedRecipe recipe) {
         if (m instanceof GasToGasRecipeManager manager) {
             return Optional.of(manager.makeRecipe(
-                  recipe.getOrThrowSingle(CrTRecipeComponents.GAS.input()),
-                  recipe.getOrThrowSingle(CrTRecipeComponents.GAS.output())
+                  recipe.getOrThrowSingle(CrTRecipeComponents.CHEMICAL.input()),
+                  recipe.getOrThrowSingle(CrTRecipeComponents.CHEMICAL.output())
             ));
         }
         return Optional.empty();

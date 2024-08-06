@@ -5,15 +5,15 @@ import com.blamejared.crafttweaker.api.fluid.CTFluidIngredient;
 import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.util.ItemStackUtil;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.basic.BasicPressurizedReactionRecipe;
-import mekanism.api.recipes.ingredients.GasStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.vanilla_input.ReactionRecipeInput;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
-import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTGasStack;
-import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
+import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack;
+import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import mekanism.common.recipe.MekanismRecipeType;
 import net.minecraft.world.item.ItemStack;
 import org.openzen.zencode.java.ZenCodeType;
@@ -35,16 +35,16 @@ public class PressurizedReactionRecipeManager extends MekanismRecipeManager<Reac
      * @param name           Name of the new recipe.
      * @param inputSolid     {@link IIngredientWithAmount} representing the item input of the recipe.
      * @param inputFluid     {@link CTFluidIngredient} representing the fluid input of the recipe.
-     * @param inputGas       {@link GasStackIngredient} representing the gas input of the recipe.
+     * @param inputGas       {@link ChemicalStackIngredient} representing the gas input of the recipe.
      * @param duration       Base duration in ticks that this recipe takes to complete. Must be greater than zero.
      * @param outputItem     {@link IItemStack} representing the item output of the recipe.
      * @param energyRequired Value representing how much "extra" energy this recipe requires, compared to the base energy requirements of the machine performing the
      *                       recipe.
      */
     @ZenCodeType.Method
-    public void addRecipe(String name, IIngredientWithAmount inputSolid, CTFluidIngredient inputFluid, GasStackIngredient inputGas, int duration, IItemStack outputItem,
+    public void addRecipe(String name, IIngredientWithAmount inputSolid, CTFluidIngredient inputFluid, ChemicalStackIngredient inputGas, int duration, IItemStack outputItem,
           long energyRequired) {
-        addRecipe(name, inputSolid, inputFluid, inputGas, duration, getAndValidateNotEmpty(outputItem), GasStack.EMPTY, energyRequired);
+        addRecipe(name, inputSolid, inputFluid, inputGas, duration, getAndValidateNotEmpty(outputItem), ChemicalStack.EMPTY, energyRequired);
     }
 
     /**
@@ -53,7 +53,7 @@ public class PressurizedReactionRecipeManager extends MekanismRecipeManager<Reac
      * @param name       Name of the new recipe.
      * @param inputSolid {@link IIngredientWithAmount} representing the item input of the recipe.
      * @param inputFluid {@link CTFluidIngredient} representing the fluid input of the recipe.
-     * @param inputGas   {@link GasStackIngredient} representing the gas input of the recipe.
+     * @param inputGas   {@link ChemicalStackIngredient} representing the gas input of the recipe.
      * @param duration   Base duration in ticks that this recipe takes to complete. Must be greater than zero.
      * @param outputItem {@link IItemStack} representing the item output of the recipe.
      *
@@ -61,8 +61,8 @@ public class PressurizedReactionRecipeManager extends MekanismRecipeManager<Reac
      * will default to zero.
      */
     @ZenCodeType.Method
-    public void addRecipe(String name, IIngredientWithAmount inputSolid, CTFluidIngredient inputFluid, GasStackIngredient inputGas, int duration, IItemStack outputItem) {
-        addRecipe(name, inputSolid, inputFluid, inputGas, duration, getAndValidateNotEmpty(outputItem), GasStack.EMPTY, 0);
+    public void addRecipe(String name, IIngredientWithAmount inputSolid, CTFluidIngredient inputFluid, ChemicalStackIngredient inputGas, int duration, IItemStack outputItem) {
+        addRecipe(name, inputSolid, inputFluid, inputGas, duration, getAndValidateNotEmpty(outputItem), ChemicalStack.EMPTY, 0);
     }
 
     /**
@@ -71,14 +71,14 @@ public class PressurizedReactionRecipeManager extends MekanismRecipeManager<Reac
      * @param name           Name of the new recipe.
      * @param inputSolid     {@link IIngredientWithAmount} representing the item input of the recipe.
      * @param inputFluid     {@link CTFluidIngredient} representing the fluid input of the recipe.
-     * @param inputGas       {@link GasStackIngredient} representing the gas input of the recipe.
+     * @param inputGas       {@link ChemicalStackIngredient} representing the gas input of the recipe.
      * @param duration       Base duration in ticks that this recipe takes to complete. Must be greater than zero.
-     * @param outputGas      {@link ICrTGasStack} representing the gas output of the recipe.
+     * @param outputGas      {@link ICrTChemicalStack} representing the gas output of the recipe.
      * @param energyRequired Value representing how much "extra" energy this recipe requires, compared to the base energy requirements of the machine performing the
      *                       recipe.
      */
     @ZenCodeType.Method
-    public void addRecipe(String name, IIngredientWithAmount inputSolid, CTFluidIngredient inputFluid, GasStackIngredient inputGas, int duration, ICrTGasStack outputGas,
+    public void addRecipe(String name, IIngredientWithAmount inputSolid, CTFluidIngredient inputFluid, ChemicalStackIngredient inputGas, int duration, ICrTChemicalStack outputGas,
           long energyRequired) {
         addRecipe(name, inputSolid, inputFluid, inputGas, duration, ItemStack.EMPTY, getAndValidateNotEmpty(outputGas), energyRequired);
     }
@@ -89,15 +89,15 @@ public class PressurizedReactionRecipeManager extends MekanismRecipeManager<Reac
      * @param name       Name of the new recipe.
      * @param inputSolid {@link IIngredientWithAmount} representing the item input of the recipe.
      * @param inputFluid {@link CTFluidIngredient} representing the fluid input of the recipe.
-     * @param inputGas   {@link GasStackIngredient} representing the gas input of the recipe.
+     * @param inputGas   {@link ChemicalStackIngredient} representing the gas input of the recipe.
      * @param duration   Base duration in ticks that this recipe takes to complete. Must be greater than zero.
-     * @param outputGas  {@link ICrTGasStack} representing the gas output of the recipe.
+     * @param outputGas  {@link ICrTChemicalStack} representing the gas output of the recipe.
      *
      * @apiNote {@code energyRequired} (the amount of "extra" energy this recipe requires, compared to the base energy requirements of the machine performing the recipe),
      * will default to zero.
      */
     @ZenCodeType.Method
-    public void addRecipe(String name, IIngredientWithAmount inputSolid, CTFluidIngredient inputFluid, GasStackIngredient inputGas, int duration, ICrTGasStack outputGas) {
+    public void addRecipe(String name, IIngredientWithAmount inputSolid, CTFluidIngredient inputFluid, ChemicalStackIngredient inputGas, int duration, ICrTChemicalStack outputGas) {
         addRecipe(name, inputSolid, inputFluid, inputGas, duration, ItemStack.EMPTY, getAndValidateNotEmpty(outputGas), 0);
     }
 
@@ -107,16 +107,16 @@ public class PressurizedReactionRecipeManager extends MekanismRecipeManager<Reac
      * @param name           Name of the new recipe.
      * @param inputSolid     {@link IIngredientWithAmount} representing the item input of the recipe.
      * @param inputFluid     {@link CTFluidIngredient} representing the fluid input of the recipe.
-     * @param inputGas       {@link GasStackIngredient} representing the gas input of the recipe.
+     * @param inputGas       {@link ChemicalStackIngredient} representing the gas input of the recipe.
      * @param duration       Base duration in ticks that this recipe takes to complete. Must be greater than zero.
      * @param outputItem     {@link IItemStack} representing the item output of the recipe.
-     * @param outputGas      {@link ICrTGasStack} representing the gas output of the recipe.
+     * @param outputGas      {@link ICrTChemicalStack} representing the gas output of the recipe.
      * @param energyRequired Value representing how much "extra" energy this recipe requires, compared to the base energy requirements of the machine performing the
      *                       recipe.
      */
     @ZenCodeType.Method
-    public void addRecipe(String name, IIngredientWithAmount inputSolid, CTFluidIngredient inputFluid, GasStackIngredient inputGas, int duration, IItemStack outputItem,
-          ICrTGasStack outputGas, long energyRequired) {
+    public void addRecipe(String name, IIngredientWithAmount inputSolid, CTFluidIngredient inputFluid, ChemicalStackIngredient inputGas, int duration, IItemStack outputItem,
+          ICrTChemicalStack outputGas, long energyRequired) {
         addRecipe(name, inputSolid, inputFluid, inputGas, duration, getAndValidateNotEmpty(outputItem), getAndValidateNotEmpty(outputGas), energyRequired);
     }
 
@@ -126,22 +126,22 @@ public class PressurizedReactionRecipeManager extends MekanismRecipeManager<Reac
      * @param name       Name of the new recipe.
      * @param inputSolid {@link IIngredientWithAmount} representing the item input of the recipe.
      * @param inputFluid {@link CTFluidIngredient} representing the fluid input of the recipe.
-     * @param inputGas   {@link GasStackIngredient} representing the gas input of the recipe.
+     * @param inputGas   {@link ChemicalStackIngredient} representing the gas input of the recipe.
      * @param duration   Base duration in ticks that this recipe takes to complete. Must be greater than zero.
      * @param outputItem {@link IItemStack} representing the item output of the recipe.
-     * @param outputGas  {@link ICrTGasStack} representing the gas output of the recipe.
+     * @param outputGas  {@link ICrTChemicalStack} representing the gas output of the recipe.
      *
      * @apiNote {@code energyRequired} (the amount of "extra" energy this recipe requires, compared to the base energy requirements of the machine performing the recipe),
      * will default to zero.
      */
     @ZenCodeType.Method
-    public void addRecipe(String name, IIngredientWithAmount inputSolid, CTFluidIngredient inputFluid, GasStackIngredient inputGas, int duration, IItemStack outputItem,
-          ICrTGasStack outputGas) {
+    public void addRecipe(String name, IIngredientWithAmount inputSolid, CTFluidIngredient inputFluid, ChemicalStackIngredient inputGas, int duration, IItemStack outputItem,
+          ICrTChemicalStack outputGas) {
         addRecipe(name, inputSolid, inputFluid, inputGas, duration, getAndValidateNotEmpty(outputItem), getAndValidateNotEmpty(outputGas), 0);
     }
 
-    private void addRecipe(String name, IIngredientWithAmount inputSolid, CTFluidIngredient inputFluid, GasStackIngredient inputGas, int duration, ItemStack outputItem,
-          GasStack outputGas, long energyRequired) {
+    private void addRecipe(String name, IIngredientWithAmount inputSolid, CTFluidIngredient inputFluid, ChemicalStackIngredient inputGas, int duration, ItemStack outputItem,
+          ChemicalStack outputGas, long energyRequired) {
         addRecipe(name, makeRecipe(inputSolid, inputFluid, inputGas, duration, outputItem, outputGas, energyRequired));
     }
 
@@ -150,15 +150,15 @@ public class PressurizedReactionRecipeManager extends MekanismRecipeManager<Reac
      *
      * @param inputSolid     {@link IIngredientWithAmount} representing the item input of the recipe.
      * @param inputFluid     {@link CTFluidIngredient} representing the fluid input of the recipe.
-     * @param inputGas       {@link GasStackIngredient} representing the gas input of the recipe.
+     * @param inputGas       {@link ChemicalStackIngredient} representing the gas input of the recipe.
      * @param duration       Base duration in ticks that this recipe takes to complete. Will be validated as being greater than zero.
      * @param outputItem     {@link IItemStack} representing the item output of the recipe. It will be validated that at least one of this and outputGas is not empty.
-     * @param outputGas      {@link ICrTGasStack} representing the gas output of the recipe. It will be validated that at least one of this and outputItem is not empty.
+     * @param outputGas      {@link ICrTChemicalStack} representing the gas output of the recipe. It will be validated that at least one of this and outputItem is not empty.
      * @param energyRequired Value representing how much "extra" energy this recipe requires, compared to the base energy requirements of the machine performing the
      *                       recipe.
      */
-    public PressurizedReactionRecipe makeRecipe(IIngredientWithAmount inputSolid, CTFluidIngredient inputFluid, GasStackIngredient inputGas,
-          int duration, ItemStack outputItem, GasStack outputGas, long energyRequired) {
+    public PressurizedReactionRecipe makeRecipe(IIngredientWithAmount inputSolid, CTFluidIngredient inputFluid, ChemicalStackIngredient inputGas,
+          int duration, ItemStack outputItem, ChemicalStack outputGas, long energyRequired) {
         if (duration <= 0) {
             throw new IllegalArgumentException("Duration must be positive! Duration: " + duration);
         }
@@ -174,12 +174,12 @@ public class PressurizedReactionRecipeManager extends MekanismRecipeManager<Reac
             if (!itemOutput.isEmpty()) {
                 builder.append(ItemStackUtil.getCommandString(itemOutput));
             }
-            GasStack gasOutput = output.gas();
+            ChemicalStack gasOutput = output.gas();
             if (!gasOutput.isEmpty()) {
                 if (!itemOutput.isEmpty()) {
                     builder.append(" and ");
                 }
-                builder.append(new CrTGasStack(gasOutput));
+                builder.append(new CrTChemicalStack(gasOutput));
             }
             return builder.toString();
         });

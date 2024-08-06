@@ -9,14 +9,12 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.chemical.FluidChemicalToChemicalRecipe;
 import mekanism.api.recipes.chemical.ItemStackChemicalToItemStackRecipe;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
@@ -124,12 +122,11 @@ public class TwoInputCachedRecipe<INPUT_A, INPUT_B, OUTPUT, RECIPE extends Mekan
      * @param chemicalInputHandler Chemical input handler.
      * @param outputHandler        Output handler.
      */
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK, ?>,
-          RECIPE extends FluidChemicalToChemicalRecipe<CHEMICAL, STACK, INGREDIENT>>
-    TwoInputCachedRecipe<@NotNull FluidStack, @NotNull STACK, @NotNull STACK, RECIPE> fluidChemicalToChemical(RECIPE recipe, BooleanSupplier recheckAllErrors,
-          IInputHandler<@NotNull FluidStack> fluidInputHandler, IInputHandler<@NotNull STACK> chemicalInputHandler, IOutputHandler<@NotNull STACK> outputHandler) {
+    public static <RECIPE extends FluidChemicalToChemicalRecipe>
+    TwoInputCachedRecipe<@NotNull FluidStack, @NotNull ChemicalStack, @NotNull ChemicalStack, RECIPE> fluidChemicalToChemical(RECIPE recipe, BooleanSupplier recheckAllErrors,
+          IInputHandler<@NotNull FluidStack> fluidInputHandler, IInputHandler<@NotNull ChemicalStack> chemicalInputHandler, IOutputHandler<@NotNull ChemicalStack> outputHandler) {
         return new TwoInputCachedRecipe<>(recipe, recheckAllErrors, fluidInputHandler, chemicalInputHandler, outputHandler, recipe::getFluidInput,
-              recipe::getChemicalInput, recipe::getOutput, ConstantPredicates.FLUID_EMPTY, ConstantPredicates.chemicalEmpty(), ConstantPredicates.chemicalEmpty());
+              recipe::getChemicalInput, recipe::getOutput, ConstantPredicates.FLUID_EMPTY, ConstantPredicates.CHEMICAL_EMPTY, ConstantPredicates.CHEMICAL_EMPTY);
     }
 
     /**
@@ -142,12 +139,11 @@ public class TwoInputCachedRecipe<INPUT_A, INPUT_B, OUTPUT, RECIPE extends Mekan
      * @param chemicalInputHandler Chemical input handler.
      * @param outputHandler        Output handler.
      */
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK, ?>,
-          RECIPE extends ItemStackChemicalToItemStackRecipe<CHEMICAL, STACK, INGREDIENT>>
-    TwoInputCachedRecipe<@NotNull ItemStack, @NotNull STACK, @NotNull ItemStack, RECIPE> itemChemicalToItem(RECIPE recipe, BooleanSupplier recheckAllErrors,
-          IInputHandler<@NotNull ItemStack> itemInputHandler, IInputHandler<@NotNull STACK> chemicalInputHandler, IOutputHandler<@NotNull ItemStack> outputHandler) {
+    public static <RECIPE extends ItemStackChemicalToItemStackRecipe>
+    TwoInputCachedRecipe<@NotNull ItemStack, @NotNull ChemicalStack, @NotNull ItemStack, RECIPE> itemChemicalToItem(RECIPE recipe, BooleanSupplier recheckAllErrors,
+          IInputHandler<@NotNull ItemStack> itemInputHandler, IInputHandler<@NotNull ChemicalStack> chemicalInputHandler, IOutputHandler<@NotNull ItemStack> outputHandler) {
         return new TwoInputCachedRecipe<>(recipe, recheckAllErrors, itemInputHandler, chemicalInputHandler, outputHandler, recipe::getItemInput, recipe::getChemicalInput,
-              recipe::getOutput, ConstantPredicates.ITEM_EMPTY, ConstantPredicates.chemicalEmpty(), ConstantPredicates.ITEM_EMPTY);
+              recipe::getOutput, ConstantPredicates.ITEM_EMPTY, ConstantPredicates.CHEMICAL_EMPTY, ConstantPredicates.ITEM_EMPTY);
     }
 
     /**

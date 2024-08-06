@@ -7,22 +7,6 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasHandler;
-import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.chemical.infuse.IInfusionHandler;
-import mekanism.api.chemical.infuse.IInfusionTank;
-import mekanism.api.chemical.infuse.InfuseType;
-import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.api.chemical.pigment.IPigmentHandler;
-import mekanism.api.chemical.pigment.IPigmentTank;
-import mekanism.api.chemical.pigment.Pigment;
-import mekanism.api.chemical.pigment.PigmentStack;
-import mekanism.api.chemical.slurry.ISlurryHandler;
-import mekanism.api.chemical.slurry.ISlurryTank;
-import mekanism.api.chemical.slurry.Slurry;
-import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.functions.ConstantPredicates;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -31,26 +15,23 @@ import org.jetbrains.annotations.Nullable;
  * Helper class for creating Chemical Tanks.
  */
 @NothingNullByDefault
-public class ChemicalTankBuilder<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> {
+public class ChemicalTankBuilder {
 
-    public static final ChemicalTankBuilder<Gas, GasStack, IGasTank> GAS = new ChemicalTankBuilder<>(BasicGasTank::new);
-    public static final ChemicalTankBuilder<InfuseType, InfusionStack, IInfusionTank> INFUSION = new ChemicalTankBuilder<>(BasicInfusionTank::new);
-    public static final ChemicalTankBuilder<Pigment, PigmentStack, IPigmentTank> PIGMENT = new ChemicalTankBuilder<>(BasicPigmentTank::new);
-    public static final ChemicalTankBuilder<Slurry, SlurryStack, ISlurryTank> SLURRY = new ChemicalTankBuilder<>(BasicSlurryTank::new);
+    public static final ChemicalTankBuilder CHEMICAL = new ChemicalTankBuilder(BasicChemicalTank::new);
 
-    public final Predicate<@NotNull CHEMICAL> alwaysTrue = ConstantPredicates.alwaysTrue();
-    public final Predicate<@NotNull CHEMICAL> alwaysFalse = ConstantPredicates.alwaysFalse();
-    public final BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> alwaysTrueBi = ConstantPredicates.alwaysTrueBi();
-    public final BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> internalOnly = ConstantPredicates.internalOnly();
-    public final BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> notExternal = ConstantPredicates.notExternal();
+    public static final Predicate<Chemical> alwaysTrue = ConstantPredicates.alwaysTrue();
+    public static final Predicate<Chemical> alwaysFalse = ConstantPredicates.alwaysFalse();
+    public static final BiPredicate<Chemical, @NotNull AutomationType> alwaysTrueBi = ConstantPredicates.alwaysTrueBi();
+    public static final BiPredicate<Chemical, @NotNull AutomationType> internalOnly = ConstantPredicates.internalOnly();
+    public static final BiPredicate<Chemical, @NotNull AutomationType> notExternal = ConstantPredicates.notExternal();
     /**
      * @since 10.5.0
      */
-    public final BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> manualOnly = (chemical, automationType) -> automationType == AutomationType.MANUAL;
+    public final BiPredicate<Chemical, @NotNull AutomationType> manualOnly = (chemical, automationType) -> automationType == AutomationType.MANUAL;
 
-    private final BasicTankCreator<CHEMICAL, STACK, TANK> tankCreator;
+    private final BasicTankCreator<IChemicalTank> tankCreator;
 
-    private ChemicalTankBuilder(BasicTankCreator<CHEMICAL, STACK, TANK> tankCreator) {
+    private ChemicalTankBuilder(BasicTankCreator<IChemicalTank> tankCreator) {
         this.tankCreator = tankCreator;
     }
 
@@ -59,7 +40,7 @@ public class ChemicalTankBuilder<CHEMICAL extends Chemical<CHEMICAL>, STACK exte
      *
      * @param capacity Tank capacity.
      */
-    public TANK createDummy(long capacity) {
+    public IChemicalTank createDummy(long capacity) {
         return createAllValid(capacity, null);
     }
 
@@ -69,7 +50,7 @@ public class ChemicalTankBuilder<CHEMICAL extends Chemical<CHEMICAL>, STACK exte
      * @param capacity Tank capacity.
      * @param listener Contents change listener.
      */
-    public TANK create(long capacity, @Nullable IContentsListener listener) {
+    public IChemicalTank create(long capacity, @Nullable IContentsListener listener) {
         return createWithValidator(capacity, null, listener);
     }
 
@@ -80,7 +61,7 @@ public class ChemicalTankBuilder<CHEMICAL extends Chemical<CHEMICAL>, STACK exte
      * @param attributeValidator Chemical Attribute Validator, or {@code null} to fall back to {@link ChemicalAttributeValidator#DEFAULT}.
      * @param listener           Contents change listener.
      */
-    public TANK createWithValidator(long capacity, @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener) {
+    public IChemicalTank createWithValidator(long capacity, @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener) {
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be at least zero");
         }
@@ -93,7 +74,7 @@ public class ChemicalTankBuilder<CHEMICAL extends Chemical<CHEMICAL>, STACK exte
      * @param capacity Tank capacity.
      * @param listener Contents change listener.
      */
-    public TANK createAllValid(long capacity, @Nullable IContentsListener listener) {
+    public IChemicalTank createAllValid(long capacity, @Nullable IContentsListener listener) {
         return createWithValidator(capacity, ChemicalAttributeValidator.ALWAYS_ALLOW, listener);
     }
 
@@ -108,7 +89,7 @@ public class ChemicalTankBuilder<CHEMICAL extends Chemical<CHEMICAL>, STACK exte
      *
      * @implNote The created tank will always allow {@link AutomationType#MANUAL} extraction, and allow any {@link AutomationType} to insert into it.
      */
-    public TANK create(long capacity, Predicate<@NotNull CHEMICAL> canExtract, Predicate<@NotNull CHEMICAL> canInsert, @Nullable IContentsListener listener) {
+    public IChemicalTank create(long capacity, Predicate<Chemical> canExtract, Predicate<Chemical> canInsert, @Nullable IContentsListener listener) {
         return create(capacity, canExtract, canInsert, alwaysTrue, listener);
     }
 
@@ -120,7 +101,7 @@ public class ChemicalTankBuilder<CHEMICAL extends Chemical<CHEMICAL>, STACK exte
      * @param validator Validation predicate.
      * @param listener  Contents change listener.
      */
-    public TANK create(long capacity, Predicate<@NotNull CHEMICAL> validator, @Nullable IContentsListener listener) {
+    public IChemicalTank create(long capacity, Predicate<Chemical> validator, @Nullable IContentsListener listener) {
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be at least zero");
         }
@@ -136,7 +117,7 @@ public class ChemicalTankBuilder<CHEMICAL extends Chemical<CHEMICAL>, STACK exte
      * @param validator Validation predicate.
      * @param listener  Contents change listener.
      */
-    public TANK input(long capacity, Predicate<@NotNull CHEMICAL> validator, @Nullable IContentsListener listener) {
+    public IChemicalTank input(long capacity, Predicate<Chemical> validator, @Nullable IContentsListener listener) {
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be at least zero");
         }
@@ -153,7 +134,7 @@ public class ChemicalTankBuilder<CHEMICAL extends Chemical<CHEMICAL>, STACK exte
      * @param validator Validation predicate.
      * @param listener  Contents change listener.
      */
-    public TANK input(long capacity, Predicate<@NotNull CHEMICAL> canInsert, Predicate<@NotNull CHEMICAL> validator, @Nullable IContentsListener listener) {
+    public IChemicalTank input(long capacity, Predicate<Chemical> canInsert, Predicate<Chemical> validator, @Nullable IContentsListener listener) {
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be at least zero");
         }
@@ -169,7 +150,7 @@ public class ChemicalTankBuilder<CHEMICAL extends Chemical<CHEMICAL>, STACK exte
      * @param capacity Tank capacity.
      * @param listener Contents change listener.
      */
-    public TANK output(long capacity, @Nullable IContentsListener listener) {
+    public IChemicalTank output(long capacity, @Nullable IContentsListener listener) {
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be at least zero");
         }
@@ -188,7 +169,7 @@ public class ChemicalTankBuilder<CHEMICAL extends Chemical<CHEMICAL>, STACK exte
      *
      * @implNote The created tank will always allow {@link AutomationType#MANUAL} extraction, and allow any {@link AutomationType} to insert into it.
      */
-    public TANK create(long capacity, Predicate<@NotNull CHEMICAL> canExtract, Predicate<@NotNull CHEMICAL> canInsert, Predicate<@NotNull CHEMICAL> validator,
+    public IChemicalTank create(long capacity, Predicate<Chemical> canExtract, Predicate<Chemical> canInsert, Predicate<Chemical> validator,
           @Nullable IContentsListener listener) {
         return create(capacity, canExtract, canInsert, validator, null, listener);
     }
@@ -203,8 +184,8 @@ public class ChemicalTankBuilder<CHEMICAL extends Chemical<CHEMICAL>, STACK exte
      * @param validator  Validation predicate.
      * @param listener   Contents change listener.
      */
-    public TANK create(long capacity, BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> canExtract,
-          BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> canInsert, Predicate<@NotNull CHEMICAL> validator, @Nullable IContentsListener listener) {
+    public IChemicalTank create(long capacity, BiPredicate<Chemical, @NotNull AutomationType> canExtract,
+          BiPredicate<Chemical, @NotNull AutomationType> canInsert, Predicate<Chemical> validator, @Nullable IContentsListener listener) {
         return create(capacity, canExtract, canInsert, validator, null, listener);
     }
 
@@ -220,7 +201,7 @@ public class ChemicalTankBuilder<CHEMICAL extends Chemical<CHEMICAL>, STACK exte
      *
      * @implNote The created tank will always allow {@link AutomationType#MANUAL} extraction, and allow any {@link AutomationType} to insert into it.
      */
-    public TANK create(long capacity, Predicate<@NotNull CHEMICAL> canExtract, Predicate<@NotNull CHEMICAL> canInsert, Predicate<@NotNull CHEMICAL> validator,
+    public IChemicalTank create(long capacity, Predicate<Chemical> canExtract, Predicate<Chemical> canInsert, Predicate<Chemical> validator,
           @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener) {
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be at least zero");
@@ -241,8 +222,8 @@ public class ChemicalTankBuilder<CHEMICAL extends Chemical<CHEMICAL>, STACK exte
      * @param attributeValidator Chemical Attribute Validator, or {@code null} to fall back to {@link ChemicalAttributeValidator#DEFAULT}.
      * @param listener           Contents change listener.
      */
-    public TANK create(long capacity, BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> canExtract, BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> canInsert,
-          Predicate<@NotNull CHEMICAL> validator, @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener) {
+    public IChemicalTank create(long capacity, BiPredicate<Chemical, @NotNull AutomationType> canExtract, BiPredicate<Chemical, @NotNull AutomationType> canInsert,
+          Predicate<Chemical> validator, @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener) {
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be at least zero");
         }
@@ -252,51 +233,16 @@ public class ChemicalTankBuilder<CHEMICAL extends Chemical<CHEMICAL>, STACK exte
         return tankCreator.create(capacity, canExtract, canInsert, validator, attributeValidator, listener);
     }
 
-    private TANK createUnchecked(long capacity, Predicate<@NotNull CHEMICAL> canExtract, Predicate<@NotNull CHEMICAL> canInsert, Predicate<@NotNull CHEMICAL> validator,
+    private IChemicalTank createUnchecked(long capacity, Predicate<Chemical> canExtract, Predicate<Chemical> canInsert, Predicate<Chemical> validator,
           @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener) {
         return tankCreator.create(capacity, (stack, automationType) -> automationType == AutomationType.MANUAL || canExtract.test(stack),
               (stack, automationType) -> canInsert.test(stack), validator, attributeValidator, listener);
     }
 
     @FunctionalInterface
-    private interface BasicTankCreator<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> {
+    private interface BasicTankCreator<TANK extends IChemicalTank> {
 
-        TANK create(long capacity, BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> canExtract, BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> canInsert,
-              Predicate<@NotNull CHEMICAL> validator, @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener);
-    }
-
-    public static class BasicGasTank extends BasicChemicalTank<Gas, GasStack> implements IGasHandler, IGasTank {
-
-        protected BasicGasTank(long capacity, BiPredicate<@NotNull Gas, @NotNull AutomationType> canExtract, BiPredicate<@NotNull Gas, @NotNull AutomationType> canInsert,
-              Predicate<@NotNull Gas> validator, @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener) {
-            super(capacity, canExtract, canInsert, validator, attributeValidator, listener);
-        }
-    }
-
-    public static class BasicInfusionTank extends BasicChemicalTank<InfuseType, InfusionStack> implements IInfusionHandler, IInfusionTank {
-
-        protected BasicInfusionTank(long capacity, BiPredicate<@NotNull InfuseType, @NotNull AutomationType> canExtract,
-              BiPredicate<@NotNull InfuseType, @NotNull AutomationType> canInsert, Predicate<@NotNull InfuseType> validator,
-              @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener) {
-            super(capacity, canExtract, canInsert, validator, attributeValidator, listener);
-        }
-    }
-
-    public static class BasicPigmentTank extends BasicChemicalTank<Pigment, PigmentStack> implements IPigmentHandler, IPigmentTank {
-
-        protected BasicPigmentTank(long capacity, BiPredicate<@NotNull Pigment, @NotNull AutomationType> canExtract,
-              BiPredicate<@NotNull Pigment, @NotNull AutomationType> canInsert, Predicate<@NotNull Pigment> validator,
-              @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener) {
-            super(capacity, canExtract, canInsert, validator, attributeValidator, listener);
-        }
-    }
-
-    public static class BasicSlurryTank extends BasicChemicalTank<Slurry, SlurryStack> implements ISlurryHandler, ISlurryTank {
-
-        protected BasicSlurryTank(long capacity, BiPredicate<@NotNull Slurry, @NotNull AutomationType> canExtract,
-              BiPredicate<@NotNull Slurry, @NotNull AutomationType> canInsert, Predicate<@NotNull Slurry> validator,
-              @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener) {
-            super(capacity, canExtract, canInsert, validator, attributeValidator, listener);
-        }
+        TANK create(long capacity, BiPredicate<Chemical, @NotNull AutomationType> canExtract, BiPredicate<Chemical, @NotNull AutomationType> canInsert,
+              Predicate<Chemical> validator, @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener);
     }
 }

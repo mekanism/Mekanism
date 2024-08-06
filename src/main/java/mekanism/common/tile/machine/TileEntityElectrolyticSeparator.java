@@ -6,9 +6,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.chemical.ChemicalTankBuilder;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasTank;
+import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.functions.LongObjectToLongFunction;
 import mekanism.api.math.MathUtils;
 import mekanism.api.recipes.ElectrolysisRecipe;
@@ -49,7 +47,7 @@ import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FluidInventorySlot;
-import mekanism.common.inventory.slot.chemical.GasInventorySlot;
+import mekanism.common.inventory.slot.chemical.ChemicalInventorySlot;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -109,13 +107,13 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
      */
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getLeftOutput", "getLeftOutputCapacity", "getLeftOutputNeeded",
                                                                                         "getLeftOutputFilledPercentage"}, docPlaceholder = "left output tank")
-    public IGasTank leftTank;
+    public IChemicalTank leftTank;
     /**
      * The amount of hydrogen this block is storing.
      */
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getRightOutput", "getRightOutputCapacity", "getRightOutputNeeded",
                                                                                         "getRightOutputFilledPercentage"}, docPlaceholder = "right output tank")
-    public IGasTank rightTank;
+    public IChemicalTank rightTank;
     @SyntheticComputerMethod(getter = "getLeftOutputDumpingMode")
     public GasMode dumpLeft = GasMode.IDLE;
     @SyntheticComputerMethod(getter = "getRightOutputDumpingMode")
@@ -132,9 +130,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem", docPlaceholder = "input item slot")
     FluidInventorySlot fluidSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getLeftOutputItem", docPlaceholder = "left output item slot")
-    GasInventorySlot leftOutputSlot;
+    ChemicalInventorySlot leftOutputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getRightOutputItem", docPlaceholder = "right output item slot")
-    GasInventorySlot rightOutputSlot;
+    ChemicalInventorySlot rightOutputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy slot")
     EnergyInventorySlot energySlot;
 
@@ -150,7 +148,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
             itemConfig.addSlotInfo(DataType.ENERGY, new InventorySlotInfo(true, true, energySlot));
         }
 
-        ConfigInfo gasConfig = configComponent.getConfig(TransmissionType.GAS);
+        ConfigInfo gasConfig = configComponent.getConfig(TransmissionType.CHEMICAL);
         if (gasConfig != null) {
             gasConfig.addSlotInfo(DataType.OUTPUT_1, new GasSlotInfo(false, true, leftTank));
             gasConfig.addSlotInfo(DataType.OUTPUT_2, new GasSlotInfo(false, true, rightTank));
@@ -160,7 +158,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
 
         ejectorComponent = new TileComponentEjector(this);
-        ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM, TransmissionType.GAS)
+        ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM, TransmissionType.CHEMICAL)
               .setCanTankEject(tank -> {
                   if (tank == leftTank) {
                       return dumpLeft != GasMode.DUMPING;
@@ -184,10 +182,10 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
 
     @NotNull
     @Override
-    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
-        ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(leftTank = ChemicalTankBuilder.GAS.output(MAX_GAS, recipeCacheUnpauseListener));
-        builder.addTank(rightTank = ChemicalTankBuilder.GAS.output(MAX_GAS, recipeCacheUnpauseListener));
+    public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
+        ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        builder.addTank(leftTank = ChemicalTankBuilder.CHEMICAL.output(MAX_GAS, recipeCacheUnpauseListener));
+        builder.addTank(rightTank = ChemicalTankBuilder.CHEMICAL.output(MAX_GAS, recipeCacheUnpauseListener));
         return builder.build();
     }
 
@@ -204,8 +202,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
         builder.addSlot(fluidSlot = FluidInventorySlot.fill(fluidTank, listener, 26, 35));
-        builder.addSlot(leftOutputSlot = GasInventorySlot.drain(leftTank, listener, 59, 52));
-        builder.addSlot(rightOutputSlot = GasInventorySlot.drain(rightTank, listener, 101, 52));
+        builder.addSlot(leftOutputSlot = ChemicalInventorySlot.drain(leftTank, listener, 59, 52));
+        builder.addSlot(rightOutputSlot = ChemicalInventorySlot.drain(rightTank, listener, 101, 52));
         builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, listener, 143, 35));
         fluidSlot.setSlotType(ContainerSlotType.INPUT);
         leftOutputSlot.setSlotType(ContainerSlotType.OUTPUT);
@@ -235,7 +233,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
         return sendUpdatePacket;
     }
 
-    private void handleTank(IGasTank tank, GasMode mode) {
+    private void handleTank(IChemicalTank tank, GasMode mode) {
         if (!tank.isEmpty()) {
             if (mode == GasMode.DUMPING) {
                 tank.shrinkStack(dumpRate, Action.EXECUTE);
@@ -250,11 +248,11 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
         }
     }
 
-    private long getDumpingExcessTarget(IGasTank tank) {
+    private long getDumpingExcessTarget(IChemicalTank tank) {
         return MathUtils.clampToLong(tank.getCapacity() * MekanismConfig.general.dumpExcessKeepRatio.get());
     }
 
-    private boolean atDumpingExcessTarget(IGasTank tank) {
+    private boolean atDumpingExcessTarget(IChemicalTank tank) {
         //Check >= so that if we are past and our eject rate is just low then we don't continue making it, so we never get to the eject rate
         return tank.getStored() >= getDumpingExcessTarget(tank);
     }

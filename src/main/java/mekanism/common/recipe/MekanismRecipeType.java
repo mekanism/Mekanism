@@ -5,14 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.infuse.InfuseType;
-import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.api.chemical.pigment.Pigment;
-import mekanism.api.chemical.pigment.PigmentStack;
-import mekanism.api.chemical.slurry.Slurry;
-import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.ChemicalDissolutionRecipe;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
@@ -43,7 +35,6 @@ import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.api.recipes.vanilla_input.BiChemicalRecipeInput;
 import mekanism.api.recipes.vanilla_input.ReactionRecipeInput;
 import mekanism.api.recipes.vanilla_input.RotaryRecipeInput;
-import mekanism.api.recipes.vanilla_input.SingleBoxedChemicalInput;
 import mekanism.api.recipes.vanilla_input.SingleChemicalRecipeInput;
 import mekanism.api.recipes.vanilla_input.SingleFluidChemicalRecipeInput;
 import mekanism.api.recipes.vanilla_input.SingleFluidRecipeInput;
@@ -51,7 +42,6 @@ import mekanism.api.recipes.vanilla_input.SingleItemChemicalRecipeInput;
 import mekanism.client.MekanismClient;
 import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.common.Mekanism;
-import mekanism.common.recipe.lookup.cache.ChemicalCrystallizerInputRecipeCache;
 import mekanism.common.recipe.lookup.cache.IInputRecipeCache;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.DoubleItem;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.EitherSideChemical;
@@ -92,45 +82,46 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
     public static final RecipeTypeRegistryObject<SingleRecipeInput, ItemStackToItemStackRecipe, SingleItem<ItemStackToItemStackRecipe>> ENRICHING = register(MekanismRecipeTypes.NAME_ENRICHING, recipeType -> new SingleItem<>(recipeType, ItemStackToItemStackRecipe::getInput));
     public static final RecipeTypeRegistryObject<SingleRecipeInput, ItemStackToItemStackRecipe, SingleItem<ItemStackToItemStackRecipe>> SMELTING = register(MekanismRecipeTypes.NAME_SMELTING, recipeType -> new SingleItem<>(recipeType, ItemStackToItemStackRecipe::getInput));
 
-    public static final RecipeTypeRegistryObject<BiChemicalRecipeInput<Gas, GasStack>, ChemicalInfuserRecipe, EitherSideChemical<Gas, GasStack, ChemicalInfuserRecipe>> CHEMICAL_INFUSING = register(MekanismRecipeTypes.NAME_CHEMICAL_INFUSING, EitherSideChemical::new);
+    public static final RecipeTypeRegistryObject<BiChemicalRecipeInput, ChemicalInfuserRecipe, EitherSideChemical<ChemicalInfuserRecipe>> CHEMICAL_INFUSING = register(MekanismRecipeTypes.NAME_CHEMICAL_INFUSING, EitherSideChemical::new);
 
     public static final RecipeTypeRegistryObject<RecipeInput, CombinerRecipe, DoubleItem<CombinerRecipe>> COMBINING = register(MekanismRecipeTypes.NAME_COMBINING, recipeType -> new DoubleItem<>(recipeType, CombinerRecipe::getMainInput, CombinerRecipe::getExtraInput));
 
     public static final RecipeTypeRegistryObject<SingleFluidRecipeInput, ElectrolysisRecipe, SingleFluid<ElectrolysisRecipe>> SEPARATING = register(MekanismRecipeTypes.NAME_SEPARATING, recipeType -> new SingleFluid<>(recipeType, ElectrolysisRecipe::getInput));
 
-    public static final RecipeTypeRegistryObject<SingleFluidChemicalRecipeInput<Slurry, SlurryStack>, FluidSlurryToSlurryRecipe, FluidChemical<Slurry, SlurryStack, FluidSlurryToSlurryRecipe>> WASHING = register(MekanismRecipeTypes.NAME_WASHING, recipeType -> new FluidChemical<>(recipeType, FluidSlurryToSlurryRecipe::getFluidInput, FluidSlurryToSlurryRecipe::getChemicalInput));
+    public static final RecipeTypeRegistryObject<SingleFluidChemicalRecipeInput, FluidSlurryToSlurryRecipe, FluidChemical<FluidSlurryToSlurryRecipe>> WASHING = register(MekanismRecipeTypes.NAME_WASHING, recipeType -> new FluidChemical<>(recipeType, FluidSlurryToSlurryRecipe::getFluidInput, FluidSlurryToSlurryRecipe::getChemicalInput));
 
     public static final RecipeTypeRegistryObject<SingleFluidRecipeInput, FluidToFluidRecipe, SingleFluid<FluidToFluidRecipe>> EVAPORATING = register(MekanismRecipeTypes.NAME_EVAPORATING, recipeType -> new SingleFluid<>(recipeType, FluidToFluidRecipe::getInput));
 
-    public static final RecipeTypeRegistryObject<SingleChemicalRecipeInput<Gas, GasStack>, GasToGasRecipe, SingleChemical<Gas, GasStack, GasToGasRecipe>> ACTIVATING = register(MekanismRecipeTypes.NAME_ACTIVATING, recipeType -> new SingleChemical<>(recipeType, GasToGasRecipe::getInput));
-    public static final RecipeTypeRegistryObject<SingleChemicalRecipeInput<Gas, GasStack>, GasToGasRecipe, SingleChemical<Gas, GasStack, GasToGasRecipe>> CENTRIFUGING = register(MekanismRecipeTypes.NAME_CENTRIFUGING, recipeType -> new SingleChemical<>(recipeType, GasToGasRecipe::getInput));
+    public static final RecipeTypeRegistryObject<SingleChemicalRecipeInput, GasToGasRecipe, SingleChemical<GasToGasRecipe>> ACTIVATING = register(MekanismRecipeTypes.NAME_ACTIVATING, recipeType -> new SingleChemical<>(recipeType, GasToGasRecipe::getInput));
+    public static final RecipeTypeRegistryObject<SingleChemicalRecipeInput, GasToGasRecipe, SingleChemical<GasToGasRecipe>> CENTRIFUGING = register(MekanismRecipeTypes.NAME_CENTRIFUGING, recipeType -> new SingleChemical<>(recipeType, GasToGasRecipe::getInput));
 
-    public static final RecipeTypeRegistryObject<SingleBoxedChemicalInput, ChemicalCrystallizerRecipe, ChemicalCrystallizerInputRecipeCache> CRYSTALLIZING = register(MekanismRecipeTypes.NAME_CRYSTALLIZING, ChemicalCrystallizerInputRecipeCache::new);
+    public static final RecipeTypeRegistryObject<SingleChemicalRecipeInput, ChemicalCrystallizerRecipe, SingleChemical<ChemicalCrystallizerRecipe>> CRYSTALLIZING = register(MekanismRecipeTypes.NAME_CRYSTALLIZING, recipeType -> new SingleChemical<>(recipeType, ChemicalCrystallizerRecipe::getInput));
 
-    public static final RecipeTypeRegistryObject<SingleItemChemicalRecipeInput<Gas, GasStack>,  ChemicalDissolutionRecipe, ItemChemical<Gas, GasStack, ChemicalDissolutionRecipe>> DISSOLUTION = register(MekanismRecipeTypes.NAME_DISSOLUTION, recipeType -> new ItemChemical<>(recipeType, ChemicalDissolutionRecipe::getItemInput, ChemicalDissolutionRecipe::getGasInput));
+    public static final RecipeTypeRegistryObject<SingleItemChemicalRecipeInput, ChemicalDissolutionRecipe, ItemChemical<ChemicalDissolutionRecipe>> DISSOLUTION = register(MekanismRecipeTypes.NAME_DISSOLUTION, recipeType -> new ItemChemical<>(recipeType, ChemicalDissolutionRecipe::getItemInput, ChemicalDissolutionRecipe::getGasInput));
 
-    public static final RecipeTypeRegistryObject<SingleItemChemicalRecipeInput<Gas, GasStack>, ItemStackGasToItemStackRecipe, ItemChemical<Gas, GasStack, ItemStackGasToItemStackRecipe>> COMPRESSING = register(MekanismRecipeTypes.NAME_COMPRESSING, recipeType -> new ItemChemical<>(recipeType, ItemStackGasToItemStackRecipe::getItemInput, ItemStackGasToItemStackRecipe::getChemicalInput));
-    public static final RecipeTypeRegistryObject<SingleItemChemicalRecipeInput<Gas, GasStack>, ItemStackGasToItemStackRecipe, ItemChemical<Gas, GasStack, ItemStackGasToItemStackRecipe>> PURIFYING = register(MekanismRecipeTypes.NAME_PURIFYING, recipeType -> new ItemChemical<>(recipeType, ItemStackGasToItemStackRecipe::getItemInput, ItemStackGasToItemStackRecipe::getChemicalInput));
-    public static final RecipeTypeRegistryObject<SingleItemChemicalRecipeInput<Gas, GasStack>, ItemStackGasToItemStackRecipe, ItemChemical<Gas, GasStack, ItemStackGasToItemStackRecipe>> INJECTING = register(MekanismRecipeTypes.NAME_INJECTING, recipeType -> new ItemChemical<>(recipeType, ItemStackGasToItemStackRecipe::getItemInput, ItemStackGasToItemStackRecipe::getChemicalInput));
+    public static final RecipeTypeRegistryObject<SingleItemChemicalRecipeInput, ItemStackGasToItemStackRecipe, ItemChemical<ItemStackGasToItemStackRecipe>> COMPRESSING = register(MekanismRecipeTypes.NAME_COMPRESSING, recipeType -> new ItemChemical<>(recipeType, ItemStackGasToItemStackRecipe::getItemInput, ItemStackGasToItemStackRecipe::getChemicalInput));
+    public static final RecipeTypeRegistryObject<SingleItemChemicalRecipeInput, ItemStackGasToItemStackRecipe, ItemChemical<ItemStackGasToItemStackRecipe>> PURIFYING = register(MekanismRecipeTypes.NAME_PURIFYING, recipeType -> new ItemChemical<>(recipeType, ItemStackGasToItemStackRecipe::getItemInput, ItemStackGasToItemStackRecipe::getChemicalInput));
+    public static final RecipeTypeRegistryObject<SingleItemChemicalRecipeInput, ItemStackGasToItemStackRecipe, ItemChemical<ItemStackGasToItemStackRecipe>> INJECTING = register(MekanismRecipeTypes.NAME_INJECTING, recipeType -> new ItemChemical<>(recipeType, ItemStackGasToItemStackRecipe::getItemInput, ItemStackGasToItemStackRecipe::getChemicalInput));
 
-    public static final RecipeTypeRegistryObject<SingleItemChemicalRecipeInput<Gas, GasStack>, NucleosynthesizingRecipe, ItemChemical<Gas, GasStack, NucleosynthesizingRecipe>> NUCLEOSYNTHESIZING = register(MekanismRecipeTypes.NAME_NUCLEOSYNTHESIZING, recipeType -> new ItemChemical<>(recipeType, NucleosynthesizingRecipe::getItemInput, NucleosynthesizingRecipe::getChemicalInput));
+    public static final RecipeTypeRegistryObject<SingleItemChemicalRecipeInput, NucleosynthesizingRecipe, ItemChemical<NucleosynthesizingRecipe>> NUCLEOSYNTHESIZING = register(MekanismRecipeTypes.NAME_NUCLEOSYNTHESIZING, recipeType -> new ItemChemical<>(recipeType, NucleosynthesizingRecipe::getItemInput, NucleosynthesizingRecipe::getChemicalInput));
 
     public static final RecipeTypeRegistryObject<SingleRecipeInput, ItemStackToEnergyRecipe, SingleItem<ItemStackToEnergyRecipe>> ENERGY_CONVERSION = register(MekanismRecipeTypes.NAME_ENERGY_CONVERSION, recipeType -> new SingleItem<>(recipeType, ItemStackToEnergyRecipe::getInput));
 
     public static final RecipeTypeRegistryObject<SingleRecipeInput, ItemStackToGasRecipe, SingleItem<ItemStackToGasRecipe>> GAS_CONVERSION = register(MekanismRecipeTypes.NAME_GAS_CONVERSION, recipeType -> new SingleItem<>(recipeType, ItemStackToChemicalRecipe::getInput));
     public static final RecipeTypeRegistryObject<SingleRecipeInput, ItemStackToGasRecipe, SingleItem<ItemStackToGasRecipe>> OXIDIZING = register(MekanismRecipeTypes.NAME_OXIDIZING, recipeType -> new SingleItem<>(recipeType, ItemStackToChemicalRecipe::getInput));
 
+    //todo merge with gas to become chemical infusion?
     public static final RecipeTypeRegistryObject<SingleRecipeInput, ItemStackToInfuseTypeRecipe, SingleItem<ItemStackToInfuseTypeRecipe>> INFUSION_CONVERSION = register(MekanismRecipeTypes.NAME_INFUSION_CONVERSION, recipeType -> new SingleItem<>(recipeType, ItemStackToChemicalRecipe::getInput));
 
     public static final RecipeTypeRegistryObject<SingleRecipeInput, ItemStackToPigmentRecipe, SingleItem<ItemStackToPigmentRecipe>> PIGMENT_EXTRACTING = register(MekanismRecipeTypes.NAME_PIGMENT_EXTRACTING, recipeType -> new SingleItem<>(recipeType, ItemStackToChemicalRecipe::getInput));
 
-    public static final RecipeTypeRegistryObject<BiChemicalRecipeInput<Pigment, PigmentStack>, PigmentMixingRecipe, EitherSideChemical<Pigment, PigmentStack, PigmentMixingRecipe>> PIGMENT_MIXING = register(MekanismRecipeTypes.NAME_PIGMENT_MIXING, EitherSideChemical::new);
+    public static final RecipeTypeRegistryObject<BiChemicalRecipeInput, PigmentMixingRecipe, EitherSideChemical<PigmentMixingRecipe>> PIGMENT_MIXING = register(MekanismRecipeTypes.NAME_PIGMENT_MIXING, EitherSideChemical::new);
 
-    public static final RecipeTypeRegistryObject<SingleItemChemicalRecipeInput<InfuseType, InfusionStack>, MetallurgicInfuserRecipe, ItemChemical<InfuseType, InfusionStack, MetallurgicInfuserRecipe>> METALLURGIC_INFUSING = register(MekanismRecipeTypes.NAME_METALLURGIC_INFUSING, recipeType -> new ItemChemical<>(recipeType, MetallurgicInfuserRecipe::getItemInput, MetallurgicInfuserRecipe::getChemicalInput));
+    public static final RecipeTypeRegistryObject<SingleItemChemicalRecipeInput, MetallurgicInfuserRecipe, ItemChemical<MetallurgicInfuserRecipe>> METALLURGIC_INFUSING = register(MekanismRecipeTypes.NAME_METALLURGIC_INFUSING, recipeType -> new ItemChemical<>(recipeType, MetallurgicInfuserRecipe::getItemInput, MetallurgicInfuserRecipe::getChemicalInput));
 
-    public static final RecipeTypeRegistryObject<SingleItemChemicalRecipeInput<Pigment, PigmentStack>, PaintingRecipe, ItemChemical<Pigment, PigmentStack, PaintingRecipe>> PAINTING = register(MekanismRecipeTypes.NAME_PAINTING, recipeType -> new ItemChemical<>(recipeType, PaintingRecipe::getItemInput, PaintingRecipe::getChemicalInput));
+    public static final RecipeTypeRegistryObject<SingleItemChemicalRecipeInput, PaintingRecipe, ItemChemical<PaintingRecipe>> PAINTING = register(MekanismRecipeTypes.NAME_PAINTING, recipeType -> new ItemChemical<>(recipeType, PaintingRecipe::getItemInput, PaintingRecipe::getChemicalInput));
 
-    public static final RecipeTypeRegistryObject<ReactionRecipeInput, PressurizedReactionRecipe, ItemFluidChemical<Gas, GasStack, PressurizedReactionRecipe>> REACTION = register(MekanismRecipeTypes.NAME_REACTION, recipeType -> new ItemFluidChemical<>(recipeType, PressurizedReactionRecipe::getInputSolid, PressurizedReactionRecipe::getInputFluid, PressurizedReactionRecipe::getInputGas));
+    public static final RecipeTypeRegistryObject<ReactionRecipeInput, PressurizedReactionRecipe, ItemFluidChemical<PressurizedReactionRecipe>> REACTION = register(MekanismRecipeTypes.NAME_REACTION, recipeType -> new ItemFluidChemical<>(recipeType, PressurizedReactionRecipe::getInputSolid, PressurizedReactionRecipe::getInputFluid, PressurizedReactionRecipe::getInputGas));
 
     public static final RecipeTypeRegistryObject<RotaryRecipeInput, RotaryRecipe, RotaryInputRecipeCache> ROTARY = register(MekanismRecipeTypes.NAME_ROTARY, RotaryInputRecipeCache::new);
 

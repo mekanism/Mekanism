@@ -3,9 +3,8 @@ package mekanism.common.tile.machine;
 import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.chemical.ChemicalTankBuilder;
-import mekanism.api.chemical.pigment.IPigmentTank;
-import mekanism.api.chemical.pigment.Pigment;
-import mekanism.api.chemical.pigment.PigmentStack;
+import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.PaintingRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
@@ -33,7 +32,7 @@ import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
-import mekanism.common.inventory.slot.chemical.PigmentInventorySlot;
+import mekanism.common.inventory.slot.chemical.ChemicalInventorySlot;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
@@ -51,7 +50,7 @@ import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class TileEntityPaintingMachine extends TileEntityProgressMachine<PaintingRecipe> implements ItemChemicalRecipeLookupHandler<Pigment, PigmentStack, PaintingRecipe> {
+public class TileEntityPaintingMachine extends TileEntityProgressMachine<PaintingRecipe> implements ItemChemicalRecipeLookupHandler<PaintingRecipe> {
 
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
           RecipeError.NOT_ENOUGH_ENERGY,
@@ -66,15 +65,15 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<Paintin
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getPigmentInput", "getPigmentInputCapacity", "getPigmentInputNeeded",
                                                                                         "getPigmentInputFilledPercentage"}, docPlaceholder = "pigment tank")
-    public IPigmentTank pigmentTank;
+    public IChemicalTank pigmentTank;
 
     private final IOutputHandler<@NotNull ItemStack> outputHandler;
     private final IInputHandler<@NotNull ItemStack> itemInputHandler;
-    private final IInputHandler<@NotNull PigmentStack> pigmentInputHandler;
+    private final IInputHandler<@NotNull ChemicalStack> pigmentInputHandler;
 
     private MachineEnergyContainer<TileEntityPaintingMachine> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputPigmentItem", docPlaceholder = "pigment slot")
-    PigmentInventorySlot pigmentInputSlot;
+    ChemicalInventorySlot pigmentInputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem", docPlaceholder = "paintable item slot")
     InputInventorySlot inputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutput", docPlaceholder = "painted item slot")
@@ -85,7 +84,7 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<Paintin
     public TileEntityPaintingMachine(BlockPos pos, BlockState state) {
         super(MekanismBlocks.PAINTING_MACHINE, pos, state, TRACKED_ERROR_TYPES, BASE_TICKS_REQUIRED);
         configComponent.setupItemIOExtraConfig(inputSlot, outputSlot, pigmentInputSlot, energySlot);
-        configComponent.setupInputConfig(TransmissionType.PIGMENT, pigmentTank);
+        configComponent.setupInputConfig(TransmissionType.CHEMICAL, pigmentTank);
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
 
         ejectorComponent = new TileComponentEjector(this);
@@ -98,9 +97,9 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<Paintin
 
     @NotNull
     @Override
-    public IChemicalTankHolder<Pigment, PigmentStack, IPigmentTank> getInitialPigmentTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
-        ChemicalTankHelper<Pigment, PigmentStack, IPigmentTank> builder = ChemicalTankHelper.forSidePigmentWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(pigmentTank = ChemicalTankBuilder.PIGMENT.input(MAX_PIGMENT, pigment -> containsRecipeBA(inputSlot.getStack(), pigment),
+    public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
+        ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        builder.addTank(pigmentTank = ChemicalTankBuilder.CHEMICAL.input(MAX_PIGMENT, pigment -> containsRecipeBA(inputSlot.getStack(), pigment),
               this::containsRecipeB, recipeCacheListener));
         return builder.build();
     }
@@ -117,7 +116,7 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<Paintin
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addSlot(pigmentInputSlot = PigmentInventorySlot.fill(pigmentTank, listener, 6, 56));
+        builder.addSlot(pigmentInputSlot = ChemicalInventorySlot.fill(pigmentTank, listener, 6, 56));
         builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipeAB(item, pigmentTank.getStack()), this::containsRecipeA, recipeCacheListener, 45, 35))
               .tracksWarnings(slot -> slot.warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(RecipeError.NOT_ENOUGH_INPUT)));
         builder.addSlot(outputSlot = OutputInventorySlot.at(recipeCacheUnpauseListener, 116, 35))
@@ -138,7 +137,7 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<Paintin
 
     @NotNull
     @Override
-    public IMekanismRecipeTypeProvider<SingleItemChemicalRecipeInput<Pigment, PigmentStack>, PaintingRecipe, ItemChemical<Pigment, PigmentStack, PaintingRecipe>> getRecipeType() {
+    public IMekanismRecipeTypeProvider<SingleItemChemicalRecipeInput, PaintingRecipe, ItemChemical<PaintingRecipe>> getRecipeType() {
         return MekanismRecipeType.PAINTING;
     }
 

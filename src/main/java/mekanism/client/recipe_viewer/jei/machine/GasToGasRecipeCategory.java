@@ -2,7 +2,7 @@ package mekanism.client.recipe_viewer.jei.machine;
 
 import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.client.gui.element.gauge.GaugeType;
-import mekanism.client.gui.element.gauge.GuiGasGauge;
+import mekanism.client.gui.element.gauge.GuiChemicalGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.SlotType;
@@ -27,8 +27,10 @@ public class GasToGasRecipeCategory extends HolderRecipeCategory<GasToGasRecipe>
         super(helper, recipeType);
         addSlot(SlotType.INPUT, 5, 56).with(SlotOverlay.MINUS);
         addSlot(SlotType.OUTPUT, 155, 56).with(SlotOverlay.PLUS);
-        input = addElement(GuiGasGauge.getDummy(GaugeType.STANDARD.with(DataType.INPUT), this, 25, 13));
-        output = addElement(GuiGasGauge.getDummy(GaugeType.STANDARD.with(DataType.OUTPUT), this, 133, 13));
+        GaugeType type1 = GaugeType.STANDARD.with(DataType.INPUT);
+        input = addElement(GuiChemicalGauge.getDummy(type1, this, 25, 13));
+        GaugeType type = GaugeType.STANDARD.with(DataType.OUTPUT);
+        output = addElement(GuiChemicalGauge.getDummy(type, this, 133, 13));
         addConstantProgress(ProgressType.LARGE_RIGHT, 64, 39);
     }
 

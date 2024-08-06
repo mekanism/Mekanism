@@ -5,7 +5,7 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.client.gui.element.progress.GuiProgress.ColorDetails;
 
-public abstract class RecipeViewerColorDetails<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> implements ColorDetails {
+public abstract class RecipeViewerColorDetails<CHEMICAL extends Chemical, STACK extends ChemicalStack> implements ColorDetails {
 
     protected final Supplier<STACK> empty;
     public Supplier<STACK> ingredient;

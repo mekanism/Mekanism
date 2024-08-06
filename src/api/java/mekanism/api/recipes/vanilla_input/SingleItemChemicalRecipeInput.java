@@ -1,7 +1,6 @@
 package mekanism.api.recipes.vanilla_input;
 
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import net.minecraft.world.item.ItemStack;
 
@@ -11,8 +10,8 @@ import net.minecraft.world.item.ItemStack;
  * @since 10.6.0
  */
 @NothingNullByDefault
-public record SingleItemChemicalRecipeInput<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>>(ItemStack item, STACK chemical) implements
-      ItemChemicalRecipeInput<CHEMICAL, STACK> {
+public record SingleItemChemicalRecipeInput(ItemStack item, ChemicalStack chemical) implements
+      ItemChemicalRecipeInput {
 
     @Override
     public ItemStack getItem(int index) {
@@ -23,7 +22,7 @@ public record SingleItemChemicalRecipeInput<CHEMICAL extends Chemical<CHEMICAL>,
     }
 
     @Override
-    public STACK getChemical(int index) {
+    public ChemicalStack getChemical(int index) {
         if (index != 0) {
             throw new IllegalArgumentException("No chemical for index " + index);
         }

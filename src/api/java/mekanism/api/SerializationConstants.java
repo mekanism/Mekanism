@@ -30,6 +30,7 @@ public final class SerializationConstants {
     //Ingredients
     public static final String AMOUNT = "amount";
     public static final String BASE = "base";
+    public static final String CHEMICAL = "chemical";
     public static final String CHILDREN = "children";
     public static final String FLUID = "fluid";
     public static final String INGREDIENT = "ingredient";
@@ -122,6 +123,7 @@ public final class SerializationConstants {
     public static final String CACHE = "cache";
     public static final String CHANCE = "chance";
     public static final String CHANNEL = "channel";
+    public static final String CHEMICAL_TANKS = "chemical_tanks";
     public static final String CHUNK_SET = "chunk_set";
     public static final String COILS = "coils";
     public static final String COLOR = "color";

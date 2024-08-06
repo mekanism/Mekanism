@@ -9,18 +9,17 @@ import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public abstract class VariableCapacityChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> extends BasicChemicalTank<CHEMICAL, STACK> {
+public class VariableCapacityChemicalTank extends BasicChemicalTank {
 
     private final LongSupplier capacity;
 
-    protected VariableCapacityChemicalTank(LongSupplier capacity, BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> canExtract,
-          BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> canInsert, Predicate<@NotNull CHEMICAL> validator,
+    public VariableCapacityChemicalTank(LongSupplier capacity, BiPredicate<Chemical, @NotNull AutomationType> canExtract,
+          BiPredicate<Chemical, @NotNull AutomationType> canInsert, Predicate<Chemical> validator,
           @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener) {
         super(capacity.getAsLong(), canExtract, canInsert, validator, attributeValidator, listener);
         this.capacity = capacity;

@@ -1,11 +1,13 @@
 package mekanism.api.recipes.ingredients.chemical;
 
+import com.mojang.serialization.MapCodec;
 import java.util.stream.Stream;
 import mekanism.api.MekanismAPI;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalStack;
 import net.minecraft.core.Holder;
-import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -17,16 +19,19 @@ import org.jetbrains.annotations.Nullable;
  * @since 10.6.0
  */
 @NothingNullByDefault
-public abstract non-sealed class SingleChemicalIngredient<CHEMICAL extends Chemical<CHEMICAL>, INGREDIENT extends IChemicalIngredient<CHEMICAL, INGREDIENT>>
-      extends ChemicalIngredient<CHEMICAL, INGREDIENT> {
+public non-sealed class SingleChemicalIngredient
+      extends ChemicalIngredient {
 
-    private final Holder<CHEMICAL> chemical;
+    //TODO register
+    public static final MapCodec<SingleChemicalIngredient> CODEC = ChemicalStack.CHEMICAL_NON_EMPTY_HOLDER_CODEC.xmap(SingleChemicalIngredient::new, SingleChemicalIngredient::chemical)
+          .fieldOf(SerializationConstants.CHEMICAL);
+
+    private final Holder<Chemical> chemical;
 
     /**
      * @param chemical Holder for the chemical to match.
      */
-    @Internal
-    protected SingleChemicalIngredient(Holder<CHEMICAL> chemical) {
+    public SingleChemicalIngredient(Holder<Chemical> chemical) {
         if (chemical.is(MekanismAPI.EMPTY_CHEMICAL_NAME)) {
             throw new IllegalStateException("SingleChemicalIngredient must not be constructed with mekanism:empty, use IChemicalIngredientCreator.empty() instead!");
         }
@@ -34,20 +39,24 @@ public abstract non-sealed class SingleChemicalIngredient<CHEMICAL extends Chemi
     }
 
     @Override
-    public final boolean test(CHEMICAL chemical) {
+    public final boolean test(Chemical chemical) {
         return chemical == this.chemical.value();
     }
 
     @Override
-    public final Stream<CHEMICAL> generateChemicals() {
+    public final Stream<Chemical> generateChemicals() {
         return Stream.of(chemical.value());
     }
 
     /**
      * {@return holder for the chemical to match}
      */
-    public final Holder<CHEMICAL> chemical() {
+    public final Holder<Chemical> chemical() {
         return chemical;
+    }
+
+    public MapCodec<SingleChemicalIngredient> codec() {
+        return CODEC;
     }
 
     @Override
@@ -62,6 +71,6 @@ public abstract non-sealed class SingleChemicalIngredient<CHEMICAL extends Chemi
         } else if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        return chemical.is(((SingleChemicalIngredient<CHEMICAL, INGREDIENT>) obj).chemical);
+        return chemical.is(((SingleChemicalIngredient) obj).chemical);
     }
 }

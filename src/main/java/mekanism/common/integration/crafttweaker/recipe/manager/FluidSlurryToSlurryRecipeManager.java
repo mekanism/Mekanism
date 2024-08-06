@@ -2,24 +2,23 @@ package mekanism.common.integration.crafttweaker.recipe.manager;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.fluid.CTFluidIngredient;
-import mekanism.api.chemical.slurry.Slurry;
-import mekanism.api.chemical.slurry.SlurryStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.FluidSlurryToSlurryRecipe;
 import mekanism.api.recipes.basic.BasicFluidSlurryToSlurryRecipe;
-import mekanism.api.recipes.ingredients.SlurryStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.vanilla_input.SingleFluidChemicalRecipeInput;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
-import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTSlurryStack;
+import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_FLUID_SLURRY_TO_SLURRY)
-public abstract class FluidSlurryToSlurryRecipeManager extends MekanismRecipeManager<SingleFluidChemicalRecipeInput<Slurry, SlurryStack>, FluidSlurryToSlurryRecipe> {
+public abstract class FluidSlurryToSlurryRecipeManager extends MekanismRecipeManager<SingleFluidChemicalRecipeInput, FluidSlurryToSlurryRecipe> {
 
-    protected FluidSlurryToSlurryRecipeManager(IMekanismRecipeTypeProvider<SingleFluidChemicalRecipeInput<Slurry, SlurryStack>, FluidSlurryToSlurryRecipe, ?> recipeType) {
+    protected FluidSlurryToSlurryRecipeManager(IMekanismRecipeTypeProvider<SingleFluidChemicalRecipeInput, FluidSlurryToSlurryRecipe, ?> recipeType) {
         super(recipeType);
     }
 
@@ -30,11 +29,11 @@ public abstract class FluidSlurryToSlurryRecipeManager extends MekanismRecipeMan
      *
      * @param name        Name of the new recipe.
      * @param fluidInput  {@link CTFluidIngredient} representing the fluid input of the recipe.
-     * @param slurryInput {@link SlurryStackIngredient} representing the slurry input of the recipe.
-     * @param output      {@link ICrTSlurryStack} representing the output of the recipe.
+     * @param slurryInput {@link ChemicalStackIngredient} representing the slurry input of the recipe.
+     * @param output      {@link ICrTChemicalStack} representing the output of the recipe.
      */
     @ZenCodeType.Method
-    public void addRecipe(String name, CTFluidIngredient fluidInput, SlurryStackIngredient slurryInput, ICrTSlurryStack output) {
+    public void addRecipe(String name, CTFluidIngredient fluidInput, ChemicalStackIngredient slurryInput, ICrTChemicalStack output) {
         addRecipe(name, makeRecipe(fluidInput, slurryInput, output));
     }
 
@@ -42,14 +41,14 @@ public abstract class FluidSlurryToSlurryRecipeManager extends MekanismRecipeMan
      * Creates a recipe that converts a fluid and slurry to another slurry.
      *
      * @param fluidInput  {@link CTFluidIngredient} representing the fluid input of the recipe.
-     * @param slurryInput {@link SlurryStackIngredient} representing the slurry input of the recipe.
-     * @param output      {@link ICrTSlurryStack} representing the output of the recipe. Will be validated as not empty.
+     * @param slurryInput {@link ChemicalStackIngredient} representing the slurry input of the recipe.
+     * @param output      {@link ICrTChemicalStack} representing the output of the recipe. Will be validated as not empty.
      */
-    public final FluidSlurryToSlurryRecipe makeRecipe(CTFluidIngredient fluidInput, SlurryStackIngredient slurryInput, ICrTSlurryStack output) {
+    public final FluidSlurryToSlurryRecipe makeRecipe(CTFluidIngredient fluidInput, ChemicalStackIngredient slurryInput, ICrTChemicalStack output) {
         return makeRecipe(fluidInput, slurryInput, getAndValidateNotEmpty(output));
     }
 
-    protected abstract FluidSlurryToSlurryRecipe makeRecipe(CTFluidIngredient fluidInput, SlurryStackIngredient slurryInput, SlurryStack output);
+    protected abstract FluidSlurryToSlurryRecipe makeRecipe(CTFluidIngredient fluidInput, ChemicalStackIngredient slurryInput, ChemicalStack output);
 
     @Override
     protected String describeOutputs(FluidSlurryToSlurryRecipe recipe) {
@@ -67,7 +66,7 @@ public abstract class FluidSlurryToSlurryRecipeManager extends MekanismRecipeMan
         }
 
         @Override
-        protected FluidSlurryToSlurryRecipe makeRecipe(CTFluidIngredient fluidInput, SlurryStackIngredient slurryInput, SlurryStack output) {
+        protected FluidSlurryToSlurryRecipe makeRecipe(CTFluidIngredient fluidInput, ChemicalStackIngredient slurryInput, ChemicalStack output) {
             return new BasicFluidSlurryToSlurryRecipe(CrTUtils.fromCrT(fluidInput), slurryInput, output);
         }
     }

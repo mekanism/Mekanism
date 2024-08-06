@@ -2,14 +2,14 @@ package mekanism.common.integration.jsonthings.builder;
 
 import dev.gigaherz.jsonthings.things.parsers.ThingParser;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.slurry.Slurry;
-import mekanism.api.chemical.slurry.SlurryBuilder;
+import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalBuilder;
 import mekanism.common.util.ChemicalUtil;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class JsonSlurryBuilder extends JsonChemicalBuilder<Slurry, SlurryBuilder, JsonSlurryBuilder> {
+public class JsonSlurryBuilder extends JsonChemicalBuilder<JsonSlurryBuilder> {
 
     @Nullable
     private Boolean clean;
@@ -19,7 +19,7 @@ public class JsonSlurryBuilder extends JsonChemicalBuilder<Slurry, SlurryBuilder
     }
 
     /**
-     * Sets the tag that represents the ore that goes with this {@link Slurry}.
+     * Sets the tag that represents the ore that goes with this {@link Chemical}.
      *
      * @param oreTag {@link ResourceLocation} of the item tag representing the ore.
      */
@@ -50,17 +50,17 @@ public class JsonSlurryBuilder extends JsonChemicalBuilder<Slurry, SlurryBuilder
     }
 
     @Override
-    protected Slurry buildInternal() {
-        SlurryBuilder internal;
+    protected Chemical buildInternal() {
+        ChemicalBuilder internal;
         if (texture == null) {
             if (clean == null) {
                 throw new IllegalStateException("Slurry " + getRegistryName() + " didn't have a texture or fallback texture (whether it is clean or not) specified");
             }
-            internal = clean ? SlurryBuilder.clean() : SlurryBuilder.dirty();
+            internal = clean ? ChemicalBuilder.cleanSlurry() : ChemicalBuilder.dirtySlurry();
         } else {
-            internal = SlurryBuilder.builder(texture);
+            internal = ChemicalBuilder.builder(texture);
         }
         applyBaseData(internal);
-        return ChemicalUtil.slurry(internal, colorRepresentation);
+        return ChemicalUtil.chemical(internal, colorRepresentation);
     }
 }

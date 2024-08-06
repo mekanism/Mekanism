@@ -4,13 +4,13 @@ import java.util.Map;
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
+import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.providers.IItemProvider;
-import mekanism.api.providers.IPigmentProvider;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.api.text.EnumColor;
 import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.recipe.impl.PigmentExtractingRecipeProvider;
-import mekanism.common.registries.MekanismPigments;
+import mekanism.common.registries.MekanismChemicals;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 
@@ -32,9 +32,9 @@ public class PigmentExtractingPlasticRecipeProvider implements ISubRecipeProvide
     @Override
     public void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
         String basePath = "pigment_extracting/plastic/";
-        for (Map.Entry<EnumColor, IPigmentProvider> entry : MekanismPigments.PIGMENT_COLOR_LOOKUP.entrySet()) {
+        for (Map.Entry<EnumColor, IChemicalProvider> entry : MekanismChemicals.PIGMENT_COLOR_LOOKUP.entrySet()) {
             EnumColor color = entry.getKey();
-            IPigmentProvider pigment = entry.getValue();
+            IChemicalProvider pigment = entry.getValue();
             addExtractionRecipe(consumer, color, AdditionsBlocks.PLASTIC_BLOCKS, pigment, PLASTIC_BLOCK_RATE, basePath + "block/");
             addExtractionRecipe(consumer, color, AdditionsBlocks.SLICK_PLASTIC_BLOCKS, pigment, SLICK_PLASTIC_BLOCK_RATE, basePath + "slick/");
             addExtractionRecipe(consumer, color, AdditionsBlocks.PLASTIC_GLOW_BLOCKS, pigment, PLASTIC_GLOW_BLOCK_RATE, basePath + "glow/");
@@ -50,7 +50,7 @@ public class PigmentExtractingPlasticRecipeProvider implements ISubRecipeProvide
         }
     }
 
-    private static void addExtractionRecipe(RecipeOutput consumer, EnumColor color, Map<EnumColor, ? extends IItemProvider> input, IPigmentProvider pigment,
+    private static void addExtractionRecipe(RecipeOutput consumer, EnumColor color, Map<EnumColor, ? extends IItemProvider> input, IChemicalProvider pigment,
           long rate, String basePath) {
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
               IngredientCreatorAccess.item().from(input.get(color)),

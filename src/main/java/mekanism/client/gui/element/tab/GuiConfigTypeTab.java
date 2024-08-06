@@ -41,10 +41,7 @@ public class GuiConfigTypeTab extends GuiInsetElement<Void> {
         MekanismRenderer.color(guiGraphics, switch (transmission) {
             case ENERGY -> SpecialColors.TAB_ENERGY_CONFIG;
             case FLUID -> SpecialColors.TAB_FLUID_CONFIG;
-            case GAS -> SpecialColors.TAB_GAS_CONFIG;
-            case INFUSION -> SpecialColors.TAB_INFUSION_CONFIG;
-            case PIGMENT -> SpecialColors.TAB_PIGMENT_CONFIG;
-            case SLURRY -> SpecialColors.TAB_SLURRY_CONFIG;
+            case CHEMICAL -> SpecialColors.TAB_CHEMICAL_CONFIG;
             case ITEM -> SpecialColors.TAB_ITEM_CONFIG;
             case HEAT -> SpecialColors.TAB_HEAT_CONFIG;
         });

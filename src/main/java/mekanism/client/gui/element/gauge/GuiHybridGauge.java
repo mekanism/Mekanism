@@ -3,7 +3,7 @@ package mekanism.client.gui.element.gauge;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
-import mekanism.api.chemical.gas.IGasTank;
+import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.recipe_viewer.interfaces.IRecipeViewerIngredientHelper;
@@ -16,26 +16,26 @@ import org.jetbrains.annotations.Nullable;
 
 public class GuiHybridGauge extends GuiGauge<Void> implements IRecipeViewerIngredientHelper {
 
-    private final Supplier<IGasTank> gasTankSupplier;
+    private final Supplier<IChemicalTank> gasTankSupplier;
 
-    private final GuiGasGauge gasGauge;
+    private final GuiChemicalGauge gasGauge;
     private final GuiFluidGauge fluidGauge;
 
     private Component label;
 
-    public GuiHybridGauge(Supplier<IGasTank> gasTankSupplier, Supplier<List<IGasTank>> gasTanksSupplier,
+    public GuiHybridGauge(Supplier<IChemicalTank> gasTankSupplier, Supplier<List<IChemicalTank>> gasTanksSupplier,
           Supplier<IExtendedFluidTank> fluidTankSupplier, Supplier<List<IExtendedFluidTank>> fluidTanksSupplier, GaugeType type,
           IGuiWrapper gui, int x, int y) {
         this(gasTankSupplier, gasTanksSupplier, fluidTankSupplier, fluidTanksSupplier, type, gui, x, y,
               type.getGaugeOverlay().getWidth() + 2, type.getGaugeOverlay().getHeight() + 2);
     }
 
-    public GuiHybridGauge(Supplier<IGasTank> gasTankSupplier, Supplier<List<IGasTank>> gasTanksSupplier,
+    public GuiHybridGauge(Supplier<IChemicalTank> gasTankSupplier, Supplier<List<IChemicalTank>> gasTanksSupplier,
           Supplier<IExtendedFluidTank> fluidTankSupplier, Supplier<List<IExtendedFluidTank>> fluidTanksSupplier, GaugeType type,
           IGuiWrapper gui, int x, int y, int width, int height) {
         super(type, gui, x, y, width, height);
         this.gasTankSupplier = gasTankSupplier;
-        gasGauge = addPositionOnlyChild(new GuiGasGauge(gasTankSupplier, gasTanksSupplier, type, gui, x, y, width, height));
+        gasGauge = addPositionOnlyChild(new GuiChemicalGauge(gasTankSupplier, gasTanksSupplier, type, gui, x, y, width, height));
         fluidGauge = addPositionOnlyChild(new GuiFluidGauge(fluidTankSupplier, fluidTanksSupplier, type, gui, x, y, width, height));
     }
 
@@ -92,6 +92,6 @@ public class GuiHybridGauge extends GuiGauge<Void> implements IRecipeViewerIngre
 
     @Override
     public TransmissionType getTransmission() {
-        return gasTankSupplier.get() == null || !gasTankSupplier.get().isEmpty() ? TransmissionType.GAS : TransmissionType.FLUID;
+        return gasTankSupplier.get() == null || !gasTankSupplier.get().isEmpty() ? TransmissionType.CHEMICAL : TransmissionType.FLUID;
     }
 }

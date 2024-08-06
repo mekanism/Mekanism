@@ -6,13 +6,12 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalTankBuilder;
+import mekanism.api.chemical.IChemicalHandler;
+import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttribute;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasHandler;
-import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.attribute.GasAttributes;
 import mekanism.common.capabilities.chemical.variable.VariableCapacityChemicalTank;
 import mekanism.common.config.MekanismConfig;
@@ -21,7 +20,7 @@ import mekanism.common.util.WorldUtils;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class StackedWasteBarrel extends VariableCapacityChemicalTank<Gas, GasStack> implements IGasHandler, IGasTank {
+public class StackedWasteBarrel extends VariableCapacityChemicalTank implements IChemicalHandler, IChemicalTank {
 
     private static final ChemicalAttributeValidator ATTRIBUTE_VALIDATOR = new ChemicalAttributeValidator() {
         @Override
@@ -30,7 +29,7 @@ public class StackedWasteBarrel extends VariableCapacityChemicalTank<Gas, GasSta
         }
 
         @Override
-        public boolean process(Chemical<?> chemical) {
+        public boolean process(Chemical chemical) {
             return chemical.isRadioactive();
         }
     };
@@ -43,16 +42,16 @@ public class StackedWasteBarrel extends VariableCapacityChemicalTank<Gas, GasSta
     private final TileEntityRadioactiveWasteBarrel tile;
 
     protected StackedWasteBarrel(TileEntityRadioactiveWasteBarrel tile, @Nullable IContentsListener listener) {
-        super(MekanismConfig.general.radioactiveWasteBarrelMaxGas, ChemicalTankBuilder.GAS.alwaysTrueBi, ChemicalTankBuilder.GAS.alwaysTrueBi,
-              ChemicalTankBuilder.GAS.alwaysTrue, ATTRIBUTE_VALIDATOR, listener);
+        super(MekanismConfig.general.radioactiveWasteBarrelMaxGas, ChemicalTankBuilder.alwaysTrueBi, ChemicalTankBuilder.alwaysTrueBi,
+              ChemicalTankBuilder.alwaysTrue, ATTRIBUTE_VALIDATOR, listener);
         this.tile = tile;
     }
 
     @Override
-    public GasStack insert(GasStack stack, Action action, AutomationType automationType) {
-        GasStack remainder = super.insert(stack, action, automationType);
+    public ChemicalStack insert(ChemicalStack stack, Action action, AutomationType automationType) {
+        ChemicalStack remainder = super.insert(stack, action, automationType);
         //Ensure we have the same type of gas stored as we failed to insert, in which case we want to try to insert to the one above
-        if (!remainder.isEmpty() && GasStack.isSameChemical(stored, remainder)) {
+        if (!remainder.isEmpty() && ChemicalStack.isSameChemical(stored, remainder)) {
             //If we have any leftover check if we can send it to the tank that is above
             TileEntityRadioactiveWasteBarrel tileAbove = WorldUtils.getTileEntity(TileEntityRadioactiveWasteBarrel.class, tile.getLevel(), tile.getBlockPos().above());
             if (tileAbove != null) {
@@ -74,7 +73,7 @@ public class StackedWasteBarrel extends VariableCapacityChemicalTank<Gas, GasSta
                 if (tileAbove != null) {
                     long leftOverToInsert = amount - grownAmount;
                     //Note: We do external so that it is not limited by the internal rate limits
-                    GasStack remainder = tileAbove.getGasTank().insert(stored.copyWithAmount(leftOverToInsert), action, AutomationType.EXTERNAL);
+                    ChemicalStack remainder = tileAbove.getGasTank().insert(stored.copyWithAmount(leftOverToInsert), action, AutomationType.EXTERNAL);
                     grownAmount += leftOverToInsert - remainder.getAmount();
                 }
             }

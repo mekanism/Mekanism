@@ -50,7 +50,7 @@ public class MekanismTankEmiWidget extends SlotWidget {
         EmiStack stack = stacks.isEmpty() ? EmiStack.EMPTY : RecipeViewerUtils.getCurrent(stacks);
         if (!stack.isEmpty() && ingredient.getAmount() > 0) {
             TextureAtlasSprite sprite;
-            if (stack.getKey() instanceof Chemical<?> chemical) {
+            if (stack.getKey() instanceof Chemical chemical) {
                 MekanismRenderer.color(graphics, chemical);
                 sprite = MekanismRenderer.getChemicalTexture(chemical);
             } else if (stack.getKey() instanceof Fluid fluid) {

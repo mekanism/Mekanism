@@ -204,7 +204,7 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
                         if (type == ContainerType.ITEM && block.asItem() instanceof ItemBlockPersonalStorage) {
                             //We don't want explosions causing personal storage items to be directly destroyed. It is also known that the attachment is missing
                             hasContents = true;
-                        } else if (type != ContainerType.GAS || !(block instanceof BlockRadioactiveWasteBarrel)) {
+                        } else if (type != ContainerType.CHEMICAL || !(block instanceof BlockRadioactiveWasteBarrel)) {
                             Mekanism.logger.warn("Container type: {}, item missing attachments: {}", type.getComponentName(), RegistryUtils.getName(block));
                         }
                     } else if (containers.isEmpty()) {

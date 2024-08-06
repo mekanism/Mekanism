@@ -1,6 +1,6 @@
 package mekanism.common.block;
 
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.prefab.BlockTile.BlockTileModel;
@@ -35,7 +35,7 @@ public class BlockRadioactiveWasteBarrel extends BlockTileModel<TileEntityRadioa
         if (tile == null) {
             return InteractionResult.PASS;
         } else if (!world.isClientSide()) {
-            GasStack stored = tile.getGas();
+            ChemicalStack stored = tile.getGas();
             Component text;
             if (stored.isEmpty()) {
                 text = MekanismLang.NO_GAS.translateColored(EnumColor.GRAY);

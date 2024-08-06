@@ -4,8 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.infuse.InfuseType;
-import mekanism.api.chemical.infuse.InfusionStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ItemStackToInfuseTypeRecipe;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
@@ -14,16 +13,16 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.Contract;
 
 @NothingNullByDefault
-public class BasicItemStackToInfuseTypeRecipe extends ItemStackToInfuseTypeRecipe implements IBasicChemicalOutput<InfuseType, InfusionStack> {
+public class BasicItemStackToInfuseTypeRecipe extends ItemStackToInfuseTypeRecipe implements IBasicChemicalOutput {
 
     protected final ItemStackIngredient input;
-    protected final InfusionStack output;
+    protected final ChemicalStack output;
 
     /**
      * @param input  Input.
      * @param output Output.
      */
-    public BasicItemStackToInfuseTypeRecipe(ItemStackIngredient input, InfusionStack output) {
+    public BasicItemStackToInfuseTypeRecipe(ItemStackIngredient input, ChemicalStack output) {
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         Objects.requireNonNull(output, "Output cannot be null.");
         if (output.isEmpty()) {
@@ -44,17 +43,17 @@ public class BasicItemStackToInfuseTypeRecipe extends ItemStackToInfuseTypeRecip
 
     @Override
     @Contract(value = "_ -> new", pure = true)
-    public InfusionStack getOutput(ItemStack input) {
+    public ChemicalStack getOutput(ItemStack input) {
         return output.copy();
     }
 
     @Override
-    public List<InfusionStack> getOutputDefinition() {
+    public List<ChemicalStack> getOutputDefinition() {
         return Collections.singletonList(output);
     }
 
     @Override
-    public InfusionStack getOutputRaw() {
+    public ChemicalStack getOutputRaw() {
         return output;
     }
 

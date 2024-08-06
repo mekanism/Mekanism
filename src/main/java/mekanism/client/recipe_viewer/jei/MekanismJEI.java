@@ -6,26 +6,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import mekanism.api.MekanismAPI;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.ChemicalType;
 import mekanism.api.chemical.IChemicalHandler;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.infuse.InfuseType;
-import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.api.chemical.pigment.Pigment;
-import mekanism.api.chemical.pigment.PigmentStack;
-import mekanism.api.chemical.slurry.Slurry;
-import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.energy.IStrictEnergyHandler;
+import mekanism.api.providers.IChemicalProvider;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.robit.GuiRobitRepair;
 import mekanism.client.recipe_viewer.RecipeViewerUtils;
-import mekanism.client.recipe_viewer.jei.ChemicalStackHelper.GasStackHelper;
-import mekanism.client.recipe_viewer.jei.ChemicalStackHelper.InfusionStackHelper;
-import mekanism.client.recipe_viewer.jei.ChemicalStackHelper.PigmentStackHelper;
-import mekanism.client.recipe_viewer.jei.ChemicalStackHelper.SlurryStackHelper;
 import mekanism.client.recipe_viewer.jei.machine.BoilerRecipeCategory;
 import mekanism.client.recipe_viewer.jei.machine.ChemicalCrystallizerRecipeCategory;
 import mekanism.client.recipe_viewer.jei.machine.ChemicalDissolutionRecipeCategory;
@@ -67,7 +54,6 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismItems;
-import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.RegistryUtils;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
@@ -89,7 +75,6 @@ import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
 import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
@@ -104,15 +89,14 @@ import org.jetbrains.annotations.NotNull;
 @JeiPlugin
 public class MekanismJEI implements IModPlugin {
 
-    public static final IIngredientType<GasStack> TYPE_GAS = () -> GasStack.class;
-    public static final IIngredientType<InfusionStack> TYPE_INFUSION = () -> InfusionStack.class;
-    public static final IIngredientType<PigmentStack> TYPE_PIGMENT = () -> PigmentStack.class;
-    public static final IIngredientType<SlurryStack> TYPE_SLURRY = () -> SlurryStack.class;
+    public static final IIngredientType<ChemicalStack> TYPE_CHEMICAL = () -> ChemicalStack.class;
+    public static final IIngredientType<ChemicalStack> TYPE_GAS = () -> ChemicalStack.class;
+    //todo remove these?
+    public static final IIngredientType<ChemicalStack> TYPE_INFUSION = () -> ChemicalStack.class;
+    public static final IIngredientType<ChemicalStack> TYPE_PIGMENT = () -> ChemicalStack.class;
+    public static final IIngredientType<ChemicalStack> TYPE_SLURRY = () -> ChemicalStack.class;
 
-    public static final GasStackHelper GAS_STACK_HELPER = new GasStackHelper();
-    public static final InfusionStackHelper INFUSION_STACK_HELPER = new InfusionStackHelper();
-    public static final PigmentStackHelper PIGMENT_STACK_HELPER = new PigmentStackHelper();
-    public static final SlurryStackHelper SLURRY_STACK_HELPER = new SlurryStackHelper();
+    public static final ChemicalStackHelper CHEMICAL_STACK_HELPER = new ChemicalStackHelper();
 
     private static final Map<IRecipeViewerRecipeType<?>, RecipeType<?>> recipeTypeInstanceCache = new HashMap<>();
 
@@ -152,10 +136,7 @@ public class MekanismJEI implements IModPlugin {
 
     private static final IIngredientSubtypeInterpreter<ItemStack> MEKANISM_NBT_INTERPRETER = (stack, context) -> {
         if (context == UidContext.Ingredient) {
-            String representation = getChemicalComponent(stack, ContainerType.GAS, Capabilities.GAS.item());
-            representation = addInterpretation(representation, getChemicalComponent(stack, ContainerType.INFUSION, Capabilities.INFUSION.item()));
-            representation = addInterpretation(representation, getChemicalComponent(stack, ContainerType.PIGMENT, Capabilities.PIGMENT.item()));
-            representation = addInterpretation(representation, getChemicalComponent(stack, ContainerType.SLURRY, Capabilities.SLURRY.item()));
+            String representation = getChemicalComponent(stack, ContainerType.CHEMICAL, Capabilities.CHEMICAL.item());
             representation = addInterpretation(representation, getFluidComponent(stack));
             representation = addInterpretation(representation, getEnergyComponent(stack));
             return representation;
@@ -167,16 +148,16 @@ public class MekanismJEI implements IModPlugin {
         return nbtRepresentation.isEmpty() ? component : nbtRepresentation + ":" + component;
     }
 
-    private static String getChemicalComponent(ItemStack stack, ContainerType<?, ?, ? extends IChemicalHandler<?, ?>> containerType,
-          ItemCapability<? extends IChemicalHandler<?, ?>, Void> capability) {
-        IChemicalHandler<?, ?> handler = containerType.createHandlerIfData(stack);
+    private static String getChemicalComponent(ItemStack stack, ContainerType<?, ?, ? extends IChemicalHandler> containerType,
+          ItemCapability<? extends IChemicalHandler, Void> capability) {
+        IChemicalHandler handler = containerType.createHandlerIfData(stack);
         if (handler == null) {
             handler = stack.getCapability(capability);
         }
         if (handler != null) {
             String component = "";
-            for (int tank = 0, tanks = handler.getTanks(); tank < tanks; tank++) {
-                ChemicalStack<?> chemicalStack = handler.getChemicalInTank(tank);
+            for (int tank = 0, tanks = handler.getChemicalTanks(); tank < tanks; tank++) {
+                ChemicalStack chemicalStack = handler.getChemicalInTank(tank);
                 if (!chemicalStack.isEmpty()) {
                     component = addInterpretation(component, chemicalStack.getTypeRegistryName().toString());
                 } else if (tanks > 1) {
@@ -229,15 +210,6 @@ public class MekanismJEI implements IModPlugin {
         return IIngredientSubtypeInterpreter.NONE;
     }
 
-    public static IIngredientType<? extends ChemicalStack<?>> getIngredientType(ChemicalType chemicalType) {
-        return switch (chemicalType) {
-            case GAS -> TYPE_GAS;
-            case INFUSION -> TYPE_INFUSION;
-            case PIGMENT -> TYPE_PIGMENT;
-            case SLURRY -> TYPE_SLURRY;
-        };
-    }
-
     @NotNull
     @Override
     public ResourceLocation getPluginUid() {
@@ -248,9 +220,7 @@ public class MekanismJEI implements IModPlugin {
         for (Holder<? extends ItemLike> itemProvider : itemProviders) {
             //Handle items
             ItemStack stack = new ItemStack(itemProvider.value());
-            if (Capabilities.STRICT_ENERGY.hasCapability(stack) || Capabilities.GAS.hasCapability(stack) ||
-                Capabilities.INFUSION.hasCapability(stack) || Capabilities.PIGMENT.hasCapability(stack) ||
-                Capabilities.SLURRY.hasCapability(stack) || Capabilities.FLUID.hasCapability(stack)) {
+            if (Capabilities.STRICT_ENERGY.hasCapability(stack) || Capabilities.CHEMICAL.hasCapability(stack) || Capabilities.FLUID.hasCapability(stack)) {
                 registry.registerSubtypeInterpreter(stack.getItem(), MEKANISM_NBT_INTERPRETER);
             }
         }
@@ -265,24 +235,14 @@ public class MekanismJEI implements IModPlugin {
     }
 
     @Override
-    @SuppressWarnings("RedundantTypeArguments")
     public void registerIngredients(IModIngredientRegistration registry) {
         //Note: We register the ingredient types regardless of if EMI is loaded so that we don't crash any addons that are trying to reference them
-        //The types cannot properly be inferred at runtime
-        this.<Gas, GasStack>registerIngredientType(registry, MekanismAPI.GAS_REGISTRY, TYPE_GAS, GAS_STACK_HELPER);
-        this.<InfuseType, InfusionStack>registerIngredientType(registry, MekanismAPI.INFUSE_TYPE_REGISTRY, TYPE_INFUSION, INFUSION_STACK_HELPER);
-        this.<Pigment, PigmentStack>registerIngredientType(registry, MekanismAPI.PIGMENT_REGISTRY, TYPE_PIGMENT, PIGMENT_STACK_HELPER);
-        this.<Slurry, SlurryStack>registerIngredientType(registry, MekanismAPI.SLURRY_REGISTRY, TYPE_SLURRY, SLURRY_STACK_HELPER);
-    }
-
-    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void registerIngredientType(IModIngredientRegistration registration,
-          Registry<CHEMICAL> registry, IIngredientType<STACK> ingredientType, ChemicalStackHelper<CHEMICAL, STACK> stackHelper) {
-        List<STACK> types = registry.stream()
+        List<ChemicalStack> types = MekanismAPI.CHEMICAL_REGISTRY.stream()
               .filter(chemical -> !chemical.isEmptyType())//Don't add the empty type. We will allow JEI to filter out any that are hidden from recipe viewers
-              .map(chemical -> ChemicalUtil.<CHEMICAL, STACK>withAmount(chemical, FluidType.BUCKET_VOLUME))
+              .map(chemical -> ((IChemicalProvider) chemical).getStack(FluidType.BUCKET_VOLUME))
               .toList();
-        stackHelper.setColorHelper(registration.getColorHelper());
-        registration.register(ingredientType, types, stackHelper, new ChemicalStackRenderer<>());
+        CHEMICAL_STACK_HELPER.setColorHelper(registry.getColorHelper());
+        registry.register(TYPE_CHEMICAL, types, CHEMICAL_STACK_HELPER, new ChemicalStackRenderer());
     }
 
     @Override

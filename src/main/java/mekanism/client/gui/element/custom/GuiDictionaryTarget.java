@@ -11,10 +11,6 @@ import java.util.function.Consumer;
 import java.util.stream.IntStream;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.api.chemical.pigment.PigmentStack;
-import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.GuiUtils.TilingDirection;
 import mekanism.client.gui.IGuiWrapper;
@@ -86,7 +82,7 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
             MekanismRenderer.color(guiGraphics, stack);
             drawTiledSprite(guiGraphics, relativeX, relativeY, height, width, height, MekanismRenderer.getFluidTexture(stack, FluidTextureType.STILL), TilingDirection.DOWN_RIGHT);
             MekanismRenderer.resetColor(guiGraphics);
-        } else if (target instanceof ChemicalStack<?> stack) {
+        } else if (target instanceof ChemicalStack stack) {
             MekanismRenderer.color(guiGraphics, stack);
             drawTiledSprite(guiGraphics, relativeX, relativeY, height, width, height, MekanismRenderer.getChemicalTexture(stack.getChemical()), TilingDirection.DOWN_RIGHT);
             MekanismRenderer.resetColor(guiGraphics);
@@ -187,10 +183,7 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
                         ));
                     }
                     //Get tags of any contained chemicals
-                    addChemicalTags(DictionaryTagType.GAS, stack, Capabilities.GAS.item());
-                    addChemicalTags(DictionaryTagType.INFUSE_TYPE, stack, Capabilities.INFUSION.item());
-                    addChemicalTags(DictionaryTagType.PIGMENT, stack, Capabilities.PIGMENT.item());
-                    addChemicalTags(DictionaryTagType.SLURRY, stack, Capabilities.SLURRY.item());
+                    addChemicalTags(DictionaryTagType.GAS, stack, Capabilities.CHEMICAL.item());
                     //TODO: Support other types of things?
                 }
             }
@@ -202,19 +195,19 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
                     tags.put(DictionaryTagType.FLUID, TagCache.getTagsAsStrings(fluidStack.getFluidHolder()));
                 }
             }
-            case ChemicalStack<?> chemicalStack -> {
+            case ChemicalStack chemicalStack -> {
                 if (chemicalStack.isEmpty()) {
                     setTarget(null);
                 } else {
                     setTarget(chemicalStack.copy());
-                    List<String> chemicalTags = TagCache.getTagsAsStrings(((ChemicalStack<?>) target).getChemical().getTags());
-                    if (target instanceof GasStack) {
+                    List<String> chemicalTags = TagCache.getTagsAsStrings(((ChemicalStack) target).getChemical().getTags());
+                    if (target instanceof ChemicalStack) {
                         tags.put(DictionaryTagType.GAS, chemicalTags);
-                    } else if (target instanceof InfusionStack) {
+                    } else if (target instanceof ChemicalStack) {
                         tags.put(DictionaryTagType.INFUSE_TYPE, chemicalTags);
-                    } else if (target instanceof PigmentStack) {
+                    } else if (target instanceof ChemicalStack) {
                         tags.put(DictionaryTagType.PIGMENT, chemicalTags);
-                    } else if (target instanceof SlurryStack) {
+                    } else if (target instanceof ChemicalStack) {
                         tags.put(DictionaryTagType.SLURRY, chemicalTags);
                     }
                 }
@@ -229,11 +222,11 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
         playClickSound(BUTTON_CLICK_SOUND);
     }
 
-    private <STACK extends ChemicalStack<?>, HANDLER extends IChemicalHandler<?, STACK>> void addChemicalTags(DictionaryTagType tagType, ItemStack stack,
+    private <STACK extends ChemicalStack, HANDLER extends IChemicalHandler> void addChemicalTags(DictionaryTagType tagType, ItemStack stack,
           ItemCapability<HANDLER, Void> capability) {
         HANDLER handler = stack.getCapability(capability);
         if (handler != null) {
-            tags.put(tagType, TagCache.getTagsAsStrings(IntStream.range(0, handler.getTanks())
+            tags.put(tagType, TagCache.getTagsAsStrings(IntStream.range(0, handler.getChemicalTanks())
                   .mapToObj(handler::getChemicalInTank)
                   .filter(chemicalInTank -> !chemicalInTank.isEmpty())
                   .flatMap(chemicalInTank -> chemicalInTank.getChemical().getTags())
@@ -266,7 +259,7 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
                     return stack.isEmpty() ? null : stack;
                 } else if (ingredient instanceof FluidStack stack) {
                     return stack.isEmpty() ? null : stack;
-                } else if (ingredient instanceof ChemicalStack<?> stack) {
+                } else if (ingredient instanceof ChemicalStack stack) {
                     return stack.isEmpty() ? null : stack;
                 }
                 return null;

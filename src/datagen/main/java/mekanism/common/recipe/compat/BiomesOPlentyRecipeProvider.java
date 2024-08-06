@@ -11,7 +11,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.RecipeProviderUtil;
 import mekanism.common.recipe.impl.PigmentExtractingRecipeProvider;
-import mekanism.common.registries.MekanismPigments;
+import mekanism.common.registries.MekanismChemicals;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Item;
@@ -128,7 +128,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
         long flowerRate = 3 * PigmentExtractingRecipeProvider.DYE_RATE;
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
                     inputIngredient,
-                    MekanismPigments.PIGMENT_COLOR_LOOKUP.get(color).getStack(flowerRate)
+                    MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(color).getStack(flowerRate)
               ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "pigment_extracting/" + color.getRegistryPrefix()));
     }
@@ -144,7 +144,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
         long largeFlowerRate = 6 * PigmentExtractingRecipeProvider.DYE_RATE;
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
                     inputIngredient,
-                    MekanismPigments.PIGMENT_COLOR_LOOKUP.get(color).getStack(largeFlowerRate)
+                    MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(color).getStack(largeFlowerRate)
               ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "pigment_extracting/large_" + color.getRegistryPrefix()));
     }

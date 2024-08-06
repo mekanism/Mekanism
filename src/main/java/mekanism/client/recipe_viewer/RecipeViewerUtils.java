@@ -13,12 +13,9 @@ import mekanism.api.MekanismAPITags;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalType;
-import mekanism.api.chemical.slurry.Slurry;
-import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.recipes.ItemStackToFluidOptionalItemRecipe;
 import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
-import mekanism.api.recipes.ingredients.SlurryStackIngredient;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.progress.IProgressInfoHandler;
 import mekanism.common.Mekanism;
@@ -98,33 +95,32 @@ public class RecipeViewerUtils {
         return (int) (System.currentTimeMillis() / TimeUtil.MILLISECONDS_PER_SECOND % elements.length);
     }
 
-    @SuppressWarnings("unchecked")
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> List<ItemStack> getStacksFor(
-          ChemicalStackIngredient<CHEMICAL, STACK, ?> ingredient, boolean displayConversions) {
-        Set<CHEMICAL> chemicals = ingredient.getRepresentations().stream().map(ChemicalStack::getChemical).collect(Collectors.toSet());
+    public static List<ItemStack> getStacksFor(
+          ChemicalStackIngredient ingredient, boolean displayConversions) {
+        Set<Chemical> chemicals = ingredient.getRepresentations().stream().map(ChemicalStack::getChemical).collect(Collectors.toSet());
         if (!displayConversions) {
             return getStacksFor(chemicals, null);
         }
         ChemicalType chemicalType = ChemicalType.getTypeFor(ingredient);
-        return getStacksFor(chemicals, (IMekanismRecipeTypeProvider<?, ? extends ItemStackToChemicalRecipe<CHEMICAL, ?>, ?>)  switch (chemicalType) {
+        return getStacksFor(chemicals, (IMekanismRecipeTypeProvider<?, ? extends ItemStackToChemicalRecipe, ?>) switch (chemicalType) {
             case GAS -> MekanismRecipeType.GAS_CONVERSION;
             case INFUSION -> MekanismRecipeType.INFUSION_CONVERSION;
             default -> null;
         });
     }
 
-    private static <CHEMICAL extends Chemical<CHEMICAL>> List<ItemStack> getStacksFor(Set<CHEMICAL> supportedTypes,
-          @Nullable IMekanismRecipeTypeProvider<?, ? extends ItemStackToChemicalRecipe<CHEMICAL, ?>, ?> recipeType) {
+    private static List<ItemStack> getStacksFor(Set<Chemical> supportedTypes,
+          @Nullable IMekanismRecipeTypeProvider<?, ? extends ItemStackToChemicalRecipe, ?> recipeType) {
         List<ItemStack> stacks = new ArrayList<>();
         //Always include the chemical tank of the type to portray that we accept items
-        for (CHEMICAL type : supportedTypes) {
+        for (Chemical type : supportedTypes) {
             stacks.add(ChemicalUtil.getFullChemicalTank(ChemicalTankTier.BASIC, type));
         }
         //See if there are any chemical to item mappings
         if (recipeType != null) {
-            for (RecipeHolder<? extends ItemStackToChemicalRecipe<CHEMICAL, ?>> recipeHolder : recipeType.getRecipes(null)) {
-                ItemStackToChemicalRecipe<CHEMICAL, ?> recipe = recipeHolder.value();
-                for (ChemicalStack<CHEMICAL> output : recipe.getOutputDefinition()) {
+            for (RecipeHolder<? extends ItemStackToChemicalRecipe> recipeHolder : recipeType.getRecipes(null)) {
+                ItemStackToChemicalRecipe recipe = recipeHolder.value();
+                for (ChemicalStack output : recipe.getOutputDefinition()) {
                     if (supportedTypes.contains(output.getChemical())) {
                         stacks.addAll(recipe.getInput().getRepresentations());
                         break;
@@ -151,10 +147,10 @@ public class RecipeViewerUtils {
         return liquification;
     }
 
-    public static List<ItemStack> getDisplayItems(SlurryStackIngredient ingredient) {
+    public static List<ItemStack> getDisplayItems(ChemicalStackIngredient ingredient) {
         SequencedSet<Named<Item>> tags = new LinkedHashSet<>();
-        for (SlurryStack slurryStack : ingredient.getRepresentations()) {
-            Slurry slurry = slurryStack.getChemical();
+        for (ChemicalStack slurryStack : ingredient.getRepresentations()) {
+            Chemical slurry = slurryStack.getChemical();
             if (!slurry.is(MekanismAPITags.Slurries.DIRTY)) {
                 TagKey<Item> oreTag = slurry.getOreTag();
                 if (oreTag != null) {

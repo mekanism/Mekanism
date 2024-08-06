@@ -3,10 +3,9 @@ package mekanism.common.tile.machine;
 import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalTankBuilder;
-import mekanism.api.chemical.pigment.IPigmentTank;
-import mekanism.api.chemical.pigment.Pigment;
-import mekanism.api.chemical.pigment.PigmentStack;
+import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.ItemStackToPigmentRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -33,7 +32,7 @@ import mekanism.common.integration.computer.computercraft.ComputerConstants;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
-import mekanism.common.inventory.slot.chemical.PigmentInventorySlot;
+import mekanism.common.inventory.slot.chemical.ChemicalInventorySlot;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
@@ -66,27 +65,27 @@ public class TileEntityPigmentExtractor extends TileEntityProgressMachine<ItemSt
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded",
                                                                                         "getOutputFilledPercentage"}, docPlaceholder = "pigment tank")
-    public IPigmentTank pigmentTank;
+    public IChemicalTank pigmentTank;
 
-    private final IOutputHandler<@NotNull PigmentStack> outputHandler;
+    private final IOutputHandler<@NotNull ChemicalStack> outputHandler;
     private final IInputHandler<@NotNull ItemStack> inputHandler;
 
     private MachineEnergyContainer<TileEntityPigmentExtractor> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInput", docPlaceholder = "input slot")
     InputInventorySlot inputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem", docPlaceholder = "output slot")
-    PigmentInventorySlot outputSlot;
+    ChemicalInventorySlot outputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy slot")
     EnergyInventorySlot energySlot;
 
     public TileEntityPigmentExtractor(BlockPos pos, BlockState state) {
         super(MekanismBlocks.PIGMENT_EXTRACTOR, pos, state, TRACKED_ERROR_TYPES, BASE_TICKS_REQUIRED);
         configComponent.setupItemIOConfig(inputSlot, outputSlot, energySlot);
-        configComponent.setupOutputConfig(TransmissionType.PIGMENT, pigmentTank, RelativeSide.RIGHT);
+        configComponent.setupOutputConfig(TransmissionType.CHEMICAL, pigmentTank, RelativeSide.RIGHT);
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
 
         ejectorComponent = new TileComponentEjector(this);
-        ejectorComponent.setOutputData(configComponent, TransmissionType.PIGMENT);
+        ejectorComponent.setOutputData(configComponent, TransmissionType.CHEMICAL);
 
         inputHandler = InputHelper.getInputHandler(inputSlot, RecipeError.NOT_ENOUGH_INPUT);
         outputHandler = OutputHelper.getOutputHandler(pigmentTank, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
@@ -94,9 +93,9 @@ public class TileEntityPigmentExtractor extends TileEntityProgressMachine<ItemSt
 
     @NotNull
     @Override
-    public IChemicalTankHolder<Pigment, PigmentStack, IPigmentTank> getInitialPigmentTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
-        ChemicalTankHelper<Pigment, PigmentStack, IPigmentTank> builder = ChemicalTankHelper.forSidePigmentWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(pigmentTank = ChemicalTankBuilder.PIGMENT.output(MAX_PIGMENT, recipeCacheUnpauseListener));
+    public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
+        ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        builder.addTank(pigmentTank = ChemicalTankBuilder.CHEMICAL.output(MAX_PIGMENT, recipeCacheUnpauseListener));
         return builder.build();
     }
 
@@ -114,7 +113,7 @@ public class TileEntityPigmentExtractor extends TileEntityProgressMachine<ItemSt
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
         builder.addSlot(inputSlot = InputInventorySlot.at(this::containsRecipe, recipeCacheListener, 26, 36))
               .tracksWarnings(slot -> slot.warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(RecipeError.NOT_ENOUGH_INPUT)));
-        builder.addSlot(outputSlot = PigmentInventorySlot.drain(pigmentTank, listener, 152, 55));
+        builder.addSlot(outputSlot = ChemicalInventorySlot.drain(pigmentTank, listener, 152, 55));
         builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, listener, 152, 14));
         outputSlot.setSlotOverlay(SlotOverlay.PLUS);
         return builder.build();

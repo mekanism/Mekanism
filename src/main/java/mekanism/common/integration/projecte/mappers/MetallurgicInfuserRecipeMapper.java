@@ -1,10 +1,10 @@
 package mekanism.common.integration.projecte.mappers;
 
 import java.util.List;
-import mekanism.api.chemical.infuse.InfusionStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.common.integration.projecte.IngredientHelper;
-import mekanism.common.integration.projecte.NSSInfuseType;
+import mekanism.common.integration.projecte.NSSChemical;
 import mekanism.common.recipe.MekanismRecipeType;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.api.mapper.recipe.RecipeTypeMapper;
@@ -32,10 +32,10 @@ public class MetallurgicInfuserRecipeMapper extends TypedMekanismRecipeMapper<Me
     @Override
     protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, MetallurgicInfuserRecipe recipe) {
         boolean handled = false;
-        List<@NotNull InfusionStack> infuseTypeRepresentations = recipe.getChemicalInput().getRepresentations();
+        List<@NotNull ChemicalStack> infuseTypeRepresentations = recipe.getChemicalInput().getRepresentations();
         List<@NotNull ItemStack> itemRepresentations = recipe.getItemInput().getRepresentations();
-        for (InfusionStack infuseTypeRepresentation : infuseTypeRepresentations) {
-            NormalizedSimpleStack nssInfuseType = NSSInfuseType.createInfuseType(infuseTypeRepresentation);
+        for (ChemicalStack infuseTypeRepresentation : infuseTypeRepresentations) {
+            NormalizedSimpleStack nssInfuseType = NSSChemical.createChemical(infuseTypeRepresentation);
             for (ItemStack itemRepresentation : itemRepresentations) {
                 ItemStack output = recipe.getOutput(itemRepresentation, infuseTypeRepresentation);
                 if (!output.isEmpty()) {

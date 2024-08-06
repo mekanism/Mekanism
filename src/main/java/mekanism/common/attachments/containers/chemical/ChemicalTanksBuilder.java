@@ -6,48 +6,76 @@ import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.common.attachments.containers.ContainsRecipe;
 import mekanism.common.attachments.containers.creator.BaseContainerCreator;
 import mekanism.common.attachments.containers.creator.IBasicContainerCreator;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.lookup.cache.IInputRecipeCache;
 import net.minecraft.world.item.crafting.RecipeInput;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class ChemicalTanksBuilder<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-      TANK extends ComponentBackedChemicalTank<CHEMICAL, STACK, ?>, BUILDER extends ChemicalTanksBuilder<CHEMICAL, STACK, TANK, BUILDER>> {
+public class ChemicalTanksBuilder {
 
-    protected final List<IBasicContainerCreator<? extends TANK>> tankCreators = new ArrayList<>();
+    public static ChemicalTanksBuilder builder() {
+        return new ChemicalTanksBuilder();
+    }
+
+    protected final List<IBasicContainerCreator<? extends ComponentBackedChemicalTank>> tankCreators = new ArrayList<>();
 
     protected ChemicalTanksBuilder() {
     }
 
-    public abstract BaseContainerCreator<?, TANK> build();
-
-    @SuppressWarnings("unchecked")
-    public <VANILLA_INPUT extends RecipeInput, RECIPE extends MekanismRecipe<VANILLA_INPUT>, INPUT_CACHE extends IInputRecipeCache> BUILDER addBasic(long capacity,
-          IMekanismRecipeTypeProvider<VANILLA_INPUT, RECIPE, INPUT_CACHE> recipeType, ContainsRecipe<INPUT_CACHE, STACK> containsRecipe) {
-        return addBasic(capacity, chemical -> containsRecipe.check(recipeType.getInputCache(), null, (STACK) chemical.getStack(1)));
+    public BaseContainerCreator<AttachedChemicals, ComponentBackedChemicalTank> build() {
+        return new BaseChemicalTankBuilder(tankCreators);
     }
 
-    public BUILDER addBasic(long capacity, Predicate<@NotNull CHEMICAL> isValid) {
+    @SuppressWarnings("unchecked")
+    public <VANILLA_INPUT extends RecipeInput, RECIPE extends MekanismRecipe<VANILLA_INPUT>, INPUT_CACHE extends IInputRecipeCache> ChemicalTanksBuilder addBasic(long capacity,
+          IMekanismRecipeTypeProvider<VANILLA_INPUT, RECIPE, INPUT_CACHE> recipeType, ContainsRecipe<INPUT_CACHE, ChemicalStack> containsRecipe) {
+        return addBasic(capacity, chemical -> containsRecipe.check(recipeType.getInputCache(), null, (ChemicalStack) chemical.getStack(1)));
+    }
+
+    public ChemicalTanksBuilder addBasic(long capacity, Predicate<Chemical> isValid) {
         return addBasic(() -> capacity, isValid);
     }
 
-    public abstract BUILDER addBasic(LongSupplier capacity, Predicate<@NotNull CHEMICAL> isValid);
+    public ChemicalTanksBuilder addBasic(LongSupplier capacity, Predicate<@NotNull Chemical> isValid) {
+        return addTank((type, attachedTo, containerIndex) -> new ComponentBackedChemicalTank(attachedTo, containerIndex, ChemicalTankBuilder.CHEMICAL.manualOnly,
+              ChemicalTankBuilder.alwaysTrueBi, isValid, MekanismConfig.general.chemicalItemFillRate, capacity, null));
+    }
 
-    public BUILDER addBasic(long capacity) {
+    public ChemicalTanksBuilder addBasic(long capacity) {
         return addBasic(() -> capacity);
     }
 
-    public abstract BUILDER addBasic(LongSupplier capacity);
+    public ChemicalTanksBuilder addBasic(LongSupplier capacity) {
+        return addTank((type, attachedTo, containerIndex) -> new ComponentBackedChemicalTank(attachedTo, containerIndex, ChemicalTankBuilder.CHEMICAL.manualOnly,
+              ChemicalTankBuilder.alwaysTrueBi, ChemicalTankBuilder.alwaysTrue, MekanismConfig.general.chemicalItemFillRate, capacity, null));
+    }
 
-    public abstract BUILDER addInternalStorage(LongSupplier rate, LongSupplier capacity, Predicate<@NotNull CHEMICAL> isValid);
+    public ChemicalTanksBuilder addInternalStorage(LongSupplier rate, LongSupplier capacity, Predicate<@NotNull Chemical> isValid) {
+        return addTank((type, attachedTo, containerIndex) -> new ComponentBackedChemicalTank(attachedTo, containerIndex, ChemicalTankBuilder.notExternal,
+              ChemicalTankBuilder.alwaysTrueBi, isValid, rate, capacity, null));
+    }
 
     @SuppressWarnings("unchecked")
-    public BUILDER addTank(IBasicContainerCreator<? extends TANK> tank) {
+    public ChemicalTanksBuilder addTank(IBasicContainerCreator<? extends ComponentBackedChemicalTank> tank) {
         tankCreators.add(tank);
-        return (BUILDER) this;
+        return this;
+    }
+
+    private static class BaseChemicalTankBuilder extends BaseContainerCreator<AttachedChemicals, ComponentBackedChemicalTank> {
+
+        public BaseChemicalTankBuilder(List<IBasicContainerCreator<? extends ComponentBackedChemicalTank>> creators) {
+            super(creators);
+        }
+
+        @Override
+        public AttachedChemicals initStorage(int containers) {
+            return AttachedChemicals.create(containers);
+        }
     }
 }

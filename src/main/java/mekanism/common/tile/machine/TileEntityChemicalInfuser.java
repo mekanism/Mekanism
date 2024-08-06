@@ -3,10 +3,9 @@ package mekanism.common.tile.machine;
 import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.Upgrade;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalTankBuilder;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasTank;
+import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
@@ -35,7 +34,7 @@ import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
-import mekanism.common.inventory.slot.chemical.GasInventorySlot;
+import mekanism.common.inventory.slot.chemical.ChemicalInventorySlot;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -54,7 +53,7 @@ import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalInfuserRecipe> implements EitherSideChemicalRecipeLookupHandler<Gas, GasStack, ChemicalInfuserRecipe> {
+public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalInfuserRecipe> implements EitherSideChemicalRecipeLookupHandler<ChemicalInfuserRecipe> {
 
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
           RecipeError.NOT_ENOUGH_ENERGY,
@@ -68,28 +67,28 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalI
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getLeftInput", "getLeftInputCapacity", "getLeftInputNeeded",
                                                                                         "getLeftInputFilledPercentage"}, docPlaceholder = "left input tank")
-    public IGasTank leftTank;
+    public IChemicalTank leftTank;
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getRightInput", "getRightInputCapacity", "getRightInputNeeded",
                                                                                         "getRightInputFilledPercentage"}, docPlaceholder = "right input tank")
-    public IGasTank rightTank;
+    public IChemicalTank rightTank;
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded",
                                                                                         "getOutputFilledPercentage"}, docPlaceholder = "output (center) tank")
-    public IGasTank centerTank;
+    public IChemicalTank centerTank;
 
     private long clientEnergyUsed = 0L;
     private int baselineMaxOperations = 1;
 
-    private final IOutputHandler<@NotNull GasStack> outputHandler;
-    private final IInputHandler<@NotNull GasStack> leftInputHandler;
-    private final IInputHandler<@NotNull GasStack> rightInputHandler;
+    private final IOutputHandler<@NotNull ChemicalStack> outputHandler;
+    private final IInputHandler<@NotNull ChemicalStack> leftInputHandler;
+    private final IInputHandler<@NotNull ChemicalStack> rightInputHandler;
 
     private MachineEnergyContainer<TileEntityChemicalInfuser> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getLeftInputItem", docPlaceholder = "left input item slot")
-    GasInventorySlot leftInputSlot;
+    ChemicalInventorySlot leftInputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem", docPlaceholder = "output item slot")
-    GasInventorySlot outputSlot;
+    ChemicalInventorySlot outputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getRightInputItem", docPlaceholder = "right input item slot")
-    GasInventorySlot rightInputSlot;
+    ChemicalInventorySlot rightInputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy slot")
     EnergyInventorySlot energySlot;
 
@@ -105,7 +104,7 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalI
             itemConfig.addSlotInfo(DataType.ENERGY, new InventorySlotInfo(true, true, energySlot));
         }
 
-        ConfigInfo gasConfig = configComponent.getConfig(TransmissionType.GAS);
+        ConfigInfo gasConfig = configComponent.getConfig(TransmissionType.CHEMICAL);
         if (gasConfig != null) {
             gasConfig.addSlotInfo(DataType.INPUT_1, new GasSlotInfo(true, false, leftTank));
             gasConfig.addSlotInfo(DataType.INPUT_2, new GasSlotInfo(true, false, rightTank));
@@ -116,7 +115,7 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalI
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
 
         ejectorComponent = new TileComponentEjector(this);
-        ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM, TransmissionType.GAS)
+        ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM, TransmissionType.CHEMICAL)
               .setCanTankEject(tank -> tank == centerTank);
 
         leftInputHandler = InputHelper.getInputHandler(leftTank, RecipeError.NOT_ENOUGH_LEFT_INPUT);
@@ -126,11 +125,11 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalI
 
     @NotNull
     @Override
-    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
-        ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(leftTank = ChemicalTankBuilder.GAS.input(MAX_GAS, gas -> containsRecipe(gas, rightTank.getStack()), this::containsRecipe, recipeCacheListener));
-        builder.addTank(rightTank = ChemicalTankBuilder.GAS.input(MAX_GAS, gas -> containsRecipe(gas, leftTank.getStack()), this::containsRecipe, recipeCacheListener));
-        builder.addTank(centerTank = ChemicalTankBuilder.GAS.output(MAX_GAS, recipeCacheUnpauseListener));
+    public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
+        ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        builder.addTank(leftTank = ChemicalTankBuilder.CHEMICAL.input(MAX_GAS, gas -> containsRecipe(gas, rightTank.getStack()), this::containsRecipe, recipeCacheListener));
+        builder.addTank(rightTank = ChemicalTankBuilder.CHEMICAL.input(MAX_GAS, gas -> containsRecipe(gas, leftTank.getStack()), this::containsRecipe, recipeCacheListener));
+        builder.addTank(centerTank = ChemicalTankBuilder.CHEMICAL.output(MAX_GAS, recipeCacheUnpauseListener));
         return builder.build();
     }
 
@@ -146,9 +145,9 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalI
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addSlot(leftInputSlot = GasInventorySlot.fill(leftTank, listener, 6, 56));
-        builder.addSlot(rightInputSlot = GasInventorySlot.fill(rightTank, listener, 154, 56));
-        builder.addSlot(outputSlot = GasInventorySlot.drain(centerTank, listener, 80, 65));
+        builder.addSlot(leftInputSlot = ChemicalInventorySlot.fill(leftTank, listener, 6, 56));
+        builder.addSlot(rightInputSlot = ChemicalInventorySlot.fill(rightTank, listener, 154, 56));
+        builder.addSlot(outputSlot = ChemicalInventorySlot.drain(centerTank, listener, 80, 65));
         builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, listener, 154, 14));
         leftInputSlot.setSlotType(ContainerSlotType.INPUT);
         leftInputSlot.setSlotOverlay(SlotOverlay.MINUS);
@@ -177,7 +176,7 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalI
 
     @NotNull
     @Override
-    public IMekanismRecipeTypeProvider<BiChemicalRecipeInput<Gas, GasStack>, ChemicalInfuserRecipe, EitherSideChemical<Gas, GasStack, ChemicalInfuserRecipe>> getRecipeType() {
+    public IMekanismRecipeTypeProvider<BiChemicalRecipeInput, ChemicalInfuserRecipe, EitherSideChemical<ChemicalInfuserRecipe>> getRecipeType() {
         return MekanismRecipeType.CHEMICAL_INFUSING;
     }
 

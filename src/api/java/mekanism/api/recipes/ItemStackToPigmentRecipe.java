@@ -3,8 +3,7 @@ package mekanism.api.recipes;
 import java.util.List;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.pigment.Pigment;
-import mekanism.api.chemical.pigment.PigmentStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.Holder;
@@ -24,7 +23,7 @@ import org.jetbrains.annotations.Contract;
  * @apiNote Pigment Extractors can process this recipe type.
  */
 @NothingNullByDefault
-public abstract class ItemStackToPigmentRecipe extends ItemStackToChemicalRecipe<Pigment, PigmentStack> {
+public abstract class ItemStackToPigmentRecipe extends ItemStackToChemicalRecipe {
 
     private static final Holder<Item> PIGMENT_EXTRACTOR = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "pigment_extractor"));
 
@@ -36,10 +35,10 @@ public abstract class ItemStackToPigmentRecipe extends ItemStackToChemicalRecipe
 
     @Override
     @Contract(value = "_ -> new", pure = true)
-    public abstract PigmentStack getOutput(ItemStack input);
+    public abstract ChemicalStack getOutput(ItemStack input);
 
     @Override
-    public abstract List<PigmentStack> getOutputDefinition();
+    public abstract List<ChemicalStack> getOutputDefinition();
 
     @Override
     public final RecipeType<ItemStackToPigmentRecipe> getType() {

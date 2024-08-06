@@ -5,29 +5,8 @@ import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import java.util.Map;
 import java.util.function.IntFunction;
-import java.util.function.Predicate;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.IGasHandler;
-import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.chemical.infuse.IInfusionHandler;
-import mekanism.api.chemical.infuse.IInfusionTank;
-import mekanism.api.chemical.infuse.InfuseType;
-import mekanism.api.chemical.pigment.IPigmentHandler;
-import mekanism.api.chemical.pigment.IPigmentTank;
-import mekanism.api.chemical.pigment.Pigment;
-import mekanism.api.chemical.slurry.ISlurryHandler;
-import mekanism.api.chemical.slurry.ISlurryTank;
-import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
-import mekanism.api.recipes.ingredients.GasStackIngredient;
-import mekanism.api.recipes.ingredients.InfusionStackIngredient;
-import mekanism.api.recipes.ingredients.PigmentStackIngredient;
-import mekanism.api.recipes.ingredients.SlurryStackIngredient;
 import mekanism.api.recipes.ingredients.chemical.IChemicalIngredient;
-import mekanism.api.recipes.ingredients.chemical.IGasIngredient;
-import mekanism.api.recipes.ingredients.chemical.IInfusionIngredient;
-import mekanism.api.recipes.ingredients.chemical.IPigmentIngredient;
-import mekanism.api.recipes.ingredients.chemical.ISlurryIngredient;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ByIdMap;
@@ -38,10 +17,11 @@ import org.jetbrains.annotations.Nullable;
 
 //TODO: Make the chemicals know their own chemical type
 public enum ChemicalType implements StringRepresentable {
-    GAS("gas", c -> c instanceof Gas),
-    INFUSION("infuse_type", c -> c instanceof InfuseType),
-    PIGMENT("pigment", c -> c instanceof Pigment),
-    SLURRY("slurry", c -> c instanceof Slurry);
+    GAS("gas"),
+    INFUSION("infuse_type"),
+    PIGMENT("pigment"),
+    SLURRY("slurry"),
+    CHEMICAL("chemical");
 
     private static final Map<String, ChemicalType> nameToType;
 
@@ -72,12 +52,10 @@ public enum ChemicalType implements StringRepresentable {
      */
     public static final StreamCodec<ByteBuf, ChemicalType> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, ChemicalType::ordinal);
 
-    private final Predicate<Chemical<?>> instanceCheck;
     private final String name;
 
-    ChemicalType(String name, Predicate<Chemical<?>> instanceCheck) {
+    ChemicalType(String name) {
         this.name = name;
-        this.instanceCheck = instanceCheck;
     }
 
     @NotNull
@@ -93,8 +71,8 @@ public enum ChemicalType implements StringRepresentable {
      *
      * @return {@code true} if the given chemical is an instance.
      */
-    public boolean isInstance(Chemical<?> chemical) {
-        return instanceCheck.test(chemical);
+    public boolean isInstance(Chemical chemical) {
+        return this == CHEMICAL;
     }
 
     /**
@@ -116,17 +94,8 @@ public enum ChemicalType implements StringRepresentable {
      *
      * @return Chemical Type.
      */
-    public static ChemicalType getTypeFor(Chemical<?> chemical) {
-        if (chemical instanceof Gas) {
-            return GAS;
-        } else if (chemical instanceof InfuseType) {
-            return INFUSION;
-        } else if (chemical instanceof Pigment) {
-            return PIGMENT;
-        } else if (chemical instanceof Slurry) {
-            return SLURRY;
-        }
-        throw new IllegalStateException("Unknown chemical type");
+    public static ChemicalType getTypeFor(Chemical chemical) {
+        return CHEMICAL;
     }
 
     /**
@@ -136,7 +105,7 @@ public enum ChemicalType implements StringRepresentable {
      *
      * @return Chemical Type.
      */
-    public static ChemicalType getTypeFor(ChemicalStack<?> stack) {
+    public static ChemicalType getTypeFor(ChemicalStack stack) {
         return getTypeFor(stack.getChemical());
     }
 
@@ -147,13 +116,8 @@ public enum ChemicalType implements StringRepresentable {
      *
      * @return Chemical Type.
      */
-    public static ChemicalType getTypeFor(ChemicalStackIngredient<?, ?, ?> ingredient) {
-        return switch (ingredient) {
-            case GasStackIngredient gas -> GAS;
-            case InfusionStackIngredient infusion -> INFUSION;
-            case PigmentStackIngredient pigment -> PIGMENT;
-            case SlurryStackIngredient slurry -> SLURRY;
-        };
+    public static ChemicalType getTypeFor(ChemicalStackIngredient ingredient) {
+        return CHEMICAL;
     }
 
     /**
@@ -165,14 +129,8 @@ public enum ChemicalType implements StringRepresentable {
      *
      * @since 10.6.0
      */
-    public static ChemicalType getTypeFor(IChemicalIngredient<?, ?> ingredient) {
-        return switch (ingredient) {
-            case IGasIngredient gas -> GAS;
-            case IInfusionIngredient infusion -> INFUSION;
-            case IPigmentIngredient pigment -> PIGMENT;
-            case ISlurryIngredient slurry -> SLURRY;
-            default -> throw new IllegalStateException("Chemical ingredient should implement an ingredient type");
-        };
+    public static ChemicalType getTypeFor(IChemicalIngredient ingredient) {
+        return CHEMICAL;
     }
 
     /**
@@ -184,17 +142,8 @@ public enum ChemicalType implements StringRepresentable {
      *
      * @since 10.5.0
      */
-    public static ChemicalType getTypeFor(IChemicalHandler<?, ?> handler) {
-        if (handler instanceof IGasHandler) {
-            return GAS;
-        } else if (handler instanceof IInfusionHandler) {
-            return INFUSION;
-        } else if (handler instanceof IPigmentHandler) {
-            return PIGMENT;
-        } else if (handler instanceof ISlurryHandler) {
-            return SLURRY;
-        }
-        throw new IllegalStateException("Unknown chemical handler type");
+    public static ChemicalType getTypeFor(IChemicalHandler handler) {
+        return CHEMICAL;
     }
 
     /**
@@ -206,16 +155,7 @@ public enum ChemicalType implements StringRepresentable {
      *
      * @since 10.5.0
      */
-    public static ChemicalType getTypeFor(IChemicalTank<?, ?> tank) {
-        if (tank instanceof IGasTank) {
-            return GAS;
-        } else if (tank instanceof IInfusionTank) {
-            return INFUSION;
-        } else if (tank instanceof IPigmentTank) {
-            return PIGMENT;
-        } else if (tank instanceof ISlurryTank) {
-            return SLURRY;
-        }
-        throw new IllegalStateException("Unknown chemical tank type");
+    public static ChemicalType getTypeFor(IChemicalTank tank) {
+        return CHEMICAL;
     }
 }

@@ -32,7 +32,7 @@ public class MekaSuitBarDecorator implements IItemDecorator {
         }
         yOffset += 12;
 
-        if (tryRender(guiGraphics, stack, ContainerType.GAS, xOffset, yOffset, armor.getGasTankSpecs())) {
+        if (tryRender(guiGraphics, stack, ContainerType.CHEMICAL, xOffset, yOffset, armor.getGasTankSpecs())) {
             yOffset--;
         }
         //TODO: Other chemical types as they get added to different meka suit pieces
@@ -50,7 +50,7 @@ public class MekaSuitBarDecorator implements IItemDecorator {
         return true;
     }
 
-    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> boolean tryRender(
+    private <CHEMICAL extends Chemical, STACK extends ChemicalStack, TANK extends IChemicalTank> boolean tryRender(
           GuiGraphics guiGraphics, ItemStack stack, ContainerType<TANK, ?, ?> containerType, int xOffset, int yOffset, List<ChemicalTankSpec<CHEMICAL>> chemicalTankSpecs) {
         if (!chemicalTankSpecs.isEmpty()) {
             List<TANK> tanks = containerType.getAttachmentContainersIfPresent(stack);

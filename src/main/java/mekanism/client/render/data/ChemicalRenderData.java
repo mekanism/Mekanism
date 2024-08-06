@@ -3,10 +3,6 @@ package mekanism.client.render.data;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.infuse.InfuseType;
-import mekanism.api.chemical.pigment.Pigment;
-import mekanism.api.chemical.slurry.Slurry;
 import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
@@ -14,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 //TODO - 1.18: Make it possible for chemicals to define a "glow/light" value and then use that here
 @NothingNullByDefault
-public abstract class ChemicalRenderData<CHEMICAL extends Chemical<CHEMICAL>> extends RenderData {
+public abstract class ChemicalRenderData<CHEMICAL extends Chemical> extends RenderData {
 
     public final CHEMICAL chemical;
 
@@ -53,9 +49,9 @@ public abstract class ChemicalRenderData<CHEMICAL extends Chemical<CHEMICAL>> ex
         return chemical == ((ChemicalRenderData<?>) o).chemical;
     }
 
-    public static class GasRenderData extends ChemicalRenderData<Gas> {
+    public static class GasRenderData extends ChemicalRenderData<Chemical> {
 
-        public GasRenderData(BlockPos renderLocation, int width, int height, int length, Gas gas) {
+        public GasRenderData(BlockPos renderLocation, int width, int height, int length, Chemical gas) {
             super(renderLocation, width, height, length, gas);
         }
 
@@ -65,23 +61,23 @@ public abstract class ChemicalRenderData<CHEMICAL extends Chemical<CHEMICAL>> ex
         }
     }
 
-    public static class InfusionRenderData extends ChemicalRenderData<InfuseType> {
+    public static class InfusionRenderData extends ChemicalRenderData<Chemical> {
 
-        public InfusionRenderData(BlockPos renderLocation, int width, int height, int length, InfuseType infuseType) {
+        public InfusionRenderData(BlockPos renderLocation, int width, int height, int length, Chemical infuseType) {
             super(renderLocation, width, height, length, infuseType);
         }
     }
 
-    public static class PigmentRenderData extends ChemicalRenderData<Pigment> {
+    public static class PigmentRenderData extends ChemicalRenderData<Chemical> {
 
-        public PigmentRenderData(BlockPos renderLocation, int width, int height, int length, Pigment pigment) {
+        public PigmentRenderData(BlockPos renderLocation, int width, int height, int length, Chemical pigment) {
             super(renderLocation, width, height, length, pigment);
         }
     }
 
-    public static class SlurryRenderData extends ChemicalRenderData<Slurry> {
+    public static class SlurryRenderData extends ChemicalRenderData<Chemical> {
 
-        public SlurryRenderData(BlockPos renderLocation, int width, int height, int length, Slurry slurry) {
+        public SlurryRenderData(BlockPos renderLocation, int width, int height, int length, Chemical slurry) {
             super(renderLocation, width, height, length, slurry);
         }
     }

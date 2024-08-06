@@ -4,10 +4,10 @@ import java.util.List;
 import java.util.function.IntSupplier;
 import java.util.function.LongSupplier;
 import mekanism.api.MekanismAPI;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.attribute.ChemicalAttribute;
-import mekanism.api.chemical.gas.Gas;
 import mekanism.api.math.MathUtils;
-import mekanism.api.providers.IGasProvider;
+import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
@@ -128,7 +128,7 @@ public class GasAttributes {
      */
     public static class CooledCoolant extends Coolant {
 
-        private final IGasProvider heatedGas;
+        private final IChemicalProvider heatedGas;
 
         /**
          * @param heatedGas       Gas provider for the heated variant of this chemical.
@@ -137,7 +137,7 @@ public class GasAttributes {
          * @param conductivity    Defines the proportion of a reactor's available heat that can be used at an instant to convert this coolant's cool variant to its heated
          *                        variant. This value should be greater than zero, and at most one.
          */
-        public CooledCoolant(IGasProvider heatedGas, double thermalEnthalpy, double conductivity) {
+        public CooledCoolant(IChemicalProvider heatedGas, double thermalEnthalpy, double conductivity) {
             super(thermalEnthalpy, conductivity);
             this.heatedGas = heatedGas;
         }
@@ -145,7 +145,7 @@ public class GasAttributes {
         /**
          * Gets the heated version of this coolant.
          */
-        public Gas getHeatedGas() {
+        public Chemical getHeatedGas() {
             return heatedGas.getChemical();
         }
     }
@@ -157,7 +157,7 @@ public class GasAttributes {
      */
     public static class HeatedCoolant extends Coolant {
 
-        private final IGasProvider cooledGas;
+        private final IChemicalProvider cooledGas;
 
         /**
          * @param cooledGas       Gas provider for the cooled variant of this chemical.
@@ -166,7 +166,7 @@ public class GasAttributes {
          * @param conductivity    Defines the proportion of a reactor's available heat that can be used at an instant to convert this coolant's cool variant to its heated
          *                        variant. This value should be greater than zero, and at most one.
          */
-        public HeatedCoolant(IGasProvider cooledGas, double thermalEnthalpy, double conductivity) {
+        public HeatedCoolant(IChemicalProvider cooledGas, double thermalEnthalpy, double conductivity) {
             super(thermalEnthalpy, conductivity);
             this.cooledGas = cooledGas;
         }
@@ -174,7 +174,7 @@ public class GasAttributes {
         /**
          * Gets the cooled version of this coolant.
          */
-        public Gas getCooledGas() {
+        public Chemical getCooledGas() {
             return cooledGas.getChemical();
         }
     }

@@ -11,10 +11,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import mekanism.api.SerializationConstants;
 import mekanism.api.RelativeSide;
-import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.chemical.infuse.IInfusionTank;
-import mekanism.api.chemical.pigment.IPigmentTank;
-import mekanism.api.chemical.slurry.ISlurryTank;
+import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.heat.IHeatCapacitor;
@@ -35,10 +32,7 @@ import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.IPersistentConfigInfo;
 import mekanism.common.tile.component.config.slot.BaseSlotInfo;
-import mekanism.common.tile.component.config.slot.ChemicalSlotInfo.GasSlotInfo;
-import mekanism.common.tile.component.config.slot.ChemicalSlotInfo.InfusionSlotInfo;
-import mekanism.common.tile.component.config.slot.ChemicalSlotInfo.PigmentSlotInfo;
-import mekanism.common.tile.component.config.slot.ChemicalSlotInfo.SlurrySlotInfo;
+import mekanism.common.tile.component.config.slot.ChemicalSlotInfo;
 import mekanism.common.tile.component.config.slot.EnergySlotInfo;
 import mekanism.common.tile.component.config.slot.FluidSlotInfo;
 import mekanism.common.tile.component.config.slot.HeatSlotInfo;
@@ -90,10 +84,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         switch (transmissionType) {
             case ENERGY -> tile.invalidateCapabilities(EnergyCompatUtils.getLoadedEnergyCapabilities(), direction);
             case FLUID -> tile.invalidateCapability(Capabilities.FLUID.block(), direction);
-            case GAS -> tile.invalidateCapability(Capabilities.GAS.block(), direction);
-            case INFUSION -> tile.invalidateCapability(Capabilities.INFUSION.block(), direction);
-            case PIGMENT -> tile.invalidateCapability(Capabilities.PIGMENT.block(), direction);
-            case SLURRY -> tile.invalidateCapability(Capabilities.SLURRY.block(), direction);
+            case CHEMICAL -> tile.invalidateCapability(Capabilities.CHEMICAL.block(), direction);
             case ITEM -> tile.invalidateCapability(Capabilities.ITEM.block(), direction);
             case HEAT -> tile.invalidateCapability(Capabilities.HEAT, direction);
         }
@@ -117,14 +108,8 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         TransmissionType type = null;
         if (Capabilities.ITEM.is(capability)) {
             type = TransmissionType.ITEM;
-        } else if (Capabilities.GAS.is(capability)) {
-            type = TransmissionType.GAS;
-        } else if (Capabilities.INFUSION.is(capability)) {
-            type = TransmissionType.INFUSION;
-        } else if (Capabilities.PIGMENT.is(capability)) {
-            type = TransmissionType.PIGMENT;
-        } else if (Capabilities.SLURRY.is(capability)) {
-            type = TransmissionType.SLURRY;
+        } else if (Capabilities.CHEMICAL.is(capability)) {
+            type = TransmissionType.CHEMICAL;
         } else if (capability == Capabilities.HEAT) {
             type = TransmissionType.HEAT;
         } else if (Capabilities.FLUID.is(capability)) {
@@ -389,10 +374,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         return switch (type) {
             case ITEM -> new InventorySlotInfo(input, output, (List<IInventorySlot>) containers);
             case FLUID -> new FluidSlotInfo(input, output, (List<IExtendedFluidTank>) containers);
-            case GAS -> new GasSlotInfo(input, output, (List<IGasTank>) containers);
-            case INFUSION -> new InfusionSlotInfo(input, output, (List<IInfusionTank>) containers);
-            case PIGMENT -> new PigmentSlotInfo(input, output, (List<IPigmentTank>) containers);
-            case SLURRY -> new SlurrySlotInfo(input, output, (List<ISlurryTank>) containers);
+            case CHEMICAL -> new ChemicalSlotInfo(input, output, (List<IChemicalTank>) containers);
             case ENERGY -> new EnergySlotInfo(input, output, (List<IEnergyContainer>) containers);
             case HEAT -> new HeatSlotInfo(input, output, (List<IHeatCapacitor>) containers);
         };

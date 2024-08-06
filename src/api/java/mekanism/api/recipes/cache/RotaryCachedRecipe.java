@@ -6,10 +6,10 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.recipes.RotaryRecipe;
-import mekanism.api.recipes.ingredients.GasStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
@@ -22,24 +22,24 @@ import org.jetbrains.annotations.NotNull;
 @NothingNullByDefault
 public class RotaryCachedRecipe extends CachedRecipe<RotaryRecipe> {
 
-    private final IOutputHandler<@NotNull GasStack> gasOutputHandler;
+    private final IOutputHandler<@NotNull ChemicalStack> gasOutputHandler;
     private final IOutputHandler<@NotNull FluidStack> fluidOutputHandler;
     private final IInputHandler<@NotNull FluidStack> fluidInputHandler;
-    private final IInputHandler<@NotNull GasStack> gasInputHandler;
+    private final IInputHandler<@NotNull ChemicalStack> gasInputHandler;
     private final BooleanSupplier modeSupplier;
     private final Consumer<FluidStack> fluidInputSetter;
-    private final Consumer<GasStack> gasInputSetter;
+    private final Consumer<ChemicalStack> gasInputSetter;
     private final Consumer<FluidStack> fluidOutputSetter;
-    private final Consumer<GasStack> gasOutputSetter;
+    private final Consumer<ChemicalStack> gasOutputSetter;
     private final Supplier<FluidStackIngredient> fluidInputGetter;
-    private final Supplier<GasStackIngredient> gasInputGetter;
-    private final Function<GasStack, FluidStack> fluidOutputGetter;
-    private final Function<FluidStack, GasStack> gasOutputGetter;
+    private final Supplier<ChemicalStackIngredient> gasInputGetter;
+    private final Function<ChemicalStack, FluidStack> fluidOutputGetter;
+    private final Function<FluidStack, ChemicalStack> gasOutputGetter;
 
     private FluidStack recipeFluid = FluidStack.EMPTY;
-    private GasStack recipeGas = GasStack.EMPTY;
+    private ChemicalStack recipeGas = ChemicalStack.EMPTY;
     private FluidStack fluidOutput = FluidStack.EMPTY;
-    private GasStack gasOutput = GasStack.EMPTY;
+    private ChemicalStack gasOutput = ChemicalStack.EMPTY;
 
     /**
      * @param recipe             Recipe.
@@ -52,7 +52,7 @@ public class RotaryCachedRecipe extends CachedRecipe<RotaryRecipe> {
      * @param modeSupplier       Machine handling mode. Returns {@code true} for fluid to gas, and {@code false} for gas to fluid.
      */
     public RotaryCachedRecipe(RotaryRecipe recipe, BooleanSupplier recheckAllErrors, IInputHandler<@NotNull FluidStack> fluidInputHandler,
-          IInputHandler<@NotNull GasStack> gasInputHandler, IOutputHandler<@NotNull GasStack> gasOutputHandler, IOutputHandler<@NotNull FluidStack> fluidOutputHandler,
+          IInputHandler<@NotNull ChemicalStack> gasInputHandler, IOutputHandler<@NotNull ChemicalStack> gasOutputHandler, IOutputHandler<@NotNull FluidStack> fluidOutputHandler,
           BooleanSupplier modeSupplier) {
         super(recipe, recheckAllErrors);
         this.fluidInputHandler = Objects.requireNonNull(fluidInputHandler, "Fluid input handler cannot be null.");
@@ -90,7 +90,7 @@ public class RotaryCachedRecipe extends CachedRecipe<RotaryRecipe> {
             } else {
                 //Handle gas to fluid conversion
                 CachedRecipeHelper.oneInputCalculateOperationsThisTick(tracker, gasInputHandler, gasInputGetter, gasInputSetter,
-                      fluidOutputHandler, fluidOutputGetter, fluidOutputSetter, ConstantPredicates.chemicalEmpty());
+                      fluidOutputHandler, fluidOutputGetter, fluidOutputSetter, ConstantPredicates.CHEMICAL_EMPTY);
             }
         }
     }
@@ -109,7 +109,7 @@ public class RotaryCachedRecipe extends CachedRecipe<RotaryRecipe> {
             //If our recipe doesn't have a gas to fluid version, return that we cannot operate
             return false;
         }
-        GasStack gasStack = gasInputHandler.getInput();
+        ChemicalStack gasStack = gasInputHandler.getInput();
         return !gasStack.isEmpty() && recipe.test(gasStack);
     }
 

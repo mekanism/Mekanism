@@ -3,8 +3,7 @@ package mekanism.common.recipe.lookup.cache;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.cache.type.ChemicalInputCache;
@@ -20,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public class RotaryInputRecipeCache extends AbstractInputRecipeCache<RotaryRecipe> {
 
-    private final ChemicalInputCache<Gas, GasStack, RotaryRecipe> gasInputCache = new ChemicalInputCache<>();
+    private final ChemicalInputCache<RotaryRecipe> gasInputCache = new ChemicalInputCache<>();
     private final FluidInputCache<RotaryRecipe> fluidInputCache = new FluidInputCache<>();
     private final Set<RotaryRecipe> complexGasInputRecipes = new HashSet<>();
     private final Set<RotaryRecipe> complexFluidInputRecipes = new HashSet<>();
@@ -58,7 +57,7 @@ public class RotaryInputRecipeCache extends AbstractInputRecipeCache<RotaryRecip
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      */
-    public boolean containsInput(@Nullable Level world, GasStack input) {
+    public boolean containsInput(@Nullable Level world, ChemicalStack input) {
         return containsInput(world, input, RotaryRecipe::getGasInput, gasInputCache, complexGasInputRecipes);
     }
 
@@ -100,7 +99,7 @@ public class RotaryInputRecipeCache extends AbstractInputRecipeCache<RotaryRecip
      * @return Recipe matching the given gas input, or {@code null} if no recipe matches.
      */
     @Nullable
-    public RotaryRecipe findFirstRecipe(@Nullable Level world, GasStack input) {
+    public RotaryRecipe findFirstRecipe(@Nullable Level world, ChemicalStack input) {
         if (gasInputCache.isEmpty(input)) {
             //Don't allow empty inputs
             return null;
@@ -111,7 +110,7 @@ public class RotaryInputRecipeCache extends AbstractInputRecipeCache<RotaryRecip
     }
 
     @Nullable
-    private RotaryRecipe findFirstRecipe(GasStack input, Iterable<RotaryRecipe> recipes) {
+    private RotaryRecipe findFirstRecipe(ChemicalStack input, Iterable<RotaryRecipe> recipes) {
         for (RotaryRecipe recipe : recipes) {
             if (recipe.test(input)) {
                 return recipe;

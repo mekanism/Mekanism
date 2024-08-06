@@ -1,9 +1,9 @@
 package mekanism.common.item.gear;
 
 import java.util.List;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasHandler;
-import mekanism.api.providers.IGasProvider;
+import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.IChemicalHandler;
+import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
@@ -11,7 +11,7 @@ import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IModeItem.IAttachmentBasedModeItem;
 import mekanism.common.registries.MekanismArmorMaterials;
 import mekanism.common.registries.MekanismDataComponents;
-import mekanism.common.registries.MekanismGases;
+import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import net.minecraft.core.component.DataComponentType;
@@ -31,8 +31,8 @@ public class ItemScubaTank extends ItemGasArmor implements IItemHUDProvider, IAt
     }
 
     @Override
-    protected IGasProvider getGasType() {
-        return MekanismGases.OXYGEN;
+    protected IChemicalProvider getGasType() {
+        return MekanismChemicals.OXYGEN;
     }
 
     @Override
@@ -46,12 +46,12 @@ public class ItemScubaTank extends ItemGasArmor implements IItemHUDProvider, IAt
         if (slotType == getEquipmentSlot()) {
             ItemScubaTank scubaTank = (ItemScubaTank) stack.getItem();
             list.add(MekanismLang.SCUBA_TANK_MODE.translateColored(EnumColor.DARK_GRAY, OnOff.of(scubaTank.getMode(stack), true)));
-            GasStack stored = GasStack.EMPTY;
-            IGasHandler gasHandlerItem = Capabilities.GAS.getCapability(stack);
-            if (gasHandlerItem != null && gasHandlerItem.getTanks() > 0) {
+            ChemicalStack stored = ChemicalStack.EMPTY;
+            IChemicalHandler gasHandlerItem = Capabilities.CHEMICAL.getCapability(stack);
+            if (gasHandlerItem != null && gasHandlerItem.getChemicalTanks() > 0) {
                 stored = gasHandlerItem.getChemicalInTank(0);
             }
-            list.add(MekanismLang.GENERIC_STORED.translateColored(EnumColor.DARK_GRAY, MekanismGases.OXYGEN, EnumColor.ORANGE, stored.getAmount()));
+            list.add(MekanismLang.GENERIC_STORED.translateColored(EnumColor.DARK_GRAY, MekanismChemicals.OXYGEN, EnumColor.ORANGE, stored.getAmount()));
         }
     }
 

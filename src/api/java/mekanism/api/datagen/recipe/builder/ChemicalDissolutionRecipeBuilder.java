@@ -5,17 +5,17 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.ChemicalDissolutionRecipe;
 import mekanism.api.recipes.basic.BasicChemicalDissolutionRecipe;
-import mekanism.api.recipes.ingredients.GasStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 
 @NothingNullByDefault
 public class ChemicalDissolutionRecipeBuilder extends MekanismRecipeBuilder<ChemicalDissolutionRecipeBuilder> {
 
     private final ItemStackIngredient itemInput;
-    private final GasStackIngredient gasInput;
-    private final ChemicalStack<?> output;
+    private final ChemicalStackIngredient gasInput;
+    private final ChemicalStack output;
 
-    protected ChemicalDissolutionRecipeBuilder(ItemStackIngredient itemInput, GasStackIngredient gasInput, ChemicalStack<?> output) {
+    protected ChemicalDissolutionRecipeBuilder(ItemStackIngredient itemInput, ChemicalStackIngredient gasInput, ChemicalStack output) {
         this.itemInput = itemInput;
         this.gasInput = gasInput;
         this.output = output;
@@ -28,7 +28,7 @@ public class ChemicalDissolutionRecipeBuilder extends MekanismRecipeBuilder<Chem
      * @param gasInput  Gas Input.
      * @param output    Output.
      */
-    public static ChemicalDissolutionRecipeBuilder dissolution(ItemStackIngredient itemInput, GasStackIngredient gasInput, ChemicalStack<?> output) {
+    public static ChemicalDissolutionRecipeBuilder dissolution(ItemStackIngredient itemInput, ChemicalStackIngredient gasInput, ChemicalStack output) {
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This dissolution chamber recipe requires a non empty chemical output.");
         }

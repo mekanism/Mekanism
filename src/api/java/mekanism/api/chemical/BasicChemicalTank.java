@@ -14,24 +14,24 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> implements IChemicalTank<CHEMICAL, STACK>,
-      IChemicalHandler<CHEMICAL, STACK> {
+public class BasicChemicalTank implements IChemicalTank,
+      IChemicalHandler {
 
-    private final Predicate<@NotNull CHEMICAL> validator;
-    protected final BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> canExtract;
-    protected final BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> canInsert;
+    private final Predicate<Chemical> validator;
+    protected final BiPredicate<Chemical, @NotNull AutomationType> canExtract;
+    protected final BiPredicate<Chemical, @NotNull AutomationType> canInsert;
     @Nullable
     private final ChemicalAttributeValidator attributeValidator;
     private final long capacity;
     /**
-     * @apiNote This is only protected for direct querying access. To modify this stack the external methods or {@link #setStackUnchecked(STACK)} should be used instead.
+     * @apiNote This is only protected for direct querying access. To modify this stack the external methods or {@link #setStackUnchecked(ChemicalStack)} should be used instead.
      */
-    protected STACK stored;
+    protected ChemicalStack stored;
     @Nullable
     private final IContentsListener listener;
 
-    protected BasicChemicalTank(long capacity, BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> canExtract,
-          BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> canInsert, Predicate<@NotNull CHEMICAL> validator,
+    protected BasicChemicalTank(long capacity, BiPredicate<Chemical, @NotNull AutomationType> canExtract,
+          BiPredicate<Chemical, @NotNull AutomationType> canInsert, Predicate<Chemical> validator,
           @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener) {
         this.capacity = capacity;
         this.canExtract = canExtract;
@@ -39,16 +39,16 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
         this.validator = validator;
         this.attributeValidator = attributeValidator;
         this.listener = listener;
-        this.stored = getEmptyStack();
+        this.stored = ChemicalStack.EMPTY;
     }
 
     @Override
-    public STACK getStack() {
+    public ChemicalStack getStack() {
         return stored;
     }
 
     @Override
-    public void setStack(STACK stack) {
+    public void setStack(ChemicalStack stack) {
         setStack(stack, true);
     }
 
@@ -85,17 +85,17 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
     }
 
     @Override
-    public void setStackUnchecked(STACK stack) {
+    public void setStackUnchecked(ChemicalStack stack) {
         setStack(stack, false);
     }
 
-    private void setStack(STACK stack, boolean validateStack) {
+    private void setStack(ChemicalStack stack, boolean validateStack) {
         if (stack.isEmpty()) {
             if (stored.isEmpty()) {
                 //If we are already empty just exit, to not fire onContentsChanged
                 return;
             }
-            stored = getEmptyStack();
+            stored = ChemicalStack.EMPTY;
         } else if (!validateStack || isValid(stack)) {
             stored = createStack(stack, stack.getAmount());
         } else {
@@ -107,7 +107,7 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
     }
 
     @Override
-    public STACK insert(@NotNull STACK stack, Action action, AutomationType automationType) {
+    public ChemicalStack insert(ChemicalStack stack, Action action, AutomationType automationType) {
         if (stack.isEmpty() || !isValid(stack) || !canInsert.test(stack.getChemical(), automationType)) {
             //"Fail quick" if the given stack is empty, or we can never insert the chemical or currently are unable to insert it
             return stack;
@@ -140,18 +140,18 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
     }
 
     @Override
-    public STACK extract(long amount, Action action, AutomationType automationType) {
+    public ChemicalStack extract(long amount, Action action, AutomationType automationType) {
         if (isEmpty() || amount < 1 || !canExtract.test(stored.getChemical(), automationType)) {
             //"Fail quick" if we don't can never extract from this tank, have a chemical stored, or the amount being requested is less than one
-            return getEmptyStack();
+            return ChemicalStack.EMPTY;
         }
         //Note: While we technically could just return the stack itself if we are removing all that we have, it would require a lot more checks
         // We also are limiting it by the rate this tank has
         long size = Math.min(Math.min(getExtractRate(automationType), getStored()), amount);
         if (size == 0) {
-            return getEmptyStack();
+            return ChemicalStack.EMPTY;
         }
-        STACK ret = createStack(stored, size);
+        ChemicalStack ret = createStack(stored, size);
         if (!ret.isEmpty() && action.execute()) {
             //If shrink gets the size to zero it will update the empty state so that isEmpty() returns true.
             stored.shrink(ret.getAmount());
@@ -161,7 +161,7 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
     }
 
     @Override
-    public boolean isValid(STACK stack) {
+    public boolean isValid(ChemicalStack stack) {
         return getAttributeValidator().process(stack) && validator.test(stack.getChemical());
     }
 
@@ -243,7 +243,7 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
      * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getStack()}, we can optimize out the copying.
      */
     @Override
-    public CHEMICAL getType() {
+    public Chemical getType() {
         return stored.getChemical();
     }
 
@@ -253,7 +253,7 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
      * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getStack()}, we can optimize out the copying.
      */
     @Override
-    public boolean isTypeEqual(STACK other) {
+    public boolean isTypeEqual(ChemicalStack other) {
         return ChemicalStack.isSameChemical(stored, other);
     }
 
@@ -263,7 +263,7 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
      * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getStack()}, we can optimize out the copying.
      */
     @Override
-    public boolean isTypeEqual(CHEMICAL other) {
+    public boolean isTypeEqual(Chemical other) {
         return stored.is(other);
     }
 
@@ -299,54 +299,54 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
     }
 
     @Override
-    public int getTanks() {
+    public int getChemicalTanks() {
         return 1;
     }
 
     @Override
-    public STACK getChemicalInTank(int tank) {
-        return tank == 0 ? getStack() : getEmptyStack();
+    public ChemicalStack getChemicalInTank(int tank) {
+        return tank == 0 ? getStack() : ChemicalStack.EMPTY;
     }
 
     @Override
-    public void setChemicalInTank(int tank, STACK stack) {
+    public void setChemicalInTank(int tank, ChemicalStack stack) {
         if (tank == 0) {
             setStack(stack);
         }
     }
 
     @Override
-    public long getTankCapacity(int tank) {
+    public long getChemicalTankCapacity(int tank) {
         return tank == 0 ? getCapacity() : 0;
     }
 
     @Override
-    public boolean isValid(int tank, STACK stack) {
+    public boolean isValid(int tank, ChemicalStack stack) {
         return tank == 0 && isValid(stack);
     }
 
     @Override
-    public STACK insertChemical(int tank, STACK stack, Action action) {
+    public ChemicalStack insertChemical(int tank, ChemicalStack stack, Action action) {
         return tank == 0 ? insertChemical(stack, action) : stack;
     }
 
     @Override
-    public STACK insertChemical(STACK stack, Action action) {
+    public ChemicalStack insertChemical(ChemicalStack stack, Action action) {
         return insert(stack, action, AutomationType.EXTERNAL);
     }
 
     @Override
-    public STACK extractChemical(int tank, long amount, Action action) {
-        return tank == 0 ? extractChemical(amount, action) : getEmptyStack();
+    public ChemicalStack extractChemical(int tank, long amount, Action action) {
+        return tank == 0 ? extractChemical(amount, action) : ChemicalStack.EMPTY;
     }
 
     @Override
-    public STACK extractChemical(long amount, Action action) {
+    public ChemicalStack extractChemical(long amount, Action action) {
         return extract(amount, action, AutomationType.EXTERNAL);
     }
 
     @Override
-    public STACK extractChemical(STACK stack, Action action) {
-        return isTypeEqual(stack) ? extractChemical(stack.getAmount(), action) : getEmptyStack();
+    public ChemicalStack extractChemical(ChemicalStack stack, Action action) {
+        return isTypeEqual(stack) ? extractChemical(stack.getAmount(), action) : ChemicalStack.EMPTY;
     }
 }

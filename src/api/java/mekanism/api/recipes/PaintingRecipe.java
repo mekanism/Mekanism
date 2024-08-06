@@ -3,10 +3,9 @@ package mekanism.api.recipes;
 import java.util.List;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.pigment.Pigment;
-import mekanism.api.chemical.pigment.PigmentStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.chemical.ItemStackChemicalToItemStackRecipe;
-import mekanism.api.recipes.ingredients.PigmentStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
@@ -29,7 +28,7 @@ import org.jetbrains.annotations.NotNull;
  * @apiNote Painting Machines can process this recipe type.
  */
 @NothingNullByDefault
-public abstract class PaintingRecipe extends ItemStackChemicalToItemStackRecipe<Pigment, PigmentStack, PigmentStackIngredient> {
+public abstract class PaintingRecipe extends ItemStackChemicalToItemStackRecipe {
 
     private static final Holder<Item> PAINTING_MACHINE = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "painting_machine"));
 
@@ -37,18 +36,18 @@ public abstract class PaintingRecipe extends ItemStackChemicalToItemStackRecipe<
     public abstract ItemStackIngredient getItemInput();
 
     @Override
-    public abstract PigmentStackIngredient getChemicalInput();
+    public abstract ChemicalStackIngredient getChemicalInput();
 
     @Override
     @Contract(value = "_, _ -> new", pure = true)
-    public abstract ItemStack getOutput(ItemStack inputItem, PigmentStack inputChemical);
+    public abstract ItemStack getOutput(ItemStack inputItem, ChemicalStack inputChemical);
 
     @NotNull
     @Override
     public abstract ItemStack getResultItem(@NotNull HolderLookup.Provider provider);
 
     @Override
-    public abstract boolean test(ItemStack itemStack, PigmentStack gasStack);
+    public abstract boolean test(ItemStack itemStack, ChemicalStack gasStack);
 
     @Override
     public abstract List<@NotNull ItemStack> getOutputDefinition();

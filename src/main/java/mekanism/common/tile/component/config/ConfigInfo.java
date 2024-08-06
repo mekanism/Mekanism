@@ -127,8 +127,8 @@ public class ConfigInfo implements IPersistentConfigInfo {
         }
         // set up mapping
         switch (info) {
-            case ChemicalSlotInfo<?, ?, ?> chemicalSlotInfo -> {
-                for (IChemicalTank<?, ?> tank : chemicalSlotInfo.getTanks()) {
+            case ChemicalSlotInfo chemicalSlotInfo -> {
+                for (IChemicalTank tank : chemicalSlotInfo.getTanks()) {
                     containerTypeMapping.computeIfAbsent(tank, t -> new ArrayList<>()).add(dataType);
                 }
             }

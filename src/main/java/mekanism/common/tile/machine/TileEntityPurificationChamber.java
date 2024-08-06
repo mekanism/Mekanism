@@ -1,7 +1,5 @@
 package mekanism.common.tile.machine;
 
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.vanilla_input.SingleItemChemicalRecipeInput;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
@@ -23,7 +21,7 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 
     @NotNull
     @Override
-    public IMekanismRecipeTypeProvider<SingleItemChemicalRecipeInput<Gas, GasStack>, ItemStackGasToItemStackRecipe, ItemChemical<Gas, GasStack, ItemStackGasToItemStackRecipe>> getRecipeType() {
+    public IMekanismRecipeTypeProvider<SingleItemChemicalRecipeInput, ItemStackGasToItemStackRecipe, ItemChemical<ItemStackGasToItemStackRecipe>> getRecipeType() {
         return MekanismRecipeType.PURIFYING;
     }
 

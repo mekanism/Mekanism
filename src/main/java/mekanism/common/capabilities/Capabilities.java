@@ -4,10 +4,7 @@ import mekanism.api.IAlloyInteraction;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.IConfigurable;
 import mekanism.api.IEvaporationSolar;
-import mekanism.api.chemical.gas.IGasHandler;
-import mekanism.api.chemical.infuse.IInfusionHandler;
-import mekanism.api.chemical.pigment.IPigmentHandler;
-import mekanism.api.chemical.slurry.ISlurryHandler;
+import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.lasers.ILaserDissipation;
@@ -58,10 +55,7 @@ public class Capabilities {
     //Note: We intentionally don't use the entity automation capability, as we want to be able to target player inventories and the like
     public static final MultiTypeCapability<IItemHandler> ITEM = new MultiTypeCapability<>(ItemHandler.BLOCK, ItemHandler.ITEM, ItemHandler.ENTITY);
 
-    public static final MultiTypeCapability<IGasHandler> GAS = new MultiTypeCapability<>(Mekanism.rl("gas_handler"), IGasHandler.class);
-    public static final MultiTypeCapability<IInfusionHandler> INFUSION = new MultiTypeCapability<>(Mekanism.rl("infusion_handler"), IInfusionHandler.class);
-    public static final MultiTypeCapability<IPigmentHandler> PIGMENT = new MultiTypeCapability<>(Mekanism.rl("pigment_handler"), IPigmentHandler.class);
-    public static final MultiTypeCapability<ISlurryHandler> SLURRY = new MultiTypeCapability<>(Mekanism.rl("slurry_handler"), ISlurryHandler.class);
+    public static final MultiTypeCapability<IChemicalHandler> CHEMICAL = new MultiTypeCapability<>(Mekanism.rl("chemical_handler"), IChemicalHandler.class);
 
     public static final BlockCapability<IHeatHandler, @Nullable Direction> HEAT = BlockCapability.createSided(Mekanism.rl("heat_handler"), IHeatHandler.class);
 

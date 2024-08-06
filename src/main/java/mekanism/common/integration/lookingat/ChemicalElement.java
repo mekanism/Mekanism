@@ -32,10 +32,10 @@ public class ChemicalElement extends LookingAtElement {
     );
 
     @NotNull
-    protected final ChemicalStack<?> stored;
+    protected final ChemicalStack stored;
     protected final long capacity;
 
-    public ChemicalElement(@NotNull ChemicalStack<?> stored, long capacity) {
+    public ChemicalElement(@NotNull ChemicalStack stored, long capacity) {
         super(0xFF000000, 0xFFFFFF);
         this.stored = stored;
         this.capacity = capacity;
@@ -54,7 +54,7 @@ public class ChemicalElement extends LookingAtElement {
     }
 
     @NotNull
-    public ChemicalStack<?> getStored() {
+    public ChemicalStack getStored() {
         return stored;
     }
 

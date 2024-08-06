@@ -1,7 +1,7 @@
 package mekanism.client.recipe_viewer.jei.machine;
 
 import java.util.List;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.client.gui.element.bar.GuiBar;
 import mekanism.client.gui.element.bar.GuiEmptyBar;
@@ -44,7 +44,7 @@ public class ItemStackGasToItemStackRecipeCategory extends HolderRecipeCategory<
     public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<ItemStackGasToItemStackRecipe> recipeHolder, @NotNull IFocusGroup focusGroup) {
         ItemStackGasToItemStackRecipe recipe = recipeHolder.value();
         initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getItemInput().getRepresentations());
-        List<GasStack> scaledGases = recipe.getChemicalInput().getRepresentations().stream()
+        List<ChemicalStack> scaledGases = recipe.getChemicalInput().getRepresentations().stream()
               .map(gas -> gas.copyWithAmount(gas.getAmount() * TileEntityAdvancedElectricMachine.BASE_TICKS_REQUIRED))
               .toList();
         initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.INPUT, gasInput, scaledGases);

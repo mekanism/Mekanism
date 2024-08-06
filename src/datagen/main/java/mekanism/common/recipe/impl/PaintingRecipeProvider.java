@@ -9,8 +9,8 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.BaseRecipeProvider;
 import mekanism.common.recipe.ISubRecipeProvider;
+import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismItems;
-import mekanism.common.registries.MekanismPigments;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.core.HolderLookup;
@@ -130,7 +130,7 @@ class PaintingRecipeProvider implements ISubRecipeProvider {
     private static void addDyeRecipe(RecipeOutput consumer, EnumColor color, ItemLike dye, String basePath) {
         ItemStackChemicalToItemStackRecipeBuilder.painting(
               IngredientCreatorAccess.item().from(MekanismItems.DYE_BASE),
-              IngredientCreatorAccess.pigmentStack().from(MekanismPigments.PIGMENT_COLOR_LOOKUP.get(color), PigmentExtractingRecipeProvider.DYE_RATE),
+              IngredientCreatorAccess.chemicalStack().from(MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(color), PigmentExtractingRecipeProvider.DYE_RATE),
               new ItemStack(dye)
         ).build(consumer, Mekanism.rl(basePath + color.getRegistryPrefix()));
     }
@@ -153,7 +153,7 @@ class PaintingRecipeProvider implements ISubRecipeProvider {
     private static void addRecoloringRecipe(RecipeOutput consumer, EnumColor color, TagKey<Item> input, ItemLike result, long rate, String basePath) {
         ItemStackChemicalToItemStackRecipeBuilder.painting(
               IngredientCreatorAccess.item().from(BaseRecipeProvider.difference(input, result)),
-              IngredientCreatorAccess.pigmentStack().from(MekanismPigments.PIGMENT_COLOR_LOOKUP.get(color), rate),
+              IngredientCreatorAccess.chemicalStack().from(MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(color), rate),
               new ItemStack(result)
         ).build(consumer, Mekanism.rl(basePath + color.getRegistryPrefix()));
     }

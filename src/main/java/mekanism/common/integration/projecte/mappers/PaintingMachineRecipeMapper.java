@@ -1,10 +1,10 @@
 package mekanism.common.integration.projecte.mappers;
 
 import java.util.List;
-import mekanism.api.chemical.pigment.PigmentStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.PaintingRecipe;
 import mekanism.common.integration.projecte.IngredientHelper;
-import mekanism.common.integration.projecte.NSSPigment;
+import mekanism.common.integration.projecte.NSSChemical;
 import mekanism.common.recipe.MekanismRecipeType;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.api.mapper.recipe.RecipeTypeMapper;
@@ -32,10 +32,10 @@ public class PaintingMachineRecipeMapper extends TypedMekanismRecipeMapper<Paint
     @Override
     protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, PaintingRecipe recipe) {
         boolean handled = false;
-        List<@NotNull PigmentStack> pigmentRepresentations = recipe.getChemicalInput().getRepresentations();
+        List<@NotNull ChemicalStack> pigmentRepresentations = recipe.getChemicalInput().getRepresentations();
         List<@NotNull ItemStack> itemRepresentations = recipe.getItemInput().getRepresentations();
-        for (PigmentStack pigmentRepresentation : pigmentRepresentations) {
-            NormalizedSimpleStack nssPigment = NSSPigment.createPigment(pigmentRepresentation);
+        for (ChemicalStack pigmentRepresentation : pigmentRepresentations) {
+            NormalizedSimpleStack nssPigment = NSSChemical.createChemical(pigmentRepresentation);
             for (ItemStack itemRepresentation : itemRepresentations) {
                 ItemStack output = recipe.getOutput(itemRepresentation, pigmentRepresentation);
                 if (!output.isEmpty()) {

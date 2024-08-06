@@ -11,7 +11,7 @@ import mekanism.common.config.listener.ConfigBasedCachedLongSupplier;
 import mekanism.common.lib.Version;
 import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.recipe.ClearConfigurationRecipe;
-import mekanism.common.registries.MekanismGases;
+import mekanism.common.registries.MekanismChemicals;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.fission.FissionReactorCache;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
@@ -102,7 +102,7 @@ public class MekanismGenerators implements IModModule {
     private void commonSetup(FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
             //Add fuel attribute to ethene
-            MekanismGases.ETHENE.get().addAttribute(new Fuel(MekanismGeneratorsConfig.generators.etheneBurnTicks, ETHENE_ENERGY_DENSITY));
+            MekanismChemicals.ETHENE.get().addAttribute(new Fuel(MekanismGeneratorsConfig.generators.etheneBurnTicks, ETHENE_ENERGY_DENSITY));
             //Register dispenser behaviors
             GeneratorsFluids.FLUIDS.registerBucketDispenserBehavior();
             //Register extended build commands (in enqueue as it is not thread safe)

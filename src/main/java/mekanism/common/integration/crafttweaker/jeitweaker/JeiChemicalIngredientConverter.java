@@ -3,53 +3,50 @@ package mekanism.common.integration.crafttweaker.jeitweaker;
 import com.blamejared.jeitweaker.common.api.ingredient.JeiIngredientConverter;
 import com.blamejared.jeitweaker.common.api.ingredient.JeiIngredientCreator;
 import java.util.function.Function;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
-import mekanism.common.util.ChemicalUtil;
 import net.minecraft.resources.ResourceLocation;
 
-class JeiChemicalIngredientConverter<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-      CRT_STACK extends ICrTChemicalStack<CHEMICAL, STACK, CRT_STACK>> implements JeiIngredientConverter<STACK, CRT_STACK> {
+class JeiChemicalIngredientConverter implements JeiIngredientConverter<ChemicalStack, ICrTChemicalStack> {
 
-    private final Function<STACK, CRT_STACK> converter;
+    private final Function<ChemicalStack, ICrTChemicalStack> converter;
 
-    JeiChemicalIngredientConverter(Function<STACK, CRT_STACK> converter) {
+    JeiChemicalIngredientConverter(Function<ChemicalStack, ICrTChemicalStack> converter) {
         this.converter = converter;
     }
 
     @Override
-    public JeiIngredientCreator.Creator<STACK, CRT_STACK> toFullIngredientFromJei(JeiIngredientCreator.FromJei creator, STACK jeiType) {
-        return creator.of(jeiType, ChemicalUtil::copy);
+    public JeiIngredientCreator.Creator<ChemicalStack, ICrTChemicalStack> toFullIngredientFromJei(JeiIngredientCreator.FromJei creator, ChemicalStack jeiType) {
+        return creator.of(jeiType, ChemicalStack::copy);
     }
 
     @Override
-    public JeiIngredientCreator.Creator<STACK, CRT_STACK> toFullIngredientFromZen(JeiIngredientCreator.FromZen creator, CRT_STACK zenType) {
+    public JeiIngredientCreator.Creator<ChemicalStack, ICrTChemicalStack> toFullIngredientFromZen(JeiIngredientCreator.FromZen creator, ICrTChemicalStack zenType) {
         return creator.of(zenType.asImmutable());
     }
 
     @Override
-    public JeiIngredientCreator.Creator<STACK, CRT_STACK> toFullIngredientFromBoth(JeiIngredientCreator.FromBoth creator, STACK jeiType, CRT_STACK zenType) {
-        return creator.of(jeiType, ChemicalUtil::copy, zenType.asImmutable());
+    public JeiIngredientCreator.Creator<ChemicalStack, ICrTChemicalStack> toFullIngredientFromBoth(JeiIngredientCreator.FromBoth creator, ChemicalStack jeiType, ICrTChemicalStack zenType) {
+        return creator.of(jeiType, ChemicalStack::copy, zenType.asImmutable());
     }
 
     @Override
-    public STACK toJeiFromZen(CRT_STACK zenType) {
+    public ChemicalStack toJeiFromZen(ICrTChemicalStack zenType) {
         return zenType.getInternal();
     }
 
     @Override
-    public CRT_STACK toZenFromJei(STACK jeiType) {
+    public ICrTChemicalStack toZenFromJei(ChemicalStack jeiType) {
         return converter.apply(jeiType);
     }
 
     @Override
-    public String toCommandStringFromZen(CRT_STACK zenType) {
+    public String toCommandStringFromZen(ICrTChemicalStack zenType) {
         return zenType.getCommandString();
     }
 
     @Override
-    public ResourceLocation toRegistryNameFromJei(STACK jeiType) {
+    public ResourceLocation toRegistryNameFromJei(ChemicalStack jeiType) {
         return jeiType.getTypeRegistryName();
     }
 }

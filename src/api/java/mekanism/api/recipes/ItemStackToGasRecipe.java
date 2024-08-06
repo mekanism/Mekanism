@@ -3,8 +3,7 @@ package mekanism.api.recipes;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.world.item.ItemStack;
@@ -22,8 +21,9 @@ import org.jetbrains.annotations.Contract;
  *     <li>Gas Conversion: Can be processed by any slots in Mekanism machines that are able to convert items to gases, for example in the Osmium Compressor and a variety of other machines.</li>
  * </ul>
  */
+//todo extract this to parent
 @NothingNullByDefault
-public abstract class ItemStackToGasRecipe extends ItemStackToChemicalRecipe<Gas, GasStack> {
+public abstract class ItemStackToGasRecipe extends ItemStackToChemicalRecipe {
 
     private final RecipeType<ItemStackToGasRecipe> recipeType;
 
@@ -39,10 +39,10 @@ public abstract class ItemStackToGasRecipe extends ItemStackToChemicalRecipe<Gas
 
     @Override
     @Contract(value = "_ -> new", pure = true)
-    public abstract GasStack getOutput(ItemStack input);
+    public abstract ChemicalStack getOutput(ItemStack input);
 
     @Override
-    public abstract List<GasStack> getOutputDefinition();
+    public abstract List<ChemicalStack> getOutputDefinition();
 
     @Override
     public final RecipeType<ItemStackToGasRecipe> getType() {

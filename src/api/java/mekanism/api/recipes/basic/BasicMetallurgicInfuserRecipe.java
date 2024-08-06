@@ -4,10 +4,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.infuse.InfusionStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
-import mekanism.api.recipes.ingredients.InfusionStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 public class BasicMetallurgicInfuserRecipe extends MetallurgicInfuserRecipe implements IBasicItemStackOutput {
 
     protected final ItemStackIngredient itemInput;
-    protected final InfusionStackIngredient infusionInput;
+    protected final ChemicalStackIngredient infusionInput;
     protected final ItemStack output;
 
     /**
@@ -27,7 +27,7 @@ public class BasicMetallurgicInfuserRecipe extends MetallurgicInfuserRecipe impl
      * @param infusionInput Infusion input.
      * @param output        Output.
      */
-    public BasicMetallurgicInfuserRecipe(ItemStackIngredient itemInput, InfusionStackIngredient infusionInput, ItemStack output) {
+    public BasicMetallurgicInfuserRecipe(ItemStackIngredient itemInput, ChemicalStackIngredient infusionInput, ItemStack output) {
         this.itemInput = Objects.requireNonNull(itemInput, "Item input cannot be null.");
         this.infusionInput = Objects.requireNonNull(infusionInput, "Chemical input cannot be null.");
         Objects.requireNonNull(output, "Output cannot be null.");
@@ -43,13 +43,13 @@ public class BasicMetallurgicInfuserRecipe extends MetallurgicInfuserRecipe impl
     }
 
     @Override
-    public InfusionStackIngredient getChemicalInput() {
+    public ChemicalStackIngredient getChemicalInput() {
         return infusionInput;
     }
 
     @Override
     @Contract(value = "_, _ -> new", pure = true)
-    public ItemStack getOutput(ItemStack inputItem, InfusionStack inputChemical) {
+    public ItemStack getOutput(ItemStack inputItem, ChemicalStack inputChemical) {
         return output.copy();
     }
 
@@ -60,7 +60,7 @@ public class BasicMetallurgicInfuserRecipe extends MetallurgicInfuserRecipe impl
     }
 
     @Override
-    public boolean test(ItemStack itemStack, InfusionStack gasStack) {
+    public boolean test(ItemStack itemStack, ChemicalStack gasStack) {
         return itemInput.test(itemStack) && infusionInput.test(gasStack);
     }
 

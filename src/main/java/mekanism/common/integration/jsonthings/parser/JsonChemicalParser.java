@@ -10,7 +10,6 @@ import dev.gigaherz.jsonthings.util.parse.value.ObjValue;
 import java.util.function.IntConsumer;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.ChemicalBuilder;
 import mekanism.api.chemical.ChemicalType;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.jsonthings.builder.JsonChemicalBuilder;
@@ -21,13 +20,13 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
 @NothingNullByDefault
-public abstract class JsonChemicalParser<CHEMICAL extends Chemical<CHEMICAL>, BUILDER extends ChemicalBuilder<CHEMICAL, BUILDER>,
-      THING_BUILDER extends JsonChemicalBuilder<CHEMICAL, BUILDER, THING_BUILDER>> extends ThingParser<THING_BUILDER> {
+public abstract class JsonChemicalParser<
+      THING_BUILDER extends JsonChemicalBuilder<THING_BUILDER>> extends ThingParser<THING_BUILDER> {
 
-    private final ResourceKey<? extends Registry<CHEMICAL>> registryKey;
+    private final ResourceKey<? extends Registry<Chemical>> registryKey;
     private final String thingType;
 
-    protected JsonChemicalParser(IEventBus bus, ChemicalType chemicalType, String thingType, ResourceKey<? extends Registry<CHEMICAL>> registryKey) {
+    protected JsonChemicalParser(IEventBus bus, ChemicalType chemicalType, String thingType, ResourceKey<? extends Registry<Chemical>> registryKey) {
         super(GSON, Mekanism.MODID + "/" + chemicalType.getSerializedName());
         this.thingType = thingType;
         this.registryKey = registryKey;

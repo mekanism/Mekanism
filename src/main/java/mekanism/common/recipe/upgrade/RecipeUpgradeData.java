@@ -26,10 +26,7 @@ import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.item.block.ItemBlockPersonalStorage;
 import mekanism.common.item.block.machine.ItemBlockFactory;
 import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
-import mekanism.common.recipe.upgrade.chemical.GasRecipeData;
-import mekanism.common.recipe.upgrade.chemical.InfusionRecipeData;
-import mekanism.common.recipe.upgrade.chemical.PigmentRecipeData;
-import mekanism.common.recipe.upgrade.chemical.SlurryRecipeData;
+import mekanism.common.recipe.upgrade.chemical.ChemicalRecipeData;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tier.BinTier;
 import net.minecraft.core.HolderLookup;
@@ -69,17 +66,8 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
         if (ContainerType.FLUID.supports(stack)) {
             supportedTypes.add(RecipeUpgradeType.FLUID);
         }
-        if (ContainerType.GAS.supports(stack)) {
-            supportedTypes.add(RecipeUpgradeType.GAS);
-        }
-        if (ContainerType.INFUSION.supports(stack)) {
-            supportedTypes.add(RecipeUpgradeType.INFUSION);
-        }
-        if (ContainerType.PIGMENT.supports(stack)) {
-            supportedTypes.add(RecipeUpgradeType.PIGMENT);
-        }
-        if (ContainerType.SLURRY.supports(stack)) {
-            supportedTypes.add(RecipeUpgradeType.SLURRY);
+        if (ContainerType.CHEMICAL.supports(stack)) {
+            supportedTypes.add(RecipeUpgradeType.CHEMICAL);
         }
         if (ContainerType.ITEM.supports(stack) || item instanceof ItemBlockPersonalStorage) {
             supportedTypes.add(RecipeUpgradeType.ITEM);
@@ -117,10 +105,7 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
         return switch (type) {
             case ENERGY -> getContainerUpgradeData(stack, ContainerType.ENERGY, EnergyRecipeData::new);
             case FLUID -> getContainerUpgradeData(stack, ContainerType.FLUID, FluidRecipeData::new);
-            case GAS -> getContainerUpgradeData(stack, ContainerType.GAS, GasRecipeData::new);
-            case INFUSION -> getContainerUpgradeData(stack, ContainerType.INFUSION, InfusionRecipeData::new);
-            case PIGMENT -> getContainerUpgradeData(stack, ContainerType.PIGMENT, PigmentRecipeData::new);
-            case SLURRY -> getContainerUpgradeData(stack, ContainerType.SLURRY, SlurryRecipeData::new);
+            case CHEMICAL -> getContainerUpgradeData(stack, ContainerType.CHEMICAL, ChemicalRecipeData::new);
             case ITEM -> {
                 List<IInventorySlot> slots;
                 if (stack.getItem() instanceof ItemBlockPersonalStorage) {

@@ -1,14 +1,6 @@
 package mekanism.api.datagen.recipe.builder;
 
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.infuse.InfuseType;
-import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.api.chemical.pigment.Pigment;
-import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.basic.BasicCompressingRecipe;
 import mekanism.api.recipes.basic.BasicInjectingRecipe;
@@ -17,24 +9,20 @@ import mekanism.api.recipes.basic.BasicPaintingRecipe;
 import mekanism.api.recipes.basic.BasicPurifyingRecipe;
 import mekanism.api.recipes.chemical.ItemStackChemicalToItemStackRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
-import mekanism.api.recipes.ingredients.GasStackIngredient;
-import mekanism.api.recipes.ingredients.InfusionStackIngredient;
-import mekanism.api.recipes.ingredients.PigmentStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.ItemStack;
 
 @NothingNullByDefault
-public class ItemStackChemicalToItemStackRecipeBuilder<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-      INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK, ?>> extends MekanismRecipeBuilder<ItemStackChemicalToItemStackRecipeBuilder<CHEMICAL, STACK, INGREDIENT>> {
+public class ItemStackChemicalToItemStackRecipeBuilder extends MekanismRecipeBuilder<ItemStackChemicalToItemStackRecipeBuilder> {
 
-    private final ItemStackChemicalToItemStackRecipeBuilder.Factory<CHEMICAL, STACK, INGREDIENT> factory;
+    private final ItemStackChemicalToItemStackRecipeBuilder.Factory factory;
     private final ItemStackIngredient itemInput;
-    private final INGREDIENT chemicalInput;
+    private final ChemicalStackIngredient chemicalInput;
     private final ItemStack output;
 
-    protected ItemStackChemicalToItemStackRecipeBuilder(ItemStackIngredient itemInput, INGREDIENT chemicalInput, ItemStack output,
-          ItemStackChemicalToItemStackRecipeBuilder.Factory<CHEMICAL, STACK, INGREDIENT> factory) {
+    protected ItemStackChemicalToItemStackRecipeBuilder(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ItemStack output,
+          ItemStackChemicalToItemStackRecipeBuilder.Factory factory) {
         this.itemInput = itemInput;
         this.chemicalInput = chemicalInput;
         this.output = output;
@@ -48,12 +36,12 @@ public class ItemStackChemicalToItemStackRecipeBuilder<CHEMICAL extends Chemical
      * @param gasInput  Gas Input, used at a constant rate over the duration of the recipe.
      * @param output    Output.
      */
-    public static ItemStackChemicalToItemStackRecipeBuilder<Gas, GasStack, GasStackIngredient> compressing(ItemStackIngredient itemInput, GasStackIngredient gasInput,
+    public static ItemStackChemicalToItemStackRecipeBuilder compressing(ItemStackIngredient itemInput, ChemicalStackIngredient gasInput,
           ItemStack output) {
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This compressing recipe requires a non empty item output.");
         }
-        return new ItemStackChemicalToItemStackRecipeBuilder<>(itemInput, gasInput, output, BasicCompressingRecipe::new);
+        return new ItemStackChemicalToItemStackRecipeBuilder(itemInput, gasInput, output, BasicCompressingRecipe::new);
     }
 
     /**
@@ -63,12 +51,12 @@ public class ItemStackChemicalToItemStackRecipeBuilder<CHEMICAL extends Chemical
      * @param gasInput  Gas Input, used at a near constant rate over the duration of the recipe.
      * @param output    Output.
      */
-    public static ItemStackChemicalToItemStackRecipeBuilder<Gas, GasStack, GasStackIngredient> purifying(ItemStackIngredient itemInput, GasStackIngredient gasInput,
+    public static ItemStackChemicalToItemStackRecipeBuilder purifying(ItemStackIngredient itemInput, ChemicalStackIngredient gasInput,
           ItemStack output) {
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This purifying recipe requires a non empty item output.");
         }
-        return new ItemStackChemicalToItemStackRecipeBuilder<>(itemInput, gasInput, output, BasicPurifyingRecipe::new);
+        return new ItemStackChemicalToItemStackRecipeBuilder(itemInput, gasInput, output, BasicPurifyingRecipe::new);
     }
 
     /**
@@ -78,12 +66,12 @@ public class ItemStackChemicalToItemStackRecipeBuilder<CHEMICAL extends Chemical
      * @param gasInput  Gas Input, used at a near constant rate over the duration of the recipe.
      * @param output    Output.
      */
-    public static ItemStackChemicalToItemStackRecipeBuilder<Gas, GasStack, GasStackIngredient> injecting(ItemStackIngredient itemInput, GasStackIngredient gasInput,
+    public static ItemStackChemicalToItemStackRecipeBuilder injecting(ItemStackIngredient itemInput, ChemicalStackIngredient gasInput,
           ItemStack output) {
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This injecting recipe requires a non empty item output.");
         }
-        return new ItemStackChemicalToItemStackRecipeBuilder<>(itemInput, gasInput, output, BasicInjectingRecipe::new);
+        return new ItemStackChemicalToItemStackRecipeBuilder(itemInput, gasInput, output, BasicInjectingRecipe::new);
     }
 
     /**
@@ -93,12 +81,12 @@ public class ItemStackChemicalToItemStackRecipeBuilder<CHEMICAL extends Chemical
      * @param infusionInput Infusion Input.
      * @param output        Output.
      */
-    public static ItemStackChemicalToItemStackRecipeBuilder<InfuseType, InfusionStack, InfusionStackIngredient> metallurgicInfusing(ItemStackIngredient itemInput,
-          InfusionStackIngredient infusionInput, ItemStack output) {
+    public static ItemStackChemicalToItemStackRecipeBuilder metallurgicInfusing(ItemStackIngredient itemInput,
+          ChemicalStackIngredient infusionInput, ItemStack output) {
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This metallurgic infusing recipe requires a non empty output.");
         }
-        return new ItemStackChemicalToItemStackRecipeBuilder<>(itemInput, infusionInput, output, BasicMetallurgicInfuserRecipe::new);
+        return new ItemStackChemicalToItemStackRecipeBuilder(itemInput, infusionInput, output, BasicMetallurgicInfuserRecipe::new);
     }
 
     /**
@@ -108,16 +96,16 @@ public class ItemStackChemicalToItemStackRecipeBuilder<CHEMICAL extends Chemical
      * @param pigmentInput Pigment Input.
      * @param output       Output.
      */
-    public static ItemStackChemicalToItemStackRecipeBuilder<Pigment, PigmentStack, PigmentStackIngredient> painting(ItemStackIngredient itemInput,
-          PigmentStackIngredient pigmentInput, ItemStack output) {
+    public static ItemStackChemicalToItemStackRecipeBuilder painting(ItemStackIngredient itemInput,
+          ChemicalStackIngredient pigmentInput, ItemStack output) {
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This painting recipe requires a non empty item output.");
         }
-        return new ItemStackChemicalToItemStackRecipeBuilder<>(itemInput, pigmentInput, output, BasicPaintingRecipe::new);
+        return new ItemStackChemicalToItemStackRecipeBuilder(itemInput, pigmentInput, output, BasicPaintingRecipe::new);
     }
 
     @Override
-    protected ItemStackChemicalToItemStackRecipe<CHEMICAL, STACK, INGREDIENT> asRecipe() {
+    protected ItemStackChemicalToItemStackRecipe asRecipe() {
         return factory.create(itemInput, chemicalInput, output);
     }
 
@@ -131,8 +119,8 @@ public class ItemStackChemicalToItemStackRecipeBuilder<CHEMICAL extends Chemical
     }
 
     @FunctionalInterface
-    public interface Factory<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK, ?>> {
+    public interface Factory {
 
-        ItemStackChemicalToItemStackRecipe<CHEMICAL, STACK, INGREDIENT> create(ItemStackIngredient itemInput, INGREDIENT chemicalInput, ItemStack output);
+        ItemStackChemicalToItemStackRecipe create(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ItemStack output);
     }
 }

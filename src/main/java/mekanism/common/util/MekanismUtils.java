@@ -217,7 +217,7 @@ public final class MekanismUtils {
         return getScale(prevScale, tank.getFluidAmount(), tank.getCapacity(), tank.isEmpty());
     }
 
-    public static float getScale(float prevScale, IChemicalTank<?, ?> tank) {
+    public static float getScale(float prevScale, IChemicalTank tank) {
         return getScale(prevScale, tank.getStored(), tank.getCapacity(), tank.isEmpty());
     }
 

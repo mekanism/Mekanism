@@ -3,7 +3,6 @@ package mekanism.common.item.block;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.attachments.component.AttachedEjector;
@@ -11,7 +10,6 @@ import mekanism.common.attachments.component.AttachedSideConfig;
 import mekanism.common.attachments.component.AttachedSideConfig.LightConfigInfo;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.prefab.BlockTile.BlockTileModel;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.blocktype.Machine;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismDataComponents;
@@ -33,10 +31,7 @@ public class ItemBlockChemicalTank extends ItemBlockTooltip<BlockTileModel<TileE
     private static final AttachedSideConfig SIDE_CONFIG = Util.make(() -> {
         Map<TransmissionType, LightConfigInfo> configInfo = new EnumMap<>(TransmissionType.class);
         configInfo.put(TransmissionType.ITEM, LightConfigInfo.FRONT_OUT_NO_EJECT);
-        configInfo.put(TransmissionType.GAS, LightConfigInfo.FRONT_OUT_EJECT);
-        configInfo.put(TransmissionType.INFUSION, LightConfigInfo.FRONT_OUT_EJECT);
-        configInfo.put(TransmissionType.PIGMENT, LightConfigInfo.FRONT_OUT_EJECT);
-        configInfo.put(TransmissionType.SLURRY, LightConfigInfo.FRONT_OUT_EJECT);
+        configInfo.put(TransmissionType.CHEMICAL, LightConfigInfo.FRONT_OUT_EJECT);
         return new AttachedSideConfig(configInfo);
     });
 
@@ -73,10 +68,7 @@ public class ItemBlockChemicalTank extends ItemBlockTooltip<BlockTileModel<TileE
             // but we may as well short circuit it here
             return false;
         }
-        return ChemicalUtil.hasGas(stack) ||
-               ChemicalUtil.hasChemical(stack, ConstantPredicates.alwaysTrue(), Capabilities.INFUSION.item()) ||
-               ChemicalUtil.hasChemical(stack, ConstantPredicates.alwaysTrue(), Capabilities.PIGMENT.item()) ||
-               ChemicalUtil.hasChemical(stack, ConstantPredicates.alwaysTrue(), Capabilities.SLURRY.item());
+        return ChemicalUtil.hasAnyChemical(stack);
     }
 
     @Override

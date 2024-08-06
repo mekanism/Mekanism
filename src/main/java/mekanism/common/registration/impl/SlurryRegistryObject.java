@@ -1,13 +1,12 @@
 package mekanism.common.registration.impl;
 
-import mekanism.api.chemical.slurry.Slurry;
+import mekanism.api.chemical.Chemical;
 import mekanism.common.registration.DoubleWrappedRegistryObject;
-import mekanism.common.registration.impl.DeferredChemical.DeferredSlurry;
 import org.jetbrains.annotations.NotNull;
 
-public class SlurryRegistryObject<DIRTY extends Slurry, CLEAN extends Slurry> extends DoubleWrappedRegistryObject<Slurry, DIRTY, Slurry, CLEAN> {
+public class SlurryRegistryObject<DIRTY extends Chemical, CLEAN extends Chemical> extends DoubleWrappedRegistryObject<Chemical, DIRTY, Chemical, CLEAN> {
 
-    public SlurryRegistryObject(DeferredSlurry<DIRTY> dirtyRO, DeferredSlurry<CLEAN> cleanRO) {
+    public SlurryRegistryObject(DeferredChemical<DIRTY> dirtyRO, DeferredChemical<CLEAN> cleanRO) {
         super(dirtyRO, cleanRO);
     }
 

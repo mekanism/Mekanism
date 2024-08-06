@@ -13,10 +13,9 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public abstract class JsonChemicalBuilder<CHEMICAL extends Chemical<CHEMICAL>, BUILDER extends ChemicalBuilder<CHEMICAL, BUILDER>,
-      THING_BUILDER extends JsonChemicalBuilder<CHEMICAL, BUILDER, THING_BUILDER>> extends BaseBuilder<CHEMICAL, THING_BUILDER> {
+public abstract class JsonChemicalBuilder<THING_BUILDER extends JsonChemicalBuilder<THING_BUILDER>> extends BaseBuilder<Chemical, THING_BUILDER> {
 
-    private final List<Consumer<BUILDER>> baseData = new ArrayList<>();
+    private final List<Consumer<ChemicalBuilder>> baseData = new ArrayList<>();
     @Nullable
     protected ResourceLocation texture;
     @Nullable
@@ -26,8 +25,8 @@ public abstract class JsonChemicalBuilder<CHEMICAL extends Chemical<CHEMICAL>, B
         super(ownerParser, registryName);
     }
 
-    protected void applyBaseData(BUILDER builder) {
-        for (Consumer<BUILDER> base : baseData) {
+    protected void applyBaseData(ChemicalBuilder builder) {
+        for (Consumer<ChemicalBuilder> base : baseData) {
             base.accept(builder);
         }
     }
@@ -42,7 +41,7 @@ public abstract class JsonChemicalBuilder<CHEMICAL extends Chemical<CHEMICAL>, B
         return self();
     }
 
-    protected THING_BUILDER baseData(Consumer<BUILDER> base) {
+    protected THING_BUILDER baseData(Consumer<ChemicalBuilder> base) {
         baseData.add(base);
         return self();
     }

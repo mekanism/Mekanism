@@ -13,7 +13,7 @@ public interface ChemicalAttributeValidator {
         }
 
         @Override
-        public boolean process(Chemical<?> chemical) {
+        public boolean process(Chemical chemical) {
             return !chemical.hasAttributesWithValidation();
         }
     };
@@ -24,7 +24,7 @@ public interface ChemicalAttributeValidator {
         }
 
         @Override
-        public boolean process(Chemical<?> chemical) {
+        public boolean process(Chemical chemical) {
             return true;
         }
     };
@@ -47,7 +47,7 @@ public interface ChemicalAttributeValidator {
      *
      * @since 10.2.3
      */
-    default boolean process(Chemical<?> chemical) {
+    default boolean process(Chemical chemical) {
         for (ChemicalAttribute chemicalAttribute : chemical.getAttributes()) {
             if (!validate(chemicalAttribute)) {
                 return false;
@@ -65,7 +65,7 @@ public interface ChemicalAttributeValidator {
      *
      * @since 10.2.3
      */
-    default boolean process(ChemicalStack<?> stack) {
+    default boolean process(ChemicalStack stack) {
         return process(stack.getChemical());
     }
 

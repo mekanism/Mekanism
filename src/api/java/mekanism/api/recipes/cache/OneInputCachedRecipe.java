@@ -7,7 +7,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.recipes.ElectrolysisRecipe;
@@ -22,7 +21,6 @@ import mekanism.api.recipes.SawmillRecipe;
 import mekanism.api.recipes.SawmillRecipe.ChanceOutput;
 import mekanism.api.recipes.chemical.ChemicalToChemicalRecipe;
 import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
@@ -188,11 +186,11 @@ public class OneInputCachedRecipe<INPUT, OUTPUT, RECIPE extends MekanismRecipe<?
      * @param inputHandler     Input handler.
      * @param outputHandler    Output handler.
      */
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, RECIPE extends ItemStackToChemicalRecipe<CHEMICAL, STACK>>
-    OneInputCachedRecipe<@NotNull ItemStack, @NotNull STACK, RECIPE> itemToChemical(RECIPE recipe, BooleanSupplier recheckAllErrors,
-          IInputHandler<@NotNull ItemStack> inputHandler, IOutputHandler<@NotNull STACK> outputHandler) {
+    public static <RECIPE extends ItemStackToChemicalRecipe>
+    OneInputCachedRecipe<@NotNull ItemStack, @NotNull ChemicalStack, RECIPE> itemToChemical(RECIPE recipe, BooleanSupplier recheckAllErrors,
+          IInputHandler<@NotNull ItemStack> inputHandler, IOutputHandler<@NotNull ChemicalStack> outputHandler) {
         return new OneInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, outputHandler, recipe::getInput, recipe::getOutput, ConstantPredicates.ITEM_EMPTY,
-              ConstantPredicates.chemicalEmpty());
+              ConstantPredicates.CHEMICAL_EMPTY);
     }
 
     /**
@@ -204,11 +202,10 @@ public class OneInputCachedRecipe<INPUT, OUTPUT, RECIPE extends MekanismRecipe<?
      * @param inputHandler     Input handler.
      * @param outputHandler    Output handler.
      */
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK, ?>,
-          RECIPE extends ChemicalToChemicalRecipe<CHEMICAL, STACK, INGREDIENT>> OneInputCachedRecipe<@NotNull STACK, @NotNull STACK, RECIPE> chemicalToChemical(
-          RECIPE recipe, BooleanSupplier recheckAllErrors, IInputHandler<@NotNull STACK> inputHandler, IOutputHandler<@NotNull STACK> outputHandler) {
-        return new OneInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, outputHandler, recipe::getInput, recipe::getOutput, ConstantPredicates.chemicalEmpty(),
-              ConstantPredicates.chemicalEmpty());
+    public static <RECIPE extends ChemicalToChemicalRecipe> OneInputCachedRecipe<@NotNull ChemicalStack, @NotNull ChemicalStack, RECIPE> chemicalToChemical(
+          RECIPE recipe, BooleanSupplier recheckAllErrors, IInputHandler<@NotNull ChemicalStack> inputHandler, IOutputHandler<@NotNull ChemicalStack> outputHandler) {
+        return new OneInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, outputHandler, recipe::getInput, recipe::getOutput, ConstantPredicates.CHEMICAL_EMPTY,
+              ConstantPredicates.CHEMICAL_EMPTY);
     }
 
     /**

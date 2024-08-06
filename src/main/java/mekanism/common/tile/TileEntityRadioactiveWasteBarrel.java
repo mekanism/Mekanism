@@ -8,10 +8,8 @@ import mekanism.api.IContentsListener;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasHandler;
-import mekanism.api.chemical.gas.IGasTank;
+import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.IChemicalHandler;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.chemical.StackedWasteBarrel;
@@ -47,7 +45,7 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
                                                                                         "getFilledPercentage"}, docPlaceholder = "barrel")
     StackedWasteBarrel gasTank;
     private int processTicks;
-    private List<BlockCapabilityCache<IGasHandler, @Nullable Direction>> gasHandlerBelow = Collections.emptyList();
+    private List<BlockCapabilityCache<IChemicalHandler, @Nullable Direction>> gasHandlerBelow = Collections.emptyList();
 
     public TileEntityRadioactiveWasteBarrel(BlockPos pos, BlockState state) {
         super(MekanismBlocks.RADIOACTIVE_WASTE_BARREL, pos, state);
@@ -56,8 +54,8 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
 
     @NotNull
     @Override
-    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks(IContentsListener listener) {
-        ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSide(this::getDirection);
+    public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener) {
+        ChemicalTankHelper builder = ChemicalTankHelper.forSide(this::getDirection);
         builder.addTank(gasTank = StackedWasteBarrel.create(this, listener), RelativeSide.TOP, RelativeSide.BOTTOM);
         return builder.build();
     }
@@ -69,14 +67,14 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
             //If we are not on the same tick do stuff, otherwise ignore it (anti tick accelerator protection)
             lastProcessTick = level.getGameTime();
             if (MekanismConfig.general.radioactiveWasteBarrelDecayAmount.get() > 0 && !gasTank.isEmpty() &&
-                !gasTank.getType().is(MekanismAPITags.Gases.WASTE_BARREL_DECAY_BLACKLIST) &&
+                !gasTank.getType().is(MekanismAPITags.WASTE_BARREL_DECAY_BLACKLIST) &&
                 ++processTicks >= MekanismConfig.general.radioactiveWasteBarrelProcessTicks.get()) {
                 processTicks = 0;
                 gasTank.shrinkStack(MekanismConfig.general.radioactiveWasteBarrelDecayAmount.get(), Action.EXECUTE);
             }
             if (getActive()) {
                 if (gasHandlerBelow.isEmpty()) {
-                    gasHandlerBelow = List.of(BlockCapabilityCache.create(Capabilities.GAS.block(), (ServerLevel) level, worldPosition.below(), Direction.UP));
+                    gasHandlerBelow = List.of(BlockCapabilityCache.create(Capabilities.CHEMICAL.block(), (ServerLevel) level, worldPosition.below(), Direction.UP));
                 }
                 ChemicalUtil.emit(gasHandlerBelow, gasTank);
             }
@@ -96,7 +94,7 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
         return gasTank.getStored() / (double) gasTank.getCapacity();
     }
 
-    public GasStack getGas() {
+    public ChemicalStack getGas() {
         return gasTank.getStack();
     }
 
@@ -140,6 +138,6 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
 
     @Override
     protected boolean makesComparatorDirty(ContainerType<?, ?, ?> type) {
-        return type == ContainerType.GAS;
+        return type == ContainerType.CHEMICAL;
     }
 }

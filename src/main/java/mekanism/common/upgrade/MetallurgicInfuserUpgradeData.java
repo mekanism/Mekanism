@@ -1,7 +1,7 @@
 package mekanism.common.upgrade;
 
 import java.util.List;
-import mekanism.api.chemical.infuse.IInfusionTank;
+import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
@@ -14,12 +14,12 @@ import net.minecraft.core.HolderLookup;
 
 public class MetallurgicInfuserUpgradeData extends MachineUpgradeData {
 
-    public final IInfusionTank stored;
+    public final IChemicalTank stored;
     public final InfusionInventorySlot infusionSlot;
 
     //Metallurgic Infuser Constructor
     public MetallurgicInfuserUpgradeData(HolderLookup.Provider provider, boolean redstone, RedstoneControl controlType, IEnergyContainer energyContainer,
-          int operatingTicks, IInfusionTank stored, InfusionInventorySlot infusionSlot, EnergyInventorySlot energySlot, InputInventorySlot inputSlot,
+          int operatingTicks, IChemicalTank stored, InfusionInventorySlot infusionSlot, EnergyInventorySlot energySlot, InputInventorySlot inputSlot,
           OutputInventorySlot outputSlot, List<ITileComponent> components) {
         super(provider, redstone, controlType, energyContainer, operatingTicks, energySlot, inputSlot, outputSlot, components);
         this.stored = stored;
@@ -28,7 +28,7 @@ public class MetallurgicInfuserUpgradeData extends MachineUpgradeData {
 
     //Infusing Factory Constructor
     public MetallurgicInfuserUpgradeData(HolderLookup.Provider provider, boolean redstone, RedstoneControl controlType, IEnergyContainer energyContainer, int[] progress,
-          IInfusionTank stored, InfusionInventorySlot infusionSlot, EnergyInventorySlot energySlot, List<IInventorySlot> inputSlots, List<IInventorySlot> outputSlots,
+          IChemicalTank stored, InfusionInventorySlot infusionSlot, EnergyInventorySlot energySlot, List<IInventorySlot> inputSlots, List<IInventorySlot> outputSlots,
           boolean sorting, List<ITileComponent> components) {
         super(provider, redstone, controlType, energyContainer, progress, energySlot, inputSlots, outputSlots, sorting, components);
         this.stored = stored;

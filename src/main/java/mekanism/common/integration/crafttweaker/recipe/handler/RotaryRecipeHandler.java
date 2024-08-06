@@ -7,10 +7,10 @@ import com.blamejared.crafttweaker.api.recipe.handler.IRecipeHandler;
 import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import java.util.Optional;
 import mekanism.api.recipes.RotaryRecipe;
-import mekanism.api.recipes.ingredients.GasStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTRecipeComponents;
 import mekanism.common.integration.crafttweaker.CrTUtils;
-import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
+import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import mekanism.common.integration.crafttweaker.recipe.manager.RotaryRecipeManager;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.crafting.Recipe;
@@ -57,13 +57,13 @@ public class RotaryRecipeHandler extends MekanismRecipeHandler<RotaryRecipe> {
     @Override
     public Optional<RotaryRecipe> recompose(IRecipeManager<? super RotaryRecipe> m, RegistryAccess registryAccess, IDecomposedRecipe recipe) {
         if (m instanceof RotaryRecipeManager manager) {
-            Optional<GasStackIngredient> gasInput = CrTUtils.getSingleIfPresent(recipe, CrTRecipeComponents.GAS.input());
+            Optional<ChemicalStackIngredient> gasInput = CrTUtils.getSingleIfPresent(recipe, CrTRecipeComponents.CHEMICAL.input());
             Optional<IFluidStack> fluidOutput = CrTUtils.getSingleIfPresent(recipe, CrTRecipeComponents.FLUID.output());
             if (gasInput.isPresent() != fluidOutput.isPresent()) {
                 throw new IllegalArgumentException("Mismatched gas input and fluid output. Only one is present.");
             }
             Optional<CTFluidIngredient> fluidInput = CrTUtils.getSingleIfPresent(recipe, CrTRecipeComponents.FLUID.input());
-            Optional<ICrTGasStack> gasOutput = CrTUtils.getSingleIfPresent(recipe, CrTRecipeComponents.GAS.output());
+            Optional<ICrTChemicalStack> gasOutput = CrTUtils.getSingleIfPresent(recipe, CrTRecipeComponents.CHEMICAL.output());
             if (fluidInput.isPresent() != gasOutput.isPresent()) {
                 throw new IllegalArgumentException("Mismatched fluid input and gas output. Only one is present.");
             }

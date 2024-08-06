@@ -8,6 +8,7 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.recipes.ingredients.creator.IChemicalIngredientCreator;
+import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.crafting.ICustomIngredient;
 
@@ -19,7 +20,7 @@ import net.neoforged.neoforge.common.crafting.ICustomIngredient;
  * @since 10.6.0
  */
 @NothingNullByDefault
-public sealed interface IChemicalIngredient<CHEMICAL extends Chemical<CHEMICAL>, INGREDIENT extends IChemicalIngredient<CHEMICAL, INGREDIENT>> extends Predicate<CHEMICAL>
+public sealed interface IChemicalIngredient extends Predicate<Chemical>
       permits ChemicalIngredient, IGasIngredient, IInfusionIngredient, IPigmentIngredient, ISlurryIngredient {
 
     /**
@@ -30,14 +31,14 @@ public sealed interface IChemicalIngredient<CHEMICAL extends Chemical<CHEMICAL>,
      * @return {@code true} if the chemical matches, {@code false} otherwise
      */
     @Override
-    boolean test(CHEMICAL chemical);
+    boolean test(Chemical chemical);
 
     /**
      * {@return a list of gases this ingredient accepts}
      *
      * @see #generateChemicals()
      */
-    default List<CHEMICAL> getChemicals() {
+    default List<Chemical> getChemicals() {
         return generateChemicals().toList();
     }
 
@@ -55,12 +56,7 @@ public sealed interface IChemicalIngredient<CHEMICAL extends Chemical<CHEMICAL>,
      *
      * @see ICustomIngredient#getItems()
      */
-    Stream<CHEMICAL> generateChemicals();
-
-    /**
-     * Helper to access the ingredient creator for this type of ingredient, in order to access the empty instance.
-     */
-    IChemicalIngredientCreator<CHEMICAL, INGREDIENT> ingredientCreator();
+    Stream<Chemical> generateChemicals();
 
     /**
      * Checks if this ingredient is <b>explicitly empty</b>, i.e. equal to {@link IChemicalIngredientCreator#empty()}.
@@ -70,7 +66,7 @@ public sealed interface IChemicalIngredient<CHEMICAL extends Chemical<CHEMICAL>,
      * @return {@code true} if this ingredient is {@link IChemicalIngredientCreator#empty()}, {@code false} otherwise
      */
     default boolean isEmpty() {
-        return this == ingredientCreator().empty();
+        return this == IngredientCreatorAccess.chemical().empty();
     }
 
     /**
@@ -91,10 +87,7 @@ public sealed interface IChemicalIngredient<CHEMICAL extends Chemical<CHEMICAL>,
      *
      * <p>The type <b>must</b> be registered to the corresponding type register.
      *
-     * @see MekanismAPI#GAS_INGREDIENT_TYPES
-     * @see MekanismAPI#INFUSION_INGREDIENT_TYPES
-     * @see MekanismAPI#PIGMENT_INGREDIENT_TYPES
-     * @see MekanismAPI#SLURRY_INGREDIENT_TYPES
+     * @see MekanismAPI#CHEMICAL_INGREDIENT_TYPES
      */
-    MapCodec<? extends INGREDIENT> codec();
+    MapCodec<? extends IChemicalIngredient> codec();
 }

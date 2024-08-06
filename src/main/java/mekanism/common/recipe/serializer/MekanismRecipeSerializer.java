@@ -12,9 +12,6 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.merged.BoxedChemicalStack;
-import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.recipes.ChemicalDissolutionRecipe;
 import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.ElectrolysisRecipe;
@@ -41,9 +38,7 @@ import mekanism.api.recipes.chemical.ItemStackChemicalToItemStackRecipe;
 import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
-import mekanism.api.recipes.ingredients.GasStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import mekanism.api.recipes.ingredients.SlurryStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IIngredientCreator;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.recipe.WrappedShapedRecipe;
@@ -114,83 +109,83 @@ public record MekanismRecipeSerializer<RECIPE extends Recipe<?>>(MapCodec<RECIPE
         ));
     }
 
-    public static <RECIPE extends BasicGasToGasRecipe> MekanismRecipeSerializer<RECIPE> gasToGas(BiFunction<GasStackIngredient, GasStack, RECIPE> factory) {
+    public static <RECIPE extends BasicGasToGasRecipe> MekanismRecipeSerializer<RECIPE> gasToGas(BiFunction<ChemicalStackIngredient, ChemicalStack, RECIPE> factory) {
         return new MekanismRecipeSerializer<>(RecordCodecBuilder.mapCodec(instance -> instance.group(
-              IngredientCreatorAccess.gasStack().codec().fieldOf(SerializationConstants.INPUT).forGetter(GasToGasRecipe::getInput),
-              GasStack.MAP_CODEC.fieldOf(SerializationConstants.OUTPUT).forGetter(BasicGasToGasRecipe::getOutputRaw)
+              IngredientCreatorAccess.chemicalStack().codec().fieldOf(SerializationConstants.INPUT).forGetter(GasToGasRecipe::getInput),
+              ChemicalStack.MAP_CODEC.fieldOf(SerializationConstants.OUTPUT).forGetter(BasicGasToGasRecipe::getOutputRaw)
         ).apply(instance, factory)), StreamCodec.composite(
-              IngredientCreatorAccess.gasStack().streamCodec(), GasToGasRecipe::getInput,
-              GasStack.STREAM_CODEC, BasicGasToGasRecipe::getOutputRaw,
+              IngredientCreatorAccess.chemicalStack().streamCodec(), GasToGasRecipe::getInput,
+              ChemicalStack.STREAM_CODEC, BasicGasToGasRecipe::getOutputRaw,
               factory
         ));
     }
 
-    public static MekanismRecipeSerializer<BasicFluidSlurryToSlurryRecipe> fluidSlurryToSlurry(Function3<FluidStackIngredient, SlurryStackIngredient, SlurryStack, BasicFluidSlurryToSlurryRecipe> factory) {
+    public static MekanismRecipeSerializer<BasicFluidSlurryToSlurryRecipe> fluidSlurryToSlurry(Function3<FluidStackIngredient, ChemicalStackIngredient, ChemicalStack, BasicFluidSlurryToSlurryRecipe> factory) {
         return new MekanismRecipeSerializer<>(RecordCodecBuilder.mapCodec(instance -> instance.group(
               FluidStackIngredient.CODEC.fieldOf(SerializationConstants.FLUID_INPUT).forGetter(FluidSlurryToSlurryRecipe::getFluidInput),
-              IngredientCreatorAccess.slurryStack().codec().fieldOf(SerializationConstants.SLURRY_INPUT).forGetter(FluidSlurryToSlurryRecipe::getChemicalInput),
-              SlurryStack.CODEC.fieldOf(SerializationConstants.OUTPUT).forGetter(BasicFluidSlurryToSlurryRecipe::getOutputRaw)
+              IngredientCreatorAccess.chemicalStack().codec().fieldOf(SerializationConstants.SLURRY_INPUT).forGetter(FluidSlurryToSlurryRecipe::getChemicalInput),
+              ChemicalStack.CODEC.fieldOf(SerializationConstants.OUTPUT).forGetter(BasicFluidSlurryToSlurryRecipe::getOutputRaw)
         ).apply(instance, factory)), StreamCodec.composite(
               FluidStackIngredient.STREAM_CODEC, FluidSlurryToSlurryRecipe::getFluidInput,
-              IngredientCreatorAccess.slurryStack().streamCodec(), FluidSlurryToSlurryRecipe::getChemicalInput,
-              SlurryStack.STREAM_CODEC, BasicFluidSlurryToSlurryRecipe::getOutputRaw,
+              IngredientCreatorAccess.chemicalStack().streamCodec(), FluidSlurryToSlurryRecipe::getChemicalInput,
+              ChemicalStack.STREAM_CODEC, BasicFluidSlurryToSlurryRecipe::getOutputRaw,
               factory
         ));
     }
 
-    public static MekanismRecipeSerializer<BasicNucleosynthesizingRecipe> nucleosynthesizing(Function4<ItemStackIngredient, GasStackIngredient, ItemStack, Integer, BasicNucleosynthesizingRecipe> factory) {
+    public static MekanismRecipeSerializer<BasicNucleosynthesizingRecipe> nucleosynthesizing(Function4<ItemStackIngredient, ChemicalStackIngredient, ItemStack, Integer, BasicNucleosynthesizingRecipe> factory) {
         return new MekanismRecipeSerializer<>(RecordCodecBuilder.mapCodec(instance -> instance.group(
               ItemStackIngredient.CODEC.fieldOf(SerializationConstants.ITEM_INPUT).forGetter(NucleosynthesizingRecipe::getItemInput),
-              IngredientCreatorAccess.gasStack().codec().fieldOf(SerializationConstants.GAS_INPUT).forGetter(NucleosynthesizingRecipe::getChemicalInput),
+              IngredientCreatorAccess.chemicalStack().codec().fieldOf(SerializationConstants.GAS_INPUT).forGetter(NucleosynthesizingRecipe::getChemicalInput),
               ItemStack.CODEC.fieldOf(SerializationConstants.OUTPUT).forGetter(BasicNucleosynthesizingRecipe::getOutputRaw),
               ExtraCodecs.POSITIVE_INT.fieldOf(SerializationConstants.DURATION).forGetter(NucleosynthesizingRecipe::getDuration)
         ).apply(instance, factory)), StreamCodec.composite(
               ItemStackIngredient.STREAM_CODEC, NucleosynthesizingRecipe::getItemInput,
-              IngredientCreatorAccess.gasStack().streamCodec(), NucleosynthesizingRecipe::getChemicalInput,
+              IngredientCreatorAccess.chemicalStack().streamCodec(), NucleosynthesizingRecipe::getChemicalInput,
               ItemStack.STREAM_CODEC, BasicNucleosynthesizingRecipe::getOutputRaw,
               ByteBufCodecs.VAR_INT, NucleosynthesizingRecipe::getDuration,
               factory
         ));
     }
 
-    public static MekanismRecipeSerializer<BasicElectrolysisRecipe> separating(Function4<FluidStackIngredient, Long, GasStack, GasStack, BasicElectrolysisRecipe> factory) {
+    public static MekanismRecipeSerializer<BasicElectrolysisRecipe> separating(Function4<FluidStackIngredient, Long, ChemicalStack, ChemicalStack, BasicElectrolysisRecipe> factory) {
         return new MekanismRecipeSerializer<>(RecordCodecBuilder.mapCodec(instance -> instance.group(
               FluidStackIngredient.CODEC.fieldOf(SerializationConstants.INPUT).forGetter(ElectrolysisRecipe::getInput),
               SerializerHelper.POSITIVE_NONZERO_LONG_CODEC_LEGACY.optionalFieldOf(SerializationConstants.ENERGY_MULTIPLIER, 1L).forGetter(ElectrolysisRecipe::getEnergyMultiplier),
-              GasStack.MAP_CODEC.fieldOf(SerializationConstants.LEFT_GAS_OUTPUT).forGetter(BasicElectrolysisRecipe::getLeftGasOutput),
-              GasStack.MAP_CODEC.fieldOf(SerializationConstants.RIGHT_GAS_OUTPUT).forGetter(BasicElectrolysisRecipe::getRightGasOutput)
+              ChemicalStack.MAP_CODEC.fieldOf(SerializationConstants.LEFT_GAS_OUTPUT).forGetter(BasicElectrolysisRecipe::getLeftGasOutput),
+              ChemicalStack.MAP_CODEC.fieldOf(SerializationConstants.RIGHT_GAS_OUTPUT).forGetter(BasicElectrolysisRecipe::getRightGasOutput)
         ).apply(instance, factory)), StreamCodec.composite(
               FluidStackIngredient.STREAM_CODEC, ElectrolysisRecipe::getInput,
               ByteBufCodecs.VAR_LONG, ElectrolysisRecipe::getEnergyMultiplier,
-              GasStack.STREAM_CODEC, BasicElectrolysisRecipe::getLeftGasOutput,
-              GasStack.STREAM_CODEC, BasicElectrolysisRecipe::getRightGasOutput,
+              ChemicalStack.STREAM_CODEC, BasicElectrolysisRecipe::getLeftGasOutput,
+              ChemicalStack.STREAM_CODEC, BasicElectrolysisRecipe::getRightGasOutput,
               factory
         ));
     }
 
-    public static MekanismRecipeSerializer<BasicChemicalDissolutionRecipe> dissolution(Function3<ItemStackIngredient, GasStackIngredient, ChemicalStack<?>, BasicChemicalDissolutionRecipe> factory) {
+    public static MekanismRecipeSerializer<BasicChemicalDissolutionRecipe> dissolution(Function3<ItemStackIngredient, ChemicalStackIngredient, ChemicalStack, BasicChemicalDissolutionRecipe> factory) {
         return new MekanismRecipeSerializer<>(RecordCodecBuilder.mapCodec(instance -> instance.group(
               ItemStackIngredient.CODEC.fieldOf(SerializationConstants.ITEM_INPUT).forGetter(ChemicalDissolutionRecipe::getItemInput),
-              IngredientCreatorAccess.gasStack().codec().fieldOf(SerializationConstants.GAS_INPUT).forGetter(ChemicalDissolutionRecipe::getGasInput),
-              ChemicalStack.BOXED_CODEC.fieldOf(SerializationConstants.OUTPUT).forGetter(r -> r.getOutputRaw().getChemicalStack())
+              IngredientCreatorAccess.chemicalStack().codec().fieldOf(SerializationConstants.GAS_INPUT).forGetter(ChemicalDissolutionRecipe::getGasInput),
+              ChemicalStack.CODEC.fieldOf(SerializationConstants.OUTPUT).forGetter(BasicChemicalDissolutionRecipe::getOutputRaw)
         ).apply(instance, factory)), StreamCodec.composite(
               ItemStackIngredient.STREAM_CODEC, BasicChemicalDissolutionRecipe::getItemInput,
-              IngredientCreatorAccess.gasStack().streamCodec(), BasicChemicalDissolutionRecipe::getGasInput,
-              BoxedChemicalStack.STREAM_CODEC, BasicChemicalDissolutionRecipe::getOutputRaw,
-              (item, gas, output) -> factory.apply(item, gas, output.getChemicalStack())
+              IngredientCreatorAccess.chemicalStack().streamCodec(), BasicChemicalDissolutionRecipe::getGasInput,
+              ChemicalStack.STREAM_CODEC, BasicChemicalDissolutionRecipe::getOutputRaw,
+              factory::apply
         ));
     }
 
     public static MekanismRecipeSerializer<BasicPressurizedReactionRecipe> reaction(
-          Function7<ItemStackIngredient, FluidStackIngredient, GasStackIngredient, Long, Integer, ItemStack, GasStack, BasicPressurizedReactionRecipe> factory) {
+          Function7<ItemStackIngredient, FluidStackIngredient, ChemicalStackIngredient, Long, Integer, ItemStack, ChemicalStack, BasicPressurizedReactionRecipe> factory) {
         return new MekanismRecipeSerializer<>(RecordCodecBuilder.<BasicPressurizedReactionRecipe>mapCodec(instance -> instance.group(
               ItemStackIngredient.CODEC.fieldOf(SerializationConstants.ITEM_INPUT).forGetter(PressurizedReactionRecipe::getInputSolid),
               FluidStackIngredient.CODEC.fieldOf(SerializationConstants.FLUID_INPUT).forGetter(PressurizedReactionRecipe::getInputFluid),
-              IngredientCreatorAccess.gasStack().codec().fieldOf(SerializationConstants.GAS_INPUT).forGetter(PressurizedReactionRecipe::getInputGas),
+              IngredientCreatorAccess.chemicalStack().codec().fieldOf(SerializationConstants.GAS_INPUT).forGetter(PressurizedReactionRecipe::getInputGas),
               SerializerHelper.POSITIVE_LONG_CODEC_LEGACY.optionalFieldOf(SerializationConstants.ENERGY_REQUIRED, 0L).forGetter(PressurizedReactionRecipe::getEnergyRequired),
               ExtraCodecs.POSITIVE_INT.fieldOf(SerializationConstants.DURATION).forGetter(PressurizedReactionRecipe::getDuration),
               ItemStack.CODEC.optionalFieldOf(SerializationConstants.ITEM_OUTPUT, ItemStack.EMPTY).forGetter(BasicPressurizedReactionRecipe::getOutputItem),
-              GasStack.CODEC.optionalFieldOf(SerializationConstants.GAS_OUTPUT, GasStack.EMPTY).forGetter(BasicPressurizedReactionRecipe::getOutputGas)
+              ChemicalStack.CODEC.optionalFieldOf(SerializationConstants.GAS_OUTPUT, ChemicalStack.EMPTY).forGetter(BasicPressurizedReactionRecipe::getOutputGas)
         ).apply(instance, factory)).validate(result -> {
             if (result.getOutputItem().isEmpty() && result.getOutputGas().isEmpty()) {
                 return DataResult.error(() -> "No output specified, must have at least an Item or Gas output");
@@ -199,17 +194,17 @@ public record MekanismRecipeSerializer<RECIPE extends Recipe<?>>(MapCodec<RECIPE
         }), NeoForgeStreamCodecs.composite(
               ItemStackIngredient.STREAM_CODEC, PressurizedReactionRecipe::getInputSolid,
               FluidStackIngredient.STREAM_CODEC, PressurizedReactionRecipe::getInputFluid,
-              IngredientCreatorAccess.gasStack().streamCodec(), PressurizedReactionRecipe::getInputGas,
+              IngredientCreatorAccess.chemicalStack().streamCodec(), PressurizedReactionRecipe::getInputGas,
               ByteBufCodecs.VAR_LONG, PressurizedReactionRecipe::getEnergyRequired,
               ByteBufCodecs.VAR_INT, PressurizedReactionRecipe::getDuration,
               ItemStack.OPTIONAL_STREAM_CODEC, BasicPressurizedReactionRecipe::getOutputItem,
-              GasStack.OPTIONAL_STREAM_CODEC, BasicPressurizedReactionRecipe::getOutputGas,
+              ChemicalStack.OPTIONAL_STREAM_CODEC, BasicPressurizedReactionRecipe::getOutputGas,
               factory
         ));
     }
 
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, RECIPE extends ItemStackToChemicalRecipe<CHEMICAL, STACK> & IBasicChemicalOutput<CHEMICAL, STACK>>
-    MekanismRecipeSerializer<RECIPE> itemToChemical(BiFunction<ItemStackIngredient, STACK, RECIPE> factory, MapCodec<STACK> stackCodec, StreamCodec<? super RegistryFriendlyByteBuf, STACK> stackStreamCodec) {
+    public static <RECIPE extends ItemStackToChemicalRecipe & IBasicChemicalOutput>
+    MekanismRecipeSerializer<RECIPE> itemToChemical(BiFunction<ItemStackIngredient, ChemicalStack, RECIPE> factory, MapCodec<ChemicalStack> stackCodec, StreamCodec<? super RegistryFriendlyByteBuf, ChemicalStack> stackStreamCodec) {
         return new MekanismRecipeSerializer<>(RecordCodecBuilder.mapCodec(instance -> instance.group(
               ItemStackIngredient.CODEC.fieldOf(SerializationConstants.INPUT).forGetter(ItemStackToChemicalRecipe::getInput),
               stackCodec.fieldOf(SerializationConstants.OUTPUT).forGetter(IBasicChemicalOutput::getOutputRaw)
@@ -220,9 +215,8 @@ public record MekanismRecipeSerializer<RECIPE extends Recipe<?>>(MapCodec<RECIPE
         ));
     }
 
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK, ?>,
-          RECIPE extends ItemStackChemicalToItemStackRecipe<CHEMICAL, STACK, INGREDIENT> & IBasicItemStackOutput> MekanismRecipeSerializer<RECIPE> itemChemicalToItem(
-          Function3<ItemStackIngredient, INGREDIENT, ItemStack, RECIPE> factory, IIngredientCreator<CHEMICAL, STACK, INGREDIENT> ingredientCreator) {
+    public static <RECIPE extends ItemStackChemicalToItemStackRecipe & IBasicItemStackOutput> MekanismRecipeSerializer<RECIPE> itemChemicalToItem(
+          Function3<ItemStackIngredient, ChemicalStackIngredient, ItemStack, RECIPE> factory, IIngredientCreator<Chemical, ChemicalStack, ChemicalStackIngredient> ingredientCreator) {
         return new MekanismRecipeSerializer<>(RecordCodecBuilder.mapCodec(instance -> instance.group(
               ItemStackIngredient.CODEC.fieldOf(SerializationConstants.ITEM_INPUT).forGetter(ItemStackChemicalToItemStackRecipe::getItemInput),
               ingredientCreator.codec().fieldOf(SerializationConstants.CHEMICAL_INPUT).forGetter(ItemStackChemicalToItemStackRecipe::getChemicalInput),
@@ -235,10 +229,9 @@ public record MekanismRecipeSerializer<RECIPE extends Recipe<?>>(MapCodec<RECIPE
         ));
     }
 
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK, ?>,
-          RECIPE extends ChemicalChemicalToChemicalRecipe<CHEMICAL, STACK, INGREDIENT> & IBasicChemicalOutput<CHEMICAL, STACK>> MekanismRecipeSerializer<RECIPE>
-    chemicalChemicalToChemical(Function3<INGREDIENT, INGREDIENT, STACK, RECIPE> factory, IIngredientCreator<CHEMICAL, STACK, INGREDIENT> ingredientCreator,
-          MapCodec<STACK> stackCodec, StreamCodec<? super RegistryFriendlyByteBuf, STACK> stackStreamCodec) {
+    public static <RECIPE extends ChemicalChemicalToChemicalRecipe & IBasicChemicalOutput> MekanismRecipeSerializer<RECIPE>
+    chemicalChemicalToChemical(Function3<ChemicalStackIngredient, ChemicalStackIngredient, ChemicalStack, RECIPE> factory, IIngredientCreator<Chemical, ChemicalStack, ChemicalStackIngredient> ingredientCreator,
+          MapCodec<ChemicalStack> stackCodec, StreamCodec<? super RegistryFriendlyByteBuf, ChemicalStack> stackStreamCodec) {
         return new MekanismRecipeSerializer<>(RecordCodecBuilder.mapCodec(instance -> instance.group(
               ingredientCreator.codec().fieldOf(SerializationConstants.LEFT_INPUT).forGetter(ChemicalChemicalToChemicalRecipe::getLeftInput),
               ingredientCreator.codec().fieldOf(SerializationConstants.RIGHT_INPUT).forGetter(ChemicalChemicalToChemicalRecipe::getRightInput),

@@ -29,10 +29,7 @@ public class ItemBlockQuantumEntangloporter extends ItemBlockTooltip<BlockTileMo
         Map<TransmissionType, LightConfigInfo> configInfo = new EnumMap<>(TransmissionType.class);
         configInfo.put(TransmissionType.ITEM, LightConfigInfo.FRONT_OUT_NO_EJECT);
         configInfo.put(TransmissionType.FLUID, LightConfigInfo.FRONT_OUT_NO_EJECT);
-        configInfo.put(TransmissionType.GAS, LightConfigInfo.FRONT_OUT_NO_EJECT);
-        configInfo.put(TransmissionType.INFUSION, LightConfigInfo.FRONT_OUT_NO_EJECT);
-        configInfo.put(TransmissionType.PIGMENT, LightConfigInfo.FRONT_OUT_NO_EJECT);
-        configInfo.put(TransmissionType.SLURRY, LightConfigInfo.FRONT_OUT_NO_EJECT);
+        configInfo.put(TransmissionType.CHEMICAL, LightConfigInfo.FRONT_OUT_NO_EJECT);
         configInfo.put(TransmissionType.ENERGY, LightConfigInfo.FRONT_OUT_NO_EJECT);
         configInfo.put(TransmissionType.HEAT, LightConfigInfo.INPUT_OUT_ALL);
         return new AttachedSideConfig(configInfo);

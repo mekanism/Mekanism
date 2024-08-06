@@ -1,21 +1,21 @@
 package mekanism.api.datagen.recipe.builder;
 
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.api.recipes.basic.BasicActivatingRecipe;
 import mekanism.api.recipes.basic.BasicCentrifugingRecipe;
-import mekanism.api.recipes.ingredients.GasStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 
 @NothingNullByDefault
 public class GasToGasRecipeBuilder extends MekanismRecipeBuilder<GasToGasRecipeBuilder> {
 
     private final GasToGasRecipeBuilder.Factory factory;
-    private final GasStackIngredient input;
-    private final GasStack output;
+    private final ChemicalStackIngredient input;
+    private final ChemicalStack output;
 
-    protected GasToGasRecipeBuilder(GasStackIngredient input, GasStack output, GasToGasRecipeBuilder.Factory factory) {
+    protected GasToGasRecipeBuilder(ChemicalStackIngredient input, ChemicalStack output, GasToGasRecipeBuilder.Factory factory) {
         this.input = input;
         this.output = output;
         this.factory = factory;
@@ -27,7 +27,7 @@ public class GasToGasRecipeBuilder extends MekanismRecipeBuilder<GasToGasRecipeB
      * @param input  Input.
      * @param output Output.
      */
-    public static GasToGasRecipeBuilder activating(GasStackIngredient input, GasStack output) {
+    public static GasToGasRecipeBuilder activating(ChemicalStackIngredient input, ChemicalStack output) {
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This solar neutron activator recipe requires a non empty gas output.");
         }
@@ -40,7 +40,7 @@ public class GasToGasRecipeBuilder extends MekanismRecipeBuilder<GasToGasRecipeB
      * @param input  Input.
      * @param output Output.
      */
-    public static GasToGasRecipeBuilder centrifuging(GasStackIngredient input, GasStack output) {
+    public static GasToGasRecipeBuilder centrifuging(ChemicalStackIngredient input, ChemicalStack output) {
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This Isotopic Centrifuge recipe requires a non empty gas output.");
         }
@@ -55,6 +55,6 @@ public class GasToGasRecipeBuilder extends MekanismRecipeBuilder<GasToGasRecipeB
     @FunctionalInterface
     public interface Factory {
 
-        GasToGasRecipe create(GasStackIngredient input, GasStack output);
+        GasToGasRecipe create(ChemicalStackIngredient input, ChemicalStack output);
     }
 }

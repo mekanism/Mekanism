@@ -4,10 +4,9 @@ import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.chemical.ChemicalTankBuilder;
+import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasTank;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
@@ -32,7 +31,7 @@ import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
-import mekanism.common.inventory.slot.chemical.GasInventorySlot;
+import mekanism.common.inventory.slot.chemical.ChemicalInventorySlot;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -54,7 +53,7 @@ import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<GasToGasRecipe> implements IBoundingBlock, ChemicalRecipeLookupHandler<Gas, GasStack, GasToGasRecipe> {
+public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<GasToGasRecipe> implements IBoundingBlock, ChemicalRecipeLookupHandler<GasToGasRecipe> {
 
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
           RecipeError.NOT_ENOUGH_INPUT,
@@ -65,10 +64,10 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Gas
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getInput", "getInputCapacity", "getInputNeeded",
                                                                                         "getInputFilledPercentage"}, docPlaceholder = "input tank")
-    public IGasTank inputTank;
+    public IChemicalTank inputTank;
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded",
                                                                                         "getOutputFilledPercentage"}, docPlaceholder = "output tank")
-    public IGasTank outputTank;
+    public IChemicalTank outputTank;
 
     @SyntheticComputerMethod(getter = "getPeakProductionRate")
     private float peakProductionRate;
@@ -77,22 +76,22 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Gas
     private boolean settingsChecked;
     private boolean needsRainCheck;
 
-    private final IOutputHandler<@NotNull GasStack> outputHandler;
-    private final IInputHandler<@NotNull GasStack> inputHandler;
+    private final IOutputHandler<@NotNull ChemicalStack> outputHandler;
+    private final IInputHandler<@NotNull ChemicalStack> inputHandler;
 
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem", docPlaceholder = "input slot")
-    GasInventorySlot inputSlot;
+    ChemicalInventorySlot inputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem", docPlaceholder = "output slot")
-    GasInventorySlot outputSlot;
+    ChemicalInventorySlot outputSlot;
 
     public TileEntitySolarNeutronActivator(BlockPos pos, BlockState state) {
         super(MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR, pos, state, TRACKED_ERROR_TYPES);
         configComponent.setupIOConfig(TransmissionType.ITEM, inputSlot, outputSlot, RelativeSide.FRONT);
-        configComponent.setupIOConfig(TransmissionType.GAS, inputTank, outputTank, RelativeSide.FRONT, false, true);
+        configComponent.setupIOConfig(TransmissionType.CHEMICAL, inputTank, outputTank, RelativeSide.FRONT, false, true);
         configComponent.addDisabledSides(RelativeSide.TOP);
 
         ejectorComponent = new TileComponentEjector(this);
-        ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM, TransmissionType.GAS)
+        ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM, TransmissionType.CHEMICAL)
               .setCanTankEject(tank -> tank != inputTank);
         inputHandler = InputHelper.getInputHandler(inputTank, RecipeError.NOT_ENOUGH_INPUT);
         outputHandler = OutputHelper.getOutputHandler(outputTank, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
@@ -100,12 +99,12 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Gas
 
     @NotNull
     @Override
-    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
-        ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
+    public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
+        ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
         //Allow extracting out of the input gas tank if it isn't external OR the output tank is empty AND the input is radioactive
-        builder.addTank(inputTank = ChemicalTankBuilder.GAS.create(MAX_GAS, ChemicalTankHelper.radioactiveInputTankPredicate(() -> outputTank),
-              ChemicalTankBuilder.GAS.alwaysTrueBi, this::containsRecipe, ChemicalAttributeValidator.ALWAYS_ALLOW, recipeCacheListener));
-        builder.addTank(outputTank = ChemicalTankBuilder.GAS.output(MAX_GAS, recipeCacheUnpauseListener));
+        builder.addTank(inputTank = ChemicalTankBuilder.CHEMICAL.create(MAX_GAS, ChemicalTankHelper.radioactiveInputTankPredicate(() -> outputTank),
+              ChemicalTankBuilder.alwaysTrueBi, this::containsRecipe, ChemicalAttributeValidator.ALWAYS_ALLOW, recipeCacheListener));
+        builder.addTank(outputTank = ChemicalTankBuilder.CHEMICAL.output(MAX_GAS, recipeCacheUnpauseListener));
         return builder.build();
     }
 
@@ -113,8 +112,8 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Gas
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addSlot(inputSlot = GasInventorySlot.fill(inputTank, listener, 5, 56));
-        builder.addSlot(outputSlot = GasInventorySlot.drain(outputTank, listener, 155, 56));
+        builder.addSlot(inputSlot = ChemicalInventorySlot.fill(inputTank, listener, 5, 56));
+        builder.addSlot(outputSlot = ChemicalInventorySlot.drain(outputTank, listener, 155, 56));
         inputSlot.setSlotType(ContainerSlotType.INPUT);
         inputSlot.setSlotOverlay(SlotOverlay.MINUS);
         outputSlot.setSlotType(ContainerSlotType.OUTPUT);
@@ -159,7 +158,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Gas
 
     @NotNull
     @Override
-    public IMekanismRecipeTypeProvider<SingleChemicalRecipeInput<Gas, GasStack>, GasToGasRecipe, SingleChemical<Gas, GasStack, GasToGasRecipe>> getRecipeType() {
+    public IMekanismRecipeTypeProvider<SingleChemicalRecipeInput, GasToGasRecipe, SingleChemical<GasToGasRecipe>> getRecipeType() {
         return MekanismRecipeType.ACTIVATING;
     }
 
@@ -223,6 +222,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Gas
 
     @Override
     protected boolean makesComparatorDirty(ContainerType<?, ?, ?> type) {
-        return type == ContainerType.GAS;
+        return type == ContainerType.CHEMICAL;
     }
 }

@@ -5,7 +5,6 @@ import java.util.List;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.chemical.IChemicalTank;
@@ -17,26 +16,30 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public abstract class ChemicalRecipeData<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>>
-      implements RecipeUpgradeData<ChemicalRecipeData<CHEMICAL, STACK, TANK>> {
+public class ChemicalRecipeData
+      implements RecipeUpgradeData<ChemicalRecipeData> {
 
-    protected final List<TANK> tanks;
+    protected final List<IChemicalTank> tanks;
 
-    protected ChemicalRecipeData(List<TANK> tanks) {
+    public ChemicalRecipeData(List<IChemicalTank> tanks) {
         this.tanks = tanks;
     }
 
     @Nullable
     @Override
-    public ChemicalRecipeData<CHEMICAL, STACK, TANK> merge(ChemicalRecipeData<CHEMICAL, STACK, TANK> other) {
-        List<TANK> allTanks = new ArrayList<>(tanks);
+    public ChemicalRecipeData merge(ChemicalRecipeData other) {
+        List<IChemicalTank> allTanks = new ArrayList<>(tanks);
         allTanks.addAll(other.tanks);
         return create(allTanks);
     }
 
-    protected abstract ChemicalRecipeData<CHEMICAL, STACK, TANK> create(List<TANK> tanks);
+    protected ChemicalRecipeData create(List<IChemicalTank> tanks) {
+        return new ChemicalRecipeData(tanks);
+    }
 
-    protected abstract ContainerType<TANK, ?, ? extends IMekanismChemicalHandler<CHEMICAL, STACK, TANK>> getContainerType();
+    protected ContainerType<IChemicalTank, ?, ? extends IMekanismChemicalHandler> getContainerType() {
+        return ContainerType.CHEMICAL;
+    }
 
     @Override
     public boolean applyToStack(HolderLookup.Provider provider, ItemStack stack) {
@@ -45,12 +48,12 @@ public abstract class ChemicalRecipeData<CHEMICAL extends Chemical<CHEMICAL>, ST
         }
         //TODO: Improve the logic used so that it tries to batch similar types of chemicals together first
         // and maybe make it try multiple slot combinations
-        IMekanismChemicalHandler<CHEMICAL, STACK, TANK> outputHandler = getContainerType().createHandler(stack);
+        IMekanismChemicalHandler outputHandler = getContainerType().createHandler(stack);
         if (outputHandler == null) {
             //Something went wrong, fail
             return false;
         }
-        for (TANK tank : this.tanks) {
+        for (IChemicalTank tank : this.tanks) {
             if (!tank.isEmpty() && !insertManualIntoOutputContainer(outputHandler, tank.getStack()).isEmpty()) {
                 //If we have a remainder something failed so bail
                 return false;
@@ -59,8 +62,8 @@ public abstract class ChemicalRecipeData<CHEMICAL extends Chemical<CHEMICAL>, ST
         return true;
     }
 
-    private STACK insertManualIntoOutputContainer(IMekanismChemicalHandler<CHEMICAL, STACK, TANK> outputHandler, STACK chemical) {
+    private ChemicalStack insertManualIntoOutputContainer(IMekanismChemicalHandler outputHandler, ChemicalStack chemical) {
         //Insert into the output using manual as the automation type
-        return ChemicalUtils.insert(chemical, null, outputHandler::getChemicalTanks, Action.EXECUTE, AutomationType.MANUAL, outputHandler.getEmptyStack());
+        return ChemicalUtils.insert(chemical, null, outputHandler::getChemicalTanks, Action.EXECUTE, AutomationType.MANUAL, ChemicalStack.EMPTY);
     }
 }

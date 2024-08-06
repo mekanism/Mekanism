@@ -1,11 +1,11 @@
 package mekanism.common.integration.projecte.mappers;
 
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.ElectrolysisRecipe.ElectrolysisRecipeOutput;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.common.integration.projecte.IngredientHelper;
-import mekanism.common.integration.projecte.NSSGas;
+import mekanism.common.integration.projecte.NSSChemical;
 import mekanism.common.recipe.MekanismRecipeType;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.api.mapper.recipe.RecipeTypeMapper;
@@ -36,12 +36,12 @@ public class ElectrolysisRecipeMapper extends TypedMekanismRecipeMapper<Electrol
         FluidStackIngredient input = recipe.getInput();
         for (FluidStack representation : input.getRepresentations()) {
             ElectrolysisRecipeOutput output = recipe.getOutput(representation);
-            GasStack leftOutput = output.left();
-            GasStack rightOutput = output.right();
+            ChemicalStack leftOutput = output.left();
+            ChemicalStack rightOutput = output.right();
             if (!leftOutput.isEmpty() && !rightOutput.isEmpty()) {
                 NormalizedSimpleStack nssInput = NSSFluid.createFluid(representation);
-                NormalizedSimpleStack nssLeftOutput = NSSGas.createGas(leftOutput);
-                NormalizedSimpleStack nssRightOutput = NSSGas.createGas(rightOutput);
+                NormalizedSimpleStack nssLeftOutput = NSSChemical.createChemical(leftOutput);
+                NormalizedSimpleStack nssRightOutput = NSSChemical.createChemical(rightOutput);
                 //Add trying to calculate left output (using it as if we needed negative of right output)
                 IngredientHelper ingredientHelper = new IngredientHelper(mapper);
                 ingredientHelper.put(nssInput, representation.getAmount());

@@ -3,10 +3,9 @@ package mekanism.api.recipes;
 import java.util.List;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.infuse.InfuseType;
-import mekanism.api.chemical.infuse.InfusionStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.chemical.ItemStackChemicalToItemStackRecipe;
-import mekanism.api.recipes.ingredients.InfusionStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
@@ -29,7 +28,7 @@ import org.jetbrains.annotations.NotNull;
  * @apiNote Metallurgic Infusers and Infusing Factories can process this recipe type.
  */
 @NothingNullByDefault
-public abstract class MetallurgicInfuserRecipe extends ItemStackChemicalToItemStackRecipe<InfuseType, InfusionStack, InfusionStackIngredient> {
+public abstract class MetallurgicInfuserRecipe extends ItemStackChemicalToItemStackRecipe {
 
     private static final Holder<Item> METALLURGIC_INFUSER = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "metallurgic_infuser"));
 
@@ -37,18 +36,18 @@ public abstract class MetallurgicInfuserRecipe extends ItemStackChemicalToItemSt
     public abstract ItemStackIngredient getItemInput();
 
     @Override
-    public abstract InfusionStackIngredient getChemicalInput();
+    public abstract ChemicalStackIngredient getChemicalInput();
 
     @Override
     @Contract(value = "_, _ -> new", pure = true)
-    public abstract ItemStack getOutput(ItemStack inputItem, InfusionStack inputChemical);
+    public abstract ItemStack getOutput(ItemStack inputItem, ChemicalStack inputChemical);
 
     @NotNull
     @Override
     public abstract ItemStack getResultItem(@NotNull HolderLookup.Provider provider);
 
     @Override
-    public abstract boolean test(ItemStack itemStack, InfusionStack gasStack);
+    public abstract boolean test(ItemStack itemStack, ChemicalStack gasStack);
 
     @Override
     public abstract List<@NotNull ItemStack> getOutputDefinition();

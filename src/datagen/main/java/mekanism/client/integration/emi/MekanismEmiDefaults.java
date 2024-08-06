@@ -12,7 +12,7 @@ import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.item.ItemModule;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.registries.MekanismGases;
+import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.util.EnumUtils;
@@ -162,22 +162,22 @@ public class MekanismEmiDefaults extends BaseEmiDefaults {
     }
 
     private void addRotaryRecipes() {
-        addRotaryRecipe(MekanismGases.BRINE);
-        addRotaryRecipe(MekanismGases.CHLORINE);
-        addRotaryRecipe(MekanismGases.ETHENE);
-        addRotaryRecipe(MekanismGases.HYDROGEN);
-        addRotaryRecipe(MekanismGases.HYDROGEN_CHLORIDE);
-        addRotaryRecipe(MekanismGases.LITHIUM);
-        addRotaryRecipe(MekanismGases.OXYGEN);
-        addRotaryRecipe(MekanismGases.SODIUM);
-        addRotaryRecipe(MekanismGases.SUPERHEATED_SODIUM);
-        addRotaryRecipe(MekanismGases.STEAM);
-        addRotaryRecipe(MekanismGases.SULFUR_DIOXIDE);
-        addRotaryRecipe(MekanismGases.SULFUR_TRIOXIDE);
-        addRotaryRecipe(MekanismGases.SULFURIC_ACID);
-        addRotaryRecipe(MekanismGases.HYDROFLUORIC_ACID);
-        addRotaryRecipe(MekanismGases.URANIUM_OXIDE);
-        addRotaryRecipe(MekanismGases.URANIUM_HEXAFLUORIDE);
+        addRotaryRecipe(MekanismChemicals.BRINE);
+        addRotaryRecipe(MekanismChemicals.CHLORINE);
+        addRotaryRecipe(MekanismChemicals.ETHENE);
+        addRotaryRecipe(MekanismChemicals.HYDROGEN);
+        addRotaryRecipe(MekanismChemicals.HYDROGEN_CHLORIDE);
+        addRotaryRecipe(MekanismChemicals.LITHIUM);
+        addRotaryRecipe(MekanismChemicals.OXYGEN);
+        addRotaryRecipe(MekanismChemicals.SODIUM);
+        addRotaryRecipe(MekanismChemicals.SUPERHEATED_SODIUM);
+        addRotaryRecipe(MekanismChemicals.STEAM);
+        addRotaryRecipe(MekanismChemicals.SULFUR_DIOXIDE);
+        addRotaryRecipe(MekanismChemicals.SULFUR_TRIOXIDE);
+        addRotaryRecipe(MekanismChemicals.SULFURIC_ACID);
+        addRotaryRecipe(MekanismChemicals.HYDROFLUORIC_ACID);
+        addRotaryRecipe(MekanismChemicals.URANIUM_OXIDE);
+        addRotaryRecipe(MekanismChemicals.URANIUM_HEXAFLUORIDE);
     }
 
     private void addMiscRecipes() {

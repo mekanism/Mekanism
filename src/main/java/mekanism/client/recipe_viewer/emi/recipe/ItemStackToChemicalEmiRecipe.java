@@ -13,8 +13,8 @@ import mekanism.client.recipe_viewer.emi.MekanismEmiRecipeCategory;
 import mekanism.common.tile.component.config.DataType;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
-public abstract class ItemStackToChemicalEmiRecipe<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-      RECIPE extends ItemStackToChemicalRecipe<CHEMICAL, STACK>> extends MekanismEmiHolderRecipe<RECIPE> {
+public abstract class ItemStackToChemicalEmiRecipe<CHEMICAL extends Chemical, STACK extends ChemicalStack,
+      RECIPE extends ItemStackToChemicalRecipe> extends MekanismEmiHolderRecipe<RECIPE> {
 
     private final int processTime;
 
@@ -25,7 +25,7 @@ public abstract class ItemStackToChemicalEmiRecipe<CHEMICAL extends Chemical<CHE
         addChemicalOutputDefinition(recipe.getOutputDefinition());
     }
 
-    protected abstract GuiChemicalGauge<CHEMICAL, STACK, ?> getGauge(GaugeType type, int x, int y);
+    protected abstract GuiChemicalGauge getGauge(GaugeType type, int x, int y);
 
     @Override
     public void addWidgets(WidgetHolder widgetHolder) {

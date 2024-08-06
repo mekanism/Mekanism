@@ -1,10 +1,10 @@
 package mekanism.common.integration.projecte.mappers;
 
 import java.util.List;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.common.integration.projecte.IngredientHelper;
-import mekanism.common.integration.projecte.NSSGas;
+import mekanism.common.integration.projecte.NSSChemical;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
@@ -34,9 +34,9 @@ public class ItemStackGasToItemStackRecipeMapper extends TypedMekanismRecipeMapp
     protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, ItemStackGasToItemStackRecipe recipe) {
         boolean handled = false;
         List<@NotNull ItemStack> itemRepresentations = recipe.getItemInput().getRepresentations();
-        List<@NotNull GasStack> gasRepresentations = recipe.getChemicalInput().getRepresentations();
-        for (GasStack gasRepresentation : gasRepresentations) {
-            NSSGas nssGas = NSSGas.createGas(gasRepresentation);
+        List<@NotNull ChemicalStack> gasRepresentations = recipe.getChemicalInput().getRepresentations();
+        for (ChemicalStack gasRepresentation : gasRepresentations) {
+            NSSChemical nssGas = NSSChemical.createChemical(gasRepresentation);
             long gasAmount = gasRepresentation.getAmount() * TileEntityAdvancedElectricMachine.BASE_TICKS_REQUIRED;
             for (ItemStack itemRepresentation : itemRepresentations) {
                 ItemStack output = recipe.getOutput(itemRepresentation, gasRepresentation);

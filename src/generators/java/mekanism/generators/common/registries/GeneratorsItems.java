@@ -1,7 +1,7 @@
 package mekanism.generators.common.registries;
 
 import mekanism.common.attachments.containers.ContainerType;
-import mekanism.common.attachments.containers.chemical.gas.GasTanksBuilder;
+import mekanism.common.attachments.containers.chemical.ChemicalTanksBuilder;
 import mekanism.common.item.ItemModule;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.registration.impl.ItemRegistryObject;
@@ -22,7 +22,7 @@ public class GeneratorsItems {
 
     public static final ItemRegistryObject<Item> SOLAR_PANEL = ITEMS.register("solar_panel");
     public static final ItemRegistryObject<ItemHohlraum> HOHLRAUM = ITEMS.registerItem("hohlraum", ItemHohlraum::new)
-          .addAttachedContainerCapabilities(ContainerType.GAS, () -> GasTanksBuilder.builder()
+          .addAttachedContainerCapabilities(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder()
                 .addInternalStorage(MekanismGeneratorsConfig.generators.hohlraumFillRate, MekanismGeneratorsConfig.generators.hohlraumMaxGas,
                       gas -> gas.is(GeneratorTags.Gases.FUSION_FUEL)
                 ).build(), MekanismGeneratorsConfig.generators);

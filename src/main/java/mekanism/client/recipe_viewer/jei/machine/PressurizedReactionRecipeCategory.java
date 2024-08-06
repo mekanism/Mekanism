@@ -2,14 +2,14 @@ package mekanism.client.recipe_viewer.jei.machine;
 
 import java.util.ArrayList;
 import java.util.List;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe.PressurizedReactionRecipeOutput;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.gauge.GaugeType;
+import mekanism.client.gui.element.gauge.GuiChemicalGauge;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
-import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.GuiSlot;
@@ -46,8 +46,10 @@ public class PressurizedReactionRecipeCategory extends HolderRecipeCategory<Pres
         outputItem = addSlot(SlotType.OUTPUT, 116, 35);
         addSlot(SlotType.POWER, 141, 17).with(SlotOverlay.POWER);
         inputFluid = addElement(GuiFluidGauge.getDummy(GaugeType.STANDARD.with(DataType.INPUT), this, 5, 10));
-        inputGas = addElement(GuiGasGauge.getDummy(GaugeType.STANDARD.with(DataType.INPUT), this, 28, 10));
-        outputGas = addElement(GuiGasGauge.getDummy(GaugeType.SMALL.with(DataType.OUTPUT), this, 140, 40));
+        GaugeType type1 = GaugeType.STANDARD.with(DataType.INPUT);
+        inputGas = addElement(GuiChemicalGauge.getDummy(type1, this, 28, 10));
+        GaugeType type = GaugeType.SMALL.with(DataType.OUTPUT);
+        outputGas = addElement(GuiChemicalGauge.getDummy(type, this, 140, 40));
         addElement(new GuiVerticalPowerBar(this, RecipeViewerUtils.FULL_BAR, 164, 15));
         addSimpleProgress(ProgressType.RIGHT, 77, 38);
     }
@@ -68,7 +70,7 @@ public class PressurizedReactionRecipeCategory extends HolderRecipeCategory<Pres
         initFluid(builder, RecipeIngredientRole.INPUT, inputFluid, recipe.getInputFluid().getRepresentations());
         initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.INPUT, inputGas, recipe.getInputGas().getRepresentations());
         List<ItemStack> itemOutputs = new ArrayList<>();
-        List<GasStack> gasOutputs = new ArrayList<>();
+        List<ChemicalStack> gasOutputs = new ArrayList<>();
         for (PressurizedReactionRecipeOutput output : recipe.getOutputDefinition()) {
             itemOutputs.add(output.item());
             gasOutputs.add(output.gas());
@@ -76,7 +78,7 @@ public class PressurizedReactionRecipeCategory extends HolderRecipeCategory<Pres
         if (!itemOutputs.stream().allMatch(ConstantPredicates.ITEM_EMPTY)) {
             initItem(builder, RecipeIngredientRole.OUTPUT, outputItem, itemOutputs);
         }
-        if (!gasOutputs.stream().allMatch(ConstantPredicates.chemicalEmpty())) {
+        if (!gasOutputs.stream().allMatch(ConstantPredicates.CHEMICAL_EMPTY)) {
             initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, outputGas, gasOutputs)
                   .setSlotName(OUTPUT_GAS);
         }

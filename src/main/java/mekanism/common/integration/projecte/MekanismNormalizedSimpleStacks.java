@@ -13,8 +13,5 @@ public class MekanismNormalizedSimpleStacks {
 
     public static final MekanismDeferredRegister<NSSCodecHolder<?>> NSS_SERIALIZERS = new MekanismDeferredRegister<>(ProjectERegistries.NSS_SERIALIZER_NAME, Mekanism.MODID);
 
-    public static final MekanismDeferredHolder<NSSCodecHolder<?>, NSSCodecHolder<NSSGas>> GAS = NSS_SERIALIZERS.register("gas", () -> NSSGas.CODECS);
-    public static final MekanismDeferredHolder<NSSCodecHolder<?>, NSSCodecHolder<NSSInfuseType>> INFUSE_TYPE = NSS_SERIALIZERS.register("infuse_type", () -> NSSInfuseType.CODECS);
-    public static final MekanismDeferredHolder<NSSCodecHolder<?>, NSSCodecHolder<NSSPigment>> PIGMENT = NSS_SERIALIZERS.register("pigment", () -> NSSPigment.CODECS);
-    public static final MekanismDeferredHolder<NSSCodecHolder<?>, NSSCodecHolder<NSSSlurry>> SLURRY = NSS_SERIALIZERS.register("slurry", () -> NSSSlurry.CODECS);
+    public static final MekanismDeferredHolder<NSSCodecHolder<?>, NSSCodecHolder<NSSChemical>> CHEMICAL = NSS_SERIALIZERS.register("chemical", () -> NSSChemical.CODECS);
 }

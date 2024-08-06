@@ -6,7 +6,6 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.ChemicalBuilder;
 import mekanism.api.chemical.ChemicalType;
 import mekanism.common.integration.jsonthings.builder.JsonChemicalBuilder;
 import net.minecraft.core.Registry;
@@ -15,12 +14,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 
 @NothingNullByDefault
-public class SimpleJsonChemicalParser<CHEMICAL extends Chemical<CHEMICAL>, BUILDER extends ChemicalBuilder<CHEMICAL, BUILDER>,
-      THING_BUILDER extends JsonChemicalBuilder<CHEMICAL, BUILDER, THING_BUILDER>> extends JsonChemicalParser<CHEMICAL, BUILDER, THING_BUILDER> {
+public class SimpleJsonChemicalParser<
+      THING_BUILDER extends JsonChemicalBuilder<THING_BUILDER>> extends JsonChemicalParser<THING_BUILDER> {
 
     private final BiFunction<ThingParser<THING_BUILDER>, ResourceLocation, THING_BUILDER> builderFunction;
 
-    SimpleJsonChemicalParser(IEventBus bus, ChemicalType chemicalType, String thingType, ResourceKey<? extends Registry<CHEMICAL>> registryKey,
+    SimpleJsonChemicalParser(IEventBus bus, ChemicalType chemicalType, String thingType, ResourceKey<? extends Registry<Chemical>> registryKey,
           BiFunction<ThingParser<THING_BUILDER>, ResourceLocation, THING_BUILDER> builderFunction) {
         super(bus, chemicalType, thingType, registryKey);
         this.builderFunction = builderFunction;

@@ -7,7 +7,7 @@ import mekanism.api.math.MathUtils;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.bar.GuiDynamicHorizontalRateBar;
 import mekanism.client.gui.element.gauge.GaugeType;
-import mekanism.client.gui.element.gauge.GuiGasGauge;
+import mekanism.client.gui.element.gauge.GuiChemicalGauge;
 import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.client.recipe_viewer.emi.MekanismEmiRecipeCategory;
 import mekanism.client.recipe_viewer.recipe.SPSRecipeViewerRecipe;
@@ -38,8 +38,8 @@ public class SPSEmiRecipe extends MekanismEmiRecipe<SPSRecipeViewerRecipe> {
             list.add(MekanismLang.PROCESS_RATE_MB.translate(1.0));
             return list;
         }));
-        initTank(widgetHolder, GuiGasGauge.getDummy(GaugeType.STANDARD, this, 6, 13), input(0));
-        initTank(widgetHolder, GuiGasGauge.getDummy(GaugeType.STANDARD, this, 150, 13), output(0)).recipeContext(this);
+        initTank(widgetHolder, GuiChemicalGauge.getDummy(GaugeType.STANDARD, this, 6, 13), input(0));
+        initTank(widgetHolder, GuiChemicalGauge.getDummy(GaugeType.STANDARD, this, 150, 13), output(0)).recipeContext(this);
         addElement(widgetHolder, new GuiDynamicHorizontalRateBar(this, RecipeViewerUtils.barProgressHandler(SharedConstants.TICKS_PER_SECOND), 6, 75, 160,
               ColorFunction.scale(Color.rgbi(60, 45, 74), Color.rgbi(100, 30, 170))));
     }

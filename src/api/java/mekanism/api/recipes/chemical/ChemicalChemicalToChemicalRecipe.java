@@ -3,14 +3,12 @@ package mekanism.api.recipes.chemical;
 import java.util.List;
 import java.util.function.BiPredicate;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.vanilla_input.BiChemicalRecipeInput;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Base class for defining chemical+chemical to chemical recipes.
@@ -19,18 +17,16 @@ import org.jetbrains.annotations.NotNull;
  * <br>
  * Output: ChemicalStack of the same chemical type as the input chemicals
  *
- * @param <INGREDIENT> Input Ingredient type
  */
 @NothingNullByDefault
-public abstract class ChemicalChemicalToChemicalRecipe<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-      INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK, ?>> extends MekanismRecipe<BiChemicalRecipeInput<CHEMICAL, STACK>>
-      implements BiPredicate<@NotNull STACK, @NotNull STACK> {
+public abstract class ChemicalChemicalToChemicalRecipe extends MekanismRecipe<BiChemicalRecipeInput>
+      implements BiPredicate<ChemicalStack, ChemicalStack> {
 
     @Override
-    public abstract boolean test(STACK input1, STACK input2);
+    public abstract boolean test(ChemicalStack input1, ChemicalStack input2);
 
     @Override
-    public boolean matches(BiChemicalRecipeInput<CHEMICAL, STACK> input, Level level) {
+    public boolean matches(BiChemicalRecipeInput input, Level level) {
         //Don't match incomplete recipes or ones that don't match
         return !isIncomplete() && test(input.left(), input.right());
     }
@@ -48,24 +44,24 @@ public abstract class ChemicalChemicalToChemicalRecipe<CHEMICAL extends Chemical
      * @implNote The passed in inputs should <strong>NOT</strong> be modified.
      */
     @Contract(value = "_, _ -> new", pure = true)
-    public abstract STACK getOutput(STACK input1, STACK input2);
+    public abstract ChemicalStack getOutput(ChemicalStack input1, ChemicalStack input2);
 
     /**
      * Gets the left input ingredient.
      */
-    public abstract INGREDIENT getLeftInput();
+    public abstract ChemicalStackIngredient getLeftInput();
 
     /**
      * Gets the right input ingredient.
      */
-    public abstract INGREDIENT getRightInput();
+    public abstract ChemicalStackIngredient getRightInput();
 
     /**
      * For JEI, gets the output representations to display.
      *
      * @return Representation of the output, <strong>MUST NOT</strong> be modified.
      */
-    public abstract List<STACK> getOutputDefinition();
+    public abstract List<ChemicalStack> getOutputDefinition();
 
     @Override
     public boolean isIncomplete() {

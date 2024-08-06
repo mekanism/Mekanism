@@ -4,10 +4,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.slurry.SlurryStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.FluidSlurryToSlurryRecipe;
 import mekanism.api.recipes.MekanismRecipeSerializers;
-import mekanism.api.recipes.ingredients.SlurryStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -17,15 +17,15 @@ import org.jetbrains.annotations.Contract;
 public class BasicFluidSlurryToSlurryRecipe extends FluidSlurryToSlurryRecipe {
 
     protected final FluidStackIngredient fluidInput;
-    protected final SlurryStackIngredient chemicalInput;
-    protected final SlurryStack output;
+    protected final ChemicalStackIngredient chemicalInput;
+    protected final ChemicalStack output;
 
     /**
      * @param fluidInput  Fluid input.
      * @param slurryInput Slurry input.
      * @param output      Output.
      */
-    public BasicFluidSlurryToSlurryRecipe(FluidStackIngredient fluidInput, SlurryStackIngredient slurryInput, SlurryStack output) {
+    public BasicFluidSlurryToSlurryRecipe(FluidStackIngredient fluidInput, ChemicalStackIngredient slurryInput, ChemicalStack output) {
         this.fluidInput = Objects.requireNonNull(fluidInput, "Fluid input cannot be null.");
         this.chemicalInput = Objects.requireNonNull(slurryInput, "Chemical input cannot be null.");
         Objects.requireNonNull(output, "Output cannot be null.");
@@ -36,7 +36,7 @@ public class BasicFluidSlurryToSlurryRecipe extends FluidSlurryToSlurryRecipe {
     }
 
     @Override
-    public boolean test(FluidStack fluidStack, SlurryStack chemicalStack) {
+    public boolean test(FluidStack fluidStack, ChemicalStack chemicalStack) {
         return fluidInput.test(fluidStack) && chemicalInput.test(chemicalStack);
     }
 
@@ -46,22 +46,22 @@ public class BasicFluidSlurryToSlurryRecipe extends FluidSlurryToSlurryRecipe {
     }
 
     @Override
-    public SlurryStackIngredient getChemicalInput() {
+    public ChemicalStackIngredient getChemicalInput() {
         return chemicalInput;
     }
 
     @Override
-    public List<SlurryStack> getOutputDefinition() {
+    public List<ChemicalStack> getOutputDefinition() {
         return Collections.singletonList(output);
     }
 
     @Override
     @Contract(value = "_, _ -> new", pure = true)
-    public SlurryStack getOutput(FluidStack fluidStack, SlurryStack chemicalStack) {
+    public ChemicalStack getOutput(FluidStack fluidStack, ChemicalStack chemicalStack) {
         return output.copy();
     }
 
-    public SlurryStack getOutputRaw() {
+    public ChemicalStack getOutputRaw() {
         return output;
     }
 

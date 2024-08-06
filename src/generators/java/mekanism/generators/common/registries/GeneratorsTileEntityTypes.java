@@ -109,7 +109,7 @@ public class GeneratorsTileEntityTypes {
           .serverTicker(TileEntityMekanism::tickServer)
           .withSimple(Capabilities.CONFIGURABLE)
           //Never allow the gas handler, fluid handler, or energy cap to be enabled here even though internally we can handle both of them
-          .without(Capabilities.GAS.block(), Capabilities.FLUID.block(), Capabilities.HEAT)
+          .without(Capabilities.CHEMICAL.block(), Capabilities.FLUID.block(), Capabilities.HEAT)
           .without(EnergyCompatUtils.getLoadedEnergyCapabilities())
           .build();
     public static final TileEntityTypeRegistryObject<TileEntityFusionReactorBlock> FUSION_REACTOR_FRAME = TILE_ENTITY_TYPES

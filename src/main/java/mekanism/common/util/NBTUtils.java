@@ -13,11 +13,8 @@ import java.util.function.IntConsumer;
 import java.util.function.IntFunction;
 import java.util.function.LongConsumer;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.api.chemical.merged.BoxedChemical;
-import mekanism.api.chemical.pigment.PigmentStack;
-import mekanism.api.chemical.slurry.SlurryStack;
+import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
@@ -171,33 +168,33 @@ public class NBTUtils {
         }
     }
 
-    public static void setBoxedChemicalIfPresent(HolderLookup.Provider provider, CompoundTag nbt, String key, Consumer<BoxedChemical> setter) {
+    public static void setChemicalIfPresent(HolderLookup.Provider provider, CompoundTag nbt, String key, Consumer<Chemical> setter) {
         if (nbt.contains(key, Tag.TAG_COMPOUND)) {
-            setter.accept(BoxedChemical.parseOptional(provider, nbt.getCompound(key)));
+            setter.accept(Chemical.parseOptional(provider, nbt.getCompound(key)));
         }
     }
 
-    public static void setGasStackIfPresent(HolderLookup.Provider provider, CompoundTag nbt, String key, Consumer<GasStack> setter) {
+    public static void setGasStackIfPresent(HolderLookup.Provider provider, CompoundTag nbt, String key, Consumer<ChemicalStack> setter) {
         if (nbt.contains(key, Tag.TAG_COMPOUND)) {
-            setter.accept(GasStack.parseOptional(provider, nbt.getCompound(key)));
+            setter.accept(ChemicalStack.parseOptional(provider, nbt.getCompound(key)));
         }
     }
 
-    public static void setInfusionStackIfPresent(HolderLookup.Provider provider, CompoundTag nbt, String key, Consumer<InfusionStack> setter) {
+    public static void setInfusionStackIfPresent(HolderLookup.Provider provider, CompoundTag nbt, String key, Consumer<ChemicalStack> setter) {
         if (nbt.contains(key, Tag.TAG_COMPOUND)) {
-            setter.accept(InfusionStack.parseOptional(provider, nbt.getCompound(key)));
+            setter.accept(ChemicalStack.parseOptional(provider, nbt.getCompound(key)));
         }
     }
 
-    public static void setPigmentStackIfPresent(HolderLookup.Provider provider, CompoundTag nbt, String key, Consumer<PigmentStack> setter) {
+    public static void setPigmentStackIfPresent(HolderLookup.Provider provider, CompoundTag nbt, String key, Consumer<ChemicalStack> setter) {
         if (nbt.contains(key, Tag.TAG_COMPOUND)) {
-            setter.accept(PigmentStack.parseOptional(provider, nbt.getCompound(key)));
+            setter.accept(ChemicalStack.parseOptional(provider, nbt.getCompound(key)));
         }
     }
 
-    public static void setSlurryStackIfPresent(HolderLookup.Provider provider, CompoundTag nbt, String key, Consumer<SlurryStack> setter) {
+    public static void setSlurryStackIfPresent(HolderLookup.Provider provider, CompoundTag nbt, String key, Consumer<ChemicalStack> setter) {
         if (nbt.contains(key, Tag.TAG_COMPOUND)) {
-            setter.accept(SlurryStack.parseOptional(provider, nbt.getCompound(key)));
+            setter.accept(ChemicalStack.parseOptional(provider, nbt.getCompound(key)));
         }
     }
 

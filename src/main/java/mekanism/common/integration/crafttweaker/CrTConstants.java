@@ -16,6 +16,7 @@ public class CrTConstants {
     public static final ResourceLocation CONTENT_LOADER_SOURCE_ID = Mekanism.rl("content");
     public static final String JEI_PLUGIN_NAME = Mekanism.MODID + ":crt_jei";
 
+    public static final String BRACKET_CHEMICAL = "chemical";
     public static final String BRACKET_GAS = "gas";
     public static final String BRACKET_INFUSE_TYPE = "infuse_type";
     public static final String BRACKET_PIGMENT = "pigment";
@@ -167,12 +168,6 @@ public class CrTConstants {
     private static final String EXPANSION_TARGET_MANY = "crafttweaker.api.util.Many";
     private static final String EXPANSION_TARGET_TAG = "crafttweaker.api.tag.type.KnownTag";
     public static final String EXPANSION_TARGET_NSS_RESOLVER = "mods.projecte.NSSResolver";
-    public static final String EXPANSION_TARGET_GAS_TAG = EXPANSION_TARGET_TAG + "<" + CLASS_GAS + ">";
-    public static final String EXPANSION_TARGET_INFUSE_TYPE_TAG = EXPANSION_TARGET_TAG + "<" + CLASS_INFUSE_TYPE + ">";
-    public static final String EXPANSION_TARGET_PIGMENT_TAG = EXPANSION_TARGET_TAG + "<" + CLASS_PIGMENT + ">";
-    public static final String EXPANSION_TARGET_SLURRY_TAG = EXPANSION_TARGET_TAG + "<" + CLASS_SLURRY + ">";
-    public static final String EXPANSION_TARGET_GAS_AMOUNT_TAG = EXPANSION_TARGET_MANY + "<" + EXPANSION_TARGET_GAS_TAG + ">";
-    public static final String EXPANSION_TARGET_INFUSE_TYPE_AMOUNT_TAG = EXPANSION_TARGET_MANY + "<" + EXPANSION_TARGET_INFUSE_TYPE_TAG + ">";
-    public static final String EXPANSION_TARGET_PIGMENT_AMOUNT_TAG = EXPANSION_TARGET_MANY + "<" + EXPANSION_TARGET_PIGMENT_TAG + ">";
-    public static final String EXPANSION_TARGET_SLURRY_AMOUNT_TAG = EXPANSION_TARGET_MANY + "<" + EXPANSION_TARGET_SLURRY_TAG + ">";
+    public static final String EXPANSION_TARGET_CHEMICAL_TAG = EXPANSION_TARGET_TAG + "<" + CLASS_CHEMICAL + ">";
+    public static final String EXPANSION_TARGET_CHEMICAL_AMOUNT_TAG = EXPANSION_TARGET_MANY + "<" + EXPANSION_TARGET_CHEMICAL_TAG + ">";
 }

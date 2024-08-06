@@ -8,13 +8,13 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 @NothingNullByDefault
-public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> extends IEmptyStackProvider<CHEMICAL, STACK>,
-      INBTSerializable<CompoundTag>, IContentsListener {
+public interface IChemicalTank extends INBTSerializable<CompoundTag>, IContentsListener {
 
     /**
      * Helper for creating a stack of the type this {@link IChemicalTank} is storing.
@@ -24,8 +24,8 @@ public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extend
      *
      * @return A new stack
      */
-    default STACK createStack(STACK stored, long size) {
-        return (STACK) stored.copyWithAmount(size);
+    default ChemicalStack createStack(ChemicalStack stored, long size) {
+        return (ChemicalStack) stored.copyWithAmount(size);
     }
 
     /**
@@ -42,7 +42,7 @@ public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extend
      *
      * @return {@link ChemicalStack} in this tank. EMPTY instance of the {@link ChemicalStack} if the tank is empty.
      */
-    STACK getStack();
+    ChemicalStack getStack();
 
     /**
      * Overrides the stack in this {@link IChemicalTank}.
@@ -52,7 +52,7 @@ public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extend
      * @throws RuntimeException if this tank is called in a way that it was not expecting.
      * @implNote If the internal stack does get updated make sure to call {@link #onContentsChanged()}
      */
-    void setStack(STACK stack);
+    void setStack(ChemicalStack stack);
 
     /**
      * Overrides the stack in this {@link IChemicalTank}.
@@ -64,7 +64,7 @@ public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extend
      * client side for purposes of receiving sync data and rendering.
      * @implNote If the internal stack does get updated make sure to call {@link #onContentsChanged()}
      */
-    void setStackUnchecked(STACK stack);
+    void setStackUnchecked(ChemicalStack stack);
 
     /**
      * <p>
@@ -84,7 +84,7 @@ public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extend
      * {@link #onContentsChanged()}. It is also recommended to override this if your internal {@link ChemicalStack} is mutable so that a copy does not have to be made
      * every run
      */
-    default STACK insert(STACK stack, Action action, AutomationType automationType) {
+    default ChemicalStack insert(ChemicalStack stack, Action action, AutomationType automationType) {
         if (stack.isEmpty() || !isValid(stack)) {
             //"Fail quick" if the given stack is empty, or we can never insert the item or currently are unable to insert it
             return stack;
@@ -132,11 +132,11 @@ public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extend
      * sure to call {@link #onContentsChanged()}. It is also recommended to override this if your internal {@link ChemicalStack} is mutable so that a copy does not have
      * to be made every run
      */
-    default STACK extract(long amount, Action action, AutomationType automationType) {
+    default ChemicalStack extract(long amount, Action action, AutomationType automationType) {
         if (isEmpty() || amount < 1) {
-            return getEmptyStack();
+            return ChemicalStack.EMPTY;
         }
-        STACK ret = createStack(getStack(), Math.min(getStored(), amount));
+        ChemicalStack ret = createStack(getStack(), Math.min(getStored(), amount));
         if (!ret.isEmpty() && action.execute()) {
             // Note: this also will mark that the contents changed
             shrinkStack(ret.getAmount(), action);
@@ -167,7 +167,7 @@ public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extend
      * @return true if this {@link IChemicalTank} can accept the {@link ChemicalStack}, not considering the current state of the tank. false if this {@link IChemicalTank}
      * can never insert the {@link ChemicalStack} in any situation.
      */
-    boolean isValid(STACK stack);
+    boolean isValid(ChemicalStack stack);
 
     /**
      * Convenience method for modifying the size of the stored stack.
@@ -264,7 +264,7 @@ public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extend
      * Convenience method for emptying this {@link IChemicalTank}.
      */
     default void setEmpty() {
-        setStack(getEmptyStack());
+        setStack(ChemicalStack.EMPTY);
     }
 
     /**
@@ -292,7 +292,7 @@ public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extend
      *
      * @return chemical type contained
      */
-    default CHEMICAL getType() {
+    default Chemical getType() {
         return getStack().getChemical();
     }
 
@@ -305,7 +305,7 @@ public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extend
      *
      * @implNote If your implementation of {@link #getStack()} returns a copy, this should be overridden to directly check against the internal stack.
      */
-    default boolean isTypeEqual(STACK other) {
+    default boolean isTypeEqual(ChemicalStack other) {
         return ChemicalStack.isSameChemical(getStack(), other);
     }
 
@@ -318,7 +318,7 @@ public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extend
      *
      * @implNote If your implementation of {@link #getStack()} returns a copy, this should be overridden to directly check against the internal stack.
      */
-    default boolean isTypeEqual(CHEMICAL other) {
+    default boolean isTypeEqual(Chemical other) {
         return getStack().is(other);
     }
 
@@ -338,5 +338,12 @@ public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extend
             nbt.put(SerializationConstants.STORED, getStack().save(provider));
         }
         return nbt;
+    }
+
+    @Override
+    default void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
+        if (nbt.contains(SerializationConstants.STORED, Tag.TAG_COMPOUND)) {
+            setStackUnchecked(ChemicalStack.parseOptional(provider, nbt.getCompound(SerializationConstants.STORED)));
+        }
     }
 }

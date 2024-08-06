@@ -7,7 +7,7 @@ import com.blamejared.crafttweaker.api.recipe.handler.IRecipeHandler;
 import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import java.util.List;
 import java.util.Optional;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe.PressurizedReactionRecipeOutput;
 import mekanism.common.integration.crafttweaker.CrTRecipeComponents;
@@ -26,13 +26,13 @@ public class PressurizedReactionRecipeHandler extends MekanismRecipeHandler<Pres
     public String dumpToCommandString(IRecipeManager<? super PressurizedReactionRecipe> manager, RegistryAccess registryAccess,
           RecipeHolder<PressurizedReactionRecipe> recipeHolder) {
         ItemStack itemOutput;
-        GasStack gasOutput;
+        ChemicalStack gasOutput;
         PressurizedReactionRecipe recipe = recipeHolder.value();
         List<PressurizedReactionRecipeOutput> outputs = recipe.getOutputDefinition();
         if (outputs.isEmpty()) {
             //Validate it isn't empty, which shouldn't be possible
             itemOutput = ItemStack.EMPTY;
-            gasOutput = GasStack.EMPTY;
+            gasOutput = ChemicalStack.EMPTY;
         } else {
             //Outputs sometimes are as lists, try wrapping them into a single element
             // eventually we may want to try listing them all somehow?
@@ -71,20 +71,20 @@ public class PressurizedReactionRecipeHandler extends MekanismRecipeHandler<Pres
         if (m instanceof PressurizedReactionRecipeManager manager) {
             Optional<IItemStack> optionalOutputItem = CrTUtils.getSingleIfPresent(recipe, CrTRecipeComponents.ITEM.output());
             ItemStack outputItem;
-            GasStack outputGas;
+            ChemicalStack outputGas;
             if (optionalOutputItem.isPresent()) {
                 outputItem = optionalOutputItem.get().getImmutableInternal();
-                outputGas = CrTUtils.getSingleIfPresent(recipe, CrTRecipeComponents.GAS.output())
+                outputGas = CrTUtils.getSingleIfPresent(recipe, CrTRecipeComponents.CHEMICAL.output())
                       .map(ICrTChemicalStack::getImmutableInternal)
-                      .orElse(GasStack.EMPTY);
+                      .orElse(ChemicalStack.EMPTY);
             } else {
                 outputItem = ItemStack.EMPTY;
-                outputGas = recipe.getOrThrowSingle(CrTRecipeComponents.GAS.output()).getImmutableInternal();
+                outputGas = recipe.getOrThrowSingle(CrTRecipeComponents.CHEMICAL.output()).getImmutableInternal();
             }
             return Optional.of(manager.makeRecipe(
                   recipe.getOrThrowSingle(CrTRecipeComponents.ITEM.input()),
                   recipe.getOrThrowSingle(CrTRecipeComponents.FLUID.input()),
-                  recipe.getOrThrowSingle(CrTRecipeComponents.GAS.input()),
+                  recipe.getOrThrowSingle(CrTRecipeComponents.CHEMICAL.input()),
                   recipe.getOrThrowSingle(BuiltinRecipeComponents.Processing.TIME),
                   outputItem,
                   outputGas,

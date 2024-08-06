@@ -1,11 +1,11 @@
 package mekanism.api.datagen.recipe.builder;
 
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.basic.BasicPressurizedReactionRecipe;
-import mekanism.api.recipes.ingredients.GasStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.world.item.ItemStack;
@@ -15,14 +15,14 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Pres
 
     private final ItemStackIngredient inputSolid;
     private final FluidStackIngredient inputFluid;
-    private final GasStackIngredient inputGas;
+    private final ChemicalStackIngredient inputGas;
     private long energyRequired = 0;
     private final int duration;
     private final ItemStack outputItem;
-    private final GasStack outputGas;
+    private final ChemicalStack outputGas;
 
-    protected PressurizedReactionRecipeBuilder(ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, GasStackIngredient inputGas, int duration,
-          ItemStack outputItem, GasStack outputGas) {
+    protected PressurizedReactionRecipeBuilder(ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, ChemicalStackIngredient inputGas, int duration,
+          ItemStack outputItem, ChemicalStack outputGas) {
         this.inputSolid = inputSolid;
         this.inputFluid = inputFluid;
         this.inputGas = inputGas;
@@ -40,13 +40,13 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Pres
      * @param duration   Base duration in ticks that this recipe takes to complete. Must be greater than zero.
      * @param outputItem Item Output.
      */
-    public static PressurizedReactionRecipeBuilder reaction(ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, GasStackIngredient inputGas,
+    public static PressurizedReactionRecipeBuilder reaction(ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, ChemicalStackIngredient inputGas,
           int duration, ItemStack outputItem) {
         if (outputItem.isEmpty()) {
             throw new IllegalArgumentException("This reaction recipe requires a non empty output item.");
         }
         validateDuration(duration);
-        return new PressurizedReactionRecipeBuilder(inputSolid, inputFluid, inputGas, duration, outputItem, GasStack.EMPTY);
+        return new PressurizedReactionRecipeBuilder(inputSolid, inputFluid, inputGas, duration, outputItem, ChemicalStack.EMPTY);
     }
 
     /**
@@ -58,8 +58,8 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Pres
      * @param duration   Base duration in ticks that this recipe takes to complete. Must be greater than zero.
      * @param outputGas  Gas Output.
      */
-    public static PressurizedReactionRecipeBuilder reaction(ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, GasStackIngredient inputGas, int duration,
-          GasStack outputGas) {
+    public static PressurizedReactionRecipeBuilder reaction(ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, ChemicalStackIngredient inputGas, int duration,
+          ChemicalStack outputGas) {
         if (outputGas.isEmpty()) {
             throw new IllegalArgumentException("This reaction recipe requires a non empty output gas.");
         }
@@ -77,8 +77,8 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Pres
      * @param outputItem Item Output.
      * @param outputGas  Gas Output.
      */
-    public static PressurizedReactionRecipeBuilder reaction(ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, GasStackIngredient inputGas, int duration,
-          ItemStack outputItem, GasStack outputGas) {
+    public static PressurizedReactionRecipeBuilder reaction(ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, ChemicalStackIngredient inputGas, int duration,
+          ItemStack outputItem, ChemicalStack outputGas) {
         if (outputItem.isEmpty() || outputGas.isEmpty()) {
             throw new IllegalArgumentException("This reaction recipe requires non empty item and gas outputs.");
         }

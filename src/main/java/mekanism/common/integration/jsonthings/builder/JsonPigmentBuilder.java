@@ -2,13 +2,13 @@ package mekanism.common.integration.jsonthings.builder;
 
 import dev.gigaherz.jsonthings.things.parsers.ThingParser;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.pigment.Pigment;
-import mekanism.api.chemical.pigment.PigmentBuilder;
+import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalBuilder;
 import mekanism.common.util.ChemicalUtil;
 import net.minecraft.resources.ResourceLocation;
 
 @NothingNullByDefault
-public class JsonPigmentBuilder extends JsonChemicalBuilder<Pigment, PigmentBuilder, JsonPigmentBuilder> {
+public class JsonPigmentBuilder extends JsonChemicalBuilder<JsonPigmentBuilder> {
 
     public JsonPigmentBuilder(ThingParser<JsonPigmentBuilder> ownerParser, ResourceLocation registryName) {
         super(ownerParser, registryName);
@@ -20,9 +20,9 @@ public class JsonPigmentBuilder extends JsonChemicalBuilder<Pigment, PigmentBuil
     }
 
     @Override
-    protected Pigment buildInternal() {
-        PigmentBuilder internal = texture == null ? PigmentBuilder.builder() : PigmentBuilder.builder(texture);
+    protected Chemical buildInternal() {
+        ChemicalBuilder internal = texture == null ? ChemicalBuilder.pigment() : ChemicalBuilder.builder(texture);
         applyBaseData(internal);
-        return ChemicalUtil.pigment(internal, colorRepresentation);
+        return ChemicalUtil.chemical(internal, colorRepresentation);
     }
 }

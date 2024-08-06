@@ -5,8 +5,8 @@ import dev.emi.emi.api.widget.WidgetHolder;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.client.gui.element.GuiDownArrow;
 import mekanism.client.gui.element.gauge.GaugeType;
+import mekanism.client.gui.element.gauge.GuiChemicalGauge;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
-import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.recipe_viewer.emi.MekanismEmiRecipeCategory;
@@ -48,7 +48,7 @@ public class RotaryEmiRecipe extends MekanismEmiRecipe<RotaryRecipe> {
     @Override
     public void addWidgets(WidgetHolder widgetHolder) {
         addElement(widgetHolder, new GuiDownArrow(this, 159, 44));
-        SlotWidget leftWidget = initTank(widgetHolder, GuiGasGauge.getDummy(GaugeType.STANDARD, this, 25, 13), condensentrating ? input(0) : output(0));
+        SlotWidget leftWidget = initTank(widgetHolder, GuiChemicalGauge.getDummy(GaugeType.STANDARD, this, 25, 13), condensentrating ? input(0) : output(0));
         SlotWidget rightWidget = initTank(widgetHolder, GuiFluidGauge.getDummy(GaugeType.STANDARD, this, 133, 13), condensentrating ? output(0) : input(0));
         if (condensentrating) {
             rightWidget.recipeContext(this);

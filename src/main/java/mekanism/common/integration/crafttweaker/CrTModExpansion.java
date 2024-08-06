@@ -9,10 +9,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import mekanism.api.MekanismAPI;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.infuse.InfuseType;
-import mekanism.api.chemical.pigment.Pigment;
-import mekanism.api.chemical.slurry.Slurry;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.robit.RobitSkin;
 import net.minecraft.core.Registry;
@@ -29,42 +26,9 @@ public class CrTModExpansion {
      * @return A list of gases that were registered under this mod's ID.
      */
     @ZenCodeType.Method
-    @ZenCodeType.Getter("gases")
-    public static Collection<Gas> getGases(Mod _this) {
-        return getModSpecific(_this, MekanismAPI.GAS_REGISTRY);
-    }
-
-    /**
-     * Gets the infuse types that are registered under this mod's ID.
-     *
-     * @return A list of infuse types that were registered under this mod's ID.
-     */
-    @ZenCodeType.Method
-    @ZenCodeType.Getter("infuseTypes")
-    public static Collection<InfuseType> getInfuseTypes(Mod _this) {
-        return getModSpecific(_this, MekanismAPI.INFUSE_TYPE_REGISTRY);
-    }
-
-    /**
-     * Gets the pigments that are registered under this mod's ID.
-     *
-     * @return A list of pigments that were registered under this mod's ID.
-     */
-    @ZenCodeType.Method
-    @ZenCodeType.Getter("pigments")
-    public static Collection<Pigment> getPigments(Mod _this) {
-        return getModSpecific(_this, MekanismAPI.PIGMENT_REGISTRY);
-    }
-
-    /**
-     * Gets the slurries that are registered under this mod's ID.
-     *
-     * @return A list of slurries that were registered under this mod's ID.
-     */
-    @ZenCodeType.Method
-    @ZenCodeType.Getter("slurries")
-    public static Collection<Slurry> getSlurries(Mod _this) {
-        return getModSpecific(_this, MekanismAPI.SLURRY_REGISTRY);
+    @ZenCodeType.Getter("chemicals")
+    public static Collection<Chemical> getChemicals(Mod _this) {
+        return getModSpecific(_this, MekanismAPI.CHEMICAL_REGISTRY);
     }
 
     /**

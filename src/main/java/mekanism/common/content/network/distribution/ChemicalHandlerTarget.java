@@ -6,10 +6,9 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.common.lib.distribution.SplitInfo;
 import mekanism.common.lib.distribution.Target;
-import mekanism.common.util.ChemicalUtil;
 import org.jetbrains.annotations.NotNull;
 
-public class ChemicalHandlerTarget<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>>
+public class ChemicalHandlerTarget<CHEMICAL extends Chemical, STACK extends ChemicalStack, HANDLER extends IChemicalHandler>
       extends Target<HANDLER, Long, @NotNull STACK> {
 
     public ChemicalHandlerTarget(@NotNull STACK type) {
@@ -23,7 +22,7 @@ public class ChemicalHandlerTarget<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
 
     @Override
     protected void acceptAmount(HANDLER handler, SplitInfo<Long> splitInfo, Long amount) {
-        splitInfo.send(amount - handler.insertChemical(ChemicalUtil.copyWithAmount(extra, amount), Action.EXECUTE).getAmount());
+        splitInfo.send(amount - handler.insertChemical(extra.copyWithAmount(amount), Action.EXECUTE).getAmount());
     }
 
     @Override

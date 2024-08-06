@@ -3,10 +3,9 @@ package mekanism.api.recipes;
 import java.util.List;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.slurry.Slurry;
-import mekanism.api.chemical.slurry.SlurryStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.chemical.FluidChemicalToChemicalRecipe;
-import mekanism.api.recipes.ingredients.SlurryStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
@@ -28,25 +27,25 @@ import org.jetbrains.annotations.Contract;
  * @apiNote Chemical Washers can process this recipe type.
  */
 @NothingNullByDefault
-public abstract class FluidSlurryToSlurryRecipe extends FluidChemicalToChemicalRecipe<Slurry, SlurryStack, SlurryStackIngredient> {
+public abstract class FluidSlurryToSlurryRecipe extends FluidChemicalToChemicalRecipe {
 
     private static final Holder<Item> CHEMICAL_WASHER = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "chemical_washer"));
 
     @Override
-    public abstract boolean test(FluidStack fluidStack, SlurryStack chemicalStack);
+    public abstract boolean test(FluidStack fluidStack, ChemicalStack chemicalStack);
 
     @Override
     public abstract FluidStackIngredient getFluidInput();
 
     @Override
-    public abstract SlurryStackIngredient getChemicalInput();
+    public abstract ChemicalStackIngredient getChemicalInput();
 
     @Override
-    public abstract List<SlurryStack> getOutputDefinition();
+    public abstract List<ChemicalStack> getOutputDefinition();
 
     @Override
     @Contract(value = "_, _ -> new", pure = true)
-    public abstract SlurryStack getOutput(FluidStack fluidStack, SlurryStack chemicalStack);
+    public abstract ChemicalStack getOutput(FluidStack fluidStack, ChemicalStack chemicalStack);
 
     @Override
     public final RecipeType<FluidSlurryToSlurryRecipe> getType() {

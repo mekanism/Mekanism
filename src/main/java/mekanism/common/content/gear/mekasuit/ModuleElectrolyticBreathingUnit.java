@@ -3,8 +3,8 @@ package mekanism.common.content.gear.mekasuit;
 import java.util.Map;
 import mekanism.api.Action;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasHandler;
+import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
@@ -13,7 +13,7 @@ import mekanism.api.math.MathUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.registries.MekanismGases;
+import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.MekanismUtils;
@@ -62,10 +62,10 @@ public record ModuleElectrolyticBreathingUnit(boolean fillHeld) implements ICust
             long usage = 2 * MekanismConfig.general.FROM_H2.get();
             int maxRate = MathUtils.clampToInt(Math.min(productionRate, module.getContainerEnergy(stack) / usage));
             long hydrogenUsed = 0;
-            GasStack hydrogenStack = MekanismGases.HYDROGEN.getStack(maxRate * 2L);
+            ChemicalStack hydrogenStack = MekanismChemicals.HYDROGEN.getStack(maxRate * 2L);
             ItemStack chestStack = player.getItemBySlot(EquipmentSlot.CHEST);
             if (checkChestPlate(chestStack)) {
-                IGasHandler chestCapability = Capabilities.GAS.getCapability(chestStack);
+                IChemicalHandler chestCapability = Capabilities.CHEMICAL.getCapability(chestStack);
                 if (chestCapability != null) {
                     hydrogenUsed = maxRate * 2L - chestCapability.insertChemical(hydrogenStack, Action.EXECUTE).getAmount();
                     hydrogenStack.shrink(hydrogenUsed);
@@ -73,7 +73,7 @@ public record ModuleElectrolyticBreathingUnit(boolean fillHeld) implements ICust
             }
             if (fillHeld) {
                 ItemStack handStack = player.getItemBySlot(EquipmentSlot.MAINHAND);
-                IGasHandler handCapability = Capabilities.GAS.getCapability(handStack);
+                IChemicalHandler handCapability = Capabilities.CHEMICAL.getCapability(handStack);
                 if (handCapability != null) {
                     hydrogenUsed = maxRate * 2L - handCapability.insertChemical(hydrogenStack, Action.EXECUTE).getAmount();
                 }

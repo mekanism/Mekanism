@@ -7,11 +7,11 @@ import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
+import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalTankBuilder;
+import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
@@ -47,7 +47,7 @@ import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
-import mekanism.common.inventory.slot.chemical.GasInventorySlot;
+import mekanism.common.inventory.slot.chemical.ChemicalInventorySlot;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -89,7 +89,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getGas", "getGasCapacity", "getGasNeeded",
                                                                                         "getGasFilledPercentage"}, docPlaceholder = "gas tank")
-    public IGasTank gasTank;
+    public IChemicalTank gasTank;
     @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getFluid", "getFluidCapacity", "getFluidNeeded",
                                                                                      "getFluidFilledPercentage"}, docPlaceholder = "fluid tank")
     public BasicFluidTank fluidTank;
@@ -100,19 +100,19 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
      */
     private boolean mode;
 
-    private final IOutputHandler<@NotNull GasStack> gasOutputHandler;
+    private final IOutputHandler<@NotNull ChemicalStack> gasOutputHandler;
     private final IOutputHandler<@NotNull FluidStack> fluidOutputHandler;
     private final IInputHandler<@NotNull FluidStack> fluidInputHandler;
-    private final IInputHandler<@NotNull GasStack> gasInputHandler;
+    private final IInputHandler<@NotNull ChemicalStack> gasInputHandler;
 
     private long clientEnergyUsed = 0;
     private int baselineMaxOperations = 1;
 
     private MachineEnergyContainer<TileEntityRotaryCondensentrator> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getGasItemInput", docPlaceholder = "gas item input slot")
-    GasInventorySlot gasInputSlot;
+    ChemicalInventorySlot gasInputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getGasItemOutput", docPlaceholder = "gas item output slot")
-    GasInventorySlot gasOutputSlot;
+    ChemicalInventorySlot gasOutputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFluidItemInput", docPlaceholder = "fluid item input slot")
     FluidInventorySlot fluidInputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFluidItemOutput", docPlaceholder = "fluid item ouput slot")
@@ -123,14 +123,14 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
     public TileEntityRotaryCondensentrator(BlockPos pos, BlockState state) {
         super(MekanismBlocks.ROTARY_CONDENSENTRATOR, pos, state, TRACKED_ERROR_TYPES);
         configComponent.setupItemIOConfig(List.of(gasInputSlot, fluidInputSlot), List.of(gasOutputSlot, fluidOutputSlot), energySlot, true);
-        configComponent.setupIOConfig(TransmissionType.GAS, gasTank, RelativeSide.LEFT, true);
+        configComponent.setupIOConfig(TransmissionType.CHEMICAL, gasTank, RelativeSide.LEFT, true);
         configComponent.setupIOConfig(TransmissionType.FLUID, fluidTank, RelativeSide.RIGHT, true);
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
 
         ejectorComponent = new TileComponentEjector(this);
-        ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM, TransmissionType.GAS, TransmissionType.FLUID)
+        ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM, TransmissionType.CHEMICAL, TransmissionType.FLUID)
               .setCanEject(transmissionType -> {
-                  if (transmissionType == TransmissionType.GAS) {
+                  if (transmissionType == TransmissionType.CHEMICAL) {
                       return mode;
                   } else if (transmissionType == TransmissionType.FLUID) {
                       return !mode;
@@ -146,15 +146,15 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
 
     @NotNull
     @Override
-    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
-        ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
+    public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
+        ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
         //Only allow extraction
-        builder.addTank(gasTank = ChemicalTankBuilder.GAS.create(CAPACITY, (gas, automationType) -> automationType == AutomationType.MANUAL || mode,
+        builder.addTank(gasTank = ChemicalTankBuilder.CHEMICAL.create(CAPACITY, (gas, automationType) -> automationType == AutomationType.MANUAL || mode,
               (gas, automationType) -> automationType == AutomationType.INTERNAL || !mode, this::isValidGas, ChemicalAttributeValidator.ALWAYS_ALLOW, recipeCacheListener));
         return builder.build();
     }
 
-    private boolean isValidGas(@NotNull Gas gas) {
+    private boolean isValidGas(@NotNull Chemical gas) {
         return getRecipeType().getInputCache().containsInput(level, gas.getStack(1));
     }
 
@@ -184,8 +184,8 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
         BooleanSupplier modeSupplier = this::getMode;
-        builder.addSlot(gasInputSlot = GasInventorySlot.rotaryDrain(gasTank, modeSupplier, listener, 5, 25));
-        builder.addSlot(gasOutputSlot = GasInventorySlot.rotaryFill(gasTank, modeSupplier, listener, 5, 56));
+        builder.addSlot(gasInputSlot = ChemicalInventorySlot.rotaryDrain(gasTank, modeSupplier, listener, 5, 25));
+        builder.addSlot(gasOutputSlot = ChemicalInventorySlot.rotaryFill(gasTank, modeSupplier, listener, 5, 56));
         builder.addSlot(fluidInputSlot = FluidInventorySlot.rotary(fluidTank, modeSupplier, listener, 155, 25));
         builder.addSlot(fluidOutputSlot = OutputInventorySlot.at(listener, 155, 56));
         builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, listener, 155, 5));
@@ -268,7 +268,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
 
     @Override
     protected boolean makesComparatorDirty(ContainerType<?, ?, ?> type) {
-        return type == ContainerType.FLUID || type == ContainerType.GAS;
+        return type == ContainerType.FLUID || type == ContainerType.CHEMICAL;
     }
 
     @NotNull

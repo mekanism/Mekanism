@@ -1,21 +1,21 @@
 package mekanism.api.datagen.recipe.builder;
 
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.slurry.SlurryStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.FluidSlurryToSlurryRecipe;
 import mekanism.api.recipes.basic.BasicFluidSlurryToSlurryRecipe;
-import mekanism.api.recipes.ingredients.SlurryStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 
 @NothingNullByDefault
 public class FluidSlurryToSlurryRecipeBuilder extends MekanismRecipeBuilder<FluidSlurryToSlurryRecipeBuilder> {
 
-    private final SlurryStackIngredient slurryInput;
+    private final ChemicalStackIngredient slurryInput;
     private final FluidStackIngredient fluidInput;
-    private final SlurryStack output;
+    private final ChemicalStack output;
 
-    protected FluidSlurryToSlurryRecipeBuilder(FluidStackIngredient fluidInput, SlurryStackIngredient slurryInput, SlurryStack output) {
+    protected FluidSlurryToSlurryRecipeBuilder(FluidStackIngredient fluidInput, ChemicalStackIngredient slurryInput, ChemicalStack output) {
         this.fluidInput = fluidInput;
         this.slurryInput = slurryInput;
         this.output = output;
@@ -28,7 +28,7 @@ public class FluidSlurryToSlurryRecipeBuilder extends MekanismRecipeBuilder<Flui
      * @param slurryInput Slurry Input.
      * @param output      Output.
      */
-    public static FluidSlurryToSlurryRecipeBuilder washing(FluidStackIngredient fluidInput, SlurryStackIngredient slurryInput, SlurryStack output) {
+    public static FluidSlurryToSlurryRecipeBuilder washing(FluidStackIngredient fluidInput, ChemicalStackIngredient slurryInput, ChemicalStack output) {
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This washing recipe requires a non empty slurry output.");
         }

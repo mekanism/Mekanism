@@ -2,14 +2,14 @@ package mekanism.client.recipe_viewer.jei.machine;
 
 import java.util.Collections;
 import java.util.List;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.NucleosynthesizingRecipe;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.bar.GuiDynamicHorizontalRateBar;
 import mekanism.client.gui.element.gauge.GaugeType;
+import mekanism.client.gui.element.gauge.GuiChemicalGauge;
 import mekanism.client.gui.element.gauge.GuiEnergyGauge;
 import mekanism.client.gui.element.gauge.GuiEnergyGauge.IEnergyInfoHandler;
-import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
@@ -46,7 +46,8 @@ public class NucleosynthesizingRecipeCategory extends HolderRecipeCategory<Nucle
         output = addSlot(SlotType.OUTPUT, 152, 40);
         addSlot(SlotType.POWER, 173, 69).with(SlotOverlay.POWER);
         addElement(new GuiInnerScreen(this, 45, 18, 104, 68));
-        gasInput = addElement(GuiGasGauge.getDummy(GaugeType.SMALL_MED.with(DataType.INPUT), this, 5, 18));
+        GaugeType type = GaugeType.SMALL_MED.with(DataType.INPUT);
+        gasInput = addElement(GuiChemicalGauge.getDummy(type, this, 5, 18));
         addElement(new GuiEnergyGauge(new IEnergyInfoHandler() {
             @Override
             public long getEnergy() {
@@ -74,7 +75,7 @@ public class NucleosynthesizingRecipeCategory extends HolderRecipeCategory<Nucle
     public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<NucleosynthesizingRecipe> recipeHolder, @NotNull IFocusGroup focusGroup) {
         NucleosynthesizingRecipe recipe = recipeHolder.value();
         initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getItemInput().getRepresentations());
-        List<@NotNull GasStack> gasInputs = recipe.getChemicalInput().getRepresentations();
+        List<@NotNull ChemicalStack> gasInputs = recipe.getChemicalInput().getRepresentations();
         initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.INPUT, gasInput, gasInputs);
         initItem(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
         initItem(builder, RecipeIngredientRole.CATALYST, extra, RecipeViewerUtils.getStacksFor(recipe.getChemicalInput(), true));

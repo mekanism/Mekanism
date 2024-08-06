@@ -99,7 +99,7 @@ public class MekanismRenderer {
         return getSprite(spriteLocation);
     }
 
-    public static TextureAtlasSprite getChemicalTexture(@NotNull Chemical<?> chemical) {
+    public static TextureAtlasSprite getChemicalTexture(@NotNull Chemical chemical) {
         return getSprite(chemical.getIcon());
     }
 
@@ -174,13 +174,13 @@ public class MekanismRenderer {
         }
     }
 
-    public static void color(GuiGraphics guiGraphics, @NotNull ChemicalStack<?> chemicalStack) {
+    public static void color(GuiGraphics guiGraphics, @NotNull ChemicalStack chemicalStack) {
         if (!chemicalStack.isEmpty()) {
             color(guiGraphics, chemicalStack.getChemical());
         }
     }
 
-    public static void color(GuiGraphics guiGraphics, @NotNull Chemical<?> chemical) {
+    public static void color(GuiGraphics guiGraphics, @NotNull Chemical chemical) {
         if (!chemical.isEmptyType()) {
             int color = chemical.getTint();
             guiGraphics.setColor(getRed(color), getGreen(color), getBlue(color), 1);
@@ -217,11 +217,11 @@ public class MekanismRenderer {
         return color;
     }
 
-    public static int getColorARGB(@NotNull ChemicalStack<?> stack, float scale, boolean gaseous) {
+    public static int getColorARGB(@NotNull ChemicalStack stack, float scale, boolean gaseous) {
         return getColorARGB(stack.getChemical(), scale, gaseous);
     }
 
-    public static int getColorARGB(@NotNull Chemical<?> chemical, float scale, boolean gaseous) {
+    public static int getColorARGB(@NotNull Chemical chemical, float scale, boolean gaseous) {
         if (chemical.isEmptyType()) {
             return -1;
         }

@@ -3,7 +3,6 @@ package mekanism.api.recipes.chemical;
 import java.util.List;
 import java.util.function.Predicate;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
@@ -20,10 +19,9 @@ import org.jetbrains.annotations.NotNull;
  * <br>
  * Output: ChemicalStack
  *
- * @param <STACK> Output type
  */
 @NothingNullByDefault
-public abstract class ItemStackToChemicalRecipe<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> extends MekanismRecipe<SingleRecipeInput>
+public abstract class ItemStackToChemicalRecipe extends MekanismRecipe<SingleRecipeInput>
       implements Predicate<@NotNull ItemStack> {
 
     @Override
@@ -52,14 +50,14 @@ public abstract class ItemStackToChemicalRecipe<CHEMICAL extends Chemical<CHEMIC
      * @implNote The passed in input should <strong>NOT</strong> be modified.
      */
     @Contract(value = "_ -> new", pure = true)
-    public abstract STACK getOutput(ItemStack input);
+    public abstract ChemicalStack getOutput(ItemStack input);
 
     /**
      * For JEI, gets the output representations to display.
      *
      * @return Representation of the output, <strong>MUST NOT</strong> be modified.
      */
-    public abstract List<STACK> getOutputDefinition();
+    public abstract List<ChemicalStack> getOutputDefinition();
 
     @Override
     public boolean isIncomplete() {

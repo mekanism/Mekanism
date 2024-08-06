@@ -22,7 +22,7 @@ public class CrTChemicalCrystallizerRecipe {
      */
     @ZenCodeType.Method
     @ZenCodeType.Getter("input")
-    public static ChemicalStackIngredient<?, ?, ?> getInput(ChemicalCrystallizerRecipe _this) {
+    public static ChemicalStackIngredient getInput(ChemicalCrystallizerRecipe _this) {
         return _this.getInput();
     }
 

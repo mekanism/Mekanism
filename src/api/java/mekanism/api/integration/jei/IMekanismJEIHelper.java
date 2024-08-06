@@ -1,9 +1,6 @@
 package mekanism.api.integration.jei;
 
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.api.chemical.pigment.PigmentStack;
-import mekanism.api.chemical.slurry.SlurryStack;
+import mekanism.api.chemical.ChemicalStack;
 import mezz.jei.api.ingredients.IIngredientHelper;
 
 /**
@@ -13,22 +10,8 @@ import mezz.jei.api.ingredients.IIngredientHelper;
 public interface IMekanismJEIHelper {
 
     /**
-     * Gets the ingredient helper for {@link GasStack gases}.
+     * Gets the ingredient helper for {@link mekanism.api.chemical.ChemicalStack gases}.
      */
-    IIngredientHelper<GasStack> getGasStackHelper();
+    IIngredientHelper<ChemicalStack> getChemicalStackHelper();
 
-    /**
-     * Gets the ingredient helper for {@link InfusionStack infuse types}.
-     */
-    IIngredientHelper<InfusionStack> getInfusionStackHelper();
-
-    /**
-     * Gets the ingredient helper for {@link PigmentStack pigments}.
-     */
-    IIngredientHelper<PigmentStack> getPigmentStackHelper();
-
-    /**
-     * Gets the ingredient helper for {@link SlurryStack slurries}.
-     */
-    IIngredientHelper<SlurryStack> getSlurryStackHelper();
 }

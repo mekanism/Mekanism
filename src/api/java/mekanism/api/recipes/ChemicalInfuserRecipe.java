@@ -3,10 +3,9 @@ package mekanism.api.recipes;
 import java.util.List;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.chemical.ChemicalChemicalToChemicalRecipe;
-import mekanism.api.recipes.ingredients.GasStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -24,25 +23,25 @@ import org.jetbrains.annotations.Contract;
  * @apiNote Chemical Infusers can process this recipe type and the gases can be put in any order into the infuser.
  */
 @NothingNullByDefault
-public abstract class ChemicalInfuserRecipe extends ChemicalChemicalToChemicalRecipe<Gas, GasStack, GasStackIngredient> {
+public abstract class ChemicalInfuserRecipe extends ChemicalChemicalToChemicalRecipe {
 
     private static final Holder<Item> CHEMICAL_INFUSER = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "chemical_infuser"));
 
     @Override
-    public abstract boolean test(GasStack input1, GasStack input2);
+    public abstract boolean test(ChemicalStack input1, ChemicalStack input2);
 
     @Override
     @Contract(value = "_, _ -> new", pure = true)
-    public abstract GasStack getOutput(GasStack input1, GasStack input2);
+    public abstract ChemicalStack getOutput(ChemicalStack input1, ChemicalStack input2);
 
     @Override
-    public abstract GasStackIngredient getLeftInput();
+    public abstract ChemicalStackIngredient getLeftInput();
 
     @Override
-    public abstract GasStackIngredient getRightInput();
+    public abstract ChemicalStackIngredient getRightInput();
 
     @Override
-    public abstract List<GasStack> getOutputDefinition();
+    public abstract List<ChemicalStack> getOutputDefinition();
 
     @Override
     public final RecipeType<ChemicalInfuserRecipe> getType() {

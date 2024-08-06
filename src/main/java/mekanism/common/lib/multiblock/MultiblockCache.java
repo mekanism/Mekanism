@@ -3,14 +3,8 @@ package mekanism.common.lib.multiblock;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.chemical.ChemicalTankBuilder;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.chemical.infuse.IInfusionTank;
-import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.api.chemical.pigment.IPigmentTank;
-import mekanism.api.chemical.pigment.PigmentStack;
-import mekanism.api.chemical.slurry.ISlurryTank;
-import mekanism.api.chemical.slurry.SlurryStack;
+import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
@@ -21,10 +15,7 @@ import mekanism.api.heat.IMekanismHeatHandler;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.attachments.containers.ContainerType;
-import mekanism.common.capabilities.chemical.dynamic.IGasTracker;
-import mekanism.common.capabilities.chemical.dynamic.IInfusionTracker;
-import mekanism.common.capabilities.chemical.dynamic.IPigmentTracker;
-import mekanism.common.capabilities.chemical.dynamic.ISlurryTracker;
+import mekanism.common.capabilities.chemical.IChemicalTracker;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
@@ -41,14 +32,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class MultiblockCache<T extends MultiblockData> implements IMekanismInventory, IMekanismFluidHandler, IMekanismStrictEnergyHandler, IMekanismHeatHandler,
-      IGasTracker, IInfusionTracker, IPigmentTracker, ISlurryTracker {
+      IChemicalTracker {
 
     private final List<IInventorySlot> inventorySlots = new ArrayList<>();
     private final List<IExtendedFluidTank> fluidTanks = new ArrayList<>();
-    private final List<IGasTank> gasTanks = new ArrayList<>();
-    private final List<IInfusionTank> infusionTanks = new ArrayList<>();
-    private final List<IPigmentTank> pigmentTanks = new ArrayList<>();
-    private final List<ISlurryTank> slurryTanks = new ArrayList<>();
+    private final List<IChemicalTank> chemicalTanks = new ArrayList<>();
+    @Deprecated(forRemoval = true)
+    private final List<IChemicalTank> slurryTanks = new ArrayList<>();
     private final List<IEnergyContainer> energyContainers = new ArrayList<>();
     private final List<IHeatCapacitor> heatCapacitors = new ArrayList<>();
 
@@ -104,14 +94,8 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
         StackUtils.merge(getInventorySlots(null), mergeCache.getInventorySlots(null), rejectContents.rejectedItems);
         // Fluid
         StorageUtils.mergeFluidTanks(getFluidTanks(null), mergeCache.getFluidTanks(null), rejectContents.rejectedFluids);
-        // Gas
-        StorageUtils.mergeTanks(getGasTanks(null), mergeCache.getGasTanks(null), rejectContents.rejectedGases);
-        // Infusion
-        StorageUtils.mergeTanks(getInfusionTanks(null), mergeCache.getInfusionTanks(null), rejectContents.rejectedInfuseTypes);
-        // Pigment
-        StorageUtils.mergeTanks(getPigmentTanks(null), mergeCache.getPigmentTanks(null), rejectContents.rejectedPigments);
-        // Slurry
-        StorageUtils.mergeTanks(getSlurryTanks(null), mergeCache.getSlurryTanks(null), rejectContents.rejectedSlurries);
+        // Chemical
+        StorageUtils.mergeTanks(getChemicalTanks(null), mergeCache.getChemicalTanks(null), rejectContents.rejectedChemicals);
         // Energy
         StorageUtils.mergeEnergyContainers(getEnergyContainers(null), mergeCache.getEnergyContainers(null));
         // Heat
@@ -134,28 +118,9 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
         return fluidTanks;
     }
 
-    @NotNull
     @Override
-    public List<IGasTank> getGasTanks(@Nullable Direction side) {
-        return gasTanks;
-    }
-
-    @NotNull
-    @Override
-    public List<IInfusionTank> getInfusionTanks(@Nullable Direction side) {
-        return infusionTanks;
-    }
-
-    @NotNull
-    @Override
-    public List<IPigmentTank> getPigmentTanks(@Nullable Direction side) {
-        return pigmentTanks;
-    }
-
-    @NotNull
-    @Override
-    public List<ISlurryTank> getSlurryTanks(@Nullable Direction side) {
-        return slurryTanks;
+    public List<IChemicalTank> getChemicalTanks(@Nullable Direction side) {
+        return chemicalTanks;
     }
 
     @NotNull
@@ -174,10 +139,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
 
         public final List<ItemStack> rejectedItems = new ArrayList<>();
         public final List<FluidStack> rejectedFluids = new ArrayList<>();
-        public final List<GasStack> rejectedGases = new ArrayList<>();
-        public final List<InfusionStack> rejectedInfuseTypes = new ArrayList<>();
-        public final List<PigmentStack> rejectedPigments = new ArrayList<>();
-        public final List<SlurryStack> rejectedSlurries = new ArrayList<>();
+        public final List<ChemicalStack> rejectedChemicals = new ArrayList<>();
     }
 
     public abstract static class CacheSubstance<HANDLER, ELEMENT extends INBTSerializable<CompoundTag>> {
@@ -216,70 +178,19 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
             }
         };
 
-        public static final CacheSubstance<IGasTracker, IGasTank> GAS = new CacheSubstance<>(ContainerType.GAS) {
+        public static final CacheSubstance<IChemicalTracker, IChemicalTank> CHEMICAL = new CacheSubstance<>(ContainerType.CHEMICAL) {
             @Override
             protected void defaultPrefab(MultiblockCache<?> cache) {
-                cache.gasTanks.add(ChemicalTankBuilder.GAS.createAllValid(Long.MAX_VALUE, cache));
+                cache.chemicalTanks.add(ChemicalTankBuilder.CHEMICAL.createAllValid(Long.MAX_VALUE, cache));
             }
 
             @Override
-            protected List<IGasTank> containerList(IGasTracker tracker) {
-                return tracker.getGasTanks(null);
+            protected List<IChemicalTank> containerList(IChemicalTracker tracker) {
+                return tracker.getChemicalTanks(null);
             }
 
             @Override
-            public void sync(IGasTank cache, IGasTank data) {
-                cache.setStack(data.getStack());
-            }
-        };
-
-        public static final CacheSubstance<IInfusionTracker, IInfusionTank> INFUSION = new CacheSubstance<>(ContainerType.INFUSION) {
-            @Override
-            protected void defaultPrefab(MultiblockCache<?> cache) {
-                cache.infusionTanks.add(ChemicalTankBuilder.INFUSION.createAllValid(Long.MAX_VALUE, cache));
-            }
-
-            @Override
-            protected List<IInfusionTank> containerList(IInfusionTracker tracker) {
-                return tracker.getInfusionTanks(null);
-            }
-
-            @Override
-            public void sync(IInfusionTank cache, IInfusionTank data) {
-                cache.setStack(data.getStack());
-            }
-        };
-
-        public static final CacheSubstance<IPigmentTracker, IPigmentTank> PIGMENT = new CacheSubstance<>(ContainerType.PIGMENT) {
-            @Override
-            protected void defaultPrefab(MultiblockCache<?> cache) {
-                cache.pigmentTanks.add(ChemicalTankBuilder.PIGMENT.createAllValid(Long.MAX_VALUE, cache));
-            }
-
-            @Override
-            protected List<IPigmentTank> containerList(IPigmentTracker tracker) {
-                return tracker.getPigmentTanks(null);
-            }
-
-            @Override
-            public void sync(IPigmentTank cache, IPigmentTank data) {
-                cache.setStack(data.getStack());
-            }
-        };
-
-        public static final CacheSubstance<ISlurryTracker, ISlurryTank> SLURRY = new CacheSubstance<>(ContainerType.SLURRY) {
-            @Override
-            protected void defaultPrefab(MultiblockCache<?> cache) {
-                cache.slurryTanks.add(ChemicalTankBuilder.SLURRY.createAllValid(Long.MAX_VALUE, cache));
-            }
-
-            @Override
-            protected List<ISlurryTank> containerList(ISlurryTracker tracker) {
-                return tracker.getSlurryTanks(null);
-            }
-
-            @Override
-            public void sync(ISlurryTank cache, ISlurryTank data) {
+            public void sync(IChemicalTank cache, IChemicalTank data) {
                 cache.setStack(data.getStack());
             }
         };
@@ -325,10 +236,6 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
         public static final CacheSubstance<?, INBTSerializable<CompoundTag>>[] VALUES = new CacheSubstance[]{
               ITEMS,
               FLUID,
-              GAS,
-              INFUSION,
-              PIGMENT,
-              SLURRY,
               ENERGY,
               HEAT
         };

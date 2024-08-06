@@ -5,11 +5,9 @@ import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.merged.BoxedChemicalStack;
 import mekanism.api.recipes.ChemicalDissolutionRecipe;
 import mekanism.api.recipes.MekanismRecipeSerializers;
-import mekanism.api.recipes.ingredients.GasStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -18,22 +16,22 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 public class BasicChemicalDissolutionRecipe extends ChemicalDissolutionRecipe {
 
     protected final ItemStackIngredient itemInput;
-    protected final GasStackIngredient gasInput;
-    protected final BoxedChemicalStack output;
+    protected final ChemicalStackIngredient gasInput;
+    protected final ChemicalStack output;
 
     /**
      * @param itemInput Item input.
      * @param gasInput  Gas input.
      * @param output    Output.
      */
-    public BasicChemicalDissolutionRecipe(ItemStackIngredient itemInput, GasStackIngredient gasInput, ChemicalStack<?> output) {
+    public BasicChemicalDissolutionRecipe(ItemStackIngredient itemInput, ChemicalStackIngredient gasInput, ChemicalStack output) {
         this.itemInput = Objects.requireNonNull(itemInput, "Item input cannot be null.");
         this.gasInput = Objects.requireNonNull(gasInput, "Gas input cannot be null.");
         Objects.requireNonNull(output, "Output cannot be null.");
         if (output.isEmpty()) {
             throw new IllegalArgumentException("Output cannot be empty.");
         }
-        this.output = BoxedChemicalStack.box(output.copy());
+        this.output = output.copy();
     }
 
     @Override
@@ -42,22 +40,22 @@ public class BasicChemicalDissolutionRecipe extends ChemicalDissolutionRecipe {
     }
 
     @Override
-    public GasStackIngredient getGasInput() {
+    public ChemicalStackIngredient getGasInput() {
         return gasInput;
     }
 
     @Override
-    public BoxedChemicalStack getOutput(ItemStack inputItem, GasStack inputGas) {
+    public ChemicalStack getOutput(ItemStack inputItem, ChemicalStack inputGas) {
         return output.copy();
     }
 
     @Override
-    public boolean test(ItemStack itemStack, GasStack gasStack) {
+    public boolean test(ItemStack itemStack, ChemicalStack gasStack) {
         return itemInput.test(itemStack) && gasInput.test(gasStack);
     }
 
     @Override
-    public List<BoxedChemicalStack> getOutputDefinition() {
+    public List<ChemicalStack> getOutputDefinition() {
         return Collections.singletonList(output);
     }
 
@@ -66,7 +64,7 @@ public class BasicChemicalDissolutionRecipe extends ChemicalDissolutionRecipe {
      *
      * @return the uncopied output definition
      */
-    public BoxedChemicalStack getOutputRaw() {
+    public ChemicalStack getOutputRaw() {
         return output;
     }
 

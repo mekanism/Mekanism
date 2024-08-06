@@ -2,10 +2,9 @@ package mekanism.common.tile.machine;
 
 import java.util.List;
 import mekanism.api.IContentsListener;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalTankBuilder;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasTank;
+import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.recipes.NucleosynthesizingRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
@@ -57,7 +56,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressMachine<NucleosynthesizingRecipe> implements
-      ItemChemicalRecipeLookupHandler<Gas, GasStack, NucleosynthesizingRecipe> {
+      ItemChemicalRecipeLookupHandler<NucleosynthesizingRecipe> {
 
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
           RecipeError.NOT_ENOUGH_ENERGY,
@@ -71,11 +70,11 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getInputChemical", "getInputChemicalCapacity", "getInputChemicalNeeded",
                                                                                         "getInputChemicalFilledPercentage"}, docPlaceholder = "input gas tank")
-    public IGasTank gasTank;
+    public IChemicalTank gasTank;
 
     protected final IOutputHandler<@NotNull ItemStack> outputHandler;
     protected final IInputHandler<@NotNull ItemStack> itemInputHandler;
-    protected final ILongInputHandler<@NotNull GasStack> gasInputHandler;
+    protected final ILongInputHandler<@NotNull ChemicalStack> gasInputHandler;
 
     private MachineEnergyContainer<TileEntityAntiprotonicNucleosynthesizer> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputChemicalItem", docPlaceholder = "input gas item slot")
@@ -92,7 +91,7 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
     public TileEntityAntiprotonicNucleosynthesizer(BlockPos pos, BlockState state) {
         super(MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER, pos, state, TRACKED_ERROR_TYPES, BASE_DURATION);
         configComponent.setupItemIOExtraConfig(inputSlot, outputSlot, gasInputSlot, energySlot);
-        configComponent.setupInputConfig(TransmissionType.GAS, gasTank);
+        configComponent.setupInputConfig(TransmissionType.CHEMICAL, gasTank);
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
 
         ejectorComponent = new TileComponentEjector(this);
@@ -110,9 +109,9 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
 
     @NotNull
     @Override
-    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
-        ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(gasTank = ChemicalTankBuilder.GAS.input(MAX_GAS, gas -> containsRecipeBA(inputSlot.getStack(), gas), this::containsRecipeB, recipeCacheListener));
+    public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
+        ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        builder.addTank(gasTank = ChemicalTankBuilder.CHEMICAL.input(MAX_GAS, gas -> containsRecipeBA(inputSlot.getStack(), gas), this::containsRecipeB, recipeCacheListener));
         return builder.build();
     }
 
@@ -188,7 +187,7 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
 
     @NotNull
     @Override
-    public IMekanismRecipeTypeProvider<SingleItemChemicalRecipeInput<Gas, GasStack>, NucleosynthesizingRecipe, ItemChemical<Gas, GasStack, NucleosynthesizingRecipe>> getRecipeType() {
+    public IMekanismRecipeTypeProvider<SingleItemChemicalRecipeInput, NucleosynthesizingRecipe, ItemChemical<NucleosynthesizingRecipe>> getRecipeType() {
         return MekanismRecipeType.NUCLEOSYNTHESIZING;
     }
 

@@ -13,33 +13,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BinaryOperator;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.ChemicalType;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.infuse.InfuseType;
-import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.api.chemical.pigment.Pigment;
-import mekanism.api.chemical.pigment.PigmentStack;
-import mekanism.api.chemical.slurry.Slurry;
-import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
-import mekanism.api.recipes.ingredients.GasStackIngredient;
-import mekanism.api.recipes.ingredients.InfusionStackIngredient;
 import mekanism.api.recipes.ingredients.InputIngredient;
-import mekanism.api.recipes.ingredients.PigmentStackIngredient;
-import mekanism.api.recipes.ingredients.SlurryStackIngredient;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
-import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
-import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTInfusionStack;
-import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTPigmentStack;
-import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTSlurryStack;
-import mekanism.common.integration.crafttweaker.ingredient.CrTGasStackIngredient;
-import mekanism.common.integration.crafttweaker.ingredient.CrTInfusionStackIngredient;
-import mekanism.common.integration.crafttweaker.ingredient.CrTPigmentStackIngredient;
-import mekanism.common.integration.crafttweaker.ingredient.CrTSlurryStackIngredient;
+import mekanism.common.integration.crafttweaker.ingredient.CrTChemicalStackIngredient;
 
 public class CrTRecipeComponents {
 
@@ -68,42 +47,14 @@ public class CrTRecipeComponents {
 
     //Compiler can't actually infer these
     @SuppressWarnings("Convert2Diamond")
-    public static final ChemicalRecipeComponent<Gas, GasStack, GasStackIngredient, ICrTGasStack> GAS = new ChemicalRecipeComponent<>(
-          ChemicalType.GAS,
-          new TypeToken<GasStackIngredient>() {},
-          new TypeToken<ICrTGasStack>() {},
-          CrTGasStackIngredient::or
-    );
-    //Compiler can't actually infer these
-    @SuppressWarnings("Convert2Diamond")
-    public static final ChemicalRecipeComponent<InfuseType, InfusionStack, InfusionStackIngredient, ICrTInfusionStack> INFUSION = new ChemicalRecipeComponent<>(
-          ChemicalType.INFUSION,
-          new TypeToken<InfusionStackIngredient>() {},
-          new TypeToken<ICrTInfusionStack>() {},
-          CrTInfusionStackIngredient::or
-    );
-    //Compiler can't actually infer these
-    @SuppressWarnings("Convert2Diamond")
-    public static final ChemicalRecipeComponent<Pigment, PigmentStack, PigmentStackIngredient, ICrTPigmentStack> PIGMENT = new ChemicalRecipeComponent<>(
-          ChemicalType.PIGMENT,
-          new TypeToken<PigmentStackIngredient>() {},
-          new TypeToken<ICrTPigmentStack>() {},
-          CrTPigmentStackIngredient::or
-    );
-    //Compiler can't actually infer these
-    @SuppressWarnings("Convert2Diamond")
-    public static final ChemicalRecipeComponent<Slurry, SlurryStack, SlurryStackIngredient, ICrTSlurryStack> SLURRY = new ChemicalRecipeComponent<>(
-          ChemicalType.SLURRY,
-          new TypeToken<SlurryStackIngredient>() {},
-          new TypeToken<ICrTSlurryStack>() {},
-          CrTSlurryStackIngredient::or
+    public static final ChemicalRecipeComponent CHEMICAL = new ChemicalRecipeComponent(
+          new TypeToken<ChemicalStackIngredient>() {},
+          new TypeToken<ICrTChemicalStack>() {},
+          CrTChemicalStackIngredient::or
     );
 
-    public static final List<ChemicalRecipeComponent<?, ?, ?, ?>> CHEMICAL_COMPONENTS = List.of(
-          GAS,
-          INFUSION,
-          PIGMENT,
-          SLURRY
+    public static final List<ChemicalRecipeComponent> CHEMICAL_COMPONENTS = List.of(
+          CHEMICAL
     );
 
     private static <TYPE, INGREDIENT extends InputIngredient<TYPE>> boolean ingredientsMatch(INGREDIENT a, INGREDIENT b) {
@@ -113,26 +64,25 @@ public class CrTRecipeComponents {
     public record PairedRecipeComponent<INPUT, OUTPUT>(IRecipeComponent<INPUT> input, IRecipeComponent<OUTPUT> output) {
     }
 
-    public record ChemicalRecipeComponent<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-          INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK, ?>, CRT_STACK extends ICrTChemicalStack<CHEMICAL, STACK, CRT_STACK>>
-          (ChemicalType chemicalType, IRecipeComponent<INGREDIENT> input, IRecipeComponent<CRT_STACK> output) {
+    public record ChemicalRecipeComponent
+          (IRecipeComponent<ChemicalStackIngredient> input, IRecipeComponent<ICrTChemicalStack> output) {
 
-        private ChemicalRecipeComponent(ChemicalType chemicalType, TypeToken<INGREDIENT> inputType, TypeToken<CRT_STACK> outputType,
-              BinaryOperator<INGREDIENT> ingredientCombiner) {
-            this(chemicalType, IRecipeComponent.composite(
-                  Mekanism.rl("input/" + chemicalType.getSerializedName()),
+        private ChemicalRecipeComponent(TypeToken<ChemicalStackIngredient> inputType, TypeToken<ICrTChemicalStack> outputType,
+              BinaryOperator<ChemicalStackIngredient> ingredientCombiner) {
+            this(IRecipeComponent.composite(
+                  Mekanism.rl("input/chemical"),
                   inputType,
                   CrTRecipeComponents::ingredientsMatch,
                   Collections::singletonList,
                   ingredients -> ingredients.stream().reduce(ingredientCombiner).orElseThrow()
             ), IRecipeComponent.simple(
-                  Mekanism.rl("output/" + chemicalType.getSerializedName()),
+                  Mekanism.rl("output/chemical"),
                   outputType,
                   ICrTChemicalStack::containsOther
             ));
         }
 
-        public DecomposedRecipeBuilder withOutput(DecomposedRecipeBuilder builder, List<STACK> output) {
+        public DecomposedRecipeBuilder withOutput(DecomposedRecipeBuilder builder, List<ChemicalStack> output) {
             return builder.with(output(), CrTUtils.convertChemical(output));
         }
     }

@@ -5,10 +5,8 @@ import dev.gigaherz.jsonthings.util.parse.value.ObjValue;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalType;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasBuilder;
 import mekanism.api.chemical.gas.attribute.GasAttributes;
-import mekanism.common.integration.LazyGasProvider;
+import mekanism.common.integration.LazyChemicalProvider;
 import mekanism.common.integration.jsonthings.builder.JsonGasBuilder;
 import mekanism.common.lib.radiation.RadiationManager;
 import net.minecraft.resources.ResourceLocation;
@@ -16,10 +14,10 @@ import net.neoforged.bus.api.IEventBus;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class JsonGasParser extends SimpleJsonChemicalParser<Gas, GasBuilder, JsonGasBuilder> {
+public class JsonGasParser extends SimpleJsonChemicalParser<JsonGasBuilder> {
 
     public JsonGasParser(IEventBus bus) {
-        super(bus, ChemicalType.GAS, "Gas", MekanismAPI.GAS_REGISTRY_NAME, JsonGasBuilder::new);
+        super(bus, ChemicalType.GAS, "Gas", MekanismAPI.CHEMICAL_REGISTRY_NAME, JsonGasBuilder::new);
     }
 
     @Override
@@ -45,9 +43,9 @@ public class JsonGasParser extends SimpleJsonChemicalParser<Gas, GasBuilder, Jso
                   .key("conductivity", conductivity -> conductivity.doubleValue().handle(c -> coolantData.conductivity = c))
                   .key(hasCooledGas ? "cooled_gas" : "heated_gas", gas -> gas.string().map(ResourceLocation::parse).handle(g -> coolantData.gas = g));
             if (hasCooledGas) {
-                builder.with(new GasAttributes.HeatedCoolant(new LazyGasProvider(coolantData.gas), coolantData.thermalEnthalpy, coolantData.conductivity));
+                builder.with(new GasAttributes.HeatedCoolant(new LazyChemicalProvider(coolantData.gas), coolantData.thermalEnthalpy, coolantData.conductivity));
             } else {
-                builder.with(new GasAttributes.CooledCoolant(new LazyGasProvider(coolantData.gas), coolantData.thermalEnthalpy, coolantData.conductivity));
+                builder.with(new GasAttributes.CooledCoolant(new LazyChemicalProvider(coolantData.gas), coolantData.thermalEnthalpy, coolantData.conductivity));
             }
         }).ifKey("fuel", attribute -> {
             FuelData fuelData = new FuelData();

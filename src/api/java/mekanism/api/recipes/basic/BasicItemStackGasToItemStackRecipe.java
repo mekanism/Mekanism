@@ -4,9 +4,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
-import mekanism.api.recipes.ingredients.GasStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 public abstract class BasicItemStackGasToItemStackRecipe extends ItemStackGasToItemStackRecipe implements IBasicItemStackOutput {
 
     protected final ItemStackIngredient itemInput;
-    protected final GasStackIngredient chemicalInput;
+    protected final ChemicalStackIngredient chemicalInput;
     protected final ItemStack output;
 
     /**
@@ -26,7 +26,7 @@ public abstract class BasicItemStackGasToItemStackRecipe extends ItemStackGasToI
      * @param gasInput  Gas input.
      * @param output    Output.
      */
-    public BasicItemStackGasToItemStackRecipe(ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output, RecipeType<ItemStackGasToItemStackRecipe> recipeType) {
+    public BasicItemStackGasToItemStackRecipe(ItemStackIngredient itemInput, ChemicalStackIngredient gasInput, ItemStack output, RecipeType<ItemStackGasToItemStackRecipe> recipeType) {
         super(recipeType);
         this.itemInput = Objects.requireNonNull(itemInput, "Item input cannot be null.");
         this.chemicalInput = Objects.requireNonNull(gasInput, "Chemical input cannot be null.");
@@ -43,13 +43,13 @@ public abstract class BasicItemStackGasToItemStackRecipe extends ItemStackGasToI
     }
 
     @Override
-    public GasStackIngredient getChemicalInput() {
+    public ChemicalStackIngredient getChemicalInput() {
         return chemicalInput;
     }
 
     @Override
     @Contract(value = "_, _ -> new", pure = true)
-    public ItemStack getOutput(ItemStack inputItem, GasStack inputChemical) {
+    public ItemStack getOutput(ItemStack inputItem, ChemicalStack inputChemical) {
         return output.copy();
     }
 
@@ -60,7 +60,7 @@ public abstract class BasicItemStackGasToItemStackRecipe extends ItemStackGasToI
     }
 
     @Override
-    public boolean test(ItemStack itemStack, GasStack gasStack) {
+    public boolean test(ItemStack itemStack, ChemicalStack gasStack) {
         return itemInput.test(itemStack) && chemicalInput.test(gasStack);
     }
 

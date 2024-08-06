@@ -7,10 +7,7 @@ import java.util.Map;
 import java.util.function.Predicate;
 import mekanism.api.Action;
 import mekanism.api.IContentsListener;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasHandler;
-import mekanism.api.chemical.gas.IGasTank;
+import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.attachments.containers.ContainerType;
@@ -36,9 +33,9 @@ import org.jetbrains.annotations.Nullable;
 
 public class TileEntityBoilerValve extends TileEntityBoilerCasing {
 
-    private final Map<Direction, BlockCapabilityCache<IGasHandler, @Nullable Direction>> capabilityCaches = new EnumMap<>(Direction.class);
+    private final Map<Direction, BlockCapabilityCache<IChemicalHandler, @Nullable Direction>> capabilityCaches = new EnumMap<>(Direction.class);
     private final List<BlockCapability<?, @Nullable Direction>> portCapabilities = List.of(
-          Capabilities.GAS.block(),
+          Capabilities.CHEMICAL.block(),
           Capabilities.FLUID.block()
     );
     private final Predicate<BoilerValveMode> MODE_MATCHES = mode -> mode == getMode();
@@ -50,7 +47,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
 
     @NotNull
     @Override
-    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks(IContentsListener listener) {
+    public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener) {
         return side -> getMultiblock().getGasTanks(getMode());
     }
 
@@ -63,16 +60,16 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
     @Override
     public boolean persists(ContainerType<?, ?, ?> type) {
         //Do not handle fluid or gas when it comes to syncing it/saving this tile to disk
-        if (type == ContainerType.FLUID || type == ContainerType.GAS) {
+        if (type == ContainerType.FLUID || type == ContainerType.CHEMICAL) {
             return false;
         }
         return super.persists(type);
     }
 
-    public void addGasTargetCapability(List<AdvancedCapabilityOutputTarget<IGasHandler, BoilerValveMode>> outputTargets, Direction side) {
-        BlockCapabilityCache<IGasHandler, @Nullable Direction> cache = capabilityCaches.get(side);
+    public void addChemicalTargetCapability(List<AdvancedCapabilityOutputTarget<IChemicalHandler, BoilerValveMode>> outputTargets, Direction side) {
+        BlockCapabilityCache<IChemicalHandler, @Nullable Direction> cache = capabilityCaches.get(side);
         if (cache == null) {
-            cache = Capabilities.GAS.createCache((ServerLevel) level, worldPosition.relative(side), side.getOpposite());
+            cache = Capabilities.CHEMICAL.createCache((ServerLevel) level, worldPosition.relative(side), side.getOpposite());
             capabilityCaches.put(side, cache);
         }
         outputTargets.add(new AdvancedCapabilityOutputTarget<>(cache, MODE_MATCHES));

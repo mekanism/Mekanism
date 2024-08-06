@@ -6,7 +6,6 @@ import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import java.util.Optional;
 import mekanism.api.recipes.ChemicalDissolutionRecipe;
 import mekanism.common.integration.crafttweaker.CrTRecipeComponents;
-import mekanism.common.integration.crafttweaker.CrTRecipeComponents.ChemicalRecipeComponent;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import mekanism.common.integration.crafttweaker.recipe.manager.ChemicalDissolutionRecipeManager;
@@ -44,16 +43,10 @@ public class ChemicalDissolutionRecipeHandler extends MekanismRecipeHandler<Chem
     @Override
     public Optional<ChemicalDissolutionRecipe> recompose(IRecipeManager<? super ChemicalDissolutionRecipe> m, RegistryAccess registryAccess, IDecomposedRecipe recipe) {
         if (m instanceof ChemicalDissolutionRecipeManager manager) {
-            Optional<? extends ICrTChemicalStack<?, ?, ?>> found = Optional.empty();
-            for (ChemicalRecipeComponent<?, ?, ?, ?> chemicalComponent : CrTRecipeComponents.CHEMICAL_COMPONENTS) {
-                found = CrTUtils.getSingleIfPresent(recipe, chemicalComponent.output());
-                if (found.isPresent()) {
-                    break;
-                }
-            }
+            Optional<? extends ICrTChemicalStack> found = CrTUtils.getSingleIfPresent(recipe, CrTRecipeComponents.CHEMICAL.output());
             return Optional.of(manager.makeRecipe(
                   recipe.getOrThrowSingle(CrTRecipeComponents.ITEM.input()),
-                  recipe.getOrThrowSingle(CrTRecipeComponents.GAS.input()),
+                  recipe.getOrThrowSingle(CrTRecipeComponents.CHEMICAL.input()),
                   found.orElseThrow(() -> new IllegalArgumentException("No specified output chemical."))
             ));
         }

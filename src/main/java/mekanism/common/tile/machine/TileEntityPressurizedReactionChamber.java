@@ -4,11 +4,10 @@ import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalTankBuilder;
+import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe.PressurizedReactionRecipeOutput;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -59,7 +58,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TileEntityPressurizedReactionChamber extends TileEntityProgressMachine<PressurizedReactionRecipe> implements
-      ItemFluidChemicalRecipeLookupHandler<Gas, GasStack, PressurizedReactionRecipe> {
+      ItemFluidChemicalRecipeLookupHandler<PressurizedReactionRecipe> {
 
     public static final RecipeError NOT_ENOUGH_ITEM_INPUT_ERROR = RecipeError.create();
     public static final RecipeError NOT_ENOUGH_FLUID_INPUT_ERROR = RecipeError.create();
@@ -84,16 +83,16 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
     public BasicFluidTank inputFluidTank;
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getInputGas", "getInputGasCapacity", "getInputGasNeeded",
                                                                                         "getInputGasFilledPercentage"}, docPlaceholder = "gas input")
-    public IGasTank inputGasTank;
+    public IChemicalTank inputGasTank;
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutputGas", "getOutputGasCapacity", "getOutputGasNeeded",
                                                                                         "getOutputGasFilledPercentage"}, docPlaceholder = "gas output")
-    public IGasTank outputGasTank;
+    public IChemicalTank outputGasTank;
 
     private long recipeEnergyRequired = 0;
     private final IOutputHandler<@NotNull PressurizedReactionRecipeOutput> outputHandler;
     private final IInputHandler<@NotNull ItemStack> itemInputHandler;
     private final IInputHandler<@NotNull FluidStack> fluidInputHandler;
-    private final IInputHandler<@NotNull GasStack> gasInputHandler;
+    private final IInputHandler<@NotNull ChemicalStack> gasInputHandler;
 
     private PRCEnergyContainer energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem", docPlaceholder = "item input slot")
@@ -107,11 +106,11 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
         super(MekanismBlocks.PRESSURIZED_REACTION_CHAMBER, pos, state, TRACKED_ERROR_TYPES, BASE_DURATION);
         configComponent.setupItemIOConfig(inputSlot, outputSlot, energySlot);
         configComponent.setupInputConfig(TransmissionType.FLUID, inputFluidTank);
-        configComponent.setupIOConfig(TransmissionType.GAS, inputGasTank, outputGasTank, RelativeSide.RIGHT, false, true);
+        configComponent.setupIOConfig(TransmissionType.CHEMICAL, inputGasTank, outputGasTank, RelativeSide.RIGHT, false, true);
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
 
         ejectorComponent = new TileComponentEjector(this);
-        ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM, TransmissionType.GAS)
+        ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM, TransmissionType.CHEMICAL)
               .setCanTankEject(tank -> tank != inputGasTank);
 
         itemInputHandler = InputHelper.getInputHandler(inputSlot, NOT_ENOUGH_ITEM_INPUT_ERROR);
@@ -122,13 +121,13 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
 
     @NotNull
     @Override
-    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
-        ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
+    public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
+        ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
         //Allow extracting out of the input gas tank if it isn't external OR the output tank is empty AND the input is radioactive
-        builder.addTank(inputGasTank = ChemicalTankBuilder.GAS.create(MAX_GAS, ChemicalTankHelper.radioactiveInputTankPredicate(() -> outputGasTank),
+        builder.addTank(inputGasTank = ChemicalTankBuilder.CHEMICAL.create(MAX_GAS, ChemicalTankHelper.radioactiveInputTankPredicate(() -> outputGasTank),
               (gas, automationType) -> containsRecipeCAB(inputSlot.getStack(), inputFluidTank.getFluid(), gas), this::containsRecipeC,
               ChemicalAttributeValidator.ALWAYS_ALLOW, recipeCacheListener));
-        builder.addTank(outputGasTank = ChemicalTankBuilder.GAS.output(MAX_GAS, recipeCacheUnpauseListener));
+        builder.addTank(outputGasTank = ChemicalTankBuilder.CHEMICAL.output(MAX_GAS, recipeCacheUnpauseListener));
         return builder.build();
     }
 
@@ -197,7 +196,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
 
     @NotNull
     @Override
-    public IMekanismRecipeTypeProvider<ReactionRecipeInput, PressurizedReactionRecipe, ItemFluidChemical<Gas, GasStack, PressurizedReactionRecipe>> getRecipeType() {
+    public IMekanismRecipeTypeProvider<ReactionRecipeInput, PressurizedReactionRecipe, ItemFluidChemical<PressurizedReactionRecipe>> getRecipeType() {
         return MekanismRecipeType.REACTION;
     }
 

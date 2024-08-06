@@ -5,12 +5,12 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 
-public class ChemicalInputCache<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, RECIPE extends MekanismRecipe<?>>
-      extends BaseInputCache<CHEMICAL, STACK, ChemicalStackIngredient<CHEMICAL, STACK, ?>, RECIPE> {
+public class ChemicalInputCache<RECIPE extends MekanismRecipe<?>>
+      extends BaseInputCache<Chemical, ChemicalStack, ChemicalStackIngredient, RECIPE> {
 
     @Override
-    public boolean mapInputs(RECIPE recipe, ChemicalStackIngredient<CHEMICAL, STACK, ?> inputIngredient) {
-        for (CHEMICAL chemical : inputIngredient.ingredient().getChemicals()) {
+    public boolean mapInputs(RECIPE recipe, ChemicalStackIngredient inputIngredient) {
+        for (Chemical chemical : inputIngredient.ingredient().getChemicals()) {
             if (!chemical.isEmptyType()) {
                 //Ignore empty stacks as some mods have ingredients that some stacks are empty
                 addInputCache(chemical, recipe);
@@ -20,12 +20,12 @@ public class ChemicalInputCache<CHEMICAL extends Chemical<CHEMICAL>, STACK exten
     }
 
     @Override
-    protected CHEMICAL createKey(STACK stack) {
+    protected Chemical createKey(ChemicalStack stack) {
         return stack.getChemical();
     }
 
     @Override
-    public boolean isEmpty(STACK input) {
+    public boolean isEmpty(ChemicalStack input) {
         return input.isEmpty();
     }
 }

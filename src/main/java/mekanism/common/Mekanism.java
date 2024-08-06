@@ -75,6 +75,7 @@ import mekanism.common.recipe.condition.MekanismRecipeConditions;
 import mekanism.common.registries.MekanismArmorMaterials;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismChemicalIngredientTypes;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismCreativeTabs;
 import mekanism.common.registries.MekanismDataComponents;
@@ -84,22 +85,15 @@ import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.registries.MekanismFeatures;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismGameEvents;
-import mekanism.common.registries.MekanismGasIngredientTypes;
-import mekanism.common.registries.MekanismGases;
+import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismHeightProviderTypes;
-import mekanism.common.registries.MekanismInfuseTypes;
-import mekanism.common.registries.MekanismInfusionIngredientTypes;
 import mekanism.common.registries.MekanismIntProviderTypes;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.registries.MekanismParticleTypes;
-import mekanism.common.registries.MekanismPigmentIngredientTypes;
-import mekanism.common.registries.MekanismPigments;
 import mekanism.common.registries.MekanismPlacementModifiers;
 import mekanism.common.registries.MekanismRecipeSerializersInternal;
 import mekanism.common.registries.MekanismRobitSkins;
-import mekanism.common.registries.MekanismSlurries;
-import mekanism.common.registries.MekanismSlurryIngredientTypes;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.component.TileComponentChunkLoader;
@@ -233,14 +227,8 @@ public class Mekanism {
         MekanismRecipeSerializersInternal.RECIPE_SERIALIZERS.register(modEventBus);
         MekanismDataSerializers.DATA_SERIALIZERS.register(modEventBus);
         MekanismLootFunctions.REGISTER.register(modEventBus);
-        MekanismGases.GASES.register(modEventBus);
-        MekanismInfuseTypes.INFUSE_TYPES.register(modEventBus);
-        MekanismPigments.PIGMENTS.register(modEventBus);
-        MekanismSlurries.SLURRIES.register(modEventBus);
-        MekanismGasIngredientTypes.INGREDIENT_TYPES.register(modEventBus);
-        MekanismInfusionIngredientTypes.INGREDIENT_TYPES.register(modEventBus);
-        MekanismPigmentIngredientTypes.INGREDIENT_TYPES.register(modEventBus);
-        MekanismSlurryIngredientTypes.INGREDIENT_TYPES.register(modEventBus);
+        MekanismChemicals.CHEMICALS.register(modEventBus);
+        MekanismChemicalIngredientTypes.INGREDIENT_TYPES.register(modEventBus);
         MekanismRobitSkins.createAndRegisterDatapack(modEventBus);
         MekanismModules.MODULES.register(modEventBus);
         MekanismRecipeConditions.CONDITION_CODECS.register(modEventBus);
@@ -262,24 +250,15 @@ public class Mekanism {
     }
 
     private void registerRegistries(NewRegistryEvent event) {
-        event.register(MekanismAPI.GAS_REGISTRY);
-        event.register(MekanismAPI.INFUSE_TYPE_REGISTRY);
-        event.register(MekanismAPI.PIGMENT_REGISTRY);
-        event.register(MekanismAPI.SLURRY_REGISTRY);
-        event.register(MekanismAPI.GAS_INGREDIENT_TYPES);
-        event.register(MekanismAPI.INFUSION_INGREDIENT_TYPES);
-        event.register(MekanismAPI.PIGMENT_INGREDIENT_TYPES);
-        event.register(MekanismAPI.SLURRY_INGREDIENT_TYPES);
+        event.register(MekanismAPI.CHEMICAL_REGISTRY);
+        event.register(MekanismAPI.CHEMICAL_INGREDIENT_TYPES);
         event.register(MekanismAPI.MODULE_REGISTRY);
         event.register(MekanismAPI.ROBIT_SKIN_SERIALIZER_REGISTRY);
     }
 
     private void registerEventListener(RegisterEvent event) {
-        //Register the empty chemicals
-        event.register(MekanismAPI.GAS_REGISTRY_NAME, MekanismAPI.EMPTY_CHEMICAL_NAME, () -> MekanismAPI.EMPTY_GAS);
-        event.register(MekanismAPI.INFUSE_TYPE_REGISTRY_NAME, MekanismAPI.EMPTY_CHEMICAL_NAME, () -> MekanismAPI.EMPTY_INFUSE_TYPE);
-        event.register(MekanismAPI.PIGMENT_REGISTRY_NAME, MekanismAPI.EMPTY_CHEMICAL_NAME, () -> MekanismAPI.EMPTY_PIGMENT);
-        event.register(MekanismAPI.SLURRY_REGISTRY_NAME, MekanismAPI.EMPTY_CHEMICAL_NAME, () -> MekanismAPI.EMPTY_SLURRY);
+        //Register the empty chemical
+        event.register(MekanismAPI.CHEMICAL_REGISTRY_NAME, MekanismAPI.EMPTY_CHEMICAL_NAME, () -> MekanismAPI.EMPTY_CHEMICAL);
     }
 
     public static ResourceLocation rl(String path) {

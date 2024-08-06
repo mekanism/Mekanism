@@ -42,8 +42,8 @@ public class FluidSlurryToSlurryRecipeHandler extends MekanismRecipeHandler<Flui
         if (m instanceof FluidSlurryToSlurryRecipeManager manager) {
             return Optional.of(manager.makeRecipe(
                   recipe.getOrThrowSingle(CrTRecipeComponents.FLUID.input()),
-                  recipe.getOrThrowSingle(CrTRecipeComponents.SLURRY.input()),
-                  recipe.getOrThrowSingle(CrTRecipeComponents.SLURRY.output())
+                  recipe.getOrThrowSingle(CrTRecipeComponents.CHEMICAL.input()),
+                  recipe.getOrThrowSingle(CrTRecipeComponents.CHEMICAL.output())
             ));
         }
         return Optional.empty();

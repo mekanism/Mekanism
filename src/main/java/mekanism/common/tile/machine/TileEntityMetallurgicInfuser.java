@@ -3,10 +3,9 @@ package mekanism.common.tile.machine;
 import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalTankBuilder;
-import mekanism.api.chemical.infuse.IInfusionTank;
-import mekanism.api.chemical.infuse.InfuseType;
-import mekanism.api.chemical.infuse.InfusionStack;
+import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
@@ -58,7 +57,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<MetallurgicInfuserRecipe> implements IHasDumpButton,
-      ItemChemicalRecipeLookupHandler<InfuseType, InfusionStack, MetallurgicInfuserRecipe> {
+      ItemChemicalRecipeLookupHandler<MetallurgicInfuserRecipe> {
 
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
           RecipeError.NOT_ENOUGH_ENERGY,
@@ -72,10 +71,10 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Meta
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getInfuseType", "getInfuseTypeCapacity", "getInfuseTypeNeeded",
                                                                                         "getInfuseTypeFilledPercentage"}, docPlaceholder = "infusion buffer")
-    public IInfusionTank infusionTank;
+    public IChemicalTank infusionTank;
 
     private final IOutputHandler<@NotNull ItemStack> outputHandler;
-    private final IInputHandler<@NotNull InfusionStack> infusionInputHandler;
+    private final IInputHandler<@NotNull ChemicalStack> infusionInputHandler;
     private final IInputHandler<@NotNull ItemStack> itemInputHandler;
 
     private MachineEnergyContainer<TileEntityMetallurgicInfuser> energyContainer;
@@ -92,7 +91,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Meta
         super(MekanismBlocks.METALLURGIC_INFUSER, pos, state, TRACKED_ERROR_TYPES, BASE_TICKS_REQUIRED);
         configComponent.setupItemIOExtraConfig(inputSlot, outputSlot, infusionSlot, energySlot);
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
-        configComponent.setupIOConfig(TransmissionType.INFUSION, infusionTank, RelativeSide.RIGHT).setCanEject(false);
+        configComponent.setupIOConfig(TransmissionType.CHEMICAL, infusionTank, RelativeSide.RIGHT).setCanEject(false);
 
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM);
@@ -104,9 +103,9 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Meta
 
     @NotNull
     @Override
-    public IChemicalTankHolder<InfuseType, InfusionStack, IInfusionTank> getInitialInfusionTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
-        ChemicalTankHelper<InfuseType, InfusionStack, IInfusionTank> builder = ChemicalTankHelper.forSideInfusionWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(infusionTank = ChemicalTankBuilder.INFUSION.create(MAX_INFUSE, ChemicalTankBuilder.INFUSION.alwaysTrueBi,
+    public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
+        ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        builder.addTank(infusionTank = ChemicalTankBuilder.CHEMICAL.create(MAX_INFUSE, ChemicalTankBuilder.alwaysTrueBi,
               (infuseType, automationType) -> containsRecipeBA(inputSlot.getStack(), infuseType), this::containsRecipeB, recipeCacheListener));
         return builder.build();
     }
@@ -143,7 +142,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Meta
 
     @NotNull
     @Override
-    public IMekanismRecipeTypeProvider<SingleItemChemicalRecipeInput<InfuseType, InfusionStack>, MetallurgicInfuserRecipe, ItemChemical<InfuseType, InfusionStack, MetallurgicInfuserRecipe>> getRecipeType() {
+    public IMekanismRecipeTypeProvider<SingleItemChemicalRecipeInput, MetallurgicInfuserRecipe, ItemChemical<MetallurgicInfuserRecipe>> getRecipeType() {
         return MekanismRecipeType.METALLURGIC_INFUSING;
     }
 

@@ -1,6 +1,6 @@
 package mekanism.common.integration.projecte.mappers;
 
-import mekanism.api.chemical.infuse.InfusionStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ItemStackToInfuseTypeRecipe;
 import mekanism.common.integration.projecte.IngredientHelper;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -30,7 +30,7 @@ public class ItemStackToInfuseTypeRecipeMapper extends TypedMekanismRecipeMapper
     protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, ItemStackToInfuseTypeRecipe recipe) {
         boolean handled = false;
         for (ItemStack representation : recipe.getInput().getRepresentations()) {
-            InfusionStack output = recipe.getOutput(representation);
+            ChemicalStack output = recipe.getOutput(representation);
             if (!output.isEmpty()) {
                 IngredientHelper ingredientHelper = new IngredientHelper(mapper);
                 ingredientHelper.put(representation);

@@ -3,7 +3,7 @@ package mekanism.api.recipes.cache;
 import java.util.Objects;
 import java.util.function.BooleanSupplier;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe.PressurizedReactionRecipeOutput;
 import mekanism.api.recipes.inputs.IInputHandler;
@@ -22,11 +22,11 @@ public class PressurizedReactionCachedRecipe extends CachedRecipe<PressurizedRea
     private final IOutputHandler<@NotNull PressurizedReactionRecipeOutput> outputHandler;
     private final IInputHandler<@NotNull ItemStack> itemInputHandler;
     private final IInputHandler<@NotNull FluidStack> fluidInputHandler;
-    private final IInputHandler<@NotNull GasStack> gasInputHandler;
+    private final IInputHandler<@NotNull ChemicalStack> gasInputHandler;
 
     private ItemStack recipeItem = ItemStack.EMPTY;
     private FluidStack recipeFluid = FluidStack.EMPTY;
-    private GasStack recipeGas = GasStack.EMPTY;
+    private ChemicalStack recipeGas = ChemicalStack.EMPTY;
     //Note: Our output shouldn't be null in places it is actually used, but we mark it as nullable, so we don't have to initialize it
     @Nullable
     private PressurizedReactionRecipeOutput output;
@@ -41,7 +41,7 @@ public class PressurizedReactionCachedRecipe extends CachedRecipe<PressurizedRea
      * @param outputHandler     Output handler, handles both the item and gas outputs.
      */
     public PressurizedReactionCachedRecipe(PressurizedReactionRecipe recipe, BooleanSupplier recheckAllErrors, IInputHandler<@NotNull ItemStack> itemInputHandler,
-          IInputHandler<@NotNull FluidStack> fluidInputHandler, IInputHandler<@NotNull GasStack> gasInputHandler,
+          IInputHandler<@NotNull FluidStack> fluidInputHandler, IInputHandler<@NotNull ChemicalStack> gasInputHandler,
           IOutputHandler<@NotNull PressurizedReactionRecipeOutput> outputHandler) {
         super(recipe, recheckAllErrors);
         this.itemInputHandler = Objects.requireNonNull(itemInputHandler, "Item input handler cannot be null.");
@@ -102,7 +102,7 @@ public class PressurizedReactionCachedRecipe extends CachedRecipe<PressurizedRea
         if (item.isEmpty()) {
             return false;
         }
-        GasStack gas = gasInputHandler.getInput();
+        ChemicalStack gas = gasInputHandler.getInput();
         if (gas.isEmpty()) {
             return false;
         }

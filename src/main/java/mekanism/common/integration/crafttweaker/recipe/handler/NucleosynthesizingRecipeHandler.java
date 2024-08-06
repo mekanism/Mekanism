@@ -42,7 +42,7 @@ public class NucleosynthesizingRecipeHandler extends MekanismRecipeHandler<Nucle
         if (m instanceof NucleosynthesizingRecipeManager manager) {
             return Optional.of(manager.makeRecipe(
                   recipe.getOrThrowSingle(CrTRecipeComponents.ITEM.input()),
-                  recipe.getOrThrowSingle(CrTRecipeComponents.GAS.input()),
+                  recipe.getOrThrowSingle(CrTRecipeComponents.CHEMICAL.input()),
                   recipe.getOrThrowSingle(CrTRecipeComponents.ITEM.output()),
                   recipe.getOrThrowSingle(BuiltinRecipeComponents.Processing.TIME)
             ));

@@ -67,7 +67,7 @@ public class Factory<TILE extends TileEntityFactory<?>> extends FactoryMachine<T
             builder.with(switch (type) {
                 case SMELTING, ENRICHING, CRUSHING, COMBINING, SAWING -> AttributeSideConfig.ELECTRIC_MACHINE;
                 case COMPRESSING, INJECTING, PURIFYING -> AttributeSideConfig.ADVANCED_ELECTRIC_MACHINE;
-                case INFUSING -> AttributeSideConfig.create(TransmissionType.ITEM, TransmissionType.INFUSION, TransmissionType.ENERGY);
+                case INFUSING -> AttributeSideConfig.create(TransmissionType.ITEM, TransmissionType.CHEMICAL, TransmissionType.ENERGY);
             });
             builder.replace(new AttributeParticleFX().addDense(ParticleTypes.SMOKE, 5, rand -> new Pos3D(
                   rand.nextFloat() * 0.7F - 0.3F,

@@ -2,18 +2,6 @@ package mekanism.common.tile.multiblock;
 
 import mekanism.api.Action;
 import mekanism.api.IContentsListener;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.chemical.infuse.IInfusionTank;
-import mekanism.api.chemical.infuse.InfuseType;
-import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.api.chemical.pigment.IPigmentTank;
-import mekanism.api.chemical.pigment.Pigment;
-import mekanism.api.chemical.pigment.PigmentStack;
-import mekanism.api.chemical.slurry.ISlurryTank;
-import mekanism.api.chemical.slurry.Slurry;
-import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
@@ -38,32 +26,14 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank {
 
     @NotNull
     @Override
-    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks(IContentsListener listener) {
-        return side -> getMultiblock().getGasTanks(side);
+    public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener) {
+        return side -> getMultiblock().getChemicalTanks(side);
     }
-
-    @NotNull
-    @Override
-    public IChemicalTankHolder<InfuseType, InfusionStack, IInfusionTank> getInitialInfusionTanks(IContentsListener listener) {
-        return side -> getMultiblock().getInfusionTanks(side);
-    }
-
-    @NotNull
-    @Override
-    public IChemicalTankHolder<Pigment, PigmentStack, IPigmentTank> getInitialPigmentTanks(IContentsListener listener) {
-        return side -> getMultiblock().getPigmentTanks(side);
-    }
-
-    @NotNull
-    @Override
-    public IChemicalTankHolder<Slurry, SlurryStack, ISlurryTank> getInitialSlurryTanks(IContentsListener listener) {
-        return side -> getMultiblock().getSlurryTanks(side);
-    }
-
+    
     @Override
     public boolean persists(ContainerType<?, ?, ?> type) {
         //Do not handle fluid when it comes to syncing it/saving this tile to disk
-        if (type == ContainerType.FLUID || type == ContainerType.GAS || type == ContainerType.INFUSION || type == ContainerType.PIGMENT || type == ContainerType.SLURRY) {
+        if (type == ContainerType.FLUID || type == ContainerType.CHEMICAL) {
             return false;
         }
         return super.persists(type);

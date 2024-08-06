@@ -24,37 +24,13 @@ import org.openzen.zencode.java.ZenCodeType;
 public class CrTBracketDumpers {
 
     /**
-     * Bracket dumper to get all registered {@link mekanism.api.chemical.gas.Gas gases} as a collection of their bracket representations.
+     * Bracket dumper to get all registered {@link Chemical gases} as a collection of their bracket representations.
      */
-    @BracketDumper(value = CrTConstants.BRACKET_GAS, subCommandName = "gases")
-    public static Collection<String> getGasStackDump() {
-        return getChemicalStackDump(MekanismAPI.GAS_REGISTRY, CrTUtils::stackFromGas);
+    @BracketDumper(value = CrTConstants.BRACKET_CHEMICAL, subCommandName = "chemicals")
+    public static Collection<String> getChemicalStackDump() {
+        return getChemicalStackDump(MekanismAPI.CHEMICAL_REGISTRY, CrTUtils::stackFromChemical);
     }
-
-    /**
-     * Bracket dumper to get all registered {@link mekanism.api.chemical.infuse.InfuseType infuse types} as a collection of their bracket representations.
-     */
-    @BracketDumper(value = CrTConstants.BRACKET_INFUSE_TYPE, subCommandName = "infuseTypes")
-    public static Collection<String> getInfusionStackDump() {
-        return getChemicalStackDump(MekanismAPI.INFUSE_TYPE_REGISTRY, CrTUtils::stackFromInfuseType);
-    }
-
-    /**
-     * Bracket dumper to get all registered {@link mekanism.api.chemical.pigment.Pigment pigments} as a collection of their bracket representations.
-     */
-    @BracketDumper(value = CrTConstants.BRACKET_PIGMENT, subCommandName = "pigments")
-    public static Collection<String> getPigmentStackDump() {
-        return getChemicalStackDump(MekanismAPI.PIGMENT_REGISTRY, CrTUtils::stackFromPigment);
-    }
-
-    /**
-     * Bracket dumper to get all registered {@link mekanism.api.chemical.slurry.Slurry slurries} as a collection of their bracket representations.
-     */
-    @BracketDumper(value = CrTConstants.BRACKET_SLURRY, subCommandName = "slurries")
-    public static Collection<String> getSlurryStackDump() {
-        return getChemicalStackDump(MekanismAPI.SLURRY_REGISTRY, CrTUtils::stackFromSlurry);
-    }
-
+    
     /**
      * Bracket dumper to get all registered {@link mekanism.api.robit.RobitSkin robit skins} as a collection of their bracket representations.
      */
@@ -71,7 +47,7 @@ public class CrTBracketDumpers {
         return getDump(MekanismAPI.MODULE_REGISTRY, CrTConstants.BRACKET_MODULE_DATA);
     }
 
-    private static <CHEMICAL extends Chemical<CHEMICAL>, CRT_STACK extends ICrTChemicalStack<CHEMICAL, ?, CRT_STACK>> Collection<String>
+    private static <CHEMICAL extends Chemical, CRT_STACK extends ICrTChemicalStack> Collection<String>
     getChemicalStackDump(Registry<CHEMICAL> registry, Function<CHEMICAL, CRT_STACK> getter) {
         return getDump(registry, chemical -> getter.apply(chemical).getCommandString());
     }

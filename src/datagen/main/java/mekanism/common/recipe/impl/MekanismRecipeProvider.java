@@ -29,7 +29,7 @@ import mekanism.common.recipe.pattern.RecipePattern.DoubleLine;
 import mekanism.common.recipe.pattern.RecipePattern.TripleLine;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismFluids;
-import mekanism.common.registries.MekanismGases;
+import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismRecipeSerializersInternal;
 import mekanism.common.resource.PrimaryResource;
@@ -1626,44 +1626,44 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
 
         //plutonium
         GasToGasRecipeBuilder.centrifuging(
-              IngredientCreatorAccess.gasStack().from(MekanismGases.NUCLEAR_WASTE, 10),
-              MekanismGases.PLUTONIUM.getStack(1)
+              IngredientCreatorAccess.chemicalStack().from(MekanismChemicals.NUCLEAR_WASTE, 10),
+              MekanismChemicals.PLUTONIUM.getStack(1)
         ).build(consumer, Mekanism.rl(basePath + "plutonium"));
         //polonium
         GasToGasRecipeBuilder.activating(
-              IngredientCreatorAccess.gasStack().from(MekanismGases.NUCLEAR_WASTE, 10),
-              MekanismGases.POLONIUM.getStack(1)
+              IngredientCreatorAccess.chemicalStack().from(MekanismChemicals.NUCLEAR_WASTE, 10),
+              MekanismChemicals.POLONIUM.getStack(1)
         ).build(consumer, Mekanism.rl(basePath + "polonium"));
 
         //plutonium pellet
         PressurizedReactionRecipeBuilder.reaction(
               IngredientCreatorAccess.item().from(MekanismTags.Items.DUSTS_FLUORITE),
               IngredientCreatorAccess.fluid().from(FluidTags.WATER, 1_000),
-              IngredientCreatorAccess.gasStack().from(MekanismGases.PLUTONIUM, 1_000),
+              IngredientCreatorAccess.chemicalStack().from(MekanismChemicals.PLUTONIUM, 1_000),
               100,
               MekanismItems.PLUTONIUM_PELLET.getItemStack(),
-              MekanismGases.SPENT_NUCLEAR_WASTE.getStack(1_000)
+              MekanismChemicals.SPENT_NUCLEAR_WASTE.getStack(1_000)
         ).build(consumer, Mekanism.rl(basePath + "plutonium_pellet/from_reaction"));
         //polonium pellet
         PressurizedReactionRecipeBuilder.reaction(
               IngredientCreatorAccess.item().from(MekanismTags.Items.DUSTS_FLUORITE),
               IngredientCreatorAccess.fluid().from(FluidTags.WATER, 1_000),
-              IngredientCreatorAccess.gasStack().from(MekanismGases.POLONIUM, 1_000),
+              IngredientCreatorAccess.chemicalStack().from(MekanismChemicals.POLONIUM, 1_000),
               100,
               MekanismItems.POLONIUM_PELLET.getItemStack(),
-              MekanismGases.SPENT_NUCLEAR_WASTE.getStack(1_000)
+              MekanismChemicals.SPENT_NUCLEAR_WASTE.getStack(1_000)
         ).build(consumer, Mekanism.rl(basePath + "polonium_pellet/from_reaction"));
 
         //antimatter pellet
         ChemicalCrystallizerRecipeBuilder.crystallizing(
-              IngredientCreatorAccess.gasStack().from(MekanismGases.ANTIMATTER, 1_000),
+              IngredientCreatorAccess.chemicalStack().from(MekanismChemicals.ANTIMATTER, 1_000),
               MekanismItems.ANTIMATTER_PELLET.getItemStack()
         ).build(consumer, Mekanism.rl(basePath + "antimatter_pellet/from_gas"));
 
         //back to antimatter
         ItemStackToChemicalRecipeBuilder.oxidizing(
               IngredientCreatorAccess.item().from(MekanismTags.Items.PELLETS_ANTIMATTER),
-              MekanismGases.ANTIMATTER.getStack(1_000)
+              MekanismChemicals.ANTIMATTER.getStack(1_000)
         ).build(consumer, Mekanism.rl(basePath + "antimatter/from_pellet"));
     }
 }

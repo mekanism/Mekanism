@@ -4,10 +4,8 @@ import java.util.List;
 import java.util.function.BiPredicate;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.merged.BoxedChemicalStack;
-import mekanism.api.recipes.ingredients.GasStackIngredient;
+import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.vanilla_input.SingleItemChemicalRecipeInput;
 import net.minecraft.core.Holder;
@@ -22,8 +20,8 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 @NothingNullByDefault
-public abstract class ChemicalDissolutionRecipe extends MekanismRecipe<SingleItemChemicalRecipeInput<Gas, GasStack>>
-      implements BiPredicate<@NotNull ItemStack, @NotNull GasStack> {
+public abstract class ChemicalDissolutionRecipe extends MekanismRecipe<SingleItemChemicalRecipeInput>
+      implements BiPredicate<@NotNull ItemStack, @NotNull ChemicalStack> {
 
     private static final Holder<Item> CHEMICAL_DISSOLUTION_CHAMBER = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "chemical_dissolution_chamber"));
 
@@ -35,7 +33,7 @@ public abstract class ChemicalDissolutionRecipe extends MekanismRecipe<SingleIte
     /**
      * Gets the input gas ingredient.
      */
-    public abstract GasStackIngredient getGasInput();
+    public abstract ChemicalStackIngredient getGasInput();
 
     /**
      * Gets a new output based on the given inputs.
@@ -50,13 +48,13 @@ public abstract class ChemicalDissolutionRecipe extends MekanismRecipe<SingleIte
      * @implNote The passed in inputs should <strong>NOT</strong> be modified.
      */
     @Contract(value = "_, _ -> new", pure = true)
-    public abstract BoxedChemicalStack getOutput(ItemStack inputItem, GasStack inputGas);
+    public abstract ChemicalStack getOutput(ItemStack inputItem, ChemicalStack inputGas);
 
     @Override
-    public abstract boolean test(ItemStack itemStack, GasStack gasStack);
+    public abstract boolean test(ItemStack itemStack, ChemicalStack gasStack);
 
     @Override
-    public boolean matches(SingleItemChemicalRecipeInput<Gas, GasStack> input, Level level) {
+    public boolean matches(SingleItemChemicalRecipeInput input, Level level) {
         //Don't match incomplete recipes or ones that don't match
         return !isIncomplete() && test(input.item(), input.chemical());
     }
@@ -66,7 +64,7 @@ public abstract class ChemicalDissolutionRecipe extends MekanismRecipe<SingleIte
      *
      * @return Representation of the output, <strong>MUST NOT</strong> be modified.
      */
-    public abstract List<BoxedChemicalStack> getOutputDefinition();
+    public abstract List<ChemicalStack> getOutputDefinition();
 
     @Override
     public boolean isIncomplete() {

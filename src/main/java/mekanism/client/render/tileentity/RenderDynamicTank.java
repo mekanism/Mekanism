@@ -40,10 +40,7 @@ public class RenderDynamicTank extends MultiblockTileEntityRenderer<TankMultiblo
         }
         return (switch (currentType) {
             case FLUID -> RenderData.Builder.create(multiblock.getFluidTank().getFluid());
-            case GAS -> RenderData.Builder.create(multiblock.getGasTank().getStack());
-            case INFUSION -> RenderData.Builder.create(multiblock.getInfusionTank().getStack());
-            case PIGMENT -> RenderData.Builder.create(multiblock.getPigmentTank().getStack());
-            case SLURRY -> RenderData.Builder.create(multiblock.getSlurryTank().getStack());
+            case CHEMICAL -> RenderData.Builder.create(multiblock.getChemicalTank().getStack());
             default -> throw new IllegalStateException("Unknown current type.");
         }).of(multiblock).build();
     }

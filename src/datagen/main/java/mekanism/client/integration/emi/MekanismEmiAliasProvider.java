@@ -13,7 +13,7 @@ import mekanism.common.item.block.ItemBlockEnergyCube;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismFluids;
-import mekanism.common.registries.MekanismGases;
+import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.resource.IResource;
 import mekanism.common.tier.FactoryTier;
@@ -52,7 +52,7 @@ public class MekanismEmiAliasProvider extends BaseEmiAliasProvider {
     private void addChemicalAliases() {
         addAliases(List.of(
               ingredient(MekanismFluids.ETHENE),
-              ingredient(MekanismGases.ETHENE)
+              ingredient(MekanismChemicals.ETHENE)
         ), MekanismAliases.ETHENE_ETHYLENE);
     }
 

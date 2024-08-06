@@ -7,10 +7,9 @@ import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalTankBuilder;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasTank;
+import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IBlockProvider;
@@ -62,9 +61,9 @@ import org.jetbrains.annotations.Nullable;
 
 //Compressing, injecting, purifying
 public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToItemFactory<ItemStackGasToItemStackRecipe> implements IHasDumpButton,
-      ItemChemicalRecipeLookupHandler<Gas, GasStack, ItemStackGasToItemStackRecipe>, ConstantUsageRecipeLookupHandler {
+      ItemChemicalRecipeLookupHandler<ItemStackGasToItemStackRecipe>, ConstantUsageRecipeLookupHandler {
 
-    private static final CheckRecipeType<ItemStack, GasStack, ItemStackGasToItemStackRecipe, ItemStack> OUTPUT_CHECK =
+    private static final CheckRecipeType<ItemStack, ChemicalStack, ItemStackGasToItemStackRecipe, ItemStack> OUTPUT_CHECK =
           (recipe, input, extra, output) -> InventoryUtils.areItemsStackable(recipe.getOutput(input, extra), output);
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
           RecipeError.NOT_ENOUGH_ENERGY,
@@ -78,12 +77,12 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
           RecipeError.NOT_ENOUGH_SECONDARY_INPUT
     );
 
-    private final ILongInputHandler<@NotNull GasStack> gasInputHandler;
+    private final ILongInputHandler<@NotNull ChemicalStack> gasInputHandler;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getChemicalItem", docPlaceholder = "chemical item (extra) slot")
     GasInventorySlot extraSlot;
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getChemical", "getChemicalCapacity", "getChemicalNeeded",
                                                                                         "getChemicalFilledPercentage"}, docPlaceholder = "gas tank")
-    IGasTank gasTank;
+    IChemicalTank gasTank;
     private final ChemicalUsageMultiplier gasUsageMultiplier;
     private final long[] usedSoFar;
     private double gasPerTickMeanMultiplier = 1;
@@ -93,9 +92,9 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
         super(blockProvider, pos, state, TRACKED_ERROR_TYPES, GLOBAL_ERROR_TYPES);
         gasInputHandler = InputHelper.getConstantInputHandler(gasTank);
         if (allowExtractingChemical()) {
-            configComponent.setupIOConfig(TransmissionType.GAS, gasTank, RelativeSide.RIGHT).setCanEject(false);
+            configComponent.setupIOConfig(TransmissionType.CHEMICAL, gasTank, RelativeSide.RIGHT).setCanEject(false);
         } else {
-            configComponent.setupInputConfig(TransmissionType.GAS, gasTank);
+            configComponent.setupInputConfig(TransmissionType.CHEMICAL, gasTank);
         }
         baseTotalUsage = BASE_TICKS_REQUIRED;
         usedSoFar = new long[tier.processes];
@@ -121,16 +120,16 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
 
     @NotNull
     @Override
-    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks(IContentsListener listener) {
-        ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
+    public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener) {
+        ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
         //If the tank's contents change make sure to call our extended content listener that also marks sorting as being needed
         // as maybe the valid recipes have changed, and we need to sort again and have all recipes know they may need to be rechecked
         // if they are not still valid
         if (allowExtractingChemical()) {
-            gasTank = ChemicalTankBuilder.GAS.create(TileEntityAdvancedElectricMachine.MAX_GAS * tier.processes, this::containsRecipeB,
+            gasTank = ChemicalTankBuilder.CHEMICAL.create(TileEntityAdvancedElectricMachine.MAX_GAS * tier.processes, this::containsRecipeB,
                   markAllMonitorsChanged(listener));
         } else {
-            gasTank = ChemicalTankBuilder.GAS.input(TileEntityAdvancedElectricMachine.MAX_GAS * tier.processes, this::containsRecipeB,
+            gasTank = ChemicalTankBuilder.CHEMICAL.input(TileEntityAdvancedElectricMachine.MAX_GAS * tier.processes, this::containsRecipeB,
                   markAllMonitorsChanged(listener));
         }
         builder.addTank(gasTank);
@@ -144,7 +143,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
         builder.addSlot(extraSlot = GasInventorySlot.fillOrConvert(gasTank, this::getLevel, listener, 7, 57));
     }
 
-    public IGasTank getGasTank() {
+    public IChemicalTank getGasTank() {
         return gasTank;
     }
 
@@ -192,7 +191,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
 
     @NotNull
     @Override
-    public IMekanismRecipeTypeProvider<SingleItemChemicalRecipeInput<Gas, GasStack>, ItemStackGasToItemStackRecipe, ItemChemical<Gas, GasStack, ItemStackGasToItemStackRecipe>> getRecipeType() {
+    public IMekanismRecipeTypeProvider<SingleItemChemicalRecipeInput, ItemStackGasToItemStackRecipe, ItemChemical<ItemStackGasToItemStackRecipe>> getRecipeType() {
         return switch (type) {
             case INJECTING -> MekanismRecipeType.INJECTING;
             case PURIFYING -> MekanismRecipeType.PURIFYING;

@@ -9,7 +9,7 @@ import java.util.UUID;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
-import mekanism.api.chemical.gas.IGasTank;
+import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.math.MathUtils;
@@ -59,7 +59,7 @@ public class TurbineMultiblockData extends MultiblockData {
     @ContainerSync
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getSteam", "getSteamCapacity", "getSteamNeeded",
                                                                                         "getSteamFilledPercentage"}, docPlaceholder = "steam tank")
-    public IGasTank gasTank;
+    public IChemicalTank gasTank;
     @ContainerSync
     public IExtendedFluidTank ventTank;
     public final List<IExtendedFluidTank> ventTanks;
@@ -102,7 +102,7 @@ public class TurbineMultiblockData extends MultiblockData {
 
     public TurbineMultiblockData(TileEntityTurbineCasing tile) {
         super(tile);
-        gasTanks.add(gasTank = new TurbineGasTank(this, createSaveAndComparator()));
+        chemicalTanks.add(gasTank = new TurbineGasTank(this, createSaveAndComparator()));
         ventTank = VariableCapacityFluidTank.output(this, () -> isFormed() ? condensers * MekanismGeneratorsConfig.generators.condenserRate.get() : FluidType.BUCKET_VOLUME,
               fluid -> fluid.is(FluidTags.WATER), this);
         ventTanks = Collections.singletonList(ventTank);

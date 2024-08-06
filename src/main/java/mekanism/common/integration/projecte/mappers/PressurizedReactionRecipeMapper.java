@@ -1,11 +1,11 @@
 package mekanism.common.integration.projecte.mappers;
 
 import java.util.List;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe.PressurizedReactionRecipeOutput;
 import mekanism.common.integration.projecte.IngredientHelper;
-import mekanism.common.integration.projecte.NSSGas;
+import mekanism.common.integration.projecte.NSSChemical;
 import mekanism.common.recipe.MekanismRecipeType;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.api.mapper.recipe.RecipeTypeMapper;
@@ -43,16 +43,16 @@ public class PressurizedReactionRecipeMapper extends TypedMekanismRecipeMapper<P
         boolean handled = false;
         List<@NotNull ItemStack> itemRepresentations = recipe.getInputSolid().getRepresentations();
         List<@NotNull FluidStack> fluidRepresentations = recipe.getInputFluid().getRepresentations();
-        List<@NotNull GasStack> gasRepresentations = recipe.getInputGas().getRepresentations();
+        List<@NotNull ChemicalStack> gasRepresentations = recipe.getInputGas().getRepresentations();
         for (ItemStack itemRepresentation : itemRepresentations) {
             NormalizedSimpleStack nssItem = NSSItem.createItem(itemRepresentation);
             for (FluidStack fluidRepresentation : fluidRepresentations) {
                 NormalizedSimpleStack nssFluid = NSSFluid.createFluid(fluidRepresentation);
-                for (GasStack gasRepresentation : gasRepresentations) {
-                    NormalizedSimpleStack nssGas = NSSGas.createGas(gasRepresentation);
+                for (ChemicalStack gasRepresentation : gasRepresentations) {
+                    NormalizedSimpleStack nssGas = NSSChemical.createChemical(gasRepresentation);
                     PressurizedReactionRecipeOutput output = recipe.getOutput(itemRepresentation, fluidRepresentation, gasRepresentation);
                     ItemStack itemOutput = output.item();
-                    GasStack gasOutput = output.gas();
+                    ChemicalStack gasOutput = output.gas();
                     IngredientHelper ingredientHelper = new IngredientHelper(mapper);
                     ingredientHelper.put(nssItem, itemRepresentation.getCount());
                     ingredientHelper.put(nssFluid, fluidRepresentation.getAmount());
@@ -69,7 +69,7 @@ public class PressurizedReactionRecipeMapper extends TypedMekanismRecipeMapper<P
                         }
                     } else {
                         NormalizedSimpleStack nssItemOutput = NSSItem.createItem(itemOutput);
-                        NormalizedSimpleStack nssGasOutput = NSSGas.createGas(gasOutput);
+                        NormalizedSimpleStack nssGasOutput = NSSChemical.createChemical(gasOutput);
                         //We have both so do our best guess
                         //Add trying to calculate the item output (using it as if we needed negative of gas output)
                         ingredientHelper.put(nssGasOutput, -gasOutput.getAmount());

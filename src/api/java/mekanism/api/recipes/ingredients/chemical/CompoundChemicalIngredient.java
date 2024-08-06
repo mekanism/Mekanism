@@ -8,6 +8,7 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.recipes.ingredients.creator.IChemicalIngredientCreator;
+import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import net.neoforged.neoforge.common.crafting.CompoundIngredient;
 import net.neoforged.neoforge.common.util.NeoForgeExtraCodecs;
 import org.jetbrains.annotations.ApiStatus.Internal;
@@ -21,27 +22,28 @@ import org.jetbrains.annotations.Nullable;
  * @since 10.6.0
  */
 @NothingNullByDefault
-public abstract non-sealed class CompoundChemicalIngredient<CHEMICAL extends Chemical<CHEMICAL>, INGREDIENT extends IChemicalIngredient<CHEMICAL, INGREDIENT>>
-      extends ChemicalIngredient<CHEMICAL, INGREDIENT> {
+public non-sealed class CompoundChemicalIngredient
+      extends ChemicalIngredient {
+
+    public static final MapCodec<CompoundChemicalIngredient> CODEC = codec(IngredientCreatorAccess.chemical(), CompoundChemicalIngredient::new);
 
     /**
      * Helper to create the codec for compound ingredients.
      */
     @Internal
-    protected static <INGREDIENT extends IChemicalIngredient<?, INGREDIENT>, COMPOUND extends CompoundChemicalIngredient<?, INGREDIENT>> MapCodec<COMPOUND> codec(
-          IChemicalIngredientCreator<?, INGREDIENT> creator, Function<List<INGREDIENT>, COMPOUND> constructor) {
+    protected static MapCodec<CompoundChemicalIngredient> codec(
+          IChemicalIngredientCreator creator, Function<List<IChemicalIngredient>, CompoundChemicalIngredient> constructor) {
         return NeoForgeExtraCodecs.aliasedFieldOf(creator.listCodecMultipleElements(), SerializationConstants.CHILDREN, SerializationConstants.INGREDIENTS).xmap(
               constructor, CompoundChemicalIngredient::children
         );
     }
 
-    private final List<INGREDIENT> children;
+    private final List<IChemicalIngredient> children;
 
     /**
      * @param children Ingredients to form a union from.
      */
-    @Internal
-    protected CompoundChemicalIngredient(List<INGREDIENT> children) {
+    public CompoundChemicalIngredient(List<IChemicalIngredient> children) {
         if (children.size() < 2) {
             throw new IllegalArgumentException("Compound chemical ingredients must have at least two children");
         }
@@ -49,15 +51,15 @@ public abstract non-sealed class CompoundChemicalIngredient<CHEMICAL extends Che
     }
 
     @Override
-    public final Stream<CHEMICAL> generateChemicals() {
+    public final Stream<Chemical> generateChemicals() {
         return children().stream()
               .flatMap(IChemicalIngredient::generateChemicals)
               .distinct();//Ensure we don't include the same chemical multiple times
     }
 
     @Override
-    public final boolean test(CHEMICAL chemical) {
-        for (INGREDIENT child : children()) {
+    public final boolean test(Chemical chemical) {
+        for (IChemicalIngredient child : children()) {
             if (child.test(chemical)) {
                 return true;
             }
@@ -68,8 +70,13 @@ public abstract non-sealed class CompoundChemicalIngredient<CHEMICAL extends Che
     /**
      * {@return all the child ingredients that this ingredient is a union of}
      */
-    public final List<INGREDIENT> children() {
+    public final List<IChemicalIngredient> children() {
         return children;
+    }
+
+    @Override
+    public MapCodec<? extends IChemicalIngredient> codec() {
+        return CODEC;
     }
 
     @Override
@@ -84,6 +91,6 @@ public abstract non-sealed class CompoundChemicalIngredient<CHEMICAL extends Che
         } else if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        return children.equals(((CompoundChemicalIngredient<?, ?>) obj).children);
+        return children.equals(((CompoundChemicalIngredient) obj).children);
     }
 }

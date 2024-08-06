@@ -16,14 +16,14 @@ public interface IMekanismEmiHelper {
     /**
      * Creates an EmiStack for the given chemical stack.
      */
-    default EmiStack createEmiStack(ChemicalStack<?> stack) {
+    default EmiStack createEmiStack(ChemicalStack stack) {
         return createEmiStack(stack.getChemical(), stack.getAmount());
     }
 
     /**
      * Creates an EmiStack of the given size for the given chemical.
      */
-    EmiStack createEmiStack(Chemical<?> chemical, long size);
+    EmiStack createEmiStack(Chemical chemical, long size);
 
     /**
      * Tries to convert a chemical EmiStack to a normal ChemicalStack
@@ -32,5 +32,5 @@ public interface IMekanismEmiHelper {
      *
      * @return ChemicalStack or an empty optional if the EmiStack doesn't represent a ChemicalStack.
      */
-    Optional<ChemicalStack<?>> asChemicalStack(EmiStack stack);
+    Optional<ChemicalStack> asChemicalStack(EmiStack stack);
 }

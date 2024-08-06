@@ -9,12 +9,12 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.basic.BasicRotaryRecipe;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
-import mekanism.api.recipes.ingredients.GasStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
-import mekanism.common.recipe.ingredients.creator.GasStackIngredientCreator;
+import mekanism.common.recipe.ingredients.creator.ChemicalStackIngredientCreator;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -29,17 +29,17 @@ public class RotaryRecipeSerializer implements RecipeSerializer<BasicRotaryRecip
           ingredient -> ingredient == null ? DataResult.error(() -> "Fluid input may not be empty") : DataResult.success(ingredient)
     ).fieldOf(SerializationConstants.FLUID_INPUT).forGetter(BasicRotaryRecipe::getFluidInputRaw);
     private final RecordCodecBuilder<BasicRotaryRecipe, FluidStack> FLUID_OUTPUT_FIELD = FluidStack.CODEC.fieldOf(SerializationConstants.FLUID_OUTPUT).forGetter(BasicRotaryRecipe::getFluidOutputRaw);
-    private final RecordCodecBuilder<BasicRotaryRecipe, GasStackIngredient> GAS_INPUT_FIELD = GasStackIngredientCreator.INSTANCE.codec().validate(
+    private final RecordCodecBuilder<BasicRotaryRecipe, ChemicalStackIngredient> GAS_INPUT_FIELD = ChemicalStackIngredientCreator.INSTANCE.codec().validate(
           ingredient -> ingredient == null ? DataResult.error(() -> "Gas input may not be empty") : DataResult.success(ingredient)
     ).fieldOf(SerializationConstants.GAS_INPUT).forGetter(BasicRotaryRecipe::getGasInputRaw);
-    private final RecordCodecBuilder<BasicRotaryRecipe, GasStack> GAS_OUTPUT_FIELD = GasStack.CODEC.fieldOf(SerializationConstants.GAS_OUTPUT).forGetter(BasicRotaryRecipe::getGasOutputRaw);
+    private final RecordCodecBuilder<BasicRotaryRecipe, ChemicalStack> GAS_OUTPUT_FIELD = ChemicalStack.CODEC.fieldOf(SerializationConstants.GAS_OUTPUT).forGetter(BasicRotaryRecipe::getGasOutputRaw);
 
     private final StreamCodec<RegistryFriendlyByteBuf, BasicRotaryRecipe> streamCodec;
     private final MapCodec<BasicRotaryRecipe> codec;
 
-    public RotaryRecipeSerializer(Function4<FluidStackIngredient, GasStackIngredient, GasStack, FluidStack, BasicRotaryRecipe> bothWaysFactory,
-          BiFunction<FluidStackIngredient, GasStack, BasicRotaryRecipe> toGasFactory,
-          BiFunction<GasStackIngredient, FluidStack, BasicRotaryRecipe> toFluidFactory) {
+    public RotaryRecipeSerializer(Function4<FluidStackIngredient, ChemicalStackIngredient, ChemicalStack, FluidStack, BasicRotaryRecipe> bothWaysFactory,
+          BiFunction<FluidStackIngredient, ChemicalStack, BasicRotaryRecipe> toGasFactory,
+          BiFunction<ChemicalStackIngredient, FluidStack, BasicRotaryRecipe> toFluidFactory) {
         this.codec = NeoForgeExtraCodecs.withAlternative(
               RecordCodecBuilder.mapCodec(i -> i.group(
                     FLUID_INPUT_FIELD,
@@ -88,12 +88,12 @@ public class RotaryRecipeSerializer implements RecipeSerializer<BasicRotaryRecip
         return streamCodec;
     }
 
-    private record FluidToGas(FluidStackIngredient input, GasStack output) {
+    private record FluidToGas(FluidStackIngredient input, ChemicalStack output) {
 
         //Note: This doesn't need to be optional gas, as we only use this if we have a fluid to gas recipe
         public static final StreamCodec<RegistryFriendlyByteBuf, FluidToGas> STREAM_CODEC = StreamCodec.composite(
               FluidStackIngredient.STREAM_CODEC, FluidToGas::input,
-              GasStack.STREAM_CODEC, FluidToGas::output,
+              ChemicalStack.STREAM_CODEC, FluidToGas::output,
               FluidToGas::new
         );
 
@@ -102,11 +102,11 @@ public class RotaryRecipeSerializer implements RecipeSerializer<BasicRotaryRecip
         }
     }
 
-    private record GasToFluid(GasStackIngredient input, FluidStack output) {
+    private record GasToFluid(ChemicalStackIngredient input, FluidStack output) {
 
         //Note: This doesn't need to be optional fluid, as we only use this if we have a gas to fluid recipe
         public static final StreamCodec<RegistryFriendlyByteBuf, GasToFluid> STREAM_CODEC = StreamCodec.composite(
-              IngredientCreatorAccess.gasStack().streamCodec(), GasToFluid::input,
+              IngredientCreatorAccess.chemicalStack().streamCodec(), GasToFluid::input,
               FluidStack.STREAM_CODEC, GasToFluid::output,
               GasToFluid::new
         );

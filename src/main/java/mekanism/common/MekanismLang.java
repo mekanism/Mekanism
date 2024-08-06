@@ -181,6 +181,7 @@ public enum MekanismLang implements ILangEntry {
     //Transmission types
     TRANSMISSION_TYPE_ENERGY("transmission", "energy"),
     TRANSMISSION_TYPE_FLUID("transmission", "fluids"),
+    TRANSMISSION_TYPE_CHEMICALS("transmission", "chemicals"),
     TRANSMISSION_TYPE_GAS("transmission", "gases"),
     TRANSMISSION_TYPE_INFUSION("transmission", "infuse_types"),
     TRANSMISSION_TYPE_PIGMENT("transmission", "pigments"),

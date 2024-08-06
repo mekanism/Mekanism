@@ -20,7 +20,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 
 public class ChemicalFluidBarDecorator implements IItemDecorator {
 
-    private final ContainerType<? extends IChemicalTank<?, ?>, ?, ?>[] chemicalContainerTypes;
+    private final ContainerType<? extends IChemicalTank, ?, ?>[] chemicalContainerTypes;
     private final boolean showFluid;
     private final Predicate<ItemStack> visibleFor;
 
@@ -30,7 +30,7 @@ public class ChemicalFluidBarDecorator implements IItemDecorator {
      * @param chemicalContainerTypes the container types to be displayed in order, starting from the bottom
      */
     @SafeVarargs
-    public ChemicalFluidBarDecorator(boolean showFluid, Predicate<ItemStack> visibleFor, ContainerType<? extends IChemicalTank<?, ?>, ?, ?>... chemicalContainerTypes) {
+    public ChemicalFluidBarDecorator(boolean showFluid, Predicate<ItemStack> visibleFor, ContainerType<? extends IChemicalTank, ?, ?>... chemicalContainerTypes) {
         this.showFluid = showFluid;
         this.chemicalContainerTypes = chemicalContainerTypes;
         this.visibleFor = visibleFor;
@@ -42,8 +42,8 @@ public class ChemicalFluidBarDecorator implements IItemDecorator {
             return false;
         }
         yOffset += 12;
-        for (ContainerType<? extends IChemicalTank<?, ?>, ?, ?> chemicalContainerType : chemicalContainerTypes) {
-            List<? extends IChemicalTank<?, ?>> tanks = chemicalContainerType.getAttachmentContainersIfPresent(stack);
+        for (ContainerType<? extends IChemicalTank, ?, ?> chemicalContainerType : chemicalContainerTypes) {
+            List<? extends IChemicalTank> tanks = chemicalContainerType.getAttachmentContainersIfPresent(stack);
             int tank = getDisplayTank(tanks.size());
             if (tank != -1) {
                 renderBar(guiGraphics, xOffset, yOffset, tanks.get(tank));
@@ -65,7 +65,7 @@ public class ChemicalFluidBarDecorator implements IItemDecorator {
         return true;
     }
 
-    protected static void renderBar(GuiGraphics guiGraphics, int stackXPos, int yPos, IChemicalTank<?, ?> tank) {
+    protected static void renderBar(GuiGraphics guiGraphics, int stackXPos, int yPos, IChemicalTank tank) {
         renderBar(guiGraphics, stackXPos, yPos, tank.getStored(), tank.getCapacity(), tank.getType().getColorRepresentation());
     }
 

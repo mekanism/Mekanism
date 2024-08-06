@@ -11,10 +11,9 @@ import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasHandler;
-import mekanism.api.chemical.gas.IGasTank;
+import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.attribute.GasAttributes.CooledCoolant;
 import mekanism.api.chemical.gas.attribute.GasAttributes.HeatedCoolant;
 import mekanism.api.chemical.gas.attribute.GasAttributes.Radiation;
@@ -35,7 +34,7 @@ import mekanism.common.lib.multiblock.IValveHandler;
 import mekanism.common.lib.multiblock.MultiblockCache;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.lib.radiation.RadiationManager;
-import mekanism.common.registries.MekanismGases;
+import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
@@ -74,11 +73,11 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
 
     private static final double EXPLOSION_CHANCE = 1D / 512_000;
 
-    private final List<AdvancedCapabilityOutputTarget<IGasHandler, FissionPortMode>> gasOutputTargets = new ArrayList<>();
+    private final List<AdvancedCapabilityOutputTarget<IChemicalHandler, FissionPortMode>> gasOutputTargets = new ArrayList<>();
     public final Set<FormedAssembly> assemblies = new LinkedHashSet<>();
-    private final List<IGasTank> inputTanks;
-    private final List<IGasTank> outputWasteTanks;
-    private final List<IGasTank> outputCoolantTanks;
+    private final List<IChemicalTank> inputTanks;
+    private final List<IChemicalTank> outputWasteTanks;
+    private final List<IChemicalTank> outputCoolantTanks;
 
     @ContainerSync(setter = "setAssemblies")
     @SyntheticComputerMethod(getter = "getFuelAssemblies")
@@ -88,22 +87,22 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     public int surfaceArea;
 
     @ContainerSync
-    public IGasTank gasCoolantTank;
+    public IChemicalTank gasCoolantTank;
     @ContainerSync
     public VariableCapacityFluidTank fluidCoolantTank;
     @ContainerSync
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getFuel", "getFuelCapacity", "getFuelNeeded",
                                                                                         "getFuelFilledPercentage"}, docPlaceholder = "fuel tank")
-    public IGasTank fuelTank;
+    public IChemicalTank fuelTank;
 
     @ContainerSync
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getHeatedCoolant", "getHeatedCoolantCapacity", "getHeatedCoolantNeeded",
                                                                                         "getHeatedCoolantFilledPercentage"}, docPlaceholder = "heated coolant")
-    public IGasTank heatedCoolantTank;
+    public IChemicalTank heatedCoolantTank;
     @ContainerSync
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getWaste", "getWasteCapacity", "getWasteNeeded",
                                                                                         "getWasteFilledPercentage"}, docPlaceholder = "waste tank")
-    public IGasTank wasteTank;
+    public IChemicalTank wasteTank;
     @ContainerSync
     @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature", docPlaceholder = "reactor")
     public VariableHeatCapacitor heatCapacitor;
@@ -150,18 +149,18 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         fluidCoolantTank = VariableCapacityFluidTank.input(this, () -> cooledCoolantCapacity,
               fluid -> fluid.is(FluidTags.WATER) && gasCoolantTank.isEmpty(), this);
         fluidTanks.add(fluidCoolantTank);
-        gasCoolantTank = MultiblockChemicalTankBuilder.GAS.input(this, () -> cooledCoolantCapacity,
+        gasCoolantTank = MultiblockChemicalTankBuilder.CHEMICAL.input(this, () -> cooledCoolantCapacity,
               gas -> gas.has(CooledCoolant.class) && fluidCoolantTank.isEmpty(), this);
-        fuelTank = MultiblockChemicalTankBuilder.GAS.input(this, fuelCapacitySupplier, gas -> gas == MekanismGases.FISSILE_FUEL.getChemical(),
+        fuelTank = MultiblockChemicalTankBuilder.CHEMICAL.input(this, fuelCapacitySupplier, gas -> gas == MekanismChemicals.FISSILE_FUEL.getChemical(),
               ChemicalAttributeValidator.ALWAYS_ALLOW, createSaveAndComparator());
-        heatedCoolantTank = MultiblockChemicalTankBuilder.GAS.output(this, () -> heatedCoolantCapacity,
-              gas -> gas == MekanismGases.STEAM.get() || gas.has(HeatedCoolant.class), this);
-        wasteTank = MultiblockChemicalTankBuilder.GAS.output(this, fuelCapacitySupplier,
-              gas -> gas == MekanismGases.NUCLEAR_WASTE.getChemical(), ChemicalAttributeValidator.ALWAYS_ALLOW, this);
+        heatedCoolantTank = MultiblockChemicalTankBuilder.CHEMICAL.output(this, () -> heatedCoolantCapacity,
+              gas -> gas == MekanismChemicals.STEAM.get() || gas.has(HeatedCoolant.class), this);
+        wasteTank = MultiblockChemicalTankBuilder.CHEMICAL.output(this, fuelCapacitySupplier,
+              gas -> gas == MekanismChemicals.NUCLEAR_WASTE.getChemical(), ChemicalAttributeValidator.ALWAYS_ALLOW, this);
         inputTanks = List.of(fuelTank, gasCoolantTank);
         outputWasteTanks = List.of(wasteTank);
         outputCoolantTanks = List.of(heatedCoolantTank);
-        Collections.addAll(gasTanks, fuelTank, heatedCoolantTank, wasteTank, gasCoolantTank);
+        Collections.addAll(chemicalTanks, fuelTank, heatedCoolantTank, wasteTank, gasCoolantTank);
         heatCapacitor = VariableHeatCapacitor.create(MekanismGeneratorsConfig.generators.fissionCasingHeatCapacity.get(),
               () -> INVERSE_CONDUCTION_COEFFICIENT, () -> INVERSE_INSULATION_COEFFICIENT, () -> biomeAmbientTemp, this);
         heatCapacitors.add(heatCapacitor);
@@ -227,12 +226,12 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         for (ValveData valve : valves) {
             TileEntityFissionReactorPort tile = WorldUtils.getTileEntity(TileEntityFissionReactorPort.class, world, valve.location);
             if (tile != null) {
-                tile.addGasTargetCapability(gasOutputTargets, valve.side);
+                tile.addChemicalTargetCapability(gasOutputTargets, valve.side);
             }
         }
     }
 
-    public List<IGasTank> getGasTanks(FissionPortMode mode) {
+    public List<IChemicalTank> getGasTanks(FissionPortMode mode) {
         return switch (mode) {
             case INPUT -> inputTanks;
             case OUTPUT_WASTE -> outputWasteTanks;
@@ -369,10 +368,10 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
      * @apiNote Assumes radiation is enabled instead of checking and returning zero if it is not.
      */
     private double getWasteTankRadioactivity(boolean dump) {
-        GasStack stored = wasteTank.getStack();
+        ChemicalStack stored = wasteTank.getStack();
         Radiation attribute;
         if (stored.isEmpty()) {
-            attribute = MekanismGases.NUCLEAR_WASTE.get().get(Radiation.class);
+            attribute = MekanismChemicals.NUCLEAR_WASTE.get().get(Radiation.class);
         } else {
             attribute = stored.get(Radiation.class);
         }
@@ -388,9 +387,9 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     /**
      * @apiNote Assumes radiation is enabled instead of checking and returning zero if it is not.
      */
-    private double getTankRadioactivityAndDump(IGasTank tank) {
+    private double getTankRadioactivityAndDump(IChemicalTank tank) {
         if (!tank.isEmpty()) {
-            GasStack stored = tank.getStack();
+            ChemicalStack stored = tank.getStack();
             Radiation attribute = stored.get(Radiation.class);
             if (attribute != null) {
                 //If we have a radioactive substance, then we need to set the tank to empty
@@ -412,7 +411,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
             if (lastBoilRate > 0) {
                 MekanismUtils.logMismatchedStackSize(fluidCoolantTank.shrinkStack((int) lastBoilRate, Action.EXECUTE), lastBoilRate);
                 // extra steam is dumped
-                heatedCoolantTank.insert(MekanismGases.STEAM.getStack(lastBoilRate), Action.EXECUTE, AutomationType.INTERNAL);
+                heatedCoolantTank.insert(MekanismChemicals.STEAM.getStack(lastBoilRate), Action.EXECUTE, AutomationType.INTERNAL);
                 caseCoolantHeat = lastBoilRate * HeatUtils.getWaterThermalEnthalpy() / HeatUtils.getSteamEnergyEfficiency();
                 heatCapacitor.handleHeat(-caseCoolantHeat);
             } else {
@@ -462,7 +461,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         if (newWaste > 0) {
             partialWaste %= 1;
             long leftoverWaste = Math.max(0, newWaste - wasteTank.getNeeded());
-            GasStack wasteToAdd = MekanismGases.NUCLEAR_WASTE.getStack(newWaste);
+            ChemicalStack wasteToAdd = MekanismChemicals.NUCLEAR_WASTE.getStack(newWaste);
             wasteTank.insert(wasteToAdd, Action.EXECUTE, AutomationType.INTERNAL);
             if (leftoverWaste > 0 && IRadiationManager.INSTANCE.isRadiationEnabled()) {
                 //Check if radiation is enabled in order to allow for short-circuiting when it will NO-OP further down the line anyway
@@ -612,7 +611,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     }
 
     @ComputerMethod
-    Either<ChemicalStack<?>, FluidStack> getCoolant() {
+    Either<ChemicalStack, FluidStack> getCoolant() {
         if (fluidCoolantTank.isEmpty() && !gasCoolantTank.isEmpty()) {
             return Either.left(gasCoolantTank.getStack());
         }

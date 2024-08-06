@@ -4,10 +4,6 @@ import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.infuse.InfuseType;
-import mekanism.api.chemical.pigment.Pigment;
-import mekanism.api.chemical.slurry.Slurry;
 import mekanism.client.render.data.ChemicalRenderData.GasRenderData;
 import mekanism.client.render.data.ChemicalRenderData.InfusionRenderData;
 import mekanism.client.render.data.ChemicalRenderData.PigmentRenderData;
@@ -56,7 +52,7 @@ public abstract class RenderData {
     public static class Builder<DATA_TYPE extends RenderData> {
 
         @Nullable
-        private final Chemical<?> chemical;
+        private final Chemical chemical;
         private final FluidStack fluid;
         @Nullable
         private BlockPos location;
@@ -64,12 +60,12 @@ public abstract class RenderData {
         private int length;
         private int width;
 
-        private Builder(@Nullable Chemical<?> chemical, FluidStack fluid) {
+        private Builder(@Nullable Chemical chemical, FluidStack fluid) {
             this.chemical = chemical;
             this.fluid = fluid;
         }
 
-        public static <CHEMICAL extends Chemical<CHEMICAL>> Builder<ChemicalRenderData<CHEMICAL>> create(ChemicalStack<CHEMICAL> chemical) {
+        public static <CHEMICAL extends Chemical> Builder<ChemicalRenderData<CHEMICAL>> create(ChemicalStack chemical) {
             if (chemical.isEmpty()) {
                 throw new IllegalArgumentException("Chemical may not be empty");
             }
@@ -119,13 +115,13 @@ public abstract class RenderData {
             RenderData data;
             if (!fluid.isEmpty()) {
                 data = new FluidRenderData(location, width, height, length, fluid);
-            } else if (chemical instanceof Gas gas) {
+            } else if (chemical instanceof Chemical gas) {
                 data = new GasRenderData(location, width, height, length, gas);
-            } else if (chemical instanceof InfuseType infuseType) {
+            } else if (chemical instanceof Chemical infuseType) {
                 data = new InfusionRenderData(location, width, height, length, infuseType);
-            } else if (chemical instanceof Pigment pigment) {
+            } else if (chemical instanceof Chemical pigment) {
                 data = new PigmentRenderData(location, width, height, length, pigment);
-            } else if (chemical instanceof Slurry slurry) {
+            } else if (chemical instanceof Chemical slurry) {
                 data = new SlurryRenderData(location, width, height, length, slurry);
             } else {
                 throw new IllegalStateException("Incomplete render data builder, missing or unknown chemical or fluid.");

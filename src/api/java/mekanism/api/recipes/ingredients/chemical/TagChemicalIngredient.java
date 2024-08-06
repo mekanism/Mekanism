@@ -3,6 +3,7 @@ package mekanism.api.recipes.ingredients.chemical;
 import com.mojang.serialization.MapCodec;
 import java.util.function.Function;
 import java.util.stream.Stream;
+import mekanism.api.MekanismAPI;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
@@ -23,52 +24,53 @@ import org.jetbrains.annotations.Nullable;
  * @since 10.6.0
  */
 @NothingNullByDefault
-public abstract non-sealed class TagChemicalIngredient<CHEMICAL extends Chemical<CHEMICAL>, INGREDIENT extends IChemicalIngredient<CHEMICAL, INGREDIENT>>
-      extends ChemicalIngredient<CHEMICAL, INGREDIENT> {
+public non-sealed class TagChemicalIngredient
+      extends ChemicalIngredient {
+
+    public static final MapCodec<TagChemicalIngredient> CODEC = codec(MekanismAPI.CHEMICAL_REGISTRY_NAME, TagChemicalIngredient::new);
 
     /**
      * Helper to create the codec for tag ingredients.
      */
     @Internal
-    protected static <CHEMICAL extends Chemical<CHEMICAL>, TAG extends TagChemicalIngredient<CHEMICAL, ?>> MapCodec<TAG> codec(
-          ResourceKey<? extends Registry<CHEMICAL>> registryName, Function<TagKey<CHEMICAL>, TAG> constructor) {
+    protected static <TAG extends TagChemicalIngredient> MapCodec<TAG> codec(
+          ResourceKey<? extends Registry<Chemical>> registryName, Function<TagKey<Chemical>, TAG> constructor) {
         return TagKey.codec(registryName).xmap(constructor, TagChemicalIngredient::tag).fieldOf(SerializationConstants.TAG);
     }
 
-    private final TagKey<CHEMICAL> tag;
+    private final TagKey<Chemical> tag;
 
     /**
      * @param tag Tag key to match.
      */
-    @Internal
-    protected TagChemicalIngredient(TagKey<CHEMICAL> tag) {
+    public TagChemicalIngredient(TagKey<Chemical> tag) {
         this.tag = tag;
     }
 
     @Override
-    public final boolean test(CHEMICAL chemical) {
+    public final boolean test(Chemical chemical) {
         return chemical.is(tag());
     }
 
     @Override
-    public final Stream<CHEMICAL> generateChemicals() {
-        return registry().getTag(tag())
+    public final Stream<Chemical> generateChemicals() {
+        return MekanismAPI.CHEMICAL_REGISTRY.getTag(tag())
               .stream()
               .flatMap(HolderSet::stream)
               .map(Holder::value);
     }
 
-    /**
-     * {@return tag key to match}
-     */
-    public final TagKey<CHEMICAL> tag() {
-        return tag;
+    @Override
+    public MapCodec<? extends IChemicalIngredient> codec() {
+        return CODEC;
     }
 
     /**
-     * Registry to look up the tag elements from.
+     * {@return tag key to match}
      */
-    protected abstract Registry<CHEMICAL> registry();
+    public final TagKey<Chemical> tag() {
+        return tag;
+    }
 
     @Override
     public int hashCode() {
@@ -82,6 +84,6 @@ public abstract non-sealed class TagChemicalIngredient<CHEMICAL extends Chemical
         } else if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        return tag.equals(((TagChemicalIngredient<?, ?>) obj).tag);
+        return tag.equals(((TagChemicalIngredient) obj).tag);
     }
 }

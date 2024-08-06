@@ -2,7 +2,6 @@ package mekanism.common.integration.crafttweaker.recipe.manager;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
 import mekanism.common.integration.crafttweaker.CrTConstants;
@@ -14,8 +13,8 @@ import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_ITEM_STACK_TO_CHEMICAL)
-public abstract class ItemStackToChemicalRecipeManager<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-      CRT_STACK extends ICrTChemicalStack<CHEMICAL, STACK, CRT_STACK>, RECIPE extends ItemStackToChemicalRecipe<CHEMICAL, STACK>>
+public abstract class ItemStackToChemicalRecipeManager<
+      RECIPE extends ItemStackToChemicalRecipe>
       extends MekanismRecipeManager<SingleRecipeInput, RECIPE> {
 
     protected ItemStackToChemicalRecipeManager(IMekanismRecipeTypeProvider<SingleRecipeInput, RECIPE, ?> recipeType) {
@@ -40,7 +39,7 @@ public abstract class ItemStackToChemicalRecipeManager<CHEMICAL extends Chemical
      * @param output Chemical stack representing the output of the recipe.
      */
     @ZenCodeType.Method
-    public void addRecipe(String name, IIngredientWithAmount input, CRT_STACK output) {
+    public void addRecipe(String name, IIngredientWithAmount input, ICrTChemicalStack output) {
         addRecipe(name, makeRecipe(input, output));
     }
 
@@ -50,11 +49,11 @@ public abstract class ItemStackToChemicalRecipeManager<CHEMICAL extends Chemical
      * @param input  {@link IIngredientWithAmount} representing the input of the recipe.
      * @param output Chemical stack representing the output of the recipe. Will be validated as not empty.
      */
-    public final RECIPE makeRecipe(IIngredientWithAmount input, CRT_STACK output) {
+    public final RECIPE makeRecipe(IIngredientWithAmount input, ICrTChemicalStack output) {
         return makeRecipe(input, getAndValidateNotEmpty(output));
     }
 
-    protected abstract RECIPE makeRecipe(IIngredientWithAmount input, STACK output);
+    protected abstract RECIPE makeRecipe(IIngredientWithAmount input, ChemicalStack output);
 
     @Override
     protected String describeOutputs(RECIPE recipe) {

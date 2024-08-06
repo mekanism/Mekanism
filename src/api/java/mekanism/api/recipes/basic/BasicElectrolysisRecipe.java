@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
@@ -16,8 +16,8 @@ import org.jetbrains.annotations.Contract;
 public class BasicElectrolysisRecipe extends ElectrolysisRecipe {
 
     protected final FluidStackIngredient input;
-    protected final GasStack leftGasOutput;
-    protected final GasStack rightGasOutput;
+    protected final ChemicalStack leftGasOutput;
+    protected final ChemicalStack rightGasOutput;
     protected final long energyMultiplier;//todo double?
 
     /**
@@ -26,7 +26,7 @@ public class BasicElectrolysisRecipe extends ElectrolysisRecipe {
      * @param leftGasOutput    Left output.
      * @param rightGasOutput   Right output.
      */
-    public BasicElectrolysisRecipe(FluidStackIngredient input, long energyMultiplier, GasStack leftGasOutput, GasStack rightGasOutput) {
+    public BasicElectrolysisRecipe(FluidStackIngredient input, long energyMultiplier, ChemicalStack leftGasOutput, ChemicalStack rightGasOutput) {
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         this.energyMultiplier = energyMultiplier;
         if (energyMultiplier < 1) {
@@ -74,11 +74,11 @@ public class BasicElectrolysisRecipe extends ElectrolysisRecipe {
         return "electrolytic_separator";
     }
 
-    public GasStack getLeftGasOutput() {
+    public ChemicalStack getLeftGasOutput() {
         return leftGasOutput;
     }
 
-    public GasStack getRightGasOutput() {
+    public ChemicalStack getRightGasOutput() {
         return rightGasOutput;
     }
 

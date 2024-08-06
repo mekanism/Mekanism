@@ -8,8 +8,8 @@ import java.util.function.Consumer;
 import java.util.function.IntFunction;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasHandler;
+import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.ILangEntry;
@@ -22,7 +22,7 @@ import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IModeItem.IAttachmentBasedModeItem;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.registries.MekanismDataComponents;
-import mekanism.common.registries.MekanismGases;
+import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
@@ -146,7 +146,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IGasItem
 
     @Override
     public void addItems(Consumer<ItemStack> tabOutput) {
-        tabOutput.accept(ChemicalUtil.getFilledVariant(this, MekanismGases.HYDROGEN));
+        tabOutput.accept(ChemicalUtil.getFilledVariant(this, MekanismChemicals.HYDROGEN));
     }
 
     @Override
@@ -162,10 +162,10 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IGasItem
     @Override
     public void addHUDStrings(List<Component> list, Player player, ItemStack stack, EquipmentSlot slotType) {
         boolean hasGas = false;
-        IGasHandler gasHandlerItem = Capabilities.GAS.getCapability(stack);
-        if (gasHandlerItem != null && gasHandlerItem.getTanks() > 0) {
+        IChemicalHandler gasHandlerItem = Capabilities.CHEMICAL.getCapability(stack);
+        if (gasHandlerItem != null && gasHandlerItem.getChemicalTanks() > 0) {
             //Validate something didn't go terribly wrong, and we actually do have the tank we expect to have
-            GasStack storedGas = gasHandlerItem.getChemicalInTank(0);
+            ChemicalStack storedGas = gasHandlerItem.getChemicalInTank(0);
             if (!storedGas.isEmpty()) {
                 list.add(MekanismLang.FLAMETHROWER_STORED.translateColored(EnumColor.GRAY, EnumColor.ORANGE, storedGas.getAmount()));
                 hasGas = true;
@@ -211,7 +211,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IGasItem
     public static boolean isIdleFlamethrower(Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         //If a flamethrower has no gas it can't be idle
-        return !stack.isEmpty() && stack.getItem() instanceof ItemFlamethrower && ChemicalUtil.hasGas(stack);
+        return !stack.isEmpty() && stack.getItem() instanceof ItemFlamethrower && ChemicalUtil.hasAnyChemical(stack);
     }
 
     @NothingNullByDefault

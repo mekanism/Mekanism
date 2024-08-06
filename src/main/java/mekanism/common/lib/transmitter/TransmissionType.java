@@ -3,7 +3,6 @@ package mekanism.common.lib.transmitter;
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
 import java.util.function.IntFunction;
-import mekanism.api.RelativeSide;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.ILangEntry;
@@ -19,10 +18,11 @@ import net.minecraft.util.StringRepresentable;
 public enum TransmissionType implements IHasTranslationKey, StringRepresentable {
     ENERGY("EnergyNetwork", "energy", MekanismLang.TRANSMISSION_TYPE_ENERGY),
     FLUID("FluidNetwork", "fluids", MekanismLang.TRANSMISSION_TYPE_FLUID),
-    GAS("GasNetwork", "gases", MekanismLang.TRANSMISSION_TYPE_GAS),
+    CHEMICAL("ChemicalNetwork", "chemicals", MekanismLang.TRANSMISSION_TYPE_CHEMICALS),
+    /*GAS("GasNetwork", "gases", MekanismLang.TRANSMISSION_TYPE_GAS),
     INFUSION("InfusionNetwork", "infuse_types", MekanismLang.TRANSMISSION_TYPE_INFUSION),
     PIGMENT("PigmentNetwork", "pigments", MekanismLang.TRANSMISSION_TYPE_PIGMENT),
-    SLURRY("SlurryNetwork", "slurries", MekanismLang.TRANSMISSION_TYPE_SLURRY),
+    SLURRY("SlurryNetwork", "slurries", MekanismLang.TRANSMISSION_TYPE_SLURRY),*/
     ITEM("InventoryNetwork", "items", MekanismLang.TRANSMISSION_TYPE_ITEM),
     HEAT("HeatNetwork", "heat", MekanismLang.TRANSMISSION_TYPE_HEAT);
 
@@ -58,7 +58,7 @@ public enum TransmissionType implements IHasTranslationKey, StringRepresentable 
     }
 
     public boolean isChemical() {
-        return this == GAS || this == INFUSION || this == PIGMENT || this == SLURRY;
+        return this == CHEMICAL;
     }
 
     public boolean checkTransmissionType(Transmitter<?, ?, ?> transmitter) {

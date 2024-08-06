@@ -84,7 +84,7 @@ public class RecipeCacheLookupMonitor<RECIPE extends MekanismRecipe<?>> implemen
     public void loadSavedData(@NotNull CachedRecipe<RECIPE> cached, int cacheIndex) {
         if (cachedIndexMatches(cacheIndex)) {
             ICachedRecipeHolder.super.loadSavedData(cached, cacheIndex);
-            if (cached instanceof ItemStackConstantChemicalToItemStackCachedRecipe<?, ?, ?, ?> c &&
+            if (cached instanceof ItemStackConstantChemicalToItemStackCachedRecipe<?> c &&
                 handler instanceof IRecipeLookupHandler.ConstantUsageRecipeLookupHandler lookupHandler) {
                 c.loadSavedUsageSoFar(lookupHandler.getSavedUsedSoFar(cacheIndex));
             }

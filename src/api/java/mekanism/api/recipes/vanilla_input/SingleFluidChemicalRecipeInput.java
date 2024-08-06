@@ -1,7 +1,6 @@
 package mekanism.api.recipes.vanilla_input;
 
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 
@@ -11,8 +10,8 @@ import net.neoforged.neoforge.fluids.FluidStack;
  * @since 10.6.0
  */
 @NothingNullByDefault
-public record SingleFluidChemicalRecipeInput<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>>(FluidStack fluid, STACK chemical) implements
-      FluidChemicalRecipeInput<CHEMICAL, STACK> {
+public record SingleFluidChemicalRecipeInput(FluidStack fluid, ChemicalStack chemical) implements
+      FluidChemicalRecipeInput {
 
     @Override
     public FluidStack getFluid(int index) {
@@ -23,7 +22,7 @@ public record SingleFluidChemicalRecipeInput<CHEMICAL extends Chemical<CHEMICAL>
     }
 
     @Override
-    public STACK getChemical(int index) {
+    public ChemicalStack getChemical(int index) {
         if (index != 0) {
             throw new IllegalArgumentException("No chemical for index " + index);
         }

@@ -26,7 +26,7 @@ public class ChemicalUtils {
      *
      * @since 10.5.13
      */
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> STACK insert(STACK stack, @Nullable Direction side, Action action,
+    public static <STACK extends ChemicalStack> STACK insert(STACK stack, @Nullable Direction side, Action action,
           STACK empty, ToIntFunction<@Nullable Direction> tankCount, InContainerGetter<STACK> inTankGetter, ContainerInteraction<STACK> insertChemical) {
         if (stack.isEmpty()) {
             //Short circuit if nothing is actually being inserted
@@ -72,13 +72,13 @@ public class ChemicalUtils {
      *
      * @since 10.5.13
      */
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> STACK insert(STACK stack,
-          @Nullable Direction side, Function<@Nullable Direction, List<TANK>> tankSupplier, Action action, AutomationType automationType, STACK empty) {
+    public static ChemicalStack insert(ChemicalStack stack,
+          @Nullable Direction side, Function<@Nullable Direction, List<IChemicalTank>> tankSupplier, Action action, AutomationType automationType, ChemicalStack empty) {
         if (stack.isEmpty()) {
             //Short circuit if nothing is actually being inserted
             return empty;
         }
-        List<TANK> chemicalTanks = tankSupplier.apply(side);
+        List<IChemicalTank> chemicalTanks = tankSupplier.apply(side);
         return insert(stack, action, automationType, empty, chemicalTanks.size(), chemicalTanks);
     }
 
@@ -87,8 +87,8 @@ public class ChemicalUtils {
      *
      * @since 10.6.0
      */
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> STACK insert(STACK stack,
-          Action action, AutomationType automationType, STACK empty, int size, Iterable<TANK> chemicalTanks) {
+    public static ChemicalStack insert(ChemicalStack stack,
+          Action action, AutomationType automationType, ChemicalStack empty, int size, Iterable<IChemicalTank> chemicalTanks) {
         if (stack.isEmpty()) {
             //Short circuit if nothing is actually being inserted
             return empty;
@@ -97,14 +97,14 @@ public class ChemicalUtils {
         } else if (size == 1) {
             return chemicalTanks.iterator().next().insert(stack, action, automationType);
         }
-        STACK toInsert = stack;
+        ChemicalStack toInsert = stack;
         //Start by trying to insert into the tanks that have the same type
-        List<TANK> emptyTanks = new ArrayList<>();
-        for (TANK tank : chemicalTanks) {
+        List<IChemicalTank> emptyTanks = new ArrayList<>();
+        for (IChemicalTank tank : chemicalTanks) {
             if (tank.isEmpty()) {
                 emptyTanks.add(tank);
             } else if (tank.isTypeEqual(stack)) {
-                STACK remainder = tank.insert(toInsert, action, automationType);
+                ChemicalStack remainder = tank.insert(toInsert, action, automationType);
                 if (remainder.isEmpty()) {
                     //If we have no remaining chemical, return that we fit it all
                     return empty;
@@ -113,8 +113,8 @@ public class ChemicalUtils {
                 toInsert = remainder;
             }
         }
-        for (TANK tank : emptyTanks) {
-            STACK remainder = tank.insert(toInsert, action, automationType);
+        for (IChemicalTank tank : emptyTanks) {
+            ChemicalStack remainder = tank.insert(toInsert, action, automationType);
             if (remainder.isEmpty()) {
                 //If we have no remaining chemical, return that we fit it all
                 return empty;
@@ -130,8 +130,8 @@ public class ChemicalUtils {
      *
      * @since 10.5.13
      */
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> STACK extract(long amount, @Nullable Direction side, Action action,
-          STACK empty, ToIntFunction<@Nullable Direction> tankCount, InContainerGetter<STACK> inTankGetter, LongContainerInteraction<STACK> extractChemical) {
+    public static ChemicalStack extract(long amount, @Nullable Direction side, Action action,
+          ChemicalStack empty, ToIntFunction<@Nullable Direction> tankCount, InContainerGetter<ChemicalStack> inTankGetter, LongContainerInteraction<ChemicalStack> extractChemical) {
         if (amount == 0) {
             return empty;
         }
@@ -141,12 +141,12 @@ public class ChemicalUtils {
         } else if (tanks == 1) {
             return extractChemical.interact(0, amount, side, action);
         }
-        STACK extracted = empty;
+        ChemicalStack extracted = empty;
         long toDrain = amount;
         for (int tank = 0; tank < tanks; tank++) {
             if (extracted.isEmpty() || ChemicalStack.isSameChemical(extracted, inTankGetter.getStored(tank, side))) {
                 //If there is chemical in the tank that matches the type we have started draining, or we haven't found a type yet
-                STACK drained = extractChemical.interact(tank, toDrain, side, action);
+                ChemicalStack drained = extractChemical.interact(tank, toDrain, side, action);
                 if (!drained.isEmpty()) {
                     //If we were able to drain something, set it as the type we have extracted/increase how much we have extracted
                     if (extracted.isEmpty()) {
@@ -172,12 +172,11 @@ public class ChemicalUtils {
      *
      * @since 10.5.13
      */
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> STACK extract(long amount,
-          @Nullable Direction side, Function<@Nullable Direction, List<TANK>> tankSupplier, Action action, AutomationType automationType, STACK empty) {
+    public static ChemicalStack extract(long amount, @Nullable Direction side, Function<@Nullable Direction, List<IChemicalTank>> tankSupplier, Action action, AutomationType automationType, ChemicalStack empty) {
         if (amount == 0) {
             return empty;
         }
-        List<TANK> chemicalTanks = tankSupplier.apply(side);
+        List<IChemicalTank> chemicalTanks = tankSupplier.apply(side);
         return extract(amount, action, automationType, empty, chemicalTanks.size(), chemicalTanks);
     }
 
@@ -186,19 +185,18 @@ public class ChemicalUtils {
      *
      * @since 10.6.0
      */
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> STACK extract(long amount,
-          Action action, AutomationType automationType, STACK empty, int size, Iterable<TANK> chemicalTanks) {
+    public static ChemicalStack extract(long amount, Action action, AutomationType automationType, ChemicalStack empty, int size, Iterable<IChemicalTank> chemicalTanks) {
         if (amount == 0 || size == 0) {
             return empty;
         } else if (size == 1) {
             return chemicalTanks.iterator().next().extract(amount, action, automationType);
         }
-        STACK extracted = empty;
+        ChemicalStack extracted = empty;
         long toDrain = amount;
-        for (TANK tank : chemicalTanks) {
+        for (IChemicalTank tank : chemicalTanks) {
             if (extracted.isEmpty() || tank.isTypeEqual(extracted)) {
                 //If there is chemical in the tank that matches the type we have started draining, or we haven't found a type yet
-                STACK drained = tank.extract(toDrain, action, automationType);
+                ChemicalStack drained = tank.extract(toDrain, action, automationType);
                 if (!drained.isEmpty()) {
                     //If we were able to drain something, set it as the type we have extracted/increase how much we have extracted
                     if (extracted.isEmpty()) {
@@ -224,8 +222,8 @@ public class ChemicalUtils {
      *
      * @since 10.5.13
      */
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> STACK extract(STACK stack, @Nullable Direction side, Action action, STACK empty,
-          ToIntFunction<@Nullable Direction> tankCount, InContainerGetter<STACK> inTankGetter, LongContainerInteraction<STACK> extractChemical) {
+    public static ChemicalStack extract(ChemicalStack stack, @Nullable Direction side, Action action, ChemicalStack empty,
+          ToIntFunction<@Nullable Direction> tankCount, InContainerGetter<ChemicalStack> inTankGetter, LongContainerInteraction<ChemicalStack> extractChemical) {
         if (stack.isEmpty()) {
             return empty;
         }
@@ -233,18 +231,18 @@ public class ChemicalUtils {
         if (tanks == 0) {
             return empty;
         } else if (tanks == 1) {
-            STACK inTank = inTankGetter.getStored(0, side);
+            ChemicalStack inTank = inTankGetter.getStored(0, side);
             if (inTank.isEmpty() || !ChemicalStack.isSameChemical(inTank, stack)) {
                 return empty;
             }
             return extractChemical.interact(0, stack.getAmount(), side, action);
         }
-        STACK extracted = empty;
+        ChemicalStack extracted = empty;
         long toDrain = stack.getAmount();
         for (int tank = 0; tank < tanks; tank++) {
             if (ChemicalStack.isSameChemical(stack, inTankGetter.getStored(tank, side))) {
                 //If there is chemical in the tank that matches the type we are trying to drain, try to drain from it
-                STACK drained = extractChemical.interact(tank, toDrain, side, action);
+                ChemicalStack drained = extractChemical.interact(tank, toDrain, side, action);
                 if (!drained.isEmpty()) {
                     //If we were able to drain something, set it as the type we have extracted/increase how much we have extracted
                     if (extracted.isEmpty()) {
@@ -269,12 +267,11 @@ public class ChemicalUtils {
      *
      * @since 10.5.13
      */
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> STACK extract(STACK stack,
-          @Nullable Direction side, Function<@Nullable Direction, List<TANK>> tankSupplier, Action action, AutomationType automationType, STACK empty) {
+    public static ChemicalStack extract(ChemicalStack stack, @Nullable Direction side, Function<@Nullable Direction, List<IChemicalTank>> tankSupplier, Action action, AutomationType automationType, ChemicalStack empty) {
         if (stack.isEmpty()) {
             return empty;
         }
-        List<TANK> chemicalTanks = tankSupplier.apply(side);
+        List<IChemicalTank> chemicalTanks = tankSupplier.apply(side);
         return extract(stack, action, automationType, empty, chemicalTanks.size(), chemicalTanks);
     }
 
@@ -283,23 +280,23 @@ public class ChemicalUtils {
      *
      * @since 10.6.0
      */
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> STACK extract(STACK stack,
-          Action action, AutomationType automationType, STACK empty, int size, Iterable<TANK> chemicalTanks) {
+    public static ChemicalStack extract(ChemicalStack stack,
+          Action action, AutomationType automationType, ChemicalStack empty, int size, Iterable<IChemicalTank> chemicalTanks) {
         if (stack.isEmpty() || size == 0) {
             return empty;
         } else if (size == 1) {
-            TANK tank = chemicalTanks.iterator().next();
+            IChemicalTank tank = chemicalTanks.iterator().next();
             if (tank.isEmpty() || !tank.isTypeEqual(stack)) {
                 return empty;
             }
             return tank.extract(stack.getAmount(), action, automationType);
         }
-        STACK extracted = empty;
+        ChemicalStack extracted = empty;
         long toDrain = stack.getAmount();
-        for (TANK tank : chemicalTanks) {
+        for (IChemicalTank tank : chemicalTanks) {
             if (tank.isTypeEqual(stack)) {
                 //If there is chemical in the tank that matches the type we are trying to drain, try to drain from it
-                STACK drained = tank.extract(toDrain, action, automationType);
+                ChemicalStack drained = tank.extract(toDrain, action, automationType);
                 if (!drained.isEmpty()) {
                     //If we were able to drain something, set it as the type we have extracted/increase how much we have extracted
                     if (extracted.isEmpty()) {

@@ -11,10 +11,6 @@ import mekanism.api.robit.RobitSkin;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
-import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
-import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTInfusionStack;
-import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTPigmentStack;
-import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTSlurryStack;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -25,55 +21,16 @@ import org.openzen.zencode.java.ZenCodeType;
 public class CrTBracketHandlers {
 
     /**
-     * Gets the {@link ICrTGasStack} based on registry name. Throws an error if it can't find the {@link mekanism.api.chemical.gas.Gas}.
+     * Gets the {@link ICrTChemicalStack} based on registry name. Throws an error if it can't find the {@link Chemical}.
      *
-     * @param tokens The {@link mekanism.api.chemical.gas.Gas}'s resource location.
+     * @param tokens The {@link Chemical}'s resource location.
      *
-     * @return A stack of the {@link mekanism.api.chemical.gas.Gas} with an amount of one mB.
+     * @return A stack of the {@link Chemical} with an amount of one mB.
      */
     @ZenCodeType.Method
-    @BracketResolver(CrTConstants.BRACKET_GAS)
-    public static ICrTGasStack getGasStack(String tokens) {
-        return getChemicalStack(CrTConstants.BRACKET_GAS, tokens, MekanismAPI.GAS_REGISTRY, CrTUtils::stackFromGas);
-    }
-
-    /**
-     * Gets the {@link ICrTInfusionStack} based on registry name. Throws an error if it can't find the {@link mekanism.api.chemical.infuse.InfuseType}.
-     *
-     * @param tokens The {@link mekanism.api.chemical.infuse.InfuseType}'s resource location.
-     *
-     * @return A stack of the {@link mekanism.api.chemical.infuse.InfuseType} with an amount of one mB.
-     */
-    @ZenCodeType.Method
-    @BracketResolver(CrTConstants.BRACKET_INFUSE_TYPE)
-    public static ICrTInfusionStack getInfusionStack(String tokens) {
-        return getChemicalStack(CrTConstants.BRACKET_INFUSE_TYPE, tokens, MekanismAPI.INFUSE_TYPE_REGISTRY, CrTUtils::stackFromInfuseType);
-    }
-
-    /**
-     * Gets the {@link ICrTPigmentStack} based on registry name. Throws an error if it can't find the {@link mekanism.api.chemical.pigment.Pigment}.
-     *
-     * @param tokens The {@link mekanism.api.chemical.pigment.Pigment}'s resource location.
-     *
-     * @return A stack of the {@link mekanism.api.chemical.pigment.Pigment} with an amount of one mB.
-     */
-    @ZenCodeType.Method
-    @BracketResolver(CrTConstants.BRACKET_PIGMENT)
-    public static ICrTPigmentStack getPigmentStack(String tokens) {
-        return getChemicalStack(CrTConstants.BRACKET_PIGMENT, tokens, MekanismAPI.PIGMENT_REGISTRY, CrTUtils::stackFromPigment);
-    }
-
-    /**
-     * Gets the {@link ICrTSlurryStack} based on registry name. Throws an error if it can't find the {@link mekanism.api.chemical.slurry.Slurry}.
-     *
-     * @param tokens The {@link mekanism.api.chemical.slurry.Slurry}'s resource location.
-     *
-     * @return A stack of the {@link mekanism.api.chemical.slurry.Slurry} with an amount of one mB.
-     */
-    @ZenCodeType.Method
-    @BracketResolver(CrTConstants.BRACKET_SLURRY)
-    public static ICrTSlurryStack getSlurryStack(String tokens) {
-        return getChemicalStack(CrTConstants.BRACKET_SLURRY, tokens, MekanismAPI.SLURRY_REGISTRY, CrTUtils::stackFromSlurry);
+    @BracketResolver(CrTConstants.BRACKET_CHEMICAL)
+    public static ICrTChemicalStack getChemicalStack(String tokens) {
+        return getChemicalStack(CrTConstants.BRACKET_CHEMICAL, tokens, MekanismAPI.CHEMICAL_REGISTRY, CrTUtils::stackFromChemical);
     }
 
     /**
@@ -102,7 +59,7 @@ public class CrTBracketHandlers {
         return getValue(CrTConstants.BRACKET_MODULE_DATA, tokens, MekanismAPI.MODULE_REGISTRY);
     }
 
-    private static <CHEMICAL extends Chemical<CHEMICAL>, CRT_STACK extends ICrTChemicalStack<CHEMICAL, ?, CRT_STACK>> CRT_STACK getChemicalStack(String bracket,
+    private static <CHEMICAL extends Chemical, CRT_STACK extends ICrTChemicalStack> CRT_STACK getChemicalStack(String bracket,
           String tokens, Registry<CHEMICAL> registry, Function<CHEMICAL, CRT_STACK> getter) {
         return getter.apply(getValue(bracket, tokens, registry));
     }

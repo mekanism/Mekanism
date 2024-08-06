@@ -1,5 +1,6 @@
 package mekanism.api.recipes.ingredients.chemical;
 
+import com.mojang.serialization.MapCodec;
 import java.util.stream.Stream;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
@@ -16,21 +17,29 @@ import org.jetbrains.annotations.ApiStatus.Internal;
  * @since 10.6.0
  */
 @NothingNullByDefault
-public abstract non-sealed class EmptyChemicalIngredient<CHEMICAL extends Chemical<CHEMICAL>, INGREDIENT extends IChemicalIngredient<CHEMICAL, INGREDIENT>>
-      extends ChemicalIngredient<CHEMICAL, INGREDIENT> {
+public non-sealed class EmptyChemicalIngredient
+      extends ChemicalIngredient {
+
+    public static final EmptyChemicalIngredient INSTANCE = new EmptyChemicalIngredient();
+    public static final MapCodec<EmptyChemicalIngredient> CODEC = MapCodec.unit(INSTANCE);
 
     @Internal
     protected EmptyChemicalIngredient() {
     }
 
     @Override
-    public final boolean test(CHEMICAL chemical) {
+    public final boolean test(Chemical chemical) {
         return chemical.isEmptyType();
     }
 
     @Override
-    public final Stream<CHEMICAL> generateChemicals() {
+    public final Stream<Chemical> generateChemicals() {
         return Stream.empty();
+    }
+
+    @Override
+    public MapCodec<? extends IChemicalIngredient> codec() {
+        return CODEC;
     }
 
     @Override

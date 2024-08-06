@@ -4,10 +4,9 @@ import java.util.List;
 import java.util.Set;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalTankBuilder;
-import mekanism.api.chemical.infuse.IInfusionTank;
-import mekanism.api.chemical.infuse.InfuseType;
-import mekanism.api.chemical.infuse.InfusionStack;
+import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IBlockProvider;
@@ -49,9 +48,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFactory<MetallurgicInfuserRecipe> implements IHasDumpButton,
-      ItemChemicalRecipeLookupHandler<InfuseType, InfusionStack, MetallurgicInfuserRecipe> {
+      ItemChemicalRecipeLookupHandler<MetallurgicInfuserRecipe> {
 
-    private static final CheckRecipeType<ItemStack, InfusionStack, MetallurgicInfuserRecipe, ItemStack> OUTPUT_CHECK =
+    private static final CheckRecipeType<ItemStack, ChemicalStack, MetallurgicInfuserRecipe, ItemStack> OUTPUT_CHECK =
           (recipe, input, extra, output) -> InventoryUtils.areItemsStackable(recipe.getOutput(input, extra), output);
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
           RecipeError.NOT_ENOUGH_ENERGY,
@@ -65,28 +64,28 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
           RecipeError.NOT_ENOUGH_SECONDARY_INPUT
     );
 
-    private final IInputHandler<@NotNull InfusionStack> infusionInputHandler;
+    private final IInputHandler<@NotNull ChemicalStack> infusionInputHandler;
 
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInfuseTypeItem", docPlaceholder = "infusion extra input slot")
     InfusionInventorySlot extraSlot;
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getInfuseType", "getInfuseTypeCapacity", "getInfuseTypeNeeded",
                                                                                         "getInfuseTypeFilledPercentage"}, docPlaceholder = "infusion buffer")
-    IInfusionTank infusionTank;
+    IChemicalTank infusionTank;
 
     public TileEntityMetallurgicInfuserFactory(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state, TRACKED_ERROR_TYPES, GLOBAL_ERROR_TYPES);
         infusionInputHandler = InputHelper.getInputHandler(infusionTank, RecipeError.NOT_ENOUGH_SECONDARY_INPUT);
-        configComponent.setupIOConfig(TransmissionType.INFUSION, infusionTank, RelativeSide.RIGHT).setCanEject(false);
+        configComponent.setupIOConfig(TransmissionType.CHEMICAL, infusionTank, RelativeSide.RIGHT).setCanEject(false);
     }
 
     @NotNull
     @Override
-    public IChemicalTankHolder<InfuseType, InfusionStack, IInfusionTank> getInitialInfusionTanks(IContentsListener listener) {
-        ChemicalTankHelper<InfuseType, InfusionStack, IInfusionTank> builder = ChemicalTankHelper.forSideInfusionWithConfig(this::getDirection, this::getConfig);
+    public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener) {
+        ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
         //If the tank's contents change make sure to call our extended content listener that also marks sorting as being needed
         // as maybe the valid recipes have changed, and we need to sort again and have all recipes know they may need to be rechecked
         // if they are not still valid
-        builder.addTank(infusionTank = ChemicalTankBuilder.INFUSION.create(TileEntityMetallurgicInfuser.MAX_INFUSE * tier.processes, this::containsRecipeB,
+        builder.addTank(infusionTank = ChemicalTankBuilder.CHEMICAL.create(TileEntityMetallurgicInfuser.MAX_INFUSE * tier.processes, this::containsRecipeB,
               markAllMonitorsChanged(listener)));
         return builder.build();
     }
@@ -98,7 +97,7 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
         builder.addSlot(extraSlot = InfusionInventorySlot.fillOrConvert(infusionTank, this::getLevel, listener, 7, 57));
     }
 
-    public IInfusionTank getInfusionTank() {
+    public IChemicalTank getInfusionTank() {
         return infusionTank;
     }
 
@@ -151,7 +150,7 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
 
     @NotNull
     @Override
-    public IMekanismRecipeTypeProvider<SingleItemChemicalRecipeInput<InfuseType, InfusionStack>, MetallurgicInfuserRecipe, ItemChemical<InfuseType, InfusionStack, MetallurgicInfuserRecipe>> getRecipeType() {
+    public IMekanismRecipeTypeProvider<SingleItemChemicalRecipeInput, MetallurgicInfuserRecipe, ItemChemical<MetallurgicInfuserRecipe>> getRecipeType() {
         return MekanismRecipeType.METALLURGIC_INFUSING;
     }
 

@@ -19,7 +19,7 @@ import net.neoforged.neoforge.common.util.TriPredicate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ChemicalTankSpec<CHEMICAL extends Chemical<CHEMICAL>> extends GenericTankSpec<CHEMICAL> {
+public class ChemicalTankSpec<CHEMICAL extends Chemical> extends GenericTankSpec<CHEMICAL> {
 
     private final LongSupplier rate;
     private final LongSupplier capacity;
@@ -50,15 +50,15 @@ public class ChemicalTankSpec<CHEMICAL extends Chemical<CHEMICAL>> extends Gener
         this.validator = validator;
     }
 
-    public <STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> TANK createTank(TankFromSpecCreator<CHEMICAL, STACK, TANK> tankCreator,
+    public <STACK extends ChemicalStack, TANK extends IChemicalTank> TANK createTank(TankFromSpecCreator<CHEMICAL, STACK, TANK> tankCreator,
           ItemStack stack) {
         LongSupplier capacity = stackBasedCapacity == null ? this.capacity : () -> stackBasedCapacity.applyAsLong(stack);
         return tankCreator.create(rate, capacity, canExtract, (chemical, automationType) -> canInsert.test(chemical, automationType, stack), isValid, validator, null);
     }
 
     //TODO - 1.20.5: Re-evaluate this
-    public <STACK extends ChemicalStack<CHEMICAL>, TANK extends ComponentBackedChemicalTank<CHEMICAL, STACK, ?>> void addTank(
-          ChemicalTanksBuilder<CHEMICAL, STACK, TANK, ?> builder, ComponentTankFromSpecCreator<CHEMICAL, STACK, TANK> tankCreator) {
+    public <STACK extends ChemicalStack, TANK extends ComponentBackedChemicalTank> void addTank(
+          ChemicalTanksBuilder builder, ComponentTankFromSpecCreator<CHEMICAL, STACK, TANK> tankCreator) {
         if (stackBasedCapacity == null) {
             builder.addTank(((type, attachedTo, containerIndex) -> tankCreator.create(attachedTo, containerIndex, canExtract,
                   (chemical, automationType) -> canInsert.test(chemical, automationType, attachedTo), isValid, rate, capacity, validator)));
@@ -69,29 +69,29 @@ public class ChemicalTankSpec<CHEMICAL extends Chemical<CHEMICAL>> extends Gener
     }
 
     @SuppressWarnings("Convert2Diamond")
-    public static <CHEMICAL extends Chemical<CHEMICAL>> ChemicalTankSpec<CHEMICAL> create(LongSupplier rate, LongSupplier capacity) {
+    public static <CHEMICAL extends Chemical> ChemicalTankSpec<CHEMICAL> create(LongSupplier rate, LongSupplier capacity) {
         return new ChemicalTankSpec<CHEMICAL>(rate, capacity, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueTri(), ConstantPredicates.alwaysTrue(),
               null, ConstantPredicates.alwaysTrue());
     }
 
-    public static <CHEMICAL extends Chemical<CHEMICAL>> ChemicalTankSpec<CHEMICAL> createFillOnly(LongSupplier rate, LongSupplier capacity,
+    public static <CHEMICAL extends Chemical> ChemicalTankSpec<CHEMICAL> createFillOnly(LongSupplier rate, LongSupplier capacity,
           Predicate<@NotNull CHEMICAL> isValid) {
         return createFillOnly(rate, capacity, isValid, ConstantPredicates.alwaysTrue());
     }
 
-    public static <CHEMICAL extends Chemical<CHEMICAL>> ChemicalTankSpec<CHEMICAL> createFillOnly(LongSupplier rate, LongSupplier capacity,
+    public static <CHEMICAL extends Chemical> ChemicalTankSpec<CHEMICAL> createFillOnly(LongSupplier rate, LongSupplier capacity,
           Predicate<@NotNull CHEMICAL> isValid, Predicate<@NotNull ItemStack> supportsStack) {
         return new ChemicalTankSpec<>(rate, capacity, ConstantPredicates.notExternal(), (chemical, automation, stack) -> supportsStack.test(stack), isValid, null, supportsStack);
     }
 
-    public static <CHEMICAL extends Chemical<CHEMICAL>> ChemicalTankSpec<CHEMICAL> createFillOnly(LongSupplier rate, ToLongFunction<ItemStack> stackBasedCapacity,
+    public static <CHEMICAL extends Chemical> ChemicalTankSpec<CHEMICAL> createFillOnly(LongSupplier rate, ToLongFunction<ItemStack> stackBasedCapacity,
           Predicate<@NotNull CHEMICAL> isValid, Predicate<@NotNull ItemStack> supportsStack) {
         return new ChemicalTankSpec<>(rate, stackBasedCapacity, ConstantPredicates.notExternal(),
               (chemical, automation, stack) -> supportsStack.test(stack), isValid, null, supportsStack);
     }
 
     @FunctionalInterface
-    public interface ComponentTankFromSpecCreator<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends ComponentBackedChemicalTank<CHEMICAL, STACK, ?>> {
+    public interface ComponentTankFromSpecCreator<CHEMICAL extends Chemical, STACK extends ChemicalStack, TANK extends ComponentBackedChemicalTank> {
 
         TANK create(ItemStack attachedTo, int tankIndex, BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> canExtract,
               BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> canInsert, Predicate<@NotNull CHEMICAL> isValid, LongSupplier rate, LongSupplier capacity,
@@ -104,7 +104,7 @@ public class ChemicalTankSpec<CHEMICAL extends Chemical<CHEMICAL>> extends Gener
     }
 
     @FunctionalInterface
-    public interface TankFromSpecCreator<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> {
+    public interface TankFromSpecCreator<CHEMICAL extends Chemical, STACK extends ChemicalStack, TANK extends IChemicalTank> {
 
         TANK create(LongSupplier rate, LongSupplier capacity, BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> canExtract,
               BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> canInsert, Predicate<@NotNull CHEMICAL> isValid, @Nullable ChemicalAttributeValidator validator,

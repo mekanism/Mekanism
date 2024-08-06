@@ -5,17 +5,15 @@ import java.util.function.Consumer;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalType;
-import mekanism.api.chemical.slurry.Slurry;
-import mekanism.api.chemical.slurry.SlurryBuilder;
 import mekanism.common.integration.jsonthings.builder.JsonSlurryBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 
 @NothingNullByDefault
-public class JsonSlurryParser extends JsonChemicalParser<Slurry, SlurryBuilder, JsonSlurryBuilder> {
+public class JsonSlurryParser extends JsonChemicalParser<JsonSlurryBuilder> {
 
     public JsonSlurryParser(IEventBus bus) {
-        super(bus, ChemicalType.SLURRY, "Slurry", MekanismAPI.SLURRY_REGISTRY_NAME);
+        super(bus, ChemicalType.SLURRY, "Slurry", MekanismAPI.CHEMICAL_REGISTRY_NAME);
     }
 
     @Override

@@ -3,10 +3,9 @@ package mekanism.api.recipes;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.chemical.ItemStackChemicalToItemStackRecipe;
-import mekanism.api.recipes.ingredients.GasStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
@@ -29,7 +28,7 @@ import org.jetbrains.annotations.NotNull;
  * </ul>
  */
 @NothingNullByDefault
-public abstract class ItemStackGasToItemStackRecipe extends ItemStackChemicalToItemStackRecipe<Gas, GasStack, GasStackIngredient> {
+public abstract class ItemStackGasToItemStackRecipe extends ItemStackChemicalToItemStackRecipe {
 
     private final RecipeType<? extends ItemStackGasToItemStackRecipe> recipeType;
 
@@ -41,18 +40,18 @@ public abstract class ItemStackGasToItemStackRecipe extends ItemStackChemicalToI
     public abstract ItemStackIngredient getItemInput();
 
     @Override
-    public abstract GasStackIngredient getChemicalInput();
+    public abstract ChemicalStackIngredient getChemicalInput();
 
     @Override
     @Contract(value = "_, _ -> new", pure = true)
-    public abstract ItemStack getOutput(ItemStack inputItem, GasStack inputChemical);
+    public abstract ItemStack getOutput(ItemStack inputItem, ChemicalStack inputChemical);
 
     @NotNull
     @Override
     public abstract ItemStack getResultItem(@NotNull HolderLookup.Provider provider);
 
     @Override
-    public abstract boolean test(ItemStack itemStack, GasStack gasStack);
+    public abstract boolean test(ItemStack itemStack, ChemicalStack gasStack);
 
     @Override
     public abstract List<@NotNull ItemStack> getOutputDefinition();

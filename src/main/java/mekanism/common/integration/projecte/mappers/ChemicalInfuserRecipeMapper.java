@@ -1,10 +1,10 @@
 package mekanism.common.integration.projecte.mappers;
 
 import java.util.List;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
 import mekanism.common.integration.projecte.IngredientHelper;
-import mekanism.common.integration.projecte.NSSGas;
+import mekanism.common.integration.projecte.NSSChemical;
 import mekanism.common.recipe.MekanismRecipeType;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.api.mapper.recipe.RecipeTypeMapper;
@@ -31,12 +31,12 @@ public class ChemicalInfuserRecipeMapper extends TypedMekanismRecipeMapper<Chemi
     @Override
     protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, ChemicalInfuserRecipe recipe) {
         boolean handled = false;
-        List<@NotNull GasStack> leftInputRepresentations = recipe.getLeftInput().getRepresentations();
-        List<@NotNull GasStack> rightInputRepresentations = recipe.getRightInput().getRepresentations();
-        for (GasStack leftRepresentation : leftInputRepresentations) {
-            NormalizedSimpleStack nssLeft = NSSGas.createGas(leftRepresentation);
-            for (GasStack rightRepresentation : rightInputRepresentations) {
-                GasStack output = recipe.getOutput(leftRepresentation, rightRepresentation);
+        List<@NotNull ChemicalStack> leftInputRepresentations = recipe.getLeftInput().getRepresentations();
+        List<@NotNull ChemicalStack> rightInputRepresentations = recipe.getRightInput().getRepresentations();
+        for (ChemicalStack leftRepresentation : leftInputRepresentations) {
+            NormalizedSimpleStack nssLeft = NSSChemical.createChemical(leftRepresentation);
+            for (ChemicalStack rightRepresentation : rightInputRepresentations) {
+                ChemicalStack output = recipe.getOutput(leftRepresentation, rightRepresentation);
                 if (!output.isEmpty()) {
                     IngredientHelper ingredientHelper = new IngredientHelper(mapper);
                     ingredientHelper.put(nssLeft, leftRepresentation.getAmount());

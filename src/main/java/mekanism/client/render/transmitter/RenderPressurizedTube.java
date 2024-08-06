@@ -28,7 +28,7 @@ public class RenderPressurizedTube extends RenderTransmitterBase<TileEntityPress
         BoxedChemicalNetwork network = tile.getTransmitter().getTransmitterNetwork();
         matrix.pushPose();
         matrix.translate(0.5, 0.5, 0.5);
-        Chemical<?> chemical = network.lastChemical.getChemical();
+        Chemical chemical = network.lastChemical.getChemical();
         renderModel(tile, matrix, renderer.getBuffer(Sheets.translucentCullBlockSheet()), chemical.getTint(), Math.max(0.2F, network.currentScale),
               LightTexture.FULL_BRIGHT, overlayLight, MekanismRenderer.getChemicalTexture(chemical));
         matrix.popPose();
@@ -45,7 +45,7 @@ public class RenderPressurizedTube extends RenderTransmitterBase<TileEntityPress
             BoxedPressurizedTube tube = tile.getTransmitter();
             if (tube.hasTransmitterNetwork()) {
                 BoxedChemicalNetwork network = tube.getTransmitterNetwork();
-                return !network.lastChemical.isEmpty() && !network.isTankEmpty() && network.currentScale > 0;
+                return !network.lastChemical.isEmptyType() && !network.isTankEmpty() && network.currentScale > 0;
             }
         }
         return false;

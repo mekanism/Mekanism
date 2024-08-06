@@ -2,13 +2,13 @@ package mekanism.client.recipe_viewer.jei.machine;
 
 import java.util.ArrayList;
 import java.util.List;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.ElectrolysisRecipe.ElectrolysisRecipeOutput;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.gauge.GaugeType;
+import mekanism.client.gui.element.gauge.GuiChemicalGauge;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
-import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.SlotType;
@@ -34,8 +34,10 @@ public class ElectrolysisRecipeCategory extends HolderRecipeCategory<Electrolysi
     public ElectrolysisRecipeCategory(IGuiHelper helper, IRecipeViewerRecipeType<ElectrolysisRecipe> recipeType) {
         super(helper, recipeType);
         input = addElement(GuiFluidGauge.getDummy(GaugeType.STANDARD.with(DataType.INPUT), this, 5, 10));
-        leftOutput = addElement(GuiGasGauge.getDummy(GaugeType.SMALL.with(DataType.OUTPUT_1), this, 58, 18));
-        rightOutput = addElement(GuiGasGauge.getDummy(GaugeType.SMALL.with(DataType.OUTPUT_2), this, 100, 18));
+        GaugeType type1 = GaugeType.SMALL.with(DataType.OUTPUT_1);
+        leftOutput = addElement(GuiChemicalGauge.getDummy(type1, this, 58, 18));
+        GaugeType type = GaugeType.SMALL.with(DataType.OUTPUT_2);
+        rightOutput = addElement(GuiChemicalGauge.getDummy(type, this, 100, 18));
         addElement(new GuiVerticalPowerBar(this, RecipeViewerUtils.FULL_BAR, 164, 15));
         addSlot(SlotType.INPUT, 26, 35);
         addSlot(SlotType.OUTPUT, 59, 52);
@@ -48,8 +50,8 @@ public class ElectrolysisRecipeCategory extends HolderRecipeCategory<Electrolysi
     public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<ElectrolysisRecipe> recipeHolder, @NotNull IFocusGroup focusGroup) {
         ElectrolysisRecipe recipe = recipeHolder.value();
         initFluid(builder, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations());
-        List<GasStack> leftDefinition = new ArrayList<>();
-        List<GasStack> rightDefinition = new ArrayList<>();
+        List<ChemicalStack> leftDefinition = new ArrayList<>();
+        List<ChemicalStack> rightDefinition = new ArrayList<>();
         for (ElectrolysisRecipeOutput output : recipe.getOutputDefinition()) {
             leftDefinition.add(output.left());
             rightDefinition.add(output.right());

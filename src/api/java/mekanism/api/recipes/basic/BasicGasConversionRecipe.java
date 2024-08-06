@@ -2,7 +2,7 @@ package mekanism.api.recipes.basic;
 
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.MekanismRecipeTypes;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
@@ -19,7 +19,7 @@ public class BasicGasConversionRecipe extends BasicItemStackToGasRecipe {
 
     private static final Holder<Item> CREATIVE_CHEMICAL_TANK = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "creative_chemical_tank"));
 
-    public BasicGasConversionRecipe(ItemStackIngredient input, GasStack output) {
+    public BasicGasConversionRecipe(ItemStackIngredient input, ChemicalStack output) {
         super(input, output, MekanismRecipeTypes.TYPE_GAS_CONVERSION.value());
     }
 

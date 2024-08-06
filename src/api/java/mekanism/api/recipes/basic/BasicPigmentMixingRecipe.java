@@ -4,20 +4,19 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.pigment.Pigment;
-import mekanism.api.chemical.pigment.PigmentStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.PigmentMixingRecipe;
-import mekanism.api.recipes.ingredients.PigmentStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.Contract;
 
 @NothingNullByDefault
-public class BasicPigmentMixingRecipe extends PigmentMixingRecipe implements IBasicChemicalOutput<Pigment, PigmentStack> {
+public class BasicPigmentMixingRecipe extends PigmentMixingRecipe implements IBasicChemicalOutput {
 
-    protected final PigmentStackIngredient leftInput;
-    protected final PigmentStackIngredient rightInput;
-    protected final PigmentStack output;
+    protected final ChemicalStackIngredient leftInput;
+    protected final ChemicalStackIngredient rightInput;
+    protected final ChemicalStack output;
 
     /**
      * @param leftInput  Left input.
@@ -26,7 +25,7 @@ public class BasicPigmentMixingRecipe extends PigmentMixingRecipe implements IBa
      *
      * @apiNote The order of the inputs does not matter.
      */
-    public BasicPigmentMixingRecipe(PigmentStackIngredient leftInput, PigmentStackIngredient rightInput, PigmentStack output) {
+    public BasicPigmentMixingRecipe(ChemicalStackIngredient leftInput, ChemicalStackIngredient rightInput, ChemicalStack output) {
         this.leftInput = Objects.requireNonNull(leftInput, "Left input cannot be null.");
         this.rightInput = Objects.requireNonNull(rightInput, "Right input cannot be null.");
         Objects.requireNonNull(output, "Output cannot be null.");
@@ -37,33 +36,33 @@ public class BasicPigmentMixingRecipe extends PigmentMixingRecipe implements IBa
     }
 
     @Override
-    public boolean test(PigmentStack input1, PigmentStack input2) {
+    public boolean test(ChemicalStack input1, ChemicalStack input2) {
         return (leftInput.test(input1) && rightInput.test(input2)) || (rightInput.test(input1) && leftInput.test(input2));
     }
 
     @Override
     @Contract(value = "_, _ -> new", pure = true)
-    public PigmentStack getOutput(PigmentStack input1, PigmentStack input2) {
+    public ChemicalStack getOutput(ChemicalStack input1, ChemicalStack input2) {
         return output.copy();
     }
 
     @Override
-    public PigmentStackIngredient getLeftInput() {
+    public ChemicalStackIngredient getLeftInput() {
         return leftInput;
     }
 
     @Override
-    public PigmentStackIngredient getRightInput() {
+    public ChemicalStackIngredient getRightInput() {
         return rightInput;
     }
 
     @Override
-    public List<PigmentStack> getOutputDefinition() {
+    public List<ChemicalStack> getOutputDefinition() {
         return Collections.singletonList(output);
     }
 
     @Override
-    public PigmentStack getOutputRaw() {
+    public ChemicalStack getOutputRaw() {
         return output;
     }
 

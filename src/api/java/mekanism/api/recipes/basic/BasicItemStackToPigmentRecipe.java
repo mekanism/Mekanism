@@ -4,8 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.pigment.Pigment;
-import mekanism.api.chemical.pigment.PigmentStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ItemStackToPigmentRecipe;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
@@ -14,16 +13,16 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.Contract;
 
 @NothingNullByDefault
-public class BasicItemStackToPigmentRecipe extends ItemStackToPigmentRecipe implements IBasicChemicalOutput<Pigment, PigmentStack> {
+public class BasicItemStackToPigmentRecipe extends ItemStackToPigmentRecipe implements IBasicChemicalOutput {
 
     protected final ItemStackIngredient input;
-    protected final PigmentStack output;
+    protected final ChemicalStack output;
 
     /**
      * @param input  Input.
      * @param output Output.
      */
-    public BasicItemStackToPigmentRecipe(ItemStackIngredient input, PigmentStack output) {
+    public BasicItemStackToPigmentRecipe(ItemStackIngredient input, ChemicalStack output) {
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         Objects.requireNonNull(output, "Output cannot be null.");
         if (output.isEmpty()) {
@@ -44,17 +43,17 @@ public class BasicItemStackToPigmentRecipe extends ItemStackToPigmentRecipe impl
 
     @Override
     @Contract(value = "_ -> new", pure = true)
-    public PigmentStack getOutput(ItemStack input) {
+    public ChemicalStack getOutput(ItemStack input) {
         return output.copy();
     }
 
     @Override
-    public List<PigmentStack> getOutputDefinition() {
+    public List<ChemicalStack> getOutputDefinition() {
         return Collections.singletonList(output);
     }
 
     @Override
-    public PigmentStack getOutputRaw() {
+    public ChemicalStack getOutputRaw() {
         return output;
     }
 

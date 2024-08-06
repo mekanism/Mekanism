@@ -23,8 +23,8 @@ import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.recipe.pattern.RecipePattern.TripleLine;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.ItemRegistryObject;
+import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismItems;
-import mekanism.common.registries.MekanismPigments;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
@@ -120,7 +120,7 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
         }
         ItemStackChemicalToItemStackRecipeBuilder.painting(
               IngredientCreatorAccess.item().from(recolorInput),
-              IngredientCreatorAccess.pigmentStack().from(MekanismPigments.PIGMENT_COLOR_LOOKUP.get(color), PigmentExtractingRecipeProvider.DYE_RATE),
+              IngredientCreatorAccess.chemicalStack().from(MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(color), PigmentExtractingRecipeProvider.DYE_RATE),
               result.getItemStack()
         ).build(consumer, MekanismAdditions.rl(basePath + "recolor/painting/" + colorString));
     }

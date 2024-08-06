@@ -11,10 +11,10 @@ import net.minecraft.world.item.ItemStack;
 @NothingNullByDefault
 public class ChemicalCrystallizerRecipeBuilder extends MekanismRecipeBuilder<ChemicalCrystallizerRecipeBuilder> {
 
-    private final ChemicalStackIngredient<?, ?, ?> input;
+    private final ChemicalStackIngredient input;
     private final ItemStack output;
 
-    protected ChemicalCrystallizerRecipeBuilder(ChemicalStackIngredient<?, ?, ?> input, ItemStack output) {
+    protected ChemicalCrystallizerRecipeBuilder(ChemicalStackIngredient input, ItemStack output) {
         this.input = input;
         this.output = output;
     }
@@ -25,7 +25,7 @@ public class ChemicalCrystallizerRecipeBuilder extends MekanismRecipeBuilder<Che
      * @param input  Input.
      * @param output Output.
      */
-    public static ChemicalCrystallizerRecipeBuilder crystallizing(ChemicalStackIngredient<?, ?, ?> input, ItemStack output) {
+    public static ChemicalCrystallizerRecipeBuilder crystallizing(ChemicalStackIngredient input, ItemStack output) {
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This crystallizing recipe requires a non empty item output.");
         }

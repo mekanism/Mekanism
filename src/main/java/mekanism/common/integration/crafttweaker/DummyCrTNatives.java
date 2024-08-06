@@ -20,7 +20,6 @@ import mekanism.api.recipes.vanilla_input.FluidRecipeInput;
 import mekanism.api.recipes.vanilla_input.ItemChemicalRecipeInput;
 import mekanism.api.recipes.vanilla_input.ReactionRecipeInput;
 import mekanism.api.recipes.vanilla_input.RotaryRecipeInput;
-import mekanism.api.recipes.vanilla_input.SingleBoxedChemicalInput;
 import mekanism.api.recipes.vanilla_input.SingleChemicalRecipeInput;
 import mekanism.api.recipes.vanilla_input.SingleFluidChemicalRecipeInput;
 import mekanism.api.recipes.vanilla_input.SingleFluidRecipeInput;
@@ -155,14 +154,6 @@ public class DummyCrTNatives {
     public static class CrTNativeItemChemicalRecipeInput {
 
         private CrTNativeItemChemicalRecipeInput() {
-        }
-    }
-
-    @ZenRegister
-    @NativeTypeRegistration(value = SingleBoxedChemicalInput.class, zenCodeName = CrTConstants.CLASS_VANILLA_INPUT_SINGLE_BOXED + DUMMY)
-    public static class CrTNativeBoxedChemicalRecipeInput {
-
-        private CrTNativeBoxedChemicalRecipeInput() {
         }
     }
 

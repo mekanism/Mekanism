@@ -7,7 +7,7 @@ import java.util.function.LongSupplier;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.MekanismAPITags;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.FloatSupplier;
 import mekanism.api.gear.IModule;
@@ -64,7 +64,7 @@ public class CommonPlayerTickHandler {
     public static boolean isScubaMaskOn(Player player, ItemStack tank) {
         ItemStack mask = player.getItemBySlot(EquipmentSlot.HEAD);
         return !tank.isEmpty() && !mask.isEmpty() && tank.getItem() instanceof ItemScubaTank scubaTank &&
-               mask.getItem() instanceof ItemScubaMask && ChemicalUtil.hasGas(tank) && scubaTank.getMode(tank);
+               mask.getItem() instanceof ItemScubaMask && ChemicalUtil.hasAnyChemical(tank) && scubaTank.getMode(tank);
     }
 
     public static float getStepBoost(Player player) {
@@ -123,7 +123,7 @@ public class CommonPlayerTickHandler {
             ItemScubaTank tank = (ItemScubaTank) chest.getItem();
             final int max = player.getMaxAirSupply();
             tank.useGas(chest, 1);
-            GasStack received = tank.useGas(chest, max - player.getAirSupply());
+            ChemicalStack received = tank.useGas(chest, max - player.getAirSupply());
             if (!received.isEmpty()) {
                 player.setAirSupply(player.getAirSupply() + (int) received.getAmount());
             }
@@ -179,7 +179,7 @@ public class CommonPlayerTickHandler {
             ItemStack headStack = entity.getItemBySlot(EquipmentSlot.HEAD);
             if (!headStack.isEmpty() && headStack.getItem() instanceof ItemScubaMask) {
                 ItemStack chestStack = entity.getItemBySlot(EquipmentSlot.CHEST);
-                if (!chestStack.isEmpty() && chestStack.getItem() instanceof ItemScubaTank tank && tank.getMode(chestStack) && ChemicalUtil.hasGas(chestStack)) {
+                if (!chestStack.isEmpty() && chestStack.getItem() instanceof ItemScubaTank tank && tank.getMode(chestStack) && ChemicalUtil.hasAnyChemical(chestStack)) {
                     event.setCanceled(true);
                     return;
                 }

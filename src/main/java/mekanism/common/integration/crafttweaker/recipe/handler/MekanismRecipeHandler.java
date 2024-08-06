@@ -15,42 +15,25 @@ import com.blamejared.crafttweaker.api.tag.manager.type.KnownTagManager;
 import com.blamejared.crafttweaker.api.tag.type.KnownTag;
 import com.blamejared.crafttweaker.api.util.ItemStackUtil;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalType;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.api.chemical.merged.BoxedChemicalStack;
-import mekanism.api.chemical.pigment.PigmentStack;
-import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.recipes.ElectrolysisRecipe.ElectrolysisRecipeOutput;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe.PressurizedReactionRecipeOutput;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
-import mekanism.api.recipes.ingredients.GasStackIngredient;
-import mekanism.api.recipes.ingredients.InfusionStackIngredient;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import mekanism.api.recipes.ingredients.PigmentStackIngredient;
-import mekanism.api.recipes.ingredients.SlurryStackIngredient;
 import mekanism.api.recipes.ingredients.chemical.IChemicalIngredient;
 import mekanism.api.recipes.ingredients.chemical.TagChemicalIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTRecipeComponents;
-import mekanism.common.integration.crafttweaker.CrTRecipeComponents.ChemicalRecipeComponent;
 import mekanism.common.integration.crafttweaker.CrTUtils;
-import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTGasStack;
-import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTInfusionStack;
-import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTPigmentStack;
-import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTSlurryStack;
+import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
@@ -69,10 +52,10 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe<?>> im
     }
 
     @SuppressWarnings("unchecked")
-    protected <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> boolean chemicalIngredientConflicts(ChemicalStackIngredient<CHEMICAL, STACK, ?> a,
-          ChemicalStackIngredient<?, ?, ?> b) {
+    protected <CHEMICAL extends Chemical, STACK extends ChemicalStack> boolean chemicalIngredientConflicts(ChemicalStackIngredient a,
+          ChemicalStackIngredient b) {
         //If types of inputs match then check if they conflict
-        return ChemicalType.getTypeFor(a) == ChemicalType.getTypeFor(b) && ingredientConflicts(a, (ChemicalStackIngredient<CHEMICAL, STACK, ?>) b);
+        return ChemicalType.getTypeFor(a) == ChemicalType.getTypeFor(b) && ingredientConflicts(a, (ChemicalStackIngredient) b);
     }
 
     protected String buildCommandString(IRecipeManager<? super RECIPE> manager, RecipeHolder<RECIPE> recipe, Object... params) {
@@ -106,30 +89,16 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe<?>> im
             return ItemStackUtil.getCommandString(stack);
         } else if (param instanceof FluidStack stack) {
             return IFluidStack.of(stack).getCommandString();
-        } else if (param instanceof GasStack stack) {
-            return new CrTGasStack(stack).getCommandString();
-        } else if (param instanceof InfusionStack stack) {
-            return new CrTInfusionStack(stack).getCommandString();
-        } else if (param instanceof PigmentStack stack) {
-            return new CrTPigmentStack(stack).getCommandString();
-        } else if (param instanceof SlurryStack stack) {
-            return new CrTSlurryStack(stack).getCommandString();
-        } else if (param instanceof BoxedChemicalStack stack) {
-            return convertParam(stack.getChemicalStack());
+        } else if (param instanceof ChemicalStack stack) {
+            return new CrTChemicalStack(stack).getCommandString();
         } else if (param instanceof Number || param instanceof Boolean) {//Handle integers and the like
             return param.toString();
         } else if (param instanceof ItemStackIngredient ingredient) {
             return convertParam(CrTUtils.toCrT(ingredient));
         } else if (param instanceof FluidStackIngredient ingredient) {
             return convertParam(CrTUtils.toCrT(ingredient));
-        } else if (param instanceof GasStackIngredient ingredient) {
-            return convertIngredient(CrTConstants.CLASS_GAS_STACK_INGREDIENT, CrTUtils.gasTags(), ingredient.ingredient(), ingredient.amount());
-        } else if (param instanceof InfusionStackIngredient ingredient) {
-            return convertIngredient(CrTConstants.CLASS_INFUSION_STACK_INGREDIENT, CrTUtils.infuseTypeTags(), ingredient.ingredient(), ingredient.amount());
-        } else if (param instanceof PigmentStackIngredient ingredient) {
-            return convertIngredient(CrTConstants.CLASS_PIGMENT_STACK_INGREDIENT, CrTUtils.pigmentTags(), ingredient.ingredient(), ingredient.amount());
-        } else if (param instanceof SlurryStackIngredient ingredient) {
-            return convertIngredient(CrTConstants.CLASS_SLURRY_STACK_INGREDIENT, CrTUtils.slurryTags(), ingredient.ingredient(), ingredient.amount());
+        } else if (param instanceof ChemicalStackIngredient ingredient) {
+            return convertChemicalIngredient(CrTUtils.chemicalTags(), ingredient.ingredient(), ingredient.amount());
         } else if (param instanceof List<?> list) {
             if (list.isEmpty()) {
                 //Shouldn't happen
@@ -153,21 +122,20 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe<?>> im
         return "Unimplemented: " + param;
     }
 
-    private static <CHEMICAL extends Chemical<CHEMICAL>, INGREDIENT extends IChemicalIngredient<CHEMICAL, INGREDIENT>,
-          CRT_STACK extends ICrTChemicalStack<CHEMICAL, ?, CRT_STACK>> String convertIngredient(String crtClass, KnownTagManager<CHEMICAL> tagManager,
-          INGREDIENT ingredient, long amount) {
-        if (ingredient instanceof TagChemicalIngredient<?, ?> tagIngredient) {
-            KnownTag<CHEMICAL> tag = tagManager.tag(tagIngredient.tag());
+    private static String convertChemicalIngredient(KnownTagManager<Chemical> tagManager,
+          IChemicalIngredient ingredient, long amount) {
+        if (ingredient instanceof TagChemicalIngredient tagIngredient) {
+            KnownTag<Chemical> tag = tagManager.tag(tagIngredient.tag());
             if (amount == 1) {
                 return tag.getCommandString();
             } else if (amount > 0 && amount <= Integer.MAX_VALUE) {
                 return tag.withAmount((int) amount).getCommandString();
             }
             //Tag with amount can only handle up to max int, so we have to do it explicitly if we have more
-            return crtClass + ".from(" + tag.getCommandString() + ", " + amount + ")";
+            return CrTConstants.CLASS_CHEMICAL_STACK_INGREDIENT + ".from(" + tag.getCommandString() + ", " + amount + ")";
         }
-        List<CRT_STACK> list = new ArrayList<>();
-        for (CHEMICAL chemical : ingredient.getChemicals()) {
+        List<ICrTChemicalStack> list = new ArrayList<>();
+        for (Chemical chemical : ingredient.getChemicals()) {
             list.add(CrTUtils.fromChemical(chemical, 1));
         }
         if (list.size() == 1) {
@@ -176,15 +144,15 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe<?>> im
         String representation = list.stream()
               .map(ICrTChemicalStack::getCommandString)
               .collect(Collectors.joining(", "));
-        return crtClass + ".from(" + amount + ", " + representation + ")";
+        return CrTConstants.CLASS_CHEMICAL_STACK_INGREDIENT + ".from(" + amount + ", " + representation + ")";
     }
 
     /**
      * Helper to generically decompose data into the proper recipe components.
      */
     protected Optional<IDecomposedRecipe> decompose(Object... importantData) {
-        TypeData<IIngredientWithAmount, CTFluidIngredient, ChemicalStackIngredient<?, ?, ?>> inputs = new TypeData<>(ChemicalType::getTypeFor);
-        TypeData<IItemStack, IFluidStack, ChemicalStack<?>> outputs = new TypeData<>(ChemicalType::getTypeFor);
+        TypeData<IIngredientWithAmount, CTFluidIngredient, ChemicalStackIngredient> inputs = new TypeData<>();
+        TypeData<IItemStack, IFluidStack, ChemicalStack> outputs = new TypeData<>();
         int duration = -1;
         long energy = -1;
         for (Object data : importantData) {
@@ -207,16 +175,14 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe<?>> im
                 inputs.addItem(CrTUtils.toCrT(ingredient));
             } else if (data instanceof FluidStackIngredient ingredient) {
                 inputs.addFluid(CrTUtils.toCrT(ingredient));
-            } else if (data instanceof ChemicalStackIngredient<?, ?, ?> ingredient) {
+            } else if (data instanceof ChemicalStackIngredient ingredient) {
                 inputs.addChemical(ingredient);
             } else if (data instanceof ItemStack stack) {
                 outputs.addItem(IItemStack.of(stack));
             } else if (data instanceof FluidStack stack) {
                 outputs.addFluid(IFluidStack.of(stack));
-            } else if (data instanceof ChemicalStack<?> stack) {
+            } else if (data instanceof ChemicalStack stack) {
                 outputs.addChemical(stack);
-            } else if (data instanceof BoxedChemicalStack stack) {
-                outputs.addChemical(stack.getChemicalStack());
             } else if (data instanceof PressurizedReactionRecipeOutput output) {
                 if (!output.item().isEmpty()) {
                     outputs.addItem(IItemStack.of(output.item()));
@@ -249,8 +215,11 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe<?>> im
               .addFluidToBuilder(builder, CrTRecipeComponents.FLUID.input());
         outputs.addItemToBuilder(builder, CrTRecipeComponents.ITEM.output())
               .addFluidToBuilder(builder, CrTRecipeComponents.FLUID.output());
-        for (ChemicalRecipeComponent<?, ?, ?, ?> chemicalComponent : CrTRecipeComponents.CHEMICAL_COMPONENTS) {
-            addChemicals(builder, inputs, outputs, chemicalComponent);
+        if (!inputs.chemicalData.isEmpty()) {
+            builder.with(CrTRecipeComponents.CHEMICAL.input(), inputs.chemicalData);
+        }
+        if (!outputs.chemicalData.isEmpty()) {
+            CrTRecipeComponents.CHEMICAL.withOutput(builder, outputs.chemicalData);
         }
         if (duration != -1) {
             builder.with(BuiltinRecipeComponents.Processing.TIME, duration);
@@ -261,29 +230,11 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe<?>> im
         return Optional.of(builder.build());
     }
 
-    private <STACK extends ChemicalStack<?>, INGREDIENT extends ChemicalStackIngredient<?, STACK, ?>, CRT_STACK extends ICrTChemicalStack<?, STACK, CRT_STACK>>
-    void addChemicals(DecomposedRecipeBuilder builder, TypeData<?, ?, ChemicalStackIngredient<?, ?, ?>> inputs, TypeData<?, ?, ChemicalStack<?>> outputs,
-          ChemicalRecipeComponent<?, STACK, INGREDIENT, CRT_STACK> component) {
-        List<INGREDIENT> data = (List<INGREDIENT>) inputs.chemicalData.getOrDefault(component.chemicalType(), Collections.emptyList());
-        if (!data.isEmpty()) {
-            builder.with(component.input(), data);
-        }
-        List<STACK> outputData = (List<STACK>) outputs.chemicalData.getOrDefault(component.chemicalType(), Collections.emptyList());
-        if (!outputData.isEmpty()) {
-            component.withOutput(builder, outputData);
-        }
-    }
-
     private static class TypeData<ITEM, FLUID, CHEMICAL> {
 
         private final List<ITEM> itemData = new ArrayList<>();
         private final List<FLUID> fluidData = new ArrayList<>();
-        private final Map<ChemicalType, List<CHEMICAL>> chemicalData = new EnumMap<>(ChemicalType.class);
-        private final Function<CHEMICAL, ChemicalType> typeExtractor;
-
-        public TypeData(Function<CHEMICAL, ChemicalType> typeExtractor) {
-            this.typeExtractor = typeExtractor;
-        }
+        private final List<CHEMICAL> chemicalData = new ArrayList<>();
 
         private void addItem(ITEM data) {
             itemData.add(data);
@@ -294,7 +245,7 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe<?>> im
         }
 
         private void addChemical(CHEMICAL data) {
-            chemicalData.computeIfAbsent(typeExtractor.apply(data), type -> new ArrayList<>()).add(data);
+            chemicalData.add(data);
         }
 
         private TypeData<ITEM, FLUID, CHEMICAL> addItemToBuilder(DecomposedRecipeBuilder builder, IRecipeComponent<ITEM> component) {

@@ -10,9 +10,9 @@ import java.util.function.LongSupplier;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.MekanismAPITags;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasHandler;
+import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.datamaps.MekaSuitAbsorption;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.gear.ICustomModule;
@@ -28,8 +28,8 @@ import mekanism.client.key.MekanismKeyHandler;
 import mekanism.common.MekanismLang;
 import mekanism.common.attachments.IAttachmentAware;
 import mekanism.common.attachments.containers.ContainerType;
-import mekanism.common.attachments.containers.chemical.gas.ComponentBackedGasTank;
-import mekanism.common.attachments.containers.chemical.gas.GasTanksBuilder;
+import mekanism.common.attachments.containers.chemical.ChemicalTanksBuilder;
+import mekanism.common.attachments.containers.chemical.ComponentBackedChemicalTank;
 import mekanism.common.attachments.containers.fluid.ComponentBackedFluidTank;
 import mekanism.common.attachments.containers.fluid.FluidTanksBuilder;
 import mekanism.common.capabilities.Capabilities;
@@ -49,7 +49,7 @@ import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCrea
 import mekanism.common.registries.MekanismArmorMaterials;
 import mekanism.common.registries.MekanismDataMapTypes;
 import mekanism.common.registries.MekanismFluids;
-import mekanism.common.registries.MekanismGases;
+import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
@@ -89,8 +89,8 @@ import org.jetbrains.annotations.Nullable;
 public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContainerItem, IJetpackItem, ICustomCreativeTabContents, IAttachmentAware {
 
     //TODO: Expand this system so that modules can maybe define needed tanks?
-    private final List<ChemicalTankSpec<Gas>> gasTankSpecs = new ArrayList<>();
-    private final List<ChemicalTankSpec<Gas>> gasTankSpecsView = Collections.unmodifiableList(gasTankSpecs);
+    private final List<ChemicalTankSpec<Chemical>> gasTankSpecs = new ArrayList<>();
+    private final List<ChemicalTankSpec<Chemical>> gasTankSpecsView = Collections.unmodifiableList(gasTankSpecs);
     private final List<FluidTankSpec> fluidTankSpecs = new ArrayList<>();
     private final List<FluidTankSpec> fluidTankSpecsView = Collections.unmodifiableList(fluidTankSpecs);
     private final float absorption;
@@ -115,7 +115,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                     //Note: We intentionally don't require the module to be enabled for purposes of calculating capacity
                     IModule<ModuleJetpackUnit> module = IModuleHelper.INSTANCE.getModule(stack, MekanismModules.JETPACK_UNIT);
                     return module != null ? MekanismConfig.gear.mekaSuitJetpackMaxStorage.get() * module.getInstalledCount() : 0L;
-                }, gas -> gas == MekanismGases.HYDROGEN.get(), stack -> hasModule(stack, MekanismModules.JETPACK_UNIT)));
+                }, gas -> gas == MekanismChemicals.HYDROGEN.get(), stack -> hasModule(stack, MekanismModules.JETPACK_UNIT)));
                 absorption = 0.4F;
                 laserDissipation = 0.3;
                 laserRefraction = 0.4;
@@ -247,10 +247,10 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     @Override
     public void attachAttachments(IEventBus eventBus) {
         if (!gasTankSpecs.isEmpty()) {
-            ContainerType.GAS.addDefaultCreators(eventBus, this, () -> {
-                GasTanksBuilder builder = GasTanksBuilder.builder();
-                for (ChemicalTankSpec<Gas> spec : gasTankSpecs) {
-                    spec.addTank(builder, ComponentBackedGasTank::new);
+            ContainerType.CHEMICAL.addDefaultCreators(eventBus, this, () -> {
+                ChemicalTanksBuilder builder = ChemicalTanksBuilder.builder();
+                for (ChemicalTankSpec<Chemical> spec : gasTankSpecs) {
+                    spec.addTank(builder, ComponentBackedChemicalTank::new);
                 }
                 return builder.build();
             }, MekanismConfig.gear);
@@ -283,7 +283,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         }, this);
     }
 
-    public List<ChemicalTankSpec<Gas>> getGasTankSpecs() {
+    public List<ChemicalTankSpec<Chemical>> getGasTankSpecs() {
         return gasTankSpecsView;
     }
 
@@ -309,7 +309,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                     // only mark that we can use the elytra if the jetpack is not set to hover or if it is if it has no hydrogen stored
                     IModule<ModuleJetpackUnit> jetpack = container.getIfEnabled(MekanismModules.JETPACK_UNIT);
                     return jetpack == null || jetpack.getCustomInstance().mode() != JetpackMode.HOVER ||
-                           StorageUtils.getContainedGas(stack, MekanismGases.HYDROGEN).isEmpty();
+                           StorageUtils.getContainedChemical(stack, MekanismChemicals.HYDROGEN).isEmpty();
                 }
             }
         }
@@ -339,7 +339,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     public boolean canUseJetpack(ItemStack stack) {
         if (type == ArmorItem.Type.CHESTPLATE) {
             if (isModuleEnabled(stack, MekanismModules.JETPACK_UNIT)) {
-                return ChemicalUtil.hasChemical(stack, MekanismGases.HYDROGEN.get());
+                return ChemicalUtil.hasChemicalOfType(stack, MekanismChemicals.HYDROGEN.get());
             }
             return getModules(stack).stream().anyMatch(module -> module.isEnabled() && module.getData().isExclusive(ExclusiveFlag.OVERRIDE_JUMP.getMask()));
         }
@@ -364,7 +364,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
             //Note: We verified we have at least one mB of gas before we get to the point of getting the thrust,
             // so we only need to do extra validation if we need more than a single mB of hydrogen
             if (neededGas > 1) {
-                GasStack containedGas = StorageUtils.getContainedGas(stack, MekanismGases.HYDROGEN);
+                ChemicalStack containedGas = StorageUtils.getContainedChemical(stack, MekanismChemicals.HYDROGEN);
                 if (neededGas > containedGas.getAmount()) {
                     //If we don't have enough gas stored to go at the set thrust, scale down the thrust
                     // to be whatever gas we have remaining
@@ -380,10 +380,10 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     public void useJetpackFuel(ItemStack stack) {
         IModule<ModuleJetpackUnit> module = getEnabledModule(stack, MekanismModules.JETPACK_UNIT);
         if (module != null) {
-            IGasHandler gasHandlerItem = Capabilities.GAS.getCapability(stack);
+            IChemicalHandler gasHandlerItem = Capabilities.CHEMICAL.getCapability(stack);
             if (gasHandlerItem != null) {
                 int amount = Mth.ceil(module.getCustomInstance().getThrustMultiplier());
-                gasHandlerItem.extractChemical(MekanismGases.HYDROGEN.getStack(amount), Action.EXECUTE);
+                gasHandlerItem.extractChemical(MekanismChemicals.HYDROGEN.getStack(amount), Action.EXECUTE);
             }
         }
     }

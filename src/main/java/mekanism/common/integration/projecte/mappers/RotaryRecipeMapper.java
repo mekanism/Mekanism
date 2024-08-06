@@ -1,6 +1,6 @@
 package mekanism.common.integration.projecte.mappers;
 
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.common.integration.projecte.IngredientHelper;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -31,7 +31,7 @@ public class RotaryRecipeMapper extends TypedMekanismRecipeMapper<RotaryRecipe> 
         boolean handled = false;
         if (recipe.hasFluidToGas()) {
             for (FluidStack representation : recipe.getFluidInput().getRepresentations()) {
-                GasStack output = recipe.getGasOutput(representation);
+                ChemicalStack output = recipe.getGasOutput(representation);
                 if (!output.isEmpty()) {
                     IngredientHelper ingredientHelper = new IngredientHelper(mapper);
                     ingredientHelper.put(representation);
@@ -42,7 +42,7 @@ public class RotaryRecipeMapper extends TypedMekanismRecipeMapper<RotaryRecipe> 
             }
         }
         if (recipe.hasGasToFluid()) {
-            for (GasStack representation : recipe.getGasInput().getRepresentations()) {
+            for (ChemicalStack representation : recipe.getGasInput().getRepresentations()) {
                 FluidStack output = recipe.getFluidOutput(representation);
                 if (!output.isEmpty()) {
                     IngredientHelper ingredientHelper = new IngredientHelper(mapper);

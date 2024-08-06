@@ -7,8 +7,8 @@ import java.util.Set;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
-import mekanism.api.chemical.gas.IGasHandler;
-import mekanism.api.chemical.gas.IGasTank;
+import mekanism.api.chemical.IChemicalHandler;
+import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.heat.HeatAPI;
@@ -31,7 +31,7 @@ import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.lib.multiblock.IValveHandler.ValveData;
 import mekanism.common.lib.multiblock.MultiblockData;
-import mekanism.common.registries.MekanismGases;
+import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.tile.prefab.TileEntityStructuralMultiblock;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.ChemicalUtil;
@@ -76,7 +76,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
     private static final double plasmaCaseConductivity = 0.2;
 
     private final List<EnergyOutputTarget> energyOutputTargets = new ArrayList<>();
-    private final List<CapabilityOutputTarget<IGasHandler>> gasOutputTargets = new ArrayList<>();
+    private final List<CapabilityOutputTarget<IChemicalHandler>> gasOutputTargets = new ArrayList<>();
     private final Set<ITileHeatHandler> heatHandlers = new ObjectOpenHashSet<>();
 
     @ContainerSync
@@ -93,7 +93,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
     @ContainerSync(tags = HEAT_TAB)
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getSteam", "getSteamCapacity", "getSteamNeeded",
                                                                                         "getSteamFilledPercentage"}, docPlaceholder = "steam tank")
-    public IGasTank steamTank;
+    public IChemicalTank steamTank;
 
     private double biomeAmbientTemp;
     @ContainerSync(tags = HEAT_TAB)
@@ -110,15 +110,15 @@ public class FusionReactorMultiblockData extends MultiblockData {
     @ContainerSync(tags = FUEL_TAB)
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getDeuterium", "getDeuteriumCapacity", "getDeuteriumNeeded",
                                                                                         "getDeuteriumFilledPercentage"}, docPlaceholder = "deuterium tank")
-    public IGasTank deuteriumTank;
+    public IChemicalTank deuteriumTank;
     @ContainerSync(tags = FUEL_TAB)
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getTritium", "getTritiumCapacity", "getTritiumNeeded",
                                                                                         "getTritiumFilledPercentage"}, docPlaceholder = "tritium tank")
-    public IGasTank tritiumTank;
+    public IChemicalTank tritiumTank;
     @ContainerSync(tags = FUEL_TAB)
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getDTFuel", "getDTFuelCapacity", "getDTFuelNeeded",
                                                                                         "getDTFuelFilledPercentage"}, docPlaceholder = "fuel tank")
-    public IGasTank fuelTank;
+    public IChemicalTank fuelTank;
     @ContainerSync(tags = {FUEL_TAB, HEAT_TAB, STATS_TAB}, getter = "getInjectionRate", setter = "setInjectionRate")
     private int injectionRate = 2;
     @ContainerSync(tags = {FUEL_TAB, HEAT_TAB, STATS_TAB})
@@ -144,13 +144,13 @@ public class FusionReactorMultiblockData extends MultiblockData {
         lastPlasmaTemperature = biomeAmbientTemp;
         lastCaseTemperature = biomeAmbientTemp;
         plasmaTemperature = biomeAmbientTemp;
-        gasTanks.add(deuteriumTank = MultiblockChemicalTankBuilder.GAS.input(this, MekanismGeneratorsConfig.generators.fusionFuelCapacity,
+        chemicalTanks.add(deuteriumTank = MultiblockChemicalTankBuilder.CHEMICAL.input(this, MekanismGeneratorsConfig.generators.fusionFuelCapacity,
               gas -> gas.is(GeneratorTags.Gases.DEUTERIUM), this));
-        gasTanks.add(tritiumTank = MultiblockChemicalTankBuilder.GAS.input(this, MekanismGeneratorsConfig.generators.fusionFuelCapacity,
+        chemicalTanks.add(tritiumTank = MultiblockChemicalTankBuilder.CHEMICAL.input(this, MekanismGeneratorsConfig.generators.fusionFuelCapacity,
               gas -> gas.is(GeneratorTags.Gases.TRITIUM), this));
-        gasTanks.add(fuelTank = MultiblockChemicalTankBuilder.GAS.input(this, MekanismGeneratorsConfig.generators.fusionFuelCapacity,
+        chemicalTanks.add(fuelTank = MultiblockChemicalTankBuilder.CHEMICAL.input(this, MekanismGeneratorsConfig.generators.fusionFuelCapacity,
               gas -> gas.is(GeneratorTags.Gases.FUSION_FUEL), createSaveAndComparator()));
-        gasTanks.add(steamTank = MultiblockChemicalTankBuilder.GAS.output(this, this::getMaxSteam, gas -> gas == MekanismGases.STEAM.getChemical(), this));
+        chemicalTanks.add(steamTank = MultiblockChemicalTankBuilder.CHEMICAL.output(this, this::getMaxSteam, gas -> gas == MekanismChemicals.STEAM.getChemical(), this));
         fluidTanks.add(waterTank = VariableCapacityFluidTank.input(this, this::getMaxWater, fluid -> fluid.is(FluidTags.WATER), this));
         energyContainers.add(energyContainer = VariableCapacityEnergyContainer.output(MekanismGeneratorsConfig.generators.fusionEnergyCapacity, this));
         heatCapacitors.add(heatCapacitor = VariableHeatCapacitor.create(caseHeatCapacity, FusionReactorMultiblockData::getInverseConductionCoefficient,
@@ -202,10 +202,10 @@ public class FusionReactorMultiblockData extends MultiblockData {
         if (!reactorSlot.isEmpty()) {
             ItemStack hohlraum = reactorSlot.getStack();
             if (hohlraum.getItem() instanceof ItemHohlraum) {
-                IGasHandler gasHandlerItem = Capabilities.GAS.getCapability(hohlraum);
-                if (gasHandlerItem != null && gasHandlerItem.getTanks() > 0) {
+                IChemicalHandler gasHandlerItem = Capabilities.CHEMICAL.getCapability(hohlraum);
+                if (gasHandlerItem != null && gasHandlerItem.getChemicalTanks() > 0) {
                     //Validate something didn't go terribly wrong, and we actually do have the tank we expect to have
-                    return gasHandlerItem.getChemicalInTank(0).getAmount() == gasHandlerItem.getTankCapacity(0);
+                    return gasHandlerItem.getChemicalInTank(0).getAmount() == gasHandlerItem.getChemicalTankCapacity(0);
                 }
             }
         }
@@ -295,8 +295,8 @@ public class FusionReactorMultiblockData extends MultiblockData {
 
     private void vaporiseHohlraum() {
         ItemStack hohlraum = reactorSlot.getStack();
-        IGasHandler gasHandlerItem = Capabilities.GAS.getCapability(hohlraum);
-        if (gasHandlerItem != null && gasHandlerItem.getTanks() > 0) {
+        IChemicalHandler gasHandlerItem = Capabilities.CHEMICAL.getCapability(hohlraum);
+        if (gasHandlerItem != null && gasHandlerItem.getChemicalTanks() > 0) {
             fuelTank.insert(gasHandlerItem.getChemicalInTank(0), Action.EXECUTE, AutomationType.INTERNAL);
             lastPlasmaTemperature = getPlasmaTemp();
             reactorSlot.setEmpty();
@@ -337,7 +337,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
             waterToVaporize = Math.min(waterToVaporize, Math.min(waterTank.getFluidAmount(), MathUtils.clampToInt(steamTank.getNeeded())));
             if (waterToVaporize > 0) {
                 MekanismUtils.logMismatchedStackSize(waterTank.shrinkStack(waterToVaporize, Action.EXECUTE), waterToVaporize);
-                steamTank.insert(MekanismGases.STEAM.getStack(waterToVaporize), Action.EXECUTE, AutomationType.INTERNAL);
+                steamTank.insert(MekanismChemicals.STEAM.getStack(waterToVaporize), Action.EXECUTE, AutomationType.INTERNAL);
                 caseWaterHeat = waterToVaporize * HeatUtils.getWaterThermalEnthalpy() / HeatUtils.getSteamEnergyEfficiency();
                 heatCapacitor.handleHeat(-caseWaterHeat);
             }

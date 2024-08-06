@@ -5,10 +5,7 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
 import java.util.function.Supplier;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.api.chemical.pigment.PigmentStack;
-import mekanism.api.chemical.slurry.SlurryStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.common.inventory.container.sync.ISyncableData;
 import mekanism.common.inventory.container.sync.SyncableBlockPos;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
@@ -22,14 +19,8 @@ import mekanism.common.inventory.container.sync.SyncableItemStack;
 import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.inventory.container.sync.SyncableRegistryEntry;
 import mekanism.common.inventory.container.sync.SyncableShort;
-import mekanism.common.inventory.container.sync.chemical.SyncableGasStack;
-import mekanism.common.inventory.container.sync.chemical.SyncableInfusionStack;
-import mekanism.common.inventory.container.sync.chemical.SyncablePigmentStack;
-import mekanism.common.inventory.container.sync.chemical.SyncableSlurryStack;
-import mekanism.common.network.to_client.container.property.chemical.GasStackPropertyData;
-import mekanism.common.network.to_client.container.property.chemical.InfusionStackPropertyData;
-import mekanism.common.network.to_client.container.property.chemical.PigmentStackPropertyData;
-import mekanism.common.network.to_client.container.property.chemical.SlurryStackPropertyData;
+import mekanism.common.inventory.container.sync.chemical.SyncableChemicalStack;
+import mekanism.common.network.to_client.container.property.chemical.ChemicalStackPropertyData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -51,10 +42,7 @@ public enum PropertyType {
     BYTE_ARRAY(byte[].class, new byte[0], (getter, setter) -> SyncableByteArray.create(() -> (byte[]) getter.get(), setter::accept), () -> ByteArrayPropertyData.STREAM_CODEC),
     ITEM_STACK(ItemStack.class, ItemStack.EMPTY, (getter, setter) -> SyncableItemStack.create(() -> (ItemStack) getter.get(), setter::accept), () -> ItemStackPropertyData.STREAM_CODEC),
     FLUID_STACK(FluidStack.class, FluidStack.EMPTY, (getter, setter) -> SyncableFluidStack.create(() -> (FluidStack) getter.get(), setter::accept), () -> FluidStackPropertyData.STREAM_CODEC),
-    GAS_STACK(GasStack.class, GasStack.EMPTY, (getter, setter) -> SyncableGasStack.create(() -> (GasStack) getter.get(), setter::accept), () -> GasStackPropertyData.STREAM_CODEC),
-    INFUSION_STACK(InfusionStack.class, InfusionStack.EMPTY, (getter, setter) -> SyncableInfusionStack.create(() -> (InfusionStack) getter.get(), setter::accept), () -> InfusionStackPropertyData.STREAM_CODEC),
-    PIGMENT_STACK(PigmentStack.class, PigmentStack.EMPTY, (getter, setter) -> SyncablePigmentStack.create(() -> (PigmentStack) getter.get(), setter::accept), () -> PigmentStackPropertyData.STREAM_CODEC),
-    SLURRY_STACK(SlurryStack.class, SlurryStack.EMPTY, (getter, setter) -> SyncableSlurryStack.create(() -> (SlurryStack) getter.get(), setter::accept), () -> SlurryStackPropertyData.STREAM_CODEC),
+    CHEMICAL_STACK(ChemicalStack.class, ChemicalStack.EMPTY, (getter, setter) -> SyncableChemicalStack.create(() -> (ChemicalStack) getter.get(), setter::accept), () -> ChemicalStackPropertyData.STREAM_CODEC),
     BLOCK_POS(BlockPos.class, null, (getter, setter) -> SyncableBlockPos.create(() -> (BlockPos) getter.get(), setter::accept), () -> BlockPosPropertyData.STREAM_CODEC);
 
     public static final IntFunction<PropertyType> BY_ID = ByIdMap.continuous(PropertyType::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);

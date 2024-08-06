@@ -2,11 +2,11 @@ package mekanism.api.recipes.basic;
 
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.MekanismRecipeTypes;
-import mekanism.api.recipes.ingredients.GasStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -21,7 +21,7 @@ public class BasicCentrifugingRecipe extends BasicGasToGasRecipe {
 
     private static final Holder<Item> ISOTOPIC_CENTRIFUGE = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "isotopic_centrifuge"));
 
-    public BasicCentrifugingRecipe(GasStackIngredient input, GasStack output) {
+    public BasicCentrifugingRecipe(ChemicalStackIngredient input, ChemicalStack output) {
         super(input, output, MekanismRecipeTypes.TYPE_CENTRIFUGING.value());
     }
 

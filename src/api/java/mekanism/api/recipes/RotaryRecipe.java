@@ -3,9 +3,9 @@ package mekanism.api.recipes;
 import java.util.List;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
-import mekanism.api.recipes.ingredients.GasStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.vanilla_input.RotaryRecipeInput;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
@@ -61,7 +61,7 @@ public abstract class RotaryRecipe extends MekanismRecipe<RotaryRecipeInput> {
      *
      * @return {@code true} if the input is valid for this recipe.
      */
-    public abstract boolean test(GasStack gasStack);
+    public abstract boolean test(ChemicalStack gasStack);
 
     @Override
     public boolean matches(RotaryRecipeInput input, Level level) {
@@ -81,7 +81,7 @@ public abstract class RotaryRecipe extends MekanismRecipe<RotaryRecipeInput> {
      *
      * @throws IllegalStateException if {@link #hasGasToFluid()} is {@code false}.
      */
-    public abstract GasStackIngredient getGasInput();
+    public abstract ChemicalStackIngredient getGasInput();
 
     /**
      * For JEI, gets the gas output representations to display.
@@ -90,7 +90,7 @@ public abstract class RotaryRecipe extends MekanismRecipe<RotaryRecipeInput> {
      *
      * @throws IllegalStateException if {@link #hasFluidToGas()} is {@code false}.
      */
-    public abstract List<GasStack> getGasOutputDefinition();
+    public abstract List<ChemicalStack> getGasOutputDefinition();
 
     /**
      * For JEI, gets the fluid output representations to display.
@@ -114,7 +114,7 @@ public abstract class RotaryRecipe extends MekanismRecipe<RotaryRecipeInput> {
      * @implNote The passed in input should <strong>NOT</strong> be modified.
      */
     @Contract(value = "_ -> new", pure = true)
-    public abstract GasStack getGasOutput(FluidStack input);
+    public abstract ChemicalStack getGasOutput(FluidStack input);
 
     /**
      * Gets a new fluid output based on the given input.
@@ -129,7 +129,7 @@ public abstract class RotaryRecipe extends MekanismRecipe<RotaryRecipeInput> {
      * @implNote The passed in input should <strong>NOT</strong> be modified.
      */
     @Contract(value = "_ -> new", pure = true)
-    public abstract FluidStack getFluidOutput(GasStack input);
+    public abstract FluidStack getFluidOutput(ChemicalStack input);
 
     @Override
     public boolean isIncomplete() {

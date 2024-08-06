@@ -6,10 +6,10 @@ import com.blamejared.crafttweaker.api.fluid.IFluidStack;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import java.util.List;
 import mekanism.api.recipes.RotaryRecipe;
-import mekanism.api.recipes.ingredients.GasStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
-import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
+import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -51,7 +51,7 @@ public class CrTRotaryRecipe {
      */
     @ZenRegister
     @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_ROTARY_GAS_TO_FLUID)
-    public record GasToFluid(@ZenCodeType.Getter("input") GasStackIngredient input,
+    public record GasToFluid(@ZenCodeType.Getter("input") ChemicalStackIngredient input,
                              @ZenCodeType.Getter("outputs") List<IFluidStack> outputs) {
     }
 
@@ -62,6 +62,6 @@ public class CrTRotaryRecipe {
     @ZenRegister
     @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_ROTARY_FLUID_TO_GAS)
     public record FluidToGas(@ZenCodeType.Getter("input") CTFluidIngredient input,
-                             @ZenCodeType.Getter("outputs") List<ICrTGasStack> outputs) {
+                             @ZenCodeType.Getter("outputs") List<ICrTChemicalStack> outputs) {
     }
 }

@@ -11,25 +11,24 @@ import net.minecraft.core.Holder;
 import net.minecraft.tags.TagKey;
 
 @NothingNullByDefault
-public interface IChemicalStackIngredientCreator<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-      INGREDIENT extends IChemicalIngredient<CHEMICAL, INGREDIENT>, STACK_INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK, INGREDIENT>>
-      extends IIngredientCreator<CHEMICAL, STACK, STACK_INGREDIENT> {
+public interface IChemicalStackIngredientCreator
+      extends IIngredientCreator<Chemical, ChemicalStack, ChemicalStackIngredient> {
 
     /**
      * {@return the basic internal chemical ingredient creator}
      *
      * @since 10.6.0
      */
-    IChemicalIngredientCreator<CHEMICAL, INGREDIENT> chemicalCreator();
+    IChemicalIngredientCreator chemicalCreator();
 
     @Override
-    default STACK_INGREDIENT from(STACK instance) {
+    default ChemicalStackIngredient from(ChemicalStack instance) {
         Objects.requireNonNull(instance, "ChemicalStackIngredients cannot be created from a null ChemicalStack.");
         return from(instance.getChemical(), instance.getAmount());
     }
 
     @Override
-    default STACK_INGREDIENT from(CHEMICAL instance, int amount) {
+    default ChemicalStackIngredient from(Chemical instance, int amount) {
         return from(instance, (long) amount);
     }
 
@@ -42,13 +41,13 @@ public interface IChemicalStackIngredientCreator<CHEMICAL extends Chemical<CHEMI
      * @throws NullPointerException     if the given provider is null.
      * @throws IllegalArgumentException if the given provider is empty or an amount smaller than one.
      */
-    default STACK_INGREDIENT from(IChemicalProvider<CHEMICAL> provider, long amount) {
+    default ChemicalStackIngredient from(IChemicalProvider provider, long amount) {
         Objects.requireNonNull(provider, "ChemicalStackIngredients cannot be created from a null chemical provider.");
         return from(chemicalCreator().of(provider), amount);
     }
 
     @Override
-    default STACK_INGREDIENT from(int amount, CHEMICAL... chemicals) {
+    default ChemicalStackIngredient from(int amount, Chemical... chemicals) {
         return from((long) amount, chemicals);
     }
 
@@ -62,7 +61,7 @@ public interface IChemicalStackIngredientCreator<CHEMICAL extends Chemical<CHEMI
      * @throws IllegalArgumentException if the given instance is empty or an amount smaller than one; or if no chemicals are passed.
      * @since 10.6.0
      */
-    default STACK_INGREDIENT from(long amount, IChemicalProvider<CHEMICAL>... chemicals) {
+    default ChemicalStackIngredient from(long amount, IChemicalProvider... chemicals) {
         if (chemicals.length == 0) {
             throw new IllegalArgumentException("Attempted to create an ChemicalStackIngredients with no chemicals.");
         }
@@ -79,12 +78,12 @@ public interface IChemicalStackIngredientCreator<CHEMICAL extends Chemical<CHEMI
      * @throws IllegalArgumentException if the given instance is empty or an amount smaller than one.
      * @since 10.5.0
      */
-    default STACK_INGREDIENT fromHolder(Holder<CHEMICAL> instance, long amount) {
+    default ChemicalStackIngredient fromHolder(Holder<Chemical> instance, long amount) {
         return from(instance.value(), amount);
     }
 
     @Override
-    default STACK_INGREDIENT from(TagKey<CHEMICAL> tag, int amount) {
+    default ChemicalStackIngredient from(TagKey<Chemical> tag, int amount) {
         return from(tag, (long) amount);
     }
 
@@ -97,7 +96,7 @@ public interface IChemicalStackIngredientCreator<CHEMICAL extends Chemical<CHEMI
      * @throws NullPointerException     if the given tag is null.
      * @throws IllegalArgumentException if the given amount smaller than one.
      */
-    default STACK_INGREDIENT from(TagKey<CHEMICAL> tag, long amount) {
+    default ChemicalStackIngredient from(TagKey<Chemical> tag, long amount) {
         Objects.requireNonNull(tag, "ChemicalStackIngredients cannot be created from a null tag.");
         return from(chemicalCreator().tag(tag), amount);
     }
@@ -111,5 +110,5 @@ public interface IChemicalStackIngredientCreator<CHEMICAL extends Chemical<CHEMI
      * @throws NullPointerException     if the given ingredient is null.
      * @throws IllegalArgumentException if the ingredient is explicitly empty or the given amount smaller than one.
      */
-    STACK_INGREDIENT from(INGREDIENT ingredient, long amount);
+    ChemicalStackIngredient from(IChemicalIngredient ingredient, long amount);
 }

@@ -4,9 +4,6 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import mekanism.api.IContentsListener;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasTank;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
@@ -28,8 +25,8 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing {
 
     @NotNull
     @Override
-    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks(IContentsListener listener) {
-        return side -> getMultiblock().getGasTanks(side);
+    public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener) {
+        return side -> getMultiblock().getChemicalTanks(side);
     }
 
     @NotNull
@@ -41,7 +38,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing {
     @Override
     public boolean persists(ContainerType<?, ?, ?> type) {
         //Do not handle gas when it comes to syncing it/saving this tile to disk
-        if (type == ContainerType.GAS || type == ContainerType.ENERGY) {
+        if (type == ContainerType.CHEMICAL || type == ContainerType.ENERGY) {
             return false;
         }
         return super.persists(type);

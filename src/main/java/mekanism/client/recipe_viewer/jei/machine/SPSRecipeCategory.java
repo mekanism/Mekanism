@@ -7,7 +7,7 @@ import mekanism.api.math.MathUtils;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.bar.GuiDynamicHorizontalRateBar;
 import mekanism.client.gui.element.gauge.GaugeType;
-import mekanism.client.gui.element.gauge.GuiGasGauge;
+import mekanism.client.gui.element.gauge.GuiChemicalGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.recipe_viewer.jei.BaseRecipeCategory;
 import mekanism.client.recipe_viewer.jei.MekanismJEI;
@@ -42,8 +42,8 @@ public class SPSRecipeCategory extends BaseRecipeCategory<SPSRecipeViewerRecipe>
             list.add(MekanismLang.PROCESS_RATE_MB.translate(1.0));
             return list;
         }));
-        input = addElement(GuiGasGauge.getDummy(GaugeType.STANDARD, this, 6, 13));
-        output = addElement(GuiGasGauge.getDummy(GaugeType.STANDARD, this, 150, 13));
+        input = addElement(GuiChemicalGauge.getDummy(GaugeType.STANDARD, this, 6, 13));
+        output = addElement(GuiChemicalGauge.getDummy(GaugeType.STANDARD, this, 150, 13));
         addElement(new GuiDynamicHorizontalRateBar(this, getBarProgressTimer(), 6, 75, 160,
               ColorFunction.scale(Color.rgbi(60, 45, 74), Color.rgbi(100, 30, 170))));
     }

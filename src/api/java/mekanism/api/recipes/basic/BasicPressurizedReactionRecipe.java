@@ -5,10 +5,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.PressurizedReactionRecipe;
-import mekanism.api.recipes.ingredients.GasStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.world.item.ItemStack;
@@ -21,11 +21,11 @@ public class BasicPressurizedReactionRecipe extends PressurizedReactionRecipe {
 
     protected final ItemStackIngredient inputSolid;
     protected final FluidStackIngredient inputFluid;
-    protected final GasStackIngredient inputGas;
+    protected final ChemicalStackIngredient inputGas;
     protected final long energyRequired;
     protected final int duration;
     protected final ItemStack outputItem;
-    protected final GasStack outputGas;
+    protected final ChemicalStack outputGas;
 
     /**
      * @param inputSolid     Item input.
@@ -38,8 +38,8 @@ public class BasicPressurizedReactionRecipe extends PressurizedReactionRecipe {
      *
      * @apiNote At least one output must not be empty.
      */
-    public BasicPressurizedReactionRecipe(ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, GasStackIngredient inputGas,
-          long energyRequired, int duration, ItemStack outputItem, GasStack outputGas) {
+    public BasicPressurizedReactionRecipe(ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, ChemicalStackIngredient inputGas,
+          long energyRequired, int duration, ItemStack outputItem, ChemicalStack outputGas) {
         this.inputSolid = Objects.requireNonNull(inputSolid, "Item input cannot be null.");
         this.inputFluid = Objects.requireNonNull(inputFluid, "Fluid input cannot be null.");
         this.inputGas = Objects.requireNonNull(inputGas, "Gas input cannot be null.");
@@ -70,7 +70,7 @@ public class BasicPressurizedReactionRecipe extends PressurizedReactionRecipe {
     }
 
     @Override
-    public GasStackIngredient getInputGas() {
+    public ChemicalStackIngredient getInputGas() {
         return inputGas;
     }
 
@@ -85,7 +85,7 @@ public class BasicPressurizedReactionRecipe extends PressurizedReactionRecipe {
     }
 
     @Override
-    public boolean test(ItemStack solid, FluidStack liquid, GasStack gas) {
+    public boolean test(ItemStack solid, FluidStack liquid, ChemicalStack gas) {
         return this.inputSolid.test(solid) && this.inputFluid.test(liquid) && this.inputGas.test(gas);
     }
 
@@ -96,7 +96,7 @@ public class BasicPressurizedReactionRecipe extends PressurizedReactionRecipe {
 
     @Override
     @Contract(value = "_, _, _ -> new", pure = true)
-    public PressurizedReactionRecipeOutput getOutput(ItemStack solid, FluidStack liquid, GasStack gas) {
+    public PressurizedReactionRecipeOutput getOutput(ItemStack solid, FluidStack liquid, ChemicalStack gas) {
         return new PressurizedReactionRecipeOutput(this.outputItem.copy(), this.outputGas.copy());
     }
 
@@ -104,7 +104,7 @@ public class BasicPressurizedReactionRecipe extends PressurizedReactionRecipe {
         return outputItem;
     }
 
-    public GasStack getOutputGas() {
+    public ChemicalStack getOutputGas() {
         return outputGas;
     }
 

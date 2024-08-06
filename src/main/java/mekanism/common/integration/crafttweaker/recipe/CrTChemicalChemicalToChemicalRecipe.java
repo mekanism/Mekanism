@@ -9,8 +9,7 @@ import mekanism.api.recipes.PigmentMixingRecipe;
 import mekanism.api.recipes.chemical.ChemicalChemicalToChemicalRecipe;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
-import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
-import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTPigmentStack;
+import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -34,7 +33,7 @@ public class CrTChemicalChemicalToChemicalRecipe {
          */
         @ZenCodeType.Method
         @ZenCodeType.Getter("outputs")
-        public static List<ICrTGasStack> getOutputs(ChemicalInfuserRecipe _this) {
+        public static List<ICrTChemicalStack> getOutputs(ChemicalInfuserRecipe _this) {
             return CrTUtils.convertChemical(_this.getOutputDefinition());
         }
     }
@@ -51,7 +50,7 @@ public class CrTChemicalChemicalToChemicalRecipe {
          */
         @ZenCodeType.Method
         @ZenCodeType.Getter("outputs")
-        public static List<ICrTPigmentStack> getOutputs(PigmentMixingRecipe _this) {
+        public static List<ICrTChemicalStack> getOutputs(PigmentMixingRecipe _this) {
             return CrTUtils.convertChemical(_this.getOutputDefinition());
         }
     }

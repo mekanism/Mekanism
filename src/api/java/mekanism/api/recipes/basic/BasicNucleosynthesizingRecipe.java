@@ -4,10 +4,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.NucleosynthesizingRecipe;
-import mekanism.api.recipes.ingredients.GasStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 public class BasicNucleosynthesizingRecipe extends NucleosynthesizingRecipe implements IBasicItemStackOutput {
 
     protected final ItemStackIngredient itemInput;
-    protected final GasStackIngredient chemicalInput;
+    protected final ChemicalStackIngredient chemicalInput;
     protected final ItemStack output;
     private final int duration;
 
@@ -29,7 +29,7 @@ public class BasicNucleosynthesizingRecipe extends NucleosynthesizingRecipe impl
      * @param output    Output.
      * @param duration  Duration in ticks that it takes the recipe to complete. Must be greater than zero.
      */
-    public BasicNucleosynthesizingRecipe(ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output, int duration) {
+    public BasicNucleosynthesizingRecipe(ItemStackIngredient itemInput, ChemicalStackIngredient gasInput, ItemStack output, int duration) {
         this.itemInput = Objects.requireNonNull(itemInput, "Item input cannot be null.");
         this.chemicalInput = Objects.requireNonNull(gasInput, "Chemical input cannot be null.");
         Objects.requireNonNull(output, "Output cannot be null.");
@@ -54,13 +54,13 @@ public class BasicNucleosynthesizingRecipe extends NucleosynthesizingRecipe impl
     }
 
     @Override
-    public GasStackIngredient getChemicalInput() {
+    public ChemicalStackIngredient getChemicalInput() {
         return chemicalInput;
     }
 
     @Override
     @Contract(value = "_, _ -> new", pure = true)
-    public ItemStack getOutput(ItemStack inputItem, GasStack inputChemical) {
+    public ItemStack getOutput(ItemStack inputItem, ChemicalStack inputChemical) {
         return output.copy();
     }
 
@@ -71,7 +71,7 @@ public class BasicNucleosynthesizingRecipe extends NucleosynthesizingRecipe impl
     }
 
     @Override
-    public boolean test(ItemStack itemStack, GasStack gasStack) {
+    public boolean test(ItemStack itemStack, ChemicalStack gasStack) {
         return itemInput.test(itemStack) && chemicalInput.test(gasStack);
     }
 

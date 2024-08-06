@@ -1,12 +1,19 @@
 package mekanism.api.recipes.ingredients;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.List;
 import java.util.Objects;
+import mekanism.api.SerializationConstants;
+import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.IEmptyStackProvider;
 import mekanism.api.recipes.ingredients.chemical.IChemicalIngredient;
+import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,20 +24,79 @@ import org.jetbrains.annotations.Nullable;
  * so this class is used to (a) wrap a standard ChemicalIngredient with an amount and (b) provide a standard serialization format for mods to use.
  *
  * @see net.neoforged.neoforge.common.crafting.SizedIngredient
- * @see GasStackIngredient
- * @see InfusionStackIngredient
- * @see PigmentStackIngredient
- * @see SlurryStackIngredient
  */
 @NothingNullByDefault
-public abstract sealed class ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-      INGREDIENT extends IChemicalIngredient<CHEMICAL, INGREDIENT>> implements InputIngredient<@NotNull STACK>, IEmptyStackProvider<CHEMICAL, STACK>
-      permits GasStackIngredient, InfusionStackIngredient, PigmentStackIngredient, SlurryStackIngredient {
+public final class ChemicalStackIngredient implements InputIngredient<ChemicalStack> {
 
-    private final INGREDIENT ingredient;
+    /**
+     * The "flat" codec for {@link ChemicalStackIngredient}.
+     *
+     * <p>The amount is serialized inline with the rest of the ingredient, for example:
+     *
+     * <pre>{@code
+     * {
+     *     "gas": "mekanism:hydrogen",
+     *     "amount": 250
+     * }
+     * }</pre>
+     *
+     * <p>
+     * <p>
+     * Compound gas ingredients are always serialized using the map codec, i.e.
+     *
+     * <pre>{@code
+     * {
+     *     "type": "mekanism:compound",
+     *     "ingredients": [
+     *         { "gas": "mekanism:hydrogen" },
+     *         { "gas": "mekanism:oxygen" }
+     *     ],
+     *     "amount": 500
+     * }
+     * }</pre>
+     *
+     * @since 10.6.0
+     *///todo backcompat for field names
+    public static final Codec<ChemicalStackIngredient> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+          IngredientCreatorAccess.chemical().mapCodecNonEmpty().forGetter(ChemicalStackIngredient::ingredient),
+          SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(SerializationConstants.AMOUNT).forGetter(ChemicalStackIngredient::amount)
+    ).apply(instance, ChemicalStackIngredient::new));
+
+    /**
+     * A stream codec for sending {@link ChemicalStackIngredient}s over the network.
+     *
+     * @since 10.6.0
+     */
+    public static final StreamCodec<RegistryFriendlyByteBuf, ChemicalStackIngredient> STREAM_CODEC = StreamCodec.composite(
+          IngredientCreatorAccess.chemical().streamCodec(), ChemicalStackIngredient::ingredient,
+          ByteBufCodecs.VAR_LONG, ChemicalStackIngredient::amount,
+          ChemicalStackIngredient::new
+    );
+
+    /**
+     * Creates a Gas Stack Ingredient that matches a given ingredient and amount. Prefer calling via
+     * {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#chemical()} and
+     * {@link mekanism.api.recipes.ingredients.creator.IChemicalStackIngredientCreator#from(IChemicalIngredient, long)}.
+     *
+     * @param ingredient Ingredient to match.
+     * @param amount     Amount to match.
+     *
+     * @throws NullPointerException     if the given instance is null.
+     * @throws IllegalArgumentException if the given instance is empty.
+     * @since 10.6.0
+     */
+    public static ChemicalStackIngredient of(IChemicalIngredient ingredient, long amount) {
+        Objects.requireNonNull(ingredient, "ChemicalStackIngredients cannot be created from a null ingredient.");
+        if (ingredient.isEmpty()) {
+            throw new IllegalArgumentException("GasStackIngredients cannot be created using the empty ingredient.");
+        }
+        return new ChemicalStackIngredient(ingredient, amount);
+    }
+
+    private final IChemicalIngredient ingredient;
     private final long amount;
 
-    protected ChemicalStackIngredient(INGREDIENT ingredient, long amount) {
+    public ChemicalStackIngredient(IChemicalIngredient ingredient, long amount) {
         if (amount <= 0) {
             throw new IllegalArgumentException("Size must be positive");
         }
@@ -39,15 +105,15 @@ public abstract sealed class ChemicalStackIngredient<CHEMICAL extends Chemical<C
     }
 
     @Nullable
-    private List<STACK> representations;
+    private List<ChemicalStack> representations;
 
     @Override
-    public boolean test(STACK stack) {
+    public boolean test(ChemicalStack stack) {
         return testType(stack) && stack.getAmount() >= amount;
     }
 
     @Override
-    public boolean testType(STACK stack) {
+    public boolean testType(ChemicalStack stack) {
         Objects.requireNonNull(stack);
         return testType(stack.getChemical());
     }
@@ -59,18 +125,18 @@ public abstract sealed class ChemicalStackIngredient<CHEMICAL extends Chemical<C
      *
      * @return {@code true} if the input argument matches the predicate, otherwise {@code false}
      */
-    public boolean testType(CHEMICAL chemical) {
+    public boolean testType(Chemical chemical) {
         Objects.requireNonNull(chemical);
         return ingredient.test(chemical);
     }
 
     @Override
-    public STACK getMatchingInstance(STACK stack) {
-        return test(stack) ? (STACK) stack.copyWithAmount(amount) : getEmptyStack();
+    public ChemicalStack getMatchingInstance(ChemicalStack stack) {
+        return test(stack) ? (ChemicalStack) stack.copyWithAmount(amount) : ChemicalStack.EMPTY;
     }
 
     @Override
-    public long getNeededAmount(STACK stack) {
+    public long getNeededAmount(ChemicalStack stack) {
         return testType(stack) ? amount : 0;
     }
 
@@ -80,10 +146,10 @@ public abstract sealed class ChemicalStackIngredient<CHEMICAL extends Chemical<C
     }
 
     @Override
-    public List<STACK> getRepresentations() {
+    public List<ChemicalStack> getRepresentations() {
         if (this.representations == null) {
             this.representations = ingredient.getChemicals().stream()
-                  .map(s -> (STACK) s.getStack(amount))
+                  .map(s -> (ChemicalStack) s.getStack(amount))
                   .toList();
         }
         return representations;
@@ -94,7 +160,7 @@ public abstract sealed class ChemicalStackIngredient<CHEMICAL extends Chemical<C
      *
      * @since 10.6.0
      */
-    public INGREDIENT ingredient() {
+    public IChemicalIngredient ingredient() {
         return ingredient;
     }
 
@@ -107,6 +173,10 @@ public abstract sealed class ChemicalStackIngredient<CHEMICAL extends Chemical<C
         return amount;
     }
 
+    public @NotNull ChemicalStack getEmptyStack() {
+        return ChemicalStack.EMPTY;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -114,7 +184,7 @@ public abstract sealed class ChemicalStackIngredient<CHEMICAL extends Chemical<C
         } else if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        ChemicalStackIngredient<?, ?, ?> other = (ChemicalStackIngredient<?, ?, ?>) o;
+        ChemicalStackIngredient other = (ChemicalStackIngredient) o;
         return amount == other.amount && ingredient.equals(other.ingredient);
     }
 

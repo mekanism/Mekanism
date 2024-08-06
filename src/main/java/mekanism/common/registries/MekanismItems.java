@@ -10,10 +10,7 @@ import mekanism.api.tier.AlloyTier;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.Mekanism;
 import mekanism.common.attachments.containers.ContainerType;
-import mekanism.common.attachments.containers.chemical.gas.GasTanksBuilder;
-import mekanism.common.attachments.containers.chemical.infuse.InfusionTanksBuilder;
-import mekanism.common.attachments.containers.chemical.pigment.PigmentTanksBuilder;
-import mekanism.common.attachments.containers.chemical.slurry.SlurryTanksBuilder;
+import mekanism.common.attachments.containers.chemical.ChemicalTanksBuilder;
 import mekanism.common.attachments.containers.energy.ComponentBackedNoClampEnergyContainer;
 import mekanism.common.attachments.containers.energy.EnergyContainersBuilder;
 import mekanism.common.attachments.containers.fluid.FluidTanksBuilder;
@@ -118,10 +115,7 @@ public class MekanismItems {
                 .build(), MekanismConfig.gear
           );
     public static final ItemRegistryObject<ItemGaugeDropper> GAUGE_DROPPER = ITEMS.registerItem("gauge_dropper", ItemGaugeDropper::new)
-          .addAttachedContainerCapabilities(ContainerType.GAS, () -> GasTanksBuilder.builder().addTank(ItemGaugeDropper.MERGED_TANK_CREATOR).build(), MekanismConfig.gear)
-          .addAttachedContainerCapabilities(ContainerType.INFUSION, () -> InfusionTanksBuilder.builder().addTank(ItemGaugeDropper.MERGED_TANK_CREATOR).build(), MekanismConfig.gear)
-          .addAttachedContainerCapabilities(ContainerType.PIGMENT, () -> PigmentTanksBuilder.builder().addTank(ItemGaugeDropper.MERGED_TANK_CREATOR).build(), MekanismConfig.gear)
-          .addAttachedContainerCapabilities(ContainerType.SLURRY, () -> SlurryTanksBuilder.builder().addTank(ItemGaugeDropper.MERGED_TANK_CREATOR).build(), MekanismConfig.gear)
+          .addAttachedContainerCapabilities(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder().addTank(ItemGaugeDropper.MERGED_TANK_CREATOR).build(), MekanismConfig.gear)
           .addAttachedContainerCapabilities(ContainerType.FLUID, () -> FluidTanksBuilder.builder().addTank(ItemGaugeDropper.MERGED_TANK_CREATOR).build(), MekanismConfig.gear);
     public static final ItemRegistryObject<ItemGeigerCounter> GEIGER_COUNTER = ITEMS.registerItem("geiger_counter", ItemGeigerCounter::new);
     public static final ItemRegistryObject<ItemDosimeter> DOSIMETER = ITEMS.registerItem("dosimeter", ItemDosimeter::new);
@@ -148,8 +142,8 @@ public class MekanismItems {
                 .build(), MekanismConfig.gear
           );
     public static final ItemRegistryObject<ItemFlamethrower> FLAMETHROWER = ITEMS.registerItem("flamethrower", ItemFlamethrower::new)
-          .addAttachedContainerCapabilities(ContainerType.GAS, () -> GasTanksBuilder.builder()
-                .addInternalStorage(MekanismConfig.gear.flamethrowerFillRate, MekanismConfig.gear.flamethrowerMaxGas, gas -> gas == MekanismGases.HYDROGEN.getChemical()
+          .addAttachedContainerCapabilities(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder()
+                .addInternalStorage(MekanismConfig.gear.flamethrowerFillRate, MekanismConfig.gear.flamethrowerMaxGas, gas -> gas == MekanismChemicals.HYDROGEN.getChemical()
                 ).build(), MekanismConfig.gear
           );
     public static final ItemRegistryObject<ItemMekaTool> MEKA_TOOL = ITEMS.registerUnburnable("meka_tool", ItemMekaTool::new)
@@ -172,18 +166,18 @@ public class MekanismItems {
           );
     public static final ItemRegistryObject<ItemScubaMask> SCUBA_MASK = ITEMS.registerItem("scuba_mask", ItemScubaMask::new);
     public static final ItemRegistryObject<ItemScubaTank> SCUBA_TANK = ITEMS.registerItem("scuba_tank", ItemScubaTank::new)
-          .addAttachedContainerCapabilities(ContainerType.GAS, () -> GasTanksBuilder.builder()
-                .addInternalStorage(MekanismConfig.gear.scubaFillRate, MekanismConfig.gear.scubaMaxGas, gas -> gas == MekanismGases.OXYGEN.getChemical())
+          .addAttachedContainerCapabilities(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder()
+                .addInternalStorage(MekanismConfig.gear.scubaFillRate, MekanismConfig.gear.scubaMaxGas, gas -> gas == MekanismChemicals.OXYGEN.getChemical())
                 .build(), MekanismConfig.gear
           );
     public static final ItemRegistryObject<ItemJetpack> JETPACK = ITEMS.registerItem("jetpack", ItemJetpack::new)
-          .addAttachedContainerCapabilities(ContainerType.GAS, () -> GasTanksBuilder.builder()
-                .addInternalStorage(MekanismConfig.gear.jetpackFillRate, MekanismConfig.gear.jetpackMaxGas, gas -> gas == MekanismGases.HYDROGEN.getChemical())
+          .addAttachedContainerCapabilities(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder()
+                .addInternalStorage(MekanismConfig.gear.jetpackFillRate, MekanismConfig.gear.jetpackMaxGas, gas -> gas == MekanismChemicals.HYDROGEN.getChemical())
                 .build(), MekanismConfig.gear
           );
     public static final ItemRegistryObject<ItemArmoredJetpack> ARMORED_JETPACK = ITEMS.registerItem("jetpack_armored", ItemArmoredJetpack::new)
-          .addAttachedContainerCapabilities(ContainerType.GAS, () -> GasTanksBuilder.builder()
-                .addInternalStorage(MekanismConfig.gear.jetpackFillRate, MekanismConfig.gear.jetpackMaxGas, gas -> gas == MekanismGases.HYDROGEN.getChemical())
+          .addAttachedContainerCapabilities(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder()
+                .addInternalStorage(MekanismConfig.gear.jetpackFillRate, MekanismConfig.gear.jetpackMaxGas, gas -> gas == MekanismChemicals.HYDROGEN.getChemical())
                 .build(), MekanismConfig.gear
           );
     public static final ItemRegistryObject<ItemHDPEElytra> HDPE_REINFORCED_ELYTRA = ITEMS.registerItem("hdpe_elytra", props -> new ItemHDPEElytra(props.durability(648).rarity(Rarity.RARE)));

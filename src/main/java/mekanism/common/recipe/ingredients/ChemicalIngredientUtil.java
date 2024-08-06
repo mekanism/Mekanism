@@ -7,7 +7,6 @@ import com.mojang.serialization.MapCodec;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.recipes.ingredients.chemical.CompoundChemicalIngredient;
 import mekanism.api.recipes.ingredients.chemical.IChemicalIngredient;
 import mekanism.api.recipes.ingredients.chemical.SingleChemicalIngredient;
@@ -21,24 +20,23 @@ public class ChemicalIngredientUtil {
     }
 
     @SuppressWarnings("unchecked")
-    public static <CHEMICAL extends Chemical<CHEMICAL>, INGREDIENT extends IChemicalIngredient<CHEMICAL, INGREDIENT>, SINGLE extends SingleChemicalIngredient<CHEMICAL, INGREDIENT>,
-          TAG extends TagChemicalIngredient<CHEMICAL, INGREDIENT>> MapCodec<INGREDIENT> singleOrTagCodec(MapCodec<SINGLE> singleCodec, MapCodec<TAG> tagCodec) {
+    public static MapCodec<IChemicalIngredient> singleOrTagCodec(MapCodec<SingleChemicalIngredient> singleCodec, MapCodec<TagChemicalIngredient> tagCodec) {
         return NeoForgeExtraCodecs.xor(singleCodec, tagCodec).flatXmap(
-              either -> DataResult.success(either.map(i -> (INGREDIENT) i, i -> (INGREDIENT) i)),
+              either -> DataResult.success(either.map(i -> i, IChemicalIngredient.class::cast)),
               ingredient -> {
                   if (ingredient instanceof SingleChemicalIngredient) {
-                      return DataResult.success(Either.left((SINGLE) ingredient));
+                      return DataResult.success(Either.left((SingleChemicalIngredient) ingredient));
                   } else if (ingredient instanceof TagChemicalIngredient) {
-                      return DataResult.success(Either.right((TAG) ingredient));
+                      return DataResult.success(Either.right((TagChemicalIngredient) ingredient));
                   }
                   return DataResult.error(() -> "Basic chemical ingredient should be either a chemical or a tag!");
               });
     }
 
     @SuppressWarnings("RedundantTypeArguments")
-    public static <CHEMICAL extends Chemical<CHEMICAL>, INGREDIENT extends IChemicalIngredient<CHEMICAL, INGREDIENT>> MapCodec<INGREDIENT> makeMapCodec(
-          Registry<MapCodec<? extends INGREDIENT>> typeRegistry, MapCodec<INGREDIENT> singleOrTagCodec) {
-        return NeoForgeExtraCodecs.<MapCodec<? extends INGREDIENT>, INGREDIENT, INGREDIENT>dispatchMapOrElse(typeRegistry.byNameCodec(), IChemicalIngredient::codec,
+    public static MapCodec<IChemicalIngredient> makeMapCodec(
+          Registry<MapCodec<? extends IChemicalIngredient>> typeRegistry, MapCodec<IChemicalIngredient> singleOrTagCodec) {
+        return NeoForgeExtraCodecs.<MapCodec<? extends IChemicalIngredient>, IChemicalIngredient, IChemicalIngredient>dispatchMapOrElse(typeRegistry.byNameCodec(), IChemicalIngredient::codec,
               Function.identity(), singleOrTagCodec).xmap(
               either -> either.map(Function.identity(), Function.identity()),
               ingredient -> {
@@ -57,13 +55,13 @@ public class ChemicalIngredientUtil {
     }
 
     @SuppressWarnings("unchecked")
-    public static <CHEMICAL extends Chemical<CHEMICAL>, INGREDIENT extends IChemicalIngredient<CHEMICAL, INGREDIENT>> Codec<INGREDIENT> codec(Codec<List<INGREDIENT>> listCodec,
-          Codec<INGREDIENT> mapCodecCodec, Function<List<? extends INGREDIENT>, INGREDIENT> compoundCreator) {
+    public static Codec<IChemicalIngredient> codec(Codec<List<IChemicalIngredient>> listCodec,
+          Codec<IChemicalIngredient> mapCodecCodec, Function<List<? extends IChemicalIngredient>, IChemicalIngredient> compoundCreator) {
         // [{...}, {...}] is turned into a CompoundChemicalIngredient instance
         return Codec.either(listCodec, mapCodecCodec).xmap(either -> either.map(compoundCreator, Function.identity()), ingredient -> {
             // serialize CompoundChemicalIngredient instances as an array over their children
-            if (ingredient instanceof CompoundChemicalIngredient<?, ?> compound) {
-                return Either.left((List<INGREDIENT>) compound.children());
+            if (ingredient instanceof CompoundChemicalIngredient compound) {
+                return Either.left(compound.children());
             } else if (ingredient.isEmpty()) {
                 // serialize empty ingredients as []
                 return Either.left(Collections.emptyList());

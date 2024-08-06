@@ -4,7 +4,7 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.MekanismRecipeTypes;
-import mekanism.api.recipes.ingredients.GasStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
@@ -19,7 +19,7 @@ public class BasicCompressingRecipe extends BasicItemStackGasToItemStackRecipe {
 
     private static final Holder<Item> OSMIUM_COMPRESSOR = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "osmium_compressor"));
 
-    public BasicCompressingRecipe(ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output) {
+    public BasicCompressingRecipe(ItemStackIngredient itemInput, ChemicalStackIngredient gasInput, ItemStack output) {
         super(itemInput, gasInput, output, MekanismRecipeTypes.TYPE_COMPRESSING.value());
     }
 

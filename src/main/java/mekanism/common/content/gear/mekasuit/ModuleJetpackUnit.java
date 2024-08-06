@@ -7,8 +7,8 @@ import java.util.function.Consumer;
 import java.util.function.IntFunction;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasHandler;
+import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IHUDElement;
 import mekanism.api.gear.IModule;
@@ -20,7 +20,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.item.interfaces.IJetpackItem.JetpackMode;
-import mekanism.common.registries.MekanismGases;
+import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -45,12 +45,12 @@ public record ModuleJetpackUnit(JetpackMode mode, ThrustMultiplier thrustMultipl
     @Override
     public void addHUDElements(IModule<ModuleJetpackUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player, Consumer<IHUDElement> hudElementAdder) {
         if (module.isEnabled()) {
-            IGasHandler gasHandler = Capabilities.GAS.getCapability(stack);
+            IChemicalHandler gasHandler = Capabilities.CHEMICAL.getCapability(stack);
             if (gasHandler == null) {
                 hudElementAdder.accept(IModuleHelper.INSTANCE.hudElementPercent(mode.getHUDIcon(), 1));
             } else {
-                GasStack stored = StorageUtils.getContainedGas(gasHandler, MekanismGases.HYDROGEN);
-                double ratio = StorageUtils.getRatio(stored.getAmount(), gasHandler.getTankCapacity(0));
+                ChemicalStack stored = StorageUtils.getContainedChemical(gasHandler, MekanismChemicals.HYDROGEN);
+                double ratio = StorageUtils.getRatio(stored.getAmount(), gasHandler.getChemicalTankCapacity(0));
                 hudElementAdder.accept(IModuleHelper.INSTANCE.hudElementPercent(mode.getHUDIcon(), ratio));
             }
         }
@@ -70,12 +70,12 @@ public record ModuleJetpackUnit(JetpackMode mode, ThrustMultiplier thrustMultipl
     @Override
     public void onRemoved(IModule<ModuleJetpackUnit> module, IModuleContainer moduleContainer, ItemStack stack, boolean last) {
         //Vent the excess hydrogen from the jetpack
-        IGasHandler gasHandler = Capabilities.GAS.getCapability(stack);
+        IChemicalHandler gasHandler = Capabilities.CHEMICAL.getCapability(stack);
         if (gasHandler != null) {
-            for (int tank = 0, tanks = gasHandler.getTanks(); tank < tanks; tank++) {
-                GasStack stored = gasHandler.getChemicalInTank(tank);
+            for (int tank = 0, tanks = gasHandler.getChemicalTanks(); tank < tanks; tank++) {
+                ChemicalStack stored = gasHandler.getChemicalInTank(tank);
                 if (!stored.isEmpty()) {
-                    long capacity = gasHandler.getTankCapacity(tank);
+                    long capacity = gasHandler.getChemicalTankCapacity(tank);
                     if (stored.getAmount() > capacity) {
                         gasHandler.setChemicalInTank(tank, stored.copyWithAmount(capacity));
                     }

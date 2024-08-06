@@ -11,10 +11,6 @@ import java.util.Objects;
 import java.util.UUID;
 import mekanism.api.Action;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.api.chemical.pigment.PigmentStack;
-import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.slot.ArmorSlot;
 import mekanism.common.inventory.container.slot.HotBarSlot;
@@ -40,10 +36,6 @@ import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.inventory.container.sync.SyncableRegistryEntry;
 import mekanism.common.inventory.container.sync.SyncableShort;
 import mekanism.common.inventory.container.sync.chemical.SyncableChemicalStack;
-import mekanism.common.inventory.container.sync.chemical.SyncableGasStack;
-import mekanism.common.inventory.container.sync.chemical.SyncableInfusionStack;
-import mekanism.common.inventory.container.sync.chemical.SyncablePigmentStack;
-import mekanism.common.inventory.container.sync.chemical.SyncableSlurryStack;
 import mekanism.common.inventory.container.sync.list.SyncableCollection;
 import mekanism.common.inventory.container.sync.list.SyncableList;
 import mekanism.common.network.PacketUtils;
@@ -582,7 +574,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         ISyncableData data = getTrackedData(property);
         if (data instanceof SyncableLong syncable) {
             syncable.set(value);
-        } else if (data instanceof SyncableChemicalStack<?, ?> syncable) {
+        } else if (data instanceof SyncableChemicalStack syncable) {
             syncable.set(value);
         }
     }
@@ -622,15 +614,9 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         }
     }
 
-    public <STACK extends ChemicalStack<?>> void handleWindowProperty(short property, @NotNull STACK value) {
+    public <STACK extends ChemicalStack> void handleWindowProperty(short property, @NotNull STACK value) {
         ISyncableData data = getTrackedData(property);
-        if (data instanceof SyncableGasStack syncable && value instanceof GasStack stack) {
-            syncable.set(stack);
-        } else if (data instanceof SyncableInfusionStack syncable && value instanceof InfusionStack stack) {
-            syncable.set(stack);
-        } else if (data instanceof SyncablePigmentStack syncable && value instanceof PigmentStack stack) {
-            syncable.set(stack);
-        } else if (data instanceof SyncableSlurryStack syncable && value instanceof SlurryStack stack) {
+        if (data instanceof SyncableChemicalStack syncable && value instanceof ChemicalStack stack) {
             syncable.set(stack);
         }
     }

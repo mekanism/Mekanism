@@ -1,7 +1,7 @@
 package mekanism.api.datagen.recipe.builder;
 
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.basic.BasicElectrolysisRecipe;
@@ -11,11 +11,11 @@ import mekanism.api.recipes.ingredients.FluidStackIngredient;
 public class ElectrolysisRecipeBuilder extends MekanismRecipeBuilder<ElectrolysisRecipeBuilder> {
 
     private final FluidStackIngredient input;
-    private final GasStack leftGasOutput;
-    private final GasStack rightGasOutput;
+    private final ChemicalStack leftGasOutput;
+    private final ChemicalStack rightGasOutput;
     private long energyMultiplier = 1;
 
-    protected ElectrolysisRecipeBuilder(FluidStackIngredient input, GasStack leftGasOutput, GasStack rightGasOutput) {
+    protected ElectrolysisRecipeBuilder(FluidStackIngredient input, ChemicalStack leftGasOutput, ChemicalStack rightGasOutput) {
         this.input = input;
         this.leftGasOutput = leftGasOutput;
         this.rightGasOutput = rightGasOutput;
@@ -28,7 +28,7 @@ public class ElectrolysisRecipeBuilder extends MekanismRecipeBuilder<Electrolysi
      * @param leftGasOutput  Left Output.
      * @param rightGasOutput Right Output.
      */
-    public static ElectrolysisRecipeBuilder separating(FluidStackIngredient input, GasStack leftGasOutput, GasStack rightGasOutput) {
+    public static ElectrolysisRecipeBuilder separating(FluidStackIngredient input, ChemicalStack leftGasOutput, ChemicalStack rightGasOutput) {
         if (leftGasOutput.isEmpty() || rightGasOutput.isEmpty()) {
             throw new IllegalArgumentException("This separating recipe requires non empty gas outputs.");
         }

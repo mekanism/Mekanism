@@ -8,7 +8,7 @@ import mekanism.api.recipes.FluidSlurryToSlurryRecipe;
 import mekanism.api.recipes.chemical.FluidChemicalToChemicalRecipe;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
-import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTSlurryStack;
+import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -32,7 +32,7 @@ public class CrTFluidChemicalToChemicalRecipe {
          */
         @ZenCodeType.Method
         @ZenCodeType.Getter("outputs")
-        public static List<ICrTSlurryStack> getOutputs(FluidSlurryToSlurryRecipe _this) {
+        public static List<ICrTChemicalStack> getOutputs(FluidSlurryToSlurryRecipe _this) {
             return CrTUtils.convertChemical(_this.getOutputDefinition());
         }
     }

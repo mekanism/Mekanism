@@ -6,7 +6,6 @@ import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
@@ -32,18 +31,18 @@ public class OutputHelper {
      * @param tank                Tank to wrap.
      * @param notEnoughSpaceError The error to apply if the output causes the recipe to not be able to perform any operations.
      */
-    public static <STACK extends ChemicalStack<?>> IOutputHandler<@NotNull STACK> getOutputHandler(IChemicalTank<?, STACK> tank, RecipeError notEnoughSpaceError) {
+    public static IOutputHandler<@NotNull ChemicalStack> getOutputHandler(IChemicalTank tank, RecipeError notEnoughSpaceError) {
         Objects.requireNonNull(tank, "Tank cannot be null.");
         Objects.requireNonNull(notEnoughSpaceError, "Not enough space error cannot be null.");
         return new IOutputHandler<>() {
 
             @Override
-            public void handleOutput(STACK toOutput, int operations) {
+            public void handleOutput(ChemicalStack toOutput, int operations) {
                 OutputHelper.handleOutput(tank, toOutput, operations);
             }
 
             @Override
-            public void calculateOperationsCanSupport(OperationTracker tracker, STACK toOutput) {
+            public void calculateOperationsCanSupport(OperationTracker tracker, ChemicalStack toOutput) {
                 OutputHelper.calculateOperationsCanSupport(tracker, notEnoughSpaceError, tank, toOutput);
             }
         };
@@ -143,7 +142,7 @@ public class OutputHelper {
      * @param tankNotEnoughSpaceError The error to apply if the tank output causes the recipe to not be able to perform any operations.
      */
     public static IOutputHandler<@NotNull PressurizedReactionRecipeOutput> getOutputHandler(IInventorySlot slot, RecipeError slotNotEnoughSpaceError,
-          IGasTank tank, RecipeError tankNotEnoughSpaceError) {
+          IChemicalTank tank, RecipeError tankNotEnoughSpaceError) {
         Objects.requireNonNull(slot, "Slot cannot be null.");
         Objects.requireNonNull(tank, "Tank cannot be null.");
         Objects.requireNonNull(slotNotEnoughSpaceError, "Slot not enough space error cannot be null.");
@@ -208,8 +207,8 @@ public class OutputHelper {
      * @param leftNotEnoughSpaceError  The error to apply if the left output causes the recipe to not be able to perform any operations.
      * @param rightNotEnoughSpaceError The error to apply if the right output causes the recipe to not be able to perform any operations.
      */
-    public static IOutputHandler<@NotNull ElectrolysisRecipeOutput> getOutputHandler(IGasTank leftTank, RecipeError leftNotEnoughSpaceError,
-          IGasTank rightTank, RecipeError rightNotEnoughSpaceError) {
+    public static IOutputHandler<@NotNull ElectrolysisRecipeOutput> getOutputHandler(IChemicalTank leftTank, RecipeError leftNotEnoughSpaceError,
+          IChemicalTank rightTank, RecipeError rightNotEnoughSpaceError) {
         Objects.requireNonNull(leftTank, "Left tank cannot be null.");
         Objects.requireNonNull(rightTank, "Right tank cannot be null.");
         Objects.requireNonNull(leftNotEnoughSpaceError, "Left not enough space error cannot be null.");
@@ -239,12 +238,12 @@ public class OutputHelper {
      * @param toOutput   Output result.
      * @param operations Operations to perform.
      */
-    static <STACK extends ChemicalStack<?>> void handleOutput(IChemicalTank<?, STACK> tank, STACK toOutput, int operations) {
+    static void handleOutput(IChemicalTank tank, ChemicalStack toOutput, int operations) {
         if (operations == 0) {
             //This should not happen
             return;
         }
-        STACK output = tank.createStack(toOutput, toOutput.getAmount() * operations);
+        ChemicalStack output = tank.createStack(toOutput, toOutput.getAmount() * operations);
         tank.insert(output, Action.EXECUTE, AutomationType.INTERNAL);
     }
 
@@ -277,14 +276,14 @@ public class OutputHelper {
      * @param toOutput       Output result.
      * @param notEnoughSpace The error to apply if the output causes the recipe to not be able to perform any operations.
      */
-    static <STACK extends ChemicalStack<?>> void calculateOperationsCanSupport(OperationTracker tracker, RecipeError notEnoughSpace, IChemicalTank<?, STACK> tank,
-          STACK toOutput) {
+    static void calculateOperationsCanSupport(OperationTracker tracker, RecipeError notEnoughSpace, IChemicalTank tank,
+          ChemicalStack toOutput) {
         //If our output is empty, we have nothing to add, so we treat it as being able to fit all
         if (!toOutput.isEmpty()) {
             //Copy the stack and make it be max size
-            STACK maxOutput = tank.createStack(toOutput, Long.MAX_VALUE);
+            ChemicalStack maxOutput = tank.createStack(toOutput, Long.MAX_VALUE);
             //Divide the amount we can actually use by the amount one output operation is equal to, capping it at the max we were told about
-            STACK remainder = tank.insert(maxOutput, Action.SIMULATE, AutomationType.INTERNAL);
+            ChemicalStack remainder = tank.insert(maxOutput, Action.SIMULATE, AutomationType.INTERNAL);
             long amountUsed = maxOutput.getAmount() - remainder.getAmount();
             //Divide the amount we can actually use by the amount one output operation is equal to, capping it at the max we were told about
             int operations = MathUtils.clampToInt(amountUsed / toOutput.getAmount());

@@ -3,9 +3,9 @@ package mekanism.api.recipes.cache;
 import java.util.Objects;
 import java.util.function.BooleanSupplier;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.merged.BoxedChemicalStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
-import mekanism.api.recipes.inputs.BoxedChemicalInputHandler;
+import mekanism.api.recipes.inputs.ILongInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -17,9 +17,9 @@ import org.jetbrains.annotations.NotNull;
 public class ChemicalCrystallizerCachedRecipe extends CachedRecipe<ChemicalCrystallizerRecipe> {
 
     private final IOutputHandler<@NotNull ItemStack> outputHandler;
-    private final BoxedChemicalInputHandler inputHandler;
+    private final ILongInputHandler<@NotNull ChemicalStack> inputHandler;
 
-    private BoxedChemicalStack recipeInput = BoxedChemicalStack.EMPTY;
+    private ChemicalStack recipeInput = ChemicalStack.EMPTY;
     private ItemStack output = ItemStack.EMPTY;
 
     /**
@@ -29,7 +29,7 @@ public class ChemicalCrystallizerCachedRecipe extends CachedRecipe<ChemicalCryst
      * @param inputHandler     Input handler.
      * @param outputHandler    Output handler.
      */
-    public ChemicalCrystallizerCachedRecipe(ChemicalCrystallizerRecipe recipe, BooleanSupplier recheckAllErrors, BoxedChemicalInputHandler inputHandler,
+    public ChemicalCrystallizerCachedRecipe(ChemicalCrystallizerRecipe recipe, BooleanSupplier recheckAllErrors, ILongInputHandler<@NotNull ChemicalStack> inputHandler,
           IOutputHandler<@NotNull ItemStack> outputHandler) {
         super(recipe, recheckAllErrors);
         this.inputHandler = Objects.requireNonNull(inputHandler, "Input handler cannot be null.");
@@ -59,7 +59,7 @@ public class ChemicalCrystallizerCachedRecipe extends CachedRecipe<ChemicalCryst
 
     @Override
     public boolean isInputValid() {
-        BoxedChemicalStack input = inputHandler.getInput();
+        ChemicalStack input = inputHandler.getInput();
         return !input.isEmpty() && recipe.test(input);
     }
 

@@ -53,11 +53,11 @@ public class GuiFactory extends GuiConfigurableTile<TileEntityFactory<?>, Mekani
         if (tile.hasSecondaryResourceBar()) {
             ISupportsWarning<?> secondaryBar = null;
             if (tile instanceof TileEntityMetallurgicInfuserFactory factory) {
-                secondaryBar = addRenderableWidget(new GuiChemicalBar<>(this, GuiChemicalBar.getProvider(factory.getInfusionTank(), tile.getInfusionTanks(null)),
+                secondaryBar = addRenderableWidget(new GuiChemicalBar(this, GuiChemicalBar.getProvider(factory.getInfusionTank(), tile.getChemicalTanks(null)),
                       7, 76, tile.tier == FactoryTier.ULTIMATE ? 172 : 138, 4, true));
                 addRenderableWidget(new GuiDumpButton<>(this, factory, tile.tier == FactoryTier.ULTIMATE ? 182 : 148, 76));
             } else if (tile instanceof TileEntityItemStackGasToItemStackFactory factory) {
-                secondaryBar = addRenderableWidget(new GuiChemicalBar<>(this, GuiChemicalBar.getProvider(factory.getGasTank(), tile.getGasTanks(null)),
+                secondaryBar = addRenderableWidget(new GuiChemicalBar(this, GuiChemicalBar.getProvider(factory.getGasTank(), tile.getChemicalTanks(null)),
                       7, 76, tile.tier == FactoryTier.ULTIMATE ? 172 : 138, 4, true));
                 addRenderableWidget(new GuiDumpButton<>(this, factory, tile.tier == FactoryTier.ULTIMATE ? 182 : 148, 76));
             }

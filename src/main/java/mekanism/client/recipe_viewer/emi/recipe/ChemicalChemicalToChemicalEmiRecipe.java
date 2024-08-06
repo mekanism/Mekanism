@@ -17,8 +17,8 @@ import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.tile.component.config.DataType;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
-public abstract class ChemicalChemicalToChemicalEmiRecipe<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-      RECIPE extends ChemicalChemicalToChemicalRecipe<CHEMICAL, STACK, ?>> extends MekanismEmiHolderRecipe<RECIPE> {
+public abstract class ChemicalChemicalToChemicalEmiRecipe<CHEMICAL extends Chemical, STACK extends ChemicalStack,
+      RECIPE extends ChemicalChemicalToChemicalRecipe> extends MekanismEmiHolderRecipe<RECIPE> {
 
     protected ChemicalChemicalToChemicalEmiRecipe(MekanismEmiRecipeCategory category, RecipeHolder<RECIPE> recipeHolder) {
         super(category, recipeHolder);
@@ -27,7 +27,7 @@ public abstract class ChemicalChemicalToChemicalEmiRecipe<CHEMICAL extends Chemi
         addChemicalOutputDefinition(recipe.getOutputDefinition());
     }
 
-    protected abstract GuiChemicalGauge<CHEMICAL, STACK, ?> getGauge(GaugeType type, int x, int y);
+    protected abstract GuiChemicalGauge getGauge(GaugeType type, int x, int y);
 
     @Override
     public void addWidgets(WidgetHolder widgetHolder) {

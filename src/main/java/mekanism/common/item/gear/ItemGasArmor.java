@@ -2,7 +2,7 @@ package mekanism.common.item.gear;
 
 import java.util.List;
 import java.util.function.Consumer;
-import mekanism.api.providers.IGasProvider;
+import mekanism.api.providers.IChemicalProvider;
 import mekanism.common.item.interfaces.IGasItem;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.util.ChemicalUtil;
@@ -23,7 +23,7 @@ public abstract class ItemGasArmor extends ItemSpecialArmor implements IGasItem,
         super(material, armorType, properties.rarity(Rarity.RARE).setNoRepair().stacksTo(1));
     }
 
-    protected abstract IGasProvider getGasType();
+    protected abstract IChemicalProvider getGasType();
 
     @Override
     public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {

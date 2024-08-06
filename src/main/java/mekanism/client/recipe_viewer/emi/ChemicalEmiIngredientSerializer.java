@@ -11,7 +11,7 @@ import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.resources.ResourceLocation;
 
 @NothingNullByDefault
-public class ChemicalEmiIngredientSerializer<CHEMICAL extends Chemical<CHEMICAL>, EMI_STACK extends ChemicalEmiStack<CHEMICAL>> implements EmiStackSerializer<EMI_STACK> {
+public class ChemicalEmiIngredientSerializer<CHEMICAL extends Chemical, EMI_STACK extends ChemicalEmiStack> implements EmiStackSerializer<EMI_STACK> {
 
     private final EmiStackCreator<CHEMICAL, EMI_STACK> stackCreator;
     private final Registry<CHEMICAL> registry;
@@ -46,7 +46,7 @@ public class ChemicalEmiIngredientSerializer<CHEMICAL extends Chemical<CHEMICAL>
     }
 
     @FunctionalInterface
-    public interface EmiStackCreator<CHEMICAL extends Chemical<CHEMICAL>, EMI_STACK extends ChemicalEmiStack<CHEMICAL>> {
+    public interface EmiStackCreator<CHEMICAL extends Chemical, EMI_STACK extends ChemicalEmiStack> {
 
         EMI_STACK create(CHEMICAL chemical, long amount);
     }

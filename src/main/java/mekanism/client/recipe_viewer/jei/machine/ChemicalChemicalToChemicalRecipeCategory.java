@@ -1,6 +1,5 @@
 package mekanism.client.recipe_viewer.jei.machine;
 
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.chemical.ChemicalChemicalToChemicalRecipe;
 import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;
@@ -23,21 +22,21 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class ChemicalChemicalToChemicalRecipeCategory<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-      RECIPE extends ChemicalChemicalToChemicalRecipe<CHEMICAL, STACK, ?>> extends HolderRecipeCategory<RECIPE> {
+public abstract class ChemicalChemicalToChemicalRecipeCategory<
+      RECIPE extends ChemicalChemicalToChemicalRecipe> extends HolderRecipeCategory<RECIPE> {
 
     protected static final String LEFT_INPUT = "leftInput";
     protected static final String RIGHT_INPUT = "rightInput";
     protected static final String OUTPUT = "output";
 
-    private final IIngredientType<STACK> ingredientType;
+    private final IIngredientType<ChemicalStack> ingredientType;
     private final GuiGauge<?> leftInputGauge;
     private final GuiGauge<?> rightInputGauge;
     private final GuiGauge<?> outputGauge;
     protected final GuiProgress rightArrow;
     protected final GuiProgress leftArrow;
 
-    protected ChemicalChemicalToChemicalRecipeCategory(IGuiHelper helper, IRecipeViewerRecipeType<RECIPE> recipeType, IIngredientType<STACK> ingredientType) {
+    protected ChemicalChemicalToChemicalRecipeCategory(IGuiHelper helper, IRecipeViewerRecipeType<RECIPE> recipeType, IIngredientType<ChemicalStack> ingredientType) {
         super(helper, recipeType);
         this.ingredientType = ingredientType;
         leftInputGauge = addElement(getGauge(GaugeType.STANDARD.with(DataType.INPUT_1), 25, 13));
@@ -52,7 +51,7 @@ public abstract class ChemicalChemicalToChemicalRecipeCategory<CHEMICAL extends 
         addElement(new GuiHorizontalPowerBar(this, RecipeViewerUtils.FULL_BAR, 115, 75));
     }
 
-    protected abstract GuiChemicalGauge<CHEMICAL, STACK, ?> getGauge(GaugeType type, int x, int y);
+    protected abstract GuiChemicalGauge getGauge(GaugeType type, int x, int y);
 
     @Override
     public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<RECIPE> recipeHolder, @NotNull IFocusGroup focusGroup) {

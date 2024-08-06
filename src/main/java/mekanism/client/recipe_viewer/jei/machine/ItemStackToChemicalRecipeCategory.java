@@ -1,6 +1,5 @@
 package mekanism.client.recipe_viewer.jei.machine;
 
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
 import mekanism.client.gui.element.gauge.GaugeType;
@@ -21,17 +20,17 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class ItemStackToChemicalRecipeCategory<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-      RECIPE extends ItemStackToChemicalRecipe<CHEMICAL, STACK>> extends HolderRecipeCategory<RECIPE> {
+public abstract class ItemStackToChemicalRecipeCategory<
+      RECIPE extends ItemStackToChemicalRecipe> extends HolderRecipeCategory<RECIPE> {
 
     protected static final String CHEMICAL_INPUT = "chemicalInput";
 
-    private final IIngredientType<STACK> ingredientType;
+    private final IIngredientType<ChemicalStack> ingredientType;
     protected final GuiProgress progressBar;
     private final GuiGauge<?> output;
     private final GuiSlot input;
 
-    protected ItemStackToChemicalRecipeCategory(IGuiHelper helper, IRecipeViewerRecipeType<RECIPE> recipeType, IIngredientType<STACK> ingredientType, boolean isConversion) {
+    protected ItemStackToChemicalRecipeCategory(IGuiHelper helper, IRecipeViewerRecipeType<RECIPE> recipeType, IIngredientType<ChemicalStack> ingredientType, boolean isConversion) {
         super(helper, recipeType);
         this.ingredientType = ingredientType;
         output = addElement(getGauge(GaugeType.STANDARD.with(DataType.OUTPUT), 131, 13));
@@ -39,7 +38,7 @@ public abstract class ItemStackToChemicalRecipeCategory<CHEMICAL extends Chemica
         progressBar = addElement(new GuiProgress(isConversion ? () -> 1 : getSimpleProgressTimer(), ProgressType.LARGE_RIGHT, this, 64, 40));
     }
 
-    protected abstract GuiChemicalGauge<CHEMICAL, STACK, ?> getGauge(GaugeType type, int x, int y);
+    protected abstract GuiChemicalGauge getGauge(GaugeType type, int x, int y);
 
     @Override
     public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<RECIPE> recipeHolder, @NotNull IFocusGroup focusGroup) {

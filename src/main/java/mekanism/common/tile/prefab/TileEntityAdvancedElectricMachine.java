@@ -7,10 +7,10 @@ import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
+import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalTankBuilder;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasTank;
+import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
@@ -59,7 +59,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgressMachine<ItemStackGasToItemStackRecipe> implements
-      ItemChemicalRecipeLookupHandler<Gas, GasStack, ItemStackGasToItemStackRecipe>, ConstantUsageRecipeLookupHandler {
+      ItemChemicalRecipeLookupHandler<ItemStackGasToItemStackRecipe>, ConstantUsageRecipeLookupHandler {
 
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
           RecipeError.NOT_ENOUGH_ENERGY,
@@ -78,11 +78,11 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getChemical", "getChemicalCapacity", "getChemicalNeeded",
                                                                                         "getChemicalFilledPercentage"}, docPlaceholder = "gas tank")
-    public IGasTank gasTank;
+    public IChemicalTank gasTank;
 
     protected final IOutputHandler<@NotNull ItemStack> outputHandler;
     protected final IInputHandler<@NotNull ItemStack> itemInputHandler;
-    protected final ILongInputHandler<@NotNull GasStack> gasInputHandler;
+    protected final ILongInputHandler<@NotNull ChemicalStack> gasInputHandler;
 
     private MachineEnergyContainer<TileEntityAdvancedElectricMachine> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInput", docPlaceholder = "input slot")
@@ -98,9 +98,9 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
         super(blockProvider, pos, state, TRACKED_ERROR_TYPES, ticksRequired);
         configComponent.setupItemIOExtraConfig(inputSlot, outputSlot, secondarySlot, energySlot);
         if (allowExtractingChemical()) {
-            configComponent.setupIOConfig(TransmissionType.GAS, gasTank, RelativeSide.RIGHT).setCanEject(false);
+            configComponent.setupIOConfig(TransmissionType.CHEMICAL, gasTank, RelativeSide.RIGHT).setCanEject(false);
         } else {
-            configComponent.setupInputConfig(TransmissionType.GAS, gasTank);
+            configComponent.setupInputConfig(TransmissionType.CHEMICAL, gasTank);
         }
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
 
@@ -133,10 +133,10 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
 
     @NotNull
     @Override
-    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
-        ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
-        BiPredicate<@NotNull Gas, @NotNull AutomationType> canExtract = allowExtractingChemical() ? ChemicalTankBuilder.GAS.alwaysTrueBi : ChemicalTankBuilder.GAS.notExternal;
-        builder.addTank(gasTank = ChemicalTankBuilder.GAS.create(MAX_GAS, canExtract, (gas, automationType) -> containsRecipeBA(inputSlot.getStack(), gas),
+    public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
+        ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        BiPredicate<@NotNull Chemical, @NotNull AutomationType> canExtract = allowExtractingChemical() ? ChemicalTankBuilder.alwaysTrueBi : ChemicalTankBuilder.notExternal;
+        builder.addTank(gasTank = ChemicalTankBuilder.CHEMICAL.create(MAX_GAS, canExtract, (gas, automationType) -> containsRecipeBA(inputSlot.getStack(), gas),
               this::containsRecipeB, recipeCacheListener));
         return builder.build();
     }

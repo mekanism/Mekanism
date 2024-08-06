@@ -3,14 +3,12 @@ package mekanism.api.recipes.chemical;
 import java.util.List;
 import java.util.function.Predicate;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.vanilla_input.SingleChemicalRecipeInput;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Base class for defining chemical to chemical recipes.
@@ -18,18 +16,15 @@ import org.jetbrains.annotations.NotNull;
  * Input: Chemical
  * <br>
  * Output: ChemicalStack of the same chemical type as the input chemical
- *
- * @param <INGREDIENT> Input Ingredient type
  */
 @NothingNullByDefault
-public abstract class ChemicalToChemicalRecipe<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-      INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK, ?>> extends MekanismRecipe<SingleChemicalRecipeInput<CHEMICAL, STACK>> implements Predicate<@NotNull STACK> {
+public abstract class ChemicalToChemicalRecipe extends MekanismRecipe<SingleChemicalRecipeInput> implements Predicate<ChemicalStack> {
 
     @Override
-    public abstract boolean test(STACK chemicalStack);
+    public abstract boolean test(ChemicalStack chemicalStack);
 
     @Override
-    public boolean matches(SingleChemicalRecipeInput<CHEMICAL, STACK> input, Level level) {
+    public boolean matches(SingleChemicalRecipeInput input, Level level) {
         //Don't match incomplete recipes or ones that don't match
         return !isIncomplete() && test(input.chemical());
     }
@@ -37,14 +32,14 @@ public abstract class ChemicalToChemicalRecipe<CHEMICAL extends Chemical<CHEMICA
     /**
      * Gets the input ingredient.
      */
-    public abstract INGREDIENT getInput();
+    public abstract ChemicalStackIngredient getInput();
 
     /**
      * For JEI, gets the output representations to display.
      *
      * @return Representation of the output, <strong>MUST NOT</strong> be modified.
      */
-    public abstract List<STACK> getOutputDefinition();
+    public abstract List<ChemicalStack> getOutputDefinition();
 
     /**
      * Gets a new output based on the given input.
@@ -58,7 +53,7 @@ public abstract class ChemicalToChemicalRecipe<CHEMICAL extends Chemical<CHEMICA
      * @implNote The passed in input should <strong>NOT</strong> be modified.
      */
     @Contract(value = "_ -> new", pure = true)
-    public abstract STACK getOutput(STACK input);
+    public abstract ChemicalStack getOutput(ChemicalStack input);
 
     @Override
     public boolean isIncomplete() {

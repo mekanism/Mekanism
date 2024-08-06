@@ -7,8 +7,8 @@ import java.util.List;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
-import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTGasStack;
-import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
+import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack;
+import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -42,7 +42,7 @@ public class CrTElectrolysisRecipe {
     @ZenCodeType.Method
     @ZenCodeType.Getter("outputs")
     public static List<CrTElectrolysisRecipeOutput> getOutputs(ElectrolysisRecipe _this) {
-        return CrTUtils.convert(_this.getOutputDefinition(), output -> new CrTElectrolysisRecipeOutput(new CrTGasStack(output.left()), new CrTGasStack(output.right())));
+        return CrTUtils.convert(_this.getOutputDefinition(), output -> new CrTElectrolysisRecipeOutput(new CrTChemicalStack(output.left()), new CrTChemicalStack(output.right())));
     }
 
     /**
@@ -51,7 +51,7 @@ public class CrTElectrolysisRecipe {
      */
     @ZenRegister
     @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_SEPARATING_OUTPUT)
-    public record CrTElectrolysisRecipeOutput(@ZenCodeType.Getter("left") ICrTGasStack left,
-                                              @ZenCodeType.Getter("right") ICrTGasStack right) {
+    public record CrTElectrolysisRecipeOutput(@ZenCodeType.Getter("left") ICrTChemicalStack left,
+                                              @ZenCodeType.Getter("right") ICrTChemicalStack right) {
     }
 }

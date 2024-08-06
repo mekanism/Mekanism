@@ -3,8 +3,7 @@ package mekanism.api.recipes;
 import java.util.List;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.infuse.InfuseType;
-import mekanism.api.chemical.infuse.InfusionStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.Holder;
@@ -25,7 +24,7 @@ import org.jetbrains.annotations.Contract;
  * and Infusing Factories.
  */
 @NothingNullByDefault
-public abstract class ItemStackToInfuseTypeRecipe extends ItemStackToChemicalRecipe<InfuseType, InfusionStack> {
+public abstract class ItemStackToInfuseTypeRecipe extends ItemStackToChemicalRecipe {
 
     private static final Holder<Item> METALLURGIC_INFUSER = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "metallurgic_infuser"));
 
@@ -37,10 +36,10 @@ public abstract class ItemStackToInfuseTypeRecipe extends ItemStackToChemicalRec
 
     @Override
     @Contract(value = "_ -> new", pure = true)
-    public abstract InfusionStack getOutput(ItemStack input);
+    public abstract ChemicalStack getOutput(ItemStack input);
 
     @Override
-    public abstract List<InfusionStack> getOutputDefinition();
+    public abstract List<ChemicalStack> getOutputDefinition();
 
     @Override
     public final RecipeType<ItemStackToInfuseTypeRecipe> getType() {

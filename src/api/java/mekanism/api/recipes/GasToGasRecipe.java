@@ -3,10 +3,9 @@ package mekanism.api.recipes;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.chemical.ChemicalToChemicalRecipe;
-import mekanism.api.recipes.ingredients.GasStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.Contract;
 
@@ -22,7 +21,8 @@ import org.jetbrains.annotations.Contract;
  * </ul>
  */
 @NothingNullByDefault
-public abstract class GasToGasRecipe extends ChemicalToChemicalRecipe<Gas, GasStack, GasStackIngredient> {
+@Deprecated
+public abstract class GasToGasRecipe extends ChemicalToChemicalRecipe {
 
     private final RecipeType<GasToGasRecipe> recipeType;
 
@@ -31,17 +31,17 @@ public abstract class GasToGasRecipe extends ChemicalToChemicalRecipe<Gas, GasSt
     }
 
     @Override
-    public abstract boolean test(GasStack chemicalStack);
+    public abstract boolean test(ChemicalStack chemicalStack);
 
     @Override
-    public abstract GasStackIngredient getInput();
+    public abstract ChemicalStackIngredient getInput();
 
     @Override
-    public abstract List<GasStack> getOutputDefinition();
+    public abstract List<ChemicalStack> getOutputDefinition();
 
     @Override
     @Contract(value = "_ -> new", pure = true)
-    public abstract GasStack getOutput(GasStack input);
+    public abstract ChemicalStack getOutput(ChemicalStack input);
 
     @Override
     public RecipeType<GasToGasRecipe> getType() {

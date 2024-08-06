@@ -1,7 +1,7 @@
 package mekanism.common.integration.projecte.mappers;
 
 import java.util.List;
-import mekanism.api.chemical.slurry.SlurryStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.FluidSlurryToSlurryRecipe;
 import mekanism.common.integration.projecte.IngredientHelper;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -33,11 +33,11 @@ public class FluidSlurryToSlurryRecipeMapper extends TypedMekanismRecipeMapper<F
     protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, FluidSlurryToSlurryRecipe recipe) {
         boolean handled = false;
         List<@NotNull FluidStack> fluidRepresentations = recipe.getFluidInput().getRepresentations();
-        List<@NotNull SlurryStack> slurryRepresentations = recipe.getChemicalInput().getRepresentations();
+        List<@NotNull ChemicalStack> slurryRepresentations = recipe.getChemicalInput().getRepresentations();
         for (FluidStack fluidRepresentation : fluidRepresentations) {
             NormalizedSimpleStack nssFluid = NSSFluid.createFluid(fluidRepresentation);
-            for (SlurryStack slurryRepresentation : slurryRepresentations) {
-                SlurryStack output = recipe.getOutput(fluidRepresentation, slurryRepresentation);
+            for (ChemicalStack slurryRepresentation : slurryRepresentations) {
+                ChemicalStack output = recipe.getOutput(fluidRepresentation, slurryRepresentation);
                 if (!output.isEmpty()) {
                     IngredientHelper ingredientHelper = new IngredientHelper(mapper);
                     ingredientHelper.put(nssFluid, fluidRepresentation.getAmount());

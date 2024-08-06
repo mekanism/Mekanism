@@ -5,12 +5,10 @@ import java.util.List;
 import java.util.function.IntFunction;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.IMekanismChemicalHandler;
-import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.radiation.IRadiationManager;
@@ -20,21 +18,15 @@ import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.advancements.triggers.UseGaugeDropperTrigger.UseDropperAction;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.chemical.dynamic.IGasTracker;
-import mekanism.common.capabilities.chemical.dynamic.IInfusionTracker;
-import mekanism.common.capabilities.chemical.dynamic.IPigmentTracker;
-import mekanism.common.capabilities.chemical.dynamic.ISlurryTracker;
 import mekanism.common.item.ItemGaugeDropper;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
-import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -92,39 +84,27 @@ public record PacketDropperUse(BlockPos pos, DropperAction action, TankType tank
         }
     }
 
-    private <HANDLER extends IMekanismFluidHandler & IGasTracker & IInfusionTracker & IPigmentTracker & ISlurryTracker> void handleTankType(HANDLER handler,
+    private <HANDLER extends IMekanismFluidHandler & IMekanismChemicalHandler> void handleTankType(HANDLER handler,
           ServerPlayer player, ItemStack stack, GlobalPos pos) {
         if (tankType == TankType.FLUID_TANK) {
             IExtendedFluidTank fluidTank = handler.getFluidTank(tankId, null);
             if (fluidTank != null) {
                 handleFluidTank(player, stack, fluidTank);
             }
-        } else if (tankType == TankType.GAS_TANK) {
-            handleChemicalTanks(player, stack, handler.getGasTanks(null), pos);
-        } else if (tankType == TankType.INFUSION_TANK) {
-            handleChemicalTanks(player, stack, handler.getInfusionTanks(null), pos);
-        } else if (tankType == TankType.PIGMENT_TANK) {
-            handleChemicalTanks(player, stack, handler.getPigmentTanks(null), pos);
-        } else if (tankType == TankType.SLURRY_TANK) {
-            handleChemicalTanks(player, stack, handler.getSlurryTanks(null), pos);
+        } else if (tankType == TankType.CHEMICAL_TANK) {
+            List<IChemicalTank> tanks = handler.getChemicalTanks(null);
+            IChemicalTank chemicalTank = handler.getChemicalTank(tankId, null);
+            if (chemicalTank != null) {
+                handleChemicalTank(player, stack, chemicalTank, pos);
+            }
         }
     }
 
-    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> void handleChemicalTanks(
-          ServerPlayer player, ItemStack stack, List<TANK> tanks, GlobalPos pos) {
-        //This method is a workaround for Eclipse's compiler showing an error/warning if we try to just assign the tanks
-        // to a variable in handleTankType and then have the size check and call to handleChemicalTank happen there
-        if (tankId < tanks.size()) {
-            handleChemicalTank(player, stack, tanks.get(tankId), pos);
-        }
-    }
-
-    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void handleChemicalTank(ServerPlayer player, ItemStack stack,
-          IChemicalTank<CHEMICAL, STACK> tank, GlobalPos pos) {
+    private void handleChemicalTank(ServerPlayer player, ItemStack stack, IChemicalTank tank, GlobalPos pos) {
         if (action == DropperAction.DUMP_TANK) {
             //Dump the tank
             if (!tank.isEmpty()) {
-                if (tank instanceof IGasTank gasTank) {
+                if (tank instanceof IChemicalTank gasTank) {
                     //If the tank is a gas tank and has radioactive substances in it make sure we properly emit the radiation to the environment
                     IRadiationManager.INSTANCE.dumpRadiation(pos, gasTank.getStack());
                 }
@@ -132,9 +112,9 @@ public record PacketDropperUse(BlockPos pos, DropperAction action, TankType tank
                 MekanismCriteriaTriggers.USE_GAUGE_DROPPER.value().trigger(player, UseDropperAction.DUMP);
             }
         } else {
-            IChemicalHandler<CHEMICAL, STACK> handler = ChemicalUtil.getCapabilityForChemical(tank).getCapability(stack);
-            if (handler instanceof IMekanismChemicalHandler<CHEMICAL, STACK, ?> chemicalHandler) {
-                IChemicalTank<CHEMICAL, STACK> itemTank = chemicalHandler.getChemicalTank(0, null);
+            IChemicalHandler handler = Capabilities.CHEMICAL.getCapability(stack);
+            if (handler instanceof IMekanismChemicalHandler chemicalHandler) {
+                IChemicalTank itemTank = chemicalHandler.getChemicalTank(0, null);
                 //It is a chemical tank
                 if (itemTank != null) {
                     //Validate something didn't go terribly wrong, and we actually do have the tank we expect to have
@@ -176,16 +156,15 @@ public record PacketDropperUse(BlockPos pos, DropperAction action, TankType tank
         }
     }
 
-    private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void transferBetweenTanks(IChemicalTank<CHEMICAL, STACK> drainTank,
-          IChemicalTank<CHEMICAL, STACK> fillTank, Player player) {
+    private static void transferBetweenTanks(IChemicalTank drainTank, IChemicalTank fillTank, Player player) {
         if (!drainTank.isEmpty() && fillTank.getNeeded() > 0) {
-            STACK chemicalInDrainTank = drainTank.getStack();
-            STACK simulatedRemainder = fillTank.insert(chemicalInDrainTank, Action.SIMULATE, AutomationType.MANUAL);
+            ChemicalStack chemicalInDrainTank = drainTank.getStack();
+            ChemicalStack simulatedRemainder = fillTank.insert(chemicalInDrainTank, Action.SIMULATE, AutomationType.MANUAL);
             long remainder = simulatedRemainder.getAmount();
             long amount = chemicalInDrainTank.getAmount();
             if (remainder < amount) {
                 //We are able to fit at least some of the chemical from our drain tank into the fill tank
-                STACK extractedChemical = drainTank.extract(amount - remainder, Action.EXECUTE, AutomationType.MANUAL);
+                ChemicalStack extractedChemical = drainTank.extract(amount - remainder, Action.EXECUTE, AutomationType.MANUAL);
                 if (!extractedChemical.isEmpty()) {
                     //If we were able to actually extract it from our tank, then insert it into the tank
                     MekanismUtils.logMismatchedStackSize(fillTank.insert(extractedChemical, Action.EXECUTE, AutomationType.MANUAL).getAmount(), 0);
@@ -223,11 +202,8 @@ public record PacketDropperUse(BlockPos pos, DropperAction action, TankType tank
     }
 
     public enum TankType {
-        GAS_TANK,
-        FLUID_TANK,
-        INFUSION_TANK,
-        PIGMENT_TANK,
-        SLURRY_TANK;
+        CHEMICAL_TANK,
+        FLUID_TANK;
 
         public static final IntFunction<TankType> BY_ID = ByIdMap.continuous(TankType::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
         public static final StreamCodec<ByteBuf, TankType> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, TankType::ordinal);

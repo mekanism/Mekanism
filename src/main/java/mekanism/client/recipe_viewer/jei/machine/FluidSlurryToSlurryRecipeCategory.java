@@ -2,9 +2,9 @@ package mekanism.client.recipe_viewer.jei.machine;
 
 import mekanism.api.recipes.FluidSlurryToSlurryRecipe;
 import mekanism.client.gui.element.gauge.GaugeType;
+import mekanism.client.gui.element.gauge.GuiChemicalGauge;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
-import mekanism.client.gui.element.gauge.GuiSlurryGauge;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.recipe_viewer.jei.HolderRecipeCategory;
@@ -28,8 +28,8 @@ public class FluidSlurryToSlurryRecipeCategory extends HolderRecipeCategory<Flui
     public FluidSlurryToSlurryRecipeCategory(IGuiHelper helper, IRecipeViewerRecipeType<FluidSlurryToSlurryRecipe> recipeType) {
         super(helper, recipeType);
         fluidInput = addElement(GuiFluidGauge.getDummy(GaugeType.STANDARD.with(DataType.INPUT), this, 7, 13));
-        slurryInput = addElement(GuiSlurryGauge.getDummy(GaugeType.STANDARD.with(DataType.INPUT), this, 28, 13));
-        output = addElement(GuiSlurryGauge.getDummy(GaugeType.STANDARD.with(DataType.OUTPUT), this, 131, 13));
+        slurryInput = addElement(GuiChemicalGauge.getDummy(GaugeType.STANDARD.with(DataType.INPUT), this, 28, 13));
+        output = addElement(GuiChemicalGauge.getDummy(GaugeType.STANDARD.with(DataType.OUTPUT), this, 131, 13));
         addSlot(SlotType.POWER, 152, 14).with(SlotOverlay.POWER);
         addSlot(SlotType.OUTPUT, 152, 56).with(SlotOverlay.MINUS);
         addConstantProgress(ProgressType.LARGE_RIGHT, 64, 39);

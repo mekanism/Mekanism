@@ -1,11 +1,11 @@
 package mekanism.client.recipe_viewer.jei.machine;
 
-import mekanism.api.chemical.pigment.PigmentStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.PaintingRecipe;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.gauge.GaugeType;
+import mekanism.client.gui.element.gauge.GuiChemicalGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
-import mekanism.client.gui.element.gauge.GuiPigmentGauge;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
@@ -40,14 +40,14 @@ public class PaintingRecipeCategory extends HolderRecipeCategory<PaintingRecipe>
         addSlot(SlotType.POWER, 144, 35).with(SlotOverlay.POWER);
         output = addSlot(SlotType.OUTPUT, 116, 35);
         addElement(new GuiVerticalPowerBar(this, RecipeViewerUtils.FULL_BAR, 164, 15));
-        inputPigment = addElement(GuiPigmentGauge.getDummy(GaugeType.STANDARD.with(DataType.INPUT), this, 25, 13));
+        inputPigment = addElement(GuiChemicalGauge.getDummy(GaugeType.STANDARD.with(DataType.INPUT), this, 25, 13));
         addSimpleProgress(ProgressType.LARGE_RIGHT, 64, 39).colored(colorDetails = new PaintingColorDetails());
     }
 
     @Override
     public void draw(RecipeHolder<PaintingRecipe> recipeHolder, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
         //Set what the "current" recipe is for our color details, before bothering to draw the arrow
-        colorDetails.setIngredient(getDisplayedStack(recipeSlotsView, PIGMENT_INPUT, MekanismJEI.TYPE_PIGMENT, PigmentStack.EMPTY));
+        colorDetails.setIngredient(getDisplayedStack(recipeSlotsView, PIGMENT_INPUT, MekanismJEI.TYPE_PIGMENT, ChemicalStack.EMPTY));
         super.draw(recipeHolder, recipeSlotsView, guiGraphics, mouseX, mouseY);
         colorDetails.reset();
     }

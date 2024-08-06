@@ -4,23 +4,23 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.GasToGasRecipe;
-import mekanism.api.recipes.ingredients.GasStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.Contract;
 
 @NothingNullByDefault
 public abstract class BasicGasToGasRecipe extends GasToGasRecipe {
 
-    protected final GasStack output;
-    private final GasStackIngredient input;
+    protected final ChemicalStack output;
+    private final ChemicalStackIngredient input;
 
     /**
      * @param input  Input.
      * @param output Output.
      */
-    public BasicGasToGasRecipe(GasStackIngredient input, GasStack output, RecipeType<GasToGasRecipe> recipeType) {
+    public BasicGasToGasRecipe(ChemicalStackIngredient input, ChemicalStack output, RecipeType<GasToGasRecipe> recipeType) {
         super(recipeType);
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         Objects.requireNonNull(output, "Output cannot be null.");
@@ -31,23 +31,23 @@ public abstract class BasicGasToGasRecipe extends GasToGasRecipe {
     }
 
     @Override
-    public boolean test(GasStack chemicalStack) {
+    public boolean test(ChemicalStack chemicalStack) {
         return input.test(chemicalStack);
     }
 
     @Override
-    public GasStackIngredient getInput() {
+    public ChemicalStackIngredient getInput() {
         return input;
     }
 
     @Override
-    public List<GasStack> getOutputDefinition() {
+    public List<ChemicalStack> getOutputDefinition() {
         return Collections.singletonList(output);
     }
 
     @Override
     @Contract(value = "_ -> new", pure = true)
-    public GasStack getOutput(GasStack input) {
+    public ChemicalStack getOutput(ChemicalStack input) {
         return output.copy();
     }
 
@@ -56,7 +56,7 @@ public abstract class BasicGasToGasRecipe extends GasToGasRecipe {
      *
      * @return the uncopied output definition
      */
-    public GasStack getOutputRaw() {
+    public ChemicalStack getOutputRaw() {
         return output;
     }
 }

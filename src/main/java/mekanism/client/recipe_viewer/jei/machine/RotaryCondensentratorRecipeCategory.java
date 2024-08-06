@@ -3,8 +3,8 @@ package mekanism.client.recipe_viewer.jei.machine;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.client.gui.element.GuiDownArrow;
 import mekanism.client.gui.element.gauge.GaugeType;
+import mekanism.client.gui.element.gauge.GuiChemicalGauge;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
-import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.SlotType;
@@ -31,7 +31,7 @@ public class RotaryCondensentratorRecipeCategory extends HolderRecipeCategory<Ro
         super(helper, condensentrating ? RecipeViewerRecipeType.CONDENSENTRATING : RecipeViewerRecipeType.DECONDENSENTRATING);
         this.condensentrating = condensentrating;
         addElement(new GuiDownArrow(this, 159, 44));
-        gasGauge = addElement(GuiGasGauge.getDummy(GaugeType.STANDARD, this, 25, 13));
+        gasGauge = addElement(GuiChemicalGauge.getDummy(GaugeType.STANDARD, this, 25, 13));
         fluidGauge = addElement(GuiFluidGauge.getDummy(GaugeType.STANDARD, this, 133, 13));
         addSlot(SlotType.INPUT, 5, 25).with(SlotOverlay.PLUS);
         addSlot(SlotType.OUTPUT, 5, 56).with(SlotOverlay.MINUS);

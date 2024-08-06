@@ -1,21 +1,13 @@
 package mekanism.api.recipes.ingredients.chemical;
 
-import mekanism.api.chemical.pigment.Pigment;
-import mekanism.api.recipes.ingredients.creator.IChemicalIngredientCreator;
-import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
-import org.jetbrains.annotations.NotNull;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 
 /**
  * {@inheritDoc}
  *
- * @see mekanism.api.recipes.ingredients.PigmentStackIngredient
+ * @see ChemicalStackIngredient
  * @since 10.6.0
  */
-public non-sealed interface IPigmentIngredient extends IChemicalIngredient<Pigment, IPigmentIngredient> {
+public non-sealed interface IPigmentIngredient extends IChemicalIngredient {
 
-    @NotNull
-    @Override
-    default IChemicalIngredientCreator<Pigment, IPigmentIngredient> ingredientCreator() {
-        return IngredientCreatorAccess.pigment();
-    }
 }

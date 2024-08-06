@@ -10,9 +10,7 @@ import mekanism.api.recipes.ItemStackToPigmentRecipe;
 import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
-import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
-import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTInfusionStack;
-import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTPigmentStack;
+import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -35,7 +33,7 @@ public class CrTItemStackToChemicalRecipe {
          */
         @ZenCodeType.Method
         @ZenCodeType.Getter("outputs")
-        public static List<ICrTGasStack> getOutputs(ItemStackToGasRecipe _this) {
+        public static List<ICrTChemicalStack> getOutputs(ItemStackToGasRecipe _this) {
             return CrTUtils.convertChemical(_this.getOutputDefinition());
         }
     }
@@ -52,7 +50,7 @@ public class CrTItemStackToChemicalRecipe {
          */
         @ZenCodeType.Method
         @ZenCodeType.Getter("outputs")
-        public static List<ICrTInfusionStack> getOutputs(ItemStackToInfuseTypeRecipe _this) {
+        public static List<ICrTChemicalStack> getOutputs(ItemStackToInfuseTypeRecipe _this) {
             return CrTUtils.convertChemical(_this.getOutputDefinition());
         }
     }
@@ -69,7 +67,7 @@ public class CrTItemStackToChemicalRecipe {
          */
         @ZenCodeType.Method
         @ZenCodeType.Getter("outputs")
-        public static List<ICrTPigmentStack> getOutputs(ItemStackToPigmentRecipe _this) {
+        public static List<ICrTChemicalStack> getOutputs(ItemStackToPigmentRecipe _this) {
             return CrTUtils.convertChemical(_this.getOutputDefinition());
         }
     }

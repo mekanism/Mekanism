@@ -32,7 +32,7 @@ public class CrTIngredientHelper {
     /**
      * Validates that the amount is greater than zero and that given chemical is not the empty variant. If one of these is not true, an error is thrown.
      */
-    static void assertValid(Chemical<?> instance, long amount, String ingredientType, String chemicalType) {
+    static void assertValid(Chemical instance, long amount, String ingredientType, String chemicalType) {
         assertValidAmount(ingredientType, amount);
         if (instance.isEmptyType()) {
             throw new IllegalArgumentException(ingredientType + " cannot be created from an empty " + chemicalType + ".");
@@ -42,12 +42,12 @@ public class CrTIngredientHelper {
     /**
      * Validates that the amount is greater than zero and that given chemical is not the empty variant. If one of these is not true, an error is thrown.
      */
-    static void assertMultiple(long amount, String ingredientType, String chemicalType, IChemicalProvider<?>... instances) {
+    static void assertMultiple(long amount, String ingredientType, String chemicalType, IChemicalProvider... instances) {
         assertValidAmount(ingredientType, amount);
         if (instances == null || instances.length == 0) {
             throw new IllegalArgumentException(ingredientType + " cannot be created from zero " + chemicalType + ".");
         }
-        for (IChemicalProvider<?> instance : instances) {
+        for (IChemicalProvider instance : instances) {
             if (instance.getChemical().isEmptyType()) {
                 throw new IllegalArgumentException(ingredientType + " cannot be created from an empty " + chemicalType + ".");
             }
@@ -57,12 +57,12 @@ public class CrTIngredientHelper {
     /**
      * Validates that the amount is greater than zero and that given chemical is not the empty variant. If one of these is not true, an error is thrown.
      */
-    static long assertMultiple(String ingredientType, String chemicalType, ICrTChemicalStack<?, ?, ?>... instances) {
+    static long assertMultiple(String ingredientType, String chemicalType, ICrTChemicalStack... instances) {
         if (instances == null || instances.length == 0) {
             throw new IllegalArgumentException(ingredientType + " cannot be created from zero " + chemicalType + ".");
         }
         long amount = 0;
-        for (ICrTChemicalStack<?, ?, ?> instance : instances) {
+        for (ICrTChemicalStack instance : instances) {
             if (instance.isEmpty()) {
                 throw new IllegalArgumentException(ingredientType + " cannot be created from an empty " + chemicalType + ".");
             } else if (amount == 0) {
@@ -76,14 +76,14 @@ public class CrTIngredientHelper {
     /**
      * Validates that the chemical stack is not empty. If it is, an error is thrown.
      */
-    static void assertValid(ICrTChemicalStack<?, ?, ?> instance, String ingredientType) {
+    static void assertValid(ICrTChemicalStack instance, String ingredientType) {
         if (instance.isEmpty()) {
             throw new IllegalArgumentException(ingredientType + " cannot be created from an empty stack.");
         }
     }
 
-    static <INGREDIENT extends IChemicalIngredient<?, ?>> void addIngredient(List<INGREDIENT> ingredients, INGREDIENT ingredient) {
-        if (ingredient instanceof CompoundChemicalIngredient<?, ?> compoundIngredient) {
+    static <INGREDIENT extends IChemicalIngredient> void addIngredient(List<INGREDIENT> ingredients, INGREDIENT ingredient) {
+        if (ingredient instanceof CompoundChemicalIngredient compoundIngredient) {
             ingredients.addAll((List<INGREDIENT>) compoundIngredient.children());
         } else {
             ingredients.add(ingredient);

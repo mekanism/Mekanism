@@ -5,7 +5,7 @@ import mekanism.api.math.MathUtils;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.gauge.GaugeType;
-import mekanism.client.gui.element.gauge.GuiGasGauge;
+import mekanism.client.gui.element.gauge.GuiChemicalGauge;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
@@ -33,7 +33,7 @@ public class GuiGasGenerator extends GuiMekanismTile<TileEntityGasGenerator, Mek
                   GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(productionAmount)),
                   MekanismLang.MAX_OUTPUT.translate(EnergyDisplay.of(tile.getMaxOutput())));
         }));
-        addRenderableWidget(new GuiGasGauge(() -> tile.fuelTank, () -> tile.getGasTanks(null), GaugeType.WIDE, this, 55, 18));
+        addRenderableWidget(new GuiChemicalGauge(() -> tile.fuelTank, () -> tile.getChemicalTanks(null), GaugeType.WIDE, this, 55, 18));
         addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
     }
 

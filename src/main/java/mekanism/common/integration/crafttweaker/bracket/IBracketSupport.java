@@ -12,6 +12,14 @@ public interface IBracketSupport {
      */
     String getBracketName();
 
+    interface IChemicalBracketSupport extends IBracketSupport {
+
+        @Override
+        default String getBracketName() {
+            return CrTConstants.BRACKET_CHEMICAL;
+        }
+    }
+
     interface IGasBracketSupport extends IBracketSupport {
 
         @Override

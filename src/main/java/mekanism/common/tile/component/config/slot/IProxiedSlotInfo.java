@@ -2,10 +2,7 @@ package mekanism.common.tile.component.config.slot;
 
 import java.util.List;
 import java.util.function.Supplier;
-import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.chemical.infuse.IInfusionTank;
-import mekanism.api.chemical.pigment.IPigmentTank;
-import mekanism.api.chemical.slurry.ISlurryTank;
+import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.heat.IHeatCapacitor;
@@ -49,60 +46,75 @@ public interface IProxiedSlotInfo extends ISlotInfo {
 
     class GasProxy extends GasSlotInfo implements IProxiedSlotInfo {
 
-        private final Supplier<List<IGasTank>> tankSupplier;
+        private final Supplier<List<IChemicalTank>> tankSupplier;
 
-        public GasProxy(boolean canInput, boolean canOutput, Supplier<List<IGasTank>> tankSupplier) {
+        public GasProxy(boolean canInput, boolean canOutput, Supplier<List<IChemicalTank>> tankSupplier) {
             super(canInput, canOutput);
             this.tankSupplier = tankSupplier;
         }
 
         @Override
-        public List<IGasTank> getTanks() {
+        public List<IChemicalTank> getTanks() {
+            return tankSupplier.get();
+        }
+    }
+
+    class ChemicalProxy extends ChemicalSlotInfo implements IProxiedSlotInfo {
+
+        private final Supplier<List<IChemicalTank>> tankSupplier;
+
+        public ChemicalProxy(boolean canInput, boolean canOutput, Supplier<List<IChemicalTank>> tankSupplier) {
+            super(canInput, canOutput);
+            this.tankSupplier = tankSupplier;
+        }
+
+        @Override
+        public List<IChemicalTank> getTanks() {
             return tankSupplier.get();
         }
     }
 
     class InfusionProxy extends InfusionSlotInfo implements IProxiedSlotInfo {
 
-        private final Supplier<List<IInfusionTank>> tankSupplier;
+        private final Supplier<List<IChemicalTank>> tankSupplier;
 
-        public InfusionProxy(boolean canInput, boolean canOutput, Supplier<List<IInfusionTank>> tankSupplier) {
+        public InfusionProxy(boolean canInput, boolean canOutput, Supplier<List<IChemicalTank>> tankSupplier) {
             super(canInput, canOutput);
             this.tankSupplier = tankSupplier;
         }
 
         @Override
-        public List<IInfusionTank> getTanks() {
+        public List<IChemicalTank> getTanks() {
             return tankSupplier.get();
         }
     }
 
     class PigmentProxy extends PigmentSlotInfo implements IProxiedSlotInfo {
 
-        private final Supplier<List<IPigmentTank>> tankSupplier;
+        private final Supplier<List<IChemicalTank>> tankSupplier;
 
-        public PigmentProxy(boolean canInput, boolean canOutput, Supplier<List<IPigmentTank>> tankSupplier) {
+        public PigmentProxy(boolean canInput, boolean canOutput, Supplier<List<IChemicalTank>> tankSupplier) {
             super(canInput, canOutput);
             this.tankSupplier = tankSupplier;
         }
 
         @Override
-        public List<IPigmentTank> getTanks() {
+        public List<IChemicalTank> getTanks() {
             return tankSupplier.get();
         }
     }
 
     class SlurryProxy extends SlurrySlotInfo implements IProxiedSlotInfo {
 
-        private final Supplier<List<ISlurryTank>> tankSupplier;
+        private final Supplier<List<IChemicalTank>> tankSupplier;
 
-        public SlurryProxy(boolean canInput, boolean canOutput, Supplier<List<ISlurryTank>> tankSupplier) {
+        public SlurryProxy(boolean canInput, boolean canOutput, Supplier<List<IChemicalTank>> tankSupplier) {
             super(canInput, canOutput);
             this.tankSupplier = tankSupplier;
         }
 
         @Override
-        public List<ISlurryTank> getTanks() {
+        public List<IChemicalTank> getTanks() {
             return tankSupplier.get();
         }
     }

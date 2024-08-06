@@ -4,10 +4,10 @@ import com.google.common.collect.Table.Cell;
 import java.util.Map;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPITags;
-import mekanism.api.chemical.slurry.Slurry;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.gear.config.ModuleConfig;
+import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.providers.IItemProvider;
-import mekanism.api.providers.IPigmentProvider;
 import mekanism.api.robit.RobitSkin;
 import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
@@ -42,13 +42,10 @@ import mekanism.common.registries.MekanismDamageTypes;
 import mekanism.common.registries.MekanismDamageTypes.MekanismDamageType;
 import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.registries.MekanismFluids;
-import mekanism.common.registries.MekanismGases;
-import mekanism.common.registries.MekanismInfuseTypes;
+import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismModules;
-import mekanism.common.registries.MekanismPigments;
 import mekanism.common.registries.MekanismRobitSkins;
-import mekanism.common.registries.MekanismSlurries;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.resource.IResource;
 import mekanism.common.resource.PrimaryResource;
@@ -205,7 +202,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         addTag(MekanismTags.Fluids.NUTRITIONAL_PASTE, "Nutritional Paste");
 
         addTag(MekanismTags.Gases.WATER_VAPOR, "Water Vapor");
-        addTag(MekanismAPITags.Gases.WASTE_BARREL_DECAY_BLACKLIST, "Waste Barrel Does Not Decay");
+        addTag(MekanismAPITags.WASTE_BARREL_DECAY_BLACKLIST, "Waste Barrel Does Not Decay");
 
         addTag(MekanismAPITags.InfuseTypes.CARBON, "Carbon");
         addTag(MekanismAPITags.InfuseTypes.REDSTONE, "Redstone");
@@ -532,60 +529,57 @@ public class MekanismLangProvider extends BaseLanguageProvider {
     }
 
     private void addGases() {
-        add(MekanismAPI.EMPTY_GAS, "Empty");
-        add(MekanismGases.HYDROGEN, "Hydrogen");
-        add(MekanismGases.OXYGEN, "Oxygen");
-        add(MekanismGases.STEAM, "Steam");
-        add(MekanismGases.WATER_VAPOR, "Water Vapor");
-        add(MekanismGases.CHLORINE, "Chlorine");
-        add(MekanismGases.SULFUR_DIOXIDE, "Sulfur Dioxide");
-        add(MekanismGases.SULFUR_TRIOXIDE, "Sulfur Trioxide");
-        add(MekanismGases.SULFURIC_ACID, "Sulfuric Acid");
-        add(MekanismGases.HYDROGEN_CHLORIDE, "Hydrogen Chloride");
-        add(MekanismGases.HYDROFLUORIC_ACID, "Hydrofluoric Acid");
-        add(MekanismGases.URANIUM_OXIDE, "Uranium Oxide");
-        add(MekanismGases.URANIUM_HEXAFLUORIDE, "Uranium Hexafluoride");
-        add(MekanismGases.ETHENE, "Ethene");
-        add(MekanismGases.SODIUM, "Sodium");
-        add(MekanismGases.SUPERHEATED_SODIUM, "Superheated Sodium");
-        add(MekanismGases.BRINE, "Gaseous Brine");
-        add(MekanismGases.LITHIUM, "Lithium");
-        add(MekanismGases.OSMIUM, "Osmium");
-        add(MekanismGases.FISSILE_FUEL, "Fissile Fuel");
-        add(MekanismGases.NUCLEAR_WASTE, "Nuclear Waste");
-        add(MekanismGases.SPENT_NUCLEAR_WASTE, "Spent Nuclear Waste");
-        add(MekanismGases.ANTIMATTER, "Antimatter");
-        add(MekanismGases.PLUTONIUM, "Plutonium");
-        add(MekanismGases.POLONIUM, "Polonium");
+        add(MekanismAPI.EMPTY_CHEMICAL, "Empty");
+        add(MekanismChemicals.HYDROGEN, "Hydrogen");
+        add(MekanismChemicals.OXYGEN, "Oxygen");
+        add(MekanismChemicals.STEAM, "Steam");
+        add(MekanismChemicals.WATER_VAPOR, "Water Vapor");
+        add(MekanismChemicals.CHLORINE, "Chlorine");
+        add(MekanismChemicals.SULFUR_DIOXIDE, "Sulfur Dioxide");
+        add(MekanismChemicals.SULFUR_TRIOXIDE, "Sulfur Trioxide");
+        add(MekanismChemicals.SULFURIC_ACID, "Sulfuric Acid");
+        add(MekanismChemicals.HYDROGEN_CHLORIDE, "Hydrogen Chloride");
+        add(MekanismChemicals.HYDROFLUORIC_ACID, "Hydrofluoric Acid");
+        add(MekanismChemicals.URANIUM_OXIDE, "Uranium Oxide");
+        add(MekanismChemicals.URANIUM_HEXAFLUORIDE, "Uranium Hexafluoride");
+        add(MekanismChemicals.ETHENE, "Ethene");
+        add(MekanismChemicals.SODIUM, "Sodium");
+        add(MekanismChemicals.SUPERHEATED_SODIUM, "Superheated Sodium");
+        add(MekanismChemicals.BRINE, "Gaseous Brine");
+        add(MekanismChemicals.LITHIUM, "Lithium");
+        add(MekanismChemicals.OSMIUM, "Osmium");
+        add(MekanismChemicals.FISSILE_FUEL, "Fissile Fuel");
+        add(MekanismChemicals.NUCLEAR_WASTE, "Nuclear Waste");
+        add(MekanismChemicals.SPENT_NUCLEAR_WASTE, "Spent Nuclear Waste");
+        add(MekanismChemicals.ANTIMATTER, "Antimatter");
+        add(MekanismChemicals.PLUTONIUM, "Plutonium");
+        add(MekanismChemicals.POLONIUM, "Polonium");
     }
 
     private void addInfusionTypes() {
-        add(MekanismAPI.EMPTY_INFUSE_TYPE, "Empty");
-        add(MekanismInfuseTypes.CARBON, "Carbon");
-        add(MekanismInfuseTypes.REDSTONE, "Redstone");
-        add(MekanismInfuseTypes.DIAMOND, "Diamond");
-        add(MekanismInfuseTypes.REFINED_OBSIDIAN, "Refined Obsidian");
-        add(MekanismInfuseTypes.GOLD, "Gold");
-        add(MekanismInfuseTypes.TIN, "Tin");
-        add(MekanismInfuseTypes.FUNGI, "Fungi");
-        add(MekanismInfuseTypes.BIO, "Biomass");
+        add(MekanismChemicals.CARBON, "Carbon");
+        add(MekanismChemicals.REDSTONE, "Redstone");
+        add(MekanismChemicals.DIAMOND, "Diamond");
+        add(MekanismChemicals.REFINED_OBSIDIAN, "Refined Obsidian");
+        add(MekanismChemicals.GOLD, "Gold");
+        add(MekanismChemicals.TIN, "Tin");
+        add(MekanismChemicals.FUNGI, "Fungi");
+        add(MekanismChemicals.BIO, "Biomass");
     }
 
     private void addPigments() {
-        add(MekanismAPI.EMPTY_PIGMENT, "Empty");
-        for (Map.Entry<EnumColor, IPigmentProvider> entry : MekanismPigments.PIGMENT_COLOR_LOOKUP.entrySet()) {
+        for (Map.Entry<EnumColor, IChemicalProvider> entry : MekanismChemicals.PIGMENT_COLOR_LOOKUP.entrySet()) {
             add(entry.getValue(), entry.getKey().getEnglishName() + " Pigment");
         }
     }
 
     private void addSlurries() {
-        add(MekanismAPI.EMPTY_SLURRY, "Empty");
-        for (Map.Entry<PrimaryResource, SlurryRegistryObject<Slurry, Slurry>> entry : MekanismSlurries.PROCESSED_RESOURCES.entrySet()) {
+        for (Map.Entry<PrimaryResource, SlurryRegistryObject<Chemical, Chemical>> entry : MekanismChemicals.PROCESSED_RESOURCES.entrySet()) {
             addSlurry(entry.getValue(), formatAndCapitalize(entry.getKey().getRegistrySuffix()));
         }
     }
 
-    private void addSlurry(SlurryRegistryObject<Slurry, Slurry> slurryRO, String name) {
+    private void addSlurry(SlurryRegistryObject<Chemical, Chemical> slurryRO, String name) {
         add(slurryRO.getDirtySlurry(), "Dirty " + name + " Slurry");
         add(slurryRO.getCleanSlurry(), "Clean " + name + " Slurry");
     }
@@ -824,6 +818,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(APILang.UPGRADE_STONE_GENERATOR_DESCRIPTION, "Generates stone or cobblestone as needed.");
         add(APILang.UPGRADE_MAX_INSTALLED, "Maximum Installed: %1$s");
         //Transmission types
+        add(MekanismLang.TRANSMISSION_TYPE_CHEMICALS, "Chemicals");
         add(MekanismLang.TRANSMISSION_TYPE_ENERGY, "Energy");
         add(MekanismLang.TRANSMISSION_TYPE_FLUID, "Fluids");
         add(MekanismLang.TRANSMISSION_TYPE_GAS, "Gases");

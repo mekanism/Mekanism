@@ -6,10 +6,7 @@ import java.util.Map;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasHandler;
-import mekanism.api.chemical.gas.IGasTank;
+import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.attachments.containers.ContainerType;
@@ -35,7 +32,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class TileEntitySPSPort extends TileEntitySPSCasing {
 
-    private final Map<Direction, BlockCapabilityCache<IGasHandler, @Nullable Direction>> chemicalCapabilityCaches = new EnumMap<>(Direction.class);
+    private final Map<Direction, BlockCapabilityCache<IChemicalHandler, @Nullable Direction>> chemicalCapabilityCaches = new EnumMap<>(Direction.class);
     private MachineEnergyContainer<TileEntitySPSPort> energyContainer;
 
     public TileEntitySPSPort(BlockPos pos, BlockState state) {
@@ -64,23 +61,23 @@ public class TileEntitySPSPort extends TileEntitySPSCasing {
 
     @NotNull
     @Override
-    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks(IContentsListener listener) {
+    public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener) {
         //Note: We can just use a proxied holder as the input/output restrictions are done in the tanks themselves
-        return side -> getMultiblock().getGasTanks(side);
+        return side -> getMultiblock().getChemicalTanks(side);
     }
 
     @Override
     public boolean persists(ContainerType<?, ?, ?> type) {
-        if (type == ContainerType.GAS) {
+        if (type == ContainerType.CHEMICAL) {
             return false;
         }
         return super.persists(type);
     }
 
-    public void addGasTargetCapability(List<CapabilityOutputTarget<IGasHandler>> outputTargets, Direction side) {
-        BlockCapabilityCache<IGasHandler, @Nullable Direction> cache = chemicalCapabilityCaches.get(side);
+    public void addChemicalTargetCapability(List<CapabilityOutputTarget<IChemicalHandler>> outputTargets, Direction side) {
+        BlockCapabilityCache<IChemicalHandler, @Nullable Direction> cache = chemicalCapabilityCaches.get(side);
         if (cache == null) {
-            cache = Capabilities.GAS.createCache((ServerLevel) level, worldPosition.relative(side), side.getOpposite());
+            cache = Capabilities.CHEMICAL.createCache((ServerLevel) level, worldPosition.relative(side), side.getOpposite());
             chemicalCapabilityCaches.put(side, cache);
         }
         outputTargets.add(new CapabilityOutputTarget<>(cache, this::getActive));

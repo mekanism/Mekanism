@@ -1,12 +1,12 @@
 package mekanism.client.recipe_viewer.color;
 
-import mekanism.api.chemical.pigment.Pigment;
-import mekanism.api.chemical.pigment.PigmentStack;
+import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalStack;
 
-public class PaintingColorDetails extends RecipeViewerColorDetails<Pigment, PigmentStack> {
+public class PaintingColorDetails extends RecipeViewerColorDetails<Chemical, ChemicalStack> {
 
     public PaintingColorDetails() {
-        super(() -> PigmentStack.EMPTY);
+        super(() -> ChemicalStack.EMPTY);
     }
 
     @Override

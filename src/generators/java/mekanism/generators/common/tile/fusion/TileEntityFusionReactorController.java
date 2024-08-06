@@ -33,7 +33,7 @@ public class TileEntityFusionReactorController extends TileEntityFusionReactorBl
 
     @Override
     public boolean persists(ContainerType<?, ?, ?> type) {
-        if (type == ContainerType.GAS || type == ContainerType.FLUID || type == ContainerType.HEAT) {
+        if (type == ContainerType.CHEMICAL || type == ContainerType.FLUID || type == ContainerType.HEAT) {
             return false;
         }
         return super.persists(type);

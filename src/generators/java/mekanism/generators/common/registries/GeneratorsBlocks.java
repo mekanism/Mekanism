@@ -3,7 +3,7 @@ package mekanism.generators.common.registries;
 import java.util.function.Supplier;
 import mekanism.api.chemical.gas.attribute.GasAttributes.Fuel;
 import mekanism.common.attachments.containers.ContainerType;
-import mekanism.common.attachments.containers.chemical.gas.GasTanksBuilder;
+import mekanism.common.attachments.containers.chemical.ChemicalTanksBuilder;
 import mekanism.common.attachments.containers.fluid.FluidTanksBuilder;
 import mekanism.common.attachments.containers.heat.HeatCapacitorsBuilder;
 import mekanism.common.attachments.containers.item.ItemSlotsBuilder;
@@ -80,11 +80,11 @@ public class GeneratorsBlocks {
     public static final BlockRegistryObject<BlockTileModel<TileEntityGasGenerator, Generator<TileEntityGasGenerator>>, ItemBlockTooltip<BlockTileModel<TileEntityGasGenerator, Generator<TileEntityGasGenerator>>>> GAS_BURNING_GENERATOR =
           BLOCKS.registerDetails("gas_burning_generator", () -> new BlockTileModel<>(GeneratorsBlockTypes.GAS_BURNING_GENERATOR, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())))
                 .forItemHolder(holder -> holder
-                      .addAttachmentOnlyContainers(ContainerType.GAS, () -> GasTanksBuilder.builder()
+                      .addAttachmentOnlyContainers(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder()
                             .addBasic(MekanismGeneratorsConfig.generators.gbgTankCapacity, gas -> gas.has(Fuel.class))
                             .build()
                       ).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
-                            .addGasFillSlot(0)
+                            .addChemicalFillSlot(0)
                             .addEnergy()
                             .build()
                       )

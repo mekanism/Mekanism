@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Objects;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
-import mekanism.api.recipes.ingredients.GasStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.vanilla_input.ReactionRecipeInput;
 import net.minecraft.core.Holder;
@@ -37,7 +37,7 @@ import org.jetbrains.annotations.Range;
  * @apiNote Pressurized Reaction Chambers can process this recipe type.
  */
 @NothingNullByDefault
-public abstract class PressurizedReactionRecipe extends MekanismRecipe<ReactionRecipeInput> implements TriPredicate<@NotNull ItemStack, @NotNull FluidStack, @NotNull GasStack> {
+public abstract class PressurizedReactionRecipe extends MekanismRecipe<ReactionRecipeInput> implements TriPredicate<@NotNull ItemStack, @NotNull FluidStack, @NotNull ChemicalStack> {
 
     private static final Holder<Item> PRESSURIZED_REACTION_CHAMBER = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "pressurized_reaction_chamber"));
 
@@ -54,7 +54,7 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe<ReactionR
     /**
      * Gets the gas input ingredient.
      */
-    public abstract GasStackIngredient getInputGas();
+    public abstract ChemicalStackIngredient getInputGas();
 
     /**
      * Gets the amount of "extra" energy this recipe requires, compared to the base energy requirements of the machine performing the recipe.
@@ -67,8 +67,7 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe<ReactionR
      */
     public abstract int getDuration();
 
-    @Override
-    public abstract boolean test(ItemStack solid, FluidStack liquid, GasStack gas);
+    public abstract boolean test(ItemStack solid, FluidStack liquid, ChemicalStack gas);
 
     @Override
     public boolean matches(ReactionRecipeInput input, Level level) {
@@ -97,7 +96,7 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe<ReactionR
      * @implNote The passed in inputs should <strong>NOT</strong> be modified.
      */
     @Contract(value = "_, _, _ -> new", pure = true)
-    public abstract PressurizedReactionRecipeOutput getOutput(ItemStack solid, FluidStack liquid, GasStack gas);
+    public abstract PressurizedReactionRecipeOutput getOutput(ItemStack solid, FluidStack liquid, ChemicalStack gas);
 
     @Override
     public boolean isIncomplete() {
@@ -122,7 +121,7 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe<ReactionR
     /**
      * @apiNote Both item and gas may be present or one may be empty.
      */
-    public record PressurizedReactionRecipeOutput(@NotNull ItemStack item, @NotNull GasStack gas) {
+    public record PressurizedReactionRecipeOutput(@NotNull ItemStack item, @NotNull ChemicalStack gas) {
 
         public PressurizedReactionRecipeOutput {
             Objects.requireNonNull(item, "Item output cannot be null.");

@@ -4,6 +4,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import net.minecraft.world.item.crafting.Ingredient;
 
 /**
@@ -14,15 +15,15 @@ import net.minecraft.world.item.crafting.Ingredient;
  * @since 10.6.0
  */
 @NothingNullByDefault
-abstract sealed class ChemicalIngredient<CHEMICAL extends Chemical<CHEMICAL>, INGREDIENT extends IChemicalIngredient<CHEMICAL, INGREDIENT>>
-      implements IChemicalIngredient<CHEMICAL, INGREDIENT> permits CompoundChemicalIngredient, DifferenceChemicalIngredient, EmptyChemicalIngredient,
-      IntersectionChemicalIngredient, SingleChemicalIngredient, TagChemicalIngredient, GasIngredient, InfusionIngredient, PigmentIngredient, SlurryIngredient {
+abstract sealed class ChemicalIngredient
+      implements IChemicalIngredient permits CompoundChemicalIngredient, DifferenceChemicalIngredient, EmptyChemicalIngredient,
+      IntersectionChemicalIngredient, SingleChemicalIngredient, TagChemicalIngredient {
 
     @Nullable
-    private List<CHEMICAL> chemicals;
+    private List<Chemical> chemicals;
 
     @Override
-    public final List<CHEMICAL> getChemicals() {
+    public final List<Chemical> getChemicals() {
         if (chemicals == null) {
             chemicals = generateChemicals().toList();
         }
@@ -31,7 +32,7 @@ abstract sealed class ChemicalIngredient<CHEMICAL extends Chemical<CHEMICAL>, IN
 
     @Override
     public final boolean isEmpty() {
-        return this == ingredientCreator().empty();
+        return this == IngredientCreatorAccess.chemical().empty();
     }
 
     @Override
