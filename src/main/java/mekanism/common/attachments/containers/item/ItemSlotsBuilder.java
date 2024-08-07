@@ -31,8 +31,7 @@ import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.QIODriveSlot;
 import mekanism.common.inventory.slot.SecurityInventorySlot;
-import mekanism.common.inventory.slot.chemical.GasInventorySlot;
-import mekanism.common.inventory.slot.chemical.InfusionInventorySlot;
+import mekanism.common.inventory.slot.chemical.ChemicalInventorySlot;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.lookup.cache.IInputRecipeCache;
 import mekanism.common.registries.MekanismDataComponents;
@@ -124,8 +123,7 @@ public class ItemSlotsBuilder {
           containerIndex, DRAIN_ENERGY_SLOT_CAN_EXTRACT, DRAIN_ENERGY_SLOT_CAN_INSERT, EnergyInventorySlot.DRAIN_VALIDATOR);
 
     //Chemical conversions
-    private static final Function<ItemStack, ChemicalStack> GAS_STACK_CONVERSION = stack -> GasInventorySlot.getPotentialConversion(null, stack);
-    private static final Function<ItemStack, ChemicalStack> INFUSION_STACK_CONVERSION = stack -> InfusionInventorySlot.getPotentialConversion(null, stack);
+    private static final Function<ItemStack, ChemicalStack> CHEMICAL_STACK_CONVERSION = stack -> ChemicalInventorySlot.getPotentialConversion(null, stack);
 
     public static ItemSlotsBuilder builder() {
         return new ItemSlotsBuilder();
@@ -525,8 +523,8 @@ public class ItemSlotsBuilder {
 
     public ItemSlotsBuilder addChemicalFillOrConvertSlot(int tankIndex) {
         return addSlot(((type, attachedTo, containerIndex) -> new ComponentBackedInventorySlot(attachedTo, containerIndex,
-              (stack, automationType) -> automationType == AutomationType.MANUAL || canChemicalFillOrConvertExtract(attachedTo, tankIndex, stack, GAS_STACK_CONVERSION),
-              (stack, automationType) -> canChemicalFillOrConvertInsert(attachedTo, tankIndex, stack, GAS_STACK_CONVERSION), BasicInventorySlot.alwaysTrue)));
+              (stack, automationType) -> automationType == AutomationType.MANUAL || canChemicalFillOrConvertExtract(attachedTo, tankIndex, stack, CHEMICAL_STACK_CONVERSION),
+              (stack, automationType) -> canChemicalFillOrConvertInsert(attachedTo, tankIndex, stack, CHEMICAL_STACK_CONVERSION), BasicInventorySlot.alwaysTrue)));
     }
 
     public ItemSlotsBuilder addChemicalDrainSlot(int tankIndex) {
@@ -562,8 +560,8 @@ public class ItemSlotsBuilder {
 
     public ItemSlotsBuilder addInfusionFillOrConvertSlot(int tankIndex) {
         return addSlot(((type, attachedTo, containerIndex) -> new ComponentBackedInventorySlot(attachedTo, containerIndex,
-              (stack, automationType) -> automationType == AutomationType.MANUAL || canChemicalFillOrConvertExtract(attachedTo, tankIndex, stack, INFUSION_STACK_CONVERSION),
-              (stack, automationType) -> canChemicalFillOrConvertInsert(attachedTo, tankIndex, stack, INFUSION_STACK_CONVERSION), BasicInventorySlot.alwaysTrue)));
+              (stack, automationType) -> automationType == AutomationType.MANUAL || canChemicalFillOrConvertExtract(attachedTo, tankIndex, stack, CHEMICAL_STACK_CONVERSION),
+              (stack, automationType) -> canChemicalFillOrConvertInsert(attachedTo, tankIndex, stack, CHEMICAL_STACK_CONVERSION), BasicInventorySlot.alwaysTrue)));
     }
 
     private static class BaseInventorySlotCreator extends BaseContainerCreator<AttachedItems, ComponentBackedInventorySlot> {

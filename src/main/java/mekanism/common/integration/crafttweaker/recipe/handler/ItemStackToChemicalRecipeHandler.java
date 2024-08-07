@@ -4,8 +4,6 @@ import com.blamejared.crafttweaker.api.recipe.component.IDecomposedRecipe;
 import com.blamejared.crafttweaker.api.recipe.handler.IRecipeHandler;
 import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import java.util.Optional;
-import mekanism.api.recipes.ItemStackToGasRecipe;
-import mekanism.api.recipes.ItemStackToInfuseTypeRecipe;
 import mekanism.api.recipes.ItemStackToPigmentRecipe;
 import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
 import mekanism.common.integration.crafttweaker.CrTRecipeComponents;
@@ -58,8 +56,8 @@ public abstract class ItemStackToChemicalRecipeHandler<
      */
     protected abstract boolean recipeIsInstance(Recipe<?> other);
 
-    @IRecipeHandler.For(ItemStackToGasRecipe.class)
-    public static class ItemStackToGasRecipeHandler extends ItemStackToChemicalRecipeHandler<ItemStackToGasRecipe> {
+    @IRecipeHandler.For(ItemStackToChemicalRecipe.class)
+    public static class ItemStackToGasRecipeHandler extends ItemStackToChemicalRecipeHandler<ItemStackToChemicalRecipe> {
 
         @Override
         protected ChemicalRecipeComponent getChemicalComponent() {
@@ -68,21 +66,7 @@ public abstract class ItemStackToChemicalRecipeHandler<
 
         @Override
         protected boolean recipeIsInstance(Recipe<?> other) {
-            return other instanceof ItemStackToGasRecipe;
-        }
-    }
-
-    @IRecipeHandler.For(ItemStackToInfuseTypeRecipe.class)
-    public static class ItemStackToInfuseTypeRecipeHandler extends ItemStackToChemicalRecipeHandler<ItemStackToInfuseTypeRecipe> {
-
-        @Override
-        protected ChemicalRecipeComponent getChemicalComponent() {
-            return CrTRecipeComponents.CHEMICAL;
-        }
-
-        @Override
-        protected boolean recipeIsInstance(Recipe<?> other) {
-            return other instanceof ItemStackToInfuseTypeRecipe;
+            return other instanceof ItemStackToChemicalRecipe;
         }
     }
 

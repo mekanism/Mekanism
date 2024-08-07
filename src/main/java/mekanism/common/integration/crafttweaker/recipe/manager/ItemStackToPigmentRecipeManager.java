@@ -5,6 +5,7 @@ import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ItemStackToPigmentRecipe;
 import mekanism.api.recipes.basic.BasicItemStackToPigmentRecipe;
+import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;

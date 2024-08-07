@@ -23,10 +23,9 @@ import mekanism.client.recipe_viewer.jei.machine.FluidSlurryToSlurryRecipeCatego
 import mekanism.client.recipe_viewer.jei.machine.FluidToFluidRecipeCategory;
 import mekanism.client.recipe_viewer.jei.machine.GasToGasRecipeCategory;
 import mekanism.client.recipe_viewer.jei.machine.ItemStackGasToItemStackRecipeCategory;
+import mekanism.client.recipe_viewer.jei.machine.ItemStackToChemicalRecipeCategory;
 import mekanism.client.recipe_viewer.jei.machine.ItemStackToEnergyRecipeCategory;
 import mekanism.client.recipe_viewer.jei.machine.ItemStackToFluidOptionalItemRecipeCategory;
-import mekanism.client.recipe_viewer.jei.machine.ItemStackToGasRecipeCategory;
-import mekanism.client.recipe_viewer.jei.machine.ItemStackToInfuseTypeRecipeCategory;
 import mekanism.client.recipe_viewer.jei.machine.ItemStackToItemStackRecipeCategory;
 import mekanism.client.recipe_viewer.jei.machine.ItemStackToPigmentRecipeCategory;
 import mekanism.client.recipe_viewer.jei.machine.MetallurgicInfuserRecipeCategory;
@@ -267,7 +266,7 @@ public class MekanismJEI implements IModPlugin {
         registry.addRecipeCategories(new RotaryCondensentratorRecipeCategory(guiHelper, true));
         registry.addRecipeCategories(new RotaryCondensentratorRecipeCategory(guiHelper, false));
 
-        registry.addRecipeCategories(new ItemStackToGasRecipeCategory(guiHelper, RecipeViewerRecipeType.OXIDIZING, false));
+        registry.addRecipeCategories(new ItemStackToChemicalRecipeCategory<>(guiHelper, RecipeViewerRecipeType.OXIDIZING, false));
         registry.addRecipeCategories(new ItemStackToFluidOptionalItemRecipeCategory(guiHelper, RecipeViewerRecipeType.NUTRITIONAL_LIQUIFICATION, false));
 
         registry.addRecipeCategories(new GasToGasRecipeCategory(guiHelper, RecipeViewerRecipeType.ACTIVATING));
@@ -294,8 +293,7 @@ public class MekanismJEI implements IModPlugin {
 
         //Conversion recipes
         registry.addRecipeCategories(new ItemStackToEnergyRecipeCategory(guiHelper, RecipeViewerRecipeType.ENERGY_CONVERSION));
-        registry.addRecipeCategories(new ItemStackToGasRecipeCategory(guiHelper, RecipeViewerRecipeType.GAS_CONVERSION, true));
-        registry.addRecipeCategories(new ItemStackToInfuseTypeRecipeCategory(guiHelper, RecipeViewerRecipeType.INFUSION_CONVERSION));
+        registry.addRecipeCategories(new ItemStackToChemicalRecipeCategory<>(guiHelper, RecipeViewerRecipeType.CHEMICAL_CONVERSION, true));
     }
 
     @Override
@@ -341,8 +339,7 @@ public class MekanismJEI implements IModPlugin {
         RecipeRegistryHelper.register(registry, RecipeViewerRecipeType.SPS, SPSRecipeViewerRecipe.getSPSRecipes());
         RecipeRegistryHelper.register(registry, RecipeViewerRecipeType.BOILER, BoilerRecipeViewerRecipe.getBoilerRecipes());
         RecipeRegistryHelper.register(registry, RecipeViewerRecipeType.ENERGY_CONVERSION, MekanismRecipeType.ENERGY_CONVERSION);
-        RecipeRegistryHelper.register(registry, RecipeViewerRecipeType.GAS_CONVERSION, MekanismRecipeType.GAS_CONVERSION);
-        RecipeRegistryHelper.register(registry, RecipeViewerRecipeType.INFUSION_CONVERSION, MekanismRecipeType.INFUSION_CONVERSION);
+        RecipeRegistryHelper.register(registry, RecipeViewerRecipeType.CHEMICAL_CONVERSION, MekanismRecipeType.CHEMICAL_CONVERSION);
         RecipeRegistryHelper.addAnvilRecipes(registry, MekanismItems.HDPE_REINFORCED_ELYTRA, item -> new ItemStack[]{MekanismItems.HDPE_SHEET.getItemStack()});
         //Note: Use a "full" bucket's worth of heavy water, so that JEI renders it as desired in the info page
         registry.addIngredientInfo(MekanismFluids.HEAVY_WATER.getFluidStack(FluidType.BUCKET_VOLUME), NeoForgeTypes.FLUID_STACK,
@@ -367,7 +364,7 @@ public class MekanismJEI implements IModPlugin {
               RecipeViewerRecipeType.EVAPORATING, RecipeViewerRecipeType.BOILER, RecipeViewerRecipeType.REACTION, RecipeViewerRecipeType.CENTRIFUGING,
               RecipeViewerRecipeType.NUTRITIONAL_LIQUIFICATION, RecipeViewerRecipeType.PIGMENT_EXTRACTING, RecipeViewerRecipeType.PIGMENT_MIXING,
               RecipeViewerRecipeType.PAINTING, RecipeViewerRecipeType.NUCLEOSYNTHESIZING, RecipeViewerRecipeType.CONDENSENTRATING, RecipeViewerRecipeType.DECONDENSENTRATING,
-              RecipeViewerRecipeType.SMELTING, RecipeViewerRecipeType.ENERGY_CONVERSION, RecipeViewerRecipeType.GAS_CONVERSION, RecipeViewerRecipeType.INFUSION_CONVERSION);
+              RecipeViewerRecipeType.SMELTING, RecipeViewerRecipeType.ENERGY_CONVERSION, RecipeViewerRecipeType.CHEMICAL_CONVERSION);
 
         CatalystRegistryHelper.register(registry, RecipeTypes.SMELTING, RecipeViewerRecipeType.VANILLA_SMELTING.workstations());
         CatalystRegistryHelper.register(registry, RecipeTypes.CRAFTING, RecipeViewerRecipeType.VANILLA_CRAFTING.workstations());

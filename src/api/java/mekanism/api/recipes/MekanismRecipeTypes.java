@@ -1,6 +1,7 @@
 package mekanism.api.recipes;
 
 import mekanism.api.MekanismAPI;
+import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -25,9 +26,8 @@ public class MekanismRecipeTypes {
     public static final ResourceLocation NAME_INJECTING = ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "injecting");
     public static final ResourceLocation NAME_NUCLEOSYNTHESIZING = ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "nucleosynthesizing");
     public static final ResourceLocation NAME_ENERGY_CONVERSION = ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "energy_conversion");
-    public static final ResourceLocation NAME_GAS_CONVERSION = ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "gas_conversion");
+    public static final ResourceLocation NAME_CHEMICAL_CONVERSION = ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "chemical_conversion");
     public static final ResourceLocation NAME_OXIDIZING = ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "oxidizing");
-    public static final ResourceLocation NAME_INFUSION_CONVERSION = ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "infusion_conversion");
     public static final ResourceLocation NAME_PIGMENT_EXTRACTING = ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "pigment_extracting");
     public static final ResourceLocation NAME_PIGMENT_MIXING = ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "pigment_mixing");
     public static final ResourceLocation NAME_METALLURGIC_INFUSING = ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "metallurgic_infusing");
@@ -53,9 +53,8 @@ public class MekanismRecipeTypes {
     public static final DeferredHolder<RecipeType<?>, RecipeType<ItemStackGasToItemStackRecipe>> TYPE_INJECTING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_INJECTING);
     public static final DeferredHolder<RecipeType<?>, RecipeType<NucleosynthesizingRecipe>> TYPE_NUCLEOSYNTHESIZING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_NUCLEOSYNTHESIZING);
     public static final DeferredHolder<RecipeType<?>, RecipeType<ItemStackToEnergyRecipe>> TYPE_ENERGY_CONVERSION = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_ENERGY_CONVERSION);
-    public static final DeferredHolder<RecipeType<?>, RecipeType<ItemStackToGasRecipe>> TYPE_GAS_CONVERSION = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_GAS_CONVERSION);
-    public static final DeferredHolder<RecipeType<?>, RecipeType<ItemStackToGasRecipe>> TYPE_OXIDIZING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_OXIDIZING);
-    public static final DeferredHolder<RecipeType<?>, RecipeType<ItemStackToInfuseTypeRecipe>> TYPE_INFUSION_CONVERSION = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_INFUSION_CONVERSION);
+    public static final DeferredHolder<RecipeType<?>, RecipeType<ItemStackToChemicalRecipe>> TYPE_CHEMICAL_CONVERSION = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_CHEMICAL_CONVERSION);
+    public static final DeferredHolder<RecipeType<?>, RecipeType<ItemStackToChemicalRecipe>> TYPE_OXIDIZING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_OXIDIZING);
     public static final DeferredHolder<RecipeType<?>, RecipeType<ItemStackToPigmentRecipe>> TYPE_PIGMENT_EXTRACTING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_PIGMENT_EXTRACTING);
     public static final DeferredHolder<RecipeType<?>, RecipeType<PigmentMixingRecipe>> TYPE_PIGMENT_MIXING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_PIGMENT_MIXING);
     public static final DeferredHolder<RecipeType<?>, RecipeType<MetallurgicInfuserRecipe>> TYPE_METALLURGIC_INFUSING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_METALLURGIC_INFUSING);

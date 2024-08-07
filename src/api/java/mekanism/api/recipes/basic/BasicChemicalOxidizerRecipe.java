@@ -15,7 +15,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 @NothingNullByDefault
-public class BasicChemicalOxidizerRecipe extends BasicItemStackToGasRecipe {
+public class BasicChemicalOxidizerRecipe extends BasicItemStackToChemicalRecipe {
 
     private static final Holder<Item> CHEMICAL_OXIDIZER = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "chemical_oxidizer"));
 

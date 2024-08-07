@@ -2,6 +2,7 @@ package mekanism.common.integration.projecte.mappers;
 
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ItemStackToPigmentRecipe;
+import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
 import mekanism.common.integration.projecte.IngredientHelper;
 import mekanism.common.recipe.MekanismRecipeType;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
@@ -10,10 +11,10 @@ import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import net.minecraft.world.item.ItemStack;
 
 @RecipeTypeMapper
-public class ItemStackToPigmentRecipeMapper extends TypedMekanismRecipeMapper<ItemStackToPigmentRecipe> {
+public class ItemStackToPigmentRecipeMapper extends TypedMekanismRecipeMapper<ItemStackToChemicalRecipe> {
 
     public ItemStackToPigmentRecipeMapper() {
-        super(ItemStackToPigmentRecipe.class, MekanismRecipeType.PIGMENT_EXTRACTING);
+        super(ItemStackToChemicalRecipe.class, MekanismRecipeType.PIGMENT_EXTRACTING);
     }
 
     @Override
@@ -27,7 +28,7 @@ public class ItemStackToPigmentRecipeMapper extends TypedMekanismRecipeMapper<It
     }
 
     @Override
-    protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, ItemStackToPigmentRecipe recipe) {
+    protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, ItemStackToChemicalRecipe recipe) {
         boolean handled = false;
         for (ItemStack representation : recipe.getInput().getRepresentations()) {
             ChemicalStack output = recipe.getOutput(representation);

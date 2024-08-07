@@ -38,10 +38,9 @@ import mekanism.client.recipe_viewer.emi.recipe.FluidSlurryToSlurryEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.FluidToFluidEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.GasToGasEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.ItemStackGasToItemStackEmiRecipe;
+import mekanism.client.recipe_viewer.emi.recipe.ItemStackToChemicalEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.ItemStackToEnergyEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.ItemStackToFluidOptionalItemEmiRecipe;
-import mekanism.client.recipe_viewer.emi.recipe.ItemStackToGasEmiRecipe;
-import mekanism.client.recipe_viewer.emi.recipe.ItemStackToInfuseTypeEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.ItemStackToItemStackEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.ItemStackToPigmentEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.MekanismEmiRecipe;
@@ -74,7 +73,9 @@ import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.machine.TileEntityChemicalOxidizer;
+import mekanism.common.tile.machine.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.machine.TileEntityNutritionalLiquifier;
+import mekanism.common.tile.machine.TileEntityPigmentExtractor;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
@@ -222,7 +223,7 @@ public class MekanismEmi implements EmiPlugin {
         addCategoryAndRecipes(registry, RecipeViewerRecipeType.SEPARATING, ElectrolysisEmiRecipe::new);
         addCategoryAndRecipes(registry, RecipeViewerRecipeType.METALLURGIC_INFUSING, MetallurgicInfuserEmiRecipe::new);
         addCategoryAndRecipes(registry, RecipeViewerRecipeType.REACTION, PressurizedReactionEmiRecipe::new);
-        addCategoryAndRecipes(registry, RecipeViewerRecipeType.PIGMENT_EXTRACTING, ItemStackToPigmentEmiRecipe::new);
+        addCategoryAndRecipes(registry, RecipeViewerRecipeType.PIGMENT_EXTRACTING, (category, holder) -> new ItemStackToChemicalEmiRecipe<>(category, holder, TileEntityPigmentExtractor.BASE_TICKS_REQUIRED));
         addCategoryAndRecipes(registry, RecipeViewerRecipeType.PIGMENT_MIXING, PigmentMixerEmiRecipe::new);
         addCategoryAndRecipes(registry, RecipeViewerRecipeType.PAINTING, PaintingEmiRecipe::new);
 
@@ -245,7 +246,7 @@ public class MekanismEmi implements EmiPlugin {
             }
         }
 
-        addCategoryAndRecipes(registry, RecipeViewerRecipeType.OXIDIZING, (category, recipeHolder) -> new ItemStackToGasEmiRecipe(category, recipeHolder, TileEntityChemicalOxidizer.BASE_TICKS_REQUIRED));
+        addCategoryAndRecipes(registry, RecipeViewerRecipeType.OXIDIZING, (category, recipeHolder) -> new ItemStackToChemicalEmiRecipe<>(category, recipeHolder, TileEntityChemicalOxidizer.BASE_TICKS_REQUIRED));
 
         addCategoryAndRecipes(registry, RecipeViewerRecipeType.NUTRITIONAL_LIQUIFICATION, (category, id, recipe) -> new ItemStackToFluidOptionalItemEmiRecipe(category, id, recipe, TileEntityNutritionalLiquifier.BASE_TICKS_REQUIRED), RecipeViewerUtils.getLiquificationRecipes());
 
@@ -273,8 +274,7 @@ public class MekanismEmi implements EmiPlugin {
 
         //Conversion recipes
         addCategoryAndRecipes(registry, RecipeViewerRecipeType.ENERGY_CONVERSION, ItemStackToEnergyEmiRecipe::new);
-        addCategoryAndRecipes(registry, RecipeViewerRecipeType.GAS_CONVERSION, (category, recipeHolder) -> new ItemStackToGasEmiRecipe(category, recipeHolder, 0));
-        addCategoryAndRecipes(registry, RecipeViewerRecipeType.INFUSION_CONVERSION, ItemStackToInfuseTypeEmiRecipe::new);
+        addCategoryAndRecipes(registry, RecipeViewerRecipeType.CHEMICAL_CONVERSION, (category, recipeHolder) -> new ItemStackToChemicalEmiRecipe<>(category, recipeHolder, 0));
 
         registry.addRecipe(new EmiInfoRecipe(List.of(EmiStack.of(MekanismFluids.HEAVY_WATER.getFluid())), List.of(
               MekanismLang.RECIPE_VIEWER_INFO_HEAVY_WATER.translate(MekanismConfig.general.pumpHeavyWaterAmount.get())

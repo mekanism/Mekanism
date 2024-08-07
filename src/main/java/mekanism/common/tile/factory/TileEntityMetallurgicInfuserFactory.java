@@ -28,7 +28,7 @@ import mekanism.common.integration.computer.SpecialComputerMethodWrapper.Compute
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
-import mekanism.common.inventory.slot.chemical.InfusionInventorySlot;
+import mekanism.common.inventory.slot.chemical.ChemicalInventorySlot;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -67,7 +67,7 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
     private final IInputHandler<@NotNull ChemicalStack> infusionInputHandler;
 
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInfuseTypeItem", docPlaceholder = "infusion extra input slot")
-    InfusionInventorySlot extraSlot;
+    ChemicalInventorySlot extraSlot;
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getInfuseType", "getInfuseTypeCapacity", "getInfuseTypeNeeded",
                                                                                         "getInfuseTypeFilledPercentage"}, docPlaceholder = "infusion buffer")
     IChemicalTank infusionTank;
@@ -94,7 +94,7 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
     protected void addSlots(InventorySlotHelper builder, IContentsListener listener, IContentsListener updateSortingListener) {
         super.addSlots(builder, listener, updateSortingListener);
         //Note: We care about the infusion tank not the slot when it comes to recipes and updating sorting
-        builder.addSlot(extraSlot = InfusionInventorySlot.fillOrConvert(infusionTank, this::getLevel, listener, 7, 57));
+        builder.addSlot(extraSlot = ChemicalInventorySlot.fillOrConvert(infusionTank, this::getLevel, listener, 7, 57));
     }
 
     public IChemicalTank getInfusionTank() {
@@ -103,7 +103,7 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
 
     @Nullable
     @Override
-    protected InfusionInventorySlot getExtraSlot() {
+    protected ChemicalInventorySlot getExtraSlot() {
         return extraSlot;
     }
 

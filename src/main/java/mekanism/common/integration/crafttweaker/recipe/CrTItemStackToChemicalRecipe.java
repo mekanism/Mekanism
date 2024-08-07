@@ -4,8 +4,6 @@ import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker_annotations.annotations.NativeMethod;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import java.util.List;
-import mekanism.api.recipes.ItemStackToGasRecipe;
-import mekanism.api.recipes.ItemStackToInfuseTypeRecipe;
 import mekanism.api.recipes.ItemStackToPigmentRecipe;
 import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
 import mekanism.common.integration.crafttweaker.CrTConstants;
@@ -21,38 +19,13 @@ public class CrTItemStackToChemicalRecipe {
     private CrTItemStackToChemicalRecipe() {
     }
 
-    @ZenRegister
-    @NativeTypeRegistration(value = ItemStackToGasRecipe.class, zenCodeName = CrTConstants.CLASS_RECIPE_ITEM_STACK_TO_GAS)
-    public static class CrTItemStackToGasRecipe {
-
-        private CrTItemStackToGasRecipe() {
-        }
-
-        /**
-         * Output representations, this list may or may not be complete and likely only contains one element, but has the possibility of containing multiple.
-         */
-        @ZenCodeType.Method
-        @ZenCodeType.Getter("outputs")
-        public static List<ICrTChemicalStack> getOutputs(ItemStackToGasRecipe _this) {
-            return CrTUtils.convertChemical(_this.getOutputDefinition());
-        }
-    }
-
-    @ZenRegister
-    @NativeTypeRegistration(value = ItemStackToInfuseTypeRecipe.class, zenCodeName = CrTConstants.CLASS_RECIPE_ITEM_STACK_TO_INFUSE_TYPE)
-    public static class CrTItemStackToInfuseTypeRecipe {
-
-        private CrTItemStackToInfuseTypeRecipe() {
-        }
-
-        /**
-         * Output representations, this list may or may not be complete and likely only contains one element, but has the possibility of containing multiple.
-         */
-        @ZenCodeType.Method
-        @ZenCodeType.Getter("outputs")
-        public static List<ICrTChemicalStack> getOutputs(ItemStackToInfuseTypeRecipe _this) {
-            return CrTUtils.convertChemical(_this.getOutputDefinition());
-        }
+    /**
+     * Output representations, this list may or may not be complete and likely only contains one element, but has the possibility of containing multiple.
+     */
+    @ZenCodeType.Method
+    @ZenCodeType.Getter("outputs")
+    public static List<ICrTChemicalStack> getOutputs(ItemStackToChemicalRecipe _this) {
+        return CrTUtils.convertChemical(_this.getOutputDefinition());
     }
 
     @ZenRegister

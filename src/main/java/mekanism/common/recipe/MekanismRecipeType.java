@@ -15,8 +15,6 @@ import mekanism.api.recipes.FluidToFluidRecipe;
 import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
-import mekanism.api.recipes.ItemStackToGasRecipe;
-import mekanism.api.recipes.ItemStackToInfuseTypeRecipe;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.ItemStackToPigmentRecipe;
 import mekanism.api.recipes.MekanismRecipe;
@@ -107,13 +105,10 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
 
     public static final RecipeTypeRegistryObject<SingleRecipeInput, ItemStackToEnergyRecipe, SingleItem<ItemStackToEnergyRecipe>> ENERGY_CONVERSION = register(MekanismRecipeTypes.NAME_ENERGY_CONVERSION, recipeType -> new SingleItem<>(recipeType, ItemStackToEnergyRecipe::getInput));
 
-    public static final RecipeTypeRegistryObject<SingleRecipeInput, ItemStackToGasRecipe, SingleItem<ItemStackToGasRecipe>> GAS_CONVERSION = register(MekanismRecipeTypes.NAME_GAS_CONVERSION, recipeType -> new SingleItem<>(recipeType, ItemStackToChemicalRecipe::getInput));
-    public static final RecipeTypeRegistryObject<SingleRecipeInput, ItemStackToGasRecipe, SingleItem<ItemStackToGasRecipe>> OXIDIZING = register(MekanismRecipeTypes.NAME_OXIDIZING, recipeType -> new SingleItem<>(recipeType, ItemStackToChemicalRecipe::getInput));
+    public static final RecipeTypeRegistryObject<SingleRecipeInput, ItemStackToChemicalRecipe, SingleItem<ItemStackToChemicalRecipe>> CHEMICAL_CONVERSION = register(MekanismRecipeTypes.NAME_CHEMICAL_CONVERSION, recipeType -> new SingleItem<>(recipeType, ItemStackToChemicalRecipe::getInput));
+    public static final RecipeTypeRegistryObject<SingleRecipeInput, ItemStackToChemicalRecipe, SingleItem<ItemStackToChemicalRecipe>> OXIDIZING = register(MekanismRecipeTypes.NAME_OXIDIZING, recipeType -> new SingleItem<>(recipeType, ItemStackToChemicalRecipe::getInput));
 
-    //todo merge with gas to become chemical infusion?
-    public static final RecipeTypeRegistryObject<SingleRecipeInput, ItemStackToInfuseTypeRecipe, SingleItem<ItemStackToInfuseTypeRecipe>> INFUSION_CONVERSION = register(MekanismRecipeTypes.NAME_INFUSION_CONVERSION, recipeType -> new SingleItem<>(recipeType, ItemStackToChemicalRecipe::getInput));
-
-    public static final RecipeTypeRegistryObject<SingleRecipeInput, ItemStackToPigmentRecipe, SingleItem<ItemStackToPigmentRecipe>> PIGMENT_EXTRACTING = register(MekanismRecipeTypes.NAME_PIGMENT_EXTRACTING, recipeType -> new SingleItem<>(recipeType, ItemStackToChemicalRecipe::getInput));
+    public static final RecipeTypeRegistryObject<SingleRecipeInput, ItemStackToPigmentRecipe, SingleItem<ItemStackToPigmentRecipe>> PIGMENT_EXTRACTING = register(MekanismRecipeTypes.NAME_PIGMENT_EXTRACTING, recipeType -> new SingleItem<>(recipeType, ItemStackToPigmentRecipe::getInput));
 
     public static final RecipeTypeRegistryObject<BiChemicalRecipeInput, PigmentMixingRecipe, EitherSideChemical<PigmentMixingRecipe>> PIGMENT_MIXING = register(MekanismRecipeTypes.NAME_PIGMENT_MIXING, EitherSideChemical::new);
 

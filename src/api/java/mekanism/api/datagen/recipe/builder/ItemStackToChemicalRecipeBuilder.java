@@ -4,8 +4,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.basic.BasicChemicalOxidizerRecipe;
-import mekanism.api.recipes.basic.BasicGasConversionRecipe;
-import mekanism.api.recipes.basic.BasicItemStackToInfuseTypeRecipe;
+import mekanism.api.recipes.basic.BasicChemicalConversionRecipe;
 import mekanism.api.recipes.basic.BasicItemStackToPigmentRecipe;
 import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
@@ -30,11 +29,11 @@ public class ItemStackToChemicalRecipeBuilder extends
      * @param input  Input.
      * @param output Output.
      */
-    public static ItemStackToChemicalRecipeBuilder gasConversion(ItemStackIngredient input, ChemicalStack output) {
+    public static ItemStackToChemicalRecipeBuilder chemicalConversion(ItemStackIngredient input, ChemicalStack output) {
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This gas conversion recipe requires a non empty gas output.");
         }
-        return new ItemStackToChemicalRecipeBuilder(input, output, BasicGasConversionRecipe::new);
+        return new ItemStackToChemicalRecipeBuilder(input, output, BasicChemicalConversionRecipe::new);
     }
 
     /**
@@ -57,10 +56,7 @@ public class ItemStackToChemicalRecipeBuilder extends
      * @param output Output.
      */
     public static ItemStackToChemicalRecipeBuilder infusionConversion(ItemStackIngredient input, ChemicalStack output) {
-        if (output.isEmpty()) {
-            throw new IllegalArgumentException("This infusion conversion recipe requires a non empty infusion output.");
-        }
-        return new ItemStackToChemicalRecipeBuilder(input, output, BasicItemStackToInfuseTypeRecipe::new);
+        return chemicalConversion(input, output);
     }
 
     /**

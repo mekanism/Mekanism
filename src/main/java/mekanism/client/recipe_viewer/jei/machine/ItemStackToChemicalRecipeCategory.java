@@ -10,6 +10,7 @@ import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.recipe_viewer.jei.HolderRecipeCategory;
+import mekanism.client.recipe_viewer.jei.MekanismJEI;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.common.tile.component.config.DataType;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -20,7 +21,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class ItemStackToChemicalRecipeCategory<
+public class ItemStackToChemicalRecipeCategory<
       RECIPE extends ItemStackToChemicalRecipe> extends HolderRecipeCategory<RECIPE> {
 
     protected static final String CHEMICAL_INPUT = "chemicalInput";
@@ -30,15 +31,17 @@ public abstract class ItemStackToChemicalRecipeCategory<
     private final GuiGauge<?> output;
     private final GuiSlot input;
 
-    protected ItemStackToChemicalRecipeCategory(IGuiHelper helper, IRecipeViewerRecipeType<RECIPE> recipeType, IIngredientType<ChemicalStack> ingredientType, boolean isConversion) {
+    public ItemStackToChemicalRecipeCategory(IGuiHelper helper, IRecipeViewerRecipeType<RECIPE> recipeType, boolean isConversion) {
         super(helper, recipeType);
-        this.ingredientType = ingredientType;
+        this.ingredientType = MekanismJEI.TYPE_CHEMICAL;
         output = addElement(getGauge(GaugeType.STANDARD.with(DataType.OUTPUT), 131, 13));
         input = addSlot(SlotType.INPUT, 26, 36);
         progressBar = addElement(new GuiProgress(isConversion ? () -> 1 : getSimpleProgressTimer(), ProgressType.LARGE_RIGHT, this, 64, 40));
     }
 
-    protected abstract GuiChemicalGauge getGauge(GaugeType type, int x, int y);
+    protected GuiChemicalGauge getGauge(GaugeType type, int x, int y) {
+        return GuiChemicalGauge.getDummy(type, this, x, y);
+    }
 
     @Override
     public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<RECIPE> recipeHolder, @NotNull IFocusGroup focusGroup) {

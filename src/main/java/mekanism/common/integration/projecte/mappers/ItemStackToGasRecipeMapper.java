@@ -1,7 +1,7 @@
 package mekanism.common.integration.projecte.mappers;
 
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.recipes.ItemStackToGasRecipe;
+import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
 import mekanism.common.integration.projecte.IngredientHelper;
 import mekanism.common.recipe.MekanismRecipeType;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
@@ -10,10 +10,10 @@ import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import net.minecraft.world.item.ItemStack;
 
 @RecipeTypeMapper
-public class ItemStackToGasRecipeMapper extends TypedMekanismRecipeMapper<ItemStackToGasRecipe> {
+public class ItemStackToGasRecipeMapper extends TypedMekanismRecipeMapper<ItemStackToChemicalRecipe> {
 
     public ItemStackToGasRecipeMapper() {
-        super(ItemStackToGasRecipe.class, MekanismRecipeType.GAS_CONVERSION, MekanismRecipeType.OXIDIZING);
+        super(ItemStackToChemicalRecipe.class, MekanismRecipeType.CHEMICAL_CONVERSION, MekanismRecipeType.OXIDIZING);
     }
 
     @Override
@@ -23,11 +23,11 @@ public class ItemStackToGasRecipeMapper extends TypedMekanismRecipeMapper<ItemSt
 
     @Override
     public String getDescription() {
-        return "Maps Mekanism item stack to gas recipes. (Gas conversion, Oxidizing)";
+        return "Maps Mekanism item stack to chemical recipes. (Gas conversion, Oxidizing)";
     }
 
     @Override
-    protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, ItemStackToGasRecipe recipe) {
+    protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, ItemStackToChemicalRecipe recipe) {
         boolean handled = false;
         for (ItemStack representation : recipe.getInput().getRepresentations()) {
             ChemicalStack output = recipe.getOutput(representation);

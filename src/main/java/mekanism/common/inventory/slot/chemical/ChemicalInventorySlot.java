@@ -19,8 +19,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.MultiTypeCapability;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.slot.BasicInventorySlot;
-import mekanism.common.recipe.IMekanismRecipeTypeProvider;
-import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleItem;
+import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -33,17 +32,16 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
     /**
      * Gets the ChemicalStack from ItemStack conversion, ignoring the size of the item stack.
      */
-    protected static <RECIPE extends ItemStackToChemicalRecipe>
-    ChemicalStack getPotentialConversion(IMekanismRecipeTypeProvider<?, RECIPE, SingleItem<RECIPE>> recipeType, @Nullable Level world, ItemStack itemStack) {
-        ItemStackToChemicalRecipe foundRecipe = recipeType.getInputCache().findTypeBasedRecipe(world, itemStack);
+    public static ChemicalStack getPotentialConversion(@Nullable Level world, ItemStack itemStack) {
+        ItemStackToChemicalRecipe foundRecipe = MekanismRecipeType.CHEMICAL_CONVERSION.getInputCache().findTypeBasedRecipe(world, itemStack);
         return foundRecipe == null ? ChemicalStack.EMPTY : foundRecipe.getOutput(itemStack);
     }
 
     protected static Predicate<@NotNull ItemStack> getFillOrConvertExtractPredicate(
-          IChemicalTank chemicalTank, MultiTypeCapability<? extends IChemicalHandler> chemicalCapability,
+          IChemicalTank chemicalTank,
           Function<ItemStack, ChemicalStack> potentialConversionSupplier) {
         return stack -> {
-            IChemicalHandler handler = chemicalCapability.getCapability(stack);
+            IChemicalHandler handler = Capabilities.CHEMICAL.getCapability(stack);
             if (handler != null) {
                 for (int tank = 0; tank < handler.getChemicalTanks(); tank++) {
                     if (chemicalTank.isValid(handler.getChemicalInTank(tank))) {
@@ -205,6 +203,17 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
         this.worldSupplier = worldSupplier;
     }
 
+    /**
+     * Fills the tank from this item OR converts the given item to a gas
+     */
+    public static ChemicalInventorySlot fillOrConvert(IChemicalTank gasTank, Supplier<Level> worldSupplier, @Nullable IContentsListener listener, int x, int y) {
+        Objects.requireNonNull(gasTank, "Gas tank cannot be null");
+        Objects.requireNonNull(worldSupplier, "World supplier cannot be null");
+        Function<ItemStack, ChemicalStack> potentialConversionSupplier = stack -> getPotentialConversion(worldSupplier.get(), stack);
+        return new ChemicalInventorySlot(gasTank, worldSupplier, getFillOrConvertExtractPredicate(gasTank, potentialConversionSupplier),
+              getFillOrConvertInsertPredicate(gasTank, Capabilities.CHEMICAL, potentialConversionSupplier), listener, x, y);
+    }
+
     @Nullable
     protected IChemicalHandler getCapability() {
         return Capabilities.CHEMICAL.getCapability(current);
@@ -212,7 +221,7 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
 
     @Nullable
     protected ItemStackToChemicalRecipe getConversionRecipe(@Nullable Level world, ItemStack stack) {
-        return null;
+        return MekanismRecipeType.CHEMICAL_CONVERSION.getInputCache().findFirstRecipe(world, stack);
     }
 
     /**

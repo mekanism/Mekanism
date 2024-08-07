@@ -41,11 +41,6 @@ public abstract class ItemStackToPigmentRecipe extends ItemStackToChemicalRecipe
     public abstract List<ChemicalStack> getOutputDefinition();
 
     @Override
-    public final RecipeType<ItemStackToPigmentRecipe> getType() {
-        return MekanismRecipeTypes.TYPE_PIGMENT_EXTRACTING.value();
-    }
-
-    @Override
     public String getGroup() {
         return "pigment_extractor";
     }
@@ -53,5 +48,10 @@ public abstract class ItemStackToPigmentRecipe extends ItemStackToChemicalRecipe
     @Override
     public ItemStack getToastSymbol() {
         return new ItemStack(PIGMENT_EXTRACTOR);
+    }
+
+    @Override
+    public RecipeType<?> getType() {
+        return MekanismRecipeTypes.TYPE_PIGMENT_EXTRACTING.value();
     }
 }

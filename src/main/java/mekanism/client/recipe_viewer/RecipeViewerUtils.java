@@ -102,11 +102,7 @@ public class RecipeViewerUtils {
             return getStacksFor(chemicals, null);
         }
         ChemicalType chemicalType = ChemicalType.getTypeFor(ingredient);
-        return getStacksFor(chemicals, (IMekanismRecipeTypeProvider<?, ? extends ItemStackToChemicalRecipe, ?>) switch (chemicalType) {
-            case GAS -> MekanismRecipeType.GAS_CONVERSION;
-            case INFUSION -> MekanismRecipeType.INFUSION_CONVERSION;
-            default -> null;
-        });
+        return getStacksFor(chemicals, MekanismRecipeType.CHEMICAL_CONVERSION);
     }
 
     private static List<ItemStack> getStacksFor(Set<Chemical> supportedTypes,

@@ -2,6 +2,7 @@ package mekanism.client.recipe_viewer.jei.machine;
 
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ItemStackToPigmentRecipe;
+import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiChemicalGauge;
 import mekanism.client.recipe_viewer.color.PigmentExtractorColorDetails;
@@ -17,13 +18,8 @@ public class ItemStackToPigmentRecipeCategory extends ItemStackToChemicalRecipeC
     private final PigmentExtractorColorDetails currentDetails;
 
     public ItemStackToPigmentRecipeCategory(IGuiHelper helper, IRecipeViewerRecipeType<ItemStackToPigmentRecipe> recipeType) {
-        super(helper, recipeType, MekanismJEI.TYPE_PIGMENT, false);
+        super(helper, recipeType, false);
         progressBar.colored(currentDetails = new PigmentExtractorColorDetails());
-    }
-
-    @Override
-    protected GuiChemicalGauge getGauge(GaugeType type, int x, int y) {
-        return GuiChemicalGauge.getDummy(type, this, x, y);
     }
 
     @Override

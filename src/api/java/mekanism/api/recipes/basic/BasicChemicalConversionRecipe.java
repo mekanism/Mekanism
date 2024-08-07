@@ -15,22 +15,22 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 @NothingNullByDefault
-public class BasicGasConversionRecipe extends BasicItemStackToGasRecipe {
+public class BasicChemicalConversionRecipe extends BasicItemStackToChemicalRecipe {
 
     private static final Holder<Item> CREATIVE_CHEMICAL_TANK = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "creative_chemical_tank"));
 
-    public BasicGasConversionRecipe(ItemStackIngredient input, ChemicalStack output) {
-        super(input, output, MekanismRecipeTypes.TYPE_GAS_CONVERSION.value());
+    public BasicChemicalConversionRecipe(ItemStackIngredient input, ChemicalStack output) {
+        super(input, output, MekanismRecipeTypes.TYPE_CHEMICAL_CONVERSION.value());
     }
 
     @Override
-    public RecipeSerializer<BasicGasConversionRecipe> getSerializer() {
-        return MekanismRecipeSerializers.GAS_CONVERSION.value();
+    public RecipeSerializer<BasicChemicalConversionRecipe> getSerializer() {
+        return MekanismRecipeSerializers.CHEMICAL_CONVERSION.value();
     }
 
     @Override
     public String getGroup() {
-        return "gas_conversion";
+        return "chemical_conversion";
     }
 
     @Override

@@ -35,7 +35,7 @@ import mekanism.common.integration.computer.SpecialComputerMethodWrapper.Compute
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
-import mekanism.common.inventory.slot.chemical.GasInventorySlot;
+import mekanism.common.inventory.slot.chemical.ChemicalInventorySlot;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -79,7 +79,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
 
     private final ILongInputHandler<@NotNull ChemicalStack> gasInputHandler;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getChemicalItem", docPlaceholder = "chemical item (extra) slot")
-    GasInventorySlot extraSlot;
+    ChemicalInventorySlot extraSlot;
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getChemical", "getChemicalCapacity", "getChemicalNeeded",
                                                                                         "getChemicalFilledPercentage"}, docPlaceholder = "gas tank")
     IChemicalTank gasTank;
@@ -140,7 +140,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     protected void addSlots(InventorySlotHelper builder, IContentsListener listener, IContentsListener updateSortingListener) {
         super.addSlots(builder, listener, updateSortingListener);
         //Note: We care about the gas tank not the slot when it comes to recipes and updating sorting
-        builder.addSlot(extraSlot = GasInventorySlot.fillOrConvert(gasTank, this::getLevel, listener, 7, 57));
+        builder.addSlot(extraSlot = ChemicalInventorySlot.fillOrConvert(gasTank, this::getLevel, listener, 7, 57));
     }
 
     public IChemicalTank getGasTank() {
@@ -149,7 +149,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
 
     @Nullable
     @Override
-    protected GasInventorySlot getExtraSlot() {
+    protected ChemicalInventorySlot getExtraSlot() {
         return extraSlot;
     }
 

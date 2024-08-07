@@ -33,8 +33,7 @@ import mekanism.common.integration.crafttweaker.recipe.manager.ItemStackChemical
 import mekanism.common.integration.crafttweaker.recipe.manager.ItemStackChemicalToItemStackRecipeManager.PurificationRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.manager.ItemStackToEnergyRecipeManager.EnergyConversionRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.manager.ItemStackToGasRecipeManager.ChemicalOxidizerRecipeManager;
-import mekanism.common.integration.crafttweaker.recipe.manager.ItemStackToGasRecipeManager.GasConversionRecipeManager;
-import mekanism.common.integration.crafttweaker.recipe.manager.ItemStackToInfuseTypeRecipeManager.InfusionConversionRecipeManager;
+import mekanism.common.integration.crafttweaker.recipe.manager.ItemStackToGasRecipeManager.ChemicalConversionRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.manager.ItemStackToItemStackRecipeManager.CrusherRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.manager.ItemStackToItemStackRecipeManager.EnergizedSmelterRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.manager.ItemStackToItemStackRecipeManager.EnrichmentChamberRecipeManager;
@@ -326,13 +325,13 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
         exampleBuilder("mekanism/gas_conversion")
               .comment("Adds a Gas Conversion Recipe that allows converting Osmium Nuggets into 22 mB of Osmium.")
               .blankLine()
-              .recipe(GasConversionRecipeManager.INSTANCE)
+              .recipe(ChemicalConversionRecipeManager.INSTANCE)
               .addExample("gas_conversion/osmium_from_nugget", IngredientCreatorAccess.item().from(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.NUGGET, PrimaryResource.OSMIUM)),
                     MekanismChemicals.OSMIUM.getStack(22))
               .end()
               .comment("Removes the Gas Conversion Recipe that allows converting Osmium Blocks into Osmium.")
               .blankLine()
-              .removeRecipes(GasConversionRecipeManager.INSTANCE, Mekanism.rl("gas_conversion/osmium_from_block"))
+              .removeRecipes(ChemicalConversionRecipeManager.INSTANCE, Mekanism.rl("gas_conversion/osmium_from_block"))
         ;
         exampleBuilder("mekanism/oxidizing")
               .comment("Adds an Oxidizing Recipe that allows converting Salt Blocks into 60 mB of Gaseous Brine.")
@@ -347,12 +346,12 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
         exampleBuilder("mekanism/infusion_conversion")
               .comment("Adds an Infusion Conversion Recipe that allows converting Gold Ingots into 10 mB Gold Infuse Type.")
               .blankLine()
-              .recipe(InfusionConversionRecipeManager.INSTANCE)
+              .recipe(ChemicalConversionRecipeManager.INSTANCE)
               .addExample("infusion_conversion/gold/from_ingot", IngredientCreatorAccess.item().from(Tags.Items.INGOTS_GOLD), MekanismChemicals.GOLD.getStack(10))
               .end()
               .comment("Removes the Infusion Conversion Recipe that allows converting Bio Fuel into the Bio Infuse Type.")
               .blankLine()
-              .removeRecipes(InfusionConversionRecipeManager.INSTANCE, Mekanism.rl("infusion_conversion/bio/from_bio_fuel"))
+              .removeRecipes(ChemicalConversionRecipeManager.INSTANCE, Mekanism.rl("infusion_conversion/bio/from_bio_fuel"))
         ;
         exampleBuilder("mekanism/crushing")
               .comment("Adds a Crushing Recipe to crush Brick Blocks into four Bricks.")

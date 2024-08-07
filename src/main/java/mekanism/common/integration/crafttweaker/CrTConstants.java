@@ -110,7 +110,7 @@ public class CrTConstants {
     public static final String CLASS_RECIPE_MANAGER_ENERGY_CONVERSION = CLASS_RECIPE_MANAGER_ITEM_STACK_TO_ENERGY + ".EnergyConversion";
     public static final String CLASS_RECIPE_MANAGER_ITEM_STACK_TO_CHEMICAL = "mods." + Mekanism.MODID + ".recipe.manager.ItemStackToChemical";
     public static final String CLASS_RECIPE_MANAGER_ITEM_STACK_TO_GAS = CLASS_RECIPE_MANAGER_ITEM_STACK_TO_CHEMICAL + ".Gas";
-    public static final String CLASS_RECIPE_MANAGER_GAS_CONVERSION = CLASS_RECIPE_MANAGER_ITEM_STACK_TO_GAS + ".GasConversion";
+    public static final String CLASS_RECIPE_MANAGER_CHEMICAL_CONVERSION = CLASS_RECIPE_MANAGER_ITEM_STACK_TO_GAS + ".ChemicalConversion";
     public static final String CLASS_RECIPE_MANAGER_OXIDIZING = CLASS_RECIPE_MANAGER_ITEM_STACK_TO_GAS + ".Oxidizing";
     public static final String CLASS_RECIPE_MANAGER_ITEM_STACK_TO_INFUSE_TYPE = CLASS_RECIPE_MANAGER_ITEM_STACK_TO_CHEMICAL + ".InfuseType";
     public static final String CLASS_RECIPE_MANAGER_INFUSION_CONVERSION = CLASS_RECIPE_MANAGER_ITEM_STACK_TO_INFUSE_TYPE + ".InfusionConversion";

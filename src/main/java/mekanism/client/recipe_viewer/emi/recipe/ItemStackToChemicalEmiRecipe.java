@@ -1,8 +1,6 @@
 package mekanism.client.recipe_viewer.emi.recipe;
 
 import dev.emi.emi.api.widget.WidgetHolder;
-import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiChemicalGauge;
@@ -13,19 +11,20 @@ import mekanism.client.recipe_viewer.emi.MekanismEmiRecipeCategory;
 import mekanism.common.tile.component.config.DataType;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
-public abstract class ItemStackToChemicalEmiRecipe<CHEMICAL extends Chemical, STACK extends ChemicalStack,
-      RECIPE extends ItemStackToChemicalRecipe> extends MekanismEmiHolderRecipe<RECIPE> {
+public class ItemStackToChemicalEmiRecipe<RECIPE extends ItemStackToChemicalRecipe> extends MekanismEmiHolderRecipe<RECIPE> {
 
     private final int processTime;
 
-    protected ItemStackToChemicalEmiRecipe(MekanismEmiRecipeCategory category, RecipeHolder<RECIPE> recipeHolder, int processTime) {
+    public ItemStackToChemicalEmiRecipe(MekanismEmiRecipeCategory category, RecipeHolder<RECIPE> recipeHolder, int processTime) {
         super(category, recipeHolder);
         this.processTime = processTime;
         addInputDefinition(recipe.getInput());
         addChemicalOutputDefinition(recipe.getOutputDefinition());
     }
 
-    protected abstract GuiChemicalGauge getGauge(GaugeType type, int x, int y);
+    protected GuiChemicalGauge getGauge(GaugeType type, int x, int y) {
+        return GuiChemicalGauge.getDummy(type, this, x, y);
+    }
 
     @Override
     public void addWidgets(WidgetHolder widgetHolder) {
