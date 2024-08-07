@@ -331,7 +331,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .end()
               .comment("Removes the Gas Conversion Recipe that allows converting Osmium Blocks into Osmium.")
               .blankLine()
-              .removeRecipes(ChemicalConversionRecipeManager.INSTANCE, Mekanism.rl("gas_conversion/osmium_from_block"))
+              .removeRecipes(ChemicalConversionRecipeManager.INSTANCE, Mekanism.rl("chemical_conversion/osmium_from_block"))
         ;
         exampleBuilder("mekanism/oxidizing")
               .comment("Adds an Oxidizing Recipe that allows converting Salt Blocks into 60 mB of Gaseous Brine.")
@@ -347,11 +347,11 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .comment("Adds an Infusion Conversion Recipe that allows converting Gold Ingots into 10 mB Gold Infuse Type.")
               .blankLine()
               .recipe(ChemicalConversionRecipeManager.INSTANCE)
-              .addExample("infusion_conversion/gold/from_ingot", IngredientCreatorAccess.item().from(Tags.Items.INGOTS_GOLD), MekanismChemicals.GOLD.getStack(10))
+              .addExample("chemical_conversion/gold/from_ingot", IngredientCreatorAccess.item().from(Tags.Items.INGOTS_GOLD), MekanismChemicals.GOLD.getStack(10))
               .end()
               .comment("Removes the Infusion Conversion Recipe that allows converting Bio Fuel into the Bio Infuse Type.")
               .blankLine()
-              .removeRecipes(ChemicalConversionRecipeManager.INSTANCE, Mekanism.rl("infusion_conversion/bio/from_bio_fuel"))
+              .removeRecipes(ChemicalConversionRecipeManager.INSTANCE, Mekanism.rl("chemical_conversion/bio/from_bio_fuel"))
         ;
         exampleBuilder("mekanism/crushing")
               .comment("Adds a Crushing Recipe to crush Brick Blocks into four Bricks.")

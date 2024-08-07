@@ -34,6 +34,10 @@ public class ChemicalDeferredRegister extends MekanismDeferredRegister<Chemical>
         });
     }
 
+    public DeferredChemical<Chemical> registerPigment(String name, int color) {
+        return register(name, () -> new Chemical(ChemicalBuilder.pigment().tint(color)));
+    }
+
     public DeferredChemical<Chemical> registerInfuse(String name, int tint) {
         return register(name, () -> new Chemical(ChemicalBuilder.infuseType().tint(tint)));
     }

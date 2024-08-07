@@ -16,7 +16,7 @@ class GasConversionRecipeProvider implements ISubRecipeProvider {
 
     @Override
     public void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
-        String basePath = "gas_conversion/";
+        String basePath = "chemical_conversion/";
         //Flint -> oxygen
         ItemStackToChemicalRecipeBuilder.chemicalConversion(
               IngredientCreatorAccess.item().from(Items.FLINT),

@@ -20,7 +20,7 @@ class InfusionConversionRecipeProvider implements ISubRecipeProvider {
 
     @Override
     public void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
-        String basePath = "infusion_conversion/";
+        String basePath = "chemical_conversion/";
         addInfusionConversionBioRecipes(consumer, basePath + "bio/");
         addInfusionConversionCarbonRecipes(consumer, basePath + "carbon/");
         addInfusionConversionDiamondRecipes(consumer, basePath + "diamond/");

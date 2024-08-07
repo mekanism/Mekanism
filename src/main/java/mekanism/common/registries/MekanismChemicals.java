@@ -79,7 +79,7 @@ public class MekanismChemicals {
         int tint = rgb[0] << 16;
         tint |= rgb[1] << 8;
         tint |= rgb[2];
-        return CHEMICALS.register(color.getRegistryPrefix(), tint);
+        return CHEMICALS.registerPigment(color.getRegistryPrefix(), tint);
     }
 
     @SuppressWarnings("Convert2MethodRef")

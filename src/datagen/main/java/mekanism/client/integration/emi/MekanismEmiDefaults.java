@@ -66,7 +66,7 @@ public class MekanismEmiDefaults extends BaseEmiDefaults {
         addRecipe("reaction/substrate/water_hydrogen");
         addRecipe("reaction/substrate/ethene_oxygen");
         //Note: We intentionally don't cover the other gas conversions as there are better defaults for them
-        addRecipe("gas_conversion/osmium_from_ingot");
+        addRecipe("chemical_conversion/osmium_from_ingot");
 
         //Custom pigments that only exist by mixing
         addPigmentMix(EnumColor.DARK_AQUA, EnumColor.WHITE, EnumColor.AQUA);
@@ -121,7 +121,7 @@ public class MekanismEmiDefaults extends BaseEmiDefaults {
     }
 
     private void addInfusingRecipes() {
-        String conversionPath = "infusion_conversion/";
+        String conversionPath = "chemical_conversion/";
         addRecipe(conversionPath + "bio/from_bio_fuel");
         addRecipe(conversionPath + "carbon/from_enriched");
         addRecipe(conversionPath + "diamond/from_enriched");
