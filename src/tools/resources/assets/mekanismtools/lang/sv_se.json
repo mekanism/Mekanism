@@ -183,5 +183,6 @@
   "item.mekanismtools.steel_sword": "Stålsvärd",
   "item.mekanismtools.stone_paxel": "Stenhackyxa",
   "item.mekanismtools.wood_paxel": "Trähackyxa",
+  "tag.item.c.tools.paxel": "Hackyxor",
   "tooltip.mekanismtools.hp": "HP: %1$s"
 }
