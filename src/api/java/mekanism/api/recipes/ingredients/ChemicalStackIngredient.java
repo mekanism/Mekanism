@@ -48,15 +48,15 @@ public final class ChemicalStackIngredient implements InputIngredient<ChemicalSt
      * {
      *     "type": "mekanism:compound",
      *     "ingredients": [
-     *         { "gas": "mekanism:hydrogen" },
-     *         { "gas": "mekanism:oxygen" }
+     *         { "chemical": "mekanism:hydrogen" },
+     *         { "chemical": "mekanism:oxygen" }
      *     ],
      *     "amount": 500
      * }
      * }</pre>
      *
      * @since 10.6.0
-     *///todo backcompat for field names
+     */
     public static final Codec<ChemicalStackIngredient> CODEC = RecordCodecBuilder.create(instance -> instance.group(
           IngredientCreatorAccess.chemical().mapCodecNonEmpty().forGetter(ChemicalStackIngredient::ingredient),
           SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(SerializationConstants.AMOUNT).forGetter(ChemicalStackIngredient::amount)
