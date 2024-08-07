@@ -144,14 +144,6 @@ public abstract class TileEntityRecipeMachine<RECIPE extends MekanismRecipe<?>> 
         return null;
     }
 
-    /**
-     * @apiNote Do not call directly, only override implementation
-     */
-    @Nullable
-    protected IChemicalTankHolder getInitialSlurryTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
-        return null;
-    }
-
     @Nullable
     @Override
     protected final IFluidTankHolder getInitialFluidTanks(IContentsListener listener) {
