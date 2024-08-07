@@ -21,7 +21,6 @@ import org.jetbrains.annotations.Contract;
  *     <li>Gas Conversion: Can be processed by any slots in Mekanism machines that are able to convert items to gases, for example in the Osmium Compressor and a variety of other machines.</li>
  * </ul>
  */
-//todo extract this to parent
 @NothingNullByDefault
 public abstract class ItemStackToGasRecipe extends ItemStackToChemicalRecipe {
 
