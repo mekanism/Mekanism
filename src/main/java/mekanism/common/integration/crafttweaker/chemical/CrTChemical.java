@@ -5,6 +5,7 @@ import com.blamejared.crafttweaker.api.tag.type.KnownTag;
 import com.blamejared.crafttweaker_annotations.annotations.NativeMethod;
 import com.blamejared.crafttweaker_annotations.annotations.NativeMethod.MethodParameter;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
+import com.blamejared.crafttweaker_annotations.annotations.TaggableElement;
 import java.util.List;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.attribute.ChemicalAttribute;
@@ -19,6 +20,7 @@ import org.openzen.zencode.java.ZenCodeType;
 @NativeMethod(name = "getAttributes", parameters = {}, getterName = "attributes")
 @NativeMethod(name = "addAttribute", parameters = @MethodParameter(type = ChemicalAttribute.class, name = "attribute"))
 @NativeTypeRegistration(value = Chemical.class, zenCodeName = CrTConstants.CLASS_CHEMICAL)
+@TaggableElement("mekanism:chemical")
 public class CrTChemical {
 
     private CrTChemical() {
