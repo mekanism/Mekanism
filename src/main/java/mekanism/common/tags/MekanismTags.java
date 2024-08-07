@@ -270,7 +270,7 @@ public class MekanismTags {
         public static final TagKey<Chemical> WATER_VAPOR = tag("water_vapor");
 
         private static TagKey<Chemical> tag(String name) {
-            return TagKey.create(MekanismAPI.GAS_REGISTRY_NAME, Mekanism.rl(name));
+            return TagKey.create(MekanismAPI.CHEMICAL_REGISTRY_NAME, Mekanism.rl(name));
         }
     }
 }

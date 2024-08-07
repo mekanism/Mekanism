@@ -7,7 +7,6 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalBuilder;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.recipes.ingredients.chemical.IChemicalIngredient;
-import mekanism.api.recipes.ingredients.chemical.IGasIngredient;
 import mekanism.api.robit.RobitSkin;
 import net.minecraft.core.DefaultedRegistry;
 import net.minecraft.core.Registry;
@@ -76,41 +75,6 @@ public class MekanismAPI {
     public static final ResourceKey<Registry<MapCodec<? extends IChemicalIngredient>>> CHEMICAL_INGREDIENT_TYPE_REGISTRY_NAME = codecRegistryKey(IChemicalIngredient.class, "chemical_ingredient_type");
 
     /**
-     * Gets the {@link ResourceKey} representing the name of the Registry for {@link Chemical gases}.
-     *
-     * @apiNote When registering {@link Chemical gases} using {@link DeferredRegister}, use this field to get access to the {@link ResourceKey}.
-     * @since 10.4.0
-     */
-    public static final ResourceKey<Registry<Chemical>> GAS_REGISTRY_NAME = registryKey(Chemical.class, "gas");
-    /**
-     * Gets the {@link ResourceKey} representing the name of the Registry for {@link IGasIngredient} ingredient type serializers.
-     *
-     * @apiNote When registering gas ingredient types using {@link DeferredRegister}, use this field to get access to the {@link ResourceKey}.
-     * @since 10.6.0
-     */
-    public static final ResourceKey<Registry<MapCodec<? extends IGasIngredient>>> GAS_INGREDIENT_TYPE_REGISTRY_NAME = codecRegistryKey(IGasIngredient.class, "gas_ingredient_type");
-    /**
-     * Gets the {@link ResourceKey} representing the name of the Registry for {@link Chemical infuse types}.
-     *
-     * @apiNote When registering {@link Chemical infuse types} using {@link DeferredRegister}, use this field to get access to the {@link ResourceKey}.
-     * @since 10.4.0
-     */
-    public static final ResourceKey<Registry<Chemical>> INFUSE_TYPE_REGISTRY_NAME = registryKey(Chemical.class, "infuse_type");
-    /**
-     * Gets the {@link ResourceKey} representing the name of the Registry for {@link Chemical pigments}.
-     *
-     * @apiNote When registering {@link Chemical pigments} using {@link DeferredRegister}, use this field to get access to the {@link ResourceKey}.
-     * @since 10.4.0
-     */
-    public static final ResourceKey<Registry<Chemical>> PIGMENT_REGISTRY_NAME = registryKey(Chemical.class, "pigment");
-    /**
-     * Gets the {@link ResourceKey} representing the name of the Registry for {@link Chemical sluries}.
-     *
-     * @apiNote When registering {@link Chemical sluries} using {@link DeferredRegister}, use this field to get access to the {@link ResourceKey}.
-     * @since 10.4.0
-     */
-    public static final ResourceKey<Registry<Chemical>> SLURRY_REGISTRY_NAME = registryKey(Chemical.class, "slurry");
-    /**
      * Gets the {@link ResourceKey} representing the name of the Registry for {@link ModuleData modules}.
      *
      * @apiNote When registering {@link ModuleData modules} using {@link DeferredRegister}, use this field to get access to the {@link ResourceKey}.
@@ -146,7 +110,7 @@ public class MekanismAPI {
     /**
      * Gets the Registry for {@link IChemicalIngredient} type serializers.
      *
-     * @see #GAS_INGREDIENT_TYPE_REGISTRY_NAME
+     * @see #CHEMICAL_INGREDIENT_TYPE_REGISTRY_NAME
      * @since 10.6.0
      */
     public static final Registry<MapCodec<? extends IChemicalIngredient>> CHEMICAL_INGREDIENT_TYPES = new RegistryBuilder<>(CHEMICAL_INGREDIENT_TYPE_REGISTRY_NAME)

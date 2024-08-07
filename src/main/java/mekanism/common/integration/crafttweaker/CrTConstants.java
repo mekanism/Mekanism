@@ -34,15 +34,7 @@ public class CrTConstants {
 
     public static final String CLASS_CHEMICAL_PROVIDER = "mods." + Mekanism.MODID + ".api.chemical.ChemicalProvider";
     public static final String CLASS_CHEMICAL = "mods." + Mekanism.MODID + ".api.chemical.Chemical";
-    public static final String CLASS_GAS = "mods." + Mekanism.MODID + ".api.chemical.Gas";
-    public static final String CLASS_INFUSE_TYPE = "mods." + Mekanism.MODID + ".api.chemical.InfuseType";
-    public static final String CLASS_PIGMENT = "mods." + Mekanism.MODID + ".api.chemical.Pigment";
-    public static final String CLASS_SLURRY = "mods." + Mekanism.MODID + ".api.chemical.Slurry";
     public static final String CLASS_CHEMICAL_STACK = "mods." + Mekanism.MODID + ".api.chemical.ChemicalStack";
-    public static final String CLASS_GAS_STACK = "mods." + Mekanism.MODID + ".api.chemical.GasStack";
-    public static final String CLASS_INFUSION_STACK = "mods." + Mekanism.MODID + ".api.chemical.InfusionStack";
-    public static final String CLASS_PIGMENT_STACK = "mods." + Mekanism.MODID + ".api.chemical.PigmentStack";
-    public static final String CLASS_SLURRY_STACK = "mods." + Mekanism.MODID + ".api.chemical.SlurryStack";
 
     public static final String CLASS_ROBIT = "mods." + Mekanism.MODID + ".api.entity.robit.Robit";
     public static final String CLASS_ROBIT_SKIN = "mods." + Mekanism.MODID + ".api.entity.robit.RobitSkin";
@@ -62,10 +54,6 @@ public class CrTConstants {
     public static final String CLASS_SLURRY_INGREDIENT = CLASS_CHEMICAL_INGREDIENT + ".SlurryIngredient";
 
     public static final String CLASS_CHEMICAL_STACK_INGREDIENT = "mods." + Mekanism.MODID + ".api.ingredient.ChemicalStackIngredient";
-    public static final String CLASS_GAS_STACK_INGREDIENT = CLASS_CHEMICAL_STACK_INGREDIENT + ".GasStackIngredient";
-    public static final String CLASS_INFUSION_STACK_INGREDIENT = CLASS_CHEMICAL_STACK_INGREDIENT + ".InfusionStackIngredient";
-    public static final String CLASS_PIGMENT_STACK_INGREDIENT = CLASS_CHEMICAL_STACK_INGREDIENT + ".PigmentStackIngredient";
-    public static final String CLASS_SLURRY_STACK_INGREDIENT = CLASS_CHEMICAL_STACK_INGREDIENT + ".SlurryStackIngredient";
 
     public static final String CLASS_VANILLA_INPUT_BI_CHEMICAL = "mods." + Mekanism.MODID + ".recipe.input.BiChemical";
     public static final String CLASS_VANILLA_INPUT_CHEMICAL = "mods." + Mekanism.MODID + ".recipe.input.Chemical";
