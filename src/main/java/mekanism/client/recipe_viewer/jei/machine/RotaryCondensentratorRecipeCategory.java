@@ -45,12 +45,12 @@ public class RotaryCondensentratorRecipeCategory extends HolderRecipeCategory<Ro
         RotaryRecipe recipe = recipeHolder.value();
         if (condensentrating) {
             if (recipe.hasGasToFluid()) {
-                initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.INPUT, gasGauge, recipe.getGasInput().getRepresentations());
+                initChemical(builder, MekanismJEI.TYPE_CHEMICAL, RecipeIngredientRole.INPUT, gasGauge, recipe.getGasInput().getRepresentations());
                 initFluid(builder, RecipeIngredientRole.OUTPUT, fluidGauge, recipe.getFluidOutputDefinition());
             }
         } else if (recipe.hasFluidToGas()) {
             initFluid(builder, RecipeIngredientRole.INPUT, fluidGauge, recipe.getFluidInput().getRepresentations());
-            initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, gasGauge, recipe.getGasOutputDefinition());
+            initChemical(builder, MekanismJEI.TYPE_CHEMICAL, RecipeIngredientRole.OUTPUT, gasGauge, recipe.getGasOutputDefinition());
         }
     }
 

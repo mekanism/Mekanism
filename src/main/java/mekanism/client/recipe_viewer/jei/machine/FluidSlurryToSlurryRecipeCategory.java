@@ -39,7 +39,7 @@ public class FluidSlurryToSlurryRecipeCategory extends HolderRecipeCategory<Flui
     public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<FluidSlurryToSlurryRecipe> recipeHolder, @NotNull IFocusGroup focusGroup) {
         FluidSlurryToSlurryRecipe recipe = recipeHolder.value();
         initFluid(builder, RecipeIngredientRole.INPUT, fluidInput, recipe.getFluidInput().getRepresentations());
-        initChemical(builder, MekanismJEI.TYPE_SLURRY, RecipeIngredientRole.INPUT, slurryInput, recipe.getChemicalInput().getRepresentations());
-        initChemical(builder, MekanismJEI.TYPE_SLURRY, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
+        initChemical(builder, MekanismJEI.TYPE_CHEMICAL, RecipeIngredientRole.INPUT, slurryInput, recipe.getChemicalInput().getRepresentations());
+        initChemical(builder, MekanismJEI.TYPE_CHEMICAL, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
     }
 }

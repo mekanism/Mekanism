@@ -88,11 +88,11 @@ public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerRecipeViewerR
     public void setRecipe(@NotNull IRecipeLayoutBuilder builder, BoilerRecipeViewerRecipe recipe, @NotNull IFocusGroup focusGroup) {
         initFluid(builder, RecipeIngredientRole.INPUT, waterTank, recipe.water().getRepresentations());
         if (recipe.superHeatedCoolant() == null) {
-            initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, steamTank, Collections.singletonList(recipe.steam()));
+            initChemical(builder, MekanismJEI.TYPE_CHEMICAL, RecipeIngredientRole.OUTPUT, steamTank, Collections.singletonList(recipe.steam()));
         } else {
-            initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.INPUT, superHeatedCoolantTank, recipe.superHeatedCoolant().getRepresentations());
-            initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, steamTank, Collections.singletonList(recipe.steam()));
-            initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, cooledCoolantTank, Collections.singletonList(recipe.cooledCoolant()));
+            initChemical(builder, MekanismJEI.TYPE_CHEMICAL, RecipeIngredientRole.INPUT, superHeatedCoolantTank, recipe.superHeatedCoolant().getRepresentations());
+            initChemical(builder, MekanismJEI.TYPE_CHEMICAL, RecipeIngredientRole.OUTPUT, steamTank, Collections.singletonList(recipe.steam()));
+            initChemical(builder, MekanismJEI.TYPE_CHEMICAL, RecipeIngredientRole.OUTPUT, cooledCoolantTank, Collections.singletonList(recipe.cooledCoolant()));
         }
     }
 }

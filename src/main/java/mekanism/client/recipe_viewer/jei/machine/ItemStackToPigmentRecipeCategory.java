@@ -2,9 +2,6 @@ package mekanism.client.recipe_viewer.jei.machine;
 
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ItemStackToPigmentRecipe;
-import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
-import mekanism.client.gui.element.gauge.GaugeType;
-import mekanism.client.gui.element.gauge.GuiChemicalGauge;
 import mekanism.client.recipe_viewer.color.PigmentExtractorColorDetails;
 import mekanism.client.recipe_viewer.jei.MekanismJEI;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
@@ -25,7 +22,7 @@ public class ItemStackToPigmentRecipeCategory extends ItemStackToChemicalRecipeC
     @Override
     public void draw(RecipeHolder<ItemStackToPigmentRecipe> recipeHolder, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
         //Set what the "current" recipe is for our color details, before bothering to draw the arrow
-        currentDetails.setIngredient(getDisplayedStack(recipeSlotsView, CHEMICAL_INPUT, MekanismJEI.TYPE_PIGMENT, ChemicalStack.EMPTY));
+        currentDetails.setIngredient(getDisplayedStack(recipeSlotsView, CHEMICAL_INPUT, MekanismJEI.TYPE_CHEMICAL, ChemicalStack.EMPTY));
         super.draw(recipeHolder, recipeSlotsView, guiGraphics, mouseX, mouseY);
         currentDetails.reset();
     }

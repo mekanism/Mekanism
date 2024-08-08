@@ -10,7 +10,7 @@ import mezz.jei.api.helpers.IGuiHelper;
 public class ChemicalInfuserRecipeCategory extends ChemicalChemicalToChemicalRecipeCategory<ChemicalInfuserRecipe> {
 
     public ChemicalInfuserRecipeCategory(IGuiHelper helper, IRecipeViewerRecipeType<ChemicalInfuserRecipe> recipeType) {
-        super(helper, recipeType, MekanismJEI.TYPE_GAS);
+        super(helper, recipeType, MekanismJEI.TYPE_CHEMICAL);
     }
 
     @Override

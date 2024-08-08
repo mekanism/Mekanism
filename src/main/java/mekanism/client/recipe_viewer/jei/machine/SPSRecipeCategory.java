@@ -50,8 +50,8 @@ public class SPSRecipeCategory extends BaseRecipeCategory<SPSRecipeViewerRecipe>
 
     @Override
     public void setRecipe(@NotNull IRecipeLayoutBuilder builder, SPSRecipeViewerRecipe recipe, @NotNull IFocusGroup focusGroup) {
-        initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.INPUT, input, recipe.input().getRepresentations());
-        initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, output, Collections.singletonList(recipe.output()));
+        initChemical(builder, MekanismJEI.TYPE_CHEMICAL, RecipeIngredientRole.INPUT, input, recipe.input().getRepresentations());
+        initChemical(builder, MekanismJEI.TYPE_CHEMICAL, RecipeIngredientRole.OUTPUT, output, Collections.singletonList(recipe.output()));
     }
 
     @Nullable

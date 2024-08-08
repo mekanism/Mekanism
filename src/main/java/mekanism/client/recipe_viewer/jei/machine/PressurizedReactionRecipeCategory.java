@@ -68,7 +68,7 @@ public class PressurizedReactionRecipeCategory extends HolderRecipeCategory<Pres
         PressurizedReactionRecipe recipe = recipeHolder.value();
         initItem(builder, RecipeIngredientRole.INPUT, inputItem, recipe.getInputSolid().getRepresentations());
         initFluid(builder, RecipeIngredientRole.INPUT, inputFluid, recipe.getInputFluid().getRepresentations());
-        initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.INPUT, inputGas, recipe.getInputGas().getRepresentations());
+        initChemical(builder, MekanismJEI.TYPE_CHEMICAL, RecipeIngredientRole.INPUT, inputGas, recipe.getInputGas().getRepresentations());
         List<ItemStack> itemOutputs = new ArrayList<>();
         List<ChemicalStack> gasOutputs = new ArrayList<>();
         for (PressurizedReactionRecipeOutput output : recipe.getOutputDefinition()) {
@@ -79,7 +79,7 @@ public class PressurizedReactionRecipeCategory extends HolderRecipeCategory<Pres
             initItem(builder, RecipeIngredientRole.OUTPUT, outputItem, itemOutputs);
         }
         if (!gasOutputs.stream().allMatch(ConstantPredicates.CHEMICAL_EMPTY)) {
-            initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, outputGas, gasOutputs)
+            initChemical(builder, MekanismJEI.TYPE_CHEMICAL, RecipeIngredientRole.OUTPUT, outputGas, gasOutputs)
                   .setSlotName(OUTPUT_GAS);
         }
     }

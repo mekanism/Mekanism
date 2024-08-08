@@ -76,7 +76,7 @@ public class NucleosynthesizingRecipeCategory extends HolderRecipeCategory<Nucle
         NucleosynthesizingRecipe recipe = recipeHolder.value();
         initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getItemInput().getRepresentations());
         List<@NotNull ChemicalStack> gasInputs = recipe.getChemicalInput().getRepresentations();
-        initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.INPUT, gasInput, gasInputs);
+        initChemical(builder, MekanismJEI.TYPE_CHEMICAL, RecipeIngredientRole.INPUT, gasInput, gasInputs);
         initItem(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
         initItem(builder, RecipeIngredientRole.CATALYST, extra, RecipeViewerUtils.getStacksFor(recipe.getChemicalInput(), true));
     }

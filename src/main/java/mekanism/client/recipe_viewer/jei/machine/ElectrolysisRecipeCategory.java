@@ -56,7 +56,7 @@ public class ElectrolysisRecipeCategory extends HolderRecipeCategory<Electrolysi
             leftDefinition.add(output.left());
             rightDefinition.add(output.right());
         }
-        initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, leftOutput, leftDefinition);
-        initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, rightOutput, rightDefinition);
+        initChemical(builder, MekanismJEI.TYPE_CHEMICAL, RecipeIngredientRole.OUTPUT, leftOutput, leftDefinition);
+        initChemical(builder, MekanismJEI.TYPE_CHEMICAL, RecipeIngredientRole.OUTPUT, rightOutput, rightDefinition);
     }
 }

@@ -47,7 +47,7 @@ public class PaintingRecipeCategory extends HolderRecipeCategory<PaintingRecipe>
     @Override
     public void draw(RecipeHolder<PaintingRecipe> recipeHolder, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
         //Set what the "current" recipe is for our color details, before bothering to draw the arrow
-        colorDetails.setIngredient(getDisplayedStack(recipeSlotsView, PIGMENT_INPUT, MekanismJEI.TYPE_PIGMENT, ChemicalStack.EMPTY));
+        colorDetails.setIngredient(getDisplayedStack(recipeSlotsView, PIGMENT_INPUT, MekanismJEI.TYPE_CHEMICAL, ChemicalStack.EMPTY));
         super.draw(recipeHolder, recipeSlotsView, guiGraphics, mouseX, mouseY);
         colorDetails.reset();
     }
@@ -56,7 +56,7 @@ public class PaintingRecipeCategory extends HolderRecipeCategory<PaintingRecipe>
     public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<PaintingRecipe> recipeHolder, @NotNull IFocusGroup focusGroup) {
         PaintingRecipe recipe = recipeHolder.value();
         initItem(builder, RecipeIngredientRole.INPUT, inputSlot, recipe.getItemInput().getRepresentations());
-        initChemical(builder, MekanismJEI.TYPE_PIGMENT, RecipeIngredientRole.INPUT, inputPigment, recipe.getChemicalInput().getRepresentations())
+        initChemical(builder, MekanismJEI.TYPE_CHEMICAL, RecipeIngredientRole.INPUT, inputPigment, recipe.getChemicalInput().getRepresentations())
               .setSlotName(PIGMENT_INPUT);
         initItem(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
     }

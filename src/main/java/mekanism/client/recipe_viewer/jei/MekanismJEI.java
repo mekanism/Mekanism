@@ -89,11 +89,6 @@ import org.jetbrains.annotations.NotNull;
 public class MekanismJEI implements IModPlugin {
 
     public static final IIngredientType<ChemicalStack> TYPE_CHEMICAL = () -> ChemicalStack.class;
-    public static final IIngredientType<ChemicalStack> TYPE_GAS = () -> ChemicalStack.class;
-    //todo remove these?
-    public static final IIngredientType<ChemicalStack> TYPE_INFUSION = () -> ChemicalStack.class;
-    public static final IIngredientType<ChemicalStack> TYPE_PIGMENT = () -> ChemicalStack.class;
-    public static final IIngredientType<ChemicalStack> TYPE_SLURRY = () -> ChemicalStack.class;
 
     public static final ChemicalStackHelper CHEMICAL_STACK_HELPER = new ChemicalStackHelper();
 

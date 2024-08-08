@@ -47,7 +47,7 @@ public class ItemStackGasToItemStackRecipeCategory extends HolderRecipeCategory<
         List<ChemicalStack> scaledGases = recipe.getChemicalInput().getRepresentations().stream()
               .map(gas -> gas.copyWithAmount(gas.getAmount() * TileEntityAdvancedElectricMachine.BASE_TICKS_REQUIRED))
               .toList();
-        initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.INPUT, gasInput, scaledGases);
+        initChemical(builder, MekanismJEI.TYPE_CHEMICAL, RecipeIngredientRole.INPUT, gasInput, scaledGases);
         initItem(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
         initItem(builder, RecipeIngredientRole.CATALYST, extra, RecipeViewerUtils.getStacksFor(recipe.getChemicalInput(), true));
     }

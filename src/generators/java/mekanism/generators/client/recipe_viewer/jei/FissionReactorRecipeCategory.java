@@ -55,11 +55,11 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<FissionReci
         if (recipe.inputCoolant() == null) {
             initFluid(builder, RecipeIngredientRole.INPUT, coolantTank, recipe.waterInput().getRepresentations());
         } else {
-            initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.INPUT, coolantTank, recipe.inputCoolant().getRepresentations());
+            initChemical(builder, MekanismJEI.TYPE_CHEMICAL, RecipeIngredientRole.INPUT, coolantTank, recipe.inputCoolant().getRepresentations());
         }
-        initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.INPUT, fuelTank, recipe.fuel().getRepresentations());
-        initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, heatedCoolantTank, Collections.singletonList(recipe.outputCoolant()));
-        initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, wasteTank, Collections.singletonList(recipe.waste()));
+        initChemical(builder, MekanismJEI.TYPE_CHEMICAL, RecipeIngredientRole.INPUT, fuelTank, recipe.fuel().getRepresentations());
+        initChemical(builder, MekanismJEI.TYPE_CHEMICAL, RecipeIngredientRole.OUTPUT, heatedCoolantTank, Collections.singletonList(recipe.outputCoolant()));
+        initChemical(builder, MekanismJEI.TYPE_CHEMICAL, RecipeIngredientRole.OUTPUT, wasteTank, Collections.singletonList(recipe.waste()));
     }
 
     @Nullable

@@ -44,7 +44,7 @@ public class MetallurgicInfuserRecipeCategory extends HolderRecipeCategory<Metal
         MetallurgicInfuserRecipe recipe = recipeHolder.value();
         initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getItemInput().getRepresentations());
         List<@NotNull ChemicalStack> infusionStacks = recipe.getChemicalInput().getRepresentations();
-        initChemical(builder, MekanismJEI.TYPE_INFUSION, RecipeIngredientRole.INPUT, infusionBar, infusionStacks);
+        initChemical(builder, MekanismJEI.TYPE_CHEMICAL, RecipeIngredientRole.INPUT, infusionBar, infusionStacks);
         initItem(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
         initItem(builder, RecipeIngredientRole.CATALYST, extra, RecipeViewerUtils.getStacksFor(recipe.getChemicalInput(), true));
     }

@@ -19,7 +19,7 @@ public class PigmentMixerRecipeCategory extends ChemicalChemicalToChemicalRecipe
     private final PigmentMixerColorDetails rightColorDetails;
 
     public PigmentMixerRecipeCategory(IGuiHelper helper, IRecipeViewerRecipeType<PigmentMixingRecipe> recipeType) {
-        super(helper, recipeType, MekanismJEI.TYPE_PIGMENT);
+        super(helper, recipeType, MekanismJEI.TYPE_CHEMICAL);
         rightArrow.colored(leftColorDetails = new PigmentMixerColorDetails());
         leftArrow.colored(rightColorDetails = new PigmentMixerColorDetails());
     }
@@ -32,9 +32,9 @@ public class PigmentMixerRecipeCategory extends ChemicalChemicalToChemicalRecipe
     @Override
     public void draw(RecipeHolder<PigmentMixingRecipe> recipeHolder, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
         //Set what the "current" recipe is for our color details, before bothering to draw the arrow
-        leftColorDetails.setIngredient(getDisplayedStack(recipeSlotsView, LEFT_INPUT, MekanismJEI.TYPE_PIGMENT, ChemicalStack.EMPTY));
-        rightColorDetails.setIngredient(getDisplayedStack(recipeSlotsView, RIGHT_INPUT, MekanismJEI.TYPE_PIGMENT, ChemicalStack.EMPTY));
-        ChemicalStack outputStack = getDisplayedStack(recipeSlotsView, OUTPUT, MekanismJEI.TYPE_PIGMENT, ChemicalStack.EMPTY);
+        leftColorDetails.setIngredient(getDisplayedStack(recipeSlotsView, LEFT_INPUT, MekanismJEI.TYPE_CHEMICAL, ChemicalStack.EMPTY));
+        rightColorDetails.setIngredient(getDisplayedStack(recipeSlotsView, RIGHT_INPUT, MekanismJEI.TYPE_CHEMICAL, ChemicalStack.EMPTY));
+        ChemicalStack outputStack = getDisplayedStack(recipeSlotsView, OUTPUT, MekanismJEI.TYPE_CHEMICAL, ChemicalStack.EMPTY);
         Supplier<ChemicalStack> outputSupplier = () -> outputStack;
         leftColorDetails.setOutputIngredient(outputSupplier);
         rightColorDetails.setOutputIngredient(outputSupplier);
