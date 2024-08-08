@@ -10,7 +10,7 @@
   },
   "gas_input": {
     "amount": 1,
-    "gas": "mekanism:lithium"
+    "chemical": "mekanism:lithium"
   },
   "gas_output": {
     "amount": 1,

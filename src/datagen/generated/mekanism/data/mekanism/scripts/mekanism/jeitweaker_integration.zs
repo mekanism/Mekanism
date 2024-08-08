@@ -12,21 +12,21 @@ import mods.jeitweaker.Jei;
  * 4) Hides clean copper slurry
 */
 
-//Jei.hideIngredient(stack as ICrTGasStack)
-//Jei.hideIngredient(stack as ICrTInfusionStack)
-//Jei.hideIngredient(stack as ICrTPigmentStack)
-//Jei.hideIngredient(stack as ICrTSlurryStack)
+//Jei.hideIngredient(stack as ICrTChemicalStack)
+//Jei.hideIngredient(stack as ICrTChemicalStack)
+//Jei.hideIngredient(stack as ICrTChemicalStack)
+//Jei.hideIngredient(stack as ICrTChemicalStack)
 
-Jei.hideIngredient(<gas:mekanism:brine> * 1000);
-Jei.hideIngredient(<infuse_type:mekanism:bio> * 1000);
-Jei.hideIngredient(<pigment:mekanism:dark_red> * 1000);
-Jei.hideIngredient(<slurry:mekanism:clean_gold> * 1000);
+Jei.hideIngredient(<chemical:mekanism:brine> * 1000);
+Jei.hideIngredient(<chemical:mekanism:bio> * 1000);
+Jei.hideIngredient(<chemical:mekanism:dark_red> * 1000);
+Jei.hideIngredient(<chemical:mekanism:clean_gold> * 1000);
 
 //Adds a description to the passed in chemical. This example adds some basic text to JEI's information tab when looking at Hydrogen.
 
-//Jei.addIngredientInformation(stack as ICrTGasStack, Component...)
-//Jei.addIngredientInformation(stack as ICrTInfusionStack, Component...)
-//Jei.addIngredientInformation(stack as ICrTPigmentStack, Component...)
-//Jei.addIngredientInformation(stack as ICrTSlurryStack, Component...)
+//Jei.addIngredientInformation(stack as ICrTChemicalStack, Component...)
+//Jei.addIngredientInformation(stack as ICrTChemicalStack, Component...)
+//Jei.addIngredientInformation(stack as ICrTChemicalStack, Component...)
+//Jei.addIngredientInformation(stack as ICrTChemicalStack, Component...)
 
-Jei.addIngredientInformation(<gas:mekanism:hydrogen> * 1000, "Hydrogen is a basic gas that is produced in an electrolytic separator");
+Jei.addIngredientInformation(<chemical:mekanism:hydrogen> * 1000, "Hydrogen is a basic gas that is produced in an electrolytic separator");

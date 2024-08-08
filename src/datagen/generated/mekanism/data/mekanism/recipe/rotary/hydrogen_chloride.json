@@ -10,7 +10,7 @@
   },
   "gas_input": {
     "amount": 1,
-    "gas": "mekanism:hydrogen_chloride"
+    "chemical": "mekanism:hydrogen_chloride"
   },
   "gas_output": {
     "amount": 1,

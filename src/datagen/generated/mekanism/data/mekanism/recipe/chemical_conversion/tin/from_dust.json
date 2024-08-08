@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:chemical_conversion",
+  "input": {
+    "count": 1,
+    "tag": "c:dusts/tin"
+  },
+  "output": {
+    "amount": 10,
+    "id": "mekanism:tin"
+  }
+}

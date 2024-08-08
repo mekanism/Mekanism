@@ -23,7 +23,7 @@
                 "mekanism:upgrades",
                 "mekanism:energy",
                 "mekanism:items",
-                "mekanism:infuse_types"
+                "mekanism:chemicals"
               ],
               "source": "block_entity"
             }

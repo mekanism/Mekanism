@@ -2,7 +2,7 @@
   "type": "mekanism:activating",
   "input": {
     "amount": 10,
-    "gas": "mekanism:nuclear_waste"
+    "chemical": "mekanism:nuclear_waste"
   },
   "output": {
     "amount": 1,

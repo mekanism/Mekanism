@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:chemical_conversion",
+  "input": {
+    "count": 1,
+    "tag": "c:dusts/sulfur"
+  },
+  "output": {
+    "amount": 2,
+    "id": "mekanism:sulfuric_acid"
+  }
+}

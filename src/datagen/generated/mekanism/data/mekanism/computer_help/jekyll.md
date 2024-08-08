@@ -349,10 +349,7 @@ enums:
   mekanism.common.lib.transmitter.TransmissionType:
   - ENERGY
   - FLUID
-  - GAS
-  - INFUSION
-  - PIGMENT
-  - SLURRY
+  - CHEMICAL
   - ITEM
   - HEAT
   mekanism.common.tile.TileEntityChemicalTank$GasMode:
@@ -3956,6 +3953,26 @@ methods:
       name: name
       type: String
     requires_public_security: true
+  - description: Get the contents of the chemical buffer.
+    methodName: getBufferChemical
+    returns:
+      java_type: mekanism.api.chemical.ChemicalStack
+      type: Table (ChemicalStack)
+  - description: Get the capacity of the chemical buffer.
+    methodName: getBufferChemicalCapacity
+    returns:
+      java_type: long
+      type: Number (long)
+  - description: Get the filled percentage of the chemical buffer.
+    methodName: getBufferChemicalFilledPercentage
+    returns:
+      java_type: double
+      type: Number (double)
+  - description: Get the amount needed to fill the chemical buffer.
+    methodName: getBufferChemicalNeeded
+    returns:
+      java_type: long
+      type: Number (long)
   - description: Get the contents of the fluid buffer.
     methodName: getBufferFluid
     returns:
@@ -3976,90 +3993,10 @@ methods:
     returns:
       java_type: int
       type: Number (int)
-  - description: Get the contents of the gas buffer.
-    methodName: getBufferGas
-    returns:
-      java_type: mekanism.api.chemical.ChemicalStack
-      type: Table (ChemicalStack)
-  - description: Get the capacity of the gas buffer.
-    methodName: getBufferGasCapacity
-    returns:
-      java_type: long
-      type: Number (long)
-  - description: Get the filled percentage of the gas buffer.
-    methodName: getBufferGasFilledPercentage
-    returns:
-      java_type: double
-      type: Number (double)
-  - description: Get the amount needed to fill the gas buffer.
-    methodName: getBufferGasNeeded
-    returns:
-      java_type: long
-      type: Number (long)
-  - description: Get the contents of the infusion buffer.
-    methodName: getBufferInfuseType
-    returns:
-      java_type: mekanism.api.chemical.ChemicalStack
-      type: Table (ChemicalStack)
-  - description: Get the capacity of the infusion buffer.
-    methodName: getBufferInfuseTypeCapacity
-    returns:
-      java_type: long
-      type: Number (long)
-  - description: Get the filled percentage of the infusion buffer.
-    methodName: getBufferInfuseTypeFilledPercentage
-    returns:
-      java_type: double
-      type: Number (double)
-  - description: Get the amount needed to fill the infusion buffer.
-    methodName: getBufferInfuseTypeNeeded
-    returns:
-      java_type: long
-      type: Number (long)
   - methodName: getBufferItem
     returns:
       java_type: net.minecraft.world.item.ItemStack
       type: Table (ItemStack)
-  - description: Get the contents of the pigment buffer.
-    methodName: getBufferPigment
-    returns:
-      java_type: mekanism.api.chemical.ChemicalStack
-      type: Table (ChemicalStack)
-  - description: Get the capacity of the pigment buffer.
-    methodName: getBufferPigmentCapacity
-    returns:
-      java_type: long
-      type: Number (long)
-  - description: Get the filled percentage of the pigment buffer.
-    methodName: getBufferPigmentFilledPercentage
-    returns:
-      java_type: double
-      type: Number (double)
-  - description: Get the amount needed to fill the pigment buffer.
-    methodName: getBufferPigmentNeeded
-    returns:
-      java_type: long
-      type: Number (long)
-  - description: Get the contents of the slurry buffer.
-    methodName: getBufferSlurry
-    returns:
-      java_type: mekanism.api.chemical.ChemicalStack
-      type: Table (ChemicalStack)
-  - description: Get the capacity of the slurry buffer.
-    methodName: getBufferSlurryCapacity
-    returns:
-      java_type: long
-      type: Number (long)
-  - description: Get the filled percentage of the slurry buffer.
-    methodName: getBufferSlurryFilledPercentage
-    returns:
-      java_type: double
-      type: Number (double)
-  - description: Get the amount needed to fill the slurry buffer.
-    methodName: getBufferSlurryNeeded
-    returns:
-      java_type: long
-      type: Number (long)
   - description: May not be accurate if there is no frequency
     methodName: getEnvironmentalLoss
     returns:

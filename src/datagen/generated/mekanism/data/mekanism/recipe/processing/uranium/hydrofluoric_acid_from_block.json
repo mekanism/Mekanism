@@ -2,7 +2,7 @@
   "type": "mekanism:dissolution",
   "gas_input": {
     "amount": 9,
-    "gas": "mekanism:sulfuric_acid"
+    "chemical": "mekanism:sulfuric_acid"
   },
   "item_input": {
     "count": 1,
@@ -10,7 +10,6 @@
   },
   "output": {
     "amount": 9000,
-    "chemical_type": "gas",
     "id": "mekanism:hydrofluoric_acid"
   }
 }

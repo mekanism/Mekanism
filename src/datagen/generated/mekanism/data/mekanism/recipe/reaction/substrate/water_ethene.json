@@ -8,7 +8,7 @@
   },
   "gas_input": {
     "amount": 100,
-    "gas": "mekanism:ethene"
+    "chemical": "mekanism:ethene"
   },
   "gas_output": {
     "amount": 10,

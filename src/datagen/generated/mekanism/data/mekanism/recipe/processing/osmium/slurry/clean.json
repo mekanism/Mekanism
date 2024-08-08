@@ -10,6 +10,6 @@
   },
   "slurry_input": {
     "amount": 1,
-    "slurry": "mekanism:dirty_osmium"
+    "chemical": "mekanism:dirty_osmium"
   }
 }

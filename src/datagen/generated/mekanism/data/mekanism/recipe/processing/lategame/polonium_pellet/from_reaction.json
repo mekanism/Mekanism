@@ -7,7 +7,7 @@
   },
   "gas_input": {
     "amount": 1000,
-    "gas": "mekanism:polonium"
+    "chemical": "mekanism:polonium"
   },
   "gas_output": {
     "amount": 1000,

@@ -7,7 +7,7 @@
   },
   "gas_input": {
     "amount": 400,
-    "gas": "mekanism:oxygen"
+    "chemical": "mekanism:oxygen"
   },
   "gas_output": {
     "amount": 400,

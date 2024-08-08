@@ -10,7 +10,7 @@
   },
   "gas_input": {
     "amount": 1,
-    "gas": "mekanism:chlorine"
+    "chemical": "mekanism:chlorine"
   },
   "gas_output": {
     "amount": 1,

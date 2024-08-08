@@ -7,7 +7,7 @@
   },
   "gas_input": {
     "amount": 100,
-    "gas": "mekanism:hydrogen"
+    "chemical": "mekanism:hydrogen"
   },
   "gas_output": {
     "amount": 100,

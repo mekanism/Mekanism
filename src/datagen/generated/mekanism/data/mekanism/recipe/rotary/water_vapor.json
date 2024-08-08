@@ -10,7 +10,7 @@
   },
   "gas_input": {
     "amount": 1,
-    "gas": "mekanism:water_vapor"
+    "chemical": "mekanism:water_vapor"
   },
   "gas_output": {
     "amount": 1,

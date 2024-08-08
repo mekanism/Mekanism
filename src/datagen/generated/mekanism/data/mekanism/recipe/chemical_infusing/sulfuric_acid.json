@@ -2,7 +2,7 @@
   "type": "mekanism:chemical_infusing",
   "left_input": {
     "amount": 1,
-    "gas": "mekanism:sulfur_trioxide"
+    "chemical": "mekanism:sulfur_trioxide"
   },
   "output": {
     "amount": 1,
@@ -10,6 +10,6 @@
   },
   "right_input": {
     "amount": 1,
-    "gas": "mekanism:water_vapor"
+    "chemical": "mekanism:water_vapor"
   }
 }

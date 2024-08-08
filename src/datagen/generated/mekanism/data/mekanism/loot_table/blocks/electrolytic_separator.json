@@ -25,7 +25,7 @@
                 "mekanism:energy",
                 "mekanism:items",
                 "mekanism:fluids",
-                "mekanism:gases"
+                "mekanism:chemicals"
               ],
               "source": "block_entity"
             }

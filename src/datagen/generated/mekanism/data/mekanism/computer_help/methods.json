@@ -5895,6 +5895,38 @@
       "requires_public_security": true
     },
     {
+      "description": "Get the contents of the chemical buffer.",
+      "methodName": "getBufferChemical",
+      "returns": {
+        "type": "Table (ChemicalStack)",
+        "java_type": "mekanism.api.chemical.ChemicalStack"
+      }
+    },
+    {
+      "description": "Get the capacity of the chemical buffer.",
+      "methodName": "getBufferChemicalCapacity",
+      "returns": {
+        "type": "Number (long)",
+        "java_type": "long"
+      }
+    },
+    {
+      "description": "Get the filled percentage of the chemical buffer.",
+      "methodName": "getBufferChemicalFilledPercentage",
+      "returns": {
+        "type": "Number (double)",
+        "java_type": "double"
+      }
+    },
+    {
+      "description": "Get the amount needed to fill the chemical buffer.",
+      "methodName": "getBufferChemicalNeeded",
+      "returns": {
+        "type": "Number (long)",
+        "java_type": "long"
+      }
+    },
+    {
       "description": "Get the contents of the fluid buffer.",
       "methodName": "getBufferFluid",
       "returns": {
@@ -5927,138 +5959,10 @@
       }
     },
     {
-      "description": "Get the contents of the gas buffer.",
-      "methodName": "getBufferGas",
-      "returns": {
-        "type": "Table (ChemicalStack)",
-        "java_type": "mekanism.api.chemical.ChemicalStack"
-      }
-    },
-    {
-      "description": "Get the capacity of the gas buffer.",
-      "methodName": "getBufferGasCapacity",
-      "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
-      }
-    },
-    {
-      "description": "Get the filled percentage of the gas buffer.",
-      "methodName": "getBufferGasFilledPercentage",
-      "returns": {
-        "type": "Number (double)",
-        "java_type": "double"
-      }
-    },
-    {
-      "description": "Get the amount needed to fill the gas buffer.",
-      "methodName": "getBufferGasNeeded",
-      "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
-      }
-    },
-    {
-      "description": "Get the contents of the infusion buffer.",
-      "methodName": "getBufferInfuseType",
-      "returns": {
-        "type": "Table (ChemicalStack)",
-        "java_type": "mekanism.api.chemical.ChemicalStack"
-      }
-    },
-    {
-      "description": "Get the capacity of the infusion buffer.",
-      "methodName": "getBufferInfuseTypeCapacity",
-      "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
-      }
-    },
-    {
-      "description": "Get the filled percentage of the infusion buffer.",
-      "methodName": "getBufferInfuseTypeFilledPercentage",
-      "returns": {
-        "type": "Number (double)",
-        "java_type": "double"
-      }
-    },
-    {
-      "description": "Get the amount needed to fill the infusion buffer.",
-      "methodName": "getBufferInfuseTypeNeeded",
-      "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
-      }
-    },
-    {
       "methodName": "getBufferItem",
       "returns": {
         "type": "Table (ItemStack)",
         "java_type": "net.minecraft.world.item.ItemStack"
-      }
-    },
-    {
-      "description": "Get the contents of the pigment buffer.",
-      "methodName": "getBufferPigment",
-      "returns": {
-        "type": "Table (ChemicalStack)",
-        "java_type": "mekanism.api.chemical.ChemicalStack"
-      }
-    },
-    {
-      "description": "Get the capacity of the pigment buffer.",
-      "methodName": "getBufferPigmentCapacity",
-      "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
-      }
-    },
-    {
-      "description": "Get the filled percentage of the pigment buffer.",
-      "methodName": "getBufferPigmentFilledPercentage",
-      "returns": {
-        "type": "Number (double)",
-        "java_type": "double"
-      }
-    },
-    {
-      "description": "Get the amount needed to fill the pigment buffer.",
-      "methodName": "getBufferPigmentNeeded",
-      "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
-      }
-    },
-    {
-      "description": "Get the contents of the slurry buffer.",
-      "methodName": "getBufferSlurry",
-      "returns": {
-        "type": "Table (ChemicalStack)",
-        "java_type": "mekanism.api.chemical.ChemicalStack"
-      }
-    },
-    {
-      "description": "Get the capacity of the slurry buffer.",
-      "methodName": "getBufferSlurryCapacity",
-      "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
-      }
-    },
-    {
-      "description": "Get the filled percentage of the slurry buffer.",
-      "methodName": "getBufferSlurryFilledPercentage",
-      "returns": {
-        "type": "Number (double)",
-        "java_type": "double"
-      }
-    },
-    {
-      "description": "Get the amount needed to fill the slurry buffer.",
-      "methodName": "getBufferSlurryNeeded",
-      "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
       }
     },
     {

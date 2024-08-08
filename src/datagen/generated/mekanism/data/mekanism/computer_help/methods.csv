@@ -672,27 +672,15 @@ QIO Redstone Adapter,setTargetItem,itemName: String (ResourceLocation),,,true,
 QIO Redstone Adapter,setTriggerAmount,amount: Number (long),,,true,
 QIO Redstone Adapter,toggleFuzzyMode,,,,true,
 Quantum Entangloporter,createFrequency,name: String,,,true,Requires frequency to not already exist and for it to be public so that it can make it as the player who owns the block. Also sets the frequency after creation
+Quantum Entangloporter,getBufferChemical,,Table (ChemicalStack),,false,Get the contents of the chemical buffer.
+Quantum Entangloporter,getBufferChemicalCapacity,,Number (long),,false,Get the capacity of the chemical buffer.
+Quantum Entangloporter,getBufferChemicalFilledPercentage,,Number (double),,false,Get the filled percentage of the chemical buffer.
+Quantum Entangloporter,getBufferChemicalNeeded,,Number (long),,false,Get the amount needed to fill the chemical buffer.
 Quantum Entangloporter,getBufferFluid,,Table (FluidStack),,false,Get the contents of the fluid buffer.
 Quantum Entangloporter,getBufferFluidCapacity,,Number (int),,false,Get the capacity of the fluid buffer.
 Quantum Entangloporter,getBufferFluidFilledPercentage,,Number (double),,false,Get the filled percentage of the fluid buffer.
 Quantum Entangloporter,getBufferFluidNeeded,,Number (int),,false,Get the amount needed to fill the fluid buffer.
-Quantum Entangloporter,getBufferGas,,Table (ChemicalStack),,false,Get the contents of the gas buffer.
-Quantum Entangloporter,getBufferGasCapacity,,Number (long),,false,Get the capacity of the gas buffer.
-Quantum Entangloporter,getBufferGasFilledPercentage,,Number (double),,false,Get the filled percentage of the gas buffer.
-Quantum Entangloporter,getBufferGasNeeded,,Number (long),,false,Get the amount needed to fill the gas buffer.
-Quantum Entangloporter,getBufferInfuseType,,Table (ChemicalStack),,false,Get the contents of the infusion buffer.
-Quantum Entangloporter,getBufferInfuseTypeCapacity,,Number (long),,false,Get the capacity of the infusion buffer.
-Quantum Entangloporter,getBufferInfuseTypeFilledPercentage,,Number (double),,false,Get the filled percentage of the infusion buffer.
-Quantum Entangloporter,getBufferInfuseTypeNeeded,,Number (long),,false,Get the amount needed to fill the infusion buffer.
 Quantum Entangloporter,getBufferItem,,Table (ItemStack),,false,
-Quantum Entangloporter,getBufferPigment,,Table (ChemicalStack),,false,Get the contents of the pigment buffer.
-Quantum Entangloporter,getBufferPigmentCapacity,,Number (long),,false,Get the capacity of the pigment buffer.
-Quantum Entangloporter,getBufferPigmentFilledPercentage,,Number (double),,false,Get the filled percentage of the pigment buffer.
-Quantum Entangloporter,getBufferPigmentNeeded,,Number (long),,false,Get the amount needed to fill the pigment buffer.
-Quantum Entangloporter,getBufferSlurry,,Table (ChemicalStack),,false,Get the contents of the slurry buffer.
-Quantum Entangloporter,getBufferSlurryCapacity,,Number (long),,false,Get the capacity of the slurry buffer.
-Quantum Entangloporter,getBufferSlurryFilledPercentage,,Number (double),,false,Get the filled percentage of the slurry buffer.
-Quantum Entangloporter,getBufferSlurryNeeded,,Number (long),,false,Get the amount needed to fill the slurry buffer.
 Quantum Entangloporter,getEnvironmentalLoss,,Number (double),,false,May not be accurate if there is no frequency
 Quantum Entangloporter,getFrequencies,,List (Table (InventoryFrequency)),,false,Lists public frequencies
 Quantum Entangloporter,getFrequency,,Table (InventoryFrequency),,false,Requires a frequency to be selected

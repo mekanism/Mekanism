@@ -1,0 +1,19 @@
+{
+  "type": "mekanism:oxidizing",
+  "input": {
+    "type": "neoforge:compound",
+    "children": [
+      {
+        "tag": "c:dusts/coal"
+      },
+      {
+        "item": "minecraft:coal"
+      }
+    ],
+    "count": 1
+  },
+  "output": {
+    "amount": 10,
+    "id": "mekanism:carbon"
+  }
+}

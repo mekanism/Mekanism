@@ -1,9 +1,8 @@
 {
   "type": "mekanism:crystallizing",
-  "chemical_type": "gas",
   "input": {
     "amount": 15,
-    "gas": "mekanism:brine"
+    "chemical": "mekanism:brine"
   },
   "output": {
     "count": 1,

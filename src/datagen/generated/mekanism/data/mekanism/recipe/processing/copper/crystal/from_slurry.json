@@ -1,9 +1,8 @@
 {
   "type": "mekanism:crystallizing",
-  "chemical_type": "slurry",
   "input": {
     "amount": 200,
-    "slurry": "mekanism:clean_copper"
+    "chemical": "mekanism:clean_copper"
   },
   "output": {
     "count": 1,

@@ -10,7 +10,7 @@
   },
   "gas_input": {
     "amount": 1,
-    "gas": "mekanism:steam"
+    "chemical": "mekanism:steam"
   },
   "gas_output": {
     "amount": 1,

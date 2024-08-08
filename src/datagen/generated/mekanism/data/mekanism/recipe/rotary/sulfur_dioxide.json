@@ -10,7 +10,7 @@
   },
   "gas_input": {
     "amount": 1,
-    "gas": "mekanism:sulfur_dioxide"
+    "chemical": "mekanism:sulfur_dioxide"
   },
   "gas_output": {
     "amount": 1,

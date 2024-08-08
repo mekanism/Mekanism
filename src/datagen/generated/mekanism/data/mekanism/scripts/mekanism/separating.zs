@@ -4,11 +4,21 @@
  * 2) Adds a recipe that separates 1 mB of Liquid Sulfur Acid into 1 mB of Water Vapor and 1 mB of Sulfur Trioxide, using twice as much energy as it takes to separate Oxygen and Hydrogen from Water.
 */
 
-// <recipetype:mekanism:separating>.addRecipe(name as string, input as CTFluidIngredient, leftGasOutput as ICrTGasStack, rightGasOutput as ICrTGasStack)
-// <recipetype:mekanism:separating>.addRecipe(name as string, input as CTFluidIngredient, leftGasOutput as ICrTGasStack, rightGasOutput as ICrTGasStack, energyMultiplier as long)
+// <recipetype:mekanism:separating>.addRecipe(name as string, input as CTFluidIngredient, leftGasOutput as ICrTChemicalStack, rightGasOutput as ICrTChemicalStack)
+// <recipetype:mekanism:separating>.addRecipe(name as string, input as CTFluidIngredient, leftGasOutput as ICrTChemicalStack, rightGasOutput as ICrTChemicalStack, energyMultiplier as long)
 
-<recipetype:mekanism:separating>.addRecipe("separator/sulfur_trioxide", <tag:fluid:c:sulfur_trioxide> * 2, <gas:mekanism:oxygen>, <gas:mekanism:sulfur_dioxide> * 2);
-<recipetype:mekanism:separating>.addRecipe("separator/sulfuric_acid", <tag:fluid:c:sulfuric_acid> * 1, <gas:mekanism:water_vapor>, <gas:mekanism:sulfur_trioxide>, 2);
+<recipetype:mekanism:separating>.addRecipe("separator/sulfur_trioxide", <tag:fluid:c:sulfur_trioxide> * 2, <chemical:mekanism:oxygen>, <chemical:mekanism:sulfur_dioxide> * 2);
+//Alternate implementations of the above recipe are shown commented below. These implementations make use of implicit casting to allow easier calling:
+// <recipetype:mekanism:separating>.addRecipe("separator/sulfur_trioxide", <tag:fluid:c:sulfur_trioxide> * 2, <chemical:mekanism:oxygen>, <chemical:mekanism:sulfur_dioxide> * 2);
+// <recipetype:mekanism:separating>.addRecipe("separator/sulfur_trioxide", <tag:fluid:c:sulfur_trioxide> * 2, <chemical:mekanism:oxygen>, <chemical:mekanism:sulfur_dioxide> * 2);
+// <recipetype:mekanism:separating>.addRecipe("separator/sulfur_trioxide", <tag:fluid:c:sulfur_trioxide> * 2, <chemical:mekanism:oxygen>, <chemical:mekanism:sulfur_dioxide> * 2);
+
+<recipetype:mekanism:separating>.addRecipe("separator/sulfuric_acid", <tag:fluid:c:sulfuric_acid> * 1, <chemical:mekanism:water_vapor>, <chemical:mekanism:sulfur_trioxide>, 2);
+//Alternate implementations of the above recipe are shown commented below. These implementations make use of implicit casting to allow easier calling:
+// <recipetype:mekanism:separating>.addRecipe("separator/sulfuric_acid", <tag:fluid:c:sulfuric_acid> * 1, <chemical:mekanism:water_vapor>, <chemical:mekanism:sulfur_trioxide>, 2);
+// <recipetype:mekanism:separating>.addRecipe("separator/sulfuric_acid", <tag:fluid:c:sulfuric_acid> * 1, <chemical:mekanism:water_vapor>, <chemical:mekanism:sulfur_trioxide>, 2);
+// <recipetype:mekanism:separating>.addRecipe("separator/sulfuric_acid", <tag:fluid:c:sulfuric_acid> * 1, <chemical:mekanism:water_vapor>, <chemical:mekanism:sulfur_trioxide>, 2);
+
 
 //Removes the Separating Recipe for separating Brine into Sodium and Chlorine.
 

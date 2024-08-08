@@ -10,7 +10,7 @@
   },
   "gas_input": {
     "amount": 1,
-    "gas": "mekanism:superheated_sodium"
+    "chemical": "mekanism:superheated_sodium"
   },
   "gas_output": {
     "amount": 1,

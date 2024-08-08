@@ -1,9 +1,8 @@
 {
   "type": "mekanism:crystallizing",
-  "chemical_type": "slurry",
   "input": {
     "amount": 200,
-    "slurry": "mekanism:clean_lead"
+    "chemical": "mekanism:clean_lead"
   },
   "output": {
     "count": 1,

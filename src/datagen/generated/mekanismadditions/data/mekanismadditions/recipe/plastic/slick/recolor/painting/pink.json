@@ -2,7 +2,7 @@
   "type": "mekanism:painting",
   "chemical_input": {
     "amount": 64,
-    "pigment": "mekanism:pink"
+    "chemical": "mekanism:pink"
   },
   "item_input": {
     "type": "neoforge:difference",

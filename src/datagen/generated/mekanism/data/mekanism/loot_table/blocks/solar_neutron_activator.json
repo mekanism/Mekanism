@@ -20,7 +20,7 @@
                 "mekanism:security",
                 "mekanism:side_config",
                 "mekanism:items",
-                "mekanism:gases"
+                "mekanism:chemicals"
               ],
               "source": "block_entity"
             }

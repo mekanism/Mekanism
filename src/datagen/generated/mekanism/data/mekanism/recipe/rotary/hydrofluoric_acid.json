@@ -10,7 +10,7 @@
   },
   "gas_input": {
     "amount": 1,
-    "gas": "mekanism:hydrofluoric_acid"
+    "chemical": "mekanism:hydrofluoric_acid"
   },
   "gas_output": {
     "amount": 1,

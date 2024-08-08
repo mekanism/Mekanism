@@ -22,7 +22,7 @@
                 "mekanism:upgrades",
                 "mekanism:energy",
                 "mekanism:items",
-                "mekanism:pigments"
+                "mekanism:chemicals"
               ],
               "source": "block_entity"
             }

@@ -2,7 +2,7 @@
   "type": "mekanism:compressing",
   "chemical_input": {
     "amount": 1,
-    "gas": "mekanism:osmium"
+    "chemical": "mekanism:osmium"
   },
   "item_input": {
     "count": 1,

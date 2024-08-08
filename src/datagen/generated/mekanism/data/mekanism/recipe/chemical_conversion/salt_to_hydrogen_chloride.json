@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:chemical_conversion",
+  "input": {
+    "count": 1,
+    "tag": "c:dusts/salt"
+  },
+  "output": {
+    "amount": 2,
+    "id": "mekanism:hydrogen_chloride"
+  }
+}

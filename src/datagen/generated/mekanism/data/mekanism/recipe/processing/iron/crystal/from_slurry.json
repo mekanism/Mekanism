@@ -1,9 +1,8 @@
 {
   "type": "mekanism:crystallizing",
-  "chemical_type": "slurry",
   "input": {
     "amount": 200,
-    "slurry": "mekanism:clean_iron"
+    "chemical": "mekanism:clean_iron"
   },
   "output": {
     "count": 1,
