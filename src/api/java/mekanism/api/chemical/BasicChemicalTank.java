@@ -108,8 +108,9 @@ public class BasicChemicalTank implements IChemicalTank,
 
     @Override
     public ChemicalStack insert(ChemicalStack stack, Action action, AutomationType automationType) {
-        if (stack.isEmpty() || !isValid(stack) || !canInsert.test(stack.getChemical(), automationType)) {
-            //"Fail quick" if the given stack is empty, or we can never insert the chemical or currently are unable to insert it
+        boolean sameType = false;
+        if (stack.isEmpty() || !(isEmpty() || (sameType = isTypeEqual(stack)))) {
+            //"Fail quick" if the given stack is empty
             return stack;
         }
         long needed = Math.min(getInsertRate(automationType), getNeeded());
@@ -117,26 +118,25 @@ public class BasicChemicalTank implements IChemicalTank,
             //Fail if we are a full tank or our rate is zero
             return stack;
         }
-        boolean sameType = false;
-        if (isEmpty() || (sameType = isTypeEqual(stack))) {
-            long toAdd = Math.min(stack.getAmount(), needed);
-            if (action.execute()) {
-                //If we want to actually insert the chemical, then update the current chemical
-                if (sameType) {
-                    //We can just grow our stack by the amount we want to increase it
-                    stored.grow(toAdd);
-                    onContentsChanged();
-                } else {
-                    //If we are not the same type then we have to copy the stack and set it
-                    // Just set it unchecked as we have already validated it
-                    // Note: this also will mark that the contents changed
-                    setStackUnchecked(createStack(stack, toAdd));
-                }
-            }
-            return createStack(stack, stack.getAmount() - toAdd);
+        if (!isValid(stack) || !canInsert.test(stack.getChemical(), automationType)) {
+            //we can never insert the chemical or currently are unable to insert it
+            return stack;
         }
-        //If we didn't accept this chemical, then just return the given stack
-        return stack;
+        long toAdd = Math.min(stack.getAmount(), needed);
+        if (action.execute()) {
+            //If we want to actually insert the chemical, then update the current chemical
+            if (sameType) {
+                //We can just grow our stack by the amount we want to increase it
+                stored.grow(toAdd);
+                onContentsChanged();
+            } else {
+                //If we are not the same type then we have to copy the stack and set it
+                // Just set it unchecked as we have already validated it
+                // Note: this also will mark that the contents changed
+                setStackUnchecked(createStack(stack, toAdd));
+            }
+        }
+        return createStack(stack, stack.getAmount() - toAdd);
     }
 
     @Override

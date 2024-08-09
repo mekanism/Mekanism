@@ -3,9 +3,7 @@ package mekanism.common.lib.frequency;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
-import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.EnumMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -15,6 +13,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import mekanism.api.SerializationConstants;
 import mekanism.api.security.SecurityMode;
@@ -22,6 +21,7 @@ import mekanism.common.attachments.FrequencyAware;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableFrequency;
 import mekanism.common.inventory.container.sync.list.SyncableFrequencyList;
+import mekanism.common.lib.CustomObjectToObjectArrayMap;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.security.SecurityFrequency;
 import mekanism.common.lib.security.SecurityUtils;
@@ -49,7 +49,7 @@ public class TileComponentFrequency implements ITileComponent {
 
     private final TileEntityMekanism tile;
 
-    private Map<FrequencyType<?>, FrequencyData> nonSecurityFrequencies = Collections.emptyMap();
+    private final CustomObjectToObjectArrayMap<FrequencyType<?>, FrequencyData> nonSecurityFrequencies = new CustomObjectToObjectArrayMap<>();
     @Nullable
     private FrequencyData securityFrequency = null;
 
@@ -58,6 +58,9 @@ public class TileComponentFrequency implements ITileComponent {
 
     private boolean needsSave;
     private boolean needsNotify;
+
+    //Method refs to allocate once and reuse in hot path
+    private final BiConsumer<FrequencyType<?>, FrequencyData> updateFrequencyRef = this::updateFrequency;
 
     public TileComponentFrequency(TileEntityMekanism tile) {
         this.tile = tile;
@@ -78,9 +81,7 @@ public class TileComponentFrequency implements ITileComponent {
             if (securityFrequency != null) {
                 updateFrequency(FrequencyType.SECURITY, securityFrequency);
             }
-            for (Entry<FrequencyType<?>, FrequencyData> entry : nonSecurityFrequencies.entrySet()) {
-                updateFrequency(entry.getKey(), entry.getValue());
-            }
+            nonSecurityFrequencies.forEach(updateFrequencyRef);
         }
         if (needsNotify) {
             tile.invalidateCapabilitiesFull();
@@ -101,15 +102,7 @@ public class TileComponentFrequency implements ITileComponent {
         if (type == FrequencyType.SECURITY) {
             securityFrequency = value;
         } else {
-            if (nonSecurityFrequencies.isEmpty()) {
-                nonSecurityFrequencies = Collections.singletonMap(type, value);
-            } else if (nonSecurityFrequencies.size() == 1) {
-                //don't expect this to happen, unless we get an all-in-one block
-                nonSecurityFrequencies = new Object2ObjectArrayMap<>(nonSecurityFrequencies);
-                nonSecurityFrequencies.put(type, value);
-            } else {
-                nonSecurityFrequencies.put(type, value);
-            }
+            nonSecurityFrequencies.put(type, value);
         }
     }
 
@@ -266,8 +259,8 @@ public class TileComponentFrequency implements ITileComponent {
     @Override
     public void applyImplicitComponents(@NotNull BlockEntity.DataComponentInput input) {
         if (!tile.isRemote()) {
-            for (Map.Entry<FrequencyType<?>, FrequencyData> entry : nonSecurityFrequencies.entrySet()) {
-                setFrequencyFromComponent(input, entry.getKey());
+            for (FrequencyType<?> key : nonSecurityFrequencies.keySet()) {
+                setFrequencyFromComponent(input, key);
             }
         }
     }
@@ -286,8 +279,7 @@ public class TileComponentFrequency implements ITileComponent {
 
     @Override
     public void addRemapEntries(List<DataComponentType<?>> remapEntries) {
-        for (Map.Entry<FrequencyType<?>, FrequencyData> entry : nonSecurityFrequencies.entrySet()) {
-            FrequencyType<?> type = entry.getKey();
+        for (FrequencyType<?> type : nonSecurityFrequencies.keySet()) {
             DataComponentType<? extends FrequencyAware<?>> frequencyComponent = MekanismDataComponents.getFrequencyComponent(type);
             if (frequencyComponent != null && !remapEntries.contains(frequencyComponent)) {
                 remapEntries.add(frequencyComponent);
