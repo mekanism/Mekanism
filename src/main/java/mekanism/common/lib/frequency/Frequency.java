@@ -45,8 +45,8 @@ public abstract class Frequency implements IFrequency {
     private String name;
 
     @Nullable
-    private UUID ownerUUID;
-    private String ownerName;
+    private final UUID ownerUUID;
+    private final String ownerName;
 
     private boolean valid = true;
     private SecurityMode securityMode;
@@ -54,13 +54,13 @@ public abstract class Frequency implements IFrequency {
     private final FrequencyType<?> frequencyType;
 
     /**
-     * @param owner Should only be null if we have incomplete data that we are loading
+     * Owner username is looked up so that we can sync it (and more importantly have it
+     * set in single player when network connections don't serialize and deserialize)
+     *
+     * @param owner Should only be null if we have incomplete data that we are loading.
      */
     protected Frequency(FrequencyType<?> frequencyType, String name, @Nullable UUID owner, SecurityMode securityMode) {
-        this.frequencyType = frequencyType;
-        this.name = name;
-        this.securityMode = securityMode;
-        setOwnerUUID(owner);
+        this(frequencyType, name, owner, MekanismUtils.getLastKnownUsername(owner), securityMode);
     }
 
     protected Frequency(FrequencyType<?> frequencyType, String name, @Nullable UUID owner, String ownerName, SecurityMode securityMode) {
@@ -149,12 +149,6 @@ public abstract class Frequency implements IFrequency {
         return ownerName;
     }
 
-    private void setOwnerUUID(@Nullable UUID uuid) {
-        ownerUUID = uuid;
-        //Look up the username of the owner so that we can sync it (and more importantly have it set in single player when network connections don't serialize and deserialize)
-        ownerName = MekanismUtils.getLastKnownUsername(ownerUUID);
-    }
-
     /**
      * This is the hashCode that is used for determining if a frequency is dirty. Override this if your frequency type has more things that may mean it needs to be
      * re-synced.
@@ -178,6 +172,9 @@ public abstract class Frequency implements IFrequency {
 
     @Override
     public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
         if (obj instanceof Frequency other) {
             if (frequencyType == FrequencyType.SECURITY || securityMode == other.securityMode) {
                 return ownerUUID != null && name.equals(other.name) && ownerUUID.equals(other.ownerUUID);
