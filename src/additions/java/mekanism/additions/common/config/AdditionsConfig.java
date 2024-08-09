@@ -7,7 +7,6 @@ import java.util.Map;
 import mekanism.additions.common.config.AdditionsConfigTranslations.BabySpawnTranslations;
 import mekanism.additions.common.entity.baby.BabyType;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
-import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.config.BaseMekanismConfig;
 import mekanism.common.config.IMekanismConfig;
 import mekanism.common.config.value.CachedBooleanValue;
@@ -18,6 +17,7 @@ import mekanism.common.config.value.CachedResourceLocationListValue;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.biome.MobSpawnSettings;
@@ -43,7 +43,7 @@ public class AdditionsConfig extends BaseMekanismConfig {
         obsidianTNTDelay = CachedIntValue.wrap(this, AdditionsConfigTranslations.SERVER_OBSIDIAN_DELAY.applyToBuilder(builder)
               .defineInRange("delay", 5 * SharedConstants.TICKS_PER_SECOND, 0, Integer.MAX_VALUE));
         obsidianTNTBlastRadius = CachedFloatValue.wrap(this, AdditionsConfigTranslations.SERVER_OBSIDIAN_RADIUS.applyToBuilder(builder)
-              .defineInRange("blast_radius", 12, 0.1, 1_000));
+              .defineInRange("blastRadius", 12, 0.1, 1_000));
         builder.pop();
 
         AdditionsConfigTranslations.SERVER_VOICE.applyToBuilder(builder).push("voice_server");
@@ -136,9 +136,9 @@ public class AdditionsConfig extends BaseMekanismConfig {
                   .worldRestart()
                   .defineInRange("maxSpawnCostPercentage", 1D, 0, 100));
             this.biomeBlackList = CachedResourceLocationListValue.define(config, translations.biomeBlacklist().applyToBuilder(builder)
-                  .worldRestart(), "biomeBlackList", ConstantPredicates.alwaysTrue());
+                  .worldRestart(), "biomeBlackList", ResourceLocation.withDefaultNamespace("plains"));
             this.structureBlackList = CachedResourceLocationListValue.define(config, translations.structureBlacklist().applyToBuilder(builder)
-                  .worldRestart(), "structureBlackList", BuiltInRegistries.STRUCTURE_TYPE::containsKey);
+                  .worldRestart(), "structureBlackList", ResourceLocation.withDefaultNamespace("fortress"), BuiltInRegistries.STRUCTURE_TYPE::containsKey);
             builder.pop();
         }
 

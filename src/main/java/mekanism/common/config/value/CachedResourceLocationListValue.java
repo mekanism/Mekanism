@@ -1,7 +1,6 @@
 package mekanism.common.config.value;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -21,9 +20,14 @@ public class CachedResourceLocationListValue extends CachedResolvableConfigValue
         super(config, internal);
     }
 
-    public static CachedResourceLocationListValue define(IMekanismConfig config, ModConfigSpec.Builder builder, String path,
+    public static CachedResourceLocationListValue define(IMekanismConfig config, ModConfigSpec.Builder builder, String path, ResourceLocation exampleElement) {
+        return new CachedResourceLocationListValue(config, builder.defineListAllowEmpty(path, EMPTY, exampleElement::toString,
+              o -> o instanceof String string && ResourceLocation.tryParse(string.toLowerCase(Locale.ROOT)) != null));
+    }
+
+    public static CachedResourceLocationListValue define(IMekanismConfig config, ModConfigSpec.Builder builder, String path, ResourceLocation exampleElement,
           Predicate<@NotNull ResourceLocation> rlValidator) {
-        return new CachedResourceLocationListValue(config, builder.defineListAllowEmpty(Collections.singletonList(path), EMPTY, o -> {
+        return new CachedResourceLocationListValue(config, builder.defineListAllowEmpty(path, EMPTY, exampleElement::toString, o -> {
             if (o instanceof String string) {
                 ResourceLocation rl = ResourceLocation.tryParse(string.toLowerCase(Locale.ROOT));
                 if (rl != null) {

@@ -133,7 +133,6 @@ public class GeneralConfig extends BaseMekanismConfig {
 
     GeneralConfig() {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
-        builder.comment("General Config. This config is synced from server to client.").push("general");
 
         //Note: We only enable this config option in dev mode
         if (FMLEnvironment.production) {
@@ -154,7 +153,9 @@ public class GeneralConfig extends BaseMekanismConfig {
         strictUnboxing = CachedBooleanValue.wrap(this, builder.comment("Enable this to disable unboxing any block that has a fluid that would be vaporized on placement, instead of trying to vaporize it and leave the remainder of the block.")
               .define("strictUnboxing", false));
         cardboardModBlacklist = CachedConfigValue.wrap(this, builder.comment("Any mod ids added to this list will not be able to have any of their blocks, picked up by the cardboard box. For example: [\"mekanism\"]")
-              .defineListAllowEmpty(Collections.singletonList("cardboardModBlacklist"), ArrayList::new, e -> e instanceof String modid && ResourceLocation.isValidNamespace(modid)));
+              .defineListAllowEmpty("cardboardModBlacklist", ArrayList::new, () -> "mekanism",
+                    e -> e instanceof String modid && ResourceLocation.isValidNamespace(modid))
+        );
         transmitterAlloyUpgrade = CachedBooleanValue.wrap(this, builder.comment("Allow right clicking on Cables/Pipes/Tubes with alloys to upgrade the tier.")
               .define("transmitterAlloyUpgrade", true));
         //If this is less than 1, upgrades make machines worse. If less than 0, I don't even know.
@@ -337,7 +338,6 @@ public class GeneralConfig extends BaseMekanismConfig {
               "energyPerInput", 1_000_000);
         builder.pop();
 
-        builder.pop();
         configSpec = builder.build();
     }
 

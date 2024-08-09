@@ -3,6 +3,8 @@
   "advancements.mekanismtools.alternate_armor.title": "More Armour Types!",
   "advancements.mekanismtools.better_than_netherite.description": "Protect yourself with a piece of Refined Obsidian Armour",
   "advancements.mekanismtools.loved_by_piglins.description": "Refined Glowstone Armour glows even brighter than gold!",
+  "configuration.mekanismtools.server.gear_spawn_chance.armor": "Armour Chance",
+  "configuration.mekanismtools.server.gear_spawn_chance.armor.tooltip": "The chance that Mekanism Armour can spawn on mobs. This is multiplied modified by the chunk's difficulty modifier. Vanilla uses 0.15 for its armour spawns, we use 0.1 as default to lower chances of mobs getting some vanilla and some mek armour.",
   "item.mekanismtools.bronze_shield.gray": "Grey Bronze Shield",
   "item.mekanismtools.bronze_shield.light_gray": "Light Grey Bronze Shield",
   "item.mekanismtools.lapis_lazuli_shield.gray": "Grey Lapis Lazuli Shield",

@@ -21,7 +21,9 @@ public class ToolsJEI implements IModPlugin {
     @NotNull
     @Override
     public ResourceLocation getPluginUid() {
-        return MekanismTools.rl("jei_plugin");
+        //Note: Can't use MekanismTools.rl, as JEI needs this in the constructor and the class may not be loaded yet.
+        // we can still reference the modid though because of constant inlining
+        return ResourceLocation.fromNamespaceAndPath(MekanismTools.MODID, "jei_plugin");
     }
 
     @Override

@@ -207,7 +207,9 @@ public class MekanismJEI implements IModPlugin {
     @NotNull
     @Override
     public ResourceLocation getPluginUid() {
-        return Mekanism.rl("jei_plugin");
+        //Note: Can't use Mekanism.rl, as JEI needs this in the constructor and the class may not be loaded yet.
+        // we can still reference the modid though because of constant inlining
+        return ResourceLocation.fromNamespaceAndPath(Mekanism.MODID, "jei_plugin");
     }
 
     public static void registerItemSubtypes(ISubtypeRegistration registry, Collection<? extends Holder<? extends ItemLike>> itemProviders) {

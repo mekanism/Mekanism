@@ -13,10 +13,10 @@ public class ToolsClientConfig extends BaseMekanismConfig {
 
     public ToolsClientConfig() {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
-        builder.comment("Mekanism Tools Client Config. This config only exists on the client").push("tools-client");
-        this.displayDurabilityTooltips = CachedBooleanValue.wrap(this, builder.comment("Enable durability tooltips for Mekanism Tools gear.")
+
+        this.displayDurabilityTooltips = CachedBooleanValue.wrap(this, ToolsConfigTranslations.CLIENT_DURABILITY_TOOLTIPS.applyToBuilder(builder)
               .define("displayDurabilityTooltips", true));
-        builder.pop();
+
         configSpec = builder.build();
     }
 

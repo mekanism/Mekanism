@@ -47,7 +47,6 @@ public class StorageConfig extends BaseMekanismConfig {
 
     StorageConfig() {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
-        builder.comment("Machine Energy Storage Config. This config is synced from server to client.").push("storage");
 
         enrichmentChamber = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.BASE_ENERGY_STORAGE_JOULES, "enrichmentChamber",
               20_000L, 1);
@@ -121,7 +120,6 @@ public class StorageConfig extends BaseMekanismConfig {
         dimensionalStabilizer = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.BASE_ENERGY_STORAGE_JOULES, "dimensionalStabilizer",
               40_000L, 1);
 
-        builder.pop();
         configSpec = builder.build();
     }
 

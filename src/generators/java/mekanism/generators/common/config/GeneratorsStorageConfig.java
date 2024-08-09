@@ -18,7 +18,6 @@ public class GeneratorsStorageConfig extends BaseMekanismConfig {
 
     GeneratorsStorageConfig() {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
-        GeneratorsConfigTranslations.STORAGE_TOP_LEVEL.applyToBuilder(builder).push("storage");
 
         heatGenerator = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.BASE_ENERGY_STORAGE_JOULES, "heatGenerator",
               160_000L, 1);
@@ -31,7 +30,6 @@ public class GeneratorsStorageConfig extends BaseMekanismConfig {
         windGenerator = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.BASE_ENERGY_STORAGE_JOULES, "windGenerator",
               200_000L, 1);
 
-        builder.pop();
         configSpec = builder.build();
     }
 

@@ -31,7 +31,7 @@ public class WorldConfig extends BaseMekanismConfig {
 
     WorldConfig() {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
-        builder.comment("World generation settings for Mekanism. This config is synced from server to client").push("world_generation");
+
         enableRegeneration = CachedBooleanValue.wrap(this, builder.comment("Allows chunks to retrogen Mekanism ore blocks.")
               .define("enableRegeneration", false));
         userGenVersion = CachedIntValue.wrap(this, builder.comment("Change this value to cause Mekanism to regen its ore in all loaded chunks.")
@@ -40,7 +40,7 @@ public class WorldConfig extends BaseMekanismConfig {
             ores.put(ore, new OreConfig(this, builder, ore));
         }
         salt = new SaltConfig(this, builder, 2, 2, 3, 1);
-        builder.pop();
+
         configSpec = builder.build();
     }
 

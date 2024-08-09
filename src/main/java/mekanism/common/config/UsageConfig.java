@@ -48,7 +48,6 @@ public class UsageConfig extends BaseMekanismConfig {
 
     UsageConfig() {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
-        builder.comment("Machine Energy Usage Config. This config is synced from server to client.").push("usage");
 
         enrichmentChamber = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "enrichmentChamber",
               50L);
@@ -111,16 +110,13 @@ public class UsageConfig extends BaseMekanismConfig {
               5_000L);
 
         builder.comment("Teleporter").push(TELEPORTER_CATEGORY);
-
         teleporterBase = CachedLongValue.definePositive(this, builder, "Base Joules cost for a teleportation.", "teleporterBase", 1_000L);
         teleporterDistance = CachedLongValue.definePositive(this, builder, "Joules per unit of distance travelled during teleportation - sqrt(xDiff^2 + yDiff^2 + zDiff^2).",
               "teleporterDistance", 10L);
         teleporterDimensionPenalty = CachedLongValue.definePositive(this, builder, "Flat additional cost for interdimensional teleportation. Distance is still taken into account minimizing energy cost based on dimension scales.",
               "teleporterDimensionPenalty", 10_000L);
-
         builder.pop();
 
-        builder.pop();
         configSpec = builder.build();
     }
 

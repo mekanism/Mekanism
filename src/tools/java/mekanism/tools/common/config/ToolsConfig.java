@@ -23,16 +23,15 @@ public class ToolsConfig extends BaseMekanismConfig {
 
     ToolsConfig() {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
-        builder.comment("Mekanism Tools Config. This config is synced from server to client.").push("tools");
 
-        builder.push("mobArmorSpawnRate");
-        armorSpawnChance = CachedFloatValue.wrap(this, builder.comment("The chance that Mekanism Armor can spawn on mobs. This is multiplied modified by the chunk's difficulty modifier. "
-                                                                       + "Vanilla uses 0.15 for its armor spawns, we use 0.1 as default to lower chances of mobs getting some vanilla and some mek armor.")
+        ToolsConfigTranslations.SERVER_GEAR_SPAWN_CHANCE.applyToBuilder(builder).push("mobGearSpawnRate");
+        armorSpawnChance = CachedFloatValue.wrap(this, ToolsConfigTranslations.SERVER_GEAR_SPAWN_CHANCE_ARMOR.applyToBuilder(builder)
               .defineInRange("general", 0.1D, 0, 1));
-        weaponSpawnChance = CachedFloatValue.wrap(this, builder.comment("The chance that Mekanism Weapons can spawn in a zombie's hand.")
+        weaponSpawnChance = CachedFloatValue.wrap(this, ToolsConfigTranslations.SERVER_GEAR_SPAWN_CHANCE_WEAPON.applyToBuilder(builder)
               .defineInRange("weapon", 0.01D, 0, 1));
-        weaponSpawnChanceHard = CachedFloatValue.wrap(this, builder.comment("The chance that Mekanism Weapons can spawn in a zombie's hand when on hard difficulty.")
+        weaponSpawnChanceHard = CachedFloatValue.wrap(this, ToolsConfigTranslations.SERVER_GEAR_SPAWN_CHANCE_WEAPON_HARD.applyToBuilder(builder)
               .defineInRange("weaponHard", 0.05F, 0, 1));
+
         bronzeSpawnRate = new ArmorSpawnChanceConfig(this, builder, "bronze", "Bronze");
         lapisLazuliSpawnRate = new ArmorSpawnChanceConfig(this, builder, "lapis_lazuli", "Lapis Lazuli");
         osmiumSpawnRate = new ArmorSpawnChanceConfig(this, builder, "osmium", "Osmium");
@@ -40,6 +39,7 @@ public class ToolsConfig extends BaseMekanismConfig {
         refinedObsidianSpawnRate = new ArmorSpawnChanceConfig(this, builder, "refined_obsidian", "Refined Obsidian");
         steelSpawnRate = new ArmorSpawnChanceConfig(this, builder, "steel", "Steel");
         builder.pop();
+
         configSpec = builder.build();
     }
 

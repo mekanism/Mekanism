@@ -37,7 +37,6 @@ public class TierConfig extends BaseMekanismConfig {
 
     TierConfig() {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
-        builder.comment("Tier Config. This config is synced from server to client.").push("tier");
         addEnergyCubeCategory(builder);
         addFluidTankCategory(builder);
         addGasTankCategory(builder);
@@ -45,7 +44,6 @@ public class TierConfig extends BaseMekanismConfig {
         addInductionCategory(builder);
         addTransmittersCategory(builder);
 
-        builder.pop();
         configSpec = builder.build();
     }
 

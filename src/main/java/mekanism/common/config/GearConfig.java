@@ -28,7 +28,7 @@ public class GearConfig extends BaseMekanismConfig {
     private static final String CANTEEN_CATEGORY = "canteen";
     private static final String MEKATOOL_CATEGORY = "mekatool";
     public static final String MEKASUIT_CATEGORY = "mekasuit";
-    private static final String MEKASUIT_DAMAGE_CATEGORY = "damage_absorption";
+    public static final String MEKASUIT_DAMAGE_CATEGORY = "damage_absorption";
 
     private final ModConfigSpec configSpec;
 
@@ -132,7 +132,6 @@ public class GearConfig extends BaseMekanismConfig {
 
     GearConfig() {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
-        builder.comment("Gear Config. This config is synced from server to client.").push("gear");
 
         builder.comment("Atomic Disassembler Settings").push(DISASSEMBLER_CATEGORY);
         disassemblerEnergyUsage = CachedLongValue.definePositive(this, builder, "Base Energy (Joules) usage of the Atomic Disassembler. (Gets multiplied by speed factor)",
@@ -287,7 +286,7 @@ public class GearConfig extends BaseMekanismConfig {
               .define("extendedMining", true));
         builder.pop();
 
-        builder.comment("MekaSuit Settings").push(MEKASUIT_CATEGORY);
+        MekanismConfigTranslations.GEAR_MEKA_SUIT.applyToBuilder(builder).push(MEKASUIT_CATEGORY);
         mekaSuitBaseEnergyCapacity = CachedLongValue.definePositive(this, builder, "Energy capacity (Joules) of MekaSuit items without any installed upgrades. Quadratically scaled by upgrades.",
               "baseEnergyCapacity", 16_000_000L);
         mekaSuitBaseChargeRate = CachedLongValue.definePositive(this, builder, "Amount (joules) of energy the MekaSuit can accept per tick. Quadratically scaled by upgrades.",
@@ -330,7 +329,7 @@ public class GearConfig extends BaseMekanismConfig {
               .defineInRange("jetpackMaxStorage", 24 * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE));
         mekaSuitJetpackTransferRate = CachedLongValue.wrap(this, builder.comment("Rate at which Hydrogen can be transferred into the jetpack unit.")
               .defineInRange("jetpackTransferRate", 256, 1, Long.MAX_VALUE));
-        builder.push(MEKASUIT_DAMAGE_CATEGORY);
+        MekanismConfigTranslations.GEAR_MEKA_SUIT_DAMAGE_ABSORPTION.applyToBuilder(builder).push(MEKASUIT_DAMAGE_CATEGORY);
         mekaSuitFallDamageRatio = CachedFloatValue.wrap(this, builder.comment("Percent of damage taken from falling that can be absorbed by MekaSuit Boots when they have enough power.")
               .defineInRange("fallDamageReductionRatio", 1D, 0, 1));
         mekaSuitMagicDamageRatio = CachedFloatValue.wrap(this, builder.comment("Percent of damage taken from magic damage that can be absorbed by MekaSuit Helmet with Purification unit when it has enough power.")
@@ -340,7 +339,6 @@ public class GearConfig extends BaseMekanismConfig {
               .defineInRange("unspecifiedDamageReductionRatio", 1D, 0, 1));
         builder.pop(2);
 
-        builder.pop();
         configSpec = builder.build();
     }
 

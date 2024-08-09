@@ -19,7 +19,7 @@ public class CommonConfig extends BaseMekanismConfig {
 
     CommonConfig() {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
-        builder.comment("Mekanism Common Config. This config is not synced between server and client.").push("common");
+
         energyUnit = CachedEnumValue.wrap(this, builder.comment("Displayed energy type in Mekanism GUIs and network reader readings.")
               .defineEnum("energyType", EnergyUnit.FORGE_ENERGY));
         tempUnit = CachedEnumValue.wrap(this, builder.comment("Displayed temperature unit in Mekanism GUIs and network reader readings.")
@@ -30,7 +30,7 @@ public class CommonConfig extends BaseMekanismConfig {
               .define("copyBlockData", true));
         holidays = CachedBooleanValue.wrap(this, builder.comment("Should holiday greetings and easter eggs play for holidays (ex: Christmas and New Years) on the client. And should robit skins be randomized on the server.")
               .define("holidays", true));
-        builder.pop();
+
         configSpec = builder.build();
     }
 

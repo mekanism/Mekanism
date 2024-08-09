@@ -59,7 +59,6 @@ public class ClientConfig extends BaseMekanismConfig {
 
     ClientConfig() {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
-        builder.comment("Client Config. This config only exists on the client").push("client");
 
         enablePlayerSounds = CachedBooleanValue.wrap(this, builder.comment("Play sounds for Jetpack/Gas Mask/Flamethrower/Radiation (all players).")
               .define("enablePlayerSounds", true));
@@ -115,7 +114,7 @@ public class ClientConfig extends BaseMekanismConfig {
         builder.comment("Last Window Positions. In general these values should not be modified manually.").push(GUI_WINDOW_CATEGORY);
         for (WindowType windowType : WindowType.values()) {
             for (String savePath : windowType.getSavePaths()) {
-                builder.push(savePath);
+                builder.comment(savePath + " Window Position").push(savePath);
                 lastWindowPositions.put(savePath, new CachedWindowPosition(
                       CachedIntValue.wrap(this, builder.define("x", Integer.MAX_VALUE)),
                       CachedIntValue.wrap(this, builder.define("y", Integer.MAX_VALUE)),
@@ -141,7 +140,6 @@ public class ClientConfig extends BaseMekanismConfig {
               .define("autoFocusSearchBar", true));
         builder.pop();
 
-        builder.pop();
         configSpec = builder.build();
     }
 
