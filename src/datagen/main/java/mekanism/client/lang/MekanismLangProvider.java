@@ -871,8 +871,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.BOILER_INVALID_SUPERHEATING, "Couldn't form, invalid Superheating Element arrangement.");
         //Conversion
         add(MekanismLang.CONVERSION_ENERGY, "Item to Energy");
-        add(MekanismLang.CONVERSION_GAS, "Item to Gas");
-        add(MekanismLang.CONVERSION_INFUSION, "Item to Infuse Type");
+        add(MekanismLang.CONVERSION_CHEMICAL, "Item to Chemical");
         //QIO stuff
         add(MekanismLang.SET_FREQUENCY, "Set Frequency");
         add(MekanismLang.QIO_FREQUENCY_SELECT, "QIO Frequency Select");
@@ -1028,6 +1027,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.INVALID, "(Invalid)");
         add(MekanismLang.HAS_INVENTORY, "Inventory: %1$s");
         add(MekanismLang.NO_GAS, "No gas stored.");
+        add(MekanismLang.NO_CHEMICAL, "No chemicals stored.");
         add(MekanismLang.NO_FLUID_TOOLTIP, "No fluid stored.");
         add(MekanismLang.FREE_RUNNERS_MODE, "Runners Mode: %1$s");
         add(MekanismLang.JETPACK_MODE, "Jetpack Mode: %1$s");

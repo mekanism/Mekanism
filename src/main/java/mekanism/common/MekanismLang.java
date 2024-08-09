@@ -50,7 +50,7 @@ public enum MekanismLang implements ILangEntry {
     BOILER_INVALID_SUPERHEATING("boiler", "invalid_superheating"),
     //Conversion
     CONVERSION_ENERGY("conversion", "energy"),
-    CONVERSION_GAS("conversion", "gas"),
+    CONVERSION_CHEMICAL("conversion", "gas"),
     CONVERSION_INFUSION("conversion", "infusion"),
     //QIO stuff
     SET_FREQUENCY("qio", "set_frequency"),
@@ -202,6 +202,7 @@ public enum MekanismLang implements ILangEntry {
     INVALID("tooltip", "invalid"),
     HAS_INVENTORY("tooltip", "inventory"),
     NO_GAS("tooltip", "no_gas"),
+    NO_CHEMICAL("tooltip", "no_chemical"),
     NO_FLUID_TOOLTIP("tooltip", "no_fluid"),
     FREE_RUNNERS_MODE("tooltip", "mode.free_runners"),
     JETPACK_MODE("tooltip", "mode.jetpack"),

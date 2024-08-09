@@ -77,7 +77,9 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
     public static final RecipeTypeDeferredRegister RECIPE_TYPES = new RecipeTypeDeferredRegister(Mekanism.MODID);
 
     public static final RecipeTypeRegistryObject<SingleRecipeInput, ItemStackToItemStackRecipe, SingleItem<ItemStackToItemStackRecipe>> CRUSHING = register(MekanismRecipeTypes.NAME_CRUSHING, recipeType -> new SingleItem<>(recipeType, ItemStackToItemStackRecipe::getInput));
+
     public static final RecipeTypeRegistryObject<SingleRecipeInput, ItemStackToItemStackRecipe, SingleItem<ItemStackToItemStackRecipe>> ENRICHING = register(MekanismRecipeTypes.NAME_ENRICHING, recipeType -> new SingleItem<>(recipeType, ItemStackToItemStackRecipe::getInput));
+
     public static final RecipeTypeRegistryObject<SingleRecipeInput, ItemStackToItemStackRecipe, SingleItem<ItemStackToItemStackRecipe>> SMELTING = register(MekanismRecipeTypes.NAME_SMELTING, recipeType -> new SingleItem<>(recipeType, ItemStackToItemStackRecipe::getInput));
 
     public static final RecipeTypeRegistryObject<BiChemicalRecipeInput, ChemicalInfuserRecipe, EitherSideChemical<ChemicalInfuserRecipe>> CHEMICAL_INFUSING = register(MekanismRecipeTypes.NAME_CHEMICAL_INFUSING, EitherSideChemical::new);
@@ -91,6 +93,7 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
     public static final RecipeTypeRegistryObject<SingleFluidRecipeInput, FluidToFluidRecipe, SingleFluid<FluidToFluidRecipe>> EVAPORATING = register(MekanismRecipeTypes.NAME_EVAPORATING, recipeType -> new SingleFluid<>(recipeType, FluidToFluidRecipe::getInput));
 
     public static final RecipeTypeRegistryObject<SingleChemicalRecipeInput, GasToGasRecipe, SingleChemical<GasToGasRecipe>> ACTIVATING = register(MekanismRecipeTypes.NAME_ACTIVATING, recipeType -> new SingleChemical<>(recipeType, GasToGasRecipe::getInput));
+
     public static final RecipeTypeRegistryObject<SingleChemicalRecipeInput, GasToGasRecipe, SingleChemical<GasToGasRecipe>> CENTRIFUGING = register(MekanismRecipeTypes.NAME_CENTRIFUGING, recipeType -> new SingleChemical<>(recipeType, GasToGasRecipe::getInput));
 
     public static final RecipeTypeRegistryObject<SingleChemicalRecipeInput, ChemicalCrystallizerRecipe, SingleChemical<ChemicalCrystallizerRecipe>> CRYSTALLIZING = register(MekanismRecipeTypes.NAME_CRYSTALLIZING, recipeType -> new SingleChemical<>(recipeType, ChemicalCrystallizerRecipe::getInput));
@@ -98,7 +101,9 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
     public static final RecipeTypeRegistryObject<SingleItemChemicalRecipeInput, ChemicalDissolutionRecipe, ItemChemical<ChemicalDissolutionRecipe>> DISSOLUTION = register(MekanismRecipeTypes.NAME_DISSOLUTION, recipeType -> new ItemChemical<>(recipeType, ChemicalDissolutionRecipe::getItemInput, ChemicalDissolutionRecipe::getGasInput));
 
     public static final RecipeTypeRegistryObject<SingleItemChemicalRecipeInput, ItemStackGasToItemStackRecipe, ItemChemical<ItemStackGasToItemStackRecipe>> COMPRESSING = register(MekanismRecipeTypes.NAME_COMPRESSING, recipeType -> new ItemChemical<>(recipeType, ItemStackGasToItemStackRecipe::getItemInput, ItemStackGasToItemStackRecipe::getChemicalInput));
+
     public static final RecipeTypeRegistryObject<SingleItemChemicalRecipeInput, ItemStackGasToItemStackRecipe, ItemChemical<ItemStackGasToItemStackRecipe>> PURIFYING = register(MekanismRecipeTypes.NAME_PURIFYING, recipeType -> new ItemChemical<>(recipeType, ItemStackGasToItemStackRecipe::getItemInput, ItemStackGasToItemStackRecipe::getChemicalInput));
+
     public static final RecipeTypeRegistryObject<SingleItemChemicalRecipeInput, ItemStackGasToItemStackRecipe, ItemChemical<ItemStackGasToItemStackRecipe>> INJECTING = register(MekanismRecipeTypes.NAME_INJECTING, recipeType -> new ItemChemical<>(recipeType, ItemStackGasToItemStackRecipe::getItemInput, ItemStackGasToItemStackRecipe::getChemicalInput));
 
     public static final RecipeTypeRegistryObject<SingleItemChemicalRecipeInput, NucleosynthesizingRecipe, ItemChemical<NucleosynthesizingRecipe>> NUCLEOSYNTHESIZING = register(MekanismRecipeTypes.NAME_NUCLEOSYNTHESIZING, recipeType -> new ItemChemical<>(recipeType, NucleosynthesizingRecipe::getItemInput, NucleosynthesizingRecipe::getChemicalInput));
@@ -106,6 +111,7 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
     public static final RecipeTypeRegistryObject<SingleRecipeInput, ItemStackToEnergyRecipe, SingleItem<ItemStackToEnergyRecipe>> ENERGY_CONVERSION = register(MekanismRecipeTypes.NAME_ENERGY_CONVERSION, recipeType -> new SingleItem<>(recipeType, ItemStackToEnergyRecipe::getInput));
 
     public static final RecipeTypeRegistryObject<SingleRecipeInput, ItemStackToChemicalRecipe, SingleItem<ItemStackToChemicalRecipe>> CHEMICAL_CONVERSION = register(MekanismRecipeTypes.NAME_CHEMICAL_CONVERSION, recipeType -> new SingleItem<>(recipeType, ItemStackToChemicalRecipe::getInput));
+
     public static final RecipeTypeRegistryObject<SingleRecipeInput, ItemStackToChemicalRecipe, SingleItem<ItemStackToChemicalRecipe>> OXIDIZING = register(MekanismRecipeTypes.NAME_OXIDIZING, recipeType -> new SingleItem<>(recipeType, ItemStackToChemicalRecipe::getInput));
 
     public static final RecipeTypeRegistryObject<SingleRecipeInput, ItemStackToPigmentRecipe, SingleItem<ItemStackToPigmentRecipe>> PIGMENT_EXTRACTING = register(MekanismRecipeTypes.NAME_PIGMENT_EXTRACTING, recipeType -> new SingleItem<>(recipeType, ItemStackToPigmentRecipe::getInput));
