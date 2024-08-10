@@ -183,7 +183,7 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
                         ));
                     }
                     //Get tags of any contained chemicals
-                    addChemicalTags(DictionaryTagType.GAS, stack, Capabilities.CHEMICAL.item());
+                    addChemicalTags(DictionaryTagType.CHEMICAL, stack, Capabilities.CHEMICAL.item());
                     //TODO: Support other types of things?
                 }
             }
@@ -200,16 +200,8 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
                     setTarget(null);
                 } else {
                     setTarget(chemicalStack.copy());
-                    List<String> chemicalTags = TagCache.getTagsAsStrings(((ChemicalStack) target).getChemical().getTags());
-                    if (target instanceof ChemicalStack) {
-                        tags.put(DictionaryTagType.GAS, chemicalTags);
-                    } else if (target instanceof ChemicalStack) {
-                        tags.put(DictionaryTagType.INFUSE_TYPE, chemicalTags);
-                    } else if (target instanceof ChemicalStack) {
-                        tags.put(DictionaryTagType.PIGMENT, chemicalTags);
-                    } else if (target instanceof ChemicalStack) {
-                        tags.put(DictionaryTagType.SLURRY, chemicalTags);
-                    }
+                    List<String> chemicalTags = TagCache.getTagsAsStrings(chemicalStack.getChemical().getTags());
+                    tags.put(DictionaryTagType.CHEMICAL, chemicalTags);
                 }
             }
             default -> {
@@ -222,9 +214,9 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
         playClickSound(BUTTON_CLICK_SOUND);
     }
 
-    private <STACK extends ChemicalStack, HANDLER extends IChemicalHandler> void addChemicalTags(DictionaryTagType tagType, ItemStack stack,
-          ItemCapability<HANDLER, Void> capability) {
-        HANDLER handler = stack.getCapability(capability);
+    private void addChemicalTags(DictionaryTagType tagType, ItemStack stack,
+          ItemCapability<IChemicalHandler, Void> capability) {
+        IChemicalHandler handler = stack.getCapability(capability);
         if (handler != null) {
             tags.put(tagType, TagCache.getTagsAsStrings(IntStream.range(0, handler.getChemicalTanks())
                   .mapToObj(handler::getChemicalInTank)

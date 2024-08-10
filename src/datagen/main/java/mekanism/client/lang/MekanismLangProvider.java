@@ -1184,14 +1184,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DICTIONARY_ENCHANTMENT_DESC, "Display Enchantment Tags");
         add(MekanismLang.DICTIONARY_BLOCK_ENTITY_TYPE, "Block Entity Type");
         add(MekanismLang.DICTIONARY_BLOCK_ENTITY_TYPE_DESC, "Display Block Entity Type Tags");
-        add(MekanismLang.DICTIONARY_GAS, "Gas");
-        add(MekanismLang.DICTIONARY_GAS_DESC, "Display Gas Tags");
-        add(MekanismLang.DICTIONARY_INFUSE_TYPE, "Infuse Type");
-        add(MekanismLang.DICTIONARY_INFUSE_TYPE_DESC, "Display Infuse Type Tags");
-        add(MekanismLang.DICTIONARY_PIGMENT, "Pigment");
-        add(MekanismLang.DICTIONARY_PIGMENT_DESC, "Display Pigment Tags");
-        add(MekanismLang.DICTIONARY_SLURRY, "Slurry");
-        add(MekanismLang.DICTIONARY_SLURRY_DESC, "Display Slurry Tags");
+        add(MekanismLang.DICTIONARY_CHEMICAL, "Chemical");
+        add(MekanismLang.DICTIONARY_CHEMICAL_DESC, "Display Chemical Tags");
         //Oredictionificator
         add(MekanismLang.LAST_ITEM, "Last Item");
         add(MekanismLang.NEXT_ITEM, "Next Item");
