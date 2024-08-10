@@ -22,7 +22,6 @@ import org.jetbrains.annotations.Nullable;
 public non-sealed class SingleChemicalIngredient
       extends ChemicalIngredient {
 
-    //TODO register
     public static final MapCodec<SingleChemicalIngredient> CODEC = ChemicalStack.CHEMICAL_NON_EMPTY_HOLDER_CODEC.xmap(SingleChemicalIngredient::new, SingleChemicalIngredient::chemical)
           .fieldOf(SerializationConstants.CHEMICAL);
 
@@ -55,6 +54,7 @@ public non-sealed class SingleChemicalIngredient
         return chemical;
     }
 
+    @Override
     public MapCodec<SingleChemicalIngredient> codec() {
         return CODEC;
     }
