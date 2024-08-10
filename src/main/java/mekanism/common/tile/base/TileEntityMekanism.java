@@ -1205,6 +1205,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return null;
     }
 
+    @NotNull
+    @Override
     public List<IChemicalTank> getChemicalTanks(@Nullable Direction side) {
         return chemicalHandlerManager != null ? chemicalHandlerManager.getContainers(side) : Collections.emptyList();
     }
