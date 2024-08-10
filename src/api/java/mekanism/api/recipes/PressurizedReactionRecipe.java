@@ -67,6 +67,7 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe<ReactionR
      */
     public abstract int getDuration();
 
+    @Override
     public abstract boolean test(ItemStack solid, FluidStack liquid, ChemicalStack gas);
 
     @Override
