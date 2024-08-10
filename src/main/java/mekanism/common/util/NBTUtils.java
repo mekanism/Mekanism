@@ -174,25 +174,7 @@ public class NBTUtils {
         }
     }
 
-    public static void setGasStackIfPresent(HolderLookup.Provider provider, CompoundTag nbt, String key, Consumer<ChemicalStack> setter) {
-        if (nbt.contains(key, Tag.TAG_COMPOUND)) {
-            setter.accept(ChemicalStack.parseOptional(provider, nbt.getCompound(key)));
-        }
-    }
-
-    public static void setInfusionStackIfPresent(HolderLookup.Provider provider, CompoundTag nbt, String key, Consumer<ChemicalStack> setter) {
-        if (nbt.contains(key, Tag.TAG_COMPOUND)) {
-            setter.accept(ChemicalStack.parseOptional(provider, nbt.getCompound(key)));
-        }
-    }
-
-    public static void setPigmentStackIfPresent(HolderLookup.Provider provider, CompoundTag nbt, String key, Consumer<ChemicalStack> setter) {
-        if (nbt.contains(key, Tag.TAG_COMPOUND)) {
-            setter.accept(ChemicalStack.parseOptional(provider, nbt.getCompound(key)));
-        }
-    }
-
-    public static void setSlurryStackIfPresent(HolderLookup.Provider provider, CompoundTag nbt, String key, Consumer<ChemicalStack> setter) {
+    public static void setChemicalStackIfPresent(HolderLookup.Provider provider, CompoundTag nbt, String key, Consumer<ChemicalStack> setter) {
         if (nbt.contains(key, Tag.TAG_COMPOUND)) {
             setter.accept(ChemicalStack.parseOptional(provider, nbt.getCompound(key)));
         }

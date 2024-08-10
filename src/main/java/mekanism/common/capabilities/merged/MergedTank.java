@@ -49,7 +49,7 @@ public class MergedTank {
 
     public void readFromUpdateTag(HolderLookup.Provider provider, CompoundTag tag) {
         NBTUtils.setFluidStackIfPresent(provider, tag, SerializationConstants.FLUID, value -> getFluidTank().setStack(value));
-        NBTUtils.setGasStackIfPresent(provider, tag, SerializationConstants.CHEMICAL, chemicalTank::setStack);
+        NBTUtils.setChemicalStackIfPresent(provider, tag, SerializationConstants.CHEMICAL, chemicalTank::setStack);
 
     }
 

@@ -209,7 +209,7 @@ public class TurbineMultiblockData extends MultiblockData {
         NBTUtils.setFloatIfPresent(tag, SerializationConstants.SCALE, scale -> prevSteamScale = scale);
         NBTUtils.setIntIfPresent(tag, SerializationConstants.VOLUME, this::setVolume);
         NBTUtils.setIntIfPresent(tag, SerializationConstants.LOWER_VOLUME, value -> lowerVolume = value);
-        NBTUtils.setGasStackIfPresent(provider, tag, SerializationConstants.GAS, value -> gasTank.setStack(value));
+        NBTUtils.setChemicalStackIfPresent(provider, tag, SerializationConstants.GAS, value -> gasTank.setStack(value));
         NBTUtils.setBlockPosIfPresent(tag, SerializationConstants.COMPLEX, value -> complex = value);
         NBTUtils.setFloatIfPresent(tag, SerializationConstants.ROTATION, value -> clientRotation = value);
         clientRotationMap.put(inventoryID, clientRotation);

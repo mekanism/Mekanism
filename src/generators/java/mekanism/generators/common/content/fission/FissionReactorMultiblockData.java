@@ -256,9 +256,9 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         NBTUtils.setFloatIfPresent(tag, SerializationConstants.SCALE_ALT_3, scale -> prevWasteScale = scale);
         NBTUtils.setIntIfPresent(tag, SerializationConstants.VOLUME, this::setVolume);
         NBTUtils.setFluidStackIfPresent(provider, tag, SerializationConstants.FLUID, value -> fluidCoolantTank.setStack(value));
-        NBTUtils.setGasStackIfPresent(provider, tag, SerializationConstants.GAS, value -> fuelTank.setStack(value));
-        NBTUtils.setGasStackIfPresent(provider, tag, SerializationConstants.GAS_STORED_ALT, value -> heatedCoolantTank.setStack(value));
-        NBTUtils.setGasStackIfPresent(provider, tag, SerializationConstants.GAS_STORED_ALT_2, value -> wasteTank.setStack(value));
+        NBTUtils.setChemicalStackIfPresent(provider, tag, SerializationConstants.GAS, value -> fuelTank.setStack(value));
+        NBTUtils.setChemicalStackIfPresent(provider, tag, SerializationConstants.GAS_STORED_ALT, value -> heatedCoolantTank.setStack(value));
+        NBTUtils.setChemicalStackIfPresent(provider, tag, SerializationConstants.GAS_STORED_ALT_2, value -> wasteTank.setStack(value));
         readValves(tag);
         assemblies.clear();
         if (tag.contains(SerializationConstants.ASSEMBLIES, Tag.TAG_LIST)) {
