@@ -614,10 +614,10 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         }
     }
 
-    public <STACK extends ChemicalStack> void handleWindowProperty(short property, @NotNull STACK value) {
+    public void handleWindowProperty(short property, @NotNull ChemicalStack value) {
         ISyncableData data = getTrackedData(property);
-        if (data instanceof SyncableChemicalStack syncable && value instanceof ChemicalStack stack) {
-            syncable.set(stack);
+        if (data instanceof SyncableChemicalStack syncable && value != null) {
+            syncable.set(value);
         }
     }
 
