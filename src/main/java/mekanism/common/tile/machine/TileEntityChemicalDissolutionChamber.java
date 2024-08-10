@@ -1,5 +1,6 @@
 package mekanism.common.tile.machine;
 
+import java.util.Collections;
 import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
@@ -208,4 +209,14 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
         return outputTank;
     }
     //End methods IComputerTile
+
+    @Override
+    public List<IChemicalTank> getLegacyGasTanks() {
+        return Collections.singletonList(injectTank);
+    }
+
+    @Override
+    public List<IChemicalTank> getLegacySlurryTanks() {
+        return Collections.singletonList(outputTank);
+    }
 }

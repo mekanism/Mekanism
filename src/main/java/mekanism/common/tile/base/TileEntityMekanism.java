@@ -1175,9 +1175,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
     //End methods ITileContainer
 
-    //Methods for implementing IGasTile
-
-
+    //Methods for implementing IMekanismChemicalHandler
     public boolean shouldDumpRadiation() {
         return canHandleChemicals();
     }
@@ -1239,7 +1237,23 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return hasNonEmpty ? new AttachedChemicals(stacks) : null;
     }
 
-    //End methods IGasTile
+    //todo 1.22 remove backcompat
+    public List<IChemicalTank> getLegacyGasTanks() {
+        return getChemicalTanks(null);
+    }
+
+    public List<IChemicalTank> getLegacyInfuseTanks() {
+        return getChemicalTanks(null);
+    }
+
+    public List<IChemicalTank> getLegacyPigmentTanks() {
+        return getChemicalTanks(null);
+    }
+
+    public List<IChemicalTank> getLegacySlurryTanks() {
+        return getChemicalTanks(null);
+    }
+    //End methods IMekanismChemicalHandler
 
     //Methods for implementing IMekanismFluidHandler
     @Nullable
