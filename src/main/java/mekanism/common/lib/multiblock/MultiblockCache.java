@@ -5,6 +5,7 @@ import java.util.List;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.IMekanismChemicalHandler;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
@@ -32,7 +33,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class MultiblockCache<T extends MultiblockData> implements IMekanismInventory, IMekanismFluidHandler, IMekanismStrictEnergyHandler, IMekanismHeatHandler,
-      IChemicalTracker {
+      IMekanismChemicalHandler {
 
     private final List<IInventorySlot> inventorySlots = new ArrayList<>();
     private final List<IExtendedFluidTank> fluidTanks = new ArrayList<>();
@@ -178,20 +179,38 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
             }
         };
 
-        public static final CacheSubstance<IChemicalTracker, IChemicalTank> CHEMICAL = new CacheSubstance<>(ContainerType.CHEMICAL) {
+        public static final CacheSubstance<IMekanismChemicalHandler, IChemicalTank> CHEMICAL = new CacheSubstance<>(ContainerType.CHEMICAL) {
             @Override
             protected void defaultPrefab(MultiblockCache<?> cache) {
                 cache.chemicalTanks.add(ChemicalTankBuilder.CHEMICAL.createAllValid(Long.MAX_VALUE, cache));
             }
 
             @Override
-            protected List<IChemicalTank> containerList(IChemicalTracker tracker) {
+            protected List<IChemicalTank> containerList(IMekanismChemicalHandler tracker) {
                 return tracker.getChemicalTanks(null);
             }
 
             @Override
             public void sync(IChemicalTank cache, IChemicalTank data) {
                 cache.setStack(data.getStack());
+            }
+
+            @Override//todo 1.22 remove backcompat
+            public void readFrom(HolderLookup.Provider provider, CompoundTag tag, MultiblockCache<?> cache) {
+                int stored = Math.max(
+                      tag.getInt("gas_tanks_stored"),
+                      Math.max(
+                            tag.getInt("infusion_tanks_stored"),
+                            Math.max(
+                                  tag.getInt("pigment_tanks_stored"),
+                                  tag.getInt("slurry_tanks_stored")
+                            )
+                      )
+                );
+                if (stored > 0) {
+                    tag.putInt(getStoredTagKey(), Math.max(stored, tag.getInt(getStoredTagKey())));
+                }
+                super.readFrom(provider, tag, cache);
             }
         };
 
@@ -234,6 +253,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
 
         @SuppressWarnings({"unchecked"})
         public static final CacheSubstance<?, INBTSerializable<CompoundTag>>[] VALUES = new CacheSubstance[]{
+              CHEMICAL,
               ITEMS,
               FLUID,
               ENERGY,
@@ -269,7 +289,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
             }
         }
 
-        private String getStoredTagKey() {
+        protected String getStoredTagKey() {
             return containerType.getTag() + "_stored";
         }
 
