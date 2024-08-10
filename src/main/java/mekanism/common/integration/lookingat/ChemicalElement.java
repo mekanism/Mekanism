@@ -5,7 +5,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mekanism.api.SerializationConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.ChemicalType;
 import mekanism.api.math.MathUtils;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
@@ -22,11 +21,11 @@ import org.jetbrains.annotations.NotNull;
 public class ChemicalElement extends LookingAtElement {
 
     public static final MapCodec<ChemicalElement> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-          ChemicalStack.BOXED_OPTIONAL_CODEC.fieldOf(SerializationConstants.BOXED_CHEMICAL).forGetter(ChemicalElement::getStored),
+          ChemicalStack.OPTIONAL_CODEC.fieldOf(SerializationConstants.BOXED_CHEMICAL).forGetter(ChemicalElement::getStored),
           SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(SerializationConstants.MAX).forGetter(ChemicalElement::getCapacity)
     ).apply(instance, ChemicalElement::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, ChemicalElement> STREAM_CODEC = StreamCodec.composite(
-          ChemicalStack.BOXED_OPTIONAL_STREAM_CODEC, ChemicalElement::getStored,
+          ChemicalStack.OPTIONAL_STREAM_CODEC, ChemicalElement::getStored,
           ByteBufCodecs.VAR_LONG, ChemicalElement::getCapacity,
           ChemicalElement::new
     );
@@ -47,10 +46,6 @@ public class ChemicalElement extends LookingAtElement {
             return level;
         }
         return MathUtils.clampToInt(level * (double) stored.getAmount() / capacity);
-    }
-
-    public ChemicalType getChemicalType() {
-        return ChemicalType.getTypeFor(stored);
     }
 
     @NotNull

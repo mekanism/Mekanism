@@ -4,7 +4,6 @@ import com.google.gson.JsonObject;
 import java.util.function.Consumer;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.ChemicalType;
 import mekanism.common.integration.jsonthings.builder.JsonSlurryBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
@@ -13,7 +12,7 @@ import net.neoforged.bus.api.IEventBus;
 public class JsonSlurryParser extends JsonChemicalParser<JsonSlurryBuilder> {
 
     public JsonSlurryParser(IEventBus bus) {
-        super(bus, ChemicalType.SLURRY, "Slurry", MekanismAPI.CHEMICAL_REGISTRY_NAME);
+        super(bus, "Slurry", MekanismAPI.CHEMICAL_REGISTRY_NAME);
     }
 
     @Override

@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.ChemicalType;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
@@ -19,7 +18,6 @@ import org.jetbrains.annotations.NotNull;
 @NothingNullByDefault
 public class BasicChemicalCrystallizerRecipe extends ChemicalCrystallizerRecipe {
 
-    protected final ChemicalType chemicalType;
     protected final ChemicalStackIngredient input;
     protected final ItemStack output;
 
@@ -29,7 +27,6 @@ public class BasicChemicalCrystallizerRecipe extends ChemicalCrystallizerRecipe 
      */
     public BasicChemicalCrystallizerRecipe(ChemicalStackIngredient input, ItemStack output) {
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
-        this.chemicalType = ChemicalType.getTypeFor(input);
         Objects.requireNonNull(output, "Output cannot be null.");
         if (output.isEmpty()) {
             throw new IllegalArgumentException("Output cannot be empty.");

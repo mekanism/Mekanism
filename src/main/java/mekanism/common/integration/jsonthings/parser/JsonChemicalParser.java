@@ -10,7 +10,6 @@ import dev.gigaherz.jsonthings.util.parse.value.ObjValue;
 import java.util.function.IntConsumer;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.ChemicalType;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.jsonthings.builder.JsonChemicalBuilder;
 import net.minecraft.core.Registry;
@@ -26,8 +25,8 @@ public abstract class JsonChemicalParser<
     private final ResourceKey<? extends Registry<Chemical>> registryKey;
     private final String thingType;
 
-    protected JsonChemicalParser(IEventBus bus, ChemicalType chemicalType, String thingType, ResourceKey<? extends Registry<Chemical>> registryKey) {
-        super(GSON, Mekanism.MODID + "/" + chemicalType.getSerializedName());
+    protected JsonChemicalParser(IEventBus bus, String thingType, ResourceKey<? extends Registry<Chemical>> registryKey) {
+        super(GSON, Mekanism.MODID + "/chemical");
         this.thingType = thingType;
         this.registryKey = registryKey;
         bus.addListener(this::register);

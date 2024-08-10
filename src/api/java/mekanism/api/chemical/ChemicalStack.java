@@ -36,7 +36,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.util.NeoForgeExtraCodecs;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -214,33 +213,6 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
             }
         };
     }
-
-    /**
-     * Codec to get any kind of chemical stack (that does not accept empty stacks), based on a "chemicalType" field.
-     *
-     * @see ChemicalType
-     * @since 10.6.0
-     */
-    @Deprecated(forRemoval = true)
-    public static final Codec<ChemicalStack> BOXED_CODEC = CODEC;
-    /**
-     * Codec to get any kind of chemical stack, based on a "chemicalType" field, serializing them as {@code {chemicalType:"chemicalType"}}. Falls back to the empty stack
-     * of the given type.
-     *
-     * @see ChemicalType
-     * @since 10.6.0
-     */
-    @Deprecated(forRemoval = true)
-    public static final Codec<ChemicalStack> BOXED_OPTIONAL_CODEC = NeoForgeExtraCodecs.withAlternative(BOXED_CODEC, Codec.unit(() -> EMPTY));
-    /**
-     * StreamCodec to get any kind of chemical stack, based on a "chemicalType" field.
-     *
-     * @see ChemicalType
-     * @since 10.6.0
-     */
-    @Deprecated(forRemoval = true)
-    public static final StreamCodec<RegistryFriendlyByteBuf, ChemicalStack> BOXED_OPTIONAL_STREAM_CODEC = ChemicalType.STREAM_CODEC.<RegistryFriendlyByteBuf>cast()
-          .dispatch(ChemicalType::getTypeFor, type -> OPTIONAL_STREAM_CODEC);
 
     private final Chemical chemical;
     private long amount;

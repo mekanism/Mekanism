@@ -11,7 +11,6 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalTankBuilder;
-import mekanism.api.chemical.ChemicalType;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.providers.IBlockProvider;
@@ -29,7 +28,6 @@ import mekanism.common.tier.TubeTier;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.upgrade.transmitter.PressurizedTubeUpgradeData;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.Direction;
@@ -73,17 +71,7 @@ public class BoxedPressurizedTube extends BufferedTransmitter<IChemicalHandler, 
                 //Note: We recheck the buffer each time in case we ended up accepting chemical somewhere
                 // and our buffer changed and is no longer empty
                 ChemicalStack bufferWithFallback = getBufferWithFallback();
-                if (bufferWithFallback.isEmpty()) {
-                    //If the buffer is empty we need to try against each chemical type
-                    for (ChemicalType chemicalType : EnumUtils.CHEMICAL_TYPES) {
-                        if (pullFromAcceptor(connectedAcceptor, bufferWithFallback, true)) {
-                            //If we successfully pulled into this tube, don't bother checking the other chemical types
-                            break;
-                        }
-                    }
-                } else {
-                    pullFromAcceptor(connectedAcceptor, bufferWithFallback, false);
-                }
+                pullFromAcceptor(connectedAcceptor, bufferWithFallback, bufferWithFallback.isEmpty());
             }
         }
     }

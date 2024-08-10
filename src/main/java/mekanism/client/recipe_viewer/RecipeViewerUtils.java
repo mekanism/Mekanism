@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.ChemicalType;
 import mekanism.api.recipes.ItemStackToFluidOptionalItemRecipe;
 import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
@@ -101,7 +100,6 @@ public class RecipeViewerUtils {
         if (!displayConversions) {
             return getStacksFor(chemicals, null);
         }
-        ChemicalType chemicalType = ChemicalType.getTypeFor(ingredient);
         return getStacksFor(chemicals, MekanismRecipeType.CHEMICAL_CONVERSION);
     }
 

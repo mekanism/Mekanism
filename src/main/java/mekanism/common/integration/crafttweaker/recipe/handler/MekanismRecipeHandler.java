@@ -20,7 +20,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.ChemicalType;
 import mekanism.api.recipes.ElectrolysisRecipe.ElectrolysisRecipeOutput;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe.PressurizedReactionRecipeOutput;
@@ -51,11 +50,10 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe<?>> im
         return a.getRepresentations().stream().anyMatch(b::testType);
     }
 
-    @SuppressWarnings("unchecked")
-    protected <CHEMICAL extends Chemical, STACK extends ChemicalStack> boolean chemicalIngredientConflicts(ChemicalStackIngredient a,
+    protected boolean chemicalIngredientConflicts(ChemicalStackIngredient a,
           ChemicalStackIngredient b) {
         //If types of inputs match then check if they conflict
-        return ChemicalType.getTypeFor(a) == ChemicalType.getTypeFor(b) && ingredientConflicts(a, (ChemicalStackIngredient) b);
+        return ingredientConflicts(a, b);
     }
 
     protected String buildCommandString(IRecipeManager<? super RECIPE> manager, RecipeHolder<RECIPE> recipe, Object... params) {

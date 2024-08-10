@@ -4,7 +4,6 @@ import dev.gigaherz.jsonthings.things.parsers.ThingParseException;
 import dev.gigaherz.jsonthings.util.parse.value.ObjValue;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.ChemicalType;
 import mekanism.api.chemical.gas.attribute.GasAttributes;
 import mekanism.common.integration.LazyChemicalProvider;
 import mekanism.common.integration.jsonthings.builder.JsonGasBuilder;
@@ -17,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 public class JsonGasParser extends SimpleJsonChemicalParser<JsonGasBuilder> {
 
     public JsonGasParser(IEventBus bus) {
-        super(bus, ChemicalType.GAS, "Gas", MekanismAPI.CHEMICAL_REGISTRY_NAME, JsonGasBuilder::new);
+        super(bus, "Gas", MekanismAPI.CHEMICAL_REGISTRY_NAME, JsonGasBuilder::new);
     }
 
     @Override

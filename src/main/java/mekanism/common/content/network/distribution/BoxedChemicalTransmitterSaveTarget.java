@@ -2,7 +2,6 @@ package mekanism.common.content.network.distribution;
 
 import java.util.Collection;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.ChemicalType;
 import mekanism.common.content.network.transmitter.BoxedPressurizedTube;
 import mekanism.common.lib.distribution.SplitInfo;
 import mekanism.common.lib.distribution.Target;
@@ -66,7 +65,6 @@ public class BoxedChemicalTransmitterSaveTarget
             if (currentStored.isEmpty() != transmitter.saveShare.isEmpty()) {
                 shouldSave = true;
             } else if (!currentStored.isEmpty()) {
-                ChemicalType chemicalType = ChemicalType.getTypeFor(currentStored);
                 shouldSave = !currentStored.equals(transmitter.saveShare);
             }
             if (shouldSave) {
