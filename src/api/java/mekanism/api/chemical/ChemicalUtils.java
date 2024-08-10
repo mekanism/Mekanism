@@ -26,8 +26,8 @@ public class ChemicalUtils {
      *
      * @since 10.5.13
      */
-    public static <STACK extends ChemicalStack> STACK insert(STACK stack, @Nullable Direction side, Action action,
-          STACK empty, ToIntFunction<@Nullable Direction> tankCount, InContainerGetter<STACK> inTankGetter, ContainerInteraction<STACK> insertChemical) {
+    public static ChemicalStack insert(ChemicalStack stack, @Nullable Direction side, Action action,
+          ChemicalStack empty, ToIntFunction<@Nullable Direction> tankCount, InContainerGetter<ChemicalStack> inTankGetter, ContainerInteraction<ChemicalStack> insertChemical) {
         if (stack.isEmpty()) {
             //Short circuit if nothing is actually being inserted
             return empty;
@@ -38,15 +38,15 @@ public class ChemicalUtils {
         } else if (tanks == 1) {
             return insertChemical.interact(0, stack, side, action);
         }
-        STACK toInsert = stack;
+        ChemicalStack toInsert = stack;
         //Start by trying to insert into the tanks that have the same type
         IntList emptyTanks = new IntArrayList();
         for (int tank = 0; tank < tanks; tank++) {
-            STACK inTank = inTankGetter.getStored(tank, side);
+            ChemicalStack inTank = inTankGetter.getStored(tank, side);
             if (inTank.isEmpty()) {
                 emptyTanks.add(tank);
             } else if (ChemicalStack.isSameChemical(inTank, stack)) {
-                STACK remainder = insertChemical.interact(tank, toInsert, side, action);
+                ChemicalStack remainder = insertChemical.interact(tank, toInsert, side, action);
                 if (remainder.isEmpty()) {
                     //If we have no remaining chemical, return that we fit it all
                     return empty;
@@ -56,7 +56,7 @@ public class ChemicalUtils {
             }
         }
         for (int tank : emptyTanks) {
-            STACK remainder = insertChemical.interact(tank, toInsert, side, action);
+            ChemicalStack remainder = insertChemical.interact(tank, toInsert, side, action);
             if (remainder.isEmpty()) {
                 //If we have no remaining chemical, return that we fit it all
                 return empty;
