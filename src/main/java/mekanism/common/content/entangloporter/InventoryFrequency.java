@@ -78,15 +78,32 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
           SecurityMode.CODEC.fieldOf(SerializationConstants.SECURITY_MODE).forGetter(Frequency::getSecurity),
           SerializerHelper.POSITIVE_LONG_CODEC_LEGACY.fieldOf(SerializationConstants.ENERGY).forGetter(freq -> freq.storedEnergy.getEnergy()),
           FluidStack.OPTIONAL_CODEC.fieldOf(SerializationConstants.FLUID).forGetter(freq -> freq.storedFluid.getFluid()),
-          ChemicalStack.OPTIONAL_CODEC.fieldOf(SerializationConstants.GAS).forGetter(freq -> freq.storedChemical.getStack()),
+          ChemicalStack.OPTIONAL_CODEC.optionalFieldOf(SerializationConstants.CHEMICAL).forGetter(freq -> Optional.of(freq.storedChemical.getStack())),
           ItemStack.OPTIONAL_CODEC.fieldOf(SerializationConstants.ITEM).forGetter(freq -> freq.storedItem.getStack()),
           Codec.DOUBLE.fieldOf(SerializationConstants.HEAT_STORED).forGetter(freq -> freq.storedHeat.getHeat()),
-          Codec.DOUBLE.fieldOf(SerializationConstants.HEAT_CAPACITY).forGetter(freq -> freq.storedHeat.getHeatCapacity())
-    ).apply(instance, (name, owner, securityMode, energy, fluid, gas, item, heat, heatCapacity) -> {
+          Codec.DOUBLE.fieldOf(SerializationConstants.HEAT_CAPACITY).forGetter(freq -> freq.storedHeat.getHeatCapacity()),
+
+          //todo 1.22 remove backcompat and change Chemical field to non-optional
+          ChemicalStack.OPTIONAL_CODEC.optionalFieldOf(SerializationConstants.GAS).forGetter(freq -> Optional.empty()),
+          ChemicalStack.OPTIONAL_CODEC.optionalFieldOf(SerializationConstants.INFUSE_TYPE).forGetter(freq -> Optional.empty()),
+          ChemicalStack.OPTIONAL_CODEC.optionalFieldOf(SerializationConstants.PIGMENT).forGetter(freq -> Optional.empty()),
+          ChemicalStack.OPTIONAL_CODEC.optionalFieldOf(SerializationConstants.SLURRY).forGetter(freq -> Optional.empty())
+    ).apply(instance, (name, owner, securityMode, energy, fluid, chemical, item, heat, heatCapacity, legacyGas, legacyInfuse, legacyPigment, legacySlurry) -> {
         InventoryFrequency frequency = new InventoryFrequency(name, owner.orElse(null), securityMode);
         frequency.storedEnergy.setEnergy(energy);
         frequency.storedFluid.setStackUnchecked(fluid);
-        frequency.storedChemical.setStackUnchecked(gas);
+        //todo 1.22 remove backcompat and change Chemical field to non-optional
+        if (chemical.isPresent()) {
+            frequency.storedChemical.setStackUnchecked(chemical.get());
+        } else if (legacyGas.isPresent() && !legacyGas.get().isEmpty()) {
+            frequency.storedChemical.setStackUnchecked(legacyGas.get());
+        } else if (legacyInfuse.isPresent() && !legacyInfuse.get().isEmpty()) {
+            frequency.storedChemical.setStackUnchecked(legacyInfuse.get());
+        } else if (legacyPigment.isPresent() && !legacyPigment.get().isEmpty()) {
+            frequency.storedChemical.setStackUnchecked(legacyPigment.get());
+        } else if (legacySlurry.isPresent() && !legacySlurry.get().isEmpty()) {
+            frequency.storedChemical.setStackUnchecked(legacySlurry.get());
+        }
         frequency.storedItem.setStackUnchecked(item);
         frequency.storedHeat.setHeat(heat);
         frequency.storedHeat.setHeatCapacity(heatCapacity, false);
