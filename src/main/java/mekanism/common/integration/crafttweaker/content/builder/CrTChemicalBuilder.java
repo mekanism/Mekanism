@@ -117,6 +117,12 @@ public class CrTChemicalBuilder {
     }
 
     @ZenCodeType.Method
+    public CrTChemicalBuilder gaseous() {
+        getInternal().gaseous();
+        return this;
+    }
+
+    @ZenCodeType.Method
     public static CrTChemicalBuilder builder(@ZenCodeType.Optional ResourceLocation textureLocation) {
         return new CrTChemicalBuilder(textureLocation == null ? ChemicalBuilder.builder() : ChemicalBuilder.builder(textureLocation));
     }

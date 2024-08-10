@@ -62,6 +62,7 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
     private boolean hasAttributesWithValidation;
     @Nullable
     private final TagKey<Item> oreTag;
+    private final boolean isGaseous;
 
     @Nullable
     private String translationKey;
@@ -74,6 +75,7 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
         this.isRadioactive = attributeMap.containsKey(Radiation.class);
         this.hasAttributesWithValidation = isRadioactive || attributeMap.values().stream().anyMatch(ChemicalAttribute::needsValidation);
         this.oreTag = builder.getOreTag();
+        this.isGaseous = builder.isGaseous();
     }
 
     @Override
@@ -250,6 +252,13 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
     @Nullable
     public TagKey<Item> getOreTag() {
         return oreTag;
+    }
+
+    /**
+     * @return whether this chemical should render as a gas or more like a fluid
+     */
+    public boolean isGaseous() {
+        return isGaseous;
     }
 
     /**

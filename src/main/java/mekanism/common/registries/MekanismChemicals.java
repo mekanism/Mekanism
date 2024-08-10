@@ -36,23 +36,23 @@ public class MekanismChemicals {
     public static final DeferredChemical<Chemical> REDSTONE = CHEMICALS.registerInfuse("redstone", 0xB30505);
     public static final DeferredChemical<Chemical> CARBON = CHEMICALS.registerInfuse("carbon", 0x2C2C2C);
 
-    public static final DeferredChemical<Chemical> HYDROGEN = CHEMICALS.register(ChemicalConstants.HYDROGEN, new Fuel(() -> 1, MekanismConfig.general.FROM_H2));
-    public static final DeferredChemical<Chemical> OXYGEN = CHEMICALS.register(ChemicalConstants.OXYGEN);
-    public static final DeferredChemical<Chemical> STEAM = CHEMICALS.register("steam", () -> new Chemical(ChemicalBuilder.builder(Mekanism.rl("liquid/steam"))));
-    public static final DeferredChemical<Chemical> WATER_VAPOR = CHEMICALS.register("water_vapor", () -> new Chemical(ChemicalBuilder.builder(Mekanism.rl("liquid/steam"))));
+    public static final DeferredChemical<Chemical> HYDROGEN = CHEMICALS.registerGas(ChemicalConstants.HYDROGEN, new Fuel(() -> 1, MekanismConfig.general.FROM_H2));
+    public static final DeferredChemical<Chemical> OXYGEN = CHEMICALS.registerGas(ChemicalConstants.OXYGEN);
+    public static final DeferredChemical<Chemical> STEAM = CHEMICALS.register("steam", () -> new Chemical(ChemicalBuilder.builder(Mekanism.rl("liquid/steam")).gaseous()));
+    public static final DeferredChemical<Chemical> WATER_VAPOR = CHEMICALS.register("water_vapor", () -> new Chemical(ChemicalBuilder.builder(Mekanism.rl("liquid/steam")).gaseous()));
     public static final DeferredChemical<Chemical> CHLORINE = CHEMICALS.register(ChemicalConstants.CHLORINE);
-    public static final DeferredChemical<Chemical> SULFUR_DIOXIDE = CHEMICALS.register(ChemicalConstants.SULFUR_DIOXIDE);
-    public static final DeferredChemical<Chemical> SULFUR_TRIOXIDE = CHEMICALS.register(ChemicalConstants.SULFUR_TRIOXIDE);
+    public static final DeferredChemical<Chemical> SULFUR_DIOXIDE = CHEMICALS.registerGas(ChemicalConstants.SULFUR_DIOXIDE);
+    public static final DeferredChemical<Chemical> SULFUR_TRIOXIDE = CHEMICALS.registerGas(ChemicalConstants.SULFUR_TRIOXIDE);
     public static final DeferredChemical<Chemical> SULFURIC_ACID = CHEMICALS.register(ChemicalConstants.SULFURIC_ACID);
-    public static final DeferredChemical<Chemical> HYDROGEN_CHLORIDE = CHEMICALS.register(ChemicalConstants.HYDROGEN_CHLORIDE);
+    public static final DeferredChemical<Chemical> HYDROGEN_CHLORIDE = CHEMICALS.registerGas(ChemicalConstants.HYDROGEN_CHLORIDE);
     public static final DeferredChemical<Chemical> HYDROFLUORIC_ACID = CHEMICALS.register(ChemicalConstants.HYDROFLUORIC_ACID);
     public static final DeferredChemical<Chemical> URANIUM_OXIDE = CHEMICALS.register(ChemicalConstants.URANIUM_OXIDE);
     public static final DeferredChemical<Chemical> URANIUM_HEXAFLUORIDE = CHEMICALS.register(ChemicalConstants.URANIUM_HEXAFLUORIDE);
     //Internal gases
-    public static final DeferredChemical<Chemical> ETHENE = CHEMICALS.register(ChemicalConstants.ETHENE);
+    public static final DeferredChemical<Chemical> ETHENE = CHEMICALS.registerGas(ChemicalConstants.ETHENE);
     public static final DeferredChemical<Chemical> SODIUM = CHEMICALS.register(ChemicalConstants.SODIUM, Coolants.SODIUM_COOLANT);
     public static final DeferredChemical<Chemical> SUPERHEATED_SODIUM = CHEMICALS.register(ChemicalConstants.SUPERHEATED_SODIUM, Coolants.HEATED_SODIUM_COOLANT);
-    public static final DeferredChemical<Chemical> BRINE = CHEMICALS.register("brine", 0xFEEF9C);
+    public static final DeferredChemical<Chemical> BRINE = CHEMICALS.registerGas("brine", 0xFEEF9C);
     public static final DeferredChemical<Chemical> LITHIUM = CHEMICALS.register(ChemicalConstants.LITHIUM);
     public static final DeferredChemical<Chemical> OSMIUM = CHEMICALS.register("osmium", 0x52BDCA);
     public static final DeferredChemical<Chemical> FISSILE_FUEL = CHEMICALS.register("fissile_fuel", 0x2E332F);

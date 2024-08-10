@@ -10,11 +10,11 @@ import org.jetbrains.annotations.Nullable;
 
 //TODO - 1.18: Make it possible for chemicals to define a "glow/light" value and then use that here
 @NothingNullByDefault
-public abstract class ChemicalRenderData<CHEMICAL extends Chemical> extends RenderData {
+public class ChemicalRenderData extends RenderData {
 
-    public final CHEMICAL chemical;
+    public final Chemical chemical;
 
-    protected ChemicalRenderData(BlockPos renderLocation, int width, int height, int length, CHEMICAL chemical) {
+    public ChemicalRenderData(BlockPos renderLocation, int width, int height, int length, Chemical chemical) {
         super(renderLocation, width, height, length);
         this.chemical = chemical;
     }
@@ -31,7 +31,7 @@ public abstract class ChemicalRenderData<CHEMICAL extends Chemical> extends Rend
 
     @Override
     public boolean isGaseous() {
-        return false;
+        return chemical.isGaseous();
     }
 
     @Override
@@ -46,39 +46,6 @@ public abstract class ChemicalRenderData<CHEMICAL extends Chemical> extends Rend
         } else if (o == null || getClass() != o.getClass() || !super.equals(o)) {
             return false;
         }
-        return chemical == ((ChemicalRenderData<?>) o).chemical;
-    }
-
-    public static class GasRenderData extends ChemicalRenderData<Chemical> {
-
-        public GasRenderData(BlockPos renderLocation, int width, int height, int length, Chemical gas) {
-            super(renderLocation, width, height, length, gas);
-        }
-
-        @Override
-        public boolean isGaseous() {
-            return true;
-        }
-    }
-
-    public static class InfusionRenderData extends ChemicalRenderData<Chemical> {
-
-        public InfusionRenderData(BlockPos renderLocation, int width, int height, int length, Chemical infuseType) {
-            super(renderLocation, width, height, length, infuseType);
-        }
-    }
-
-    public static class PigmentRenderData extends ChemicalRenderData<Chemical> {
-
-        public PigmentRenderData(BlockPos renderLocation, int width, int height, int length, Chemical pigment) {
-            super(renderLocation, width, height, length, pigment);
-        }
-    }
-
-    public static class SlurryRenderData extends ChemicalRenderData<Chemical> {
-
-        public SlurryRenderData(BlockPos renderLocation, int width, int height, int length, Chemical slurry) {
-            super(renderLocation, width, height, length, slurry);
-        }
+        return chemical == ((ChemicalRenderData) o).chemical;
     }
 }

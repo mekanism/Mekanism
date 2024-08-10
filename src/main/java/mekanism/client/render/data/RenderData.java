@@ -4,10 +4,6 @@ import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.client.render.data.ChemicalRenderData.GasRenderData;
-import mekanism.client.render.data.ChemicalRenderData.InfusionRenderData;
-import mekanism.client.render.data.ChemicalRenderData.PigmentRenderData;
-import mekanism.client.render.data.ChemicalRenderData.SlurryRenderData;
 import mekanism.common.lib.multiblock.MultiblockData;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
@@ -65,7 +61,7 @@ public abstract class RenderData {
             this.fluid = fluid;
         }
 
-        public static <CHEMICAL extends Chemical> Builder<ChemicalRenderData<CHEMICAL>> create(ChemicalStack chemical) {
+        public static <CHEMICAL extends Chemical> Builder<ChemicalRenderData> create(ChemicalStack chemical) {
             if (chemical.isEmpty()) {
                 throw new IllegalArgumentException("Chemical may not be empty");
             }
@@ -115,14 +111,8 @@ public abstract class RenderData {
             RenderData data;
             if (!fluid.isEmpty()) {
                 data = new FluidRenderData(location, width, height, length, fluid);
-            } else if (chemical instanceof Chemical gas) {
-                data = new GasRenderData(location, width, height, length, gas);
-            } else if (chemical instanceof Chemical infuseType) {
-                data = new InfusionRenderData(location, width, height, length, infuseType);
-            } else if (chemical instanceof Chemical pigment) {
-                data = new PigmentRenderData(location, width, height, length, pigment);
-            } else if (chemical instanceof Chemical slurry) {
-                data = new SlurryRenderData(location, width, height, length, slurry);
+            } else if (chemical != null) {
+                data = new ChemicalRenderData(location, width, height, length, chemical);
             } else {
                 throw new IllegalStateException("Incomplete render data builder, missing or unknown chemical or fluid.");
             }

@@ -21,6 +21,7 @@ public class ChemicalBuilder {
     private int tint = 0xFFFFFF;
     @Nullable
     private TagKey<Item> oreTag;
+    private boolean isGaseous = false;
 
     protected ChemicalBuilder(ResourceLocation texture) {
         this.texture = texture;
@@ -94,6 +95,21 @@ public class ChemicalBuilder {
     @Nullable
     public TagKey<Item> getOreTag() {
         return oreTag;
+    }
+
+    /**
+     * Set this chemical should render as a gas. Omit to leave as fluid-like
+     */
+    public ChemicalBuilder gaseous() {
+        this.isGaseous = true;
+        return this;
+    }
+
+    /**
+     * @return whether this chemical should render as a gas or more like a fluid
+     */
+    public boolean isGaseous() {
+        return isGaseous;
     }
 
     /**

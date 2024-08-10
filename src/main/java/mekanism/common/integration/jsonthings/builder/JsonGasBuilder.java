@@ -21,7 +21,7 @@ public class JsonGasBuilder extends JsonChemicalBuilder<JsonGasBuilder> {
 
     @Override
     protected Chemical buildInternal() {
-        ChemicalBuilder internal = texture == null ? ChemicalBuilder.builder() : ChemicalBuilder.builder(texture);
+        ChemicalBuilder internal = (texture == null ? ChemicalBuilder.builder() : ChemicalBuilder.builder(texture)).gaseous();
         applyBaseData(internal);
         return ChemicalUtil.chemical(internal, colorRepresentation);
     }

@@ -34,6 +34,20 @@ public class ChemicalDeferredRegister extends MekanismDeferredRegister<Chemical>
         });
     }
 
+    public DeferredChemical<Chemical> registerGas(IChemicalConstant constants, ChemicalAttribute... attributes) {
+        return registerGas(constants.getName(), constants.getColor(), attributes);
+    }
+
+    public DeferredChemical<Chemical> registerGas(String name, int color, ChemicalAttribute... attributes) {
+        return register(name, () -> {
+            ChemicalBuilder builder = ChemicalBuilder.builder().tint(color).gaseous();
+            for (ChemicalAttribute attribute : attributes) {
+                builder.with(attribute);
+            }
+            return new Chemical(builder);
+        });
+    }
+
     public DeferredChemical<Chemical> registerPigment(String name, int color) {
         return register(name, () -> new Chemical(ChemicalBuilder.pigment().tint(color)));
     }
