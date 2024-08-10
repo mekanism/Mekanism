@@ -6,7 +6,6 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.providers.IChemicalProvider;
-import mekanism.api.providers.IGasProvider;
 import moze_intel.projecte.api.codec.NSSCodecHolder;
 import moze_intel.projecte.api.nss.AbstractNSSTag;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;

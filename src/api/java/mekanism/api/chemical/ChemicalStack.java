@@ -51,13 +51,13 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
      *
      * @since 10.6.0
      */
-    public static final Codec<Chemical> CHEMICAL_NON_EMPTY_CODEC = chemicalNonEmptyCodec(MekanismAPI.CHEMICAL_REGISTRY);
+    public static final Codec<Chemical> CHEMICAL_NON_EMPTY_CODEC = MekanismAPI.CHEMICAL_REGISTRY.byNameCodec().validate(chemical -> chemical.isEmptyType() ? DataResult.error(() -> "Chemical must not be mekanism:empty") : DataResult.success(chemical));
     /**
      * A standard codec for non-empty Chemical holders.
      *
      * @since 10.6.0
      */
-    public static final Codec<Holder<Chemical>> CHEMICAL_NON_EMPTY_HOLDER_CODEC = chemicalNonEmptyHolderCodec(MekanismAPI.CHEMICAL_REGISTRY);
+    public static final Codec<Holder<Chemical>> CHEMICAL_NON_EMPTY_HOLDER_CODEC = MekanismAPI.CHEMICAL_REGISTRY.holderByNameCodec().validate(chemical -> chemical.value().isEmptyType() ? DataResult.error(() -> "Chemical must not be mekanism:empty") : DataResult.success(chemical));
     /**
      * A standard map codec for Chemical stacks that does not accept empty stacks.
      *
@@ -100,27 +100,6 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
         return fixedAmountCodec(CHEMICAL_NON_EMPTY_CODEC, ChemicalStack::new, amount);
     }
 
-
-    /**
-     * A standard codec for chemicals.
-     *
-     * @implNote Unlike for fluids we do this on the objects instead of on the holders, as we don't have builtin holders.
-     * @since 10.6.0
-     */
-    protected static <CHEMICAL extends Chemical> Codec<CHEMICAL> chemicalNonEmptyCodec(Registry<CHEMICAL> registry) {
-        return registry.byNameCodec().validate(chemical -> chemical.isEmptyType() ? DataResult.error(() -> "Chemical must not be mekanism:empty")
-                                                                                  : DataResult.success(chemical));
-    }
-
-    /**
-     * A standard codec for chemicals.
-     *
-     * @since 10.6.0
-     */
-    protected static <CHEMICAL extends Chemical> Codec<Holder<CHEMICAL>> chemicalNonEmptyHolderCodec(Registry<CHEMICAL> registry) {
-        return registry.holderByNameCodec().validate(chemical -> chemical.value().isEmptyType() ? DataResult.error(() -> "Chemical must not be mekanism:empty")
-                                                                                                : DataResult.success(chemical));
-    }
 
     /**
      * A standard codec for chemical stacks that does not accept empty stacks.
