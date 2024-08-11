@@ -61,7 +61,7 @@ public abstract class RenderData {
             this.fluid = fluid;
         }
 
-        public static <CHEMICAL extends Chemical> Builder<ChemicalRenderData> create(ChemicalStack chemical) {
+        public static Builder<ChemicalRenderData> create(ChemicalStack chemical) {
             if (chemical.isEmpty()) {
                 throw new IllegalArgumentException("Chemical may not be empty");
             }

@@ -1,9 +1,8 @@
 package mekanism.client.recipe_viewer.color;
 
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 
-public class PigmentExtractorColorDetails extends RecipeViewerColorDetails<Chemical, ChemicalStack> {
+public class PigmentExtractorColorDetails extends RecipeViewerColorDetails {
 
     public PigmentExtractorColorDetails() {
         super(() -> ChemicalStack.EMPTY);

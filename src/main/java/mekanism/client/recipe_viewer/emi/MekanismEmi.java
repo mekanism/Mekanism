@@ -42,7 +42,6 @@ import mekanism.client.recipe_viewer.emi.recipe.ItemStackToChemicalEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.ItemStackToEnergyEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.ItemStackToFluidOptionalItemEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.ItemStackToItemStackEmiRecipe;
-import mekanism.client.recipe_viewer.emi.recipe.ItemStackToPigmentEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.MekanismEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.MetallurgicInfuserEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.NucleosynthesizingEmiRecipe;
@@ -73,7 +72,6 @@ import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.machine.TileEntityChemicalOxidizer;
-import mekanism.common.tile.machine.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.machine.TileEntityNutritionalLiquifier;
 import mekanism.common.tile.machine.TileEntityPigmentExtractor;
 import mekanism.common.util.EnumUtils;
@@ -88,7 +86,7 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 @EmiEntrypoint
 public class MekanismEmi implements EmiPlugin {
 
-    private static final ChemicalEmiIngredientSerializer<Chemical, ChemicalEmiStack> CHEMICAL_SERIALIZER = new ChemicalEmiIngredientSerializer<>(MekanismAPI.CHEMICAL_REGISTRY, ChemicalEmiStack::new);
+    private static final ChemicalEmiIngredientSerializer CHEMICAL_SERIALIZER = new ChemicalEmiIngredientSerializer(MekanismAPI.CHEMICAL_REGISTRY);
     private static final EmiRegistryAdapter<Chemical> CHEMICAL_REGISTRY_ADAPTER = EmiRegistryAdapter.simple(Chemical.class, MekanismAPI.CHEMICAL_REGISTRY, ChemicalEmiStack::new);
 
     private static final Comparison MEKANISM_COMPARISON = Comparison.compareData(emiStack -> {

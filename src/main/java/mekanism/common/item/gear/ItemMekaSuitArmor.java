@@ -10,7 +10,6 @@ import java.util.function.LongSupplier;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.MekanismAPITags;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.datamaps.MekaSuitAbsorption;
@@ -89,8 +88,8 @@ import org.jetbrains.annotations.Nullable;
 public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContainerItem, IJetpackItem, ICustomCreativeTabContents, IAttachmentAware {
 
     //TODO: Expand this system so that modules can maybe define needed tanks?
-    private final List<ChemicalTankSpec<Chemical>> gasTankSpecs = new ArrayList<>();
-    private final List<ChemicalTankSpec<Chemical>> gasTankSpecsView = Collections.unmodifiableList(gasTankSpecs);
+    private final List<ChemicalTankSpec> gasTankSpecs = new ArrayList<>();
+    private final List<ChemicalTankSpec> gasTankSpecsView = Collections.unmodifiableList(gasTankSpecs);
     private final List<FluidTankSpec> fluidTankSpecs = new ArrayList<>();
     private final List<FluidTankSpec> fluidTankSpecsView = Collections.unmodifiableList(fluidTankSpecs);
     private final float absorption;
@@ -249,7 +248,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         if (!gasTankSpecs.isEmpty()) {
             ContainerType.CHEMICAL.addDefaultCreators(eventBus, this, () -> {
                 ChemicalTanksBuilder builder = ChemicalTanksBuilder.builder();
-                for (ChemicalTankSpec<Chemical> spec : gasTankSpecs) {
+                for (ChemicalTankSpec spec : gasTankSpecs) {
                     spec.addTank(builder, ComponentBackedChemicalTank::new);
                 }
                 return builder.build();
@@ -283,7 +282,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         }, this);
     }
 
-    public List<ChemicalTankSpec<Chemical>> getGasTankSpecs() {
+    public List<ChemicalTankSpec> getGasTankSpecs() {
         return gasTankSpecsView;
     }
 

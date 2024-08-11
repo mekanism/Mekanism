@@ -30,7 +30,7 @@ public class CrTBracketHandlers {
     @ZenCodeType.Method
     @BracketResolver(CrTConstants.BRACKET_CHEMICAL)
     public static ICrTChemicalStack getChemicalStack(String tokens) {
-        return getChemicalStack(CrTConstants.BRACKET_CHEMICAL, tokens, MekanismAPI.CHEMICAL_REGISTRY, CrTUtils::stackFromChemical);
+        return CrTUtils.stackFromChemical(getValue(CrTConstants.BRACKET_CHEMICAL, tokens, MekanismAPI.CHEMICAL_REGISTRY));
     }
 
     /**
@@ -57,11 +57,6 @@ public class CrTBracketHandlers {
     @BracketResolver(CrTConstants.BRACKET_MODULE_DATA)
     public static ModuleData<?> getModuleData(String tokens) {
         return getValue(CrTConstants.BRACKET_MODULE_DATA, tokens, MekanismAPI.MODULE_REGISTRY);
-    }
-
-    private static <CHEMICAL extends Chemical, CRT_STACK extends ICrTChemicalStack> CRT_STACK getChemicalStack(String bracket,
-          String tokens, Registry<CHEMICAL> registry, Function<CHEMICAL, CRT_STACK> getter) {
-        return getter.apply(getValue(bracket, tokens, registry));
     }
 
     private static <V> V getValue(String bracket, String tokens, ResourceKey<? extends Registry<? extends V>> registryKey) {

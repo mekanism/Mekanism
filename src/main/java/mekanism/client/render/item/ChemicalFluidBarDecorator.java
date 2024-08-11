@@ -20,7 +20,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 
 public class ChemicalFluidBarDecorator implements IItemDecorator {
 
-    private final ContainerType<? extends IChemicalTank, ?, ?>[] chemicalContainerTypes;
+    private final ContainerType<IChemicalTank, ?, ?>[] chemicalContainerTypes;
     private final boolean showFluid;
     private final Predicate<ItemStack> visibleFor;
 
@@ -30,7 +30,7 @@ public class ChemicalFluidBarDecorator implements IItemDecorator {
      * @param chemicalContainerTypes the container types to be displayed in order, starting from the bottom
      */
     @SafeVarargs
-    public ChemicalFluidBarDecorator(boolean showFluid, Predicate<ItemStack> visibleFor, ContainerType<? extends IChemicalTank, ?, ?>... chemicalContainerTypes) {
+    public ChemicalFluidBarDecorator(boolean showFluid, Predicate<ItemStack> visibleFor, ContainerType<IChemicalTank, ?, ?>... chemicalContainerTypes) {
         this.showFluid = showFluid;
         this.chemicalContainerTypes = chemicalContainerTypes;
         this.visibleFor = visibleFor;

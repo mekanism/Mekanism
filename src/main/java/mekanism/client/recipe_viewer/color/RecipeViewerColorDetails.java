@@ -1,25 +1,24 @@
 package mekanism.client.recipe_viewer.color;
 
 import java.util.function.Supplier;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.client.gui.element.progress.GuiProgress.ColorDetails;
 
-public abstract class RecipeViewerColorDetails<CHEMICAL extends Chemical, STACK extends ChemicalStack> implements ColorDetails {
+public abstract class RecipeViewerColorDetails implements ColorDetails {
 
-    protected final Supplier<STACK> empty;
-    public Supplier<STACK> ingredient;
+    protected final Supplier<ChemicalStack> empty;
+    public Supplier<ChemicalStack> ingredient;
 
-    protected RecipeViewerColorDetails(Supplier<STACK> empty) {
+    protected RecipeViewerColorDetails(Supplier<ChemicalStack> empty) {
         this.empty = empty;
         setIngredient(this.empty);
     }
 
-    public void setIngredient(STACK ingredient) {
+    public void setIngredient(ChemicalStack ingredient) {
         setIngredient(() -> ingredient);
     }
 
-    public void setIngredient(Supplier<STACK> ingredient) {
+    public void setIngredient(Supplier<ChemicalStack> ingredient) {
         this.ingredient = ingredient;
     }
 
@@ -27,11 +26,11 @@ public abstract class RecipeViewerColorDetails<CHEMICAL extends Chemical, STACK 
         setIngredient(empty);
     }
 
-    protected int getColor(Supplier<STACK> ingredient) {
+    protected int getColor(Supplier<ChemicalStack> ingredient) {
         return getColor(ingredient.get());
     }
 
-    protected int getColor(STACK ingredient) {
+    protected int getColor(ChemicalStack ingredient) {
         return getColor(ingredient.getChemicalColorRepresentation());
     }
 

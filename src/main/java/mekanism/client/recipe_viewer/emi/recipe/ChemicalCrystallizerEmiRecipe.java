@@ -33,8 +33,8 @@ public class ChemicalCrystallizerEmiRecipe extends MekanismEmiHolderRecipe<Chemi
         addItemOutputDefinition(recipe.getOutputDefinition());
         ChemicalStackIngredient input = recipe.getInput();
         addInputDefinition(input);
-        List<? extends ChemicalStack> inputRepresentations = input.getRepresentations();
-        displayItems = input instanceof ChemicalStackIngredient ingredient ? RecipeViewerUtils.getDisplayItems(ingredient) : Collections.emptyList();
+        List<ChemicalStack> inputRepresentations = input.getRepresentations();
+        displayItems = input != null ? RecipeViewerUtils.getDisplayItems(input) : Collections.emptyList();
         oreInfo = new IOreInfo() {
             @Override
             public @NotNull ChemicalStack getInputChemical() {

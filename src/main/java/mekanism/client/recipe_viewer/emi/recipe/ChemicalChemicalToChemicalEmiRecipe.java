@@ -2,8 +2,6 @@ package mekanism.client.recipe_viewer.emi.recipe;
 
 import dev.emi.emi.api.render.EmiTexture;
 import dev.emi.emi.api.widget.WidgetHolder;
-import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.chemical.ChemicalChemicalToChemicalRecipe;
 import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;
 import mekanism.client.gui.element.gauge.GaugeType;
@@ -17,8 +15,7 @@ import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.tile.component.config.DataType;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
-public abstract class ChemicalChemicalToChemicalEmiRecipe<CHEMICAL extends Chemical, STACK extends ChemicalStack,
-      RECIPE extends ChemicalChemicalToChemicalRecipe> extends MekanismEmiHolderRecipe<RECIPE> {
+public abstract class ChemicalChemicalToChemicalEmiRecipe<RECIPE extends ChemicalChemicalToChemicalRecipe> extends MekanismEmiHolderRecipe<RECIPE> {
 
     protected ChemicalChemicalToChemicalEmiRecipe(MekanismEmiRecipeCategory category, RecipeHolder<RECIPE> recipeHolder) {
         super(category, recipeHolder);

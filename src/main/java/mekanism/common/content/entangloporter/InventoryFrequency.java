@@ -17,7 +17,6 @@ import mekanism.api.AutomationType;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
 import mekanism.api.SerializerHelper;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.IChemicalHandler;
@@ -292,7 +291,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     private void addChemicalTransferHandler(IChemicalTank tank, Map<TransmissionType, Consumer<?>> typesToEject, List<Runnable> transferHandlers, int expected) {
         ChemicalStack toSend = tank.extract(tank.getCapacity(), Action.SIMULATE, AutomationType.INTERNAL);
         if (!toSend.isEmpty()) {
-            SendingChemicalHandlerTarget<?, ?, ?> target = new SendingChemicalHandlerTarget<>(toSend, expected, tank);
+            SendingChemicalHandlerTarget target = new SendingChemicalHandlerTarget(toSend, expected, tank);
             typesToEject.put(TransmissionType.CHEMICAL, target);
             transferHandlers.add(target);
         }
@@ -346,12 +345,12 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         }
     }
 
-    private static class SendingChemicalHandlerTarget<CHEMICAL extends Chemical, STACK extends ChemicalStack, HANDLER extends IChemicalHandler>
-          extends ChemicalHandlerTarget<CHEMICAL, STACK, HANDLER> implements Runnable, Consumer<HANDLER> {
+    private static class SendingChemicalHandlerTarget
+          extends ChemicalHandlerTarget implements Runnable, Consumer<IChemicalHandler> {
 
         private final IChemicalTank storedChemical;
 
-        public SendingChemicalHandlerTarget(@NotNull STACK toSend, int expectedSize, IChemicalTank storedChemical) {
+        public SendingChemicalHandlerTarget(ChemicalStack toSend, int expectedSize, IChemicalTank storedChemical) {
             super(toSend, expectedSize);
             this.storedChemical = storedChemical;
         }
@@ -364,7 +363,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         }
 
         @Override
-        public void accept(HANDLER handler) {
+        public void accept(IChemicalHandler handler) {
             if (ChemicalUtil.canInsert(handler, extra)) {
                 addHandler(handler);
             }

@@ -28,7 +28,7 @@ public class CrTBracketDumpers {
      */
     @BracketDumper(value = CrTConstants.BRACKET_CHEMICAL, subCommandName = "chemicals")
     public static Collection<String> getChemicalStackDump() {
-        return getChemicalStackDump(MekanismAPI.CHEMICAL_REGISTRY, CrTUtils::stackFromChemical);
+        return getDump(MekanismAPI.CHEMICAL_REGISTRY, chemical -> CrTUtils.stackFromChemical(chemical).getCommandString());
     }
     
     /**
@@ -45,11 +45,6 @@ public class CrTBracketDumpers {
     @BracketDumper(value = CrTConstants.BRACKET_MODULE_DATA, subCommandName = "moduleData")
     public static Collection<String> getModuleDataDump() {
         return getDump(MekanismAPI.MODULE_REGISTRY, CrTConstants.BRACKET_MODULE_DATA);
-    }
-
-    private static <CHEMICAL extends Chemical, CRT_STACK extends ICrTChemicalStack> Collection<String>
-    getChemicalStackDump(Registry<CHEMICAL> registry, Function<CHEMICAL, CRT_STACK> getter) {
-        return getDump(registry, chemical -> getter.apply(chemical).getCommandString());
     }
 
     private static <V> Collection<String> getDump(Registry<V> registry, String bracket) {

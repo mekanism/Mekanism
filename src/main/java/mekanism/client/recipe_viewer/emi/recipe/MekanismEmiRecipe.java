@@ -111,7 +111,7 @@ public abstract class MekanismEmiRecipe<RECIPE> extends AbstractContainerEventHa
         addOutputDefinition(definition.stream().map(NeoForgeEmiStack::of).toList());
     }
 
-    protected <CHEMICAL extends Chemical, STACK extends ChemicalStack> void addChemicalOutputDefinition(List<STACK> definition) {
+    protected void addChemicalOutputDefinition(List<ChemicalStack> definition) {
         addOutputDefinition(definition.stream().<EmiStack>map(ChemicalEmiStack::create).toList());
     }
 

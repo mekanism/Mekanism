@@ -37,7 +37,7 @@ public class HybridInventorySlot extends BasicInventorySlot implements IFluidHan
 
     public static HybridInventorySlot outputOrFill(MergedTank mergedTank, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(mergedTank, "Merged tank cannot be null");
-        Predicate<@NotNull ItemStack> chemicalExtractPredicate = ChemicalInventorySlot.getFillExtractPredicate(mergedTank.getChemicalTank(), Capabilities.CHEMICAL);
+        Predicate<@NotNull ItemStack> chemicalExtractPredicate = ChemicalInventorySlot.getFillExtractPredicate(mergedTank.getChemicalTank());
         Predicate<@NotNull ItemStack> chemicalInsertPredicate = stack -> ChemicalInventorySlot.fillInsertCheck(mergedTank.getChemicalTank(), Capabilities.CHEMICAL, stack);
 
         return new HybridInventorySlot(mergedTank, (stack, automationType) -> {

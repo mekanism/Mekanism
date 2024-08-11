@@ -179,7 +179,7 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<IChemicalHandle
 
     private long tickEmit(@NotNull ChemicalStack stack) {
         Collection<Map<Direction, IChemicalHandler>> acceptorValues = acceptorCache.getAcceptorValues();
-        ChemicalHandlerTarget<Chemical, ChemicalStack, IChemicalHandler> target = new ChemicalHandlerTarget<>(stack, acceptorValues.size() * 2);
+        ChemicalHandlerTarget target = new ChemicalHandlerTarget(stack, acceptorValues.size() * 2);
         for (Map<Direction, IChemicalHandler> acceptors : acceptorValues) {
             for (IChemicalHandler handler : acceptors.values()) {
                 if (handler != null && ChemicalUtil.canInsert(handler, stack)) {

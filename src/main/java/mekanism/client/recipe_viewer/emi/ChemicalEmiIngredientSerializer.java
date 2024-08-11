@@ -11,23 +11,21 @@ import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.resources.ResourceLocation;
 
 @NothingNullByDefault
-public class ChemicalEmiIngredientSerializer<CHEMICAL extends Chemical, EMI_STACK extends ChemicalEmiStack> implements EmiStackSerializer<EMI_STACK> {
+public class ChemicalEmiIngredientSerializer implements EmiStackSerializer<ChemicalEmiStack> {
 
-    private final EmiStackCreator<CHEMICAL, EMI_STACK> stackCreator;
-    private final Registry<CHEMICAL> registry;
+    private final Registry<Chemical> registry;
     private final String type;
 
-    ChemicalEmiIngredientSerializer(Registry<CHEMICAL> registry, EmiStackCreator<CHEMICAL, EMI_STACK> stackCreator) {
+    ChemicalEmiIngredientSerializer(Registry<Chemical> registry) {
         this.registry = registry;
-        this.stackCreator = stackCreator;
         this.type = registry.key().location().toString().replace(':', '_');
     }
 
     @Override
     public EmiStack create(ResourceLocation id, DataComponentPatch ignored, long amount) {
-        Optional<CHEMICAL> chemical = registry.getOptional(id).filter(c -> !c.isEmptyType());
+        Optional<Chemical> chemical = registry.getOptional(id).filter(c -> !c.isEmptyType());
         if (chemical.isPresent()) {
-            return stackCreator.create(chemical.get(), amount);
+            return new ChemicalEmiStack(chemical.get(), amount);
         }
         return EmiStack.EMPTY;
     }
@@ -38,16 +36,10 @@ public class ChemicalEmiIngredientSerializer<CHEMICAL extends Chemical, EMI_STAC
     }
 
     void addEmiStacks(EmiRegistry emiRegistry) {
-        for (CHEMICAL chemical : registry) {
+        for (Chemical chemical : registry) {
             if (!chemical.isEmptyType()) {//Don't add the empty type. We will allow EMI to filter out any that are hidden from recipe viewers
-                emiRegistry.addEmiStack(stackCreator.create(chemical, 1));
+                emiRegistry.addEmiStack(new ChemicalEmiStack(chemical, 1));
             }
         }
-    }
-
-    @FunctionalInterface
-    public interface EmiStackCreator<CHEMICAL extends Chemical, EMI_STACK extends ChemicalEmiStack> {
-
-        EMI_STACK create(CHEMICAL chemical, long amount);
     }
 }

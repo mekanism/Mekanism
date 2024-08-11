@@ -1,10 +1,9 @@
 package mekanism.client.recipe_viewer.color;
 
 import java.util.function.Supplier;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 
-public class PigmentMixerColorDetails extends RecipeViewerColorDetails<Chemical, ChemicalStack> {
+public class PigmentMixerColorDetails extends RecipeViewerColorDetails {
 
     private Supplier<ChemicalStack> outputIngredient;
 

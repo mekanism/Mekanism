@@ -29,9 +29,9 @@ public class ChemicalTankBuilder {
      */
     public final BiPredicate<Chemical, @NotNull AutomationType> manualOnly = (chemical, automationType) -> automationType == AutomationType.MANUAL;
 
-    private final BasicTankCreator<IChemicalTank> tankCreator;
+    private final BasicTankCreator tankCreator;
 
-    private ChemicalTankBuilder(BasicTankCreator<IChemicalTank> tankCreator) {
+    private ChemicalTankBuilder(BasicTankCreator tankCreator) {
         this.tankCreator = tankCreator;
     }
 
@@ -240,9 +240,9 @@ public class ChemicalTankBuilder {
     }
 
     @FunctionalInterface
-    private interface BasicTankCreator<TANK extends IChemicalTank> {
+    private interface BasicTankCreator {
 
-        TANK create(long capacity, BiPredicate<Chemical, @NotNull AutomationType> canExtract, BiPredicate<Chemical, @NotNull AutomationType> canInsert,
+        IChemicalTank create(long capacity, BiPredicate<Chemical, @NotNull AutomationType> canExtract, BiPredicate<Chemical, @NotNull AutomationType> canInsert,
               Predicate<Chemical> validator, @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener);
     }
 }

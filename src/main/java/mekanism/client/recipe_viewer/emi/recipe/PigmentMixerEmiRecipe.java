@@ -2,7 +2,6 @@ package mekanism.client.recipe_viewer.emi.recipe;
 
 import dev.emi.emi.api.widget.WidgetHolder;
 import java.util.function.Supplier;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.PigmentMixingRecipe;
 import mekanism.client.gui.element.gauge.GaugeType;
@@ -13,7 +12,7 @@ import mekanism.client.recipe_viewer.color.PigmentMixerColorDetails;
 import mekanism.client.recipe_viewer.emi.MekanismEmiRecipeCategory;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
-public class PigmentMixerEmiRecipe extends ChemicalChemicalToChemicalEmiRecipe<Chemical, ChemicalStack, PigmentMixingRecipe> {
+public class PigmentMixerEmiRecipe extends ChemicalChemicalToChemicalEmiRecipe<PigmentMixingRecipe> {
 
     private final Supplier<ChemicalStack> leftInput;
     private final Supplier<ChemicalStack> rightInput;

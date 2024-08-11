@@ -135,7 +135,7 @@ public class ChemicalUtil {
     public static void addChemicalDataToTooltip(List<Component> tooltips, Chemical chemical, boolean advanced) {
         if (!chemical.isEmptyType()) {
             addAttributeTooltips(tooltips, chemical);
-            if (chemical instanceof Chemical gas && gas.is(MekanismAPITags.WASTE_BARREL_DECAY_BLACKLIST)) {
+            if (chemical.is(MekanismAPITags.WASTE_BARREL_DECAY_BLACKLIST)) {
                 tooltips.add(MekanismLang.DECAY_IMMUNE.translateColored(EnumColor.AQUA));
             }
             if (advanced) {
@@ -167,7 +167,7 @@ public class ChemicalUtil {
         if (stack.isEmpty() || targets.isEmpty()) {
             return 0;
         }
-        ChemicalHandlerTarget<Chemical, ChemicalStack, IChemicalHandler> target = new ChemicalHandlerTarget<>(stack, targets.size());
+        ChemicalHandlerTarget target = new ChemicalHandlerTarget(stack, targets.size());
         for (BlockCapabilityCache<IChemicalHandler, Direction> capability : targets) {
             //Insert to access side and collect the cap if it is present, and we can insert the type of the stack into it
             IChemicalHandler handler = capability.getCapability();

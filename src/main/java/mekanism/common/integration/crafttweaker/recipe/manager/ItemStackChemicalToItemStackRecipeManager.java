@@ -4,8 +4,6 @@ import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.util.ItemStackUtil;
-import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.api.recipes.PaintingRecipe;
@@ -26,8 +24,7 @@ import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_ITEM_STACK_CHEMICAL_TO_ITEM_STACK)
-public abstract class ItemStackChemicalToItemStackRecipeManager<CHEMICAL extends Chemical, STACK extends ChemicalStack,
-      INGREDIENT extends ChemicalStackIngredient, RECIPE extends ItemStackChemicalToItemStackRecipe>
+public abstract class ItemStackChemicalToItemStackRecipeManager<INGREDIENT extends ChemicalStackIngredient, RECIPE extends ItemStackChemicalToItemStackRecipe>
       extends MekanismRecipeManager<SingleItemChemicalRecipeInput, RECIPE> {
 
     protected ItemStackChemicalToItemStackRecipeManager(IMekanismRecipeTypeProvider<SingleItemChemicalRecipeInput, RECIPE, ?> recipeType) {
@@ -85,7 +82,7 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<CHEMICAL extends
 
     @ZenRegister
     @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_COMPRESSING)
-    public static class OsmiumCompressorRecipeManager extends ItemStackChemicalToItemStackRecipeManager<Chemical, ChemicalStack, ChemicalStackIngredient, ItemStackGasToItemStackRecipe> {
+    public static class OsmiumCompressorRecipeManager extends ItemStackChemicalToItemStackRecipeManager<ChemicalStackIngredient, ItemStackGasToItemStackRecipe> {
 
         public static final OsmiumCompressorRecipeManager INSTANCE = new OsmiumCompressorRecipeManager();
 
@@ -101,7 +98,7 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<CHEMICAL extends
 
     @ZenRegister
     @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_INJECTING)
-    public static class ChemicalInjectionRecipeManager extends ItemStackChemicalToItemStackRecipeManager<Chemical, ChemicalStack, ChemicalStackIngredient, ItemStackGasToItemStackRecipe> {
+    public static class ChemicalInjectionRecipeManager extends ItemStackChemicalToItemStackRecipeManager<ChemicalStackIngredient, ItemStackGasToItemStackRecipe> {
 
         public static final ChemicalInjectionRecipeManager INSTANCE = new ChemicalInjectionRecipeManager();
 
@@ -117,7 +114,7 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<CHEMICAL extends
 
     @ZenRegister
     @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_PURIFYING)
-    public static class PurificationRecipeManager extends ItemStackChemicalToItemStackRecipeManager<Chemical, ChemicalStack, ChemicalStackIngredient, ItemStackGasToItemStackRecipe> {
+    public static class PurificationRecipeManager extends ItemStackChemicalToItemStackRecipeManager<ChemicalStackIngredient, ItemStackGasToItemStackRecipe> {
 
         public static final PurificationRecipeManager INSTANCE = new PurificationRecipeManager();
 
@@ -133,7 +130,7 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<CHEMICAL extends
 
     @ZenRegister
     @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_METALLURGIC_INFUSING)
-    public static class MetallurgicInfuserRecipeManager extends ItemStackChemicalToItemStackRecipeManager<Chemical, ChemicalStack, ChemicalStackIngredient,
+    public static class MetallurgicInfuserRecipeManager extends ItemStackChemicalToItemStackRecipeManager<ChemicalStackIngredient,
           MetallurgicInfuserRecipe> {
 
         public static final MetallurgicInfuserRecipeManager INSTANCE = new MetallurgicInfuserRecipeManager();
@@ -150,7 +147,7 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<CHEMICAL extends
 
     @ZenRegister
     @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_PAINTING)
-    public static class PaintingRecipeManager extends ItemStackChemicalToItemStackRecipeManager<Chemical, ChemicalStack, ChemicalStackIngredient, PaintingRecipe> {
+    public static class PaintingRecipeManager extends ItemStackChemicalToItemStackRecipeManager<ChemicalStackIngredient, PaintingRecipe> {
 
         public static final PaintingRecipeManager INSTANCE = new PaintingRecipeManager();
 
