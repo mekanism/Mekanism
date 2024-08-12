@@ -192,6 +192,9 @@
   "turbine.mekanismgenerators.stats.tank_volume": "Volum del Tanc: %1$s",
   "turbine.mekanismgenerators.stats.vents": "Ventilacions: %1$s %2$s",
   "turbine.mekanismgenerators.steam_input": "Entrada de Vapor: %1$s mB/t",
+  "turbine.mekanismgenerators.tooltip.steamdump": "Buidant Vapor",
+  "turbine.mekanismgenerators.tooltip.steamdump.warning": "L'Aigua NO serà reciclada",
+  "turbine.mekanismgenerators.tooltip.steamdump_excess": "Buidant excés de Vapor",
   "wind_generator.mekanismgenerators.no_wind": "Sense vent",
   "wind_generator.mekanismgenerators.sky_blocked": "Cel obstruït"
 }
