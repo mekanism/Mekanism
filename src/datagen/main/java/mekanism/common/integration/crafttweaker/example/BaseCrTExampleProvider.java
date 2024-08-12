@@ -93,8 +93,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
         );
         addSupportedConversion(IIngredientWithAmount.class, ItemStackIngredient.class, (imports, ingredient) -> CrTUtils.toCrT(ingredient).getCommandString());
         addSupportedConversion(CTFluidIngredient.class, FluidStackIngredient.class, (imports, ingredient) -> CrTUtils.toCrT(ingredient).getCommandString());
-        addSupportedChemical(ChemicalStack.class, ICrTChemicalStack.class, ChemicalStackIngredient.class, CrTConstants.CLASS_CHEMICAL_STACK_INGREDIENT, CrTChemicalStack::new,
-              CrTUtils.chemicalTags());
+        addChemicalConversions();
         if (PARAMETER_NAMES == null) {
             //Lazy initialize the parameter names, ideally we would find a better time to do this and
             // support multiple instances better but for now this will work
@@ -247,22 +246,20 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
         return "CraftTweaker Examples: " + modid;
     }
 
-    private void addSupportedChemical(Class<ChemicalStack> stackClass,
-          Class<? extends ICrTChemicalStack> stackCrTClass, Class<? extends ChemicalStackIngredient> ingredientClass,
-          String ingredientType, Function<ChemicalStack, CommandStringDisplayable> singleDescription, KnownTagManager<Chemical> tagManager) {
-        addSupportedConversion(stackCrTClass, stackClass, (imports, stack) -> singleDescription.apply(stack).getCommandString());
-        addSupportedConversion(ingredientClass, ingredientClass,
-              (imports, ingredient) -> getIngredientRepresentation(ingredient, imports.addImport(ingredientType), singleDescription, tagManager),
+    private void addChemicalConversions() {
+        addSupportedConversion(ICrTChemicalStack.class, ChemicalStack.class, (imports, stack) -> new CrTChemicalStack(stack).getCommandString());
+        addSupportedConversion(ChemicalStackIngredient.class, ChemicalStackIngredient.class,
+              (imports, ingredient) -> getIngredientRepresentation(ingredient, imports.addImport(CrTConstants.CLASS_CHEMICAL_STACK_INGREDIENT), CrTChemicalStack::new, CrTUtils.chemicalTags()),
               (imports, ingredient) -> {
                   if (ingredient.ingredient() instanceof TagChemicalIngredient tagged) {
                       long amount = ingredient.amount();
                       if (amount > 0 && amount <= Integer.MAX_VALUE) {
-                          return tagManager.tag(tagged.tag()).withAmount((int) amount).getCommandString();
+                          return CrTUtils.chemicalTags().tag(tagged.tag()).withAmount((int) amount).getCommandString();
                       }
                   } else {
                       List<ChemicalStack> chemicals = ingredient.getRepresentations();
                       if (chemicals.size() == 1) {
-                          return singleDescription.apply(chemicals.getFirst()).getCommandString();
+                          return new CrTChemicalStack(chemicals.getFirst()).getCommandString();
                       }
                   }
                   return null;
