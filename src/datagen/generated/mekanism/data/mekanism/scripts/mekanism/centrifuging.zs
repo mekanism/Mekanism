@@ -5,13 +5,7 @@ import mods.mekanism.api.ingredient.ChemicalStackIngredient;
 // <recipetype:mekanism:centrifuging>.addRecipe(name as string, input as ChemicalStackIngredient, output as ICrTChemicalStack)
 
 <recipetype:mekanism:centrifuging>.addRecipe("centrifuge_brine", ChemicalStackIngredient.from(<chemical:mekanism:brine>), <chemical:mekanism:hydrogen_chloride>);
-//Alternate implementations of the above recipe are shown commented below. These implementations make use of implicit casting to allow easier calling:
-// <recipetype:mekanism:centrifuging>.addRecipe("centrifuge_brine", <chemical:mekanism:brine>, <chemical:mekanism:hydrogen_chloride>);
-// <recipetype:mekanism:centrifuging>.addRecipe("centrifuge_brine", ChemicalStackIngredient.from(<chemical:mekanism:brine>), <chemical:mekanism:hydrogen_chloride>);
-// <recipetype:mekanism:centrifuging>.addRecipe("centrifuge_brine", <chemical:mekanism:brine>, <chemical:mekanism:hydrogen_chloride>);
-// <recipetype:mekanism:centrifuging>.addRecipe("centrifuge_brine", ChemicalStackIngredient.from(<chemical:mekanism:brine>), <chemical:mekanism:hydrogen_chloride>);
-// <recipetype:mekanism:centrifuging>.addRecipe("centrifuge_brine", <chemical:mekanism:brine>, <chemical:mekanism:hydrogen_chloride>);
-// <recipetype:mekanism:centrifuging>.addRecipe("centrifuge_brine", ChemicalStackIngredient.from(<chemical:mekanism:brine>), <chemical:mekanism:hydrogen_chloride>);
+//An alternate implementation of the above recipe are shown commented below. This implementation makes use of implicit casting to allow easier calling:
 // <recipetype:mekanism:centrifuging>.addRecipe("centrifuge_brine", <chemical:mekanism:brine>, <chemical:mekanism:hydrogen_chloride>);
 
 

@@ -9,15 +9,11 @@ import mods.mekanism.api.ingredient.ChemicalStackIngredient;
 // <recipetype:mekanism:crystallizing>.addRecipe(name as string, input as ChemicalStackIngredient, output as IItemStack)
 
 <recipetype:mekanism:crystallizing>.addRecipe("osmium_ingotification", ChemicalStackIngredient.from(<chemical:mekanism:osmium> * 200), <item:mekanism:ingot_osmium>);
-//Alternate implementations of the above recipe are shown commented below. These implementations make use of implicit casting to allow easier calling:
-// <recipetype:mekanism:crystallizing>.addRecipe("osmium_ingotification", <chemical:mekanism:osmium> * 200, <item:mekanism:ingot_osmium>);
-// <recipetype:mekanism:crystallizing>.addRecipe("osmium_ingotification", ChemicalStackIngredient.from(<chemical:mekanism:osmium> * 200), <item:mekanism:ingot_osmium>);
+//An alternate implementation of the above recipe are shown commented below. This implementation makes use of implicit casting to allow easier calling:
 // <recipetype:mekanism:crystallizing>.addRecipe("osmium_ingotification", <chemical:mekanism:osmium> * 200, <item:mekanism:ingot_osmium>);
 
 <recipetype:mekanism:crystallizing>.addRecipe("gold_infusion_to_gold", ChemicalStackIngredient.from(<tag:mekanism/chemical:mekanism:gold>, 9), <item:minecraft:gold_nugget>);
-//Alternate implementations of the above recipe are shown commented below. These implementations make use of implicit casting to allow easier calling:
-// <recipetype:mekanism:crystallizing>.addRecipe("gold_infusion_to_gold", <tag:mekanism/chemical:mekanism:gold> * 9, <item:minecraft:gold_nugget>);
-// <recipetype:mekanism:crystallizing>.addRecipe("gold_infusion_to_gold", ChemicalStackIngredient.from(<tag:mekanism/chemical:mekanism:gold>, 9), <item:minecraft:gold_nugget>);
+//An alternate implementation of the above recipe are shown commented below. This implementation makes use of implicit casting to allow easier calling:
 // <recipetype:mekanism:crystallizing>.addRecipe("gold_infusion_to_gold", <tag:mekanism/chemical:mekanism:gold> * 9, <item:minecraft:gold_nugget>);
 
 

@@ -5,13 +5,7 @@ import mods.mekanism.api.ingredient.ChemicalStackIngredient;
 // <recipetype:mekanism:activating>.addRecipe(name as string, input as ChemicalStackIngredient, output as ICrTChemicalStack)
 
 <recipetype:mekanism:activating>.addRecipe("activate_water_vapor", ChemicalStackIngredient.from(<chemical:mekanism:water_vapor>), <chemical:mekanism:brine>);
-//Alternate implementations of the above recipe are shown commented below. These implementations make use of implicit casting to allow easier calling:
-// <recipetype:mekanism:activating>.addRecipe("activate_water_vapor", <chemical:mekanism:water_vapor>, <chemical:mekanism:brine>);
-// <recipetype:mekanism:activating>.addRecipe("activate_water_vapor", ChemicalStackIngredient.from(<chemical:mekanism:water_vapor>), <chemical:mekanism:brine>);
-// <recipetype:mekanism:activating>.addRecipe("activate_water_vapor", <chemical:mekanism:water_vapor>, <chemical:mekanism:brine>);
-// <recipetype:mekanism:activating>.addRecipe("activate_water_vapor", ChemicalStackIngredient.from(<chemical:mekanism:water_vapor>), <chemical:mekanism:brine>);
-// <recipetype:mekanism:activating>.addRecipe("activate_water_vapor", <chemical:mekanism:water_vapor>, <chemical:mekanism:brine>);
-// <recipetype:mekanism:activating>.addRecipe("activate_water_vapor", ChemicalStackIngredient.from(<chemical:mekanism:water_vapor>), <chemical:mekanism:brine>);
+//An alternate implementation of the above recipe are shown commented below. This implementation makes use of implicit casting to allow easier calling:
 // <recipetype:mekanism:activating>.addRecipe("activate_water_vapor", <chemical:mekanism:water_vapor>, <chemical:mekanism:brine>);
 
 

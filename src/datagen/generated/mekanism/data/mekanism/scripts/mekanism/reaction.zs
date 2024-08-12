@@ -18,55 +18,27 @@ import mods.mekanism.api.ingredient.ChemicalStackIngredient;
 // <recipetype:mekanism:reaction>.addRecipe(name as string, inputSolid as IIngredientWithAmount, inputFluid as CTFluidIngredient, inputGas as ChemicalStackIngredient, duration as int, outputItem as IItemStack, outputGas as ICrTChemicalStack, energyRequired as long)
 
 <recipetype:mekanism:reaction>.addRecipe("reaction/sawdust", <tag:item:c:dusts/wood>, <tag:fluid:minecraft:water> * 350, ChemicalStackIngredient.from(<chemical:mekanism:hydrogen_chloride> * 50), 45, <item:minecraft:paper> * 2, 25);
-//Alternate implementations of the above recipe are shown commented below. These implementations make use of implicit casting to allow easier calling:
-// <recipetype:mekanism:reaction>.addRecipe("reaction/sawdust", <tag:item:c:dusts/wood>, <tag:fluid:minecraft:water> * 350, <chemical:mekanism:hydrogen_chloride> * 50, 45, <item:minecraft:paper> * 2, 25);
-// <recipetype:mekanism:reaction>.addRecipe("reaction/sawdust", <tag:item:c:dusts/wood>, <tag:fluid:minecraft:water> * 350, ChemicalStackIngredient.from(<chemical:mekanism:hydrogen_chloride> * 50), 45, <item:minecraft:paper> * 2, 25);
+//An alternate implementation of the above recipe are shown commented below. This implementation makes use of implicit casting to allow easier calling:
 // <recipetype:mekanism:reaction>.addRecipe("reaction/sawdust", <tag:item:c:dusts/wood>, <tag:fluid:minecraft:water> * 350, <chemical:mekanism:hydrogen_chloride> * 50, 45, <item:minecraft:paper> * 2, 25);
 
 <recipetype:mekanism:reaction>.addRecipe("reaction/sand", <tag:item:c:sands>, <tag:fluid:c:chlorine> * 100, ChemicalStackIngredient.from(<chemical:mekanism:hydrogen> * 100), 300, <item:mekanism:block_salt>);
-//Alternate implementations of the above recipe are shown commented below. These implementations make use of implicit casting to allow easier calling:
-// <recipetype:mekanism:reaction>.addRecipe("reaction/sand", <tag:item:c:sands>, <tag:fluid:c:chlorine> * 100, <chemical:mekanism:hydrogen> * 100, 300, <item:mekanism:block_salt>);
-// <recipetype:mekanism:reaction>.addRecipe("reaction/sand", <tag:item:c:sands>, <tag:fluid:c:chlorine> * 100, ChemicalStackIngredient.from(<chemical:mekanism:hydrogen> * 100), 300, <item:mekanism:block_salt>);
+//An alternate implementation of the above recipe are shown commented below. This implementation makes use of implicit casting to allow easier calling:
 // <recipetype:mekanism:reaction>.addRecipe("reaction/sand", <tag:item:c:sands>, <tag:fluid:c:chlorine> * 100, <chemical:mekanism:hydrogen> * 100, 300, <item:mekanism:block_salt>);
 
 <recipetype:mekanism:reaction>.addRecipe("reaction/wooden_buttons", (<tag:item:minecraft:wooden_buttons>) * 8, <tag:fluid:minecraft:water> * 25, ChemicalStackIngredient.from(<chemical:mekanism:oxygen> * 25), 37, <chemical:mekanism:hydrogen> * 25);
-//Alternate implementations of the above recipe are shown commented below. These implementations make use of implicit casting to allow easier calling:
-// <recipetype:mekanism:reaction>.addRecipe("reaction/wooden_buttons", (<tag:item:minecraft:wooden_buttons>) * 8, <tag:fluid:minecraft:water> * 25, <chemical:mekanism:oxygen> * 25, 37, <chemical:mekanism:hydrogen> * 25);
-// <recipetype:mekanism:reaction>.addRecipe("reaction/wooden_buttons", (<tag:item:minecraft:wooden_buttons>) * 8, <tag:fluid:minecraft:water> * 25, ChemicalStackIngredient.from(<chemical:mekanism:oxygen> * 25), 37, <chemical:mekanism:hydrogen> * 25);
-// <recipetype:mekanism:reaction>.addRecipe("reaction/wooden_buttons", (<tag:item:minecraft:wooden_buttons>) * 8, <tag:fluid:minecraft:water> * 25, <chemical:mekanism:oxygen> * 25, 37, <chemical:mekanism:hydrogen> * 25);
-// <recipetype:mekanism:reaction>.addRecipe("reaction/wooden_buttons", (<tag:item:minecraft:wooden_buttons>) * 8, <tag:fluid:minecraft:water> * 25, ChemicalStackIngredient.from(<chemical:mekanism:oxygen> * 25), 37, <chemical:mekanism:hydrogen> * 25);
-// <recipetype:mekanism:reaction>.addRecipe("reaction/wooden_buttons", (<tag:item:minecraft:wooden_buttons>) * 8, <tag:fluid:minecraft:water> * 25, <chemical:mekanism:oxygen> * 25, 37, <chemical:mekanism:hydrogen> * 25);
-// <recipetype:mekanism:reaction>.addRecipe("reaction/wooden_buttons", (<tag:item:minecraft:wooden_buttons>) * 8, <tag:fluid:minecraft:water> * 25, ChemicalStackIngredient.from(<chemical:mekanism:oxygen> * 25), 37, <chemical:mekanism:hydrogen> * 25);
+//An alternate implementation of the above recipe are shown commented below. This implementation makes use of implicit casting to allow easier calling:
 // <recipetype:mekanism:reaction>.addRecipe("reaction/wooden_buttons", (<tag:item:minecraft:wooden_buttons>) * 8, <tag:fluid:minecraft:water> * 25, <chemical:mekanism:oxygen> * 25, 37, <chemical:mekanism:hydrogen> * 25);
 
 <recipetype:mekanism:reaction>.addRecipe("reaction/wooden_pressure_plates", (<tag:item:minecraft:wooden_pressure_plates>) * 8, <tag:fluid:minecraft:water> * 50, ChemicalStackIngredient.from(<chemical:mekanism:oxygen> * 50), 74, <chemical:mekanism:hydrogen> * 50, 100);
-//Alternate implementations of the above recipe are shown commented below. These implementations make use of implicit casting to allow easier calling:
-// <recipetype:mekanism:reaction>.addRecipe("reaction/wooden_pressure_plates", (<tag:item:minecraft:wooden_pressure_plates>) * 8, <tag:fluid:minecraft:water> * 50, <chemical:mekanism:oxygen> * 50, 74, <chemical:mekanism:hydrogen> * 50, 100);
-// <recipetype:mekanism:reaction>.addRecipe("reaction/wooden_pressure_plates", (<tag:item:minecraft:wooden_pressure_plates>) * 8, <tag:fluid:minecraft:water> * 50, ChemicalStackIngredient.from(<chemical:mekanism:oxygen> * 50), 74, <chemical:mekanism:hydrogen> * 50, 100);
-// <recipetype:mekanism:reaction>.addRecipe("reaction/wooden_pressure_plates", (<tag:item:minecraft:wooden_pressure_plates>) * 8, <tag:fluid:minecraft:water> * 50, <chemical:mekanism:oxygen> * 50, 74, <chemical:mekanism:hydrogen> * 50, 100);
-// <recipetype:mekanism:reaction>.addRecipe("reaction/wooden_pressure_plates", (<tag:item:minecraft:wooden_pressure_plates>) * 8, <tag:fluid:minecraft:water> * 50, ChemicalStackIngredient.from(<chemical:mekanism:oxygen> * 50), 74, <chemical:mekanism:hydrogen> * 50, 100);
-// <recipetype:mekanism:reaction>.addRecipe("reaction/wooden_pressure_plates", (<tag:item:minecraft:wooden_pressure_plates>) * 8, <tag:fluid:minecraft:water> * 50, <chemical:mekanism:oxygen> * 50, 74, <chemical:mekanism:hydrogen> * 50, 100);
-// <recipetype:mekanism:reaction>.addRecipe("reaction/wooden_pressure_plates", (<tag:item:minecraft:wooden_pressure_plates>) * 8, <tag:fluid:minecraft:water> * 50, ChemicalStackIngredient.from(<chemical:mekanism:oxygen> * 50), 74, <chemical:mekanism:hydrogen> * 50, 100);
+//An alternate implementation of the above recipe are shown commented below. This implementation makes use of implicit casting to allow easier calling:
 // <recipetype:mekanism:reaction>.addRecipe("reaction/wooden_pressure_plates", (<tag:item:minecraft:wooden_pressure_plates>) * 8, <tag:fluid:minecraft:water> * 50, <chemical:mekanism:oxygen> * 50, 74, <chemical:mekanism:hydrogen> * 50, 100);
 
 <recipetype:mekanism:reaction>.addRecipe("reaction/wooden_fences", (<tag:item:minecraft:wooden_fences>) * 20, <tag:fluid:minecraft:water> * 400, ChemicalStackIngredient.from(<chemical:mekanism:oxygen> * 400), 600, <item:mekanism:dust_charcoal>, <chemical:mekanism:hydrogen> * 400, 300);
-//Alternate implementations of the above recipe are shown commented below. These implementations make use of implicit casting to allow easier calling:
-// <recipetype:mekanism:reaction>.addRecipe("reaction/wooden_fences", (<tag:item:minecraft:wooden_fences>) * 20, <tag:fluid:minecraft:water> * 400, <chemical:mekanism:oxygen> * 400, 600, <item:mekanism:dust_charcoal>, <chemical:mekanism:hydrogen> * 400, 300);
-// <recipetype:mekanism:reaction>.addRecipe("reaction/wooden_fences", (<tag:item:minecraft:wooden_fences>) * 20, <tag:fluid:minecraft:water> * 400, ChemicalStackIngredient.from(<chemical:mekanism:oxygen> * 400), 600, <item:mekanism:dust_charcoal>, <chemical:mekanism:hydrogen> * 400, 300);
-// <recipetype:mekanism:reaction>.addRecipe("reaction/wooden_fences", (<tag:item:minecraft:wooden_fences>) * 20, <tag:fluid:minecraft:water> * 400, <chemical:mekanism:oxygen> * 400, 600, <item:mekanism:dust_charcoal>, <chemical:mekanism:hydrogen> * 400, 300);
-// <recipetype:mekanism:reaction>.addRecipe("reaction/wooden_fences", (<tag:item:minecraft:wooden_fences>) * 20, <tag:fluid:minecraft:water> * 400, ChemicalStackIngredient.from(<chemical:mekanism:oxygen> * 400), 600, <item:mekanism:dust_charcoal>, <chemical:mekanism:hydrogen> * 400, 300);
-// <recipetype:mekanism:reaction>.addRecipe("reaction/wooden_fences", (<tag:item:minecraft:wooden_fences>) * 20, <tag:fluid:minecraft:water> * 400, <chemical:mekanism:oxygen> * 400, 600, <item:mekanism:dust_charcoal>, <chemical:mekanism:hydrogen> * 400, 300);
-// <recipetype:mekanism:reaction>.addRecipe("reaction/wooden_fences", (<tag:item:minecraft:wooden_fences>) * 20, <tag:fluid:minecraft:water> * 400, ChemicalStackIngredient.from(<chemical:mekanism:oxygen> * 400), 600, <item:mekanism:dust_charcoal>, <chemical:mekanism:hydrogen> * 400, 300);
+//An alternate implementation of the above recipe are shown commented below. This implementation makes use of implicit casting to allow easier calling:
 // <recipetype:mekanism:reaction>.addRecipe("reaction/wooden_fences", (<tag:item:minecraft:wooden_fences>) * 20, <tag:fluid:minecraft:water> * 400, <chemical:mekanism:oxygen> * 400, 600, <item:mekanism:dust_charcoal>, <chemical:mekanism:hydrogen> * 400, 300);
 
 <recipetype:mekanism:reaction>.addRecipe("reaction/boat", (<tag:item:minecraft:boats>) * 4, <tag:fluid:minecraft:water> * 400, ChemicalStackIngredient.from(<chemical:mekanism:oxygen> * 400), 600, <item:mekanism:dust_charcoal>, <chemical:mekanism:hydrogen> * 400);
-//Alternate implementations of the above recipe are shown commented below. These implementations make use of implicit casting to allow easier calling:
-// <recipetype:mekanism:reaction>.addRecipe("reaction/boat", (<tag:item:minecraft:boats>) * 4, <tag:fluid:minecraft:water> * 400, <chemical:mekanism:oxygen> * 400, 600, <item:mekanism:dust_charcoal>, <chemical:mekanism:hydrogen> * 400);
-// <recipetype:mekanism:reaction>.addRecipe("reaction/boat", (<tag:item:minecraft:boats>) * 4, <tag:fluid:minecraft:water> * 400, ChemicalStackIngredient.from(<chemical:mekanism:oxygen> * 400), 600, <item:mekanism:dust_charcoal>, <chemical:mekanism:hydrogen> * 400);
-// <recipetype:mekanism:reaction>.addRecipe("reaction/boat", (<tag:item:minecraft:boats>) * 4, <tag:fluid:minecraft:water> * 400, <chemical:mekanism:oxygen> * 400, 600, <item:mekanism:dust_charcoal>, <chemical:mekanism:hydrogen> * 400);
-// <recipetype:mekanism:reaction>.addRecipe("reaction/boat", (<tag:item:minecraft:boats>) * 4, <tag:fluid:minecraft:water> * 400, ChemicalStackIngredient.from(<chemical:mekanism:oxygen> * 400), 600, <item:mekanism:dust_charcoal>, <chemical:mekanism:hydrogen> * 400);
-// <recipetype:mekanism:reaction>.addRecipe("reaction/boat", (<tag:item:minecraft:boats>) * 4, <tag:fluid:minecraft:water> * 400, <chemical:mekanism:oxygen> * 400, 600, <item:mekanism:dust_charcoal>, <chemical:mekanism:hydrogen> * 400);
-// <recipetype:mekanism:reaction>.addRecipe("reaction/boat", (<tag:item:minecraft:boats>) * 4, <tag:fluid:minecraft:water> * 400, ChemicalStackIngredient.from(<chemical:mekanism:oxygen> * 400), 600, <item:mekanism:dust_charcoal>, <chemical:mekanism:hydrogen> * 400);
+//An alternate implementation of the above recipe are shown commented below. This implementation makes use of implicit casting to allow easier calling:
 // <recipetype:mekanism:reaction>.addRecipe("reaction/boat", (<tag:item:minecraft:boats>) * 4, <tag:fluid:minecraft:water> * 400, <chemical:mekanism:oxygen> * 400, 600, <item:mekanism:dust_charcoal>, <chemical:mekanism:hydrogen> * 400);
 
 

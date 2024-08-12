@@ -24,22 +24,11 @@ import mods.mekanism.api.ingredient.ChemicalStackIngredient;
 // <recipetype:mekanism:rotary>.addRecipe(name as string, fluidInput as CTFluidIngredient, gasInput as ChemicalStackIngredient, gasOutput as ICrTChemicalStack, fluidOutput as IFluidStack)
 
 <recipetype:mekanism:rotary>.addRecipe("condensentrate_lithium", ChemicalStackIngredient.from(<chemical:mekanism:lithium>), <fluid:mekanism:lithium>);
-//Alternate implementations of the above recipe are shown commented below. These implementations make use of implicit casting to allow easier calling:
-// <recipetype:mekanism:rotary>.addRecipe("condensentrate_lithium", <chemical:mekanism:lithium>, <fluid:mekanism:lithium>);
-// <recipetype:mekanism:rotary>.addRecipe("condensentrate_lithium", ChemicalStackIngredient.from(<chemical:mekanism:lithium>), <fluid:mekanism:lithium>);
+//An alternate implementation of the above recipe are shown commented below. This implementation makes use of implicit casting to allow easier calling:
 // <recipetype:mekanism:rotary>.addRecipe("condensentrate_lithium", <chemical:mekanism:lithium>, <fluid:mekanism:lithium>);
 
 <recipetype:mekanism:rotary>.addRecipe("decondensentrate_sulfur_dioxide", <tag:fluid:c:sulfur_dioxide> * 1, <chemical:mekanism:sulfur_dioxide>);
-//An alternate implementation of the above recipe are shown commented below. This implementation makes use of implicit casting to allow easier calling:
-// <recipetype:mekanism:rotary>.addRecipe("decondensentrate_sulfur_dioxide", <tag:fluid:c:sulfur_dioxide> * 1, <chemical:mekanism:sulfur_dioxide>);
-
 <recipetype:mekanism:rotary>.addRecipe("rotary_sulfur_trioxide", <tag:fluid:c:sulfur_trioxide> * 1, ChemicalStackIngredient.from(<chemical:mekanism:sulfur_trioxide>), <chemical:mekanism:sulfur_trioxide>, <fluid:mekanism:sulfur_trioxide>);
-//Alternate implementations of the above recipe are shown commented below. These implementations make use of implicit casting to allow easier calling:
-// <recipetype:mekanism:rotary>.addRecipe("rotary_sulfur_trioxide", <tag:fluid:c:sulfur_trioxide> * 1, <chemical:mekanism:sulfur_trioxide>, <chemical:mekanism:sulfur_trioxide>, <fluid:mekanism:sulfur_trioxide>);
-// <recipetype:mekanism:rotary>.addRecipe("rotary_sulfur_trioxide", <tag:fluid:c:sulfur_trioxide> * 1, ChemicalStackIngredient.from(<chemical:mekanism:sulfur_trioxide>), <chemical:mekanism:sulfur_trioxide>, <fluid:mekanism:sulfur_trioxide>);
-// <recipetype:mekanism:rotary>.addRecipe("rotary_sulfur_trioxide", <tag:fluid:c:sulfur_trioxide> * 1, <chemical:mekanism:sulfur_trioxide>, <chemical:mekanism:sulfur_trioxide>, <fluid:mekanism:sulfur_trioxide>);
-// <recipetype:mekanism:rotary>.addRecipe("rotary_sulfur_trioxide", <tag:fluid:c:sulfur_trioxide> * 1, ChemicalStackIngredient.from(<chemical:mekanism:sulfur_trioxide>), <chemical:mekanism:sulfur_trioxide>, <fluid:mekanism:sulfur_trioxide>);
-// <recipetype:mekanism:rotary>.addRecipe("rotary_sulfur_trioxide", <tag:fluid:c:sulfur_trioxide> * 1, <chemical:mekanism:sulfur_trioxide>, <chemical:mekanism:sulfur_trioxide>, <fluid:mekanism:sulfur_trioxide>);
-// <recipetype:mekanism:rotary>.addRecipe("rotary_sulfur_trioxide", <tag:fluid:c:sulfur_trioxide> * 1, ChemicalStackIngredient.from(<chemical:mekanism:sulfur_trioxide>), <chemical:mekanism:sulfur_trioxide>, <fluid:mekanism:sulfur_trioxide>);
+//An alternate implementation of the above recipe are shown commented below. This implementation makes use of implicit casting to allow easier calling:
 // <recipetype:mekanism:rotary>.addRecipe("rotary_sulfur_trioxide", <tag:fluid:c:sulfur_trioxide> * 1, <chemical:mekanism:sulfur_trioxide>, <chemical:mekanism:sulfur_trioxide>, <fluid:mekanism:sulfur_trioxide>);
 

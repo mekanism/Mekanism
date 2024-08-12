@@ -250,8 +250,8 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
     private void addSupportedChemical(Class<ChemicalStack> stackClass,
           Class<? extends ICrTChemicalStack> stackCrTClass, Class<? extends ChemicalStackIngredient> ingredientClass,
           String ingredientType, Function<ChemicalStack, CommandStringDisplayable> singleDescription, KnownTagManager<Chemical> tagManager) {
-        addSupportedConversionWithAlt(ICrTChemicalStack.class, stackCrTClass, stackClass, (imports, stack) -> singleDescription.apply(stack).getCommandString());
-        addSupportedConversionWithAlt(ChemicalStackIngredient.class, ingredientClass, ingredientClass,
+        addSupportedConversion(stackCrTClass, stackClass, (imports, stack) -> singleDescription.apply(stack).getCommandString());
+        addSupportedConversion(ingredientClass, ingredientClass,
               (imports, ingredient) -> getIngredientRepresentation(ingredient, imports.addImport(ingredientType), singleDescription, tagManager),
               (imports, ingredient) -> {
                   if (ingredient.ingredient() instanceof TagChemicalIngredient tagged) {

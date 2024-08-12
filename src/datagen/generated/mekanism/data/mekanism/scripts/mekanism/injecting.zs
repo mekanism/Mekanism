@@ -5,9 +5,7 @@ import mods.mekanism.api.ingredient.ChemicalStackIngredient;
 // <recipetype:mekanism:injecting>.addRecipe(name as string, itemInput as IIngredientWithAmount, chemicalInput as ChemicalStackIngredient, output as IItemStack)
 
 <recipetype:mekanism:injecting>.addRecipe("inject_water_to_sponge", <item:minecraft:sponge>, ChemicalStackIngredient.from(<tag:mekanism/chemical:mekanism:water_vapor>, 5), <item:minecraft:wet_sponge>);
-//Alternate implementations of the above recipe are shown commented below. These implementations make use of implicit casting to allow easier calling:
-// <recipetype:mekanism:injecting>.addRecipe("inject_water_to_sponge", <item:minecraft:sponge>, <tag:mekanism/chemical:mekanism:water_vapor> * 5, <item:minecraft:wet_sponge>);
-// <recipetype:mekanism:injecting>.addRecipe("inject_water_to_sponge", <item:minecraft:sponge>, ChemicalStackIngredient.from(<tag:mekanism/chemical:mekanism:water_vapor>, 5), <item:minecraft:wet_sponge>);
+//An alternate implementation of the above recipe are shown commented below. This implementation makes use of implicit casting to allow easier calling:
 // <recipetype:mekanism:injecting>.addRecipe("inject_water_to_sponge", <item:minecraft:sponge>, <tag:mekanism/chemical:mekanism:water_vapor> * 5, <item:minecraft:wet_sponge>);
 
 

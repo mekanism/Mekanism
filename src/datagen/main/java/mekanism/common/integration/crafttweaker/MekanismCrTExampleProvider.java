@@ -109,9 +109,6 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
                     "4) Hides clean copper slurry"
               ).blankLine()
               .comment(imports -> hideSignature(imports, ICrTChemicalStack.class))
-              .comment(imports -> hideSignature(imports, ICrTChemicalStack.class))
-              .comment(imports -> hideSignature(imports, ICrTChemicalStack.class))
-              .comment(imports -> hideSignature(imports, ICrTChemicalStack.class))
               .blankLine()
               .addComponent(imports -> new JEIHidingComponent(imports, MekanismChemicals.BRINE, CrTChemicalStack::new))
               .addComponent(imports -> new JEIHidingComponent(imports, MekanismChemicals.BIO, CrTChemicalStack::new))
@@ -120,9 +117,6 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .blankLine()
               .comment("Adds a description to the passed in chemical. This example adds some basic text to JEI's information tab when looking at Hydrogen.")
               .blankLine()
-              .comment(imports -> descriptionSignature(imports, ICrTChemicalStack.class))
-              .comment(imports -> descriptionSignature(imports, ICrTChemicalStack.class))
-              .comment(imports -> descriptionSignature(imports, ICrTChemicalStack.class))
               .comment(imports -> descriptionSignature(imports, ICrTChemicalStack.class))
               .blankLine()
               .addComponent(imports -> () -> imports.addImport(EXPANSION_TARGET_JEITWEAKER) + ".addIngredientInformation(" +

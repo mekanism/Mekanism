@@ -10,12 +10,6 @@ import mods.mekanism.api.ingredient.ChemicalStackIngredient;
 // <recipetype:mekanism:washing>.addRecipe(name as string, fluidInput as CTFluidIngredient, slurryInput as ChemicalStackIngredient, output as ICrTChemicalStack)
 
 <recipetype:mekanism:washing>.addRecipe("cleaning_uranium_slurry", <tag:fluid:minecraft:water> * 10, ChemicalStackIngredient.from(<chemical:mekanism:dirty_uranium>), <chemical:mekanism:clean_uranium>);
-//Alternate implementations of the above recipe are shown commented below. These implementations make use of implicit casting to allow easier calling:
-// <recipetype:mekanism:washing>.addRecipe("cleaning_uranium_slurry", <tag:fluid:minecraft:water> * 10, <chemical:mekanism:dirty_uranium>, <chemical:mekanism:clean_uranium>);
-// <recipetype:mekanism:washing>.addRecipe("cleaning_uranium_slurry", <tag:fluid:minecraft:water> * 10, ChemicalStackIngredient.from(<chemical:mekanism:dirty_uranium>), <chemical:mekanism:clean_uranium>);
-// <recipetype:mekanism:washing>.addRecipe("cleaning_uranium_slurry", <tag:fluid:minecraft:water> * 10, <chemical:mekanism:dirty_uranium>, <chemical:mekanism:clean_uranium>);
-// <recipetype:mekanism:washing>.addRecipe("cleaning_uranium_slurry", <tag:fluid:minecraft:water> * 10, ChemicalStackIngredient.from(<chemical:mekanism:dirty_uranium>), <chemical:mekanism:clean_uranium>);
-// <recipetype:mekanism:washing>.addRecipe("cleaning_uranium_slurry", <tag:fluid:minecraft:water> * 10, <chemical:mekanism:dirty_uranium>, <chemical:mekanism:clean_uranium>);
-// <recipetype:mekanism:washing>.addRecipe("cleaning_uranium_slurry", <tag:fluid:minecraft:water> * 10, ChemicalStackIngredient.from(<chemical:mekanism:dirty_uranium>), <chemical:mekanism:clean_uranium>);
+//An alternate implementation of the above recipe are shown commented below. This implementation makes use of implicit casting to allow easier calling:
 // <recipetype:mekanism:washing>.addRecipe("cleaning_uranium_slurry", <tag:fluid:minecraft:water> * 10, <chemical:mekanism:dirty_uranium>, <chemical:mekanism:clean_uranium>);
 

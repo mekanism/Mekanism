@@ -13,9 +13,6 @@ import mods.jeitweaker.Jei;
 */
 
 //Jei.hideIngredient(stack as ICrTChemicalStack)
-//Jei.hideIngredient(stack as ICrTChemicalStack)
-//Jei.hideIngredient(stack as ICrTChemicalStack)
-//Jei.hideIngredient(stack as ICrTChemicalStack)
 
 Jei.hideIngredient(<chemical:mekanism:brine> * 1000);
 Jei.hideIngredient(<chemical:mekanism:bio> * 1000);
@@ -24,9 +21,6 @@ Jei.hideIngredient(<chemical:mekanism:clean_gold> * 1000);
 
 //Adds a description to the passed in chemical. This example adds some basic text to JEI's information tab when looking at Hydrogen.
 
-//Jei.addIngredientInformation(stack as ICrTChemicalStack, Component...)
-//Jei.addIngredientInformation(stack as ICrTChemicalStack, Component...)
-//Jei.addIngredientInformation(stack as ICrTChemicalStack, Component...)
 //Jei.addIngredientInformation(stack as ICrTChemicalStack, Component...)
 
 Jei.addIngredientInformation(<chemical:mekanism:hydrogen> * 1000, "Hydrogen is a basic gas that is produced in an electrolytic separator");

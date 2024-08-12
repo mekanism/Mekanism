@@ -5,13 +5,7 @@ import mods.mekanism.api.ingredient.ChemicalStackIngredient;
 // <recipetype:mekanism:dissolution>.addRecipe(name as string, itemInput as IIngredientWithAmount, gasInput as ChemicalStackIngredient, output as ICrTChemicalStack)
 
 <recipetype:mekanism:dissolution>.addRecipe("salt_to_hydrogen_chloride", <item:mekanism:salt>, ChemicalStackIngredient.from(<chemical:mekanism:sulfuric_acid>), <chemical:mekanism:hydrogen_chloride> * 10);
-//Alternate implementations of the above recipe are shown commented below. These implementations make use of implicit casting to allow easier calling:
-// <recipetype:mekanism:dissolution>.addRecipe("salt_to_hydrogen_chloride", <item:mekanism:salt>, <chemical:mekanism:sulfuric_acid>, <chemical:mekanism:hydrogen_chloride> * 10);
-// <recipetype:mekanism:dissolution>.addRecipe("salt_to_hydrogen_chloride", <item:mekanism:salt>, ChemicalStackIngredient.from(<chemical:mekanism:sulfuric_acid>), <chemical:mekanism:hydrogen_chloride> * 10);
-// <recipetype:mekanism:dissolution>.addRecipe("salt_to_hydrogen_chloride", <item:mekanism:salt>, <chemical:mekanism:sulfuric_acid>, <chemical:mekanism:hydrogen_chloride> * 10);
-// <recipetype:mekanism:dissolution>.addRecipe("salt_to_hydrogen_chloride", <item:mekanism:salt>, ChemicalStackIngredient.from(<chemical:mekanism:sulfuric_acid>), <chemical:mekanism:hydrogen_chloride> * 10);
-// <recipetype:mekanism:dissolution>.addRecipe("salt_to_hydrogen_chloride", <item:mekanism:salt>, <chemical:mekanism:sulfuric_acid>, <chemical:mekanism:hydrogen_chloride> * 10);
-// <recipetype:mekanism:dissolution>.addRecipe("salt_to_hydrogen_chloride", <item:mekanism:salt>, ChemicalStackIngredient.from(<chemical:mekanism:sulfuric_acid>), <chemical:mekanism:hydrogen_chloride> * 10);
+//An alternate implementation of the above recipe are shown commented below. This implementation makes use of implicit casting to allow easier calling:
 // <recipetype:mekanism:dissolution>.addRecipe("salt_to_hydrogen_chloride", <item:mekanism:salt>, <chemical:mekanism:sulfuric_acid>, <chemical:mekanism:hydrogen_chloride> * 10);
 
 
