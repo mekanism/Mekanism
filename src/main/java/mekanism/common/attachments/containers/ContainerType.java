@@ -82,13 +82,13 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
     public static final ContainerType<IExtendedFluidTank, AttachedFluids, ComponentBackedFluidHandler> FLUID = new ContainerType<>(MekanismDataComponents.ATTACHED_FLUIDS,
           SerializationConstants.FLUID_TANKS, SerializationConstants.TANK, ComponentBackedFluidHandler::new, Capabilities.FLUID, AttachedFluids.EMPTY,
           TileEntityMekanism::getFluidTanks, TileEntityMekanism::collectFluidTanks, TileEntityMekanism::applyFluidTanks, TileEntityMekanism::canHandleFluid);
-    
+
     public static final ContainerType<IChemicalTank, AttachedChemicals, ComponentBackedChemicalHandler> CHEMICAL = new ContainerType<>(MekanismDataComponents.ATTACHED_CHEMICALS,
           SerializationConstants.CHEMICAL_TANKS, SerializationConstants.TANK, ComponentBackedChemicalHandler::new, Capabilities.CHEMICAL, AttachedChemicals.EMPTY,
           TileEntityMekanism::getChemicalTanks, TileEntityMekanism::collectChemicalTanks, TileEntityMekanism::applyChemicalTanks, TileEntityMekanism::canHandleChemicals) {
         @Override//todo 1.22 remove backcompat, incl getLegacyX methods
         public void readFrom(HolderLookup.Provider provider, CompoundTag tag, TileEntityMekanism tile) {
-            if (tag.contains(getTag(), Tag.TAG_COMPOUND)) {
+            if (tag.contains(getTag(), Tag.TAG_LIST)) {
                 //has already saved with new format
                 readFrom(provider, tag, getContainers(tile));
             } else {
@@ -109,7 +109,7 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
 
         @Override//todo 1.22 remove backcompat. this one only for NON TileEntityMekanism
         public void readFrom(HolderLookup.Provider provider, CompoundTag tag, List<IChemicalTank> containers) {
-            if (tag.contains(getTag(), Tag.TAG_COMPOUND)) {
+            if (tag.contains(getTag(), Tag.TAG_LIST)) {
                 //has already saved with new format
                 super.readFrom(provider, tag, containers);
             } else {
