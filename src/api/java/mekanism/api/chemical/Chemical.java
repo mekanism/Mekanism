@@ -50,8 +50,8 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
               .resultOrPartial(error -> MekanismAPI.logger.error("Tried to load invalid chemical: '{}'", error));
     }
 
-    public static Chemical parseOptional(HolderLookup.Provider lookupProvider, CompoundTag tag) {
-        return tag.isEmpty() ? MekanismAPI.EMPTY_CHEMICAL : parse(lookupProvider, tag).orElse(MekanismAPI.EMPTY_CHEMICAL);
+    public static Chemical parseOptional(HolderLookup.Provider lookupProvider, String tag) {
+        return tag.isEmpty() ? MekanismAPI.EMPTY_CHEMICAL : MekanismAPI.CHEMICAL_REGISTRY.get(ResourceLocation.tryParse(tag));
     }
 
     private final Map<Class<? extends ChemicalAttribute>, ChemicalAttribute> attributeMap;
