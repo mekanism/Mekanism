@@ -125,7 +125,11 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
                 needsPacket = true;
             }
             if (multiblock.inventoryID != null) {
+                UUID oldCachedID = cachedID;
                 cachedID = multiblock.inventoryID;
+                if (oldCachedID != cachedID) {
+                    markForSave();
+                }
                 if (isMaster()) {
                     if (multiblock.tick(level)) {
                         needsPacket = true;
