@@ -58,7 +58,7 @@ public class RotaryInputRecipeCache extends AbstractInputRecipeCache<RotaryRecip
      * @return {@code true} if there is a match, {@code false} if there isn't.
      */
     public boolean containsInput(@Nullable Level world, ChemicalStack input) {
-        return containsInput(world, input, RotaryRecipe::getGasInput, gasInputCache, complexGasInputRecipes);
+        return containsInput(world, input, RotaryRecipe::getChemicalInput, gasInputCache, complexGasInputRecipes);
     }
 
     /**
@@ -123,10 +123,10 @@ public class RotaryInputRecipeCache extends AbstractInputRecipeCache<RotaryRecip
     protected void initCache(List<RecipeHolder<RotaryRecipe>> recipes) {
         for (RecipeHolder<RotaryRecipe> recipeHolder : recipes) {
             RotaryRecipe recipe = recipeHolder.value();
-            if (recipe.hasFluidToGas() && fluidInputCache.mapInputs(recipe, recipe.getFluidInput())) {
+            if (recipe.hasFluidToChemical() && fluidInputCache.mapInputs(recipe, recipe.getFluidInput())) {
                 complexFluidInputRecipes.add(recipe);
             }
-            if (recipe.hasGasToFluid() && gasInputCache.mapInputs(recipe, recipe.getGasInput())) {
+            if (recipe.hasChemicalToFluid() && gasInputCache.mapInputs(recipe, recipe.getChemicalInput())) {
                 complexGasInputRecipes.add(recipe);
             }
         }

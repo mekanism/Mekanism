@@ -25,13 +25,13 @@ public class RotaryEmiRecipe extends MekanismEmiRecipe<RotaryRecipe> {
         this.recipeHolder = recipeHolder;
         this.condensentrating = condensentrating;
         if (condensentrating) {
-            if (recipe.hasGasToFluid()) {
-                addInputDefinition(recipe.getGasInput());
+            if (recipe.hasChemicalToFluid()) {
+                addInputDefinition(recipe.getChemicalInput());
                 addFluidOutputDefinition(recipe.getFluidOutputDefinition());
             } else {
                 throw new IllegalArgumentException("Condensentrating recipes require a gas to fluid component");
             }
-        } else if (recipe.hasFluidToGas()) {
+        } else if (recipe.hasFluidToChemical()) {
             addInputDefinition(recipe.getFluidInput());
             addChemicalOutputDefinition(recipe.getGasOutputDefinition());
         } else {

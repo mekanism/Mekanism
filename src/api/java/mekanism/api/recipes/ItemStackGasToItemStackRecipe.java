@@ -16,11 +16,11 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Input: ItemStack
  * <br>
- * Input: Gas (Base value, will be multiplied by a per tick amount)
+ * Input: Chemical (Base value, will be multiplied by a per tick amount)
  * <br>
  * Output: ItemStack
  *
- * @apiNote There are currently three types of ItemStack Gas to ItemStack recipe types:
+ * @apiNote There are currently three types of ItemStack Chemical to ItemStack recipe types:
  * <ul>
  *     <li>Compressing: Can be processed in Osmium Compressors and Compressing Factories.</li>
  *     <li>Injecting: Can be processed in Chemical Injection Chambers and Injecting Factories.</li>

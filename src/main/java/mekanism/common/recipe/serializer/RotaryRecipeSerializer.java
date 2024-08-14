@@ -59,8 +59,8 @@ public class RotaryRecipeSerializer implements RecipeSerializer<BasicRotaryRecip
               )
         );
         this.streamCodec = StreamCodec.composite(
-              ByteBufCodecs.optional(FluidToGas.STREAM_CODEC), recipe -> recipe.hasFluidToGas() ? Optional.of(new FluidToGas(recipe)) : Optional.empty(),
-              ByteBufCodecs.optional(GasToFluid.STREAM_CODEC), recipe -> recipe.hasGasToFluid() ? Optional.of(new GasToFluid(recipe)) : Optional.empty(),
+              ByteBufCodecs.optional(FluidToGas.STREAM_CODEC), recipe -> recipe.hasFluidToChemical() ? Optional.of(new FluidToGas(recipe)) : Optional.empty(),
+              ByteBufCodecs.optional(GasToFluid.STREAM_CODEC), recipe -> recipe.hasChemicalToFluid() ? Optional.of(new GasToFluid(recipe)) : Optional.empty(),
               (toGas, toFluid) -> {
                   if (toGas.isPresent()) {
                       FluidToGas fluidToGas = toGas.get();
@@ -112,7 +112,7 @@ public class RotaryRecipeSerializer implements RecipeSerializer<BasicRotaryRecip
         );
 
         private GasToFluid(BasicRotaryRecipe recipe) {
-            this(recipe.getGasInput(), recipe.getFluidOutputRaw());
+            this(recipe.getChemicalInput(), recipe.getFluidOutputRaw());
         }
     }
 }

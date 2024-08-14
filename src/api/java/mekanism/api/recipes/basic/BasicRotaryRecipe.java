@@ -17,122 +17,124 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class BasicRotaryRecipe extends RotaryRecipe {
 
-    protected final ChemicalStackIngredient gasInput;
+    protected final ChemicalStackIngredient chemicalInput;
     protected final FluidStackIngredient fluidInput;
     protected final FluidStack fluidOutput;
-    protected final ChemicalStack gasOutput;
-    protected final boolean hasGasToFluid;
-    protected final boolean hasFluidToGas;
+    protected final ChemicalStack chemicalOutput;
+    protected final boolean hasChemicalToFluid;
+    protected final boolean hasFluidToChemical;
 
     /**
-     * Rotary recipe that converts a fluid into a gas.
+     * Rotary recipe that converts a fluid into a chemical.
      *
-     * @param fluidInput Fluid input.
-     * @param gasOutput  Gas output.
+     * @param fluidInput     Fluid input.
+     * @param chemicalOutput Chemical output.
      *
-     * @apiNote It is recommended to use {@link #BasicRotaryRecipe(FluidStackIngredient, ChemicalStackIngredient, ChemicalStack, FluidStack)} over this constructor in combination
-     * with {@link #BasicRotaryRecipe(ChemicalStackIngredient, FluidStack)} and making two separate recipes if the conversion will be possible in both directions.
+     * @apiNote It is recommended to use {@link #BasicRotaryRecipe(FluidStackIngredient, ChemicalStackIngredient, ChemicalStack, FluidStack)} over this constructor in
+     * combination with {@link #BasicRotaryRecipe(ChemicalStackIngredient, FluidStack)} and making two separate recipes if the conversion will be possible in both
+     * directions.
      */
-    public BasicRotaryRecipe(FluidStackIngredient fluidInput, ChemicalStack gasOutput) {
+    public BasicRotaryRecipe(FluidStackIngredient fluidInput, ChemicalStack chemicalOutput) {
         this.fluidInput = Objects.requireNonNull(fluidInput, "Fluid input cannot be null.");
-        Objects.requireNonNull(gasOutput, "Gas output cannot be null.");
-        if (gasOutput.isEmpty()) {
-            throw new IllegalArgumentException("Gas output cannot be empty.");
+        Objects.requireNonNull(chemicalOutput, "Chemical output cannot be null.");
+        if (chemicalOutput.isEmpty()) {
+            throw new IllegalArgumentException("Chemical output cannot be empty.");
         }
-        this.gasOutput = gasOutput.copy();
-        //noinspection ConstantConditions we safety check it being null behind require hasGasToFluid
-        this.gasInput = null;
+        this.chemicalOutput = chemicalOutput.copy();
+        //noinspection ConstantConditions we safety check it being null behind require hasChemicalToFluid
+        this.chemicalInput = null;
         this.fluidOutput = FluidStack.EMPTY;
-        this.hasGasToFluid = false;
-        this.hasFluidToGas = true;
+        this.hasChemicalToFluid = false;
+        this.hasFluidToChemical = true;
     }
 
     /**
-     * Rotary recipe that converts a gas into a fluid.
+     * Rotary recipe that converts a chemical into a fluid.
      *
-     * @param gasInput    Gas input.
-     * @param fluidOutput Fluid output.
+     * @param chemicalInput Chemical input.
+     * @param fluidOutput   Fluid output.
      *
-     * @apiNote It is recommended to use {@link #BasicRotaryRecipe(FluidStackIngredient, ChemicalStackIngredient, ChemicalStack, FluidStack)} over this constructor in combination
-     * with {@link #BasicRotaryRecipe(FluidStackIngredient, ChemicalStack)} and making two separate recipes if the conversion will be possible in both directions.
+     * @apiNote It is recommended to use {@link #BasicRotaryRecipe(FluidStackIngredient, ChemicalStackIngredient, ChemicalStack, FluidStack)} over this constructor in
+     * combination with {@link #BasicRotaryRecipe(FluidStackIngredient, ChemicalStack)} and making two separate recipes if the conversion will be possible in both
+     * directions.
      */
-    public BasicRotaryRecipe(ChemicalStackIngredient gasInput, FluidStack fluidOutput) {
-        this.gasInput = Objects.requireNonNull(gasInput, "Gas input cannot be null.");
+    public BasicRotaryRecipe(ChemicalStackIngredient chemicalInput, FluidStack fluidOutput) {
+        this.chemicalInput = Objects.requireNonNull(chemicalInput, "Chemical input cannot be null.");
         Objects.requireNonNull(fluidOutput, "Fluid output cannot be null.");
         if (fluidOutput.isEmpty()) {
             throw new IllegalArgumentException("Fluid output cannot be empty.");
         }
         this.fluidOutput = fluidOutput.copy();
-        //noinspection ConstantConditions we safety check it being null behind require hasFluidToGas
+        //noinspection ConstantConditions we safety check it being null behind require hasFluidToChemical
         this.fluidInput = null;
-        this.gasOutput = ChemicalStack.EMPTY;
-        this.hasGasToFluid = true;
-        this.hasFluidToGas = false;
+        this.chemicalOutput = ChemicalStack.EMPTY;
+        this.hasChemicalToFluid = true;
+        this.hasFluidToChemical = false;
     }
 
     /**
-     * Rotary recipe that is capable of converting a fluid into a gas and a gas into a fluid.
+     * Rotary recipe that is capable of converting a fluid into a chemical and a chemical into a fluid.
      *
-     * @param fluidInput  Fluid input.
-     * @param gasInput    Gas input.
-     * @param gasOutput   Gas output.
-     * @param fluidOutput Fluid output.
+     * @param fluidInput     Fluid input.
+     * @param chemicalInput  Chemical input.
+     * @param chemicalOutput Chemical output.
+     * @param fluidOutput    Fluid output.
      *
      * @apiNote It is recommended to use this constructor over using {@link #BasicRotaryRecipe(FluidStackIngredient, ChemicalStack)} and
      * {@link #BasicRotaryRecipe(ChemicalStackIngredient, FluidStack)} in combination and creating two recipes if the conversion will be possible in both directions.
      */
-    public BasicRotaryRecipe(FluidStackIngredient fluidInput, ChemicalStackIngredient gasInput, ChemicalStack gasOutput, FluidStack fluidOutput) {
-        this.gasInput = Objects.requireNonNull(gasInput, "Gas input cannot be null.");
+    public BasicRotaryRecipe(FluidStackIngredient fluidInput, ChemicalStackIngredient chemicalInput, ChemicalStack chemicalOutput, FluidStack fluidOutput) {
+        this.chemicalInput = Objects.requireNonNull(chemicalInput, "Chemical input cannot be null.");
         this.fluidInput = Objects.requireNonNull(fluidInput, "Fluid input cannot be null.");
-        Objects.requireNonNull(gasOutput, "Gas output cannot be null.");
+        Objects.requireNonNull(chemicalOutput, "Chemical output cannot be null.");
         Objects.requireNonNull(fluidOutput, "Fluid output cannot be null.");
-        if (gasOutput.isEmpty()) {
-            throw new IllegalArgumentException("Gas output cannot be empty.");
+        if (chemicalOutput.isEmpty()) {
+            throw new IllegalArgumentException("Chemical output cannot be empty.");
         } else if (fluidOutput.isEmpty()) {
             throw new IllegalArgumentException("Fluid output cannot be empty.");
         }
-        this.gasOutput = gasOutput.copy();
+        this.chemicalOutput = chemicalOutput.copy();
         this.fluidOutput = fluidOutput.copy();
-        this.hasGasToFluid = true;
-        this.hasFluidToGas = true;
+        this.hasChemicalToFluid = true;
+        this.hasFluidToChemical = true;
     }
 
     @Override
-    public boolean hasGasToFluid() {
-        return hasGasToFluid;
+    public boolean hasChemicalToFluid() {
+        return hasChemicalToFluid;
     }
 
     @Override
-    public boolean hasFluidToGas() {
-        return hasFluidToGas;
+    public boolean hasFluidToChemical() {
+        return hasFluidToChemical;
     }
 
     /**
-     * @throws IllegalStateException if {@link #hasGasToFluid()} is {@code false}.
+     * @throws IllegalStateException if {@link #hasChemicalToFluid()} is {@code false}.
      */
-    protected void assertHasGasToFluid() {
-        if (!hasGasToFluid()) {
-            throw new IllegalStateException("This recipe has no gas to fluid conversion.");
+    protected void assertHasChemicalToFluid() {
+        if (!hasChemicalToFluid()) {
+            throw new IllegalStateException("This recipe has no chemical to fluid conversion.");
         }
     }
 
     /**
-     * @throws IllegalStateException if {@link #hasFluidToGas()} is {@code false}.
+     * @throws IllegalStateException if {@link #hasFluidToChemical()} is {@code false}.
      */
     protected void assertHasFluidToGas() {
-        if (!hasFluidToGas()) {
-            throw new IllegalStateException("This recipe has no fluid to gas conversion.");
+        if (!hasFluidToChemical()) {
+            throw new IllegalStateException("This recipe has no fluid to chemical conversion.");
         }
     }
 
     @Override
     public boolean test(FluidStack fluidStack) {
-        return hasFluidToGas() && fluidInput.test(fluidStack);
+        return hasFluidToChemical() && fluidInput.test(fluidStack);
     }
 
     @Override
-    public boolean test(ChemicalStack gasStack) {
-        return hasGasToFluid() && gasInput.test(gasStack);
+    public boolean test(ChemicalStack chemicalStack) {
+        return hasChemicalToFluid() && chemicalInput.test(chemicalStack);
     }
 
     @Override
@@ -142,20 +144,20 @@ public class BasicRotaryRecipe extends RotaryRecipe {
     }
 
     @Override
-    public ChemicalStackIngredient getGasInput() {
-        assertHasGasToFluid();
-        return gasInput;
+    public ChemicalStackIngredient getChemicalInput() {
+        assertHasChemicalToFluid();
+        return chemicalInput;
     }
 
     @Override
     public List<ChemicalStack> getGasOutputDefinition() {
         assertHasFluidToGas();
-        return Collections.singletonList(gasOutput);
+        return Collections.singletonList(chemicalOutput);
     }
 
     @Override
     public List<FluidStack> getFluidOutputDefinition() {
-        assertHasGasToFluid();
+        assertHasChemicalToFluid();
         return Collections.singletonList(fluidOutput);
     }
 
@@ -163,24 +165,24 @@ public class BasicRotaryRecipe extends RotaryRecipe {
     @Contract(value = "_ -> new", pure = true)
     public ChemicalStack getGasOutput(FluidStack input) {
         assertHasFluidToGas();
-        return gasOutput.copy();
+        return chemicalOutput.copy();
     }
 
     @Override
     @Contract(value = "_ -> new", pure = true)
     public FluidStack getFluidOutput(ChemicalStack input) {
-        assertHasGasToFluid();
+        assertHasChemicalToFluid();
         return fluidOutput.copy();
     }
 
     /**
      * For Serializer use. DO NOT MODIFY RETURN VALUE.
      *
-     * @return the uncopied basic input, {@code null} if the recipe doesn't support gas to fluid recipes.
+     * @return the uncopied basic input, {@code null} if the recipe doesn't support chemical to fluid recipes.
      */
     @Nullable
     public ChemicalStackIngredient getGasInputRaw() {
-        return gasInput;
+        return chemicalInput;
     }
 
     /**
@@ -189,13 +191,13 @@ public class BasicRotaryRecipe extends RotaryRecipe {
      * @return the uncopied basic output
      */
     public ChemicalStack getGasOutputRaw() {
-        return this.gasOutput;
+        return this.chemicalOutput;
     }
 
     /**
      * For Serializer use. DO NOT MODIFY RETURN VALUE.
      *
-     * @return the uncopied basic input, {@code null} if the recipe doesn't support fluid to gas recipes.
+     * @return the uncopied basic input, {@code null} if the recipe doesn't support fluid to chemical recipes.
      */
     @Nullable
     public FluidStackIngredient getFluidInputRaw() {

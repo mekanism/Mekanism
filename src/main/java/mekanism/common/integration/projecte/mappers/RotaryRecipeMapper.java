@@ -29,7 +29,7 @@ public class RotaryRecipeMapper extends TypedMekanismRecipeMapper<RotaryRecipe> 
     @Override
     protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, RotaryRecipe recipe) {
         boolean handled = false;
-        if (recipe.hasFluidToGas()) {
+        if (recipe.hasFluidToChemical()) {
             for (FluidStack representation : recipe.getFluidInput().getRepresentations()) {
                 ChemicalStack output = recipe.getGasOutput(representation);
                 if (!output.isEmpty()) {
@@ -41,8 +41,8 @@ public class RotaryRecipeMapper extends TypedMekanismRecipeMapper<RotaryRecipe> 
                 }
             }
         }
-        if (recipe.hasGasToFluid()) {
-            for (ChemicalStack representation : recipe.getGasInput().getRepresentations()) {
+        if (recipe.hasChemicalToFluid()) {
+            for (ChemicalStack representation : recipe.getChemicalInput().getRepresentations()) {
                 FluidStack output = recipe.getFluidOutput(representation);
                 if (!output.isEmpty()) {
                     IngredientHelper ingredientHelper = new IngredientHelper(mapper);

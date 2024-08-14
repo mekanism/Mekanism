@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Extension of {@link ItemStackGasToItemStackRecipe} with a defined amount of ticks needed to process. Input: ItemStack
  * <br>
- * Input: Gas (Base value, will be multiplied by a per tick amount)
+ * Input: Chemical (Base value, will be multiplied by a per tick amount)
  * <br>
  * Output: ItemStack
  *

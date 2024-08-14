@@ -26,8 +26,8 @@ public class CrTRotaryRecipe {
     @ZenCodeType.Method
     @ZenCodeType.Getter("gasToFluid")
     public static GasToFluid getGasToFluid(RotaryRecipe _this) {
-        if (_this.hasGasToFluid()) {
-            return new GasToFluid(_this.getGasInput(), CrTUtils.convertFluids(_this.getFluidOutputDefinition()));
+        if (_this.hasChemicalToFluid()) {
+            return new GasToFluid(_this.getChemicalInput(), CrTUtils.convertFluids(_this.getFluidOutputDefinition()));
         }
         return null;
     }
@@ -39,7 +39,7 @@ public class CrTRotaryRecipe {
     @ZenCodeType.Method
     @ZenCodeType.Getter("fluidToGas")
     public static FluidToGas getFluidToGas(RotaryRecipe _this) {
-        if (_this.hasFluidToGas()) {
+        if (_this.hasFluidToChemical()) {
             return new FluidToGas(CrTUtils.toCrT(_this.getFluidInput()), CrTUtils.convertChemical(_this.getGasOutputDefinition()));
         }
         return null;

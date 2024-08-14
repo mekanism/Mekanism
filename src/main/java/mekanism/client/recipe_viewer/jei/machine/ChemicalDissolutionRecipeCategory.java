@@ -48,7 +48,7 @@ public class ChemicalDissolutionRecipeCategory extends HolderRecipeCategory<Chem
     public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<ChemicalDissolutionRecipe> recipeHolder, @NotNull IFocusGroup focusGroup) {
         ChemicalDissolutionRecipe recipe = recipeHolder.value();
         initItem(builder, RecipeIngredientRole.INPUT, inputSlot, recipe.getItemInput().getRepresentations());
-        List<@NotNull ChemicalStack> gasInputs = recipe.getGasInput().getRepresentations();
+        List<@NotNull ChemicalStack> gasInputs = recipe.getChemicalInput().getRepresentations();
         List<ChemicalStack> scaledGases = gasInputs.stream().map(gas -> gas.copyWithAmount(gas.getAmount() * TileEntityChemicalDissolutionChamber.BASE_TICKS_REQUIRED)).toList();
         initChemical(builder, MekanismJEI.TYPE_CHEMICAL, RecipeIngredientRole.INPUT, inputGauge, scaledGases);
         initChemical(builder, MekanismJEI.TYPE_CHEMICAL, RecipeIngredientRole.OUTPUT, outputGauge, recipe.getOutputDefinition());

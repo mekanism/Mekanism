@@ -28,50 +28,50 @@ public class RotaryRecipeBuilder extends MekanismRecipeBuilder<RotaryRecipeBuild
     }
 
     /**
-     * Creates a Rotary recipe builder. For converting a fluid into a gas.
+     * Creates a Rotary recipe builder. For converting a fluid into a chemical.
      *
-     * @param fluidInput Input.
-     * @param gasOutput  Output.
+     * @param fluidInput     Input.
+     * @param chemicalOutput Output.
      *
      * @apiNote It is recommended to use {@link #rotary(FluidStackIngredient, ChemicalStackIngredient, ChemicalStack, FluidStack)} over this method in combination with
      * {@link #rotary(ChemicalStackIngredient, FluidStack)} if the conversion will be possible in both directions.
      */
-    public static RotaryRecipeBuilder rotary(FluidStackIngredient fluidInput, ChemicalStack gasOutput) {
-        if (gasOutput.isEmpty()) {
-            throw new IllegalArgumentException("This rotary condensentrator recipe requires a non empty gas output.");
+    public static RotaryRecipeBuilder rotary(FluidStackIngredient fluidInput, ChemicalStack chemicalOutput) {
+        if (chemicalOutput.isEmpty()) {
+            throw new IllegalArgumentException("This rotary condensentrator recipe requires a non empty chemical output.");
         }
-        return new RotaryRecipeBuilder(fluidInput, null, gasOutput, FluidStack.EMPTY);
+        return new RotaryRecipeBuilder(fluidInput, null, chemicalOutput, FluidStack.EMPTY);
     }
 
     /**
-     * Creates a Rotary recipe builder. For converting a gas into a fluid.
+     * Creates a Rotary recipe builder. For converting a chemical into a fluid.
      *
-     * @param gasInput    Input.
-     * @param fluidOutput Output.
+     * @param chemicalInput Input.
+     * @param fluidOutput   Output.
      *
      * @apiNote It is recommended to use {@link #rotary(FluidStackIngredient, ChemicalStackIngredient, ChemicalStack, FluidStack)} over this method in combination with
      * {@link #rotary(FluidStackIngredient, ChemicalStack)} if the conversion will be possible in both directions.
      */
-    public static RotaryRecipeBuilder rotary(ChemicalStackIngredient gasInput, FluidStack fluidOutput) {
+    public static RotaryRecipeBuilder rotary(ChemicalStackIngredient chemicalInput, FluidStack fluidOutput) {
         if (fluidOutput.isEmpty()) {
             throw new IllegalArgumentException("This rotary condensentrator recipe requires a non empty fluid output.");
         }
-        return new RotaryRecipeBuilder(null, gasInput, ChemicalStack.EMPTY, fluidOutput);
+        return new RotaryRecipeBuilder(null, chemicalInput, ChemicalStack.EMPTY, fluidOutput);
     }
 
     /**
-     * Creates a Rotary recipe builder that is capable of converting a fluid into a gas and a gas into a fluid.
+     * Creates a Rotary recipe builder that is capable of converting a fluid into a chemical and a chemical into a fluid.
      *
-     * @param fluidInput  Fluid Input. (For fluid to gas)
-     * @param gasInput    Gas Input. (For gas to fluid)
-     * @param gasOutput   Gas Output. (For fluid to gas)
-     * @param fluidOutput Fluid Output. (For gas to fluid)
+     * @param fluidInput     Fluid Input. (For fluid to chemical)
+     * @param chemicalInput  Chemical Input. (For chemical to fluid)
+     * @param chemicalOutput Chemical Output. (For fluid to chemical)
+     * @param fluidOutput    Fluid Output. (For chemical to fluid)
      */
-    public static RotaryRecipeBuilder rotary(FluidStackIngredient fluidInput, ChemicalStackIngredient gasInput, ChemicalStack gasOutput, FluidStack fluidOutput) {
-        if (gasOutput.isEmpty() || fluidOutput.isEmpty()) {
-            throw new IllegalArgumentException("This rotary condensentrator recipe requires non empty gas and fluid outputs.");
+    public static RotaryRecipeBuilder rotary(FluidStackIngredient fluidInput, ChemicalStackIngredient chemicalInput, ChemicalStack chemicalOutput, FluidStack fluidOutput) {
+        if (chemicalOutput.isEmpty() || fluidOutput.isEmpty()) {
+            throw new IllegalArgumentException("This rotary condensentrator recipe requires non empty chemical and fluid outputs.");
         }
-        return new RotaryRecipeBuilder(fluidInput, gasInput, gasOutput, fluidOutput);
+        return new RotaryRecipeBuilder(fluidInput, chemicalInput, chemicalOutput, fluidOutput);
     }
 
     @Override

@@ -134,7 +134,7 @@ public class OutputHelper {
     }
 
     /**
-     * Wraps a gas tank and an inventory slot an {@link IOutputHandler}.
+     * Wraps a chemical tank and an inventory slot an {@link IOutputHandler}.
      *
      * @param tank                    Tank to wrap.
      * @param slot                    Slot to wrap.
@@ -152,14 +152,14 @@ public class OutputHelper {
             @Override
             public void handleOutput(PressurizedReactionRecipeOutput toOutput, int operations) {
                 OutputHelper.handleOutput(slot, toOutput.item(), operations);
-                OutputHelper.handleOutput(tank, toOutput.gas(), operations);
+                OutputHelper.handleOutput(tank, toOutput.chemical(), operations);
             }
 
             @Override
             public void calculateOperationsCanSupport(OperationTracker tracker, PressurizedReactionRecipeOutput toOutput) {
                 OutputHelper.calculateOperationsCanSupport(tracker, slotNotEnoughSpaceError, slot, toOutput.item());
                 if (tracker.shouldContinueChecking()) {
-                    OutputHelper.calculateOperationsCanSupport(tracker, tankNotEnoughSpaceError, tank, toOutput.gas());
+                    OutputHelper.calculateOperationsCanSupport(tracker, tankNotEnoughSpaceError, tank, toOutput.chemical());
                 }
             }
         };
@@ -200,7 +200,7 @@ public class OutputHelper {
     }
 
     /**
-     * Wraps two gas tank into an {@link IOutputHandler}.
+     * Wraps two chemical tanks into an {@link IOutputHandler}.
      *
      * @param leftTank                 Left tank to wrap.
      * @param rightTank                Right tank to wrap.

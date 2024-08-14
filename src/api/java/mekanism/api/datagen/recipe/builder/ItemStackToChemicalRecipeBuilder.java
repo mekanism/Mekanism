@@ -24,14 +24,14 @@ public class ItemStackToChemicalRecipeBuilder extends
     }
 
     /**
-     * Creates a Gas Conversion recipe builder.
+     * Creates a Chemical Conversion recipe builder.
      *
      * @param input  Input.
      * @param output Output.
      */
     public static ItemStackToChemicalRecipeBuilder chemicalConversion(ItemStackIngredient input, ChemicalStack output) {
         if (output.isEmpty()) {
-            throw new IllegalArgumentException("This gas conversion recipe requires a non empty gas output.");
+            throw new IllegalArgumentException("This chemical conversion recipe requires a non empty chemical output.");
         }
         return new ItemStackToChemicalRecipeBuilder(input, output, BasicChemicalConversionRecipe::new);
     }
@@ -44,7 +44,7 @@ public class ItemStackToChemicalRecipeBuilder extends
      */
     public static ItemStackToChemicalRecipeBuilder oxidizing(ItemStackIngredient input, ChemicalStack output) {
         if (output.isEmpty()) {
-            throw new IllegalArgumentException("This oxidizing recipe requires a non empty gas output.");
+            throw new IllegalArgumentException("This oxidizing recipe requires a non empty chemical output.");
         }
         return new ItemStackToChemicalRecipeBuilder(input, output, BasicChemicalOxidizerRecipe::new);
     }

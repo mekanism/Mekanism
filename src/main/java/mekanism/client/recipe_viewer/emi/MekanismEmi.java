@@ -230,8 +230,8 @@ public class MekanismEmi implements EmiPlugin {
         MekanismEmiRecipeCategory decondensentratingCategory = addCategory(registry, RecipeViewerRecipeType.DECONDENSENTRATING);
         for (RecipeHolder<RotaryRecipe> recipeHolder : MekanismRecipeType.ROTARY.getRecipes(registry.getRecipeManager(), null)) {
             RotaryRecipe recipe = recipeHolder.value();
-            if (recipe.hasGasToFluid()) {
-                if (recipe.hasFluidToGas()) {
+            if (recipe.hasChemicalToFluid()) {
+                if (recipe.hasFluidToChemical()) {
                     //Note: If the recipe is bidirectional, we prefix the recipe id so that they don't clash as duplicates
                     // as we return the proper recipe holder regardless
                     registry.addRecipe(new RotaryEmiRecipe(condensentratingCategory, RecipeViewerUtils.synthetic(recipeHolder.id(), "condensentrating"), recipeHolder, true));
@@ -239,7 +239,7 @@ public class MekanismEmi implements EmiPlugin {
                 } else {
                     registry.addRecipe(new RotaryEmiRecipe(condensentratingCategory, recipeHolder.id(), recipeHolder, true));
                 }
-            } else if (recipe.hasFluidToGas()) {
+            } else if (recipe.hasFluidToChemical()) {
                 registry.addRecipe(new RotaryEmiRecipe(decondensentratingCategory, recipeHolder.id(), recipeHolder, false));
             }
         }

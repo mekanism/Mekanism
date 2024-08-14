@@ -25,10 +25,10 @@ public class RotaryRecipeHandler extends MekanismRecipeHandler<RotaryRecipe> {
         //Note: We take advantage of the fact that if we have a recipe we have at least one direction and that we can skip parameters
         // as if they were optional as we will skip the later one as well and then end up with the proper method
         return buildCommandString(manager, recipeHolder,
-              recipe.hasFluidToGas() ? recipe.getFluidInput() : SKIP_OPTIONAL_PARAM,
-              recipe.hasGasToFluid() ? recipe.getGasInput() : SKIP_OPTIONAL_PARAM,
-              recipe.hasFluidToGas() ? recipe.getGasOutputDefinition() : SKIP_OPTIONAL_PARAM,
-              recipe.hasGasToFluid() ? recipe.getFluidOutputDefinition() : SKIP_OPTIONAL_PARAM
+              recipe.hasFluidToChemical() ? recipe.getFluidInput() : SKIP_OPTIONAL_PARAM,
+              recipe.hasChemicalToFluid() ? recipe.getChemicalInput() : SKIP_OPTIONAL_PARAM,
+              recipe.hasFluidToChemical() ? recipe.getGasOutputDefinition() : SKIP_OPTIONAL_PARAM,
+              recipe.hasChemicalToFluid() ? recipe.getFluidOutputDefinition() : SKIP_OPTIONAL_PARAM
         );
     }
 
@@ -37,21 +37,21 @@ public class RotaryRecipeHandler extends MekanismRecipeHandler<RotaryRecipe> {
         //Only support if the other is a rotary recipe and don't bother checking the reverse as the recipe type's generics
         // ensures that it is of the same type
         if (o instanceof RotaryRecipe other) {
-            return recipe.hasFluidToGas() && other.hasFluidToGas() && ingredientConflicts(recipe.getFluidInput(), other.getFluidInput()) ||
-                   recipe.hasGasToFluid() && other.hasGasToFluid() && ingredientConflicts(recipe.getGasInput(), other.getGasInput());
+            return recipe.hasFluidToChemical() && other.hasFluidToChemical() && ingredientConflicts(recipe.getFluidInput(), other.getFluidInput()) ||
+                   recipe.hasChemicalToFluid() && other.hasChemicalToFluid() && ingredientConflicts(recipe.getChemicalInput(), other.getChemicalInput());
         }
         return false;
     }
 
     @Override
     public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super RotaryRecipe> manager, RegistryAccess registryAccess, RotaryRecipe recipe) {
-        if (recipe.hasFluidToGas()) {
-            if (recipe.hasGasToFluid()) {
-                return decompose(recipe.getFluidInput(), recipe.getGasInput(), recipe.getGasOutputDefinition(), recipe.getFluidOutputDefinition());
+        if (recipe.hasFluidToChemical()) {
+            if (recipe.hasChemicalToFluid()) {
+                return decompose(recipe.getFluidInput(), recipe.getChemicalInput(), recipe.getGasOutputDefinition(), recipe.getFluidOutputDefinition());
             }
             return decompose(recipe.getFluidInput(), recipe.getGasOutputDefinition());
         }//Else has gas to fluid
-        return decompose(recipe.getGasInput(), recipe.getFluidOutputDefinition());
+        return decompose(recipe.getChemicalInput(), recipe.getFluidOutputDefinition());
     }
 
     @Override

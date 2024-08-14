@@ -34,17 +34,17 @@ public class IngredientCreatorAccess {
      * Gets the chemical stack ingredient creator.
      *
      * @see #chemical()
-     * @since 10.6.0 Previously was named gas
+     * @since 10.6.8
      */
     public static IChemicalStackIngredientCreator chemicalStack() {
         return IMekanismAccess.INSTANCE.chemicalStackIngredientCreator();
     }
 
     /**
-     * Gets the gas ingredient creator.
+     * Gets the chemical ingredient creator.
      *
-     * @see #chemicalStack() ()
-     * @since 10.6.0
+     * @see #chemicalStack()
+     * @since 10.6.8
      */
     public static IChemicalIngredientCreator chemical() {
         return IMekanismAccess.INSTANCE.chemicalIngredientCreator();

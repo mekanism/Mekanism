@@ -20,7 +20,7 @@ public class ChemicalDissolutionRecipeHandler extends MekanismRecipeHandler<Chem
     public String dumpToCommandString(IRecipeManager<? super ChemicalDissolutionRecipe> manager, RegistryAccess registryAccess,
           RecipeHolder<ChemicalDissolutionRecipe> recipeHolder) {
         ChemicalDissolutionRecipe recipe = recipeHolder.value();
-        return buildCommandString(manager, recipeHolder, recipe.getItemInput(), recipe.getGasInput(), recipe.getOutputDefinition());
+        return buildCommandString(manager, recipeHolder, recipe.getItemInput(), recipe.getChemicalInput(), recipe.getOutputDefinition());
     }
 
     @Override
@@ -29,7 +29,7 @@ public class ChemicalDissolutionRecipeHandler extends MekanismRecipeHandler<Chem
         // ensures that it is of the same type
         if (o instanceof ChemicalDissolutionRecipe other) {
             return ingredientConflicts(recipe.getItemInput(), other.getItemInput()) &&
-                   ingredientConflicts(recipe.getGasInput(), other.getGasInput());
+                   ingredientConflicts(recipe.getChemicalInput(), other.getChemicalInput());
         }
         return false;
     }
@@ -37,7 +37,7 @@ public class ChemicalDissolutionRecipeHandler extends MekanismRecipeHandler<Chem
     @Override
     public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super ChemicalDissolutionRecipe> manager, RegistryAccess registryAccess,
           ChemicalDissolutionRecipe recipe) {
-        return decompose(recipe.getItemInput(), recipe.getGasInput(), recipe.getOutputDefinition());
+        return decompose(recipe.getItemInput(), recipe.getChemicalInput(), recipe.getOutputDefinition());
     }
 
     @Override

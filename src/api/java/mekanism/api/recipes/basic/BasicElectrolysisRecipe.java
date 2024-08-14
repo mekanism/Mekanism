@@ -16,31 +16,31 @@ import org.jetbrains.annotations.Contract;
 public class BasicElectrolysisRecipe extends ElectrolysisRecipe {
 
     protected final FluidStackIngredient input;
-    protected final ChemicalStack leftGasOutput;
-    protected final ChemicalStack rightGasOutput;
+    protected final ChemicalStack leftChemicalOutput;
+    protected final ChemicalStack rightChemicalOutput;
     protected final long energyMultiplier;//todo double?
 
     /**
-     * @param input            Input.
-     * @param energyMultiplier Multiplier to the energy cost in relation to the configured hydrogen separating energy cost. Must be at least one.
-     * @param leftGasOutput    Left output.
-     * @param rightGasOutput   Right output.
+     * @param input               Input.
+     * @param energyMultiplier    Multiplier to the energy cost in relation to the configured hydrogen separating energy cost. Must be at least one.
+     * @param leftChemicalOutput  Left output.
+     * @param rightChemicalOutput Right output.
      */
-    public BasicElectrolysisRecipe(FluidStackIngredient input, long energyMultiplier, ChemicalStack leftGasOutput, ChemicalStack rightGasOutput) {
+    public BasicElectrolysisRecipe(FluidStackIngredient input, long energyMultiplier, ChemicalStack leftChemicalOutput, ChemicalStack rightChemicalOutput) {
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         this.energyMultiplier = energyMultiplier;
         if (energyMultiplier < 1) {
             throw new IllegalArgumentException("Energy multiplier must be at least one.");
         }
-        Objects.requireNonNull(leftGasOutput, "Left output cannot be null");
-        Objects.requireNonNull(rightGasOutput, "Right output cannot be null");
-        if (leftGasOutput.isEmpty()) {
+        Objects.requireNonNull(leftChemicalOutput, "Left output cannot be null");
+        Objects.requireNonNull(rightChemicalOutput, "Right output cannot be null");
+        if (leftChemicalOutput.isEmpty()) {
             throw new IllegalArgumentException("Left output cannot be empty.");
-        } else if (rightGasOutput.isEmpty()) {
+        } else if (rightChemicalOutput.isEmpty()) {
             throw new IllegalArgumentException("Right output cannot be empty.");
         }
-        this.leftGasOutput = leftGasOutput.copy();
-        this.rightGasOutput = rightGasOutput.copy();
+        this.leftChemicalOutput = leftChemicalOutput.copy();
+        this.rightChemicalOutput = rightChemicalOutput.copy();
     }
 
     @Override
@@ -50,7 +50,7 @@ public class BasicElectrolysisRecipe extends ElectrolysisRecipe {
 
     @Override
     public List<ElectrolysisRecipeOutput> getOutputDefinition() {
-        return Collections.singletonList(new ElectrolysisRecipeOutput(leftGasOutput, rightGasOutput));
+        return Collections.singletonList(new ElectrolysisRecipeOutput(leftChemicalOutput, rightChemicalOutput));
     }
 
     @Override
@@ -61,7 +61,7 @@ public class BasicElectrolysisRecipe extends ElectrolysisRecipe {
     @Override
     @Contract(value = "_ -> new", pure = true)
     public ElectrolysisRecipeOutput getOutput(FluidStack input) {
-        return new ElectrolysisRecipeOutput(leftGasOutput.copy(), rightGasOutput.copy());
+        return new ElectrolysisRecipeOutput(leftChemicalOutput.copy(), rightChemicalOutput.copy());
     }
 
     @Override
@@ -74,12 +74,12 @@ public class BasicElectrolysisRecipe extends ElectrolysisRecipe {
         return "electrolytic_separator";
     }
 
-    public ChemicalStack getLeftGasOutput() {
-        return leftGasOutput;
+    public ChemicalStack getLeftChemicalOutput() {
+        return leftChemicalOutput;
     }
 
-    public ChemicalStack getRightGasOutput() {
-        return rightGasOutput;
+    public ChemicalStack getRightChemicalOutput() {
+        return rightChemicalOutput;
     }
 
     @Override

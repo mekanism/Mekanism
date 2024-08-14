@@ -174,7 +174,7 @@ public class PressurizedReactionRecipeManager extends MekanismRecipeManager<Reac
             if (!itemOutput.isEmpty()) {
                 builder.append(ItemStackUtil.getCommandString(itemOutput));
             }
-            ChemicalStack gasOutput = output.gas();
+            ChemicalStack gasOutput = output.chemical();
             if (!gasOutput.isEmpty()) {
                 if (!itemOutput.isEmpty()) {
                     builder.append(" and ");

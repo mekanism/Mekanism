@@ -10,11 +10,11 @@ import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.Contract;
 
 /**
- * Input: Gas
+ * Input: Chemical
  * <br>
- * Output: GasStack
+ * Output: ChemicalStack
  *
- * @apiNote There are currently two types of Gas to Gas recipe types:
+ * @apiNote There are currently two types of Chemical to Chemical recipe types:
  * <ul>
  *     <li>Activating: Can be processed in a Solar Neutron Activator.</li>
  *     <li>Centrifuging: Can be processed in an Isotopic Centrifuge.</li>

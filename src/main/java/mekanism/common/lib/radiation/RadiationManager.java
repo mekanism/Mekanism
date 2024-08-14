@@ -280,10 +280,10 @@ public class RadiationManager implements IRadiationManager {
     }
 
     @Override
-    public void dumpRadiation(GlobalPos pos, IChemicalHandler gasHandler, boolean clearRadioactive) {
-        for (int tank = 0, gasTanks = gasHandler.getChemicalTanks(); tank < gasTanks; tank++) {
-            if (dumpRadiation(pos, gasHandler.getChemicalInTank(tank)) && clearRadioactive) {
-                gasHandler.setChemicalInTank(tank, ChemicalStack.EMPTY);
+    public void dumpRadiation(GlobalPos pos, IChemicalHandler chemicalHandler, boolean clearRadioactive) {
+        for (int tank = 0, gasTanks = chemicalHandler.getChemicalTanks(); tank < gasTanks; tank++) {
+            if (dumpRadiation(pos, chemicalHandler.getChemicalInTank(tank)) && clearRadioactive) {
+                chemicalHandler.setChemicalInTank(tank, ChemicalStack.EMPTY);
             }
         }
     }

@@ -35,14 +35,14 @@ public final class ChemicalStackIngredient implements InputIngredient<ChemicalSt
      *
      * <pre>{@code
      * {
-     *     "gas": "mekanism:hydrogen",
+     *     "chemical": "mekanism:hydrogen",
      *     "amount": 250
      * }
      * }</pre>
      *
      * <p>
      * <p>
-     * Compound gas ingredients are always serialized using the map codec, i.e.
+     * Compound chemical ingredients are always serialized using the map codec, i.e.
      *
      * <pre>{@code
      * {
@@ -74,7 +74,7 @@ public final class ChemicalStackIngredient implements InputIngredient<ChemicalSt
     );
 
     /**
-     * Creates a Gas Stack Ingredient that matches a given ingredient and amount. Prefer calling via
+     * Creates a Chemical Stack Ingredient that matches a given ingredient and amount. Prefer calling via
      * {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#chemical()} and
      * {@link mekanism.api.recipes.ingredients.creator.IChemicalStackIngredientCreator#from(IChemicalIngredient, long)}.
      *
@@ -88,7 +88,7 @@ public final class ChemicalStackIngredient implements InputIngredient<ChemicalSt
     public static ChemicalStackIngredient of(IChemicalIngredient ingredient, long amount) {
         Objects.requireNonNull(ingredient, "ChemicalStackIngredients cannot be created from a null ingredient.");
         if (ingredient.isEmpty()) {
-            throw new IllegalArgumentException("GasStackIngredients cannot be created using the empty ingredient.");
+            throw new IllegalArgumentException("ChemicalStackIngredients cannot be created using the empty ingredient.");
         }
         return new ChemicalStackIngredient(ingredient, amount);
     }

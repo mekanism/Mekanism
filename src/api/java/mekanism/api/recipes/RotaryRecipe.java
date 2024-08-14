@@ -4,8 +4,8 @@ import java.util.List;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
+import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.vanilla_input.RotaryRecipeInput;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
@@ -21,14 +21,14 @@ import org.jetbrains.annotations.Contract;
 /**
  * Input: FluidStack
  * <br>
- * Output: GasStack
+ * Output: ChemicalStack
  * <br><br>
- * Input: GasStack
+ * Input: ChemicalStack
  * <br>
  * Output: FluidStack
  *
- * @apiNote Rotary Condensentrators can process this recipe type. Converting from fluid to gas when set to Decondensentrating and converting from gas to fluid when set to
- * Condensentrating.
+ * @apiNote Rotary Condensentrators can process this recipe type. Converting from fluid to chemical when set to Decondensentrating and converting from chemical to fluid
+ * when set to Condensentrating.
  */
 @NothingNullByDefault
 public abstract class RotaryRecipe extends MekanismRecipe<RotaryRecipeInput> {
@@ -36,17 +36,17 @@ public abstract class RotaryRecipe extends MekanismRecipe<RotaryRecipeInput> {
     private static final Holder<Item> ROTARY_CONDENSENTRATOR = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "rotary_condensentrator"));
 
     /**
-     * @return {@code true} if this recipe knows how to convert a gas to a fluid.
+     * @return {@code true} if this recipe knows how to convert a chemical to a fluid.
      */
-    public abstract boolean hasGasToFluid();
+    public abstract boolean hasChemicalToFluid();
 
     /**
-     * @return {@code true} if this recipe knows how to convert a fluid to a gas.
+     * @return {@code true} if this recipe knows how to convert a fluid to a chemical.
      */
-    public abstract boolean hasFluidToGas();
+    public abstract boolean hasFluidToChemical();
 
     /**
-     * Checks if this recipe can convert fluids to gases, and evaluates this recipe on the given input.
+     * Checks if this recipe can convert fluids to chemicals, and evaluates this recipe on the given input.
      *
      * @param fluidStack Fluid input.
      *
@@ -55,13 +55,13 @@ public abstract class RotaryRecipe extends MekanismRecipe<RotaryRecipeInput> {
     public abstract boolean test(FluidStack fluidStack);
 
     /**
-     * Checks if this recipe can convert gases to fluids, and evaluates this recipe on the given input.
+     * Checks if this recipe can convert chemicals to fluids, and evaluates this recipe on the given input.
      *
-     * @param gasStack Gas input.
+     * @param chemicalStack Chemical input.
      *
      * @return {@code true} if the input is valid for this recipe.
      */
-    public abstract boolean test(ChemicalStack gasStack);
+    public abstract boolean test(ChemicalStack chemicalStack);
 
     @Override
     public boolean matches(RotaryRecipeInput input, Level level) {
@@ -72,23 +72,23 @@ public abstract class RotaryRecipe extends MekanismRecipe<RotaryRecipeInput> {
     /**
      * Gets the fluid input ingredient.
      *
-     * @throws IllegalStateException if {@link #hasFluidToGas()} is {@code false}.
+     * @throws IllegalStateException if {@link #hasFluidToChemical()} is {@code false}.
      */
     public abstract FluidStackIngredient getFluidInput();
 
     /**
-     * Gets the gas input ingredient.
+     * Gets the chemical input ingredient.
      *
-     * @throws IllegalStateException if {@link #hasGasToFluid()} is {@code false}.
+     * @throws IllegalStateException if {@link #hasChemicalToFluid()} is {@code false}.
      */
-    public abstract ChemicalStackIngredient getGasInput();
+    public abstract ChemicalStackIngredient getChemicalInput();
 
     /**
-     * For JEI, gets the gas output representations to display.
+     * For JEI, gets the chemical output representations to display.
      *
-     * @return Representation of the gas output, <strong>MUST NOT</strong> be modified.
+     * @return Representation of the chemical output, <strong>MUST NOT</strong> be modified.
      *
-     * @throws IllegalStateException if {@link #hasFluidToGas()} is {@code false}.
+     * @throws IllegalStateException if {@link #hasFluidToChemical()} is {@code false}.
      */
     public abstract List<ChemicalStack> getGasOutputDefinition();
 
@@ -97,18 +97,18 @@ public abstract class RotaryRecipe extends MekanismRecipe<RotaryRecipeInput> {
      *
      * @return Representation of the output, <strong>MUST NOT</strong> be modified.
      *
-     * @throws IllegalStateException if {@link #hasGasToFluid()} is {@code false}.
+     * @throws IllegalStateException if {@link #hasChemicalToFluid()} is {@code false}.
      */
     public abstract List<FluidStack> getFluidOutputDefinition();
 
     /**
-     * Gets a new gas output based on the given input.
+     * Gets a new chemical output based on the given input.
      *
      * @param input Specific fluid input.
      *
-     * @return New gas output.
+     * @return New chemical output.
      *
-     * @throws IllegalStateException if {@link #hasFluidToGas()} is {@code false}.
+     * @throws IllegalStateException if {@link #hasFluidToChemical()} is {@code false}.
      * @apiNote While Mekanism does not currently make use of the input, it is important to support it and pass the proper value in case any addons define input based
      * outputs where things like NBT may be different.
      * @implNote The passed in input should <strong>NOT</strong> be modified.
@@ -119,11 +119,11 @@ public abstract class RotaryRecipe extends MekanismRecipe<RotaryRecipeInput> {
     /**
      * Gets a new fluid output based on the given input.
      *
-     * @param input Specific gas input.
+     * @param input Specific chemical input.
      *
      * @return New fluid output.
      *
-     * @throws IllegalStateException if {@link #hasGasToFluid()} is {@code false}.
+     * @throws IllegalStateException if {@link #hasChemicalToFluid()} is {@code false}.
      * @apiNote While Mekanism does not currently make use of the input, it is important to support it and pass the proper value in case any addons define input based
      * outputs where things like NBT may be different.
      * @implNote The passed in input should <strong>NOT</strong> be modified.
@@ -133,7 +133,7 @@ public abstract class RotaryRecipe extends MekanismRecipe<RotaryRecipeInput> {
 
     @Override
     public boolean isIncomplete() {
-        return (hasFluidToGas() && getFluidInput().hasNoMatchingInstances()) || (hasGasToFluid() && getGasInput().hasNoMatchingInstances());
+        return (hasFluidToChemical() && getFluidInput().hasNoMatchingInstances()) || (hasChemicalToFluid() && getChemicalInput().hasNoMatchingInstances());
     }
 
     @Override

@@ -33,13 +33,13 @@ import org.jetbrains.annotations.Nullable;
 public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<Chemical> {
 
     /**
-     * A codec which can (de)encode gases.
+     * A codec which can (de)encode chemicals.
      *
      * @since 10.6.0
      */
     public static final Codec<Chemical> CODEC = MekanismAPI.CHEMICAL_REGISTRY.byNameCodec();
     /**
-     * A stream codec which can be used to encode and decode gases over the network.
+     * A stream codec which can be used to encode and decode chemicals over the network.
      *
      * @since 10.6.0
      */

@@ -23,9 +23,9 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Input: FluidStack
  * <br>
- * Left Output: GasStack
+ * Left Output: ChemicalStack
  * <br>
- * Right Output: GasStack
+ * Right Output: ChemicalStack
  *
  * @apiNote Electrolytic Separators can process this recipe type.
  */

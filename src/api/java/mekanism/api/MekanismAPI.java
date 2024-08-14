@@ -25,7 +25,7 @@ public class MekanismAPI {
     /**
      * The version of the api classes - may not always match the mod's version
      */
-    public static final String API_VERSION = "10.6.7";
+    public static final String API_VERSION = "10.6.8";
     /**
      * Mekanism's Mod ID
      */
@@ -59,10 +59,10 @@ public class MekanismAPI {
     public static final ResourceLocation EMPTY_CHEMICAL_NAME = rl("empty");
 
     /**
-     * Gets the {@link ResourceKey} representing the name of the Registry for {@link Chemical gases}.
+     * Gets the {@link ResourceKey} representing the name of the Registry for {@link Chemical chemicals}.
      *
-     * @apiNote When registering {@link Chemical gases} using {@link DeferredRegister}, use this field to get access to the {@link ResourceKey}.
-     * @since 10.4.0
+     * @apiNote When registering {@link Chemical chemicals} using {@link DeferredRegister}, use this field to get access to the {@link ResourceKey}.
+     * @since 10.6.8
      */
     public static final ResourceKey<Registry<Chemical>> CHEMICAL_REGISTRY_NAME = registryKey(Chemical.class, "chemical");
 
@@ -70,7 +70,7 @@ public class MekanismAPI {
      * Gets the {@link ResourceKey} representing the name of the Registry for {@link IChemicalIngredient} ingredient type serializers.
      *
      * @apiNote When registering chemical ingredient types using {@link DeferredRegister}, use this field to get access to the {@link ResourceKey}.
-     * @since 10.6.0
+     * @since 10.6.8
      */
     public static final ResourceKey<Registry<MapCodec<? extends IChemicalIngredient>>> CHEMICAL_INGREDIENT_TYPE_REGISTRY_NAME = codecRegistryKey(IChemicalIngredient.class, "chemical_ingredient_type");
 
@@ -100,7 +100,7 @@ public class MekanismAPI {
      * Gets the Registry for {@link Chemical}.
      *
      * @see #CHEMICAL_REGISTRY_NAME
-     * @since 10.5.0
+     * @since 10.6.8
      */
     public static final DefaultedRegistry<Chemical> CHEMICAL_REGISTRY = (DefaultedRegistry<Chemical>) new RegistryBuilder<>(CHEMICAL_REGISTRY_NAME)
           .defaultKey(EMPTY_CHEMICAL_NAME)
@@ -111,7 +111,7 @@ public class MekanismAPI {
      * Gets the Registry for {@link IChemicalIngredient} type serializers.
      *
      * @see #CHEMICAL_INGREDIENT_TYPE_REGISTRY_NAME
-     * @since 10.6.0
+     * @since 10.6.8
      */
     public static final Registry<MapCodec<? extends IChemicalIngredient>> CHEMICAL_INGREDIENT_TYPES = new RegistryBuilder<>(CHEMICAL_INGREDIENT_TYPE_REGISTRY_NAME)
           .sync(true)
@@ -135,10 +135,11 @@ public class MekanismAPI {
     public static final Registry<MapCodec<? extends RobitSkin>> ROBIT_SKIN_SERIALIZER_REGISTRY = new RegistryBuilder<>(ROBIT_SKIN_SERIALIZER_REGISTRY_NAME)
           .create();
 
-    //TODO: Potentially define these with DeferredHolder for purposes of fully defining them outside of the API
-    // would have some minor issues with how the empty stacks are declared
+    //TODO: Potentially define this with DeferredHolder for purposes of fully defining them outside of the API
     /**
      * Empty Chemical instance.
+     *
+     * @since 10.6.8
      */
     public static final Chemical EMPTY_CHEMICAL = new Chemical(ChemicalBuilder.builder());
 

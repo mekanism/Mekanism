@@ -32,46 +32,46 @@ public class ItemStackChemicalToItemStackRecipeBuilder extends MekanismRecipeBui
     /**
      * Creates a Compressing recipe builder.
      *
-     * @param itemInput Item Input.
-     * @param gasInput  Gas Input, used at a constant rate over the duration of the recipe.
-     * @param output    Output.
+     * @param itemInput     Item Input.
+     * @param chemicalInput Chemical Input, used at a constant rate over the duration of the recipe.
+     * @param output        Output.
      */
-    public static ItemStackChemicalToItemStackRecipeBuilder compressing(ItemStackIngredient itemInput, ChemicalStackIngredient gasInput,
+    public static ItemStackChemicalToItemStackRecipeBuilder compressing(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput,
           ItemStack output) {
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This compressing recipe requires a non empty item output.");
         }
-        return new ItemStackChemicalToItemStackRecipeBuilder(itemInput, gasInput, output, BasicCompressingRecipe::new);
+        return new ItemStackChemicalToItemStackRecipeBuilder(itemInput, chemicalInput, output, BasicCompressingRecipe::new);
     }
 
     /**
      * Creates a Purifying recipe builder.
      *
-     * @param itemInput Item Input.
-     * @param gasInput  Gas Input, used at a near constant rate over the duration of the recipe.
-     * @param output    Output.
+     * @param itemInput     Item Input.
+     * @param chemicalInput Chemical Input, used at a near constant rate over the duration of the recipe.
+     * @param output        Output.
      */
-    public static ItemStackChemicalToItemStackRecipeBuilder purifying(ItemStackIngredient itemInput, ChemicalStackIngredient gasInput,
+    public static ItemStackChemicalToItemStackRecipeBuilder purifying(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput,
           ItemStack output) {
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This purifying recipe requires a non empty item output.");
         }
-        return new ItemStackChemicalToItemStackRecipeBuilder(itemInput, gasInput, output, BasicPurifyingRecipe::new);
+        return new ItemStackChemicalToItemStackRecipeBuilder(itemInput, chemicalInput, output, BasicPurifyingRecipe::new);
     }
 
     /**
      * Creates an Injecting recipe builder.
      *
-     * @param itemInput Item Input.
-     * @param gasInput  Gas Input, used at a near constant rate over the duration of the recipe.
-     * @param output    Output.
+     * @param itemInput     Item Input.
+     * @param chemicalInput Chemical Input, used at a near constant rate over the duration of the recipe.
+     * @param output        Output.
      */
-    public static ItemStackChemicalToItemStackRecipeBuilder injecting(ItemStackIngredient itemInput, ChemicalStackIngredient gasInput,
+    public static ItemStackChemicalToItemStackRecipeBuilder injecting(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput,
           ItemStack output) {
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This injecting recipe requires a non empty item output.");
         }
-        return new ItemStackChemicalToItemStackRecipeBuilder(itemInput, gasInput, output, BasicInjectingRecipe::new);
+        return new ItemStackChemicalToItemStackRecipeBuilder(itemInput, chemicalInput, output, BasicInjectingRecipe::new);
     }
 
     /**

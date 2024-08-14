@@ -12,31 +12,31 @@ import mekanism.api.recipes.ingredients.ItemStackIngredient;
 public class ChemicalDissolutionRecipeBuilder extends MekanismRecipeBuilder<ChemicalDissolutionRecipeBuilder> {
 
     private final ItemStackIngredient itemInput;
-    private final ChemicalStackIngredient gasInput;
+    private final ChemicalStackIngredient chemicalInput;
     private final ChemicalStack output;
 
-    protected ChemicalDissolutionRecipeBuilder(ItemStackIngredient itemInput, ChemicalStackIngredient gasInput, ChemicalStack output) {
+    protected ChemicalDissolutionRecipeBuilder(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ChemicalStack output) {
         this.itemInput = itemInput;
-        this.gasInput = gasInput;
+        this.chemicalInput = chemicalInput;
         this.output = output;
     }
 
     /**
      * Creates a Chemical Dissolution recipe builder.
      *
-     * @param itemInput Item Input.
-     * @param gasInput  Gas Input.
-     * @param output    Output.
+     * @param itemInput     Item Input.
+     * @param chemicalInput Chemical Input.
+     * @param output        Output.
      */
-    public static ChemicalDissolutionRecipeBuilder dissolution(ItemStackIngredient itemInput, ChemicalStackIngredient gasInput, ChemicalStack output) {
+    public static ChemicalDissolutionRecipeBuilder dissolution(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ChemicalStack output) {
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This dissolution chamber recipe requires a non empty chemical output.");
         }
-        return new ChemicalDissolutionRecipeBuilder(itemInput, gasInput, output);
+        return new ChemicalDissolutionRecipeBuilder(itemInput, chemicalInput, output);
     }
 
     @Override
     protected ChemicalDissolutionRecipe asRecipe() {
-        return new BasicChemicalDissolutionRecipe(itemInput, gasInput, output);
+        return new BasicChemicalDissolutionRecipe(itemInput, chemicalInput, output);
     }
 }

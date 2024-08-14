@@ -152,13 +152,13 @@ public record MekanismRecipeSerializer<RECIPE extends Recipe<?>>(MapCodec<RECIPE
         return new MekanismRecipeSerializer<>(RecordCodecBuilder.mapCodec(instance -> instance.group(
               FluidStackIngredient.CODEC.fieldOf(SerializationConstants.INPUT).forGetter(ElectrolysisRecipe::getInput),
               SerializerHelper.POSITIVE_NONZERO_LONG_CODEC_LEGACY.optionalFieldOf(SerializationConstants.ENERGY_MULTIPLIER, 1L).forGetter(ElectrolysisRecipe::getEnergyMultiplier),
-              ChemicalStack.MAP_CODEC.fieldOf(SerializationConstants.LEFT_GAS_OUTPUT).forGetter(BasicElectrolysisRecipe::getLeftGasOutput),
-              ChemicalStack.MAP_CODEC.fieldOf(SerializationConstants.RIGHT_GAS_OUTPUT).forGetter(BasicElectrolysisRecipe::getRightGasOutput)
+              ChemicalStack.MAP_CODEC.fieldOf(SerializationConstants.LEFT_GAS_OUTPUT).forGetter(BasicElectrolysisRecipe::getLeftChemicalOutput),
+              ChemicalStack.MAP_CODEC.fieldOf(SerializationConstants.RIGHT_GAS_OUTPUT).forGetter(BasicElectrolysisRecipe::getRightChemicalOutput)
         ).apply(instance, factory)), StreamCodec.composite(
               FluidStackIngredient.STREAM_CODEC, ElectrolysisRecipe::getInput,
               ByteBufCodecs.VAR_LONG, ElectrolysisRecipe::getEnergyMultiplier,
-              ChemicalStack.STREAM_CODEC, BasicElectrolysisRecipe::getLeftGasOutput,
-              ChemicalStack.STREAM_CODEC, BasicElectrolysisRecipe::getRightGasOutput,
+              ChemicalStack.STREAM_CODEC, BasicElectrolysisRecipe::getLeftChemicalOutput,
+              ChemicalStack.STREAM_CODEC, BasicElectrolysisRecipe::getRightChemicalOutput,
               factory
         ));
     }
@@ -166,11 +166,11 @@ public record MekanismRecipeSerializer<RECIPE extends Recipe<?>>(MapCodec<RECIPE
     public static MekanismRecipeSerializer<BasicChemicalDissolutionRecipe> dissolution(Function3<ItemStackIngredient, ChemicalStackIngredient, ChemicalStack, BasicChemicalDissolutionRecipe> factory) {
         return new MekanismRecipeSerializer<>(RecordCodecBuilder.mapCodec(instance -> instance.group(
               ItemStackIngredient.CODEC.fieldOf(SerializationConstants.ITEM_INPUT).forGetter(ChemicalDissolutionRecipe::getItemInput),
-              IngredientCreatorAccess.chemicalStack().codec().fieldOf(SerializationConstants.GAS_INPUT).forGetter(ChemicalDissolutionRecipe::getGasInput),
+              IngredientCreatorAccess.chemicalStack().codec().fieldOf(SerializationConstants.GAS_INPUT).forGetter(ChemicalDissolutionRecipe::getChemicalInput),
               ChemicalStack.CODEC.fieldOf(SerializationConstants.OUTPUT).forGetter(BasicChemicalDissolutionRecipe::getOutputRaw)
         ).apply(instance, factory)), StreamCodec.composite(
               ItemStackIngredient.STREAM_CODEC, BasicChemicalDissolutionRecipe::getItemInput,
-              IngredientCreatorAccess.chemicalStack().streamCodec(), BasicChemicalDissolutionRecipe::getGasInput,
+              IngredientCreatorAccess.chemicalStack().streamCodec(), BasicChemicalDissolutionRecipe::getChemicalInput,
               ChemicalStack.STREAM_CODEC, BasicChemicalDissolutionRecipe::getOutputRaw,
               factory::apply
         ));
@@ -181,24 +181,24 @@ public record MekanismRecipeSerializer<RECIPE extends Recipe<?>>(MapCodec<RECIPE
         return new MekanismRecipeSerializer<>(RecordCodecBuilder.<BasicPressurizedReactionRecipe>mapCodec(instance -> instance.group(
               ItemStackIngredient.CODEC.fieldOf(SerializationConstants.ITEM_INPUT).forGetter(PressurizedReactionRecipe::getInputSolid),
               FluidStackIngredient.CODEC.fieldOf(SerializationConstants.FLUID_INPUT).forGetter(PressurizedReactionRecipe::getInputFluid),
-              IngredientCreatorAccess.chemicalStack().codec().fieldOf(SerializationConstants.GAS_INPUT).forGetter(PressurizedReactionRecipe::getInputGas),
+              IngredientCreatorAccess.chemicalStack().codec().fieldOf(SerializationConstants.GAS_INPUT).forGetter(PressurizedReactionRecipe::getInputChemical),
               SerializerHelper.POSITIVE_LONG_CODEC_LEGACY.optionalFieldOf(SerializationConstants.ENERGY_REQUIRED, 0L).forGetter(PressurizedReactionRecipe::getEnergyRequired),
               ExtraCodecs.POSITIVE_INT.fieldOf(SerializationConstants.DURATION).forGetter(PressurizedReactionRecipe::getDuration),
               ItemStack.CODEC.optionalFieldOf(SerializationConstants.ITEM_OUTPUT, ItemStack.EMPTY).forGetter(BasicPressurizedReactionRecipe::getOutputItem),
-              ChemicalStack.CODEC.optionalFieldOf(SerializationConstants.GAS_OUTPUT, ChemicalStack.EMPTY).forGetter(BasicPressurizedReactionRecipe::getOutputGas)
+              ChemicalStack.CODEC.optionalFieldOf(SerializationConstants.GAS_OUTPUT, ChemicalStack.EMPTY).forGetter(BasicPressurizedReactionRecipe::getOutputChemical)
         ).apply(instance, factory)).validate(result -> {
-            if (result.getOutputItem().isEmpty() && result.getOutputGas().isEmpty()) {
+            if (result.getOutputItem().isEmpty() && result.getOutputChemical().isEmpty()) {
                 return DataResult.error(() -> "No output specified, must have at least an Item or Gas output");
             }
             return DataResult.success(result);
         }), NeoForgeStreamCodecs.composite(
               ItemStackIngredient.STREAM_CODEC, PressurizedReactionRecipe::getInputSolid,
               FluidStackIngredient.STREAM_CODEC, PressurizedReactionRecipe::getInputFluid,
-              IngredientCreatorAccess.chemicalStack().streamCodec(), PressurizedReactionRecipe::getInputGas,
+              IngredientCreatorAccess.chemicalStack().streamCodec(), PressurizedReactionRecipe::getInputChemical,
               ByteBufCodecs.VAR_LONG, PressurizedReactionRecipe::getEnergyRequired,
               ByteBufCodecs.VAR_INT, PressurizedReactionRecipe::getDuration,
               ItemStack.OPTIONAL_STREAM_CODEC, BasicPressurizedReactionRecipe::getOutputItem,
-              ChemicalStack.OPTIONAL_STREAM_CODEC, BasicPressurizedReactionRecipe::getOutputGas,
+              ChemicalStack.OPTIONAL_STREAM_CODEC, BasicPressurizedReactionRecipe::getOutputChemical,
               factory
         ));
     }

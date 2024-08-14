@@ -34,7 +34,7 @@ public class CrTChemicalDissolutionRecipe {
     @ZenCodeType.Method
     @ZenCodeType.Getter("gasInput")
     public static ChemicalStackIngredient getGasInput(ChemicalDissolutionRecipe _this) {
-        return _this.getGasInput();
+        return _this.getChemicalInput();
     }
 
     /**

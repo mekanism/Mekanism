@@ -24,14 +24,14 @@ public class BasicNucleosynthesizingRecipe extends NucleosynthesizingRecipe impl
     private final int duration;
 
     /**
-     * @param itemInput Item input.
-     * @param gasInput  Gas input.
-     * @param output    Output.
-     * @param duration  Duration in ticks that it takes the recipe to complete. Must be greater than zero.
+     * @param itemInput     Item input.
+     * @param chemicalInput Chemical input.
+     * @param output        Output.
+     * @param duration      Duration in ticks that it takes the recipe to complete. Must be greater than zero.
      */
-    public BasicNucleosynthesizingRecipe(ItemStackIngredient itemInput, ChemicalStackIngredient gasInput, ItemStack output, int duration) {
+    public BasicNucleosynthesizingRecipe(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ItemStack output, int duration) {
         this.itemInput = Objects.requireNonNull(itemInput, "Item input cannot be null.");
-        this.chemicalInput = Objects.requireNonNull(gasInput, "Chemical input cannot be null.");
+        this.chemicalInput = Objects.requireNonNull(chemicalInput, "Chemical input cannot be null.");
         Objects.requireNonNull(output, "Output cannot be null.");
         if (output.isEmpty()) {
             throw new IllegalArgumentException("Output cannot be empty.");

@@ -45,7 +45,7 @@ public class CrTPressurizedReactionRecipe {
     @ZenCodeType.Method
     @ZenCodeType.Getter("inputGas")
     public static ChemicalStackIngredient getInputGas(PressurizedReactionRecipe _this) {
-        return _this.getInputGas();
+        return _this.getInputChemical();
     }
 
     /**
@@ -72,7 +72,7 @@ public class CrTPressurizedReactionRecipe {
     @ZenCodeType.Method
     @ZenCodeType.Getter("outputs")
     public static List<CrTPressurizedReactionRecipeOutput> getOutputs(PressurizedReactionRecipe _this) {
-        return CrTUtils.convert(_this.getOutputDefinition(), output -> new CrTPressurizedReactionRecipeOutput(IItemStack.of(output.item()), new CrTChemicalStack(output.gas())));
+        return CrTUtils.convert(_this.getOutputDefinition(), output -> new CrTPressurizedReactionRecipeOutput(IItemStack.of(output.item()), new CrTChemicalStack(output.chemical())));
     }
 
     /**

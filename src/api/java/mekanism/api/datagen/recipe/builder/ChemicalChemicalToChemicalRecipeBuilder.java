@@ -34,7 +34,7 @@ public class ChemicalChemicalToChemicalRecipeBuilder extends MekanismRecipeBuild
     public static ChemicalChemicalToChemicalRecipeBuilder chemicalInfusing(ChemicalStackIngredient leftInput, ChemicalStackIngredient rightInput,
           ChemicalStack output) {
         if (output.isEmpty()) {
-            throw new IllegalArgumentException("This chemical infusing recipe requires a non empty gas output.");
+            throw new IllegalArgumentException("This chemical infusing recipe requires a non empty chemical output.");
         }
         return new ChemicalChemicalToChemicalRecipeBuilder(leftInput, rightInput, output, BasicChemicalInfuserRecipe::new);
     }
@@ -49,7 +49,7 @@ public class ChemicalChemicalToChemicalRecipeBuilder extends MekanismRecipeBuild
     public static ChemicalChemicalToChemicalRecipeBuilder pigmentMixing(ChemicalStackIngredient leftInput,
           ChemicalStackIngredient rightInput, ChemicalStack output) {
         if (output.isEmpty()) {
-            throw new IllegalArgumentException("This pigment mixing recipe requires a non empty gas output.");
+            throw new IllegalArgumentException("This pigment mixing recipe requires a non empty chemical output.");
         }
         return new ChemicalChemicalToChemicalRecipeBuilder(leftInput, rightInput, output, BasicPigmentMixingRecipe::new);
     }

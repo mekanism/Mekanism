@@ -134,23 +134,23 @@ public interface IRadiationManager {
     void radiate(LivingEntity entity, double magnitude);
 
     /**
-     * Helper to "dump" any radioactive gases stored in the tanks handled by the given gas handler.
+     * Helper to "dump" any radioactive chemicals stored in the tanks handled by the given gas handler.
      *
      * @param pos              Location to dump radiation at.
-     * @param gasHandler       Gas handler to process the tanks of.
-     * @param clearRadioactive {@code true} to clear any gas tanks that have radioactive substances.
+     * @param chemicalHandler  Chemical handler to process the tanks of.
+     * @param clearRadioactive {@code true} to clear any chemical tanks that have radioactive substances.
      *
      * @throws RuntimeException if {@code clearRadioactive = true} and the passed in handler does not expect to have
      *                          {@link IChemicalHandler#setChemicalInTank(int, ChemicalStack)} called wth an empty stack.
      */
-    void dumpRadiation(GlobalPos pos, IChemicalHandler gasHandler, boolean clearRadioactive);
+    void dumpRadiation(GlobalPos pos, IChemicalHandler chemicalHandler, boolean clearRadioactive);
 
     /**
-     * Helper to "dump" any radioactive gases stored in the given gas tanks.
+     * Helper to "dump" any radioactive chemicals stored in the given gas tanks.
      *
      * @param pos              Location to dump radiation at.
      * @param chemicalTanks    Tanks to process.
-     * @param clearRadioactive {@code true} to clear any gas tanks that have radioactive substances.
+     * @param clearRadioactive {@code true} to clear any chemical tanks that have radioactive substances.
      */
     void dumpRadiation(GlobalPos pos, List<IChemicalTank> chemicalTanks, boolean clearRadioactive);
 

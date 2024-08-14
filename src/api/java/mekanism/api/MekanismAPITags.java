@@ -19,12 +19,16 @@ public class MekanismAPITags {
     private static final ResourceLocation HIDDEN_RL = ResourceLocation.fromNamespaceAndPath("c", "hidden_from_recipe_viewers");
 
     /**
-     * Tag that holds all gases that recipe viewers should not show to users.
+     * Tag that holds all chemicals that recipe viewers should not show to users.
+     *
+     * @since 10.6.8
      */
     public static final TagKey<Chemical> CHEMICAL_HIDDEN_FROM_RECIPE_VIEWERS = TagKey.create(MekanismAPI.CHEMICAL_REGISTRY_NAME, HIDDEN_RL);
 
     /**
-     * Gases in this tag that are radioactive will not decay inside a Radioactive Waste Barrel.
+     * Chemicals in this tag that are radioactive will not decay inside a Radioactive Waste Barrel.
+     *
+     * @since 10.6.8
      */
     public static final TagKey<Chemical> WASTE_BARREL_DECAY_BLACKLIST = TagKey.create(MekanismAPI.CHEMICAL_REGISTRY_NAME, rl("waste_barrel_decay_blacklist"));
 

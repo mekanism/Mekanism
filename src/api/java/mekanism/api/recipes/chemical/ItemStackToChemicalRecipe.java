@@ -1,14 +1,12 @@
 package mekanism.api.recipes.chemical;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Predicate;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Contract;
@@ -21,12 +19,11 @@ import org.jetbrains.annotations.NotNull;
  * <br>
  * Output: ChemicalStack
  *
- *  @apiNote There are currently two types of ItemStack to Gas recipe types:
+ * @apiNote There are currently two types of ItemStack to Chemical recipe types:
  *  <ul>
  *  <li>Oxidizing: Can be processed in a Chemical Oxidizer.</li>
- *  <li>Gas Conversion: Can be processed by any slots in Mekanism machines that are able to convert items to gases, for example in the Osmium Compressor and a variety of other machines.</li>
+ *  <li>Chemical Conversion: Can be processed by any slots in Mekanism machines that are able to convert items to chemicals, for example in the Osmium Compressor and a variety of other machines.</li>
  * </ul>
- *
  */
 @NothingNullByDefault
 public abstract class ItemStackToChemicalRecipe extends MekanismRecipe<SingleRecipeInput>

@@ -38,11 +38,11 @@ public class PressurizedReactionRecipeHandler extends MekanismRecipeHandler<Pres
             // eventually we may want to try listing them all somehow?
             PressurizedReactionRecipeOutput output = outputs.getFirst();
             itemOutput = output.item();
-            gasOutput = output.gas();
+            gasOutput = output.chemical();
         }
         //Note: We can handle skipping optional params like this because only one output should be empty at a time
         // if there is only a single output, which means we can safely skip the other
-        return buildCommandString(manager, recipeHolder, recipe.getInputSolid(), recipe.getInputFluid(), recipe.getInputGas(), recipe.getDuration(),
+        return buildCommandString(manager, recipeHolder, recipe.getInputSolid(), recipe.getInputFluid(), recipe.getInputChemical(), recipe.getDuration(),
               itemOutput.isEmpty() ? SKIP_OPTIONAL_PARAM : itemOutput, gasOutput.isEmpty() ? SKIP_OPTIONAL_PARAM : gasOutput,
               recipe.getEnergyRequired() == 0L ? SKIP_OPTIONAL_PARAM : recipe.getEnergyRequired()
         );
@@ -55,14 +55,14 @@ public class PressurizedReactionRecipeHandler extends MekanismRecipeHandler<Pres
         if (o instanceof PressurizedReactionRecipe other) {
             return ingredientConflicts(recipe.getInputSolid(), other.getInputSolid()) &&
                    ingredientConflicts(recipe.getInputFluid(), other.getInputFluid()) &&
-                   ingredientConflicts(recipe.getInputGas(), other.getInputGas());
+                   ingredientConflicts(recipe.getInputChemical(), other.getInputChemical());
         }
         return false;
     }
 
     @Override
     public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super PressurizedReactionRecipe> manager, RegistryAccess registryAccess, PressurizedReactionRecipe recipe) {
-        return decompose(recipe.getInputSolid(), recipe.getInputFluid(), recipe.getInputGas(), recipe.getDuration(), recipe.getOutputDefinition(),
+        return decompose(recipe.getInputSolid(), recipe.getInputFluid(), recipe.getInputChemical(), recipe.getDuration(), recipe.getOutputDefinition(),
               recipe.getEnergyRequired());
     }
 

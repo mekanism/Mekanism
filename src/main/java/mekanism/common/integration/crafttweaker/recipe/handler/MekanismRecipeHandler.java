@@ -185,8 +185,8 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe<?>> im
                 if (!output.item().isEmpty()) {
                     outputs.addItem(IItemStack.of(output.item()));
                 }
-                if (!output.gas().isEmpty()) {
-                    outputs.addChemical(output.gas());
+                if (!output.chemical().isEmpty()) {
+                    outputs.addChemical(output.chemical());
                 }
             } else if (data instanceof ElectrolysisRecipeOutput output) {
                 outputs.addChemical(output.left());

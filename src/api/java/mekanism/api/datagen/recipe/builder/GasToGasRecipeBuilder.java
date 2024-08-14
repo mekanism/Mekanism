@@ -29,7 +29,7 @@ public class GasToGasRecipeBuilder extends MekanismRecipeBuilder<GasToGasRecipeB
      */
     public static GasToGasRecipeBuilder activating(ChemicalStackIngredient input, ChemicalStack output) {
         if (output.isEmpty()) {
-            throw new IllegalArgumentException("This solar neutron activator recipe requires a non empty gas output.");
+            throw new IllegalArgumentException("This solar neutron activator recipe requires a non empty chemical output.");
         }
         return new GasToGasRecipeBuilder(input, output, BasicActivatingRecipe::new);
     }
@@ -42,7 +42,7 @@ public class GasToGasRecipeBuilder extends MekanismRecipeBuilder<GasToGasRecipeB
      */
     public static GasToGasRecipeBuilder centrifuging(ChemicalStackIngredient input, ChemicalStack output) {
         if (output.isEmpty()) {
-            throw new IllegalArgumentException("This Isotopic Centrifuge recipe requires a non empty gas output.");
+            throw new IllegalArgumentException("This Isotopic Centrifuge recipe requires a non empty chemical output.");
         }
         return new GasToGasRecipeBuilder(input, output, BasicCentrifugingRecipe::new);
     }

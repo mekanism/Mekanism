@@ -50,17 +50,18 @@ public interface IMekanismAccess {
     IFluidStackIngredientCreator fluidStackIngredientCreator();
 
     /**
-     * Gets the gas stack ingredient creator.
+     * Gets the chemical stack ingredient creator.
      *
-     * @apiNote Use {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#gasStack()} instead.
+     * @apiNote Use {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#chemicalStack()} instead.
+     * @since 10.6.8
      */
     IChemicalStackIngredientCreator chemicalStackIngredientCreator();
 
     /**
-     * Gets the gas ingredient creator.
+     * Gets the chemical ingredient creator.
      *
-     * @apiNote Use {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#gas()} instead.
-     * @since 10.6.0
+     * @apiNote Use {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#chemical()} instead.
+     * @since 10.6.8
      */
     IChemicalIngredientCreator chemicalIngredientCreator();
 }

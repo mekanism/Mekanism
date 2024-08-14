@@ -224,7 +224,7 @@ public class InputHelper {
         public void calculateOperationsCanSupport(OperationTracker tracker, ChemicalStack recipeInput, long usageMultiplier) {
             //Only calculate if we need to use anything
             if (usageMultiplier > 0) {
-                //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputGas)
+                //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputChemical)
                 // Note: If we can't, we treat it as we just don't have enough of the input to better support cases
                 // where we may want to allow not having the input be required for recipe matching
                 if (!recipeInput.isEmpty()) {

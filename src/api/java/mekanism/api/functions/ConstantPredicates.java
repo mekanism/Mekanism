@@ -50,6 +50,11 @@ public class ConstantPredicates {
      * @since 10.5.15
      */
     public static final Predicate<FluidStack> FLUID_EMPTY = FluidStack::isEmpty;
+    /**
+     * Represents a predicate that checks if a chemical stack is empty.
+     *
+     * @since 10.6.8
+     */
     public static final Predicate<ChemicalStack> CHEMICAL_EMPTY = ChemicalStack::isEmpty;
 
     private static final Predicate<Object> alwaysFalse = t -> false;

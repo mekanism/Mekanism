@@ -31,15 +31,15 @@ public abstract class ChemicalDissolutionRecipe extends MekanismRecipe<SingleIte
     public abstract ItemStackIngredient getItemInput();
 
     /**
-     * Gets the input gas ingredient.
+     * Gets the input chemical ingredient.
      */
-    public abstract ChemicalStackIngredient getGasInput();
+    public abstract ChemicalStackIngredient getChemicalInput();
 
     /**
      * Gets a new output based on the given inputs.
      *
-     * @param inputItem Specific item input.
-     * @param inputGas  Specific gas input.
+     * @param inputItem     Specific item input.
+     * @param inputChemical Specific chemical input.
      *
      * @return New output.
      *
@@ -48,7 +48,7 @@ public abstract class ChemicalDissolutionRecipe extends MekanismRecipe<SingleIte
      * @implNote The passed in inputs should <strong>NOT</strong> be modified.
      */
     @Contract(value = "_, _ -> new", pure = true)
-    public abstract ChemicalStack getOutput(ItemStack inputItem, ChemicalStack inputGas);
+    public abstract ChemicalStack getOutput(ItemStack inputItem, ChemicalStack inputChemical);
 
     @Override
     public abstract boolean test(ItemStack itemStack, ChemicalStack gasStack);
@@ -68,7 +68,7 @@ public abstract class ChemicalDissolutionRecipe extends MekanismRecipe<SingleIte
 
     @Override
     public boolean isIncomplete() {
-        return getItemInput().hasNoMatchingInstances() || getGasInput().hasNoMatchingInstances();
+        return getItemInput().hasNoMatchingInstances() || getChemicalInput().hasNoMatchingInstances();
     }
 
     @Override

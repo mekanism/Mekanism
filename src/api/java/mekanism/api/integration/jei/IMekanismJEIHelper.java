@@ -10,8 +10,9 @@ import mezz.jei.api.ingredients.IIngredientHelper;
 public interface IMekanismJEIHelper {
 
     /**
-     * Gets the ingredient helper for {@link mekanism.api.chemical.ChemicalStack gases}.
+     * Gets the ingredient helper for {@link mekanism.api.chemical.ChemicalStack chemicals}.
+     *
+     * @since 10.6.8
      */
     IIngredientHelper<ChemicalStack> getChemicalStackHelper();
-
 }

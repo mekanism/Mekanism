@@ -16,17 +16,17 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 public class BasicChemicalDissolutionRecipe extends ChemicalDissolutionRecipe {
 
     protected final ItemStackIngredient itemInput;
-    protected final ChemicalStackIngredient gasInput;
+    protected final ChemicalStackIngredient chemicalInput;
     protected final ChemicalStack output;
 
     /**
      * @param itemInput Item input.
-     * @param gasInput  Gas input.
+     * @param chemicalInput  Chemical input.
      * @param output    Output.
      */
-    public BasicChemicalDissolutionRecipe(ItemStackIngredient itemInput, ChemicalStackIngredient gasInput, ChemicalStack output) {
+    public BasicChemicalDissolutionRecipe(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ChemicalStack output) {
         this.itemInput = Objects.requireNonNull(itemInput, "Item input cannot be null.");
-        this.gasInput = Objects.requireNonNull(gasInput, "Gas input cannot be null.");
+        this.chemicalInput = Objects.requireNonNull(chemicalInput, "Chemical input cannot be null.");
         Objects.requireNonNull(output, "Output cannot be null.");
         if (output.isEmpty()) {
             throw new IllegalArgumentException("Output cannot be empty.");
@@ -40,18 +40,18 @@ public class BasicChemicalDissolutionRecipe extends ChemicalDissolutionRecipe {
     }
 
     @Override
-    public ChemicalStackIngredient getGasInput() {
-        return gasInput;
+    public ChemicalStackIngredient getChemicalInput() {
+        return chemicalInput;
     }
 
     @Override
-    public ChemicalStack getOutput(ItemStack inputItem, ChemicalStack inputGas) {
+    public ChemicalStack getOutput(ItemStack inputItem, ChemicalStack inputChemical) {
         return output.copy();
     }
 
     @Override
     public boolean test(ItemStack itemStack, ChemicalStack gasStack) {
-        return itemInput.test(itemStack) && gasInput.test(gasStack);
+        return itemInput.test(itemStack) && chemicalInput.test(gasStack);
     }
 
     @Override

@@ -11,28 +11,28 @@ import mekanism.api.recipes.ingredients.FluidStackIngredient;
 public class ElectrolysisRecipeBuilder extends MekanismRecipeBuilder<ElectrolysisRecipeBuilder> {
 
     private final FluidStackIngredient input;
-    private final ChemicalStack leftGasOutput;
-    private final ChemicalStack rightGasOutput;
+    private final ChemicalStack leftChemicalOutput;
+    private final ChemicalStack rightChemicalOutput;
     private long energyMultiplier = 1;
 
-    protected ElectrolysisRecipeBuilder(FluidStackIngredient input, ChemicalStack leftGasOutput, ChemicalStack rightGasOutput) {
+    protected ElectrolysisRecipeBuilder(FluidStackIngredient input, ChemicalStack leftChemicalOutput, ChemicalStack rightChemicalOutput) {
         this.input = input;
-        this.leftGasOutput = leftGasOutput;
-        this.rightGasOutput = rightGasOutput;
+        this.leftChemicalOutput = leftChemicalOutput;
+        this.rightChemicalOutput = rightChemicalOutput;
     }
 
     /**
      * Creates a Separating recipe builder.
      *
-     * @param input          Input.
-     * @param leftGasOutput  Left Output.
-     * @param rightGasOutput Right Output.
+     * @param input               Input.
+     * @param leftChemicalOutput  Left Output.
+     * @param rightChemicalOutput Right Output.
      */
-    public static ElectrolysisRecipeBuilder separating(FluidStackIngredient input, ChemicalStack leftGasOutput, ChemicalStack rightGasOutput) {
-        if (leftGasOutput.isEmpty() || rightGasOutput.isEmpty()) {
-            throw new IllegalArgumentException("This separating recipe requires non empty gas outputs.");
+    public static ElectrolysisRecipeBuilder separating(FluidStackIngredient input, ChemicalStack leftChemicalOutput, ChemicalStack rightChemicalOutput) {
+        if (leftChemicalOutput.isEmpty() || rightChemicalOutput.isEmpty()) {
+            throw new IllegalArgumentException("This separating recipe requires non empty chemical outputs.");
         }
-        return new ElectrolysisRecipeBuilder(input, leftGasOutput, rightGasOutput);
+        return new ElectrolysisRecipeBuilder(input, leftChemicalOutput, rightChemicalOutput);
     }
 
     /**
@@ -50,6 +50,6 @@ public class ElectrolysisRecipeBuilder extends MekanismRecipeBuilder<Electrolysi
 
     @Override
     protected ElectrolysisRecipe asRecipe() {
-        return new BasicElectrolysisRecipe(input, energyMultiplier, leftGasOutput, rightGasOutput);
+        return new BasicElectrolysisRecipe(input, energyMultiplier, leftChemicalOutput, rightChemicalOutput);
     }
 }

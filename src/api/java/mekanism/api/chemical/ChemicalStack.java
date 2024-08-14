@@ -90,7 +90,7 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
     public static final StreamCodec<RegistryFriendlyByteBuf, ChemicalStack> STREAM_CODEC = streamCodec(OPTIONAL_STREAM_CODEC);
 
     /**
-     * A standard codec for gas stacks that always deserializes with a fixed amount, and does not accept empty stacks.
+     * A standard codec for chemical stacks that always deserializes with a fixed amount, and does not accept empty stacks.
      * <p>
      * Chemical equivalent of {@link ItemStack#SINGLE_ITEM_CODEC}.
      *

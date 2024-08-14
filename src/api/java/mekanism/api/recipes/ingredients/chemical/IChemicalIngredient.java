@@ -34,7 +34,7 @@ public sealed interface IChemicalIngredient extends Predicate<Chemical>
     boolean test(Chemical chemical);
 
     /**
-     * {@return a list of gases this ingredient accepts}
+     * {@return a list of chemicals this ingredient accepts}
      *
      * @see #generateChemicals()
      */

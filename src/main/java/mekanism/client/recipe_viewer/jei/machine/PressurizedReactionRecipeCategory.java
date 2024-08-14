@@ -68,12 +68,12 @@ public class PressurizedReactionRecipeCategory extends HolderRecipeCategory<Pres
         PressurizedReactionRecipe recipe = recipeHolder.value();
         initItem(builder, RecipeIngredientRole.INPUT, inputItem, recipe.getInputSolid().getRepresentations());
         initFluid(builder, RecipeIngredientRole.INPUT, inputFluid, recipe.getInputFluid().getRepresentations());
-        initChemical(builder, MekanismJEI.TYPE_CHEMICAL, RecipeIngredientRole.INPUT, inputGas, recipe.getInputGas().getRepresentations());
+        initChemical(builder, MekanismJEI.TYPE_CHEMICAL, RecipeIngredientRole.INPUT, inputGas, recipe.getInputChemical().getRepresentations());
         List<ItemStack> itemOutputs = new ArrayList<>();
         List<ChemicalStack> gasOutputs = new ArrayList<>();
         for (PressurizedReactionRecipeOutput output : recipe.getOutputDefinition()) {
             itemOutputs.add(output.item());
-            gasOutputs.add(output.gas());
+            gasOutputs.add(output.chemical());
         }
         if (!itemOutputs.stream().allMatch(ConstantPredicates.ITEM_EMPTY)) {
             initItem(builder, RecipeIngredientRole.OUTPUT, outputItem, itemOutputs);

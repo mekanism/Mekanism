@@ -22,14 +22,15 @@ public abstract class BasicItemStackGasToItemStackRecipe extends ItemStackGasToI
     protected final ItemStack output;
 
     /**
-     * @param itemInput Item input.
-     * @param gasInput  Gas input.
-     * @param output    Output.
+     * @param itemInput     Item input.
+     * @param chemicalInput Chemical input.
+     * @param output        Output.
      */
-    public BasicItemStackGasToItemStackRecipe(ItemStackIngredient itemInput, ChemicalStackIngredient gasInput, ItemStack output, RecipeType<ItemStackGasToItemStackRecipe> recipeType) {
+    public BasicItemStackGasToItemStackRecipe(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ItemStack output,
+          RecipeType<ItemStackGasToItemStackRecipe> recipeType) {
         super(recipeType);
         this.itemInput = Objects.requireNonNull(itemInput, "Item input cannot be null.");
-        this.chemicalInput = Objects.requireNonNull(gasInput, "Chemical input cannot be null.");
+        this.chemicalInput = Objects.requireNonNull(chemicalInput, "Chemical input cannot be null.");
         Objects.requireNonNull(output, "Output cannot be null.");
         if (output.isEmpty()) {
             throw new IllegalArgumentException("Output cannot be empty.");

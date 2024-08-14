@@ -234,7 +234,7 @@ public interface ISidedFluidHandler extends IExtendedFluidHandler {
      * @return {@link FluidStack} extracted from the tank, must be empty if nothing can be extracted. The returned {@link FluidStack} can be safely modified after, so the
      * tank should return a new or copied stack.
      *
-     * @implNote The default implementation of this method, extracts across all tanks that contents match the type of gas passed into this method.
+     * @implNote The default implementation of this method, extracts across all tanks that contents match the type of fluid passed into this method.
      * @apiNote It is not guaranteed that the default implementation will be how this {@link IExtendedFluidHandler} ends up distributing the extraction.
      */
     default FluidStack extractFluid(FluidStack stack, @Nullable Direction side, Action action) {

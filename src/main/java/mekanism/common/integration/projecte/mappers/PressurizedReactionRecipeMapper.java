@@ -43,7 +43,7 @@ public class PressurizedReactionRecipeMapper extends TypedMekanismRecipeMapper<P
         boolean handled = false;
         List<@NotNull ItemStack> itemRepresentations = recipe.getInputSolid().getRepresentations();
         List<@NotNull FluidStack> fluidRepresentations = recipe.getInputFluid().getRepresentations();
-        List<@NotNull ChemicalStack> gasRepresentations = recipe.getInputGas().getRepresentations();
+        List<@NotNull ChemicalStack> gasRepresentations = recipe.getInputChemical().getRepresentations();
         for (ItemStack itemRepresentation : itemRepresentations) {
             NormalizedSimpleStack nssItem = NSSItem.createItem(itemRepresentation);
             for (FluidStack fluidRepresentation : fluidRepresentations) {
@@ -52,7 +52,7 @@ public class PressurizedReactionRecipeMapper extends TypedMekanismRecipeMapper<P
                     NormalizedSimpleStack nssGas = NSSChemical.createChemical(gasRepresentation);
                     PressurizedReactionRecipeOutput output = recipe.getOutput(itemRepresentation, fluidRepresentation, gasRepresentation);
                     ItemStack itemOutput = output.item();
-                    ChemicalStack gasOutput = output.gas();
+                    ChemicalStack gasOutput = output.chemical();
                     IngredientHelper ingredientHelper = new IngredientHelper(mapper);
                     ingredientHelper.put(nssItem, itemRepresentation.getCount());
                     ingredientHelper.put(nssFluid, fluidRepresentation.getAmount());

@@ -16,11 +16,11 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Contract;
 
 /**
- * Input: Two gases. The order of them does not matter.
+ * Input: Two chemicals. The order of them does not matter.
  * <br>
- * Output: GasStack
+ * Output: ChemicalStack
  *
- * @apiNote Chemical Infusers can process this recipe type and the gases can be put in any order into the infuser.
+ * @apiNote Chemical Infusers can process this recipe type and the chemicals can be put in any order into the infuser.
  */
 @NothingNullByDefault
 public abstract class ChemicalInfuserRecipe extends ChemicalChemicalToChemicalRecipe {
