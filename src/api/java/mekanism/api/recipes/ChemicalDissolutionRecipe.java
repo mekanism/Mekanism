@@ -51,7 +51,7 @@ public abstract class ChemicalDissolutionRecipe extends MekanismRecipe<SingleIte
     public abstract ChemicalStack getOutput(ItemStack inputItem, ChemicalStack inputChemical);
 
     @Override
-    public abstract boolean test(ItemStack itemStack, ChemicalStack gasStack);
+    public abstract boolean test(ItemStack itemStack, ChemicalStack chemicalStack);
 
     @Override
     public boolean matches(SingleItemChemicalRecipeInput input, Level level) {

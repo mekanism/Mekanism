@@ -33,7 +33,7 @@ public class RotaryEmiRecipe extends MekanismEmiRecipe<RotaryRecipe> {
             }
         } else if (recipe.hasFluidToChemical()) {
             addInputDefinition(recipe.getFluidInput());
-            addChemicalOutputDefinition(recipe.getGasOutputDefinition());
+            addChemicalOutputDefinition(recipe.getChemicalOutputDefinition());
         } else {
             throw new IllegalArgumentException("Decondensentrating recipes require a fluid to gas component");
         }

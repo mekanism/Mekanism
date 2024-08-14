@@ -213,8 +213,8 @@ public class InputHelper {
                 // or if something went wrong, this if should never really be true if we got to finishProcessing
                 return;
             }
-            ChemicalStack inputGas = getInput();
-            if (!inputGas.isEmpty()) {
+            ChemicalStack inputChemical = getInput();
+            if (!inputChemical.isEmpty()) {
                 long amount = recipeInput.getAmount() * operations;
                 logMismatchedStackSize(tank.shrinkStack(amount, Action.EXECUTE), amount);
             }

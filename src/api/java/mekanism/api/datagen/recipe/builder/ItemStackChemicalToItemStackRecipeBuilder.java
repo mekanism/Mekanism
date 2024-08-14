@@ -78,30 +78,29 @@ public class ItemStackChemicalToItemStackRecipeBuilder extends MekanismRecipeBui
      * Creates a Metallurgic Infusing recipe builder.
      *
      * @param itemInput     Item Input.
-     * @param infusionInput Infusion Input.
+     * @param chemicalInput Infusion Input.
      * @param output        Output.
      */
     public static ItemStackChemicalToItemStackRecipeBuilder metallurgicInfusing(ItemStackIngredient itemInput,
-          ChemicalStackIngredient infusionInput, ItemStack output) {
+          ChemicalStackIngredient chemicalInput, ItemStack output) {
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This metallurgic infusing recipe requires a non empty output.");
         }
-        return new ItemStackChemicalToItemStackRecipeBuilder(itemInput, infusionInput, output, BasicMetallurgicInfuserRecipe::new);
+        return new ItemStackChemicalToItemStackRecipeBuilder(itemInput, chemicalInput, output, BasicMetallurgicInfuserRecipe::new);
     }
 
     /**
      * Creates a Painting recipe builder.
      *
-     * @param itemInput    Item Input.
-     * @param pigmentInput Pigment Input.
-     * @param output       Output.
+     * @param itemInput     Item Input.
+     * @param chemicalInput Chemical Input.
+     * @param output        Output.
      */
-    public static ItemStackChemicalToItemStackRecipeBuilder painting(ItemStackIngredient itemInput,
-          ChemicalStackIngredient pigmentInput, ItemStack output) {
+    public static ItemStackChemicalToItemStackRecipeBuilder painting(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ItemStack output) {
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This painting recipe requires a non empty item output.");
         }
-        return new ItemStackChemicalToItemStackRecipeBuilder(itemInput, pigmentInput, output, BasicPaintingRecipe::new);
+        return new ItemStackChemicalToItemStackRecipeBuilder(itemInput, chemicalInput, output, BasicPaintingRecipe::new);
     }
 
     @Override

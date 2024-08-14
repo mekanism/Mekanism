@@ -11,32 +11,32 @@ import mekanism.api.recipes.ingredients.FluidStackIngredient;
 @NothingNullByDefault
 public class FluidSlurryToSlurryRecipeBuilder extends MekanismRecipeBuilder<FluidSlurryToSlurryRecipeBuilder> {
 
-    private final ChemicalStackIngredient slurryInput;
+    private final ChemicalStackIngredient chemicalInput;
     private final FluidStackIngredient fluidInput;
     private final ChemicalStack output;
 
-    protected FluidSlurryToSlurryRecipeBuilder(FluidStackIngredient fluidInput, ChemicalStackIngredient slurryInput, ChemicalStack output) {
+    protected FluidSlurryToSlurryRecipeBuilder(FluidStackIngredient fluidInput, ChemicalStackIngredient chemicalInput, ChemicalStack output) {
         this.fluidInput = fluidInput;
-        this.slurryInput = slurryInput;
+        this.chemicalInput = chemicalInput;
         this.output = output;
     }
 
     /**
      * Creates a Washing recipe builder.
      *
-     * @param fluidInput  Fluid Input.
-     * @param slurryInput Slurry Input.
-     * @param output      Output.
+     * @param fluidInput    Fluid Input.
+     * @param chemicalInput Chemical Input.
+     * @param output        Output.
      */
-    public static FluidSlurryToSlurryRecipeBuilder washing(FluidStackIngredient fluidInput, ChemicalStackIngredient slurryInput, ChemicalStack output) {
+    public static FluidSlurryToSlurryRecipeBuilder washing(FluidStackIngredient fluidInput, ChemicalStackIngredient chemicalInput, ChemicalStack output) {
         if (output.isEmpty()) {
-            throw new IllegalArgumentException("This washing recipe requires a non empty slurry output.");
+            throw new IllegalArgumentException("This washing recipe requires a non empty chemical output.");
         }
-        return new FluidSlurryToSlurryRecipeBuilder(fluidInput, slurryInput, output);
+        return new FluidSlurryToSlurryRecipeBuilder(fluidInput, chemicalInput, output);
     }
 
     @Override
     protected FluidSlurryToSlurryRecipe asRecipe() {
-        return new BasicFluidSlurryToSlurryRecipe(fluidInput, slurryInput, output);
+        return new BasicFluidSlurryToSlurryRecipe(fluidInput, chemicalInput, output);
     }
 }

@@ -67,7 +67,7 @@ public class ItemStackToChemicalRecipeBuilder extends
      */
     public static ItemStackToChemicalRecipeBuilder pigmentExtracting(ItemStackIngredient input, ChemicalStack output) {
         if (output.isEmpty()) {
-            throw new IllegalArgumentException("This pigment extracting recipe requires a non empty pigment output.");
+            throw new IllegalArgumentException("This pigment extracting recipe requires a non empty chemical output.");
         }
         return new ItemStackToChemicalRecipeBuilder(input, output, BasicItemStackToPigmentRecipe::new);
     }

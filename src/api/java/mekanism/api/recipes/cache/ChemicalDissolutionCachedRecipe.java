@@ -22,10 +22,10 @@ public class ChemicalDissolutionCachedRecipe extends CachedRecipe<ChemicalDissol
     private final IInputHandler<@NotNull ItemStack> itemInputHandler;
     private final ILongInputHandler<@NotNull ChemicalStack> chemicalInputHandler;
     private final LongSupplier chemicalUsage;
-    private long gasUsageMultiplier;
+    private long chemicalUsageMultiplier;
 
     private ItemStack recipeItem = ItemStack.EMPTY;
-    private ChemicalStack recipeGas = ChemicalStack.EMPTY;
+    private ChemicalStack recipeChemical = ChemicalStack.EMPTY;
     private ChemicalStack output = ChemicalStack.EMPTY;
 
     /**
@@ -48,7 +48,7 @@ public class ChemicalDissolutionCachedRecipe extends CachedRecipe<ChemicalDissol
 
     @Override
     protected void setupVariableValues() {
-        gasUsageMultiplier = Math.max(chemicalUsage.getAsLong(), 0);
+        chemicalUsageMultiplier = Math.max(chemicalUsage.getAsLong(), 0);
     }
 
     @Override
@@ -62,9 +62,9 @@ public class ChemicalDissolutionCachedRecipe extends CachedRecipe<ChemicalDissol
                 tracker.mismatchedRecipe();
             } else {
                 //Now check the chemical input
-                recipeGas = chemicalInputHandler.getRecipeInput(recipe.getChemicalInput());
+                recipeChemical = chemicalInputHandler.getRecipeInput(recipe.getChemicalInput());
                 //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputChemical)
-                if (recipeGas.isEmpty()) {
+                if (recipeChemical.isEmpty()) {
                     //TODO: Allow processing when secondary chemical is empty if the usage multiplier is zero?
                     //Note: we don't force reset based on secondary per tick usages
                     tracker.updateOperations(0);
@@ -76,11 +76,11 @@ public class ChemicalDissolutionCachedRecipe extends CachedRecipe<ChemicalDissol
                 }
                 //Calculate the current max based on the item input
                 itemInputHandler.calculateOperationsCanSupport(tracker, recipeItem);
-                if (!recipeGas.isEmpty() && tracker.shouldContinueChecking()) {
+                if (!recipeChemical.isEmpty() && tracker.shouldContinueChecking()) {
                     //Calculate the current max based on the chemical input, and the given usage amount
-                    chemicalInputHandler.calculateOperationsCanSupport(tracker, recipeGas, gasUsageMultiplier);
+                    chemicalInputHandler.calculateOperationsCanSupport(tracker, recipeChemical, chemicalUsageMultiplier);
                     if (tracker.shouldContinueChecking()) {
-                        output = recipe.getOutput(recipeItem, recipeGas);
+                        output = recipe.getOutput(recipeItem, recipeChemical);
                         //Calculate the max based on the space in the output
                         outputHandler.calculateOperationsCanSupport(tracker, output);
                     }
@@ -93,11 +93,11 @@ public class ChemicalDissolutionCachedRecipe extends CachedRecipe<ChemicalDissol
     public boolean isInputValid() {
         ItemStack itemInput = itemInputHandler.getInput();
         if (!itemInput.isEmpty()) {
-            ChemicalStack gasStack = chemicalInputHandler.getInput();
+            ChemicalStack chemicalStack = chemicalInputHandler.getInput();
             //Ensure that we check that we have enough for that the recipe matches *and* also that we have enough for how much we need to use
-            if (!gasStack.isEmpty() && recipe.test(itemInput, gasStack)) {
-                ChemicalStack recipeGas = chemicalInputHandler.getRecipeInput(recipe.getChemicalInput());
-                return !recipeGas.isEmpty() && gasStack.getAmount() >= recipeGas.getAmount();
+            if (!chemicalStack.isEmpty() && recipe.test(itemInput, chemicalStack)) {
+                ChemicalStack recipeChemical = chemicalInputHandler.getRecipeInput(recipe.getChemicalInput());
+                return !recipeChemical.isEmpty() && chemicalStack.getAmount() >= recipeChemical.getAmount();
             }
         }
         return false;
@@ -106,24 +106,24 @@ public class ChemicalDissolutionCachedRecipe extends CachedRecipe<ChemicalDissol
     @Override
     protected void useResources(int operations) {
         super.useResources(operations);
-        if (gasUsageMultiplier <= 0) {
+        if (chemicalUsageMultiplier <= 0) {
             //We don't need to use the chemical
             return;
-        } else if (recipeGas.isEmpty()) {
+        } else if (recipeChemical.isEmpty()) {
             //Something went wrong, this if should never really be true if we are in useResources
             return;
         }
         //Note: We should have enough because of the getOperationsThisTick call to reduce it based on amounts
-        chemicalInputHandler.use(recipeGas, operations * gasUsageMultiplier);
+        chemicalInputHandler.use(recipeChemical, operations * chemicalUsageMultiplier);
     }
 
     @Override
     protected void finishProcessing(int operations) {
         //Validate something didn't go horribly wrong
-        if (!recipeItem.isEmpty() && !recipeGas.isEmpty() && !output.isEmpty()) {
+        if (!recipeItem.isEmpty() && !recipeChemical.isEmpty() && !output.isEmpty()) {
             itemInputHandler.use(recipeItem, operations);
-            if (gasUsageMultiplier > 0) {
-                chemicalInputHandler.use(recipeGas, operations * gasUsageMultiplier);
+            if (chemicalUsageMultiplier > 0) {
+                chemicalInputHandler.use(recipeChemical, operations * chemicalUsageMultiplier);
             }
             outputHandler.handleOutput(output, operations);
         }

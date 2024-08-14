@@ -15,20 +15,20 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Pres
 
     private final ItemStackIngredient inputSolid;
     private final FluidStackIngredient inputFluid;
-    private final ChemicalStackIngredient inputGas;
+    private final ChemicalStackIngredient inputChemical;
     private long energyRequired = 0;
     private final int duration;
     private final ItemStack outputItem;
-    private final ChemicalStack outputGas;
+    private final ChemicalStack outputChemical;
 
-    protected PressurizedReactionRecipeBuilder(ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, ChemicalStackIngredient inputGas, int duration,
-          ItemStack outputItem, ChemicalStack outputGas) {
+    protected PressurizedReactionRecipeBuilder(ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, ChemicalStackIngredient inputChemical, int duration,
+          ItemStack outputItem, ChemicalStack outputChemical) {
         this.inputSolid = inputSolid;
         this.inputFluid = inputFluid;
-        this.inputGas = inputGas;
+        this.inputChemical = inputChemical;
         this.duration = duration;
         this.outputItem = outputItem;
-        this.outputGas = outputGas;
+        this.outputChemical = outputChemical;
     }
 
     /**
@@ -107,6 +107,6 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Pres
 
     @Override
     protected PressurizedReactionRecipe asRecipe() {
-        return new BasicPressurizedReactionRecipe(inputSolid, inputFluid, inputGas, energyRequired, duration, outputItem, outputGas);
+        return new BasicPressurizedReactionRecipe(inputSolid, inputFluid, inputChemical, energyRequired, duration, outputItem, outputChemical);
     }
 }

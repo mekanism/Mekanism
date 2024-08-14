@@ -90,7 +90,7 @@ public abstract class RotaryRecipe extends MekanismRecipe<RotaryRecipeInput> {
      *
      * @throws IllegalStateException if {@link #hasFluidToChemical()} is {@code false}.
      */
-    public abstract List<ChemicalStack> getGasOutputDefinition();
+    public abstract List<ChemicalStack> getChemicalOutputDefinition();
 
     /**
      * For JEI, gets the fluid output representations to display.
@@ -114,7 +114,7 @@ public abstract class RotaryRecipe extends MekanismRecipe<RotaryRecipeInput> {
      * @implNote The passed in input should <strong>NOT</strong> be modified.
      */
     @Contract(value = "_ -> new", pure = true)
-    public abstract ChemicalStack getGasOutput(FluidStack input);
+    public abstract ChemicalStack getChemicalOutput(FluidStack input);
 
     /**
      * Gets a new fluid output based on the given input.

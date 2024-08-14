@@ -11,7 +11,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
  * @since 10.6.0
  */
 @NothingNullByDefault
-public record ReactionRecipeInput(ItemStack item, FluidStack fluid, ChemicalStack gas) implements FluidRecipeInput, ChemicalRecipeInput {
+public record ReactionRecipeInput(ItemStack item, FluidStack fluid, ChemicalStack chemical) implements FluidRecipeInput, ChemicalRecipeInput {
 
     @Override
     public ItemStack getItem(int index) {
@@ -34,7 +34,7 @@ public record ReactionRecipeInput(ItemStack item, FluidStack fluid, ChemicalStac
         if (index != 0) {
             throw new IllegalArgumentException("No chemical for index " + index);
         }
-        return gas;
+        return chemical;
     }
 
     @Override
@@ -44,6 +44,6 @@ public record ReactionRecipeInput(ItemStack item, FluidStack fluid, ChemicalStac
 
     @Override
     public boolean isEmpty() {
-        return item.isEmpty() || fluid.isEmpty() || gas.isEmpty();
+        return item.isEmpty() || fluid.isEmpty() || chemical.isEmpty();
     }
 }

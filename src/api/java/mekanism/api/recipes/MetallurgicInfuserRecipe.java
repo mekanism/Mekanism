@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Input: ItemStack
  * <br>
- * Input: Infuse Type
+ * Input: Chemical
  * <br>
  * Output: ItemStack
  *
@@ -47,7 +47,7 @@ public abstract class MetallurgicInfuserRecipe extends ItemStackChemicalToItemSt
     public abstract ItemStack getResultItem(@NotNull HolderLookup.Provider provider);
 
     @Override
-    public abstract boolean test(ItemStack itemStack, ChemicalStack gasStack);
+    public abstract boolean test(ItemStack itemStack, ChemicalStack chemicalStack);
 
     @Override
     public abstract List<@NotNull ItemStack> getOutputDefinition();

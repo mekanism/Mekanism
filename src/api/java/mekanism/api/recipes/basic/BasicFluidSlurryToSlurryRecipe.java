@@ -21,13 +21,13 @@ public class BasicFluidSlurryToSlurryRecipe extends FluidSlurryToSlurryRecipe {
     protected final ChemicalStack output;
 
     /**
-     * @param fluidInput  Fluid input.
-     * @param slurryInput Slurry input.
-     * @param output      Output.
+     * @param fluidInput    Fluid input.
+     * @param chemicalInput Chemical input.
+     * @param output        Output.
      */
-    public BasicFluidSlurryToSlurryRecipe(FluidStackIngredient fluidInput, ChemicalStackIngredient slurryInput, ChemicalStack output) {
+    public BasicFluidSlurryToSlurryRecipe(FluidStackIngredient fluidInput, ChemicalStackIngredient chemicalInput, ChemicalStack output) {
         this.fluidInput = Objects.requireNonNull(fluidInput, "Fluid input cannot be null.");
-        this.chemicalInput = Objects.requireNonNull(slurryInput, "Chemical input cannot be null.");
+        this.chemicalInput = Objects.requireNonNull(chemicalInput, "Chemical input cannot be null.");
         Objects.requireNonNull(output, "Output cannot be null.");
         if (output.isEmpty()) {
             throw new IllegalArgumentException("Output cannot be empty.");

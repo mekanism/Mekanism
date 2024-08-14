@@ -134,7 +134,7 @@ public interface IRadiationManager {
     void radiate(LivingEntity entity, double magnitude);
 
     /**
-     * Helper to "dump" any radioactive chemicals stored in the tanks handled by the given gas handler.
+     * Helper to "dump" any radioactive chemicals stored in the tanks handled by the given chemical handler.
      *
      * @param pos              Location to dump radiation at.
      * @param chemicalHandler  Chemical handler to process the tanks of.
@@ -146,7 +146,7 @@ public interface IRadiationManager {
     void dumpRadiation(GlobalPos pos, IChemicalHandler chemicalHandler, boolean clearRadioactive);
 
     /**
-     * Helper to "dump" any radioactive chemicals stored in the given gas tanks.
+     * Helper to "dump" any radioactive chemicals stored in the given chemical tanks.
      *
      * @param pos              Location to dump radiation at.
      * @param chemicalTanks    Tanks to process.

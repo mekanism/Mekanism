@@ -31,7 +31,7 @@ public class RotaryRecipeMapper extends TypedMekanismRecipeMapper<RotaryRecipe> 
         boolean handled = false;
         if (recipe.hasFluidToChemical()) {
             for (FluidStack representation : recipe.getFluidInput().getRepresentations()) {
-                ChemicalStack output = recipe.getGasOutput(representation);
+                ChemicalStack output = recipe.getChemicalOutput(representation);
                 if (!output.isEmpty()) {
                     IngredientHelper ingredientHelper = new IngredientHelper(mapper);
                     ingredientHelper.put(representation);

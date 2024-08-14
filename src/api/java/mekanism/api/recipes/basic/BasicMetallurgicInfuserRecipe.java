@@ -24,12 +24,12 @@ public class BasicMetallurgicInfuserRecipe extends MetallurgicInfuserRecipe impl
 
     /**
      * @param itemInput     Item input.
-     * @param infusionInput Infusion input.
+     * @param chemicalInput Infusion input.
      * @param output        Output.
      */
-    public BasicMetallurgicInfuserRecipe(ItemStackIngredient itemInput, ChemicalStackIngredient infusionInput, ItemStack output) {
+    public BasicMetallurgicInfuserRecipe(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ItemStack output) {
         this.itemInput = Objects.requireNonNull(itemInput, "Item input cannot be null.");
-        this.infusionInput = Objects.requireNonNull(infusionInput, "Chemical input cannot be null.");
+        this.infusionInput = Objects.requireNonNull(chemicalInput, "Chemical input cannot be null.");
         Objects.requireNonNull(output, "Output cannot be null.");
         if (output.isEmpty()) {
             throw new IllegalArgumentException("Output cannot be empty.");
@@ -60,8 +60,8 @@ public class BasicMetallurgicInfuserRecipe extends MetallurgicInfuserRecipe impl
     }
 
     @Override
-    public boolean test(ItemStack itemStack, ChemicalStack gasStack) {
-        return itemInput.test(itemStack) && infusionInput.test(gasStack);
+    public boolean test(ItemStack itemStack, ChemicalStack chemicalStack) {
+        return itemInput.test(itemStack) && infusionInput.test(chemicalStack);
     }
 
     @Override

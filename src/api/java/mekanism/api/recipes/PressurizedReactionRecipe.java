@@ -68,12 +68,12 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe<ReactionR
     public abstract int getDuration();
 
     @Override
-    public abstract boolean test(ItemStack solid, FluidStack liquid, ChemicalStack gas);
+    public abstract boolean test(ItemStack solid, FluidStack liquid, ChemicalStack chemical);
 
     @Override
     public boolean matches(ReactionRecipeInput input, Level level) {
         //Don't match incomplete recipes or ones that don't match
-        return !isIncomplete() && test(input.item(), input.fluid(), input.gas());
+        return !isIncomplete() && test(input.item(), input.fluid(), input.chemical());
     }
 
     /**

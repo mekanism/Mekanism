@@ -16,11 +16,11 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Contract;
 
 /**
- * Input: Two pigments. The order of them does not matter.
+ * Input: Two chemicals. The order of them does not matter.
  * <br>
- * Output: PigmentStack
+ * Output: ChemicalStack
  *
- * @apiNote Pigment Mixers can process this recipe type and the pigments can be put in any order into the mixer.
+ * @apiNote Pigment Mixers can process this recipe type and the chemicals can be put in any order into the mixer.
  */
 @NothingNullByDefault
 public abstract class PigmentMixingRecipe extends ChemicalChemicalToChemicalRecipe {

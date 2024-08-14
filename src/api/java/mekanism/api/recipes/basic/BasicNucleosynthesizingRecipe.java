@@ -71,8 +71,8 @@ public class BasicNucleosynthesizingRecipe extends NucleosynthesizingRecipe impl
     }
 
     @Override
-    public boolean test(ItemStack itemStack, ChemicalStack gasStack) {
-        return itemInput.test(itemStack) && chemicalInput.test(gasStack);
+    public boolean test(ItemStack itemStack, ChemicalStack chemicalStack) {
+        return itemInput.test(itemStack) && chemicalInput.test(chemicalStack);
     }
 
     @Override

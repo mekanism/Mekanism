@@ -13,13 +13,13 @@ import net.minecraft.world.item.ItemStack;
 public class NucleosynthesizingRecipeBuilder extends MekanismRecipeBuilder<NucleosynthesizingRecipeBuilder> {
 
     private final ItemStackIngredient itemInput;
-    private final ChemicalStackIngredient gasInput;
+    private final ChemicalStackIngredient chemicalInput;
     private final ItemStack output;
     private final int duration;
 
-    protected NucleosynthesizingRecipeBuilder(ItemStackIngredient itemInput, ChemicalStackIngredient gasInput, ItemStack output, int duration) {
+    protected NucleosynthesizingRecipeBuilder(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ItemStack output, int duration) {
         this.itemInput = itemInput;
-        this.gasInput = gasInput;
+        this.chemicalInput = chemicalInput;
         this.output = output;
         this.duration = duration;
     }
@@ -43,7 +43,7 @@ public class NucleosynthesizingRecipeBuilder extends MekanismRecipeBuilder<Nucle
 
     @Override
     protected NucleosynthesizingRecipe asRecipe() {
-        return new BasicNucleosynthesizingRecipe(itemInput, gasInput, output, duration);
+        return new BasicNucleosynthesizingRecipe(itemInput, chemicalInput, output, duration);
     }
 
     /**

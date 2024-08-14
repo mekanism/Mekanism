@@ -18,7 +18,7 @@ import org.jetbrains.annotations.Contract;
 /**
  * Input: ItemStack
  * <br>
- * Output: PigmentStack
+ * Output: ChemicalStack
  *
  * @apiNote Pigment Extractors can process this recipe type.
  */

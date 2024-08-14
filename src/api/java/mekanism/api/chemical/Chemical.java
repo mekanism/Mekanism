@@ -255,7 +255,9 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
     }
 
     /**
-     * @return whether this chemical should render as a gas or more like a fluid
+     * {@return whether this chemical should render as a gas or more like a fluid}
+     *
+     * @since 10.6.8
      */
     public boolean isGaseous() {
         return isGaseous;

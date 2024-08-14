@@ -14,16 +14,17 @@ import org.jetbrains.annotations.Nullable;
 public class RotaryRecipeBuilder extends MekanismRecipeBuilder<RotaryRecipeBuilder> {
 
     @Nullable
-    private final ChemicalStackIngredient gasInput;
+    private final ChemicalStackIngredient chemicalInput;
     @Nullable
     private final FluidStackIngredient fluidInput;
     private final FluidStack fluidOutput;
-    private final ChemicalStack gasOutput;
+    private final ChemicalStack chemicalOutput;
 
-    protected RotaryRecipeBuilder(@Nullable FluidStackIngredient fluidInput, @Nullable ChemicalStackIngredient gasInput, ChemicalStack gasOutput, FluidStack fluidOutput) {
-        this.gasInput = gasInput;
+    protected RotaryRecipeBuilder(@Nullable FluidStackIngredient fluidInput, @Nullable ChemicalStackIngredient chemicalInput, ChemicalStack chemicalOutput,
+          FluidStack fluidOutput) {
+        this.chemicalInput = chemicalInput;
         this.fluidInput = fluidInput;
-        this.gasOutput = gasOutput;
+        this.chemicalOutput = chemicalOutput;
         this.fluidOutput = fluidOutput;
     }
 
@@ -77,12 +78,12 @@ public class RotaryRecipeBuilder extends MekanismRecipeBuilder<RotaryRecipeBuild
     @Override
     protected RotaryRecipe asRecipe() {
         if (fluidInput != null) {
-            if (gasInput != null) {
-                return new BasicRotaryRecipe(fluidInput, gasInput, gasOutput, fluidOutput);
+            if (chemicalInput != null) {
+                return new BasicRotaryRecipe(fluidInput, chemicalInput, chemicalOutput, fluidOutput);
             }
-            return new BasicRotaryRecipe(fluidInput, gasOutput);
-        } else if (gasInput != null) {
-            return new BasicRotaryRecipe(gasInput, fluidOutput);
+            return new BasicRotaryRecipe(fluidInput, chemicalOutput);
+        } else if (chemicalInput != null) {
+            return new BasicRotaryRecipe(chemicalInput, fluidOutput);
         }
         throw new IllegalStateException("Invalid rotary recipe");
     }

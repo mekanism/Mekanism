@@ -85,8 +85,8 @@ public class BasicPressurizedReactionRecipe extends PressurizedReactionRecipe {
     }
 
     @Override
-    public boolean test(ItemStack solid, FluidStack liquid, ChemicalStack gas) {
-        return this.inputSolid.test(solid) && this.inputFluid.test(liquid) && this.inputChemical.test(gas);
+    public boolean test(ItemStack solid, FluidStack liquid, ChemicalStack chemical) {
+        return this.inputSolid.test(solid) && this.inputFluid.test(liquid) && this.inputChemical.test(chemical);
     }
 
     @Override

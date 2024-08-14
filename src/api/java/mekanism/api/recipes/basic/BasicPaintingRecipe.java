@@ -19,17 +19,17 @@ import org.jetbrains.annotations.NotNull;
 public class BasicPaintingRecipe extends PaintingRecipe implements IBasicItemStackOutput {
 
     protected final ItemStackIngredient itemInput;
-    protected final ChemicalStackIngredient pigmentInput;
+    protected final ChemicalStackIngredient chemicalInput;
     protected final ItemStack output;
 
     /**
-     * @param itemInput    Item input.
-     * @param pigmentInput Pigment input.
-     * @param output       Output.
+     * @param itemInput     Item input.
+     * @param chemicalInput Chemical input.
+     * @param output        Output.
      */
-    public BasicPaintingRecipe(ItemStackIngredient itemInput, ChemicalStackIngredient pigmentInput, ItemStack output) {
+    public BasicPaintingRecipe(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ItemStack output) {
         this.itemInput = Objects.requireNonNull(itemInput, "Item input cannot be null.");
-        this.pigmentInput = Objects.requireNonNull(pigmentInput, "Chemical input cannot be null.");
+        this.chemicalInput = Objects.requireNonNull(chemicalInput, "Chemical input cannot be null.");
         Objects.requireNonNull(output, "Output cannot be null.");
         if (output.isEmpty()) {
             throw new IllegalArgumentException("Output cannot be empty.");
@@ -44,7 +44,7 @@ public class BasicPaintingRecipe extends PaintingRecipe implements IBasicItemSta
 
     @Override
     public ChemicalStackIngredient getChemicalInput() {
-        return pigmentInput;
+        return chemicalInput;
     }
 
     @Override
@@ -60,8 +60,8 @@ public class BasicPaintingRecipe extends PaintingRecipe implements IBasicItemSta
     }
 
     @Override
-    public boolean test(ItemStack itemStack, ChemicalStack gasStack) {
-        return itemInput.test(itemStack) && pigmentInput.test(gasStack);
+    public boolean test(ItemStack itemStack, ChemicalStack chemicalStack) {
+        return itemInput.test(itemStack) && chemicalInput.test(chemicalStack);
     }
 
     @Override

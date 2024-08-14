@@ -121,7 +121,7 @@ public class BasicRotaryRecipe extends RotaryRecipe {
     /**
      * @throws IllegalStateException if {@link #hasFluidToChemical()} is {@code false}.
      */
-    protected void assertHasFluidToGas() {
+    protected void assertHasFluidToChemical() {
         if (!hasFluidToChemical()) {
             throw new IllegalStateException("This recipe has no fluid to chemical conversion.");
         }
@@ -139,7 +139,7 @@ public class BasicRotaryRecipe extends RotaryRecipe {
 
     @Override
     public FluidStackIngredient getFluidInput() {
-        assertHasFluidToGas();
+        assertHasFluidToChemical();
         return fluidInput;
     }
 
@@ -150,8 +150,8 @@ public class BasicRotaryRecipe extends RotaryRecipe {
     }
 
     @Override
-    public List<ChemicalStack> getGasOutputDefinition() {
-        assertHasFluidToGas();
+    public List<ChemicalStack> getChemicalOutputDefinition() {
+        assertHasFluidToChemical();
         return Collections.singletonList(chemicalOutput);
     }
 
@@ -163,8 +163,8 @@ public class BasicRotaryRecipe extends RotaryRecipe {
 
     @Override
     @Contract(value = "_ -> new", pure = true)
-    public ChemicalStack getGasOutput(FluidStack input) {
-        assertHasFluidToGas();
+    public ChemicalStack getChemicalOutput(FluidStack input) {
+        assertHasFluidToChemical();
         return chemicalOutput.copy();
     }
 
@@ -181,7 +181,7 @@ public class BasicRotaryRecipe extends RotaryRecipe {
      * @return the uncopied basic input, {@code null} if the recipe doesn't support chemical to fluid recipes.
      */
     @Nullable
-    public ChemicalStackIngredient getGasInputRaw() {
+    public ChemicalStackIngredient getChemicalInputRaw() {
         return chemicalInput;
     }
 
@@ -190,7 +190,7 @@ public class BasicRotaryRecipe extends RotaryRecipe {
      *
      * @return the uncopied basic output
      */
-    public ChemicalStack getGasOutputRaw() {
+    public ChemicalStack getChemicalOutputRaw() {
         return this.chemicalOutput;
     }
 

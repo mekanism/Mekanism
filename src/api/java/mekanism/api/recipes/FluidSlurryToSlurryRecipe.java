@@ -20,9 +20,9 @@ import org.jetbrains.annotations.Contract;
 /**
  * Input: FluidStack
  * <br>
- * Input: Slurry
+ * Input: Chemical
  * <br>
- * Output: SlurryStack
+ * Output: ChemicalStack
  *
  * @apiNote Chemical Washers can process this recipe type.
  */

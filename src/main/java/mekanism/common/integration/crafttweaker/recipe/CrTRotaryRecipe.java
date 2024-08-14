@@ -40,7 +40,7 @@ public class CrTRotaryRecipe {
     @ZenCodeType.Getter("fluidToGas")
     public static FluidToGas getFluidToGas(RotaryRecipe _this) {
         if (_this.hasFluidToChemical()) {
-            return new FluidToGas(CrTUtils.toCrT(_this.getFluidInput()), CrTUtils.convertChemical(_this.getGasOutputDefinition()));
+            return new FluidToGas(CrTUtils.toCrT(_this.getFluidInput()), CrTUtils.convertChemical(_this.getChemicalOutputDefinition()));
         }
         return null;
     }

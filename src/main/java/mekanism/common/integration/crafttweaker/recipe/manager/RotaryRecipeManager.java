@@ -107,7 +107,7 @@ public class RotaryRecipeManager extends MekanismRecipeManager<RotaryRecipeInput
     protected String describeOutputs(RotaryRecipe recipe) {
         StringBuilder builder = new StringBuilder();
         if (recipe.hasFluidToChemical()) {
-            builder.append(CrTUtils.describeOutputs(recipe.getGasOutputDefinition()))
+            builder.append(CrTUtils.describeOutputs(recipe.getChemicalOutputDefinition()))
                   .append(" for fluid to gas");
         }
         if (recipe.hasChemicalToFluid()) {

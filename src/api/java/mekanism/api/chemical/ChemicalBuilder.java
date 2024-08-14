@@ -99,6 +99,8 @@ public class ChemicalBuilder {
 
     /**
      * Set this chemical should render as a gas. Omit to leave as fluid-like
+     *
+     * @since 10.6.8
      */
     public ChemicalBuilder gaseous() {
         this.isGaseous = true;
@@ -106,7 +108,9 @@ public class ChemicalBuilder {
     }
 
     /**
-     * @return whether this chemical should render as a gas or more like a fluid
+     * {@return whether this chemical should render as a gas or more like a fluid}
+     *
+     * @since 10.6.8
      */
     public boolean isGaseous() {
         return isGaseous;

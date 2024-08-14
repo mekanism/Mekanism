@@ -54,7 +54,7 @@ public abstract class NucleosynthesizingRecipe extends ItemStackGasToItemStackRe
     public abstract ItemStack getResultItem(@NotNull HolderLookup.Provider provider);
 
     @Override
-    public abstract boolean test(ItemStack itemStack, ChemicalStack gasStack);
+    public abstract boolean test(ItemStack itemStack, ChemicalStack chemicalStack);
 
     @Override
     public abstract List<@NotNull ItemStack> getOutputDefinition();

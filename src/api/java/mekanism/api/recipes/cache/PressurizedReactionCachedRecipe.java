@@ -26,7 +26,7 @@ public class PressurizedReactionCachedRecipe extends CachedRecipe<PressurizedRea
 
     private ItemStack recipeItem = ItemStack.EMPTY;
     private FluidStack recipeFluid = FluidStack.EMPTY;
-    private ChemicalStack recipeGas = ChemicalStack.EMPTY;
+    private ChemicalStack recipeChemical = ChemicalStack.EMPTY;
     //Note: Our output shouldn't be null in places it is actually used, but we mark it as nullable, so we don't have to initialize it
     @Nullable
     private PressurizedReactionRecipeOutput output;
@@ -69,9 +69,9 @@ public class PressurizedReactionCachedRecipe extends CachedRecipe<PressurizedRea
                     //No input, we don't know if the recipe matches or not so treat it as not matching
                     tracker.mismatchedRecipe();
                 } else {
-                    recipeGas = chemicalInputHandler.getRecipeInput(recipe.getInputChemical());
+                    recipeChemical = chemicalInputHandler.getRecipeInput(recipe.getInputChemical());
                     //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputChemical)
-                    if (recipeGas.isEmpty()) {
+                    if (recipeChemical.isEmpty()) {
                         //No input, we don't know if the recipe matches or not so treat it as not matching
                         tracker.mismatchedRecipe();
                     } else {
@@ -82,9 +82,9 @@ public class PressurizedReactionCachedRecipe extends CachedRecipe<PressurizedRea
                             fluidInputHandler.calculateOperationsCanSupport(tracker, recipeFluid);
                             if (tracker.shouldContinueChecking()) {
                                 //Calculate the current max based on the chemical input
-                                chemicalInputHandler.calculateOperationsCanSupport(tracker, recipeGas);
+                                chemicalInputHandler.calculateOperationsCanSupport(tracker, recipeChemical);
                                 if (tracker.shouldContinueChecking()) {
-                                    output = recipe.getOutput(recipeItem, recipeFluid, recipeGas);
+                                    output = recipe.getOutput(recipeItem, recipeFluid, recipeChemical);
                                     //Calculate the max based on the space in the output
                                     outputHandler.calculateOperationsCanSupport(tracker, output);
                                 }
@@ -102,21 +102,21 @@ public class PressurizedReactionCachedRecipe extends CachedRecipe<PressurizedRea
         if (item.isEmpty()) {
             return false;
         }
-        ChemicalStack gas = chemicalInputHandler.getInput();
-        if (gas.isEmpty()) {
+        ChemicalStack chemical = chemicalInputHandler.getInput();
+        if (chemical.isEmpty()) {
             return false;
         }
         FluidStack fluid = fluidInputHandler.getInput();
-        return !fluid.isEmpty() && recipe.test(item, fluid, gas);
+        return !fluid.isEmpty() && recipe.test(item, fluid, chemical);
     }
 
     @Override
     protected void finishProcessing(int operations) {
         //Validate something didn't go horribly wrong
-        if (output != null && !recipeItem.isEmpty() && !recipeFluid.isEmpty() && !recipeGas.isEmpty()) {
+        if (output != null && !recipeItem.isEmpty() && !recipeFluid.isEmpty() && !recipeChemical.isEmpty()) {
             itemInputHandler.use(recipeItem, operations);
             fluidInputHandler.use(recipeFluid, operations);
-            chemicalInputHandler.use(recipeGas, operations);
+            chemicalInputHandler.use(recipeChemical, operations);
             outputHandler.handleOutput(output, operations);
         }
     }

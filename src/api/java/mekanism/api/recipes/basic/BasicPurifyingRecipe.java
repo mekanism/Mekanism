@@ -19,8 +19,8 @@ public class BasicPurifyingRecipe extends BasicItemStackGasToItemStackRecipe {
 
     private static final Holder<Item> PURIFICATION_CHAMBER = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "purification_chamber"));
 
-    public BasicPurifyingRecipe(ItemStackIngredient itemInput, ChemicalStackIngredient gasInput, ItemStack output) {
-        super(itemInput, gasInput, output, MekanismRecipeTypes.TYPE_PURIFYING.value());
+    public BasicPurifyingRecipe(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ItemStack output) {
+        super(itemInput, chemicalInput, output, MekanismRecipeTypes.TYPE_PURIFYING.value());
     }
 
     @Override

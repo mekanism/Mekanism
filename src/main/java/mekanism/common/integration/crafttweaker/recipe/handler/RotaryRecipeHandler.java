@@ -27,7 +27,7 @@ public class RotaryRecipeHandler extends MekanismRecipeHandler<RotaryRecipe> {
         return buildCommandString(manager, recipeHolder,
               recipe.hasFluidToChemical() ? recipe.getFluidInput() : SKIP_OPTIONAL_PARAM,
               recipe.hasChemicalToFluid() ? recipe.getChemicalInput() : SKIP_OPTIONAL_PARAM,
-              recipe.hasFluidToChemical() ? recipe.getGasOutputDefinition() : SKIP_OPTIONAL_PARAM,
+              recipe.hasFluidToChemical() ? recipe.getChemicalOutputDefinition() : SKIP_OPTIONAL_PARAM,
               recipe.hasChemicalToFluid() ? recipe.getFluidOutputDefinition() : SKIP_OPTIONAL_PARAM
         );
     }
@@ -47,9 +47,9 @@ public class RotaryRecipeHandler extends MekanismRecipeHandler<RotaryRecipe> {
     public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super RotaryRecipe> manager, RegistryAccess registryAccess, RotaryRecipe recipe) {
         if (recipe.hasFluidToChemical()) {
             if (recipe.hasChemicalToFluid()) {
-                return decompose(recipe.getFluidInput(), recipe.getChemicalInput(), recipe.getGasOutputDefinition(), recipe.getFluidOutputDefinition());
+                return decompose(recipe.getFluidInput(), recipe.getChemicalInput(), recipe.getChemicalOutputDefinition(), recipe.getFluidOutputDefinition());
             }
-            return decompose(recipe.getFluidInput(), recipe.getGasOutputDefinition());
+            return decompose(recipe.getFluidInput(), recipe.getChemicalOutputDefinition());
         }//Else has gas to fluid
         return decompose(recipe.getChemicalInput(), recipe.getFluidOutputDefinition());
     }

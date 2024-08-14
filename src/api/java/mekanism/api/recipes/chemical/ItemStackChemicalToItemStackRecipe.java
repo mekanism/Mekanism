@@ -58,7 +58,7 @@ public abstract class ItemStackChemicalToItemStackRecipe extends MekanismRecipe<
     public abstract ItemStack getResultItem(@NotNull HolderLookup.Provider provider);
 
     @Override
-    public abstract boolean test(ItemStack itemStack, ChemicalStack gasStack);
+    public abstract boolean test(ItemStack itemStack, ChemicalStack chemicalStack);
 
     @NotNull
     @Override
