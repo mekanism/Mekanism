@@ -1,11 +1,10 @@
-package mekanism.api.chemical.gas.attribute;
+package mekanism.api.chemical.attribute;
 
 import java.util.List;
 import java.util.function.IntSupplier;
 import java.util.function.LongSupplier;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.attribute.ChemicalAttribute;
 import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.radiation.IRadiationManager;
@@ -14,9 +13,12 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.ITooltipHelper;
 import net.minecraft.network.chat.Component;
 
-public class GasAttributes {
+/**
+ * @since 10.6.8 Previously was GasAttributes
+ */
+public class ChemicalAttributes {
 
-    private GasAttributes() {
+    private ChemicalAttributes() {
     }
 
     /**
@@ -40,7 +42,8 @@ public class GasAttributes {
         }
 
         /**
-         * Gets the radioactivity of this gas in Sv/h. Each mB of this chemical released into the environment will cause a radiation source of the given radioactivity.
+         * Gets the radioactivity of this chemical in Sv/h. Each mB of this chemical released into the environment will cause a radiation source of the given
+         * radioactivity.
          *
          * @return the radioactivity of this chemical
          */
@@ -73,7 +76,7 @@ public class GasAttributes {
      *
      * @author aidancbrady
      */
-    public abstract static class Coolant extends ChemicalAttribute {
+    public abstract static sealed class Coolant extends ChemicalAttribute permits CooledCoolant, HeatedCoolant {
 
         private final double thermalEnthalpy;
         private final double conductivity;
@@ -126,27 +129,27 @@ public class GasAttributes {
      *
      * @author aidancbrady
      */
-    public static class CooledCoolant extends Coolant {
+    public static non-sealed class CooledCoolant extends Coolant {
 
-        private final IChemicalProvider heatedGas;
+        private final IChemicalProvider heatedChemical;
 
         /**
-         * @param heatedGas       Gas provider for the heated variant of this chemical.
+         * @param heatedChemical  Chemical provider for the heated variant of this chemical.
          * @param thermalEnthalpy Defines how much energy one mB of the chemical can store; lower values will cause reactors to require more of the chemical to stay cool.
          *                        Must be greater than zero.
          * @param conductivity    Defines the proportion of a reactor's available heat that can be used at an instant to convert this coolant's cool variant to its heated
          *                        variant. This value should be greater than zero, and at most one.
          */
-        public CooledCoolant(IChemicalProvider heatedGas, double thermalEnthalpy, double conductivity) {
+        public CooledCoolant(IChemicalProvider heatedChemical, double thermalEnthalpy, double conductivity) {
             super(thermalEnthalpy, conductivity);
-            this.heatedGas = heatedGas;
+            this.heatedChemical = heatedChemical;
         }
 
         /**
          * Gets the heated version of this coolant.
          */
-        public Chemical getHeatedGas() {
-            return heatedGas.getChemical();
+        public Chemical getHeatedChemical() {
+            return heatedChemical.getChemical();
         }
     }
 
@@ -155,27 +158,27 @@ public class GasAttributes {
      *
      * @author aidancbrady
      */
-    public static class HeatedCoolant extends Coolant {
+    public static non-sealed class HeatedCoolant extends Coolant {
 
-        private final IChemicalProvider cooledGas;
+        private final IChemicalProvider cooledChemical;
 
         /**
-         * @param cooledGas       Gas provider for the cooled variant of this chemical.
+         * @param cooledChemical  Chemical provider for the cooled variant of this chemical.
          * @param thermalEnthalpy Defines how much energy one mB of the chemical can store; lower values will cause reactors to require more of the chemical to stay cool.
          *                        Must be greater than zero.
          * @param conductivity    Defines the proportion of a reactor's available heat that can be used at an instant to convert this coolant's cool variant to its heated
          *                        variant. This value should be greater than zero, and at most one.
          */
-        public HeatedCoolant(IChemicalProvider cooledGas, double thermalEnthalpy, double conductivity) {
+        public HeatedCoolant(IChemicalProvider cooledChemical, double thermalEnthalpy, double conductivity) {
             super(thermalEnthalpy, conductivity);
-            this.cooledGas = cooledGas;
+            this.cooledChemical = cooledChemical;
         }
 
         /**
          * Gets the cooled version of this coolant.
          */
-        public Chemical getCooledGas() {
-            return cooledGas.getChemical();
+        public Chemical getCooledChemical() {
+            return cooledChemical.getChemical();
         }
     }
 

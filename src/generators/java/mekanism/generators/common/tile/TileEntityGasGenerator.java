@@ -6,7 +6,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalTankBuilder;
-import mekanism.api.chemical.gas.attribute.GasAttributes.Fuel;
+import mekanism.api.chemical.attribute.ChemicalAttributes.Fuel;
 import mekanism.api.math.MathUtils;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.chemical.variable.VariableCapacityChemicalTank;

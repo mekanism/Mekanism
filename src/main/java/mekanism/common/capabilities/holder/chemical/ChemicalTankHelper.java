@@ -6,7 +6,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.RelativeSide;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.gas.attribute.GasAttributes;
+import mekanism.api.chemical.attribute.ChemicalAttributes;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.common.tile.component.TileComponentConfig;
 import net.minecraft.core.Direction;
@@ -24,7 +24,7 @@ public class ChemicalTankHelper {
     public static BiPredicate<@NotNull Chemical, @NotNull AutomationType> radioactiveInputTankPredicate(Supplier<IChemicalTank> outputTank) {
         //Allow extracting out of the input gas tank if it isn't external OR the output tank is empty AND the input is radioactive
         //Note: This only is the case if radiation is enabled as otherwise things like gauge droppers can work as the way to remove radioactive contents
-        return (type, automationType) -> automationType != AutomationType.EXTERNAL || (outputTank.get().isEmpty() && type.has(GasAttributes.Radiation.class) &&
+        return (type, automationType) -> automationType != AutomationType.EXTERNAL || (outputTank.get().isEmpty() && type.has(ChemicalAttributes.Radiation.class) &&
                                                                                        IRadiationManager.INSTANCE.isRadiationEnabled());
     }
 

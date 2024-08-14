@@ -12,7 +12,7 @@ import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttribute;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
-import mekanism.api.chemical.gas.attribute.GasAttributes;
+import mekanism.api.chemical.attribute.ChemicalAttributes;
 import mekanism.common.capabilities.chemical.variable.VariableCapacityChemicalTank;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.TileEntityRadioactiveWasteBarrel;
@@ -25,7 +25,7 @@ public class StackedWasteBarrel extends VariableCapacityChemicalTank implements 
     private static final ChemicalAttributeValidator ATTRIBUTE_VALIDATOR = new ChemicalAttributeValidator() {
         @Override
         public boolean validate(ChemicalAttribute attr) {
-            return attr instanceof GasAttributes.Radiation;
+            return attr instanceof ChemicalAttributes.Radiation;
         }
 
         @Override

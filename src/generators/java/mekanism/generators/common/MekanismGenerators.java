@@ -1,7 +1,7 @@
 package mekanism.generators.common;
 
 import mekanism.api.MekanismIMC;
-import mekanism.api.chemical.gas.attribute.GasAttributes.Fuel;
+import mekanism.api.chemical.attribute.ChemicalAttributes.Fuel;
 import mekanism.api.math.MathUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IModModule;

@@ -5,7 +5,7 @@ import java.util.List;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.gas.attribute.GasAttributes.HeatedCoolant;
+import mekanism.api.chemical.attribute.ChemicalAttributes.HeatedCoolant;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
@@ -42,7 +42,7 @@ public record BoilerRecipeViewerRecipe(ResourceLocation id, @Nullable ChemicalSt
             HeatedCoolant heatedCoolant = gas.get(HeatedCoolant.class);
             if (heatedCoolant != null) {
                 //If it is a cooled coolant add a recipe for it
-                Chemical cooledCoolant = heatedCoolant.getCooledGas();
+                Chemical cooledCoolant = heatedCoolant.getCooledChemical();
                 long coolantAmount = Math.round(waterAmount * waterToSteamEfficiency / heatedCoolant.getThermalEnthalpy());
                 recipes.add(new BoilerRecipeViewerRecipe(
                       RecipeViewerUtils.synthetic(gas.getRegistryName(), "boiler", Mekanism.MODID),

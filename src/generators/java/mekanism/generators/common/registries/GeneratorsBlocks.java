@@ -1,7 +1,7 @@
 package mekanism.generators.common.registries;
 
 import java.util.function.Supplier;
-import mekanism.api.chemical.gas.attribute.GasAttributes.Fuel;
+import mekanism.api.chemical.attribute.ChemicalAttributes.Fuel;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.attachments.containers.chemical.ChemicalTanksBuilder;
 import mekanism.common.attachments.containers.fluid.FluidTanksBuilder;

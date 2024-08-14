@@ -14,9 +14,9 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.gas.attribute.GasAttributes.CooledCoolant;
-import mekanism.api.chemical.gas.attribute.GasAttributes.HeatedCoolant;
-import mekanism.api.chemical.gas.attribute.GasAttributes.Radiation;
+import mekanism.api.chemical.attribute.ChemicalAttributes.CooledCoolant;
+import mekanism.api.chemical.attribute.ChemicalAttributes.HeatedCoolant;
+import mekanism.api.chemical.attribute.ChemicalAttributes.Radiation;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.math.MathUtils;
 import mekanism.api.radiation.IRadiationManager;
@@ -424,7 +424,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
                 lastBoilRate = clampCoolantHeated(caseCoolantHeat / coolantType.getThermalEnthalpy(), gasCoolantTank.getStored());
                 if (lastBoilRate > 0) {
                     MekanismUtils.logMismatchedStackSize(gasCoolantTank.shrinkStack(lastBoilRate, Action.EXECUTE), lastBoilRate);
-                    heatedCoolantTank.insert(coolantType.getHeatedGas().getStack(lastBoilRate), Action.EXECUTE, AutomationType.INTERNAL);
+                    heatedCoolantTank.insert(coolantType.getHeatedChemical().getStack(lastBoilRate), Action.EXECUTE, AutomationType.INTERNAL);
                     caseCoolantHeat = lastBoilRate * coolantType.getThermalEnthalpy();
                     heatCapacitor.handleHeat(-caseCoolantHeat);
                 }

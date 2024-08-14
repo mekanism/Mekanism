@@ -10,7 +10,7 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.attribute.ChemicalAttribute;
 import mekanism.api.chemical.attribute.IChemicalAttributeContainer;
-import mekanism.api.chemical.gas.attribute.GasAttributes.Radiation;
+import mekanism.api.chemical.attribute.ChemicalAttributes.Radiation;
 import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.text.TextComponentUtil;
 import net.minecraft.Util;

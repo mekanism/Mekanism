@@ -12,8 +12,8 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.gas.attribute.GasAttributes.CooledCoolant;
-import mekanism.api.chemical.gas.attribute.GasAttributes.HeatedCoolant;
+import mekanism.api.chemical.attribute.ChemicalAttributes.CooledCoolant;
+import mekanism.api.chemical.attribute.ChemicalAttributes.HeatedCoolant;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.math.MathUtils;
 import mekanism.common.block.attribute.AttributeStateBoilerValveMode.BoilerValveMode;
@@ -157,7 +157,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
             if (coolantType != null) {
                 long toCool = Math.round(BoilerMultiblockData.COOLANT_COOLING_EFFICIENCY * superheatedCoolantTank.getStored());
                 toCool = MathUtils.clampToLong(toCool * (1 - heatCapacitor.getTemperature() / HeatUtils.HEATED_COOLANT_TEMP));
-                ChemicalStack cooledCoolant = coolantType.getCooledGas().getStack(toCool);
+                ChemicalStack cooledCoolant = coolantType.getCooledChemical().getStack(toCool);
                 toCool = Math.min(toCool, toCool - cooledCoolantTank.insert(cooledCoolant, Action.EXECUTE, AutomationType.INTERNAL).getAmount());
                 if (toCool > 0) {
                     double heatEnergy = toCool * coolantType.getThermalEnthalpy();

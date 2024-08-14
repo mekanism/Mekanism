@@ -21,7 +21,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.gas.attribute.GasAttributes.Radiation;
+import mekanism.api.chemical.attribute.ChemicalAttributes.Radiation;
 import mekanism.api.math.MathUtils;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.radiation.IRadiationSource;

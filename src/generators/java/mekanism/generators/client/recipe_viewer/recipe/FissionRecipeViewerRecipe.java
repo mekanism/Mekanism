@@ -5,7 +5,7 @@ import java.util.List;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.gas.attribute.GasAttributes.CooledCoolant;
+import mekanism.api.chemical.attribute.ChemicalAttributes.CooledCoolant;
 import mekanism.api.math.MathUtils;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
@@ -46,7 +46,7 @@ public record FissionRecipeViewerRecipe(ResourceLocation id, @Nullable ChemicalS
             CooledCoolant cooledCoolant = chemical.get(CooledCoolant.class);
             if (cooledCoolant != null) {
                 //If it is a cooled coolant add a recipe for it
-                Chemical heatedCoolant = cooledCoolant.getHeatedGas();
+                Chemical heatedCoolant = cooledCoolant.getHeatedChemical();
                 long amount = Math.round(energyPerFuel / cooledCoolant.getThermalEnthalpy());
                 recipes.add(new FissionRecipeViewerRecipe(
                       RecipeViewerUtils.synthetic(chemical.getRegistryName(), "fission", MekanismGenerators.MODID),

@@ -4,7 +4,7 @@ import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import java.util.function.Supplier;
 import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.gas.attribute.GasAttributes;
+import mekanism.api.chemical.attribute.ChemicalAttributes;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.LazyChemicalProvider;
 import org.openzen.zencode.java.ZenCodeType;
@@ -15,7 +15,7 @@ import org.openzen.zencode.java.ZenCodeType;
  * proportion of a reactor's available heat that can be used at an instant to convert this coolant's cool variant to its heated variant.
  */
 @ZenRegister
-@NativeTypeRegistration(value = GasAttributes.Coolant.class, zenCodeName = CrTConstants.CLASS_ATTRIBUTE_COOLANT)
+@NativeTypeRegistration(value = ChemicalAttributes.Coolant.class, zenCodeName = CrTConstants.CLASS_ATTRIBUTE_COOLANT)
 public class CrTCoolantAttribute {
 
     private CrTCoolantAttribute() {
@@ -33,8 +33,8 @@ public class CrTCoolantAttribute {
      * @return Attribute representing a 'cooled' variant of a coolant.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static GasAttributes.CooledCoolant cooled(Supplier<Chemical> heatedGas, double thermalEnthalpy, double conductivity) {
-        return new GasAttributes.CooledCoolant(new LazyChemicalProvider(heatedGas), thermalEnthalpy, conductivity);
+    public static ChemicalAttributes.CooledCoolant cooled(Supplier<Chemical> heatedGas, double thermalEnthalpy, double conductivity) {
+        return new ChemicalAttributes.CooledCoolant(new LazyChemicalProvider(heatedGas), thermalEnthalpy, conductivity);
     }
 
     /**
@@ -49,8 +49,8 @@ public class CrTCoolantAttribute {
      * @return Attribute representing the 'heated' variant of a coolant.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static GasAttributes.HeatedCoolant heated(Supplier<Chemical> cooledGas, double thermalEnthalpy, double conductivity) {
-        return new GasAttributes.HeatedCoolant(new LazyChemicalProvider(cooledGas), thermalEnthalpy, conductivity);
+    public static ChemicalAttributes.HeatedCoolant heated(Supplier<Chemical> cooledGas, double thermalEnthalpy, double conductivity) {
+        return new ChemicalAttributes.HeatedCoolant(new LazyChemicalProvider(cooledGas), thermalEnthalpy, conductivity);
     }
 
     /**
@@ -58,7 +58,7 @@ public class CrTCoolantAttribute {
      */
     @ZenCodeType.Method
     @ZenCodeType.Getter("thermalEnthalpy")
-    public static double getThermalEnthalpy(GasAttributes.Coolant _this) {
+    public static double getThermalEnthalpy(ChemicalAttributes.Coolant _this) {
         return _this.getThermalEnthalpy();
     }
 
@@ -68,7 +68,7 @@ public class CrTCoolantAttribute {
      */
     @ZenCodeType.Method
     @ZenCodeType.Getter("conductivity")
-    public static double getConductivity(GasAttributes.Coolant _this) {
+    public static double getConductivity(ChemicalAttributes.Coolant _this) {
         return _this.getConductivity();
     }
 
@@ -76,7 +76,7 @@ public class CrTCoolantAttribute {
      * Defines the 'cooled' variant of a coolant - the heated variant must be supplied in this class.
      */
     @ZenRegister
-    @NativeTypeRegistration(value = GasAttributes.CooledCoolant.class, zenCodeName = CrTConstants.CLASS_ATTRIBUTE_COOLED_COOLANT)
+    @NativeTypeRegistration(value = ChemicalAttributes.CooledCoolant.class, zenCodeName = CrTConstants.CLASS_ATTRIBUTE_COOLED_COOLANT)
     public static class CrTCooledCoolantAttribute {
 
         private CrTCooledCoolantAttribute() {
@@ -86,8 +86,8 @@ public class CrTCoolantAttribute {
          * Gets the heated version of this coolant.
          */
         @ZenCodeType.Method
-        public static Chemical getHeatedGas(GasAttributes.CooledCoolant _this) {
-            return _this.getHeatedGas();
+        public static Chemical getHeatedGas(ChemicalAttributes.CooledCoolant _this) {
+            return _this.getHeatedChemical();
         }
     }
 
@@ -95,7 +95,7 @@ public class CrTCoolantAttribute {
      * Defines the 'heated' variant of a coolant - the cooled variant must be supplied in this class.
      */
     @ZenRegister
-    @NativeTypeRegistration(value = GasAttributes.HeatedCoolant.class, zenCodeName = CrTConstants.CLASS_ATTRIBUTE_HEATED_COOLANT)
+    @NativeTypeRegistration(value = ChemicalAttributes.HeatedCoolant.class, zenCodeName = CrTConstants.CLASS_ATTRIBUTE_HEATED_COOLANT)
     public static class CrTHeatedCoolantAttribute {
 
         private CrTHeatedCoolantAttribute() {
@@ -105,8 +105,8 @@ public class CrTCoolantAttribute {
          * Gets the heated version of this coolant.
          */
         @ZenCodeType.Method
-        public static Chemical getCooledGas(GasAttributes.HeatedCoolant _this) {
-            return _this.getCooledGas();
+        public static Chemical getCooledGas(ChemicalAttributes.HeatedCoolant _this) {
+            return _this.getCooledChemical();
         }
     }
 }

@@ -4,7 +4,7 @@ import dev.gigaherz.jsonthings.things.parsers.ThingParseException;
 import dev.gigaherz.jsonthings.util.parse.value.ObjValue;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.gas.attribute.GasAttributes;
+import mekanism.api.chemical.attribute.ChemicalAttributes;
 import mekanism.common.integration.LazyChemicalProvider;
 import mekanism.common.integration.jsonthings.builder.JsonGasBuilder;
 import mekanism.common.lib.radiation.RadiationManager;
@@ -25,7 +25,7 @@ public class JsonGasParser extends SimpleJsonChemicalParser<JsonGasBuilder> {
         // with allowing multiple attribute types to be defined in each block
         rawAttribute.ifKey("radioactivity", attribute -> attribute.doubleValue()
               .min(RadiationManager.MIN_MAGNITUDE)
-              .handle(radioactivity -> builder.with(new GasAttributes.Radiation(radioactivity)))
+              .handle(radioactivity -> builder.with(new ChemicalAttributes.Radiation(radioactivity)))
         ).ifKey("coolant", attribute -> {
             ObjValue coolant = attribute.obj();
             boolean hasCooledGas = coolant.hasKey("cooled_gas");
@@ -42,9 +42,9 @@ public class JsonGasParser extends SimpleJsonChemicalParser<JsonGasBuilder> {
                   .key("conductivity", conductivity -> conductivity.doubleValue().handle(c -> coolantData.conductivity = c))
                   .key(hasCooledGas ? "cooled_gas" : "heated_gas", gas -> gas.string().map(ResourceLocation::parse).handle(g -> coolantData.gas = g));
             if (hasCooledGas) {
-                builder.with(new GasAttributes.HeatedCoolant(new LazyChemicalProvider(coolantData.gas), coolantData.thermalEnthalpy, coolantData.conductivity));
+                builder.with(new ChemicalAttributes.HeatedCoolant(new LazyChemicalProvider(coolantData.gas), coolantData.thermalEnthalpy, coolantData.conductivity));
             } else {
-                builder.with(new GasAttributes.CooledCoolant(new LazyChemicalProvider(coolantData.gas), coolantData.thermalEnthalpy, coolantData.conductivity));
+                builder.with(new ChemicalAttributes.CooledCoolant(new LazyChemicalProvider(coolantData.gas), coolantData.thermalEnthalpy, coolantData.conductivity));
             }
         }).ifKey("fuel", attribute -> {
             FuelData fuelData = new FuelData();
@@ -55,7 +55,7 @@ public class JsonGasParser extends SimpleJsonChemicalParser<JsonGasBuilder> {
                         .ifLong(l -> l.min(1).handle(fuelData::setEnergyDensity))
                         .typeError()
                   );
-            builder.with(new GasAttributes.Fuel(fuelData.burnTicks, fuelData.energyDensity));
+            builder.with(new ChemicalAttributes.Fuel(fuelData.burnTicks, fuelData.energyDensity));
         });
     }
 

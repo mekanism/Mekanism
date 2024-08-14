@@ -2,7 +2,7 @@ package mekanism.common.integration.crafttweaker.chemical.attribute.gas;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
-import mekanism.api.chemical.gas.attribute.GasAttributes;
+import mekanism.api.chemical.attribute.ChemicalAttributes;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -11,7 +11,7 @@ import org.openzen.zencode.java.ZenCodeType;
  * can be burned for before being depleted, and 'energyDensity', defining how much energy is stored in one mB of fuel.
  */
 @ZenRegister
-@NativeTypeRegistration(value = GasAttributes.Fuel.class, zenCodeName = CrTConstants.CLASS_ATTRIBUTE_FUEL)
+@NativeTypeRegistration(value = ChemicalAttributes.Fuel.class, zenCodeName = CrTConstants.CLASS_ATTRIBUTE_FUEL)
 public class CrTFuelAttribute {
 
     private CrTFuelAttribute() {
@@ -26,10 +26,10 @@ public class CrTFuelAttribute {
      * @return Attribute representing the stats a substance has as a fuel.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static GasAttributes.Fuel create(int burnTicks, long energyDensity) {
+    public static ChemicalAttributes.Fuel create(int burnTicks, long energyDensity) {
         //Note: We don't allow suppliers from CrT as there is no real reason to allow them to change at runtime from the
         // context of CrT, the only real reason the values are suppliers is so that they can be adjusted via configs
-        return new GasAttributes.Fuel(burnTicks, energyDensity);
+        return new ChemicalAttributes.Fuel(burnTicks, energyDensity);
     }
 
     /**
@@ -37,7 +37,7 @@ public class CrTFuelAttribute {
      */
     @ZenCodeType.Method
     @ZenCodeType.Getter("burnTicks")
-    public static int getBurnTicks(GasAttributes.Fuel _this) {
+    public static int getBurnTicks(ChemicalAttributes.Fuel _this) {
         return _this.getBurnTicks();
     }
 
@@ -46,7 +46,7 @@ public class CrTFuelAttribute {
      */
     @ZenCodeType.Method
     @ZenCodeType.Getter("energyPerTick")
-    public static long getEnergyPerTick(GasAttributes.Fuel _this) {
+    public static long getEnergyPerTick(ChemicalAttributes.Fuel _this) {
         return _this.getEnergyPerTick();
     }
 }
