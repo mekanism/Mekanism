@@ -360,15 +360,14 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junit_version}")
     //We use https://github.com/jqwik-team/jqwik to allow for implementing property based testing
     testImplementation("net.jqwik:jqwik:${jqwik_version}")
-
-    compileOnly("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
+    
     compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
     if (recipe_viewer == 'jei' || recipe_viewer == 'hybrid') {
         localRuntime("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
     }
 
-    compileOnly("dev.emi:emi-neoforge:${emi_version}+${minecraft_version}:api")
-    def emi = "dev.emi:emi-neoforge:${emi_version}+${minecraft_version}"
+    compileOnly("dev.emi:emi-neoforge:${emi_version}+${previous_minor_minecraft_version}:api")
+    def emi = "dev.emi:emi-neoforge:${emi_version}+${previous_minor_minecraft_version}"
     //TODO: Re-evaluate (https://github.com/emilyploszaj/emi/issues/537) might allow us to not have to do this
     //Compile against full emi in datagen
     datagenMainCompileOnly(emi)
@@ -382,7 +381,7 @@ dependencies {
         //datagenMainRuntimeOnly(emi)
     }
 
-    localRuntime("team.chisel.ctm:CTM:${minecraft_version}-${ctm_version}")
+    localRuntime("team.chisel.ctm:CTM:${previous_minor_minecraft_version}-${ctm_version}")
 
     compileOnly("mcjty.theoneprobe:theoneprobe:${top_version}:api")
     localRuntime("mcjty.theoneprobe:theoneprobe:${top_version}")
@@ -400,7 +399,7 @@ dependencies {
     //TODO: Re-enable when it updates
     //localRuntime(jeiTweaker)
 
-    compileOnly("dev.gigaherz.jsonthings:JsonThings-${minecraft_version}:${json_things_version}")
+    compileOnly("dev.gigaherz.jsonthings:JsonThings-${previous_minor_minecraft_version}:${json_things_version}")
 
     //Mods we have dependencies on but don't bother loading into the dev environment
     //compileOnly("curse.maven:projecte-api-226410:${projecte_api_id}")
@@ -410,15 +409,15 @@ dependencies {
     compileOnly("top.theillusivec4.curios:curios-neoforge:${curios_version}:api")
     compileOnly("com.blamejared.recipestages:RecipeStages:${recipe_stages_version}")
     compileOnly("curse.maven:opencomputers2-437654:${oc2_id}")
-    compileOnly("cc.tweaked:cc-tweaked-${minecraft_version}-forge-api:${cc_tweaked_version}")
+    compileOnly("cc.tweaked:cc-tweaked-${previous_minor_minecraft_version}-forge-api:${cc_tweaked_version}")
     //localRuntime("cc.tweaked:cc-tweaked-${minecraft_version}-forge:${cc_tweaked_version}")
     compileOnly("curse.maven:female-gender-forge-481655:${wildfire_gender_mod_id}")
 
     //Dependencies for data generators for mod compat reference
     datagenMainImplementation("appeng:appliedenergistics2:${ae2_version}")
-    datagenMainRuntimeOnly("com.github.glitchfiend:GlitchCore-neoforge:${minecraft_version}-${glitchcore_version}")
-    datagenMainRuntimeOnly("com.github.glitchfiend:TerraBlender-neoforge:${minecraft_version}-${terrablender_version}")
-    datagenMainImplementation("com.github.glitchfiend:BiomesOPlenty-neoforge:${minecraft_version}-${biomesoplenty_version}")
+    datagenMainRuntimeOnly("com.github.glitchfiend:GlitchCore-neoforge:${previous_minor_minecraft_version}-${glitchcore_version}")
+    datagenMainRuntimeOnly("com.github.glitchfiend:TerraBlender-neoforge:${previous_minor_minecraft_version}-${terrablender_version}")
+    datagenMainImplementation("com.github.glitchfiend:BiomesOPlenty-neoforge:${previous_minor_minecraft_version}-${biomesoplenty_version}")
     //TODO: Switch back to datagenMainImplementation after it doesn't crash when default components are modified in datagen
     datagenMainCompileOnly("curse.maven:farmers-delight-398521:${farmers_delight_id}")
     //TODO - 1.20.2: Re-enable after projecte is updated
