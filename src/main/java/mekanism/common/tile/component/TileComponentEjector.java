@@ -185,7 +185,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                             outputData = new IdentityHashMap<>();
                         }
                         switch (slotInfo) {
-                            case ChemicalSlotInfo chemicalSlotInfo when type.isChemical() -> {
+                            case ChemicalSlotInfo chemicalSlotInfo when type == TransmissionType.CHEMICAL -> {
                                 for (IChemicalTank tank : chemicalSlotInfo.getTanks()) {
                                     if (!tank.isEmpty() && (canTankEject == null || canTankEject.test(tank))) {
                                         addData(outputData, tank, outputSides);
@@ -219,7 +219,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
             Map<Direction, BlockCapabilityCache<?, @Nullable Direction>> typeCapabilityCaches = capabilityCaches.computeIfAbsent(type, t -> new EnumMap<>(Direction.class));
             for (Map.Entry<Object, Set<Direction>> entry : outputData.entrySet()) {
                 Set<Direction> sides = entry.getValue();
-                if (type.isChemical()) {
+                if (type == TransmissionType.CHEMICAL) {
                     IChemicalTank tank = (IChemicalTank) entry.getKey();
                     List<BlockCapabilityCache<IChemicalHandler, @Nullable Direction>> caches = getCapabilityCaches(level, pos, typeCapabilityCaches, sides, Capabilities.CHEMICAL);
                     ChemicalUtil.emit(caches, tank, chemicalEjectRate.getAsLong());

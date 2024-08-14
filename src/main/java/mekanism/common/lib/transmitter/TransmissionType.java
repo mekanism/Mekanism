@@ -57,10 +57,6 @@ public enum TransmissionType implements IHasTranslationKey, StringRepresentable 
         return langEntry.getTranslationKey();
     }
 
-    public boolean isChemical() {
-        return this == CHEMICAL;
-    }
-
     public boolean checkTransmissionType(Transmitter<?, ?, ?> transmitter) {
         return transmitter.getSupportedTransmissionTypes().contains(this);
     }
