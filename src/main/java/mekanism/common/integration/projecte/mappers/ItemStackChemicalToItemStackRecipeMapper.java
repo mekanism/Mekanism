@@ -2,7 +2,7 @@ package mekanism.common.integration.projecte.mappers;
 
 import java.util.List;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
+import mekanism.api.recipes.ItemStackChemicalToItemStackRecipe;
 import mekanism.common.integration.projecte.IngredientHelper;
 import mekanism.common.integration.projecte.NSSChemical;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -14,15 +14,15 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 @RecipeTypeMapper
-public class ItemStackGasToItemStackRecipeMapper extends TypedMekanismRecipeMapper<ItemStackGasToItemStackRecipe> {
+public class ItemStackChemicalToItemStackRecipeMapper extends TypedMekanismRecipeMapper<ItemStackChemicalToItemStackRecipe> {
 
-    public ItemStackGasToItemStackRecipeMapper() {
-        super(ItemStackGasToItemStackRecipe.class, MekanismRecipeType.COMPRESSING, MekanismRecipeType.PURIFYING, MekanismRecipeType.INJECTING);
+    public ItemStackChemicalToItemStackRecipeMapper() {
+        super(ItemStackChemicalToItemStackRecipe.class, MekanismRecipeType.COMPRESSING, MekanismRecipeType.PURIFYING, MekanismRecipeType.INJECTING);
     }
 
     @Override
     public String getName() {
-        return "MekItemStackGasToItemStack";
+        return "MekItemStackChemicalToItemStack";
     }
 
     @Override
@@ -31,7 +31,7 @@ public class ItemStackGasToItemStackRecipeMapper extends TypedMekanismRecipeMapp
     }
 
     @Override
-    protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, ItemStackGasToItemStackRecipe recipe) {
+    protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, ItemStackChemicalToItemStackRecipe recipe) {
         boolean handled = false;
         List<@NotNull ItemStack> itemRepresentations = recipe.getItemInput().getRepresentations();
         List<@NotNull ChemicalStack> gasRepresentations = recipe.getChemicalInput().getRepresentations();

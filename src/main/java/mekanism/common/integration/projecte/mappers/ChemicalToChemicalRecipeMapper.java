@@ -17,7 +17,7 @@ public class ChemicalToChemicalRecipeMapper extends TypedMekanismRecipeMapper<Ch
 
     @Override
     public String getName() {
-        return "MekGasToGas";
+        return "MekChemicalToChemical";
     }
 
     @Override

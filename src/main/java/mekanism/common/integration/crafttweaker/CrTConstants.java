@@ -116,14 +116,11 @@ public class CrTConstants {
     public static final String CLASS_RECIPE_CRYSTALLIZING = "mods." + Mekanism.MODID + ".recipe.Crystallizing";
     public static final String CLASS_RECIPE_DISSOLUTION = "mods." + Mekanism.MODID + ".recipe.Dissolution";
     public static final String CLASS_RECIPE_ITEM_STACK_CHEMICAL_TO_ITEM_STACK = "mods." + Mekanism.MODID + ".recipe.ItemStackChemicalToItemStack";
-    public static final String CLASS_RECIPE_ITEM_STACK_GAS_TO_ITEM_STACK = CLASS_RECIPE_ITEM_STACK_CHEMICAL_TO_ITEM_STACK + ".Gas";
     public static final String CLASS_RECIPE_METALLURGIC_INFUSING = CLASS_RECIPE_ITEM_STACK_CHEMICAL_TO_ITEM_STACK + ".MetallurgicInfusing";
     public static final String CLASS_RECIPE_PAINTING = CLASS_RECIPE_ITEM_STACK_CHEMICAL_TO_ITEM_STACK + ".Painting";
-    public static final String CLASS_RECIPE_NUCLEOSYNTHESIZING = CLASS_RECIPE_ITEM_STACK_GAS_TO_ITEM_STACK + ".Nucleosynthesizing";
+    public static final String CLASS_RECIPE_NUCLEOSYNTHESIZING = CLASS_RECIPE_ITEM_STACK_CHEMICAL_TO_ITEM_STACK + ".Nucleosynthesizing";
     public static final String CLASS_RECIPE_ITEM_STACK_TO_ENERGY = "mods." + Mekanism.MODID + ".recipe.ItemStackToEnergy";
     public static final String CLASS_RECIPE_ITEM_STACK_TO_CHEMICAL = "mods." + Mekanism.MODID + ".recipe.ItemStackToChemical";
-    public static final String CLASS_RECIPE_ITEM_STACK_TO_GAS = CLASS_RECIPE_ITEM_STACK_TO_CHEMICAL + ".ItemStackToGas";
-    public static final String CLASS_RECIPE_ITEM_STACK_TO_INFUSE_TYPE = CLASS_RECIPE_ITEM_STACK_TO_CHEMICAL + ".ItemStackToInfuseType";
     public static final String CLASS_RECIPE_ITEM_STACK_TO_PIGMENT = CLASS_RECIPE_ITEM_STACK_TO_CHEMICAL + ".ItemStackToPigment";
     public static final String CLASS_RECIPE_REACTION = "mods." + Mekanism.MODID + ".recipe.Reaction";
     public static final String CLASS_RECIPE_REACTION_OUTPUT = CLASS_RECIPE_REACTION + ".Output";

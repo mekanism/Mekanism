@@ -15,7 +15,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 @NothingNullByDefault
-public class BasicPurifyingRecipe extends BasicItemStackGasToItemStackRecipe {
+public class BasicPurifyingRecipe extends BasicItemStackChemicalToItemStackRecipe {
 
     private static final Holder<Item> PURIFICATION_CHAMBER = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "purification_chamber"));
 

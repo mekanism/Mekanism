@@ -47,9 +47,9 @@ public class MekanismRecipeTypes {
     public static final DeferredHolder<RecipeType<?>, RecipeType<ChemicalToChemicalRecipe>> TYPE_CENTRIFUGING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_CENTRIFUGING);
     public static final DeferredHolder<RecipeType<?>, RecipeType<ChemicalCrystallizerRecipe>> TYPE_CRYSTALLIZING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_CRYSTALLIZING);
     public static final DeferredHolder<RecipeType<?>, RecipeType<ChemicalDissolutionRecipe>> TYPE_DISSOLUTION = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_DISSOLUTION);
-    public static final DeferredHolder<RecipeType<?>, RecipeType<ItemStackGasToItemStackRecipe>> TYPE_COMPRESSING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_COMPRESSING);
-    public static final DeferredHolder<RecipeType<?>, RecipeType<ItemStackGasToItemStackRecipe>> TYPE_PURIFYING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_PURIFYING);
-    public static final DeferredHolder<RecipeType<?>, RecipeType<ItemStackGasToItemStackRecipe>> TYPE_INJECTING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_INJECTING);
+    public static final DeferredHolder<RecipeType<?>, RecipeType<ItemStackChemicalToItemStackRecipe>> TYPE_COMPRESSING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_COMPRESSING);
+    public static final DeferredHolder<RecipeType<?>, RecipeType<ItemStackChemicalToItemStackRecipe>> TYPE_PURIFYING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_PURIFYING);
+    public static final DeferredHolder<RecipeType<?>, RecipeType<ItemStackChemicalToItemStackRecipe>> TYPE_INJECTING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_INJECTING);
     public static final DeferredHolder<RecipeType<?>, RecipeType<NucleosynthesizingRecipe>> TYPE_NUCLEOSYNTHESIZING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_NUCLEOSYNTHESIZING);
     public static final DeferredHolder<RecipeType<?>, RecipeType<ItemStackToEnergyRecipe>> TYPE_ENERGY_CONVERSION = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_ENERGY_CONVERSION);
     public static final DeferredHolder<RecipeType<?>, RecipeType<ItemStackToChemicalRecipe>> TYPE_CHEMICAL_CONVERSION = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_CHEMICAL_CONVERSION);

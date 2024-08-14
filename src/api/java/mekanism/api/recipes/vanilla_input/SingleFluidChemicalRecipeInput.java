@@ -10,8 +10,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
  * @since 10.6.0
  */
 @NothingNullByDefault
-public record SingleFluidChemicalRecipeInput(FluidStack fluid, ChemicalStack chemical) implements
-      FluidChemicalRecipeInput {
+public record SingleFluidChemicalRecipeInput(FluidStack fluid, ChemicalStack chemical) implements FluidChemicalRecipeInput {
 
     @Override
     public FluidStack getFluid(int index) {

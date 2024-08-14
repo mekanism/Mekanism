@@ -10,8 +10,7 @@ import net.minecraft.world.item.ItemStack;
  * @since 10.6.0
  */
 @NothingNullByDefault
-public record SingleItemChemicalRecipeInput(ItemStack item, ChemicalStack chemical) implements
-      ItemChemicalRecipeInput {
+public record SingleItemChemicalRecipeInput(ItemStack item, ChemicalStack chemical) implements ItemChemicalRecipeInput {
 
     @Override
     public ItemStack getItem(int index) {

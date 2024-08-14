@@ -22,7 +22,7 @@ import mekanism.client.recipe_viewer.jei.machine.ElectrolysisRecipeCategory;
 import mekanism.client.recipe_viewer.jei.machine.FluidSlurryToSlurryRecipeCategory;
 import mekanism.client.recipe_viewer.jei.machine.FluidToFluidRecipeCategory;
 import mekanism.client.recipe_viewer.jei.machine.ChemicalToChemicalRecipeCategory;
-import mekanism.client.recipe_viewer.jei.machine.ItemStackGasToItemStackRecipeCategory;
+import mekanism.client.recipe_viewer.jei.machine.ItemStackChemicalToItemStackRecipeCategory;
 import mekanism.client.recipe_viewer.jei.machine.ItemStackToChemicalRecipeCategory;
 import mekanism.client.recipe_viewer.jei.machine.ItemStackToEnergyRecipeCategory;
 import mekanism.client.recipe_viewer.jei.machine.ItemStackToFluidOptionalItemRecipeCategory;
@@ -269,9 +269,9 @@ public class MekanismJEI implements IModPlugin {
 
         registry.addRecipeCategories(new CombinerRecipeCategory(guiHelper, RecipeViewerRecipeType.COMBINING));
 
-        registry.addRecipeCategories(new ItemStackGasToItemStackRecipeCategory(guiHelper, RecipeViewerRecipeType.PURIFYING));
-        registry.addRecipeCategories(new ItemStackGasToItemStackRecipeCategory(guiHelper, RecipeViewerRecipeType.COMPRESSING));
-        registry.addRecipeCategories(new ItemStackGasToItemStackRecipeCategory(guiHelper, RecipeViewerRecipeType.INJECTING));
+        registry.addRecipeCategories(new ItemStackChemicalToItemStackRecipeCategory(guiHelper, RecipeViewerRecipeType.PURIFYING));
+        registry.addRecipeCategories(new ItemStackChemicalToItemStackRecipeCategory(guiHelper, RecipeViewerRecipeType.COMPRESSING));
+        registry.addRecipeCategories(new ItemStackChemicalToItemStackRecipeCategory(guiHelper, RecipeViewerRecipeType.INJECTING));
 
         registry.addRecipeCategories(new NucleosynthesizingRecipeCategory(guiHelper, RecipeViewerRecipeType.NUCLEOSYNTHESIZING));
 

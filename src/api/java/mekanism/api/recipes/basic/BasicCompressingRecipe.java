@@ -15,7 +15,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 @NothingNullByDefault
-public class BasicCompressingRecipe extends BasicItemStackGasToItemStackRecipe {
+public class BasicCompressingRecipe extends BasicItemStackChemicalToItemStackRecipe {
 
     private static final Holder<Item> OSMIUM_COMPRESSOR = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "osmium_compressor"));
 

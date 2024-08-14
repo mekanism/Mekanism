@@ -2,7 +2,7 @@ package mekanism.client.recipe_viewer.jei.machine;
 
 import java.util.List;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
+import mekanism.api.recipes.ItemStackChemicalToItemStackRecipe;
 import mekanism.client.gui.element.bar.GuiBar;
 import mekanism.client.gui.element.bar.GuiEmptyBar;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
@@ -22,14 +22,14 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 
-public class ItemStackGasToItemStackRecipeCategory extends HolderRecipeCategory<ItemStackGasToItemStackRecipe> {
+public class ItemStackChemicalToItemStackRecipeCategory extends HolderRecipeCategory<ItemStackChemicalToItemStackRecipe> {
 
     private final GuiBar<?> gasInput;
     private final GuiSlot input;
     private final GuiSlot extra;
     private final GuiSlot output;
 
-    public ItemStackGasToItemStackRecipeCategory(IGuiHelper helper, IRecipeViewerRecipeType<ItemStackGasToItemStackRecipe> recipeType) {
+    public ItemStackChemicalToItemStackRecipeCategory(IGuiHelper helper, IRecipeViewerRecipeType<ItemStackChemicalToItemStackRecipe> recipeType) {
         super(helper, recipeType);
         input = addSlot(SlotType.INPUT, 64, 17);
         extra = addSlot(SlotType.EXTRA, 64, 53);
@@ -41,8 +41,8 @@ public class ItemStackGasToItemStackRecipeCategory extends HolderRecipeCategory<
     }
 
     @Override
-    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<ItemStackGasToItemStackRecipe> recipeHolder, @NotNull IFocusGroup focusGroup) {
-        ItemStackGasToItemStackRecipe recipe = recipeHolder.value();
+    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<ItemStackChemicalToItemStackRecipe> recipeHolder, @NotNull IFocusGroup focusGroup) {
+        ItemStackChemicalToItemStackRecipe recipe = recipeHolder.value();
         initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getItemInput().getRepresentations());
         List<ChemicalStack> scaledGases = recipe.getChemicalInput().getRepresentations().stream()
               .map(gas -> gas.copyWithAmount(gas.getAmount() * TileEntityAdvancedElectricMachine.BASE_TICKS_REQUIRED))

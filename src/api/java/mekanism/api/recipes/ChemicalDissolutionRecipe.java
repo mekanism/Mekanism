@@ -20,8 +20,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 @NothingNullByDefault
-public abstract class ChemicalDissolutionRecipe extends MekanismRecipe<SingleItemChemicalRecipeInput>
-      implements BiPredicate<@NotNull ItemStack, @NotNull ChemicalStack> {
+public abstract class ChemicalDissolutionRecipe extends MekanismRecipe<SingleItemChemicalRecipeInput> implements BiPredicate<@NotNull ItemStack, @NotNull ChemicalStack> {
 
     private static final Holder<Item> CHEMICAL_DISSOLUTION_CHAMBER = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "chemical_dissolution_chamber"));
 

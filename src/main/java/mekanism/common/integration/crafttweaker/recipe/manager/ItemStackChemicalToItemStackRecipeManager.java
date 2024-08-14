@@ -4,7 +4,7 @@ import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.util.ItemStackUtil;
-import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
+import mekanism.api.recipes.ItemStackChemicalToItemStackRecipe;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.api.recipes.PaintingRecipe;
 import mekanism.api.recipes.basic.BasicCompressingRecipe;
@@ -12,7 +12,6 @@ import mekanism.api.recipes.basic.BasicInjectingRecipe;
 import mekanism.api.recipes.basic.BasicMetallurgicInfuserRecipe;
 import mekanism.api.recipes.basic.BasicPaintingRecipe;
 import mekanism.api.recipes.basic.BasicPurifyingRecipe;
-import mekanism.api.recipes.ItemStackChemicalToItemStackRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.vanilla_input.SingleItemChemicalRecipeInput;
 import mekanism.common.integration.crafttweaker.CrTConstants;
@@ -82,7 +81,7 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<INGREDIENT exten
 
     @ZenRegister
     @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_COMPRESSING)
-    public static class OsmiumCompressorRecipeManager extends ItemStackChemicalToItemStackRecipeManager<ChemicalStackIngredient, ItemStackGasToItemStackRecipe> {
+    public static class OsmiumCompressorRecipeManager extends ItemStackChemicalToItemStackRecipeManager<ChemicalStackIngredient, ItemStackChemicalToItemStackRecipe> {
 
         public static final OsmiumCompressorRecipeManager INSTANCE = new OsmiumCompressorRecipeManager();
 
@@ -91,14 +90,14 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<INGREDIENT exten
         }
 
         @Override
-        protected ItemStackGasToItemStackRecipe makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient gasInput, ItemStack output) {
+        protected ItemStackChemicalToItemStackRecipe makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient gasInput, ItemStack output) {
             return new BasicCompressingRecipe(CrTUtils.fromCrT(itemInput), gasInput, output);
         }
     }
 
     @ZenRegister
     @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_INJECTING)
-    public static class ChemicalInjectionRecipeManager extends ItemStackChemicalToItemStackRecipeManager<ChemicalStackIngredient, ItemStackGasToItemStackRecipe> {
+    public static class ChemicalInjectionRecipeManager extends ItemStackChemicalToItemStackRecipeManager<ChemicalStackIngredient, ItemStackChemicalToItemStackRecipe> {
 
         public static final ChemicalInjectionRecipeManager INSTANCE = new ChemicalInjectionRecipeManager();
 
@@ -107,14 +106,14 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<INGREDIENT exten
         }
 
         @Override
-        protected ItemStackGasToItemStackRecipe makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient gasInput, ItemStack output) {
+        protected ItemStackChemicalToItemStackRecipe makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient gasInput, ItemStack output) {
             return new BasicInjectingRecipe(CrTUtils.fromCrT(itemInput), gasInput, output);
         }
     }
 
     @ZenRegister
     @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_PURIFYING)
-    public static class PurificationRecipeManager extends ItemStackChemicalToItemStackRecipeManager<ChemicalStackIngredient, ItemStackGasToItemStackRecipe> {
+    public static class PurificationRecipeManager extends ItemStackChemicalToItemStackRecipeManager<ChemicalStackIngredient, ItemStackChemicalToItemStackRecipe> {
 
         public static final PurificationRecipeManager INSTANCE = new PurificationRecipeManager();
 
@@ -123,7 +122,7 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<INGREDIENT exten
         }
 
         @Override
-        protected ItemStackGasToItemStackRecipe makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient gasInput, ItemStack output) {
+        protected ItemStackChemicalToItemStackRecipe makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient gasInput, ItemStack output) {
             return new BasicPurifyingRecipe(CrTUtils.fromCrT(itemInput), gasInput, output);
         }
     }

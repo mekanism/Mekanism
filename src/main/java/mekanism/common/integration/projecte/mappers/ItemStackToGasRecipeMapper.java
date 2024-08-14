@@ -13,17 +13,17 @@ import net.minecraft.world.item.ItemStack;
 public class ItemStackToGasRecipeMapper extends TypedMekanismRecipeMapper<ItemStackToChemicalRecipe> {
 
     public ItemStackToGasRecipeMapper() {
-        super(ItemStackToChemicalRecipe.class, MekanismRecipeType.CHEMICAL_CONVERSION, MekanismRecipeType.OXIDIZING);
+        super(ItemStackToChemicalRecipe.class, MekanismRecipeType.CHEMICAL_CONVERSION, MekanismRecipeType.OXIDIZING, MekanismRecipeType.PIGMENT_EXTRACTING);
     }
 
     @Override
     public String getName() {
-        return "MekItemStackToGas";
+        return "MekItemStackToChemical";
     }
 
     @Override
     public String getDescription() {
-        return "Maps Mekanism item stack to chemical recipes. (Gas conversion, Oxidizing)";
+        return "Maps Mekanism item stack to chemical recipes. (Chemical conversion, Oxidizing, Pigment Extracting)";
     }
 
     @Override

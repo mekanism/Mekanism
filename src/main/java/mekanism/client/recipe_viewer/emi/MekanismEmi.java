@@ -37,7 +37,7 @@ import mekanism.client.recipe_viewer.emi.recipe.ElectrolysisEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.FluidSlurryToSlurryEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.FluidToFluidEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.ChemicalToChemicalEmiRecipe;
-import mekanism.client.recipe_viewer.emi.recipe.ItemStackGasToItemStackEmiRecipe;
+import mekanism.client.recipe_viewer.emi.recipe.ItemStackChemicalToItemStackEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.ItemStackToChemicalEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.ItemStackToEnergyEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.ItemStackToFluidOptionalItemEmiRecipe;
@@ -253,9 +253,9 @@ public class MekanismEmi implements EmiPlugin {
 
         addCategoryAndRecipes(registry, RecipeViewerRecipeType.COMBINING, CombinerEmiRecipe::new);
 
-        addCategoryAndRecipes(registry, RecipeViewerRecipeType.PURIFYING, ItemStackGasToItemStackEmiRecipe::new);
-        addCategoryAndRecipes(registry, RecipeViewerRecipeType.COMPRESSING, ItemStackGasToItemStackEmiRecipe::new);
-        addCategoryAndRecipes(registry, RecipeViewerRecipeType.INJECTING, ItemStackGasToItemStackEmiRecipe::new);
+        addCategoryAndRecipes(registry, RecipeViewerRecipeType.PURIFYING, ItemStackChemicalToItemStackEmiRecipe::new);
+        addCategoryAndRecipes(registry, RecipeViewerRecipeType.COMPRESSING, ItemStackChemicalToItemStackEmiRecipe::new);
+        addCategoryAndRecipes(registry, RecipeViewerRecipeType.INJECTING, ItemStackChemicalToItemStackEmiRecipe::new);
 
         addCategoryAndRecipes(registry, RecipeViewerRecipeType.NUCLEOSYNTHESIZING, NucleosynthesizingEmiRecipe::new);
 

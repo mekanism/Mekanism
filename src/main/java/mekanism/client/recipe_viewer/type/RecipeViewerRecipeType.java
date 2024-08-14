@@ -4,11 +4,13 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.ChemicalDissolutionRecipe;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
+import mekanism.api.recipes.ChemicalToChemicalRecipe;
 import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.FluidSlurryToSlurryRecipe;
 import mekanism.api.recipes.FluidToFluidRecipe;
-import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
+import mekanism.api.recipes.ItemStackChemicalToItemStackRecipe;
+import mekanism.api.recipes.ItemStackToChemicalRecipe;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
 import mekanism.api.recipes.ItemStackToFluidOptionalItemRecipe;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
@@ -19,8 +21,6 @@ import mekanism.api.recipes.PaintingRecipe;
 import mekanism.api.recipes.PigmentMixingRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.SawmillRecipe;
-import mekanism.api.recipes.ChemicalToChemicalRecipe;
-import mekanism.api.recipes.ItemStackToChemicalRecipe;
 import mekanism.client.recipe_viewer.recipe.BoilerRecipeViewerRecipe;
 import mekanism.client.recipe_viewer.recipe.SPSRecipeViewerRecipe;
 import mekanism.common.Mekanism;
@@ -69,9 +69,9 @@ public class RecipeViewerRecipeType {
     //TODO - 1.20.4: Re-evaluate ^^
     public static final RVRecipeTypeWrapper<?, ChemicalDissolutionRecipe, ?> DISSOLUTION = new RVRecipeTypeWrapper<>(MekanismRecipeType.DISSOLUTION, ChemicalDissolutionRecipe.class, -3, -3, 170, 79, MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER);
 
-    public static final RVRecipeTypeWrapper<?, ItemStackGasToItemStackRecipe, ?> COMPRESSING = new RVRecipeTypeWrapper<>(MekanismRecipeType.COMPRESSING, ItemStackGasToItemStackRecipe.class, -28, -16, 144, 54, MekanismBlocks.OSMIUM_COMPRESSOR);
-    public static final RVRecipeTypeWrapper<?, ItemStackGasToItemStackRecipe, ?> PURIFYING = new RVRecipeTypeWrapper<>(MekanismRecipeType.PURIFYING, ItemStackGasToItemStackRecipe.class, -28, -16, 144, 54, MekanismBlocks.PURIFICATION_CHAMBER);
-    public static final RVRecipeTypeWrapper<?, ItemStackGasToItemStackRecipe, ?> INJECTING = new RVRecipeTypeWrapper<>(MekanismRecipeType.INJECTING, ItemStackGasToItemStackRecipe.class, -28, -16, 144, 54, MekanismBlocks.CHEMICAL_INJECTION_CHAMBER);
+    public static final RVRecipeTypeWrapper<?, ItemStackChemicalToItemStackRecipe, ?> COMPRESSING = new RVRecipeTypeWrapper<>(MekanismRecipeType.COMPRESSING, ItemStackChemicalToItemStackRecipe.class, -28, -16, 144, 54, MekanismBlocks.OSMIUM_COMPRESSOR);
+    public static final RVRecipeTypeWrapper<?, ItemStackChemicalToItemStackRecipe, ?> PURIFYING = new RVRecipeTypeWrapper<>(MekanismRecipeType.PURIFYING, ItemStackChemicalToItemStackRecipe.class, -28, -16, 144, 54, MekanismBlocks.PURIFICATION_CHAMBER);
+    public static final RVRecipeTypeWrapper<?, ItemStackChemicalToItemStackRecipe, ?> INJECTING = new RVRecipeTypeWrapper<>(MekanismRecipeType.INJECTING, ItemStackChemicalToItemStackRecipe.class, -28, -16, 144, 54, MekanismBlocks.CHEMICAL_INJECTION_CHAMBER);
 
     public static final RVRecipeTypeWrapper<?, NucleosynthesizingRecipe, ?> NUCLEOSYNTHESIZING = new RVRecipeTypeWrapper<>(MekanismRecipeType.NUCLEOSYNTHESIZING, NucleosynthesizingRecipe.class, -6, -18, 182, 80, MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER);
 

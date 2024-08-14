@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
+import mekanism.api.recipes.ItemStackChemicalToItemStackRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.HolderLookup;
@@ -15,8 +15,9 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 @NothingNullByDefault
-public abstract class BasicItemStackGasToItemStackRecipe extends ItemStackGasToItemStackRecipe implements IBasicItemStackOutput {
+public abstract class BasicItemStackChemicalToItemStackRecipe extends ItemStackChemicalToItemStackRecipe implements IBasicItemStackOutput {
 
+    private final RecipeType<? extends ItemStackChemicalToItemStackRecipe> recipeType;
     protected final ItemStackIngredient itemInput;
     protected final ChemicalStackIngredient chemicalInput;
     protected final ItemStack output;
@@ -26,9 +27,9 @@ public abstract class BasicItemStackGasToItemStackRecipe extends ItemStackGasToI
      * @param chemicalInput Chemical input.
      * @param output        Output.
      */
-    public BasicItemStackGasToItemStackRecipe(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ItemStack output,
-          RecipeType<ItemStackGasToItemStackRecipe> recipeType) {
-        super(recipeType);
+    public BasicItemStackChemicalToItemStackRecipe(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ItemStack output,
+          RecipeType<? extends ItemStackChemicalToItemStackRecipe> recipeType) {
+        this.recipeType = Objects.requireNonNull(recipeType, "Recipe type cannot be null");
         this.itemInput = Objects.requireNonNull(itemInput, "Item input cannot be null.");
         this.chemicalInput = Objects.requireNonNull(chemicalInput, "Chemical input cannot be null.");
         Objects.requireNonNull(output, "Output cannot be null.");
@@ -36,6 +37,11 @@ public abstract class BasicItemStackGasToItemStackRecipe extends ItemStackGasToI
             throw new IllegalArgumentException("Output cannot be empty.");
         }
         this.output = output.copy();
+    }
+
+    @Override
+    public final RecipeType<? extends ItemStackChemicalToItemStackRecipe> getType() {
+        return recipeType;
     }
 
     @Override

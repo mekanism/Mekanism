@@ -9,8 +9,7 @@ import mekanism.api.chemical.ChemicalStack;
  * @since 10.6.0
  */
 @NothingNullByDefault
-public record SingleChemicalRecipeInput(ChemicalStack chemical) implements
-      ChemicalRecipeInput {
+public record SingleChemicalRecipeInput(ChemicalStack chemical) implements ChemicalRecipeInput {
 
     @Override
     public ChemicalStack getChemical(int index) {

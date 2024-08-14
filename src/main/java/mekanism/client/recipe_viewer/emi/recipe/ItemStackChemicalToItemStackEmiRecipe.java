@@ -1,7 +1,7 @@
 package mekanism.client.recipe_viewer.emi.recipe;
 
 import dev.emi.emi.api.widget.WidgetHolder;
-import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
+import mekanism.api.recipes.ItemStackChemicalToItemStackRecipe;
 import mekanism.client.gui.element.bar.GuiEmptyBar;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.progress.ProgressType;
@@ -12,11 +12,11 @@ import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
-public class ItemStackGasToItemStackEmiRecipe extends MekanismEmiHolderRecipe<ItemStackGasToItemStackRecipe> {
+public class ItemStackChemicalToItemStackEmiRecipe extends MekanismEmiHolderRecipe<ItemStackChemicalToItemStackRecipe> {
 
     private static final int PROCESS_TIME = TileEntityAdvancedElectricMachine.BASE_TICKS_REQUIRED;
 
-    public ItemStackGasToItemStackEmiRecipe(MekanismEmiRecipeCategory category, RecipeHolder<ItemStackGasToItemStackRecipe> recipeHolder) {
+    public ItemStackChemicalToItemStackEmiRecipe(MekanismEmiRecipeCategory category, RecipeHolder<ItemStackChemicalToItemStackRecipe> recipeHolder) {
         super(category, recipeHolder);
         addInputDefinition(recipe.getItemInput());
         addItemOutputDefinition(recipe.getOutputDefinition());
