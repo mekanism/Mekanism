@@ -5,15 +5,11 @@ import com.blamejared.crafttweaker.api.fluid.IFluidStack;
 import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.recipe.component.BuiltinRecipeComponents;
-import com.blamejared.crafttweaker.api.recipe.component.DecomposedRecipeBuilder;
 import com.blamejared.crafttweaker.api.recipe.component.IRecipeComponent;
 import com.blamejared.crafttweaker.api.recipe.component.RecipeComponentEqualityCheckers;
 import com.google.gson.reflect.TypeToken;
 import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
-import java.util.function.BinaryOperator;
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.common.Mekanism;
@@ -45,16 +41,19 @@ public class CrTRecipeComponents {
           BuiltinRecipeComponents.Output.FLUIDS
     );
 
-    //Compiler can't actually infer these
-    @SuppressWarnings("Convert2Diamond")
-    public static final ChemicalRecipeComponent CHEMICAL = new ChemicalRecipeComponent(
-          new TypeToken<ChemicalStackIngredient>() {},
-          new TypeToken<ICrTChemicalStack>() {},
-          CrTChemicalStackIngredient::or
-    );
-
-    public static final List<ChemicalRecipeComponent> CHEMICAL_COMPONENTS = List.of(
-          CHEMICAL
+    public static final PairedRecipeComponent<ChemicalStackIngredient, ICrTChemicalStack> CHEMICAL = new PairedRecipeComponent<>(
+          IRecipeComponent.composite(
+                Mekanism.rl("input/chemical"),
+                new TypeToken<>() {},
+                CrTRecipeComponents::ingredientsMatch,
+                Collections::singletonList,
+                ingredients -> ingredients.stream().reduce(CrTChemicalStackIngredient::or).orElseThrow()
+          ),
+          IRecipeComponent.simple(
+                Mekanism.rl("output/chemical"),
+                new TypeToken<>() {},
+                ICrTChemicalStack::containsOther
+          )
     );
 
     private static <TYPE, INGREDIENT extends InputIngredient<TYPE>> boolean ingredientsMatch(INGREDIENT a, INGREDIENT b) {
@@ -62,28 +61,5 @@ public class CrTRecipeComponents {
     }
 
     public record PairedRecipeComponent<INPUT, OUTPUT>(IRecipeComponent<INPUT> input, IRecipeComponent<OUTPUT> output) {
-    }
-
-    public record ChemicalRecipeComponent
-          (IRecipeComponent<ChemicalStackIngredient> input, IRecipeComponent<ICrTChemicalStack> output) {
-
-        private ChemicalRecipeComponent(TypeToken<ChemicalStackIngredient> inputType, TypeToken<ICrTChemicalStack> outputType,
-              BinaryOperator<ChemicalStackIngredient> ingredientCombiner) {
-            this(IRecipeComponent.composite(
-                  Mekanism.rl("input/chemical"),
-                  inputType,
-                  CrTRecipeComponents::ingredientsMatch,
-                  Collections::singletonList,
-                  ingredients -> ingredients.stream().reduce(ingredientCombiner).orElseThrow()
-            ), IRecipeComponent.simple(
-                  Mekanism.rl("output/chemical"),
-                  outputType,
-                  ICrTChemicalStack::containsOther
-            ));
-        }
-
-        public DecomposedRecipeBuilder withOutput(DecomposedRecipeBuilder builder, List<ChemicalStack> output) {
-            return builder.with(output(), CrTUtils.convertChemical(output));
-        }
     }
 }

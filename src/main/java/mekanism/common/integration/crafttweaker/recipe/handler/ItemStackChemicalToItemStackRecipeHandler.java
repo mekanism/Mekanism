@@ -5,7 +5,6 @@ import com.blamejared.crafttweaker.api.recipe.handler.IRecipeHandler;
 import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import java.util.Optional;
 import mekanism.api.recipes.ItemStackChemicalToItemStackRecipe;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTRecipeComponents;
 import mekanism.common.integration.crafttweaker.recipe.manager.ItemStackChemicalToItemStackRecipeManager;
 import net.minecraft.core.RegistryAccess;
@@ -43,9 +42,7 @@ public class ItemStackChemicalToItemStackRecipeHandler extends MekanismRecipeHan
     @Override
     public Optional<ItemStackChemicalToItemStackRecipe> recompose(IRecipeManager<? super ItemStackChemicalToItemStackRecipe> m, RegistryAccess registryAccess,
           IDecomposedRecipe recipe) {
-        if (m instanceof ItemStackChemicalToItemStackRecipeManager) {
-            ItemStackChemicalToItemStackRecipeManager<ChemicalStackIngredient, ItemStackChemicalToItemStackRecipe> manager =
-                  (ItemStackChemicalToItemStackRecipeManager<ChemicalStackIngredient, ItemStackChemicalToItemStackRecipe>) m;
+        if (m instanceof ItemStackChemicalToItemStackRecipeManager<?> manager) {
             return Optional.of(manager.makeRecipe(
                   recipe.getOrThrowSingle(CrTRecipeComponents.ITEM.input()),
                   recipe.getOrThrowSingle(CrTRecipeComponents.CHEMICAL.input()),

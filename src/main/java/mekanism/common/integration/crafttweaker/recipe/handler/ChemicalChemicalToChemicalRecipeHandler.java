@@ -4,12 +4,11 @@ import com.blamejared.crafttweaker.api.recipe.component.IDecomposedRecipe;
 import com.blamejared.crafttweaker.api.recipe.handler.IRecipeHandler;
 import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import java.util.Optional;
+import mekanism.api.recipes.ChemicalChemicalToChemicalRecipe;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
 import mekanism.api.recipes.PigmentMixingRecipe;
-import mekanism.api.recipes.ChemicalChemicalToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTRecipeComponents;
-import mekanism.common.integration.crafttweaker.CrTRecipeComponents.ChemicalRecipeComponent;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.CrTUtils.UnaryTypePair;
 import mekanism.common.integration.crafttweaker.recipe.manager.ChemicalChemicalToChemicalRecipeManager;
@@ -17,8 +16,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
-public abstract class ChemicalChemicalToChemicalRecipeHandler<
-      RECIPE extends ChemicalChemicalToChemicalRecipe> extends MekanismRecipeHandler<RECIPE> {
+public abstract class ChemicalChemicalToChemicalRecipeHandler<RECIPE extends ChemicalChemicalToChemicalRecipe> extends MekanismRecipeHandler<RECIPE> {
 
     @Override
     public String dumpToCommandString(IRecipeManager<? super RECIPE> manager, RegistryAccess registryAccess, RecipeHolder<RECIPE> recipeHolder) {
@@ -48,22 +46,16 @@ public abstract class ChemicalChemicalToChemicalRecipeHandler<
     @Override
     public Optional<RECIPE> recompose(IRecipeManager<? super RECIPE> m, RegistryAccess registryAccess, IDecomposedRecipe recipe) {
         if (m instanceof ChemicalChemicalToChemicalRecipeManager) {
-            ChemicalChemicalToChemicalRecipeManager<RECIPE> manager =
-                  (ChemicalChemicalToChemicalRecipeManager<RECIPE>) m;
-            UnaryTypePair<ChemicalStackIngredient> inputs = CrTUtils.getPair(recipe, getChemicalComponent().input());
+            ChemicalChemicalToChemicalRecipeManager<RECIPE> manager = (ChemicalChemicalToChemicalRecipeManager<RECIPE>) m;
+            UnaryTypePair<ChemicalStackIngredient> inputs = CrTUtils.getPair(recipe, CrTRecipeComponents.CHEMICAL.input());
             return Optional.of(manager.makeRecipe(
                   inputs.a(),
                   inputs.b(),
-                  recipe.getOrThrowSingle(getChemicalComponent().output())
+                  recipe.getOrThrowSingle(CrTRecipeComponents.CHEMICAL.output())
             ));
         }
         return Optional.empty();
     }
-
-    /**
-     * @return Chemical component for recomposing recipes.
-     */
-    protected abstract ChemicalRecipeComponent getChemicalComponent();
 
     /**
      * @return if the other recipe the correct class type.
@@ -74,24 +66,13 @@ public abstract class ChemicalChemicalToChemicalRecipeHandler<
     public static class ChemicalInfuserRecipeHandler extends ChemicalChemicalToChemicalRecipeHandler<ChemicalInfuserRecipe> {
 
         @Override
-        protected ChemicalRecipeComponent getChemicalComponent() {
-            return CrTRecipeComponents.CHEMICAL;
-        }
-
-        @Override
         protected boolean recipeIsInstance(Recipe<?> other) {
             return other instanceof ChemicalInfuserRecipe;
         }
     }
 
     @IRecipeHandler.For(PigmentMixingRecipe.class)
-    public static class PigmentMixingRecipeHandler extends ChemicalChemicalToChemicalRecipeHandler<
-          PigmentMixingRecipe> {
-
-        @Override
-        protected ChemicalRecipeComponent getChemicalComponent() {
-            return CrTRecipeComponents.CHEMICAL;
-        }
+    public static class PigmentMixingRecipeHandler extends ChemicalChemicalToChemicalRecipeHandler<PigmentMixingRecipe> {
 
         @Override
         protected boolean recipeIsInstance(Recipe<?> other) {

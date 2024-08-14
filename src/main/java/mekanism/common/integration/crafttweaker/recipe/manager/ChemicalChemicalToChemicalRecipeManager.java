@@ -18,8 +18,7 @@ import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_CHEMICAL_CHEMICAL_TO_CHEMICAL)
-public abstract class ChemicalChemicalToChemicalRecipeManager<
-      RECIPE extends ChemicalChemicalToChemicalRecipe> extends MekanismRecipeManager<BiChemicalRecipeInput, RECIPE> {
+public abstract class ChemicalChemicalToChemicalRecipeManager<RECIPE extends ChemicalChemicalToChemicalRecipe> extends MekanismRecipeManager<BiChemicalRecipeInput, RECIPE> {
 
     protected ChemicalChemicalToChemicalRecipeManager(IMekanismRecipeTypeProvider<BiChemicalRecipeInput, RECIPE, ?> recipeType) {
         super(recipeType);

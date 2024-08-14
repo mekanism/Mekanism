@@ -4,17 +4,15 @@ import com.blamejared.crafttweaker.api.recipe.component.IDecomposedRecipe;
 import com.blamejared.crafttweaker.api.recipe.handler.IRecipeHandler;
 import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import java.util.Optional;
-import mekanism.api.recipes.ItemStackToPigmentRecipe;
 import mekanism.api.recipes.ItemStackToChemicalRecipe;
+import mekanism.api.recipes.ItemStackToPigmentRecipe;
 import mekanism.common.integration.crafttweaker.CrTRecipeComponents;
-import mekanism.common.integration.crafttweaker.CrTRecipeComponents.ChemicalRecipeComponent;
 import mekanism.common.integration.crafttweaker.recipe.manager.ItemStackToChemicalRecipeManager;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
-public abstract class ItemStackToChemicalRecipeHandler<
-      RECIPE extends ItemStackToChemicalRecipe> extends MekanismRecipeHandler<RECIPE> {
+public abstract class ItemStackToChemicalRecipeHandler<RECIPE extends ItemStackToChemicalRecipe> extends MekanismRecipeHandler<RECIPE> {
 
     @Override
     public String dumpToCommandString(IRecipeManager<? super RECIPE> manager, RegistryAccess registryAccess, RecipeHolder<RECIPE> recipeHolder) {
@@ -40,16 +38,11 @@ public abstract class ItemStackToChemicalRecipeHandler<
             ItemStackToChemicalRecipeManager<RECIPE> manager = (ItemStackToChemicalRecipeManager<RECIPE>) m;
             return Optional.of(manager.makeRecipe(
                   recipe.getOrThrowSingle(CrTRecipeComponents.ITEM.input()),
-                  recipe.getOrThrowSingle(getChemicalComponent().output())
+                  recipe.getOrThrowSingle(CrTRecipeComponents.CHEMICAL.output())
             ));
         }
         return Optional.empty();
     }
-
-    /**
-     * @return Chemical component for recomposing recipes.
-     */
-    protected abstract ChemicalRecipeComponent getChemicalComponent();
 
     /**
      * @return if the other recipe the correct class type.
@@ -60,11 +53,6 @@ public abstract class ItemStackToChemicalRecipeHandler<
     public static class ItemStackToGasRecipeHandler extends ItemStackToChemicalRecipeHandler<ItemStackToChemicalRecipe> {
 
         @Override
-        protected ChemicalRecipeComponent getChemicalComponent() {
-            return CrTRecipeComponents.CHEMICAL;
-        }
-
-        @Override
         protected boolean recipeIsInstance(Recipe<?> other) {
             return other instanceof ItemStackToChemicalRecipe;
         }
@@ -72,11 +60,6 @@ public abstract class ItemStackToChemicalRecipeHandler<
 
     @IRecipeHandler.For(ItemStackToPigmentRecipe.class)
     public static class ItemStackToPigmentRecipeHandler extends ItemStackToChemicalRecipeHandler<ItemStackToPigmentRecipe> {
-
-        @Override
-        protected ChemicalRecipeComponent getChemicalComponent() {
-            return CrTRecipeComponents.CHEMICAL;
-        }
 
         @Override
         protected boolean recipeIsInstance(Recipe<?> other) {

@@ -217,7 +217,7 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe<?>> im
             builder.with(CrTRecipeComponents.CHEMICAL.input(), inputs.chemicalData);
         }
         if (!outputs.chemicalData.isEmpty()) {
-            CrTRecipeComponents.CHEMICAL.withOutput(builder, outputs.chemicalData);
+            builder.with(CrTRecipeComponents.CHEMICAL.output(), CrTUtils.convertChemical(outputs.chemicalData));
         }
         if (duration != -1) {
             builder.with(BuiltinRecipeComponents.Processing.TIME, duration);

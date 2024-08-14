@@ -146,7 +146,6 @@ public class CrTUtils {
         if (outputs.isEmpty()) {
             return "";
         }
-        outputs.getFirst();
         return describeOutputs(outputs, CHEMICAL_CONVERTER);
     }
 
@@ -216,7 +215,6 @@ public class CrTUtils {
         if (elements.isEmpty()) {
             return Collections.emptyList();
         }
-        elements.getFirst();
         return convert(elements, CHEMICAL_CONVERTER);
     }
 
