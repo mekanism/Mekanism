@@ -6,7 +6,7 @@ import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.basic.BasicChemicalOxidizerRecipe;
 import mekanism.api.recipes.basic.BasicChemicalConversionRecipe;
 import mekanism.api.recipes.basic.BasicItemStackToPigmentRecipe;
-import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
+import mekanism.api.recipes.ItemStackToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 
 @NothingNullByDefault

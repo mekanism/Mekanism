@@ -6,7 +6,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.datagen.recipe.builder.ChemicalChemicalToChemicalRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ElectrolysisRecipeBuilder;
-import mekanism.api.datagen.recipe.builder.GasToGasRecipeBuilder;
+import mekanism.api.datagen.recipe.builder.ChemicalToChemicalRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.RotaryRecipeBuilder;
 import mekanism.api.providers.IChemicalProvider;
@@ -108,7 +108,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
 
     private void addSolarNeutronActivatorRecipes(RecipeOutput consumer) {
         String basePath = "activating/";
-        GasToGasRecipeBuilder.activating(
+        ChemicalToChemicalRecipeBuilder.activating(
               IngredientCreatorAccess.chemicalStack().from(MekanismChemicals.LITHIUM, 1),
               GeneratorsGases.TRITIUM.getStack(1)
         ).build(consumer, MekanismGenerators.rl(basePath + "tritium"));

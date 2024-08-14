@@ -5,7 +5,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.MekanismRecipe;
-import mekanism.api.recipes.chemical.ChemicalChemicalToChemicalRecipe;
+import mekanism.api.recipes.ChemicalChemicalToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;

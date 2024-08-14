@@ -5,7 +5,7 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.basic.BasicChemicalInfuserRecipe;
 import mekanism.api.recipes.basic.BasicPigmentMixingRecipe;
-import mekanism.api.recipes.chemical.ChemicalChemicalToChemicalRecipe;
+import mekanism.api.recipes.ChemicalChemicalToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 
 @NothingNullByDefault

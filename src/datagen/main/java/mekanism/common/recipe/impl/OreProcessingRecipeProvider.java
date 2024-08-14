@@ -6,7 +6,7 @@ import mekanism.api.datagen.recipe.builder.ChemicalCrystallizerRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ChemicalDissolutionRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.CombinerRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.FluidSlurryToSlurryRecipeBuilder;
-import mekanism.api.datagen.recipe.builder.GasToGasRecipeBuilder;
+import mekanism.api.datagen.recipe.builder.ChemicalToChemicalRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
@@ -605,7 +605,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
               MekanismChemicals.URANIUM_HEXAFLUORIDE.getStack(2)
         ).build(consumer, Mekanism.rl(basePath + "sulfuric_acid"));
         //fissile fuel
-        GasToGasRecipeBuilder.centrifuging(
+        ChemicalToChemicalRecipeBuilder.centrifuging(
               IngredientCreatorAccess.chemicalStack().from(MekanismChemicals.URANIUM_HEXAFLUORIDE, 1),
               MekanismChemicals.FISSILE_FUEL.getStack(1)
         ).build(consumer, Mekanism.rl(basePath + "fissile_fuel"));

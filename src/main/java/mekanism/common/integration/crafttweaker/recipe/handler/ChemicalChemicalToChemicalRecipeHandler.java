@@ -6,7 +6,7 @@ import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import java.util.Optional;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
 import mekanism.api.recipes.PigmentMixingRecipe;
-import mekanism.api.recipes.chemical.ChemicalChemicalToChemicalRecipe;
+import mekanism.api.recipes.ChemicalChemicalToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTRecipeComponents;
 import mekanism.common.integration.crafttweaker.CrTRecipeComponents.ChemicalRecipeComponent;

@@ -13,7 +13,7 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
+import mekanism.api.recipes.ItemStackToChemicalRecipe;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.MultiTypeCapability;
 import mekanism.common.inventory.container.slot.ContainerSlotType;

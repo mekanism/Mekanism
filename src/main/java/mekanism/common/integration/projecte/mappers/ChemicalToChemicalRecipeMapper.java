@@ -1,7 +1,7 @@
 package mekanism.common.integration.projecte.mappers;
 
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.recipes.GasToGasRecipe;
+import mekanism.api.recipes.ChemicalToChemicalRecipe;
 import mekanism.common.integration.projecte.IngredientHelper;
 import mekanism.common.recipe.MekanismRecipeType;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
@@ -9,10 +9,10 @@ import moze_intel.projecte.api.mapper.recipe.RecipeTypeMapper;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 
 @RecipeTypeMapper
-public class GasToGasRecipeMapper extends TypedMekanismRecipeMapper<GasToGasRecipe> {
+public class ChemicalToChemicalRecipeMapper extends TypedMekanismRecipeMapper<ChemicalToChemicalRecipe> {
 
-    public GasToGasRecipeMapper() {
-        super(GasToGasRecipe.class, MekanismRecipeType.ACTIVATING, MekanismRecipeType.CENTRIFUGING);
+    public ChemicalToChemicalRecipeMapper() {
+        super(ChemicalToChemicalRecipe.class, MekanismRecipeType.ACTIVATING, MekanismRecipeType.CENTRIFUGING);
     }
 
     @Override
@@ -26,7 +26,7 @@ public class GasToGasRecipeMapper extends TypedMekanismRecipeMapper<GasToGasReci
     }
 
     @Override
-    protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, GasToGasRecipe recipe) {
+    protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, ChemicalToChemicalRecipe recipe) {
         boolean handled = false;
         for (ChemicalStack representation : recipe.getInput().getRepresentations()) {
             ChemicalStack output = recipe.getOutput(representation);

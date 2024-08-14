@@ -3,14 +3,14 @@ package mekanism.common.tile.machine;
 import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
-import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.api.recipes.cache.OneInputCachedRecipe;
+import mekanism.api.recipes.ChemicalToChemicalRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
@@ -53,7 +53,7 @@ import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<GasToGasRecipe> implements IBoundingBlock, ChemicalRecipeLookupHandler<GasToGasRecipe> {
+public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<ChemicalToChemicalRecipe> implements IBoundingBlock, ChemicalRecipeLookupHandler<ChemicalToChemicalRecipe> {
 
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
           RecipeError.NOT_ENOUGH_INPUT,
@@ -158,18 +158,18 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Gas
 
     @NotNull
     @Override
-    public IMekanismRecipeTypeProvider<SingleChemicalRecipeInput, GasToGasRecipe, SingleChemical<GasToGasRecipe>> getRecipeType() {
+    public IMekanismRecipeTypeProvider<SingleChemicalRecipeInput, ChemicalToChemicalRecipe, SingleChemical<ChemicalToChemicalRecipe>> getRecipeType() {
         return MekanismRecipeType.ACTIVATING;
     }
 
     @Override
-    public IRecipeViewerRecipeType<GasToGasRecipe> recipeViewerType() {
+    public IRecipeViewerRecipeType<ChemicalToChemicalRecipe> recipeViewerType() {
         return RecipeViewerRecipeType.ACTIVATING;
     }
 
     @Nullable
     @Override
-    public GasToGasRecipe getRecipe(int cacheIndex) {
+    public ChemicalToChemicalRecipe getRecipe(int cacheIndex) {
         return findFirstRecipe(inputHandler);
     }
 
@@ -204,7 +204,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Gas
 
     @NotNull
     @Override
-    public CachedRecipe<GasToGasRecipe> createNewCachedRecipe(@NotNull GasToGasRecipe recipe, int cacheIndex) {
+    public CachedRecipe<ChemicalToChemicalRecipe> createNewCachedRecipe(@NotNull ChemicalToChemicalRecipe recipe, int cacheIndex) {
         return OneInputCachedRecipe.chemicalToChemical(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
               .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(this::canFunction)

@@ -5,7 +5,7 @@ import com.blamejared.crafttweaker_annotations.annotations.NativeMethod;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import java.util.List;
 import mekanism.api.recipes.FluidSlurryToSlurryRecipe;
-import mekanism.api.recipes.chemical.FluidChemicalToChemicalRecipe;
+import mekanism.api.recipes.FluidChemicalToChemicalRecipe;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;

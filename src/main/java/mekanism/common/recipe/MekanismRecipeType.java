@@ -12,7 +12,6 @@ import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.FluidSlurryToSlurryRecipe;
 import mekanism.api.recipes.FluidToFluidRecipe;
-import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
@@ -27,7 +26,8 @@ import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.SawmillRecipe;
 import mekanism.api.recipes.basic.BasicSmeltingRecipe;
-import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
+import mekanism.api.recipes.ChemicalToChemicalRecipe;
+import mekanism.api.recipes.ItemStackToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.api.recipes.vanilla_input.BiChemicalRecipeInput;
@@ -92,9 +92,9 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
 
     public static final RecipeTypeRegistryObject<SingleFluidRecipeInput, FluidToFluidRecipe, SingleFluid<FluidToFluidRecipe>> EVAPORATING = register(MekanismRecipeTypes.NAME_EVAPORATING, recipeType -> new SingleFluid<>(recipeType, FluidToFluidRecipe::getInput));
 
-    public static final RecipeTypeRegistryObject<SingleChemicalRecipeInput, GasToGasRecipe, SingleChemical<GasToGasRecipe>> ACTIVATING = register(MekanismRecipeTypes.NAME_ACTIVATING, recipeType -> new SingleChemical<>(recipeType, GasToGasRecipe::getInput));
+    public static final RecipeTypeRegistryObject<SingleChemicalRecipeInput, ChemicalToChemicalRecipe, SingleChemical<ChemicalToChemicalRecipe>> ACTIVATING = register(MekanismRecipeTypes.NAME_ACTIVATING, recipeType -> new SingleChemical<>(recipeType, ChemicalToChemicalRecipe::getInput));
 
-    public static final RecipeTypeRegistryObject<SingleChemicalRecipeInput, GasToGasRecipe, SingleChemical<GasToGasRecipe>> CENTRIFUGING = register(MekanismRecipeTypes.NAME_CENTRIFUGING, recipeType -> new SingleChemical<>(recipeType, GasToGasRecipe::getInput));
+    public static final RecipeTypeRegistryObject<SingleChemicalRecipeInput, ChemicalToChemicalRecipe, SingleChemical<ChemicalToChemicalRecipe>> CENTRIFUGING = register(MekanismRecipeTypes.NAME_CENTRIFUGING, recipeType -> new SingleChemical<>(recipeType, ChemicalToChemicalRecipe::getInput));
 
     public static final RecipeTypeRegistryObject<SingleChemicalRecipeInput, ChemicalCrystallizerRecipe, SingleChemical<ChemicalCrystallizerRecipe>> CRYSTALLIZING = register(MekanismRecipeTypes.NAME_CRYSTALLIZING, recipeType -> new SingleChemical<>(recipeType, ChemicalCrystallizerRecipe::getInput));
 

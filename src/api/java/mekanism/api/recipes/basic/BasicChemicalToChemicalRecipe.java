@@ -5,14 +5,15 @@ import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.recipes.GasToGasRecipe;
+import mekanism.api.recipes.ChemicalToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.Contract;
 
 @NothingNullByDefault
-public abstract class BasicGasToGasRecipe extends GasToGasRecipe {
+public abstract class BasicChemicalToChemicalRecipe extends ChemicalToChemicalRecipe {
 
+    private final RecipeType<ChemicalToChemicalRecipe> recipeType;
     protected final ChemicalStack output;
     private final ChemicalStackIngredient input;
 
@@ -20,14 +21,19 @@ public abstract class BasicGasToGasRecipe extends GasToGasRecipe {
      * @param input  Input.
      * @param output Output.
      */
-    public BasicGasToGasRecipe(ChemicalStackIngredient input, ChemicalStack output, RecipeType<GasToGasRecipe> recipeType) {
-        super(recipeType);
+    public BasicChemicalToChemicalRecipe(ChemicalStackIngredient input, ChemicalStack output, RecipeType<ChemicalToChemicalRecipe> recipeType) {
+        this.recipeType = Objects.requireNonNull(recipeType, "Recipe type cannot be null");
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         Objects.requireNonNull(output, "Output cannot be null.");
         if (output.isEmpty()) {
             throw new IllegalArgumentException("Output cannot be empty.");
         }
         this.output = output.copy();
+    }
+
+    @Override
+    public RecipeType<ChemicalToChemicalRecipe> getType() {
+        return recipeType;
     }
 
     @Override

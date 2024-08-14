@@ -9,7 +9,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.datagen.recipe.builder.ChemicalCrystallizerRecipeBuilder;
-import mekanism.api.datagen.recipe.builder.GasToGasRecipeBuilder;
+import mekanism.api.datagen.recipe.builder.ChemicalToChemicalRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.PressurizedReactionRecipeBuilder;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
@@ -1625,12 +1625,12 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         String basePath = "processing/lategame/";
 
         //plutonium
-        GasToGasRecipeBuilder.centrifuging(
+        ChemicalToChemicalRecipeBuilder.centrifuging(
               IngredientCreatorAccess.chemicalStack().from(MekanismChemicals.NUCLEAR_WASTE, 10),
               MekanismChemicals.PLUTONIUM.getStack(1)
         ).build(consumer, Mekanism.rl(basePath + "plutonium"));
         //polonium
-        GasToGasRecipeBuilder.activating(
+        ChemicalToChemicalRecipeBuilder.activating(
               IngredientCreatorAccess.chemicalStack().from(MekanismChemicals.NUCLEAR_WASTE, 10),
               MekanismChemicals.POLONIUM.getStack(1)
         ).build(consumer, Mekanism.rl(basePath + "polonium"));

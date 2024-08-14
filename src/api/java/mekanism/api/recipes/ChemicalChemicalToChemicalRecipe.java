@@ -1,10 +1,9 @@
-package mekanism.api.recipes.chemical;
+package mekanism.api.recipes;
 
 import java.util.List;
 import java.util.function.BiPredicate;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.vanilla_input.BiChemicalRecipeInput;
 import net.minecraft.world.level.Level;
@@ -19,8 +18,7 @@ import org.jetbrains.annotations.Contract;
  *
  */
 @NothingNullByDefault
-public abstract class ChemicalChemicalToChemicalRecipe extends MekanismRecipe<BiChemicalRecipeInput>
-      implements BiPredicate<ChemicalStack, ChemicalStack> {
+public abstract class ChemicalChemicalToChemicalRecipe extends MekanismRecipe<BiChemicalRecipeInput> implements BiPredicate<ChemicalStack, ChemicalStack> {
 
     @Override
     public abstract boolean test(ChemicalStack input1, ChemicalStack input2);

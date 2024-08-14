@@ -9,7 +9,7 @@ import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.api.recipes.NucleosynthesizingRecipe;
 import mekanism.api.recipes.PaintingRecipe;
-import mekanism.api.recipes.chemical.ItemStackChemicalToItemStackRecipe;
+import mekanism.api.recipes.ItemStackChemicalToItemStackRecipe;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import org.openzen.zencode.java.ZenCodeType;

@@ -78,9 +78,9 @@ public class CrTConstants {
     public static final String CLASS_RECIPE_MANAGER_WASHING = CLASS_RECIPE_MANAGER_FLUID_SLURRY_TO_SLURRY + ".Washing";
     public static final String CLASS_RECIPE_MANAGER_FLUID_TO_FLUID = "mods." + Mekanism.MODID + ".recipe.manager.FluidToFluid";
     public static final String CLASS_RECIPE_MANAGER_EVAPORATING = CLASS_RECIPE_MANAGER_FLUID_TO_FLUID + ".Evaporating";
-    public static final String CLASS_RECIPE_MANAGER_GAS_TO_GAS = "mods." + Mekanism.MODID + ".recipe.manager.GasToGas";
-    public static final String CLASS_RECIPE_MANAGER_ACTIVATING = CLASS_RECIPE_MANAGER_GAS_TO_GAS + ".Activating";
-    public static final String CLASS_RECIPE_MANAGER_CENTRIFUGING = CLASS_RECIPE_MANAGER_GAS_TO_GAS + ".Centrifuging";
+    public static final String CLASS_RECIPE_MANAGER_CHEMICAL_TO_CHEMICAL = "mods." + Mekanism.MODID + ".recipe.manager.ChemicalToChemical";
+    public static final String CLASS_RECIPE_MANAGER_ACTIVATING = CLASS_RECIPE_MANAGER_CHEMICAL_TO_CHEMICAL + ".Activating";
+    public static final String CLASS_RECIPE_MANAGER_CENTRIFUGING = CLASS_RECIPE_MANAGER_CHEMICAL_TO_CHEMICAL + ".Centrifuging";
     public static final String CLASS_RECIPE_MANAGER_CRYSTALLIZING = "mods." + Mekanism.MODID + ".recipe.manager.Crystallizing";
     public static final String CLASS_RECIPE_MANAGER_DISSOLUTION = "mods." + Mekanism.MODID + ".recipe.manager.Dissolution";
     public static final String CLASS_RECIPE_MANAGER_ITEM_STACK_CHEMICAL_TO_ITEM_STACK = "mods." + Mekanism.MODID + ".recipe.manager.ItemStackChemicalToItemStack";
@@ -96,8 +96,6 @@ public class CrTConstants {
     public static final String CLASS_RECIPE_MANAGER_ITEM_STACK_TO_GAS = CLASS_RECIPE_MANAGER_ITEM_STACK_TO_CHEMICAL + ".Gas";
     public static final String CLASS_RECIPE_MANAGER_CHEMICAL_CONVERSION = CLASS_RECIPE_MANAGER_ITEM_STACK_TO_GAS + ".ChemicalConversion";
     public static final String CLASS_RECIPE_MANAGER_OXIDIZING = CLASS_RECIPE_MANAGER_ITEM_STACK_TO_GAS + ".Oxidizing";
-    public static final String CLASS_RECIPE_MANAGER_ITEM_STACK_TO_INFUSE_TYPE = CLASS_RECIPE_MANAGER_ITEM_STACK_TO_CHEMICAL + ".InfuseType";
-    public static final String CLASS_RECIPE_MANAGER_INFUSION_CONVERSION = CLASS_RECIPE_MANAGER_ITEM_STACK_TO_INFUSE_TYPE + ".InfusionConversion";
     public static final String CLASS_RECIPE_MANAGER_ITEM_STACK_TO_PIGMENT = CLASS_RECIPE_MANAGER_ITEM_STACK_TO_CHEMICAL + ".Pigment";
     public static final String CLASS_RECIPE_MANAGER_PIGMENT_EXTRACTING = CLASS_RECIPE_MANAGER_ITEM_STACK_TO_PIGMENT + ".PigmentExtracting";
     public static final String CLASS_RECIPE_MANAGER_REACTION = "mods." + Mekanism.MODID + ".recipe.manager.Reaction";
@@ -115,7 +113,6 @@ public class CrTConstants {
     public static final String CLASS_RECIPE_FLUID_SLURRY_TO_SLURRY = CLASS_RECIPE_FLUID_CHEMICAL_TO_CHEMICAL + ".Slurry";
     public static final String CLASS_RECIPE_FLUID_TO_FLUID = "mods." + Mekanism.MODID + ".recipe.FluidToFluid";
     public static final String CLASS_RECIPE_CHEMICAL_TO_CHEMICAL = "mods." + Mekanism.MODID + ".recipe.ChemicalToChemical";
-    public static final String CLASS_RECIPE_GAS_TO_GAS = CLASS_RECIPE_CHEMICAL_TO_CHEMICAL + ".GasToGas";
     public static final String CLASS_RECIPE_CRYSTALLIZING = "mods." + Mekanism.MODID + ".recipe.Crystallizing";
     public static final String CLASS_RECIPE_DISSOLUTION = "mods." + Mekanism.MODID + ".recipe.Dissolution";
     public static final String CLASS_RECIPE_ITEM_STACK_CHEMICAL_TO_ITEM_STACK = "mods." + Mekanism.MODID + ".recipe.ItemStackChemicalToItemStack";

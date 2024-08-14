@@ -1,7 +1,6 @@
 package mekanism.api.recipes;
 
 import mekanism.api.MekanismAPI;
-import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -44,8 +43,8 @@ public class MekanismRecipeTypes {
     public static final DeferredHolder<RecipeType<?>, RecipeType<ElectrolysisRecipe>> TYPE_SEPARATING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_SEPARATING);
     public static final DeferredHolder<RecipeType<?>, RecipeType<FluidSlurryToSlurryRecipe>> TYPE_WASHING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_WASHING);
     public static final DeferredHolder<RecipeType<?>, RecipeType<FluidToFluidRecipe>> TYPE_EVAPORATING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_EVAPORATING);
-    public static final DeferredHolder<RecipeType<?>, RecipeType<GasToGasRecipe>> TYPE_ACTIVATING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_ACTIVATING);
-    public static final DeferredHolder<RecipeType<?>, RecipeType<GasToGasRecipe>> TYPE_CENTRIFUGING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_CENTRIFUGING);
+    public static final DeferredHolder<RecipeType<?>, RecipeType<ChemicalToChemicalRecipe>> TYPE_ACTIVATING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_ACTIVATING);
+    public static final DeferredHolder<RecipeType<?>, RecipeType<ChemicalToChemicalRecipe>> TYPE_CENTRIFUGING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_CENTRIFUGING);
     public static final DeferredHolder<RecipeType<?>, RecipeType<ChemicalCrystallizerRecipe>> TYPE_CRYSTALLIZING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_CRYSTALLIZING);
     public static final DeferredHolder<RecipeType<?>, RecipeType<ChemicalDissolutionRecipe>> TYPE_DISSOLUTION = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_DISSOLUTION);
     public static final DeferredHolder<RecipeType<?>, RecipeType<ItemStackGasToItemStackRecipe>> TYPE_COMPRESSING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_COMPRESSING);

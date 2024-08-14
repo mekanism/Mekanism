@@ -7,7 +7,7 @@ import mekanism.api.recipes.basic.BasicInjectingRecipe;
 import mekanism.api.recipes.basic.BasicMetallurgicInfuserRecipe;
 import mekanism.api.recipes.basic.BasicPaintingRecipe;
 import mekanism.api.recipes.basic.BasicPurifyingRecipe;
-import mekanism.api.recipes.chemical.ItemStackChemicalToItemStackRecipe;
+import mekanism.api.recipes.ItemStackChemicalToItemStackRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.data.recipes.RecipeOutput;

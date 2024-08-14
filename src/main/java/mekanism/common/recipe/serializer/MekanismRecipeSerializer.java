@@ -17,25 +17,25 @@ import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.FluidSlurryToSlurryRecipe;
 import mekanism.api.recipes.FluidToFluidRecipe;
-import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
 import mekanism.api.recipes.NucleosynthesizingRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.basic.BasicChemicalDissolutionRecipe;
+import mekanism.api.recipes.basic.BasicChemicalToChemicalRecipe;
 import mekanism.api.recipes.basic.BasicCombinerRecipe;
 import mekanism.api.recipes.basic.BasicElectrolysisRecipe;
 import mekanism.api.recipes.basic.BasicFluidSlurryToSlurryRecipe;
 import mekanism.api.recipes.basic.BasicFluidToFluidRecipe;
-import mekanism.api.recipes.basic.BasicGasToGasRecipe;
 import mekanism.api.recipes.basic.BasicItemStackToEnergyRecipe;
 import mekanism.api.recipes.basic.BasicItemStackToItemStackRecipe;
 import mekanism.api.recipes.basic.BasicNucleosynthesizingRecipe;
 import mekanism.api.recipes.basic.BasicPressurizedReactionRecipe;
 import mekanism.api.recipes.basic.IBasicChemicalOutput;
 import mekanism.api.recipes.basic.IBasicItemStackOutput;
-import mekanism.api.recipes.chemical.ChemicalChemicalToChemicalRecipe;
-import mekanism.api.recipes.chemical.ItemStackChemicalToItemStackRecipe;
-import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
+import mekanism.api.recipes.ChemicalChemicalToChemicalRecipe;
+import mekanism.api.recipes.ChemicalToChemicalRecipe;
+import mekanism.api.recipes.ItemStackChemicalToItemStackRecipe;
+import mekanism.api.recipes.ItemStackToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
@@ -109,13 +109,13 @@ public record MekanismRecipeSerializer<RECIPE extends Recipe<?>>(MapCodec<RECIPE
         ));
     }
 
-    public static <RECIPE extends BasicGasToGasRecipe> MekanismRecipeSerializer<RECIPE> gasToGas(BiFunction<ChemicalStackIngredient, ChemicalStack, RECIPE> factory) {
+    public static <RECIPE extends BasicChemicalToChemicalRecipe> MekanismRecipeSerializer<RECIPE> gasToGas(BiFunction<ChemicalStackIngredient, ChemicalStack, RECIPE> factory) {
         return new MekanismRecipeSerializer<>(RecordCodecBuilder.mapCodec(instance -> instance.group(
-              IngredientCreatorAccess.chemicalStack().codec().fieldOf(SerializationConstants.INPUT).forGetter(GasToGasRecipe::getInput),
-              ChemicalStack.MAP_CODEC.fieldOf(SerializationConstants.OUTPUT).forGetter(BasicGasToGasRecipe::getOutputRaw)
+              IngredientCreatorAccess.chemicalStack().codec().fieldOf(SerializationConstants.INPUT).forGetter(ChemicalToChemicalRecipe::getInput),
+              ChemicalStack.MAP_CODEC.fieldOf(SerializationConstants.OUTPUT).forGetter(BasicChemicalToChemicalRecipe::getOutputRaw)
         ).apply(instance, factory)), StreamCodec.composite(
-              IngredientCreatorAccess.chemicalStack().streamCodec(), GasToGasRecipe::getInput,
-              ChemicalStack.STREAM_CODEC, BasicGasToGasRecipe::getOutputRaw,
+              IngredientCreatorAccess.chemicalStack().streamCodec(), ChemicalToChemicalRecipe::getInput,
+              ChemicalStack.STREAM_CODEC, BasicChemicalToChemicalRecipe::getOutputRaw,
               factory
         ));
     }

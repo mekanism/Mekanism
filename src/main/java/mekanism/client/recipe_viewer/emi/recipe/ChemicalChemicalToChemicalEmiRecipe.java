@@ -2,7 +2,7 @@ package mekanism.client.recipe_viewer.emi.recipe;
 
 import dev.emi.emi.api.render.EmiTexture;
 import dev.emi.emi.api.widget.WidgetHolder;
-import mekanism.api.recipes.chemical.ChemicalChemicalToChemicalRecipe;
+import mekanism.api.recipes.ChemicalChemicalToChemicalRecipe;
 import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiChemicalGauge;

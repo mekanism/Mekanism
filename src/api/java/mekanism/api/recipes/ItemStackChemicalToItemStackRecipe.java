@@ -1,10 +1,9 @@
-package mekanism.api.recipes.chemical;
+package mekanism.api.recipes;
 
 import java.util.List;
 import java.util.function.BiPredicate;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.vanilla_input.SingleItemChemicalRecipeInput;
@@ -25,8 +24,7 @@ import org.jetbrains.annotations.NotNull;
  *
  */
 @NothingNullByDefault
-public abstract class ItemStackChemicalToItemStackRecipe extends MekanismRecipe<SingleItemChemicalRecipeInput>
-      implements BiPredicate<@NotNull ItemStack, ChemicalStack> {
+public abstract class ItemStackChemicalToItemStackRecipe extends MekanismRecipe<SingleItemChemicalRecipeInput> implements BiPredicate<@NotNull ItemStack, ChemicalStack> {
 
     /**
      * Gets the input item ingredient.

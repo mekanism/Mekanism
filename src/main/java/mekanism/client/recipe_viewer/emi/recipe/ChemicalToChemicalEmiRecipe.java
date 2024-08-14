@@ -1,7 +1,7 @@
 package mekanism.client.recipe_viewer.emi.recipe;
 
 import dev.emi.emi.api.widget.WidgetHolder;
-import mekanism.api.recipes.GasToGasRecipe;
+import mekanism.api.recipes.ChemicalToChemicalRecipe;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiChemicalGauge;
 import mekanism.client.gui.element.progress.ProgressType;
@@ -11,9 +11,9 @@ import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.tile.component.config.DataType;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
-public class GasToGasEmiRecipe extends MekanismEmiHolderRecipe<GasToGasRecipe> {
+public class ChemicalToChemicalEmiRecipe extends MekanismEmiHolderRecipe<ChemicalToChemicalRecipe> {
 
-    public GasToGasEmiRecipe(MekanismEmiRecipeCategory category, RecipeHolder<GasToGasRecipe> recipeHolder) {
+    public ChemicalToChemicalEmiRecipe(MekanismEmiRecipeCategory category, RecipeHolder<ChemicalToChemicalRecipe> recipeHolder) {
         super(category, recipeHolder);
         addInputDefinition(recipe.getInput());
         addChemicalOutputDefinition(recipe.getOutputDefinition());

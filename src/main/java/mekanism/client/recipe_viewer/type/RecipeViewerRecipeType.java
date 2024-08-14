@@ -8,7 +8,6 @@ import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.FluidSlurryToSlurryRecipe;
 import mekanism.api.recipes.FluidToFluidRecipe;
-import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
 import mekanism.api.recipes.ItemStackToFluidOptionalItemRecipe;
@@ -20,7 +19,8 @@ import mekanism.api.recipes.PaintingRecipe;
 import mekanism.api.recipes.PigmentMixingRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.SawmillRecipe;
-import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
+import mekanism.api.recipes.ChemicalToChemicalRecipe;
+import mekanism.api.recipes.ItemStackToChemicalRecipe;
 import mekanism.client.recipe_viewer.recipe.BoilerRecipeViewerRecipe;
 import mekanism.client.recipe_viewer.recipe.SPSRecipeViewerRecipe;
 import mekanism.common.Mekanism;
@@ -60,8 +60,8 @@ public class RecipeViewerRecipeType {
 
     public static final RVRecipeTypeWrapper<?, FluidToFluidRecipe, ?> EVAPORATING = new RVRecipeTypeWrapper<>(MekanismRecipeType.EVAPORATING, FluidToFluidRecipe.class, -3, -12, 170, 62, MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER, MekanismBlocks.THERMAL_EVAPORATION_VALVE, MekanismBlocks.THERMAL_EVAPORATION_BLOCK);
 
-    public static final RVRecipeTypeWrapper<?, GasToGasRecipe, ?> ACTIVATING = new RVRecipeTypeWrapper<>(MekanismRecipeType.ACTIVATING, GasToGasRecipe.class, -4, -13, 168, 60, MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR);
-    public static final RVRecipeTypeWrapper<?, GasToGasRecipe, ?> CENTRIFUGING = new RVRecipeTypeWrapper<>(MekanismRecipeType.CENTRIFUGING, GasToGasRecipe.class, -4, -13, 168, 60, MekanismBlocks.ISOTOPIC_CENTRIFUGE);
+    public static final RVRecipeTypeWrapper<?, ChemicalToChemicalRecipe, ?> ACTIVATING = new RVRecipeTypeWrapper<>(MekanismRecipeType.ACTIVATING, ChemicalToChemicalRecipe.class, -4, -13, 168, 60, MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR);
+    public static final RVRecipeTypeWrapper<?, ChemicalToChemicalRecipe, ?> CENTRIFUGING = new RVRecipeTypeWrapper<>(MekanismRecipeType.CENTRIFUGING, ChemicalToChemicalRecipe.class, -4, -13, 168, 60, MekanismBlocks.ISOTOPIC_CENTRIFUGE);
 
     public static final RVRecipeTypeWrapper<?, ChemicalCrystallizerRecipe, ?> CRYSTALLIZING = new RVRecipeTypeWrapper<>(MekanismRecipeType.CRYSTALLIZING, ChemicalCrystallizerRecipe.class, -5, -3, 147, 79, MekanismBlocks.CHEMICAL_CRYSTALLIZER);
 

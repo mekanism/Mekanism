@@ -36,7 +36,7 @@ import mekanism.client.recipe_viewer.emi.recipe.CombinerEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.ElectrolysisEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.FluidSlurryToSlurryEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.FluidToFluidEmiRecipe;
-import mekanism.client.recipe_viewer.emi.recipe.GasToGasEmiRecipe;
+import mekanism.client.recipe_viewer.emi.recipe.ChemicalToChemicalEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.ItemStackGasToItemStackEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.ItemStackToChemicalEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.ItemStackToEnergyEmiRecipe;
@@ -248,8 +248,8 @@ public class MekanismEmi implements EmiPlugin {
 
         addCategoryAndRecipes(registry, RecipeViewerRecipeType.NUTRITIONAL_LIQUIFICATION, (category, id, recipe) -> new ItemStackToFluidOptionalItemEmiRecipe(category, id, recipe, TileEntityNutritionalLiquifier.BASE_TICKS_REQUIRED), RecipeViewerUtils.getLiquificationRecipes());
 
-        addCategoryAndRecipes(registry, RecipeViewerRecipeType.ACTIVATING, GasToGasEmiRecipe::new);
-        addCategoryAndRecipes(registry, RecipeViewerRecipeType.CENTRIFUGING, GasToGasEmiRecipe::new);
+        addCategoryAndRecipes(registry, RecipeViewerRecipeType.ACTIVATING, ChemicalToChemicalEmiRecipe::new);
+        addCategoryAndRecipes(registry, RecipeViewerRecipeType.CENTRIFUGING, ChemicalToChemicalEmiRecipe::new);
 
         addCategoryAndRecipes(registry, RecipeViewerRecipeType.COMBINING, CombinerEmiRecipe::new);
 

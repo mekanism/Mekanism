@@ -6,7 +6,7 @@ import mekanism.api.recipes.ChemicalInfuserRecipe;
 import mekanism.api.recipes.PigmentMixingRecipe;
 import mekanism.api.recipes.basic.BasicChemicalInfuserRecipe;
 import mekanism.api.recipes.basic.BasicPigmentMixingRecipe;
-import mekanism.api.recipes.chemical.ChemicalChemicalToChemicalRecipe;
+import mekanism.api.recipes.ChemicalChemicalToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.vanilla_input.BiChemicalRecipeInput;
 import mekanism.common.integration.crafttweaker.CrTConstants;

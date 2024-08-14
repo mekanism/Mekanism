@@ -1,10 +1,9 @@
-package mekanism.api.recipes.chemical;
+package mekanism.api.recipes;
 
 import java.util.List;
 import java.util.function.Predicate;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
@@ -26,8 +25,7 @@ import org.jetbrains.annotations.NotNull;
  * </ul>
  */
 @NothingNullByDefault
-public abstract class ItemStackToChemicalRecipe extends MekanismRecipe<SingleRecipeInput>
-      implements Predicate<@NotNull ItemStack> {
+public abstract class ItemStackToChemicalRecipe extends MekanismRecipe<SingleRecipeInput> implements Predicate<@NotNull ItemStack> {
 
     @Override
     public abstract boolean test(ItemStack itemStack);

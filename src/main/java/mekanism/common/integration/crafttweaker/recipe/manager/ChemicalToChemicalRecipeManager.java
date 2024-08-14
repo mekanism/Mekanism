@@ -2,9 +2,9 @@ package mekanism.common.integration.crafttweaker.recipe.manager;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.api.recipes.basic.BasicActivatingRecipe;
 import mekanism.api.recipes.basic.BasicCentrifugingRecipe;
+import mekanism.api.recipes.ChemicalToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.vanilla_input.SingleChemicalRecipeInput;
 import mekanism.common.integration.crafttweaker.CrTConstants;
@@ -15,10 +15,10 @@ import mekanism.common.recipe.MekanismRecipeType;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
-@ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_GAS_TO_GAS)
-public abstract class GasToGasRecipeManager extends MekanismRecipeManager<SingleChemicalRecipeInput, GasToGasRecipe> {
+@ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_CHEMICAL_TO_CHEMICAL)
+public abstract class ChemicalToChemicalRecipeManager extends MekanismRecipeManager<SingleChemicalRecipeInput, ChemicalToChemicalRecipe> {
 
-    protected GasToGasRecipeManager(IMekanismRecipeTypeProvider<SingleChemicalRecipeInput, GasToGasRecipe, ?> recipeType) {
+    protected ChemicalToChemicalRecipeManager(IMekanismRecipeTypeProvider<SingleChemicalRecipeInput, ChemicalToChemicalRecipe, ?> recipeType) {
         super(recipeType);
     }
 
@@ -44,20 +44,20 @@ public abstract class GasToGasRecipeManager extends MekanismRecipeManager<Single
      * @param input  {@link ChemicalStackIngredient} representing the input of the recipe.
      * @param output {@link ICrTChemicalStack} representing the output of the recipe. Will be validated as not empty.
      */
-    public final GasToGasRecipe makeRecipe(ChemicalStackIngredient input, ICrTChemicalStack output) {
+    public final ChemicalToChemicalRecipe makeRecipe(ChemicalStackIngredient input, ICrTChemicalStack output) {
         return makeRecipe(input, getAndValidateNotEmpty(output));
     }
 
-    protected abstract GasToGasRecipe makeRecipe(ChemicalStackIngredient ingredient, ChemicalStack output);
+    protected abstract ChemicalToChemicalRecipe makeRecipe(ChemicalStackIngredient ingredient, ChemicalStack output);
 
     @Override
-    protected String describeOutputs(GasToGasRecipe recipe) {
+    protected String describeOutputs(ChemicalToChemicalRecipe recipe) {
         return CrTUtils.describeOutputs(recipe.getOutputDefinition());
     }
 
     @ZenRegister
     @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_ACTIVATING)
-    public static class SolarNeutronActivatorRecipeManager extends GasToGasRecipeManager {
+    public static class SolarNeutronActivatorRecipeManager extends ChemicalToChemicalRecipeManager {
 
         public static final SolarNeutronActivatorRecipeManager INSTANCE = new SolarNeutronActivatorRecipeManager();
 
@@ -66,14 +66,14 @@ public abstract class GasToGasRecipeManager extends MekanismRecipeManager<Single
         }
 
         @Override
-        protected GasToGasRecipe makeRecipe(ChemicalStackIngredient ingredient, ChemicalStack output) {
+        protected ChemicalToChemicalRecipe makeRecipe(ChemicalStackIngredient ingredient, ChemicalStack output) {
             return new BasicActivatingRecipe(ingredient, output);
         }
     }
 
     @ZenRegister
     @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_CENTRIFUGING)
-    public static class IsotopicCentrifugeRecipeManager extends GasToGasRecipeManager {
+    public static class IsotopicCentrifugeRecipeManager extends ChemicalToChemicalRecipeManager {
 
         public static final IsotopicCentrifugeRecipeManager INSTANCE = new IsotopicCentrifugeRecipeManager();
 
@@ -82,7 +82,7 @@ public abstract class GasToGasRecipeManager extends MekanismRecipeManager<Single
         }
 
         @Override
-        protected GasToGasRecipe makeRecipe(ChemicalStackIngredient ingredient, ChemicalStack output) {
+        protected ChemicalToChemicalRecipe makeRecipe(ChemicalStackIngredient ingredient, ChemicalStack output) {
             return new BasicCentrifugingRecipe(ingredient, output);
         }
     }

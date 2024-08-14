@@ -1,10 +1,9 @@
-package mekanism.api.recipes.chemical;
+package mekanism.api.recipes;
 
 import java.util.List;
 import java.util.function.Predicate;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.vanilla_input.SingleChemicalRecipeInput;
 import net.minecraft.world.level.Level;
@@ -16,6 +15,12 @@ import org.jetbrains.annotations.Contract;
  * Input: Chemical
  * <br>
  * Output: ChemicalStack of the same chemical type as the input chemical
+ *
+ * @apiNote There are currently two types of Chemical to Chemical recipe types:
+ * <ul>
+ *     <li>Activating: Can be processed in a Solar Neutron Activator.</li>
+ *     <li>Centrifuging: Can be processed in an Isotopic Centrifuge.</li>
+ * </ul>
  */
 @NothingNullByDefault
 public abstract class ChemicalToChemicalRecipe extends MekanismRecipe<SingleChemicalRecipeInput> implements Predicate<ChemicalStack> {

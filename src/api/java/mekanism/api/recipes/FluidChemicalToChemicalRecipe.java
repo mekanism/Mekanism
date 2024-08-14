@@ -1,10 +1,9 @@
-package mekanism.api.recipes.chemical;
+package mekanism.api.recipes;
 
 import java.util.List;
 import java.util.function.BiPredicate;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.vanilla_input.SingleFluidChemicalRecipeInput;
@@ -23,8 +22,7 @@ import org.jetbrains.annotations.NotNull;
  * Output: ChemicalStack of the same chemical type as the input chemical
  */
 @NothingNullByDefault
-public abstract class FluidChemicalToChemicalRecipe extends MekanismRecipe<SingleFluidChemicalRecipeInput>
-      implements BiPredicate<@NotNull FluidStack, ChemicalStack> {
+public abstract class FluidChemicalToChemicalRecipe extends MekanismRecipe<SingleFluidChemicalRecipeInput> implements BiPredicate<@NotNull FluidStack, ChemicalStack> {
 
     @Override
     public abstract boolean test(FluidStack fluidStack, ChemicalStack chemicalStack);
