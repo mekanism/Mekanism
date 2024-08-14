@@ -48,10 +48,6 @@ public class CrTConstants {
     //TODO: Eventually we might want to expose these as actually CrT objects. And then make the stack variant basically just be an OR of them,
     // and also make the stacks be instances of an interface so that they can be used directly in place of the ingredients? (Or at least implicit cast to them)
     public static final String CLASS_CHEMICAL_INGREDIENT = "mods." + Mekanism.MODID + ".api.ingredient.ChemicalIngredient";
-    public static final String CLASS_GAS_INGREDIENT = CLASS_CHEMICAL_INGREDIENT + ".GasIngredient";
-    public static final String CLASS_INFUSION_INGREDIENT = CLASS_CHEMICAL_INGREDIENT + ".InfusionIngredient";
-    public static final String CLASS_PIGMENT_INGREDIENT = CLASS_CHEMICAL_INGREDIENT + ".PigmentIngredient";
-    public static final String CLASS_SLURRY_INGREDIENT = CLASS_CHEMICAL_INGREDIENT + ".SlurryIngredient";
 
     public static final String CLASS_CHEMICAL_STACK_INGREDIENT = "mods." + Mekanism.MODID + ".api.ingredient.ChemicalStackIngredient";
 

@@ -20,8 +20,7 @@ import net.neoforged.neoforge.common.crafting.ICustomIngredient;
  * @since 10.6.0
  */
 @NothingNullByDefault
-public sealed interface IChemicalIngredient extends Predicate<Chemical>
-      permits ChemicalIngredient, IGasIngredient, IInfusionIngredient, IPigmentIngredient, ISlurryIngredient {
+public sealed interface IChemicalIngredient extends Predicate<Chemical> permits ChemicalIngredient {
 
     /**
      * Checks if a given chemical matches this ingredient.
