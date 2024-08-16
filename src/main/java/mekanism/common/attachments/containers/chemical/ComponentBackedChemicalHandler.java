@@ -48,16 +48,16 @@ public class ComponentBackedChemicalHandler extends ComponentBackedHandler<Chemi
 
     @Override
     public ChemicalStack insertChemical(ChemicalStack stack, @Nullable Direction side, Action action) {
-        return ChemicalUtils.insert(stack, action, AutomationType.handler(side), ChemicalStack.EMPTY, size(), this);
+        return ChemicalUtils.insert(stack, action, AutomationType.handler(side), size(), this);
     }
 
     @Override
     public ChemicalStack extractChemical(long amount, @Nullable Direction side, Action action) {
-        return ChemicalUtils.extract(amount, action, AutomationType.handler(side), ChemicalStack.EMPTY, size(), this);
+        return ChemicalUtils.extract(amount, action, AutomationType.handler(side), size(), this);
     }
 
     @Override
     public ChemicalStack extractChemical(ChemicalStack stack, @Nullable Direction side, Action action) {
-        return ChemicalUtils.extract(stack, action, AutomationType.handler(side), ChemicalStack.EMPTY, size(), this);
+        return ChemicalUtils.extract(stack, action, AutomationType.handler(side), size(), this);
     }
 }

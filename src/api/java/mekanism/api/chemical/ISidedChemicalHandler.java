@@ -193,7 +193,7 @@ public interface ISidedChemicalHandler extends IChemicalHandler {
      * @apiNote It is not guaranteed that the default implementation will be how this {@link IChemicalHandler} ends up distributing the insertion.
      */
     default ChemicalStack insertChemical(ChemicalStack stack, @Nullable Direction side, Action action) {
-        return ChemicalUtils.insert(stack, side, action, ChemicalStack.EMPTY, this::getCountChemicalTanks, this::getChemicalInTank, this::insertChemical);
+        return ChemicalUtils.insert(stack, side, action, this::getCountChemicalTanks, this::getChemicalInTank, this::insertChemical);
     }
 
     /**
@@ -216,7 +216,7 @@ public interface ISidedChemicalHandler extends IChemicalHandler {
      * @apiNote It is not guaranteed that the default implementation will be how this {@link IChemicalHandler} ends up distributing the extraction.
      */
     default ChemicalStack extractChemical(long amount, @Nullable Direction side, Action action) {
-        return ChemicalUtils.extract(amount, side, action, ChemicalStack.EMPTY, this::getCountChemicalTanks, this::getChemicalInTank, this::extractChemical);
+        return ChemicalUtils.extract(amount, side, action, this::getCountChemicalTanks, this::getChemicalInTank, this::extractChemical);
     }
 
     /**
@@ -227,7 +227,7 @@ public interface ISidedChemicalHandler extends IChemicalHandler {
      * The returned value must be empty if nothing is extracted, otherwise its stack size must be less than or equal to {@code amount}.
      * </p>
      *
-     * @param stack  ChemicalStack representing the {@link CHEMICAL} and maximum amount to be drained.
+     * @param stack  ChemicalStack representing the {@link Chemical} and maximum amount to be drained.
      * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
      * @param side   The side we are interacting with the handler from (null for internal).
      *
@@ -238,6 +238,6 @@ public interface ISidedChemicalHandler extends IChemicalHandler {
      * @apiNote It is not guaranteed that the default implementation will be how this {@link IChemicalHandler} ends up distributing the extraction.
      */
     default ChemicalStack extractChemical(ChemicalStack stack, @Nullable Direction side, Action action) {
-        return ChemicalUtils.extract(stack, side, action, ChemicalStack.EMPTY, this::getCountChemicalTanks, this::getChemicalInTank, this::extractChemical);
+        return ChemicalUtils.extract(stack, side, action, this::getCountChemicalTanks, this::getChemicalInTank, this::extractChemical);
     }
 }

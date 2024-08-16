@@ -64,6 +64,6 @@ public class ChemicalRecipeData
 
     private ChemicalStack insertManualIntoOutputContainer(IMekanismChemicalHandler outputHandler, ChemicalStack chemical) {
         //Insert into the output using manual as the automation type
-        return ChemicalUtils.insert(chemical, null, outputHandler::getChemicalTanks, Action.EXECUTE, AutomationType.MANUAL, ChemicalStack.EMPTY);
+        return ChemicalUtils.insert(chemical, null, outputHandler::getChemicalTanks, Action.EXECUTE, AutomationType.MANUAL);
     }
 }

@@ -9,7 +9,6 @@ import io.netty.handler.codec.EncoderException;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 import mekanism.api.MekanismAPI;
@@ -20,10 +19,10 @@ import mekanism.api.chemical.attribute.ChemicalAttribute;
 import mekanism.api.chemical.attribute.IChemicalAttributeContainer;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.IHasTranslationKey;
+import net.minecraft.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
@@ -31,7 +30,6 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.ExtraCodecs;
@@ -51,19 +49,24 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
      *
      * @since 10.6.0
      */
-    public static final Codec<Chemical> CHEMICAL_NON_EMPTY_CODEC = MekanismAPI.CHEMICAL_REGISTRY.byNameCodec().validate(chemical -> chemical.isEmptyType() ? DataResult.error(() -> "Chemical must not be mekanism:empty") : DataResult.success(chemical));
+    public static final Codec<Chemical> CHEMICAL_NON_EMPTY_CODEC = Chemical.CODEC
+          .validate(chemical -> chemical.isEmptyType() ? DataResult.error(() -> "Chemical must not be mekanism:empty") : DataResult.success(chemical));
     /**
      * A standard codec for non-empty Chemical holders.
      *
      * @since 10.6.0
      */
-    public static final Codec<Holder<Chemical>> CHEMICAL_NON_EMPTY_HOLDER_CODEC = MekanismAPI.CHEMICAL_REGISTRY.holderByNameCodec().validate(chemical -> chemical.value().isEmptyType() ? DataResult.error(() -> "Chemical must not be mekanism:empty") : DataResult.success(chemical));
+    public static final Codec<Holder<Chemical>> CHEMICAL_NON_EMPTY_HOLDER_CODEC = MekanismAPI.CHEMICAL_REGISTRY.holderByNameCodec()
+          .validate(chemical -> chemical.value().isEmptyType() ? DataResult.error(() -> "Chemical must not be mekanism:empty") : DataResult.success(chemical));
     /**
      * A standard map codec for Chemical stacks that does not accept empty stacks.
      *
      * @since 10.6.0
      */
-    public static final MapCodec<ChemicalStack> MAP_CODEC = codec(CHEMICAL_NON_EMPTY_CODEC, ChemicalStack::new);
+    public static final MapCodec<ChemicalStack> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+          CHEMICAL_NON_EMPTY_CODEC.fieldOf(SerializationConstants.ID).forGetter(ChemicalStack::getChemical),
+          SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(SerializationConstants.AMOUNT).forGetter(ChemicalStack::getAmount)
+    ).apply(instance, ChemicalStack::new));
     /**
      * A standard codec for Chemical stacks that does not accept empty stacks.
      *
@@ -75,85 +78,23 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
      *
      * @since 10.6.0
      */
-    public static final Codec<ChemicalStack> OPTIONAL_CODEC = optionalCodec(CODEC, EMPTY);
+    public static final Codec<ChemicalStack> OPTIONAL_CODEC = ExtraCodecs.optionalEmptyMap(CODEC).xmap(optional -> optional.orElse(EMPTY), stack -> stack.isEmpty() ? Optional.empty() : Optional.of(stack));
     /**
      * A stream codec for Chemical stacks that accepts empty stacks.
      *
      * @since 10.6.0
      */
-    public static final StreamCodec<RegistryFriendlyByteBuf, ChemicalStack> OPTIONAL_STREAM_CODEC = optionalStreamCodec(MekanismAPI.CHEMICAL_REGISTRY_NAME, ChemicalStack::new, EMPTY);
-    /**
-     * A stream codec for Chemical stacks that does not accept empty stacks.
-     *
-     * @since 10.6.0
-     */
-    public static final StreamCodec<RegistryFriendlyByteBuf, ChemicalStack> STREAM_CODEC = streamCodec(OPTIONAL_STREAM_CODEC);
-
-    /**
-     * A standard codec for chemical stacks that always deserializes with a fixed amount, and does not accept empty stacks.
-     * <p>
-     * Chemical equivalent of {@link ItemStack#SINGLE_ITEM_CODEC}.
-     *
-     * @since 10.6.0
-     */
-    public static Codec<ChemicalStack> fixedAmountCodec(int amount) {
-        return fixedAmountCodec(CHEMICAL_NON_EMPTY_CODEC, ChemicalStack::new, amount);
-    }
-
-
-    /**
-     * A standard codec for chemical stacks that does not accept empty stacks.
-     *
-     * @since 10.6.0
-     */
-    protected static MapCodec<ChemicalStack> codec(Codec<Chemical> nonEmptyCodec,
-          BiFunction<Chemical, Long, ChemicalStack> constructor) {
-        return RecordCodecBuilder.mapCodec(instance -> instance.group(
-              nonEmptyCodec.fieldOf(SerializationConstants.ID).forGetter(ChemicalStack::getChemical),
-              SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(SerializationConstants.AMOUNT).forGetter(ChemicalStack::getAmount)
-        ).apply(instance, constructor));
-    }
-
-    /**
-     * A standard codec for chemical stacks that always deserializes with a fixed amount, and does not accept empty stacks.
-     * <p>
-     * Chemical equivalent of {@link ItemStack#SINGLE_ITEM_CODEC}.
-     *
-     * @since 10.6.0
-     */
-    protected static Codec<ChemicalStack> fixedAmountCodec(
-          Codec<Chemical> chemicalNonEmptyCodec, BiFunction<Chemical, Long, ChemicalStack> constructor, long amount) {
-        return RecordCodecBuilder.create(instance -> instance.group(
-              chemicalNonEmptyCodec.fieldOf(SerializationConstants.ID).forGetter(ChemicalStack::getChemical)
-        ).apply(instance, holder -> constructor.apply(holder, amount)));
-    }
-
-    /**
-     * A standard codec for chemical stacks that accepts empty stacks, serializing them as {@code {}}.
-     *
-     * @since 10.6.0
-     */
-    protected static Codec<ChemicalStack> optionalCodec(Codec<ChemicalStack> codec, ChemicalStack empty) {
-        return ExtraCodecs.optionalEmptyMap(codec).xmap(optional -> optional.orElse(empty), stack -> stack.isEmpty() ? Optional.empty() : Optional.of(stack));
-    }
-
-    /**
-     * A stream codec for chemical stacks that accepts empty stacks.
-     *
-     * @since 10.6.0
-     */
-    protected static StreamCodec<RegistryFriendlyByteBuf, ChemicalStack> optionalStreamCodec(
-          ResourceKey<? extends Registry<Chemical>> registry, BiFunction<Chemical, Long, ChemicalStack> constructor, ChemicalStack empty) {
-        StreamCodec<RegistryFriendlyByteBuf, Chemical> chemicalStreamCodec = ByteBufCodecs.registry(registry);
+    public static final StreamCodec<RegistryFriendlyByteBuf, ChemicalStack> OPTIONAL_STREAM_CODEC = Util.make(() -> {
+        StreamCodec<RegistryFriendlyByteBuf, Chemical> chemicalStreamCodec = ByteBufCodecs.registry(MekanismAPI.CHEMICAL_REGISTRY_NAME);
         return new StreamCodec<>() {
             @Override
             public ChemicalStack decode(RegistryFriendlyByteBuf buffer) {
                 long amount = buffer.readVarLong();
                 if (amount <= 0) {
-                    return empty;
+                    return EMPTY;
                 }
                 Chemical chemical = chemicalStreamCodec.decode(buffer);
-                return constructor.apply(chemical, amount);
+                return new ChemicalStack(chemical, amount);
             }
 
             @Override
@@ -164,33 +105,42 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
                 }
             }
         };
-    }
-
+    });
     /**
-     * A stream codec for chemical stacks that does not accept empty stacks.
+     * A stream codec for Chemical stacks that does not accept empty stacks.
      *
      * @since 10.6.0
      */
-    protected static StreamCodec<RegistryFriendlyByteBuf, ChemicalStack> streamCodec(
-          StreamCodec<RegistryFriendlyByteBuf, ChemicalStack> optionalStreamCodec) {
-        return new StreamCodec<>() {
-            @Override
-            public ChemicalStack decode(RegistryFriendlyByteBuf buffer) {
-                ChemicalStack stack = optionalStreamCodec.decode(buffer);
-                if (stack.isEmpty()) {
-                    throw new DecoderException("Empty ChemicalStack not allowed");
-                }
-                return stack;
+    public static final StreamCodec<RegistryFriendlyByteBuf, ChemicalStack> STREAM_CODEC = new StreamCodec<>() {
+        @Override
+        public ChemicalStack decode(RegistryFriendlyByteBuf buffer) {
+            ChemicalStack stack = OPTIONAL_STREAM_CODEC.decode(buffer);
+            if (stack.isEmpty()) {
+                throw new DecoderException("Empty ChemicalStack not allowed");
             }
+            return stack;
+        }
 
-            @Override
-            public void encode(RegistryFriendlyByteBuf buffer, ChemicalStack stack) {
-                if (stack.isEmpty()) {
-                    throw new EncoderException("Empty ChemicalStack not allowed");
-                }
-                optionalStreamCodec.encode(buffer, stack);
+        @Override
+        public void encode(RegistryFriendlyByteBuf buffer, ChemicalStack stack) {
+            if (stack.isEmpty()) {
+                throw new EncoderException("Empty ChemicalStack not allowed");
             }
-        };
+            OPTIONAL_STREAM_CODEC.encode(buffer, stack);
+        }
+    };
+
+    /**
+     * A standard codec for chemical stacks that always deserializes with a fixed amount, and does not accept empty stacks.
+     * <p>
+     * Chemical equivalent of {@link ItemStack#SINGLE_ITEM_CODEC}.
+     *
+     * @since 10.6.0
+     */
+    public static Codec<ChemicalStack> fixedAmountCodec(int amount) {
+        return RecordCodecBuilder.create(instance -> instance.group(
+              CHEMICAL_NON_EMPTY_CODEC.fieldOf(SerializationConstants.ID).forGetter(ChemicalStack::getChemical)
+        ).apply(instance, holder -> new ChemicalStack(holder, amount)));
     }
 
     private final Chemical chemical;

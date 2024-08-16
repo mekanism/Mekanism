@@ -39,12 +39,12 @@ public interface IMekanismChemicalHandler
     List<IChemicalTank> getChemicalTanks(@Nullable Direction side);
 
     /**
-     * Returns the {@link TANK} that has the given index from the list of tanks on the given side.
+     * Returns the {@link IChemicalTank} that has the given index from the list of tanks on the given side.
      *
      * @param tank The index of the tank to retrieve.
      * @param side The side we are interacting with the handler from (null for internal).
      *
-     * @return The {@link TANK} that has the given index from the list of tanks on the given side.
+     * @return The {@link IChemicalTank} that has the given index from the list of tanks on the given side.
      */
     @Nullable
     default IChemicalTank getChemicalTank(int tank, @Nullable Direction side) {
@@ -110,16 +110,16 @@ public interface IMekanismChemicalHandler
 
     @Override
     default ChemicalStack insertChemical(ChemicalStack stack, @Nullable Direction side, Action action) {
-        return ChemicalUtils.insert(stack, side, this::getChemicalTanks, action, AutomationType.handler(side), ChemicalStack.EMPTY);
+        return ChemicalUtils.insert(stack, side, this::getChemicalTanks, action, AutomationType.handler(side));
     }
 
     @Override
     default ChemicalStack extractChemical(long amount, @Nullable Direction side, Action action) {
-        return ChemicalUtils.extract(amount, side, this::getChemicalTanks, action, AutomationType.handler(side), ChemicalStack.EMPTY);
+        return ChemicalUtils.extract(amount, side, this::getChemicalTanks, action, AutomationType.handler(side));
     }
 
     @Override
     default ChemicalStack extractChemical(ChemicalStack stack, @Nullable Direction side, Action action) {
-        return ChemicalUtils.extract(stack, side, this::getChemicalTanks, action, AutomationType.handler(side), ChemicalStack.EMPTY);
+        return ChemicalUtils.extract(stack, side, this::getChemicalTanks, action, AutomationType.handler(side));
     }
 }

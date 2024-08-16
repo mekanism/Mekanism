@@ -9,11 +9,11 @@ import mekanism.common.lib.distribution.Target;
 public class BoxedChemicalTransmitterSaveTarget
       extends Target<BoxedChemicalTransmitterSaveTarget.SaveHandler, Long, ChemicalStack> {
 
-    public BoxedChemicalTransmitterSaveTarget(ChemicalStack empty, ChemicalStack type, Collection<BoxedPressurizedTube> transmitters) {
+    public BoxedChemicalTransmitterSaveTarget(ChemicalStack type, Collection<BoxedPressurizedTube> transmitters) {
         super(transmitters.size());
         this.extra = type;
         for (BoxedPressurizedTube transmitter : transmitters) {
-            addHandler(new SaveHandler(empty, transmitter));
+            addHandler(new SaveHandler(transmitter));
         }
     }
 
@@ -38,8 +38,8 @@ public class BoxedChemicalTransmitterSaveTarget
         private ChemicalStack currentStored;
         private final BoxedPressurizedTube transmitter;
 
-        public SaveHandler(ChemicalStack empty, BoxedPressurizedTube transmitter) {
-            this.currentStored = empty;
+        public SaveHandler(BoxedPressurizedTube transmitter) {
+            this.currentStored = ChemicalStack.EMPTY;
             this.transmitter = transmitter;
         }
 
