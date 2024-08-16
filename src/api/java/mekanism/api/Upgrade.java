@@ -7,6 +7,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Function;
 import java.util.function.IntFunction;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.APILang;
@@ -28,7 +29,7 @@ public enum Upgrade implements IHasTranslationKey, StringRepresentable {
     SPEED("speed", APILang.UPGRADE_SPEED, APILang.UPGRADE_SPEED_DESCRIPTION, 8, EnumColor.RED),
     ENERGY("energy", APILang.UPGRADE_ENERGY, APILang.UPGRADE_ENERGY_DESCRIPTION, 8, EnumColor.BRIGHT_GREEN),
     FILTER("filter", APILang.UPGRADE_FILTER, APILang.UPGRADE_FILTER_DESCRIPTION, 1, EnumColor.DARK_AQUA),
-    GAS("gas", APILang.UPGRADE_GAS, APILang.UPGRADE_GAS_DESCRIPTION, 8, EnumColor.YELLOW),
+    CHEMICAL("chemical", APILang.UPGRADE_CHEMICAL, APILang.UPGRADE_CHEMICAL_DESCRIPTION, 8, EnumColor.YELLOW),
     MUFFLING("muffling", APILang.UPGRADE_MUFFLING, APILang.UPGRADE_MUFFLING_DESCRIPTION, 1, EnumColor.INDIGO),
     ANCHOR("anchor", APILang.UPGRADE_ANCHOR, APILang.UPGRADE_ANCHOR_DESCRIPTION, 1, EnumColor.DARK_GREEN),
     STONE_GENERATOR("stone_generator", APILang.UPGRADE_STONE_GENERATOR, APILang.UPGRADE_STONE_GENERATOR_DESCRIPTION, 1, EnumColor.ORANGE);
@@ -38,7 +39,16 @@ public enum Upgrade implements IHasTranslationKey, StringRepresentable {
      *
      * @since 10.6.0
      */
-    public static final Codec<Upgrade> CODEC = StringRepresentable.fromEnum(Upgrade::values);
+    public static final Codec<Upgrade> CODEC;
+
+    //todo 1.22 remove backcompat and inline back to StringRepresentable.fromEnum
+    static {
+        Upgrade[] values = values();
+        Function<String, Upgrade> nameLookup = StringRepresentable.createNameLookup(values, Function.identity());
+        Function<String, Upgrade> remapper = it -> "gas".equals(it) ? CHEMICAL : nameLookup.apply(it);
+        CODEC = new EnumCodec<>(values, remapper);
+    }
+
     /**
      * Gets an upgrade by index, wrapping for out of bounds indices.
      *

@@ -295,7 +295,7 @@ enums:
   - SPEED
   - ENERGY
   - FILTER
-  - GAS
+  - CHEMICAL
   - MUFFLING
   - ANCHOR
   - STONE_GENERATOR

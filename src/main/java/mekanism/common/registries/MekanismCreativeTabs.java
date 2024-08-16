@@ -118,7 +118,7 @@ public class MekanismCreativeTabs {
                   //Installers
                   MekanismItems.BASIC_TIER_INSTALLER, MekanismItems.ADVANCED_TIER_INSTALLER, MekanismItems.ELITE_TIER_INSTALLER, MekanismItems.ULTIMATE_TIER_INSTALLER,
                   //Upgrades
-                  MekanismItems.SPEED_UPGRADE, MekanismItems.ENERGY_UPGRADE, MekanismItems.FILTER_UPGRADE, MekanismItems.MUFFLING_UPGRADE, MekanismItems.GAS_UPGRADE,
+                  MekanismItems.SPEED_UPGRADE, MekanismItems.ENERGY_UPGRADE, MekanismItems.FILTER_UPGRADE, MekanismItems.MUFFLING_UPGRADE, MekanismItems.CHEMICAL_UPGRADE,
                   MekanismItems.ANCHOR_UPGRADE, MekanismItems.STONE_GENERATOR_UPGRADE,
                   //Tanks
                   MekanismBlocks.BASIC_FLUID_TANK, MekanismBlocks.ADVANCED_FLUID_TANK, MekanismBlocks.ELITE_FLUID_TANK, MekanismBlocks.ULTIMATE_FLUID_TANK,

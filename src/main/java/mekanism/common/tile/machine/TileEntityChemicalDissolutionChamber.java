@@ -188,7 +188,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
     @Override
     public void recalculateUpgrades(Upgrade upgrade) {
         super.recalculateUpgrades(upgrade);
-        if (upgrade == Upgrade.GAS || upgrade == Upgrade.SPEED) {
+        if (upgrade == Upgrade.CHEMICAL || upgrade == Upgrade.SPEED) {
             injectUsage = MekanismUtils.getGasPerTickMeanMultiplier(this);
         }
     }
