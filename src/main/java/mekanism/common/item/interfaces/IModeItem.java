@@ -72,7 +72,7 @@ public interface IModeItem {
                 //TODO: Eventually decide if we want to make it so that it checks if IModeItem#getScrollTextComponent is null and otherwise just make it a system message
                 displayModeChange(player);
             } else if (this == OTHER) {
-                player.sendSystemMessage(MekanismUtils.logFormat(message.apply(data)));
+                player.displayClientMessage(message.apply(data), true);
             }
         }
     }
