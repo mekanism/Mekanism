@@ -25,7 +25,7 @@ public interface IChemicalTank extends INBTSerializable<CompoundTag>, IContentsL
      * @return A new stack
      */
     default ChemicalStack createStack(ChemicalStack stored, long size) {
-        return (ChemicalStack) stored.copyWithAmount(size);
+        return stored.copyWithAmount(size);
     }
 
     /**

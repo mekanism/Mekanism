@@ -56,7 +56,7 @@ public interface ISidedChemicalHandler extends IChemicalHandler {
      * @param tank Tank to query.
      * @param side The side we are interacting with the handler from (null for internal).
      *
-     * @return ChemicalStack in a given tank. {@link #getEmptyStack()} if the tank is empty.
+     * @return ChemicalStack in a given tank. {@link ChemicalStack#EMPTY} if the tank is empty.
      */
     ChemicalStack getChemicalInTank(int tank, @Nullable Direction side);
 

@@ -41,7 +41,7 @@ public enum Upgrade implements IHasTranslationKey, StringRepresentable {
      */
     public static final Codec<Upgrade> CODEC;
 
-    //todo 1.22 remove backcompat and inline back to StringRepresentable.fromEnum
+    //TODO - 1.22 remove backcompat and inline back to StringRepresentable.fromEnum
     static {
         Upgrade[] values = values();
         Function<String, Upgrade> nameLookup = StringRepresentable.createNameLookup(values, Function.identity());

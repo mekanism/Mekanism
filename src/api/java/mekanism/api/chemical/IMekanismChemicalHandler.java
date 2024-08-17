@@ -9,8 +9,7 @@ import net.minecraft.core.Direction;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public interface IMekanismChemicalHandler
-      extends ISidedChemicalHandler, IContentsListener {
+public interface IMekanismChemicalHandler extends ISidedChemicalHandler, IContentsListener {
 
     /**
      * Used to check if an instance of {@link IMekanismChemicalHandler} actually has the ability to handle chemicals.

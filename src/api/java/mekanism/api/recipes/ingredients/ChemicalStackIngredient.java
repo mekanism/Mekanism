@@ -132,7 +132,7 @@ public final class ChemicalStackIngredient implements InputIngredient<ChemicalSt
 
     @Override
     public ChemicalStack getMatchingInstance(ChemicalStack stack) {
-        return test(stack) ? (ChemicalStack) stack.copyWithAmount(amount) : ChemicalStack.EMPTY;
+        return test(stack) ? stack.copyWithAmount(amount) : ChemicalStack.EMPTY;
     }
 
     @Override
@@ -149,7 +149,7 @@ public final class ChemicalStackIngredient implements InputIngredient<ChemicalSt
     public List<ChemicalStack> getRepresentations() {
         if (this.representations == null) {
             this.representations = ingredient.getChemicals().stream()
-                  .map(s -> (ChemicalStack) s.getStack(amount))
+                  .map(s -> s.getStack(amount))
                   .toList();
         }
         return representations;
