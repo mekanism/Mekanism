@@ -1,4 +1,4 @@
-// 1.21.1	2024-08-17T10:41:21.6987653	Loot Tables
+// 1.21.1	2024-08-17T11:31:51.8101683	Loot Tables
 90992650e29475610e02a1c0b2454977a170d33f data/mekanismgenerators/loot_table/blocks/advanced_solar_generator.json
 ab50976cf8dc688d91aa0ff6f126e73ab8be22c6 data/mekanismgenerators/loot_table/blocks/bio_generator.json
 44cc1f117a05e901fd25e0de114bc408323d8567 data/mekanismgenerators/loot_table/blocks/control_rod_assembly.json
@@ -11,7 +11,7 @@ bb8d958aa826f154babe9c7c0000dcd431f4de68 data/mekanismgenerators/loot_table/bloc
 e50e3d0984e3e9dd533f2db79fb815a208b5e683 data/mekanismgenerators/loot_table/blocks/fusion_reactor_frame.json
 ea3c1c4bbb0146b9988121e6fa9d7f7aa605ad2a data/mekanismgenerators/loot_table/blocks/fusion_reactor_logic_adapter.json
 bc55bd4780eb79f15464d7e9083595fc4ac26e03 data/mekanismgenerators/loot_table/blocks/fusion_reactor_port.json
-09d4e78160f1e1fb3f02de375670124d89bb40ad data/mekanismgenerators/loot_table/blocks/gas_burning_generator.json
+d99ea558a940d45e478d577554f9a3d48ea8445b data/mekanismgenerators/loot_table/blocks/gas_burning_generator.json
 8b819ee101701934ac319d9c8dca7c49a45073cf data/mekanismgenerators/loot_table/blocks/heat_generator.json
 d2732671f3434d693cee74f8c30321866399eaf1 data/mekanismgenerators/loot_table/blocks/laser_focus_matrix.json
 5e199ee3532b639563eb218ace2201041150fc62 data/mekanismgenerators/loot_table/blocks/reactor_glass.json

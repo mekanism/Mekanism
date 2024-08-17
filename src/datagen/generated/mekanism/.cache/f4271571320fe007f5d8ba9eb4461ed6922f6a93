@@ -1,4 +1,4 @@
-// 1.21.1	2024-08-17T10:41:21.1217666	Tags: mekanism
+// 1.21.1	2024-08-17T11:31:51.1851668	Tags: mekanism
 8a89da3b810e00ad44b7ee4d062a88db6298c8fe data/create/tags/fluid/no_infinite_draining.json
 b881c0bb158879ac88758c2b0562b422271e6397 data/c/tags/block/barrels.json
 adb3ecfd3180c123cdc984320eab5ce930bdc5be data/c/tags/block/barrels/personal.json
@@ -237,18 +237,18 @@ b2120789859908320dbc76815630b40fe060ebc2 data/mekanism/tags/item/muffling_center
 a58ddd5a8f5be0c88b72a84ee584f41d15b7b367 data/mekanism/tags/item/personal_storage.json
 aa53bc6da85fb79e3103e642309bd81593088499 data/mekanism/tags/item/shards.json
 da5fac0b5280e7ffa0b5a33de0d7e696f1fdbad0 data/mekanism/tags/item/stone_crafting_materials.json
-4855fe3f8bdf65c371fb4204cf9ab93833f1a3af data/mekanism/tags/mekanism/gas/waste_barrel_decay_blacklist.json
-8f1b80f33d49ac84b841d229d26f396ea176c2e0 data/mekanism/tags/mekanism/gas/water_vapor.json
-4352f2d5cbacccc1ad1e93fce7ce57b876242f92 data/mekanism/tags/mekanism/infuse_type/bio.json
-5c0c1b88e77131a2d64533b20b7e071e63173f4a data/mekanism/tags/mekanism/infuse_type/carbon.json
-e5e1cb4e8e915c4c78c3ad064d3ba7219c029355 data/mekanism/tags/mekanism/infuse_type/diamond.json
-5c914c224222cfa7a0f313dba526f184fa6edea9 data/mekanism/tags/mekanism/infuse_type/fungi.json
-36354cb6d883774cf407b601fa7054686fb647d1 data/mekanism/tags/mekanism/infuse_type/gold.json
-af8ca69893bd56125e9204b0bdd702767d9db9ab data/mekanism/tags/mekanism/infuse_type/redstone.json
-b52afb060e54f9fa521b82346af5cb3cd4378697 data/mekanism/tags/mekanism/infuse_type/refined_obsidian.json
-4911fa51ae365a17ba0c00b3bed313f1d43f20a6 data/mekanism/tags/mekanism/infuse_type/tin.json
-3825830b29d051492a06a5aa0de89f95cd6ac79d data/mekanism/tags/mekanism/slurry/clean.json
-61af0ea7c8d297d714e770d36434a317500d15e9 data/mekanism/tags/mekanism/slurry/dirty.json
+4352f2d5cbacccc1ad1e93fce7ce57b876242f92 data/mekanism/tags/mekanism/chemical/bio.json
+5c0c1b88e77131a2d64533b20b7e071e63173f4a data/mekanism/tags/mekanism/chemical/carbon.json
+3825830b29d051492a06a5aa0de89f95cd6ac79d data/mekanism/tags/mekanism/chemical/clean.json
+e5e1cb4e8e915c4c78c3ad064d3ba7219c029355 data/mekanism/tags/mekanism/chemical/diamond.json
+61af0ea7c8d297d714e770d36434a317500d15e9 data/mekanism/tags/mekanism/chemical/dirty.json
+5c914c224222cfa7a0f313dba526f184fa6edea9 data/mekanism/tags/mekanism/chemical/fungi.json
+36354cb6d883774cf407b601fa7054686fb647d1 data/mekanism/tags/mekanism/chemical/gold.json
+af8ca69893bd56125e9204b0bdd702767d9db9ab data/mekanism/tags/mekanism/chemical/redstone.json
+b52afb060e54f9fa521b82346af5cb3cd4378697 data/mekanism/tags/mekanism/chemical/refined_obsidian.json
+4911fa51ae365a17ba0c00b3bed313f1d43f20a6 data/mekanism/tags/mekanism/chemical/tin.json
+4855fe3f8bdf65c371fb4204cf9ab93833f1a3af data/mekanism/tags/mekanism/chemical/waste_barrel_decay_blacklist.json
+8f1b80f33d49ac84b841d229d26f396ea176c2e0 data/mekanism/tags/mekanism/chemical/water_vapor.json
 35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/mekanism/tags/mob_effect/speed_up_blacklist.json
 5a2931ef953e5514fb6f73eedec6ae10a3fbeb2c data/mekanism/tags/worldgen/biome/spawn_ores.json
 b79a9a1e0ddcf1344df98002024bc070480b51d7 data/minecraft/tags/block/axolotls_spawnable_on.json
