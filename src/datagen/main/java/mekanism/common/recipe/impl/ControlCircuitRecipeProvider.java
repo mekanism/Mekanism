@@ -55,7 +55,7 @@ class ControlCircuitRecipeProvider implements ISubRecipeProvider {
     private void addCircuitInfusionUpgrade(RecipeOutput consumer, IItemProvider output, TagKey<Item> circuitTag, TagKey<InfuseType> infusionType, int singleAlloyAmount, String basePath, String name) {
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               IngredientCreatorAccess.item().from(circuitTag),
-              IngredientCreatorAccess.infusionStack().from(infusionType, (int) (singleAlloyAmount * 1.5F)),
+              IngredientCreatorAccess.infusionStack().from(infusionType, singleAlloyAmount * 6), /* 3x 2 alloys */
               output.getItemStack()
         ).build(consumer, Mekanism.rl(basePath + "infused_" + name));
     }

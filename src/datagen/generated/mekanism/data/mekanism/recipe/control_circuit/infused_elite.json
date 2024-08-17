@@ -1,7 +1,7 @@
 {
   "type": "mekanism:metallurgic_infusing",
   "chemical_input": {
-    "amount": 30,
+    "amount": 120,
     "tag": "mekanism:diamond"
   },
   "item_input": {

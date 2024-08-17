@@ -56,16 +56,11 @@ class MetallurgicInfuserRecipeProvider implements ISubRecipeProvider {
     private void addMetallurgicInfuserAlloyRecipes(RecipeOutput consumer, String basePath) {
         //Infused
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
-              IngredientCreatorAccess.item().from(Tags.Items.INGOTS_IRON),
+              IngredientCreatorAccess.item().from(Tags.Items.INGOTS_COPPER),
               IngredientCreatorAccess.chemicalStack().from(MekanismAPITags.Chemicals.REDSTONE, 10),
               MekanismItems.INFUSED_ALLOY.getItemStack(),
               false
         ).build(consumer, Mekanism.rl(basePath + "infused"));
-        ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
-              IngredientCreatorAccess.item().from(Tags.Items.INGOTS_COPPER),
-              IngredientCreatorAccess.infusionStack().from(MekanismAPITags.InfuseTypes.REDSTONE, 10),
-              MekanismItems.INFUSED_ALLOY.getItemStack()
-        ).build(consumer, Mekanism.rl(basePath + "infused_copper"));
         //Reinforced
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               IngredientCreatorAccess.item().from(MekanismTags.Items.ALLOYS_INFUSED),
