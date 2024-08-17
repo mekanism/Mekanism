@@ -20,7 +20,7 @@ plugins {
     id('eclipse')
     id('idea')
     id('maven-publish')
-    id('net.neoforged.gradle.userdev') version('7.0.154')//https://projects.neoforged.net/neoforged/neogradle
+    id('net.neoforged.gradle.userdev') version('7.0.161')//https://projects.neoforged.net/neoforged/neogradle
 }
 
 tasks.named('wrapper', Wrapper).configure {
@@ -267,13 +267,13 @@ runs {
     client {
     }
     clientAlt {
-        configure('client')
+        runType('client')
         //Force disable devLogin for clientAlt regardless of if it is enabled via gradle properties for the main gradle run
         devLogin.enabled(false)
         if (!(findProperty('neogradle.subsystems.devLogin.conventionForRun') ?: false)) {
             //If the property is missing or set to false (so the normal runClient task would use Dev as the name),
             // change the name of the alt client type so that it doesn't conflict with the main dev one
-            programArguments.addAll((String[]) ['--username', 'AltDev'])
+            arguments.addAll((String[]) ['--username', 'AltDev'])
         }
     }
     server {
@@ -282,21 +282,21 @@ runs {
         modSources.add((SourceSet) sourceSets.gameTest)
     }
     gameTestClient {
-        configure('client')
+        runType('client')
         modSources.add((SourceSet) sourceSets.gameTest)
     }
     junit {
         unitTestSources.add((SourceSet) sourceSets.test)
     }
     data {
-        programArguments.addAll((String[]) ['--all', '--output', file('src/datagen/generated/').absolutePath,
+        arguments.addAll((String[]) ['--all', '--output', file('src/datagen/generated/').absolutePath,
                                             '--mod', 'mekanism', '--existing', file('src/main/resources/').absolutePath])
 
         modSources.add((SourceSet) sourceSets.datagenMain)
 
         for (String name : secondaryModules) {
             modSources.add(getExtraSourceSet(name, 'datagen').get())
-            programArguments.addAll((String[]) ['--mod', "mekanism${name}", '--existing', file("src/${name}/resources/").absolutePath])
+            arguments.addAll((String[]) ['--mod', "mekanism${name}", '--existing', file("src/${name}/resources/").absolutePath])
         }
 
         dependencies {
