@@ -1,4 +1,4 @@
-// 1.21.1	2024-08-16T20:25:49.3883069	Advancements: mekanism
+// 1.21.1	2024-08-17T10:41:21.1257669	Advancements: mekanism
 3a2f5d1f072fc9f3329d78b373ad22b388f201a6 data/mekanism/advancement/advanced_control_circuit.json
 933630e10a3785e731fc362ba0d8f98cdd70394e data/mekanism/advancement/advanced_qio_drive.json
 a8e9b9fc41a2a07212d5a1f160c849624065ead0 data/mekanism/advancement/alarm.json
@@ -26,7 +26,7 @@ c645ee6d267e98a5678294978d7a01c2435eb59f data/mekanism/advancement/elite_control
 53859c84c4613cdb8c5ea552a96fc5dc55cc28e0 data/mekanism/advancement/energy_transport.json
 a6abce0ac224b6a149125a963d8e5640a0e9d711 data/mekanism/advancement/enricher.json
 5474a29965c70c7d03cb1907fc6a60b89b51533c data/mekanism/advancement/environmental_radiation.json
-4f0b807583cf62d103ae03d3c4e3480076d8607c data/mekanism/advancement/factory.json
+6cf9136e64794aa43566651b640e342b74a11815 data/mekanism/advancement/factory.json
 9803d844bad64700700f3c0cb3fe626417d9a210 data/mekanism/advancement/fluid_tank.json
 fa028c773788c123fdee75fa15af96f29d18cc49 data/mekanism/advancement/fluid_transport.json
 dbb4bf334027cd1f39c58c978b1797a855ae390e data/mekanism/advancement/full_canteen.json

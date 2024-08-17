@@ -683,7 +683,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
 
         add(MekanismAdvancements.ALARM, "Woop Woop Woop!", "Alarms are loud, especially the industrial kind");
         add(MekanismAdvancements.INSTALLER, "Your Distinctiveness Will Be Added to Our Own", "Craft any tier of Installer to upgrade your factories in place");
-        add(MekanismAdvancements.FACTORY, "The Factory Must Grow!", "Craft any kind of factory");
+        add(MekanismAdvancements.FACTORY, "The Factory Must Grow!", "Craft any kind of factory or use a Tier Installer");
         add(MekanismAdvancements.CONFIGURATION_COPYING, "Ctrl+C, Ctrl+V", "Use a configuration card to copy the configuration of one machine to another");
         add(MekanismAdvancements.RUNNING_FREE, "Yeah I'm Freeeeee Fallin'", "Protect yourself from falling with a pair of Free Runners");
         add(MekanismAdvancements.PLAYING_WITH_FIRE, "Playing With Fire", "Be responsible and don't burn down any forests; or do, we're not your manager");

@@ -83,6 +83,11 @@ public class ExtendedAdvancementBuilder {
         return andCriteria(criteria);
     }
 
+    public ExtendedAdvancementBuilder orCriteria(String key, Criterion<?> criterion) {
+        internal.requirements(Strategy.OR);
+        return addCriterion(key, criterion);
+    }
+
     public ExtendedAdvancementBuilder andCriteria(ItemLike... items) {
         for (ItemLike item : items) {
             addCriterion(item);

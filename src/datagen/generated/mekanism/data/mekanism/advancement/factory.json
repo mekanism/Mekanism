@@ -47,6 +47,12 @@
         ]
       },
       "trigger": "minecraft:inventory_changed"
+    },
+    "tier_installer": {
+      "conditions": {
+        "action": "any"
+      },
+      "trigger": "mekanism:use_tier_installer"
     }
   },
   "display": {
@@ -64,7 +70,8 @@
   },
   "requirements": [
     [
-      "factory"
+      "factory",
+      "tier_installer"
     ]
   ],
   "sends_telemetry_event": true

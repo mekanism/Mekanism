@@ -9,6 +9,7 @@ import mekanism.common.advancements.triggers.ConfigurationCardTrigger;
 import mekanism.common.advancements.triggers.MekanismDamageTrigger;
 import mekanism.common.advancements.triggers.UnboxCardboardBoxTrigger;
 import mekanism.common.advancements.triggers.UseGaugeDropperTrigger;
+import mekanism.common.advancements.triggers.UseTierInstallerTrigger;
 import mekanism.common.advancements.triggers.ViewVibrationsTrigger;
 import mekanism.common.registration.MekanismDeferredRegister;
 import mekanism.common.registration.impl.DeferredCriterionTrigger;
@@ -40,4 +41,5 @@ public class MekanismCriteriaTriggers {
     public static final DeferredCriterionTrigger<UseGaugeDropperTrigger.TriggerInstance, UseGaugeDropperTrigger> USE_GAUGE_DROPPER = register("use_gauge_dropper", UseGaugeDropperTrigger::new);
     public static final DeferredCriterionTrigger<UnboxCardboardBoxTrigger.TriggerInstance, UnboxCardboardBoxTrigger> UNBOX_CARDBOARD_BOX = register("unbox_cardboard_box", UnboxCardboardBoxTrigger::new);
     public static final DeferredCriterionTrigger<ViewVibrationsTrigger.TriggerInstance, ViewVibrationsTrigger> VIEW_VIBRATIONS = register("view_vibrations", ViewVibrationsTrigger::new);
+    public static final DeferredCriterionTrigger<UseTierInstallerTrigger.TriggerInstance, UseTierInstallerTrigger> USE_TIER_INSTALLER = register("use_tier_installer", UseTierInstallerTrigger::new);
 }

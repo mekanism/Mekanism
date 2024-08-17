@@ -13,6 +13,7 @@ import mekanism.common.advancements.triggers.ConfigurationCardTrigger;
 import mekanism.common.advancements.triggers.MekanismDamageTrigger;
 import mekanism.common.advancements.triggers.UnboxCardboardBoxTrigger;
 import mekanism.common.advancements.triggers.UseGaugeDropperTrigger;
+import mekanism.common.advancements.triggers.UseTierInstallerTrigger;
 import mekanism.common.advancements.triggers.ViewVibrationsTrigger;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.entity.RobitPrideSkinData;
@@ -137,6 +138,7 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
         advancement(MekanismAdvancements.FACTORY)
               .display(MekanismBlocks.getFactory(FactoryTier.BASIC, FactoryType.SMELTING), AdvancementType.GOAL, true)
               .orCriteria("factory", getItems(MekanismBlocks.BLOCKS.getSecondaryEntries(), item -> item instanceof ItemBlockFactory))
+              .orCriteria("tier_installer", UseTierInstallerTrigger.TriggerInstance.any())
               .save(consumer);
         advancement(MekanismAdvancements.CONFIGURATION_COPYING)
               .display(MekanismItems.CONFIGURATION_CARD, AdvancementType.TASK, false)
