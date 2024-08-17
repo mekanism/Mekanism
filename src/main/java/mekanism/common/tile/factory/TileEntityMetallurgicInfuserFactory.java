@@ -85,7 +85,7 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
         //If the tank's contents change make sure to call our extended content listener that also marks sorting as being needed
         // as maybe the valid recipes have changed, and we need to sort again and have all recipes know they may need to be rechecked
         // if they are not still valid
-        builder.addTank(infusionTank = ChemicalTankBuilder.CHEMICAL.create(TileEntityMetallurgicInfuser.MAX_INFUSE * tier.processes, this::containsRecipeB,
+        builder.addTank(infusionTank = ChemicalTankBuilder.create(TileEntityMetallurgicInfuser.MAX_INFUSE * tier.processes, this::containsRecipeB,
               markAllMonitorsChanged(listener)));
         return builder.build();
     }

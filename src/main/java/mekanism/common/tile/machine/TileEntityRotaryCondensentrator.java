@@ -149,7 +149,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
     public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
         //Only allow extraction
-        builder.addTank(gasTank = ChemicalTankBuilder.CHEMICAL.create(CAPACITY, (gas, automationType) -> automationType == AutomationType.MANUAL || mode,
+        builder.addTank(gasTank = ChemicalTankBuilder.create(CAPACITY, (gas, automationType) -> automationType == AutomationType.MANUAL || mode,
               (gas, automationType) -> automationType == AutomationType.INTERNAL || !mode, this::isValidGas, ChemicalAttributeValidator.ALWAYS_ALLOW, recipeCacheListener));
         return builder.build();
     }

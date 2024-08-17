@@ -95,7 +95,7 @@ public class TileEntityPigmentExtractor extends TileEntityProgressMachine<ItemSt
     @Override
     public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(pigmentTank = ChemicalTankBuilder.CHEMICAL.output(MAX_PIGMENT, recipeCacheUnpauseListener));
+        builder.addTank(pigmentTank = ChemicalTankBuilder.output(MAX_PIGMENT, recipeCacheUnpauseListener));
         return builder.build();
     }
 

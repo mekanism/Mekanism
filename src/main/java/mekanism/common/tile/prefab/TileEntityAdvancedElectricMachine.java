@@ -136,7 +136,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
     public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
         BiPredicate<@NotNull Chemical, @NotNull AutomationType> canExtract = allowExtractingChemical() ? ChemicalTankBuilder.alwaysTrueBi : ChemicalTankBuilder.notExternal;
-        builder.addTank(gasTank = ChemicalTankBuilder.CHEMICAL.create(MAX_GAS, canExtract, (gas, automationType) -> containsRecipeBA(inputSlot.getStack(), gas),
+        builder.addTank(gasTank = ChemicalTankBuilder.create(MAX_GAS, canExtract, (gas, automationType) -> containsRecipeBA(inputSlot.getStack(), gas),
               this::containsRecipeB, recipeCacheListener));
         return builder.build();
     }

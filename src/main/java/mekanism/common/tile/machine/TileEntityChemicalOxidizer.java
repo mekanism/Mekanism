@@ -93,7 +93,7 @@ public class TileEntityChemicalOxidizer extends TileEntityProgressMachine<ItemSt
     @Override
     public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(gasTank = ChemicalTankBuilder.CHEMICAL.output(MAX_GAS, recipeCacheUnpauseListener));
+        builder.addTank(gasTank = ChemicalTankBuilder.output(MAX_GAS, recipeCacheUnpauseListener));
         return builder.build();
     }
 

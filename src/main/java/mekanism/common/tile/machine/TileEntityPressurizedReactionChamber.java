@@ -124,10 +124,10 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
     public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
         //Allow extracting out of the input gas tank if it isn't external OR the output tank is empty AND the input is radioactive
-        builder.addTank(inputGasTank = ChemicalTankBuilder.CHEMICAL.create(MAX_GAS, ChemicalTankHelper.radioactiveInputTankPredicate(() -> outputGasTank),
+        builder.addTank(inputGasTank = ChemicalTankBuilder.create(MAX_GAS, ChemicalTankHelper.radioactiveInputTankPredicate(() -> outputGasTank),
               (gas, automationType) -> containsRecipeCAB(inputSlot.getStack(), inputFluidTank.getFluid(), gas), this::containsRecipeC,
               ChemicalAttributeValidator.ALWAYS_ALLOW, recipeCacheListener));
-        builder.addTank(outputGasTank = ChemicalTankBuilder.CHEMICAL.output(MAX_GAS, recipeCacheUnpauseListener));
+        builder.addTank(outputGasTank = ChemicalTankBuilder.output(MAX_GAS, recipeCacheUnpauseListener));
         return builder.build();
     }
 

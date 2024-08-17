@@ -155,7 +155,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
 
     private void presetVariables() {
         fluidTanks = Collections.singletonList(storedFluid = BasicFluidTank.create(MekanismConfig.general.entangloporterFluidBuffer.get(), this));
-        chemicalTanks = Collections.singletonList(storedChemical = ChemicalTankBuilder.CHEMICAL.create(MekanismConfig.general.entangloporterChemicalBuffer.get(), this));
+        chemicalTanks = Collections.singletonList(storedChemical = ChemicalTankBuilder.create(MekanismConfig.general.entangloporterChemicalBuffer.get(), this));
         inventorySlots = Collections.singletonList(storedItem = EntangloporterInventorySlot.create(this));
         energyContainers = Collections.singletonList(storedEnergy = BasicEnergyContainer.create(MekanismConfig.general.entangloporterEnergyBuffer.getAsLong(), this));
         heatCapacitors = Collections.singletonList(storedHeat = BasicHeatCapacitor.create(HeatAPI.DEFAULT_HEAT_CAPACITY, HeatAPI.DEFAULT_INVERSE_CONDUCTION,

@@ -184,8 +184,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     @Override
     public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(leftTank = ChemicalTankBuilder.CHEMICAL.output(MAX_GAS, recipeCacheUnpauseListener));
-        builder.addTank(rightTank = ChemicalTankBuilder.CHEMICAL.output(MAX_GAS, recipeCacheUnpauseListener));
+        builder.addTank(leftTank = ChemicalTankBuilder.output(MAX_GAS, recipeCacheUnpauseListener));
+        builder.addTank(rightTank = ChemicalTankBuilder.output(MAX_GAS, recipeCacheUnpauseListener));
         return builder.build();
     }
 

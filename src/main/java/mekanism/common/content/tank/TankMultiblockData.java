@@ -55,7 +55,7 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
         IContentsListener saveAndComparator = createSaveAndComparator();
         mergedTank = MergedTank.create(
               VariableCapacityFluidTank.create(this, this::getTankCapacity, BasicFluidTank.alwaysTrue, saveAndComparator),
-              MultiblockChemicalTankBuilder.CHEMICAL.create(this, this::getChemicalTankCapacity, ChemicalTankBuilder.alwaysTrue, saveAndComparator)
+              MultiblockChemicalTankBuilder.create(this, this::getChemicalTankCapacity, ChemicalTankBuilder.alwaysTrue, saveAndComparator)
         );
         fluidTanks.add(mergedTank.getFluidTank());
         chemicalTanks.add(mergedTank.getChemicalTank());

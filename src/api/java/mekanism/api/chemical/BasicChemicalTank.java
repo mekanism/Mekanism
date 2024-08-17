@@ -14,8 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class BasicChemicalTank implements IChemicalTank,
-      IChemicalHandler {
+public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
 
     private final Predicate<Chemical> validator;
     protected final BiPredicate<Chemical, @NotNull AutomationType> canExtract;

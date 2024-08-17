@@ -43,7 +43,7 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<IChemicalHandle
 
     public BoxedChemicalNetwork(UUID networkID) {
         super(networkID);
-        chemicalTank = VariableCapacityChemicalTankBuilder.INSTANCE.createAllValid(this::getCapacity, this);
+        chemicalTank = VariableCapacityChemicalTankBuilder.createAllValid(this::getCapacity, this);
         chemicalTanks = Collections.singletonList(chemicalTank);
     }
 

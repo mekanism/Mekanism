@@ -42,7 +42,7 @@ public class ChemicalTanksBuilder {
     }
 
     public ChemicalTanksBuilder addBasic(LongSupplier capacity, Predicate<@NotNull Chemical> isValid) {
-        return addTank((type, attachedTo, containerIndex) -> new ComponentBackedChemicalTank(attachedTo, containerIndex, ChemicalTankBuilder.CHEMICAL.manualOnly,
+        return addTank((type, attachedTo, containerIndex) -> new ComponentBackedChemicalTank(attachedTo, containerIndex, ChemicalTankBuilder.manualOnly,
               ChemicalTankBuilder.alwaysTrueBi, isValid, MekanismConfig.general.chemicalItemFillRate, capacity, null));
     }
 
@@ -51,7 +51,7 @@ public class ChemicalTanksBuilder {
     }
 
     public ChemicalTanksBuilder addBasic(LongSupplier capacity) {
-        return addTank((type, attachedTo, containerIndex) -> new ComponentBackedChemicalTank(attachedTo, containerIndex, ChemicalTankBuilder.CHEMICAL.manualOnly,
+        return addTank((type, attachedTo, containerIndex) -> new ComponentBackedChemicalTank(attachedTo, containerIndex, ChemicalTankBuilder.manualOnly,
               ChemicalTankBuilder.alwaysTrueBi, ChemicalTankBuilder.alwaysTrue, MekanismConfig.general.chemicalItemFillRate, capacity, null));
     }
 

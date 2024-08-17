@@ -15,48 +15,34 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class VariableCapacityChemicalTankBuilder {
+public final class VariableCapacityChemicalTankBuilder {
 
-    public static final VariableCapacityChemicalTankBuilder INSTANCE = new VariableCapacityChemicalTankBuilder(ChemicalTankBuilder.CHEMICAL, VariableCapacityChemicalTank::new);
-
-    private final VariableCapacityTankCreator tankCreator;
-    private final ChemicalTankBuilder tankBuilder;
-
-    private VariableCapacityChemicalTankBuilder(ChemicalTankBuilder tankBuilder, VariableCapacityTankCreator tankCreator) {
-        this.tankBuilder = tankBuilder;
-        this.tankCreator = tankCreator;
+    private VariableCapacityChemicalTankBuilder() {
     }
 
-    public IChemicalTank createAllValid(LongSupplier capacity, @Nullable IContentsListener listener) {
+    public static IChemicalTank createAllValid(LongSupplier capacity, @Nullable IContentsListener listener) {
         Objects.requireNonNull(capacity, "Capacity supplier cannot be null");
-        return tankCreator.create(capacity, ChemicalTankBuilder.alwaysTrueBi, ChemicalTankBuilder.alwaysTrueBi, ChemicalTankBuilder.alwaysTrue, ChemicalAttributeValidator.ALWAYS_ALLOW, listener);
+        return new VariableCapacityChemicalTank(capacity, ChemicalTankBuilder.alwaysTrueBi, ChemicalTankBuilder.alwaysTrueBi, ChemicalTankBuilder.alwaysTrue, ChemicalAttributeValidator.ALWAYS_ALLOW, listener);
     }
 
-    public IChemicalTank create(LongSupplier capacity, BiPredicate<Chemical, @NotNull AutomationType> canExtract,
+    public static IChemicalTank create(LongSupplier capacity, BiPredicate<Chemical, @NotNull AutomationType> canExtract,
           BiPredicate<Chemical, @NotNull AutomationType> canInsert, Predicate<Chemical> validator, @Nullable IContentsListener listener) {
         return create(capacity, canExtract, canInsert, validator, null, listener);
     }
 
-    public IChemicalTank create(LongSupplier capacity, BiPredicate<Chemical, @NotNull AutomationType> canExtract,
+    public static IChemicalTank create(LongSupplier capacity, BiPredicate<Chemical, @NotNull AutomationType> canExtract,
           BiPredicate<Chemical, @NotNull AutomationType> canInsert, Predicate<Chemical> validator,
           @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener) {
         Objects.requireNonNull(capacity, "Capacity supplier cannot be null");
         Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
         Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
         Objects.requireNonNull(validator, "Chemical validity check cannot be null");
-        return tankCreator.create(capacity, canExtract, canInsert, validator, attributeValidator, listener);
+        return new VariableCapacityChemicalTank(capacity, canExtract, canInsert, validator, attributeValidator, listener);
     }
 
-    public IChemicalTank output(LongSupplier capacity, Predicate<Chemical> validator, @Nullable IContentsListener listener) {
+    public static IChemicalTank output(LongSupplier capacity, Predicate<Chemical> validator, @Nullable IContentsListener listener) {
         Objects.requireNonNull(capacity, "Capacity supplier cannot be null");
         Objects.requireNonNull(validator, "Chemical validity check cannot be null");
-        return tankCreator.create(capacity, ChemicalTankBuilder.alwaysTrueBi, ChemicalTankBuilder.internalOnly, validator, null, listener);
-    }
-
-    @FunctionalInterface
-    private interface VariableCapacityTankCreator {
-
-        IChemicalTank create(LongSupplier capacity, BiPredicate<Chemical, @NotNull AutomationType> canExtract, BiPredicate<Chemical, @NotNull AutomationType> canInsert,
-              Predicate<Chemical> validator, @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener);
+        return new VariableCapacityChemicalTank(capacity, ChemicalTankBuilder.alwaysTrueBi, ChemicalTankBuilder.internalOnly, validator, null, listener);
     }
 }

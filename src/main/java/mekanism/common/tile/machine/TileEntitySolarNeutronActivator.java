@@ -102,9 +102,9 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Che
     public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
         //Allow extracting out of the input gas tank if it isn't external OR the output tank is empty AND the input is radioactive
-        builder.addTank(inputTank = ChemicalTankBuilder.CHEMICAL.create(MAX_GAS, ChemicalTankHelper.radioactiveInputTankPredicate(() -> outputTank),
+        builder.addTank(inputTank = ChemicalTankBuilder.create(MAX_GAS, ChemicalTankHelper.radioactiveInputTankPredicate(() -> outputTank),
               ChemicalTankBuilder.alwaysTrueBi, this::containsRecipe, ChemicalAttributeValidator.ALWAYS_ALLOW, recipeCacheListener));
-        builder.addTank(outputTank = ChemicalTankBuilder.CHEMICAL.output(MAX_GAS, recipeCacheUnpauseListener));
+        builder.addTank(outputTank = ChemicalTankBuilder.output(MAX_GAS, recipeCacheUnpauseListener));
         return builder.build();
     }
 

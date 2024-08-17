@@ -49,7 +49,7 @@ public class BoxedPressurizedTube extends BufferedTransmitter<IChemicalHandler, 
     public BoxedPressurizedTube(IBlockProvider blockProvider, TileEntityTransmitter tile) {
         super(tile, TransmissionType.CHEMICAL);
         this.tier = Attribute.getTier(blockProvider, TubeTier.class);
-        chemicalTank = ChemicalTankBuilder.CHEMICAL.createAllValid(getCapacity(), this);
+        chemicalTank = ChemicalTankBuilder.createAllValid(getCapacity(), this);
         chemicalTanks = Collections.singletonList(chemicalTank);
     }
 

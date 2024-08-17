@@ -121,9 +121,9 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidSlurr
     @Override
     public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(inputTank = ChemicalTankBuilder.CHEMICAL.input(MAX_SLURRY, slurry -> containsRecipeBA(fluidTank.getFluid(), slurry), this::containsRecipeB,
+        builder.addTank(inputTank = ChemicalTankBuilder.input(MAX_SLURRY, slurry -> containsRecipeBA(fluidTank.getFluid(), slurry), this::containsRecipeB,
               recipeCacheListener));
-        builder.addTank(outputTank = ChemicalTankBuilder.CHEMICAL.output(MAX_SLURRY, recipeCacheUnpauseListener));
+        builder.addTank(outputTank = ChemicalTankBuilder.output(MAX_SLURRY, recipeCacheUnpauseListener));
         return builder.build();
     }
 

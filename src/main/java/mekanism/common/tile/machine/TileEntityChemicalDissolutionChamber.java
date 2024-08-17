@@ -110,14 +110,14 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
         super.presetVariables();
         //Pass null so that we do the save only path
         IContentsListener saveOnlyListener = getRecipeCacheUnpauseListener(null);
-        outputTank = ChemicalTankBuilder.CHEMICAL.output(MAX_CHEMICAL, getListener(ContainerType.CHEMICAL, saveOnlyListener));
+        outputTank = ChemicalTankBuilder.output(MAX_CHEMICAL, getListener(ContainerType.CHEMICAL, saveOnlyListener));
     }
 
     @NotNull
     @Override
     public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(injectTank = ChemicalTankBuilder.CHEMICAL.input(MAX_CHEMICAL, gas -> containsRecipeBA(inputSlot.getStack(), gas), this::containsRecipeB,
+        builder.addTank(injectTank = ChemicalTankBuilder.input(MAX_CHEMICAL, gas -> containsRecipeBA(inputSlot.getStack(), gas), this::containsRecipeB,
               recipeCacheListener));
         builder.addTank(outputTank);
         return builder.build();

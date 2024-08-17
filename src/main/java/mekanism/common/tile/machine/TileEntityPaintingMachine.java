@@ -99,7 +99,7 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<Paintin
     @Override
     public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(pigmentTank = ChemicalTankBuilder.CHEMICAL.input(MAX_PIGMENT, pigment -> containsRecipeBA(inputSlot.getStack(), pigment),
+        builder.addTank(pigmentTank = ChemicalTankBuilder.input(MAX_PIGMENT, pigment -> containsRecipeBA(inputSlot.getStack(), pigment),
               this::containsRecipeB, recipeCacheListener));
         return builder.build();
     }

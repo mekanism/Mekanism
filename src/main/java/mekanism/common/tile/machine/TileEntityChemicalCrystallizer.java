@@ -91,7 +91,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityProgressMachine<Ch
     protected void presetVariables() {
         super.presetVariables();
         //TODO: Come up with a better way to grab the listener for this (old todo, not sure if still relevant)
-        inputTank = ChemicalTankBuilder.CHEMICAL.input(MAX_CHEMICAL, this::containsRecipe, getRecipeCacheSaveOnlyListener());
+        inputTank = ChemicalTankBuilder.input(MAX_CHEMICAL, this::containsRecipe, getRecipeCacheSaveOnlyListener());
     }
 
     @NotNull

@@ -105,7 +105,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Meta
     @Override
     public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(infusionTank = ChemicalTankBuilder.CHEMICAL.create(MAX_INFUSE, ChemicalTankBuilder.alwaysTrueBi,
+        builder.addTank(infusionTank = ChemicalTankBuilder.create(MAX_INFUSE, ChemicalTankBuilder.alwaysTrueBi,
               (infuseType, automationType) -> containsRecipeBA(inputSlot.getStack(), infuseType), this::containsRecipeB, recipeCacheListener));
         return builder.build();
     }

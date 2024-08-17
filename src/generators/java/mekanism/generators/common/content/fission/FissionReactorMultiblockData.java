@@ -149,13 +149,13 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         fluidCoolantTank = VariableCapacityFluidTank.input(this, () -> cooledCoolantCapacity,
               fluid -> fluid.is(FluidTags.WATER) && gasCoolantTank.isEmpty(), this);
         fluidTanks.add(fluidCoolantTank);
-        gasCoolantTank = MultiblockChemicalTankBuilder.CHEMICAL.input(this, () -> cooledCoolantCapacity,
+        gasCoolantTank = MultiblockChemicalTankBuilder.input(this, () -> cooledCoolantCapacity,
               gas -> gas.has(CooledCoolant.class) && fluidCoolantTank.isEmpty(), this);
-        fuelTank = MultiblockChemicalTankBuilder.CHEMICAL.input(this, fuelCapacitySupplier, gas -> gas == MekanismChemicals.FISSILE_FUEL.getChemical(),
+        fuelTank = MultiblockChemicalTankBuilder.input(this, fuelCapacitySupplier, gas -> gas == MekanismChemicals.FISSILE_FUEL.getChemical(),
               ChemicalAttributeValidator.ALWAYS_ALLOW, createSaveAndComparator());
-        heatedCoolantTank = MultiblockChemicalTankBuilder.CHEMICAL.output(this, () -> heatedCoolantCapacity,
+        heatedCoolantTank = MultiblockChemicalTankBuilder.output(this, () -> heatedCoolantCapacity,
               gas -> gas == MekanismChemicals.STEAM.get() || gas.has(HeatedCoolant.class), this);
-        wasteTank = MultiblockChemicalTankBuilder.CHEMICAL.output(this, fuelCapacitySupplier,
+        wasteTank = MultiblockChemicalTankBuilder.output(this, fuelCapacitySupplier,
               gas -> gas == MekanismChemicals.NUCLEAR_WASTE.getChemical(), ChemicalAttributeValidator.ALWAYS_ALLOW, this);
         inputTanks = List.of(fuelTank, gasCoolantTank);
         outputWasteTanks = List.of(wasteTank);
