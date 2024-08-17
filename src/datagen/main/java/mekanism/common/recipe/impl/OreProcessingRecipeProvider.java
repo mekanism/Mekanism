@@ -64,6 +64,11 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
               MekanismItems.ENRICHED_IRON.getItemStack(),
               false
         ).build(consumer, Mekanism.rl(basePath + "iron/enriched"));
+        ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
+              IngredientCreatorAccess.item().from(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.IRON)),
+              IngredientCreatorAccess.infusionStack().from(MekanismAPITags.InfuseTypes.CARBON, 10),
+              MekanismItems.ENRICHED_IRON.getItemStack()
+        ).build(consumer, Mekanism.rl(basePath + "iron/enriched_dust"));
         addNetheriteProcessingRecipes(consumer, basePath + "netherite/");
         addBronzeProcessingRecipes(consumer, basePath + "bronze/");
         addCoalOreProcessingRecipes(consumer, basePath + "coal/");
