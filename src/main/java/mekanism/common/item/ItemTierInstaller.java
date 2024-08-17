@@ -3,6 +3,8 @@ package mekanism.common.item;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.Mekanism;
+import mekanism.common.advancements.MekanismCriteriaTriggers;
+import mekanism.common.advancements.triggers.UseGaugeDropperTrigger;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeUpgradeable;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -12,6 +14,7 @@ import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -103,6 +106,9 @@ public class ItemTierInstaller extends Item {
                             upgradedTile.invalidateCapabilities();
                             if (!player.isCreative()) {
                                 context.getItemInHand().shrink(1);
+                            }
+                            if (player instanceof ServerPlayer serverPlayer) {
+                                MekanismCriteriaTriggers.USE_TIER_INSTALLER.value().trigger(serverPlayer, toTier);
                             }
                             return InteractionResult.sidedSuccess(world.isClientSide);
                         }

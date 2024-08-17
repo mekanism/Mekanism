@@ -1,6 +1,6 @@
-// 1.21.1	2024-08-16T20:25:50.0823061	Recipes
-47a10a2b491fbe904653c1497a88520960de6435 data/mekanismgenerators/recipe/activating/tritium.json
-4f1291918b8fd1e5ca2fde1d598b8cf244b0868c data/mekanismgenerators/recipe/chemical_infusing/fusion_fuel.json
+// 1.21.1	2024-08-17T10:41:21.6997667	Recipes
+eb6f6e61d04d73c24e8af0f611cf0e73c680f657 data/mekanismgenerators/recipe/activating/tritium.json
+942aa804aff4b3d03b5fc9f0408322a929f53ed5 data/mekanismgenerators/recipe/chemical_infusing/fusion_fuel.json
 6d1e381f6dc10f151aac465a334266e0b0a41379 data/mekanismgenerators/recipe/electromagnetic_coil.json
 140d94c4442b9856e12f626a7214da013b09d966 data/mekanismgenerators/recipe/fission_reactor/casing.json
 7cac4c2fc21de62cbb083018e6e14d13632baccc data/mekanismgenerators/recipe/fission_reactor/control_rod_assembly.json
