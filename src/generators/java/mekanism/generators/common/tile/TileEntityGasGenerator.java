@@ -5,11 +5,10 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.attribute.ChemicalAttributes.Fuel;
 import mekanism.api.math.MathUtils;
 import mekanism.common.attachments.containers.ContainerType;
-import mekanism.common.capabilities.chemical.variable.VariableCapacityChemicalTank;
+import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
@@ -175,8 +174,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
     private class FuelTank extends VariableCapacityChemicalTank {
 
         protected FuelTank(@Nullable IContentsListener listener) {
-            super(MekanismGeneratorsConfig.generators.gbgTankCapacity, ChemicalTankBuilder.notExternal, ChemicalTankBuilder.alwaysTrueBi,
-                  gas -> gas.has(Fuel.class), null, listener);
+            super(MekanismGeneratorsConfig.generators.gbgTankCapacity, notExternal, alwaysTrueBi, gas -> gas.has(Fuel.class), null, listener);
         }
 
         @Override

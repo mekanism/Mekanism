@@ -5,8 +5,8 @@ import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
+import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.recipes.ChemicalDissolutionRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -110,14 +110,14 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
         super.presetVariables();
         //Pass null so that we do the save only path
         IContentsListener saveOnlyListener = getRecipeCacheUnpauseListener(null);
-        outputTank = ChemicalTankBuilder.output(MAX_CHEMICAL, getListener(ContainerType.CHEMICAL, saveOnlyListener));
+        outputTank = BasicChemicalTank.output(MAX_CHEMICAL, getListener(ContainerType.CHEMICAL, saveOnlyListener));
     }
 
     @NotNull
     @Override
     public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(injectTank = ChemicalTankBuilder.input(MAX_CHEMICAL, gas -> containsRecipeBA(inputSlot.getStack(), gas), this::containsRecipeB,
+        builder.addTank(injectTank = BasicChemicalTank.input(MAX_CHEMICAL, gas -> containsRecipeBA(inputSlot.getStack(), gas), this::containsRecipeB,
               recipeCacheListener));
         builder.addTank(outputTank);
         return builder.build();

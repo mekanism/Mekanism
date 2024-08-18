@@ -13,7 +13,7 @@ import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.math.MathUtils;
-import mekanism.common.capabilities.chemical.multiblock.MultiblockChemicalTankBuilder;
+import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
@@ -70,9 +70,9 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
 
     public SPSMultiblockData(TileEntitySPSCasing tile) {
         super(tile);
-        chemicalTanks.add(inputTank = MultiblockChemicalTankBuilder.input(this, this::getMaxInputGas, gas -> gas == MekanismChemicals.POLONIUM.get(),
+        chemicalTanks.add(inputTank = VariableCapacityChemicalTank.input(this, this::getMaxInputGas, gas -> gas == MekanismChemicals.POLONIUM.get(),
               ChemicalAttributeValidator.ALWAYS_ALLOW, createSaveAndComparator()));
-        chemicalTanks.add(outputTank = MultiblockChemicalTankBuilder.output(this, MekanismConfig.general.spsOutputTankCapacity,
+        chemicalTanks.add(outputTank = VariableCapacityChemicalTank.output(this, MekanismConfig.general.spsOutputTankCapacity,
               gas -> gas == MekanismChemicals.ANTIMATTER.get(), ChemicalAttributeValidator.ALWAYS_ALLOW, this));
     }
 

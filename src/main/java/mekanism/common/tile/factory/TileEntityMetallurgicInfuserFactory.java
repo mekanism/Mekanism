@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Set;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
+import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
@@ -85,7 +85,7 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
         //If the tank's contents change make sure to call our extended content listener that also marks sorting as being needed
         // as maybe the valid recipes have changed, and we need to sort again and have all recipes know they may need to be rechecked
         // if they are not still valid
-        builder.addTank(infusionTank = ChemicalTankBuilder.create(TileEntityMetallurgicInfuser.MAX_INFUSE * tier.processes, this::containsRecipeB,
+        builder.addTank(infusionTank = BasicChemicalTank.create(TileEntityMetallurgicInfuser.MAX_INFUSE * tier.processes, this::containsRecipeB,
               markAllMonitorsChanged(listener)));
         return builder.build();
     }

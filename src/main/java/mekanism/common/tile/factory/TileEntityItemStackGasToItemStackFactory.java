@@ -7,8 +7,8 @@ import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
+import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
@@ -126,10 +126,10 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
         // as maybe the valid recipes have changed, and we need to sort again and have all recipes know they may need to be rechecked
         // if they are not still valid
         if (allowExtractingChemical()) {
-            gasTank = ChemicalTankBuilder.create(TileEntityAdvancedElectricMachine.MAX_GAS * tier.processes, this::containsRecipeB,
+            gasTank = BasicChemicalTank.create(TileEntityAdvancedElectricMachine.MAX_GAS * tier.processes, this::containsRecipeB,
                   markAllMonitorsChanged(listener));
         } else {
-            gasTank = ChemicalTankBuilder.input(TileEntityAdvancedElectricMachine.MAX_GAS * tier.processes, this::containsRecipeB,
+            gasTank = BasicChemicalTank.input(TileEntityAdvancedElectricMachine.MAX_GAS * tier.processes, this::containsRecipeB,
                   markAllMonitorsChanged(listener));
         }
         builder.addTank(gasTank);

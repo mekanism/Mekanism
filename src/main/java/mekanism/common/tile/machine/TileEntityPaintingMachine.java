@@ -2,9 +2,9 @@ package mekanism.common.tile.machine;
 
 import java.util.List;
 import mekanism.api.IContentsListener;
-import mekanism.api.chemical.ChemicalTankBuilder;
-import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.recipes.PaintingRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
@@ -99,7 +99,7 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<Paintin
     @Override
     public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(pigmentTank = ChemicalTankBuilder.input(MAX_PIGMENT, pigment -> containsRecipeBA(inputSlot.getStack(), pigment),
+        builder.addTank(pigmentTank = BasicChemicalTank.input(MAX_PIGMENT, pigment -> containsRecipeBA(inputSlot.getStack(), pigment),
               this::containsRecipeB, recipeCacheListener));
         return builder.build();
     }

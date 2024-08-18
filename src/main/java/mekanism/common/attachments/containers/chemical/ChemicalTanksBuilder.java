@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.LongSupplier;
 import java.util.function.Predicate;
+import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.common.attachments.containers.ContainsRecipe;
 import mekanism.common.attachments.containers.creator.BaseContainerCreator;
@@ -42,8 +42,8 @@ public class ChemicalTanksBuilder {
     }
 
     public ChemicalTanksBuilder addBasic(LongSupplier capacity, Predicate<@NotNull Chemical> isValid) {
-        return addTank((type, attachedTo, containerIndex) -> new ComponentBackedChemicalTank(attachedTo, containerIndex, ChemicalTankBuilder.manualOnly,
-              ChemicalTankBuilder.alwaysTrueBi, isValid, MekanismConfig.general.chemicalItemFillRate, capacity, null));
+        return addTank((type, attachedTo, containerIndex) -> new ComponentBackedChemicalTank(attachedTo, containerIndex, BasicChemicalTank.manualOnly,
+              BasicChemicalTank.alwaysTrueBi, isValid, MekanismConfig.general.chemicalItemFillRate, capacity, null));
     }
 
     public ChemicalTanksBuilder addBasic(long capacity) {
@@ -51,13 +51,13 @@ public class ChemicalTanksBuilder {
     }
 
     public ChemicalTanksBuilder addBasic(LongSupplier capacity) {
-        return addTank((type, attachedTo, containerIndex) -> new ComponentBackedChemicalTank(attachedTo, containerIndex, ChemicalTankBuilder.manualOnly,
-              ChemicalTankBuilder.alwaysTrueBi, ChemicalTankBuilder.alwaysTrue, MekanismConfig.general.chemicalItemFillRate, capacity, null));
+        return addTank((type, attachedTo, containerIndex) -> new ComponentBackedChemicalTank(attachedTo, containerIndex, BasicChemicalTank.manualOnly,
+              BasicChemicalTank.alwaysTrueBi, BasicChemicalTank.alwaysTrue, MekanismConfig.general.chemicalItemFillRate, capacity, null));
     }
 
     public ChemicalTanksBuilder addInternalStorage(LongSupplier rate, LongSupplier capacity, Predicate<@NotNull Chemical> isValid) {
-        return addTank((type, attachedTo, containerIndex) -> new ComponentBackedChemicalTank(attachedTo, containerIndex, ChemicalTankBuilder.notExternal,
-              ChemicalTankBuilder.alwaysTrueBi, isValid, rate, capacity, null));
+        return addTank((type, attachedTo, containerIndex) -> new ComponentBackedChemicalTank(attachedTo, containerIndex, BasicChemicalTank.notExternal,
+              BasicChemicalTank.alwaysTrueBi, isValid, rate, capacity, null));
     }
 
     @SuppressWarnings("unchecked")

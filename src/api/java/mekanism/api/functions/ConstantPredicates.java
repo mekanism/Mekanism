@@ -63,6 +63,7 @@ public class ConstantPredicates {
 
     private static final BiPredicate<Object, @NotNull AutomationType> internalOnly = (t, automationType) -> automationType == AutomationType.INTERNAL;
     private static final BiPredicate<Object, @NotNull AutomationType> notExternal = (t, automationType) -> automationType != AutomationType.EXTERNAL;
+    private static final BiPredicate<Object, @NotNull AutomationType> manualOnly = (t, automationType) -> automationType == AutomationType.MANUAL;
 
     /**
      * Returns a predicate that returns {@code true} for any input.
@@ -122,6 +123,15 @@ public class ConstantPredicates {
      */
     public static <T> BiPredicate<T, @NotNull AutomationType> notExternal() {
         return (BiPredicate<T, @NotNull AutomationType>) notExternal;
+    }
+
+    /**
+     * Returns a bi predicate that returns {@code true} for any input when the automation type is manual.
+     *
+     * @since 10.6.8
+     */
+    public static <T> BiPredicate<T, @NotNull AutomationType> manualOnly() {
+        return (BiPredicate<T, @NotNull AutomationType>) manualOnly;
     }
 
 }

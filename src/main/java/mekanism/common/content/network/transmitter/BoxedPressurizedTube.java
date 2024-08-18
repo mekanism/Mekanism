@@ -8,9 +8,9 @@ import java.util.UUID;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
+import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.providers.IBlockProvider;
@@ -49,7 +49,7 @@ public class BoxedPressurizedTube extends BufferedTransmitter<IChemicalHandler, 
     public BoxedPressurizedTube(IBlockProvider blockProvider, TileEntityTransmitter tile) {
         super(tile, TransmissionType.CHEMICAL);
         this.tier = Attribute.getTier(blockProvider, TubeTier.class);
-        chemicalTank = ChemicalTankBuilder.createAllValid(getCapacity(), this);
+        chemicalTank = BasicChemicalTank.createAllValid(getCapacity(), this);
         chemicalTanks = Collections.singletonList(chemicalTank);
     }
 

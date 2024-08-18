@@ -8,7 +8,6 @@ import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
@@ -27,8 +26,7 @@ public class ChemicalTankChemicalTank extends BasicChemicalTank {
     private final LongSupplier rate;
 
     private ChemicalTankChemicalTank(ChemicalTankTier tier, @Nullable IContentsListener listener) {
-        super(tier.getStorage(), ChemicalTankBuilder.alwaysTrueBi, ChemicalTankBuilder.alwaysTrueBi, ChemicalTankBuilder.alwaysTrue,
-              tier == ChemicalTankTier.CREATIVE ? ChemicalAttributeValidator.ALWAYS_ALLOW : null, listener);
+        super(tier.getStorage(), alwaysTrueBi, alwaysTrueBi, alwaysTrue, tier == ChemicalTankTier.CREATIVE ? ChemicalAttributeValidator.ALWAYS_ALLOW : null, listener);
         isCreative = tier == ChemicalTankTier.CREATIVE;
         rate = tier::getOutput;
     }

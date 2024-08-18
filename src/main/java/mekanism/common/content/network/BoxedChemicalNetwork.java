@@ -16,7 +16,7 @@ import mekanism.api.text.TextComponentUtil;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.chemical.IChemicalTracker;
-import mekanism.common.capabilities.chemical.variable.VariableCapacityChemicalTankBuilder;
+import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
 import mekanism.common.content.network.distribution.BoxedChemicalTransmitterSaveTarget;
 import mekanism.common.content.network.distribution.ChemicalHandlerTarget;
 import mekanism.common.content.network.transmitter.BoxedPressurizedTube;
@@ -43,7 +43,7 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<IChemicalHandle
 
     public BoxedChemicalNetwork(UUID networkID) {
         super(networkID);
-        chemicalTank = VariableCapacityChemicalTankBuilder.createAllValid(this::getCapacity, this);
+        chemicalTank = VariableCapacityChemicalTank.createAllValid(this::getCapacity, this);
         chemicalTanks = Collections.singletonList(chemicalTank);
     }
 

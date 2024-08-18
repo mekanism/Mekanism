@@ -16,7 +16,7 @@ import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.math.MathUtils;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.chemical.multiblock.MultiblockChemicalTankBuilder;
+import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
 import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
@@ -144,13 +144,13 @@ public class FusionReactorMultiblockData extends MultiblockData {
         lastPlasmaTemperature = biomeAmbientTemp;
         lastCaseTemperature = biomeAmbientTemp;
         plasmaTemperature = biomeAmbientTemp;
-        chemicalTanks.add(deuteriumTank = MultiblockChemicalTankBuilder.input(this, MekanismGeneratorsConfig.generators.fusionFuelCapacity,
+        chemicalTanks.add(deuteriumTank = VariableCapacityChemicalTank.input(this, MekanismGeneratorsConfig.generators.fusionFuelCapacity,
               gas -> gas.is(GeneratorTags.Gases.DEUTERIUM), this));
-        chemicalTanks.add(tritiumTank = MultiblockChemicalTankBuilder.input(this, MekanismGeneratorsConfig.generators.fusionFuelCapacity,
+        chemicalTanks.add(tritiumTank = VariableCapacityChemicalTank.input(this, MekanismGeneratorsConfig.generators.fusionFuelCapacity,
               gas -> gas.is(GeneratorTags.Gases.TRITIUM), this));
-        chemicalTanks.add(fuelTank = MultiblockChemicalTankBuilder.input(this, MekanismGeneratorsConfig.generators.fusionFuelCapacity,
+        chemicalTanks.add(fuelTank = VariableCapacityChemicalTank.input(this, MekanismGeneratorsConfig.generators.fusionFuelCapacity,
               gas -> gas.is(GeneratorTags.Gases.FUSION_FUEL), createSaveAndComparator()));
-        chemicalTanks.add(steamTank = MultiblockChemicalTankBuilder.output(this, this::getMaxSteam, gas -> gas == MekanismChemicals.STEAM.getChemical(), this));
+        chemicalTanks.add(steamTank = VariableCapacityChemicalTank.output(this, this::getMaxSteam, gas -> gas == MekanismChemicals.STEAM.getChemical(), this));
         fluidTanks.add(waterTank = VariableCapacityFluidTank.input(this, this::getMaxWater, fluid -> fluid.is(FluidTags.WATER), this));
         energyContainers.add(energyContainer = VariableCapacityEnergyContainer.output(MekanismGeneratorsConfig.generators.fusionEnergyCapacity, this));
         heatCapacitors.add(heatCapacitor = VariableHeatCapacitor.create(caseHeatCapacity, FusionReactorMultiblockData::getInverseConductionCoefficient,

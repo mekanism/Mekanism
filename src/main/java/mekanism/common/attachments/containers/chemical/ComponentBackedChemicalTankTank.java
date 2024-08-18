@@ -3,8 +3,8 @@ package mekanism.common.attachments.containers.chemical;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.item.block.ItemBlockChemicalTank;
@@ -27,7 +27,7 @@ public class ComponentBackedChemicalTankTank extends ComponentBackedChemicalTank
     }
 
     private ComponentBackedChemicalTankTank(ItemStack attachedTo, int tankIndex, ChemicalTankTier tier) {
-        super(attachedTo, tankIndex, ChemicalTankBuilder.alwaysTrueBi, ChemicalTankBuilder.alwaysTrueBi, ChemicalTankBuilder.alwaysTrue,
+        super(attachedTo, tankIndex, BasicChemicalTank.alwaysTrueBi, BasicChemicalTank.alwaysTrueBi, BasicChemicalTank.alwaysTrue,
               tier::getOutput, tier::getStorage, tier == ChemicalTankTier.CREATIVE ? ChemicalAttributeValidator.ALWAYS_ALLOW : null);
         isCreative = tier == ChemicalTankTier.CREATIVE;
     }

@@ -17,7 +17,7 @@ import mekanism.api.chemical.attribute.ChemicalAttributes.HeatedCoolant;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.math.MathUtils;
 import mekanism.common.block.attribute.AttributeStateBoilerValveMode.BoilerValveMode;
-import mekanism.common.capabilities.chemical.multiblock.MultiblockChemicalTankBuilder;
+import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.capabilities.heat.VariableHeatCapacitor;
 import mekanism.common.config.MekanismConfig;
@@ -114,12 +114,12 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         super(tile);
         //Default biome temp to the ambient temperature at the block we are at
         biomeAmbientTemp = HeatAPI.getAmbientTemp(tile.getLevel(), tile.getBlockPos());
-        superheatedCoolantTank = MultiblockChemicalTankBuilder.input(this, () -> superheatedCoolantCapacity, gas -> gas.has(HeatedCoolant.class), this);
+        superheatedCoolantTank = VariableCapacityChemicalTank.input(this, () -> superheatedCoolantCapacity, gas -> gas.has(HeatedCoolant.class), this);
         waterTank = VariableCapacityFluidTank.input(this, () -> waterTankCapacity, fluid -> fluid.is(FluidTags.WATER),
               createSaveAndComparator());
         fluidTanks.add(waterTank);
-        steamTank = MultiblockChemicalTankBuilder.output(this, () -> steamTankCapacity, gas -> gas == MekanismChemicals.STEAM.getChemical(), this);
-        cooledCoolantTank = MultiblockChemicalTankBuilder.output(this, () -> cooledCoolantCapacity, gas -> gas.has(CooledCoolant.class), this);
+        steamTank = VariableCapacityChemicalTank.output(this, () -> steamTankCapacity, gas -> gas == MekanismChemicals.STEAM.getChemical(), this);
+        cooledCoolantTank = VariableCapacityChemicalTank.output(this, () -> cooledCoolantCapacity, gas -> gas.has(CooledCoolant.class), this);
         inputTanks = List.of(superheatedCoolantTank);
         outputSteamTanks = List.of(steamTank);
         outputCoolantTanks = List.of(cooledCoolantTank);

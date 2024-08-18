@@ -9,7 +9,7 @@ import java.util.function.Function;
 import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import mekanism.api.chemical.ChemicalTankBuilder;
+import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.tier.ITier;
 import mekanism.common.Mekanism;
@@ -555,8 +555,8 @@ public class MekanismBlocks {
                     final LongSupplier capacitySupplier = () -> TileEntityChemicalDissolutionChamber.MAX_CHEMICAL;
               holder.addAttachmentOnlyContainers(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder()
                                 .addBasic(TileEntityChemicalDissolutionChamber.MAX_CHEMICAL, MekanismRecipeType.DISSOLUTION, ItemChemical::containsInputB)
-                          .addTank((type, attachedTo, containerIndex) -> new ComponentBackedChemicalTank(attachedTo, containerIndex, ChemicalTankBuilder.alwaysTrueBi, ChemicalTankBuilder.alwaysTrueBi,
-                                ChemicalTankBuilder.alwaysTrue, MekanismConfig.general.chemicalItemFillRate, capacitySupplier, null))
+                          .addTank((type, attachedTo, containerIndex) -> new ComponentBackedChemicalTank(attachedTo, containerIndex, BasicChemicalTank.alwaysTrueBi,
+                                BasicChemicalTank.alwaysTrueBi, BasicChemicalTank.alwaysTrue, MekanismConfig.general.chemicalItemFillRate, capacitySupplier, null))
                                 .build()
                     )
                           .addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()

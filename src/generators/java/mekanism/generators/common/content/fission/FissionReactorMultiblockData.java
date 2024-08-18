@@ -12,15 +12,15 @@ import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
-import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.chemical.attribute.ChemicalAttributes.CooledCoolant;
 import mekanism.api.chemical.attribute.ChemicalAttributes.HeatedCoolant;
 import mekanism.api.chemical.attribute.ChemicalAttributes.Radiation;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.math.MathUtils;
 import mekanism.api.radiation.IRadiationManager;
-import mekanism.common.capabilities.chemical.multiblock.MultiblockChemicalTankBuilder;
+import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.capabilities.heat.VariableHeatCapacitor;
 import mekanism.common.integration.computer.ComputerException;
@@ -149,13 +149,13 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         fluidCoolantTank = VariableCapacityFluidTank.input(this, () -> cooledCoolantCapacity,
               fluid -> fluid.is(FluidTags.WATER) && gasCoolantTank.isEmpty(), this);
         fluidTanks.add(fluidCoolantTank);
-        gasCoolantTank = MultiblockChemicalTankBuilder.input(this, () -> cooledCoolantCapacity,
+        gasCoolantTank = VariableCapacityChemicalTank.input(this, () -> cooledCoolantCapacity,
               gas -> gas.has(CooledCoolant.class) && fluidCoolantTank.isEmpty(), this);
-        fuelTank = MultiblockChemicalTankBuilder.input(this, fuelCapacitySupplier, gas -> gas == MekanismChemicals.FISSILE_FUEL.getChemical(),
+        fuelTank = VariableCapacityChemicalTank.input(this, fuelCapacitySupplier, gas -> gas == MekanismChemicals.FISSILE_FUEL.getChemical(),
               ChemicalAttributeValidator.ALWAYS_ALLOW, createSaveAndComparator());
-        heatedCoolantTank = MultiblockChemicalTankBuilder.output(this, () -> heatedCoolantCapacity,
+        heatedCoolantTank = VariableCapacityChemicalTank.output(this, () -> heatedCoolantCapacity,
               gas -> gas == MekanismChemicals.STEAM.get() || gas.has(HeatedCoolant.class), this);
-        wasteTank = MultiblockChemicalTankBuilder.output(this, fuelCapacitySupplier,
+        wasteTank = VariableCapacityChemicalTank.output(this, fuelCapacitySupplier,
               gas -> gas == MekanismChemicals.NUCLEAR_WASTE.getChemical(), ChemicalAttributeValidator.ALWAYS_ALLOW, this);
         inputTanks = List.of(fuelTank, gasCoolantTank);
         outputWasteTanks = List.of(wasteTank);

@@ -5,12 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
+import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.common.capabilities.chemical.multiblock.MultiblockChemicalTankBuilder;
+import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.capabilities.merged.MergedTank;
@@ -55,7 +55,7 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
         IContentsListener saveAndComparator = createSaveAndComparator();
         mergedTank = MergedTank.create(
               VariableCapacityFluidTank.create(this, this::getTankCapacity, BasicFluidTank.alwaysTrue, saveAndComparator),
-              MultiblockChemicalTankBuilder.create(this, this::getChemicalTankCapacity, ChemicalTankBuilder.alwaysTrue, saveAndComparator)
+              VariableCapacityChemicalTank.create(this, this::getChemicalTankCapacity, BasicChemicalTank.alwaysTrue, saveAndComparator)
         );
         fluidTanks.add(mergedTank.getFluidTank());
         chemicalTanks.add(mergedTank.getChemicalTank());

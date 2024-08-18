@@ -2,8 +2,8 @@ package mekanism.common.tile.machine;
 
 import java.util.List;
 import mekanism.api.IContentsListener;
+import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -91,7 +91,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityProgressMachine<Ch
     protected void presetVariables() {
         super.presetVariables();
         //TODO: Come up with a better way to grab the listener for this (old todo, not sure if still relevant)
-        inputTank = ChemicalTankBuilder.input(MAX_CHEMICAL, this::containsRecipe, getRecipeCacheSaveOnlyListener());
+        inputTank = BasicChemicalTank.input(MAX_CHEMICAL, this::containsRecipe, getRecipeCacheSaveOnlyListener());
     }
 
     @NotNull

@@ -2,8 +2,8 @@ package mekanism.common.lib.multiblock;
 
 import java.util.ArrayList;
 import java.util.List;
+import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.IMekanismChemicalHandler;
 import mekanism.api.energy.IEnergyContainer;
@@ -181,7 +181,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
         public static final CacheSubstance<IMekanismChemicalHandler, IChemicalTank> CHEMICAL = new CacheSubstance<>(ContainerType.CHEMICAL) {
             @Override
             protected void defaultPrefab(MultiblockCache<?> cache) {
-                cache.chemicalTanks.add(ChemicalTankBuilder.createAllValid(Long.MAX_VALUE, cache));
+                cache.chemicalTanks.add(BasicChemicalTank.createAllValid(Long.MAX_VALUE, cache));
             }
 
             @Override
