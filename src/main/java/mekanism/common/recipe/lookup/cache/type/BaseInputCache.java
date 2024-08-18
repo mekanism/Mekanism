@@ -75,7 +75,18 @@ public abstract class BaseInputCache<KEY, INPUT, INGREDIENT extends InputIngredi
      * @param recipe Recipe to add.
      */
     protected void addInputCache(KEY input, RECIPE recipe) {
-        inputCache.computeIfAbsent(input, i -> new ArrayList<>()).add(recipe);
+        if (!inputCache.containsKey(input)) {
+            inputCache.put(input, Collections.singletonList(recipe));
+        } else {
+            List<RECIPE> existing = inputCache.get(input);
+            if (existing.size() == 1) {
+                List<RECIPE> newList = new ArrayList<>(existing);
+                newList.add(recipe);
+                inputCache.put(input, newList);
+            } else {
+                existing.add(recipe);
+            }
+        }
     }
 
     /**
