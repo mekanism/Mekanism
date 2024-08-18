@@ -16,6 +16,16 @@ public class EnergySlotInfo extends BaseSlotInfo {
         this.containers = containers;
     }
 
+    @Override
+    public boolean isEmpty() {
+        for (IEnergyContainer container : getContainers()) {
+            if (!container.isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public List<IEnergyContainer> getContainers() {
         return containers;
     }

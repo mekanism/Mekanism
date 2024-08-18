@@ -34,6 +34,11 @@ public abstract class ConfigHolder<TYPE> implements IHolder {
         }
 
         @Override
+        public boolean isEmpty() {
+            return false;
+        }
+
+        @Override
         public int hashCode() {
             return 0;
         }

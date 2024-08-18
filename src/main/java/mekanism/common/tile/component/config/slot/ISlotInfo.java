@@ -9,4 +9,11 @@ public interface ISlotInfo {
     default boolean isEnabled() {
         return canInput() || canOutput();
     }
+
+    /**
+     * Relevant to Output modes
+     *
+     * @return true if none of the slots contain anything to output, and ejecting can be skipped
+     */
+    boolean isEmpty();
 }

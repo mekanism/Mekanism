@@ -32,6 +32,16 @@ public abstract class ChemicalSlotInfo<CHEMICAL extends Chemical<CHEMICAL>, STAC
         this.tanks = tanks;
     }
 
+    @Override
+    public boolean isEmpty() {
+        for (TANK tank : getTanks()) {
+            if (!tank.isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public List<TANK> getTanks() {
         return tanks;
     }
