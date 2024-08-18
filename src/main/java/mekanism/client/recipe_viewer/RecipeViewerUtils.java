@@ -143,10 +143,10 @@ public class RecipeViewerUtils {
 
     public static List<ItemStack> getDisplayItems(ChemicalStackIngredient ingredient) {
         SequencedSet<Named<Item>> tags = new LinkedHashSet<>();
-        for (ChemicalStack slurryStack : ingredient.getRepresentations()) {
-            Chemical slurry = slurryStack.getChemical();
-            if (!slurry.is(MekanismAPITags.Slurries.DIRTY)) {
-                TagKey<Item> oreTag = slurry.getOreTag();
+        for (ChemicalStack chemicalStack : ingredient.getRepresentations()) {
+            Chemical chemical = chemicalStack.getChemical();
+            if (!chemical.is(MekanismAPITags.Slurries.DIRTY)) {
+                TagKey<Item> oreTag = chemical.getOreTag();
                 if (oreTag != null) {
                     BuiltInRegistries.ITEM.getTag(oreTag).ifPresent(tags::add);
                 }

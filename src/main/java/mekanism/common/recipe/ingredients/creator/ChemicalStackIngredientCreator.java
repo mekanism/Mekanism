@@ -36,7 +36,7 @@ public class ChemicalStackIngredientCreator implements IChemicalStackIngredientC
 
     @Override
     public ChemicalStackIngredient from(IChemicalIngredient ingredient, long amount) {
-        Objects.requireNonNull(ingredient, "GasStackIngredients cannot be created from a null ingredient.");
+        Objects.requireNonNull(ingredient, "ChemicalStackIngredients cannot be created from a null ingredient.");
         return ChemicalStackIngredient.of(ingredient, amount);
     }
 }

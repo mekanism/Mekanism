@@ -25,7 +25,7 @@ class IngredientCreatorAccessTest {
 
     @Test
     @DisplayName("Test getting ChemicalStackIngredient creator")
-    void testGetGasStackIngredientCreator() {
+    void testGetChemicalStackIngredientCreator() {
         Assertions.assertInstanceOf(ChemicalStackIngredientCreator.class, IngredientCreatorAccess.chemicalStack());
     }
 

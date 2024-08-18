@@ -85,23 +85,8 @@ public class ChemicalUtil {
     }
 
     public static int getRGBDurabilityForDisplay(ItemStack stack) {
-        ChemicalStack gasStack = StorageUtils.getStoredChemicalFromAttachment(stack);
-        if (!gasStack.isEmpty()) {
-            return gasStack.getChemicalColorRepresentation();
-        }
-        ChemicalStack infusionStack = StorageUtils.getStoredChemicalFromAttachment(stack);
-        if (!infusionStack.isEmpty()) {
-            return infusionStack.getChemicalColorRepresentation();
-        }
-        ChemicalStack pigmentStack = StorageUtils.getStoredChemicalFromAttachment(stack);
-        if (!pigmentStack.isEmpty()) {
-            return pigmentStack.getChemicalColorRepresentation();
-        }
-        ChemicalStack slurryStack = StorageUtils.getStoredChemicalFromAttachment(stack);
-        if (!slurryStack.isEmpty()) {
-            return slurryStack.getChemicalColorRepresentation();
-        }
-        return 0;
+        ChemicalStack chemicalStack = StorageUtils.getStoredChemicalFromAttachment(stack);
+        return chemicalStack.isEmpty() ? 0 : chemicalStack.getChemicalColorRepresentation();
     }
 
     public static boolean hasAnyChemical(ItemStack stack) {
@@ -112,8 +97,7 @@ public class ChemicalUtil {
         return hasChemical(stack, s -> s.is(type));
     }
 
-    public static boolean hasChemical(
-          ItemStack stack, Predicate<ChemicalStack> validityCheck) {
+    public static boolean hasChemical(ItemStack stack, Predicate<ChemicalStack> validityCheck) {
         IChemicalHandler handler = stack.getCapability(Capabilities.CHEMICAL.item());
         if (handler != null) {
             for (int tank = 0; tank < handler.getChemicalTanks(); tank++) {

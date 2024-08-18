@@ -178,7 +178,7 @@ public class CrTChemicalStackIngredient {
     @ZenCodeType.Operator(ZenCodeType.OperatorType.OR)
     public static ChemicalStackIngredient or(ChemicalStackIngredient _this, ChemicalStackIngredient other) {
         if (_this.amount() != other.amount()) {
-            throw new IllegalArgumentException("InfusionStack ingredients can only be or'd if they have the same counts");
+            throw new IllegalArgumentException("ChemicalStack ingredients can only be or'd if they have the same counts");
         }
         List<IChemicalIngredient> ingredients = new ArrayList<>();
         CrTIngredientHelper.addIngredient(ingredients, _this.ingredient());

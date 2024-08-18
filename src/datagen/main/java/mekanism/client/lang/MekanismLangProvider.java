@@ -1062,10 +1062,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.VOLUME, "Volume: %1$s");
         add(MekanismLang.NO_FLUID, "No fluid");
         add(MekanismLang.CHEMICAL, "Chemical: %1$s");
-        add(MekanismLang.GAS, "Gas: %1$s");
-        add(MekanismLang.INFUSE_TYPE, "Infuse Type: %1$s");
-        add(MekanismLang.PIGMENT, "Pigment: %1$s");
-        add(MekanismLang.SLURRY, "Slurry: %1$s");
         add(MekanismLang.LIQUID, "Liquid: %1$s");
         add(MekanismLang.UNIT, "Unit: %1$s");
         add(MekanismLang.USING, "Using: %1$s/t");

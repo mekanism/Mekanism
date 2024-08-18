@@ -130,11 +130,8 @@ public class StorageUtils {
      */
     public static void addStoredSubstance(@NotNull ItemStack stack, @NotNull List<Component> tooltip, boolean isCreative) {
         FluidStack fluidStack = getStoredFluidFromAttachment(stack);
-        ChemicalStack gasStack = getStoredChemicalFromAttachment(stack);
-        ChemicalStack infusionStack = getStoredChemicalFromAttachment(stack);
-        ChemicalStack pigmentStack = getStoredChemicalFromAttachment(stack);
-        ChemicalStack slurryStack = getStoredChemicalFromAttachment(stack);
-        if (fluidStack.isEmpty() && gasStack.isEmpty() && infusionStack.isEmpty() && pigmentStack.isEmpty() && slurryStack.isEmpty()) {
+        ChemicalStack chemicalStack = getStoredChemicalFromAttachment(stack);
+        if (fluidStack.isEmpty() && chemicalStack.isEmpty()) {
             tooltip.add(MekanismLang.EMPTY.translate());
             return;
         }
@@ -146,24 +143,9 @@ public class StorageUtils {
             amount = fluidStack.getAmount();
             type = MekanismLang.LIQUID;
         } else {
-            ChemicalStack chemicalStack;
-            if (!gasStack.isEmpty()) {
-                chemicalStack = gasStack;
-                type = MekanismLang.GAS;
-            } else if (!infusionStack.isEmpty()) {
-                chemicalStack = infusionStack;
-                type = MekanismLang.INFUSE_TYPE;
-            } else if (!pigmentStack.isEmpty()) {
-                chemicalStack = pigmentStack;
-                type = MekanismLang.PIGMENT;
-            } else if (!slurryStack.isEmpty()) {
-                chemicalStack = slurryStack;
-                type = MekanismLang.SLURRY;
-            } else {
-                throw new IllegalStateException("Unknown chemical");
-            }
             contents = chemicalStack;
             amount = chemicalStack.getAmount();
+            type = MekanismLang.CHEMICAL;
         }
         if (isCreative) {
             tooltip.add(type.translateColored(EnumColor.YELLOW, EnumColor.ORANGE, MekanismLang.GENERIC_STORED.translate(contents, EnumColor.GRAY, MekanismLang.INFINITE)));
