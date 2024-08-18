@@ -1,10 +1,10 @@
 package mekanism.common.recipe.lookup.cache.type;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Predicate;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.InputIngredient;
@@ -21,7 +21,7 @@ public abstract class BaseInputCache<KEY, INPUT, INGREDIENT extends InputIngredi
      * Map of keys representing inputs to a set of the recipes that contain said input. This allows for quick contains checking by checking if a key exists, as well as
      * quicker recipe lookup.
      */
-    private final Map<KEY, Set<RECIPE>> inputCache = new HashMap<>();
+    private final Map<KEY, List<RECIPE>> inputCache = new HashMap<>();
 
     @Override
     public void clear() {
@@ -56,7 +56,7 @@ public abstract class BaseInputCache<KEY, INPUT, INGREDIENT extends InputIngredi
 
     @Override
     public Iterable<RECIPE> getRecipes(INPUT input) {
-        return inputCache.getOrDefault(createKey(input), Collections.emptySet());
+        return inputCache.getOrDefault(createKey(input), Collections.emptyList());
     }
 
     /**
@@ -75,7 +75,7 @@ public abstract class BaseInputCache<KEY, INPUT, INGREDIENT extends InputIngredi
      * @param recipe Recipe to add.
      */
     protected void addInputCache(KEY input, RECIPE recipe) {
-        inputCache.computeIfAbsent(input, i -> new HashSet<>()).add(recipe);
+        inputCache.computeIfAbsent(input, i -> new ArrayList<>()).add(recipe);
     }
 
     /**
