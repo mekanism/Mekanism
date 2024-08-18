@@ -41,7 +41,7 @@ public abstract class ComponentSensitiveInputCache<KEY, INPUT, INGREDIENT extend
      */
     @Override
     public boolean contains(INPUT input) {
-        return componentInputCache.containsKey(input) || super.contains(input);
+        return super.contains(input) || componentInputCache.containsKey(input);
     }
 
     /**
