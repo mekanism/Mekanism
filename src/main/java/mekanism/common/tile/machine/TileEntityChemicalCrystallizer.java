@@ -87,18 +87,11 @@ public class TileEntityChemicalCrystallizer extends TileEntityProgressMachine<Ch
         outputHandler = OutputHelper.getOutputHandler(outputSlot, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
     }
 
-    @Override
-    protected void presetVariables() {
-        super.presetVariables();
-        //TODO: Come up with a better way to grab the listener for this (old todo, not sure if still relevant)
-        inputTank = BasicChemicalTank.input(MAX_CHEMICAL, this::containsRecipe, getRecipeCacheSaveOnlyListener());
-    }
-
     @NotNull
     @Override
     public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(inputTank);
+        builder.addTank(inputTank = BasicChemicalTank.input(MAX_CHEMICAL, this::containsRecipe, recipeCacheUnpauseListener));
         return builder.build();
     }
 

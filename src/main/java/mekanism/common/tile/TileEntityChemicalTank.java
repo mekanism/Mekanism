@@ -86,13 +86,12 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
     protected void presetVariables() {
         super.presetVariables();
         tier = Attribute.getTier(getBlockType(), ChemicalTankTier.class);
-        chemicalTank = ChemicalTankChemicalTank.create(tier, this);
     }
 
     @Override
     public @Nullable IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener) {
         ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(getChemicalTank());
+        builder.addTank(chemicalTank = ChemicalTankChemicalTank.create(tier, listener));
         return builder.build();
     }
 
