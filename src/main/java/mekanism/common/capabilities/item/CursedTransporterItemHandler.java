@@ -99,7 +99,7 @@ public class CursedTransporterItemHandler implements IItemHandler {
             if (stack.getPathType().hasTarget()) {
                 //If the stack actually has a path add that simulated insert to a list of locally simulated flowing stacks so that
                 // if the mod simulates against the next slot as well we can give a more accurate result
-                simulatedFlowingStacks.computeIfAbsent(GlobalPos.of(transporter.getLevel().dimension(), stack.getDest()), k -> new ObjectOpenHashSet<>()).add(stack);
+                simulatedFlowingStacks.computeIfAbsent(GlobalPos.of(transporter.getLevel().dimension(), BlockPos.of(stack.getDest())), k -> new ObjectOpenHashSet<>()).add(stack);
             }
         } else {
             if (!seenExecutedStacks.add(itemStack)) {

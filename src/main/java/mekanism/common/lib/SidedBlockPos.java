@@ -1,6 +1,6 @@
 package mekanism.common.lib;
 
-import java.util.List;
+import it.unimi.dsi.fastutil.longs.LongList;
 import mekanism.api.SerializationConstants;
 import mekanism.common.content.transporter.TransporterPathfinder.Destination;
 import mekanism.common.util.NBTUtils;
@@ -12,33 +12,35 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
 import org.jetbrains.annotations.Nullable;
 
-public record SidedBlockPos(BlockPos pos, Direction side) {
+public record SidedBlockPos(long pos, Direction side) {
 
     public static SidedBlockPos get(Destination destination) {
-        List<BlockPos> path = destination.getPath();
-        BlockPos pos = path.get(0);
-        Direction sideOfDest = WorldUtils.sideDifference(path.get(1), pos);
+        LongList path = destination.getPath();
+        long pos = path.getLong(0);
+        Direction sideOfDest = WorldUtils.sideDifference(path.getLong(1), pos);
         return new SidedBlockPos(pos, sideOfDest);
     }
 
     @Nullable
     public static SidedBlockPos deserialize(CompoundTag tag) {
         if (tag.contains(SerializationConstants.SIDE, Tag.TAG_INT)) {
-            BlockPos pos = NbtUtils.readBlockPos(tag, SerializationConstants.POSITION).orElse(null);
-            if (pos != null) {
+            long pos = Long.MAX_VALUE;
+            if (tag.contains(SerializationConstants.POSITION, Tag.TAG_INT_ARRAY)) {
+                //old version
+                pos = NbtUtils.readBlockPos(tag, SerializationConstants.POSITION).map(BlockPos::asLong).orElse(Long.MAX_VALUE);
+            } else if (tag.contains(SerializationConstants.POSITION, Tag.TAG_LONG)) {
+                pos = tag.getLong(SerializationConstants.POSITION);
+            }
+            if (pos != Long.MAX_VALUE) {
                 return new SidedBlockPos(pos, Direction.from3DDataValue(tag.getInt(SerializationConstants.SIDE)));
             }
         }
         return null;
     }
 
-    public SidedBlockPos {
-        pos = pos.immutable();
-    }
-
     public CompoundTag serialize() {
         CompoundTag target = new CompoundTag();
-        target.put(SerializationConstants.POSITION, NbtUtils.writeBlockPos(pos));
+        target.putLong(SerializationConstants.POSITION, pos);
         NBTUtils.writeEnum(target, SerializationConstants.SIDE, side);
         return target;
     }

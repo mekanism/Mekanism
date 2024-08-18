@@ -10,6 +10,7 @@ import mekanism.common.lib.inventory.TransitRequest.ItemData;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.StackUtils;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.world.item.ItemStack;
@@ -21,6 +22,7 @@ public class TransporterManager {
     private TransporterManager() {
     }
 
+    //todo determine if a custom pos record is better storing the long
     private static final Map<GlobalPos, Set<TransporterStack>> flowingStacks = new Object2ObjectOpenHashMap<>();
 
     public static void reset() {
@@ -28,12 +30,12 @@ public class TransporterManager {
     }
 
     public static void add(Level world, TransporterStack stack) {
-        flowingStacks.computeIfAbsent(GlobalPos.of(world.dimension(), stack.getDest()), k -> new HashSet<>()).add(stack);
+        flowingStacks.computeIfAbsent(GlobalPos.of(world.dimension(), BlockPos.of(stack.getDest())), k -> new HashSet<>()).add(stack);
     }
 
     public static void remove(Level world, TransporterStack stack) {
         if (stack.hasPath() && stack.getPathType().hasTarget()) {
-            GlobalPos pos = GlobalPos.of(world.dimension(), stack.getDest());
+            GlobalPos pos = GlobalPos.of(world.dimension(), BlockPos.of(stack.getDest()));
             Set<TransporterStack> transporterStacks = flowingStacks.get(pos);
             if (transporterStacks != null && transporterStacks.remove(stack) && transporterStacks.isEmpty()) {
                 flowingStacks.remove(pos);

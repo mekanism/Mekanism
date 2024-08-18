@@ -1,9 +1,9 @@
 package mekanism.common.content.transporter;
 
 import io.netty.buffer.ByteBuf;
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.longs.LongArrayList;
+import it.unimi.dsi.fastutil.longs.LongList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -45,8 +45,8 @@ public class TransporterStack {
           ByteBufCodecs.VAR_INT, stack -> stack.progress,
           BlockPos.STREAM_CODEC, stack -> stack.originalLocation,
           Path.STREAM_CODEC, TransporterStack::getPathType,
-          ByteBufCodecs.optional(BlockPos.STREAM_CODEC), stack -> Optional.ofNullable(stack.clientNext),
-          BlockPos.STREAM_CODEC, stack -> stack.clientPrev,
+          ByteBufCodecs.optional(ByteBufCodecs.VAR_LONG), stack -> stack.clientNext == Long.MAX_VALUE ? Optional.empty() : Optional.of(stack.clientNext),
+          ByteBufCodecs.optional(ByteBufCodecs.VAR_LONG), stack -> stack.clientPrev == Long.MAX_VALUE ? Optional.empty() : Optional.of(stack.clientPrev),
           ItemStack.OPTIONAL_STREAM_CODEC, stack -> stack.itemStack,
           (color, progress, originalLocation, pathType, clientNext, clientPrev, itemStack) -> {
               TransporterStack stack = new TransporterStack();
@@ -54,8 +54,8 @@ public class TransporterStack {
               stack.progress = progress == 0 ? 5 : progress;
               stack.originalLocation = originalLocation;
               stack.pathType = pathType;
-              stack.clientNext = clientNext.orElse(null);
-              stack.clientPrev = clientPrev;
+              stack.clientNext = clientNext.orElse(Long.MAX_VALUE);
+              stack.clientPrev = clientPrev.orElse(Long.MAX_VALUE);
               stack.itemStack = itemStack;
               return stack;
           }
@@ -72,12 +72,11 @@ public class TransporterStack {
     public Direction idleDir = null;
     public BlockPos originalLocation;
     public BlockPos homeLocation;
-    @Nullable
-    private BlockPos clientNext;
-    private BlockPos clientPrev;
+    private long clientNext = Long.MAX_VALUE;
+    private long clientPrev = Long.MAX_VALUE;
     @Nullable
     private Path pathType;
-    private List<BlockPos> pathToTarget = new ArrayList<>();
+    private LongList pathToTarget = new LongArrayList();
 
     public static TransporterStack readFromNBT(HolderLookup.Provider provider, CompoundTag nbtTags) {
         TransporterStack stack = new TransporterStack();
@@ -98,11 +97,14 @@ public class TransporterStack {
         updateTag.putInt(SerializationConstants.PROGRESS, progress);
         updateTag.put(SerializationConstants.ORIGINAL_LOCATION, NbtUtils.writeBlockPos(originalLocation));
         NBTUtils.writeEnum(updateTag, SerializationConstants.PATH_TYPE, getPathType());
-        BlockPos next = getNext(transporter);
-        if (next != null) {
-            updateTag.put(SerializationConstants.NEXT, NbtUtils.writeBlockPos(next));
+        long next = getNext(transporter);
+        if (next != Long.MAX_VALUE) {
+            updateTag.putLong(SerializationConstants.NEXT, next);
         }
-        updateTag.put(SerializationConstants.PREVIOUS, NbtUtils.writeBlockPos(getPrev(transporter)));
+        long prev = getPrev(transporter);
+        if (prev != Long.MAX_VALUE) {
+            updateTag.putLong(SerializationConstants.PREVIOUS, prev);
+        }
         if (!itemStack.isEmpty()) {
             itemStack.save(provider, updateTag);
         }
@@ -113,8 +115,15 @@ public class TransporterStack {
         progress = updateTag.getInt(SerializationConstants.PROGRESS);
         NBTUtils.setBlockPosIfPresent(updateTag, SerializationConstants.ORIGINAL_LOCATION, coord -> originalLocation = coord);
         NBTUtils.setEnumIfPresent(updateTag, SerializationConstants.PATH_TYPE, Path.BY_ID, type -> pathType = type);
-        NBTUtils.setBlockPosIfPresent(updateTag, SerializationConstants.NEXT, coord -> clientNext = coord);
-        NBTUtils.setBlockPosIfPresent(updateTag, SerializationConstants.PREVIOUS, coord -> clientPrev = coord);
+
+        //todo is backcompat needed?
+        clientNext = Long.MAX_VALUE;
+        NBTUtils.setLongIfPresent(updateTag, SerializationConstants.NEXT, coord -> clientNext = coord);
+        NBTUtils.setBlockPosIfPresent(updateTag, SerializationConstants.NEXT, coord -> clientNext = coord.asLong());
+        clientPrev = Long.MAX_VALUE;
+        NBTUtils.setLongIfPresent(updateTag, SerializationConstants.PREVIOUS, coord -> clientPrev = coord);
+        NBTUtils.setBlockPosIfPresent(updateTag, SerializationConstants.PREVIOUS, coord -> clientPrev = coord.asLong());
+
         itemStack = ItemStack.parseOptional(provider, updateTag);
     }
 
@@ -154,7 +163,7 @@ public class TransporterStack {
         }
     }
 
-    private void setPath(Level world, @NotNull List<BlockPos> path, @NotNull Path type, boolean updateFlowing) {
+    private void setPath(Level world, @NotNull LongList path, @NotNull Path type, boolean updateFlowing) {
         //Make sure old path isn't null
         if (updateFlowing && (pathType == null || pathType.hasTarget())) {
             //Only update the actual flowing stacks if we want to modify more than our current stack
@@ -172,7 +181,7 @@ public class TransporterStack {
         return pathToTarget.size() >= 2;
     }
 
-    public List<BlockPos> getPath() {
+    public LongList getPath() {
         return pathToTarget;
     }
 
@@ -239,53 +248,51 @@ public class TransporterStack {
     }
 
     public boolean isFinal(LogisticalTransporterBase transporter) {
-        return pathToTarget.indexOf(transporter.getBlockPos()) == (getPathType().hasTarget() ? 1 : 0);
+        return pathToTarget.indexOf(transporter.getBlockPos().asLong()) == (getPathType().hasTarget() ? 1 : 0);
     }
 
     //TODO - 1.20.5: Re-evaluate this method
     public TransporterStack updateForPos(BlockPos pos) {
         clientNext = getNext(pos);
-        clientPrev = getPrev(pos);
+        clientPrev = getPrev(pos.asLong());
         return this;
     }
 
-    @Nullable
-    public BlockPos getNext(LogisticalTransporterBase transporter) {
+    public long getNext(LogisticalTransporterBase transporter) {
         return transporter.isRemote() ? clientNext : getNext(transporter.getBlockPos());
     }
 
-    @Nullable
-    private BlockPos getNext(BlockPos pos) {
-        int index = pathToTarget.indexOf(pos) - 1;
+    private long getNext(BlockPos pos) {
+        int index = pathToTarget.indexOf(pos.asLong()) - 1;
         if (index < 0) {
-            return null;
+            return Long.MAX_VALUE;
         }
-        return pathToTarget.get(index);
+        return pathToTarget.getLong(index);
     }
 
-    public BlockPos getPrev(LogisticalTransporterBase transporter) {
-        return transporter.isRemote() ? clientPrev : getPrev(transporter.getBlockPos());
+    public long getPrev(LogisticalTransporterBase transporter) {
+        return transporter.isRemote() ? clientPrev : getPrev(transporter.getBlockPos().asLong());
     }
 
-    private BlockPos getPrev(BlockPos pos) {
+    private long getPrev(long pos) {
         int index = pathToTarget.indexOf(pos) + 1;
         if (index < pathToTarget.size()) {
-            return pathToTarget.get(index);
+            return pathToTarget.getLong(index);
         }
-        return originalLocation;
+        return originalLocation.asLong();
     }
 
     public Direction getSide(LogisticalTransporterBase transporter) {
         Direction side = null;
         if (progress < 50) {
-            BlockPos prev = getPrev(transporter);
-            if (prev != null) {
-                side = WorldUtils.sideDifference(transporter.getBlockPos(), prev);
+            long prev = getPrev(transporter);
+            if (prev != Long.MAX_VALUE) {
+                side = WorldUtils.sideDifference(transporter.getBlockPos().asLong(), prev);
             }
         } else {
-            BlockPos next = getNext(transporter);
-            if (next != null) {
-                side = WorldUtils.sideDifference(next, transporter.getBlockPos());
+            long next = getNext(transporter);
+            if (next != Long.MAX_VALUE) {
+                side = WorldUtils.sideDifference(next, transporter.getBlockPos().asLong());
             }
         }
         //sideDifference can return null
@@ -295,10 +302,10 @@ public class TransporterStack {
         return side == null ? Direction.DOWN : side;
     }
 
-    public Direction getSide(BlockPos pos, @Nullable BlockPos target) {
+    public Direction getSide(BlockPos pos, long target) {
         Direction side = null;
-        if (target != null) {
-            side = WorldUtils.sideDifference(target, pos);
+        if (target != Long.MAX_VALUE) {
+            side = WorldUtils.sideDifference(target, pos.asLong());
         }
         //TODO: See getSide(Transporter) for why we null check and then return down
         return side == null ? Direction.DOWN : side;
@@ -321,14 +328,14 @@ public class TransporterStack {
         return (color == null || color == this.color) && transporter.canConnectMutual(from.getOpposite(), transporterFrom);
     }
 
-    public BlockPos getDest() {
+    public long getDest() {
         return pathToTarget.getFirst();
     }
 
     @Nullable
     public Direction getSideOfDest() {
         if (hasPath()) {
-            BlockPos lastTransporter = pathToTarget.get(1);
+            long lastTransporter = pathToTarget.getLong(1);
             return WorldUtils.sideDifference(lastTransporter, getDest());
         }
         return null;
