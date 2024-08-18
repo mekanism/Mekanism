@@ -5,7 +5,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.base.ProfilerConstants;
-import mekanism.common.content.network.BoxedChemicalNetwork;
+import mekanism.common.content.network.ChemicalNetwork;
 import mekanism.common.content.network.transmitter.BoxedPressurizedTube;
 import mekanism.common.tile.transmitter.TileEntityPressurizedTube;
 import net.minecraft.client.renderer.LightTexture;
@@ -25,7 +25,7 @@ public class RenderPressurizedTube extends RenderTransmitterBase<TileEntityPress
     @Override
     protected void render(TileEntityPressurizedTube tile, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight,
           ProfilerFiller profiler) {
-        BoxedChemicalNetwork network = tile.getTransmitter().getTransmitterNetwork();
+        ChemicalNetwork network = tile.getTransmitter().getTransmitterNetwork();
         matrix.pushPose();
         matrix.translate(0.5, 0.5, 0.5);
         Chemical chemical = network.lastChemical.getChemical();
@@ -44,7 +44,7 @@ public class RenderPressurizedTube extends RenderTransmitterBase<TileEntityPress
         if (super.shouldRenderTransmitter(tile, camera)) {
             BoxedPressurizedTube tube = tile.getTransmitter();
             if (tube.hasTransmitterNetwork()) {
-                BoxedChemicalNetwork network = tube.getTransmitterNetwork();
+                ChemicalNetwork network = tube.getTransmitterNetwork();
                 return !network.lastChemical.isEmptyType() && !network.isTankEmpty() && network.currentScale > 0;
             }
         }

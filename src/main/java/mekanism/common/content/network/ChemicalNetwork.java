@@ -17,7 +17,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.chemical.IChemicalTracker;
 import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
-import mekanism.common.content.network.distribution.BoxedChemicalTransmitterSaveTarget;
+import mekanism.common.content.network.distribution.ChemicalTransmitterSaveTarget;
 import mekanism.common.content.network.distribution.ChemicalHandlerTarget;
 import mekanism.common.content.network.transmitter.BoxedPressurizedTube;
 import mekanism.common.lib.transmitter.DynamicBufferedNetwork;
@@ -33,21 +33,20 @@ import org.jetbrains.annotations.Nullable;
 /**
  * A DynamicNetwork extension created specifically for the transfer of Chemicals.
  */
-public class BoxedChemicalNetwork extends DynamicBufferedNetwork<IChemicalHandler, BoxedChemicalNetwork, ChemicalStack, BoxedPressurizedTube>
-      implements IChemicalTracker {
+public class ChemicalNetwork extends DynamicBufferedNetwork<IChemicalHandler, ChemicalNetwork, ChemicalStack, BoxedPressurizedTube> implements IChemicalTracker {
 
     public final IChemicalTank chemicalTank;
     private final List<IChemicalTank> chemicalTanks;
     public Chemical lastChemical = MekanismAPI.EMPTY_CHEMICAL;
     private long prevTransferAmount;
 
-    public BoxedChemicalNetwork(UUID networkID) {
+    public ChemicalNetwork(UUID networkID) {
         super(networkID);
         chemicalTank = VariableCapacityChemicalTank.createAllValid(this::getCapacity, this);
         chemicalTanks = Collections.singletonList(chemicalTank);
     }
 
-    public BoxedChemicalNetwork(Collection<BoxedChemicalNetwork> networks) {
+    public ChemicalNetwork(Collection<ChemicalNetwork> networks) {
         this(UUID.randomUUID());
         adoptAllAndRegister(networks);
     }
@@ -70,7 +69,7 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<IChemicalHandle
     }
 
     @Override
-    public List<BoxedPressurizedTube> adoptTransmittersAndAcceptorsFrom(BoxedChemicalNetwork net) {
+    public List<BoxedPressurizedTube> adoptTransmittersAndAcceptorsFrom(ChemicalNetwork net) {
         float oldScale = currentScale;
         long oldCapacity = getCapacity();
         List<BoxedPressurizedTube> transmittersToUpdate = super.adoptTransmittersAndAcceptorsFrom(net);
@@ -106,7 +105,7 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<IChemicalHandle
         return transmittersToUpdate;
     }
 
-    private void adoptBuffer(BoxedChemicalNetwork net) {
+    private void adoptBuffer(ChemicalNetwork net) {
         IChemicalTank other = net.getChemicalTank();
         ChemicalStack stack = other.getStack();
         getChemicalTank().setStack(stack.copy());
@@ -155,7 +154,7 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<IChemicalHandle
     }
 
     private void updateSaveShares(@Nullable BoxedPressurizedTube triggerTransmitter, ChemicalStack chemical) {
-        BoxedChemicalTransmitterSaveTarget saveTarget = new BoxedChemicalTransmitterSaveTarget(chemical, getTransmitters());
+        ChemicalTransmitterSaveTarget saveTarget = new ChemicalTransmitterSaveTarget(chemical, getTransmitters());
         long sent = EmitUtils.sendToAcceptors(saveTarget, chemical.getAmount(), chemical);
         if (triggerTransmitter != null && sent < chemical.getAmount()) {
             disperse(triggerTransmitter, chemical.copyWithAmount(chemical.getAmount() - sent));
@@ -239,7 +238,7 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<IChemicalHandle
     }
 
     @Override
-    public boolean isCompatibleWith(BoxedChemicalNetwork other) {
+    public boolean isCompatibleWith(ChemicalNetwork other) {
         if (super.isCompatibleWith(other)) {
             if (isTankEmpty()) {
                 return true;
@@ -289,11 +288,11 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<IChemicalHandle
         return chemicalTanks;
     }
 
-    public static class ChemicalTransferEvent extends TransferEvent<BoxedChemicalNetwork> {
+    public static class ChemicalTransferEvent extends TransferEvent<ChemicalNetwork> {
 
         public final Chemical transferType;
 
-        public ChemicalTransferEvent(BoxedChemicalNetwork network, Chemical type) {
+        public ChemicalTransferEvent(ChemicalNetwork network, Chemical type) {
             super(network);
             transferType = type;
         }

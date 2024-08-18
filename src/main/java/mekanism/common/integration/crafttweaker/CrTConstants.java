@@ -58,7 +58,6 @@ public class CrTConstants {
     public static final String CLASS_VANILLA_INPUT_ITEM_CHEMICAL = "mods." + Mekanism.MODID + ".recipe.input.ItemChemical";
     public static final String CLASS_VANILLA_INPUT_REACTION = "mods." + Mekanism.MODID + ".recipe.input.Reaction";
     public static final String CLASS_VANILLA_INPUT_ROTARY = "mods." + Mekanism.MODID + ".recipe.input.Rotary";
-    public static final String CLASS_VANILLA_INPUT_SINGLE_BOXED = "mods." + Mekanism.MODID + ".recipe.input.SingleBoxedChemical";
     public static final String CLASS_VANILLA_INPUT_SINGLE_CHEMICAL = "mods." + Mekanism.MODID + ".recipe.input.SingleChemical";
     public static final String CLASS_VANILLA_INPUT_SINGLE_FLUID_CHEMICAL = "mods." + Mekanism.MODID + ".recipe.input.SingleFluidChemical";
     public static final String CLASS_VANILLA_INPUT_SINGLE_FLUID = "mods." + Mekanism.MODID + ".recipe.input.SingleFluid";

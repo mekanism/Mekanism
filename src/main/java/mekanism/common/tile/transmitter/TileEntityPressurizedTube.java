@@ -17,7 +17,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.chemical.dynamic.DynamicChemicalHandler;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.resolver.manager.ChemicalHandlerManager;
-import mekanism.common.content.network.BoxedChemicalNetwork;
+import mekanism.common.content.network.ChemicalNetwork;
 import mekanism.common.content.network.transmitter.BoxedPressurizedTube;
 import mekanism.common.integration.computer.IComputerTile;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
@@ -83,7 +83,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
         //Note: We add the stored information to the initial update tag and not to the one we sync on side changes which uses getReducedUpdateTag
         CompoundTag updateTag = super.getUpdateTag(provider);
         if (getTransmitter().hasTransmitterNetwork()) {
-            BoxedChemicalNetwork network = getTransmitter().getTransmitterNetwork();
+            ChemicalNetwork network = getTransmitter().getTransmitterNetwork();
             updateTag.put(SerializationConstants.BOXED_CHEMICAL, network.lastChemical.saveOptional(provider));
             updateTag.putFloat(SerializationConstants.SCALE, network.currentScale);
         }
@@ -108,7 +108,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
             BoxedPressurizedTube tube = getTransmitter();
             if (isRemote()) {
                 if (tube.hasTransmitterNetwork()) {
-                    BoxedChemicalNetwork network = tube.getTransmitterNetwork();
+                    ChemicalNetwork network = tube.getTransmitterNetwork();
                     if (!network.lastChemical.isEmptyType() && !network.isTankEmpty() && network.lastChemical.getChemical().isRadioactive()) {
                         //Note: This may act as full when the network isn't actually full if there is radioactive stuff
                         // going through it, but it shouldn't matter too much

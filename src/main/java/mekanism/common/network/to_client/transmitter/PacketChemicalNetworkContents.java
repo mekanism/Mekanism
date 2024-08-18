@@ -3,7 +3,7 @@ package mekanism.common.network.to_client.transmitter;
 import java.util.UUID;
 import mekanism.api.chemical.Chemical;
 import mekanism.common.Mekanism;
-import mekanism.common.content.network.BoxedChemicalNetwork;
+import mekanism.common.content.network.ChemicalNetwork;
 import mekanism.common.lib.transmitter.DynamicNetwork;
 import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
 import mekanism.common.network.IMekanismPacket;
@@ -34,7 +34,7 @@ public record PacketChemicalNetworkContents(UUID networkID, Chemical chemical) i
         //Note: We set the information even if opaque transmitters is true in case the client turns the config setting off
         // so that they will have the proper information to then render
         DynamicNetwork<?, ?, ?> clientNetwork = TransmitterNetworkRegistry.getInstance().getClientNetwork(networkID);
-        if (clientNetwork instanceof BoxedChemicalNetwork network) {
+        if (clientNetwork instanceof ChemicalNetwork network) {
             network.setLastChemical(chemical);
         }
     }

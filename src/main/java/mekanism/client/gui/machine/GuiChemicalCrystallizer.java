@@ -81,9 +81,9 @@ public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemi
     }
 
     private void updateSlotContents() {
-        ChemicalStack boxedChemical = oreInfo.getInputChemical();
-        if (!boxedChemical.isEmpty()) {
-            Chemical inputSlurry = boxedChemical.getChemical();
+        ChemicalStack chemical = oreInfo.getInputChemical();
+        if (!chemical.isEmpty()) {
+            Chemical inputSlurry = chemical.getChemical();
             if (prevSlurry != inputSlurry) {
                 prevSlurry = inputSlurry;
                 iterStacks.clear();
@@ -105,10 +105,10 @@ public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemi
     }
 
     public static List<Component> getScreenRenderStrings(IOreInfo oreInfo) {
-        ChemicalStack boxedChemical = oreInfo.getInputChemical();
-        if (!boxedChemical.isEmpty()) {
+        ChemicalStack chemical = oreInfo.getInputChemical();
+        if (!chemical.isEmpty()) {
             List<Component> ret = new ArrayList<>();
-            ret.add(boxedChemical.getTextComponent());
+            ret.add(chemical.getTextComponent());
             if (!oreInfo.getRenderStack().isEmpty()) {
                 ret.add(MekanismLang.GENERIC_PARENTHESIS.translate(oreInfo.getRenderStack()));
             } else {
@@ -116,7 +116,7 @@ public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemi
                 if (recipe == null) {
                     ret.add(MekanismLang.NO_RECIPE.translate());
                 } else {
-                    ret.add(MekanismLang.GENERIC_PARENTHESIS.translate(recipe.getOutput(boxedChemical)));
+                    ret.add(MekanismLang.GENERIC_PARENTHESIS.translate(recipe.getOutput(chemical)));
                 }
             }
             return ret;

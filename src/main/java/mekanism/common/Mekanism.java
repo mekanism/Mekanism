@@ -37,7 +37,7 @@ import mekanism.common.content.gear.ModuleDispenseBehavior;
 import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.content.matrix.MatrixMultiblockData;
 import mekanism.common.content.matrix.MatrixValidator;
-import mekanism.common.content.network.BoxedChemicalNetwork.ChemicalTransferEvent;
+import mekanism.common.content.network.ChemicalNetwork.ChemicalTransferEvent;
 import mekanism.common.content.network.EnergyNetwork.EnergyTransferEvent;
 import mekanism.common.content.network.FluidNetwork.FluidTransferEvent;
 import mekanism.common.content.qio.QIOGlobalItemLookup;

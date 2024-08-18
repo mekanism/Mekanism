@@ -22,7 +22,7 @@ import mekanism.common.capabilities.fluid.FluidTankWrapper;
 import mekanism.common.capabilities.merged.MergedTank;
 import mekanism.common.capabilities.merged.MergedTank.CurrentType;
 import mekanism.common.capabilities.proxy.ProxyChemicalHandler;
-import mekanism.common.content.network.BoxedChemicalNetwork;
+import mekanism.common.content.network.ChemicalNetwork;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.lib.multiblock.IMultiblock;
 import mekanism.common.lib.multiblock.IStructuralMultiblock;
@@ -195,7 +195,7 @@ public class LookingAtUtils {
         if (handler != null) {
             Chemical fallback = ChemicalStack.EMPTY.getChemical();
             if (tile instanceof TileEntityPressurizedTube tube && tube.getTransmitter().hasTransmitterNetwork()) {
-                BoxedChemicalNetwork network = tube.getTransmitter().getTransmitterNetwork();
+                ChemicalNetwork network = tube.getTransmitter().getTransmitterNetwork();
                 if (!network.lastChemical.isEmptyType()) {
                     fallback = network.lastChemical.getChemical();
                 }

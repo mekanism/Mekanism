@@ -6,10 +6,9 @@ import mekanism.common.content.network.transmitter.BoxedPressurizedTube;
 import mekanism.common.lib.distribution.SplitInfo;
 import mekanism.common.lib.distribution.Target;
 
-public class BoxedChemicalTransmitterSaveTarget
-      extends Target<BoxedChemicalTransmitterSaveTarget.SaveHandler, Long, ChemicalStack> {
+public class ChemicalTransmitterSaveTarget extends Target<ChemicalTransmitterSaveTarget.SaveHandler, Long, ChemicalStack> {
 
-    public BoxedChemicalTransmitterSaveTarget(ChemicalStack type, Collection<BoxedPressurizedTube> transmitters) {
+    public ChemicalTransmitterSaveTarget(ChemicalStack type, Collection<BoxedPressurizedTube> transmitters) {
         super(transmitters.size());
         this.extra = type;
         for (BoxedPressurizedTube transmitter : transmitters) {
@@ -18,12 +17,12 @@ public class BoxedChemicalTransmitterSaveTarget
     }
 
     @Override
-    protected void acceptAmount(BoxedChemicalTransmitterSaveTarget.SaveHandler handler, SplitInfo<Long> splitInfo, Long amount) {
+    protected void acceptAmount(ChemicalTransmitterSaveTarget.SaveHandler handler, SplitInfo<Long> splitInfo, Long amount) {
         handler.acceptAmount(splitInfo, amount);
     }
 
     @Override
-    protected Long simulate(BoxedChemicalTransmitterSaveTarget.SaveHandler handler, ChemicalStack chemicalStack) {
+    protected Long simulate(ChemicalTransmitterSaveTarget.SaveHandler handler, ChemicalStack chemicalStack) {
         return handler.simulate(chemicalStack);
     }
 

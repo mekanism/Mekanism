@@ -17,7 +17,7 @@ import mekanism.api.providers.IBlockProvider;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.chemical.IChemicalTracker;
-import mekanism.common.content.network.BoxedChemicalNetwork;
+import mekanism.common.content.network.ChemicalNetwork;
 import mekanism.common.lib.transmitter.CompatibleTransmitterValidator;
 import mekanism.common.lib.transmitter.CompatibleTransmitterValidator.CompatibleChemicalTransmitterValidator;
 import mekanism.common.lib.transmitter.ConnectionType;
@@ -37,7 +37,7 @@ import net.minecraft.nbt.Tag;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class BoxedPressurizedTube extends BufferedTransmitter<IChemicalHandler, BoxedChemicalNetwork, ChemicalStack, BoxedPressurizedTube>
+public class BoxedPressurizedTube extends BufferedTransmitter<IChemicalHandler, ChemicalNetwork, ChemicalStack, BoxedPressurizedTube>
       implements IChemicalTracker, IUpgradeableTransmitter<PressurizedTubeUpgradeData> {
 
     public final TubeTier tier;
@@ -164,17 +164,17 @@ public class BoxedPressurizedTube extends BufferedTransmitter<IChemicalHandler, 
     }
 
     @Override
-    public BoxedChemicalNetwork createEmptyNetworkWithID(UUID networkID) {
-        return new BoxedChemicalNetwork(networkID);
+    public ChemicalNetwork createEmptyNetworkWithID(UUID networkID) {
+        return new ChemicalNetwork(networkID);
     }
 
     @Override
-    public BoxedChemicalNetwork createNetworkByMerging(Collection<BoxedChemicalNetwork> toMerge) {
-        return new BoxedChemicalNetwork(toMerge);
+    public ChemicalNetwork createNetworkByMerging(Collection<ChemicalNetwork> toMerge) {
+        return new ChemicalNetwork(toMerge);
     }
 
     @Override
-    public CompatibleTransmitterValidator<IChemicalHandler, BoxedChemicalNetwork, BoxedPressurizedTube> getNewOrphanValidator() {
+    public CompatibleTransmitterValidator<IChemicalHandler, ChemicalNetwork, BoxedPressurizedTube> getNewOrphanValidator() {
         return new CompatibleChemicalTransmitterValidator(this);
     }
 
@@ -240,7 +240,7 @@ public class BoxedPressurizedTube extends BufferedTransmitter<IChemicalHandler, 
     @Override
     public void takeShare() {
         if (hasTransmitterNetwork()) {
-            BoxedChemicalNetwork transmitterNetwork = getTransmitterNetwork();
+            ChemicalNetwork transmitterNetwork = getTransmitterNetwork();
             if (!transmitterNetwork.chemicalTank.isEmpty() && !saveShare.isEmpty()) {
                 ChemicalStack chemicalStack = saveShare;
                 long amount = chemicalStack.getAmount();
@@ -275,7 +275,7 @@ public class BoxedPressurizedTube extends BufferedTransmitter<IChemicalHandler, 
     }
 
     @Override
-    protected void handleContentsUpdateTag(@NotNull BoxedChemicalNetwork network, @NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
+    protected void handleContentsUpdateTag(@NotNull ChemicalNetwork network, @NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
         super.handleContentsUpdateTag(network, tag, provider);
         NBTUtils.setFloatIfPresent(tag, SerializationConstants.SCALE, scale -> network.currentScale = scale);
         NBTUtils.setChemicalIfPresent(provider, tag, SerializationConstants.BOXED_CHEMICAL, network::setLastChemical);

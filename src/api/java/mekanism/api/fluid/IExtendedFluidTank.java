@@ -7,6 +7,7 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.IFluidTank;
@@ -248,6 +249,13 @@ public interface IExtendedFluidTank extends IFluidTank, INBTSerializable<Compoun
             nbt.put(SerializationConstants.STORED, getFluid().save(provider));
         }
         return nbt;
+    }
+
+    @Override
+    default void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
+        if (nbt.contains(SerializationConstants.STORED, Tag.TAG_COMPOUND)) {
+            setStackUnchecked(FluidStack.parseOptional(provider, nbt.getCompound(SerializationConstants.STORED)));
+        }
     }
 
     /**

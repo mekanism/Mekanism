@@ -2,7 +2,7 @@ package mekanism.common.lib.transmitter;
 
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.IChemicalHandler;
-import mekanism.common.content.network.BoxedChemicalNetwork;
+import mekanism.common.content.network.ChemicalNetwork;
 import mekanism.common.content.network.FluidNetwork;
 import mekanism.common.content.network.transmitter.BoxedPressurizedTube;
 import mekanism.common.content.network.transmitter.MechanicalPipe;
@@ -24,7 +24,7 @@ public class CompatibleTransmitterValidator<ACCEPTOR, NETWORK extends DynamicNet
         return true;
     }
 
-    public static class CompatibleChemicalTransmitterValidator extends CompatibleTransmitterValidator<IChemicalHandler, BoxedChemicalNetwork, BoxedPressurizedTube> {
+    public static class CompatibleChemicalTransmitterValidator extends CompatibleTransmitterValidator<IChemicalHandler, ChemicalNetwork, BoxedPressurizedTube> {
 
         private Chemical buffer;
 
@@ -41,7 +41,7 @@ public class CompatibleTransmitterValidator<ACCEPTOR, NETWORK extends DynamicNet
         }
 
         @Override
-        public boolean isNetworkCompatible(BoxedChemicalNetwork network) {
+        public boolean isNetworkCompatible(ChemicalNetwork network) {
             if (super.isNetworkCompatible(network)) {
                 Chemical otherBuffer;
                 if (network.getTransmitterValidator() instanceof CompatibleChemicalTransmitterValidator validator) {
