@@ -51,7 +51,7 @@ public class ChemicalTankChemicalTank extends BasicChemicalTank {
             ChemicalStack simulatedRemainder = super.insert(stack, Action.SIMULATE, automationType);
             if (simulatedRemainder.isEmpty()) {
                 //If we are able to insert it then set perform the action of setting it to full
-                setStackUnchecked(createStack(stack, getCapacity()));
+                setStackUnchecked(stack.copyWithAmount(getCapacity()));
             }
             return simulatedRemainder;
         }

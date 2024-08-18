@@ -17,18 +17,6 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 public interface IChemicalTank extends INBTSerializable<CompoundTag>, IContentsListener {
 
     /**
-     * Helper for creating a stack of the type this {@link IChemicalTank} is storing.
-     *
-     * @param stored The stack to copy the type of.
-     * @param size   The size of the new stack.
-     *
-     * @return A new stack
-     */
-    default ChemicalStack createStack(ChemicalStack stored, long size) {
-        return stored.copyWithAmount(size);
-    }
-
-    /**
      * Returns the {@link ChemicalStack} in this tank.
      *
      * <p>
@@ -106,10 +94,10 @@ public interface IChemicalTank extends INBTSerializable<CompoundTag>, IContentsL
                 } else {
                     //If we are not the same type then we have to copy the stack and set it
                     // Note: this also will mark that the contents changed
-                    setStack(createStack(stack, toAdd));
+                    setStack(stack.copyWithAmount(toAdd));
                 }
             }
-            return createStack(stack, stack.getAmount() - toAdd);
+            return stack.copyWithAmount(stack.getAmount() - toAdd);
         }
         //If we didn't accept this chemical, then just return the given stack
         return stack;
@@ -136,7 +124,7 @@ public interface IChemicalTank extends INBTSerializable<CompoundTag>, IContentsL
         if (isEmpty() || amount < 1) {
             return ChemicalStack.EMPTY;
         }
-        ChemicalStack ret = createStack(getStack(), Math.min(getStored(), amount));
+        ChemicalStack ret = getStack().copyWithAmount(Math.min(getStored(), amount));
         if (!ret.isEmpty() && action.execute()) {
             // Note: this also will mark that the contents changed
             shrinkStack(ret.getAmount(), action);
@@ -200,7 +188,7 @@ public interface IChemicalTank extends INBTSerializable<CompoundTag>, IContentsL
             //If our size is not changing, or we are only simulating the change, don't do anything
             return amount;
         }
-        setStack(createStack(getStack(), amount));
+        setStack(getStack().copyWithAmount(amount));
         return amount;
     }
 

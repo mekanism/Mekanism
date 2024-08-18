@@ -238,12 +238,12 @@ public class OutputHelper {
      * @param toOutput   Output result.
      * @param operations Operations to perform.
      */
-    static void handleOutput(IChemicalTank tank, ChemicalStack toOutput, int operations) {
+    private static void handleOutput(IChemicalTank tank, ChemicalStack toOutput, int operations) {
         if (operations == 0) {
             //This should not happen
             return;
         }
-        ChemicalStack output = tank.createStack(toOutput, toOutput.getAmount() * operations);
+        ChemicalStack output = toOutput.copyWithAmount(toOutput.getAmount() * operations);
         tank.insert(output, Action.EXECUTE, AutomationType.INTERNAL);
     }
 
@@ -276,12 +276,12 @@ public class OutputHelper {
      * @param toOutput       Output result.
      * @param notEnoughSpace The error to apply if the output causes the recipe to not be able to perform any operations.
      */
-    static void calculateOperationsCanSupport(OperationTracker tracker, RecipeError notEnoughSpace, IChemicalTank tank,
+    private static void calculateOperationsCanSupport(OperationTracker tracker, RecipeError notEnoughSpace, IChemicalTank tank,
           ChemicalStack toOutput) {
         //If our output is empty, we have nothing to add, so we treat it as being able to fit all
         if (!toOutput.isEmpty()) {
             //Copy the stack and make it be max size
-            ChemicalStack maxOutput = tank.createStack(toOutput, Long.MAX_VALUE);
+            ChemicalStack maxOutput = toOutput.copyWithAmount(Long.MAX_VALUE);
             //Divide the amount we can actually use by the amount one output operation is equal to, capping it at the max we were told about
             ChemicalStack remainder = tank.insert(maxOutput, Action.SIMULATE, AutomationType.INTERNAL);
             long amountUsed = maxOutput.getAmount() - remainder.getAmount();

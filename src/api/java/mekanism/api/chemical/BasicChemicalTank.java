@@ -345,7 +345,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
             }
             stored = ChemicalStack.EMPTY;
         } else if (!validateStack || isValid(stack)) {
-            stored = createStack(stack, stack.getAmount());
+            stored = stack.copy();
         } else {
             //Throws a RuntimeException as specified is allowed when something unexpected happens
             // As setStack is more meant to be used as an internal method
@@ -381,10 +381,10 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
                 //If we are not the same type then we have to copy the stack and set it
                 // Just set it unchecked as we have already validated it
                 // Note: this also will mark that the contents changed
-                setStackUnchecked(createStack(stack, toAdd));
+                setStackUnchecked(stack.copyWithAmount(toAdd));
             }
         }
-        return createStack(stack, stack.getAmount() - toAdd);
+        return stack.copyWithAmount(stack.getAmount() - toAdd);
     }
 
     @Override
@@ -399,7 +399,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
         if (size == 0) {
             return ChemicalStack.EMPTY;
         }
-        ChemicalStack ret = createStack(stored, size);
+        ChemicalStack ret = stored.copyWithAmount(size);
         if (!ret.isEmpty() && action.execute()) {
             //If shrink gets the size to zero it will update the empty state so that isEmpty() returns true.
             stored.shrink(ret.getAmount());

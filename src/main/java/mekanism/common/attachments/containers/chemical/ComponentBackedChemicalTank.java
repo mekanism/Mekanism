@@ -122,9 +122,9 @@ public class ComponentBackedChemicalTank extends ComponentBackedContainer<Chemic
                 //Note: We let setStack handle updating the backing holding stack
                 // We use stored.getAmount + toAdd so that if we are empty we end up at toAdd
                 // but if we aren't then we grow by the given amount
-                setContents(attachedChemicals, createStack(stack, stored.getAmount() + toAdd));
+                setContents(attachedChemicals, stack.copyWithAmount(stored.getAmount() + toAdd));
             }
-            return createStack(stack, stack.getAmount() - toAdd);
+            return stack.copyWithAmount(stack.getAmount() - toAdd);
         }
         //If we didn't accept this fluid, then just return the given stack
         return stack;
@@ -151,10 +151,10 @@ public class ComponentBackedChemicalTank extends ComponentBackedContainer<Chemic
         if (size == 0) {
             return ChemicalStack.EMPTY;
         }
-        ChemicalStack ret = createStack(stored, size);
+        ChemicalStack ret = stored.copyWithAmount(size);
         if (!ret.isEmpty() && action.execute()) {
             //Note: We let setStack handle updating the backing holding stack
-            setContents(attachedChemicals, createStack(stored, stored.getAmount() - ret.getAmount()));
+            setContents(attachedChemicals, stored.copyWithAmount(stored.getAmount() - ret.getAmount()));
         }
         return ret;
     }
@@ -182,7 +182,7 @@ public class ComponentBackedChemicalTank extends ComponentBackedContainer<Chemic
             //If our size is not changing, or we are only simulating the change, don't do anything
             return amount;
         }
-        setContents(attachedChemicals, createStack(stored, amount));
+        setContents(attachedChemicals, stored.copyWithAmount(amount));
         return amount;
     }
 
