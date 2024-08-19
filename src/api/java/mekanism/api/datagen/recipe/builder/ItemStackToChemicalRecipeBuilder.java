@@ -10,8 +10,7 @@ import mekanism.api.recipes.ItemStackToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 
 @NothingNullByDefault
-public class ItemStackToChemicalRecipeBuilder extends
-      MekanismRecipeBuilder<ItemStackToChemicalRecipeBuilder> {
+public class ItemStackToChemicalRecipeBuilder extends MekanismRecipeBuilder<ItemStackToChemicalRecipeBuilder> {
 
     private final ItemStackToChemicalRecipeBuilder.Factory factory;
     private final ItemStackIngredient input;
@@ -47,16 +46,6 @@ public class ItemStackToChemicalRecipeBuilder extends
             throw new IllegalArgumentException("This oxidizing recipe requires a non empty chemical output.");
         }
         return new ItemStackToChemicalRecipeBuilder(input, output, BasicChemicalOxidizerRecipe::new);
-    }
-
-    /**
-     * Creates an Infusion Conversion recipe builder.
-     *
-     * @param input  Input.
-     * @param output Output.
-     */
-    public static ItemStackToChemicalRecipeBuilder infusionConversion(ItemStackIngredient input, ChemicalStack output) {
-        return chemicalConversion(input, output);
     }
 
     /**

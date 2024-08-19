@@ -33,7 +33,7 @@ class InfusionConversionRecipeProvider implements ISubRecipeProvider {
     }
 
     private static void infusionConversion(RecipeOutput consumer, ItemStackIngredient input, ChemicalStack output, String basePath, String recipeName) {
-        ItemStackToChemicalRecipeBuilder.infusionConversion(input, output).build(consumer, Mekanism.rl("chemical_conversion/" + basePath + recipeName));
+        ItemStackToChemicalRecipeBuilder.chemicalConversion(input, output).build(consumer, Mekanism.rl("chemical_conversion/" + basePath + recipeName));
         ItemStackToChemicalRecipeBuilder.oxidizing(input, output).build(consumer, Mekanism.rl("oxidizing/" + basePath + recipeName));
     }
 
