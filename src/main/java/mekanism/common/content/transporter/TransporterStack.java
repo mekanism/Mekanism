@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.IntFunction;
 import mekanism.api.SerializationConstants;
+import mekanism.api.SerializerHelper;
 import mekanism.api.text.EnumColor;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.content.transporter.TransporterPathfinder.Destination;
@@ -106,7 +107,7 @@ public class TransporterStack {
             updateTag.putLong(SerializationConstants.PREVIOUS, prev);
         }
         if (!itemStack.isEmpty()) {
-            itemStack.save(provider, updateTag);
+            updateTag.put(SerializationConstants.ITEM, SerializerHelper.saveOversized(provider, itemStack));
         }
     }
 
@@ -124,7 +125,10 @@ public class TransporterStack {
         NBTUtils.setLongIfPresent(updateTag, SerializationConstants.PREVIOUS, coord -> clientPrev = coord);
         NBTUtils.setBlockPosIfPresent(updateTag, SerializationConstants.PREVIOUS, coord -> clientPrev = coord.asLong());
 
-        itemStack = ItemStack.parseOptional(provider, updateTag);
+        Tag itemTag = updateTag.get(SerializationConstants.ITEM);
+        if (itemTag != null) {
+            itemStack = SerializerHelper.parseOversized(provider, itemTag).orElse(ItemStack.EMPTY);
+        }
     }
 
     public void write(HolderLookup.Provider provider, CompoundTag nbtTags) {
@@ -145,7 +149,7 @@ public class TransporterStack {
             NBTUtils.writeEnum(nbtTags, SerializationConstants.PATH_TYPE, pathType);
         }
         if (!itemStack.isEmpty()) {
-            nbtTags.put(SerializationConstants.ITEM, itemStack.save(provider));
+            nbtTags.put(SerializationConstants.ITEM_OVERSIZED, SerializerHelper.saveOversized(provider, itemStack));
         }
     }
 
@@ -156,7 +160,9 @@ public class TransporterStack {
         NBTUtils.setEnumIfPresent(nbtTags, SerializationConstants.IDLE_DIR, Direction::from3DDataValue, dir -> idleDir = dir);
         NBTUtils.setBlockPosIfPresent(nbtTags, SerializationConstants.HOME_LOCATION, coord -> homeLocation = coord);
         NBTUtils.setEnumIfPresent(nbtTags, SerializationConstants.PATH_TYPE, Path.BY_ID, type -> pathType = type);
-        if (nbtTags.contains(SerializationConstants.ITEM, Tag.TAG_COMPOUND)) {
+        if (nbtTags.contains(SerializationConstants.ITEM_OVERSIZED)) {
+            itemStack = SerializerHelper.parseOversized(provider, nbtTags.get(SerializationConstants.ITEM_OVERSIZED)).orElse(ItemStack.EMPTY);
+        } else if (nbtTags.contains(SerializationConstants.ITEM, Tag.TAG_COMPOUND)) {//TODO - 1.22: Remove this legacy way of loading data
             itemStack = ItemStack.parseOptional(provider, nbtTags.getCompound(SerializationConstants.ITEM));
         } else {//TODO - 1.22: Remove this legacy way of loading data
             itemStack = ItemStack.parseOptional(provider, nbtTags);

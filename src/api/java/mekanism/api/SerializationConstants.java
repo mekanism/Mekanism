@@ -35,6 +35,7 @@ public final class SerializationConstants {
     public static final String INGREDIENT = "ingredient";
     public static final String INGREDIENTS = "ingredients";
     public static final String ITEM = "item";
+    public static final String ITEM_OVERSIZED = "item_oversized";
     public static final String GAS = "gas";
     public static final String INFUSE_TYPE = "infuse_type";
     public static final String PIGMENT = "pigment";
