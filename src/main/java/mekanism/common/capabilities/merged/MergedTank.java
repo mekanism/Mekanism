@@ -43,12 +43,12 @@ public class MergedTank {
     }
 
     public void addToUpdateTag(HolderLookup.Provider provider, CompoundTag updateTag) {
-        updateTag.put(SerializationConstants.FLUID, getFluidTank().getFluid().saveOptional(provider));
-        updateTag.put(SerializationConstants.CHEMICAL, getChemicalTank().getStack().saveOptional(provider));
+        updateTag.put(SerializationConstants.FLUID, fluidTank.getFluid().saveOptional(provider));
+        updateTag.put(SerializationConstants.CHEMICAL, chemicalTank.getStack().saveOptional(provider));
     }
 
     public void readFromUpdateTag(HolderLookup.Provider provider, CompoundTag tag) {
-        NBTUtils.setFluidStackIfPresent(provider, tag, SerializationConstants.FLUID, value -> getFluidTank().setStack(value));
+        NBTUtils.setFluidStackIfPresent(provider, tag, SerializationConstants.FLUID, fluidTank::setStack);
         NBTUtils.setChemicalStackIfPresent(provider, tag, SerializationConstants.CHEMICAL, chemicalTank::setStack);
 
     }
