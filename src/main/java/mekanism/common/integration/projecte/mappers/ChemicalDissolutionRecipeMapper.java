@@ -6,7 +6,7 @@ import mekanism.api.recipes.ChemicalDissolutionRecipe;
 import mekanism.common.integration.projecte.IngredientHelper;
 import mekanism.common.integration.projecte.NSSChemical;
 import mekanism.common.recipe.MekanismRecipeType;
-import mekanism.common.tile.machine.TileEntityChemicalDissolutionChamber;
+import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.api.mapper.recipe.RecipeTypeMapper;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
@@ -37,7 +37,10 @@ public class ChemicalDissolutionRecipeMapper extends TypedMekanismRecipeMapper<C
         List<@NotNull ChemicalStack> chemicalRepresentations = recipe.getChemicalInput().getRepresentations();
         for (ChemicalStack chemicalRepresentation : chemicalRepresentations) {
             NSSChemical nssChemical = NSSChemical.createChemical(chemicalRepresentation);
-            long chemicalAmount = chemicalRepresentation.getAmount() * TileEntityChemicalDissolutionChamber.BASE_TICKS_REQUIRED;
+            long chemicalAmount = chemicalRepresentation.getAmount();
+            if (recipe.perTickUsage()) {
+                chemicalAmount *= TileEntityAdvancedElectricMachine.BASE_TICKS_REQUIRED;
+            }
             for (ItemStack itemRepresentation : itemRepresentations) {
                 ChemicalStack output = recipe.getOutput(itemRepresentation, chemicalRepresentation);
                 if (!output.isEmpty()) {

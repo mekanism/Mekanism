@@ -53,19 +53,11 @@ public class BasicChemicalCrystallizerRecipe extends ChemicalCrystallizerRecipe 
 
     @Override
     public boolean test(ChemicalStack stack) {
-        return testInternal(stack);
+        return input.test(stack);
     }
 
     @Override
     public boolean testType(ChemicalStack stack) {
-        return testTypeInternal(stack);
-    }
-
-    private boolean testInternal(ChemicalStack stack) {
-        return input.test(stack);
-    }
-
-    private boolean testTypeInternal(ChemicalStack stack) {
         return input.testType(stack);
     }
 

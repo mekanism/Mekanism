@@ -47,8 +47,12 @@ public class ChemicalDissolutionRecipeCategory extends HolderRecipeCategory<Chem
     public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<ChemicalDissolutionRecipe> recipeHolder, @NotNull IFocusGroup focusGroup) {
         ChemicalDissolutionRecipe recipe = recipeHolder.value();
         initItem(builder, RecipeIngredientRole.INPUT, inputSlot, recipe.getItemInput().getRepresentations());
-        List<@NotNull ChemicalStack> chemicalInputs = recipe.getChemicalInput().getRepresentations();
-        List<ChemicalStack> scaledChemicals = chemicalInputs.stream().map(chemical -> chemical.copyWithAmount(chemical.getAmount() * TileEntityChemicalDissolutionChamber.BASE_TICKS_REQUIRED)).toList();
+        List<ChemicalStack> scaledChemicals = recipe.getChemicalInput().getRepresentations();
+        if (recipe.perTickUsage()) {
+            scaledChemicals = scaledChemicals.stream()
+                  .map(chemical -> chemical.copyWithAmount(chemical.getAmount() * TileEntityChemicalDissolutionChamber.BASE_TICKS_REQUIRED))
+                  .toList();
+        }
         initChemical(builder, RecipeIngredientRole.INPUT, inputGauge, scaledChemicals);
         initChemical(builder, RecipeIngredientRole.OUTPUT, outputGauge, recipe.getOutputDefinition());
     }

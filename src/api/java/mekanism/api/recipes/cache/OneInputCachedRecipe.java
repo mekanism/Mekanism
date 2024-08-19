@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.functions.ConstantPredicates;
+import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.ElectrolysisRecipe.ElectrolysisRecipeOutput;
 import mekanism.api.recipes.FluidToFluidRecipe;
@@ -97,6 +98,23 @@ public class OneInputCachedRecipe<INPUT, OUTPUT, RECIPE extends MekanismRecipe<?
             inputHandler.use(input, operations);
             outputHandler.handleOutput(output, operations);
         }
+    }
+
+    /**
+     * Base implementation for handling Crystallizing Recipes.
+     *
+     * @param recipe           Recipe.
+     * @param recheckAllErrors Returns {@code true} if processing should be continued even if an error is hit in order to gather all the errors. It is recommended to not
+     *                         do this every tick or if there is no one viewing recipes.
+     * @param inputHandler     Input handler.
+     * @param outputHandler    Output handler, handles both the left and right outputs.
+     *
+     * @since 10.6.10
+     */
+    public static OneInputCachedRecipe<@NotNull ChemicalStack, @NotNull ItemStack, ChemicalCrystallizerRecipe> crystallizing(ChemicalCrystallizerRecipe recipe,
+          BooleanSupplier recheckAllErrors, IInputHandler<@NotNull ChemicalStack> inputHandler, IOutputHandler<@NotNull ItemStack> outputHandler) {
+        return new OneInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, outputHandler, recipe::getInput, recipe::getOutput, ConstantPredicates.CHEMICAL_EMPTY,
+              ConstantPredicates.ITEM_EMPTY);
     }
 
     /**

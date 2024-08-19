@@ -13,6 +13,7 @@ import mekanism.api.recipes.ChemicalChemicalToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Base class to help implement handling of chemical chemical to chemical recipes.
@@ -30,8 +31,11 @@ public class ChemicalChemicalToChemicalCachedRecipe<RECIPE extends ChemicalChemi
     private final BinaryOperator<ChemicalStack> outputGetter;
 
     //Note: These shouldn't be null in places they are actually used, but we mark them as nullable, so we don't have to initialize them
+    @Nullable
     private ChemicalStack leftRecipeInput;
+    @Nullable
     private ChemicalStack rightRecipeInput;
+    @Nullable
     private ChemicalStack output;
 
     /**
