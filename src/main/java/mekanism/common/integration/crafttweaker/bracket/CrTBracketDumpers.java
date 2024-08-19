@@ -24,7 +24,7 @@ import org.openzen.zencode.java.ZenCodeType;
 public class CrTBracketDumpers {
 
     /**
-     * Bracket dumper to get all registered {@link Chemical gases} as a collection of their bracket representations.
+     * Bracket dumper to get all registered {@link Chemical chemicals} as a collection of their bracket representations.
      */
     @BracketDumper(value = CrTConstants.BRACKET_CHEMICAL, subCommandName = "chemicals")
     public static Collection<String> getChemicalStackDump() {

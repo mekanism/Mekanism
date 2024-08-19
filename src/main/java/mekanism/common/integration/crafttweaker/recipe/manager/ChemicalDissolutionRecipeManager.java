@@ -24,27 +24,27 @@ public class ChemicalDissolutionRecipeManager extends MekanismRecipeManager<Sing
     }
 
     /**
-     * Adds a chemical dissolution recipe that converts an item and a gas into a chemical. Chemical Dissolution Chambers can process this recipe type.
+     * Adds a chemical dissolution recipe that converts an item and a chemical into a chemical. Chemical Dissolution Chambers can process this recipe type.
      *
-     * @param name      Name of the new recipe.
-     * @param itemInput {@link IIngredientWithAmount} representing the item input of the recipe.
-     * @param gasInput  {@link ChemicalStackIngredient} representing the gas input of the recipe.
-     * @param output    {@link ICrTChemicalStack} representing the output of the recipe.
+     * @param name          Name of the new recipe.
+     * @param itemInput     {@link IIngredientWithAmount} representing the item input of the recipe.
+     * @param chemicalInput {@link ChemicalStackIngredient} representing the chemical input of the recipe.
+     * @param output        {@link ICrTChemicalStack} representing the output of the recipe.
      */
     @ZenCodeType.Method
-    public void addRecipe(String name, IIngredientWithAmount itemInput, ChemicalStackIngredient gasInput, ICrTChemicalStack output) {
-        addRecipe(name, makeRecipe(itemInput, gasInput, output));
+    public void addRecipe(String name, IIngredientWithAmount itemInput, ChemicalStackIngredient chemicalInput, ICrTChemicalStack output) {
+        addRecipe(name, makeRecipe(itemInput, chemicalInput, output));
     }
 
     /**
-     * Makes a chemical dissolution recipe that converts an item and a gas into a chemical.
+     * Makes a chemical dissolution recipe that converts an item and a chemical into a chemical.
      *
-     * @param itemInput {@link IIngredientWithAmount} representing the item input of the recipe.
-     * @param gasInput  {@link ChemicalStackIngredient} representing the gas input of the recipe.
-     * @param output    {@link ICrTChemicalStack} representing the output of the recipe. Will be validated as not empty.
+     * @param itemInput     {@link IIngredientWithAmount} representing the item input of the recipe.
+     * @param chemicalInput {@link ChemicalStackIngredient} representing the chemical input of the recipe.
+     * @param output        {@link ICrTChemicalStack} representing the output of the recipe. Will be validated as not empty.
      */
-    public final BasicChemicalDissolutionRecipe makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient gasInput, ICrTChemicalStack output) {
-        return new BasicChemicalDissolutionRecipe(CrTUtils.fromCrT(itemInput), gasInput, getAndValidateNotEmpty(output));
+    public final BasicChemicalDissolutionRecipe makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient chemicalInput, ICrTChemicalStack output) {
+        return new BasicChemicalDissolutionRecipe(CrTUtils.fromCrT(itemInput), chemicalInput, getAndValidateNotEmpty(output));
     }
 
     @Override

@@ -26,24 +26,24 @@ public class PressurizedReactionRecipeHandler extends MekanismRecipeHandler<Pres
     public String dumpToCommandString(IRecipeManager<? super PressurizedReactionRecipe> manager, RegistryAccess registryAccess,
           RecipeHolder<PressurizedReactionRecipe> recipeHolder) {
         ItemStack itemOutput;
-        ChemicalStack gasOutput;
+        ChemicalStack chemicalOutput;
         PressurizedReactionRecipe recipe = recipeHolder.value();
         List<PressurizedReactionRecipeOutput> outputs = recipe.getOutputDefinition();
         if (outputs.isEmpty()) {
             //Validate it isn't empty, which shouldn't be possible
             itemOutput = ItemStack.EMPTY;
-            gasOutput = ChemicalStack.EMPTY;
+            chemicalOutput = ChemicalStack.EMPTY;
         } else {
             //Outputs sometimes are as lists, try wrapping them into a single element
             // eventually we may want to try listing them all somehow?
             PressurizedReactionRecipeOutput output = outputs.getFirst();
             itemOutput = output.item();
-            gasOutput = output.chemical();
+            chemicalOutput = output.chemical();
         }
         //Note: We can handle skipping optional params like this because only one output should be empty at a time
         // if there is only a single output, which means we can safely skip the other
         return buildCommandString(manager, recipeHolder, recipe.getInputSolid(), recipe.getInputFluid(), recipe.getInputChemical(), recipe.getDuration(),
-              itemOutput.isEmpty() ? SKIP_OPTIONAL_PARAM : itemOutput, gasOutput.isEmpty() ? SKIP_OPTIONAL_PARAM : gasOutput,
+              itemOutput.isEmpty() ? SKIP_OPTIONAL_PARAM : itemOutput, chemicalOutput.isEmpty() ? SKIP_OPTIONAL_PARAM : chemicalOutput,
               recipe.getEnergyRequired() == 0L ? SKIP_OPTIONAL_PARAM : recipe.getEnergyRequired()
         );
     }
@@ -71,15 +71,15 @@ public class PressurizedReactionRecipeHandler extends MekanismRecipeHandler<Pres
         if (m instanceof PressurizedReactionRecipeManager manager) {
             Optional<IItemStack> optionalOutputItem = CrTUtils.getSingleIfPresent(recipe, CrTRecipeComponents.ITEM.output());
             ItemStack outputItem;
-            ChemicalStack outputGas;
+            ChemicalStack outputChemical;
             if (optionalOutputItem.isPresent()) {
                 outputItem = optionalOutputItem.get().getImmutableInternal();
-                outputGas = CrTUtils.getSingleIfPresent(recipe, CrTRecipeComponents.CHEMICAL.output())
+                outputChemical = CrTUtils.getSingleIfPresent(recipe, CrTRecipeComponents.CHEMICAL.output())
                       .map(ICrTChemicalStack::getImmutableInternal)
                       .orElse(ChemicalStack.EMPTY);
             } else {
                 outputItem = ItemStack.EMPTY;
-                outputGas = recipe.getOrThrowSingle(CrTRecipeComponents.CHEMICAL.output()).getImmutableInternal();
+                outputChemical = recipe.getOrThrowSingle(CrTRecipeComponents.CHEMICAL.output()).getImmutableInternal();
             }
             return Optional.of(manager.makeRecipe(
                   recipe.getOrThrowSingle(CrTRecipeComponents.ITEM.input()),
@@ -87,7 +87,7 @@ public class PressurizedReactionRecipeHandler extends MekanismRecipeHandler<Pres
                   recipe.getOrThrowSingle(CrTRecipeComponents.CHEMICAL.input()),
                   recipe.getOrThrowSingle(BuiltinRecipeComponents.Processing.TIME),
                   outputItem,
-                  outputGas,
+                  outputChemical,
                   CrTUtils.getSingleIfPresent(recipe, CrTRecipeComponents.ENERGY).orElse(0L)
             ));
         }

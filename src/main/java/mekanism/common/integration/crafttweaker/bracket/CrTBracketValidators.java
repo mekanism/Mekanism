@@ -27,7 +27,7 @@ public class CrTBracketValidators {
     @ZenCodeType.Method
     @BracketValidator(CrTConstants.BRACKET_CHEMICAL)
     public static boolean validateChemicalStack(String tokens) {
-        return validate(CrTConstants.BRACKET_GAS, tokens, MekanismAPI.CHEMICAL_REGISTRY);
+        return validate(CrTConstants.BRACKET_CHEMICAL, tokens, MekanismAPI.CHEMICAL_REGISTRY);
     }
 
     /**

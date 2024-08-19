@@ -17,10 +17,6 @@ public class CrTConstants {
     public static final String JEI_PLUGIN_NAME = Mekanism.MODID + ":crt_jei";
 
     public static final String BRACKET_CHEMICAL = "chemical";
-    public static final String BRACKET_GAS = "gas";
-    public static final String BRACKET_INFUSE_TYPE = "infuse_type";
-    public static final String BRACKET_PIGMENT = "pigment";
-    public static final String BRACKET_SLURRY = "slurry";
     public static final String BRACKET_ROBIT_SKIN = "robit_skin";
     public static final String BRACKET_MODULE_DATA = "module_data";
 
@@ -92,11 +88,9 @@ public class CrTConstants {
     public static final String CLASS_RECIPE_MANAGER_ITEM_STACK_TO_ENERGY = "mods." + Mekanism.MODID + ".recipe.manager.ItemStackToEnergy";
     public static final String CLASS_RECIPE_MANAGER_ENERGY_CONVERSION = CLASS_RECIPE_MANAGER_ITEM_STACK_TO_ENERGY + ".EnergyConversion";
     public static final String CLASS_RECIPE_MANAGER_ITEM_STACK_TO_CHEMICAL = "mods." + Mekanism.MODID + ".recipe.manager.ItemStackToChemical";
-    public static final String CLASS_RECIPE_MANAGER_ITEM_STACK_TO_GAS = CLASS_RECIPE_MANAGER_ITEM_STACK_TO_CHEMICAL + ".Gas";
-    public static final String CLASS_RECIPE_MANAGER_CHEMICAL_CONVERSION = CLASS_RECIPE_MANAGER_ITEM_STACK_TO_GAS + ".ChemicalConversion";
-    public static final String CLASS_RECIPE_MANAGER_OXIDIZING = CLASS_RECIPE_MANAGER_ITEM_STACK_TO_GAS + ".Oxidizing";
-    public static final String CLASS_RECIPE_MANAGER_ITEM_STACK_TO_PIGMENT = CLASS_RECIPE_MANAGER_ITEM_STACK_TO_CHEMICAL + ".Pigment";
-    public static final String CLASS_RECIPE_MANAGER_PIGMENT_EXTRACTING = CLASS_RECIPE_MANAGER_ITEM_STACK_TO_PIGMENT + ".PigmentExtracting";
+    public static final String CLASS_RECIPE_MANAGER_CHEMICAL_CONVERSION = CLASS_RECIPE_MANAGER_ITEM_STACK_TO_CHEMICAL + ".ChemicalConversion";
+    public static final String CLASS_RECIPE_MANAGER_OXIDIZING = CLASS_RECIPE_MANAGER_ITEM_STACK_TO_CHEMICAL + ".Oxidizing";
+    public static final String CLASS_RECIPE_MANAGER_PIGMENT_EXTRACTING = CLASS_RECIPE_MANAGER_ITEM_STACK_TO_CHEMICAL + ".PigmentExtracting";
     public static final String CLASS_RECIPE_MANAGER_REACTION = "mods." + Mekanism.MODID + ".recipe.manager.Reaction";
     public static final String CLASS_RECIPE_MANAGER_ROTARY = "mods." + Mekanism.MODID + ".recipe.manager.Rotary";
     public static final String CLASS_RECIPE_MANAGER_SAWING = "mods." + Mekanism.MODID + ".recipe.manager.Sawing";
@@ -124,22 +118,18 @@ public class CrTConstants {
     public static final String CLASS_RECIPE_REACTION = "mods." + Mekanism.MODID + ".recipe.Reaction";
     public static final String CLASS_RECIPE_REACTION_OUTPUT = CLASS_RECIPE_REACTION + ".Output";
     public static final String CLASS_RECIPE_ROTARY = "mods." + Mekanism.MODID + ".recipe.Rotary";
-    public static final String CLASS_RECIPE_ROTARY_GAS_TO_FLUID = CLASS_RECIPE_ROTARY + ".GasToFluid";
-    public static final String CLASS_RECIPE_ROTARY_FLUID_TO_GAS = CLASS_RECIPE_ROTARY + ".FluidToGas";
+    public static final String CLASS_RECIPE_ROTARY_CHEMICAL_TO_FLUID = CLASS_RECIPE_ROTARY + ".ChemicalToFluid";
+    public static final String CLASS_RECIPE_ROTARY_FLUID_TO_CHEMICAL = CLASS_RECIPE_ROTARY + ".FluidToChemical";
     public static final String CLASS_RECIPE_SAWING = "mods." + Mekanism.MODID + ".recipe.Sawing";
 
     public static final String CLASS_ATTRIBUTE_CHEMICAL = "mods." + Mekanism.MODID + ".attribute.ChemicalAttribute";
-    public static final String CLASS_ATTRIBUTE_COOLANT = "mods." + Mekanism.MODID + ".attribute.gas.CoolantAttribute";
-    public static final String CLASS_ATTRIBUTE_COOLED_COOLANT = "mods." + Mekanism.MODID + ".attribute.gas.CooledCoolantAttribute";
-    public static final String CLASS_ATTRIBUTE_HEATED_COOLANT = "mods." + Mekanism.MODID + ".attribute.gas.HeatedCoolantAttribute";
-    public static final String CLASS_ATTRIBUTE_FUEL = "mods." + Mekanism.MODID + ".attribute.gas.FuelAttribute";
-    public static final String CLASS_ATTRIBUTE_RADIATION = "mods." + Mekanism.MODID + ".attribute.gas.RadiationAttribute";
+    public static final String CLASS_ATTRIBUTE_COOLANT = CLASS_ATTRIBUTE_CHEMICAL + ".Coolant";
+    public static final String CLASS_ATTRIBUTE_COOLED_COOLANT = CLASS_ATTRIBUTE_COOLANT + ".Cooled";
+    public static final String CLASS_ATTRIBUTE_HEATED_COOLANT = CLASS_ATTRIBUTE_COOLANT + "Heated";
+    public static final String CLASS_ATTRIBUTE_FUEL = CLASS_ATTRIBUTE_CHEMICAL + "Fuel";
+    public static final String CLASS_ATTRIBUTE_RADIATION = CLASS_ATTRIBUTE_CHEMICAL + ".Radiation";
 
     public static final String CLASS_BUILDER_CHEMICAL = "mods." + Mekanism.MODID + ".content.builder.ChemicalBuilder";
-    public static final String CLASS_BUILDER_GAS = "mods." + Mekanism.MODID + ".content.builder.GasBuilder";
-    public static final String CLASS_BUILDER_INFUSE_TYPE = "mods." + Mekanism.MODID + ".content.builder.InfuseTypeBuilder";
-    public static final String CLASS_BUILDER_PIGMENT = "mods." + Mekanism.MODID + ".content.builder.PigmentBuilder";
-    public static final String CLASS_BUILDER_SLURRY = "mods." + Mekanism.MODID + ".content.builder.SlurryBuilder";
 
     //Expansions, declared below classes we can reference the partial string parts of our other types
     private static final String EXPANSION_TARGET_MANY = "crafttweaker.api.util.Many";

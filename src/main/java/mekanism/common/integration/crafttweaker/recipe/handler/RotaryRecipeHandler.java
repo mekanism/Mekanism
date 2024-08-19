@@ -50,41 +50,41 @@ public class RotaryRecipeHandler extends MekanismRecipeHandler<RotaryRecipe> {
                 return decompose(recipe.getFluidInput(), recipe.getChemicalInput(), recipe.getChemicalOutputDefinition(), recipe.getFluidOutputDefinition());
             }
             return decompose(recipe.getFluidInput(), recipe.getChemicalOutputDefinition());
-        }//Else has gas to fluid
+        }//Else has chemical to fluid
         return decompose(recipe.getChemicalInput(), recipe.getFluidOutputDefinition());
     }
 
     @Override
     public Optional<RotaryRecipe> recompose(IRecipeManager<? super RotaryRecipe> m, RegistryAccess registryAccess, IDecomposedRecipe recipe) {
         if (m instanceof RotaryRecipeManager manager) {
-            Optional<ChemicalStackIngredient> gasInput = CrTUtils.getSingleIfPresent(recipe, CrTRecipeComponents.CHEMICAL.input());
+            Optional<ChemicalStackIngredient> chemicalInput = CrTUtils.getSingleIfPresent(recipe, CrTRecipeComponents.CHEMICAL.input());
             Optional<IFluidStack> fluidOutput = CrTUtils.getSingleIfPresent(recipe, CrTRecipeComponents.FLUID.output());
-            if (gasInput.isPresent() != fluidOutput.isPresent()) {
-                throw new IllegalArgumentException("Mismatched gas input and fluid output. Only one is present.");
+            if (chemicalInput.isPresent() != fluidOutput.isPresent()) {
+                throw new IllegalArgumentException("Mismatched chemical input and fluid output. Only one is present.");
             }
             Optional<CTFluidIngredient> fluidInput = CrTUtils.getSingleIfPresent(recipe, CrTRecipeComponents.FLUID.input());
-            Optional<ICrTChemicalStack> gasOutput = CrTUtils.getSingleIfPresent(recipe, CrTRecipeComponents.CHEMICAL.output());
-            if (fluidInput.isPresent() != gasOutput.isPresent()) {
-                throw new IllegalArgumentException("Mismatched fluid input and gas output. Only one is present.");
+            Optional<ICrTChemicalStack> chemicalOutput = CrTUtils.getSingleIfPresent(recipe, CrTRecipeComponents.CHEMICAL.output());
+            if (fluidInput.isPresent() != chemicalOutput.isPresent()) {
+                throw new IllegalArgumentException("Mismatched fluid input and chemical output. Only one is present.");
             }
-            if (gasInput.isPresent()) {
+            if (chemicalInput.isPresent()) {
                 //noinspection OptionalIsPresent - Capturing lambdas
                 if (fluidInput.isPresent()) {
                     return Optional.of(manager.makeRecipe(
                           fluidInput.get(),
-                          gasInput.get(),
-                          gasOutput.get(),
+                          chemicalInput.get(),
+                          chemicalOutput.get(),
                           fluidOutput.get()
                     ));
                 }
                 return Optional.of(manager.makeRecipe(
-                      gasInput.get(),
+                      chemicalInput.get(),
                       fluidOutput.get()
                 ));
             } else if (fluidInput.isPresent()) {
                 return Optional.of(manager.makeRecipe(
                       fluidInput.get(),
-                      gasOutput.get()
+                      chemicalOutput.get()
                 ));
             }
         }

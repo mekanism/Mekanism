@@ -10,12 +10,12 @@ import mods.mekanism.api.ingredient.ChemicalStackIngredient;
  * 6) Adds a recipe that uses 400 mB of Water, 400 mB of Oxygen, and four Boats to create a Charcoal Dust and 400 mB of Hydrogen in 600 ticks.
 */
 
-// <recipetype:mekanism:reaction>.addRecipe(name as string, inputSolid as IIngredientWithAmount, inputFluid as CTFluidIngredient, inputGas as ChemicalStackIngredient, duration as int, outputItem as IItemStack)
-// <recipetype:mekanism:reaction>.addRecipe(name as string, inputSolid as IIngredientWithAmount, inputFluid as CTFluidIngredient, inputGas as ChemicalStackIngredient, duration as int, outputGas as ICrTChemicalStack)
-// <recipetype:mekanism:reaction>.addRecipe(name as string, inputSolid as IIngredientWithAmount, inputFluid as CTFluidIngredient, inputGas as ChemicalStackIngredient, duration as int, outputItem as IItemStack, energyRequired as long)
-// <recipetype:mekanism:reaction>.addRecipe(name as string, inputSolid as IIngredientWithAmount, inputFluid as CTFluidIngredient, inputGas as ChemicalStackIngredient, duration as int, outputItem as IItemStack, outputGas as ICrTChemicalStack)
-// <recipetype:mekanism:reaction>.addRecipe(name as string, inputSolid as IIngredientWithAmount, inputFluid as CTFluidIngredient, inputGas as ChemicalStackIngredient, duration as int, outputGas as ICrTChemicalStack, energyRequired as long)
-// <recipetype:mekanism:reaction>.addRecipe(name as string, inputSolid as IIngredientWithAmount, inputFluid as CTFluidIngredient, inputGas as ChemicalStackIngredient, duration as int, outputItem as IItemStack, outputGas as ICrTChemicalStack, energyRequired as long)
+// <recipetype:mekanism:reaction>.addRecipe(name as string, inputSolid as IIngredientWithAmount, inputFluid as CTFluidIngredient, inputChemical as ChemicalStackIngredient, duration as int, outputItem as IItemStack)
+// <recipetype:mekanism:reaction>.addRecipe(name as string, inputSolid as IIngredientWithAmount, inputFluid as CTFluidIngredient, inputChemical as ChemicalStackIngredient, duration as int, outputChemical as ICrTChemicalStack)
+// <recipetype:mekanism:reaction>.addRecipe(name as string, inputSolid as IIngredientWithAmount, inputFluid as CTFluidIngredient, inputChemical as ChemicalStackIngredient, duration as int, outputItem as IItemStack, energyRequired as long)
+// <recipetype:mekanism:reaction>.addRecipe(name as string, inputSolid as IIngredientWithAmount, inputFluid as CTFluidIngredient, inputChemical as ChemicalStackIngredient, duration as int, outputItem as IItemStack, outputChemical as ICrTChemicalStack)
+// <recipetype:mekanism:reaction>.addRecipe(name as string, inputSolid as IIngredientWithAmount, inputFluid as CTFluidIngredient, inputChemical as ChemicalStackIngredient, duration as int, outputChemical as ICrTChemicalStack, energyRequired as long)
+// <recipetype:mekanism:reaction>.addRecipe(name as string, inputSolid as IIngredientWithAmount, inputFluid as CTFluidIngredient, inputChemical as ChemicalStackIngredient, duration as int, outputItem as IItemStack, outputChemical as ICrTChemicalStack, energyRequired as long)
 
 <recipetype:mekanism:reaction>.addRecipe("reaction/sawdust", <tag:item:c:dusts/wood>, <tag:fluid:minecraft:water> * 350, ChemicalStackIngredient.from(<chemical:mekanism:hydrogen_chloride> * 50), 45, <item:minecraft:paper> * 2, 25);
 //An alternate implementation of the above recipe are shown commented below. This implementation makes use of implicit casting to allow easier calling:

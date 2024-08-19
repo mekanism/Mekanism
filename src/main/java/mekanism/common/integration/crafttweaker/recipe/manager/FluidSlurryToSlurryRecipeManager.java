@@ -23,32 +23,32 @@ public abstract class FluidSlurryToSlurryRecipeManager extends MekanismRecipeMan
     }
 
     /**
-     * Adds a recipe that converts a fluid and slurry to another slurry.
+     * Adds a recipe that converts a fluid and chemical to another chemical.
      * <br>
      * If this is called from the washing recipe manager, this will be a washing recipe and able to be processed in a chemical washer.
      *
-     * @param name        Name of the new recipe.
-     * @param fluidInput  {@link CTFluidIngredient} representing the fluid input of the recipe.
-     * @param slurryInput {@link ChemicalStackIngredient} representing the slurry input of the recipe.
-     * @param output      {@link ICrTChemicalStack} representing the output of the recipe.
+     * @param name          Name of the new recipe.
+     * @param fluidInput    {@link CTFluidIngredient} representing the fluid input of the recipe.
+     * @param chemicalInput {@link ChemicalStackIngredient} representing the slurry input of the recipe.
+     * @param output        {@link ICrTChemicalStack} representing the output of the recipe.
      */
     @ZenCodeType.Method
-    public void addRecipe(String name, CTFluidIngredient fluidInput, ChemicalStackIngredient slurryInput, ICrTChemicalStack output) {
-        addRecipe(name, makeRecipe(fluidInput, slurryInput, output));
+    public void addRecipe(String name, CTFluidIngredient fluidInput, ChemicalStackIngredient chemicalInput, ICrTChemicalStack output) {
+        addRecipe(name, makeRecipe(fluidInput, chemicalInput, output));
     }
 
     /**
-     * Creates a recipe that converts a fluid and slurry to another slurry.
+     * Creates a recipe that converts a fluid and chemical to another chemical.
      *
-     * @param fluidInput  {@link CTFluidIngredient} representing the fluid input of the recipe.
-     * @param slurryInput {@link ChemicalStackIngredient} representing the slurry input of the recipe.
-     * @param output      {@link ICrTChemicalStack} representing the output of the recipe. Will be validated as not empty.
+     * @param fluidInput    {@link CTFluidIngredient} representing the fluid input of the recipe.
+     * @param chemicalInput {@link ChemicalStackIngredient} representing the slurry input of the recipe.
+     * @param output        {@link ICrTChemicalStack} representing the output of the recipe. Will be validated as not empty.
      */
-    public final FluidSlurryToSlurryRecipe makeRecipe(CTFluidIngredient fluidInput, ChemicalStackIngredient slurryInput, ICrTChemicalStack output) {
-        return makeRecipe(fluidInput, slurryInput, getAndValidateNotEmpty(output));
+    public final FluidSlurryToSlurryRecipe makeRecipe(CTFluidIngredient fluidInput, ChemicalStackIngredient chemicalInput, ICrTChemicalStack output) {
+        return makeRecipe(fluidInput, chemicalInput, getAndValidateNotEmpty(output));
     }
 
-    protected abstract FluidSlurryToSlurryRecipe makeRecipe(CTFluidIngredient fluidInput, ChemicalStackIngredient slurryInput, ChemicalStack output);
+    protected abstract FluidSlurryToSlurryRecipe makeRecipe(CTFluidIngredient fluidInput, ChemicalStackIngredient chemicalInput, ChemicalStack output);
 
     @Override
     protected String describeOutputs(FluidSlurryToSlurryRecipe recipe) {
@@ -66,8 +66,8 @@ public abstract class FluidSlurryToSlurryRecipeManager extends MekanismRecipeMan
         }
 
         @Override
-        protected FluidSlurryToSlurryRecipe makeRecipe(CTFluidIngredient fluidInput, ChemicalStackIngredient slurryInput, ChemicalStack output) {
-            return new BasicFluidSlurryToSlurryRecipe(CrTUtils.fromCrT(fluidInput), slurryInput, output);
+        protected FluidSlurryToSlurryRecipe makeRecipe(CTFluidIngredient fluidInput, ChemicalStackIngredient chemicalInput, ChemicalStack output) {
+            return new BasicFluidSlurryToSlurryRecipe(CrTUtils.fromCrT(fluidInput), chemicalInput, output);
         }
     }
 }

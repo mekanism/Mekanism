@@ -21,9 +21,9 @@ import org.openzen.zencode.java.ZenCodeType;
 public class CrTModExpansion {
 
     /**
-     * Gets the gases that are registered under this mod's ID.
+     * Gets the chemicals that are registered under this mod's ID.
      *
-     * @return A list of gases that were registered under this mod's ID.
+     * @return A list of chemicals that were registered under this mod's ID.
      */
     @ZenCodeType.Method
     @ZenCodeType.Getter("chemicals")

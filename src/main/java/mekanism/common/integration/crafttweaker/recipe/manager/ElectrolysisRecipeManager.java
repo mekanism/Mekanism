@@ -23,51 +23,50 @@ public class ElectrolysisRecipeManager extends MekanismRecipeManager<SingleFluid
     }
 
     /**
-     * Adds a separating recipe that separates a fluid into two gases. Electrolytic Separators can process this recipe type.
+     * Adds a separating recipe that separates a fluid into two chemicals. Electrolytic Separators can process this recipe type.
      *
-     * @param name             Name of the new recipe.
-     * @param input            {@link CTFluidIngredient} representing the input of the recipe.
-     * @param leftGasOutput    {@link ICrTChemicalStack} representing the left output of the recipe.
-     * @param rightGasOutput   {@link ICrTChemicalStack} representing the right output of the recipe.
-     * @param energyMultiplier Value representing the multiplier to the energy cost in relation to the configured hydrogen separating energy cost. This value must be
-     *                         greater than or equal to one.
+     * @param name                Name of the new recipe.
+     * @param input               {@link CTFluidIngredient} representing the input of the recipe.
+     * @param leftChemicalOutput  {@link ICrTChemicalStack} representing the left output of the recipe.
+     * @param rightChemicalOutput {@link ICrTChemicalStack} representing the right output of the recipe.
+     * @param energyMultiplier    Value representing the multiplier to the energy cost in relation to the configured hydrogen separating energy cost. This value must be
+     *                            greater than or equal to one.
      */
     @ZenCodeType.Method
-    public void addRecipe(String name, CTFluidIngredient input, ICrTChemicalStack leftGasOutput, ICrTChemicalStack rightGasOutput, long energyMultiplier) {
-        addRecipe(name, makeRecipe(input, leftGasOutput, rightGasOutput, energyMultiplier));
+    public void addRecipe(String name, CTFluidIngredient input, ICrTChemicalStack leftChemicalOutput, ICrTChemicalStack rightChemicalOutput, long energyMultiplier) {
+        addRecipe(name, makeRecipe(input, leftChemicalOutput, rightChemicalOutput, energyMultiplier));
     }
 
     /**
-     * Adds a separating recipe that separates a fluid into two gases. Electrolytic Separators can process this recipe type.
+     * Adds a separating recipe that separates a fluid into two chemicals. Electrolytic Separators can process this recipe type.
      *
-     * @param name           Name of the new recipe.
-     * @param input          {@link CTFluidIngredient} representing the input of the recipe.
-     * @param leftGasOutput  {@link ICrTChemicalStack} representing the left output of the recipe.
-     * @param rightGasOutput {@link ICrTChemicalStack} representing the right output of the recipe.
+     * @param name                Name of the new recipe.
+     * @param input               {@link CTFluidIngredient} representing the input of the recipe.
+     * @param leftChemicalOutput  {@link ICrTChemicalStack} representing the left output of the recipe.
+     * @param rightChemicalOutput {@link ICrTChemicalStack} representing the right output of the recipe.
      *
      * @apiNote {@code energyMultiplier} will default to one. If this value is specified it must be greater than or equal to one.
      */
     @ZenCodeType.Method
-    public void addRecipe(String name, CTFluidIngredient input, ICrTChemicalStack leftGasOutput, ICrTChemicalStack rightGasOutput) {
+    public void addRecipe(String name, CTFluidIngredient input, ICrTChemicalStack leftChemicalOutput, ICrTChemicalStack rightChemicalOutput) {
         //TODO: If https://github.com/ZenCodeLang/ZenCode/issues/31 gets fixed, merge this back with the other addRecipe method using a ZC Optional
-        addRecipe(name, makeRecipe(input, leftGasOutput, rightGasOutput, 1L));
+        addRecipe(name, makeRecipe(input, leftChemicalOutput, rightChemicalOutput, 1L));
     }
 
     /**
-     * Creates a separating recipe that separates a fluid into two gases.
+     * Creates a separating recipe that separates a fluid into two chemicals.
      *
-     * @param input            {@link CTFluidIngredient} representing the input of the recipe.
-     * @param leftGasOutput    {@link ICrTChemicalStack} representing the left output of the recipe. Will be validated as not empty.
-     * @param rightGasOutput   {@link ICrTChemicalStack} representing the right output of the recipe. Will be validated as not empty.
-     * @param energyMultiplier Value representing the multiplier to the energy cost in relation to the configured hydrogen separating energy cost. Will be validated to be
-     *                         greater than or equal to one.
+     * @param input               {@link CTFluidIngredient} representing the input of the recipe.
+     * @param leftChemicalOutput  {@link ICrTChemicalStack} representing the left output of the recipe. Will be validated as not empty.
+     * @param rightChemicalOutput {@link ICrTChemicalStack} representing the right output of the recipe. Will be validated as not empty.
+     * @param energyMultiplier    Value representing the multiplier to the energy cost in relation to the configured hydrogen separating energy cost. Will be validated to
+     *                            be greater than or equal to one.
      */
-    public final ElectrolysisRecipe makeRecipe(CTFluidIngredient input, ICrTChemicalStack leftGasOutput, ICrTChemicalStack rightGasOutput, long energyMultiplier) {
+    public final ElectrolysisRecipe makeRecipe(CTFluidIngredient input, ICrTChemicalStack leftChemicalOutput, ICrTChemicalStack rightChemicalOutput, long energyMultiplier) {
         if (energyMultiplier < 1L) {
             throw new IllegalArgumentException("Energy multiplier must be at least one! Multiplier: " + energyMultiplier);
         }
-        return new BasicElectrolysisRecipe(CrTUtils.fromCrT(input), energyMultiplier, getAndValidateNotEmpty(leftGasOutput),
-              getAndValidateNotEmpty(rightGasOutput));
+        return new BasicElectrolysisRecipe(CrTUtils.fromCrT(input), energyMultiplier, getAndValidateNotEmpty(leftChemicalOutput), getAndValidateNotEmpty(rightChemicalOutput));
     }
 
     @Override

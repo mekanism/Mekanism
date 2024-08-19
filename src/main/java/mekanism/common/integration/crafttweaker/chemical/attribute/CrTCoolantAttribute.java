@@ -1,4 +1,4 @@
-package mekanism.common.integration.crafttweaker.chemical.attribute.gas;
+package mekanism.common.integration.crafttweaker.chemical.attribute;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
@@ -24,7 +24,7 @@ public class CrTCoolantAttribute {
     /**
      * Defines a 'cooled' variant of a coolant for use in Fission Reactors.
      *
-     * @param heatedGas       Supplier to the heated variant of this chemical.
+     * @param heatedChemical       Supplier to the heated variant of this chemical.
      * @param thermalEnthalpy Defines how much energy one mB of the chemical can store; lower values will cause reactors to require more of the chemical to stay cool.
      *                        Must be greater than zero.
      * @param conductivity    Defines the proportion of a reactor's available heat that can be used at an instant to convert this coolant's cool variant to its heated
@@ -33,14 +33,14 @@ public class CrTCoolantAttribute {
      * @return Attribute representing a 'cooled' variant of a coolant.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static ChemicalAttributes.CooledCoolant cooled(Supplier<Chemical> heatedGas, double thermalEnthalpy, double conductivity) {
-        return new ChemicalAttributes.CooledCoolant(new LazyChemicalProvider(heatedGas), thermalEnthalpy, conductivity);
+    public static ChemicalAttributes.CooledCoolant cooled(Supplier<Chemical> heatedChemical, double thermalEnthalpy, double conductivity) {
+        return new ChemicalAttributes.CooledCoolant(new LazyChemicalProvider(heatedChemical), thermalEnthalpy, conductivity);
     }
 
     /**
      * Defines the 'heated' variant of a coolant for use in Fission Reactors.
      *
-     * @param cooledGas       Supplier to the cooled variant of this chemical.
+     * @param cooledChemical       Supplier to the cooled variant of this chemical.
      * @param thermalEnthalpy Defines how much energy one mB of the chemical can store; lower values will cause reactors to require more of the chemical to stay cool.
      *                        Must be greater than zero.
      * @param conductivity    Defines the proportion of a reactor's available heat that can be used at an instant to convert this coolant's cool variant to its heated
@@ -49,8 +49,8 @@ public class CrTCoolantAttribute {
      * @return Attribute representing the 'heated' variant of a coolant.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static ChemicalAttributes.HeatedCoolant heated(Supplier<Chemical> cooledGas, double thermalEnthalpy, double conductivity) {
-        return new ChemicalAttributes.HeatedCoolant(new LazyChemicalProvider(cooledGas), thermalEnthalpy, conductivity);
+    public static ChemicalAttributes.HeatedCoolant heated(Supplier<Chemical> cooledChemical, double thermalEnthalpy, double conductivity) {
+        return new ChemicalAttributes.HeatedCoolant(new LazyChemicalProvider(cooledChemical), thermalEnthalpy, conductivity);
     }
 
     /**
@@ -86,7 +86,7 @@ public class CrTCoolantAttribute {
          * Gets the heated version of this coolant.
          */
         @ZenCodeType.Method
-        public static Chemical getHeatedGas(ChemicalAttributes.CooledCoolant _this) {
+        public static Chemical getHeatedChemical(ChemicalAttributes.CooledCoolant _this) {
             return _this.getHeatedChemical();
         }
     }
@@ -105,7 +105,7 @@ public class CrTCoolantAttribute {
          * Gets the heated version of this coolant.
          */
         @ZenCodeType.Method
-        public static Chemical getCooledGas(ChemicalAttributes.HeatedCoolant _this) {
+        public static Chemical getCooledChemical(ChemicalAttributes.HeatedCoolant _this) {
             return _this.getCooledChemical();
         }
     }

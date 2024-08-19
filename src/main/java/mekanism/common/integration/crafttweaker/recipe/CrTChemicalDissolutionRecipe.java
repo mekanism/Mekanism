@@ -29,11 +29,11 @@ public class CrTChemicalDissolutionRecipe {
     }
 
     /**
-     * Gets the input gas ingredient.
+     * Gets the input chemical ingredient.
      */
     @ZenCodeType.Method
-    @ZenCodeType.Getter("gasInput")
-    public static ChemicalStackIngredient getGasInput(ChemicalDissolutionRecipe _this) {
+    @ZenCodeType.Getter("chemicalInput")
+    public static ChemicalStackIngredient getChemicalInput(ChemicalDissolutionRecipe _this) {
         return _this.getChemicalInput();
     }
 

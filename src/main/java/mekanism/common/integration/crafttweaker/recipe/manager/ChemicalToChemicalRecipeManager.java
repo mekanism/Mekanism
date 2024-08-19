@@ -23,7 +23,7 @@ public abstract class ChemicalToChemicalRecipeManager extends MekanismRecipeMana
     }
 
     /**
-     * Adds a recipe that converts a gas into another gas.
+     * Adds a recipe that converts a chemical into another chemical.
      * <br>
      * If this is called from the activating recipe manager, this will be an activating recipe and able to be processed in a solar neutron activator.
      * <br>
@@ -39,7 +39,7 @@ public abstract class ChemicalToChemicalRecipeManager extends MekanismRecipeMana
     }
 
     /**
-     * Creates a recipe that converts a gas into another gas.
+     * Creates a recipe that converts a chemical into another chemical.
      *
      * @param input  {@link ChemicalStackIngredient} representing the input of the recipe.
      * @param output {@link ICrTChemicalStack} representing the output of the recipe. Will be validated as not empty.

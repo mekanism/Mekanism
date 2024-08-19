@@ -22,8 +22,6 @@ public class ChemicalToChemicalRecipeHandler extends MekanismRecipeHandler<Chemi
 
     @Override
     public <U extends Recipe<?>> boolean doesConflict(IRecipeManager<? super ChemicalToChemicalRecipe> manager, ChemicalToChemicalRecipe recipe, U o) {
-        //Only support if the other is a gas to gas recipe and don't bother checking the reverse as the recipe type's generics
-        // ensures that it is of the same type
         return o instanceof ChemicalToChemicalRecipe other && ingredientConflicts(recipe.getInput(), other.getInput());
     }
 

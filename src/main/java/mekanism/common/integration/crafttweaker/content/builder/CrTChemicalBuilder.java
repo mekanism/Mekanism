@@ -34,7 +34,7 @@ public class CrTChemicalBuilder {
     @ZenCodeType.Method
     public CrTChemicalBuilder with(ChemicalAttribute attribute) {
         getInternal().with(attribute);
-        return self();
+        return this;
     }
 
     /**
@@ -45,7 +45,7 @@ public class CrTChemicalBuilder {
     @ZenCodeType.Method
     public CrTChemicalBuilder tint(int tint) {
         getInternal().tint(tint);
-        return self();
+        return this;
     }
 
     /**
@@ -57,7 +57,7 @@ public class CrTChemicalBuilder {
     @ZenCodeType.Method
     public CrTChemicalBuilder colorRepresentation(int color) {
         colorRepresentation = color;
-        return self();
+        return this;
     }
 
     /**
@@ -76,8 +76,8 @@ public class CrTChemicalBuilder {
      * @param registryName Registry name for the chemical.
      */
     protected void build(ResourceLocation registryName) {
-        Chemical gas = ChemicalUtil.chemical(getInternal(), colorRepresentation);
-        CrTContentUtils.queueChemicalForRegistration(registryName, gas);
+        Chemical chemical = ChemicalUtil.chemical(getInternal(), colorRepresentation);
+        CrTContentUtils.queueChemicalForRegistration(registryName, chemical);
     }
 
     /**
@@ -85,10 +85,6 @@ public class CrTChemicalBuilder {
      */
     protected ChemicalBuilder getInternal() {
         return builder;
-    }
-
-    protected CrTChemicalBuilder self() {
-        return (CrTChemicalBuilder) this;
     }
 
     /**
@@ -116,47 +112,48 @@ public class CrTChemicalBuilder {
         return this;
     }
 
+    /**
+     * Set this chemical should render as a gas. Omit to leave as fluid-like.
+     */
     @ZenCodeType.Method
     public CrTChemicalBuilder gaseous() {
         getInternal().gaseous();
         return this;
     }
 
+    /**
+     * Creates a builder for registering a custom {@link Chemical}.
+     *
+     * @param textureLocation If present the {@link ResourceLocation} representing the texture this {@link Chemical} will use, otherwise defaults to our default Gas texture.
+     *
+     * @return A builder for creating a custom {@link Chemical}.
+     *
+     * @apiNote If a custom texture is used it is recommended to override to use {@link #colorRepresentation(int)} if this builder method is not being used in combination
+     * with {@link #tint(int)} due to the texture not needing tinting.
+     */
     @ZenCodeType.Method
     public static CrTChemicalBuilder builder(@ZenCodeType.Optional ResourceLocation textureLocation) {
         return new CrTChemicalBuilder(textureLocation == null ? ChemicalBuilder.builder() : ChemicalBuilder.builder(textureLocation));
     }
 
     /**
-     * Creates a builder for registering a custom {@link Chemical}.
-     *
-     * @param textureLocation If present the {@link ResourceLocation} representing the texture this {@link Chemical} will use, otherwise defaults to our default Infuse
-     *                        Type texture.
+     * Creates a builder for registering a custom {@link Chemical} with the default infuse type texture.
      *
      * @return A builder for creating a custom {@link Chemical}.
-     *
-     * @apiNote If a custom texture is used it is recommended to override to use {@link #colorRepresentation(int)} if this builder method is not being used in combination
-     * with {@link #tint(int)} due to the texture not needing tinting.
      */
     @ZenCodeType.Method
-    public static CrTChemicalBuilder infuseType(@ZenCodeType.Optional ResourceLocation textureLocation) {
-        return new CrTChemicalBuilder(textureLocation == null ? ChemicalBuilder.infuseType() : ChemicalBuilder.builder(textureLocation));
+    public static CrTChemicalBuilder infuseType() {
+        return new CrTChemicalBuilder(ChemicalBuilder.infuseType());
     }
 
     /**
-     * Creates a builder for registering a custom {@link Chemical}.
-     *
-     * @param textureLocation If present the {@link ResourceLocation} representing the texture this {@link Chemical} will use, otherwise defaults to our default
-     *                        {@link Chemical} texture.
+     * Creates a builder for registering a custom {@link Chemical} with the default pigment texture.
      *
      * @return A builder for creating a custom {@link Chemical}.
-     *
-     * @apiNote If a custom texture is used it is recommended to override to use {@link #colorRepresentation(int)} if this builder method is not being used in combination
-     * with {@link #tint(int)} due to the texture not needing tinting.
      */
     @ZenCodeType.Method
-    public static CrTChemicalBuilder pigment(@ZenCodeType.Optional ResourceLocation textureLocation) {
-        return new CrTChemicalBuilder(textureLocation == null ? ChemicalBuilder.pigment() : ChemicalBuilder.builder(textureLocation));
+    public static CrTChemicalBuilder pigment() {
+        return new CrTChemicalBuilder(ChemicalBuilder.pigment());
     }
 
     /**

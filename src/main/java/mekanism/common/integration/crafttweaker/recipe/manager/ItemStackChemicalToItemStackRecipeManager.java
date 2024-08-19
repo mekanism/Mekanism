@@ -90,8 +90,8 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<RECIPE extends I
         }
 
         @Override
-        protected ItemStackChemicalToItemStackRecipe makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient gasInput, ItemStack output) {
-            return new BasicCompressingRecipe(CrTUtils.fromCrT(itemInput), gasInput, output);
+        protected ItemStackChemicalToItemStackRecipe makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient chemicalInput, ItemStack output) {
+            return new BasicCompressingRecipe(CrTUtils.fromCrT(itemInput), chemicalInput, output);
         }
     }
 
@@ -106,8 +106,8 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<RECIPE extends I
         }
 
         @Override
-        protected ItemStackChemicalToItemStackRecipe makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient gasInput, ItemStack output) {
-            return new BasicInjectingRecipe(CrTUtils.fromCrT(itemInput), gasInput, output);
+        protected ItemStackChemicalToItemStackRecipe makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient chemicalInput, ItemStack output) {
+            return new BasicInjectingRecipe(CrTUtils.fromCrT(itemInput), chemicalInput, output);
         }
     }
 
@@ -122,8 +122,8 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<RECIPE extends I
         }
 
         @Override
-        protected ItemStackChemicalToItemStackRecipe makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient gasInput, ItemStack output) {
-            return new BasicPurifyingRecipe(CrTUtils.fromCrT(itemInput), gasInput, output);
+        protected ItemStackChemicalToItemStackRecipe makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient chemicalInput, ItemStack output) {
+            return new BasicPurifyingRecipe(CrTUtils.fromCrT(itemInput), chemicalInput, output);
         }
     }
 
@@ -138,8 +138,8 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<RECIPE extends I
         }
 
         @Override
-        protected MetallurgicInfuserRecipe makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient infusionInput, ItemStack output) {
-            return new BasicMetallurgicInfuserRecipe(CrTUtils.fromCrT(itemInput), infusionInput, output);
+        protected MetallurgicInfuserRecipe makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient chemicalInput, ItemStack output) {
+            return new BasicMetallurgicInfuserRecipe(CrTUtils.fromCrT(itemInput), chemicalInput, output);
         }
     }
 
@@ -154,8 +154,8 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<RECIPE extends I
         }
 
         @Override
-        protected PaintingRecipe makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient pigmentInput, ItemStack output) {
-            return new BasicPaintingRecipe(CrTUtils.fromCrT(itemInput), pigmentInput, output);
+        protected PaintingRecipe makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient chemicalInput, ItemStack output) {
+            return new BasicPaintingRecipe(CrTUtils.fromCrT(itemInput), chemicalInput, output);
         }
     }
 }

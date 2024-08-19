@@ -27,7 +27,7 @@ public class CrTChemical {
     }
 
     /**
-     * Creates a new {@link ICrTChemicalStack} with the given amount of infuse type.
+     * Creates a new {@link ICrTChemicalStack} with the given amount of chemical.
      *
      * @param amount The size of the stack to create.
      *
@@ -40,9 +40,9 @@ public class CrTChemical {
     }
 
     /**
-     * Gets the tags that this infuse type is a part of.
+     * Gets the tags that this chemical is a part of.
      *
-     * @return All the tags this infuse type is a part of.
+     * @return All the tags this chemical is a part of.
      */
     @ZenCodeType.Method
     @ZenCodeType.Getter("tags")

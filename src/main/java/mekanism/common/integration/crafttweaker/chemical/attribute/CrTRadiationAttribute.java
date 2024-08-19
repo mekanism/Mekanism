@@ -1,4 +1,4 @@
-package mekanism.common.integration.crafttweaker.chemical.attribute.gas;
+package mekanism.common.integration.crafttweaker.chemical.attribute;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
@@ -31,7 +31,7 @@ public class CrTRadiationAttribute {
     }
 
     /**
-     * Gets the radioactivity of this gas in Sv/h. Each mB of this chemical released into the environment will cause a radiation source of the given radioactivity.
+     * Gets the radioactivity of this chemical in Sv/h. Each mB of this chemical released into the environment will cause a radiation source of the given radioactivity.
      *
      * @return the radioactivity of this chemical
      */

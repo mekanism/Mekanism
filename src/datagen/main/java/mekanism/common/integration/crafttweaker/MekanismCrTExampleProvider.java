@@ -20,32 +20,32 @@ import mekanism.common.integration.crafttweaker.recipe.manager.ChemicalChemicalT
 import mekanism.common.integration.crafttweaker.recipe.manager.ChemicalChemicalToChemicalRecipeManager.PigmentMixingRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.manager.ChemicalCrystallizerRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.manager.ChemicalDissolutionRecipeManager;
+import mekanism.common.integration.crafttweaker.recipe.manager.ChemicalToChemicalRecipeManager.IsotopicCentrifugeRecipeManager;
+import mekanism.common.integration.crafttweaker.recipe.manager.ChemicalToChemicalRecipeManager.SolarNeutronActivatorRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.manager.CombinerRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.manager.ElectrolysisRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.manager.FluidSlurryToSlurryRecipeManager.ChemicalWasherRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.manager.FluidToFluidRecipeManager.EvaporatingRecipeManager;
-import mekanism.common.integration.crafttweaker.recipe.manager.ChemicalToChemicalRecipeManager.IsotopicCentrifugeRecipeManager;
-import mekanism.common.integration.crafttweaker.recipe.manager.ChemicalToChemicalRecipeManager.SolarNeutronActivatorRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.manager.ItemStackChemicalToItemStackRecipeManager.ChemicalInjectionRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.manager.ItemStackChemicalToItemStackRecipeManager.MetallurgicInfuserRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.manager.ItemStackChemicalToItemStackRecipeManager.OsmiumCompressorRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.manager.ItemStackChemicalToItemStackRecipeManager.PaintingRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.manager.ItemStackChemicalToItemStackRecipeManager.PurificationRecipeManager;
+import mekanism.common.integration.crafttweaker.recipe.manager.ItemStackToChemicalRecipeManager.ChemicalConversionRecipeManager;
+import mekanism.common.integration.crafttweaker.recipe.manager.ItemStackToChemicalRecipeManager.ChemicalOxidizerRecipeManager;
+import mekanism.common.integration.crafttweaker.recipe.manager.ItemStackToChemicalRecipeManager.PigmentExtractingRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.manager.ItemStackToEnergyRecipeManager.EnergyConversionRecipeManager;
-import mekanism.common.integration.crafttweaker.recipe.manager.ItemStackToGasRecipeManager.ChemicalOxidizerRecipeManager;
-import mekanism.common.integration.crafttweaker.recipe.manager.ItemStackToGasRecipeManager.ChemicalConversionRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.manager.ItemStackToItemStackRecipeManager.CrusherRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.manager.ItemStackToItemStackRecipeManager.EnergizedSmelterRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.manager.ItemStackToItemStackRecipeManager.EnrichmentChamberRecipeManager;
-import mekanism.common.integration.crafttweaker.recipe.manager.ItemStackToPigmentRecipeManager.PigmentExtractingRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.manager.NucleosynthesizingRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.manager.PressurizedReactionRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.manager.RotaryRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.manager.SawmillRecipeManager;
 import mekanism.common.registration.impl.SlurryRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismChemicals;
+import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
@@ -89,11 +89,11 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
                     "4) Creates an example Dirty Slurry that is for a yellow ore.",
                     "5) Creates an example Clean Slurry that is for the same yellow ore."
               ).blankLine()
-              .addComponent(imports -> new SimpleCustomChemicalComponent(imports.addImport(CrTConstants.CLASS_BUILDER_GAS), "example_gas", 0xDF03FC))
-              .addComponent(imports -> new SimpleCustomChemicalComponent(imports.addImport(CrTConstants.CLASS_BUILDER_INFUSE_TYPE), "example_infuse_type", 0x03FC0B))
-              .addComponent(imports -> new SimpleCustomChemicalComponent(imports.addImport(CrTConstants.CLASS_BUILDER_PIGMENT), "example_pigment", 0xCAFC03))
-              .addComponent(imports -> new SimpleCustomChemicalComponent(imports.addImport(CrTConstants.CLASS_BUILDER_SLURRY), "dirty", "example_dirty_slurry", 0xF0FC03))
-              .addComponent(imports -> new SimpleCustomChemicalComponent(imports.addImport(CrTConstants.CLASS_BUILDER_SLURRY), "clean", "example_clean_slurry", 0xF0FC03))
+              .addComponent(imports -> new SimpleCustomChemicalComponent(imports.addImport(CrTConstants.CLASS_BUILDER_CHEMICAL), "builder", "example_gas", 0xDF03FC))
+              .addComponent(imports -> new SimpleCustomChemicalComponent(imports.addImport(CrTConstants.CLASS_BUILDER_CHEMICAL), "infuseType", "example_infuse_type", 0x03FC0B))
+              .addComponent(imports -> new SimpleCustomChemicalComponent(imports.addImport(CrTConstants.CLASS_BUILDER_CHEMICAL), "pigment", "example_pigment", 0xCAFC03))
+              .addComponent(imports -> new SimpleCustomChemicalComponent(imports.addImport(CrTConstants.CLASS_BUILDER_CHEMICAL), "dirty", "example_dirty_slurry", 0xF0FC03))
+              .addComponent(imports -> new SimpleCustomChemicalComponent(imports.addImport(CrTConstants.CLASS_BUILDER_CHEMICAL), "clean", "example_clean_slurry", 0xF0FC03))
         ;
         //JEITweaker integration
         exampleBuilder("mekanism/jeitweaker_integration")
@@ -506,23 +506,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
         }
     }
 
-    private static class SimpleCustomChemicalComponent implements ICrTExampleComponent {
-
-        private final String type;
-        private final String name;
-        private final String constructor;
-        private final int color;
-
-        public SimpleCustomChemicalComponent(String type, String name, int color) {
-            this(type, "builder", name, color);
-        }
-
-        public SimpleCustomChemicalComponent(String type, String constructor, String name, int color) {
-            this.type = type;
-            this.constructor = constructor;
-            this.name = name;
-            this.color = color;
-        }
+    private record SimpleCustomChemicalComponent(String type, String constructor, String name, int color) implements ICrTExampleComponent {
 
         @NotNull
         @Override

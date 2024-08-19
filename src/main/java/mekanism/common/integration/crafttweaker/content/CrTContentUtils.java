@@ -3,7 +3,6 @@ package mekanism.common.integration.crafttweaker.content;
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.zencode.scriptrun.ScriptRunConfiguration;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
@@ -28,9 +27,9 @@ public class CrTContentUtils {
         //Only queue our chemicals for registration on the first run of our loader
         if (queuedChemicals != null) {
             if (queuedChemicals.put(registryName, chemical) == null) {
-                CrTConstants.CRT_LOGGER.info("Queueing {} '{}' for registration.", "Chemical", registryName);
+                CrTConstants.CRT_LOGGER.info("Queueing Chemical '{}' for registration.", registryName);
             } else {
-                CrTConstants.CRT_LOGGER.warn("Registration for {} '{}' is already queued, skipping duplicate.", "Chemical", registryName);
+                CrTConstants.CRT_LOGGER.warn("Registration for Chemical '{}' is already queued, skipping duplicate.", registryName);
             }
         }
     }
@@ -51,11 +50,11 @@ public class CrTContentUtils {
             }
             if (queuedChemicals != null) {//Validate it isn't null, it shouldn't be but just in case the event gets fired again or something
                 int count = queuedChemicals.size();
-                CrTConstants.CRT_LOGGER.info("Registering {} custom {}.", count, count == 1 ? "Chemical".toLowerCase(Locale.ROOT) : "chemicals");
+                CrTConstants.CRT_LOGGER.info("Registering {} custom {}.", count, count == 1 ? "chemical" : "chemicals");
                 for (Map.Entry<ResourceLocation, Chemical> entry : queuedChemicals.entrySet()) {
                     ResourceLocation registryName = entry.getKey();
                     helper.register(registryName, entry.getValue());
-                    CrTConstants.CRT_LOGGER.info("Registered {}: '{}'.", "Chemical", registryName);
+                    CrTConstants.CRT_LOGGER.info("Registered Chemical: '{}'.", registryName);
                 }
                 // invalidate the reference to it, so that
                 // we properly don't allow more registration to happen once we start registering a specific chemical type

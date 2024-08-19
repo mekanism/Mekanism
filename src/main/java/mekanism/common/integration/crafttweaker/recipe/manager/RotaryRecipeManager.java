@@ -24,83 +24,83 @@ public class RotaryRecipeManager extends MekanismRecipeManager<RotaryRecipeInput
     }
 
     /**
-     * Adds a rotary recipe that converts a fluid into a gas. Rotary Condensers set to Decondensentrating can process this recipe type.
+     * Adds a rotary recipe that converts a fluid into a chemical. Rotary Condensers set to Decondensentrating can process this recipe type.
      *
-     * @param name       Name of the new recipe.
-     * @param fluidInput {@link CTFluidIngredient} representing the input of the recipe.
-     * @param gasOutput  {@link ICrTChemicalStack} representing the output of the recipe.
+     * @param name           Name of the new recipe.
+     * @param fluidInput     {@link CTFluidIngredient} representing the input of the recipe.
+     * @param chemicalOutput {@link ICrTChemicalStack} representing the output of the recipe.
      *
-     * @apiNote It is recommended to use {@link #addRecipe(String, CTFluidIngredient, ChemicalStackIngredient, ICrTChemicalStack, IFluidStack)} over this method in combination
-     * with {@link #addRecipe(String, ChemicalStackIngredient, IFluidStack)} if the conversion will be possible in both directions.
+     * @apiNote It is recommended to use {@link #addRecipe(String, CTFluidIngredient, ChemicalStackIngredient, ICrTChemicalStack, IFluidStack)} over this method in
+     * combination with {@link #addRecipe(String, ChemicalStackIngredient, IFluidStack)} if the conversion will be possible in both directions.
      */
     @ZenCodeType.Method
-    public void addRecipe(String name, CTFluidIngredient fluidInput, ICrTChemicalStack gasOutput) {
-        addRecipe(name, makeRecipe(fluidInput, gasOutput));
+    public void addRecipe(String name, CTFluidIngredient fluidInput, ICrTChemicalStack chemicalOutput) {
+        addRecipe(name, makeRecipe(fluidInput, chemicalOutput));
     }
 
     /**
-     * Adds a rotary recipe that converts a gas into a fluid. Rotary Condensers set to Condensentrating can process this recipe type.
+     * Adds a rotary recipe that converts a chemical into a fluid. Rotary Condensers set to Condensentrating can process this recipe type.
      *
-     * @param name        Name of the new recipe.
-     * @param gasInput    {@link CTFluidIngredient} representing the input of the recipe.
-     * @param fluidOutput {@link IFluidStack} representing the output of the recipe.
+     * @param name          Name of the new recipe.
+     * @param chemicalInput {@link CTFluidIngredient} representing the input of the recipe.
+     * @param fluidOutput   {@link IFluidStack} representing the output of the recipe.
      *
-     * @apiNote It is recommended to use {@link #addRecipe(String, CTFluidIngredient, ChemicalStackIngredient, ICrTChemicalStack, IFluidStack)} over this method in combination
-     * with {@link #addRecipe(String, CTFluidIngredient, ICrTChemicalStack)} if the conversion will be possible in both directions.
+     * @apiNote It is recommended to use {@link #addRecipe(String, CTFluidIngredient, ChemicalStackIngredient, ICrTChemicalStack, IFluidStack)} over this method in
+     * combination with {@link #addRecipe(String, CTFluidIngredient, ICrTChemicalStack)} if the conversion will be possible in both directions.
      */
     @ZenCodeType.Method
-    public void addRecipe(String name, ChemicalStackIngredient gasInput, IFluidStack fluidOutput) {
-        addRecipe(name, makeRecipe(gasInput, fluidOutput));
+    public void addRecipe(String name, ChemicalStackIngredient chemicalInput, IFluidStack fluidOutput) {
+        addRecipe(name, makeRecipe(chemicalInput, fluidOutput));
     }
 
     /**
-     * Adds a rotary recipe that is capable of converting a fluid into a gas and a gas into a fluid. Rotary Condensers can process this recipe type, converting from fluid
-     * to gas when set to Decondensentrating and converting from gas to fluid when set to Condensentrating.
+     * Adds a rotary recipe that is capable of converting a fluid into a chemical and a chemical into a fluid. Rotary Condensers can process this recipe type, converting
+     * from fluid to chemical when set to Decondensentrating and converting from chemical to fluid when set to Condensentrating.
      *
-     * @param name        Name of the new recipe.
-     * @param fluidInput  {@link CTFluidIngredient} representing the input of the recipe when converting from a fluid to a gas.
-     * @param gasInput    {@link ChemicalStackIngredient} representing the input of the recipe when converting from a gas to a fluid.
-     * @param gasOutput   {@link ICrTChemicalStack} representing the output of the recipe when converting from a fluid to a gas.
-     * @param fluidOutput {@link IFluidStack} representing the output of the recipe when converting from a gas to a fluid.
+     * @param name           Name of the new recipe.
+     * @param fluidInput     {@link CTFluidIngredient} representing the input of the recipe when converting from a fluid to a chemical.
+     * @param chemicalInput  {@link ChemicalStackIngredient} representing the input of the recipe when converting from a chemical to a fluid.
+     * @param chemicalOutput {@link ICrTChemicalStack} representing the output of the recipe when converting from a fluid to a chemical.
+     * @param fluidOutput    {@link IFluidStack} representing the output of the recipe when converting from a chemical to a fluid.
      *
      * @apiNote It is recommended to use this method over using {@link #addRecipe(String, CTFluidIngredient, ICrTChemicalStack)} and
      * {@link #addRecipe(String, ChemicalStackIngredient, IFluidStack)} in combination if the conversion will be possible in both directions.
      */
     @ZenCodeType.Method
-    public void addRecipe(String name, CTFluidIngredient fluidInput, ChemicalStackIngredient gasInput, ICrTChemicalStack gasOutput, IFluidStack fluidOutput) {
-        addRecipe(name, makeRecipe(fluidInput, gasInput, gasOutput, fluidOutput));
+    public void addRecipe(String name, CTFluidIngredient fluidInput, ChemicalStackIngredient chemicalInput, ICrTChemicalStack chemicalOutput, IFluidStack fluidOutput) {
+        addRecipe(name, makeRecipe(fluidInput, chemicalInput, chemicalOutput, fluidOutput));
     }
 
     /**
-     * Creates a rotary recipe that converts a fluid into a gas.
+     * Creates a rotary recipe that converts a fluid into a chemical.
      *
-     * @param fluidInput {@link CTFluidIngredient} representing the input of the recipe.
-     * @param gasOutput  {@link ICrTChemicalStack} representing the output of the recipe. Will be validated as not empty.
+     * @param fluidInput     {@link CTFluidIngredient} representing the input of the recipe.
+     * @param chemicalOutput {@link ICrTChemicalStack} representing the output of the recipe. Will be validated as not empty.
      */
-    public final RotaryRecipe makeRecipe(CTFluidIngredient fluidInput, ICrTChemicalStack gasOutput) {
-        return new BasicRotaryRecipe(CrTUtils.fromCrT(fluidInput), getAndValidateNotEmpty(gasOutput));
+    public final RotaryRecipe makeRecipe(CTFluidIngredient fluidInput, ICrTChemicalStack chemicalOutput) {
+        return new BasicRotaryRecipe(CrTUtils.fromCrT(fluidInput), getAndValidateNotEmpty(chemicalOutput));
     }
 
     /**
-     * Creates a rotary recipe that converts a gas into a fluid.
+     * Creates a rotary recipe that converts a chemical into a fluid.
      *
-     * @param gasInput    {@link ChemicalStackIngredient} representing the input of the recipe.
-     * @param fluidOutput {@link IFluidStack} representing the output of the recipe. Will be validated as not empty.
+     * @param chemicalInput {@link ChemicalStackIngredient} representing the input of the recipe.
+     * @param fluidOutput   {@link IFluidStack} representing the output of the recipe. Will be validated as not empty.
      */
-    public final RotaryRecipe makeRecipe(ChemicalStackIngredient gasInput, IFluidStack fluidOutput) {
-        return new BasicRotaryRecipe(gasInput, getAndValidateNotEmpty(fluidOutput));
+    public final RotaryRecipe makeRecipe(ChemicalStackIngredient chemicalInput, IFluidStack fluidOutput) {
+        return new BasicRotaryRecipe(chemicalInput, getAndValidateNotEmpty(fluidOutput));
     }
 
     /**
-     * Creates a rotary recipe that is capable of converting a fluid into a gas and a gas into a fluid.
+     * Creates a rotary recipe that is capable of converting a fluid into a chemical and a chemical into a fluid.
      *
-     * @param fluidInput  {@link CTFluidIngredient} representing the input of the recipe when converting from a fluid to a gas.
-     * @param gasInput    {@link ChemicalStackIngredient} representing the input of the recipe when converting from a gas to a fluid.
-     * @param gasOutput   {@link ICrTChemicalStack} representing the output of the recipe when converting from a fluid to a gas. Will be validated as not empty.
-     * @param fluidOutput {@link IFluidStack} representing the output of the recipe when converting from a gas to a fluid. Will be validated as not empty.
+     * @param fluidInput     {@link CTFluidIngredient} representing the input of the recipe when converting from a fluid to a chemical.
+     * @param chemicalInput  {@link ChemicalStackIngredient} representing the input of the recipe when converting from a chemical to a fluid.
+     * @param chemicalOutput {@link ICrTChemicalStack} representing the output of the recipe when converting from a fluid to a chemical. Will be validated as not empty.
+     * @param fluidOutput    {@link IFluidStack} representing the output of the recipe when converting from a chemical to a fluid. Will be validated as not empty.
      */
-    public final RotaryRecipe makeRecipe(CTFluidIngredient fluidInput, ChemicalStackIngredient gasInput, ICrTChemicalStack gasOutput, IFluidStack fluidOutput) {
-        return new BasicRotaryRecipe(CrTUtils.fromCrT(fluidInput), gasInput, getAndValidateNotEmpty(gasOutput), getAndValidateNotEmpty(fluidOutput));
+    public final RotaryRecipe makeRecipe(CTFluidIngredient fluidInput, ChemicalStackIngredient chemicalInput, ICrTChemicalStack chemicalOutput, IFluidStack fluidOutput) {
+        return new BasicRotaryRecipe(CrTUtils.fromCrT(fluidInput), chemicalInput, getAndValidateNotEmpty(chemicalOutput), getAndValidateNotEmpty(fluidOutput));
     }
 
     @Override
@@ -108,14 +108,14 @@ public class RotaryRecipeManager extends MekanismRecipeManager<RotaryRecipeInput
         StringBuilder builder = new StringBuilder();
         if (recipe.hasFluidToChemical()) {
             builder.append(CrTUtils.describeOutputs(recipe.getChemicalOutputDefinition()))
-                  .append(" for fluid to gas");
+                  .append(" for fluid to chemical");
         }
         if (recipe.hasChemicalToFluid()) {
             if (recipe.hasFluidToChemical()) {
                 builder.append(" and ");
             }
             builder.append(CrTUtils.describeOutputs(recipe.getFluidOutputDefinition(), IFluidStack::of))
-                  .append(" for gas to fluid");
+                  .append(" for chemical to fluid");
         }
         return builder.toString();
     }

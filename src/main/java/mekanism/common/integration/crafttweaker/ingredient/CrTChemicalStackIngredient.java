@@ -43,11 +43,11 @@ public class CrTChemicalStackIngredient {
     }
 
     /**
-     * Creates a {@link ChemicalStackIngredient} that matches a given infusion stack.
+     * Creates a {@link ChemicalStackIngredient} that matches a given chemical stack.
      *
      * @param instance Chemical stack to match
      *
-     * @return A {@link ChemicalStackIngredient} that matches a given infusion stack.
+     * @return A {@link ChemicalStackIngredient} that matches a given chemical stack.
      */
     @ZenCodeType.StaticExpansionMethod
     public static ChemicalStackIngredient from(ICrTChemicalStack instance) {
@@ -72,54 +72,54 @@ public class CrTChemicalStackIngredient {
     /**
      * Creates a {@link ChemicalStackIngredient} that matches the given chemicals and amount.
      *
-     * @param amount      Amount needed
-     * @param infuseTypes Chemicals to match
+     * @param amount    Amount needed
+     * @param chemicals Chemicals to match
      *
      * @return A {@link ChemicalStackIngredient} that matches the given chemicals and amount.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static ChemicalStackIngredient from(long amount, ICrTChemicalStack... infuseTypes) {
-        CrTIngredientHelper.assertMultiple(amount, "ChemicalStackIngredients", "chemical", infuseTypes);
-        return IngredientCreatorAccess.chemicalStack().from(amount, infuseTypes);
+    public static ChemicalStackIngredient from(long amount, ICrTChemicalStack... chemicals) {
+        CrTIngredientHelper.assertMultiple(amount, "ChemicalStackIngredients", "chemical", chemicals);
+        return IngredientCreatorAccess.chemicalStack().from(amount, chemicals);
     }
 
     /**
-     * Creates a {@link ChemicalStackIngredient} that matches the given infusion stacks. The first stack's size will be used for this ingredient.
+     * Creates a {@link ChemicalStackIngredient} that matches the given chemical stacks. The first stack's size will be used for this ingredient.
      *
-     * @param infuseTypes Infusion stacks to match
+     * @param chemicals Chemical stacks to match
      *
-     * @return A {@link ChemicalStackIngredient} that matches a given infusion stack.
+     * @return A {@link ChemicalStackIngredient} that matches a given chemical stack.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static ChemicalStackIngredient from(ICrTChemicalStack... infuseTypes) {
-        long amount = CrTIngredientHelper.assertMultiple("ChemicalStackIngredients", "chemical", infuseTypes);
-        return IngredientCreatorAccess.chemicalStack().from(amount, infuseTypes);
+    public static ChemicalStackIngredient from(ICrTChemicalStack... chemicals) {
+        long amount = CrTIngredientHelper.assertMultiple("ChemicalStackIngredients", "chemical", chemicals);
+        return IngredientCreatorAccess.chemicalStack().from(amount, chemicals);
     }
 
     /**
      * Creates a {@link ChemicalStackIngredient} that matches a given chemical tag with a given amount.
      *
-     * @param infuseTypeTag Tag to match
-     * @param amount        Amount needed
+     * @param chemicalTag Tag to match
+     * @param amount      Amount needed
      *
      * @return A {@link ChemicalStackIngredient} that matches a given chemical tag with a given amount.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static ChemicalStackIngredient from(KnownTag<Chemical> infuseTypeTag, long amount) {
-        TagKey<Chemical> tag = CrTIngredientHelper.assertValidAndGet(infuseTypeTag, amount, "ChemicalStackIngredients");
+    public static ChemicalStackIngredient from(KnownTag<Chemical> chemicalTag, long amount) {
+        TagKey<Chemical> tag = CrTIngredientHelper.assertValidAndGet(chemicalTag, amount, "ChemicalStackIngredients");
         return IngredientCreatorAccess.chemicalStack().from(tag, amount);
     }
 
     /**
      * Creates a {@link ChemicalStackIngredient} that matches a given chemical tag with amount.
      *
-     * @param infuseTypeTag Tag and amount to match
+     * @param chemicalTag Tag and amount to match
      *
      * @return A {@link ChemicalStackIngredient} that matches a given chemical tag with amount.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static ChemicalStackIngredient from(Many<KnownTag<Chemical>> infuseTypeTag) {
-        return from(infuseTypeTag.getData(), infuseTypeTag.getAmount());
+    public static ChemicalStackIngredient from(Many<KnownTag<Chemical>> chemicalTag) {
+        return from(chemicalTag.getData(), chemicalTag.getAmount());
     }
 
     /**

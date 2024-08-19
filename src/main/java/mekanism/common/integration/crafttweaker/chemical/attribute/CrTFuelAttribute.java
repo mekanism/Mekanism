@@ -1,4 +1,4 @@
-package mekanism.common.integration.crafttweaker.chemical.attribute.gas;
+package mekanism.common.integration.crafttweaker.chemical.attribute;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;

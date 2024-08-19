@@ -247,7 +247,7 @@ public class CrTUtils {
     }
 
     /**
-     * Helper to get CraftTweaker's gas tag manager.
+     * Helper to get CraftTweaker's chemical tag manager.
      */
     public static KnownTagManager<Chemical> chemicalTags() {
         return CraftTweakerTagRegistry.INSTANCE.knownTagManager(MekanismAPI.CHEMICAL_REGISTRY_NAME);

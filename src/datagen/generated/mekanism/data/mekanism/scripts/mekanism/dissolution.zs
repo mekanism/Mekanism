@@ -2,7 +2,7 @@ import mods.mekanism.api.ingredient.ChemicalStackIngredient;
 
 //Adds a Dissolution Recipe that uses 100 mB of Sulfuric Acid (1 mB per tick) to convert Salt into 10 mB of Hydrogen Chloride.
 
-// <recipetype:mekanism:dissolution>.addRecipe(name as string, itemInput as IIngredientWithAmount, gasInput as ChemicalStackIngredient, output as ICrTChemicalStack)
+// <recipetype:mekanism:dissolution>.addRecipe(name as string, itemInput as IIngredientWithAmount, chemicalInput as ChemicalStackIngredient, output as ICrTChemicalStack)
 
 <recipetype:mekanism:dissolution>.addRecipe("salt_to_hydrogen_chloride", <item:mekanism:salt>, ChemicalStackIngredient.from(<chemical:mekanism:sulfuric_acid>), <chemical:mekanism:hydrogen_chloride> * 10);
 //An alternate implementation of the above recipe are shown commented below. This implementation makes use of implicit casting to allow easier calling:

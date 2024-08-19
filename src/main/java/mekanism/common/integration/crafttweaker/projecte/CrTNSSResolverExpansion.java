@@ -25,36 +25,36 @@ public class CrTNSSResolverExpansion {
     /**
      * Create a {@link NormalizedSimpleStack} representing a given {@link Chemical}.
      *
-     * @param gas Gas to represent
+     * @param chemical Chemical to represent
      *
      * @return A {@link NormalizedSimpleStack} representing a given {@link Chemical}.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static NormalizedSimpleStack fromChemical(Chemical gas) {
-        return NSSChemical.createChemical(validateNotEmptyAndGet(gas, "chemical"));
+    public static NormalizedSimpleStack fromChemical(Chemical chemical) {
+        return NSSChemical.createChemical(validateNotEmptyAndGet(chemical, "chemical"));
     }
 
     /**
      * Create a {@link NormalizedSimpleStack} representing a given {@link ICrTChemicalStack}.
      *
-     * @param stack Gas Stack to represent
+     * @param stack Chemical Stack to represent
      *
      * @return A {@link NormalizedSimpleStack} representing a given {@link ICrTChemicalStack}.
      */
     @ZenCodeType.StaticExpansionMethod
     public static NormalizedSimpleStack fromChemical(ICrTChemicalStack stack) {
-        return NSSChemical.createChemical(validateNotEmptyAndGet(stack, "gas"));
+        return NSSChemical.createChemical(validateNotEmptyAndGet(stack, "chemical"));
     }
 
     /**
      * Create a {@link NormalizedSimpleStack} representing a given {@link KnownTag< Chemical >}.
      *
-     * @param tag Gas Tag to represent
+     * @param tag Chemical Tag to represent
      *
      * @return A {@link NormalizedSimpleStack} representing a given {@link KnownTag< Chemical >}.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static NormalizedSimpleStack fromGasTag(KnownTag<Chemical> tag) {
+    public static NormalizedSimpleStack fromChemicalTag(KnownTag<Chemical> tag) {
         return NSSChemical.createTag(CrTUtils.validateTagAndGet(tag));
     }
 

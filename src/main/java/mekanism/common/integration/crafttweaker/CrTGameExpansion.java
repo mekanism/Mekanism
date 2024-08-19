@@ -16,7 +16,7 @@ import org.openzen.zencode.java.ZenCodeType;
 public class CrTGameExpansion {
 
     /**
-     * Gets all registered gases.
+     * Gets all registered chemicals.
      */
     @ZenCodeType.Method
     @ZenCodeType.Getter("chemicals")

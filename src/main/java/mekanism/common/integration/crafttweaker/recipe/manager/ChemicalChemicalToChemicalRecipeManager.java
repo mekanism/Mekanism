@@ -2,11 +2,11 @@ package mekanism.common.integration.crafttweaker.recipe.manager;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.recipes.ChemicalChemicalToChemicalRecipe;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
 import mekanism.api.recipes.PigmentMixingRecipe;
 import mekanism.api.recipes.basic.BasicChemicalInfuserRecipe;
 import mekanism.api.recipes.basic.BasicPigmentMixingRecipe;
-import mekanism.api.recipes.ChemicalChemicalToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.vanilla_input.BiChemicalRecipeInput;
 import mekanism.common.integration.crafttweaker.CrTConstants;
@@ -27,11 +27,11 @@ public abstract class ChemicalChemicalToChemicalRecipeManager<RECIPE extends Che
     /**
      * Adds a recipe that combines two chemicals of the same type into another chemical of the same type.
      * <br>
-     * If this is called from the pigment mixing recipe manager, this will be a pigment mixing recipe. Pigment Mixers can process this recipe type and the pigments can be
-     * put in any order into the mixer.
+     * If this is called from the pigment mixing recipe manager, this will be a pigment mixing recipe. Pigment Mixers can process this recipe type and the chemicals can
+     * be put in any order into the mixer.
      * <br>
-     * If this is called from the chemical infuser recipe manager, this will be a chemical infuser recipe. Chemical Infusers can process this recipe type and the pigments
-     * can be put in any order into the infuser.
+     * If this is called from the chemical infuser recipe manager, this will be a chemical infuser recipe. Chemical Infusers can process this recipe type and the
+     * chemicals can be put in any order into the infuser.
      *
      * @param name       Name of the new recipe.
      * @param leftInput  Chemical stack ingredient representing the "left" chemical input of the recipe.
