@@ -4,7 +4,6 @@ import com.mojang.serialization.MapCodec;
 import java.util.stream.Stream;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
-import org.jetbrains.annotations.ApiStatus.Internal;
 
 /**
  * Base Chemical ingredient implementation for a singleton that represents an empty chemical ingredient.
@@ -13,32 +12,30 @@ import org.jetbrains.annotations.ApiStatus.Internal;
  * create an ingredient from an empty list).
  *
  * @see mekanism.api.recipes.ingredients.creator.IChemicalIngredientCreator#empty()
- * @see IChemicalIngredient#isEmpty()
+ * @see ChemicalIngredient#isEmpty()
  * @since 10.6.0
  */
 @NothingNullByDefault
-public non-sealed class EmptyChemicalIngredient
-      extends ChemicalIngredient {
+public final class EmptyChemicalIngredient extends ChemicalIngredient {
 
     public static final EmptyChemicalIngredient INSTANCE = new EmptyChemicalIngredient();
     public static final MapCodec<EmptyChemicalIngredient> CODEC = MapCodec.unit(INSTANCE);
 
-    @Internal
-    protected EmptyChemicalIngredient() {
+    private EmptyChemicalIngredient() {
     }
 
     @Override
-    public final boolean test(Chemical chemical) {
+    public boolean test(Chemical chemical) {
         return chemical.isEmptyType();
     }
 
     @Override
-    public final Stream<Chemical> generateChemicals() {
+    public Stream<Chemical> generateChemicals() {
         return Stream.empty();
     }
 
     @Override
-    public MapCodec<? extends IChemicalIngredient> codec() {
+    public MapCodec<? extends ChemicalIngredient> codec() {
         return CODEC;
     }
 

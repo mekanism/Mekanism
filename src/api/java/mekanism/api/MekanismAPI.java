@@ -6,7 +6,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalBuilder;
 import mekanism.api.gear.ModuleData;
-import mekanism.api.recipes.ingredients.chemical.IChemicalIngredient;
+import mekanism.api.recipes.ingredients.chemical.ChemicalIngredient;
 import mekanism.api.robit.RobitSkin;
 import net.minecraft.core.DefaultedRegistry;
 import net.minecraft.core.Registry;
@@ -67,12 +67,12 @@ public class MekanismAPI {
     public static final ResourceKey<Registry<Chemical>> CHEMICAL_REGISTRY_NAME = registryKey(Chemical.class, "chemical");
 
     /**
-     * Gets the {@link ResourceKey} representing the name of the Registry for {@link IChemicalIngredient} ingredient type serializers.
+     * Gets the {@link ResourceKey} representing the name of the Registry for {@link ChemicalIngredient} ingredient type serializers.
      *
      * @apiNote When registering chemical ingredient types using {@link DeferredRegister}, use this field to get access to the {@link ResourceKey}.
      * @since 10.6.10
      */
-    public static final ResourceKey<Registry<MapCodec<? extends IChemicalIngredient>>> CHEMICAL_INGREDIENT_TYPE_REGISTRY_NAME = codecRegistryKey(IChemicalIngredient.class, "chemical_ingredient_type");
+    public static final ResourceKey<Registry<MapCodec<? extends ChemicalIngredient>>> CHEMICAL_INGREDIENT_TYPE_REGISTRY_NAME = codecRegistryKey(ChemicalIngredient.class, "chemical_ingredient_type");
 
     /**
      * Gets the {@link ResourceKey} representing the name of the Registry for {@link ModuleData modules}.
@@ -108,12 +108,12 @@ public class MekanismAPI {
           .create();
 
     /**
-     * Gets the Registry for {@link IChemicalIngredient} type serializers.
+     * Gets the Registry for {@link ChemicalIngredient} type serializers.
      *
      * @see #CHEMICAL_INGREDIENT_TYPE_REGISTRY_NAME
      * @since 10.6.10
      */
-    public static final Registry<MapCodec<? extends IChemicalIngredient>> CHEMICAL_INGREDIENT_TYPES = new RegistryBuilder<>(CHEMICAL_INGREDIENT_TYPE_REGISTRY_NAME)
+    public static final Registry<MapCodec<? extends ChemicalIngredient>> CHEMICAL_INGREDIENT_TYPES = new RegistryBuilder<>(CHEMICAL_INGREDIENT_TYPE_REGISTRY_NAME)
           .sync(true)
           .create();
 

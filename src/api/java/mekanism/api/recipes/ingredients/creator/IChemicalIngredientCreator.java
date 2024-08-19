@@ -9,8 +9,8 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.providers.IChemicalProvider;
+import mekanism.api.recipes.ingredients.chemical.ChemicalIngredient;
 import mekanism.api.recipes.ingredients.chemical.EmptyChemicalIngredient;
-import mekanism.api.recipes.ingredients.chemical.IChemicalIngredient;
 import net.minecraft.core.Holder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -25,9 +25,9 @@ public interface IChemicalIngredientCreator {
 
     /**
      * A codec that is used to represent basic "single chemical" or "tag" chemical ingredients directly, similar to {@link Ingredient.Value#CODEC}, except not using value
-     * subclasses and instead directly providing the corresponding {@link IChemicalIngredient}.
+     * subclasses and instead directly providing the corresponding {@link ChemicalIngredient}.
      */
-    MapCodec<IChemicalIngredient> singleOrTagCodec();
+    MapCodec<ChemicalIngredient> singleOrTagCodec();
 
     /**
      * A codec that represents a single {@code IChemicalIngredient} in map form; either dispatched by type or falling back to {@link #singleOrTagCodec} if no type is
@@ -35,7 +35,7 @@ public interface IChemicalIngredientCreator {
      *
      * @see Ingredient#MAP_CODEC_NONEMPTY
      */
-    MapCodec<IChemicalIngredient> mapCodecNonEmpty();
+    MapCodec<ChemicalIngredient> mapCodecNonEmpty();
 
     /**
      * Simple codec representing a list of {@code IChemicalIngredient}s.
@@ -43,7 +43,7 @@ public interface IChemicalIngredientCreator {
      * @see #listCodecNonEmpty()
      * @see #listCodecMultipleElements()
      */
-    Codec<List<IChemicalIngredient>> listCodec();
+    Codec<List<ChemicalIngredient>> listCodec();
 
     /**
      * Simple codec representing a list of {@code IChemicalIngredient}s, that requires at least one element.
@@ -51,7 +51,7 @@ public interface IChemicalIngredientCreator {
      * @see #listCodec()
      * @see #listCodecMultipleElements()
      */
-    Codec<List<IChemicalIngredient>> listCodecNonEmpty();
+    Codec<List<ChemicalIngredient>> listCodecNonEmpty();
 
     /**
      * Simple codec representing a list of {@code IChemicalIngredient}s, that requires at least two element.
@@ -59,7 +59,7 @@ public interface IChemicalIngredientCreator {
      * @see #listCodec()
      * @see #listCodecNonEmpty()
      */
-    Codec<List<IChemicalIngredient>> listCodecMultipleElements();
+    Codec<List<ChemicalIngredient>> listCodecMultipleElements();
 
     /**
      * Full codec representing a chemical ingredient in all possible forms.
@@ -69,21 +69,21 @@ public interface IChemicalIngredientCreator {
      *
      * @see #mapCodecNonEmpty
      */
-    Codec<IChemicalIngredient> codec();
+    Codec<ChemicalIngredient> codec();
 
     /**
      * Same as {@link #codec}, except does not allow empty ingredients ({@code []}) to be specified.
      */
-    Codec<IChemicalIngredient> codecNonEmpty();
+    Codec<ChemicalIngredient> codecNonEmpty();
 
     /**
      * Stream codec for syncing ingredients over the network.
      *
      * @implNote As all chemical ingredients are simple, it gets synced to the client as a list of supported chemicals.
      */
-    StreamCodec<RegistryFriendlyByteBuf, IChemicalIngredient> streamCodec();
+    StreamCodec<RegistryFriendlyByteBuf, ChemicalIngredient> streamCodec();
 
-    default IChemicalIngredient empty() {
+    default ChemicalIngredient empty() {
         return EmptyChemicalIngredient.INSTANCE;
     }
 
@@ -94,7 +94,7 @@ public interface IChemicalIngredientCreator {
      *
      * @see mekanism.api.recipes.ingredients.chemical.EmptyChemicalIngredient
      */
-    default IChemicalIngredient of() {
+    default ChemicalIngredient of() {
         return empty();
     }
 
@@ -103,7 +103,7 @@ public interface IChemicalIngredientCreator {
      *
      * @param stack Chemical to match
      */
-    default IChemicalIngredient of(ChemicalStack stack) {
+    default ChemicalIngredient of(ChemicalStack stack) {
         return of(stack.getChemical());
     }
 
@@ -112,7 +112,7 @@ public interface IChemicalIngredientCreator {
      *
      * @param chemicalProvider Chemical to match
      */
-    default IChemicalIngredient of(IChemicalProvider chemicalProvider) {
+    default ChemicalIngredient of(IChemicalProvider chemicalProvider) {
         return of(chemicalProvider.getChemical().getAsHolder());
     }
 
@@ -121,14 +121,14 @@ public interface IChemicalIngredientCreator {
      *
      * @param holder Chemical to match
      */
-    IChemicalIngredient of(Holder<Chemical> holder);
+    ChemicalIngredient of(Holder<Chemical> holder);
 
     /**
      * Creates a {@link mekanism.api.recipes.ingredients.chemical.TagChemicalIngredient} matching the chemicals in the given tag.
      *
      * @param tag Chemical tag to match
      */
-    IChemicalIngredient tag(TagKey<Chemical> tag);
+    ChemicalIngredient tag(TagKey<Chemical> tag);
 
     /**
      * Creates a {@link mekanism.api.recipes.ingredients.chemical.CompoundChemicalIngredient} matching the chemicals for the given stacks.
@@ -138,7 +138,7 @@ public interface IChemicalIngredientCreator {
      * @implNote This method is subtly different from {@link #compound(List)} as if there is no elements this method will return {@link #empty()}, and if there is one
      * element, this will return a {@link mekanism.api.recipes.ingredients.chemical.SingleChemicalIngredient}.
      */
-    default IChemicalIngredient of(ChemicalStack... chemicals) {
+    default ChemicalIngredient of(ChemicalStack... chemicals) {
         return of(Arrays.stream(chemicals).map(ChemicalStack::getChemical));
     }
 
@@ -150,7 +150,7 @@ public interface IChemicalIngredientCreator {
      * @implNote This method is subtly different from {@link #compound(List)} as if there is no elements this method will return {@link #empty()}, and if there is one
      * element, this will return a {@link mekanism.api.recipes.ingredients.chemical.SingleChemicalIngredient}.
      */
-    default IChemicalIngredient of(IChemicalProvider... chemicalProviders) {
+    default ChemicalIngredient of(IChemicalProvider... chemicalProviders) {
         return of(Arrays.stream(chemicalProviders));
     }
 
@@ -162,7 +162,7 @@ public interface IChemicalIngredientCreator {
      * @implNote This method is subtly different from {@link #compound(List)} as if there is no elements this method will return {@link #empty()}, and if there is one
      * element, this will return a {@link mekanism.api.recipes.ingredients.chemical.SingleChemicalIngredient}.
      */
-    default IChemicalIngredient of(Stream<? extends IChemicalProvider> chemicalProviders) {
+    default ChemicalIngredient of(Stream<? extends IChemicalProvider> chemicalProviders) {
         return ofIngredients(chemicalProviders.map(this::of));
     }
 
@@ -174,7 +174,7 @@ public interface IChemicalIngredientCreator {
      * @implNote This method is subtly different from {@link #compound(List)} as if there is no elements this method will return {@link #empty()}, and if there is one
      * element, this will return the element.
      */
-    default IChemicalIngredient ofIngredients(IChemicalIngredient... children) {
+    default ChemicalIngredient ofIngredients(ChemicalIngredient... children) {
         if (children.length == 0) {
             return empty();
         } else if (children.length == 1) {
@@ -191,7 +191,7 @@ public interface IChemicalIngredientCreator {
      * @implNote This method is subtly different from {@link #compound(List)} as if there is no elements this method will return {@link #empty()}, and if there is one
      * element, this will return the element.
      */
-    default IChemicalIngredient ofIngredients(List<? extends IChemicalIngredient> children) {
+    default ChemicalIngredient ofIngredients(List<? extends ChemicalIngredient> children) {
         if (children.isEmpty()) {
             return empty();
         } else if (children.size() == 1) {
@@ -208,7 +208,7 @@ public interface IChemicalIngredientCreator {
      * @implNote This method is subtly different from {@link #compound(List)} as if there is no elements this method will return {@link #empty()}, and if there is one
      * element, this will return the element.
      */
-    default IChemicalIngredient ofIngredients(Stream<? extends IChemicalIngredient> children) {
+    default ChemicalIngredient ofIngredients(Stream<? extends ChemicalIngredient> children) {
         return ofIngredients(children.toList());
     }
 
@@ -219,7 +219,7 @@ public interface IChemicalIngredientCreator {
      *
      * @throws IllegalArgumentException If children is empty or contains only a single element.
      */
-    IChemicalIngredient compound(List<IChemicalIngredient> children);
+    ChemicalIngredient compound(List<ChemicalIngredient> children);
 
     /**
      * Gets the difference of the two chemical ingredients
@@ -230,7 +230,7 @@ public interface IChemicalIngredientCreator {
      * @return A {@link mekanism.api.recipes.ingredients.chemical.DifferenceChemicalIngredient} that matches anything contained in {@code base} that is not in
      * {@code subtracted}
      */
-    IChemicalIngredient difference(IChemicalIngredient base, IChemicalIngredient subtracted);
+    ChemicalIngredient difference(ChemicalIngredient base, ChemicalIngredient subtracted);
 
     /**
      * Gets an intersection chemical ingredient
@@ -241,7 +241,7 @@ public interface IChemicalIngredientCreator {
      *
      * @throws IllegalArgumentException If ingredients is empty.
      */
-    IChemicalIngredient intersection(IChemicalIngredient... ingredients);
+    ChemicalIngredient intersection(ChemicalIngredient... ingredients);
 
     /**
      * Gets an intersection chemical ingredient
@@ -252,7 +252,7 @@ public interface IChemicalIngredientCreator {
      *
      * @throws IllegalArgumentException If ingredients is empty.
      */
-    IChemicalIngredient intersection(List<? extends IChemicalIngredient> ingredients);
+    ChemicalIngredient intersection(List<? extends ChemicalIngredient> ingredients);
 
     /**
      * Gets an intersection chemical ingredient
@@ -263,7 +263,7 @@ public interface IChemicalIngredientCreator {
      *
      * @throws IllegalArgumentException If ingredients is empty.
      */
-    default IChemicalIngredient intersection(Stream<? extends IChemicalIngredient> ingredients) {
+    default ChemicalIngredient intersection(Stream<? extends ChemicalIngredient> ingredients) {
         return intersection(ingredients.toList());
     }
 }

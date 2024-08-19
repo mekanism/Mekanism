@@ -9,7 +9,7 @@ import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.recipes.ingredients.chemical.IChemicalIngredient;
+import mekanism.api.recipes.ingredients.chemical.ChemicalIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -20,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Base implementation for a ChemicalIngredient with an amount.
  *
- * <p>{@link IChemicalIngredient}, like its item counterpart, explicitly does not perform count checks,
+ * <p>{@link ChemicalIngredient}, like its item counterpart, explicitly does not perform count checks,
  * so this class is used to (a) wrap a standard ChemicalIngredient with an amount and (b) provide a standard serialization format for mods to use.
  *
  * @see net.neoforged.neoforge.common.crafting.SizedIngredient
@@ -76,7 +76,7 @@ public final class ChemicalStackIngredient implements InputIngredient<ChemicalSt
     /**
      * Creates a Chemical Stack Ingredient that matches a given ingredient and amount. Prefer calling via
      * {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#chemical()} and
-     * {@link mekanism.api.recipes.ingredients.creator.IChemicalStackIngredientCreator#from(IChemicalIngredient, long)}.
+     * {@link mekanism.api.recipes.ingredients.creator.IChemicalStackIngredientCreator#from(ChemicalIngredient, long)}.
      *
      * @param ingredient Ingredient to match.
      * @param amount     Amount to match.
@@ -85,7 +85,7 @@ public final class ChemicalStackIngredient implements InputIngredient<ChemicalSt
      * @throws IllegalArgumentException if the given instance is empty.
      * @since 10.6.0
      */
-    public static ChemicalStackIngredient of(IChemicalIngredient ingredient, long amount) {
+    public static ChemicalStackIngredient of(ChemicalIngredient ingredient, long amount) {
         Objects.requireNonNull(ingredient, "ChemicalStackIngredients cannot be created from a null ingredient.");
         if (ingredient.isEmpty()) {
             throw new IllegalArgumentException("ChemicalStackIngredients cannot be created using the empty ingredient.");
@@ -93,10 +93,10 @@ public final class ChemicalStackIngredient implements InputIngredient<ChemicalSt
         return new ChemicalStackIngredient(ingredient, amount);
     }
 
-    private final IChemicalIngredient ingredient;
+    private final ChemicalIngredient ingredient;
     private final long amount;
 
-    public ChemicalStackIngredient(IChemicalIngredient ingredient, long amount) {
+    public ChemicalStackIngredient(ChemicalIngredient ingredient, long amount) {
         if (amount <= 0) {
             throw new IllegalArgumentException("Size must be positive");
         }
@@ -160,7 +160,7 @@ public final class ChemicalStackIngredient implements InputIngredient<ChemicalSt
      *
      * @since 10.6.0
      */
-    public IChemicalIngredient ingredient() {
+    public ChemicalIngredient ingredient() {
         return ingredient;
     }
 

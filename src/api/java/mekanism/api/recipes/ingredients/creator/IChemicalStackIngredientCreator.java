@@ -6,7 +6,7 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
-import mekanism.api.recipes.ingredients.chemical.IChemicalIngredient;
+import mekanism.api.recipes.ingredients.chemical.ChemicalIngredient;
 import net.minecraft.core.Holder;
 import net.minecraft.tags.TagKey;
 
@@ -110,5 +110,5 @@ public interface IChemicalStackIngredientCreator
      * @throws NullPointerException     if the given ingredient is null.
      * @throws IllegalArgumentException if the ingredient is explicitly empty or the given amount smaller than one.
      */
-    ChemicalStackIngredient from(IChemicalIngredient ingredient, long amount);
+    ChemicalStackIngredient from(ChemicalIngredient ingredient, long amount);
 }

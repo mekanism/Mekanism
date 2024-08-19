@@ -27,7 +27,7 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import mekanism.api.recipes.ingredients.chemical.IChemicalIngredient;
+import mekanism.api.recipes.ingredients.chemical.ChemicalIngredient;
 import mekanism.api.recipes.ingredients.chemical.TagChemicalIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTRecipeComponents;
@@ -120,8 +120,7 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe<?>> im
         return "Unimplemented: " + param;
     }
 
-    private static String convertChemicalIngredient(KnownTagManager<Chemical> tagManager,
-          IChemicalIngredient ingredient, long amount) {
+    private static String convertChemicalIngredient(KnownTagManager<Chemical> tagManager, ChemicalIngredient ingredient, long amount) {
         if (ingredient instanceof TagChemicalIngredient tagIngredient) {
             KnownTag<Chemical> tag = tagManager.tag(tagIngredient.tag());
             if (amount == 1) {

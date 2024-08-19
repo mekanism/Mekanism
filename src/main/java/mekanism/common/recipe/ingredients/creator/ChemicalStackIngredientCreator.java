@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
-import mekanism.api.recipes.ingredients.chemical.IChemicalIngredient;
+import mekanism.api.recipes.ingredients.chemical.ChemicalIngredient;
 import mekanism.api.recipes.ingredients.creator.IChemicalIngredientCreator;
 import mekanism.api.recipes.ingredients.creator.IChemicalStackIngredientCreator;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
@@ -35,7 +35,7 @@ public class ChemicalStackIngredientCreator implements IChemicalStackIngredientC
     }
 
     @Override
-    public ChemicalStackIngredient from(IChemicalIngredient ingredient, long amount) {
+    public ChemicalStackIngredient from(ChemicalIngredient ingredient, long amount) {
         Objects.requireNonNull(ingredient, "ChemicalStackIngredients cannot be created from a null ingredient.");
         return ChemicalStackIngredient.of(ingredient, amount);
     }

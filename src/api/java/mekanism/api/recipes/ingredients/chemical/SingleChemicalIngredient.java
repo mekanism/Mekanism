@@ -19,8 +19,7 @@ import org.jetbrains.annotations.Nullable;
  * @since 10.6.0
  */
 @NothingNullByDefault
-public non-sealed class SingleChemicalIngredient
-      extends ChemicalIngredient {
+public non-sealed class SingleChemicalIngredient extends ChemicalIngredient {
 
     public static final MapCodec<SingleChemicalIngredient> CODEC = ChemicalStack.CHEMICAL_NON_EMPTY_HOLDER_CODEC.xmap(SingleChemicalIngredient::new, SingleChemicalIngredient::chemical)
           .fieldOf(SerializationConstants.CHEMICAL);

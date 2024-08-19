@@ -8,7 +8,7 @@ import mekanism.api.gear.ICustomModule;
 import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.providers.IModuleDataProvider;
 import mekanism.api.recipes.MekanismRecipe;
-import mekanism.api.recipes.ingredients.chemical.IChemicalIngredient;
+import mekanism.api.recipes.ingredients.chemical.ChemicalIngredient;
 import mekanism.api.recipes.vanilla_input.BiChemicalRecipeInput;
 import mekanism.api.recipes.vanilla_input.ChemicalRecipeInput;
 import mekanism.api.recipes.vanilla_input.FluidChemicalRecipeInput;
@@ -65,7 +65,7 @@ public class DummyCrTNatives {
     }
 
     @ZenRegister
-    @NativeTypeRegistration(value = IChemicalIngredient.class, zenCodeName = CrTConstants.CLASS_CHEMICAL_INGREDIENT + DUMMY)
+    @NativeTypeRegistration(value = ChemicalIngredient.class, zenCodeName = CrTConstants.CLASS_CHEMICAL_INGREDIENT + DUMMY)
     public static class CrTNativeChemicalIngredient {
 
         private CrTNativeChemicalIngredient() {

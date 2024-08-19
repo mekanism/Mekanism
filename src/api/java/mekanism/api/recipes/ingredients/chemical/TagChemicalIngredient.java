@@ -1,7 +1,6 @@
 package mekanism.api.recipes.ingredients.chemical;
 
 import com.mojang.serialization.MapCodec;
-import java.util.function.Function;
 import java.util.stream.Stream;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializationConstants;
@@ -9,10 +8,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
-import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -24,19 +20,12 @@ import org.jetbrains.annotations.Nullable;
  * @since 10.6.0
  */
 @NothingNullByDefault
-public non-sealed class TagChemicalIngredient
-      extends ChemicalIngredient {
+public non-sealed class TagChemicalIngredient extends ChemicalIngredient {
 
-    public static final MapCodec<TagChemicalIngredient> CODEC = codec(MekanismAPI.CHEMICAL_REGISTRY_NAME, TagChemicalIngredient::new);
-
-    /**
-     * Helper to create the codec for tag ingredients.
-     */
-    @Internal
-    protected static <TAG extends TagChemicalIngredient> MapCodec<TAG> codec(
-          ResourceKey<? extends Registry<Chemical>> registryName, Function<TagKey<Chemical>, TAG> constructor) {
-        return TagKey.codec(registryName).xmap(constructor, TagChemicalIngredient::tag).fieldOf(SerializationConstants.TAG);
-    }
+    public static final MapCodec<TagChemicalIngredient> CODEC = TagKey.codec(MekanismAPI.CHEMICAL_REGISTRY_NAME).xmap(
+          TagChemicalIngredient::new,
+          TagChemicalIngredient::tag
+    ).fieldOf(SerializationConstants.TAG);
 
     private final TagKey<Chemical> tag;
 
@@ -61,7 +50,7 @@ public non-sealed class TagChemicalIngredient
     }
 
     @Override
-    public MapCodec<? extends IChemicalIngredient> codec() {
+    public MapCodec<? extends ChemicalIngredient> codec() {
         return CODEC;
     }
 

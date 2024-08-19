@@ -18,20 +18,19 @@ import org.jetbrains.annotations.Nullable;
  * @since 10.6.0
  */
 @NothingNullByDefault
-public non-sealed class IntersectionChemicalIngredient
-      extends ChemicalIngredient {
+public non-sealed class IntersectionChemicalIngredient extends ChemicalIngredient {
 
     public static final MapCodec<IntersectionChemicalIngredient> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
           IngredientCreatorAccess.chemical().listCodecMultipleElements().fieldOf(SerializationConstants.CHILDREN).forGetter(IntersectionChemicalIngredient::children)
     ).apply(builder, IntersectionChemicalIngredient::new));
 
-    private final List<IChemicalIngredient> children;
+    private final List<ChemicalIngredient> children;
 
     /**
      * @param children Ingredients to form an intersection from.
      */
     @Internal
-    public IntersectionChemicalIngredient(List<IChemicalIngredient> children) {
+    public IntersectionChemicalIngredient(List<ChemicalIngredient> children) {
         if (children.size() < 2) {
             throw new IllegalArgumentException("Intersection chemical ingredients require at least two ingredients");
         }
@@ -40,7 +39,7 @@ public non-sealed class IntersectionChemicalIngredient
 
     @Override
     public final boolean test(Chemical chemical) {
-        for (IChemicalIngredient child : children) {
+        for (ChemicalIngredient child : children) {
             if (!child.test(chemical)) {
                 return false;
             }
@@ -51,7 +50,7 @@ public non-sealed class IntersectionChemicalIngredient
     @Override
     public final Stream<Chemical> generateChemicals() {
         return children.stream()
-              .flatMap(IChemicalIngredient::generateChemicals)
+              .flatMap(ChemicalIngredient::generateChemicals)
               .distinct()//Ensure we don't include the same chemical multiple times
               .filter(this);
     }
@@ -59,7 +58,7 @@ public non-sealed class IntersectionChemicalIngredient
     /**
      * {@return all the child ingredients that this ingredient is an intersection of}
      */
-    public final List<IChemicalIngredient> children() {
+    public final List<ChemicalIngredient> children() {
         return children;
     }
 
@@ -69,7 +68,7 @@ public non-sealed class IntersectionChemicalIngredient
     }
 
     @Override
-    public MapCodec<? extends IChemicalIngredient> codec() {
+    public MapCodec<? extends ChemicalIngredient> codec() {
         return CODEC;
     }
 

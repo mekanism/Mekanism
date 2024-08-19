@@ -3,15 +3,12 @@ package mekanism.api.recipes.ingredients.chemical;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Objects;
-import java.util.function.BiFunction;
 import java.util.stream.Stream;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
-import mekanism.api.recipes.ingredients.creator.IChemicalIngredientCreator;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import net.neoforged.neoforge.common.crafting.DifferenceIngredient;
-import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -22,31 +19,21 @@ import org.jetbrains.annotations.Nullable;
  * @since 10.6.0
  */
 @NothingNullByDefault
-public non-sealed class DifferenceChemicalIngredient
-      extends ChemicalIngredient {
+public non-sealed class DifferenceChemicalIngredient extends ChemicalIngredient {
 
-    public static final MapCodec<DifferenceChemicalIngredient> CODEC = codec(IngredientCreatorAccess.chemical(), DifferenceChemicalIngredient::new);
+    public static final MapCodec<DifferenceChemicalIngredient> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
+          IngredientCreatorAccess.chemical().codecNonEmpty().fieldOf(SerializationConstants.BASE).forGetter(DifferenceChemicalIngredient::base),
+          IngredientCreatorAccess.chemical().codecNonEmpty().fieldOf(SerializationConstants.SUBTRACTED).forGetter(DifferenceChemicalIngredient::subtracted)
+    ).apply(builder, DifferenceChemicalIngredient::new));
 
-    /**
-     * Helper to create the codec for difference ingredients.
-     */
-    @Internal
-    protected static MapCodec<DifferenceChemicalIngredient> codec(
-          IChemicalIngredientCreator creator, BiFunction<IChemicalIngredient, IChemicalIngredient, DifferenceChemicalIngredient> constructor) {
-        return RecordCodecBuilder.mapCodec(builder -> builder.group(
-              creator.codecNonEmpty().fieldOf(SerializationConstants.BASE).forGetter(DifferenceChemicalIngredient::base),
-              creator.codecNonEmpty().fieldOf(SerializationConstants.SUBTRACTED).forGetter(DifferenceChemicalIngredient::subtracted)
-        ).apply(builder, constructor));
-    }
-
-    private final IChemicalIngredient base;
-    private final IChemicalIngredient subtracted;
+    private final ChemicalIngredient base;
+    private final ChemicalIngredient subtracted;
 
     /**
      * @param base       ingredient the chemical must match
      * @param subtracted ingredient the chemical must not match
      */
-    public DifferenceChemicalIngredient(IChemicalIngredient base, IChemicalIngredient subtracted) {
+    public DifferenceChemicalIngredient(ChemicalIngredient base, ChemicalIngredient subtracted) {
         this.base = base;
         this.subtracted = subtracted;
     }
@@ -57,7 +44,7 @@ public non-sealed class DifferenceChemicalIngredient
     }
 
     @Override
-    public MapCodec<? extends IChemicalIngredient> codec() {
+    public MapCodec<? extends ChemicalIngredient> codec() {
         return CODEC;
     }
 
@@ -69,14 +56,14 @@ public non-sealed class DifferenceChemicalIngredient
     /**
      * {@return ingredient the chemical must match}
      */
-    public final IChemicalIngredient base() {
+    public final ChemicalIngredient base() {
         return base;
     }
 
     /**
      * {@return ingredient the chemical must not match}
      */
-    public final IChemicalIngredient subtracted() {
+    public final ChemicalIngredient subtracted() {
         return subtracted;
     }
 

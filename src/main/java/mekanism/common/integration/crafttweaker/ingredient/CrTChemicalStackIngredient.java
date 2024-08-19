@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
-import mekanism.api.recipes.ingredients.chemical.IChemicalIngredient;
+import mekanism.api.recipes.ingredients.chemical.ChemicalIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
@@ -180,7 +180,7 @@ public class CrTChemicalStackIngredient {
         if (_this.amount() != other.amount()) {
             throw new IllegalArgumentException("ChemicalStack ingredients can only be or'd if they have the same counts");
         }
-        List<IChemicalIngredient> ingredients = new ArrayList<>();
+        List<ChemicalIngredient> ingredients = new ArrayList<>();
         CrTIngredientHelper.addIngredient(ingredients, _this.ingredient());
         CrTIngredientHelper.addIngredient(ingredients, other.ingredient());
         return IngredientCreatorAccess.chemicalStack().from(IngredientCreatorAccess.chemical().ofIngredients(ingredients), _this.amount());

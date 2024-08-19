@@ -4,8 +4,8 @@ import com.blamejared.crafttweaker.api.tag.type.KnownTag;
 import java.util.List;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.providers.IChemicalProvider;
+import mekanism.api.recipes.ingredients.chemical.ChemicalIngredient;
 import mekanism.api.recipes.ingredients.chemical.CompoundChemicalIngredient;
-import mekanism.api.recipes.ingredients.chemical.IChemicalIngredient;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import net.minecraft.tags.TagKey;
@@ -82,7 +82,7 @@ public class CrTIngredientHelper {
         }
     }
 
-    static <INGREDIENT extends IChemicalIngredient> void addIngredient(List<INGREDIENT> ingredients, INGREDIENT ingredient) {
+    static <INGREDIENT extends ChemicalIngredient> void addIngredient(List<INGREDIENT> ingredients, INGREDIENT ingredient) {
         if (ingredient instanceof CompoundChemicalIngredient compoundIngredient) {
             ingredients.addAll((List<INGREDIENT>) compoundIngredient.children());
         } else {
