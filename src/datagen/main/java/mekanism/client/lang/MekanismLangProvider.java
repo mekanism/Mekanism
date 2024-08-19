@@ -201,20 +201,20 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         addTag(MekanismTags.Fluids.HYDROFLUORIC_ACID, "Hydrofluoric Acid");
         addTag(MekanismTags.Fluids.NUTRITIONAL_PASTE, "Nutritional Paste");
 
-        addTag(MekanismTags.Gases.WATER_VAPOR, "Water Vapor");
-        addTag(MekanismAPITags.WASTE_BARREL_DECAY_BLACKLIST, "Waste Barrel Does Not Decay");
+        addTag(MekanismTags.Chemicals.WATER_VAPOR, "Water Vapor");
+        addTag(MekanismAPITags.Chemicals.WASTE_BARREL_DECAY_BLACKLIST, "Waste Barrel Does Not Decay");
 
-        addTag(MekanismAPITags.InfuseTypes.CARBON, "Carbon");
-        addTag(MekanismAPITags.InfuseTypes.REDSTONE, "Redstone");
-        addTag(MekanismAPITags.InfuseTypes.DIAMOND, "Diamond");
-        addTag(MekanismAPITags.InfuseTypes.REFINED_OBSIDIAN, "Refined Obsidian");
-        addTag(MekanismAPITags.InfuseTypes.BIO, "Bio");
-        addTag(MekanismAPITags.InfuseTypes.FUNGI, "Fungi");
-        addTag(MekanismAPITags.InfuseTypes.GOLD, "Gold");
-        addTag(MekanismAPITags.InfuseTypes.TIN, "Tin");
+        addTag(MekanismAPITags.Chemicals.CARBON, "Carbon");
+        addTag(MekanismAPITags.Chemicals.REDSTONE, "Redstone");
+        addTag(MekanismAPITags.Chemicals.DIAMOND, "Diamond");
+        addTag(MekanismAPITags.Chemicals.REFINED_OBSIDIAN, "Refined Obsidian");
+        addTag(MekanismAPITags.Chemicals.BIO, "Bio");
+        addTag(MekanismAPITags.Chemicals.FUNGI, "Fungi");
+        addTag(MekanismAPITags.Chemicals.GOLD, "Gold");
+        addTag(MekanismAPITags.Chemicals.TIN, "Tin");
 
-        addTag(MekanismAPITags.Slurries.DIRTY, "Dirty Slurry");
-        addTag(MekanismAPITags.Slurries.CLEAN, "Clean Slurry");
+        addTag(MekanismAPITags.Chemicals.DIRTY, "Dirty Slurry");
+        addTag(MekanismAPITags.Chemicals.CLEAN, "Clean Slurry");
     }
 
     private void addItems() {

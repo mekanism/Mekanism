@@ -53,7 +53,7 @@ public class ConstantPredicates {
     /**
      * Represents a predicate that checks if a chemical stack is empty.
      *
-     * @since 10.6.8
+     * @since 10.6.10
      */
     public static final Predicate<ChemicalStack> CHEMICAL_EMPTY = ChemicalStack::isEmpty;
 
@@ -128,7 +128,7 @@ public class ConstantPredicates {
     /**
      * Returns a bi predicate that returns {@code true} for any input when the automation type is manual.
      *
-     * @since 10.6.8
+     * @since 10.6.10
      */
     public static <T> BiPredicate<T, @NotNull AutomationType> manualOnly() {
         return (BiPredicate<T, @NotNull AutomationType>) manualOnly;

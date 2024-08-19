@@ -83,9 +83,7 @@ public class MekanismTagProvider extends BaseTagProvider {
         addDamageTypes();
         addFluids();
         addGameEvents();
-        addGasTags();
-        addSlurryTags();
-        addInfuseTags();
+        addChemicalTags();
         addPellets();
         addColorableItems();
         getBlockBuilder(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE).add(Tags.Blocks.ORES, BlockTags.LOGS);
@@ -588,34 +586,26 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismGameEvents.GRAVITY_MODULATE_BOOSTED);
     }
 
-    private void addGasTags() {
-        addToTag(MekanismTags.Gases.WATER_VAPOR, MekanismChemicals.WATER_VAPOR, MekanismChemicals.STEAM);
-        addToTag(MekanismAPITags.WASTE_BARREL_DECAY_BLACKLIST, MekanismChemicals.PLUTONIUM, MekanismChemicals.POLONIUM);
-    }
+    private void addChemicalTags() {
+        addToTag(MekanismTags.Chemicals.WATER_VAPOR, MekanismChemicals.WATER_VAPOR, MekanismChemicals.STEAM);
+        addToTag(MekanismAPITags.Chemicals.WASTE_BARREL_DECAY_BLACKLIST, MekanismChemicals.PLUTONIUM, MekanismChemicals.POLONIUM);
 
-    private void addSlurryTags(SlurryRegistryObject<?, ?>... slurryRegistryObjects) {
-        IntrinsicMekanismTagBuilder<Chemical> dirtyTagBuilder = getChemicalBuilder(MekanismAPITags.Slurries.DIRTY);
-        IntrinsicMekanismTagBuilder<Chemical> cleanTagBuilder = getChemicalBuilder(MekanismAPITags.Slurries.CLEAN);
-        for (SlurryRegistryObject<?, ?> slurryRO : slurryRegistryObjects) {
-            dirtyTagBuilder.add(slurryRO.getDirtySlurry());
-            cleanTagBuilder.add(slurryRO.getCleanSlurry());
-        }
+        IntrinsicMekanismTagBuilder<Chemical> dirtyTagBuilder = getChemicalBuilder(MekanismAPITags.Chemicals.DIRTY);
+        IntrinsicMekanismTagBuilder<Chemical> cleanTagBuilder = getChemicalBuilder(MekanismAPITags.Chemicals.CLEAN);
         // add dynamic slurry tags
         for (SlurryRegistryObject<?, ?> slurryRO : MekanismChemicals.PROCESSED_RESOURCES.values()) {
             dirtyTagBuilder.add(slurryRO.getDirtySlurry());
             cleanTagBuilder.add(slurryRO.getCleanSlurry());
         }
-    }
 
-    private void addInfuseTags() {
-        addToTag(MekanismAPITags.InfuseTypes.CARBON, MekanismChemicals.CARBON);
-        addToTag(MekanismAPITags.InfuseTypes.REDSTONE, MekanismChemicals.REDSTONE);
-        addToTag(MekanismAPITags.InfuseTypes.DIAMOND, MekanismChemicals.DIAMOND);
-        addToTag(MekanismAPITags.InfuseTypes.REFINED_OBSIDIAN, MekanismChemicals.REFINED_OBSIDIAN);
-        addToTag(MekanismAPITags.InfuseTypes.GOLD, MekanismChemicals.GOLD);
-        addToTag(MekanismAPITags.InfuseTypes.TIN, MekanismChemicals.TIN);
-        addToTag(MekanismAPITags.InfuseTypes.FUNGI, MekanismChemicals.FUNGI);
-        addToTag(MekanismAPITags.InfuseTypes.BIO, MekanismChemicals.BIO);
+        addToTag(MekanismAPITags.Chemicals.CARBON, MekanismChemicals.CARBON);
+        addToTag(MekanismAPITags.Chemicals.REDSTONE, MekanismChemicals.REDSTONE);
+        addToTag(MekanismAPITags.Chemicals.DIAMOND, MekanismChemicals.DIAMOND);
+        addToTag(MekanismAPITags.Chemicals.REFINED_OBSIDIAN, MekanismChemicals.REFINED_OBSIDIAN);
+        addToTag(MekanismAPITags.Chemicals.GOLD, MekanismChemicals.GOLD);
+        addToTag(MekanismAPITags.Chemicals.TIN, MekanismChemicals.TIN);
+        addToTag(MekanismAPITags.Chemicals.FUNGI, MekanismChemicals.FUNGI);
+        addToTag(MekanismAPITags.Chemicals.BIO, MekanismChemicals.BIO);
     }
 
     private void addHarvestRequirements() {

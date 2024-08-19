@@ -28,9 +28,9 @@ public class GeneratorTags {
         }
     }
 
-    public static class Gases {
+    public static class Chemicals {
 
-        private Gases() {
+        private Chemicals() {
         }
 
         public static final TagKey<Chemical> DEUTERIUM = tag("deuterium");

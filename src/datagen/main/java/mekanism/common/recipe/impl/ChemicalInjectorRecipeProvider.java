@@ -28,13 +28,13 @@ class ChemicalInjectorRecipeProvider implements ISubRecipeProvider {
         //Brick -> clay ball
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
               IngredientCreatorAccess.item().from(Tags.Items.BRICKS_NORMAL),
-              IngredientCreatorAccess.chemicalStack().from(MekanismTags.Gases.WATER_VAPOR, 1),
+              IngredientCreatorAccess.chemicalStack().from(MekanismTags.Chemicals.WATER_VAPOR, 1),
               new ItemStack(Items.CLAY_BALL)
         ).build(consumer, Mekanism.rl(basePath + "brick_to_clay_ball"));
         //Dirt -> mud
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
               IngredientCreatorAccess.item().from(Blocks.DIRT),
-              IngredientCreatorAccess.chemicalStack().from(MekanismTags.Gases.WATER_VAPOR, 1),
+              IngredientCreatorAccess.chemicalStack().from(MekanismTags.Chemicals.WATER_VAPOR, 1),
               new ItemStack(Blocks.MUD)
         ).build(consumer, Mekanism.rl(basePath + "dirt_to_mud"));
         //Gunpowder -> sulfur
@@ -46,7 +46,7 @@ class ChemicalInjectorRecipeProvider implements ISubRecipeProvider {
         //Terracotta -> clay
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
               IngredientCreatorAccess.item().from(Blocks.TERRACOTTA),
-              IngredientCreatorAccess.chemicalStack().from(MekanismTags.Gases.WATER_VAPOR, 1),
+              IngredientCreatorAccess.chemicalStack().from(MekanismTags.Chemicals.WATER_VAPOR, 1),
               new ItemStack(Blocks.CLAY)
         ).build(consumer, Mekanism.rl(basePath + "terracotta_to_clay"));
         addChemicalInjectorConcreteRecipes(consumer, basePath + "concrete/");
@@ -76,7 +76,7 @@ class ChemicalInjectorRecipeProvider implements ISubRecipeProvider {
     private void addChemicalInjectorConcreteRecipe(RecipeOutput consumer, String basePath, ItemLike powder, ItemLike concrete, String name) {
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
               IngredientCreatorAccess.item().from(powder),
-              IngredientCreatorAccess.chemicalStack().from(MekanismTags.Gases.WATER_VAPOR, 1),
+              IngredientCreatorAccess.chemicalStack().from(MekanismTags.Chemicals.WATER_VAPOR, 1),
               new ItemStack(concrete)
         ).build(consumer, Mekanism.rl(basePath + name));
     }
@@ -102,7 +102,7 @@ class ChemicalInjectorRecipeProvider implements ISubRecipeProvider {
     private void addChemicalInjectorCoralRevivalRecipe(RecipeOutput consumer, String basePath, ItemLike dead, ItemLike living, int water) {
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
               IngredientCreatorAccess.item().from(dead),
-              IngredientCreatorAccess.chemicalStack().from(MekanismTags.Gases.WATER_VAPOR, water),
+              IngredientCreatorAccess.chemicalStack().from(MekanismTags.Chemicals.WATER_VAPOR, water),
               new ItemStack(living)
         ).build(consumer, Mekanism.rl(basePath + RegistryUtils.getPath(living.asItem())));
     }

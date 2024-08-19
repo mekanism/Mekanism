@@ -16,21 +16,8 @@ import net.minecraft.world.entity.EntityType;
  */
 @NothingNullByDefault
 public class MekanismAPITags {
+
     private static final ResourceLocation HIDDEN_RL = ResourceLocation.fromNamespaceAndPath("c", "hidden_from_recipe_viewers");
-
-    /**
-     * Tag that holds all chemicals that recipe viewers should not show to users.
-     *
-     * @since 10.6.8
-     */
-    public static final TagKey<Chemical> CHEMICAL_HIDDEN_FROM_RECIPE_VIEWERS = TagKey.create(MekanismAPI.CHEMICAL_REGISTRY_NAME, HIDDEN_RL);
-
-    /**
-     * Chemicals in this tag that are radioactive will not decay inside a Radioactive Waste Barrel.
-     *
-     * @since 10.6.8
-     */
-    public static final TagKey<Chemical> WASTE_BARREL_DECAY_BLACKLIST = TagKey.create(MekanismAPI.CHEMICAL_REGISTRY_NAME, rl("waste_barrel_decay_blacklist"));
 
     private MekanismAPITags() {
     }
@@ -39,50 +26,56 @@ public class MekanismAPITags {
         return ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, path);
     }
 
-    public static class InfuseTypes {
+    /**
+     * @since 10.6.10
+     */
+    public static class Chemicals {
 
-        private InfuseTypes() {
+        private Chemicals() {
         }
+
+        /**
+         * Tag that holds all chemicals that recipe viewers should not show to users.
+         */
+        public static final TagKey<Chemical> HIDDEN_FROM_RECIPE_VIEWERS = TagKey.create(MekanismAPI.CHEMICAL_REGISTRY_NAME, HIDDEN_RL);
+
+        /**
+         * Chemicals in this tag that are radioactive will not decay inside a Radioactive Waste Barrel.
+         */
+        public static final TagKey<Chemical> WASTE_BARREL_DECAY_BLACKLIST = tag("waste_barrel_decay_blacklist");
 
         /**
          * Represents an infuse type that is equivalent to carbon.
          */
-        public static final TagKey<Chemical> CARBON = TagKey.create(MekanismAPI.CHEMICAL_REGISTRY_NAME, rl("carbon"));
+        public static final TagKey<Chemical> CARBON = tag("carbon");
         /**
          * Represents an infuse type that is equivalent to redstone.
          */
-        public static final TagKey<Chemical> REDSTONE = TagKey.create(MekanismAPI.CHEMICAL_REGISTRY_NAME, rl("redstone"));
+        public static final TagKey<Chemical> REDSTONE = tag("redstone");
         /**
          * Represents an infuse type that is equivalent to diamond.
          */
-        public static final TagKey<Chemical> DIAMOND = TagKey.create(MekanismAPI.CHEMICAL_REGISTRY_NAME, rl("diamond"));
+        public static final TagKey<Chemical> DIAMOND = tag("diamond");
         /**
          * Represents an infuse type that is equivalent to refined obsidian.
          */
-        public static final TagKey<Chemical> REFINED_OBSIDIAN = TagKey.create(MekanismAPI.CHEMICAL_REGISTRY_NAME, rl("refined_obsidian"));
+        public static final TagKey<Chemical> REFINED_OBSIDIAN = tag("refined_obsidian");
         /**
          * Represents an infuse type that is equivalent to bio.
          */
-        public static final TagKey<Chemical> BIO = TagKey.create(MekanismAPI.CHEMICAL_REGISTRY_NAME, rl("bio"));
+        public static final TagKey<Chemical> BIO = tag("bio");
         /**
          * Represents an infuse type that is equivalent to fungi.
          */
-        public static final TagKey<Chemical> FUNGI = TagKey.create(MekanismAPI.CHEMICAL_REGISTRY_NAME, rl("fungi"));
+        public static final TagKey<Chemical> FUNGI = tag("fungi");
         /**
          * Represents an infuse type that is equivalent to gold.
          */
-        public static final TagKey<Chemical> GOLD = TagKey.create(MekanismAPI.CHEMICAL_REGISTRY_NAME, rl("gold"));
+        public static final TagKey<Chemical> GOLD = tag("gold");
         /**
          * Represents an infuse type that is equivalent to tin.
          */
-        public static final TagKey<Chemical> TIN = TagKey.create(MekanismAPI.CHEMICAL_REGISTRY_NAME, rl("tin"));
-
-    }
-
-    public static class Slurries {
-
-        private Slurries() {
-        }
+        public static final TagKey<Chemical> TIN = tag("tin");
 
         /**
          * Represents all dirty slurries.

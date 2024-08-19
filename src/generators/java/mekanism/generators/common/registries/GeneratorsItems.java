@@ -24,7 +24,7 @@ public class GeneratorsItems {
     public static final ItemRegistryObject<ItemHohlraum> HOHLRAUM = ITEMS.registerItem("hohlraum", ItemHohlraum::new)
           .addAttachedContainerCapabilities(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder()
                 .addInternalStorage(MekanismGeneratorsConfig.generators.hohlraumFillRate, MekanismGeneratorsConfig.generators.hohlraumMaxGas,
-                      gas -> gas.is(GeneratorTags.Gases.FUSION_FUEL)
+                      gas -> gas.is(GeneratorTags.Chemicals.FUSION_FUEL)
                 ).build(), MekanismGeneratorsConfig.generators);
     public static final ItemRegistryObject<ItemTurbineBlade> TURBINE_BLADE = ITEMS.registerItem("turbine_blade", ItemTurbineBlade::new);
 

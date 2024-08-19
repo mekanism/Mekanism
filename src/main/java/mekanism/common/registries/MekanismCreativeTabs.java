@@ -61,7 +61,7 @@ public class MekanismCreativeTabs {
                 if (MekanismConfig.general.prefilledChemicaltanks.get()) {
                     parameters.holders().lookupOrThrow(MekanismAPI.CHEMICAL_REGISTRY_NAME)
                           .listElements()
-                          .filter(holder -> !holder.is(MekanismAPITags.CHEMICAL_HIDDEN_FROM_RECIPE_VIEWERS) && !holder.is(MekanismAPI.EMPTY_CHEMICAL_NAME))
+                          .filter(holder -> !holder.is(MekanismAPITags.Chemicals.HIDDEN_FROM_RECIPE_VIEWERS) && !holder.is(MekanismAPI.EMPTY_CHEMICAL_NAME))
                           .forEach(holder -> output.accept(ChemicalUtil.getFilledVariant(MekanismBlocks.CREATIVE_CHEMICAL_TANK, holder.value())));
                 }
             }

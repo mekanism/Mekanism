@@ -39,9 +39,9 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
         addTag(GeneratorTags.Fluids.TRITIUM, "Tritium");
         addTag(GeneratorTags.Fluids.FUSION_FUEL, "D-T Fuels");
 
-        addTag(GeneratorTags.Gases.DEUTERIUM, "Deuterium");
-        addTag(GeneratorTags.Gases.TRITIUM, "Tritium");
-        addTag(GeneratorTags.Gases.FUSION_FUEL, "D-T Fuels");
+        addTag(GeneratorTags.Chemicals.DEUTERIUM, "Deuterium");
+        addTag(GeneratorTags.Chemicals.TRITIUM, "Tritium");
+        addTag(GeneratorTags.Chemicals.FUSION_FUEL, "D-T Fuels");
     }
 
     private void addItems() {

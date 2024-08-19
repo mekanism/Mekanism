@@ -9,7 +9,7 @@ import mekanism.api.recipes.ChemicalToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 
 /**
- * @since 10.6.8 Previously was GasToGasRecipeBuilder
+ * @since 10.6.10 Previously was GasToGasRecipeBuilder
  */
 @NothingNullByDefault
 public class ChemicalToChemicalRecipeBuilder extends MekanismRecipeBuilder<ChemicalToChemicalRecipeBuilder> {

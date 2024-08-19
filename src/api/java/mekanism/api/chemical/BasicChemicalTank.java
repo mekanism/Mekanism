@@ -21,37 +21,37 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
     /**
      * A predicate that returns {@code true} for any input.
      *
-     * @since 10.6.8 Previously was in ChemicalTankBuilder
+     * @since 10.6.10 Previously was in ChemicalTankBuilder
      */
     public static final Predicate<Chemical> alwaysTrue = ConstantPredicates.alwaysTrue();
     /**
      * A predicate that returns {@code false} for any input.
      *
-     * @since 10.6.8 Previously was in ChemicalTankBuilder
+     * @since 10.6.10 Previously was in ChemicalTankBuilder
      */
     public static final Predicate<Chemical> alwaysFalse = ConstantPredicates.alwaysFalse();
     /**
      * A bi predicate that returns {@code true} for any input.
      *
-     * @since 10.6.8 Previously was in ChemicalTankBuilder
+     * @since 10.6.10 Previously was in ChemicalTankBuilder
      */
     public static final BiPredicate<Chemical, @NotNull AutomationType> alwaysTrueBi = ConstantPredicates.alwaysTrueBi();
     /**
      * A bi predicate that returns {@code true} for any input when the automation type is internal.
      *
-     * @since 10.6.8 Previously was in ChemicalTankBuilder
+     * @since 10.6.10 Previously was in ChemicalTankBuilder
      */
     public static final BiPredicate<Chemical, @NotNull AutomationType> internalOnly = ConstantPredicates.internalOnly();
     /**
      * A bi predicate that returns {@code true} for any input when the automation type is not external.
      *
-     * @since 10.6.8 Previously was in ChemicalTankBuilder
+     * @since 10.6.10 Previously was in ChemicalTankBuilder
      */
     public static final BiPredicate<Chemical, @NotNull AutomationType> notExternal = ConstantPredicates.notExternal();
     /**
      * A bi predicate that returns {@code true} for any input when the automation type is manual.
      *
-     * @since 10.6.8 Previously was in ChemicalTankBuilder
+     * @since 10.6.10 Previously was in ChemicalTankBuilder
      */
     public static final BiPredicate<Chemical, @NotNull AutomationType> manualOnly = ConstantPredicates.manualOnly();
 
@@ -61,7 +61,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
      * @param capacity Tank capacity.
      * @param listener Contents change listener.
      *
-     * @since 10.6.8 Previously was in ChemicalTankBuilder
+     * @since 10.6.10 Previously was in ChemicalTankBuilder
      */
     public static IChemicalTank create(long capacity, @Nullable IContentsListener listener) {
         return createWithValidator(capacity, null, listener);
@@ -74,7 +74,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
      * @param attributeValidator Chemical Attribute Validator, or {@code null} to fall back to {@link ChemicalAttributeValidator#DEFAULT}.
      * @param listener           Contents change listener.
      *
-     * @since 10.6.8 Previously was in ChemicalTankBuilder
+     * @since 10.6.10 Previously was in ChemicalTankBuilder
      */
     public static IChemicalTank createWithValidator(long capacity, @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener) {
         if (capacity < 0) {
@@ -89,7 +89,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
      * @param capacity Tank capacity.
      * @param listener Contents change listener.
      *
-     * @since 10.6.8 Previously was in ChemicalTankBuilder
+     * @since 10.6.10 Previously was in ChemicalTankBuilder
      */
     public static IChemicalTank createAllValid(long capacity, @Nullable IContentsListener listener) {
         return createWithValidator(capacity, ChemicalAttributeValidator.ALWAYS_ALLOW, listener);
@@ -105,7 +105,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
      * @param listener   Contents change listener.
      *
      * @implNote The created tank will always allow {@link AutomationType#MANUAL} extraction, and allow any {@link AutomationType} to insert into it.
-     * @since 10.6.8 Previously was in ChemicalTankBuilder
+     * @since 10.6.10 Previously was in ChemicalTankBuilder
      */
     public static IChemicalTank create(long capacity, Predicate<Chemical> canExtract, Predicate<Chemical> canInsert, @Nullable IContentsListener listener) {
         return create(capacity, canExtract, canInsert, alwaysTrue, listener);
@@ -119,7 +119,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
      * @param validator Validation predicate.
      * @param listener  Contents change listener.
      *
-     * @since 10.6.8 Previously was in ChemicalTankBuilder
+     * @since 10.6.10 Previously was in ChemicalTankBuilder
      */
     public static IChemicalTank create(long capacity, Predicate<Chemical> validator, @Nullable IContentsListener listener) {
         if (capacity < 0) {
@@ -137,7 +137,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
      * @param validator Validation predicate.
      * @param listener  Contents change listener.
      *
-     * @since 10.6.8 Previously was in ChemicalTankBuilder
+     * @since 10.6.10 Previously was in ChemicalTankBuilder
      */
     public static IChemicalTank input(long capacity, Predicate<Chemical> validator, @Nullable IContentsListener listener) {
         if (capacity < 0) {
@@ -156,7 +156,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
      * @param validator Validation predicate.
      * @param listener  Contents change listener.
      *
-     * @since 10.6.8 Previously was in ChemicalTankBuilder
+     * @since 10.6.10 Previously was in ChemicalTankBuilder
      */
     public static IChemicalTank input(long capacity, Predicate<Chemical> canInsert, Predicate<Chemical> validator, @Nullable IContentsListener listener) {
         if (capacity < 0) {
@@ -174,7 +174,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
      * @param capacity Tank capacity.
      * @param listener Contents change listener.
      *
-     * @since 10.6.8 Previously was in ChemicalTankBuilder
+     * @since 10.6.10 Previously was in ChemicalTankBuilder
      */
     public static IChemicalTank output(long capacity, @Nullable IContentsListener listener) {
         if (capacity < 0) {
@@ -194,7 +194,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
      * @param listener   Contents change listener.
      *
      * @implNote The created tank will always allow {@link AutomationType#MANUAL} extraction, and allow any {@link AutomationType} to insert into it.
-     * @since 10.6.8 Previously was in ChemicalTankBuilder
+     * @since 10.6.10 Previously was in ChemicalTankBuilder
      */
     public static IChemicalTank create(long capacity, Predicate<Chemical> canExtract, Predicate<Chemical> canInsert, Predicate<Chemical> validator,
           @Nullable IContentsListener listener) {
@@ -211,7 +211,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
      * @param validator  Validation predicate.
      * @param listener   Contents change listener.
      *
-     * @since 10.6.8 Previously was in ChemicalTankBuilder
+     * @since 10.6.10 Previously was in ChemicalTankBuilder
      */
     public static IChemicalTank create(long capacity, BiPredicate<Chemical, @NotNull AutomationType> canExtract,
           BiPredicate<Chemical, @NotNull AutomationType> canInsert, Predicate<Chemical> validator, @Nullable IContentsListener listener) {
@@ -229,7 +229,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
      * @param listener           Contents change listener.
      *
      * @implNote The created tank will always allow {@link AutomationType#MANUAL} extraction, and allow any {@link AutomationType} to insert into it.
-     * @since 10.6.8 Previously was in ChemicalTankBuilder
+     * @since 10.6.10 Previously was in ChemicalTankBuilder
      */
     public static IChemicalTank create(long capacity, Predicate<Chemical> canExtract, Predicate<Chemical> canInsert, Predicate<Chemical> validator,
           @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener) {
@@ -253,7 +253,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
      * @param attributeValidator Chemical Attribute Validator, or {@code null} to fall back to {@link ChemicalAttributeValidator#DEFAULT}.
      * @param listener           Contents change listener.
      *
-     * @since 10.6.8 Previously was in ChemicalTankBuilder
+     * @since 10.6.10 Previously was in ChemicalTankBuilder
      */
     public static IChemicalTank create(long capacity, BiPredicate<Chemical, @NotNull AutomationType> canExtract, BiPredicate<Chemical, @NotNull AutomationType> canInsert,
           Predicate<Chemical> validator, @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener) {

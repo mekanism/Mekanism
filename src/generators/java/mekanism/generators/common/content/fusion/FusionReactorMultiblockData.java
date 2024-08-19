@@ -145,11 +145,11 @@ public class FusionReactorMultiblockData extends MultiblockData {
         lastCaseTemperature = biomeAmbientTemp;
         plasmaTemperature = biomeAmbientTemp;
         chemicalTanks.add(deuteriumTank = VariableCapacityChemicalTank.input(this, MekanismGeneratorsConfig.generators.fusionFuelCapacity,
-              gas -> gas.is(GeneratorTags.Gases.DEUTERIUM), this));
+              gas -> gas.is(GeneratorTags.Chemicals.DEUTERIUM), this));
         chemicalTanks.add(tritiumTank = VariableCapacityChemicalTank.input(this, MekanismGeneratorsConfig.generators.fusionFuelCapacity,
-              gas -> gas.is(GeneratorTags.Gases.TRITIUM), this));
+              gas -> gas.is(GeneratorTags.Chemicals.TRITIUM), this));
         chemicalTanks.add(fuelTank = VariableCapacityChemicalTank.input(this, MekanismGeneratorsConfig.generators.fusionFuelCapacity,
-              gas -> gas.is(GeneratorTags.Gases.FUSION_FUEL), createSaveAndComparator()));
+              gas -> gas.is(GeneratorTags.Chemicals.FUSION_FUEL), createSaveAndComparator()));
         chemicalTanks.add(steamTank = VariableCapacityChemicalTank.output(this, this::getMaxSteam, gas -> gas == MekanismChemicals.STEAM.getChemical(), this));
         fluidTanks.add(waterTank = VariableCapacityFluidTank.input(this, this::getMaxWater, fluid -> fluid.is(FluidTags.WATER), this));
         energyContainers.add(energyContainer = VariableCapacityEnergyContainer.output(MekanismGeneratorsConfig.generators.fusionEnergyCapacity, this));

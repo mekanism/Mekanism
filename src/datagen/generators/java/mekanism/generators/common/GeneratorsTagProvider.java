@@ -98,9 +98,9 @@ public class GeneratorsTagProvider extends BaseTagProvider {
     }
 
     private void addGases() {
-        addToTag(GeneratorTags.Gases.DEUTERIUM, GeneratorsGases.DEUTERIUM);
-        addToTag(GeneratorTags.Gases.TRITIUM, GeneratorsGases.TRITIUM);
-        addToTag(GeneratorTags.Gases.FUSION_FUEL, GeneratorsGases.FUSION_FUEL);
+        addToTag(GeneratorTags.Chemicals.DEUTERIUM, GeneratorsGases.DEUTERIUM);
+        addToTag(GeneratorTags.Chemicals.TRITIUM, GeneratorsGases.TRITIUM);
+        addToTag(GeneratorTags.Chemicals.FUSION_FUEL, GeneratorsGases.FUSION_FUEL);
     }
 
     private void addHarvestRequirements() {

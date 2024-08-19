@@ -262,9 +262,9 @@ public class MekanismTags {
         }
     }
 
-    public static class Gases {
+    public static class Chemicals {
 
-        private Gases() {
+        private Chemicals() {
         }
 
         public static final TagKey<Chemical> WATER_VAPOR = tag("water_vapor");

@@ -134,7 +134,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .recipe(ChemicalCrystallizerRecipeManager.INSTANCE)
               .addExample("osmium_ingotification", IngredientCreatorAccess.chemicalStack().from(MekanismChemicals.OSMIUM, 200),
                     MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM).getItemStack())
-              .addExample("gold_infusion_to_gold", IngredientCreatorAccess.chemicalStack().from(MekanismAPITags.InfuseTypes.GOLD, 9), new ItemStack(Items.GOLD_NUGGET))
+              .addExample("gold_infusion_to_gold", IngredientCreatorAccess.chemicalStack().from(MekanismAPITags.Chemicals.GOLD, 9), new ItemStack(Items.GOLD_NUGGET))
               .end()
               .comment("Removes two Crystallizing Recipes:",
                     "1) The recipe for producing Lithium Dust.",
@@ -265,7 +265,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .comment("Adds an Injecting Recipe that injects 1,000 mB of Water Vapor (5 mB per tick) into a Dry Sponge to make it Wet.")
               .blankLine()
               .recipe(ChemicalInjectionRecipeManager.INSTANCE)
-              .addExample("inject_water_to_sponge", IngredientCreatorAccess.item().from(Blocks.SPONGE), IngredientCreatorAccess.chemicalStack().from(MekanismTags.Gases.WATER_VAPOR, 5),
+              .addExample("inject_water_to_sponge", IngredientCreatorAccess.item().from(Blocks.SPONGE), IngredientCreatorAccess.chemicalStack().from(MekanismTags.Chemicals.WATER_VAPOR, 5),
                     new ItemStack(Blocks.WET_SPONGE))
               .end()
               .comment("Removes the Injecting Recipe that creates Gold Shards from Gold Ore.")

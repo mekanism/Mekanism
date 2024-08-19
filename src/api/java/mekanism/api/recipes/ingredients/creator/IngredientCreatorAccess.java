@@ -34,7 +34,7 @@ public class IngredientCreatorAccess {
      * Gets the chemical stack ingredient creator.
      *
      * @see #chemical()
-     * @since 10.6.8
+     * @since 10.6.10
      */
     public static IChemicalStackIngredientCreator chemicalStack() {
         return IMekanismAccess.INSTANCE.chemicalStackIngredientCreator();
@@ -44,7 +44,7 @@ public class IngredientCreatorAccess {
      * Gets the chemical ingredient creator.
      *
      * @see #chemicalStack()
-     * @since 10.6.8
+     * @since 10.6.10
      */
     public static IChemicalIngredientCreator chemical() {
         return IMekanismAccess.INSTANCE.chemicalIngredientCreator();

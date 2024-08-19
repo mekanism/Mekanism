@@ -257,7 +257,7 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
     /**
      * {@return whether this chemical should render as a gas or more like a fluid}
      *
-     * @since 10.6.8
+     * @since 10.6.10
      */
     public boolean isGaseous() {
         return isGaseous;
@@ -267,7 +267,7 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
      * Saves this chemical to a new tag.
      *
      * @throws IllegalStateException if this chemical is empty
-     * @since 10.6.8
+     * @since 10.6.10
      */
     public Tag save(HolderLookup.Provider lookupProvider) {
         if (isEmptyType()) {
@@ -279,7 +279,7 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
     /**
      * Saves this chemical to a new tag. Empty chemicals are supported and will be saved as an empty tag.
      *
-     * @since 10.6.8
+     * @since 10.6.10
      */
     public Tag saveOptional(HolderLookup.Provider lookupProvider) {
         return isEmptyType() ? new CompoundTag() : save(lookupProvider);
