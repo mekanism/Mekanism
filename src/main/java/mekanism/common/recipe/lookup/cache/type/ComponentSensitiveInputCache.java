@@ -41,7 +41,7 @@ public abstract class ComponentSensitiveInputCache<KEY, INPUT, INGREDIENT extend
      */
     @Override
     public boolean contains(INPUT input) {
-        return super.contains(input) || componentInputCache.containsKey(input);
+        return super.contains(input) || (!componentInputCache.isEmpty() && componentInputCache.containsKey(input));
     }
 
     /**
@@ -51,6 +51,9 @@ public abstract class ComponentSensitiveInputCache<KEY, INPUT, INGREDIENT extend
      */
     @Override
     public Iterable<RECIPE> getRecipes(INPUT input) {
+        if (componentInputCache.isEmpty()) {
+            return super.getRecipes(input);
+        }
         List<RECIPE> nbtRecipes = componentInputCache.getOrDefault(input, Collections.emptyList());
         if (nbtRecipes.isEmpty()) {
             return super.getRecipes(input);
