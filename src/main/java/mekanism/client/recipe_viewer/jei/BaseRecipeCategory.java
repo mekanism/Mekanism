@@ -283,14 +283,13 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
               .setFluidRenderer(max, false, width, height);
     }
 
-    protected IRecipeSlotBuilder initChemical(IRecipeLayoutBuilder builder, IIngredientType<ChemicalStack> type, RecipeIngredientRole role,
-          GuiElement element, List<ChemicalStack> stacks) {
+    protected IRecipeSlotBuilder initChemical(IRecipeLayoutBuilder builder, RecipeIngredientRole role, GuiElement element, List<ChemicalStack> stacks) {
         int width = element.getWidth() - 2;
         int height = element.getHeight() - 2;
         //If we have no max (no chemicals or just an empty chemical) we mirror how we handle fluids and just return a capacity for the render of a bucket
         long max = stacks.stream().mapToLong(ChemicalStack::getAmount).filter(stackSize -> stackSize > 0).max().orElse(FluidType.BUCKET_VOLUME);
-        return init(builder, type, role, element, stacks)
-              .setCustomRenderer(type, new ChemicalStackRenderer(max, width, height));
+        return init(builder, MekanismJEI.TYPE_CHEMICAL, role, element, stacks)
+              .setCustomRenderer(MekanismJEI.TYPE_CHEMICAL, new ChemicalStackRenderer(max, width, height));
     }
 
     private <STACK> IRecipeSlotBuilder init(IRecipeLayoutBuilder builder, IIngredientType<STACK> type, RecipeIngredientRole role, GuiElement element, List<STACK> stacks) {

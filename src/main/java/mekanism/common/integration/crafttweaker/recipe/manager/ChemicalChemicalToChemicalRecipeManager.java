@@ -3,8 +3,6 @@ package mekanism.common.integration.crafttweaker.recipe.manager;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ChemicalChemicalToChemicalRecipe;
-import mekanism.api.recipes.ChemicalInfuserRecipe;
-import mekanism.api.recipes.PigmentMixingRecipe;
 import mekanism.api.recipes.basic.BasicChemicalInfuserRecipe;
 import mekanism.api.recipes.basic.BasicPigmentMixingRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
@@ -18,9 +16,9 @@ import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_CHEMICAL_CHEMICAL_TO_CHEMICAL)
-public abstract class ChemicalChemicalToChemicalRecipeManager<RECIPE extends ChemicalChemicalToChemicalRecipe> extends MekanismRecipeManager<BiChemicalRecipeInput, RECIPE> {
+public abstract class ChemicalChemicalToChemicalRecipeManager extends MekanismRecipeManager<BiChemicalRecipeInput, ChemicalChemicalToChemicalRecipe> {
 
-    protected ChemicalChemicalToChemicalRecipeManager(IMekanismRecipeTypeProvider<BiChemicalRecipeInput, RECIPE, ?> recipeType) {
+    protected ChemicalChemicalToChemicalRecipeManager(IMekanismRecipeTypeProvider<BiChemicalRecipeInput, ChemicalChemicalToChemicalRecipe, ?> recipeType) {
         super(recipeType);
     }
 
@@ -50,20 +48,20 @@ public abstract class ChemicalChemicalToChemicalRecipeManager<RECIPE extends Che
      * @param rightInput Chemical stack ingredient representing the "right" chemical input of the recipe.
      * @param output     Chemical stack representing the output of the recipe. Will be validated as not empty.
      */
-    public final RECIPE makeRecipe(ChemicalStackIngredient leftInput, ChemicalStackIngredient rightInput, ICrTChemicalStack output) {
+    public final ChemicalChemicalToChemicalRecipe makeRecipe(ChemicalStackIngredient leftInput, ChemicalStackIngredient rightInput, ICrTChemicalStack output) {
         return makeRecipe(leftInput, rightInput, getAndValidateNotEmpty(output));
     }
 
-    protected abstract RECIPE makeRecipe(ChemicalStackIngredient leftInput, ChemicalStackIngredient rightInput, ChemicalStack output);
+    protected abstract ChemicalChemicalToChemicalRecipe makeRecipe(ChemicalStackIngredient leftInput, ChemicalStackIngredient rightInput, ChemicalStack output);
 
     @Override
-    protected String describeOutputs(RECIPE recipe) {
+    protected String describeOutputs(ChemicalChemicalToChemicalRecipe recipe) {
         return CrTUtils.describeOutputs(recipe.getOutputDefinition());
     }
 
     @ZenRegister
     @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_CHEMICAL_INFUSING)
-    public static class ChemicalInfuserRecipeManager extends ChemicalChemicalToChemicalRecipeManager<ChemicalInfuserRecipe> {
+    public static class ChemicalInfuserRecipeManager extends ChemicalChemicalToChemicalRecipeManager {
 
         public static final ChemicalInfuserRecipeManager INSTANCE = new ChemicalInfuserRecipeManager();
 
@@ -72,14 +70,14 @@ public abstract class ChemicalChemicalToChemicalRecipeManager<RECIPE extends Che
         }
 
         @Override
-        protected BasicChemicalInfuserRecipe makeRecipe(ChemicalStackIngredient left, ChemicalStackIngredient right, ChemicalStack output) {
+        protected ChemicalChemicalToChemicalRecipe makeRecipe(ChemicalStackIngredient left, ChemicalStackIngredient right, ChemicalStack output) {
             return new BasicChemicalInfuserRecipe(left, right, output);
         }
     }
 
     @ZenRegister
     @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_PIGMENT_MIXING)
-    public static class PigmentMixingRecipeManager extends ChemicalChemicalToChemicalRecipeManager<PigmentMixingRecipe> {
+    public static class PigmentMixingRecipeManager extends ChemicalChemicalToChemicalRecipeManager {
 
         public static final PigmentMixingRecipeManager INSTANCE = new PigmentMixingRecipeManager();
 
@@ -88,7 +86,7 @@ public abstract class ChemicalChemicalToChemicalRecipeManager<RECIPE extends Che
         }
 
         @Override
-        protected PigmentMixingRecipe makeRecipe(ChemicalStackIngredient left, ChemicalStackIngredient right, ChemicalStack output) {
+        protected ChemicalChemicalToChemicalRecipe makeRecipe(ChemicalStackIngredient left, ChemicalStackIngredient right, ChemicalStack output) {
             return new BasicPigmentMixingRecipe(left, right, output);
         }
     }

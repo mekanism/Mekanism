@@ -6,9 +6,7 @@ import com.blamejared.crafttweaker_annotations.annotations.NativeMethod;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import java.util.List;
 import mekanism.api.recipes.ItemStackChemicalToItemStackRecipe;
-import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.api.recipes.NucleosynthesizingRecipe;
-import mekanism.api.recipes.PaintingRecipe;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import org.openzen.zencode.java.ZenCodeType;
@@ -45,40 +43,6 @@ public class CrTItemStackChemicalToItemStackRecipe {
         @ZenCodeType.Getter("duration")
         public static int getDuration(NucleosynthesizingRecipe _this) {
             return _this.getDuration();
-        }
-    }
-
-    @ZenRegister
-    @NativeTypeRegistration(value = MetallurgicInfuserRecipe.class, zenCodeName = CrTConstants.CLASS_RECIPE_METALLURGIC_INFUSING)
-    public static class CrTMetallurgicInfuserRecipe {
-
-        private CrTMetallurgicInfuserRecipe() {
-        }
-
-        /**
-         * Output representations, this list may or may not be complete and likely only contains one element, but has the possibility of containing multiple.
-         */
-        @ZenCodeType.Method
-        @ZenCodeType.Getter("outputs")
-        public static List<IItemStack> getOutputs(MetallurgicInfuserRecipe _this) {
-            return CrTUtils.convertItems(_this.getOutputDefinition());
-        }
-    }
-
-    @ZenRegister
-    @NativeTypeRegistration(value = PaintingRecipe.class, zenCodeName = CrTConstants.CLASS_RECIPE_PAINTING)
-    public static class CrTPaintingRecipe {
-
-        private CrTPaintingRecipe() {
-        }
-
-        /**
-         * Output representations, this list may or may not be complete and likely only contains one element, but has the possibility of containing multiple.
-         */
-        @ZenCodeType.Method
-        @ZenCodeType.Getter("outputs")
-        public static List<IItemStack> getOutputs(PaintingRecipe _this) {
-            return CrTUtils.convertItems(_this.getOutputDefinition());
         }
     }
 }

@@ -45,13 +45,28 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
      */
     public static final StreamCodec<RegistryFriendlyByteBuf, Chemical> STREAM_CODEC = ByteBufCodecs.registry(MekanismAPI.CHEMICAL_REGISTRY_NAME);
 
+    /**
+     * Tries to parse a chemical.
+     *
+     * @since 10.6.10
+     */
     public static Optional<Chemical> parse(HolderLookup.Provider lookupProvider, Tag tag) {
         return CODEC.parse(lookupProvider.createSerializationContext(NbtOps.INSTANCE), tag)
               .resultOrPartial(error -> MekanismAPI.logger.error("Tried to load invalid chemical: '{}'", error));
     }
 
+
+    /**
+     * Tries to parse a chemical stack, defaulting to {@link MekanismAPI#EMPTY_CHEMICAL} on parsing failure.
+     *
+     * @since 10.6.10
+     */
     public static Chemical parseOptional(HolderLookup.Provider lookupProvider, String tag) {
-        return tag.isEmpty() ? MekanismAPI.EMPTY_CHEMICAL : MekanismAPI.CHEMICAL_REGISTRY.get(ResourceLocation.tryParse(tag));
+        if (tag.isEmpty()) {
+            return MekanismAPI.EMPTY_CHEMICAL;
+        }
+        ResourceLocation name = ResourceLocation.tryParse(tag);
+        return name == null ? MekanismAPI.EMPTY_CHEMICAL : MekanismAPI.CHEMICAL_REGISTRY.get(name);
     }
 
     private final Map<Class<? extends ChemicalAttribute>, ChemicalAttribute> attributeMap;
@@ -92,7 +107,7 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
     @Override
     public String getTranslationKey() {
         if (translationKey == null) {
-            translationKey = getDefaultTranslationKey();
+            translationKey = Util.makeDescriptionId("chemical", getRegistryName());
         }
         return translationKey;
     }
@@ -154,13 +169,6 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
     @Override
     public Collection<Class<? extends ChemicalAttribute>> getAttributeTypes() {
         return attributeMap.keySet();
-    }
-
-    /**
-     * Gets the default translation key for this chemical.
-     */
-    protected String getDefaultTranslationKey() {
-        return Util.makeDescriptionId("chemical", getRegistryName());
     }
 
     @Override

@@ -24,6 +24,11 @@ public class BasicCompressingRecipe extends BasicItemStackChemicalToItemStackRec
     }
 
     @Override
+    public boolean perTickUsage() {
+        return true;
+    }
+
+    @Override
     public RecipeSerializer<BasicCompressingRecipe> getSerializer() {
         return MekanismRecipeSerializers.COMPRESSING.value();
     }

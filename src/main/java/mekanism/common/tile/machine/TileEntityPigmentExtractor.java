@@ -7,7 +7,7 @@ import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.api.recipes.ItemStackToPigmentRecipe;
+import mekanism.api.recipes.ItemStackToChemicalRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.api.recipes.cache.OneInputCachedRecipe;
@@ -51,7 +51,7 @@ import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class TileEntityPigmentExtractor extends TileEntityProgressMachine<ItemStackToPigmentRecipe> implements ItemRecipeLookupHandler<ItemStackToPigmentRecipe> {
+public class TileEntityPigmentExtractor extends TileEntityProgressMachine<ItemStackToChemicalRecipe> implements ItemRecipeLookupHandler<ItemStackToChemicalRecipe> {
 
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
           RecipeError.NOT_ENOUGH_ENERGY,
@@ -134,24 +134,24 @@ public class TileEntityPigmentExtractor extends TileEntityProgressMachine<ItemSt
 
     @NotNull
     @Override
-    public IMekanismRecipeTypeProvider<SingleRecipeInput, ItemStackToPigmentRecipe, SingleItem<ItemStackToPigmentRecipe>> getRecipeType() {
+    public IMekanismRecipeTypeProvider<SingleRecipeInput, ItemStackToChemicalRecipe, SingleItem<ItemStackToChemicalRecipe>> getRecipeType() {
         return MekanismRecipeType.PIGMENT_EXTRACTING;
     }
 
     @Override
-    public IRecipeViewerRecipeType<ItemStackToPigmentRecipe> recipeViewerType() {
+    public IRecipeViewerRecipeType<ItemStackToChemicalRecipe> recipeViewerType() {
         return RecipeViewerRecipeType.PIGMENT_EXTRACTING;
     }
 
     @Nullable
     @Override
-    public ItemStackToPigmentRecipe getRecipe(int cacheIndex) {
+    public ItemStackToChemicalRecipe getRecipe(int cacheIndex) {
         return findFirstRecipe(inputHandler);
     }
 
     @NotNull
     @Override
-    public CachedRecipe<ItemStackToPigmentRecipe> createNewCachedRecipe(@NotNull ItemStackToPigmentRecipe recipe, int cacheIndex) {
+    public CachedRecipe<ItemStackToChemicalRecipe> createNewCachedRecipe(@NotNull ItemStackToChemicalRecipe recipe, int cacheIndex) {
         return OneInputCachedRecipe.itemToChemical(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
               .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(this::canFunction)

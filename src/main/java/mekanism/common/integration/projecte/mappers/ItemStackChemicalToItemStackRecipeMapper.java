@@ -17,7 +17,8 @@ import org.jetbrains.annotations.NotNull;
 public class ItemStackChemicalToItemStackRecipeMapper extends TypedMekanismRecipeMapper<ItemStackChemicalToItemStackRecipe> {
 
     public ItemStackChemicalToItemStackRecipeMapper() {
-        super(ItemStackChemicalToItemStackRecipe.class, MekanismRecipeType.COMPRESSING, MekanismRecipeType.PURIFYING, MekanismRecipeType.INJECTING);
+        super(ItemStackChemicalToItemStackRecipe.class, MekanismRecipeType.COMPRESSING, MekanismRecipeType.PURIFYING, MekanismRecipeType.INJECTING,
+              MekanismRecipeType.PAINTING, MekanismRecipeType.METALLURGIC_INFUSING);
     }
 
     @Override
@@ -27,23 +28,26 @@ public class ItemStackChemicalToItemStackRecipeMapper extends TypedMekanismRecip
 
     @Override
     public String getDescription() {
-        return "Maps Mekanism Machine recipes that go from item, gas to item. (Compressing, Purifying, Injecting)";
+        return "Maps Mekanism Machine recipes that go from item, chemical to item. (Compressing, Purifying, Injecting, Metallurgic Infusing, Painting)";
     }
 
     @Override
     protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, ItemStackChemicalToItemStackRecipe recipe) {
         boolean handled = false;
         List<@NotNull ItemStack> itemRepresentations = recipe.getItemInput().getRepresentations();
-        List<@NotNull ChemicalStack> gasRepresentations = recipe.getChemicalInput().getRepresentations();
-        for (ChemicalStack gasRepresentation : gasRepresentations) {
-            NSSChemical nssGas = NSSChemical.createChemical(gasRepresentation);
-            long gasAmount = gasRepresentation.getAmount() * TileEntityAdvancedElectricMachine.BASE_TICKS_REQUIRED;
+        List<@NotNull ChemicalStack> chemicalRepresentations = recipe.getChemicalInput().getRepresentations();
+        for (ChemicalStack chemicalRepresentation : chemicalRepresentations) {
+            NSSChemical nssChemical = NSSChemical.createChemical(chemicalRepresentation);
+            long chemicalAmount = chemicalRepresentation.getAmount();
+            if (recipe.perTickUsage()) {
+                chemicalAmount *= TileEntityAdvancedElectricMachine.BASE_TICKS_REQUIRED;
+            }
             for (ItemStack itemRepresentation : itemRepresentations) {
-                ItemStack output = recipe.getOutput(itemRepresentation, gasRepresentation);
+                ItemStack output = recipe.getOutput(itemRepresentation, chemicalRepresentation);
                 if (!output.isEmpty()) {
                     IngredientHelper ingredientHelper = new IngredientHelper(mapper);
                     ingredientHelper.put(itemRepresentation);
-                    ingredientHelper.put(nssGas, gasAmount);
+                    ingredientHelper.put(nssChemical, chemicalAmount);
                     if (ingredientHelper.addAsConversion(output)) {
                         handled = true;
                     }

@@ -38,10 +38,10 @@ public class MekanismRecipeTypes {
     public static final DeferredHolder<RecipeType<?>, RecipeType<ItemStackToItemStackRecipe>> TYPE_CRUSHING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_CRUSHING);
     public static final DeferredHolder<RecipeType<?>, RecipeType<ItemStackToItemStackRecipe>> TYPE_ENRICHING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_ENRICHING);
     public static final DeferredHolder<RecipeType<?>, RecipeType<ItemStackToItemStackRecipe>> TYPE_SMELTING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_SMELTING);
-    public static final DeferredHolder<RecipeType<?>, RecipeType<ChemicalInfuserRecipe>> TYPE_CHEMICAL_INFUSING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_CHEMICAL_INFUSING);
+    public static final DeferredHolder<RecipeType<?>, RecipeType<ChemicalChemicalToChemicalRecipe>> TYPE_CHEMICAL_INFUSING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_CHEMICAL_INFUSING);
     public static final DeferredHolder<RecipeType<?>, RecipeType<CombinerRecipe>> TYPE_COMBINING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_COMBINING);
     public static final DeferredHolder<RecipeType<?>, RecipeType<ElectrolysisRecipe>> TYPE_SEPARATING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_SEPARATING);
-    public static final DeferredHolder<RecipeType<?>, RecipeType<FluidSlurryToSlurryRecipe>> TYPE_WASHING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_WASHING);
+    public static final DeferredHolder<RecipeType<?>, RecipeType<FluidChemicalToChemicalRecipe>> TYPE_WASHING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_WASHING);
     public static final DeferredHolder<RecipeType<?>, RecipeType<FluidToFluidRecipe>> TYPE_EVAPORATING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_EVAPORATING);
     public static final DeferredHolder<RecipeType<?>, RecipeType<ChemicalToChemicalRecipe>> TYPE_ACTIVATING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_ACTIVATING);
     public static final DeferredHolder<RecipeType<?>, RecipeType<ChemicalToChemicalRecipe>> TYPE_CENTRIFUGING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_CENTRIFUGING);
@@ -54,10 +54,10 @@ public class MekanismRecipeTypes {
     public static final DeferredHolder<RecipeType<?>, RecipeType<ItemStackToEnergyRecipe>> TYPE_ENERGY_CONVERSION = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_ENERGY_CONVERSION);
     public static final DeferredHolder<RecipeType<?>, RecipeType<ItemStackToChemicalRecipe>> TYPE_CHEMICAL_CONVERSION = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_CHEMICAL_CONVERSION);
     public static final DeferredHolder<RecipeType<?>, RecipeType<ItemStackToChemicalRecipe>> TYPE_OXIDIZING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_OXIDIZING);
-    public static final DeferredHolder<RecipeType<?>, RecipeType<ItemStackToPigmentRecipe>> TYPE_PIGMENT_EXTRACTING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_PIGMENT_EXTRACTING);
-    public static final DeferredHolder<RecipeType<?>, RecipeType<PigmentMixingRecipe>> TYPE_PIGMENT_MIXING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_PIGMENT_MIXING);
-    public static final DeferredHolder<RecipeType<?>, RecipeType<MetallurgicInfuserRecipe>> TYPE_METALLURGIC_INFUSING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_METALLURGIC_INFUSING);
-    public static final DeferredHolder<RecipeType<?>, RecipeType<PaintingRecipe>> TYPE_PAINTING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_PAINTING);
+    public static final DeferredHolder<RecipeType<?>, RecipeType<ItemStackToChemicalRecipe>> TYPE_PIGMENT_EXTRACTING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_PIGMENT_EXTRACTING);
+    public static final DeferredHolder<RecipeType<?>, RecipeType<ChemicalChemicalToChemicalRecipe>> TYPE_PIGMENT_MIXING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_PIGMENT_MIXING);
+    public static final DeferredHolder<RecipeType<?>, RecipeType<ItemStackChemicalToItemStackRecipe>> TYPE_METALLURGIC_INFUSING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_METALLURGIC_INFUSING);
+    public static final DeferredHolder<RecipeType<?>, RecipeType<ItemStackChemicalToItemStackRecipe>> TYPE_PAINTING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_PAINTING);
     public static final DeferredHolder<RecipeType<?>, RecipeType<PressurizedReactionRecipe>> TYPE_REACTION = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_REACTION);
     public static final DeferredHolder<RecipeType<?>, RecipeType<RotaryRecipe>> TYPE_ROTARY = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_ROTARY);
     public static final DeferredHolder<RecipeType<?>, RecipeType<SawmillRecipe>> TYPE_SAWING = DeferredHolder.create(Registries.RECIPE_TYPE, NAME_SAWING);

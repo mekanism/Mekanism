@@ -42,7 +42,7 @@ public class ItemStackChemicalToItemStackRecipeHandler extends MekanismRecipeHan
     @Override
     public Optional<ItemStackChemicalToItemStackRecipe> recompose(IRecipeManager<? super ItemStackChemicalToItemStackRecipe> m, RegistryAccess registryAccess,
           IDecomposedRecipe recipe) {
-        if (m instanceof ItemStackChemicalToItemStackRecipeManager<?> manager) {
+        if (m instanceof ItemStackChemicalToItemStackRecipeManager manager) {
             return Optional.of(manager.makeRecipe(
                   recipe.getOrThrowSingle(CrTRecipeComponents.ITEM.input()),
                   recipe.getOrThrowSingle(CrTRecipeComponents.CHEMICAL.input()),

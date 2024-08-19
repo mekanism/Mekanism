@@ -24,6 +24,11 @@ public class BasicPurifyingRecipe extends BasicItemStackChemicalToItemStackRecip
     }
 
     @Override
+    public boolean perTickUsage() {
+        return true;
+    }
+
+    @Override
     public RecipeSerializer<BasicPurifyingRecipe> getSerializer() {
         return MekanismRecipeSerializers.PURIFYING.value();
     }

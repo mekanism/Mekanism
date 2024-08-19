@@ -1,7 +1,7 @@
 package mekanism.client.recipe_viewer.emi.recipe;
 
 import dev.emi.emi.api.widget.WidgetHolder;
-import mekanism.api.recipes.FluidSlurryToSlurryRecipe;
+import mekanism.api.recipes.FluidChemicalToChemicalRecipe;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiChemicalGauge;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
@@ -12,9 +12,9 @@ import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.tile.component.config.DataType;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
-public class FluidSlurryToSlurryEmiRecipe extends MekanismEmiHolderRecipe<FluidSlurryToSlurryRecipe> {
+public class FluidChemicalToChemicalEmiRecipe extends MekanismEmiHolderRecipe<FluidChemicalToChemicalRecipe> {
 
-    public FluidSlurryToSlurryEmiRecipe(MekanismEmiRecipeCategory category, RecipeHolder<FluidSlurryToSlurryRecipe> recipeHolder) {
+    public FluidChemicalToChemicalEmiRecipe(MekanismEmiRecipeCategory category, RecipeHolder<FluidChemicalToChemicalRecipe> recipeHolder) {
         super(category, recipeHolder);
         addInputDefinition(recipe.getFluidInput());
         addInputDefinition(recipe.getChemicalInput());

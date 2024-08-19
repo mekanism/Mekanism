@@ -29,20 +29,20 @@ public class PressurizedReactionEmiRecipe extends MekanismEmiHolderRecipe<Pressu
         addInputDefinition(recipe.getInputFluid());
         addInputDefinition(recipe.getInputChemical());
         List<ItemStack> itemOutputs = new ArrayList<>();
-        List<ChemicalStack> gasOutputs = new ArrayList<>();
+        List<ChemicalStack> chemicalOutputs = new ArrayList<>();
         for (PressurizedReactionRecipeOutput output : recipe.getOutputDefinition()) {
             itemOutputs.add(output.item());
-            gasOutputs.add(output.chemical());
+            chemicalOutputs.add(output.chemical());
         }
         if (itemOutputs.stream().allMatch(ConstantPredicates.ITEM_EMPTY)) {
             addOutputDefinition(Collections.emptyList());
         } else {
             addItemOutputDefinition(itemOutputs);
         }
-        if (gasOutputs.stream().allMatch(ConstantPredicates.CHEMICAL_EMPTY)) {
+        if (chemicalOutputs.stream().allMatch(ConstantPredicates.CHEMICAL_EMPTY)) {
             addOutputDefinition(Collections.emptyList());
         } else {
-            addChemicalOutputDefinition(gasOutputs);
+            addChemicalOutputDefinition(chemicalOutputs);
         }
     }
 

@@ -5,7 +5,7 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.basic.BasicChemicalOxidizerRecipe;
 import mekanism.api.recipes.basic.BasicChemicalConversionRecipe;
-import mekanism.api.recipes.basic.BasicItemStackToPigmentRecipe;
+import mekanism.api.recipes.basic.BasicPigmentExtractingRecipe;
 import mekanism.api.recipes.ItemStackToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 
@@ -69,7 +69,7 @@ public class ItemStackToChemicalRecipeBuilder extends
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This pigment extracting recipe requires a non empty chemical output.");
         }
-        return new ItemStackToChemicalRecipeBuilder(input, output, BasicItemStackToPigmentRecipe::new);
+        return new ItemStackToChemicalRecipeBuilder(input, output, BasicPigmentExtractingRecipe::new);
     }
 
     @Override

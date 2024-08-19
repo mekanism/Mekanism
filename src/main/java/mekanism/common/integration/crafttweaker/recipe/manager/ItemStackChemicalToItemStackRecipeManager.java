@@ -5,8 +5,6 @@ import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.util.ItemStackUtil;
 import mekanism.api.recipes.ItemStackChemicalToItemStackRecipe;
-import mekanism.api.recipes.MetallurgicInfuserRecipe;
-import mekanism.api.recipes.PaintingRecipe;
 import mekanism.api.recipes.basic.BasicCompressingRecipe;
 import mekanism.api.recipes.basic.BasicInjectingRecipe;
 import mekanism.api.recipes.basic.BasicMetallurgicInfuserRecipe;
@@ -23,10 +21,10 @@ import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_ITEM_STACK_CHEMICAL_TO_ITEM_STACK)
-public abstract class ItemStackChemicalToItemStackRecipeManager<RECIPE extends ItemStackChemicalToItemStackRecipe> extends
-      MekanismRecipeManager<SingleItemChemicalRecipeInput, RECIPE> {
+public abstract class ItemStackChemicalToItemStackRecipeManager extends
+      MekanismRecipeManager<SingleItemChemicalRecipeInput, ItemStackChemicalToItemStackRecipe> {
 
-    protected ItemStackChemicalToItemStackRecipeManager(IMekanismRecipeTypeProvider<SingleItemChemicalRecipeInput, RECIPE, ?> recipeType) {
+    protected ItemStackChemicalToItemStackRecipeManager(IMekanismRecipeTypeProvider<SingleItemChemicalRecipeInput, ItemStackChemicalToItemStackRecipe, ?> recipeType) {
         super(recipeType);
     }
 
@@ -68,20 +66,20 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<RECIPE extends I
      *                      called from.
      * @param output        {@link IItemStack} representing the output of the recipe. Will be validated as not empty.
      */
-    public final RECIPE makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient chemicalInput, IItemStack output) {
+    public final ItemStackChemicalToItemStackRecipe makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient chemicalInput, IItemStack output) {
         return makeRecipe(itemInput, chemicalInput, getAndValidateNotEmpty(output));
     }
 
-    protected abstract RECIPE makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient chemicalInput, ItemStack output);
+    protected abstract ItemStackChemicalToItemStackRecipe makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient chemicalInput, ItemStack output);
 
     @Override
-    protected String describeOutputs(RECIPE recipe) {
+    protected String describeOutputs(ItemStackChemicalToItemStackRecipe recipe) {
         return CrTUtils.describeOutputs(recipe.getOutputDefinition(), ItemStackUtil::getCommandString);
     }
 
     @ZenRegister
     @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_COMPRESSING)
-    public static class OsmiumCompressorRecipeManager extends ItemStackChemicalToItemStackRecipeManager<ItemStackChemicalToItemStackRecipe> {
+    public static class OsmiumCompressorRecipeManager extends ItemStackChemicalToItemStackRecipeManager {
 
         public static final OsmiumCompressorRecipeManager INSTANCE = new OsmiumCompressorRecipeManager();
 
@@ -97,7 +95,7 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<RECIPE extends I
 
     @ZenRegister
     @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_INJECTING)
-    public static class ChemicalInjectionRecipeManager extends ItemStackChemicalToItemStackRecipeManager<ItemStackChemicalToItemStackRecipe> {
+    public static class ChemicalInjectionRecipeManager extends ItemStackChemicalToItemStackRecipeManager {
 
         public static final ChemicalInjectionRecipeManager INSTANCE = new ChemicalInjectionRecipeManager();
 
@@ -113,7 +111,7 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<RECIPE extends I
 
     @ZenRegister
     @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_PURIFYING)
-    public static class PurificationRecipeManager extends ItemStackChemicalToItemStackRecipeManager<ItemStackChemicalToItemStackRecipe> {
+    public static class PurificationRecipeManager extends ItemStackChemicalToItemStackRecipeManager {
 
         public static final PurificationRecipeManager INSTANCE = new PurificationRecipeManager();
 
@@ -129,7 +127,7 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<RECIPE extends I
 
     @ZenRegister
     @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_METALLURGIC_INFUSING)
-    public static class MetallurgicInfuserRecipeManager extends ItemStackChemicalToItemStackRecipeManager<MetallurgicInfuserRecipe> {
+    public static class MetallurgicInfuserRecipeManager extends ItemStackChemicalToItemStackRecipeManager {
 
         public static final MetallurgicInfuserRecipeManager INSTANCE = new MetallurgicInfuserRecipeManager();
 
@@ -138,14 +136,14 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<RECIPE extends I
         }
 
         @Override
-        protected MetallurgicInfuserRecipe makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient chemicalInput, ItemStack output) {
+        protected ItemStackChemicalToItemStackRecipe makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient chemicalInput, ItemStack output) {
             return new BasicMetallurgicInfuserRecipe(CrTUtils.fromCrT(itemInput), chemicalInput, output);
         }
     }
 
     @ZenRegister
     @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_PAINTING)
-    public static class PaintingRecipeManager extends ItemStackChemicalToItemStackRecipeManager<PaintingRecipe> {
+    public static class PaintingRecipeManager extends ItemStackChemicalToItemStackRecipeManager {
 
         public static final PaintingRecipeManager INSTANCE = new PaintingRecipeManager();
 
@@ -154,7 +152,7 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<RECIPE extends I
         }
 
         @Override
-        protected PaintingRecipe makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient chemicalInput, ItemStack output) {
+        protected ItemStackChemicalToItemStackRecipe makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient chemicalInput, ItemStack output) {
             return new BasicPaintingRecipe(CrTUtils.fromCrT(itemInput), chemicalInput, output);
         }
     }

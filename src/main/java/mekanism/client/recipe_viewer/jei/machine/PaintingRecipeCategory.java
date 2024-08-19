@@ -1,7 +1,8 @@
 package mekanism.client.recipe_viewer.jei.machine;
 
+import java.util.List;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.recipes.PaintingRecipe;
+import mekanism.api.recipes.ItemStackChemicalToItemStackRecipe;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiChemicalGauge;
@@ -16,6 +17,7 @@ import mekanism.client.recipe_viewer.jei.MekanismJEI;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.tile.component.config.DataType;
+import mekanism.common.tile.machine.TileEntityPaintingMachine;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
@@ -25,39 +27,45 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 
-public class PaintingRecipeCategory extends HolderRecipeCategory<PaintingRecipe> {
+public class PaintingRecipeCategory extends HolderRecipeCategory<ItemStackChemicalToItemStackRecipe> {
 
-    private static final String PIGMENT_INPUT = "pigmentInput";
+    private static final String CHEMICAL_INPUT = "chemicalInput";
 
     private final PaintingColorDetails colorDetails;
-    private final GuiGauge<?> inputPigment;
+    private final GuiGauge<?> inputChemical;
     private final GuiSlot inputSlot;
     private final GuiSlot output;
 
-    public PaintingRecipeCategory(IGuiHelper helper, IRecipeViewerRecipeType<PaintingRecipe> recipeType) {
+    public PaintingRecipeCategory(IGuiHelper helper, IRecipeViewerRecipeType<ItemStackChemicalToItemStackRecipe> recipeType) {
         super(helper, recipeType);
         inputSlot = addSlot(SlotType.INPUT, 45, 35);
         addSlot(SlotType.POWER, 144, 35).with(SlotOverlay.POWER);
         output = addSlot(SlotType.OUTPUT, 116, 35);
         addElement(new GuiVerticalPowerBar(this, RecipeViewerUtils.FULL_BAR, 164, 15));
-        inputPigment = addElement(GuiChemicalGauge.getDummy(GaugeType.STANDARD.with(DataType.INPUT), this, 25, 13));
+        inputChemical = addElement(GuiChemicalGauge.getDummy(GaugeType.STANDARD.with(DataType.INPUT), this, 25, 13));
         addSimpleProgress(ProgressType.LARGE_RIGHT, 64, 39).colored(colorDetails = new PaintingColorDetails());
     }
 
     @Override
-    public void draw(RecipeHolder<PaintingRecipe> recipeHolder, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+    public void draw(RecipeHolder<ItemStackChemicalToItemStackRecipe> recipeHolder, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
         //Set what the "current" recipe is for our color details, before bothering to draw the arrow
-        colorDetails.setIngredient(getDisplayedStack(recipeSlotsView, PIGMENT_INPUT, MekanismJEI.TYPE_CHEMICAL, ChemicalStack.EMPTY));
+        colorDetails.setIngredient(getDisplayedStack(recipeSlotsView, CHEMICAL_INPUT, MekanismJEI.TYPE_CHEMICAL, ChemicalStack.EMPTY));
         super.draw(recipeHolder, recipeSlotsView, guiGraphics, mouseX, mouseY);
         colorDetails.reset();
     }
 
     @Override
-    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<PaintingRecipe> recipeHolder, @NotNull IFocusGroup focusGroup) {
-        PaintingRecipe recipe = recipeHolder.value();
+    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<ItemStackChemicalToItemStackRecipe> recipeHolder, @NotNull IFocusGroup focusGroup) {
+        ItemStackChemicalToItemStackRecipe recipe = recipeHolder.value();
         initItem(builder, RecipeIngredientRole.INPUT, inputSlot, recipe.getItemInput().getRepresentations());
-        initChemical(builder, MekanismJEI.TYPE_CHEMICAL, RecipeIngredientRole.INPUT, inputPigment, recipe.getChemicalInput().getRepresentations())
-              .setSlotName(PIGMENT_INPUT);
+        List<ChemicalStack> scaledChemicals = recipe.getChemicalInput().getRepresentations();
+        if (recipe.perTickUsage()) {
+            scaledChemicals = scaledChemicals.stream()
+                  .map(chemical -> chemical.copyWithAmount(chemical.getAmount() * TileEntityPaintingMachine.BASE_TICKS_REQUIRED))
+                  .toList();
+        }
+        initChemical(builder, RecipeIngredientRole.INPUT, inputChemical, scaledChemicals)
+              .setSlotName(CHEMICAL_INPUT);
         initItem(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
     }
 }

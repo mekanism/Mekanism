@@ -19,7 +19,9 @@ import org.jetbrains.annotations.NotNull;
  * <br>
  * Input: Chemical
  * <br>
- * Output: ChemicalStack of the same chemical type as the input chemical
+ * Output: ChemicalStack
+ *
+ * @apiNote Chemical Washers can process this recipe type.
  */
 @NothingNullByDefault
 public abstract class FluidChemicalToChemicalRecipe extends MekanismRecipe<SingleFluidChemicalRecipeInput> implements BiPredicate<@NotNull FluidStack, ChemicalStack> {

@@ -2,7 +2,7 @@ package mekanism.client.gui.machine;
 
 import java.lang.ref.WeakReference;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.api.recipes.ItemStackToPigmentRecipe;
+import mekanism.api.recipes.ItemStackToChemicalRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.client.gui.GuiConfigurableTile;
 import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;
@@ -49,7 +49,7 @@ public class GuiPigmentExtractor extends GuiConfigurableTile<TileEntityPigmentEx
 
     private class PigmentColorDetails implements ColorDetails {
 
-        private WeakReference<ItemStackToPigmentRecipe> cachedRecipe;
+        private WeakReference<ItemStackToChemicalRecipe> cachedRecipe;
 
         @Override
         public int getColorFrom() {
@@ -67,7 +67,7 @@ public class GuiPigmentExtractor extends GuiConfigurableTile<TileEntityPigmentEx
                 IInventorySlot inputSlot = tile.getInputSlot();
                 if (!inputSlot.isEmpty()) {
                     ItemStack input = inputSlot.getStack();
-                    ItemStackToPigmentRecipe recipe;
+                    ItemStackToChemicalRecipe recipe;
                     if (cachedRecipe == null) {
                         recipe = getRecipeAndCache();
                     } else {
@@ -85,8 +85,8 @@ public class GuiPigmentExtractor extends GuiConfigurableTile<TileEntityPigmentEx
             return getColor(tile.pigmentTank.getType().getColorRepresentation());
         }
 
-        private ItemStackToPigmentRecipe getRecipeAndCache() {
-            ItemStackToPigmentRecipe recipe = tile.getRecipe(0);
+        private ItemStackToChemicalRecipe getRecipeAndCache() {
+            ItemStackToChemicalRecipe recipe = tile.getRecipe(0);
             if (recipe == null) {
                 cachedRecipe = null;
             } else {

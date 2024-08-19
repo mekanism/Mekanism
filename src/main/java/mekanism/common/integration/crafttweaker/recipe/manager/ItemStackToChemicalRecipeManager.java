@@ -4,10 +4,9 @@ import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ItemStackToChemicalRecipe;
-import mekanism.api.recipes.ItemStackToPigmentRecipe;
 import mekanism.api.recipes.basic.BasicChemicalConversionRecipe;
 import mekanism.api.recipes.basic.BasicChemicalOxidizerRecipe;
-import mekanism.api.recipes.basic.BasicItemStackToPigmentRecipe;
+import mekanism.api.recipes.basic.BasicPigmentExtractingRecipe;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
@@ -18,9 +17,9 @@ import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_ITEM_STACK_TO_CHEMICAL)
-public abstract class ItemStackToChemicalRecipeManager<RECIPE extends ItemStackToChemicalRecipe> extends MekanismRecipeManager<SingleRecipeInput, RECIPE> {
+public abstract class ItemStackToChemicalRecipeManager extends MekanismRecipeManager<SingleRecipeInput, ItemStackToChemicalRecipe> {
 
-    protected ItemStackToChemicalRecipeManager(IMekanismRecipeTypeProvider<SingleRecipeInput, RECIPE, ?> recipeType) {
+    protected ItemStackToChemicalRecipeManager(IMekanismRecipeTypeProvider<SingleRecipeInput, ItemStackToChemicalRecipe, ?> recipeType) {
         super(recipeType);
     }
 
@@ -49,20 +48,20 @@ public abstract class ItemStackToChemicalRecipeManager<RECIPE extends ItemStackT
      * @param input  {@link IIngredientWithAmount} representing the input of the recipe.
      * @param output Chemical stack representing the output of the recipe. Will be validated as not empty.
      */
-    public final RECIPE makeRecipe(IIngredientWithAmount input, ICrTChemicalStack output) {
+    public final ItemStackToChemicalRecipe makeRecipe(IIngredientWithAmount input, ICrTChemicalStack output) {
         return makeRecipe(input, getAndValidateNotEmpty(output));
     }
 
-    protected abstract RECIPE makeRecipe(IIngredientWithAmount input, ChemicalStack output);
+    protected abstract ItemStackToChemicalRecipe makeRecipe(IIngredientWithAmount input, ChemicalStack output);
 
     @Override
-    protected String describeOutputs(RECIPE recipe) {
+    protected String describeOutputs(ItemStackToChemicalRecipe recipe) {
         return CrTUtils.describeOutputs(recipe.getOutputDefinition());
     }
 
     @ZenRegister
     @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_CHEMICAL_CONVERSION)
-    public static class ChemicalConversionRecipeManager extends ItemStackToChemicalRecipeManager<ItemStackToChemicalRecipe> {
+    public static class ChemicalConversionRecipeManager extends ItemStackToChemicalRecipeManager {
 
         public static final ChemicalConversionRecipeManager INSTANCE = new ChemicalConversionRecipeManager();
 
@@ -78,7 +77,7 @@ public abstract class ItemStackToChemicalRecipeManager<RECIPE extends ItemStackT
 
     @ZenRegister
     @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_OXIDIZING)
-    public static class ChemicalOxidizerRecipeManager extends ItemStackToChemicalRecipeManager<ItemStackToChemicalRecipe> {
+    public static class ChemicalOxidizerRecipeManager extends ItemStackToChemicalRecipeManager {
 
         public static final ChemicalOxidizerRecipeManager INSTANCE = new ChemicalOxidizerRecipeManager();
 
@@ -94,7 +93,7 @@ public abstract class ItemStackToChemicalRecipeManager<RECIPE extends ItemStackT
 
     @ZenRegister
     @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_PIGMENT_EXTRACTING)
-    public static class PigmentExtractingRecipeManager extends ItemStackToChemicalRecipeManager<ItemStackToPigmentRecipe> {
+    public static class PigmentExtractingRecipeManager extends ItemStackToChemicalRecipeManager {
 
         public static final PigmentExtractingRecipeManager INSTANCE = new PigmentExtractingRecipeManager();
 
@@ -103,8 +102,8 @@ public abstract class ItemStackToChemicalRecipeManager<RECIPE extends ItemStackT
         }
 
         @Override
-        protected ItemStackToPigmentRecipe makeRecipe(IIngredientWithAmount input, ChemicalStack output) {
-            return new BasicItemStackToPigmentRecipe(CrTUtils.fromCrT(input), output);
+        protected ItemStackToChemicalRecipe makeRecipe(IIngredientWithAmount input, ChemicalStack output) {
+            return new BasicPigmentExtractingRecipe(CrTUtils.fromCrT(input), output);
         }
     }
 }

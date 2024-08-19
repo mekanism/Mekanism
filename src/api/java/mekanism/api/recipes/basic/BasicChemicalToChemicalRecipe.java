@@ -32,7 +32,7 @@ public abstract class BasicChemicalToChemicalRecipe extends ChemicalToChemicalRe
     }
 
     @Override
-    public RecipeType<ChemicalToChemicalRecipe> getType() {
+    public final RecipeType<ChemicalToChemicalRecipe> getType() {
         return recipeType;
     }
 

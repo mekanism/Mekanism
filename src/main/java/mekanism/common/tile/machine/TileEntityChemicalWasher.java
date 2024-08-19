@@ -8,7 +8,7 @@ import mekanism.api.Upgrade;
 import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.recipes.FluidSlurryToSlurryRecipe;
+import mekanism.api.recipes.FluidChemicalToChemicalRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.api.recipes.cache.TwoInputCachedRecipe;
@@ -60,8 +60,8 @@ import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidSlurryToSlurryRecipe> implements
-      FluidChemicalRecipeLookupHandler<FluidSlurryToSlurryRecipe> {
+public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidChemicalToChemicalRecipe> implements
+      FluidChemicalRecipeLookupHandler<FluidChemicalToChemicalRecipe> {
 
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
           RecipeError.NOT_ENOUGH_ENERGY,
@@ -175,24 +175,24 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidSlurr
 
     @NotNull
     @Override
-    public IMekanismRecipeTypeProvider<SingleFluidChemicalRecipeInput, FluidSlurryToSlurryRecipe, FluidChemical<FluidSlurryToSlurryRecipe>> getRecipeType() {
+    public IMekanismRecipeTypeProvider<SingleFluidChemicalRecipeInput, FluidChemicalToChemicalRecipe, FluidChemical<FluidChemicalToChemicalRecipe>> getRecipeType() {
         return MekanismRecipeType.WASHING;
     }
 
     @Override
-    public IRecipeViewerRecipeType<FluidSlurryToSlurryRecipe> recipeViewerType() {
+    public IRecipeViewerRecipeType<FluidChemicalToChemicalRecipe> recipeViewerType() {
         return RecipeViewerRecipeType.WASHING;
     }
 
     @Nullable
     @Override
-    public FluidSlurryToSlurryRecipe getRecipe(int cacheIndex) {
+    public FluidChemicalToChemicalRecipe getRecipe(int cacheIndex) {
         return getRecipeType().getInputCache().findFirstRecipe(level, fluidInputHandler.getInput(), slurryInputHandler.getInput(), false);
     }
 
     @NotNull
     @Override
-    public CachedRecipe<FluidSlurryToSlurryRecipe> createNewCachedRecipe(@NotNull FluidSlurryToSlurryRecipe recipe, int cacheIndex) {
+    public CachedRecipe<FluidChemicalToChemicalRecipe> createNewCachedRecipe(@NotNull FluidChemicalToChemicalRecipe recipe, int cacheIndex) {
         return TwoInputCachedRecipe.fluidChemicalToChemical(recipe, recheckAllRecipeErrors, fluidInputHandler, slurryInputHandler, outputHandler)
               .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(this::canFunction)

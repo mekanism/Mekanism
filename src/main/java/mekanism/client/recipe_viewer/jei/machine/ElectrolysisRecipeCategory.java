@@ -14,7 +14,6 @@ import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.client.recipe_viewer.jei.HolderRecipeCategory;
-import mekanism.client.recipe_viewer.jei.MekanismJEI;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.tile.component.config.DataType;
@@ -56,7 +55,7 @@ public class ElectrolysisRecipeCategory extends HolderRecipeCategory<Electrolysi
             leftDefinition.add(output.left());
             rightDefinition.add(output.right());
         }
-        initChemical(builder, MekanismJEI.TYPE_CHEMICAL, RecipeIngredientRole.OUTPUT, leftOutput, leftDefinition);
-        initChemical(builder, MekanismJEI.TYPE_CHEMICAL, RecipeIngredientRole.OUTPUT, rightOutput, rightDefinition);
+        initChemical(builder, RecipeIngredientRole.OUTPUT, leftOutput, leftDefinition);
+        initChemical(builder, RecipeIngredientRole.OUTPUT, rightOutput, rightDefinition);
     }
 }

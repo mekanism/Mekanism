@@ -10,7 +10,6 @@ import mekanism.client.gui.element.gauge.GuiChemicalGauge;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.recipe_viewer.jei.BaseRecipeCategory;
-import mekanism.client.recipe_viewer.jei.MekanismJEI;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.common.MekanismLang;
 import mekanism.common.util.MekanismUtils;
@@ -55,11 +54,11 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<FissionReci
         if (recipe.inputCoolant() == null) {
             initFluid(builder, RecipeIngredientRole.INPUT, coolantTank, recipe.waterInput().getRepresentations());
         } else {
-            initChemical(builder, MekanismJEI.TYPE_CHEMICAL, RecipeIngredientRole.INPUT, coolantTank, recipe.inputCoolant().getRepresentations());
+            initChemical(builder, RecipeIngredientRole.INPUT, coolantTank, recipe.inputCoolant().getRepresentations());
         }
-        initChemical(builder, MekanismJEI.TYPE_CHEMICAL, RecipeIngredientRole.INPUT, fuelTank, recipe.fuel().getRepresentations());
-        initChemical(builder, MekanismJEI.TYPE_CHEMICAL, RecipeIngredientRole.OUTPUT, heatedCoolantTank, Collections.singletonList(recipe.outputCoolant()));
-        initChemical(builder, MekanismJEI.TYPE_CHEMICAL, RecipeIngredientRole.OUTPUT, wasteTank, Collections.singletonList(recipe.waste()));
+        initChemical(builder, RecipeIngredientRole.INPUT, fuelTank, recipe.fuel().getRepresentations());
+        initChemical(builder, RecipeIngredientRole.OUTPUT, heatedCoolantTank, Collections.singletonList(recipe.outputCoolant()));
+        initChemical(builder, RecipeIngredientRole.OUTPUT, wasteTank, Collections.singletonList(recipe.waste()));
     }
 
     @Nullable

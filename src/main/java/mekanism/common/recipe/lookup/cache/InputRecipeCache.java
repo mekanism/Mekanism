@@ -73,8 +73,7 @@ public class InputRecipeCache {
         }
     }
 
-    public static class EitherSideChemical<
-          RECIPE extends ChemicalChemicalToChemicalRecipe>
+    public static class EitherSideChemical<RECIPE extends ChemicalChemicalToChemicalRecipe>
           extends EitherSideInputRecipeCache<ChemicalStack, ChemicalStackIngredient, RECIPE, ChemicalInputCache<RECIPE>> {
 
         public EitherSideChemical(MekanismRecipeType<?, RECIPE, ?> recipeType) {

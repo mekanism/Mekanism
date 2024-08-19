@@ -2,7 +2,7 @@ package mekanism.client.gui.machine;
 
 import java.lang.ref.WeakReference;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.recipes.PigmentMixingRecipe;
+import mekanism.api.recipes.ChemicalChemicalToChemicalRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.client.gui.GuiConfigurableTile;
 import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;
@@ -74,7 +74,7 @@ public class GuiPigmentMixer extends GuiConfigurableTile<TileEntityPigmentMixer,
 
     private abstract class PigmentColorDetails implements ColorDetails {
 
-        private WeakReference<PigmentMixingRecipe> cachedRecipe;
+        private WeakReference<ChemicalChemicalToChemicalRecipe> cachedRecipe;
 
         @Override
         public abstract int getColorFrom();
@@ -90,7 +90,7 @@ public class GuiPigmentMixer extends GuiConfigurableTile<TileEntityPigmentMixer,
                 if (!tile.leftInputTank.isEmpty() && !tile.rightInputTank.isEmpty()) {
                     ChemicalStack leftInput = tile.leftInputTank.getStack();
                     ChemicalStack rightInput = tile.rightInputTank.getStack();
-                    PigmentMixingRecipe recipe;
+                    ChemicalChemicalToChemicalRecipe recipe;
                     if (cachedRecipe == null) {
                         recipe = getRecipeAndCache();
                     } else {
@@ -108,8 +108,8 @@ public class GuiPigmentMixer extends GuiConfigurableTile<TileEntityPigmentMixer,
             return getColor(tile.outputTank.getType().getColorRepresentation());
         }
 
-        private PigmentMixingRecipe getRecipeAndCache() {
-            PigmentMixingRecipe recipe = tile.getRecipe(0);
+        private ChemicalChemicalToChemicalRecipe getRecipeAndCache() {
+            ChemicalChemicalToChemicalRecipe recipe = tile.getRecipe(0);
             if (recipe == null) {
                 cachedRecipe = null;
             } else {
@@ -118,7 +118,7 @@ public class GuiPigmentMixer extends GuiConfigurableTile<TileEntityPigmentMixer,
             return recipe;
         }
 
-        private boolean isValid(PigmentMixingRecipe recipe, ChemicalStack leftInput, ChemicalStack rightInput) {
+        private boolean isValid(ChemicalChemicalToChemicalRecipe recipe, ChemicalStack leftInput, ChemicalStack rightInput) {
             return (recipe.getLeftInput().testType(leftInput) && recipe.getRightInput().testType(rightInput)) ||
                    (recipe.getLeftInput().testType(rightInput) && recipe.getRightInput().testType(leftInput));
         }

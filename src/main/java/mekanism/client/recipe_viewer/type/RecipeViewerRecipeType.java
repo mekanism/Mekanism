@@ -1,24 +1,20 @@
 package mekanism.client.recipe_viewer.type;
 
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.recipes.ChemicalChemicalToChemicalRecipe;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.ChemicalDissolutionRecipe;
-import mekanism.api.recipes.ChemicalInfuserRecipe;
 import mekanism.api.recipes.ChemicalToChemicalRecipe;
 import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.ElectrolysisRecipe;
-import mekanism.api.recipes.FluidSlurryToSlurryRecipe;
+import mekanism.api.recipes.FluidChemicalToChemicalRecipe;
 import mekanism.api.recipes.FluidToFluidRecipe;
 import mekanism.api.recipes.ItemStackChemicalToItemStackRecipe;
 import mekanism.api.recipes.ItemStackToChemicalRecipe;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
 import mekanism.api.recipes.ItemStackToFluidOptionalItemRecipe;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
-import mekanism.api.recipes.ItemStackToPigmentRecipe;
-import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.api.recipes.NucleosynthesizingRecipe;
-import mekanism.api.recipes.PaintingRecipe;
-import mekanism.api.recipes.PigmentMixingRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.SawmillRecipe;
 import mekanism.client.recipe_viewer.recipe.BoilerRecipeViewerRecipe;
@@ -50,13 +46,13 @@ public class RecipeViewerRecipeType {
     public static final RVRecipeTypeWrapper<?, ItemStackToItemStackRecipe, ?> ENRICHING = new RVRecipeTypeWrapper<>(MekanismRecipeType.ENRICHING, ItemStackToItemStackRecipe.class, -28, -16, 144, 54, MekanismBlocks.ENRICHMENT_CHAMBER);
     public static final RVRecipeTypeWrapper<?, ItemStackToItemStackRecipe, ?> SMELTING = new RVRecipeTypeWrapper<>(MekanismRecipeType.SMELTING, ItemStackToItemStackRecipe.class, -28, -16, 144, 54, MekanismBlocks.ENERGIZED_SMELTER, MekanismItems.ROBIT);
 
-    public static final RVRecipeTypeWrapper<?, ChemicalInfuserRecipe, ?> CHEMICAL_INFUSING = new RVRecipeTypeWrapper<>(MekanismRecipeType.CHEMICAL_INFUSING, ChemicalInfuserRecipe.class, -3, -3, 170, 80, MekanismBlocks.CHEMICAL_INFUSER);
+    public static final RVRecipeTypeWrapper<?, ChemicalChemicalToChemicalRecipe, ?> CHEMICAL_INFUSING = new RVRecipeTypeWrapper<>(MekanismRecipeType.CHEMICAL_INFUSING, ChemicalChemicalToChemicalRecipe.class, -3, -3, 170, 80, MekanismBlocks.CHEMICAL_INFUSER);
 
     public static final RVRecipeTypeWrapper<?, CombinerRecipe, ?> COMBINING = new RVRecipeTypeWrapper<>(MekanismRecipeType.COMBINING, CombinerRecipe.class, -28, -16, 144, 54, MekanismBlocks.COMBINER);
 
     public static final RVRecipeTypeWrapper<?, ElectrolysisRecipe, ?> SEPARATING = new RVRecipeTypeWrapper<>(MekanismRecipeType.SEPARATING, ElectrolysisRecipe.class, -4, -9, 167, 62, MekanismBlocks.ELECTROLYTIC_SEPARATOR);
 
-    public static final RVRecipeTypeWrapper<?, FluidSlurryToSlurryRecipe, ?> WASHING = new RVRecipeTypeWrapper<>(MekanismRecipeType.WASHING, FluidSlurryToSlurryRecipe.class, -7, -13, 162, 60, MekanismBlocks.CHEMICAL_WASHER);
+    public static final RVRecipeTypeWrapper<?, FluidChemicalToChemicalRecipe, ?> WASHING = new RVRecipeTypeWrapper<>(MekanismRecipeType.WASHING, FluidChemicalToChemicalRecipe.class, -7, -13, 162, 60, MekanismBlocks.CHEMICAL_WASHER);
 
     public static final RVRecipeTypeWrapper<?, FluidToFluidRecipe, ?> EVAPORATING = new RVRecipeTypeWrapper<>(MekanismRecipeType.EVAPORATING, FluidToFluidRecipe.class, -3, -12, 170, 62, MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER, MekanismBlocks.THERMAL_EVAPORATION_VALVE, MekanismBlocks.THERMAL_EVAPORATION_BLOCK);
 
@@ -82,13 +78,13 @@ public class RecipeViewerRecipeType {
 
     public static final RVRecipeTypeWrapper<?, ItemStackToChemicalRecipe, ?> OXIDIZING = new RVRecipeTypeWrapper<>(MekanismRecipeType.OXIDIZING, ItemStackToChemicalRecipe.class, -20, -12, 132, 62, MekanismBlocks.CHEMICAL_OXIDIZER);
 
-    public static final RVRecipeTypeWrapper<?, ItemStackToPigmentRecipe, ?> PIGMENT_EXTRACTING = new RVRecipeTypeWrapper<>(MekanismRecipeType.PIGMENT_EXTRACTING, ItemStackToPigmentRecipe.class, -20, -12, 132, 62, MekanismBlocks.PIGMENT_EXTRACTOR);
+    public static final RVRecipeTypeWrapper<?, ItemStackToChemicalRecipe, ?> PIGMENT_EXTRACTING = new RVRecipeTypeWrapper<>(MekanismRecipeType.PIGMENT_EXTRACTING, ItemStackToChemicalRecipe.class, -20, -12, 132, 62, MekanismBlocks.PIGMENT_EXTRACTOR);
 
-    public static final RVRecipeTypeWrapper<?, PigmentMixingRecipe, ?> PIGMENT_MIXING = new RVRecipeTypeWrapper<>(MekanismRecipeType.PIGMENT_MIXING, PigmentMixingRecipe.class, -3, -3, 170, 80, MekanismBlocks.PIGMENT_MIXER);
+    public static final RVRecipeTypeWrapper<?, ChemicalChemicalToChemicalRecipe, ?> PIGMENT_MIXING = new RVRecipeTypeWrapper<>(MekanismRecipeType.PIGMENT_MIXING, ChemicalChemicalToChemicalRecipe.class, -3, -3, 170, 80, MekanismBlocks.PIGMENT_MIXER);
 
-    public static final RVRecipeTypeWrapper<?, MetallurgicInfuserRecipe, ?> METALLURGIC_INFUSING = new RVRecipeTypeWrapper<>(MekanismRecipeType.METALLURGIC_INFUSING, MetallurgicInfuserRecipe.class, -5, -16, 166, 54, MekanismBlocks.METALLURGIC_INFUSER);
+    public static final RVRecipeTypeWrapper<?, ItemStackChemicalToItemStackRecipe, ?> METALLURGIC_INFUSING = new RVRecipeTypeWrapper<>(MekanismRecipeType.METALLURGIC_INFUSING, ItemStackChemicalToItemStackRecipe.class, -5, -16, 166, 54, MekanismBlocks.METALLURGIC_INFUSER);
 
-    public static final RVRecipeTypeWrapper<?, PaintingRecipe, ?> PAINTING = new RVRecipeTypeWrapper<>(MekanismRecipeType.PAINTING, PaintingRecipe.class, -25, -13, 146, 60, MekanismBlocks.PAINTING_MACHINE);
+    public static final RVRecipeTypeWrapper<?, ItemStackChemicalToItemStackRecipe, ?> PAINTING = new RVRecipeTypeWrapper<>(MekanismRecipeType.PAINTING, ItemStackChemicalToItemStackRecipe.class, -25, -13, 146, 60, MekanismBlocks.PAINTING_MACHINE);
 
     //Note: This previously had a lang key for a shorter string. Though ideally especially due to translations we will eventually instead just make the text scale
     //TODO - 1.20.4: Re-evaluate ^^

@@ -3,8 +3,8 @@ package mekanism.common.integration.crafttweaker.recipe.manager;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.fluid.CTFluidIngredient;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.recipes.FluidSlurryToSlurryRecipe;
-import mekanism.api.recipes.basic.BasicFluidSlurryToSlurryRecipe;
+import mekanism.api.recipes.FluidChemicalToChemicalRecipe;
+import mekanism.api.recipes.basic.BasicWashingRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.vanilla_input.SingleFluidChemicalRecipeInput;
 import mekanism.common.integration.crafttweaker.CrTConstants;
@@ -15,10 +15,10 @@ import mekanism.common.recipe.MekanismRecipeType;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
-@ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_FLUID_SLURRY_TO_SLURRY)
-public abstract class FluidSlurryToSlurryRecipeManager extends MekanismRecipeManager<SingleFluidChemicalRecipeInput, FluidSlurryToSlurryRecipe> {
+@ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_FLUID_CHEMICAL_TO_CHEMICAL)
+public abstract class FluidChemicalToChemicalRecipeManager extends MekanismRecipeManager<SingleFluidChemicalRecipeInput, FluidChemicalToChemicalRecipe> {
 
-    protected FluidSlurryToSlurryRecipeManager(IMekanismRecipeTypeProvider<SingleFluidChemicalRecipeInput, FluidSlurryToSlurryRecipe, ?> recipeType) {
+    protected FluidChemicalToChemicalRecipeManager(IMekanismRecipeTypeProvider<SingleFluidChemicalRecipeInput, FluidChemicalToChemicalRecipe, ?> recipeType) {
         super(recipeType);
     }
 
@@ -44,20 +44,20 @@ public abstract class FluidSlurryToSlurryRecipeManager extends MekanismRecipeMan
      * @param chemicalInput {@link ChemicalStackIngredient} representing the slurry input of the recipe.
      * @param output        {@link ICrTChemicalStack} representing the output of the recipe. Will be validated as not empty.
      */
-    public final FluidSlurryToSlurryRecipe makeRecipe(CTFluidIngredient fluidInput, ChemicalStackIngredient chemicalInput, ICrTChemicalStack output) {
+    public final FluidChemicalToChemicalRecipe makeRecipe(CTFluidIngredient fluidInput, ChemicalStackIngredient chemicalInput, ICrTChemicalStack output) {
         return makeRecipe(fluidInput, chemicalInput, getAndValidateNotEmpty(output));
     }
 
-    protected abstract FluidSlurryToSlurryRecipe makeRecipe(CTFluidIngredient fluidInput, ChemicalStackIngredient chemicalInput, ChemicalStack output);
+    protected abstract FluidChemicalToChemicalRecipe makeRecipe(CTFluidIngredient fluidInput, ChemicalStackIngredient chemicalInput, ChemicalStack output);
 
     @Override
-    protected String describeOutputs(FluidSlurryToSlurryRecipe recipe) {
+    protected String describeOutputs(FluidChemicalToChemicalRecipe recipe) {
         return CrTUtils.describeOutputs(recipe.getOutputDefinition());
     }
 
     @ZenRegister
     @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_WASHING)
-    public static class ChemicalWasherRecipeManager extends FluidSlurryToSlurryRecipeManager {
+    public static class ChemicalWasherRecipeManager extends FluidChemicalToChemicalRecipeManager {
 
         public static final ChemicalWasherRecipeManager INSTANCE = new ChemicalWasherRecipeManager();
 
@@ -66,8 +66,8 @@ public abstract class FluidSlurryToSlurryRecipeManager extends MekanismRecipeMan
         }
 
         @Override
-        protected FluidSlurryToSlurryRecipe makeRecipe(CTFluidIngredient fluidInput, ChemicalStackIngredient chemicalInput, ChemicalStack output) {
-            return new BasicFluidSlurryToSlurryRecipe(CrTUtils.fromCrT(fluidInput), chemicalInput, output);
+        protected FluidChemicalToChemicalRecipe makeRecipe(CTFluidIngredient fluidInput, ChemicalStackIngredient chemicalInput, ChemicalStack output) {
+            return new BasicWashingRecipe(CrTUtils.fromCrT(fluidInput), chemicalInput, output);
         }
     }
 }

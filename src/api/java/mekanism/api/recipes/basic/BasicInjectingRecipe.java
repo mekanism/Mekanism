@@ -24,6 +24,11 @@ public class BasicInjectingRecipe extends BasicItemStackChemicalToItemStackRecip
     }
 
     @Override
+    public boolean perTickUsage() {
+        return true;
+    }
+
+    @Override
     public RecipeSerializer<BasicInjectingRecipe> getSerializer() {
         return MekanismRecipeSerializers.INJECTING.value();
     }

@@ -22,13 +22,9 @@ public class ItemStackToChemicalEmiRecipe<RECIPE extends ItemStackToChemicalReci
         addChemicalOutputDefinition(recipe.getOutputDefinition());
     }
 
-    protected GuiChemicalGauge getGauge(GaugeType type, int x, int y) {
-        return GuiChemicalGauge.getDummy(type, this, x, y);
-    }
-
     @Override
     public void addWidgets(WidgetHolder widgetHolder) {
-        initTank(widgetHolder, getGauge(GaugeType.STANDARD.with(DataType.OUTPUT), 131, 13), output(0)).recipeContext(this);
+        initTank(widgetHolder, GuiChemicalGauge.getDummy(GaugeType.STANDARD.with(DataType.OUTPUT), this, 131, 13), output(0)).recipeContext(this);
         addSlot(widgetHolder, SlotType.INPUT, 26, 36, input(0));
         addProgressBar(widgetHolder, ProgressType.LARGE_RIGHT, 64, 40);
     }

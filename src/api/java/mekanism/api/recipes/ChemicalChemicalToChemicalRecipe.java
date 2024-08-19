@@ -16,6 +16,11 @@ import org.jetbrains.annotations.Contract;
  * <br>
  * Output: ChemicalStack of the same chemical type as the input chemicals
  *
+ * @apiNote There are currently two types of Chemical+Chemical to Chemical recipe types:
+ * <ul>
+ *     <li>Chemical Infusing: Can be processed in a Chemical Infuser.</li>
+ *     <li>Pigment Mixing: Can be processed in a Pigment Mixer.</li>
+ * </ul>
  */
 @NothingNullByDefault
 public abstract class ChemicalChemicalToChemicalRecipe extends MekanismRecipe<BiChemicalRecipeInput> implements BiPredicate<ChemicalStack, ChemicalStack> {

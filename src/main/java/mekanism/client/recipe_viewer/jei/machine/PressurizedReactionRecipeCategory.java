@@ -16,7 +16,6 @@ import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.client.recipe_viewer.jei.HolderRecipeCategory;
-import mekanism.client.recipe_viewer.jei.MekanismJEI;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.tile.component.config.DataType;
@@ -32,13 +31,13 @@ import org.jetbrains.annotations.NotNull;
 
 public class PressurizedReactionRecipeCategory extends HolderRecipeCategory<PressurizedReactionRecipe> {
 
-    private static final String OUTPUT_GAS = "outputGas";
+    private static final String OUTPUT_CHEMICAL = "outputChemical";
 
-    private final GuiGauge<?> inputGas;
+    private final GuiGauge<?> inputChemical;
     private final GuiGauge<?> inputFluid;
     private final GuiSlot inputItem;
     private final GuiSlot outputItem;
-    private final GuiGauge<?> outputGas;
+    private final GuiGauge<?> outputChemical;
 
     public PressurizedReactionRecipeCategory(IGuiHelper helper, IRecipeViewerRecipeType<PressurizedReactionRecipe> recipeType) {
         super(helper, recipeType);
@@ -47,9 +46,9 @@ public class PressurizedReactionRecipeCategory extends HolderRecipeCategory<Pres
         addSlot(SlotType.POWER, 141, 17).with(SlotOverlay.POWER);
         inputFluid = addElement(GuiFluidGauge.getDummy(GaugeType.STANDARD.with(DataType.INPUT), this, 5, 10));
         GaugeType type1 = GaugeType.STANDARD.with(DataType.INPUT);
-        inputGas = addElement(GuiChemicalGauge.getDummy(type1, this, 28, 10));
+        inputChemical = addElement(GuiChemicalGauge.getDummy(type1, this, 28, 10));
         GaugeType type = GaugeType.SMALL.with(DataType.OUTPUT);
-        outputGas = addElement(GuiChemicalGauge.getDummy(type, this, 140, 40));
+        outputChemical = addElement(GuiChemicalGauge.getDummy(type, this, 140, 40));
         addElement(new GuiVerticalPowerBar(this, RecipeViewerUtils.FULL_BAR, 164, 15));
         addSimpleProgress(ProgressType.RIGHT, 77, 38);
     }
@@ -57,9 +56,9 @@ public class PressurizedReactionRecipeCategory extends HolderRecipeCategory<Pres
     @Override
     protected void renderElements(RecipeHolder<PressurizedReactionRecipe> recipeHolder, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, int x, int y) {
         super.renderElements(recipeHolder, recipeSlotsView, guiGraphics, x, y);
-        if (recipeSlotsView.findSlotByName(OUTPUT_GAS).isEmpty()) {
-            //If we don't have an output gas at all for this recipe, draw the bar overlay manually
-            outputGas.drawBarOverlay(guiGraphics);
+        if (recipeSlotsView.findSlotByName(OUTPUT_CHEMICAL).isEmpty()) {
+            //If we don't have an output chemical at all for this recipe, draw the bar overlay manually
+            outputChemical.drawBarOverlay(guiGraphics);
         }
     }
 
@@ -68,19 +67,19 @@ public class PressurizedReactionRecipeCategory extends HolderRecipeCategory<Pres
         PressurizedReactionRecipe recipe = recipeHolder.value();
         initItem(builder, RecipeIngredientRole.INPUT, inputItem, recipe.getInputSolid().getRepresentations());
         initFluid(builder, RecipeIngredientRole.INPUT, inputFluid, recipe.getInputFluid().getRepresentations());
-        initChemical(builder, MekanismJEI.TYPE_CHEMICAL, RecipeIngredientRole.INPUT, inputGas, recipe.getInputChemical().getRepresentations());
+        initChemical(builder, RecipeIngredientRole.INPUT, inputChemical, recipe.getInputChemical().getRepresentations());
         List<ItemStack> itemOutputs = new ArrayList<>();
-        List<ChemicalStack> gasOutputs = new ArrayList<>();
+        List<ChemicalStack> chemicalOutputs = new ArrayList<>();
         for (PressurizedReactionRecipeOutput output : recipe.getOutputDefinition()) {
             itemOutputs.add(output.item());
-            gasOutputs.add(output.chemical());
+            chemicalOutputs.add(output.chemical());
         }
         if (!itemOutputs.stream().allMatch(ConstantPredicates.ITEM_EMPTY)) {
             initItem(builder, RecipeIngredientRole.OUTPUT, outputItem, itemOutputs);
         }
-        if (!gasOutputs.stream().allMatch(ConstantPredicates.CHEMICAL_EMPTY)) {
-            initChemical(builder, MekanismJEI.TYPE_CHEMICAL, RecipeIngredientRole.OUTPUT, outputGas, gasOutputs)
-                  .setSlotName(OUTPUT_GAS);
+        if (!chemicalOutputs.stream().allMatch(ConstantPredicates.CHEMICAL_EMPTY)) {
+            initChemical(builder, RecipeIngredientRole.OUTPUT, outputChemical, chemicalOutputs)
+                  .setSlotName(OUTPUT_CHEMICAL);
         }
     }
 }

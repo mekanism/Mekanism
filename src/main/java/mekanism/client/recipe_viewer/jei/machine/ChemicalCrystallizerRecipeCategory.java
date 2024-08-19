@@ -15,7 +15,6 @@ import mekanism.client.gui.machine.GuiChemicalCrystallizer;
 import mekanism.client.gui.machine.GuiChemicalCrystallizer.IOreInfo;
 import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.client.recipe_viewer.jei.HolderRecipeCategory;
-import mekanism.client.recipe_viewer.jei.MekanismJEI;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.tile.component.config.DataType;
@@ -24,7 +23,6 @@ import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.ingredient.IRecipeSlotView;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.ingredients.ITypedIngredient;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
@@ -76,16 +74,12 @@ public class ChemicalCrystallizerRecipeCategory extends HolderRecipeCategory<Che
         ChemicalCrystallizerRecipe recipe = recipeHolder.value();
         initItem(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
         ChemicalStackIngredient input = recipe.getInput();
-        initChemical(builder, MekanismJEI.TYPE_CHEMICAL, input);
+        initChemical(builder, RecipeIngredientRole.INPUT, gauge, input.getRepresentations())
+              .setSlotName(CHEMICAL_INPUT);
         List<ItemStack> displayItems = RecipeViewerUtils.getDisplayItems(input);
         if (!displayItems.isEmpty()) {
             initItem(builder, RecipeIngredientRole.RENDER_ONLY, slurryOreSlot, displayItems).setSlotName(DISPLAYED_ITEM);
         }
-    }
-
-    private void initChemical(IRecipeLayoutBuilder builder, IIngredientType<ChemicalStack> type, ChemicalStackIngredient ingredient) {
-        initChemical(builder, type, RecipeIngredientRole.INPUT, gauge, ingredient.getRepresentations())
-              .setSlotName(CHEMICAL_INPUT);
     }
 
     private static class OreInfo implements IOreInfo {

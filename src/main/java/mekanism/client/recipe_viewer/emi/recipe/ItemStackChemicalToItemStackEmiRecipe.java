@@ -20,7 +20,7 @@ public class ItemStackChemicalToItemStackEmiRecipe extends MekanismEmiHolderReci
         super(category, recipeHolder);
         addInputDefinition(recipe.getItemInput());
         addItemOutputDefinition(recipe.getOutputDefinition());
-        addInputDefinition(recipe.getChemicalInput(), PROCESS_TIME);
+        addInputDefinition(recipe.getChemicalInput(), recipe.perTickUsage() ? PROCESS_TIME : 1);
         addCatalsyst(recipe.getChemicalInput());
     }
 

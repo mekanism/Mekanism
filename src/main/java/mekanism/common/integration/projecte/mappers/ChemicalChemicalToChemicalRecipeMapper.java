@@ -2,7 +2,7 @@ package mekanism.common.integration.projecte.mappers;
 
 import java.util.List;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.recipes.ChemicalInfuserRecipe;
+import mekanism.api.recipes.ChemicalChemicalToChemicalRecipe;
 import mekanism.common.integration.projecte.IngredientHelper;
 import mekanism.common.integration.projecte.NSSChemical;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -12,24 +12,24 @@ import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import org.jetbrains.annotations.NotNull;
 
 @RecipeTypeMapper
-public class ChemicalInfuserRecipeMapper extends TypedMekanismRecipeMapper<ChemicalInfuserRecipe> {
+public class ChemicalChemicalToChemicalRecipeMapper extends TypedMekanismRecipeMapper<ChemicalChemicalToChemicalRecipe> {
 
-    public ChemicalInfuserRecipeMapper() {
-        super(ChemicalInfuserRecipe.class, MekanismRecipeType.CHEMICAL_INFUSING);
+    public ChemicalChemicalToChemicalRecipeMapper() {
+        super(ChemicalChemicalToChemicalRecipe.class, MekanismRecipeType.CHEMICAL_INFUSING, MekanismRecipeType.PIGMENT_MIXING);
     }
 
     @Override
     public String getName() {
-        return "MekChemicalInfuser";
+        return "MekChemicalChemicalToChemical";
     }
 
     @Override
     public String getDescription() {
-        return "Maps Mekanism chemical infuser recipes.";
+        return "Maps Mekanism chemical infuser and pigment mixer recipes.";
     }
 
     @Override
-    protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, ChemicalInfuserRecipe recipe) {
+    protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, ChemicalChemicalToChemicalRecipe recipe) {
         boolean handled = false;
         List<@NotNull ChemicalStack> leftInputRepresentations = recipe.getLeftInput().getRepresentations();
         List<@NotNull ChemicalStack> rightInputRepresentations = recipe.getRightInput().getRepresentations();

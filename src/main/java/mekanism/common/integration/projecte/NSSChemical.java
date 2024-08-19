@@ -22,7 +22,7 @@ public final class NSSChemical extends AbstractNSSTag<Chemical> {
     private static final boolean ALLOW_DEFAULT = false;
 
     /**
-     * Codec for encoding NSSGases to and from strings.
+     * Codec for encoding NSSChemicals to and from strings.
      */
     public static final Codec<NSSChemical> LEGACY_CODEC = createLegacyCodec(MekanismAPI.CHEMICAL_REGISTRY, ALLOW_DEFAULT, "CHEMICAL|", NSSChemical::new);
 
@@ -36,7 +36,7 @@ public final class NSSChemical extends AbstractNSSTag<Chemical> {
     }
 
     /**
-     * Helper method to create an {@link NSSChemical} representing a gas from a {@link ChemicalStack}
+     * Helper method to create an {@link NSSChemical} representing a chemical from a {@link ChemicalStack}
      */
     @NotNull
     public static NSSChemical createChemical(@NotNull ChemicalStack stack) {
@@ -45,7 +45,7 @@ public final class NSSChemical extends AbstractNSSTag<Chemical> {
     }
 
     /**
-     * Helper method to create an {@link NSSChemical} representing a gas from an {@link IChemicalProvider}
+     * Helper method to create an {@link NSSChemical} representing a chemical from an {@link IChemicalProvider}
      */
     @NotNull
     public static NSSChemical createChemical(@NotNull IChemicalProvider chemicalProvider) {
@@ -65,11 +65,11 @@ public final class NSSChemical extends AbstractNSSTag<Chemical> {
     }
 
     /**
-     * Helper method to create an {@link NSSChemical} representing a gas from a {@link ResourceLocation}
+     * Helper method to create an {@link NSSChemical} representing a chemical from a {@link ResourceLocation}
      */
     @NotNull
-    public static NSSChemical createChemical(@NotNull ResourceLocation gasID) {
-        return new NSSChemical(gasID, false);
+    public static NSSChemical createChemical(@NotNull ResourceLocation chemicalId) {
+        return new NSSChemical(chemicalId, false);
     }
 
     /**
@@ -95,8 +95,8 @@ public final class NSSChemical extends AbstractNSSTag<Chemical> {
     }
 
     @Override
-    protected NSSChemical createNew(Chemical gas) {
-        return createChemical(gas);
+    protected NSSChemical createNew(Chemical chemical) {
+        return createChemical(chemical);
     }
 
     @Override

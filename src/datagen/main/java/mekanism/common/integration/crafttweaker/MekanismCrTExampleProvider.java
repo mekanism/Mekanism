@@ -24,7 +24,7 @@ import mekanism.common.integration.crafttweaker.recipe.manager.ChemicalToChemica
 import mekanism.common.integration.crafttweaker.recipe.manager.ChemicalToChemicalRecipeManager.SolarNeutronActivatorRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.manager.CombinerRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.manager.ElectrolysisRecipeManager;
-import mekanism.common.integration.crafttweaker.recipe.manager.FluidSlurryToSlurryRecipeManager.ChemicalWasherRecipeManager;
+import mekanism.common.integration.crafttweaker.recipe.manager.FluidChemicalToChemicalRecipeManager.ChemicalWasherRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.manager.FluidToFluidRecipeManager.EvaporatingRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.manager.ItemStackChemicalToItemStackRecipeManager.ChemicalInjectionRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.manager.ItemStackChemicalToItemStackRecipeManager.MetallurgicInfuserRecipeManager;

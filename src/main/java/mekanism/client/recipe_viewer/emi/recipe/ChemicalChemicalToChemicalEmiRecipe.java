@@ -15,25 +15,23 @@ import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.tile.component.config.DataType;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
-public abstract class ChemicalChemicalToChemicalEmiRecipe<RECIPE extends ChemicalChemicalToChemicalRecipe> extends MekanismEmiHolderRecipe<RECIPE> {
+public class ChemicalChemicalToChemicalEmiRecipe extends MekanismEmiHolderRecipe<ChemicalChemicalToChemicalRecipe> {
 
-    protected ChemicalChemicalToChemicalEmiRecipe(MekanismEmiRecipeCategory category, RecipeHolder<RECIPE> recipeHolder) {
+    public ChemicalChemicalToChemicalEmiRecipe(MekanismEmiRecipeCategory category, RecipeHolder<ChemicalChemicalToChemicalRecipe> recipeHolder) {
         super(category, recipeHolder);
         addInputDefinition(recipe.getLeftInput());
         addInputDefinition(recipe.getRightInput());
         addChemicalOutputDefinition(recipe.getOutputDefinition());
     }
 
-    protected abstract GuiChemicalGauge getGauge(GaugeType type, int x, int y);
-
     @Override
     public void addWidgets(WidgetHolder widgetHolder) {
         //Add shapeless icon to represent that it doesn't matter which sides the inputs are added on
         widgetHolder.addTexture(EmiTexture.SHAPELESS, 152, 2);
 
-        initTank(widgetHolder, getGauge(GaugeType.STANDARD.with(DataType.INPUT_1), 25, 13), input(0));
-        initTank(widgetHolder, getGauge(GaugeType.STANDARD.with(DataType.OUTPUT), 79, 4), output(0)).recipeContext(this);
-        initTank(widgetHolder, getGauge(GaugeType.STANDARD.with(DataType.INPUT_2), 133, 13), input(1));
+        initTank(widgetHolder, GuiChemicalGauge.getDummy(GaugeType.STANDARD.with(DataType.INPUT_1), this, 25, 13), input(0));
+        initTank(widgetHolder, GuiChemicalGauge.getDummy(GaugeType.STANDARD.with(DataType.OUTPUT), this, 79, 4), output(0)).recipeContext(this);
+        initTank(widgetHolder, GuiChemicalGauge.getDummy(GaugeType.STANDARD.with(DataType.INPUT_2), this, 133, 13), input(1));
         addSlot(widgetHolder, SlotType.INPUT, 6, 56).with(SlotOverlay.MINUS);
         addSlot(widgetHolder, SlotType.INPUT_2, 154, 56).with(SlotOverlay.MINUS);
         addSlot(widgetHolder, SlotType.OUTPUT, 80, 65).with(SlotOverlay.PLUS);

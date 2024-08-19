@@ -1,22 +1,23 @@
 package mekanism.api.recipes.basic;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.MekanismRecipeSerializers;
-import mekanism.api.recipes.PigmentMixingRecipe;
+import mekanism.api.recipes.MekanismRecipeTypes;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import org.jetbrains.annotations.Contract;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 @NothingNullByDefault
-public class BasicPigmentMixingRecipe extends PigmentMixingRecipe implements IBasicChemicalOutput {
+public class BasicPigmentMixingRecipe extends BasicChemicalChemicalToChemicalRecipe {
 
-    protected final ChemicalStackIngredient leftInput;
-    protected final ChemicalStackIngredient rightInput;
-    protected final ChemicalStack output;
+    private static final Holder<Item> PIGMENT_MIXER = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "pigment_mixer"));
 
     /**
      * @param leftInput  Left input.
@@ -26,44 +27,17 @@ public class BasicPigmentMixingRecipe extends PigmentMixingRecipe implements IBa
      * @apiNote The order of the inputs does not matter.
      */
     public BasicPigmentMixingRecipe(ChemicalStackIngredient leftInput, ChemicalStackIngredient rightInput, ChemicalStack output) {
-        this.leftInput = Objects.requireNonNull(leftInput, "Left input cannot be null.");
-        this.rightInput = Objects.requireNonNull(rightInput, "Right input cannot be null.");
-        Objects.requireNonNull(output, "Output cannot be null.");
-        if (output.isEmpty()) {
-            throw new IllegalArgumentException("Output cannot be empty.");
-        }
-        this.output = output.copy();
+        super(leftInput, rightInput, output, MekanismRecipeTypes.TYPE_PIGMENT_MIXING.value());
     }
 
     @Override
-    public boolean test(ChemicalStack input1, ChemicalStack input2) {
-        return (leftInput.test(input1) && rightInput.test(input2)) || (rightInput.test(input1) && leftInput.test(input2));
+    public String getGroup() {
+        return "pigment_mixer";
     }
 
     @Override
-    @Contract(value = "_, _ -> new", pure = true)
-    public ChemicalStack getOutput(ChemicalStack input1, ChemicalStack input2) {
-        return output.copy();
-    }
-
-    @Override
-    public ChemicalStackIngredient getLeftInput() {
-        return leftInput;
-    }
-
-    @Override
-    public ChemicalStackIngredient getRightInput() {
-        return rightInput;
-    }
-
-    @Override
-    public List<ChemicalStack> getOutputDefinition() {
-        return Collections.singletonList(output);
-    }
-
-    @Override
-    public ChemicalStack getOutputRaw() {
-        return output;
+    public ItemStack getToastSymbol() {
+        return new ItemStack(PIGMENT_MIXER);
     }
 
     @Override

@@ -3,19 +3,19 @@ package mekanism.api.datagen.recipe.builder;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
-import mekanism.api.recipes.FluidSlurryToSlurryRecipe;
-import mekanism.api.recipes.basic.BasicFluidSlurryToSlurryRecipe;
+import mekanism.api.recipes.FluidChemicalToChemicalRecipe;
+import mekanism.api.recipes.basic.BasicWashingRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 
 @NothingNullByDefault
-public class FluidSlurryToSlurryRecipeBuilder extends MekanismRecipeBuilder<FluidSlurryToSlurryRecipeBuilder> {
+public class FluidChemicalToChemicalRecipeBuilder extends MekanismRecipeBuilder<FluidChemicalToChemicalRecipeBuilder> {
 
     private final ChemicalStackIngredient chemicalInput;
     private final FluidStackIngredient fluidInput;
     private final ChemicalStack output;
 
-    protected FluidSlurryToSlurryRecipeBuilder(FluidStackIngredient fluidInput, ChemicalStackIngredient chemicalInput, ChemicalStack output) {
+    protected FluidChemicalToChemicalRecipeBuilder(FluidStackIngredient fluidInput, ChemicalStackIngredient chemicalInput, ChemicalStack output) {
         this.fluidInput = fluidInput;
         this.chemicalInput = chemicalInput;
         this.output = output;
@@ -28,15 +28,15 @@ public class FluidSlurryToSlurryRecipeBuilder extends MekanismRecipeBuilder<Flui
      * @param chemicalInput Chemical Input.
      * @param output        Output.
      */
-    public static FluidSlurryToSlurryRecipeBuilder washing(FluidStackIngredient fluidInput, ChemicalStackIngredient chemicalInput, ChemicalStack output) {
+    public static FluidChemicalToChemicalRecipeBuilder washing(FluidStackIngredient fluidInput, ChemicalStackIngredient chemicalInput, ChemicalStack output) {
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This washing recipe requires a non empty chemical output.");
         }
-        return new FluidSlurryToSlurryRecipeBuilder(fluidInput, chemicalInput, output);
+        return new FluidChemicalToChemicalRecipeBuilder(fluidInput, chemicalInput, output);
     }
 
     @Override
-    protected FluidSlurryToSlurryRecipe asRecipe() {
-        return new BasicFluidSlurryToSlurryRecipe(fluidInput, chemicalInput, output);
+    protected FluidChemicalToChemicalRecipe asRecipe() {
+        return new BasicWashingRecipe(fluidInput, chemicalInput, output);
     }
 }

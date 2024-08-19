@@ -4,7 +4,6 @@ import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker_annotations.annotations.NativeMethod;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import java.util.List;
-import mekanism.api.recipes.FluidSlurryToSlurryRecipe;
 import mekanism.api.recipes.FluidChemicalToChemicalRecipe;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
@@ -20,20 +19,12 @@ public class CrTFluidChemicalToChemicalRecipe {
     private CrTFluidChemicalToChemicalRecipe() {
     }
 
-    @ZenRegister
-    @NativeTypeRegistration(value = FluidSlurryToSlurryRecipe.class, zenCodeName = CrTConstants.CLASS_RECIPE_FLUID_SLURRY_TO_SLURRY)
-    public static class CrTFluidSlurryToSlurryRecipe {
-
-        private CrTFluidSlurryToSlurryRecipe() {
-        }
-
-        /**
-         * Output representations, this list may or may not be complete and likely only contains one element, but has the possibility of containing multiple.
-         */
-        @ZenCodeType.Method
-        @ZenCodeType.Getter("outputs")
-        public static List<ICrTChemicalStack> getOutputs(FluidSlurryToSlurryRecipe _this) {
-            return CrTUtils.convertChemical(_this.getOutputDefinition());
-        }
+    /**
+     * Output representations, this list may or may not be complete and likely only contains one element, but has the possibility of containing multiple.
+     */
+    @ZenCodeType.Method
+    @ZenCodeType.Getter("outputs")
+    public static List<ICrTChemicalStack> getOutputs(FluidChemicalToChemicalRecipe _this) {
+        return CrTUtils.convertChemical(_this.getOutputDefinition());
     }
 }

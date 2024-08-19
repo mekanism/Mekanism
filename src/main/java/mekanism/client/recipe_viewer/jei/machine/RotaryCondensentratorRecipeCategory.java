@@ -10,7 +10,6 @@ import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.client.recipe_viewer.jei.HolderRecipeCategory;
-import mekanism.client.recipe_viewer.jei.MekanismJEI;
 import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -24,14 +23,14 @@ import org.jetbrains.annotations.NotNull;
 public class RotaryCondensentratorRecipeCategory extends HolderRecipeCategory<RotaryRecipe> {
 
     private final boolean condensentrating;
-    private final GuiGauge<?> gasGauge;
+    private final GuiGauge<?> chemicalGauge;
     private final GuiGauge<?> fluidGauge;
 
     public RotaryCondensentratorRecipeCategory(IGuiHelper helper, boolean condensentrating) {
         super(helper, condensentrating ? RecipeViewerRecipeType.CONDENSENTRATING : RecipeViewerRecipeType.DECONDENSENTRATING);
         this.condensentrating = condensentrating;
         addElement(new GuiDownArrow(this, 159, 44));
-        gasGauge = addElement(GuiChemicalGauge.getDummy(GaugeType.STANDARD, this, 25, 13));
+        chemicalGauge = addElement(GuiChemicalGauge.getDummy(GaugeType.STANDARD, this, 25, 13));
         fluidGauge = addElement(GuiFluidGauge.getDummy(GaugeType.STANDARD, this, 133, 13));
         addSlot(SlotType.INPUT, 5, 25).with(SlotOverlay.PLUS);
         addSlot(SlotType.OUTPUT, 5, 56).with(SlotOverlay.MINUS);
@@ -45,12 +44,12 @@ public class RotaryCondensentratorRecipeCategory extends HolderRecipeCategory<Ro
         RotaryRecipe recipe = recipeHolder.value();
         if (condensentrating) {
             if (recipe.hasChemicalToFluid()) {
-                initChemical(builder, MekanismJEI.TYPE_CHEMICAL, RecipeIngredientRole.INPUT, gasGauge, recipe.getChemicalInput().getRepresentations());
+                initChemical(builder, RecipeIngredientRole.INPUT, chemicalGauge, recipe.getChemicalInput().getRepresentations());
                 initFluid(builder, RecipeIngredientRole.OUTPUT, fluidGauge, recipe.getFluidOutputDefinition());
             }
         } else if (recipe.hasFluidToChemical()) {
             initFluid(builder, RecipeIngredientRole.INPUT, fluidGauge, recipe.getFluidInput().getRepresentations());
-            initChemical(builder, MekanismJEI.TYPE_CHEMICAL, RecipeIngredientRole.OUTPUT, gasGauge, recipe.getChemicalOutputDefinition());
+            initChemical(builder, RecipeIngredientRole.OUTPUT, chemicalGauge, recipe.getChemicalOutputDefinition());
         }
     }
 

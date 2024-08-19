@@ -5,7 +5,7 @@ import mekanism.api.datagen.recipe.builder.ChemicalChemicalToChemicalRecipeBuild
 import mekanism.api.datagen.recipe.builder.ChemicalCrystallizerRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ChemicalDissolutionRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.CombinerRecipeBuilder;
-import mekanism.api.datagen.recipe.builder.FluidSlurryToSlurryRecipeBuilder;
+import mekanism.api.datagen.recipe.builder.FluidChemicalToChemicalRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ChemicalToChemicalRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
@@ -238,7 +238,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         ChemicalCrystallizerRecipeBuilder.crystallizing(IngredientCreatorAccess.chemicalStack().from(slurry.getCleanSlurry(), 200), crystal.getItemStack())
               .build(consumer, Mekanism.rl(basePath + "crystal/from_slurry"));
         // Clean Slurry from Dirty Slurry
-        FluidSlurryToSlurryRecipeBuilder.washing(
+        FluidChemicalToChemicalRecipeBuilder.washing(
               IngredientCreatorAccess.fluid().from(FluidTags.WATER, 5),
               IngredientCreatorAccess.chemicalStack().from(slurry.getDirtySlurry(), 1),
               slurry.getCleanSlurry().getStack(1)

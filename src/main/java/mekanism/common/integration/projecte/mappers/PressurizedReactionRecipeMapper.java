@@ -43,46 +43,46 @@ public class PressurizedReactionRecipeMapper extends TypedMekanismRecipeMapper<P
         boolean handled = false;
         List<@NotNull ItemStack> itemRepresentations = recipe.getInputSolid().getRepresentations();
         List<@NotNull FluidStack> fluidRepresentations = recipe.getInputFluid().getRepresentations();
-        List<@NotNull ChemicalStack> gasRepresentations = recipe.getInputChemical().getRepresentations();
+        List<@NotNull ChemicalStack> chemicalRepresentations = recipe.getInputChemical().getRepresentations();
         for (ItemStack itemRepresentation : itemRepresentations) {
             NormalizedSimpleStack nssItem = NSSItem.createItem(itemRepresentation);
             for (FluidStack fluidRepresentation : fluidRepresentations) {
                 NormalizedSimpleStack nssFluid = NSSFluid.createFluid(fluidRepresentation);
-                for (ChemicalStack gasRepresentation : gasRepresentations) {
-                    NormalizedSimpleStack nssGas = NSSChemical.createChemical(gasRepresentation);
-                    PressurizedReactionRecipeOutput output = recipe.getOutput(itemRepresentation, fluidRepresentation, gasRepresentation);
+                for (ChemicalStack chemicalRepresentation : chemicalRepresentations) {
+                    NormalizedSimpleStack nssChemical = NSSChemical.createChemical(chemicalRepresentation);
+                    PressurizedReactionRecipeOutput output = recipe.getOutput(itemRepresentation, fluidRepresentation, chemicalRepresentation);
                     ItemStack itemOutput = output.item();
-                    ChemicalStack gasOutput = output.chemical();
+                    ChemicalStack chemicalOutput = output.chemical();
                     IngredientHelper ingredientHelper = new IngredientHelper(mapper);
                     ingredientHelper.put(nssItem, itemRepresentation.getCount());
                     ingredientHelper.put(nssFluid, fluidRepresentation.getAmount());
-                    ingredientHelper.put(nssGas, gasRepresentation.getAmount());
+                    ingredientHelper.put(nssChemical, chemicalRepresentation.getAmount());
                     if (itemOutput.isEmpty()) {
-                        //We only have a gas output
-                        if (!gasOutput.isEmpty() && ingredientHelper.addAsConversion(gasOutput)) {
+                        //We only have a chemical output
+                        if (!chemicalOutput.isEmpty() && ingredientHelper.addAsConversion(chemicalOutput)) {
                             handled = true;
                         }
-                    } else if (gasOutput.isEmpty()) {
+                    } else if (chemicalOutput.isEmpty()) {
                         //We only have an item output
                         if (ingredientHelper.addAsConversion(itemOutput)) {
                             handled = true;
                         }
                     } else {
                         NormalizedSimpleStack nssItemOutput = NSSItem.createItem(itemOutput);
-                        NormalizedSimpleStack nssGasOutput = NSSChemical.createChemical(gasOutput);
+                        NormalizedSimpleStack nssChemicalOutput = NSSChemical.createChemical(chemicalOutput);
                         //We have both so do our best guess
-                        //Add trying to calculate the item output (using it as if we needed negative of gas output)
-                        ingredientHelper.put(nssGasOutput, -gasOutput.getAmount());
+                        //Add trying to calculate the item output (using it as if we needed negative of chemical output)
+                        ingredientHelper.put(nssChemicalOutput, -chemicalOutput.getAmount());
                         if (ingredientHelper.addAsConversion(nssItemOutput, itemOutput.getCount())) {
                             handled = true;
                         }
-                        //Add trying to calculate gas output (using it as if we needed negative of item output)
+                        //Add trying to calculate chemical output (using it as if we needed negative of item output)
                         ingredientHelper.resetHelper();
                         ingredientHelper.put(nssItem, itemRepresentation.getCount());
                         ingredientHelper.put(nssFluid, fluidRepresentation.getAmount());
-                        ingredientHelper.put(nssGas, gasRepresentation.getAmount());
+                        ingredientHelper.put(nssChemical, chemicalRepresentation.getAmount());
                         ingredientHelper.put(nssItemOutput, -itemOutput.getCount());
-                        if (ingredientHelper.addAsConversion(nssGasOutput, gasOutput.getAmount())) {
+                        if (ingredientHelper.addAsConversion(nssChemicalOutput, chemicalOutput.getAmount())) {
                             handled = true;
                         }
                     }

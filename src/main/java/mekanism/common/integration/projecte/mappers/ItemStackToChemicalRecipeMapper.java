@@ -10,9 +10,9 @@ import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import net.minecraft.world.item.ItemStack;
 
 @RecipeTypeMapper
-public class ItemStackToGasRecipeMapper extends TypedMekanismRecipeMapper<ItemStackToChemicalRecipe> {
+public class ItemStackToChemicalRecipeMapper extends TypedMekanismRecipeMapper<ItemStackToChemicalRecipe> {
 
-    public ItemStackToGasRecipeMapper() {
+    public ItemStackToChemicalRecipeMapper() {
         super(ItemStackToChemicalRecipe.class, MekanismRecipeType.CHEMICAL_CONVERSION, MekanismRecipeType.OXIDIZING, MekanismRecipeType.PIGMENT_EXTRACTING);
     }
 

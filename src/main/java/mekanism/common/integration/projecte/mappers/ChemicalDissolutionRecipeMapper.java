@@ -34,16 +34,16 @@ public class ChemicalDissolutionRecipeMapper extends TypedMekanismRecipeMapper<C
     protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, ChemicalDissolutionRecipe recipe) {
         boolean handled = false;
         List<@NotNull ItemStack> itemRepresentations = recipe.getItemInput().getRepresentations();
-        List<@NotNull ChemicalStack> gasRepresentations = recipe.getChemicalInput().getRepresentations();
-        for (ChemicalStack gasRepresentation : gasRepresentations) {
-            NSSChemical nssGas = NSSChemical.createChemical(gasRepresentation);
-            long gasAmount = gasRepresentation.getAmount() * TileEntityChemicalDissolutionChamber.BASE_TICKS_REQUIRED;
+        List<@NotNull ChemicalStack> chemicalRepresentations = recipe.getChemicalInput().getRepresentations();
+        for (ChemicalStack chemicalRepresentation : chemicalRepresentations) {
+            NSSChemical nssChemical = NSSChemical.createChemical(chemicalRepresentation);
+            long chemicalAmount = chemicalRepresentation.getAmount() * TileEntityChemicalDissolutionChamber.BASE_TICKS_REQUIRED;
             for (ItemStack itemRepresentation : itemRepresentations) {
-                ChemicalStack output = recipe.getOutput(itemRepresentation, gasRepresentation);
+                ChemicalStack output = recipe.getOutput(itemRepresentation, chemicalRepresentation);
                 if (!output.isEmpty()) {
                     IngredientHelper ingredientHelper = new IngredientHelper(mapper);
                     ingredientHelper.put(itemRepresentation);
-                    ingredientHelper.put(nssGas, gasAmount);
+                    ingredientHelper.put(nssChemical, chemicalAmount);
                     if (ingredientHelper.addAsConversion(output)) {
                         handled = true;
                     }

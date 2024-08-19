@@ -69,8 +69,8 @@ public class CrTConstants {
     public static final String CLASS_RECIPE_MANAGER_PIGMENT_MIXING = CLASS_RECIPE_MANAGER_CHEMICAL_CHEMICAL_TO_CHEMICAL + ".PigmentMixing";
     public static final String CLASS_RECIPE_MANAGER_COMBINING = "mods." + Mekanism.MODID + ".recipe.manager.Combining";
     public static final String CLASS_RECIPE_MANAGER_SEPARATING = "mods." + Mekanism.MODID + ".recipe.manager.Separating";
-    public static final String CLASS_RECIPE_MANAGER_FLUID_SLURRY_TO_SLURRY = "mods." + Mekanism.MODID + ".recipe.manager.FluidSlurryToSlurry";
-    public static final String CLASS_RECIPE_MANAGER_WASHING = CLASS_RECIPE_MANAGER_FLUID_SLURRY_TO_SLURRY + ".Washing";
+    public static final String CLASS_RECIPE_MANAGER_FLUID_CHEMICAL_TO_CHEMICAL = "mods." + Mekanism.MODID + ".recipe.manager.FluidChemicalToChemical";
+    public static final String CLASS_RECIPE_MANAGER_WASHING = CLASS_RECIPE_MANAGER_FLUID_CHEMICAL_TO_CHEMICAL + ".Washing";
     public static final String CLASS_RECIPE_MANAGER_FLUID_TO_FLUID = "mods." + Mekanism.MODID + ".recipe.manager.FluidToFluid";
     public static final String CLASS_RECIPE_MANAGER_EVAPORATING = CLASS_RECIPE_MANAGER_FLUID_TO_FLUID + ".Evaporating";
     public static final String CLASS_RECIPE_MANAGER_CHEMICAL_TO_CHEMICAL = "mods." + Mekanism.MODID + ".recipe.manager.ChemicalToChemical";
@@ -97,24 +97,18 @@ public class CrTConstants {
 
     public static final String CLASS_RECIPE_ITEM_STACK_TO_ITEM_STACK = "mods." + Mekanism.MODID + ".recipe.ItemStackToItemStack";
     public static final String CLASS_RECIPE_CHEMICAL_CHEMICAL_TO_CHEMICAL = "mods." + Mekanism.MODID + ".recipe.ChemicalChemicalToChemical";
-    public static final String CLASS_RECIPE_CHEMICAL_INFUSING = CLASS_RECIPE_CHEMICAL_CHEMICAL_TO_CHEMICAL + ".ChemicalInfusing";
-    public static final String CLASS_RECIPE_PIGMENT_MIXING = "mods." + Mekanism.MODID + ".recipe.PigmentMixing";
     public static final String CLASS_RECIPE_COMBINING = "mods." + Mekanism.MODID + ".recipe.Combining";
     public static final String CLASS_RECIPE_SEPARATING = "mods." + Mekanism.MODID + ".recipe.Separating";
     public static final String CLASS_RECIPE_SEPARATING_OUTPUT = CLASS_RECIPE_SEPARATING + ".Output";
     public static final String CLASS_RECIPE_FLUID_CHEMICAL_TO_CHEMICAL = "mods." + Mekanism.MODID + ".recipe.FluidChemicalToChemical";
-    public static final String CLASS_RECIPE_FLUID_SLURRY_TO_SLURRY = CLASS_RECIPE_FLUID_CHEMICAL_TO_CHEMICAL + ".Slurry";
     public static final String CLASS_RECIPE_FLUID_TO_FLUID = "mods." + Mekanism.MODID + ".recipe.FluidToFluid";
     public static final String CLASS_RECIPE_CHEMICAL_TO_CHEMICAL = "mods." + Mekanism.MODID + ".recipe.ChemicalToChemical";
     public static final String CLASS_RECIPE_CRYSTALLIZING = "mods." + Mekanism.MODID + ".recipe.Crystallizing";
     public static final String CLASS_RECIPE_DISSOLUTION = "mods." + Mekanism.MODID + ".recipe.Dissolution";
     public static final String CLASS_RECIPE_ITEM_STACK_CHEMICAL_TO_ITEM_STACK = "mods." + Mekanism.MODID + ".recipe.ItemStackChemicalToItemStack";
-    public static final String CLASS_RECIPE_METALLURGIC_INFUSING = CLASS_RECIPE_ITEM_STACK_CHEMICAL_TO_ITEM_STACK + ".MetallurgicInfusing";
-    public static final String CLASS_RECIPE_PAINTING = CLASS_RECIPE_ITEM_STACK_CHEMICAL_TO_ITEM_STACK + ".Painting";
     public static final String CLASS_RECIPE_NUCLEOSYNTHESIZING = CLASS_RECIPE_ITEM_STACK_CHEMICAL_TO_ITEM_STACK + ".Nucleosynthesizing";
     public static final String CLASS_RECIPE_ITEM_STACK_TO_ENERGY = "mods." + Mekanism.MODID + ".recipe.ItemStackToEnergy";
     public static final String CLASS_RECIPE_ITEM_STACK_TO_CHEMICAL = "mods." + Mekanism.MODID + ".recipe.ItemStackToChemical";
-    public static final String CLASS_RECIPE_ITEM_STACK_TO_PIGMENT = CLASS_RECIPE_ITEM_STACK_TO_CHEMICAL + ".ItemStackToPigment";
     public static final String CLASS_RECIPE_REACTION = "mods." + Mekanism.MODID + ".recipe.Reaction";
     public static final String CLASS_RECIPE_REACTION_OUTPUT = CLASS_RECIPE_REACTION + ".Output";
     public static final String CLASS_RECIPE_ROTARY = "mods." + Mekanism.MODID + ".recipe.Rotary";

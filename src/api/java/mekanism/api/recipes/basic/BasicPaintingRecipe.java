@@ -1,26 +1,23 @@
 package mekanism.api.recipes.basic;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.MekanismRecipeSerializers;
-import mekanism.api.recipes.PaintingRecipe;
+import mekanism.api.recipes.MekanismRecipeTypes;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 @NothingNullByDefault
-public class BasicPaintingRecipe extends PaintingRecipe implements IBasicItemStackOutput {
+public class BasicPaintingRecipe extends BasicItemStackChemicalToItemStackRecipe {
 
-    protected final ItemStackIngredient itemInput;
-    protected final ChemicalStackIngredient chemicalInput;
-    protected final ItemStack output;
+    private static final Holder<Item> PAINTING_MACHINE = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "painting_machine"));
 
     /**
      * @param itemInput     Item input.
@@ -28,50 +25,22 @@ public class BasicPaintingRecipe extends PaintingRecipe implements IBasicItemSta
      * @param output        Output.
      */
     public BasicPaintingRecipe(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ItemStack output) {
-        this.itemInput = Objects.requireNonNull(itemInput, "Item input cannot be null.");
-        this.chemicalInput = Objects.requireNonNull(chemicalInput, "Chemical input cannot be null.");
-        Objects.requireNonNull(output, "Output cannot be null.");
-        if (output.isEmpty()) {
-            throw new IllegalArgumentException("Output cannot be empty.");
-        }
-        this.output = output.copy();
+        super(itemInput, chemicalInput, output, MekanismRecipeTypes.TYPE_PAINTING.value());
     }
 
     @Override
-    public ItemStackIngredient getItemInput() {
-        return itemInput;
+    public boolean perTickUsage() {
+        return false;
     }
 
     @Override
-    public ChemicalStackIngredient getChemicalInput() {
-        return chemicalInput;
+    public String getGroup() {
+        return "painting_machine";
     }
 
     @Override
-    @Contract(value = "_, _ -> new", pure = true)
-    public ItemStack getOutput(ItemStack inputItem, ChemicalStack inputChemical) {
-        return output.copy();
-    }
-
-    @NotNull
-    @Override
-    public ItemStack getResultItem(@NotNull HolderLookup.Provider provider) {
-        return output.copy();
-    }
-
-    @Override
-    public boolean test(ItemStack itemStack, ChemicalStack chemicalStack) {
-        return itemInput.test(itemStack) && chemicalInput.test(chemicalStack);
-    }
-
-    @Override
-    public List<@NotNull ItemStack> getOutputDefinition() {
-        return Collections.singletonList(output);
-    }
-
-    @Override
-    public ItemStack getOutputRaw() {
-        return output;
+    public ItemStack getToastSymbol() {
+        return new ItemStack(PAINTING_MACHINE);
     }
 
     @Override

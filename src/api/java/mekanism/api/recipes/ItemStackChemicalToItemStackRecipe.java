@@ -36,6 +36,13 @@ import org.jetbrains.annotations.NotNull;
 public abstract class ItemStackChemicalToItemStackRecipe extends MekanismRecipe<SingleItemChemicalRecipeInput> implements BiPredicate<@NotNull ItemStack, ChemicalStack> {
 
     /**
+     * Represents whether this recipe consumes the chemical each tick.
+     *
+     * @since 10.6.10
+     */
+    public abstract boolean perTickUsage();//TODO: Make things respect/use this rather than it mostly just being a marker for things per type
+
+    /**
      * Gets the input item ingredient.
      */
     public abstract ItemStackIngredient getItemInput();

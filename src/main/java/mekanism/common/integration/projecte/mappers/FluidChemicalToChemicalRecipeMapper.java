@@ -2,7 +2,7 @@ package mekanism.common.integration.projecte.mappers;
 
 import java.util.List;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.recipes.FluidSlurryToSlurryRecipe;
+import mekanism.api.recipes.FluidChemicalToChemicalRecipe;
 import mekanism.common.integration.projecte.IngredientHelper;
 import mekanism.common.recipe.MekanismRecipeType;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
@@ -13,15 +13,15 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 @RecipeTypeMapper
-public class FluidSlurryToSlurryRecipeMapper extends TypedMekanismRecipeMapper<FluidSlurryToSlurryRecipe> {
+public class FluidChemicalToChemicalRecipeMapper extends TypedMekanismRecipeMapper<FluidChemicalToChemicalRecipe> {
 
-    public FluidSlurryToSlurryRecipeMapper() {
-        super(FluidSlurryToSlurryRecipe.class, MekanismRecipeType.WASHING);
+    public FluidChemicalToChemicalRecipeMapper() {
+        super(FluidChemicalToChemicalRecipe.class, MekanismRecipeType.WASHING);
     }
 
     @Override
     public String getName() {
-        return "MekFluidSlurryToSlurry";
+        return "MekWashing";
     }
 
     @Override
@@ -30,7 +30,7 @@ public class FluidSlurryToSlurryRecipeMapper extends TypedMekanismRecipeMapper<F
     }
 
     @Override
-    protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, FluidSlurryToSlurryRecipe recipe) {
+    protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, FluidChemicalToChemicalRecipe recipe) {
         boolean handled = false;
         List<@NotNull FluidStack> fluidRepresentations = recipe.getFluidInput().getRepresentations();
         List<@NotNull ChemicalStack> slurryRepresentations = recipe.getChemicalInput().getRepresentations();
