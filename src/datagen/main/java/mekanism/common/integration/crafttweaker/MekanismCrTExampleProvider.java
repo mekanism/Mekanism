@@ -494,9 +494,8 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
         return imports.addImport(EXPANSION_TARGET_JEITWEAKER) + ".addIngredientInformation(stack as " + getCrTClassName(clazz) + ", " + getCrTClassName(Component.class) + "...)";
     }
 
-    private record JEIHidingComponent(
-          CrTImportsComponent imports, IChemicalProvider chemicalProvider,
-          Function<ChemicalStack, CommandStringDisplayable> describer) implements ICrTExampleComponent {
+    private record JEIHidingComponent(CrTImportsComponent imports, IChemicalProvider chemicalProvider,
+                                      Function<ChemicalStack, CommandStringDisplayable> describer) implements ICrTExampleComponent {
 
         @NotNull
         @Override

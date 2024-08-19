@@ -14,7 +14,6 @@ import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -171,10 +170,6 @@ public final class ChemicalStackIngredient implements InputIngredient<ChemicalSt
      */
     public long amount() {
         return amount;
-    }
-
-    public @NotNull ChemicalStack getEmptyStack() {
-        return ChemicalStack.EMPTY;
     }
 
     @Override

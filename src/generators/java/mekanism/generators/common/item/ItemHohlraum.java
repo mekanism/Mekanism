@@ -11,7 +11,7 @@ import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCrea
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.StorageUtils;
 import mekanism.generators.common.GeneratorsLang;
-import mekanism.generators.common.registries.GeneratorsGases;
+import mekanism.generators.common.registries.GeneratorsChemicals;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -61,6 +61,6 @@ public class ItemHohlraum extends Item implements ICustomCreativeTabContents {
 
     @Override
     public void addItems(Consumer<ItemStack> tabOutput) {
-        tabOutput.accept(ChemicalUtil.getFilledVariant(this, GeneratorsGases.FUSION_FUEL));
+        tabOutput.accept(ChemicalUtil.getFilledVariant(this, GeneratorsChemicals.FUSION_FUEL));
     }
 }

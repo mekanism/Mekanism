@@ -31,7 +31,7 @@ import mekanism.generators.common.registries.GeneratorsContainerTypes;
 import mekanism.generators.common.registries.GeneratorsCreativeTabs;
 import mekanism.generators.common.registries.GeneratorsDataComponents;
 import mekanism.generators.common.registries.GeneratorsFluids;
-import mekanism.generators.common.registries.GeneratorsGases;
+import mekanism.generators.common.registries.GeneratorsChemicals;
 import mekanism.generators.common.registries.GeneratorsItems;
 import mekanism.generators.common.registries.GeneratorsModules;
 import mekanism.generators.common.registries.GeneratorsSounds;
@@ -86,7 +86,7 @@ public class MekanismGenerators implements IModModule {
         GeneratorsSounds.SOUND_EVENTS.register(modEventBus);
         GeneratorsContainerTypes.CONTAINER_TYPES.register(modEventBus);
         GeneratorsTileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);
-        GeneratorsGases.GASES.register(modEventBus);
+        GeneratorsChemicals.CHEMICALS.register(modEventBus);
         GeneratorsModules.MODULES.register(modEventBus);
         packetHandler = new GeneratorsPacketHandler(modEventBus, versionNumber);
     }

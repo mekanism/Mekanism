@@ -11,8 +11,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.tags.TagKey;
 
 @NothingNullByDefault
-public interface IChemicalStackIngredientCreator
-      extends IIngredientCreator<Chemical, ChemicalStack, ChemicalStackIngredient> {
+public interface IChemicalStackIngredientCreator extends IIngredientCreator<Chemical, ChemicalStack, ChemicalStackIngredient> {
 
     /**
      * {@return the basic internal chemical ingredient creator}

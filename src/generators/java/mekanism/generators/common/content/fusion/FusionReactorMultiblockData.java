@@ -42,7 +42,7 @@ import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.GeneratorTags;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.item.ItemHohlraum;
-import mekanism.generators.common.registries.GeneratorsGases;
+import mekanism.generators.common.registries.GeneratorsChemicals;
 import mekanism.generators.common.slot.ReactorInventorySlot;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorBlock;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorPort;
@@ -76,7 +76,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
     private static final double plasmaCaseConductivity = 0.2;
 
     private final List<EnergyOutputTarget> energyOutputTargets = new ArrayList<>();
-    private final List<CapabilityOutputTarget<IChemicalHandler>> gasOutputTargets = new ArrayList<>();
+    private final List<CapabilityOutputTarget<IChemicalHandler>> chemicalOutputTargets = new ArrayList<>();
     private final Set<ITileHeatHandler> heatHandlers = new ObjectOpenHashSet<>();
 
     @ContainerSync
@@ -248,8 +248,8 @@ public class FusionReactorMultiblockData extends MultiblockData {
             CableUtils.emit(getActiveOutputs(energyOutputTargets), energyContainer);
         }
 
-        if (!gasOutputTargets.isEmpty() && !steamTank.isEmpty()) {
-            ChemicalUtil.emit(getActiveOutputs(gasOutputTargets), steamTank);
+        if (!chemicalOutputTargets.isEmpty() && !steamTank.isEmpty()) {
+            ChemicalUtil.emit(getActiveOutputs(chemicalOutputTargets), steamTank);
         }
 
         if (isBurning()) {
@@ -267,12 +267,12 @@ public class FusionReactorMultiblockData extends MultiblockData {
     @Override
     protected void updateEjectors(Level world) {
         energyOutputTargets.clear();
-        gasOutputTargets.clear();
+        chemicalOutputTargets.clear();
         for (ValveData valve : valves) {
             TileEntityFusionReactorPort tile = WorldUtils.getTileEntity(TileEntityFusionReactorPort.class, world, valve.location);
             if (tile != null) {
                 tile.addEnergyTargetCapability(energyOutputTargets, valve.side);
-                tile.addGasTargetCapability(gasOutputTargets, valve.side);
+                tile.addGasTargetCapability(chemicalOutputTargets, valve.side);
             }
         }
     }
@@ -312,7 +312,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
         long injectingAmount = amountToInject / 2;
         MekanismUtils.logMismatchedStackSize(deuteriumTank.shrinkStack(injectingAmount, Action.EXECUTE), injectingAmount);
         MekanismUtils.logMismatchedStackSize(tritiumTank.shrinkStack(injectingAmount, Action.EXECUTE), injectingAmount);
-        fuelTank.insert(GeneratorsGases.FUSION_FUEL.getStack(amountToInject), Action.EXECUTE, AutomationType.INTERNAL);
+        fuelTank.insert(GeneratorsChemicals.FUSION_FUEL.getStack(amountToInject), Action.EXECUTE, AutomationType.INTERNAL);
     }
 
     private long burnFuel() {

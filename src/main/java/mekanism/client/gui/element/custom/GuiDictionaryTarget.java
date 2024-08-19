@@ -41,7 +41,6 @@ import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import org.jetbrains.annotations.NotNull;
@@ -183,7 +182,15 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
                         ));
                     }
                     //Get tags of any contained chemicals
-                    addChemicalTags(DictionaryTagType.CHEMICAL, stack, Capabilities.CHEMICAL.item());
+                    IChemicalHandler chemicalHandler = Capabilities.CHEMICAL.getCapability(stack);
+                    if (chemicalHandler != null) {
+                        tags.put(DictionaryTagType.CHEMICAL, TagCache.getTagsAsStrings(IntStream.range(0, chemicalHandler.getChemicalTanks())
+                              .mapToObj(chemicalHandler::getChemicalInTank)
+                              .filter(chemicalInTank -> !chemicalInTank.isEmpty())
+                              .flatMap(chemicalInTank -> chemicalInTank.getChemical().getTags())
+                              .distinct()
+                        ));
+                    }
                     //TODO: Support other types of things?
                 }
             }
@@ -200,8 +207,7 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
                     setTarget(null);
                 } else {
                     setTarget(chemicalStack.copy());
-                    List<String> chemicalTags = TagCache.getTagsAsStrings(chemicalStack.getChemical().getTags());
-                    tags.put(DictionaryTagType.CHEMICAL, chemicalTags);
+                    tags.put(DictionaryTagType.CHEMICAL, TagCache.getTagsAsStrings(chemicalStack.getChemical().getTags()));
                 }
             }
             default -> {
@@ -212,19 +218,6 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
         //Update the list being viewed
         tagSetter.accept(tags.keySet());
         playClickSound(BUTTON_CLICK_SOUND);
-    }
-
-    private void addChemicalTags(DictionaryTagType tagType, ItemStack stack,
-          ItemCapability<IChemicalHandler, Void> capability) {
-        IChemicalHandler handler = stack.getCapability(capability);
-        if (handler != null) {
-            tags.put(tagType, TagCache.getTagsAsStrings(IntStream.range(0, handler.getChemicalTanks())
-                  .mapToObj(handler::getChemicalInTank)
-                  .filter(chemicalInTank -> !chemicalInTank.isEmpty())
-                  .flatMap(chemicalInTank -> chemicalInTank.getChemical().getTags())
-                  .distinct()
-            ));
-        }
     }
 
     @Override

@@ -27,7 +27,7 @@ import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsFluids;
-import mekanism.generators.common.registries.GeneratorsGases;
+import mekanism.generators.common.registries.GeneratorsChemicals;
 import mekanism.generators.common.registries.GeneratorsItems;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -73,7 +73,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
         //Heavy water
         ElectrolysisRecipeBuilder.separating(
                     IngredientCreatorAccess.fluid().from(MekanismTags.Fluids.HEAVY_WATER, 2),
-                    GeneratorsGases.DEUTERIUM.getStack(2),
+                    GeneratorsChemicals.DEUTERIUM.getStack(2),
                     MekanismChemicals.OXYGEN.getStack(1)
               ).energyMultiplier(2)
               .build(consumer, MekanismGenerators.rl(basePath + "heavy_water"));
@@ -81,9 +81,9 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
 
     private void addRotaryCondensentratorRecipes(RecipeOutput consumer) {
         String basePath = "rotary/";
-        addRotaryCondensentratorRecipe(consumer, basePath, GeneratorsGases.DEUTERIUM, GeneratorsFluids.DEUTERIUM, GeneratorTags.Fluids.DEUTERIUM, GeneratorTags.Chemicals.DEUTERIUM);
-        addRotaryCondensentratorRecipe(consumer, basePath, GeneratorsGases.FUSION_FUEL, GeneratorsFluids.FUSION_FUEL, GeneratorTags.Fluids.FUSION_FUEL, GeneratorTags.Chemicals.FUSION_FUEL);
-        addRotaryCondensentratorRecipe(consumer, basePath, GeneratorsGases.TRITIUM, GeneratorsFluids.TRITIUM, GeneratorTags.Fluids.TRITIUM, GeneratorTags.Chemicals.TRITIUM);
+        addRotaryCondensentratorRecipe(consumer, basePath, GeneratorsChemicals.DEUTERIUM, GeneratorsFluids.DEUTERIUM, GeneratorTags.Fluids.DEUTERIUM, GeneratorTags.Chemicals.DEUTERIUM);
+        addRotaryCondensentratorRecipe(consumer, basePath, GeneratorsChemicals.FUSION_FUEL, GeneratorsFluids.FUSION_FUEL, GeneratorTags.Fluids.FUSION_FUEL, GeneratorTags.Chemicals.FUSION_FUEL);
+        addRotaryCondensentratorRecipe(consumer, basePath, GeneratorsChemicals.TRITIUM, GeneratorsFluids.TRITIUM, GeneratorTags.Fluids.TRITIUM, GeneratorTags.Chemicals.TRITIUM);
     }
 
     private void addRotaryCondensentratorRecipe(RecipeOutput consumer, String basePath, IChemicalProvider gas, IFluidProvider fluidOutput,
@@ -100,9 +100,9 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
         String basePath = "chemical_infusing/";
         //DT Fuel
         ChemicalChemicalToChemicalRecipeBuilder.chemicalInfusing(
-              IngredientCreatorAccess.chemicalStack().from(GeneratorsGases.DEUTERIUM, 1),
-              IngredientCreatorAccess.chemicalStack().from(GeneratorsGases.TRITIUM, 1),
-              GeneratorsGases.FUSION_FUEL.getStack(2)
+              IngredientCreatorAccess.chemicalStack().from(GeneratorsChemicals.DEUTERIUM, 1),
+              IngredientCreatorAccess.chemicalStack().from(GeneratorsChemicals.TRITIUM, 1),
+              GeneratorsChemicals.FUSION_FUEL.getStack(2)
         ).build(consumer, MekanismGenerators.rl(basePath + "fusion_fuel"));
     }
 
@@ -110,7 +110,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
         String basePath = "activating/";
         ChemicalToChemicalRecipeBuilder.activating(
               IngredientCreatorAccess.chemicalStack().from(MekanismChemicals.LITHIUM, 1),
-              GeneratorsGases.TRITIUM.getStack(1)
+              GeneratorsChemicals.TRITIUM.getStack(1)
         ).build(consumer, MekanismGenerators.rl(basePath + "tritium"));
     }
 

@@ -57,7 +57,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
 
     private static final double COOLANT_COOLING_EFFICIENCY = 0.4;
 
-    private final List<AdvancedCapabilityOutputTarget<IChemicalHandler, BoilerValveMode>> gasOutputTargets = new ArrayList<>();
+    private final List<AdvancedCapabilityOutputTarget<IChemicalHandler, BoilerValveMode>> chemicalOutputTargets = new ArrayList<>();
     private final List<IChemicalTank> inputTanks;
     private final List<IChemicalTank> outputSteamTanks;
     private final List<IChemicalTank> outputCoolantTanks;
@@ -188,12 +188,12 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
             lastBoilRate = 0;
             lastMaxBoil = 0;
         }
-        if (!gasOutputTargets.isEmpty()) {
+        if (!chemicalOutputTargets.isEmpty()) {
             if (!steamTank.isEmpty()) {
-                ChemicalUtil.emit(getActiveOutputs(gasOutputTargets, BoilerValveMode.OUTPUT_STEAM), steamTank);
+                ChemicalUtil.emit(getActiveOutputs(chemicalOutputTargets, BoilerValveMode.OUTPUT_STEAM), steamTank);
             }
             if (!cooledCoolantTank.isEmpty()) {
-                ChemicalUtil.emit(getActiveOutputs(gasOutputTargets, BoilerValveMode.OUTPUT_COOLANT), cooledCoolantTank);
+                ChemicalUtil.emit(getActiveOutputs(chemicalOutputTargets, BoilerValveMode.OUTPUT_COOLANT), cooledCoolantTank);
             }
         }
         float waterScale = MekanismUtils.getScale(prevWaterScale, waterTank);
@@ -211,11 +211,11 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
 
     @Override
     protected void updateEjectors(Level world) {
-        gasOutputTargets.clear();
+        chemicalOutputTargets.clear();
         for (ValveData valve : valves) {
             TileEntityBoilerValve tile = WorldUtils.getTileEntity(TileEntityBoilerValve.class, world, valve.location);
             if (tile != null) {
-                tile.addChemicalTargetCapability(gasOutputTargets, valve.side);
+                tile.addChemicalTargetCapability(chemicalOutputTargets, valve.side);
             }
         }
     }

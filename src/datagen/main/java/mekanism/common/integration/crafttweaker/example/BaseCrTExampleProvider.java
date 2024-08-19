@@ -266,8 +266,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
               });
     }
 
-    private String getIngredientRepresentation(
-          ChemicalStackIngredient ingredient, String ingredientType, Function<ChemicalStack, CommandStringDisplayable> singleDescription,
+    private String getIngredientRepresentation(ChemicalStackIngredient ingredient, String ingredientType, Function<ChemicalStack, CommandStringDisplayable> singleDescription,
           KnownTagManager<Chemical> tagManager) {
         if (ingredient.ingredient() instanceof TagChemicalIngredient tagged) {
             String tagRepresentation = tagManager.tag(tagged.tag()).getCommandString();

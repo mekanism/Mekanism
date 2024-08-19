@@ -6,12 +6,11 @@ import mekanism.client.gui.element.progress.GuiProgress.ColorDetails;
 
 public abstract class RecipeViewerColorDetails implements ColorDetails {
 
-    protected final Supplier<ChemicalStack> empty;
-    public Supplier<ChemicalStack> ingredient;
+    protected static final Supplier<ChemicalStack> EMPTY = () -> ChemicalStack.EMPTY;
 
-    protected RecipeViewerColorDetails(Supplier<ChemicalStack> empty) {
-        this.empty = empty;
-        setIngredient(this.empty);
+    public Supplier<ChemicalStack> ingredient = EMPTY;
+
+    protected RecipeViewerColorDetails() {
     }
 
     public void setIngredient(ChemicalStack ingredient) {
@@ -23,7 +22,7 @@ public abstract class RecipeViewerColorDetails implements ColorDetails {
     }
 
     public void reset() {
-        setIngredient(empty);
+        setIngredient(EMPTY);
     }
 
     protected int getColor(Supplier<ChemicalStack> ingredient) {

@@ -8,14 +8,13 @@ public class PigmentMixerColorDetails extends RecipeViewerColorDetails {
     private Supplier<ChemicalStack> outputIngredient;
 
     public PigmentMixerColorDetails() {
-        super(() -> ChemicalStack.EMPTY);
-        setOutputIngredient(empty);
+        setOutputIngredient(EMPTY);
     }
 
     @Override
     public void reset() {
         super.reset();
-        setOutputIngredient(empty);
+        setOutputIngredient(EMPTY);
     }
 
     @Override

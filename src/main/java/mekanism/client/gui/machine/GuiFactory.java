@@ -1,5 +1,6 @@
 package mekanism.client.gui.machine;
 
+import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.client.gui.GuiConfigurableTile;
 import mekanism.client.gui.element.GuiDumpButton;
@@ -10,13 +11,13 @@ import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.client.gui.element.tab.GuiSortingTab;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
-import mekanism.common.inventory.warning.ISupportsWarning;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.tile.factory.TileEntityItemStackGasToItemStackFactory;
 import mekanism.common.tile.factory.TileEntityMetallurgicInfuserFactory;
 import mekanism.common.tile.factory.TileEntitySawingFactory;
+import mekanism.common.tile.interfaces.IHasDumpButton;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -51,18 +52,17 @@ public class GuiFactory extends GuiConfigurableTile<TileEntityFactory<?>, Mekani
               .warning(WarningType.NOT_ENOUGH_ENERGY, tile.getWarningCheck(RecipeError.NOT_ENOUGH_ENERGY, 0));
         addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::getLastUsage));
         if (tile.hasSecondaryResourceBar()) {
-            ISupportsWarning<?> secondaryBar = null;
+            IChemicalTank chemicalTank = null;
             if (tile instanceof TileEntityMetallurgicInfuserFactory factory) {
-                secondaryBar = addRenderableWidget(new GuiChemicalBar(this, GuiChemicalBar.getProvider(factory.getInfusionTank(), tile.getChemicalTanks(null)),
-                      7, 76, tile.tier == FactoryTier.ULTIMATE ? 172 : 138, 4, true));
-                addRenderableWidget(new GuiDumpButton<>(this, factory, tile.tier == FactoryTier.ULTIMATE ? 182 : 148, 76));
+                chemicalTank = factory.getInfusionTank();
             } else if (tile instanceof TileEntityItemStackGasToItemStackFactory factory) {
-                secondaryBar = addRenderableWidget(new GuiChemicalBar(this, GuiChemicalBar.getProvider(factory.getGasTank(), tile.getChemicalTanks(null)),
-                      7, 76, tile.tier == FactoryTier.ULTIMATE ? 172 : 138, 4, true));
-                addRenderableWidget(new GuiDumpButton<>(this, factory, tile.tier == FactoryTier.ULTIMATE ? 182 : 148, 76));
+                chemicalTank = factory.getGasTank();
             }
-            if (secondaryBar != null) {
-                secondaryBar.warning(WarningType.NO_MATCHING_RECIPE, tile.getWarningCheck(RecipeError.NOT_ENOUGH_SECONDARY_INPUT, 0));
+            if (chemicalTank != null) {
+                addRenderableWidget(new GuiChemicalBar(this, GuiChemicalBar.getProvider(chemicalTank, tile.getChemicalTanks(null)), 7, 76,
+                      tile.tier == FactoryTier.ULTIMATE ? 172 : 138, 4, true))
+                      .warning(WarningType.NO_MATCHING_RECIPE, tile.getWarningCheck(RecipeError.NOT_ENOUGH_SECONDARY_INPUT, 0));
+                addRenderableWidget(new GuiDumpButton<>(this, (TileEntityFactory<?> & IHasDumpButton) tile, tile.tier == FactoryTier.ULTIMATE ? 182 : 148, 76));
             }
         }
 

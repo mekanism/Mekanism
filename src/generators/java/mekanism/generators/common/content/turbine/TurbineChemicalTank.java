@@ -11,11 +11,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class TurbineGasTank extends VariableCapacityChemicalTank {
+public class TurbineChemicalTank extends VariableCapacityChemicalTank {
 
     private final TurbineMultiblockData multiblock;
 
-    public TurbineGasTank(TurbineMultiblockData multiblock, @Nullable IContentsListener listener) {
+    public TurbineChemicalTank(TurbineMultiblockData multiblock, @Nullable IContentsListener listener) {
         super(multiblock::getSteamCapacity, multiblock.notExternalFormedBiPred(), multiblock.formedBiPred(), gas -> gas == MekanismChemicals.STEAM.getChemical(),
               null, listener);
         this.multiblock = multiblock;

@@ -52,7 +52,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     public IChemicalTank outputTank;
 
     public final SyncableCoilData coilData = new SyncableCoilData();
-    private final List<CapabilityOutputTarget<IChemicalHandler>> gasOutputTargets = new ArrayList<>();
+    private final List<CapabilityOutputTarget<IChemicalHandler>> chemicalOutputTargets = new ArrayList<>();
 
     @ContainerSync
     public double progress;
@@ -120,8 +120,8 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
         if (receivedEnergy != lastReceivedEnergy || processed != lastProcessed) {
             needsPacket = true;
         }
-        if (!gasOutputTargets.isEmpty() && !outputTank.isEmpty()) {
-            ChemicalUtil.emit(getActiveOutputs(gasOutputTargets), outputTank);
+        if (!chemicalOutputTargets.isEmpty() && !outputTank.isEmpty()) {
+            ChemicalUtil.emit(getActiveOutputs(chemicalOutputTargets), outputTank);
         }
         lastReceivedEnergy = receivedEnergy;
         receivedEnergy = 0L;
@@ -135,11 +135,11 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
 
     @Override
     protected void updateEjectors(Level world) {
-        gasOutputTargets.clear();
+        chemicalOutputTargets.clear();
         for (ValveData valve : valves) {
             TileEntitySPSPort tile = WorldUtils.getTileEntity(TileEntitySPSPort.class, world, valve.location);
             if (tile != null) {
-                tile.addChemicalTargetCapability(gasOutputTargets, valve.side);
+                tile.addChemicalTargetCapability(chemicalOutputTargets, valve.side);
             }
         }
     }

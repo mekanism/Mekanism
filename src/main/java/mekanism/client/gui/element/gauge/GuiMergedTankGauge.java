@@ -15,8 +15,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 
-public class GuiMergedTankGauge<HANDLER extends IMekanismFluidHandler & IMekanismChemicalHandler> extends GuiGauge<Void>
-      implements IRecipeViewerIngredientHelper {
+public class GuiMergedTankGauge<HANDLER extends IMekanismFluidHandler & IMekanismChemicalHandler> extends GuiGauge<Void> implements IRecipeViewerIngredientHelper {
 
     private final Supplier<MergedTank> mergedTankSupplier;
     private final Supplier<HANDLER> handlerSupplier;
@@ -25,6 +24,10 @@ public class GuiMergedTankGauge<HANDLER extends IMekanismFluidHandler & IMekanis
     private final GuiChemicalGauge chemicalGauge;
 
     private Component label;
+
+    public GuiMergedTankGauge(Supplier<MergedTank> mergedTankSupplier, Supplier<HANDLER> handlerSupplier, GaugeType type, IGuiWrapper gui, int x, int y) {
+        this(mergedTankSupplier, handlerSupplier, type, gui, x, y, type.getGaugeOverlay().getWidth() + 2, type.getGaugeOverlay().getHeight() + 2);
+    }
 
     public GuiMergedTankGauge(Supplier<MergedTank> mergedTankSupplier, Supplier<HANDLER> handlerSupplier, GaugeType type, IGuiWrapper gui, int x, int y, int width,
           int height) {

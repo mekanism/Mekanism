@@ -12,7 +12,7 @@ import mekanism.generators.client.integration.GeneratorsAliases;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsFluids;
-import mekanism.generators.common.registries.GeneratorsGases;
+import mekanism.generators.common.registries.GeneratorsChemicals;
 import mekanism.generators.common.registries.GeneratorsItems;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -34,7 +34,7 @@ public class GeneratorsEmiAliasProvider extends BaseEmiAliasProvider {
     private void addChemicalAliases() {
         addAliases(List.of(
               ingredient(GeneratorsFluids.FUSION_FUEL),
-              ingredient(GeneratorsGases.FUSION_FUEL)
+              ingredient(GeneratorsChemicals.FUSION_FUEL)
         ), GeneratorsAliases.FUSION_FUEL);
     }
 
@@ -63,7 +63,7 @@ public class GeneratorsEmiAliasProvider extends BaseEmiAliasProvider {
               EmiStack.of(GeneratorsBlocks.FUSION_REACTOR_LOGIC_ADAPTER),
               EmiStack.of(GeneratorsBlocks.LASER_FOCUS_MATRIX),
               EmiStack.of(GeneratorsBlocks.REACTOR_GLASS),
-              EmiStack.of(ChemicalUtil.getFilledVariant(GeneratorsItems.HOHLRAUM, GeneratorsGases.FUSION_FUEL))
+              EmiStack.of(ChemicalUtil.getFilledVariant(GeneratorsItems.HOHLRAUM, GeneratorsChemicals.FUSION_FUEL))
         ), GeneratorsAliases.FUSION_COMPONENT);
         addAlias(GeneratorsAliases.TURBINE_COMPONENT,
               GeneratorsBlocks.TURBINE_CASING,

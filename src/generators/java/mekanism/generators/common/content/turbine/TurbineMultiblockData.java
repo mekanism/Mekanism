@@ -59,7 +59,7 @@ public class TurbineMultiblockData extends MultiblockData {
     @ContainerSync
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getSteam", "getSteamCapacity", "getSteamNeeded",
                                                                                         "getSteamFilledPercentage"}, docPlaceholder = "steam tank")
-    public IChemicalTank gasTank;
+    public IChemicalTank chemicalTank;
     @ContainerSync
     public IExtendedFluidTank ventTank;
     public final List<IExtendedFluidTank> ventTanks;
@@ -102,7 +102,7 @@ public class TurbineMultiblockData extends MultiblockData {
 
     public TurbineMultiblockData(TileEntityTurbineCasing tile) {
         super(tile);
-        chemicalTanks.add(gasTank = new TurbineGasTank(this, createSaveAndComparator()));
+        chemicalTanks.add(chemicalTank = new TurbineChemicalTank(this, createSaveAndComparator()));
         ventTank = VariableCapacityFluidTank.output(this, () -> isFormed() ? condensers * MekanismGeneratorsConfig.generators.condenserRate.get() : FluidType.BUCKET_VOLUME,
               fluid -> fluid.is(FluidTags.WATER), this);
         ventTanks = Collections.singletonList(ventTank);
@@ -135,7 +135,7 @@ public class TurbineMultiblockData extends MultiblockData {
 
         lastSteamInput = newSteamInput;
         newSteamInput = 0;
-        long stored = gasTank.getStored();
+        long stored = chemicalTank.getStored();
         double flowRate = 0;
 
         long energyNeeded = energyContainer.getNeeded();
@@ -154,7 +154,7 @@ public class TurbineMultiblockData extends MultiblockData {
                 if (clientFlow > 0) {
                     flowRate = rate / origRate;
                     energyContainer.insert(MathUtils.clampToLong(energyMultiplier * rate), Action.EXECUTE, AutomationType.INTERNAL);
-                    gasTank.shrinkStack(clientFlow, Action.EXECUTE);
+                    chemicalTank.shrinkStack(clientFlow, Action.EXECUTE);
                     ventTank.setStack(new FluidStack(Fluids.WATER, Math.min(MathUtils.clampToInt(rate), condensers * MekanismGeneratorsConfig.generators.condenserRate.get())));
                 }
             }
@@ -167,15 +167,15 @@ public class TurbineMultiblockData extends MultiblockData {
         }
         CableUtils.emit(energyOutputTargets, energyContainer);
 
-        if (dumpMode != GasMode.IDLE && !gasTank.isEmpty()) {
-            long amount = gasTank.getStored();
+        if (dumpMode != GasMode.IDLE && !chemicalTank.isEmpty()) {
+            long amount = chemicalTank.getStored();
             if (dumpMode == GasMode.DUMPING) {
-                gasTank.shrinkStack(getDumpingAmount(amount), Action.EXECUTE);
+                chemicalTank.shrinkStack(getDumpingAmount(amount), Action.EXECUTE);
             } else {//DUMPING_EXCESS
                 //Don't allow dumping more than the configured amount
-                long targetLevel = MathUtils.clampToLong(gasTank.getCapacity() * MekanismConfig.general.dumpExcessKeepRatio.get());
+                long targetLevel = MathUtils.clampToLong(chemicalTank.getCapacity() * MekanismConfig.general.dumpExcessKeepRatio.get());
                 if (targetLevel < amount) {
-                    gasTank.shrinkStack(Math.min(amount - targetLevel, getDumpingAmount(amount)), Action.EXECUTE);
+                    chemicalTank.shrinkStack(Math.min(amount - targetLevel, getDumpingAmount(amount)), Action.EXECUTE);
                 }
             }
         }
@@ -186,7 +186,7 @@ public class TurbineMultiblockData extends MultiblockData {
             clientRotation = newRotation;
             needsPacket = true;
         }
-        float scale = MekanismUtils.getScale(prevSteamScale, gasTank);
+        float scale = MekanismUtils.getScale(prevSteamScale, chemicalTank);
         if (MekanismUtils.scaleChanged(scale, prevSteamScale)) {
             needsPacket = true;
             prevSteamScale = scale;
@@ -209,7 +209,7 @@ public class TurbineMultiblockData extends MultiblockData {
         NBTUtils.setFloatIfPresent(tag, SerializationConstants.SCALE, scale -> prevSteamScale = scale);
         NBTUtils.setIntIfPresent(tag, SerializationConstants.VOLUME, this::setVolume);
         NBTUtils.setIntIfPresent(tag, SerializationConstants.LOWER_VOLUME, value -> lowerVolume = value);
-        NBTUtils.setChemicalStackIfPresent(provider, tag, SerializationConstants.GAS, value -> gasTank.setStack(value));
+        NBTUtils.setChemicalStackIfPresent(provider, tag, SerializationConstants.GAS, value -> chemicalTank.setStack(value));
         NBTUtils.setBlockPosIfPresent(tag, SerializationConstants.COMPLEX, value -> complex = value);
         NBTUtils.setFloatIfPresent(tag, SerializationConstants.ROTATION, value -> clientRotation = value);
         clientRotationMap.put(inventoryID, clientRotation);
@@ -221,7 +221,7 @@ public class TurbineMultiblockData extends MultiblockData {
         tag.putFloat(SerializationConstants.SCALE, prevSteamScale);
         tag.putInt(SerializationConstants.VOLUME, getVolume());
         tag.putInt(SerializationConstants.LOWER_VOLUME, lowerVolume);
-        tag.put(SerializationConstants.GAS, gasTank.getStack().saveOptional(provider));
+        tag.put(SerializationConstants.GAS, chemicalTank.getStack().saveOptional(provider));
         tag.put(SerializationConstants.COMPLEX, NbtUtils.writeBlockPos(complex));
         tag.putFloat(SerializationConstants.ROTATION, clientRotation);
     }
@@ -249,7 +249,7 @@ public class TurbineMultiblockData extends MultiblockData {
 
     @Override
     protected int getMultiblockRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(gasTank.getStored(), gasTank.getCapacity());
+        return MekanismUtils.redstoneLevelFromContents(chemicalTank.getStored(), chemicalTank.getCapacity());
     }
 
     @ComputerMethod

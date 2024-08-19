@@ -94,7 +94,7 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
                 return Math.min(1, multiblock.lastSteamInput / rate);
             }
         }, 40, 13));
-        addRenderableWidget(new GuiChemicalGauge(() -> tile.getMultiblock().gasTank, () -> tile.getMultiblock().getChemicalTanks(null), GaugeType.MEDIUM, this, 6, 13));
+        addRenderableWidget(new GuiChemicalGauge(() -> tile.getMultiblock().chemicalTank, () -> tile.getMultiblock().getChemicalTanks(null), GaugeType.MEDIUM, this, 6, 13));
         addRenderableWidget(new GuiEnergyTab(this, () -> {
             EnergyDisplay storing;
             EnergyDisplay producing;

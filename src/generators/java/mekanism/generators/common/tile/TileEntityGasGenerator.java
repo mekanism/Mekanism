@@ -5,6 +5,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributes.Fuel;
 import mekanism.api.math.MathUtils;
 import mekanism.common.attachments.containers.ContainerType;
@@ -40,7 +41,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
      */
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getFuel", "getFuelCapacity", "getFuelNeeded",
                                                                                         "getFuelFilledPercentage"}, docPlaceholder = "fuel tank")
-    public VariableCapacityChemicalTank fuelTank;
+    public IChemicalTank fuelTank;
     private long burnTicks;
     private int maxBurnTicks;
     private long generationRate = 0;

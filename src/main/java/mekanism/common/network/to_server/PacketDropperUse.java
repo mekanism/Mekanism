@@ -84,8 +84,7 @@ public record PacketDropperUse(BlockPos pos, DropperAction action, TankType tank
         }
     }
 
-    private <HANDLER extends IMekanismFluidHandler & IMekanismChemicalHandler> void handleTankType(HANDLER handler,
-          ServerPlayer player, ItemStack stack, GlobalPos pos) {
+    private <HANDLER extends IMekanismFluidHandler & IMekanismChemicalHandler> void handleTankType(HANDLER handler, ServerPlayer player, ItemStack stack, GlobalPos pos) {
         if (tankType == TankType.FLUID_TANK) {
             IExtendedFluidTank fluidTank = handler.getFluidTank(tankId, null);
             if (fluidTank != null) {

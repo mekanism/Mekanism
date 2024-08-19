@@ -6,7 +6,7 @@ import mekanism.client.integration.emi.BaseEmiDefaults;
 import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.registries.GeneratorsBlocks;
-import mekanism.generators.common.registries.GeneratorsGases;
+import mekanism.generators.common.registries.GeneratorsChemicals;
 import mekanism.generators.common.registries.GeneratorsItems;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -34,9 +34,9 @@ public class GeneratorsEmiDefaults extends BaseEmiDefaults {
     }
 
     private void addRotaryRecipes() {
-        addRotaryRecipe(GeneratorsGases.DEUTERIUM);
-        addRotaryRecipe(GeneratorsGases.FUSION_FUEL);
-        addRotaryRecipe(GeneratorsGases.TRITIUM);
+        addRotaryRecipe(GeneratorsChemicals.DEUTERIUM);
+        addRotaryRecipe(GeneratorsChemicals.FUSION_FUEL);
+        addRotaryRecipe(GeneratorsChemicals.TRITIUM);
     }
 
     private void addElectrolyticSeparatorRecipes() {
