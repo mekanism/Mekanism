@@ -7,7 +7,6 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
-import mekanism.common.integration.crafttweaker.bracket.IBracketSupport;
 import mekanism.common.integration.crafttweaker.ingredient.CrTChemicalStackIngredient;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
@@ -15,7 +14,7 @@ import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
 @ZenCodeType.Name(CrTConstants.CLASS_CHEMICAL_STACK)
-public interface ICrTChemicalStack extends CommandStringDisplayable, IBracketSupport.IChemicalBracketSupport, IChemicalProvider {
+public interface ICrTChemicalStack extends CommandStringDisplayable, IChemicalProvider {
 
     /**
      * Gets the registry name for the chemical this stack is representing.

@@ -94,17 +94,12 @@ public class RecipeViewerUtils {
         return (int) (System.currentTimeMillis() / TimeUtil.MILLISECONDS_PER_SECOND % elements.length);
     }
 
-    public static List<ItemStack> getStacksFor(
-          ChemicalStackIngredient ingredient, boolean displayConversions) {
+    public static List<ItemStack> getStacksFor(ChemicalStackIngredient ingredient, boolean displayConversions) {
         Set<Chemical> chemicals = ingredient.getRepresentations().stream().map(ChemicalStack::getChemical).collect(Collectors.toSet());
-        if (!displayConversions) {
-            return getStacksFor(chemicals, null);
-        }
-        return getStacksFor(chemicals, MekanismRecipeType.CHEMICAL_CONVERSION);
+        return getStacksFor(chemicals, displayConversions ? MekanismRecipeType.CHEMICAL_CONVERSION : null);
     }
 
-    private static List<ItemStack> getStacksFor(Set<Chemical> supportedTypes,
-          @Nullable IMekanismRecipeTypeProvider<?, ? extends ItemStackToChemicalRecipe, ?> recipeType) {
+    private static List<ItemStack> getStacksFor(Set<Chemical> supportedTypes, @Nullable IMekanismRecipeTypeProvider<?, ? extends ItemStackToChemicalRecipe, ?> recipeType) {
         List<ItemStack> stacks = new ArrayList<>();
         //Always include the chemical tank of the type to portray that we accept items
         for (Chemical type : supportedTypes) {

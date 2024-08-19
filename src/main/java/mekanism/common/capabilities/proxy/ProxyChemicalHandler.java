@@ -28,8 +28,8 @@ public class ProxyChemicalHandler extends ProxyHandler implements IChemicalHandl
      * anywhere else. It is also important to not use this to bypass write access the proxy may limit.
      */
     public List<IChemicalTank> getTanksIfMekanism() {
-        if (sidedHandler instanceof IMekanismChemicalHandler) {
-            return ((IMekanismChemicalHandler) sidedHandler).getChemicalTanks(null);
+        if (sidedHandler instanceof IMekanismChemicalHandler mekHandler) {
+            return mekHandler.getChemicalTanks(null);
         }
         return Collections.emptyList();
     }

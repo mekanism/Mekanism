@@ -65,7 +65,7 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
     @NotNull
     @Override
     public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener) {
-        return side -> getMultiblock().getGasTanks(getMode());
+        return side -> getMultiblock().getChemicalTanks(getMode());
     }
 
     @NotNull

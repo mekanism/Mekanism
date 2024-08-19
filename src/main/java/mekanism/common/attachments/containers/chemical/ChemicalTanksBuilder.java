@@ -60,7 +60,6 @@ public class ChemicalTanksBuilder {
               BasicChemicalTank.alwaysTrueBi, isValid, rate, capacity, null));
     }
 
-    @SuppressWarnings("unchecked")
     public ChemicalTanksBuilder addTank(IBasicContainerCreator<? extends ComponentBackedChemicalTank> tank) {
         tankCreators.add(tank);
         return this;

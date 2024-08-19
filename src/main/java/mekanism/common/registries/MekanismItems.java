@@ -236,7 +236,7 @@ public class MekanismItems {
     public static final ItemRegistryObject<ItemUpgrade> MUFFLING_UPGRADE = registerUpgrade(Upgrade.MUFFLING);
     public static final ItemRegistryObject<ItemUpgrade> CHEMICAL_UPGRADE = registerUpgrade(Upgrade.CHEMICAL);
 
-    static {//todo 1.22 remove backcompat
+    static {//TODO - 1.22: remove backcompat
         ITEMS.addAlias(Mekanism.rl("upgrade_gas"), CHEMICAL_UPGRADE.getKey().location());
     }
 

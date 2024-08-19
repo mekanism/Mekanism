@@ -13,7 +13,6 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
-import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -28,7 +27,7 @@ public class CrTBracketDumpers {
      */
     @BracketDumper(value = CrTConstants.BRACKET_CHEMICAL, subCommandName = "chemicals")
     public static Collection<String> getChemicalStackDump() {
-        return getDump(MekanismAPI.CHEMICAL_REGISTRY, chemical -> CrTUtils.stackFromChemical(chemical).getCommandString());
+        return getDump(MekanismAPI.CHEMICAL_REGISTRY, chemical -> CrTUtils.fromChemical(chemical, 1).getCommandString());
     }
     
     /**

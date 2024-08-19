@@ -2,7 +2,6 @@ package mekanism.common.integration.crafttweaker.chemical;
 
 import mekanism.api.chemical.ChemicalStack;
 
-
 public class CrTChemicalStack extends BaseCrTChemicalStack {
 
     public CrTChemicalStack(ChemicalStack stack) {

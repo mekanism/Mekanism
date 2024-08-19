@@ -88,7 +88,7 @@ public interface IChemicalIngredientCreator {
     }
 
     /**
-     * Retrieves the explicit empty instance ingredient for this chemical type.
+     * Retrieves the explicit empty instance ingredient.
      * <p>
      * Overload for {@link #empty()}
      *

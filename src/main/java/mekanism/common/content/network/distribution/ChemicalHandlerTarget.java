@@ -6,8 +6,7 @@ import mekanism.api.chemical.IChemicalHandler;
 import mekanism.common.lib.distribution.SplitInfo;
 import mekanism.common.lib.distribution.Target;
 
-public class ChemicalHandlerTarget
-      extends Target<IChemicalHandler, Long, ChemicalStack> {
+public class ChemicalHandlerTarget extends Target<IChemicalHandler, Long, ChemicalStack> {
 
     public ChemicalHandlerTarget(ChemicalStack type) {
         this.extra = type;

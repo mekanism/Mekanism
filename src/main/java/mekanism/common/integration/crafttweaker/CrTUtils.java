@@ -51,13 +51,6 @@ public class CrTUtils {
     }
 
     /**
-     * Helper to create an {@link ICrTChemicalStack} from a {@link Chemical} with a stack size of one mB.
-     */
-    public static ICrTChemicalStack stackFromChemical(Chemical chemical) {
-        return new CrTChemicalStack(chemical.getStack(1));
-    }
-
-    /**
      * Helper method to convert a {@link Chemical} to an {@link ICrTChemicalStack}.
      */
     public static ICrTChemicalStack fromChemical(Chemical chemical, int size) {

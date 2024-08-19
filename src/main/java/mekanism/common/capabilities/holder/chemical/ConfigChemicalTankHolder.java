@@ -12,8 +12,7 @@ import net.minecraft.core.Direction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ConfigChemicalTankHolder
-      extends ConfigHolder<IChemicalTank> implements IChemicalTankHolder {
+public class ConfigChemicalTankHolder extends ConfigHolder<IChemicalTank> implements IChemicalTankHolder {
 
     protected ConfigChemicalTankHolder(Supplier<Direction> facingSupplier, Supplier<TileComponentConfig> configSupplier) {
         super(facingSupplier, configSupplier);
@@ -22,7 +21,6 @@ public class ConfigChemicalTankHolder
     void addTank(IChemicalTank tank) {
         slots.add(tank);
     }
-
 
     @NotNull
     @Override
@@ -34,5 +32,4 @@ public class ConfigChemicalTankHolder
     protected TransmissionType getTransmissionType() {
         return TransmissionType.CHEMICAL;
     }
-
 }

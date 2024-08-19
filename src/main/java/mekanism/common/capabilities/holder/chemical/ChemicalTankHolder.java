@@ -9,8 +9,7 @@ import net.minecraft.core.Direction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ChemicalTankHolder
-      extends BasicHolder<IChemicalTank> implements IChemicalTankHolder {
+public class ChemicalTankHolder extends BasicHolder<IChemicalTank> implements IChemicalTankHolder {
 
     ChemicalTankHolder(Supplier<Direction> facingSupplier) {
         super(facingSupplier);

@@ -114,12 +114,12 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         super(tile);
         //Default biome temp to the ambient temperature at the block we are at
         biomeAmbientTemp = HeatAPI.getAmbientTemp(tile.getLevel(), tile.getBlockPos());
-        superheatedCoolantTank = VariableCapacityChemicalTank.input(this, () -> superheatedCoolantCapacity, gas -> gas.has(HeatedCoolant.class), this);
+        superheatedCoolantTank = VariableCapacityChemicalTank.input(this, () -> superheatedCoolantCapacity, chemical -> chemical.has(HeatedCoolant.class), this);
         waterTank = VariableCapacityFluidTank.input(this, () -> waterTankCapacity, fluid -> fluid.is(FluidTags.WATER),
               createSaveAndComparator());
         fluidTanks.add(waterTank);
-        steamTank = VariableCapacityChemicalTank.output(this, () -> steamTankCapacity, gas -> gas == MekanismChemicals.STEAM.getChemical(), this);
-        cooledCoolantTank = VariableCapacityChemicalTank.output(this, () -> cooledCoolantCapacity, gas -> gas.has(CooledCoolant.class), this);
+        steamTank = VariableCapacityChemicalTank.output(this, () -> steamTankCapacity, chemical -> chemical == MekanismChemicals.STEAM.getChemical(), this);
+        cooledCoolantTank = VariableCapacityChemicalTank.output(this, () -> cooledCoolantCapacity, chemical -> chemical.has(CooledCoolant.class), this);
         inputTanks = List.of(superheatedCoolantTank);
         outputSteamTanks = List.of(steamTank);
         outputCoolantTanks = List.of(cooledCoolantTank);
@@ -220,7 +220,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         }
     }
 
-    public List<IChemicalTank> getGasTanks(BoilerValveMode mode) {
+    public List<IChemicalTank> getChemicalTanks(BoilerValveMode mode) {
         return switch (mode) {
             case INPUT -> inputTanks;
             case OUTPUT_STEAM -> outputSteamTanks;

@@ -1,6 +1,7 @@
 package mekanism.client.render.data;
 
 import java.util.Objects;
+import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -47,7 +48,6 @@ public abstract class RenderData {
 
     public static class Builder<DATA_TYPE extends RenderData> {
 
-        @Nullable
         private final Chemical chemical;
         private final FluidStack fluid;
         @Nullable
@@ -56,7 +56,7 @@ public abstract class RenderData {
         private int length;
         private int width;
 
-        private Builder(@Nullable Chemical chemical, FluidStack fluid) {
+        private Builder(Chemical chemical, FluidStack fluid) {
             this.chemical = chemical;
             this.fluid = fluid;
         }
@@ -72,7 +72,7 @@ public abstract class RenderData {
             if (fluid.isEmpty()) {
                 throw new IllegalArgumentException("Fluid may not be empty");
             }
-            return new Builder<>(null, fluid);
+            return new Builder<>(MekanismAPI.EMPTY_CHEMICAL, fluid);
         }
 
         public Builder<DATA_TYPE> location(BlockPos renderLocation) {
@@ -111,7 +111,7 @@ public abstract class RenderData {
             RenderData data;
             if (!fluid.isEmpty()) {
                 data = new FluidRenderData(location, width, height, length, fluid);
-            } else if (chemical != null) {
+            } else if (!chemical.isEmptyType()) {
                 data = new ChemicalRenderData(location, width, height, length, chemical);
             } else {
                 throw new IllegalStateException("Incomplete render data builder, missing or unknown chemical or fluid.");

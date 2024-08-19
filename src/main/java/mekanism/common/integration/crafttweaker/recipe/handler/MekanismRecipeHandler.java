@@ -11,7 +11,6 @@ import com.blamejared.crafttweaker.api.recipe.component.IDecomposedRecipe;
 import com.blamejared.crafttweaker.api.recipe.component.IRecipeComponent;
 import com.blamejared.crafttweaker.api.recipe.handler.IRecipeHandler;
 import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
-import com.blamejared.crafttweaker.api.tag.manager.type.KnownTagManager;
 import com.blamejared.crafttweaker.api.tag.type.KnownTag;
 import com.blamejared.crafttweaker.api.util.ItemStackUtil;
 import java.util.ArrayList;
@@ -96,7 +95,7 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe<?>> im
         } else if (param instanceof FluidStackIngredient ingredient) {
             return convertParam(CrTUtils.toCrT(ingredient));
         } else if (param instanceof ChemicalStackIngredient ingredient) {
-            return convertChemicalIngredient(CrTUtils.chemicalTags(), ingredient.ingredient(), ingredient.amount());
+            return convertChemicalIngredient(ingredient.ingredient(), ingredient.amount());
         } else if (param instanceof List<?> list) {
             if (list.isEmpty()) {
                 //Shouldn't happen
@@ -120,9 +119,9 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe<?>> im
         return "Unimplemented: " + param;
     }
 
-    private static String convertChemicalIngredient(KnownTagManager<Chemical> tagManager, ChemicalIngredient ingredient, long amount) {
+    private static String convertChemicalIngredient(ChemicalIngredient ingredient, long amount) {
         if (ingredient instanceof TagChemicalIngredient tagIngredient) {
-            KnownTag<Chemical> tag = tagManager.tag(tagIngredient.tag());
+            KnownTag<Chemical> tag = CrTUtils.chemicalTags().tag(tagIngredient.tag());
             if (amount == 1) {
                 return tag.getCommandString();
             } else if (amount > 0 && amount <= Integer.MAX_VALUE) {
@@ -209,12 +208,10 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe<?>> im
         }
         DecomposedRecipeBuilder builder = IDecomposedRecipe.builder();
         inputs.addItemToBuilder(builder, CrTRecipeComponents.ITEM.input())
-              .addFluidToBuilder(builder, CrTRecipeComponents.FLUID.input());
+              .addFluidToBuilder(builder, CrTRecipeComponents.FLUID.input())
+              .addChemicalToBuilder(builder, CrTRecipeComponents.CHEMICAL.input());
         outputs.addItemToBuilder(builder, CrTRecipeComponents.ITEM.output())
               .addFluidToBuilder(builder, CrTRecipeComponents.FLUID.output());
-        if (!inputs.chemicalData.isEmpty()) {
-            builder.with(CrTRecipeComponents.CHEMICAL.input(), inputs.chemicalData);
-        }
         if (!outputs.chemicalData.isEmpty()) {
             builder.with(CrTRecipeComponents.CHEMICAL.output(), CrTUtils.convertChemical(outputs.chemicalData));
         }
@@ -255,6 +252,13 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe<?>> im
         private TypeData<ITEM, FLUID, CHEMICAL> addFluidToBuilder(DecomposedRecipeBuilder builder, IRecipeComponent<FLUID> component) {
             if (!fluidData.isEmpty()) {
                 builder.with(component, fluidData);
+            }
+            return this;
+        }
+
+        private TypeData<ITEM, FLUID, CHEMICAL> addChemicalToBuilder(DecomposedRecipeBuilder builder, IRecipeComponent<CHEMICAL> component) {
+            if (!chemicalData.isEmpty()) {
+                builder.with(component, chemicalData);
             }
             return this;
         }

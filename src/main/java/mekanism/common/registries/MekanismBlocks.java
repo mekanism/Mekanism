@@ -360,7 +360,7 @@ public class MekanismBlocks {
           BLOCKS.register("metallurgic_infuser", () -> new BlockFactoryMachineModel<>(MekanismBlockTypes.METALLURGIC_INFUSER, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())),
                 (block, properties) -> new ItemBlockTooltip<>(block, true, properties
                       .component(MekanismDataComponents.EJECTOR, AttachedEjector.DEFAULT)
-                      .component(MekanismDataComponents.SIDE_CONFIG, AttachedSideConfig.METALLURGIC)
+                      .component(MekanismDataComponents.SIDE_CONFIG, AttachedSideConfig.ADVANCED_MACHINE)
                 )
           ).forItemHolder(holder -> holder
                 .addAttachmentOnlyContainers(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder()
@@ -445,8 +445,8 @@ public class MekanismBlocks {
                       .addBasic(TileEntityRotaryCondensentrator.CAPACITY, MekanismRecipeType.ROTARY, RotaryInputRecipeCache::containsInput)
                       .build()
                 ).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
-                      .addGasRotaryDrainSlot(0)
-                      .addGasRotaryFillSlot(0)
+                      .addChemicalRotaryDrainSlot(0)
+                      .addChemicalRotaryFillSlot(0)
                       .addFluidRotarySlot(0)
                       .addOutput()
                       .addEnergy()
@@ -457,7 +457,7 @@ public class MekanismBlocks {
           BLOCKS.register("chemical_oxidizer", () -> new BlockTileModel<>(MekanismBlockTypes.CHEMICAL_OXIDIZER, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())),
                 (block, properties) -> new ItemBlockTooltip<>(block, true, properties
                       .component(MekanismDataComponents.EJECTOR, AttachedEjector.DEFAULT)
-                      .component(MekanismDataComponents.SIDE_CONFIG, AttachedSideConfig.OXIDIZING)
+                      .component(MekanismDataComponents.SIDE_CONFIG, AttachedSideConfig.CHEMICAL_OUT_MACHINE)
                 )
           ).forItemHolder(holder -> holder
                 .addAttachmentOnlyContainers(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder()
@@ -795,7 +795,7 @@ public class MekanismBlocks {
           BLOCKS.register("pigment_extractor", () -> new BlockTile<>(MekanismBlockTypes.PIGMENT_EXTRACTOR, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())),
                 (block, properties) -> new ItemBlockTooltip<>(block, true, properties
                       .component(MekanismDataComponents.EJECTOR, AttachedEjector.DEFAULT)
-                      .component(MekanismDataComponents.SIDE_CONFIG, AttachedSideConfig.PIGMENT_EXTRACTOR)
+                      .component(MekanismDataComponents.SIDE_CONFIG, AttachedSideConfig.CHEMICAL_OUT_MACHINE)
                 )
           ).forItemHolder(holder -> holder
                 .addAttachmentOnlyContainers(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder()

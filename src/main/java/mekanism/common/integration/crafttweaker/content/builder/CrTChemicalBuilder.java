@@ -20,9 +20,9 @@ public class CrTChemicalBuilder {
 
     private final ChemicalBuilder builder;
     @Nullable
-    protected Integer colorRepresentation;
+    private Integer colorRepresentation;
 
-    public CrTChemicalBuilder(ChemicalBuilder builder) {
+    private CrTChemicalBuilder(ChemicalBuilder builder) {
         this.builder = builder;
     }
 
@@ -33,7 +33,7 @@ public class CrTChemicalBuilder {
      */
     @ZenCodeType.Method
     public CrTChemicalBuilder with(ChemicalAttribute attribute) {
-        getInternal().with(attribute);
+        builder.with(attribute);
         return this;
     }
 
@@ -44,7 +44,7 @@ public class CrTChemicalBuilder {
      */
     @ZenCodeType.Method
     public CrTChemicalBuilder tint(int tint) {
-        getInternal().tint(tint);
+        builder.tint(tint);
         return this;
     }
 
@@ -76,15 +76,8 @@ public class CrTChemicalBuilder {
      * @param registryName Registry name for the chemical.
      */
     protected void build(ResourceLocation registryName) {
-        Chemical chemical = ChemicalUtil.chemical(getInternal(), colorRepresentation);
+        Chemical chemical = ChemicalUtil.chemical(builder, colorRepresentation);
         CrTContentUtils.queueChemicalForRegistration(registryName, chemical);
-    }
-
-    /**
-     * Gets the internal {@link ChemicalBuilder}
-     */
-    protected ChemicalBuilder getInternal() {
-        return builder;
     }
 
     /**
@@ -94,7 +87,7 @@ public class CrTChemicalBuilder {
      */
     @ZenCodeType.Method
     public CrTChemicalBuilder ore(ResourceLocation oreTagLocation) {
-        getInternal().ore(oreTagLocation);
+        builder.ore(oreTagLocation);
         return this;
     }
 
@@ -108,7 +101,7 @@ public class CrTChemicalBuilder {
      */
     @ZenCodeType.Method
     public CrTChemicalBuilder ore(KnownTag<Item> oreTag) {
-        getInternal().ore(oreTag.getTagKey());
+        builder.ore(oreTag.getTagKey());
         return this;
     }
 
@@ -117,7 +110,7 @@ public class CrTChemicalBuilder {
      */
     @ZenCodeType.Method
     public CrTChemicalBuilder gaseous() {
-        getInternal().gaseous();
+        builder.gaseous();
         return this;
     }
 

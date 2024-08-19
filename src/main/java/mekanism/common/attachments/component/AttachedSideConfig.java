@@ -61,14 +61,6 @@ public record AttachedSideConfig(Map<TransmissionType, LightConfigInfo> configIn
         return new AttachedSideConfig(configInfo);
     });
 
-    public static final AttachedSideConfig METALLURGIC = Util.make(() -> {
-        Map<TransmissionType, LightConfigInfo> configInfo = new EnumMap<>(TransmissionType.class);
-        configInfo.put(TransmissionType.ITEM, LightConfigInfo.EXTRA_MACHINE);
-        configInfo.put(TransmissionType.CHEMICAL, LightConfigInfo.OUT_NO_EJECT);
-        configInfo.put(TransmissionType.ENERGY, LightConfigInfo.INPUT_ONLY);
-        return new AttachedSideConfig(configInfo);
-    });
-
     public static final AttachedSideConfig CRYSTALLIZER = Util.make(() -> {
         Map<TransmissionType, LightConfigInfo> configInfo = new EnumMap<>(TransmissionType.class);
         configInfo.put(TransmissionType.ITEM, LightConfigInfo.MACHINE);
@@ -101,7 +93,7 @@ public record AttachedSideConfig(Map<TransmissionType, LightConfigInfo> configIn
         return new AttachedSideConfig(configInfo);
     });
 
-    public static final AttachedSideConfig PIGMENT_EXTRACTOR = Util.make(() -> {
+    public static final AttachedSideConfig CHEMICAL_OUT_MACHINE = Util.make(() -> {
         Map<TransmissionType, LightConfigInfo> configInfo = new EnumMap<>(TransmissionType.class);
         configInfo.put(TransmissionType.ITEM, LightConfigInfo.MACHINE);
         configInfo.put(TransmissionType.CHEMICAL, LightConfigInfo.RIGHT_OUTPUT);
@@ -113,14 +105,6 @@ public record AttachedSideConfig(Map<TransmissionType, LightConfigInfo> configIn
         Map<TransmissionType, LightConfigInfo> configInfo = new EnumMap<>(TransmissionType.class);
         configInfo.put(TransmissionType.ITEM, LightConfigInfo.EXTRA_MACHINE);
         configInfo.put(TransmissionType.CHEMICAL, LightConfigInfo.INPUT_ONLY);
-        configInfo.put(TransmissionType.ENERGY, LightConfigInfo.INPUT_ONLY);
-        return new AttachedSideConfig(configInfo);
-    });
-
-    public static final AttachedSideConfig OXIDIZING = Util.make(() -> {
-        Map<TransmissionType, LightConfigInfo> configInfo = new EnumMap<>(TransmissionType.class);
-        configInfo.put(TransmissionType.ITEM, LightConfigInfo.MACHINE);
-        configInfo.put(TransmissionType.CHEMICAL, LightConfigInfo.RIGHT_OUTPUT);
         configInfo.put(TransmissionType.ENERGY, LightConfigInfo.INPUT_ONLY);
         return new AttachedSideConfig(configInfo);
     });

@@ -12,9 +12,9 @@ import org.jetbrains.annotations.Contract;
 /**
  * Base class for defining chemical+chemical to chemical recipes.
  * <br>
- * Input: Two chemicals of the same chemical type. The order of them does not matter.
+ * Input: Two chemicals. The order of them does not matter.
  * <br>
- * Output: ChemicalStack of the same chemical type as the input chemicals
+ * Output: ChemicalStack
  *
  * @apiNote There are currently two types of Chemical+Chemical to Chemical recipe types:
  * <ul>

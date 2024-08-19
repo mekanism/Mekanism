@@ -5,14 +5,14 @@ import com.blamejared.crafttweaker.api.data.IData;
 import com.blamejared.crafttweaker.api.data.op.IDataOps;
 import com.blamejared.crafttweaker.api.tag.type.KnownTag;
 import com.blamejared.crafttweaker.api.util.Many;
-import com.blamejared.crafttweaker_annotations.annotations.NativeMethod;
-import com.blamejared.crafttweaker_annotations.annotations.NativeMethod.MethodParameter;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.chemical.ChemicalIngredient;
+import mekanism.api.recipes.ingredients.chemical.CompoundChemicalIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
@@ -21,7 +21,6 @@ import net.minecraft.tags.TagKey;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
-@NativeMethod(name = "testType", parameters = @MethodParameter(type = Chemical.class, name = "chemical"))
 @NativeTypeRegistration(value = ChemicalStackIngredient.class, zenCodeName = CrTConstants.CLASS_CHEMICAL_STACK_INGREDIENT)
 public class CrTChemicalStackIngredient {
 
@@ -38,7 +37,10 @@ public class CrTChemicalStackIngredient {
      */
     @ZenCodeType.StaticExpansionMethod
     public static ChemicalStackIngredient from(Chemical instance, long amount) {
-        CrTIngredientHelper.assertValid(instance, amount, "ChemicalStackIngredients", "chemical");
+        assertValidAmount(amount);
+        if (instance.isEmptyType()) {
+            throw new IllegalArgumentException("ChemicalStackIngredients cannot be created from an empty chemical.");
+        }
         return IngredientCreatorAccess.chemicalStack().from(instance, amount);
     }
 
@@ -51,7 +53,9 @@ public class CrTChemicalStackIngredient {
      */
     @ZenCodeType.StaticExpansionMethod
     public static ChemicalStackIngredient from(ICrTChemicalStack instance) {
-        CrTIngredientHelper.assertValid(instance, "ChemicalStackIngredients");
+        if (instance.isEmpty()) {
+            throw new IllegalArgumentException("ChemicalStackIngredients cannot be created from an empty stack.");
+        }
         return IngredientCreatorAccess.chemicalStack().from(instance.getImmutableInternal());
     }
 
@@ -65,7 +69,7 @@ public class CrTChemicalStackIngredient {
      */
     @ZenCodeType.StaticExpansionMethod
     public static ChemicalStackIngredient from(long amount, Chemical... chemicals) {
-        CrTIngredientHelper.assertMultiple(amount, "ChemicalStackIngredients", "chemical", chemicals);
+        assertMultiple(amount, chemicals);
         return IngredientCreatorAccess.chemicalStack().from(amount, chemicals);
     }
 
@@ -79,7 +83,7 @@ public class CrTChemicalStackIngredient {
      */
     @ZenCodeType.StaticExpansionMethod
     public static ChemicalStackIngredient from(long amount, ICrTChemicalStack... chemicals) {
-        CrTIngredientHelper.assertMultiple(amount, "ChemicalStackIngredients", "chemical", chemicals);
+        assertMultiple(amount, chemicals);
         return IngredientCreatorAccess.chemicalStack().from(amount, chemicals);
     }
 
@@ -92,7 +96,18 @@ public class CrTChemicalStackIngredient {
      */
     @ZenCodeType.StaticExpansionMethod
     public static ChemicalStackIngredient from(ICrTChemicalStack... chemicals) {
-        long amount = CrTIngredientHelper.assertMultiple("ChemicalStackIngredients", "chemical", chemicals);
+        if (chemicals == null || chemicals.length == 0) {
+            throw new IllegalArgumentException("ChemicalStackIngredients cannot be created from zero chemicals.");
+        }
+        long amount = 0;
+        for (ICrTChemicalStack instance : chemicals) {
+            if (instance.isEmpty()) {
+                throw new IllegalArgumentException("ChemicalStackIngredients cannot be created from an empty chemical.");
+            } else if (amount == 0) {
+                amount = instance.getAmount();
+            }
+        }
+        assertValidAmount(amount);
         return IngredientCreatorAccess.chemicalStack().from(amount, chemicals);
     }
 
@@ -106,7 +121,8 @@ public class CrTChemicalStackIngredient {
      */
     @ZenCodeType.StaticExpansionMethod
     public static ChemicalStackIngredient from(KnownTag<Chemical> chemicalTag, long amount) {
-        TagKey<Chemical> tag = CrTIngredientHelper.assertValidAndGet(chemicalTag, amount, "ChemicalStackIngredients");
+        assertValidAmount(amount);
+        TagKey<Chemical> tag = CrTUtils.validateTagAndGet(chemicalTag);
         return IngredientCreatorAccess.chemicalStack().from(tag, amount);
     }
 
@@ -146,6 +162,18 @@ public class CrTChemicalStackIngredient {
     }
 
     /**
+     * Checks if a given chemical has a type match for this {@link ChemicalStackIngredient}. Type matches ignore stack size.
+     *
+     * @param chemical Type to check for a match
+     *
+     * @return {@code true} if the type is supported by this {@link ChemicalStackIngredient}.
+     */
+    @ZenCodeType.Method
+    public static boolean testType(ChemicalStackIngredient _this, Chemical chemical) {
+        return _this.testType(chemical);
+    }
+
+    /**
      * Checks if a given {@link ICrTChemicalStack} matches this {@link ChemicalStackIngredient}. (Checks size for >=)
      *
      * @param stack Stack to check for a match
@@ -181,8 +209,40 @@ public class CrTChemicalStackIngredient {
             throw new IllegalArgumentException("ChemicalStack ingredients can only be or'd if they have the same counts");
         }
         List<ChemicalIngredient> ingredients = new ArrayList<>();
-        CrTIngredientHelper.addIngredient(ingredients, _this.ingredient());
-        CrTIngredientHelper.addIngredient(ingredients, other.ingredient());
+        addIngredient(ingredients, _this.ingredient());
+        addIngredient(ingredients, other.ingredient());
         return IngredientCreatorAccess.chemicalStack().from(IngredientCreatorAccess.chemical().ofIngredients(ingredients), _this.amount());
+    }
+
+    /**
+     * Validates that the amount is greater than zero. If it is not it throws an error.
+     */
+    private static void assertValidAmount(long amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("ChemicalStackIngredients can only be created with a size of at least one. Received size was: " + amount);
+        }
+    }
+
+    /**
+     * Validates that the amount is greater than zero and that given chemical is not the empty variant. If one of these is not true, an error is thrown.
+     */
+    private static void assertMultiple(long amount, IChemicalProvider... instances) {
+        assertValidAmount(amount);
+        if (instances == null || instances.length == 0) {
+            throw new IllegalArgumentException("ChemicalStackIngredients cannot be created from zero chemicals.");
+        }
+        for (IChemicalProvider instance : instances) {
+            if (instance.getChemical().isEmptyType()) {
+                throw new IllegalArgumentException("ChemicalStackIngredients cannot be created from an empty chemical.");
+            }
+        }
+    }
+
+    private static <INGREDIENT extends ChemicalIngredient> void addIngredient(List<INGREDIENT> ingredients, INGREDIENT ingredient) {
+        if (ingredient instanceof CompoundChemicalIngredient compoundIngredient) {
+            ingredients.addAll((List<INGREDIENT>) compoundIngredient.children());
+        } else {
+            ingredients.add(ingredient);
+        }
     }
 }

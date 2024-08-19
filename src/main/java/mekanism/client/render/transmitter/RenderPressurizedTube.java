@@ -6,7 +6,7 @@ import mekanism.api.chemical.Chemical;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.content.network.ChemicalNetwork;
-import mekanism.common.content.network.transmitter.BoxedPressurizedTube;
+import mekanism.common.content.network.transmitter.PressurizedTube;
 import mekanism.common.tile.transmitter.TileEntityPressurizedTube;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -42,10 +42,10 @@ public class RenderPressurizedTube extends RenderTransmitterBase<TileEntityPress
     @Override
     protected boolean shouldRenderTransmitter(TileEntityPressurizedTube tile, Vec3 camera) {
         if (super.shouldRenderTransmitter(tile, camera)) {
-            BoxedPressurizedTube tube = tile.getTransmitter();
+            PressurizedTube tube = tile.getTransmitter();
             if (tube.hasTransmitterNetwork()) {
                 ChemicalNetwork network = tube.getTransmitterNetwork();
-                return !network.lastChemical.isEmptyType() && !network.isTankEmpty() && network.currentScale > 0;
+                return !network.lastChemical.isEmptyType() && !network.getChemicalTank().isEmpty() && network.currentScale > 0;
             }
         }
         return false;

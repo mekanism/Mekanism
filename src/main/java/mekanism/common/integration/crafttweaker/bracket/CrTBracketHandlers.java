@@ -3,7 +3,6 @@ package mekanism.common.integration.crafttweaker.bracket;
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.annotation.BracketResolver;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
-import java.util.function.Function;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.gear.ModuleData;
@@ -30,7 +29,7 @@ public class CrTBracketHandlers {
     @ZenCodeType.Method
     @BracketResolver(CrTConstants.BRACKET_CHEMICAL)
     public static ICrTChemicalStack getChemicalStack(String tokens) {
-        return CrTUtils.stackFromChemical(getValue(CrTConstants.BRACKET_CHEMICAL, tokens, MekanismAPI.CHEMICAL_REGISTRY));
+        return CrTUtils.fromChemical(getValue(CrTConstants.BRACKET_CHEMICAL, tokens, MekanismAPI.CHEMICAL_REGISTRY), 1);
     }
 
     /**

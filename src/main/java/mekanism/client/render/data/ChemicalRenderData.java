@@ -21,7 +21,7 @@ public class ChemicalRenderData extends RenderData {
 
     @Override
     public int getColorARGB(float scale) {
-        return MekanismRenderer.getColorARGB(chemical, scale, isGaseous());
+        return MekanismRenderer.getColorARGB(chemical, scale);
     }
 
     @Override

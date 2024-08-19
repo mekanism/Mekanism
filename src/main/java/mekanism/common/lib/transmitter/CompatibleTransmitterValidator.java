@@ -4,7 +4,7 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.common.content.network.ChemicalNetwork;
 import mekanism.common.content.network.FluidNetwork;
-import mekanism.common.content.network.transmitter.BoxedPressurizedTube;
+import mekanism.common.content.network.transmitter.PressurizedTube;
 import mekanism.common.content.network.transmitter.MechanicalPipe;
 import mekanism.common.content.network.transmitter.Transmitter;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -24,11 +24,11 @@ public class CompatibleTransmitterValidator<ACCEPTOR, NETWORK extends DynamicNet
         return true;
     }
 
-    public static class CompatibleChemicalTransmitterValidator extends CompatibleTransmitterValidator<IChemicalHandler, ChemicalNetwork, BoxedPressurizedTube> {
+    public static class CompatibleChemicalTransmitterValidator extends CompatibleTransmitterValidator<IChemicalHandler, ChemicalNetwork, PressurizedTube> {
 
         private Chemical buffer;
 
-        public CompatibleChemicalTransmitterValidator(BoxedPressurizedTube transmitter) {
+        public CompatibleChemicalTransmitterValidator(PressurizedTube transmitter) {
             buffer = transmitter.getBufferWithFallback().getChemical();
         }
 
@@ -60,7 +60,7 @@ public class CompatibleTransmitterValidator<ACCEPTOR, NETWORK extends DynamicNet
 
         @Override
         public boolean isTransmitterCompatible(Transmitter<?, ?, ?> transmitter) {
-            return super.isTransmitterCompatible(transmitter) && transmitter instanceof BoxedPressurizedTube tube && compareBuffers(tube.getBufferWithFallback().getChemical());
+            return super.isTransmitterCompatible(transmitter) && transmitter instanceof PressurizedTube tube && compareBuffers(tube.getBufferWithFallback().getChemical());
         }
     }
 

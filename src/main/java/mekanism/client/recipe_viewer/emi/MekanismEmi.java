@@ -86,7 +86,7 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 @EmiEntrypoint
 public class MekanismEmi implements EmiPlugin {
 
-    private static final ChemicalEmiIngredientSerializer CHEMICAL_SERIALIZER = new ChemicalEmiIngredientSerializer(MekanismAPI.CHEMICAL_REGISTRY);
+    private static final ChemicalEmiIngredientSerializer CHEMICAL_SERIALIZER = new ChemicalEmiIngredientSerializer();
     private static final EmiRegistryAdapter<Chemical> CHEMICAL_REGISTRY_ADAPTER = EmiRegistryAdapter.simple(Chemical.class, MekanismAPI.CHEMICAL_REGISTRY, ChemicalEmiStack::new);
 
     private static final Comparison MEKANISM_COMPARISON = Comparison.compareData(emiStack -> {

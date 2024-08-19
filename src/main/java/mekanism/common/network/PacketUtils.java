@@ -1,6 +1,5 @@
 package mekanism.common.network;
 
-import com.mojang.datafixers.util.Function6;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import java.util.ArrayList;
@@ -42,7 +41,6 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class PacketUtils {
@@ -167,38 +165,5 @@ public class PacketUtils {
             return new ClientboundBundlePacket(packets);
         }
         return new ClientboundCustomPayloadPacket(payloads[0]);
-    }
-
-    public static <B, C, T1, T2, T3, T4, T5, T6> StreamCodec<B, C> composite(
-          final StreamCodec<? super B, T1> codec1, final Function<C, T1> getter1,
-          final StreamCodec<? super B, T2> codec2, final Function<C, T2> getter2,
-          final StreamCodec<? super B, T3> codec3, final Function<C, T3> getter3,
-          final StreamCodec<? super B, T4> codec4, final Function<C, T4> getter4,
-          final StreamCodec<? super B, T5> codec5, final Function<C, T5> getter5,
-          final StreamCodec<? super B, T6> codec6, final Function<C, T6> getter6,
-          final Function6<T1, T2, T3, T4, T5, T6, C> factory) {
-        return new StreamCodec<>() {
-            @NotNull
-            @Override
-            public C decode(@NotNull B buffer) {
-                T1 t1 = codec1.decode(buffer);
-                T2 t2 = codec2.decode(buffer);
-                T3 t3 = codec3.decode(buffer);
-                T4 t4 = codec4.decode(buffer);
-                T5 t5 = codec5.decode(buffer);
-                T6 t6 = codec6.decode(buffer);
-                return factory.apply(t1, t2, t3, t4, t5, t6);
-            }
-
-            @Override
-            public void encode(@NotNull B buffer, @NotNull C obj) {
-                codec1.encode(buffer, getter1.apply(obj));
-                codec2.encode(buffer, getter2.apply(obj));
-                codec3.encode(buffer, getter3.apply(obj));
-                codec4.encode(buffer, getter4.apply(obj));
-                codec5.encode(buffer, getter5.apply(obj));
-                codec6.encode(buffer, getter6.apply(obj));
-            }
-        };
     }
 }

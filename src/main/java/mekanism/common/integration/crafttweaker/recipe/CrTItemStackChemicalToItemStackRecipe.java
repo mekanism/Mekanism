@@ -1,23 +1,40 @@
 package mekanism.common.integration.crafttweaker.recipe;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
 import com.blamejared.crafttweaker.api.item.IItemStack;
-import com.blamejared.crafttweaker_annotations.annotations.NativeMethod;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import java.util.List;
 import mekanism.api.recipes.ItemStackChemicalToItemStackRecipe;
 import mekanism.api.recipes.NucleosynthesizingRecipe;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
-@NativeMethod(name = "getItemInput", parameters = {}, getterName = "itemInput")
-@NativeMethod(name = "getChemicalInput", parameters = {}, getterName = "chemicalInput")
 @NativeTypeRegistration(value = ItemStackChemicalToItemStackRecipe.class, zenCodeName = CrTConstants.CLASS_RECIPE_ITEM_STACK_CHEMICAL_TO_ITEM_STACK)
 public class CrTItemStackChemicalToItemStackRecipe {
 
     private CrTItemStackChemicalToItemStackRecipe() {
+    }
+
+    /**
+     * Gets the input item ingredient.
+     */
+    @ZenCodeType.Method
+    @ZenCodeType.Getter("itemInput")
+    public static IIngredientWithAmount getItemInput(ItemStackChemicalToItemStackRecipe _this) {
+        return CrTUtils.toCrT(_this.getItemInput());
+    }
+
+    /**
+     * Gets the input chemical ingredient.
+     */
+    @ZenCodeType.Method
+    @ZenCodeType.Getter("chemicalInput")
+    public static ChemicalStackIngredient getChemicalInput(ItemStackChemicalToItemStackRecipe _this) {
+        return _this.getChemicalInput();
     }
 
     /**

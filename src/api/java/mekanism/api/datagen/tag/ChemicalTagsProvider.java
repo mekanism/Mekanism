@@ -12,7 +12,7 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Helper classes for implementing tag providers for various chemical types.
+ * Helper class for implementing tag providers for chemicals.
  */
 public abstract class ChemicalTagsProvider extends IntrinsicHolderTagsProvider<Chemical> {
 

@@ -45,7 +45,6 @@ import mekanism.common.inventory.slot.EntangloporterInventorySlot;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.transmitter.TransmissionType;
-import mekanism.common.network.PacketUtils;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
@@ -82,7 +81,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
           Codec.DOUBLE.fieldOf(SerializationConstants.HEAT_STORED).forGetter(freq -> freq.storedHeat.getHeat()),
           Codec.DOUBLE.fieldOf(SerializationConstants.HEAT_CAPACITY).forGetter(freq -> freq.storedHeat.getHeatCapacity()),
 
-          //todo 1.22 remove backcompat and change Chemical field to non-optional
+          //TODO - 1.22: remove backcompat and change Chemical field to non-optional
           ChemicalStack.OPTIONAL_CODEC.optionalFieldOf(SerializationConstants.GAS).forGetter(freq -> Optional.empty()),
           ChemicalStack.OPTIONAL_CODEC.optionalFieldOf(SerializationConstants.INFUSE_TYPE).forGetter(freq -> Optional.empty()),
           ChemicalStack.OPTIONAL_CODEC.optionalFieldOf(SerializationConstants.PIGMENT).forGetter(freq -> Optional.empty()),
@@ -91,7 +90,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         InventoryFrequency frequency = new InventoryFrequency(name, owner.orElse(null), securityMode);
         frequency.storedEnergy.setEnergy(energy);
         frequency.storedFluid.setStackUnchecked(fluid);
-        //todo 1.22 remove backcompat and change Chemical field to non-optional
+        //TODO - 1.22: remove backcompat and change Chemical field to non-optional (but keep the stack itself as an optional codec)
         if (chemical.isPresent()) {
             frequency.storedChemical.setStackUnchecked(chemical.get());
         } else if (legacyGas.isPresent() && !legacyGas.get().isEmpty()) {
@@ -108,7 +107,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         frequency.storedHeat.setHeatCapacity(heatCapacity, false);
         return frequency;
     }));
-    public static final StreamCodec<RegistryFriendlyByteBuf, InventoryFrequency> STREAM_CODEC = PacketUtils.composite(
+    public static final StreamCodec<RegistryFriendlyByteBuf, InventoryFrequency> STREAM_CODEC = StreamCodec.composite(
           baseStreamCodec(InventoryFrequency::new), Function.identity(),
           ByteBufCodecs.VAR_LONG, freq -> freq.storedEnergy.getEnergy(),
           FluidStack.OPTIONAL_STREAM_CODEC, freq -> freq.storedFluid.getFluid(),
@@ -225,7 +224,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
             int expected = 6 * activeQEs.size();
             addEnergyTransferHandler(typesToEject, transferHandlers, expected);
             addFluidTransferHandler(typesToEject, transferHandlers, expected);
-            addChemicalTransferHandler(storedChemical, typesToEject, transferHandlers, expected);
+            addChemicalTransferHandler(typesToEject, transferHandlers, expected);
             if (!typesToEject.isEmpty()) {
                 //If we have at least one type to eject (we are not entirely empty)
                 // then go through all the QEs and build up the target locations
@@ -288,10 +287,10 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         }
     }
 
-    private void addChemicalTransferHandler(IChemicalTank tank, Map<TransmissionType, Consumer<?>> typesToEject, List<Runnable> transferHandlers, int expected) {
-        ChemicalStack toSend = tank.extract(tank.getCapacity(), Action.SIMULATE, AutomationType.INTERNAL);
+    private void addChemicalTransferHandler(Map<TransmissionType, Consumer<?>> typesToEject, List<Runnable> transferHandlers, int expected) {
+        ChemicalStack toSend = storedChemical.extract(storedChemical.getCapacity(), Action.SIMULATE, AutomationType.INTERNAL);
         if (!toSend.isEmpty()) {
-            SendingChemicalHandlerTarget target = new SendingChemicalHandlerTarget(toSend, expected, tank);
+            SendingChemicalHandlerTarget target = new SendingChemicalHandlerTarget(toSend, expected, storedChemical);
             typesToEject.put(TransmissionType.CHEMICAL, target);
             transferHandlers.add(target);
         }
@@ -345,8 +344,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         }
     }
 
-    private static class SendingChemicalHandlerTarget
-          extends ChemicalHandlerTarget implements Runnable, Consumer<IChemicalHandler> {
+    private static class SendingChemicalHandlerTarget extends ChemicalHandlerTarget implements Runnable, Consumer<IChemicalHandler> {
 
         private final IChemicalTank storedChemical;
 

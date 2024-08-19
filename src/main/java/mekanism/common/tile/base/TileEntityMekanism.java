@@ -1239,19 +1239,23 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return hasNonEmpty ? new AttachedChemicals(stacks) : null;
     }
 
-    //todo 1.22 remove backcompat
+    //TODO - 1.22: remove backcompat
+    @Deprecated(forRemoval = true)
     public List<IChemicalTank> getLegacyGasTanks() {
         return getChemicalTanks(null);
     }
 
+    @Deprecated(forRemoval = true)
     public List<IChemicalTank> getLegacyInfuseTanks() {
         return getChemicalTanks(null);
     }
 
+    @Deprecated(forRemoval = true)
     public List<IChemicalTank> getLegacyPigmentTanks() {
         return getChemicalTanks(null);
     }
 
+    @Deprecated(forRemoval = true)
     public List<IChemicalTank> getLegacySlurryTanks() {
         return getChemicalTanks(null);
     }

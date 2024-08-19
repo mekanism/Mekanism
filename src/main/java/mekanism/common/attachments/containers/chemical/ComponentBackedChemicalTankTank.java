@@ -38,8 +38,8 @@ public class ComponentBackedChemicalTankTank extends ComponentBackedChemicalTank
     }
 
     @Override
-    public ChemicalStack extract(AttachedChemicals attachedGases, ChemicalStack stored, long amount, Action action, AutomationType automationType) {
-        return super.extract(attachedGases, stored, amount, action.combine(!isCreative), automationType);
+    public ChemicalStack extract(AttachedChemicals attachedChemicals, ChemicalStack stored, long amount, Action action, AutomationType automationType) {
+        return super.extract(attachedChemicals, stored, amount, action.combine(!isCreative), automationType);
     }
 
     /**
@@ -49,7 +49,7 @@ public class ComponentBackedChemicalTankTank extends ComponentBackedChemicalTank
      * {@link #shrinkStack(long, Action)} are wrapped through this method.
      */
     @Override
-    public long setStackSize(AttachedChemicals attachedGases, ChemicalStack stored, long amount, Action action) {
-        return super.setStackSize(attachedGases, stored, amount, action.combine(!isCreative));
+    public long setStackSize(AttachedChemicals attachedChemicals, ChemicalStack stored, long amount, Action action) {
+        return super.setStackSize(attachedChemicals, stored, amount, action.combine(!isCreative));
     }
 }

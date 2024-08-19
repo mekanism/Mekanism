@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 public class ChemicalElement extends LookingAtElement {
 
     public static final MapCodec<ChemicalElement> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-          ChemicalStack.OPTIONAL_CODEC.fieldOf(SerializationConstants.BOXED_CHEMICAL).forGetter(ChemicalElement::getStored),
+          ChemicalStack.OPTIONAL_CODEC.fieldOf(SerializationConstants.CHEMICAL).forGetter(ChemicalElement::getStored),
           SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(SerializationConstants.MAX).forGetter(ChemicalElement::getCapacity)
     ).apply(instance, ChemicalElement::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, ChemicalElement> STREAM_CODEC = StreamCodec.composite(

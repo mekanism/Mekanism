@@ -3,7 +3,6 @@ package mekanism.common.integration.crafttweaker.projecte;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.tag.type.KnownTag;
 import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
@@ -31,7 +30,11 @@ public class CrTNSSResolverExpansion {
      */
     @ZenCodeType.StaticExpansionMethod
     public static NormalizedSimpleStack fromChemical(Chemical chemical) {
-        return NSSChemical.createChemical(validateNotEmptyAndGet(chemical, "chemical"));
+        if (chemical.isEmptyType()) {
+            //Note: We check this here to provide a better error than we would get in the NSS create method
+            throw new IllegalArgumentException("Cannot make an NSS Representation using an empty chemical.");
+        }
+        return NSSChemical.createChemical(chemical.getChemical());
     }
 
     /**
@@ -43,7 +46,11 @@ public class CrTNSSResolverExpansion {
      */
     @ZenCodeType.StaticExpansionMethod
     public static NormalizedSimpleStack fromChemical(ICrTChemicalStack stack) {
-        return NSSChemical.createChemical(validateNotEmptyAndGet(stack, "chemical"));
+        if (stack.isEmpty()) {
+            //Note: We check this here to provide a better error than we would get in the NSS create method
+            throw new IllegalArgumentException("Cannot make an NSS Representation using an empty chemical stack.");
+        }
+        return NSSChemical.createChemical(stack.getInternal());
     }
 
     /**
@@ -56,22 +63,5 @@ public class CrTNSSResolverExpansion {
     @ZenCodeType.StaticExpansionMethod
     public static NormalizedSimpleStack fromChemicalTag(KnownTag<Chemical> tag) {
         return NSSChemical.createTag(CrTUtils.validateTagAndGet(tag));
-    }
-
-
-    private static Chemical validateNotEmptyAndGet(Chemical chemical, String type) {
-        if (chemical.isEmptyType()) {
-            //Note: We check this here to provide a better error than we would get in the NSS create method
-            throw new IllegalArgumentException("Cannot make an NSS Representation using an empty " + type + ".");
-        }
-        return chemical.getChemical();
-    }
-
-    private static ChemicalStack validateNotEmptyAndGet(ICrTChemicalStack stack, String type) {
-        if (stack.isEmpty()) {
-            //Note: We check this here to provide a better error than we would get in the NSS create method
-            throw new IllegalArgumentException("Cannot make an NSS Representation using an empty " + type + " stack.");
-        }
-        return stack.getInternal();
     }
 }

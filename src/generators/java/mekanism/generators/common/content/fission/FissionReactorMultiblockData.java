@@ -232,7 +232,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         }
     }
 
-    public List<IChemicalTank> getGasTanks(FissionPortMode mode) {
+    public List<IChemicalTank> getChemicalTanks(FissionPortMode mode) {
         return switch (mode) {
             case INPUT -> inputTanks;
             case OUTPUT_WASTE -> outputWasteTanks;

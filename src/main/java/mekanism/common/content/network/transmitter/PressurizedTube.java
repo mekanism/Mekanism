@@ -37,8 +37,8 @@ import net.minecraft.nbt.Tag;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class BoxedPressurizedTube extends BufferedTransmitter<IChemicalHandler, ChemicalNetwork, ChemicalStack, BoxedPressurizedTube>
-      implements IChemicalTracker, IUpgradeableTransmitter<PressurizedTubeUpgradeData> {
+public class PressurizedTube extends BufferedTransmitter<IChemicalHandler, ChemicalNetwork, ChemicalStack, PressurizedTube> implements IChemicalTracker,
+      IUpgradeableTransmitter<PressurizedTubeUpgradeData> {
 
     public final TubeTier tier;
     public final IChemicalTank chemicalTank;
@@ -46,7 +46,7 @@ public class BoxedPressurizedTube extends BufferedTransmitter<IChemicalHandler, 
     @NotNull
     public ChemicalStack saveShare = ChemicalStack.EMPTY;
 
-    public BoxedPressurizedTube(IBlockProvider blockProvider, TileEntityTransmitter tile) {
+    public PressurizedTube(IBlockProvider blockProvider, TileEntityTransmitter tile) {
         super(tile, TransmissionType.CHEMICAL);
         this.tier = Attribute.getTier(blockProvider, TubeTier.class);
         chemicalTank = BasicChemicalTank.createAllValid(getCapacity(), this);
@@ -174,13 +174,13 @@ public class BoxedPressurizedTube extends BufferedTransmitter<IChemicalHandler, 
     }
 
     @Override
-    public CompatibleTransmitterValidator<IChemicalHandler, ChemicalNetwork, BoxedPressurizedTube> getNewOrphanValidator() {
+    public CompatibleTransmitterValidator<IChemicalHandler, ChemicalNetwork, PressurizedTube> getNewOrphanValidator() {
         return new CompatibleChemicalTransmitterValidator(this);
     }
 
     @Override
     public boolean isValidTransmitter(TileEntityTransmitter transmitter, Direction side) {
-        if (super.isValidTransmitter(transmitter, side) && transmitter.getTransmitter() instanceof BoxedPressurizedTube other) {
+        if (super.isValidTransmitter(transmitter, side) && transmitter.getTransmitter() instanceof PressurizedTube other) {
             Chemical buffer = getBufferWithFallback().getChemical();
             if (buffer.isEmptyType() && hasTransmitterNetwork() && getTransmitterNetwork().getPrevTransferAmount() > 0) {
                 buffer = getTransmitterNetwork().lastChemical;
@@ -278,7 +278,7 @@ public class BoxedPressurizedTube extends BufferedTransmitter<IChemicalHandler, 
     protected void handleContentsUpdateTag(@NotNull ChemicalNetwork network, @NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
         super.handleContentsUpdateTag(network, tag, provider);
         NBTUtils.setFloatIfPresent(tag, SerializationConstants.SCALE, scale -> network.currentScale = scale);
-        NBTUtils.setChemicalIfPresent(provider, tag, SerializationConstants.BOXED_CHEMICAL, network::setLastChemical);
+        NBTUtils.setChemicalIfPresent(provider, tag, SerializationConstants.CHEMICAL, network::setLastChemical);
     }
 
     public IChemicalTank getChemicalTank() {

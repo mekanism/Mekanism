@@ -2,16 +2,16 @@ package mekanism.common.content.network.distribution;
 
 import java.util.Collection;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.common.content.network.transmitter.BoxedPressurizedTube;
+import mekanism.common.content.network.transmitter.PressurizedTube;
 import mekanism.common.lib.distribution.SplitInfo;
 import mekanism.common.lib.distribution.Target;
 
 public class ChemicalTransmitterSaveTarget extends Target<ChemicalTransmitterSaveTarget.SaveHandler, Long, ChemicalStack> {
 
-    public ChemicalTransmitterSaveTarget(ChemicalStack type, Collection<BoxedPressurizedTube> transmitters) {
+    public ChemicalTransmitterSaveTarget(ChemicalStack type, Collection<PressurizedTube> transmitters) {
         super(transmitters.size());
         this.extra = type;
-        for (BoxedPressurizedTube transmitter : transmitters) {
+        for (PressurizedTube transmitter : transmitters) {
             addHandler(new SaveHandler(transmitter));
         }
     }
@@ -35,9 +35,9 @@ public class ChemicalTransmitterSaveTarget extends Target<ChemicalTransmitterSav
     public class SaveHandler {
 
         private ChemicalStack currentStored;
-        private final BoxedPressurizedTube transmitter;
+        private final PressurizedTube transmitter;
 
-        public SaveHandler(BoxedPressurizedTube transmitter) {
+        public SaveHandler(PressurizedTube transmitter) {
             this.currentStored = ChemicalStack.EMPTY;
             this.transmitter = transmitter;
         }

@@ -1,4 +1,4 @@
-package mekanism.common.capabilities.chemical.dynamic;
+package mekanism.common.capabilities.chemical;
 
 import java.util.List;
 import java.util.function.Function;
@@ -16,8 +16,8 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class DynamicChemicalHandler extends DynamicHandler<IChemicalTank> implements IMekanismChemicalHandler {
 
-    public DynamicChemicalHandler(Function<Direction, List<IChemicalTank>> tankSupplier, Predicate<@Nullable Direction> canExtract, Predicate<@Nullable Direction> canInsert,
-          @Nullable IContentsListener listener) {
+    public DynamicChemicalHandler(Function<Direction, List<IChemicalTank>> tankSupplier, Predicate<@Nullable Direction> canExtract,
+          Predicate<@Nullable Direction> canInsert, @Nullable IContentsListener listener) {
         super(tankSupplier, canExtract, canInsert, listener);
     }
 

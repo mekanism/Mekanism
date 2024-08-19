@@ -217,16 +217,16 @@ public class MekanismRenderer {
         return color;
     }
 
-    public static int getColorARGB(@NotNull ChemicalStack stack, float scale, boolean gaseous) {
-        return getColorARGB(stack.getChemical(), scale, gaseous);
+    public static int getColorARGB(@NotNull ChemicalStack stack, float scale) {
+        return getColorARGB(stack.getChemical(), scale);
     }
 
-    public static int getColorARGB(@NotNull Chemical chemical, float scale, boolean gaseous) {
+    public static int getColorARGB(@NotNull Chemical chemical, float scale) {
         if (chemical.isEmptyType()) {
             return -1;
         }
         int color = chemical.getTint();
-        return getColorARGB(FastColor.ARGB32.red(color), FastColor.ARGB32.green(color), FastColor.ARGB32.blue(color), gaseous ? Math.min(1, scale + 0.2F) : 1);
+        return getColorARGB(FastColor.ARGB32.red(color), FastColor.ARGB32.green(color), FastColor.ARGB32.blue(color), chemical.isGaseous() ? Math.min(1, scale + 0.2F) : 1);
     }
 
     public static int getColorARGB(float red, float green, float blue, float alpha) {

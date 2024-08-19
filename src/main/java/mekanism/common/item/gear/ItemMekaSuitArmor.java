@@ -88,8 +88,8 @@ import org.jetbrains.annotations.Nullable;
 public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContainerItem, IJetpackItem, ICustomCreativeTabContents, IAttachmentAware {
 
     //TODO: Expand this system so that modules can maybe define needed tanks?
-    private final List<ChemicalTankSpec> gasTankSpecs = new ArrayList<>();
-    private final List<ChemicalTankSpec> gasTankSpecsView = Collections.unmodifiableList(gasTankSpecs);
+    private final List<ChemicalTankSpec> chemicalTankSpecs = new ArrayList<>();
+    private final List<ChemicalTankSpec> chemicalTankSpecsView = Collections.unmodifiableList(chemicalTankSpecs);
     private final List<FluidTankSpec> fluidTankSpecs = new ArrayList<>();
     private final List<FluidTankSpec> fluidTankSpecsView = Collections.unmodifiableList(fluidTankSpecs);
     private final float absorption;
@@ -110,7 +110,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                 laserRefraction = 0.2;
             }
             case CHESTPLATE -> {
-                gasTankSpecs.add(ChemicalTankSpec.createFillOnly(MekanismConfig.gear.mekaSuitJetpackTransferRate, stack -> {
+                chemicalTankSpecs.add(ChemicalTankSpec.createFillOnly(MekanismConfig.gear.mekaSuitJetpackTransferRate, stack -> {
                     //Note: We intentionally don't require the module to be enabled for purposes of calculating capacity
                     IModule<ModuleJetpackUnit> module = IModuleHelper.INSTANCE.getModule(stack, MekanismModules.JETPACK_UNIT);
                     return module != null ? MekanismConfig.gear.mekaSuitJetpackMaxStorage.get() * module.getInstalledCount() : 0L;
@@ -150,7 +150,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
             addModuleDetails(stack, tooltip);
         } else {
             StorageUtils.addStoredEnergy(stack, tooltip, true);
-            if (!gasTankSpecs.isEmpty()) {
+            if (!chemicalTankSpecs.isEmpty()) {
                 StorageUtils.addStoredGas(stack, tooltip, true, false);
             }
             if (!fluidTankSpecs.isEmpty()) {
@@ -245,10 +245,10 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
 
     @Override
     public void attachAttachments(IEventBus eventBus) {
-        if (!gasTankSpecs.isEmpty()) {
+        if (!chemicalTankSpecs.isEmpty()) {
             ContainerType.CHEMICAL.addDefaultCreators(eventBus, this, () -> {
                 ChemicalTanksBuilder builder = ChemicalTanksBuilder.builder();
-                for (ChemicalTankSpec spec : gasTankSpecs) {
+                for (ChemicalTankSpec spec : chemicalTankSpecs) {
                     spec.addTank(builder, ComponentBackedChemicalTank::new);
                 }
                 return builder.build();
@@ -282,8 +282,8 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         }, this);
     }
 
-    public List<ChemicalTankSpec> getGasTankSpecs() {
-        return gasTankSpecsView;
+    public List<ChemicalTankSpec> getChemicalTankSpecs() {
+        return chemicalTankSpecsView;
     }
 
     public List<FluidTankSpec> getFluidTankSpecs() {

@@ -41,23 +41,9 @@ public class CrTConstants {
     public static final String CLASS_CUSTOM_MODULE = "mods." + Mekanism.MODID + ".api.gear.CustomModule";
     public static final String CLASS_MODULE_DATA_PROVIDER = "mods." + Mekanism.MODID + ".api.gear.ModuleDataProvider";
 
-    //TODO: Eventually we might want to expose these as actually CrT objects. And then make the stack variant basically just be an OR of them,
+    //TODO: Eventually we might want to expose basic chemical ingredients as actually CrT objects. And then make the stack variant basically just be an OR of them,
     // and also make the stacks be instances of an interface so that they can be used directly in place of the ingredients? (Or at least implicit cast to them)
-    public static final String CLASS_CHEMICAL_INGREDIENT = "mods." + Mekanism.MODID + ".api.ingredient.ChemicalIngredient";
-
     public static final String CLASS_CHEMICAL_STACK_INGREDIENT = "mods." + Mekanism.MODID + ".api.ingredient.ChemicalStackIngredient";
-
-    public static final String CLASS_VANILLA_INPUT_BI_CHEMICAL = "mods." + Mekanism.MODID + ".recipe.input.BiChemical";
-    public static final String CLASS_VANILLA_INPUT_CHEMICAL = "mods." + Mekanism.MODID + ".recipe.input.Chemical";
-    public static final String CLASS_VANILLA_INPUT_FLUID_CHEMICAL = "mods." + Mekanism.MODID + ".recipe.input.FluidChemical";
-    public static final String CLASS_VANILLA_INPUT_FLUID = "mods." + Mekanism.MODID + ".recipe.input.Fluid";
-    public static final String CLASS_VANILLA_INPUT_ITEM_CHEMICAL = "mods." + Mekanism.MODID + ".recipe.input.ItemChemical";
-    public static final String CLASS_VANILLA_INPUT_REACTION = "mods." + Mekanism.MODID + ".recipe.input.Reaction";
-    public static final String CLASS_VANILLA_INPUT_ROTARY = "mods." + Mekanism.MODID + ".recipe.input.Rotary";
-    public static final String CLASS_VANILLA_INPUT_SINGLE_CHEMICAL = "mods." + Mekanism.MODID + ".recipe.input.SingleChemical";
-    public static final String CLASS_VANILLA_INPUT_SINGLE_FLUID_CHEMICAL = "mods." + Mekanism.MODID + ".recipe.input.SingleFluidChemical";
-    public static final String CLASS_VANILLA_INPUT_SINGLE_FLUID = "mods." + Mekanism.MODID + ".recipe.input.SingleFluid";
-    public static final String CLASS_VANILLA_INPUT_SINGLE_ITEM_CHEMICAL = "mods." + Mekanism.MODID + ".recipe.input.SingleItemChemical";
 
     public static final String CLASS_RECIPE_MANAGER = "mods." + Mekanism.MODID + ".recipe.manager.MekanismRecipe";
     public static final String CLASS_RECIPE_MANAGER_ITEM_STACK_TO_ITEM_STACK = "mods." + Mekanism.MODID + ".recipe.manager.ItemStackToItemStack";
@@ -129,6 +115,6 @@ public class CrTConstants {
     private static final String EXPANSION_TARGET_MANY = "crafttweaker.api.util.Many";
     private static final String EXPANSION_TARGET_TAG = "crafttweaker.api.tag.type.KnownTag";
     public static final String EXPANSION_TARGET_NSS_RESOLVER = "mods.projecte.NSSResolver";
-    public static final String EXPANSION_TARGET_CHEMICAL_TAG = EXPANSION_TARGET_TAG + "<" + CLASS_CHEMICAL + ">";
+    private static final String EXPANSION_TARGET_CHEMICAL_TAG = EXPANSION_TARGET_TAG + "<" + CLASS_CHEMICAL + ">";
     public static final String EXPANSION_TARGET_CHEMICAL_AMOUNT_TAG = EXPANSION_TARGET_MANY + "<" + EXPANSION_TARGET_CHEMICAL_TAG + ">";
 }

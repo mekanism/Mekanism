@@ -1,7 +1,7 @@
 package mekanism.common.integration.crafttweaker.recipe;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
-import com.blamejared.crafttweaker_annotations.annotations.NativeMethod;
+import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import java.util.List;
 import mekanism.api.recipes.ItemStackToChemicalRecipe;
@@ -11,11 +11,19 @@ import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
-@NativeMethod(name = "getInput", parameters = {}, getterName = "input")
 @NativeTypeRegistration(value = ItemStackToChemicalRecipe.class, zenCodeName = CrTConstants.CLASS_RECIPE_ITEM_STACK_TO_CHEMICAL)
 public class CrTItemStackToChemicalRecipe {
 
     private CrTItemStackToChemicalRecipe() {
+    }
+
+    /**
+     * Gets the input ingredient.
+     */
+    @ZenCodeType.Method
+    @ZenCodeType.Getter("input")
+    public static IIngredientWithAmount getInput(ItemStackToChemicalRecipe _this) {
+        return CrTUtils.toCrT(_this.getInput());
     }
 
     /**

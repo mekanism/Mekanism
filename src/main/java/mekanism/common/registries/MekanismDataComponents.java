@@ -96,13 +96,13 @@ public class MekanismDataComponents {
         DATA_COMPONENTS.addAlias(Mekanism.rl("slurries"), Mekanism.rl(ATTACHED_CHEMICALS.getName()));
     }
 
-    @Deprecated(forRemoval = true) // todo 1.22 remove backcompat
+    @Deprecated(forRemoval = true) //TODO - 1.22: remove backcompat
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedChemicals>> ATTACHED_GASES = ATTACHED_CHEMICALS;
-    @Deprecated(forRemoval = true) // todo 1.22 remove backcompat
+    @Deprecated(forRemoval = true) //TODO - 1.22: remove backcompat
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedChemicals>> ATTACHED_INFUSE_TYPES = ATTACHED_CHEMICALS;
-    @Deprecated(forRemoval = true) // todo 1.22 remove backcompat
+    @Deprecated(forRemoval = true) //TODO - 1.22: remove backcompat
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedChemicals>> ATTACHED_PIGMENTS = ATTACHED_CHEMICALS;
-    @Deprecated(forRemoval = true) // todo 1.22 remove backcompat
+    @Deprecated(forRemoval = true) //TODO - 1.22: remove backcompat
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedChemicals>> ATTACHED_SLURRIES = ATTACHED_CHEMICALS;
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedHeat>> ATTACHED_HEAT = DATA_COMPONENTS.simple("heat_data",
           builder -> builder.persistent(AttachedHeat.CODEC)

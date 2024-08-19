@@ -8,7 +8,6 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.client.recipe_viewer.jei.MekanismJEI;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.CrTConstants;
-import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 
 @JeiTweakerPlugin(CrTConstants.JEI_PLUGIN_NAME)
@@ -18,7 +17,7 @@ public class MekanismJeiTweakerPluginProvider implements JeiTweakerPluginProvide
     public void registerIngredientTypes(JeiIngredientTypeRegistration registration) {
         registration.registerIngredientType(
               JeiIngredientType.of(Mekanism.rl("chemical"), ChemicalStack.class, ICrTChemicalStack.class),
-              new JeiChemicalIngredientConverter(CrTUtils.CHEMICAL_CONVERTER),
+              new JeiChemicalIngredientConverter(),
               MekanismJEI.TYPE_CHEMICAL
         );
     }

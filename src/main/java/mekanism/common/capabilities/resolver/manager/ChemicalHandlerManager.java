@@ -7,8 +7,6 @@ import mekanism.api.chemical.ISidedChemicalHandler;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.proxy.ProxyChemicalHandler;
-import net.minecraft.core.Direction;
-import net.neoforged.neoforge.capabilities.BlockCapability;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -17,13 +15,7 @@ import org.jetbrains.annotations.Nullable;
 @ParametersAreNotNullByDefault
 public class ChemicalHandlerManager extends CapabilityHandlerManager<IChemicalTankHolder, IChemicalTank, IChemicalHandler, ISidedChemicalHandler> {
 
-    public ChemicalHandlerManager(@Nullable IChemicalTankHolder holder, ISidedChemicalHandler baseHandler,
-          BlockCapability<IChemicalHandler, @Nullable Direction> supportedCapability, ProxyCreator<IChemicalHandler, ISidedChemicalHandler> proxyCreator) {
-        super(holder, baseHandler, supportedCapability, proxyCreator, IChemicalTankHolder::getTanks);
-    }
-
     public ChemicalHandlerManager(@Nullable IChemicalTankHolder holder, ISidedChemicalHandler baseHandler) {
         super(holder, baseHandler, Capabilities.CHEMICAL.block(), ProxyChemicalHandler::new, IChemicalTankHolder::getTanks);
     }
-
 }

@@ -6,7 +6,6 @@ import mekanism.api.AutomationType;
 import mekanism.api.RelativeSide;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.attribute.ChemicalAttributes;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.common.tile.component.TileComponentConfig;
 import net.minecraft.core.Direction;
@@ -24,7 +23,7 @@ public class ChemicalTankHelper {
     public static BiPredicate<@NotNull Chemical, @NotNull AutomationType> radioactiveInputTankPredicate(Supplier<IChemicalTank> outputTank) {
         //Allow extracting out of the input gas tank if it isn't external OR the output tank is empty AND the input is radioactive
         //Note: This only is the case if radiation is enabled as otherwise things like gauge droppers can work as the way to remove radioactive contents
-        return (type, automationType) -> automationType != AutomationType.EXTERNAL || (outputTank.get().isEmpty() && type.has(ChemicalAttributes.Radiation.class) &&
+        return (type, automationType) -> automationType != AutomationType.EXTERNAL || (outputTank.get().isEmpty() && type.isRadioactive() &&
                                                                                        IRadiationManager.INSTANCE.isRadiationEnabled());
     }
 
@@ -40,10 +39,10 @@ public class ChemicalTankHelper {
         if (built) {
             throw new IllegalStateException("Builder has already built.");
         }
-        if (slotHolder instanceof ChemicalTankHolder slotHolder) {
-            slotHolder.addTank(tank);
-        } else if (slotHolder instanceof ConfigChemicalTankHolder slotHolder) {
-            slotHolder.addTank(tank);
+        if (slotHolder instanceof ChemicalTankHolder tankHolder) {
+            tankHolder.addTank(tank);
+        } else if (slotHolder instanceof ConfigChemicalTankHolder tankHolder) {
+            tankHolder.addTank(tank);
         } else {
             throw new IllegalArgumentException("Holder does not know how to add tanks");
         }
@@ -54,8 +53,8 @@ public class ChemicalTankHelper {
         if (built) {
             throw new IllegalStateException("Builder has already built.");
         }
-        if (slotHolder instanceof ChemicalTankHolder slotHolder) {
-            slotHolder.addTank(tank, sides);
+        if (slotHolder instanceof ChemicalTankHolder tankHolder) {
+            tankHolder.addTank(tank, sides);
         } else {
             throw new IllegalArgumentException("Holder does not know how to add tanks on specific sides");
         }

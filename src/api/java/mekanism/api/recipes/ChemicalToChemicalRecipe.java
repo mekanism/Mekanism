@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Contract;
  * <br>
  * Input: Chemical
  * <br>
- * Output: ChemicalStack of the same chemical type as the input chemical
+ * Output: ChemicalStack
  *
  * @apiNote There are currently two types of Chemical to Chemical recipe types:
  * <ul>

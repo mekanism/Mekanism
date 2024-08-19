@@ -58,7 +58,7 @@ public class MekanismCreativeTabs {
             }
             if (chemical) {
                 //Chemical Tanks
-                if (MekanismConfig.general.prefilledChemicaltanks.get()) {
+                if (MekanismConfig.general.prefilledChemicalTanks.get()) {
                     parameters.holders().lookupOrThrow(MekanismAPI.CHEMICAL_REGISTRY_NAME)
                           .listElements()
                           .filter(holder -> !holder.is(MekanismAPITags.Chemicals.HIDDEN_FROM_RECIPE_VIEWERS) && !holder.is(MekanismAPI.EMPTY_CHEMICAL_NAME))

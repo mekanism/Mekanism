@@ -8,8 +8,6 @@ import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.IChemicalHandler;
-import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.common.tier.ChemicalTankTier;
 import org.jetbrains.annotations.Nullable;
@@ -72,33 +70,5 @@ public class ChemicalTankChemicalTank extends BasicChemicalTank {
     @Override
     public long setStackSize(long amount, Action action) {
         return super.setStackSize(amount, action.combine(!isCreative));
-    }
-
-    private static class GasTankChemicalTank extends ChemicalTankChemicalTank implements IChemicalHandler, IChemicalTank {
-
-        private GasTankChemicalTank(ChemicalTankTier tier, @Nullable IContentsListener listener) {
-            super(tier, listener);
-        }
-    }
-
-    private static class InfusionTankChemicalTank extends ChemicalTankChemicalTank implements IChemicalHandler, IChemicalTank {
-
-        private InfusionTankChemicalTank(ChemicalTankTier tier, @Nullable IContentsListener listener) {
-            super(tier, listener);
-        }
-    }
-
-    private static class PigmentTankChemicalTank extends ChemicalTankChemicalTank implements IChemicalHandler, IChemicalTank {
-
-        private PigmentTankChemicalTank(ChemicalTankTier tier, @Nullable IContentsListener listener) {
-            super(tier, listener);
-        }
-    }
-
-    private static class SlurryTankChemicalTank extends ChemicalTankChemicalTank implements IChemicalHandler, IChemicalTank {
-
-        private SlurryTankChemicalTank(ChemicalTankTier tier, @Nullable IContentsListener listener) {
-            super(tier, listener);
-        }
     }
 }

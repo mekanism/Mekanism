@@ -2,13 +2,12 @@ package mekanism.common.integration.lookingat;
 
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.function.Function;
+import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.IMekanismChemicalHandler;
-import mekanism.common.capabilities.merged.ChemicalTankWrapper;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
@@ -19,6 +18,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.attachments.BlockData;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.fluid.FluidTankWrapper;
+import mekanism.common.capabilities.merged.ChemicalTankWrapper;
 import mekanism.common.capabilities.merged.MergedTank;
 import mekanism.common.capabilities.merged.MergedTank.CurrentType;
 import mekanism.common.capabilities.proxy.ProxyChemicalHandler;
@@ -148,7 +148,7 @@ public class LookingAtUtils {
                 }
             }
             //Chemicals
-            addInfo(level, pos, state, tile, structure, multiblock -> multiblock.getChemicalTanks(null), info);
+            addInfo(level, pos, state, tile, structure, info);
         }
     }
 
@@ -189,11 +189,10 @@ public class LookingAtUtils {
         }
     }
     
-    private static void addInfo(Level level, BlockPos pos, BlockState state, @Nullable BlockEntity tile,
-          @Nullable MultiblockData structure, Function<MultiblockData, List<IChemicalTank>> multiBlockToTanks, LookingAtHelper info) {
+    private static void addInfo(Level level, BlockPos pos, BlockState state, @Nullable BlockEntity tile, @Nullable MultiblockData structure, LookingAtHelper info) {
         IChemicalHandler handler = Capabilities.CHEMICAL.getCapabilityIfLoaded(level, pos, state, tile, null);
         if (handler != null) {
-            Chemical fallback = ChemicalStack.EMPTY.getChemical();
+            Chemical fallback = MekanismAPI.EMPTY_CHEMICAL;
             if (tile instanceof TileEntityPressurizedTube tube && tube.getTransmitter().hasTransmitterNetwork()) {
                 ChemicalNetwork network = tube.getTransmitter().getTransmitterNetwork();
                 if (!network.lastChemical.isEmptyType()) {
@@ -221,8 +220,8 @@ public class LookingAtUtils {
             }
         } else if (structure != null && structure.isFormed()) {
             //Special handling to allow viewing the chemicals in a multiblock when looking at things other than the ports
-            for (IChemicalTank tank : multiBlockToTanks.apply(structure)) {
-                addChemicalTankInfo(info, tank, ChemicalStack.EMPTY.getChemical());
+            for (IChemicalTank tank : structure.getChemicalTanks(null)) {
+                addChemicalTankInfo(info, tank, MekanismAPI.EMPTY_CHEMICAL);
             }
         }
     }

@@ -7,8 +7,7 @@ import net.minecraft.core.Direction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface IChemicalTankHolder
-      extends IHolder {
+public interface IChemicalTankHolder extends IHolder {
 
     @NotNull
     List<IChemicalTank> getTanks(@Nullable Direction side);

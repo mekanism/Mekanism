@@ -45,12 +45,12 @@ public record ModuleJetpackUnit(JetpackMode mode, ThrustMultiplier thrustMultipl
     @Override
     public void addHUDElements(IModule<ModuleJetpackUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player, Consumer<IHUDElement> hudElementAdder) {
         if (module.isEnabled()) {
-            IChemicalHandler gasHandler = Capabilities.CHEMICAL.getCapability(stack);
-            if (gasHandler == null) {
+            IChemicalHandler chemicalHandler = Capabilities.CHEMICAL.getCapability(stack);
+            if (chemicalHandler == null) {
                 hudElementAdder.accept(IModuleHelper.INSTANCE.hudElementPercent(mode.getHUDIcon(), 1));
             } else {
-                ChemicalStack stored = StorageUtils.getContainedChemical(gasHandler, MekanismChemicals.HYDROGEN);
-                double ratio = StorageUtils.getRatio(stored.getAmount(), gasHandler.getChemicalTankCapacity(0));
+                ChemicalStack stored = StorageUtils.getContainedChemical(chemicalHandler, MekanismChemicals.HYDROGEN);
+                double ratio = StorageUtils.getRatio(stored.getAmount(), chemicalHandler.getChemicalTankCapacity(0));
                 hudElementAdder.accept(IModuleHelper.INSTANCE.hudElementPercent(mode.getHUDIcon(), ratio));
             }
         }
@@ -70,14 +70,14 @@ public record ModuleJetpackUnit(JetpackMode mode, ThrustMultiplier thrustMultipl
     @Override
     public void onRemoved(IModule<ModuleJetpackUnit> module, IModuleContainer moduleContainer, ItemStack stack, boolean last) {
         //Vent the excess hydrogen from the jetpack
-        IChemicalHandler gasHandler = Capabilities.CHEMICAL.getCapability(stack);
-        if (gasHandler != null) {
-            for (int tank = 0, tanks = gasHandler.getChemicalTanks(); tank < tanks; tank++) {
-                ChemicalStack stored = gasHandler.getChemicalInTank(tank);
+        IChemicalHandler chemicalHandler = Capabilities.CHEMICAL.getCapability(stack);
+        if (chemicalHandler != null) {
+            for (int tank = 0, tanks = chemicalHandler.getChemicalTanks(); tank < tanks; tank++) {
+                ChemicalStack stored = chemicalHandler.getChemicalInTank(tank);
                 if (!stored.isEmpty()) {
-                    long capacity = gasHandler.getChemicalTankCapacity(tank);
+                    long capacity = chemicalHandler.getChemicalTankCapacity(tank);
                     if (stored.getAmount() > capacity) {
-                        gasHandler.setChemicalInTank(tank, stored.copyWithAmount(capacity));
+                        chemicalHandler.setChemicalInTank(tank, stored.copyWithAmount(capacity));
                     }
                 }
             }

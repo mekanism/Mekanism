@@ -49,15 +49,13 @@ public class ChemicalTankSpec extends GenericTankSpec<Chemical> {
         this.validator = validator;
     }
 
-    public IChemicalTank createTank(TankFromSpecCreator tankCreator,
-          ItemStack stack) {
+    public IChemicalTank createTank(TankFromSpecCreator tankCreator, ItemStack stack) {
         LongSupplier capacity = stackBasedCapacity == null ? this.capacity : () -> stackBasedCapacity.applyAsLong(stack);
         return tankCreator.create(rate, capacity, canExtract, (chemical, automationType) -> canInsert.test(chemical, automationType, stack), isValid, validator, null);
     }
 
     //TODO - 1.20.5: Re-evaluate this
-    public void addTank(
-          ChemicalTanksBuilder builder, ComponentTankFromSpecCreator tankCreator) {
+    public void addTank(ChemicalTanksBuilder builder, ComponentTankFromSpecCreator tankCreator) {
         if (stackBasedCapacity == null) {
             builder.addTank(((type, attachedTo, containerIndex) -> tankCreator.create(attachedTo, containerIndex, canExtract,
                   (chemical, automationType) -> canInsert.test(chemical, automationType, attachedTo), isValid, rate, capacity, validator)));

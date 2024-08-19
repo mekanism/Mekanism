@@ -216,7 +216,7 @@ public class MekanismBlockTypes {
           .withGui(() -> MekanismContainerTypes.METALLURGIC_INFUSER)
           .withSound(MekanismSounds.METALLURGIC_INFUSER)
           .withEnergyConfig(MekanismConfig.usage.metallurgicInfuser, MekanismConfig.storage.metallurgicInfuser)
-          .withSideConfig(TransmissionType.ITEM, TransmissionType.CHEMICAL, TransmissionType.ENERGY)
+          .with(AttributeSideConfig.ADVANCED_ELECTRIC_MACHINE)
           .withCustomShape(BlockShapes.METALLURGIC_INFUSER)
           .withComputerSupport("metallurgicInfuser")
           .build();
@@ -267,7 +267,7 @@ public class MekanismBlockTypes {
           .withSound(MekanismSounds.CHEMICAL_DISSOLUTION_CHAMBER)
           .withEnergyConfig(MekanismConfig.usage.chemicalDissolutionChamber, MekanismConfig.storage.chemicalDissolutionChamber)
           .with(AttributeUpgradeSupport.DEFAULT_ADVANCED_MACHINE_UPGRADES)
-          .withSideConfig(TransmissionType.ITEM, TransmissionType.CHEMICAL, TransmissionType.ENERGY)
+          .with(AttributeSideConfig.ADVANCED_ELECTRIC_MACHINE)
           .withCustomShape(BlockShapes.CHEMICAL_DISSOLUTION_CHAMBER)
           .withComputerSupport("chemicalDissolutionChamber")
           .build();
@@ -287,7 +287,7 @@ public class MekanismBlockTypes {
           .withGui(() -> MekanismContainerTypes.CHEMICAL_OXIDIZER)
           .withSound(MekanismSounds.CHEMICAL_OXIDIZER)
           .withEnergyConfig(MekanismConfig.usage.chemicalOxidizer, MekanismConfig.storage.chemicalOxidizer)
-          .withSideConfig(TransmissionType.ITEM, TransmissionType.CHEMICAL, TransmissionType.ENERGY)
+          .with(AttributeSideConfig.ADVANCED_ELECTRIC_MACHINE)
           .withCustomShape(BlockShapes.CHEMICAL_OXIDIZER)
           .withComputerSupport("chemicalOxidizer")
           .build();
@@ -576,7 +576,7 @@ public class MekanismBlockTypes {
           .withEnergyConfig(MekanismConfig.usage.antiprotonicNucleosynthesizer, MekanismConfig.storage.antiprotonicNucleosynthesizer)
           .withSound(MekanismSounds.ANTIPROTONIC_NUCLEOSYNTHESIZER)
           .with(AttributeUpgradeSupport.MUFFLING_ONLY)
-          .withSideConfig(TransmissionType.ITEM, TransmissionType.CHEMICAL, TransmissionType.ENERGY)
+          .with(AttributeSideConfig.ADVANCED_ELECTRIC_MACHINE)
           .withCustomShape(BlockShapes.ANTIPROTONIC_NUCLEOSYNTHESIZER)
           .withComputerSupport("antiprotonicNucleosynthesizer")
           .build();
@@ -587,7 +587,7 @@ public class MekanismBlockTypes {
           .withSound(MekanismSounds.PIGMENT_EXTRACTOR)
           .withEnergyConfig(MekanismConfig.usage.pigmentExtractor, MekanismConfig.storage.pigmentExtractor)
           .with(AttributeUpgradeSupport.DEFAULT_MACHINE_UPGRADES)
-          .withSideConfig(TransmissionType.ITEM, TransmissionType.CHEMICAL, TransmissionType.ENERGY)
+          .with(AttributeSideConfig.ADVANCED_ELECTRIC_MACHINE)
           .withComputerSupport("pigmentExtractor")
           .build();
     // Pigment Mixer
@@ -610,7 +610,7 @@ public class MekanismBlockTypes {
           .withSound(MekanismSounds.PAINTING_MACHINE)
           .withEnergyConfig(MekanismConfig.usage.paintingMachine, MekanismConfig.storage.paintingMachine)
           .with(AttributeUpgradeSupport.DEFAULT_MACHINE_UPGRADES)
-          .withSideConfig(TransmissionType.ITEM, TransmissionType.CHEMICAL, TransmissionType.ENERGY)
+          .with(AttributeSideConfig.ADVANCED_ELECTRIC_MACHINE)
           .withComputerSupport("paintingMachine")
           .build();
     // Dimensional Stabilizer
