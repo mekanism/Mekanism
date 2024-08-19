@@ -2,7 +2,7 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "item": "minecraft:coal"
+    "tag": "minecraft:coals"
   },
   "output": {
     "count": 1,

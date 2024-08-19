@@ -1,4 +1,4 @@
-// Recipes	2024-07-28T11:28:14.5148063	Recipes
+// Recipes	2024-08-19T18:16:14.1748765	Recipes
 0fc9e539372429b3e5df0dc0595978c4fc45d201 data/mekanism/recipe/antiprotonic_nucleosynthesizer.json
 6d20b08ca1cc993d4c39a761361dce522fe45a7a data/mekanism/recipe/atomic_disassembler.json
 00928ea6e8b57d257c773343c0dc0d337c9d4f5f data/mekanism/recipe/bin/advanced.json
@@ -1400,7 +1400,7 @@ f8a695d8c88e2ba9987133fcb4f7dc9823448c43 data/mekanism/recipe/processing/bronze/
 ef2417ec49a9df3e118d091691bc0eb34dd9978d data/mekanism/recipe/processing/coal/from_dust.json
 89bbd587e385bb1d908c3ac5661697658b0217cd data/mekanism/recipe/processing/coal/from_ore.json
 6105d7fdf457bb1bbf1b0f52d0282ccffd177655 data/mekanism/recipe/processing/coal/to_deepslate_ore.json
-d53e9fa4965c89f5e5ee68e85eafd5fed0c6370d data/mekanism/recipe/processing/coal/to_dust.json
+8bd51eb062b1f4b01c32a5322138489fdc06d067 data/mekanism/recipe/processing/coal/to_dust.json
 c2a63b1f35119dbc13525a4b7ebabbff74499099 data/mekanism/recipe/processing/coal/to_ore.json
 0f89bbab878baa345fea2f09a92dec5405442797 data/mekanism/recipe/processing/copper/clump/from_ore.json
 8277be9ce80fb7d99a2cdb438feaa7bdee0ca46a data/mekanism/recipe/processing/copper/clump/from_raw_block.json

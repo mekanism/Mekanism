@@ -33,6 +33,7 @@ import mekanism.common.util.EnumUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -328,7 +329,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "from_ore"));
         //to dust
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.COAL),
+              IngredientCreatorAccess.item().from(ItemTags.COALS),
               MekanismItems.COAL_DUST.getItemStack()
         ).build(consumer, Mekanism.rl(basePath + "to_dust"));
         ItemStackIngredient forOre = IngredientCreatorAccess.item().from(MekanismTags.Items.DUSTS_COAL, 8);
