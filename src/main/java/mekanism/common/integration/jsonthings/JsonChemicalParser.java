@@ -1,26 +1,64 @@
-package mekanism.common.integration.jsonthings.parser;
+package mekanism.common.integration.jsonthings;
 
+import com.google.gson.JsonObject;
+import dev.gigaherz.jsonthings.things.builders.BaseBuilder;
 import dev.gigaherz.jsonthings.things.parsers.ThingParseException;
+import dev.gigaherz.jsonthings.things.parsers.ThingParser;
+import dev.gigaherz.jsonthings.util.parse.JParse;
+import dev.gigaherz.jsonthings.util.parse.function.ObjValueFunction;
+import dev.gigaherz.jsonthings.util.parse.value.Any;
 import dev.gigaherz.jsonthings.util.parse.value.ObjValue;
+import java.util.function.Consumer;
+import java.util.function.IntConsumer;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.attribute.ChemicalAttributes;
+import mekanism.common.Mekanism;
 import mekanism.common.integration.LazyChemicalProvider;
-import mekanism.common.integration.jsonthings.builder.JsonGasBuilder;
 import mekanism.common.lib.radiation.RadiationManager;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.RegisterEvent;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class JsonGasParser extends SimpleJsonChemicalParser<JsonGasBuilder> {
+public class JsonChemicalParser extends ThingParser<JsonChemicalBuilder> {
 
-    public JsonGasParser(IEventBus bus) {
-        super(bus, "Gas", MekanismAPI.CHEMICAL_REGISTRY_NAME, JsonGasBuilder::new);
+    public JsonChemicalParser(IEventBus bus) {
+        super(GSON, Mekanism.MODID + "/chemical");
+        bus.addListener(this::register);
+    }
+
+    private void register(RegisterEvent event) {
+        event.register(MekanismAPI.CHEMICAL_REGISTRY_NAME, helper -> {
+            LOGGER.info("Started registering Chemical things, errors about unexpected registry domains are harmless...");
+            processAndConsumeErrors(getThingType(), getBuilders(), thing -> helper.register(thing.getRegistryName(), thing.get()), BaseBuilder::getRegistryName);
+            LOGGER.info("Done processing thingpack Chemical.");
+        });
     }
 
     @Override
-    protected void processAttribute(JsonGasBuilder builder, ObjValue rawAttribute) {
+    protected JsonChemicalBuilder processThing(ResourceLocation key, JsonObject data, Consumer<JsonChemicalBuilder> builderModification) {
+        JsonChemicalBuilder builder = new JsonChemicalBuilder(this, key);
+        JParse.begin(data)
+              .ifKey("texture", val -> val.string().map(ResourceLocation::parse).handle(builder::texture))
+              .ifKey("ore", val -> val.string().map(ResourceLocation::parse).handle(builder::ore))
+              .ifKey("tint", val -> processColor(val, builder::tint))
+              .ifKey("color_representation", val -> processColor(val, builder::colorRepresentation))
+              .ifKey("attributes", val -> processAttribute(builder, val.obj()));
+        builderModification.accept(builder);
+        return builder;
+    }
+
+    private static void processColor(Any val, IntConsumer colorSetter) {
+        val.ifObj(obj -> obj.map((ObjValueFunction<Integer>) ThingParser::parseColor).handle(colorSetter::accept))
+              .ifArray(arr -> arr.mapWhole(ThingParser::parseColor).handle(colorSetter::accept))
+              .ifString(str -> str.map(ThingParser::parseColor).handle(colorSetter::accept))
+              .ifInteger(i -> i.handle(colorSetter))
+              .typeError();
+    }
+
+    private void processAttribute(JsonChemicalBuilder builder, ObjValue rawAttribute) {
         //Note: We chain ifKeys here as while there shouldn't be an overlap as it doesn't make sense, there is also nothing wrong
         // with allowing multiple attribute types to be defined in each block
         rawAttribute.ifKey("radioactivity", attribute -> attribute.doubleValue()
