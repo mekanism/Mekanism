@@ -32,7 +32,7 @@
   "description.mekanismgenerators.laser_focus_matrix": "A panel of Reactor Glass that is capable of absorbing optical energy and thereby heating up the Fusion Reactor.",
   "description.mekanismgenerators.reactor.logic.capacity": "The reactor's core heat capacity has been met",
   "description.mekanismgenerators.reactor.logic.depleted": "The reactor has insufficient fuel to sustain a reaction",
-  "description.mekanismgenerators.reactor.logic.disabled": "Will not emit a redstone signal",
+  "description.mekanismgenerators.reactor.logic.disabled": "Sẽ không xử lý tín hiệu đá đỏ",
   "description.mekanismgenerators.reactor.logic.ready": "Reactor has reached the required heat level to ignite",
   "description.mekanismgenerators.reactor_glass": "Reinforced glass that can be used in the Fusion Reactor multiblock.",
   "description.mekanismgenerators.turbine_rotor": "Trục thép dùng để đỡ cánh tuốc bin trong Tuốc bin công nghiệp.",

@@ -18,6 +18,5 @@
   "filter.mekanism.oredictionificator.unsupported_tag": "Неподдържан таг",
   "key.mekanism.description": "Show description",
   "key.mekanism.details": "Show details",
-  "tooltip.mekanism.no_fluid": "Няма течност.",
-  "tooltip.mekanism.no_gas": "Няма газ."
+  "tooltip.mekanism.no_fluid": "Няма течност."
 }

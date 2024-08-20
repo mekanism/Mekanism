@@ -301,7 +301,6 @@
   "crafting_formula.mekanism.ingredients": "מרכיבים:",
   "description.mekanism.chemical_crystallizer": "מכונה אולטימטיבית המשמשת להפיכת תערובות עפרות מטוהרות לקריסטלים של עפרות.",
   "description.mekanism.chemical_dissolution_chamber": "מכונה אולטימטיבית המשמשת להמסה כימית של כל הזיהומים של עפרה, המשאירה תערובת לא מעובדת.",
-  "description.mekanism.chemical_infuser": "מכונה שמייצרת גז חדש על ידי החדרת שני אחרים.",
   "description.mekanism.chemical_injection_chamber": "מכונת עלית המסוגלת לעבד עפרות לארבעה שברים, המשמשת כשלב ההתחלתי לעיבוד 400% של עפרות.",
   "description.mekanism.chemical_washer": "מכונה אולטימטיבית המנקה תערובות בלתי מעובדות ומכינה אותן להפיכה לקריסטלים.",
   "description.mekanism.metallurgic_infuser": "מכונה המשמשת להחדרת מגוון חומרים ל (בדרך כלל) מתכות על מנת ליצור סגסוגות מתכות ותשלובות אחרות.",
@@ -325,9 +324,6 @@
   "gui.mekanism.empty": "ריק",
   "gui.mekanism.infinite": "אינסופי",
   "holiday.mekanism.christmas.4": "משפחה :)",
-  "infuse_type.mekanism.diamond": "יהלום",
-  "infuse_type.mekanism.refined_obsidian": "אובסידיאן מזוקק",
-  "infuse_type.mekanism.tin": "בדיל",
   "item.mekanism.advanced_control_circuit": "מעגל בקרה מתקדם",
   "item.mekanism.advanced_tier_installer": "מתקין דרגה מתקדמת",
   "item.mekanism.basic_control_circuit": "מעגל בקרה בסיסי",
@@ -424,6 +420,5 @@
   "multiblock.mekanism.incomplete": "לא גמור",
   "oredictionificator.mekanism.last_item": "פריט אחרון",
   "oredictionificator.mekanism.next_item": "פריט הבא",
-  "seismic_vibrator.mekanism.vibrating": "רוטט",
-  "tooltip.mekanism.no_gas": "אין גז מאוחסן."
+  "seismic_vibrator.mekanism.vibrating": "רוטט"
 }
