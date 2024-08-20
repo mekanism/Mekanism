@@ -100,6 +100,151 @@
       "text": "enchantment.minecraft.soul_speed"
     },
     {
+      "stacks": "item:mekanism:module_energy_unit",
+      "text": [
+        "item.mekanism.meka_tool",
+        "item.mekanism.mekasuit_bodyarmor",
+        "item.mekanism.mekasuit_boots",
+        "item.mekanism.mekasuit_helmet",
+        "item.mekanism.mekasuit_pants"
+      ]
+    },
+    {
+      "stacks": "item:mekanism:module_color_modulation_unit",
+      "text": [
+        "item.mekanism.mekasuit_bodyarmor",
+        "item.mekanism.mekasuit_boots",
+        "item.mekanism.mekasuit_helmet",
+        "item.mekanism.mekasuit_pants"
+      ]
+    },
+    {
+      "stacks": "item:mekanism:module_laser_dissipation_unit",
+      "text": [
+        "item.mekanism.mekasuit_bodyarmor",
+        "item.mekanism.mekasuit_boots",
+        "item.mekanism.mekasuit_helmet",
+        "item.mekanism.mekasuit_pants"
+      ]
+    },
+    {
+      "stacks": "item:mekanism:module_radiation_shielding_unit",
+      "text": [
+        "item.mekanism.mekasuit_bodyarmor",
+        "item.mekanism.mekasuit_boots",
+        "item.mekanism.mekasuit_helmet",
+        "item.mekanism.mekasuit_pants"
+      ]
+    },
+    {
+      "stacks": "item:mekanism:module_excavation_escalation_unit",
+      "text": "item.mekanism.meka_tool"
+    },
+    {
+      "stacks": "item:mekanism:module_attack_amplification_unit",
+      "text": "item.mekanism.meka_tool"
+    },
+    {
+      "stacks": "item:mekanism:module_farming_unit",
+      "text": "item.mekanism.meka_tool"
+    },
+    {
+      "stacks": "item:mekanism:module_shearing_unit",
+      "text": "item.mekanism.meka_tool"
+    },
+    {
+      "stacks": "item:mekanism:module_silk_touch_unit",
+      "text": "item.mekanism.meka_tool"
+    },
+    {
+      "stacks": "item:mekanism:module_fortune_unit",
+      "text": "item.mekanism.meka_tool"
+    },
+    {
+      "stacks": "item:mekanism:module_blasting_unit",
+      "text": "item.mekanism.meka_tool"
+    },
+    {
+      "stacks": "item:mekanism:module_vein_mining_unit",
+      "text": "item.mekanism.meka_tool"
+    },
+    {
+      "stacks": "item:mekanism:module_teleportation_unit",
+      "text": "item.mekanism.meka_tool"
+    },
+    {
+      "stacks": "item:mekanism:module_electrolytic_breathing_unit",
+      "text": "item.mekanism.mekasuit_helmet"
+    },
+    {
+      "stacks": "item:mekanism:module_inhalation_purification_unit",
+      "text": "item.mekanism.mekasuit_helmet"
+    },
+    {
+      "stacks": "item:mekanism:module_vision_enhancement_unit",
+      "text": "item.mekanism.mekasuit_helmet"
+    },
+    {
+      "stacks": "item:mekanism:module_nutritional_injection_unit",
+      "text": "item.mekanism.mekasuit_helmet"
+    },
+    {
+      "stacks": "item:mekanism:module_dosimeter_unit",
+      "text": "item.mekanism.mekasuit_bodyarmor"
+    },
+    {
+      "stacks": "item:mekanism:module_geiger_unit",
+      "text": "item.mekanism.mekasuit_bodyarmor"
+    },
+    {
+      "stacks": "item:mekanism:module_jetpack_unit",
+      "text": "item.mekanism.mekasuit_bodyarmor"
+    },
+    {
+      "stacks": "item:mekanism:module_charge_distribution_unit",
+      "text": "item.mekanism.mekasuit_bodyarmor"
+    },
+    {
+      "stacks": "item:mekanism:module_gravitational_modulating_unit",
+      "text": "item.mekanism.mekasuit_bodyarmor"
+    },
+    {
+      "stacks": "item:mekanism:module_elytra_unit",
+      "text": "item.mekanism.mekasuit_bodyarmor"
+    },
+    {
+      "stacks": "item:mekanism:module_locomotive_boosting_unit",
+      "text": "item.mekanism.mekasuit_pants"
+    },
+    {
+      "stacks": "item:mekanism:module_gyroscopic_stabilization_unit",
+      "text": "item.mekanism.mekasuit_pants"
+    },
+    {
+      "stacks": "item:mekanism:module_hydrostatic_repulsor_unit",
+      "text": "item.mekanism.mekasuit_pants"
+    },
+    {
+      "stacks": "item:mekanism:module_motorized_servo_unit",
+      "text": "item.mekanism.mekasuit_pants"
+    },
+    {
+      "stacks": "item:mekanism:module_hydraulic_propulsion_unit",
+      "text": "item.mekanism.mekasuit_boots"
+    },
+    {
+      "stacks": "item:mekanism:module_magnetic_attraction_unit",
+      "text": "item.mekanism.mekasuit_boots"
+    },
+    {
+      "stacks": "item:mekanism:module_frost_walker_unit",
+      "text": "item.mekanism.mekasuit_boots"
+    },
+    {
+      "stacks": "item:mekanism:module_soul_surfer_unit",
+      "text": "item.mekanism.mekasuit_boots"
+    },
+    {
       "stacks": [
         "item:mekanism:basic_smelting_factory",
         "item:mekanism:advanced_smelting_factory",

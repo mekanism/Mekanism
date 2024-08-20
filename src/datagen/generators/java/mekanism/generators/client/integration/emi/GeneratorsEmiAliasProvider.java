@@ -11,8 +11,8 @@ import mekanism.common.util.ChemicalUtil;
 import mekanism.generators.client.integration.GeneratorsAliases;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.registries.GeneratorsBlocks;
-import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.registries.GeneratorsChemicals;
+import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.registries.GeneratorsItems;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -29,6 +29,7 @@ public class GeneratorsEmiAliasProvider extends BaseEmiAliasProvider {
         addChemicalAliases();
         addMultiblockAliases();
         addAliases(GeneratorsBlocks.GAS_BURNING_GENERATOR, GeneratorsAliases.GBG_ETHENE, GeneratorsAliases.GBG_ETHYLENE);
+        addModuleAliases(GeneratorsItems.ITEMS);
     }
 
     private void addChemicalAliases() {

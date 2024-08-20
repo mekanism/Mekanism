@@ -23,13 +23,16 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.gear.IModuleHelper;
 import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.providers.IFluidProvider;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.client.recipe_viewer.emi.ChemicalEmiStack;
 import mekanism.common.DataGenSerializationConstants;
+import mekanism.common.content.gear.IModuleItem;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.lib.collection.HashList;
+import mekanism.common.registration.impl.ItemDeferredRegister;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
@@ -38,7 +41,9 @@ import net.minecraft.data.PackOutput.PathProvider;
 import net.minecraft.data.PackOutput.Target;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 @NothingNullByDefault
 public abstract class BaseEmiAliasProvider implements DataProvider {
@@ -122,6 +127,18 @@ public abstract class BaseEmiAliasProvider implements DataProvider {
             //TODO: Can we improve the validation we have relating to duplicate values/make things more compact?
             // This if statement exists mainly as a simple check against copy-paste errors
             throw new IllegalStateException("Duplicate alias pair added");
+        }
+    }
+
+    protected void addModuleAliases(ItemDeferredRegister items) {
+        for (DeferredHolder<Item, ? extends Item> entry : items.getEntries()) {
+            if (entry.get() instanceof IModuleItem module) {
+                addAliases(entry.get(), IModuleHelper.INSTANCE.getSupported(module.getModuleData())
+                      .stream()
+                      .map(item -> (IHasTranslationKey) item::getDescriptionId)
+                      .toArray(IHasTranslationKey[]::new)
+                );
+            }
         }
     }
 

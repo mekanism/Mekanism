@@ -12,8 +12,10 @@ import java.io.OutputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
@@ -37,10 +39,15 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.DeferredWorkQueue;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.config.ConfigTracker;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.config.ModConfigEvent;
+import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
+import net.neoforged.fml.event.lifecycle.InterModProcessEvent;
 import net.neoforged.fml.util.ObfuscationReflectionHelper;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
@@ -72,6 +79,7 @@ public class MekanismDataGenerator {
     @SubscribeEvent
     public static void gatherData(GatherDataEvent event) {
         bootstrapConfigs(Mekanism.MODID);
+        bootstrapIMC();
         DataGenerator gen = event.getGenerator();
         PackOutput output = gen.getPackOutput();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
@@ -123,6 +131,24 @@ public class MekanismDataGenerator {
                 }
             }
         }
+    }
+
+    private static void bootstrapIMC() {
+        List<ModContainer> mods = new ArrayList<>();
+        DeferredWorkQueue enqueueIMC = new DeferredWorkQueue("IMC Bootstrap: Enqueue IMC");
+        for (ModContainer mod : ModList.get().getSortedMods()) {
+            //Handle all our modules
+            if (mod.getModId().startsWith(Mekanism.MODID)) {
+                mods.add(mod);
+                mod.getEventBus().post(new InterModEnqueueEvent(mod, enqueueIMC));
+            }
+        }
+        enqueueIMC.runTasks();
+        DeferredWorkQueue processIMC = new DeferredWorkQueue("IMC Bootstrap: Process IMC");
+        for (ModContainer mod : mods) {
+            mod.getEventBus().post(new InterModProcessEvent(mod, processIMC));
+        }
+        processIMC.runTasks();
     }
 
     /**

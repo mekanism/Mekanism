@@ -12,8 +12,8 @@ import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.item.block.ItemBlockEnergyCube;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismChemicals;
+import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.resource.IResource;
 import mekanism.common.tier.FactoryTier;
@@ -77,6 +77,8 @@ public class MekanismEmiAliasProvider extends BaseEmiAliasProvider {
         addAliases(MekanismItems.MODULE_MOTORIZED_SERVO, getTranslationKey(Enchantments.SWIFT_SNEAK));
         addAliases(MekanismItems.MODULE_LOCOMOTIVE_BOOSTING, MobEffects.MOVEMENT_SPEED.value()::getDescriptionId);
         addAliases(MekanismItems.MODULE_SOUL_SURFER, getTranslationKey(Enchantments.SOUL_SPEED));
+
+        addModuleAliases(MekanismItems.ITEMS);
     }
 
     private IHasTranslationKey getTranslationKey(ResourceKey<Enchantment> enchantmentKey) {

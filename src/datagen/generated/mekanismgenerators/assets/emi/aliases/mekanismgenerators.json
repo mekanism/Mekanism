@@ -67,6 +67,14 @@
         "alias.mekanismgenerators.gbg.ethene",
         "alias.mekanismgenerators.gbg.ethylene"
       ]
+    },
+    {
+      "stacks": "item:mekanismgenerators:module_solar_recharging_unit",
+      "text": "item.mekanism.mekasuit_helmet"
+    },
+    {
+      "stacks": "item:mekanismgenerators:module_geothermal_generator_unit",
+      "text": "item.mekanism.mekasuit_pants"
     }
   ]
 }
