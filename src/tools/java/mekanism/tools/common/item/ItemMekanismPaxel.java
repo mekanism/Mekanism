@@ -5,6 +5,7 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.MekanismItemAbilities;
 import mekanism.tools.common.ToolsTags;
 import mekanism.tools.common.material.IPaxelMaterial;
 import mekanism.tools.common.material.MaterialCreator;
@@ -39,9 +40,8 @@ import org.jetbrains.annotations.Nullable;
 @ParametersAreNonnullByDefault
 public class ItemMekanismPaxel extends DiggerItem {
 
-    private static final ItemAbility PAXEL_DIG = ItemAbility.get("paxel_dig");
     private static final Set<ItemAbility> PAXEL_ACTIONS = Util.make(Collections.newSetFromMap(new IdentityHashMap<>()), actions -> {
-        actions.add(PAXEL_DIG);
+        actions.add(MekanismItemAbilities.PAXEL_DIG);
         actions.addAll(ItemAbilities.DEFAULT_PICKAXE_ACTIONS);
         actions.addAll(ItemAbilities.DEFAULT_SHOVEL_ACTIONS);
         actions.addAll(ItemAbilities.DEFAULT_AXE_ACTIONS);

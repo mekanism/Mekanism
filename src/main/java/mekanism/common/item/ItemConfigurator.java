@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.function.IntFunction;
 import mekanism.api.IConfigurable;
 import mekanism.api.IIncrementalEnum;
+import mekanism.api.MekanismItemAbilities;
 import mekanism.api.RelativeSide;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
@@ -61,13 +62,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class ItemConfigurator extends Item implements IRadialModeItem<ConfiguratorMode>, IItemHUDProvider {
 
-    public static final Lazy<RadialData<ConfiguratorMode>> LAZY_RADIAL_DATA = Lazy.of(() ->
+    private static final Lazy<RadialData<ConfiguratorMode>> LAZY_RADIAL_DATA = Lazy.of(() ->
           IRadialDataHelper.INSTANCE.dataForEnum(Mekanism.rl("configurator_mode"), ConfiguratorMode.class));
 
     public ItemConfigurator(Properties properties) {
@@ -86,6 +88,30 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
     @Override
     public Component getName(@NotNull ItemStack stack) {
         return TextComponentUtil.build(EnumColor.AQUA, super.getName(stack));
+    }
+
+    @Override
+    public boolean canPerformAction(@NotNull ItemStack stack, @NotNull ItemAbility action) {
+        if (action == MekanismItemAbilities.WRENCH_CONFIGURE) {
+            return getMode(stack).isConfigurating();
+        } else if (action == MekanismItemAbilities.WRENCH_CONFIGURE_CHEMICALS) {
+            return getMode(stack) == ConfiguratorMode.CONFIGURATE_CHEMICALS;
+        } else if (action == MekanismItemAbilities.WRENCH_CONFIGURE_ENERGY) {
+            return getMode(stack) == ConfiguratorMode.CONFIGURATE_ENERGY;
+        } else if (action == MekanismItemAbilities.WRENCH_CONFIGURE_FLUIDS) {
+            return getMode(stack) == ConfiguratorMode.CONFIGURATE_FLUIDS;
+        } else if (action == MekanismItemAbilities.WRENCH_CONFIGURE_HEAT) {
+            return getMode(stack) == ConfiguratorMode.CONFIGURATE_HEAT;
+        } else if (action == MekanismItemAbilities.WRENCH_CONFIGURE_ITEMS) {
+            return getMode(stack) == ConfiguratorMode.CONFIGURATE_ITEMS;
+        } else if (action == MekanismItemAbilities.WRENCH_DISMANTLE) {
+            return getMode(stack) == ConfiguratorMode.WRENCH;
+        } else if (action == MekanismItemAbilities.WRENCH_EMPTY) {
+            return getMode(stack) == ConfiguratorMode.EMPTY;
+        } else if (action == MekanismItemAbilities.WRENCH_ROTATE) {
+            return getMode(stack) == ConfiguratorMode.ROTATE;
+        }
+        return super.canPerformAction(stack, action);
     }
 
     @NotNull
