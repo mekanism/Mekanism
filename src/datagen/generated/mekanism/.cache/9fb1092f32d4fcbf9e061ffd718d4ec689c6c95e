@@ -1,4 +1,4 @@
-// Recipes	2024-08-20T10:06:51.1191648	Recipes
+// Recipes	2024-08-20T11:06:15.1803649	Recipes
 0fc9e539372429b3e5df0dc0595978c4fc45d201 data/mekanism/recipe/antiprotonic_nucleosynthesizer.json
 6d20b08ca1cc993d4c39a761361dce522fe45a7a data/mekanism/recipe/atomic_disassembler.json
 00928ea6e8b57d257c773343c0dc0d337c9d4f5f data/mekanism/recipe/bin/advanced.json
@@ -1882,6 +1882,7 @@ d7d20b69e9c206c859434d24f4dd29b437d23270 data/mekanism/recipe/storage_blocks/ref
 ef59b76546eb7427673ccaa31431f7d12d87c22a data/mekanism/recipe/storage_blocks/salt.json
 cb7da6e1239157ef9c1b0957a3c7a9b29e342ded data/mekanism/recipe/storage_blocks/steel.json
 5d16229b0d8fc6d3cd9b99a70e05c6ae02077dd2 data/mekanism/recipe/structural_glass.json
+57c2e31ddfab29e8016e91bf6dd9d68a51d84dde data/mekanism/recipe/sulfur_dye.json
 b3215131b9e964aa237820bbf106e245a5ce41d9 data/mekanism/recipe/supercharged_coil.json
 0ce7495fda0bd4a9cb80f2b02f1a1dfa05f760b5 data/mekanism/recipe/superheating_element.json
 cd996460e3e1ea228d0010e6a3dbf82ea657341f data/mekanism/recipe/teleportation_core.json

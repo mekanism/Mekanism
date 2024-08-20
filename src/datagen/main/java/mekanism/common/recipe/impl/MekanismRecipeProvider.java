@@ -203,6 +203,10 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         ExtendedShapelessRecipeBuilder.shapelessRecipe(MekanismItems.BIO_FUEL, 9)
               .addIngredient(MekanismBlocks.BIO_FUEL_BLOCK)
               .build(consumer, Mekanism.rl("bio_fuel"));
+        //Sulfur as dye
+        ExtendedShapelessRecipeBuilder.shapelessRecipe(Items.YELLOW_DYE)
+              .addIngredient(MekanismItems.SULFUR_DUST)
+              .build(consumer, Mekanism.rl("sulfur_dye"));
         //Charcoal
         ExtendedShapelessRecipeBuilder.shapelessRecipe(Items.CHARCOAL, 9)
               .addIngredient(MekanismBlocks.CHARCOAL_BLOCK)

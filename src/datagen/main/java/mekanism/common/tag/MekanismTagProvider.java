@@ -482,8 +482,6 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismTags.Items.DUSTS_LITHIUM, MekanismTags.Items.DUSTS_OBSIDIAN, MekanismTags.Items.DUSTS_QUARTZ, MekanismTags.Items.DUSTS_REFINED_OBSIDIAN,
               MekanismTags.Items.DUSTS_SALT, MekanismTags.Items.DUSTS_STEEL, MekanismTags.Items.DUSTS_SULFUR, MekanismTags.Items.DUSTS_WOOD,
               MekanismTags.Items.DUSTS_FLUORITE);
-
-        addToTag(Tags.Items.DYES_YELLOW, MekanismItems.SULFUR_DUST);
     }
 
     private void addGems() {
