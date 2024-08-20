@@ -1,8 +1,10 @@
 package mekanism.generators.client.gui;
 
 import java.util.List;
+import mekanism.client.SpecialColors;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiInnerScreen;
+import mekanism.client.gui.element.GuiSideHolder;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.common.MekanismLang;
@@ -27,6 +29,8 @@ public class GuiSolarGenerator<TILE extends TileEntitySolarGenerator> extends Gu
 
     @Override
     protected void addGuiElements() {
+        //Add the side holder before the slots, as it holds a couple of the slots
+        addRenderableWidget(GuiSideHolder.create(this, -26, 6, 98, true, true, SpecialColors.TAB_ARMOR_SLOTS));
         super.addGuiElements();
         addRenderableWidget(new GuiInnerScreen(this, 48, 23, 80, 40, () -> List.of(
               EnergyDisplay.of(tile.getEnergyContainer()).getTextComponent(),
