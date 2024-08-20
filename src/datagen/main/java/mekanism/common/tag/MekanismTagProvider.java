@@ -8,6 +8,7 @@ import mekanism.api.MekanismAPITags;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.Mekanism;
+import mekanism.common.content.gear.IModuleItem;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.common.registration.impl.SlurryRegistryObject;
@@ -165,6 +166,8 @@ public class MekanismTagProvider extends BaseTagProvider {
 
         addToTag(FRAMEABLE, MekanismBlocks.STRUCTURAL_GLASS);
         addToTag(FB_BE_WHITELIST, MekanismBlocks.STRUCTURAL_GLASS);
+
+        getItemBuilder(MekanismAPITags.Items.MEKA_UNITS).add(MekanismItems.ITEMS.getEntries().stream().filter(item -> item.get() instanceof IModuleItem).toList());
     }
 
     private void addEntities() {

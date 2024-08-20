@@ -8,6 +8,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Item;
 
 /**
  * Provides access to pre-existing tag keys for various functionality that we use tags for.
@@ -88,6 +89,24 @@ public class MekanismAPITags {
 
         private static TagKey<Chemical> tag(String name) {
             return TagKey.create(MekanismAPI.CHEMICAL_REGISTRY_NAME, rl(name));
+        }
+    }
+
+    /**
+     * @since 10.7.0
+     */
+    public static class Items {
+
+        private Items() {
+        }
+
+        /**
+         * Contains all mekanism modules.
+         */
+        public static final TagKey<Item> MEKA_UNITS = tag("unit");
+
+        private static TagKey<Item> tag(String name) {
+            return TagKey.create(Registries.ITEM, rl(name));
         }
     }
 

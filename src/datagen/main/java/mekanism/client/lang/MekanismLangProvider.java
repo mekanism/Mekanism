@@ -87,6 +87,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
     }
 
     private void addTags() {
+        addTag(MekanismAPITags.Items.MEKA_UNITS, "Meka Units");
         addTag(MekanismTags.Items.CONFIGURATORS, "Configurators");
         addTag(MekanismTags.Items.TOOLS_WRENCH, "Wrenches");
         addTag(MekanismTags.Items.PERSONAL_STORAGE, "Personal Storage");
