@@ -94,9 +94,9 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
                                                                                      "getFluidFilledPercentage"}, docPlaceholder = "fluid tank")
     public BasicFluidTank fluidTank;
     /**
-     * True: fluid -> gas
+     * True: fluid -> chemical
      * <p>
-     * False: gas -> fluid
+     * False: chemical -> fluid
      */
     private boolean mode;
 

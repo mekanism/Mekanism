@@ -1206,17 +1206,17 @@ methods:
   - description: Empty the contents of the gas tank into the environment
     methodName: dumpChemical
     requires_public_security: true
-  - description: Get the contents of the gas tank.
+  - description: Get the contents of the chemical tank.
     methodName: getChemical
     returns:
       java_type: mekanism.api.chemical.ChemicalStack
       type: Table (ChemicalStack)
-  - description: Get the capacity of the gas tank.
+  - description: Get the capacity of the chemical tank.
     methodName: getChemicalCapacity
     returns:
       java_type: long
       type: Number (long)
-  - description: Get the filled percentage of the gas tank.
+  - description: Get the filled percentage of the chemical tank.
     methodName: getChemicalFilledPercentage
     returns:
       java_type: double
@@ -1226,7 +1226,7 @@ methods:
     returns:
       java_type: net.minecraft.world.item.ItemStack
       type: Table (ItemStack)
-  - description: Get the amount needed to fill the gas tank.
+  - description: Get the amount needed to fill the chemical tank.
     methodName: getChemicalNeeded
     returns:
       java_type: long

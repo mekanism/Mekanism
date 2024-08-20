@@ -5,8 +5,7 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 
-public class ChemicalInputCache<RECIPE extends MekanismRecipe<?>>
-      extends BaseInputCache<Chemical, ChemicalStack, ChemicalStackIngredient, RECIPE> {
+public class ChemicalInputCache<RECIPE extends MekanismRecipe<?>> extends BaseInputCache<Chemical, ChemicalStack, ChemicalStackIngredient, RECIPE> {
 
     @Override
     public boolean mapInputs(RECIPE recipe, ChemicalStackIngredient inputIngredient) {

@@ -145,11 +145,11 @@ Compressing/Injecting/Purifying Factory,getChemicalFilledPercentage,,Number (dou
 Compressing/Injecting/Purifying Factory,getChemicalItem,,Table (ItemStack),,false,Get the contents of the chemical item (extra) slot.
 Compressing/Injecting/Purifying Factory,getChemicalNeeded,,Number (long),,false,Get the amount needed to fill the gas tank.
 Compressing/Injecting/Purifying Machine,dumpChemical,,,,true,Empty the contents of the gas tank into the environment
-Compressing/Injecting/Purifying Machine,getChemical,,Table (ChemicalStack),,false,Get the contents of the gas tank.
-Compressing/Injecting/Purifying Machine,getChemicalCapacity,,Number (long),,false,Get the capacity of the gas tank.
-Compressing/Injecting/Purifying Machine,getChemicalFilledPercentage,,Number (double),,false,Get the filled percentage of the gas tank.
+Compressing/Injecting/Purifying Machine,getChemical,,Table (ChemicalStack),,false,Get the contents of the chemical tank.
+Compressing/Injecting/Purifying Machine,getChemicalCapacity,,Number (long),,false,Get the capacity of the chemical tank.
+Compressing/Injecting/Purifying Machine,getChemicalFilledPercentage,,Number (double),,false,Get the filled percentage of the chemical tank.
 Compressing/Injecting/Purifying Machine,getChemicalItem,,Table (ItemStack),,false,Get the contents of the secondary input slot.
-Compressing/Injecting/Purifying Machine,getChemicalNeeded,,Number (long),,false,Get the amount needed to fill the gas tank.
+Compressing/Injecting/Purifying Machine,getChemicalNeeded,,Number (long),,false,Get the amount needed to fill the chemical tank.
 Compressing/Injecting/Purifying Machine,getEnergyItem,,Table (ItemStack),,false,Get the contents of the energy slot.
 Compressing/Injecting/Purifying Machine,getEnergyUsage,,Number (long),,false,Get the energy used in the last tick by the machine
 Compressing/Injecting/Purifying Machine,getInput,,Table (ItemStack),,false,Get the contents of the input slot.

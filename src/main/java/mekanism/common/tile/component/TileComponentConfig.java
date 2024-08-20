@@ -61,7 +61,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     public TileComponentConfig(TileEntityMekanism tile, Set<TransmissionType> types) {
         this.tile = tile;
         for (TransmissionType type : types) {
-            configInfo.put(type, new ConfigInfo(tile::getDirection));
+            configInfo.put(type, new ConfigInfo());
             transmissionTypes.add(type);
         }
         tile.addComponent(this);

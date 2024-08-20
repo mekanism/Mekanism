@@ -2,7 +2,6 @@ package mekanism.common.recipe.lookup;
 
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.common.recipe.lookup.IRecipeLookupHandler.IRecipeTypedLookupHandler;
@@ -139,8 +138,8 @@ public interface ITripleRecipeLookupHandler<INPUT_A, INPUT_B, INPUT_C, RECIPE ex
      * Helper interface to make the generics that we have to pass to {@link ITripleRecipeLookupHandler} not as messy, and reduce the duplicate code in the other chemical
      * based helper interfaces.
      */
-    interface ObjectObjectChemicalRecipeLookupHandler<INPUT_A, INPUT_B,
-          RECIPE extends MekanismRecipe<?> & TriPredicate<INPUT_A, INPUT_B, ChemicalStack>, INPUT_CACHE extends TripleInputRecipeCache<INPUT_A, ?, INPUT_B, ?, ChemicalStack, ?, RECIPE, ?, ?, ?>>
+    interface ObjectObjectChemicalRecipeLookupHandler<INPUT_A, INPUT_B, RECIPE extends MekanismRecipe<?> & TriPredicate<INPUT_A, INPUT_B, ChemicalStack>,
+          INPUT_CACHE extends TripleInputRecipeCache<INPUT_A, ?, INPUT_B, ?, ChemicalStack, ?, RECIPE, ?, ?, ?>>
           extends ITripleRecipeLookupHandler<INPUT_A, INPUT_B, ChemicalStack, RECIPE, INPUT_CACHE> {
 
         /**
@@ -155,15 +154,14 @@ public interface ITripleRecipeLookupHandler<INPUT_A, INPUT_B, INPUT_C, RECIPE ex
          * Helper wrapper to convert a chemical to a chemical stack and pass it to {@link #containsRecipeC(Object)} to make validity predicates easier and cleaner.
          */
         default boolean containsRecipeC(Chemical input) {
-            return containsRecipeC(((IChemicalProvider) input).getStack(1));
+            return containsRecipeC(input.getStack(1));
         }
     }
 
     /**
      * Helper interface to make the generics that we have to pass to {@link ITripleRecipeLookupHandler} not as messy.
      */
-    interface ItemFluidChemicalRecipeLookupHandler<RECIPE extends MekanismRecipe<?> &
-          TriPredicate<ItemStack, FluidStack, ChemicalStack>> extends ObjectObjectChemicalRecipeLookupHandler<ItemStack, FluidStack, RECIPE,
-          ItemFluidChemical<RECIPE>> {
+    interface ItemFluidChemicalRecipeLookupHandler<RECIPE extends MekanismRecipe<?> & TriPredicate<ItemStack, FluidStack, ChemicalStack>> extends
+          ObjectObjectChemicalRecipeLookupHandler<ItemStack, FluidStack, RECIPE, ItemFluidChemical<RECIPE>> {
     }
 }

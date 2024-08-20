@@ -4,6 +4,7 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.basic.BasicActivatingRecipe;
 import mekanism.api.recipes.basic.BasicCentrifugingRecipe;
+import mekanism.api.recipes.basic.BasicChemicalConversionRecipe;
 import mekanism.api.recipes.basic.BasicChemicalCrystallizerRecipe;
 import mekanism.api.recipes.basic.BasicChemicalDissolutionRecipe;
 import mekanism.api.recipes.basic.BasicChemicalInfuserRecipe;
@@ -13,27 +14,25 @@ import mekanism.api.recipes.basic.BasicCompressingRecipe;
 import mekanism.api.recipes.basic.BasicCrushingRecipe;
 import mekanism.api.recipes.basic.BasicElectrolysisRecipe;
 import mekanism.api.recipes.basic.BasicEnrichingRecipe;
-import mekanism.api.recipes.basic.BasicWashingRecipe;
 import mekanism.api.recipes.basic.BasicFluidToFluidRecipe;
-import mekanism.api.recipes.basic.BasicChemicalConversionRecipe;
 import mekanism.api.recipes.basic.BasicInjectingRecipe;
 import mekanism.api.recipes.basic.BasicItemStackToEnergyRecipe;
-import mekanism.api.recipes.basic.BasicPigmentExtractingRecipe;
 import mekanism.api.recipes.basic.BasicMetallurgicInfuserRecipe;
 import mekanism.api.recipes.basic.BasicNucleosynthesizingRecipe;
 import mekanism.api.recipes.basic.BasicPaintingRecipe;
+import mekanism.api.recipes.basic.BasicPigmentExtractingRecipe;
 import mekanism.api.recipes.basic.BasicPigmentMixingRecipe;
 import mekanism.api.recipes.basic.BasicPressurizedReactionRecipe;
 import mekanism.api.recipes.basic.BasicPurifyingRecipe;
 import mekanism.api.recipes.basic.BasicRotaryRecipe;
 import mekanism.api.recipes.basic.BasicSawmillRecipe;
 import mekanism.api.recipes.basic.BasicSmeltingRecipe;
+import mekanism.api.recipes.basic.BasicWashingRecipe;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.ClearConfigurationRecipe;
 import mekanism.common.recipe.bin.BinExtractRecipe;
 import mekanism.common.recipe.bin.BinInsertRecipe;
-import mekanism.common.recipe.serializer.ChemicalCrystallizerRecipeSerializer;
 import mekanism.common.recipe.serializer.MekanismRecipeSerializer;
 import mekanism.common.recipe.serializer.RotaryRecipeSerializer;
 import mekanism.common.recipe.serializer.SawmillRecipeSerializer;
@@ -62,14 +61,14 @@ public class MekanismRecipeSerializersInternal {
 
         MekanismRecipeSerializers.SEPARATING = RECIPE_SERIALIZERS.register("separating", () -> MekanismRecipeSerializer.separating(BasicElectrolysisRecipe::new));
 
-        MekanismRecipeSerializers.WASHING = RECIPE_SERIALIZERS.register("washing", () -> MekanismRecipeSerializer.fluidSlurryToSlurry(BasicWashingRecipe::new));
+        MekanismRecipeSerializers.WASHING = RECIPE_SERIALIZERS.register("washing", () -> MekanismRecipeSerializer.fluidChemicalToChemical(BasicWashingRecipe::new));
 
         MekanismRecipeSerializers.EVAPORATING = RECIPE_SERIALIZERS.register("evaporating", () -> MekanismRecipeSerializer.fluidToFluid(BasicFluidToFluidRecipe::new));
 
-        MekanismRecipeSerializers.ACTIVATING = RECIPE_SERIALIZERS.register("activating", () -> MekanismRecipeSerializer.gasToGas(BasicActivatingRecipe::new));
-        MekanismRecipeSerializers.CENTRIFUGING = RECIPE_SERIALIZERS.register("centrifuging", () -> MekanismRecipeSerializer.gasToGas(BasicCentrifugingRecipe::new));
+        MekanismRecipeSerializers.ACTIVATING = RECIPE_SERIALIZERS.register("activating", () -> MekanismRecipeSerializer.chemicalToChemical(BasicActivatingRecipe::new));
+        MekanismRecipeSerializers.CENTRIFUGING = RECIPE_SERIALIZERS.register("centrifuging", () -> MekanismRecipeSerializer.chemicalToChemical(BasicCentrifugingRecipe::new));
 
-        MekanismRecipeSerializers.CRYSTALLIZING = RECIPE_SERIALIZERS.register("crystallizing", () -> new ChemicalCrystallizerRecipeSerializer(BasicChemicalCrystallizerRecipe::new));
+        MekanismRecipeSerializers.CRYSTALLIZING = RECIPE_SERIALIZERS.register("crystallizing", () -> MekanismRecipeSerializer.crystallizing(BasicChemicalCrystallizerRecipe::new));
 
         MekanismRecipeSerializers.DISSOLUTION = RECIPE_SERIALIZERS.register("dissolution", () -> MekanismRecipeSerializer.dissolution(BasicChemicalDissolutionRecipe::new));
 

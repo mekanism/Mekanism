@@ -616,7 +616,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
 
     public void handleWindowProperty(short property, @NotNull ChemicalStack value) {
         ISyncableData data = getTrackedData(property);
-        if (data instanceof SyncableChemicalStack syncable && value != null) {
+        if (data instanceof SyncableChemicalStack syncable) {
             syncable.set(value);
         }
     }

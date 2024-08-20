@@ -121,9 +121,9 @@ public class FormationProtocol<T extends MultiblockData> {
                     //Dump any rejected gases, if they are radioactive vent them into the atmosphere
                     // we are able to skip this if radiation is disabled as it will just NO-OP further down the line
                     double radiation = 0;
-                    for (ChemicalStack rejectedGas : rejectContents.rejectedChemicals) {
+                    for (ChemicalStack rejectedChemical : rejectContents.rejectedChemicals) {
                         //If we have a radioactive substance, then we need to set the tank to empty
-                        radiation += rejectedGas.mapAttributeToDouble(ChemicalAttributes.Radiation.class, (stored, attribute) -> stored.getAmount() * attribute.getRadioactivity());
+                        radiation += rejectedChemical.mapAttributeToDouble(ChemicalAttributes.Radiation.class, (stored, attribute) -> stored.getAmount() * attribute.getRadioactivity());
                     }
                     if (radiation > 0) {
                         GlobalPos dumpLocation = GlobalPos.of(world.dimension(), structureFound.getBounds().getCenter());

@@ -15,13 +15,13 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * Similar in concept to {@link SingleInputRecipeCache} except specialized to handle Rotary Condensentrator recipes for the purposes of being able to handle both the gas
- * to fluid and fluid to gas directions.
+ * to fluid and fluid to chemical directions.
  */
 public class RotaryInputRecipeCache extends AbstractInputRecipeCache<RotaryRecipe> {
 
-    private final ChemicalInputCache<RotaryRecipe> gasInputCache = new ChemicalInputCache<>();
+    private final ChemicalInputCache<RotaryRecipe> chemicalInputCache = new ChemicalInputCache<>();
     private final FluidInputCache<RotaryRecipe> fluidInputCache = new FluidInputCache<>();
-    private final Set<RotaryRecipe> complexGasInputRecipes = new HashSet<>();
+    private final Set<RotaryRecipe> complexChemicalInputRecipes = new HashSet<>();
     private final Set<RotaryRecipe> complexFluidInputRecipes = new HashSet<>();
 
     public RotaryInputRecipeCache(MekanismRecipeType<?, RotaryRecipe, ?> recipeType) {
@@ -31,9 +31,9 @@ public class RotaryInputRecipeCache extends AbstractInputRecipeCache<RotaryRecip
     @Override
     public void clear() {
         super.clear();
-        gasInputCache.clear();
+        chemicalInputCache.clear();
         fluidInputCache.clear();
-        complexGasInputRecipes.clear();
+        complexChemicalInputRecipes.clear();
         complexFluidInputRecipes.clear();
     }
 
@@ -50,7 +50,7 @@ public class RotaryInputRecipeCache extends AbstractInputRecipeCache<RotaryRecip
     }
 
     /**
-     * Checks if there is a matching recipe that has the given gas input.
+     * Checks if there is a matching recipe that has the given chemical input.
      *
      * @param world World.
      * @param input Recipe input.
@@ -58,7 +58,7 @@ public class RotaryInputRecipeCache extends AbstractInputRecipeCache<RotaryRecip
      * @return {@code true} if there is a match, {@code false} if there isn't.
      */
     public boolean containsInput(@Nullable Level world, ChemicalStack input) {
-        return containsInput(world, input, RotaryRecipe::getChemicalInput, gasInputCache, complexGasInputRecipes);
+        return containsInput(world, input, RotaryRecipe::getChemicalInput, chemicalInputCache, complexChemicalInputRecipes);
     }
 
     /**
@@ -91,22 +91,22 @@ public class RotaryInputRecipeCache extends AbstractInputRecipeCache<RotaryRecip
     }
 
     /**
-     * Finds the first recipe that matches the given gas input.
+     * Finds the first recipe that matches the given chemical input.
      *
      * @param world World.
      * @param input Recipe input.
      *
-     * @return Recipe matching the given gas input, or {@code null} if no recipe matches.
+     * @return Recipe matching the given chemical input, or {@code null} if no recipe matches.
      */
     @Nullable
     public RotaryRecipe findFirstRecipe(@Nullable Level world, ChemicalStack input) {
-        if (gasInputCache.isEmpty(input)) {
+        if (chemicalInputCache.isEmpty(input)) {
             //Don't allow empty inputs
             return null;
         }
         initCacheIfNeeded(world);
-        RotaryRecipe recipe = findFirstRecipe(input, gasInputCache.getRecipes(input));
-        return recipe == null ? findFirstRecipe(input, complexGasInputRecipes) : recipe;
+        RotaryRecipe recipe = findFirstRecipe(input, chemicalInputCache.getRecipes(input));
+        return recipe == null ? findFirstRecipe(input, complexChemicalInputRecipes) : recipe;
     }
 
     @Nullable
@@ -126,8 +126,8 @@ public class RotaryInputRecipeCache extends AbstractInputRecipeCache<RotaryRecip
             if (recipe.hasFluidToChemical() && fluidInputCache.mapInputs(recipe, recipe.getFluidInput())) {
                 complexFluidInputRecipes.add(recipe);
             }
-            if (recipe.hasChemicalToFluid() && gasInputCache.mapInputs(recipe, recipe.getChemicalInput())) {
-                complexGasInputRecipes.add(recipe);
+            if (recipe.hasChemicalToFluid() && chemicalInputCache.mapInputs(recipe, recipe.getChemicalInput())) {
+                complexChemicalInputRecipes.add(recipe);
             }
         }
     }

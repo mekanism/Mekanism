@@ -3,7 +3,6 @@ package mekanism.common.recipe.lookup;
 import java.util.function.Predicate;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.common.recipe.lookup.IRecipeLookupHandler.IRecipeTypedLookupHandler;
@@ -71,14 +70,13 @@ public interface ISingleRecipeLookupHandler<INPUT, RECIPE extends MekanismRecipe
     /**
      * Helper interface to make the generics that we have to pass to {@link ISingleRecipeLookupHandler} not as messy.
      */
-    interface ChemicalRecipeLookupHandler<RECIPE extends MekanismRecipe<?> & Predicate<ChemicalStack>>
-          extends ISingleRecipeLookupHandler<ChemicalStack, RECIPE, SingleChemical<RECIPE>> {
+    interface ChemicalRecipeLookupHandler<RECIPE extends MekanismRecipe<?> & Predicate<ChemicalStack>> extends ISingleRecipeLookupHandler<ChemicalStack, RECIPE, SingleChemical<RECIPE>> {
 
         /**
          * Helper wrapper to convert a chemical to a chemical stack and pass it to {@link #containsRecipe(Object)} to make validity predicates easier and cleaner.
          */
         default boolean containsRecipe(Chemical input) {
-            return containsRecipe(((IChemicalProvider) input).getStack(1));
+            return containsRecipe(input.getStack(1));
         }
     }
 }

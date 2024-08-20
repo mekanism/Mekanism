@@ -2,7 +2,6 @@ package mekanism.common.tile.transmitter;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.ChemicalStack;
@@ -15,7 +14,6 @@ import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.chemical.DynamicChemicalHandler;
-import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.resolver.manager.ChemicalHandlerManager;
 import mekanism.common.content.network.ChemicalNetwork;
 import mekanism.common.content.network.transmitter.PressurizedTube;
@@ -40,8 +38,15 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
         super(blockProvider, pos, state);
         Predicate<@Nullable Direction> canExtract = getExtractPredicate();
         Predicate<@Nullable Direction> canInsert = getInsertPredicate();
-        addCapabilityResolver(chemicalHandlerManager = new ChemicalHandlerManager(getHolder(PressurizedTube::getChemicalTanks),
-              new DynamicChemicalHandler(this::getChemicalTanks, canExtract, canInsert, null)));
+        addCapabilityResolver(chemicalHandlerManager = new ChemicalHandlerManager(direction -> {
+            PressurizedTube tube = getTransmitter();
+            if (direction != null && (tube.getConnectionTypeRaw(direction) == ConnectionType.NONE) || tube.isRedstoneActivated()) {
+                //If we actually have a side, and our connection type on that side is none, or we are currently activated by redstone,
+                // then return that we have no tanks
+                return Collections.emptyList();
+            }
+            return tube.getChemicalTanks(direction);
+        }, new DynamicChemicalHandler(this::getChemicalTanks, canExtract, canInsert, null)));
     }
 
     @Override
@@ -88,18 +93,6 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
             updateTag.putFloat(SerializationConstants.SCALE, network.currentScale);
         }
         return updateTag;
-    }
-
-    private IChemicalTankHolder getHolder(BiFunction<PressurizedTube, Direction, List<IChemicalTank>> tankFunction) {
-        return direction -> {
-            PressurizedTube tube = getTransmitter();
-            if (direction != null && (tube.getConnectionTypeRaw(direction) == ConnectionType.NONE) || tube.isRedstoneActivated()) {
-                //If we actually have a side, and our connection type on that side is none, or we are currently activated by redstone,
-                // then return that we have no tanks
-                return Collections.emptyList();
-            }
-            return tankFunction.apply(tube, direction);
-        };
     }
 
     @Override

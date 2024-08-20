@@ -50,8 +50,7 @@ public enum MekanismLang implements ILangEntry {
     BOILER_INVALID_SUPERHEATING("boiler", "invalid_superheating"),
     //Conversion
     CONVERSION_ENERGY("conversion", "energy"),
-    CONVERSION_CHEMICAL("conversion", "gas"),
-    CONVERSION_INFUSION("conversion", "infusion"),
+    CONVERSION_CHEMICAL("conversion", "chemical"),
     //QIO stuff
     SET_FREQUENCY("qio", "set_frequency"),
     QIO_FREQUENCY_SELECT("qio", "qio_frequency_select"),
@@ -182,10 +181,6 @@ public enum MekanismLang implements ILangEntry {
     TRANSMISSION_TYPE_ENERGY("transmission", "energy"),
     TRANSMISSION_TYPE_FLUID("transmission", "fluids"),
     TRANSMISSION_TYPE_CHEMICALS("transmission", "chemicals"),
-    TRANSMISSION_TYPE_GAS("transmission", "gases"),
-    TRANSMISSION_TYPE_INFUSION("transmission", "infuse_types"),
-    TRANSMISSION_TYPE_PIGMENT("transmission", "pigments"),
-    TRANSMISSION_TYPE_SLURRY("transmission", "slurries"),
     TRANSMISSION_TYPE_ITEM("transmission", "items"),
     TRANSMISSION_TYPE_HEAT("transmission", "heat"),
     //Tooltip stuff
@@ -201,7 +196,6 @@ public enum MekanismLang implements ILangEntry {
     FLOWING("tooltip", "flowing"),
     INVALID("tooltip", "invalid"),
     HAS_INVENTORY("tooltip", "inventory"),
-    NO_GAS("tooltip", "no_gas"),
     NO_CHEMICAL("tooltip", "no_chemical"),
     NO_FLUID_TOOLTIP("tooltip", "no_fluid"),
     FREE_RUNNERS_MODE("tooltip", "mode.free_runners"),
@@ -327,10 +321,10 @@ public enum MekanismLang implements ILangEntry {
     AUTO_PULL("auto", "pull"),
     AUTO_EJECT("auto", "eject"),
     AUTO_SORT("auto", "sort"),
-    //Gas mode
-    IDLE("gas_mode", "idle"),
-    DUMPING_EXCESS("gas_mode", "dumping_excess"),
-    DUMPING("gas_mode", "dumping"),
+    //Chemical mode
+    IDLE("chemical_mode", "idle"),
+    DUMPING_EXCESS("chemical_mode", "dumping_excess"),
+    DUMPING("chemical_mode", "dumping"),
     //Dictionary
     DICTIONARY_KEY("dictionary", "key"),
     DICTIONARY_NO_KEY("dictionary", "no_key"),
@@ -410,10 +404,7 @@ public enum MekanismLang implements ILangEntry {
     ITEMS("transmitter", "items"),
     BLOCKS("transmitter", "blocks"),
     FLUIDS("transmitter", "fluids"),
-    GASES("transmitter", "gases"),
-    INFUSE_TYPES("transmitter", "infuse_types"),
-    PIGMENTS("transmitter", "pigments"),
-    SLURRIES("transmitter", "slurries"),
+    CHEMICALS("transmitter", "chemicals"),
     HEAT("transmitter", "heat"),
     CONDUCTION("transmitter", "conduction"),
     INSULATION("transmitter", "insulation"),

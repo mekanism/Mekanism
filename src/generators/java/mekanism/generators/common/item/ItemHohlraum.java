@@ -40,7 +40,7 @@ public class ItemHohlraum extends Item implements ICustomCreativeTabContents {
                 return;
             }
         }
-        tooltip.add(MekanismLang.NO_GAS.translate());
+        tooltip.add(MekanismLang.NO_CHEMICAL.translate());
         tooltip.add(GeneratorsLang.INSUFFICIENT_FUEL.translateColored(EnumColor.DARK_RED));
     }
 

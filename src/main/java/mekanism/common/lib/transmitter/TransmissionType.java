@@ -19,10 +19,6 @@ public enum TransmissionType implements IHasTranslationKey, StringRepresentable 
     ENERGY("EnergyNetwork", "energy", MekanismLang.TRANSMISSION_TYPE_ENERGY),
     FLUID("FluidNetwork", "fluids", MekanismLang.TRANSMISSION_TYPE_FLUID),
     CHEMICAL("ChemicalNetwork", "chemicals", MekanismLang.TRANSMISSION_TYPE_CHEMICALS),
-    /*GAS("GasNetwork", "gases", MekanismLang.TRANSMISSION_TYPE_GAS),
-    INFUSION("InfusionNetwork", "infuse_types", MekanismLang.TRANSMISSION_TYPE_INFUSION),
-    PIGMENT("PigmentNetwork", "pigments", MekanismLang.TRANSMISSION_TYPE_PIGMENT),
-    SLURRY("SlurryNetwork", "slurries", MekanismLang.TRANSMISSION_TYPE_SLURRY),*/
     ITEM("InventoryNetwork", "items", MekanismLang.TRANSMISSION_TYPE_ITEM),
     HEAT("HeatNetwork", "heat", MekanismLang.TRANSMISSION_TYPE_HEAT);
 

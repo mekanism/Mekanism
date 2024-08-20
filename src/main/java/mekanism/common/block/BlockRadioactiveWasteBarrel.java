@@ -35,13 +35,13 @@ public class BlockRadioactiveWasteBarrel extends BlockTileModel<TileEntityRadioa
         if (tile == null) {
             return InteractionResult.PASS;
         } else if (!world.isClientSide()) {
-            ChemicalStack stored = tile.getGas();
+            ChemicalStack stored = tile.getChemicalTank().getStack();
             Component text;
             if (stored.isEmpty()) {
                 text = MekanismLang.NO_CHEMICAL.translateColored(EnumColor.GRAY);
             } else {
                 text = MekanismLang.STORED_MB_PERCENTAGE.translateColored(EnumColor.ORANGE, EnumColor.ORANGE, stored, EnumColor.GRAY,
-                      TextUtils.format(stored.getAmount()), TextUtils.getPercent(tile.getGasScale()));
+                      TextUtils.format(stored.getAmount()), TextUtils.getPercent(tile.getChemicalScale()));
             }
             player.sendSystemMessage(text);
         }

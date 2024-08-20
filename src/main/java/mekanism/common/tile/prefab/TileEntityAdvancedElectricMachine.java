@@ -77,12 +77,12 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
     private long usedSoFar;
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getChemical", "getChemicalCapacity", "getChemicalNeeded",
-                                                                                        "getChemicalFilledPercentage"}, docPlaceholder = "gas tank")
-    public IChemicalTank gasTank;
+                                                                                        "getChemicalFilledPercentage"}, docPlaceholder = "chemical tank")
+    public IChemicalTank chemicalTank;
 
     protected final IOutputHandler<@NotNull ItemStack> outputHandler;
     protected final IInputHandler<@NotNull ItemStack> itemInputHandler;
-    protected final ILongInputHandler<@NotNull ChemicalStack> gasInputHandler;
+    protected final ILongInputHandler<@NotNull ChemicalStack> chemicalInputHandler;
 
     private MachineEnergyContainer<TileEntityAdvancedElectricMachine> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInput", docPlaceholder = "input slot")
@@ -98,9 +98,9 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
         super(blockProvider, pos, state, TRACKED_ERROR_TYPES, ticksRequired);
         configComponent.setupItemIOExtraConfig(inputSlot, outputSlot, secondarySlot, energySlot);
         if (allowExtractingChemical()) {
-            configComponent.setupIOConfig(TransmissionType.CHEMICAL, gasTank, RelativeSide.RIGHT).setCanEject(false);
+            configComponent.setupIOConfig(TransmissionType.CHEMICAL, chemicalTank, RelativeSide.RIGHT).setCanEject(false);
         } else {
-            configComponent.setupInputConfig(TransmissionType.CHEMICAL, gasTank);
+            configComponent.setupInputConfig(TransmissionType.CHEMICAL, chemicalTank);
         }
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
 
@@ -108,7 +108,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM);
 
         itemInputHandler = InputHelper.getInputHandler(inputSlot, RecipeError.NOT_ENOUGH_INPUT);
-        gasInputHandler = InputHelper.getConstantInputHandler(gasTank);
+        chemicalInputHandler = InputHelper.getConstantInputHandler(chemicalTank);
         outputHandler = OutputHelper.getOutputHandler(outputSlot, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
         baseTotalUsage = baseTicksRequired;
         if (useStatisticalMechanics()) {
@@ -136,7 +136,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
     public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
         BiPredicate<@NotNull Chemical, @NotNull AutomationType> canExtract = allowExtractingChemical() ? BasicChemicalTank.alwaysTrueBi : BasicChemicalTank.notExternal;
-        builder.addTank(gasTank = BasicChemicalTank.create(MAX_GAS, canExtract, (gas, automationType) -> containsRecipeBA(inputSlot.getStack(), gas),
+        builder.addTank(chemicalTank = BasicChemicalTank.create(MAX_GAS, canExtract, (gas, automationType) -> containsRecipeBA(inputSlot.getStack(), gas),
               this::containsRecipeB, recipeCacheListener));
         return builder.build();
     }
@@ -153,9 +153,9 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipeAB(item, gasTank.getStack()), this::containsRecipeA, recipeCacheListener, 64, 17))
+        builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipeAB(item, chemicalTank.getStack()), this::containsRecipeA, recipeCacheListener, 64, 17))
               .tracksWarnings(slot -> slot.warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(RecipeError.NOT_ENOUGH_INPUT)));
-        builder.addSlot(secondarySlot = ChemicalInventorySlot.fillOrConvert(gasTank, this::getLevel, listener, 64, 53));
+        builder.addSlot(secondarySlot = ChemicalInventorySlot.fillOrConvert(chemicalTank, this::getLevel, listener, 64, 53));
         builder.addSlot(outputSlot = OutputInventorySlot.at(recipeCacheUnpauseListener, 116, 35))
               .tracksWarnings(slot -> slot.warning(WarningType.NO_SPACE_IN_OUTPUT, getWarningCheck(RecipeError.NOT_ENOUGH_OUTPUT_SPACE)));
         builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, listener, 39, 35));
@@ -182,13 +182,13 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
     @Nullable
     @Override
     public ItemStackChemicalToItemStackRecipe getRecipe(int cacheIndex) {
-        return findFirstRecipe(itemInputHandler, gasInputHandler);
+        return findFirstRecipe(itemInputHandler, chemicalInputHandler);
     }
 
     @NotNull
     @Override
     public CachedRecipe<ItemStackChemicalToItemStackRecipe> createNewCachedRecipe(@NotNull ItemStackChemicalToItemStackRecipe recipe, int cacheIndex) {
-        return ItemStackConstantChemicalToObjectCachedRecipe.toItem(recipe, recheckAllRecipeErrors, itemInputHandler, gasInputHandler, gasUsageMultiplier,
+        return ItemStackConstantChemicalToObjectCachedRecipe.toItem(recipe, recheckAllRecipeErrors, itemInputHandler, chemicalInputHandler, gasUsageMultiplier,
               used -> usedSoFar = used, outputHandler)
               .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(this::canFunction)
@@ -214,7 +214,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
     @NotNull
     @Override
     public AdvancedMachineUpgradeData getUpgradeData(HolderLookup.Provider provider) {
-        return new AdvancedMachineUpgradeData(provider, redstone, getControlType(), getEnergyContainer(), getOperatingTicks(), usedSoFar, gasTank, secondarySlot,
+        return new AdvancedMachineUpgradeData(provider, redstone, getControlType(), getEnergyContainer(), getOperatingTicks(), usedSoFar, chemicalTank, secondarySlot,
               energySlot, inputSlot, outputSlot, getComponents());
     }
 
@@ -254,7 +254,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
     @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Empty the contents of the gas tank into the environment")
     void dumpChemical() throws ComputerException {
         validateSecurityIsPublic();
-        gasTank.setEmpty();
+        chemicalTank.setEmpty();
     }
     //End methods IComputerTile
 }

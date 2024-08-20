@@ -59,39 +59,27 @@ public class StorageUtils {
         }
     }
 
-    public static void addStoredGas(@NotNull ItemStack stack, @NotNull List<Component> tooltip, boolean showMissingCap, boolean showAttributes) {
-        addStoredGas(stack, tooltip, showMissingCap, showAttributes, MekanismLang.NO_GAS);
-    }
-
-    public static void addStoredGas(@NotNull ItemStack stack, @NotNull List<Component> tooltip, boolean showMissingCap, boolean showAttributes,
-          ILangEntry emptyLangEntry) {
-        addStoredChemical(stack, tooltip, showMissingCap, showAttributes, emptyLangEntry, (stored, emptyLang) -> {
-            if (stored.isEmpty()) {
-                return emptyLang.translateColored(EnumColor.GRAY);
-            }
-            return MekanismLang.STORED.translateColored(EnumColor.ORANGE, EnumColor.ORANGE, stored, EnumColor.GRAY,
-                  MekanismLang.GENERIC_MB.translate(TextUtils.format(stored.getAmount())));
-        }, Capabilities.CHEMICAL.item(), ContainerType.CHEMICAL);
-    }
-
-    public static void addStoredChemical(@NotNull ItemStack stack, @NotNull List<Component> tooltip,
-          boolean showMissingCap, boolean showAttributes, ILangEntry emptyLangEntry, BiFunction<ChemicalStack, ILangEntry, Component> storedFunction, ItemCapability<? extends IChemicalHandler, Void> capability,
-          ContainerType<?, ?, ? extends IChemicalHandler> containerType) {
-        IChemicalHandler handler = stack.getCapability(capability);
+    public static void addStoredChemical(@NotNull ItemStack stack, @NotNull List<Component> tooltip, boolean showMissingCap, boolean showAttributes) {
+        IChemicalHandler handler = Capabilities.CHEMICAL.getCapability(stack);
         if (handler == null) {
             //Fall back to trying to look up the stored chemical by the container type if the stack doesn't expose it
-            handler = containerType.createHandlerIfData(stack);
+            handler = ContainerType.CHEMICAL.createHandlerIfData(stack);
         }
         if (handler != null) {
             for (int tank = 0, tanks = handler.getChemicalTanks(); tank < tanks; tank++) {
                 ChemicalStack chemicalInTank = handler.getChemicalInTank(tank);
-                tooltip.add(storedFunction.apply(chemicalInTank, emptyLangEntry));
+                if (chemicalInTank.isEmpty()) {
+                    tooltip.add(MekanismLang.NO_CHEMICAL.translateColored(EnumColor.GRAY));
+                } else {
+                    tooltip.add(MekanismLang.STORED.translateColored(EnumColor.ORANGE, EnumColor.ORANGE, chemicalInTank, EnumColor.GRAY,
+                          MekanismLang.GENERIC_MB.translate(TextUtils.format(chemicalInTank.getAmount()))));
+                }
                 if (showAttributes) {
                     ChemicalUtil.addAttributeTooltips(tooltip, chemicalInTank.getChemical());
                 }
             }
         } else if (showMissingCap) {
-            tooltip.add(emptyLangEntry.translate());
+            tooltip.add(MekanismLang.NO_CHEMICAL.translate());
         }
     }
 

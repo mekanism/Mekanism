@@ -151,7 +151,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         } else {
             StorageUtils.addStoredEnergy(stack, tooltip, true);
             if (!chemicalTankSpecs.isEmpty()) {
-                StorageUtils.addStoredGas(stack, tooltip, true, false);
+                StorageUtils.addStoredChemical(stack, tooltip, true, false);
             }
             if (!fluidTankSpecs.isEmpty()) {
                 StorageUtils.addStoredFluid(stack, tooltip, true);

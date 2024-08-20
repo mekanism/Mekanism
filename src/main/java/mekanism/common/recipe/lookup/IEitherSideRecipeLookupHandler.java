@@ -3,9 +3,8 @@ package mekanism.common.recipe.lookup;
 import java.util.function.BiPredicate;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.providers.IChemicalProvider;
-import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ChemicalChemicalToChemicalRecipe;
+import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.common.recipe.lookup.IRecipeLookupHandler.IRecipeTypedLookupHandler;
 import mekanism.common.recipe.lookup.cache.EitherSideInputRecipeCache;
@@ -81,14 +80,14 @@ public interface IEitherSideRecipeLookupHandler<INPUT, RECIPE extends MekanismRe
          * Helper wrapper to convert a chemical to a chemical stack and pass it to {@link #containsRecipe(Object)} to make validity predicates easier and cleaner.
          */
         default boolean containsRecipe(Chemical input) {
-            return containsRecipe(((IChemicalProvider) input).getStack(1));
+            return containsRecipe(input.getStack(1));
         }
 
         /**
          * Helper wrapper to convert a chemical to a chemical stack and pass it to {@link #containsRecipe(Object)} to make validity predicates easier and cleaner.
          */
         default boolean containsRecipe(Chemical inputA, ChemicalStack inputB) {
-            return containsRecipe(((IChemicalProvider) inputA).getStack(1), inputB);
+            return containsRecipe(inputA.getStack(1), inputB);
         }
     }
 }

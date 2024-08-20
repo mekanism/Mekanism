@@ -1276,7 +1276,7 @@
       "requires_public_security": true
     },
     {
-      "description": "Get the contents of the gas tank.",
+      "description": "Get the contents of the chemical tank.",
       "methodName": "getChemical",
       "returns": {
         "type": "Table (ChemicalStack)",
@@ -1284,7 +1284,7 @@
       }
     },
     {
-      "description": "Get the capacity of the gas tank.",
+      "description": "Get the capacity of the chemical tank.",
       "methodName": "getChemicalCapacity",
       "returns": {
         "type": "Number (long)",
@@ -1292,7 +1292,7 @@
       }
     },
     {
-      "description": "Get the filled percentage of the gas tank.",
+      "description": "Get the filled percentage of the chemical tank.",
       "methodName": "getChemicalFilledPercentage",
       "returns": {
         "type": "Number (double)",
@@ -1308,7 +1308,7 @@
       }
     },
     {
-      "description": "Get the amount needed to fill the gas tank.",
+      "description": "Get the amount needed to fill the chemical tank.",
       "methodName": "getChemicalNeeded",
       "returns": {
         "type": "Number (long)",

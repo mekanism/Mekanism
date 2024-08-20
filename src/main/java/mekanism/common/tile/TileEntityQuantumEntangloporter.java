@@ -49,9 +49,9 @@ import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
+import mekanism.common.tile.component.config.slot.IProxiedSlotInfo.ChemicalProxy;
 import mekanism.common.tile.component.config.slot.IProxiedSlotInfo.EnergyProxy;
 import mekanism.common.tile.component.config.slot.IProxiedSlotInfo.FluidProxy;
-import mekanism.common.tile.component.config.slot.IProxiedSlotInfo.GasProxy;
 import mekanism.common.tile.component.config.slot.IProxiedSlotInfo.HeatProxy;
 import mekanism.common.tile.component.config.slot.IProxiedSlotInfo.InventoryProxy;
 import mekanism.common.tile.component.config.slot.IProxiedSlotInfo.ProxySlotInfoCreator;
@@ -81,7 +81,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
 
         setupConfig(TransmissionType.ITEM, InventoryProxy::new, () -> hasFrequency() ? getFreq().getInventorySlots(null) : Collections.emptyList());
         setupConfig(TransmissionType.FLUID, FluidProxy::new, () -> hasFrequency() ? getFreq().getFluidTanks(null) : Collections.emptyList());
-        setupConfig(TransmissionType.CHEMICAL, GasProxy::new, () -> hasFrequency() ? getFreq().getChemicalTanks(null) : Collections.emptyList());
+        setupConfig(TransmissionType.CHEMICAL, ChemicalProxy::new, () -> hasFrequency() ? getFreq().getChemicalTanks(null) : Collections.emptyList());
         setupConfig(TransmissionType.ENERGY, EnergyProxy::new, () -> hasFrequency() ? getFreq().getEnergyContainers(null) : Collections.emptyList());
 
         ConfigInfo heatConfig = configComponent.getConfig(TransmissionType.HEAT);

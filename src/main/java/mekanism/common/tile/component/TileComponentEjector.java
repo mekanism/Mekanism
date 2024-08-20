@@ -219,25 +219,29 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
             Map<Direction, BlockCapabilityCache<?, @Nullable Direction>> typeCapabilityCaches = capabilityCaches.computeIfAbsent(type, t -> new EnumMap<>(Direction.class));
             for (Map.Entry<Object, Set<Direction>> entry : outputData.entrySet()) {
                 Set<Direction> sides = entry.getValue();
-                if (type == TransmissionType.CHEMICAL) {
-                    IChemicalTank tank = (IChemicalTank) entry.getKey();
-                    List<BlockCapabilityCache<IChemicalHandler, @Nullable Direction>> caches = getCapabilityCaches(level, pos, typeCapabilityCaches, sides, Capabilities.CHEMICAL);
-                    ChemicalUtil.emit(caches, tank, chemicalEjectRate.getAsLong());
-                } else if (type == TransmissionType.FLUID) {
-                    List<BlockCapabilityCache<IFluidHandler, @Nullable Direction>> caches = getCapabilityCaches(level, pos, typeCapabilityCaches, sides, Capabilities.FLUID);
-                    FluidUtils.emit(caches, (IExtendedFluidTank) entry.getKey(), fluidEjectRate.getAsInt());
-                } else if (type == TransmissionType.ENERGY) {
-                    IEnergyContainer container = (IEnergyContainer) entry.getKey();
-                    List<BlockEnergyCapabilityCache> caches = new ArrayList<>(sides.size());
-                    for (Direction side : sides) {
-                        BlockEnergyCapabilityCache cache = energyCapabilityCache.get(side);
-                        if (cache == null) {
-                            cache = BlockEnergyCapabilityCache.create(level, pos.relative(side), side.getOpposite());
-                            energyCapabilityCache.put(side, cache);
-                        }
-                        caches.add(cache);
+                switch (type) {
+                    case CHEMICAL -> {
+                        IChemicalTank tank = (IChemicalTank) entry.getKey();
+                        List<BlockCapabilityCache<IChemicalHandler, @Nullable Direction>> caches = getCapabilityCaches(level, pos, typeCapabilityCaches, sides, Capabilities.CHEMICAL);
+                        ChemicalUtil.emit(caches, tank, chemicalEjectRate.getAsLong());
                     }
-                    CableUtils.emit(caches, container, energyEjectRate == null ? container.getMaxEnergy() : energyEjectRate.getAsLong());
+                    case FLUID -> {
+                        List<BlockCapabilityCache<IFluidHandler, @Nullable Direction>> caches = getCapabilityCaches(level, pos, typeCapabilityCaches, sides, Capabilities.FLUID);
+                        FluidUtils.emit(caches, (IExtendedFluidTank) entry.getKey(), fluidEjectRate.getAsInt());
+                    }
+                    case ENERGY -> {
+                        IEnergyContainer container = (IEnergyContainer) entry.getKey();
+                        List<BlockEnergyCapabilityCache> caches = new ArrayList<>(sides.size());
+                        for (Direction side : sides) {
+                            BlockEnergyCapabilityCache cache = energyCapabilityCache.get(side);
+                            if (cache == null) {
+                                cache = BlockEnergyCapabilityCache.create(level, pos.relative(side), side.getOpposite());
+                                energyCapabilityCache.put(side, cache);
+                            }
+                            caches.add(cache);
+                        }
+                        CableUtils.emit(caches, container, energyEjectRate == null ? container.getMaxEnergy() : energyEjectRate.getAsLong());
+                    }
                 }
             }
         }

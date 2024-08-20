@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Supplier;
 import mekanism.api.RelativeSide;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.fluid.IExtendedFluidTank;
@@ -17,13 +16,11 @@ import mekanism.common.tile.component.config.slot.FluidSlotInfo;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.util.EnumUtils;
-import net.minecraft.core.Direction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class ConfigInfo implements IPersistentConfigInfo {
 
-    private final Supplier<Direction> facingSupplier;
     //TODO: Ejecting/can eject, how do we want to use these
     private boolean canEject;
     private boolean ejecting;
@@ -37,8 +34,7 @@ public class ConfigInfo implements IPersistentConfigInfo {
     @Nullable
     private Set<DataType> supportedDataTypes;
 
-    public ConfigInfo(@NotNull Supplier<Direction> facingSupplier) {
-        this.facingSupplier = facingSupplier;
+    public ConfigInfo() {
         canEject = true;
         ejecting = false;
         sideConfig = new EnumMap<>(RelativeSide.class);

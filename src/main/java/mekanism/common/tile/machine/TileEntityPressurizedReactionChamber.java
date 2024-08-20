@@ -62,14 +62,14 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
 
     public static final RecipeError NOT_ENOUGH_ITEM_INPUT_ERROR = RecipeError.create();
     public static final RecipeError NOT_ENOUGH_FLUID_INPUT_ERROR = RecipeError.create();
-    public static final RecipeError NOT_ENOUGH_GAS_INPUT_ERROR = RecipeError.create();
+    public static final RecipeError NOT_ENOUGH_CHEMICAL_INPUT_ERROR = RecipeError.create();
     public static final RecipeError NOT_ENOUGH_SPACE_ITEM_OUTPUT_ERROR = RecipeError.create();
     public static final RecipeError NOT_ENOUGH_SPACE_GAS_OUTPUT_ERROR = RecipeError.create();
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
           RecipeError.NOT_ENOUGH_ENERGY,
           NOT_ENOUGH_ITEM_INPUT_ERROR,
           NOT_ENOUGH_FLUID_INPUT_ERROR,
-          NOT_ENOUGH_GAS_INPUT_ERROR,
+          NOT_ENOUGH_CHEMICAL_INPUT_ERROR,
           NOT_ENOUGH_SPACE_ITEM_OUTPUT_ERROR,
           NOT_ENOUGH_SPACE_GAS_OUTPUT_ERROR,
           RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
@@ -115,7 +115,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
 
         itemInputHandler = InputHelper.getInputHandler(inputSlot, NOT_ENOUGH_ITEM_INPUT_ERROR);
         fluidInputHandler = InputHelper.getInputHandler(inputFluidTank, NOT_ENOUGH_FLUID_INPUT_ERROR);
-        gasInputHandler = InputHelper.getInputHandler(inputGasTank, NOT_ENOUGH_GAS_INPUT_ERROR);
+        gasInputHandler = InputHelper.getInputHandler(inputGasTank, NOT_ENOUGH_CHEMICAL_INPUT_ERROR);
         outputHandler = OutputHelper.getOutputHandler(outputSlot, NOT_ENOUGH_SPACE_ITEM_OUTPUT_ERROR, outputGasTank, NOT_ENOUGH_SPACE_GAS_OUTPUT_ERROR);
     }
 

@@ -1,7 +1,6 @@
 package mekanism.common.network.to_server;
 
 import io.netty.buffer.ByteBuf;
-import java.util.List;
 import java.util.function.IntFunction;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
@@ -91,7 +90,6 @@ public record PacketDropperUse(BlockPos pos, DropperAction action, TankType tank
                 handleFluidTank(player, stack, fluidTank);
             }
         } else if (tankType == TankType.CHEMICAL_TANK) {
-            List<IChemicalTank> tanks = handler.getChemicalTanks(null);
             IChemicalTank chemicalTank = handler.getChemicalTank(tankId, null);
             if (chemicalTank != null) {
                 handleChemicalTank(player, stack, chemicalTank, pos);
@@ -103,10 +101,8 @@ public record PacketDropperUse(BlockPos pos, DropperAction action, TankType tank
         if (action == DropperAction.DUMP_TANK) {
             //Dump the tank
             if (!tank.isEmpty()) {
-                if (tank instanceof IChemicalTank gasTank) {
-                    //If the tank is a gas tank and has radioactive substances in it make sure we properly emit the radiation to the environment
-                    IRadiationManager.INSTANCE.dumpRadiation(pos, gasTank.getStack());
-                }
+                //If the tank has radioactive substances in it make sure we properly emit the radiation to the environment
+                IRadiationManager.INSTANCE.dumpRadiation(pos, tank.getStack());
                 tank.setEmpty();
                 MekanismCriteriaTriggers.USE_GAUGE_DROPPER.value().trigger(player, UseDropperAction.DUMP);
             }

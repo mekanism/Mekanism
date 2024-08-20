@@ -45,7 +45,7 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
-import mekanism.common.tile.component.config.slot.ChemicalSlotInfo.PigmentSlotInfo;
+import mekanism.common.tile.component.config.slot.ChemicalSlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
@@ -111,10 +111,10 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<ChemicalChem
 
         ConfigInfo pigmentConfig = configComponent.getConfig(TransmissionType.CHEMICAL);
         if (pigmentConfig != null) {
-            pigmentConfig.addSlotInfo(DataType.INPUT_1, new PigmentSlotInfo(true, false, leftInputTank));
-            pigmentConfig.addSlotInfo(DataType.INPUT_2, new PigmentSlotInfo(true, false, rightInputTank));
-            pigmentConfig.addSlotInfo(DataType.OUTPUT, new PigmentSlotInfo(false, true, outputTank));
-            pigmentConfig.addSlotInfo(DataType.INPUT_OUTPUT, new PigmentSlotInfo(true, true, leftInputTank, rightInputTank, outputTank));
+            pigmentConfig.addSlotInfo(DataType.INPUT_1, new ChemicalSlotInfo(true, false, leftInputTank));
+            pigmentConfig.addSlotInfo(DataType.INPUT_2, new ChemicalSlotInfo(true, false, rightInputTank));
+            pigmentConfig.addSlotInfo(DataType.OUTPUT, new ChemicalSlotInfo(false, true, outputTank));
+            pigmentConfig.addSlotInfo(DataType.INPUT_OUTPUT, new ChemicalSlotInfo(true, true, leftInputTank, rightInputTank, outputTank));
         }
 
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);

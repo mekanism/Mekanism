@@ -27,7 +27,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import org.jetbrains.annotations.NotNull;
 
-public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IJetpackItem, IAttachmentBasedModeItem<JetpackMode> {
+public class ItemJetpack extends ItemChemicalArmor implements IItemHUDProvider, IJetpackItem, IAttachmentBasedModeItem<JetpackMode> {
 
     public ItemJetpack(Properties properties) {
         this(MekanismArmorMaterials.JETPACK, properties);
@@ -38,7 +38,7 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IJetp
     }
 
     @Override
-    protected IChemicalProvider getGasType() {
+    protected IChemicalProvider getChemicalType() {
         return MekanismChemicals.HYDROGEN;
     }
 
@@ -50,7 +50,7 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IJetp
 
     @Override
     public boolean canUseJetpack(ItemStack stack) {
-        return hasGas(stack);
+        return hasChemical(stack);
     }
 
     @Override
@@ -75,7 +75,7 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IJetp
 
     @Override
     public void useJetpackFuel(ItemStack stack) {
-        useGas(stack, 1);
+        useChemical(stack, 1);
     }
 
     @Override

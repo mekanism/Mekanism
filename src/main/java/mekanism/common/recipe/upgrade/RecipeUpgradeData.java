@@ -26,7 +26,6 @@ import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.item.block.ItemBlockPersonalStorage;
 import mekanism.common.item.block.machine.ItemBlockFactory;
 import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
-import mekanism.common.recipe.upgrade.chemical.ChemicalRecipeData;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tier.BinTier;
 import net.minecraft.core.HolderLookup;

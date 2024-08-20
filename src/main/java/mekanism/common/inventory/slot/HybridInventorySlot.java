@@ -23,7 +23,7 @@ public class HybridInventorySlot extends BasicInventorySlot implements IFluidHan
     public static HybridInventorySlot inputOrDrain(MergedTank mergedTank, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(mergedTank, "Merged tank cannot be null");
         Predicate<@NotNull ItemStack> fluidInsertPredicate = FluidInventorySlot.getInputPredicate(mergedTank.getFluidTank());
-        Predicate<@NotNull ItemStack> chemicalInsertPredicate = ChemicalInventorySlot.getDrainInsertPredicate(mergedTank.getChemicalTank(), Capabilities.CHEMICAL);
+        Predicate<@NotNull ItemStack> chemicalInsertPredicate = ChemicalInventorySlot.getDrainInsertPredicate(mergedTank.getChemicalTank());
         BiPredicate<@NotNull ItemStack, @NotNull AutomationType> insertPredicate = (stack, automationType) -> switch (mergedTank.getCurrentType()) {
             case FLUID -> fluidInsertPredicate.test(stack);
             case CHEMICAL -> chemicalInsertPredicate.test(stack);
@@ -38,7 +38,7 @@ public class HybridInventorySlot extends BasicInventorySlot implements IFluidHan
     public static HybridInventorySlot outputOrFill(MergedTank mergedTank, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(mergedTank, "Merged tank cannot be null");
         Predicate<@NotNull ItemStack> chemicalExtractPredicate = ChemicalInventorySlot.getFillExtractPredicate(mergedTank.getChemicalTank());
-        Predicate<@NotNull ItemStack> chemicalInsertPredicate = stack -> ChemicalInventorySlot.fillInsertCheck(mergedTank.getChemicalTank(), Capabilities.CHEMICAL, stack);
+        Predicate<@NotNull ItemStack> chemicalInsertPredicate = stack -> ChemicalInventorySlot.fillInsertCheck(mergedTank.getChemicalTank(), stack);
 
         return new HybridInventorySlot(mergedTank, (stack, automationType) -> {
             if (automationType == AutomationType.MANUAL) {
@@ -70,7 +70,7 @@ public class HybridInventorySlot extends BasicInventorySlot implements IFluidHan
     // used by IFluidHandlerSlot
     private boolean isDraining;
     private boolean isFilling;
-    protected final MergedTank mergedTank;
+    private final MergedTank mergedTank;
 
     private HybridInventorySlot(MergedTank mergedTank, BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canExtract,
           BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canInsert, @Nullable IContentsListener listener, int x, int y) {

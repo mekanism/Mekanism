@@ -17,7 +17,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.entity.EntityFlame;
 import mekanism.common.item.gear.ItemFlamethrower.FlamethrowerMode;
-import mekanism.common.item.interfaces.IGasItem;
+import mekanism.common.item.interfaces.IChemicalItem;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IModeItem.IAttachmentBasedModeItem;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
@@ -50,7 +50,7 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-public class ItemFlamethrower extends Item implements IItemHUDProvider, IGasItem, ICustomCreativeTabContents, IAttachmentBasedModeItem<FlamethrowerMode> {
+public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemicalItem, ICustomCreativeTabContents, IAttachmentBasedModeItem<FlamethrowerMode> {
 
     public ItemFlamethrower(Properties properties) {
         super(properties.stacksTo(1).rarity(Rarity.RARE).setNoRepair()
@@ -60,7 +60,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IGasItem
 
     @Override
     public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-        StorageUtils.addStoredGas(stack, tooltip, true, false);
+        StorageUtils.addStoredChemical(stack, tooltip, true, false);
         tooltip.add(MekanismLang.MODE.translateColored(EnumColor.GRAY, getMode(stack)));
     }
 
@@ -82,7 +82,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IGasItem
     @Override
     public InteractionResult useOn(UseOnContext context) {
         Player player = context.getPlayer();
-        if (player != null && hasGas(context.getItemInHand())) {
+        if (player != null && hasChemical(context.getItemInHand())) {
             player.startUsingItem(context.getHand());
             return InteractionResult.CONSUME;
         }
@@ -93,7 +93,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IGasItem
     @Override
     public InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        if (hasGas(stack)) {
+        if (hasChemical(stack)) {
             player.awardStat(Stats.ITEM_USED.get(this));
             player.startUsingItem(hand);
             return InteractionResultHolder.consume(stack);
@@ -106,7 +106,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IGasItem
         //TODO: Do we want to allow non players to use the flamethrower?
         if (remainingDuration >= 0 && entity instanceof Player player) {
             //If the flamethrower has gas, add the entity if we are on the server and use gas if we aren't creative
-            if (hasGas(stack)) {
+            if (hasChemical(stack)) {
                 if (!level.isClientSide) {
                     EntityFlame flame = EntityFlame.create(level, entity, entity.getUsedItemHand(), getMode(stack));
                     if (flame != null) {
@@ -115,7 +115,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IGasItem
                             level.addFreshEntity(flame);
                         }
                         if (MekanismUtils.isPlayingMode(player)) {
-                            useGas(stack, 1);
+                            useChemical(stack, 1);
                         }
                     }
                 }
@@ -172,7 +172,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IGasItem
             }
         }
         if (!hasGas) {
-            list.add(MekanismLang.FLAMETHROWER_STORED.translateColored(EnumColor.GRAY, EnumColor.ORANGE, MekanismLang.NO_GAS));
+            list.add(MekanismLang.FLAMETHROWER_STORED.translateColored(EnumColor.GRAY, EnumColor.ORANGE, MekanismLang.NO_CHEMICAL));
         }
         list.add(MekanismLang.MODE.translate(getMode(stack)));
     }

@@ -53,7 +53,7 @@ public class StackedWasteBarrel extends VariableCapacityChemicalTank implements 
             TileEntityRadioactiveWasteBarrel tileAbove = WorldUtils.getTileEntity(TileEntityRadioactiveWasteBarrel.class, tile.getLevel(), tile.getBlockPos().above());
             if (tileAbove != null) {
                 //Note: We do external so that it is not limited by the internal rate limits
-                remainder = tileAbove.getGasTank().insert(remainder, action, AutomationType.EXTERNAL);
+                remainder = tileAbove.getChemicalTank().insert(remainder, action, AutomationType.EXTERNAL);
             }
         }
         return remainder;
@@ -70,7 +70,7 @@ public class StackedWasteBarrel extends VariableCapacityChemicalTank implements 
                 if (tileAbove != null) {
                     long leftOverToInsert = amount - grownAmount;
                     //Note: We do external so that it is not limited by the internal rate limits
-                    ChemicalStack remainder = tileAbove.getGasTank().insert(stored.copyWithAmount(leftOverToInsert), action, AutomationType.EXTERNAL);
+                    ChemicalStack remainder = tileAbove.getChemicalTank().insert(stored.copyWithAmount(leftOverToInsert), action, AutomationType.EXTERNAL);
                     grownAmount += leftOverToInsert - remainder.getAmount();
                 }
             }

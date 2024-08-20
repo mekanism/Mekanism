@@ -13,13 +13,6 @@ import net.minecraft.tags.TagKey;
 @NothingNullByDefault
 public interface IChemicalStackIngredientCreator extends IIngredientCreator<Chemical, ChemicalStack, ChemicalStackIngredient> {
 
-    /**
-     * {@return the basic internal chemical ingredient creator}
-     *
-     * @since 10.6.0
-     */
-    IChemicalIngredientCreator chemicalCreator();
-
     @Override
     default ChemicalStackIngredient from(ChemicalStack instance) {
         Objects.requireNonNull(instance, "ChemicalStackIngredients cannot be created from a null ChemicalStack.");
@@ -42,7 +35,7 @@ public interface IChemicalStackIngredientCreator extends IIngredientCreator<Chem
      */
     default ChemicalStackIngredient from(IChemicalProvider provider, long amount) {
         Objects.requireNonNull(provider, "ChemicalStackIngredients cannot be created from a null chemical provider.");
-        return from(chemicalCreator().of(provider), amount);
+        return from(IngredientCreatorAccess.chemical().of(provider), amount);
     }
 
     @Override
@@ -64,7 +57,7 @@ public interface IChemicalStackIngredientCreator extends IIngredientCreator<Chem
         if (chemicals.length == 0) {
             throw new IllegalArgumentException("Attempted to create an ChemicalStackIngredients with no chemicals.");
         }
-        return from(chemicalCreator().of(chemicals), amount);
+        return from(IngredientCreatorAccess.chemical().of(chemicals), amount);
     }
 
     /**
@@ -97,7 +90,7 @@ public interface IChemicalStackIngredientCreator extends IIngredientCreator<Chem
      */
     default ChemicalStackIngredient from(TagKey<Chemical> tag, long amount) {
         Objects.requireNonNull(tag, "ChemicalStackIngredients cannot be created from a null tag.");
-        return from(chemicalCreator().tag(tag), amount);
+        return from(IngredientCreatorAccess.chemical().tag(tag), amount);
     }
 
     /**

@@ -3,7 +3,7 @@ package mekanism.common.item.gear;
 import java.util.List;
 import java.util.function.Consumer;
 import mekanism.api.providers.IChemicalProvider;
-import mekanism.common.item.interfaces.IGasItem;
+import mekanism.common.item.interfaces.IChemicalItem;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.StorageUtils;
@@ -17,17 +17,17 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class ItemGasArmor extends ItemSpecialArmor implements IGasItem, ICustomCreativeTabContents {
+public abstract class ItemChemicalArmor extends ItemSpecialArmor implements IChemicalItem, ICustomCreativeTabContents {
 
-    protected ItemGasArmor(Holder<ArmorMaterial> material, ArmorItem.Type armorType, Properties properties) {
+    protected ItemChemicalArmor(Holder<ArmorMaterial> material, ArmorItem.Type armorType, Properties properties) {
         super(material, armorType, properties.rarity(Rarity.RARE).setNoRepair().stacksTo(1));
     }
 
-    protected abstract IChemicalProvider getGasType();
+    protected abstract IChemicalProvider getChemicalType();
 
     @Override
     public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-        StorageUtils.addStoredGas(stack, tooltip, true, false);
+        StorageUtils.addStoredChemical(stack, tooltip, true, false);
     }
 
     @Override
@@ -47,6 +47,6 @@ public abstract class ItemGasArmor extends ItemSpecialArmor implements IGasItem,
 
     @Override
     public void addItems(Consumer<ItemStack> tabOutput) {
-        tabOutput.accept(ChemicalUtil.getFilledVariant(this, getGasType()));
+        tabOutput.accept(ChemicalUtil.getFilledVariant(this, getChemicalType()));
     }
 }

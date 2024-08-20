@@ -1199,7 +1199,6 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return IRadiationManager.INSTANCE.isRadiationEnabled() ? radiationScale : 0;
     }
 
-
     @Nullable
     public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener) {
         return null;
@@ -1208,7 +1207,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @NotNull
     @Override
     public List<IChemicalTank> getChemicalTanks(@Nullable Direction side) {
-        return chemicalHandlerManager != null ? chemicalHandlerManager.getContainers(side) : Collections.emptyList();
+        return chemicalHandlerManager == null ? Collections.emptyList() : chemicalHandlerManager.getContainers(side);
     }
 
     public void applyChemicalTanks(BlockEntity.DataComponentInput input, List<IChemicalTank> tanks, AttachedChemicals attachedChemicals) {

@@ -256,7 +256,7 @@ public class MekanismBlockTypes {
           .withGui(() -> MekanismContainerTypes.CHEMICAL_CRYSTALLIZER)
           .withSound(MekanismSounds.CHEMICAL_CRYSTALLIZER)
           .withEnergyConfig(MekanismConfig.usage.chemicalCrystallizer, MekanismConfig.storage.chemicalCrystallizer)
-          .withSideConfig(TransmissionType.ITEM, TransmissionType.ENERGY, TransmissionType.CHEMICAL)
+          .with(AttributeSideConfig.ADVANCED_ELECTRIC_MACHINE)
           .withCustomShape(BlockShapes.CHEMICAL_CRYSTALLIZER)
           .withComputerSupport("chemicalCrystallizer")
           .build();

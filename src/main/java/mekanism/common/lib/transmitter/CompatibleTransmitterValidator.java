@@ -37,7 +37,7 @@ public class CompatibleTransmitterValidator<ACCEPTOR, NETWORK extends DynamicNet
                 buffer = otherBuffer;
                 return true;
             }
-            return otherBuffer.isEmptyType() || buffer.equals(otherBuffer);
+            return otherBuffer.isEmptyType() || buffer == otherBuffer;
         }
 
         @Override

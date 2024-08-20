@@ -821,10 +821,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.TRANSMISSION_TYPE_CHEMICALS, "Chemicals");
         add(MekanismLang.TRANSMISSION_TYPE_ENERGY, "Energy");
         add(MekanismLang.TRANSMISSION_TYPE_FLUID, "Fluids");
-        add(MekanismLang.TRANSMISSION_TYPE_GAS, "Gases");
-        add(MekanismLang.TRANSMISSION_TYPE_INFUSION, "Infuse Types");
-        add(MekanismLang.TRANSMISSION_TYPE_PIGMENT, "Pigments");
-        add(MekanismLang.TRANSMISSION_TYPE_SLURRY, "Slurries");
         add(MekanismLang.TRANSMISSION_TYPE_ITEM, "Items");
         add(MekanismLang.TRANSMISSION_TYPE_HEAT, "Heat");
         //Chemical Attributes
@@ -1026,7 +1022,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.FLOWING, "Flowing: %1$s");
         add(MekanismLang.INVALID, "(Invalid)");
         add(MekanismLang.HAS_INVENTORY, "Inventory: %1$s");
-        add(MekanismLang.NO_GAS, "No gas stored.");
         add(MekanismLang.NO_CHEMICAL, "No chemicals stored.");
         add(MekanismLang.NO_FLUID_TOOLTIP, "No fluid stored.");
         add(MekanismLang.FREE_RUNNERS_MODE, "Runners Mode: %1$s");
@@ -1150,7 +1145,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.AUTO_PULL, "Auto-pull");
         add(MekanismLang.AUTO_EJECT, "Auto-eject");
         add(MekanismLang.AUTO_SORT, "Auto-sort");
-        //Gas mode
+        //Chemical mode
         add(MekanismLang.IDLE, "Idle");
         add(MekanismLang.DUMPING_EXCESS, "Dumping Excess");
         add(MekanismLang.DUMPING, "Dumping");
@@ -1233,10 +1228,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.ITEMS, "- Items (%1$s)");
         add(MekanismLang.BLOCKS, "- Blocks (%1$s)");
         add(MekanismLang.FLUIDS, "- Fluids (%1$s)");
-        add(MekanismLang.GASES, "- Gases (%1$s)");
-        add(MekanismLang.INFUSE_TYPES, "- Infuse Types (%1$s)");
-        add(MekanismLang.PIGMENTS, "- Pigments (%1$s)");
-        add(MekanismLang.SLURRIES, "- Slurries (%1$s)");
+        add(MekanismLang.CHEMICALS, "- Chemicals (%1$s)");
         add(MekanismLang.HEAT, "- Heat (%1$s)");
         add(MekanismLang.CONDUCTION, "Conduction: %1$s");
         add(MekanismLang.INSULATION, "Insulation: %1$s");
@@ -1584,17 +1576,17 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DESCRIPTION_PERSONAL_CHEST, "A 54-slot chest that can be opened from your own inventory.");
         add(MekanismLang.DESCRIPTION_CHARGEPAD, "A universal chargepad that can charge any energized item from any mod.");
         add(MekanismLang.DESCRIPTION_LOGISTICAL_SORTER, "A filter-based, advanced sorting machine that can auto-eject specified items out of and into adjacent inventories and Logistical Transporters.");
-        add(MekanismLang.DESCRIPTION_ROTARY_CONDENSENTRATOR, "A machine capable of converting gases into their fluid form and vice versa.");
+        add(MekanismLang.DESCRIPTION_ROTARY_CONDENSENTRATOR, "A machine capable of converting chemicals into their fluid form and vice versa.");
         add(MekanismLang.DESCRIPTION_CHEMICAL_INJECTION_CHAMBER, "An elite machine capable of processing ores into four shards, serving as the initial stage of 400% ore processing.");
-        add(MekanismLang.DESCRIPTION_ELECTROLYTIC_SEPARATOR, "A machine that uses the process of electrolysis to split apart a certain gas into two different gases.");
+        add(MekanismLang.DESCRIPTION_ELECTROLYTIC_SEPARATOR, "A machine that uses the process of electrolysis to split apart a certain fluid into two different chemicals.");
         add(MekanismLang.DESCRIPTION_PRECISION_SAWMILL, "A machine used to process logs and other wood-based items more efficiently, as well as to obtain sawdust.");
         add(MekanismLang.DESCRIPTION_CHEMICAL_DISSOLUTION_CHAMBER, "An ultimate machine used to chemically dissolve all impurities of an ore, leaving an unprocessed slurry behind.");
         add(MekanismLang.DESCRIPTION_CHEMICAL_WASHER, "An ultimate machine that cleans unprocessed slurry and prepares it for crystallization.");
         add(MekanismLang.DESCRIPTION_CHEMICAL_CRYSTALLIZER, "An ultimate machine used to crystallize purified ore slurry into ore crystals.");
         add(MekanismLang.DESCRIPTION_CHEMICAL_OXIDIZER, "A machine capable of oxidizing solid materials into gas phase.");
-        add(MekanismLang.DESCRIPTION_CHEMICAL_INFUSER, "A machine that produces a new gas by infusing two others.");
+        add(MekanismLang.DESCRIPTION_CHEMICAL_INFUSER, "A machine that produces a new chemicals by infusing two others.");
         add(MekanismLang.DESCRIPTION_SEISMIC_VIBRATOR, "A machine that uses seismic vibrations to provide information on differing layers of the world.");
-        add(MekanismLang.DESCRIPTION_PRESSURIZED_REACTION_CHAMBER, "An advanced machine that processes a solid, liquid and gaseous mixture and creates both a gaseous and solid product.");
+        add(MekanismLang.DESCRIPTION_PRESSURIZED_REACTION_CHAMBER, "An advanced machine that processes a solid, liquid and chemical mixture and creates both a chemical and solid product.");
         add(MekanismLang.DESCRIPTION_FLUID_TANK, "A handy, sturdy, portable tank that lets you carry multiple buckets of fluid wherever you please. Also doubles as a bucket!");
         add(MekanismLang.DESCRIPTION_FLUIDIC_PLENISHER, "A machine that is capable of creating entire lakes by filling ravines with fluids.");
         add(MekanismLang.DESCRIPTION_LASER, "An advanced form of linear energy transfer that utilizes an extremely collimated beam of light.");

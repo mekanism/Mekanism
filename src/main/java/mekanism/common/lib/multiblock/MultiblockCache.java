@@ -37,8 +37,6 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
     private final List<IInventorySlot> inventorySlots = new ArrayList<>();
     private final List<IExtendedFluidTank> fluidTanks = new ArrayList<>();
     private final List<IChemicalTank> chemicalTanks = new ArrayList<>();
-    @Deprecated(forRemoval = true)
-    private final List<IChemicalTank> slurryTanks = new ArrayList<>();
     private final List<IEnergyContainer> energyContainers = new ArrayList<>();
     private final List<IHeatCapacitor> heatCapacitors = new ArrayList<>();
 
@@ -118,6 +116,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
         return fluidTanks;
     }
 
+    @NotNull
     @Override
     public List<IChemicalTank> getChemicalTanks(@Nullable Direction side) {
         return chemicalTanks;
