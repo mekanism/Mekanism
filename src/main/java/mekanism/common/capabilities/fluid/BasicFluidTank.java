@@ -10,7 +10,6 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.functions.ConstantPredicates;
-import mekanism.common.util.NBTUtils;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -26,7 +25,7 @@ public class BasicFluidTank implements IExtendedFluidTank {
     public static final BiPredicate<@NotNull FluidStack, @NotNull AutomationType> alwaysTrueBi = ConstantPredicates.alwaysTrueBi();
     public static final BiPredicate<@NotNull FluidStack, @NotNull AutomationType> internalOnly = ConstantPredicates.internalOnly();
     public static final BiPredicate<@NotNull FluidStack, @NotNull AutomationType> notExternal = ConstantPredicates.notExternal();
-    public static final BiPredicate<@NotNull FluidStack, @NotNull AutomationType> manualOnly = (fluid, automationType) -> automationType == AutomationType.MANUAL;
+    public static final BiPredicate<@NotNull FluidStack, @NotNull AutomationType> manualOnly = ConstantPredicates.manualOnly();
 
     public static BasicFluidTank create(int capacity, @Nullable IContentsListener listener) {
         if (capacity < 0) {
@@ -344,10 +343,5 @@ public class BasicFluidTank implements IExtendedFluidTank {
             nbt.put(SerializationConstants.STORED, stored.save(provider));
         }
         return nbt;
-    }
-
-    @Override
-    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        NBTUtils.setFluidStackIfPresent(provider, nbt, SerializationConstants.STORED, this::setStackUnchecked);
     }
 }

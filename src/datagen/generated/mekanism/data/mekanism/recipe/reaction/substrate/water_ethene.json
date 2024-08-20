@@ -1,18 +1,18 @@
 {
   "type": "mekanism:reaction",
+  "chemical_input": {
+    "amount": 100,
+    "chemical": "mekanism:ethene"
+  },
+  "chemical_output": {
+    "amount": 10,
+    "id": "mekanism:oxygen"
+  },
   "duration": 400,
   "energy_required": 200,
   "fluid_input": {
     "amount": 200,
     "tag": "minecraft:water"
-  },
-  "gas_input": {
-    "amount": 100,
-    "gas": "mekanism:ethene"
-  },
-  "gas_output": {
-    "amount": 10,
-    "id": "mekanism:oxygen"
   },
   "item_input": {
     "count": 1,

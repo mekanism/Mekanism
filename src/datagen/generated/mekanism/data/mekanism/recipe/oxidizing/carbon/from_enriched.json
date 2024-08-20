@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:oxidizing",
+  "input": {
+    "count": 1,
+    "tag": "mekanism:enriched/carbon"
+  },
+  "output": {
+    "amount": 80,
+    "id": "mekanism:carbon"
+  }
+}

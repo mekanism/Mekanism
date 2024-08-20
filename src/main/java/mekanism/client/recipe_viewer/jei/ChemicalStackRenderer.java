@@ -13,7 +13,7 @@ import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.GuiUtils.TilingDirection;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
-import mekanism.common.registries.MekanismGases;
+import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.text.TextUtils;
 import mezz.jei.api.ingredients.IIngredientRenderer;
@@ -25,7 +25,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 
-public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements IIngredientRenderer<STACK> {
+public class ChemicalStackRenderer implements IIngredientRenderer<ChemicalStack> {
 
     private static final int TEXTURE_SIZE = 16;
     private static final int MIN_CHEMICAL_HEIGHT = 1; // ensure tiny amounts of chemical are still visible
@@ -52,7 +52,7 @@ public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements II
     }
 
     @Override
-    public void render(@NotNull GuiGraphics guiGraphics, @NotNull STACK stack) {
+    public void render(@NotNull GuiGraphics guiGraphics, ChemicalStack stack) {
         if (!stack.isEmpty()) {
             int desiredHeight = MathUtils.clampToInt(height * (double) stack.getAmount() / capacityMb);
             if (desiredHeight < MIN_CHEMICAL_HEIGHT) {
@@ -61,7 +61,7 @@ public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements II
             if (desiredHeight > height) {
                 desiredHeight = height;
             }
-            Chemical<?> chemical = stack.getChemical();
+            Chemical chemical = stack.getChemical();
             MekanismRenderer.color(guiGraphics, chemical);
             //Tile upwards and to the right as the majority of things we render are gauges which look better when tiling upwards
             GuiUtils.drawTiledSprite(guiGraphics, 0, 0, height, width, desiredHeight, MekanismRenderer.getSprite(chemical.getIcon()),
@@ -71,14 +71,14 @@ public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements II
     }
 
     @Override
-    public List<Component> getTooltip(@NotNull STACK stack, TooltipFlag tooltipFlag) {
-        Chemical<?> chemical = stack.getChemical();
+    public List<Component> getTooltip(ChemicalStack stack, TooltipFlag tooltipFlag) {
+        Chemical chemical = stack.getChemical();
         if (chemical.isEmptyType()) {
             return Collections.emptyList();
         }
         List<Component> tooltips = new ArrayList<>();
         tooltips.add(TextComponentUtil.build(chemical));
-        if (stack.getChemical() == MekanismGases.ETHENE.get()) {
+        if (stack.getChemical() == MekanismChemicals.ETHENE.get()) {
             //TODO - 1.22: Remove this
             tooltips.add(MekanismLang.ALSO_KNOWN_AS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismLang.ETHENE_ETHYLENE_ALIAS));
         }
@@ -92,7 +92,7 @@ public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements II
     }
 
     @Override
-    public Font getFontRenderer(Minecraft minecraft, @NotNull STACK stack) {
+    public Font getFontRenderer(Minecraft minecraft, ChemicalStack stack) {
         return minecraft.font;
     }
 

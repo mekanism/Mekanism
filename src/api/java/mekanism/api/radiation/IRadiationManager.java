@@ -6,9 +6,8 @@ import java.util.ServiceLoader;
 import mekanism.api.Chunk3D;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasHandler;
-import mekanism.api.chemical.gas.IGasTank;
+import mekanism.api.chemical.IChemicalHandler;
+import mekanism.api.chemical.IChemicalTank;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
@@ -135,28 +134,28 @@ public interface IRadiationManager {
     void radiate(LivingEntity entity, double magnitude);
 
     /**
-     * Helper to "dump" any radioactive gases stored in the tanks handled by the given gas handler.
+     * Helper to "dump" any radioactive chemicals stored in the tanks handled by the given chemical handler.
      *
      * @param pos              Location to dump radiation at.
-     * @param gasHandler       Gas handler to process the tanks of.
-     * @param clearRadioactive {@code true} to clear any gas tanks that have radioactive substances.
+     * @param chemicalHandler  Chemical handler to process the tanks of.
+     * @param clearRadioactive {@code true} to clear any chemical tanks that have radioactive substances.
      *
      * @throws RuntimeException if {@code clearRadioactive = true} and the passed in handler does not expect to have
-     *                          {@link IGasHandler#setChemicalInTank(int, ChemicalStack)} called wth an empty stack.
+     *                          {@link IChemicalHandler#setChemicalInTank(int, ChemicalStack)} called wth an empty stack.
      */
-    void dumpRadiation(GlobalPos pos, IGasHandler gasHandler, boolean clearRadioactive);
+    void dumpRadiation(GlobalPos pos, IChemicalHandler chemicalHandler, boolean clearRadioactive);
 
     /**
-     * Helper to "dump" any radioactive gases stored in the given gas tanks.
+     * Helper to "dump" any radioactive chemicals stored in the given chemical tanks.
      *
      * @param pos              Location to dump radiation at.
-     * @param gasTanks         Tanks to process.
-     * @param clearRadioactive {@code true} to clear any gas tanks that have radioactive substances.
+     * @param chemicalTanks    Tanks to process.
+     * @param clearRadioactive {@code true} to clear any chemical tanks that have radioactive substances.
      */
-    void dumpRadiation(GlobalPos pos, List<IGasTank> gasTanks, boolean clearRadioactive);
+    void dumpRadiation(GlobalPos pos, List<IChemicalTank> chemicalTanks, boolean clearRadioactive);
 
     /**
-     * Checks if the given {@link GasStack} is radioactive and if it is dumps a proportionate amount of radiation at the given location.
+     * Checks if the given {@link ChemicalStack} is radioactive and if it is dumps a proportionate amount of radiation at the given location.
      *
      * @param pos   Location to dump radiation at.
      * @param stack Stack to check.
@@ -165,5 +164,5 @@ public interface IRadiationManager {
      *
      * @apiNote If radiation is disabled this may still return {@code true}.
      */
-    boolean dumpRadiation(GlobalPos pos, GasStack stack);
+    boolean dumpRadiation(GlobalPos pos, ChemicalStack stack);
 }

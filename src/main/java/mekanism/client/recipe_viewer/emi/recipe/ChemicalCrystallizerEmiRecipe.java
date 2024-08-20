@@ -1,16 +1,13 @@
 package mekanism.client.recipe_viewer.emi.recipe;
 
 import dev.emi.emi.api.widget.WidgetHolder;
-import java.util.Collections;
 import java.util.List;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.merged.BoxedChemicalStack;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
-import mekanism.api.recipes.ingredients.SlurryStackIngredient;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.gauge.GaugeType;
-import mekanism.client.gui.element.gauge.GuiGasGauge;
+import mekanism.client.gui.element.gauge.GuiChemicalGauge;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
@@ -33,15 +30,14 @@ public class ChemicalCrystallizerEmiRecipe extends MekanismEmiHolderRecipe<Chemi
     public ChemicalCrystallizerEmiRecipe(MekanismEmiRecipeCategory category, RecipeHolder<ChemicalCrystallizerRecipe> recipeHolder) {
         super(category, recipeHolder);
         addItemOutputDefinition(recipe.getOutputDefinition());
-        ChemicalStackIngredient<?, ?, ?> input = recipe.getInput();
+        ChemicalStackIngredient input = recipe.getInput();
         addInputDefinition(input);
-        List<? extends ChemicalStack<?>> inputRepresentations = input.getRepresentations();
-        displayItems = input instanceof SlurryStackIngredient ingredient ? RecipeViewerUtils.getDisplayItems(ingredient) : Collections.emptyList();
+        List<ChemicalStack> inputRepresentations = input.getRepresentations();
+        displayItems = RecipeViewerUtils.getDisplayItems(input);
         oreInfo = new IOreInfo() {
-            @NotNull
             @Override
-            public BoxedChemicalStack getInputChemical() {
-                return inputRepresentations.isEmpty() ? BoxedChemicalStack.EMPTY : BoxedChemicalStack.box(RecipeViewerUtils.getCurrent(inputRepresentations));
+            public @NotNull ChemicalStack getInputChemical() {
+                return inputRepresentations.isEmpty() ? ChemicalStack.EMPTY : RecipeViewerUtils.getCurrent(inputRepresentations);
             }
 
             @Override
@@ -59,7 +55,8 @@ public class ChemicalCrystallizerEmiRecipe extends MekanismEmiHolderRecipe<Chemi
 
     @Override
     public void addWidgets(WidgetHolder widgetHolder) {
-        initTank(widgetHolder, GuiGasGauge.getDummy(GaugeType.STANDARD.with(DataType.INPUT), this, 7, 4), input(0));
+        GaugeType type = GaugeType.STANDARD.with(DataType.INPUT);
+        initTank(widgetHolder, GuiChemicalGauge.getDummy(type, this, 7, 4), input(0));
         addSlot(widgetHolder, SlotType.INPUT, 8, 65).with(SlotOverlay.PLUS);
         addSlot(widgetHolder, SlotType.OUTPUT, 129, 57, output(0)).recipeContext(this);
         addSimpleProgress(widgetHolder, ProgressType.LARGE_RIGHT, 53, 61, TileEntityChemicalCrystallizer.BASE_TICKS_REQUIRED);

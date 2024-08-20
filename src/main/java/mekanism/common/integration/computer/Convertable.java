@@ -30,7 +30,7 @@ public final class Convertable<RAW> {
         return of(value, BaseComputerHelper::convert);
     }
 
-    public static Convertable<ChemicalStack<?>> of(ChemicalStack<?> value) {
+    public static Convertable<ChemicalStack> of(ChemicalStack value) {
         return of(value, BaseComputerHelper::convert);
     }
 }

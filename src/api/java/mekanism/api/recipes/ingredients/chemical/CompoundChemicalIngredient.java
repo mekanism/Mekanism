@@ -2,15 +2,13 @@ package mekanism.api.recipes.ingredients.chemical;
 
 import com.mojang.serialization.MapCodec;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Stream;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
-import mekanism.api.recipes.ingredients.creator.IChemicalIngredientCreator;
+import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import net.neoforged.neoforge.common.crafting.CompoundIngredient;
 import net.neoforged.neoforge.common.util.NeoForgeExtraCodecs;
-import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -21,27 +19,20 @@ import org.jetbrains.annotations.Nullable;
  * @since 10.6.0
  */
 @NothingNullByDefault
-public abstract non-sealed class CompoundChemicalIngredient<CHEMICAL extends Chemical<CHEMICAL>, INGREDIENT extends IChemicalIngredient<CHEMICAL, INGREDIENT>>
-      extends ChemicalIngredient<CHEMICAL, INGREDIENT> {
+public non-sealed class CompoundChemicalIngredient extends ChemicalIngredient {
 
-    /**
-     * Helper to create the codec for compound ingredients.
-     */
-    @Internal
-    protected static <INGREDIENT extends IChemicalIngredient<?, INGREDIENT>, COMPOUND extends CompoundChemicalIngredient<?, INGREDIENT>> MapCodec<COMPOUND> codec(
-          IChemicalIngredientCreator<?, INGREDIENT> creator, Function<List<INGREDIENT>, COMPOUND> constructor) {
-        return NeoForgeExtraCodecs.aliasedFieldOf(creator.listCodecMultipleElements(), SerializationConstants.CHILDREN, SerializationConstants.INGREDIENTS).xmap(
-              constructor, CompoundChemicalIngredient::children
-        );
-    }
+    public static final MapCodec<CompoundChemicalIngredient> CODEC = NeoForgeExtraCodecs.aliasedFieldOf(
+          IngredientCreatorAccess.chemical().listCodecMultipleElements(), SerializationConstants.CHILDREN, SerializationConstants.INGREDIENTS
+    ).xmap(
+          CompoundChemicalIngredient::new, CompoundChemicalIngredient::children
+    );
 
-    private final List<INGREDIENT> children;
+    private final List<ChemicalIngredient> children;
 
     /**
      * @param children Ingredients to form a union from.
      */
-    @Internal
-    protected CompoundChemicalIngredient(List<INGREDIENT> children) {
+    public CompoundChemicalIngredient(List<ChemicalIngredient> children) {
         if (children.size() < 2) {
             throw new IllegalArgumentException("Compound chemical ingredients must have at least two children");
         }
@@ -49,15 +40,15 @@ public abstract non-sealed class CompoundChemicalIngredient<CHEMICAL extends Che
     }
 
     @Override
-    public final Stream<CHEMICAL> generateChemicals() {
+    public final Stream<Chemical> generateChemicals() {
         return children().stream()
-              .flatMap(IChemicalIngredient::generateChemicals)
+              .flatMap(ChemicalIngredient::generateChemicals)
               .distinct();//Ensure we don't include the same chemical multiple times
     }
 
     @Override
-    public final boolean test(CHEMICAL chemical) {
-        for (INGREDIENT child : children()) {
+    public final boolean test(Chemical chemical) {
+        for (ChemicalIngredient child : children()) {
             if (child.test(chemical)) {
                 return true;
             }
@@ -68,8 +59,13 @@ public abstract non-sealed class CompoundChemicalIngredient<CHEMICAL extends Che
     /**
      * {@return all the child ingredients that this ingredient is a union of}
      */
-    public final List<INGREDIENT> children() {
+    public final List<ChemicalIngredient> children() {
         return children;
+    }
+
+    @Override
+    public MapCodec<? extends ChemicalIngredient> codec() {
+        return CODEC;
     }
 
     @Override
@@ -84,6 +80,6 @@ public abstract non-sealed class CompoundChemicalIngredient<CHEMICAL extends Che
         } else if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        return children.equals(((CompoundChemicalIngredient<?, ?>) obj).children);
+        return children.equals(((CompoundChemicalIngredient) obj).children);
     }
 }

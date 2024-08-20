@@ -1,10 +1,7 @@
 package mekanism.common.tile.interfaces;
 
 import java.util.List;
-import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.chemical.infuse.IInfusionTank;
-import mekanism.api.chemical.pigment.IPigmentTank;
-import mekanism.api.chemical.slurry.ISlurryTank;
+import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.lib.transmitter.TransmissionType;
@@ -48,14 +45,8 @@ public interface ISideConfiguration {
     default DataType getActiveDataType(Object container) {
         ConfigInfo info = null;
         TileComponentConfig config = getConfig();
-        if (container instanceof IGasTank && config.supports(TransmissionType.GAS)) {
-            info = config.getConfig(TransmissionType.GAS);
-        } else if (container instanceof IInfusionTank && config.supports(TransmissionType.INFUSION)) {
-            info = config.getConfig(TransmissionType.INFUSION);
-        } else if (container instanceof IPigmentTank && config.supports(TransmissionType.PIGMENT)) {
-            info = config.getConfig(TransmissionType.PIGMENT);
-        } else if (container instanceof ISlurryTank && config.supports(TransmissionType.SLURRY)) {
-            info = config.getConfig(TransmissionType.SLURRY);
+        if (container instanceof IChemicalTank && config.supports(TransmissionType.CHEMICAL)) {
+            info = config.getConfig(TransmissionType.CHEMICAL);
         } else if (container instanceof IExtendedFluidTank && config.supports(TransmissionType.FLUID)) {
             info = config.getConfig(TransmissionType.FLUID);
         } else if (container instanceof IInventorySlot && config.supports(TransmissionType.ITEM)) {

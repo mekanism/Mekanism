@@ -3,10 +3,6 @@ package mekanism.common.integration.projecte;
 import java.util.HashMap;
 import java.util.Map;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.api.chemical.pigment.PigmentStack;
-import mekanism.api.chemical.slurry.SlurryStack;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.api.nss.NSSFluid;
 import moze_intel.projecte.api.nss.NSSItem;
@@ -56,7 +52,7 @@ public class IngredientHelper {
         }
     }
 
-    public void put(ChemicalStack<?> stack) {
+    public void put(ChemicalStack stack) {
         put(convertToNSS(stack), stack.getAmount());
     }
 
@@ -83,7 +79,7 @@ public class IngredientHelper {
         return addAsConversion(output, (int) outputAmount);
     }
 
-    public boolean addAsConversion(ChemicalStack<?> stack) {
+    public boolean addAsConversion(ChemicalStack stack) {
         return addAsConversion(convertToNSS(stack), stack.getAmount());
     }
 
@@ -95,16 +91,7 @@ public class IngredientHelper {
         return addAsConversion(NSSItem.createItem(stack), stack.getCount());
     }
 
-    private NormalizedSimpleStack convertToNSS(ChemicalStack<?> chemicalStack) {
-        if (chemicalStack instanceof GasStack stack) {
-            return NSSGas.createGas(stack);
-        } else if (chemicalStack instanceof InfusionStack stack) {
-            return NSSInfuseType.createInfuseType(stack);
-        } else if (chemicalStack instanceof PigmentStack stack) {
-            return NSSPigment.createPigment(stack);
-        } else if (chemicalStack instanceof SlurryStack stack) {
-            return NSSSlurry.createSlurry(stack);
-        }
-        throw new IllegalStateException("Unknown Chemical Type");
+    private NormalizedSimpleStack convertToNSS(ChemicalStack chemicalStack) {
+        return NSSChemical.createChemical(chemicalStack);
     }
 }

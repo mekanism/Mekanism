@@ -1,31 +1,23 @@
 package mekanism.api.datagen.recipe.builder;
 
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.pigment.Pigment;
-import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.basic.BasicChemicalInfuserRecipe;
 import mekanism.api.recipes.basic.BasicPigmentMixingRecipe;
-import mekanism.api.recipes.chemical.ChemicalChemicalToChemicalRecipe;
+import mekanism.api.recipes.ChemicalChemicalToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
-import mekanism.api.recipes.ingredients.GasStackIngredient;
-import mekanism.api.recipes.ingredients.PigmentStackIngredient;
 
 @NothingNullByDefault
-public class ChemicalChemicalToChemicalRecipeBuilder<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-      INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK, ?>> extends MekanismRecipeBuilder<ChemicalChemicalToChemicalRecipeBuilder<CHEMICAL, STACK, INGREDIENT>> {
+public class ChemicalChemicalToChemicalRecipeBuilder extends MekanismRecipeBuilder<ChemicalChemicalToChemicalRecipeBuilder> {
 
-    private final ChemicalChemicalToChemicalRecipeBuilder.Factory<CHEMICAL, STACK, INGREDIENT> factory;
-    private final INGREDIENT leftInput;
-    private final INGREDIENT rightInput;
-    private final STACK output;
+    private final ChemicalChemicalToChemicalRecipeBuilder.Factory factory;
+    private final ChemicalStackIngredient leftInput;
+    private final ChemicalStackIngredient rightInput;
+    private final ChemicalStack output;
 
-    protected ChemicalChemicalToChemicalRecipeBuilder(INGREDIENT leftInput, INGREDIENT rightInput, STACK output,
-          ChemicalChemicalToChemicalRecipeBuilder.Factory<CHEMICAL, STACK, INGREDIENT> factory) {
+    protected ChemicalChemicalToChemicalRecipeBuilder(ChemicalStackIngredient leftInput, ChemicalStackIngredient rightInput, ChemicalStack output,
+          ChemicalChemicalToChemicalRecipeBuilder.Factory factory) {
         this.leftInput = leftInput;
         this.rightInput = rightInput;
         this.output = output;
@@ -39,12 +31,12 @@ public class ChemicalChemicalToChemicalRecipeBuilder<CHEMICAL extends Chemical<C
      * @param rightInput Right input.
      * @param output     Output.
      */
-    public static ChemicalChemicalToChemicalRecipeBuilder<Gas, GasStack, GasStackIngredient> chemicalInfusing(GasStackIngredient leftInput, GasStackIngredient rightInput,
-          GasStack output) {
+    public static ChemicalChemicalToChemicalRecipeBuilder chemicalInfusing(ChemicalStackIngredient leftInput, ChemicalStackIngredient rightInput,
+          ChemicalStack output) {
         if (output.isEmpty()) {
-            throw new IllegalArgumentException("This chemical infusing recipe requires a non empty gas output.");
+            throw new IllegalArgumentException("This chemical infusing recipe requires a non empty chemical output.");
         }
-        return new ChemicalChemicalToChemicalRecipeBuilder<>(leftInput, rightInput, output, BasicChemicalInfuserRecipe::new);
+        return new ChemicalChemicalToChemicalRecipeBuilder(leftInput, rightInput, output, BasicChemicalInfuserRecipe::new);
     }
 
     /**
@@ -54,22 +46,22 @@ public class ChemicalChemicalToChemicalRecipeBuilder<CHEMICAL extends Chemical<C
      * @param rightInput Right input.
      * @param output     Output.
      */
-    public static ChemicalChemicalToChemicalRecipeBuilder<Pigment, PigmentStack, PigmentStackIngredient> pigmentMixing(PigmentStackIngredient leftInput,
-          PigmentStackIngredient rightInput, PigmentStack output) {
+    public static ChemicalChemicalToChemicalRecipeBuilder pigmentMixing(ChemicalStackIngredient leftInput,
+          ChemicalStackIngredient rightInput, ChemicalStack output) {
         if (output.isEmpty()) {
-            throw new IllegalArgumentException("This pigment mixing recipe requires a non empty gas output.");
+            throw new IllegalArgumentException("This pigment mixing recipe requires a non empty chemical output.");
         }
-        return new ChemicalChemicalToChemicalRecipeBuilder<>(leftInput, rightInput, output, BasicPigmentMixingRecipe::new);
+        return new ChemicalChemicalToChemicalRecipeBuilder(leftInput, rightInput, output, BasicPigmentMixingRecipe::new);
     }
 
     @Override
-    protected ChemicalChemicalToChemicalRecipe<CHEMICAL, STACK, INGREDIENT> asRecipe() {
+    protected ChemicalChemicalToChemicalRecipe asRecipe() {
         return factory.create(leftInput, rightInput, output);
     }
 
     @FunctionalInterface
-    public interface Factory<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK, ?>> {
+    public interface Factory {
 
-        ChemicalChemicalToChemicalRecipe<CHEMICAL, STACK, INGREDIENT> create(INGREDIENT leftInput, INGREDIENT rightInput, STACK output);
+        ChemicalChemicalToChemicalRecipe create(ChemicalStackIngredient leftInput, ChemicalStackIngredient rightInput, ChemicalStack output);
     }
 }

@@ -5,6 +5,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.common.capabilities.merged.ChemicalTankWrapper;
 import mekanism.common.capabilities.merged.MergedTank;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -12,20 +13,20 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Like {@link mekanism.api.chemical.merged.ChemicalTankWrapper}
+ * Like {@link ChemicalTankWrapper}
  */
 @NothingNullByDefault
 public class FluidTankWrapper implements IExtendedFluidTank {
 
-    private final IChemicalTank<?, ?>[] chemicalTanks;
+    private final IChemicalTank chemicalTank;
     private final IExtendedFluidTank internal;
     private final MergedTank mergedTank;
 
-    public FluidTankWrapper(MergedTank mergedTank, IExtendedFluidTank internal, IChemicalTank<?, ?>... chemicalTanks) {
+    public FluidTankWrapper(MergedTank mergedTank, IExtendedFluidTank internal, IChemicalTank chemicalTank) {
         //TODO: Do we want to short circuit it so that if we are not empty it allows for inserting before checking the insertCheck
         this.mergedTank = mergedTank;
         this.internal = internal;
-        this.chemicalTanks = chemicalTanks;
+        this.chemicalTank = chemicalTank;
     }
 
     public MergedTank getMergedTank() {
@@ -43,12 +44,7 @@ public class FluidTankWrapper implements IExtendedFluidTank {
     }
 
     private boolean canInsert() {
-        for (IChemicalTank<?, ?> otherTank : chemicalTanks) {
-            if (!otherTank.isEmpty()) {
-                return false;
-            }
-        }
-        return true;
+        return chemicalTank.isEmpty();
     }
 
     @Override

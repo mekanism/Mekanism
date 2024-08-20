@@ -1,7 +1,6 @@
 package mekanism.api.recipes.vanilla_input;
 
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 
 /**
@@ -10,11 +9,10 @@ import mekanism.api.chemical.ChemicalStack;
  * @since 10.6.0
  */
 @NothingNullByDefault
-public record BiChemicalRecipeInput<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>>(STACK left, STACK right) implements
-      ChemicalRecipeInput<CHEMICAL, STACK> {
+public record BiChemicalRecipeInput(ChemicalStack left, ChemicalStack right) implements ChemicalRecipeInput {
 
     @Override
-    public STACK getChemical(int index) {
+    public ChemicalStack getChemical(int index) {
         if (index == 0) {
             return left;
         } else if (index == 1) {

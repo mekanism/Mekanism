@@ -51,10 +51,7 @@ public class GuiDynamicTank extends GuiMekanismTile<TileEntityDynamicTank, Mekan
                     addStored(ret, multiblock.getFluidTank().getFluid(), FluidStack::getAmount);
                     capacity = multiblock.getTankCapacity();
                 }
-                case GAS -> addStored(ret, multiblock.getGasTank());
-                case INFUSION -> addStored(ret, multiblock.getInfusionTank());
-                case PIGMENT -> addStored(ret, multiblock.getPigmentTank());
-                case SLURRY -> addStored(ret, multiblock.getSlurryTank());
+                case CHEMICAL -> addStored(ret, multiblock.getChemicalTank());
             }
             ret.add(MekanismLang.CAPACITY.translate(""));
             ret.add(MekanismLang.GENERIC_MB.translate(TextUtils.format(capacity)));
@@ -65,7 +62,7 @@ public class GuiDynamicTank extends GuiMekanismTile<TileEntityDynamicTank, Mekan
         addRenderableWidget(new GuiMergedTankGauge<>(() -> tile.getMultiblock().mergedTank, tile::getMultiblock, GaugeType.MEDIUM, this, 7, 16, 34, 56));
     }
 
-    private void addStored(List<Component> ret, IChemicalTank<?, ?> tank) {
+    private void addStored(List<Component> ret, IChemicalTank tank) {
         addStored(ret, tank.getStack(), ChemicalStack::getAmount);
     }
 

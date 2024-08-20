@@ -1,18 +1,18 @@
 {
   "type": "mekanism:rotary",
+  "chemical_input": {
+    "amount": 1,
+    "chemical": "mekanism:lithium"
+  },
+  "chemical_output": {
+    "amount": 1,
+    "id": "mekanism:lithium"
+  },
   "fluid_input": {
     "amount": 1,
     "tag": "c:lithium"
   },
   "fluid_output": {
-    "amount": 1,
-    "id": "mekanism:lithium"
-  },
-  "gas_input": {
-    "amount": 1,
-    "gas": "mekanism:lithium"
-  },
-  "gas_output": {
     "amount": 1,
     "id": "mekanism:lithium"
   }

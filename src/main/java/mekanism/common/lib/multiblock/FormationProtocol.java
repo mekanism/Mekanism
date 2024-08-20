@@ -9,8 +9,8 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.attribute.GasAttributes;
+import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.attribute.ChemicalAttributes;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
@@ -117,13 +117,13 @@ public class FormationProtocol<T extends MultiblockData> {
                         world.addFreshEntity(new ItemEntity(world, dropPosition.x, dropPosition.y, dropPosition.z, rejectedItem));
                     }
                 }
-                if (!rejectContents.rejectedGases.isEmpty() && IRadiationManager.INSTANCE.isRadiationEnabled()) {
+                if (!rejectContents.rejectedChemicals.isEmpty() && IRadiationManager.INSTANCE.isRadiationEnabled()) {
                     //Dump any rejected gases, if they are radioactive vent them into the atmosphere
                     // we are able to skip this if radiation is disabled as it will just NO-OP further down the line
                     double radiation = 0;
-                    for (GasStack rejectedGas : rejectContents.rejectedGases) {
+                    for (ChemicalStack rejectedChemical : rejectContents.rejectedChemicals) {
                         //If we have a radioactive substance, then we need to set the tank to empty
-                        radiation += rejectedGas.mapAttributeToDouble(GasAttributes.Radiation.class, (stored, attribute) -> stored.getAmount() * attribute.getRadioactivity());
+                        radiation += rejectedChemical.mapAttributeToDouble(ChemicalAttributes.Radiation.class, (stored, attribute) -> stored.getAmount() * attribute.getRadioactivity());
                     }
                     if (radiation > 0) {
                         GlobalPos dumpLocation = GlobalPos.of(world.dimension(), structureFound.getBounds().getCenter());

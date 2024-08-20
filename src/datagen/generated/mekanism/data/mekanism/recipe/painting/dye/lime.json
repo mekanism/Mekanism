@@ -2,7 +2,7 @@
   "type": "mekanism:painting",
   "chemical_input": {
     "amount": 256,
-    "pigment": "mekanism:lime"
+    "chemical": "mekanism:lime"
   },
   "item_input": {
     "count": 1,
@@ -11,5 +11,6 @@
   "output": {
     "count": 1,
     "id": "minecraft:lime_dye"
-  }
+  },
+  "per_tick_usage": false
 }

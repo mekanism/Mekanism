@@ -1,8 +1,6 @@
 package mekanism.client.recipe_viewer.jei.machine;
 
-import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.recipes.chemical.ChemicalChemicalToChemicalRecipe;
+import mekanism.api.recipes.ChemicalChemicalToChemicalRecipe;
 import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiChemicalGauge;
@@ -17,32 +15,28 @@ import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.tile.component.config.DataType;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class ChemicalChemicalToChemicalRecipeCategory<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-      RECIPE extends ChemicalChemicalToChemicalRecipe<CHEMICAL, STACK, ?>> extends HolderRecipeCategory<RECIPE> {
+public class ChemicalChemicalToChemicalRecipeCategory extends HolderRecipeCategory<ChemicalChemicalToChemicalRecipe> {
 
     protected static final String LEFT_INPUT = "leftInput";
     protected static final String RIGHT_INPUT = "rightInput";
     protected static final String OUTPUT = "output";
 
-    private final IIngredientType<STACK> ingredientType;
     private final GuiGauge<?> leftInputGauge;
     private final GuiGauge<?> rightInputGauge;
     private final GuiGauge<?> outputGauge;
     protected final GuiProgress rightArrow;
     protected final GuiProgress leftArrow;
 
-    protected ChemicalChemicalToChemicalRecipeCategory(IGuiHelper helper, IRecipeViewerRecipeType<RECIPE> recipeType, IIngredientType<STACK> ingredientType) {
+    public ChemicalChemicalToChemicalRecipeCategory(IGuiHelper helper, IRecipeViewerRecipeType<ChemicalChemicalToChemicalRecipe> recipeType) {
         super(helper, recipeType);
-        this.ingredientType = ingredientType;
-        leftInputGauge = addElement(getGauge(GaugeType.STANDARD.with(DataType.INPUT_1), 25, 13));
-        outputGauge = addElement(getGauge(GaugeType.STANDARD.with(DataType.OUTPUT), 79, 4));
-        rightInputGauge = addElement(getGauge(GaugeType.STANDARD.with(DataType.INPUT_2), 133, 13));
+        leftInputGauge = addElement(GuiChemicalGauge.getDummy(GaugeType.STANDARD.with(DataType.INPUT_1), this, 25, 13));
+        outputGauge = addElement(GuiChemicalGauge.getDummy(GaugeType.STANDARD.with(DataType.OUTPUT), this, 79, 4));
+        rightInputGauge = addElement(GuiChemicalGauge.getDummy(GaugeType.STANDARD.with(DataType.INPUT_2), this, 133, 13));
         addSlot(SlotType.INPUT, 6, 56).with(SlotOverlay.MINUS);
         addSlot(SlotType.INPUT_2, 154, 56).with(SlotOverlay.MINUS);
         addSlot(SlotType.OUTPUT, 80, 65).with(SlotOverlay.PLUS);
@@ -52,17 +46,15 @@ public abstract class ChemicalChemicalToChemicalRecipeCategory<CHEMICAL extends 
         addElement(new GuiHorizontalPowerBar(this, RecipeViewerUtils.FULL_BAR, 115, 75));
     }
 
-    protected abstract GuiChemicalGauge<CHEMICAL, STACK, ?> getGauge(GaugeType type, int x, int y);
-
     @Override
-    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<RECIPE> recipeHolder, @NotNull IFocusGroup focusGroup) {
-        RECIPE recipe = recipeHolder.value();
+    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<ChemicalChemicalToChemicalRecipe> recipeHolder, @NotNull IFocusGroup focusGroup) {
+        ChemicalChemicalToChemicalRecipe recipe = recipeHolder.value();
         builder.setShapeless();
-        initChemical(builder, ingredientType, RecipeIngredientRole.INPUT, leftInputGauge, recipe.getLeftInput().getRepresentations())
+        initChemical(builder, RecipeIngredientRole.INPUT, leftInputGauge, recipe.getLeftInput().getRepresentations())
               .setSlotName(LEFT_INPUT);
-        initChemical(builder, ingredientType, RecipeIngredientRole.INPUT, rightInputGauge, recipe.getRightInput().getRepresentations())
+        initChemical(builder, RecipeIngredientRole.INPUT, rightInputGauge, recipe.getRightInput().getRepresentations())
               .setSlotName(RIGHT_INPUT);
-        initChemical(builder, ingredientType, RecipeIngredientRole.OUTPUT, outputGauge, recipe.getOutputDefinition())
+        initChemical(builder, RecipeIngredientRole.OUTPUT, outputGauge, recipe.getOutputDefinition())
               .setSlotName(OUTPUT);
     }
 }

@@ -3,14 +3,12 @@ package mekanism.common.recipe.lookup;
 import java.util.function.BiPredicate;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.recipes.ChemicalChemicalToChemicalRecipe;
 import mekanism.api.recipes.MekanismRecipe;
-import mekanism.api.recipes.chemical.ChemicalChemicalToChemicalRecipe;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.common.recipe.lookup.IRecipeLookupHandler.IRecipeTypedLookupHandler;
 import mekanism.common.recipe.lookup.cache.EitherSideInputRecipeCache;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.EitherSideChemical;
-import mekanism.common.util.ChemicalUtil;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
@@ -75,22 +73,21 @@ public interface IEitherSideRecipeLookupHandler<INPUT, RECIPE extends MekanismRe
     /**
      * Helper interface to make the generics that we have to pass to {@link IEitherSideRecipeLookupHandler} not as messy.
      */
-    interface EitherSideChemicalRecipeLookupHandler<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-          RECIPE extends ChemicalChemicalToChemicalRecipe<CHEMICAL, STACK, ? extends ChemicalStackIngredient<CHEMICAL, STACK, ?>>> extends
-          IEitherSideRecipeLookupHandler<STACK, RECIPE, EitherSideChemical<CHEMICAL, STACK, RECIPE>> {
+    interface EitherSideChemicalRecipeLookupHandler<RECIPE extends ChemicalChemicalToChemicalRecipe> extends
+          IEitherSideRecipeLookupHandler<ChemicalStack, RECIPE, EitherSideChemical<RECIPE>> {
 
         /**
          * Helper wrapper to convert a chemical to a chemical stack and pass it to {@link #containsRecipe(Object)} to make validity predicates easier and cleaner.
          */
-        default boolean containsRecipe(CHEMICAL input) {
-            return containsRecipe(ChemicalUtil.withAmount(input, 1));
+        default boolean containsRecipe(Chemical input) {
+            return containsRecipe(input.getStack(1));
         }
 
         /**
          * Helper wrapper to convert a chemical to a chemical stack and pass it to {@link #containsRecipe(Object)} to make validity predicates easier and cleaner.
          */
-        default boolean containsRecipe(CHEMICAL inputA, STACK inputB) {
-            return containsRecipe(ChemicalUtil.withAmount(inputA, 1), inputB);
+        default boolean containsRecipe(Chemical inputA, ChemicalStack inputB) {
+            return containsRecipe(inputA.getStack(1), inputB);
         }
     }
 }

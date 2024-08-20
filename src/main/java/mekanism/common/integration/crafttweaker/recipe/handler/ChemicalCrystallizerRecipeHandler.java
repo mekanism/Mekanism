@@ -7,7 +7,6 @@ import java.util.Optional;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTRecipeComponents;
-import mekanism.common.integration.crafttweaker.CrTRecipeComponents.ChemicalRecipeComponent;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.recipe.manager.ChemicalCrystallizerRecipeManager;
 import net.minecraft.core.RegistryAccess;
@@ -39,14 +38,8 @@ public class ChemicalCrystallizerRecipeHandler extends MekanismRecipeHandler<Che
     @Override
     public Optional<ChemicalCrystallizerRecipe> recompose(IRecipeManager<? super ChemicalCrystallizerRecipe> m, RegistryAccess registryAccess, IDecomposedRecipe recipe) {
         if (m instanceof ChemicalCrystallizerRecipeManager manager) {
-            Optional<? extends ChemicalStackIngredient<?, ?, ?>> found = Optional.empty();
-            for (ChemicalRecipeComponent<?, ?, ?, ?> chemicalComponent : CrTRecipeComponents.CHEMICAL_COMPONENTS) {
-                found = CrTUtils.getSingleIfPresent(recipe, chemicalComponent.input());
-                if (found.isPresent()) {
-                    break;
-                }
-            }
-            ChemicalStackIngredient<?, ?, ?> input = found.orElseThrow(() -> new IllegalArgumentException("No chemical input ingredient provided."));
+            Optional<? extends ChemicalStackIngredient> found = CrTUtils.getSingleIfPresent(recipe, CrTRecipeComponents.CHEMICAL.input());
+            ChemicalStackIngredient input = found.orElseThrow(() -> new IllegalArgumentException("No chemical input ingredient provided."));
             return Optional.of(manager.makeRecipe(input, recipe.getOrThrowSingle(CrTRecipeComponents.ITEM.output())));
         }
         return Optional.empty();

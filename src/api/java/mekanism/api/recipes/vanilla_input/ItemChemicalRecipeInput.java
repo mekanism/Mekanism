@@ -1,7 +1,6 @@
 package mekanism.api.recipes.vanilla_input;
 
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import net.minecraft.world.item.crafting.RecipeInput;
 
@@ -11,9 +10,9 @@ import net.minecraft.world.item.crafting.RecipeInput;
  * @since 10.6.0
  */
 @NothingNullByDefault
-public interface ItemChemicalRecipeInput<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> extends RecipeInput {
+public interface ItemChemicalRecipeInput extends RecipeInput {
 
-    STACK getChemical(int index);
+    ChemicalStack getChemical(int index);
 
     @Override
     default boolean isEmpty() {

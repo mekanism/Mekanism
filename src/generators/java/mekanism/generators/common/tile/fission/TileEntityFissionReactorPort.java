@@ -7,10 +7,7 @@ import java.util.Map;
 import java.util.function.Predicate;
 import mekanism.api.Action;
 import mekanism.api.IContentsListener;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasHandler;
-import mekanism.api.chemical.gas.IGasTank;
+import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
@@ -40,9 +37,9 @@ import org.jetbrains.annotations.Nullable;
 
 public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing {
 
-    private final Map<Direction, BlockCapabilityCache<IGasHandler, @Nullable Direction>> capabilityCaches = new EnumMap<>(Direction.class);
+    private final Map<Direction, BlockCapabilityCache<IChemicalHandler, @Nullable Direction>> capabilityCaches = new EnumMap<>(Direction.class);
     private final List<BlockCapability<?, @Nullable Direction>> portCapabilities = List.of(
-          Capabilities.GAS.block(),
+          Capabilities.CHEMICAL.block(),
           Capabilities.FLUID.block()
     );
     private final Predicate<FissionPortMode> MODE_MATCHES = mode -> mode == getMode();
@@ -67,8 +64,8 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
 
     @NotNull
     @Override
-    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks(IContentsListener listener) {
-        return side -> getMultiblock().getGasTanks(getMode());
+    public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener) {
+        return side -> getMultiblock().getChemicalTanks(getMode());
     }
 
     @NotNull
@@ -85,16 +82,16 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
 
     @Override
     public boolean persists(ContainerType<?, ?, ?> type) {
-        if (type == ContainerType.HEAT || type == ContainerType.GAS || type == ContainerType.FLUID) {
+        if (type == ContainerType.HEAT || type == ContainerType.CHEMICAL || type == ContainerType.FLUID) {
             return false;
         }
         return super.persists(type);
     }
 
-    public void addGasTargetCapability(List<AdvancedCapabilityOutputTarget<IGasHandler, FissionPortMode>> outputTargets, Direction side) {
-        BlockCapabilityCache<IGasHandler, @Nullable Direction> cache = capabilityCaches.get(side);
+    public void addChemicalTargetCapability(List<AdvancedCapabilityOutputTarget<IChemicalHandler, FissionPortMode>> outputTargets, Direction side) {
+        BlockCapabilityCache<IChemicalHandler, @Nullable Direction> cache = capabilityCaches.get(side);
         if (cache == null) {
-            cache = Capabilities.GAS.createCache((ServerLevel) level, worldPosition.relative(side), side.getOpposite());
+            cache = Capabilities.CHEMICAL.createCache((ServerLevel) level, worldPosition.relative(side), side.getOpposite());
             capabilityCaches.put(side, cache);
         }
         outputTargets.add(new AdvancedCapabilityOutputTarget<>(cache, MODE_MATCHES));

@@ -1,9 +1,6 @@
 package mekanism.client.recipe_viewer.jei;
 
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.api.chemical.pigment.PigmentStack;
-import mekanism.api.chemical.slurry.SlurryStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.integration.jei.IMekanismJEIHelper;
 import mezz.jei.api.ingredients.IIngredientHelper;
 
@@ -15,22 +12,7 @@ public class MekanismJEIHelper implements IMekanismJEIHelper {
     }
 
     @Override
-    public IIngredientHelper<GasStack> getGasStackHelper() {
-        return MekanismJEI.GAS_STACK_HELPER;
-    }
-
-    @Override
-    public IIngredientHelper<InfusionStack> getInfusionStackHelper() {
-        return MekanismJEI.INFUSION_STACK_HELPER;
-    }
-
-    @Override
-    public IIngredientHelper<PigmentStack> getPigmentStackHelper() {
-        return MekanismJEI.PIGMENT_STACK_HELPER;
-    }
-
-    @Override
-    public IIngredientHelper<SlurryStack> getSlurryStackHelper() {
-        return MekanismJEI.SLURRY_STACK_HELPER;
+    public IIngredientHelper<ChemicalStack> getChemicalStackHelper() {
+        return MekanismJEI.CHEMICAL_STACK_HELPER;
     }
 }

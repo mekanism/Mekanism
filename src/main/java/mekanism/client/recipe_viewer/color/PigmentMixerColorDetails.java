@@ -1,22 +1,20 @@
 package mekanism.client.recipe_viewer.color;
 
 import java.util.function.Supplier;
-import mekanism.api.chemical.pigment.Pigment;
-import mekanism.api.chemical.pigment.PigmentStack;
+import mekanism.api.chemical.ChemicalStack;
 
-public class PigmentMixerColorDetails extends RecipeViewerColorDetails<Pigment, PigmentStack> {
+public class PigmentMixerColorDetails extends RecipeViewerColorDetails {
 
-    private Supplier<PigmentStack> outputIngredient;
+    private Supplier<ChemicalStack> outputIngredient;
 
     public PigmentMixerColorDetails() {
-        super(() -> PigmentStack.EMPTY);
-        setOutputIngredient(empty);
+        setOutputIngredient(EMPTY);
     }
 
     @Override
     public void reset() {
         super.reset();
-        setOutputIngredient(empty);
+        setOutputIngredient(EMPTY);
     }
 
     @Override
@@ -29,7 +27,7 @@ public class PigmentMixerColorDetails extends RecipeViewerColorDetails<Pigment, 
         return getColor(outputIngredient);
     }
 
-    public void setOutputIngredient(Supplier<PigmentStack> outputIngredient) {
+    public void setOutputIngredient(Supplier<ChemicalStack> outputIngredient) {
         this.outputIngredient = outputIngredient;
     }
 }

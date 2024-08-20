@@ -2,7 +2,7 @@
   "type": "mekanism:painting",
   "chemical_input": {
     "amount": 32,
-    "pigment": "mekanism:light_gray"
+    "chemical": "mekanism:light_gray"
   },
   "item_input": {
     "type": "neoforge:difference",
@@ -17,5 +17,6 @@
   "output": {
     "count": 1,
     "id": "minecraft:light_gray_stained_glass"
-  }
+  },
+  "per_tick_usage": false
 }

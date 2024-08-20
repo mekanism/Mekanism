@@ -11,5 +11,6 @@
   "output": {
     "count": 1,
     "id": "minecraft:pink_concrete"
-  }
+  },
+  "per_tick_usage": true
 }

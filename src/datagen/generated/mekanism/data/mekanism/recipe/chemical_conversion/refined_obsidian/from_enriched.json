@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:chemical_conversion",
+  "input": {
+    "count": 1,
+    "tag": "mekanism:enriched/obsidian"
+  },
+  "output": {
+    "amount": 80,
+    "id": "mekanism:refined_obsidian"
+  }
+}

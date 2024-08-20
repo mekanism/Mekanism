@@ -1,18 +1,18 @@
 {
   "type": "mekanism:rotary",
+  "chemical_input": {
+    "amount": 1,
+    "chemical": "mekanism:sulfur_trioxide"
+  },
+  "chemical_output": {
+    "amount": 1,
+    "id": "mekanism:sulfur_trioxide"
+  },
   "fluid_input": {
     "amount": 1,
     "tag": "c:sulfur_trioxide"
   },
   "fluid_output": {
-    "amount": 1,
-    "id": "mekanism:sulfur_trioxide"
-  },
-  "gas_input": {
-    "amount": 1,
-    "gas": "mekanism:sulfur_trioxide"
-  },
-  "gas_output": {
     "amount": 1,
     "id": "mekanism:sulfur_trioxide"
   }

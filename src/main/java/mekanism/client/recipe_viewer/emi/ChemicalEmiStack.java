@@ -10,11 +10,6 @@ import java.util.stream.Collectors;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.ChemicalType;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.infuse.InfuseType;
-import mekanism.api.chemical.pigment.Pigment;
-import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.MekanismRenderer;
@@ -31,24 +26,26 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
 
 @NothingNullByDefault
-public abstract class ChemicalEmiStack<CHEMICAL extends Chemical<CHEMICAL>> extends EmiStack {
+public class ChemicalEmiStack extends EmiStack {
 
-    private final CHEMICAL chemical;
+    private final Chemical chemical;
 
-    protected ChemicalEmiStack(ChemicalStack<CHEMICAL> stack) {
+    public ChemicalEmiStack(ChemicalStack stack) {
         this(stack.getChemical(), stack.getAmount());
     }
 
-    protected ChemicalEmiStack(CHEMICAL chemical, long amount) {
+    public ChemicalEmiStack(Chemical chemical, DataComponentPatch ignored, long amount) {
+        this(chemical, amount);
+    }
+
+    public ChemicalEmiStack(Chemical chemical, long amount) {
         this.chemical = chemical;
         this.amount = amount;
     }
 
-    protected abstract ChemicalEmiStack<CHEMICAL> construct(CHEMICAL chemical, long amount);
-
     @Override
     public EmiStack copy() {
-        ChemicalEmiStack<CHEMICAL> e = construct(this.chemical, this.amount);
+        ChemicalEmiStack e = new ChemicalEmiStack(this.chemical, this.amount);
         e.setChance(this.chance);
         e.setRemainder(getRemainder().copy());
         e.comparison = this.comparison;
@@ -84,7 +81,7 @@ public abstract class ChemicalEmiStack<CHEMICAL extends Chemical<CHEMICAL>> exte
     }
 
     @Override
-    public CHEMICAL getKey() {
+    public Chemical getKey() {
         return chemical;
     }
 
@@ -124,82 +121,12 @@ public abstract class ChemicalEmiStack<CHEMICAL extends Chemical<CHEMICAL>> exte
         return chemical.getTextComponent();
     }
 
-    public static ChemicalEmiStack<?> create(ChemicalStack<?> stack) {
+    public static ChemicalEmiStack create(ChemicalStack stack) {
         return create(stack.getChemical(), stack.getAmount());
     }
 
-    public static ChemicalEmiStack<?> create(IChemicalProvider<?> chemicalProvider, long amount) {
-        Chemical<?> chemical = chemicalProvider.getChemical();
-        ChemicalType type = ChemicalType.getTypeFor(chemical);
-        return switch (type) {
-            case GAS -> new GasEmiStack((Gas) chemical, amount);
-            case INFUSION -> new InfusionEmiStack((InfuseType) chemical, amount);
-            case PIGMENT -> new PigmentEmiStack((Pigment) chemical, amount);
-            case SLURRY -> new SlurryEmiStack((Slurry) chemical, amount);
-        };
+    public static ChemicalEmiStack create(IChemicalProvider chemicalProvider, long amount) {
+        return new ChemicalEmiStack(chemicalProvider.getChemical(), amount);
     }
 
-    public static class GasEmiStack extends ChemicalEmiStack<Gas> {
-
-        public GasEmiStack(Gas gas, DataComponentPatch ignored, long amount) {
-            this(gas, amount);
-        }
-
-        public GasEmiStack(Gas gas, long amount) {
-            super(gas, amount);
-        }
-
-        @Override
-        protected GasEmiStack construct(Gas gas, long amount) {
-            return new GasEmiStack(gas, amount);
-        }
-    }
-
-    public static class InfusionEmiStack extends ChemicalEmiStack<InfuseType> {
-
-        public InfusionEmiStack(InfuseType infuseType, DataComponentPatch ignored, long amount) {
-            this(infuseType, amount);
-        }
-
-        public InfusionEmiStack(InfuseType infuseType, long amount) {
-            super(infuseType, amount);
-        }
-
-        @Override
-        protected InfusionEmiStack construct(InfuseType infuseType, long amount) {
-            return new InfusionEmiStack(infuseType, amount);
-        }
-    }
-
-    public static class PigmentEmiStack extends ChemicalEmiStack<Pigment> {
-
-        public PigmentEmiStack(Pigment pigment, DataComponentPatch ignored, long amount) {
-            this(pigment, amount);
-        }
-
-        public PigmentEmiStack(Pigment pigment, long amount) {
-            super(pigment, amount);
-        }
-
-        @Override
-        protected PigmentEmiStack construct(Pigment pigment, long amount) {
-            return new PigmentEmiStack(pigment, amount);
-        }
-    }
-
-    public static class SlurryEmiStack extends ChemicalEmiStack<Slurry> {
-
-        public SlurryEmiStack(Slurry slurry, DataComponentPatch ignored, long amount) {
-            this(slurry, amount);
-        }
-
-        public SlurryEmiStack(Slurry slurry, long amount) {
-            super(slurry, amount);
-        }
-
-        @Override
-        protected SlurryEmiStack construct(Slurry slurry, long amount) {
-            return new SlurryEmiStack(slurry, amount);
-        }
-    }
 }

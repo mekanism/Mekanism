@@ -4,7 +4,7 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.MekanismRecipeTypes;
-import mekanism.api.recipes.ingredients.GasStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
@@ -15,12 +15,12 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 @NothingNullByDefault
-public class BasicPurifyingRecipe extends BasicItemStackGasToItemStackRecipe {
+public class BasicPurifyingRecipe extends BasicItemStackChemicalToItemStackRecipe {
 
     private static final Holder<Item> PURIFICATION_CHAMBER = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "purification_chamber"));
 
-    public BasicPurifyingRecipe(ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output) {
-        super(itemInput, gasInput, output, MekanismRecipeTypes.TYPE_PURIFYING.value());
+    public BasicPurifyingRecipe(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ItemStack output, boolean perTickUsage) {
+        super(itemInput, chemicalInput, output, perTickUsage, MekanismRecipeTypes.TYPE_PURIFYING.value());
     }
 
     @Override

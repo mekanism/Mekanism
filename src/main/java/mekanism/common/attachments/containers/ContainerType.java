@@ -13,24 +13,15 @@ import java.util.function.Supplier;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.chemical.infuse.IInfusionTank;
-import mekanism.api.chemical.pigment.IPigmentTank;
-import mekanism.api.chemical.slurry.ISlurryTank;
+import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.Mekanism;
-import mekanism.common.attachments.containers.chemical.gas.AttachedGases;
-import mekanism.common.attachments.containers.chemical.gas.ComponentBackedGasHandler;
-import mekanism.common.attachments.containers.chemical.infuse.AttachedInfuseTypes;
-import mekanism.common.attachments.containers.chemical.infuse.ComponentBackedInfusionHandler;
-import mekanism.common.attachments.containers.chemical.pigment.AttachedPigments;
-import mekanism.common.attachments.containers.chemical.pigment.ComponentBackedPigmentHandler;
-import mekanism.common.attachments.containers.chemical.slurry.AttachedSlurries;
-import mekanism.common.attachments.containers.chemical.slurry.ComponentBackedSlurryHandler;
+import mekanism.common.attachments.containers.chemical.AttachedChemicals;
+import mekanism.common.attachments.containers.chemical.ComponentBackedChemicalHandler;
 import mekanism.common.attachments.containers.creator.IContainerCreator;
 import mekanism.common.attachments.containers.energy.AttachedEnergy;
 import mekanism.common.attachments.containers.energy.ComponentBackedEnergyHandler;
@@ -91,19 +82,46 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
     public static final ContainerType<IExtendedFluidTank, AttachedFluids, ComponentBackedFluidHandler> FLUID = new ContainerType<>(MekanismDataComponents.ATTACHED_FLUIDS,
           SerializationConstants.FLUID_TANKS, SerializationConstants.TANK, ComponentBackedFluidHandler::new, Capabilities.FLUID, AttachedFluids.EMPTY,
           TileEntityMekanism::getFluidTanks, TileEntityMekanism::collectFluidTanks, TileEntityMekanism::applyFluidTanks, TileEntityMekanism::canHandleFluid);
-    public static final ContainerType<IGasTank, AttachedGases, ComponentBackedGasHandler> GAS = new ContainerType<>(MekanismDataComponents.ATTACHED_GASES,
-          SerializationConstants.GAS_TANKS, SerializationConstants.TANK, ComponentBackedGasHandler::new, Capabilities.GAS, AttachedGases.EMPTY,
-          TileEntityMekanism::getGasTanks, TileEntityMekanism::collectGasTanks, TileEntityMekanism::applyGasTanks, TileEntityMekanism::canHandleGas);
-    public static final ContainerType<IInfusionTank, AttachedInfuseTypes, ComponentBackedInfusionHandler> INFUSION = new ContainerType<>(
-          MekanismDataComponents.ATTACHED_INFUSE_TYPES, SerializationConstants.INFUSION_TANKS, SerializationConstants.TANK, ComponentBackedInfusionHandler::new,
-          Capabilities.INFUSION, AttachedInfuseTypes.EMPTY, TileEntityMekanism::getInfusionTanks, TileEntityMekanism::collectInfusionTanks,
-          TileEntityMekanism::applyInfusionTanks, TileEntityMekanism::canHandleInfusion);
-    public static final ContainerType<IPigmentTank, AttachedPigments, ComponentBackedPigmentHandler> PIGMENT = new ContainerType<>(MekanismDataComponents.ATTACHED_PIGMENTS,
-          SerializationConstants.PIGMENT_TANKS, SerializationConstants.TANK, ComponentBackedPigmentHandler::new, Capabilities.PIGMENT, AttachedPigments.EMPTY,
-          TileEntityMekanism::getPigmentTanks, TileEntityMekanism::collectPigmentTanks, TileEntityMekanism::applyPigmentTanks, TileEntityMekanism::canHandlePigment);
-    public static final ContainerType<ISlurryTank, AttachedSlurries, ComponentBackedSlurryHandler> SLURRY = new ContainerType<>(MekanismDataComponents.ATTACHED_SLURRIES,
-          SerializationConstants.SLURRY_TANKS, SerializationConstants.TANK, ComponentBackedSlurryHandler::new, Capabilities.SLURRY, AttachedSlurries.EMPTY,
-          TileEntityMekanism::getSlurryTanks, TileEntityMekanism::collectSlurryTanks, TileEntityMekanism::applySlurryTanks, TileEntityMekanism::canHandleSlurry);
+
+    public static final ContainerType<IChemicalTank, AttachedChemicals, ComponentBackedChemicalHandler> CHEMICAL = new ContainerType<>(MekanismDataComponents.ATTACHED_CHEMICALS,
+          SerializationConstants.CHEMICAL_TANKS, SerializationConstants.TANK, ComponentBackedChemicalHandler::new, Capabilities.CHEMICAL, AttachedChemicals.EMPTY,
+          TileEntityMekanism::getChemicalTanks, TileEntityMekanism::collectChemicalTanks, TileEntityMekanism::applyChemicalTanks, TileEntityMekanism::canHandleChemicals) {
+        @Override//TODO - 1.22: remove backcompat, incl getLegacyX methods
+        public void readFrom(HolderLookup.Provider provider, CompoundTag tag, TileEntityMekanism tile) {
+            if (tag.contains(getTag(), Tag.TAG_LIST)) {
+                //has already saved with new format
+                super.readFrom(provider, tag, getContainers(tile));
+            } else {
+                if (tag.contains(SerializationConstants.GAS_TANKS)) {
+                    read(provider, tile.getLegacyGasTanks(), tag.getList(SerializationConstants.GAS_TANKS, Tag.TAG_COMPOUND));
+                }
+                if (tag.contains(SerializationConstants.INFUSION_TANKS)) {
+                    read(provider, tile.getLegacyInfuseTanks(), tag.getList(SerializationConstants.INFUSION_TANKS, Tag.TAG_COMPOUND));
+                }
+                if (tag.contains(SerializationConstants.PIGMENT_TANKS)) {
+                    read(provider, tile.getLegacyPigmentTanks(), tag.getList(SerializationConstants.PIGMENT_TANKS, Tag.TAG_COMPOUND));
+                }
+                if (tag.contains(SerializationConstants.SLURRY_TANKS)) {
+                    read(provider, tile.getLegacySlurryTanks(), tag.getList(SerializationConstants.SLURRY_TANKS, Tag.TAG_COMPOUND));
+                }
+            }
+        }
+
+        @Override//TODO - 1.22: remove backcompat. this one only for NON TileEntityMekanism
+        public void readFrom(HolderLookup.Provider provider, CompoundTag tag, List<IChemicalTank> containers) {
+            if (tag.contains(getTag(), Tag.TAG_LIST)) {
+                //has already saved with new format
+                super.readFrom(provider, tag, containers);
+            } else {
+                //this should be safe, as only one of them should have data per type
+                read(provider, containers, tag.getList(SerializationConstants.GAS_TANKS, Tag.TAG_COMPOUND));
+                read(provider, containers, tag.getList(SerializationConstants.INFUSION_TANKS, Tag.TAG_COMPOUND));
+                read(provider, containers, tag.getList(SerializationConstants.PIGMENT_TANKS, Tag.TAG_COMPOUND));
+                read(provider, containers, tag.getList(SerializationConstants.SLURRY_TANKS, Tag.TAG_COMPOUND));
+            }
+        }
+    };
+
     public static final ContainerType<IHeatCapacitor, AttachedHeat, ComponentBackedHeatHandler> HEAT = new ContainerType<>(MekanismDataComponents.ATTACHED_HEAT,
           SerializationConstants.HEAT_CAPACITORS, SerializationConstants.CONTAINER, ComponentBackedHeatHandler::new, null, AttachedHeat.EMPTY,
           TileEntityMekanism::getHeatCapacitors, TileEntityMekanism::collectHeatCapacitors, TileEntityMekanism::applyHeatCapacitors, TileEntityMekanism::canHandleHeat);
@@ -129,7 +147,7 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
     private final Predicate<TileEntityMekanism> canHandle;
     private final ATTACHED emptyAttachment;
     private final String containerTag;
-    private final String containerKey;
+    protected final String containerKey;
 
     private ContainerType(DeferredHolder<DataComponentType<?>, DataComponentType<ATTACHED>> component, String containerTag, String containerKey,
           HandlerConstructor<HANDLER> handlerConstructor, @Nullable IMultiTypeCapability<? super HANDLER, ?> capability, ATTACHED emptyAttachment,
@@ -296,7 +314,7 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
         return DataHandlerUtils.writeContents(provider, containers, containerKey);
     }
 
-    private void read(HolderLookup.Provider provider, List<CONTAINER> containers, @Nullable ListTag storedContainers) {
+    protected void read(HolderLookup.Provider provider, List<CONTAINER> containers, @Nullable ListTag storedContainers) {
         if (storedContainers != null) {
             DataHandlerUtils.readContents(provider, containers, storedContainers, containerKey);
         }

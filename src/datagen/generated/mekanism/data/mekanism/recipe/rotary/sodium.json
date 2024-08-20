@@ -1,18 +1,18 @@
 {
   "type": "mekanism:rotary",
+  "chemical_input": {
+    "amount": 1,
+    "chemical": "mekanism:sodium"
+  },
+  "chemical_output": {
+    "amount": 1,
+    "id": "mekanism:sodium"
+  },
   "fluid_input": {
     "amount": 1,
     "tag": "c:sodium"
   },
   "fluid_output": {
-    "amount": 1,
-    "id": "mekanism:sodium"
-  },
-  "gas_input": {
-    "amount": 1,
-    "gas": "mekanism:sodium"
-  },
-  "gas_output": {
     "amount": 1,
     "id": "mekanism:sodium"
   }

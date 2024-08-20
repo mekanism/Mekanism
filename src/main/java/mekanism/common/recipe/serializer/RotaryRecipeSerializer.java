@@ -9,12 +9,12 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.basic.BasicRotaryRecipe;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
-import mekanism.api.recipes.ingredients.GasStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
-import mekanism.common.recipe.ingredients.creator.GasStackIngredientCreator;
+import mekanism.common.recipe.ingredients.creator.ChemicalStackIngredientCreator;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -29,49 +29,49 @@ public class RotaryRecipeSerializer implements RecipeSerializer<BasicRotaryRecip
           ingredient -> ingredient == null ? DataResult.error(() -> "Fluid input may not be empty") : DataResult.success(ingredient)
     ).fieldOf(SerializationConstants.FLUID_INPUT).forGetter(BasicRotaryRecipe::getFluidInputRaw);
     private final RecordCodecBuilder<BasicRotaryRecipe, FluidStack> FLUID_OUTPUT_FIELD = FluidStack.CODEC.fieldOf(SerializationConstants.FLUID_OUTPUT).forGetter(BasicRotaryRecipe::getFluidOutputRaw);
-    private final RecordCodecBuilder<BasicRotaryRecipe, GasStackIngredient> GAS_INPUT_FIELD = GasStackIngredientCreator.INSTANCE.codec().validate(
-          ingredient -> ingredient == null ? DataResult.error(() -> "Gas input may not be empty") : DataResult.success(ingredient)
-    ).fieldOf(SerializationConstants.GAS_INPUT).forGetter(BasicRotaryRecipe::getGasInputRaw);
-    private final RecordCodecBuilder<BasicRotaryRecipe, GasStack> GAS_OUTPUT_FIELD = GasStack.CODEC.fieldOf(SerializationConstants.GAS_OUTPUT).forGetter(BasicRotaryRecipe::getGasOutputRaw);
+    private final RecordCodecBuilder<BasicRotaryRecipe, ChemicalStackIngredient> CHEMICAL_INPUT_FIELD = ChemicalStackIngredientCreator.INSTANCE.codec().validate(
+          ingredient -> ingredient == null ? DataResult.error(() -> "Chemical input may not be empty") : DataResult.success(ingredient)
+    ).fieldOf(SerializationConstants.CHEMICAL_INPUT).forGetter(BasicRotaryRecipe::getChemicalInputRaw);
+    private final RecordCodecBuilder<BasicRotaryRecipe, ChemicalStack> CHEMICAL_OUTPUT_FIELD = ChemicalStack.CODEC.fieldOf(SerializationConstants.CHEMICAL_OUTPUT).forGetter(BasicRotaryRecipe::getChemicalOutputRaw);
 
     private final StreamCodec<RegistryFriendlyByteBuf, BasicRotaryRecipe> streamCodec;
     private final MapCodec<BasicRotaryRecipe> codec;
 
-    public RotaryRecipeSerializer(Function4<FluidStackIngredient, GasStackIngredient, GasStack, FluidStack, BasicRotaryRecipe> bothWaysFactory,
-          BiFunction<FluidStackIngredient, GasStack, BasicRotaryRecipe> toGasFactory,
-          BiFunction<GasStackIngredient, FluidStack, BasicRotaryRecipe> toFluidFactory) {
+    public RotaryRecipeSerializer(Function4<FluidStackIngredient, ChemicalStackIngredient, ChemicalStack, FluidStack, BasicRotaryRecipe> bothWaysFactory,
+          BiFunction<FluidStackIngredient, ChemicalStack, BasicRotaryRecipe> toChemicalFactory,
+          BiFunction<ChemicalStackIngredient, FluidStack, BasicRotaryRecipe> toFluidFactory) {
         this.codec = NeoForgeExtraCodecs.withAlternative(
               RecordCodecBuilder.mapCodec(i -> i.group(
                     FLUID_INPUT_FIELD,
-                    GAS_INPUT_FIELD,
-                    GAS_OUTPUT_FIELD,
+                    CHEMICAL_INPUT_FIELD,
+                    CHEMICAL_OUTPUT_FIELD,
                     FLUID_OUTPUT_FIELD
               ).apply(i, bothWaysFactory)),
               NeoForgeExtraCodecs.withAlternative(
                     RecordCodecBuilder.mapCodec(i -> i.group(
                           FLUID_INPUT_FIELD,
-                          GAS_OUTPUT_FIELD
-                    ).apply(i, toGasFactory)),
+                          CHEMICAL_OUTPUT_FIELD
+                    ).apply(i, toChemicalFactory)),
                     RecordCodecBuilder.mapCodec(i -> i.group(
-                          GAS_INPUT_FIELD,
+                          CHEMICAL_INPUT_FIELD,
                           FLUID_OUTPUT_FIELD
                     ).apply(i, toFluidFactory))
               )
         );
         this.streamCodec = StreamCodec.composite(
-              ByteBufCodecs.optional(FluidToGas.STREAM_CODEC), recipe -> recipe.hasFluidToGas() ? Optional.of(new FluidToGas(recipe)) : Optional.empty(),
-              ByteBufCodecs.optional(GasToFluid.STREAM_CODEC), recipe -> recipe.hasGasToFluid() ? Optional.of(new GasToFluid(recipe)) : Optional.empty(),
+              ByteBufCodecs.optional(FluidToChemical.STREAM_CODEC), recipe -> recipe.hasFluidToChemical() ? Optional.of(new FluidToChemical(recipe)) : Optional.empty(),
+              ByteBufCodecs.optional(ChemicalToFluid.STREAM_CODEC), recipe -> recipe.hasChemicalToFluid() ? Optional.of(new ChemicalToFluid(recipe)) : Optional.empty(),
               (toGas, toFluid) -> {
                   if (toGas.isPresent()) {
-                      FluidToGas fluidToGas = toGas.get();
+                      FluidToChemical fluidToChemical = toGas.get();
                       if (toFluid.isPresent()) {
-                          GasToFluid gasToFluid = toFluid.get();
-                          return bothWaysFactory.apply(fluidToGas.input(), gasToFluid.input(), fluidToGas.output(), gasToFluid.output());
+                          ChemicalToFluid chemicalToFluid = toFluid.get();
+                          return bothWaysFactory.apply(fluidToChemical.input(), chemicalToFluid.input(), fluidToChemical.output(), chemicalToFluid.output());
                       }
-                      return toGasFactory.apply(fluidToGas.input(), fluidToGas.output());
+                      return toChemicalFactory.apply(fluidToChemical.input(), fluidToChemical.output());
                   } else if (toFluid.isPresent()) {
-                      GasToFluid gasToFluid = toFluid.get();
-                      return toFluidFactory.apply(gasToFluid.input(), gasToFluid.output());
+                      ChemicalToFluid chemicalToFluid = toFluid.get();
+                      return toFluidFactory.apply(chemicalToFluid.input(), chemicalToFluid.output());
                   }
                   throw new DecoderException("A recipe got sent with no conversion in either direction.");
               }
@@ -88,31 +88,31 @@ public class RotaryRecipeSerializer implements RecipeSerializer<BasicRotaryRecip
         return streamCodec;
     }
 
-    private record FluidToGas(FluidStackIngredient input, GasStack output) {
+    private record FluidToChemical(FluidStackIngredient input, ChemicalStack output) {
 
         //Note: This doesn't need to be optional gas, as we only use this if we have a fluid to gas recipe
-        public static final StreamCodec<RegistryFriendlyByteBuf, FluidToGas> STREAM_CODEC = StreamCodec.composite(
-              FluidStackIngredient.STREAM_CODEC, FluidToGas::input,
-              GasStack.STREAM_CODEC, FluidToGas::output,
-              FluidToGas::new
+        public static final StreamCodec<RegistryFriendlyByteBuf, FluidToChemical> STREAM_CODEC = StreamCodec.composite(
+              FluidStackIngredient.STREAM_CODEC, FluidToChemical::input,
+              ChemicalStack.STREAM_CODEC, FluidToChemical::output,
+              FluidToChemical::new
         );
 
-        private FluidToGas(BasicRotaryRecipe recipe) {
-            this(recipe.getFluidInput(), recipe.getGasOutputRaw());
+        private FluidToChemical(BasicRotaryRecipe recipe) {
+            this(recipe.getFluidInput(), recipe.getChemicalOutputRaw());
         }
     }
 
-    private record GasToFluid(GasStackIngredient input, FluidStack output) {
+    private record ChemicalToFluid(ChemicalStackIngredient input, FluidStack output) {
 
         //Note: This doesn't need to be optional fluid, as we only use this if we have a gas to fluid recipe
-        public static final StreamCodec<RegistryFriendlyByteBuf, GasToFluid> STREAM_CODEC = StreamCodec.composite(
-              IngredientCreatorAccess.gasStack().streamCodec(), GasToFluid::input,
-              FluidStack.STREAM_CODEC, GasToFluid::output,
-              GasToFluid::new
+        public static final StreamCodec<RegistryFriendlyByteBuf, ChemicalToFluid> STREAM_CODEC = StreamCodec.composite(
+              IngredientCreatorAccess.chemicalStack().streamCodec(), ChemicalToFluid::input,
+              FluidStack.STREAM_CODEC, ChemicalToFluid::output,
+              ChemicalToFluid::new
         );
 
-        private GasToFluid(BasicRotaryRecipe recipe) {
-            this(recipe.getGasInput(), recipe.getFluidOutputRaw());
+        private ChemicalToFluid(BasicRotaryRecipe recipe) {
+            this(recipe.getChemicalInput(), recipe.getFluidOutputRaw());
         }
     }
 }

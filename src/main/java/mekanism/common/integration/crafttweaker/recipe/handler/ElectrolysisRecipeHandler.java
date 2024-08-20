@@ -8,7 +8,7 @@ import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.common.integration.crafttweaker.CrTRecipeComponents;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.CrTUtils.UnaryTypePair;
-import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
+import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import mekanism.common.integration.crafttweaker.recipe.manager.ElectrolysisRecipeManager;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.crafting.Recipe;
@@ -39,7 +39,7 @@ public class ElectrolysisRecipeHandler extends MekanismRecipeHandler<Electrolysi
     @Override
     public Optional<ElectrolysisRecipe> recompose(IRecipeManager<? super ElectrolysisRecipe> m, RegistryAccess registryAccess, IDecomposedRecipe recipe) {
         if (m instanceof ElectrolysisRecipeManager manager) {
-            UnaryTypePair<ICrTGasStack> output = CrTUtils.getPair(recipe, CrTRecipeComponents.GAS.output());
+            UnaryTypePair<ICrTChemicalStack> output = CrTUtils.getPair(recipe, CrTRecipeComponents.CHEMICAL.output());
             return Optional.of(manager.makeRecipe(
                   recipe.getOrThrowSingle(CrTRecipeComponents.FLUID.input()),
                   output.a(),

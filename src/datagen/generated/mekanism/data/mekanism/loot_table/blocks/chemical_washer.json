@@ -23,7 +23,7 @@
                 "mekanism:energy",
                 "mekanism:items",
                 "mekanism:fluids",
-                "mekanism:slurries"
+                "mekanism:chemicals"
               ],
               "source": "block_entity"
             }

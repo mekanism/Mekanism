@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:chemical_conversion",
+  "input": {
+    "count": 1,
+    "tag": "c:ingots/osmium"
+  },
+  "output": {
+    "amount": 200,
+    "id": "mekanism:osmium"
+  }
+}

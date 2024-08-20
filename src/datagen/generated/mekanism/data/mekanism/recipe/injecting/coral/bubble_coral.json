@@ -11,5 +11,6 @@
   "output": {
     "count": 1,
     "id": "minecraft:bubble_coral"
-  }
+  },
+  "per_tick_usage": true
 }

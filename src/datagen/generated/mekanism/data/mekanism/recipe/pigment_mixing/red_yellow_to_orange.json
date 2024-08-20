@@ -2,7 +2,7 @@
   "type": "mekanism:pigment_mixing",
   "left_input": {
     "amount": 1,
-    "pigment": "mekanism:red"
+    "chemical": "mekanism:red"
   },
   "output": {
     "amount": 2,
@@ -10,6 +10,6 @@
   },
   "right_input": {
     "amount": 1,
-    "pigment": "mekanism:yellow"
+    "chemical": "mekanism:yellow"
   }
 }

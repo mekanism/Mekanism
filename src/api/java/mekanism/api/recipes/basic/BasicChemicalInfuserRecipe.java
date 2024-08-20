@@ -1,23 +1,23 @@
 package mekanism.api.recipes.basic;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.recipes.ChemicalInfuserRecipe;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.MekanismRecipeSerializers;
-import mekanism.api.recipes.ingredients.GasStackIngredient;
+import mekanism.api.recipes.MekanismRecipeTypes;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import org.jetbrains.annotations.Contract;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 @NothingNullByDefault
-public class BasicChemicalInfuserRecipe extends ChemicalInfuserRecipe implements IBasicChemicalOutput<Gas, GasStack> {
+public class BasicChemicalInfuserRecipe extends BasicChemicalChemicalToChemicalRecipe {
 
-    protected final GasStackIngredient leftInput;
-    protected final GasStackIngredient rightInput;
-    protected final GasStack output;
+    private static final Holder<Item> CHEMICAL_INFUSER = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "chemical_infuser"));
 
     /**
      * @param leftInput  Left input.
@@ -26,45 +26,18 @@ public class BasicChemicalInfuserRecipe extends ChemicalInfuserRecipe implements
      *
      * @apiNote The order of the inputs does not matter.
      */
-    public BasicChemicalInfuserRecipe(GasStackIngredient leftInput, GasStackIngredient rightInput, GasStack output) {
-        this.leftInput = Objects.requireNonNull(leftInput, "Left input cannot be null.");
-        this.rightInput = Objects.requireNonNull(rightInput, "Right input cannot be null.");
-        Objects.requireNonNull(output, "Output cannot be null.");
-        if (output.isEmpty()) {
-            throw new IllegalArgumentException("Output cannot be empty.");
-        }
-        this.output = output.copy();
+    public BasicChemicalInfuserRecipe(ChemicalStackIngredient leftInput, ChemicalStackIngredient rightInput, ChemicalStack output) {
+        super(leftInput, rightInput, output, MekanismRecipeTypes.TYPE_CHEMICAL_INFUSING.value());
     }
 
     @Override
-    public boolean test(GasStack input1, GasStack input2) {
-        return (leftInput.test(input1) && rightInput.test(input2)) || (rightInput.test(input1) && leftInput.test(input2));
+    public String getGroup() {
+        return "chemical_infuser";
     }
 
     @Override
-    @Contract(value = "_, _ -> new", pure = true)
-    public GasStack getOutput(GasStack input1, GasStack input2) {
-        return output.copy();
-    }
-
-    @Override
-    public GasStackIngredient getLeftInput() {
-        return leftInput;
-    }
-
-    @Override
-    public GasStackIngredient getRightInput() {
-        return rightInput;
-    }
-
-    @Override
-    public List<GasStack> getOutputDefinition() {
-        return Collections.singletonList(output);
-    }
-
-    @Override
-    public GasStack getOutputRaw() {
-        return output;
+    public ItemStack getToastSymbol() {
+        return new ItemStack(CHEMICAL_INFUSER);
     }
 
     @Override

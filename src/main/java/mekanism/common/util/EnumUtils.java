@@ -2,7 +2,6 @@ package mekanism.common.util;
 
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
-import mekanism.api.chemical.ChemicalType;
 import mekanism.api.text.EnumColor;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.content.blocktype.FactoryType;
@@ -165,11 +164,6 @@ public class EnumUtils {
      * Cached value of {@link EquipmentSlot#values()}. DO NOT MODIFY THIS LIST.
      */
     public static final EquipmentSlot[] EQUIPMENT_SLOT_TYPES = EquipmentSlot.values();
-
-    /**
-     * Cached value of {@link ChemicalType#values()}. DO NOT MODIFY THIS LIST.
-     */
-    public static final ChemicalType[] CHEMICAL_TYPES = ChemicalType.values();
 
     /**
      * Cached value of {@link EnumColor#values()}. DO NOT MODIFY THIS LIST.

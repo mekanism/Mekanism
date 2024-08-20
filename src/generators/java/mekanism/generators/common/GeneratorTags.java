@@ -1,7 +1,7 @@
 package mekanism.generators.common;
 
 import mekanism.api.MekanismAPI;
-import mekanism.api.chemical.gas.Gas;
+import mekanism.api.chemical.Chemical;
 import mekanism.common.Mekanism;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
@@ -28,17 +28,17 @@ public class GeneratorTags {
         }
     }
 
-    public static class Gases {
+    public static class Chemicals {
 
-        private Gases() {
+        private Chemicals() {
         }
 
-        public static final TagKey<Gas> DEUTERIUM = tag("deuterium");
-        public static final TagKey<Gas> TRITIUM = tag("tritium");
-        public static final TagKey<Gas> FUSION_FUEL = tag("fusion_fuel");
+        public static final TagKey<Chemical> DEUTERIUM = tag("deuterium");
+        public static final TagKey<Chemical> TRITIUM = tag("tritium");
+        public static final TagKey<Chemical> FUSION_FUEL = tag("fusion_fuel");
 
-        private static TagKey<Gas> tag(String name) {
-            return TagKey.create(MekanismAPI.GAS_REGISTRY_NAME, Mekanism.rl(name));
+        private static TagKey<Chemical> tag(String name) {
+            return TagKey.create(MekanismAPI.CHEMICAL_REGISTRY_NAME, Mekanism.rl(name));
         }
     }
 }

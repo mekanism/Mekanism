@@ -2,7 +2,7 @@
   "type": "mekanism:painting",
   "chemical_input": {
     "amount": 256,
-    "pigment": "mekanism:pink"
+    "chemical": "mekanism:pink"
   },
   "item_input": {
     "count": 1,
@@ -11,5 +11,6 @@
   "output": {
     "count": 1,
     "id": "minecraft:pink_dye"
-  }
+  },
+  "per_tick_usage": false
 }

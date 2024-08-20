@@ -11,5 +11,6 @@
   "output": {
     "count": 1,
     "id": "minecraft:mossy_cobblestone"
-  }
+  },
+  "per_tick_usage": false
 }

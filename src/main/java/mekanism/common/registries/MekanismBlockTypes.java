@@ -4,7 +4,6 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import java.util.function.Supplier;
 import mekanism.api.Upgrade;
-import mekanism.api.math.MathUtils;
 import mekanism.api.text.ILangEntry;
 import mekanism.api.tier.ITier;
 import mekanism.common.MekanismLang;
@@ -217,7 +216,7 @@ public class MekanismBlockTypes {
           .withGui(() -> MekanismContainerTypes.METALLURGIC_INFUSER)
           .withSound(MekanismSounds.METALLURGIC_INFUSER)
           .withEnergyConfig(MekanismConfig.usage.metallurgicInfuser, MekanismConfig.storage.metallurgicInfuser)
-          .withSideConfig(TransmissionType.ITEM, TransmissionType.INFUSION, TransmissionType.ENERGY)
+          .with(AttributeSideConfig.ADVANCED_ELECTRIC_MACHINE)
           .withCustomShape(BlockShapes.METALLURGIC_INFUSER)
           .withComputerSupport("metallurgicInfuser")
           .build();
@@ -247,7 +246,7 @@ public class MekanismBlockTypes {
           .withGui(() -> MekanismContainerTypes.PRESSURIZED_REACTION_CHAMBER)
           .withSound(MekanismSounds.PRESSURIZED_REACTION_CHAMBER)
           .withEnergyConfig(MekanismConfig.usage.pressurizedReactionBase, MekanismConfig.storage.pressurizedReactionBase)
-          .withSideConfig(TransmissionType.ITEM, TransmissionType.GAS, TransmissionType.FLUID, TransmissionType.ENERGY)
+          .withSideConfig(TransmissionType.ITEM, TransmissionType.CHEMICAL, TransmissionType.FLUID, TransmissionType.ENERGY)
           .withCustomShape(BlockShapes.PRESSURIZED_REACTION_CHAMBER)
           .withComputerSupport("pressurizedReactionChamber")
           .build();
@@ -257,7 +256,7 @@ public class MekanismBlockTypes {
           .withGui(() -> MekanismContainerTypes.CHEMICAL_CRYSTALLIZER)
           .withSound(MekanismSounds.CHEMICAL_CRYSTALLIZER)
           .withEnergyConfig(MekanismConfig.usage.chemicalCrystallizer, MekanismConfig.storage.chemicalCrystallizer)
-          .withSideConfig(TransmissionType.ITEM, TransmissionType.ENERGY, TransmissionType.GAS, TransmissionType.INFUSION, TransmissionType.PIGMENT, TransmissionType.SLURRY)
+          .with(AttributeSideConfig.ADVANCED_ELECTRIC_MACHINE)
           .withCustomShape(BlockShapes.CHEMICAL_CRYSTALLIZER)
           .withComputerSupport("chemicalCrystallizer")
           .build();
@@ -268,7 +267,7 @@ public class MekanismBlockTypes {
           .withSound(MekanismSounds.CHEMICAL_DISSOLUTION_CHAMBER)
           .withEnergyConfig(MekanismConfig.usage.chemicalDissolutionChamber, MekanismConfig.storage.chemicalDissolutionChamber)
           .with(AttributeUpgradeSupport.DEFAULT_ADVANCED_MACHINE_UPGRADES)
-          .withSideConfig(TransmissionType.ITEM, TransmissionType.GAS, TransmissionType.INFUSION, TransmissionType.PIGMENT, TransmissionType.SLURRY, TransmissionType.ENERGY)
+          .with(AttributeSideConfig.ADVANCED_ELECTRIC_MACHINE)
           .withCustomShape(BlockShapes.CHEMICAL_DISSOLUTION_CHAMBER)
           .withComputerSupport("chemicalDissolutionChamber")
           .build();
@@ -278,7 +277,7 @@ public class MekanismBlockTypes {
           .withGui(() -> MekanismContainerTypes.CHEMICAL_INFUSER)
           .withSound(MekanismSounds.CHEMICAL_INFUSER)
           .withEnergyConfig(MekanismConfig.usage.chemicalInfuser, MekanismConfig.storage.chemicalInfuser)
-          .withSideConfig(TransmissionType.GAS, TransmissionType.ITEM, TransmissionType.ENERGY)
+          .withSideConfig(TransmissionType.CHEMICAL, TransmissionType.ITEM, TransmissionType.ENERGY)
           .withCustomShape(BlockShapes.CHEMICAL_INFUSER)
           .withComputerSupport("chemicalInfuser")
           .build();
@@ -288,7 +287,7 @@ public class MekanismBlockTypes {
           .withGui(() -> MekanismContainerTypes.CHEMICAL_OXIDIZER)
           .withSound(MekanismSounds.CHEMICAL_OXIDIZER)
           .withEnergyConfig(MekanismConfig.usage.chemicalOxidizer, MekanismConfig.storage.chemicalOxidizer)
-          .withSideConfig(TransmissionType.ITEM, TransmissionType.GAS, TransmissionType.ENERGY)
+          .with(AttributeSideConfig.ADVANCED_ELECTRIC_MACHINE)
           .withCustomShape(BlockShapes.CHEMICAL_OXIDIZER)
           .withComputerSupport("chemicalOxidizer")
           .build();
@@ -298,7 +297,7 @@ public class MekanismBlockTypes {
           .withGui(() -> MekanismContainerTypes.CHEMICAL_WASHER)
           .withSound(MekanismSounds.CHEMICAL_WASHER)
           .withEnergyConfig(MekanismConfig.usage.chemicalWasher, MekanismConfig.storage.chemicalWasher)
-          .withSideConfig(TransmissionType.SLURRY, TransmissionType.FLUID, TransmissionType.ITEM, TransmissionType.ENERGY)
+          .withSideConfig(TransmissionType.CHEMICAL, TransmissionType.FLUID, TransmissionType.ITEM, TransmissionType.ENERGY)
           .withCustomShape(BlockShapes.CHEMICAL_WASHER)
           .withComputerSupport("chemicalWasher")
           .build();
@@ -308,7 +307,7 @@ public class MekanismBlockTypes {
           .withGui(() -> MekanismContainerTypes.ROTARY_CONDENSENTRATOR)
           .withSound(MekanismSounds.ROTARY_CONDENSENTRATOR)
           .withEnergyConfig(MekanismConfig.usage.rotaryCondensentrator, MekanismConfig.storage.rotaryCondensentrator)
-          .withSideConfig(TransmissionType.GAS, TransmissionType.FLUID, TransmissionType.ITEM, TransmissionType.ENERGY)
+          .withSideConfig(TransmissionType.CHEMICAL, TransmissionType.FLUID, TransmissionType.ITEM, TransmissionType.ENERGY)
           .withCustomShape(BlockShapes.ROTARY_CONDENSENTRATOR)
           .withComputerSupport("rotaryCondensentrator")
           .build();
@@ -318,7 +317,7 @@ public class MekanismBlockTypes {
           .withGui(() -> MekanismContainerTypes.ELECTROLYTIC_SEPARATOR)
           .withSound(MekanismSounds.ELECTROLYTIC_SEPARATOR)
           .withEnergyConfig(() -> 2 * MekanismConfig.general.FROM_H2.get(), MekanismConfig.storage.electrolyticSeparator)
-          .withSideConfig(TransmissionType.FLUID, TransmissionType.GAS, TransmissionType.ITEM, TransmissionType.ENERGY)
+          .withSideConfig(TransmissionType.FLUID, TransmissionType.CHEMICAL, TransmissionType.ITEM, TransmissionType.ENERGY)
           .withCustomShape(BlockShapes.ELECTROLYTIC_SEPARATOR)
           .withComputerSupport("electrolyticSeparator")
           .build();
@@ -388,7 +387,7 @@ public class MekanismBlockTypes {
           .without(AttributeParticleFX.class, AttributeUpgradeSupport.class)
           .withCustomShape(BlockShapes.SOLAR_NEUTRON_ACTIVATOR)
           .with(AttributeCustomSelectionBox.JSON)
-          .withSideConfig(TransmissionType.GAS, TransmissionType.ITEM)
+          .withSideConfig(TransmissionType.CHEMICAL, TransmissionType.ITEM)
           .with(AttributeHasBounding.ABOVE_ONLY)
           .withComputerSupport("solarNeutronActivator")
           .replace(Attributes.ACTIVE)
@@ -501,7 +500,7 @@ public class MekanismBlockTypes {
           .withGui(() -> MekanismContainerTypes.QUANTUM_ENTANGLOPORTER)
           .with(AttributeUpgradeSupport.ANCHOR_ONLY)
           .with(new AttributeStateFacing(BlockStateProperties.FACING), Attributes.INVENTORY, Attributes.SECURITY, Attributes.REDSTONE)
-          .withSideConfig(TransmissionType.ITEM, TransmissionType.FLUID, TransmissionType.GAS, TransmissionType.INFUSION, TransmissionType.PIGMENT, TransmissionType.SLURRY, TransmissionType.ENERGY, TransmissionType.HEAT)
+          .withSideConfig(TransmissionType.ITEM, TransmissionType.FLUID, TransmissionType.CHEMICAL, TransmissionType.ENERGY, TransmissionType.HEAT)
           .withCustomShape(BlockShapes.QUANTUM_ENTANGLOPORTER)
           .withComputerSupport("quantumEntangloporter")
           .build();
@@ -555,7 +554,7 @@ public class MekanismBlockTypes {
           .createMachine(() -> MekanismTileEntityTypes.ISOTOPIC_CENTRIFUGE, MekanismLang.DESCRIPTION_ISOTOPIC_CENTRIFUGE)
           .withGui(() -> MekanismContainerTypes.ISOTOPIC_CENTRIFUGE)
           .withEnergyConfig(MekanismConfig.usage.isotopicCentrifuge, MekanismConfig.storage.isotopicCentrifuge)
-          .withSideConfig(TransmissionType.GAS, TransmissionType.ITEM, TransmissionType.ENERGY)
+          .withSideConfig(TransmissionType.CHEMICAL, TransmissionType.ITEM, TransmissionType.ENERGY)
           .withSound(MekanismSounds.ISOTOPIC_CENTRIFUGE)
           .withCustomShape(BlockShapes.ISOTOPIC_CENTRIFUGE)
           .with(AttributeHasBounding.ABOVE_ONLY)
@@ -577,7 +576,7 @@ public class MekanismBlockTypes {
           .withEnergyConfig(MekanismConfig.usage.antiprotonicNucleosynthesizer, MekanismConfig.storage.antiprotonicNucleosynthesizer)
           .withSound(MekanismSounds.ANTIPROTONIC_NUCLEOSYNTHESIZER)
           .with(AttributeUpgradeSupport.MUFFLING_ONLY)
-          .withSideConfig(TransmissionType.ITEM, TransmissionType.GAS, TransmissionType.ENERGY)
+          .with(AttributeSideConfig.ADVANCED_ELECTRIC_MACHINE)
           .withCustomShape(BlockShapes.ANTIPROTONIC_NUCLEOSYNTHESIZER)
           .withComputerSupport("antiprotonicNucleosynthesizer")
           .build();
@@ -588,7 +587,7 @@ public class MekanismBlockTypes {
           .withSound(MekanismSounds.PIGMENT_EXTRACTOR)
           .withEnergyConfig(MekanismConfig.usage.pigmentExtractor, MekanismConfig.storage.pigmentExtractor)
           .with(AttributeUpgradeSupport.DEFAULT_MACHINE_UPGRADES)
-          .withSideConfig(TransmissionType.ITEM, TransmissionType.PIGMENT, TransmissionType.ENERGY)
+          .with(AttributeSideConfig.ADVANCED_ELECTRIC_MACHINE)
           .withComputerSupport("pigmentExtractor")
           .build();
     // Pigment Mixer
@@ -598,7 +597,7 @@ public class MekanismBlockTypes {
           .withSound(MekanismSounds.PIGMENT_MIXER)
           .withEnergyConfig(MekanismConfig.usage.pigmentMixer, MekanismConfig.storage.pigmentMixer)
           .with(AttributeUpgradeSupport.DEFAULT_MACHINE_UPGRADES)
-          .withSideConfig(TransmissionType.PIGMENT, TransmissionType.ITEM, TransmissionType.ENERGY)
+          .withSideConfig(TransmissionType.CHEMICAL, TransmissionType.ITEM, TransmissionType.ENERGY)
           .withCustomShape(BlockShapes.PIGMENT_MIXER)
           .with(AttributeCustomSelectionBox.JAVA)
           .with(AttributeHasBounding.ABOVE_ONLY)
@@ -611,7 +610,7 @@ public class MekanismBlockTypes {
           .withSound(MekanismSounds.PAINTING_MACHINE)
           .withEnergyConfig(MekanismConfig.usage.paintingMachine, MekanismConfig.storage.paintingMachine)
           .with(AttributeUpgradeSupport.DEFAULT_MACHINE_UPGRADES)
-          .withSideConfig(TransmissionType.ITEM, TransmissionType.PIGMENT, TransmissionType.ENERGY)
+          .with(AttributeSideConfig.ADVANCED_ELECTRIC_MACHINE)
           .withComputerSupport("paintingMachine")
           .build();
     // Dimensional Stabilizer
@@ -928,7 +927,7 @@ public class MekanismBlockTypes {
               .withGui(() -> MekanismContainerTypes.CHEMICAL_TANK)
               .withCustomShape(BlockShapes.CHEMICAL_TANK)
               .with(new AttributeTier<>(tier), new AttributeUpgradeable(upgradeBlock))
-              .withSideConfig(TransmissionType.GAS, TransmissionType.INFUSION, TransmissionType.PIGMENT, TransmissionType.SLURRY, TransmissionType.ITEM)
+              .withSideConfig(TransmissionType.CHEMICAL, TransmissionType.ITEM)
               .without(AttributeParticleFX.class, AttributeStateActive.class, AttributeUpgradeSupport.class)
               .withComputerSupport(tier, "ChemicalTank")
               .build();

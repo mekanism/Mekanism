@@ -2,7 +2,7 @@
   "type": "mekanism:painting",
   "chemical_input": {
     "amount": 256,
-    "pigment": "mekanism:light_blue"
+    "chemical": "mekanism:light_blue"
   },
   "item_input": {
     "type": "neoforge:difference",
@@ -17,5 +17,6 @@
   "output": {
     "count": 1,
     "id": "minecraft:light_blue_candle"
-  }
+  },
+  "per_tick_usage": false
 }

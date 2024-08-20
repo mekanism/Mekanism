@@ -1,18 +1,18 @@
 {
   "type": "mekanism:rotary",
+  "chemical_input": {
+    "amount": 1,
+    "chemical": "mekanism:chlorine"
+  },
+  "chemical_output": {
+    "amount": 1,
+    "id": "mekanism:chlorine"
+  },
   "fluid_input": {
     "amount": 1,
     "tag": "c:chlorine"
   },
   "fluid_output": {
-    "amount": 1,
-    "id": "mekanism:chlorine"
-  },
-  "gas_input": {
-    "amount": 1,
-    "gas": "mekanism:chlorine"
-  },
-  "gas_output": {
     "amount": 1,
     "id": "mekanism:chlorine"
   }

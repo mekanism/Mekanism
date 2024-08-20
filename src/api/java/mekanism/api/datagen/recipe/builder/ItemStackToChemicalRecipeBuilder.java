@@ -1,47 +1,38 @@
 package mekanism.api.datagen.recipe.builder;
 
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.infuse.InfuseType;
-import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.api.chemical.pigment.Pigment;
-import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.basic.BasicChemicalOxidizerRecipe;
-import mekanism.api.recipes.basic.BasicGasConversionRecipe;
-import mekanism.api.recipes.basic.BasicItemStackToInfuseTypeRecipe;
-import mekanism.api.recipes.basic.BasicItemStackToPigmentRecipe;
-import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
+import mekanism.api.recipes.basic.BasicChemicalConversionRecipe;
+import mekanism.api.recipes.basic.BasicPigmentExtractingRecipe;
+import mekanism.api.recipes.ItemStackToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 
 @NothingNullByDefault
-public class ItemStackToChemicalRecipeBuilder<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> extends
-      MekanismRecipeBuilder<ItemStackToChemicalRecipeBuilder<CHEMICAL, STACK>> {
+public class ItemStackToChemicalRecipeBuilder extends MekanismRecipeBuilder<ItemStackToChemicalRecipeBuilder> {
 
-    private final ItemStackToChemicalRecipeBuilder.Factory<CHEMICAL, STACK> factory;
+    private final ItemStackToChemicalRecipeBuilder.Factory factory;
     private final ItemStackIngredient input;
-    private final STACK output;
+    private final ChemicalStack output;
 
-    protected ItemStackToChemicalRecipeBuilder(ItemStackIngredient input, STACK output, ItemStackToChemicalRecipeBuilder.Factory<CHEMICAL, STACK> factory) {
+    protected ItemStackToChemicalRecipeBuilder(ItemStackIngredient input, ChemicalStack output, ItemStackToChemicalRecipeBuilder.Factory factory) {
         this.input = input;
         this.output = output;
         this.factory = factory;
     }
 
     /**
-     * Creates a Gas Conversion recipe builder.
+     * Creates a Chemical Conversion recipe builder.
      *
      * @param input  Input.
      * @param output Output.
      */
-    public static ItemStackToChemicalRecipeBuilder<Gas, GasStack> gasConversion(ItemStackIngredient input, GasStack output) {
+    public static ItemStackToChemicalRecipeBuilder chemicalConversion(ItemStackIngredient input, ChemicalStack output) {
         if (output.isEmpty()) {
-            throw new IllegalArgumentException("This gas conversion recipe requires a non empty gas output.");
+            throw new IllegalArgumentException("This chemical conversion recipe requires a non empty chemical output.");
         }
-        return new ItemStackToChemicalRecipeBuilder<>(input, output, BasicGasConversionRecipe::new);
+        return new ItemStackToChemicalRecipeBuilder(input, output, BasicChemicalConversionRecipe::new);
     }
 
     /**
@@ -50,24 +41,11 @@ public class ItemStackToChemicalRecipeBuilder<CHEMICAL extends Chemical<CHEMICAL
      * @param input  Input.
      * @param output Output.
      */
-    public static ItemStackToChemicalRecipeBuilder<Gas, GasStack> oxidizing(ItemStackIngredient input, GasStack output) {
+    public static ItemStackToChemicalRecipeBuilder oxidizing(ItemStackIngredient input, ChemicalStack output) {
         if (output.isEmpty()) {
-            throw new IllegalArgumentException("This oxidizing recipe requires a non empty gas output.");
+            throw new IllegalArgumentException("This oxidizing recipe requires a non empty chemical output.");
         }
-        return new ItemStackToChemicalRecipeBuilder<>(input, output, BasicChemicalOxidizerRecipe::new);
-    }
-
-    /**
-     * Creates an Infusion Conversion recipe builder.
-     *
-     * @param input  Input.
-     * @param output Output.
-     */
-    public static ItemStackToChemicalRecipeBuilder<InfuseType, InfusionStack> infusionConversion(ItemStackIngredient input, InfusionStack output) {
-        if (output.isEmpty()) {
-            throw new IllegalArgumentException("This infusion conversion recipe requires a non empty infusion output.");
-        }
-        return new ItemStackToChemicalRecipeBuilder<>(input, output, BasicItemStackToInfuseTypeRecipe::new);
+        return new ItemStackToChemicalRecipeBuilder(input, output, BasicChemicalOxidizerRecipe::new);
     }
 
     /**
@@ -76,21 +54,21 @@ public class ItemStackToChemicalRecipeBuilder<CHEMICAL extends Chemical<CHEMICAL
      * @param input  Input.
      * @param output Output.
      */
-    public static ItemStackToChemicalRecipeBuilder<Pigment, PigmentStack> pigmentExtracting(ItemStackIngredient input, PigmentStack output) {
+    public static ItemStackToChemicalRecipeBuilder pigmentExtracting(ItemStackIngredient input, ChemicalStack output) {
         if (output.isEmpty()) {
-            throw new IllegalArgumentException("This pigment extracting recipe requires a non empty pigment output.");
+            throw new IllegalArgumentException("This pigment extracting recipe requires a non empty chemical output.");
         }
-        return new ItemStackToChemicalRecipeBuilder<>(input, output, BasicItemStackToPigmentRecipe::new);
+        return new ItemStackToChemicalRecipeBuilder(input, output, BasicPigmentExtractingRecipe::new);
     }
 
     @Override
-    protected ItemStackToChemicalRecipe<CHEMICAL, STACK> asRecipe() {
+    protected ItemStackToChemicalRecipe asRecipe() {
         return factory.create(input, output);
     }
 
     @FunctionalInterface
-    public interface Factory<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> {
+    public interface Factory {
 
-        ItemStackToChemicalRecipe<CHEMICAL, STACK> create(ItemStackIngredient input, STACK output);
+        ItemStackToChemicalRecipe create(ItemStackIngredient input, ChemicalStack output);
     }
 }

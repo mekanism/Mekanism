@@ -14,7 +14,7 @@ public class MekanismEmiHelper implements IMekanismEmiHelper {
     }
 
     @Override
-    public EmiStack createEmiStack(Chemical<?> chemical, long size) {
+    public EmiStack createEmiStack(Chemical chemical, long size) {
         if (size < 1) {
             return EmiStack.EMPTY;
         }
@@ -22,8 +22,8 @@ public class MekanismEmiHelper implements IMekanismEmiHelper {
     }
 
     @Override
-    public Optional<ChemicalStack<?>> asChemicalStack(EmiStack stack) {
-        if (stack.getKey() instanceof Chemical<?> chemical) {
+    public Optional<ChemicalStack> asChemicalStack(EmiStack stack) {
+        if (stack.getKey() instanceof Chemical chemical) {
             return Optional.of(chemical.getStack(stack.getAmount()));
         }
         return Optional.empty();

@@ -1,8 +1,8 @@
 {
   "type": "mekanism:dissolution",
-  "gas_input": {
+  "chemical_input": {
     "amount": 1,
-    "gas": "mekanism:sulfuric_acid"
+    "chemical": "mekanism:sulfuric_acid"
   },
   "item_input": {
     "count": 3,
@@ -10,7 +10,7 @@
   },
   "output": {
     "amount": 2000,
-    "chemical_type": "slurry",
     "id": "mekanism:dirty_uranium"
-  }
+  },
+  "per_tick_usage": true
 }

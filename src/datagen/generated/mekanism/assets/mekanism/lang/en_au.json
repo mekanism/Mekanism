@@ -16,6 +16,8 @@
   "block.mekanism.energized_smelter": "Energised Smelter",
   "block.mekanism.pressurized_reaction_chamber": "Pressurised Reaction Chamber",
   "block.mekanism.ultimate_pressurized_tube": "Ultimate Pressurised Tube",
+  "chemical.mekanism.gray": "Grey Pigment",
+  "chemical.mekanism.light_gray": "Light Grey Pigment",
   "color.mekanism.dark_gray": "Grey",
   "color.mekanism.gray": "Light Grey",
   "configurator.mekanism.toggle_color": "Colour bumped to: %1$s",
@@ -51,8 +53,6 @@
   "module.mekanism.color_modulation_unit": "Colour Modulation Unit",
   "module.mekanism.gyroscopic_stabilization_unit": "Gyroscopic Stabilisation Unit",
   "module.mekanism.motorized_servo_unit": "Motorised Servo Unit",
-  "pigment.mekanism.gray": "Grey Pigment",
-  "pigment.mekanism.light_gray": "Light Grey Pigment",
   "sound_event.mekanism.tile.machine.antiprotonic_nucleosynthesizer": "Nucleosynthesiser hums",
   "sound_event.mekanism.tile.machine.chemical_crystallizer": "Crystalliser hums",
   "sound_event.mekanism.tile.machine.chemical_oxidizer": "Oxidiser hums"

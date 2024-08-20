@@ -15,7 +15,6 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.phys.Vec3;
@@ -49,10 +48,10 @@ public class RenderIndustrialTurbine extends MultiblockTileEntityRenderer<Turbin
             matrix.popPose();
         }
         profiler.pop();
-        if (!multiblock.gasTank.isEmpty() && multiblock.length() > 0) {
+        if (!multiblock.chemicalTank.isEmpty() && multiblock.length() > 0) {
             int height = multiblock.lowerVolume / (multiblock.length() * multiblock.width());
             if (height > 0) {
-                RenderData data = RenderData.Builder.create(multiblock.gasTank.getStack())
+                RenderData data = RenderData.Builder.create(multiblock.chemicalTank.getStack())
                       .of(multiblock)
                       .height(height)
                       .build();

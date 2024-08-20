@@ -5,94 +5,63 @@ import java.util.function.Supplier;
 import mekanism.api.AutomationType;
 import mekanism.api.RelativeSide;
 import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.chemical.gas.attribute.GasAttributes;
-import mekanism.api.chemical.infuse.IInfusionTank;
-import mekanism.api.chemical.infuse.InfuseType;
-import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.api.chemical.pigment.IPigmentTank;
-import mekanism.api.chemical.pigment.Pigment;
-import mekanism.api.chemical.pigment.PigmentStack;
-import mekanism.api.chemical.slurry.ISlurryTank;
-import mekanism.api.chemical.slurry.Slurry;
-import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.radiation.IRadiationManager;
-import mekanism.common.capabilities.holder.chemical.ConfigChemicalTankHolder.ConfigGasTankHolder;
-import mekanism.common.capabilities.holder.chemical.ConfigChemicalTankHolder.ConfigInfusionTankHolder;
-import mekanism.common.capabilities.holder.chemical.ConfigChemicalTankHolder.ConfigPigmentTankHolder;
-import mekanism.common.capabilities.holder.chemical.ConfigChemicalTankHolder.ConfigSlurryTankHolder;
 import mekanism.common.tile.component.TileComponentConfig;
 import net.minecraft.core.Direction;
 import org.jetbrains.annotations.NotNull;
 
-public class ChemicalTankHelper<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> {
+public class ChemicalTankHelper {
 
-    private final IChemicalTankHolder<CHEMICAL, STACK, TANK> slotHolder;
+    private final IChemicalTankHolder slotHolder;
     private boolean built;
 
-    private ChemicalTankHelper(IChemicalTankHolder<CHEMICAL, STACK, TANK> slotHolder) {
+    private ChemicalTankHelper(IChemicalTankHolder slotHolder) {
         this.slotHolder = slotHolder;
     }
 
-    public static BiPredicate<@NotNull Gas, @NotNull AutomationType> radioactiveInputTankPredicate(Supplier<IGasTank> outputTank) {
+    public static BiPredicate<@NotNull Chemical, @NotNull AutomationType> radioactiveInputTankPredicate(Supplier<IChemicalTank> outputTank) {
         //Allow extracting out of the input gas tank if it isn't external OR the output tank is empty AND the input is radioactive
         //Note: This only is the case if radiation is enabled as otherwise things like gauge droppers can work as the way to remove radioactive contents
-        return (type, automationType) -> automationType != AutomationType.EXTERNAL || (outputTank.get().isEmpty() && type.has(GasAttributes.Radiation.class) &&
+        return (type, automationType) -> automationType != AutomationType.EXTERNAL || (outputTank.get().isEmpty() && type.isRadioactive() &&
                                                                                        IRadiationManager.INSTANCE.isRadiationEnabled());
     }
 
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>>
-    ChemicalTankHelper<CHEMICAL, STACK, TANK> forSide(Supplier<Direction> facingSupplier) {
-        return new ChemicalTankHelper<CHEMICAL, STACK, TANK>(new ChemicalTankHolder<>(facingSupplier));
+    public static ChemicalTankHelper forSide(Supplier<Direction> facingSupplier) {
+        return new ChemicalTankHelper(new ChemicalTankHolder(facingSupplier));
     }
 
-    public static ChemicalTankHelper<Gas, GasStack, IGasTank> forSideGasWithConfig(Supplier<Direction> facingSupplier, Supplier<TileComponentConfig> configSupplier) {
-        return new ChemicalTankHelper<>(new ConfigGasTankHolder(facingSupplier, configSupplier));
+    public static ChemicalTankHelper forSideWithConfig(Supplier<Direction> facingSupplier, Supplier<TileComponentConfig> configSupplier) {
+        return new ChemicalTankHelper(new ConfigChemicalTankHolder(facingSupplier, configSupplier));
     }
 
-    public static ChemicalTankHelper<InfuseType, InfusionStack, IInfusionTank> forSideInfusionWithConfig(Supplier<Direction> facingSupplier, Supplier<TileComponentConfig> configSupplier) {
-        return new ChemicalTankHelper<>(new ConfigInfusionTankHolder(facingSupplier, configSupplier));
-    }
-
-    public static ChemicalTankHelper<Pigment, PigmentStack, IPigmentTank> forSidePigmentWithConfig(Supplier<Direction> facingSupplier, Supplier<TileComponentConfig> configSupplier) {
-        return new ChemicalTankHelper<>(new ConfigPigmentTankHolder(facingSupplier, configSupplier));
-    }
-
-    public static ChemicalTankHelper<Slurry, SlurryStack, ISlurryTank> forSideSlurryWithConfig(Supplier<Direction> facingSupplier, Supplier<TileComponentConfig> configSupplier) {
-        return new ChemicalTankHelper<>(new ConfigSlurryTankHolder(facingSupplier, configSupplier));
-    }
-
-    public TANK addTank(@NotNull TANK tank) {
+    public IChemicalTank addTank(IChemicalTank tank) {
         if (built) {
             throw new IllegalStateException("Builder has already built.");
         }
-        if (slotHolder instanceof ChemicalTankHolder<CHEMICAL, STACK, TANK> slotHolder) {
-            slotHolder.addTank(tank);
-        } else if (slotHolder instanceof ConfigChemicalTankHolder<CHEMICAL, STACK, TANK> slotHolder) {
-            slotHolder.addTank(tank);
+        if (slotHolder instanceof ChemicalTankHolder tankHolder) {
+            tankHolder.addTank(tank);
+        } else if (slotHolder instanceof ConfigChemicalTankHolder tankHolder) {
+            tankHolder.addTank(tank);
         } else {
             throw new IllegalArgumentException("Holder does not know how to add tanks");
         }
         return tank;
     }
 
-    public TANK addTank(@NotNull TANK tank, RelativeSide... sides) {
+    public IChemicalTank addTank(IChemicalTank tank, RelativeSide... sides) {
         if (built) {
             throw new IllegalStateException("Builder has already built.");
         }
-        if (slotHolder instanceof ChemicalTankHolder<CHEMICAL, STACK, TANK> slotHolder) {
-            slotHolder.addTank(tank, sides);
+        if (slotHolder instanceof ChemicalTankHolder tankHolder) {
+            tankHolder.addTank(tank, sides);
         } else {
             throw new IllegalArgumentException("Holder does not know how to add tanks on specific sides");
         }
         return tank;
     }
 
-    public IChemicalTankHolder<CHEMICAL, STACK, TANK> build() {
+    public IChemicalTankHolder build() {
         built = true;
         return slotHolder;
     }

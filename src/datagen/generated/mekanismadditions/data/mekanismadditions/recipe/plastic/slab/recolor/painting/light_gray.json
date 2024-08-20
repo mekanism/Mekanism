@@ -2,7 +2,7 @@
   "type": "mekanism:painting",
   "chemical_input": {
     "amount": 64,
-    "pigment": "mekanism:light_gray"
+    "chemical": "mekanism:light_gray"
   },
   "item_input": {
     "type": "neoforge:difference",
@@ -17,5 +17,6 @@
   "output": {
     "count": 1,
     "id": "mekanismadditions:light_gray_plastic_slab"
-  }
+  },
+  "per_tick_usage": false
 }

@@ -1,7 +1,6 @@
 package mekanism.common.integration.projecte.mappers;
 
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.merged.BoxedChemicalStack;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.common.integration.projecte.IngredientHelper;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -30,8 +29,8 @@ public class ChemicalCrystallizerRecipeMapper extends TypedMekanismRecipeMapper<
     @Override
     protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, ChemicalCrystallizerRecipe recipe) {
         boolean handled = false;
-        for (ChemicalStack<?> representation : recipe.getInput().getRepresentations()) {
-            ItemStack output = recipe.getOutput(BoxedChemicalStack.box(representation));
+        for (ChemicalStack representation : recipe.getInput().getRepresentations()) {
+            ItemStack output = recipe.getOutput(representation);
             if (!output.isEmpty()) {
                 IngredientHelper ingredientHelper = new IngredientHelper(mapper);
                 ingredientHelper.put(representation);

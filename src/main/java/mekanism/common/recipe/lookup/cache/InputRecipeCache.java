@@ -3,10 +3,9 @@ package mekanism.common.recipe.lookup.cache;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.MekanismRecipe;
-import mekanism.api.recipes.chemical.ChemicalChemicalToChemicalRecipe;
+import mekanism.api.recipes.ChemicalChemicalToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
@@ -37,10 +36,10 @@ public class InputRecipeCache {
         }
     }
 
-    public static class SingleChemical<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, RECIPE extends MekanismRecipe<?> & Predicate<STACK>>
-          extends SingleInputRecipeCache<STACK, ChemicalStackIngredient<CHEMICAL, STACK, ?>, RECIPE, ChemicalInputCache<CHEMICAL, STACK, RECIPE>> {
+    public static class SingleChemical<RECIPE extends MekanismRecipe<?> & Predicate<ChemicalStack>>
+          extends SingleInputRecipeCache<ChemicalStack, ChemicalStackIngredient, RECIPE, ChemicalInputCache<RECIPE>> {
 
-        public SingleChemical(MekanismRecipeType<?, RECIPE, ?> recipeType, Function<RECIPE, ChemicalStackIngredient<CHEMICAL, STACK, ?>> inputExtractor) {
+        public SingleChemical(MekanismRecipeType<?, RECIPE, ?> recipeType, Function<RECIPE, ChemicalStackIngredient> inputExtractor) {
             super(recipeType, inputExtractor, new ChemicalInputCache<>());
         }
     }
@@ -54,41 +53,38 @@ public class InputRecipeCache {
         }
     }
 
-    public static class ItemChemical<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, RECIPE extends MekanismRecipe<?> &
-          BiPredicate<ItemStack, STACK>> extends DoubleInputRecipeCache<ItemStack, ItemStackIngredient, STACK, ChemicalStackIngredient<CHEMICAL, STACK, ?>, RECIPE,
-          ItemInputCache<RECIPE>, ChemicalInputCache<CHEMICAL, STACK, RECIPE>> {
+    public static class ItemChemical<RECIPE extends MekanismRecipe<?> & BiPredicate<ItemStack, ChemicalStack>> extends
+          DoubleInputRecipeCache<ItemStack, ItemStackIngredient, ChemicalStack, ChemicalStackIngredient, RECIPE, ItemInputCache<RECIPE>, ChemicalInputCache<RECIPE>> {
 
         public ItemChemical(MekanismRecipeType<?, RECIPE, ?> recipeType, Function<RECIPE, ItemStackIngredient> inputAExtractor,
-              Function<RECIPE, ChemicalStackIngredient<CHEMICAL, STACK, ?>> inputBExtractor) {
+              Function<RECIPE, ChemicalStackIngredient> inputBExtractor) {
             super(recipeType, inputAExtractor, new ItemInputCache<>(), inputBExtractor, new ChemicalInputCache<>());
         }
     }
 
-    public static class FluidChemical<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, RECIPE extends MekanismRecipe<?> &
-          BiPredicate<FluidStack, STACK>> extends DoubleInputRecipeCache<FluidStack, FluidStackIngredient, STACK, ChemicalStackIngredient<CHEMICAL, STACK, ?>, RECIPE,
-          FluidInputCache<RECIPE>, ChemicalInputCache<CHEMICAL, STACK, RECIPE>> {
+    public static class FluidChemical<RECIPE extends MekanismRecipe<?> & BiPredicate<FluidStack, ChemicalStack>> extends
+          DoubleInputRecipeCache<FluidStack, FluidStackIngredient, ChemicalStack, ChemicalStackIngredient, RECIPE, FluidInputCache<RECIPE>, ChemicalInputCache<RECIPE>> {
 
         public FluidChemical(MekanismRecipeType<?, RECIPE, ?> recipeType, Function<RECIPE, FluidStackIngredient> inputAExtractor,
-              Function<RECIPE, ChemicalStackIngredient<CHEMICAL, STACK, ?>> inputBExtractor) {
+              Function<RECIPE, ChemicalStackIngredient> inputBExtractor) {
             super(recipeType, inputAExtractor, new FluidInputCache<>(), inputBExtractor, new ChemicalInputCache<>());
         }
     }
 
-    public static class EitherSideChemical<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-          RECIPE extends ChemicalChemicalToChemicalRecipe<CHEMICAL, STACK, ? extends ChemicalStackIngredient<CHEMICAL, STACK, ?>>>
-          extends EitherSideInputRecipeCache<STACK, ChemicalStackIngredient<CHEMICAL, STACK, ?>, RECIPE, ChemicalInputCache<CHEMICAL, STACK, RECIPE>> {
+    public static class EitherSideChemical<RECIPE extends ChemicalChemicalToChemicalRecipe>
+          extends EitherSideInputRecipeCache<ChemicalStack, ChemicalStackIngredient, RECIPE, ChemicalInputCache<RECIPE>> {
 
         public EitherSideChemical(MekanismRecipeType<?, RECIPE, ?> recipeType) {
             super(recipeType, ChemicalChemicalToChemicalRecipe::getLeftInput, ChemicalChemicalToChemicalRecipe::getRightInput, new ChemicalInputCache<>());
         }
     }
 
-    public static class ItemFluidChemical<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, RECIPE extends MekanismRecipe<?> &
-          TriPredicate<ItemStack, FluidStack, STACK>> extends TripleInputRecipeCache<ItemStack, ItemStackIngredient, FluidStack, FluidStackIngredient, STACK,
-          ChemicalStackIngredient<CHEMICAL, STACK, ?>, RECIPE, ItemInputCache<RECIPE>, FluidInputCache<RECIPE>, ChemicalInputCache<CHEMICAL, STACK, RECIPE>> {
+    public static class ItemFluidChemical<RECIPE extends MekanismRecipe<?> & TriPredicate<ItemStack, FluidStack, ChemicalStack>> extends
+          TripleInputRecipeCache<ItemStack, ItemStackIngredient, FluidStack, FluidStackIngredient, ChemicalStack, ChemicalStackIngredient, RECIPE, ItemInputCache<RECIPE>,
+                FluidInputCache<RECIPE>, ChemicalInputCache<RECIPE>> {
 
         public ItemFluidChemical(MekanismRecipeType<?, RECIPE, ?> recipeType, Function<RECIPE, ItemStackIngredient> inputAExtractor,
-              Function<RECIPE, FluidStackIngredient> inputBExtractor, Function<RECIPE, ChemicalStackIngredient<CHEMICAL, STACK, ?>> inputCExtractor) {
+              Function<RECIPE, FluidStackIngredient> inputBExtractor, Function<RECIPE, ChemicalStackIngredient> inputCExtractor) {
             super(recipeType, inputAExtractor, new ItemInputCache<>(), inputBExtractor, new FluidInputCache<>(), inputCExtractor, new ChemicalInputCache<>());
         }
     }

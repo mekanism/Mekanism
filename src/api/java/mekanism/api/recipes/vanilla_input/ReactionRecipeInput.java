@@ -1,8 +1,7 @@
 package mekanism.api.recipes.vanilla_input;
 
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.ChemicalStack;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 
@@ -12,7 +11,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
  * @since 10.6.0
  */
 @NothingNullByDefault
-public record ReactionRecipeInput(ItemStack item, FluidStack fluid, GasStack gas) implements FluidRecipeInput, ChemicalRecipeInput<Gas, GasStack> {
+public record ReactionRecipeInput(ItemStack item, FluidStack fluid, ChemicalStack chemical) implements FluidRecipeInput, ChemicalRecipeInput {
 
     @Override
     public ItemStack getItem(int index) {
@@ -31,11 +30,11 @@ public record ReactionRecipeInput(ItemStack item, FluidStack fluid, GasStack gas
     }
 
     @Override
-    public GasStack getChemical(int index) {
+    public ChemicalStack getChemical(int index) {
         if (index != 0) {
             throw new IllegalArgumentException("No chemical for index " + index);
         }
-        return gas;
+        return chemical;
     }
 
     @Override
@@ -45,6 +44,6 @@ public record ReactionRecipeInput(ItemStack item, FluidStack fluid, GasStack gas
 
     @Override
     public boolean isEmpty() {
-        return item.isEmpty() || fluid.isEmpty() || gas.isEmpty();
+        return item.isEmpty() || fluid.isEmpty() || chemical.isEmpty();
     }
 }

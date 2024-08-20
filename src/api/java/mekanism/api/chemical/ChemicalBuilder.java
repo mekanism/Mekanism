@@ -3,16 +3,25 @@ package mekanism.api.chemical;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
+import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.attribute.ChemicalAttribute;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
+import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class ChemicalBuilder<CHEMICAL extends Chemical<CHEMICAL>, BUILDER extends ChemicalBuilder<CHEMICAL, BUILDER>> {
+public class ChemicalBuilder {
 
     private final Map<Class<? extends ChemicalAttribute>, ChemicalAttribute> attributeMap = new Object2ObjectOpenHashMap<>();
     private final ResourceLocation texture;
     private int tint = 0xFFFFFF;
+    @Nullable
+    private TagKey<Item> oreTag;
+    private boolean isGaseous = false;
 
     protected ChemicalBuilder(ResourceLocation texture) {
         this.texture = texture;
@@ -23,9 +32,9 @@ public class ChemicalBuilder<CHEMICAL extends Chemical<CHEMICAL>, BUILDER extend
      *
      * @param attribute Attribute to add.
      */
-    public BUILDER with(ChemicalAttribute attribute) {
+    public ChemicalBuilder with(ChemicalAttribute attribute) {
         attributeMap.put(attribute.getClass(), attribute);
-        return self();
+        return this;
     }
 
     /**
@@ -47,9 +56,9 @@ public class ChemicalBuilder<CHEMICAL extends Chemical<CHEMICAL>, BUILDER extend
      *
      * @param tint Color in RRGGBB format
      */
-    public BUILDER tint(int tint) {
+    public ChemicalBuilder tint(int tint) {
         this.tint = tint;
-        return self();
+        return this;
     }
 
     /**
@@ -61,8 +70,110 @@ public class ChemicalBuilder<CHEMICAL extends Chemical<CHEMICAL>, BUILDER extend
         return tint;
     }
 
-    @SuppressWarnings("unchecked")
-    private BUILDER self() {
-        return (BUILDER) this;
+    /**
+     * Sets the tag that represents the ore that goes with this {@link Chemical}.
+     *
+     * @param oreTagLocation {@link ResourceLocation} of the item tag representing the ore.
+     */
+    public ChemicalBuilder ore(ResourceLocation oreTagLocation) {
+        return ore(ItemTags.create(Objects.requireNonNull(oreTagLocation)));
+    }
+
+    /**
+     * Sets the tag that represents the ore that goes with this {@link Chemical}.
+     *
+     * @param oreTag Tag representing the ore.
+     */
+    public ChemicalBuilder ore(TagKey<Item> oreTag) {
+        this.oreTag = Objects.requireNonNull(oreTag);
+        return this;
+    }
+
+    /**
+     * Gets the item tag that represents the ore that goes with this {@link Chemical}.
+     */
+    @Nullable
+    public TagKey<Item> getOreTag() {
+        return oreTag;
+    }
+
+    /**
+     * Set this chemical should render as a gas. Omit to leave as fluid-like
+     *
+     * @since 10.7.0
+     */
+    public ChemicalBuilder gaseous() {
+        this.isGaseous = true;
+        return this;
+    }
+
+    /**
+     * {@return whether this chemical should render as a gas or more like a fluid}
+     *
+     * @since 10.7.0
+     */
+    public boolean isGaseous() {
+        return isGaseous;
+    }
+
+    /**
+     * Creates a builder for registering a {@link Chemical}, with a given texture.
+     *
+     * @param texture A {@link ResourceLocation} representing the texture this {@link Chemical} will use.
+     *
+     * @return A builder for creating a {@link Chemical}.
+     *
+     * @apiNote The texture will be automatically stitched to the block texture atlas.
+     * <br>
+     * It is recommended to override {@link Chemical#getColorRepresentation()} if this builder method is not used in combination with {@link #tint(int)} due to the
+     * texture not needing tinting.
+     */
+    public static ChemicalBuilder builder(ResourceLocation texture) {
+        return new ChemicalBuilder(Objects.requireNonNull(texture));
+    }
+
+    /**
+     * Creates a builder for registering a {@link Chemical}, using our default Gas texture.
+     *
+     * @return A builder for creating a {@link Chemical}.
+     */
+    public static ChemicalBuilder builder() {
+        return builder(ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "liquid/liquid"));
+    }
+
+    /**
+     * Creates a builder for registering a {@link Chemical}, using our default clean Slurry texture.
+     *
+     * @return A builder for creating a {@link Chemical}.
+     */
+    public static ChemicalBuilder cleanSlurry() {
+        return builder(ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "slurry/clean"));
+    }
+
+    /**
+     * Creates a builder for registering a {@link Chemical}, using our default dirty Slurry texture.
+     *
+     * @return A builder for creating a {@link Chemical}.
+     */
+    public static ChemicalBuilder dirtySlurry() {
+        return builder(ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "slurry/dirty"));
+    }
+
+    /**
+     * Creates a builder for registering an {@link Chemical}, using our default Infuse Type texture.
+     *
+     * @return A builder for creating an {@link Chemical}.
+     */
+    public static ChemicalBuilder infuseType() {
+        return builder(ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "infuse_type/base"));
+    }
+
+    /**
+     * Creates a builder for registering a {@link Chemical}, using our default Pigment texture.
+     *
+     * @return A builder for creating a {@link Chemical}.
+     */
+    public static ChemicalBuilder pigment() {
+        return builder(ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "pigment/base"));
     }
 }

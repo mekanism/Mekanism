@@ -1,10 +1,10 @@
 {
   "type": "mekanism:nucleosynthesizing",
-  "duration": 200,
-  "gas_input": {
+  "chemical_input": {
     "amount": 1,
-    "gas": "mekanism:antimatter"
+    "chemical": "mekanism:antimatter"
   },
+  "duration": 200,
   "item_input": {
     "count": 1,
     "item": "minecraft:bow"
@@ -12,5 +12,6 @@
   "output": {
     "count": 1,
     "id": "minecraft:crossbow"
-  }
+  },
+  "per_tick_usage": false
 }

@@ -17,16 +17,8 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.chemical.infuse.IInfusionTank;
-import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.api.chemical.merged.MergedChemicalTank;
-import mekanism.api.chemical.pigment.IPigmentTank;
-import mekanism.api.chemical.pigment.PigmentStack;
-import mekanism.api.chemical.slurry.ISlurryTank;
-import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.heat.IHeatCapacitor;
@@ -63,17 +55,8 @@ public class SyncMapper extends BaseAnnotationScanner {
         specialProperties.add(new SpecialPropertyHandler<>(IExtendedFluidTank.class,
               SpecialPropertyData.create(FluidStack.class, IFluidTank::getFluid, IExtendedFluidTank::setStackUnchecked)
         ));
-        specialProperties.add(new SpecialPropertyHandler<>(IGasTank.class,
-              SpecialPropertyData.create(GasStack.class, IChemicalTank::getStack, IChemicalTank::setStackUnchecked)
-        ));
-        specialProperties.add(new SpecialPropertyHandler<>(IInfusionTank.class,
-              SpecialPropertyData.create(InfusionStack.class, IChemicalTank::getStack, IChemicalTank::setStackUnchecked)
-        ));
-        specialProperties.add(new SpecialPropertyHandler<>(IPigmentTank.class,
-              SpecialPropertyData.create(PigmentStack.class, IChemicalTank::getStack, IChemicalTank::setStackUnchecked)
-        ));
-        specialProperties.add(new SpecialPropertyHandler<>(ISlurryTank.class,
-              SpecialPropertyData.create(SlurryStack.class, IChemicalTank::getStack, IChemicalTank::setStackUnchecked)
+        specialProperties.add(new SpecialPropertyHandler<>(IChemicalTank.class,
+              SpecialPropertyData.create(ChemicalStack.class, IChemicalTank::getStack, IChemicalTank::setStackUnchecked)
         ));
         specialProperties.add(new SpecialPropertyHandler<>(IEnergyContainer.class,
               SpecialPropertyData.create(Long.TYPE, IEnergyContainer::getEnergy, IEnergyContainer::setEnergy)
@@ -84,16 +67,7 @@ public class SyncMapper extends BaseAnnotationScanner {
         ));
         specialProperties.add(new SpecialPropertyHandler<>(MergedTank.class,
               SpecialPropertyData.create(FluidStack.class, obj -> obj.getFluidTank().getFluid(), (obj, val) -> obj.getFluidTank().setStackUnchecked(val)),
-              SpecialPropertyData.create(GasStack.class, obj -> obj.getGasTank().getStack(), (obj, val) -> obj.getGasTank().setStackUnchecked(val)),
-              SpecialPropertyData.create(InfusionStack.class, obj -> obj.getInfusionTank().getStack(), (obj, val) -> obj.getInfusionTank().setStackUnchecked(val)),
-              SpecialPropertyData.create(PigmentStack.class, obj -> obj.getPigmentTank().getStack(), (obj, val) -> obj.getPigmentTank().setStackUnchecked(val)),
-              SpecialPropertyData.create(SlurryStack.class, obj -> obj.getSlurryTank().getStack(), (obj, val) -> obj.getSlurryTank().setStackUnchecked(val))
-        ));
-        specialProperties.add(new SpecialPropertyHandler<>(MergedChemicalTank.class,
-              SpecialPropertyData.create(GasStack.class, obj -> obj.getGasTank().getStack(), (obj, val) -> obj.getGasTank().setStackUnchecked(val)),
-              SpecialPropertyData.create(InfusionStack.class, obj -> obj.getInfusionTank().getStack(), (obj, val) -> obj.getInfusionTank().setStackUnchecked(val)),
-              SpecialPropertyData.create(PigmentStack.class, obj -> obj.getPigmentTank().getStack(), (obj, val) -> obj.getPigmentTank().setStackUnchecked(val)),
-              SpecialPropertyData.create(SlurryStack.class, obj -> obj.getSlurryTank().getStack(), (obj, val) -> obj.getSlurryTank().setStackUnchecked(val))
+              SpecialPropertyData.create(ChemicalStack.class, obj -> obj.getChemicalTank().getStack(), (obj, val) -> obj.getChemicalTank().setStackUnchecked(val))
         ));
         specialProperties.add(new SpecialPropertyHandler<>(VoxelCuboid.class,
               SpecialPropertyData.create(BlockPos.class, VoxelCuboid::getMinPos, VoxelCuboid::setMinPos),

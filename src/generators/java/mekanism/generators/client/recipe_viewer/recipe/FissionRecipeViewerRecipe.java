@@ -3,16 +3,16 @@ package mekanism.generators.client.recipe_viewer.recipe;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.MekanismAPI;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.attribute.GasAttributes.CooledCoolant;
+import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.attribute.ChemicalAttributes.CooledCoolant;
 import mekanism.api.math.MathUtils;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
-import mekanism.api.recipes.ingredients.GasStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.client.recipe_viewer.emi.INamedRVRecipe;
-import mekanism.common.registries.MekanismGases;
+import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.util.HeatUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
@@ -21,7 +21,8 @@ import net.minecraft.tags.FluidTags;
 import org.jetbrains.annotations.Nullable;
 
 //If null -> coolant is water
-public record FissionRecipeViewerRecipe(ResourceLocation id, @Nullable GasStackIngredient inputCoolant, GasStackIngredient fuel, GasStack outputCoolant, GasStack waste)
+public record FissionRecipeViewerRecipe(ResourceLocation id, @Nullable ChemicalStackIngredient inputCoolant, ChemicalStackIngredient fuel, ChemicalStack outputCoolant,
+                                        ChemicalStack waste)
       implements INamedRVRecipe {
 
     public FluidStackIngredient waterInput() {
@@ -37,20 +38,20 @@ public record FissionRecipeViewerRecipe(ResourceLocation id, @Nullable GasStackI
         long coolantAmount = Math.round(energyPerFuel * HeatUtils.getSteamEnergyEfficiency() / HeatUtils.getWaterThermalEnthalpy());
         recipes.add(new FissionRecipeViewerRecipe(
               RecipeViewerUtils.synthetic(MekanismGenerators.rl("water"), "fission"),
-              null, IngredientCreatorAccess.gasStack().from(MekanismGases.FISSILE_FUEL, 1),
-              MekanismGases.STEAM.getStack(coolantAmount), MekanismGases.NUCLEAR_WASTE.getStack(1)
+              null, IngredientCreatorAccess.chemicalStack().from(MekanismChemicals.FISSILE_FUEL, 1),
+              MekanismChemicals.STEAM.getStack(coolantAmount), MekanismChemicals.NUCLEAR_WASTE.getStack(1)
         ));
         //Go through all gases and add each coolant
-        for (Gas gas : MekanismAPI.GAS_REGISTRY) {
-            CooledCoolant cooledCoolant = gas.get(CooledCoolant.class);
+        for (Chemical chemical : MekanismAPI.CHEMICAL_REGISTRY) {
+            CooledCoolant cooledCoolant = chemical.get(CooledCoolant.class);
             if (cooledCoolant != null) {
                 //If it is a cooled coolant add a recipe for it
-                Gas heatedCoolant = cooledCoolant.getHeatedGas();
+                Chemical heatedCoolant = cooledCoolant.getHeatedChemical();
                 long amount = Math.round(energyPerFuel / cooledCoolant.getThermalEnthalpy());
                 recipes.add(new FissionRecipeViewerRecipe(
-                      RecipeViewerUtils.synthetic(gas.getRegistryName(), "fission", MekanismGenerators.MODID),
-                      IngredientCreatorAccess.gasStack().from(gas, amount), IngredientCreatorAccess.gasStack().from(MekanismGases.FISSILE_FUEL, 1),
-                      heatedCoolant.getStack(amount), MekanismGases.NUCLEAR_WASTE.getStack(1)
+                      RecipeViewerUtils.synthetic(chemical.getRegistryName(), "fission", MekanismGenerators.MODID),
+                      IngredientCreatorAccess.chemicalStack().from(chemical, amount), IngredientCreatorAccess.chemicalStack().from(MekanismChemicals.FISSILE_FUEL, 1),
+                      heatedCoolant.getStack(amount), MekanismChemicals.NUCLEAR_WASTE.getStack(1)
                 ));
             }
         }

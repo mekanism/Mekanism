@@ -5,7 +5,7 @@ import dev.emi.emi.api.widget.WidgetHolder;
 import mekanism.api.recipes.ChemicalDissolutionRecipe;
 import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;
 import mekanism.client.gui.element.gauge.GaugeType;
-import mekanism.client.gui.element.gauge.GuiGasGauge;
+import mekanism.client.gui.element.gauge.GuiChemicalGauge;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.recipe_viewer.RecipeViewerUtils;
@@ -21,14 +21,16 @@ public class ChemicalDissolutionEmiRecipe extends MekanismEmiHolderRecipe<Chemic
     public ChemicalDissolutionEmiRecipe(MekanismEmiRecipeCategory category, RecipeHolder<ChemicalDissolutionRecipe> recipeHolder) {
         super(category, recipeHolder);
         addInputDefinition(recipe.getItemInput());
-        addInputDefinition(recipe.getGasInput(), TileEntityChemicalDissolutionChamber.BASE_TICKS_REQUIRED);
-        addOutputDefinition(recipe.getOutputDefinition().stream().<EmiStack>map(stack -> ChemicalEmiStack.create(stack.getChemicalStack())).toList());
+        addInputDefinition(recipe.getChemicalInput(), recipe.perTickUsage() ? TileEntityChemicalDissolutionChamber.BASE_TICKS_REQUIRED : 1);
+        addOutputDefinition(recipe.getOutputDefinition().stream().<EmiStack>map(ChemicalEmiStack::create).toList());
     }
 
     @Override
     public void addWidgets(WidgetHolder widgetHolder) {
-        initTank(widgetHolder, GuiGasGauge.getDummy(GaugeType.STANDARD.with(DataType.INPUT), this, 7, 4), input(1));
-        initTank(widgetHolder, GuiGasGauge.getDummy(GaugeType.STANDARD.with(DataType.OUTPUT), this, 131, 13), output(0)).recipeContext(this);
+        GaugeType type1 = GaugeType.STANDARD.with(DataType.INPUT);
+        initTank(widgetHolder, GuiChemicalGauge.getDummy(type1, this, 7, 4), input(1));
+        GaugeType type = GaugeType.STANDARD.with(DataType.OUTPUT);
+        initTank(widgetHolder, GuiChemicalGauge.getDummy(type, this, 131, 13), output(0)).recipeContext(this);
         addSlot(widgetHolder, SlotType.INPUT, 28, 36, input(0));
         addSlot(widgetHolder, SlotType.EXTRA, 8, 65).with(SlotOverlay.MINUS);
         addSlot(widgetHolder, SlotType.OUTPUT, 152, 55).with(SlotOverlay.PLUS);

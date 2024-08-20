@@ -16,10 +16,8 @@ import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
-import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.chemical.infuse.IInfusionTank;
-import mekanism.api.chemical.pigment.IPigmentTank;
-import mekanism.api.chemical.slurry.ISlurryTank;
+import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.chemical.IMekanismChemicalHandler;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
@@ -28,10 +26,6 @@ import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
-import mekanism.common.capabilities.chemical.dynamic.IGasTracker;
-import mekanism.common.capabilities.chemical.dynamic.IInfusionTracker;
-import mekanism.common.capabilities.chemical.dynamic.IPigmentTracker;
-import mekanism.common.capabilities.chemical.dynamic.ISlurryTracker;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.energy.BlockEnergyCapabilityCache;
@@ -58,8 +52,7 @@ import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler, IMekanismStrictEnergyHandler, ITileHeatHandler, IGasTracker, IInfusionTracker,
-      IPigmentTracker, ISlurryTracker {
+public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler, IMekanismStrictEnergyHandler, ITileHeatHandler, IMekanismChemicalHandler {
 
     public Set<BlockPos> locations = new ObjectOpenHashSet<>();
     /**
@@ -96,10 +89,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
 
     protected final List<IInventorySlot> inventorySlots = new ArrayList<>();
     protected final List<IExtendedFluidTank> fluidTanks = new ArrayList<>();
-    protected final List<IGasTank> gasTanks = new ArrayList<>();
-    protected final List<IInfusionTank> infusionTanks = new ArrayList<>();
-    protected final List<IPigmentTank> pigmentTanks = new ArrayList<>();
-    protected final List<ISlurryTank> slurryTanks = new ArrayList<>();
+    protected final List<IChemicalTank> chemicalTanks = new ArrayList<>();
     protected final List<IEnergyContainer> energyContainers = new ArrayList<>();
     protected final List<IHeatCapacitor> heatCapacitors = new ArrayList<>();
 
@@ -229,23 +219,8 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
                 tank.setStackSize(Math.min(tank.getFluidAmount(), tank.getCapacity()), Action.EXECUTE);
             }
         }
-        if (shouldCap(CacheSubstance.GAS)) {
-            for (IGasTank tank : getGasTanks(null)) {
-                tank.setStackSize(Math.min(tank.getStored(), tank.getCapacity()), Action.EXECUTE);
-            }
-        }
-        if (shouldCap(CacheSubstance.INFUSION)) {
-            for (IInfusionTank tank : getInfusionTanks(null)) {
-                tank.setStackSize(Math.min(tank.getStored(), tank.getCapacity()), Action.EXECUTE);
-            }
-        }
-        if (shouldCap(CacheSubstance.PIGMENT)) {
-            for (IPigmentTank tank : getPigmentTanks(null)) {
-                tank.setStackSize(Math.min(tank.getStored(), tank.getCapacity()), Action.EXECUTE);
-            }
-        }
-        if (shouldCap(CacheSubstance.SLURRY)) {
-            for (ISlurryTank tank : getSlurryTanks(null)) {
+        if (shouldCap(CacheSubstance.CHEMICAL)) {
+            for (IChemicalTank tank : getChemicalTanks(null)) {
                 tank.setStackSize(Math.min(tank.getStored(), tank.getCapacity()), Action.EXECUTE);
             }
         }
@@ -406,26 +381,8 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
 
     @NotNull
     @Override
-    public List<IGasTank> getGasTanks(@Nullable Direction side) {
-        return isFormed() || isRemote() ? gasTanks : Collections.emptyList();
-    }
-
-    @NotNull
-    @Override
-    public List<IInfusionTank> getInfusionTanks(@Nullable Direction side) {
-        return isFormed() || isRemote() ? infusionTanks : Collections.emptyList();
-    }
-
-    @NotNull
-    @Override
-    public List<IPigmentTank> getPigmentTanks(@Nullable Direction side) {
-        return isFormed() || isRemote() ? pigmentTanks : Collections.emptyList();
-    }
-
-    @NotNull
-    @Override
-    public List<ISlurryTank> getSlurryTanks(@Nullable Direction side) {
-        return isFormed() || isRemote() ? slurryTanks : Collections.emptyList();
+    public List<IChemicalTank> getChemicalTanks(@Nullable Direction side) {
+        return isFormed() || isRemote() ? chemicalTanks : Collections.emptyList();
     }
 
     @NotNull

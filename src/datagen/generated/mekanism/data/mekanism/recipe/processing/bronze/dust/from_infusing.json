@@ -11,5 +11,6 @@
   "output": {
     "count": 4,
     "id": "mekanism:dust_bronze"
-  }
+  },
+  "per_tick_usage": false
 }

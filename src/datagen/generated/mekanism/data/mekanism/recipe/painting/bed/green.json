@@ -2,7 +2,7 @@
   "type": "mekanism:painting",
   "chemical_input": {
     "amount": 256,
-    "pigment": "mekanism:green"
+    "chemical": "mekanism:green"
   },
   "item_input": {
     "type": "neoforge:difference",
@@ -17,5 +17,6 @@
   "output": {
     "count": 1,
     "id": "minecraft:green_bed"
-  }
+  },
+  "per_tick_usage": false
 }

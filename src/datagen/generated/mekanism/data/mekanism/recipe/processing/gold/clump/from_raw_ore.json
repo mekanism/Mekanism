@@ -2,7 +2,7 @@
   "type": "mekanism:purifying",
   "chemical_input": {
     "amount": 1,
-    "gas": "mekanism:oxygen"
+    "chemical": "mekanism:oxygen"
   },
   "item_input": {
     "count": 1,
@@ -11,5 +11,6 @@
   "output": {
     "count": 2,
     "id": "mekanism:clump_gold"
-  }
+  },
+  "per_tick_usage": true
 }

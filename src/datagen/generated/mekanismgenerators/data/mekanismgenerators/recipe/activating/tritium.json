@@ -2,7 +2,7 @@
   "type": "mekanism:activating",
   "input": {
     "amount": 1,
-    "gas": "mekanism:lithium"
+    "chemical": "mekanism:lithium"
   },
   "output": {
     "amount": 1,

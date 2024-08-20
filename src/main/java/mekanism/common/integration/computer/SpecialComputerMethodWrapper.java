@@ -20,25 +20,25 @@ public class SpecialComputerMethodWrapper {
 
         @WrappingComputerMethodIndex(0)
         @WrappingComputerMethodHelp("Get the contents of the %s.")
-        public static ChemicalStack<?> getStack(IChemicalTank<?, ?> tank) {
+        public static ChemicalStack getStack(IChemicalTank tank) {
             return tank.getStack();
         }
 
         @WrappingComputerMethodIndex(1)
         @WrappingComputerMethodHelp("Get the capacity of the %s.")
-        public static long getCapacity(IChemicalTank<?, ?> tank) {
+        public static long getCapacity(IChemicalTank tank) {
             return tank.getCapacity();
         }
 
         @WrappingComputerMethodIndex(2)
         @WrappingComputerMethodHelp("Get the amount needed to fill the %s.")
-        public static long getNeeded(IChemicalTank<?, ?> tank) {
+        public static long getNeeded(IChemicalTank tank) {
             return tank.getNeeded();
         }
 
         @WrappingComputerMethodIndex(3)
         @WrappingComputerMethodHelp("Get the filled percentage of the %s.")
-        public static double getFilledPercentage(IChemicalTank<?, ?> tank) {
+        public static double getFilledPercentage(IChemicalTank tank) {
             return tank.getStored() / (double) tank.getCapacity();
         }
     }

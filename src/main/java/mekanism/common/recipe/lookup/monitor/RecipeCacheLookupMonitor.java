@@ -5,7 +5,7 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ICachedRecipeHolder;
-import mekanism.api.recipes.cache.ItemStackConstantChemicalToItemStackCachedRecipe;
+import mekanism.api.recipes.cache.ItemStackConstantChemicalToObjectCachedRecipe;
 import mekanism.common.CommonWorldTickHandler;
 import mekanism.common.recipe.lookup.IRecipeLookupHandler;
 import org.jetbrains.annotations.NotNull;
@@ -84,7 +84,7 @@ public class RecipeCacheLookupMonitor<RECIPE extends MekanismRecipe<?>> implemen
     public void loadSavedData(@NotNull CachedRecipe<RECIPE> cached, int cacheIndex) {
         if (cachedIndexMatches(cacheIndex)) {
             ICachedRecipeHolder.super.loadSavedData(cached, cacheIndex);
-            if (cached instanceof ItemStackConstantChemicalToItemStackCachedRecipe<?, ?, ?, ?> c &&
+            if (cached instanceof ItemStackConstantChemicalToObjectCachedRecipe<?, ?> c &&
                 handler instanceof IRecipeLookupHandler.ConstantUsageRecipeLookupHandler lookupHandler) {
                 c.loadSavedUsageSoFar(lookupHandler.getSavedUsedSoFar(cacheIndex));
             }

@@ -1,18 +1,18 @@
 {
   "type": "mekanism:rotary",
+  "chemical_input": {
+    "amount": 1,
+    "tag": "mekanism:tritium"
+  },
+  "chemical_output": {
+    "amount": 1,
+    "id": "mekanismgenerators:tritium"
+  },
   "fluid_input": {
     "amount": 1,
     "tag": "c:tritium"
   },
   "fluid_output": {
-    "amount": 1,
-    "id": "mekanismgenerators:tritium"
-  },
-  "gas_input": {
-    "amount": 1,
-    "tag": "mekanism:tritium"
-  },
-  "gas_output": {
     "amount": 1,
     "id": "mekanismgenerators:tritium"
   }

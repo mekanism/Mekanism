@@ -1,17 +1,17 @@
 {
   "type": "mekanism:reaction",
+  "chemical_input": {
+    "amount": 100,
+    "chemical": "mekanism:hydrogen"
+  },
+  "chemical_output": {
+    "amount": 100,
+    "id": "mekanism:ethene"
+  },
   "duration": 100,
   "fluid_input": {
     "amount": 10,
     "tag": "minecraft:water"
-  },
-  "gas_input": {
-    "amount": 100,
-    "gas": "mekanism:hydrogen"
-  },
-  "gas_output": {
-    "amount": 100,
-    "id": "mekanism:ethene"
   },
   "item_input": {
     "count": 2,

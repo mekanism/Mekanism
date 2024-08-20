@@ -2,16 +2,12 @@ package mekanism.common.integration.lookingat;
 
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.function.Function;
+import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.ChemicalType;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.IMekanismChemicalHandler;
-import mekanism.api.chemical.merged.ChemicalTankWrapper;
-import mekanism.api.chemical.merged.MergedChemicalTank;
-import mekanism.api.chemical.merged.MergedChemicalTank.Current;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
@@ -21,12 +17,12 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.attachments.BlockData;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.MultiTypeCapability;
 import mekanism.common.capabilities.fluid.FluidTankWrapper;
+import mekanism.common.capabilities.merged.ChemicalTankWrapper;
 import mekanism.common.capabilities.merged.MergedTank;
 import mekanism.common.capabilities.merged.MergedTank.CurrentType;
 import mekanism.common.capabilities.proxy.ProxyChemicalHandler;
-import mekanism.common.content.network.BoxedChemicalNetwork;
+import mekanism.common.content.network.ChemicalNetwork;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.lib.multiblock.IMultiblock;
 import mekanism.common.lib.multiblock.IStructuralMultiblock;
@@ -152,10 +148,7 @@ public class LookingAtUtils {
                 }
             }
             //Chemicals
-            addInfo(level, pos, state, tile, structure, Capabilities.GAS, multiblock -> multiblock.getGasTanks(null), info, MekanismLang.GAS, Current.GAS, CurrentType.GAS);
-            addInfo(level, pos, state, tile, structure, Capabilities.INFUSION, multiblock -> multiblock.getInfusionTanks(null), info, MekanismLang.INFUSE_TYPE, Current.INFUSION, CurrentType.INFUSION);
-            addInfo(level, pos, state, tile, structure, Capabilities.PIGMENT, multiblock -> multiblock.getPigmentTanks(null), info, MekanismLang.PIGMENT, Current.PIGMENT, CurrentType.PIGMENT);
-            addInfo(level, pos, state, tile, structure, Capabilities.SLURRY, multiblock -> multiblock.getSlurryTanks(null), info, MekanismLang.SLURRY, Current.SLURRY, CurrentType.SLURRY);
+            addInfo(level, pos, state, tile, structure, info);
         }
     }
 
@@ -195,82 +188,63 @@ public class LookingAtUtils {
             info.addEnergyElement(new EnergyElement(energyHandler.getEnergy(container), energyHandler.getMaxEnergy(container)));
         }
     }
-
-    @SuppressWarnings("unchecked")
-    private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>,
-          HANDLER extends IChemicalHandler<CHEMICAL, STACK>> void addInfo(Level level, BlockPos pos, BlockState state, @Nullable BlockEntity tile,
-          @Nullable MultiblockData structure, MultiTypeCapability<HANDLER> capability, Function<MultiblockData, List<TANK>> multiBlockToTanks, LookingAtHelper info,
-          ILangEntry langEntry, Current matchingCurrent, CurrentType matchingCurrentType) {
-        HANDLER handler = capability.getCapabilityIfLoaded(level, pos, state, tile, null);
+    
+    private static void addInfo(Level level, BlockPos pos, BlockState state, @Nullable BlockEntity tile, @Nullable MultiblockData structure, LookingAtHelper info) {
+        IChemicalHandler handler = Capabilities.CHEMICAL.getCapabilityIfLoaded(level, pos, state, tile, null);
         if (handler != null) {
-            CHEMICAL fallback = handler.getEmptyStack().getChemical();
+            Chemical fallback = MekanismAPI.EMPTY_CHEMICAL;
             if (tile instanceof TileEntityPressurizedTube tube && tube.getTransmitter().hasTransmitterNetwork()) {
-                BoxedChemicalNetwork network = tube.getTransmitter().getTransmitterNetwork();
-                if (!network.lastChemical.isEmpty() && network.lastChemical.getChemicalType() == ChemicalType.getTypeFor(handler)) {
-                    fallback = (CHEMICAL) network.lastChemical.getChemical();
+                ChemicalNetwork network = tube.getTransmitter().getTransmitterNetwork();
+                if (!network.lastChemical.isEmptyType()) {
+                    fallback = network.lastChemical.getChemical();
                 }
             }
             if (handler instanceof ProxyChemicalHandler) {
-                List<TANK> tanks = ((ProxyChemicalHandler<CHEMICAL, STACK, ?>) handler).getTanksIfMekanism();
+                List<IChemicalTank> tanks = ((ProxyChemicalHandler) handler).getTanksIfMekanism();
                 if (!tanks.isEmpty()) {
                     //If there are any tanks add them and then exit, otherwise continue on assuming it is not a mekanism handler that is wrapped
-                    for (TANK tank : tanks) {
-                        addChemicalTankInfo(info, langEntry, tank, matchingCurrent, matchingCurrentType, fallback);
+                    for (IChemicalTank tank : tanks) {
+                        addChemicalTankInfo(info, tank, fallback);
                     }
                     return;
                 }
             }
-            if (handler instanceof IMekanismChemicalHandler) {
-                IMekanismChemicalHandler<CHEMICAL, STACK, TANK> mekHandler = (IMekanismChemicalHandler<CHEMICAL, STACK, TANK>) handler;
-                for (TANK tank : mekHandler.getChemicalTanks(null)) {
-                    addChemicalTankInfo(info, langEntry, tank, matchingCurrent, matchingCurrentType, fallback);
+            if (handler instanceof IMekanismChemicalHandler mekHandler) {
+                for (IChemicalTank tank : mekHandler.getChemicalTanks(null)) {
+                    addChemicalTankInfo(info, tank, fallback);
                 }
             } else {
-                for (int i = 0; i < handler.getTanks(); i++) {
-                    addChemicalInfo(info, langEntry, handler.getChemicalInTank(i), handler.getTankCapacity(i), fallback);
+                for (int i = 0; i < handler.getChemicalTanks(); i++) {
+                    addChemicalInfo(info, handler.getChemicalInTank(i), handler.getChemicalTankCapacity(i), fallback);
                 }
             }
         } else if (structure != null && structure.isFormed()) {
             //Special handling to allow viewing the chemicals in a multiblock when looking at things other than the ports
-            for (TANK tank : multiBlockToTanks.apply(structure)) {
-                addChemicalTankInfo(info, langEntry, tank, matchingCurrent, matchingCurrentType, tank.getEmptyStack().getChemical());
+            for (IChemicalTank tank : structure.getChemicalTanks(null)) {
+                addChemicalTankInfo(info, tank, MekanismAPI.EMPTY_CHEMICAL);
             }
         }
     }
 
-    @SuppressWarnings("unchecked")
-    private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> void addChemicalTankInfo(
-          LookingAtHelper info, ILangEntry langEntry, TANK chemicalTank, Current matchingCurrent, CurrentType matchingCurrentType, CHEMICAL fallback) {
+    private static void addChemicalTankInfo(LookingAtHelper info, IChemicalTank chemicalTank, Chemical fallback) {
         if (chemicalTank instanceof ChemicalTankWrapper) {
-            MergedChemicalTank mergedTank = ((ChemicalTankWrapper<CHEMICAL, STACK>) chemicalTank).getMergedTank();
+            MergedTank mergedTank = ((ChemicalTankWrapper) chemicalTank).getMergedTank();
             if (mergedTank instanceof MergedTank tank) {
                 //If we are also support fluid, only show if we are the correct type
-                if (tank.getCurrentType() != matchingCurrentType) {
+                if (tank.getCurrentType() != CurrentType.CHEMICAL) {
                     //Skip if the tank is not the correct chemical type (fluid is default for merged tanks when empty)
                     return;
                 }
-            } else {
-                Current current = mergedTank.getCurrent();
-                if (current == Current.EMPTY) {
-                    if (matchingCurrent != Current.GAS) {
-                        //Skip tanks if overall it is empty, and it is not the gas tank
-                        return;
-                    }
-                } else if (current != matchingCurrent) {
-                    //Skip if the tank is on the wrong type of chemical
-                    return;
-                }
             }
         }
-        addChemicalInfo(info, langEntry, chemicalTank.getStack(), chemicalTank.getCapacity(), fallback);
+        addChemicalInfo(info, chemicalTank.getStack(), chemicalTank.getCapacity(), fallback);
     }
 
-    private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void addChemicalInfo(LookingAtHelper info, ILangEntry langEntry,
-          STACK chemicalInTank, long capacity, CHEMICAL fallback) {
+    private static void addChemicalInfo(LookingAtHelper info, ChemicalStack chemicalInTank, long capacity, Chemical fallback) {
         if (!chemicalInTank.isEmpty()) {
-            info.addText(langEntry.translate(chemicalInTank.getChemical()));
+            info.addText(MekanismLang.CHEMICAL.translate(chemicalInTank.getChemical()));
         } else if (!fallback.isEmptyType()) {
-            info.addText(langEntry.translate(fallback));
+            info.addText(MekanismLang.CHEMICAL.translate(fallback));
         }
         info.addChemicalElement(new ChemicalElement(chemicalInTank, capacity));
     }

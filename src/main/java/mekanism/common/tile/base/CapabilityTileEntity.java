@@ -3,10 +3,7 @@ package mekanism.common.tile.base;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.BiFunction;
-import mekanism.api.chemical.gas.IGasHandler;
-import mekanism.api.chemical.infuse.IInfusionHandler;
-import mekanism.api.chemical.pigment.IPigmentHandler;
-import mekanism.api.chemical.slurry.ISlurryHandler;
+import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.CapabilityCache;
@@ -27,10 +24,7 @@ import org.jetbrains.annotations.Nullable;
 public abstract class CapabilityTileEntity extends TileEntityUpdateable {
 
     //Note: The below providers assume that the capability if supported has been added by either addCapabilityResolver or addCapabilityResolvers
-    public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, IGasHandler> GAS_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.GAS.block());
-    public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, IInfusionHandler> INFUSION_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.INFUSION.block());
-    public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, IPigmentHandler> PIGMENT_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.PIGMENT.block());
-    public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, ISlurryHandler> SLURRY_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.SLURRY.block());
+    public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, IChemicalHandler> CHEMICAL_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.CHEMICAL.block());
     public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, IHeatHandler> HEAT_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.HEAT);
     public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, IItemHandler> ITEM_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.ITEM.block());
     public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, IFluidHandler> FLUID_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.FLUID.block());

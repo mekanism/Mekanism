@@ -11,5 +11,6 @@
   "output": {
     "count": 1,
     "id": "mekanismgenerators:hohlraum"
-  }
+  },
+  "per_tick_usage": false
 }

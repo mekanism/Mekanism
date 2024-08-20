@@ -5,10 +5,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.PressurizedReactionRecipe;
-import mekanism.api.recipes.ingredients.GasStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.world.item.ItemStack;
@@ -21,28 +21,28 @@ public class BasicPressurizedReactionRecipe extends PressurizedReactionRecipe {
 
     protected final ItemStackIngredient inputSolid;
     protected final FluidStackIngredient inputFluid;
-    protected final GasStackIngredient inputGas;
+    protected final ChemicalStackIngredient inputChemical;
     protected final long energyRequired;
     protected final int duration;
     protected final ItemStack outputItem;
-    protected final GasStack outputGas;
+    protected final ChemicalStack outputChemical;
 
     /**
      * @param inputSolid     Item input.
      * @param inputFluid     Fluid input.
-     * @param inputGas       Gas input.
+     * @param inputChemical       Chemical input.
      * @param energyRequired Amount of "extra" energy this recipe requires, compared to the base energy requirements of the machine performing the recipe.
      * @param duration       Base duration in ticks that this recipe takes to complete. Must be greater than zero.
      * @param outputItem     Item output.
-     * @param outputGas      Gas output.
+     * @param outputChemical      Chemical output.
      *
      * @apiNote At least one output must not be empty.
      */
-    public BasicPressurizedReactionRecipe(ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, GasStackIngredient inputGas,
-          long energyRequired, int duration, ItemStack outputItem, GasStack outputGas) {
+    public BasicPressurizedReactionRecipe(ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, ChemicalStackIngredient inputChemical,
+          long energyRequired, int duration, ItemStack outputItem, ChemicalStack outputChemical) {
         this.inputSolid = Objects.requireNonNull(inputSolid, "Item input cannot be null.");
         this.inputFluid = Objects.requireNonNull(inputFluid, "Fluid input cannot be null.");
-        this.inputGas = Objects.requireNonNull(inputGas, "Gas input cannot be null.");
+        this.inputChemical = Objects.requireNonNull(inputChemical, "Chemical input cannot be null.");
         Preconditions.checkArgument(energyRequired >= 0, "Energy required must not be negative");
         this.energyRequired = energyRequired;
 
@@ -51,12 +51,12 @@ public class BasicPressurizedReactionRecipe extends PressurizedReactionRecipe {
         }
         this.duration = duration;
         Objects.requireNonNull(outputItem, "Item output cannot be null.");
-        Objects.requireNonNull(outputGas, "Gas output cannot be null.");
-        if (outputItem.isEmpty() && outputGas.isEmpty()) {
+        Objects.requireNonNull(outputChemical, "Chemical output cannot be null.");
+        if (outputItem.isEmpty() && outputChemical.isEmpty()) {
             throw new IllegalArgumentException("At least one output must not be empty.");
         }
         this.outputItem = outputItem.copy();
-        this.outputGas = outputGas.copy();
+        this.outputChemical = outputChemical.copy();
     }
 
     @Override
@@ -70,8 +70,8 @@ public class BasicPressurizedReactionRecipe extends PressurizedReactionRecipe {
     }
 
     @Override
-    public GasStackIngredient getInputGas() {
-        return inputGas;
+    public ChemicalStackIngredient getInputChemical() {
+        return inputChemical;
     }
 
     @Override
@@ -85,27 +85,27 @@ public class BasicPressurizedReactionRecipe extends PressurizedReactionRecipe {
     }
 
     @Override
-    public boolean test(ItemStack solid, FluidStack liquid, GasStack gas) {
-        return this.inputSolid.test(solid) && this.inputFluid.test(liquid) && this.inputGas.test(gas);
+    public boolean test(ItemStack solid, FluidStack liquid, ChemicalStack chemical) {
+        return this.inputSolid.test(solid) && this.inputFluid.test(liquid) && this.inputChemical.test(chemical);
     }
 
     @Override
     public List<PressurizedReactionRecipeOutput> getOutputDefinition() {
-        return Collections.singletonList(new PressurizedReactionRecipeOutput(outputItem, outputGas));
+        return Collections.singletonList(new PressurizedReactionRecipeOutput(outputItem, outputChemical));
     }
 
     @Override
     @Contract(value = "_, _, _ -> new", pure = true)
-    public PressurizedReactionRecipeOutput getOutput(ItemStack solid, FluidStack liquid, GasStack gas) {
-        return new PressurizedReactionRecipeOutput(this.outputItem.copy(), this.outputGas.copy());
+    public PressurizedReactionRecipeOutput getOutput(ItemStack solid, FluidStack liquid, ChemicalStack chemical) {
+        return new PressurizedReactionRecipeOutput(this.outputItem.copy(), this.outputChemical.copy());
     }
 
     public ItemStack getOutputItem() {
         return outputItem;
     }
 
-    public GasStack getOutputGas() {
-        return outputGas;
+    public ChemicalStack getOutputChemical() {
+        return outputChemical;
     }
 
     @Override

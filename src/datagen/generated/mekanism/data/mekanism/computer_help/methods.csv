@@ -138,18 +138,18 @@ Combiner,getMainInput,,Table (ItemStack),,false,Get the contents of the main inp
 Combiner,getOutput,,Table (ItemStack),,false,Get the contents of the output slot.
 Combiner,getSecondaryInput,,Table (ItemStack),,false,Get the contents of the secondary input slot.
 Combining Factory,getSecondaryInput,,Table (ItemStack),,false,Get the contents of the secondary input slot.
-Compressing/Injecting/Purifying Factory,dumpChemical,,,,true,Empty the contents of the gas tank into the environment
-Compressing/Injecting/Purifying Factory,getChemical,,Table (ChemicalStack),,false,Get the contents of the gas tank.
-Compressing/Injecting/Purifying Factory,getChemicalCapacity,,Number (long),,false,Get the capacity of the gas tank.
-Compressing/Injecting/Purifying Factory,getChemicalFilledPercentage,,Number (double),,false,Get the filled percentage of the gas tank.
-Compressing/Injecting/Purifying Factory,getChemicalItem,,Table (ItemStack),,false,Get the contents of the chemical item (extra) slot.
-Compressing/Injecting/Purifying Factory,getChemicalNeeded,,Number (long),,false,Get the amount needed to fill the gas tank.
+Compressing/Infusing/Injecting/Purifying Factory,dumpChemical,,,,true,Empty the contents of the chemical tank into the environment
+Compressing/Infusing/Injecting/Purifying Factory,getChemical,,Table (ChemicalStack),,false,Get the contents of the chemical tank.
+Compressing/Infusing/Injecting/Purifying Factory,getChemicalCapacity,,Number (long),,false,Get the capacity of the chemical tank.
+Compressing/Infusing/Injecting/Purifying Factory,getChemicalFilledPercentage,,Number (double),,false,Get the filled percentage of the chemical tank.
+Compressing/Infusing/Injecting/Purifying Factory,getChemicalItem,,Table (ItemStack),,false,Get the contents of the chemical item (extra) slot.
+Compressing/Infusing/Injecting/Purifying Factory,getChemicalNeeded,,Number (long),,false,Get the amount needed to fill the chemical tank.
 Compressing/Injecting/Purifying Machine,dumpChemical,,,,true,Empty the contents of the gas tank into the environment
-Compressing/Injecting/Purifying Machine,getChemical,,Table (ChemicalStack),,false,Get the contents of the gas tank.
-Compressing/Injecting/Purifying Machine,getChemicalCapacity,,Number (long),,false,Get the capacity of the gas tank.
-Compressing/Injecting/Purifying Machine,getChemicalFilledPercentage,,Number (double),,false,Get the filled percentage of the gas tank.
+Compressing/Injecting/Purifying Machine,getChemical,,Table (ChemicalStack),,false,Get the contents of the chemical tank.
+Compressing/Injecting/Purifying Machine,getChemicalCapacity,,Number (long),,false,Get the capacity of the chemical tank.
+Compressing/Injecting/Purifying Machine,getChemicalFilledPercentage,,Number (double),,false,Get the filled percentage of the chemical tank.
 Compressing/Injecting/Purifying Machine,getChemicalItem,,Table (ItemStack),,false,Get the contents of the secondary input slot.
-Compressing/Injecting/Purifying Machine,getChemicalNeeded,,Number (long),,false,Get the amount needed to fill the gas tank.
+Compressing/Injecting/Purifying Machine,getChemicalNeeded,,Number (long),,false,Get the amount needed to fill the chemical tank.
 Compressing/Injecting/Purifying Machine,getEnergyItem,,Table (ItemStack),,false,Get the contents of the energy slot.
 Compressing/Injecting/Purifying Machine,getEnergyUsage,,Number (long),,false,Get the energy used in the last tick by the machine
 Compressing/Injecting/Purifying Machine,getInput,,Table (ItemStack),,false,Get the contents of the input slot.
@@ -542,12 +542,6 @@ Metallurgic Infuser,getInfuseTypeItem,,Table (ItemStack),,false,Get the contents
 Metallurgic Infuser,getInfuseTypeNeeded,,Number (long),,false,Get the amount needed to fill the infusion buffer.
 Metallurgic Infuser,getInput,,Table (ItemStack),,false,Get the contents of the input slot.
 Metallurgic Infuser,getOutput,,Table (ItemStack),,false,Get the contents of the output slot.
-Metallurgic Infuser Factory,dumpInfuseType,,,,true,Empty the contents of the infusion buffer into the environment
-Metallurgic Infuser Factory,getInfuseType,,Table (ChemicalStack),,false,Get the contents of the infusion buffer.
-Metallurgic Infuser Factory,getInfuseTypeCapacity,,Number (long),,false,Get the capacity of the infusion buffer.
-Metallurgic Infuser Factory,getInfuseTypeFilledPercentage,,Number (double),,false,Get the filled percentage of the infusion buffer.
-Metallurgic Infuser Factory,getInfuseTypeItem,,Table (ItemStack),,false,Get the contents of the infusion extra input slot.
-Metallurgic Infuser Factory,getInfuseTypeNeeded,,Number (long),,false,Get the amount needed to fill the infusion buffer.
 Modification Station,getContainerItem,,Table (ItemStack),,false,"Get the contents of the module holder slot (suit, tool, etc)."
 Modification Station,getEnergyItem,,Table (ItemStack),,false,Get the contents of the energy slot.
 Modification Station,getModuleItem,,Table (ItemStack),,false,Get the contents of the module slot.
@@ -672,27 +666,15 @@ QIO Redstone Adapter,setTargetItem,itemName: String (ResourceLocation),,,true,
 QIO Redstone Adapter,setTriggerAmount,amount: Number (long),,,true,
 QIO Redstone Adapter,toggleFuzzyMode,,,,true,
 Quantum Entangloporter,createFrequency,name: String,,,true,Requires frequency to not already exist and for it to be public so that it can make it as the player who owns the block. Also sets the frequency after creation
+Quantum Entangloporter,getBufferChemical,,Table (ChemicalStack),,false,Get the contents of the chemical buffer.
+Quantum Entangloporter,getBufferChemicalCapacity,,Number (long),,false,Get the capacity of the chemical buffer.
+Quantum Entangloporter,getBufferChemicalFilledPercentage,,Number (double),,false,Get the filled percentage of the chemical buffer.
+Quantum Entangloporter,getBufferChemicalNeeded,,Number (long),,false,Get the amount needed to fill the chemical buffer.
 Quantum Entangloporter,getBufferFluid,,Table (FluidStack),,false,Get the contents of the fluid buffer.
 Quantum Entangloporter,getBufferFluidCapacity,,Number (int),,false,Get the capacity of the fluid buffer.
 Quantum Entangloporter,getBufferFluidFilledPercentage,,Number (double),,false,Get the filled percentage of the fluid buffer.
 Quantum Entangloporter,getBufferFluidNeeded,,Number (int),,false,Get the amount needed to fill the fluid buffer.
-Quantum Entangloporter,getBufferGas,,Table (ChemicalStack),,false,Get the contents of the gas buffer.
-Quantum Entangloporter,getBufferGasCapacity,,Number (long),,false,Get the capacity of the gas buffer.
-Quantum Entangloporter,getBufferGasFilledPercentage,,Number (double),,false,Get the filled percentage of the gas buffer.
-Quantum Entangloporter,getBufferGasNeeded,,Number (long),,false,Get the amount needed to fill the gas buffer.
-Quantum Entangloporter,getBufferInfuseType,,Table (ChemicalStack),,false,Get the contents of the infusion buffer.
-Quantum Entangloporter,getBufferInfuseTypeCapacity,,Number (long),,false,Get the capacity of the infusion buffer.
-Quantum Entangloporter,getBufferInfuseTypeFilledPercentage,,Number (double),,false,Get the filled percentage of the infusion buffer.
-Quantum Entangloporter,getBufferInfuseTypeNeeded,,Number (long),,false,Get the amount needed to fill the infusion buffer.
 Quantum Entangloporter,getBufferItem,,Table (ItemStack),,false,
-Quantum Entangloporter,getBufferPigment,,Table (ChemicalStack),,false,Get the contents of the pigment buffer.
-Quantum Entangloporter,getBufferPigmentCapacity,,Number (long),,false,Get the capacity of the pigment buffer.
-Quantum Entangloporter,getBufferPigmentFilledPercentage,,Number (double),,false,Get the filled percentage of the pigment buffer.
-Quantum Entangloporter,getBufferPigmentNeeded,,Number (long),,false,Get the amount needed to fill the pigment buffer.
-Quantum Entangloporter,getBufferSlurry,,Table (ChemicalStack),,false,Get the contents of the slurry buffer.
-Quantum Entangloporter,getBufferSlurryCapacity,,Number (long),,false,Get the capacity of the slurry buffer.
-Quantum Entangloporter,getBufferSlurryFilledPercentage,,Number (double),,false,Get the filled percentage of the slurry buffer.
-Quantum Entangloporter,getBufferSlurryNeeded,,Number (long),,false,Get the amount needed to fill the slurry buffer.
 Quantum Entangloporter,getEnvironmentalLoss,,Number (double),,false,May not be accurate if there is no frequency
 Quantum Entangloporter,getFrequencies,,List (Table (InventoryFrequency)),,false,Lists public frequencies
 Quantum Entangloporter,getFrequency,,Table (InventoryFrequency),,false,Requires a frequency to be selected

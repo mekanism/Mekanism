@@ -6,10 +6,10 @@ import com.blamejared.crafttweaker.api.fluid.IFluidStack;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import java.util.List;
 import mekanism.api.recipes.RotaryRecipe;
-import mekanism.api.recipes.ingredients.GasStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
-import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
+import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -20,27 +20,27 @@ public class CrTRotaryRecipe {
     }
 
     /**
-     * Gets the gas to fluid conversion this rotary recipe has or {@code null} if it only has a fluid to gas conversion.
+     * Gets the chemical to fluid conversion this rotary recipe has or {@code null} if it only has a fluid to chemical conversion.
      */
     @ZenCodeType.Nullable
     @ZenCodeType.Method
-    @ZenCodeType.Getter("gasToFluid")
-    public static GasToFluid getGasToFluid(RotaryRecipe _this) {
-        if (_this.hasGasToFluid()) {
-            return new GasToFluid(_this.getGasInput(), CrTUtils.convertFluids(_this.getFluidOutputDefinition()));
+    @ZenCodeType.Getter("chemicalToFluid")
+    public static ChemicalToFluid getChemicalToFluid(RotaryRecipe _this) {
+        if (_this.hasChemicalToFluid()) {
+            return new ChemicalToFluid(_this.getChemicalInput(), CrTUtils.convertFluids(_this.getFluidOutputDefinition()));
         }
         return null;
     }
 
     /**
-     * Gets the fluid to gas conversion this rotary recipe has or {@code null} if it only has a gas to fluid conversion.
+     * Gets the fluid to chemical conversion this rotary recipe has or {@code null} if it only has a chemical to fluid conversion.
      */
     @ZenCodeType.Nullable
     @ZenCodeType.Method
-    @ZenCodeType.Getter("fluidToGas")
-    public static FluidToGas getFluidToGas(RotaryRecipe _this) {
-        if (_this.hasFluidToGas()) {
-            return new FluidToGas(CrTUtils.toCrT(_this.getFluidInput()), CrTUtils.convertChemical(_this.getGasOutputDefinition()));
+    @ZenCodeType.Getter("fluidToChemical")
+    public static FluidToChemical getFluidToChemical(RotaryRecipe _this) {
+        if (_this.hasFluidToChemical()) {
+            return new FluidToChemical(CrTUtils.toCrT(_this.getFluidInput()), CrTUtils.convertChemical(_this.getChemicalOutputDefinition()));
         }
         return null;
     }
@@ -50,9 +50,9 @@ public class CrTRotaryRecipe {
      * @param outputs Output representations, this list may or may not be complete and likely only contains one element, but has the possibility of containing multiple.
      */
     @ZenRegister
-    @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_ROTARY_GAS_TO_FLUID)
-    public record GasToFluid(@ZenCodeType.Getter("input") GasStackIngredient input,
-                             @ZenCodeType.Getter("outputs") List<IFluidStack> outputs) {
+    @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_ROTARY_CHEMICAL_TO_FLUID)
+    public record ChemicalToFluid(@ZenCodeType.Getter("input") ChemicalStackIngredient input,
+                                  @ZenCodeType.Getter("outputs") List<IFluidStack> outputs) {
     }
 
     /**
@@ -60,8 +60,8 @@ public class CrTRotaryRecipe {
      * @param outputs Output representations, this list may or may not be complete and likely only contains one element, but has the possibility of containing multiple.
      */
     @ZenRegister
-    @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_ROTARY_FLUID_TO_GAS)
-    public record FluidToGas(@ZenCodeType.Getter("input") CTFluidIngredient input,
-                             @ZenCodeType.Getter("outputs") List<ICrTGasStack> outputs) {
+    @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_ROTARY_FLUID_TO_CHEMICAL)
+    public record FluidToChemical(@ZenCodeType.Getter("input") CTFluidIngredient input,
+                                  @ZenCodeType.Getter("outputs") List<ICrTChemicalStack> outputs) {
     }
 }

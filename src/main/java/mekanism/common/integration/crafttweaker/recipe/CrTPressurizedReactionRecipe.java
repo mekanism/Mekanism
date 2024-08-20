@@ -7,11 +7,11 @@ import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import java.util.List;
 import mekanism.api.recipes.PressurizedReactionRecipe;
-import mekanism.api.recipes.ingredients.GasStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
-import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTGasStack;
-import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
+import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack;
+import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -40,12 +40,12 @@ public class CrTPressurizedReactionRecipe {
     }
 
     /**
-     * Gets the gas input ingredient.
+     * Gets the chemical input ingredient.
      */
     @ZenCodeType.Method
-    @ZenCodeType.Getter("inputGas")
-    public static GasStackIngredient getInputGas(PressurizedReactionRecipe _this) {
-        return _this.getInputGas();
+    @ZenCodeType.Getter("inputChemical")
+    public static ChemicalStackIngredient getInputChemical(PressurizedReactionRecipe _this) {
+        return _this.getInputChemical();
     }
 
     /**
@@ -72,18 +72,18 @@ public class CrTPressurizedReactionRecipe {
     @ZenCodeType.Method
     @ZenCodeType.Getter("outputs")
     public static List<CrTPressurizedReactionRecipeOutput> getOutputs(PressurizedReactionRecipe _this) {
-        return CrTUtils.convert(_this.getOutputDefinition(), output -> new CrTPressurizedReactionRecipeOutput(IItemStack.of(output.item()), new CrTGasStack(output.gas())));
+        return CrTUtils.convert(_this.getOutputDefinition(), output -> new CrTPressurizedReactionRecipeOutput(IItemStack.of(output.item()), new CrTChemicalStack(output.chemical())));
     }
 
     /**
      * At least one output type will be present.
      *
-     * @param item Item output, can be empty if gas is empty but does not have to be.
-     * @param gas  Gas output, can be empty if item is empty but does not have to be.
+     * @param item     Item output, can be empty if chemical is empty but does not have to be.
+     * @param chemical Chemical output, can be empty if item is empty but does not have to be.
      */
     @ZenRegister
     @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_REACTION_OUTPUT)
     public record CrTPressurizedReactionRecipeOutput(@ZenCodeType.Getter("item") IItemStack item,
-                                                     @ZenCodeType.Getter("gas") ICrTGasStack gas) {
+                                                     @ZenCodeType.Getter("chemical") ICrTChemicalStack chemical) {
     }
 }

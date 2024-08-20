@@ -1,7 +1,6 @@
 package mekanism.api.recipes.vanilla_input;
 
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 
 /**
@@ -10,9 +9,9 @@ import mekanism.api.chemical.ChemicalStack;
  * @since 10.6.0
  */
 @NothingNullByDefault
-public interface FluidChemicalRecipeInput<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> extends FluidRecipeInput {
+public interface FluidChemicalRecipeInput extends FluidRecipeInput {
 
-    STACK getChemical(int index);
+    ChemicalStack getChemical(int index);
 
     @Override
     default boolean isEmpty() {

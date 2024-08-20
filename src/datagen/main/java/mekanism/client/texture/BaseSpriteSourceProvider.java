@@ -12,7 +12,6 @@ import net.minecraft.client.renderer.texture.atlas.sources.DirectoryLister;
 import net.minecraft.client.renderer.texture.atlas.sources.SingleFile;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup.Provider;
-import net.minecraft.core.Registry;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
@@ -38,15 +37,7 @@ public abstract class BaseSpriteSourceProvider extends SpriteSourceProvider {
 
     //TODO - 1.20: Re-evaluate doing this
     protected void addChemicalSprites(SourceList atlas) {
-        addChemicalSprites(atlas, MekanismAPI.GAS_REGISTRY);
-        addChemicalSprites(atlas, MekanismAPI.INFUSE_TYPE_REGISTRY);
-        addChemicalSprites(atlas, MekanismAPI.PIGMENT_REGISTRY);
-        addChemicalSprites(atlas, MekanismAPI.SLURRY_REGISTRY);
-    }
-
-    private <CHEMICAL extends Chemical<CHEMICAL>> void addChemicalSprites(SourceList atlas, Registry<CHEMICAL> chemicalRegistry) {
-        for (Chemical<?> chemical : chemicalRegistry) {
-            //TODO - 1.20: Evaluate this
+        for (Chemical chemical : MekanismAPI.CHEMICAL_REGISTRY) {
             if (chemical.getRegistryName().getNamespace().equals(modid)) {
                 addFiles(atlas, chemical.getIcon());
             }

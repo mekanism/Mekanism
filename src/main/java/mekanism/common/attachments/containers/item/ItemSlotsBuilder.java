@@ -4,17 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.BiPredicate;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.api.chemical.merged.MergedChemicalTank;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.recipes.MekanismRecipe;
@@ -22,12 +17,11 @@ import mekanism.api.security.IItemSecurityUtils;
 import mekanism.common.attachments.FilterAware;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.attachments.containers.ContainsRecipe;
-import mekanism.common.attachments.containers.IAttachedContainers;
+import mekanism.common.attachments.containers.chemical.AttachedChemicals;
 import mekanism.common.attachments.containers.creator.BaseContainerCreator;
 import mekanism.common.attachments.containers.creator.IBasicContainerCreator;
 import mekanism.common.attachments.containers.fluid.AttachedFluids;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.MultiTypeCapability;
 import mekanism.common.content.oredictionificator.OredictionificatorItemFilter;
 import mekanism.common.content.qio.IQIOCraftingWindowHolder;
 import mekanism.common.integration.energy.EnergyCompatUtils;
@@ -37,8 +31,6 @@ import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.QIODriveSlot;
 import mekanism.common.inventory.slot.SecurityInventorySlot;
 import mekanism.common.inventory.slot.chemical.ChemicalInventorySlot;
-import mekanism.common.inventory.slot.chemical.GasInventorySlot;
-import mekanism.common.inventory.slot.chemical.InfusionInventorySlot;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.lookup.cache.IInputRecipeCache;
 import mekanism.common.registries.MekanismDataComponents;
@@ -128,10 +120,6 @@ public class ItemSlotsBuilder {
     };
     private static final IBasicContainerCreator<ComponentBackedInventorySlot> DRAIN_ENERGY_SLOT_CREATOR = (type, attachedTo, containerIndex) -> new ComponentBackedInventorySlot(attachedTo,
           containerIndex, DRAIN_ENERGY_SLOT_CAN_EXTRACT, DRAIN_ENERGY_SLOT_CAN_INSERT, EnergyInventorySlot.DRAIN_VALIDATOR);
-
-    //Chemical conversions
-    private static final Function<ItemStack, GasStack> GAS_STACK_CONVERSION = stack -> GasInventorySlot.getPotentialConversion(null, stack);
-    private static final Function<ItemStack, InfusionStack> INFUSION_STACK_CONVERSION = stack -> InfusionInventorySlot.getPotentialConversion(null, stack);
 
     public static ItemSlotsBuilder builder() {
         return new ItemSlotsBuilder();
@@ -338,7 +326,7 @@ public class ItemSlotsBuilder {
             IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID.getCapability(stack);
             if (fluidHandlerItem != null) {
                 boolean mode = attachedTo.getOrDefault(MekanismDataComponents.ROTARY_MODE, false);
-                //Mode == true if fluid to gas
+                //Mode == true if fluid to chemical
                 boolean allEmpty = true;
                 IExtendedFluidTank fluidTank = null;
                 for (int tank = 0, tanks = fluidHandlerItem.getTanks(); tank < tanks; tank++) {
@@ -385,19 +373,17 @@ public class ItemSlotsBuilder {
         }, (stack, automationType) -> hasFuelValue.test(stack) || canFluidFill(attachedTo, tankIndex, stack), BasicInventorySlot.alwaysTrue)));
     }
 
-    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, ATTACHED extends IAttachedContainers<STACK, ATTACHED>> boolean
-    canChemicalDrainInsert(ItemStack attachedTo, int tankIndex, ItemStack stack, ContainerType<?, ATTACHED, ?> containerType,
-          MultiTypeCapability<? extends IChemicalHandler<CHEMICAL, STACK>> chemicalCapability) {
+    private boolean canChemicalDrainInsert(ItemStack attachedTo, int tankIndex, ItemStack stack) {
         //Copy of logic from ChemicalInventorySlot#getDrainInsertPredicate
-        IChemicalHandler<CHEMICAL, STACK> handler = chemicalCapability.getCapability(stack);
+        IChemicalHandler handler = Capabilities.CHEMICAL.getCapability(stack);
         if (handler != null) {
             //Note: We don't need to create a fake tank using the container type, as we only care about the stored type
-            ATTACHED containers = containerType.getOrEmpty(attachedTo);
-            STACK chemicalInTank = containers.getOrDefault(tankIndex);
+            AttachedChemicals containers = ContainerType.CHEMICAL.getOrEmpty(attachedTo);
+            ChemicalStack chemicalInTank = containers.getOrDefault(tankIndex);
             if (chemicalInTank.isEmpty()) {
                 //If the chemical tank is empty, accept the chemical item as long as it is not full
-                for (int tank = 0; tank < handler.getTanks(); tank++) {
-                    if (handler.getChemicalInTank(tank).getAmount() < handler.getTankCapacity(tank)) {
+                for (int tank = 0; tank < handler.getChemicalTanks(); tank++) {
+                    if (handler.getChemicalInTank(tank).getAmount() < handler.getChemicalTankCapacity(tank)) {
                         //True if we have any space in this tank
                         return true;
                     }
@@ -410,18 +396,16 @@ public class ItemSlotsBuilder {
         return false;
     }
 
-    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> boolean canChemicalFillExtract(
-          ItemStack attachedTo, int tankIndex, ItemStack stack, ContainerType<TANK, ?, ?> containerType,
-          MultiTypeCapability<? extends IChemicalHandler<CHEMICAL, STACK>> chemicalCapability) {
+    private boolean canChemicalFillExtract(ItemStack attachedTo, int tankIndex, ItemStack stack) {
         //Copy of logic from ChemicalInventorySlot#getFillExtractPredicate
-        IChemicalHandler<CHEMICAL, STACK> handler = chemicalCapability.getCapability(stack);
+        IChemicalHandler handler = Capabilities.CHEMICAL.getCapability(stack);
         if (handler != null) {
-            IChemicalTank<CHEMICAL, STACK> chemicalTank = null;
-            for (int tank = 0; tank < handler.getTanks(); tank++) {
-                STACK storedChemical = handler.getChemicalInTank(tank);
+            IChemicalTank chemicalTank = null;
+            for (int tank = 0; tank < handler.getChemicalTanks(); tank++) {
+                ChemicalStack storedChemical = handler.getChemicalInTank(tank);
                 if (!storedChemical.isEmpty()) {
                     if (chemicalTank == null) {
-                        chemicalTank = containerType.createContainer(attachedTo, tankIndex);
+                        chemicalTank = ContainerType.CHEMICAL.createContainer(attachedTo, tankIndex);
                     }
                     if (chemicalTank.isValid(storedChemical)) {
                         //False if the item isn't empty and the contents are still valid
@@ -435,18 +419,16 @@ public class ItemSlotsBuilder {
         return true;
     }
 
-    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> boolean canChemicalFillInsert(
-          ItemStack attachedTo, int tankIndex, ItemStack stack, ContainerType<TANK, ?, ?> containerType,
-          MultiTypeCapability<? extends IChemicalHandler<CHEMICAL, STACK>> chemicalCapability) {
+    private boolean canChemicalFillInsert(ItemStack attachedTo, int tankIndex, ItemStack stack) {
         //Copy of logic from ChemicalInventorySlot#fillInsertCheck
-        IChemicalHandler<CHEMICAL, STACK> handler = chemicalCapability.getCapability(stack);
+        IChemicalHandler handler = Capabilities.CHEMICAL.getCapability(stack);
         if (handler != null) {
-            TANK chemicalTank = null;
-            for (int tank = 0; tank < handler.getTanks(); tank++) {
-                STACK chemicalInTank = handler.getChemicalInTank(tank);
+            IChemicalTank chemicalTank = null;
+            for (int tank = 0; tank < handler.getChemicalTanks(); tank++) {
+                ChemicalStack chemicalInTank = handler.getChemicalInTank(tank);
                 if (!chemicalInTank.isEmpty()) {
                     if (chemicalTank == null) {
-                        chemicalTank = containerType.createContainer(attachedTo, tankIndex);
+                        chemicalTank = ContainerType.CHEMICAL.createContainer(attachedTo, tankIndex);
                     }
                     if (chemicalTank.insert(chemicalInTank, Action.SIMULATE, AutomationType.INTERNAL).getAmount() < chemicalInTank.getAmount()) {
                         //True if we can fill the tank with any of our contents
@@ -459,16 +441,14 @@ public class ItemSlotsBuilder {
         return false;
     }
 
-    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> boolean canChemicalFillOrConvertExtract(
-          ItemStack attachedTo, int tankIndex, ItemStack stack, ContainerType<TANK, ?, ?> containerType,
-          MultiTypeCapability<? extends IChemicalHandler<CHEMICAL, STACK>> chemicalCapability, Function<ItemStack, STACK> potentialConversionSupplier) {
+    private boolean canChemicalFillOrConvertExtract(ItemStack attachedTo, int tankIndex, ItemStack stack) {
         //Copy of logic from ChemicalInventorySlot#getFillOrConvertExtractPredicate
-        IChemicalHandler<CHEMICAL, STACK> handler = chemicalCapability.getCapability(stack);
-        TANK chemicalTank = null;
+        IChemicalHandler handler = Capabilities.CHEMICAL.getCapability(stack);
+        IChemicalTank chemicalTank = null;
         if (handler != null) {
-            int tanks = handler.getTanks();
+            int tanks = handler.getChemicalTanks();
             if (tanks > 0) {
-                chemicalTank = containerType.createContainer(attachedTo, tankIndex);
+                chemicalTank = ContainerType.CHEMICAL.createContainer(attachedTo, tankIndex);
                 for (int tank = 0; tank < tanks; tank++) {
                     if (chemicalTank.isValid(handler.getChemicalInTank(tank))) {
                         //False if the items contents are still valid
@@ -480,29 +460,27 @@ public class ItemSlotsBuilder {
         }
         //Always allow extraction if something went horribly wrong, and we are not a chemical item AND we can't provide a valid type of chemical
         // This might happen after a reload for example
-        STACK conversion = potentialConversionSupplier.apply(stack);
+        ChemicalStack conversion = ChemicalInventorySlot.getPotentialConversion(null, stack);
         if (conversion.isEmpty()) {
             return true;
         } else if (chemicalTank == null) {
             //If we haven't resolved the tank yet, we need to do it now
-            chemicalTank = containerType.createContainer(attachedTo, tankIndex);
+            chemicalTank = ContainerType.CHEMICAL.createContainer(attachedTo, tankIndex);
         }
         return !chemicalTank.isValid(conversion);
     }
 
-    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> boolean canChemicalFillOrConvertInsert(
-          ItemStack attachedTo, int tankIndex, ItemStack stack, ContainerType<TANK, ?, ?> containerType,
-          MultiTypeCapability<? extends IChemicalHandler<CHEMICAL, STACK>> chemicalCapability, Function<ItemStack, STACK> potentialConversionSupplier) {
+    private boolean canChemicalFillOrConvertInsert(ItemStack attachedTo, int tankIndex, ItemStack stack) {
         //Copy of logic from ChemicalInventorySlot#getFillOrConvertInsertPredicate
-        TANK chemicalTank = null;
+        IChemicalTank chemicalTank = null;
         {//Fill insert check logic, we want to avoid resolving the tank as long as possible
-            IChemicalHandler<CHEMICAL, STACK> handler = chemicalCapability.getCapability(stack);
+            IChemicalHandler handler = Capabilities.CHEMICAL.getCapability(stack);
             if (handler != null) {
-                for (int tank = 0; tank < handler.getTanks(); tank++) {
-                    STACK chemicalInTank = handler.getChemicalInTank(tank);
+                for (int tank = 0; tank < handler.getChemicalTanks(); tank++) {
+                    ChemicalStack chemicalInTank = handler.getChemicalInTank(tank);
                     if (!chemicalInTank.isEmpty()) {
                         if (chemicalTank == null) {
-                            chemicalTank = containerType.createContainer(attachedTo, tankIndex);
+                            chemicalTank = ContainerType.CHEMICAL.createContainer(attachedTo, tankIndex);
                         }
                         if (chemicalTank.insert(chemicalInTank, Action.SIMULATE, AutomationType.INTERNAL).getAmount() < chemicalInTank.getAmount()) {
                             //True if we can fill the tank with any of our contents
@@ -513,13 +491,13 @@ public class ItemSlotsBuilder {
                 }
             }
         }
-        STACK conversion = potentialConversionSupplier.apply(stack);
+        ChemicalStack conversion = ChemicalInventorySlot.getPotentialConversion(null, stack);
         //Note: We recheck about this being empty and that it is still valid as the conversion list might have changed, such as after a reload
         if (conversion.isEmpty()) {
             return false;
         } else if (chemicalTank == null) {
             //If we haven't resolved the tank yet, we need to do it now
-            chemicalTank = containerType.createContainer(attachedTo, tankIndex);
+            chemicalTank = ContainerType.CHEMICAL.createContainer(attachedTo, tankIndex);
         }
         if (chemicalTank.insert(conversion, Action.SIMULATE, AutomationType.INTERNAL).getAmount() < conversion.getAmount()) {
             //If we can insert the converted substance into the tank allow insertion
@@ -530,26 +508,26 @@ public class ItemSlotsBuilder {
         return chemicalTank.getNeeded() == 0 && chemicalTank.isTypeEqual(conversion) && chemicalTank.isValid(conversion);
     }
 
-    public ItemSlotsBuilder addGasFillSlot(int tankIndex) {
+    public ItemSlotsBuilder addChemicalFillSlot(int tankIndex) {
         return addSlot(((type, attachedTo, containerIndex) -> new ComponentBackedInventorySlot(attachedTo, containerIndex,
-              (stack, automationType) -> automationType == AutomationType.MANUAL || canChemicalFillExtract(attachedTo, tankIndex, stack, ContainerType.GAS, Capabilities.GAS),
-              (stack, automationType) -> canChemicalFillInsert(attachedTo, tankIndex, stack, ContainerType.GAS, Capabilities.GAS), BasicInventorySlot.alwaysTrue)));
+              (stack, automationType) -> automationType == AutomationType.MANUAL || canChemicalFillExtract(attachedTo, tankIndex, stack),
+              (stack, automationType) -> canChemicalFillInsert(attachedTo, tankIndex, stack), BasicInventorySlot.alwaysTrue)));
     }
 
-    public ItemSlotsBuilder addGasFillOrConvertSlot(int tankIndex) {
+    public ItemSlotsBuilder addChemicalFillOrConvertSlot(int tankIndex) {
         return addSlot(((type, attachedTo, containerIndex) -> new ComponentBackedInventorySlot(attachedTo, containerIndex,
-              (stack, automationType) -> automationType == AutomationType.MANUAL || canChemicalFillOrConvertExtract(attachedTo, tankIndex, stack, ContainerType.GAS, Capabilities.GAS, GAS_STACK_CONVERSION),
-              (stack, automationType) -> canChemicalFillOrConvertInsert(attachedTo, tankIndex, stack, ContainerType.GAS, Capabilities.GAS, GAS_STACK_CONVERSION), BasicInventorySlot.alwaysTrue)));
+              (stack, automationType) -> automationType == AutomationType.MANUAL || canChemicalFillOrConvertExtract(attachedTo, tankIndex, stack),
+              (stack, automationType) -> canChemicalFillOrConvertInsert(attachedTo, tankIndex, stack), BasicInventorySlot.alwaysTrue)));
     }
 
-    public ItemSlotsBuilder addGasDrainSlot(int tankIndex) {
+    public ItemSlotsBuilder addChemicalDrainSlot(int tankIndex) {
         return addSlot(((type, attachedTo, containerIndex) -> new ComponentBackedInventorySlot(attachedTo, containerIndex,
-              (stack, automationType) -> automationType == AutomationType.MANUAL || !canChemicalDrainInsert(attachedTo, tankIndex, stack, ContainerType.GAS, Capabilities.GAS),
-              (stack, automationType) -> canChemicalDrainInsert(attachedTo, tankIndex, stack, ContainerType.GAS, Capabilities.GAS), BasicInventorySlot.alwaysTrue)));
+              (stack, automationType) -> automationType == AutomationType.MANUAL || !canChemicalDrainInsert(attachedTo, tankIndex, stack),
+              (stack, automationType) -> canChemicalDrainInsert(attachedTo, tankIndex, stack), BasicInventorySlot.alwaysTrue)));
     }
 
-    public ItemSlotsBuilder addGasRotaryDrainSlot(int tankIndex) {
-        //Copy of logic from GasInventorySlot#rotaryDrain
+    public ItemSlotsBuilder addChemicalRotaryDrainSlot(int tankIndex) {
+        //Copy of logic from ChemicalInventorySlot#rotaryDrain
         return addSlot(((type, attachedTo, containerIndex) -> new ComponentBackedInventorySlot(attachedTo, containerIndex,
               (stack, automationType) -> {
                   if (automationType == AutomationType.MANUAL) {
@@ -557,118 +535,26 @@ public class ItemSlotsBuilder {
                   }
                   //Copy of the insert check but inverted
                   return !attachedTo.getOrDefault(MekanismDataComponents.ROTARY_MODE, false) ||
-                         !canChemicalDrainInsert(attachedTo, tankIndex, stack, ContainerType.GAS, Capabilities.GAS);
+                         !canChemicalDrainInsert(attachedTo, tankIndex, stack);
               },
               (stack, automationType) -> attachedTo.getOrDefault(MekanismDataComponents.ROTARY_MODE, false) &&
-                                         canChemicalDrainInsert(attachedTo, tankIndex, stack, ContainerType.GAS, Capabilities.GAS),
+                                         canChemicalDrainInsert(attachedTo, tankIndex, stack),
               BasicInventorySlot.alwaysTrue)));
     }
 
-    public ItemSlotsBuilder addGasRotaryFillSlot(int tankIndex) {
-        //Copy of logic from GasInventorySlot#rotaryFill
+    public ItemSlotsBuilder addChemicalRotaryFillSlot(int tankIndex) {
+        //Copy of logic from ChemicalInventorySlot#rotaryFill
         return addSlot(((type, attachedTo, containerIndex) -> new ComponentBackedInventorySlot(attachedTo, containerIndex,
-              (stack, automationType) -> automationType == AutomationType.MANUAL || canChemicalFillExtract(attachedTo, tankIndex, stack, ContainerType.GAS, Capabilities.GAS),
+              (stack, automationType) -> automationType == AutomationType.MANUAL || canChemicalFillExtract(attachedTo, tankIndex, stack),
               (stack, automationType) -> !attachedTo.getOrDefault(MekanismDataComponents.ROTARY_MODE, false) &&
-                                         canChemicalFillInsert(attachedTo, tankIndex, stack, ContainerType.GAS, Capabilities.GAS),
+                                         canChemicalFillInsert(attachedTo, tankIndex, stack),
               BasicInventorySlot.alwaysTrue)));
     }
 
     public ItemSlotsBuilder addInfusionFillOrConvertSlot(int tankIndex) {
         return addSlot(((type, attachedTo, containerIndex) -> new ComponentBackedInventorySlot(attachedTo, containerIndex,
-              (stack, automationType) -> automationType == AutomationType.MANUAL || canChemicalFillOrConvertExtract(attachedTo, tankIndex, stack, ContainerType.INFUSION, Capabilities.INFUSION, INFUSION_STACK_CONVERSION),
-              (stack, automationType) -> canChemicalFillOrConvertInsert(attachedTo, tankIndex, stack, ContainerType.INFUSION, Capabilities.INFUSION, INFUSION_STACK_CONVERSION), BasicInventorySlot.alwaysTrue)));
-    }
-
-    public ItemSlotsBuilder addPigmentFillSlot(int tankIndex) {
-        return addSlot(((type, attachedTo, containerIndex) -> new ComponentBackedInventorySlot(attachedTo, containerIndex,
-              (stack, automationType) -> automationType == AutomationType.MANUAL || canChemicalFillExtract(attachedTo, tankIndex, stack, ContainerType.PIGMENT, Capabilities.PIGMENT),
-              (stack, automationType) -> canChemicalFillInsert(attachedTo, tankIndex, stack, ContainerType.PIGMENT, Capabilities.PIGMENT), BasicInventorySlot.alwaysTrue)));
-    }
-
-    public ItemSlotsBuilder addPigmentDrainSlot(int tankIndex) {
-        return addSlot(((type, attachedTo, containerIndex) -> new ComponentBackedInventorySlot(attachedTo, containerIndex,
-              (stack, automationType) -> automationType == AutomationType.MANUAL || !canChemicalDrainInsert(attachedTo, tankIndex, stack, ContainerType.PIGMENT, Capabilities.PIGMENT),
-              (stack, automationType) -> canChemicalDrainInsert(attachedTo, tankIndex, stack, ContainerType.PIGMENT, Capabilities.PIGMENT), BasicInventorySlot.alwaysTrue)));
-    }
-
-    public ItemSlotsBuilder addSlurryDrainSlot(int tankIndex) {
-        return addSlot(((type, attachedTo, containerIndex) -> new ComponentBackedInventorySlot(attachedTo, containerIndex,
-              (stack, automationType) -> automationType == AutomationType.MANUAL || !canChemicalDrainInsert(attachedTo, tankIndex, stack, ContainerType.SLURRY, Capabilities.SLURRY),
-              (stack, automationType) -> canChemicalDrainInsert(attachedTo, tankIndex, stack, ContainerType.SLURRY, Capabilities.SLURRY), BasicInventorySlot.alwaysTrue)));
-    }
-
-    //TODO - 1.21: Test this
-    public ItemSlotsBuilder addMergedChemicalFillSlot(int gasIndex, int infusionIndex, int pigmentIndex, int slurryIndex) {
-        return addSlot(((type, attachedTo, containerIndex) -> new ComponentBackedInventorySlot(attachedTo, containerIndex, (stack, automationType) -> {
-            if (automationType == AutomationType.MANUAL) {
-                //Always allow the player to manually extract
-                return true;
-            }
-            MergedChemicalTank chemicalTank = createMergedTank(attachedTo, gasIndex, infusionIndex, pigmentIndex, slurryIndex);
-            Predicate<@NotNull ItemStack> gasExtractPredicate = ChemicalInventorySlot.getFillExtractPredicate(chemicalTank.getGasTank(), Capabilities.GAS);
-            Predicate<@NotNull ItemStack> infusionExtractPredicate = ChemicalInventorySlot.getFillExtractPredicate(chemicalTank.getInfusionTank(), Capabilities.INFUSION);
-            Predicate<@NotNull ItemStack> pigmentExtractPredicate = ChemicalInventorySlot.getFillExtractPredicate(chemicalTank.getPigmentTank(), Capabilities.PIGMENT);
-            Predicate<@NotNull ItemStack> slurryExtractPredicate = ChemicalInventorySlot.getFillExtractPredicate(chemicalTank.getSlurryTank(), Capabilities.SLURRY);
-            return switch (chemicalTank.getCurrent()) {
-                case GAS -> gasExtractPredicate.test(stack);
-                case INFUSION -> infusionExtractPredicate.test(stack);
-                case PIGMENT -> pigmentExtractPredicate.test(stack);
-                case SLURRY -> slurryExtractPredicate.test(stack);
-                //Tank is empty, check all our extraction predicates
-                case EMPTY -> gasExtractPredicate.test(stack) && infusionExtractPredicate.test(stack) && pigmentExtractPredicate.test(stack) &&
-                              slurryExtractPredicate.test(stack);
-            };
-        }, (stack, automationType) -> {
-            MergedChemicalTank chemicalTank = createMergedTank(attachedTo, gasIndex, infusionIndex, pigmentIndex, slurryIndex);
-            return switch (chemicalTank.getCurrent()) {
-                case GAS -> ChemicalInventorySlot.fillInsertCheck(chemicalTank.getGasTank(), Capabilities.GAS, stack);
-                case INFUSION -> ChemicalInventorySlot.fillInsertCheck(chemicalTank.getInfusionTank(), Capabilities.INFUSION, stack);
-                case PIGMENT -> ChemicalInventorySlot.fillInsertCheck(chemicalTank.getPigmentTank(), Capabilities.PIGMENT, stack);
-                case SLURRY -> ChemicalInventorySlot.fillInsertCheck(chemicalTank.getSlurryTank(), Capabilities.SLURRY, stack);
-                //Tank is empty, only allow it if one of the chemical insert predicates matches
-                case EMPTY -> ChemicalInventorySlot.fillInsertCheck(chemicalTank.getGasTank(), Capabilities.GAS, stack) ||
-                              ChemicalInventorySlot.fillInsertCheck(chemicalTank.getInfusionTank(), Capabilities.INFUSION, stack) ||
-                              ChemicalInventorySlot.fillInsertCheck(chemicalTank.getPigmentTank(), Capabilities.PIGMENT, stack) ||
-                              ChemicalInventorySlot.fillInsertCheck(chemicalTank.getSlurryTank(), Capabilities.SLURRY, stack);
-            };
-        }, BasicInventorySlot.alwaysTrue)));
-    }
-
-    private static MergedChemicalTank createMergedTank(ItemStack attachedTo, int gasIndex, int infusionIndex, int pigmentIndex, int slurryIndex) {
-        return MergedChemicalTank.create(
-              ContainerType.GAS.createContainer(attachedTo, gasIndex),
-              ContainerType.INFUSION.createContainer(attachedTo, infusionIndex),
-              ContainerType.PIGMENT.createContainer(attachedTo, pigmentIndex),
-              ContainerType.SLURRY.createContainer(attachedTo, slurryIndex)
-        );
-    }
-
-    private boolean canInsertMerged(ItemStack attachedTo, int gasIndex, int infusionIndex, int pigmentIndex, int slurryIndex, ItemStack stack) {
-        MergedChemicalTank chemicalTank = createMergedTank(attachedTo, gasIndex, infusionIndex, pigmentIndex, slurryIndex);
-        //TODO - 1.21: Improve this so we aren't looking up tanks multiple times?
-        Predicate<@NotNull ItemStack> gasInsertPredicate = ChemicalInventorySlot.getDrainInsertPredicate(chemicalTank.getGasTank(), Capabilities.GAS);
-        Predicate<@NotNull ItemStack> infusionInsertPredicate = ChemicalInventorySlot.getDrainInsertPredicate(chemicalTank.getInfusionTank(), Capabilities.INFUSION);
-        Predicate<@NotNull ItemStack> pigmentInsertPredicate = ChemicalInventorySlot.getDrainInsertPredicate(chemicalTank.getPigmentTank(), Capabilities.PIGMENT);
-        Predicate<@NotNull ItemStack> slurryInsertPredicate = ChemicalInventorySlot.getDrainInsertPredicate(chemicalTank.getSlurryTank(), Capabilities.SLURRY);
-        return switch (chemicalTank.getCurrent()) {
-            case GAS -> gasInsertPredicate.test(stack);
-            case INFUSION -> infusionInsertPredicate.test(stack);
-            case PIGMENT -> pigmentInsertPredicate.test(stack);
-            case SLURRY -> slurryInsertPredicate.test(stack);
-            //Tank is empty, check if any insert predicate is valid
-            case EMPTY -> gasInsertPredicate.test(stack) || infusionInsertPredicate.test(stack) || pigmentInsertPredicate.test(stack) ||
-                          slurryInsertPredicate.test(stack);
-        };
-    }
-
-    //TODO - 1.21: Test this
-    public ItemSlotsBuilder addMergedChemicalDrainSlot(int gasIndex, int infusionIndex, int pigmentIndex, int slurryIndex) {
-        return addSlot(((type, attachedTo, containerIndex) -> new ComponentBackedInventorySlot(attachedTo, containerIndex, (stack, automationType) -> {
-            if (automationType == AutomationType.MANUAL) {
-                return true;
-            }
-            return !canInsertMerged(attachedTo, gasIndex, infusionIndex, pigmentIndex, slurryIndex, stack);
-        }, (stack, automationType) -> canInsertMerged(attachedTo, gasIndex, infusionIndex, pigmentIndex, slurryIndex, stack), BasicInventorySlot.alwaysTrue)));
+              (stack, automationType) -> automationType == AutomationType.MANUAL || canChemicalFillOrConvertExtract(attachedTo, tankIndex, stack),
+              (stack, automationType) -> canChemicalFillOrConvertInsert(attachedTo, tankIndex, stack), BasicInventorySlot.alwaysTrue)));
     }
 
     private static class BaseInventorySlotCreator extends BaseContainerCreator<AttachedItems, ComponentBackedInventorySlot> {

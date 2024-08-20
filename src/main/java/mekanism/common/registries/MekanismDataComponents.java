@@ -17,10 +17,7 @@ import mekanism.common.attachments.StabilizedChunks;
 import mekanism.common.attachments.component.AttachedEjector;
 import mekanism.common.attachments.component.AttachedSideConfig;
 import mekanism.common.attachments.component.UpgradeAware;
-import mekanism.common.attachments.containers.chemical.gas.AttachedGases;
-import mekanism.common.attachments.containers.chemical.infuse.AttachedInfuseTypes;
-import mekanism.common.attachments.containers.chemical.pigment.AttachedPigments;
-import mekanism.common.attachments.containers.chemical.slurry.AttachedSlurries;
+import mekanism.common.attachments.containers.chemical.AttachedChemicals;
 import mekanism.common.attachments.containers.energy.AttachedEnergy;
 import mekanism.common.attachments.containers.fluid.AttachedFluids;
 import mekanism.common.attachments.containers.heat.AttachedHeat;
@@ -85,26 +82,20 @@ public class MekanismDataComponents {
                 .networkSynchronized(AttachedFluids.STREAM_CODEC)
                 .cacheEncoding()
     );
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedGases>> ATTACHED_GASES = DATA_COMPONENTS.simple("gases",
-          builder -> builder.persistent(AttachedGases.CODEC)
-                .networkSynchronized(AttachedGases.STREAM_CODEC)
+
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedChemicals>> ATTACHED_CHEMICALS = DATA_COMPONENTS.simple("chemicals",
+          builder -> builder.persistent(AttachedChemicals.CODEC)
+                .networkSynchronized(AttachedChemicals.STREAM_CODEC)
                 .cacheEncoding()
     );
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedInfuseTypes>> ATTACHED_INFUSE_TYPES = DATA_COMPONENTS.simple("infuse_types",
-          builder -> builder.persistent(AttachedInfuseTypes.CODEC)
-                .networkSynchronized(AttachedInfuseTypes.STREAM_CODEC)
-                .cacheEncoding()
-    );
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedPigments>> ATTACHED_PIGMENTS = DATA_COMPONENTS.simple("pigments",
-          builder -> builder.persistent(AttachedPigments.CODEC)
-                .networkSynchronized(AttachedPigments.STREAM_CODEC)
-                .cacheEncoding()
-    );
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedSlurries>> ATTACHED_SLURRIES = DATA_COMPONENTS.simple("slurries",
-          builder -> builder.persistent(AttachedSlurries.CODEC)
-                .networkSynchronized(AttachedSlurries.STREAM_CODEC)
-                .cacheEncoding()
-    );
+
+    static {//TODO - 1.22: remove backcompat
+        DATA_COMPONENTS.addAlias(Mekanism.rl("gases"), Mekanism.rl(ATTACHED_CHEMICALS.getName()));
+        DATA_COMPONENTS.addAlias(Mekanism.rl("infuse_types"), Mekanism.rl(ATTACHED_CHEMICALS.getName()));
+        DATA_COMPONENTS.addAlias(Mekanism.rl("pigments"), Mekanism.rl(ATTACHED_CHEMICALS.getName()));
+        DATA_COMPONENTS.addAlias(Mekanism.rl("slurries"), Mekanism.rl(ATTACHED_CHEMICALS.getName()));
+    }
+
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedHeat>> ATTACHED_HEAT = DATA_COMPONENTS.simple("heat_data",
           builder -> builder.persistent(AttachedHeat.CODEC)
                 .networkSynchronized(AttachedHeat.STREAM_CODEC)

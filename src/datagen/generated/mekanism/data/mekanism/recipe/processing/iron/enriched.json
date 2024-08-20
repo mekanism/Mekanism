@@ -11,5 +11,6 @@
   "output": {
     "count": 1,
     "id": "mekanism:enriched_iron"
-  }
+  },
+  "per_tick_usage": false
 }

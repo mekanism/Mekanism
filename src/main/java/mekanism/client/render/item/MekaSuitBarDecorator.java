@@ -3,8 +3,6 @@ package mekanism.client.render.item;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import java.util.List;
-import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.attachments.containers.ContainerType;
@@ -32,10 +30,9 @@ public class MekaSuitBarDecorator implements IItemDecorator {
         }
         yOffset += 12;
 
-        if (tryRender(guiGraphics, stack, ContainerType.GAS, xOffset, yOffset, armor.getGasTankSpecs())) {
+        if (tryRender(guiGraphics, stack, xOffset, yOffset, armor.getChemicalTankSpecs())) {
             yOffset--;
         }
-        //TODO: Other chemical types as they get added to different meka suit pieces
 
         List<FluidTankSpec> fluidTankSpecs = armor.getFluidTankSpecs();
         if (!fluidTankSpecs.isEmpty()) {
@@ -50,10 +47,9 @@ public class MekaSuitBarDecorator implements IItemDecorator {
         return true;
     }
 
-    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> boolean tryRender(
-          GuiGraphics guiGraphics, ItemStack stack, ContainerType<TANK, ?, ?> containerType, int xOffset, int yOffset, List<ChemicalTankSpec<CHEMICAL>> chemicalTankSpecs) {
+    private boolean tryRender(GuiGraphics guiGraphics, ItemStack stack, int xOffset, int yOffset, List<ChemicalTankSpec> chemicalTankSpecs) {
         if (!chemicalTankSpecs.isEmpty()) {
-            List<TANK> tanks = containerType.getAttachmentContainersIfPresent(stack);
+            List<IChemicalTank> tanks = ContainerType.CHEMICAL.getAttachmentContainersIfPresent(stack);
             int tank = getDisplayTank(chemicalTankSpecs, stack, tanks.size());
             if (tank != -1) {
                 ChemicalFluidBarDecorator.renderBar(guiGraphics, xOffset, yOffset, tanks.get(tank));

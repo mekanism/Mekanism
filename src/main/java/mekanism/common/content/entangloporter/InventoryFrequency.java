@@ -17,19 +17,10 @@ import mekanism.api.AutomationType;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
 import mekanism.api.SerializerHelper;
-import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.chemical.infuse.IInfusionTank;
-import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.api.chemical.pigment.IPigmentTank;
-import mekanism.api.chemical.pigment.PigmentStack;
-import mekanism.api.chemical.slurry.ISlurryTank;
-import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
@@ -40,10 +31,7 @@ import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.security.SecurityMode;
-import mekanism.common.capabilities.chemical.dynamic.IGasTracker;
-import mekanism.common.capabilities.chemical.dynamic.IInfusionTracker;
-import mekanism.common.capabilities.chemical.dynamic.IPigmentTracker;
-import mekanism.common.capabilities.chemical.dynamic.ISlurryTracker;
+import mekanism.common.capabilities.chemical.IChemicalTracker;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
@@ -57,7 +45,6 @@ import mekanism.common.inventory.slot.EntangloporterInventorySlot;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.transmitter.TransmissionType;
-import mekanism.common.network.PacketUtils;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
@@ -81,8 +68,7 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class InventoryFrequency extends Frequency implements IMekanismInventory, IMekanismFluidHandler, IMekanismStrictEnergyHandler, ITileHeatHandler, IGasTracker,
-      IInfusionTracker, IPigmentTracker, ISlurryTracker {
+public class InventoryFrequency extends Frequency implements IMekanismInventory, IMekanismFluidHandler, IMekanismStrictEnergyHandler, ITileHeatHandler, IChemicalTracker {
 
     public static final Codec<InventoryFrequency> CODEC = RecordCodecBuilder.create(instance -> instance.group(
           ExtraCodecs.NON_EMPTY_STRING.fieldOf(SerializationConstants.NAME).forGetter(Frequency::getName),
@@ -90,43 +76,48 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
           SecurityMode.CODEC.fieldOf(SerializationConstants.SECURITY_MODE).forGetter(Frequency::getSecurity),
           SerializerHelper.POSITIVE_LONG_CODEC_LEGACY.fieldOf(SerializationConstants.ENERGY).forGetter(freq -> freq.storedEnergy.getEnergy()),
           FluidStack.OPTIONAL_CODEC.fieldOf(SerializationConstants.FLUID).forGetter(freq -> freq.storedFluid.getFluid()),
-          GasStack.OPTIONAL_CODEC.fieldOf(SerializationConstants.GAS).forGetter(freq -> freq.storedGas.getStack()),
-          InfusionStack.OPTIONAL_CODEC.fieldOf(SerializationConstants.INFUSE_TYPE).forGetter(freq -> freq.storedInfusion.getStack()),
-          PigmentStack.OPTIONAL_CODEC.fieldOf(SerializationConstants.PIGMENT).forGetter(freq -> freq.storedPigment.getStack()),
-          SlurryStack.OPTIONAL_CODEC.fieldOf(SerializationConstants.SLURRY).forGetter(freq -> freq.storedSlurry.getStack()),
+          ChemicalStack.OPTIONAL_CODEC.optionalFieldOf(SerializationConstants.CHEMICAL).forGetter(freq -> Optional.of(freq.storedChemical.getStack())),
           ItemStack.OPTIONAL_CODEC.fieldOf(SerializationConstants.ITEM).forGetter(freq -> freq.storedItem.getStack()),
           Codec.DOUBLE.fieldOf(SerializationConstants.HEAT_STORED).forGetter(freq -> freq.storedHeat.getHeat()),
-          Codec.DOUBLE.fieldOf(SerializationConstants.HEAT_CAPACITY).forGetter(freq -> freq.storedHeat.getHeatCapacity())
-    ).apply(instance, (name, owner, securityMode, energy, fluid, gas, infusion, pigment, slurry, item, heat, heatCapacity) -> {
+          Codec.DOUBLE.fieldOf(SerializationConstants.HEAT_CAPACITY).forGetter(freq -> freq.storedHeat.getHeatCapacity()),
+
+          //TODO - 1.22: remove backcompat and change Chemical field to non-optional
+          ChemicalStack.OPTIONAL_CODEC.optionalFieldOf("gas").forGetter(freq -> Optional.empty()),
+          ChemicalStack.OPTIONAL_CODEC.optionalFieldOf("infuse_type").forGetter(freq -> Optional.empty()),
+          ChemicalStack.OPTIONAL_CODEC.optionalFieldOf("pigment").forGetter(freq -> Optional.empty()),
+          ChemicalStack.OPTIONAL_CODEC.optionalFieldOf("slurry").forGetter(freq -> Optional.empty())
+    ).apply(instance, (name, owner, securityMode, energy, fluid, chemical, item, heat, heatCapacity, legacyGas, legacyInfuse, legacyPigment, legacySlurry) -> {
         InventoryFrequency frequency = new InventoryFrequency(name, owner.orElse(null), securityMode);
         frequency.storedEnergy.setEnergy(energy);
         frequency.storedFluid.setStackUnchecked(fluid);
-        frequency.storedGas.setStackUnchecked(gas);
-        frequency.storedInfusion.setStackUnchecked(infusion);
-        frequency.storedPigment.setStackUnchecked(pigment);
-        frequency.storedSlurry.setStackUnchecked(slurry);
+        //TODO - 1.22: remove backcompat and change Chemical field to non-optional (but keep the stack itself as an optional codec)
+        if (chemical.isPresent()) {
+            frequency.storedChemical.setStackUnchecked(chemical.get());
+        } else if (legacyGas.isPresent() && !legacyGas.get().isEmpty()) {
+            frequency.storedChemical.setStackUnchecked(legacyGas.get());
+        } else if (legacyInfuse.isPresent() && !legacyInfuse.get().isEmpty()) {
+            frequency.storedChemical.setStackUnchecked(legacyInfuse.get());
+        } else if (legacyPigment.isPresent() && !legacyPigment.get().isEmpty()) {
+            frequency.storedChemical.setStackUnchecked(legacyPigment.get());
+        } else if (legacySlurry.isPresent() && !legacySlurry.get().isEmpty()) {
+            frequency.storedChemical.setStackUnchecked(legacySlurry.get());
+        }
         frequency.storedItem.setStackUnchecked(item);
         frequency.storedHeat.setHeat(heat);
         frequency.storedHeat.setHeatCapacity(heatCapacity, false);
         return frequency;
     }));
-    public static final StreamCodec<RegistryFriendlyByteBuf, InventoryFrequency> STREAM_CODEC = PacketUtils.composite(
+    public static final StreamCodec<RegistryFriendlyByteBuf, InventoryFrequency> STREAM_CODEC = StreamCodec.composite(
           baseStreamCodec(InventoryFrequency::new), Function.identity(),
           ByteBufCodecs.VAR_LONG, freq -> freq.storedEnergy.getEnergy(),
           FluidStack.OPTIONAL_STREAM_CODEC, freq -> freq.storedFluid.getFluid(),
-          GasStack.OPTIONAL_STREAM_CODEC, freq -> freq.storedGas.getStack(),
-          InfusionStack.OPTIONAL_STREAM_CODEC, freq -> freq.storedInfusion.getStack(),
-          PigmentStack.OPTIONAL_STREAM_CODEC, freq -> freq.storedPigment.getStack(),
-          SlurryStack.OPTIONAL_STREAM_CODEC, freq -> freq.storedSlurry.getStack(),
+          ChemicalStack.OPTIONAL_STREAM_CODEC, freq -> freq.storedChemical.getStack(),
           ItemStack.OPTIONAL_STREAM_CODEC, freq -> freq.storedItem.getStack(),
           ByteBufCodecs.DOUBLE, freq -> freq.storedHeat.getHeat(),
-          (frequency, energy, fluid, gas, infusion, pigment, slurry, item, heat) -> {
+          (frequency, energy, fluid, gas, item, heat) -> {
               frequency.storedEnergy.setEnergy(energy);
               frequency.storedFluid.setStack(fluid);
-              frequency.storedGas.setStack(gas);
-              frequency.storedInfusion.setStack(infusion);
-              frequency.storedPigment.setStack(pigment);
-              frequency.storedSlurry.setStack(slurry);
+              frequency.storedChemical.setStack(gas);
               frequency.storedItem.setStack(item);
               frequency.storedHeat.setHeat(heat);
               return frequency;
@@ -137,19 +128,13 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     private long lastEject = -1;
 
     private BasicFluidTank storedFluid;
-    private IGasTank storedGas;
-    private IInfusionTank storedInfusion;
-    private IPigmentTank storedPigment;
-    private ISlurryTank storedSlurry;
+    private IChemicalTank storedChemical;
     private BasicInventorySlot storedItem;
     public IEnergyContainer storedEnergy;
     private BasicHeatCapacitor storedHeat;
 
     private List<IInventorySlot> inventorySlots;
-    private List<IGasTank> gasTanks;
-    private List<IInfusionTank> infusionTanks;
-    private List<IPigmentTank> pigmentTanks;
-    private List<ISlurryTank> slurryTanks;
+    private List<IChemicalTank> chemicalTanks;
     private List<IExtendedFluidTank> fluidTanks;
     private List<IEnergyContainer> energyContainers;
     private List<IHeatCapacitor> heatCapacitors;
@@ -169,10 +154,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
 
     private void presetVariables() {
         fluidTanks = Collections.singletonList(storedFluid = BasicFluidTank.create(MekanismConfig.general.entangloporterFluidBuffer.get(), this));
-        gasTanks = Collections.singletonList(storedGas = ChemicalTankBuilder.GAS.create(MekanismConfig.general.entangloporterChemicalBuffer.get(), this));
-        infusionTanks = Collections.singletonList(storedInfusion = ChemicalTankBuilder.INFUSION.create(MekanismConfig.general.entangloporterChemicalBuffer.get(), this));
-        pigmentTanks = Collections.singletonList(storedPigment = ChemicalTankBuilder.PIGMENT.create(MekanismConfig.general.entangloporterChemicalBuffer.get(), this));
-        slurryTanks = Collections.singletonList(storedSlurry = ChemicalTankBuilder.SLURRY.create(MekanismConfig.general.entangloporterChemicalBuffer.get(), this));
+        chemicalTanks = Collections.singletonList(storedChemical = BasicChemicalTank.create(MekanismConfig.general.entangloporterChemicalBuffer.get(), this));
         inventorySlots = Collections.singletonList(storedItem = EntangloporterInventorySlot.create(this));
         energyContainers = Collections.singletonList(storedEnergy = BasicEnergyContainer.create(MekanismConfig.general.entangloporterEnergyBuffer.getAsLong(), this));
         heatCapacitors = Collections.singletonList(storedHeat = BasicHeatCapacitor.create(HeatAPI.DEFAULT_HEAT_CAPACITY, HeatAPI.DEFAULT_INVERSE_CONDUCTION,
@@ -187,26 +169,8 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
 
     @NotNull
     @Override
-    public List<IGasTank> getGasTanks(@Nullable Direction side) {
-        return gasTanks;
-    }
-
-    @NotNull
-    @Override
-    public List<IInfusionTank> getInfusionTanks(@Nullable Direction side) {
-        return infusionTanks;
-    }
-
-    @NotNull
-    @Override
-    public List<IPigmentTank> getPigmentTanks(@Nullable Direction side) {
-        return pigmentTanks;
-    }
-
-    @NotNull
-    @Override
-    public List<ISlurryTank> getSlurryTanks(@Nullable Direction side) {
-        return slurryTanks;
+    public List<IChemicalTank> getChemicalTanks(@Nullable Direction side) {
+        return chemicalTanks;
     }
 
     @NotNull
@@ -260,10 +224,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
             int expected = 6 * activeQEs.size();
             addEnergyTransferHandler(typesToEject, transferHandlers, expected);
             addFluidTransferHandler(typesToEject, transferHandlers, expected);
-            addChemicalTransferHandler(TransmissionType.GAS, storedGas, typesToEject, transferHandlers, expected);
-            addChemicalTransferHandler(TransmissionType.INFUSION, storedInfusion, typesToEject, transferHandlers, expected);
-            addChemicalTransferHandler(TransmissionType.PIGMENT, storedPigment, typesToEject, transferHandlers, expected);
-            addChemicalTransferHandler(TransmissionType.SLURRY, storedSlurry, typesToEject, transferHandlers, expected);
+            addChemicalTransferHandler(typesToEject, transferHandlers, expected);
             if (!typesToEject.isEmpty()) {
                 //If we have at least one type to eject (we are not entirely empty)
                 // then go through all the QEs and build up the target locations
@@ -326,12 +287,11 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         }
     }
 
-    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void addChemicalTransferHandler(TransmissionType chemicalType,
-          IChemicalTank<CHEMICAL, STACK> tank, Map<TransmissionType, Consumer<?>> typesToEject, List<Runnable> transferHandlers, int expected) {
-        STACK toSend = tank.extract(tank.getCapacity(), Action.SIMULATE, AutomationType.INTERNAL);
+    private void addChemicalTransferHandler(Map<TransmissionType, Consumer<?>> typesToEject, List<Runnable> transferHandlers, int expected) {
+        ChemicalStack toSend = storedChemical.extract(storedChemical.getCapacity(), Action.SIMULATE, AutomationType.INTERNAL);
         if (!toSend.isEmpty()) {
-            SendingChemicalHandlerTarget<?, ?, ?> target = new SendingChemicalHandlerTarget<>(toSend, expected, tank);
-            typesToEject.put(chemicalType, target);
+            SendingChemicalHandlerTarget target = new SendingChemicalHandlerTarget(toSend, expected, storedChemical);
+            typesToEject.put(TransmissionType.CHEMICAL, target);
             transferHandlers.add(target);
         }
     }
@@ -384,12 +344,11 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         }
     }
 
-    private static class SendingChemicalHandlerTarget<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>>
-          extends ChemicalHandlerTarget<CHEMICAL, STACK, HANDLER> implements Runnable, Consumer<HANDLER> {
+    private static class SendingChemicalHandlerTarget extends ChemicalHandlerTarget implements Runnable, Consumer<IChemicalHandler> {
 
-        private final IChemicalTank<CHEMICAL, STACK> storedChemical;
+        private final IChemicalTank storedChemical;
 
-        public SendingChemicalHandlerTarget(@NotNull STACK toSend, int expectedSize, IChemicalTank<CHEMICAL, STACK> storedChemical) {
+        public SendingChemicalHandlerTarget(ChemicalStack toSend, int expectedSize, IChemicalTank storedChemical) {
             super(toSend, expectedSize);
             this.storedChemical = storedChemical;
         }
@@ -402,7 +361,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         }
 
         @Override
-        public void accept(HANDLER handler) {
+        public void accept(IChemicalHandler handler) {
             if (ChemicalUtil.canInsert(handler, extra)) {
                 addHandler(handler);
             }

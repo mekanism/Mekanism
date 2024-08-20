@@ -5,7 +5,6 @@ import java.util.function.BooleanSupplier;
 import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.util.TriPredicate;
@@ -51,7 +50,12 @@ public class ConstantPredicates {
      * @since 10.5.15
      */
     public static final Predicate<FluidStack> FLUID_EMPTY = FluidStack::isEmpty;
-    private static final Predicate<ChemicalStack<?>> CHEMICAL_EMPTY = ChemicalStack::isEmpty;
+    /**
+     * Represents a predicate that checks if a chemical stack is empty.
+     *
+     * @since 10.7.0
+     */
+    public static final Predicate<ChemicalStack> CHEMICAL_EMPTY = ChemicalStack::isEmpty;
 
     private static final Predicate<Object> alwaysFalse = t -> false;
     private static final BiPredicate<Object, Object> alwaysFalseBi = (t, u) -> false;
@@ -59,6 +63,7 @@ public class ConstantPredicates {
 
     private static final BiPredicate<Object, @NotNull AutomationType> internalOnly = (t, automationType) -> automationType == AutomationType.INTERNAL;
     private static final BiPredicate<Object, @NotNull AutomationType> notExternal = (t, automationType) -> automationType != AutomationType.EXTERNAL;
+    private static final BiPredicate<Object, @NotNull AutomationType> manualOnly = (t, automationType) -> automationType == AutomationType.MANUAL;
 
     /**
      * Returns a predicate that returns {@code true} for any input.
@@ -121,11 +126,12 @@ public class ConstantPredicates {
     }
 
     /**
-     * Represents a predicate that checks if a chemical stack is empty.
+     * Returns a bi predicate that returns {@code true} for any input when the automation type is manual.
      *
-     * @since 10.5.15
+     * @since 10.7.0
      */
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> Predicate<STACK> chemicalEmpty() {
-        return (Predicate<STACK>) CHEMICAL_EMPTY;
+    public static <T> BiPredicate<T, @NotNull AutomationType> manualOnly() {
+        return (BiPredicate<T, @NotNull AutomationType>) manualOnly;
     }
+
 }

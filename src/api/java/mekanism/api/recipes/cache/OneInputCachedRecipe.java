@@ -7,9 +7,9 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.functions.ConstantPredicates;
+import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.ElectrolysisRecipe.ElectrolysisRecipeOutput;
 import mekanism.api.recipes.FluidToFluidRecipe;
@@ -20,9 +20,8 @@ import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.SawmillRecipe;
 import mekanism.api.recipes.SawmillRecipe.ChanceOutput;
-import mekanism.api.recipes.chemical.ChemicalToChemicalRecipe;
-import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
+import mekanism.api.recipes.ChemicalToChemicalRecipe;
+import mekanism.api.recipes.ItemStackToChemicalRecipe;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
@@ -99,6 +98,23 @@ public class OneInputCachedRecipe<INPUT, OUTPUT, RECIPE extends MekanismRecipe<?
             inputHandler.use(input, operations);
             outputHandler.handleOutput(output, operations);
         }
+    }
+
+    /**
+     * Base implementation for handling Crystallizing Recipes.
+     *
+     * @param recipe           Recipe.
+     * @param recheckAllErrors Returns {@code true} if processing should be continued even if an error is hit in order to gather all the errors. It is recommended to not
+     *                         do this every tick or if there is no one viewing recipes.
+     * @param inputHandler     Input handler.
+     * @param outputHandler    Output handler, handles both the left and right outputs.
+     *
+     * @since 10.7.0
+     */
+    public static OneInputCachedRecipe<@NotNull ChemicalStack, @NotNull ItemStack, ChemicalCrystallizerRecipe> crystallizing(ChemicalCrystallizerRecipe recipe,
+          BooleanSupplier recheckAllErrors, IInputHandler<@NotNull ChemicalStack> inputHandler, IOutputHandler<@NotNull ItemStack> outputHandler) {
+        return new OneInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, outputHandler, recipe::getInput, recipe::getOutput, ConstantPredicates.CHEMICAL_EMPTY,
+              ConstantPredicates.ITEM_EMPTY);
     }
 
     /**
@@ -188,11 +204,11 @@ public class OneInputCachedRecipe<INPUT, OUTPUT, RECIPE extends MekanismRecipe<?
      * @param inputHandler     Input handler.
      * @param outputHandler    Output handler.
      */
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, RECIPE extends ItemStackToChemicalRecipe<CHEMICAL, STACK>>
-    OneInputCachedRecipe<@NotNull ItemStack, @NotNull STACK, RECIPE> itemToChemical(RECIPE recipe, BooleanSupplier recheckAllErrors,
-          IInputHandler<@NotNull ItemStack> inputHandler, IOutputHandler<@NotNull STACK> outputHandler) {
+    public static <RECIPE extends ItemStackToChemicalRecipe>
+    OneInputCachedRecipe<@NotNull ItemStack, @NotNull ChemicalStack, RECIPE> itemToChemical(RECIPE recipe, BooleanSupplier recheckAllErrors,
+          IInputHandler<@NotNull ItemStack> inputHandler, IOutputHandler<@NotNull ChemicalStack> outputHandler) {
         return new OneInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, outputHandler, recipe::getInput, recipe::getOutput, ConstantPredicates.ITEM_EMPTY,
-              ConstantPredicates.chemicalEmpty());
+              ConstantPredicates.CHEMICAL_EMPTY);
     }
 
     /**
@@ -204,11 +220,10 @@ public class OneInputCachedRecipe<INPUT, OUTPUT, RECIPE extends MekanismRecipe<?
      * @param inputHandler     Input handler.
      * @param outputHandler    Output handler.
      */
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK, ?>,
-          RECIPE extends ChemicalToChemicalRecipe<CHEMICAL, STACK, INGREDIENT>> OneInputCachedRecipe<@NotNull STACK, @NotNull STACK, RECIPE> chemicalToChemical(
-          RECIPE recipe, BooleanSupplier recheckAllErrors, IInputHandler<@NotNull STACK> inputHandler, IOutputHandler<@NotNull STACK> outputHandler) {
-        return new OneInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, outputHandler, recipe::getInput, recipe::getOutput, ConstantPredicates.chemicalEmpty(),
-              ConstantPredicates.chemicalEmpty());
+    public static <RECIPE extends ChemicalToChemicalRecipe> OneInputCachedRecipe<@NotNull ChemicalStack, @NotNull ChemicalStack, RECIPE> chemicalToChemical(
+          RECIPE recipe, BooleanSupplier recheckAllErrors, IInputHandler<@NotNull ChemicalStack> inputHandler, IOutputHandler<@NotNull ChemicalStack> outputHandler) {
+        return new OneInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, outputHandler, recipe::getInput, recipe::getOutput, ConstantPredicates.CHEMICAL_EMPTY,
+              ConstantPredicates.CHEMICAL_EMPTY);
     }
 
     /**

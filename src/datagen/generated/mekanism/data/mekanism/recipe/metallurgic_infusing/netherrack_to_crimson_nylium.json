@@ -11,5 +11,6 @@
   "output": {
     "count": 1,
     "id": "minecraft:crimson_nylium"
-  }
+  },
+  "per_tick_usage": false
 }

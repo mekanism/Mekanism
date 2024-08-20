@@ -5,7 +5,7 @@ import java.util.Objects;
 import java.util.function.Predicate;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.vanilla_input.SingleFluidRecipeInput;
 import net.minecraft.core.Holder;
@@ -23,9 +23,9 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Input: FluidStack
  * <br>
- * Left Output: GasStack
+ * Left Output: ChemicalStack
  * <br>
- * Right Output: GasStack
+ * Right Output: ChemicalStack
  *
  * @apiNote Electrolytic Separators can process this recipe type.
  */
@@ -89,7 +89,7 @@ public abstract class ElectrolysisRecipe extends MekanismRecipe<SingleFluidRecip
         return new ItemStack(ELECTROLYTIC_SEPARATOR);
     }
 
-    public record ElectrolysisRecipeOutput(@NotNull GasStack left, @NotNull GasStack right) {
+    public record ElectrolysisRecipeOutput(@NotNull ChemicalStack left, @NotNull ChemicalStack right) {
 
         public ElectrolysisRecipeOutput {
             Objects.requireNonNull(left, "Left output cannot be null.");

@@ -1,0 +1,19 @@
+{
+  "type": "mekanism:chemical_conversion",
+  "input": {
+    "type": "neoforge:compound",
+    "children": [
+      {
+        "tag": "c:dusts/charcoal"
+      },
+      {
+        "item": "minecraft:charcoal"
+      }
+    ],
+    "count": 1
+  },
+  "output": {
+    "amount": 20,
+    "id": "mekanism:carbon"
+  }
+}

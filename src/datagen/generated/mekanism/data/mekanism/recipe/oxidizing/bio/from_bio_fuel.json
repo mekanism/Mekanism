@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:oxidizing",
+  "input": {
+    "count": 1,
+    "tag": "c:fuels/bio"
+  },
+  "output": {
+    "amount": 5,
+    "id": "mekanism:bio"
+  }
+}

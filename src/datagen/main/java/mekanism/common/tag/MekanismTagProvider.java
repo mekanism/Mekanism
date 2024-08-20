@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import mekanism.api.MekanismAPITags;
-import mekanism.api.chemical.slurry.Slurry;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.registration.impl.BlockRegistryObject;
@@ -16,10 +16,8 @@ import mekanism.common.registries.MekanismDamageTypes;
 import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismGameEvents;
-import mekanism.common.registries.MekanismGases;
-import mekanism.common.registries.MekanismInfuseTypes;
+import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismItems;
-import mekanism.common.registries.MekanismSlurries;
 import mekanism.common.resource.BlockResourceInfo;
 import mekanism.common.resource.IResource;
 import mekanism.common.resource.MiscResource;
@@ -85,9 +83,7 @@ public class MekanismTagProvider extends BaseTagProvider {
         addDamageTypes();
         addFluids();
         addGameEvents();
-        addGasTags();
-        addSlurryTags();
-        addInfuseTags();
+        addChemicalTags();
         addPellets();
         addColorableItems();
         getBlockBuilder(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE).add(Tags.Blocks.ORES, BlockTags.LOGS);
@@ -590,34 +586,26 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismGameEvents.GRAVITY_MODULATE_BOOSTED);
     }
 
-    private void addGasTags() {
-        addToTag(MekanismTags.Gases.WATER_VAPOR, MekanismGases.WATER_VAPOR, MekanismGases.STEAM);
-        addToTag(MekanismAPITags.Gases.WASTE_BARREL_DECAY_BLACKLIST, MekanismGases.PLUTONIUM, MekanismGases.POLONIUM);
-    }
+    private void addChemicalTags() {
+        addToTag(MekanismTags.Chemicals.WATER_VAPOR, MekanismChemicals.WATER_VAPOR, MekanismChemicals.STEAM);
+        addToTag(MekanismAPITags.Chemicals.WASTE_BARREL_DECAY_BLACKLIST, MekanismChemicals.PLUTONIUM, MekanismChemicals.POLONIUM);
 
-    private void addSlurryTags(SlurryRegistryObject<?, ?>... slurryRegistryObjects) {
-        IntrinsicMekanismTagBuilder<Slurry> dirtyTagBuilder = getSlurryBuilder(MekanismAPITags.Slurries.DIRTY);
-        IntrinsicMekanismTagBuilder<Slurry> cleanTagBuilder = getSlurryBuilder(MekanismAPITags.Slurries.CLEAN);
-        for (SlurryRegistryObject<?, ?> slurryRO : slurryRegistryObjects) {
-            dirtyTagBuilder.add(slurryRO.getDirtySlurry());
-            cleanTagBuilder.add(slurryRO.getCleanSlurry());
-        }
+        IntrinsicMekanismTagBuilder<Chemical> dirtyTagBuilder = getChemicalBuilder(MekanismAPITags.Chemicals.DIRTY);
+        IntrinsicMekanismTagBuilder<Chemical> cleanTagBuilder = getChemicalBuilder(MekanismAPITags.Chemicals.CLEAN);
         // add dynamic slurry tags
-        for (SlurryRegistryObject<?, ?> slurryRO : MekanismSlurries.PROCESSED_RESOURCES.values()) {
+        for (SlurryRegistryObject<?, ?> slurryRO : MekanismChemicals.PROCESSED_RESOURCES.values()) {
             dirtyTagBuilder.add(slurryRO.getDirtySlurry());
             cleanTagBuilder.add(slurryRO.getCleanSlurry());
         }
-    }
 
-    private void addInfuseTags() {
-        addToTag(MekanismAPITags.InfuseTypes.CARBON, MekanismInfuseTypes.CARBON);
-        addToTag(MekanismAPITags.InfuseTypes.REDSTONE, MekanismInfuseTypes.REDSTONE);
-        addToTag(MekanismAPITags.InfuseTypes.DIAMOND, MekanismInfuseTypes.DIAMOND);
-        addToTag(MekanismAPITags.InfuseTypes.REFINED_OBSIDIAN, MekanismInfuseTypes.REFINED_OBSIDIAN);
-        addToTag(MekanismAPITags.InfuseTypes.GOLD, MekanismInfuseTypes.GOLD);
-        addToTag(MekanismAPITags.InfuseTypes.TIN, MekanismInfuseTypes.TIN);
-        addToTag(MekanismAPITags.InfuseTypes.FUNGI, MekanismInfuseTypes.FUNGI);
-        addToTag(MekanismAPITags.InfuseTypes.BIO, MekanismInfuseTypes.BIO);
+        addToTag(MekanismAPITags.Chemicals.CARBON, MekanismChemicals.CARBON);
+        addToTag(MekanismAPITags.Chemicals.REDSTONE, MekanismChemicals.REDSTONE);
+        addToTag(MekanismAPITags.Chemicals.DIAMOND, MekanismChemicals.DIAMOND);
+        addToTag(MekanismAPITags.Chemicals.REFINED_OBSIDIAN, MekanismChemicals.REFINED_OBSIDIAN);
+        addToTag(MekanismAPITags.Chemicals.GOLD, MekanismChemicals.GOLD);
+        addToTag(MekanismAPITags.Chemicals.TIN, MekanismChemicals.TIN);
+        addToTag(MekanismAPITags.Chemicals.FUNGI, MekanismChemicals.FUNGI);
+        addToTag(MekanismAPITags.Chemicals.BIO, MekanismChemicals.BIO);
     }
 
     private void addHarvestRequirements() {

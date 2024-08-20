@@ -18,10 +18,10 @@ import java.util.stream.Collectors;
 import mekanism.api.Chunk3D;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasHandler;
-import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.chemical.gas.attribute.GasAttributes.Radiation;
+import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.IChemicalHandler;
+import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.chemical.attribute.ChemicalAttributes.Radiation;
 import mekanism.api.math.MathUtils;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.radiation.IRadiationSource;
@@ -280,17 +280,17 @@ public class RadiationManager implements IRadiationManager {
     }
 
     @Override
-    public void dumpRadiation(GlobalPos pos, IGasHandler gasHandler, boolean clearRadioactive) {
-        for (int tank = 0, gasTanks = gasHandler.getTanks(); tank < gasTanks; tank++) {
-            if (dumpRadiation(pos, gasHandler.getChemicalInTank(tank)) && clearRadioactive) {
-                gasHandler.setChemicalInTank(tank, GasStack.EMPTY);
+    public void dumpRadiation(GlobalPos pos, IChemicalHandler chemicalHandler, boolean clearRadioactive) {
+        for (int tank = 0, gasTanks = chemicalHandler.getChemicalTanks(); tank < gasTanks; tank++) {
+            if (dumpRadiation(pos, chemicalHandler.getChemicalInTank(tank)) && clearRadioactive) {
+                chemicalHandler.setChemicalInTank(tank, ChemicalStack.EMPTY);
             }
         }
     }
 
     @Override
-    public void dumpRadiation(GlobalPos pos, List<IGasTank> gasTanks, boolean clearRadioactive) {
-        for (IGasTank gasTank : gasTanks) {
+    public void dumpRadiation(GlobalPos pos, List<IChemicalTank> chemicalTanks, boolean clearRadioactive) {
+        for (IChemicalTank gasTank : chemicalTanks) {
             if (dumpRadiation(pos, gasTank.getStack()) && clearRadioactive) {
                 gasTank.setEmpty();
             }
@@ -298,7 +298,7 @@ public class RadiationManager implements IRadiationManager {
     }
 
     @Override
-    public boolean dumpRadiation(GlobalPos pos, GasStack stack) {
+    public boolean dumpRadiation(GlobalPos pos, ChemicalStack stack) {
         //Note: We only attempt to dump and mark that we did if radiation is enabled in order to allow persisting radioactive
         // substances when radiation is disabled
         if (isRadiationEnabled() && !stack.isEmpty()) {

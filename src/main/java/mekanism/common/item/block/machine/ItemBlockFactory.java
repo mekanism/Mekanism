@@ -23,10 +23,9 @@ public class ItemBlockFactory extends ItemBlockTooltip<BlockTile<?, ?>> {
     private static AttachedSideConfig getSideConfig(BlockFactory<?> block) {
         return switch (Attribute.getOrThrow(block, AttributeFactoryType.class).getFactoryType()) {
             case SMELTING, ENRICHING, CRUSHING, SAWING -> AttachedSideConfig.ELECTRIC_MACHINE;
-            case COMPRESSING -> AttachedSideConfig.ADVANCED_MACHINE;
+            case COMPRESSING, INFUSING -> AttachedSideConfig.ADVANCED_MACHINE;
             case COMBINING -> AttachedSideConfig.EXTRA_MACHINE;
             case PURIFYING, INJECTING -> AttachedSideConfig.ADVANCED_MACHINE_INPUT_ONLY;
-            case INFUSING -> AttachedSideConfig.METALLURGIC;
         };
     }
 

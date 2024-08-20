@@ -5,9 +5,8 @@ import java.util.function.Predicate;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.merged.BoxedChemicalStack;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
-import mekanism.api.recipes.vanilla_input.SingleBoxedChemicalInput;
+import mekanism.api.recipes.vanilla_input.SingleChemicalRecipeInput;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
@@ -28,7 +27,7 @@ import org.jetbrains.annotations.NotNull;
  * @apiNote Chemical Crystallizers can process this recipe type.
  */
 @NothingNullByDefault
-public abstract class ChemicalCrystallizerRecipe extends MekanismRecipe<SingleBoxedChemicalInput> implements Predicate<@NotNull BoxedChemicalStack> {
+public abstract class ChemicalCrystallizerRecipe extends MekanismRecipe<SingleChemicalRecipeInput> implements Predicate<@NotNull ChemicalStack> {
 
     private static final Holder<Item> CHEMICAL_CRYSTALLIZER = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "chemical_crystallizer"));
 
@@ -44,7 +43,7 @@ public abstract class ChemicalCrystallizerRecipe extends MekanismRecipe<SingleBo
      * @implNote The passed in input should <strong>NOT</strong> be modified.
      */
     @Contract(value = "_ -> new", pure = true)
-    public abstract ItemStack getOutput(BoxedChemicalStack input);
+    public abstract ItemStack getOutput(ChemicalStack input);
 
     /**
      * For JEI, gets the output representations to display.
@@ -55,7 +54,7 @@ public abstract class ChemicalCrystallizerRecipe extends MekanismRecipe<SingleBo
 
     @NotNull
     @Override
-    public ItemStack assemble(SingleBoxedChemicalInput input, HolderLookup.Provider provider) {
+    public ItemStack assemble(SingleChemicalRecipeInput input, HolderLookup.Provider provider) {
         if (!isIncomplete() && test(input.chemical())) {
             return getOutput(input.chemical());
         }
@@ -63,13 +62,10 @@ public abstract class ChemicalCrystallizerRecipe extends MekanismRecipe<SingleBo
     }
 
     @Override
-    public boolean matches(SingleBoxedChemicalInput input, Level level) {
+    public boolean matches(SingleChemicalRecipeInput input, Level level) {
         //Don't match incomplete recipes or ones that don't match
         return !isIncomplete() && test(input.chemical());
     }
-
-    @Override
-    public abstract boolean test(BoxedChemicalStack chemicalStack);
 
     /**
      * Helper to test this recipe against a chemical stack without having to first box it up.
@@ -77,10 +73,8 @@ public abstract class ChemicalCrystallizerRecipe extends MekanismRecipe<SingleBo
      * @param stack Input stack.
      *
      * @return {@code true} if the stack matches the input.
-     *
-     * @apiNote See {@link #test(BoxedChemicalStack)}.
      */
-    public abstract boolean test(ChemicalStack<?> stack);
+    public abstract boolean test(ChemicalStack stack);
 
     /**
      * Helper to test this recipe against a chemical stack's type without having to first box it up.
@@ -89,23 +83,13 @@ public abstract class ChemicalCrystallizerRecipe extends MekanismRecipe<SingleBo
      *
      * @return {@code true} if the stack's type matches the input.
      *
-     * @apiNote See {@link #testType(BoxedChemicalStack)}.
      */
-    public abstract boolean testType(ChemicalStack<?> stack);
-
-    /**
-     * Helper to test this recipe against a chemical stack's type without having to first box it up.
-     *
-     * @param stack Input stack.
-     *
-     * @return {@code true} if the stack's type matches the input.
-     */
-    public abstract boolean testType(BoxedChemicalStack stack);
+    public abstract boolean testType(ChemicalStack stack);
 
     /**
      * Gets the input ingredient.
      */
-    public abstract ChemicalStackIngredient<?, ?, ?> getInput();
+    public abstract ChemicalStackIngredient getInput();
 
     @Override
     public boolean isIncomplete() {

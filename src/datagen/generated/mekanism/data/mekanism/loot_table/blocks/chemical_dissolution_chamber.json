@@ -22,10 +22,7 @@
                 "mekanism:upgrades",
                 "mekanism:energy",
                 "mekanism:items",
-                "mekanism:gases",
-                "mekanism:infuse_types",
-                "mekanism:pigments",
-                "mekanism:slurries"
+                "mekanism:chemicals"
               ],
               "source": "block_entity"
             }

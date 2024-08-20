@@ -1,8 +1,8 @@
 {
   "type": "mekanism:dissolution",
-  "gas_input": {
+  "chemical_input": {
     "amount": 2,
-    "gas": "mekanism:sulfuric_acid"
+    "chemical": "mekanism:sulfuric_acid"
   },
   "item_input": {
     "count": 1,
@@ -10,7 +10,7 @@
   },
   "output": {
     "amount": 6000,
-    "chemical_type": "slurry",
     "id": "mekanism:dirty_copper"
-  }
+  },
+  "per_tick_usage": true
 }

@@ -4,10 +4,10 @@ import com.google.common.collect.Table.Cell;
 import java.util.Map;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPITags;
-import mekanism.api.chemical.slurry.Slurry;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.gear.config.ModuleConfig;
+import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.providers.IItemProvider;
-import mekanism.api.providers.IPigmentProvider;
 import mekanism.api.robit.RobitSkin;
 import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
@@ -42,13 +42,10 @@ import mekanism.common.registries.MekanismDamageTypes;
 import mekanism.common.registries.MekanismDamageTypes.MekanismDamageType;
 import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.registries.MekanismFluids;
-import mekanism.common.registries.MekanismGases;
-import mekanism.common.registries.MekanismInfuseTypes;
+import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismModules;
-import mekanism.common.registries.MekanismPigments;
 import mekanism.common.registries.MekanismRobitSkins;
-import mekanism.common.registries.MekanismSlurries;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.resource.IResource;
 import mekanism.common.resource.PrimaryResource;
@@ -204,20 +201,20 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         addTag(MekanismTags.Fluids.HYDROFLUORIC_ACID, "Hydrofluoric Acid");
         addTag(MekanismTags.Fluids.NUTRITIONAL_PASTE, "Nutritional Paste");
 
-        addTag(MekanismTags.Gases.WATER_VAPOR, "Water Vapor");
-        addTag(MekanismAPITags.Gases.WASTE_BARREL_DECAY_BLACKLIST, "Waste Barrel Does Not Decay");
+        addTag(MekanismTags.Chemicals.WATER_VAPOR, "Water Vapor");
+        addTag(MekanismAPITags.Chemicals.WASTE_BARREL_DECAY_BLACKLIST, "Waste Barrel Does Not Decay");
 
-        addTag(MekanismAPITags.InfuseTypes.CARBON, "Carbon");
-        addTag(MekanismAPITags.InfuseTypes.REDSTONE, "Redstone");
-        addTag(MekanismAPITags.InfuseTypes.DIAMOND, "Diamond");
-        addTag(MekanismAPITags.InfuseTypes.REFINED_OBSIDIAN, "Refined Obsidian");
-        addTag(MekanismAPITags.InfuseTypes.BIO, "Bio");
-        addTag(MekanismAPITags.InfuseTypes.FUNGI, "Fungi");
-        addTag(MekanismAPITags.InfuseTypes.GOLD, "Gold");
-        addTag(MekanismAPITags.InfuseTypes.TIN, "Tin");
+        addTag(MekanismAPITags.Chemicals.CARBON, "Carbon");
+        addTag(MekanismAPITags.Chemicals.REDSTONE, "Redstone");
+        addTag(MekanismAPITags.Chemicals.DIAMOND, "Diamond");
+        addTag(MekanismAPITags.Chemicals.REFINED_OBSIDIAN, "Refined Obsidian");
+        addTag(MekanismAPITags.Chemicals.BIO, "Bio");
+        addTag(MekanismAPITags.Chemicals.FUNGI, "Fungi");
+        addTag(MekanismAPITags.Chemicals.GOLD, "Gold");
+        addTag(MekanismAPITags.Chemicals.TIN, "Tin");
 
-        addTag(MekanismAPITags.Slurries.DIRTY, "Dirty Slurry");
-        addTag(MekanismAPITags.Slurries.CLEAN, "Clean Slurry");
+        addTag(MekanismAPITags.Chemicals.DIRTY, "Dirty Slurry");
+        addTag(MekanismAPITags.Chemicals.CLEAN, "Clean Slurry");
     }
 
     private void addItems() {
@@ -292,7 +289,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismItems.ENERGY_UPGRADE, "Energy Upgrade");
         add(MekanismItems.FILTER_UPGRADE, "Filter Upgrade");
         add(MekanismItems.MUFFLING_UPGRADE, "Muffling Upgrade");
-        add(MekanismItems.GAS_UPGRADE, "Gas Upgrade");
+        add(MekanismItems.CHEMICAL_UPGRADE, "Chemical Upgrade");
         add(MekanismItems.ANCHOR_UPGRADE, "Anchor Upgrade");
         add(MekanismItems.STONE_GENERATOR_UPGRADE, "Stone Generator Upgrade");
         //Alloys
@@ -532,60 +529,57 @@ public class MekanismLangProvider extends BaseLanguageProvider {
     }
 
     private void addGases() {
-        add(MekanismAPI.EMPTY_GAS, "Empty");
-        add(MekanismGases.HYDROGEN, "Hydrogen");
-        add(MekanismGases.OXYGEN, "Oxygen");
-        add(MekanismGases.STEAM, "Steam");
-        add(MekanismGases.WATER_VAPOR, "Water Vapor");
-        add(MekanismGases.CHLORINE, "Chlorine");
-        add(MekanismGases.SULFUR_DIOXIDE, "Sulfur Dioxide");
-        add(MekanismGases.SULFUR_TRIOXIDE, "Sulfur Trioxide");
-        add(MekanismGases.SULFURIC_ACID, "Sulfuric Acid");
-        add(MekanismGases.HYDROGEN_CHLORIDE, "Hydrogen Chloride");
-        add(MekanismGases.HYDROFLUORIC_ACID, "Hydrofluoric Acid");
-        add(MekanismGases.URANIUM_OXIDE, "Uranium Oxide");
-        add(MekanismGases.URANIUM_HEXAFLUORIDE, "Uranium Hexafluoride");
-        add(MekanismGases.ETHENE, "Ethene");
-        add(MekanismGases.SODIUM, "Sodium");
-        add(MekanismGases.SUPERHEATED_SODIUM, "Superheated Sodium");
-        add(MekanismGases.BRINE, "Gaseous Brine");
-        add(MekanismGases.LITHIUM, "Lithium");
-        add(MekanismGases.OSMIUM, "Osmium");
-        add(MekanismGases.FISSILE_FUEL, "Fissile Fuel");
-        add(MekanismGases.NUCLEAR_WASTE, "Nuclear Waste");
-        add(MekanismGases.SPENT_NUCLEAR_WASTE, "Spent Nuclear Waste");
-        add(MekanismGases.ANTIMATTER, "Antimatter");
-        add(MekanismGases.PLUTONIUM, "Plutonium");
-        add(MekanismGases.POLONIUM, "Polonium");
+        add(MekanismAPI.EMPTY_CHEMICAL, "Empty");
+        add(MekanismChemicals.HYDROGEN, "Hydrogen");
+        add(MekanismChemicals.OXYGEN, "Oxygen");
+        add(MekanismChemicals.STEAM, "Steam");
+        add(MekanismChemicals.WATER_VAPOR, "Water Vapor");
+        add(MekanismChemicals.CHLORINE, "Chlorine");
+        add(MekanismChemicals.SULFUR_DIOXIDE, "Sulfur Dioxide");
+        add(MekanismChemicals.SULFUR_TRIOXIDE, "Sulfur Trioxide");
+        add(MekanismChemicals.SULFURIC_ACID, "Sulfuric Acid");
+        add(MekanismChemicals.HYDROGEN_CHLORIDE, "Hydrogen Chloride");
+        add(MekanismChemicals.HYDROFLUORIC_ACID, "Hydrofluoric Acid");
+        add(MekanismChemicals.URANIUM_OXIDE, "Uranium Oxide");
+        add(MekanismChemicals.URANIUM_HEXAFLUORIDE, "Uranium Hexafluoride");
+        add(MekanismChemicals.ETHENE, "Ethene");
+        add(MekanismChemicals.SODIUM, "Sodium");
+        add(MekanismChemicals.SUPERHEATED_SODIUM, "Superheated Sodium");
+        add(MekanismChemicals.BRINE, "Gaseous Brine");
+        add(MekanismChemicals.LITHIUM, "Lithium");
+        add(MekanismChemicals.OSMIUM, "Osmium");
+        add(MekanismChemicals.FISSILE_FUEL, "Fissile Fuel");
+        add(MekanismChemicals.NUCLEAR_WASTE, "Nuclear Waste");
+        add(MekanismChemicals.SPENT_NUCLEAR_WASTE, "Spent Nuclear Waste");
+        add(MekanismChemicals.ANTIMATTER, "Antimatter");
+        add(MekanismChemicals.PLUTONIUM, "Plutonium");
+        add(MekanismChemicals.POLONIUM, "Polonium");
     }
 
     private void addInfusionTypes() {
-        add(MekanismAPI.EMPTY_INFUSE_TYPE, "Empty");
-        add(MekanismInfuseTypes.CARBON, "Carbon");
-        add(MekanismInfuseTypes.REDSTONE, "Redstone");
-        add(MekanismInfuseTypes.DIAMOND, "Diamond");
-        add(MekanismInfuseTypes.REFINED_OBSIDIAN, "Refined Obsidian");
-        add(MekanismInfuseTypes.GOLD, "Gold");
-        add(MekanismInfuseTypes.TIN, "Tin");
-        add(MekanismInfuseTypes.FUNGI, "Fungi");
-        add(MekanismInfuseTypes.BIO, "Biomass");
+        add(MekanismChemicals.CARBON, "Carbon");
+        add(MekanismChemicals.REDSTONE, "Redstone");
+        add(MekanismChemicals.DIAMOND, "Diamond");
+        add(MekanismChemicals.REFINED_OBSIDIAN, "Refined Obsidian");
+        add(MekanismChemicals.GOLD, "Gold");
+        add(MekanismChemicals.TIN, "Tin");
+        add(MekanismChemicals.FUNGI, "Fungi");
+        add(MekanismChemicals.BIO, "Biomass");
     }
 
     private void addPigments() {
-        add(MekanismAPI.EMPTY_PIGMENT, "Empty");
-        for (Map.Entry<EnumColor, IPigmentProvider> entry : MekanismPigments.PIGMENT_COLOR_LOOKUP.entrySet()) {
+        for (Map.Entry<EnumColor, IChemicalProvider> entry : MekanismChemicals.PIGMENT_COLOR_LOOKUP.entrySet()) {
             add(entry.getValue(), entry.getKey().getEnglishName() + " Pigment");
         }
     }
 
     private void addSlurries() {
-        add(MekanismAPI.EMPTY_SLURRY, "Empty");
-        for (Map.Entry<PrimaryResource, SlurryRegistryObject<Slurry, Slurry>> entry : MekanismSlurries.PROCESSED_RESOURCES.entrySet()) {
+        for (Map.Entry<PrimaryResource, SlurryRegistryObject<Chemical, Chemical>> entry : MekanismChemicals.PROCESSED_RESOURCES.entrySet()) {
             addSlurry(entry.getValue(), formatAndCapitalize(entry.getKey().getRegistrySuffix()));
         }
     }
 
-    private void addSlurry(SlurryRegistryObject<Slurry, Slurry> slurryRO, String name) {
+    private void addSlurry(SlurryRegistryObject<Chemical, Chemical> slurryRO, String name) {
         add(slurryRO.getDirtySlurry(), "Dirty " + name + " Slurry");
         add(slurryRO.getCleanSlurry(), "Clean " + name + " Slurry");
     }
@@ -814,8 +808,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(APILang.UPGRADE_ENERGY_DESCRIPTION, "Increases energy efficiency and capacity of machinery.");
         add(APILang.UPGRADE_FILTER, "Filter");
         add(APILang.UPGRADE_FILTER_DESCRIPTION, "A filter that separates heavy water from regular water.");
-        add(APILang.UPGRADE_GAS, "Gas");
-        add(APILang.UPGRADE_GAS_DESCRIPTION, "Increases the efficiency of gas-using machinery.");
+        add(APILang.UPGRADE_CHEMICAL, "Chemical");
+        add(APILang.UPGRADE_CHEMICAL_DESCRIPTION, "Increases the efficiency of chemical-using machinery.");
         add(APILang.UPGRADE_MUFFLING, "Muffling");
         add(APILang.UPGRADE_MUFFLING_DESCRIPTION, "Reduces noise generated by machinery.");
         add(APILang.UPGRADE_ANCHOR, "Anchor");
@@ -824,12 +818,9 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(APILang.UPGRADE_STONE_GENERATOR_DESCRIPTION, "Generates stone or cobblestone as needed.");
         add(APILang.UPGRADE_MAX_INSTALLED, "Maximum Installed: %1$s");
         //Transmission types
+        add(MekanismLang.TRANSMISSION_TYPE_CHEMICALS, "Chemicals");
         add(MekanismLang.TRANSMISSION_TYPE_ENERGY, "Energy");
         add(MekanismLang.TRANSMISSION_TYPE_FLUID, "Fluids");
-        add(MekanismLang.TRANSMISSION_TYPE_GAS, "Gases");
-        add(MekanismLang.TRANSMISSION_TYPE_INFUSION, "Infuse Types");
-        add(MekanismLang.TRANSMISSION_TYPE_PIGMENT, "Pigments");
-        add(MekanismLang.TRANSMISSION_TYPE_SLURRY, "Slurries");
         add(MekanismLang.TRANSMISSION_TYPE_ITEM, "Items");
         add(MekanismLang.TRANSMISSION_TYPE_HEAT, "Heat");
         //Chemical Attributes
@@ -876,8 +867,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.BOILER_INVALID_SUPERHEATING, "Couldn't form, invalid Superheating Element arrangement.");
         //Conversion
         add(MekanismLang.CONVERSION_ENERGY, "Item to Energy");
-        add(MekanismLang.CONVERSION_GAS, "Item to Gas");
-        add(MekanismLang.CONVERSION_INFUSION, "Item to Infuse Type");
+        add(MekanismLang.CONVERSION_CHEMICAL, "Item to Chemical");
         //QIO stuff
         add(MekanismLang.SET_FREQUENCY, "Set Frequency");
         add(MekanismLang.QIO_FREQUENCY_SELECT, "QIO Frequency Select");
@@ -1032,7 +1022,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.FLOWING, "Flowing: %1$s");
         add(MekanismLang.INVALID, "(Invalid)");
         add(MekanismLang.HAS_INVENTORY, "Inventory: %1$s");
-        add(MekanismLang.NO_GAS, "No gas stored.");
+        add(MekanismLang.NO_CHEMICAL, "No chemicals stored.");
         add(MekanismLang.NO_FLUID_TOOLTIP, "No fluid stored.");
         add(MekanismLang.FREE_RUNNERS_MODE, "Runners Mode: %1$s");
         add(MekanismLang.JETPACK_MODE, "Jetpack Mode: %1$s");
@@ -1067,10 +1057,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.VOLUME, "Volume: %1$s");
         add(MekanismLang.NO_FLUID, "No fluid");
         add(MekanismLang.CHEMICAL, "Chemical: %1$s");
-        add(MekanismLang.GAS, "Gas: %1$s");
-        add(MekanismLang.INFUSE_TYPE, "Infuse Type: %1$s");
-        add(MekanismLang.PIGMENT, "Pigment: %1$s");
-        add(MekanismLang.SLURRY, "Slurry: %1$s");
         add(MekanismLang.LIQUID, "Liquid: %1$s");
         add(MekanismLang.UNIT, "Unit: %1$s");
         add(MekanismLang.USING, "Using: %1$s/t");
@@ -1159,7 +1145,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.AUTO_PULL, "Auto-pull");
         add(MekanismLang.AUTO_EJECT, "Auto-eject");
         add(MekanismLang.AUTO_SORT, "Auto-sort");
-        //Gas mode
+        //Chemical mode
         add(MekanismLang.IDLE, "Idle");
         add(MekanismLang.DUMPING_EXCESS, "Dumping Excess");
         add(MekanismLang.DUMPING, "Dumping");
@@ -1189,14 +1175,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DICTIONARY_ENCHANTMENT_DESC, "Display Enchantment Tags");
         add(MekanismLang.DICTIONARY_BLOCK_ENTITY_TYPE, "Block Entity Type");
         add(MekanismLang.DICTIONARY_BLOCK_ENTITY_TYPE_DESC, "Display Block Entity Type Tags");
-        add(MekanismLang.DICTIONARY_GAS, "Gas");
-        add(MekanismLang.DICTIONARY_GAS_DESC, "Display Gas Tags");
-        add(MekanismLang.DICTIONARY_INFUSE_TYPE, "Infuse Type");
-        add(MekanismLang.DICTIONARY_INFUSE_TYPE_DESC, "Display Infuse Type Tags");
-        add(MekanismLang.DICTIONARY_PIGMENT, "Pigment");
-        add(MekanismLang.DICTIONARY_PIGMENT_DESC, "Display Pigment Tags");
-        add(MekanismLang.DICTIONARY_SLURRY, "Slurry");
-        add(MekanismLang.DICTIONARY_SLURRY_DESC, "Display Slurry Tags");
+        add(MekanismLang.DICTIONARY_CHEMICAL, "Chemical");
+        add(MekanismLang.DICTIONARY_CHEMICAL_DESC, "Display Chemical Tags");
         //Oredictionificator
         add(MekanismLang.LAST_ITEM, "Last Item");
         add(MekanismLang.NEXT_ITEM, "Next Item");
@@ -1248,10 +1228,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.ITEMS, "- Items (%1$s)");
         add(MekanismLang.BLOCKS, "- Blocks (%1$s)");
         add(MekanismLang.FLUIDS, "- Fluids (%1$s)");
-        add(MekanismLang.GASES, "- Gases (%1$s)");
-        add(MekanismLang.INFUSE_TYPES, "- Infuse Types (%1$s)");
-        add(MekanismLang.PIGMENTS, "- Pigments (%1$s)");
-        add(MekanismLang.SLURRIES, "- Slurries (%1$s)");
+        add(MekanismLang.CHEMICALS, "- Chemicals (%1$s)");
         add(MekanismLang.HEAT, "- Heat (%1$s)");
         add(MekanismLang.CONDUCTION, "Conduction: %1$s");
         add(MekanismLang.INSULATION, "Insulation: %1$s");
@@ -1599,17 +1576,17 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DESCRIPTION_PERSONAL_CHEST, "A 54-slot chest that can be opened from your own inventory.");
         add(MekanismLang.DESCRIPTION_CHARGEPAD, "A universal chargepad that can charge any energized item from any mod.");
         add(MekanismLang.DESCRIPTION_LOGISTICAL_SORTER, "A filter-based, advanced sorting machine that can auto-eject specified items out of and into adjacent inventories and Logistical Transporters.");
-        add(MekanismLang.DESCRIPTION_ROTARY_CONDENSENTRATOR, "A machine capable of converting gases into their fluid form and vice versa.");
+        add(MekanismLang.DESCRIPTION_ROTARY_CONDENSENTRATOR, "A machine capable of converting chemicals into their fluid form and vice versa.");
         add(MekanismLang.DESCRIPTION_CHEMICAL_INJECTION_CHAMBER, "An elite machine capable of processing ores into four shards, serving as the initial stage of 400% ore processing.");
-        add(MekanismLang.DESCRIPTION_ELECTROLYTIC_SEPARATOR, "A machine that uses the process of electrolysis to split apart a certain gas into two different gases.");
+        add(MekanismLang.DESCRIPTION_ELECTROLYTIC_SEPARATOR, "A machine that uses the process of electrolysis to split apart a certain fluid into two different chemicals.");
         add(MekanismLang.DESCRIPTION_PRECISION_SAWMILL, "A machine used to process logs and other wood-based items more efficiently, as well as to obtain sawdust.");
         add(MekanismLang.DESCRIPTION_CHEMICAL_DISSOLUTION_CHAMBER, "An ultimate machine used to chemically dissolve all impurities of an ore, leaving an unprocessed slurry behind.");
         add(MekanismLang.DESCRIPTION_CHEMICAL_WASHER, "An ultimate machine that cleans unprocessed slurry and prepares it for crystallization.");
         add(MekanismLang.DESCRIPTION_CHEMICAL_CRYSTALLIZER, "An ultimate machine used to crystallize purified ore slurry into ore crystals.");
         add(MekanismLang.DESCRIPTION_CHEMICAL_OXIDIZER, "A machine capable of oxidizing solid materials into gas phase.");
-        add(MekanismLang.DESCRIPTION_CHEMICAL_INFUSER, "A machine that produces a new gas by infusing two others.");
+        add(MekanismLang.DESCRIPTION_CHEMICAL_INFUSER, "A machine that produces a new chemicals by infusing two others.");
         add(MekanismLang.DESCRIPTION_SEISMIC_VIBRATOR, "A machine that uses seismic vibrations to provide information on differing layers of the world.");
-        add(MekanismLang.DESCRIPTION_PRESSURIZED_REACTION_CHAMBER, "An advanced machine that processes a solid, liquid and gaseous mixture and creates both a gaseous and solid product.");
+        add(MekanismLang.DESCRIPTION_PRESSURIZED_REACTION_CHAMBER, "An advanced machine that processes a solid, liquid and chemical mixture and creates both a chemical and solid product.");
         add(MekanismLang.DESCRIPTION_FLUID_TANK, "A handy, sturdy, portable tank that lets you carry multiple buckets of fluid wherever you please. Also doubles as a bucket!");
         add(MekanismLang.DESCRIPTION_FLUIDIC_PLENISHER, "A machine that is capable of creating entire lakes by filling ravines with fluids.");
         add(MekanismLang.DESCRIPTION_LASER, "An advanced form of linear energy transfer that utilizes an extremely collimated beam of light.");

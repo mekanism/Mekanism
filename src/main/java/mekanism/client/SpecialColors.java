@@ -13,10 +13,7 @@ public class SpecialColors {
 
     public static final ColorRegistryObject TAB_ENERGY_CONFIG = GUI_OBJECTS.register(0xFF59C15F);
     public static final ColorRegistryObject TAB_FLUID_CONFIG = GUI_OBJECTS.register(0xFF366BD0);
-    public static final ColorRegistryObject TAB_GAS_CONFIG = GUI_OBJECTS.register(0xFFFFDD4F);
-    public static final ColorRegistryObject TAB_INFUSION_CONFIG = GUI_OBJECTS.register(0xFFC9071F);
-    public static final ColorRegistryObject TAB_PIGMENT_CONFIG = GUI_OBJECTS.register(0xFFFFBCC4);
-    public static final ColorRegistryObject TAB_SLURRY_CONFIG = GUI_OBJECTS.register(0xFFA17649);
+    public static final ColorRegistryObject TAB_CHEMICAL_CONFIG = GUI_OBJECTS.register(0xFFFFDD4F);
     public static final ColorRegistryObject TAB_ITEM_CONFIG = GUI_OBJECTS.register(0xFFCFCFCF);
     public static final ColorRegistryObject TAB_HEAT_CONFIG = GUI_OBJECTS.register(0xFFFFA160);
 

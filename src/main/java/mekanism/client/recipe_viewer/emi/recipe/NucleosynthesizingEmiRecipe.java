@@ -5,9 +5,9 @@ import mekanism.api.recipes.NucleosynthesizingRecipe;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.bar.GuiDynamicHorizontalRateBar;
 import mekanism.client.gui.element.gauge.GaugeType;
+import mekanism.client.gui.element.gauge.GuiChemicalGauge;
 import mekanism.client.gui.element.gauge.GuiEnergyGauge;
 import mekanism.client.gui.element.gauge.GuiEnergyGauge.IEnergyInfoHandler;
-import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.client.recipe_viewer.emi.MekanismEmiRecipeCategory;
@@ -15,6 +15,7 @@ import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.lib.Color;
 import mekanism.common.lib.Color.ColorFunction;
 import mekanism.common.tile.component.config.DataType;
+import mekanism.common.tile.machine.TileEntityAntiprotonicNucleosynthesizer;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 public class NucleosynthesizingEmiRecipe extends MekanismEmiHolderRecipe<NucleosynthesizingRecipe> {
@@ -22,7 +23,7 @@ public class NucleosynthesizingEmiRecipe extends MekanismEmiHolderRecipe<Nucleos
     public NucleosynthesizingEmiRecipe(MekanismEmiRecipeCategory category, RecipeHolder<NucleosynthesizingRecipe> recipeHolder) {
         super(category, recipeHolder);
         addInputDefinition(recipe.getItemInput());
-        addInputDefinition(recipe.getChemicalInput());
+        addInputDefinition(recipe.getChemicalInput(), recipe.perTickUsage() ? TileEntityAntiprotonicNucleosynthesizer.BASE_TICKS_REQUIRED : 1);
         addItemOutputDefinition(recipe.getOutputDefinition());
         addCatalsyst(recipe.getChemicalInput());
     }
@@ -34,7 +35,8 @@ public class NucleosynthesizingEmiRecipe extends MekanismEmiHolderRecipe<Nucleos
         addSlot(widgetHolder, SlotType.OUTPUT, 152, 40, output(0)).recipeContext(this);
         addSlot(widgetHolder, SlotType.POWER, 173, 69).with(SlotOverlay.POWER);
         addElement(widgetHolder, new GuiInnerScreen(this, 45, 18, 104, 68));
-        initTank(widgetHolder, GuiGasGauge.getDummy(GaugeType.SMALL_MED.with(DataType.INPUT), this, 5, 18), input(1));
+        GaugeType type = GaugeType.SMALL_MED.with(DataType.INPUT);
+        initTank(widgetHolder, GuiChemicalGauge.getDummy(type, this, 5, 18), input(1));
         addElement(widgetHolder, new GuiEnergyGauge(new IEnergyInfoHandler() {
             @Override
             public long getEnergy() {

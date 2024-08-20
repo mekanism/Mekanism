@@ -27,7 +27,7 @@ public class UpgradeUtils {
             case ENERGY -> MekanismItems.ENERGY_UPGRADE.getItemStack(count);
             case FILTER -> MekanismItems.FILTER_UPGRADE.getItemStack(count);
             case MUFFLING -> MekanismItems.MUFFLING_UPGRADE.getItemStack(count);
-            case GAS -> MekanismItems.GAS_UPGRADE.getItemStack(count);
+            case CHEMICAL -> MekanismItems.CHEMICAL_UPGRADE.getItemStack(count);
             case ANCHOR -> MekanismItems.ANCHOR_UPGRADE.getItemStack(count);
             case STONE_GENERATOR -> MekanismItems.STONE_GENERATOR_UPGRADE.getItemStack(count);
         };

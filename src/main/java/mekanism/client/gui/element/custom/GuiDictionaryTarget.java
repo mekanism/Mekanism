@@ -11,10 +11,6 @@ import java.util.function.Consumer;
 import java.util.stream.IntStream;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.api.chemical.pigment.PigmentStack;
-import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.GuiUtils.TilingDirection;
 import mekanism.client.gui.IGuiWrapper;
@@ -45,7 +41,6 @@ import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import org.jetbrains.annotations.NotNull;
@@ -86,7 +81,7 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
             MekanismRenderer.color(guiGraphics, stack);
             drawTiledSprite(guiGraphics, relativeX, relativeY, height, width, height, MekanismRenderer.getFluidTexture(stack, FluidTextureType.STILL), TilingDirection.DOWN_RIGHT);
             MekanismRenderer.resetColor(guiGraphics);
-        } else if (target instanceof ChemicalStack<?> stack) {
+        } else if (target instanceof ChemicalStack stack) {
             MekanismRenderer.color(guiGraphics, stack);
             drawTiledSprite(guiGraphics, relativeX, relativeY, height, width, height, MekanismRenderer.getChemicalTexture(stack.getChemical()), TilingDirection.DOWN_RIGHT);
             MekanismRenderer.resetColor(guiGraphics);
@@ -187,10 +182,15 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
                         ));
                     }
                     //Get tags of any contained chemicals
-                    addChemicalTags(DictionaryTagType.GAS, stack, Capabilities.GAS.item());
-                    addChemicalTags(DictionaryTagType.INFUSE_TYPE, stack, Capabilities.INFUSION.item());
-                    addChemicalTags(DictionaryTagType.PIGMENT, stack, Capabilities.PIGMENT.item());
-                    addChemicalTags(DictionaryTagType.SLURRY, stack, Capabilities.SLURRY.item());
+                    IChemicalHandler chemicalHandler = Capabilities.CHEMICAL.getCapability(stack);
+                    if (chemicalHandler != null) {
+                        tags.put(DictionaryTagType.CHEMICAL, TagCache.getTagsAsStrings(IntStream.range(0, chemicalHandler.getChemicalTanks())
+                              .mapToObj(chemicalHandler::getChemicalInTank)
+                              .filter(chemicalInTank -> !chemicalInTank.isEmpty())
+                              .flatMap(chemicalInTank -> chemicalInTank.getChemical().getTags())
+                              .distinct()
+                        ));
+                    }
                     //TODO: Support other types of things?
                 }
             }
@@ -202,21 +202,12 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
                     tags.put(DictionaryTagType.FLUID, TagCache.getTagsAsStrings(fluidStack.getFluidHolder()));
                 }
             }
-            case ChemicalStack<?> chemicalStack -> {
+            case ChemicalStack chemicalStack -> {
                 if (chemicalStack.isEmpty()) {
                     setTarget(null);
                 } else {
                     setTarget(chemicalStack.copy());
-                    List<String> chemicalTags = TagCache.getTagsAsStrings(((ChemicalStack<?>) target).getChemical().getTags());
-                    if (target instanceof GasStack) {
-                        tags.put(DictionaryTagType.GAS, chemicalTags);
-                    } else if (target instanceof InfusionStack) {
-                        tags.put(DictionaryTagType.INFUSE_TYPE, chemicalTags);
-                    } else if (target instanceof PigmentStack) {
-                        tags.put(DictionaryTagType.PIGMENT, chemicalTags);
-                    } else if (target instanceof SlurryStack) {
-                        tags.put(DictionaryTagType.SLURRY, chemicalTags);
-                    }
+                    tags.put(DictionaryTagType.CHEMICAL, TagCache.getTagsAsStrings(chemicalStack.getChemical().getTags()));
                 }
             }
             default -> {
@@ -227,19 +218,6 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
         //Update the list being viewed
         tagSetter.accept(tags.keySet());
         playClickSound(BUTTON_CLICK_SOUND);
-    }
-
-    private <STACK extends ChemicalStack<?>, HANDLER extends IChemicalHandler<?, STACK>> void addChemicalTags(DictionaryTagType tagType, ItemStack stack,
-          ItemCapability<HANDLER, Void> capability) {
-        HANDLER handler = stack.getCapability(capability);
-        if (handler != null) {
-            tags.put(tagType, TagCache.getTagsAsStrings(IntStream.range(0, handler.getTanks())
-                  .mapToObj(handler::getChemicalInTank)
-                  .filter(chemicalInTank -> !chemicalInTank.isEmpty())
-                  .flatMap(chemicalInTank -> chemicalInTank.getChemical().getTags())
-                  .distinct()
-            ));
-        }
     }
 
     @Override
@@ -266,7 +244,7 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
                     return stack.isEmpty() ? null : stack;
                 } else if (ingredient instanceof FluidStack stack) {
                     return stack.isEmpty() ? null : stack;
-                } else if (ingredient instanceof ChemicalStack<?> stack) {
+                } else if (ingredient instanceof ChemicalStack stack) {
                     return stack.isEmpty() ? null : stack;
                 }
                 return null;

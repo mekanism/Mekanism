@@ -15,8 +15,6 @@ import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
-import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
@@ -87,7 +85,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     @Nullable
     private Predicate<TransmissionType> canEject;
     @Nullable//TODO: At some point it would be nice to be able to generify this further
-    private Predicate<IChemicalTank<?, ?>> canTankEject;
+    private Predicate<IChemicalTank> canTankEject;
     private boolean strictInput;
     private EnumColor outputColor;
     private int tickDelay = 0;
@@ -132,7 +130,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         return this;
     }
 
-    public TileComponentEjector setCanTankEject(Predicate<IChemicalTank<?, ?>> canTankEject) {
+    public TileComponentEjector setCanTankEject(Predicate<IChemicalTank> canTankEject) {
         this.canTankEject = canTankEject;
         return this;
     }
@@ -187,8 +185,8 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                             outputData = new IdentityHashMap<>();
                         }
                         switch (slotInfo) {
-                            case ChemicalSlotInfo<?, ?, ?> chemicalSlotInfo when type.isChemical() -> {
-                                for (IChemicalTank<?, ?> tank : chemicalSlotInfo.getTanks()) {
+                            case ChemicalSlotInfo chemicalSlotInfo when type == TransmissionType.CHEMICAL -> {
+                                for (IChemicalTank tank : chemicalSlotInfo.getTanks()) {
                                     if (!tank.isEmpty() && (canTankEject == null || canTankEject.test(tank))) {
                                         addData(outputData, tank, outputSides);
                                     }
@@ -221,32 +219,32 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
             Map<Direction, BlockCapabilityCache<?, @Nullable Direction>> typeCapabilityCaches = capabilityCaches.computeIfAbsent(type, t -> new EnumMap<>(Direction.class));
             for (Map.Entry<Object, Set<Direction>> entry : outputData.entrySet()) {
                 Set<Direction> sides = entry.getValue();
-                if (type.isChemical()) {
-                    emit(level, pos, typeCapabilityCaches, sides, (IChemicalTank<?, ?>) entry.getKey());
-                } else if (type == TransmissionType.FLUID) {
-                    List<BlockCapabilityCache<IFluidHandler, @Nullable Direction>> caches = getCapabilityCaches(level, pos, typeCapabilityCaches, sides, Capabilities.FLUID);
-                    FluidUtils.emit(caches, (IExtendedFluidTank) entry.getKey(), fluidEjectRate.getAsInt());
-                } else if (type == TransmissionType.ENERGY) {
-                    IEnergyContainer container = (IEnergyContainer) entry.getKey();
-                    List<BlockEnergyCapabilityCache> caches = new ArrayList<>(sides.size());
-                    for (Direction side : sides) {
-                        BlockEnergyCapabilityCache cache = energyCapabilityCache.get(side);
-                        if (cache == null) {
-                            cache = BlockEnergyCapabilityCache.create(level, pos.relative(side), side.getOpposite());
-                            energyCapabilityCache.put(side, cache);
-                        }
-                        caches.add(cache);
+                switch (type) {
+                    case CHEMICAL -> {
+                        IChemicalTank tank = (IChemicalTank) entry.getKey();
+                        List<BlockCapabilityCache<IChemicalHandler, @Nullable Direction>> caches = getCapabilityCaches(level, pos, typeCapabilityCaches, sides, Capabilities.CHEMICAL);
+                        ChemicalUtil.emit(caches, tank, chemicalEjectRate.getAsLong());
                     }
-                    CableUtils.emit(caches, container, energyEjectRate == null ? container.getMaxEnergy() : energyEjectRate.getAsLong());
+                    case FLUID -> {
+                        List<BlockCapabilityCache<IFluidHandler, @Nullable Direction>> caches = getCapabilityCaches(level, pos, typeCapabilityCaches, sides, Capabilities.FLUID);
+                        FluidUtils.emit(caches, (IExtendedFluidTank) entry.getKey(), fluidEjectRate.getAsInt());
+                    }
+                    case ENERGY -> {
+                        IEnergyContainer container = (IEnergyContainer) entry.getKey();
+                        List<BlockEnergyCapabilityCache> caches = new ArrayList<>(sides.size());
+                        for (Direction side : sides) {
+                            BlockEnergyCapabilityCache cache = energyCapabilityCache.get(side);
+                            if (cache == null) {
+                                cache = BlockEnergyCapabilityCache.create(level, pos.relative(side), side.getOpposite());
+                                energyCapabilityCache.put(side, cache);
+                            }
+                            caches.add(cache);
+                        }
+                        CableUtils.emit(caches, container, energyEjectRate == null ? container.getMaxEnergy() : energyEjectRate.getAsLong());
+                    }
                 }
             }
         }
-    }
-
-    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>> void emit(ServerLevel level,
-          BlockPos pos, Map<Direction, BlockCapabilityCache<?, @Nullable Direction>> typeCapabilityCaches, Set<Direction> sides, IChemicalTank<CHEMICAL, STACK> tank) {
-        List<BlockCapabilityCache<HANDLER, @Nullable Direction>> caches = getCapabilityCaches(level, pos, typeCapabilityCaches, sides, ChemicalUtil.getCapabilityForChemical(tank));
-        ChemicalUtil.emit(caches, tank, chemicalEjectRate.getAsLong());
     }
 
     @SuppressWarnings("unchecked")

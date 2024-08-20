@@ -1,9 +1,8 @@
 {
   "type": "mekanism:crystallizing",
-  "chemical_type": "gas",
   "input": {
     "amount": 1000,
-    "gas": "mekanism:antimatter"
+    "chemical": "mekanism:antimatter"
   },
   "output": {
     "count": 1,

@@ -6,6 +6,7 @@ import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import java.util.Optional;
 import java.util.function.Predicate;
 import mekanism.api.MekanismAPI;
+import mekanism.api.chemical.Chemical;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
@@ -17,55 +18,16 @@ import org.openzen.zencode.java.ZenCodeType;
 public class CrTBracketValidators {
 
     /**
-     * Validates if there is a {@link mekanism.api.chemical.gas.Gas} with the given registry name.
+     * Validates if there is a {@link Chemical} with the given registry name.
      *
      * @param tokens The resource location to validate.
      *
      * @return {@code true} if valid, {@code false} otherwise.
      */
     @ZenCodeType.Method
-    @BracketValidator(CrTConstants.BRACKET_GAS)
-    public static boolean validateGasStack(String tokens) {
-        return validate(CrTConstants.BRACKET_GAS, tokens, MekanismAPI.GAS_REGISTRY);
-    }
-
-    /**
-     * Validates if there is a {@link mekanism.api.chemical.infuse.InfuseType} with the given registry name.
-     *
-     * @param tokens The resource location to validate.
-     *
-     * @return {@code true} if valid, {@code false} otherwise.
-     */
-    @ZenCodeType.Method
-    @BracketValidator(CrTConstants.BRACKET_INFUSE_TYPE)
-    public static boolean validateInfusionStack(String tokens) {
-        return validate(CrTConstants.BRACKET_INFUSE_TYPE, tokens, MekanismAPI.INFUSE_TYPE_REGISTRY);
-    }
-
-    /**
-     * Validates if there is a {@link mekanism.api.chemical.pigment.Pigment} with the given registry name.
-     *
-     * @param tokens The resource location to validate.
-     *
-     * @return {@code true} if valid, {@code false} otherwise.
-     */
-    @ZenCodeType.Method
-    @BracketValidator(CrTConstants.BRACKET_PIGMENT)
-    public static boolean validatePigmentStack(String tokens) {
-        return validate(CrTConstants.BRACKET_PIGMENT, tokens, MekanismAPI.PIGMENT_REGISTRY);
-    }
-
-    /**
-     * Validates if there is a {@link mekanism.api.chemical.slurry.Slurry} with the given registry name.
-     *
-     * @param tokens The resource location to validate.
-     *
-     * @return {@code true} if valid, {@code false} otherwise.
-     */
-    @ZenCodeType.Method
-    @BracketValidator(CrTConstants.BRACKET_SLURRY)
-    public static boolean validateSlurryStack(String tokens) {
-        return validate(CrTConstants.BRACKET_SLURRY, tokens, MekanismAPI.SLURRY_REGISTRY);
+    @BracketValidator(CrTConstants.BRACKET_CHEMICAL)
+    public static boolean validateChemicalStack(String tokens) {
+        return validate(CrTConstants.BRACKET_CHEMICAL, tokens, MekanismAPI.CHEMICAL_REGISTRY);
     }
 
     /**

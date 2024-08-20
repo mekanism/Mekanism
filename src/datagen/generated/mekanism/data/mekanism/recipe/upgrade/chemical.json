@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "tag": "c:dusts/iron"
+    },
+    "A": {
+      "tag": "mekanism:alloys/infused"
+    },
+    "G": {
+      "tag": "c:glass_blocks/cheap"
+    }
+  },
+  "pattern": [
+    " G ",
+    "A#A",
+    " G "
+  ],
+  "result": {
+    "count": 1,
+    "id": "mekanism:upgrade_chemical"
+  }
+}

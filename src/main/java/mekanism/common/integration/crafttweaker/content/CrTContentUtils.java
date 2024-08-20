@@ -3,82 +3,39 @@ package mekanism.common.integration.crafttweaker.content;
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.zencode.scriptrun.ScriptRunConfiguration;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import mekanism.api.MekanismAPI;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.infuse.InfuseType;
-import mekanism.api.chemical.pigment.Pigment;
-import mekanism.api.chemical.slurry.Slurry;
+import mekanism.api.chemical.Chemical;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.registries.RegisterEvent;
-import net.neoforged.neoforge.registries.RegisterEvent.RegisterHelper;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Helper class for registering chemicals via CraftTweaker. This is sort of akin to how ContentTweaker allows registering items/blocks via CraftTweaker
  */
 public class CrTContentUtils {
 
-    private static Map<ResourceLocation, Gas> queuedGases = new HashMap<>();
-    private static Map<ResourceLocation, InfuseType> queuedInfuseTypes = new HashMap<>();
-    private static Map<ResourceLocation, Pigment> queuedPigments = new HashMap<>();
-    private static Map<ResourceLocation, Slurry> queuedSlurries = new HashMap<>();
+    private static Map<ResourceLocation, Chemical> queuedChemicals = new HashMap<>();
 
     /**
-     * Queues a {@link Gas} to be registered with the given registry name.
+     * Queues a {@link Chemical} to be registered with the given registry name.
      *
-     * @param registryName Registry name to give the {@link Gas}.
-     * @param gas          {@link Gas} to queue for registration.
+     * @param registryName Registry name to give the {@link Chemical}.
+     * @param chemical          {@link Chemical} to queue for registration.
      */
-    public static void queueGasForRegistration(ResourceLocation registryName, Gas gas) {
-        queueForRegistration("Gas", queuedGases, registryName, gas);
-    }
-
-    /**
-     * Queues an {@link InfuseType} to be registered with the given registry name.
-     *
-     * @param registryName Registry name to give the {@link InfuseType}.
-     * @param infuseType   {@link InfuseType} to queue for registration.
-     */
-    public static void queueInfuseTypeForRegistration(ResourceLocation registryName, InfuseType infuseType) {
-        queueForRegistration("Infuse Type", queuedInfuseTypes, registryName, infuseType);
-    }
-
-    /**
-     * Queues a {@link Pigment} to be registered with the given registry name.
-     *
-     * @param registryName Registry name to give the {@link Pigment}.
-     * @param pigment      {@link Pigment} to queue for registration.
-     */
-    public static void queuePigmentForRegistration(ResourceLocation registryName, Pigment pigment) {
-        queueForRegistration("Pigment", queuedPigments, registryName, pigment);
-    }
-
-    /**
-     * Queues a {@link Slurry} to be registered with the given registry name.
-     *
-     * @param registryName Registry name to give the {@link Slurry}.
-     * @param slurry       {@link Slurry} to queue for registration.
-     */
-    public static void queueSlurryForRegistration(ResourceLocation registryName, Slurry slurry) {
-        queueForRegistration("Slurry", queuedSlurries, registryName, slurry);
-    }
-
-    private static <V> void queueForRegistration(String type, @Nullable Map<ResourceLocation, V> queued, ResourceLocation registryName, V element) {
+    public static void queueChemicalForRegistration(ResourceLocation registryName, Chemical chemical) {
         //Only queue our chemicals for registration on the first run of our loader
-        if (queued != null) {
-            if (queued.put(registryName, element) == null) {
-                CrTConstants.CRT_LOGGER.info("Queueing {} '{}' for registration.", type, registryName);
+        if (queuedChemicals != null) {
+            if (queuedChemicals.put(registryName, chemical) == null) {
+                CrTConstants.CRT_LOGGER.info("Queueing Chemical '{}' for registration.", registryName);
             } else {
-                CrTConstants.CRT_LOGGER.warn("Registration for {} '{}' is already queued, skipping duplicate.", type, registryName);
+                CrTConstants.CRT_LOGGER.warn("Registration for Chemical '{}' is already queued, skipping duplicate.", registryName);
             }
         }
     }
 
     public static void registerCrTContent(RegisterEvent event) {
-        event.register(MekanismAPI.GAS_REGISTRY_NAME, helper -> {
+        event.register(MekanismAPI.CHEMICAL_REGISTRY_NAME, helper -> {
             //We load our content scripts here in the first registry event of ours for our types of content
             // to make sure that the new registry events have fired and that the registries exist and the bracket handler
             // validators won't choke
@@ -91,25 +48,19 @@ public class CrTContentUtils {
             } catch (Throwable e) {
                 CrTConstants.CRT_LOGGER.error("Unable to register chemicals due to an error.", e);
             }
-            registerQueued(helper, queuedGases, () -> queuedGases = null, "Gas", "gases");
+            if (queuedChemicals != null) {//Validate it isn't null, it shouldn't be but just in case the event gets fired again or something
+                int count = queuedChemicals.size();
+                CrTConstants.CRT_LOGGER.info("Registering {} custom {}.", count, count == 1 ? "chemical" : "chemicals");
+                for (Map.Entry<ResourceLocation, Chemical> entry : queuedChemicals.entrySet()) {
+                    ResourceLocation registryName = entry.getKey();
+                    helper.register(registryName, entry.getValue());
+                    CrTConstants.CRT_LOGGER.info("Registered Chemical: '{}'.", registryName);
+                }
+                // invalidate the reference to it, so that
+                // we properly don't allow more registration to happen once we start registering a specific chemical type
+                queuedChemicals = null;
+            }
         });
-        event.register(MekanismAPI.INFUSE_TYPE_REGISTRY_NAME, helper -> registerQueued(helper, queuedInfuseTypes, () -> queuedInfuseTypes = null, "Infuse Type", "infuse types"));
-        event.register(MekanismAPI.PIGMENT_REGISTRY_NAME, helper -> registerQueued(helper, queuedPigments, () -> queuedPigments = null, "Pigment", "pigments"));
-        event.register(MekanismAPI.SLURRY_REGISTRY_NAME, helper -> registerQueued(helper, queuedSlurries, () -> queuedSlurries = null, "Slurry", "slurries"));
     }
 
-    private static <V> void registerQueued(RegisterHelper<V> helper, Map<ResourceLocation, V> queued, Runnable setNull, String type, String plural) {
-        if (queued != null) {//Validate it isn't null, it shouldn't be but just in case the event gets fired again or something
-            //The reference got copied as needed to our parameter, so we can invalidate the other reference to it safely, so that
-            // we properly don't allow more registration to happen once we start registering a specific chemical type
-            setNull.run();
-            int count = queued.size();
-            CrTConstants.CRT_LOGGER.info("Registering {} custom {}.", count, count == 1 ? type.toLowerCase(Locale.ROOT) : plural);
-            for (Map.Entry<ResourceLocation, V> entry : queued.entrySet()) {
-                ResourceLocation registryName = entry.getKey();
-                helper.register(registryName, entry.getValue());
-                CrTConstants.CRT_LOGGER.info("Registered {}: '{}'.", type, registryName);
-            }
-        }
-    }
 }

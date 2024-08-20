@@ -7,8 +7,8 @@ import java.util.Set;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
-import mekanism.api.chemical.gas.IGasHandler;
-import mekanism.api.chemical.gas.IGasTank;
+import mekanism.api.chemical.IChemicalHandler;
+import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.heat.HeatAPI;
@@ -16,7 +16,7 @@ import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.math.MathUtils;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.chemical.multiblock.MultiblockChemicalTankBuilder;
+import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
 import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
@@ -31,7 +31,7 @@ import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.lib.multiblock.IValveHandler.ValveData;
 import mekanism.common.lib.multiblock.MultiblockData;
-import mekanism.common.registries.MekanismGases;
+import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.tile.prefab.TileEntityStructuralMultiblock;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.ChemicalUtil;
@@ -42,7 +42,7 @@ import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.GeneratorTags;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.item.ItemHohlraum;
-import mekanism.generators.common.registries.GeneratorsGases;
+import mekanism.generators.common.registries.GeneratorsChemicals;
 import mekanism.generators.common.slot.ReactorInventorySlot;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorBlock;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorPort;
@@ -76,7 +76,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
     private static final double plasmaCaseConductivity = 0.2;
 
     private final List<EnergyOutputTarget> energyOutputTargets = new ArrayList<>();
-    private final List<CapabilityOutputTarget<IGasHandler>> gasOutputTargets = new ArrayList<>();
+    private final List<CapabilityOutputTarget<IChemicalHandler>> chemicalOutputTargets = new ArrayList<>();
     private final Set<ITileHeatHandler> heatHandlers = new ObjectOpenHashSet<>();
 
     @ContainerSync
@@ -93,7 +93,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
     @ContainerSync(tags = HEAT_TAB)
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getSteam", "getSteamCapacity", "getSteamNeeded",
                                                                                         "getSteamFilledPercentage"}, docPlaceholder = "steam tank")
-    public IGasTank steamTank;
+    public IChemicalTank steamTank;
 
     private double biomeAmbientTemp;
     @ContainerSync(tags = HEAT_TAB)
@@ -110,15 +110,15 @@ public class FusionReactorMultiblockData extends MultiblockData {
     @ContainerSync(tags = FUEL_TAB)
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getDeuterium", "getDeuteriumCapacity", "getDeuteriumNeeded",
                                                                                         "getDeuteriumFilledPercentage"}, docPlaceholder = "deuterium tank")
-    public IGasTank deuteriumTank;
+    public IChemicalTank deuteriumTank;
     @ContainerSync(tags = FUEL_TAB)
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getTritium", "getTritiumCapacity", "getTritiumNeeded",
                                                                                         "getTritiumFilledPercentage"}, docPlaceholder = "tritium tank")
-    public IGasTank tritiumTank;
+    public IChemicalTank tritiumTank;
     @ContainerSync(tags = FUEL_TAB)
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getDTFuel", "getDTFuelCapacity", "getDTFuelNeeded",
                                                                                         "getDTFuelFilledPercentage"}, docPlaceholder = "fuel tank")
-    public IGasTank fuelTank;
+    public IChemicalTank fuelTank;
     @ContainerSync(tags = {FUEL_TAB, HEAT_TAB, STATS_TAB}, getter = "getInjectionRate", setter = "setInjectionRate")
     private int injectionRate = 2;
     @ContainerSync(tags = {FUEL_TAB, HEAT_TAB, STATS_TAB})
@@ -144,13 +144,13 @@ public class FusionReactorMultiblockData extends MultiblockData {
         lastPlasmaTemperature = biomeAmbientTemp;
         lastCaseTemperature = biomeAmbientTemp;
         plasmaTemperature = biomeAmbientTemp;
-        gasTanks.add(deuteriumTank = MultiblockChemicalTankBuilder.GAS.input(this, MekanismGeneratorsConfig.generators.fusionFuelCapacity,
-              gas -> gas.is(GeneratorTags.Gases.DEUTERIUM), this));
-        gasTanks.add(tritiumTank = MultiblockChemicalTankBuilder.GAS.input(this, MekanismGeneratorsConfig.generators.fusionFuelCapacity,
-              gas -> gas.is(GeneratorTags.Gases.TRITIUM), this));
-        gasTanks.add(fuelTank = MultiblockChemicalTankBuilder.GAS.input(this, MekanismGeneratorsConfig.generators.fusionFuelCapacity,
-              gas -> gas.is(GeneratorTags.Gases.FUSION_FUEL), createSaveAndComparator()));
-        gasTanks.add(steamTank = MultiblockChemicalTankBuilder.GAS.output(this, this::getMaxSteam, gas -> gas == MekanismGases.STEAM.getChemical(), this));
+        chemicalTanks.add(deuteriumTank = VariableCapacityChemicalTank.input(this, MekanismGeneratorsConfig.generators.fusionFuelCapacity,
+              gas -> gas.is(GeneratorTags.Chemicals.DEUTERIUM), this));
+        chemicalTanks.add(tritiumTank = VariableCapacityChemicalTank.input(this, MekanismGeneratorsConfig.generators.fusionFuelCapacity,
+              gas -> gas.is(GeneratorTags.Chemicals.TRITIUM), this));
+        chemicalTanks.add(fuelTank = VariableCapacityChemicalTank.input(this, MekanismGeneratorsConfig.generators.fusionFuelCapacity,
+              gas -> gas.is(GeneratorTags.Chemicals.FUSION_FUEL), createSaveAndComparator()));
+        chemicalTanks.add(steamTank = VariableCapacityChemicalTank.output(this, this::getMaxSteam, gas -> gas == MekanismChemicals.STEAM.getChemical(), this));
         fluidTanks.add(waterTank = VariableCapacityFluidTank.input(this, this::getMaxWater, fluid -> fluid.is(FluidTags.WATER), this));
         energyContainers.add(energyContainer = VariableCapacityEnergyContainer.output(MekanismGeneratorsConfig.generators.fusionEnergyCapacity, this));
         heatCapacitors.add(heatCapacitor = VariableHeatCapacitor.create(caseHeatCapacity, FusionReactorMultiblockData::getInverseConductionCoefficient,
@@ -202,10 +202,10 @@ public class FusionReactorMultiblockData extends MultiblockData {
         if (!reactorSlot.isEmpty()) {
             ItemStack hohlraum = reactorSlot.getStack();
             if (hohlraum.getItem() instanceof ItemHohlraum) {
-                IGasHandler gasHandlerItem = Capabilities.GAS.getCapability(hohlraum);
-                if (gasHandlerItem != null && gasHandlerItem.getTanks() > 0) {
+                IChemicalHandler gasHandlerItem = Capabilities.CHEMICAL.getCapability(hohlraum);
+                if (gasHandlerItem != null && gasHandlerItem.getChemicalTanks() > 0) {
                     //Validate something didn't go terribly wrong, and we actually do have the tank we expect to have
-                    return gasHandlerItem.getChemicalInTank(0).getAmount() == gasHandlerItem.getTankCapacity(0);
+                    return gasHandlerItem.getChemicalInTank(0).getAmount() == gasHandlerItem.getChemicalTankCapacity(0);
                 }
             }
         }
@@ -248,8 +248,8 @@ public class FusionReactorMultiblockData extends MultiblockData {
             CableUtils.emit(getActiveOutputs(energyOutputTargets), energyContainer);
         }
 
-        if (!gasOutputTargets.isEmpty() && !steamTank.isEmpty()) {
-            ChemicalUtil.emit(getActiveOutputs(gasOutputTargets), steamTank);
+        if (!chemicalOutputTargets.isEmpty() && !steamTank.isEmpty()) {
+            ChemicalUtil.emit(getActiveOutputs(chemicalOutputTargets), steamTank);
         }
 
         if (isBurning()) {
@@ -267,12 +267,12 @@ public class FusionReactorMultiblockData extends MultiblockData {
     @Override
     protected void updateEjectors(Level world) {
         energyOutputTargets.clear();
-        gasOutputTargets.clear();
+        chemicalOutputTargets.clear();
         for (ValveData valve : valves) {
             TileEntityFusionReactorPort tile = WorldUtils.getTileEntity(TileEntityFusionReactorPort.class, world, valve.location);
             if (tile != null) {
                 tile.addEnergyTargetCapability(energyOutputTargets, valve.side);
-                tile.addGasTargetCapability(gasOutputTargets, valve.side);
+                tile.addGasTargetCapability(chemicalOutputTargets, valve.side);
             }
         }
     }
@@ -295,8 +295,8 @@ public class FusionReactorMultiblockData extends MultiblockData {
 
     private void vaporiseHohlraum() {
         ItemStack hohlraum = reactorSlot.getStack();
-        IGasHandler gasHandlerItem = Capabilities.GAS.getCapability(hohlraum);
-        if (gasHandlerItem != null && gasHandlerItem.getTanks() > 0) {
+        IChemicalHandler gasHandlerItem = Capabilities.CHEMICAL.getCapability(hohlraum);
+        if (gasHandlerItem != null && gasHandlerItem.getChemicalTanks() > 0) {
             fuelTank.insert(gasHandlerItem.getChemicalInTank(0), Action.EXECUTE, AutomationType.INTERNAL);
             lastPlasmaTemperature = getPlasmaTemp();
             reactorSlot.setEmpty();
@@ -312,7 +312,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
         long injectingAmount = amountToInject / 2;
         MekanismUtils.logMismatchedStackSize(deuteriumTank.shrinkStack(injectingAmount, Action.EXECUTE), injectingAmount);
         MekanismUtils.logMismatchedStackSize(tritiumTank.shrinkStack(injectingAmount, Action.EXECUTE), injectingAmount);
-        fuelTank.insert(GeneratorsGases.FUSION_FUEL.getStack(amountToInject), Action.EXECUTE, AutomationType.INTERNAL);
+        fuelTank.insert(GeneratorsChemicals.FUSION_FUEL.getStack(amountToInject), Action.EXECUTE, AutomationType.INTERNAL);
     }
 
     private long burnFuel() {
@@ -337,7 +337,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
             waterToVaporize = Math.min(waterToVaporize, Math.min(waterTank.getFluidAmount(), MathUtils.clampToInt(steamTank.getNeeded())));
             if (waterToVaporize > 0) {
                 MekanismUtils.logMismatchedStackSize(waterTank.shrinkStack(waterToVaporize, Action.EXECUTE), waterToVaporize);
-                steamTank.insert(MekanismGases.STEAM.getStack(waterToVaporize), Action.EXECUTE, AutomationType.INTERNAL);
+                steamTank.insert(MekanismChemicals.STEAM.getStack(waterToVaporize), Action.EXECUTE, AutomationType.INTERNAL);
                 caseWaterHeat = waterToVaporize * HeatUtils.getWaterThermalEnthalpy() / HeatUtils.getSteamEnergyEfficiency();
                 heatCapacitor.handleHeat(-caseWaterHeat);
             }

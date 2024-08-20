@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 public record AttributeSideConfig(@NotNull Set<TransmissionType> supportedTypes) implements Attribute {
 
     public static final AttributeSideConfig ELECTRIC_MACHINE = create(TransmissionType.ITEM, TransmissionType.ENERGY);
-    public static final AttributeSideConfig ADVANCED_ELECTRIC_MACHINE = create(TransmissionType.ITEM, TransmissionType.GAS, TransmissionType.ENERGY);
+    public static final AttributeSideConfig ADVANCED_ELECTRIC_MACHINE = create(TransmissionType.ITEM, TransmissionType.CHEMICAL, TransmissionType.ENERGY);
 
     public static AttributeSideConfig create(TransmissionType... types) {
         if (types.length == 0) {

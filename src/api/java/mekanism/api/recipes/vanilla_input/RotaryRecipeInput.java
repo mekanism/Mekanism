@@ -3,8 +3,6 @@ package mekanism.api.recipes.vanilla_input;
 import com.mojang.datafixers.util.Either;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 /**
@@ -13,7 +11,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
  * @since 10.6.0
  */
 @NothingNullByDefault
-public record RotaryRecipeInput(Either<FluidStack, GasStack> input) implements FluidChemicalRecipeInput<Gas, GasStack> {
+public record RotaryRecipeInput(Either<FluidStack, ChemicalStack> input) implements FluidChemicalRecipeInput {
 
     @Override
     public FluidStack getFluid(int index) {
@@ -24,11 +22,11 @@ public record RotaryRecipeInput(Either<FluidStack, GasStack> input) implements F
     }
 
     @Override
-    public GasStack getChemical(int index) {
+    public ChemicalStack getChemical(int index) {
         if (index != 0) {
             throw new IllegalArgumentException("No chemical for index " + index);
         }
-        return input.right().orElse(GasStack.EMPTY);
+        return input.right().orElse(ChemicalStack.EMPTY);
     }
 
     @Override

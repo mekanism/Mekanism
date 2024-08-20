@@ -1,24 +1,22 @@
 package mekanism.common.integration.crafttweaker.chemical;
 
 import java.util.function.Function;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.common.util.ChemicalUtil;
+import mekanism.common.integration.crafttweaker.CrTConstants;
 
-public abstract class BaseCrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-      CRT_STACK extends ICrTChemicalStack<CHEMICAL, STACK, CRT_STACK>> implements ICrTChemicalStack<CHEMICAL, STACK, CRT_STACK> {
+public abstract class BaseCrTChemicalStack implements ICrTChemicalStack {
 
-    protected final STACK stack;
-    protected final Function<STACK, CRT_STACK> stackConverter;
+    protected final ChemicalStack stack;
+    protected final Function<ChemicalStack, ICrTChemicalStack> stackConverter;
 
-    public BaseCrTChemicalStack(STACK stack, Function<STACK, CRT_STACK> stackConverter) {
+    public BaseCrTChemicalStack(ChemicalStack stack, Function<ChemicalStack, ICrTChemicalStack> stackConverter) {
         this.stack = stack;
         this.stackConverter = stackConverter;
     }
 
     protected StringBuilder getBracket() {
         return new StringBuilder().append('<')
-              .append(getBracketName())
+              .append(CrTConstants.BRACKET_CHEMICAL)
               .append(':')
               .append(stack.getTypeRegistryName())
               .append('>');
@@ -34,13 +32,13 @@ public abstract class BaseCrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, 
     }
 
     @Override
-    public CRT_STACK copy() {
+    public ICrTChemicalStack copy() {
         //We have to copy, in case someone calls ".copy().mutable"
-        return stackConverter.apply(ChemicalUtil.copy(stack));
+        return stackConverter.apply(stack.copy());
     }
 
     @Override
-    public STACK getInternal() {
+    public ChemicalStack getInternal() {
         return stack;
     }
 
@@ -57,7 +55,7 @@ public abstract class BaseCrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, 
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        return stack.equals(((BaseCrTChemicalStack<?, ?, ?>) o).stack);
+        return stack.equals(((BaseCrTChemicalStack) o).stack);
     }
 
     @Override

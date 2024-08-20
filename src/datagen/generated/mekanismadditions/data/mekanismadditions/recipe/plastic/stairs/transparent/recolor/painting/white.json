@@ -2,7 +2,7 @@
   "type": "mekanism:painting",
   "chemical_input": {
     "amount": 32,
-    "pigment": "mekanism:white"
+    "chemical": "mekanism:white"
   },
   "item_input": {
     "type": "neoforge:difference",
@@ -17,5 +17,6 @@
   "output": {
     "count": 1,
     "id": "mekanismadditions:white_plastic_transparent_stairs"
-  }
+  },
+  "per_tick_usage": false
 }

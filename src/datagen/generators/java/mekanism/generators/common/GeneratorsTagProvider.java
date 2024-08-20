@@ -5,7 +5,7 @@ import java.util.concurrent.CompletableFuture;
 import mekanism.common.tag.BaseTagProvider;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsFluids;
-import mekanism.generators.common.registries.GeneratorsGases;
+import mekanism.generators.common.registries.GeneratorsChemicals;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -98,9 +98,9 @@ public class GeneratorsTagProvider extends BaseTagProvider {
     }
 
     private void addGases() {
-        addToTag(GeneratorTags.Gases.DEUTERIUM, GeneratorsGases.DEUTERIUM);
-        addToTag(GeneratorTags.Gases.TRITIUM, GeneratorsGases.TRITIUM);
-        addToTag(GeneratorTags.Gases.FUSION_FUEL, GeneratorsGases.FUSION_FUEL);
+        addToTag(GeneratorTags.Chemicals.DEUTERIUM, GeneratorsChemicals.DEUTERIUM);
+        addToTag(GeneratorTags.Chemicals.TRITIUM, GeneratorsChemicals.TRITIUM);
+        addToTag(GeneratorTags.Chemicals.FUSION_FUEL, GeneratorsChemicals.FUSION_FUEL);
     }
 
     private void addHarvestRequirements() {

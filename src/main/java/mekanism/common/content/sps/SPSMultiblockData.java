@@ -8,12 +8,12 @@ import java.util.Optional;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
+import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.IChemicalHandler;
+import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasHandler;
-import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.math.MathUtils;
-import mekanism.common.capabilities.chemical.multiblock.MultiblockChemicalTankBuilder;
+import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
@@ -21,7 +21,7 @@ import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.lib.multiblock.IValveHandler;
 import mekanism.common.lib.multiblock.MultiblockData;
-import mekanism.common.registries.MekanismGases;
+import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.tile.multiblock.TileEntitySPSCasing;
 import mekanism.common.tile.multiblock.TileEntitySPSPort;
 import mekanism.common.util.ChemicalUtil;
@@ -45,14 +45,14 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     @ContainerSync
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getInput", "getInputCapacity", "getInputNeeded",
                                                                                         "getInputFilledPercentage"}, docPlaceholder = "input tank")
-    public IGasTank inputTank;
+    public IChemicalTank inputTank;
     @ContainerSync
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded",
                                                                                         "getOutputFilledPercentage"}, docPlaceholder = "output tank")
-    public IGasTank outputTank;
+    public IChemicalTank outputTank;
 
     public final SyncableCoilData coilData = new SyncableCoilData();
-    private final List<CapabilityOutputTarget<IGasHandler>> gasOutputTargets = new ArrayList<>();
+    private final List<CapabilityOutputTarget<IChemicalHandler>> chemicalOutputTargets = new ArrayList<>();
 
     @ContainerSync
     public double progress;
@@ -70,10 +70,10 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
 
     public SPSMultiblockData(TileEntitySPSCasing tile) {
         super(tile);
-        gasTanks.add(inputTank = MultiblockChemicalTankBuilder.GAS.input(this, this::getMaxInputGas, gas -> gas == MekanismGases.POLONIUM.get(),
+        chemicalTanks.add(inputTank = VariableCapacityChemicalTank.input(this, this::getMaxInputGas, gas -> gas == MekanismChemicals.POLONIUM.get(),
               ChemicalAttributeValidator.ALWAYS_ALLOW, createSaveAndComparator()));
-        gasTanks.add(outputTank = MultiblockChemicalTankBuilder.GAS.output(this, MekanismConfig.general.spsOutputTankCapacity,
-              gas -> gas == MekanismGases.ANTIMATTER.get(), ChemicalAttributeValidator.ALWAYS_ALLOW, this));
+        chemicalTanks.add(outputTank = VariableCapacityChemicalTank.output(this, MekanismConfig.general.spsOutputTankCapacity,
+              gas -> gas == MekanismChemicals.ANTIMATTER.get(), ChemicalAttributeValidator.ALWAYS_ALLOW, this));
     }
 
     @Override
@@ -120,8 +120,8 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
         if (receivedEnergy != lastReceivedEnergy || processed != lastProcessed) {
             needsPacket = true;
         }
-        if (!gasOutputTargets.isEmpty() && !outputTank.isEmpty()) {
-            ChemicalUtil.emit(getActiveOutputs(gasOutputTargets), outputTank);
+        if (!chemicalOutputTargets.isEmpty() && !outputTank.isEmpty()) {
+            ChemicalUtil.emit(getActiveOutputs(chemicalOutputTargets), outputTank);
         }
         lastReceivedEnergy = receivedEnergy;
         receivedEnergy = 0L;
@@ -135,11 +135,11 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
 
     @Override
     protected void updateEjectors(Level world) {
-        gasOutputTargets.clear();
+        chemicalOutputTargets.clear();
         for (ValveData valve : valves) {
             TileEntitySPSPort tile = WorldUtils.getTileEntity(TileEntitySPSPort.class, world, valve.location);
             if (tile != null) {
-                tile.addGasTargetCapability(gasOutputTargets, valve.side);
+                tile.addChemicalTargetCapability(chemicalOutputTargets, valve.side);
             }
         }
     }
@@ -175,7 +175,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
         inputProcessed += MathUtils.clampToInt(processed);
         final int inputPerAntimatter = MekanismConfig.general.spsInputPerAntimatter.get();
         if (inputProcessed >= inputPerAntimatter) {
-            GasStack toAdd = MekanismGases.ANTIMATTER.getStack(inputProcessed / inputPerAntimatter);
+            ChemicalStack toAdd = MekanismChemicals.ANTIMATTER.getStack(inputProcessed / inputPerAntimatter);
             outputTank.insert(toAdd, Action.EXECUTE, AutomationType.INTERNAL);
             inputProcessed %= inputPerAntimatter;
         }

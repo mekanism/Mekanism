@@ -12,7 +12,7 @@ import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.item.ItemModule;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.registries.MekanismGases;
+import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.util.EnumUtils;
@@ -66,7 +66,7 @@ public class MekanismEmiDefaults extends BaseEmiDefaults {
         addRecipe("reaction/substrate/water_hydrogen");
         addRecipe("reaction/substrate/ethene_oxygen");
         //Note: We intentionally don't cover the other gas conversions as there are better defaults for them
-        addRecipe("gas_conversion/osmium_from_ingot");
+        addRecipe("chemical_conversion/osmium_from_ingot");
 
         //Custom pigments that only exist by mixing
         addPigmentMix(EnumColor.DARK_AQUA, EnumColor.WHITE, EnumColor.AQUA);
@@ -121,7 +121,7 @@ public class MekanismEmiDefaults extends BaseEmiDefaults {
     }
 
     private void addInfusingRecipes() {
-        String conversionPath = "infusion_conversion/";
+        String conversionPath = "chemical_conversion/";
         addRecipe(conversionPath + "bio/from_bio_fuel");
         addRecipe(conversionPath + "carbon/from_enriched");
         addRecipe(conversionPath + "diamond/from_enriched");
@@ -162,22 +162,22 @@ public class MekanismEmiDefaults extends BaseEmiDefaults {
     }
 
     private void addRotaryRecipes() {
-        addRotaryRecipe(MekanismGases.BRINE);
-        addRotaryRecipe(MekanismGases.CHLORINE);
-        addRotaryRecipe(MekanismGases.ETHENE);
-        addRotaryRecipe(MekanismGases.HYDROGEN);
-        addRotaryRecipe(MekanismGases.HYDROGEN_CHLORIDE);
-        addRotaryRecipe(MekanismGases.LITHIUM);
-        addRotaryRecipe(MekanismGases.OXYGEN);
-        addRotaryRecipe(MekanismGases.SODIUM);
-        addRotaryRecipe(MekanismGases.SUPERHEATED_SODIUM);
-        addRotaryRecipe(MekanismGases.STEAM);
-        addRotaryRecipe(MekanismGases.SULFUR_DIOXIDE);
-        addRotaryRecipe(MekanismGases.SULFUR_TRIOXIDE);
-        addRotaryRecipe(MekanismGases.SULFURIC_ACID);
-        addRotaryRecipe(MekanismGases.HYDROFLUORIC_ACID);
-        addRotaryRecipe(MekanismGases.URANIUM_OXIDE);
-        addRotaryRecipe(MekanismGases.URANIUM_HEXAFLUORIDE);
+        addRotaryRecipe(MekanismChemicals.BRINE);
+        addRotaryRecipe(MekanismChemicals.CHLORINE);
+        addRotaryRecipe(MekanismChemicals.ETHENE);
+        addRotaryRecipe(MekanismChemicals.HYDROGEN);
+        addRotaryRecipe(MekanismChemicals.HYDROGEN_CHLORIDE);
+        addRotaryRecipe(MekanismChemicals.LITHIUM);
+        addRotaryRecipe(MekanismChemicals.OXYGEN);
+        addRotaryRecipe(MekanismChemicals.SODIUM);
+        addRotaryRecipe(MekanismChemicals.SUPERHEATED_SODIUM);
+        addRotaryRecipe(MekanismChemicals.STEAM);
+        addRotaryRecipe(MekanismChemicals.SULFUR_DIOXIDE);
+        addRotaryRecipe(MekanismChemicals.SULFUR_TRIOXIDE);
+        addRotaryRecipe(MekanismChemicals.SULFURIC_ACID);
+        addRotaryRecipe(MekanismChemicals.HYDROFLUORIC_ACID);
+        addRotaryRecipe(MekanismChemicals.URANIUM_OXIDE);
+        addRotaryRecipe(MekanismChemicals.URANIUM_HEXAFLUORIDE);
     }
 
     private void addMiscRecipes() {

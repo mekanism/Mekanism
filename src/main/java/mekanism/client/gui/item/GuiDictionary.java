@@ -90,10 +90,8 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
         POTION(MekanismLang.DICTIONARY_POTION, MekanismLang.DICTIONARY_POTION_DESC),
         MOB_EFFECT(MekanismLang.DICTIONARY_MOB_EFFECT, MekanismLang.DICTIONARY_MOB_EFFECT_DESC),
         ENCHANTMENT(MekanismLang.DICTIONARY_ENCHANTMENT, MekanismLang.DICTIONARY_ENCHANTMENT_DESC),
-        GAS(MekanismLang.DICTIONARY_GAS, MekanismLang.DICTIONARY_GAS_DESC),
-        INFUSE_TYPE(MekanismLang.DICTIONARY_INFUSE_TYPE, MekanismLang.DICTIONARY_INFUSE_TYPE_DESC),
-        PIGMENT(MekanismLang.DICTIONARY_PIGMENT, MekanismLang.DICTIONARY_PIGMENT_DESC),
-        SLURRY(MekanismLang.DICTIONARY_SLURRY, MekanismLang.DICTIONARY_SLURRY_DESC);
+        CHEMICAL(MekanismLang.DICTIONARY_CHEMICAL, MekanismLang.DICTIONARY_CHEMICAL_DESC),
+        ;
 
         private final ILangEntry name;
         private final ILangEntry tooltip;

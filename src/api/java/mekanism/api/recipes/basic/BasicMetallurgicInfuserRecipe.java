@@ -1,77 +1,41 @@
 package mekanism.api.recipes.basic;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.recipes.MekanismRecipeSerializers;
-import mekanism.api.recipes.MetallurgicInfuserRecipe;
-import mekanism.api.recipes.ingredients.InfusionStackIngredient;
+import mekanism.api.recipes.MekanismRecipeTypes;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 @NothingNullByDefault
-public class BasicMetallurgicInfuserRecipe extends MetallurgicInfuserRecipe implements IBasicItemStackOutput {
+public class BasicMetallurgicInfuserRecipe extends BasicItemStackChemicalToItemStackRecipe {
 
-    protected final ItemStackIngredient itemInput;
-    protected final InfusionStackIngredient infusionInput;
-    protected final ItemStack output;
+    private static final Holder<Item> METALLURGIC_INFUSER = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "metallurgic_infuser"));
 
     /**
      * @param itemInput     Item input.
-     * @param infusionInput Infusion input.
+     * @param chemicalInput Infusion input.
      * @param output        Output.
      */
-    public BasicMetallurgicInfuserRecipe(ItemStackIngredient itemInput, InfusionStackIngredient infusionInput, ItemStack output) {
-        this.itemInput = Objects.requireNonNull(itemInput, "Item input cannot be null.");
-        this.infusionInput = Objects.requireNonNull(infusionInput, "Chemical input cannot be null.");
-        Objects.requireNonNull(output, "Output cannot be null.");
-        if (output.isEmpty()) {
-            throw new IllegalArgumentException("Output cannot be empty.");
-        }
-        this.output = output.copy();
+    public BasicMetallurgicInfuserRecipe(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ItemStack output, boolean perTickUsage) {
+        super(itemInput, chemicalInput, output, perTickUsage, MekanismRecipeTypes.TYPE_METALLURGIC_INFUSING.value());
     }
 
     @Override
-    public ItemStackIngredient getItemInput() {
-        return itemInput;
+    public String getGroup() {
+        return "metallurgic_infuser";
     }
 
     @Override
-    public InfusionStackIngredient getChemicalInput() {
-        return infusionInput;
-    }
-
-    @Override
-    @Contract(value = "_, _ -> new", pure = true)
-    public ItemStack getOutput(ItemStack inputItem, InfusionStack inputChemical) {
-        return output.copy();
-    }
-
-    @NotNull
-    @Override
-    public ItemStack getResultItem(@NotNull HolderLookup.Provider provider) {
-        return output.copy();
-    }
-
-    @Override
-    public boolean test(ItemStack itemStack, InfusionStack gasStack) {
-        return itemInput.test(itemStack) && infusionInput.test(gasStack);
-    }
-
-    @Override
-    public List<@NotNull ItemStack> getOutputDefinition() {
-        return Collections.singletonList(output);
-    }
-
-    @Override
-    public ItemStack getOutputRaw() {
-        return output;
+    public ItemStack getToastSymbol() {
+        return new ItemStack(METALLURGIC_INFUSER);
     }
 
     @Override

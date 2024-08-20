@@ -42,7 +42,7 @@ import mekanism.common.lib.Version;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.factory.TileEntityFactory;
-import mekanism.common.tile.factory.TileEntityItemStackGasToItemStackFactory;
+import mekanism.common.tile.factory.TileEntityItemStackChemicalToItemStackFactory;
 import mekanism.common.tile.laser.TileEntityBasicLaser;
 import mekanism.common.tile.multiblock.TileEntityInductionPort;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
@@ -275,7 +275,7 @@ public class ComputerHelpProvider implements DataProvider {
           Map.entry(TileEntityProgressMachine.class, "Machine with Recipe Progress"),
           Map.entry(TileEntityQIOComponent.class, "QIO Machine"),
           Map.entry(TileEntityAdvancedElectricMachine.class, "Compressing/Injecting/Purifying Machine"),
-          Map.entry(TileEntityItemStackGasToItemStackFactory.class, "Compressing/Injecting/Purifying Factory"),
+          Map.entry(TileEntityItemStackChemicalToItemStackFactory.class, "Compressing/Infusing/Injecting/Purifying Factory"),
           Map.entry(TileEntityQIOFilterHandler.class, "QIO Machine with Filter")
     );
 

@@ -13,7 +13,7 @@ import mekanism.common.item.block.ItemBlockEnergyCube;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismFluids;
-import mekanism.common.registries.MekanismGases;
+import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.resource.IResource;
 import mekanism.common.tier.FactoryTier;
@@ -52,7 +52,7 @@ public class MekanismEmiAliasProvider extends BaseEmiAliasProvider {
     private void addChemicalAliases() {
         addAliases(List.of(
               ingredient(MekanismFluids.ETHENE),
-              ingredient(MekanismGases.ETHENE)
+              ingredient(MekanismChemicals.ETHENE)
         ), MekanismAliases.ETHENE_ETHYLENE);
     }
 
@@ -371,7 +371,7 @@ public class MekanismEmiAliasProvider extends BaseEmiAliasProvider {
         addAliases(MekanismItems.ENERGY_UPGRADE, MekanismAliases.UPGRADE_AUGMENT, MekanismAliases.ENERGY_STORAGE);
         addAliases(MekanismItems.FILTER_UPGRADE, MekanismAliases.UPGRADE_AUGMENT);
         addAliases(MekanismItems.MUFFLING_UPGRADE, MekanismAliases.UPGRADE_AUGMENT, MekanismAliases.UPGRADE_MUFFLER);
-        addAliases(MekanismItems.GAS_UPGRADE, MekanismAliases.UPGRADE_AUGMENT, MekanismAliases.UPGRADE_CHEMICAL);
+        addAliases(MekanismItems.CHEMICAL_UPGRADE, MekanismAliases.UPGRADE_AUGMENT);
         addAliases(MekanismItems.ANCHOR_UPGRADE, MekanismAliases.UPGRADE_AUGMENT, MekanismAliases.CHUNK_LOADER);
         addAliases(MekanismItems.STONE_GENERATOR_UPGRADE, MekanismAliases.UPGRADE_AUGMENT, MekanismAliases.UPGRADE_HOLE_FILLER);
         addAliases(List.of(

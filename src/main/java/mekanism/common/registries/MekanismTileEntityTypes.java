@@ -45,9 +45,8 @@ import mekanism.common.tile.base.CapabilityTileEntity;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.factory.TileEntityCombiningFactory;
 import mekanism.common.tile.factory.TileEntityFactory;
-import mekanism.common.tile.factory.TileEntityItemStackGasToItemStackFactory;
+import mekanism.common.tile.factory.TileEntityItemStackChemicalToItemStackFactory;
 import mekanism.common.tile.factory.TileEntityItemStackToItemStackFactory;
-import mekanism.common.tile.factory.TileEntityMetallurgicInfuserFactory;
 import mekanism.common.tile.factory.TileEntitySawingFactory;
 import mekanism.common.tile.laser.TileEntityLaser;
 import mekanism.common.tile.laser.TileEntityLaserAmplifier;
@@ -132,12 +131,12 @@ public class MekanismTileEntityTypes {
     static {
         for (FactoryTier tier : EnumUtils.FACTORY_TIERS) {
             registerFactory(tier, FactoryType.COMBINING, TileEntityCombiningFactory::new);
-            registerFactory(tier, FactoryType.COMPRESSING, TileEntityItemStackGasToItemStackFactory::new);
+            registerFactory(tier, FactoryType.COMPRESSING, TileEntityItemStackChemicalToItemStackFactory::new);
             registerFactory(tier, FactoryType.CRUSHING, TileEntityItemStackToItemStackFactory::new);
             registerFactory(tier, FactoryType.ENRICHING, TileEntityItemStackToItemStackFactory::new);
-            registerFactory(tier, FactoryType.INFUSING, TileEntityMetallurgicInfuserFactory::new);
-            registerFactory(tier, FactoryType.INJECTING, TileEntityItemStackGasToItemStackFactory::new);
-            registerFactory(tier, FactoryType.PURIFYING, TileEntityItemStackGasToItemStackFactory::new);
+            registerFactory(tier, FactoryType.INFUSING, TileEntityItemStackChemicalToItemStackFactory::new);
+            registerFactory(tier, FactoryType.INJECTING, TileEntityItemStackChemicalToItemStackFactory::new);
+            registerFactory(tier, FactoryType.PURIFYING, TileEntityItemStackChemicalToItemStackFactory::new);
             registerFactory(tier, FactoryType.SAWING, TileEntitySawingFactory::new);
             registerFactory(tier, FactoryType.SMELTING, TileEntityItemStackToItemStackFactory::new);
         }
@@ -546,10 +545,7 @@ public class MekanismTileEntityTypes {
 
     private static TileEntityTypeRegistryObject<TileEntityPressurizedTube> registerTube(BlockRegistryObject<?, ?> block) {
         BlockEntityTypeBuilder<TileEntityPressurizedTube> builder = transmitterBuilder(block, TileEntityPressurizedTube::new)
-              .with(Capabilities.GAS.block(), CapabilityTileEntity.GAS_HANDLER_PROVIDER)
-              .with(Capabilities.INFUSION.block(), CapabilityTileEntity.INFUSION_HANDLER_PROVIDER)
-              .with(Capabilities.PIGMENT.block(), CapabilityTileEntity.PIGMENT_HANDLER_PROVIDER)
-              .with(Capabilities.SLURRY.block(), CapabilityTileEntity.SLURRY_HANDLER_PROVIDER);
+              .with(Capabilities.CHEMICAL.block(), CapabilityTileEntity.CHEMICAL_HANDLER_PROVIDER);
         if (Mekanism.hooks.computerCompatEnabled()) {
             ComputerCapabilityHelper.addComputerCapabilities(builder, ConstantPredicates.ALWAYS_TRUE);
         }

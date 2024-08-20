@@ -83,7 +83,7 @@ public abstract class BaseEmiAliasProvider implements DataProvider {
         return EmiStack.of(fluidProvider.getFluid(), 1);
     }
 
-    protected EmiIngredient ingredient(IChemicalProvider<?> chemicalProvider) {
+    protected EmiIngredient ingredient(IChemicalProvider chemicalProvider) {
         return ChemicalEmiStack.create(chemicalProvider, 1);
     }
 

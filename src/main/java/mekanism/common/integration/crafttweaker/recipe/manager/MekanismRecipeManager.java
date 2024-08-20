@@ -8,7 +8,6 @@ import com.blamejared.crafttweaker.api.ingredient.IIngredient;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import java.util.List;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.common.integration.crafttweaker.CrTConstants;
@@ -81,7 +80,7 @@ public abstract class MekanismRecipeManager<INPUT extends RecipeInput, RECIPE ex
         return stack.getImmutableInternal();
     }
 
-    protected <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> STACK getAndValidateNotEmpty(ICrTChemicalStack<CHEMICAL, STACK, ?> stack) {
+    protected ChemicalStack getAndValidateNotEmpty(ICrTChemicalStack stack) {
         if (stack.isEmpty()) {
             throw new IllegalArgumentException("Output stack cannot be empty.");
         }

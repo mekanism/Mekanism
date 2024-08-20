@@ -3,14 +3,14 @@ package mekanism.generators.common;
 import java.util.concurrent.CompletableFuture;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.gas.Gas;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.datagen.recipe.builder.ChemicalChemicalToChemicalRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ElectrolysisRecipeBuilder;
-import mekanism.api.datagen.recipe.builder.GasToGasRecipeBuilder;
+import mekanism.api.datagen.recipe.builder.ChemicalToChemicalRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.RotaryRecipeBuilder;
+import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.providers.IFluidProvider;
-import mekanism.api.providers.IGasProvider;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.recipe.BaseRecipeProvider;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
@@ -20,14 +20,14 @@ import mekanism.common.recipe.pattern.Pattern;
 import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.recipe.pattern.RecipePattern.TripleLine;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.registries.MekanismGases;
+import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsFluids;
-import mekanism.generators.common.registries.GeneratorsGases;
+import mekanism.generators.common.registries.GeneratorsChemicals;
 import mekanism.generators.common.registries.GeneratorsItems;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -73,24 +73,24 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
         //Heavy water
         ElectrolysisRecipeBuilder.separating(
                     IngredientCreatorAccess.fluid().from(MekanismTags.Fluids.HEAVY_WATER, 2),
-                    GeneratorsGases.DEUTERIUM.getStack(2),
-                    MekanismGases.OXYGEN.getStack(1)
+                    GeneratorsChemicals.DEUTERIUM.getStack(2),
+                    MekanismChemicals.OXYGEN.getStack(1)
               ).energyMultiplier(2)
               .build(consumer, MekanismGenerators.rl(basePath + "heavy_water"));
     }
 
     private void addRotaryCondensentratorRecipes(RecipeOutput consumer) {
         String basePath = "rotary/";
-        addRotaryCondensentratorRecipe(consumer, basePath, GeneratorsGases.DEUTERIUM, GeneratorsFluids.DEUTERIUM, GeneratorTags.Fluids.DEUTERIUM, GeneratorTags.Gases.DEUTERIUM);
-        addRotaryCondensentratorRecipe(consumer, basePath, GeneratorsGases.FUSION_FUEL, GeneratorsFluids.FUSION_FUEL, GeneratorTags.Fluids.FUSION_FUEL, GeneratorTags.Gases.FUSION_FUEL);
-        addRotaryCondensentratorRecipe(consumer, basePath, GeneratorsGases.TRITIUM, GeneratorsFluids.TRITIUM, GeneratorTags.Fluids.TRITIUM, GeneratorTags.Gases.TRITIUM);
+        addRotaryCondensentratorRecipe(consumer, basePath, GeneratorsChemicals.DEUTERIUM, GeneratorsFluids.DEUTERIUM, GeneratorTags.Fluids.DEUTERIUM, GeneratorTags.Chemicals.DEUTERIUM);
+        addRotaryCondensentratorRecipe(consumer, basePath, GeneratorsChemicals.FUSION_FUEL, GeneratorsFluids.FUSION_FUEL, GeneratorTags.Fluids.FUSION_FUEL, GeneratorTags.Chemicals.FUSION_FUEL);
+        addRotaryCondensentratorRecipe(consumer, basePath, GeneratorsChemicals.TRITIUM, GeneratorsFluids.TRITIUM, GeneratorTags.Fluids.TRITIUM, GeneratorTags.Chemicals.TRITIUM);
     }
 
-    private void addRotaryCondensentratorRecipe(RecipeOutput consumer, String basePath, IGasProvider gas, IFluidProvider fluidOutput,
-          TagKey<Fluid> fluidInput, TagKey<Gas> gasInput) {
+    private void addRotaryCondensentratorRecipe(RecipeOutput consumer, String basePath, IChemicalProvider gas, IFluidProvider fluidOutput,
+          TagKey<Fluid> fluidInput, TagKey<Chemical> gasInput) {
         RotaryRecipeBuilder.rotary(
               IngredientCreatorAccess.fluid().from(fluidInput, 1),
-              IngredientCreatorAccess.gasStack().from(gasInput, 1),
+              IngredientCreatorAccess.chemicalStack().from(gasInput, 1),
               gas.getStack(1),
               fluidOutput.getFluidStack(1)
         ).build(consumer, MekanismGenerators.rl(basePath + gas.getName()));
@@ -100,17 +100,17 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
         String basePath = "chemical_infusing/";
         //DT Fuel
         ChemicalChemicalToChemicalRecipeBuilder.chemicalInfusing(
-              IngredientCreatorAccess.gasStack().from(GeneratorsGases.DEUTERIUM, 1),
-              IngredientCreatorAccess.gasStack().from(GeneratorsGases.TRITIUM, 1),
-              GeneratorsGases.FUSION_FUEL.getStack(2)
+              IngredientCreatorAccess.chemicalStack().from(GeneratorsChemicals.DEUTERIUM, 1),
+              IngredientCreatorAccess.chemicalStack().from(GeneratorsChemicals.TRITIUM, 1),
+              GeneratorsChemicals.FUSION_FUEL.getStack(2)
         ).build(consumer, MekanismGenerators.rl(basePath + "fusion_fuel"));
     }
 
     private void addSolarNeutronActivatorRecipes(RecipeOutput consumer) {
         String basePath = "activating/";
-        GasToGasRecipeBuilder.activating(
-              IngredientCreatorAccess.gasStack().from(MekanismGases.LITHIUM, 1),
-              GeneratorsGases.TRITIUM.getStack(1)
+        ChemicalToChemicalRecipeBuilder.activating(
+              IngredientCreatorAccess.chemicalStack().from(MekanismChemicals.LITHIUM, 1),
+              GeneratorsChemicals.TRITIUM.getStack(1)
         ).build(consumer, MekanismGenerators.rl(basePath + "tritium"));
     }
 
@@ -269,8 +269,9 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
         //Hohlraum
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               IngredientCreatorAccess.item().from(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.GOLD), 4),
-              IngredientCreatorAccess.infusionStack().from(MekanismAPITags.InfuseTypes.CARBON, 10),
-              GeneratorsItems.HOHLRAUM.getItemStack()
+              IngredientCreatorAccess.chemicalStack().from(MekanismAPITags.Chemicals.CARBON, 10),
+              GeneratorsItems.HOHLRAUM.getItemStack(),
+              false
         ).build(consumer);
         //Laser Focus Matrix
         ExtendedShapedRecipeBuilder.shapedRecipe(GeneratorsBlocks.LASER_FOCUS_MATRIX, 2)

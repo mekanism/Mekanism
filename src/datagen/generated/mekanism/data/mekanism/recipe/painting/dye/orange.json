@@ -2,7 +2,7 @@
   "type": "mekanism:painting",
   "chemical_input": {
     "amount": 256,
-    "pigment": "mekanism:orange"
+    "chemical": "mekanism:orange"
   },
   "item_input": {
     "count": 1,
@@ -11,5 +11,6 @@
   "output": {
     "count": 1,
     "id": "minecraft:orange_dye"
-  }
+  },
+  "per_tick_usage": false
 }

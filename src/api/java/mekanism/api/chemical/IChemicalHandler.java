@@ -6,20 +6,20 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 @NothingNullByDefault
-public interface IChemicalHandler<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> extends IEmptyStackProvider<CHEMICAL, STACK> {
+public interface IChemicalHandler {
 
     /**
      * Returns the number of chemical storage units ("tanks") available
      *
      * @return The number of tanks available
      */
-    int getTanks();
+    int getChemicalTanks();
 
     /**
-     * Returns the {@link STACK} in a given tank.
+     * Returns the {@link ChemicalStack} in a given tank.
      *
      * <p>
-     * <strong>IMPORTANT:</strong> This {@link STACK} <em>MUST NOT</em> be modified. This method is not for altering internal contents. Any implementers who are
+     * <strong>IMPORTANT:</strong> This {@link ChemicalStack} <em>MUST NOT</em> be modified. This method is not for altering internal contents. Any implementers who are
      * able to detect modification via this method should throw an exception. It is ENTIRELY reasonable and likely that the stack returned here will be a copy.
      * </p>
      *
@@ -29,19 +29,19 @@ public interface IChemicalHandler<CHEMICAL extends Chemical<CHEMICAL>, STACK ext
      *
      * @param tank Tank to query.
      *
-     * @return {@link STACK} in a given tank. {@link #getEmptyStack()} if the tank is empty.
+     * @return {@link ChemicalStack} in a given tank. {@link ChemicalStack#EMPTY} if the tank is empty.
      */
-    STACK getChemicalInTank(int tank);
+    ChemicalStack getChemicalInTank(int tank);
 
     /**
      * Overrides the stack in the given tank. This method may throw an error if it is called unexpectedly.
      *
      * @param tank  Tank to modify
-     * @param stack {@link STACK} to set tank to (may be empty).
+     * @param stack {@link ChemicalStack} to set tank to (may be empty).
      *
      * @throws RuntimeException if the handler is called in a way that the handler was not expecting.
      **/
-    void setChemicalInTank(int tank, STACK stack);
+    void setChemicalInTank(int tank, ChemicalStack stack);
 
     /**
      * Retrieves the maximum amount of chemical that can be stored in a given tank.
@@ -50,7 +50,7 @@ public interface IChemicalHandler<CHEMICAL extends Chemical<CHEMICAL>, STACK ext
      *
      * @return The maximum chemical amount held by the tank.
      */
-    long getTankCapacity(int tank);
+    long getChemicalTankCapacity(int tank);
 
     /**
      * <p>
@@ -66,28 +66,28 @@ public interface IChemicalHandler<CHEMICAL extends Chemical<CHEMICAL>, STACK ext
      * @param tank  Tank to query.
      * @param stack Stack to test with for validity
      *
-     * @return true if the tank can accept the {@link STACK}, not considering the current state of the tank. false if the tank can never support the given {@link STACK}
+     * @return true if the tank can accept the {@link ChemicalStack}, not considering the current state of the tank. false if the tank can never support the given {@link ChemicalStack}
      * in any situation.
      */
-    boolean isValid(int tank, STACK stack);
+    boolean isValid(int tank, ChemicalStack stack);
 
     /**
      * <p>
-     * Inserts a {@link STACK} into a given tank and return the remainder. The {@link STACK} <em>should not</em> be modified in this function!
+     * Inserts a {@link ChemicalStack} into a given tank and return the remainder. The {@link ChemicalStack} <em>should not</em> be modified in this function!
      * </p>
      * Note: This behaviour is subtly different from {@link IFluidHandler#fill(FluidStack, IFluidHandler.FluidAction)}
      *
      * @param tank   Tank to insert to.
-     * @param stack  {@link STACK} to insert. This must not be modified by the tank.
+     * @param stack  {@link ChemicalStack} to insert. This must not be modified by the tank.
      * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
      *
-     * @return The remaining {@link STACK} that was not inserted (if the entire stack is accepted, then return an empty {@link STACK}). May be the same as the input
-     * {@link STACK} if unchanged, otherwise a new {@link STACK}. The returned {@link STACK} can be safely modified after
+     * @return The remaining {@link ChemicalStack} that was not inserted (if the entire stack is accepted, then return an empty {@link ChemicalStack}). May be the same as the input
+     * {@link ChemicalStack} if unchanged, otherwise a new {@link ChemicalStack}. The returned {@link ChemicalStack} can be safely modified after
      */
-    STACK insertChemical(int tank, STACK stack, Action action);
+    ChemicalStack insertChemical(int tank, ChemicalStack stack, Action action);
 
     /**
-     * Extracts a {@link STACK} from a specific tank in this handler.
+     * Extracts a {@link ChemicalStack} from a specific tank in this handler.
      * <p>
      * The returned value must be empty if nothing is extracted, otherwise its stack size must be less than or equal to {@code amount}.
      * </p>
@@ -96,35 +96,35 @@ public interface IChemicalHandler<CHEMICAL extends Chemical<CHEMICAL>, STACK ext
      * @param amount Amount to extract (may be greater than the current stack's amount or the tank's capacity)
      * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
      *
-     * @return {@link STACK} extracted from the tank, must be empty if nothing can be extracted. The returned {@link STACK} can be safely modified after, so the tank
+     * @return {@link ChemicalStack} extracted from the tank, must be empty if nothing can be extracted. The returned {@link ChemicalStack} can be safely modified after, so the tank
      * should return a new or copied stack.
      */
-    STACK extractChemical(int tank, long amount, Action action);
+    ChemicalStack extractChemical(int tank, long amount, Action action);
 
     /**
      * <p>
-     * Inserts a {@link STACK} into this handler, distribution is left <strong>entirely</strong> to this {@link IChemicalHandler}. The {@link STACK}
+     * Inserts a {@link ChemicalStack} into this handler, distribution is left <strong>entirely</strong> to this {@link IChemicalHandler}. The {@link ChemicalStack}
      * <em>should not</em> be modified in this function!
      * </p>
      * Note: This behaviour is subtly different from {@link IFluidHandler#fill(FluidStack, IFluidHandler.FluidAction)}
      *
-     * @param stack  {@link STACK} to insert. This must not be modified by the handler.
+     * @param stack  {@link ChemicalStack} to insert. This must not be modified by the handler.
      * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
      *
-     * @return The remaining {@link STACK} that was not inserted (if the entire stack is accepted, then return an empty {@link STACK}). May be the same as the input
-     * {@link STACK} if unchanged, otherwise a new {@link STACK}. The returned {@link STACK} can be safely modified after
+     * @return The remaining {@link ChemicalStack} that was not inserted (if the entire stack is accepted, then return an empty {@link ChemicalStack}). May be the same as the input
+     * {@link ChemicalStack} if unchanged, otherwise a new {@link ChemicalStack}. The returned {@link ChemicalStack} can be safely modified after
      *
      * @implNote The default implementation of this method, attempts to insert into tanks that contain the same type of chemical as the supplied type, and if it will not
      * all fit, falls back to inserting into any empty tanks.
      * @apiNote It is not guaranteed that the default implementation will be how this {@link IChemicalHandler} ends up distributing the insertion.
      */
-    default STACK insertChemical(STACK stack, Action action) {
-        return ChemicalUtils.insert(stack, null , action, getEmptyStack(), side -> getTanks(), (tank, side) -> getChemicalInTank(tank),
+    default ChemicalStack insertChemical(ChemicalStack stack, Action action) {
+        return ChemicalUtils.insert(stack, null, action, side -> getChemicalTanks(), (tank, side) -> getChemicalInTank(tank),
               (tank, chemical, s, act) -> insertChemical(tank, chemical, act));
     }
 
     /**
-     * Extracts a {@link STACK} from this handler, distribution is left <strong>entirely</strong> to this {@link IChemicalHandler}.
+     * Extracts a {@link ChemicalStack} from this handler, distribution is left <strong>entirely</strong> to this {@link IChemicalHandler}.
      * <p>
      * The returned value must be empty if nothing is extracted, otherwise its stack size must be less than or equal to {@code amount}.
      * </p>
@@ -132,35 +132,35 @@ public interface IChemicalHandler<CHEMICAL extends Chemical<CHEMICAL>, STACK ext
      * @param amount Amount to extract (may be greater than the current stack's amount or the tank's capacity)
      * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
      *
-     * @return {@link STACK} extracted from the tank, must be empty if nothing can be extracted. The returned {@link STACK} can be safely modified after, so the tank
+     * @return {@link ChemicalStack} extracted from the tank, must be empty if nothing can be extracted. The returned {@link ChemicalStack} can be safely modified after, so the tank
      * should return a new or copied stack.
      *
      * @implNote The default implementation of this method, extracts across all tanks to try and reach the desired amount to extract. Once the first chemical that can be
      * extracted is found, all future extractions will make sure to also make sure they are for the same type of chemical.
      * @apiNote It is not guaranteed that the default implementation will be how this {@link IChemicalHandler} ends up distributing the extraction.
      */
-    default STACK extractChemical(long amount, Action action) {
-        return ChemicalUtils.extract(amount, null, action, getEmptyStack(), side -> getTanks(), (tank, side) -> getChemicalInTank(tank),
+    default ChemicalStack extractChemical(long amount, Action action) {
+        return ChemicalUtils.extract(amount, null, action, side -> getChemicalTanks(), (tank, side) -> getChemicalInTank(tank),
               (tank, amt, side, act) -> extractChemical(tank, amt, act));
     }
 
     /**
-     * Extracts a {@link STACK} from this handler, distribution is left <strong>entirely</strong> to this {@link IChemicalHandler}.
+     * Extracts a {@link ChemicalStack} from this handler, distribution is left <strong>entirely</strong> to this {@link IChemicalHandler}.
      * <p>
      * The returned value must be empty if nothing is extracted, otherwise its stack size must be less than or equal to {@code amount}.
      * </p>
      *
-     * @param stack  {@link STACK} representing the {@link CHEMICAL} and maximum amount to be drained.
+     * @param stack  {@link ChemicalStack} representing the {@link Chemical} and maximum amount to be drained.
      * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
      *
-     * @return {@link STACK} extracted from the tank, must be empty if nothing can be extracted. The returned {@link STACK} can be safely modified after, so the tank
+     * @return {@link ChemicalStack} extracted from the tank, must be empty if nothing can be extracted. The returned {@link ChemicalStack} can be safely modified after, so the tank
      * should return a new or copied stack.
      *
      * @implNote The default implementation of this method, extracts across all tanks that contents match the type of chemical passed into this method.
      * @apiNote It is not guaranteed that the default implementation will be how this {@link IChemicalHandler} ends up distributing the extraction.
      */
-    default STACK extractChemical(STACK stack, Action action) {
-        return ChemicalUtils.extract(stack, null, action, getEmptyStack(), side -> getTanks(), (tank, side) -> getChemicalInTank(tank),
+    default ChemicalStack extractChemical(ChemicalStack stack, Action action) {
+        return ChemicalUtils.extract(stack, null, action, side -> getChemicalTanks(), (tank, side) -> getChemicalInTank(tank),
               (tank, chemical, side, act) -> extractChemical(tank, chemical, act));
     }
 }

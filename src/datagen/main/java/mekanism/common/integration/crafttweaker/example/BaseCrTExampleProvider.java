@@ -28,30 +28,15 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.api.chemical.pigment.PigmentStack;
-import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
-import mekanism.api.recipes.ingredients.GasStackIngredient;
-import mekanism.api.recipes.ingredients.InfusionStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import mekanism.api.recipes.ingredients.PigmentStackIngredient;
-import mekanism.api.recipes.ingredients.SlurryStackIngredient;
 import mekanism.api.recipes.ingredients.chemical.TagChemicalIngredient;
 import mekanism.common.MekanismDataGenerator;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
-import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTGasStack;
-import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTInfusionStack;
-import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTPigmentStack;
-import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTSlurryStack;
+import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
-import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
-import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTInfusionStack;
-import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTPigmentStack;
-import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTSlurryStack;
 import mekanism.common.integration.crafttweaker.example.component.CrTImportsComponent;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
@@ -108,14 +93,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
         );
         addSupportedConversion(IIngredientWithAmount.class, ItemStackIngredient.class, (imports, ingredient) -> CrTUtils.toCrT(ingredient).getCommandString());
         addSupportedConversion(CTFluidIngredient.class, FluidStackIngredient.class, (imports, ingredient) -> CrTUtils.toCrT(ingredient).getCommandString());
-        addSupportedChemical(GasStack.class, ICrTGasStack.class, GasStackIngredient.class, CrTConstants.CLASS_GAS_STACK_INGREDIENT, CrTGasStack::new,
-              CrTUtils.gasTags());
-        addSupportedChemical(InfusionStack.class, ICrTInfusionStack.class, InfusionStackIngredient.class, CrTConstants.CLASS_INFUSION_STACK_INGREDIENT,
-              CrTInfusionStack::new, CrTUtils.infuseTypeTags());
-        addSupportedChemical(PigmentStack.class, ICrTPigmentStack.class, PigmentStackIngredient.class, CrTConstants.CLASS_PIGMENT_STACK_INGREDIENT,
-              CrTPigmentStack::new, CrTUtils.pigmentTags());
-        addSupportedChemical(SlurryStack.class, ICrTSlurryStack.class, SlurryStackIngredient.class, CrTConstants.CLASS_SLURRY_STACK_INGREDIENT,
-              CrTSlurryStack::new, CrTUtils.slurryTags());
+        addChemicalConversions();
         if (PARAMETER_NAMES == null) {
             //Lazy initialize the parameter names, ideally we would find a better time to do this and
             // support multiple instances better but for now this will work
@@ -268,36 +246,33 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
         return "CraftTweaker Examples: " + modid;
     }
 
-    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void addSupportedChemical(Class<STACK> stackClass,
-          Class<? extends ICrTChemicalStack<CHEMICAL, STACK, ?>> stackCrTClass, Class<? extends ChemicalStackIngredient<CHEMICAL, STACK, ?>> ingredientClass,
-          String ingredientType, Function<STACK, CommandStringDisplayable> singleDescription, KnownTagManager<CHEMICAL> tagManager) {
-        addSupportedConversionWithAlt(ICrTChemicalStack.class, stackCrTClass, stackClass, (imports, stack) -> singleDescription.apply(stack).getCommandString());
-        addSupportedConversionWithAlt(ChemicalStackIngredient.class, ingredientClass, ingredientClass,
-              (imports, ingredient) -> getIngredientRepresentation(ingredient, imports.addImport(ingredientType), singleDescription, tagManager),
+    private void addChemicalConversions() {
+        addSupportedConversion(ICrTChemicalStack.class, ChemicalStack.class, (imports, stack) -> new CrTChemicalStack(stack).getCommandString());
+        addSupportedConversion(ChemicalStackIngredient.class, ChemicalStackIngredient.class,
+              (imports, ingredient) -> getIngredientRepresentation(ingredient, imports.addImport(CrTConstants.CLASS_CHEMICAL_STACK_INGREDIENT), CrTChemicalStack::new, CrTUtils.chemicalTags()),
               (imports, ingredient) -> {
-                  if (ingredient.ingredient() instanceof TagChemicalIngredient<CHEMICAL, ?> tagged) {
+                  if (ingredient.ingredient() instanceof TagChemicalIngredient tagged) {
                       long amount = ingredient.amount();
                       if (amount > 0 && amount <= Integer.MAX_VALUE) {
-                          return tagManager.tag(tagged.tag()).withAmount((int) amount).getCommandString();
+                          return CrTUtils.chemicalTags().tag(tagged.tag()).withAmount((int) amount).getCommandString();
                       }
                   } else {
-                      List<STACK> chemicals = ingredient.getRepresentations();
+                      List<ChemicalStack> chemicals = ingredient.getRepresentations();
                       if (chemicals.size() == 1) {
-                          return singleDescription.apply(chemicals.getFirst()).getCommandString();
+                          return new CrTChemicalStack(chemicals.getFirst()).getCommandString();
                       }
                   }
                   return null;
               });
     }
 
-    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> String getIngredientRepresentation(
-          ChemicalStackIngredient<CHEMICAL, STACK, ?> ingredient, String ingredientType, Function<STACK, CommandStringDisplayable> singleDescription,
-          KnownTagManager<CHEMICAL> tagManager) {
-        if (ingredient.ingredient() instanceof TagChemicalIngredient<?, ?> tagged) {
+    private String getIngredientRepresentation(ChemicalStackIngredient ingredient, String ingredientType, Function<ChemicalStack, CommandStringDisplayable> singleDescription,
+          KnownTagManager<Chemical> tagManager) {
+        if (ingredient.ingredient() instanceof TagChemicalIngredient tagged) {
             String tagRepresentation = tagManager.tag(tagged.tag()).getCommandString();
             return ingredientType + ".from(" + tagRepresentation + ", " + ingredient.amount() + ")";
         }
-        List<STACK> chemicals = ingredient.getRepresentations();
+        List<ChemicalStack> chemicals = ingredient.getRepresentations();
         if (chemicals.size() == 1) {
             String stackRepresentation = singleDescription.apply(chemicals.getFirst()).getCommandString();
             return ingredientType + ".from(" + stackRepresentation + ")";

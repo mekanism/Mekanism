@@ -2,9 +2,9 @@ package mekanism.common.item.gear;
 
 import java.util.List;
 import java.util.Locale;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasHandler;
-import mekanism.api.providers.IGasProvider;
+import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.IChemicalHandler;
+import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
@@ -14,7 +14,7 @@ import mekanism.common.item.interfaces.IJetpackItem.JetpackMode;
 import mekanism.common.item.interfaces.IModeItem.IAttachmentBasedModeItem;
 import mekanism.common.registries.MekanismArmorMaterials;
 import mekanism.common.registries.MekanismDataComponents;
-import mekanism.common.registries.MekanismGases;
+import mekanism.common.registries.MekanismChemicals;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
@@ -27,7 +27,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import org.jetbrains.annotations.NotNull;
 
-public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IJetpackItem, IAttachmentBasedModeItem<JetpackMode> {
+public class ItemJetpack extends ItemChemicalArmor implements IItemHUDProvider, IJetpackItem, IAttachmentBasedModeItem<JetpackMode> {
 
     public ItemJetpack(Properties properties) {
         this(MekanismArmorMaterials.JETPACK, properties);
@@ -38,8 +38,8 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IJetp
     }
 
     @Override
-    protected IGasProvider getGasType() {
-        return MekanismGases.HYDROGEN;
+    protected IChemicalProvider getChemicalType() {
+        return MekanismChemicals.HYDROGEN;
     }
 
     @Override
@@ -50,7 +50,7 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IJetp
 
     @Override
     public boolean canUseJetpack(ItemStack stack) {
-        return hasGas(stack);
+        return hasChemical(stack);
     }
 
     @Override
@@ -75,7 +75,7 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IJetp
 
     @Override
     public void useJetpackFuel(ItemStack stack) {
-        useGas(stack, 1);
+        useChemical(stack, 1);
     }
 
     @Override
@@ -83,12 +83,12 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IJetp
         if (slotType == getEquipmentSlot()) {
             ItemJetpack jetpack = (ItemJetpack) stack.getItem();
             list.add(MekanismLang.JETPACK_MODE.translateColored(EnumColor.DARK_GRAY, jetpack.getMode(stack)));
-            GasStack stored = GasStack.EMPTY;
+            ChemicalStack stored = ChemicalStack.EMPTY;
             long capacity = 1;
-            IGasHandler gasHandlerItem = Capabilities.GAS.getCapability(stack);
-            if (gasHandlerItem != null && gasHandlerItem.getTanks() > 0) {
+            IChemicalHandler gasHandlerItem = Capabilities.CHEMICAL.getCapability(stack);
+            if (gasHandlerItem != null && gasHandlerItem.getChemicalTanks() > 0) {
                 stored = gasHandlerItem.getChemicalInTank(0);
-                capacity = gasHandlerItem.getTankCapacity(0);
+                capacity = gasHandlerItem.getChemicalTankCapacity(0);
             }
             list.add(MekanismLang.JETPACK_STORED.translateColored(EnumColor.DARK_GRAY, EnumColor.ORANGE, stored.getAmount(), String.format(Locale.ROOT, "%.0f", 100.0 * stored.getAmount() / capacity)));
         }

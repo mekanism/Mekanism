@@ -1,10 +1,7 @@
 package mekanism.api;
 
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.infuse.InfuseType;
-import mekanism.api.chemical.pigment.Pigment;
-import mekanism.api.chemical.slurry.Slurry;
+import mekanism.api.chemical.Chemical;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -29,105 +26,68 @@ public class MekanismAPITags {
         return ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, path);
     }
 
-    public static class Gases {
+    /**
+     * @since 10.7.0
+     */
+    public static class Chemicals {
 
-        private Gases() {
+        private Chemicals() {
         }
 
         /**
-         * Tag that holds all gases that recipe viewers should not show to users.
+         * Tag that holds all chemicals that recipe viewers should not show to users.
          */
-        public static final TagKey<Gas> HIDDEN_FROM_RECIPE_VIEWERS = TagKey.create(MekanismAPI.GAS_REGISTRY_NAME, HIDDEN_RL);
-        /**
-         * Gases in this tag that are radioactive will not decay inside a Radioactive Waste Barrel.
-         */
-        public static final TagKey<Gas> WASTE_BARREL_DECAY_BLACKLIST = tag("waste_barrel_decay_blacklist");
-
-        private static TagKey<Gas> tag(String name) {
-            return TagKey.create(MekanismAPI.GAS_REGISTRY_NAME, rl(name));
-        }
-    }
-
-    public static class InfuseTypes {
-
-        private InfuseTypes() {
-        }
+        public static final TagKey<Chemical> HIDDEN_FROM_RECIPE_VIEWERS = TagKey.create(MekanismAPI.CHEMICAL_REGISTRY_NAME, HIDDEN_RL);
 
         /**
-         * Tag that holds all infuse types that recipe viewers should not show to users.
+         * Chemicals in this tag that are radioactive will not decay inside a Radioactive Waste Barrel.
          */
-        public static final TagKey<InfuseType> HIDDEN_FROM_RECIPE_VIEWERS = TagKey.create(MekanismAPI.INFUSE_TYPE_REGISTRY_NAME, HIDDEN_RL);
+        public static final TagKey<Chemical> WASTE_BARREL_DECAY_BLACKLIST = tag("waste_barrel_decay_blacklist");
 
         /**
          * Represents an infuse type that is equivalent to carbon.
          */
-        public static final TagKey<InfuseType> CARBON = tag("carbon");
+        public static final TagKey<Chemical> CARBON = tag("carbon");
         /**
          * Represents an infuse type that is equivalent to redstone.
          */
-        public static final TagKey<InfuseType> REDSTONE = tag("redstone");
+        public static final TagKey<Chemical> REDSTONE = tag("redstone");
         /**
          * Represents an infuse type that is equivalent to diamond.
          */
-        public static final TagKey<InfuseType> DIAMOND = tag("diamond");
+        public static final TagKey<Chemical> DIAMOND = tag("diamond");
         /**
          * Represents an infuse type that is equivalent to refined obsidian.
          */
-        public static final TagKey<InfuseType> REFINED_OBSIDIAN = tag("refined_obsidian");
+        public static final TagKey<Chemical> REFINED_OBSIDIAN = tag("refined_obsidian");
         /**
          * Represents an infuse type that is equivalent to bio.
          */
-        public static final TagKey<InfuseType> BIO = tag("bio");
+        public static final TagKey<Chemical> BIO = tag("bio");
         /**
          * Represents an infuse type that is equivalent to fungi.
          */
-        public static final TagKey<InfuseType> FUNGI = tag("fungi");
+        public static final TagKey<Chemical> FUNGI = tag("fungi");
         /**
          * Represents an infuse type that is equivalent to gold.
          */
-        public static final TagKey<InfuseType> GOLD = tag("gold");
+        public static final TagKey<Chemical> GOLD = tag("gold");
         /**
          * Represents an infuse type that is equivalent to tin.
          */
-        public static final TagKey<InfuseType> TIN = tag("tin");
-
-        private static TagKey<InfuseType> tag(String name) {
-            return TagKey.create(MekanismAPI.INFUSE_TYPE_REGISTRY_NAME, rl(name));
-        }
-    }
-
-    public static class Pigments {
-
-        private Pigments() {
-        }
-
-        /**
-         * Tag that holds all pigments that recipe viewers should not show to users.
-         */
-        public static final TagKey<Pigment> HIDDEN_FROM_RECIPE_VIEWERS = TagKey.create(MekanismAPI.PIGMENT_REGISTRY_NAME, HIDDEN_RL);
-    }
-
-    public static class Slurries {
-
-        private Slurries() {
-        }
-
-        /**
-         * Tag that holds all slurries that recipe viewers should not show to users.
-         */
-        public static final TagKey<Slurry> HIDDEN_FROM_RECIPE_VIEWERS = TagKey.create(MekanismAPI.SLURRY_REGISTRY_NAME, HIDDEN_RL);
+        public static final TagKey<Chemical> TIN = tag("tin");
 
         /**
          * Represents all dirty slurries.
          */
-        public static final TagKey<Slurry> DIRTY = tag("dirty");
+        public static final TagKey<Chemical> DIRTY = tag("dirty");
         /**
          * Represents all clean slurries.
          */
-        public static final TagKey<Slurry> CLEAN = tag("clean");
+        public static final TagKey<Chemical> CLEAN = tag("clean");
 
-        private static TagKey<Slurry> tag(String name) {
-            return TagKey.create(MekanismAPI.SLURRY_REGISTRY_NAME, rl(name));
+        private static TagKey<Chemical> tag(String name) {
+            return TagKey.create(MekanismAPI.CHEMICAL_REGISTRY_NAME, rl(name));
         }
     }
 

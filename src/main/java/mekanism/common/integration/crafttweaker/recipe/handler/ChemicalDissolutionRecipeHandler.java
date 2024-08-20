@@ -6,7 +6,6 @@ import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import java.util.Optional;
 import mekanism.api.recipes.ChemicalDissolutionRecipe;
 import mekanism.common.integration.crafttweaker.CrTRecipeComponents;
-import mekanism.common.integration.crafttweaker.CrTRecipeComponents.ChemicalRecipeComponent;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import mekanism.common.integration.crafttweaker.recipe.manager.ChemicalDissolutionRecipeManager;
@@ -21,7 +20,7 @@ public class ChemicalDissolutionRecipeHandler extends MekanismRecipeHandler<Chem
     public String dumpToCommandString(IRecipeManager<? super ChemicalDissolutionRecipe> manager, RegistryAccess registryAccess,
           RecipeHolder<ChemicalDissolutionRecipe> recipeHolder) {
         ChemicalDissolutionRecipe recipe = recipeHolder.value();
-        return buildCommandString(manager, recipeHolder, recipe.getItemInput(), recipe.getGasInput(), recipe.getOutputDefinition());
+        return buildCommandString(manager, recipeHolder, recipe.getItemInput(), recipe.getChemicalInput(), recipe.getOutputDefinition(), recipe.perTickUsage());
     }
 
     @Override
@@ -30,7 +29,7 @@ public class ChemicalDissolutionRecipeHandler extends MekanismRecipeHandler<Chem
         // ensures that it is of the same type
         if (o instanceof ChemicalDissolutionRecipe other) {
             return ingredientConflicts(recipe.getItemInput(), other.getItemInput()) &&
-                   ingredientConflicts(recipe.getGasInput(), other.getGasInput());
+                   ingredientConflicts(recipe.getChemicalInput(), other.getChemicalInput());
         }
         return false;
     }
@@ -38,23 +37,18 @@ public class ChemicalDissolutionRecipeHandler extends MekanismRecipeHandler<Chem
     @Override
     public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super ChemicalDissolutionRecipe> manager, RegistryAccess registryAccess,
           ChemicalDissolutionRecipe recipe) {
-        return decompose(recipe.getItemInput(), recipe.getGasInput(), recipe.getOutputDefinition());
+        return decompose(recipe.getItemInput(), recipe.getChemicalInput(), recipe.getOutputDefinition(), recipe.perTickUsage());
     }
 
     @Override
     public Optional<ChemicalDissolutionRecipe> recompose(IRecipeManager<? super ChemicalDissolutionRecipe> m, RegistryAccess registryAccess, IDecomposedRecipe recipe) {
         if (m instanceof ChemicalDissolutionRecipeManager manager) {
-            Optional<? extends ICrTChemicalStack<?, ?, ?>> found = Optional.empty();
-            for (ChemicalRecipeComponent<?, ?, ?, ?> chemicalComponent : CrTRecipeComponents.CHEMICAL_COMPONENTS) {
-                found = CrTUtils.getSingleIfPresent(recipe, chemicalComponent.output());
-                if (found.isPresent()) {
-                    break;
-                }
-            }
+            Optional<? extends ICrTChemicalStack> found = CrTUtils.getSingleIfPresent(recipe, CrTRecipeComponents.CHEMICAL.output());
             return Optional.of(manager.makeRecipe(
                   recipe.getOrThrowSingle(CrTRecipeComponents.ITEM.input()),
-                  recipe.getOrThrowSingle(CrTRecipeComponents.GAS.input()),
-                  found.orElseThrow(() -> new IllegalArgumentException("No specified output chemical."))
+                  recipe.getOrThrowSingle(CrTRecipeComponents.CHEMICAL.input()),
+                  found.orElseThrow(() -> new IllegalArgumentException("No specified output chemical.")),
+                  recipe.getOrThrowSingle(CrTRecipeComponents.PER_TICK_USAGE)
             ));
         }
         return Optional.empty();

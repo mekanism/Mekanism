@@ -225,7 +225,7 @@ public abstract class BaseComputerHelper {
         return uuid == null ? null : uuid.toString();
     }
 
-    public Object convert(@Nullable ChemicalStack<?> stack) {
+    public Object convert(@Nullable ChemicalStack stack) {
         if (stack == null) {
             return null;
         }

@@ -8,7 +8,7 @@ import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.advancements.GeneratorsAdvancements;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsFluids;
-import mekanism.generators.common.registries.GeneratorsGases;
+import mekanism.generators.common.registries.GeneratorsChemicals;
 import mekanism.generators.common.registries.GeneratorsItems;
 import mekanism.generators.common.registries.GeneratorsModules;
 import mekanism.generators.common.registries.GeneratorsSounds;
@@ -39,9 +39,9 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
         addTag(GeneratorTags.Fluids.TRITIUM, "Tritium");
         addTag(GeneratorTags.Fluids.FUSION_FUEL, "D-T Fuels");
 
-        addTag(GeneratorTags.Gases.DEUTERIUM, "Deuterium");
-        addTag(GeneratorTags.Gases.TRITIUM, "Tritium");
-        addTag(GeneratorTags.Gases.FUSION_FUEL, "D-T Fuels");
+        addTag(GeneratorTags.Chemicals.DEUTERIUM, "Deuterium");
+        addTag(GeneratorTags.Chemicals.TRITIUM, "Tritium");
+        addTag(GeneratorTags.Chemicals.FUSION_FUEL, "D-T Fuels");
     }
 
     private void addItems() {
@@ -85,9 +85,9 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
     }
 
     private void addGases() {
-        add(GeneratorsGases.DEUTERIUM, "Deuterium");
-        add(GeneratorsGases.FUSION_FUEL, "D-T Fuel");
-        add(GeneratorsGases.TRITIUM, "Tritium");
+        add(GeneratorsChemicals.DEUTERIUM, "Deuterium");
+        add(GeneratorsChemicals.FUSION_FUEL, "D-T Fuel");
+        add(GeneratorsChemicals.TRITIUM, "Tritium");
     }
 
     private void addSubtitles() {

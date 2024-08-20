@@ -1,5 +1,9 @@
 {
   "type": "mekanism:washing",
+  "chemical_input": {
+    "amount": 1,
+    "chemical": "mekanism:dirty_uranium"
+  },
   "fluid_input": {
     "amount": 5,
     "tag": "minecraft:water"
@@ -7,9 +11,5 @@
   "output": {
     "amount": 1,
     "id": "mekanism:clean_uranium"
-  },
-  "slurry_input": {
-    "amount": 1,
-    "slurry": "mekanism:dirty_uranium"
   }
 }

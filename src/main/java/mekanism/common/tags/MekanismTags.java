@@ -6,7 +6,7 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import mekanism.api.MekanismAPI;
-import mekanism.api.chemical.gas.Gas;
+import mekanism.api.chemical.Chemical;
 import mekanism.common.Mekanism;
 import mekanism.common.resource.BlockResourceInfo;
 import mekanism.common.resource.IResource;
@@ -262,15 +262,15 @@ public class MekanismTags {
         }
     }
 
-    public static class Gases {
+    public static class Chemicals {
 
-        private Gases() {
+        private Chemicals() {
         }
 
-        public static final TagKey<Gas> WATER_VAPOR = tag("water_vapor");
+        public static final TagKey<Chemical> WATER_VAPOR = tag("water_vapor");
 
-        private static TagKey<Gas> tag(String name) {
-            return TagKey.create(MekanismAPI.GAS_REGISTRY_NAME, Mekanism.rl(name));
+        private static TagKey<Chemical> tag(String name) {
+            return TagKey.create(MekanismAPI.CHEMICAL_REGISTRY_NAME, Mekanism.rl(name));
         }
     }
 }

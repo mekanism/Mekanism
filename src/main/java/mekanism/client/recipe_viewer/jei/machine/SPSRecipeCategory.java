@@ -7,10 +7,9 @@ import mekanism.api.math.MathUtils;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.bar.GuiDynamicHorizontalRateBar;
 import mekanism.client.gui.element.gauge.GaugeType;
-import mekanism.client.gui.element.gauge.GuiGasGauge;
+import mekanism.client.gui.element.gauge.GuiChemicalGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.recipe_viewer.jei.BaseRecipeCategory;
-import mekanism.client.recipe_viewer.jei.MekanismJEI;
 import mekanism.client.recipe_viewer.recipe.SPSRecipeViewerRecipe;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.common.MekanismLang;
@@ -42,16 +41,16 @@ public class SPSRecipeCategory extends BaseRecipeCategory<SPSRecipeViewerRecipe>
             list.add(MekanismLang.PROCESS_RATE_MB.translate(1.0));
             return list;
         }));
-        input = addElement(GuiGasGauge.getDummy(GaugeType.STANDARD, this, 6, 13));
-        output = addElement(GuiGasGauge.getDummy(GaugeType.STANDARD, this, 150, 13));
+        input = addElement(GuiChemicalGauge.getDummy(GaugeType.STANDARD, this, 6, 13));
+        output = addElement(GuiChemicalGauge.getDummy(GaugeType.STANDARD, this, 150, 13));
         addElement(new GuiDynamicHorizontalRateBar(this, getBarProgressTimer(), 6, 75, 160,
               ColorFunction.scale(Color.rgbi(60, 45, 74), Color.rgbi(100, 30, 170))));
     }
 
     @Override
     public void setRecipe(@NotNull IRecipeLayoutBuilder builder, SPSRecipeViewerRecipe recipe, @NotNull IFocusGroup focusGroup) {
-        initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.INPUT, input, recipe.input().getRepresentations());
-        initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, output, Collections.singletonList(recipe.output()));
+        initChemical(builder, RecipeIngredientRole.INPUT, input, recipe.input().getRepresentations());
+        initChemical(builder, RecipeIngredientRole.OUTPUT, output, Collections.singletonList(recipe.output()));
     }
 
     @Nullable

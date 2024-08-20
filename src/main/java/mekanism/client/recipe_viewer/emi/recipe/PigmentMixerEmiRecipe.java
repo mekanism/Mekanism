@@ -2,34 +2,25 @@ package mekanism.client.recipe_viewer.emi.recipe;
 
 import dev.emi.emi.api.widget.WidgetHolder;
 import java.util.function.Supplier;
-import mekanism.api.chemical.pigment.Pigment;
-import mekanism.api.chemical.pigment.PigmentStack;
-import mekanism.api.recipes.PigmentMixingRecipe;
-import mekanism.client.gui.element.gauge.GaugeType;
-import mekanism.client.gui.element.gauge.GuiChemicalGauge;
-import mekanism.client.gui.element.gauge.GuiPigmentGauge;
+import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.recipes.ChemicalChemicalToChemicalRecipe;
 import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.recipe_viewer.color.PigmentMixerColorDetails;
 import mekanism.client.recipe_viewer.emi.MekanismEmiRecipeCategory;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
-public class PigmentMixerEmiRecipe extends ChemicalChemicalToChemicalEmiRecipe<Pigment, PigmentStack, PigmentMixingRecipe> {
+public class PigmentMixerEmiRecipe extends ChemicalChemicalToChemicalEmiRecipe {
 
-    private final Supplier<PigmentStack> leftInput;
-    private final Supplier<PigmentStack> rightInput;
-    private final Supplier<PigmentStack> output;
+    private final Supplier<ChemicalStack> leftInput;
+    private final Supplier<ChemicalStack> rightInput;
+    private final Supplier<ChemicalStack> output;
 
-    public PigmentMixerEmiRecipe(MekanismEmiRecipeCategory category, RecipeHolder<PigmentMixingRecipe> recipeHolder) {
+    public PigmentMixerEmiRecipe(MekanismEmiRecipeCategory category, RecipeHolder<ChemicalChemicalToChemicalRecipe> recipeHolder) {
         super(category, recipeHolder);
-        leftInput = getSupplier(recipe.getLeftInput().getRepresentations(), PigmentStack.EMPTY);
-        rightInput = getSupplier(recipe.getRightInput().getRepresentations(), PigmentStack.EMPTY);
-        output = getSupplier(recipe.getOutputDefinition(), PigmentStack.EMPTY);
-    }
-
-    @Override
-    protected GuiChemicalGauge<Pigment, PigmentStack, ?> getGauge(GaugeType type, int x, int y) {
-        return GuiPigmentGauge.getDummy(type, this, x, y);
+        leftInput = getSupplier(recipe.getLeftInput().getRepresentations(), ChemicalStack.EMPTY);
+        rightInput = getSupplier(recipe.getRightInput().getRepresentations(), ChemicalStack.EMPTY);
+        output = getSupplier(recipe.getOutputDefinition(), ChemicalStack.EMPTY);
     }
 
     @Override

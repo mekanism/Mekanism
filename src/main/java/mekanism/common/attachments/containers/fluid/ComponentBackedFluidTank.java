@@ -10,7 +10,6 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.attachments.containers.ComponentBackedContainer;
 import mekanism.common.attachments.containers.ContainerType;
-import mekanism.common.util.NBTUtils;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
@@ -207,11 +206,6 @@ public class ComponentBackedFluidTank extends ComponentBackedContainer<FluidStac
             nbt.put(SerializationConstants.STORED, stored.save(provider));
         }
         return nbt;
-    }
-
-    @Override
-    public void deserializeNBT(Provider provider, CompoundTag nbt) {
-        NBTUtils.setFluidStackIfPresent(provider, nbt, SerializationConstants.STORED, this::setStackUnchecked);
     }
 
     @Override

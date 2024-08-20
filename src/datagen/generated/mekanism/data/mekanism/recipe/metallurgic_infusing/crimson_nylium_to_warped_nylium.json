@@ -11,5 +11,6 @@
   "output": {
     "count": 1,
     "id": "minecraft:warped_nylium"
-  }
+  },
+  "per_tick_usage": false
 }

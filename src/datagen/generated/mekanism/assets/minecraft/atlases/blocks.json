@@ -50,15 +50,7 @@
     },
     {
       "type": "minecraft:single",
-      "resource": "mekanism:liquid/liquid"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:liquid/steam"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:infuse_type/base"
+      "resource": "mekanism:infuse_type/bio"
     },
     {
       "type": "minecraft:single",
@@ -66,7 +58,15 @@
     },
     {
       "type": "minecraft:single",
-      "resource": "mekanism:infuse_type/bio"
+      "resource": "mekanism:infuse_type/base"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanism:liquid/liquid"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanism:liquid/steam"
     },
     {
       "type": "minecraft:single",

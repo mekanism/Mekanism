@@ -4,12 +4,11 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.stream.Stream;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
-import mekanism.api.recipes.ingredients.creator.IChemicalIngredientCreator;
+import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,27 +18,19 @@ import org.jetbrains.annotations.Nullable;
  * @since 10.6.0
  */
 @NothingNullByDefault
-public abstract non-sealed class IntersectionChemicalIngredient<CHEMICAL extends Chemical<CHEMICAL>, INGREDIENT extends IChemicalIngredient<CHEMICAL, INGREDIENT>>
-      extends ChemicalIngredient<CHEMICAL, INGREDIENT> {
+public non-sealed class IntersectionChemicalIngredient extends ChemicalIngredient {
 
-    /**
-     * Helper to create the codec for intersection ingredients.
-     */
-    @Internal
-    protected static <INGREDIENT extends IChemicalIngredient<?, INGREDIENT>, INTERSECTION extends IntersectionChemicalIngredient<?, INGREDIENT>> MapCodec<INTERSECTION> codec(
-          IChemicalIngredientCreator<?, INGREDIENT> creator, Function<List<INGREDIENT>, INTERSECTION> constructor) {
-        return RecordCodecBuilder.mapCodec(builder -> builder.group(
-              creator.listCodecMultipleElements().fieldOf(SerializationConstants.CHILDREN).forGetter(IntersectionChemicalIngredient::children)
-        ).apply(builder, constructor));
-    }
+    public static final MapCodec<IntersectionChemicalIngredient> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
+          IngredientCreatorAccess.chemical().listCodecMultipleElements().fieldOf(SerializationConstants.CHILDREN).forGetter(IntersectionChemicalIngredient::children)
+    ).apply(builder, IntersectionChemicalIngredient::new));
 
-    private final List<INGREDIENT> children;
+    private final List<ChemicalIngredient> children;
 
     /**
      * @param children Ingredients to form an intersection from.
      */
     @Internal
-    protected IntersectionChemicalIngredient(List<INGREDIENT> children) {
+    public IntersectionChemicalIngredient(List<ChemicalIngredient> children) {
         if (children.size() < 2) {
             throw new IllegalArgumentException("Intersection chemical ingredients require at least two ingredients");
         }
@@ -47,8 +38,8 @@ public abstract non-sealed class IntersectionChemicalIngredient<CHEMICAL extends
     }
 
     @Override
-    public final boolean test(CHEMICAL chemical) {
-        for (INGREDIENT child : children) {
+    public final boolean test(Chemical chemical) {
+        for (ChemicalIngredient child : children) {
             if (!child.test(chemical)) {
                 return false;
             }
@@ -57,9 +48,9 @@ public abstract non-sealed class IntersectionChemicalIngredient<CHEMICAL extends
     }
 
     @Override
-    public final Stream<CHEMICAL> generateChemicals() {
+    public final Stream<Chemical> generateChemicals() {
         return children.stream()
-              .flatMap(IChemicalIngredient::generateChemicals)
+              .flatMap(ChemicalIngredient::generateChemicals)
               .distinct()//Ensure we don't include the same chemical multiple times
               .filter(this);
     }
@@ -67,7 +58,7 @@ public abstract non-sealed class IntersectionChemicalIngredient<CHEMICAL extends
     /**
      * {@return all the child ingredients that this ingredient is an intersection of}
      */
-    public final List<INGREDIENT> children() {
+    public final List<ChemicalIngredient> children() {
         return children;
     }
 
@@ -77,12 +68,17 @@ public abstract non-sealed class IntersectionChemicalIngredient<CHEMICAL extends
     }
 
     @Override
+    public MapCodec<? extends ChemicalIngredient> codec() {
+        return CODEC;
+    }
+
+    @Override
     public boolean equals(@Nullable Object obj) {
         if (this == obj) {
             return true;
         } else if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        return children.equals(((IntersectionChemicalIngredient<?, ?>) obj).children);
+        return children.equals(((IntersectionChemicalIngredient) obj).children);
     }
 }

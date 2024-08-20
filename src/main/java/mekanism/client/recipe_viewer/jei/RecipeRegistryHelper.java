@@ -29,10 +29,10 @@ public class RecipeRegistryHelper {
         List<RecipeHolder<RotaryRecipe>> decondensentratorRecipes = new ArrayList<>();
         for (RecipeHolder<RotaryRecipe> recipeHolder : MekanismRecipeType.ROTARY.getRecipes(null)) {
             RotaryRecipe recipe = recipeHolder.value();
-            if (recipe.hasGasToFluid()) {
+            if (recipe.hasChemicalToFluid()) {
                 condensentratorRecipes.add(recipeHolder);
             }
-            if (recipe.hasFluidToGas()) {
+            if (recipe.hasFluidToChemical()) {
                 decondensentratorRecipes.add(recipeHolder);
             }
         }

@@ -10,7 +10,7 @@ import mekanism.common.base.KeySync;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.curios.CuriosIntegration;
 import mekanism.common.inventory.container.ModuleTweakerContainer;
-import mekanism.common.item.interfaces.IGasItem;
+import mekanism.common.item.interfaces.IChemicalItem;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.PacketModeChange;
@@ -83,7 +83,7 @@ public class MekanismKeyHandler {
             } else if (Mekanism.hooks.CuriosLoaded) {
                 Optional<SlotResult> curiosResult = CuriosIntegration.findFirstCurioAsResult(player, stack -> {
                     if (stack.canEquip(slot, player) && IModeItem.isModeItem(stack, slot)) {
-                        return !(stack.getItem() instanceof IGasItem item) || item.hasGas(stack);
+                        return !(stack.getItem() instanceof IChemicalItem item) || item.hasChemical(stack);
                     }
                     return false;
                 });

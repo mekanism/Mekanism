@@ -11,5 +11,6 @@
   "output": {
     "count": 1,
     "id": "mekanism:alloy_atomic"
-  }
+  },
+  "per_tick_usage": false
 }

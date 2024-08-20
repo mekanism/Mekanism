@@ -1,9 +1,7 @@
 package mekanism.common.registries;
 
-import java.util.function.BooleanSupplier;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPITags;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -23,10 +21,8 @@ import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.FluidUtils;
 import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTab.ItemDisplayParameters;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -62,21 +58,13 @@ public class MekanismCreativeTabs {
             }
             if (chemical) {
                 //Chemical Tanks
-                addFilled(MekanismConfig.general.prefilledGasTanks, MekanismAPI.GAS_REGISTRY_NAME, parameters, output, MekanismAPITags.Gases.HIDDEN_FROM_RECIPE_VIEWERS);
-                addFilled(MekanismConfig.general.prefilledInfusionTanks, MekanismAPI.INFUSE_TYPE_REGISTRY_NAME, parameters, output, MekanismAPITags.InfuseTypes.HIDDEN_FROM_RECIPE_VIEWERS);
-                addFilled(MekanismConfig.general.prefilledPigmentTanks, MekanismAPI.PIGMENT_REGISTRY_NAME, parameters, output, MekanismAPITags.Pigments.HIDDEN_FROM_RECIPE_VIEWERS);
-                addFilled(MekanismConfig.general.prefilledSlurryTanks, MekanismAPI.SLURRY_REGISTRY_NAME, parameters, output, MekanismAPITags.Slurries.HIDDEN_FROM_RECIPE_VIEWERS);
+                if (MekanismConfig.general.prefilledChemicalTanks.get()) {
+                    parameters.holders().lookupOrThrow(MekanismAPI.CHEMICAL_REGISTRY_NAME)
+                          .listElements()
+                          .filter(holder -> !holder.is(MekanismAPITags.Chemicals.HIDDEN_FROM_RECIPE_VIEWERS) && !holder.is(MekanismAPI.EMPTY_CHEMICAL_NAME))
+                          .forEach(holder -> output.accept(ChemicalUtil.getFilledVariant(MekanismBlocks.CREATIVE_CHEMICAL_TANK, holder.value())));
+                }
             }
-        }
-    }
-
-    private static <CHEMICAL extends Chemical<CHEMICAL>> void addFilled(BooleanSupplier shouldAdd, ResourceKey<? extends Registry<CHEMICAL>> registryName,
-          ItemDisplayParameters parameters, CreativeModeTab.Output tabOutput, TagKey<CHEMICAL> hiddenTag) {
-        if (shouldAdd.getAsBoolean()) {
-            parameters.holders().lookupOrThrow(registryName)
-                  .listElements()
-                  .filter(holder -> !holder.is(hiddenTag) && !holder.is(MekanismAPI.EMPTY_CHEMICAL_NAME))
-                  .forEach(holder -> tabOutput.accept(ChemicalUtil.getFilledVariant(MekanismBlocks.CREATIVE_CHEMICAL_TANK, holder.value())));
         }
     }
 
@@ -130,7 +118,7 @@ public class MekanismCreativeTabs {
                   //Installers
                   MekanismItems.BASIC_TIER_INSTALLER, MekanismItems.ADVANCED_TIER_INSTALLER, MekanismItems.ELITE_TIER_INSTALLER, MekanismItems.ULTIMATE_TIER_INSTALLER,
                   //Upgrades
-                  MekanismItems.SPEED_UPGRADE, MekanismItems.ENERGY_UPGRADE, MekanismItems.FILTER_UPGRADE, MekanismItems.MUFFLING_UPGRADE, MekanismItems.GAS_UPGRADE,
+                  MekanismItems.SPEED_UPGRADE, MekanismItems.ENERGY_UPGRADE, MekanismItems.FILTER_UPGRADE, MekanismItems.MUFFLING_UPGRADE, MekanismItems.CHEMICAL_UPGRADE,
                   MekanismItems.ANCHOR_UPGRADE, MekanismItems.STONE_GENERATOR_UPGRADE,
                   //Tanks
                   MekanismBlocks.BASIC_FLUID_TANK, MekanismBlocks.ADVANCED_FLUID_TANK, MekanismBlocks.ELITE_FLUID_TANK, MekanismBlocks.ULTIMATE_FLUID_TANK,

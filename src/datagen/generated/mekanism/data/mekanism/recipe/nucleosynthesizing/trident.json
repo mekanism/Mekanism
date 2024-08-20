@@ -1,10 +1,10 @@
 {
   "type": "mekanism:nucleosynthesizing",
-  "duration": 1000,
-  "gas_input": {
+  "chemical_input": {
     "amount": 4,
-    "gas": "mekanism:antimatter"
+    "chemical": "mekanism:antimatter"
   },
+  "duration": 1000,
   "item_input": {
     "count": 1,
     "item": "minecraft:diamond_sword"
@@ -12,5 +12,6 @@
   "output": {
     "count": 1,
     "id": "minecraft:trident"
-  }
+  },
+  "per_tick_usage": false
 }

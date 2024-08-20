@@ -1,10 +1,10 @@
 package mekanism.common.lib.transmitter;
 
-import mekanism.api.chemical.merged.BoxedChemical;
-import mekanism.common.capabilities.chemical.BoxedChemicalHandler;
-import mekanism.common.content.network.BoxedChemicalNetwork;
+import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.IChemicalHandler;
+import mekanism.common.content.network.ChemicalNetwork;
 import mekanism.common.content.network.FluidNetwork;
-import mekanism.common.content.network.transmitter.BoxedPressurizedTube;
+import mekanism.common.content.network.transmitter.PressurizedTube;
 import mekanism.common.content.network.transmitter.MechanicalPipe;
 import mekanism.common.content.network.transmitter.Transmitter;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -24,32 +24,32 @@ public class CompatibleTransmitterValidator<ACCEPTOR, NETWORK extends DynamicNet
         return true;
     }
 
-    public static class CompatibleChemicalTransmitterValidator extends CompatibleTransmitterValidator<BoxedChemicalHandler, BoxedChemicalNetwork, BoxedPressurizedTube> {
+    public static class CompatibleChemicalTransmitterValidator extends CompatibleTransmitterValidator<IChemicalHandler, ChemicalNetwork, PressurizedTube> {
 
-        private BoxedChemical buffer;
+        private Chemical buffer;
 
-        public CompatibleChemicalTransmitterValidator(BoxedPressurizedTube transmitter) {
-            buffer = transmitter.getBufferWithFallback().getType();
+        public CompatibleChemicalTransmitterValidator(PressurizedTube transmitter) {
+            buffer = transmitter.getBufferWithFallback().getChemical();
         }
 
-        private boolean compareBuffers(BoxedChemical otherBuffer) {
-            if (buffer.isEmpty()) {
+        private boolean compareBuffers(Chemical otherBuffer) {
+            if (buffer.isEmptyType()) {
                 buffer = otherBuffer;
                 return true;
             }
-            return otherBuffer.isEmpty() || buffer.equals(otherBuffer);
+            return otherBuffer.isEmptyType() || buffer == otherBuffer;
         }
 
         @Override
-        public boolean isNetworkCompatible(BoxedChemicalNetwork network) {
+        public boolean isNetworkCompatible(ChemicalNetwork network) {
             if (super.isNetworkCompatible(network)) {
-                BoxedChemical otherBuffer;
+                Chemical otherBuffer;
                 if (network.getTransmitterValidator() instanceof CompatibleChemicalTransmitterValidator validator) {
                     //Null check it, but use instanceof to double-check it is actually the expected type
                     otherBuffer = validator.buffer;
                 } else {
-                    otherBuffer = network.getBuffer().getType();
-                    if (otherBuffer.isEmpty() && network.getPrevTransferAmount() > 0) {
+                    otherBuffer = network.getBuffer().getChemical();
+                    if (otherBuffer.isEmptyType() && network.getPrevTransferAmount() > 0) {
                         otherBuffer = network.lastChemical;
                     }
                 }
@@ -60,7 +60,7 @@ public class CompatibleTransmitterValidator<ACCEPTOR, NETWORK extends DynamicNet
 
         @Override
         public boolean isTransmitterCompatible(Transmitter<?, ?, ?> transmitter) {
-            return super.isTransmitterCompatible(transmitter) && transmitter instanceof BoxedPressurizedTube tube && compareBuffers(tube.getBufferWithFallback().getType());
+            return super.isTransmitterCompatible(transmitter) && transmitter instanceof PressurizedTube tube && compareBuffers(tube.getBufferWithFallback().getChemical());
         }
     }
 

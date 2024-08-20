@@ -71,10 +71,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedLongValue dynamicTankChemicalPerTank;
     //Prefilled
     public final CachedBooleanValue prefilledFluidTanks;
-    public final CachedBooleanValue prefilledGasTanks;
-    public final CachedBooleanValue prefilledInfusionTanks;
-    public final CachedBooleanValue prefilledPigmentTanks;
-    public final CachedBooleanValue prefilledSlurryTanks;
+    public final CachedBooleanValue prefilledChemicalTanks;
     //Energy Conversion
     public final CachedBooleanValue blacklistForge;
     public final CachedDoubleValue forgeConversionRate;
@@ -201,14 +198,8 @@ public class GeneralConfig extends BaseMekanismConfig {
         builder.comment("Prefilled Tanks").push(PREFILLED_CATEGORY);
         prefilledFluidTanks = CachedBooleanValue.wrap(this, builder.comment("Add filled creative fluid tanks to creative/JEI.")
               .define("fluidTanks", true));
-        prefilledGasTanks = CachedBooleanValue.wrap(this, builder.comment("Add filled creative gas tanks to creative/JEI.")
-              .define("gasTanks", true));
-        prefilledInfusionTanks = CachedBooleanValue.wrap(this, builder.comment("Add filled creative infusion tanks to creative/JEI.")
-              .define("infusionTanks", true));
-        prefilledPigmentTanks = CachedBooleanValue.wrap(this, builder.comment("Add filled creative pigment tanks to creative/JEI.")
-              .define("pigmentTanks", true));
-        prefilledSlurryTanks = CachedBooleanValue.wrap(this, builder.comment("Add filled creative slurry tanks to creative/JEI.")
-              .define("slurryTanks", true));
+        prefilledChemicalTanks = CachedBooleanValue.wrap(this, builder.comment("Add filled creative chemical tanks to creative/JEI.")
+              .define("chemicalTanks", true));
         builder.pop();
 
         builder.comment("Energy Conversion Rate Settings").push(CONVERSION_CATEGORY);

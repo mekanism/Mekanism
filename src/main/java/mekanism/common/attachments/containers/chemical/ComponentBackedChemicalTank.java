@@ -12,8 +12,7 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.common.attachments.containers.ComponentBackedContainer;
-import mekanism.common.attachments.containers.IAttachedContainers;
-import mekanism.common.util.ChemicalUtil;
+import mekanism.common.attachments.containers.ContainerType;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
@@ -21,19 +20,18 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public abstract class ComponentBackedChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-      ATTACHED extends IAttachedContainers<STACK, ATTACHED>> extends ComponentBackedContainer<STACK, ATTACHED> implements IChemicalTank<CHEMICAL, STACK> {
+public class ComponentBackedChemicalTank extends ComponentBackedContainer<ChemicalStack, AttachedChemicals> implements IChemicalTank {
 
-    private final BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> canExtract;
-    private final BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> canInsert;
-    private final Predicate<@NotNull CHEMICAL> validator;
+    private final BiPredicate<Chemical, @NotNull AutomationType> canExtract;
+    private final BiPredicate<Chemical, @NotNull AutomationType> canInsert;
+    private final Predicate<Chemical> validator;
     @Nullable
     private final ChemicalAttributeValidator attributeValidator;
     private final LongSupplier capacity;
     private final LongSupplier rate;
 
-    protected ComponentBackedChemicalTank(ItemStack attachedTo, int tankIndex, BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> canExtract,
-          BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> canInsert, Predicate<@NotNull CHEMICAL> validator, LongSupplier rate, LongSupplier capacity,
+    public ComponentBackedChemicalTank(ItemStack attachedTo, int tankIndex, BiPredicate<Chemical, @NotNull AutomationType> canExtract,
+          BiPredicate<Chemical, @NotNull AutomationType> canInsert, Predicate<Chemical> validator, LongSupplier rate, LongSupplier capacity,
           @Nullable ChemicalAttributeValidator attributeValidator) {
         super(attachedTo, tankIndex);
         this.canExtract = canExtract;
@@ -45,13 +43,18 @@ public abstract class ComponentBackedChemicalTank<CHEMICAL extends Chemical<CHEM
     }
 
     @Override
-    protected STACK copy(STACK toCopy) {
-        return ChemicalUtil.copy(toCopy);
+    protected ChemicalStack copy(ChemicalStack toCopy) {
+        return toCopy.copy();
     }
 
     @Override
-    protected boolean isEmpty(STACK value) {
+    protected boolean isEmpty(ChemicalStack value) {
         return value.isEmpty();
+    }
+
+    @Override
+    protected ContainerType<?, AttachedChemicals, ?> containerType() {
+        return ContainerType.CHEMICAL;
     }
 
     /**
@@ -60,17 +63,17 @@ public abstract class ComponentBackedChemicalTank<CHEMICAL extends Chemical<CHEM
      * @apiNote Try to minimize the number of calls to this method so that we don't have to look up the data component multiple times.
      */
     @Override
-    public STACK getStack() {
+    public ChemicalStack getStack() {
         return getContents(getAttached());
     }
 
     @Override
-    public void setStack(STACK stack) {
+    public void setStack(ChemicalStack stack) {
         setStackUnchecked(stack);
     }
 
     @Override
-    public void setStackUnchecked(STACK stack) {
+    public void setStackUnchecked(ChemicalStack stack) {
         setContents(getAttached(), stack);
     }
 
@@ -95,20 +98,20 @@ public abstract class ComponentBackedChemicalTank<CHEMICAL extends Chemical<CHEM
     }
 
     @Override
-    public boolean isValid(STACK stack) {
+    public boolean isValid(ChemicalStack stack) {
         return getAttributeValidator().process(stack) && validator.test(stack.getChemical());
     }
 
     @Override
-    public STACK insert(STACK stack, Action action, AutomationType automationType) {
+    public ChemicalStack insert(ChemicalStack stack, Action action, AutomationType automationType) {
         //TODO - 1.21: Items do the is valid and canInsert check after checking the needed amount. Should we do the same for fluids
         // or should items have the order flipped? In general calculating the needed amount is likely cheaper which is likely why items do it first
         if (stack.isEmpty() || !isValid(stack) || !canInsert.test(stack.getChemical(), automationType)) {
             //"Fail quick" if the given stack is empty, or we can never insert the fluid or currently are unable to insert it
             return stack;
         }
-        ATTACHED attachedChemicals = getAttached();
-        STACK stored = getContents(attachedChemicals);
+        AttachedChemicals attachedChemicals = getAttached();
+        ChemicalStack stored = getContents(attachedChemicals);
         long needed = Math.min(getInsertRate(automationType), getNeeded(stored));
         if (needed <= 0) {
             //Fail if we are a full tank or our rate is zero
@@ -119,55 +122,55 @@ public abstract class ComponentBackedChemicalTank<CHEMICAL extends Chemical<CHEM
                 //Note: We let setStack handle updating the backing holding stack
                 // We use stored.getAmount + toAdd so that if we are empty we end up at toAdd
                 // but if we aren't then we grow by the given amount
-                setContents(attachedChemicals, createStack(stack, stored.getAmount() + toAdd));
+                setContents(attachedChemicals, stack.copyWithAmount(stored.getAmount() + toAdd));
             }
-            return createStack(stack, stack.getAmount() - toAdd);
+            return stack.copyWithAmount(stack.getAmount() - toAdd);
         }
         //If we didn't accept this fluid, then just return the given stack
         return stack;
     }
 
     @Override
-    public final STACK extract(long amount, Action action, AutomationType automationType) {
+    public final ChemicalStack extract(long amount, Action action, AutomationType automationType) {
         if (amount < 1) {
             //"Fail quick" if the amount being requested is less than one
-            return getEmptyStack();
+            return ChemicalStack.EMPTY;
         }
-        ATTACHED attachedChemicals = getAttached();
+        AttachedChemicals attachedChemicals = getAttached();
         return extract(attachedChemicals, getContents(attachedChemicals), amount, action, automationType);
     }
 
-    protected STACK extract(ATTACHED attachedChemicals, STACK stored, long amount, Action action, AutomationType automationType) {
+    protected ChemicalStack extract(AttachedChemicals attachedChemicals, ChemicalStack stored, long amount, Action action, AutomationType automationType) {
         if (amount < 1 || stored.isEmpty() || !canExtract.test(stored.getChemical(), automationType)) {
             //"Fail quick" if we don't can never extract from this tank, have a fluid stored, or the amount being requested is less than one
-            return getEmptyStack();
+            return ChemicalStack.EMPTY;
         }
         //Note: While we technically could just return the stack itself if we are removing all that we have, it would require a lot more checks
         // We also are limiting it by the rate this tank has
         long size = Math.min(Math.min(getExtractRate(automationType), stored.getAmount()), amount);
         if (size == 0) {
-            return getEmptyStack();
+            return ChemicalStack.EMPTY;
         }
-        STACK ret = createStack(stored, size);
+        ChemicalStack ret = stored.copyWithAmount(size);
         if (!ret.isEmpty() && action.execute()) {
             //Note: We let setStack handle updating the backing holding stack
-            setContents(attachedChemicals, createStack(stored, stored.getAmount() - ret.getAmount()));
+            setContents(attachedChemicals, stored.copyWithAmount(stored.getAmount() - ret.getAmount()));
         }
         return ret;
     }
 
     @Override
     public final long setStackSize(long amount, Action action) {
-        ATTACHED attachedChemicals = getAttached();
+        AttachedChemicals attachedChemicals = getAttached();
         return setStackSize(attachedChemicals, getContents(attachedChemicals), amount, action);
     }
 
-    protected long setStackSize(ATTACHED attachedChemicals, STACK stored, long amount, Action action) {
+    protected long setStackSize(AttachedChemicals attachedChemicals, ChemicalStack stored, long amount, Action action) {
         if (stored.isEmpty()) {
             return 0;
         } else if (amount <= 0) {
             if (action.execute()) {
-                setContents(attachedChemicals, getEmptyStack());
+                setContents(attachedChemicals, ChemicalStack.EMPTY);
             }
             return 0;
         }
@@ -179,14 +182,14 @@ public abstract class ComponentBackedChemicalTank<CHEMICAL extends Chemical<CHEM
             //If our size is not changing, or we are only simulating the change, don't do anything
             return amount;
         }
-        setContents(attachedChemicals, createStack(stored, amount));
+        setContents(attachedChemicals, stored.copyWithAmount(amount));
         return amount;
     }
 
     @Override
     public long growStack(long amount, Action action) {
-        ATTACHED attachedChemicals = getAttached();
-        STACK stored = getContents(attachedChemicals);
+        AttachedChemicals attachedChemicals = getAttached();
+        ChemicalStack stored = getContents(attachedChemicals);
         long current = stored.getAmount();
         if (current == 0) {
             //"Fail quick" if our stack is empty, so we can't grow it
@@ -203,7 +206,7 @@ public abstract class ComponentBackedChemicalTank<CHEMICAL extends Chemical<CHEM
         return newSize - current;
     }
 
-    protected long getNeeded(STACK stored) {
+    protected long getNeeded(ChemicalStack stored) {
         //Skip the stack lookup for getNeeded
         return Math.max(0, getCapacity() - stored.getAmount());
     }
@@ -211,7 +214,7 @@ public abstract class ComponentBackedChemicalTank<CHEMICAL extends Chemical<CHEM
     @Override
     public CompoundTag serializeNBT(Provider provider) {
         CompoundTag nbt = new CompoundTag();
-        STACK stored = getStack();
+        ChemicalStack stored = getStack();
         if (!stored.isEmpty()) {
             nbt.put(SerializationConstants.STORED, stored.save(provider));
         }

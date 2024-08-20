@@ -12,16 +12,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.infuse.InfuseType;
-import mekanism.api.chemical.pigment.Pigment;
-import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.providers.IChemicalProvider;
-import mekanism.api.providers.IGasProvider;
-import mekanism.api.providers.IInfuseTypeProvider;
-import mekanism.api.providers.IPigmentProvider;
-import mekanism.api.providers.ISlurryProvider;
 import mekanism.common.registration.impl.FluidDeferredRegister;
 import mekanism.common.registration.impl.FluidRegistryObject;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
@@ -180,20 +172,8 @@ public abstract class BaseTagProvider implements DataProvider {
         return getBuilder(Registries.BIOME, tag);
     }
 
-    protected IntrinsicMekanismTagBuilder<Gas> getGasBuilder(TagKey<Gas> tag) {
-        return getBuilder(MekanismAPI.GAS_REGISTRY, tag);
-    }
-
-    protected IntrinsicMekanismTagBuilder<InfuseType> getInfuseTypeBuilder(TagKey<InfuseType> tag) {
-        return getBuilder(MekanismAPI.INFUSE_TYPE_REGISTRY, tag);
-    }
-
-    protected IntrinsicMekanismTagBuilder<Pigment> getPigmentBuilder(TagKey<Pigment> tag) {
-        return getBuilder(MekanismAPI.PIGMENT_REGISTRY, tag);
-    }
-
-    protected IntrinsicMekanismTagBuilder<Slurry> getSlurryBuilder(TagKey<Slurry> tag) {
-        return getBuilder(MekanismAPI.SLURRY_REGISTRY, tag);
+    protected IntrinsicMekanismTagBuilder<Chemical> getChemicalBuilder(TagKey<Chemical> tag) {
+        return getBuilder(MekanismAPI.CHEMICAL_REGISTRY, tag);
     }
 
     protected IntrinsicMekanismTagBuilder<MobEffect> getMobEffectBuilder(TagKey<MobEffect> tag) {
@@ -280,20 +260,8 @@ public abstract class BaseTagProvider implements DataProvider {
         getTileEntityTypeBuilder(tag).add(tileEntityTypeRegistryObjects);
     }
 
-    protected void addToTag(TagKey<Gas> tag, IGasProvider... gasProviders) {
-        addToTag(getGasBuilder(tag), gasProviders);
-    }
-
-    protected void addToTag(TagKey<InfuseType> tag, IInfuseTypeProvider... infuseTypeProviders) {
-        addToTag(getInfuseTypeBuilder(tag), infuseTypeProviders);
-    }
-
-    protected void addToTag(TagKey<Pigment> tag, IPigmentProvider... pigmentProviders) {
-        addToTag(getPigmentBuilder(tag), pigmentProviders);
-    }
-
-    protected void addToTag(TagKey<Slurry> tag, ISlurryProvider... slurryProviders) {
-        addToTag(getSlurryBuilder(tag), slurryProviders);
+    protected void addToTag(TagKey<Chemical> tag, IChemicalProvider... chemicalProviders) {
+        addToTag(getChemicalBuilder(tag), chemicalProviders);
     }
 
     @SafeVarargs
@@ -304,8 +272,7 @@ public abstract class BaseTagProvider implements DataProvider {
         }
     }
 
-    @SafeVarargs
-    protected final <CHEMICAL extends Chemical<CHEMICAL>> void addToTag(IntrinsicMekanismTagBuilder<CHEMICAL> tagBuilder, IChemicalProvider<CHEMICAL>... providers) {
+    protected final void addToTag(IntrinsicMekanismTagBuilder<Chemical> tagBuilder, IChemicalProvider... providers) {
         tagBuilder.addTyped(IChemicalProvider::getChemical, providers);
     }
 }

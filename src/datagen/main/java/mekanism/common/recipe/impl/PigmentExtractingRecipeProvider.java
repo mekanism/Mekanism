@@ -3,12 +3,12 @@ package mekanism.common.recipe.impl;
 import java.util.EnumMap;
 import java.util.Map;
 import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
-import mekanism.api.providers.IPigmentProvider;
+import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.ISubRecipeProvider;
-import mekanism.common.registries.MekanismPigments;
+import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.core.HolderLookup;
@@ -65,7 +65,7 @@ public class PigmentExtractingRecipeProvider implements ISubRecipeProvider {
         //Red
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
               IngredientCreatorAccess.item().from(Blocks.ROSE_BUSH),
-              MekanismPigments.PIGMENT_COLOR_LOOKUP.get(EnumColor.RED).getStack(largeFlowerRate)
+              MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(EnumColor.RED).getStack(largeFlowerRate)
         ).build(consumer, Mekanism.rl(basePath + "large_red"));
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
               IngredientCreatorAccess.item().from(
@@ -73,17 +73,17 @@ public class PigmentExtractingRecipeProvider implements ISubRecipeProvider {
                     Blocks.POPPY,
                     Blocks.RED_TULIP
               ),
-              MekanismPigments.PIGMENT_COLOR_LOOKUP.get(EnumColor.RED).getStack(flowerRate)
+              MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(EnumColor.RED).getStack(flowerRate)
         ).build(consumer, Mekanism.rl(basePath + "small_red"));
         //Cyan
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
               IngredientCreatorAccess.item().from(Blocks.PITCHER_PLANT),
-              MekanismPigments.PIGMENT_COLOR_LOOKUP.get(EnumColor.DARK_AQUA).getStack(largeFlowerRate)
+              MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(EnumColor.DARK_AQUA).getStack(largeFlowerRate)
         ).build(consumer, Mekanism.rl(basePath + "large_cyan"));
         //Green
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
               IngredientCreatorAccess.item().from(Blocks.CACTUS),
-              MekanismPigments.PIGMENT_COLOR_LOOKUP.get(EnumColor.DARK_GREEN).getStack(flowerRate)
+              MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(EnumColor.DARK_GREEN).getStack(flowerRate)
         ).build(consumer, Mekanism.rl(basePath + "green"));
         //Light gray
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
@@ -92,47 +92,47 @@ public class PigmentExtractingRecipeProvider implements ISubRecipeProvider {
                     Blocks.AZURE_BLUET,
                     Blocks.WHITE_TULIP
               ),
-              MekanismPigments.PIGMENT_COLOR_LOOKUP.get(EnumColor.GRAY).getStack(flowerRate)
+              MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(EnumColor.GRAY).getStack(flowerRate)
         ).build(consumer, Mekanism.rl(basePath + "light_gray"));
         //Pink
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
               IngredientCreatorAccess.item().from(Blocks.PEONY),
-              MekanismPigments.PIGMENT_COLOR_LOOKUP.get(EnumColor.BRIGHT_PINK).getStack(largeFlowerRate)
+              MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(EnumColor.BRIGHT_PINK).getStack(largeFlowerRate)
         ).build(consumer, Mekanism.rl(basePath + "large_pink"));
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
               IngredientCreatorAccess.item().from(
                     Blocks.PINK_TULIP,
                     Blocks.PINK_PETALS
               ),
-              MekanismPigments.PIGMENT_COLOR_LOOKUP.get(EnumColor.BRIGHT_PINK).getStack(flowerRate)
+              MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(EnumColor.BRIGHT_PINK).getStack(flowerRate)
         ).build(consumer, Mekanism.rl(basePath + "small_pink"));
         //Lime
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
               IngredientCreatorAccess.item().from(Blocks.SEA_PICKLE),
-              MekanismPigments.PIGMENT_COLOR_LOOKUP.get(EnumColor.BRIGHT_GREEN).getStack(flowerRate)
+              MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(EnumColor.BRIGHT_GREEN).getStack(flowerRate)
         ).build(consumer, Mekanism.rl(basePath + "lime"));
         //Yellow
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
               IngredientCreatorAccess.item().from(Blocks.SUNFLOWER),
-              MekanismPigments.PIGMENT_COLOR_LOOKUP.get(EnumColor.YELLOW).getStack(largeFlowerRate)
+              MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(EnumColor.YELLOW).getStack(largeFlowerRate)
         ).build(consumer, Mekanism.rl(basePath + "large_yellow"));
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
               IngredientCreatorAccess.item().from(Blocks.DANDELION),
-              MekanismPigments.PIGMENT_COLOR_LOOKUP.get(EnumColor.YELLOW).getStack(flowerRate)
+              MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(EnumColor.YELLOW).getStack(flowerRate)
         ).build(consumer, Mekanism.rl(basePath + "small_yellow"));
         //Light blue
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
               IngredientCreatorAccess.item().from(Blocks.BLUE_ORCHID),
-              MekanismPigments.PIGMENT_COLOR_LOOKUP.get(EnumColor.INDIGO).getStack(flowerRate)
+              MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(EnumColor.INDIGO).getStack(flowerRate)
         ).build(consumer, Mekanism.rl(basePath + "light_blue"));
         //Magenta
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
               IngredientCreatorAccess.item().from(Blocks.LILAC),
-              MekanismPigments.PIGMENT_COLOR_LOOKUP.get(EnumColor.PINK).getStack(largeFlowerRate)
+              MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(EnumColor.PINK).getStack(largeFlowerRate)
         ).build(consumer, Mekanism.rl(basePath + "large_magenta"));
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
               IngredientCreatorAccess.item().from(Blocks.ALLIUM),
-              MekanismPigments.PIGMENT_COLOR_LOOKUP.get(EnumColor.PINK).getStack(flowerRate)
+              MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(EnumColor.PINK).getStack(flowerRate)
         ).build(consumer, Mekanism.rl(basePath + "small_magenta"));
         //Orange
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
@@ -140,7 +140,7 @@ public class PigmentExtractingRecipeProvider implements ISubRecipeProvider {
                     Blocks.ORANGE_TULIP,
                     Blocks.TORCHFLOWER
               ),
-              MekanismPigments.PIGMENT_COLOR_LOOKUP.get(EnumColor.ORANGE).getStack(flowerRate)
+              MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(EnumColor.ORANGE).getStack(flowerRate)
         ).build(consumer, Mekanism.rl(basePath + "orange"));
         //Blue
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
@@ -148,12 +148,12 @@ public class PigmentExtractingRecipeProvider implements ISubRecipeProvider {
                     Blocks.CORNFLOWER,
                     Items.LAPIS_LAZULI
               ),
-              MekanismPigments.PIGMENT_COLOR_LOOKUP.get(EnumColor.DARK_BLUE).getStack(flowerRate)
+              MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(EnumColor.DARK_BLUE).getStack(flowerRate)
         ).build(consumer, Mekanism.rl(basePath + "blue"));
         //Brown
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
               IngredientCreatorAccess.item().from(Items.COCOA_BEANS),
-              MekanismPigments.PIGMENT_COLOR_LOOKUP.get(EnumColor.BROWN).getStack(flowerRate)
+              MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(EnumColor.BROWN).getStack(flowerRate)
         ).build(consumer, Mekanism.rl(basePath + "brown"));
         //Black
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
@@ -161,7 +161,7 @@ public class PigmentExtractingRecipeProvider implements ISubRecipeProvider {
                     Items.INK_SAC,
                     Blocks.WITHER_ROSE
               ),
-              MekanismPigments.PIGMENT_COLOR_LOOKUP.get(EnumColor.BLACK).getStack(flowerRate)
+              MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(EnumColor.BLACK).getStack(flowerRate)
         ).build(consumer, Mekanism.rl(basePath + "black"));
         //White
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
@@ -169,14 +169,14 @@ public class PigmentExtractingRecipeProvider implements ISubRecipeProvider {
                     Items.BONE_MEAL,
                     Blocks.LILY_OF_THE_VALLEY
               ),
-              MekanismPigments.PIGMENT_COLOR_LOOKUP.get(EnumColor.WHITE).getStack(flowerRate)
+              MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(EnumColor.WHITE).getStack(flowerRate)
         ).build(consumer, Mekanism.rl(basePath + "white"));
     }
 
     private static void addExtractionRecipes(RecipeOutput consumer, String basePath) {
-        for (Map.Entry<EnumColor, IPigmentProvider> entry : MekanismPigments.PIGMENT_COLOR_LOOKUP.entrySet()) {
+        for (Map.Entry<EnumColor, IChemicalProvider> entry : MekanismChemicals.PIGMENT_COLOR_LOOKUP.entrySet()) {
             EnumColor color = entry.getKey();
-            IPigmentProvider pigment = entry.getValue();
+            IChemicalProvider pigment = entry.getValue();
             DyeColor dye = color.getDyeColor();
             if (dye != null) {
                 ItemStackToChemicalRecipeBuilder.pigmentExtracting(
@@ -200,7 +200,7 @@ public class PigmentExtractingRecipeProvider implements ISubRecipeProvider {
         }
     }
 
-    private static void addExtractionRecipe(RecipeOutput consumer, EnumColor color, TagKey<Item> input, IPigmentProvider pigment, long rate, String basePath) {
+    private static void addExtractionRecipe(RecipeOutput consumer, EnumColor color, TagKey<Item> input, IChemicalProvider pigment, long rate, String basePath) {
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
               IngredientCreatorAccess.item().from(IntersectionIngredient.of(
                     Ingredient.of(input),

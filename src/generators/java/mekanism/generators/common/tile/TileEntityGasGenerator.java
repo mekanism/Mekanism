@@ -4,14 +4,12 @@ import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
-import mekanism.api.chemical.ChemicalTankBuilder;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.chemical.gas.attribute.GasAttributes.Fuel;
+import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.chemical.attribute.ChemicalAttributes.Fuel;
 import mekanism.api.math.MathUtils;
 import mekanism.common.attachments.containers.ContainerType;
-import mekanism.common.capabilities.chemical.variable.VariableCapacityChemicalTankBuilder.VariableCapacityGasTank;
+import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
@@ -27,7 +25,7 @@ import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
-import mekanism.common.inventory.slot.chemical.GasInventorySlot;
+import mekanism.common.inventory.slot.chemical.ChemicalInventorySlot;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
@@ -43,14 +41,14 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
      */
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getFuel", "getFuelCapacity", "getFuelNeeded",
                                                                                         "getFuelFilledPercentage"}, docPlaceholder = "fuel tank")
-    public VariableCapacityGasTank fuelTank;
+    public IChemicalTank fuelTank;
     private long burnTicks;
     private int maxBurnTicks;
     private long generationRate = 0;
     private double gasUsedLastTick;
 
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFuelItem", docPlaceholder = "fuel item slot")
-    GasInventorySlot fuelSlot;
+    ChemicalInventorySlot fuelSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy item slot")
     EnergyInventorySlot energySlot;
 
@@ -60,8 +58,8 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
 
     @NotNull
     @Override
-    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks(IContentsListener listener) {
-        ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSide(this::getDirection);
+    public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener) {
+        ChemicalTankHelper builder = ChemicalTankHelper.forSide(this::getDirection);
         builder.addTank(fuelTank = new FuelTank(listener), RelativeSide.LEFT, RelativeSide.RIGHT, RelativeSide.BACK, RelativeSide.TOP, RelativeSide.BOTTOM);
         return builder.build();
     }
@@ -70,7 +68,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        builder.addSlot(fuelSlot = GasInventorySlot.fill(fuelTank, listener, 17, 35), RelativeSide.FRONT, RelativeSide.LEFT, RelativeSide.BACK, RelativeSide.TOP,
+        builder.addSlot(fuelSlot = ChemicalInventorySlot.fill(fuelTank, listener, 17, 35), RelativeSide.FRONT, RelativeSide.LEFT, RelativeSide.BACK, RelativeSide.TOP,
               RelativeSide.BOTTOM);
         builder.addSlot(energySlot = EnergyInventorySlot.drain(getEnergyContainer(), listener, 143, 35), RelativeSide.RIGHT);
         fuelSlot.setSlotOverlay(SlotOverlay.MINUS);
@@ -154,7 +152,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
 
     @Override
     protected boolean makesComparatorDirty(ContainerType<?, ?, ?> type) {
-        return type == ContainerType.GAS;
+        return type == ContainerType.CHEMICAL;
     }
 
     @Override
@@ -174,28 +172,27 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
     //End methods IComputerTile
 
     //Implementation of gas tank that on no longer being empty updates the output rate of this generator
-    private class FuelTank extends VariableCapacityGasTank {
+    private class FuelTank extends VariableCapacityChemicalTank {
 
         protected FuelTank(@Nullable IContentsListener listener) {
-            super(MekanismGeneratorsConfig.generators.gbgTankCapacity, ChemicalTankBuilder.GAS.notExternal, ChemicalTankBuilder.GAS.alwaysTrueBi,
-                  gas -> gas.has(Fuel.class), null, listener);
+            super(MekanismGeneratorsConfig.generators.gbgTankCapacity, notExternal, alwaysTrueBi, gas -> gas.has(Fuel.class), null, listener);
         }
 
         @Override
-        public void setStack(@NotNull GasStack stack) {
+        public void setStack(@NotNull ChemicalStack stack) {
             boolean wasEmpty = isEmpty();
             super.setStack(stack);
             recheckOutput(stack, wasEmpty);
         }
 
         @Override
-        public void setStackUnchecked(@NotNull GasStack stack) {
+        public void setStackUnchecked(@NotNull ChemicalStack stack) {
             boolean wasEmpty = isEmpty();
             super.setStackUnchecked(stack);
             recheckOutput(stack, wasEmpty);
         }
 
-        private void recheckOutput(@NotNull GasStack stack, boolean wasEmpty) {
+        private void recheckOutput(@NotNull ChemicalStack stack, boolean wasEmpty) {
             if (wasEmpty && !stack.isEmpty()) {
                 Fuel fuel = getType().get(Fuel.class);
                 if (fuel != null) {

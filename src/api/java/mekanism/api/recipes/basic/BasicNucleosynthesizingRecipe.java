@@ -4,10 +4,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.NucleosynthesizingRecipe;
-import mekanism.api.recipes.ingredients.GasStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
@@ -19,19 +19,21 @@ import org.jetbrains.annotations.NotNull;
 public class BasicNucleosynthesizingRecipe extends NucleosynthesizingRecipe implements IBasicItemStackOutput {
 
     protected final ItemStackIngredient itemInput;
-    protected final GasStackIngredient chemicalInput;
+    protected final ChemicalStackIngredient chemicalInput;
     protected final ItemStack output;
     private final int duration;
+    private final boolean perTickUsage;
 
     /**
-     * @param itemInput Item input.
-     * @param gasInput  Gas input.
-     * @param output    Output.
-     * @param duration  Duration in ticks that it takes the recipe to complete. Must be greater than zero.
+     * @param itemInput     Item input.
+     * @param chemicalInput Chemical input.
+     * @param output        Output.
+     * @param duration      Duration in ticks that it takes the recipe to complete. Must be greater than zero.
+     * @param perTickUsage  Should the recipe consume the chemical input each tick it is processing.
      */
-    public BasicNucleosynthesizingRecipe(ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output, int duration) {
+    public BasicNucleosynthesizingRecipe(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ItemStack output, int duration, boolean perTickUsage) {
         this.itemInput = Objects.requireNonNull(itemInput, "Item input cannot be null.");
-        this.chemicalInput = Objects.requireNonNull(gasInput, "Chemical input cannot be null.");
+        this.chemicalInput = Objects.requireNonNull(chemicalInput, "Chemical input cannot be null.");
         Objects.requireNonNull(output, "Output cannot be null.");
         if (output.isEmpty()) {
             throw new IllegalArgumentException("Output cannot be empty.");
@@ -41,6 +43,7 @@ public class BasicNucleosynthesizingRecipe extends NucleosynthesizingRecipe impl
             throw new IllegalArgumentException("Duration must be a number greater than zero.");
         }
         this.duration = duration;
+        this.perTickUsage = perTickUsage;
     }
 
     @Override
@@ -49,18 +52,23 @@ public class BasicNucleosynthesizingRecipe extends NucleosynthesizingRecipe impl
     }
 
     @Override
+    public boolean perTickUsage() {
+        return perTickUsage;
+    }
+
+    @Override
     public ItemStackIngredient getItemInput() {
         return itemInput;
     }
 
     @Override
-    public GasStackIngredient getChemicalInput() {
+    public ChemicalStackIngredient getChemicalInput() {
         return chemicalInput;
     }
 
     @Override
     @Contract(value = "_, _ -> new", pure = true)
-    public ItemStack getOutput(ItemStack inputItem, GasStack inputChemical) {
+    public ItemStack getOutput(ItemStack inputItem, ChemicalStack inputChemical) {
         return output.copy();
     }
 
@@ -71,8 +79,8 @@ public class BasicNucleosynthesizingRecipe extends NucleosynthesizingRecipe impl
     }
 
     @Override
-    public boolean test(ItemStack itemStack, GasStack gasStack) {
-        return itemInput.test(itemStack) && chemicalInput.test(gasStack);
+    public boolean test(ItemStack itemStack, ChemicalStack chemicalStack) {
+        return itemInput.test(itemStack) && chemicalInput.test(chemicalStack);
     }
 
     @Override

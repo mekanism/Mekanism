@@ -16,17 +16,9 @@ import mekanism.api.IConfigCardAccess;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.chemical.infuse.IInfusionTank;
-import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.api.chemical.pigment.IPigmentTank;
-import mekanism.api.chemical.pigment.PigmentStack;
-import mekanism.api.chemical.slurry.ISlurryTank;
-import mekanism.api.chemical.slurry.SlurryStack;
+import mekanism.api.chemical.IMekanismChemicalHandler;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
@@ -45,10 +37,7 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.attachments.FilterAware;
 import mekanism.common.attachments.containers.ContainerType;
-import mekanism.common.attachments.containers.chemical.gas.AttachedGases;
-import mekanism.common.attachments.containers.chemical.infuse.AttachedInfuseTypes;
-import mekanism.common.attachments.containers.chemical.pigment.AttachedPigments;
-import mekanism.common.attachments.containers.chemical.slurry.AttachedSlurries;
+import mekanism.common.attachments.containers.chemical.AttachedChemicals;
 import mekanism.common.attachments.containers.energy.AttachedEnergy;
 import mekanism.common.attachments.containers.fluid.AttachedFluids;
 import mekanism.common.attachments.containers.heat.AttachedHeat;
@@ -71,14 +60,12 @@ import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.capabilities.heat.CachedAmbientTemperature;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
+import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
-import mekanism.common.capabilities.resolver.manager.ChemicalHandlerManager.GasHandlerManager;
-import mekanism.common.capabilities.resolver.manager.ChemicalHandlerManager.InfusionHandlerManager;
-import mekanism.common.capabilities.resolver.manager.ChemicalHandlerManager.PigmentHandlerManager;
-import mekanism.common.capabilities.resolver.manager.ChemicalHandlerManager.SlurryHandlerManager;
+import mekanism.common.capabilities.resolver.manager.ChemicalHandlerManager;
 import mekanism.common.capabilities.resolver.manager.EnergyHandlerManager;
 import mekanism.common.capabilities.resolver.manager.FluidHandlerManager;
 import mekanism.common.capabilities.resolver.manager.HeatHandlerManager;
@@ -98,10 +85,7 @@ import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.container.sync.SyncableFluidStack;
 import mekanism.common.inventory.container.sync.SyncableLong;
-import mekanism.common.inventory.container.sync.chemical.SyncableGasStack;
-import mekanism.common.inventory.container.sync.chemical.SyncableInfusionStack;
-import mekanism.common.inventory.container.sync.chemical.SyncablePigmentStack;
-import mekanism.common.inventory.container.sync.chemical.SyncableSlurryStack;
+import mekanism.common.inventory.container.sync.chemical.SyncableChemicalStack;
 import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.item.ItemConfigurationCard;
@@ -126,12 +110,7 @@ import mekanism.common.tile.interfaces.ITileRadioactive;
 import mekanism.common.tile.interfaces.ITileRedstone;
 import mekanism.common.tile.interfaces.ITileSound;
 import mekanism.common.tile.interfaces.ITileUpgradable;
-import mekanism.common.tile.interfaces.chemical.IGasTile;
-import mekanism.common.tile.interfaces.chemical.IInfusionTile;
-import mekanism.common.tile.interfaces.chemical.IPigmentTile;
-import mekanism.common.tile.interfaces.chemical.ISlurryTile;
 import mekanism.common.upgrade.IUpgradeData;
-import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.RegistryUtils;
@@ -167,7 +146,7 @@ import org.jetbrains.annotations.Nullable;
 //TODO: We need to move the "supports" methods into the source interfaces so that we make sure they get checked before being used
 public abstract class TileEntityMekanism extends CapabilityTileEntity implements IFrequencyHandler, ITileDirectional, IConfigCardAccess, ITileActive, ITileSound,
       ITileRedstone, ISecurityTile, IMekanismInventory, ITileUpgradable, ITierUpgradable, IComparatorSupport, ITrackableContainer, IMekanismFluidHandler,
-      IMekanismStrictEnergyHandler, ITileHeatHandler, IGasTile, IInfusionTile, IPigmentTile, ISlurryTile, IComputerTile, ITileRadioactive, Nameable {
+      IMekanismStrictEnergyHandler, ITileHeatHandler, IMekanismChemicalHandler, IComputerTile, ITileRadioactive, Nameable {
 
     /**
      * The players currently using this block.
@@ -235,26 +214,11 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     protected final ItemHandlerManager itemHandlerManager;
     //End variables ITileContainer
 
-    //Variables for handling IGasTile
+    //Variables for handling IMekanismChemicalHandler
     @Nullable
-    private final GasHandlerManager gasHandlerManager;
+    private final ChemicalHandlerManager chemicalHandlerManager;
     private float radiationScale;
-    //End variables IGasTile
-
-    //Variables for handling IInfusionTile
-    @Nullable
-    private final InfusionHandlerManager infusionHandlerManager;
-    //End variables IInfusionTile
-
-    //Variables for handling IPigmentTile
-    @Nullable
-    private final PigmentHandlerManager pigmentHandlerManager;
-    //End variables IPigmentTile
-
-    //Variables for handling ISlurryTile
-    @Nullable
-    private final SlurryHandlerManager slurryHandlerManager;
-    //End variables ISlurryTile
+    //End variables IMekanismChemicalHandler
 
     //Variables for handling IMekanismFluidHandler
     @Nullable
@@ -305,25 +269,13 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         presetVariables();
         IContentsListener saveOnlyListener = this::markForSave;
 
-        gasHandlerManager = getInitialGasManager(getListener(ContainerType.GAS, saveOnlyListener));
         List<ICapabilityHandlerManager<?>> capabilityHandlerManagers = new ArrayList<>();
-        if (gasHandlerManager != null) {
-            capabilityHandlerManagers.add(gasHandlerManager);
-        }
 
-        infusionHandlerManager = getInitialInfusionManager(getListener(ContainerType.INFUSION, saveOnlyListener));
-        if (infusionHandlerManager != null) {
-            capabilityHandlerManagers.add(infusionHandlerManager);
-        }
-
-        pigmentHandlerManager = getInitialPigmentManager(getListener(ContainerType.PIGMENT, saveOnlyListener));
-        if (pigmentHandlerManager != null) {
-            capabilityHandlerManagers.add(pigmentHandlerManager);
-        }
-
-        slurryHandlerManager = getInitialSlurryManager(getListener(ContainerType.SLURRY, saveOnlyListener));
-        if (slurryHandlerManager != null) {
-            capabilityHandlerManagers.add(slurryHandlerManager);
+        IChemicalTankHolder initialChemicalTanks = getInitialChemicalTanks(getListener(ContainerType.CHEMICAL, saveOnlyListener));
+        if (initialChemicalTanks != null) {
+            capabilityHandlerManagers.add(chemicalHandlerManager = new ChemicalHandlerManager(initialChemicalTanks, this));
+        } else {
+            chemicalHandlerManager = null;
         }
 
         IFluidTankHolder initialFluidTanks = getInitialFluidTanks(getListener(ContainerType.FLUID, saveOnlyListener));
@@ -476,23 +428,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Override
-    public final boolean canHandleGas() {
-        return gasHandlerManager != null && gasHandlerManager.canHandle();
-    }
-
-    @Override
-    public final boolean canHandleInfusion() {
-        return infusionHandlerManager != null && infusionHandlerManager.canHandle();
-    }
-
-    @Override
-    public final boolean canHandlePigment() {
-        return pigmentHandlerManager != null && pigmentHandlerManager.canHandle();
-    }
-
-    @Override
-    public final boolean canHandleSlurry() {
-        return slurryHandlerManager != null && slurryHandlerManager.canHandle();
+    public boolean canHandleChemicals() {
+        return chemicalHandlerManager != null && chemicalHandlerManager.canHandle();
     }
 
     @Override
@@ -711,7 +648,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         if (!isRemote() && IRadiationManager.INSTANCE.isRadiationEnabled() && shouldDumpRadiation()) {
             //If we are on a server and radiation is enabled dump all gas tanks with radioactive materials
             // Note: we handle clearing radioactive contents later in drop calculation due to when things are written to NBT
-            IRadiationManager.INSTANCE.dumpRadiation(getTileGlobalPos(), getGasTanks(null), false);
+            IRadiationManager.INSTANCE.dumpRadiation(getTileGlobalPos(), getChemicalTanks(null), false);
         }
     }
 
@@ -922,28 +859,10 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             container.track(SyncableEnum.create(RedstoneControl.BY_ID, RedstoneControl.DISABLED, () -> controlType, value -> controlType = value));
         }
         boolean isClient = isRemote();
-        if (canHandleGas() && syncs(ContainerType.GAS)) {
-            List<IGasTank> gasTanks = getGasTanks(null);
-            for (IGasTank gasTank : gasTanks) {
-                container.track(SyncableGasStack.create(gasTank, isClient));
-            }
-        }
-        if (canHandleInfusion() && syncs(ContainerType.INFUSION)) {
-            List<IInfusionTank> infusionTanks = getInfusionTanks(null);
-            for (IInfusionTank infusionTank : infusionTanks) {
-                container.track(SyncableInfusionStack.create(infusionTank, isClient));
-            }
-        }
-        if (canHandlePigment() && syncs(ContainerType.PIGMENT)) {
-            List<IPigmentTank> pigmentTanks = getPigmentTanks(null);
-            for (IPigmentTank pigmentTank : pigmentTanks) {
-                container.track(SyncablePigmentStack.create(pigmentTank, isClient));
-            }
-        }
-        if (canHandleSlurry() && syncs(ContainerType.SLURRY)) {
-            List<ISlurryTank> slurryTanks = getSlurryTanks(null);
-            for (ISlurryTank slurryTank : slurryTanks) {
-                container.track(SyncableSlurryStack.create(slurryTank, isClient));
+        if (canHandleChemicals() && syncs(ContainerType.CHEMICAL)) {
+            List<IChemicalTank> chemicalTanks = getChemicalTanks(null);
+            for (IChemicalTank chemicalTank : chemicalTanks) {
+                container.track(SyncableChemicalStack.create(chemicalTank, isClient));
             }
         }
         if (canHandleFluid() && syncs(ContainerType.FLUID)) {
@@ -1256,15 +1175,9 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
     //End methods ITileContainer
 
-    //Methods for implementing IGasTile
-    @Nullable
-    @Override
-    public GasHandlerManager getGasManager() {
-        return gasHandlerManager;
-    }
-
+    //Methods for implementing IMekanismChemicalHandler
     public boolean shouldDumpRadiation() {
-        return canHandleGas();
+        return canHandleChemicals();
     }
 
     /**
@@ -1272,7 +1185,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
      */
     private boolean updateRadiationScale() {
         if (shouldDumpRadiation()) {
-            float scale = ITileRadioactive.calculateRadiationScale(getGasTanks(null));
+            float scale = ITileRadioactive.calculateRadiationScale(getChemicalTanks(null));
             if (Math.abs(scale - radiationScale) > 0.05F) {
                 radiationScale = scale;
                 return true;
@@ -1286,106 +1199,66 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return IRadiationManager.INSTANCE.isRadiationEnabled() ? radiationScale : 0;
     }
 
-    public void applyGasTanks(BlockEntity.DataComponentInput input, List<IGasTank> tanks, AttachedGases attachedGases) {
-        applyContents(tanks, attachedGases.containers());
+    @Nullable
+    public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener) {
+        return null;
+    }
+
+    @NotNull
+    @Override
+    public List<IChemicalTank> getChemicalTanks(@Nullable Direction side) {
+        return chemicalHandlerManager == null ? Collections.emptyList() : chemicalHandlerManager.getContainers(side);
+    }
+
+    public void applyChemicalTanks(BlockEntity.DataComponentInput input, List<IChemicalTank> tanks, AttachedChemicals attachedChemicals) {
+        List<ChemicalStack> stacks = attachedChemicals.containers();
+        int size = stacks.size();
+        if (size == tanks.size()) {
+            for (int i = 0; i < size; i++) {
+                tanks.get(i).setStackUnchecked(stacks.get(i).copy());
+            }
+        }
     }
 
     @Nullable
-    public AttachedGases collectGasTanks(DataComponentMap.Builder builder, List<IGasTank> tanks) {
+    public AttachedChemicals collectChemicalTanks(DataComponentMap.Builder builder, List<IChemicalTank> tanks) {
         //Skip tiles that have no gas tanks and skip the creative chemical tank
         boolean hasNonEmpty = false;
-        List<GasStack> stacks = new ArrayList<>(tanks.size());
+        List<ChemicalStack> stacks = new ArrayList<>(tanks.size());
         boolean skipRadioactive = IRadiationManager.INSTANCE.isRadiationEnabled() && shouldDumpRadiation();
-        for (IGasTank tank : tanks) {
+        for (IChemicalTank tank : tanks) {
             if (tank.isEmpty() || skipRadioactive && tank.getStack().isRadioactive()) {
                 //If the tank is empty or has a radioactive gas, treat it as empty
-                stacks.add(GasStack.EMPTY);
+                stacks.add(ChemicalStack.EMPTY);
             } else {
                 hasNonEmpty = true;
                 stacks.add(tank.getStack().copy());
             }
         }
-        return hasNonEmpty ? new AttachedGases(stacks) : null;
+        return hasNonEmpty ? new AttachedChemicals(stacks) : null;
     }
 
-    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> void applyContents(List<TANK> tanks,
-          List<STACK> stacks) {
-        int size = stacks.size();
-        if (size == tanks.size()) {
-            for (int i = 0; i < size; i++) {
-                tanks.get(i).setStackUnchecked(ChemicalUtil.copy(stacks.get(i)));
-            }
-        }
+    //TODO - 1.22: remove backcompat
+    @Deprecated(forRemoval = true)
+    public List<IChemicalTank> getLegacyGasTanks() {
+        return getChemicalTanks(null);
     }
 
-    @Nullable
-    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> List<STACK> collectContents(
-          List<TANK> tanks) {
-        boolean hasNonEmpty = false;
-        List<STACK> stacks = new ArrayList<>(tanks.size());
-        for (TANK tank : tanks) {
-            stacks.add(ChemicalUtil.copy(tank.getStack()));
-            if (!tank.isEmpty()) {
-                hasNonEmpty = true;
-            }
-        }
-        return hasNonEmpty ? stacks : null;
-    }
-    //End methods IGasTile
-
-    //Methods for implementing IInfusionTile
-    @Nullable
-    @Override
-    public InfusionHandlerManager getInfusionManager() {
-        return infusionHandlerManager;
+    @Deprecated(forRemoval = true)
+    public List<IChemicalTank> getLegacyInfuseTanks() {
+        return getChemicalTanks(null);
     }
 
-    public void applyInfusionTanks(BlockEntity.DataComponentInput input, List<IInfusionTank> tanks, AttachedInfuseTypes attachedInfuseTypes) {
-        applyContents(tanks, attachedInfuseTypes.containers());
+    @Deprecated(forRemoval = true)
+    public List<IChemicalTank> getLegacyPigmentTanks() {
+        return getChemicalTanks(null);
     }
 
-    @Nullable
-    public AttachedInfuseTypes collectInfusionTanks(DataComponentMap.Builder builder, List<IInfusionTank> tanks) {
-        List<InfusionStack> stacks = collectContents(tanks);
-        return stacks == null ? null : new AttachedInfuseTypes(stacks);
+    @Deprecated(forRemoval = true)
+    public List<IChemicalTank> getLegacySlurryTanks() {
+        return getChemicalTanks(null);
     }
-    //End methods IInfusionTile
-
-    //Methods for implementing IPigmentTile
-    @Nullable
-    @Override
-    public PigmentHandlerManager getPigmentManager() {
-        return pigmentHandlerManager;
-    }
-
-    public void applyPigmentTanks(BlockEntity.DataComponentInput input, List<IPigmentTank> tanks, AttachedPigments attachedPigments) {
-        applyContents(tanks, attachedPigments.containers());
-    }
-
-    @Nullable
-    public AttachedPigments collectPigmentTanks(DataComponentMap.Builder builder, List<IPigmentTank> tanks) {
-        List<PigmentStack> stacks = collectContents(tanks);
-        return stacks == null ? null : new AttachedPigments(stacks);
-    }
-    //End methods IPigmentTile
-
-    //Methods for implementing ISlurryTile
-    @Nullable
-    @Override
-    public SlurryHandlerManager getSlurryManager() {
-        return slurryHandlerManager;
-    }
-
-    public void applySlurryTanks(BlockEntity.DataComponentInput input, List<ISlurryTank> tanks, AttachedSlurries attachedSlurries) {
-        applyContents(tanks, attachedSlurries.containers());
-    }
-
-    @Nullable
-    public AttachedSlurries collectSlurryTanks(DataComponentMap.Builder builder, List<ISlurryTank> tanks) {
-        List<SlurryStack> stacks = collectContents(tanks);
-        return stacks == null ? null : new AttachedSlurries(stacks);
-    }
-    //End methods ISlurryTile
+    //End methods IMekanismChemicalHandler
 
     //Methods for implementing IMekanismFluidHandler
     @Nullable

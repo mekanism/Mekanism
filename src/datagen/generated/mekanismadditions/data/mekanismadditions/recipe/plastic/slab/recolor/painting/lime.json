@@ -2,7 +2,7 @@
   "type": "mekanism:painting",
   "chemical_input": {
     "amount": 64,
-    "pigment": "mekanism:lime"
+    "chemical": "mekanism:lime"
   },
   "item_input": {
     "type": "neoforge:difference",
@@ -17,5 +17,6 @@
   "output": {
     "count": 1,
     "id": "mekanismadditions:lime_plastic_slab"
-  }
+  },
+  "per_tick_usage": false
 }

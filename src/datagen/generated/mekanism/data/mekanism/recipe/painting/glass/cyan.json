@@ -2,7 +2,7 @@
   "type": "mekanism:painting",
   "chemical_input": {
     "amount": 32,
-    "pigment": "mekanism:cyan"
+    "chemical": "mekanism:cyan"
   },
   "item_input": {
     "type": "neoforge:difference",
@@ -17,5 +17,6 @@
   "output": {
     "count": 1,
     "id": "minecraft:cyan_stained_glass"
-  }
+  },
+  "per_tick_usage": false
 }

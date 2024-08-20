@@ -21,29 +21,12 @@ import java.util.function.Function;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.ChemicalType;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.infuse.InfuseType;
-import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.api.chemical.merged.BoxedChemicalStack;
-import mekanism.api.chemical.pigment.Pigment;
-import mekanism.api.chemical.pigment.PigmentStack;
-import mekanism.api.chemical.slurry.Slurry;
-import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.integration.MekanismHooks;
-import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTGasStack;
-import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTInfusionStack;
-import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTPigmentStack;
-import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTSlurryStack;
+import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
-import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
-import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTInfusionStack;
-import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTPigmentStack;
-import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTSlurryStack;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -51,14 +34,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
-import org.jetbrains.annotations.Nullable;
 
 public class CrTUtils {
 
-    public static final Function<GasStack, ICrTGasStack> GAS_CONVERTER = CrTGasStack::new;
-    public static final Function<InfusionStack, ICrTInfusionStack> INFUSION_CONVERTER = CrTInfusionStack::new;
-    public static final Function<PigmentStack, ICrTPigmentStack> PIGMENT_CONVERTER = CrTPigmentStack::new;
-    public static final Function<SlurryStack, ICrTSlurryStack> SLURRY_CONVERTER = CrTSlurryStack::new;
+    public static final Function<ChemicalStack, ICrTChemicalStack> CHEMICAL_CONVERTER = CrTChemicalStack::new;
 
     /**
      * Creates a {@link ResourceLocation} in CraftTweaker's domain from the given path.
@@ -72,63 +51,10 @@ public class CrTUtils {
     }
 
     /**
-     * Helper to create an {@link ICrTGasStack} from a {@link Gas} with a stack size of one mB.
-     */
-    public static ICrTGasStack stackFromGas(Gas gas) {
-        return new CrTGasStack(gas.getStack(1));
-    }
-
-    /**
-     * Helper to create an {@link ICrTInfusionStack} from a {@link InfuseType} with a stack size of one mB.
-     */
-    public static ICrTInfusionStack stackFromInfuseType(InfuseType infuseType) {
-        return new CrTInfusionStack(infuseType.getStack(1));
-    }
-
-    /**
-     * Helper to create an {@link ICrTPigmentStack} from a {@link Pigment} with a stack size of one mB.
-     */
-    public static ICrTPigmentStack stackFromPigment(Pigment pigment) {
-        return new CrTPigmentStack(pigment.getStack(1));
-    }
-
-    /**
-     * Helper to create an {@link ICrTSlurryStack} from a {@link Slurry} with a stack size of one mB.
-     */
-    public static ICrTSlurryStack stackFromSlurry(Slurry slurry) {
-        return new CrTSlurryStack(slurry.getStack(1));
-    }
-
-    /**
-     * Helper method to convert a {@link BoxedChemicalStack} to an {@link ICrTChemicalStack}.
-     *
-     * @return {@link ICrTChemicalStack} representation of the given stack or {@code null} if empty.
-     */
-    @Nullable
-    public static ICrTChemicalStack<?, ?, ?> fromBoxedStack(BoxedChemicalStack stack) {
-        if (stack.isEmpty()) {
-            return null;
-        }
-        return switch (stack.getChemicalType()) {
-            case GAS -> new CrTGasStack((GasStack) stack.getChemicalStack());
-            case INFUSION -> new CrTInfusionStack((InfusionStack) stack.getChemicalStack());
-            case PIGMENT -> new CrTPigmentStack((PigmentStack) stack.getChemicalStack());
-            case SLURRY -> new CrTSlurryStack((SlurryStack) stack.getChemicalStack());
-        };
-    }
-
-    /**
      * Helper method to convert a {@link Chemical} to an {@link ICrTChemicalStack}.
      */
-    @SuppressWarnings("unchecked")
-    public static <CHEMICAL extends Chemical<CHEMICAL>, CRT_STACK extends ICrTChemicalStack<CHEMICAL, ?, CRT_STACK>> CRT_STACK fromChemical(CHEMICAL chemical, int size) {
-        return (CRT_STACK) switch (chemical) {
-            case Gas gas -> new CrTGasStack(gas.getStack(size));
-            case InfuseType infuseType -> new CrTInfusionStack(infuseType.getStack(size));
-            case Pigment pigment -> new CrTPigmentStack(pigment.getStack(size));
-            case Slurry slurry -> new CrTSlurryStack(slurry.getStack(size));
-            default -> throw new IllegalArgumentException("Unknown chemical type");
-        };
+    public static ICrTChemicalStack fromChemical(Chemical chemical, int size) {
+        return new CrTChemicalStack(chemical.getStack(size));
     }
 
     /**
@@ -209,11 +135,11 @@ public class CrTUtils {
     /**
      * Helper method for describing the outputs of a recipe that may have multiple outputs.
      */
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> String describeOutputs(List<STACK> outputs) {
+    public static String describeOutputs(List<ChemicalStack> outputs) {
         if (outputs.isEmpty()) {
             return "";
         }
-        return describeOutputs(outputs, getConverter(outputs.getFirst()));
+        return describeOutputs(outputs, CHEMICAL_CONVERTER);
     }
 
     /**
@@ -276,28 +202,13 @@ public class CrTUtils {
     }
 
     /**
-     * Helper to get a function that converts a chemical stack into the corresponding CraftTweaker chemical stack.
-     */
-    @SuppressWarnings("unchecked")
-    private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, CRT_STACK extends ICrTChemicalStack<CHEMICAL, STACK, CRT_STACK>>
-    Function<STACK, CRT_STACK> getConverter(STACK stack) {
-        return (Function<STACK, CRT_STACK>) switch (ChemicalType.getTypeFor(stack)) {
-            case GAS -> GAS_CONVERTER;
-            case INFUSION -> INFUSION_CONVERTER;
-            case PIGMENT -> PIGMENT_CONVERTER;
-            case SLURRY -> SLURRY_CONVERTER;
-        };
-    }
-
-    /**
      * Helper to convert a list of chemicals to a list of crafttweaker chemicals.
      */
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, CRT_STACK extends ICrTChemicalStack<CHEMICAL, STACK, CRT_STACK>>
-    List<CRT_STACK> convertChemical(List<STACK> elements) {
+    public static List<ICrTChemicalStack> convertChemical(List<ChemicalStack> elements) {
         if (elements.isEmpty()) {
             return Collections.emptyList();
         }
-        return convert(elements, CrTUtils.<CHEMICAL, STACK, CRT_STACK>getConverter(elements.getFirst()));
+        return convert(elements, CHEMICAL_CONVERTER);
     }
 
     /**
@@ -329,31 +240,10 @@ public class CrTUtils {
     }
 
     /**
-     * Helper to get CraftTweaker's gas tag manager.
+     * Helper to get CraftTweaker's chemical tag manager.
      */
-    public static KnownTagManager<Gas> gasTags() {
-        return CraftTweakerTagRegistry.INSTANCE.knownTagManager(MekanismAPI.GAS_REGISTRY_NAME);
-    }
-
-    /**
-     * Helper to get CraftTweaker's infuse type tag manager.
-     */
-    public static KnownTagManager<InfuseType> infuseTypeTags() {
-        return CraftTweakerTagRegistry.INSTANCE.knownTagManager(MekanismAPI.INFUSE_TYPE_REGISTRY_NAME);
-    }
-
-    /**
-     * Helper to get CraftTweaker's pigment tag manager.
-     */
-    public static KnownTagManager<Pigment> pigmentTags() {
-        return CraftTweakerTagRegistry.INSTANCE.knownTagManager(MekanismAPI.PIGMENT_REGISTRY_NAME);
-    }
-
-    /**
-     * Helper to get CraftTweaker's slurry tag manager.
-     */
-    public static KnownTagManager<Slurry> slurryTags() {
-        return CraftTweakerTagRegistry.INSTANCE.knownTagManager(MekanismAPI.SLURRY_REGISTRY_NAME);
+    public static KnownTagManager<Chemical> chemicalTags() {
+        return CraftTweakerTagRegistry.INSTANCE.knownTagManager(MekanismAPI.CHEMICAL_REGISTRY_NAME);
     }
 
     public record UnaryTypePair<TYPE>(TYPE a, TYPE b) {

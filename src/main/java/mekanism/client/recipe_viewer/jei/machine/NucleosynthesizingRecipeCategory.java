@@ -2,26 +2,26 @@ package mekanism.client.recipe_viewer.jei.machine;
 
 import java.util.Collections;
 import java.util.List;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.NucleosynthesizingRecipe;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.bar.GuiDynamicHorizontalRateBar;
 import mekanism.client.gui.element.gauge.GaugeType;
+import mekanism.client.gui.element.gauge.GuiChemicalGauge;
 import mekanism.client.gui.element.gauge.GuiEnergyGauge;
 import mekanism.client.gui.element.gauge.GuiEnergyGauge.IEnergyInfoHandler;
-import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.client.recipe_viewer.jei.HolderRecipeCategory;
-import mekanism.client.recipe_viewer.jei.MekanismJEI;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.lib.Color;
 import mekanism.common.lib.Color.ColorFunction;
 import mekanism.common.tile.component.config.DataType;
+import mekanism.common.tile.machine.TileEntityAntiprotonicNucleosynthesizer;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
@@ -37,7 +37,7 @@ public class NucleosynthesizingRecipeCategory extends HolderRecipeCategory<Nucle
     private final GuiSlot input;
     private final GuiSlot extra;
     private final GuiSlot output;
-    private final GuiGauge<?> gasInput;
+    private final GuiGauge<?> chemicalInput;
 
     public NucleosynthesizingRecipeCategory(IGuiHelper helper, IRecipeViewerRecipeType<NucleosynthesizingRecipe> recipeType) {
         super(helper, recipeType);
@@ -46,7 +46,8 @@ public class NucleosynthesizingRecipeCategory extends HolderRecipeCategory<Nucle
         output = addSlot(SlotType.OUTPUT, 152, 40);
         addSlot(SlotType.POWER, 173, 69).with(SlotOverlay.POWER);
         addElement(new GuiInnerScreen(this, 45, 18, 104, 68));
-        gasInput = addElement(GuiGasGauge.getDummy(GaugeType.SMALL_MED.with(DataType.INPUT), this, 5, 18));
+        GaugeType type = GaugeType.SMALL_MED.with(DataType.INPUT);
+        chemicalInput = addElement(GuiChemicalGauge.getDummy(type, this, 5, 18));
         addElement(new GuiEnergyGauge(new IEnergyInfoHandler() {
             @Override
             public long getEnergy() {
@@ -74,8 +75,13 @@ public class NucleosynthesizingRecipeCategory extends HolderRecipeCategory<Nucle
     public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<NucleosynthesizingRecipe> recipeHolder, @NotNull IFocusGroup focusGroup) {
         NucleosynthesizingRecipe recipe = recipeHolder.value();
         initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getItemInput().getRepresentations());
-        List<@NotNull GasStack> gasInputs = recipe.getChemicalInput().getRepresentations();
-        initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.INPUT, gasInput, gasInputs);
+        List<ChemicalStack> scaledChemicals = recipe.getChemicalInput().getRepresentations();
+        if (recipe.perTickUsage()) {
+            scaledChemicals = scaledChemicals.stream()
+                  .map(chemical -> chemical.copyWithAmount(chemical.getAmount() * TileEntityAntiprotonicNucleosynthesizer.BASE_TICKS_REQUIRED))
+                  .toList();
+        }
+        initChemical(builder, RecipeIngredientRole.INPUT, chemicalInput, scaledChemicals);
         initItem(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
         initItem(builder, RecipeIngredientRole.CATALYST, extra, RecipeViewerUtils.getStacksFor(recipe.getChemicalInput(), true));
     }

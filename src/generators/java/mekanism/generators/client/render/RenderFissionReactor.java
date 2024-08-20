@@ -13,6 +13,7 @@ import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.client.render.data.FluidRenderData;
 import mekanism.client.render.data.RenderData;
 import mekanism.client.render.tileentity.MultiblockTileEntityRenderer;
+import mekanism.common.capabilities.merged.MergedTank.CurrentType;
 import mekanism.generators.common.GeneratorsProfilerConstants;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
 import mekanism.generators.common.content.fission.FissionReactorValidator.FormedAssembly;
@@ -71,11 +72,11 @@ public class RenderFissionReactor extends MultiblockTileEntityRenderer<FissionRe
             }
             profiler.pop();
         }
-        if (!multiblock.fluidCoolantTank.isEmpty()) {
+        if (multiblock.coolantTank.getCurrentType() == CurrentType.FLUID) {
             if (buffer == null) {
                 buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
             }
-            FluidRenderData data = RenderData.Builder.create(multiblock.fluidCoolantTank.getFluid()).of(multiblock).build();
+            FluidRenderData data = RenderData.Builder.create(multiblock.coolantTank.getFluidTank().getFluid()).of(multiblock).build();
             renderObject(data, multiblock.valves, pos, matrix, buffer, overlayLight, multiblock.prevCoolantScale);
         }
         if (!multiblock.heatedCoolantTank.isEmpty()) {

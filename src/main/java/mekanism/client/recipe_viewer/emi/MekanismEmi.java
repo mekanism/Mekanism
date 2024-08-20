@@ -22,40 +22,31 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.infuse.InfuseType;
-import mekanism.api.chemical.pigment.Pigment;
-import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.client.recipe_viewer.RecipeViewerUtils;
-import mekanism.client.recipe_viewer.emi.ChemicalEmiStack.GasEmiStack;
-import mekanism.client.recipe_viewer.emi.ChemicalEmiStack.InfusionEmiStack;
-import mekanism.client.recipe_viewer.emi.ChemicalEmiStack.PigmentEmiStack;
-import mekanism.client.recipe_viewer.emi.ChemicalEmiStack.SlurryEmiStack;
 import mekanism.client.recipe_viewer.emi.recipe.BoilerEmiRecipe;
+import mekanism.client.recipe_viewer.emi.recipe.ChemicalChemicalToChemicalEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.ChemicalCrystallizerEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.ChemicalDissolutionEmiRecipe;
-import mekanism.client.recipe_viewer.emi.recipe.ChemicalInfuserEmiRecipe;
+import mekanism.client.recipe_viewer.emi.recipe.ChemicalToChemicalEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.CombinerEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.ElectrolysisEmiRecipe;
-import mekanism.client.recipe_viewer.emi.recipe.FluidSlurryToSlurryEmiRecipe;
+import mekanism.client.recipe_viewer.emi.recipe.FluidChemicalToChemicalEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.FluidToFluidEmiRecipe;
-import mekanism.client.recipe_viewer.emi.recipe.GasToGasEmiRecipe;
-import mekanism.client.recipe_viewer.emi.recipe.ItemStackGasToItemStackEmiRecipe;
+import mekanism.client.recipe_viewer.emi.recipe.ItemStackChemicalToItemStackEmiRecipe;
+import mekanism.client.recipe_viewer.emi.recipe.ItemStackToChemicalEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.ItemStackToEnergyEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.ItemStackToFluidOptionalItemEmiRecipe;
-import mekanism.client.recipe_viewer.emi.recipe.ItemStackToGasEmiRecipe;
-import mekanism.client.recipe_viewer.emi.recipe.ItemStackToInfuseTypeEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.ItemStackToItemStackEmiRecipe;
-import mekanism.client.recipe_viewer.emi.recipe.ItemStackToPigmentEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.MekanismEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.MetallurgicInfuserEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.NucleosynthesizingEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.PaintingEmiRecipe;
+import mekanism.client.recipe_viewer.emi.recipe.PigmentExtractingEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.PigmentMixerEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.PressurizedReactionEmiRecipe;
 import mekanism.client.recipe_viewer.emi.recipe.RotaryEmiRecipe;
@@ -89,33 +80,19 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.ItemLike;
-import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 @EmiEntrypoint
 public class MekanismEmi implements EmiPlugin {
 
-    @SuppressWarnings("Convert2Diamond")//Can't be detected properly
-    private static final ChemicalEmiIngredientSerializer<Gas, GasEmiStack> GAS_SERIALIZER = new ChemicalEmiIngredientSerializer<Gas, GasEmiStack>(MekanismAPI.GAS_REGISTRY, GasEmiStack::new);
-    private static final EmiRegistryAdapter<Gas> GAS_REGISTRY_ADAPTER = EmiRegistryAdapter.simple(Gas.class, MekanismAPI.GAS_REGISTRY, GasEmiStack::new);
-    @SuppressWarnings("Convert2Diamond")//Can't be detected properly
-    private static final ChemicalEmiIngredientSerializer<InfuseType, InfusionEmiStack> INFUSION_SERIALIZER = new ChemicalEmiIngredientSerializer<InfuseType, InfusionEmiStack>(MekanismAPI.INFUSE_TYPE_REGISTRY, InfusionEmiStack::new);
-    private static final EmiRegistryAdapter<InfuseType> INFUSE_TYPE_REGISTRY_ADAPTER = EmiRegistryAdapter.simple(InfuseType.class, MekanismAPI.INFUSE_TYPE_REGISTRY, InfusionEmiStack::new);
-    @SuppressWarnings("Convert2Diamond")//Can't be detected properly
-    private static final ChemicalEmiIngredientSerializer<Pigment, PigmentEmiStack> PIGMENT_SERIALIZER = new ChemicalEmiIngredientSerializer<Pigment, PigmentEmiStack>(MekanismAPI.PIGMENT_REGISTRY, PigmentEmiStack::new);
-    private static final EmiRegistryAdapter<Pigment> PIGMENT_REGISTRY_ADAPTER = EmiRegistryAdapter.simple(Pigment.class, MekanismAPI.PIGMENT_REGISTRY, PigmentEmiStack::new);
-    @SuppressWarnings("Convert2Diamond")//Can't be detected properly
-    private static final ChemicalEmiIngredientSerializer<Slurry, SlurryEmiStack> SLURRY_SERIALIZER = new ChemicalEmiIngredientSerializer<Slurry, SlurryEmiStack>(MekanismAPI.SLURRY_REGISTRY, SlurryEmiStack::new);
-    private static final EmiRegistryAdapter<Slurry> SLURRY_REGISTRY_ADAPTER = EmiRegistryAdapter.simple(Slurry.class, MekanismAPI.SLURRY_REGISTRY, SlurryEmiStack::new);
+    private static final ChemicalEmiIngredientSerializer CHEMICAL_SERIALIZER = new ChemicalEmiIngredientSerializer();
+    private static final EmiRegistryAdapter<Chemical> CHEMICAL_REGISTRY_ADAPTER = EmiRegistryAdapter.simple(Chemical.class, MekanismAPI.CHEMICAL_REGISTRY, ChemicalEmiStack::new);
 
     private static final Comparison MEKANISM_COMPARISON = Comparison.compareData(emiStack -> {
         Set<Object> representation = new HashSet<>();
         ItemStack stack = emiStack.getItemStack();
-        addChemicalComponent(representation, stack, ContainerType.GAS, Capabilities.GAS.item());
-        addChemicalComponent(representation, stack, ContainerType.INFUSION, Capabilities.INFUSION.item());
-        addChemicalComponent(representation, stack, ContainerType.PIGMENT, Capabilities.PIGMENT.item());
-        addChemicalComponent(representation, stack, ContainerType.SLURRY, Capabilities.SLURRY.item());
+        addChemicalComponent(representation, stack);
         addFluidComponent(representation, stack);
         addEnergyComponent(representation, stack);
         if (!representation.isEmpty()) {
@@ -124,21 +101,20 @@ public class MekanismEmi implements EmiPlugin {
         return null;
     });
 
-    private static void addChemicalComponent(Set<Object> representation, ItemStack stack, ContainerType<?, ?, ? extends IChemicalHandler<?, ?>> containerType,
-          ItemCapability<? extends IChemicalHandler<?, ?>, Void> capability) {
-        IChemicalHandler<?, ?> handler = containerType.createHandlerIfData(stack);
+    private static void addChemicalComponent(Set<Object> representation, ItemStack stack) {
+        IChemicalHandler handler = ContainerType.CHEMICAL.createHandlerIfData(stack);
         if (handler == null) {
-            handler = stack.getCapability(capability);
+            handler = stack.getCapability(Capabilities.CHEMICAL.item());
         }
         if (handler != null) {
-            int tanks = handler.getTanks();
+            int tanks = handler.getChemicalTanks();
             if (tanks == 1) {
-                ChemicalStack<?> chemicalStack = handler.getChemicalInTank(0);
+                ChemicalStack chemicalStack = handler.getChemicalInTank(0);
                 if (!chemicalStack.isEmpty()) {
                     representation.add(chemicalStack.getChemical());
                 }
             } else if (tanks > 1) {
-                List<Chemical<?>> chemicals = new ArrayList<>(tanks);
+                List<Chemical> chemicals = new ArrayList<>(tanks);
                 for (int tank = 0; tank < tanks; tank++) {
                     chemicals.add(handler.getChemicalInTank(tank).getChemical());
                 }
@@ -200,22 +176,13 @@ public class MekanismEmi implements EmiPlugin {
 
     @Override
     public void initialize(EmiInitRegistry registry) {
-        registry.addIngredientSerializer(GasEmiStack.class, GAS_SERIALIZER);
-        registry.addIngredientSerializer(InfusionEmiStack.class, INFUSION_SERIALIZER);
-        registry.addIngredientSerializer(PigmentEmiStack.class, PIGMENT_SERIALIZER);
-        registry.addIngredientSerializer(SlurryEmiStack.class, SLURRY_SERIALIZER);
-        registry.addRegistryAdapter(GAS_REGISTRY_ADAPTER);
-        registry.addRegistryAdapter(INFUSE_TYPE_REGISTRY_ADAPTER);
-        registry.addRegistryAdapter(PIGMENT_REGISTRY_ADAPTER);
-        registry.addRegistryAdapter(SLURRY_REGISTRY_ADAPTER);
+        registry.addIngredientSerializer(ChemicalEmiStack.class, CHEMICAL_SERIALIZER);
+        registry.addRegistryAdapter(CHEMICAL_REGISTRY_ADAPTER);
     }
 
     @Override
     public void register(EmiRegistry registry) {
-        GAS_SERIALIZER.addEmiStacks(registry);
-        INFUSION_SERIALIZER.addEmiStacks(registry);
-        PIGMENT_SERIALIZER.addEmiStacks(registry);
-        SLURRY_SERIALIZER.addEmiStacks(registry);
+        CHEMICAL_SERIALIZER.addEmiStacks(registry);
 
         //Note: We have to add these as generic and then instance check the class so that we can have them be generic across our classes
         registry.addGenericExclusionArea(new EmiExclusionHandler());
@@ -240,9 +207,7 @@ public class MekanismEmi implements EmiPlugin {
         for (Holder<? extends ItemLike> itemProvider : itemProviders) {
             //Handle items
             ItemStack stack = new ItemStack(itemProvider.value());
-            if (Capabilities.STRICT_ENERGY.hasCapability(stack) || Capabilities.GAS.hasCapability(stack) ||
-                Capabilities.INFUSION.hasCapability(stack) || Capabilities.PIGMENT.hasCapability(stack) ||
-                Capabilities.SLURRY.hasCapability(stack) || Capabilities.FLUID.hasCapability(stack)) {
+            if (Capabilities.STRICT_ENERGY.hasCapability(stack) || Capabilities.CHEMICAL.hasCapability(stack) || Capabilities.FLUID.hasCapability(stack)) {
                 registry.setDefaultComparison(stack.getItem(), MEKANISM_COMPARISON);
             }
         }
@@ -251,12 +216,12 @@ public class MekanismEmi implements EmiPlugin {
     private void addCategories(EmiRegistry registry) {
         addCategoryAndRecipes(registry, RecipeViewerRecipeType.CRYSTALLIZING, ChemicalCrystallizerEmiRecipe::new);
         addCategoryAndRecipes(registry, RecipeViewerRecipeType.DISSOLUTION, ChemicalDissolutionEmiRecipe::new);
-        addCategoryAndRecipes(registry, RecipeViewerRecipeType.CHEMICAL_INFUSING, ChemicalInfuserEmiRecipe::new);
-        addCategoryAndRecipes(registry, RecipeViewerRecipeType.WASHING, FluidSlurryToSlurryEmiRecipe::new);
+        addCategoryAndRecipes(registry, RecipeViewerRecipeType.CHEMICAL_INFUSING, ChemicalChemicalToChemicalEmiRecipe::new);
+        addCategoryAndRecipes(registry, RecipeViewerRecipeType.WASHING, FluidChemicalToChemicalEmiRecipe::new);
         addCategoryAndRecipes(registry, RecipeViewerRecipeType.SEPARATING, ElectrolysisEmiRecipe::new);
         addCategoryAndRecipes(registry, RecipeViewerRecipeType.METALLURGIC_INFUSING, MetallurgicInfuserEmiRecipe::new);
         addCategoryAndRecipes(registry, RecipeViewerRecipeType.REACTION, PressurizedReactionEmiRecipe::new);
-        addCategoryAndRecipes(registry, RecipeViewerRecipeType.PIGMENT_EXTRACTING, ItemStackToPigmentEmiRecipe::new);
+        addCategoryAndRecipes(registry, RecipeViewerRecipeType.PIGMENT_EXTRACTING, PigmentExtractingEmiRecipe::new);
         addCategoryAndRecipes(registry, RecipeViewerRecipeType.PIGMENT_MIXING, PigmentMixerEmiRecipe::new);
         addCategoryAndRecipes(registry, RecipeViewerRecipeType.PAINTING, PaintingEmiRecipe::new);
 
@@ -265,8 +230,8 @@ public class MekanismEmi implements EmiPlugin {
         MekanismEmiRecipeCategory decondensentratingCategory = addCategory(registry, RecipeViewerRecipeType.DECONDENSENTRATING);
         for (RecipeHolder<RotaryRecipe> recipeHolder : MekanismRecipeType.ROTARY.getRecipes(registry.getRecipeManager(), null)) {
             RotaryRecipe recipe = recipeHolder.value();
-            if (recipe.hasGasToFluid()) {
-                if (recipe.hasFluidToGas()) {
+            if (recipe.hasChemicalToFluid()) {
+                if (recipe.hasFluidToChemical()) {
                     //Note: If the recipe is bidirectional, we prefix the recipe id so that they don't clash as duplicates
                     // as we return the proper recipe holder regardless
                     registry.addRecipe(new RotaryEmiRecipe(condensentratingCategory, RecipeViewerUtils.synthetic(recipeHolder.id(), "condensentrating"), recipeHolder, true));
@@ -274,23 +239,23 @@ public class MekanismEmi implements EmiPlugin {
                 } else {
                     registry.addRecipe(new RotaryEmiRecipe(condensentratingCategory, recipeHolder.id(), recipeHolder, true));
                 }
-            } else if (recipe.hasFluidToGas()) {
+            } else if (recipe.hasFluidToChemical()) {
                 registry.addRecipe(new RotaryEmiRecipe(decondensentratingCategory, recipeHolder.id(), recipeHolder, false));
             }
         }
 
-        addCategoryAndRecipes(registry, RecipeViewerRecipeType.OXIDIZING, (category, recipeHolder) -> new ItemStackToGasEmiRecipe(category, recipeHolder, TileEntityChemicalOxidizer.BASE_TICKS_REQUIRED));
+        addCategoryAndRecipes(registry, RecipeViewerRecipeType.OXIDIZING, (category, recipeHolder) -> new ItemStackToChemicalEmiRecipe<>(category, recipeHolder, TileEntityChemicalOxidizer.BASE_TICKS_REQUIRED));
 
         addCategoryAndRecipes(registry, RecipeViewerRecipeType.NUTRITIONAL_LIQUIFICATION, (category, id, recipe) -> new ItemStackToFluidOptionalItemEmiRecipe(category, id, recipe, TileEntityNutritionalLiquifier.BASE_TICKS_REQUIRED), RecipeViewerUtils.getLiquificationRecipes());
 
-        addCategoryAndRecipes(registry, RecipeViewerRecipeType.ACTIVATING, GasToGasEmiRecipe::new);
-        addCategoryAndRecipes(registry, RecipeViewerRecipeType.CENTRIFUGING, GasToGasEmiRecipe::new);
+        addCategoryAndRecipes(registry, RecipeViewerRecipeType.ACTIVATING, ChemicalToChemicalEmiRecipe::new);
+        addCategoryAndRecipes(registry, RecipeViewerRecipeType.CENTRIFUGING, ChemicalToChemicalEmiRecipe::new);
 
         addCategoryAndRecipes(registry, RecipeViewerRecipeType.COMBINING, CombinerEmiRecipe::new);
 
-        addCategoryAndRecipes(registry, RecipeViewerRecipeType.PURIFYING, ItemStackGasToItemStackEmiRecipe::new);
-        addCategoryAndRecipes(registry, RecipeViewerRecipeType.COMPRESSING, ItemStackGasToItemStackEmiRecipe::new);
-        addCategoryAndRecipes(registry, RecipeViewerRecipeType.INJECTING, ItemStackGasToItemStackEmiRecipe::new);
+        addCategoryAndRecipes(registry, RecipeViewerRecipeType.PURIFYING, ItemStackChemicalToItemStackEmiRecipe::new);
+        addCategoryAndRecipes(registry, RecipeViewerRecipeType.COMPRESSING, ItemStackChemicalToItemStackEmiRecipe::new);
+        addCategoryAndRecipes(registry, RecipeViewerRecipeType.INJECTING, ItemStackChemicalToItemStackEmiRecipe::new);
 
         addCategoryAndRecipes(registry, RecipeViewerRecipeType.NUCLEOSYNTHESIZING, NucleosynthesizingEmiRecipe::new);
 
@@ -307,8 +272,7 @@ public class MekanismEmi implements EmiPlugin {
 
         //Conversion recipes
         addCategoryAndRecipes(registry, RecipeViewerRecipeType.ENERGY_CONVERSION, ItemStackToEnergyEmiRecipe::new);
-        addCategoryAndRecipes(registry, RecipeViewerRecipeType.GAS_CONVERSION, (category, recipeHolder) -> new ItemStackToGasEmiRecipe(category, recipeHolder, 0));
-        addCategoryAndRecipes(registry, RecipeViewerRecipeType.INFUSION_CONVERSION, ItemStackToInfuseTypeEmiRecipe::new);
+        addCategoryAndRecipes(registry, RecipeViewerRecipeType.CHEMICAL_CONVERSION, (category, recipeHolder) -> new ItemStackToChemicalEmiRecipe<>(category, recipeHolder, 0));
 
         registry.addRecipe(new EmiInfoRecipe(List.of(EmiStack.of(MekanismFluids.HEAVY_WATER.getFluid())), List.of(
               MekanismLang.RECIPE_VIEWER_INFO_HEAVY_WATER.translate(MekanismConfig.general.pumpHeavyWaterAmount.get())
