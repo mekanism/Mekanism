@@ -1,16 +1,16 @@
 {
   "type": "mekanism:metallurgic_infusing",
   "chemical_input": {
-    "amount": 10,
+    "amount": 60,
     "tag": "mekanism:redstone"
   },
   "item_input": {
     "count": 1,
-    "tag": "c:ingots/copper"
+    "tag": "c:circuits/basic"
   },
   "output": {
     "count": 1,
-    "id": "mekanism:alloy_infused"
+    "id": "mekanism:advanced_control_circuit"
   },
   "per_tick_usage": false
 }
