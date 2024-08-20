@@ -8,6 +8,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.util.FluidUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -95,10 +96,15 @@ public class ItemCanteen extends Item implements ICustomCreativeTabContents {
 
     @NotNull
     @Override
-    public InteractionResultHolder<ItemStack> use(@NotNull Level worldIn, Player playerIn, @NotNull InteractionHand handIn) {
-        if (!playerIn.isCreative() && playerIn.canEat(false) && getFluid(playerIn.getItemInHand(handIn)).getAmount() >= 50) {
-            playerIn.startUsingItem(handIn);
+    public InteractionResultHolder<ItemStack> use(@NotNull Level worldIn, Player player, @NotNull InteractionHand hand) {
+        ItemStack item = player.getItemInHand(hand);
+        if (!MekanismUtils.isPlayingMode(player)) {
+            return InteractionResultHolder.pass(item);
         }
-        return InteractionResultHolder.success(playerIn.getItemInHand(handIn));
+        if (player.canEat(false) && getFluid(item).getAmount() >= 50) {
+            player.startUsingItem(hand);
+            return InteractionResultHolder.consume(item);
+        }
+        return InteractionResultHolder.fail(item);
     }
 }
