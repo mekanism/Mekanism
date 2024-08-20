@@ -177,7 +177,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         for (DataType dataType : info.getSupportedDataTypes()) {
             if (dataType.canOutput()) {
                 ISlotInfo slotInfo = info.getSlotInfo(dataType);
-                if (slotInfo != null) {
+                if (slotInfo != null && !slotInfo.isEmpty()) {//Only bother getting caps if the containers are not empty
                     Set<Direction> outputSides = getSidesForData(info, facing, dataType);
                     if (!outputSides.isEmpty()) {
                         if (outputData == null) {
