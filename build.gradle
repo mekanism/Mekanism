@@ -44,7 +44,7 @@ idea {
 }
 
 ext {
-    secondaryModules = ['additions', 'defense', 'generators', 'tools']
+    secondaryModules = ['additions', 'generators', 'tools']
     extraTypes = ['datagen']
 }
 
@@ -444,10 +444,10 @@ tasks.named('jar', Jar).configure { Jar jar ->
 }
 
 tasks.named('sourcesJar', Jar).configure { Jar jar ->
-    dependsOn(classes, apiClasses, additionsClasses, defenseClasses, generatorsClasses, toolsClasses)
+    dependsOn(classes, apiClasses, additionsClasses, generatorsClasses, toolsClasses)
     jar.duplicatesStrategy(DuplicatesStrategy.FAIL)
     //Note: Already contains main source set's sources by default
-    jar.from(sourceSets.api.allJava, sourceSets.additions.allJava, sourceSets.defense.allJava, sourceSets.generators.allJava, sourceSets.tools.allJava)
+    jar.from(sourceSets.api.allJava, sourceSets.additions.allJava, sourceSets.generators.allJava, sourceSets.tools.allJava)
     jar.manifest.attributes(getManifestAttributes('Mekanism'))
 }
 
@@ -465,12 +465,11 @@ def secondaryJar(SourceSet sourceSet, String title) {
 
 def apiJar = secondaryJar(sourceSets.api, '')
 def additionsJar = secondaryJar(sourceSets.additions, 'MekanismAdditions')
-def defenseJar = secondaryJar(sourceSets.defense, 'MekanismDefense')
 def generatorsJar = secondaryJar(sourceSets.generators, 'MekanismGenerators')
 def toolsJar = secondaryJar(sourceSets.tools, 'MekanismTools')
 
 def mergeModuleResources = tasks.register('mergeModuleResources', MergeModuleResources, {
-    dependsOn('classes', 'apiClasses', 'additionsClasses', 'defenseClasses', 'generatorsClasses', 'toolsClasses')
+    dependsOn('classes', 'apiClasses', 'additionsClasses', 'generatorsClasses', 'toolsClasses')
     mustRunAfter('clean')
     //Note: Get the resources from the output of process resources, so that any expands that need to happen we know have already happened
     resources = tasks.named(sourceSets.main.processResourcesTaskName).get().outputs.files
@@ -518,7 +517,6 @@ artifacts {
     archives jar
     archives additionsJar
     archives generatorsJar
-    archives defenseJar
     archives toolsJar
     archives allJar
     archives sourcesJar
@@ -529,7 +527,7 @@ tasks.register('optimizePng', OptimizePng) {
     //Ensure the logo is minimized (we add this file to each jar)
     inputFiles.from(file("${projectDir}/logo.png"))
     //Minimize any PNGs in the source sets
-    def sourceSets = [sourceSets.main, sourceSets.additions, sourceSets.defense, sourceSets.generators, sourceSets.tools]
+    def sourceSets = [sourceSets.main, sourceSets.additions, sourceSets.generators, sourceSets.tools]
     for (def sourceSet : sourceSets) {
         for (def dir : sourceSet.resources.srcDirs) {
             inputFiles.from(fileTree(dir: dir, includes: pngPatterns))
@@ -645,7 +643,6 @@ if (System.getenv('CURSEFORGE_KEY') != null || project.hasProperty('curseforgeKe
 
         //Secondary modules/projects
         def additionsCfUpload = uploadSecondaryCurseProject(task, 345425, changelog, additionsJar)
-        //def defenseCfUpload = uploadSecondaryCurseProject(task, 376939, changelog, defenseJar)
         def generatorsCfUpload = uploadSecondaryCurseProject(task, 268566, changelog, generatorsJar)
         def toolsCfUpload = uploadSecondaryCurseProject(task, 268567, changelog, toolsJar)
 
@@ -684,12 +681,11 @@ UploadArtifact uploadSecondaryCurseProject(TaskPublishCurseForge task, long proj
 if (System.getenv('MODRINTH_TOKEN') != null || project.hasProperty('modrinthToken')) {
     logger.lifecycle('Enabling Modrinth config')
     def additionsModrinth = createSecondaryModrinthUpload('additions', 'a6F3uASn', additionsJar)
-    //def defenseModrinth = createSecondaryModrinthUpload('defense', '', defenseJar)
     def generatorsModrinth = createSecondaryModrinthUpload('generators', 'OFVYKsAk', generatorsJar)
     def toolsModrinth = createSecondaryModrinthUpload('tools', 'tqQpq1lt', toolsJar)
     tasks.named('modrinth').configure {
         dependsOn(jar, apiJar, outputChangelog)
-        finalizedBy(additionsModrinth, /*defenseModrinth,*/ generatorsModrinth, toolsModrinth)
+        finalizedBy(additionsModrinth, generatorsModrinth, toolsModrinth)
         notCompatibleWithConfigurationCache('Not yet compatible')//TODO: Remove when possible
     }
 
