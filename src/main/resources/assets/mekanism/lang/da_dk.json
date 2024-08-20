@@ -321,8 +321,5 @@
   "radial.mekanism.blasting_power.high": "Høj",
   "radial.mekanism.blasting_power.low": "Lav",
   "radial.mekanism.blasting_power.med": "Mellem",
-  "radial.mekanism.blasting_power.off": "Fra",
-  "transmitter.mekanism.infuse_types": "- Infusionstype (%1$s)",
-  "transmitter.mekanism.pigments": "- Pigmenter (%1$s)",
-  "transmitter.mekanism.slurries": "- Slam (%1$s)"
+  "radial.mekanism.blasting_power.off": "Fra"
 }
