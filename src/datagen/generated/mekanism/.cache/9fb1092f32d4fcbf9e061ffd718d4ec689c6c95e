@@ -1,4 +1,4 @@
-// Recipes	2024-08-19T22:47:25.602549	Recipes
+// Recipes	2024-08-20T10:06:51.1191648	Recipes
 0fc9e539372429b3e5df0dc0595978c4fc45d201 data/mekanism/recipe/antiprotonic_nucleosynthesizer.json
 6d20b08ca1cc993d4c39a761361dce522fe45a7a data/mekanism/recipe/atomic_disassembler.json
 00928ea6e8b57d257c773343c0dc0d337c9d4f5f data/mekanism/recipe/bin/advanced.json
@@ -411,9 +411,9 @@ db8d5fead33bf8f287f001e80185b2fd79789ea9 data/mekanism/recipe/compat/farmersdeli
 978e93ebc4736e97f49675ef33acf9f700f17631 data/mekanism/recipe/control_circuit/advanced.json
 e92604f830d1f2ffda4194894502e3ddbb0fe11d data/mekanism/recipe/control_circuit/basic.json
 c1820aeebce95092c3dee0d3bd0f825e9d18be46 data/mekanism/recipe/control_circuit/elite.json
-6923fda26b2b101525d03bf8b6fa33fb29b8fa5d data/mekanism/recipe/control_circuit/infused_advanced.json
-d8af2becfcb3fad474f3be23ebb8e18260dea145 data/mekanism/recipe/control_circuit/infused_elite.json
-711b8f2c50c0dbc5edeec06a9418ce93a882f85f data/mekanism/recipe/control_circuit/infused_ultimate.json
+7f80015e3df088ac21982d422d9503c6e24a8d7e data/mekanism/recipe/control_circuit/infused_advanced.json
+c178327fc61473e095566f7adf06416921d585fd data/mekanism/recipe/control_circuit/infused_elite.json
+8376cd3ee1c035230d6974b489ae0741765a82a5 data/mekanism/recipe/control_circuit/infused_ultimate.json
 78ad6052118d53e0244e7fbc31dfc825176398b4 data/mekanism/recipe/control_circuit/ultimate.json
 e24bc3bf593ef401ec48ec119bfade472d9ccff7 data/mekanism/recipe/crafting_formula.json
 706f403b5c9c307dd34dbd4653938464aff67073 data/mekanism/recipe/crusher.json
@@ -931,7 +931,7 @@ c6cd2fd37aab4730caf0cbee9ad07b09e0591c47 data/mekanism/recipe/mekasuit_pants.jso
 2613866da1635b99ce8ca3e0867e1dc020897467 data/mekanism/recipe/meka_tool.json
 214b255b24034be3e122e947d3752cecfad5007e data/mekanism/recipe/metallurgic_infuser.json
 a59d363194ef19c58220fe5612c5ba6282d4aaf8 data/mekanism/recipe/metallurgic_infusing/alloy/atomic.json
-ec75c9214b2da5b0189b383df5fee162d4cb006a data/mekanism/recipe/metallurgic_infusing/alloy/infused.json
+be4c82d370800106b9d5e0fe6ea288b21f4b16ce data/mekanism/recipe/metallurgic_infusing/alloy/infused.json
 cf5b8b045d12d4d26e72919e31ccd1fa1d7d6a21 data/mekanism/recipe/metallurgic_infusing/alloy/reinforced.json
 cbf1630a24eb79f6bb20a351ad24f6f4f83ed918 data/mekanism/recipe/metallurgic_infusing/blackstone_to_gilded_blackstone.json
 fdd238dbf1763906fa5acc49a9741accda4133a9 data/mekanism/recipe/metallurgic_infusing/clay_to_slime_ball.json
@@ -1499,6 +1499,7 @@ f6c74c72645f5c0f52339f248de9ca4bb885acf4 data/mekanism/recipe/processing/iron/du
 05ecec991e637309f5399a71c87fa8ea7fee0df9 data/mekanism/recipe/processing/iron/dust/from_raw_block.json
 23fc78ef49824d71ffd31b53e76f4f8453739f5f data/mekanism/recipe/processing/iron/dust/from_raw_ore.json
 de9f3119a77fcc8292774f874449d5967a33ca0c data/mekanism/recipe/processing/iron/enriched.json
+47162cc704fb2d375a8ec21ffa4ad4c7bcb94dd4 data/mekanism/recipe/processing/iron/enriched_dust.json
 ef64ccbbfcedfcceed60a44c318409859f2c8fd8 data/mekanism/recipe/processing/iron/ingot/from_dust_blasting.json
 82da095e293a2777c0660ebe5aaefbeb83422056 data/mekanism/recipe/processing/iron/ingot/from_dust_smelting.json
 90fd8a292979389eabfcae09db96fc22034eb1c9 data/mekanism/recipe/processing/iron/ore/deepslate_from_raw.json

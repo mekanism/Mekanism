@@ -11,5 +11,6 @@
   "output": {
     "count": 1,
     "id": "mekanism:advanced_control_circuit"
-  }
+  },
+  "per_tick_usage": false
 }

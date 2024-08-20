@@ -666,7 +666,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismAdvancements.STEEL_INGOT, "Industrial Revolution", "Infuse Iron with Carbon and repeat");
         add(MekanismAdvancements.STEEL_CASING, "The Perfect Foundation", "Used in even the most advanced machines");
 
-        add(MekanismAdvancements.INFUSED_ALLOY, "The Alloy That Started it All", "Infuse Iron with Redstone");
+        add(MekanismAdvancements.INFUSED_ALLOY, "The Alloy That Started it All", "Infuse Copper with Redstone");
         add(MekanismAdvancements.REINFORCED_ALLOY, "Make it Stronger", "Diamonds make everything better!");
         add(MekanismAdvancements.ATOMIC_ALLOY, "Top Tier Alloy", "Create one of the strongest alloys in existence");
 
