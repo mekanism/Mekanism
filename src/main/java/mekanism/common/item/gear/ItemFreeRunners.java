@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
 import mekanism.api.IIncrementalEnum;
@@ -24,8 +23,6 @@ import mekanism.common.registries.MekanismArmorMaterials;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.Holder;
-import net.minecraft.core.Holder.Reference;
-import net.minecraft.core.HolderLookup.RegistryLookup;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -45,9 +42,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import org.jetbrains.annotations.NotNull;
 
@@ -95,35 +89,6 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
     @Override
     public int getBarColor(@NotNull ItemStack stack) {
         return MekanismConfig.client.energyColor.get();
-    }
-
-    private int getFakeEnchantmentLevel(@NotNull ItemStack stack, @NotNull Holder<Enchantment> enchantment) {
-        if (enchantment.is(Enchantments.SOUL_SPEED) && getMode(stack) == FreeRunnerMode.NORMAL) {
-            return 1;
-        }
-        return 0;
-    }
-
-    @Override
-    public int getEnchantmentLevel(@NotNull ItemStack stack, @NotNull Holder<Enchantment> enchantment) {
-        return Math.max(getFakeEnchantmentLevel(stack, enchantment), super.getEnchantmentLevel(stack, enchantment));
-    }
-
-    @NotNull
-    @Override
-    public ItemEnchantments getAllEnchantments(@NotNull ItemStack stack, @NotNull RegistryLookup<Enchantment> lookup) {
-        ItemEnchantments enchantments = super.getAllEnchantments(stack, lookup);
-        Optional<Reference<Enchantment>> enchantment = lookup.get(Enchantments.SOUL_SPEED);
-        if (enchantment.isPresent()) {
-            Holder<Enchantment> soulSpeed = enchantment.get();
-            int fakeLevel = getFakeEnchantmentLevel(stack, soulSpeed);
-            if (enchantments.getLevel(soulSpeed) < fakeLevel) {
-                ItemEnchantments.Mutable mutable = new ItemEnchantments.Mutable(enchantments);
-                mutable.set(soulSpeed, fakeLevel);
-                return mutable.toImmutable();
-            }
-        }
-        return enchantments;
     }
 
     @Override
