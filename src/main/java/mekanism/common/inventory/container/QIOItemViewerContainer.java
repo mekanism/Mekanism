@@ -591,7 +591,10 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         SIZE(MekanismLang.LIST_SORT_COUNT, MekanismLang.LIST_SORT_COUNT_DESC, Comparator.comparingLong(IScrollableSlot::count).thenComparing(IScrollableSlot::getDisplayName),
               Comparator.comparingLong(IScrollableSlot::count).reversed().thenComparing(IScrollableSlot::getDisplayName)),
         MOD(MekanismLang.LIST_SORT_MOD, MekanismLang.LIST_SORT_MOD_DESC, Comparator.comparing(IScrollableSlot::getModID).thenComparing(IScrollableSlot::getDisplayName),
-              Comparator.comparing(IScrollableSlot::getModID).reversed().thenComparing(IScrollableSlot::getDisplayName));
+              Comparator.comparing(IScrollableSlot::getModID).reversed().thenComparing(IScrollableSlot::getDisplayName)),
+        REGISTRY_NAME(MekanismLang.LIST_SORT_REGISTRY_NAME, MekanismLang.LIST_SORT_REGISTRY_NAME_DESC,
+              Comparator.comparing(IScrollableSlot::getRegistryName, ResourceLocation::compareNamespaced).thenComparingLong(IScrollableSlot::count),
+              Comparator.comparing(IScrollableSlot::getRegistryName, ResourceLocation::compareNamespaced).reversed().thenComparingLong(IScrollableSlot::count));
 
         private final ILangEntry name;
         private final ILangEntry tooltip;

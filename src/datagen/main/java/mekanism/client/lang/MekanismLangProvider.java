@@ -893,9 +893,11 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.LIST_SORT_COUNT, "Count");
         add(MekanismLang.LIST_SORT_NAME, "Name");
         add(MekanismLang.LIST_SORT_MOD, "Mod");
+        add(MekanismLang.LIST_SORT_REGISTRY_NAME, "Item ID");
         add(MekanismLang.LIST_SORT_NAME_DESC, "Sort items by name.");
         add(MekanismLang.LIST_SORT_COUNT_DESC, "Sort items by count.");
         add(MekanismLang.LIST_SORT_MOD_DESC, "Sort items by mod.");
+        add(MekanismLang.LIST_SORT_REGISTRY_NAME_DESC, "Sort items by registry name.");
         add(MekanismLang.LIST_SORT_ASCENDING_DESC, "Sort items in ascending order.");
         add(MekanismLang.LIST_SORT_DESCENDING_DESC, "Sort items in descending order.");
         add(MekanismLang.LIST_SEARCH, "Search:");
