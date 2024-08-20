@@ -761,6 +761,12 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         for (ITileComponent component : components) {
             component.applyImplicitComponents(input);
         }
+        if (supportsUpgrades()) {
+            //Recalculate upgrades before setting types so that we don't clamp the stored energy
+            for (Upgrade upgrade : getSupportedUpgrade()) {
+                recalculateUpgrades(upgrade);
+            }
+        }
 
         for (ContainerType<?, ?, ?> type : ContainerType.TYPES) {
             if (persists(type)) {
@@ -776,12 +782,6 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
         if (supportsRedstone()) {
             setControlType(input.getOrDefault(MekanismDataComponents.REDSTONE_CONTROL, getControlType()));
-        }
-        if (supportsUpgrades()) {
-            //Recalculate upgrades after applying components
-            for (Upgrade upgrade : getSupportedUpgrade()) {
-                recalculateUpgrades(upgrade);
-            }
         }
     }
 
