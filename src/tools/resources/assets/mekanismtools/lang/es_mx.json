@@ -183,5 +183,6 @@
   "item.mekanismtools.steel_sword": "Espada de acero",
   "item.mekanismtools.stone_paxel": "Picapalacha de piedra",
   "item.mekanismtools.wood_paxel": "Picapalacha de madera",
+  "tag.item.c.tools.paxel": "Paxels",
   "tooltip.mekanismtools.hp": "HP: %1$s"
 }
