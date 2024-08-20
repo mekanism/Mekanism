@@ -4495,5 +4495,5 @@ methods:
     returns:
       java_type: boolean
       type: boolean
-version: 10.6.7
+version: 10.6.9
 ---
