@@ -14,6 +14,7 @@ import java.util.function.ToLongFunction;
 import mekanism.api.Action;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.IContentsListener;
+import mekanism.api.MekanismItemAbilities;
 import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.chemical.ChemicalStack;
@@ -97,6 +98,7 @@ import mekanism.common.lib.frequency.TileComponentFrequency;
 import mekanism.common.lib.security.BlockSecurityUtils;
 import mekanism.common.lib.security.ISecurityTile;
 import mekanism.common.registries.MekanismDataComponents;
+import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.component.ITileComponent;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentSecurity;
@@ -138,6 +140,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
@@ -515,26 +518,57 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         level.updateNeighbourForOutputSignal(worldPosition, getBlockType());
     }
 
-    public WrenchResult tryWrench(BlockState state, Player player, ItemStack stack) {
-        if (MekanismUtils.canUseAsWrench(stack)) {
-            if (hasSecurity() && !IBlockSecurityUtils.INSTANCE.canAccessOrDisplayError(player, getWorldNN(), worldPosition, this)) {
-                return WrenchResult.NO_SECURITY;
+    protected WrenchResult tryWrenchDismantle(BlockState state, Player player, ItemStack stack) {
+        if (player.isShiftKeyDown()) {
+            if (IRadiationManager.INSTANCE.isRadiationEnabled() && getRadiationScale() > 0) {
+                //Don't allow dismantling radioactive blocks
+                return WrenchResult.RADIOACTIVE;
             }
-            if (player.isShiftKeyDown()) {
-                if (IRadiationManager.INSTANCE.isRadiationEnabled() && getRadiationScale() > 0) {
-                    //Don't allow dismantling radioactive blocks
-                    return WrenchResult.RADIOACTIVE;
-                }
-                WorldUtils.dismantleBlock(state, getLevel(), worldPosition, this, player, stack);
-                return WrenchResult.DISMANTLED;
-            }
-            //Special ITileDirectional handling
-            if (isDirectional() && Attribute.getOrThrow(getBlockType(), AttributeStateFacing.class).canRotate()) {
-                setFacing(getDirection().getClockWise());
-            }
-            return WrenchResult.SUCCESS;
+            WorldUtils.dismantleBlock(state, getLevel(), worldPosition, this, player, stack);
+            return WrenchResult.DISMANTLED;
         }
         return WrenchResult.PASS;
+    }
+
+    protected WrenchResult tryWrenchRotate(BlockState state, Player player, ItemStack stack) {
+        //Special ITileDirectional handling
+        if (isDirectional()) {
+            AttributeStateFacing attribute = Attribute.getOrThrow(getBlockType(), AttributeStateFacing.class);
+            if (attribute.canRotate()) {
+                setFacing(MekanismUtils.rotate(getDirection(), attribute.getFacingProperty() == BlockStateProperties.FACING));
+                return WrenchResult.SUCCESS;
+            }
+        }
+        return WrenchResult.PASS;
+    }
+
+    public WrenchResult tryWrench(BlockState state, Player player, ItemStack stack) {
+        if (stack.isEmpty()) {
+            return WrenchResult.PASS;
+        }
+        WrenchResult result = WrenchResult.PASS;
+        boolean canRotate = stack.canPerformAction(MekanismItemAbilities.WRENCH_ROTATE);
+        boolean canDismantle = stack.canPerformAction(MekanismItemAbilities.WRENCH_DISMANTLE);
+        if (!canRotate && !canDismantle) {
+            if (stack.canPerformAction(MekanismItemAbilities.WRENCH_EMPTY) || stack.canPerformAction(MekanismItemAbilities.WRENCH_CONFIGURE)) {
+                //The stack provides some wrench actions, it is likely intentional that it can't rotate or dismantle blocks
+                return result;
+            }
+            //If the item doesn't explicitly declare the ability to rotate or dismantle,
+            // then mark that it can do both if it is in the configurator tag
+            canRotate = canDismantle = stack.is(MekanismTags.Items.CONFIGURATORS);
+        }
+        if (canRotate || canDismantle) {
+            if (hasSecurity() && !IBlockSecurityUtils.INSTANCE.canAccessOrDisplayError(player, getWorldNN(), worldPosition, this)) {
+                return WrenchResult.NO_SECURITY;
+            } else if (canDismantle) {
+                result = tryWrenchDismantle(state, player, stack);
+            }
+            if (result == WrenchResult.PASS && canRotate) {
+                result = tryWrenchRotate(state, player, stack);
+            }
+        }
+        return result;
     }
 
     public InteractionResult openGui(Player player) {

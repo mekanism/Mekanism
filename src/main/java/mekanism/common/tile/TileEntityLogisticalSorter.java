@@ -3,8 +3,8 @@ package mekanism.common.tile;
 import java.util.Collection;
 import java.util.List;
 import mekanism.api.IContentsListener;
-import mekanism.api.SerializationConstants;
 import mekanism.api.RelativeSide;
+import mekanism.api.SerializationConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.attachments.containers.ContainerType;
@@ -30,7 +30,10 @@ import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
+import mekanism.common.util.EnumUtils;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.TransporterUtils;
@@ -43,6 +46,7 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -291,6 +295,23 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
     @Override
     public boolean supportsMode(RedstoneControl mode) {
         return true;
+    }
+
+    @Override
+    protected WrenchResult tryWrenchRotate(BlockState state, Player player, ItemStack stack) {
+        Direction change = MekanismUtils.rotate(getDirection(), true);
+        if (!hasConnectedInventory()) {
+            for (Direction dir : EnumUtils.DIRECTIONS) {
+                Direction opposite = dir.getOpposite();
+                if (InventoryUtils.isItemHandler(level, worldPosition.relative(dir), opposite)) {
+                    change = opposite;
+                    break;
+                }
+            }
+        }
+        setFacing(change);
+        level.updateNeighborsAt(worldPosition, state.getBlock());
+        return WrenchResult.SUCCESS;
     }
 
     @Override

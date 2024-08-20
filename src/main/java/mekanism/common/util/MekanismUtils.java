@@ -20,6 +20,7 @@ import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPITags;
+import mekanism.api.MekanismItemAbilities;
 import mekanism.api.Upgrade;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
@@ -34,8 +35,6 @@ import mekanism.common.attachments.FrequencyAware;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeFactoryType;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.item.ItemConfigurator;
-import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.frequency.IFrequencyItem;
 import mekanism.common.registries.MekanismDataComponents;
@@ -204,6 +203,20 @@ public final class MekanismUtils {
      */
     public static Direction getRight(Direction orientation) {
         return orientation.getCounterClockWise();
+    }
+
+    public static Direction rotate(Direction orientation, boolean supportY) {
+        if (supportY) {
+            return switch (orientation) {
+                case UP -> Direction.NORTH;
+                case DOWN -> Direction.SOUTH;
+                case NORTH -> Direction.EAST;
+                case SOUTH -> Direction.WEST;
+                case WEST -> Direction.UP;
+                case EAST -> Direction.DOWN;
+            };
+        }
+        return orientation.getClockWise();
     }
 
     public static double fractionUpgrades(IUpgradeTile tile, Upgrade type) {
@@ -530,15 +543,21 @@ public final class MekanismUtils {
     }
 
     /**
-     * Gets the wrench if the item is an IMekWrench, or a generic implementation if the item is in the forge wrenches tag
+     * Checks if the stack can be used as a wrench for dismantling purposes
      */
     public static boolean canUseAsWrench(ItemStack stack) {
         if (stack.isEmpty()) {
             return false;
-        } else if (stack.getItem() instanceof ItemConfigurator configurator) {
-            return configurator.getMode(stack) == ConfiguratorMode.WRENCH;
+        } else if (stack.canPerformAction(MekanismItemAbilities.WRENCH_DISMANTLE)) {
+            return true;
+        } else if (stack.is(MekanismTags.Items.CONFIGURATORS)) {
+            //If it is in the tag, validate it isn't exposing one of the other wrench action types, as then it probably wants to act
+            // as only that type instead of as any type
+            return !stack.canPerformAction(MekanismItemAbilities.WRENCH_ROTATE) &&
+                   !stack.canPerformAction(MekanismItemAbilities.WRENCH_EMPTY) &&
+                   !stack.canPerformAction(MekanismItemAbilities.WRENCH_CONFIGURE);
         }
-        return stack.is(MekanismTags.Items.CONFIGURATORS);
+        return false;
     }
 
     @NotNull
