@@ -1222,14 +1222,14 @@
       }
     }
   ],
-  "Compressing/Injecting/Purifying Factory": [
+  "Compressing/Infusing/Injecting/Purifying Factory": [
     {
-      "description": "Empty the contents of the gas tank into the environment",
+      "description": "Empty the contents of the chemical tank into the environment",
       "methodName": "dumpChemical",
       "requires_public_security": true
     },
     {
-      "description": "Get the contents of the gas tank.",
+      "description": "Get the contents of the chemical tank.",
       "methodName": "getChemical",
       "returns": {
         "type": "Table (ChemicalStack)",
@@ -1237,7 +1237,7 @@
       }
     },
     {
-      "description": "Get the capacity of the gas tank.",
+      "description": "Get the capacity of the chemical tank.",
       "methodName": "getChemicalCapacity",
       "returns": {
         "type": "Number (long)",
@@ -1245,7 +1245,7 @@
       }
     },
     {
-      "description": "Get the filled percentage of the gas tank.",
+      "description": "Get the filled percentage of the chemical tank.",
       "methodName": "getChemicalFilledPercentage",
       "returns": {
         "type": "Number (double)",
@@ -1261,7 +1261,7 @@
       }
     },
     {
-      "description": "Get the amount needed to fill the gas tank.",
+      "description": "Get the amount needed to fill the chemical tank.",
       "methodName": "getChemicalNeeded",
       "returns": {
         "type": "Number (long)",
@@ -4750,53 +4750,6 @@
       "returns": {
         "type": "Table (ItemStack)",
         "java_type": "net.minecraft.world.item.ItemStack"
-      }
-    }
-  ],
-  "Metallurgic Infuser Factory": [
-    {
-      "description": "Empty the contents of the infusion buffer into the environment",
-      "methodName": "dumpInfuseType",
-      "requires_public_security": true
-    },
-    {
-      "description": "Get the contents of the infusion buffer.",
-      "methodName": "getInfuseType",
-      "returns": {
-        "type": "Table (ChemicalStack)",
-        "java_type": "mekanism.api.chemical.ChemicalStack"
-      }
-    },
-    {
-      "description": "Get the capacity of the infusion buffer.",
-      "methodName": "getInfuseTypeCapacity",
-      "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
-      }
-    },
-    {
-      "description": "Get the filled percentage of the infusion buffer.",
-      "methodName": "getInfuseTypeFilledPercentage",
-      "returns": {
-        "type": "Number (double)",
-        "java_type": "double"
-      }
-    },
-    {
-      "description": "Get the contents of the infusion extra input slot.",
-      "methodName": "getInfuseTypeItem",
-      "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
-      }
-    },
-    {
-      "description": "Get the amount needed to fill the infusion buffer.",
-      "methodName": "getInfuseTypeNeeded",
-      "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
       }
     }
   ],

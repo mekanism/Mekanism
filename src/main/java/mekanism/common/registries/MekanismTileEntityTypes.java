@@ -45,9 +45,8 @@ import mekanism.common.tile.base.CapabilityTileEntity;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.factory.TileEntityCombiningFactory;
 import mekanism.common.tile.factory.TileEntityFactory;
-import mekanism.common.tile.factory.TileEntityItemStackGasToItemStackFactory;
+import mekanism.common.tile.factory.TileEntityItemStackChemicalToItemStackFactory;
 import mekanism.common.tile.factory.TileEntityItemStackToItemStackFactory;
-import mekanism.common.tile.factory.TileEntityMetallurgicInfuserFactory;
 import mekanism.common.tile.factory.TileEntitySawingFactory;
 import mekanism.common.tile.laser.TileEntityLaser;
 import mekanism.common.tile.laser.TileEntityLaserAmplifier;
@@ -132,12 +131,12 @@ public class MekanismTileEntityTypes {
     static {
         for (FactoryTier tier : EnumUtils.FACTORY_TIERS) {
             registerFactory(tier, FactoryType.COMBINING, TileEntityCombiningFactory::new);
-            registerFactory(tier, FactoryType.COMPRESSING, TileEntityItemStackGasToItemStackFactory::new);
+            registerFactory(tier, FactoryType.COMPRESSING, TileEntityItemStackChemicalToItemStackFactory::new);
             registerFactory(tier, FactoryType.CRUSHING, TileEntityItemStackToItemStackFactory::new);
             registerFactory(tier, FactoryType.ENRICHING, TileEntityItemStackToItemStackFactory::new);
-            registerFactory(tier, FactoryType.INFUSING, TileEntityMetallurgicInfuserFactory::new);
-            registerFactory(tier, FactoryType.INJECTING, TileEntityItemStackGasToItemStackFactory::new);
-            registerFactory(tier, FactoryType.PURIFYING, TileEntityItemStackGasToItemStackFactory::new);
+            registerFactory(tier, FactoryType.INFUSING, TileEntityItemStackChemicalToItemStackFactory::new);
+            registerFactory(tier, FactoryType.INJECTING, TileEntityItemStackChemicalToItemStackFactory::new);
+            registerFactory(tier, FactoryType.PURIFYING, TileEntityItemStackChemicalToItemStackFactory::new);
             registerFactory(tier, FactoryType.SAWING, TileEntitySawingFactory::new);
             registerFactory(tier, FactoryType.SMELTING, TileEntityItemStackToItemStackFactory::new);
         }

@@ -58,6 +58,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+//TODO: See what classes we can deduplicate by making this a parent class of them
 public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgressMachine<ItemStackChemicalToItemStackRecipe> implements
       ItemChemicalRecipeLookupHandler<ItemStackChemicalToItemStackRecipe>, ConstantUsageRecipeLookupHandler {
 

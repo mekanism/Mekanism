@@ -45,6 +45,7 @@ import mekanism.common.recipe.lookup.IRecipeLookupHandler.ConstantUsageRecipeLoo
 import mekanism.common.recipe.lookup.cache.DoubleInputRecipeCache.CheckRecipeType;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.ItemChemical;
 import mekanism.common.tile.interfaces.IHasDumpButton;
+import mekanism.common.tile.machine.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.upgrade.AdvancedMachineUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
@@ -60,8 +61,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-//Compressing, injecting, purifying
-public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToItemFactory<ItemStackChemicalToItemStackRecipe> implements IHasDumpButton,
+//Compressing, injecting, purifying, infusing
+public class TileEntityItemStackChemicalToItemStackFactory extends TileEntityItemToItemFactory<ItemStackChemicalToItemStackRecipe> implements IHasDumpButton,
       ItemChemicalRecipeLookupHandler<ItemStackChemicalToItemStackRecipe>, ConstantUsageRecipeLookupHandler {
 
     protected static final CheckRecipeType<ItemStack, ChemicalStack, ItemStackChemicalToItemStackRecipe, ItemStack> OUTPUT_CHECK =
@@ -78,33 +79,33 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
           RecipeError.NOT_ENOUGH_SECONDARY_INPUT
     );
 
-    private final ILongInputHandler<@NotNull ChemicalStack> gasInputHandler;
+    private final ILongInputHandler<@NotNull ChemicalStack> chemicalInputHandler;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getChemicalItem", docPlaceholder = "chemical item (extra) slot")
     ChemicalInventorySlot extraSlot;
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getChemical", "getChemicalCapacity", "getChemicalNeeded",
-                                                                                        "getChemicalFilledPercentage"}, docPlaceholder = "gas tank")
-    IChemicalTank gasTank;
-    private final ChemicalUsageMultiplier gasUsageMultiplier;
+                                                                                        "getChemicalFilledPercentage"}, docPlaceholder = "chemical tank")
+    IChemicalTank chemicalTank;
+    private final ChemicalUsageMultiplier chemicalUsageMultiplier;
     private final long[] usedSoFar;
-    private double gasPerTickMeanMultiplier = 1;
+    private double chemicalPerTickMeanMultiplier = 1;
     private long baseTotalUsage;
 
-    public TileEntityItemStackGasToItemStackFactory(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
+    public TileEntityItemStackChemicalToItemStackFactory(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state, TRACKED_ERROR_TYPES, GLOBAL_ERROR_TYPES);
-        gasInputHandler = InputHelper.getConstantInputHandler(gasTank);
+        chemicalInputHandler = InputHelper.getConstantInputHandler(chemicalTank);
         if (allowExtractingChemical()) {
-            configComponent.setupIOConfig(TransmissionType.CHEMICAL, gasTank, RelativeSide.RIGHT).setCanEject(false);
+            configComponent.setupIOConfig(TransmissionType.CHEMICAL, chemicalTank, RelativeSide.RIGHT).setCanEject(false);
         } else {
-            configComponent.setupInputConfig(TransmissionType.CHEMICAL, gasTank);
+            configComponent.setupInputConfig(TransmissionType.CHEMICAL, chemicalTank);
         }
         baseTotalUsage = BASE_TICKS_REQUIRED;
         usedSoFar = new long[tier.processes];
         if (useStatisticalMechanics()) {
             //Note: Statistical mechanics works best by just using the mean gas usage we want to target
             // rather than adjusting the mean each time to try and reach a given target
-            gasUsageMultiplier = (usedSoFar, operatingTicks) -> StatUtils.inversePoisson(gasPerTickMeanMultiplier);
+            chemicalUsageMultiplier = (usedSoFar, operatingTicks) -> StatUtils.inversePoisson(chemicalPerTickMeanMultiplier);
         } else {
-            gasUsageMultiplier = ChemicalUsageMultiplier.constantUse(() -> baseTotalUsage, this::getTicksRequired);
+            chemicalUsageMultiplier = ChemicalUsageMultiplier.constantUse(() -> baseTotalUsage, this::getTicksRequired);
         }
     }
 
@@ -115,14 +116,13 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
         //If the tank's contents change make sure to call our extended content listener that also marks sorting as being needed
         // as maybe the valid recipes have changed, and we need to sort again and have all recipes know they may need to be rechecked
         // if they are not still valid
+        long capacity = Attribute.getOrThrow(blockProvider, AttributeFactoryType.class).getFactoryType() == FactoryType.INFUSING ? TileEntityMetallurgicInfuser.MAX_INFUSE : TileEntityAdvancedElectricMachine.MAX_GAS;
         if (allowExtractingChemical()) {
-            gasTank = BasicChemicalTank.create(TileEntityAdvancedElectricMachine.MAX_GAS * tier.processes, this::containsRecipeB,
-                  markAllMonitorsChanged(listener));
+            chemicalTank = BasicChemicalTank.create(capacity * tier.processes, this::containsRecipeB, markAllMonitorsChanged(listener));
         } else {
-            gasTank = BasicChemicalTank.input(TileEntityAdvancedElectricMachine.MAX_GAS * tier.processes, this::containsRecipeB,
-                  markAllMonitorsChanged(listener));
+            chemicalTank = BasicChemicalTank.input(capacity * tier.processes, this::containsRecipeB, markAllMonitorsChanged(listener));
         }
-        builder.addTank(gasTank);
+        builder.addTank(chemicalTank);
         return builder.build();
     }
 
@@ -130,11 +130,11 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     protected void addSlots(InventorySlotHelper builder, IContentsListener listener, IContentsListener updateSortingListener) {
         super.addSlots(builder, listener, updateSortingListener);
         //Note: We care about the gas tank not the slot when it comes to recipes and updating sorting
-        builder.addSlot(extraSlot = ChemicalInventorySlot.fillOrConvert(gasTank, this::getLevel, listener, 7, 57));
+        builder.addSlot(extraSlot = ChemicalInventorySlot.fillOrConvert(chemicalTank, this::getLevel, listener, 7, 57));
     }
 
-    public IChemicalTank getGasTank() {
-        return gasTank;
+    public IChemicalTank getChemicalTank() {
+        return chemicalTank;
     }
 
     @Nullable
@@ -145,7 +145,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
 
     @Override
     public boolean isItemValidForSlot(@NotNull ItemStack stack) {
-        return containsRecipeAB(stack, gasTank.getStack());
+        return containsRecipeAB(stack, chemicalTank.getStack());
     }
 
     @Override
@@ -162,7 +162,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     protected boolean isCachedRecipeValid(@Nullable CachedRecipe<ItemStackChemicalToItemStackRecipe> cached, @NotNull ItemStack stack) {
         if (cached != null) {
             ItemStackChemicalToItemStackRecipe cachedRecipe = cached.getRecipe();
-            return cachedRecipe.getItemInput().testType(stack) && (gasTank.isEmpty() || cachedRecipe.getChemicalInput().testType(gasTank.getType()));
+            return cachedRecipe.getItemInput().testType(stack) && (chemicalTank.isEmpty() || cachedRecipe.getChemicalInput().testType(chemicalTank.getType()));
         }
         return false;
     }
@@ -171,7 +171,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     protected ItemStackChemicalToItemStackRecipe findRecipe(int process, @NotNull ItemStack fallbackInput, @NotNull IInventorySlot outputSlot,
           @Nullable IInventorySlot secondaryOutputSlot) {
         //TODO: Give it something that is not empty when we don't have a stored gas stack for getting the output?
-        return getRecipeType().getInputCache().findTypeBasedRecipe(level, fallbackInput, gasTank.getStack(), outputSlot.getStack(), OUTPUT_CHECK);
+        return getRecipeType().getInputCache().findTypeBasedRecipe(level, fallbackInput, chemicalTank.getStack(), outputSlot.getStack(), OUTPUT_CHECK);
     }
 
     @Override
@@ -183,26 +183,29 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     @Override
     public IMekanismRecipeTypeProvider<SingleItemChemicalRecipeInput, ItemStackChemicalToItemStackRecipe, ItemChemical<ItemStackChemicalToItemStackRecipe>> getRecipeType() {
         return switch (type) {
+            case COMPRESSING -> MekanismRecipeType.COMPRESSING;
+            case INFUSING -> MekanismRecipeType.METALLURGIC_INFUSING;
             case INJECTING -> MekanismRecipeType.INJECTING;
             case PURIFYING -> MekanismRecipeType.PURIFYING;
-            //TODO: Make it so that it throws an error if it is not one of the three types
-            default -> MekanismRecipeType.COMPRESSING;
+            default -> throw new IllegalStateException("Unhandled factory type");
         };
     }
 
     @Override
     public IRecipeViewerRecipeType<ItemStackChemicalToItemStackRecipe> recipeViewerType() {
         return switch (type) {
+            case COMPRESSING -> RecipeViewerRecipeType.COMPRESSING;
+            case INFUSING -> RecipeViewerRecipeType.METALLURGIC_INFUSING;
             case INJECTING -> RecipeViewerRecipeType.INJECTING;
             case PURIFYING -> RecipeViewerRecipeType.PURIFYING;
-            //TODO: Make it so that it throws an error if it is not one of the three types
-            default -> RecipeViewerRecipeType.COMPRESSING;
+            default -> throw new IllegalStateException("Unhandled factory type");
         };
     }
 
     private boolean allowExtractingChemical() {
         //Note: We can't use type directly as when this is being used for creating the chemical tank the type field hasn't been set yet
-        return Attribute.getOrThrow(blockProvider, AttributeFactoryType.class).getFactoryType() == FactoryType.COMPRESSING;
+        FactoryType factoryType = Attribute.getOrThrow(blockProvider, AttributeFactoryType.class).getFactoryType();
+        return factoryType == FactoryType.COMPRESSING || factoryType == FactoryType.INFUSING;
     }
 
     private boolean useStatisticalMechanics() {
@@ -212,7 +215,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     @Nullable
     @Override
     public ItemStackChemicalToItemStackRecipe getRecipe(int cacheIndex) {
-        return findFirstRecipe(inputHandlers[cacheIndex], gasInputHandler);
+        return findFirstRecipe(inputHandlers[cacheIndex], chemicalInputHandler);
     }
 
     @NotNull
@@ -220,10 +223,10 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     public CachedRecipe<ItemStackChemicalToItemStackRecipe> createNewCachedRecipe(@NotNull ItemStackChemicalToItemStackRecipe recipe, int cacheIndex) {
         CachedRecipe<ItemStackChemicalToItemStackRecipe> cachedRecipe;
         if (recipe.perTickUsage()) {
-            cachedRecipe = ItemStackConstantChemicalToObjectCachedRecipe.toItem(recipe, recheckAllRecipeErrors[cacheIndex], inputHandlers[cacheIndex], gasInputHandler,
-                  gasUsageMultiplier, used -> usedSoFar[cacheIndex] = used, outputHandlers[cacheIndex]);
+            cachedRecipe = ItemStackConstantChemicalToObjectCachedRecipe.toItem(recipe, recheckAllRecipeErrors[cacheIndex], inputHandlers[cacheIndex], chemicalInputHandler,
+                  chemicalUsageMultiplier, used -> usedSoFar[cacheIndex] = used, outputHandlers[cacheIndex]);
         } else {
-            cachedRecipe = TwoInputCachedRecipe.itemChemicalToItem(recipe, recheckAllRecipeErrors[cacheIndex], inputHandlers[cacheIndex], gasInputHandler, outputHandlers[cacheIndex]);
+            cachedRecipe = TwoInputCachedRecipe.itemChemicalToItem(recipe, recheckAllRecipeErrors[cacheIndex], inputHandlers[cacheIndex], chemicalInputHandler, outputHandlers[cacheIndex]);
         }
         return cachedRecipe
               .setErrorsChanged(errors -> errorTracker.onErrorsChanged(errors, cacheIndex))
@@ -272,7 +275,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
         super.recalculateUpgrades(upgrade);
         if (upgrade == Upgrade.SPEED || upgrade == Upgrade.CHEMICAL && supportsUpgrade(Upgrade.CHEMICAL)) {
             if (useStatisticalMechanics()) {
-                gasPerTickMeanMultiplier = MekanismUtils.getGasPerTickMeanMultiplier(this);
+                chemicalPerTickMeanMultiplier = MekanismUtils.getGasPerTickMeanMultiplier(this);
             } else {
                 baseTotalUsage = MekanismUtils.getBaseUsage(this, BASE_TICKS_REQUIRED);
             }
@@ -285,7 +288,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
             //Generic factory upgrade data handling
             super.parseUpgradeData(provider, upgradeData);
             //Copy the contents using NBT so that if it is not actually valid due to a reload we don't crash
-            gasTank.deserializeNBT(provider, data.stored.serializeNBT(provider));
+            chemicalTank.deserializeNBT(provider, data.stored.serializeNBT(provider));
             extraSlot.deserializeNBT(provider, data.chemicalSlot.serializeNBT(provider));
             System.arraycopy(data.usedSoFar, 0, usedSoFar, 0, data.usedSoFar.length);
         } else {
@@ -296,17 +299,17 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     @NotNull
     @Override
     public AdvancedMachineUpgradeData getUpgradeData(HolderLookup.Provider provider) {
-        return new AdvancedMachineUpgradeData(provider, redstone, getControlType(), getEnergyContainer(), progress, usedSoFar, gasTank, extraSlot, energySlot,
+        return new AdvancedMachineUpgradeData(provider, redstone, getControlType(), getEnergyContainer(), progress, usedSoFar, chemicalTank, extraSlot, energySlot,
               inputSlots, outputSlots, isSorting(), getComponents());
     }
 
     @Override
     public void dump() {
-        gasTank.setEmpty();
+        chemicalTank.setEmpty();
     }
 
     //Methods relating to IComputerTile
-    @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Empty the contents of the gas tank into the environment")
+    @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Empty the contents of the chemical tank into the environment")
     void dumpChemical() throws ComputerException {
         validateSecurityIsPublic();
         dump();
