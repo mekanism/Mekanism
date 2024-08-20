@@ -23,3 +23,28 @@ license="MIT"
     type="required"
     versionRange="${forge_version}"
     side="BOTH"
+
+[[dependencies.mekanism]]
+    modId="appmek"
+    type="incompatible"
+    reason="Requires an update to support changes to Mekanism's Chemical API"
+    versionRange="[,1.6.0-alpha.2]"
+    side="BOTH"
+[[dependencies.mekanism]]
+    modId="enderio_conduits_modded"
+    type="incompatible"
+    reason="Requires an update to support changes to Mekanism's Chemical API"
+    versionRange="[,6.0.24.351-nightly+d8261275]"
+    side="BOTH"
+[[dependencies.mekanism]]
+    modId="laserio"
+    type="incompatible"
+    reason="Requires an update to support changes to Mekanism's Chemical API"
+    versionRange="[,1.9.9]"
+    side="BOTH"
+[[dependencies.mekanism]]
+    modId="jaopca"
+    type="incompatible"
+    reason="Requires an update to support changes to Mekanism's Chemical API"
+    versionRange="[,5.0.1.2]"
+    side="BOTH"
