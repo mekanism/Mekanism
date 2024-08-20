@@ -24,7 +24,7 @@ public class ChemicalEmiIngredientSerializer implements EmiStackSerializer<Chemi
 
     @Override
     public String getType() {
-        return "mekanism:chemical";
+        return "mekanism_chemical";
     }
 
     void addEmiStacks(EmiRegistry emiRegistry) {

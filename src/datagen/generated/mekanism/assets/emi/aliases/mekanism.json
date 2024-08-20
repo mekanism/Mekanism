@@ -3,7 +3,7 @@
     {
       "stacks": [
         "fluid:mekanism:ethene",
-        "mekanism:chemical:mekanism:ethene"
+        "mekanism_chemical:mekanism:ethene"
       ],
       "text": "alias.mekanism.ethene.ethylene"
     },
