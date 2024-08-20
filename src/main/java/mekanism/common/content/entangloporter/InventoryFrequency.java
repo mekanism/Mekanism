@@ -82,10 +82,10 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
           Codec.DOUBLE.fieldOf(SerializationConstants.HEAT_CAPACITY).forGetter(freq -> freq.storedHeat.getHeatCapacity()),
 
           //TODO - 1.22: remove backcompat and change Chemical field to non-optional
-          ChemicalStack.OPTIONAL_CODEC.optionalFieldOf(SerializationConstants.GAS).forGetter(freq -> Optional.empty()),
-          ChemicalStack.OPTIONAL_CODEC.optionalFieldOf(SerializationConstants.INFUSE_TYPE).forGetter(freq -> Optional.empty()),
-          ChemicalStack.OPTIONAL_CODEC.optionalFieldOf(SerializationConstants.PIGMENT).forGetter(freq -> Optional.empty()),
-          ChemicalStack.OPTIONAL_CODEC.optionalFieldOf(SerializationConstants.SLURRY).forGetter(freq -> Optional.empty())
+          ChemicalStack.OPTIONAL_CODEC.optionalFieldOf("gas").forGetter(freq -> Optional.empty()),
+          ChemicalStack.OPTIONAL_CODEC.optionalFieldOf("infuse_type").forGetter(freq -> Optional.empty()),
+          ChemicalStack.OPTIONAL_CODEC.optionalFieldOf("pigment").forGetter(freq -> Optional.empty()),
+          ChemicalStack.OPTIONAL_CODEC.optionalFieldOf("slurry").forGetter(freq -> Optional.empty())
     ).apply(instance, (name, owner, securityMode, energy, fluid, chemical, item, heat, heatCapacity, legacyGas, legacyInfuse, legacyPigment, legacySlurry) -> {
         InventoryFrequency frequency = new InventoryFrequency(name, owner.orElse(null), securityMode);
         frequency.storedEnergy.setEnergy(energy);

@@ -257,9 +257,9 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         NBTUtils.setFloatIfPresent(tag, SerializationConstants.SCALE_ALT_3, scale -> prevWasteScale = scale);
         NBTUtils.setIntIfPresent(tag, SerializationConstants.VOLUME, this::setVolume);
         NBTUtils.setFluidStackIfPresent(provider, tag, SerializationConstants.FLUID, coolantTank.getFluidTank()::setStack);
-        NBTUtils.setChemicalStackIfPresent(provider, tag, SerializationConstants.GAS, fuelTank::setStack);
-        NBTUtils.setChemicalStackIfPresent(provider, tag, SerializationConstants.GAS_STORED_ALT, heatedCoolantTank::setStack);
-        NBTUtils.setChemicalStackIfPresent(provider, tag, SerializationConstants.GAS_STORED_ALT_2, wasteTank::setStack);
+        NBTUtils.setChemicalStackIfPresent(provider, tag, SerializationConstants.CHEMICAL, fuelTank::setStack);
+        NBTUtils.setChemicalStackIfPresent(provider, tag, SerializationConstants.CHEMICAL_STORED_ALT, heatedCoolantTank::setStack);
+        NBTUtils.setChemicalStackIfPresent(provider, tag, SerializationConstants.CHEMICAL_STORED_ALT_2, wasteTank::setStack);
         readValves(tag);
         assemblies.clear();
         if (tag.contains(SerializationConstants.ASSEMBLIES, Tag.TAG_LIST)) {
@@ -282,9 +282,9 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         tag.putFloat(SerializationConstants.SCALE_ALT_3, prevWasteScale);
         tag.putInt(SerializationConstants.VOLUME, getVolume());
         tag.put(SerializationConstants.FLUID, coolantTank.getFluidTank().getFluid().saveOptional(provider));
-        tag.put(SerializationConstants.GAS, fuelTank.getStack().saveOptional(provider));
-        tag.put(SerializationConstants.GAS_STORED_ALT, heatedCoolantTank.getStack().saveOptional(provider));
-        tag.put(SerializationConstants.GAS_STORED_ALT_2, wasteTank.getStack().saveOptional(provider));
+        tag.put(SerializationConstants.CHEMICAL, fuelTank.getStack().saveOptional(provider));
+        tag.put(SerializationConstants.CHEMICAL_STORED_ALT, heatedCoolantTank.getStack().saveOptional(provider));
+        tag.put(SerializationConstants.CHEMICAL_STORED_ALT_2, wasteTank.getStack().saveOptional(provider));
         writeValves(tag);
         ListTag list = new ListTag();
         for (FormedAssembly assembly : assemblies) {

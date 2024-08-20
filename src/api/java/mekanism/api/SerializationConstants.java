@@ -39,15 +39,10 @@ public final class SerializationConstants {
     public static final String INGREDIENT = "ingredient";
     public static final String INGREDIENTS = "ingredients";
     public static final String ITEM = "item";
-    public static final String GAS = "gas";
-    public static final String INFUSE_TYPE = "infuse_type";
-    public static final String PIGMENT = "pigment";
-    public static final String SLURRY = "slurry";
     public static final String SUBTRACTED = "subtracted";
     public static final String TAG = "tag";
 
     //Recipes
-    public static final String CHEMICAL_TYPE = "chemical_type";
     public static final String TYPE = "type";
     public static final String ENERGY_MULTIPLIER = "energy_multiplier";
     public static final String ENERGY_REQUIRED = "energy_required";
@@ -181,8 +176,14 @@ public final class SerializationConstants {
     public static final String FOLLOW = "follow";
     public static final String FREQUENCY_LIST = "freq_list";
     public static final String FUZZY = "fuzzy";
-    public static final String GAS_STORED_ALT = "gas_1";
-    public static final String GAS_STORED_ALT_2 = "gas_2";
+    /**
+     * @since 10.6.10
+     */
+    public static final String CHEMICAL_STORED_ALT = "chemical_1";
+    /**
+     * @since 10.6.10
+     */
+    public static final String CHEMICAL_STORED_ALT_2 = "chemical_2";
     public static final String GAS_TANKS = "gas_tanks";
     public static final String GUI = "gui";
     public static final String HANDLE_SOUND = "handle_sound";
