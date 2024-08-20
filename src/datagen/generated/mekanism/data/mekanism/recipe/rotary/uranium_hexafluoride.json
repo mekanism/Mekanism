@@ -1,18 +1,18 @@
 {
   "type": "mekanism:rotary",
+  "chemical_input": {
+    "amount": 1,
+    "chemical": "mekanism:uranium_hexafluoride"
+  },
+  "chemical_output": {
+    "amount": 1,
+    "id": "mekanism:uranium_hexafluoride"
+  },
   "fluid_input": {
     "amount": 1,
     "tag": "c:uranium_hexafluoride"
   },
   "fluid_output": {
-    "amount": 1,
-    "id": "mekanism:uranium_hexafluoride"
-  },
-  "gas_input": {
-    "amount": 1,
-    "chemical": "mekanism:uranium_hexafluoride"
-  },
-  "gas_output": {
     "amount": 1,
     "id": "mekanism:uranium_hexafluoride"
   }

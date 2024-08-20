@@ -5,11 +5,11 @@
     "amount": 2,
     "tag": "c:heavy_water"
   },
-  "left_gas_output": {
+  "left_chemical_output": {
     "amount": 2,
     "id": "mekanismgenerators:deuterium"
   },
-  "right_gas_output": {
+  "right_chemical_output": {
     "amount": 1,
     "id": "mekanism:oxygen"
   }

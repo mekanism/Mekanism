@@ -1,18 +1,18 @@
 {
   "type": "mekanism:rotary",
+  "chemical_input": {
+    "amount": 1,
+    "chemical": "mekanism:superheated_sodium"
+  },
+  "chemical_output": {
+    "amount": 1,
+    "id": "mekanism:superheated_sodium"
+  },
   "fluid_input": {
     "amount": 1,
     "tag": "c:superheated_sodium"
   },
   "fluid_output": {
-    "amount": 1,
-    "id": "mekanism:superheated_sodium"
-  },
-  "gas_input": {
-    "amount": 1,
-    "chemical": "mekanism:superheated_sodium"
-  },
-  "gas_output": {
     "amount": 1,
     "id": "mekanism:superheated_sodium"
   }

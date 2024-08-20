@@ -1,18 +1,18 @@
 {
   "type": "mekanism:rotary",
+  "chemical_input": {
+    "amount": 1,
+    "chemical": "mekanism:brine"
+  },
+  "chemical_output": {
+    "amount": 1,
+    "id": "mekanism:brine"
+  },
   "fluid_input": {
     "amount": 1,
     "tag": "c:brine"
   },
   "fluid_output": {
-    "amount": 1,
-    "id": "mekanism:brine"
-  },
-  "gas_input": {
-    "amount": 1,
-    "chemical": "mekanism:brine"
-  },
-  "gas_output": {
     "amount": 1,
     "id": "mekanism:brine"
   }

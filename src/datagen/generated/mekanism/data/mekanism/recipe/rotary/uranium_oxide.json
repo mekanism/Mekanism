@@ -1,18 +1,18 @@
 {
   "type": "mekanism:rotary",
+  "chemical_input": {
+    "amount": 1,
+    "chemical": "mekanism:uranium_oxide"
+  },
+  "chemical_output": {
+    "amount": 1,
+    "id": "mekanism:uranium_oxide"
+  },
   "fluid_input": {
     "amount": 1,
     "tag": "c:uranium_oxide"
   },
   "fluid_output": {
-    "amount": 1,
-    "id": "mekanism:uranium_oxide"
-  },
-  "gas_input": {
-    "amount": 1,
-    "chemical": "mekanism:uranium_oxide"
-  },
-  "gas_output": {
     "amount": 1,
     "id": "mekanism:uranium_oxide"
   }

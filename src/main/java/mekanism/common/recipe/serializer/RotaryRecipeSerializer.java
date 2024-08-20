@@ -31,8 +31,8 @@ public class RotaryRecipeSerializer implements RecipeSerializer<BasicRotaryRecip
     private final RecordCodecBuilder<BasicRotaryRecipe, FluidStack> FLUID_OUTPUT_FIELD = FluidStack.CODEC.fieldOf(SerializationConstants.FLUID_OUTPUT).forGetter(BasicRotaryRecipe::getFluidOutputRaw);
     private final RecordCodecBuilder<BasicRotaryRecipe, ChemicalStackIngredient> CHEMICAL_INPUT_FIELD = ChemicalStackIngredientCreator.INSTANCE.codec().validate(
           ingredient -> ingredient == null ? DataResult.error(() -> "Chemical input may not be empty") : DataResult.success(ingredient)
-    ).fieldOf(SerializationConstants.GAS_INPUT).forGetter(BasicRotaryRecipe::getChemicalInputRaw);
-    private final RecordCodecBuilder<BasicRotaryRecipe, ChemicalStack> CHEMICAL_OUTPUT_FIELD = ChemicalStack.CODEC.fieldOf(SerializationConstants.GAS_OUTPUT).forGetter(BasicRotaryRecipe::getChemicalOutputRaw);
+    ).fieldOf(SerializationConstants.CHEMICAL_INPUT).forGetter(BasicRotaryRecipe::getChemicalInputRaw);
+    private final RecordCodecBuilder<BasicRotaryRecipe, ChemicalStack> CHEMICAL_OUTPUT_FIELD = ChemicalStack.CODEC.fieldOf(SerializationConstants.CHEMICAL_OUTPUT).forGetter(BasicRotaryRecipe::getChemicalOutputRaw);
 
     private final StreamCodec<RegistryFriendlyByteBuf, BasicRotaryRecipe> streamCodec;
     private final MapCodec<BasicRotaryRecipe> codec;

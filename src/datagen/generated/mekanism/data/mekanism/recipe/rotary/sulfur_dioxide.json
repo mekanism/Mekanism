@@ -1,18 +1,18 @@
 {
   "type": "mekanism:rotary",
+  "chemical_input": {
+    "amount": 1,
+    "chemical": "mekanism:sulfur_dioxide"
+  },
+  "chemical_output": {
+    "amount": 1,
+    "id": "mekanism:sulfur_dioxide"
+  },
   "fluid_input": {
     "amount": 1,
     "tag": "c:sulfur_dioxide"
   },
   "fluid_output": {
-    "amount": 1,
-    "id": "mekanism:sulfur_dioxide"
-  },
-  "gas_input": {
-    "amount": 1,
-    "chemical": "mekanism:sulfur_dioxide"
-  },
-  "gas_output": {
     "amount": 1,
     "id": "mekanism:sulfur_dioxide"
   }

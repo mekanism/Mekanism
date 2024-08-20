@@ -1,6 +1,6 @@
 {
   "type": "mekanism:dissolution",
-  "gas_input": {
+  "chemical_input": {
     "amount": 1,
     "chemical": "mekanism:sulfuric_acid"
   },

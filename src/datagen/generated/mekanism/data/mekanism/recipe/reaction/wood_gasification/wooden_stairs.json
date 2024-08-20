@@ -1,17 +1,17 @@
 {
   "type": "mekanism:reaction",
+  "chemical_input": {
+    "amount": 15,
+    "chemical": "mekanism:oxygen"
+  },
+  "chemical_output": {
+    "amount": 15,
+    "id": "mekanism:hydrogen"
+  },
   "duration": 22,
   "fluid_input": {
     "amount": 15,
     "tag": "minecraft:water"
-  },
-  "gas_input": {
-    "amount": 15,
-    "chemical": "mekanism:oxygen"
-  },
-  "gas_output": {
-    "amount": 15,
-    "id": "mekanism:hydrogen"
   },
   "item_input": {
     "type": "neoforge:compound",

@@ -1,18 +1,18 @@
 {
   "type": "mekanism:rotary",
+  "chemical_input": {
+    "amount": 1,
+    "chemical": "mekanism:oxygen"
+  },
+  "chemical_output": {
+    "amount": 1,
+    "id": "mekanism:oxygen"
+  },
   "fluid_input": {
     "amount": 1,
     "tag": "c:oxygen"
   },
   "fluid_output": {
-    "amount": 1,
-    "id": "mekanism:oxygen"
-  },
-  "gas_input": {
-    "amount": 1,
-    "chemical": "mekanism:oxygen"
-  },
-  "gas_output": {
     "amount": 1,
     "id": "mekanism:oxygen"
   }

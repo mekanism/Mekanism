@@ -1,5 +1,13 @@
 {
   "type": "mekanism:rotary",
+  "chemical_input": {
+    "amount": 1,
+    "chemical": "mekanism:water_vapor"
+  },
+  "chemical_output": {
+    "amount": 1,
+    "id": "mekanism:water_vapor"
+  },
   "fluid_input": {
     "amount": 1,
     "tag": "minecraft:water"
@@ -7,13 +15,5 @@
   "fluid_output": {
     "amount": 1,
     "id": "minecraft:water"
-  },
-  "gas_input": {
-    "amount": 1,
-    "chemical": "mekanism:water_vapor"
-  },
-  "gas_output": {
-    "amount": 1,
-    "id": "mekanism:water_vapor"
   }
 }

@@ -1,18 +1,18 @@
 {
   "type": "mekanism:rotary",
+  "chemical_input": {
+    "amount": 1,
+    "tag": "mekanism:fusion_fuel"
+  },
+  "chemical_output": {
+    "amount": 1,
+    "id": "mekanismgenerators:fusion_fuel"
+  },
   "fluid_input": {
     "amount": 1,
     "tag": "c:fusion_fuel"
   },
   "fluid_output": {
-    "amount": 1,
-    "id": "mekanismgenerators:fusion_fuel"
-  },
-  "gas_input": {
-    "amount": 1,
-    "tag": "mekanism:fusion_fuel"
-  },
-  "gas_output": {
     "amount": 1,
     "id": "mekanismgenerators:fusion_fuel"
   }

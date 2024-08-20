@@ -4,11 +4,11 @@
     "amount": 2,
     "tag": "minecraft:water"
   },
-  "left_gas_output": {
+  "left_chemical_output": {
     "amount": 2,
     "id": "mekanism:hydrogen"
   },
-  "right_gas_output": {
+  "right_chemical_output": {
     "amount": 1,
     "id": "mekanism:oxygen"
   }

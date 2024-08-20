@@ -1,18 +1,18 @@
 {
   "type": "mekanism:rotary",
+  "chemical_input": {
+    "amount": 1,
+    "chemical": "mekanism:hydrofluoric_acid"
+  },
+  "chemical_output": {
+    "amount": 1,
+    "id": "mekanism:hydrofluoric_acid"
+  },
   "fluid_input": {
     "amount": 1,
     "tag": "c:hydrofluoric_acid"
   },
   "fluid_output": {
-    "amount": 1,
-    "id": "mekanism:hydrofluoric_acid"
-  },
-  "gas_input": {
-    "amount": 1,
-    "chemical": "mekanism:hydrofluoric_acid"
-  },
-  "gas_output": {
     "amount": 1,
     "id": "mekanism:hydrofluoric_acid"
   }

@@ -55,16 +55,23 @@ public final class SerializationConstants {
     public static final String CHEMICAL_INPUT = "chemical_input";
     public static final String FLUID_INPUT = "fluid_input";
     public static final String ITEM_INPUT = "item_input";
-    public static final String GAS_INPUT = "gas_input";
-    public static final String SLURRY_INPUT = "slurry_input";
     public static final String OUTPUT = "output";
     public static final String MAIN_OUTPUT = "main_output";
     public static final String SECONDARY_OUTPUT = "secondary_output";
     public static final String SECONDARY_CHANCE = "secondary_chance";
-    public static final String LEFT_GAS_OUTPUT = "left_gas_output";
-    public static final String RIGHT_GAS_OUTPUT = "right_gas_output";
+    /**
+     * @since 10.6.10
+     */
+    public static final String CHEMICAL_OUTPUT = "chemical_output";
+    /**
+     * @since 10.6.10
+     */
+    public static final String LEFT_CHEMICAL_OUTPUT = "left_chemical_output";
+    /**
+     * @since 10.6.10
+     */
+    public static final String RIGHT_CHEMICAL_OUTPUT = "right_chemical_output";
     public static final String ITEM_OUTPUT = "item_output";
-    public static final String GAS_OUTPUT = "gas_output";
     public static final String FLUID_OUTPUT = "fluid_output";
 
     //Transmitter model
@@ -184,6 +191,7 @@ public final class SerializationConstants {
      * @since 10.6.10
      */
     public static final String CHEMICAL_STORED_ALT_2 = "chemical_2";
+    @Deprecated(forRemoval = true, since = "10.6.10")
     public static final String GAS_TANKS = "gas_tanks";
     public static final String GUI = "gui";
     public static final String HANDLE_SOUND = "handle_sound";
@@ -195,6 +203,7 @@ public final class SerializationConstants {
     public static final String IDENTITY = "identity";
     public static final String IDLE_DIR = "idle_dir";
     public static final String INDEX = "index";
+    @Deprecated(forRemoval = true, since = "10.6.10")
     public static final String INFUSION_TANKS = "infusion_tanks";
     public static final String INJECTION_RATE = "injection_rate";
     public static final String INPUT_COLOR = "input_color";
@@ -239,6 +248,7 @@ public final class SerializationConstants {
     public static final String PATH_TYPE = "path_type";
     public static final String PERSONAL_STORAGE_ID = "personal_storage_id";
     public static final String PICKUP_DROPS = "pickup_drops";
+    @Deprecated(forRemoval = true, since = "10.6.10")
     public static final String PIGMENT_TANKS = "pigment_tanks";
     public static final String PLASMA_TEMP = "plasma_temp";
     public static final String POSITION = "position";
@@ -270,6 +280,7 @@ public final class SerializationConstants {
     public static final String SINGLE_ITEM = "single_item";
     public static final String SIZE = "size";
     public static final String SLOT = "slot";
+    @Deprecated(forRemoval = true, since = "10.6.10")
     public static final String SLURRY_TANKS = "slurry_tanks";
     public static final String SORTING = "sorting";
     public static final String STABILIZER_CHUNKS_TO_LOAD = "stabilizer_chunks_to_load";
