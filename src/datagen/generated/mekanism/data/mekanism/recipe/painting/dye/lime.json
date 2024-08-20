@@ -11,5 +11,6 @@
   "output": {
     "count": 1,
     "id": "minecraft:lime_dye"
-  }
+  },
+  "per_tick_usage": false
 }

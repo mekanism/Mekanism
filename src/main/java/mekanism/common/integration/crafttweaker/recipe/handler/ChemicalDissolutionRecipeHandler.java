@@ -20,7 +20,7 @@ public class ChemicalDissolutionRecipeHandler extends MekanismRecipeHandler<Chem
     public String dumpToCommandString(IRecipeManager<? super ChemicalDissolutionRecipe> manager, RegistryAccess registryAccess,
           RecipeHolder<ChemicalDissolutionRecipe> recipeHolder) {
         ChemicalDissolutionRecipe recipe = recipeHolder.value();
-        return buildCommandString(manager, recipeHolder, recipe.getItemInput(), recipe.getChemicalInput(), recipe.getOutputDefinition());
+        return buildCommandString(manager, recipeHolder, recipe.getItemInput(), recipe.getChemicalInput(), recipe.getOutputDefinition(), recipe.perTickUsage());
     }
 
     @Override
@@ -37,7 +37,7 @@ public class ChemicalDissolutionRecipeHandler extends MekanismRecipeHandler<Chem
     @Override
     public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super ChemicalDissolutionRecipe> manager, RegistryAccess registryAccess,
           ChemicalDissolutionRecipe recipe) {
-        return decompose(recipe.getItemInput(), recipe.getChemicalInput(), recipe.getOutputDefinition());
+        return decompose(recipe.getItemInput(), recipe.getChemicalInput(), recipe.getOutputDefinition(), recipe.perTickUsage());
     }
 
     @Override
@@ -47,7 +47,8 @@ public class ChemicalDissolutionRecipeHandler extends MekanismRecipeHandler<Chem
             return Optional.of(manager.makeRecipe(
                   recipe.getOrThrowSingle(CrTRecipeComponents.ITEM.input()),
                   recipe.getOrThrowSingle(CrTRecipeComponents.CHEMICAL.input()),
-                  found.orElseThrow(() -> new IllegalArgumentException("No specified output chemical."))
+                  found.orElseThrow(() -> new IllegalArgumentException("No specified output chemical.")),
+                  recipe.getOrThrowSingle(CrTRecipeComponents.PER_TICK_USAGE)
             ));
         }
         return Optional.empty();

@@ -17,5 +17,6 @@
   "output": {
     "count": 1,
     "id": "minecraft:yellow_terracotta"
-  }
+  },
+  "per_tick_usage": false
 }

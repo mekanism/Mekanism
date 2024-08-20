@@ -20,6 +20,15 @@ public class CrTChemicalDissolutionRecipe {
     }
 
     /**
+     * Represents whether this recipe consumes the chemical each tick.
+     */
+    @ZenCodeType.Method
+    @ZenCodeType.Getter("perTickUsage")
+    public static boolean isPerTickUsage(ChemicalDissolutionRecipe _this) {
+        return _this.perTickUsage();
+    }
+
+    /**
      * Gets the input item ingredient.
      */
     @ZenCodeType.Method

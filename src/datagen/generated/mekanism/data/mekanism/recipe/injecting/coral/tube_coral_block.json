@@ -11,5 +11,6 @@
   "output": {
     "count": 1,
     "id": "minecraft:tube_coral_block"
-  }
+  },
+  "per_tick_usage": true
 }

@@ -17,5 +17,6 @@
   "output": {
     "count": 1,
     "id": "mekanismadditions:aqua_slick_plastic"
-  }
+  },
+  "per_tick_usage": false
 }

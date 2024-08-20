@@ -17,5 +17,6 @@
   "output": {
     "count": 1,
     "id": "minecraft:cyan_concrete"
-  }
+  },
+  "per_tick_usage": false
 }

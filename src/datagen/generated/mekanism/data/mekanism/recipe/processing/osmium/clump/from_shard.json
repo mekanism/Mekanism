@@ -11,5 +11,6 @@
   "output": {
     "count": 1,
     "id": "mekanism:clump_osmium"
-  }
+  },
+  "per_tick_usage": true
 }

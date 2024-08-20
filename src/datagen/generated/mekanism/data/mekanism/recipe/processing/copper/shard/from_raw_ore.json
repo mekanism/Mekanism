@@ -11,5 +11,6 @@
   "output": {
     "count": 8,
     "id": "mekanism:shard_copper"
-  }
+  },
+  "per_tick_usage": true
 }

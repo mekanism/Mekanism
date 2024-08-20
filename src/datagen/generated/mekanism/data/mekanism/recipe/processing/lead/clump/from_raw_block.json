@@ -11,5 +11,6 @@
   "output": {
     "count": 18,
     "id": "mekanism:clump_lead"
-  }
+  },
+  "per_tick_usage": true
 }

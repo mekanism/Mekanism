@@ -17,5 +17,6 @@
   "output": {
     "count": 1,
     "id": "minecraft:pink_candle"
-  }
+  },
+  "per_tick_usage": false
 }

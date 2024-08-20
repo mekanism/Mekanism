@@ -2,14 +2,18 @@ package mekanism.common.tile.machine;
 
 import java.util.List;
 import mekanism.api.IContentsListener;
+import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.recipes.ItemStackChemicalToItemStackRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
+import mekanism.api.recipes.cache.ItemStackConstantChemicalToObjectCachedRecipe;
+import mekanism.api.recipes.cache.ItemStackConstantChemicalToObjectCachedRecipe.ChemicalUsageMultiplier;
 import mekanism.api.recipes.cache.TwoInputCachedRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
+import mekanism.api.recipes.inputs.ILongInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
@@ -38,19 +42,23 @@ import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.IDoubleRecipeLookupHandler.ItemChemicalRecipeLookupHandler;
+import mekanism.common.recipe.lookup.IRecipeLookupHandler.ConstantUsageRecipeLookupHandler;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.ItemChemical;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class TileEntityPaintingMachine extends TileEntityProgressMachine<ItemStackChemicalToItemStackRecipe> implements ItemChemicalRecipeLookupHandler<ItemStackChemicalToItemStackRecipe> {
+public class TileEntityPaintingMachine extends TileEntityProgressMachine<ItemStackChemicalToItemStackRecipe> implements ConstantUsageRecipeLookupHandler,
+      ItemChemicalRecipeLookupHandler<ItemStackChemicalToItemStackRecipe> {
 
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
           RecipeError.NOT_ENOUGH_ENERGY,
@@ -67,9 +75,12 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<ItemSta
                                                                                         "getPigmentInputFilledPercentage"}, docPlaceholder = "pigment tank")
     public IChemicalTank pigmentTank;
 
+    private final ChemicalUsageMultiplier chemicalUsageMultiplier = ChemicalUsageMultiplier.constantUse(() -> ticksRequired, this::getTicksRequired);
+    private long usedSoFar;
+
     private final IOutputHandler<@NotNull ItemStack> outputHandler;
     private final IInputHandler<@NotNull ItemStack> itemInputHandler;
-    private final IInputHandler<@NotNull ChemicalStack> pigmentInputHandler;
+    private final ILongInputHandler<@NotNull ChemicalStack> pigmentInputHandler;
 
     private MachineEnergyContainer<TileEntityPaintingMachine> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputPigmentItem", docPlaceholder = "pigment slot")
@@ -155,7 +166,14 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<ItemSta
     @NotNull
     @Override
     public CachedRecipe<ItemStackChemicalToItemStackRecipe> createNewCachedRecipe(@NotNull ItemStackChemicalToItemStackRecipe recipe, int cacheIndex) {
-        return TwoInputCachedRecipe.itemChemicalToItem(recipe, recheckAllRecipeErrors, itemInputHandler, pigmentInputHandler, outputHandler)
+        CachedRecipe<ItemStackChemicalToItemStackRecipe> cachedRecipe;
+        if (recipe.perTickUsage()) {
+            cachedRecipe = ItemStackConstantChemicalToObjectCachedRecipe.toItem(recipe, recheckAllRecipeErrors, itemInputHandler, pigmentInputHandler,
+                  chemicalUsageMultiplier, used -> usedSoFar = used, outputHandler);
+        } else {
+            cachedRecipe = TwoInputCachedRecipe.itemChemicalToItem(recipe, recheckAllRecipeErrors, itemInputHandler, pigmentInputHandler, outputHandler);
+        }
+        return cachedRecipe
               .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(this::canFunction)
               .setActive(this::setActive)
@@ -167,6 +185,23 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<ItemSta
 
     public MachineEnergyContainer<TileEntityPaintingMachine> getEnergyContainer() {
         return energyContainer;
+    }
+
+    @Override
+    public long getSavedUsedSoFar(int cacheIndex) {
+        return usedSoFar;
+    }
+
+    @Override
+    public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
+        super.loadAdditional(nbt, provider);
+        usedSoFar = nbt.getLong(SerializationConstants.USED_SO_FAR);
+    }
+
+    @Override
+    public void saveAdditional(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
+        super.saveAdditional(nbtTags, provider);
+        nbtTags.putLong(SerializationConstants.USED_SO_FAR, usedSoFar);
     }
 
     //Methods relating to IComputerTile

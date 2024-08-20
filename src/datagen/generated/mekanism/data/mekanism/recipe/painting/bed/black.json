@@ -17,5 +17,6 @@
   "output": {
     "count": 1,
     "id": "minecraft:black_bed"
-  }
+  },
+  "per_tick_usage": false
 }

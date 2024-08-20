@@ -31,6 +31,11 @@ public class CrTRecipeComponents {
           new TypeToken<>() {},
           Long::equals
     );
+    public static final IRecipeComponent<Boolean> PER_TICK_USAGE = IRecipeComponent.simple(
+          Mekanism.rl("per_tick_usage"),
+          new TypeToken<>() {},
+          Boolean::equals
+    );
 
     public static final PairedRecipeComponent<IIngredientWithAmount, IItemStack> ITEM = new PairedRecipeComponent<>(
           BuiltinRecipeComponents.Input.INGREDIENTS_WITH_AMOUNTS,

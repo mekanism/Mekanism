@@ -17,5 +17,6 @@
   "output": {
     "count": 1,
     "id": "minecraft:light_blue_concrete_powder"
-  }
+  },
+  "per_tick_usage": false
 }

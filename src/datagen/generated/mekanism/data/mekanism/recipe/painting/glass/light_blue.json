@@ -17,5 +17,6 @@
   "output": {
     "count": 1,
     "id": "minecraft:light_blue_stained_glass"
-  }
+  },
+  "per_tick_usage": false
 }

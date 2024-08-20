@@ -11,5 +11,6 @@
   "output": {
     "amount": 1000,
     "id": "mekanism:dirty_copper"
-  }
+  },
+  "per_tick_usage": true
 }

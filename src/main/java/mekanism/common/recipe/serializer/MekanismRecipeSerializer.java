@@ -2,7 +2,9 @@ package mekanism.common.recipe.serializer;
 
 import com.mojang.datafixers.util.Function3;
 import com.mojang.datafixers.util.Function4;
+import com.mojang.datafixers.util.Function5;
 import com.mojang.datafixers.util.Function7;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -145,17 +147,20 @@ public record MekanismRecipeSerializer<RECIPE extends Recipe<?>>(MapCodec<RECIPE
         ));
     }
 
-    public static MekanismRecipeSerializer<BasicNucleosynthesizingRecipe> nucleosynthesizing(Function4<ItemStackIngredient, ChemicalStackIngredient, ItemStack, Integer, BasicNucleosynthesizingRecipe> factory) {
+    public static MekanismRecipeSerializer<BasicNucleosynthesizingRecipe> nucleosynthesizing(
+          Function5<ItemStackIngredient, ChemicalStackIngredient, ItemStack, Integer, Boolean, BasicNucleosynthesizingRecipe> factory) {
         return new MekanismRecipeSerializer<>(RecordCodecBuilder.mapCodec(instance -> instance.group(
               ItemStackIngredient.CODEC.fieldOf(SerializationConstants.ITEM_INPUT).forGetter(NucleosynthesizingRecipe::getItemInput),
               IngredientCreatorAccess.chemicalStack().codec().fieldOf(SerializationConstants.CHEMICAL_INPUT).forGetter(NucleosynthesizingRecipe::getChemicalInput),
               ItemStack.CODEC.fieldOf(SerializationConstants.OUTPUT).forGetter(BasicNucleosynthesizingRecipe::getOutputRaw),
-              ExtraCodecs.POSITIVE_INT.fieldOf(SerializationConstants.DURATION).forGetter(NucleosynthesizingRecipe::getDuration)
+              ExtraCodecs.POSITIVE_INT.fieldOf(SerializationConstants.DURATION).forGetter(NucleosynthesizingRecipe::getDuration),
+              Codec.BOOL.fieldOf(SerializationConstants.PER_TICK_USAGE).forGetter(NucleosynthesizingRecipe::perTickUsage)
         ).apply(instance, factory)), StreamCodec.composite(
               ItemStackIngredient.STREAM_CODEC, NucleosynthesizingRecipe::getItemInput,
               IngredientCreatorAccess.chemicalStack().streamCodec(), NucleosynthesizingRecipe::getChemicalInput,
               ItemStack.STREAM_CODEC, BasicNucleosynthesizingRecipe::getOutputRaw,
               ByteBufCodecs.VAR_INT, NucleosynthesizingRecipe::getDuration,
+              ByteBufCodecs.BOOL, NucleosynthesizingRecipe::perTickUsage,
               factory
         ));
     }
@@ -175,16 +180,19 @@ public record MekanismRecipeSerializer<RECIPE extends Recipe<?>>(MapCodec<RECIPE
         ));
     }
 
-    public static MekanismRecipeSerializer<BasicChemicalDissolutionRecipe> dissolution(Function3<ItemStackIngredient, ChemicalStackIngredient, ChemicalStack, BasicChemicalDissolutionRecipe> factory) {
+    public static MekanismRecipeSerializer<BasicChemicalDissolutionRecipe> dissolution(
+          Function4<ItemStackIngredient, ChemicalStackIngredient, ChemicalStack, Boolean, BasicChemicalDissolutionRecipe> factory) {
         return new MekanismRecipeSerializer<>(RecordCodecBuilder.mapCodec(instance -> instance.group(
               ItemStackIngredient.CODEC.fieldOf(SerializationConstants.ITEM_INPUT).forGetter(ChemicalDissolutionRecipe::getItemInput),
               IngredientCreatorAccess.chemicalStack().codec().fieldOf(SerializationConstants.CHEMICAL_INPUT).forGetter(ChemicalDissolutionRecipe::getChemicalInput),
-              ChemicalStack.CODEC.fieldOf(SerializationConstants.OUTPUT).forGetter(BasicChemicalDissolutionRecipe::getOutputRaw)
+              ChemicalStack.CODEC.fieldOf(SerializationConstants.OUTPUT).forGetter(BasicChemicalDissolutionRecipe::getOutputRaw),
+              Codec.BOOL.fieldOf(SerializationConstants.PER_TICK_USAGE).forGetter(BasicChemicalDissolutionRecipe::perTickUsage)
         ).apply(instance, factory)), StreamCodec.composite(
               ItemStackIngredient.STREAM_CODEC, BasicChemicalDissolutionRecipe::getItemInput,
               IngredientCreatorAccess.chemicalStack().streamCodec(), BasicChemicalDissolutionRecipe::getChemicalInput,
               ChemicalStack.STREAM_CODEC, BasicChemicalDissolutionRecipe::getOutputRaw,
-              factory::apply
+              ByteBufCodecs.BOOL, BasicChemicalDissolutionRecipe::perTickUsage,
+              factory
         ));
     }
 
@@ -228,15 +236,17 @@ public record MekanismRecipeSerializer<RECIPE extends Recipe<?>>(MapCodec<RECIPE
     }
 
     public static <RECIPE extends ItemStackChemicalToItemStackRecipe & IBasicItemStackOutput> MekanismRecipeSerializer<RECIPE> itemChemicalToItem(
-          Function3<ItemStackIngredient, ChemicalStackIngredient, ItemStack, RECIPE> factory, IIngredientCreator<Chemical, ChemicalStack, ChemicalStackIngredient> ingredientCreator) {
+          Function4<ItemStackIngredient, ChemicalStackIngredient, ItemStack, Boolean, RECIPE> factory) {
         return new MekanismRecipeSerializer<>(RecordCodecBuilder.mapCodec(instance -> instance.group(
               ItemStackIngredient.CODEC.fieldOf(SerializationConstants.ITEM_INPUT).forGetter(ItemStackChemicalToItemStackRecipe::getItemInput),
-              ingredientCreator.codec().fieldOf(SerializationConstants.CHEMICAL_INPUT).forGetter(ItemStackChemicalToItemStackRecipe::getChemicalInput),
-              ItemStack.CODEC.fieldOf(SerializationConstants.OUTPUT).forGetter(IBasicItemStackOutput::getOutputRaw)
+              IngredientCreatorAccess.chemicalStack().codec().fieldOf(SerializationConstants.CHEMICAL_INPUT).forGetter(ItemStackChemicalToItemStackRecipe::getChemicalInput),
+              ItemStack.CODEC.fieldOf(SerializationConstants.OUTPUT).forGetter(IBasicItemStackOutput::getOutputRaw),
+              Codec.BOOL.fieldOf(SerializationConstants.PER_TICK_USAGE).forGetter(ItemStackChemicalToItemStackRecipe::perTickUsage)
         ).apply(instance, factory)), StreamCodec.composite(
               ItemStackIngredient.STREAM_CODEC, ItemStackChemicalToItemStackRecipe::getItemInput,
-              ingredientCreator.streamCodec(), ItemStackChemicalToItemStackRecipe::getChemicalInput,
+              IngredientCreatorAccess.chemicalStack().streamCodec(), ItemStackChemicalToItemStackRecipe::getChemicalInput,
               ItemStack.STREAM_CODEC, IBasicItemStackOutput::getOutputRaw,
+              ByteBufCodecs.BOOL, ItemStackChemicalToItemStackRecipe::perTickUsage,
               factory
         ));
     }

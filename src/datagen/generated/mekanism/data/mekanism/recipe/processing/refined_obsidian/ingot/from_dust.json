@@ -11,5 +11,6 @@
   "output": {
     "count": 1,
     "id": "mekanism:ingot_refined_obsidian"
-  }
+  },
+  "per_tick_usage": true
 }

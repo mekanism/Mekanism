@@ -22,14 +22,16 @@ public class BasicNucleosynthesizingRecipe extends NucleosynthesizingRecipe impl
     protected final ChemicalStackIngredient chemicalInput;
     protected final ItemStack output;
     private final int duration;
+    private final boolean perTickUsage;
 
     /**
      * @param itemInput     Item input.
      * @param chemicalInput Chemical input.
      * @param output        Output.
      * @param duration      Duration in ticks that it takes the recipe to complete. Must be greater than zero.
+     * @param perTickUsage  Should the recipe consume the chemical input each tick it is processing.
      */
-    public BasicNucleosynthesizingRecipe(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ItemStack output, int duration) {
+    public BasicNucleosynthesizingRecipe(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ItemStack output, int duration, boolean perTickUsage) {
         this.itemInput = Objects.requireNonNull(itemInput, "Item input cannot be null.");
         this.chemicalInput = Objects.requireNonNull(chemicalInput, "Chemical input cannot be null.");
         Objects.requireNonNull(output, "Output cannot be null.");
@@ -41,11 +43,17 @@ public class BasicNucleosynthesizingRecipe extends NucleosynthesizingRecipe impl
             throw new IllegalArgumentException("Duration must be a number greater than zero.");
         }
         this.duration = duration;
+        this.perTickUsage = perTickUsage;
     }
 
     @Override
     public int getDuration() {
         return duration;
+    }
+
+    @Override
+    public boolean perTickUsage() {
+        return perTickUsage;
     }
 
     @Override

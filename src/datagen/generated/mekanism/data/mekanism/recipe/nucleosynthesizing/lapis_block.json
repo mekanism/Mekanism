@@ -12,5 +12,6 @@
   "output": {
     "count": 1,
     "id": "minecraft:lapis_block"
-  }
+  },
+  "per_tick_usage": false
 }

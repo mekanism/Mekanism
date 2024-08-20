@@ -17,5 +17,6 @@
   "output": {
     "count": 1,
     "id": "mekanismadditions:dark_red_plastic_fence_gate"
-  }
+  },
+  "per_tick_usage": false
 }

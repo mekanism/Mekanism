@@ -17,5 +17,6 @@
   "output": {
     "count": 1,
     "id": "mekanismadditions:cyan_plastic_fence"
-  }
+  },
+  "per_tick_usage": false
 }

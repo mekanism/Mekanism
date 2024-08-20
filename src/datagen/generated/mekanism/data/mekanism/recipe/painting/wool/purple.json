@@ -17,5 +17,6 @@
   "output": {
     "count": 1,
     "id": "minecraft:purple_wool"
-  }
+  },
+  "per_tick_usage": false
 }

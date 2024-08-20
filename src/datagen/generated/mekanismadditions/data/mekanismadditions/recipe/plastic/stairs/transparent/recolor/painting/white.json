@@ -17,5 +17,6 @@
   "output": {
     "count": 1,
     "id": "mekanismadditions:white_plastic_transparent_stairs"
-  }
+  },
+  "per_tick_usage": false
 }

@@ -11,5 +11,6 @@
   "output": {
     "count": 1,
     "id": "minecraft:clay"
-  }
+  },
+  "per_tick_usage": true
 }

@@ -131,7 +131,8 @@ class PaintingRecipeProvider implements ISubRecipeProvider {
         ItemStackChemicalToItemStackRecipeBuilder.painting(
               IngredientCreatorAccess.item().from(MekanismItems.DYE_BASE),
               IngredientCreatorAccess.chemicalStack().from(MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(color), PigmentExtractingRecipeProvider.DYE_RATE),
-              new ItemStack(dye)
+              new ItemStack(dye),
+              false
         ).build(consumer, Mekanism.rl(basePath + color.getRegistryPrefix()));
     }
 
@@ -154,7 +155,8 @@ class PaintingRecipeProvider implements ISubRecipeProvider {
         ItemStackChemicalToItemStackRecipeBuilder.painting(
               IngredientCreatorAccess.item().from(BaseRecipeProvider.difference(input, result)),
               IngredientCreatorAccess.chemicalStack().from(MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(color), rate),
-              new ItemStack(result)
+              new ItemStack(result),
+              false
         ).build(consumer, Mekanism.rl(basePath + color.getRegistryPrefix()));
     }
 }

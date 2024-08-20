@@ -17,5 +17,6 @@
   "output": {
     "count": 1,
     "id": "mekanismadditions:yellow_plastic_glow_slab"
-  }
+  },
+  "per_tick_usage": false
 }

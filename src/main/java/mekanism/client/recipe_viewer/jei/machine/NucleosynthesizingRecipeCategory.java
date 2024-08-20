@@ -2,6 +2,7 @@ package mekanism.client.recipe_viewer.jei.machine;
 
 import java.util.Collections;
 import java.util.List;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.NucleosynthesizingRecipe;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.bar.GuiDynamicHorizontalRateBar;
@@ -20,6 +21,7 @@ import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.lib.Color;
 import mekanism.common.lib.Color.ColorFunction;
 import mekanism.common.tile.component.config.DataType;
+import mekanism.common.tile.machine.TileEntityAntiprotonicNucleosynthesizer;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
@@ -73,7 +75,13 @@ public class NucleosynthesizingRecipeCategory extends HolderRecipeCategory<Nucle
     public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<NucleosynthesizingRecipe> recipeHolder, @NotNull IFocusGroup focusGroup) {
         NucleosynthesizingRecipe recipe = recipeHolder.value();
         initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getItemInput().getRepresentations());
-        initChemical(builder, RecipeIngredientRole.INPUT, chemicalInput, recipe.getChemicalInput().getRepresentations());
+        List<ChemicalStack> scaledChemicals = recipe.getChemicalInput().getRepresentations();
+        if (recipe.perTickUsage()) {
+            scaledChemicals = scaledChemicals.stream()
+                  .map(chemical -> chemical.copyWithAmount(chemical.getAmount() * TileEntityAntiprotonicNucleosynthesizer.BASE_TICKS_REQUIRED))
+                  .toList();
+        }
+        initChemical(builder, RecipeIngredientRole.INPUT, chemicalInput, scaledChemicals);
         initItem(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
         initItem(builder, RecipeIngredientRole.CATALYST, extra, RecipeViewerUtils.getStacksFor(recipe.getChemicalInput(), true));
     }

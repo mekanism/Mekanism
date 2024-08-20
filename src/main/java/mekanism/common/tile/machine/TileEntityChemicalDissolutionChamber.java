@@ -14,6 +14,7 @@ import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.api.recipes.cache.ItemStackConstantChemicalToObjectCachedRecipe;
 import mekanism.api.recipes.cache.ItemStackConstantChemicalToObjectCachedRecipe.ChemicalUsageMultiplier;
+import mekanism.api.recipes.cache.TwoInputCachedRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.ILongInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
@@ -176,8 +177,14 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
     @NotNull
     @Override
     public CachedRecipe<ChemicalDissolutionRecipe> createNewCachedRecipe(@NotNull ChemicalDissolutionRecipe recipe, int cacheIndex) {
-        return ItemStackConstantChemicalToObjectCachedRecipe.dissolution(recipe, recheckAllRecipeErrors, itemInputHandler, gasInputHandler,
-                    injectUsageMultiplier, used -> usedSoFar = used, outputHandler)
+        CachedRecipe<ChemicalDissolutionRecipe> cachedRecipe;
+        if (recipe.perTickUsage()) {
+            cachedRecipe = ItemStackConstantChemicalToObjectCachedRecipe.dissolution(recipe, recheckAllRecipeErrors, itemInputHandler, gasInputHandler,
+                  injectUsageMultiplier, used -> usedSoFar = used, outputHandler);
+        } else {
+            cachedRecipe = TwoInputCachedRecipe.itemChemicalToChemical(recipe, recheckAllRecipeErrors, itemInputHandler, gasInputHandler, outputHandler);
+        }
+        return cachedRecipe
               .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(this::canFunction)
               .setActive(this::setActive)

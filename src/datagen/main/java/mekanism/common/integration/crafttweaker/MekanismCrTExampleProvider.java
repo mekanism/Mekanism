@@ -150,7 +150,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .blankLine()
               .recipe(ChemicalDissolutionRecipeManager.INSTANCE)
               .addExample("salt_to_hydrogen_chloride", IngredientCreatorAccess.item().from(MekanismItems.SALT), IngredientCreatorAccess.chemicalStack().from(MekanismChemicals.SULFURIC_ACID, 1),
-                    MekanismChemicals.HYDROGEN_CHLORIDE.getStack(10))
+                    MekanismChemicals.HYDROGEN_CHLORIDE.getStack(10), true)
               .end()
               .comment("Removes two Dissolution Recipes:",
                     "1) The recipe for producing Hydrofluoric Acid from Fluorite.",
@@ -255,7 +255,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .blankLine()
               .recipe(OsmiumCompressorRecipeManager.INSTANCE)
               .addExample("compress_emerald", IngredientCreatorAccess.item().from(MekanismTags.Items.DUSTS_EMERALD), IngredientCreatorAccess.chemicalStack().from(MekanismChemicals.OSMIUM, 1),
-                    new ItemStack(Items.EMERALD))
+                    new ItemStack(Items.EMERALD), true)
               .end()
               .comment("Removes the Compressing Recipe that creates Refined Obsidian Ingots.")
               .blankLine()
@@ -266,7 +266,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .blankLine()
               .recipe(ChemicalInjectionRecipeManager.INSTANCE)
               .addExample("inject_water_to_sponge", IngredientCreatorAccess.item().from(Blocks.SPONGE), IngredientCreatorAccess.chemicalStack().from(MekanismTags.Chemicals.WATER_VAPOR, 5),
-                    new ItemStack(Blocks.WET_SPONGE))
+                    new ItemStack(Blocks.WET_SPONGE), true)
               .end()
               .comment("Removes the Injecting Recipe that creates Gold Shards from Gold Ore.")
               .blankLine()
@@ -277,7 +277,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .blankLine()
               .recipe(PurificationRecipeManager.INSTANCE)
               .addExample("purify_basalt", IngredientCreatorAccess.item().from(Blocks.BASALT), IngredientCreatorAccess.chemicalStack().from(MekanismChemicals.OXYGEN, 1),
-                    new ItemStack(Blocks.POLISHED_BASALT))
+                    new ItemStack(Blocks.POLISHED_BASALT), true)
               .end()
               .comment("Removes the Purifying Recipe that creates Gold Clumps from Gold Ore.")
               .blankLine()
@@ -288,7 +288,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .blankLine()
               .recipe(MetallurgicInfuserRecipeManager.INSTANCE)
               .addExample("infuse_planks", IngredientCreatorAccess.item().from(Blocks.OAK_PLANKS), IngredientCreatorAccess.chemicalStack().from(MekanismChemicals.FUNGI, 10),
-                    new ItemStack(Blocks.CRIMSON_PLANKS))
+                    new ItemStack(Blocks.CRIMSON_PLANKS), false)
               .end()
               .comment("Removes the Metallurgic Infusing Recipe that allows creating Dirt from Sand.")
               .blankLine()
@@ -300,7 +300,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .recipe(PaintingRecipeManager.INSTANCE)
               .addExample("paint_sand", IngredientCreatorAccess.item().from(Tags.Items.SANDS_COLORLESS),
                     IngredientCreatorAccess.chemicalStack().from(MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(EnumColor.RED), 256),
-                    new ItemStack(Blocks.RED_SAND))
+                    new ItemStack(Blocks.RED_SAND), false)
               .end()
               .comment("Removes the Painting Recipe that allows creating White Dye.")
               .blankLine()
@@ -390,7 +390,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .blankLine()
               .recipe(NucleosynthesizingRecipeManager.INSTANCE)
               .addExample("coal_block_to_diamond_block", IngredientCreatorAccess.item().from(Tags.Items.STORAGE_BLOCKS_COAL),
-                    IngredientCreatorAccess.chemicalStack().from(MekanismChemicals.ANTIMATTER, 36), new ItemStack(Blocks.DIAMOND_BLOCK), 9_000)
+                    IngredientCreatorAccess.chemicalStack().from(MekanismChemicals.ANTIMATTER, 36), new ItemStack(Blocks.DIAMOND_BLOCK), 9_000, false)
               .end()
               .comment("Removes the Nucleosynthesizing Recipe that converts Tin Ingots into Iron Ingots.")
               .blankLine()

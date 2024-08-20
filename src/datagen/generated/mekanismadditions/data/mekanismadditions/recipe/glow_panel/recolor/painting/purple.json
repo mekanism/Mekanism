@@ -17,5 +17,6 @@
   "output": {
     "count": 1,
     "id": "mekanismadditions:purple_glow_panel"
-  }
+  },
+  "per_tick_usage": false
 }

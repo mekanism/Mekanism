@@ -17,5 +17,6 @@
   "output": {
     "count": 1,
     "id": "minecraft:orange_carpet"
-  }
+  },
+  "per_tick_usage": false
 }

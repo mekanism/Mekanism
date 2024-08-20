@@ -12,5 +12,6 @@
   "output": {
     "count": 1,
     "id": "minecraft:wither_skeleton_skull"
-  }
+  },
+  "per_tick_usage": false
 }

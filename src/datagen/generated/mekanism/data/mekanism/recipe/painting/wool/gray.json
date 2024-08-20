@@ -17,5 +17,6 @@
   "output": {
     "count": 1,
     "id": "minecraft:gray_wool"
-  }
+  },
+  "per_tick_usage": false
 }

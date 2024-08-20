@@ -31,7 +31,7 @@ public abstract class ItemStackChemicalToObjectRecipe<OUTPUT> extends MekanismRe
      *
      * @since 10.6.10
      */
-    public abstract boolean perTickUsage();//TODO: Make things respect/use this rather than it mostly just being a marker for things per type
+    public abstract boolean perTickUsage();
 
     /**
      * Gets the input item ingredient.

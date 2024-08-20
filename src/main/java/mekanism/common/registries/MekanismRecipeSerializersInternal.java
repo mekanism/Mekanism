@@ -72,9 +72,9 @@ public class MekanismRecipeSerializersInternal {
 
         MekanismRecipeSerializers.DISSOLUTION = RECIPE_SERIALIZERS.register("dissolution", () -> MekanismRecipeSerializer.dissolution(BasicChemicalDissolutionRecipe::new));
 
-        MekanismRecipeSerializers.COMPRESSING = RECIPE_SERIALIZERS.register("compressing", () -> MekanismRecipeSerializer.itemChemicalToItem(BasicCompressingRecipe::new, IngredientCreatorAccess.chemicalStack()));
-        MekanismRecipeSerializers.PURIFYING = RECIPE_SERIALIZERS.register("purifying", () -> MekanismRecipeSerializer.itemChemicalToItem(BasicPurifyingRecipe::new, IngredientCreatorAccess.chemicalStack()));
-        MekanismRecipeSerializers.INJECTING = RECIPE_SERIALIZERS.register("injecting", () -> MekanismRecipeSerializer.itemChemicalToItem(BasicInjectingRecipe::new, IngredientCreatorAccess.chemicalStack()));
+        MekanismRecipeSerializers.COMPRESSING = RECIPE_SERIALIZERS.register("compressing", () -> MekanismRecipeSerializer.itemChemicalToItem(BasicCompressingRecipe::new));
+        MekanismRecipeSerializers.PURIFYING = RECIPE_SERIALIZERS.register("purifying", () -> MekanismRecipeSerializer.itemChemicalToItem(BasicPurifyingRecipe::new));
+        MekanismRecipeSerializers.INJECTING = RECIPE_SERIALIZERS.register("injecting", () -> MekanismRecipeSerializer.itemChemicalToItem(BasicInjectingRecipe::new));
 
         MekanismRecipeSerializers.NUCLEOSYNTHESIZING = RECIPE_SERIALIZERS.register("nucleosynthesizing", () -> MekanismRecipeSerializer.nucleosynthesizing(BasicNucleosynthesizingRecipe::new));
 
@@ -87,9 +87,9 @@ public class MekanismRecipeSerializersInternal {
 
         MekanismRecipeSerializers.PIGMENT_MIXING = RECIPE_SERIALIZERS.register("pigment_mixing", () -> MekanismRecipeSerializer.chemicalChemicalToChemical(BasicPigmentMixingRecipe::new, IngredientCreatorAccess.chemicalStack(), ChemicalStack.MAP_CODEC, ChemicalStack.STREAM_CODEC));
 
-        MekanismRecipeSerializers.METALLURGIC_INFUSING = RECIPE_SERIALIZERS.register("metallurgic_infusing", () -> MekanismRecipeSerializer.itemChemicalToItem(BasicMetallurgicInfuserRecipe::new, IngredientCreatorAccess.chemicalStack()));
+        MekanismRecipeSerializers.METALLURGIC_INFUSING = RECIPE_SERIALIZERS.register("metallurgic_infusing", () -> MekanismRecipeSerializer.itemChemicalToItem(BasicMetallurgicInfuserRecipe::new));
 
-        MekanismRecipeSerializers.PAINTING = RECIPE_SERIALIZERS.register("painting", () -> MekanismRecipeSerializer.itemChemicalToItem(BasicPaintingRecipe::new, IngredientCreatorAccess.chemicalStack()));
+        MekanismRecipeSerializers.PAINTING = RECIPE_SERIALIZERS.register("painting", () -> MekanismRecipeSerializer.itemChemicalToItem(BasicPaintingRecipe::new));
 
         MekanismRecipeSerializers.REACTION = RECIPE_SERIALIZERS.register("reaction", () -> MekanismRecipeSerializer.reaction(BasicPressurizedReactionRecipe::new));
 

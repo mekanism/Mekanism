@@ -17,5 +17,6 @@
   "output": {
     "count": 1,
     "id": "minecraft:lime_terracotta"
-  }
+  },
+  "per_tick_usage": false
 }

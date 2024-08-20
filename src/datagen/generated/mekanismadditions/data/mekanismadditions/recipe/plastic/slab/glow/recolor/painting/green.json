@@ -17,5 +17,6 @@
   "output": {
     "count": 1,
     "id": "mekanismadditions:green_plastic_glow_slab"
-  }
+  },
+  "per_tick_usage": false
 }

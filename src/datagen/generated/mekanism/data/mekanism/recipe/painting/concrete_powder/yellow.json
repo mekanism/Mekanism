@@ -17,5 +17,6 @@
   "output": {
     "count": 1,
     "id": "minecraft:yellow_concrete_powder"
-  }
+  },
+  "per_tick_usage": false
 }

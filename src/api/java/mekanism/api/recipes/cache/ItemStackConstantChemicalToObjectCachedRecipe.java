@@ -2,11 +2,14 @@ package mekanism.api.recipes.cache;
 
 import java.util.Objects;
 import java.util.function.BooleanSupplier;
+import java.util.function.IntSupplier;
 import java.util.function.LongConsumer;
+import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.functions.ConstantPredicates;
+import mekanism.api.math.MathUtils;
 import mekanism.api.recipes.ChemicalDissolutionRecipe;
 import mekanism.api.recipes.ItemStackChemicalToItemStackRecipe;
 import mekanism.api.recipes.ItemStackChemicalToObjectRecipe;
@@ -172,6 +175,21 @@ public class ItemStackConstantChemicalToObjectCachedRecipe<OUTPUT, RECIPE extend
     public interface ChemicalUsageMultiplier {
 
         long getToUse(long usedSoFar, int operatingTicks);
+
+        static ChemicalUsageMultiplier constantUse(LongSupplier baseTotalUsage, IntSupplier ticksRequired) {
+            return (usedSoFar, operatingTicks) -> {
+                long baseRemaining = baseTotalUsage.getAsLong() - usedSoFar;
+                int remainingTicks = ticksRequired.getAsInt() - operatingTicks;
+                if (baseRemaining < remainingTicks) {
+                    //If we already used more than we would need to use (due to removing speed upgrades or adding gas upgrades)
+                    // then just don't use any gas this tick
+                    return 0;
+                } else if (baseRemaining == remainingTicks) {
+                    return 1;
+                }
+                return Math.max(MathUtils.clampToLong(baseRemaining / (double) remainingTicks), 0);
+            };
+        }
     }
 
     /**
@@ -184,7 +202,7 @@ public class ItemStackConstantChemicalToObjectCachedRecipe<OUTPUT, RECIPE extend
      * @param chemicalUsedSoFarChanged Called when the number chemical usage so far changes.
      * @param outputHandler            Output handler.
      */
-    public static ItemStackConstantChemicalToObjectCachedRecipe<ItemStack, ItemStackChemicalToItemStackRecipe> toItem(ItemStackChemicalToItemStackRecipe recipe,
+    public static <RECIPE extends ItemStackChemicalToItemStackRecipe> ItemStackConstantChemicalToObjectCachedRecipe<ItemStack, RECIPE> toItem(RECIPE recipe,
           BooleanSupplier recheckAllErrors, IInputHandler<@NotNull ItemStack> itemInputHandler, ILongInputHandler<ChemicalStack> chemicalInputHandler,
           ChemicalUsageMultiplier chemicalUsage, LongConsumer chemicalUsedSoFarChanged, IOutputHandler<@NotNull ItemStack> outputHandler) {
         return new ItemStackConstantChemicalToObjectCachedRecipe<>(recipe, recheckAllErrors, itemInputHandler, chemicalInputHandler, chemicalUsage,

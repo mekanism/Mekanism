@@ -31,14 +31,14 @@ public abstract class ItemStackChemicalToItemStackRecipeManager extends
     /**
      * Adds a recipe that converts an item and a chemical into an item.
      * <br>
-     * If this is called from the compressing recipe manager, this will be a compressing recipe and the chemical input must be a {@link ChemicalStackIngredient} that will be
-     * used at a constant rate over the duration of the recipe. Osmium Compressors and Compressing Factories can process this recipe type.
+     * If this is called from the compressing recipe manager, this will be a compressing recipe and the chemical input must be a {@link ChemicalStackIngredient} that will
+     * be used at a constant rate over the duration of the recipe. Osmium Compressors and Compressing Factories can process this recipe type.
      * <br>
-     * If this is called from the injecting recipe manager, this will be an injecting recipe and the chemical input must be a {@link ChemicalStackIngredient} that will be used
-     * at a near constant rate over the duration of the recipe. Chemical Injection Chambers and Injecting Factories can process this recipe type.
+     * If this is called from the injecting recipe manager, this will be an injecting recipe and the chemical input must be a {@link ChemicalStackIngredient} that will be
+     * used at a near constant rate over the duration of the recipe. Chemical Injection Chambers and Injecting Factories can process this recipe type.
      * <br>
-     * If this is called from the purifying recipe manager, this will be a purifying recipe and the chemical input must be a {@link ChemicalStackIngredient} that will be used
-     * at a near constant rate over the duration of the recipe. Purification Chambers and Purifying Factories can process this recipe type.
+     * If this is called from the purifying recipe manager, this will be a purifying recipe and the chemical input must be a {@link ChemicalStackIngredient} that will be
+     * used at a near constant rate over the duration of the recipe. Purification Chambers and Purifying Factories can process this recipe type.
      * <br>
      * If this is called from the metallurgic infusing recipe manager, this will be a metallurgic infusing recipe and the chemical input must be an
      * {@link ChemicalStackIngredient} that will be consumed at the end along with the item input. Metallurgic Infusers and Infusing Factories can process this recipe
@@ -52,10 +52,11 @@ public abstract class ItemStackChemicalToItemStackRecipeManager extends
      * @param chemicalInput {@link ChemicalStackIngredient} representing the chemical input of the recipe. The type of this chemical depends on the recipe manager it is
      *                      called from.
      * @param output        {@link IItemStack} representing the output of the recipe.
+     * @param perTickUsage  Should the recipe consume the chemical input each tick it is processing.
      */
     @ZenCodeType.Method
-    public void addRecipe(String name, IIngredientWithAmount itemInput, ChemicalStackIngredient chemicalInput, IItemStack output) {
-        addRecipe(name, makeRecipe(itemInput, chemicalInput, output));
+    public void addRecipe(String name, IIngredientWithAmount itemInput, ChemicalStackIngredient chemicalInput, IItemStack output, boolean perTickUsage) {
+        addRecipe(name, makeRecipe(itemInput, chemicalInput, output, perTickUsage));
     }
 
     /**
@@ -65,12 +66,13 @@ public abstract class ItemStackChemicalToItemStackRecipeManager extends
      * @param chemicalInput {@link ChemicalStackIngredient} representing the chemical input of the recipe. The type of this chemical depends on the recipe manager it is
      *                      called from.
      * @param output        {@link IItemStack} representing the output of the recipe. Will be validated as not empty.
+     * @param perTickUsage  Should the recipe consume the chemical input each tick it is processing.
      */
-    public final ItemStackChemicalToItemStackRecipe makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient chemicalInput, IItemStack output) {
-        return makeRecipe(itemInput, chemicalInput, getAndValidateNotEmpty(output));
+    public final ItemStackChemicalToItemStackRecipe makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient chemicalInput, IItemStack output, boolean perTickUsage) {
+        return makeRecipe(itemInput, chemicalInput, getAndValidateNotEmpty(output), perTickUsage);
     }
 
-    protected abstract ItemStackChemicalToItemStackRecipe makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient chemicalInput, ItemStack output);
+    protected abstract ItemStackChemicalToItemStackRecipe makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient chemicalInput, ItemStack output, boolean perTickUsage);
 
     @Override
     protected String describeOutputs(ItemStackChemicalToItemStackRecipe recipe) {
@@ -88,8 +90,8 @@ public abstract class ItemStackChemicalToItemStackRecipeManager extends
         }
 
         @Override
-        protected ItemStackChemicalToItemStackRecipe makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient chemicalInput, ItemStack output) {
-            return new BasicCompressingRecipe(CrTUtils.fromCrT(itemInput), chemicalInput, output);
+        protected ItemStackChemicalToItemStackRecipe makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient chemicalInput, ItemStack output, boolean perTickUsage) {
+            return new BasicCompressingRecipe(CrTUtils.fromCrT(itemInput), chemicalInput, output, perTickUsage);
         }
     }
 
@@ -104,8 +106,8 @@ public abstract class ItemStackChemicalToItemStackRecipeManager extends
         }
 
         @Override
-        protected ItemStackChemicalToItemStackRecipe makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient chemicalInput, ItemStack output) {
-            return new BasicInjectingRecipe(CrTUtils.fromCrT(itemInput), chemicalInput, output);
+        protected ItemStackChemicalToItemStackRecipe makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient chemicalInput, ItemStack output, boolean perTickUsage) {
+            return new BasicInjectingRecipe(CrTUtils.fromCrT(itemInput), chemicalInput, output, perTickUsage);
         }
     }
 
@@ -120,8 +122,8 @@ public abstract class ItemStackChemicalToItemStackRecipeManager extends
         }
 
         @Override
-        protected ItemStackChemicalToItemStackRecipe makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient chemicalInput, ItemStack output) {
-            return new BasicPurifyingRecipe(CrTUtils.fromCrT(itemInput), chemicalInput, output);
+        protected ItemStackChemicalToItemStackRecipe makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient chemicalInput, ItemStack output, boolean perTickUsage) {
+            return new BasicPurifyingRecipe(CrTUtils.fromCrT(itemInput), chemicalInput, output, perTickUsage);
         }
     }
 
@@ -136,8 +138,8 @@ public abstract class ItemStackChemicalToItemStackRecipeManager extends
         }
 
         @Override
-        protected ItemStackChemicalToItemStackRecipe makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient chemicalInput, ItemStack output) {
-            return new BasicMetallurgicInfuserRecipe(CrTUtils.fromCrT(itemInput), chemicalInput, output);
+        protected ItemStackChemicalToItemStackRecipe makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient chemicalInput, ItemStack output, boolean perTickUsage) {
+            return new BasicMetallurgicInfuserRecipe(CrTUtils.fromCrT(itemInput), chemicalInput, output, perTickUsage);
         }
     }
 
@@ -152,8 +154,8 @@ public abstract class ItemStackChemicalToItemStackRecipeManager extends
         }
 
         @Override
-        protected ItemStackChemicalToItemStackRecipe makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient chemicalInput, ItemStack output) {
-            return new BasicPaintingRecipe(CrTUtils.fromCrT(itemInput), chemicalInput, output);
+        protected ItemStackChemicalToItemStackRecipe makeRecipe(IIngredientWithAmount itemInput, ChemicalStackIngredient chemicalInput, ItemStack output, boolean perTickUsage) {
+            return new BasicPaintingRecipe(CrTUtils.fromCrT(itemInput), chemicalInput, output, perTickUsage);
         }
     }
 }

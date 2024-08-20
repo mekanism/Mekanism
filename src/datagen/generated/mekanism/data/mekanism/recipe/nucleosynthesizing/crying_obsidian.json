@@ -12,5 +12,6 @@
   "output": {
     "count": 1,
     "id": "minecraft:crying_obsidian"
-  }
+  },
+  "per_tick_usage": false
 }

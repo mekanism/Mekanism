@@ -12,5 +12,6 @@
   "output": {
     "count": 1,
     "id": "minecraft:enchanted_golden_apple"
-  }
+  },
+  "per_tick_usage": false
 }

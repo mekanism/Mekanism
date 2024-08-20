@@ -19,7 +19,7 @@ public class NucleosynthesizingRecipeHandler extends MekanismRecipeHandler<Nucle
     public String dumpToCommandString(IRecipeManager<? super NucleosynthesizingRecipe> manager, RegistryAccess registryAccess,
           RecipeHolder<NucleosynthesizingRecipe> recipeHolder) {
         NucleosynthesizingRecipe recipe = recipeHolder.value();
-        return buildCommandString(manager, recipeHolder, recipe.getItemInput(), recipe.getChemicalInput(), recipe.getOutputDefinition(), recipe.getDuration());
+        return buildCommandString(manager, recipeHolder, recipe.getItemInput(), recipe.getChemicalInput(), recipe.getOutputDefinition(), recipe.getDuration(), recipe.perTickUsage());
     }
 
     @Override
@@ -34,7 +34,7 @@ public class NucleosynthesizingRecipeHandler extends MekanismRecipeHandler<Nucle
 
     @Override
     public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super NucleosynthesizingRecipe> manager, RegistryAccess registryAccess, NucleosynthesizingRecipe recipe) {
-        return decompose(recipe.getItemInput(), recipe.getChemicalInput(), recipe.getOutputDefinition(), recipe.getDuration());
+        return decompose(recipe.getItemInput(), recipe.getChemicalInput(), recipe.getOutputDefinition(), recipe.getDuration(), recipe.perTickUsage());
     }
 
     @Override
@@ -44,7 +44,8 @@ public class NucleosynthesizingRecipeHandler extends MekanismRecipeHandler<Nucle
                   recipe.getOrThrowSingle(CrTRecipeComponents.ITEM.input()),
                   recipe.getOrThrowSingle(CrTRecipeComponents.CHEMICAL.input()),
                   recipe.getOrThrowSingle(CrTRecipeComponents.ITEM.output()),
-                  recipe.getOrThrowSingle(BuiltinRecipeComponents.Processing.TIME)
+                  recipe.getOrThrowSingle(BuiltinRecipeComponents.Processing.TIME),
+                  recipe.getOrThrowSingle(CrTRecipeComponents.PER_TICK_USAGE)
             ));
         }
         return Optional.empty();

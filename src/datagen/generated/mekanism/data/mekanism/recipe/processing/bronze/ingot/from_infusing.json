@@ -11,5 +11,6 @@
   "output": {
     "count": 4,
     "id": "mekanism:ingot_bronze"
-  }
+  },
+  "per_tick_usage": false
 }

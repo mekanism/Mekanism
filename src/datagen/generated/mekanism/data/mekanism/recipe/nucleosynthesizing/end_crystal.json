@@ -12,5 +12,6 @@
   "output": {
     "count": 1,
     "id": "minecraft:end_crystal"
-  }
+  },
+  "per_tick_usage": false
 }

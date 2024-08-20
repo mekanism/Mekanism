@@ -17,5 +17,6 @@
   "output": {
     "count": 1,
     "id": "mekanismadditions:gray_balloon"
-  }
+  },
+  "per_tick_usage": false
 }

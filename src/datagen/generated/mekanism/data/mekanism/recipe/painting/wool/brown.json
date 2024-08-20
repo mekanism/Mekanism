@@ -17,5 +17,6 @@
   "output": {
     "count": 1,
     "id": "minecraft:brown_wool"
-  }
+  },
+  "per_tick_usage": false
 }

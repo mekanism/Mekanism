@@ -18,6 +18,7 @@ import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.api.recipes.cache.ItemStackConstantChemicalToObjectCachedRecipe;
 import mekanism.api.recipes.cache.ItemStackConstantChemicalToObjectCachedRecipe.ChemicalUsageMultiplier;
+import mekanism.api.recipes.cache.TwoInputCachedRecipe;
 import mekanism.api.recipes.inputs.ILongInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.vanilla_input.SingleItemChemicalRecipeInput;
@@ -103,18 +104,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
             // rather than adjusting the mean each time to try and reach a given target
             gasUsageMultiplier = (usedSoFar, operatingTicks) -> StatUtils.inversePoisson(gasPerTickMeanMultiplier);
         } else {
-            gasUsageMultiplier = (usedSoFar, operatingTicks) -> {
-                long baseRemaining = baseTotalUsage - usedSoFar;
-                int remainingTicks = getTicksRequired() - operatingTicks;
-                if (baseRemaining < remainingTicks) {
-                    //If we already used more than we would need to use (due to removing speed upgrades or adding gas upgrades)
-                    // then just don't use any gas this tick
-                    return 0;
-                } else if (baseRemaining == remainingTicks) {
-                    return 1;
-                }
-                return Math.max(MathUtils.clampToLong(baseRemaining / (double) remainingTicks), 0);
-            };
+            gasUsageMultiplier = ChemicalUsageMultiplier.constantUse(() -> baseTotalUsage, this::getTicksRequired);
         }
     }
 
@@ -228,8 +218,14 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     @NotNull
     @Override
     public CachedRecipe<ItemStackChemicalToItemStackRecipe> createNewCachedRecipe(@NotNull ItemStackChemicalToItemStackRecipe recipe, int cacheIndex) {
-        return ItemStackConstantChemicalToObjectCachedRecipe.toItem(recipe, recheckAllRecipeErrors[cacheIndex], inputHandlers[cacheIndex], gasInputHandler,
-              gasUsageMultiplier, used -> usedSoFar[cacheIndex] = used, outputHandlers[cacheIndex])
+        CachedRecipe<ItemStackChemicalToItemStackRecipe> cachedRecipe;
+        if (recipe.perTickUsage()) {
+            cachedRecipe = ItemStackConstantChemicalToObjectCachedRecipe.toItem(recipe, recheckAllRecipeErrors[cacheIndex], inputHandlers[cacheIndex], gasInputHandler,
+                  gasUsageMultiplier, used -> usedSoFar[cacheIndex] = used, outputHandlers[cacheIndex]);
+        } else {
+            cachedRecipe = TwoInputCachedRecipe.itemChemicalToItem(recipe, recheckAllRecipeErrors[cacheIndex], inputHandlers[cacheIndex], gasInputHandler, outputHandlers[cacheIndex]);
+        }
+        return cachedRecipe
               .setErrorsChanged(errors -> errorTracker.onErrorsChanged(errors, cacheIndex))
               .setCanHolderFunction(this::canFunction)
               .setActive(active -> setActiveState(active, cacheIndex))
@@ -290,7 +286,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
             super.parseUpgradeData(provider, upgradeData);
             //Copy the contents using NBT so that if it is not actually valid due to a reload we don't crash
             gasTank.deserializeNBT(provider, data.stored.serializeNBT(provider));
-            extraSlot.deserializeNBT(provider, data.gasSlot.serializeNBT(provider));
+            extraSlot.deserializeNBT(provider, data.chemicalSlot.serializeNBT(provider));
             System.arraycopy(data.usedSoFar, 0, usedSoFar, 0, data.usedSoFar.length);
         } else {
             Mekanism.logger.warn("Unhandled upgrade data.", new Throwable());

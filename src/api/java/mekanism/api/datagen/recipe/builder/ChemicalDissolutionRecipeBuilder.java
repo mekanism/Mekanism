@@ -14,11 +14,13 @@ public class ChemicalDissolutionRecipeBuilder extends MekanismRecipeBuilder<Chem
     private final ItemStackIngredient itemInput;
     private final ChemicalStackIngredient chemicalInput;
     private final ChemicalStack output;
+    private final boolean perTickUsage;
 
-    protected ChemicalDissolutionRecipeBuilder(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ChemicalStack output) {
+    protected ChemicalDissolutionRecipeBuilder(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ChemicalStack output, boolean perTickUsage) {
         this.itemInput = itemInput;
         this.chemicalInput = chemicalInput;
         this.output = output;
+        this.perTickUsage = perTickUsage;
     }
 
     /**
@@ -27,16 +29,17 @@ public class ChemicalDissolutionRecipeBuilder extends MekanismRecipeBuilder<Chem
      * @param itemInput     Item Input.
      * @param chemicalInput Chemical Input.
      * @param output        Output.
+     * @param perTickUsage  Should the recipe consume the chemical input each tick it is processing.
      */
-    public static ChemicalDissolutionRecipeBuilder dissolution(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ChemicalStack output) {
+    public static ChemicalDissolutionRecipeBuilder dissolution(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ChemicalStack output, boolean perTickUsage) {
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This dissolution chamber recipe requires a non empty chemical output.");
         }
-        return new ChemicalDissolutionRecipeBuilder(itemInput, chemicalInput, output);
+        return new ChemicalDissolutionRecipeBuilder(itemInput, chemicalInput, output, perTickUsage);
     }
 
     @Override
     protected ChemicalDissolutionRecipe asRecipe() {
-        return new BasicChemicalDissolutionRecipe(itemInput, chemicalInput, output);
+        return new BasicChemicalDissolutionRecipe(itemInput, chemicalInput, output, perTickUsage);
     }
 }

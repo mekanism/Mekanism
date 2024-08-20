@@ -29,7 +29,8 @@ class ControlCircuitRecipeProvider implements ISubRecipeProvider {
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               IngredientCreatorAccess.item().from(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM)),
               IngredientCreatorAccess.chemicalStack().from(MekanismAPITags.Chemicals.REDSTONE, 20),
-              MekanismItems.BASIC_CONTROL_CIRCUIT.getItemStack()
+              MekanismItems.BASIC_CONTROL_CIRCUIT.getItemStack(),
+              false
         ).build(consumer, Mekanism.rl(basePath + "basic"));
         addCircuitUpgradeRecipe(consumer, MekanismItems.ADVANCED_CONTROL_CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC, MekanismTags.Items.ALLOYS_INFUSED, basePath, "advanced");
         addCircuitUpgradeRecipe(consumer, MekanismItems.ELITE_CONTROL_CIRCUIT, MekanismTags.Items.CIRCUITS_ADVANCED, MekanismTags.Items.ALLOYS_REINFORCED, basePath, "elite");

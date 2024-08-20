@@ -12,5 +12,6 @@
   "output": {
     "count": 1,
     "id": "minecraft:dragon_egg"
-  }
+  },
+  "per_tick_usage": false
 }

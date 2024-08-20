@@ -2,12 +2,15 @@ package mekanism.common.tile.machine;
 
 import java.util.List;
 import mekanism.api.IContentsListener;
+import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.recipes.NucleosynthesizingRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
+import mekanism.api.recipes.cache.ItemStackConstantChemicalToObjectCachedRecipe;
+import mekanism.api.recipes.cache.ItemStackConstantChemicalToObjectCachedRecipe.ChemicalUsageMultiplier;
 import mekanism.api.recipes.cache.TwoInputCachedRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.ILongInputHandler;
@@ -41,6 +44,7 @@ import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.IDoubleRecipeLookupHandler.ItemChemicalRecipeLookupHandler;
+import mekanism.common.recipe.lookup.IRecipeLookupHandler.ConstantUsageRecipeLookupHandler;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.ItemChemical;
 import mekanism.common.recipe.lookup.monitor.NucleosynthesizerRecipeCacheLookupMonitor;
 import mekanism.common.recipe.lookup.monitor.RecipeCacheLookupMonitor;
@@ -49,13 +53,15 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressMachine<NucleosynthesizingRecipe> implements
+public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressMachine<NucleosynthesizingRecipe> implements ConstantUsageRecipeLookupHandler,
       ItemChemicalRecipeLookupHandler<NucleosynthesizingRecipe> {
 
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
@@ -65,12 +71,15 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
           RecipeError.NOT_ENOUGH_OUTPUT_SPACE,
           RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
     );
-    private static final int BASE_DURATION = 20 * SharedConstants.TICKS_PER_SECOND;
+    public static final int BASE_TICKS_REQUIRED = 20 * SharedConstants.TICKS_PER_SECOND;
     public static final long MAX_GAS = 10 * FluidType.BUCKET_VOLUME;
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getInputChemical", "getInputChemicalCapacity", "getInputChemicalNeeded",
                                                                                         "getInputChemicalFilledPercentage"}, docPlaceholder = "input gas tank")
     public IChemicalTank gasTank;
+
+    private final ChemicalUsageMultiplier chemicalUsageMultiplier = ChemicalUsageMultiplier.constantUse(() -> ticksRequired, this::getTicksRequired);
+    private long usedSoFar;
 
     protected final IOutputHandler<@NotNull ItemStack> outputHandler;
     protected final IInputHandler<@NotNull ItemStack> itemInputHandler;
@@ -89,7 +98,7 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
     private long clientEnergyUsed = 0L;
 
     public TileEntityAntiprotonicNucleosynthesizer(BlockPos pos, BlockState state) {
-        super(MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER, pos, state, TRACKED_ERROR_TYPES, BASE_DURATION);
+        super(MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER, pos, state, TRACKED_ERROR_TYPES, BASE_TICKS_REQUIRED);
         configComponent.setupItemIOExtraConfig(inputSlot, outputSlot, gasInputSlot, energySlot);
         configComponent.setupInputConfig(TransmissionType.CHEMICAL, gasTank);
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
@@ -150,7 +159,7 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
     public void onCachedRecipeChanged(@Nullable CachedRecipe<NucleosynthesizingRecipe> cachedRecipe, int cacheIndex) {
         super.onCachedRecipeChanged(cachedRecipe, cacheIndex);
         //Note: Because we don't support speed upgrades we can do this in a much cleaner way than how we have to do it for the PRC
-        ticksRequired = cachedRecipe == null ? BASE_DURATION : cachedRecipe.getRecipe().getDuration();
+        ticksRequired = cachedRecipe == null ? BASE_TICKS_REQUIRED : cachedRecipe.getRecipe().getDuration();
     }
 
     @Override
@@ -171,7 +180,14 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
     @NotNull
     @Override
     public CachedRecipe<NucleosynthesizingRecipe> createNewCachedRecipe(@NotNull NucleosynthesizingRecipe recipe, int cacheIndex) {
-        return TwoInputCachedRecipe.itemChemicalToItem(recipe, recheckAllRecipeErrors, itemInputHandler, gasInputHandler, outputHandler)
+        CachedRecipe<NucleosynthesizingRecipe> cachedRecipe;
+        if (recipe.perTickUsage()) {
+            cachedRecipe = ItemStackConstantChemicalToObjectCachedRecipe.toItem(recipe, recheckAllRecipeErrors, itemInputHandler, gasInputHandler,
+                  chemicalUsageMultiplier, used -> usedSoFar = used, outputHandler);
+        } else {
+            cachedRecipe = TwoInputCachedRecipe.itemChemicalToItem(recipe, recheckAllRecipeErrors, itemInputHandler, gasInputHandler, outputHandler);
+        }
+        return cachedRecipe
               .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(this::canFunction)
               .setActive(this::setActive)
@@ -183,6 +199,23 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
 
     public MachineEnergyContainer<TileEntityAntiprotonicNucleosynthesizer> getEnergyContainer() {
         return energyContainer;
+    }
+
+    @Override
+    public long getSavedUsedSoFar(int cacheIndex) {
+        return usedSoFar;
+    }
+
+    @Override
+    public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
+        super.loadAdditional(nbt, provider);
+        usedSoFar = nbt.getLong(SerializationConstants.USED_SO_FAR);
+    }
+
+    @Override
+    public void saveAdditional(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
+        super.saveAdditional(nbtTags, provider);
+        nbtTags.putLong(SerializationConstants.USED_SO_FAR, usedSoFar);
     }
 
     @NotNull

@@ -17,5 +17,6 @@
   "output": {
     "count": 1,
     "id": "mekanismadditions:lime_plastic_slab"
-  }
+  },
+  "per_tick_usage": false
 }

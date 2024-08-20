@@ -12,5 +12,6 @@
   "output": {
     "count": 1,
     "id": "minecraft:ender_chest"
-  }
+  },
+  "per_tick_usage": false
 }

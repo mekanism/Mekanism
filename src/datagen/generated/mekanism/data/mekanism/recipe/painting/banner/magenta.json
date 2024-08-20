@@ -17,5 +17,6 @@
   "output": {
     "count": 1,
     "id": "minecraft:magenta_banner"
-  }
+  },
+  "per_tick_usage": false
 }

@@ -11,5 +11,6 @@
   "output": {
     "count": 1,
     "id": "minecraft:fire_coral_fan"
-  }
+  },
+  "per_tick_usage": true
 }

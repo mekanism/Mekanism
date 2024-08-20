@@ -18,7 +18,7 @@ public class ItemStackChemicalToItemStackRecipeHandler extends MekanismRecipeHan
     public String dumpToCommandString(IRecipeManager<? super ItemStackChemicalToItemStackRecipe> manager, RegistryAccess registryAccess,
           RecipeHolder<ItemStackChemicalToItemStackRecipe> recipeHolder) {
         ItemStackChemicalToItemStackRecipe recipe = recipeHolder.value();
-        return buildCommandString(manager, recipeHolder, recipe.getItemInput(), recipe.getChemicalInput(), recipe.getOutputDefinition());
+        return buildCommandString(manager, recipeHolder, recipe.getItemInput(), recipe.getChemicalInput(), recipe.getOutputDefinition(), recipe.perTickUsage());
     }
 
     @Override
@@ -36,7 +36,7 @@ public class ItemStackChemicalToItemStackRecipeHandler extends MekanismRecipeHan
     @Override
     public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super ItemStackChemicalToItemStackRecipe> manager, RegistryAccess registryAccess,
           ItemStackChemicalToItemStackRecipe recipe) {
-        return decompose(recipe.getItemInput(), recipe.getChemicalInput(), recipe.getOutputDefinition());
+        return decompose(recipe.getItemInput(), recipe.getChemicalInput(), recipe.getOutputDefinition(), recipe.perTickUsage());
     }
 
     @Override
@@ -46,7 +46,8 @@ public class ItemStackChemicalToItemStackRecipeHandler extends MekanismRecipeHan
             return Optional.of(manager.makeRecipe(
                   recipe.getOrThrowSingle(CrTRecipeComponents.ITEM.input()),
                   recipe.getOrThrowSingle(CrTRecipeComponents.CHEMICAL.input()),
-                  recipe.getOrThrowSingle(CrTRecipeComponents.ITEM.output())
+                  recipe.getOrThrowSingle(CrTRecipeComponents.ITEM.output()),
+                  recipe.getOrThrowSingle(CrTRecipeComponents.PER_TICK_USAGE)
             ));
         }
         return Optional.empty();

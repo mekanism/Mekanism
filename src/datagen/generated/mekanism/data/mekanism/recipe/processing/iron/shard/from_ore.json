@@ -11,5 +11,6 @@
   "output": {
     "count": 4,
     "id": "mekanism:shard_iron"
-  }
+  },
+  "per_tick_usage": true
 }

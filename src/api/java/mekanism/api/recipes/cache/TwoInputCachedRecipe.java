@@ -11,6 +11,7 @@ import java.util.function.Supplier;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.functions.ConstantPredicates;
+import mekanism.api.recipes.ChemicalDissolutionRecipe;
 import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.FluidChemicalToChemicalRecipe;
 import mekanism.api.recipes.ItemStackChemicalToItemStackRecipe;
@@ -144,6 +145,25 @@ public class TwoInputCachedRecipe<INPUT_A, INPUT_B, OUTPUT, RECIPE extends Mekan
           IInputHandler<@NotNull ChemicalStack> chemicalInputHandler, IOutputHandler<@NotNull ItemStack> outputHandler) {
         return new TwoInputCachedRecipe<>(recipe, recheckAllErrors, itemInputHandler, chemicalInputHandler, outputHandler, recipe::getItemInput, recipe::getChemicalInput,
               recipe::getOutput, ConstantPredicates.ITEM_EMPTY, ConstantPredicates.CHEMICAL_EMPTY, ConstantPredicates.ITEM_EMPTY);
+    }
+
+    /**
+     * Base implementation for handling ItemStack Chemical To Chemical Recipes.
+     *
+     * @param recipe               Recipe.
+     * @param recheckAllErrors     Returns {@code true} if processing should be continued even if an error is hit in order to gather all the errors. It is recommended to
+     *                             not do this every tick or if there is no one viewing recipes.
+     * @param itemInputHandler     Item input handler.
+     * @param chemicalInputHandler Chemical input handler.
+     * @param outputHandler        Output handler.
+     *
+     * @since 10.6.10
+     */
+    public static <RECIPE extends ChemicalDissolutionRecipe> TwoInputCachedRecipe<@NotNull ItemStack, @NotNull ChemicalStack, @NotNull ChemicalStack, RECIPE>
+    itemChemicalToChemical(RECIPE recipe, BooleanSupplier recheckAllErrors, IInputHandler<@NotNull ItemStack> itemInputHandler,
+          IInputHandler<@NotNull ChemicalStack> chemicalInputHandler, IOutputHandler<@NotNull ChemicalStack> outputHandler) {
+        return new TwoInputCachedRecipe<>(recipe, recheckAllErrors, itemInputHandler, chemicalInputHandler, outputHandler, recipe::getItemInput, recipe::getChemicalInput,
+              recipe::getOutput, ConstantPredicates.ITEM_EMPTY, ConstantPredicates.CHEMICAL_EMPTY, ConstantPredicates.CHEMICAL_EMPTY);
     }
 
     /**

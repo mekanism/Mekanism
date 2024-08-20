@@ -11,5 +11,6 @@
   "output": {
     "count": 1,
     "id": "minecraft:gilded_blackstone"
-  }
+  },
+  "per_tick_usage": false
 }

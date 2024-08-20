@@ -11,5 +11,6 @@
   "output": {
     "count": 2,
     "id": "mekanism:clump_copper"
-  }
+  },
+  "per_tick_usage": true
 }

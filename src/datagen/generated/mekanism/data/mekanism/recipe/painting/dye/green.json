@@ -11,5 +11,6 @@
   "output": {
     "count": 1,
     "id": "minecraft:green_dye"
-  }
+  },
+  "per_tick_usage": false
 }

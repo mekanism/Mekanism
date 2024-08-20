@@ -17,5 +17,6 @@
   "output": {
     "count": 1,
     "id": "minecraft:green_bed"
-  }
+  },
+  "per_tick_usage": false
 }

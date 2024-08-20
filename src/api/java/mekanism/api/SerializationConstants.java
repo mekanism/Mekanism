@@ -56,6 +56,10 @@ public final class SerializationConstants {
     public static final String FLUID_INPUT = "fluid_input";
     public static final String ITEM_INPUT = "item_input";
     public static final String OUTPUT = "output";
+    /**
+     * @since 10.6.10
+     */
+    public static final String PER_TICK_USAGE = "per_tick_usage";
     public static final String MAIN_OUTPUT = "main_output";
     public static final String SECONDARY_OUTPUT = "secondary_output";
     public static final String SECONDARY_CHANCE = "secondary_chance";

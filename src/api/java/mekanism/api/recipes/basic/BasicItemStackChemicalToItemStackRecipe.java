@@ -21,13 +21,15 @@ public abstract class BasicItemStackChemicalToItemStackRecipe extends ItemStackC
     protected final ItemStackIngredient itemInput;
     protected final ChemicalStackIngredient chemicalInput;
     protected final ItemStack output;
+    private final boolean perTickUsage;
 
     /**
      * @param itemInput     Item input.
      * @param chemicalInput Chemical input.
      * @param output        Output.
+     * @param perTickUsage  Should the recipe consume the chemical input each tick it is processing.
      */
-    public BasicItemStackChemicalToItemStackRecipe(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ItemStack output,
+    public BasicItemStackChemicalToItemStackRecipe(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ItemStack output, boolean perTickUsage,
           RecipeType<? extends ItemStackChemicalToItemStackRecipe> recipeType) {
         this.recipeType = Objects.requireNonNull(recipeType, "Recipe type cannot be null");
         this.itemInput = Objects.requireNonNull(itemInput, "Item input cannot be null.");
@@ -37,6 +39,7 @@ public abstract class BasicItemStackChemicalToItemStackRecipe extends ItemStackC
             throw new IllegalArgumentException("Output cannot be empty.");
         }
         this.output = output.copy();
+        this.perTickUsage = perTickUsage;
     }
 
     @Override
@@ -58,6 +61,11 @@ public abstract class BasicItemStackChemicalToItemStackRecipe extends ItemStackC
     @Contract(value = "_, _ -> new", pure = true)
     public ItemStack getOutput(ItemStack inputItem, ChemicalStack inputChemical) {
         return output.copy();
+    }
+
+    @Override
+    public final boolean perTickUsage() {
+        return perTickUsage;
     }
 
     @NotNull

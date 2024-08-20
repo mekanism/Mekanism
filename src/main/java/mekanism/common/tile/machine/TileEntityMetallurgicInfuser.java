@@ -3,14 +3,18 @@ package mekanism.common.tile.machine;
 import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
+import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.recipes.ItemStackChemicalToItemStackRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
+import mekanism.api.recipes.cache.ItemStackConstantChemicalToObjectCachedRecipe;
+import mekanism.api.recipes.cache.ItemStackConstantChemicalToObjectCachedRecipe.ChemicalUsageMultiplier;
 import mekanism.api.recipes.cache.TwoInputCachedRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
+import mekanism.api.recipes.inputs.ILongInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
@@ -39,16 +43,18 @@ import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.IDoubleRecipeLookupHandler.ItemChemicalRecipeLookupHandler;
+import mekanism.common.recipe.lookup.IRecipeLookupHandler.ConstantUsageRecipeLookupHandler;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.ItemChemical;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.interfaces.IHasDumpButton;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
-import mekanism.common.upgrade.MetallurgicInfuserUpgradeData;
+import mekanism.common.upgrade.AdvancedMachineUpgradeData;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -56,7 +62,7 @@ import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<ItemStackChemicalToItemStackRecipe> implements IHasDumpButton,
+public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<ItemStackChemicalToItemStackRecipe> implements IHasDumpButton, ConstantUsageRecipeLookupHandler,
       ItemChemicalRecipeLookupHandler<ItemStackChemicalToItemStackRecipe> {
 
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
@@ -73,8 +79,11 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Item
                                                                                         "getInfuseTypeFilledPercentage"}, docPlaceholder = "infusion buffer")
     public IChemicalTank infusionTank;
 
+    private final ChemicalUsageMultiplier chemicalUsageMultiplier = ChemicalUsageMultiplier.constantUse(() -> ticksRequired, this::getTicksRequired);
+    private long usedSoFar;
+
     private final IOutputHandler<@NotNull ItemStack> outputHandler;
-    private final IInputHandler<@NotNull ChemicalStack> infusionInputHandler;
+    private final ILongInputHandler<@NotNull ChemicalStack> infusionInputHandler;
     private final IInputHandler<@NotNull ItemStack> itemInputHandler;
 
     private MachineEnergyContainer<TileEntityMetallurgicInfuser> energyContainer;
@@ -160,7 +169,14 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Item
     @NotNull
     @Override
     public CachedRecipe<ItemStackChemicalToItemStackRecipe> createNewCachedRecipe(@NotNull ItemStackChemicalToItemStackRecipe recipe, int cacheIndex) {
-        return TwoInputCachedRecipe.itemChemicalToItem(recipe, recheckAllRecipeErrors, itemInputHandler, infusionInputHandler, outputHandler)
+        CachedRecipe<ItemStackChemicalToItemStackRecipe> cachedRecipe;
+        if (recipe.perTickUsage()) {
+            cachedRecipe = ItemStackConstantChemicalToObjectCachedRecipe.toItem(recipe, recheckAllRecipeErrors, itemInputHandler, infusionInputHandler,
+                  chemicalUsageMultiplier, used -> usedSoFar = used, outputHandler);
+        } else {
+            cachedRecipe = TwoInputCachedRecipe.itemChemicalToItem(recipe, recheckAllRecipeErrors, itemInputHandler, infusionInputHandler, outputHandler);
+        }
+        return cachedRecipe
               .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(this::canFunction)
               .setActive(this::setActive)
@@ -172,13 +188,30 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Item
 
     @NotNull
     @Override
-    public MetallurgicInfuserUpgradeData getUpgradeData(HolderLookup.Provider provider) {
-        return new MetallurgicInfuserUpgradeData(provider, redstone, getControlType(), getEnergyContainer(), getOperatingTicks(), infusionTank, infusionSlot, energySlot,
-              inputSlot, outputSlot, getComponents());
+    public AdvancedMachineUpgradeData getUpgradeData(HolderLookup.Provider provider) {
+        return new AdvancedMachineUpgradeData(provider, redstone, getControlType(), getEnergyContainer(), getOperatingTicks(), usedSoFar, infusionTank,
+              infusionSlot, energySlot, inputSlot, outputSlot, getComponents());
     }
 
     public MachineEnergyContainer<TileEntityMetallurgicInfuser> getEnergyContainer() {
         return energyContainer;
+    }
+
+    @Override
+    public long getSavedUsedSoFar(int cacheIndex) {
+        return usedSoFar;
+    }
+
+    @Override
+    public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
+        super.loadAdditional(nbt, provider);
+        usedSoFar = nbt.getLong(SerializationConstants.USED_SO_FAR);
+    }
+
+    @Override
+    public void saveAdditional(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
+        super.saveAdditional(nbtTags, provider);
+        nbtTags.putLong(SerializationConstants.USED_SO_FAR, usedSoFar);
     }
 
     @Override

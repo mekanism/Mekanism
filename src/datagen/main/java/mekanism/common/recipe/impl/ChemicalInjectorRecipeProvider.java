@@ -29,25 +29,29 @@ class ChemicalInjectorRecipeProvider implements ISubRecipeProvider {
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
               IngredientCreatorAccess.item().from(Tags.Items.BRICKS_NORMAL),
               IngredientCreatorAccess.chemicalStack().from(MekanismTags.Chemicals.WATER_VAPOR, 1),
-              new ItemStack(Items.CLAY_BALL)
+              new ItemStack(Items.CLAY_BALL),
+              true
         ).build(consumer, Mekanism.rl(basePath + "brick_to_clay_ball"));
         //Dirt -> mud
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
               IngredientCreatorAccess.item().from(Blocks.DIRT),
               IngredientCreatorAccess.chemicalStack().from(MekanismTags.Chemicals.WATER_VAPOR, 1),
-              new ItemStack(Blocks.MUD)
+              new ItemStack(Blocks.MUD),
+              true
         ).build(consumer, Mekanism.rl(basePath + "dirt_to_mud"));
         //Gunpowder -> sulfur
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
               IngredientCreatorAccess.item().from(Tags.Items.GUNPOWDERS),
               IngredientCreatorAccess.chemicalStack().from(MekanismChemicals.HYDROGEN_CHLORIDE, 1),
-              MekanismItems.SULFUR_DUST.getItemStack()
+              MekanismItems.SULFUR_DUST.getItemStack(),
+              true
         ).build(consumer, Mekanism.rl(basePath + "gunpowder_to_sulfur"));
         //Terracotta -> clay
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
               IngredientCreatorAccess.item().from(Blocks.TERRACOTTA),
               IngredientCreatorAccess.chemicalStack().from(MekanismTags.Chemicals.WATER_VAPOR, 1),
-              new ItemStack(Blocks.CLAY)
+              new ItemStack(Blocks.CLAY),
+              true
         ).build(consumer, Mekanism.rl(basePath + "terracotta_to_clay"));
         addChemicalInjectorConcreteRecipes(consumer, basePath + "concrete/");
         addChemicalInjectorCoralRevivalRecipes(consumer, basePath + "coral/");
@@ -77,7 +81,8 @@ class ChemicalInjectorRecipeProvider implements ISubRecipeProvider {
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
               IngredientCreatorAccess.item().from(powder),
               IngredientCreatorAccess.chemicalStack().from(MekanismTags.Chemicals.WATER_VAPOR, 1),
-              new ItemStack(concrete)
+              new ItemStack(concrete),
+              true
         ).build(consumer, Mekanism.rl(basePath + name));
     }
 
@@ -103,7 +108,8 @@ class ChemicalInjectorRecipeProvider implements ISubRecipeProvider {
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
               IngredientCreatorAccess.item().from(dead),
               IngredientCreatorAccess.chemicalStack().from(MekanismTags.Chemicals.WATER_VAPOR, water),
-              new ItemStack(living)
+              new ItemStack(living),
+              true
         ).build(consumer, Mekanism.rl(basePath + RegistryUtils.getPath(living.asItem())));
     }
 
@@ -115,7 +121,8 @@ class ChemicalInjectorRecipeProvider implements ISubRecipeProvider {
             ItemStackChemicalToItemStackRecipeBuilder.injecting(
                   IngredientCreatorAccess.item().from(entry.getKey()),
                   oxygen,
-                  new ItemStack(result)
+                  new ItemStack(result),
+                  true
             ).build(consumer, Mekanism.rl(basePath + RegistryUtils.getPath(result.asItem())));
         }
     }

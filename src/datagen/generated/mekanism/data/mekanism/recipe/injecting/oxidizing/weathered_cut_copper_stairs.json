@@ -11,5 +11,6 @@
   "output": {
     "count": 1,
     "id": "minecraft:weathered_cut_copper_stairs"
-  }
+  },
+  "per_tick_usage": true
 }

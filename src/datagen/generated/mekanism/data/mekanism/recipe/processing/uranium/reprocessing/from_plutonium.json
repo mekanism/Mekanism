@@ -11,5 +11,6 @@
   "output": {
     "count": 4,
     "id": "mekanism:reprocessed_fissile_fragment"
-  }
+  },
+  "per_tick_usage": true
 }

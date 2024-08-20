@@ -17,5 +17,6 @@
   "output": {
     "count": 1,
     "id": "minecraft:magenta_carpet"
-  }
+  },
+  "per_tick_usage": false
 }

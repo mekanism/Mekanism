@@ -26,26 +26,30 @@ class MetallurgicInfuserRecipeProvider implements ISubRecipeProvider {
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               IngredientCreatorAccess.item().from(Blocks.DIRT),
               IngredientCreatorAccess.chemicalStack().from(MekanismAPITags.Chemicals.FUNGI, 10),
-              new ItemStack(Blocks.MYCELIUM)
+              new ItemStack(Blocks.MYCELIUM),
+              false
         ).build(consumer, Mekanism.rl(basePath + "dirt_to_mycelium"));
         //Netherrack -> crimson nylium
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               IngredientCreatorAccess.item().from(Blocks.NETHERRACK),
               IngredientCreatorAccess.chemicalStack().from(MekanismAPITags.Chemicals.FUNGI, 10),
-              new ItemStack(Blocks.CRIMSON_NYLIUM)
+              new ItemStack(Blocks.CRIMSON_NYLIUM),
+              false
         ).build(consumer, Mekanism.rl(basePath + "netherrack_to_crimson_nylium"));
         //Crimson nylium -> warped nylium
         //Note: We use crimson as the base so that it is easy to "specify" which output is desired
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               IngredientCreatorAccess.item().from(Blocks.CRIMSON_NYLIUM),
               IngredientCreatorAccess.chemicalStack().from(MekanismAPITags.Chemicals.FUNGI, 10),
-              new ItemStack(Blocks.WARPED_NYLIUM)
+              new ItemStack(Blocks.WARPED_NYLIUM),
+              false
         ).build(consumer, Mekanism.rl(basePath + "crimson_nylium_to_warped_nylium"));
         //Blackstone -> Gilded Blackstone
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               IngredientCreatorAccess.item().from(Blocks.BLACKSTONE),
               IngredientCreatorAccess.chemicalStack().from(MekanismAPITags.Chemicals.GOLD, 100),
-              new ItemStack(Blocks.GILDED_BLACKSTONE)
+              new ItemStack(Blocks.GILDED_BLACKSTONE),
+              false
         ).build(consumer, Mekanism.rl(basePath + "blackstone_to_gilded_blackstone"));
     }
 
@@ -54,19 +58,22 @@ class MetallurgicInfuserRecipeProvider implements ISubRecipeProvider {
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               IngredientCreatorAccess.item().from(Tags.Items.INGOTS_IRON),
               IngredientCreatorAccess.chemicalStack().from(MekanismAPITags.Chemicals.REDSTONE, 10),
-              MekanismItems.INFUSED_ALLOY.getItemStack()
+              MekanismItems.INFUSED_ALLOY.getItemStack(),
+              false
         ).build(consumer, Mekanism.rl(basePath + "infused"));
         //Reinforced
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               IngredientCreatorAccess.item().from(MekanismTags.Items.ALLOYS_INFUSED),
               IngredientCreatorAccess.chemicalStack().from(MekanismAPITags.Chemicals.DIAMOND, 20),
-              MekanismItems.REINFORCED_ALLOY.getItemStack()
+              MekanismItems.REINFORCED_ALLOY.getItemStack(),
+              false
         ).build(consumer, Mekanism.rl(basePath + "reinforced"));
         //Atomic
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               IngredientCreatorAccess.item().from(MekanismTags.Items.ALLOYS_REINFORCED),
               IngredientCreatorAccess.chemicalStack().from(MekanismAPITags.Chemicals.REFINED_OBSIDIAN, 40),
-              MekanismItems.ATOMIC_ALLOY.getItemStack()
+              MekanismItems.ATOMIC_ALLOY.getItemStack(),
+              false
         ).build(consumer, Mekanism.rl(basePath + "atomic"));
     }
 
@@ -75,50 +82,58 @@ class MetallurgicInfuserRecipeProvider implements ISubRecipeProvider {
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               IngredientCreatorAccess.item().from(Blocks.COBBLESTONE),
               IngredientCreatorAccess.chemicalStack().from(MekanismAPITags.Chemicals.BIO, 10),
-              new ItemStack(Blocks.MOSSY_COBBLESTONE)
+              new ItemStack(Blocks.MOSSY_COBBLESTONE),
+              false
         ).build(consumer, Mekanism.rl(basePath + "cobblestone"));
         //Cobblestone slab
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               IngredientCreatorAccess.item().from(Blocks.COBBLESTONE_SLAB),
               IngredientCreatorAccess.chemicalStack().from(MekanismAPITags.Chemicals.BIO, 10),
-              new ItemStack(Blocks.MOSSY_COBBLESTONE_SLAB)
+              new ItemStack(Blocks.MOSSY_COBBLESTONE_SLAB),
+              false
         ).build(consumer, Mekanism.rl(basePath + "cobblestone_slab"));
         //Cobblestone stairs
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               IngredientCreatorAccess.item().from(Blocks.COBBLESTONE_STAIRS),
               IngredientCreatorAccess.chemicalStack().from(MekanismAPITags.Chemicals.BIO, 10),
-              new ItemStack(Blocks.MOSSY_COBBLESTONE_STAIRS)
+              new ItemStack(Blocks.MOSSY_COBBLESTONE_STAIRS),
+              false
         ).build(consumer, Mekanism.rl(basePath + "cobblestone_stairs"));
         //Cobblestone wall
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               IngredientCreatorAccess.item().from(Blocks.COBBLESTONE_WALL),
               IngredientCreatorAccess.chemicalStack().from(MekanismAPITags.Chemicals.BIO, 10),
-              new ItemStack(Blocks.MOSSY_COBBLESTONE_WALL)
+              new ItemStack(Blocks.MOSSY_COBBLESTONE_WALL),
+              false
         ).build(consumer, Mekanism.rl(basePath + "cobblestone_wall"));
 
         //Stone brick
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               IngredientCreatorAccess.item().from(Blocks.STONE_BRICKS),
               IngredientCreatorAccess.chemicalStack().from(MekanismAPITags.Chemicals.BIO, 10),
-              new ItemStack(Blocks.MOSSY_STONE_BRICKS)
+              new ItemStack(Blocks.MOSSY_STONE_BRICKS),
+              false
         ).build(consumer, Mekanism.rl(basePath + "stone_brick"));
         //Stone brick slab
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               IngredientCreatorAccess.item().from(Blocks.STONE_BRICK_SLAB),
               IngredientCreatorAccess.chemicalStack().from(MekanismAPITags.Chemicals.BIO, 10),
-              new ItemStack(Blocks.MOSSY_STONE_BRICK_SLAB)
+              new ItemStack(Blocks.MOSSY_STONE_BRICK_SLAB),
+              false
         ).build(consumer, Mekanism.rl(basePath + "stone_brick_slab"));
         //Stone brick stairs
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               IngredientCreatorAccess.item().from(Blocks.STONE_BRICK_STAIRS),
               IngredientCreatorAccess.chemicalStack().from(MekanismAPITags.Chemicals.BIO, 10),
-              new ItemStack(Blocks.MOSSY_STONE_BRICK_STAIRS)
+              new ItemStack(Blocks.MOSSY_STONE_BRICK_STAIRS),
+              false
         ).build(consumer, Mekanism.rl(basePath + "stone_brick_stairs"));
         //Stone brick wall
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               IngredientCreatorAccess.item().from(Blocks.STONE_BRICK_WALL),
               IngredientCreatorAccess.chemicalStack().from(MekanismAPITags.Chemicals.BIO, 10),
-              new ItemStack(Blocks.MOSSY_STONE_BRICK_WALL)
+              new ItemStack(Blocks.MOSSY_STONE_BRICK_WALL),
+              false
         ).build(consumer, Mekanism.rl(basePath + "stone_brick_wall"));
     }
 
@@ -127,25 +142,29 @@ class MetallurgicInfuserRecipeProvider implements ISubRecipeProvider {
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               IngredientCreatorAccess.item().from(Blocks.DIRT),
               IngredientCreatorAccess.chemicalStack().from(MekanismAPITags.Chemicals.BIO, 10),
-              new ItemStack(Blocks.PODZOL)
+              new ItemStack(Blocks.PODZOL),
+              false
         ).build(consumer, Mekanism.rl(basePath + "dirt_to_podzol"));
         //Sand -> dirt
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               IngredientCreatorAccess.item().from(Tags.Items.SANDS),
               IngredientCreatorAccess.chemicalStack().from(MekanismAPITags.Chemicals.BIO, 10),
-              new ItemStack(Blocks.DIRT)
+              new ItemStack(Blocks.DIRT),
+              false
         ).build(consumer, Mekanism.rl(basePath + "sand_to_dirt"));
         //slime ball
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               IngredientCreatorAccess.item().from(Items.CLAY_BALL),
               IngredientCreatorAccess.chemicalStack().from(MekanismAPITags.Chemicals.BIO, 10),
-              new ItemStack(Items.SLIME_BALL)
+              new ItemStack(Items.SLIME_BALL),
+              false
         ).build(consumer, Mekanism.rl(basePath + "clay_to_slime_ball"));
         //slime block
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               IngredientCreatorAccess.item().from(Blocks.CLAY),
               IngredientCreatorAccess.chemicalStack().from(MekanismAPITags.Chemicals.BIO, 40),
-              new ItemStack(Items.SLIME_BALL, 4)
+              new ItemStack(Items.SLIME_BALL, 4),
+              false
         ).build(consumer, Mekanism.rl(basePath + "clay_to_slime_block"));
     }
 }

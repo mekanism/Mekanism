@@ -11,5 +11,6 @@
   "output": {
     "count": 1,
     "id": "minecraft:oxidized_copper_door"
-  }
+  },
+  "per_tick_usage": true
 }

@@ -11,5 +11,6 @@
   "output": {
     "count": 1,
     "id": "mekanism:shard_gold"
-  }
+  },
+  "per_tick_usage": true
 }

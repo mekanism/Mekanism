@@ -29,11 +29,6 @@ public abstract class NucleosynthesizingRecipe extends ItemStackChemicalToItemSt
         return MekanismRecipeTypes.TYPE_NUCLEOSYNTHESIZING.value();
     }
 
-    @Override
-    public boolean perTickUsage() {
-        return false;
-    }
-
     /**
      * Gets the duration in ticks this recipe takes to complete.
      */

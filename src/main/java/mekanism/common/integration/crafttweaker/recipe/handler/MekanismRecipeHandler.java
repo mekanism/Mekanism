@@ -151,6 +151,7 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe<?>> im
         TypeData<IItemStack, IFluidStack, ChemicalStack> outputs = new TypeData<>();
         int duration = -1;
         long energy = -1;
+        Boolean perTickUsage = null;
         for (Object data : importantData) {
             if (data instanceof List<?> dataList) {
                 if (dataList.size() != 1) {
@@ -189,6 +190,12 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe<?>> im
             } else if (data instanceof ElectrolysisRecipeOutput output) {
                 outputs.addChemical(output.left());
                 outputs.addChemical(output.right());
+            } else if (data instanceof Boolean b) {
+                if (perTickUsage != null) {
+                    //Fail if we have multiple per tick usages specified
+                    return Optional.empty();
+                }
+                perTickUsage = b;
             } else if (data instanceof Integer i) {
                 if (duration != -1) {
                     //Fail if we have multiple durations specified
@@ -220,6 +227,9 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe<?>> im
         }
         if (energy != -1) {
             builder.with(CrTRecipeComponents.ENERGY, energy);
+        }
+        if (perTickUsage != null) {
+            builder.with(CrTRecipeComponents.PER_TICK_USAGE, perTickUsage);
         }
         return Optional.of(builder.build());
     }

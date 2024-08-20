@@ -11,5 +11,6 @@
   "output": {
     "count": 1,
     "id": "minecraft:light_blue_dye"
-  }
+  },
+  "per_tick_usage": false
 }

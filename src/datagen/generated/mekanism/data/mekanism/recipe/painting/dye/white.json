@@ -11,5 +11,6 @@
   "output": {
     "count": 1,
     "id": "minecraft:white_dye"
-  }
+  },
+  "per_tick_usage": false
 }

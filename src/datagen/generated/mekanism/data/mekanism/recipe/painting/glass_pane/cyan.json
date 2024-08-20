@@ -17,5 +17,6 @@
   "output": {
     "count": 1,
     "id": "minecraft:cyan_stained_glass_pane"
-  }
+  },
+  "per_tick_usage": false
 }

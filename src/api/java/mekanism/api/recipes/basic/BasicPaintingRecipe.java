@@ -24,13 +24,8 @@ public class BasicPaintingRecipe extends BasicItemStackChemicalToItemStackRecipe
      * @param chemicalInput Chemical input.
      * @param output        Output.
      */
-    public BasicPaintingRecipe(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ItemStack output) {
-        super(itemInput, chemicalInput, output, MekanismRecipeTypes.TYPE_PAINTING.value());
-    }
-
-    @Override
-    public boolean perTickUsage() {
-        return false;
+    public BasicPaintingRecipe(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ItemStack output, boolean perTickUsage) {
+        super(itemInput, chemicalInput, output, perTickUsage, MekanismRecipeTypes.TYPE_PAINTING.value());
     }
 
     @Override

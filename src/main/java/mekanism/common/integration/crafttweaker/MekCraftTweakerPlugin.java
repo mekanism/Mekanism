@@ -38,5 +38,6 @@ public class MekCraftTweakerPlugin implements ICraftTweakerPlugin {
         //Misc
         handler.registerRecipeComponent(CrTRecipeComponents.CHANCE);
         handler.registerRecipeComponent(CrTRecipeComponents.ENERGY);
+        handler.registerRecipeComponent(CrTRecipeComponents.PER_TICK_USAGE);
     }
 }

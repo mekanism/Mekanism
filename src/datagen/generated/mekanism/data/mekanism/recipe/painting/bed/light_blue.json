@@ -17,5 +17,6 @@
   "output": {
     "count": 1,
     "id": "minecraft:light_blue_bed"
-  }
+  },
+  "per_tick_usage": false
 }

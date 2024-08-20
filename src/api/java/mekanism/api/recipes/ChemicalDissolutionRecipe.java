@@ -17,11 +17,6 @@ public abstract class ChemicalDissolutionRecipe extends ItemStackChemicalToObjec
     private static final Holder<Item> CHEMICAL_DISSOLUTION_CHAMBER = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "chemical_dissolution_chamber"));
 
     @Override
-    public boolean perTickUsage() {
-        return true;
-    }
-
-    @Override
     public final RecipeType<ChemicalDissolutionRecipe> getType() {
         return MekanismRecipeTypes.TYPE_DISSOLUTION.value();
     }

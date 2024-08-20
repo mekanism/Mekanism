@@ -11,5 +11,6 @@
   "output": {
     "amount": 6000,
     "id": "mekanism:dirty_gold"
-  }
+  },
+  "per_tick_usage": true
 }
