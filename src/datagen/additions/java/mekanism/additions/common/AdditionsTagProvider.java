@@ -17,7 +17,6 @@ import mekanism.common.tag.IntrinsicMekanismTagBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.EntityTypeTags;
@@ -33,8 +32,6 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
 
 public class AdditionsTagProvider extends BaseTagProvider {
-
-    private static final TagKey<Block> FRAMEABLE = BlockTags.create(ResourceLocation.fromNamespaceAndPath("framedblocks", "frameable"));
 
     public AdditionsTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
         super(output, lookupProvider, MekanismAdditions.MODID, existingFileHelper);

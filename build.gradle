@@ -639,7 +639,7 @@ if (System.getenv('CURSEFORGE_KEY') != null || project.hasProperty('curseforgeKe
                     'biomes-o-plenty',
                     //Misc
                     'applied-energistics-2', 'ctm', 'curios-continuation', 'dark-mode-everywhere', 'farmers-delight', 'female-gender-forge', 'flux-networks',
-                    'grandpower', 'json-things', 'perviaminvenire', 'projecte', 'recipe-stages'
+                    'framedblocks', 'grandpower', 'json-things', 'perviaminvenire', 'projecte', 'recipe-stages'
             )
         }
 

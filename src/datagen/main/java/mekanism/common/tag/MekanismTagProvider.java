@@ -162,6 +162,9 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismBlocks.DYNAMIC_TANK,
               MekanismBlocks.DYNAMIC_VALVE
         );
+
+        addToTag(FRAMEABLE, MekanismBlocks.STRUCTURAL_GLASS);
+        addToTag(FB_BE_WHITELIST, MekanismBlocks.STRUCTURAL_GLASS);
     }
 
     private void addEntities() {

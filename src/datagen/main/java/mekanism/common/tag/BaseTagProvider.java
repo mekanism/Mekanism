@@ -55,6 +55,8 @@ public abstract class BaseTagProvider implements DataProvider {
 
     protected static final TagKey<EntityType<?>> PVI_COMPAT = TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath("per-viam-invenire", "replace_vanilla_navigator"));
     private static final TagKey<Fluid> CREATE_NO_INFINITE_FLUID = FluidTags.create(ResourceLocation.fromNamespaceAndPath("create", "no_infinite_draining"));
+    protected static final TagKey<Block> FRAMEABLE = BlockTags.create(ResourceLocation.fromNamespaceAndPath("framedblocks", "frameable"));
+    protected static final TagKey<Block> FB_BE_WHITELIST = BlockTags.create(ResourceLocation.fromNamespaceAndPath("framedblocks", "blockentity_whitelisted"));
 
     private final Map<ResourceKey<? extends Registry<?>>, Map<TagKey<?>, TagBuilder>> supportedTagTypes = new Object2ObjectLinkedOpenHashMap<>();
     private final Set<Block> knownHarvestRequirements = new ReferenceOpenHashSet<>();
