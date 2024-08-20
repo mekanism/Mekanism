@@ -40,7 +40,7 @@ import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismParticleTypes;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.component.TileComponentConfig;
-import mekanism.common.tile.component.config.DataType;
+import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
@@ -463,18 +463,21 @@ public class RenderTickHandler {
                     TileComponentConfig config = configurable.getConfig();
                     if (config.supports(type)) {
                         Direction face = rayTraceResult.getDirection();
-                        DataType dataType = config.getDataType(type, RelativeSide.fromDirections(configurable.getDirection(), face));
-                        if (dataType != null) {
-                            Vec3 viewPosition = info.getPosition();
-                            matrix.pushPose();
-                            matrix.translate(pos.getX() - viewPosition.x, pos.getY() - viewPosition.y, pos.getZ() - viewPosition.z);
-                            @Nullable Model3D object = getOverlayModel(face, type);
-                            VertexConsumer buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
-                            int argb = MekanismRenderer.getColorARGB(dataType.getColor(), 0.6F);
-                            if (object != null) {
-                                RenderResizableCuboid.renderCube(object, matrix, buffer, argb, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, FaceDisplay.FRONT, info, null);
+                        ConfigInfo configInfo = config.getConfig(type);
+                        if (configInfo != null) {
+                            RelativeSide side = RelativeSide.fromDirections(configurable.getDirection(), face);
+                            if (configInfo.isSideEnabled(side)) {
+                                Vec3 viewPosition = info.getPosition();
+                                matrix.pushPose();
+                                matrix.translate(pos.getX() - viewPosition.x, pos.getY() - viewPosition.y, pos.getZ() - viewPosition.z);
+                                @Nullable Model3D object = getOverlayModel(face, type);
+                                VertexConsumer buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
+                                int argb = MekanismRenderer.getColorARGB(configInfo.getDataType(side).getColor(), 0.6F);
+                                if (object != null) {
+                                    RenderResizableCuboid.renderCube(object, matrix, buffer, argb, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, FaceDisplay.FRONT, info, null);
+                                }
+                                matrix.popPose();
                             }
-                            matrix.popPose();
                         }
                     }
                 }
