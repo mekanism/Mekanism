@@ -135,7 +135,7 @@ public abstract class BlockMekanism extends Block {
                 hasBounding.removeBoundingBlocks(world, pos, state);
             }
         }
-        if (state.hasBlockEntity() && (!state.is(newState.getBlock()) || !newState.hasBlockEntity())) {
+        if (state.hasBlockEntity() && !state.is(newState.getBlock())) {
             TileEntityUpdateable tile = WorldUtils.getTileEntity(TileEntityUpdateable.class, world, pos);
             if (tile != null) {
                 tile.blockRemoved();

@@ -116,6 +116,8 @@ class ChemicalInjectorRecipeProvider implements ISubRecipeProvider {
     private void addChemicalInjectorOxidizingRecipe(RecipeOutput consumer, String basePath) {
         //Generate baseline recipes from weathering recipe set
         ChemicalStackIngredient oxygen = IngredientCreatorAccess.chemicalStack().from(MekanismChemicals.OXYGEN, 1);
+        //TODO - 1.21: Switch this to being created at runtime and making use of the Neo DataMap?
+        // https://github.com/neoforged/NeoForge/commit/87875183dcd8239404cbddbe8717db1dbe4f64ee
         for (Map.Entry<Block, Block> entry : WeatheringCopper.NEXT_BY_BLOCK.get().entrySet()) {
             Block result = entry.getValue();
             ItemStackChemicalToItemStackRecipeBuilder.injecting(

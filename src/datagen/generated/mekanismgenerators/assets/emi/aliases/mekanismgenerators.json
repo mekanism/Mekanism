@@ -3,7 +3,7 @@
     {
       "stacks": [
         "fluid:mekanismgenerators:fusion_fuel",
-        "mekanism_gas:mekanismgenerators:fusion_fuel"
+        "mekanism:chemical:mekanismgenerators:fusion_fuel"
       ],
       "text": "alias.mekanismgenerators.fusion_fuel"
     },
@@ -41,7 +41,7 @@
         "item:mekanismgenerators:fusion_reactor_logic_adapter",
         "item:mekanismgenerators:laser_focus_matrix",
         "item:mekanismgenerators:reactor_glass",
-        "item:mekanismgenerators:hohlraum{\"mekanism:gases\":{gas_tanks:[{amount:10L,id:\"mekanismgenerators:fusion_fuel\"}]}}"
+        "item:mekanismgenerators:hohlraum{\"mekanism:chemicals\":{chemical_tanks:[{amount:10L,id:\"mekanismgenerators:fusion_fuel\"}]}}"
       ],
       "text": "alias.mekanismgenerators.multiblock.fusion"
     },

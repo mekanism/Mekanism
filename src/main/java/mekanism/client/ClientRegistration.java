@@ -597,19 +597,19 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void registerClientExtensions(RegisterClientExtensionsEvent event) {
-        event.registerItem(new MekCustomArmorRenderProperties(RenderJetpack.ARMORED_RENDERER, JetpackArmor.ARMORED_JETPACK), MekanismItems.ARMORED_JETPACK.get());
-        event.registerItem(new MekCustomArmorRenderProperties(RenderJetpack.RENDERER, JetpackArmor.JETPACK), MekanismItems.JETPACK.get());
-        event.registerItem(new MekCustomArmorRenderProperties(RenderFreeRunners.ARMORED_RENDERER, FreeRunnerArmor.ARMORED_FREE_RUNNERS), MekanismItems.ARMORED_FREE_RUNNERS.get());
-        event.registerItem(new MekCustomArmorRenderProperties(RenderFreeRunners.RENDERER, FreeRunnerArmor.FREE_RUNNERS), MekanismItems.FREE_RUNNERS.get());
-        event.registerItem(new MekCustomArmorRenderProperties(RenderScubaMask.RENDERER, ScubaMaskArmor.SCUBA_MASK), MekanismItems.SCUBA_MASK.get());
-        event.registerItem(new MekCustomArmorRenderProperties(RenderScubaTank.RENDERER, ScubaTankArmor.SCUBA_TANK), MekanismItems.SCUBA_TANK.get());
-        event.registerItem(new MekRenderProperties(RenderAtomicDisassembler.RENDERER), MekanismItems.ATOMIC_DISASSEMBLER.get());
-        event.registerItem(new MekRenderProperties(RenderFlameThrower.RENDERER), MekanismItems.FLAMETHROWER.get());
+        event.registerItem(new MekCustomArmorRenderProperties(RenderJetpack.ARMORED_RENDERER, JetpackArmor.ARMORED_JETPACK), MekanismItems.ARMORED_JETPACK);
+        event.registerItem(new MekCustomArmorRenderProperties(RenderJetpack.RENDERER, JetpackArmor.JETPACK), MekanismItems.JETPACK);
+        event.registerItem(new MekCustomArmorRenderProperties(RenderFreeRunners.ARMORED_RENDERER, FreeRunnerArmor.ARMORED_FREE_RUNNERS), MekanismItems.ARMORED_FREE_RUNNERS);
+        event.registerItem(new MekCustomArmorRenderProperties(RenderFreeRunners.RENDERER, FreeRunnerArmor.FREE_RUNNERS), MekanismItems.FREE_RUNNERS);
+        event.registerItem(new MekCustomArmorRenderProperties(RenderScubaMask.RENDERER, ScubaMaskArmor.SCUBA_MASK), MekanismItems.SCUBA_MASK);
+        event.registerItem(new MekCustomArmorRenderProperties(RenderScubaTank.RENDERER, ScubaTankArmor.SCUBA_TANK), MekanismItems.SCUBA_TANK);
+        event.registerItem(new MekRenderProperties(RenderAtomicDisassembler.RENDERER), MekanismItems.ATOMIC_DISASSEMBLER);
+        event.registerItem(new MekRenderProperties(RenderFlameThrower.RENDERER), MekanismItems.FLAMETHROWER);
 
-        event.registerItem(MekaSuitArmor.HELMET, MekanismItems.MEKASUIT_HELMET.get());
-        event.registerItem(MekaSuitArmor.BODYARMOR, MekanismItems.MEKASUIT_BODYARMOR.get());
-        event.registerItem(MekaSuitArmor.PANTS, MekanismItems.MEKASUIT_PANTS.get());
-        event.registerItem(MekaSuitArmor.BOOTS, MekanismItems.MEKASUIT_BOOTS.get());
+        event.registerItem(MekaSuitArmor.HELMET, MekanismItems.MEKASUIT_HELMET);
+        event.registerItem(MekaSuitArmor.BODYARMOR, MekanismItems.MEKASUIT_BODYARMOR);
+        event.registerItem(MekaSuitArmor.PANTS, MekanismItems.MEKASUIT_PANTS);
+        event.registerItem(MekaSuitArmor.BOOTS, MekanismItems.MEKASUIT_BOOTS);
 
         ClientRegistrationUtil.registerItemExtensions(event, new MekRenderProperties(RenderEnergyCubeItem.RENDERER), MekanismBlocks.BASIC_ENERGY_CUBE,
               MekanismBlocks.ADVANCED_ENERGY_CUBE, MekanismBlocks.ELITE_ENERGY_CUBE, MekanismBlocks.ULTIMATE_ENERGY_CUBE, MekanismBlocks.CREATIVE_ENERGY_CUBE);

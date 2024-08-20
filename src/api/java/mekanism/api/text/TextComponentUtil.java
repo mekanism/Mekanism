@@ -15,6 +15,7 @@ import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -75,6 +76,7 @@ public class TextComponentUtil {
                 case FluidStack stack -> current = stack.getHoverName().copy();
                 case Fluid fluid -> current = fluid.getFluidType().getDescription().copy();
                 case EntityType<?> entityType -> current = entityType.getDescription().copy();
+                case Level level -> current = level.getDescription().copy();
                 case Direction direction -> current = getTranslatedDirection(direction);
                 case Boolean bool -> current = getTranslatedBoolean(bool);
                 //Fallback to a generic replacement
@@ -207,6 +209,8 @@ public class TextComponentUtil {
                 current = fluid.getFluidType().getDescription().copy();
             } else if (component instanceof EntityType<?> entityType) {
                 current = entityType.getDescription().copy();
+            } else if (component instanceof Level level) {
+                current = level.getDescription().copy();
             } else if (component instanceof Direction direction) {
                 current = getTranslatedDirection(direction);
             } else if (component instanceof Boolean bool) {

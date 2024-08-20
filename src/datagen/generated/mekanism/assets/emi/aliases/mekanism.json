@@ -3,7 +3,7 @@
     {
       "stacks": [
         "fluid:mekanism:ethene",
-        "mekanism_gas:mekanism:ethene"
+        "mekanism:chemical:mekanism:ethene"
       ],
       "text": "alias.mekanism.ethene.ethylene"
     },
@@ -554,7 +554,7 @@
         "item:mekanism:advanced_energy_cube",
         "item:mekanism:elite_energy_cube",
         "item:mekanism:ultimate_energy_cube",
-        "item:mekanism:creative_energy_cube{\"mekanism:energy\":{energy_containers:[\"18446744073709551615.9999\"]},\"mekanism:side_config\":{config:{energy:{eject:1b,side:{back:\"output\",bottom:\"output\",front:\"output\",left:\"output\",right:\"output\",top:\"output\"}},items:{side:{back:\"input\",bottom:\"input\",front:\"output\",left:\"input\",right:\"input\",top:\"input\"}}}}}"
+        "item:mekanism:creative_energy_cube{\"mekanism:energy\":{energy_containers:[L;9223372036854775807L]},\"mekanism:side_config\":{config:{energy:{eject:1b,side:{back:\"output\",bottom:\"output\",front:\"output\",left:\"output\",right:\"output\",top:\"output\"}},items:{side:{back:\"input\",bottom:\"input\",front:\"output\",left:\"input\",right:\"input\",top:\"input\"}}}}}"
       ],
       "text": [
         "alias.mekanism.item_charger",
@@ -719,11 +719,8 @@
       ]
     },
     {
-      "stacks": "item:mekanism:upgrade_gas",
-      "text": [
-        "alias.mekanism.upgrade.augment",
-        "alias.mekanism.upgrade.chemical"
-      ]
+      "stacks": "item:mekanism:upgrade_chemical",
+      "text": "alias.mekanism.upgrade.augment"
     },
     {
       "stacks": "item:mekanism:upgrade_anchor",

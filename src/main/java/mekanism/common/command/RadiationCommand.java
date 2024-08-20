@@ -220,8 +220,7 @@ public class RadiationCommand {
         GlobalPos location = GlobalPos.of(world.dimension(), BlockPos.containing(pos));
         IRadiationManager.INSTANCE.radiate(location, magnitude);
         source.sendSuccess(() -> MekanismLang.COMMAND_RADIATION_ADD.translateColored(EnumColor.GRAY, RadiationScale.getSeverityColor(magnitude),
-              UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SVH, 3), EnumColor.INDIGO, getPosition(location.pos()), EnumColor.INDIGO,
-              location.dimension().location()), true);
+              UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SVH, 3), EnumColor.INDIGO, getPosition(location.pos()), EnumColor.INDIGO, world), true);
         return 0;
     }
 
@@ -233,7 +232,7 @@ public class RadiationCommand {
         GlobalPos location = GlobalPos.of(world.dimension(), BlockPos.containing(pos));
         double magnitude = IRadiationManager.INSTANCE.getRadiationLevel(location);
         source.sendSuccess(() -> MekanismLang.COMMAND_RADIATION_GET.translateColored(EnumColor.GRAY, EnumColor.INDIGO, getPosition(location.pos()), EnumColor.INDIGO,
-                    location.dimension().location(), RadiationScale.getSeverityColor(magnitude), UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SVH, 3)),
+                    world, RadiationScale.getSeverityColor(magnitude), UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SVH, 3)),
               true);
         return 0;
     }

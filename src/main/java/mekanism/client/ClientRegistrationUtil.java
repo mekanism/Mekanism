@@ -204,7 +204,7 @@ public class ClientRegistrationUtil {
     public static void registerBlockExtensions(RegisterClientExtensionsEvent event, BlockDeferredRegister allBlocks) {
         for (DeferredHolder<Block, ? extends Block> primaryEntry : allBlocks.getPrimaryEntries()) {
             if (primaryEntry.get() instanceof BlockMekanism) {
-                event.registerBlock(RenderPropertiesProvider.PARTICLE_HANDLER, primaryEntry.get());
+                event.registerBlock(RenderPropertiesProvider.PARTICLE_HANDLER, primaryEntry);
             }
         }
     }

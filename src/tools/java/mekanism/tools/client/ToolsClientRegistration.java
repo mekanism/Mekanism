@@ -50,14 +50,14 @@ public class ToolsClientRegistration {
 
     @SubscribeEvent
     public static void registerClientExtensions(RegisterClientExtensionsEvent event) {
-        ClientRegistrationUtil.registerItemExtensions(event, new IClientItemExtensions() {
+        event.registerItem(new IClientItemExtensions() {
             @NotNull
             @Override
             public Model getGenericArmorModel(@NotNull LivingEntity entity, @NotNull ItemStack stack, @NotNull EquipmentSlot slot, @NotNull HumanoidModel<?> _default) {
                 return GlowArmor.wrap(_default);
             }
         }, ToolsItems.REFINED_GLOWSTONE_HELMET, ToolsItems.REFINED_GLOWSTONE_CHESTPLATE, ToolsItems.REFINED_GLOWSTONE_LEGGINGS, ToolsItems.REFINED_GLOWSTONE_BOOTS);
-        ClientRegistrationUtil.registerItemExtensions(event, new MekRenderProperties(RenderMekanismShieldItem.RENDERER), ToolsItems.BRONZE_SHIELD,
-              ToolsItems.LAPIS_LAZULI_SHIELD, ToolsItems.OSMIUM_SHIELD, ToolsItems.REFINED_GLOWSTONE_SHIELD, ToolsItems.REFINED_OBSIDIAN_SHIELD, ToolsItems.STEEL_SHIELD);
+        event.registerItem(new MekRenderProperties(RenderMekanismShieldItem.RENDERER), ToolsItems.BRONZE_SHIELD, ToolsItems.LAPIS_LAZULI_SHIELD,
+              ToolsItems.OSMIUM_SHIELD, ToolsItems.REFINED_GLOWSTONE_SHIELD, ToolsItems.REFINED_OBSIDIAN_SHIELD, ToolsItems.STEEL_SHIELD);
     }
 }

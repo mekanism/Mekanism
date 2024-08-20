@@ -66,7 +66,7 @@ public class ForceRetrogenCommand {
                     Mekanism.worldTickHandler.addRegenChunk(registryKey, new ChunkPos(chunkX, chunkZ));
                     int finalChunkX = chunkX, finalChunkZ = chunkZ;
                     source.sendSuccess(() -> MekanismLang.COMMAND_RETROGEN_CHUNK_QUEUED.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
-                          MekanismLang.GENERIC_WITH_COMMA.translate(finalChunkX, finalChunkZ), EnumColor.INDIGO, registryKey.location()), true);
+                          MekanismLang.GENERIC_WITH_COMMA.translate(finalChunkX, finalChunkZ), EnumColor.INDIGO, world), true);
                     hasChunks = true;
                 }
             }
