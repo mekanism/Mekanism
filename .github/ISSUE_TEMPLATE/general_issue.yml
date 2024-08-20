@@ -24,7 +24,8 @@ body:
       label: Minecraft version
       description: What version of Minecraft are you using?
       options:
-        - 1.21 (Latest)
+        - 1.21.1 (Latest)
+        - 1.21.0
         - 1.20.x or earlier (No longer being developed)
     validations:
       required: true
@@ -32,7 +33,7 @@ body:
     attributes:
       label: NeoForge version
       description: What version of NeoForge are you using?
-      placeholder: e.g. 21.0.143
+      placeholder: e.g. 21.1.21
     validations:
       required: true
   - type: dropdown
@@ -41,7 +42,10 @@ body:
       label: Mekanism version
       description: What version of Mekanism are you using?
       options:
-        - 10.6.7 (Latest)
+        - 10.7.0 (Latest)
+        - 10.6.9 (Manually Compiled, Unreleased)
+        - 10.6.8 (Manually Compiled, Unreleased)
+        - 10.6.7
         - 10.6.6
         - 10.6.5
         - 10.6.4
