@@ -459,8 +459,6 @@
   "container.mekanism.ultimate_sawing_factory": "Végső Fűrészüzem",
   "container.mekanism.ultimate_smelting_factory": "Végső Olvasztóüzem",
   "conversion.mekanism.energy": "Tárgy Energiává",
-  "conversion.mekanism.gas": "Tárgy Gázzá",
-  "conversion.mekanism.infusion": "Tárgy Infúziós Tipússá",
   "crafting_formula.mekanism.encoded": "(Titkosított)",
   "crafting_formula.mekanism.ingredients": "Összetevők:",
   "death.attack.mekanism.laser": "%1$s hamuvá vált.",
@@ -477,7 +475,6 @@
   "description.mekanism.chargepad": "Egy univerzális töltőállomás, ami képes bármilyen energiával rengelkező tárgyat feltölteni bármilyen modból.",
   "description.mekanism.chemical_crystallizer": "Egy végső gép amit kristályosításra használnak tisztított érciszapnál, érckristályok kinyerése érdekében.",
   "description.mekanism.chemical_dissolution_chamber": "Egy végső gép amit az ércek szennyeződéseinek kémiai feloldására használnak, miközben feldolgozatlan iszapot hagy hátra.",
-  "description.mekanism.chemical_infuser": "Egy gép ami új gázt állít elő, két másik gáz infúziójával.",
   "description.mekanism.chemical_injection_chamber": "Egy elit gép ami képes érceket négy szilánkká alakítani, ami a 400%-os ércfeldolgozás kezdeti szakaszaként szolgál.",
   "description.mekanism.chemical_oxidizer": "Egy gép ami képes szilárd anyagokat oxidációval gázfázisúvá változtatni.",
   "key.mekanism.description": "Show description",
@@ -488,8 +485,5 @@
   "radial.mekanism.blasting_power.low": "Alacsony",
   "radial.mekanism.blasting_power.med": "Közepes",
   "radial.mekanism.blasting_power.off": "Ki",
-  "transmitter.mekanism.infuse_types": "- Összekeverni a típusokat (%1$s)",
-  "transmitter.mekanism.pigments": "- Pigmentek (%1$s)",
-  "transmitter.mekanism.slurries": "- Szörpök (%1$s)",
   "upgrade.mekanism.max_installed": "Maximum telepítve: %1$s"
 }
