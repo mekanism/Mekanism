@@ -46,6 +46,21 @@ class PigmentMixingRecipeProvider implements ISubRecipeProvider {
         addMix(consumer, EnumColor.INDIGO, 1, EnumColor.BRIGHT_GREEN, 1, EnumColor.AQUA, basePath);
         //light blue + red -> 2 magenta
         addMix(consumer, EnumColor.INDIGO, 1, EnumColor.RED, 1, EnumColor.PINK, basePath);
+
+        //Recipes that don't exist for vanilla dye mixing, but we add
+        //blue + yellow -> 2 green
+        addMix(consumer, EnumColor.DARK_BLUE, 1, EnumColor.YELLOW, 1, EnumColor.DARK_GREEN, basePath);
+        //aqua + yellow -> 2 lime
+        addMix(consumer, EnumColor.AQUA, 1, EnumColor.YELLOW, 1, EnumColor.BRIGHT_GREEN, basePath);
+        //TODO: Come up with more mixtures, and figure out the numbers for them
+        //black + 2 pink -> 3 purple
+        /*addMix(consumer, EnumColor.BLACK, 1, EnumColor.BRIGHT_PINK, 2, EnumColor.PURPLE, basePath);
+        //black + 4 magenta -> 5 purple
+        addMix(consumer, EnumColor.BLACK, 1, EnumColor.PINK, 4, EnumColor.PURPLE, basePath);
+        //gray + 2 magenta -> 3 purple
+        addMix(consumer, EnumColor.GRAY, 1, EnumColor.PINK, 4, EnumColor.PURPLE, basePath);
+        //gray + 2 pink -> 3 magenta
+        addMix(consumer, EnumColor.GRAY, 1, EnumColor.BRIGHT_PINK, 4, EnumColor.PINK, basePath);*/
     }
 
     private static void addMix(RecipeOutput consumer, EnumColor leftInput, long leftInputAmount, EnumColor rightInput, long rightInputAmount,
