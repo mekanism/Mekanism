@@ -12,7 +12,9 @@
   "advancements.mekanismtools.paxel.description": "Fabrica qualsevol Paxel (Pic, Destral, Pala)",
   "advancements.mekanismtools.paxel.title": "Multi-Eina",
   "constants.mekanismtools.mod_name": "Mekanism: Tools",
-  "constants.mekanismtools.pack_description": "Recursos utilitzats per Mekanism: Tools",
+  "constants.mekanismtools.pack_description": "Recursos utilitzats per a Mekanism: Tools",
+  "fml.menu.mods.info.description.mekanismtools": "Mòdul d'eines per a Mekanism",
+  "fml.menu.mods.info.displayname.mekanismtools": "Mekanism: Tools",
   "item.mekanismtools.bronze_axe": "Destral de Bronze",
   "item.mekanismtools.bronze_boots": "Botes de Bronze",
   "item.mekanismtools.bronze_chestplate": "Cuirassa de Bronze",
@@ -181,5 +183,6 @@
   "item.mekanismtools.steel_sword": "Espasa d'Acer",
   "item.mekanismtools.stone_paxel": "Paxel de Pedra",
   "item.mekanismtools.wood_paxel": "Paxel de Fusta",
+  "tag.item.c.tools.paxel": "Paxels",
   "tooltip.mekanismtools.hp": "Vida: %1$s"
 }
