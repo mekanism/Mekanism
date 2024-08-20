@@ -24,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
  * Base class to help implement handling of item chemical to object recipes. Unlike {@link TwoInputCachedRecipe#itemChemicalToItem} this variant has constant
  * chemical usage.
  *
- * @since 10.6.10
+ * @since 10.7.0
  */
 @NothingNullByDefault
 public class ItemStackConstantChemicalToObjectCachedRecipe<OUTPUT, RECIPE extends ItemStackChemicalToObjectRecipe<OUTPUT>> extends CachedRecipe<RECIPE> {

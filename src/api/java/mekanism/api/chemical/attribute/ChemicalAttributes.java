@@ -14,7 +14,7 @@ import mekanism.api.text.ITooltipHelper;
 import net.minecraft.network.chat.Component;
 
 /**
- * @since 10.6.10 Previously was GasAttributes
+ * @since 10.7.0 Previously was GasAttributes
  */
 public class ChemicalAttributes {
 

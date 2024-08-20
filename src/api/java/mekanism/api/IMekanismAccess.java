@@ -53,7 +53,7 @@ public interface IMekanismAccess {
      * Gets the chemical stack ingredient creator.
      *
      * @apiNote Use {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#chemicalStack()} instead.
-     * @since 10.6.10
+     * @since 10.7.0
      */
     IChemicalStackIngredientCreator chemicalStackIngredientCreator();
 
@@ -61,7 +61,7 @@ public interface IMekanismAccess {
      * Gets the chemical ingredient creator.
      *
      * @apiNote Use {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#chemical()} instead.
-     * @since 10.6.10
+     * @since 10.7.0
      */
     IChemicalIngredientCreator chemicalIngredientCreator();
 }

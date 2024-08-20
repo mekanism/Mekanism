@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
  * <br>
  * Output: OUTPUT
  *
- * @since 10.6.10
+ * @since 10.7.0
  */
 @NothingNullByDefault
 public abstract class ItemStackChemicalToObjectRecipe<OUTPUT> extends MekanismRecipe<SingleItemChemicalRecipeInput> implements BiPredicate<@NotNull ItemStack, ChemicalStack> {
@@ -29,7 +29,7 @@ public abstract class ItemStackChemicalToObjectRecipe<OUTPUT> extends MekanismRe
     /**
      * Represents whether this recipe consumes the chemical each tick.
      *
-     * @since 10.6.10
+     * @since 10.7.0
      */
     public abstract boolean perTickUsage();
 

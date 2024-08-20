@@ -157,7 +157,7 @@ public class TwoInputCachedRecipe<INPUT_A, INPUT_B, OUTPUT, RECIPE extends Mekan
      * @param chemicalInputHandler Chemical input handler.
      * @param outputHandler        Output handler.
      *
-     * @since 10.6.10
+     * @since 10.7.0
      */
     public static <RECIPE extends ChemicalDissolutionRecipe> TwoInputCachedRecipe<@NotNull ItemStack, @NotNull ChemicalStack, @NotNull ChemicalStack, RECIPE>
     itemChemicalToChemical(RECIPE recipe, BooleanSupplier recheckAllErrors, IInputHandler<@NotNull ItemStack> itemInputHandler,

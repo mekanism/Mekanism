@@ -109,7 +109,7 @@ public class OneInputCachedRecipe<INPUT, OUTPUT, RECIPE extends MekanismRecipe<?
      * @param inputHandler     Input handler.
      * @param outputHandler    Output handler, handles both the left and right outputs.
      *
-     * @since 10.6.10
+     * @since 10.7.0
      */
     public static OneInputCachedRecipe<@NotNull ChemicalStack, @NotNull ItemStack, ChemicalCrystallizerRecipe> crystallizing(ChemicalCrystallizerRecipe recipe,
           BooleanSupplier recheckAllErrors, IInputHandler<@NotNull ChemicalStack> inputHandler, IOutputHandler<@NotNull ItemStack> outputHandler) {

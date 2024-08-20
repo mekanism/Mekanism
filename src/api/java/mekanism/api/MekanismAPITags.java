@@ -27,7 +27,7 @@ public class MekanismAPITags {
     }
 
     /**
-     * @since 10.6.10
+     * @since 10.7.0
      */
     public static class Chemicals {
 

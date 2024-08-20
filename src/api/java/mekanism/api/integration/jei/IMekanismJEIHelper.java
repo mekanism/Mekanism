@@ -12,7 +12,7 @@ public interface IMekanismJEIHelper {
     /**
      * Gets the ingredient helper for {@link mekanism.api.chemical.ChemicalStack chemicals}.
      *
-     * @since 10.6.10
+     * @since 10.7.0
      */
     IIngredientHelper<ChemicalStack> getChemicalStackHelper();
 }
