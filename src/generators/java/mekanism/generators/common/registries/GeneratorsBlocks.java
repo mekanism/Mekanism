@@ -7,7 +7,6 @@ import mekanism.common.attachments.containers.chemical.ChemicalTanksBuilder;
 import mekanism.common.attachments.containers.fluid.FluidTanksBuilder;
 import mekanism.common.attachments.containers.heat.HeatCapacitorsBuilder;
 import mekanism.common.attachments.containers.item.ItemSlotsBuilder;
-import mekanism.common.block.basic.BlockStructuralGlass;
 import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.prefab.BlockBasicMultiblock;
 import mekanism.common.block.prefab.BlockTile;
@@ -20,6 +19,7 @@ import mekanism.common.resource.BlockResourceInfo;
 import mekanism.common.tags.MekanismTags;
 import mekanism.generators.common.GeneratorTags;
 import mekanism.generators.common.MekanismGenerators;
+import mekanism.generators.common.block.BlockReactorGlass;
 import mekanism.generators.common.block.fusion.BlockLaserFocusMatrix;
 import mekanism.generators.common.block.turbine.BlockTurbineRotor;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
@@ -115,7 +115,7 @@ public class GeneratorsBlocks {
     public static final BlockRegistryObject<BlockBasicMultiblock<TileEntityTurbineVent>, ItemBlockTooltip<BlockBasicMultiblock<TileEntityTurbineVent>>> TURBINE_VENT = registerTooltipBlock("turbine_vent", () -> new BlockBasicMultiblock<>(GeneratorsBlockTypes.TURBINE_VENT, properties -> properties.mapColor(MapColor.COLOR_GRAY)));
     public static final BlockRegistryObject<BlockTile<TileEntitySaturatingCondenser, BlockTypeTile<TileEntitySaturatingCondenser>>, ItemBlockTooltip<BlockTile<TileEntitySaturatingCondenser, BlockTypeTile<TileEntitySaturatingCondenser>>>> SATURATING_CONDENSER = registerTooltipBlock("saturating_condenser", () -> new BlockTile<>(GeneratorsBlockTypes.SATURATING_CONDENSER, properties -> properties.mapColor(MapColor.COLOR_GRAY)));
 
-    public static final BlockRegistryObject<BlockStructuralGlass<TileEntityReactorGlass>, ItemBlockTooltip<BlockStructuralGlass<TileEntityReactorGlass>>> REACTOR_GLASS = registerTooltipBlock("reactor_glass", () -> new BlockStructuralGlass<>(GeneratorsBlockTypes.REACTOR_GLASS));
+    public static final BlockRegistryObject<BlockReactorGlass<TileEntityReactorGlass>, ItemBlockTooltip<BlockReactorGlass<TileEntityReactorGlass>>> REACTOR_GLASS = registerTooltipBlock("reactor_glass", () -> new BlockReactorGlass<>(GeneratorsBlockTypes.REACTOR_GLASS));
 
     public static final BlockRegistryObject<BlockBasicMultiblock<TileEntityFissionReactorCasing>, ItemBlockTooltip<BlockBasicMultiblock<TileEntityFissionReactorCasing>>> FISSION_REACTOR_CASING = registerTooltipBlock("fission_reactor_casing", () -> new BlockBasicMultiblock<>(GeneratorsBlockTypes.FISSION_REACTOR_CASING, properties -> properties.mapColor(MapColor.COLOR_LIGHT_GRAY)));
     public static final BlockRegistryObject<BlockBasicMultiblock<TileEntityFissionReactorPort>, ItemBlockTooltip<BlockBasicMultiblock<TileEntityFissionReactorPort>>> FISSION_REACTOR_PORT = registerTooltipBlock("fission_reactor_port", () -> new BlockBasicMultiblock<>(GeneratorsBlockTypes.FISSION_REACTOR_PORT, properties -> properties.mapColor(MapColor.COLOR_LIGHT_GRAY)));

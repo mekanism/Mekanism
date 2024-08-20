@@ -1,8 +1,8 @@
 package mekanism.generators.common.block.fusion;
 
-import mekanism.common.block.basic.BlockStructuralGlass;
 import mekanism.common.block.prefab.BlockBasicMultiblock;
 import mekanism.common.block.states.BlockStateHelper;
+import mekanism.generators.common.block.BlockReactorGlass;
 import mekanism.generators.common.registries.GeneratorsBlockTypes;
 import mekanism.generators.common.tile.fusion.TileEntityLaserFocusMatrix;
 import net.minecraft.core.BlockPos;
@@ -36,7 +36,7 @@ public class BlockLaserFocusMatrix extends BlockBasicMultiblock<TileEntityLaserF
     @Override
     protected boolean skipRendering(@NotNull BlockState state, @NotNull BlockState adjacentBlockState, @NotNull Direction side) {
         Block blockOffset = adjacentBlockState.getBlock();
-        if (blockOffset instanceof BlockStructuralGlass || blockOffset instanceof BlockLaserFocusMatrix) {
+        if (blockOffset instanceof BlockReactorGlass || blockOffset instanceof BlockLaserFocusMatrix) {
             return true;
         }
         return super.skipRendering(state, adjacentBlockState, side);
