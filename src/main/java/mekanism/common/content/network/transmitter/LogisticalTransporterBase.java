@@ -152,7 +152,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                     int stackId = entry.getIntKey();
                     TransporterStack stack = entry.getValue();
                     if (!stack.initiatedPath) {//Initiate any paths and remove things that can't go places
-                        if (stack.itemStack.isEmpty() || !recalculate(stackId, stack, null)) {
+                        if (stack.itemStack.isEmpty() || !recalculate(stackId, stack, Long.MAX_VALUE)) {
                             deletes.add(stackId);
                             continue;
                         }
@@ -161,15 +161,16 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                     int prevProgress = stack.progress;
                     stack.progress += tier.getSpeed();
                     if (stack.progress >= 100) {
-                        BlockPos prevSet = null;
+                        long prevSet = Long.MAX_VALUE;
                         if (stack.hasPath()) {
-                            int currentIndex = stack.getPath().indexOf(pos);
+                            int currentIndex = stack.getPath().indexOf(pos.asLong());
                             if (currentIndex == 0) { //Necessary for transition reasons, not sure why
                                 deletes.add(stackId);
                                 continue;
                             }
-                            BlockPos next = stack.getPath().get(currentIndex - 1);
-                            if (next != null) {
+                            long next = stack.getPath().getLong(currentIndex - 1);
+                            if (next != Long.MAX_VALUE) {
+                                BlockPos nextPos = BlockPos.of(next);
                                 if (!stack.isFinal(this)) {
                                     //If this is not the final transporter try transferring it to the next one
                                     LogisticalTransporterBase transmitter = network.getTransmitter(next);
@@ -183,13 +184,13 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                                     //Otherwise, try to insert it into the destination inventory
                                     //Get the handler we are trying to insert into from the network's acceptor cache
                                     Direction side = stack.getSide(this).getOpposite();
-                                    IItemHandler acceptor = network.getCachedAcceptor(next, side);
+                                    IItemHandler acceptor = network.getCachedAcceptor(nextPos, side);
                                     if (acceptor == null && stack.getPathType().isHome()) {
                                         //TODO: Cache this capability. The issue is that when we are sending it back home
                                         // if it pulled the item itself, then it isn't in our cached acceptors, and thus won't be able to insert it
-                                        acceptor = Capabilities.ITEM.getCapabilityIfLoaded(getLevel(), next, side);
+                                        acceptor = Capabilities.ITEM.getCapabilityIfLoaded(getLevel(), nextPos, side);
                                     }
-                                    TransitResponse response = TransitRequest.simple(stack.itemStack).addToInventory(getLevel(), next, acceptor, 0,
+                                    TransitResponse response = TransitRequest.simple(stack.itemStack).addToInventory(getLevel(), nextPos, acceptor, 0,
                                           stack.getPathType().isHome());
                                     if (!response.isEmpty()) {
                                         //We were able to add at least part of the stack to the inventory
@@ -211,7 +212,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                         }
                         if (!recalculate(stackId, stack, prevSet)) {
                             deletes.add(stackId);
-                        } else if (prevSet == null) {
+                        } else if (prevSet == Long.MAX_VALUE) {
                             stack.progress = 50;
                         } else {
                             stack.progress = 0;
@@ -224,14 +225,14 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                                 Direction side = stack.getSide(this);
                                 ConnectionType connectionType = getConnectionType(side);
                                 tryRecalculate = !connectionType.canSendTo() ||
-                                                 !TransporterUtils.canInsert(getLevel(), stack.getDest(), stack.color, stack.itemStack, side, pathType.isHome());
+                                                 !TransporterUtils.canInsert(getLevel(), BlockPos.of(stack.getDest()), stack.color, stack.itemStack, side, pathType.isHome());
                             } else {
                                 //Try to recalculate idles once they reach their destination
                                 tryRecalculate = true;
                             }
                         } else {
-                            BlockPos nextPos = stack.getNext(this);
-                            if (nextPos == null) {
+                            long nextPos = stack.getNext(this);
+                            if (nextPos == Long.MAX_VALUE) {
                                 tryRecalculate = true;
                             } else {
                                 Direction nextSide = stack.getSide(pos, nextPos);
@@ -246,7 +247,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                                 }
                             }
                         }
-                        if (tryRecalculate && !recalculate(stackId, stack, null)) {
+                        if (tryRecalculate && !recalculate(stackId, stack, Long.MAX_VALUE)) {
                             deletes.add(stackId);
                         }
                     }
@@ -379,7 +380,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
         transit.put(id, s);
     }
 
-    private boolean recalculate(int stackId, TransporterStack stack, BlockPos from) {
+    private boolean recalculate(int stackId, TransporterStack stack, long from) {
         //TODO: Why do we skip recalculating the path if it is idle. Is it possible for idle paths to eventually stop being idle or are they just idle forever??
         boolean noPath = stack.getPathType().noTarget() || stack.recalculatePath(TransitRequest.simple(stack.itemStack), this, 0).isEmpty();
         if (noPath && !stack.calculateIdle(this)) {
@@ -389,8 +390,8 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
 
         //Only add to needsSync if true is being returned; otherwise it gets added to deletes
         needsSync.put(stackId, stack);
-        if (from != null) {
-            stack.originalLocation = from;
+        if (from != Long.MAX_VALUE) {
+            stack.originalLocation = BlockPos.of(from);
         }
         return true;
     }

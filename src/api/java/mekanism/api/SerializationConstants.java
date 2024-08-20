@@ -39,6 +39,10 @@ public final class SerializationConstants {
     public static final String INGREDIENT = "ingredient";
     public static final String INGREDIENTS = "ingredients";
     public static final String ITEM = "item";
+    /**
+     * @since 10.6.9
+     */
+    public static final String ITEM_OVERSIZED = "item_oversized";
     public static final String SUBTRACTED = "subtracted";
     public static final String TAG = "tag";
 

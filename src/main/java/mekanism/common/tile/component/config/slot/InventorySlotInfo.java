@@ -24,6 +24,16 @@ public class InventorySlotInfo extends BaseSlotInfo {
         return inventorySlots;
     }
 
+    @Override
+    public boolean isEmpty() {
+        for (IInventorySlot slot : getSlots()) {
+            if (!slot.isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public boolean hasSlot(IInventorySlot slot) {
         return getSlots().contains(slot);
     }

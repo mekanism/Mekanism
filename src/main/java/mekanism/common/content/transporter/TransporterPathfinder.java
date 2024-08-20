@@ -1,11 +1,15 @@
 package mekanism.common.content.transporter;
 
-import com.google.common.collect.ImmutableList;
+import it.unimi.dsi.fastutil.longs.Long2DoubleOpenHashMap;
+import it.unimi.dsi.fastutil.longs.Long2LongMap;
+import it.unimi.dsi.fastutil.longs.Long2LongOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.longs.LongArrayList;
+import it.unimi.dsi.fastutil.longs.LongList;
+import it.unimi.dsi.fastutil.longs.LongLists;
+import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
+import it.unimi.dsi.fastutil.longs.LongSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -60,9 +64,9 @@ public final class TransporterPathfinder {
         return paths;
     }
 
-    private static boolean checkPath(InventoryNetwork network, List<BlockPos> path, TransporterStack stack) {
+    private static boolean checkPath(InventoryNetwork network, LongList path, TransporterStack stack) {
         for (int i = path.size() - 1; i > 0; i--) {
-            LogisticalTransporterBase transmitter = network.getTransmitter(path.get(i));
+            LogisticalTransporterBase transmitter = network.getTransmitter(path.getLong(i));
             if (transmitter == null) {
                 return false;
             }
@@ -124,10 +128,10 @@ public final class TransporterPathfinder {
                 // go through the different destinations and find one that matches
                 for (int i = 0; i < destinationCount; i++) {
                     Destination destination = destinations.get(i);
-                    List<BlockPos> path = destination.getPath();
-                    BlockPos pos = path.get(0);
-                    if (rrTarget.pos().equals(pos)) {
-                        Direction sideOfDest = WorldUtils.sideDifference(path.get(1), pos);
+                    LongList path = destination.getPath();
+                    long pos = path.getLong(0);
+                    if (rrTarget.pos() == pos) {
+                        Direction sideOfDest = WorldUtils.sideDifference(path.getLong(1), pos);
                         if (rrTarget.side() == sideOfDest) {
                             //When we find one that matches
                             if (i == destinationCount - 1) {
@@ -160,7 +164,7 @@ public final class TransporterPathfinder {
         return destination;
     }
 
-    public record IdlePathData(List<BlockPos> path, Path type) {
+    public record IdlePathData(LongList path, Path type) {
     }
 
     @Nullable
@@ -202,8 +206,8 @@ public final class TransporterPathfinder {
         }
 
         public Destination find() {
-            List<BlockPos> ret = new ArrayList<>();
-            ret.add(start);
+            LongList ret = new LongArrayList();
+            ret.add(start.asLong());
             LogisticalTransporterBase startTransmitter = network.getTransmitter(start);
             if (transportStack.idleDir == null) {
                 return getDestination(ret, startTransmitter);
@@ -226,7 +230,7 @@ public final class TransporterPathfinder {
         }
 
         @Nullable
-        private Destination getDestination(List<BlockPos> ret, @Nullable LogisticalTransporterBase startTransmitter) {
+        private Destination getDestination(LongList ret, @Nullable LogisticalTransporterBase startTransmitter) {
             Direction newSide = findSide(startTransmitter);
             if (newSide == null) {
                 if (startTransmitter != null) {
@@ -240,7 +244,7 @@ public final class TransporterPathfinder {
                             //If we are connected to a side, idle towards it, the path not pointing at a transmitter
                             // is gracefully handled
                             transportStack.idleDir = side;
-                            ret.add(start.relative(side));
+                            ret.add(relativePos(start.asLong(), side));
                             return createDestination(ret);
                         }
                     }
@@ -252,19 +256,19 @@ public final class TransporterPathfinder {
             return createDestination(ret);
         }
 
-        private Destination createDestination(List<BlockPos> ret) {
-            List<BlockPos> path = new ArrayList<>(ret);
+        private Destination createDestination(LongList ret) {
+            LongList path = new LongArrayList(ret);
             Collections.reverse(path);
-            return new Destination(Collections.unmodifiableList(path), null, 0);
+            return new Destination(LongLists.unmodifiable(path), null, 0);
         }
 
-        private void loopSide(List<BlockPos> list, Direction side, @Nullable LogisticalTransporterBase startTransmitter) {
+        private void loopSide(LongList list, Direction side, @Nullable LogisticalTransporterBase startTransmitter) {
             LogisticalTransporterBase lastTransmitter = startTransmitter;
             BlockPos pos = start.relative(side);
             LogisticalTransporterBase transmitter = network.getTransmitter(pos);
             while (transportStack.canInsertToTransporter(transmitter, side, lastTransmitter)) {
                 lastTransmitter = transmitter;
-                list.add(pos);
+                list.add(pos.asLong());
                 pos = pos.relative(side);
                 transmitter = network.getTransmitter(pos);
             }
@@ -299,7 +303,7 @@ public final class TransporterPathfinder {
     public static class Destination implements Comparable<Destination> {
 
         private final TransitResponse response;
-        private final List<BlockPos> path;
+        private final LongList path;
         private final int cachedHash;
         private final double score;
         private Path pathType = Path.NONE;
@@ -311,7 +315,7 @@ public final class TransporterPathfinder {
         /**
          * @apiNote Expects list to be unmodifiable/immutable (at the very least not mutated after being passed).
          */
-        public Destination(List<BlockPos> path, TransitResponse ret, double gScore) {
+        public Destination(LongList path, TransitResponse ret, double gScore) {
             this.path = path;
             this.cachedHash = this.path.hashCode();
             this.response = ret;
@@ -351,18 +355,18 @@ public final class TransporterPathfinder {
             return pathType;
         }
 
-        public List<BlockPos> getPath() {
+        public LongList getPath() {
             return path;
         }
     }
 
     public static class Pathfinder {
 
-        private final Set<BlockPos> openSet = new ObjectOpenHashSet<>();
-        private final Set<BlockPos> closedSet = new ObjectOpenHashSet<>();
-        private final Map<BlockPos, BlockPos> navMap = new Object2ObjectOpenHashMap<>();
-        private final Object2DoubleOpenHashMap<BlockPos> gScore = new Object2DoubleOpenHashMap<>();
-        private final Object2DoubleOpenHashMap<BlockPos> fScore = new Object2DoubleOpenHashMap<>();
+        private final LongSet openSet = new LongOpenHashSet();
+        private final LongSet closedSet = new LongOpenHashSet();
+        private final Long2LongMap navMap = new Long2LongOpenHashMap();
+        private final Long2DoubleOpenHashMap gScore = new Long2DoubleOpenHashMap();
+        private final Long2DoubleOpenHashMap fScore = new Long2DoubleOpenHashMap();
         private final InventoryNetwork network;
         private final BlockPos start;
         private final BlockPos finalNode;
@@ -372,7 +376,7 @@ public final class TransporterPathfinder {
         private final Level world;
         private double finalScore;
         private Direction side;
-        private List<BlockPos> results = new ArrayList<>();
+        private LongList results = new LongArrayList();
 
         public Pathfinder(InventoryNetwork network, Level world, BlockPos finalNode, BlockPos start, TransporterStack stack, ItemStack data, DestChecker checker) {
             destChecker = checker;
@@ -385,11 +389,11 @@ public final class TransporterPathfinder {
         }
 
         public boolean find(Long2ObjectMap<ChunkAccess> chunkMap) {
-            openSet.add(start);
-            gScore.put(start, 0D);
+            openSet.add(start.asLong());
+            gScore.put(start.asLong(), 0D);
             //Note: This is gScore + estimate, but given our gScore starts at zero we just skip getting it back out
             double totalDistance = WorldUtils.distanceBetween(start, finalNode);
-            fScore.put(start, totalDistance);
+            fScore.put(start.asLong(), totalDistance);
             boolean hasValidDirection = false;
             LogisticalTransporterBase startTransmitter = network.getTransmitter(start);
             BlockPos.MutableBlockPos neighbor = new BlockPos.MutableBlockPos();
@@ -413,44 +417,45 @@ public final class TransporterPathfinder {
             //If the blocks are very close together, allow for path finding up to four blocks away
             double maxSearchDistance = Math.max(2 * totalDistance, 4);
             while (!openSet.isEmpty()) {
-                BlockPos currentNode = null;
+                long currentNodeLong = Long.MAX_VALUE;
                 double lowestFScore = 0;
-                for (BlockPos node : openSet) {
-                    if (currentNode == null || fScore.getDouble(node) < lowestFScore) {
-                        currentNode = node;
-                        lowestFScore = fScore.getDouble(node);
+                for (long node : openSet) {
+                    if (currentNodeLong == Long.MAX_VALUE || fScore.get(node) < lowestFScore) {
+                        currentNodeLong = node;
+                        lowestFScore = fScore.get(node);
                     }
                 }
-                if (currentNode == null) {
+                if (currentNodeLong == Long.MAX_VALUE) {
                     //If we have no current node, then exit
                     break;
                 }
+                BlockPos currentNode = BlockPos.of(currentNodeLong);
                 //Remove the current node from unchecked and add it to checked
-                openSet.remove(currentNode);
-                closedSet.add(currentNode);
+                openSet.remove(currentNodeLong);
+                closedSet.add(currentNodeLong);
                 if (WorldUtils.distanceBetween(start, currentNode) > maxSearchDistance) {
                     //If it is too far away for us to keep considering then continue on and see if we have another path that may be valid
                     // Even if it currently has a bit higher of a score
                     continue;
                 }
                 LogisticalTransporterBase currentNodeTransmitter = network.getTransmitter(currentNode);
-                double currentScore = gScore.getDouble(currentNode);
+                double currentScore = gScore.get(currentNodeLong);
                 for (Direction direction : EnumUtils.DIRECTIONS) {
                     neighbor.setWithOffset(currentNode, direction);
+                    long neighborLong = neighbor.asLong();
                     LogisticalTransporterBase neighborTransmitter = network.getTransmitter(neighbor);
                     if (transportStack.canInsertToTransporter(neighborTransmitter, direction, currentNodeTransmitter)) {
                         //If the neighbor is a transporter and the stack is valid for it
                         double tentativeG = currentScore + neighborTransmitter.getCost();
-                        if (closedSet.contains(neighbor) && tentativeG >= gScore.getDouble(neighbor)) {
+                        if (closedSet.contains(neighborLong) && tentativeG >= gScore.get(neighborLong)) {
                             continue;
                         }
-                        if (!openSet.contains(neighbor) || tentativeG < gScore.getDouble(neighbor)) {
-                            BlockPos immutableNeighbor = neighbor.immutable();
-                            navMap.put(immutableNeighbor, currentNode);
-                            gScore.put(immutableNeighbor, tentativeG);
+                        if (!openSet.contains(neighborLong) || tentativeG < gScore.get(neighborLong)) {
+                            navMap.put(neighborLong, currentNodeLong);
+                            gScore.put(neighborLong, tentativeG);
                             //Put the gScore plus estimate in the final score
-                            fScore.put(immutableNeighbor, tentativeG + WorldUtils.distanceBetween(immutableNeighbor, finalNode));
-                            openSet.add(immutableNeighbor);
+                            fScore.put(neighborLong, tentativeG + WorldUtils.distanceBetween(neighbor, finalNode));
+                            openSet.add(neighborLong);
                         }
                     } else if (isValidDestination(currentNode, currentNodeTransmitter, direction, neighbor, chunkMap)) {
                         //Else if the neighbor is the destination, and we can send to it
@@ -478,8 +483,8 @@ public final class TransporterPathfinder {
                         // we can connect to it (normal, push, or pull (should always be pull as otherwise canEmitTo would have been true)),
                         // then this is the proper path, so we mark it as so and return true indicating that we found and marked the ideal path
                         side = direction;
-                        results = reconstructPath(navMap, start);
-                        finalScore = gScore.getDouble(start) + WorldUtils.distanceBetween(start, finalNode);
+                        results = reconstructPath(navMap, start.asLong());
+                        finalScore = gScore.get(start.asLong()) + WorldUtils.distanceBetween(start, finalNode);
                         return true;
                     }
                 }
@@ -487,12 +492,12 @@ public final class TransporterPathfinder {
             return false;
         }
 
-        private List<BlockPos> reconstructPath(Map<BlockPos, BlockPos> navMap, BlockPos nextNode) {
-            List<BlockPos> path = new ArrayList<>();
-            while (nextNode != null) {
+        private LongList reconstructPath(Long2LongMap navMap, long nextNode) {
+            LongList path = new LongArrayList();
+            do {
                 path.add(nextNode);
-                nextNode = navMap.get(nextNode);
-            }
+                nextNode = navMap.getOrDefault(nextNode, Long.MAX_VALUE);
+            } while (nextNode != Long.MAX_VALUE);
             return path;
         }
 
@@ -500,11 +505,11 @@ public final class TransporterPathfinder {
             return !results.isEmpty();
         }
 
-        public List<BlockPos> getPath() {
-            ImmutableList.Builder<BlockPos> path = ImmutableList.builder();
-            path.add(finalNode);
+        public LongList getPath() {
+            LongList path = new LongArrayList(results.size() + 1);
+            path.add(finalNode.asLong());
             path.addAll(results);
-            return path.build();
+            return path;
         }
 
         public double getFinalScore() {
@@ -520,5 +525,9 @@ public final class TransporterPathfinder {
 
             boolean isValid(Level level, BlockPos pos, @Nullable BlockEntity tile, TransporterStack stack, ItemStack data, Direction side);
         }
+    }
+
+    private static long relativePos(long pos, Direction direction) {
+        return BlockPos.asLong(BlockPos.getX(pos) + direction.getStepX(), BlockPos.getY(pos) + direction.getStepY(), BlockPos.getZ(pos) + direction.getStepZ());
     }
 }

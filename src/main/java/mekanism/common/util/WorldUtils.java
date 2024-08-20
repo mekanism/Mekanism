@@ -512,6 +512,22 @@ public class WorldUtils {
         int xDiff = pos.getX() - other.getX();
         int yDiff = pos.getY() - other.getY();
         int zDiff = pos.getZ() - other.getZ();
+        return getDirection(xDiff, yDiff, zDiff);
+    }
+
+    /**
+     * A method used to find the Direction represented by the distance of the defined packed BlockPos. Most likely won't have many applicable uses.
+     *
+     * @return Direction representing the side the defined relative packed BlockPos is on to this
+     */
+    public static Direction sideDifference(long pos, long other) {
+        int xDiff = BlockPos.getX(pos) - BlockPos.getX(other);
+        int yDiff = BlockPos.getY(pos) - BlockPos.getY(other);
+        int zDiff = BlockPos.getZ(pos) - BlockPos.getZ(other);
+        return getDirection(xDiff, yDiff, zDiff);
+    }
+
+    private static @Nullable Direction getDirection(int xDiff, int yDiff, int zDiff) {
         for (Direction side : EnumUtils.DIRECTIONS) {
             if (side.getStepX() == xDiff && side.getStepY() == yDiff && side.getStepZ() == zDiff) {
                 return side;

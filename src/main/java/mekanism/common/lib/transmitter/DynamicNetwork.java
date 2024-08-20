@@ -1,11 +1,11 @@
 package mekanism.common.lib.transmitter;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import mekanism.api.text.IHasTextComponent;
@@ -23,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
 public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK, TRANSMITTER>,
       TRANSMITTER extends Transmitter<ACCEPTOR, NETWORK, TRANSMITTER>> implements INetworkDataHandler, IHasTextComponent {
 
-    protected final Map<BlockPos, TRANSMITTER> positionedTransmitters = new Object2ObjectOpenHashMap<>();
+    protected final Long2ObjectMap<TRANSMITTER> positionedTransmitters = new Long2ObjectOpenHashMap<>();
     protected final Set<TRANSMITTER> transmittersToAdd = new ObjectOpenHashSet<>();
     protected final NetworkAcceptorCache<ACCEPTOR> acceptorCache = new NetworkAcceptorCache<>();
     @Nullable
@@ -91,12 +91,17 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     }
 
     @Nullable
-    public TRANSMITTER getTransmitter(BlockPos pos) {
+    public TRANSMITTER getTransmitter(long pos) {
         return positionedTransmitters.get(pos);
     }
 
+    @Nullable
+    public TRANSMITTER getTransmitter(BlockPos pos) {
+        return getTransmitter(pos.asLong());
+    }
+
     protected void addTransmitterFromCommit(TRANSMITTER transmitter) {
-        positionedTransmitters.put(transmitter.getBlockPos(), transmitter);
+        positionedTransmitters.put(transmitter.getBlockPos().asLong(), transmitter);
     }
 
     protected void validTransmittersAdded() {
@@ -141,7 +146,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     public List<TRANSMITTER> adoptTransmittersAndAcceptorsFrom(NETWORK net) {
         positionedTransmitters.putAll(net.positionedTransmitters);
         List<TRANSMITTER> transmittersToUpdate = new ArrayList<>();
-        for (Map.Entry<BlockPos, TRANSMITTER> entry : net.positionedTransmitters.entrySet()) {
+        for (Long2ObjectMap.Entry<TRANSMITTER> entry : net.positionedTransmitters.long2ObjectEntrySet()) {
             TRANSMITTER transmitter = entry.getValue();
             positionedTransmitters.put(entry.getKey(), transmitter);
             if (transmitter.setTransmitterNetwork(getNetwork(), false)) {
@@ -209,7 +214,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     }
 
     public void addTransmitter(TRANSMITTER transmitter) {
-        positionedTransmitters.put(transmitter.getBlockPos(), transmitter);
+        positionedTransmitters.put(transmitter.getBlockPos().asLong(), transmitter);
     }
 
     public void removeTransmitter(TRANSMITTER transmitter) {
@@ -239,7 +244,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
                 }
                 Mekanism.logger.warn("Removed transmitter at position: {} in {} was different than expected.", pos, world == null ? null : world.dimension().location());
             }
-            positionedTransmitters.remove(pos);
+            positionedTransmitters.remove(pos.asLong());
         }
     }
 

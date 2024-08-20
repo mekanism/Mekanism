@@ -46,7 +46,7 @@ public class AttributeStateBoilerValveMode implements AttributeState {
     @NothingNullByDefault
     public enum BoilerValveMode implements StringRepresentable, IHasTextComponent, IIncrementalEnum<BoilerValveMode> {
         INPUT("input", MekanismLang.BOILER_VALVE_MODE_INPUT, EnumColor.BRIGHT_GREEN),
-        OUTPUT_STEAM("output_steam", MekanismLang.BOILER_VALVE_MODE_OUTPUT_STEAM, EnumColor.GRAY),
+        OUTPUT_STEAM("output_steam", MekanismLang.BOILER_VALVE_MODE_OUTPUT_STEAM, EnumColor.RED),
         OUTPUT_COOLANT("output_coolant", MekanismLang.BOILER_VALVE_MODE_OUTPUT_COOLANT, EnumColor.DARK_AQUA);
 
         public static final IntFunction<BoilerValveMode> BY_ID = ByIdMap.continuous(BoilerValveMode::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);

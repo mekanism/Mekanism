@@ -19,4 +19,14 @@ public class FluidSlotInfo extends BaseSlotInfo {
     public List<IExtendedFluidTank> getTanks() {
         return tanks;
     }
+
+    @Override
+    public boolean isEmpty() {
+        for (IExtendedFluidTank tank : getTanks()) {
+            if (!tank.isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

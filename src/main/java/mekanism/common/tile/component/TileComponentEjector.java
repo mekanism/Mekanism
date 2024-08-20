@@ -273,6 +273,9 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                 continue;
             }
             ISlotInfo slotInfo = info.getSlotInfo(dataType);
+            if (slotInfo != null && slotInfo.isEmpty()) {
+                continue;//don't even bother getting caps etc
+            }
             if (slotInfo instanceof InventorySlotInfo inventorySlotInfo) {
                 //Validate the slot info is of the correct type
                 Set<Direction> outputs = getSidesForData(info, facing, dataType);

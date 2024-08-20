@@ -16,6 +16,11 @@ public class HeatSlotInfo extends BaseSlotInfo {
         this.capacitors = capacitors;
     }
 
+    @Override
+    public boolean isEmpty() {
+        return false;
+    }
+
     public List<IHeatCapacitor> getHeatCapacitors() {
         return capacitors;
     }

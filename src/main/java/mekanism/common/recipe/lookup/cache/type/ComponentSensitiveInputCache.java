@@ -3,11 +3,11 @@ package mekanism.common.recipe.lookup.cache.type;
 import com.google.common.collect.Iterables;
 import it.unimi.dsi.fastutil.Hash;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.InputIngredient;
 
@@ -22,10 +22,10 @@ public abstract class ComponentSensitiveInputCache<KEY, INPUT, INGREDIENT extend
      * Map of NBT based keys representing inputs to a set of the recipes that contain said input. This allows for quick contains checking by checking if a key exists, as
      * well as quicker recipe lookup.
      */
-    private final Map<INPUT, Set<RECIPE>> componentInputCache;
+    private final Map<INPUT, List<RECIPE>> componentInputCache;
 
     protected ComponentSensitiveInputCache(Hash.Strategy<? super INPUT> componentHashStrategy) {
-        this.componentInputCache = new Object2ObjectOpenCustomHashMap<>(componentHashStrategy);
+        this.componentInputCache = new Object2ObjectOpenCustomHashMap<>(0, Hash.VERY_FAST_LOAD_FACTOR, componentHashStrategy);
     }
 
     @Override
@@ -41,7 +41,7 @@ public abstract class ComponentSensitiveInputCache<KEY, INPUT, INGREDIENT extend
      */
     @Override
     public boolean contains(INPUT input) {
-        return componentInputCache.containsKey(input) || super.contains(input);
+        return super.contains(input) || (!componentInputCache.isEmpty() && componentInputCache.containsKey(input));
     }
 
     /**
@@ -51,7 +51,10 @@ public abstract class ComponentSensitiveInputCache<KEY, INPUT, INGREDIENT extend
      */
     @Override
     public Iterable<RECIPE> getRecipes(INPUT input) {
-        Set<RECIPE> nbtRecipes = componentInputCache.getOrDefault(input, Collections.emptySet());
+        if (componentInputCache.isEmpty()) {
+            return super.getRecipes(input);
+        }
+        List<RECIPE> nbtRecipes = componentInputCache.getOrDefault(input, Collections.emptyList());
         if (nbtRecipes.isEmpty()) {
             return super.getRecipes(input);
         }
@@ -69,6 +72,17 @@ public abstract class ComponentSensitiveInputCache<KEY, INPUT, INGREDIENT extend
      * @param recipe Recipe to add.
      */
     protected void addNbtInputCache(INPUT input, RECIPE recipe) {
-        componentInputCache.computeIfAbsent(input, i -> new HashSet<>()).add(recipe);
+        if (!componentInputCache.containsKey(input)) {
+            componentInputCache.put(input, Collections.singletonList(recipe));
+        } else {
+            List<RECIPE> existing = componentInputCache.get(input);
+            if (existing.size() == 1) {
+                List<RECIPE> newList = new ArrayList<>(existing);
+                newList.add(recipe);
+                componentInputCache.put(input, newList);
+            } else {
+                existing.add(recipe);
+            }
+        }
     }
 }

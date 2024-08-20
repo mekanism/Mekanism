@@ -90,7 +90,7 @@ public class CommonWorldTickHandler {
                 entity.discard();
                 event.setCanceled(true);
             }
-        } else if (fallbackItemCollector != null && event.getEntity() instanceof ItemEntity entity && fallbackItemCollector.test(entity.getItem())) {
+        } else if (!event.getLevel().isClientSide && fallbackItemCollector != null && event.getEntity() instanceof ItemEntity entity && fallbackItemCollector.test(entity.getItem())) {
             //If we have a fallback item collector active and the entity that is being added is an item,
             // try to let our fallback collector handle the item and keep track of it instead of actually adding it to the world
             entity.discard();

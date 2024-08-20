@@ -16,6 +16,16 @@ public class ChemicalSlotInfo extends BaseSlotInfo {
         this.tanks = tanks;
     }
 
+    @Override
+    public boolean isEmpty() {
+        for (IChemicalTank tank : getTanks()) {
+            if (!tank.isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public List<IChemicalTank> getTanks() {
         return tanks;
     }

@@ -183,5 +183,6 @@
   "item.mekanismtools.steel_sword": "Espada de acero",
   "item.mekanismtools.stone_paxel": "Paxel de piedra",
   "item.mekanismtools.wood_paxel": "Paxel de madera",
+  "tag.item.c.tools.paxel": "Paxels",
   "tooltip.mekanismtools.hp": "Vida: %1$s"
 }

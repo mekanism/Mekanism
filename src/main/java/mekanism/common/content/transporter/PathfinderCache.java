@@ -1,5 +1,6 @@
 package mekanism.common.content.transporter;
 
+import it.unimi.dsi.fastutil.longs.LongList;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.HashMap;
 import java.util.List;
@@ -56,7 +57,7 @@ public class PathfinderCache {
         cachedPaths.clear();
     }
 
-    public record CachedPath(List<BlockPos> path, double cost) {
+    public record CachedPath(LongList path, double cost) {
     }
 
     private record PathData(BlockPos startTransporter, BlockPos end, Direction endSide) {
