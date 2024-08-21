@@ -1,12 +1,9 @@
 package mekanism.common.integration.framedblocks;
 
-import mekanism.api.MekanismAPI;
-import mekanism.api.chemical.Chemical;
 import mekanism.common.Mekanism;
+import mekanism.common.registration.impl.ParticleTypeDeferredRegister;
 import net.minecraft.core.particles.ParticleType;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.client.event.ModelEvent;
@@ -23,9 +20,7 @@ public final class FramedBlocksIntegration {
             FramedConstants.CAMO_CONTAINER_FACTORY_REGISTRY_KEY,
             Mekanism.MODID
     );
-    private static final DeferredRegister<ParticleType<?>> PARTICLE_TYPES = DeferredRegister.create(
-            Registries.PARTICLE_TYPE, Mekanism.MODID
-    );
+    private static final ParticleTypeDeferredRegister PARTICLE_TYPES = new ParticleTypeDeferredRegister(Mekanism.MODID);
 
     static final DeferredHolder<CamoContainerFactory<?>, ChemicalCamoContainerFactory> CHEMICAL_FACTORY =
             CAMO_FACTORIES.register("chemical", ChemicalCamoContainerFactory::new);
@@ -43,12 +38,6 @@ public final class FramedBlocksIntegration {
 
     public static final class Constants {
 
-        /**
-         * Chemicals tagged with this tag cannot be inserted into a framed blocks
-         */
-        public static final TagKey<Chemical> CHEMICAL_BLACKLISTED = TagKey.create(
-                MekanismAPI.CHEMICAL_REGISTRY_NAME, Mekanism.rl("framedblocks_blacklisted")
-        );
         /**
          * The amount of a given chemical to consume when applying it to a framed block
          */

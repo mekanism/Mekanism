@@ -216,6 +216,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
 
         addTag(MekanismAPITags.Chemicals.DIRTY, "Dirty Slurry");
         addTag(MekanismAPITags.Chemicals.CLEAN, "Clean Slurry");
+
+        add(MekanismAPITags.Chemicals.FRAMEDBLOCKS_BLACKLISTED, "FramedBlocks Blacklisted");
     }
 
     private void addItems() {

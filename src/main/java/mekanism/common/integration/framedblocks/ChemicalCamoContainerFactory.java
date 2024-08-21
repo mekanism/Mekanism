@@ -3,6 +3,7 @@ package mekanism.common.integration.framedblocks;
 import com.mojang.serialization.MapCodec;
 import mekanism.api.Action;
 import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismAPITags;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
@@ -54,23 +55,26 @@ final class ChemicalCamoContainerFactory extends CamoContainerFactory<ChemicalCa
              return null;
         }
 
-        ChemicalStack chemical = handler.getChemicalInTank(0);
-        if (!isValidChemical(chemical.getChemical(), player)) {
-            return null;
-        }
-
-        if (!player.isCreative() && ConfigView.Server.INSTANCE.shouldConsumeCamoItem()) {
-            ChemicalStack extracted = handler.extractChemical(0, FramedBlocksIntegration.Constants.CHEMICAL_AMOUNT, Action.SIMULATE);
-            if (extracted.getAmount() != FramedBlocksIntegration.Constants.CHEMICAL_AMOUNT) {
-                return null;
+        for (int tank = 0; tank < handler.getChemicalTanks(); tank++) {
+            ChemicalStack chemical = handler.getChemicalInTank(tank);
+            if (!isValidChemical(chemical.getChemical(), player)) {
+                continue;
             }
 
-            if (!level.isClientSide()) {
-                handler.extractChemical(0, FramedBlocksIntegration.Constants.CHEMICAL_AMOUNT, Action.EXECUTE);
-            }
-        }
+            if (!player.isCreative() && ConfigView.Server.INSTANCE.shouldConsumeCamoItem()) {
+                ChemicalStack extracted = handler.extractChemical(tank, FramedBlocksIntegration.Constants.CHEMICAL_AMOUNT, Action.SIMULATE);
+                if (extracted.getAmount() != FramedBlocksIntegration.Constants.CHEMICAL_AMOUNT) {
+                    continue;
+                }
 
-        return new ChemicalCamoContainer(chemical.getChemical());
+                if (!level.isClientSide()) {
+                    handler.extractChemical(tank, FramedBlocksIntegration.Constants.CHEMICAL_AMOUNT, Action.EXECUTE);
+                }
+            }
+
+            return new ChemicalCamoContainer(chemical.getChemical());
+        }
+        return null;
     }
 
     @Override
@@ -85,13 +89,30 @@ final class ChemicalCamoContainerFactory extends CamoContainerFactory<ChemicalCa
         }
 
         ChemicalStack chemical = camo.getChemical().getStack(FramedBlocksIntegration.Constants.CHEMICAL_AMOUNT);
-        if (handler.insertChemical(chemical, Action.SIMULATE).isEmpty()) {
-            if (!level.isClientSide() && !player.isCreative() && ConfigView.Server.INSTANCE.shouldConsumeCamoItem()) {
+        if (!isValidForHandler(handler, chemical)) {
+            return false;
+        }
+        if (!player.isCreative() && ConfigView.Server.INSTANCE.shouldConsumeCamoItem()) {
+            if (!handler.insertChemical(chemical, Action.SIMULATE).isEmpty()) {
+                return false;
+            }
+            if (!level.isClientSide()) {
                 handler.insertChemical(chemical, Action.EXECUTE);
             }
-            return true;
         }
+        return true;
+    }
 
+    private static boolean isValidForHandler(IChemicalHandler handler, ChemicalStack chemical) {
+        for (int tank = 0; tank < handler.getChemicalTanks(); tank++) {
+            if (!handler.isValid(tank, chemical)) {
+                continue;
+            }
+            ChemicalStack inTank = handler.getChemicalInTank(tank);
+            if (inTank.isEmpty() || inTank.is(chemical.getChemical())) {
+                return true;
+            }
+        }
         return false;
     }
 
@@ -114,11 +135,11 @@ final class ChemicalCamoContainerFactory extends CamoContainerFactory<ChemicalCa
         if (chemical.isEmptyType()) {
             return false;
         }
-        if (chemical.isRadioactive()) {
+        if (chemical.hasAttributesWithValidation()) {
             displayValidationMessage(player, MSG_RADIOACTIVE, CamoMessageVerbosity.DEFAULT);
             return false;
         }
-        if (chemical.is(FramedBlocksIntegration.Constants.CHEMICAL_BLACKLISTED)) {
+        if (chemical.is(MekanismAPITags.Chemicals.FRAMEDBLOCKS_BLACKLISTED)) {
             displayValidationMessage(player, MSG_BLACKLISTED, CamoMessageVerbosity.DEFAULT);
             return false;
         }

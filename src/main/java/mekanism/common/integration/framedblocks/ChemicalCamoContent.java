@@ -1,6 +1,7 @@
 package mekanism.common.integration.framedblocks;
 
 import mekanism.api.chemical.Chemical;
+import mekanism.common.registration.impl.FluidDeferredRegister;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleOptions;
@@ -23,9 +24,11 @@ import xfacthd.framedblocks.api.camo.CamoContent;
 final class ChemicalCamoContent extends CamoContent<ChemicalCamoContent> {
 
     private final Chemical chemical;
+    private final MapColor mapColor;
 
     ChemicalCamoContent(Chemical chemical) {
         this.chemical = chemical;
+        this.mapColor = FluidDeferredRegister.getClosestColor(chemical.getColorRepresentation());
     }
 
     Chemical getChemical() {
@@ -75,7 +78,7 @@ final class ChemicalCamoContent extends CamoContent<ChemicalCamoContent> {
 
     @Override
     public SoundType getSoundType() {
-        return SoundType.STONE;
+        return SoundType.WET_GRASS;
     }
 
     @Override
@@ -101,8 +104,7 @@ final class ChemicalCamoContent extends CamoContent<ChemicalCamoContent> {
     @Override
     @Nullable
     public MapColor getMapColor(BlockGetter level, BlockPos pos) {
-        // TODO: Chemicals don't provide a map color
-        return null;
+        return mapColor;
     }
 
     @Override

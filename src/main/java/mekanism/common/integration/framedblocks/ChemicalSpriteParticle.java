@@ -1,6 +1,8 @@
 package mekanism.common.integration.framedblocks;
 
 import mekanism.api.chemical.Chemical;
+import mekanism.client.render.MekanismRenderer;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
@@ -29,9 +31,9 @@ final class ChemicalSpriteParticle extends TextureSheetParticle {
         this.brightness = 0;
 
         int tint = chemical.getTint();
-        this.rCol = .6F * (float)(tint >> 16 & 0xFF) / 255F;
-        this.gCol = .6F * (float)(tint >>  8 & 0xFF) / 255F;
-        this.bCol = .6F * (float)(tint       & 0xFF) / 255F;
+        this.rCol = .6F * MekanismRenderer.getRed(tint);
+        this.gCol = .6F * MekanismRenderer.getGreen(tint);
+        this.bCol = .6F * MekanismRenderer.getBlue(tint);
 
         setSprite(Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(chemical.getIcon()));
     }
@@ -62,9 +64,8 @@ final class ChemicalSpriteParticle extends TextureSheetParticle {
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     public int getLightColor(float partialTick) {
-        int light = level.hasChunkAt(pos) ? LevelRenderer.getLightColor(level, pos) : 0;
+        int light = WorldUtils.isChunkLoaded(level, pos) ? LevelRenderer.getLightColor(level, pos) : 0;
         int block = Math.max(brightness, LightTexture.block(light));
         return LightTexture.pack(block, LightTexture.sky(light));
     }

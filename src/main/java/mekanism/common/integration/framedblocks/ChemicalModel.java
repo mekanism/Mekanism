@@ -1,5 +1,6 @@
 package mekanism.common.integration.framedblocks;
 
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +52,7 @@ final class ChemicalModel implements BakedModel {
 
     @Override
     public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand, ModelData extraData, RenderType layer) {
-        return (side == null || layer != renderType) ? List.of() : quads.get(side);
+        return (side == null || layer != renderType) ? Collections.emptyList() : quads.get(side);
     }
 
     @Override
