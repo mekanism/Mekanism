@@ -841,6 +841,8 @@ public enum MekanismLang implements ILangEntry {
     MODULE_MAGNETIC_ATTRACTION("module", "magnetic_attraction"),
     MODULE_MODE_CHANGE("module", "mode_change"),
     MODULE_VISION_ENHANCEMENT("module", "vision_enhancement"),
+    //FramedBlocks integration
+    FRAMEDBLOCKS_CAMO_RADIOACTIVE("msg", "compat.framedblocks.camo.radioactive")
     ;
 
     private final String key;

@@ -409,6 +409,7 @@ dependencies {
     compileOnly("cc.tweaked:cc-tweaked-${previous_minor_minecraft_version}-forge-api:${cc_tweaked_version}")
     //localRuntime("cc.tweaked:cc-tweaked-${minecraft_version}-forge:${cc_tweaked_version}")
     compileOnly("curse.maven:female-gender-forge-481655:${wildfire_gender_mod_id}")
+    compileOnly("curse.maven:framedblocks-441647:${framedblocks_mod_id}")
 
     //Dependencies for data generators for mod compat reference
     datagenMainImplementation("appeng:appliedenergistics2:${ae2_version}")
