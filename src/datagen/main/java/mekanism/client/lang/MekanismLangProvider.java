@@ -1725,7 +1725,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismModules.FROST_WALKER_UNIT, "Frost Walker Unit", "Uses liquid hydrogen to freeze any water the player walks on. Install multiple for a greater range.");
         add(MekanismModules.SOUL_SURFER_UNIT, "Soul Surfer Unit", "Allows the user to surf effortlessly across the top of souls. Install multiple for a greater speed.");
         // FramedBlocks integration
-        add(MekanismLang.FRAMEDBLOCKS_CAMO_RADIOACTIVE, "Radioactive chemicals cannot be inserted into framed blocks!");
+        add(MekanismLang.FRAMEDBLOCKS_CAMO_HAS_SPECIAL_HANDLING, "Chemicals which require special handling cannot be inserted into framed blocks!");
     }
 
     private void addOre(OreType type, String description) {

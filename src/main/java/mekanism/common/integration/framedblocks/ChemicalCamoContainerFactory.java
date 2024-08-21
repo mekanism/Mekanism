@@ -31,8 +31,8 @@ final class ChemicalCamoContainerFactory extends CamoContainerFactory<ChemicalCa
             .fieldOf("chemical");
     private static final StreamCodec<RegistryFriendlyByteBuf, ChemicalCamoContainer> STREAM_CODEC =
             Chemical.STREAM_CODEC.map(ChemicalCamoContainer::new, ChemicalCamoContainer::getChemical);
-    private static final Component MSG_RADIOACTIVE = TextComponentUtil.translate(
-            MekanismLang.FRAMEDBLOCKS_CAMO_RADIOACTIVE.getTranslationKey()
+    private static final Component MSG_HAS_SPECIAL_HANDLING = TextComponentUtil.translate(
+            MekanismLang.FRAMEDBLOCKS_CAMO_HAS_SPECIAL_HANDLING.getTranslationKey()
     );
 
     @Override
@@ -136,7 +136,7 @@ final class ChemicalCamoContainerFactory extends CamoContainerFactory<ChemicalCa
             return false;
         }
         if (chemical.hasAttributesWithValidation()) {
-            displayValidationMessage(player, MSG_RADIOACTIVE, CamoMessageVerbosity.DEFAULT);
+            displayValidationMessage(player, MSG_HAS_SPECIAL_HANDLING, CamoMessageVerbosity.DEFAULT);
             return false;
         }
         if (chemical.is(MekanismAPITags.Chemicals.FRAMEDBLOCKS_BLACKLISTED)) {

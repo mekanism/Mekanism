@@ -1519,7 +1519,7 @@
   "module.mekanism.vein_mining_unit": "Vein Mining Unit",
   "module.mekanism.vision_enhancement": "Vision Enhancement",
   "module.mekanism.vision_enhancement_unit": "Vision Enhancement Unit",
-  "msg.mekanism.compat.framedblocks.camo.radioactive": "Radioactive chemicals cannot be inserted into framed blocks!",
+  "msg.mekanism.compat.framedblocks.camo.has_special_handling": "Chemicals which require special handling cannot be inserted into framed blocks!",
   "multiblock.mekanism.conflict": "Conflict",
   "multiblock.mekanism.formed": "Formed",
   "multiblock.mekanism.formed.chat": "Multiblock Formed",
