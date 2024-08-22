@@ -13,6 +13,7 @@ import java.util.function.Supplier;
 import mekanism.api.Action;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
+import mekanism.api.text.IHasTranslationKey.IHasEnumNameTranslationKey;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -52,6 +53,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.common.TranslatableEnum;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -559,15 +561,17 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     private record ItemSlotData(HashedItem item, UUID itemUUID, long count) implements IScrollableSlot {
     }
 
-    public enum SortDirection implements IToggleEnum<SortDirection> {
-        ASCENDING(MekanismUtils.getResource(ResourceType.GUI, "arrow_up.png"), MekanismLang.LIST_SORT_ASCENDING_DESC),
-        DESCENDING(MekanismUtils.getResource(ResourceType.GUI, "arrow_down.png"), MekanismLang.LIST_SORT_DESCENDING_DESC);
+    public enum SortDirection implements IToggleEnum<SortDirection>, IHasEnumNameTranslationKey {
+        ASCENDING(MekanismUtils.getResource(ResourceType.GUI, "arrow_up.png"), MekanismLang.LIST_SORT_ASCENDING, MekanismLang.LIST_SORT_ASCENDING_DESC),
+        DESCENDING(MekanismUtils.getResource(ResourceType.GUI, "arrow_down.png"), MekanismLang.LIST_SORT_DESCENDING, MekanismLang.LIST_SORT_DESCENDING_DESC);
 
         private final ResourceLocation icon;
+        private final ILangEntry name;
         private final ILangEntry tooltip;
 
-        SortDirection(ResourceLocation icon, ILangEntry tooltip) {
+        SortDirection(ResourceLocation icon, ILangEntry name, ILangEntry tooltip) {
             this.icon = icon;
+            this.name = name;
             this.tooltip = tooltip;
         }
 
@@ -584,9 +588,15 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         public boolean isAscending() {
             return this == ASCENDING;
         }
+
+        @NotNull
+        @Override
+        public String getTranslationKey() {
+            return name.getTranslationKey();
+        }
     }
 
-    public enum ListSortType implements IDropdownEnum<ListSortType> {
+    public enum ListSortType implements IDropdownEnum<ListSortType>, TranslatableEnum {
         NAME(MekanismLang.LIST_SORT_NAME, MekanismLang.LIST_SORT_NAME_DESC, Comparator.comparing(IScrollableSlot::getDisplayName)),
         SIZE(MekanismLang.LIST_SORT_COUNT, MekanismLang.LIST_SORT_COUNT_DESC, Comparator.comparingLong(IScrollableSlot::count).thenComparing(IScrollableSlot::getDisplayName),
               Comparator.comparingLong(IScrollableSlot::count).reversed().thenComparing(IScrollableSlot::getDisplayName)),
@@ -624,6 +634,12 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         @Override
         public Component getShortName() {
             return name.translate();
+        }
+
+        @NotNull
+        @Override
+        public Component getTranslatedName() {
+            return getShortName();
         }
     }
 }

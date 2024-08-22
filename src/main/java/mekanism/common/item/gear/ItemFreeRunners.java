@@ -9,7 +9,7 @@ import java.util.function.IntFunction;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.EnumColor;
-import mekanism.api.text.IHasTextComponent;
+import mekanism.api.text.IHasTextComponent.IHasEnumNameTextComponent;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -132,7 +132,7 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
     }
 
     @NothingNullByDefault
-    public enum FreeRunnerMode implements IIncrementalEnum<FreeRunnerMode>, IHasTextComponent, StringRepresentable {
+    public enum FreeRunnerMode implements IIncrementalEnum<FreeRunnerMode>, IHasEnumNameTextComponent, StringRepresentable {
         NORMAL(MekanismLang.FREE_RUNNER_NORMAL, EnumColor.DARK_GREEN, true, true),
         SAFETY(MekanismLang.FREE_RUNNER_SAFETY, EnumColor.ORANGE, true, false),
         DISABLED(MekanismLang.FREE_RUNNER_DISABLED, EnumColor.DARK_RED, false, false);

@@ -128,7 +128,7 @@ public class AdditionsLangProvider extends BaseLanguageProvider {
     }
 
     private void addMisc() {
-        addModInfo("Additions module for Mekanism, contains things that don't quite fit in the other modules");
+        addModInfo("Additions module for Mekanism, contains miscellaneous things that do not thematically fit in the other modules");
         addPackData(AdditionsLang.MEKANISM_ADDITIONS, AdditionsLang.PACK_DESCRIPTION);
         add(AdditionsLang.CHANNEL, "Channel: %1$s");
         add(AdditionsLang.CHANNEL_CHANGE, "Channel changed to: %1$s");

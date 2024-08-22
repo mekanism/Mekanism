@@ -17,6 +17,8 @@ import mekanism.common.MekanismLang;
 import mekanism.common.advancements.MekanismAdvancements;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.MekanismConfigTranslations;
+import mekanism.common.config.MekanismConfigTranslations.OreConfigTranslations;
+import mekanism.common.config.MekanismConfigTranslations.OreVeinConfigTranslations;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.content.gear.mekasuit.ModuleChargeDistributionUnit;
 import mekanism.common.content.gear.mekasuit.ModuleElectrolyticBreathingUnit;
@@ -54,6 +56,7 @@ import mekanism.common.registries.MekanismSounds;
 import mekanism.common.resource.IResource;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
+import mekanism.common.resource.ore.BaseOreConfig;
 import mekanism.common.resource.ore.OreBlockType;
 import mekanism.common.resource.ore.OreType;
 import mekanism.common.tags.MekanismTags;
@@ -98,6 +101,14 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         for (WindowType windowType : WindowType.values()) {
             for (ConfigSaveData saveData : windowType.getSavePaths()) {
                 addConfigs(saveData);
+            }
+        }
+        //World Gen configs
+        for (OreType oreType : EnumUtils.ORE_TYPES) {
+            String ore = oreType.getResource().getRegistrySuffix();
+            addConfigs(OreConfigTranslations.create(ore).toArray());
+            for (BaseOreConfig baseConfig : oreType.getBaseConfigs()) {
+                addConfigs(OreVeinConfigTranslations.create(ore, baseConfig.name()).toArray());
             }
         }
     }
@@ -805,6 +816,13 @@ public class MekanismLangProvider extends BaseLanguageProvider {
     private void addMisc() {
         add("_mekanism_force_utf8", "\ufeff");
         addJade();
+        //Anchor Type
+        add(MekanismLang.ANCHOR_TYPE_ABSOLUTE, "Absolute (y = value)");
+        add(MekanismLang.ANCHOR_TYPE_ABOVE_BOTTOM, "Above Bottom (y = minY + value)");
+        add(MekanismLang.ANCHOR_TYPE_BELOW_TOP, "Below Top (y = depth - 1 + minY - value)");
+        //Height Shape
+        add(MekanismLang.HEIGHT_SHAPE_TRAPEZOID, "Trapezoid");
+        add(MekanismLang.HEIGHT_SHAPE_UNIFORM, "Uniform");
         //Upgrades
         add(APILang.UPGRADE_SPEED, "Speed");
         add(APILang.UPGRADE_SPEED_DESCRIPTION, "Increases speed of machinery.");
@@ -902,7 +920,9 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.LIST_SORT_COUNT_DESC, "Sort items by count.");
         add(MekanismLang.LIST_SORT_MOD_DESC, "Sort items by mod.");
         add(MekanismLang.LIST_SORT_REGISTRY_NAME_DESC, "Sort items by registry name.");
+        add(MekanismLang.LIST_SORT_ASCENDING, "Ascending");
         add(MekanismLang.LIST_SORT_ASCENDING_DESC, "Sort items in ascending order.");
+        add(MekanismLang.LIST_SORT_DESCENDING, "Descending");
         add(MekanismLang.LIST_SORT_DESCENDING_DESC, "Sort items in descending order.");
         add(MekanismLang.LIST_SEARCH, "Search:");
         add(MekanismLang.LIST_SORT, "Sort:");

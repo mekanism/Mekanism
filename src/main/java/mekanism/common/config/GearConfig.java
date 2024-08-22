@@ -334,8 +334,8 @@ public class GearConfig extends BaseMekanismConfig {
               .defineInRange("fallDamageReductionRatio", 1D, 0, 1));
         mekaSuitMagicDamageRatio = CachedFloatValue.wrap(this, builder.comment("Percent of damage taken from magic damage that can be absorbed by MekaSuit Helmet with Purification unit when it has enough power.")
               .defineInRange("magicDamageReductionRatio", 1D, 0, 1));
-        mekaSuitUnspecifiedDamageRatio = CachedFloatValue.wrap(this, builder.comment("Percent of damage taken from other non explicitly supported damage types that don't bypass armor when the MekaSuit has enough power and a full suit is equipped.",
-                    "Note: Support for specific damage types can be added by adding an entry for the damage type in the mekanism:mekasuit_absorption data map.")
+        mekaSuitUnspecifiedDamageRatio = CachedFloatValue.wrap(this, builder.comment("Percent of damage taken from other non explicitly supported damage types that don't bypass armor when the MekaSuit has enough power and a full suit is equipped. "
+                                                                                     + "Note: Support for specific damage types can be added by adding an entry for the damage type in the mekanism:mekasuit_absorption data map.")
               .defineInRange("unspecifiedDamageReductionRatio", 1D, 0, 1));
         builder.pop(2);
 

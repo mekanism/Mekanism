@@ -1,6 +1,7 @@
 package mekanism.common.config;
 
 import mekanism.common.Mekanism;
+import mekanism.common.util.text.TextUtils;
 import net.minecraft.Util;
 import org.jetbrains.annotations.NotNull;
 
@@ -72,14 +73,28 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
           "Should holiday greetings and easter eggs play for holidays (ex: Christmas and New Years) on the client. And should robit skins be randomized on the server."),
 
 
-
     BASE_ENERGY_STORAGE_JOULES("storage.energy.base", "Base energy storage", "Base energy storage (Joules)."),
-
 
 
     GEAR_MEKA_SUIT("gear.meka_suit", "MekaSuit Settings", "Settings for configuring the MekaSuit"),
     GEAR_MEKA_SUIT_DAMAGE_ABSORPTION("gear.meka_suit.damage_absorption", "MekaSuit Damage Absorption Settings", "Settings for configuring damage absorption of the MekaSuit"),
 
+
+    //World Config
+    WORLD_RETROGEN("world.retrogen", "Retrogen",
+          "Allows chunks to retrogen Mekanism salt and ore blocks. In general when enabling this you also want to bump userWorldGenVersion."),
+    WORLD_WORLD_VERSION("world.world_version", "User World Version", "Change this value to cause Mekanism to regen its ore in all loaded chunks."),
+    WORLD_HEIGHT_RANGE_PLATEAU("world.height_range.plateau", "Plateau",
+          "Half length of short side of trapezoid, only used if shape is TRAPEZOID. A value of zero means the shape is a triangle."),
+    WORLD_ANCHOR_TYPE("world.height_range.anchor.type", "Anchor Type", "Type of anchor"),
+    WORLD_ANCHOR_VALUE("world.height_range.anchor.value", "Value", "Value used for calculating y for the anchor based on the type."),
+
+    WORLD_SALT("world.salt", "Salt Settings", "Generation Settings for salt."),
+    WORLD_SALT_SHOULD_GENERATE("world.salt.generate", "Should Generate", "Determines if salt should be added to world generation."),
+    WORLD_SALT_PER_CHUNK("world.salt.per_chunk", "Per Chunk", "Chance that salt generates in a chunk."),
+    WORLD_SALT_RADIUS_MIN("world.salt.radius.min", "Min Radius", "Base radius of a vein of salt."),
+    WORLD_SALT_RADIUS_MAX("world.salt.radius.max", "Min Radius", "Extended variability (spread) for the radius in a vein of salt."),
+    WORLD_SALT_HALF_HEIGHT("world.salt.half_height", "Half Height", "Number of blocks to extend up and down when placing a vein of salt."),
     ;
 
     private final String key;
@@ -106,5 +121,59 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
     @Override
     public String tooltip() {
         return tooltip;
+    }
+
+    public record OreConfigTranslations(IConfigTranslation topLevel, IConfigTranslation shouldGenerate) {
+
+        public IConfigTranslation[] toArray() {
+            return new IConfigTranslation[]{topLevel, shouldGenerate};
+        }
+
+        private static String getKey(String ore, String path) {
+            return Util.makeDescriptionId("configuration", Mekanism.rl("world." + ore + "." + path));
+        }
+
+        public static OreConfigTranslations create(String ore) {
+            String name = TextUtils.formatAndCapitalize(ore);
+            return new OreConfigTranslations(
+                  new ConfigTranslation(getKey(ore, "top_level"), name + " Settings", "Generation Settings for " + name + " ore."),
+                  new ConfigTranslation(getKey(ore, "generate"), "Should Generate", "Determines if " + name + " ore should be added to world generation.")
+            );
+        }
+    }
+
+    public record OreVeinConfigTranslations(
+          IConfigTranslation topLevel, IConfigTranslation shouldGenerate,
+          IConfigTranslation perChunk, IConfigTranslation maxVeinSize, IConfigTranslation discardChanceOnAirExposure,
+          IConfigTranslation distributionShape, IConfigTranslation minInclusive, IConfigTranslation maxInclusive
+    ) {
+
+        public IConfigTranslation[] toArray() {
+            return new IConfigTranslation[]{topLevel, shouldGenerate, perChunk, maxVeinSize, discardChanceOnAirExposure, distributionShape, minInclusive,
+                                            maxInclusive};
+        }
+
+        private static String getKey(String ore, String vein, String path) {
+            return Util.makeDescriptionId("configuration", Mekanism.rl("world." + ore + "." + vein + "." + path));
+        }
+
+        public static OreVeinConfigTranslations create(String ore, String vein) {
+            String capitalizedOre = TextUtils.formatAndCapitalize(ore);
+            String capitalizedVein = TextUtils.formatAndCapitalize(vein);
+            String name = capitalizedVein + " " + capitalizedOre + " Vein";
+            return new OreVeinConfigTranslations(
+                  new ConfigTranslation(getKey(ore, vein, "top_level"), capitalizedVein + " Vein", name + " Generation Settings."),
+                  new ConfigTranslation(getKey(ore, vein, "generate"), "Should Generate",
+                        "Determines if " + name + "s should be added to world generation. Note: Requires generating " + ore + " ore to be enabled."),
+                  new ConfigTranslation(getKey(ore, vein, "per_chunk"), "Per Chunk", "Chance that " + name + "s generates in a chunk."),
+                  new ConfigTranslation(getKey(ore, vein, "max_size"), "Max Size", "Maximum number of blocks in a " + name + "."),
+                  new ConfigTranslation(getKey(ore, vein, "discard_chance"), "Discard Chance",
+                        "Chance that blocks that are directly exposed to air in a " + name + " are not placed."),
+
+                  new ConfigTranslation(getKey(ore, vein, "shape"), "Distribution shape", "Distribution shape for placing " + name + "s."),
+                  new ConfigTranslation(getKey(ore, vein, "min"), "Min Anchor", "Minimum (inclusive) height anchor for " + name + "s."),
+                  new ConfigTranslation(getKey(ore, vein, "max"), "Max Anchor", "Maximum (inclusive) height anchor for " + name + "s.")
+            );
+        }
     }
 }

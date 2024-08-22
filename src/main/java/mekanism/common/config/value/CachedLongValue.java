@@ -20,7 +20,7 @@ public class CachedLongValue extends CachedValue<Long> implements LongSupplier {
     }
 
     public static CachedLongValue definePositive(IMekanismConfig config, Builder builder, String comment, String path, long defaultValue) {
-        return define(config, builder, comment, path, defaultValue, 0, Long.MAX_VALUE);
+        return definedMin(config, builder, comment, path, defaultValue, 0);
     }
 
     public static CachedLongValue definedMin(IMekanismConfig config, Builder builder, String comment, String path, long defaultValue, long min) {

@@ -51,6 +51,13 @@ public enum MekanismLang implements ILangEntry {
     //Conversion
     CONVERSION_ENERGY("conversion", "energy"),
     CONVERSION_CHEMICAL("conversion", "chemical"),
+    //Anchor Type
+    ANCHOR_TYPE_ABSOLUTE("anchor_type", "absolute"),
+    ANCHOR_TYPE_ABOVE_BOTTOM("anchor_type", "above_bottom"),
+    ANCHOR_TYPE_BELOW_TOP("anchor_type", "below_top"),
+    //Height Shape
+    HEIGHT_SHAPE_TRAPEZOID("height_shape", "trapezoid"),
+    HEIGHT_SHAPE_UNIFORM("height_shape", "above_bottom"),
     //QIO stuff
     SET_FREQUENCY("qio", "set_frequency"),
     QIO_FREQUENCY_SELECT("qio", "qio_frequency_select"),
@@ -81,7 +88,9 @@ public enum MekanismLang implements ILangEntry {
     LIST_SORT_COUNT_DESC("qio", "sort_count_desc"),
     LIST_SORT_MOD_DESC("qio", "sort_mod_desc"),
     LIST_SORT_REGISTRY_NAME_DESC("qio", "sort_registry_name.desc"),
+    LIST_SORT_ASCENDING("qio", "sort_ascending"),
     LIST_SORT_ASCENDING_DESC("qio", "sort_ascending_desc"),
+    LIST_SORT_DESCENDING("qio", "sort_descending"),
     LIST_SORT_DESCENDING_DESC("qio", "sort_descending_desc"),
     LIST_SEARCH("qio", "list_search"),
     LIST_SORT("qio", "list_sort"),

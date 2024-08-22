@@ -7,7 +7,7 @@ import mekanism.api.IIncrementalEnum;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.EnumColor;
-import mekanism.api.text.IHasTextComponent;
+import mekanism.api.text.IHasTextComponent.IHasEnumNameTextComponent;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
@@ -190,7 +190,7 @@ public class DiversionTransporter extends LogisticalTransporterBase {
     }
 
     @NothingNullByDefault
-    public enum DiversionControl implements IIncrementalEnum<DiversionControl>, IHasTextComponent {
+    public enum DiversionControl implements IIncrementalEnum<DiversionControl>, IHasEnumNameTextComponent {
         DISABLED(MekanismLang.DIVERSION_CONTROL_DISABLED),
         HIGH(MekanismLang.DIVERSION_CONTROL_HIGH),
         LOW(MekanismLang.DIVERSION_CONTROL_LOW);

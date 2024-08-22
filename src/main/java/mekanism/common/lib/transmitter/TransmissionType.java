@@ -5,7 +5,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.text.IHasTranslationKey;
+import mekanism.api.text.IHasTranslationKey.IHasEnumNameTranslationKey;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.network.transmitter.Transmitter;
@@ -16,7 +16,7 @@ import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 
 @NothingNullByDefault
-public enum TransmissionType implements IHasTranslationKey, StringRepresentable {
+public enum TransmissionType implements IHasEnumNameTranslationKey, StringRepresentable {
     ENERGY("EnergyNetwork", "energy", MekanismLang.TRANSMISSION_TYPE_ENERGY, 0),
     FLUID("FluidNetwork", "fluids", MekanismLang.TRANSMISSION_TYPE_FLUID, 1),
     CHEMICAL("ChemicalNetwork", "chemicals", MekanismLang.TRANSMISSION_TYPE_CHEMICALS, 2),//3,4,5 deleted

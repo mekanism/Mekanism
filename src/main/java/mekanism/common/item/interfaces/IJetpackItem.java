@@ -9,6 +9,7 @@ import mekanism.api.IIncrementalEnum;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.gear.config.IHasModeIcon;
 import mekanism.api.text.EnumColor;
+import mekanism.api.text.IHasTextComponent.IHasEnumNameTextComponent;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.CommonPlayerTickHandler;
 import mekanism.common.Mekanism;
@@ -40,7 +41,7 @@ public interface IJetpackItem {
     void useJetpackFuel(ItemStack stack);
 
     @NothingNullByDefault
-    enum JetpackMode implements IIncrementalEnum<JetpackMode>, IHasModeIcon, StringRepresentable {
+    enum JetpackMode implements IIncrementalEnum<JetpackMode>, IHasModeIcon, StringRepresentable, IHasEnumNameTextComponent {
         NORMAL(MekanismLang.JETPACK_NORMAL, EnumColor.DARK_GREEN, "jetpack_normal.png"),
         HOVER(MekanismLang.JETPACK_HOVER, EnumColor.DARK_AQUA, "jetpack_hover.png"),
         VECTOR(MekanismLang.JETPACK_VECTOR, EnumColor.ORANGE, "jetpack_vector.png"),

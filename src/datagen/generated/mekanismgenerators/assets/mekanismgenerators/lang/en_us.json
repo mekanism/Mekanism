@@ -238,7 +238,6 @@
   "fission.mekanismgenerators.surface_area": "Fuel Surface Area: %1$s m2",
   "fission.mekanismgenerators.waste_tank": "Waste Tank",
   "fml.menu.mods.info.description.mekanismgenerators": "Generators module for Mekanism",
-  "fml.menu.mods.info.displayname.mekanismgenerators": "Mekanism: Generators",
   "gui.mekanismgenerators.bio_generator.bio_fuel": "BioFuel: %1$s",
   "gui.mekanismgenerators.gas_burning_generator.burn_rate": "Burn Rate: %1$s mB/t",
   "gui.mekanismgenerators.output_rate.short": "Out: %1$s/t",

@@ -5,9 +5,8 @@ import java.util.List;
 import java.util.function.IntFunction;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
-import mekanism.api.text.IHasTextComponent;
+import mekanism.api.text.IHasTextComponent.IHasEnumNameTextComponent;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
 import net.minecraft.network.chat.Component;
@@ -44,7 +43,7 @@ public class AttributeStateBoilerValveMode implements AttributeState {
     }
 
     @NothingNullByDefault
-    public enum BoilerValveMode implements StringRepresentable, IHasTextComponent, IIncrementalEnum<BoilerValveMode> {
+    public enum BoilerValveMode implements StringRepresentable, IHasEnumNameTextComponent, IIncrementalEnum<BoilerValveMode> {
         INPUT("input", MekanismLang.BOILER_VALVE_MODE_INPUT, EnumColor.BRIGHT_GREEN),
         OUTPUT_STEAM("output_steam", MekanismLang.BOILER_VALVE_MODE_OUTPUT_STEAM, EnumColor.RED),
         OUTPUT_COOLANT("output_coolant", MekanismLang.BOILER_VALVE_MODE_OUTPUT_COOLANT, EnumColor.DARK_AQUA);

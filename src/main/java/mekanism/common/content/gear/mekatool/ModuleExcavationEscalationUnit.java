@@ -33,6 +33,7 @@ import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.common.TranslatableEnum;
 import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -119,7 +120,7 @@ public record ModuleExcavationEscalationUnit(ExcavationMode excavationMode) impl
     }
 
     @NothingNullByDefault
-    public enum ExcavationMode implements IIncrementalEnum<ExcavationMode>, IHasTextComponent, IRadialMode, StringRepresentable {
+    public enum ExcavationMode implements IIncrementalEnum<ExcavationMode>, IHasTextComponent, TranslatableEnum, IRadialMode, StringRepresentable {
         OFF(MekanismLang.RADIAL_EXCAVATION_SPEED_OFF, 0, EnumColor.WHITE, "speed_off"),
         SLOW(MekanismLang.RADIAL_EXCAVATION_SPEED_SLOW, 4, EnumColor.PINK, "speed_slow"),
         NORMAL(MekanismLang.RADIAL_EXCAVATION_SPEED_NORMAL, 16, EnumColor.BRIGHT_GREEN, "speed_normal"),
@@ -155,6 +156,11 @@ public record ModuleExcavationEscalationUnit(ExcavationMode excavationMode) impl
         @Override
         public Component getTextComponent() {
             return label;
+        }
+
+        @Override
+        public Component getTranslatedName() {
+            return sliceName();
         }
 
         public int getEfficiency() {

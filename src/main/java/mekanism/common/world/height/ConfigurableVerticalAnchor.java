@@ -1,6 +1,8 @@
 package mekanism.common.world.height;
 
+import mekanism.common.config.IConfigTranslation;
 import mekanism.common.config.IMekanismConfig;
+import mekanism.common.config.MekanismConfigTranslations;
 import mekanism.common.config.value.CachedEnumValue;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.resource.ore.OreAnchor;
@@ -11,19 +13,21 @@ import org.jetbrains.annotations.Nullable;
 
 public record ConfigurableVerticalAnchor(CachedEnumValue<AnchorType> anchorType, CachedIntValue value) {
 
-    public static ConfigurableVerticalAnchor create(IMekanismConfig config, ModConfigSpec.Builder builder, String path, String comment, OreAnchor defaultAnchor,
+    public static ConfigurableVerticalAnchor create(IMekanismConfig config, ModConfigSpec.Builder builder, String path, IConfigTranslation translation, OreAnchor defaultAnchor,
           @Nullable ConfigurableVerticalAnchor minAnchor) {
-        builder.comment(comment).push(path);
-        CachedEnumValue<AnchorType> type = CachedEnumValue.wrap(config, builder.comment("Type of anchor.",
-              "Absolute -> y = value",
-              "Above Bottom -> y = minY + value",
-              "Below Top -> y = depth - 1 + minY - value").defineEnum("type", defaultAnchor.type()));
-        ModConfigSpec.Builder valueBuilder = builder.comment("Value used for calculating y for the anchor based on the type.");
+        translation.applyToBuilder(builder).push(path);
+        CachedEnumValue<AnchorType> type = CachedEnumValue.wrap(config, MekanismConfigTranslations.WORLD_ANCHOR_TYPE.applyToBuilder(builder)
+              //Note: Add extra comments so that when viewing from the file, people can know what each option does
+              .comment(
+                    "Absolute (y = value)",
+                    "Above Bottom (y = minY + value)",
+                    "Below Top (y = depth - 1 + minY - value)"
+              ).defineEnum("type", defaultAnchor.type()));
         ConfigValue<Integer> value;
         if (minAnchor == null) {
-            value = valueBuilder.define("value", defaultAnchor.value());
+            value = MekanismConfigTranslations.WORLD_ANCHOR_VALUE.applyToBuilder(builder).define("value", defaultAnchor.value());
         } else {
-            value = valueBuilder.define("value", defaultAnchor.value(), o -> {
+            value = MekanismConfigTranslations.WORLD_ANCHOR_VALUE.applyToBuilder(builder).define("value", defaultAnchor.value(), o -> {
                 if (o instanceof Integer v) {
                     return minAnchor.anchorType.getOrDefault() != type.getOrDefault() || v >= minAnchor.value.getOrDefault();
                 }

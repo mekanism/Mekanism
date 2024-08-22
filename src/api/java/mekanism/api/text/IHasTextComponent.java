@@ -2,6 +2,8 @@ package mekanism.api.text;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
+import net.neoforged.neoforge.common.TranslatableEnum;
+import org.jetbrains.annotations.NotNull;
 
 @MethodsReturnNonnullByDefault
 public interface IHasTextComponent {
@@ -14,4 +16,17 @@ public interface IHasTextComponent {
      * Gets the text component that represents this object.
      */
     Component getTextComponent();
+
+    /**
+     * Helper interface that also implements Neo's TranslatableEnum interface
+     * @since 10.7.3
+     */
+    interface IHasEnumNameTextComponent extends IHasTextComponent, TranslatableEnum {
+
+        @NotNull
+        @Override
+        default Component getTranslatedName() {
+            return getTextComponent();
+        }
+    }
 }

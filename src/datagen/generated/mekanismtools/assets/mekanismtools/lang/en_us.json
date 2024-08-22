@@ -602,7 +602,6 @@
   "constants.mekanismtools.mod_name": "Mekanism: Tools",
   "constants.mekanismtools.pack_description": "Resources used for Mekanism: Tools",
   "fml.menu.mods.info.description.mekanismtools": "Tools module for Mekanism",
-  "fml.menu.mods.info.displayname.mekanismtools": "Mekanism: Tools",
   "item.mekanismtools.bronze_axe": "Bronze Axe",
   "item.mekanismtools.bronze_boots": "Bronze Boots",
   "item.mekanismtools.bronze_chestplate": "Bronze Chestplate",

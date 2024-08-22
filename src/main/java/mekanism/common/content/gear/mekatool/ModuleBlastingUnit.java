@@ -31,6 +31,7 @@ import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.common.TranslatableEnum;
 import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -102,7 +103,7 @@ public record ModuleBlastingUnit(BlastRadius blastRadius) implements ICustomModu
     }
 
     @NothingNullByDefault
-    public enum BlastRadius implements IHasTextComponent, IRadialMode, StringRepresentable {
+    public enum BlastRadius implements IHasTextComponent, TranslatableEnum, IRadialMode, StringRepresentable {
         OFF(0, MekanismLang.RADIAL_BLASTING_POWER_OFF, EnumColor.WHITE, "blasting_off"),
         LOW(1, MekanismLang.RADIAL_BLASTING_POWER_LOW, EnumColor.BRIGHT_GREEN, "blasting_low"),
         MED(2, MekanismLang.RADIAL_BLASTING_POWER_MED, EnumColor.YELLOW, "blasting_med"),
@@ -142,6 +143,11 @@ public record ModuleBlastingUnit(BlastRadius blastRadius) implements ICustomModu
         @Override
         public Component sliceName() {
             return langEntry.translateColored(color);
+        }
+
+        @Override
+        public Component getTranslatedName() {
+            return sliceName();
         }
 
         @NotNull

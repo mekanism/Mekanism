@@ -11,7 +11,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.text.EnumColor;
-import mekanism.api.text.IHasTextComponent;
+import mekanism.api.text.IHasTextComponent.IHasEnumNameTextComponent;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
@@ -21,8 +21,8 @@ import mekanism.common.item.interfaces.IChemicalItem;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IModeItem.IAttachmentBasedModeItem;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
-import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismChemicals;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
@@ -215,7 +215,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
     }
 
     @NothingNullByDefault
-    public enum FlamethrowerMode implements IIncrementalEnum<FlamethrowerMode>, IHasTextComponent, StringRepresentable {
+    public enum FlamethrowerMode implements IIncrementalEnum<FlamethrowerMode>, IHasEnumNameTextComponent, StringRepresentable {
         COMBAT(MekanismLang.FLAMETHROWER_COMBAT, EnumColor.YELLOW),
         HEAT(MekanismLang.FLAMETHROWER_HEAT, EnumColor.ORANGE),
         INFERNO(MekanismLang.FLAMETHROWER_INFERNO, EnumColor.DARK_RED);

@@ -9,7 +9,7 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
-import mekanism.api.text.IHasTranslationKey;
+import mekanism.api.text.IHasTranslationKey.IHasEnumNameTranslationKey;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
@@ -191,7 +191,7 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
     }
 
     @NothingNullByDefault
-    public enum FissionReactorLogic implements IReactorLogicMode<FissionReactorLogic>, IHasTranslationKey, StringRepresentable {
+    public enum FissionReactorLogic implements IReactorLogicMode<FissionReactorLogic>, IHasEnumNameTranslationKey, StringRepresentable {
         DISABLED(GeneratorsLang.REACTOR_LOGIC_DISABLED, GeneratorsLang.DESCRIPTION_REACTOR_DISABLED, new ItemStack(Items.GUNPOWDER), EnumColor.DARK_GRAY),
         ACTIVATION(GeneratorsLang.REACTOR_LOGIC_ACTIVATION, GeneratorsLang.DESCRIPTION_REACTOR_ACTIVATION, new ItemStack(Items.FLINT_AND_STEEL), EnumColor.AQUA),
         TEMPERATURE(GeneratorsLang.REACTOR_LOGIC_TEMPERATURE, GeneratorsLang.DESCRIPTION_REACTOR_TEMPERATURE, new ItemStack(Items.REDSTONE), EnumColor.RED),
@@ -250,7 +250,7 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
     }
 
     @NothingNullByDefault
-    public enum RedstoneStatus implements IHasTranslationKey {
+    public enum RedstoneStatus implements IHasEnumNameTranslationKey {
         IDLE(MekanismLang.IDLE),
         OUTPUTTING(GeneratorsLang.REACTOR_LOGIC_OUTPUTTING),
         POWERED(GeneratorsLang.REACTOR_LOGIC_POWERED);
