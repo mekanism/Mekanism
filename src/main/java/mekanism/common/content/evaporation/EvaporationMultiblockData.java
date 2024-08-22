@@ -116,10 +116,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
         //Default biome temp to the ambient temperature at the block we are at
         biomeAmbientTemp = HeatAPI.getAmbientTemp(tile.getLevel(), tile.getBlockPos());
         fluidTanks.add(inputTank = VariableCapacityFluidTank.input(this, this::getMaxFluid, this::containsRecipe, createSaveAndComparator(recipeCacheLookupMonitor)));
-        fluidTanks.add(outputTank = VariableCapacityFluidTank.output(this, MekanismConfig.general.evaporationOutputTankCapacity, BasicFluidTank.alwaysTrue, () -> {
-            onContentsChanged();
-            recipeCacheLookupMonitor.unpause();
-        }));
+        fluidTanks.add(outputTank = VariableCapacityFluidTank.output(this, MekanismConfig.general.evaporationOutputTankCapacity, BasicFluidTank.alwaysTrue, this));
         inputHandler = InputHelper.getInputHandler(inputTank, RecipeError.NOT_ENOUGH_INPUT);
         outputHandler = OutputHelper.getOutputHandler(outputTank, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
         inventorySlots.add(inputInputSlot = FluidInventorySlot.fill(inputTank, this, 28, 20));
@@ -138,6 +135,14 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
         // update the heat capacity now that we've read
         heatCapacitor.setHeatCapacity(MekanismConfig.general.evaporationHeatCapacity.get() * height(), true);
         updateSolars(world);
+    }
+
+    @Override
+    public void onContentsChanged() {
+        super.onContentsChanged();
+        if (getTemperature() > HeatAPI.AMBIENT_TEMP) {
+            recipeCacheLookupMonitor.unpause();
+        }
     }
 
     @Override
