@@ -2,6 +2,7 @@ package mekanism.common.lib.transmitter;
 
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
+import java.util.function.Function;
 import java.util.function.IntFunction;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.IHasTranslationKey;
@@ -22,7 +23,15 @@ public enum TransmissionType implements IHasTranslationKey, StringRepresentable 
     ITEM("InventoryNetwork", "items", MekanismLang.TRANSMISSION_TYPE_ITEM, 6),
     HEAT("HeatNetwork", "heat", MekanismLang.TRANSMISSION_TYPE_HEAT, 7);
 
-    public static final Codec<TransmissionType> CODEC = StringRepresentable.fromEnum(TransmissionType::values);
+    public static final Codec<TransmissionType> CODEC;
+
+    //TODO - 1.22 remove backcompat and inline back to StringRepresentable.fromEnum
+    static {
+        TransmissionType[] values = values();
+        Function<String, TransmissionType> nameLookup = StringRepresentable.createNameLookup(values, Function.identity());
+        Function<String, TransmissionType> remapper = it -> ("gases".equals(it) || "infuse_types".equals(it) || "pigments".equals(it) || "slurries".equals(it)) ? CHEMICAL : nameLookup.apply(it);
+        CODEC = new EnumCodec<>(values, remapper);
+    }
     public static final IntFunction<TransmissionType> BY_ID = ByIdMap.continuous(TransmissionType::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
     public static final StreamCodec<ByteBuf, TransmissionType> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, TransmissionType::ordinal);
 
