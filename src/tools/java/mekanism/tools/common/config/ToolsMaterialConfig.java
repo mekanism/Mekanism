@@ -37,10 +37,8 @@ public class ToolsMaterialConfig extends BaseMekanismConfig {
 
     ToolsMaterialConfig() {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
-        builder.comment("Mekanism Tools Startup Config. This config is loaded on early, and requires a game restart to take effect, and is not synced automatically between "
-                        + "client and server. It is highly recommended to ensure you are using the same values for this config on the server and client.").push("startup");
 
-        builder.comment("Startup material configs").push("materials");
+        ToolsConfigTranslations.STARTUP_MATERIALS.applyToBuilder(builder).push("materials");
         wood = new VanillaPaxelMaterialCreator(this, builder, new WoodPaxelMaterialDefaults());
         stone = new VanillaPaxelMaterialCreator(this, builder, new StonePaxelMaterialDefaults());
         iron = new VanillaPaxelMaterialCreator(this, builder, new IronPaxelMaterialDefaults());
@@ -55,6 +53,7 @@ public class ToolsMaterialConfig extends BaseMekanismConfig {
         refinedObsidian = new MaterialCreator(this, builder, new RefinedObsidianMaterialDefaults());
         steel = new MaterialCreator(this, builder, new SteelMaterialDefaults());
         builder.pop();
+
         configSpec = builder.build();
     }
 

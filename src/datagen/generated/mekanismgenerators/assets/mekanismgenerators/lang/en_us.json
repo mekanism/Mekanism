@@ -86,7 +86,7 @@
   "configuration.mekanismgenerators.server.fusion.capacity.fuel": "Fuel Capacity",
   "configuration.mekanismgenerators.server.fusion.capacity.fuel.tooltip": "Amount of fuel (mB) that the fusion reactor can store.",
   "configuration.mekanismgenerators.server.fusion.casing_thermal_conductivity": "Casing Thermal Conductivity",
-  "configuration.mekanismgenerators.server.fusion.casing_thermal_conductivity.tooltip": "The fraction fraction of heat from the casing that can be transferred to all sources that are not water. Will impact max heat, heat transfer to thermodynamic conductors, and power generation.",
+  "configuration.mekanismgenerators.server.fusion.casing_thermal_conductivity.tooltip": "The fraction of heat from the casing that can be transferred to all sources that are not water. Will impact max heat, heat transfer to thermodynamic conductors, and power generation.",
   "configuration.mekanismgenerators.server.fusion.fuel_energy": "Energy Per D-T Fuel",
   "configuration.mekanismgenerators.server.fusion.fuel_energy.tooltip": "Affects the Injection Rate, Max Temp, and Ignition Temp.",
   "configuration.mekanismgenerators.server.fusion.injection.steam": "Steam Per Injection",

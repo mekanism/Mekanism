@@ -70,8 +70,7 @@ public class AdditionsConfig extends BaseMekanismConfig {
     }
 
     private void addBabyTypeConfig(BabyType type, ModConfigSpec.Builder builder, Holder<EntityType<?>> entityTypeProvider, EntityType<?> parentType) {
-        spawnConfigs.put(type, new SpawnConfig(this, builder, "baby " + type.getSerializedName().replace('_', ' '),
-              entityTypeProvider, parentType));
+        spawnConfigs.put(type, new SpawnConfig(this, builder, "baby_" + type.getSerializedName(), entityTypeProvider, parentType));
     }
 
     @Override
@@ -116,7 +115,7 @@ public class AdditionsConfig extends BaseMekanismConfig {
             this.parentType = parentType;
             BabySpawnTranslations translations = BabySpawnTranslations.create(name);
 
-            translations.topLevel().applyToBuilder(builder).push(name.replace(" ", "-"));
+            translations.topLevel().applyToBuilder(builder).push(name);
             this.shouldSpawn = CachedBooleanValue.wrap(config, translations.shouldSpawn().applyToBuilder(builder)
                   .worldRestart()
                   .define("shouldSpawn", true));

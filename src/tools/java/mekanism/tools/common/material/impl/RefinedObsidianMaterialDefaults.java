@@ -82,12 +82,6 @@ public class RefinedObsidianMaterialDefaults implements BaseMekanismMaterial {
 
     @NotNull
     @Override
-    public String getConfigCommentName() {
-        return "Refined Obsidian";
-    }
-
-    @NotNull
-    @Override
     public String getRegistryPrefix() {
         return "refined_obsidian";
     }

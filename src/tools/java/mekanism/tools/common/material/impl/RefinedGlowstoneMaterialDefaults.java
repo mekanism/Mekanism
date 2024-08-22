@@ -76,12 +76,6 @@ public class RefinedGlowstoneMaterialDefaults implements BaseMekanismMaterial {
 
     @NotNull
     @Override
-    public String getConfigCommentName() {
-        return "Refined Glowstone";
-    }
-
-    @NotNull
-    @Override
     public String getRegistryPrefix() {
         return "refined_glowstone";
     }

@@ -36,15 +36,17 @@ import mekanism.common.content.gear.shared.ModuleColorModulationUnit;
 import mekanism.common.entity.RobitPrideSkinData;
 import mekanism.common.integration.lookingat.LookingAtUtils;
 import mekanism.common.integration.lookingat.jade.JadeConstants;
+import mekanism.common.inventory.container.SelectedWindowData.WindowType;
+import mekanism.common.inventory.container.SelectedWindowData.WindowType.ConfigSaveData;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.common.registration.impl.SlurryRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismDamageTypes;
 import mekanism.common.registries.MekanismDamageTypes.MekanismDamageType;
 import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.registries.MekanismFluids;
-import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.registries.MekanismRobitSkins;
@@ -57,6 +59,7 @@ import mekanism.common.resource.ore.OreType;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.text.TextUtils;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -71,8 +74,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
 
     @Override
     protected void addTranslations() {
-        addConfigs(MekanismConfig.getConfigs());
-        addConfigs(MekanismConfigTranslations.values());
+        addConfigs();
         addTags();
         addItems();
         addBlocks();
@@ -88,6 +90,16 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         addMisc();
         addAdvancements();
         addAliases();
+    }
+
+    private void addConfigs() {
+        addConfigs(MekanismConfig.getConfigs());
+        addConfigs(MekanismConfigTranslations.values());
+        for (WindowType windowType : WindowType.values()) {
+            for (ConfigSaveData saveData : windowType.getSavePaths()) {
+                addConfigs(saveData);
+            }
+        }
     }
 
     private void addTags() {
@@ -335,7 +347,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         addTiered(MekanismItems.BASIC_TIER_INSTALLER, MekanismItems.ADVANCED_TIER_INSTALLER, MekanismItems.ELITE_TIER_INSTALLER, MekanismItems.ULTIMATE_TIER_INSTALLER, "Tier Installer");
 
         for (Cell<ResourceType, PrimaryResource, ItemRegistryObject<Item>> item : MekanismItems.PROCESSED_RESOURCES.cellSet()) {
-            String resourceName = formatAndCapitalize(item.getColumnKey().getRegistrySuffix());
+            String resourceName = TextUtils.formatAndCapitalize(item.getColumnKey().getRegistrySuffix());
             TagKey<Item> tag = MekanismTags.Items.PROCESSED_RESOURCES.get(item.getRowKey(), item.getColumnKey());
             switch (item.getRowKey()) {
                 case SHARD -> {
@@ -373,21 +385,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
                 default -> throw new IllegalStateException("Unexpected resource type for primary resource.");
             }
         }
-    }
-
-    private static String formatAndCapitalize(String s) {
-        boolean isFirst = true;
-        StringBuilder ret = new StringBuilder();
-        for (char c : s.toCharArray()) {
-            if (c == '_') {
-                isFirst = true;
-                ret.append(' ');
-            } else {
-                ret.append(isFirst ? Character.toUpperCase(c) : c);
-                isFirst = false;
-            }
-        }
-        return ret.toString();
     }
 
     private void addBlocks() {
@@ -480,7 +477,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         //Dynamic storage blocks
         for (Map.Entry<IResource, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
             IResource key = entry.getKey();
-            String name = formatAndCapitalize(key.getRegistrySuffix());
+            String name = TextUtils.formatAndCapitalize(key.getRegistrySuffix());
             add(entry.getValue(), "Block of " + name);
             addAlias(key.getRegistrySuffix(), name + " Block");
             addTag(MekanismTags.Items.PROCESSED_RESOURCE_BLOCKS.get(key), name + " Storage Blocks");
@@ -582,7 +579,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
 
     private void addSlurries() {
         for (Map.Entry<PrimaryResource, SlurryRegistryObject<Chemical, Chemical>> entry : MekanismChemicals.PROCESSED_RESOURCES.entrySet()) {
-            addSlurry(entry.getValue(), formatAndCapitalize(entry.getKey().getRegistrySuffix()));
+            addSlurry(entry.getValue(), TextUtils.formatAndCapitalize(entry.getKey().getRegistrySuffix()));
         }
     }
 
@@ -606,7 +603,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         addRobitSkin(MekanismRobitSkins.ALLAY, "Allay Costume");
         for (Map.Entry<RobitPrideSkinData, ResourceKey<RobitSkin>> entry : MekanismRobitSkins.PRIDE_SKINS.entrySet()) {
             ResourceKey<RobitSkin> prideSkin = entry.getValue();
-            String name = formatAndCapitalize(prideSkin.location().getPath());
+            String name = TextUtils.formatAndCapitalize(prideSkin.location().getPath());
             if (entry.getKey() != RobitPrideSkinData.PRIDE) {
                 name += " Pride";
             }
@@ -1733,7 +1730,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
     }
 
     private void addOre(OreType type, String description) {
-        String name = formatAndCapitalize(type.getResource().getRegistrySuffix());
+        String name = TextUtils.formatAndCapitalize(type.getResource().getRegistrySuffix());
         OreBlockType oreBlockType = MekanismBlocks.ORES.get(type);
         add(oreBlockType.stone(), name + " Ore");
         add(oreBlockType.stoneBlock().getDescriptionTranslationKey(), description);

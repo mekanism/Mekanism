@@ -91,7 +91,7 @@ public enum GeneratorsConfigTranslations implements IConfigTranslation {
     SERVER_FUSION_THERMOCOUPLE_EFFICIENCY("server.fusion.thermocouple_efficiency", "Thermocouple Efficiency",
           "The fraction of the heat dissipated from the case that is converted to Joules."),
     SERVER_FUSION_THERMAL_CONDUCTIVITY("server.fusion.casing_thermal_conductivity", "Casing Thermal Conductivity",
-          "The fraction fraction of heat from the casing that can be transferred to all sources that are not water. Will impact max heat, heat transfer to "
+          "The fraction of heat from the casing that can be transferred to all sources that are not water. Will impact max heat, heat transfer to "
           + "thermodynamic conductors, and power generation."),
     SERVER_FUSION_HEATING_RATE("server.fusion.water_heating_ratio", "Water Heating Ratio",
           "The fraction of the heat from the casing that is dissipated to water when water cooling is in use. Will impact max heat, and steam generation."),

@@ -16,9 +16,4 @@ public class GoldPaxelMaterialDefaults extends VanillaPaxelMaterial {
     public float getPaxelDamage() {
         return 7;
     }
-
-    @Override
-    public String getConfigCommentName() {
-        return "Gold";
-    }
 }

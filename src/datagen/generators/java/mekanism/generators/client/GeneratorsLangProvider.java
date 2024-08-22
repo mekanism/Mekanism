@@ -9,8 +9,8 @@ import mekanism.generators.common.advancements.GeneratorsAdvancements;
 import mekanism.generators.common.config.GeneratorsConfigTranslations;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
-import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.registries.GeneratorsChemicals;
+import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.registries.GeneratorsItems;
 import mekanism.generators.common.registries.GeneratorsModules;
 import mekanism.generators.common.registries.GeneratorsSounds;
@@ -24,8 +24,7 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
 
     @Override
     protected void addTranslations() {
-        addConfigs(MekanismGeneratorsConfig.getConfigs());
-        addConfigs(GeneratorsConfigTranslations.values());
+        addConfigs();
         addTags();
         addItems();
         addBlocks();
@@ -35,6 +34,11 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
         addAdvancements();
         addMisc();
         addAliases(GeneratorsAliases.values());
+    }
+
+    private void addConfigs() {
+        addConfigs(MekanismGeneratorsConfig.getConfigs());
+        addConfigs(GeneratorsConfigTranslations.values());
     }
 
     private void addTags() {

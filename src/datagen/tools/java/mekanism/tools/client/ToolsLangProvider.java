@@ -11,6 +11,11 @@ import mekanism.tools.common.ToolsTags;
 import mekanism.tools.common.advancements.ToolsAdvancements;
 import mekanism.tools.common.config.MekanismToolsConfig;
 import mekanism.tools.common.config.ToolsConfigTranslations;
+import mekanism.tools.common.config.ToolsConfigTranslations.ArmorSpawnChanceTranslations;
+import mekanism.tools.common.config.ToolsConfigTranslations.MaterialTranslations;
+import mekanism.tools.common.config.ToolsConfigTranslations.VanillaPaxelMaterialTranslations;
+import mekanism.tools.common.material.MaterialCreator;
+import mekanism.tools.common.material.VanillaPaxelMaterialCreator;
 import mekanism.tools.common.registries.ToolsItems;
 import net.minecraft.data.PackOutput;
 
@@ -22,13 +27,40 @@ public class ToolsLangProvider extends BaseLanguageProvider {
 
     @Override
     protected void addTranslations() {
-        addConfigs(MekanismToolsConfig.getConfigs());
-        addConfigs(ToolsConfigTranslations.values());
+        addConfigs();
         addTags();
         addItems();
         addAdvancements();
         addMisc();
         addAliases(ToolsAliases.values());
+    }
+
+    private void addConfigs() {
+        addConfigs(MekanismToolsConfig.getConfigs());
+        addConfigs(ToolsConfigTranslations.values());
+        //Vanilla paxels
+        addConfigs(MekanismToolsConfig.materials.wood);
+        addConfigs(MekanismToolsConfig.materials.stone);
+        addConfigs(MekanismToolsConfig.materials.iron);
+        addConfigs(MekanismToolsConfig.materials.diamond);
+        addConfigs(MekanismToolsConfig.materials.gold);
+        addConfigs(MekanismToolsConfig.materials.netherite);
+        //Mekanism materials
+        addConfigs(MekanismToolsConfig.materials.bronze);
+        addConfigs(MekanismToolsConfig.materials.lapisLazuli);
+        addConfigs(MekanismToolsConfig.materials.osmium);
+        addConfigs(MekanismToolsConfig.materials.refinedGlowstone);
+        addConfigs(MekanismToolsConfig.materials.refinedObsidian);
+        addConfigs(MekanismToolsConfig.materials.steel);
+    }
+
+    private void addConfigs(VanillaPaxelMaterialCreator config) {
+        addConfigs(VanillaPaxelMaterialTranslations.create(config.getRegistryPrefix()).toArray());
+    }
+
+    private void addConfigs(MaterialCreator config) {
+        addConfigs(MaterialTranslations.create(config.getRegistryPrefix()).toArray());
+        addConfigs(ArmorSpawnChanceTranslations.create(config.getRegistryPrefix()).toArray());
     }
 
     private void addTags() {

@@ -16,9 +16,4 @@ public class NetheritePaxelMaterialDefaults extends VanillaPaxelMaterial {
     public float getPaxelDamage() {
         return 6;
     }
-
-    @Override
-    public String getConfigCommentName() {
-        return "Netherite";
-    }
 }

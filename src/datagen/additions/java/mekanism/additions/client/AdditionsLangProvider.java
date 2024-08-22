@@ -44,9 +44,7 @@ public class AdditionsLangProvider extends BaseLanguageProvider {
         addConfigs(MekanismAdditionsConfig.getConfigs());
         addConfigs(AdditionsConfigTranslations.values());
         for (BabyType type : BabyType.values()) {
-            BabySpawnTranslations translations = BabySpawnTranslations.create("baby " + type.getSerializedName().replace('_', ' '));
-            addConfigs(translations.topLevel(), translations.shouldSpawn(), translations.weight(), translations.minSize(), translations.maxSize(),
-                  translations.costPerEntity(), translations.maxCost(), translations.biomeBlacklist(), translations.structureBlacklist());
+            addConfigs(BabySpawnTranslations.create("baby_" + type.getSerializedName()).toArray());
         }
     }
 

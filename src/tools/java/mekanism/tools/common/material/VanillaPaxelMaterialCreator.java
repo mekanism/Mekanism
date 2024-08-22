@@ -4,6 +4,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.config.IMekanismConfig;
 import mekanism.common.config.value.CachedFloatValue;
 import mekanism.common.config.value.CachedIntValue;
+import mekanism.tools.common.config.ToolsConfigTranslations.VanillaPaxelMaterialTranslations;
 import net.minecraft.world.item.Tiers;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
@@ -12,20 +13,20 @@ public class VanillaPaxelMaterialCreator implements IPaxelMaterial {
 
     private final VanillaPaxelMaterial fallback;
 
-    public final CachedFloatValue paxelDamage;
-    public final CachedFloatValue paxelAtkSpeed;
+    private final CachedFloatValue paxelDamage;
+    private final CachedFloatValue paxelAtkSpeed;
     private final CachedFloatValue paxelEfficiency;
     private final CachedIntValue paxelEnchantability;
-    private final CachedIntValue paxelMaxUses;
+    private final CachedIntValue paxelDurability;
 
     public VanillaPaxelMaterialCreator(IMekanismConfig config, ModConfigSpec.Builder builder, VanillaPaxelMaterial materialDefaults) {
         this.fallback = materialDefaults;
         String toolKey = getRegistryPrefix();
-        String name = getConfigCommentName();
-        builder.comment("Vanilla Material Paxel Settings for " + name).push(toolKey);
+        VanillaPaxelMaterialTranslations translations = VanillaPaxelMaterialTranslations.create(toolKey);
+        translations.topLevel().applyToBuilder(builder).push(toolKey);
         //Note: Damage predicate to allow for tools to go negative to the value of the base tier so that a tool
         // can effectively have zero damage for things like the hoe
-        paxelDamage = CachedFloatValue.wrap(config, builder.comment("Attack damage modifier of " + name + " paxels.")
+        paxelDamage = CachedFloatValue.wrap(config, translations.damage().applyToBuilder(builder).gameRestart()
               .define(toolKey + "PaxelDamage", (double) materialDefaults.getPaxelDamage(), value -> {
                   if (value instanceof Double) {
                       double val = (double) value;
@@ -44,14 +45,14 @@ public class VanillaPaxelMaterialCreator implements IPaxelMaterial {
                   }
                   return false;
               }));
-        paxelAtkSpeed = CachedFloatValue.wrap(config, builder.comment("Attack speed of " + name + " paxels.")
+        paxelAtkSpeed = CachedFloatValue.wrap(config, translations.attackSpeed().applyToBuilder(builder).gameRestart()
               .define(toolKey + "PaxelAtkSpeed", (double) materialDefaults.getPaxelAtkSpeed()));
-        paxelEfficiency = CachedFloatValue.wrap(config, builder.comment("Efficiency of " + name + " paxels.")
+        paxelEfficiency = CachedFloatValue.wrap(config, translations.efficiency().applyToBuilder(builder).gameRestart()
               .define(toolKey + "PaxelEfficiency", (double) materialDefaults.getPaxelEfficiency()));
-        paxelEnchantability = CachedIntValue.wrap(config, builder.comment("Natural enchantability factor of " + name + " paxels.")
+        paxelEnchantability = CachedIntValue.wrap(config, translations.enchantability().applyToBuilder(builder).gameRestart()
               .defineInRange(toolKey + "PaxelEnchantability", materialDefaults.getPaxelEnchantability(), 0, Integer.MAX_VALUE));
-        paxelMaxUses = CachedIntValue.wrap(config, builder.comment("Maximum durability of " + name + " paxels.")
-              .defineInRange(toolKey + "PaxelMaxUses", materialDefaults.getPaxelMaxUses(), 1, Integer.MAX_VALUE));
+        paxelDurability = CachedIntValue.wrap(config, translations.durability().applyToBuilder(builder).gameRestart()
+              .defineInRange(toolKey + "PaxelDurability", materialDefaults.getPaxelDurability(), 1, Integer.MAX_VALUE));
         builder.pop();
     }
 
@@ -64,8 +65,8 @@ public class VanillaPaxelMaterialCreator implements IPaxelMaterial {
     }
 
     @Override
-    public int getPaxelMaxUses() {
-        return paxelMaxUses.getOrDefault();
+    public int getPaxelDurability() {
+        return paxelDurability.getOrDefault();
     }
 
     @Override
@@ -86,10 +87,5 @@ public class VanillaPaxelMaterialCreator implements IPaxelMaterial {
     @Override
     public int getPaxelEnchantability() {
         return paxelEnchantability.get();
-    }
-
-    @Override
-    public String getConfigCommentName() {
-        return fallback.getConfigCommentName();
     }
 }

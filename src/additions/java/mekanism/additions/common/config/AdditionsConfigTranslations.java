@@ -2,6 +2,7 @@ package mekanism.additions.common.config;
 
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.common.config.IConfigTranslation;
+import mekanism.common.util.text.TextUtils;
 import net.minecraft.Util;
 import org.jetbrains.annotations.NotNull;
 
@@ -63,22 +64,26 @@ public enum AdditionsConfigTranslations implements IConfigTranslation {
           IConfigTranslation structureBlacklist
     ) {
 
+        public IConfigTranslation[] toArray() {
+            return new IConfigTranslation[]{topLevel, shouldSpawn, minSize, maxSize, weight, costPerEntity, maxCost, biomeBlacklist, structureBlacklist};
+        }
+
         private static String getKey(String name, String path) {
-            name = name.replace(" ", "_");
             return Util.makeDescriptionId("configuration", MekanismAdditions.rl("server.baby.spawning." + name + "." + path));
         }
 
-        public static BabySpawnTranslations create(String name) {
+        public static BabySpawnTranslations create(String key) {
+            String name = TextUtils.formatAndCapitalize(key);
             return new BabySpawnTranslations(
-                  new ConfigTranslation(getKey(name, "top_level"), name, "Config options regarding " + name + "."),
-                  new ConfigTranslation(getKey(name, "should_spawn"), "Should Spawn", "Enable the spawning of " + name + ". Think baby zombies."),
-                  new ConfigTranslation(getKey(name, "min_size"), "Min Group Size", "The multiplier for minimum group size of " + name + " spawns, compared to the adult mob."),
-                  new ConfigTranslation(getKey(name, "max_size"), "Max Group Size", "The multiplier for maximum group size of " + name + " spawns, compared to the adult mob."),
-                  new ConfigTranslation(getKey(name, "weight"), "Weight Multiplier", "The multiplier for weight of " + name + " spawns, compared to the adult mob."),
-                  new ConfigTranslation(getKey(name, "cost_per_entity"), "Cost Per Entity Multiplier", "The multiplier for spawn cost per entity of " + name + " spawns, compared to the adult mob."),
-                  new ConfigTranslation(getKey(name, "max_cost"), "Max Cost Multiplier", "The multiplier for max spawn cost of " + name + " spawns, compared to the adult mob."),
-                  new ConfigTranslation(getKey(name, "biome_blacklist"), "Biome Blacklist", "The list of biome ids that " + name + " will not spawn in even if the normal mob variant can spawn."),
-                  new ConfigTranslation(getKey(name, "structure_blacklist"), "Structure Blacklist", "The list of structure ids that " + name + " will not spawn in even if the normal mob variant can spawn.")
+                  new ConfigTranslation(getKey(key, "top_level"), name, "Config options regarding " + name + "."),
+                  new ConfigTranslation(getKey(key, "should_spawn"), "Should Spawn", "Enable the spawning of " + name + ". Think baby zombies."),
+                  new ConfigTranslation(getKey(key, "min_size"), "Min Group Size", "The multiplier for minimum group size of " + name + " spawns, compared to the adult mob."),
+                  new ConfigTranslation(getKey(key, "max_size"), "Max Group Size", "The multiplier for maximum group size of " + name + " spawns, compared to the adult mob."),
+                  new ConfigTranslation(getKey(key, "weight"), "Weight Multiplier", "The multiplier for weight of " + name + " spawns, compared to the adult mob."),
+                  new ConfigTranslation(getKey(key, "cost_per_entity"), "Cost Per Entity Multiplier", "The multiplier for spawn cost per entity of " + name + " spawns, compared to the adult mob."),
+                  new ConfigTranslation(getKey(key, "max_cost"), "Max Cost Multiplier", "The multiplier for max spawn cost of " + name + " spawns, compared to the adult mob."),
+                  new ConfigTranslation(getKey(key, "biome_blacklist"), "Biome Blacklist", "The list of biome ids that " + name + " will not spawn in even if the normal mob variant can spawn."),
+                  new ConfigTranslation(getKey(key, "structure_blacklist"), "Structure Blacklist", "The list of structure ids that " + name + " will not spawn in even if the normal mob variant can spawn.")
             );
         }
 

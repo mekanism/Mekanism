@@ -11,11 +11,9 @@ public interface IPaxelMaterial {
         return -2.4F;
     }
 
-    int getPaxelMaxUses();
+    int getPaxelDurability();
 
     float getPaxelEfficiency();
 
     int getPaxelEnchantability();
-
-    String getConfigCommentName();
 }

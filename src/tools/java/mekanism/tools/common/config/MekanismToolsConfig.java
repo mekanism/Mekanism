@@ -17,13 +17,14 @@ public class MekanismToolsConfig {
     }
 
     private static final Map<IConfigSpec, IMekanismConfig> KNOWN_CONFIGS = new HashMap<>();
-    public static final ToolsConfig tools = new ToolsConfig();
+    //Note: Materials has to be registered above tools, so that we can reference the materials in the other config
     public static final ToolsMaterialConfig materials = new ToolsMaterialConfig();
+    public static final ToolsConfig tools = new ToolsConfig();
     public static final ToolsClientConfig toolsClient = new ToolsClientConfig();
 
     public static void registerConfigs(ModContainer modContainer) {
-        MekanismConfigHelper.registerConfig(KNOWN_CONFIGS, modContainer, tools);
         MekanismConfigHelper.registerConfig(KNOWN_CONFIGS, modContainer, materials);
+        MekanismConfigHelper.registerConfig(KNOWN_CONFIGS, modContainer, tools);
         MekanismConfigHelper.registerConfig(KNOWN_CONFIGS, modContainer, toolsClient);
     }
 
