@@ -546,24 +546,24 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
                 autoEject = (Boolean) arguments[0];
                 return new Object[]{"Auto-eject mode set to " + autoEject};
             } else if (method == 3) {
-                if (arguments.length != 6 || !(arguments[0] instanceof String) || !(arguments[1] instanceof Double) ||
+                if (arguments.length != 6 || !(arguments[0] instanceof String) || !(arguments[1] instanceof Number) ||
                     !(arguments[2] instanceof String) || !(arguments[3] instanceof Boolean) ||
-                    !(arguments[4] instanceof Double) || !(arguments[5] instanceof Double)) {
+                    !(arguments[4] instanceof Number) || !(arguments[5] instanceof Number)) {
                     return new Object[]{"Invalid parameters."};
                 }
                 TItemStackFilter filter = new TItemStackFilter();
-                filter.setItemStack(new ItemStack(Item.getByNameOrId((String) arguments[0]), 1, ((Double) arguments[1]).intValue()));
+                filter.setItemStack(new ItemStack(Item.getByNameOrId((String) arguments[0]), 1, ((Number) arguments[1]).intValue()));
                 filter.color = EnumColor.getFromDyeName((String) arguments[2]);
                 filter.sizeMode = (Boolean) arguments[3];
-                filter.min = ((Double) arguments[4]).intValue();
-                filter.max = ((Double) arguments[5]).intValue();
+                filter.min = ((Number) arguments[4]).intValue();
+                filter.max = ((Number) arguments[5]).intValue();
                 filters.add(filter);
                 return new Object[]{"Added filter."};
             } else if (method == 4) {
-                if (arguments.length != 2 || !(arguments[0] instanceof String) || !(arguments[1] instanceof Double)) {
+                if (arguments.length != 2 || !(arguments[0] instanceof String) || !(arguments[1] instanceof Number)) {
                     return new Object[]{"Invalid parameters."};
                 }
-                ItemStack stack = new ItemStack(Item.getByNameOrId((String) arguments[0]), 1, ((Double) arguments[1]).intValue());
+                ItemStack stack = new ItemStack(Item.getByNameOrId((String) arguments[0]), 1, ((Number) arguments[1]).intValue());
                 Iterator<TransporterFilter> iter = filters.iterator();
                 while (iter.hasNext()) {
                     TransporterFilter filter = iter.next();

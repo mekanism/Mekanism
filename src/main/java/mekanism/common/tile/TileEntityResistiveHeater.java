@@ -271,8 +271,8 @@ public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements
                 return new Object[]{temperature};
             case 3:
                 if (arguments.length == 1) {
-                    if (arguments[0] instanceof Double) {
-                        energyUsage = (Double) arguments[0];
+                    if (arguments[0] instanceof Number) {
+                        energyUsage = ((Number) arguments[0]).doubleValue();
                         return new Object[]{"Set energy usage."};
                     }
                 }
