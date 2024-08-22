@@ -72,8 +72,83 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
     COMMON_HOLIDAYS("common.holidays", "Holidays",
           "Should holiday greetings and easter eggs play for holidays (ex: Christmas and New Years) on the client. And should robit skins be randomized on the server."),
 
+    //Storage Config
+    ENERGY_STORAGE_ENRICHMENT_CHAMBER(TranslationPreset.ENERGY_STORAGE, "Enrichment Chamber"),
+    ENERGY_STORAGE_COMPRESSOR(TranslationPreset.ENERGY_STORAGE, "Osmium Compressor"),
+    ENERGY_STORAGE_COMBINER(TranslationPreset.ENERGY_STORAGE, "Combiner"),
+    ENERGY_STORAGE_CRUSHER(TranslationPreset.ENERGY_STORAGE, "Crusher"),
+    ENERGY_STORAGE_METALLURGIC_INFUSER(TranslationPreset.ENERGY_STORAGE, "Metallurgic Infuser"),
+    ENERGY_STORAGE_PURIFICATION_CHAMBER(TranslationPreset.ENERGY_STORAGE, "Purification Chamber"),
+    ENERGY_STORAGE_SMELTER(TranslationPreset.ENERGY_STORAGE, "Energized Smelter"),
+    ENERGY_STORAGE_MINER(TranslationPreset.ENERGY_STORAGE, "Digital Miner"),
+    ENERGY_STORAGE_PUMP(TranslationPreset.ENERGY_STORAGE, "Electric Pump"),
+    ENERGY_STORAGE_CHARGEPAD(TranslationPreset.ENERGY_STORAGE, "Chargepad"),
+    ENERGY_STORAGE_CONDENSENTRATOR(TranslationPreset.ENERGY_STORAGE, "Rotary Condensentrator"),
+    ENERGY_STORAGE_OXIDIZER(TranslationPreset.ENERGY_STORAGE, "Chemical Oxidizer"),
+    ENERGY_STORAGE_CHEMICAL_INFUSER(TranslationPreset.ENERGY_STORAGE, "Chemical Infuser"),
+    ENERGY_STORAGE_INJECTION_CHAMBER(TranslationPreset.ENERGY_STORAGE, "Chemical Injection Chamber"),
+    ENERGY_STORAGE_SEPARATOR(TranslationPreset.ENERGY_STORAGE, "Electrolytic Separator"),
+    ENERGY_STORAGE_SAWMILL(TranslationPreset.ENERGY_STORAGE, "Precision Sawmill"),
+    ENERGY_STORAGE_CDC(TranslationPreset.ENERGY_STORAGE, "Chemical Dissolution Chamber"),
+    ENERGY_STORAGE_WASHER(TranslationPreset.ENERGY_STORAGE, "Chemical Washer"),
+    ENERGY_STORAGE_CRYSTALLIZER(TranslationPreset.ENERGY_STORAGE, "Chemical Crystallizer"),
+    ENERGY_STORAGE_VIBRATOR(TranslationPreset.ENERGY_STORAGE, "Seismic Vibrator"),
+    ENERGY_STORAGE_PRC(TranslationPreset.ENERGY_STORAGE, "Pressurized Reaction Chamber"),
+    ENERGY_STORAGE_PLENISHER(TranslationPreset.ENERGY_STORAGE, "Fluidic Plenisher"),
+    ENERGY_STORAGE_LASER(TranslationPreset.ENERGY_STORAGE, "Laser"),
+    ENERGY_STORAGE_LASER_AMPLIFIER(TranslationPreset.ENERGY_STORAGE, "Laser Amplifier"),
+    ENERGY_STORAGE_TRACTOR_BEAM(TranslationPreset.ENERGY_STORAGE, "Laser Tractor Beam"),
+    ENERGY_STORAGE_ASSEMBLICATOR(TranslationPreset.ENERGY_STORAGE, "Formulaic Assemblicator"),
+    ENERGY_STORAGE_TELEPORTER(TranslationPreset.ENERGY_STORAGE, "Teleporter"),
+    ENERGY_STORAGE_MODIFICATION_STATION(TranslationPreset.ENERGY_STORAGE, "Modification Station"),
+    ENERGY_STORAGE_CENTRIFUGE(TranslationPreset.ENERGY_STORAGE, "Isotopic Centrifuge"),
+    ENERGY_STORAGE_LIQUIFIER(TranslationPreset.ENERGY_STORAGE, "Nutritional Liquifier"),
+    ENERGY_STORAGE_NUCLEOSYNTHESIZER(TranslationPreset.ENERGY_STORAGE, "Nucleosynthesizer", ". Also defines max process rate."),
+    ENERGY_STORAGE_PIGMENT_EXTRACTOR(TranslationPreset.ENERGY_STORAGE, "Pigment Extractor"),
+    ENERGY_STORAGE_PIGMENT_MIXER(TranslationPreset.ENERGY_STORAGE, "Pigment Mixer"),
+    ENERGY_STORAGE_PAINTING(TranslationPreset.ENERGY_STORAGE, "Painting Machine"),
+    ENERGY_STORAGE_SPS_PORT(TranslationPreset.ENERGY_STORAGE, "SPS Port", ". Also defines max output rate."),
+    ENERGY_STORAGE_DIMENSIONAL_STABILIZER(TranslationPreset.ENERGY_STORAGE, "Dimensional Stabilizer"),
 
-    BASE_ENERGY_STORAGE_JOULES("storage.energy.base", "Base energy storage", "Base energy storage (Joules)."),
+    //Usage Config
+    ENERGY_USAGE_ENRICHMENT_CHAMBER(TranslationPreset.ENERGY_USAGE, "Enrichment Chamber"),
+    ENERGY_USAGE_COMPRESSOR(TranslationPreset.ENERGY_USAGE, "Osmium Compressor"),
+    ENERGY_USAGE_COMBINER(TranslationPreset.ENERGY_USAGE, "Combiner"),
+    ENERGY_USAGE_CRUSHER(TranslationPreset.ENERGY_USAGE, "Crusher"),
+    ENERGY_USAGE_METALLURGIC_INFUSER(TranslationPreset.ENERGY_USAGE, "Metallurgic Infuser"),
+    ENERGY_USAGE_PURIFICATION_CHAMBER(TranslationPreset.ENERGY_USAGE, "Purification Chamber"),
+    ENERGY_USAGE_SMELTER(TranslationPreset.ENERGY_USAGE, "Energized Smelter"),
+    ENERGY_USAGE_MINER(TranslationPreset.ENERGY_USAGE, "Digital Miner"),
+    ENERGY_USAGE_PUMP(TranslationPreset.ENERGY_USAGE, "Electric Pump"),
+    ENERGY_USAGE_CHARGEPAD("usage.chargepad.energy", "Chargepad Energy Usage", "Energy in Joules that can be transferred at once per charge operation."),
+    ENERGY_USAGE_CONDENSENTRATOR(TranslationPreset.ENERGY_USAGE, "Rotary Condensentrator"),
+    ENERGY_USAGE_OXIDIZER(TranslationPreset.ENERGY_USAGE, "Chemical Oxidizer"),
+    ENERGY_USAGE_CHEMICAL_INFUSER(TranslationPreset.ENERGY_USAGE, "Chemical Infuser"),
+    ENERGY_USAGE_INJECTION_CHAMBER(TranslationPreset.ENERGY_USAGE, "Chemical Injection Chamber"),
+    ENERGY_USAGE_SAWMILL(TranslationPreset.ENERGY_USAGE, "Precision Sawmill"),
+    ENERGY_USAGE_CDC(TranslationPreset.ENERGY_USAGE, "Chemical Dissolution Chamber"),
+    ENERGY_USAGE_WASHER(TranslationPreset.ENERGY_USAGE, "Chemical Washer"),
+    ENERGY_USAGE_CRYSTALLIZER(TranslationPreset.ENERGY_USAGE, "Chemical Crystallizer"),
+    ENERGY_USAGE_VIBRATOR(TranslationPreset.ENERGY_USAGE, "Seismic Vibrator"),
+    ENERGY_USAGE_PRC(TranslationPreset.ENERGY_USAGE, "Pressurized Reaction Chamber"),
+    ENERGY_USAGE_PLENISHER(TranslationPreset.ENERGY_USAGE, "Fluidic Plenisher"),
+    ENERGY_USAGE_LASER(TranslationPreset.ENERGY_USAGE, "Laser"),
+    ENERGY_USAGE_ASSEMBLICATOR(TranslationPreset.ENERGY_USAGE, "Formulaic Assemblicator"),
+    ENERGY_USAGE_MODIFICATION_STATION(TranslationPreset.ENERGY_USAGE, "Modification Station"),
+    ENERGY_USAGE_CENTRIFUGE(TranslationPreset.ENERGY_USAGE, "Isotopic Centrifuge"),
+    ENERGY_USAGE_LIQUIFIER(TranslationPreset.ENERGY_USAGE, "Nutritional Liquifier"),
+    ENERGY_USAGE_NUCLEOSYNTHESIZER(TranslationPreset.ENERGY_USAGE, "Nucleosynthesizer"),
+    ENERGY_USAGE_PIGMENT_EXTRACTOR(TranslationPreset.ENERGY_USAGE, "Pigment Extractor"),
+    ENERGY_USAGE_PIGMENT_MIXER(TranslationPreset.ENERGY_USAGE, "Pigment Mixer"),
+    ENERGY_USAGE_PAINTING(TranslationPreset.ENERGY_USAGE, "Painting Machine"),
+    ENERGY_USAGE_DIMENSIONAL_STABILIZER("usage.stabilizer.energy", "Dimensional Stabilizer Energy Usage", "Energy per chunk per tick in Joules"),
+
+    USAGE_TELEPORTER("usage.teleporter", "Teleporter Settings", "Settings for configuring Teleporter Energy Usage"),
+    USAGE_TELEPORTER_BASE("usage.teleporter.base", "Base Energy Usage", "Base Joules cost for teleporting an entity."),
+    USAGE_TELEPORTER_DISTANCE("usage.teleporter.distance", "Distance Energy Usage",
+          "Joules per unit of distance travelled during teleportation - sqrt(xDiff^2 + yDiff^2 + zDiff^2)."),
+    USAGE_TELEPORTER_PENALTY("usage.teleporter.penalty.dimension", "Dimension Energy Penalty",
+          "Flat additional cost for interdimensional teleportation. Distance is still taken into account minimizing energy cost based on dimension scales."),
 
 
     GEAR_MEKA_SUIT("gear.meka_suit", "MekaSuit Settings", "Settings for configuring the MekaSuit"),
@@ -100,6 +175,14 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
     private final String key;
     private final String title;
     private final String tooltip;
+
+    MekanismConfigTranslations(TranslationPreset preset, String type) {
+        this(preset.path(type), preset.title(type), preset.tooltip(type));
+    }
+
+    MekanismConfigTranslations(TranslationPreset preset, String type, String tooltipSuffix) {
+        this(preset.path(type), preset.title(type), preset.tooltip(type) + tooltipSuffix);
+    }
 
     MekanismConfigTranslations(String path, String title, String tooltip) {
         this.key = Util.makeDescriptionId("configuration", Mekanism.rl(path));

@@ -1,6 +1,7 @@
 package mekanism.generators.common.config;
 
 import mekanism.common.config.IConfigTranslation;
+import mekanism.common.config.TranslationPreset;
 import mekanism.generators.common.MekanismGenerators;
 import net.minecraft.Util;
 import org.jetbrains.annotations.NotNull;
@@ -106,6 +107,14 @@ public enum GeneratorsConfigTranslations implements IConfigTranslation {
     SERVER_HOHLRAUM_CAPACITY("server.hohlraum.capacity", "Capacity", "Hohlraum capacity in mB"),
     SERVER_HOHLRAUM_FILL_RATE("server.hohlraum.fill_rate", "Fill Rate", "Amount of DT-Fuel Hohlraum can accept per tick."),
 
+    //STORAGE CONFIG FILE
+
+    ENERGY_STORAGE_GENERATOR_HEAT(TranslationPreset.ENERGY_STORAGE, "Heat Generator"),
+    ENERGY_STORAGE_GENERATOR_BIO(TranslationPreset.ENERGY_STORAGE, "Bio-Generator"),
+    ENERGY_STORAGE_GENERATOR_SOLAR(TranslationPreset.ENERGY_STORAGE, "Solar Generator"),
+    ENERGY_STORAGE_GENERATOR_SOLAR_ADVANCED(TranslationPreset.ENERGY_STORAGE, "Advanced Solar Generator"),
+    ENERGY_STORAGE_GENERATOR_WIND(TranslationPreset.ENERGY_STORAGE, "Wind Generator"),
+
     //GEAR CONFIG FILE
 
     GEAR_MEKA_SUIT_GEOTHERMAL("gear.meka_suit.geothermal_charging_rate", "Geothermal charging rate",
@@ -120,6 +129,10 @@ public enum GeneratorsConfigTranslations implements IConfigTranslation {
     private final String key;
     private final String title;
     private final String tooltip;
+
+    GeneratorsConfigTranslations(TranslationPreset preset, String type) {
+        this(preset.path(type), preset.title(type), preset.tooltip(type));
+    }
 
     GeneratorsConfigTranslations(String path, String title, String tooltip) {
         this.key = Util.makeDescriptionId("configuration", MekanismGenerators.rl(path));

@@ -58,7 +58,7 @@ public final class TextUtils {
         boolean isFirst = true;
         StringBuilder ret = new StringBuilder();
         for (char c : s.toCharArray()) {
-            if (c == '_') {
+            if (c == '_' || c == ' ') {
                 isFirst = true;
                 ret.append(' ');
             } else {

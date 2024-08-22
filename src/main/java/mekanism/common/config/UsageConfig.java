@@ -6,8 +6,6 @@ import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class UsageConfig extends BaseMekanismConfig {
 
-    private static final String TELEPORTER_CATEGORY = "teleporter";
-
     private final ModConfigSpec configSpec;
 
     public final CachedLongValue enrichmentChamber;
@@ -49,72 +47,42 @@ public class UsageConfig extends BaseMekanismConfig {
     UsageConfig() {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
 
-        enrichmentChamber = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "enrichmentChamber",
-              50L);
-        osmiumCompressor = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "osmiumCompressor",
-              100L);
-        combiner = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "combiner", 50L);
-        crusher = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "crusher", 50L);
-        metallurgicInfuser = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "metallurgicInfuser",
-              50L);
-        purificationChamber = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "purificationChamber",
-              200L);
-        energizedSmelter = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "energizedSmelter",
-              50L);
-        digitalMiner = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "digitalMiner",
-              1_000L);
-        electricPump = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "electricPump",
-              100L);
-        chargePad = CachedLongValue.definePositive(this, builder, "Energy that can be transferred at once per charge operation (Joules).", "chargePad",
-              1_024_000L);
-        rotaryCondensentrator = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "rotaryCondensentrator",
-              50L);
-        chemicalOxidizer = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "chemicalOxidizer",
-              200L);
-        chemicalInfuser = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "chemicalInfuser",
-              200L);
-        chemicalInjectionChamber = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "chemicalInjectionChamber",
-              400L);
-        precisionSawmill = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "precisionSawmill",
-              50L);
-        chemicalDissolutionChamber = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "chemicalDissolutionChamber",
-              400L);
-        chemicalWasher = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "chemicalWasher",
-              200L);
-        chemicalCrystallizer = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "chemicalCrystallizer",
-              400L);
-        seismicVibrator = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "seismicVibrator",
-              50L);
-        pressurizedReactionBase = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "pressurizedReactionBase",
-              5L);
-        fluidicPlenisher = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "fluidicPlenisher",
-              100L);
-        laser = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "laser", 10_000L);
-        formulaicAssemblicator = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "formulaicAssemblicator",
-              100L);
-        modificationStation = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "modificationStation",
-              400L);
-        isotopicCentrifuge = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "isotopicCentrifuge",
-              200L);
-        nutritionalLiquifier = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "nutritionalLiquifier",
-              200L);
-        antiprotonicNucleosynthesizer = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "antiprotonicNucleosynthesizer",
-              100_000L);
-        pigmentExtractor = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "pigmentExtractor",
-              200L);
-        pigmentMixer = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "pigmentMixer",
-              200L);
-        paintingMachine = CachedLongValue.definePositive(this, builder, "Energy per operation tick (Joules).", "paintingMachine",
-              100L);
-        dimensionalStabilizer = CachedLongValue.definePositive(this, builder, "Energy per chunk per tick (Joules).", "dimensionalStabilizer",
-              5_000L);
+        enrichmentChamber = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_ENRICHMENT_CHAMBER, "enrichmentChamber", 50L);
+        osmiumCompressor = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_COMPRESSOR, "osmiumCompressor", 100L);
+        combiner = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_COMBINER, "combiner", 50L);
+        crusher = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_CRUSHER, "crusher", 50L);
+        metallurgicInfuser = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_METALLURGIC_INFUSER, "metallurgicInfuser", 50L);
+        purificationChamber = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_PURIFICATION_CHAMBER, "purificationChamber", 200L);
+        energizedSmelter = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_SMELTER, "energizedSmelter", 50L);
+        digitalMiner = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_MINER, "digitalMiner", 1_000L);
+        electricPump = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_PUMP, "electricPump", 100L);
+        chargePad = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_CHARGEPAD, "chargepad", 1_024_000L);
+        rotaryCondensentrator = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_CONDENSENTRATOR, "rotaryCondensentrator", 50L);
+        chemicalOxidizer = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_OXIDIZER, "chemicalOxidizer", 200L);
+        chemicalInfuser = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_CHEMICAL_INFUSER, "chemicalInfuser", 200L);
+        chemicalInjectionChamber = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_INJECTION_CHAMBER, "chemicalInjectionChamber", 400L);
+        precisionSawmill = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_SAWMILL, "precisionSawmill", 50L);
+        chemicalDissolutionChamber = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_CDC, "chemicalDissolutionChamber", 400L);
+        chemicalWasher = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_WASHER, "chemicalWasher", 200L);
+        chemicalCrystallizer = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_CRYSTALLIZER, "chemicalCrystallizer", 400L);
+        seismicVibrator = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_VIBRATOR, "seismicVibrator", 50L);
+        pressurizedReactionBase = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_PRC, "pressurizedReactionBase", 5L);
+        fluidicPlenisher = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_PLENISHER, "fluidicPlenisher", 100L);
+        laser = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_LASER, "laser", 10_000L);
+        formulaicAssemblicator = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_ASSEMBLICATOR, "formulaicAssemblicator", 100L);
+        modificationStation = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_MODIFICATION_STATION, "modificationStation", 400L);
+        isotopicCentrifuge = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_CENTRIFUGE, "isotopicCentrifuge", 200L);
+        nutritionalLiquifier = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_LIQUIFIER, "nutritionalLiquifier", 200L);
+        antiprotonicNucleosynthesizer = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_NUCLEOSYNTHESIZER, "antiprotonicNucleosynthesizer", 100_000L);
+        pigmentExtractor = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_PIGMENT_EXTRACTOR, "pigmentExtractor", 200L);
+        pigmentMixer = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_PIGMENT_MIXER, "pigmentMixer", 200L);
+        paintingMachine = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_PAINTING, "paintingMachine", 100L);
+        dimensionalStabilizer = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_DIMENSIONAL_STABILIZER, "dimensionalStabilizer", 5_000L);
 
-        builder.comment("Teleporter").push(TELEPORTER_CATEGORY);
-        teleporterBase = CachedLongValue.definePositive(this, builder, "Base Joules cost for a teleportation.", "teleporterBase", 1_000L);
-        teleporterDistance = CachedLongValue.definePositive(this, builder, "Joules per unit of distance travelled during teleportation - sqrt(xDiff^2 + yDiff^2 + zDiff^2).",
-              "teleporterDistance", 10L);
-        teleporterDimensionPenalty = CachedLongValue.definePositive(this, builder, "Flat additional cost for interdimensional teleportation. Distance is still taken into account minimizing energy cost based on dimension scales.",
-              "teleporterDimensionPenalty", 10_000L);
+        MekanismConfigTranslations.USAGE_TELEPORTER.applyToBuilder(builder).push("teleporter");
+        teleporterBase = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.USAGE_TELEPORTER_BASE, "base", 1_000L);
+        teleporterDistance = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.USAGE_TELEPORTER_DISTANCE, "distance", 10L);
+        teleporterDimensionPenalty = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.USAGE_TELEPORTER_PENALTY, "dimensionPenalty", 10_000L);
         builder.pop();
 
         configSpec = builder.build();
