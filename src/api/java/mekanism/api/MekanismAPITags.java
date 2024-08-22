@@ -86,6 +86,12 @@ public class MekanismAPITags {
          * Represents all clean slurries.
          */
         public static final TagKey<Chemical> CLEAN = tag("clean");
+        /**
+         * Chemicals in this tag cannot be inserted into framed blocks
+         *
+         * @since 10.7.1
+         */
+        public static final TagKey<Chemical> FRAMEDBLOCKS_BLACKLISTED = tag("framedblocks_blacklisted");
 
         private static TagKey<Chemical> tag(String name) {
             return TagKey.create(MekanismAPI.CHEMICAL_REGISTRY_NAME, rl(name));

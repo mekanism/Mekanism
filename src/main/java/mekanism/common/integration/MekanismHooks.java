@@ -8,6 +8,7 @@ import mekanism.common.integration.computer.computercraft.CCCapabilityHelper;
 import mekanism.common.integration.crafttweaker.content.CrTContentUtils;
 import mekanism.common.integration.curios.CuriosIntegration;
 import mekanism.common.integration.energy.EnergyCompatUtils;
+import mekanism.common.integration.framedblocks.FramedBlocksIntegration;
 import mekanism.common.integration.jsonthings.JsonThingsIntegration;
 import mekanism.common.integration.lookingat.theoneprobe.TOPProvider;
 import mekanism.common.integration.projecte.MekanismNormalizedSimpleStacks;
@@ -43,6 +44,7 @@ public final class MekanismHooks {
     public static final String RECIPE_STAGES_MOD_ID = "recipestages";
     public static final String TOP_MOD_ID = "theoneprobe";
     public static final String WILDFIRE_GENDER_MOD_ID = "wildfire_gender";
+    public static final String FRAMEDBLOCKS_MOD_ID = "framedblocks";
 
     public final boolean CCLoaded;
     public final boolean CraftTweakerLoaded;
@@ -58,6 +60,7 @@ public final class MekanismHooks {
     public final boolean RecipeStagesLoaded;
     public final boolean TOPLoaded;
     public final boolean WildfireGenderModLoaded;
+    public final boolean FramedBlocksLoaded;
 
     public MekanismHooks() {
         ModList modList = ModList.get();
@@ -77,6 +80,7 @@ public final class MekanismHooks {
         RecipeStagesLoaded = loadedCheck.test(RECIPE_STAGES_MOD_ID);
         TOPLoaded = loadedCheck.test(TOP_MOD_ID);
         WildfireGenderModLoaded = loadedCheck.test(WILDFIRE_GENDER_MOD_ID);
+        FramedBlocksLoaded = loadedCheck.test(FRAMEDBLOCKS_MOD_ID);
     }
 
     public void hookConstructor(final IEventBus bus) {
@@ -99,6 +103,9 @@ public final class MekanismHooks {
         }
         if (ProjectELoaded) {
             MekanismNormalizedSimpleStacks.NSS_SERIALIZERS.register(bus);
+        }
+        if (FramedBlocksLoaded) {
+            FramedBlocksIntegration.init(bus);
         }
     }
 
