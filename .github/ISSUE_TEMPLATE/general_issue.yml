@@ -42,9 +42,9 @@ body:
       label: Mekanism version
       description: What version of Mekanism are you using?
       options:
-        - 10.7.0 (Latest)
-        - 10.6.9 (Manually Compiled, Unreleased)
-        - 10.6.8 (Manually Compiled, Unreleased)
+        - 10.7.2 (Latest)
+        - 10.7.1
+        - 10.7.0
         - 10.6.7
         - 10.6.6
         - 10.6.5
