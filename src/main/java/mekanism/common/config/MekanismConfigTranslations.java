@@ -1,9 +1,26 @@
 package mekanism.common.config;
 
+import java.util.Locale;
+import java.util.Objects;
+import java.util.function.UnaryOperator;
+import java.util.stream.Stream;
+import mekanism.api.tier.ITier;
 import mekanism.common.Mekanism;
+import mekanism.common.tier.BinTier;
+import mekanism.common.tier.CableTier;
+import mekanism.common.tier.ChemicalTankTier;
+import mekanism.common.tier.ConductorTier;
+import mekanism.common.tier.EnergyCubeTier;
+import mekanism.common.tier.FluidTankTier;
+import mekanism.common.tier.InductionCellTier;
+import mekanism.common.tier.InductionProviderTier;
+import mekanism.common.tier.PipeTier;
+import mekanism.common.tier.TransporterTier;
+import mekanism.common.tier.TubeTier;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.Util;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public enum MekanismConfigTranslations implements IConfigTranslation {
     //Client config
@@ -71,6 +88,19 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
           + "of the stack will be returned."),
     COMMON_HOLIDAYS("common.holidays", "Holidays",
           "Should holiday greetings and easter eggs play for holidays (ex: Christmas and New Years) on the client. And should robit skins be randomized on the server."),
+
+    //Tier Config
+    TIER_ENERGY_CUBE("tier.energy_cube", "Energy Cube Settings", "Settings for configuring Energy Cubes"),
+    TIER_FLUID_TANK("tier.fluid_tank", "Fluid Tank Settings", "Settings for configuring Fluid Tanks"),
+    TIER_CHEMICAL_TANK("tier.chemical_tank", "Chemical Tank Settings", "Settings for configuring Chemical Tanks"),
+    TIER_BIN("tier.bin", "Bin Settings", "Settings for configuring Bins"),
+    TIER_INDUCTION("tier.induction", "Induction Matrix Settings", "Settings for configuring Induction Cells and Providers"),
+    TIER_TRANSMITTERS("tier.transmitter", "Transmitter Settings", "Settings for configuring Transmitters"),
+    TIER_TRANSMITTERS_ENERGY("tier.transmitter.energy", "Universal Cable Settings", "Settings for configuring Universal Cables"),
+    TIER_TRANSMITTERS_FLUID("tier.transmitter.fluid", "Mechanical Pipe Settings", "Settings for configuring Mechanical Pipes"),
+    TIER_TRANSMITTERS_CHEMICAL("tier.transmitter.chemical", "Pressurized Tube Settings", "Settings for configuring Pressurized Tubes"),
+    TIER_TRANSMITTERS_ITEM("tier.transmitter.item", "Logistical Transporter Settings", "Settings for configuring Logistical Transporters"),
+    TIER_TRANSMITTERS_HEAT("tier.transmitter.heat", "Thermodynamic Conductor Settings", "Settings for configuring Thermodynamic Conductors"),
 
     //Storage Config
     ENERGY_STORAGE_ENRICHMENT_CHAMBER(TranslationPreset.ENERGY_STORAGE, "Enrichment Chamber"),
@@ -204,6 +234,135 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
     @Override
     public String tooltip() {
         return tooltip;
+    }
+
+    public record TierTranslations(@Nullable IConfigTranslation first, @Nullable IConfigTranslation second, @Nullable IConfigTranslation third) {
+
+        public TierTranslations {
+            if (first == null && second == null) {
+                throw new IllegalArgumentException("Tier Translations must have at least a first, second, or third tooltip");
+            }
+        }
+
+        public IConfigTranslation[] toArray() {
+            return Stream.of(first, second, third).filter(Objects::nonNull).toArray(IConfigTranslation[]::new);
+        }
+
+        @NotNull
+        @Override
+        public IConfigTranslation first() {
+            if (first == null) {
+                throw new IllegalStateException("This method should not be called when first is null. Define first");
+            }
+            return first;
+        }
+
+        @NotNull
+        @Override
+        public IConfigTranslation second() {
+            if (second == null) {
+                throw new IllegalStateException("This method should not be called when storage is null. Define second");
+            }
+            return second;
+        }
+
+        @NotNull
+        @Override
+        public IConfigTranslation third() {
+            if (third == null) {
+                throw new IllegalStateException("This method should not be called when third is null. Define third");
+            }
+            return third;
+        }
+
+        private static String getKey(String type, String tier, String path) {
+            return Util.makeDescriptionId("configuration", Mekanism.rl("tier." + type + "." + tier + "." + path));
+        }
+
+        public static TierTranslations create(ITier tier, String type, @Nullable UnaryOperator<String> storageTooltip, @Nullable UnaryOperator<String> outputTooltip) {
+            return create(tier, type, storageTooltip, outputTooltip, " Output Rate");
+        }
+
+        public static TierTranslations create(ITier tier, String type, @Nullable UnaryOperator<String> storageTooltip, @Nullable UnaryOperator<String> outputTooltip,
+              String rateSuffix) {
+            String tierName = tier.getBaseTier().getSimpleName();
+            String key = tierName.toLowerCase(Locale.ROOT);
+            return new TierTranslations(
+                  storageTooltip == null ? null : new ConfigTranslation(getKey(type, key, "storage"), tierName + " Storage", storageTooltip.apply(tierName)),
+                  outputTooltip == null ? null : new ConfigTranslation(getKey(type, key, "rate"), tierName + rateSuffix, outputTooltip.apply(tierName)),
+                  null
+            );
+        }
+
+        public static TierTranslations create(EnergyCubeTier tier) {
+            return create(tier, "energy_cube", name -> "Maximum number of Joules " + name + " energy cubes can store.",
+                  name -> "Output rate in Joules of " + name + " energy cubes."
+            );
+        }
+
+        public static TierTranslations create(FluidTankTier tier) {
+            return create(tier, "fluid_tank", name -> "Storage size of " + name + " fluid tanks in mB.",
+                  name -> "Output rate of " + name + " fluid tanks in mB."
+            );
+        }
+
+        public static TierTranslations create(ChemicalTankTier tier) {
+            return create(tier, "chemical_tank", name -> "Storage size of " + name + " chemical tanks in mB.",
+                  name -> "Output rate of " + name + " chemical tanks in mB."
+            );
+        }
+
+        public static TierTranslations create(BinTier tier) {
+            return create(tier, "bin", name -> "The number of items " + name + " bins can store.", null);
+        }
+
+        public static TierTranslations create(InductionCellTier tier) {
+            return create(tier, "induction.cell", name -> "Maximum number of Joules " + name + " induction cells can store.", null);
+        }
+
+        public static TierTranslations create(InductionProviderTier tier) {
+            return create(tier, "induction.provider", null, name -> "Maximum number of Joules " + name + " induction providers can output or accept.");
+        }
+
+        public static TierTranslations create(CableTier tier) {
+            return create(tier, "transmitter.energy", name -> "Internal buffer in Joules of each " + name + " universal cable.", null);
+        }
+
+        public static TierTranslations create(PipeTier tier) {
+            return create(tier, "transmitter.fluid", name -> "Capacity of " + name + " mechanical pipes in mB.",
+                  name -> "Pump rate of " + name + " mechanical pipes in mB/t.", " Pull Rate"
+            );
+        }
+
+        public static TierTranslations create(TubeTier tier) {
+            return create(tier, "transmitter.chemical", name -> "Capacity of " + name + " pressurized tubes in mB.",
+                  name -> "Pump rate of " + name + " pressurized tubes in mB/t.", " Pull Rate"
+            );
+        }
+
+        public static TierTranslations create(TransporterTier tier) {
+            String type = "transmitter.item";
+            String tierName = tier.getBaseTier().getSimpleName();
+            String key = tierName.toLowerCase(Locale.ROOT);
+            return new TierTranslations(new ConfigTranslation(getKey(type, key, "pull_rate"), tierName + " Pull Rate",
+                  "Item throughput rate of " + tierName + " logistical transporters in items/half second. This value assumes a target tick rate of 20 ticks per second."
+            ), new ConfigTranslation(getKey(type, key, "speed"), tierName + " Transfer Speed",
+                  "Five times the travel speed in m/s of " + tierName + " logistical transporter. This value assumes a target tick rate of 20 ticks per second."
+            ), null);
+        }
+
+        public static TierTranslations create(ConductorTier tier) {
+            String type = "transmitter.heat";
+            String tierName = tier.getBaseTier().getSimpleName();
+            String key = tierName.toLowerCase(Locale.ROOT);
+            return new TierTranslations(new ConfigTranslation(getKey(type, key, "inverse_conduction"), tierName + " Inverse Conduction",
+                  "Conduction value of " + tierName + " thermodynamic conductors."
+            ), new ConfigTranslation(getKey(type, key, "heat_capacity"), tierName + " Heat Capacity",
+                  "Heat capacity of " + tierName + " thermodynamic conductors."
+            ), new ConfigTranslation(getKey(type, key, "insulation"), tierName + " Insulation",
+                  "Insulation value of " + tierName + " thermodynamic conductor."
+            ));
+        }
     }
 
     public record OreConfigTranslations(IConfigTranslation topLevel, IConfigTranslation shouldGenerate) {

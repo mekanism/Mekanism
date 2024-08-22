@@ -42,6 +42,8 @@
   "configuration.mekanism.storage.nucleosynthesizer.energy.tooltip": "Base energy storage in Joules of: Nucleosynthesiser. Also defines max process rate.",
   "configuration.mekanism.storage.pressurized_reaction_chamber.energy": "Pressurised Reaction Chamber Energy Storage",
   "configuration.mekanism.storage.pressurized_reaction_chamber.energy.tooltip": "Base energy storage in Joules of: Pressurised Reaction Chamber",
+  "configuration.mekanism.tier.transmitter.chemical": "Pressurised Tube Settings",
+  "configuration.mekanism.tier.transmitter.chemical.tooltip": "Settings for configuring Pressurised Tubes",
   "configuration.mekanism.usage.chemical_crystallizer.energy": "Chemical Crystalliser Energy Usage",
   "configuration.mekanism.usage.chemical_crystallizer.energy.tooltip": "Energy per operation in Joules of: Chemical Crystalliser",
   "configuration.mekanism.usage.chemical_oxidizer.energy": "Chemical Oxidiser Energy Usage",
