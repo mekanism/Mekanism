@@ -931,38 +931,38 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     @Override
     public Object[] invoke(int method, Object[] arguments) throws NoSuchMethodException {
         if (method == 0) {
-            if (arguments.length != 1 || !(arguments[0] instanceof Double)) {
+            if (arguments.length != 1 || !(arguments[0] instanceof Number)) {
                 return new Object[]{"Invalid parameters."};
             }
-            setRadius(Math.min(((Double) arguments[0]).intValue(), MekanismConfig.current().general.digitalMinerMaxRadius.val()));
+            setRadius(Math.min(((Number) arguments[0]).intValue(), MekanismConfig.current().general.digitalMinerMaxRadius.val()));
         } else if (method == 1) {
-            if (arguments.length != 1 || !(arguments[0] instanceof Double)) {
+            if (arguments.length != 1 || !(arguments[0] instanceof Number)) {
                 return new Object[]{"Invalid parameters."};
             }
-            minY = ((Double) arguments[0]).intValue();
+            minY = ((Number) arguments[0]).intValue();
         } else if (method == 2) {
-            if (arguments.length != 1 || !(arguments[0] instanceof Double)) {
+            if (arguments.length != 1 || !(arguments[0] instanceof Number)) {
                 return new Object[]{"Invalid parameters."};
             }
-            maxY = ((Double) arguments[0]).intValue();
+            maxY = ((Number) arguments[0]).intValue();
         } else if (method == 3) {
-            if (arguments.length < 1 || !(arguments[0] instanceof Double)) {
+            if (arguments.length < 1 || !(arguments[0] instanceof Number)) {
                 return new Object[]{"Invalid parameters."};
             }
-            int id = ((Double) arguments[0]).intValue();
+            int id = ((Number) arguments[0]).intValue();
             int meta = 0;
             if (arguments.length > 1) {
-                if (arguments[1] instanceof Double) {
-                    meta = ((Double) arguments[1]).intValue();
+                if (arguments[1] instanceof Number) {
+                    meta = ((Number) arguments[1]).intValue();
                 }
             }
             filters.add(new MItemStackFilter(new ItemStack(Item.getItemById(id), 1, meta)));
             return new Object[]{"Added filter."};
         } else if (method == 4) {
-            if (arguments.length < 1 || !(arguments[0] instanceof Double)) {
+            if (arguments.length < 1 || !(arguments[0] instanceof Number)) {
                 return new Object[]{"Invalid parameters."};
             }
-            int id = ((Double) arguments[0]).intValue();
+            int id = ((Number) arguments[0]).intValue();
             Iterator<MinerFilter> iter = filters.iterator();
             while (iter.hasNext()) {
                 MinerFilter filter = iter.next();

@@ -135,8 +135,8 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
             case 6:
                 return new Object[]{getReactor().getInjectionRate()};
             case 7:
-                if (arguments[0] instanceof Double) {
-                    getReactor().setInjectionRate(((Double) arguments[0]).intValue());
+                if (arguments[0] instanceof Number) {
+                    getReactor().setInjectionRate(((Number) arguments[0]).intValue());
                     return new Object[]{"Injection rate set."};
                 }
                 return new Object[]{"Invalid parameters."};

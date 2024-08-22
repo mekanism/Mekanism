@@ -821,6 +821,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 
     @Override
     public Object[] invoke(int method, Object[] arguments) throws NoSuchMethodException {
+        int index;
         switch (method) {
             case 0:
                 return new Object[]{electricityStored};
@@ -828,27 +829,29 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
                 if (arguments[0] == null) {
                     return new Object[]{"Please provide a target operation."};
                 }
-                if (!(arguments[0] instanceof Double) && !(arguments[0] instanceof Integer)) {
+                if (!(arguments[0] instanceof Number)) {
                     return new Object[]{"Invalid characters."};
                 }
-                if ((Integer) arguments[0] < 0 || (Integer) arguments[0] > progress.length) {
+                index = ((Number) arguments[0]).intValue();
+                if (index < 0 || index > progress.length) {
                     return new Object[]{"No such operation found."};
                 }
-                return new Object[]{progress[(Integer) arguments[0]]};
+                return new Object[]{progress[index]};
             case 2:
                 return new Object[]{facing};
             case 3:
                 if (arguments[0] == null) {
                     return new Object[]{"Please provide a target operation."};
                 }
-                if (!(arguments[0] instanceof Double) && !(arguments[0] instanceof Integer)) {
+                if (!(arguments[0] instanceof Number)) {
                     return new Object[]{"Invalid characters."};
                 }
-                if ((Integer) arguments[0] < 0 || (Integer) arguments[0] > progress.length) {
+                index = ((Number) arguments[0]).intValue();
+                if (index < 0 || index > progress.length) {
                     return new Object[]{"No such operation found."};
                 }
                 return new Object[]{
-                      canOperate(getInputSlot((Integer) arguments[0]), getOutputSlot((Integer) arguments[0]))};
+                      canOperate(getInputSlot(index), getOutputSlot(index))};
             case 4:
                 return new Object[]{getMaxEnergy()};
             case 5:
