@@ -49,8 +49,6 @@ public enum GeneratorsConfigTranslations implements IConfigTranslation {
     SERVER_GENERATOR_WIND_GEN_MAX_Y("server.generator.wind.gen.max.height", "Max Y Value",
           "The maximum Y value that affects the Wind Generators Power generation. This value gets clamped at the world's logical height. For example for worlds like "
           + "the nether that are 256 blocks tall, but have a ceiling at 128 blocks, this would be clamped at 128."),
-    SERVER_GENERATOR_WIND_DIM_BLACKLIST("server.generator.wind.dimension_blacklist", "Dimension Blacklist",
-          "The list of dimension ids that the Wind Generator will not generate power in.", "Edit Blacklist"),
 
     SERVER_TURBINE("server.turbine", "Industrial Turbine", "Settings for configuring Industrial Turbines", "Edit Turbine Settings"),
     SERVER_TURBINE_BLADES("server.turbine.blades", "Blades Per Coil", "The number of Turbine Blades supported by each Electromagnetic Coil."),

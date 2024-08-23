@@ -76,13 +76,11 @@ public enum AdditionsConfigTranslations implements IConfigTranslation {
           IConfigTranslation maxSize,
           IConfigTranslation weight,
           IConfigTranslation costPerEntity,
-          IConfigTranslation maxCost,
-          IConfigTranslation biomeBlacklist,
-          IConfigTranslation structureBlacklist
+          IConfigTranslation maxCost
     ) {
 
         public IConfigTranslation[] toArray() {
-            return new IConfigTranslation[]{topLevel, shouldSpawn, minSize, maxSize, weight, costPerEntity, maxCost, biomeBlacklist, structureBlacklist};
+            return new IConfigTranslation[]{topLevel, shouldSpawn, minSize, maxSize, weight, costPerEntity, maxCost};
         }
 
         private static String getKey(String name, String path) {
@@ -98,15 +96,7 @@ public enum AdditionsConfigTranslations implements IConfigTranslation {
                   new ConfigTranslation(getKey(key, "max_size"), "Max Group Size", "The multiplier for maximum group size of " + name + " spawns, compared to the adult mob."),
                   new ConfigTranslation(getKey(key, "weight"), "Weight Multiplier", "The multiplier for weight of " + name + " spawns, compared to the adult mob."),
                   new ConfigTranslation(getKey(key, "cost_per_entity"), "Cost Per Entity Multiplier", "The multiplier for spawn cost per entity of " + name + " spawns, compared to the adult mob."),
-                  new ConfigTranslation(getKey(key, "max_cost"), "Max Cost Multiplier", "The multiplier for max spawn cost of " + name + " spawns, compared to the adult mob."),
-                  new ConfigTranslation(getKey(key, "biome_blacklist"),
-                        "Biome Blacklist", "The list of biome ids that " + name + " will not spawn in even if the normal mob variant can spawn.",
-                        "Edit Blacklist"
-                  ),
-                  new ConfigTranslation(getKey(key, "structure_blacklist"), "Structure Blacklist",
-                        "The list of structure ids that " + name + " will not spawn in even if the normal mob variant can spawn.",
-                        "Edit Blacklist"
-                  )
+                  new ConfigTranslation(getKey(key, "max_cost"), "Max Cost Multiplier", "The multiplier for max spawn cost of " + name + " spawns, compared to the adult mob.")
             );
         }
 

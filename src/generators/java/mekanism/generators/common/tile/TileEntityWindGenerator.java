@@ -3,6 +3,7 @@ package mekanism.generators.common.tile;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
+import mekanism.api.MekanismAPITags;
 import mekanism.api.RelativeSide;
 import mekanism.api.math.MathUtils;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
@@ -29,7 +30,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     private static final float SPEED = 32F;
     private static final RelativeSide[] ENERGY_SIDES = {RelativeSide.FRONT, RelativeSide.BOTTOM};
 
-    private double angle;
+    private float angle;
     private double currentMultiplier = 0;
     private boolean isBlacklistDimension;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy item slot")
@@ -123,7 +124,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
         // Check the blacklist and force an update if we're in the blacklist. Otherwise, we'll never send
         // an initial activity status and the client (in MP) will show the windmills turning while not
         // generating any power
-        isBlacklistDimension = MekanismGeneratorsConfig.generators.windGenerationDimBlacklist.get().contains(world.dimension().location());
+        isBlacklistDimension = world.dimensionTypeRegistration().is(MekanismAPITags.DimensionTypes.NO_WIND);
         if (isBlacklistDimension) {
             setActive(false);
         }
@@ -133,7 +134,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
         return currentMultiplier;
     }
 
-    public double getAngle() {
+    public float getAngle() {
         return angle;
     }
 

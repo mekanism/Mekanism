@@ -6,12 +6,10 @@ import mekanism.common.config.value.CachedDoubleValue;
 import mekanism.common.config.value.CachedFloatValue;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.config.value.CachedLongValue;
-import mekanism.common.config.value.CachedResourceLocationListValue;
 import mekanism.common.util.EnumUtils;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
 import mekanism.generators.common.content.fusion.FusionReactorMultiblockData;
 import net.minecraft.SharedConstants;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.neoforged.fml.config.ModConfig.Type;
 import net.neoforged.neoforge.common.ModConfigSpec;
@@ -49,7 +47,6 @@ public class GeneratorsConfig extends BaseMekanismConfig {
     public final CachedLongValue windGenerationMax;
     public final CachedIntValue windGenerationMinY;
     public final CachedIntValue windGenerationMaxY;
-    public final CachedResourceLocationListValue windGenerationDimBlacklist;
 
     public final CachedLongValue energyPerFissionFuel;
     public final CachedDoubleValue fissionCasingHeatCapacity;
@@ -131,10 +128,6 @@ public class GeneratorsConfig extends BaseMekanismConfig {
         // as it is just used for range clamping
         windGenerationMaxY = CachedIntValue.wrap(this, GeneratorsConfigTranslations.SERVER_GENERATOR_WIND_GEN_MAX_Y.applyToBuilder(builder)
               .define("maxY", DimensionType.MAX_Y, value -> value instanceof Integer && (Integer) value > windGenerationMinY.getOrDefault()));
-        //Note: We cannot verify the dimension exists as dimensions are dynamic so may not actually exist when we are validating
-        //TODO - 1.21: Re-evaluate some of these blacklist configs and maybe move them over to using tags
-        windGenerationDimBlacklist = CachedResourceLocationListValue.define(this, GeneratorsConfigTranslations.SERVER_GENERATOR_WIND_DIM_BLACKLIST.applyToBuilder(builder),
-              "dimensionBlacklist", ResourceLocation.withDefaultNamespace("the_end"));
         builder.pop();
 
         GeneratorsConfigTranslations.SERVER_TURBINE.applyToBuilder(builder).push("turbine");

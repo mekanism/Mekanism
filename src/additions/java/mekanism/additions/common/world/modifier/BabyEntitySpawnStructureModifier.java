@@ -10,8 +10,7 @@ import mekanism.api.SerializationConstants;
 import mekanism.common.Mekanism;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.Holder;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.levelgen.structure.Structure;
@@ -34,12 +33,12 @@ public record BabyEntitySpawnStructureModifier(BabyType babyType, AdditionsConfi
             StructureSettingsBuilder structureSettings = builder.getStructureSettings();
             StructureSpawnOverrideBuilder spawnOverrides = structureSettings.getSpawnOverrides(MobCategory.MONSTER);
             //Fail quick if there are no overrides for this structure, or it is blacklisted
-            ResourceLocation structureName = BuiltInRegistries.STRUCTURE_TYPE.getKey(structure.value().type());
-            if (spawnOverrides != null && !spawnConfig.structureBlackList.get().contains(structureName)) {
+            if (spawnOverrides != null && !structure.is(babyType.structureBlacklist)) {
                 for (MobSpawnSettings.SpawnerData spawner : spawnConfig.getSpawnersToAdd(spawnOverrides.getSpawns())) {
                     spawnOverrides.addSpawn(spawner);
                     Mekanism.logger.debug("Adding spawn rate for '{}' in structure '{}', with weight: {}, minSize: {}, maxSize: {}",
-                          RegistryUtils.getName(spawner.type), structureName, spawner.getWeight(), spawner.minCount, spawner.maxCount);
+                          RegistryUtils.getName(spawner.type), structure.unwrapKey().map(ResourceKey::location).orElse(null), spawner.getWeight(),
+                          spawner.minCount, spawner.maxCount);
                 }
             }
         }

@@ -2,14 +2,12 @@ package mekanism.generators.client.render.item;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import java.util.List;
+import mekanism.api.MekanismAPITags;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.item.MekanismISTER;
 import mekanism.generators.client.model.ModelWindGenerator;
-import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -33,17 +31,17 @@ public class RenderWindGeneratorItem extends MekanismISTER {
           int light, int overlayLight) {
         Minecraft minecraft = Minecraft.getInstance();
         boolean tickingNormally = MekanismRenderer.isRunningNormally();
-        if (tickingNormally) {
-            int ticks = Minecraft.getInstance().levelRenderer.getTicks();
-            if (lastTicksUpdated != ticks) {
-                //Only update the angle if we are in a world and that world is not blacklisted
-                if (minecraft.level != null) {
-                    List<ResourceLocation> blacklistedDimensions = MekanismGeneratorsConfig.generators.windGenerationDimBlacklist.get();
-                    if (blacklistedDimensions.isEmpty() || !blacklistedDimensions.contains(minecraft.level.dimension().location())) {
-                        angle = (angle + SPEED) % 360;
-                    }
+        if (tickingNormally && minecraft.level != null) {
+            //Only update the angle if we are in a world and that world is not blacklisted
+            if (minecraft.level.dimensionTypeRegistration().is(MekanismAPITags.DimensionTypes.NO_WIND)) {
+                //If the dimension is blacklisted, don't try to tick it at all
+                tickingNormally = false;
+            } else {
+                int ticks = Minecraft.getInstance().levelRenderer.getTicks();
+                if (lastTicksUpdated != ticks) {
+                    angle = (angle + SPEED) % 360;
+                    lastTicksUpdated = ticks;
                 }
-                lastTicksUpdated = ticks;
             }
         }
         float renderAngle = angle;

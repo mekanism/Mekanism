@@ -26,7 +26,7 @@ public class RenderWindGenerator extends ModelTileEntityRenderer<TileEntityWindG
 
     @Override
     protected void render(TileEntityWindGenerator tile, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight, ProfilerFiller profiler) {
-        double angle = setupRenderer(tile, partialTick, matrix);
+        float angle = setupRenderer(tile, partialTick, matrix);
         model.render(matrix, renderer, angle, light, overlayLight, false);
         matrix.popPose();
     }
@@ -51,18 +51,18 @@ public class RenderWindGenerator extends ModelTileEntityRenderer<TileEntityWindG
     @Override
     public void renderWireFrame(BlockEntity tile, float partialTick, PoseStack matrix, VertexConsumer buffer) {
         if (tile instanceof TileEntityWindGenerator windGenerator) {
-            double angle = setupRenderer(windGenerator, partialTick, matrix);
+            float angle = setupRenderer(windGenerator, partialTick, matrix);
             model.renderWireFrame(matrix, buffer, angle);
             matrix.popPose();
         }
     }
 
-    private double setupRenderer(TileEntityWindGenerator tile, float partialTick, PoseStack matrix) {
+    private float setupRenderer(TileEntityWindGenerator tile, float partialTick, PoseStack matrix) {
         matrix.pushPose();
         matrix.translate(0.5, 1.5, 0.5);
         MekanismRenderer.rotate(matrix, tile.getDirection(), 0, 180, 90, 270);
         matrix.mulPose(Axis.ZP.rotationDegrees(180));
-        double angle = tile.getAngle();
+        float angle = tile.getAngle();
         if (tile.getActive() && partialTick > 0) {
             angle = (angle + tile.getHeightSpeedRatio() * partialTick) % 360;
         }

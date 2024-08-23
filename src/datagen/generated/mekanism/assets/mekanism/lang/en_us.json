@@ -828,7 +828,7 @@
   "configuration.mekanism.client.sounds.player.enable.tooltip": "Play sounds for when any player is using a Jetpack, Scuba Mask, Flamethrower, or Gravitational Modulating Unit. This also affects playing the Radiation clicking sound.",
   "configuration.mekanism.client.sounds.tooltip": "Settings for configuring Mekanism's Sounds",
   "configuration.mekanism.client.transmitters.opaque": "Opaque Transmitters",
-  "configuration.mekanism.client.transmitters.opaque.tooltip": "If true, renders sides for Universal Cables, Mechanical Pipes, Pressurized Tubes, Logistical Transporters, and Thermodynamic Conductors instead ofrendering their contents. If transmitters are causing you fps issues, this should hopefully help.",
+  "configuration.mekanism.client.transmitters.opaque.tooltip": "If true, renders sides for Universal Cables, Mechanical Pipes, Pressurized Tubes, Logistical Transporters, and Thermodynamic Conductors instead of rendering their contents. If transmitters are causing you fps issues, this should hopefully help.",
   "configuration.mekanism.common.copy_block_data": "Copy Block Data",
   "configuration.mekanism.common.copy_block_data.tooltip": "Determines whether machine configuration data is copied when using middle click. If this is set to false no data will be copied and the default instance of the stack will be returned.",
   "configuration.mekanism.common.decay_timers": "Decay Timers",

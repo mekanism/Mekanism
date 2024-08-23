@@ -9,6 +9,9 @@ import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.dimension.DimensionType;
+import net.minecraft.world.level.levelgen.structure.Structure;
 
 /**
  * Provides access to pre-existing tag keys for various functionality that we use tags for.
@@ -25,6 +28,44 @@ public class MekanismAPITags {
 
     private static ResourceLocation rl(String path) {
         return ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, path);
+    }
+
+    /**
+     * @since 10.6.4
+     */
+    public static class Biomes {
+
+        private Biomes() {
+        }
+
+        /**
+         * Represents any biomes that baby bogged should not spawn in, even if normal bogged do.
+         */
+        public static final TagKey<Biome> BLACKLIST_BABY_BOGGED = additionsTag("blacklist_baby_bogged");
+        /**
+         * Represents any biomes that baby creepers should not spawn in, even if normal creepers do.
+         */
+        public static final TagKey<Biome> BLACKLIST_BABY_CREEPERS = additionsTag("blacklist_baby_creepers");
+        /**
+         * Represents any biomes that baby endermen should not spawn in, even if normal endermen do.
+         */
+        public static final TagKey<Biome> BLACKLIST_BABY_ENDERMEN = additionsTag("blacklist_baby_endermen");
+        /**
+         * Represents any biomes that baby skeletons should not spawn in, even if normal skeletons do.
+         */
+        public static final TagKey<Biome> BLACKLIST_BABY_SKELETONS = additionsTag("blacklist_baby_skeletons");
+        /**
+         * Represents any biomes that baby strays should not spawn in, even if normal strays do.
+         */
+        public static final TagKey<Biome> BLACKLIST_BABY_STRAYS = additionsTag("blacklist_baby_strays");
+        /**
+         * Represents any biomes that baby wither skeletons should not spawn in, even if normal wither skeletons do.
+         */
+        public static final TagKey<Biome> BLACKLIST_BABY_WITHER_SKELETONS = additionsTag("blacklist_baby_wither_skeletons");
+
+        private static TagKey<Biome> additionsTag(String name) {
+            return TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath("mekanismadditions", name));
+        }
     }
 
     /**
@@ -98,6 +139,71 @@ public class MekanismAPITags {
         }
     }
 
+    public static class DamageTypes {
+
+        private DamageTypes() {
+        }
+
+        /**
+         * Represents any damage type that is always supported by the MekaSuit.
+         */
+        public static final TagKey<DamageType> MEKASUIT_ALWAYS_SUPPORTED = tag("mekasuit_always_supported");
+        /**
+         * Represents any type of damage that can be prevented by the Scuba Mask or the Inhalation Purification Unit.
+         */
+        public static final TagKey<DamageType> IS_PREVENTABLE_MAGIC = tag("is_preventable_magic");
+
+        private static TagKey<DamageType> tag(String name) {
+            return TagKey.create(Registries.DAMAGE_TYPE, rl(name));
+        }
+    }
+
+    /**
+     * @since 10.6.4
+     */
+    public static class DimensionTypes {
+
+        private DimensionTypes() {
+        }
+
+        /**
+         * Represents any dimension without wind.
+         *
+         * @apiNote This is used by Mekanism to determine what dimensions a wind generator can function in.
+         */
+        public static final TagKey<DimensionType> NO_WIND = commonTag("no_wind");
+
+        private static TagKey<DimensionType> commonTag(String name) {
+            return TagKey.create(Registries.DIMENSION_TYPE, ResourceLocation.fromNamespaceAndPath("c", name));
+        }
+    }
+
+    /**
+     * @since 10.6.3
+     */
+    public static class Entities {
+
+        private Entities() {
+        }
+
+        /**
+         * Represents any entity type that is immune to all Radiation.
+         */
+        public static final TagKey<EntityType<?>> RADIATION_IMMUNE = commonTag("radiation_immune");
+        /**
+         * Represents any entity type that is immune to Mekanism Radiation.
+         */
+        public static final TagKey<EntityType<?>> MEK_RADIATION_IMMUNE = tag("radiation_immune");
+
+        private static TagKey<EntityType<?>> commonTag(String name) {
+            return TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath("c", name));
+        }
+
+        private static TagKey<EntityType<?>> tag(String name) {
+            return TagKey.create(Registries.ENTITY_TYPE, rl(name));
+        }
+    }
+
     /**
      * @since 10.7.0
      */
@@ -131,48 +237,42 @@ public class MekanismAPITags {
         }
     }
 
-    public static class DamageTypes {
-
-        private DamageTypes() {
-        }
-
-        /**
-         * Represents any damage type that is always supported by the MekaSuit.
-         */
-        public static final TagKey<DamageType> MEKASUIT_ALWAYS_SUPPORTED = tag("mekasuit_always_supported");
-        /**
-         * Represents any type of damage that can be prevented by the Scuba Mask or the Inhalation Purification Unit.
-         */
-        public static final TagKey<DamageType> IS_PREVENTABLE_MAGIC = tag("is_preventable_magic");
-
-        private static TagKey<DamageType> tag(String name) {
-            return TagKey.create(Registries.DAMAGE_TYPE, rl(name));
-        }
-    }
 
     /**
-     * @since 10.6.3
+     * @since 10.6.4
      */
-    public static class Entities {
+    public static class Structures {
 
-        private Entities() {
+        private Structures() {
         }
 
         /**
-         * Represents any entity type that is immune to all Radiation.
+         * Represents any structure that baby bogged should not spawn in, even if normal bogged do.
          */
-        public static final TagKey<EntityType<?>> RADIATION_IMMUNE = commonTag("radiation_immune");
+        public static final TagKey<Structure> BLACKLIST_BABY_BOGGED = additionsTag("blacklist_baby_bogged");
         /**
-         * Represents any entity type that is immune to Mekanism Radiation.
+         * Represents any structure that baby creepers should not spawn in, even if normal creepers do.
          */
-        public static final TagKey<EntityType<?>> MEK_RADIATION_IMMUNE = tag("radiation_immune");
+        public static final TagKey<Structure> BLACKLIST_BABY_CREEPERS = additionsTag("blacklist_baby_creepers");
+        /**
+         * Represents any structure that baby endermen should not spawn in, even if normal endermen do.
+         */
+        public static final TagKey<Structure> BLACKLIST_BABY_ENDERMEN = additionsTag("blacklist_baby_endermen");
+        /**
+         * Represents any structure that baby skeletons should not spawn in, even if normal skeletons do.
+         */
+        public static final TagKey<Structure> BLACKLIST_BABY_SKELETONS = additionsTag("blacklist_baby_skeletons");
+        /**
+         * Represents any structure that baby strays should not spawn in, even if normal strays do.
+         */
+        public static final TagKey<Structure> BLACKLIST_BABY_STRAYS = additionsTag("blacklist_baby_strays");
+        /**
+         * Represents any structure that baby wither skeletons should not spawn in, even if normal wither skeletons do.
+         */
+        public static final TagKey<Structure> BLACKLIST_BABY_WITHER_SKELETONS = additionsTag("blacklist_baby_wither_skeletons");
 
-        private static TagKey<EntityType<?>> commonTag(String name) {
-            return TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath("c", name));
-        }
-
-        private static TagKey<EntityType<?>> tag(String name) {
-            return TagKey.create(Registries.ENTITY_TYPE, rl(name));
+        private static TagKey<Structure> additionsTag(String name) {
+            return TagKey.create(Registries.STRUCTURE, ResourceLocation.fromNamespaceAndPath("mekanismadditions", name));
         }
     }
 }

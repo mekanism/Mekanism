@@ -40,7 +40,7 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
 
     CLIENT_RENDERING("client.rendering", "Rendering Settings", "Settings for adjusting how Mekanism render's certain blocks and how many particles Mekanism adds.", true),
     CLIENT_OPAQUE_TRANSMITTERS("client.transmitters.opaque", "Opaque Transmitters",
-          "If true, renders sides for Universal Cables, Mechanical Pipes, Pressurized Tubes, Logistical Transporters, and Thermodynamic Conductors instead of"
+          "If true, renders sides for Universal Cables, Mechanical Pipes, Pressurized Tubes, Logistical Transporters, and Thermodynamic Conductors instead of "
           + "rendering their contents. If transmitters are causing you fps issues, this should hopefully help."),
     CLIENT_BE_RENDER_RANGE("client.render_range.block_entity", "BE Render Range",
           "Range at which Block Entity Renderer's added by Mekanism can render at, for example the contents of multiblocks. Vanilla defaults the rendering range for "

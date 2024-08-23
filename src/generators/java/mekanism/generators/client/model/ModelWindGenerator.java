@@ -15,6 +15,7 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
 public class ModelWindGenerator extends MekanismJavaModel {
@@ -134,7 +135,7 @@ public class ModelWindGenerator extends MekanismJavaModel {
         bladeCenter = BLADE_CENTER.getFromRoot(root);
     }
 
-    public void render(@NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, double angle, int light, int overlayLight, boolean hasEffect) {
+    public void render(@NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, float angle, int light, int overlayLight, boolean hasEffect) {
         float baseRotation = getAbsoluteRotation(angle);
         setRotation(blade1a, 0F, 0F, baseRotation);
         setRotation(blade1b, 0F, 0F, 0.0349066F + baseRotation);
@@ -158,7 +159,7 @@ public class ModelWindGenerator extends MekanismJavaModel {
         renderPartsToBuffer(parts, poseStack, vertexConsumer, light, overlayLight, color);
     }
 
-    public void renderWireFrame(PoseStack matrix, VertexConsumer vertexBuilder, double angle) {
+    public void renderWireFrame(PoseStack matrix, VertexConsumer vertexBuilder, float angle) {
         float baseRotation = getAbsoluteRotation(angle);
         setRotation(blade1a, 0F, 0F, baseRotation);
         setRotation(blade1b, 0F, 0F, 0.0349066F + baseRotation);
@@ -176,7 +177,7 @@ public class ModelWindGenerator extends MekanismJavaModel {
         renderPartsAsWireFrame(parts, matrix, vertexBuilder);
     }
 
-    private float getAbsoluteRotation(double angle) {
-        return (float) Math.toRadians(angle % 360);
+    private float getAbsoluteRotation(float angle) {
+        return (angle % 360) * Mth.DEG_TO_RAD;
     }
 }

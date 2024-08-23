@@ -13,11 +13,8 @@ import mekanism.common.config.value.CachedBooleanValue;
 import mekanism.common.config.value.CachedDoubleValue;
 import mekanism.common.config.value.CachedFloatValue;
 import mekanism.common.config.value.CachedIntValue;
-import mekanism.common.config.value.CachedResourceLocationListValue;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.Holder;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.biome.MobSpawnSettings;
@@ -105,8 +102,6 @@ public class AdditionsConfig extends BaseMekanismConfig {
         public final CachedDoubleValue weightPercentage;
         public final CachedDoubleValue spawnCostPerEntityPercentage;
         public final CachedDoubleValue maxSpawnCostPercentage;
-        public final CachedResourceLocationListValue biomeBlackList;
-        public final CachedResourceLocationListValue structureBlackList;
         public final Holder<EntityType<?>> entityType;
         public final EntityType<?> parentType;
 
@@ -134,10 +129,6 @@ public class AdditionsConfig extends BaseMekanismConfig {
             this.maxSpawnCostPercentage = CachedDoubleValue.wrap(config, translations.maxCost().applyToBuilder(builder)
                   .worldRestart()
                   .defineInRange("maxSpawnCostPercentage", 1D, 0, 100));
-            this.biomeBlackList = CachedResourceLocationListValue.define(config, translations.biomeBlacklist().applyToBuilder(builder)
-                  .worldRestart(), "biomeBlackList", ResourceLocation.withDefaultNamespace("plains"));
-            this.structureBlackList = CachedResourceLocationListValue.define(config, translations.structureBlacklist().applyToBuilder(builder)
-                  .worldRestart(), "structureBlackList", ResourceLocation.withDefaultNamespace("fortress"), BuiltInRegistries.STRUCTURE_TYPE::containsKey);
             builder.pop();
         }
 

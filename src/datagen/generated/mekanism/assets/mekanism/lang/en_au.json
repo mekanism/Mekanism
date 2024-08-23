@@ -32,7 +32,7 @@
   "configuration.mekanism.client.last_window_positions.color": "Colour Window Position",
   "configuration.mekanism.client.last_window_positions.color.button": "Edit Colour Position",
   "configuration.mekanism.client.last_window_positions.color.tooltip": "The last position the Colour window was in when it was closed.",
-  "configuration.mekanism.client.transmitters.opaque.tooltip": "If true, renders sides for Universal Cables, Mechanical Pipes, Pressurised Tubes, Logistical Transporters, and Thermodynamic Conductors instead ofrendering their contents. If transmitters are causing you fps issues, this should hopefully help.",
+  "configuration.mekanism.client.transmitters.opaque.tooltip": "If true, renders sides for Universal Cables, Mechanical Pipes, Pressurised Tubes, Logistical Transporters, and Thermodynamic Conductors instead of rendering their contents. If transmitters are causing you fps issues, this should hopefully help.",
   "configuration.mekanism.gear.free_runners.armored": "Armoured Free Runners",
   "configuration.mekanism.gear.free_runners.armored.armor": "Armour",
   "configuration.mekanism.gear.free_runners.armored.armor.tooltip": "Armour value of the Armoured Free Runners",
