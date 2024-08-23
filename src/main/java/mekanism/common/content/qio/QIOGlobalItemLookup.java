@@ -2,6 +2,8 @@ package mekanism.common.content.qio;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import mekanism.api.SerializationConstants;
@@ -36,6 +38,18 @@ public class QIOGlobalItemLookup {
     // we only don't store them as such for the generic so that we don't have to create extra objects for purposes
     // of getting the uuid for a given item type
     private BiMap<UUID, HashedItem> itemCache = HashBiMap.create();
+    /**
+     * Map of "No longer valid" -> "New Id"
+     */
+    private Map<UUID, UUID> mergedIds = Collections.emptyMap();
+
+    public boolean hasAliases() {
+        return !mergedIds.isEmpty();
+    }
+
+    public UUID getWinningId(UUID uuid) {
+        return mergedIds.getOrDefault(uuid, uuid);
+    }
 
     @Nullable
     public UUID getUUIDForType(HashedItem item) {
@@ -94,7 +108,19 @@ public class QIOGlobalItemLookup {
 
         @Override
         public void load(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
-            //TODO - 1.19: Do we want to clear existing elements
+            boolean hasAliases = nbt.contains(SerializationConstants.ALIASES, Tag.TAG_COMPOUND);
+            if (hasAliases) {
+                loadAliases(nbt.getCompound(SerializationConstants.ALIASES));
+            }
+            if (nbt.contains(SerializationConstants.ITEMS, Tag.TAG_COMPOUND)) {
+                loadItemData(nbt.getCompound(SerializationConstants.ITEMS), provider);
+            } else if (!hasAliases) {
+                //TODO - 1.22: Remove this legacy way of falling back to assuming the entire nbt is the item data
+                loadItemData(nbt, provider);
+            }
+        }
+
+        private void loadItemData(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
             for (String key : nbt.getAllKeys()) {
                 UUID uuid;
                 try {
@@ -112,7 +138,40 @@ public class QIOGlobalItemLookup {
                     //Note: We can't cache the nbt we read from as something might have changed related to caps just from loading it, and we
                     // want to make sure that we save it with the proper corresponding data
                     //TODO: Eventually we may want to keep the NBT so that if the mod gets added back it exists again
-                    QIOGlobalItemLookup.INSTANCE.itemCache.put(uuid, new SerializedHashedItem(stack));
+                    SerializedHashedItem item = new SerializedHashedItem(stack);
+                    try {
+                        QIOGlobalItemLookup.INSTANCE.itemCache.put(uuid, item);
+                    } catch (IllegalArgumentException e) {
+                        UUID winningId = QIOGlobalItemLookup.INSTANCE.itemCache.inverse().get(item);
+                        if (winningId == null) {
+                            Mekanism.logger.error("Failed to resolve conflict for UUID ({}) for item {} with components: {}. Skipping", uuid, stack.getItem(),
+                                  stack.getComponentsPatch());
+                        } else {
+                            Mekanism.logger.warn("Adding alias between UUID ({}) to ({}) for item {} with components: {}", uuid, winningId, stack.getItem(),
+                                  stack.getComponentsPatch());
+                            //Try to add it as an alias
+                            if (QIOGlobalItemLookup.INSTANCE.mergedIds.isEmpty()) {
+                                QIOGlobalItemLookup.INSTANCE.mergedIds = new HashMap<>();
+                            }
+                            QIOGlobalItemLookup.INSTANCE.mergedIds.put(uuid, winningId);
+                        }
+                    }
+                }
+            }
+        }
+
+        private void loadAliases(CompoundTag tag) {
+            if (!tag.isEmpty() && QIOGlobalItemLookup.INSTANCE.mergedIds.isEmpty()) {
+                QIOGlobalItemLookup.INSTANCE.mergedIds = new HashMap<>();
+            }
+            for (String key : tag.getAllKeys()) {
+                try {
+                    //Note: Either of these might throw an IllegalArgumentException
+                    UUID uuid = UUID.fromString(key);
+                    UUID winningId = tag.getUUID(key);
+                    QIOGlobalItemLookup.INSTANCE.mergedIds.put(uuid, winningId);
+                } catch (IllegalArgumentException e) {
+                    Mekanism.logger.warn("Invalid alias UUID ({}) or winningId UUID stored in {} saved data.", key, DATA_HANDLER_NAME);
                 }
             }
         }
@@ -120,9 +179,20 @@ public class QIOGlobalItemLookup {
         @NotNull
         @Override
         public CompoundTag save(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
-            //TODO - 1.19: See if we can further improve this
-            for (Map.Entry<UUID, HashedItem> entry : QIOGlobalItemLookup.INSTANCE.itemCache.entrySet()) {
-                nbt.put(entry.getKey().toString(), ((SerializedHashedItem) entry.getValue()).getNbtRepresentation(provider));
+            if (!QIOGlobalItemLookup.INSTANCE.mergedIds.isEmpty()) {
+                //Ensure we persist and aliases, as we don't want someone losing data if their chunks weren't loaded
+                CompoundTag aliases = new CompoundTag();
+                for (Map.Entry<UUID, UUID> entry : QIOGlobalItemLookup.INSTANCE.mergedIds.entrySet()) {
+                    aliases.putUUID(entry.getKey().toString(), entry.getValue());
+                }
+                nbt.put(SerializationConstants.ALIASES, aliases);
+            }
+            if (!QIOGlobalItemLookup.INSTANCE.itemCache.isEmpty()) {
+                CompoundTag items = new CompoundTag();
+                for (Map.Entry<UUID, HashedItem> entry : QIOGlobalItemLookup.INSTANCE.itemCache.entrySet()) {
+                    items.put(entry.getKey().toString(), ((SerializedHashedItem) entry.getValue()).getNbtRepresentation(provider));
+                }
+                nbt.put(SerializationConstants.ITEMS, items);
             }
             return nbt;
         }
@@ -131,15 +201,6 @@ public class QIOGlobalItemLookup {
     private static class SerializedHashedItem extends HashedItem {
 
         private Tag nbtRepresentation;
-
-        @Nullable
-        protected static SerializedHashedItem read(HolderLookup.Provider provider, CompoundTag nbtRepresentation) {
-            ItemStack stack = ItemStack.parseOptional(provider, nbtRepresentation);
-            //If the stack is empty something went wrong so return null, otherwise just create a new serializable hashed item
-            // We can't cache the nbt we read from as something might have changed related to caps just from loading it, and we
-            // want to make sure that we save it with the proper corresponding data
-            return stack.isEmpty() ? null : new SerializedHashedItem(stack);
-        }
 
         private SerializedHashedItem(ItemStack stack) {
             super(stack);

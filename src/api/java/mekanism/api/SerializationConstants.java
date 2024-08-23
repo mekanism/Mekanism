@@ -123,6 +123,10 @@ public final class SerializationConstants {
     public static final String ADVANCEMENT = "advancement";
     public static final String ALLOW_DEFAULT = "allow_default";
     public static final String AGE = "age";
+    /**
+     * @since 10.7.4
+     */
+    public static final String ALIASES = "aliases";
     public static final String ASSEMBLIES = "assemblies";
     public static final String AUTO = "auto";
     public static final String BABY_TYPE = "baby_type";

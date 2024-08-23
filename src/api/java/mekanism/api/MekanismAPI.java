@@ -25,7 +25,7 @@ public class MekanismAPI {
     /**
      * The version of the api classes - may not always match the mod's version
      */
-    public static final String API_VERSION = "10.7.1";
+    public static final String API_VERSION = "10.7.4";
     /**
      * Mekanism's Mod ID
      */

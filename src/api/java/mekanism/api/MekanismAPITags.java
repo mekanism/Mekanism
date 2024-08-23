@@ -89,7 +89,7 @@ public class MekanismAPITags {
         /**
          * Chemicals in this tag cannot be inserted into framed blocks
          *
-         * @since 10.7.1
+         * @since 10.7.3
          */
         public static final TagKey<Chemical> FRAMEDBLOCKS_BLACKLISTED = tag("framedblocks_blacklisted");
 

@@ -7,6 +7,7 @@ import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongSortedMap;
 import it.unimi.dsi.fastutil.objects.Object2LongSortedMaps;
 import java.util.UUID;
+import java.util.function.LongBinaryOperator;
 import java.util.stream.LongStream;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.content.qio.QIODriveData;
@@ -20,6 +21,7 @@ import net.minecraft.network.codec.StreamCodec;
 public record DriveContents(Object2LongSortedMap<UUID> namedItemMap) {
 
     public static final DriveContents EMPTY = new DriveContents(Object2LongSortedMaps.emptyMap());
+    private static final LongBinaryOperator SUM = Long::sum;
 
     public static final Codec<DriveContents> CODEC = Codec.LONG_STREAM.xmap(
           stream -> readSerializedItemMap(stream.toArray()),
@@ -80,8 +82,20 @@ public record DriveContents(Object2LongSortedMap<UUID> namedItemMap) {
         if (serializedItemMap.length > 0 && serializedItemMap.length % 3 == 0) {
             //Ensure we have valid data and not some value we don't know how to process
             Object2LongSortedMap<UUID> namedItemMap = new Object2LongLinkedOpenHashMap<>();
+            boolean hasAliases = QIOGlobalItemLookup.INSTANCE.hasAliases();
             for (int i = 0; i < serializedItemMap.length; i++) {
-                namedItemMap.put(new UUID(serializedItemMap[i++], serializedItemMap[i++]), serializedItemMap[i]);
+                UUID savedUUID = new UUID(serializedItemMap[i++], serializedItemMap[i++]);
+                long storedCount = serializedItemMap[i];
+                if (!hasAliases) {
+                    //If we have no aliases stored in the lookup, we can just short circuit to directly adding the id
+                    namedItemMap.put(savedUUID, storedCount);
+                } else {
+                    //Note: getWinningId, will return the passed in id if there isn't an id to remap it to
+                    UUID winningId = QIOGlobalItemLookup.INSTANCE.getWinningId(savedUUID);
+                    //We merge regardless of if our item had an alias or not, so that we don't fail on the
+                    // case where we load the alias version first, and then the one that is new might override it
+                    namedItemMap.mergeLong(winningId, storedCount, SUM);
+                }
             }
             return new DriveContents(namedItemMap);
         }
