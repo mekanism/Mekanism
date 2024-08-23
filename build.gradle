@@ -14,7 +14,7 @@ import java.util.function.Consumer
 
 plugins {
     id('org.ajoberstar.grgit.service')//Version declared in buildSrc
-    id('net.darkhax.curseforgegradle') version('1.1.24')
+    id('net.darkhax.curseforgegradle') version('1.1.25')
     id('com.modrinth.minotaur') version('2.8.7')
     id('java')
     id('eclipse')
@@ -606,7 +606,6 @@ if (System.getenv('CURSEFORGE_KEY') != null || project.hasProperty('curseforgeKe
         dependsOn(outputChangelog)
         setGroup('publishing')
         setDescription('Upload Mekanism to CurseForge')
-        notCompatibleWithConfigurationCache('Not yet compatible')//TODO: Remove when possible
 
         def changelog = outputChangelog.flatMap(c -> c.outputFile)
         inputs.file(changelog)
@@ -614,10 +613,8 @@ if (System.getenv('CURSEFORGE_KEY') != null || project.hasProperty('curseforgeKe
         inputs.property('java_version', java_version)
         inputs.property('minecraft_version', minecraft_version)
 
-        //debugMode.set(true)
         disableVersionDetection()
         apiToken = System.getenv('CURSEFORGE_KEY') ?: project.findProperty('curseforgeKey')
-        //apiToken.set(project.providers.environmentVariable('CURSEFORGE_KEY').orElse(project.providers.gradleProperty('curseforgeKey')))
 
         //Main Mekanism Project
         def mainCfUpload = task.upload(268560, jar) { main ->
@@ -664,9 +661,6 @@ void setGenericCurseArtifactData(UploadArtifact artifact, Provider<RegularFile> 
     artifact.changelog = changelog
     artifact.changelogType = 'markdown'
     artifact.releaseType = release_type
-    //artifact.changelog.set(changelog.map(file -> file.asFile.text))
-    //artifact.changelogType.set('markdown')
-    //artifact.releaseType.set(release_type)
     artifact.addModLoader('NeoForge')
     artifact.addJavaVersion("Java ${java_version}")
     artifact.addGameVersion(minecraft_version)
