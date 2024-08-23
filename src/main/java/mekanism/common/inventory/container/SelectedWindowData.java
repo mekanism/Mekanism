@@ -115,7 +115,7 @@ public class SelectedWindowData {
         COLOR("color", false),
         CONFIRMATION("confirmation", false),
         CRAFTING("crafting", true, IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS),
-        MEKA_SUIT_HELMET("meka_suit_helmet", false),
+        MEKA_SUIT_HELMET("mekasuit_helmet", false),
         RENAME("rename", false),
         SKIN_SELECT("skin_select", false),
         SIDE_CONFIG("side_config", true),

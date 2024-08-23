@@ -19,6 +19,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.MekanismConfigTranslations;
 import mekanism.common.config.MekanismConfigTranslations.OreConfigTranslations;
 import mekanism.common.config.MekanismConfigTranslations.OreVeinConfigTranslations;
+import mekanism.common.config.MekanismConfigTranslations.TierTranslations;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.content.gear.mekasuit.ModuleChargeDistributionUnit;
 import mekanism.common.content.gear.mekasuit.ModuleElectrolyticBreathingUnit;
@@ -60,7 +61,18 @@ import mekanism.common.resource.ore.BaseOreConfig;
 import mekanism.common.resource.ore.OreBlockType;
 import mekanism.common.resource.ore.OreType;
 import mekanism.common.tags.MekanismTags;
+import mekanism.common.tier.BinTier;
+import mekanism.common.tier.CableTier;
+import mekanism.common.tier.ChemicalTankTier;
+import mekanism.common.tier.ConductorTier;
+import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tier.FactoryTier;
+import mekanism.common.tier.FluidTankTier;
+import mekanism.common.tier.InductionCellTier;
+import mekanism.common.tier.InductionProviderTier;
+import mekanism.common.tier.PipeTier;
+import mekanism.common.tier.TransporterTier;
+import mekanism.common.tier.TubeTier;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.data.PackOutput;
@@ -102,6 +114,40 @@ public class MekanismLangProvider extends BaseLanguageProvider {
             for (ConfigSaveData saveData : windowType.getSavePaths()) {
                 addConfigs(saveData);
             }
+        }
+        //Tier Configs
+        for (EnergyCubeTier tier : EnumUtils.ENERGY_CUBE_TIERS) {
+            addConfigs(TierTranslations.create(tier).toArray());
+        }
+        for (FluidTankTier tier : EnumUtils.FLUID_TANK_TIERS) {
+            addConfigs(TierTranslations.create(tier).toArray());
+        }
+        for (ChemicalTankTier tier : EnumUtils.CHEMICAL_TANK_TIERS) {
+            addConfigs(TierTranslations.create(tier).toArray());
+        }
+        for (BinTier tier : EnumUtils.BIN_TIERS) {
+            addConfigs(TierTranslations.create(tier).toArray());
+        }
+        for (InductionCellTier tier : EnumUtils.INDUCTION_CELL_TIERS) {
+            addConfigs(TierTranslations.create(tier).toArray());
+        }
+        for (InductionProviderTier tier : EnumUtils.INDUCTION_PROVIDER_TIERS) {
+            addConfigs(TierTranslations.create(tier).toArray());
+        }
+        for (CableTier tier : EnumUtils.CABLE_TIERS) {
+            addConfigs(TierTranslations.create(tier).toArray());
+        }
+        for (PipeTier tier : EnumUtils.PIPE_TIERS) {
+            addConfigs(TierTranslations.create(tier).toArray());
+        }
+        for (TubeTier tier : EnumUtils.TUBE_TIERS) {
+            addConfigs(TierTranslations.create(tier).toArray());
+        }
+        for (TransporterTier tier : EnumUtils.TRANSPORTER_TIERS) {
+            addConfigs(TierTranslations.create(tier).toArray());
+        }
+        for (ConductorTier tier : EnumUtils.CONDUCTOR_TIERS) {
+            addConfigs(TierTranslations.create(tier).toArray());
         }
         //World Gen configs
         for (OreType oreType : EnumUtils.ORE_TYPES) {
