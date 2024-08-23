@@ -14,7 +14,6 @@
   "constants.mekanismtools.mod_name": "Mekanism: Tools",
   "constants.mekanismtools.pack_description": "Mekanism: Toolsで使用されるリソース",
   "fml.menu.mods.info.description.mekanismtools": "Mekanismのツールモジュール",
-  "fml.menu.mods.info.displayname.mekanismtools": "Mekanism: Tools",
   "item.mekanismtools.bronze_axe": "青銅の斧",
   "item.mekanismtools.bronze_boots": "青銅のブーツ",
   "item.mekanismtools.bronze_chestplate": "青銅のチェストプレート",
