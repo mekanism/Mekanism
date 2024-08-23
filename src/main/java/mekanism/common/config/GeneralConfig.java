@@ -121,204 +121,207 @@ public class GeneralConfig extends BaseMekanismConfig {
         if (FMLEnvironment.production) {
             enableAlphaWarning = ConstantPredicates.ALWAYS_TRUE;
         } else {
-            enableAlphaWarning = CachedBooleanValue.wrap(this, builder.comment("Display Mekanism's alpha warning when joining the game if Mekanism is currently in alpha. Dev mode only setting.")
-                  .define("alphaWarning", true));
+            enableAlphaWarning = CachedBooleanValue.wrap(this, MekanismConfigTranslations.GENERAL_ALPHA_WARNING.applyToBuilder(builder).define("alphaWarning", true));
         }
 
-        logPackets = CachedBooleanValue.wrap(this, builder.comment("Log Mekanism packet names. Debug setting.")
+        logPackets = CachedBooleanValue.wrap(this, MekanismConfigTranslations.GENERAL_PACKET_LOGGING.applyToBuilder(builder)
               .define("logPackets", false));
-        allowChunkloading = CachedBooleanValue.wrap(this, builder.comment("Disable to make the anchor upgrade not do anything.")
+        allowChunkloading = CachedBooleanValue.wrap(this, MekanismConfigTranslations.GENERAL_CHUNKLOADING.applyToBuilder(builder)
               .define("allowChunkloading", true));
-        easyMinerFilters = CachedBooleanValue.wrap(this, builder.comment("Enable this to allow dragging items from JEI into the target slot of Digital Miner filters.")
+        easyMinerFilters = CachedBooleanValue.wrap(this, MekanismConfigTranslations.GENERAL_EASY_FILTERS_MINER.applyToBuilder(builder)
               .define("easyMinerFilters", false));
-        blockDeactivationDelay = CachedIntValue.wrap(this, builder.comment("How many ticks must pass until a block's active state is synced with the client, if it has been rapidly changing.")
+        blockDeactivationDelay = CachedIntValue.wrap(this, MekanismConfigTranslations.GENERAL_DEACTIVATION_DELAY.applyToBuilder(builder)
               .defineInRange("blockDeactivationDelay", 3 * SharedConstants.TICKS_PER_SECOND, 0, SharedConstants.TICKS_PER_MINUTE));
-        strictUnboxing = CachedBooleanValue.wrap(this, builder.comment("Enable this to disable unboxing any block that has a fluid that would be vaporized on placement, instead of trying to vaporize it and leave the remainder of the block.")
-              .define("strictUnboxing", false));
-        cardboardModBlacklist = CachedConfigValue.wrap(this, builder.comment("Any mod ids added to this list will not be able to have any of their blocks, picked up by the cardboard box. For example: [\"mekanism\"]")
-              .defineListAllowEmpty("cardboardModBlacklist", ArrayList::new, () -> "mekanism",
-                    e -> e instanceof String modid && ResourceLocation.isValidNamespace(modid))
-        );
-        transmitterAlloyUpgrade = CachedBooleanValue.wrap(this, builder.comment("Allow right clicking on Cables/Pipes/Tubes with alloys to upgrade the tier.")
+        aestheticWorldDamage = CachedBooleanValue.wrap(this, MekanismConfigTranslations.GENERAL_AESTHETIC_DAMAGE.applyToBuilder(builder)
+              .define("aestheticWorldDamage", true));
+        transmitterAlloyUpgrade = CachedBooleanValue.wrap(this, MekanismConfigTranslations.GENERAL_ALLOY_UPGRADING.applyToBuilder(builder)
               .define("transmitterAlloyUpgrade", true));
         //If this is less than 1, upgrades make machines worse. If less than 0, I don't even know.
-        maxUpgradeMultiplier = CachedIntValue.wrap(this, builder.comment("Base factor for working out machine performance with upgrades - UpgradeModifier * (UpgradesInstalled/UpgradesPossible).")
+        maxUpgradeMultiplier = CachedIntValue.wrap(this, MekanismConfigTranslations.GENERAL_UPGRADE_MULTIPLIER.applyToBuilder(builder)
               .defineInRange("maxUpgradeMultiplier", 10, 1, Integer.MAX_VALUE));
-        boilerWaterConductivity = CachedDoubleValue.wrap(this, builder.comment("How much Boiler heat is immediately usable to convert water to steam.")
-              .defineInRange("boilerWaterConductivity", 0.7, 0.01, 1));
-        heatPerFuelTick = CachedDoubleValue.wrap(this, builder.comment("Amount of heat produced per fuel tick of a fuel's burn time in the Fuelwood Heater.")
-              .defineInRange("heatPerFuelTick", 400, 0.1, 4_000_000));
-        fuelwoodTickMultiplier = CachedIntValue.wrap(this, builder.comment("Number of ticks to burn an item at in a Fuelwood Heater. Use this config option to effectively make Fuelwood Heater's burn faster but produce the same amount of heat per item.")
-              .defineInRange("fuelwoodTickMultiplier", 1, 1, 1_000));
-        resistiveHeaterEfficiency = CachedDoubleValue.wrap(this, builder.comment("How much heat energy is created from one Joule of regular energy in the Resistive Heater.")
-              .defineInRange("resistiveHeaterEfficiency", 0.6, 0, 1));
-        superheatingHeatTransfer = CachedDoubleValue.wrap(this, builder.comment("Amount of heat each Boiler heating element produces.")
-              .defineInRange("superheatingHeatTransfer", 16_000_000, 0.1, 1_024_000_000));
-        maxSolarNeutronActivatorRate = CachedIntValue.wrap(this, builder.comment("Peak processing rate for the Solar Neutron Activator. Note: It can go higher than this value in some extreme environments.")
+        maxSolarNeutronActivatorRate = CachedIntValue.wrap(this, MekanismConfigTranslations.GENERAL_RATE_SNA.applyToBuilder(builder)
               .defineInRange("maxSolarNeutronActivatorRate", 64, 1, 1_024));
 
-        fluidItemFillRate = CachedIntValue.wrap(this, builder.comment("Rate at which generic fluid storage items can be filled or emptied.")
-              .defineInRange("fluidItemFillRate", 1_024, 1, Integer.MAX_VALUE));
-        chemicalItemFillRate = CachedLongValue.wrap(this, builder.comment("Rate at which generic chemical storage items can be filled or emptied.")
-              .defineInRange("chemicalItemFillRate", 1_024, 1, Long.MAX_VALUE));
+        MekanismConfigTranslations.GENERAL_HEATER.applyToBuilder(builder).push("heater");
+        heatPerFuelTick = CachedDoubleValue.wrap(this, MekanismConfigTranslations.GENERAL_FUELWOOD_HEAT.applyToBuilder(builder)
+              .defineInRange("heatPerFuelTick", 400, 0.1, 4_000_000));
+        fuelwoodTickMultiplier = CachedIntValue.wrap(this, MekanismConfigTranslations.GENERAL_FUELWOOD_DURATION.applyToBuilder(builder)
+              .defineInRange("fuelwoodTickMultiplier", 1, 1, 1_000));
+        resistiveHeaterEfficiency = CachedDoubleValue.wrap(this, MekanismConfigTranslations.GENERAL_RESISTIVE_EFFICIENCY.applyToBuilder(builder)
+              .defineInRange("resistiveEfficiency", 0.6, 0, 1));
+        builder.pop();
 
-        builder.comment("Dynamic Tank Settings").push("dynamic_tank");
+        MekanismConfigTranslations.GENERAL_CARDBOARD.applyToBuilder(builder).push("cardboard_box");
+        strictUnboxing = CachedBooleanValue.wrap(this, MekanismConfigTranslations.GENERAL_CARDBOARD_STRICT_UNBOXING.applyToBuilder(builder)
+              .define("strictUnboxing", false));
+        cardboardModBlacklist = CachedConfigValue.wrap(this, MekanismConfigTranslations.GENERAL_CARDBOARD_MOD_BLACKLIST.applyToBuilder(builder)
+              .defineListAllowEmpty("modBlacklist", ArrayList::new, () -> "mekanism",
+                    e -> e instanceof String modid && ResourceLocation.isValidNamespace(modid))
+        );
+        builder.pop();
+
+        MekanismConfigTranslations.GENERAL_FILL_RATE.applyToBuilder(builder).push("item_fill_rate");
+        fluidItemFillRate = CachedIntValue.wrap(this, MekanismConfigTranslations.GENERAL_FILL_RATE_FLUID.applyToBuilder(builder)
+              .defineInRange("fluid", 1_024, 1, Integer.MAX_VALUE));
+        chemicalItemFillRate = CachedLongValue.wrap(this, MekanismConfigTranslations.GENERAL_FILL_RATE_CHEMICAL.applyToBuilder(builder)
+              .defineInRange("chemical", 1_024, 1, Long.MAX_VALUE));
+        builder.pop();
+
+        MekanismConfigTranslations.GENERAL_DYNAMIC_TANK.applyToBuilder(builder).push("dynamic_tank");
         int maxVolume = 18 * 18 * 18;
-        dynamicTankFluidPerTank = CachedIntValue.wrap(this, builder.comment("Amount of fluid (mB) that each block of the dynamic tank contributes to the volume. Max = volume * fluidPerTank")
+        dynamicTankFluidPerTank = CachedIntValue.wrap(this, MekanismConfigTranslations.GENERAL_DYNAMIC_TANK_FLUID_CAPACITY.applyToBuilder(builder)
               .defineInRange("fluidPerTank", 350 * FluidType.BUCKET_VOLUME, 1, Integer.MAX_VALUE / maxVolume));
-        dynamicTankChemicalPerTank = CachedLongValue.wrap(this, builder.comment("Amount of chemical (mB) that each block of the dynamic tank contributes to the volume. Max = volume * chemicalPerTank")
+        dynamicTankChemicalPerTank = CachedLongValue.wrap(this, MekanismConfigTranslations.GENERAL_DYNAMIC_TANK_CHEMICAL_CAPACITY.applyToBuilder(builder)
               .defineInRange("chemicalPerTank", 16_000 * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE / maxVolume));
         builder.pop();
 
-        builder.comment("Auto Eject Settings").push("auto_eject");
-        fluidAutoEjectRate = CachedIntValue.wrap(this, builder.comment("Rate at which fluid gets auto ejected from tiles.")
+        MekanismConfigTranslations.GENERAL_AUTO_EJECT.applyToBuilder(builder).push("auto_eject");
+        fluidAutoEjectRate = CachedIntValue.wrap(this, MekanismConfigTranslations.GENERAL_AUTO_EJECT_RATE_FLUID.applyToBuilder(builder)
               .defineInRange("fluid", 1_024, 1, Integer.MAX_VALUE));
-        chemicalAutoEjectRate = CachedLongValue.wrap(this, builder.comment("Rate at which chemicals gets auto ejected from tiles.")
+        chemicalAutoEjectRate = CachedLongValue.wrap(this, MekanismConfigTranslations.GENERAL_AUTO_EJECT_RATE_CHEMICAL.applyToBuilder(builder)
               .defineInRange("chemical", 1_024L, 1, Long.MAX_VALUE));
-        dumpExcessKeepRatio = CachedDoubleValue.wrap(this, builder.comment("The percentage of a tank's capacity to leave contents in when set to dumping excess.")
+        dumpExcessKeepRatio = CachedDoubleValue.wrap(this, MekanismConfigTranslations.GENERAL_AUTO_EJECT_EXCESS.applyToBuilder(builder)
               .defineInRange("dumpExcessKeepRatio", 0.9D, 0.001D, 1D));
         builder.pop();
 
-        builder.comment("Prefilled Tanks").push("prefilled");
-        prefilledFluidTanks = CachedBooleanValue.wrap(this, builder.comment("Add filled creative fluid tanks to creative/JEI.")
+        MekanismConfigTranslations.GENERAL_PREFILLED_TANKS.applyToBuilder(builder).push("prefilled");
+        prefilledFluidTanks = CachedBooleanValue.wrap(this, MekanismConfigTranslations.GENERAL_PREFILLED_TANKS_FLUID.applyToBuilder(builder)
               .define("fluidTanks", true));
-        prefilledChemicalTanks = CachedBooleanValue.wrap(this, builder.comment("Add filled creative chemical tanks to creative/JEI.")
+        prefilledChemicalTanks = CachedBooleanValue.wrap(this, MekanismConfigTranslations.GENERAL_PREFILLED_TANKS_CHEMICAL.applyToBuilder(builder)
               .define("chemicalTanks", true));
         builder.pop();
 
-        builder.comment("Energy Conversion Rate Settings").push("energy_conversion");
-        blacklistForge = CachedBooleanValue.wrap(this, builder.comment("Disables Forge Energy (FE,RF,IF,uF,CF) power integration. Requires world restart (server-side option in SMP).")
+        MekanismConfigTranslations.GENERAL_ENERGY_CONVERSION.applyToBuilder(builder).push("energy_conversion");
+        blacklistForge = CachedBooleanValue.wrap(this, MekanismConfigTranslations.GENERAL_ENERGY_CONVERSION_BLACKLIST_FE.applyToBuilder(builder)
               .worldRestart()
               .define("blacklistForge", false));
-        forgeConversionRate = CachedDoubleValue.wrap(this, builder.comment("Conversion multiplier from Forge Energy to Joules (FE * feConversionRate = Joules)")
+        forgeConversionRate = CachedDoubleValue.wrap(this, MekanismConfigTranslations.GENERAL_ENERGY_CONVERSION_FE.applyToBuilder(builder)
               .defineInRange("feConversionRate", 2.5, 0.0001, 10_000 /* Inverse of min positive value */));
-        blacklistFluxNetworks = CachedBooleanValue.wrap(this, builder.comment("Disables Flux Networks higher throughput Forge Energy (FE,RF,IF,uF,CF) power integration. Requires world restart (server-side option in SMP). Note: Disabling Forge Energy integration also disables this.")
+        blacklistFluxNetworks = CachedBooleanValue.wrap(this, MekanismConfigTranslations.GENERAL_ENERGY_CONVERSION_BLACKLIST_FN.applyToBuilder(builder)
               .worldRestart()
               .define("blacklistFluxNetworks", false));
-        blacklistGrandPower = CachedBooleanValue.wrap(this, builder.comment("Disables Grand Power higher throughput Forge Energy (FE,RF,IF,uF,CF) power integration. Requires world restart (server-side option in SMP). Note: Disabling Forge Energy integration also disables this.")
+        blacklistGrandPower = CachedBooleanValue.wrap(this, MekanismConfigTranslations.GENERAL_ENERGY_CONVERSION_BLACKLIST_GP.applyToBuilder(builder)
               .worldRestart()
               .define("blacklistGrandPower", false));
-        FROM_H2 = CachedLongValue.define(this, builder, "How much energy is produced per mB of Hydrogen, also affects Electrolytic Separator usage, Ethene burn rate and Gas generator energy capacity.",
+        FROM_H2 = CachedLongValue.define(this, builder, MekanismConfigTranslations.GENERAL_ENERGY_CONVERSION_HYDROGEN,
               "HydrogenEnergyDensity", 200, 1, Long.MAX_VALUE / 100_000);
-        maxEnergyPerSteam = CachedLongValue.definePositive(this, builder, "Maximum Joules per mB of Steam. Also affects Thermoelectric Boiler.",
-              "maxEnergyPerSteam", 10);
+        maxEnergyPerSteam = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.GENERAL_ENERGY_CONVERSION_STEAM, "maxEnergyPerSteam", 10);
         builder.pop();
 
-        builder.comment("Radiation Settings").push("radiation");
-        radiationEnabled = CachedBooleanValue.wrap(this, builder.comment("Enable worldwide radiation effects. Don't be a downer and disable this.")
-              .define("radiationEnabled", true));
-        radiationChunkCheckRadius = CachedIntValue.wrap(this, builder.comment("The radius of chunks checked when running radiation calculations. The algorithm is efficient, but don't abuse it by making this crazy high.")
+        MekanismConfigTranslations.GENERAL_RADIATION.applyToBuilder(builder).push("radiation");
+        radiationEnabled = CachedBooleanValue.wrap(this, MekanismConfigTranslations.GENERAL_RADIATION_ENABLED.applyToBuilder(builder)
+              .define("enabled", true));
+        radiationChunkCheckRadius = CachedIntValue.wrap(this, MekanismConfigTranslations.GENERAL_RADIATION_CHUNK_RADIUS.applyToBuilder(builder)
               .defineInRange("chunkCheckRadius", 5, 1, 100));
-        radiationSourceDecayRate = CachedDoubleValue.wrap(this, builder.comment("Radiation sources are multiplied by this constant roughly once per second to represent their emission decay. At the default rate, it takes roughly 10 hours to remove a 1,000 Sv/h (crazy high) source.")
+        radiationSourceDecayRate = CachedDoubleValue.wrap(this, MekanismConfigTranslations.GENERAL_RADIATION_DECAY_RATE_SOURCE.applyToBuilder(builder)
               .defineInRange("sourceDecayRate", 0.9995D, 0, 1));
-        radiationTargetDecayRate = CachedDoubleValue.wrap(this, builder.comment("Radiated objects and entities are multiplied by this constant roughly once per second to represent their dosage decay.")
+        radiationTargetDecayRate = CachedDoubleValue.wrap(this, MekanismConfigTranslations.GENERAL_RADIATION_DECAY_RATE_TARGET.applyToBuilder(builder)
               .defineInRange("targetDecayRate", 0.9995D, 0, 1));
-        radiationNegativeEffectsMinSeverity = CachedDoubleValue.wrap(this, builder.comment("Defines the minimum severity radiation dosage severity (scale of 0 to 1) for which negative effects can take place. Set to 1 to disable negative effects completely.")
+        radiationNegativeEffectsMinSeverity = CachedDoubleValue.wrap(this, MekanismConfigTranslations.GENERAL_RADIATION_MIN_SEVERITY.applyToBuilder(builder)
               .defineInRange("negativeEffectsMinSeverity", 0.1D, 0, 1));
-        radioactiveWasteBarrelMaxGas = CachedLongValue.wrap(this, builder.comment("Amount of gas (mB) that can be stored in a Radioactive Waste Barrel.")
-              .defineInRange("radioactiveWasteBarrelMaxGas", 512 * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE));
-        radioactiveWasteBarrelProcessTicks = CachedIntValue.wrap(this, builder.comment("Number of ticks required for radioactive gas stored in a Radioactive Waste Barrel to decay radioactiveWasteBarrelDecayAmount mB.")
-              .defineInRange("radioactiveWasteBarrelProcessTicks", SharedConstants.TICKS_PER_SECOND, 1, Integer.MAX_VALUE));
-        radioactiveWasteBarrelDecayAmount = CachedLongValue.wrap(this, builder.comment("Number of mB of gas that decay every radioactiveWasteBarrelProcessTicks ticks when stored in a Radioactive Waste Barrel. Set to zero to disable decay all together. (Gases in the mekanism:waste_barrel_decay_blacklist tag will not decay).")
-              .defineInRange("radioactiveWasteBarrelDecayAmount", 1, 0, Long.MAX_VALUE));
+        radioactiveWasteBarrelMaxGas = CachedLongValue.wrap(this, MekanismConfigTranslations.GENERAL_RADIATION_BARREL_CAPACITY.applyToBuilder(builder)
+              .defineInRange("wasteBarrelCapacity", 512 * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE));
+        radioactiveWasteBarrelProcessTicks = CachedIntValue.wrap(this, MekanismConfigTranslations.GENERAL_RADIATION_BARREL_DECAY_FREQUENCY.applyToBuilder(builder)
+              .defineInRange("wasteBarrelProcessTicks", SharedConstants.TICKS_PER_SECOND, 1, Integer.MAX_VALUE));
+        radioactiveWasteBarrelDecayAmount = CachedLongValue.wrap(this, MekanismConfigTranslations.GENERAL_RADIATION_BARREL_DECAY_AMOUNT.applyToBuilder(builder)
+              .defineInRange("wasteBarrelDecayAmount", 1, 0, Long.MAX_VALUE));
         builder.pop();
 
-        builder.comment("Digital Miner Settings").push("digital_miner");
-        minerSilkMultiplier = CachedIntValue.wrap(this, builder.comment("Energy multiplier for using silk touch mode with the Digital Miner.")
+        MekanismConfigTranslations.GENERAL_MINER.applyToBuilder(builder).push("digital_miner");
+        minerSilkMultiplier = CachedIntValue.wrap(this, MekanismConfigTranslations.GENERAL_MINER_SILK_MULTIPLIER.applyToBuilder(builder)
               .defineInRange("silkMultiplier", 12, 1, Integer.MAX_VALUE));
-        minerMaxRadius = CachedIntValue.wrap(this, builder.comment("Maximum radius in blocks that the Digital Miner can reach. (Increasing this may have negative effects on stability and/or performance. We strongly recommend you leave it at the default value).")
+        minerMaxRadius = CachedIntValue.wrap(this, MekanismConfigTranslations.GENERAL_MINER_MAX_RADIUS.applyToBuilder(builder)
               .defineInRange("maxRadius", 32, 1, Integer.MAX_VALUE));
-        minerTicksPerMine = CachedIntValue.wrap(this, builder.comment("Number of ticks required to mine a single block with a Digital Miner (without any upgrades).")
+        minerTicksPerMine = CachedIntValue.wrap(this, MekanismConfigTranslations.GENERAL_MINER_TICK_RATE.applyToBuilder(builder)
               .defineInRange("ticksPerMine", 80, 1, Integer.MAX_VALUE));
         builder.pop();
 
-        builder.comment("Laser Settings").push("laser");
-        aestheticWorldDamage = CachedBooleanValue.wrap(this, builder.comment("If enabled, lasers can break blocks and the flamethrower starts fires.")
-              .define("aestheticWorldDamage", true));
-        laserRange = CachedIntValue.wrap(this, builder.comment("How far (in blocks) a laser can travel.")
+        MekanismConfigTranslations.GENERAL_LASER.applyToBuilder(builder).push("laser");
+        laserRange = CachedIntValue.wrap(this, MekanismConfigTranslations.GENERAL_LASER_RANGE.applyToBuilder(builder)
               .defineInRange("range", 64, 1, 1_024));
-        laserEnergyNeededPerHardness = CachedLongValue.definePositive(this, builder, "Energy needed to destroy or attract blocks with a Laser (per block hardness level).",
-              "energyNeededPerHardness", 100_000);
-        laserEnergyPerDamage = CachedLongValue.definedMin(this, builder, "Energy used per half heart of damage being transferred to entities.",
-              "energyPerDamage", 2_500, 1);
+        laserEnergyNeededPerHardness = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.GENERAL_LASER_ENERGY_HARDNESS, "energyNeededPerHardness", 100_000);
+        laserEnergyPerDamage = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.GENERAL_LASER_ENERGY_DAMAGE, "energyPerDamage", 2_500, 1);
         builder.pop();
 
-        builder.comment("Oredictionificator Settings").push("oredictionificator");
-        validOredictionificatorFilters = CachedOredictionificatorConfigValue.define(this, builder.comment("The list of valid tag prefixes for the Oredictionificator. Note: It is highly recommended to only include well known/defined tag prefixes otherwise it is very easy to potentially add in accidental conversions of things that are not actually equivalent."),
+        MekanismConfigTranslations.GENERAL_OREDICTIONIFICATOR.applyToBuilder(builder).push("oredictionificator");
+        validOredictionificatorFilters = CachedOredictionificatorConfigValue.define(this, MekanismConfigTranslations.GENERAL_OREDICTIONIFICATOR_VALID_ITEMS.applyToBuilder(builder),
               "validItemFilters", () -> Collections.singletonMap("c", List.of("ingots/", "ores/", "dusts/", "nuggets/", "storage_blocks/", "raw_materials/")));
         builder.pop();
 
-        builder.comment("Pump Settings").push("pump");
-        maxPumpRange = CachedIntValue.wrap(this, builder.comment("Maximum block distance to pull fluid from for the Electric Pump.")
-              .defineInRange("maxPumpRange", 80, 1, 512));
-        pumpInfiniteFluidSources = CachedBooleanValue.wrap(this, builder.comment("If enabled and waterSourceConversion is enabled makes Water and Heavy Water blocks be removed from the world on pump. Similarly behavior for lavaSourceConversion and Lava")
+        MekanismConfigTranslations.GENERAL_PUMP.applyToBuilder(builder).push("pump");
+        maxPumpRange = CachedIntValue.wrap(this, MekanismConfigTranslations.GENERAL_PUMP_RANGE.applyToBuilder(builder)
+              .defineInRange("range", 80, 1, 512));
+        pumpInfiniteFluidSources = CachedBooleanValue.wrap(this, MekanismConfigTranslations.GENERAL_PUMP_INFINITE_FLUIDS.applyToBuilder(builder)
               .define("pumpInfiniteFluidSources", false));
-        pumpHeavyWaterAmount = CachedIntValue.wrap(this, builder.comment("mB of Heavy Water that is extracted per block of Water by the Electric Pump with a Filter Upgrade.")
-              .defineInRange("pumpHeavyWaterAmount", FluidType.BUCKET_VOLUME / 100, 1, FluidType.BUCKET_VOLUME));
-        maxPlenisherNodes = CachedIntValue.wrap(this, builder.comment("Fluidic Plenisher stops after this many blocks.")
+        pumpHeavyWaterAmount = CachedIntValue.wrap(this, MekanismConfigTranslations.GENERAL_PUMP_HEAVY_WATER.applyToBuilder(builder)
+              .defineInRange("heavyWaterAmount", FluidType.BUCKET_VOLUME / 100, 1, FluidType.BUCKET_VOLUME));
+        maxPlenisherNodes = CachedIntValue.wrap(this, MekanismConfigTranslations.GENERAL_PUMP_PLENISHER_MAX_NODES.applyToBuilder(builder)
               .defineInRange("maxPlenisherNodes", 4_000, 1, 1_000_000));
         builder.pop();
 
-        builder.comment("Quantum Entangloporter Settings").push("quantum_entangloporter");
-        entangloporterEnergyBuffer = CachedLongValue.wrap(this, builder.comment("Maximum energy buffer (Mekanism Joules) of an Entangoloporter frequency - i.e. the maximum transfer per tick per frequency. Default is ultimate tier energy cube capacity.")
+        MekanismConfigTranslations.GENERAL_QE.applyToBuilder(builder).push("quantum_entangloporter");
+        entangloporterEnergyBuffer = CachedLongValue.wrap(this, MekanismConfigTranslations.GENERAL_QE_BUFFER_ENERGY.applyToBuilder(builder)
               .worldRestart()
               .defineInRange("energyBuffer", EnergyCubeTier.ULTIMATE.getBaseMaxEnergy(), 1, Long.MAX_VALUE));
-        entangloporterFluidBuffer = CachedIntValue.wrap(this, builder.comment("Maximum fluid buffer (mb) of an Entangoloporter frequency - i.e. the maximum transfer per tick per frequency. Default is ultimate tier tank capacity.")
+        entangloporterFluidBuffer = CachedIntValue.wrap(this, MekanismConfigTranslations.GENERAL_QE_BUFFER_FLUID.applyToBuilder(builder)
               .worldRestart()
               .defineInRange("fluidBuffer", FluidTankTier.ULTIMATE.getBaseStorage(), 1, Integer.MAX_VALUE));
-        entangloporterChemicalBuffer = CachedLongValue.wrap(this, builder.comment("Maximum chemical buffer (mb) of an Entangoloporter frequency - i.e. the maximum transfer per tick per frequency. Default is ultimate tier tank capacity.")
+        entangloporterChemicalBuffer = CachedLongValue.wrap(this, MekanismConfigTranslations.GENERAL_QE_BUFFER_CHEMICAL.applyToBuilder(builder)
               .worldRestart()
               .defineInRange("chemicalBuffer", ChemicalTankTier.ULTIMATE.getBaseStorage(), 1, Long.MAX_VALUE));
         builder.pop();
 
-        builder.comment("Block security/protection Settings").push("security");
-        allowProtection = CachedBooleanValue.wrap(this, builder.comment("Enable the security system for players to prevent others from accessing their machines. Does NOT affect Frequencies.")
+        MekanismConfigTranslations.GENERAL_SECURITY.applyToBuilder(builder).push("security");
+        allowProtection = CachedBooleanValue.wrap(this, MekanismConfigTranslations.GENERAL_SECURITY_ENABLED.applyToBuilder(builder)
               .define("allowProtection", true));
-        opsBypassRestrictions = CachedBooleanValue.wrap(this, builder.comment("If this is enabled then players with the 'mekanism.bypass_security' permission (default ops) can bypass the block and item security restrictions.")
+        opsBypassRestrictions = CachedBooleanValue.wrap(this, MekanismConfigTranslations.GENERAL_SECURITY_OPS_BYPASS.applyToBuilder(builder)
               .define("opsBypassRestrictions", false));
         builder.pop();
 
-        builder.comment("Nutritional Paste Settings").push("nutritional_paste");
-        nutritionalPasteSaturation = CachedFloatValue.wrap(this, builder.comment("Saturation level of Nutritional Paste when eaten.")
+        MekanismConfigTranslations.GENERAL_PASTE.applyToBuilder(builder).push("nutritional_paste");
+        nutritionalPasteSaturation = CachedFloatValue.wrap(this, MekanismConfigTranslations.GENERAL_PASTE_SATURATION.applyToBuilder(builder)
               .defineInRange("saturation", 0.8, 0, 100));
-        nutritionalPasteMBPerFood = CachedIntValue.wrap(this, builder.comment("How much mB of Nutritional Paste equates to one 'half-food.'")
+        nutritionalPasteMBPerFood = CachedIntValue.wrap(this, MekanismConfigTranslations.GENERAL_PASTE_PER_FOOD.applyToBuilder(builder)
               .defineInRange("mbPerFood", 50, 1, Integer.MAX_VALUE));
         builder.pop();
 
-        builder.comment("Boiler Settings").push("boiler");
+        MekanismConfigTranslations.GENERAL_BOILER.applyToBuilder(builder).push("boiler");
         //Note: We use maxVolume as it still is a large number, and we have no reason to go higher even if some things we technically could
-        boilerWaterPerTank = CachedIntValue.wrap(this, builder.comment("Amount of fluid (mB) that each block of the boiler's water portion contributes to the volume. Max = volume * waterPerTank")
+        boilerWaterPerTank = CachedIntValue.wrap(this, MekanismConfigTranslations.GENERAL_BOILER_CAPACITY_WATER.applyToBuilder(builder)
               .defineInRange("waterPerTank", 16 * FluidType.BUCKET_VOLUME, 1, Integer.MAX_VALUE / maxVolume));
-        boilerSteamPerTank = CachedLongValue.wrap(this, builder.comment("Amount of steam (mB) that each block of the boiler's steam portion contributes to the volume. Max = volume * steamPerTank")
+        boilerSteamPerTank = CachedLongValue.wrap(this, MekanismConfigTranslations.GENERAL_BOILER_CAPACITY_STEAM.applyToBuilder(builder)
               .defineInRange("steamPerTank", 160L * FluidType.BUCKET_VOLUME, 10, Long.MAX_VALUE / maxVolume));
-        boilerHeatedCoolantPerTank = CachedLongValue.wrap(this, builder.comment("Amount of steam (mB) that each block of the boiler's heated coolant portion contributes to the volume. Max = volume * heatedCoolantPerTank")
+        boilerHeatedCoolantPerTank = CachedLongValue.wrap(this, MekanismConfigTranslations.GENERAL_BOILER_CAPACITY_HEATED_COOLANT.applyToBuilder(builder)
               .defineInRange("heatedCoolantPerTank", 256L * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE / maxVolume));
-        boilerCooledCoolantPerTank = CachedLongValue.wrap(this, builder.comment("Amount of steam (mB) that each block of the boiler's cooled coolant portion contributes to the volume. Max = volume * cooledCoolantPerTank")
+        boilerCooledCoolantPerTank = CachedLongValue.wrap(this, MekanismConfigTranslations.GENERAL_BOILER_CAPACITY_COOLED_COOLANT.applyToBuilder(builder)
               .defineInRange("cooledCoolantPerTank", 256L * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE / maxVolume));
+        boilerWaterConductivity = CachedDoubleValue.wrap(this, MekanismConfigTranslations.GENERAL_BOILER_WATER_CONDUCTIVITY.applyToBuilder(builder)
+              .defineInRange("waterConductivity", 0.7, 0.01, 1));
+        superheatingHeatTransfer = CachedDoubleValue.wrap(this, MekanismConfigTranslations.GENERAL_BOILER_HEAT_TRANSFER.applyToBuilder(builder)
+              .defineInRange("superheatingHeatTransfer", 16_000_000, 0.1, 1_024_000_000));
         builder.pop();
 
-        builder.comment("Thermal Evaporation Plant Settings").push("thermal_evaporation");
-        evaporationHeatDissipation = CachedDoubleValue.wrap(this, builder.comment("Thermal Evaporation Tower heat loss per tick.")
+        MekanismConfigTranslations.GENERAL_TEP.applyToBuilder(builder).push("thermal_evaporation");
+        evaporationHeatDissipation = CachedDoubleValue.wrap(this, MekanismConfigTranslations.GENERAL_TEP_HEAT_LOSS.applyToBuilder(builder)
               .defineInRange("heatDissipation", 0.02, 0.001, 1_000));
-        evaporationTempMultiplier = CachedDoubleValue.wrap(this, builder.comment("Temperature to amount produced ratio for Thermal Evaporation Tower.")
-              .defineInRange("tempMultiplier", 0.4, 0.001, 1_000_000));
-        evaporationSolarMultiplier = CachedDoubleValue.wrap(this, builder.comment("Heat to absorb per Solar Panel array of Thermal Evaporation Tower.")
+        evaporationSolarMultiplier = CachedDoubleValue.wrap(this, MekanismConfigTranslations.GENERAL_TEP_HEAT_SOLAR.applyToBuilder(builder)
               .defineInRange("solarMultiplier", 0.2, 0.001, 1_000_000));
-        evaporationHeatCapacity = CachedDoubleValue.wrap(this, builder.comment("Heat capacity of Thermal Evaporation Tower layers (increases amount of energy needed to increase temperature).")
+        evaporationTempMultiplier = CachedDoubleValue.wrap(this, MekanismConfigTranslations.GENERAL_TEP_TEMP_MULT.applyToBuilder(builder)
+              .defineInRange("tempMultiplier", 0.4, 0.001, 1_000_000));
+        evaporationHeatCapacity = CachedDoubleValue.wrap(this, MekanismConfigTranslations.GENERAL_TEP_CAPACITY_HEAT.applyToBuilder(builder)
               .defineInRange("heatCapacity", 100D, 1, 1_000_000));
-        evaporationFluidPerTank = CachedIntValue.wrap(this, builder.comment("Amount of fluid (mB) that each block of the evaporation plant contributes to the input tank capacity. Max = volume * fluidPerTank")
+        evaporationFluidPerTank = CachedIntValue.wrap(this, MekanismConfigTranslations.GENERAL_TEP_CAPACITY_INPUT.applyToBuilder(builder)
               .defineInRange("fluidPerTank", 64 * FluidType.BUCKET_VOLUME, 1, Integer.MAX_VALUE / (EvaporationMultiblockData.MAX_HEIGHT * 4)));
-        evaporationOutputTankCapacity = CachedIntValue.wrap(this, builder.comment("Amount of output fluid (mB) that the evaporation plant can store.")
+        evaporationOutputTankCapacity = CachedIntValue.wrap(this, MekanismConfigTranslations.GENERAL_TEP_CAPACITY_OUTPUT.applyToBuilder(builder)
               .defineInRange("outputTankCapacity", 10 * FluidType.BUCKET_VOLUME, 1, Integer.MAX_VALUE));
         builder.pop();
 
-        builder.comment("SPS Settings").push("sps");
-        spsInputPerAntimatter = CachedIntValue.wrap(this, builder.comment("How much input gas (polonium) in mB must be processed to make 1 mB of antimatter. Input tank capacity is 2x this value.")
+        MekanismConfigTranslations.GENERAL_SPS.applyToBuilder(builder).push("sps");
+        spsInputPerAntimatter = CachedIntValue.wrap(this, MekanismConfigTranslations.GENERAL_SPS_ANTIMATTER_COST.applyToBuilder(builder)
               .defineInRange("inputPerAntimatter", FluidType.BUCKET_VOLUME, 1, Integer.MAX_VALUE));
-        spsOutputTankCapacity = CachedLongValue.wrap(this, builder.comment("Amount of output gas (mB, antimatter) that the SPS can store.")
+        spsOutputTankCapacity = CachedLongValue.wrap(this, MekanismConfigTranslations.GENERAL_SPS_CAPACITY_OUTPUT.applyToBuilder(builder)
               .defineInRange("outputTankCapacity", FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE));
-        spsEnergyPerInput = CachedLongValue.definePositive(this, builder, "Energy needed to process 1 mB of input (inputPerAntimatter * energyPerInput = energy to produce 1 mB of antimatter).",
-              "energyPerInput", 1_000_000);
+        spsEnergyPerInput = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.GENERAL_SPS_ENERGY_PER, "energyPerInput", 1_000_000);
         builder.pop();
 
         configSpec = builder.build();

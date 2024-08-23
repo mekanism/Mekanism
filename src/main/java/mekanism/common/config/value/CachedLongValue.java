@@ -19,19 +19,6 @@ public class CachedLongValue extends CachedValue<Long> implements LongSupplier {
         return new CachedLongValue(config, internal);
     }
 
-    public static CachedLongValue definePositive(IMekanismConfig config, Builder builder, String comment, String path, long defaultValue) {
-        return definedMin(config, builder, comment, path, defaultValue, 0);
-    }
-
-    public static CachedLongValue definedMin(IMekanismConfig config, Builder builder, String comment, String path, long defaultValue, long min) {
-        return define(config, builder, comment, path, defaultValue, min, Long.MAX_VALUE);
-    }
-
-    public static CachedLongValue define(IMekanismConfig config, Builder builder, String comment, String path, long defaultValue, long min, long max) {
-        return CachedLongValue.wrap(config, builder.comment(comment)
-              .defineInRange(path, defaultValue, min, max));
-    }
-
     public static CachedLongValue definePositive(IMekanismConfig config, Builder builder, IConfigTranslation comment, String path, long defaultValue) {
         return define(config, builder, comment, path, defaultValue, 0, Long.MAX_VALUE);
     }
