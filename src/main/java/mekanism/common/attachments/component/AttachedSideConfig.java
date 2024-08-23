@@ -9,6 +9,7 @@ import java.util.Map;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.common.lib.codec.DroppingUnboundedMapCodec;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.component.config.ConfigInfo;
@@ -26,7 +27,8 @@ import org.jetbrains.annotations.Nullable;
 public record AttachedSideConfig(Map<TransmissionType, LightConfigInfo> configInfo) {
 
     public static final Codec<AttachedSideConfig> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          Codec.unboundedMap(TransmissionType.CODEC, LightConfigInfo.CODEC).fieldOf(SerializationConstants.CONFIG).forGetter(AttachedSideConfig::configInfo)
+          //TODO - 1.22: Switch this back to using Codec.unboundedMap
+          new DroppingUnboundedMapCodec<>(TransmissionType.CODEC, LightConfigInfo.CODEC).fieldOf(SerializationConstants.CONFIG).forGetter(AttachedSideConfig::configInfo)
     ).apply(instance, AttachedSideConfig::new));
     public static final StreamCodec<ByteBuf, AttachedSideConfig> STREAM_CODEC = ByteBufCodecs.<ByteBuf, TransmissionType, LightConfigInfo, Map<TransmissionType, LightConfigInfo>>map(
                 i -> new EnumMap<>(TransmissionType.class), TransmissionType.STREAM_CODEC, LightConfigInfo.STREAM_CODEC)
