@@ -16,10 +16,8 @@ public record ConfigurableHeightRange(Supplier<HeightShape> shape, ConfigurableV
     public static ConfigurableHeightRange create(IMekanismConfig config, ModConfigSpec.Builder builder, OreVeinConfigTranslations translations, BaseOreConfig baseConfig) {
         CachedEnumValue<HeightShape> shape = CachedEnumValue.wrap(config, translations.distributionShape().applyToBuilder(builder)
               .defineEnum("shape", baseConfig.shape()));
-        ConfigurableVerticalAnchor minInclusive = ConfigurableVerticalAnchor.create(config, builder, "minInclusive", translations.minInclusive(), baseConfig.min(), null);
-        return new ConfigurableHeightRange(shape, minInclusive,
-              ConfigurableVerticalAnchor.create(config, builder, "maxInclusive", translations.maxInclusive(), baseConfig.max(), minInclusive),
-              CachedIntValue.wrap(config, MekanismConfigTranslations.WORLD_HEIGHT_RANGE_PLATEAU.applyToBuilder(builder).define("plateau", baseConfig.plateau(), o -> {
+        CachedIntValue plateau = CachedIntValue.wrap(config, MekanismConfigTranslations.WORLD_HEIGHT_RANGE_PLATEAU.applyToBuilder(builder)
+              .define("plateau", baseConfig.plateau(), o -> {
                   if (o instanceof Integer value) {
                       if (value == 0) {
                           return true;
@@ -27,7 +25,9 @@ public record ConfigurableHeightRange(Supplier<HeightShape> shape, ConfigurableV
                       return value > 0 && shape.getOrDefault() == HeightShape.TRAPEZOID;
                   }
                   return false;
-              }))
-        );
+              }));
+        ConfigurableVerticalAnchor minInclusive = ConfigurableVerticalAnchor.create(config, builder, "minInclusive", translations.minInclusive(), baseConfig.min(), null);
+        ConfigurableVerticalAnchor maxInclusive = ConfigurableVerticalAnchor.create(config, builder, "maxInclusive", translations.maxInclusive(), baseConfig.max(), minInclusive);
+        return new ConfigurableHeightRange(shape, minInclusive, maxInclusive, plateau);
     }
 }

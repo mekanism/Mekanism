@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 import mekanism.api.functions.ConstantPredicates;
+import mekanism.common.Mekanism;
 import mekanism.common.config.value.CachedBooleanValue;
 import mekanism.common.config.value.CachedConfigValue;
 import mekanism.common.config.value.CachedDoubleValue;
@@ -31,7 +32,6 @@ public class GeneralConfig extends BaseMekanismConfig {
 
     public final CachedBooleanValue logPackets;
     public final CachedBooleanValue allowChunkloading;
-    public final CachedBooleanValue easyMinerFilters;
     public final CachedIntValue blockDeactivationDelay;
     public final CachedBooleanValue strictUnboxing;
     public final CachedConfigValue<List<? extends String>> cardboardModBlacklist;
@@ -68,17 +68,18 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedDoubleValue radiationSourceDecayRate;
     public final CachedDoubleValue radiationTargetDecayRate;
     public final CachedDoubleValue radiationNegativeEffectsMinSeverity;
-    public final CachedLongValue radioactiveWasteBarrelMaxGas;
+    public final CachedLongValue radioactiveWasteBarrelMaxChemical;
     public final CachedIntValue radioactiveWasteBarrelProcessTicks;
     public final CachedLongValue radioactiveWasteBarrelDecayAmount;
     //Digital Miner
     public final CachedIntValue minerSilkMultiplier;
     public final CachedIntValue minerMaxRadius;
     public final CachedIntValue minerTicksPerMine;
+    public final CachedBooleanValue easyMinerFilters;
     //Laser
     public final CachedBooleanValue aestheticWorldDamage;
     public final CachedIntValue laserRange;
-    public final CachedLongValue laserEnergyNeededPerHardness;
+    public final CachedLongValue laserEnergyPerHardness;
     public final CachedLongValue laserEnergyPerDamage;
     //Oredictionificator
     public final CachedOredictionificatorConfigValue validOredictionificatorFilters;
@@ -128,8 +129,6 @@ public class GeneralConfig extends BaseMekanismConfig {
               .define("logPackets", false));
         allowChunkloading = CachedBooleanValue.wrap(this, MekanismConfigTranslations.GENERAL_CHUNKLOADING.applyToBuilder(builder)
               .define("allowChunkloading", true));
-        easyMinerFilters = CachedBooleanValue.wrap(this, MekanismConfigTranslations.GENERAL_EASY_FILTERS_MINER.applyToBuilder(builder)
-              .define("easyMinerFilters", false));
         blockDeactivationDelay = CachedIntValue.wrap(this, MekanismConfigTranslations.GENERAL_DEACTIVATION_DELAY.applyToBuilder(builder)
               .defineInRange("blockDeactivationDelay", 3 * SharedConstants.TICKS_PER_SECOND, 0, SharedConstants.TICKS_PER_MINUTE));
         aestheticWorldDamage = CachedBooleanValue.wrap(this, MekanismConfigTranslations.GENERAL_AESTHETIC_DAMAGE.applyToBuilder(builder)
@@ -155,9 +154,7 @@ public class GeneralConfig extends BaseMekanismConfig {
         strictUnboxing = CachedBooleanValue.wrap(this, MekanismConfigTranslations.GENERAL_CARDBOARD_STRICT_UNBOXING.applyToBuilder(builder)
               .define("strictUnboxing", false));
         cardboardModBlacklist = CachedConfigValue.wrap(this, MekanismConfigTranslations.GENERAL_CARDBOARD_MOD_BLACKLIST.applyToBuilder(builder)
-              .defineListAllowEmpty("modBlacklist", ArrayList::new, () -> "mekanism",
-                    e -> e instanceof String modid && ResourceLocation.isValidNamespace(modid))
-        );
+              .defineListAllowEmpty("modBlacklist", ArrayList::new, () -> Mekanism.MODID, e -> e instanceof String modid && ResourceLocation.isValidNamespace(modid)));
         builder.pop();
 
         MekanismConfigTranslations.GENERAL_FILL_RATE.applyToBuilder(builder).push("item_fill_rate");
@@ -181,7 +178,7 @@ public class GeneralConfig extends BaseMekanismConfig {
         chemicalAutoEjectRate = CachedLongValue.wrap(this, MekanismConfigTranslations.GENERAL_AUTO_EJECT_RATE_CHEMICAL.applyToBuilder(builder)
               .defineInRange("chemical", 1_024L, 1, Long.MAX_VALUE));
         dumpExcessKeepRatio = CachedDoubleValue.wrap(this, MekanismConfigTranslations.GENERAL_AUTO_EJECT_EXCESS.applyToBuilder(builder)
-              .defineInRange("dumpExcessKeepRatio", 0.9D, 0.001D, 1D));
+              .defineInRange("dumpExcessKeepRatio", 0.85D, 0.001D, 1D));
         builder.pop();
 
         MekanismConfigTranslations.GENERAL_PREFILLED_TANKS.applyToBuilder(builder).push("prefilled");
@@ -204,7 +201,7 @@ public class GeneralConfig extends BaseMekanismConfig {
               .worldRestart()
               .define("blacklistGrandPower", false));
         FROM_H2 = CachedLongValue.define(this, builder, MekanismConfigTranslations.GENERAL_ENERGY_CONVERSION_HYDROGEN,
-              "HydrogenEnergyDensity", 200, 1, Long.MAX_VALUE / 100_000);
+              "hydrogenEnergyDensity", 200, 1, Long.MAX_VALUE / 100_000);
         maxEnergyPerSteam = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.GENERAL_ENERGY_CONVERSION_STEAM, "maxEnergyPerSteam", 10);
         builder.pop();
 
@@ -219,7 +216,7 @@ public class GeneralConfig extends BaseMekanismConfig {
               .defineInRange("targetDecayRate", 0.9995D, 0, 1));
         radiationNegativeEffectsMinSeverity = CachedDoubleValue.wrap(this, MekanismConfigTranslations.GENERAL_RADIATION_MIN_SEVERITY.applyToBuilder(builder)
               .defineInRange("negativeEffectsMinSeverity", 0.1D, 0, 1));
-        radioactiveWasteBarrelMaxGas = CachedLongValue.wrap(this, MekanismConfigTranslations.GENERAL_RADIATION_BARREL_CAPACITY.applyToBuilder(builder)
+        radioactiveWasteBarrelMaxChemical = CachedLongValue.wrap(this, MekanismConfigTranslations.GENERAL_RADIATION_BARREL_CAPACITY.applyToBuilder(builder)
               .defineInRange("wasteBarrelCapacity", 512 * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE));
         radioactiveWasteBarrelProcessTicks = CachedIntValue.wrap(this, MekanismConfigTranslations.GENERAL_RADIATION_BARREL_DECAY_FREQUENCY.applyToBuilder(builder)
               .defineInRange("wasteBarrelProcessTicks", SharedConstants.TICKS_PER_SECOND, 1, Integer.MAX_VALUE));
@@ -234,12 +231,14 @@ public class GeneralConfig extends BaseMekanismConfig {
               .defineInRange("maxRadius", 32, 1, Integer.MAX_VALUE));
         minerTicksPerMine = CachedIntValue.wrap(this, MekanismConfigTranslations.GENERAL_MINER_TICK_RATE.applyToBuilder(builder)
               .defineInRange("ticksPerMine", 80, 1, Integer.MAX_VALUE));
+        easyMinerFilters = CachedBooleanValue.wrap(this, MekanismConfigTranslations.GENERAL_MINER_EASY_FILTERS.applyToBuilder(builder)
+              .define("easyMinerFilters", false));
         builder.pop();
 
         MekanismConfigTranslations.GENERAL_LASER.applyToBuilder(builder).push("laser");
         laserRange = CachedIntValue.wrap(this, MekanismConfigTranslations.GENERAL_LASER_RANGE.applyToBuilder(builder)
               .defineInRange("range", 64, 1, 1_024));
-        laserEnergyNeededPerHardness = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.GENERAL_LASER_ENERGY_HARDNESS, "energyNeededPerHardness", 100_000);
+        laserEnergyPerHardness = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.GENERAL_LASER_ENERGY_HARDNESS, "energyPerHardness", 100_000);
         laserEnergyPerDamage = CachedLongValue.definedMin(this, builder, MekanismConfigTranslations.GENERAL_LASER_ENERGY_DAMAGE, "energyPerDamage", 2_500, 1);
         builder.pop();
 

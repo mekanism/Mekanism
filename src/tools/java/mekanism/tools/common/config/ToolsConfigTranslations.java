@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 public enum ToolsConfigTranslations implements IConfigTranslation {
     //Client config
-    CLIENT_DURABILITY_TOOLTIPS("client.durability_tooltips", "Durability Tooltips", "Enable durability tooltips for Mekanism: Tools gear."),
+    CLIENT_DURABILITY_TOOLTIPS("client.durability_tooltips", "Durability Tooltips", "Enable durability tooltips for gear provided by Mekanism: Tools."),
 
     //Startup config
     STARTUP_MATERIALS("startup.materials", "Material Settings",
@@ -18,13 +18,13 @@ public enum ToolsConfigTranslations implements IConfigTranslation {
 
     //Server config
     SERVER_GEAR_SPAWN_CHANCE("server.gear_spawn_chance", "Mob Gear Spawn Chance",
-          "Settings for configuring the spawn chance of Mekanism: Tools gear on mobs", true),
+          "Settings for configuring the spawn chance of Mekanism: Tools' gear on mobs", "Edit Gear Spawn Chance"),
     SERVER_GEAR_SPAWN_CHANCE_ARMOR("server.gear_spawn_chance.armor", "Armor Chance",
-          "The chance that Mekanism Armor can spawn on mobs. This is multiplied modified by the chunk's difficulty modifier. "
+          "The chance that Mekanism: Tools' armor can spawn on mobs. This is multiplied modified by the chunk's difficulty modifier. "
           + "Vanilla uses 0.15 for its armor spawns, we use 0.1 as default to lower chances of mobs getting some vanilla and some mek armor."),
-    SERVER_GEAR_SPAWN_CHANCE_WEAPON("server.gear_spawn_chance.weapon", "Weapon Chance", "The chance that Mekanism Weapons can spawn in a zombie's hand."),
+    SERVER_GEAR_SPAWN_CHANCE_WEAPON("server.gear_spawn_chance.weapon", "Weapon Chance", "The chance that Mekanism: Tools' weapons can spawn in a zombie's hand."),
     SERVER_GEAR_SPAWN_CHANCE_WEAPON_HARD("server.gear_spawn_chance.weapon.hard", "Weapon Chance, Hard",
-          "The chance that Mekanism Weapons can spawn in a zombie's hand when on hard difficulty."),
+          "The chance that Mekanism: Tools' weapons can spawn in a zombie's hand when on hard difficulty."),
     ;
 
     private final String key;
@@ -101,28 +101,29 @@ public enum ToolsConfigTranslations implements IConfigTranslation {
         public static ArmorSpawnChanceTranslations create(String registryPrefix) {
             String name = TextUtils.formatAndCapitalize(registryPrefix);
             return new ArmorSpawnChanceTranslations(
-                  new ConfigTranslation(getKey(registryPrefix, "top_level"), name + " Gear Spawn Chance",
+                  new ConfigTranslation(getKey(registryPrefix, "top_level"), name + " Gear",
                         "Spawn chances for pieces of " + name + " gear. Note: These values are after the general mobArmorSpawnRate (or corresponding weapon rate) "
                         + "has been checked, and after an even split between material types has been done.",
-                        "Edit Gear Spawn Chance"
+                        "Edit Spawn Chance"
                   ),
-                  new ConfigTranslation(getKey(registryPrefix, "spawn_weapon"), "With Weapon", "Whether mobs can spawn with " + name + " Weapons."),
+                  new ConfigTranslation(getKey(registryPrefix, "spawn_weapon"), "With Weapon", "If enabled, zombies can spawn with " + name + " weapons."),
                   new ConfigTranslation(getKey(registryPrefix, "sword_weight"), "Sword Weight",
-                        "The chance that mobs will spawn with " + name + " Swords rather than " + name + " Shovels."),
-                  new ConfigTranslation(getKey(registryPrefix, "chance.helmet"), "Helmet Chance", "The chance that mobs can spawn with " + name + " Helmets."),
-                  new ConfigTranslation(getKey(registryPrefix, "chance.chestplate"), "Chestplate Chance", "The chance that mobs can spawn with " + name + " Chestplates."),
-                  new ConfigTranslation(getKey(registryPrefix, "chance.leggings"), "Legging Chance", "The chance that mobs can spawn with " + name + " Leggings."),
-                  new ConfigTranslation(getKey(registryPrefix, "chance.boots"), "Boots Chance", "The chance that mobs can spawn with " + name + " Boots."),
+                        "The chance that mobs will spawn with " + name + " swords rather than " + name + " shovels. Requires canSpawnWeapon to be enabled."),
+                  new ConfigTranslation(getKey(registryPrefix, "chance.helmet"), "Helmet Chance", "The chance that mobs can spawn with " + name + " helmets."),
+                  new ConfigTranslation(getKey(registryPrefix, "chance.chestplate"), "Chestplate Chance", "The chance that mobs can spawn with " + name + " chestplates."),
+                  new ConfigTranslation(getKey(registryPrefix, "chance.leggings"), "Legging Chance", "The chance that mobs can spawn with " + name + " leggings."),
+                  new ConfigTranslation(getKey(registryPrefix, "chance.boots"), "Boots Chance", "The chance that mobs can spawn with " + name + " boots."),
                   new ConfigTranslation(getKey(registryPrefix, "chance.multiple_piece"), "Multiple Pieces Chance",
-                        "The chance that after each piece of " + name + " Armor a mob spawns with that no more pieces will be added. Order of pieces tried is boots, "
+                        "The chance that after each piece of " + name + " armor a mob spawns with no more pieces will be added. Order of pieces tried is boots, "
                         + "leggings, chestplate, helmet."),
                   new ConfigTranslation(getKey(registryPrefix, "chance.multiple_piece.hard"), "Multiple Pieces Chance Hard",
-                        "The chance on hard mode that after each piece of " + name + " Armor a mob spawns with that no more pieces will be added. Order of pieces "
-                        + "tried is boots, leggings, chestplate, helmet."),
+                        "The chance on hard mode that after each piece of " + name + " armor a mob spawns with no more pieces will be added. Order of pieces tried "
+                        + "is boots, leggings, chestplate, helmet."),
                   new ConfigTranslation(getKey(registryPrefix, "chance.enchantment.weapon"), "Weapon Enchantment Chance",
-                        "The chance that if a mob spawns with " + name + " Weapons that it will be enchanted. This is multiplied modified by the chunk's difficulty modifier."),
+                        "The chance that if a mob spawns with " + name + " weapons that it will be enchanted. This is multiplied modified by the chunk's difficulty "
+                        + "modifier. Requires canSpawnWeapon to be enabled."),
                   new ConfigTranslation(getKey(registryPrefix, "chance.enchantment.armor"), "Armor Enchantment Chance",
-                        "The chance that if a mob spawns with " + name + " Armor that they will be enchanted. This is multiplied modified by the chunk's difficulty modifier.")
+                        "The chance that if a mob spawns with " + name + " armor that they will be enchanted. This is multiplied modified by the chunk's difficulty modifier.")
             );
         }
     }
@@ -147,7 +148,7 @@ public enum ToolsConfigTranslations implements IConfigTranslation {
         public static VanillaPaxelMaterialTranslations create(String registryPrefix) {
             String name = TextUtils.formatAndCapitalize(registryPrefix);
             return new VanillaPaxelMaterialTranslations(
-                  new ConfigTranslation(getKey(registryPrefix, "top_level"), name, "Vanilla Material Paxel Settings for " + name + ".",
+                  new ConfigTranslation(getKey(registryPrefix, "top_level"), name + " Paxels", "Vanilla Material Paxel Settings for " + name + ".",
                         "Edit " + name + " Settings"
                   ),
                   new ConfigTranslation(getKey(registryPrefix, "damage"), "Damage", "Attack damage modifier of " + name + " paxels."),
@@ -204,7 +205,7 @@ public enum ToolsConfigTranslations implements IConfigTranslation {
         public static MaterialTranslations create(String registryPrefix) {
             String name = TextUtils.formatAndCapitalize(registryPrefix);
             return new MaterialTranslations(
-                  new ConfigTranslation(getKey(registryPrefix, "top_level"), name, "Material Settings for " + name, "Edit " + name + " Settings"),
+                  new ConfigTranslation(getKey(registryPrefix, "top_level"), name + " Gear", "Material Settings for " + name, "Edit " + name + " Settings"),
                   new ConfigTranslation(getKey(registryPrefix, "durability.tool"), "Tool Durability", "Maximum durability of " + name + " tools."),
                   new ConfigTranslation(getKey(registryPrefix, "efficiency"), "Efficiency", "Efficiency of " + name + " tools."),
                   new ConfigTranslation(getKey(registryPrefix, "damage"), "Base Damage", "Base attack damage of " + name + " items."),

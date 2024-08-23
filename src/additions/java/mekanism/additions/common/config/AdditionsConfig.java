@@ -48,23 +48,23 @@ public class AdditionsConfig extends BaseMekanismConfig {
 
         AdditionsConfigTranslations.SERVER_VOICE.applyToBuilder(builder).push("voice_server");
         voiceServerEnabled = CachedBooleanValue.wrap(this, AdditionsConfigTranslations.SERVER_VOICE_ENABLED.applyToBuilder(builder)
-              .worldRestart() .define("enabled", false));
+              .worldRestart()
+              .define("enabled", false));
         voicePort = CachedIntValue.wrap(this, AdditionsConfigTranslations.SERVER_VOICE_PORT.applyToBuilder(builder)
-              .defineInRange("VoicePort", 36_123, 1, 65_535));
+              .defineInRange("voicePort", 36_123, 1, 65_535));
         builder.pop();
 
         AdditionsConfigTranslations.SERVER_BABY.applyToBuilder(builder).push("baby_mobs");
         babyArrowDamageMultiplier = CachedDoubleValue.wrap(this, AdditionsConfigTranslations.SERVER_BABY_ARROW_DAMAGE.applyToBuilder(builder)
               .defineInRange("arrowDamageMultiplier", 0.25, 0.1, 10));
 
-        AdditionsConfigTranslations.SERVER_BABY_SPAWNING.applyToBuilder(builder).push("spawning");
         addBabyTypeConfig(BabyType.BOGGED, builder, AdditionsEntityTypes.BABY_BOGGED, EntityType.BOGGED);
         addBabyTypeConfig(BabyType.CREEPER, builder, AdditionsEntityTypes.BABY_CREEPER, EntityType.CREEPER);
         addBabyTypeConfig(BabyType.ENDERMAN, builder, AdditionsEntityTypes.BABY_ENDERMAN, EntityType.ENDERMAN);
         addBabyTypeConfig(BabyType.SKELETON, builder, AdditionsEntityTypes.BABY_SKELETON, EntityType.SKELETON);
         addBabyTypeConfig(BabyType.STRAY, builder, AdditionsEntityTypes.BABY_STRAY, EntityType.STRAY);
         addBabyTypeConfig(BabyType.WITHER_SKELETON, builder, AdditionsEntityTypes.BABY_WITHER_SKELETON, EntityType.WITHER_SKELETON);
-        builder.pop(2);
+        builder.pop();
 
         configSpec = builder.build();
     }

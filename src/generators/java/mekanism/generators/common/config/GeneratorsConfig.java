@@ -38,8 +38,8 @@ public class GeneratorsConfig extends BaseMekanismConfig {
 
     public final CachedLongValue solarGeneration;
     public final CachedIntValue turbineBladesPerCoil;
-    public final CachedDoubleValue turbineVentGasFlow;
-    public final CachedDoubleValue turbineDisperserGasFlow;
+    public final CachedDoubleValue turbineVentChemicalFlow;
+    public final CachedDoubleValue turbineDisperserChemicalFlow;
     public final CachedLongValue turbineEnergyCapacityPerVolume;
     public final CachedLongValue turbineChemicalPerTank;
     public final CachedIntValue condenserRate;
@@ -79,6 +79,13 @@ public class GeneratorsConfig extends BaseMekanismConfig {
 
     GeneratorsConfig() {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
+
+        GeneratorsConfigTranslations.SERVER_HOHLRAUM.applyToBuilder(builder).push("hohlraum");
+        hohlraumMaxGas = CachedLongValue.wrap(this, GeneratorsConfigTranslations.SERVER_HOHLRAUM_CAPACITY.applyToBuilder(builder)
+              .defineInRange("capacity", 10, 1, Long.MAX_VALUE));
+        hohlraumFillRate = CachedLongValue.wrap(this, GeneratorsConfigTranslations.SERVER_HOHLRAUM_FILL_RATE.applyToBuilder(builder)
+              .defineInRange("fillRate", 1, 1, Long.MAX_VALUE));
+        builder.pop();
 
         GeneratorsConfigTranslations.SERVER_GENERATOR_SOLAR.applyToBuilder(builder).push("solar_generator");
         solarGeneration = CachedLongValue.definePositive(this, builder, GeneratorsConfigTranslations.SERVER_SOLAR_GENERATION, "solarGeneration", 50L);
@@ -132,19 +139,19 @@ public class GeneratorsConfig extends BaseMekanismConfig {
 
         GeneratorsConfigTranslations.SERVER_TURBINE.applyToBuilder(builder).push("turbine");
         turbineBladesPerCoil = CachedIntValue.wrap(this, GeneratorsConfigTranslations.SERVER_TURBINE_BLADES.applyToBuilder(builder)
-              .defineInRange("turbineBladesPerCoil", 4, 1, 12));
-        turbineVentGasFlow = CachedDoubleValue.wrap(this, GeneratorsConfigTranslations.SERVER_TURBINE_RATE_VENT.applyToBuilder(builder)
-              .defineInRange("turbineVentGasFlow", 32D * FluidType.BUCKET_VOLUME, 0.1, 1_024 * FluidType.BUCKET_VOLUME));
-        turbineDisperserGasFlow = CachedDoubleValue.wrap(this, GeneratorsConfigTranslations.SERVER_TURBINE_RATE_DISPERSER.applyToBuilder(builder)
-              .defineInRange("turbineDisperserGasFlow", 1_280D, 0.1, 1_024 * FluidType.BUCKET_VOLUME));
+              .defineInRange("bladesPerCoil", 4, 1, 12));
+        turbineVentChemicalFlow = CachedDoubleValue.wrap(this, GeneratorsConfigTranslations.SERVER_TURBINE_RATE_VENT.applyToBuilder(builder)
+              .defineInRange("ventChemicalFlow", 32D * FluidType.BUCKET_VOLUME, 0.1, 1_024 * FluidType.BUCKET_VOLUME));
+        turbineDisperserChemicalFlow = CachedDoubleValue.wrap(this, GeneratorsConfigTranslations.SERVER_TURBINE_RATE_DISPERSER.applyToBuilder(builder)
+              .defineInRange("disperserChemicalFlow", 1_280D, 0.1, 1_024 * FluidType.BUCKET_VOLUME));
+        condenserRate = CachedIntValue.wrap(this, GeneratorsConfigTranslations.SERVER_TURBINE_RATE_CONDENSER.applyToBuilder(builder)
+              .defineInRange("condenserRate", 64 * FluidType.BUCKET_VOLUME, 1, 2_000 * FluidType.BUCKET_VOLUME));
         turbineEnergyCapacityPerVolume = CachedLongValue.define(this, builder, GeneratorsConfigTranslations.SERVER_TURBINE_ENERGY_CAPACITY,
               "energyCapacityPerVolume", 16_000_000L, 1L, 1_000_000_000_000L);
         //Note: We use maxVolume as it still is a large number, and we have no reason to go higher even if some things we technically could
         int maxTurbine = 17 * 17 * 18;
         turbineChemicalPerTank = CachedLongValue.wrap(this, GeneratorsConfigTranslations.SERVER_TURBINE_CHEMICAL_CAPACITY.applyToBuilder(builder)
               .defineInRange("chemicalPerTank", 64L * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE / maxTurbine));
-        condenserRate = CachedIntValue.wrap(this, GeneratorsConfigTranslations.SERVER_TURBINE_RATE_CONDENSER.applyToBuilder(builder)
-              .defineInRange("condenserRate", 64 * FluidType.BUCKET_VOLUME, 1, 2_000 * FluidType.BUCKET_VOLUME));
         builder.pop();
 
         GeneratorsConfigTranslations.SERVER_FISSION.applyToBuilder(builder).push("fission_reactor");
@@ -199,13 +206,6 @@ public class GeneratorsConfig extends BaseMekanismConfig {
               .defineInRange("waterPerInjection", 1_000 * FluidType.BUCKET_VOLUME, 1, Integer.MAX_VALUE / FusionReactorMultiblockData.MAX_INJECTION));
         fusionSteamPerInjection = CachedLongValue.wrap(this, GeneratorsConfigTranslations.SERVER_FUSION_STEAM_INJECTION.applyToBuilder(builder)
               .defineInRange("steamPerInjection", 100L * baseMaxWater, 1, Long.MAX_VALUE / FusionReactorMultiblockData.MAX_INJECTION));
-        builder.pop();
-
-        GeneratorsConfigTranslations.SERVER_HOHLRAUM.applyToBuilder(builder).push("hohlraum");
-        hohlraumMaxGas = CachedLongValue.wrap(this, GeneratorsConfigTranslations.SERVER_HOHLRAUM_CAPACITY.applyToBuilder(builder)
-              .defineInRange("capacity", 10, 1, Long.MAX_VALUE));
-        hohlraumFillRate = CachedLongValue.wrap(this, GeneratorsConfigTranslations.SERVER_HOHLRAUM_FILL_RATE.applyToBuilder(builder)
-              .defineInRange("fillRate", 1, 1, Long.MAX_VALUE));
         builder.pop();
 
         configSpec = builder.build();

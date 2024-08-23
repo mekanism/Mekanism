@@ -26,7 +26,8 @@ public class VanillaPaxelMaterialCreator implements IPaxelMaterial {
         translations.topLevel().applyToBuilder(builder).push(toolKey);
         //Note: Damage predicate to allow for tools to go negative to the value of the base tier so that a tool
         // can effectively have zero damage for things like the hoe
-        paxelDamage = CachedFloatValue.wrap(config, translations.damage().applyToBuilder(builder).gameRestart()
+        paxelDamage = CachedFloatValue.wrap(config, translations.damage().applyToBuilder(builder)
+              .gameRestart()
               .define(toolKey + "PaxelDamage", (double) materialDefaults.getPaxelDamage(), value -> {
                   if (value instanceof Double) {
                       double val = (double) value;
@@ -45,13 +46,17 @@ public class VanillaPaxelMaterialCreator implements IPaxelMaterial {
                   }
                   return false;
               }));
-        paxelAtkSpeed = CachedFloatValue.wrap(config, translations.attackSpeed().applyToBuilder(builder).gameRestart()
+        paxelAtkSpeed = CachedFloatValue.wrap(config, translations.attackSpeed().applyToBuilder(builder)
+              .gameRestart()
               .define(toolKey + "PaxelAtkSpeed", (double) materialDefaults.getPaxelAtkSpeed()));
-        paxelEfficiency = CachedFloatValue.wrap(config, translations.efficiency().applyToBuilder(builder).gameRestart()
+        paxelEfficiency = CachedFloatValue.wrap(config, translations.efficiency().applyToBuilder(builder)
+              .gameRestart()
               .define(toolKey + "PaxelEfficiency", (double) materialDefaults.getPaxelEfficiency()));
-        paxelEnchantability = CachedIntValue.wrap(config, translations.enchantability().applyToBuilder(builder).gameRestart()
+        paxelEnchantability = CachedIntValue.wrap(config, translations.enchantability().applyToBuilder(builder)
+              .gameRestart()
               .defineInRange(toolKey + "PaxelEnchantability", materialDefaults.getPaxelEnchantability(), 0, Integer.MAX_VALUE));
-        paxelDurability = CachedIntValue.wrap(config, translations.durability().applyToBuilder(builder).gameRestart()
+        paxelDurability = CachedIntValue.wrap(config, translations.durability().applyToBuilder(builder)
+              .gameRestart()
               .defineInRange(toolKey + "PaxelDurability", materialDefaults.getPaxelDurability(), 1, Integer.MAX_VALUE));
         builder.pop();
     }

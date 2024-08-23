@@ -9,13 +9,13 @@ public class AdditionsClientConfig extends BaseMekanismConfig {
 
     private final ModConfigSpec configSpec;
 
-    public final CachedBooleanValue voiceKeyIsToggle;
+    public final CachedBooleanValue pushToTalk;
 
     AdditionsClientConfig() {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
 
-        voiceKeyIsToggle = CachedBooleanValue.wrap(this, AdditionsConfigTranslations.CLIENT_VOICE_KEY_TOGGLE.applyToBuilder(builder)
-              .define("voiceKeyIsToggle", false));
+        pushToTalk = CachedBooleanValue.wrap(this, AdditionsConfigTranslations.CLIENT_PUSH_TO_TALK.applyToBuilder(builder)
+              .define("pushToTalk", true));
 
         configSpec = builder.build();
     }

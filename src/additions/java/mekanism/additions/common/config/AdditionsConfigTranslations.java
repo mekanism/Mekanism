@@ -9,13 +9,13 @@ import org.jetbrains.annotations.Nullable;
 
 public enum AdditionsConfigTranslations implements IConfigTranslation {
     //Client Config
-    CLIENT_VOICE_KEY_TOGGLE("client.voice_key_is_toggle", "Voice Key is Toggle",
-          "If the voice server is enabled and voiceKeyIsToggle is also enabled, the voice key will act as a toggle instead of requiring to be held while talking."),
+    CLIENT_PUSH_TO_TALK("client.push_to_talk", "Push to Talk",
+          "If the voice server is enabled and pushToTalk is disabled, the voice key will act as a toggle instead of requiring to be held while talking."),
 
     //Server config
     SERVER_OBSIDIAN_TNT("server.obsidian_tnt", "Obsidian TNT", "Settings for configuring Obsidian TNT", true),
-    SERVER_OBSIDIAN_DELAY("server.obsidian_tnt.delay", "Fuse Time", "Fuse time for Obsidian TNT."),
-    SERVER_OBSIDIAN_RADIUS("server.obsidian_tnt.radius", "Radius", "Radius of the explosion of Obsidian TNT."),
+    SERVER_OBSIDIAN_DELAY("server.obsidian_tnt.delay", "Fuse Time", "Fuse time in ticks for Obsidian TNT. Vanilla TNT has a fuse of 80 ticks (4 seconds)."),
+    SERVER_OBSIDIAN_RADIUS("server.obsidian_tnt.radius", "Radius", "Radius of the explosion of Obsidian TNT. Vanilla TNT has a radius of 4."),
 
     SERVER_VOICE("server.voice", "Voice Server", "Settings for configuring the Voice Server", true),
     SERVER_VOICE_ENABLED("server.voice.enabled", "Enabled", "Enables the voice server for Walkie Talkies."),
@@ -23,7 +23,6 @@ public enum AdditionsConfigTranslations implements IConfigTranslation {
 
     SERVER_BABY("server.baby", "Baby Mobs", "Settings for configuring values relating to baby mobs", true),
     SERVER_BABY_ARROW_DAMAGE("server.baby.arrow_damage_multiplier", "Arrow Damage Multiplier", "Damage multiplier of arrows shot by baby mobs."),
-    SERVER_BABY_SPAWNING("server.baby.spawning", "Entity Spawning", "Config options regarding spawning of entities.", true),
 
     ;
 
@@ -93,7 +92,7 @@ public enum AdditionsConfigTranslations implements IConfigTranslation {
         public static BabySpawnTranslations create(String key) {
             String name = TextUtils.formatAndCapitalize(key);
             return new BabySpawnTranslations(
-                  new ConfigTranslation(getKey(key, "top_level"), name, "Config options regarding " + name + ".", true),
+                  new ConfigTranslation(getKey(key, "top_level"), name, "Config options regarding the spawning of " + name + ".", "Edit Spawn Settings"),
                   new ConfigTranslation(getKey(key, "should_spawn"), "Should Spawn", "Enable the spawning of " + name + ". Think baby zombies."),
                   new ConfigTranslation(getKey(key, "min_size"), "Min Group Size", "The multiplier for minimum group size of " + name + " spawns, compared to the adult mob."),
                   new ConfigTranslation(getKey(key, "max_size"), "Max Group Size", "The multiplier for maximum group size of " + name + " spawns, compared to the adult mob."),

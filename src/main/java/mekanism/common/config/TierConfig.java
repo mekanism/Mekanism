@@ -28,7 +28,7 @@ public class TierConfig extends BaseMekanismConfig {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
         addEnergyCubeCategory(builder);
         addFluidTankCategory(builder);
-        addGasTankCategory(builder);
+        addChemicalTankCategory(builder);
         addBinCategory(builder);
         addInductionCategory(builder);
         addTransmittersCategory(builder);
@@ -42,7 +42,7 @@ public class TierConfig extends BaseMekanismConfig {
             TierTranslations translations = TierTranslations.create(tier);
             String tierName = tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT);
             CachedLongValue storageReference = CachedLongValue.wrap(this, translations.first().applyToBuilder(builder)
-                  .defineInRange(tierName + "Storage", tier.getBaseMaxEnergy(), 1, Long.MAX_VALUE));
+                  .defineInRange(tierName + "Capacity", tier.getBaseMaxEnergy(), 1, Long.MAX_VALUE));
             CachedLongValue outputReference = CachedLongValue.wrap(this, translations.second().applyToBuilder(builder)
                   .defineInRange(tierName + "Output", tier.getBaseOutput(), 1, Long.MAX_VALUE));
             tier.setConfigReference(storageReference, outputReference);
@@ -56,7 +56,7 @@ public class TierConfig extends BaseMekanismConfig {
             TierTranslations translations = TierTranslations.create(tier);
             String tierName = tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT);
             CachedIntValue storageReference = CachedIntValue.wrap(this, translations.first().applyToBuilder(builder)
-                  .defineInRange(tierName + "Storage", tier.getBaseStorage(), 1, Integer.MAX_VALUE));
+                  .defineInRange(tierName + "Capacity", tier.getBaseStorage(), 1, Integer.MAX_VALUE));
             CachedIntValue outputReference = CachedIntValue.wrap(this, translations.second().applyToBuilder(builder)
                   .defineInRange(tierName + "Output", tier.getBaseOutput(), 1, Integer.MAX_VALUE));
             tier.setConfigReference(storageReference, outputReference);
@@ -64,13 +64,13 @@ public class TierConfig extends BaseMekanismConfig {
         builder.pop();
     }
 
-    private void addGasTankCategory(ModConfigSpec.Builder builder) {
+    private void addChemicalTankCategory(ModConfigSpec.Builder builder) {
         MekanismConfigTranslations.TIER_CHEMICAL_TANK.applyToBuilder(builder).push("chemical_tanks");
         for (ChemicalTankTier tier : EnumUtils.CHEMICAL_TANK_TIERS) {
             TierTranslations translations = TierTranslations.create(tier);
             String tierName = tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT);
             CachedLongValue storageReference = CachedLongValue.wrap(this, translations.first().applyToBuilder(builder)
-                  .defineInRange(tierName + "Storage", tier.getBaseStorage(), 1, Long.MAX_VALUE));
+                  .defineInRange(tierName + "Capacity", tier.getBaseStorage(), 1, Long.MAX_VALUE));
             CachedLongValue outputReference = CachedLongValue.wrap(this, translations.second().applyToBuilder(builder)
                   .defineInRange(tierName + "Output", tier.getBaseOutput(), 1, Long.MAX_VALUE));
             tier.setConfigReference(storageReference, outputReference);
@@ -84,7 +84,7 @@ public class TierConfig extends BaseMekanismConfig {
             TierTranslations translations = TierTranslations.create(tier);
             String tierName = tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT);
             CachedIntValue storageReference = CachedIntValue.wrap(this, translations.first().applyToBuilder(builder)
-                  .defineInRange(tierName + "Storage", tier.getBaseStorage(), 1, Integer.MAX_VALUE));
+                  .defineInRange(tierName + "Capacity", tier.getBaseStorage(), 1, Integer.MAX_VALUE));
             tier.setConfigReference(storageReference);
         }
         builder.pop();
@@ -96,7 +96,7 @@ public class TierConfig extends BaseMekanismConfig {
             TierTranslations translations = TierTranslations.create(tier);
             String tierName = tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT);
             CachedLongValue storageReference = CachedLongValue.wrap(this, translations.first().applyToBuilder(builder)
-                  .defineInRange(tierName + "Storage", tier.getBaseMaxEnergy(), 1, Long.MAX_VALUE));
+                  .defineInRange(tierName + "Capacity", tier.getBaseMaxEnergy(), 1, Long.MAX_VALUE));
             tier.setConfigReference(storageReference);
         }
         for (InductionProviderTier tier : EnumUtils.INDUCTION_PROVIDER_TIERS) {

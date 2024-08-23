@@ -20,10 +20,11 @@ public class ClientConfig extends BaseMekanismConfig {
     private final ModConfigSpec configSpec;
 
     public final CachedBooleanValue whiteRadialText;
-    public final CachedBooleanValue opaqueTransmitters;
-    public final CachedBooleanValue allowModeScroll;
     public final CachedIntValue energyColor;
-    public final CachedIntValue terRange;
+    public final CachedBooleanValue allowModeScroll;
+
+    public final CachedBooleanValue opaqueTransmitters;
+    public final CachedIntValue berRange;
 
     public final CachedFloatValue baseSoundVolume;
     public final CachedBooleanValue enablePlayerSounds;
@@ -58,29 +59,34 @@ public class ClientConfig extends BaseMekanismConfig {
     ClientConfig() {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
 
+        MekanismConfigTranslations.CLIENT_ACCESSIBILITY.applyToBuilder(builder).push("accessibility");
         whiteRadialText = CachedBooleanValue.wrap(this, MekanismConfigTranslations.CLIENT_WHITE_RADIAL_TEXT.applyToBuilder(builder)
               .define("whiteRadialText", false));
         opaqueTransmitters = CachedBooleanValue.wrap(this, MekanismConfigTranslations.CLIENT_OPAQUE_TRANSMITTERS.applyToBuilder(builder)
+              .gameRestart()
               .define("opaqueTransmitters", false));
         allowModeScroll = CachedBooleanValue.wrap(this, MekanismConfigTranslations.CLIENT_SCROLL_MODE_CHANGE.applyToBuilder(builder)
               .define("allowModeScroll", true));
-        energyColor = CachedIntValue.wrap(this, MekanismConfigTranslations.CLIENT_ENERGY_COLOR.applyToBuilder(builder)
-              .define("energyColor", 0x3CFE9A));
-        terRange = CachedIntValue.wrap(this, MekanismConfigTranslations.CLIENT_BE_RENDER_RANGE.applyToBuilder(builder)
-              .defineInRange("terRange", 256, 1, 1_024));
+        builder.pop();
 
         MekanismConfigTranslations.CLIENT_SOUNDS.applyToBuilder(builder).push("sounds");
+        baseSoundVolume = CachedFloatValue.wrap(this, MekanismConfigTranslations.CLIENT_BASE_SOUND_VOLUME.applyToBuilder(builder)
+              .defineInRange("baseVolume", 1D, 0, 10));
         enablePlayerSounds = CachedBooleanValue.wrap(this, MekanismConfigTranslations.CLIENT_PLAYER_SOUNDS_ENABLED.applyToBuilder(builder)
               .define("enablePlayer", true));
         enableMachineSounds = CachedBooleanValue.wrap(this, MekanismConfigTranslations.CLIENT_MACHINE_SOUNDS_ENABLED.applyToBuilder(builder)
               .define("enableMachine", true));
-        baseSoundVolume = CachedFloatValue.wrap(this, MekanismConfigTranslations.CLIENT_BASE_SOUND_VOLUME.applyToBuilder(builder)
-              .defineInRange("baseVolume", 1D, 0, 10));
         builder.pop();
+
+        MekanismConfigTranslations.CLIENT_RENDERING.applyToBuilder(builder).push("rendering");
+        energyColor = CachedIntValue.wrap(this, MekanismConfigTranslations.CLIENT_ENERGY_COLOR.applyToBuilder(builder)
+              .define("energyColor", 0x3CFE9A));
+        berRange = CachedIntValue.wrap(this, MekanismConfigTranslations.CLIENT_BE_RENDER_RANGE.applyToBuilder(builder)
+              .defineInRange("berRange", 256, 1, 1_024));
 
         MekanismConfigTranslations.CLIENT_PARTICLE.applyToBuilder(builder).push("particle");
         enableMultiblockFormationParticles = CachedBooleanValue.wrap(this, MekanismConfigTranslations.CLIENT_PARTICLE_MULTIBLOCK_FORMATION.applyToBuilder(builder)
-              .define("enableMultiblockFormationParticles", true));
+              .define("multiblockFormation", true));
         machineEffects = CachedBooleanValue.wrap(this, MekanismConfigTranslations.CLIENT_PARTICLE_MACHINE_EFFECTS.applyToBuilder(builder)
               .define("machineEffects", true));
         radiationParticleRadius = CachedIntValue.wrap(this, MekanismConfigTranslations.CLIENT_PARTICLE_RADIATION_RADIUS.applyToBuilder(builder)
@@ -92,6 +98,7 @@ public class ClientConfig extends BaseMekanismConfig {
         renderToolAOEParticles = CachedBooleanValue.wrap(this, MekanismConfigTranslations.CLIENT_PARTICLE_TOOL_AOE.applyToBuilder(builder)
               .define("toolAOE", true));
         builder.pop();
+        builder.pop();//pop rendering
 
         MekanismConfigTranslations.CLIENT_HUD.applyToBuilder(builder).push("hud");
         enableHUD = CachedBooleanValue.wrap(this, MekanismConfigTranslations.CLIENT_HUD_ENABLED.applyToBuilder(builder)
@@ -101,28 +108,28 @@ public class ClientConfig extends BaseMekanismConfig {
         reverseHUD = CachedBooleanValue.wrap(this, MekanismConfigTranslations.CLIENT_HUD_REVERSE.applyToBuilder(builder)
               .define("reverse", false));
         hudOpacity = CachedFloatValue.wrap(this, MekanismConfigTranslations.CLIENT_HUD_OPACITY.applyToBuilder(builder)
-              .defineInRange("hudOpacity", 0.4F, 0, 1));
+              .defineInRange("opacity", 0.4F, 0, 1));
         hudColor = CachedIntValue.wrap(this, MekanismConfigTranslations.CLIENT_HUD_COLOR.applyToBuilder(builder)
-              .defineInRange("hudColor", 0x40F5F0, 0, 0xFFFFFF));
+              .defineInRange("color", 0x40F5F0, 0, 0xFFFFFF));
         hudWarningColor = CachedIntValue.wrap(this, MekanismConfigTranslations.CLIENT_HUD_COLOR_WARNING.applyToBuilder(builder)
-              .defineInRange("hudWarningColor", 0xFFDD4F, 0, 0xFFFFFF));
+              .defineInRange("warningColor", 0xFFDD4F, 0, 0xFFFFFF));
         hudDangerColor = CachedIntValue.wrap(this, MekanismConfigTranslations.CLIENT_HUD_COLOR_DANGER.applyToBuilder(builder)
-              .defineInRange("hudDangerColor", 0xFF383C, 0, 0xFFFFFF));
+              .defineInRange("dangerColor", 0xFF383C, 0, 0xFFFFFF));
         hudJitter = CachedFloatValue.wrap(this, MekanismConfigTranslations.CLIENT_HUD_JITTER.applyToBuilder(builder)
-              .defineInRange("hudJitter", 6F, 1F, 100F));
+              .defineInRange("jitter", 6F, 1F, 100F));
         hudCompassEnabled = CachedBooleanValue.wrap(this, MekanismConfigTranslations.CLIENT_HUD_COMPASS.applyToBuilder(builder)
               .define("mekaSuitHelmetCompass", true));
         builder.pop();
 
         MekanismConfigTranslations.CLIENT_QIO.applyToBuilder(builder).push("qio");
         qioItemViewerSortType = CachedEnumValue.wrap(this, MekanismConfigTranslations.CLIENT_QIO_SORT_TYPE.applyToBuilder(builder)
-              .defineEnum("itemViewerSortType", ListSortType.NAME));
+              .defineEnum("sortType", ListSortType.NAME));
         qioItemViewerSortDirection = CachedEnumValue.wrap(this, MekanismConfigTranslations.CLIENT_QIO_SORT_DIRECTION.applyToBuilder(builder)
-              .defineEnum("itemViewerSortDirection", SortDirection.ASCENDING));
+              .defineEnum("sortDirection", SortDirection.ASCENDING));
         qioItemViewerSlotsX = CachedIntValue.wrap(this, MekanismConfigTranslations.CLIENT_QIO_SLOTS_X.applyToBuilder(builder)
-              .defineInRange("itemViewerSlotsX", 8, QIOItemViewerContainer.SLOTS_X_MIN, QIOItemViewerContainer.SLOTS_X_MAX));
+              .defineInRange("slotsWide", 8, QIOItemViewerContainer.SLOTS_X_MIN, QIOItemViewerContainer.SLOTS_X_MAX));
         qioItemViewerSlotsY = CachedIntValue.wrap(this, MekanismConfigTranslations.CLIENT_QIO_SLOTS_Y.applyToBuilder(builder)
-              .defineInRange("itemViewerSlotsY", 4, QIOItemViewerContainer.SLOTS_Y_MIN, QIOItemViewerContainer.SLOTS_Y_MAX));
+              .defineInRange("slotsTall", 4, QIOItemViewerContainer.SLOTS_Y_MIN, QIOItemViewerContainer.SLOTS_Y_MAX));
         qioAutoFocusSearchBar = CachedBooleanValue.wrap(this, MekanismConfigTranslations.CLIENT_QIO_AUTO_FOCUS.applyToBuilder(builder)
               .define("autoFocusSearchBar", true));
         qioRejectsToInventory = CachedBooleanValue.wrap(this, MekanismConfigTranslations.CLIENT_QIO_REJECTS_DESTINATION.applyToBuilder(builder)

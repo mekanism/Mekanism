@@ -86,8 +86,8 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
                 if (!multiblock.isFormed()) {
                     return 0;
                 }
-                double rate = Math.min(multiblock.lowerVolume * multiblock.getDispersers() * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get(),
-                      multiblock.vents * MekanismGeneratorsConfig.generators.turbineVentGasFlow.get());
+                double rate = Math.min(multiblock.lowerVolume * multiblock.getDispersers() * MekanismGeneratorsConfig.generators.turbineDisperserChemicalFlow.get(),
+                      multiblock.vents * MekanismGeneratorsConfig.generators.turbineVentChemicalFlow.get());
                 if (rate == 0) {
                     return 0;
                 }
