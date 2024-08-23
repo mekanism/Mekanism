@@ -6,7 +6,7 @@ import java.util.Locale;
 import java.util.function.IntFunction;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.text.IHasTextComponent;
+import mekanism.api.text.IHasTextComponent.IHasEnumNameTextComponent;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
 import net.minecraft.network.chat.Component;
@@ -49,7 +49,7 @@ public interface IRedstoneControl {
     boolean supportsMode(RedstoneControl mode);
 
     @NothingNullByDefault
-    enum RedstoneControl implements IIncrementalEnum<RedstoneControl>, IHasTextComponent, StringRepresentable {
+    enum RedstoneControl implements IIncrementalEnum<RedstoneControl>, IHasEnumNameTextComponent, StringRepresentable {
         DISABLED(MekanismLang.REDSTONE_CONTROL_DISABLED),
         HIGH(MekanismLang.REDSTONE_CONTROL_HIGH),
         LOW(MekanismLang.REDSTONE_CONTROL_LOW),

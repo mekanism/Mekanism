@@ -14,7 +14,7 @@ public abstract class VanillaPaxelMaterial implements IPaxelMaterial {
     }
 
     @Override
-    public int getPaxelMaxUses() {
+    public int getPaxelDurability() {
         return 2 * getVanillaTier().getUses();
     }
 

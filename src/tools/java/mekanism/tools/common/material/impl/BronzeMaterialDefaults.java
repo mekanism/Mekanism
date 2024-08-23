@@ -77,12 +77,6 @@ public class BronzeMaterialDefaults implements BaseMekanismMaterial {
 
     @NotNull
     @Override
-    public String getConfigCommentName() {
-        return "Bronze";
-    }
-
-    @NotNull
-    @Override
     public String getRegistryPrefix() {
         return "bronze";
     }

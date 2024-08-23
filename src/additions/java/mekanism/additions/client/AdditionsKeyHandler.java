@@ -11,7 +11,7 @@ import org.lwjgl.glfw.GLFW;
 public class AdditionsKeyHandler {
 
     public static final KeyMapping voiceKey = new MekKeyBindingBuilder().description(AdditionsLang.KEY_VOICE).keyCode(GLFW.GLFW_KEY_U)
-          .toggleable(MekanismAdditionsConfig.client.voiceKeyIsToggle::getOrDefault).build();
+          .toggleable(() -> !MekanismAdditionsConfig.client.pushToTalk.getOrDefault()).build();
 
     public static void registerKeybindings(RegisterKeyMappingsEvent event) {
         ClientRegistrationUtil.registerKeyBindings(event, voiceKey);

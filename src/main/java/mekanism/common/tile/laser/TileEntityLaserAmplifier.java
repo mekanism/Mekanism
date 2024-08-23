@@ -8,7 +8,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.text.IHasTranslationKey;
+import mekanism.api.text.IHasTranslationKey.IHasEnumNameTranslationKey;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
 import mekanism.common.attachments.containers.ContainerType;
@@ -271,7 +271,7 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     //End methods IComputerTile
 
     @NothingNullByDefault
-    public enum RedstoneOutput implements IIncrementalEnum<RedstoneOutput>, IHasTranslationKey, StringRepresentable {
+    public enum RedstoneOutput implements IIncrementalEnum<RedstoneOutput>, IHasEnumNameTranslationKey, StringRepresentable {
         OFF(MekanismLang.OFF),
         ENTITY_DETECTION(MekanismLang.ENTITY_DETECTION),
         ENERGY_CONTENTS(MekanismLang.ENERGY_CONTENTS);

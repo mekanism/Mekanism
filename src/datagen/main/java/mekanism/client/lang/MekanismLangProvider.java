@@ -15,6 +15,11 @@ import mekanism.client.integration.MekanismAliases;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.advancements.MekanismAdvancements;
+import mekanism.common.config.MekanismConfig;
+import mekanism.common.config.MekanismConfigTranslations;
+import mekanism.common.config.MekanismConfigTranslations.OreConfigTranslations;
+import mekanism.common.config.MekanismConfigTranslations.OreVeinConfigTranslations;
+import mekanism.common.config.MekanismConfigTranslations.TierTranslations;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.content.gear.mekasuit.ModuleChargeDistributionUnit;
 import mekanism.common.content.gear.mekasuit.ModuleElectrolyticBreathingUnit;
@@ -34,15 +39,17 @@ import mekanism.common.content.gear.shared.ModuleColorModulationUnit;
 import mekanism.common.entity.RobitPrideSkinData;
 import mekanism.common.integration.lookingat.LookingAtUtils;
 import mekanism.common.integration.lookingat.jade.JadeConstants;
+import mekanism.common.inventory.container.SelectedWindowData.WindowType;
+import mekanism.common.inventory.container.SelectedWindowData.WindowType.ConfigSaveData;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.common.registration.impl.SlurryRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismDamageTypes;
 import mekanism.common.registries.MekanismDamageTypes.MekanismDamageType;
 import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.registries.MekanismFluids;
-import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.registries.MekanismRobitSkins;
@@ -50,11 +57,24 @@ import mekanism.common.registries.MekanismSounds;
 import mekanism.common.resource.IResource;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
+import mekanism.common.resource.ore.BaseOreConfig;
 import mekanism.common.resource.ore.OreBlockType;
 import mekanism.common.resource.ore.OreType;
 import mekanism.common.tags.MekanismTags;
+import mekanism.common.tier.BinTier;
+import mekanism.common.tier.CableTier;
+import mekanism.common.tier.ChemicalTankTier;
+import mekanism.common.tier.ConductorTier;
+import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tier.FactoryTier;
+import mekanism.common.tier.FluidTankTier;
+import mekanism.common.tier.InductionCellTier;
+import mekanism.common.tier.InductionProviderTier;
+import mekanism.common.tier.PipeTier;
+import mekanism.common.tier.TransporterTier;
+import mekanism.common.tier.TubeTier;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.text.TextUtils;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -69,6 +89,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
 
     @Override
     protected void addTranslations() {
+        addConfigs();
         addTags();
         addItems();
         addBlocks();
@@ -84,6 +105,58 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         addMisc();
         addAdvancements();
         addAliases();
+    }
+
+    private void addConfigs() {
+        addConfigs(MekanismConfig.getConfigs());
+        addConfigs(MekanismConfigTranslations.values());
+        for (WindowType windowType : WindowType.values()) {
+            for (ConfigSaveData saveData : windowType.getSavePaths()) {
+                addConfigs(saveData);
+            }
+        }
+        //Tier Configs
+        for (EnergyCubeTier tier : EnumUtils.ENERGY_CUBE_TIERS) {
+            addConfigs(TierTranslations.create(tier).toArray());
+        }
+        for (FluidTankTier tier : EnumUtils.FLUID_TANK_TIERS) {
+            addConfigs(TierTranslations.create(tier).toArray());
+        }
+        for (ChemicalTankTier tier : EnumUtils.CHEMICAL_TANK_TIERS) {
+            addConfigs(TierTranslations.create(tier).toArray());
+        }
+        for (BinTier tier : EnumUtils.BIN_TIERS) {
+            addConfigs(TierTranslations.create(tier).toArray());
+        }
+        for (InductionCellTier tier : EnumUtils.INDUCTION_CELL_TIERS) {
+            addConfigs(TierTranslations.create(tier).toArray());
+        }
+        for (InductionProviderTier tier : EnumUtils.INDUCTION_PROVIDER_TIERS) {
+            addConfigs(TierTranslations.create(tier).toArray());
+        }
+        for (CableTier tier : EnumUtils.CABLE_TIERS) {
+            addConfigs(TierTranslations.create(tier).toArray());
+        }
+        for (PipeTier tier : EnumUtils.PIPE_TIERS) {
+            addConfigs(TierTranslations.create(tier).toArray());
+        }
+        for (TubeTier tier : EnumUtils.TUBE_TIERS) {
+            addConfigs(TierTranslations.create(tier).toArray());
+        }
+        for (TransporterTier tier : EnumUtils.TRANSPORTER_TIERS) {
+            addConfigs(TierTranslations.create(tier).toArray());
+        }
+        for (ConductorTier tier : EnumUtils.CONDUCTOR_TIERS) {
+            addConfigs(TierTranslations.create(tier).toArray());
+        }
+        //World Gen configs
+        for (OreType oreType : EnumUtils.ORE_TYPES) {
+            String ore = oreType.getResource().getRegistrySuffix();
+            addConfigs(OreConfigTranslations.create(ore).toArray());
+            for (BaseOreConfig baseConfig : oreType.getBaseConfigs()) {
+                addConfigs(OreVeinConfigTranslations.create(ore, baseConfig.name()).toArray());
+            }
+        }
     }
 
     private void addTags() {
@@ -331,7 +404,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         addTiered(MekanismItems.BASIC_TIER_INSTALLER, MekanismItems.ADVANCED_TIER_INSTALLER, MekanismItems.ELITE_TIER_INSTALLER, MekanismItems.ULTIMATE_TIER_INSTALLER, "Tier Installer");
 
         for (Cell<ResourceType, PrimaryResource, ItemRegistryObject<Item>> item : MekanismItems.PROCESSED_RESOURCES.cellSet()) {
-            String resourceName = formatAndCapitalize(item.getColumnKey().getRegistrySuffix());
+            String resourceName = TextUtils.formatAndCapitalize(item.getColumnKey().getRegistrySuffix());
             TagKey<Item> tag = MekanismTags.Items.PROCESSED_RESOURCES.get(item.getRowKey(), item.getColumnKey());
             switch (item.getRowKey()) {
                 case SHARD -> {
@@ -369,21 +442,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
                 default -> throw new IllegalStateException("Unexpected resource type for primary resource.");
             }
         }
-    }
-
-    private static String formatAndCapitalize(String s) {
-        boolean isFirst = true;
-        StringBuilder ret = new StringBuilder();
-        for (char c : s.toCharArray()) {
-            if (c == '_') {
-                isFirst = true;
-                ret.append(' ');
-            } else {
-                ret.append(isFirst ? Character.toUpperCase(c) : c);
-                isFirst = false;
-            }
-        }
-        return ret.toString();
     }
 
     private void addBlocks() {
@@ -476,7 +534,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         //Dynamic storage blocks
         for (Map.Entry<IResource, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
             IResource key = entry.getKey();
-            String name = formatAndCapitalize(key.getRegistrySuffix());
+            String name = TextUtils.formatAndCapitalize(key.getRegistrySuffix());
             add(entry.getValue(), "Block of " + name);
             addAlias(key.getRegistrySuffix(), name + " Block");
             addTag(MekanismTags.Items.PROCESSED_RESOURCE_BLOCKS.get(key), name + " Storage Blocks");
@@ -578,7 +636,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
 
     private void addSlurries() {
         for (Map.Entry<PrimaryResource, SlurryRegistryObject<Chemical, Chemical>> entry : MekanismChemicals.PROCESSED_RESOURCES.entrySet()) {
-            addSlurry(entry.getValue(), formatAndCapitalize(entry.getKey().getRegistrySuffix()));
+            addSlurry(entry.getValue(), TextUtils.formatAndCapitalize(entry.getKey().getRegistrySuffix()));
         }
     }
 
@@ -602,7 +660,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         addRobitSkin(MekanismRobitSkins.ALLAY, "Allay Costume");
         for (Map.Entry<RobitPrideSkinData, ResourceKey<RobitSkin>> entry : MekanismRobitSkins.PRIDE_SKINS.entrySet()) {
             ResourceKey<RobitSkin> prideSkin = entry.getValue();
-            String name = formatAndCapitalize(prideSkin.location().getPath());
+            String name = TextUtils.formatAndCapitalize(prideSkin.location().getPath());
             if (entry.getKey() != RobitPrideSkinData.PRIDE) {
                 name += " Pride";
             }
@@ -804,6 +862,13 @@ public class MekanismLangProvider extends BaseLanguageProvider {
     private void addMisc() {
         add("_mekanism_force_utf8", "\ufeff");
         addJade();
+        //Anchor Type
+        add(MekanismLang.ANCHOR_TYPE_ABSOLUTE, "Absolute (y = value)");
+        add(MekanismLang.ANCHOR_TYPE_ABOVE_BOTTOM, "Above Bottom (y = minY + value)");
+        add(MekanismLang.ANCHOR_TYPE_BELOW_TOP, "Below Top (y = depth - 1 + minY - value)");
+        //Height Shape
+        add(MekanismLang.HEIGHT_SHAPE_TRAPEZOID, "Trapezoid");
+        add(MekanismLang.HEIGHT_SHAPE_UNIFORM, "Uniform");
         //Upgrades
         add(APILang.UPGRADE_SPEED, "Speed");
         add(APILang.UPGRADE_SPEED_DESCRIPTION, "Increases speed of machinery.");
@@ -901,7 +966,9 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.LIST_SORT_COUNT_DESC, "Sort items by count.");
         add(MekanismLang.LIST_SORT_MOD_DESC, "Sort items by mod.");
         add(MekanismLang.LIST_SORT_REGISTRY_NAME_DESC, "Sort items by registry name.");
+        add(MekanismLang.LIST_SORT_ASCENDING, "Ascending");
         add(MekanismLang.LIST_SORT_ASCENDING_DESC, "Sort items in ascending order.");
+        add(MekanismLang.LIST_SORT_DESCENDING, "Descending");
         add(MekanismLang.LIST_SORT_DESCENDING_DESC, "Sort items in descending order.");
         add(MekanismLang.LIST_SEARCH, "Search:");
         add(MekanismLang.LIST_SORT, "Sort:");
@@ -1729,7 +1796,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
     }
 
     private void addOre(OreType type, String description) {
-        String name = formatAndCapitalize(type.getResource().getRegistrySuffix());
+        String name = TextUtils.formatAndCapitalize(type.getResource().getRegistrySuffix());
         OreBlockType oreBlockType = MekanismBlocks.ORES.get(type);
         add(oreBlockType.stone(), name + " Ore");
         add(oreBlockType.stoneBlock().getDescriptionTranslationKey(), description);

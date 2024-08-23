@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import mekanism.additions.common.config.AdditionsConfigTranslations.BabySpawnTranslations;
 import mekanism.additions.common.entity.baby.BabyType;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
-import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.config.BaseMekanismConfig;
 import mekanism.common.config.IMekanismConfig;
 import mekanism.common.config.value.CachedBooleanValue;
@@ -17,6 +17,7 @@ import mekanism.common.config.value.CachedResourceLocationListValue;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.biome.MobSpawnSettings;
@@ -37,40 +38,49 @@ public class AdditionsConfig extends BaseMekanismConfig {
 
     AdditionsConfig() {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
-        builder.comment("Mekanism Additions Config. This config is synced between server and client.").push("additions");
 
-        obsidianTNTDelay = CachedIntValue.wrap(this, builder.comment("Fuse time for Obsidian TNT.")
-              .defineInRange("obsidianTNTDelay", 5 * SharedConstants.TICKS_PER_SECOND, 0, Integer.MAX_VALUE));
-        obsidianTNTBlastRadius = CachedFloatValue.wrap(this, builder.comment("Radius of the explosion of Obsidian TNT.")
-              .defineInRange("obsidianTNTBlastRadius", 12, 0.1, 1_000));
+        AdditionsConfigTranslations.SERVER_OBSIDIAN_TNT.applyToBuilder(builder).push("obsidian_tnt");
+        obsidianTNTDelay = CachedIntValue.wrap(this, AdditionsConfigTranslations.SERVER_OBSIDIAN_DELAY.applyToBuilder(builder)
+              .defineInRange("delay", 5 * SharedConstants.TICKS_PER_SECOND, 0, Integer.MAX_VALUE));
+        obsidianTNTBlastRadius = CachedFloatValue.wrap(this, AdditionsConfigTranslations.SERVER_OBSIDIAN_RADIUS.applyToBuilder(builder)
+              .defineInRange("blastRadius", 12, 0.1, 1_000));
+        builder.pop();
 
-        babyArrowDamageMultiplier = CachedDoubleValue.wrap(this, builder.comment("Damage multiplier of arrows shot by baby mobs.")
-              .defineInRange("babyArrowDamageMultiplier", 0.25, 0.1, 10));
+        AdditionsConfigTranslations.SERVER_VOICE.applyToBuilder(builder).push("voice_server");
+        voiceServerEnabled = CachedBooleanValue.wrap(this, AdditionsConfigTranslations.SERVER_VOICE_ENABLED.applyToBuilder(builder)
+              .worldRestart()
+              .define("enabled", false));
+        voicePort = CachedIntValue.wrap(this, AdditionsConfigTranslations.SERVER_VOICE_PORT.applyToBuilder(builder)
+              .defineInRange("voicePort", 36_123, 1, 65_535));
+        builder.pop();
 
-        voiceServerEnabled = CachedBooleanValue.wrap(this, builder.comment("Enables the voice server for Walkie Talkies.").worldRestart()
-              .define("voiceServerEnabled", false));
-        voicePort = CachedIntValue.wrap(this, builder.comment("TCP port for the Voice server to listen on.")
-              .defineInRange("VoicePort", 36_123, 1, 65_535));
+        AdditionsConfigTranslations.SERVER_BABY.applyToBuilder(builder).push("baby_mobs");
+        babyArrowDamageMultiplier = CachedDoubleValue.wrap(this, AdditionsConfigTranslations.SERVER_BABY_ARROW_DAMAGE.applyToBuilder(builder)
+              .defineInRange("arrowDamageMultiplier", 0.25, 0.1, 10));
 
-        builder.comment("Config options regarding spawning of entities.").push("spawning");
         addBabyTypeConfig(BabyType.BOGGED, builder, AdditionsEntityTypes.BABY_BOGGED, EntityType.BOGGED);
         addBabyTypeConfig(BabyType.CREEPER, builder, AdditionsEntityTypes.BABY_CREEPER, EntityType.CREEPER);
         addBabyTypeConfig(BabyType.ENDERMAN, builder, AdditionsEntityTypes.BABY_ENDERMAN, EntityType.ENDERMAN);
         addBabyTypeConfig(BabyType.SKELETON, builder, AdditionsEntityTypes.BABY_SKELETON, EntityType.SKELETON);
         addBabyTypeConfig(BabyType.STRAY, builder, AdditionsEntityTypes.BABY_STRAY, EntityType.STRAY);
         addBabyTypeConfig(BabyType.WITHER_SKELETON, builder, AdditionsEntityTypes.BABY_WITHER_SKELETON, EntityType.WITHER_SKELETON);
-        builder.pop(2);
+        builder.pop();
+
         configSpec = builder.build();
     }
 
     private void addBabyTypeConfig(BabyType type, ModConfigSpec.Builder builder, Holder<EntityType<?>> entityTypeProvider, EntityType<?> parentType) {
-        spawnConfigs.put(type, new SpawnConfig(this, builder, "baby " + type.getSerializedName().replace('_', ' '),
-              entityTypeProvider, parentType));
+        spawnConfigs.put(type, new SpawnConfig(this, builder, "baby_" + type.getSerializedName(), entityTypeProvider, parentType));
     }
 
     @Override
     public String getFileName() {
         return "additions";
+    }
+
+    @Override
+    public String getTranslation() {
+        return "General Config";
     }
 
     @Override
@@ -90,9 +100,9 @@ public class AdditionsConfig extends BaseMekanismConfig {
     public static class SpawnConfig {
 
         public final CachedBooleanValue shouldSpawn;
-        public final CachedDoubleValue weightPercentage;
         public final CachedDoubleValue minSizePercentage;
         public final CachedDoubleValue maxSizePercentage;
+        public final CachedDoubleValue weightPercentage;
         public final CachedDoubleValue spawnCostPerEntityPercentage;
         public final CachedDoubleValue maxSpawnCostPercentage;
         public final CachedResourceLocationListValue biomeBlackList;
@@ -103,29 +113,31 @@ public class AdditionsConfig extends BaseMekanismConfig {
         private SpawnConfig(IMekanismConfig config, ModConfigSpec.Builder builder, String name, Holder<EntityType<?>> entityType, EntityType<?> parentType) {
             this.entityType = entityType;
             this.parentType = parentType;
-            builder.comment("Config options regarding " + name + ".").push(name.replace(" ", "-"));
-            this.shouldSpawn = CachedBooleanValue.wrap(config, builder.comment("Enable the spawning of " + name + ". Think baby zombies.")
+            BabySpawnTranslations translations = BabySpawnTranslations.create(name);
+
+            translations.topLevel().applyToBuilder(builder).push(name);
+            this.shouldSpawn = CachedBooleanValue.wrap(config, translations.shouldSpawn().applyToBuilder(builder)
                   .worldRestart()
                   .define("shouldSpawn", true));
-            this.weightPercentage = CachedDoubleValue.wrap(config, builder.comment("The multiplier for weight of " + name + " spawns, compared to the adult mob.")
-                  .worldRestart()
-                  .defineInRange("weightPercentage", 0.05, 0, 100));
-            this.minSizePercentage = CachedDoubleValue.wrap(config, builder.comment("The multiplier for minimum group size of " + name + " spawns, compared to the adult mob.")
+            this.minSizePercentage = CachedDoubleValue.wrap(config, translations.minSize().applyToBuilder(builder)
                   .worldRestart()
                   .defineInRange("minSizePercentage", 0.5, 0, 100));
-            this.maxSizePercentage = CachedDoubleValue.wrap(config, builder.comment("The multiplier for maximum group size of " + name + " spawns, compared to the adult mob.")
+            this.maxSizePercentage = CachedDoubleValue.wrap(config, translations.maxSize().applyToBuilder(builder)
                   .worldRestart()
                   .defineInRange("maxSizePercentage", 0.5, 0, 100));
-            this.spawnCostPerEntityPercentage = CachedDoubleValue.wrap(config, builder.comment("The multiplier for spawn cost per entity of " + name + " spawns, compared to the adult mob.")
+            this.weightPercentage = CachedDoubleValue.wrap(config, translations.weight().applyToBuilder(builder)
+                  .worldRestart()
+                  .defineInRange("weightPercentage", 0.05, 0, 100));
+            this.spawnCostPerEntityPercentage = CachedDoubleValue.wrap(config, translations.costPerEntity().applyToBuilder(builder)
                   .worldRestart()
                   .defineInRange("spawnCostPerEntityPercentage", 1D, 0, 100));
-            this.maxSpawnCostPercentage = CachedDoubleValue.wrap(config, builder.comment("The multiplier for max spawn cost of " + name + " spawns, compared to the adult mob.")
+            this.maxSpawnCostPercentage = CachedDoubleValue.wrap(config, translations.maxCost().applyToBuilder(builder)
                   .worldRestart()
                   .defineInRange("maxSpawnCostPercentage", 1D, 0, 100));
-            this.biomeBlackList = CachedResourceLocationListValue.define(config, builder.comment("The list of biome ids that " + name + " will not spawn in even if the normal mob variant can spawn.")
-                  .worldRestart(), "biomeBlackList", ConstantPredicates.alwaysTrue());
-            this.structureBlackList = CachedResourceLocationListValue.define(config, builder.comment("The list of structure ids that " + name + " will not spawn in even if the normal mob variant can spawn.")
-                  .worldRestart(), "structureBlackList", BuiltInRegistries.STRUCTURE_TYPE::containsKey);
+            this.biomeBlackList = CachedResourceLocationListValue.define(config, translations.biomeBlacklist().applyToBuilder(builder)
+                  .worldRestart(), "biomeBlackList", ResourceLocation.withDefaultNamespace("plains"));
+            this.structureBlackList = CachedResourceLocationListValue.define(config, translations.structureBlacklist().applyToBuilder(builder)
+                  .worldRestart(), "structureBlackList", ResourceLocation.withDefaultNamespace("fortress"), BuiltInRegistries.STRUCTURE_TYPE::containsKey);
             builder.pop();
         }
 

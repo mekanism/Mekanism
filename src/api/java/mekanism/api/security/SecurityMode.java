@@ -8,7 +8,7 @@ import mekanism.api.IIncrementalEnum;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
-import mekanism.api.text.IHasTextComponent;
+import mekanism.api.text.IHasTextComponent.IHasEnumNameTextComponent;
 import mekanism.api.text.ILangEntry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -22,7 +22,7 @@ import net.minecraft.util.StringRepresentable;
  * @since 10.2.1
  */
 @NothingNullByDefault
-public enum SecurityMode implements IIncrementalEnum<SecurityMode>, IHasTextComponent, StringRepresentable {
+public enum SecurityMode implements IIncrementalEnum<SecurityMode>, IHasEnumNameTextComponent, StringRepresentable {
     /**
      * Public Security: Everyone is allowed access.
      */

@@ -76,12 +76,6 @@ public class SteelMaterialDefaults implements BaseMekanismMaterial {
 
     @NotNull
     @Override
-    public String getConfigCommentName() {
-        return "Steel";
-    }
-
-    @NotNull
-    @Override
     public String getRegistryPrefix() {
         return "steel";
     }

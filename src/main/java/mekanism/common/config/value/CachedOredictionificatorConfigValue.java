@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import mekanism.common.config.IMekanismConfig;
-import net.minecraft.ResourceLocationException;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.common.ModConfigSpec.ConfigValue;
@@ -22,6 +21,7 @@ public class CachedOredictionificatorConfigValue extends CachedMapConfigValue<St
           Supplier<Map<String, List<String>>> defaults) {
         return new CachedOredictionificatorConfigValue(config, builder.defineListAllowEmpty(path,
               () -> encodeStatic(defaults.get(), CachedOredictionificatorConfigValue::encodeStatic),
+              () -> "c:ingots/",
               o -> o instanceof String string && ResourceLocation.tryParse(string.toLowerCase(Locale.ROOT)) != null));
     }
 
@@ -44,12 +44,11 @@ public class CachedOredictionificatorConfigValue extends CachedMapConfigValue<St
         //Ensure it is all lower case
         String namespace = key.toLowerCase(Locale.ROOT);
         for (String path : values) {
-            try {
-                //Try to create a resource location from it to ensure all characters are valid
-                ResourceLocation rl = ResourceLocation.fromNamespaceAndPath(namespace, path.toLowerCase(Locale.ROOT));
+            //Try to create a resource location from it to ensure all characters are valid
+            ResourceLocation rl = ResourceLocation.tryBuild(namespace, path.toLowerCase(Locale.ROOT));
+            if (rl != null) {
                 // if they are, add it
                 adder.accept(rl.toString());
-            } catch (ResourceLocationException ignored) {
             }
         }
     }

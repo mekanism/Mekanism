@@ -20,6 +20,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.Mth;
+import net.neoforged.neoforge.common.TranslatableEnum;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -106,7 +107,7 @@ public class UnitDisplayUtils {
     }
 
     @NothingNullByDefault
-    public enum EnergyUnit implements IDisableableEnum<EnergyUnit>, IEnergyConversion, Unit, IHasTranslationKey {
+    public enum EnergyUnit implements IDisableableEnum<EnergyUnit>, IEnergyConversion, Unit, IHasTranslationKey, TranslatableEnum {
         JOULES(MekanismLang.ENERGY_JOULES, MekanismLang.ENERGY_JOULES_PLURAL, MekanismLang.ENERGY_JOULES_SHORT, "j", null, ConstantPredicates.ALWAYS_TRUE) {
             @Override
             public double getConversion() {
@@ -179,6 +180,12 @@ public class UnitDisplayUtils {
 
         @NotNull
         @Override
+        public Component getTranslatedName() {
+            return getLabel(false).translate();
+        }
+
+        @NotNull
+        @Override
         public EnergyUnit byIndex(int index) {
             return BY_ID.apply(index);
         }
@@ -199,7 +206,7 @@ public class UnitDisplayUtils {
     }
 
     @NothingNullByDefault
-    public enum TemperatureUnit implements IIncrementalEnum<TemperatureUnit>, IHasTranslationKey, Unit {
+    public enum TemperatureUnit implements IIncrementalEnum<TemperatureUnit>, IHasTranslationKey, Unit, TranslatableEnum {
         KELVIN(MekanismLang.TEMPERATURE_KELVIN, MekanismLang.TEMPERATURE_KELVIN_SHORT, "K", "k", 0, 1),
         CELSIUS(MekanismLang.TEMPERATURE_CELSIUS, MekanismLang.TEMPERATURE_CELSIUS_SHORT, "°C", "c", 273.15, 1),
         RANKINE(MekanismLang.TEMPERATURE_RANKINE, MekanismLang.TEMPERATURE_RANKINE_SHORT, "R", "r", 0, 1.8),
@@ -241,6 +248,12 @@ public class UnitDisplayUtils {
         @Override
         public ILangEntry getLabel(boolean singular) {
             return langEntry;
+        }
+
+        @NotNull
+        @Override
+        public Component getTranslatedName() {
+            return getLabel(false).translate();
         }
 
         @Override

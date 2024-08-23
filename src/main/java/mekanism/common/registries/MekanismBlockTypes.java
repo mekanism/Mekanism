@@ -405,7 +405,7 @@ public class MekanismBlockTypes {
     // Chargepad
     public static final BlockTypeTile<TileEntityChargepad> CHARGEPAD = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.CHARGEPAD, MekanismLang.DESCRIPTION_CHARGEPAD)
-          .withEnergyConfig(MekanismConfig.usage.chargePad, MekanismConfig.storage.chargePad)
+          .withEnergyConfig(MekanismConfig.usage.chargePad, MekanismConfig.storage.chargepad)
           .withSound(MekanismSounds.CHARGEPAD)
           .with(Attributes.ACTIVE_LIGHT, new AttributeStateFacing())
           .with(new AttributeParticleFX().add(DustParticleOptions.REDSTONE, rand -> new Pos3D(rand.nextDouble() - 0.5, -0.35, rand.nextDouble() - 0.5)))

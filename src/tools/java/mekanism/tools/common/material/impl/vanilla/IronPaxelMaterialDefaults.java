@@ -16,9 +16,4 @@ public class IronPaxelMaterialDefaults extends VanillaPaxelMaterial {
     public float getPaxelDamage() {
         return 7;
     }
-
-    @Override
-    public String getConfigCommentName() {
-        return "Iron";
-    }
 }

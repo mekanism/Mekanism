@@ -1,6 +1,7 @@
 package mekanism.common.util.text;
 
 import java.text.NumberFormat;
+import java.util.Locale;
 import mekanism.common.MekanismLang;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -49,6 +50,21 @@ public final class TextUtils {
         }
         if (prefix) {
             ret.insert(0, HEX_PREFIX);
+        }
+        return ret.toString();
+    }
+
+    public static String formatAndCapitalize(String s) {
+        boolean isFirst = true;
+        StringBuilder ret = new StringBuilder();
+        for (char c : s.toCharArray()) {
+            if (c == '_' || c == ' ') {
+                isFirst = true;
+                ret.append(' ');
+            } else {
+                ret.append(isFirst ? Character.toString(c).toUpperCase(Locale.ROOT) : c);
+                isFirst = false;
+            }
         }
         return ret.toString();
     }

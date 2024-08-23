@@ -79,12 +79,6 @@ public class OsmiumMaterialDefaults implements BaseMekanismMaterial {
 
     @NotNull
     @Override
-    public String getConfigCommentName() {
-        return "Osmium";
-    }
-
-    @NotNull
-    @Override
     public String getRegistryPrefix() {
         return "osmium";
     }

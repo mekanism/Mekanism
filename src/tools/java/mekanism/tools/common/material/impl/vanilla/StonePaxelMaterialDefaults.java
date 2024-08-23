@@ -16,9 +16,4 @@ public class StonePaxelMaterialDefaults extends VanillaPaxelMaterial {
     public float getPaxelDamage() {
         return 8;
     }
-
-    @Override
-    public String getConfigCommentName() {
-        return "Stone";
-    }
 }

@@ -76,12 +76,6 @@ public class LapisLazuliMaterialDefaults implements BaseMekanismMaterial {
 
     @NotNull
     @Override
-    public String getConfigCommentName() {
-        return "Lapis Lazuli";
-    }
-
-    @NotNull
-    @Override
     public String getRegistryPrefix() {
         return "lapis_lazuli";
     }

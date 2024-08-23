@@ -39,7 +39,7 @@ public abstract class MekanismTileEntityRenderer<TILE extends BlockEntity> imple
     @Override
     public int getViewDistance() {
         //Override and change the default range for TERs for mekanism tiles to the value defined in the config
-        return MekanismConfig.client.terRange.get();
+        return MekanismConfig.client.berRange.get();
     }
 
     protected boolean isTickingNormally(TILE tile) {

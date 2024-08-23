@@ -1,6 +1,8 @@
 package mekanism.client.lang;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.providers.IBlockProvider;
@@ -13,6 +15,8 @@ import mekanism.common.advancements.MekanismAdvancement;
 import mekanism.common.base.IModModule;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeGui;
+import mekanism.common.config.IConfigTranslation;
+import mekanism.common.config.IMekanismConfig;
 import mekanism.common.registration.impl.FluidRegistryObject;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.Util;
@@ -61,7 +65,6 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
     }
 
     protected void addModInfo(String description) {
-        add("fml.menu.mods.info.displayname." + modid, modName);
         add("fml.menu.mods.info.description." + modid, description);
     }
 
@@ -116,6 +119,32 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
     protected void add(MekanismAdvancement advancement, String title, String description) {
         add(advancement.title(), title);
         add(advancement.description(), description);
+    }
+
+    private String getConfigSectionTranslationPath(IMekanismConfig config) {
+        String baseConfigFolder = Mekanism.MOD_NAME.toLowerCase(Locale.ROOT);
+        String fileName = config.getFileName().replaceAll("[^a-zA-Z0-9]+", ".").toLowerCase(Locale.ROOT);
+        return modid + ".configuration.section." + baseConfigFolder + "." + fileName + ".toml";
+    }
+
+    protected void addConfigs(Collection<IMekanismConfig> configs) {
+        add(modid + ".configuration.title", modName + " Config");
+        for (IMekanismConfig config : configs) {
+            String key = getConfigSectionTranslationPath(config);
+            add(key, config.getTranslation());
+            add(key + ".title", modName + " - " + config.getTranslation());
+        }
+    }
+
+    protected void addConfigs(IConfigTranslation... translations) {
+        for (IConfigTranslation translation : translations) {
+            add(translation, translation.title());
+            add(translation.getTranslationKey() + ".tooltip", translation.tooltip());
+            String button = translation.button();
+            if (button != null) {
+                add(translation.getTranslationKey() + ".button", button);
+            }
+        }
     }
 
     protected void addAliases(IAliasedTranslation... translations) {

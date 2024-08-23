@@ -54,7 +54,7 @@ public interface BaseMekanismMaterial extends Tier, IPaxelMaterial {
     }
 
     @Override
-    default int getPaxelMaxUses() {
+    default int getPaxelDurability() {
         return 2 * getUses();
     }
 
