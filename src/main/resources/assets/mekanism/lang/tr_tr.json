@@ -1079,7 +1079,6 @@
   "fluid_container.mekanism.empty": "Boş",
   "fluid_container.mekanism.fill": "Dolu",
   "fml.menu.mods.info.description.mekanism": "Mekanism; güçlü aletler, zırhlar ve silahlar üretebilen oldukça teknolojik makineler sunan bir Minecraft eklentisidir.",
-  "fml.menu.mods.info.displayname.mekanism": "Mekanism",
   "free_runner.mekanism.disabled": "Devre Dışı",
   "free_runner.mekanism.mode_change": "Serbest koşucu modu şuna değiştirildi: %1$s",
   "free_runner.mekanism.normal": "Normal",
