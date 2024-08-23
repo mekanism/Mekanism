@@ -1078,7 +1078,6 @@
   "fluid_container.mekanism.empty": "倒空",
   "fluid_container.mekanism.fill": "填充",
   "fml.menu.mods.info.description.mekanism": "通用機械是一個含有高科技機械的Minecraft模組, 可讓你製作強大的工具, 盔甲和武器.",
-  "fml.menu.mods.info.displayname.mekanism": "通用機械",
   "free_runner.mekanism.disabled": "禁用",
   "free_runner.mekanism.mode_change": "自由助跑器模式更改為: %1$s",
   "free_runner.mekanism.normal": "標準",
