@@ -180,11 +180,6 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
     USAGE_TELEPORTER_PENALTY("usage.teleporter.penalty.dimension", "Dimension Energy Penalty",
           "Flat additional cost for interdimensional teleportation. Distance is still taken into account minimizing energy cost based on dimension scales."),
 
-
-    GEAR_MEKA_SUIT("gear.meka_suit", "MekaSuit Settings", "Settings for configuring the MekaSuit"),
-    GEAR_MEKA_SUIT_DAMAGE_ABSORPTION("gear.meka_suit.damage_absorption", "MekaSuit Damage Absorption Settings", "Settings for configuring damage absorption of the MekaSuit"),
-
-
     //World Config
     WORLD_RETROGEN("world.retrogen", "Retrogen",
           "Allows chunks to retrogen Mekanism salt and ore blocks. In general when enabling this you also want to bump userWorldGenVersion."),
@@ -200,6 +195,163 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
     WORLD_SALT_RADIUS_MIN("world.salt.radius.min", "Min Radius", "Base radius of a vein of salt."),
     WORLD_SALT_RADIUS_MAX("world.salt.radius.max", "Min Radius", "Extended variability (spread) for the radius in a vein of salt."),
     WORLD_SALT_HALF_HEIGHT("world.salt.half_height", "Half Height", "Number of blocks to extend up and down when placing a vein of salt."),
+
+    //Gear Config
+    GEAR_DISASSEMBLER("gear.disassembler", "Atomic Disassembler Settings", "Settings for configuring the Atomic Disassembler"),
+    GEAR_DISASSEMBLER_MAX_ENERGY("gear.disassembler.max_energy", "Max Energy", "Maximum amount (joules) of energy the Atomic Disassembler can contain."),
+    GEAR_DISASSEMBLER_CHARGE_RATE("gear.disassembler.charge_rate", "Charge Rate", "Amount (joules) of energy the Atomic Disassembler can accept per tick."),
+    GEAR_DISASSEMBLER_ENERGY_USAGE("gear.disassembler.energy_usage", "Energy Usage",
+          "Base Energy (Joules) usage of the Atomic Disassembler. (Gets multiplied by speed factor)"),
+    GEAR_DISASSEMBLER_ENERGY_USAGE_WEAPON("gear.disassembler.energy_usage.weapon", "Energy Usage Weapon",
+          "Cost in Joules of using the Atomic Disassembler as a weapon."),
+    GEAR_DISASSEMBLER_MIN_DAMAGE("gear.disassembler.damage.min", "Min Damage",
+          "The bonus attack damage of the Atomic Disassembler when it is out of power. (Value is in number of half hearts)"),
+    GEAR_DISASSEMBLER_MAX_DAMAGE("gear.disassembler.damage.max", "Max Damage",
+          "The bonus attack damage of the Atomic Disassembler when it has at least energyUsageWeapon power stored. (Value is in number of half hearts)"),
+    GEAR_DISASSEMBLER_ATTACK_SPEED("gear.disassembler.attack_speed", "Attack Speed", "Attack speed of the Atomic Disassembler."),
+    GEAR_DISASSEMBLER_SLOW("gear.disassembler.slow", "Slow Mode Enabled", "Enable the 'Slow ' mode for the Atomic Disassembler."),
+    GEAR_DISASSEMBLER_FAST("gear.disassembler.fast", "Fast Mode Enabled", "Enable the 'Fast' mode for the Atomic Disassembler."),
+    GEAR_DISASSEMBLER_VEIN_MINING("gear.disassembler.vein_mining", "Vein Mining", "Enable the 'Vein Mining' mode for the Atomic Disassembler."),
+    GEAR_DISASSEMBLER_MINING_COUNT("gear.disassembler.mining_count", "Vein Mining Block Count",
+          "The max Atomic Disassembler Vein Mining Block Count. Requires veinMining to be enabled."),
+
+    GEAR_BOW("gear.bow", "Electric Bow Settings", "Settings for configuring the Electric Bow"),
+    GEAR_BOW_MAX_ENERGY("gear.bow.max_energy", "Max Energy", "Maximum amount (joules) of energy the Electric Bow can contain."),
+    GEAR_BOW_CHARGE_RATE("gear.bow.charge_rate", "Charge Rate", "Amount (joules) of energy the Electric Bow can accept per tick."),
+    GEAR_BOW_ENERGY_USAGE("gear.bow.energy_usage", "Energy Usage", "Cost in Joules of using the Electric Bow."),
+    GEAR_BOW_ENERGY_USAGE_FLAME("gear.bow.energy_usage.flame", "Flame Energy Usage", "Cost in Joules of using the Electric Bow with flame mode active."),
+
+    GEAR_ENERGY_TABLET("gear.energy_table", "Energy Tablet Settings", "Settings for configuring Energy Tablets"),
+    GEAR_ENERGY_TABLET_MAX_ENERGY("gear.energy_table.max_energy", "Max Energy", "Maximum amount (joules) of energy the Energy Tablet can contain."),
+    GEAR_ENERGY_TABLET_CHARGE_RATE("gear.energy_table.charge_rate", "Charge Rate", "Amount (joules) of energy the Energy Tablet can accept per tick."),
+
+    GEAR_GAUGE_DROPPER("gear.gauge_dropper", "Gauge Dropper Settings", "Settings for configuring Gauge Droppers"),
+    GEAR_GAUGE_DROPPER_CAPACITY("gear.gauge_dropper.capacity", "Capacity", "Capacity in mB of gauge droppers."),
+    GEAR_GAUGE_DROPPER_TRANSFER_RATE("gear.gauge_dropper.transfer_rate", "Transfer Rate", "Rate in mB/t at which a gauge dropper can be filled or emptied."),
+
+    GEAR_FLAMETHROWER("gear.flamethrower", "Flamethrower Settings", "Settings for configuring the Flamethrower"),
+    GEAR_FLAMETHROWER_CAPACITY("gear.flamethrower.capacity", "Capacity", "Flamethrower tank capacity in mB."),
+    GEAR_FLAMETHROWER_FILL_RATE("gear.flamethrower.fill_rate", "Fill Rate", "Rate in mB/t at which a Flamethrower's tank can accept hydrogen."),
+    GEAR_FLAMETHROWER_DESTROY_ITEMS("gear.flamethrower.destroy_items", "Destroy Items",
+          "Determines whether or not the Flamethrower can destroy items if it fails to smelt them."),
+
+    GEAR_FREE_RUNNERS("gear.free_runners", "Free Runner Settings", "Settings for configuring Free Runners"),
+    GEAR_FREE_RUNNERS_MAX_ENERGY("gear.free_runners.max_energy", "Max Energy", "Maximum amount (joules) of energy Free Runners can contain."),
+    GEAR_FREE_RUNNERS_CHARGE_RATE("gear.free_runners.charge_rate", "Charge Rate", "Amount (joules) of energy the Free Runners can accept per tick."),
+    GEAR_FREE_RUNNERS_FALL_COST("gear.free_runners.fall.energy", "Fall Energy Cost",
+          "Energy cost multiplier in Joules for reducing fall damage with free runners. Energy cost is: FallDamage * fallEnergyCost. (1 FallDamage is 1 half heart)"),
+    GEAR_FREE_RUNNERS_FALL_DAMAGE("gear.free_runners.fall.reduction", "Fall Damage Reduction Ratio",
+          "Percent of damage taken from falling that can be absorbed by Free Runners when they have enough power."),
+
+    GEAR_JETPACK("gear.jetpack", "Jetpack Settings", "Settings for configuring Jetpacks"),
+    GEAR_JETPACK_CAPACITY("gear.jetpack.capacity", "Capacity", "Jetpack tank capacity in mB."),
+    GEAR_JETPACK_FILL_RATE("gear.jetpack.fill_rate", "Fill Rate", "Rate in mB/t at which a Jetpack's tank can accept hydrogen."),
+
+    GEAR_NETWORK_READER("gear.network_reader", "Network Reader Settings", "Settings for configuring Network Readers"),
+    GEAR_NETWORK_READER_MAX_ENERGY("gear.network_reader.max_energy", "Max Energy", "Maximum amount (joules) of energy the Network Reader can contain."),
+    GEAR_NETWORK_READER_CHARGE_RATE("gear.network_reader.charge_rate", "Charge Rate", "Amount (joules) of energy the Network Reader can accept per tick."),
+    GEAR_NETWORK_READER_ENERGY_USAGE("gear.network_reader.energy_usage", "Energy Usage", "Energy usage in joules for each network reading."),
+
+    GEAR_PORTABLE_TELEPORTER("gear.portable_teleporter", "Portable Teleporter Settings", "Settings for configuring the Portable Teleporter"),
+    GEAR_PORTABLE_TELEPORTER_MAX_ENERGY("gear.portable_teleporter.max_energy", "Max Energy", "Maximum amount (joules) of energy the Portable Teleporter can contain."),
+    GEAR_PORTABLE_TELEPORTER_CHARGE_RATE("gear.portable_teleporter.charge_rate", "Charge Rate", "Amount (joules) of energy the Portable Teleporter can accept per tick."),
+    GEAR_PORTABLE_TELEPORTER_DELAY("gear.portable_teleporter.delay", "Teleportation Delay",
+          "Delay in ticks before a player is teleported after clicking the Teleport button in the portable teleporter."),
+
+    GEAR_SCUBA_TANK("gear.scuba_tank", "Scuba Tank Settings", "Settings for configuring Scuba Tanks"),
+    GEAR_SCUBA_TANK_CAPACITY("gear.scuba_tank.capacity", "Capacity", "Scuba Tank capacity in mB."),
+    GEAR_SCUBA_TANK_FILL_RATE("gear.scuba_tank.fill_rate", "Fill Rate", "Rate in mB/t at which a Scuba Tank can accept oxygen."),
+
+    GEAR_SEISMIC_READER("gear.seismic_reader", "Seismic Reader Settings", "Settings for configuring Seismic Readers"),
+    GEAR_SEISMIC_READER_MAX_ENERGY("gear.seismic_reader.max_energy", "Max Energy", "Maximum amount (joules) of energy the Seismic Reader can contain."),
+    GEAR_SEISMIC_READER_CHARGE_RATE("gear.seismic_reader.charge_rate", "Charge Rate", "Amount (joules) of energy the Seismic Reader can accept per tick."),
+    GEAR_SEISMIC_READER_ENERGY_USAGE("gear.seismic_reader.energy_usage", "Energy Usage", "Energy usage in joules required to use the Seismic Reader."),
+
+    GEAR_CANTEEN("gear.canteen", "Canteen Settings", "Settings for configuring Canteens"),
+    GEAR_CANTEEN_CAPACITY("gear.canteen.capacity", "Capacity", "Maximum amount in mB of Nutritional Paste storable by the Canteen."),
+    GEAR_CANTEEN_TRANSFER_RATE("gear.canteen.transfer_rate", "Transfer Rate", "Rate in mB/t at which Nutritional Paste can be transferred into a Canteen."),
+
+    GEAR_MEKA_TOOL("gear.meka_tool", "Meka-Tool Settings", "Settings for configuring the Meka-Tool"),
+    GEAR_MEKA_TOOL_CAPACITY("gear.meka_tool.capacity", "Max Energy", "Energy capacity (Joules) of the Meka-Tool without any installed upgrades. Quadratically scaled by upgrades."),
+    GEAR_MEKA_TOOL_CHARGE_RATE("gear.meka_tool.charge_rate", "Charge Rate", "Amount (joules) of energy the Meka-Tool can accept per tick. Quadratically scaled by upgrades."),
+    GEAR_MEKA_TOOL_DAMAGE("gear.meka_tool.damage", "Base Damage", "Base bonus damage applied by the Meka-Tool without using any energy."),
+    GEAR_MEKA_TOOL_ATTACK_SPEED("gear.meka_tool.attack_speed", "Attack Speed", "Attack speed of the Meka-Tool."),
+    GEAR_MEKA_TOOL_EFFICIENCY("gear.meka_tool.efficiency", "Efficiency", "Efficiency of the Meka-Tool with energy but without any upgrades."),
+    GEAR_MEKA_TOOL_TELEPORTATION_DISTANCE("gear.meka_tool.teleportation_distance", "Max Teleportation Distance", "Maximum distance a player can teleport with the Meka-Tool."),
+    GEAR_MEKA_TOOL_EXTENDED_VEIN("gear.meka_tool.extended_vein", "Extended Vein Mining",
+          "Enable the 'Extended Vein Mining' mode for the Meka-Tool. (Allows vein mining everything not just ores/logs)"),
+
+    GEAR_MEKA_TOOL_ENERGY_USAGE("gear.meka_tool.energy_usage", "Energy Usage", "Settings for configuring the Meka-Tool's Energy Usage"),
+    GEAR_MEKA_TOOL_ENERGY_USAGE_BASE("gear.meka_tool.energy_usage.base", "Base", "Base energy (Joules) usage of the Meka-Tool. (Gets multiplied by speed factor)"),
+    GEAR_MEKA_TOOL_ENERGY_USAGE_SILK("gear.meka_tool.energy_usage.silk", "Silk Touch", "Silk touch energy (Joules) usage of the Meka-Tool. (Gets multiplied by speed factor)"),
+    GEAR_MEKA_TOOL_ENERGY_USAGE_WEAPON("gear.meka_tool.energy_usage.weapon", "Weapon", "Cost in Joules of using the Meka-Tool to deal 4 units of damage."),
+    GEAR_MEKA_TOOL_HOE("gear.meka_tool.hoe", "Hoe", "Cost in Joules of using the Meka-Tool as a hoe."),
+    GEAR_MEKA_TOOL_SHOVEL("gear.meka_tool.shovel", "Shovel", "Cost in Joules of using the Meka-Tool as a shovel for making paths and dowsing campfires."),
+    GEAR_MEKA_TOOL_AXE("gear.meka_tool.axe", "Axe", "Cost in Joules of using the Meka-Tool as an axe for stripping logs, scraping, or removing wax."),
+    GEAR_MEKA_TOOL_SHEAR_ENTITY("gear.meka_tool.shear.entity", "Shear Entities", "Cost in Joules of using the Meka-Tool to shear entities."),
+    GEAR_MEKA_TOOL_SHEAR_BLOCK("gear.meka_tool.shear.block", "Shear Blocks", "Cost in Joules of using the Meka-Tool to carefully shear and trim blocks."),
+    GEAR_MEKA_TOOL_ENERGY_USAGE_TELEPORT("gear.meka_tool.energy_usage.teleport", "Teleport Energy Usage", "Cost in Joules of using the Meka-Tool to teleport 10 blocks."),
+
+    GEAR_MEKA_SUIT("gear.meka_suit", "MekaSuit Settings", "Settings for configuring the MekaSuit"),
+    GEAR_MEKA_SUIT_CAPACITY("gear.meka_suit.capacity.energy", "Max Energy",
+          "Energy capacity (Joules) of MekaSuit items without any installed upgrades. Quadratically scaled by upgrades."),
+    GEAR_MEKA_SUIT_CHARGE_RATE("gear.meka_suit.charge_rate", "Charge Rate", "Amount (joules) of energy the MekaSuit can accept per tick. Quadratically scaled by upgrades."),
+    GEAR_MEKA_SUIT_CHARGE_RATE_INVENTORY("gear.meka_suit.charge_rate.inventory", "Inventory Charge Rate", "Charge rate of inventory items (Joules) per tick."),
+    GEAR_MEKA_SUIT_CHARGE_RATE_SOLAR("gear.meka_suit.charge_rate.solar", "Solar Charging Rate", "Solar recharging rate (Joules) of helmet per tick, per upgrade installed."),
+    GEAR_MEKA_SUIT_FLIGHT_VIBRATIONS("gear.meka_suit.gravitational_vibrations", "Gravitational Vibrations", "Should the Gravitational Modulation unit give off vibrations when in use."),
+    GEAR_MEKA_SUIT_PASTE_CAPACITY("gear.meka_suit.paste.capacity", "Nutritional Paste Capacity", "Maximum amount in mB of Nutritional Paste storable by the nutritional injection unit."),
+    GEAR_MEKA_SUIT_PASTE_TRANSFER_RATE("gear.meka_suit.paste.transfer_rate", "Nutritional Paste Transfer Rate", "Rate in mB/t at which Nutritional Paste can be transferred into the nutritional injection unit."),
+    GEAR_MEKA_SUIT_JETPACK_CAPACITY("gear.meka_suit.jetpack.capacity", "Jetpack Hydrogen Capacity", "Maximum amount in mB of Hydrogen storable per installed jetpack unit."),
+    GEAR_MEKA_SUIT_JETPACK_TRANSFER_RATE("gear.meka_suit.jetpack.transfer_rate", "Jetpack Transfer Rate", "Rate in mB/t at which Hydrogen can be transferred into the jetpack unit."),
+
+    GEAR_MEKA_SUIT_ENERGY_USAGE("gear.meka_suit.energy_usage", "Energy Usage", "Settings for configuring the MekaSuit's Energy Usage"),
+    GEAR_MEKA_SUIT_ENERGY_USAGE_DAMAGE("gear.meka_suit.energy_usage.damage", "Damage Reduction", "Energy usage (Joules) of MekaSuit per unit of damage applied."),
+    GEAR_MEKA_SUIT_ENERGY_USAGE_MAGIC("gear.meka_suit.energy_usage.magic", "Magic Prevention",
+          "Energy cost multiplier in Joules for reducing magic damage via the inhalation purification unit. Energy cost is: MagicDamage * magicReduce. (1 MagicDamage is 1 half heart)."),
+    GEAR_MEKA_SUIT_ENERGY_USAGE_FALL("gear.meka_suit.energy_usage.fall", "Fall Reduction",
+          "Energy cost multiplier in Joules for reducing fall damage with MekaSuit Boots. Energy cost is: FallDamage * fall. (1 FallDamage is 1 half heart)"),
+    GEAR_MEKA_SUIT_ENERGY_USAGE_JUMP("gear.meka_suit.energy_usage.jump", "Jump Boost", "Energy usage (Joules) of MekaSuit when adding 0.1 to jump motion."),
+    GEAR_MEKA_SUIT_ENERGY_USAGE_ELYTRA("gear.meka_suit.energy_usage.elytra", "Elytra", "Energy usage (Joules) per second of the MekaSuit when flying with the Elytra Unit."),
+    GEAR_MEKA_SUIT_ENERGY_USAGE_POTION("gear.meka_suit.energy_usage.potion", "Potion Effect Speedup", "Energy usage (Joules) of MekaSuit when lessening a potion effect."),
+    GEAR_MEKA_SUIT_ENERGY_USAGE_SPRINT("gear.meka_suit.energy_usage.sprint", "Sprint Boost", "Energy usage (Joules) of MekaSuit when adding 0.1 to sprint motion."),
+    GEAR_MEKA_SUIT_ENERGY_USAGE_FLIGHT("gear.meka_suit.energy_usage.flight", "Gravitational Modulation", "Energy usage (Joules) of MekaSuit per tick when flying via Gravitational Modulation."),
+    GEAR_MEKA_SUIT_ENERGY_USAGE_VISION("gear.meka_suit.energy_usage.vision", "Vision Enhancement", "Energy usage (Joules) of MekaSuit per tick of using vision enhancement."),
+    GEAR_MEKA_SUIT_ENERGY_USAGE_SWIM("gear.meka_suit.energy_usage.swim", "Hydrostatic Repulsion", "Energy usage (Joules) of MekaSuit per tick of using hydrostatic repulsion."),
+    GEAR_MEKA_SUIT_ENERGY_USAGE_FOOD("gear.meka_suit.energy_usage.food", "Nutritional Injection", "Energy usage (Joules) of MekaSuit per half-food of nutritional injection."),
+    GEAR_MEKA_SUIT_ENERGY_USAGE_MAGNET("gear.meka_suit.energy_usage.magnet", "Magnetic Attraction", "Energy usage (Joules) of MekaSuit per tick of attracting a single item."),
+
+    GEAR_MEKA_SUIT_DAMAGE_ABSORPTION("gear.meka_suit.damage_absorption", "MekaSuit Damage Absorption Settings", "Settings for configuring damage absorption of the MekaSuit"),
+    GEAR_MEKA_SUIT_ABSORPTION_FALL("gear.meka_suit.damage_absorption.fall", "Fall Damage Ratio",
+          "Percent of damage taken from falling that can be absorbed by MekaSuit Boots when they have enough power."),
+    GEAR_MEKA_SUIT_ABSORPTION_MAGIC("gear.meka_suit.damage_absorption.magic", "Magic Damage Ratio",
+          "Percent of damage taken from magic damage that can be absorbed by MekaSuit Helmet with Purification unit when it has enough power."),
+    GEAR_MEKA_SUIT_ABSORPTION_UNSPECIFIED("gear.meka_suit.damage_absorption.unspecified", "Unspecified Damage Ratio",
+          "Percent of damage taken from other non explicitly supported damage types that don't bypass armor when the MekaSuit has enough power and a full suit is equipped. "
+          + "Note: Support for specific damage types can be added by adding an entry for the damage type in the mekanism:mekasuit_absorption data map."),
+
+    //Startup config
+    STARTUP_GEAR("startup.gear", "Gear Settings",
+          "Settings for configuring Mekanism's gear settings. This config is not synced automatically between client and server. It is highly "
+          + "recommended to ensure you are using the same values for this config on the server and client."),
+
+    STARTUP_FREE_RUNNERS_ARMORED("gear.free_runners.armored", "Armored Free Runner Settings", "Settings for configuring Armored Free Runners"),
+    STARTUP_FREE_RUNNERS_ARMOR("gear.free_runners.armored.armor", "Armor", "Armor value of the Armored Free Runners"),
+    STARTUP_FREE_RUNNERS_TOUGHNESS("gear.free_runners.armored.toughness", "Toughness", "Toughness value of the Armored Free Runners."),
+    STARTUP_FREE_RUNNERS_KNOCKBACK_RESISTANCE("gear.free_runners.armored.knockback_resistance", "Knockback Resistance",
+          "Knockback resistance value of the Armored Free Runners."),
+
+    STARTUP_JETPACK_ARMORED("gear.jetpack.armored", "Armored Jetpack Settings", "Settings for configuring Armored Jetpacks"),
+    STARTUP_JETPACK_ARMOR("gear.jetpack.armored.armor", "Armor", "Armor value of the Armored Jetpacks"),
+    STARTUP_JETPACK_TOUGHNESS("gear.jetpack.armored.toughness", "Toughness", "Toughness value of the Armored Jetpacks."),
+    STARTUP_JETPACK_KNOCKBACK_RESISTANCE("gear.jetpack.armored.knockback_resistance", "Knockback Resistance",
+          "Knockback resistance value of the Armored Jetpacks."),
+
+    STARTUP_MEKA_SUIT_ARMOR_HELMET("gear.meka_suit.armor.helmet", "Helmet Armor", "Armor value of MekaSuit Helmets."),
+    STARTUP_MEKA_SUIT_ARMOR_CHESTPLATE("gear.meka_suit.armor.chestplate", "BodyArmor Armor", "Armor value of MekaSuit BodyArmor."),
+    STARTUP_MEKA_SUIT_ARMOR_LEGGINGS("gear.meka_suit.armor.leggings", "Pants Armor", "Armor value of MekaSuit Pants."),
+    STARTUP_MEKA_SUIT_ARMOR_BOOTS("gear.meka_suit.armor.boots", "Boots Armor", "Armor value of MekaSuit Boots."),
+    STARTUP_MEKA_SUIT_TOUGHNESS(".gear.meka_suit.toughness", "Toughness", "Toughness value of the MekaSuit."),
+    STARTUP_MEKA_SUIT_KNOCKBACK_RESISTANCE("gear.meka_suit.knockback_resistance", "Knockback Resistance", "Knockback resistance value of the MekaSuit."),
     ;
 
     private final String key;

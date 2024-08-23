@@ -117,11 +117,11 @@ public enum GeneratorsConfigTranslations implements IConfigTranslation {
 
     //GEAR CONFIG FILE
 
-    GEAR_MEKA_SUIT_GEOTHERMAL("gear.meka_suit.geothermal_charging_rate", "Geothermal charging rate",
+    GEAR_MEKA_SUIT_GEOTHERMAL("gear.meka_suit.charge_rate.geothermal", "Geothermal Charging Rate",
           "Geothermal charging rate (Joules) of pants per tick, per degree above ambient, per upgrade installed. This value scales down based on how much of "
           + "the MekaSuit Pants is submerged. Fire is treated as having a temperature of ~200K above ambient, lava has a temperature of 1,000K above ambient."),
 
-    GEAR_MEKA_SUIT_HEAT_DAMAGE("gear.meka_suit.damage_absorption.heat", "Heat damage reduction",
+    GEAR_MEKA_SUIT_HEAT_DAMAGE("gear.meka_suit.damage_absorption.heat", "Heat Damage Reduction",
           "Percent of heat damage negated by MekaSuit Pants with maximum geothermal generator units installed. This number scales down linearly based on how many "
           + "units are actually installed."),
     ;
