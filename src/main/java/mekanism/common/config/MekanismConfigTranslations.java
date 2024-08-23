@@ -32,12 +32,12 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
           "Range at which Block Entity Renderer's added by Mekanism can render at, for example the contents of multiblocks. Vanilla defaults the rendering range for "
           + "BERs to 64 for most blocks, but uses a range of 256 for beacons and end gateways."),
 
-    CLIENT_SOUNDS("client.sounds", "Sound Settings", "Settings for configuring Mekanism's Sounds"),
+    CLIENT_SOUNDS("client.sounds", "Sound", "Settings for configuring Mekanism's Sounds", true),
     CLIENT_PLAYER_SOUNDS_ENABLED("client.sounds.player.enable", "Enable Player Sounds", "Play sounds for Jetpack/Gas Mask/Flamethrower/Radiation (all players)."),
     CLIENT_MACHINE_SOUNDS_ENABLED("client.sounds.machine.enable", "Enable Player Sounds", "If enabled machines play their sounds while running."),
     CLIENT_BASE_SOUND_VOLUME("client.sounds.base_volume", "Base Sound Volume", "Adjust Mekanism sounds' base volume. < 1 is softer, higher is louder."),
 
-    CLIENT_PARTICLE("client.particle", "Particle Settings", "Settings for configuring Mekanism's Particles"),
+    CLIENT_PARTICLE("client.particle", "Particle", "Settings for configuring Mekanism's Particles", true),
     CLIENT_PARTICLE_MULTIBLOCK_FORMATION("client.particle.multiblock_formation", "Multiblock Formation",
           "Set to false to prevent particle spam when loading multiblocks (notification message will display instead)."),
     CLIENT_PARTICLE_MACHINE_EFFECTS("client.particle.machine_effects", "Machine Effects", "Show particles when machines active."),
@@ -49,7 +49,7 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
           "Show bolts when the Magnetic Attraction Unit is pulling items."),
     CLIENT_PARTICLE_TOOL_AOE("client.particle.tool_aoe", "Tool AOE", "Show bolts for various AOE tool behaviors such as tilling, debarking, and vein mining."),
 
-    CLIENT_HUD("client.hud", "HUD Settings", "Settings for configuring Mekanism's HUD"),
+    CLIENT_HUD("client.hud", "HUD", "Settings for configuring Mekanism's HUD", true),
     CLIENT_HUD_ENABLED("client.hud.enabled", "Enabled", "Enable item information HUD during gameplay."),
     CLIENT_HUD_SCALE("client.hud.scale", "Scale", "Scale of the text displayed on the HUD."),
     CLIENT_HUD_REVERSE("client.hud.reverse", "Reverse", "If true will move HUD text alignment and compass rendering to the right side of the screen, "
@@ -61,7 +61,7 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
     CLIENT_HUD_JITTER("client.hud.jitter", "Jitter", "Visual jitter of MekaSuit HUD, seen when moving the player's head. Bigger value = more jitter."),
     CLIENT_HUD_COMPASS("client.hud.compass", "Compass", "Display a fancy compass when the MekaSuit is worn."),
 
-    CLIENT_QIO("client.qio", "QIO Settings", "Settings for configuring Mekanism's QIO"),
+    CLIENT_QIO("client.qio", "QIO", "Settings for configuring Mekanism's QIO", true),
     CLIENT_QIO_SORT_TYPE("client.qio.sort.type", "Sort Type", "Sorting strategy when viewing items in a QIO Item Viewer."),
     CLIENT_QIO_SORT_DIRECTION("client.qio.sort.direction", "Sort Direction", "Sorting direction when viewing items in a QIO Item Viewer."),
     CLIENT_QIO_SLOTS_X("client.qio.slots.x", "Slots Wide", "Number of slots to view horizontally on a QIO Item Viewer."),
@@ -71,7 +71,8 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
           "Determines if items in a QIO crafting window should be moved to the player's inventory or frequency first when replacing the items with a recipe viewer."),
 
     CLIENT_LAST_WINDOW_POSITIONS("client.last_window_positions", "Last Window Positions",
-          "Stores the last position various windows were in when they were closed, and whether they are pinned. In general these values should not be modified manually."),
+          "Stores the last position various windows were in when they were closed, and whether they are pinned. In general these values should not be modified manually.",
+          "Edit Window Positions"),
     CLIENT_LAST_WINDOW_POSITIONS_X("client.last_window_positions.x", "X Component", "The x component of this window's last position."),
     CLIENT_LAST_WINDOW_POSITIONS_Y("client.last_window_positions.y", "Y Component", "The y component of this window's last position."),
     CLIENT_LAST_WINDOW_POSITIONS_PINNED("client.last_window_positions.pinned", "Pinned",
@@ -104,39 +105,40 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
     GENERAL_RATE_SNA("general.misc.rate.sna", "Peak SNA Processing Rate",
           "Peak processing rate for the Solar Neutron Activator. Note: It can go higher than this value in some extreme environments."),
 
-    GENERAL_HEATER("general.heater", "Heater Settings", "Settings for configuring heaters"),
+    GENERAL_HEATER("general.heater", "Heater", "Settings for configuring heaters", true),
     GENERAL_FUELWOOD_HEAT("general.heater.fuelwood.heat", "Fuelwood Heat per Tick", "Amount of heat produced per fuel tick of a fuel's burn time in the Fuelwood Heater."),
     GENERAL_FUELWOOD_DURATION("general.heater.fuelwood.duration", "Fuelwood Burn Duration",
           "Number of ticks to burn an item at in a Fuelwood Heater. Use this config option to effectively make Fuelwood Heater's burn faster but produce the same amount of heat per item."),
     GENERAL_RESISTIVE_EFFICIENCY("general.heater.resistive.efficiency", "Resistive Heater Efficiency",
           "How much heat energy is created from one Joule of regular energy in the Resistive Heater."),
 
-    GENERAL_FILL_RATE("general.fill_rate", "Item Fill Rate Settings", "Settings for configuring item tank fill rates"),
+    GENERAL_FILL_RATE("general.fill_rate", "Item Fill Rate", "Settings for configuring item tank fill rates", true),
     GENERAL_FILL_RATE_FLUID("general.fill_rate.fluid", "Fluid Item Fill Rate", "Rate at which generic fluid storage items can be filled or emptied."),
     GENERAL_FILL_RATE_CHEMICAL("general.fill_rate.chemical", "Chemical Item Fill Rate", "Rate at which generic chemical storage items can be filled or emptied."),
 
-    GENERAL_CARDBOARD("general.cardboard", "Cardboard Box Settings", "Settings for configuring Cardboard Boxes"),
+    GENERAL_CARDBOARD("general.cardboard", "Cardboard Box", "Settings for configuring Cardboard Boxes", true),
     GENERAL_CARDBOARD_STRICT_UNBOXING("general.cardboard.strict_unboxing", "Strict Unboxing",
           "Enable this to disable unboxing any block that has a fluid that would be vaporized on placement, instead of trying to vaporize it and leave the remainder of the block."),
     GENERAL_CARDBOARD_MOD_BLACKLIST("general.cardboard.mod_blacklist", "Cardboard Box Mod Blacklist",
-          "Any mod ids added to this list will not be able to have any of their blocks, picked up by the cardboard box. For example: [\"mekanism\"]"),
+          "Any mod ids added to this list will not be able to have any of their blocks, picked up by the cardboard box. For example: [\"mekanism\"]",
+          "Edit Blacklist"),
 
-    GENERAL_DYNAMIC_TANK("general.dynamic_tank", "Dynamic Tank Settings", "Settings for configuring Dynamic Tanks"),
+    GENERAL_DYNAMIC_TANK("general.dynamic_tank", "Dynamic Tank", "Settings for configuring Dynamic Tanks", true),
     GENERAL_DYNAMIC_TANK_FLUID_CAPACITY("general.dynamic_tank.capacity.fluid", "Fluid Capacity Per Block",
           "Amount of fluid (mB) that each block of the dynamic tank contributes to the volume. Max = volume * fluidPerTank"),
     GENERAL_DYNAMIC_TANK_CHEMICAL_CAPACITY("general.dynamic_tank.capacity.chemical", "Chemical Capacity Per Block",
           "Amount of chemical (mB) that each block of the dynamic tank contributes to the volume. Max = volume * chemicalPerTank"),
 
-    GENERAL_AUTO_EJECT("general.auto_eject", "Auto Eject Settings", "Settings for configuring Auto Eject from block entities"),
+    GENERAL_AUTO_EJECT("general.auto_eject", "Auto Eject", "Settings for configuring Auto Eject from block entities", true),
     GENERAL_AUTO_EJECT_RATE_FLUID("general.auto_eject.rate.fluid", "Fluid Rate", "Rate in mB at which fluid gets auto ejected from block entities."),
     GENERAL_AUTO_EJECT_RATE_CHEMICAL("general.auto_eject.rate.chemical", "Chemical Rate", "Rate in mB at which chemicals gets auto ejected from block entities."),
     GENERAL_AUTO_EJECT_EXCESS("general.auto_eject.excess", "Excess Percentage", "The percentage of a tank's capacity to leave contents in when set to dumping excess."),
 
-    GENERAL_PREFILLED_TANKS("general.prefilled_tanks", "Prefilled Tank Settings", "Settings for configuring Prefilled Tanks"),
+    GENERAL_PREFILLED_TANKS("general.prefilled_tanks", "Prefilled Tanks", "Settings for configuring Prefilled Tanks", true),
     GENERAL_PREFILLED_TANKS_FLUID("general.prefilled_tanks.fluid", "Fluid Tanks", "Add filled creative fluid tanks to creative/recipe viewers."),
     GENERAL_PREFILLED_TANKS_CHEMICAL("general.prefilled_tanks.chemical", "Chemical Tanks", "Add filled creative chemical tanks to creative/recipe viewers."),
 
-    GENERAL_ENERGY_CONVERSION("general.energy_conversion", "Energy Conversion Rate Settings", "Settings for configuring Energy Conversions"),
+    GENERAL_ENERGY_CONVERSION("general.energy_conversion", "Energy Conversion Rate", "Settings for configuring Energy Conversions", true),
     GENERAL_ENERGY_CONVERSION_BLACKLIST_FE("general.energy_conversion.blacklist.neoforge", "Blacklist Forge Energy", "Disables Forge Energy (FE,RF,IF,uF,CF) power integration."),
     GENERAL_ENERGY_CONVERSION_BLACKLIST_FN("general.energy_conversion.blacklist.fluxnetworks", "Blacklist Flux Networks",
           "Disables Flux Networks higher throughput Forge Energy (FE,RF,IF,uF,CF) power integration. Note: Disabling Forge Energy integration also disables this."),
@@ -147,7 +149,7 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
           "How much energy is produced per mB of Hydrogen, also affects Electrolytic Separator usage, Ethene burn rate and Gas-Burning Generator energy capacity."),
     GENERAL_ENERGY_CONVERSION_STEAM("general.energy_conversion.steam", "Steam Energy Density", "Maximum Joules per mB of Steam. Also affects Thermoelectric Boiler."),
 
-    GENERAL_RADIATION("general.radiation", "Radiation Settings", "Settings for configuring Radiation"),
+    GENERAL_RADIATION("general.radiation", "Radiation", "Settings for configuring Radiation", true),
     GENERAL_RADIATION_ENABLED("general.radiation.enabled", "Enabled", "Enable worldwide radiation effects."),
     GENERAL_RADIATION_CHUNK_RADIUS("general.radiation.chunk_radius", "Chunk Check Radius",
           "The radius of chunks checked when running radiation calculations. The algorithm is efficient, but don't abuse it by making this crazy high."),
@@ -164,7 +166,7 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
           "Number of mB of chemical that decay every radioactiveWasteBarrelProcessTicks ticks when stored in a Radioactive Waste Barrel. Set to zero to disable decay "
           + "all together. (Chemicals in the mekanism:waste_barrel_decay_blacklist tag will not decay)."),
 
-    GENERAL_MINER("general.miner", "Digital Miner Settings", "Settings for configuring the Digital Miner"),
+    GENERAL_MINER("general.miner", "Digital Miner", "Settings for configuring the Digital Miner", true),
     GENERAL_MINER_SILK_MULTIPLIER("general.miner.silk", "Silk Touch Energy Multiplier", "Energy multiplier for using silk touch mode with the Digital Miner."),
     GENERAL_MINER_MAX_RADIUS("general.miner.max_radius", "Max Radius",
           "Maximum radius in blocks that the Digital Miner can reach. (Increasing this may have negative effects on stability and/or performance. We strongly "
@@ -172,17 +174,17 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
     GENERAL_MINER_TICK_RATE("general.miner.ticks_per_mine", "Ticks Per Mine",
           "Number of ticks required to mine a single block with a Digital Miner (without any upgrades)."),
 
-    GENERAL_LASER("general.laser", "Laser Settings", "Settings for configuring Lasers"),
+    GENERAL_LASER("general.laser", "Laser", "Settings for configuring Lasers", true),
     GENERAL_LASER_RANGE("general.laser.range", "Range", "How far (in blocks) a laser can travel."),
     GENERAL_LASER_ENERGY_HARDNESS("general.laser.energy.hardness", "Energy Per Hardness", "Energy needed to destroy or attract blocks with a Laser (per block hardness level)."),
     GENERAL_LASER_ENERGY_DAMAGE("general.laser.energy.damage", "Energy Per Damage", "Energy used per half heart of damage being transferred to entities."),
 
-    GENERAL_OREDICTIONIFICATOR("general.oredictionificator", "Oredictionificator Settings", "Settings for configuring the Oredictionificator"),
+    GENERAL_OREDICTIONIFICATOR("general.oredictionificator", "Oredictionificator", "Settings for configuring the Oredictionificator", true),
     GENERAL_OREDICTIONIFICATOR_VALID_ITEMS("general.oredictionificator.valid_filters.item", "Valid Item Filters",
           "The list of valid tag prefixes for the Oredictionificator. Note: It is highly recommended to only include well known/defined tag prefixes otherwise it is "
-          + "very easy to potentially add in accidental conversions of things that are not actually equivalent."),
+          + "very easy to potentially add in accidental conversions of things that are not actually equivalent.", "Edit Filters"),
 
-    GENERAL_PUMP("general.pump", "Pump Settings", "Settings for configuring Electric Pumps and Fluidic Plenishers"),
+    GENERAL_PUMP("general.pump", "Pump", "Settings for configuring Electric Pumps and Fluidic Plenishers", true),
     GENERAL_PUMP_RANGE("general.pump.range", "Range", "Maximum block distance to pull fluid from for the Electric Pump."),
     GENERAL_PUMP_INFINITE_FLUIDS("general.pump.infinite_fluids", "Drain Infinite Fluids",
           "If enabled and waterSourceConversion is enabled makes Water and Heavy Water blocks be removed from the world on pump. Similarly behavior for lavaSourceConversion and Lava"),
@@ -190,7 +192,7 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
           "mB of Heavy Water that is extracted per block of Water by the Electric Pump with a Filter Upgrade."),
     GENERAL_PUMP_PLENISHER_MAX_NODES("general.pump.plenisher.max_nodes", "Max Plenisher Nodes", "Fluidic Plenisher stops after this many blocks."),
 
-    GENERAL_QE("general.qe", "Quantum Entangloporter Settings", "Settings for configuring Quantum Entangloporters"),
+    GENERAL_QE("general.qe", "Quantum Entangloporter", "Settings for configuring Quantum Entangloporters", true),
     GENERAL_QE_BUFFER_ENERGY("general.qe.buffer.energy", "Energy Buffer",
           "Maximum energy buffer (Mekanism Joules) of an Entangoloporter frequency - i.e. the maximum transfer per tick per frequency. Default is ultimate tier energy cube capacity."),
     GENERAL_QE_BUFFER_FLUID("general.qe.buffer.fluid",
@@ -198,17 +200,17 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
     GENERAL_QE_BUFFER_CHEMICAL("general.qe.buffer.chemical", "Chemical Buffer",
           "Maximum chemical buffer (mb) of an Entangoloporter frequency - i.e. the maximum transfer per tick per frequency. Default is ultimate tier tank capacity."),
 
-    GENERAL_SECURITY("general.security", "Block security/protection Settings", "Settings for configuring Mekanism's security system"),
+    GENERAL_SECURITY("general.security", "Block security/protection Settings", "Settings for configuring Mekanism's security system", true),
     GENERAL_SECURITY_ENABLED("general.security.enabled", "Allow Protection",
           "Enable the security system for players to prevent others from accessing their machines. Does NOT affect Frequencies."),
     GENERAL_SECURITY_OPS_BYPASS("general.security.ops_bypass", "Operator Bypass",
           "If this is enabled then players with the 'mekanism.bypass_security' permission (default ops) can bypass the block and item security restrictions."),
 
-    GENERAL_PASTE("general.paste", "Nutritional Paste Settings", "Settings for configuring Nutritional Paste"),
+    GENERAL_PASTE("general.paste", "Nutritional Paste", "Settings for configuring Nutritional Paste", true),
     GENERAL_PASTE_SATURATION("general.paste.saturation", "Saturation", "Saturation level of Nutritional Paste when eaten."),
     GENERAL_PASTE_PER_FOOD("general.paste.per_food", "Paste per Food", "How much mB of Nutritional Paste equates to one 'half-food'."),
 
-    GENERAL_BOILER("general.boiler", "Boiler Settings", "Settings for configuring Boilers"),
+    GENERAL_BOILER("general.boiler", "Thermoelectric Boiler", "Settings for configuring Boilers", true),
     GENERAL_BOILER_CAPACITY_WATER("general.boiler.capacity.water", "Water Capacity Per Block",
           "Amount of fluid (mB) that each block of the boiler's water portion contributes to the volume. Max = volume * waterPerTank"),
     GENERAL_BOILER_CAPACITY_STEAM("general.boiler.capacity.steam", "Steam Capacity Per Block",
@@ -220,7 +222,7 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
     GENERAL_BOILER_WATER_CONDUCTIVITY("general.boiler.water_conductivity", "Water Conductivity", "How much Boiler heat is immediately usable to convert water to steam."),
     GENERAL_BOILER_HEAT_TRANSFER("general.boiler.heat_transfer", "Superheating Heat Transfer", "Amount of heat each Boiler heating element produces."),
 
-    GENERAL_TEP("general.tep", "Thermal Evaporation Plant Settings", "Settings for configuring Thermal Evaporation Plants"),
+    GENERAL_TEP("general.tep", "Thermal Evaporation Plant", "Settings for configuring Thermal Evaporation Plants", true),
     GENERAL_TEP_HEAT_LOSS("general.tep.heat.loss", "Heat Dissipation", "Thermal Evaporation Tower heat loss per tick."),
     GENERAL_TEP_HEAT_SOLAR("general.tep.heat.solar", "Heat per Solar", "Heat to absorb per Solar Panel array of Thermal Evaporation Tower."),
     GENERAL_TEP_TEMP_MULT("general.tep.temperature_multiplier", "Temperature Multiplier", "Temperature to amount produced ratio for Thermal Evaporation Tower."),
@@ -230,7 +232,7 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
           "Amount of fluid (mB) that each block of the evaporation plant contributes to the input tank capacity. Max = volume * fluidPerTank"),
     GENERAL_TEP_CAPACITY_OUTPUT("general.tep.capacity.output", "Output Tank Capacity", "Amount of output fluid (mB) that the evaporation plant can store."),
 
-    GENERAL_SPS("general.sps", "SPS Settings", "Settings for configuring the Supercritical Phase Shifter"),
+    GENERAL_SPS("general.sps", "SPS", "Settings for configuring the Supercritical Phase Shifter", true),
     GENERAL_SPS_ANTIMATTER_COST("general.sps.antimatter_cost", "Polonium Per Antimatter",
           "How much input chemical (polonium) in mB must be processed to make 1 mB of antimatter. Input tank capacity is 2x this value."),
     GENERAL_SPS_CAPACITY_OUTPUT("general.sps.capacity.output", "Output Tank Capacity", "Amount of output chemical (mB, antimatter) that the SPS can store."),
@@ -238,17 +240,17 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
           "Energy needed to process 1 mB of input (inputPerAntimatter * energyPerInput = energy to produce 1 mB of antimatter)."),
 
     //Tier Config
-    TIER_ENERGY_CUBE("tier.energy_cube", "Energy Cube Settings", "Settings for configuring Energy Cubes"),
-    TIER_FLUID_TANK("tier.fluid_tank", "Fluid Tank Settings", "Settings for configuring Fluid Tanks"),
-    TIER_CHEMICAL_TANK("tier.chemical_tank", "Chemical Tank Settings", "Settings for configuring Chemical Tanks"),
-    TIER_BIN("tier.bin", "Bin Settings", "Settings for configuring Bins"),
-    TIER_INDUCTION("tier.induction", "Induction Matrix Settings", "Settings for configuring Induction Cells and Providers"),
-    TIER_TRANSMITTERS("tier.transmitter", "Transmitter Settings", "Settings for configuring Transmitters"),
-    TIER_TRANSMITTERS_ENERGY("tier.transmitter.energy", "Universal Cable Settings", "Settings for configuring Universal Cables"),
-    TIER_TRANSMITTERS_FLUID("tier.transmitter.fluid", "Mechanical Pipe Settings", "Settings for configuring Mechanical Pipes"),
-    TIER_TRANSMITTERS_CHEMICAL("tier.transmitter.chemical", "Pressurized Tube Settings", "Settings for configuring Pressurized Tubes"),
-    TIER_TRANSMITTERS_ITEM("tier.transmitter.item", "Logistical Transporter Settings", "Settings for configuring Logistical Transporters"),
-    TIER_TRANSMITTERS_HEAT("tier.transmitter.heat", "Thermodynamic Conductor Settings", "Settings for configuring Thermodynamic Conductors"),
+    TIER_ENERGY_CUBE("tier.energy_cube", "Energy Cubes", "Settings for configuring Energy Cubes", true),
+    TIER_FLUID_TANK("tier.fluid_tank", "Fluid Tanks", "Settings for configuring Fluid Tanks", true),
+    TIER_CHEMICAL_TANK("tier.chemical_tank", "Chemical Tanks", "Settings for configuring Chemical Tanks", true),
+    TIER_BIN("tier.bin", "Bins", "Settings for configuring Bins", true),
+    TIER_INDUCTION("tier.induction", "Induction Matrix", "Settings for configuring Induction Cells and Providers", true),
+    TIER_TRANSMITTERS("tier.transmitter", "Transmitters", "Settings for configuring Transmitters", true),
+    TIER_TRANSMITTERS_ENERGY("tier.transmitter.energy", "Universal Cables", "Settings for configuring Universal Cables", "Edit Cable Settings"),
+    TIER_TRANSMITTERS_FLUID("tier.transmitter.fluid", "Mechanical Pipes", "Settings for configuring Mechanical Pipes", "Edit Pipe Settings"),
+    TIER_TRANSMITTERS_CHEMICAL("tier.transmitter.chemical", "Pressurized Tubes", "Settings for configuring Pressurized Tubes", "Edit Tube Settings"),
+    TIER_TRANSMITTERS_ITEM("tier.transmitter.item", "Logistical Transporters", "Settings for configuring Logistical Transporters", "Edit Transporter Settings"),
+    TIER_TRANSMITTERS_HEAT("tier.transmitter.heat", "Thermodynamic Conductors", "Settings for configuring Thermodynamic Conductors", "Edit Conductor Settings"),
 
     //Storage Config
     ENERGY_STORAGE_ENRICHMENT_CHAMBER(TranslationPreset.ENERGY_STORAGE, "Enrichment Chamber"),
@@ -321,7 +323,7 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
     ENERGY_USAGE_PAINTING(TranslationPreset.ENERGY_USAGE, "Painting Machine"),
     ENERGY_USAGE_DIMENSIONAL_STABILIZER("usage.stabilizer.energy", "Dimensional Stabilizer Energy Usage", "Energy per chunk per tick in Joules"),
 
-    USAGE_TELEPORTER("usage.teleporter", "Teleporter Settings", "Settings for configuring Teleporter Energy Usage"),
+    USAGE_TELEPORTER("usage.teleporter", "Teleporter", "Settings for configuring Teleporter Energy Usage", true),
     USAGE_TELEPORTER_BASE("usage.teleporter.base", "Base Energy Usage", "Base Joules cost for teleporting an entity."),
     USAGE_TELEPORTER_DISTANCE("usage.teleporter.distance", "Distance Energy Usage",
           "Joules per unit of distance travelled during teleportation - sqrt(xDiff^2 + yDiff^2 + zDiff^2)."),
@@ -337,7 +339,7 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
     WORLD_ANCHOR_TYPE("world.height_range.anchor.type", "Anchor Type", "Type of anchor"),
     WORLD_ANCHOR_VALUE("world.height_range.anchor.value", "Value", "Value used for calculating y for the anchor based on the type."),
 
-    WORLD_SALT("world.salt", "Salt Settings", "Generation Settings for salt."),
+    WORLD_SALT("world.salt", "Salt", "Generation Settings for salt.", true),
     WORLD_SALT_SHOULD_GENERATE("world.salt.generate", "Should Generate", "Determines if salt should be added to world generation."),
     WORLD_SALT_PER_CHUNK("world.salt.per_chunk", "Per Chunk", "Chance that salt generates in a chunk."),
     WORLD_SALT_RADIUS_MIN("world.salt.radius.min", "Min Radius", "Base radius of a vein of salt."),
@@ -345,7 +347,7 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
     WORLD_SALT_HALF_HEIGHT("world.salt.half_height", "Half Height", "Number of blocks to extend up and down when placing a vein of salt."),
 
     //Gear Config
-    GEAR_DISASSEMBLER("gear.disassembler", "Atomic Disassembler Settings", "Settings for configuring the Atomic Disassembler"),
+    GEAR_DISASSEMBLER("gear.disassembler", "Atomic Disassembler", "Settings for configuring the Atomic Disassembler", true),
     GEAR_DISASSEMBLER_MAX_ENERGY("gear.disassembler.max_energy", "Max Energy", "Maximum amount (joules) of energy the Atomic Disassembler can contain."),
     GEAR_DISASSEMBLER_CHARGE_RATE("gear.disassembler.charge_rate", "Charge Rate", "Amount (joules) of energy the Atomic Disassembler can accept per tick."),
     GEAR_DISASSEMBLER_ENERGY_USAGE("gear.disassembler.energy_usage", "Energy Usage",
@@ -363,27 +365,27 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
     GEAR_DISASSEMBLER_MINING_COUNT("gear.disassembler.mining_count", "Vein Mining Block Count",
           "The max Atomic Disassembler Vein Mining Block Count. Requires veinMining to be enabled."),
 
-    GEAR_BOW("gear.bow", "Electric Bow Settings", "Settings for configuring the Electric Bow"),
+    GEAR_BOW("gear.bow", "Electric Bow", "Settings for configuring the Electric Bow", true),
     GEAR_BOW_MAX_ENERGY("gear.bow.max_energy", "Max Energy", "Maximum amount (joules) of energy the Electric Bow can contain."),
     GEAR_BOW_CHARGE_RATE("gear.bow.charge_rate", "Charge Rate", "Amount (joules) of energy the Electric Bow can accept per tick."),
     GEAR_BOW_ENERGY_USAGE("gear.bow.energy_usage", "Energy Usage", "Cost in Joules of using the Electric Bow."),
     GEAR_BOW_ENERGY_USAGE_FLAME("gear.bow.energy_usage.flame", "Flame Energy Usage", "Cost in Joules of using the Electric Bow with flame mode active."),
 
-    GEAR_ENERGY_TABLET("gear.energy_table", "Energy Tablet Settings", "Settings for configuring Energy Tablets"),
+    GEAR_ENERGY_TABLET("gear.energy_table", "Energy Tablet", "Settings for configuring Energy Tablets", true),
     GEAR_ENERGY_TABLET_MAX_ENERGY("gear.energy_table.max_energy", "Max Energy", "Maximum amount (joules) of energy the Energy Tablet can contain."),
     GEAR_ENERGY_TABLET_CHARGE_RATE("gear.energy_table.charge_rate", "Charge Rate", "Amount (joules) of energy the Energy Tablet can accept per tick."),
 
-    GEAR_GAUGE_DROPPER("gear.gauge_dropper", "Gauge Dropper Settings", "Settings for configuring Gauge Droppers"),
+    GEAR_GAUGE_DROPPER("gear.gauge_dropper", "Gauge Dropper", "Settings for configuring Gauge Droppers", true),
     GEAR_GAUGE_DROPPER_CAPACITY("gear.gauge_dropper.capacity", "Capacity", "Capacity in mB of gauge droppers."),
     GEAR_GAUGE_DROPPER_TRANSFER_RATE("gear.gauge_dropper.transfer_rate", "Transfer Rate", "Rate in mB/t at which a gauge dropper can be filled or emptied."),
 
-    GEAR_FLAMETHROWER("gear.flamethrower", "Flamethrower Settings", "Settings for configuring the Flamethrower"),
+    GEAR_FLAMETHROWER("gear.flamethrower", "Flamethrower", "Settings for configuring the Flamethrower", true),
     GEAR_FLAMETHROWER_CAPACITY("gear.flamethrower.capacity", "Capacity", "Flamethrower tank capacity in mB."),
     GEAR_FLAMETHROWER_FILL_RATE("gear.flamethrower.fill_rate", "Fill Rate", "Rate in mB/t at which a Flamethrower's tank can accept hydrogen."),
     GEAR_FLAMETHROWER_DESTROY_ITEMS("gear.flamethrower.destroy_items", "Destroy Items",
           "Determines whether or not the Flamethrower can destroy items if it fails to smelt them."),
 
-    GEAR_FREE_RUNNERS("gear.free_runners", "Free Runner Settings", "Settings for configuring Free Runners"),
+    GEAR_FREE_RUNNERS("gear.free_runners", "Free Runner", "Settings for configuring Free Runners", true),
     GEAR_FREE_RUNNERS_MAX_ENERGY("gear.free_runners.max_energy", "Max Energy", "Maximum amount (joules) of energy Free Runners can contain."),
     GEAR_FREE_RUNNERS_CHARGE_RATE("gear.free_runners.charge_rate", "Charge Rate", "Amount (joules) of energy the Free Runners can accept per tick."),
     GEAR_FREE_RUNNERS_FALL_COST("gear.free_runners.fall.energy", "Fall Energy Cost",
@@ -391,35 +393,35 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
     GEAR_FREE_RUNNERS_FALL_DAMAGE("gear.free_runners.fall.reduction", "Fall Damage Reduction Ratio",
           "Percent of damage taken from falling that can be absorbed by Free Runners when they have enough power."),
 
-    GEAR_JETPACK("gear.jetpack", "Jetpack Settings", "Settings for configuring Jetpacks"),
+    GEAR_JETPACK("gear.jetpack", "Jetpack", "Settings for configuring Jetpacks", true),
     GEAR_JETPACK_CAPACITY("gear.jetpack.capacity", "Capacity", "Jetpack tank capacity in mB."),
     GEAR_JETPACK_FILL_RATE("gear.jetpack.fill_rate", "Fill Rate", "Rate in mB/t at which a Jetpack's tank can accept hydrogen."),
 
-    GEAR_NETWORK_READER("gear.network_reader", "Network Reader Settings", "Settings for configuring Network Readers"),
+    GEAR_NETWORK_READER("gear.network_reader", "Network Reader", "Settings for configuring Network Readers", true),
     GEAR_NETWORK_READER_MAX_ENERGY("gear.network_reader.max_energy", "Max Energy", "Maximum amount (joules) of energy the Network Reader can contain."),
     GEAR_NETWORK_READER_CHARGE_RATE("gear.network_reader.charge_rate", "Charge Rate", "Amount (joules) of energy the Network Reader can accept per tick."),
     GEAR_NETWORK_READER_ENERGY_USAGE("gear.network_reader.energy_usage", "Energy Usage", "Energy usage in joules for each network reading."),
 
-    GEAR_PORTABLE_TELEPORTER("gear.portable_teleporter", "Portable Teleporter Settings", "Settings for configuring the Portable Teleporter"),
+    GEAR_PORTABLE_TELEPORTER("gear.portable_teleporter", "Portable Teleporter", "Settings for configuring the Portable Teleporter", true),
     GEAR_PORTABLE_TELEPORTER_MAX_ENERGY("gear.portable_teleporter.max_energy", "Max Energy", "Maximum amount (joules) of energy the Portable Teleporter can contain."),
     GEAR_PORTABLE_TELEPORTER_CHARGE_RATE("gear.portable_teleporter.charge_rate", "Charge Rate", "Amount (joules) of energy the Portable Teleporter can accept per tick."),
     GEAR_PORTABLE_TELEPORTER_DELAY("gear.portable_teleporter.delay", "Teleportation Delay",
           "Delay in ticks before a player is teleported after clicking the Teleport button in the portable teleporter."),
 
-    GEAR_SCUBA_TANK("gear.scuba_tank", "Scuba Tank Settings", "Settings for configuring Scuba Tanks"),
+    GEAR_SCUBA_TANK("gear.scuba_tank", "Scuba Tank", "Settings for configuring Scuba Tanks", true),
     GEAR_SCUBA_TANK_CAPACITY("gear.scuba_tank.capacity", "Capacity", "Scuba Tank capacity in mB."),
     GEAR_SCUBA_TANK_FILL_RATE("gear.scuba_tank.fill_rate", "Fill Rate", "Rate in mB/t at which a Scuba Tank can accept oxygen."),
 
-    GEAR_SEISMIC_READER("gear.seismic_reader", "Seismic Reader Settings", "Settings for configuring Seismic Readers"),
+    GEAR_SEISMIC_READER("gear.seismic_reader", "Seismic Reader", "Settings for configuring Seismic Readers", true),
     GEAR_SEISMIC_READER_MAX_ENERGY("gear.seismic_reader.max_energy", "Max Energy", "Maximum amount (joules) of energy the Seismic Reader can contain."),
     GEAR_SEISMIC_READER_CHARGE_RATE("gear.seismic_reader.charge_rate", "Charge Rate", "Amount (joules) of energy the Seismic Reader can accept per tick."),
     GEAR_SEISMIC_READER_ENERGY_USAGE("gear.seismic_reader.energy_usage", "Energy Usage", "Energy usage in joules required to use the Seismic Reader."),
 
-    GEAR_CANTEEN("gear.canteen", "Canteen Settings", "Settings for configuring Canteens"),
+    GEAR_CANTEEN("gear.canteen", "Canteen", "Settings for configuring Canteens", true),
     GEAR_CANTEEN_CAPACITY("gear.canteen.capacity", "Capacity", "Maximum amount in mB of Nutritional Paste storable by the Canteen."),
     GEAR_CANTEEN_TRANSFER_RATE("gear.canteen.transfer_rate", "Transfer Rate", "Rate in mB/t at which Nutritional Paste can be transferred into a Canteen."),
 
-    GEAR_MEKA_TOOL("gear.meka_tool", "Meka-Tool Settings", "Settings for configuring the Meka-Tool"),
+    GEAR_MEKA_TOOL("gear.meka_tool", "Meka-Tool", "Settings for configuring the Meka-Tool", true),
     GEAR_MEKA_TOOL_CAPACITY("gear.meka_tool.capacity", "Max Energy", "Energy capacity (Joules) of the Meka-Tool without any installed upgrades. Quadratically scaled by upgrades."),
     GEAR_MEKA_TOOL_CHARGE_RATE("gear.meka_tool.charge_rate", "Charge Rate", "Amount (joules) of energy the Meka-Tool can accept per tick. Quadratically scaled by upgrades."),
     GEAR_MEKA_TOOL_DAMAGE("gear.meka_tool.damage", "Base Damage", "Base bonus damage applied by the Meka-Tool without using any energy."),
@@ -429,7 +431,7 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
     GEAR_MEKA_TOOL_EXTENDED_VEIN("gear.meka_tool.extended_vein", "Extended Vein Mining",
           "Enable the 'Extended Vein Mining' mode for the Meka-Tool. (Allows vein mining everything not just ores/logs)"),
 
-    GEAR_MEKA_TOOL_ENERGY_USAGE("gear.meka_tool.energy_usage", "Energy Usage", "Settings for configuring the Meka-Tool's Energy Usage"),
+    GEAR_MEKA_TOOL_ENERGY_USAGE("gear.meka_tool.energy_usage", "Energy Usage", "Settings for configuring the Meka-Tool's Energy Usage", true),
     GEAR_MEKA_TOOL_ENERGY_USAGE_BASE("gear.meka_tool.energy_usage.base", "Base", "Base energy (Joules) usage of the Meka-Tool. (Gets multiplied by speed factor)"),
     GEAR_MEKA_TOOL_ENERGY_USAGE_SILK("gear.meka_tool.energy_usage.silk", "Silk Touch", "Silk touch energy (Joules) usage of the Meka-Tool. (Gets multiplied by speed factor)"),
     GEAR_MEKA_TOOL_ENERGY_USAGE_WEAPON("gear.meka_tool.energy_usage.weapon", "Weapon", "Cost in Joules of using the Meka-Tool to deal 4 units of damage."),
@@ -440,7 +442,7 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
     GEAR_MEKA_TOOL_SHEAR_BLOCK("gear.meka_tool.shear.block", "Shear Blocks", "Cost in Joules of using the Meka-Tool to carefully shear and trim blocks."),
     GEAR_MEKA_TOOL_ENERGY_USAGE_TELEPORT("gear.meka_tool.energy_usage.teleport", "Teleport Energy Usage", "Cost in Joules of using the Meka-Tool to teleport 10 blocks."),
 
-    GEAR_MEKA_SUIT("gear.meka_suit", "MekaSuit Settings", "Settings for configuring the MekaSuit"),
+    GEAR_MEKA_SUIT("gear.meka_suit", "MekaSuit", "Settings for configuring the MekaSuit", true),
     GEAR_MEKA_SUIT_CAPACITY("gear.meka_suit.capacity.energy", "Max Energy",
           "Energy capacity (Joules) of MekaSuit items without any installed upgrades. Quadratically scaled by upgrades."),
     GEAR_MEKA_SUIT_CHARGE_RATE("gear.meka_suit.charge_rate", "Charge Rate", "Amount (joules) of energy the MekaSuit can accept per tick. Quadratically scaled by upgrades."),
@@ -452,7 +454,7 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
     GEAR_MEKA_SUIT_JETPACK_CAPACITY("gear.meka_suit.jetpack.capacity", "Jetpack Hydrogen Capacity", "Maximum amount in mB of Hydrogen storable per installed jetpack unit."),
     GEAR_MEKA_SUIT_JETPACK_TRANSFER_RATE("gear.meka_suit.jetpack.transfer_rate", "Jetpack Transfer Rate", "Rate in mB/t at which Hydrogen can be transferred into the jetpack unit."),
 
-    GEAR_MEKA_SUIT_ENERGY_USAGE("gear.meka_suit.energy_usage", "Energy Usage", "Settings for configuring the MekaSuit's Energy Usage"),
+    GEAR_MEKA_SUIT_ENERGY_USAGE("gear.meka_suit.energy_usage", "Energy Usage", "Settings for configuring the MekaSuit's Energy Usage", true),
     GEAR_MEKA_SUIT_ENERGY_USAGE_DAMAGE("gear.meka_suit.energy_usage.damage", "Damage Reduction", "Energy usage (Joules) of MekaSuit per unit of damage applied."),
     GEAR_MEKA_SUIT_ENERGY_USAGE_MAGIC("gear.meka_suit.energy_usage.magic", "Magic Prevention",
           "Energy cost multiplier in Joules for reducing magic damage via the inhalation purification unit. Energy cost is: MagicDamage * magicReduce. (1 MagicDamage is 1 half heart)."),
@@ -468,7 +470,8 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
     GEAR_MEKA_SUIT_ENERGY_USAGE_FOOD("gear.meka_suit.energy_usage.food", "Nutritional Injection", "Energy usage (Joules) of MekaSuit per half-food of nutritional injection."),
     GEAR_MEKA_SUIT_ENERGY_USAGE_MAGNET("gear.meka_suit.energy_usage.magnet", "Magnetic Attraction", "Energy usage (Joules) of MekaSuit per tick of attracting a single item."),
 
-    GEAR_MEKA_SUIT_DAMAGE_ABSORPTION("gear.meka_suit.damage_absorption", "MekaSuit Damage Absorption Settings", "Settings for configuring damage absorption of the MekaSuit"),
+    GEAR_MEKA_SUIT_DAMAGE_ABSORPTION("gear.meka_suit.damage_absorption", "MekaSuit Damage Absorption",
+          "Settings for configuring damage absorption of the MekaSuit", "Edit Absorption Ratios"),
     GEAR_MEKA_SUIT_ABSORPTION_FALL("gear.meka_suit.damage_absorption.fall", "Fall Damage Ratio",
           "Percent of damage taken from falling that can be absorbed by MekaSuit Boots when they have enough power."),
     GEAR_MEKA_SUIT_ABSORPTION_MAGIC("gear.meka_suit.damage_absorption.magic", "Magic Damage Ratio",
@@ -480,15 +483,15 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
     //Startup config
     STARTUP_GEAR("startup.gear", "Gear Settings",
           "Settings for configuring Mekanism's gear settings. This config is not synced automatically between client and server. It is highly "
-          + "recommended to ensure you are using the same values for this config on the server and client."),
+          + "recommended to ensure you are using the same values for this config on the server and client.", true),
 
-    STARTUP_FREE_RUNNERS_ARMORED("gear.free_runners.armored", "Armored Free Runner Settings", "Settings for configuring Armored Free Runners"),
+    STARTUP_FREE_RUNNERS_ARMORED("gear.free_runners.armored", "Armored Free Runners", "Settings for configuring Armored Free Runners", true),
     STARTUP_FREE_RUNNERS_ARMOR("gear.free_runners.armored.armor", "Armor", "Armor value of the Armored Free Runners"),
     STARTUP_FREE_RUNNERS_TOUGHNESS("gear.free_runners.armored.toughness", "Toughness", "Toughness value of the Armored Free Runners."),
     STARTUP_FREE_RUNNERS_KNOCKBACK_RESISTANCE("gear.free_runners.armored.knockback_resistance", "Knockback Resistance",
           "Knockback resistance value of the Armored Free Runners."),
 
-    STARTUP_JETPACK_ARMORED("gear.jetpack.armored", "Armored Jetpack Settings", "Settings for configuring Armored Jetpacks"),
+    STARTUP_JETPACK_ARMORED("gear.jetpack.armored", "Armored Jetpack", "Settings for configuring Armored Jetpacks", true),
     STARTUP_JETPACK_ARMOR("gear.jetpack.armored.armor", "Armor", "Armor value of the Armored Jetpacks"),
     STARTUP_JETPACK_TOUGHNESS("gear.jetpack.armored.toughness", "Toughness", "Toughness value of the Armored Jetpacks."),
     STARTUP_JETPACK_KNOCKBACK_RESISTANCE("gear.jetpack.armored.knockback_resistance", "Knockback Resistance",
@@ -505,6 +508,8 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
     private final String key;
     private final String title;
     private final String tooltip;
+    @Nullable
+    private final String button;
 
     MekanismConfigTranslations(TranslationPreset preset, String type) {
         this(preset.path(type), preset.title(type), preset.tooltip(type));
@@ -515,9 +520,18 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
     }
 
     MekanismConfigTranslations(String path, String title, String tooltip) {
+        this(path, title, tooltip, false);
+    }
+
+    MekanismConfigTranslations(String path, String title, String tooltip, boolean isSection) {
+        this(path, title, tooltip, IConfigTranslation.getSectionTitle(title, isSection));
+    }
+
+    MekanismConfigTranslations(String path, String title, String tooltip, @Nullable String button) {
         this.key = Util.makeDescriptionId("configuration", Mekanism.rl(path));
         this.title = title;
         this.tooltip = tooltip;
+        this.button = button;
     }
 
     @NotNull
@@ -534,6 +548,12 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
     @Override
     public String tooltip() {
         return tooltip;
+    }
+
+    @Nullable
+    @Override
+    public String button() {
+        return button;
     }
 
     public record TierTranslations(@Nullable IConfigTranslation first, @Nullable IConfigTranslation second, @Nullable IConfigTranslation third) {
@@ -678,7 +698,7 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
         public static OreConfigTranslations create(String ore) {
             String name = TextUtils.formatAndCapitalize(ore);
             return new OreConfigTranslations(
-                  new ConfigTranslation(getKey(ore, "top_level"), name + " Settings", "Generation Settings for " + name + " ore."),
+                  new ConfigTranslation(getKey(ore, "top_level"), name, "Generation Settings for " + name + " ore.", true),
                   new ConfigTranslation(getKey(ore, "generate"), "Should Generate", "Determines if " + name + " ore should be added to world generation.")
             );
         }
@@ -704,7 +724,7 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
             String capitalizedVein = TextUtils.formatAndCapitalize(vein);
             String name = capitalizedVein + " " + capitalizedOre + " Vein";
             return new OreVeinConfigTranslations(
-                  new ConfigTranslation(getKey(ore, vein, "top_level"), capitalizedVein + " Vein", name + " Generation Settings."),
+                  new ConfigTranslation(getKey(ore, vein, "top_level"), capitalizedVein + " Vein", name + " Generation Settings.", true),
                   new ConfigTranslation(getKey(ore, vein, "generate"), "Should Generate",
                         "Determines if " + name + "s should be added to world generation. Note: Requires generating " + ore + " ore to be enabled."),
                   new ConfigTranslation(getKey(ore, vein, "per_chunk"), "Per Chunk", "Chance that " + name + "s generates in a chunk."),
@@ -713,8 +733,8 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
                         "Chance that blocks that are directly exposed to air in a " + name + " are not placed."),
 
                   new ConfigTranslation(getKey(ore, vein, "shape"), "Distribution shape", "Distribution shape for placing " + name + "s."),
-                  new ConfigTranslation(getKey(ore, vein, "min"), "Min Anchor", "Minimum (inclusive) height anchor for " + name + "s."),
-                  new ConfigTranslation(getKey(ore, vein, "max"), "Max Anchor", "Maximum (inclusive) height anchor for " + name + "s.")
+                  new ConfigTranslation(getKey(ore, vein, "min"), "Min Anchor", "Minimum (inclusive) height anchor for " + name + "s.", true),
+                  new ConfigTranslation(getKey(ore, vein, "max"), "Max Anchor", "Maximum (inclusive) height anchor for " + name + "s.", true)
             );
         }
     }

@@ -140,6 +140,10 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
         for (IConfigTranslation translation : translations) {
             add(translation, translation.title());
             add(translation.getTranslationKey() + ".tooltip", translation.tooltip());
+            String button = translation.button();
+            if (button != null) {
+                add(translation.getTranslationKey() + ".button", button);
+            }
         }
     }
 

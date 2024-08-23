@@ -171,7 +171,7 @@ public class SelectedWindowData {
             return extraData >= 0 && extraData < maxData;
         }
 
-        public record ConfigSaveData(String savePath, String title, String tooltip, String getTranslationKey) implements IConfigTranslation {
+        public record ConfigSaveData(String savePath, String title, String tooltip, @Nullable String button, String getTranslationKey) implements IConfigTranslation {
 
             private static ConfigSaveData create(String savePath, int index, int size, boolean canPin) {
                 String saveName = TextUtils.formatAndCapitalize(savePath);
@@ -184,7 +184,9 @@ public class SelectedWindowData {
                 if (canPin) {
                     tooltip += ", and whether it was pinned";
                 }
-                return new ConfigSaveData(savePath, title, tooltip + ".", Util.makeDescriptionId("configuration", Mekanism.rl("client.last_window_positions." + savePath)));
+                return new ConfigSaveData(savePath, title, tooltip + ".", "Edit " + saveName + " Position",
+                      Util.makeDescriptionId("configuration", Mekanism.rl("client.last_window_positions." + savePath))
+                );
             }
         }
     }

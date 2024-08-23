@@ -5,6 +5,7 @@ import mekanism.common.util.text.TextUtils;
 import mekanism.tools.common.MekanismTools;
 import net.minecraft.Util;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public enum ToolsConfigTranslations implements IConfigTranslation {
     //Client config
@@ -13,10 +14,11 @@ public enum ToolsConfigTranslations implements IConfigTranslation {
     //Startup config
     STARTUP_MATERIALS("startup.materials", "Material Settings",
           "Settings for configuring Mekanism: Tools' material settings. This config is not synced automatically between client and server. It is highly "
-          + "recommended to ensure you are using the same values for this config on the server and client."),
+          + "recommended to ensure you are using the same values for this config on the server and client.", true),
 
     //Server config
-    SERVER_GEAR_SPAWN_CHANCE("server.gear_spawn_chance", "Mob Gear Spawn Chance", "Settings for configuring the spawn chance of Mekanism: Tools gear on mobs"),
+    SERVER_GEAR_SPAWN_CHANCE("server.gear_spawn_chance", "Mob Gear Spawn Chance",
+          "Settings for configuring the spawn chance of Mekanism: Tools gear on mobs", true),
     SERVER_GEAR_SPAWN_CHANCE_ARMOR("server.gear_spawn_chance.armor", "Armor Chance",
           "The chance that Mekanism Armor can spawn on mobs. This is multiplied modified by the chunk's difficulty modifier. "
           + "Vanilla uses 0.15 for its armor spawns, we use 0.1 as default to lower chances of mobs getting some vanilla and some mek armor."),
@@ -28,11 +30,22 @@ public enum ToolsConfigTranslations implements IConfigTranslation {
     private final String key;
     private final String title;
     private final String tooltip;
+    @Nullable
+    private final String button;
 
     ToolsConfigTranslations(String path, String title, String tooltip) {
+        this(path, title, tooltip, false);
+    }
+
+    ToolsConfigTranslations(String path, String title, String tooltip, boolean isSection) {
+        this(path, title, tooltip, IConfigTranslation.getSectionTitle(title, isSection));
+    }
+
+    ToolsConfigTranslations(String path, String title, String tooltip, @Nullable String button) {
         this.key = Util.makeDescriptionId("configuration", MekanismTools.rl(path));
         this.title = title;
         this.tooltip = tooltip;
+        this.button = button;
     }
 
     @NotNull
@@ -49,6 +62,12 @@ public enum ToolsConfigTranslations implements IConfigTranslation {
     @Override
     public String tooltip() {
         return tooltip;
+    }
+
+    @Nullable
+    @Override
+    public String button() {
+        return button;
     }
 
     public record ArmorSpawnChanceTranslations(
@@ -84,7 +103,9 @@ public enum ToolsConfigTranslations implements IConfigTranslation {
             return new ArmorSpawnChanceTranslations(
                   new ConfigTranslation(getKey(registryPrefix, "top_level"), name + " Gear Spawn Chance",
                         "Spawn chances for pieces of " + name + " gear. Note: These values are after the general mobArmorSpawnRate (or corresponding weapon rate) "
-                        + "has been checked, and after an even split between material types has been done."),
+                        + "has been checked, and after an even split between material types has been done.",
+                        "Edit Gear Spawn Chance"
+                  ),
                   new ConfigTranslation(getKey(registryPrefix, "spawn_weapon"), "With Weapon", "Whether mobs can spawn with " + name + " Weapons."),
                   new ConfigTranslation(getKey(registryPrefix, "sword_weight"), "Sword Weight",
                         "The chance that mobs will spawn with " + name + " Swords rather than " + name + " Shovels."),
@@ -126,7 +147,9 @@ public enum ToolsConfigTranslations implements IConfigTranslation {
         public static VanillaPaxelMaterialTranslations create(String registryPrefix) {
             String name = TextUtils.formatAndCapitalize(registryPrefix);
             return new VanillaPaxelMaterialTranslations(
-                  new ConfigTranslation(getKey(registryPrefix, "top_level"), name, "Vanilla Material Paxel Settings for " + name + "."),
+                  new ConfigTranslation(getKey(registryPrefix, "top_level"), name, "Vanilla Material Paxel Settings for " + name + ".",
+                        "Edit " + name + " Settings"
+                  ),
                   new ConfigTranslation(getKey(registryPrefix, "damage"), "Damage", "Attack damage modifier of " + name + " paxels."),
                   new ConfigTranslation(getKey(registryPrefix, "attack_speed"), "Attack Speed", "Attack speed of " + name + " paxels."),
                   new ConfigTranslation(getKey(registryPrefix, "efficiency"), "Efficiency", "Efficiency of " + name + " paxels."),
@@ -181,7 +204,7 @@ public enum ToolsConfigTranslations implements IConfigTranslation {
         public static MaterialTranslations create(String registryPrefix) {
             String name = TextUtils.formatAndCapitalize(registryPrefix);
             return new MaterialTranslations(
-                  new ConfigTranslation(getKey(registryPrefix, "top_level"), name, "Material Settings for " + name),
+                  new ConfigTranslation(getKey(registryPrefix, "top_level"), name, "Material Settings for " + name, "Edit " + name + " Settings"),
                   new ConfigTranslation(getKey(registryPrefix, "durability.tool"), "Tool Durability", "Maximum durability of " + name + " tools."),
                   new ConfigTranslation(getKey(registryPrefix, "efficiency"), "Efficiency", "Efficiency of " + name + " tools."),
                   new ConfigTranslation(getKey(registryPrefix, "damage"), "Base Damage", "Base attack damage of " + name + " items."),

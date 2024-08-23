@@ -41,7 +41,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
     public final CachedDoubleValue turbineVentGasFlow;
     public final CachedDoubleValue turbineDisperserGasFlow;
     public final CachedLongValue turbineEnergyCapacityPerVolume;
-    public final CachedLongValue turbineGasPerTank;
+    public final CachedLongValue turbineChemicalPerTank;
     public final CachedIntValue condenserRate;
 
     public final CachedLongValue energyPerFusionFuel;
@@ -141,8 +141,8 @@ public class GeneratorsConfig extends BaseMekanismConfig {
               "energyCapacityPerVolume", 16_000_000L, 1L, 1_000_000_000_000L);
         //Note: We use maxVolume as it still is a large number, and we have no reason to go higher even if some things we technically could
         int maxTurbine = 17 * 17 * 18;
-        turbineGasPerTank = CachedLongValue.wrap(this, GeneratorsConfigTranslations.SERVER_TURBINE_GAS_CAPACITY.applyToBuilder(builder)
-              .defineInRange("gasPerTank", 64L * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE / maxTurbine));
+        turbineChemicalPerTank = CachedLongValue.wrap(this, GeneratorsConfigTranslations.SERVER_TURBINE_CHEMICAL_CAPACITY.applyToBuilder(builder)
+              .defineInRange("chemicalPerTank", 64L * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE / maxTurbine));
         condenserRate = CachedIntValue.wrap(this, GeneratorsConfigTranslations.SERVER_TURBINE_RATE_CONDENSER.applyToBuilder(builder)
               .defineInRange("condenserRate", 64 * FluidType.BUCKET_VOLUME, 1, 2_000 * FluidType.BUCKET_VOLUME));
         builder.pop();

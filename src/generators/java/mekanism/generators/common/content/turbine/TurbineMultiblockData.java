@@ -232,7 +232,7 @@ public class TurbineMultiblockData extends MultiblockData {
     }
 
     public long getSteamCapacity() {
-        return lowerVolume * MekanismGeneratorsConfig.generators.turbineGasPerTank.get();
+        return lowerVolume * MekanismGeneratorsConfig.generators.turbineChemicalPerTank.get();
     }
 
     public long getEnergyCapacity() {
