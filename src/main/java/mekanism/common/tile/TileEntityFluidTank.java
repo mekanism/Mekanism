@@ -66,7 +66,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
 
     public FluidTankTier tier;
 
-    public int valve;
+    private int valve;
     @NotNull
     public FluidStack valveFluid = FluidStack.EMPTY;
     private List<BlockCapabilityCache<IFluidHandler, @Nullable Direction>> fluidHandlerBelow = Collections.emptyList();
@@ -137,6 +137,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
             if (prevScale == 0 || scale == 0) {
                 //If it was empty and no longer is, or wasn't empty and now is empty we want to recheck the block lighting
                 // as the fluid may have changed and have a light value
+                //TODO - 1.21: Do we want to use the active delay for turning lighting off?
                 WorldUtils.recheckLighting(level, worldPosition);
             }
             prevScale = scale;

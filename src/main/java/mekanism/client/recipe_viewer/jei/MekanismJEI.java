@@ -9,7 +9,6 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
-import mekanism.api.providers.IChemicalProvider;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.robit.GuiRobitRepair;
 import mekanism.client.recipe_viewer.RecipeViewerUtils;
@@ -79,7 +78,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.ItemLike;
-import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -130,7 +128,7 @@ public class MekanismJEI implements IModPlugin {
 
     private static final IIngredientSubtypeInterpreter<ItemStack> MEKANISM_NBT_INTERPRETER = (stack, context) -> {
         if (context == UidContext.Ingredient) {
-            String representation = getChemicalComponent(stack, ContainerType.CHEMICAL, Capabilities.CHEMICAL.item());
+            String representation = getChemicalComponent(stack);
             representation = addInterpretation(representation, getFluidComponent(stack));
             representation = addInterpretation(representation, getEnergyComponent(stack));
             return representation;
@@ -142,11 +140,10 @@ public class MekanismJEI implements IModPlugin {
         return nbtRepresentation.isEmpty() ? component : nbtRepresentation + ":" + component;
     }
 
-    private static String getChemicalComponent(ItemStack stack, ContainerType<?, ?, ? extends IChemicalHandler> containerType,
-          ItemCapability<? extends IChemicalHandler, Void> capability) {
-        IChemicalHandler handler = containerType.createHandlerIfData(stack);
+    private static String getChemicalComponent(ItemStack stack) {
+        IChemicalHandler handler = ContainerType.CHEMICAL.createHandlerIfData(stack);
         if (handler == null) {
-            handler = stack.getCapability(capability);
+            handler = Capabilities.CHEMICAL.getCapability(stack);
         }
         if (handler != null) {
             String component = "";
@@ -235,7 +232,7 @@ public class MekanismJEI implements IModPlugin {
         //Note: We register the ingredient types regardless of if EMI is loaded so that we don't crash any addons that are trying to reference them
         List<ChemicalStack> types = MekanismAPI.CHEMICAL_REGISTRY.stream()
               .filter(chemical -> !chemical.isEmptyType())//Don't add the empty type. We will allow JEI to filter out any that are hidden from recipe viewers
-              .map(chemical -> ((IChemicalProvider) chemical).getStack(FluidType.BUCKET_VOLUME))
+              .map(chemical -> chemical.getStack(FluidType.BUCKET_VOLUME))
               .toList();
         CHEMICAL_STACK_HELPER.setColorHelper(registry.getColorHelper());
         registry.register(TYPE_CHEMICAL, types, CHEMICAL_STACK_HELPER, new ChemicalStackRenderer());
