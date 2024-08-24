@@ -189,7 +189,8 @@ def setupTasks(SourceSet sourceSet) {
     tasks.named(sourceSet.processResourcesTaskName, ProcessResources).configure { ProcessResources process ->
         process.setGroup('process resources')
         process.duplicatesStrategy(DuplicatesStrategy.FAIL)
-        var versionProperties = ['version': mod_version, 'mc_version': minecraft_version_range, 'forge_version': forge_version_range, 'loader_version': loader_version_range]
+        var versionProperties = ['version': mod_version, 'mc_version': minecraft_version_range, 'forge_version': forge_version_range, 'loader_version': loader_version_range,
+                                 'jei_version': jei_version_range]
         //Mark the properties as inputs so that when they change things update
         process.inputs.properties(versionProperties)
         process.filesMatching('META-INF/neoforge.mods.toml') { expand(versionProperties) }

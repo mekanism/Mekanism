@@ -23,6 +23,12 @@ license="MIT"
     type="required"
     versionRange="${forge_version}"
     side="BOTH"
+[[dependencies.mekanism]]
+    modId="jei"
+    type="optional"
+    versionRange="${jei_version}"
+    ordering="NONE"
+    side="BOTH"
 
 [[dependencies.mekanism]]
     modId="appmek"

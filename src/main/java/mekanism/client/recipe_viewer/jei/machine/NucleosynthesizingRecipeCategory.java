@@ -1,6 +1,5 @@
 package mekanism.client.recipe_viewer.jei.machine;
 
-import java.util.Collections;
 import java.util.List;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.NucleosynthesizingRecipe;
@@ -23,11 +22,11 @@ import mekanism.common.lib.Color.ColorFunction;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.machine.TileEntityAntiprotonicNucleosynthesizer;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.gui.builder.ITooltipBuilder;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 
@@ -64,11 +63,10 @@ public class NucleosynthesizingRecipeCategory extends HolderRecipeCategory<Nucle
     }
 
     @Override
-    public List<Component> getTooltipStrings(RecipeHolder<NucleosynthesizingRecipe> recipeHolder, IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY) {
+    public void getTooltip(ITooltipBuilder tooltip, RecipeHolder<NucleosynthesizingRecipe> recipeHolder, IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY) {
         if (rateBar.isMouseOver(mouseX, mouseY)) {
-            return Collections.singletonList(MekanismLang.TICKS_REQUIRED.translate(recipeHolder.value().getDuration()));
+            tooltip.add(MekanismLang.TICKS_REQUIRED.translate(recipeHolder.value().getDuration()));
         }
-        return Collections.emptyList();
     }
 
     @Override

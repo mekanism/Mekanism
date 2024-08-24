@@ -2,6 +2,7 @@ package mekanism.common.util;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
@@ -110,21 +111,27 @@ public class ChemicalUtil {
         return false;
     }
 
-    public static void addAttributeTooltips(List<Component> tooltips, Chemical chemical) {
+    public static void addAttributeTooltips(Chemical chemical, Consumer<Component> tooltipAdder) {
         for (ChemicalAttribute attr : chemical.getAttributes()) {
-            attr.addTooltipText(tooltips);
+            attr.collectTooltips(tooltipAdder);
         }
     }
 
     public static void addChemicalDataToTooltip(List<Component> tooltips, Chemical chemical, boolean advanced) {
         if (!chemical.isEmptyType()) {
-            addAttributeTooltips(tooltips, chemical);
+            addChemicalDataToTooltip(chemical, advanced, tooltips::add);
+        }
+    }
+
+    public static void addChemicalDataToTooltip(Chemical chemical, boolean advanced, Consumer<Component> tooltipAdder) {
+        if (!chemical.isEmptyType()) {
+            addAttributeTooltips(chemical, tooltipAdder);
             if (chemical.is(MekanismAPITags.Chemicals.WASTE_BARREL_DECAY_BLACKLIST)) {
-                tooltips.add(MekanismLang.DECAY_IMMUNE.translateColored(EnumColor.AQUA));
+                tooltipAdder.accept(MekanismLang.DECAY_IMMUNE.translateColored(EnumColor.AQUA));
             }
             if (advanced) {
                 //If advanced tooltips are on, display the registry name
-                tooltips.add(TextComponentUtil.build(ChatFormatting.DARK_GRAY, chemical.getRegistryName()));
+                tooltipAdder.accept(TextComponentUtil.build(ChatFormatting.DARK_GRAY, chemical.getRegistryName()));
             }
         }
     }

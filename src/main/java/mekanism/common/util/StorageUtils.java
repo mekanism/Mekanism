@@ -3,6 +3,7 @@ package mekanism.common.util;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import mekanism.api.Action;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -66,16 +67,20 @@ public class StorageUtils {
             handler = ContainerType.CHEMICAL.createHandlerIfData(stack);
         }
         if (handler != null) {
-            for (int tank = 0, tanks = handler.getChemicalTanks(); tank < tanks; tank++) {
-                ChemicalStack chemicalInTank = handler.getChemicalInTank(tank);
-                if (chemicalInTank.isEmpty()) {
-                    tooltip.add(MekanismLang.NO_CHEMICAL.translateColored(EnumColor.GRAY));
-                } else {
-                    tooltip.add(MekanismLang.STORED.translateColored(EnumColor.ORANGE, EnumColor.ORANGE, chemicalInTank, EnumColor.GRAY,
-                          MekanismLang.GENERIC_MB.translate(TextUtils.format(chemicalInTank.getAmount()))));
-                }
-                if (showAttributes) {
-                    ChemicalUtil.addAttributeTooltips(tooltip, chemicalInTank.getChemical());
+            int tanks = handler.getChemicalTanks();
+            if (tanks > 0) {
+                Consumer<Component> tooltipAdder = tooltip::add;
+                for (int tank = 0; tank < tanks; tank++) {
+                    ChemicalStack chemicalInTank = handler.getChemicalInTank(tank);
+                    if (chemicalInTank.isEmpty()) {
+                        tooltip.add(MekanismLang.NO_CHEMICAL.translateColored(EnumColor.GRAY));
+                    } else {
+                        tooltip.add(MekanismLang.STORED.translateColored(EnumColor.ORANGE, EnumColor.ORANGE, chemicalInTank, EnumColor.GRAY,
+                              MekanismLang.GENERIC_MB.translate(TextUtils.format(chemicalInTank.getAmount()))));
+                    }
+                    if (showAttributes) {
+                        ChemicalUtil.addAttributeTooltips(chemicalInTank.getChemical(), tooltipAdder);
+                    }
                 }
             }
         } else if (showMissingCap) {

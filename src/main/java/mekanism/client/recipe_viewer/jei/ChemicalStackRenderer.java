@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.math.MathUtils;
@@ -16,6 +17,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.text.TextUtils;
+import mezz.jei.api.gui.builder.ITooltipBuilder;
 import mezz.jei.api.ingredients.IIngredientRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -71,24 +73,38 @@ public class ChemicalStackRenderer implements IIngredientRenderer<ChemicalStack>
     }
 
     @Override
+    @Deprecated(forRemoval = true)
     public List<Component> getTooltip(ChemicalStack stack, TooltipFlag tooltipFlag) {
         Chemical chemical = stack.getChemical();
         if (chemical.isEmptyType()) {
             return Collections.emptyList();
         }
         List<Component> tooltips = new ArrayList<>();
-        tooltips.add(TextComponentUtil.build(chemical));
-        if (stack.getChemical() == MekanismChemicals.ETHENE.get()) {
-            //TODO - 1.22: Remove this
-            tooltips.add(MekanismLang.ALSO_KNOWN_AS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismLang.ETHENE_ETHYLENE_ALIAS));
-        }
-        if (tooltipMode == TooltipMode.SHOW_AMOUNT_AND_CAPACITY) {
-            tooltips.add(MekanismLang.JEI_AMOUNT_WITH_CAPACITY.translateColored(EnumColor.GRAY, TextUtils.format(stack.getAmount()), TextUtils.format(capacityMb)));
-        } else if (tooltipMode == TooltipMode.SHOW_AMOUNT) {
-            tooltips.add(MekanismLang.GENERIC_MB.translateColored(EnumColor.GRAY, TextUtils.format(stack.getAmount())));
-        }
-        ChemicalUtil.addChemicalDataToTooltip(tooltips, stack.getChemical(), tooltipFlag.isAdvanced());
+        collectTooltips(stack, tooltipFlag, tooltips::add);
         return tooltips;
+    }
+
+    @Override
+    public void getTooltip(ITooltipBuilder tooltip, ChemicalStack stack, TooltipFlag tooltipFlag) {
+        //TODO - 1.22: Flatten the collectTooltips into this method
+        collectTooltips(stack, tooltipFlag, tooltip::add);
+    }
+
+    private void collectTooltips(ChemicalStack stack, TooltipFlag tooltipFlag, Consumer<Component> tooltipAdder) {
+        Chemical chemical = stack.getChemical();
+        if (!chemical.isEmptyType()) {
+            tooltipAdder.accept(TextComponentUtil.build(chemical));
+            if (stack.getChemical() == MekanismChemicals.ETHENE.get()) {
+                //TODO - 1.22: Remove this
+                tooltipAdder.accept(MekanismLang.ALSO_KNOWN_AS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismLang.ETHENE_ETHYLENE_ALIAS));
+            }
+            if (tooltipMode == TooltipMode.SHOW_AMOUNT_AND_CAPACITY) {
+                tooltipAdder.accept(MekanismLang.JEI_AMOUNT_WITH_CAPACITY.translateColored(EnumColor.GRAY, TextUtils.format(stack.getAmount()), TextUtils.format(capacityMb)));
+            } else if (tooltipMode == TooltipMode.SHOW_AMOUNT) {
+                tooltipAdder.accept(MekanismLang.GENERIC_MB.translateColored(EnumColor.GRAY, TextUtils.format(stack.getAmount())));
+            }
+            ChemicalUtil.addChemicalDataToTooltip(stack.getChemical(), tooltipFlag.isAdvanced(), tooltipAdder);
+        }
     }
 
     @Override

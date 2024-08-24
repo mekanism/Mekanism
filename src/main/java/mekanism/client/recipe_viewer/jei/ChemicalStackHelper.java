@@ -2,10 +2,10 @@ package mekanism.client.recipe_viewer.jei;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
+import com.mojang.datafixers.util.Pair;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
@@ -40,8 +40,15 @@ public class ChemicalStackHelper implements IIngredientHelper<ChemicalStack> {
     }
 
     @Override
+    @Deprecated(forRemoval = true)
     public String getUniqueId(ChemicalStack ingredient, UidContext context) {
         return "chemical:" + ingredient.getTypeRegistryName();
+    }
+
+    @Override
+    public Object getUid(ChemicalStack ingredient, UidContext context) {
+        //Note: We just return the registry element itself as we have no component data
+        return ingredient.getChemical();
     }
 
     @Override
@@ -89,13 +96,14 @@ public class ChemicalStackHelper implements IIngredientHelper<ChemicalStack> {
     }
 
     @Override
-    public Optional<ResourceLocation> getTagEquivalent(Collection<ChemicalStack> stacks) {
+    public Optional<TagKey<?>> getTagKeyEquivalent(Collection<ChemicalStack> stacks) {
         if (stacks.size() < 2) {
             return Optional.empty();
         }
-        Set<Chemical> values = stacks.stream()
+        List<Chemical> values = stacks.stream()
               .map(ChemicalStack::getChemical)
-              .collect(Collectors.toSet());
+              .distinct()
+              .toList();
         int expected = values.size();
         if (expected != stacks.size()) {
             //One of the chemicals is there more than once, definitely not a tag
@@ -104,8 +112,16 @@ public class ChemicalStackHelper implements IIngredientHelper<ChemicalStack> {
         return MekanismAPI.CHEMICAL_REGISTRY.getTags()
               .filter(pair -> {
                   Named<Chemical> tag = pair.getSecond();
-                  return tag.size() == expected && tag.stream().allMatch(holder -> values.contains(holder.value()));
-              }).map(pair -> pair.getFirst().location())
+                  if (tag.size() != expected) {
+                      return false;
+                  }
+                  for (int i = 0; i < expected; i++) {
+                      if (tag.get(i).value() != values.get(i)) {
+                          return false;
+                      }
+                  }
+                  return true;
+              }).<TagKey<?>>map(Pair::getFirst)
               .findFirst();
     }
 

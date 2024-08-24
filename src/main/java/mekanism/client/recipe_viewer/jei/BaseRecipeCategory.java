@@ -1,6 +1,5 @@
 package mekanism.client.recipe_viewer.jei;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -29,9 +28,11 @@ import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IRecipeSlotView;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
+import mezz.jei.api.gui.widgets.IRecipeExtrasBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.neoforge.NeoForgeTypes;
+import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
@@ -49,6 +50,7 @@ import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+//TODO: Re-evaluate this extending AbstractContainerEventHandler
 public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventHandler implements IRecipeCategory<RECIPE>, IGuiWrapper {
 
     protected static IDrawable createIcon(IGuiHelper helper, IRecipeViewerRecipeType<?> recipeType) {
@@ -108,13 +110,12 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
     }
 
     @Override
-    public boolean handleInput(RECIPE recipe, double mouseX, double mouseY, InputConstants.Key input) {
-        return switch (input.getType()) {
-            case KEYSYM -> keyPressed(input.getValue(), -1, 0);
-            case SCANCODE -> keyPressed(-1, input.getValue(), 0);
-            //Shift by the offset as JEI doesn't realize we are actually starting at negatives
-            case MOUSE -> mouseClicked(mouseX, mouseY, input.getValue());
-        };
+    public void createRecipeExtras(IRecipeExtrasBuilder builder, RECIPE recipe, IFocusGroup focuses) {
+        for (GuiElement guiElement : guiElements) {
+            //TODO: I believe we can use this method and adding via builder.addWidget to reduce some of our draw override hacks
+            //TODO: Only add this for ones that we actually have interaction behavior for?
+            builder.addGuiEventListener(new MekJeiWidget(guiElement));
+        }
     }
 
     /**

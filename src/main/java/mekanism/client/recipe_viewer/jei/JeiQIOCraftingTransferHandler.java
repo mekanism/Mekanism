@@ -67,7 +67,7 @@ public class JeiQIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContai
     private record JeiRecipeInfo(
           QIOItemViewerContainer container, RecipeHolder<CraftingRecipe> recipeHolder, IRecipeSlotsView recipeSlots, Player player, int transferAmount,
           IRecipeTransferHandlerHelper handlerHelper, IStackHelper stackHelper
-    ) implements RVRecipeInfo<IRecipeTransferError, JeiRecipeSlot, String> {
+    ) implements RVRecipeInfo<IRecipeTransferError, JeiRecipeSlot, Object> {
 
         @Override
         public IRecipeTransferError createInternalError() {
@@ -85,8 +85,8 @@ public class JeiQIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContai
         }
 
         @Override
-        public String itemUUID(HashedItem hashed) {
-            return stackHelper.getUniqueIdentifierForStack(hashed.getInternalStack(), UidContext.Recipe);
+        public Object itemUUID(HashedItem hashed) {
+            return stackHelper.getUidForStack(hashed.getInternalStack(), UidContext.Recipe);
         }
 
         @Override

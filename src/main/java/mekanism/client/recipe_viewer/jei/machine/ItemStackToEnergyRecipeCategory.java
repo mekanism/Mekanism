@@ -1,7 +1,5 @@
 package mekanism.client.recipe_viewer.jei.machine;
 
-import java.util.Collections;
-import java.util.List;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.element.gauge.GaugeType;
@@ -16,6 +14,7 @@ import mekanism.common.tile.component.config.DataType;
 import mekanism.common.util.text.EnergyDisplay;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.gui.builder.ITooltipBuilder;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
@@ -24,7 +23,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
@@ -59,19 +57,17 @@ public class ItemStackToEnergyRecipeCategory extends HolderRecipeCategory<ItemSt
     }
 
     @Override
-    public List<Component> getTooltipStrings(RecipeHolder<ItemStackToEnergyRecipe> recipeHolder, IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY) {
+    public void getTooltip(ITooltipBuilder tooltip, RecipeHolder<ItemStackToEnergyRecipe> recipeHolder, IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY) {
         if (gauge.isMouseOver(mouseX, mouseY)) {
             long energy = getOutputEnergy(recipeHolder, recipeSlotsView);
             if (energy != 0L) {
                 //Manually add the tooltip showing the amounts if the mouse is over the energy gauge
-                Component energyOutput = EnergyDisplay.of(energy).getTextComponent();
+                tooltip.add(EnergyDisplay.of(energy).getTextComponent());
                 if (Minecraft.getInstance().options.advancedItemTooltips || Screen.hasShiftDown()) {
-                    return List.of(energyOutput, TextComponentUtil.build(ChatFormatting.DARK_GRAY, MekanismLang.JEI_RECIPE_ID.translate(recipeHolder.id())));
+                    tooltip.add(TextComponentUtil.build(ChatFormatting.DARK_GRAY, MekanismLang.JEI_RECIPE_ID.translate(recipeHolder.id())));
                 }
-                return Collections.singletonList(energyOutput);
             }
         }
-        return Collections.emptyList();
     }
 
     private long getOutputEnergy(RecipeHolder<ItemStackToEnergyRecipe> recipeHolder, IRecipeSlotsView recipeSlotsView) {

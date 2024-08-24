@@ -6,9 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import mekanism.api.MekanismAPI;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.IChemicalHandler;
-import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.robit.GuiRobitRepair;
 import mekanism.client.recipe_viewer.RecipeViewerUtils;
@@ -41,7 +40,6 @@ import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.entity.robit.CraftingRobitContainer;
@@ -52,7 +50,6 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismItems;
-import mekanism.common.util.RegistryUtils;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.RecipeTypes;
@@ -60,8 +57,7 @@ import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.helpers.IStackHelper;
 import mezz.jei.api.ingredients.IIngredientType;
-import mezz.jei.api.ingredients.subtypes.IIngredientSubtypeInterpreter;
-import mezz.jei.api.ingredients.subtypes.UidContext;
+import mezz.jei.api.ingredients.subtypes.ISubtypeInterpreter;
 import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
@@ -78,9 +74,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.ItemLike;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 
 @JeiPlugin
@@ -89,7 +83,7 @@ public class MekanismJEI implements IModPlugin {
     public static final IIngredientType<ChemicalStack> TYPE_CHEMICAL = () -> ChemicalStack.class;
 
     public static final ChemicalStackHelper CHEMICAL_STACK_HELPER = new ChemicalStackHelper();
-
+    private static final ISubtypeInterpreter<ItemStack> MEKANISM_DATA_INTERPRETER = new MekanismSubtypeInterpreter();
     private static final Map<IRecipeViewerRecipeType<?>, RecipeType<?>> recipeTypeInstanceCache = new HashMap<>();
 
     public static boolean shouldLoad() {
@@ -126,81 +120,6 @@ public class MekanismJEI implements IModPlugin {
         return Arrays.stream(recipeTypes).map(MekanismJEI::genericRecipeType).toArray(RecipeType[]::new);
     }
 
-    private static final IIngredientSubtypeInterpreter<ItemStack> MEKANISM_NBT_INTERPRETER = (stack, context) -> {
-        if (context == UidContext.Ingredient) {
-            String representation = getChemicalComponent(stack);
-            representation = addInterpretation(representation, getFluidComponent(stack));
-            representation = addInterpretation(representation, getEnergyComponent(stack));
-            return representation;
-        }
-        return IIngredientSubtypeInterpreter.NONE;
-    };
-
-    private static String addInterpretation(String nbtRepresentation, String component) {
-        return nbtRepresentation.isEmpty() ? component : nbtRepresentation + ":" + component;
-    }
-
-    private static String getChemicalComponent(ItemStack stack) {
-        IChemicalHandler handler = ContainerType.CHEMICAL.createHandlerIfData(stack);
-        if (handler == null) {
-            handler = Capabilities.CHEMICAL.getCapability(stack);
-        }
-        if (handler != null) {
-            String component = "";
-            for (int tank = 0, tanks = handler.getChemicalTanks(); tank < tanks; tank++) {
-                ChemicalStack chemicalStack = handler.getChemicalInTank(tank);
-                if (!chemicalStack.isEmpty()) {
-                    component = addInterpretation(component, chemicalStack.getTypeRegistryName().toString());
-                } else if (tanks > 1) {
-                    component = addInterpretation(component, "empty");
-                }
-            }
-            return component;
-        }
-        return IIngredientSubtypeInterpreter.NONE;
-    }
-
-    private static String getFluidComponent(ItemStack stack) {
-        IFluidHandler handler = ContainerType.FLUID.createHandlerIfData(stack);
-        if (handler == null) {
-            handler = Capabilities.FLUID.getCapability(stack);
-        }
-        if (handler != null) {
-            String component = "";
-            for (int tank = 0, tanks = handler.getTanks(); tank < tanks; tank++) {
-                FluidStack fluidStack = handler.getFluidInTank(tank);
-                if (!fluidStack.isEmpty()) {
-                    component = addInterpretation(component, RegistryUtils.getName(fluidStack.getFluid()).toString());
-                } else if (tanks > 1) {
-                    component = addInterpretation(component, "empty");
-                }
-            }
-            return component;
-        }
-        return IIngredientSubtypeInterpreter.NONE;
-    }
-
-    private static String getEnergyComponent(ItemStack stack) {
-        IStrictEnergyHandler energyHandlerItem = ContainerType.ENERGY.createHandlerIfData(stack);
-        if (energyHandlerItem == null) {
-            energyHandlerItem = Capabilities.STRICT_ENERGY.getCapability(stack);
-        }
-        if (energyHandlerItem != null) {
-            String component = "";
-            int containers = energyHandlerItem.getEnergyContainerCount();
-            for (int container = 0; container < containers; container++) {
-                long neededEnergy = energyHandlerItem.getNeededEnergy(container);
-                if (neededEnergy == 0L) {
-                    component = addInterpretation(component, "filled");
-                } else if (containers > 1) {
-                    component = addInterpretation(component, "empty");
-                }
-            }
-            return component;
-        }
-        return IIngredientSubtypeInterpreter.NONE;
-    }
-
     @NotNull
     @Override
     public ResourceLocation getPluginUid() {
@@ -214,7 +133,7 @@ public class MekanismJEI implements IModPlugin {
             //Handle items
             ItemStack stack = new ItemStack(itemProvider.value());
             if (Capabilities.STRICT_ENERGY.hasCapability(stack) || Capabilities.CHEMICAL.hasCapability(stack) || Capabilities.FLUID.hasCapability(stack)) {
-                registry.registerSubtypeInterpreter(stack.getItem(), MEKANISM_NBT_INTERPRETER);
+                registry.registerSubtypeInterpreter(stack.getItem(), MEKANISM_DATA_INTERPRETER);
             }
         }
     }
@@ -235,7 +154,10 @@ public class MekanismJEI implements IModPlugin {
               .map(chemical -> chemical.getStack(FluidType.BUCKET_VOLUME))
               .toList();
         CHEMICAL_STACK_HELPER.setColorHelper(registry.getColorHelper());
-        registry.register(TYPE_CHEMICAL, types, CHEMICAL_STACK_HELPER, new ChemicalStackRenderer());
+        registry.register(TYPE_CHEMICAL, types, CHEMICAL_STACK_HELPER, new ChemicalStackRenderer(), Chemical.CODEC.xmap(
+              chemical -> chemical.getStack(FluidType.BUCKET_VOLUME),
+              ChemicalStack::getChemical
+        ));
     }
 
     @Override

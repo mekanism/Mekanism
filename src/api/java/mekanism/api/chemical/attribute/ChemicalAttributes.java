@@ -1,6 +1,7 @@
 package mekanism.api.chemical.attribute;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.IntSupplier;
 import java.util.function.LongSupplier;
 import mekanism.api.MekanismAPI;
@@ -58,14 +59,19 @@ public class ChemicalAttributes {
         }
 
         @Override
+        @Deprecated(since = "10.7.4", forRemoval = true)
         public List<Component> addTooltipText(List<Component> list) {
-            super.addTooltipText(list);
+            collectTooltips(list::add);
+            return list;
+        }
+
+        @Override
+        public void collectTooltips(Consumer<Component> adder) {
             if (needsValidation()) {
                 //Only show the radioactive tooltip information if radiation is actually enabled
                 ITooltipHelper tooltipHelper = ITooltipHelper.INSTANCE;
-                list.add(APILang.CHEMICAL_ATTRIBUTE_RADIATION.translateColored(EnumColor.GRAY, EnumColor.INDIGO, tooltipHelper.getRadioactivityDisplayShort(getRadioactivity())));
+                adder.accept(APILang.CHEMICAL_ATTRIBUTE_RADIATION.translateColored(EnumColor.GRAY, EnumColor.INDIGO, tooltipHelper.getRadioactivityDisplayShort(getRadioactivity())));
             }
-            return list;
         }
     }
 
@@ -114,13 +120,18 @@ public class ChemicalAttributes {
         }
 
         @Override
+        @Deprecated(since = "10.7.4", forRemoval = true)
         public List<Component> addTooltipText(List<Component> list) {
-            super.addTooltipText(list);
-            ITooltipHelper tooltipHelper = ITooltipHelper.INSTANCE;
-            list.add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_EFFICIENCY.translateColored(EnumColor.GRAY, EnumColor.INDIGO, tooltipHelper.getPercent(conductivity)));
-            list.add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_ENTHALPY.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
-                  tooltipHelper.getEnergyPerMBDisplayShort(MathUtils.clampToLong(thermalEnthalpy))));
+            collectTooltips(list::add);
             return list;
+        }
+
+        @Override
+        public void collectTooltips(Consumer<Component> adder) {
+            ITooltipHelper tooltipHelper = ITooltipHelper.INSTANCE;
+            adder.accept(APILang.CHEMICAL_ATTRIBUTE_COOLANT_EFFICIENCY.translateColored(EnumColor.GRAY, EnumColor.INDIGO, tooltipHelper.getPercent(conductivity)));
+            adder.accept(APILang.CHEMICAL_ATTRIBUTE_COOLANT_ENTHALPY.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
+                  tooltipHelper.getEnergyPerMBDisplayShort(MathUtils.clampToLong(thermalEnthalpy))));
         }
     }
 
@@ -245,13 +256,18 @@ public class ChemicalAttributes {
         }
 
         @Override
+        @Deprecated(since = "10.7.4", forRemoval = true)
         public List<Component> addTooltipText(List<Component> list) {
-            super.addTooltipText(list);
-            ITooltipHelper tooltipHelper = ITooltipHelper.INSTANCE;
-            list.add(APILang.CHEMICAL_ATTRIBUTE_FUEL_BURN_TICKS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, tooltipHelper.getFormattedNumber(getBurnTicks())));
-            list.add(APILang.CHEMICAL_ATTRIBUTE_FUEL_ENERGY_DENSITY.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
-                  tooltipHelper.getEnergyPerMBDisplayShort(energyDensity.getAsLong())));
+            collectTooltips(list::add);
             return list;
+        }
+
+        @Override
+        public void collectTooltips(Consumer<Component> adder) {
+            ITooltipHelper tooltipHelper = ITooltipHelper.INSTANCE;
+            adder.accept(APILang.CHEMICAL_ATTRIBUTE_FUEL_BURN_TICKS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, tooltipHelper.getFormattedNumber(getBurnTicks())));
+            adder.accept(APILang.CHEMICAL_ATTRIBUTE_FUEL_ENERGY_DENSITY.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
+                  tooltipHelper.getEnergyPerMBDisplayShort(energyDensity.getAsLong())));
         }
     }
 }
