@@ -29,8 +29,10 @@ import mekanism.api.radiation.capability.IRadiationEntity;
 import mekanism.api.radiation.capability.IRadiationShielding;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ITooltipHelper;
+import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.integration.curios.CuriosIntegration;
 import mekanism.common.lib.MekanismSavedData;
 import mekanism.common.lib.collection.HashList;
 import mekanism.common.network.to_client.radiation.PacketEnvironmentalRadiationData;
@@ -68,6 +70,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
+import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
@@ -336,6 +339,21 @@ public class RadiationManager implements IRadiationManager {
                 IRadiationShielding shielding = stack.getCapability(Capabilities.RADIATION_SHIELDING);
                 if (shielding != null) {
                     resistance += shielding.getRadiationShielding();
+                }
+            }
+        }
+        if (resistance < 1 && Mekanism.hooks.CuriosLoaded) {
+            IItemHandler handler = CuriosIntegration.getCuriosInventory(entity);
+            if (handler != null) {
+                for (int i = 0, slots = handler.getSlots(); i < slots; i++) {
+                    ItemStack stack = handler.getStackInSlot(i);
+                    IRadiationShielding shielding = stack.getCapability(Capabilities.RADIATION_SHIELDING);
+                    if (shielding != null) {
+                        resistance += shielding.getRadiationShielding();
+                        if (resistance >= 1) {
+                            return 1;
+                        }
+                    }
                 }
             }
         }
