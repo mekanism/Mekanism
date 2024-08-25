@@ -70,7 +70,7 @@ public class UpgradesRecipeData implements RecipeUpgradeData<UpgradesRecipeData>
                 supportedUpgrades = upgradeSupport.supportedUpgrades();
             }
         }
-        if (supportedUpgrades.containsAll(upgrades.keySet())) {
+        if (!supportedUpgrades.containsAll(upgrades.keySet())) {
             //Not all upgrades are supported, fail
             return false;
         }
