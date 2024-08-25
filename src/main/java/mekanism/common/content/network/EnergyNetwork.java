@@ -105,10 +105,14 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
 
     private long tickEmit(long energyToSend) {
         Collection<Map<Direction, IStrictEnergyHandler>> acceptorValues = acceptorCache.getAcceptorValues();
-        EnergyAcceptorTarget target = new EnergyAcceptorTarget(acceptorValues.size() * 2);
+        EnergyAcceptorTarget target = null;
         for (Map<Direction, IStrictEnergyHandler> acceptors : acceptorValues) {
             for (IStrictEnergyHandler acceptor : acceptors.values()) {
                 if (acceptor.insertEnergy(energyToSend, Action.SIMULATE) < energyToSend) {
+                    if (target == null) {
+                        //Lazily initialize the target, which allows us to also skip attempting to start emitting
+                        target = new EnergyAcceptorTarget(acceptorValues.size() * 2);
+                    }
                     target.addHandler(acceptor);
                 }
             }

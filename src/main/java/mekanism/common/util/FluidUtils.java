@@ -71,8 +71,8 @@ public final class FluidUtils {
     }
 
     public static void emit(Collection<BlockCapabilityCache<IFluidHandler, @Nullable Direction>> targets, IExtendedFluidTank tank, int maxOutput) {
-        if (!tank.isEmpty() && maxOutput > 0) {
-            tank.extract(emit(targets, tank.extract(maxOutput, Action.SIMULATE, AutomationType.INTERNAL)), Action.EXECUTE, AutomationType.INTERNAL);
+        if (!tank.isEmpty() && maxOutput > 0 && !targets.isEmpty()) {
+            tank.extract(emit(targets, FluidStack.EMPTY, tank, maxOutput), Action.EXECUTE, AutomationType.INTERNAL);
         }
     }
 
@@ -85,22 +85,44 @@ public final class FluidUtils {
      * @return the amount of fluid emitted
      */
     public static int emit(Collection<BlockCapabilityCache<IFluidHandler, @Nullable Direction>> targets, @NotNull FluidStack stack) {
-        if (stack.isEmpty() || targets.isEmpty()) {
+        return emit(targets, stack, null, Integer.MAX_VALUE);
+    }
+
+    private static int emit(Collection<BlockCapabilityCache<IFluidHandler, @Nullable Direction>> targets, @NotNull FluidStack stack, IExtendedFluidTank tank,
+          int maxOutput) {
+        if (stack.isEmpty() && tank == null) {
+            //Something went wrong in calling this method
+            return 0;
+        } else if (targets.isEmpty()) {
             return 0;
         }
         FluidStack toSend = stack.copy();
-        FluidHandlerTarget target = new FluidHandlerTarget(stack, targets.size());
+        FluidHandlerTarget target = null;
         for (BlockCapabilityCache<IFluidHandler, Direction> capability : targets) {
             //Insert to access side and collect the cap if it is present, and we can insert the type of the stack into it
             IFluidHandler handler = capability.getCapability();
-            if (handler != null && canFill(handler, toSend)) {
-                target.addHandler(handler);
+            if (handler != null) {
+                //If we weren't given a stack by the caller, then we want to lazily try to extract from the tank to see how much we are trying to emit
+                // so that we don't have to attempt an extraction if all our targets are actually not currently fluid handlers
+                if (stack.isEmpty()) {
+                    stack = tank.extract(maxOutput, Action.SIMULATE, AutomationType.INTERNAL);
+                    if (stack.isEmpty()) {
+                        //If we failed to extract from it, just exit early
+                        return 0;
+                    }
+                    //Note: We need to copy and use toSend instead of just passing stack to canFill, as the docs for IFluidHandler don't specify
+                    // whether it is safe to modify the passed in stack
+                    toSend = stack.copy();
+                }
+                if (canFill(handler, toSend)) {
+                    if (target == null) {
+                        target = new FluidHandlerTarget(stack, targets.size());
+                    }
+                    target.addHandler(handler);
+                }
             }
         }
-        if (target.getHandlerCount() > 0) {
-            return EmitUtils.sendToAcceptors(target, stack.getAmount(), toSend);
-        }
-        return 0;
+        return EmitUtils.sendToAcceptors(target, stack.getAmount(), toSend);
     }
 
     public static boolean canFill(IFluidHandler handler, @NotNull FluidStack stack) {

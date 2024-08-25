@@ -4,6 +4,7 @@ import mekanism.common.lib.distribution.IntegerSplitInfo;
 import mekanism.common.lib.distribution.LongSplitInfo;
 import mekanism.common.lib.distribution.SplitInfo;
 import mekanism.common.lib.distribution.Target;
+import org.jetbrains.annotations.Nullable;
 
 public class EmitUtils {//TODO: Make things work with primitives more directly rather than having to do the boxing and unboxing
 
@@ -55,7 +56,10 @@ public class EmitUtils {//TODO: Make things work with primitives more directly r
      *
      * @return The amount that actually got sent.
      */
-    public static <HANDLER, EXTRA, TARGET extends Target<HANDLER, Integer, EXTRA>> int sendToAcceptors(TARGET availableTargets, int amountToSplit, EXTRA toSend) {
+    public static <HANDLER, EXTRA, TARGET extends Target<HANDLER, Integer, EXTRA>> int sendToAcceptors(@Nullable TARGET availableTargets, int amountToSplit, EXTRA toSend) {
+        if (availableTargets == null || availableTargets.getHandlerCount() == 0) {
+            return 0;
+        }
         return sendToAcceptors(availableTargets, new IntegerSplitInfo(amountToSplit, availableTargets.getHandlerCount()), toSend);
     }
 
@@ -69,7 +73,10 @@ public class EmitUtils {//TODO: Make things work with primitives more directly r
      *
      * @return The amount that actually got sent.
      */
-    public static <HANDLER, EXTRA, TARGET extends Target<HANDLER, Long, EXTRA>> long sendToAcceptors(TARGET availableTargets, long amountToSplit, EXTRA toSend) {
+    public static <HANDLER, EXTRA, TARGET extends Target<HANDLER, Long, EXTRA>> long sendToAcceptors(@Nullable TARGET availableTargets, long amountToSplit, EXTRA toSend) {
+        if (availableTargets == null || availableTargets.getHandlerCount() == 0) {
+            return 0;
+        }
         return sendToAcceptors(availableTargets, new LongSplitInfo(amountToSplit, availableTargets.getHandlerCount()), toSend);
     }
 }

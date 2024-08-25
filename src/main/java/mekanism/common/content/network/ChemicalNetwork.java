@@ -167,10 +167,14 @@ public class ChemicalNetwork extends DynamicBufferedNetwork<IChemicalHandler, Ch
 
     private long tickEmit(@NotNull ChemicalStack stack) {
         Collection<Map<Direction, IChemicalHandler>> acceptorValues = acceptorCache.getAcceptorValues();
-        ChemicalHandlerTarget target = new ChemicalHandlerTarget(stack, acceptorValues.size() * 2);
+        ChemicalHandlerTarget target = null;
         for (Map<Direction, IChemicalHandler> acceptors : acceptorValues) {
             for (IChemicalHandler handler : acceptors.values()) {
-                if (handler != null && ChemicalUtil.canInsert(handler, stack)) {
+                if (ChemicalUtil.canInsert(handler, stack)) {
+                    if (target == null) {
+                        //Lazily initialize the target, which allows us to also skip attempting to start emitting
+                        target = new ChemicalHandlerTarget(stack, acceptorValues.size() * 2);
+                    }
                     target.addHandler(handler);
                 }
             }

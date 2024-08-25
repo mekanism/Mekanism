@@ -33,6 +33,7 @@ import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 /**
  * @apiNote This class is called ChemicalUtil instead of ChemicalUtils so that it does not overlap with {@link mekanism.api.chemical.ChemicalUtils}
@@ -142,7 +143,7 @@ public class ChemicalUtil {
 
     public static void emit(Collection<BlockCapabilityCache<IChemicalHandler, @Nullable Direction>> targets, IChemicalTank tank, long maxOutput) {
         if (!tank.isEmpty() && maxOutput > 0) {
-            tank.extract(emit(targets, tank.extract(maxOutput, Action.SIMULATE, AutomationType.INTERNAL)), Action.EXECUTE, AutomationType.INTERNAL);
+            tank.extract(emit(targets, ChemicalStack.EMPTY, tank, maxOutput), Action.EXECUTE, AutomationType.INTERNAL);
         }
     }
 
@@ -155,21 +156,40 @@ public class ChemicalUtil {
      * @return the amount of chemical emitted
      */
     public static long emit(Collection<BlockCapabilityCache<IChemicalHandler, @Nullable Direction>> targets, @NotNull ChemicalStack stack) {
-        if (stack.isEmpty() || targets.isEmpty()) {
+        return emit(targets, stack, null, Long.MAX_VALUE);
+    }
+
+    private static long emit(Collection<BlockCapabilityCache<IChemicalHandler, @Nullable Direction>> targets, @NotNull ChemicalStack stack,
+          @UnknownNullability IChemicalTank tank, long maxOutput) {
+        if (stack.isEmpty() && tank == null) {
+            //Something went wrong in calling this method
+            return 0;
+        } else if (targets.isEmpty()) {
             return 0;
         }
-        ChemicalHandlerTarget target = new ChemicalHandlerTarget(stack, targets.size());
+        ChemicalHandlerTarget target = null;
         for (BlockCapabilityCache<IChemicalHandler, Direction> capability : targets) {
             //Insert to access side and collect the cap if it is present, and we can insert the type of the stack into it
             IChemicalHandler handler = capability.getCapability();
-            if (handler != null && canInsert(handler, stack)) {
-                target.addHandler(handler);
+            if (handler != null) {
+                //If we weren't given a stack by the caller, then we want to lazily try to extract from the tank to see how much we are trying to emit
+                // so that we don't have to attempt an extraction if all our targets are actually not currently fluid handlers
+                if (stack.isEmpty()) {
+                    stack = tank.extract(maxOutput, Action.SIMULATE, AutomationType.INTERNAL);
+                    if (stack.isEmpty()) {
+                        //If we failed to extract from it, just exit early
+                        return 0;
+                    }
+                }
+                if (canInsert(handler, stack)) {
+                    if (target == null) {
+                        target = new ChemicalHandlerTarget(stack, targets.size());
+                    }
+                    target.addHandler(handler);
+                }
             }
         }
-        if (target.getHandlerCount() > 0) {
-            return EmitUtils.sendToAcceptors(target, stack.getAmount(), stack.copy());
-        }
-        return 0;
+        return EmitUtils.sendToAcceptors(target, stack.getAmount(), stack.copy());
     }
 
     public static boolean canInsert(IChemicalHandler handler, @NotNull ChemicalStack stack) {

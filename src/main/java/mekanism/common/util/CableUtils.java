@@ -19,7 +19,7 @@ public final class CableUtils {
 
     public static void emit(Collection<BlockEnergyCapabilityCache> targets, IEnergyContainer energyContainer, long maxOutput) {
         if (!energyContainer.isEmpty() && maxOutput > 0L) {
-            energyContainer.extract(emit(targets, energyContainer.extract(maxOutput, Action.SIMULATE, AutomationType.INTERNAL)), Action.EXECUTE, AutomationType.INTERNAL);
+            energyContainer.extract(emit(targets, 0, energyContainer, maxOutput), Action.EXECUTE, AutomationType.INTERNAL);
         }
     }
 
@@ -32,19 +32,35 @@ public final class CableUtils {
      * @return the amount of energy emitted
      */
     public static long emit(Collection<BlockEnergyCapabilityCache> targets, long energyToSend) {
-        if (energyToSend <= 0L || targets.isEmpty()) {
+        return emit(targets, energyToSend, null, energyToSend);
+    }
+
+    private static long emit(Collection<BlockEnergyCapabilityCache> targets, long energyToSend, IEnergyContainer energyContainer, long maxOutput) {
+        if (energyToSend == 0 && energyContainer == null) {
+            //Something went wrong in calling this method
+            return 0;
+        } else if (energyToSend < 0 || targets.isEmpty()) {
             return 0;
         }
-        EnergyAcceptorTarget target = new EnergyAcceptorTarget(targets.size());
+        EnergyAcceptorTarget target = null;
         for (BlockEnergyCapabilityCache capability : targets) {
             IStrictEnergyHandler handler = capability.getCapability();
             if (handler != null) {
+                //If we weren't given a stack by the caller, then we want to lazily try to extract from the tank to see how much we are trying to emit
+                // so that we don't have to attempt an extraction if all our targets are actually not currently fluid handlers
+                if (energyToSend == 0) {
+                    energyToSend = energyContainer.extract(maxOutput, Action.SIMULATE, AutomationType.INTERNAL);
+                    if (energyToSend <= 0) {
+                        //If we failed to extract from it, just exit early
+                        return 0;
+                    }
+                }
+                if (target == null) {
+                    target = new EnergyAcceptorTarget(targets.size());
+                }
                 target.addHandler(handler);
             }
         }
-        if (target.getHandlerCount() > 0) {
-            return EmitUtils.sendToAcceptors(target, energyToSend, energyToSend);
-        }
-        return 0;
+        return EmitUtils.sendToAcceptors(target, energyToSend, energyToSend);
     }
 }

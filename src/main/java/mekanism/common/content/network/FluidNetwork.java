@@ -151,10 +151,14 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
 
     private int tickEmit(@NotNull FluidStack fluidToSend) {
         Collection<Map<Direction, IFluidHandler>> acceptorValues = acceptorCache.getAcceptorValues();
-        FluidHandlerTarget target = new FluidHandlerTarget(fluidToSend, acceptorValues.size() * 2);
+        FluidHandlerTarget target = null;
         for (Map<Direction, IFluidHandler> acceptors : acceptorValues) {
             for (IFluidHandler acceptor : acceptors.values()) {
                 if (FluidUtils.canFill(acceptor, fluidToSend)) {
+                    if (target == null) {
+                        //Lazily initialize the target, which allows us to also skip attempting to start emitting
+                        target = new FluidHandlerTarget(fluidToSend, acceptorValues.size() * 2);
+                    }
                     target.addHandler(acceptor);
                 }
             }
