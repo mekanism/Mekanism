@@ -311,8 +311,7 @@ public class RadiationManager implements IRadiationManager {
                 resistance += shielding.get().getRadiationShielding();
             }
         }
-        if (resistance >= 1) return resistance;
-        if (Mekanism.hooks.CuriosLoaded) {
+        if (resistance < 1 && Mekanism.hooks.CuriosLoaded) {
             Optional<? extends IItemHandler> handlerOptional = CuriosIntegration.getCuriosInventory(entity);
             if (handlerOptional.isPresent()) {
                 IItemHandler handler = handlerOptional.get();
@@ -322,7 +321,7 @@ public class RadiationManager implements IRadiationManager {
                     Optional<IRadiationShielding> shielding = CapabilityUtils.getCapability(item, Capabilities.RADIATION_SHIELDING, null).resolve();
                     if (shielding.isPresent()) {
                         resistance += shielding.get().getRadiationShielding();
-                        if (resistance >= 1) return resistance;
+                        if (resistance >= 1) return 1;
                     }
                 }
             }
