@@ -112,7 +112,7 @@ public class TileEntityItemStackChemicalToItemStackFactory extends TileEntityIte
     @NotNull
     @Override
     public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener) {
-        ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(facingSupplier, configSupplier);
         //If the tank's contents change make sure to call our extended content listener that also marks sorting as being needed
         // as maybe the valid recipes have changed, and we need to sort again and have all recipes know they may need to be rechecked
         // if they are not still valid

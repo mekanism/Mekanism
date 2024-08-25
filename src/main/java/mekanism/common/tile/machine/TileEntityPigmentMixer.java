@@ -132,7 +132,7 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<ChemicalChem
     @NotNull
     @Override
     public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
-        ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(facingSupplier, configSupplier);
         builder.addTank(leftInputTank = BasicChemicalTank.input(MAX_INPUT_PIGMENT, pigment -> containsRecipe(pigment, rightInputTank.getStack()),
               this::containsRecipe, recipeCacheListener));
         builder.addTank(rightInputTank = BasicChemicalTank.input(MAX_INPUT_PIGMENT, pigment -> containsRecipe(pigment, leftInputTank.getStack()),
@@ -144,7 +144,7 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<ChemicalChem
     @NotNull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
-        EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(facingSupplier, configSupplier);
         builder.addContainer(energyContainer = MachineEnergyContainer.input(this, recipeCacheUnpauseListener));
         return builder.build();
     }
@@ -152,7 +152,7 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<ChemicalChem
     @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
-        InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(facingSupplier, configSupplier);
         builder.addSlot(leftInputSlot = ChemicalInventorySlot.fill(leftInputTank, listener, 6, 56));
         builder.addSlot(rightInputSlot = ChemicalInventorySlot.fill(rightInputTank, listener, 154, 56));
         builder.addSlot(outputSlot = ChemicalInventorySlot.drain(outputTank, listener, 80, 65));

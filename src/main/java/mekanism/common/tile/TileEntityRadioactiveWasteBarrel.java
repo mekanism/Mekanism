@@ -54,7 +54,7 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
     @NotNull
     @Override
     public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener) {
-        ChemicalTankHelper builder = ChemicalTankHelper.forSide(this::getDirection);
+        ChemicalTankHelper builder = ChemicalTankHelper.forSide(facingSupplier);
         builder.addTank(chemicalTank = StackedWasteBarrel.create(this, listener), RelativeSide.TOP, RelativeSide.BOTTOM);
         return builder.build();
     }

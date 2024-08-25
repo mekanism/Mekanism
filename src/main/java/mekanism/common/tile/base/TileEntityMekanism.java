@@ -186,6 +186,9 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     //Methods for implementing ITileDirectional
     @Nullable
     private Direction cachedDirection;
+
+    //TODO: Re-evaluate if we should have this be null when we are not a directional tile?
+    public final Supplier<Direction> facingSupplier = this::getDirection;
     //End variables ITileRedstone
 
     //Variables for handling ITileRedstone

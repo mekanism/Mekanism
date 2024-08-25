@@ -177,7 +177,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
     @NotNull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
-        EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(facingSupplier, configSupplier);
         builder.addContainer(energyContainer = MachineEnergyContainer.input(this, () -> {
             listener.onContentsChanged();
             for (FactoryRecipeCacheLookupMonitor<RECIPE> cacheLookupMonitor : recipeCacheLookupMonitors) {
@@ -190,7 +190,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
     @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
-        InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(facingSupplier, configSupplier);
         addSlots(builder, listener, () -> {
             listener.onContentsChanged();
             //Mark sorting as being needed again

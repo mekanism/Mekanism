@@ -1,5 +1,6 @@
 package mekanism.common.tile.prefab;
 
+import java.util.function.Supplier;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeSideConfig;
@@ -17,6 +18,7 @@ public abstract class TileEntityConfigurableMachine extends TileEntityMekanism i
 
     public TileComponentEjector ejectorComponent;
     public final TileComponentConfig configComponent;//does not tick!
+    public final Supplier<TileComponentConfig> configSupplier = this::getConfig;
 
     public TileEntityConfigurableMachine(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);

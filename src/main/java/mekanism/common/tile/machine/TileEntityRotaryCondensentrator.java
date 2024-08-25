@@ -147,7 +147,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
     @NotNull
     @Override
     public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
-        ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(facingSupplier, configSupplier);
         //Only allow extraction
         builder.addTank(gasTank = BasicChemicalTank.create(CAPACITY, (gas, automationType) -> automationType == AutomationType.MANUAL || mode,
               (gas, automationType) -> automationType == AutomationType.INTERNAL || !mode, this::isValidGas, ChemicalAttributeValidator.ALWAYS_ALLOW, recipeCacheListener));
@@ -161,7 +161,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
     @NotNull
     @Override
     protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
-        FluidTankHelper builder = FluidTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        FluidTankHelper builder = FluidTankHelper.forSideWithConfig(facingSupplier, configSupplier);
         builder.addTank(fluidTank = BasicFluidTank.create(CAPACITY, (fluid, automationType) -> automationType == AutomationType.MANUAL || !mode,
               (fluid, automationType) -> automationType == AutomationType.INTERNAL || mode, this::isValidFluid, recipeCacheListener));
         return builder.build();
@@ -174,7 +174,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
     @NotNull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
-        EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(facingSupplier, configSupplier);
         builder.addContainer(energyContainer = MachineEnergyContainer.input(this, recipeCacheUnpauseListener));
         return builder.build();
     }
@@ -182,7 +182,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
     @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
-        InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(facingSupplier, configSupplier);
         BooleanSupplier modeSupplier = this::getMode;
         builder.addSlot(gasInputSlot = ChemicalInventorySlot.rotaryDrain(gasTank, modeSupplier, listener, 5, 25));
         builder.addSlot(gasOutputSlot = ChemicalInventorySlot.rotaryFill(gasTank, modeSupplier, listener, 5, 56));

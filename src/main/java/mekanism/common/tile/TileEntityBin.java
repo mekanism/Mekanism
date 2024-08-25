@@ -72,7 +72,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
-        InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
+        InventorySlotHelper builder = InventorySlotHelper.forSide(facingSupplier);
         builder.addSlot(binSlot = BinInventorySlot.create(listener, tier));
         return builder.build();
     }

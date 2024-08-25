@@ -48,7 +48,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
-        InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
+        InventorySlotHelper builder = InventorySlotHelper.forSide(facingSupplier);
         builder.addSlot(energySlot = EnergyInventorySlot.drain(getEnergyContainer(), listener, 143, 35));
         return builder.build();
     }

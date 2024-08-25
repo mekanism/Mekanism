@@ -90,7 +90,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
 
     @Override
     public @Nullable IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener) {
-        ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(facingSupplier, configSupplier);
         builder.addTank(chemicalTank = ChemicalTankChemicalTank.create(tier, listener));
         return builder.build();
     }
@@ -98,7 +98,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
     @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
-        InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(facingSupplier, configSupplier);
         builder.addSlot(drainSlot = ChemicalInventorySlot.drain(chemicalTank, listener, 16, 16));
         builder.addSlot(fillSlot = ChemicalInventorySlot.fill(chemicalTank, listener, 16, 48));
         drainSlot.setSlotType(ContainerSlotType.OUTPUT);

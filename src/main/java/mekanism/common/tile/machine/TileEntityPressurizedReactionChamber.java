@@ -122,7 +122,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
     @NotNull
     @Override
     public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
-        ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(facingSupplier, configSupplier);
         //Allow extracting out of the input gas tank if it isn't external OR the output tank is empty AND the input is radioactive
         builder.addTank(inputGasTank = BasicChemicalTank.create(MAX_GAS, ChemicalTankHelper.radioactiveInputTankPredicate(() -> outputGasTank),
               (gas, automationType) -> containsRecipeCAB(inputSlot.getStack(), inputFluidTank.getFluid(), gas), this::containsRecipeC,
@@ -134,7 +134,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
     @NotNull
     @Override
     protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
-        FluidTankHelper builder = FluidTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        FluidTankHelper builder = FluidTankHelper.forSideWithConfig(facingSupplier, configSupplier);
         builder.addTank(inputFluidTank = BasicFluidTank.input(MAX_FLUID, fluid -> containsRecipeBAC(inputSlot.getStack(), fluid, inputGasTank.getStack()),
               this::containsRecipeB, recipeCacheListener));
         return builder.build();
@@ -143,7 +143,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
     @NotNull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
-        EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(facingSupplier, configSupplier);
         builder.addContainer(energyContainer = PRCEnergyContainer.input(this, recipeCacheUnpauseListener));
         return builder.build();
     }
@@ -151,7 +151,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
     @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
-        InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(facingSupplier, configSupplier);
         builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipeABC(item, inputFluidTank.getFluid(), inputGasTank.getStack()), this::containsRecipeA,
                     recipeCacheListener, 54, 35))
               .tracksWarnings(slot -> slot.warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(NOT_ENOUGH_ITEM_INPUT_ERROR)));

@@ -58,7 +58,7 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
     @NotNull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
-        EnergyContainerHelper builder = EnergyContainerHelper.forSide(this::getDirection);
+        EnergyContainerHelper builder = EnergyContainerHelper.forSide(facingSupplier);
         builder.addContainer(energyContainer = MachineEnergyContainer.input(this, listener), RelativeSide.BACK);
         return builder.build();
     }
@@ -70,7 +70,7 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
     @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
-        InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
+        InventorySlotHelper builder = InventorySlotHelper.forSide(facingSupplier);
         builder.addSlot(moduleSlot = InputInventorySlot.at(stack -> stack.getItem() instanceof IModuleItem, listener, 35, 118));
         builder.addSlot(containerSlot = InputInventorySlot.at(IModuleHelper.INSTANCE::isModuleContainer, listener, 125, 118));
         moduleSlot.setSlotType(ContainerSlotType.NORMAL);

@@ -171,7 +171,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     @NotNull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
-        EnergyContainerHelper builder = EnergyContainerHelper.forSide(this::getDirection);
+        EnergyContainerHelper builder = EnergyContainerHelper.forSide(facingSupplier);
         builder.addContainer(energyContainer = MinerEnergyContainer.input(this, listener), RelativeSide.LEFT, RelativeSide.RIGHT, RelativeSide.BOTTOM);
         return builder.build();
     }
@@ -185,7 +185,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
             //Ensure we recheck if our overflow can fit anywhere
             recheckOverflow = true;
         };
-        InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection, side -> side == RelativeSide.TOP, side -> side == RelativeSide.BACK);
+        InventorySlotHelper builder = InventorySlotHelper.forSide(facingSupplier, side -> side == RelativeSide.TOP, side -> side == RelativeSide.BACK);
         //Allow insertion manually or internally, or if it is a replace stack
         BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canInsert = (stack, automationType) -> automationType != AutomationType.EXTERNAL || isReplaceTarget(stack.getItem());
         //Allow extraction if it is manual or for internal usage, or if it is not a replace stack

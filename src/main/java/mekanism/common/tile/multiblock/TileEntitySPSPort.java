@@ -54,7 +54,7 @@ public class TileEntitySPSPort extends TileEntitySPSCasing {
     @NotNull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
-        EnergyContainerHelper builder = EnergyContainerHelper.forSide(this::getDirection);
+        EnergyContainerHelper builder = EnergyContainerHelper.forSide(facingSupplier);
         builder.addContainer(energyContainer = MachineEnergyContainer.input(this, listener));
         return builder.build();
     }

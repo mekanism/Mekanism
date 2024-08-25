@@ -175,7 +175,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     @NotNull
     @Override
     protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
-        FluidTankHelper builder = FluidTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        FluidTankHelper builder = FluidTankHelper.forSideWithConfig(facingSupplier, configSupplier);
         builder.addTank(fluidTank = BasicFluidTank.input(MAX_FLUID, this::containsRecipe, recipeCacheListener));
         return builder.build();
     }
@@ -183,7 +183,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     @NotNull
     @Override
     public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
-        ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(facingSupplier, configSupplier);
         builder.addTank(leftTank = BasicChemicalTank.output(MAX_GAS, recipeCacheUnpauseListener));
         builder.addTank(rightTank = BasicChemicalTank.output(MAX_GAS, recipeCacheUnpauseListener));
         return builder.build();
@@ -192,7 +192,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     @NotNull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
-        EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(facingSupplier, configSupplier);
         builder.addContainer(energyContainer = FixedUsageEnergyContainer.input(this, BASE_ENERGY_CALCULATOR, recipeCacheUnpauseListener));
         return builder.build();
     }
@@ -200,7 +200,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
-        InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(facingSupplier, configSupplier);
         builder.addSlot(fluidSlot = FluidInventorySlot.fill(fluidTank, listener, 26, 35));
         builder.addSlot(leftOutputSlot = ChemicalInventorySlot.drain(leftTank, listener, 59, 52));
         builder.addSlot(rightOutputSlot = ChemicalInventorySlot.drain(rightTank, listener, 101, 52));

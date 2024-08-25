@@ -38,7 +38,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
     @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
-        InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
+        InventorySlotHelper builder = InventorySlotHelper.forSide(facingSupplier);
         builder.addSlot(unlockSlot = SecurityInventorySlot.unlock(this::getOwnerUUID, listener, 146, 18));
         builder.addSlot(lockSlot = SecurityInventorySlot.lock(listener, 146, 97));
         return builder.build();

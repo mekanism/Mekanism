@@ -61,7 +61,7 @@ public abstract class TileEntityPersonalStorage extends TileEntityMekanism {
     @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
-        InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
+        InventorySlotHelper builder = InventorySlotHelper.forSide(facingSupplier);
         //Note: We always allow manual interaction (even for insertion), as if a player has the GUI open we treat that as they are allowed to interact with it
         // and if the security mode changes we then boot any players who can't interact with it anymore out of the GUI
         //Note: We can just directly pass ourselves as a security object as we know we are present and that we aren't just an owner item

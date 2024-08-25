@@ -82,7 +82,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
     @NotNull
     @Override
     protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener) {
-        FluidTankHelper builder = FluidTankHelper.forSide(this::getDirection);
+        FluidTankHelper builder = FluidTankHelper.forSide(facingSupplier);
         builder.addTank(lavaTank = VariableCapacityFluidTank.input(MekanismGeneratorsConfig.generators.heatTankCapacity,
                     fluidStack -> fluidStack.is(FluidTags.LAVA), listener), RelativeSide.LEFT, RelativeSide.RIGHT, RelativeSide.BACK,
               RelativeSide.TOP, RelativeSide.BOTTOM);
@@ -92,7 +92,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
     @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
-        InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
+        InventorySlotHelper builder = InventorySlotHelper.forSide(facingSupplier);
         //Divide the burn time by 20 as that is the ratio of how much a bucket of lava would burn for
         //TODO: Eventually we may want to grab the 20 dynamically in case some mod is changing the burn time of a lava bucket
         builder.addSlot(fuelSlot = FluidFuelInventorySlot.forFuel(lavaTank, stack -> stack.getBurnTime(null) / 20, size -> new FluidStack(Fluids.LAVA, size),
@@ -104,7 +104,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
     @NotNull
     @Override
     protected IHeatCapacitorHolder getInitialHeatCapacitors(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
-        HeatCapacitorHelper builder = HeatCapacitorHelper.forSide(this::getDirection);
+        HeatCapacitorHelper builder = HeatCapacitorHelper.forSide(facingSupplier);
         builder.addCapacitor(heatCapacitor = BasicHeatCapacitor.create(HEAT_CAPACITY, INVERSE_CONDUCTION_COEFFICIENT, INVERSE_INSULATION_COEFFICIENT, ambientTemperature, listener));
         return builder.build();
     }

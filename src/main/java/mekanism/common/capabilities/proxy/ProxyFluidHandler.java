@@ -19,6 +19,10 @@ public class ProxyFluidHandler extends ProxyHandler implements IExtendedFluidHan
         this.fluidHandler = fluidHandler;
     }
 
+    public ISidedFluidHandler getInternalHandler() {
+        return fluidHandler;
+    }
+
     @Override
     public int getTanks() {
         return fluidHandler.getTanks(side);

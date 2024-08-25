@@ -48,7 +48,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
     @NotNull
     @Override
     protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener) {
-        FluidTankHelper builder = FluidTankHelper.forSide(this::getDirection);
+        FluidTankHelper builder = FluidTankHelper.forSide(facingSupplier);
         builder.addTank(bioFuelTank = VariableCapacityFluidTank.input(MekanismGeneratorsConfig.generators.bioTankCapacity,
                     fluidStack -> fluidStack.is(GeneratorTags.Fluids.BIOETHANOL), listener), RelativeSide.LEFT, RelativeSide.RIGHT,
               RelativeSide.BACK, RelativeSide.TOP, RelativeSide.BOTTOM);
@@ -58,7 +58,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
     @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
-        InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
+        InventorySlotHelper builder = InventorySlotHelper.forSide(facingSupplier);
         builder.addSlot(fuelSlot = FluidFuelInventorySlot.forFuel(bioFuelTank, stack -> stack.is(MekanismTags.Items.FUELS_BIO) ? 200 : stack.is(MekanismTags.Items.FUELS_BLOCK_BIO) ? 200 * 9 : 0,
                     GeneratorsFluids.BIOETHANOL::getFluidStack, listener, 17, 35), RelativeSide.FRONT, RelativeSide.LEFT, RelativeSide.BACK, RelativeSide.TOP,
               RelativeSide.BOTTOM);

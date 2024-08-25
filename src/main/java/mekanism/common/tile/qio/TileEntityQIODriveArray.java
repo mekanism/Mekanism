@@ -48,7 +48,7 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
     @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
-        InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
+        InventorySlotHelper builder = InventorySlotHelper.forSide(facingSupplier);
         final int xSize = 176;
         driveSlots = new ArrayList<>();
         for (int y = 0; y < 2; y++) {

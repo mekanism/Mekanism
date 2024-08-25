@@ -127,7 +127,7 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalC
     @NotNull
     @Override
     public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
-        ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(facingSupplier, configSupplier);
         builder.addTank(leftTank = BasicChemicalTank.input(MAX_GAS, gas -> containsRecipe(gas, rightTank.getStack()), this::containsRecipe, recipeCacheListener));
         builder.addTank(rightTank = BasicChemicalTank.input(MAX_GAS, gas -> containsRecipe(gas, leftTank.getStack()), this::containsRecipe, recipeCacheListener));
         builder.addTank(centerTank = BasicChemicalTank.output(MAX_GAS, recipeCacheUnpauseListener));
@@ -137,7 +137,7 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalC
     @NotNull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
-        EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(facingSupplier, configSupplier);
         builder.addContainer(energyContainer = MachineEnergyContainer.input(this, recipeCacheUnpauseListener));
         return builder.build();
     }
@@ -145,7 +145,7 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalC
     @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
-        InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(facingSupplier, configSupplier);
         builder.addSlot(leftInputSlot = ChemicalInventorySlot.fill(leftTank, listener, 6, 56));
         builder.addSlot(rightInputSlot = ChemicalInventorySlot.fill(rightTank, listener, 154, 56));
         builder.addSlot(outputSlot = ChemicalInventorySlot.drain(centerTank, listener, 80, 65));

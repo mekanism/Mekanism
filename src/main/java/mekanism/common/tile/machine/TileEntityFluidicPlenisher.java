@@ -93,7 +93,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     @NotNull
     @Override
     protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener) {
-        FluidTankHelper builder = FluidTankHelper.forSide(this::getDirection);
+        FluidTankHelper builder = FluidTankHelper.forSide(facingSupplier);
         builder.addTank(fluidTank = BasicFluidTank.input(MAX_FLUID, this::isValidFluid, listener), RelativeSide.TOP);
         return builder.build();
     }
@@ -101,7 +101,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     @NotNull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
-        EnergyContainerHelper builder = EnergyContainerHelper.forSide(this::getDirection);
+        EnergyContainerHelper builder = EnergyContainerHelper.forSide(facingSupplier);
         builder.addContainer(energyContainer = MachineEnergyContainer.input(this, listener), RelativeSide.BACK);
         return builder.build();
     }
@@ -109,7 +109,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
-        InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
+        InventorySlotHelper builder = InventorySlotHelper.forSide(facingSupplier);
         builder.addSlot(inputSlot = FluidInventorySlot.fill(fluidTank, listener, 28, 20), RelativeSide.TOP);
         builder.addSlot(outputSlot = OutputInventorySlot.at(listener, 28, 51), RelativeSide.BOTTOM);
         builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, listener, 143, 35), RelativeSide.BACK);

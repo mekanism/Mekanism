@@ -62,7 +62,6 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
-import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
@@ -140,19 +139,18 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     }
 
     public void tickServer() {
-        Lazy<Direction> facing = Lazy.of(tile::getDirection);
         for (Map.Entry<TransmissionType, ConfigInfo> entry : configInfo.entrySet()) {
             TransmissionType type = entry.getKey();
             ConfigInfo info = entry.getValue();
             if (isEjecting(info, type)) {
                 if (type == TransmissionType.ITEM) {
                     if (tickDelay == 0) {
-                        outputItems(facing.get(), info);
+                        outputItems(tile.facingSupplier.get(), info);
                     } else {
                         tickDelay--;
                     }
                 } else if (type != TransmissionType.HEAT) {
-                    eject(type, facing.get(), info);
+                    eject(type, tile.facingSupplier.get(), info);
                 }
             }
         }

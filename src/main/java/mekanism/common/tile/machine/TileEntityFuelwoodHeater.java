@@ -50,7 +50,7 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism {
     @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
-        InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
+        InventorySlotHelper builder = InventorySlotHelper.forSide(facingSupplier);
         builder.addSlot(fuelSlot = FuelInventorySlot.forFuel(stack -> stack.getBurnTime(null), listener, 15, 29));
         return builder.build();
     }
@@ -58,7 +58,7 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism {
     @NotNull
     @Override
     protected IHeatCapacitorHolder getInitialHeatCapacitors(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
-        HeatCapacitorHelper builder = HeatCapacitorHelper.forSide(this::getDirection);
+        HeatCapacitorHelper builder = HeatCapacitorHelper.forSide(facingSupplier);
         builder.addCapacitor(heatCapacitor = BasicHeatCapacitor.create(HEAT_CAPACITY, INVERSE_CONDUCTION_COEFFICIENT, INVERSE_INSULATION_COEFFICIENT, ambientTemperature, listener));
         return builder.build();
     }

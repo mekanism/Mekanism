@@ -44,7 +44,7 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
     @NotNull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
-        EnergyContainerHelper builder = EnergyContainerHelper.forSide(this::getDirection);
+        EnergyContainerHelper builder = EnergyContainerHelper.forSide(facingSupplier);
         builder.addContainer(energyContainer = MachineEnergyContainer.input(this, listener), RelativeSide.BACK);
         return builder.build();
     }
@@ -52,7 +52,7 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
     @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
-        InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
+        InventorySlotHelper builder = InventorySlotHelper.forSide(facingSupplier);
         builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, listener, 143, 35));
         return builder.build();
     }

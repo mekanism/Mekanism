@@ -96,7 +96,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     @NotNull
     @Override
     protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener) {
-        FluidTankHelper builder = FluidTankHelper.forSide(this::getDirection);
+        FluidTankHelper builder = FluidTankHelper.forSide(facingSupplier);
         builder.addTank(fluidTank = FluidTankFluidTank.create(this, listener));
         return builder.build();
     }
@@ -104,7 +104,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
-        InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
+        InventorySlotHelper builder = InventorySlotHelper.forSide(facingSupplier);
         builder.addSlot(inputSlot = FluidInventorySlot.input(fluidTank, listener, 146, 19));
         builder.addSlot(outputSlot = OutputInventorySlot.at(listener, 146, 51));
         inputSlot.setSlotOverlay(SlotOverlay.INPUT);

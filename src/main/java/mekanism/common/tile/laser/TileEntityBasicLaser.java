@@ -77,7 +77,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     @NotNull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
-        EnergyContainerHelper builder = EnergyContainerHelper.forSide(this::getDirection);
+        EnergyContainerHelper builder = EnergyContainerHelper.forSide(facingSupplier);
         addInitialEnergyContainers(builder, listener);
         return builder.build();
     }

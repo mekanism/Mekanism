@@ -86,7 +86,7 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
     @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
-        InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
+        InventorySlotHelper builder = InventorySlotHelper.forSide(facingSupplier);
         //TODO - 1.20.4: Re-evaluate the internal inventory slot and why do we even have a slot on the exporter
         // I think it is so that transporters can connect, but it seems a bit silly
         builder.addSlot(InternalInventorySlot.create(listener), RelativeSide.BACK);

@@ -19,6 +19,9 @@ import org.jetbrains.annotations.Nullable;
 
 public abstract class ConfigHolder<TYPE> implements IHolder {
 
+    private static final Predicate<ISlotInfo> CAN_INPUT = ISlotInfo::canInput;
+    private static final Predicate<ISlotInfo> CAN_OUTPUT = ISlotInfo::canOutput;
+
     /**
      * Dummy ISlotInfo used for representing we have no config
      */
@@ -71,12 +74,12 @@ public abstract class ConfigHolder<TYPE> implements IHolder {
 
     @Override
     public boolean canInsert(@Nullable Direction side) {
-        return canInteract(side, ISlotInfo::canInput);
+        return canInteract(side, CAN_INPUT);
     }
 
     @Override
     public boolean canExtract(@Nullable Direction side) {
-        return canInteract(side, ISlotInfo::canOutput);
+        return canInteract(side, CAN_OUTPUT);
     }
 
     private boolean canInteract(@Nullable Direction side, @NotNull Predicate<ISlotInfo> interactPredicate) {
@@ -114,7 +117,8 @@ public abstract class ConfigHolder<TYPE> implements IHolder {
             //Invalid entire cache and update what direction we had as last if our last direction doesn't match the one we currently are facing
             cachedSlotInfo.clear();
             lastDirection = direction;
-        } else if (cachedSlotInfo.containsKey(side)) {
+        }
+        if (cachedSlotInfo.containsKey(side)) {
             return cachedSlotInfo.get(side);
         }
         ISlotInfo slotInfo;

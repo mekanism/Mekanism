@@ -113,7 +113,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Item
     @NotNull
     @Override
     public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
-        ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(facingSupplier, configSupplier);
         builder.addTank(infusionTank = BasicChemicalTank.create(MAX_INFUSE, BasicChemicalTank.alwaysTrueBi,
               (infuseType, automationType) -> containsRecipeBA(inputSlot.getStack(), infuseType), this::containsRecipeB, recipeCacheListener));
         return builder.build();
@@ -122,7 +122,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Item
     @NotNull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
-        EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(facingSupplier, configSupplier);
         builder.addContainer(energyContainer = MachineEnergyContainer.input(this, recipeCacheUnpauseListener));
         return builder.build();
     }
@@ -130,7 +130,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Item
     @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
-        InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(facingSupplier, configSupplier);
         builder.addSlot(infusionSlot = ChemicalInventorySlot.fillOrConvert(infusionTank, this::getLevel, listener, 17, 35));
         builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipeAB(item, infusionTank.getStack()), this::containsRecipeA, recipeCacheListener, 51, 43))
               .tracksWarnings(slot -> slot.warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(RecipeError.NOT_ENOUGH_INPUT)));

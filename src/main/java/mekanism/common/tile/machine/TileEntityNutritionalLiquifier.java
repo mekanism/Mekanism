@@ -111,7 +111,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
     @NotNull
     @Override
     public IFluidTankHolder getInitialFluidTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
-        FluidTankHelper builder = FluidTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        FluidTankHelper builder = FluidTankHelper.forSideWithConfig(facingSupplier, configSupplier);
         builder.addTank(fluidTank = BasicFluidTank.output(MAX_FLUID, recipeCacheUnpauseListener));
         return builder.build();
     }
@@ -119,7 +119,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
     @NotNull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
-        EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(facingSupplier, configSupplier);
         builder.addContainer(energyContainer = MachineEnergyContainer.input(this, recipeCacheUnpauseListener));
         return builder.build();
     }
@@ -127,7 +127,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
     @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
-        InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(facingSupplier, configSupplier);
         builder.addSlot(inputSlot = InputInventorySlot.at(TileEntityNutritionalLiquifier::isValidInput, recipeCacheListener, 26, 36)
         ).tracksWarnings(slot -> slot.warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(RecipeError.NOT_ENOUGH_INPUT)));
         builder.addSlot(outputSlot = OutputInventorySlot.at(listener, 110, 36))

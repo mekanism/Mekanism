@@ -125,7 +125,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     @NotNull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
-        EnergyContainerHelper builder = EnergyContainerHelper.forSide(this::getDirection);
+        EnergyContainerHelper builder = EnergyContainerHelper.forSide(facingSupplier);
         builder.addContainer(energyContainer = MachineEnergyContainer.input(this, listener));
         return builder.build();
     }
@@ -133,7 +133,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
-        InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
+        InventorySlotHelper builder = InventorySlotHelper.forSide(facingSupplier);
         builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, listener, 153, 7));
         return builder.build();
     }

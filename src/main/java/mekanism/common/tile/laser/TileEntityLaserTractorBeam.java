@@ -42,7 +42,7 @@ public class TileEntityLaserTractorBeam extends TileEntityLaserReceptor {
     @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
-        InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
+        InventorySlotHelper builder = InventorySlotHelper.forSide(facingSupplier);
         for (int slotX = 0; slotX < 9; slotX++) {
             for (int slotY = 0; slotY < 3; slotY++) {
                 OutputInventorySlot slot = OutputInventorySlot.at(listener, 8 + slotX * 18, 16 + slotY * 18);

@@ -67,7 +67,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     @NotNull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
-        EnergyContainerHelper builder = EnergyContainerHelper.forSide(this::getDirection);
+        EnergyContainerHelper builder = EnergyContainerHelper.forSide(facingSupplier);
         builder.addContainer(energyContainer = ResistiveHeaterEnergyContainer.input(this, listener), RelativeSide.LEFT, RelativeSide.RIGHT);
         return builder.build();
     }
@@ -75,7 +75,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     @NotNull
     @Override
     protected IHeatCapacitorHolder getInitialHeatCapacitors(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
-        HeatCapacitorHelper builder = HeatCapacitorHelper.forSide(this::getDirection);
+        HeatCapacitorHelper builder = HeatCapacitorHelper.forSide(facingSupplier);
         builder.addCapacitor(heatCapacitor = BasicHeatCapacitor.create(HEAT_CAPACITY, INVERSE_CONDUCTION_COEFFICIENT, INVERSE_INSULATION_COEFFICIENT, ambientTemperature, listener));
         return builder.build();
     }
@@ -83,7 +83,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
-        InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
+        InventorySlotHelper builder = InventorySlotHelper.forSide(facingSupplier);
         builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, listener, 15, 35));
         return builder.build();
     }

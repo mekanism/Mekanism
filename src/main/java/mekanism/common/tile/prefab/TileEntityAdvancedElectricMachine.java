@@ -124,7 +124,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
     @NotNull
     @Override
     public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
-        ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(facingSupplier, configSupplier);
         BiPredicate<@NotNull Chemical, @NotNull AutomationType> canExtract = allowExtractingChemical() ? BasicChemicalTank.alwaysTrueBi : BasicChemicalTank.notExternal;
         builder.addTank(chemicalTank = BasicChemicalTank.create(MAX_GAS, canExtract, (gas, automationType) -> containsRecipeBA(inputSlot.getStack(), gas),
               this::containsRecipeB, recipeCacheListener));
@@ -134,7 +134,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
     @NotNull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
-        EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(facingSupplier, configSupplier);
         builder.addContainer(energyContainer = MachineEnergyContainer.input(this, recipeCacheUnpauseListener));
         return builder.build();
     }
@@ -142,7 +142,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
     @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
-        InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(facingSupplier, configSupplier);
         builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipeAB(item, chemicalTank.getStack()), this::containsRecipeA, recipeCacheListener, 64, 17))
               .tracksWarnings(slot -> slot.warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(RecipeError.NOT_ENOUGH_INPUT)));
         builder.addSlot(secondarySlot = ChemicalInventorySlot.fillOrConvert(chemicalTank, this::getLevel, listener, 64, 53));

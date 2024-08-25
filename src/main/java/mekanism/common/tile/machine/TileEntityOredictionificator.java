@@ -63,7 +63,7 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
     @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
-        InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(facingSupplier, configSupplier);
         //Only allow inserting items with tags that match filters, but mark all items that have any filterable tags as valid
         builder.addSlot(inputSlot = InputInventorySlot.at(item -> hasResult(filterManager.getEnabledFilters(), item), this::hasFilterableTags, listener, 56, 115));
         builder.addSlot(outputSlot = OutputInventorySlot.at(listener, 164, 115));
