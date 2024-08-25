@@ -6,6 +6,8 @@ import mekanism.api.Action;
 import mekanism.api.IConfigurable;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
+import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.block.attribute.Attribute;
@@ -15,6 +17,7 @@ import mekanism.common.capabilities.holder.fluid.FluidTankHelper;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.capabilities.proxy.ProxyFluidHandler;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerFluidTankWrapper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
@@ -61,6 +64,10 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getStored", "getCapacity", "getNeeded",
                                                                                      "getFilledPercentage"}, docPlaceholder = "tank")
     public FluidTankFluidTank fluidTank;
+
+    @Nullable
+    private IExtendedFluidTank belowTank;
+    private boolean resolvedBelowTank;
 
     private ContainerEditMode editMode = ContainerEditMode.BOTH;
 
@@ -147,15 +154,40 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
         inputSlot.handleTank(outputSlot, editMode);
         if (getActive()) {
             if (fluidHandlerBelow.isEmpty()) {
-                fluidHandlerBelow = List.of(Capabilities.FLUID.createCache((ServerLevel) level, worldPosition.below(), Direction.UP));
+                //Note: We just pass true for this always being valid, and allow GC to handle figuring out when it no longer is valid
+                fluidHandlerBelow = List.of(Capabilities.FLUID.createCache((ServerLevel) level, worldPosition.below(), Direction.UP, ConstantPredicates.ALWAYS_TRUE, () -> {
+                    //Reset the tank that we know is below this
+                    resolvedBelowTank = false;
+                    belowTank = null;
+                }));
             }
-            FluidUtils.emit(fluidHandlerBelow, fluidTank, tier.getOutput());
+            IExtendedFluidTank below = getBelowTank();
+            if (below == null) {
+                FluidUtils.emit(fluidHandlerBelow, fluidTank, tier.getOutput());
+            } else {
+                //If the block below this tank, is also a tank. Only emit as much as it might be able to accept.
+                // This prevents it then trying to go up the chain back to this tank and any ones above it
+                FluidUtils.emit(fluidHandlerBelow, fluidTank, Math.min(below.getNeeded(), tier.getOutput()));
+            }
         }
         if (needsPacket) {
             sendUpdatePacket = true;
             needsPacket = false;
         }
         return sendUpdatePacket;
+    }
+
+    @Nullable
+    private IExtendedFluidTank getBelowTank() {
+        if (!resolvedBelowTank) {
+            resolvedBelowTank = true;
+            IFluidHandler belowHandler = fluidHandlerBelow.getFirst().getCapability();
+            if (belowHandler instanceof ProxyFluidHandler fluidHandler && fluidHandler.getInternalHandler() instanceof TileEntityFluidTank tank) {
+                //Note: We don't need to bother with weak references as these are vertical so will always be in the same chunk
+                belowTank = tank.fluidTank;
+            }
+        }
+        return belowTank;
     }
 
     @Override

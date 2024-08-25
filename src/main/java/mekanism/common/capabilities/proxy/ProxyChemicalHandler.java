@@ -23,6 +23,10 @@ public class ProxyChemicalHandler extends ProxyHandler implements IChemicalHandl
         this.sidedHandler = sidedHandler;
     }
 
+    public ISidedChemicalHandler getInternalHandler() {
+        return sidedHandler;
+    }
+
     /**
      * @apiNote This is only for use in the TOP integration to allow us to properly handle hiding merged chemical tanks, and <strong>SHOULD NOT</strong> be called from
      * anywhere else. It is also important to not use this to bypass write access the proxy may limit.

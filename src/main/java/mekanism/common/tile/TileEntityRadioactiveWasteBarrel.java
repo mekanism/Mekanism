@@ -9,11 +9,14 @@ import mekanism.api.MekanismAPITags;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.IChemicalHandler;
+import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.chemical.StackedWasteBarrel;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
+import mekanism.common.capabilities.proxy.ProxyChemicalHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
@@ -43,6 +46,11 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getStored", "getCapacity", "getNeeded",
                                                                                         "getFilledPercentage"}, docPlaceholder = "barrel")
     StackedWasteBarrel chemicalTank;
+
+    @Nullable
+    private IChemicalTank belowTank;
+    private boolean resolvedBelowTank;
+
     private int processTicks;
     private List<BlockCapabilityCache<IChemicalHandler, @Nullable Direction>> chemicalHandlerBelow = Collections.emptyList();
 
@@ -73,9 +81,21 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
             }
             if (getActive()) {
                 if (chemicalHandlerBelow.isEmpty()) {
-                    chemicalHandlerBelow = List.of(BlockCapabilityCache.create(Capabilities.CHEMICAL.block(), (ServerLevel) level, worldPosition.below(), Direction.UP));
+                    //Note: We just pass true for this always being valid, and allow GC to handle figuring out when it no longer is valid
+                    chemicalHandlerBelow = List.of(Capabilities.CHEMICAL.createCache((ServerLevel) level, worldPosition.below(), Direction.UP, ConstantPredicates.ALWAYS_TRUE, () -> {
+                        //Reset the tank that we know is below this
+                        resolvedBelowTank = false;
+                        belowTank = null;
+                    }));
                 }
-                ChemicalUtil.emit(chemicalHandlerBelow, chemicalTank);
+                IChemicalTank below = getBelowTank();
+                if (below == null) {
+                    ChemicalUtil.emit(chemicalHandlerBelow, chemicalTank);
+                } else {
+                    //If the block below this barrel, is also a barrel. Only emit as much as it might be able to accept.
+                    // This prevents it then trying to go up the chain back to this barrel and any ones above it
+                    ChemicalUtil.emit(chemicalHandlerBelow, chemicalTank, Math.min(below.getNeeded(), chemicalTank.getCapacity()));
+                }
             }
             //Note: We don't need to do any checking here if the packet needs due to capacity changing as we do it
             // in TileentityMekanism after this method is called. And given radioactive waste barrels can only contain
@@ -83,6 +103,19 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
             // of when the client sneak right-clicks on the barrel
         }
         return sendUpdatePacket;
+    }
+
+    @Nullable
+    private IChemicalTank getBelowTank() {
+        if (!resolvedBelowTank) {
+            resolvedBelowTank = true;
+            IChemicalHandler belowHandler = chemicalHandlerBelow.getFirst().getCapability();
+            if (belowHandler instanceof ProxyChemicalHandler chemicalHandler && chemicalHandler.getInternalHandler() instanceof TileEntityRadioactiveWasteBarrel barrel) {
+                //Note: We don't need to bother with weak references as these are vertical so will always be in the same chunk
+                belowTank = barrel.chemicalTank;
+            }
+        }
+        return belowTank;
     }
 
     public StackedWasteBarrel getChemicalTank() {
