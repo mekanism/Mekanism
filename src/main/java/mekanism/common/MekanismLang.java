@@ -216,10 +216,6 @@ public enum MekanismLang implements ILangEntry {
     FLAMETHROWER_STORED("tooltip", "stored.flamethrower"),
     JETPACK_STORED("tooltip", "stored.jetpack"),
     DECAY_IMMUNE("tooltip", "decay_immune"),
-    //Aliases
-    ALSO_KNOWN_AS("tooltip", "known_as"),
-    //TODO - 1.22: When we no longer have JEI have to manually add the alias, we can move this to MekanismAliases
-    ETHENE_ETHYLENE_ALIAS("alias", "ethene.ethylene"),
     //Gui stuff
     HEIGHT("gui", "height"),
     WIDTH("gui", "width"),

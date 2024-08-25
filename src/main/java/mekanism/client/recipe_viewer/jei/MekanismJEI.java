@@ -11,6 +11,7 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.robit.GuiRobitRepair;
 import mekanism.client.recipe_viewer.RecipeViewerUtils;
+import mekanism.client.recipe_viewer.alias.MekanismAliasMapping;
 import mekanism.client.recipe_viewer.jei.machine.BoilerRecipeCategory;
 import mekanism.client.recipe_viewer.jei.machine.ChemicalChemicalToChemicalRecipeCategory;
 import mekanism.client.recipe_viewer.jei.machine.ChemicalCrystallizerRecipeCategory;
@@ -62,6 +63,7 @@ import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
+import mezz.jei.api.registration.IIngredientAliasRegistration;
 import mezz.jei.api.registration.IModIngredientRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
@@ -220,6 +222,11 @@ public class MekanismJEI implements IModPlugin {
         registry.addRecipeClickArea(GuiRobitRepair.class, 102, 48, 22, 15, RecipeTypes.ANVIL);
         registry.addGenericGuiContainerHandler(GuiMekanism.class, new JeiGuiElementHandler(registry.getJeiHelpers().getIngredientManager()));
         registry.addGhostIngredientHandler(GuiMekanism.class, new JeiGhostIngredientHandler<>());
+    }
+
+    @Override
+    public void registerIngredientAliases(IIngredientAliasRegistration registration) {
+        new MekanismAliasMapping().addAliases(new JEIAliasHelper(registration));
     }
 
     @Override
