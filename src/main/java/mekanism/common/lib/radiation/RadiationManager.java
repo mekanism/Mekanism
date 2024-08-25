@@ -35,6 +35,7 @@ import mekanism.api.text.ITooltipHelper;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.integration.curios.CuriosIntegration;
 import mekanism.common.lib.MekanismSavedData;
 import mekanism.common.lib.collection.HashList;
 import mekanism.common.network.to_client.PacketRadiationData;
@@ -66,6 +67,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -307,6 +309,21 @@ public class RadiationManager implements IRadiationManager {
             Optional<IRadiationShielding> shielding = CapabilityUtils.getCapability(stack, Capabilities.RADIATION_SHIELDING, null).resolve();
             if (shielding.isPresent()) {
                 resistance += shielding.get().getRadiationShielding();
+            }
+        }
+        if (resistance < 1 && Mekanism.hooks.CuriosLoaded) {
+            Optional<? extends IItemHandler> handlerOptional = CuriosIntegration.getCuriosInventory(entity);
+            if (handlerOptional.isPresent()) {
+                IItemHandler handler = handlerOptional.get();
+                int slots = handler.getSlots();
+                for (int i = 0; i < slots; i++) {
+                    ItemStack item = handler.getStackInSlot(i);
+                    Optional<IRadiationShielding> shielding = CapabilityUtils.getCapability(item, Capabilities.RADIATION_SHIELDING, null).resolve();
+                    if (shielding.isPresent()) {
+                        resistance += shielding.get().getRadiationShielding();
+                        if (resistance >= 1) return 1;
+                    }
+                }
             }
         }
         return resistance;
