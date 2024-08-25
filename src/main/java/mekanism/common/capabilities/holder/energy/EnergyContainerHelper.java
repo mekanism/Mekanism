@@ -3,7 +3,7 @@ package mekanism.common.capabilities.holder.energy;
 import java.util.function.Supplier;
 import mekanism.api.RelativeSide;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.common.tile.component.TileComponentConfig;
+import mekanism.common.tile.interfaces.ISideConfiguration;
 import net.minecraft.core.Direction;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,8 +20,8 @@ public class EnergyContainerHelper {
         return new EnergyContainerHelper(new EnergyContainerHolder(facingSupplier));
     }
 
-    public static EnergyContainerHelper forSideWithConfig(Supplier<Direction> facingSupplier, Supplier<TileComponentConfig> configSupplier) {
-        return new EnergyContainerHelper(new ConfigEnergyContainerHolder(facingSupplier, configSupplier));
+    public static EnergyContainerHelper forSideWithConfig(ISideConfiguration sideConfiguration) {
+        return new EnergyContainerHelper(new ConfigEnergyContainerHolder(sideConfiguration));
     }
 
     public <CONTAINER extends IEnergyContainer> CONTAINER addContainer(@NotNull CONTAINER container) {

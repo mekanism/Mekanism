@@ -125,7 +125,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     @NotNull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
-        EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(facingSupplier, configSupplier);
+        EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this);
         builder.addContainer(energyContainer = MachineEnergyContainer.input(this, listener));
         return builder.build();
     }
@@ -148,7 +148,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
             recalculateRecipe();
         };
 
-        InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(facingSupplier, configSupplier);
+        InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this);
         //If the formula slot changes we want to make sure to recheck the recipe
         builder.addSlot(formulaSlot = BasicInventorySlot.at(FORMULA_SLOT_VALIDATOR, listenAndRecheckRecipe, 6, 26, 1))
               .setSlotOverlay(SlotOverlay.FORMULA);

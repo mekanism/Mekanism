@@ -4,7 +4,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import mekanism.api.RelativeSide;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.common.tile.component.TileComponentConfig;
+import mekanism.common.tile.interfaces.ISideConfiguration;
 import net.minecraft.core.Direction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -31,8 +31,8 @@ public class InventorySlotHelper {
         return new InventorySlotHelper(new InventorySlotHolder(facingSupplier, insertPredicate, extractPredicate));
     }
 
-    public static InventorySlotHelper forSideWithConfig(Supplier<Direction> facingSupplier, Supplier<TileComponentConfig> configSupplier) {
-        return new InventorySlotHelper(new ConfigInventorySlotHolder(facingSupplier, configSupplier));
+    public static InventorySlotHelper forSideWithConfig(ISideConfiguration sideConfiguration) {
+        return new InventorySlotHelper(new ConfigInventorySlotHolder(sideConfiguration));
     }
 
     public <SLOT extends IInventorySlot> SLOT addSlot(@NotNull SLOT slot) {

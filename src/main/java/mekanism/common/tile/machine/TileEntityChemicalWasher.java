@@ -120,7 +120,7 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidChemi
     @NotNull
     @Override
     public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
-        ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(facingSupplier, configSupplier);
+        ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this);
         builder.addTank(inputTank = BasicChemicalTank.input(MAX_SLURRY, slurry -> containsRecipeBA(fluidTank.getFluid(), slurry), this::containsRecipeB,
               recipeCacheListener));
         builder.addTank(outputTank = BasicChemicalTank.output(MAX_SLURRY, recipeCacheUnpauseListener));
@@ -130,7 +130,7 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidChemi
     @NotNull
     @Override
     protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
-        FluidTankHelper builder = FluidTankHelper.forSideWithConfig(facingSupplier, configSupplier);
+        FluidTankHelper builder = FluidTankHelper.forSideWithConfig(this);
         builder.addTank(fluidTank = BasicFluidTank.input(MAX_FLUID, fluid -> containsRecipeAB(fluid, inputTank.getStack()), this::containsRecipeA, recipeCacheListener));
         return builder.build();
     }
@@ -138,7 +138,7 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidChemi
     @NotNull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
-        EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(facingSupplier, configSupplier);
+        EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this);
         builder.addContainer(energyContainer = MachineEnergyContainer.input(this, recipeCacheUnpauseListener));
         return builder.build();
     }
@@ -146,7 +146,7 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidChemi
     @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
-        InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(facingSupplier, configSupplier);
+        InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this);
         builder.addSlot(fluidSlot = FluidInventorySlot.fill(fluidTank, listener, 180, 71));
         //Output slot for the fluid container that was used as an input
         builder.addSlot(fluidOutputSlot = OutputInventorySlot.at(listener, 180, 102));

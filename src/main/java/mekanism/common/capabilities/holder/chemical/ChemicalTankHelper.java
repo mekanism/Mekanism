@@ -7,7 +7,7 @@ import mekanism.api.RelativeSide;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.radiation.IRadiationManager;
-import mekanism.common.tile.component.TileComponentConfig;
+import mekanism.common.tile.interfaces.ISideConfiguration;
 import net.minecraft.core.Direction;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,8 +31,8 @@ public class ChemicalTankHelper {
         return new ChemicalTankHelper(new ChemicalTankHolder(facingSupplier));
     }
 
-    public static ChemicalTankHelper forSideWithConfig(Supplier<Direction> facingSupplier, Supplier<TileComponentConfig> configSupplier) {
-        return new ChemicalTankHelper(new ConfigChemicalTankHolder(facingSupplier, configSupplier));
+    public static ChemicalTankHelper forSideWithConfig(ISideConfiguration sideConfiguration) {
+        return new ChemicalTankHelper(new ConfigChemicalTankHolder(sideConfiguration));
     }
 
     public IChemicalTank addTank(IChemicalTank tank) {

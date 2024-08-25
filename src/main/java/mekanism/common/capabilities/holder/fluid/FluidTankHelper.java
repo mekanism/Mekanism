@@ -3,7 +3,7 @@ package mekanism.common.capabilities.holder.fluid;
 import java.util.function.Supplier;
 import mekanism.api.RelativeSide;
 import mekanism.api.fluid.IExtendedFluidTank;
-import mekanism.common.tile.component.TileComponentConfig;
+import mekanism.common.tile.interfaces.ISideConfiguration;
 import net.minecraft.core.Direction;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,8 +20,8 @@ public class FluidTankHelper {
         return new FluidTankHelper(new FluidTankHolder(facingSupplier));
     }
 
-    public static FluidTankHelper forSideWithConfig(Supplier<Direction> facingSupplier, Supplier<TileComponentConfig> configSupplier) {
-        return new FluidTankHelper(new ConfigFluidTankHolder(facingSupplier, configSupplier));
+    public static FluidTankHelper forSideWithConfig(ISideConfiguration sideConfiguration) {
+        return new FluidTankHelper(new ConfigFluidTankHolder(sideConfiguration));
     }
 
     public <TANK extends IExtendedFluidTank> TANK addTank(@NotNull TANK tank) {

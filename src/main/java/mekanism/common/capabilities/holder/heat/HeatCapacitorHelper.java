@@ -3,7 +3,7 @@ package mekanism.common.capabilities.holder.heat;
 import java.util.function.Supplier;
 import mekanism.api.RelativeSide;
 import mekanism.api.heat.IHeatCapacitor;
-import mekanism.common.tile.component.TileComponentConfig;
+import mekanism.common.tile.interfaces.ISideConfiguration;
 import net.minecraft.core.Direction;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,8 +20,8 @@ public class HeatCapacitorHelper {
         return new HeatCapacitorHelper(new HeatCapacitorHolder(facingSupplier));
     }
 
-    public static HeatCapacitorHelper forSideWithConfig(Supplier<Direction> facingSupplier, Supplier<TileComponentConfig> configSupplier) {
-        return new HeatCapacitorHelper(new ConfigHeatCapacitorHolder(facingSupplier, configSupplier));
+    public static HeatCapacitorHelper forSideWithConfig(ISideConfiguration sideConfiguration) {
+        return new HeatCapacitorHelper(new ConfigHeatCapacitorHolder(sideConfiguration));
     }
 
     public <CAPACITOR extends IHeatCapacitor> CAPACITOR addCapacitor(@NotNull CAPACITOR capacitor) {

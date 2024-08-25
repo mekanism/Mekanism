@@ -100,7 +100,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Che
     @NotNull
     @Override
     public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
-        ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(facingSupplier, configSupplier);
+        ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this);
         //Allow extracting out of the input gas tank if it isn't external OR the output tank is empty AND the input is radioactive
         builder.addTank(inputTank = BasicChemicalTank.create(MAX_GAS, ChemicalTankHelper.radioactiveInputTankPredicate(() -> outputTank),
               BasicChemicalTank.alwaysTrueBi, this::containsRecipe, ChemicalAttributeValidator.ALWAYS_ALLOW, recipeCacheListener));
@@ -111,7 +111,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Che
     @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
-        InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(facingSupplier, configSupplier);
+        InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this);
         builder.addSlot(inputSlot = ChemicalInventorySlot.fill(inputTank, listener, 5, 56));
         builder.addSlot(outputSlot = ChemicalInventorySlot.drain(outputTank, listener, 155, 56));
         inputSlot.setSlotType(ContainerSlotType.INPUT);

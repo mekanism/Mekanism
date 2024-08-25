@@ -2,20 +2,19 @@ package mekanism.common.capabilities.holder.heat;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Supplier;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.common.capabilities.holder.ConfigHolder;
 import mekanism.common.lib.transmitter.TransmissionType;
-import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.config.slot.HeatSlotInfo;
+import mekanism.common.tile.interfaces.ISideConfiguration;
 import net.minecraft.core.Direction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class ConfigHeatCapacitorHolder extends ConfigHolder<IHeatCapacitor> implements IHeatCapacitorHolder {
 
-    protected ConfigHeatCapacitorHolder(Supplier<Direction> facingSupplier, Supplier<TileComponentConfig> configSupplier) {
-        super(facingSupplier, configSupplier);
+    protected ConfigHeatCapacitorHolder(ISideConfiguration sideConfiguration) {
+        super(sideConfiguration);
     }
 
     @Override

@@ -7,12 +7,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import mekanism.api.RelativeSide;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
+import mekanism.common.tile.interfaces.ISideConfiguration;
 import net.minecraft.core.Direction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -58,16 +58,14 @@ public abstract class ConfigHolder<TYPE> implements IHolder {
     };
 
     private final Map<Direction, ISlotInfo> cachedSlotInfo = new EnumMap<>(Direction.class);
-    private final Supplier<TileComponentConfig> configSupplier;
-    private final Supplier<Direction> facingSupplier;
+    private final ISideConfiguration sideConfiguration;
     protected final List<TYPE> slots = new ArrayList<>();
     @Nullable
     private Direction lastDirection;
     private boolean listenerAdded;
 
-    protected ConfigHolder(Supplier<Direction> facingSupplier, Supplier<TileComponentConfig> configSupplier) {
-        this.facingSupplier = facingSupplier;
-        this.configSupplier = configSupplier;
+    protected ConfigHolder(ISideConfiguration sideConfiguration) {
+        this.sideConfiguration = sideConfiguration;
     }
 
     protected abstract TransmissionType getTransmissionType();
@@ -112,7 +110,7 @@ public abstract class ConfigHolder<TYPE> implements IHolder {
 
     @Nullable
     private ISlotInfo getSlotInfo(Direction side) {
-        Direction direction = facingSupplier.get();
+        Direction direction = sideConfiguration.getDirection();
         if (direction != lastDirection) {
             //Invalid entire cache and update what direction we had as last if our last direction doesn't match the one we currently are facing
             cachedSlotInfo.clear();
@@ -122,7 +120,7 @@ public abstract class ConfigHolder<TYPE> implements IHolder {
             return cachedSlotInfo.get(side);
         }
         ISlotInfo slotInfo;
-        TileComponentConfig config = configSupplier.get();
+        TileComponentConfig config = sideConfiguration.getConfig();
         if (config == null) {
             slotInfo = NO_CONFIG;
         } else {

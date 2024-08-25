@@ -109,7 +109,7 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<ItemSta
     @NotNull
     @Override
     public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
-        ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(facingSupplier, configSupplier);
+        ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this);
         builder.addTank(pigmentTank = BasicChemicalTank.input(MAX_PIGMENT, pigment -> containsRecipeBA(inputSlot.getStack(), pigment),
               this::containsRecipeB, recipeCacheListener));
         return builder.build();
@@ -118,7 +118,7 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<ItemSta
     @NotNull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
-        EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(facingSupplier, configSupplier);
+        EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this);
         builder.addContainer(energyContainer = MachineEnergyContainer.input(this, recipeCacheUnpauseListener));
         return builder.build();
     }
@@ -126,7 +126,7 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<ItemSta
     @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
-        InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(facingSupplier, configSupplier);
+        InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this);
         builder.addSlot(pigmentInputSlot = ChemicalInventorySlot.fill(pigmentTank, listener, 6, 56));
         builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipeAB(item, pigmentTank.getStack()), this::containsRecipeA, recipeCacheListener, 45, 35))
               .tracksWarnings(slot -> slot.warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(RecipeError.NOT_ENOUGH_INPUT)));
