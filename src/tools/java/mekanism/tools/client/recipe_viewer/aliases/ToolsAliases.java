@@ -1,7 +1,7 @@
-package mekanism.tools.client.integration;
+package mekanism.tools.client.recipe_viewer.aliases;
 
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.client.integration.IAliasedTranslation;
+import mekanism.client.recipe_viewer.alias.IAliasedTranslation;
 import mekanism.tools.common.MekanismTools;
 import net.minecraft.Util;
 

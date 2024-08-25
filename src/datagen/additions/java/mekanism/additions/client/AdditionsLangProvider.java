@@ -1,7 +1,7 @@
 package mekanism.additions.client;
 
 import java.util.Map;
-import mekanism.additions.client.integration.AdditionsAliases;
+import mekanism.additions.client.recipe_viewer.aliases.AdditionsAliases;
 import mekanism.additions.common.AdditionsLang;
 import mekanism.additions.common.AdditionsTags;
 import mekanism.additions.common.MekanismAdditions;

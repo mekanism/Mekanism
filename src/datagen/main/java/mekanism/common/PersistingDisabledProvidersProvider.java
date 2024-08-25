@@ -16,8 +16,10 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import mekanism.client.integration.emi.MekanismEmiAliasProvider;
+import mekanism.client.integration.emi.EmiAliasProvider;
 import mekanism.client.integration.emi.MekanismEmiDefaults;
+import mekanism.client.recipe_viewer.alias.IAliasMapping;
+import mekanism.client.recipe_viewer.alias.MekanismAliasMapping;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.crafttweaker.MekanismCrTExampleProvider;
 import mekanism.common.integration.projecte.MekanismCustomConversions;
@@ -54,7 +56,7 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
         Set<String> pathsToSkip = new HashSet<>();
         List<String> fakeProviders = new ArrayList<>();
         if (modList.isLoaded(MekanismHooks.EMI_MOD_ID)) {
-            gen.addProvider(event.includeClient(), new MekanismEmiAliasProvider(output, lookupProvider));
+            gen.addProvider(event.includeClient(), new EmiAliasProvider(output, lookupProvider, Mekanism.MODID, MekanismAliasMapping::new));
             gen.addProvider(event.includeClient(), new MekanismEmiDefaults(output, existingFileHelper, lookupProvider));
         } else {
             pathsToSkip.add("emi/aliases");
@@ -81,14 +83,14 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
     }
 
     public static void addDisabledEmiProvider(GatherDataEvent event, CompletableFuture<HolderLookup.Provider> lookupProvider, String modid,
-          Supplier<SimpleProvider> aliasProviderFunction, Supplier<ExistingFileProvider> defaultsProviderFunction) {
+          Supplier<IAliasMapping> mappings, Supplier<ExistingFileProvider> defaultsProviderFunction) {
         DataGenerator gen = event.getGenerator();
         PackOutput output = gen.getPackOutput();
         ModList modList = ModList.get();
         Set<String> pathsToSkip = new HashSet<>();
         List<String> fakeProviders = new ArrayList<>();
         if (modList.isLoaded(MekanismHooks.EMI_MOD_ID)) {
-            gen.addProvider(event.includeClient(), aliasProviderFunction.get().create(output, lookupProvider));
+            gen.addProvider(event.includeClient(), new EmiAliasProvider(output, lookupProvider, modid, mappings));
             gen.addProvider(event.includeClient(), defaultsProviderFunction.get().create(output, event.getExistingFileHelper(), lookupProvider));
         } else {
             pathsToSkip.add("emi/aliases");
@@ -198,12 +200,6 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
     private static Path getProviderCachePath(Path cacheDir, String providerName) {
         //Copy of HashCache#getProviderCachePath
         return cacheDir.resolve(Hashing.sha1().hashString(providerName, StandardCharsets.UTF_8).toString());
-    }
-
-    @FunctionalInterface
-    public interface SimpleProvider {
-
-        DataProvider create(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries);
     }
 
     @FunctionalInterface

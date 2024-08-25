@@ -9,8 +9,8 @@ import mekanism.generators.client.GeneratorsItemModelProvider;
 import mekanism.generators.client.GeneratorsLangProvider;
 import mekanism.generators.client.GeneratorsSoundProvider;
 import mekanism.generators.client.GeneratorsSpriteSourceProvider;
-import mekanism.generators.client.integration.emi.GeneratorsEmiAliasProvider;
 import mekanism.generators.client.integration.emi.GeneratorsEmiDefaults;
+import mekanism.generators.client.recipe_viewer.alias.GeneratorsAliasMapping;
 import mekanism.generators.common.loot.GeneratorsLootProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
@@ -47,7 +47,7 @@ public class GeneratorsDataGenerator {
         gen.addProvider(event.includeServer(), new GeneratorsAdvancementProvider(output, lookupProvider, existingFileHelper));
         //Data generator to help with persisting data when porting across MC versions when optional deps aren't updated yet
         // DO NOT ADD OTHERS AFTER THIS ONE
-        PersistingDisabledProvidersProvider.addDisabledEmiProvider(event, lookupProvider, MekanismGenerators.MODID, () -> GeneratorsEmiAliasProvider::new,
+        PersistingDisabledProvidersProvider.addDisabledEmiProvider(event, lookupProvider, MekanismGenerators.MODID, GeneratorsAliasMapping::new,
               () -> GeneratorsEmiDefaults::new);
     }
 }

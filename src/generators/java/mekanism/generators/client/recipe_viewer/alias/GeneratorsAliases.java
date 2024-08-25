@@ -1,7 +1,7 @@
-package mekanism.generators.client.integration;
+package mekanism.generators.client.recipe_viewer.alias;
 
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.client.integration.IAliasedTranslation;
+import mekanism.client.recipe_viewer.alias.IAliasedTranslation;
 import mekanism.generators.common.MekanismGenerators;
 import net.minecraft.Util;
 

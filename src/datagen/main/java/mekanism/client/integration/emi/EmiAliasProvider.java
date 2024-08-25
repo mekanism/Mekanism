@@ -8,6 +8,7 @@ import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.emi.emi.api.EmiInitRegistry;
+import dev.emi.emi.api.neoforge.NeoForgeEmiStack;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.stack.serializer.EmiIngredientSerializer;
@@ -16,23 +17,22 @@ import dev.emi.emi.registry.EmiInitRegistryImpl;
 import dev.emi.emi.registry.EmiPluginContainer;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.gear.IModuleHelper;
 import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.providers.IFluidProvider;
 import mekanism.api.text.IHasTranslationKey;
+import mekanism.client.recipe_viewer.alias.IAliasMapping;
+import mekanism.client.recipe_viewer.alias.RVAliasHelper;
 import mekanism.client.recipe_viewer.emi.ChemicalEmiStack;
 import mekanism.common.DataGenSerializationConstants;
-import mekanism.common.content.gear.IModuleItem;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.lib.collection.HashList;
-import mekanism.common.registration.impl.ItemDeferredRegister;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
@@ -41,12 +41,12 @@ import net.minecraft.data.PackOutput.PathProvider;
 import net.minecraft.data.PackOutput.Target;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
-import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
-import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 @NothingNullByDefault
-public abstract class BaseEmiAliasProvider implements DataProvider {
+public class EmiAliasProvider implements DataProvider, RVAliasHelper<EmiIngredient, EmiIngredient, EmiIngredient> {
 
     private static boolean emiSerializersInitialized;
 
@@ -65,55 +65,74 @@ public abstract class BaseEmiAliasProvider implements DataProvider {
 
     private final CompletableFuture<HolderLookup.Provider> registries;
     private final HashList<AliasInfo> data = new HashList<>();
+    private final Supplier<IAliasMapping> mappings;
     private final PathProvider pathProvider;
     private final String modid;
 
-    protected BaseEmiAliasProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries, String modid) {
+    public EmiAliasProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries, String modid, Supplier<IAliasMapping> mappings) {
         this.pathProvider = output.createPathProvider(Target.RESOURCE_PACK, "aliases");
         this.registries = registries;
         this.modid = modid;
+        this.mappings = mappings;
     }
 
     @Override
     public final CompletableFuture<?> run(CachedOutput cachedOutput) {
         bootstrapEmi();
         return this.registries.thenCompose(lookupProvider -> {
-            addAliases(lookupProvider);
+            IAliasMapping mapping = mappings.get();
+            mapping.addAliases(this);
             Path path = pathProvider.json(ResourceLocation.fromNamespaceAndPath(MekanismHooks.EMI_MOD_ID, modid));
             return DataProvider.saveStable(cachedOutput, lookupProvider, AliasInfo.LIST_CODEC, data.elements(), path);
         });
     }
 
-    protected EmiIngredient ingredient(IFluidProvider fluidProvider) {
+    @Override
+    public EmiIngredient ingredient(ItemLike itemLike) {
+        return EmiStack.of(itemLike);
+    }
+
+    @Override
+    public EmiIngredient ingredient(ItemStack item) {
+        return EmiStack.of(item);
+    }
+
+    @Override
+    public EmiIngredient ingredient(IFluidProvider fluidProvider) {
         return EmiStack.of(fluidProvider.getFluid(), 1);
     }
 
-    protected EmiIngredient ingredient(IChemicalProvider chemicalProvider) {
+    @Override
+    public EmiIngredient ingredient(FluidStack fluid) {
+        return NeoForgeEmiStack.of(fluid);
+    }
+
+    @Override
+    public EmiIngredient ingredient(IChemicalProvider chemicalProvider) {
         return ChemicalEmiStack.create(chemicalProvider, 1);
     }
 
-    protected abstract void addAliases(HolderLookup.Provider lookupProvider);
-
-    protected void addAlias(IHasTranslationKey alias, ItemLike... items) {
-        if (items.length == 0) {
-            throw new IllegalArgumentException("Expected to have at least one item");
-        }
-        addAliases(Arrays.stream(items).<EmiIngredient>map(EmiStack::of).toList(), alias);
+    @Override
+    public void addAliases(IFluidProvider fluidProvider, IChemicalProvider chemicalProvider, IHasTranslationKey... aliases) {
+        addAliases(List.of(ingredient(fluidProvider), ingredient(chemicalProvider)), aliases);
     }
 
-    protected void addAliases(ItemLike item, IHasTranslationKey... aliases) {
-        addAliases(EmiStack.of(item), aliases);
+    @Override
+    public void addItemAliases(List<EmiIngredient> stacks, IHasTranslationKey... aliases) {
+        addAliases(stacks, aliases);
     }
 
-    protected void addAliases(Collection<? extends ItemLike> stacks, IHasTranslationKey... aliases) {
-        addAliases(stacks.stream().<EmiIngredient>map(EmiStack::of).toList(), aliases);
+    @Override
+    public void addFluidAliases(List<EmiIngredient> stacks, IHasTranslationKey... aliases) {
+        addAliases(stacks, aliases);
     }
 
-    protected void addAliases(EmiIngredient stack, IHasTranslationKey... aliases) {
-        addAliases(List.of(stack), aliases);
+    @Override
+    public void addChemicalAliases(List<EmiIngredient> stacks, IHasTranslationKey... aliases) {
+        addAliases(stacks, aliases);
     }
 
-    protected void addAliases(List<EmiIngredient> stacks, IHasTranslationKey... aliases) {
+    private void addAliases(List<EmiIngredient> stacks, IHasTranslationKey... aliases) {
         if (aliases.length == 0) {
             throw new IllegalArgumentException("Expected to have at least one alias");
         }
@@ -127,18 +146,6 @@ public abstract class BaseEmiAliasProvider implements DataProvider {
             //TODO: Can we improve the validation we have relating to duplicate values/make things more compact?
             // This if statement exists mainly as a simple check against copy-paste errors
             throw new IllegalStateException("Duplicate alias pair added");
-        }
-    }
-
-    protected void addModuleAliases(ItemDeferredRegister items) {
-        for (DeferredHolder<Item, ? extends Item> entry : items.getEntries()) {
-            if (entry.get() instanceof IModuleItem module) {
-                addAliases(entry.get(), IModuleHelper.INSTANCE.getSupported(module.getModuleData())
-                      .stream()
-                      .map(item -> (IHasTranslationKey) item::getDescriptionId)
-                      .toArray(IHasTranslationKey[]::new)
-                );
-            }
         }
     }
 

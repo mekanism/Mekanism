@@ -1,4 +1,4 @@
-package mekanism.tools.client.jei;
+package mekanism.tools.client.recipe_viewer.jei;
 
 import mekanism.client.recipe_viewer.jei.MekanismJEI;
 import mekanism.client.recipe_viewer.jei.RecipeRegistryHelper;

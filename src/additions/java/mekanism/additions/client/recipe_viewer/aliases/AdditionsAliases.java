@@ -1,8 +1,8 @@
-package mekanism.additions.client.integration;
+package mekanism.additions.client.recipe_viewer.aliases;
 
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.client.integration.IAliasedTranslation;
+import mekanism.client.recipe_viewer.alias.IAliasedTranslation;
 import net.minecraft.Util;
 
 @NothingNullByDefault

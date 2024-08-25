@@ -133,6 +133,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
         }
 
         float scale = MekanismUtils.getScale(prevScale, fluidTank);
+        //TODO - 1.21: Figure out handling of stacked tanks where it may be going back and forth between being full and not?
         if (MekanismUtils.scaleChanged(scale, prevScale)) {
             if (prevScale == 0 || scale == 0) {
                 //If it was empty and no longer is, or wasn't empty and now is empty we want to recheck the block lighting
@@ -206,6 +207,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     private FluidStack insertExcess(@NotNull FluidStack stack, @Nullable Direction side, @NotNull Action action, @NotNull FluidStack remainder) {
         if (side == Direction.UP && action.execute() && remainder.getAmount() < stack.getAmount() && !isRemote()) {
             if (valve == 0) {
+                //TODO - 1.21: Only mark it as needing a packet if our fluid tank volume is below a certain amount??
                 needsPacket = true;
             }
             valve = SharedConstants.TICKS_PER_SECOND;

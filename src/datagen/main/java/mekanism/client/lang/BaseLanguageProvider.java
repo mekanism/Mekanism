@@ -8,7 +8,7 @@ import mekanism.api.gear.ModuleData;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.providers.IModuleDataProvider;
 import mekanism.api.text.IHasTranslationKey;
-import mekanism.client.integration.IAliasedTranslation;
+import mekanism.client.recipe_viewer.alias.IAliasedTranslation;
 import mekanism.client.lang.FormatSplitter.Component;
 import mekanism.common.Mekanism;
 import mekanism.common.advancements.MekanismAdvancement;

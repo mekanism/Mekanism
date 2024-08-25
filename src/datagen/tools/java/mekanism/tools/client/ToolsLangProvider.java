@@ -4,7 +4,7 @@ import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.client.lang.BaseLanguageProvider;
 import mekanism.common.util.EnumUtils;
-import mekanism.tools.client.integration.ToolsAliases;
+import mekanism.tools.client.recipe_viewer.aliases.ToolsAliases;
 import mekanism.tools.common.MekanismTools;
 import mekanism.tools.common.ToolsLang;
 import mekanism.tools.common.ToolsTags;

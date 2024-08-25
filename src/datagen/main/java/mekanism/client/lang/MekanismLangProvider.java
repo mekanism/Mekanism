@@ -11,7 +11,7 @@ import mekanism.api.providers.IItemProvider;
 import mekanism.api.robit.RobitSkin;
 import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
-import mekanism.client.integration.MekanismAliases;
+import mekanism.client.recipe_viewer.alias.MekanismAliases;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.advancements.MekanismAdvancements;

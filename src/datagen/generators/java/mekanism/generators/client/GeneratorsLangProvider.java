@@ -1,7 +1,7 @@
 package mekanism.generators.client;
 
 import mekanism.client.lang.BaseLanguageProvider;
-import mekanism.generators.client.integration.GeneratorsAliases;
+import mekanism.generators.client.recipe_viewer.alias.GeneratorsAliases;
 import mekanism.generators.common.GeneratorTags;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.MekanismGenerators;

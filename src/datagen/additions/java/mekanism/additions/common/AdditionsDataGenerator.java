@@ -6,8 +6,8 @@ import mekanism.additions.client.AdditionsItemModelProvider;
 import mekanism.additions.client.AdditionsLangProvider;
 import mekanism.additions.client.AdditionsSoundProvider;
 import mekanism.additions.client.AdditionsSpriteSourceProvider;
-import mekanism.additions.client.integration.emi.AdditionsEmiAliasProvider;
 import mekanism.additions.client.integration.emi.AdditionsEmiDefaults;
+import mekanism.additions.client.recipe_viewer.aliases.AdditionsAliasMapping;
 import mekanism.additions.common.loot.AdditionsLootProvider;
 import mekanism.additions.common.recipe.AdditionsRecipeProvider;
 import mekanism.common.BasePackMetadataGenerator;
@@ -51,7 +51,7 @@ public class AdditionsDataGenerator {
         gen.addProvider(event.includeServer(), new AdditionsAdvancementProvider(output, lookupProvider, existingFileHelper));
         //Data generator to help with persisting data when porting across MC versions when optional deps aren't updated yet
         // DO NOT ADD OTHERS AFTER THIS ONE
-        PersistingDisabledProvidersProvider.addDisabledEmiProvider(event, lookupProvider, MekanismAdditions.MODID, () -> AdditionsEmiAliasProvider::new,
+        PersistingDisabledProvidersProvider.addDisabledEmiProvider(event, lookupProvider, MekanismAdditions.MODID, AdditionsAliasMapping::new,
               () -> AdditionsEmiDefaults::new);
     }
 }
