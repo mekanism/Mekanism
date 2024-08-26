@@ -295,8 +295,6 @@
   "entity.mekanismadditions.baby_wither_skeleton": "아기 위더 스켈레톤",
   "entity.mekanismadditions.balloon": "풍선",
   "entity.mekanismadditions.obsidian_tnt": "흑요석 TNT",
-  "fml.menu.mods.info.description.mekanismadditions": "Mekanism의 추가 모듈 입니다. 다른 모듈에 별로 맞지 않는 것들을 포함하고있습니다.",
-  "fml.menu.mods.info.displayname.mekanismadditions": "Mekanism: Additions",
   "item.mekanismadditions.aqua_balloon": "물색 풍선",
   "item.mekanismadditions.baby_bogged_spawn_egg": "아기 보그드 생성 알",
   "item.mekanismadditions.baby_creeper_spawn_egg": "아기 크리퍼 생성 알",

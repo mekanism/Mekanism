@@ -1003,7 +1003,6 @@
   "fluid_container.mekanism.empty": "Vacío",
   "fluid_container.mekanism.fill": "Rellenar",
   "fml.menu.mods.info.description.mekanism": "El Mekanism es un complemento de Minecraft con maquinaria de alta tecnología que se puede utilizar para crear poderosas herramientas, armaduras y armas.",
-  "fml.menu.mods.info.displayname.mekanism": "Mekanismo",
   "free_runner.mekanism.disabled": "Deshabilitado",
   "free_runner.mekanism.mode_change": "Modo de corredores libres cambiado a: %1$s",
   "free_runner.mekanism.normal": "Normal",

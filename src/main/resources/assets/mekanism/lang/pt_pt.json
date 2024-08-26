@@ -881,7 +881,6 @@
   "fluid_container.mekanism.empty": "Vazio",
   "fluid_container.mekanism.fill": "Preencher",
   "fml.menu.mods.info.description.mekanism": "O Mekanism é um add-on para o Minecraft com máquinas de alta tecnologia que podem ser usadas para criar ferramentas, armaduras e armas poderosas.",
-  "fml.menu.mods.info.displayname.mekanism": "Mekanism",
   "free_runner.mekanism.disabled": "Desabilitado",
   "free_runner.mekanism.mode_change": "Modo Desviador alterado para: %1$s",
   "free_runner.mekanism.normal": "Padrão",

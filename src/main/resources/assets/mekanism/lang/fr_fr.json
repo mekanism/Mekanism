@@ -1000,7 +1000,6 @@
   "fluid_container.mekanism.empty": "Vide",
   "fluid_container.mekanism.fill": "Remplir",
   "fml.menu.mods.info.description.mekanism": "Mekanism est une extension de Minecraft avec des machines de hautes technologies qui peuvent être utilisées pour créer des outils, des armures et des armes puissantes.",
-  "fml.menu.mods.info.displayname.mekanism": "Mekanism",
   "free_runner.mekanism.disabled": "Désactiver",
   "free_runner.mekanism.mode_change": "Mode des coureuses changé sur: %1$s",
   "free_runner.mekanism.normal": "Régulier",

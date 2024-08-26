@@ -898,7 +898,6 @@
   "fluid_container.mekanism.empty": "Опустошать",
   "fluid_container.mekanism.fill": "Заполнять",
   "fml.menu.mods.info.description.mekanism": "Меканизм - это дополнение Minecraft с высокотехнологичным оборудованием, которое может быть использовано для создания мощных инструментов, брони и оружия.",
-  "fml.menu.mods.info.displayname.mekanism": "Mekanism",
   "free_runner.mekanism.disabled": "Отключен",
   "free_runner.mekanism.mode_change": "Режим свободного бега изменен на: %1$s",
   "free_runner.mekanism.normal": "Обычный",

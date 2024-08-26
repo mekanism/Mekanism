@@ -14,7 +14,6 @@
   "constants.mekanismtools.mod_name": "Mekanism: Tools",
   "constants.mekanismtools.pack_description": "Recursos utilizados por Mekanism: Tools",
   "fml.menu.mods.info.description.mekanismtools": "Modulo de herramientas para el Mekanismo",
-  "fml.menu.mods.info.displayname.mekanismtools": "Mekanismo: Herramientas",
   "item.mekanismtools.bronze_axe": "Hacha de bronce",
   "item.mekanismtools.bronze_boots": "Botas de bronce",
   "item.mekanismtools.bronze_chestplate": "Pechera de bronce",

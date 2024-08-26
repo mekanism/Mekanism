@@ -953,7 +953,6 @@
   "fluid_container.mekanism.empty": "비우기",
   "fluid_container.mekanism.fill": "채우기",
   "fml.menu.mods.info.description.mekanism": "Mekanism은 강력한 도구, 갑옷, 무기를 만들 수 있는 하이테크 기계를 특징으로 한 마인크래프트 애드온 입니다.",
-  "fml.menu.mods.info.displayname.mekanism": "Mekanism",
   "free_runner.mekanism.disabled": "비활성화됨",
   "free_runner.mekanism.mode_change": "프리 러너의 모드가 다음으로 변경됨: %1$s",
   "free_runner.mekanism.normal": "일반",

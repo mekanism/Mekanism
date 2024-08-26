@@ -885,7 +885,6 @@
   "fluid_container.mekanism.empty": "Vuoto",
   "fluid_container.mekanism.fill": "Riempi",
   "fml.menu.mods.info.description.mekanism": "La Mekanism è un componente aggiuntivo di Minecraft con macchinari avanzati che possono essere utilizzati per creare potenti strumenti, armature e armi.",
-  "fml.menu.mods.info.displayname.mekanism": "Mekanism",
   "free_runner.mekanism.disabled": "Disattivata",
   "free_runner.mekanism.mode_change": "Modalità delle protesi cambiata in: %1$s",
   "free_runner.mekanism.normal": "Normale",

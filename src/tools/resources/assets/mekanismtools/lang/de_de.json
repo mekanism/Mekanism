@@ -14,7 +14,6 @@
   "constants.mekanismtools.mod_name": "Mekanism: Tools",
   "constants.mekanismtools.pack_description": "Für Mekanism: Tools verwendete Ressourcen",
   "fml.menu.mods.info.description.mekanismtools": "Gegenstands-Module für Mekanism",
-  "fml.menu.mods.info.displayname.mekanismtools": "Mekanism: Tools",
   "item.mekanismtools.bronze_axe": "Bronzeaxt",
   "item.mekanismtools.bronze_boots": "Bronzestiefel",
   "item.mekanismtools.bronze_chestplate": "Bronzebrustpanzer",

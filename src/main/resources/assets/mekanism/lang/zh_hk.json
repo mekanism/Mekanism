@@ -9,6 +9,5 @@
   "block.mekanism.advanced_bin": "高級儲物箱",
   "block.mekanism.advanced_chemical_tank": "高級化學品罐",
   "cardboard_box.mekanism.block_entity.decoration": "裝飾：",
-  "constants.mekanism.forge": "NeoForge",
-  "fml.menu.mods.info.displayname.mekanism": "通用機械"
+  "constants.mekanism.forge": "NeoForge"
 }

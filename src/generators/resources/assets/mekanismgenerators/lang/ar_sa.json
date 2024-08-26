@@ -48,7 +48,6 @@
   "description.mekanismgenerators.turbine_valve": "- نوع من التوربين الذي يشمل ميناء نقل الطاقة والبخار.",
   "description.mekanismgenerators.turbine_vent": "نوع من التوربين مع منافس متكامل لإطلاق البخار. وينبغي أن توضع هذه المواد على مستوى مجمع دوران التربيني أو فوقه.",
   "description.mekanismgenerators.wind_generator": "مولد كهربائي يستخدم قوة الرياح لإنتاج الطاقة، مع زيادة الكفاءة على المستويات الأعلى.",
-  "gas.mekanismgenerators.fusion_fuel": "وقود D-T",
   "item.mekanismgenerators.deuterium_bucket": "دلو ديوتريوم سائل",
   "item.mekanismgenerators.fusion_fuel_bucket": "دلو وقود سائل D-T",
   "item.mekanismgenerators.solar_panel": "لوحة الطاقة الشمسية",
