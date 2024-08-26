@@ -62,7 +62,10 @@ public abstract class ConfigHolder<TYPE> implements IHolder {
     protected final List<TYPE> slots = new ArrayList<>();
     @Nullable
     private Direction lastDirection;
-    private boolean listenerAdded;
+
+    @Nullable
+    private ConfigInfo lazyConfig;
+    private boolean retrievedConfig;
 
     protected ConfigHolder(ISideConfiguration sideConfiguration) {
         this.sideConfiguration = sideConfiguration;
@@ -115,30 +118,31 @@ public abstract class ConfigHolder<TYPE> implements IHolder {
             //Invalid entire cache and update what direction we had as last if our last direction doesn't match the one we currently are facing
             cachedSlotInfo.clear();
             lastDirection = direction;
-        }
-        if (cachedSlotInfo.containsKey(side)) {
+        } else if (cachedSlotInfo.containsKey(side)) {
+            //If the direction changed, we know it isn't cached so can skip checking
             return cachedSlotInfo.get(side);
         }
-        ISlotInfo slotInfo;
-        TileComponentConfig config = sideConfiguration.getConfig();
-        if (config == null) {
-            slotInfo = NO_CONFIG;
-        } else {
-            TransmissionType transmissionType = getTransmissionType();
-            ConfigInfo configInfo = config.getConfig(transmissionType);
-            if (configInfo == null) {
-                slotInfo = NO_CONFIG;
-            } else {
-                if (!listenerAdded) {
+        if (!retrievedConfig) {
+            retrievedConfig = true;
+            TileComponentConfig config = sideConfiguration.getConfig();
+            if (config != null) {
+                TransmissionType transmissionType = getTransmissionType();
+                lazyConfig = config.getConfig(transmissionType);
+                if (lazyConfig != null) {
                     //If we haven't added a listener to our config yet add one to remove the cached info we have for that side
-                    listenerAdded = true;
+                    //Note: We know we haven't done this if we haven't retrieved the config yet, as we only retrieve the config a single time
                     config.addConfigChangeListener(transmissionType, cachedSlotInfo::remove);
                 }
-                slotInfo = configInfo.getSlotInfo(RelativeSide.fromDirections(direction, side));
-                if (slotInfo != null && !slotInfo.isEnabled()) {
-                    //If we have a slot info, but it is not actually enabled, just store it as null to avoid having to recheck if it is enabled later
-                    slotInfo = null;
-                }
+            }
+        }
+        ISlotInfo slotInfo;
+        if (lazyConfig == null) {
+            slotInfo = NO_CONFIG;
+        } else {
+            slotInfo = lazyConfig.getSlotInfo(RelativeSide.fromDirections(direction, side));
+            if (slotInfo != null && !slotInfo.isEnabled()) {
+                //If we have a slot info, but it is not actually enabled, just store it as null to avoid having to recheck if it is enabled later
+                slotInfo = null;
             }
         }
         cachedSlotInfo.put(side, slotInfo);
