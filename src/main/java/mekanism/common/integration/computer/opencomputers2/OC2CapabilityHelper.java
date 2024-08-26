@@ -4,6 +4,7 @@ import java.util.function.BooleanSupplier;
 import mekanism.common.integration.computer.IComputerTile;
 import mekanism.common.registration.impl.TileEntityTypeDeferredRegister.BlockEntityTypeBuilder;
 import mekanism.common.tile.base.CapabilityTileEntity;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 public class OC2CapabilityHelper {
 
@@ -23,5 +24,9 @@ public class OC2CapabilityHelper {
     public static <TILE extends CapabilityTileEntity & IComputerTile> void addCapability(BlockEntityTypeBuilder<TILE> builder, BooleanSupplier supportsComputer) {
         //TODO - 1.20.2: Reimplement when OC2 updates
         //builder.with(CAPABILITY, (ICapabilityProvider<? super TILE, @Nullable Direction, Device>) PROVIDER, supportsComputer);
+    }
+
+    public static void addBoundingComputerCapabilities(RegisterCapabilitiesEvent event) {
+        //TileEntityBoundingBlock.proxyCapability(event, CAPABILITY);
     }
 }

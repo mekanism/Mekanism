@@ -9,9 +9,11 @@ import mekanism.common.integration.computer.ComputerEnergyHelper;
 import mekanism.common.integration.computer.ComputerFilterHelper;
 import mekanism.common.integration.computer.IComputerTile;
 import mekanism.common.registration.impl.TileEntityTypeDeferredRegister.BlockEntityTypeBuilder;
+import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.base.CapabilityTileEntity;
 import net.minecraft.core.Direction;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.Nullable;
 
 public class CCCapabilityHelper {
@@ -30,6 +32,10 @@ public class CCCapabilityHelper {
     @SuppressWarnings("unchecked")
     public static <TILE extends CapabilityTileEntity & IComputerTile> void addCapability(BlockEntityTypeBuilder<TILE> builder, BooleanSupplier supportsComputer) {
         builder.with(PeripheralCapability.get(), (ICapabilityProvider<? super TILE, @Nullable Direction, IPeripheral>) PROVIDER, supportsComputer);
+    }
+
+    public static void addBoundingComputerCapabilities(RegisterCapabilitiesEvent event) {
+        TileEntityBoundingBlock.proxyCapability(event, PeripheralCapability.get());
     }
 
     public static void registerApis() {
