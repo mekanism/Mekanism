@@ -65,7 +65,7 @@ public class ClientRegistrationUtil {
     private static final BlockColor COLORED_BLOCK_COLOR = (state, world, pos, tintIndex) -> {
         Block block = state.getBlock();
         if (block instanceof IColoredBlock coloredBlock) {
-            return MekanismRenderer.getColorARGB(coloredBlock.getColor(), 1);
+            return coloredBlock.getColor().getPackedColor();
         }
         return -1;
     };
@@ -74,7 +74,7 @@ public class ClientRegistrationUtil {
         if (item instanceof BlockItem blockItem) {
             Block block = blockItem.getBlock();
             if (block instanceof IColoredBlock coloredBlock) {
-                return MekanismRenderer.getColorARGB(coloredBlock.getColor(), 1);
+                return coloredBlock.getColor().getPackedColor();
             }
         }
         return -1;

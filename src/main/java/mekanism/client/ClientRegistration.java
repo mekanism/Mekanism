@@ -101,7 +101,6 @@ import mekanism.client.particle.JetpackSmokeParticle;
 import mekanism.client.particle.LaserParticle;
 import mekanism.client.particle.RadiationParticle;
 import mekanism.client.particle.ScubaBubbleParticle;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.client.render.RenderPropertiesProvider.MekCustomArmorRenderProperties;
 import mekanism.client.render.RenderPropertiesProvider.MekRenderProperties;
@@ -510,7 +509,7 @@ public class ClientRegistration {
                   if (tintIndex == 1) {
                       BaseTier tier = Attribute.getBaseTier(state.getBlock());
                       if (tier != null) {
-                          return MekanismRenderer.getColorARGB(tier, 1);
+                          return tier.getPackedColor();
                       }
                   }
                   return -1;
@@ -521,7 +520,7 @@ public class ClientRegistration {
                       TileEntityQIOComponent tile = WorldUtils.getTileEntity(TileEntityQIOComponent.class, world, pos);
                       if (tile != null) {
                           EnumColor color = tile.getColor();
-                          return color == null ? -1 : MekanismRenderer.getColorARGB(color, 1);
+                          return color == null ? -1 : color.getPackedColor();
                       }
                   }
                   return -1;
@@ -533,7 +532,7 @@ public class ClientRegistration {
                       if (transporter != null) {
                           EnumColor renderColor = transporter.getTransmitter().getColor();
                           if (renderColor != null) {
-                              return MekanismRenderer.getColorARGB(renderColor, 1);
+                              return renderColor.getPackedColor();
                           }
                       }
                   }
@@ -553,7 +552,7 @@ public class ClientRegistration {
         ClientRegistrationUtil.registerItemColorHandler(event, (stack, tintIndex) -> {
                   Item item = stack.getItem();
                   if (tintIndex == 1 && item instanceof ItemBlockFluidTank tank) {
-                      return MekanismRenderer.getColorARGB(tank.getTier().getBaseTier(), 1);
+                      return tank.getTier().getBaseTier().getPackedColor();
                   }
                   return -1;
               }, MekanismBlocks.BASIC_FLUID_TANK, MekanismBlocks.ADVANCED_FLUID_TANK, MekanismBlocks.ELITE_FLUID_TANK, MekanismBlocks.ULTIMATE_FLUID_TANK,

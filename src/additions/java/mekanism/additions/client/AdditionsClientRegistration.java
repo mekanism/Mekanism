@@ -15,7 +15,6 @@ import mekanism.additions.common.registries.AdditionsEntityTypes;
 import mekanism.additions.common.registries.AdditionsItems;
 import mekanism.api.text.EnumColor;
 import mekanism.client.ClientRegistrationUtil;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.ItemRegistryObject;
 import net.minecraft.client.color.item.ItemColor;
@@ -98,7 +97,7 @@ public class AdditionsClientRegistration {
     @SubscribeEvent
     public static void registerItemColorHandlers(RegisterColorHandlersEvent.Item event) {
         registerIColoredBlocks(event);
-        ItemColor balloonColorHandler = (stack, tintIndex) -> stack.getItem() instanceof ItemBalloon balloon ? MekanismRenderer.getColorARGB(balloon.getColor(), 1) : -1;
+        ItemColor balloonColorHandler = (stack, tintIndex) -> stack.getItem() instanceof ItemBalloon balloon ? balloon.getColor().getPackedColor() : -1;
         for (ItemRegistryObject<ItemBalloon> balloon : AdditionsItems.BALLOONS.values()) {
             ClientRegistrationUtil.registerItemColorHandler(event, balloonColorHandler, balloon);
         }

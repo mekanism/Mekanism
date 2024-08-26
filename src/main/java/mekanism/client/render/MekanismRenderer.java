@@ -198,6 +198,9 @@ public class MekanismRenderer {
     }
 
     public static int getColorARGB(SupportsColorMap color, float alpha) {
+        if (alpha == 1) {
+            return color.getPackedColor();
+        }
         return getColorARGB(color.getRgbCode()[0], color.getRgbCode()[1], color.getRgbCode()[2], alpha);
     }
 

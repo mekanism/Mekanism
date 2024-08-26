@@ -12,7 +12,6 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.slot.GuiSequencedSlotDisplay;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.filter.FilterManager;
 import mekanism.common.content.filter.IFilter;
@@ -145,7 +144,7 @@ public class FilterButton extends MekanismButton {
             int colorY = relativeY + 13;
             GuiUtils.drawOutline(guiGraphics, colorX, colorY, 6, 6, 0xFF393939);
             if (sorterFilter.color != null) {
-                guiGraphics.fill(colorX + 1, colorY + 1, colorX + 5, colorY + 5, MekanismRenderer.getColorARGB(sorterFilter.color, 1));
+                guiGraphics.fill(colorX + 1, colorY + 1, colorX + 5, colorY + 5, sorterFilter.color.getPackedColor());
             }
 
             drawTextWithScale(guiGraphics, sorterFilter.color == null ? MekanismLang.NO_COLOR.translate() : sorterFilter.color.getName(), relativeX + 22 + 8, relativeY + 12,
