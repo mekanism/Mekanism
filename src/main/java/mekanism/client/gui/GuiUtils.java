@@ -17,6 +17,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
@@ -252,6 +253,16 @@ public class GuiUtils {
 
     public static int drawString(GuiGraphics guiGraphics, Font font, Component component, float x, float y, int color, boolean drawShadow) {
         return guiGraphics.drawString(font, component.getVisualOrderText(), x, y, color, drawShadow);
+    }
+
+    public static int drawStringNoFlush(GuiGraphics graphics, Font font, Component component, float x, float y, int color, boolean drawShadow) {
+        return drawStringNoFlush(graphics, graphics.pose().last().pose(), font, component, x, y, color, drawShadow);
+    }
+
+    public static int drawStringNoFlush(GuiGraphics graphics, Matrix4f matrix, Font font, Component component, float x, float y, int color, boolean drawShadow) {
+        //Copy of GuiGraphics#drawString(Font, FormattedCharSequence, float, float, int, boolean) but without the flush at the end
+        return font.drawInBatch(component.getVisualOrderText(), x, y, color, drawShadow, matrix, graphics.bufferSource(),
+              Font.DisplayMode.NORMAL, 0, LightTexture.FULL_BRIGHT);
     }
 
     public static void renderItem(GuiGraphics guiGraphics, @NotNull ItemStack stack, int xAxis, int yAxis, float scale, Font font, @Nullable String text, boolean overlay) {

@@ -176,18 +176,22 @@ public class GuiRadialSelector extends Screen {
             textToDraw.add(new PositionedText(x, y, mode.sliceName()));
         }
 
-        // Labels (has to be separate from icons or the icons occasionally will get extra artifacts for some reason)
-        boolean whiteRadialText = MekanismConfig.client.whiteRadialText.get();
-        for (PositionedText toDraw : textToDraw) {
-            pose.pushPose();
-            pose.translate(toDraw.x, toDraw.y, 0);
-            pose.scale(0.6F, 0.6F, 0.6F);
-            Component text = toDraw.text;
-            if (whiteRadialText) {
-                text = text.copy().withStyle(ChatFormatting.RESET);
+        if (!textToDraw.isEmpty()) {
+            // Labels (has to be separate from icons or the icons occasionally will get extra artifacts for some reason and also then we can't batch them)
+            boolean whiteRadialText = MekanismConfig.client.whiteRadialText.get();
+            for (PositionedText toDraw : textToDraw) {
+                pose.pushPose();
+                pose.translate(toDraw.x, toDraw.y, 0);
+                pose.scale(0.6F, 0.6F, 0.6F);
+                Component text = toDraw.text;
+                if (whiteRadialText) {
+                    text = text.copy().withStyle(ChatFormatting.RESET);
+                }
+                GuiUtils.drawStringNoFlush(guiGraphics, font, text, -font.width(text) / 2F, 8, 0xCCFFFFFF, true);
+                pose.popPose();
             }
-            GuiUtils.drawString(guiGraphics, font, text, -font.width(text) / 2F, 8, 0xCCFFFFFF, true);
-            pose.popPose();
+            //Flush and actually render out the labels
+            guiGraphics.flush();
         }
 
         pose.popPose();

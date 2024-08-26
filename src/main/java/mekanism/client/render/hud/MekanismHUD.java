@@ -24,6 +24,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
 
 public class MekanismHUD implements LayeredDraw.Layer {
 
@@ -78,9 +79,12 @@ public class MekanismHUD implements LayeredDraw.Layer {
                 }
             }
             Font font = minecraft.font;
+            List<DelayedString> delayedDraws = null;
+
             boolean reverseHud = MekanismConfig.client.reverseHUD.get();
             int maxTextHeight = graphics.guiHeight();
             if (count > 0) {
+                delayedDraws = new ArrayList<>();
                 float hudScale = MekanismConfig.client.hudScale.get();
                 int xScale = (int) (graphics.guiWidth() / hudScale);
                 int yScale = (int) (graphics.guiHeight() / hudScale);
@@ -108,13 +112,14 @@ public class MekanismHUD implements LayeredDraw.Layer {
                     GuiUtils.drawBackdrop(graphics, Minecraft.getInstance(), x, y, maxTextWidth, maxTextHeight, 0xFFFFFFFF);
                 }
 
+                Matrix4f matrix = new Matrix4f(pose.last().pose());
                 for (List<Component> group : renderStrings) {
                     for (Component text : group) {
                         int textWidth = font.width(text);
                         //Align text to right if hud is reversed, otherwise align to the left
                         //Note: that we always offset by 2 pixels from the edge of the screen regardless of how it is aligned
                         int x = reverseHud ? xScale - textWidth - 2 : 2;
-                        graphics.drawString(font, text, x, y, 0xFFC8C8C8);
+                        delayedDraws.add(new DelayedString(matrix, text, x, y, 0xFFC8C8C8, true));
                         y += 9;
                     }
                     y += 2;
@@ -123,7 +128,18 @@ public class MekanismHUD implements LayeredDraw.Layer {
             }
 
             if (player.getItemBySlot(EquipmentSlot.HEAD).is(MekanismTags.Items.MEKASUIT_HUD_RENDERER)) {
-                hudRenderer.renderHUD(minecraft, graphics, font, delta, graphics.guiWidth(), graphics.guiHeight(), maxTextHeight, reverseHud);
+                if (delayedDraws == null) {
+                    delayedDraws = new ArrayList<>();
+                }
+                hudRenderer.renderHUD(minecraft, graphics, font, delayedDraws, delta, graphics.guiWidth(), graphics.guiHeight(), maxTextHeight, reverseHud);
+            }
+
+            if (delayedDraws != null && !delayedDraws.isEmpty()) {
+                for (DelayedString delayedDraw : delayedDraws) {
+                    delayedDraw.draw(graphics, font);
+                }
+                //Flush once at the end of the draws
+                graphics.flush();
             }
         }
     }
@@ -142,5 +158,16 @@ public class MekanismHUD implements LayeredDraw.Layer {
     private interface HudComponentBuilder {
 
         void add(IItemHUDProvider hudProvider, List<Component> existing, Player player, ItemStack stack, EquipmentSlot slot);
+    }
+
+    public record DelayedString(Matrix4f matrix, Component component, float x, float y, int color, boolean dropShadow) {
+
+        public DelayedString(PoseStack pose, Component component, float x, float y, int color, boolean dropShadow) {
+            this(new Matrix4f(pose.last().pose()), component, x, y, color, dropShadow);
+        }
+
+        public void draw(GuiGraphics graphics, Font font) {
+            GuiUtils.drawStringNoFlush(graphics, matrix, font, component, x, y, color, dropShadow);
+        }
     }
 }
