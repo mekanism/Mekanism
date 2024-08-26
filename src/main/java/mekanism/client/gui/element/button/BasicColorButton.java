@@ -27,18 +27,17 @@ public class BasicColorButton extends MekanismButton {
     @Override
     public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         EnumColor color = getColor();
-        boolean doColor = color != null && color != EnumColor.GRAY;
-        if (doColor) {
+        if (color != null) {
             Color c = Color.rgb(color.getRgbCode());
             double[] hsv = c.hsvArray();
-            hsv[1] = Math.max(0, hsv[1] - 0.25F);
-            hsv[2] = Math.min(1, hsv[2] + 0.4F);
+            hsv[1] = Math.max(0, hsv[1] - 0.1);
+            hsv[2] = Math.min(1, hsv[2] + 0.1);
             MekanismRenderer.color(guiGraphics, Color.hsv(hsv[0], hsv[1], hsv[2]));
         } else {
             MekanismRenderer.resetColor(guiGraphics);
         }
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
-        if (doColor) {
+        if (color != null) {
             MekanismRenderer.resetColor(guiGraphics);
         }
     }
