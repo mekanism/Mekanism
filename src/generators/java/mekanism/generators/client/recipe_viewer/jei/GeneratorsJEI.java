@@ -1,9 +1,11 @@
 package mekanism.generators.client.recipe_viewer.jei;
 
 import mekanism.client.recipe_viewer.jei.CatalystRegistryHelper;
+import mekanism.client.recipe_viewer.jei.JEIAliasHelper;
 import mekanism.client.recipe_viewer.jei.MekanismJEI;
 import mekanism.client.recipe_viewer.jei.RecipeRegistryHelper;
 import mekanism.generators.client.recipe_viewer.GeneratorsRVRecipeType;
+import mekanism.generators.client.recipe_viewer.alias.GeneratorsAliasMapping;
 import mekanism.generators.client.recipe_viewer.recipe.FissionRecipeViewerRecipe;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.registries.GeneratorsBlocks;
@@ -11,6 +13,7 @@ import mekanism.generators.common.registries.GeneratorsItems;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.helpers.IGuiHelper;
+import mezz.jei.api.registration.IIngredientAliasRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
@@ -52,6 +55,11 @@ public class GeneratorsJEI implements IModPlugin {
             return;
         }
         CatalystRegistryHelper.register(registry, GeneratorsRVRecipeType.FISSION);
+    }
+
+    @Override
+    public void registerIngredientAliases(@NotNull IIngredientAliasRegistration registration) {
+        new GeneratorsAliasMapping().addAliases(new JEIAliasHelper(registration));
     }
 
     @Override

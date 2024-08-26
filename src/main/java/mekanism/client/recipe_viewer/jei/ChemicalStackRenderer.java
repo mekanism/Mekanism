@@ -14,7 +14,6 @@ import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.GuiUtils.TilingDirection;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
-import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.text.TextUtils;
 import mezz.jei.api.gui.builder.ITooltipBuilder;
@@ -94,10 +93,6 @@ public class ChemicalStackRenderer implements IIngredientRenderer<ChemicalStack>
         Chemical chemical = stack.getChemical();
         if (!chemical.isEmptyType()) {
             tooltipAdder.accept(TextComponentUtil.build(chemical));
-            if (stack.getChemical() == MekanismChemicals.ETHENE.get()) {
-                //TODO - 1.22: Remove this
-                tooltipAdder.accept(MekanismLang.ALSO_KNOWN_AS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismLang.ETHENE_ETHYLENE_ALIAS));
-            }
             if (tooltipMode == TooltipMode.SHOW_AMOUNT_AND_CAPACITY) {
                 tooltipAdder.accept(MekanismLang.JEI_AMOUNT_WITH_CAPACITY.translateColored(EnumColor.GRAY, TextUtils.format(stack.getAmount()), TextUtils.format(capacityMb)));
             } else if (tooltipMode == TooltipMode.SHOW_AMOUNT) {

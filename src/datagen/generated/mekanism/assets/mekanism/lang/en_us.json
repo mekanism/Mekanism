@@ -3109,7 +3109,6 @@
   "tooltip.mekanism.inventory": "Inventory: %1$s",
   "tooltip.mekanism.item_amount": "Item amount: %1$s",
   "tooltip.mekanism.jei.amount.with.capacity": "%1$s / %2$s mB",
-  "tooltip.mekanism.known_as": "Also known as %1$s",
   "tooltip.mekanism.locked": "Locked to item: %1$s",
   "tooltip.mekanism.mode": "Mode: %1$s",
   "tooltip.mekanism.mode.free_runners": "Runners Mode: %1$s",

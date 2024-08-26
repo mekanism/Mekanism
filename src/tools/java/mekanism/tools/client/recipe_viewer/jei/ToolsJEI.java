@@ -1,12 +1,15 @@
 package mekanism.tools.client.recipe_viewer.jei;
 
+import mekanism.client.recipe_viewer.jei.JEIAliasHelper;
 import mekanism.client.recipe_viewer.jei.MekanismJEI;
 import mekanism.client.recipe_viewer.jei.RecipeRegistryHelper;
+import mekanism.tools.client.recipe_viewer.aliases.ToolsAliasMapping;
 import mekanism.tools.common.MekanismTools;
 import mekanism.tools.common.item.ItemMekanismShield;
 import mekanism.tools.common.registries.ToolsItems;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.registration.IIngredientAliasRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
@@ -24,6 +27,11 @@ public class ToolsJEI implements IModPlugin {
         //Note: Can't use MekanismTools.rl, as JEI needs this in the constructor and the class may not be loaded yet.
         // we can still reference the modid though because of constant inlining
         return ResourceLocation.fromNamespaceAndPath(MekanismTools.MODID, "jei_plugin");
+    }
+
+    @Override
+    public void registerIngredientAliases(@NotNull IIngredientAliasRegistration registration) {
+        new ToolsAliasMapping().addAliases(new JEIAliasHelper(registration));
     }
 
     @Override

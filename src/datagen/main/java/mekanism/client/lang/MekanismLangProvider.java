@@ -838,7 +838,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
     }
 
     private void addAliases() {
-        add(MekanismLang.ALSO_KNOWN_AS, "Also known as %1$s");
         addAliases(MekanismAliases.values());
         for (FactoryType type : EnumUtils.FACTORY_TYPES) {
             addAlias(type.getRegistryNameComponent(), type.getRegistryNameComponentCapitalized());

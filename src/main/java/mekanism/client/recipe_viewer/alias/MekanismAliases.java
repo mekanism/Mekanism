@@ -1,9 +1,7 @@
 package mekanism.client.recipe_viewer.alias;
 
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismLang;
 import net.minecraft.Util;
 
 @NothingNullByDefault
@@ -31,7 +29,7 @@ public enum MekanismAliases implements IAliasedTranslation {
     FLIGHT("flight", "Flight"),
     CREATIVE_FLIGHT("flight.creative", "Creative Flight"),
     //Chemicals
-    ETHENE_ETHYLENE(MekanismLang.ETHENE_ETHYLENE_ALIAS, "Ethylene"),
+    ETHENE_ETHYLENE("ethene.ethylene", "Ethylene"),
     //Machine
     MACHINE_SMELTING("machine.smelting", "Smelting"),
     MACHINE_ENRICHING("machine.enriching", "Enriching"),
@@ -142,11 +140,6 @@ public enum MekanismAliases implements IAliasedTranslation {
 
     MekanismAliases(String path, String alias) {
         this.key = Util.makeDescriptionId("alias", Mekanism.rl(path));
-        this.alias = alias;
-    }
-
-    MekanismAliases(IHasTranslationKey key, String alias) {
-        this.key = key.getTranslationKey();
         this.alias = alias;
     }
 
