@@ -1,9 +1,11 @@
 package mekanism.client.gui;
 
 import java.math.BigDecimal;
+import java.util.List;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiEnergyGauge;
 import mekanism.client.gui.element.tab.GuiAmplifierTab;
+import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
@@ -34,6 +36,7 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
     protected void addGuiElements() {
         super.addGuiElements();
         addRenderableWidget(new GuiEnergyGauge(tile.getEnergyContainer(), GaugeType.STANDARD, this, 6, 10));
+        addRenderableWidget(new GuiEnergyTab(this, () -> List.of(MekanismLang.STORING.translate(EnergyDisplay.of(tile.getEnergyContainer())))));
         addRenderableWidget(new GuiAmplifierTab(this, tile));
         timerField = addRenderableWidget(new GuiTextField(this, 96, 28, 36, 11));
         timerField.setMaxLength(4);
