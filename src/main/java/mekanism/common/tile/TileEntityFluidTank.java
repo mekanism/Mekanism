@@ -23,6 +23,7 @@ import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.capabilities.proxy.ProxyFluidHandler;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerFluidTankWrapper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
@@ -100,7 +101,8 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem", docPlaceholder = "output slot")
     OutputInventorySlot outputSlot;
 
-    private boolean updateClientLight = false;
+    private int lastLightLevel;
+    private int lightUpdateDelay;
 
     public TileEntityFluidTank(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
@@ -135,9 +137,19 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     @Override
     protected void onUpdateClient() {
         super.onUpdateClient();
-        if (updateClientLight) {
-            WorldUtils.recheckLighting(level, worldPosition);
-            updateClientLight = false;
+        checkLight();
+    }
+
+    private void checkLight() {
+        if (lightUpdateDelay > 0) {
+            lightUpdateDelay--;
+            if (lightUpdateDelay == 0) {
+                int lightLevel = getBlockType().getLightEmission(getBlockState(), level, worldPosition);
+                if (lightLevel != lastLightLevel) {
+                    lastLightLevel = lightLevel;
+                    WorldUtils.recheckLighting(level, worldPosition);
+                }
+            }
         }
     }
 
@@ -151,6 +163,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
                 needsPacket = true;
             }
         }
+        checkLight();
 
         float scale = MekanismUtils.getScale(prevScale, fluidTank);
         //TODO - 1.21: Figure out handling of stacked tanks where it may be going back and forth between being full and not?
@@ -159,8 +172,9 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
             if (prevScale == 0 || scale == 0) {
                 //If it was empty and no longer is, or wasn't empty and now is empty we want to recheck the block lighting
                 // as the fluid may have changed and have a light value
-                //TODO - 1.21: Do we want to use the active delay for turning lighting off?
-                WorldUtils.recheckLighting(level, worldPosition);
+                if (lightUpdateDelay == 0) {
+                    lightUpdateDelay = prevScale == 0 ? 1 : MekanismConfig.general.blockDeactivationDelay.get();
+                }
             }
             prevScale = scale;
             sendUpdatePacket = true;
@@ -325,6 +339,18 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
         container.track(SyncableEnum.create(ContainerEditMode.BY_ID, ContainerEditMode.BOTH, () -> editMode, value -> editMode = value));
     }
 
+    @Override
+    public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
+        super.loadAdditional(nbt, provider);
+        NBTUtils.setIntIfPresent(nbt, SerializationConstants.DELAY, value -> lightUpdateDelay = value);
+    }
+
+    @Override
+    public void saveAdditional(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
+        super.saveAdditional(nbtTags, provider);
+        nbtTags.putInt(SerializationConstants.DELAY, lightUpdateDelay);
+    }
+
     @NotNull
     @Override
     public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
@@ -370,11 +396,12 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
         //NBTUtils.setFluidStackIfPresent(provider, tag, SerializationConstants.FLUID, fluid -> fluidTank.setStack(fluid));
         //NBTUtils.setFluidStackIfPresent(provider, tag, SerializationConstants.VALVE, fluid -> valveFluid = fluid);
         NBTUtils.setFloatIfPresent(tag, SerializationConstants.SCALE, scale -> {
-            if (MekanismUtils.scaleChanged(prevScale, scale)) {
+            if (lightUpdateDelay == 0 && MekanismUtils.scaleChanged(prevScale, scale)) {
                 if (prevScale == 0 || scale == 0) {
                     //If it was empty and no longer is, or wasn't empty and now is empty we want to recheck the block lighting
                     // as the fluid may have changed and have a light value, mark that the client should update the light value
-                    updateClientLight = true;
+                    //Note: If we previously had no fluid, we queue the lighting for the next client tick
+                    lightUpdateDelay = prevScale == 0 ? 1 : MekanismConfig.general.blockDeactivationDelay.get();
                 }
             }
             prevScale = scale;

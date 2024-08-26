@@ -148,6 +148,7 @@ public class HUDRenderer {
         MekanismRenderer.color(guiGraphics, color);
         guiGraphics.blit(element.getIcon(), iconRight ? x + font.width(element.getText()) + 2 : x, y, 0, 0, 16, 16, 16, 16);
         MekanismRenderer.resetColor(guiGraphics);
+        //TODO: Batch the string draw calls that are in this class
         guiGraphics.drawString(font, element.getText(), iconRight ? x : x + 18, y + 5, element.getColor(), false);
     }
 
