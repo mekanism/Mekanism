@@ -794,18 +794,6 @@ public class WorldUtils {
     }
 
     /**
-     * Rechecks the lighting at a specific block's position if the block is loaded.
-     *
-     * @param world world the block is in
-     * @param pos   coordinates
-     */
-    public static void recheckLighting(@Nullable BlockAndTintGetter world, @NotNull BlockPos pos) {
-        if (isBlockLoaded(world, pos)) {
-            world.getLightEngine().checkBlock(pos);
-        }
-    }
-
-    /**
      * Vanilla copy of {@link net.minecraft.client.multiplayer.ClientLevel#getSkyDarken(float)} used to be World#getSunBrightness
      */
     public static float getSunBrightness(Level world, float partialTicks) {

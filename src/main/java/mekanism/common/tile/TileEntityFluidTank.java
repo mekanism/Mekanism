@@ -44,7 +44,6 @@ import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.FluidUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
-import mekanism.common.util.WorldUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -147,7 +146,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
                 int lightLevel = getBlockType().getLightEmission(getBlockState(), level, worldPosition);
                 if (lightLevel != lastLightLevel) {
                     lastLightLevel = lightLevel;
-                    WorldUtils.recheckLighting(level, worldPosition);
+                    level.getLightEngine().checkBlock(worldPosition);
                 }
             }
         }
@@ -369,7 +368,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
         if (!fluid.isEmpty()) {
             //Note: This should never be null as it returns a reference holder
             // We throw if it is, so that we can find the bug if it gets introduced during porting
-            ResourceKey<Fluid> key = Objects.requireNonNull(fluid.getFluidHolder().getKey());
+            ResourceKey<Fluid> key = Objects.requireNonNull(fluid.getFluidHolder().getKey(), "Resource key should always be present");
             fluidData.putString(SerializationConstants.ID, key.location().toString());
             if (!fluid.isComponentsPatchEmpty()) {
                 //Note: This isn't necessarily optimal, but it does mean in general we can avoid codecs unless it happens to be a fluid that
