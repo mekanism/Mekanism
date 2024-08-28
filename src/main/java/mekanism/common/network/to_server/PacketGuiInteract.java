@@ -30,6 +30,7 @@ import mekanism.common.tile.laser.TileEntityLaserAmplifier;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import mekanism.common.tile.machine.TileEntityDimensionalStabilizer;
 import mekanism.common.tile.machine.TileEntityFormulaicAssemblicator;
+import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import mekanism.common.tile.qio.TileEntityQIODashboard;
 import mekanism.common.tile.qio.TileEntityQIOExporter;
 import mekanism.common.tile.qio.TileEntityQIOImporter;
@@ -415,6 +416,8 @@ public class PacketGuiInteract implements IMekanismPacket {
         ROUND_ROBIN_BUTTON((tile, player, extra) -> {
             if (tile instanceof IAdvancedTransportEjector sorter) {
                 sorter.toggleRoundRobin();
+            } else if (tile instanceof TileEntityConfigurableMachine machine) {
+                machine.getEjector().toggleRoundRobin();
             }
         }),
         SINGLE_ITEM_BUTTON((tile, player, extra) -> {
