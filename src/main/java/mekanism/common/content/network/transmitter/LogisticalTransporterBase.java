@@ -26,6 +26,8 @@ import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.transmitter.PacketTransporterBatch;
 import mekanism.common.network.to_client.transmitter.PacketTransporterSync;
 import mekanism.common.tier.TransporterTier;
+import mekanism.common.tile.component.TileComponentEjector;
+import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
@@ -398,6 +400,14 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
 
     public <BE extends BlockEntity & IAdvancedTransportEjector> TransitResponse insertMaybeRR(@Nullable BE outputter, BlockPos outputterPos, TransitRequest request, @Nullable EnumColor color, boolean doEmit, int min) {
         if (outputter != null && outputter.getRoundRobin()) {
+            return insert(outputter, outputterPos, request, color, min, doEmit, TransporterStack::recalculateRRPath);
+        }
+        return insert(outputter, outputterPos, request, color, doEmit, min);
+    }
+
+    public TransitResponse insertMaybeRR(@NotNull TileEntityConfigurableMachine outputter, BlockPos outputterPos, TransitRequest request, @Nullable EnumColor color, boolean doEmit, int min) {
+        TileComponentEjector ejector = outputter.getEjector();
+        if (ejector != null && ejector.getRoundRobin()) {
             return insert(outputter, outputterPos, request, color, min, doEmit, TransporterStack::recalculateRRPath);
         }
         return insert(outputter, outputterPos, request, color, doEmit, min);

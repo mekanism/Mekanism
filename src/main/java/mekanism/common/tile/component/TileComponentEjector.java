@@ -32,12 +32,14 @@ import mekanism.common.inventory.container.MekanismContainer.ISpecificContainerT
 import mekanism.common.inventory.container.sync.ISyncableData;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableInt;
+import mekanism.common.lib.SidedBlockPos;
 import mekanism.common.lib.inventory.HandlerTransitRequest;
+import mekanism.common.lib.inventory.IAdvancedTransportEjector;
+import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.base.CapabilityTileEntity;
-import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.ChemicalSlotInfo;
@@ -45,6 +47,7 @@ import mekanism.common.tile.component.config.slot.EnergySlotInfo;
 import mekanism.common.tile.component.config.slot.FluidSlotInfo;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
+import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.EnumUtils;
@@ -60,6 +63,7 @@ import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -67,9 +71,9 @@ import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class TileComponentEjector implements ITileComponent, ISpecificContainerTracker {
+public class TileComponentEjector implements ITileComponent, ISpecificContainerTracker, IAdvancedTransportEjector {
 
-    private final TileEntityMekanism tile;
+    private final TileEntityConfigurableMachine tile;
     private final Map<TransmissionType, ConfigInfo> configInfo = new EnumMap<>(TransmissionType.class);
 
     private final Map<TransmissionType, Map<Direction, BlockCapabilityCache<?, @Nullable Direction>>> capabilityCaches = new EnumMap<>(TransmissionType.class);
@@ -88,24 +92,26 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     private boolean strictInput;
     private EnumColor outputColor;
     private int tickDelay = 0;
+    @Nullable
+    private SidedBlockPos rrTarget;
 
-    public TileComponentEjector(TileEntityMekanism tile) {
+    public TileComponentEjector(TileEntityConfigurableMachine tile) {
         this(tile, MekanismConfig.general.chemicalAutoEjectRate);
     }
 
-    public TileComponentEjector(TileEntityMekanism tile, LongSupplier chemicalEjectRate) {
+    public TileComponentEjector(TileEntityConfigurableMachine tile, LongSupplier chemicalEjectRate) {
         this(tile, chemicalEjectRate, MekanismConfig.general.fluidAutoEjectRate);
     }
 
-    public TileComponentEjector(TileEntityMekanism tile, LongSupplier chemicalEjectRate, IntSupplier fluidEjectRate) {
+    public TileComponentEjector(TileEntityConfigurableMachine tile, LongSupplier chemicalEjectRate, IntSupplier fluidEjectRate) {
         this(tile, chemicalEjectRate, fluidEjectRate, null);
     }
 
-    public TileComponentEjector(TileEntityMekanism tile, LongSupplier energyEjectRate, boolean energyMarker) {
+    public TileComponentEjector(TileEntityConfigurableMachine tile, LongSupplier energyEjectRate, boolean energyMarker) {
         this(tile, MekanismConfig.general.chemicalAutoEjectRate, MekanismConfig.general.fluidAutoEjectRate, energyEjectRate);
     }
 
-    public TileComponentEjector(TileEntityMekanism tile, LongSupplier chemicalEjectRate, IntSupplier fluidEjectRate, @Nullable LongSupplier energyEjectRate) {
+    public TileComponentEjector(TileEntityConfigurableMachine tile, LongSupplier chemicalEjectRate, IntSupplier fluidEjectRate, @Nullable LongSupplier energyEjectRate) {
         this.tile = tile;
         this.chemicalEjectRate = chemicalEjectRate;
         this.fluidEjectRate = fluidEjectRate;
@@ -309,7 +315,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                             ejectMap.handler = handler;
                         }
                         //If the spot is not loaded just skip trying to eject to it
-                        TransitResponse response = ejectMap.eject(tile, capability, 0, this.outputColorFunction);
+                        TransitResponse response = ejectMap.ejectMaybeRR(tile, capability, 0, this.outputColorFunction);
                         if (!response.isEmpty()) {
                             // use the items returned by the TransitResponse; will be visible next loop
                             response.useAll();
@@ -535,8 +541,48 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         tile.validateSecurityIsPublic();
         setOutputColor(color);
     }
+
+    @Override
+    public @Nullable SidedBlockPos getRoundRobinTarget() {
+        return rrTarget;
+    }
+
+    @Override
+    public void setRoundRobinTarget(@Nullable SidedBlockPos target) {
+        rrTarget = target;
+    }
+
+    @Override
+    public boolean getRoundRobin() {
+        ConfigInfo itemConfig = configInfo.get(TransmissionType.ITEM);
+        return itemConfig != null && itemConfig.isRoundRobin();
+    }
+
+    @Override
+    public void toggleRoundRobin() {
+        ConfigInfo itemConfig = configInfo.get(TransmissionType.ITEM);
+        if (itemConfig != null) {
+            itemConfig.setRoundRobin(!itemConfig.isRoundRobin());
+            setRoundRobinTarget((SidedBlockPos) null);
+            tile.markForSave();
+        }
+    }
+
+    @Override
+    public boolean canSendHome(@NotNull ItemStack stack) {
+        //not really likely to be used, as not implemented on Tile
+        return false;
+    }
+
+    @Override
+    @NotNull
+    public TransitResponse sendHome(TransitRequest request) {
+        //not really likely to be used, as not implemented on Tile
+        return request.getEmptyResponse();
+    }
     //End computer related methods
 
+    //todo this seems redundant?
     private static class EjectTransitRequest extends HandlerTransitRequest {
 
         public IItemHandler handler;
