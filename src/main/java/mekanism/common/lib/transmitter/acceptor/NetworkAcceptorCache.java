@@ -5,12 +5,12 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import mekanism.common.content.network.transmitter.Transmitter;
+import mekanism.common.lib.collection.EnumArray;
 import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
@@ -18,8 +18,9 @@ import net.minecraft.core.Direction;
 import org.jetbrains.annotations.Nullable;
 
 public class NetworkAcceptorCache<ACCEPTOR> {
+    private static final Direction[] DIRECTIONS = Direction.values();
 
-    private final Long2ObjectMap<Map<Direction, ACCEPTOR>> cachedAcceptors = new Long2ObjectOpenHashMap<>();
+    private final Long2ObjectMap<EnumArray<Direction, ACCEPTOR>> cachedAcceptors = new Long2ObjectOpenHashMap<>();
     private final Map<Transmitter<ACCEPTOR, ?, ?>, Set<Direction>> changedAcceptors = new Object2ObjectOpenHashMap<>();
 
     public void updateTransmitterOnSide(Transmitter<ACCEPTOR, ?, ?> transmitter, Direction side) {
@@ -27,25 +28,27 @@ public class NetworkAcceptorCache<ACCEPTOR> {
         ACCEPTOR acceptor = transmitter.canConnectToAcceptor(side) ? transmitter.getAcceptor(side) : null;
         long acceptorPos = WorldUtils.relativePos(transmitter.getWorldPositionLong(), side);
         if (acceptor == null) {
-            Map<Direction, ACCEPTOR> cached = cachedAcceptors.get(acceptorPos);
+            EnumArray<Direction, ACCEPTOR> cached = cachedAcceptors.get(acceptorPos);
             if (cached != null) {
-                cached.remove(side.getOpposite());
+                cached.set(side.getOpposite(),  null);
                 if (cached.isEmpty()) {
                     cachedAcceptors.remove(acceptorPos);
                 }
             }
         } else {
-            cachedAcceptors.computeIfAbsent(acceptorPos, pos -> new EnumMap<>(Direction.class)).put(side.getOpposite(), acceptor);
+            cachedAcceptors.computeIfAbsent(acceptorPos, pos -> new EnumArray<>(DIRECTIONS, Direction.class)).set(side.getOpposite(), acceptor);
         }
     }
 
     public void adoptAcceptors(NetworkAcceptorCache<ACCEPTOR> other) {
-        for (Long2ObjectMap.Entry<Map<Direction, ACCEPTOR>> entry : other.cachedAcceptors.long2ObjectEntrySet()) {
+        for (Long2ObjectMap.Entry<EnumArray<Direction, ACCEPTOR>> entry : other.cachedAcceptors.long2ObjectEntrySet()) {
             long pos = entry.getLongKey();
-            if (cachedAcceptors.containsKey(pos)) {
-                cachedAcceptors.get(pos).putAll(entry.getValue());
+            EnumArray<Direction, ACCEPTOR> otherAcceptors = entry.getValue();
+            EnumArray<Direction, ACCEPTOR> myCachedAcceptors = this.cachedAcceptors.get(pos);
+            if (myCachedAcceptors != null) {
+                myCachedAcceptors.putAll(otherAcceptors);
             } else {
-                cachedAcceptors.put(pos, entry.getValue());
+                cachedAcceptors.put(pos, otherAcceptors);
             }
         }
         for (Entry<Transmitter<ACCEPTOR, ?, ?>, Set<Direction>> entry : other.changedAcceptors.entrySet()) {
@@ -86,33 +89,39 @@ public class NetworkAcceptorCache<ACCEPTOR> {
     /**
      * @apiNote Listeners should not be added to these LazyOptionals here as they may not correspond to an actual handler and may not get invalidated.
      */
-    public Set<Long2ObjectMap.Entry<Map<Direction, ACCEPTOR>>> getAcceptorEntrySet() {
+    public Set<Long2ObjectMap.Entry<EnumArray<Direction, ACCEPTOR>>> getAcceptorEntrySet() {
         return cachedAcceptors.long2ObjectEntrySet();
     }
 
     /**
      * @apiNote Listeners should not be added to these LazyOptionals here as they may not correspond to an actual handler and may not get invalidated.
      */
-    public Collection<Map<Direction, ACCEPTOR>> getAcceptorValues() {
+    public Collection<EnumArray<Direction, ACCEPTOR>> getAcceptorValues() {
         return cachedAcceptors.values();
     }
 
     public int getAcceptorCount() {
         //Count multiple connections to the same position as multiple acceptors
-        return cachedAcceptors.values().stream().mapToInt(Map::size).sum();
+        return cachedAcceptors.values().stream().mapToInt(EnumArray::countNonEmpty).sum();
+    }
+
+    public boolean hasAcceptor(long acceptorPos) {
+        return cachedAcceptors.containsKey(acceptorPos);
     }
 
     public boolean hasAcceptor(BlockPos acceptorPos) {
-        return cachedAcceptors.containsKey(acceptorPos.asLong());
+        return hasAcceptor(acceptorPos.asLong());
     }
 
     @Nullable
     public ACCEPTOR getCachedAcceptor(long acceptorPos, Direction side) {
-        return cachedAcceptors.getOrDefault(acceptorPos, Collections.emptyMap()).get(side);
+        EnumArray<Direction, ACCEPTOR> acceptors = cachedAcceptors.get(acceptorPos);
+        return acceptors != null ? acceptors.get(side) : null;
     }
 
     public Set<Direction> getAcceptorDirections(long pos) {
         //TODO: Do this better?
-        return cachedAcceptors.get(pos).keySet();
+        EnumArray<Direction, ACCEPTOR> acceptors = cachedAcceptors.get(pos);
+        return acceptors != null ? acceptors.usedKeys() : Collections.emptySet();
     }
 }

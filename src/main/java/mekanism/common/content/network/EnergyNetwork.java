@@ -3,7 +3,6 @@ package mekanism.common.content.network;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
@@ -17,6 +16,7 @@ import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
 import mekanism.common.content.network.distribution.EnergyAcceptorTarget;
 import mekanism.common.content.network.distribution.EnergyTransmitterSaveTarget;
 import mekanism.common.content.network.transmitter.UniversalCable;
+import mekanism.common.lib.collection.EnumArray;
 import mekanism.common.lib.transmitter.DynamicBufferedNetwork;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.text.EnergyDisplay;
@@ -104,11 +104,12 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
     }
 
     private long tickEmit(long energyToSend) {
-        Collection<Map<Direction, IStrictEnergyHandler>> acceptorValues = acceptorCache.getAcceptorValues();
+        Collection<EnumArray<Direction, IStrictEnergyHandler>> acceptorValues = acceptorCache.getAcceptorValues();
         EnergyAcceptorTarget target = null;
-        for (Map<Direction, IStrictEnergyHandler> acceptors : acceptorValues) {
-            for (IStrictEnergyHandler acceptor : acceptors.values()) {
-                if (acceptor.insertEnergy(energyToSend, Action.SIMULATE) < energyToSend) {
+        for (EnumArray<Direction, IStrictEnergyHandler> acceptors : acceptorValues) {
+            for (Direction side : acceptors.enumKeys()) {
+                IStrictEnergyHandler acceptor = acceptors.get(side);
+                if (acceptor != null && acceptor.insertEnergy(energyToSend, Action.SIMULATE) < energyToSend) {
                     if (target == null) {
                         //Lazily initialize the target, which allows us to also skip attempting to start emitting
                         target = new EnergyAcceptorTarget(acceptorValues.size() * 2);

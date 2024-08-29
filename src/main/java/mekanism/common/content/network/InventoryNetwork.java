@@ -16,6 +16,7 @@ import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.content.transporter.TransporterStack;
+import mekanism.common.lib.collection.EnumArray;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.lib.transmitter.DynamicNetwork;
@@ -44,15 +45,19 @@ public class InventoryNetwork extends DynamicNetwork<IItemHandler, InventoryNetw
     public List<AcceptorData> calculateAcceptors(TransitRequest request, TransporterStack stack, Long2ObjectMap<ChunkAccess> chunkMap,
           Map<GlobalPos, Set<TransporterStack>> additionalFlowingStacks) {
         List<AcceptorData> toReturn = new ArrayList<>();
-        for (Long2ObjectMap.Entry<Map<Direction, IItemHandler>> entry : acceptorCache.getAcceptorEntrySet()) {
+        for (Long2ObjectMap.Entry<EnumArray<Direction, IItemHandler>> entry : acceptorCache.getAcceptorEntrySet()) {
             BlockPos pos = BlockPos.of(entry.getLongKey());
             if (!pos.equals(stack.homeLocation)) {
                 BlockEntity acceptor = WorldUtils.getTileEntity(getWorld(), chunkMap, pos);
                 Map<TransitResponse, AcceptorData> dataMap = new HashMap<>();
                 GlobalPos position = GlobalPos.of(getWorld().dimension(), pos);
-                for (Map.Entry<Direction, IItemHandler> acceptorEntry : entry.getValue().entrySet()) {
-                    IItemHandler handler = acceptorEntry.getValue();
-                    Direction side = acceptorEntry.getKey();
+                EnumArray<Direction, IItemHandler> handlers = entry.getValue();
+                for (Direction side : handlers.enumKeys()) {
+                    IItemHandler handler = handlers.get(side);
+                    if (handler == null) {
+                        continue;
+                    }
+
                     //TODO: Figure out how we want to best handle the color check, as without doing it here we don't
                     // actually need to even query the TE
                     if (acceptor instanceof ISideConfiguration config) {

@@ -252,6 +252,10 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         return positionedTransmitters.size();
     }
 
+    public boolean hasAcceptor(long acceptorPos) {
+        return acceptorCache.hasAcceptor(acceptorPos);
+    }
+
     public boolean hasAcceptor(BlockPos acceptorPos) {
         return acceptorCache.hasAcceptor(acceptorPos);
     }

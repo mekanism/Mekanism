@@ -3,7 +3,6 @@ package mekanism.common.content.network;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import mekanism.api.Action;
 import mekanism.api.fluid.IExtendedFluidTank;
@@ -16,6 +15,7 @@ import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.content.network.distribution.FluidHandlerTarget;
 import mekanism.common.content.network.distribution.FluidTransmitterSaveTarget;
 import mekanism.common.content.network.transmitter.MechanicalPipe;
+import mekanism.common.lib.collection.EnumArray;
 import mekanism.common.lib.transmitter.DynamicBufferedNetwork;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.FluidUtils;
@@ -150,11 +150,12 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
     }
 
     private int tickEmit(@NotNull FluidStack fluidToSend) {
-        Collection<Map<Direction, IFluidHandler>> acceptorValues = acceptorCache.getAcceptorValues();
+        Collection<EnumArray<Direction, IFluidHandler>> acceptorValues = acceptorCache.getAcceptorValues();
         FluidHandlerTarget target = null;
-        for (Map<Direction, IFluidHandler> acceptors : acceptorValues) {
-            for (IFluidHandler acceptor : acceptors.values()) {
-                if (FluidUtils.canFill(acceptor, fluidToSend)) {
+        for (EnumArray<Direction, IFluidHandler> acceptors : acceptorValues) {
+            for (Direction side : acceptors.enumKeys()) {
+                IFluidHandler acceptor = acceptors.get(side);
+                if (acceptor != null && FluidUtils.canFill(acceptor, fluidToSend)) {
                     if (target == null) {
                         //Lazily initialize the target, which allows us to also skip attempting to start emitting
                         target = new FluidHandlerTarget(fluidToSend, acceptorValues.size() * 2);

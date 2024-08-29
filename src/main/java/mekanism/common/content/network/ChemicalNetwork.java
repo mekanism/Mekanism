@@ -3,7 +3,6 @@ package mekanism.common.content.network;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import mekanism.api.Action;
 import mekanism.api.MekanismAPI;
@@ -20,6 +19,7 @@ import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
 import mekanism.common.content.network.distribution.ChemicalTransmitterSaveTarget;
 import mekanism.common.content.network.distribution.ChemicalHandlerTarget;
 import mekanism.common.content.network.transmitter.PressurizedTube;
+import mekanism.common.lib.collection.EnumArray;
 import mekanism.common.lib.transmitter.DynamicBufferedNetwork;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.EmitUtils;
@@ -166,11 +166,12 @@ public class ChemicalNetwork extends DynamicBufferedNetwork<IChemicalHandler, Ch
     }
 
     private long tickEmit(@NotNull ChemicalStack stack) {
-        Collection<Map<Direction, IChemicalHandler>> acceptorValues = acceptorCache.getAcceptorValues();
+        Collection<EnumArray<Direction, IChemicalHandler>> acceptorValues = acceptorCache.getAcceptorValues();
         ChemicalHandlerTarget target = null;
-        for (Map<Direction, IChemicalHandler> acceptors : acceptorValues) {
-            for (IChemicalHandler handler : acceptors.values()) {
-                if (ChemicalUtil.canInsert(handler, stack)) {
+        for (EnumArray<Direction, IChemicalHandler> acceptors : acceptorValues) {
+            for (Direction side : acceptors.enumKeys()) {
+                IChemicalHandler handler = acceptors.get(side);
+                if (handler != null && ChemicalUtil.canInsert(handler, stack)) {
                     if (target == null) {
                         //Lazily initialize the target, which allows us to also skip attempting to start emitting
                         target = new ChemicalHandlerTarget(stack, acceptorValues.size() * 2);
