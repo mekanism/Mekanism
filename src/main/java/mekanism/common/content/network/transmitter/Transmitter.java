@@ -127,6 +127,10 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         return transmitterTile.getBlockPos();
     }
 
+    public long getWorldPositionLong() {
+        return transmitterTile.getWorldPositionLong();
+    }
+
     @Override
     public Level getLevel() {
         return transmitterTile.getLevel();

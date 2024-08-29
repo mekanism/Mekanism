@@ -114,6 +114,7 @@ public class ItemNetworkReader extends ItemEnergized {
     private void displayConnectedNetworks(Player player, Level world, BlockPos pos) {
         Set<DynamicNetwork<?, ?, ?>> iteratedNetworks = new ObjectOpenHashSet<>();
         BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
+        long posAsLong = pos.asLong();
         for (Direction side : EnumUtils.DIRECTIONS) {
             mutable.setWithOffset(pos, side);
             BlockEntity tile = WorldUtils.getTileEntity(world, mutable);
@@ -123,7 +124,7 @@ public class ItemNetworkReader extends ItemEnergized {
                 if (transmitterNetwork.hasAcceptor(pos) && !iteratedNetworks.contains(transmitterNetwork)) {
                     displayBorder(player, compileList(transmitter.getSupportedTransmissionTypes()), false);
                     player.sendSystemMessage(MekanismLang.NETWORK_READER_CONNECTED_SIDES.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY,
-                          compileList(transmitterNetwork.getAcceptorDirections(pos))));
+                          compileList(transmitterNetwork.getAcceptorDirections(posAsLong))));
                     displayEndBorder(player);
                     iteratedNetworks.add(transmitterNetwork);
                 }

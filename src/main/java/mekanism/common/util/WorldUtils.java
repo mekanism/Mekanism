@@ -830,4 +830,16 @@ public class WorldUtils {
     public static BlockPos getBlockPosFromChunkPos(long chunkPos) {
         return new BlockPos((int) chunkPos, 0, (int) (chunkPos >> 32));
     }
+
+    /**
+     * Get a packed block pos on the relative side.
+     * @see BlockPos#relative(Direction)
+     *
+     * @param pos Source position
+     * @param direction direction to offset in
+     * @return the packed offset position
+     */
+    public static long relativePos(long pos, Direction direction) {
+        return BlockPos.asLong(BlockPos.getX(pos) + direction.getStepX(), BlockPos.getY(pos) + direction.getStepY(), BlockPos.getZ(pos) + direction.getStepZ());
+    }
 }

@@ -44,8 +44,8 @@ public class InventoryNetwork extends DynamicNetwork<IItemHandler, InventoryNetw
     public List<AcceptorData> calculateAcceptors(TransitRequest request, TransporterStack stack, Long2ObjectMap<ChunkAccess> chunkMap,
           Map<GlobalPos, Set<TransporterStack>> additionalFlowingStacks) {
         List<AcceptorData> toReturn = new ArrayList<>();
-        for (Map.Entry<BlockPos, Map<Direction, IItemHandler>> entry : acceptorCache.getAcceptorEntrySet()) {
-            BlockPos pos = entry.getKey();
+        for (Long2ObjectMap.Entry<Map<Direction, IItemHandler>> entry : acceptorCache.getAcceptorEntrySet()) {
+            BlockPos pos = BlockPos.of(entry.getLongKey());
             if (!pos.equals(stack.homeLocation)) {
                 BlockEntity acceptor = WorldUtils.getTileEntity(getWorld(), chunkMap, pos);
                 Map<TransitResponse, AcceptorData> dataMap = new HashMap<>();

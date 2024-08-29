@@ -35,9 +35,11 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
     private GlobalPos cachedCoord;
     private boolean cacheCoord;
     private long lastSave;
+    private final long worldPositionLong;
 
     public TileEntityUpdateable(TileEntityTypeRegistryObject<?> type, BlockPos pos, BlockState state) {
         super(type.get(), pos, state);
+        this.worldPositionLong = pos.asLong();
     }
 
     /**
@@ -208,6 +210,10 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
     @Override
     public GlobalPos getTileGlobalPos() {
         return cacheCoord && cachedCoord != null ? cachedCoord : ITileWrapper.super.getTileGlobalPos();
+    }
+
+    public long getWorldPositionLong() {
+        return worldPositionLong;
     }
 
     @Override

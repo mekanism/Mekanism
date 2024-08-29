@@ -244,7 +244,7 @@ public final class TransporterPathfinder {
                             //If we are connected to a side, idle towards it, the path not pointing at a transmitter
                             // is gracefully handled
                             transportStack.idleDir = side;
-                            ret.add(relativePos(start.asLong(), side));
+                            ret.add(WorldUtils.relativePos(start.asLong(), side));
                             return createDestination(ret);
                         }
                     }
@@ -527,7 +527,4 @@ public final class TransporterPathfinder {
         }
     }
 
-    private static long relativePos(long pos, Direction direction) {
-        return BlockPos.asLong(BlockPos.getX(pos) + direction.getStepX(), BlockPos.getY(pos) + direction.getStepY(), BlockPos.getZ(pos) + direction.getStepZ());
-    }
 }
