@@ -3,7 +3,6 @@ package mekanism.common.content.network.transmitter;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
@@ -26,6 +25,7 @@ import mekanism.common.tier.PipeTier;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.upgrade.transmitter.MechanicalPipeUpgradeData;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.Direction;
@@ -72,9 +72,13 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
 
     @Override
     public void pullFromAcceptors() {
-        Set<Direction> connections = getConnections(ConnectionType.PULL);
-        if (!connections.isEmpty()) {
-            for (IFluidHandler connectedAcceptor : getAcceptorCache().getConnectedAcceptors(connections)) {
+        AcceptorCache<IFluidHandler> acceptorCache = getAcceptorCache();
+        for (Direction side : EnumUtils.DIRECTIONS) {
+            if (!isConnectionType(side, ConnectionType.PULL)) {
+                continue;
+            }
+            IFluidHandler connectedAcceptor = acceptorCache.getConnectedAcceptor(side);
+            if (connectedAcceptor != null) {
                 FluidStack received;
                 //Note: We recheck the buffer each time in case we ended up accepting fluid somewhere
                 // and our buffer changed and is no longer empty

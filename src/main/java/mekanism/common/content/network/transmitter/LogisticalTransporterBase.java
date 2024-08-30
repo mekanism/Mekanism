@@ -27,6 +27,7 @@ import mekanism.common.network.to_client.transmitter.PacketTransporterBatch;
 import mekanism.common.network.to_client.transmitter.PacketTransporterSync;
 import mekanism.common.tier.TransporterTier;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.WorldUtils;
@@ -118,7 +119,10 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                 //Attempt to pull
                 BlockPos.MutableBlockPos inventoryPos = new BlockPos.MutableBlockPos();
                 BlockPos pos = getBlockPos();
-                for (Direction side : getConnections(ConnectionType.PULL)) {
+                for (Direction side : EnumUtils.DIRECTIONS) {
+                    if (!isConnectionType(side, ConnectionType.PULL)) {
+                        continue;
+                    }
                     inventoryPos.setWithOffset(pos, side);
                     IItemHandler inventory = Capabilities.ITEM.getCapabilityIfLoaded(getLevel(), inventoryPos, side.getOpposite());
                     if (inventory != null) {

@@ -60,6 +60,16 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         return types[sideOrdinal];
     }
 
+    private static boolean isConnectionType(Direction side, byte allConnections, byte transmitterConnections, ConnectionType[] types, ConnectionType typeToCheck) {
+        int sideOrdinal = side.ordinal();
+        if (!connectionMapContainsSide(allConnections, sideOrdinal)) {
+            return typeToCheck == ConnectionType.NONE;
+        } else if (connectionMapContainsSide(transmitterConnections, sideOrdinal)) {
+            return typeToCheck == ConnectionType.NORMAL;
+        }
+        return typeToCheck == types[sideOrdinal];
+    }
+
     private ConnectionType[] connectionTypes = {ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL,
                                                 ConnectionType.NORMAL};
     private final AbstractAcceptorCache<ACCEPTOR, ?> acceptorCache;
@@ -652,19 +662,8 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         return getConnectionType(side, getAllCurrentConnections(), currentTransmitterConnections, connectionTypes);
     }
 
-    public Set<Direction> getConnections(ConnectionType type) {
-        Set<Direction> sides = null;
-        for (Direction side : EnumUtils.DIRECTIONS) {
-            if (getConnectionType(side) == type) {
-                if (sides == null) {
-                    //Lazy init the set so that if there are none we can just use an empty set
-                    // instead of having to initialize an enum set
-                    sides = EnumSet.noneOf(Direction.class);
-                }
-                sides.add(side);
-            }
-        }
-        return sides == null ? Collections.emptySet() : sides;
+    public boolean isConnectionType(Direction side, ConnectionType typeToCheck) {
+        return isConnectionType(side, getAllCurrentConnections(), currentTransmitterConnections, connectionTypes, typeToCheck);
     }
 
     public InteractionResult onConfigure(Player player, Direction side) {

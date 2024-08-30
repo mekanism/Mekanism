@@ -3,7 +3,6 @@ package mekanism.common.content.network.transmitter;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
@@ -28,6 +27,7 @@ import mekanism.common.tier.TubeTier;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.upgrade.transmitter.PressurizedTubeUpgradeData;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.Direction;
@@ -59,15 +59,25 @@ public class PressurizedTube extends BufferedTransmitter<IChemicalHandler, Chemi
     }
 
     @Override
+    @SuppressWarnings("unchecked")
+    public AcceptorCache<IChemicalHandler> getAcceptorCache() {
+        return (AcceptorCache<IChemicalHandler>) super.getAcceptorCache();
+    }
+
+    @Override
     public TubeTier getTier() {
         return tier;
     }
 
     @Override
     public void pullFromAcceptors() {
-        Set<Direction> connections = getConnections(ConnectionType.PULL);
-        if (!connections.isEmpty()) {
-            for (IChemicalHandler connectedAcceptor : getAcceptorCache().getConnectedAcceptors(connections)) {
+        AcceptorCache<IChemicalHandler> acceptorCache = getAcceptorCache();
+        for (Direction side : EnumUtils.DIRECTIONS) {
+            if (!isConnectionType(side, ConnectionType.PULL)) {
+                continue;
+            }
+            IChemicalHandler connectedAcceptor = acceptorCache.getConnectedAcceptor(side);
+            if (connectedAcceptor != null) {
                 //Note: We recheck the buffer each time in case we ended up accepting chemical somewhere
                 // and our buffer changed and is no longer empty
                 ChemicalStack bufferWithFallback = getBufferWithFallback();
