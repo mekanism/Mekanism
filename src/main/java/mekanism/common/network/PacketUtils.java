@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
@@ -18,6 +19,7 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.SectionPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -127,6 +129,23 @@ public class PacketUtils {
 
     public static <MSG extends CustomPacketPayload> void sendToAllTracking(MSG message, Level world, BlockPos pos) {
         PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) world, new ChunkPos(pos), message);
+    }
+
+    /**
+     * Based on home {@link PacketDistributor#sendToPlayersTrackingChunk(ServerLevel, ChunkPos, CustomPacketPayload, CustomPacketPayload...)} finds players to send to,
+     * without the immutable list.
+     */
+    public static boolean hasPlayersTracking(ServerLevel level, BlockPos pos) {
+        int chunkX = SectionPos.blockToSectionCoord(pos.getX());
+        int chunkZ = SectionPos.blockToSectionCoord(pos.getZ());
+        Set<ServerPlayer> players = level.getChunkSource().chunkMap.playerMap.getAllPlayers();
+
+        for (ServerPlayer serverplayer : players) {
+            if (level.getChunkSource().chunkMap.isChunkTracked(serverplayer, chunkX, chunkZ)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     //TODO: Evaluate moving various network related packets over to this (and making it support non buffered networks)
