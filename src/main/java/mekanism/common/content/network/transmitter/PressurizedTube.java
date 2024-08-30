@@ -71,6 +71,9 @@ public class PressurizedTube extends BufferedTransmitter<IChemicalHandler, Chemi
 
     @Override
     public void pullFromAcceptors() {
+        if (getAvailablePull() <= 0) {
+            return;
+        }
         AcceptorCache<IChemicalHandler> acceptorCache = getAcceptorCache();
         for (Direction side : EnumUtils.DIRECTIONS) {
             if (!isConnectionType(side, ConnectionType.PULL)) {

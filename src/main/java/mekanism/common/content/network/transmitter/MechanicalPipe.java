@@ -72,6 +72,9 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
 
     @Override
     public void pullFromAcceptors() {
+        if (getAvailablePull() <= 0) {
+            return;
+        }
         AcceptorCache<IFluidHandler> acceptorCache = getAcceptorCache();
         for (Direction side : EnumUtils.DIRECTIONS) {
             if (!isConnectionType(side, ConnectionType.PULL)) {

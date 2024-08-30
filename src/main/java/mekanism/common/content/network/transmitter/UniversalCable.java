@@ -62,6 +62,9 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
 
     @Override
     public void pullFromAcceptors() {
+        if (getAvailablePull() <= 0) {
+            return;
+        }
         EnergyAcceptorCache acceptorCache = getAcceptorCache();
         for (Direction side : EnumUtils.DIRECTIONS) {
             if (!isConnectionType(side, ConnectionType.PULL)) {
