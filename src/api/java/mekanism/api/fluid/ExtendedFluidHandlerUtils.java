@@ -83,14 +83,15 @@ public class ExtendedFluidHandlerUtils {
      *
      * @since 10.6.0
      */
-    public static FluidStack insert(FluidStack stack, Action action, AutomationType automationType, int size, Iterable<IExtendedFluidTank> fluidTanks) {
+    public static FluidStack insert(FluidStack stack, Action action, AutomationType automationType, int size, List<IExtendedFluidTank> fluidTanks) {
         if (stack.isEmpty()) {
             //Short circuit if nothing is actually being inserted
             return FluidStack.EMPTY;
         } else if (size == 0) {
             return stack;
         } else if (size == 1) {
-            return fluidTanks.iterator().next().insert(stack, action, automationType);
+            //noinspection SequencedCollectionMethodCanBeUsed: we know size
+            return fluidTanks.get(0).insert(stack, action, automationType);
         }
         FluidStack toInsert = stack;
         //Start by trying to insert into the tanks that have the same type
@@ -181,11 +182,12 @@ public class ExtendedFluidHandlerUtils {
      *
      * @since 10.6.0
      */
-    public static FluidStack extract(int amount, Action action, AutomationType automationType, int size, Iterable<IExtendedFluidTank> fluidTanks) {
+    public static FluidStack extract(int amount, Action action, AutomationType automationType, int size, List<IExtendedFluidTank> fluidTanks) {
         if (amount == 0 || size == 0) {
             return FluidStack.EMPTY;
         } else if (size == 1) {
-            return fluidTanks.iterator().next().extract(amount, action, automationType);
+            //noinspection SequencedCollectionMethodCanBeUsed: we know size
+            return fluidTanks.get(0).extract(amount, action, automationType);
         }
         FluidStack extracted = FluidStack.EMPTY;
         int toDrain = amount;
@@ -277,11 +279,12 @@ public class ExtendedFluidHandlerUtils {
      *
      * @since 10.6.0
      */
-    public static FluidStack extract(FluidStack stack, Action action, AutomationType automationType, int size, Iterable<IExtendedFluidTank> fluidTanks) {
+    public static FluidStack extract(FluidStack stack, Action action, AutomationType automationType, int size, List<IExtendedFluidTank> fluidTanks) {
         if (stack.isEmpty() || size == 0) {
             return FluidStack.EMPTY;
         } else if (size == 1) {
-            IExtendedFluidTank tank = fluidTanks.iterator().next();
+            //noinspection SequencedCollectionMethodCanBeUsed: we know size
+            IExtendedFluidTank tank = fluidTanks.get(0);
             if (tank.isEmpty() || !tank.isFluidEqual(stack)) {
                 return FluidStack.EMPTY;
             }

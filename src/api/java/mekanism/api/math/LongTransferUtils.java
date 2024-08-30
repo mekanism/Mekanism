@@ -87,14 +87,15 @@ public class LongTransferUtils {
      *
      * @since 10.6.0
      */
-    public static long insert(long stack, Action action, AutomationType automationType, int containerCount, Iterable<IEnergyContainer> energyContainers) {
+    public static long insert(long stack, Action action, AutomationType automationType, int containerCount, List<IEnergyContainer> energyContainers) {
         if (stack <= 0L) {
             //Short circuit if no energy is trying to be inserted
             return 0L;
         } else if (containerCount == 0) {
             return stack;
         } else if (containerCount == 1) {
-            return energyContainers.iterator().next().insert(stack, action, automationType);
+            //noinspection SequencedCollectionMethodCanBeUsed: we know size
+            return energyContainers.get(0).insert(stack, action, automationType);
         }
         long toInsert = stack;
         //Start by trying to insert into the containers that are not empty
@@ -184,12 +185,13 @@ public class LongTransferUtils {
      *
      * @since 10.6.0
      */
-    public static long extract(long amount, Action action, AutomationType automationType, int containerCount, Iterable<IEnergyContainer> energyContainers) {
+    public static long extract(long amount, Action action, AutomationType automationType, int containerCount, List<IEnergyContainer> energyContainers) {
         if (amount <= 0L || containerCount == 0) {
             //Short circuit if no energy is trying to be extracted
             return 0L;
         } else if (containerCount == 1) {
-            return energyContainers.iterator().next().extract(amount, action, automationType);
+            //noinspection SequencedCollectionMethodCanBeUsed: we know size
+            return energyContainers.get(0).extract(amount, action, automationType);
         }
         long extracted = 0;
         long toExtract = amount;

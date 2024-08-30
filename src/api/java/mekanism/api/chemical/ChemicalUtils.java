@@ -87,14 +87,15 @@ public class ChemicalUtils {
      *
      * @since 10.6.0
      */
-    public static ChemicalStack insert(ChemicalStack stack, Action action, AutomationType automationType, int size, Iterable<IChemicalTank> chemicalTanks) {
+    public static ChemicalStack insert(ChemicalStack stack, Action action, AutomationType automationType, int size, List<IChemicalTank> chemicalTanks) {
         if (stack.isEmpty()) {
             //Short circuit if nothing is actually being inserted
             return ChemicalStack.EMPTY;
         } else if (size == 0) {
             return stack;
         } else if (size == 1) {
-            return chemicalTanks.iterator().next().insert(stack, action, automationType);
+            //noinspection SequencedCollectionMethodCanBeUsed: we know size
+            return chemicalTanks.get(0).insert(stack, action, automationType);
         }
         ChemicalStack toInsert = stack;
         //Start by trying to insert into the tanks that have the same type
@@ -185,11 +186,12 @@ public class ChemicalUtils {
      *
      * @since 10.6.0
      */
-    public static ChemicalStack extract(long amount, Action action, AutomationType automationType, int size, Iterable<IChemicalTank> chemicalTanks) {
+    public static ChemicalStack extract(long amount, Action action, AutomationType automationType, int size, List<IChemicalTank> chemicalTanks) {
         if (amount == 0 || size == 0) {
             return ChemicalStack.EMPTY;
         } else if (size == 1) {
-            return chemicalTanks.iterator().next().extract(amount, action, automationType);
+            //noinspection SequencedCollectionMethodCanBeUsed: we know size
+            return chemicalTanks.get(0).extract(amount, action, automationType);
         }
         ChemicalStack extracted = ChemicalStack.EMPTY;
         long toDrain = amount;

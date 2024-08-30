@@ -1,5 +1,6 @@
 package mekanism.common.attachments.containers;
 
+import java.util.AbstractList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -11,7 +12,7 @@ import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public abstract class ComponentBackedHandler<TYPE, CONTAINER extends INBTSerializable<CompoundTag>, ATTACHED extends IAttachedContainers<TYPE, ATTACHED>>
+public abstract class ComponentBackedHandler<TYPE, CONTAINER extends INBTSerializable<CompoundTag>, ATTACHED extends IAttachedContainers<TYPE, ATTACHED>> extends AbstractList<CONTAINER>
       implements IContentsListener, Iterable<CONTAINER> {
 
     protected final ItemStack attachedTo;
@@ -72,8 +73,13 @@ public abstract class ComponentBackedHandler<TYPE, CONTAINER extends INBTSeriali
         return container == null ? initializeContainer(index) : container;
     }
 
-    protected int size() {
+    public int size() {
         return totalContainers;
+    }
+
+    @Override
+    public CONTAINER get(int index) {
+        return getContainer(index);
     }
 
     @Override
