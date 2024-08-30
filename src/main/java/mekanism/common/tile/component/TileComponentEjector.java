@@ -139,9 +139,12 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     }
 
     public void tickServer() {
-        for (Map.Entry<TransmissionType, ConfigInfo> entry : configInfo.entrySet()) {
-            TransmissionType type = entry.getKey();
-            ConfigInfo info = entry.getValue();
+        //loop on array to avoid iterator usage and high memory consumption
+        for (TransmissionType type : EnumUtils.TRANSMISSION_TYPES) {
+            ConfigInfo info = configInfo.get(type);
+            if (info == null) {
+                continue;
+            }
             if (isEjecting(info, type)) {
                 if (type == TransmissionType.ITEM) {
                     if (tickDelay == 0) {
