@@ -183,7 +183,7 @@ public class ChemicalUtil {
                 }
                 if (canInsert(handler, stack)) {
                     if (target == null) {
-                        target = new ChemicalHandlerTarget(stack, targets.size());
+                        target = new ChemicalHandlerTarget(targets.size());
                     }
                     target.addHandler(handler);
                 }

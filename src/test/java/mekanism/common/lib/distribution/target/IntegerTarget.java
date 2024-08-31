@@ -5,15 +5,15 @@ import mekanism.common.lib.distribution.SplitInfo;
 import mekanism.common.lib.distribution.Target;
 import mekanism.common.lib.distribution.handler.IntegerHandler;
 
-public final class IntegerTarget extends Target<IntegerHandler, Integer> {
+public final class IntegerTarget extends Target<IntegerHandler, Void> {
 
     @Override
-    protected void acceptAmount(IntegerHandler integerHandler, SplitInfo splitInfo, long amount) {
+    protected void acceptAmount(IntegerHandler integerHandler, SplitInfo splitInfo, Void resource, long amount) {
         splitInfo.send(integerHandler.perform(MathUtils.clampToInt(amount), false));
     }
 
     @Override
-    protected long simulate(IntegerHandler integerHandler, Integer offered) {
-        return integerHandler.perform(offered, true);
+    protected long simulate(IntegerHandler integerHandler, Void resource, long amount) {
+        return integerHandler.perform(MathUtils.clampToInt(amount), true);
     }
 }

@@ -7,15 +7,14 @@ import mekanism.common.lib.distribution.SplitInfo;
 import mekanism.common.lib.distribution.Target;
 import org.jetbrains.annotations.Nullable;
 
-public class EmitUtils {//TODO: Make things work with primitives more directly rather than having to do the boxing and unboxing
+public class EmitUtils {
 
     private EmitUtils() {
     }
 
     /**
      * @param <HANDLER>        The handler of our target.
-     * @param <TYPE>           The type of the number
-     * @param <EXTRA>          Any extra information we may need.
+     * @param <RESOURCE>       Type of resource (e.g. Stack). Stack amounts ignored
      * @param <TARGET>         The emitter target.
      * @param availableTargets The targets to distribute toSend fairly among.
      * @param splitInfo        Information containing the split.
@@ -23,8 +22,8 @@ public class EmitUtils {//TODO: Make things work with primitives more directly r
      *
      * @return The amount that actually got sent.
      */
-    private static <HANDLER, EXTRA, TARGET extends Target<HANDLER, EXTRA>> long sendToAcceptors(
-          TARGET availableTargets, SplitInfo splitInfo, EXTRA toSend) {
+    private static <HANDLER, RESOURCE, TARGET extends Target<HANDLER, RESOURCE>> long sendToAcceptors(
+          TARGET availableTargets, SplitInfo splitInfo, RESOURCE toSend) {
         if (availableTargets.getHandlerCount() == 0) {
             return splitInfo.getTotalSent();
         }
@@ -38,18 +37,18 @@ public class EmitUtils {//TODO: Make things work with primitives more directly r
             splitInfo.amountPerChanged = false;
             //splitInfo gets adjusted to account for how much is actually sent,
             // and if amountPer got changed again, and we need to rerun this
-            availableTargets.shiftNeeded(splitInfo);
+            availableTargets.shiftNeeded(toSend, splitInfo);
         }
 
         //Evenly distribute the remaining amount we have to give between all targets and handlers
         // splitInfo gets adjusted to account for how much is actually sent
-        availableTargets.sendRemainingSplit(splitInfo);
+        availableTargets.sendRemainingSplit(toSend, splitInfo);
         return splitInfo.getTotalSent();
     }
 
     /**
      * @param <HANDLER>        The handler of our target.
-     * @param <EXTRA>          Any extra information we may need
+     * @param <RESOURCE>       Type of resource (e.g. Stack). Stack amounts ignored
      * @param <TARGET>         The emitter target
      * @param availableTargets The targets to distribute toSend fairly among.
      * @param amountToSplit    The amount to split between all the targets
@@ -57,7 +56,7 @@ public class EmitUtils {//TODO: Make things work with primitives more directly r
      *
      * @return The amount that actually got sent.
      */
-    public static <HANDLER, EXTRA, TARGET extends Target<HANDLER, EXTRA>> int sendToAcceptors(@Nullable TARGET availableTargets, int amountToSplit, EXTRA toSend) {
+    public static <HANDLER, RESOURCE, TARGET extends Target<HANDLER, RESOURCE>> int sendToAcceptors(@Nullable TARGET availableTargets, int amountToSplit, RESOURCE toSend) {
         if (availableTargets == null || availableTargets.getHandlerCount() == 0) {
             return 0;
         }
@@ -66,7 +65,7 @@ public class EmitUtils {//TODO: Make things work with primitives more directly r
 
     /**
      * @param <HANDLER>        The handler of our target.
-     * @param <EXTRA>          Any extra information we may need
+     * @param <RESOURCE>       Type of resource (e.g. Stack). Stack amounts ignored
      * @param <TARGET>         The emitter target
      * @param availableTargets The targets to distribute toSend fairly among.
      * @param amountToSplit    The amount to split between all the targets
@@ -74,7 +73,7 @@ public class EmitUtils {//TODO: Make things work with primitives more directly r
      *
      * @return The amount that actually got sent.
      */
-    public static <HANDLER, EXTRA, TARGET extends Target<HANDLER, EXTRA>> long sendToAcceptors(@Nullable TARGET availableTargets, long amountToSplit, EXTRA toSend) {
+    public static <HANDLER, RESOURCE, TARGET extends Target<HANDLER, RESOURCE>> long sendToAcceptors(@Nullable TARGET availableTargets, long amountToSplit, RESOURCE toSend) {
         if (availableTargets == null || availableTargets.getHandlerCount() == 0) {
             return 0;
         }

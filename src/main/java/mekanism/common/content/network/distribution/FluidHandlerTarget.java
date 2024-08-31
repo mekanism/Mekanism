@@ -11,27 +11,24 @@ import org.jetbrains.annotations.NotNull;
 
 public class FluidHandlerTarget extends Target<IFluidHandler, @NotNull FluidStack> {
 
-    public FluidHandlerTarget(@NotNull FluidStack type) {
-        this.extra = type;
+    public FluidHandlerTarget() {
     }
 
-    public FluidHandlerTarget(@NotNull FluidStack type, Collection<IFluidHandler> allHandlers) {
+    public FluidHandlerTarget(Collection<IFluidHandler> allHandlers) {
         super(allHandlers);
-        this.extra = type;
     }
 
-    public FluidHandlerTarget(@NotNull FluidStack type, int expectedSize) {
+    public FluidHandlerTarget(int expectedSize) {
         super(expectedSize);
-        this.extra = type;
     }
 
     @Override
-    protected void acceptAmount(IFluidHandler handler, SplitInfo splitInfo, long amount) {
-        splitInfo.send(handler.fill(extra.copyWithAmount(MathUtils.clampToInt(amount)), FluidAction.EXECUTE));
+    protected void acceptAmount(IFluidHandler handler, SplitInfo splitInfo, @NotNull FluidStack resource, long amount) {
+        splitInfo.send(handler.fill(resource.copyWithAmount(MathUtils.clampToInt(amount)), FluidAction.EXECUTE));
     }
 
     @Override
-    protected long simulate(IFluidHandler handler, @NotNull FluidStack fluidStack) {
-        return handler.fill(fluidStack, FluidAction.SIMULATE);
+    protected long simulate(IFluidHandler handler, @NotNull FluidStack resource, long amount) {
+        return handler.fill(resource.copyWithAmount(MathUtils.clampToInt(amount)), FluidAction.SIMULATE);
     }
 }

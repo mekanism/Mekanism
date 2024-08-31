@@ -8,22 +8,21 @@ import mekanism.common.lib.distribution.Target;
 
 public class ChemicalTransmitterSaveTarget extends Target<ChemicalTransmitterSaveTarget.SaveHandler, ChemicalStack> {
 
-    public ChemicalTransmitterSaveTarget(ChemicalStack type, Collection<PressurizedTube> transmitters) {
+    public ChemicalTransmitterSaveTarget(Collection<PressurizedTube> transmitters) {
         super(transmitters.size());
-        this.extra = type;
         for (PressurizedTube transmitter : transmitters) {
             addHandler(new SaveHandler(transmitter));
         }
     }
 
     @Override
-    protected void acceptAmount(ChemicalTransmitterSaveTarget.SaveHandler handler, SplitInfo splitInfo, long amount) {
-        handler.acceptAmount(splitInfo, amount);
+    protected void acceptAmount(SaveHandler handler, SplitInfo splitInfo, ChemicalStack resource, long amount) {
+        handler.acceptAmount(splitInfo, resource, amount);
     }
 
     @Override
-    protected long simulate(ChemicalTransmitterSaveTarget.SaveHandler handler, ChemicalStack chemicalStack) {
-        return handler.simulate(chemicalStack);
+    protected long simulate(SaveHandler handler, ChemicalStack resource, long amount) {
+        return handler.simulate(resource.copyWithAmount(amount));
     }
 
     public void saveShare() {
@@ -32,7 +31,8 @@ public class ChemicalTransmitterSaveTarget extends Target<ChemicalTransmitterSav
         }
     }
 
-    public class SaveHandler {
+    //todo implement this on the transmitter with slightly different names?
+    public static class SaveHandler {
 
         private ChemicalStack currentStored;
         private final PressurizedTube transmitter;
@@ -42,10 +42,10 @@ public class ChemicalTransmitterSaveTarget extends Target<ChemicalTransmitterSav
             this.transmitter = transmitter;
         }
 
-        protected void acceptAmount(SplitInfo splitInfo, long amount) {
+        protected void acceptAmount(SplitInfo splitInfo, ChemicalStack resource, long amount) {
             amount = Math.min(amount, transmitter.getCapacity() - currentStored.getAmount());
             if (currentStored.isEmpty()) {
-                currentStored = extra.copyWithAmount(amount);
+                currentStored = resource.copyWithAmount(amount);
             } else {
                 currentStored.grow(amount);
             }

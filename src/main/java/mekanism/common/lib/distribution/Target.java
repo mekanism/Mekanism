@@ -10,9 +10,9 @@ import java.util.LinkedList;
  * Keeps track of a target for emitting from various networks.
  *
  * @param <HANDLER> The Handler this target keeps track of.
- * @param <EXTRA>   Any extra information this target may need to keep track of.
+ * @param <RESOURCE>   The resource being sent. Any amount field in this should be ignored.
  */
-public abstract class Target<HANDLER, EXTRA> {
+public abstract class Target<HANDLER, RESOURCE> {
 
     /**
      * Collection of handlers
@@ -25,8 +25,6 @@ public abstract class Target<HANDLER, EXTRA> {
     protected final Collection<HandlerType<HANDLER>> needed;
 
     private int handlerCount = 0;
-
-    protected EXTRA extra;
 
     protected Target() {
         handlers = new LinkedList<>();
@@ -60,7 +58,7 @@ public abstract class Target<HANDLER, EXTRA> {
      *
      * @param splitInfo Keeps track of the current amount sent and the default each one can get.
      */
-    public void sendRemainingSplit(SplitInfo splitInfo) {
+    public void sendRemainingSplit(RESOURCE resource, SplitInfo splitInfo) {
         //If needed is not empty then we default it to the given calculated fair split amount of remaining energy
         if (!needed.isEmpty() && splitInfo.getRemainderAmount() != 0) {
             Iterator<HandlerType<HANDLER>> iterator = needed.iterator();
@@ -74,13 +72,13 @@ public abstract class Target<HANDLER, EXTRA> {
                 //Accept the remaining amount
                 long amountNeeded = needInfo.amount();
                 if (amountNeeded <= remainderAmount) {
-                    acceptAmount(needInfo.handler(), splitInfo, amountNeeded);
+                    acceptAmount(needInfo.handler(), splitInfo, resource, amountNeeded);
                     //If the amount we needed was the less than or the same as our remaining amount
                     // we can remove the value as it has now been sent
                     iterator.remove();
                 } else {
                     splitInfo.decrementTargets = false;
-                    acceptAmount(needInfo.handler(), splitInfo, remainderAmount);
+                    acceptAmount(needInfo.handler(), splitInfo, resource, remainderAmount);
                     splitInfo.decrementTargets = true;
                 }
             }
@@ -96,7 +94,7 @@ public abstract class Target<HANDLER, EXTRA> {
                         //We finished, exit
                         return;
                     }
-                    acceptAmount(recipient.handler(), splitInfo, remaining);
+                    acceptAmount(recipient.handler(), splitInfo, resource, remaining);
                 }
             }
         }
@@ -108,48 +106,48 @@ public abstract class Target<HANDLER, EXTRA> {
      * @param handler   Handler to give to.
      * @param splitInfo Information about current overall split. The given split will be increased by the actual amount accepted, in case it is less than the offered
      *                  amount.
+     * @param resource  Resource template where relevant (Stacks). Amount in stacks is to be ignored. Typed null where not relevant
      * @param amount    Amount to give.
      *
      * @implNote Must call {@link SplitInfo#send(long)} with the amount actually accepted.
      */
-    protected abstract void acceptAmount(HANDLER handler, SplitInfo splitInfo, long amount);
+    protected abstract void acceptAmount(HANDLER handler, SplitInfo splitInfo, RESOURCE resource, long amount);
 
     /**
      * Simulate inserting into the handler.
      *
-     * @param handler The handler (should correspond with the side we are simulating).
-     * @param extra   All the information we are inserting.
+     * @param handler  The handler (should correspond with the side we are simulating).
+     * @param resource All the information we are inserting.
      *
      * @return The amount it was actually willing to accept.
      */
-    //TODO avoid boxing the extra - maybe make it like the resource thingo where it's Type + amount
-    protected abstract long simulate(HANDLER handler, EXTRA extra);
+    protected abstract long simulate(HANDLER handler, RESOURCE resource, long amount);
 
     /**
-     * Calculates how much each handler can take of toSend. If the amount requested is less than the amount per handler/target in splitInfo it immediately sends the
-     * requested amount to the handler via {@link #acceptAmount(HANDLER, SplitInfo, long)}
+     * Calculates how much each handler can take of the resource. If the amount requested is less than the amount per handler/target in splitInfo it immediately sends the
+     * requested amount to the handler via {@link #acceptAmount(Object, SplitInfo, Object, long)}
      *
-     * @param toSend    The total amount getting sent.
+     * @param resource    The total amount getting sent.
      * @param splitInfo Information about current overall split.
      */
-    public void sendPossible(EXTRA toSend, SplitInfo splitInfo) {//TODO avoid boxing the extra - maybe make it like the resource thingo where it's Type + amount
+    public void sendPossible(RESOURCE resource, SplitInfo splitInfo) {
         if (splitInfo.getShareAmount() == 0) {
             //We are all remainder, just calculate how much each can accept
             for (HANDLER entry : handlers) {
-                long amountNeeded = simulate(entry, toSend);
+                long amountNeeded = simulate(entry, resource, splitInfo.getUnsent());
                 if (amountNeeded != 0) {
                     needed.add(new HandlerType<>(entry, amountNeeded));
                 }
             }
         } else {
             for (HANDLER entry : handlers) {
-                long amountNeeded = simulate(entry, toSend);
+                long amountNeeded = simulate(entry, resource, splitInfo.getUnsent());
                 if (amountNeeded <= splitInfo.getShareAmount()) {
                     //Add the amount, in case something changed from simulation only mark actual sent amount
                     // in split info
                     if (amountNeeded != 0) {
                         //Note: We can skip actually running it if it doesn't need anything
-                        acceptAmount(entry, splitInfo, amountNeeded);
+                        acceptAmount(entry, splitInfo, resource, amountNeeded);
                     }
                 } else {
                     needed.add(new HandlerType<>(entry, amountNeeded));
@@ -163,7 +161,7 @@ public abstract class Target<HANDLER, EXTRA> {
      *
      * @param splitInfo The new split to (re)check.
      */
-    public void shiftNeeded(SplitInfo splitInfo) {
+    public void shiftNeeded(RESOURCE resource, SplitInfo splitInfo) {
         if (splitInfo.getShareAmount() == 0) {
             return;
         }
@@ -175,7 +173,7 @@ public abstract class Target<HANDLER, EXTRA> {
             HandlerType<HANDLER> needInfo = iterator.next();
             long amountNeeded = needInfo.amount();
             if (amountNeeded <= splitInfo.getShareAmount()) {
-                acceptAmount(needInfo.handler(), splitInfo, amountNeeded);
+                acceptAmount(needInfo.handler(), splitInfo, resource, amountNeeded);
                 //Remove it as it has now been sent
                 iterator.remove();
                 //Continue checking things in case we happen to be

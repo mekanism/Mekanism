@@ -8,22 +8,20 @@ import mekanism.common.lib.distribution.Target;
 
 public class ChemicalHandlerTarget extends Target<IChemicalHandler, ChemicalStack> {
 
-    public ChemicalHandlerTarget(ChemicalStack type) {
-        this.extra = type;
+    public ChemicalHandlerTarget() {
     }
 
-    public ChemicalHandlerTarget(ChemicalStack type, int expectedSize) {
+    public ChemicalHandlerTarget(int expectedSize) {
         super(expectedSize);
-        this.extra = type;
     }
 
     @Override
-    protected void acceptAmount(IChemicalHandler handler, SplitInfo splitInfo, long amount) {
-        splitInfo.send(amount - handler.insertChemical(extra.copyWithAmount(amount), Action.EXECUTE).getAmount());
+    protected void acceptAmount(IChemicalHandler handler, SplitInfo splitInfo, ChemicalStack resource, long amount) {
+        splitInfo.send(amount - handler.insertChemical(resource.copyWithAmount(amount), Action.EXECUTE).getAmount());
     }
 
     @Override
-    protected long simulate(IChemicalHandler handler, ChemicalStack stack) {
-        return stack.getAmount() - handler.insertChemical(stack, Action.SIMULATE).getAmount();
+    protected long simulate(IChemicalHandler handler, ChemicalStack resource, long amount) {
+        return resource.getAmount() - handler.insertChemical(resource.copyWithAmount(amount), Action.SIMULATE).getAmount();
     }
 }

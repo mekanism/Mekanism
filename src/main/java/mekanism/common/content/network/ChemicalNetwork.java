@@ -145,7 +145,7 @@ public class ChemicalNetwork extends DynamicBufferedNetwork<IChemicalHandler, Ch
     }
 
     private void updateSaveShares(@Nullable PressurizedTube triggerTransmitter, ChemicalStack chemical) {
-        ChemicalTransmitterSaveTarget saveTarget = new ChemicalTransmitterSaveTarget(chemical, getTransmitters());
+        ChemicalTransmitterSaveTarget saveTarget = new ChemicalTransmitterSaveTarget(getTransmitters());
         long sent = EmitUtils.sendToAcceptors(saveTarget, chemical.getAmount(), chemical);
         if (triggerTransmitter != null && sent < chemical.getAmount()) {
             disperse(triggerTransmitter, chemical.copyWithAmount(chemical.getAmount() - sent));
@@ -173,7 +173,7 @@ public class ChemicalNetwork extends DynamicBufferedNetwork<IChemicalHandler, Ch
                 if (ChemicalUtil.canInsert(handler, stack)) {
                     if (target == null) {
                         //Lazily initialize the target, which allows us to also skip attempting to start emitting
-                        target = new ChemicalHandlerTarget(stack, acceptorValues.size() * 2);
+                        target = new ChemicalHandlerTarget(acceptorValues.size() * 2);
                     }
                     target.addHandler(handler);
                 }

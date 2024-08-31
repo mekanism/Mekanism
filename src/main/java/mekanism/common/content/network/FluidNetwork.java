@@ -143,7 +143,7 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
         super.updateSaveShares(triggerTransmitter);
         if (!isEmpty()) {
             FluidStack fluidType = fluidTank.getFluid();
-            FluidTransmitterSaveTarget saveTarget = new FluidTransmitterSaveTarget(fluidType, getTransmitters());
+            FluidTransmitterSaveTarget saveTarget = new FluidTransmitterSaveTarget(getTransmitters());
             EmitUtils.sendToAcceptors(saveTarget, fluidType.getAmount(), fluidType);
             saveTarget.saveShare();
         }
@@ -157,7 +157,7 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
                 if (FluidUtils.canFill(acceptor, fluidToSend)) {
                     if (target == null) {
                         //Lazily initialize the target, which allows us to also skip attempting to start emitting
-                        target = new FluidHandlerTarget(fluidToSend, acceptorValues.size() * 2);
+                        target = new FluidHandlerTarget(acceptorValues.size() * 2);
                     }
                     target.addHandler(acceptor);
                 }

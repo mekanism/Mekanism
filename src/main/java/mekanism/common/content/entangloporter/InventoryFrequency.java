@@ -322,23 +322,25 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
 
     private static class SendingFluidHandlerTarget extends FluidHandlerTarget implements Runnable, Consumer<IFluidHandler> {
 
+        private final FluidStack toSend;
         private final IExtendedFluidTank storedFluid;
 
         public SendingFluidHandlerTarget(@NotNull FluidStack toSend, int expectedSize, IExtendedFluidTank storedFluid) {
-            super(toSend, expectedSize);
+            super(expectedSize);
+            this.toSend = toSend;
             this.storedFluid = storedFluid;
         }
 
         @Override
         public void run() {
             if (getHandlerCount() > 0) {
-                storedFluid.extract(EmitUtils.sendToAcceptors(this, extra.getAmount(), extra), Action.EXECUTE, AutomationType.INTERNAL);
+                storedFluid.extract(EmitUtils.sendToAcceptors(this, toSend.getAmount(), toSend), Action.EXECUTE, AutomationType.INTERNAL);
             }
         }
 
         @Override
         public void accept(IFluidHandler handler) {
-            if (FluidUtils.canFill(handler, extra)) {
+            if (FluidUtils.canFill(handler, toSend)) {
                 addHandler(handler);
             }
         }
@@ -346,23 +348,25 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
 
     private static class SendingChemicalHandlerTarget extends ChemicalHandlerTarget implements Runnable, Consumer<IChemicalHandler> {
 
+        private final ChemicalStack toSend;
         private final IChemicalTank storedChemical;
 
         public SendingChemicalHandlerTarget(ChemicalStack toSend, int expectedSize, IChemicalTank storedChemical) {
-            super(toSend, expectedSize);
+            super(expectedSize);
+            this.toSend = toSend;
             this.storedChemical = storedChemical;
         }
 
         @Override
         public void run() {
             if (getHandlerCount() > 0) {
-                storedChemical.extract(EmitUtils.sendToAcceptors(this, extra.getAmount(), extra), Action.EXECUTE, AutomationType.INTERNAL);
+                storedChemical.extract(EmitUtils.sendToAcceptors(this, toSend.getAmount(), toSend), Action.EXECUTE, AutomationType.INTERNAL);
             }
         }
 
         @Override
         public void accept(IChemicalHandler handler) {
-            if (ChemicalUtil.canInsert(handler, extra)) {
+            if (ChemicalUtil.canInsert(handler, toSend)) {
                 addHandler(handler);
             }
         }

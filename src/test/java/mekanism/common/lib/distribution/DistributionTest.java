@@ -16,6 +16,8 @@ import org.junit.jupiter.api.Test;
 @DisplayName("Test Distribution via EmitUtils")
 class DistributionTest {
 
+    static final Void VOID_RESOURCE = null;
+
     public static IntegerTarget getTargets(int infinite, int some, int none) {
         IntegerTarget target = new IntegerTarget();
         addTargets(target, InfiniteIntegerHandler::new, infinite);
@@ -35,7 +37,7 @@ class DistributionTest {
     void testEvenDistribution() {
         int toSend = 10;
         IntegerTarget availableAcceptors = getTargets(toSend, 0, 0);
-        Assertions.assertEquals(toSend, EmitUtils.sendToAcceptors(availableAcceptors, toSend, toSend));
+        Assertions.assertEquals(toSend, EmitUtils.sendToAcceptors(availableAcceptors, toSend, VOID_RESOURCE));
         for (IntegerHandler handler : availableAcceptors.handlers) {
             Assertions.assertEquals(1, handler.getAccepted());
         }
@@ -46,7 +48,7 @@ class DistributionTest {
     void testEvenDistribution2() {
         int toSend = 40;
         IntegerTarget availableAcceptors = getTargets(toSend / 4, 0, 0);
-        Assertions.assertEquals(toSend, EmitUtils.sendToAcceptors(availableAcceptors, toSend, toSend));
+        Assertions.assertEquals(toSend, EmitUtils.sendToAcceptors(availableAcceptors, toSend, VOID_RESOURCE));
         for (IntegerHandler handler : availableAcceptors.handlers) {
             Assertions.assertEquals(4, handler.getAccepted());
         }
@@ -57,7 +59,7 @@ class DistributionTest {
     void testRemainderDistribution() {
         int toSend = 10;
         IntegerTarget availableAcceptors = getTargets(7, 0, 0);
-        Assertions.assertEquals(toSend, EmitUtils.sendToAcceptors(availableAcceptors, toSend, toSend));
+        Assertions.assertEquals(toSend, EmitUtils.sendToAcceptors(availableAcceptors, toSend, VOID_RESOURCE));
         int singleAccepted = 0, twoAccepted = 0;
         for (IntegerHandler handler : availableAcceptors.handlers) {
             Assertions.assertTrue(handler.getAccepted() == 1 || handler.getAccepted() == 2);
@@ -76,7 +78,7 @@ class DistributionTest {
     void testAllRemainder() {
         int toSend = 3;
         IntegerTarget availableAcceptors = getTargets(7, 0, 0);
-        Assertions.assertEquals(toSend, EmitUtils.sendToAcceptors(availableAcceptors, toSend, toSend));
+        Assertions.assertEquals(toSend, EmitUtils.sendToAcceptors(availableAcceptors, toSend, VOID_RESOURCE));
         int destinationsAccepted = 0;
         int destinationsNotAccepted = 0;
         for (IntegerHandler availableAcceptor : availableAcceptors.handlers) {
@@ -101,7 +103,7 @@ class DistributionTest {
         IntegerTarget availableAcceptors = new IntegerTarget();
         availableAcceptors.addHandler(new SpecificAmountIntegerHandler(1));
         addTargets(availableAcceptors, () -> new SpecificAmountIntegerHandler(3), 2);
-        int sent = EmitUtils.sendToAcceptors(availableAcceptors, toSend, toSend);
+        int sent = EmitUtils.sendToAcceptors(availableAcceptors, toSend, VOID_RESOURCE);
         if (sent > toSend) {
             Assertions.fail(String.format(Locale.ROOT, "expected: <%s> to be greater or equal to: <%s>", toSend, sent));
         }
@@ -116,7 +118,7 @@ class DistributionTest {
         IntegerHandler lyingHandler = new LyingAmountIntegerHandler(1, 10);
         availableAcceptors.addHandler(specificHandler);
         availableAcceptors.addHandler(lyingHandler);
-        Assertions.assertEquals(toSend, EmitUtils.sendToAcceptors(availableAcceptors, toSend, toSend));
+        Assertions.assertEquals(toSend, EmitUtils.sendToAcceptors(availableAcceptors, toSend, VOID_RESOURCE));
         Assertions.assertEquals(1, lyingHandler.getAccepted());
         Assertions.assertEquals(8, specificHandler.getAccepted());
     }
@@ -130,7 +132,7 @@ class DistributionTest {
         IntegerHandler lyingHandler = new LyingAmountIntegerHandler(1, 10);
         availableAcceptors.addHandler(lyingHandler);
         availableAcceptors.addHandler(specificHandler);
-        Assertions.assertEquals(toSend, EmitUtils.sendToAcceptors(availableAcceptors, toSend, toSend));
+        Assertions.assertEquals(toSend, EmitUtils.sendToAcceptors(availableAcceptors, toSend, VOID_RESOURCE));
         Assertions.assertEquals(1, lyingHandler.getAccepted());
         Assertions.assertEquals(8, specificHandler.getAccepted());
     }

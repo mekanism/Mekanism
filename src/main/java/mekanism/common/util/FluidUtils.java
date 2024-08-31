@@ -116,7 +116,7 @@ public final class FluidUtils {
                 }
                 if (canFill(handler, toSend)) {
                     if (target == null) {
-                        target = new FluidHandlerTarget(stack, targets.size());
+                        target = new FluidHandlerTarget(targets.size());
                     }
                     target.addHandler(handler);
                 }

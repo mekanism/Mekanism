@@ -21,13 +21,13 @@ public class EnergySaveTarget<HANDLER extends EnergySaveTarget.SaveHandler> exte
     }
 
     @Override
-    protected void acceptAmount(HANDLER handler, SplitInfo splitInfo, long amount) {
+    protected void acceptAmount(HANDLER handler, SplitInfo splitInfo, Long resource, long amount) {
         handler.acceptAmount(splitInfo, amount);
     }
 
     @Override
-    protected long simulate(HANDLER handler, Long energyToSend) {
-        return handler.simulate(energyToSend);
+    protected long simulate(HANDLER handler, Long resource, long amount) {
+        return handler.simulate(amount);
     }
 
     public void save() {
