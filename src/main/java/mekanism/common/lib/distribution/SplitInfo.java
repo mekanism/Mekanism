@@ -1,6 +1,6 @@
 package mekanism.common.lib.distribution;
 
-public abstract class SplitInfo<TYPE extends Number & Comparable<TYPE>> {
+public abstract class SplitInfo {
 
     /**
      * Number of targets to split the contents among.
@@ -29,12 +29,12 @@ public abstract class SplitInfo<TYPE extends Number & Comparable<TYPE>> {
      *
      * @param amountNeeded Amount needed by the target and that we are accounting as having been sent to the target.
      */
-    public abstract void send(TYPE amountNeeded);
+    public abstract void send(long amountNeeded);
 
     /**
      * {@return the "share" each target should get when distributing in an even split}
      */
-    public abstract TYPE getShareAmount();
+    public abstract long getShareAmount();
 
     /**
      * Gets the "share" including a potential remainder that targets should get when handling remainders. This is used for actually sending providing the split share to
@@ -43,22 +43,15 @@ public abstract class SplitInfo<TYPE extends Number & Comparable<TYPE>> {
      *
      * @return the "share" plus any potential remainder.
      */
-    public abstract TYPE getRemainderAmount();
+    public abstract long getRemainderAmount();
 
     /**
      * {@return the amount of contents that has not been sent anywhere yet}
      */
-    public abstract TYPE getUnsent();
-
-    /**
-     * {@return true if the value is equal to zero}
-     *
-     * @param value Value to check
-     */
-    public abstract boolean isZero(TYPE value);
+    public abstract long getUnsent();
 
     /**
      * {@return the total amount of contents that have been sent}
      */
-    public abstract TYPE getTotalSent();
+    public abstract long getTotalSent();
 }

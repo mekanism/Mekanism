@@ -6,7 +6,7 @@ import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.common.lib.distribution.SplitInfo;
 import mekanism.common.lib.distribution.Target;
 
-public class EnergyAcceptorTarget extends Target<IStrictEnergyHandler, Long, Long> {
+public class EnergyAcceptorTarget extends Target<IStrictEnergyHandler, Long> {
 
     public EnergyAcceptorTarget() {
     }
@@ -20,12 +20,12 @@ public class EnergyAcceptorTarget extends Target<IStrictEnergyHandler, Long, Lon
     }
 
     @Override
-    protected void acceptAmount(IStrictEnergyHandler handler, SplitInfo<Long> splitInfo, Long amount) {
+    protected void acceptAmount(IStrictEnergyHandler handler, SplitInfo splitInfo, long amount) {
         splitInfo.send(amount - (handler.insertEnergy(amount, Action.EXECUTE)));
     }
 
     @Override
-    protected Long simulate(IStrictEnergyHandler handler, Long energyToSend) {
+    protected long simulate(IStrictEnergyHandler handler, Long energyToSend) {
         return energyToSend - (handler.insertEnergy(energyToSend, Action.SIMULATE));
     }
 }

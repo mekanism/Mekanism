@@ -7,7 +7,7 @@ import mekanism.api.math.MathUtils;
 import mekanism.common.lib.distribution.SplitInfo;
 import mekanism.common.lib.distribution.Target;
 
-public class EnergySaveTarget<HANDLER extends EnergySaveTarget.SaveHandler> extends Target<HANDLER, Long, Long> {
+public class EnergySaveTarget<HANDLER extends EnergySaveTarget.SaveHandler> extends Target<HANDLER, Long> {
 
     public EnergySaveTarget() {
     }
@@ -21,12 +21,12 @@ public class EnergySaveTarget<HANDLER extends EnergySaveTarget.SaveHandler> exte
     }
 
     @Override
-    protected void acceptAmount(HANDLER handler, SplitInfo<Long> splitInfo, Long amount) {
+    protected void acceptAmount(HANDLER handler, SplitInfo splitInfo, long amount) {
         handler.acceptAmount(splitInfo, amount);
     }
 
     @Override
-    protected Long simulate(HANDLER handler, Long energyToSend) {
+    protected long simulate(HANDLER handler, Long energyToSend) {
         return handler.simulate(energyToSend);
     }
 
@@ -55,7 +55,7 @@ public class EnergySaveTarget<HANDLER extends EnergySaveTarget.SaveHandler> exte
             this.neededEnergy = this.maxEnergy;
         }
 
-        protected void acceptAmount(SplitInfo<Long> splitInfo, long amount) {
+        protected void acceptAmount(SplitInfo splitInfo, long amount) {
             if (neededEnergy <= 0L) {
                 splitInfo.send(0L);
             } else {

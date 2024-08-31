@@ -1,6 +1,8 @@
 package mekanism.common.lib.distribution;
 
-public class IntegerSplitInfo extends SplitInfo<Integer> {
+import mekanism.api.math.MathUtils;
+
+public class IntegerSplitInfo extends SplitInfo {
 
     private int amountToSplit;
     private int amountPerTarget;
@@ -15,13 +17,14 @@ public class IntegerSplitInfo extends SplitInfo<Integer> {
     }
 
     @Override
-    public void send(Integer amountNeeded) {
+    public void send(long amountNeeded) {
         //If we are giving it, then lower the amount we are checking/splitting
-        amountToSplit -= amountNeeded;
-        sentSoFar += amountNeeded;
+        int amountNeededInt = MathUtils.clampToInt(amountNeeded);
+        amountToSplit -= amountNeededInt;
+        sentSoFar += amountNeededInt;
         if (!decrementTargets) {
             //If we are not decrementing targets, then don't remove that as a valid target, or update how much there is per target
-            int difference = amountNeeded - amountPerTarget;
+            int difference = amountNeededInt - amountPerTarget;
             if (difference > 0) {
                 //If we removed more than we have per target, we need to remove the excess from our remainder
                 remainder -= difference;
@@ -42,14 +45,14 @@ public class IntegerSplitInfo extends SplitInfo<Integer> {
     }
 
     @Override
-    public Integer getShareAmount() {
+    public long getShareAmount() {
         //TODO: Should we make this return a + 1 if there is a remainder, so that we can factor out those cases that can accept exactly amountPerTarget + 1
         // while doing our initial loop rather than handling it via getRemainderAmount?
         return amountPerTarget;
     }
 
     @Override
-    public Integer getRemainderAmount() {
+    public long getRemainderAmount() {
         if (toSplitAmong != 0 && remainder > 0) {
             //If we have a remainder, be willing to provide a single unit as the remainder
             // so that we split the remainder more evenly across the targets.
@@ -59,17 +62,12 @@ public class IntegerSplitInfo extends SplitInfo<Integer> {
     }
 
     @Override
-    public Integer getUnsent() {
+    public long getUnsent() {
         return amountToSplit;
     }
 
     @Override
-    public boolean isZero(Integer value) {
-        return value == 0;
-    }
-
-    @Override
-    public Integer getTotalSent() {
+    public long getTotalSent() {
         return sentSoFar;
     }
 }

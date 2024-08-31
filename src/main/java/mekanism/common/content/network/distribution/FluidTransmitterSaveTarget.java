@@ -9,7 +9,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 //TODO: Improve handling for fluid storage as longs
-public class FluidTransmitterSaveTarget extends Target<FluidTransmitterSaveTarget.SaveHandler, Integer, @NotNull FluidStack> {
+public class FluidTransmitterSaveTarget extends Target<FluidTransmitterSaveTarget.SaveHandler, @NotNull FluidStack> {
 
     public FluidTransmitterSaveTarget(@NotNull FluidStack type, Collection<MechanicalPipe> transmitters) {
         super(transmitters.size());
@@ -20,12 +20,12 @@ public class FluidTransmitterSaveTarget extends Target<FluidTransmitterSaveTarge
     }
 
     @Override
-    protected void acceptAmount(FluidTransmitterSaveTarget.SaveHandler handler, SplitInfo<Integer> splitInfo, Integer amount) {
-        handler.acceptAmount(splitInfo, amount);
+    protected void acceptAmount(FluidTransmitterSaveTarget.SaveHandler handler, SplitInfo splitInfo, long amount) {
+        handler.acceptAmount(splitInfo, MathUtils.clampToInt(amount));
     }
 
     @Override
-    protected Integer simulate(FluidTransmitterSaveTarget.SaveHandler handler, @NotNull FluidStack fluidStack) {
+    protected long simulate(FluidTransmitterSaveTarget.SaveHandler handler, @NotNull FluidStack fluidStack) {
         return handler.simulate(fluidStack);
     }
 
@@ -44,7 +44,7 @@ public class FluidTransmitterSaveTarget extends Target<FluidTransmitterSaveTarge
             this.transmitter = transmitter;
         }
 
-        protected void acceptAmount(SplitInfo<Integer> splitInfo, Integer amount) {
+        protected void acceptAmount(SplitInfo splitInfo, Integer amount) {
             amount = Math.min(amount, MathUtils.clampToInt(transmitter.getCapacity() - currentStored.getAmount()));
             if (currentStored.isEmpty()) {
                 currentStored = extra.copyWithAmount(amount);

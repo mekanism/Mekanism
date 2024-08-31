@@ -1,6 +1,6 @@
 package mekanism.common.lib.distribution;
 
-public class LongSplitInfo extends SplitInfo<Long> {
+public class LongSplitInfo extends SplitInfo {
 
     private long amountToSplit;
     private long amountPerTarget;
@@ -15,7 +15,7 @@ public class LongSplitInfo extends SplitInfo<Long> {
     }
 
     @Override
-    public void send(Long amountNeeded) {
+    public void send(long amountNeeded) {
         //If we are giving it, then lower the amount we are checking/splitting
         amountToSplit -= amountNeeded;
         sentSoFar += amountNeeded;
@@ -42,12 +42,12 @@ public class LongSplitInfo extends SplitInfo<Long> {
     }
 
     @Override
-    public Long getShareAmount() {
+    public long getShareAmount() {
         return amountPerTarget;
     }
 
     @Override
-    public Long getRemainderAmount() {
+    public long getRemainderAmount() {
         if (toSplitAmong != 0 && remainder > 0) {
             //If we have a remainder, be willing to provide a single unit as the remainder
             // so that we split the remainder more evenly across the targets.
@@ -57,17 +57,12 @@ public class LongSplitInfo extends SplitInfo<Long> {
     }
 
     @Override
-    public Long getUnsent() {
+    public long getUnsent() {
         return remainder;
     }
 
     @Override
-    public boolean isZero(Long value) {
-        return value == 0;
-    }
-
-    @Override
-    public Long getTotalSent() {
+    public long getTotalSent() {
         return sentSoFar;
     }
 }

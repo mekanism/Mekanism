@@ -6,7 +6,7 @@ import mekanism.common.content.network.transmitter.PressurizedTube;
 import mekanism.common.lib.distribution.SplitInfo;
 import mekanism.common.lib.distribution.Target;
 
-public class ChemicalTransmitterSaveTarget extends Target<ChemicalTransmitterSaveTarget.SaveHandler, Long, ChemicalStack> {
+public class ChemicalTransmitterSaveTarget extends Target<ChemicalTransmitterSaveTarget.SaveHandler, ChemicalStack> {
 
     public ChemicalTransmitterSaveTarget(ChemicalStack type, Collection<PressurizedTube> transmitters) {
         super(transmitters.size());
@@ -17,12 +17,12 @@ public class ChemicalTransmitterSaveTarget extends Target<ChemicalTransmitterSav
     }
 
     @Override
-    protected void acceptAmount(ChemicalTransmitterSaveTarget.SaveHandler handler, SplitInfo<Long> splitInfo, Long amount) {
+    protected void acceptAmount(ChemicalTransmitterSaveTarget.SaveHandler handler, SplitInfo splitInfo, long amount) {
         handler.acceptAmount(splitInfo, amount);
     }
 
     @Override
-    protected Long simulate(ChemicalTransmitterSaveTarget.SaveHandler handler, ChemicalStack chemicalStack) {
+    protected long simulate(ChemicalTransmitterSaveTarget.SaveHandler handler, ChemicalStack chemicalStack) {
         return handler.simulate(chemicalStack);
     }
 
@@ -42,7 +42,7 @@ public class ChemicalTransmitterSaveTarget extends Target<ChemicalTransmitterSav
             this.transmitter = transmitter;
         }
 
-        protected void acceptAmount(SplitInfo<Long> splitInfo, Long amount) {
+        protected void acceptAmount(SplitInfo splitInfo, long amount) {
             amount = Math.min(amount, transmitter.getCapacity() - currentStored.getAmount());
             if (currentStored.isEmpty()) {
                 currentStored = extra.copyWithAmount(amount);

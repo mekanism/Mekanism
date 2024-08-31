@@ -1,5 +1,6 @@
 package mekanism.common.util;
 
+import mekanism.api.math.MathUtils;
 import mekanism.common.lib.distribution.IntegerSplitInfo;
 import mekanism.common.lib.distribution.LongSplitInfo;
 import mekanism.common.lib.distribution.SplitInfo;
@@ -22,8 +23,8 @@ public class EmitUtils {//TODO: Make things work with primitives more directly r
      *
      * @return The amount that actually got sent.
      */
-    private static <HANDLER, TYPE extends Number & Comparable<TYPE>, EXTRA, TARGET extends Target<HANDLER, TYPE, EXTRA>> TYPE sendToAcceptors(
-          TARGET availableTargets, SplitInfo<TYPE> splitInfo, EXTRA toSend) {
+    private static <HANDLER, EXTRA, TARGET extends Target<HANDLER, EXTRA>> long sendToAcceptors(
+          TARGET availableTargets, SplitInfo splitInfo, EXTRA toSend) {
         if (availableTargets.getHandlerCount() == 0) {
             return splitInfo.getTotalSent();
         }
@@ -56,11 +57,11 @@ public class EmitUtils {//TODO: Make things work with primitives more directly r
      *
      * @return The amount that actually got sent.
      */
-    public static <HANDLER, EXTRA, TARGET extends Target<HANDLER, Integer, EXTRA>> int sendToAcceptors(@Nullable TARGET availableTargets, int amountToSplit, EXTRA toSend) {
+    public static <HANDLER, EXTRA, TARGET extends Target<HANDLER, EXTRA>> int sendToAcceptors(@Nullable TARGET availableTargets, int amountToSplit, EXTRA toSend) {
         if (availableTargets == null || availableTargets.getHandlerCount() == 0) {
             return 0;
         }
-        return sendToAcceptors(availableTargets, new IntegerSplitInfo(amountToSplit, availableTargets.getHandlerCount()), toSend);
+        return MathUtils.clampToInt(sendToAcceptors(availableTargets, new IntegerSplitInfo(amountToSplit, availableTargets.getHandlerCount()), toSend));
     }
 
     /**
@@ -73,7 +74,7 @@ public class EmitUtils {//TODO: Make things work with primitives more directly r
      *
      * @return The amount that actually got sent.
      */
-    public static <HANDLER, EXTRA, TARGET extends Target<HANDLER, Long, EXTRA>> long sendToAcceptors(@Nullable TARGET availableTargets, long amountToSplit, EXTRA toSend) {
+    public static <HANDLER, EXTRA, TARGET extends Target<HANDLER, EXTRA>> long sendToAcceptors(@Nullable TARGET availableTargets, long amountToSplit, EXTRA toSend) {
         if (availableTargets == null || availableTargets.getHandlerCount() == 0) {
             return 0;
         }
