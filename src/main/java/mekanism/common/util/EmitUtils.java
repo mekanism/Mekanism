@@ -18,31 +18,31 @@ public class EmitUtils {
      * @param <TARGET>         The emitter target.
      * @param availableTargets The targets to distribute toSend fairly among.
      * @param splitInfo        Information containing the split.
-     * @param toSend           Any extra information such as gas stack or fluid stack.
+     * @param resource           Any extra information such as gas stack or fluid stack.
      *
      * @return The amount that actually got sent.
      */
     private static <HANDLER, RESOURCE, TARGET extends Target<HANDLER, RESOURCE>> long sendToAcceptors(
-          TARGET availableTargets, SplitInfo splitInfo, RESOURCE toSend) {
+          TARGET availableTargets, SplitInfo splitInfo, RESOURCE resource) {
         if (availableTargets.getHandlerCount() == 0) {
             return splitInfo.getTotalSent();
         }
 
         //Simulate addition, sending when the requested amount is less than the amountPer
         // splitInfo gets adjusted to account for how much is actually sent
-        availableTargets.sendPossible(toSend, splitInfo);
+        availableTargets.sendPossible(resource, splitInfo);
 
         //Only run this if we changed the amountPer from when we first/last ran things
         while (splitInfo.amountPerChanged) {
             splitInfo.amountPerChanged = false;
             //splitInfo gets adjusted to account for how much is actually sent,
             // and if amountPer got changed again, and we need to rerun this
-            availableTargets.shiftNeeded(toSend, splitInfo);
+            availableTargets.shiftNeeded(resource, splitInfo);
         }
 
         //Evenly distribute the remaining amount we have to give between all targets and handlers
         // splitInfo gets adjusted to account for how much is actually sent
-        availableTargets.sendRemainingSplit(toSend, splitInfo);
+        availableTargets.sendRemainingSplit(resource, splitInfo);
         return splitInfo.getTotalSent();
     }
 
@@ -69,14 +69,14 @@ public class EmitUtils {
      * @param <TARGET>         The emitter target
      * @param availableTargets The targets to distribute toSend fairly among.
      * @param amountToSplit    The amount to split between all the targets
-     * @param toSend           Any extra information such as gas stack or fluid stack.
+     * @param resource           Any extra information such as gas stack or fluid stack.
      *
      * @return The amount that actually got sent.
      */
-    public static <HANDLER, RESOURCE, TARGET extends Target<HANDLER, RESOURCE>> long sendToAcceptors(@Nullable TARGET availableTargets, long amountToSplit, RESOURCE toSend) {
+    public static <HANDLER, RESOURCE, TARGET extends Target<HANDLER, RESOURCE>> long sendToAcceptors(@Nullable TARGET availableTargets, long amountToSplit, RESOURCE resource) {
         if (availableTargets == null || availableTargets.getHandlerCount() == 0) {
             return 0;
         }
-        return sendToAcceptors(availableTargets, new LongSplitInfo(amountToSplit, availableTargets.getHandlerCount()), toSend);
+        return sendToAcceptors(availableTargets, new LongSplitInfo(amountToSplit, availableTargets.getHandlerCount()), resource);
     }
 }
