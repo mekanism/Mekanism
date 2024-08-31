@@ -71,7 +71,7 @@ public class PressurizedTube extends BufferedTransmitter<IChemicalHandler, Chemi
 
     @Override
     public void pullFromAcceptors() {
-        if (getAvailablePull() <= 0) {
+        if (!hasPullSide || getAvailablePull() <= 0) {
             return;
         }
         AcceptorCache<IChemicalHandler> acceptorCache = getAcceptorCache();

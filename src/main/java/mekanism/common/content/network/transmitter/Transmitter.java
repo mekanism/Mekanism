@@ -74,6 +74,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
                                                 ConnectionType.NORMAL};
     private final AbstractAcceptorCache<ACCEPTOR, ?> acceptorCache;
     public byte currentTransmitterConnections = 0x00;
+    protected boolean hasPullSide = false;
 
     private final TileEntityTransmitter transmitterTile;
     private final Set<TransmissionType> supportedTransmissionTypes;
@@ -117,6 +118,16 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
             throw new IllegalArgumentException("Mismatched connection types length");
         }
         this.connectionTypes = connectionTypes;
+        this.hasPullSide = recalculateHasPull(connectionTypes);
+    }
+
+    private boolean recalculateHasPull(@NotNull ConnectionType @NotNull [] connectionTypes) {
+        for (@NotNull ConnectionType connectionType : connectionTypes) {
+            if (connectionType == ConnectionType.PULL) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public ConnectionType getConnectionTypeRaw(@NotNull Direction side) {
@@ -128,6 +139,11 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         ConnectionType old = connectionTypes[index];
         if (old != type) {
             connectionTypes[index] = type;
+            if (type == ConnectionType.PULL) {
+                hasPullSide = true;
+            } else if (hasPullSide) {
+                this.hasPullSide = recalculateHasPull(connectionTypes);
+            }
             getTransmitterTile().sideChanged(side, old, type);
         }
     }
