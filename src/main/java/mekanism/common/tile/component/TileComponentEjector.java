@@ -174,7 +174,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
      */
     private void eject(TransmissionType type, Direction facing, ConfigInfo info) {
         //Used to keep track of tanks to what sides they output to
-        Map<Object, Set<Direction>> outputData = null;
+        Map<Object, Set<Direction>> outputData = null;//todo what is the point of putting it into a map??
         for (DataType dataType : info.getSupportedDataTypes()) {
             if (dataType.canOutput()) {
                 ISlotInfo slotInfo = info.getSlotInfo(dataType);
