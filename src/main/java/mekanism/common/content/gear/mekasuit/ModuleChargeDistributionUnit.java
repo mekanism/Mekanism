@@ -10,6 +10,7 @@ import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.content.network.EnergyNetwork;
 import mekanism.common.content.network.distribution.EnergySaveTarget;
 import mekanism.common.content.network.distribution.EnergySaveTarget.DelegateSaveHandler;
 import mekanism.common.integration.curios.CuriosIntegration;
@@ -57,7 +58,7 @@ public record ModuleChargeDistributionUnit(boolean chargeSuit, boolean chargeInv
         if (saveTarget.getHandlerCount() > 1) {
             //If we only have one handler we can skip charging as it will all just go back into the chest piece
             long stored = saveTarget.getStored();
-            EmitUtils.sendToAcceptors(saveTarget, stored, stored);
+            EmitUtils.sendToAcceptors(saveTarget, stored, EnergyNetwork.ENERGY);
             saveTarget.save();
         }
     }

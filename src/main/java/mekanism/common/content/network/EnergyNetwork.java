@@ -28,6 +28,9 @@ import org.jetbrains.annotations.Nullable;
 
 public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, EnergyNetwork, Long, UniversalCable> implements IMekanismStrictEnergyHandler {
 
+    //for emit utils
+    public static final Void ENERGY = null;
+
     private final List<IEnergyContainer> energyContainers;
     public final VariableCapacityEnergyContainer energyContainer;
     private long prevTransferAmount = 0L;
@@ -98,7 +101,7 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
         if (!isEmpty()) {
             EnergyTransmitterSaveTarget saveTarget = new EnergyTransmitterSaveTarget(getTransmitters());
             long energy = energyContainer.getEnergy();
-            EmitUtils.sendToAcceptors(saveTarget, energy, energy);
+            EmitUtils.sendToAcceptors(saveTarget, energy, ENERGY);
             saveTarget.save();
         }
     }
@@ -117,7 +120,7 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
                 }
             }
         }
-        return EmitUtils.sendToAcceptors(target, energyToSend, energyToSend);
+        return EmitUtils.sendToAcceptors(target, energyToSend, ENERGY);
     }
 
     @Override

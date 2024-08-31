@@ -5,6 +5,7 @@ import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IStrictEnergyHandler;
+import mekanism.common.content.network.EnergyNetwork;
 import mekanism.common.content.network.distribution.EnergyAcceptorTarget;
 import mekanism.common.integration.energy.BlockEnergyCapabilityCache;
 
@@ -61,6 +62,6 @@ public final class CableUtils {
                 target.addHandler(handler);
             }
         }
-        return EmitUtils.sendToAcceptors(target, energyToSend, energyToSend);
+        return EmitUtils.sendToAcceptors(target, energyToSend, EnergyNetwork.ENERGY);
     }
 }

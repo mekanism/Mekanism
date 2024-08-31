@@ -37,6 +37,7 @@ import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.content.network.EnergyNetwork;
 import mekanism.common.content.network.distribution.ChemicalHandlerTarget;
 import mekanism.common.content.network.distribution.EnergyAcceptorTarget;
 import mekanism.common.content.network.distribution.FluidHandlerTarget;
@@ -310,7 +311,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         @Override
         public void run() {
             if (getHandlerCount() > 0) {
-                storedEnergy.extract(EmitUtils.sendToAcceptors(this, toSend, toSend), Action.EXECUTE, AutomationType.INTERNAL);
+                storedEnergy.extract(EmitUtils.sendToAcceptors(this, toSend, EnergyNetwork.ENERGY), Action.EXECUTE, AutomationType.INTERNAL);
             }
         }
 

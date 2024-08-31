@@ -7,7 +7,7 @@ import mekanism.api.math.MathUtils;
 import mekanism.common.lib.distribution.SplitInfo;
 import mekanism.common.lib.distribution.Target;
 
-public class EnergySaveTarget<HANDLER extends EnergySaveTarget.SaveHandler> extends Target<HANDLER, Long> {
+public class EnergySaveTarget<HANDLER extends EnergySaveTarget.SaveHandler> extends Target<HANDLER, Void> {
 
     public EnergySaveTarget() {
     }
@@ -21,12 +21,12 @@ public class EnergySaveTarget<HANDLER extends EnergySaveTarget.SaveHandler> exte
     }
 
     @Override
-    protected void acceptAmount(HANDLER handler, SplitInfo splitInfo, Long resource, long amount) {
+    protected void acceptAmount(HANDLER handler, SplitInfo splitInfo, Void unused, long amount) {
         handler.acceptAmount(splitInfo, amount);
     }
 
     @Override
-    protected long simulate(HANDLER handler, Long resource, long amount) {
+    protected long simulate(HANDLER handler, Void unused, long amount) {
         return handler.simulate(amount);
     }
 
