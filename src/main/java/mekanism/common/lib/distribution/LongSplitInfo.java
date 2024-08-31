@@ -58,7 +58,7 @@ public class LongSplitInfo extends SplitInfo {
 
     @Override
     public long getUnsent() {
-        return remainder;
+        return amountToSplit;
     }
 
     @Override
