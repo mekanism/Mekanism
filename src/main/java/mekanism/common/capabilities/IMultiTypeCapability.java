@@ -66,4 +66,8 @@ public interface IMultiTypeCapability<HANDLER, ITEM_HANDLER extends HANDLER> {
           Runnable invalidationListener) {
         return BlockCapabilityCache.create(block(), level, pos, context, isValid, invalidationListener);
     }
+
+    default BlockCapabilityCache<HANDLER, @Nullable Direction> createCache(ServerLevel level, BlockPos pos, @Nullable Direction context, BooleanSupplier isValid) {
+        return BlockCapabilityCache.create(block(), level, pos, context, isValid, () -> {});
+    }
 }

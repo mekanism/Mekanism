@@ -4,9 +4,13 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
+import it.unimi.dsi.fastutil.longs.Long2ReferenceMap;
+import it.unimi.dsi.fastutil.longs.Long2ReferenceRBTreeMap;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.PrimitiveIterator.OfInt;
 import java.util.UUID;
 import mekanism.api.SerializationConstants;
@@ -39,8 +43,10 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -53,11 +59,35 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     protected int nextId = 0;
     protected int delay = 0;
     protected int delayCount = 0;
+    private final Map<Direction, BlockCapabilityCache<IItemHandler, Direction>> capabilityCache = new EnumMap<>(Direction.class);
+    private final Long2ReferenceMap<EnumMap<Direction, BlockCapabilityCache<IItemHandler, Direction>>> fallbackHandlerCache = new Long2ReferenceRBTreeMap<>();
 
     protected LogisticalTransporterBase(TileEntityTransmitter tile, TransporterTier tier) {
         super(tile, TransmissionType.ITEM);
         this.tier = tier;
     }
+
+    @Nullable
+    private IItemHandler getCapForSide(Direction logisticalSide) {
+        BlockCapabilityCache<IItemHandler, Direction> cache = capabilityCache.get(logisticalSide);
+        if (cache == null) {
+            cache = Capabilities.ITEM.createCache((ServerLevel) getLevel(), getBlockPos().relative(logisticalSide), logisticalSide.getOpposite(), this::isValid);
+            capabilityCache.put(logisticalSide, cache);
+        }
+        return cache.getCapability();
+    }
+
+    @Nullable
+    private IItemHandler getFallbackCapForSide(long pos, Direction handlerSide) {
+        EnumMap<Direction, BlockCapabilityCache<IItemHandler, Direction>> sideCache = fallbackHandlerCache.computeIfAbsent(pos, k -> new EnumMap<>(Direction.class));
+        BlockCapabilityCache<IItemHandler, Direction> cache = sideCache.get(handlerSide);
+        if (cache == null) {
+            cache = Capabilities.ITEM.createCache((ServerLevel) getLevel(), BlockPos.of(pos), handlerSide, this::isValid);
+            sideCache.put(handlerSide, cache);
+        }
+        return cache.getCapability();
+    }
+
 
     @Override
     protected AbstractAcceptorCache<IItemHandler, ?> createAcceptorCache() {
@@ -118,19 +148,16 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                 //Reset delay to 3 ticks; if nothing is available to insert OR inserted, we'll try again in 3 ticks
                 delay = 3;
                 //Attempt to pull
-                BlockPos.MutableBlockPos inventoryPos = new BlockPos.MutableBlockPos();
-                BlockPos pos = getBlockPos();
                 for (Direction side : EnumUtils.DIRECTIONS) {
                     if (!isConnectionType(side, ConnectionType.PULL)) {
                         continue;
                     }
-                    inventoryPos.setWithOffset(pos, side);
-                    IItemHandler inventory = Capabilities.ITEM.getCapabilityIfLoaded(getLevel(), inventoryPos, side.getOpposite());
+                    IItemHandler inventory = getCapForSide(side);
                     if (inventory != null) {
                         TransitRequest request = TransitRequest.anyItem(inventory, tier.getPullAmount());
                         //There's a stack available to insert into the network...
                         if (!request.isEmpty()) {
-                            TransitResponse response = insert(null, inventoryPos, request, getColor(), true, 0);
+                            TransitResponse response = insert(null, getBlockPos().relative(side), request, getColor(), true, 0);
                             if (response.isEmpty()) {
                                 //Insert failed; increment the backoff and calculate delay. Note that we cap retries
                                 // at a max of 40 ticks (2 seconds), which would be 4 consecutive retries
@@ -180,7 +207,6 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                             }
                             long next = stack.getPath().getLong(currentIndex - 1);
                             if (next != Long.MAX_VALUE) {
-                                BlockPos nextPos = BlockPos.of(next);
                                 if (!stack.isFinal(this)) {
                                     //If this is not the final transporter try transferring it to the next one
                                     LogisticalTransporterBase transmitter = network.getTransmitter(next);
@@ -196,11 +222,9 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                                     Direction side = stack.getSide(this).getOpposite();
                                     IItemHandler acceptor = network.getCachedAcceptor(next, side);
                                     if (acceptor == null && stack.getPathType().isHome()) {
-                                        //TODO: Cache this capability. The issue is that when we are sending it back home
-                                        // if it pulled the item itself, then it isn't in our cached acceptors, and thus won't be able to insert it
-                                        acceptor = Capabilities.ITEM.getCapabilityIfLoaded(getLevel(), nextPos, side);
+                                        acceptor = getFallbackCapForSide(next, side);
                                     }
-                                    TransitResponse response = TransitRequest.simple(stack.itemStack).addToInventory(getLevel(), nextPos, acceptor, 0,
+                                    TransitResponse response = TransitRequest.simple(stack.itemStack).addToInventory(getLevel(), BlockPos.of(next), acceptor, 0,
                                           stack.getPathType().isHome());
                                     if (!response.isEmpty()) {
                                         //We were able to add at least part of the stack to the inventory
