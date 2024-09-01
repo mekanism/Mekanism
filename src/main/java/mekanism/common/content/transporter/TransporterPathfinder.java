@@ -52,7 +52,7 @@ public final class TransporterPathfinder {
             return Collections.emptyList();
         }
         Long2ObjectMap<ChunkAccess> chunkMap = new Long2ObjectOpenHashMap<>();
-        List<AcceptorData> acceptors = network.calculateAcceptors(request, stack, chunkMap, additionalFlowingStacks);
+        List<AcceptorData> acceptors = network.calculateAcceptors(request, stack, chunkMap, additionalFlowingStacks, start);
         List<Destination> paths = new ArrayList<>();
         for (AcceptorData data : acceptors) {
             Destination path = getPath(network, data, start, stack, min, chunkMap);
@@ -64,7 +64,7 @@ public final class TransporterPathfinder {
         return paths;
     }
 
-    private static boolean checkPath(InventoryNetwork network, LongList path, TransporterStack stack) {
+    public static boolean checkPath(InventoryNetwork network, LongList path, TransporterStack stack) {
         for (int i = path.size() - 1; i > 0; i--) {
             LogisticalTransporterBase transmitter = network.getTransmitter(path.getLong(i));
             if (transmitter == null) {

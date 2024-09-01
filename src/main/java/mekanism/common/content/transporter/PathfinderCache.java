@@ -3,7 +3,6 @@ package mekanism.common.content.transporter;
 import it.unimi.dsi.fastutil.longs.LongList;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -51,6 +50,17 @@ public class PathfinderCache {
             }
         }
         return ret;
+    }
+
+    @Nullable
+    public static CachedPath getSingleCache(LogisticalTransporterBase start, BlockPos end, Direction side) {
+        UUID uuid = start.getTransmitterNetwork().getUUID();
+        Map<PathData, CachedPath> pathMap = cachedPaths.get(uuid);
+        if (pathMap != null) {
+            BlockPos startPos = start.getBlockPos();
+            return pathMap.get(new PathData(startPos, end, side));
+        }
+        return null;
     }
 
     public static void reset() {

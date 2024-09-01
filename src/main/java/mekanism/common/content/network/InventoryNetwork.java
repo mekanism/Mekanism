@@ -15,6 +15,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransporterManager;
+import mekanism.common.content.transporter.TransporterPathfinder;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
@@ -42,7 +43,7 @@ public class InventoryNetwork extends DynamicNetwork<IItemHandler, InventoryNetw
     }
 
     public List<AcceptorData> calculateAcceptors(TransitRequest request, TransporterStack stack, Long2ObjectMap<ChunkAccess> chunkMap,
-          Map<GlobalPos, Set<TransporterStack>> additionalFlowingStacks) {
+          Map<GlobalPos, Set<TransporterStack>> additionalFlowingStacks, LogisticalTransporterBase start) {
         List<AcceptorData> toReturn = new ArrayList<>();
         for (Long2ObjectMap.Entry<Map<Direction, IItemHandler>> entry : acceptorCache.getAcceptorEntrySet()) {
             BlockPos pos = BlockPos.of(entry.getLongKey());
@@ -53,6 +54,10 @@ public class InventoryNetwork extends DynamicNetwork<IItemHandler, InventoryNetw
                 for (Map.Entry<Direction, IItemHandler> acceptorEntry : entry.getValue().entrySet()) {
                     IItemHandler handler = acceptorEntry.getValue();
                     Direction side = acceptorEntry.getKey();
+                    PathfinderCache.CachedPath cachedPath = PathfinderCache.getSingleCache(start, pos, side);
+                    if (cachedPath != null && !TransporterPathfinder.checkPath(this, cachedPath.path(), stack)) {
+                        continue;//invalid path, no need to simulate
+                    }
                     //TODO: Figure out how we want to best handle the color check, as without doing it here we don't
                     // actually need to even query the TE
                     if (acceptor instanceof ISideConfiguration config) {
