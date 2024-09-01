@@ -173,7 +173,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                 }
             }
             if (!transit.isEmpty()) {
-                BlockPos pos = getBlockPos();
+                long pos = getWorldPositionLong();
                 InventoryNetwork network = getTransmitterNetwork();
                 //Update stack positions
                 IntSet deletes = new IntOpenHashSet();
@@ -200,11 +200,11 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                     if (stack.progress >= 100) {
                         long prevSet = Long.MAX_VALUE;
                         if (stack.hasPath()) {
-                            int currentIndex = stack.getPath().indexOf(pos.asLong());
-                            if (currentIndex == 0) { //Necessary for transition reasons, not sure why
+                            if (stack.getPath().getLong(0) == pos) { //Necessary for transition reasons, not sure why
                                 deletes.add(stackId);
                                 continue;
                             }
+                            int currentIndex = stack.getPath().indexOf(pos);
                             long next = stack.getPath().getLong(currentIndex - 1);
                             if (next != Long.MAX_VALUE) {
                                 if (!stack.isFinal(this)) {
@@ -269,7 +269,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                             if (nextPos == Long.MAX_VALUE) {
                                 tryRecalculate = true;
                             } else {
-                                Direction nextSide = stack.getSide(pos, nextPos);
+                                Direction nextSide = stack.getSide(getWorldPositionLong(), nextPos);
                                 LogisticalTransporterBase nextTransmitter = network.getTransmitter(nextPos);
                                 if (nextTransmitter == null && stack.getPathType().noTarget() && stack.getPath().size() == 2) {
                                     //If there is no next transmitter, and it was an idle path, assume that we are idling
@@ -424,9 +424,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
 
         //Only add to needsSync if true is being returned; otherwise it gets added to deletes
         needsSync.put(stackId, stack);
-        if (from != Long.MAX_VALUE) {
-            stack.originalLocation = BlockPos.of(from);
-        }
+        stack.originalLocation = from;
         return true;
     }
 
@@ -445,7 +443,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
           int min, boolean doEmit, PathCalculator<BE> pathCalculator) {
         Direction from = WorldUtils.sideDifference(getBlockPos(), outputterPos);
         if (from != null && canReceiveFrom(from.getOpposite())) {
-            TransporterStack stack = createInsertStack(outputterPos.immutable(), color);
+            TransporterStack stack = createInsertStack(outputterPos.asLong(), color);
             if (stack.canInsertToTransporterNN(this, from, outputter)) {
                 return updateTransit(doEmit, stack, pathCalculator.calculate(stack, request, outputter, this, min, doEmit));
             }
@@ -453,17 +451,17 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
         return request.getEmptyResponse();
     }
 
-    public TransitResponse insertUnchecked(BlockPos outputterPos, TransitRequest request, @Nullable EnumColor color, boolean doEmit, int min) {
+    public TransitResponse insertUnchecked(long outputterPos, TransitRequest request, @Nullable EnumColor color, boolean doEmit, int min) {
         TransporterStack stack = createInsertStack(outputterPos, color);
         return updateTransit(doEmit, stack, stack.recalculatePath(request, this, min, doEmit));
     }
 
     public <BE extends BlockEntity> TransitResponse insertUnchecked(BE outputter, TransitRequest request, @Nullable EnumColor color, boolean doEmit, int min, PathCalculator<BE> pathCalculator) {
-        TransporterStack stack = createInsertStack(outputter.getBlockPos(), color);
+        TransporterStack stack = createInsertStack(outputter.getBlockPos().asLong(), color);
         return updateTransit(doEmit, stack, pathCalculator.calculate(stack, request, outputter, this, min, doEmit));
     }
 
-    public TransporterStack createInsertStack(BlockPos outputterCoord, @Nullable EnumColor color) {
+    public TransporterStack createInsertStack(long outputterCoord, @Nullable EnumColor color) {
         TransporterStack stack = new TransporterStack();
         stack.originalLocation = outputterCoord;
         stack.homeLocation = outputterCoord;
@@ -478,7 +476,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
             if (doEmit) {
                 int stackId = nextId++;
                 addStack(stackId, stack);
-                PacketUtils.sendToAllTracking(PacketTransporterSync.create(getBlockPos(), stackId, stack), getTransmitterTile());
+                PacketUtils.sendToAllTracking(PacketTransporterSync.create(getWorldPositionLong(), stackId, stack), getTransmitterTile());
                 getTransmitterTile().markForSave();
             }
         }

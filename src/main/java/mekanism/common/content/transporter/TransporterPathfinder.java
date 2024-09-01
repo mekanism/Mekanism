@@ -173,16 +173,16 @@ public final class TransporterPathfinder {
         if (network == null) {
             return null;
         }
-        if (stack.homeLocation != null) {
+        if (stack.homeLocation != Long.MAX_VALUE) {
             Long2ObjectMap<ChunkAccess> chunkMap = new Long2ObjectOpenHashMap<>();
             //We are idling use the base stack
-            Pathfinder p = new Pathfinder(network, start.getLevel(), stack.homeLocation, start.getBlockPos(), stack, stack.itemStack,
+            Pathfinder p = new Pathfinder(network, start.getLevel(), BlockPos.of(stack.homeLocation), start.getBlockPos(), stack, stack.itemStack,
                   (level, pos, tile, s, resp, side) -> TransporterUtils.canInsert(level, pos, tile, s.color, resp, side, true));
             p.find(chunkMap);
             if (p.hasPath()) {
                 return new IdlePathData(p.getPath(), Path.HOME);
             }
-            stack.homeLocation = null;
+            stack.homeLocation = Long.MAX_VALUE;
         }
 
         IdlePath d = new IdlePath(network, start.getBlockPos(), stack);

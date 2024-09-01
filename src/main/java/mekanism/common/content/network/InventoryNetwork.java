@@ -46,15 +46,16 @@ public class InventoryNetwork extends DynamicNetwork<IItemHandler, InventoryNetw
           Map<GlobalPos, Set<TransporterStack>> additionalFlowingStacks, LogisticalTransporterBase start) {
         List<AcceptorData> toReturn = new ArrayList<>();
         for (Long2ObjectMap.Entry<Map<Direction, IItemHandler>> entry : acceptorCache.getAcceptorEntrySet()) {
-            BlockPos pos = BlockPos.of(entry.getLongKey());
-            if (!pos.equals(stack.homeLocation)) {
-                BlockEntity acceptor = WorldUtils.getTileEntity(getWorld(), chunkMap, pos);
+            long pos = entry.getLongKey();
+            if (pos != stack.homeLocation) {
+                BlockPos blockPos = BlockPos.of(pos);
+                BlockEntity acceptor = WorldUtils.getTileEntity(getWorld(), chunkMap, blockPos);
                 Map<TransitResponse, AcceptorData> dataMap = new HashMap<>();
-                GlobalPos position = GlobalPos.of(getWorld().dimension(), pos);
+                GlobalPos position = GlobalPos.of(getWorld().dimension(), blockPos);
                 for (Map.Entry<Direction, IItemHandler> acceptorEntry : entry.getValue().entrySet()) {
                     IItemHandler handler = acceptorEntry.getValue();
                     Direction side = acceptorEntry.getKey();
-                    PathfinderCache.CachedPath cachedPath = PathfinderCache.getSingleCache(start, pos, side);
+                    PathfinderCache.CachedPath cachedPath = PathfinderCache.getSingleCache(start, blockPos, side);
                     if (cachedPath != null && !TransporterPathfinder.checkPath(this, cachedPath.path(), stack)) {
                         continue;//invalid path, no need to simulate
                     }
@@ -77,7 +78,7 @@ public class InventoryNetwork extends DynamicNetwork<IItemHandler, InventoryNetw
                         AcceptorData data = dataMap.get(response);
                         if (data == null) {
                             //If we don't, add a new acceptor data for the response and position with side
-                            data = new AcceptorData(pos, response, opposite);
+                            data = new AcceptorData(blockPos, response, opposite);
                             dataMap.put(response, data);
                             toReturn.add(data);
                             //Note: In theory this shouldn't cause any issues if some exposed slots overlap but are for

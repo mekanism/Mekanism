@@ -5,7 +5,6 @@ import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -13,17 +12,17 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-public record PacketTransporterSync(BlockPos pos, int stackId, TransporterStack stack) implements IMekanismPacket {
+public record PacketTransporterSync(long pos, int stackId, TransporterStack stack) implements IMekanismPacket {
 
     public static final CustomPacketPayload.Type<PacketTransporterSync> TYPE = new CustomPacketPayload.Type<>(Mekanism.rl("transporter_sync"));
     public static final StreamCodec<RegistryFriendlyByteBuf, PacketTransporterSync> STREAM_CODEC = StreamCodec.composite(
-          BlockPos.STREAM_CODEC, PacketTransporterSync::pos,
+          ByteBufCodecs.VAR_LONG, PacketTransporterSync::pos,
           ByteBufCodecs.VAR_INT, PacketTransporterSync::stackId,
           TransporterStack.STREAM_CODEC, PacketTransporterSync::stack,
           PacketTransporterSync::new
     );
 
-    public static PacketTransporterSync create(BlockPos pos, int stackId, TransporterStack stack) {
+    public static PacketTransporterSync create(long pos, int stackId, TransporterStack stack) {
         return new PacketTransporterSync(pos, stackId, stack.updateForPos(pos));
     }
 

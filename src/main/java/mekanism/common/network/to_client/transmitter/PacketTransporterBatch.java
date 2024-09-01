@@ -10,7 +10,6 @@ import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -18,17 +17,17 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-public record PacketTransporterBatch(BlockPos pos, IntSet deletes, Int2ObjectMap<TransporterStack> updates) implements IMekanismPacket {
+public record PacketTransporterBatch(long pos, IntSet deletes, Int2ObjectMap<TransporterStack> updates) implements IMekanismPacket {
 
     public static final CustomPacketPayload.Type<PacketTransporterBatch> TYPE = new CustomPacketPayload.Type<>(Mekanism.rl("transporter_batch"));
     public static final StreamCodec<RegistryFriendlyByteBuf, PacketTransporterBatch> STREAM_CODEC = StreamCodec.composite(
-          BlockPos.STREAM_CODEC, PacketTransporterBatch::pos,
+          ByteBufCodecs.VAR_LONG, PacketTransporterBatch::pos,
           ByteBufCodecs.VAR_INT.apply(ByteBufCodecs.collection(IntOpenHashSet::new)), PacketTransporterBatch::deletes,
           ByteBufCodecs.map(Int2ObjectOpenHashMap::new, ByteBufCodecs.VAR_INT, TransporterStack.STREAM_CODEC), PacketTransporterBatch::updates,
           PacketTransporterBatch::new
     );
 
-    public static PacketTransporterBatch create(BlockPos pos, IntSet deletes, Int2ObjectMap<TransporterStack> updates) {
+    public static PacketTransporterBatch create(long pos, IntSet deletes, Int2ObjectMap<TransporterStack> updates) {
         for (TransporterStack stack : updates.values()) {
             stack.updateForPos(pos);
         }

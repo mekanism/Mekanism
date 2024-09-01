@@ -13,6 +13,7 @@ import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.util.TransporterUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
@@ -106,7 +107,7 @@ public abstract class TileEntityLogisticalTransporterBase extends TileEntityTran
                 if (transporter.exposesInsertCap(side)) {
                     CursedTransporterItemHandler cached = cursedHandlers.get(side);
                     if (cached == null) {
-                        cached = new CursedTransporterItemHandler(transporter, worldPosition.relative(side), () -> level == null ? -1 : level.getGameTime());
+                        cached = new CursedTransporterItemHandler(transporter, WorldUtils.relativePos(getWorldPositionLong(), side), () -> level == null ? -1 : level.getGameTime());
                         cursedHandlers.put(side, cached);
                     }
                     handlers.put(side, cached);

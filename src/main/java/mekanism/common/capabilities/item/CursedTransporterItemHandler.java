@@ -28,10 +28,10 @@ public class CursedTransporterItemHandler implements IItemHandler {
     private final Set<ItemStack> seenExecutedStacks = Collections.newSetFromMap(new IdentityHashMap<>());
     private final LogisticalTransporterBase transporter;
     private final LongSupplier currentTickSupplier;
-    private final BlockPos fromPos;
+    private final long fromPos;
     private long lastTick;
 
-    public CursedTransporterItemHandler(LogisticalTransporterBase transporter, BlockPos fromPos, LongSupplier currentTickSupplier) {
+    public CursedTransporterItemHandler(LogisticalTransporterBase transporter, long fromPos, LongSupplier currentTickSupplier) {
         this.transporter = transporter;
         this.fromPos = fromPos;
         this.currentTickSupplier = currentTickSupplier;

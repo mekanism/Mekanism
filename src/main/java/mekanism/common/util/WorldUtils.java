@@ -29,7 +29,6 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.GameRules;
@@ -67,6 +66,19 @@ public class WorldUtils {
     @Contract("null, _ -> false")
     public static boolean isChunkLoaded(@Nullable LevelReader world, @NotNull BlockPos pos) {
         return isChunkLoaded(world, SectionPos.blockToSectionCoord(pos.getX()), SectionPos.blockToSectionCoord(pos.getZ()));
+    }
+
+    /**
+     * Checks if the chunk at the given position is loaded but does not validate the position is in bounds of the world.
+     *
+     * @param world world
+     * @param pos   packed block position
+     *
+     * @see #isBlockLoaded(BlockGetter, BlockPos)
+     */
+    @Contract("null, _ -> false")
+    public static boolean isChunkLoaded(@Nullable LevelReader world, long pos) {
+        return isChunkLoaded(world, SectionPos.blockToSectionCoord(BlockPos.getX(pos)), SectionPos.blockToSectionCoord(BlockPos.getZ(pos)));
     }
 
     /**
@@ -115,6 +127,41 @@ public class WorldUtils {
             return false;
         } else if (world instanceof LevelReader reader) {
             if (reader instanceof Level level && !level.isInWorldBounds(pos)) {
+                return false;
+            }
+            //TODO: If any cases come up where things are behaving oddly due to the change from reader.hasChunkAt(pos)
+            // re-evaluate this and if the specific case is being handled properly
+            return isChunkLoaded(reader, pos);
+        }
+        return true;
+    }
+
+    private static boolean isInWorldBound(BlockGetter world, long pos) {
+        return !world.isOutsideBuildHeight(BlockPos.getY(pos)) && isInWorldBoundsHorizontal(pos);
+    }
+
+    private static boolean isInWorldBoundsHorizontal(long pos) {
+        int x = BlockPos.getX(pos);
+        int z = BlockPos.getZ(pos);
+        return x >= -30000000 && z >= -30000000 && x < 30000000 && z < 30000000;
+    }
+
+    /**
+     * Checks if a position is in bounds of the world, and is loaded
+     *
+     * @param world world
+     * @param pos   packed block position
+     *
+     * @return True if the position is loaded or the given world is of a superclass of IWorldReader that does not have a concept of being loaded.
+     *
+     * @implNote the checks for world bound don't account for a mod changing the default 30,000,000 limit, but surely that's rare...
+     */
+    @Contract("null, _ -> false")
+    public static boolean isBlockLoaded(@Nullable BlockGetter world, long pos) {
+        if (world == null) {
+            return false;
+        } else if (world instanceof LevelReader reader) {
+            if (reader instanceof Level level && !isInWorldBound(level, pos)) {
                 return false;
             }
             //TODO: If any cases come up where things are behaving oddly due to the change from reader.hasChunkAt(pos)
@@ -294,6 +341,24 @@ public class WorldUtils {
           boolean logWrongType) {
         //Get the tile entity using the chunk we found/had cached
         return getTileEntity(clazz, getChunkForPos(world, chunkMap, pos), pos, logWrongType);
+    }
+
+    /**
+     * Gets a tile entity if the location is loaded
+     *
+     * @param world world
+     * @param pos   position
+     *
+     * @return tile entity if found, null if either not found or not loaded
+     */
+    @Nullable
+    @Contract("null, _ -> null")
+    public static BlockEntity getTileEntity(@Nullable BlockGetter world, long pos) {
+        if (!isBlockLoaded(world, pos)) {
+            //If the world is null, or it is a world reader and the block is not loaded, return null
+            return null;
+        }
+        return world.getBlockEntity(BlockPos.of(pos));
     }
 
     /**

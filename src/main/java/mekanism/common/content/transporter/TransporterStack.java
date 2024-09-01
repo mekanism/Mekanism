@@ -19,12 +19,10 @@ import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -44,7 +42,7 @@ public class TransporterStack {
     public static StreamCodec<RegistryFriendlyByteBuf, TransporterStack> STREAM_CODEC = NeoForgeStreamCodecs.composite(
           EnumColor.OPTIONAL_STREAM_CODEC, stack -> Optional.ofNullable(stack.color),
           ByteBufCodecs.VAR_INT, stack -> stack.progress,
-          BlockPos.STREAM_CODEC, stack -> stack.originalLocation,
+          ByteBufCodecs.VAR_LONG, stack -> stack.originalLocation,
           Path.STREAM_CODEC, TransporterStack::getPathType,
           ByteBufCodecs.optional(ByteBufCodecs.VAR_LONG), stack -> stack.clientNext == Long.MAX_VALUE ? Optional.empty() : Optional.of(stack.clientNext),
           ByteBufCodecs.optional(ByteBufCodecs.VAR_LONG), stack -> stack.clientPrev == Long.MAX_VALUE ? Optional.empty() : Optional.of(stack.clientPrev),
@@ -71,10 +69,14 @@ public class TransporterStack {
     public boolean initiatedPath = false;
 
     public Direction idleDir = null;
-    public BlockPos originalLocation;
-    public BlockPos homeLocation;
+
+    //packed BlockPos-es
+    public long originalLocation = Long.MAX_VALUE;
+    public long homeLocation = Long.MAX_VALUE;
     private long clientNext = Long.MAX_VALUE;
     private long clientPrev = Long.MAX_VALUE;
+    //
+
     @Nullable
     private Path pathType;
     private LongList pathToTarget = new LongArrayList();
@@ -96,7 +98,7 @@ public class TransporterStack {
             NBTUtils.writeEnum(updateTag, SerializationConstants.COLOR, color);
         }
         updateTag.putInt(SerializationConstants.PROGRESS, progress);
-        updateTag.put(SerializationConstants.ORIGINAL_LOCATION, NbtUtils.writeBlockPos(originalLocation));
+        updateTag.putLong(SerializationConstants.ORIGINAL_LOCATION, originalLocation);
         NBTUtils.writeEnum(updateTag, SerializationConstants.PATH_TYPE, getPathType());
         long next = getNext(transporter);
         if (next != Long.MAX_VALUE) {
@@ -114,7 +116,7 @@ public class TransporterStack {
     public void readFromUpdateTag(HolderLookup.Provider provider, CompoundTag updateTag) {
         this.color = NBTUtils.getEnum(updateTag, SerializationConstants.COLOR, EnumColor.BY_ID);
         progress = updateTag.getInt(SerializationConstants.PROGRESS);
-        NBTUtils.setBlockPosIfPresent(updateTag, SerializationConstants.ORIGINAL_LOCATION, coord -> originalLocation = coord);
+        NBTUtils.setLongIfPresent(updateTag, SerializationConstants.ORIGINAL_LOCATION, coord -> originalLocation = coord);
         NBTUtils.setEnumIfPresent(updateTag, SerializationConstants.PATH_TYPE, Path.BY_ID, type -> pathType = type);
 
         //todo is backcompat needed?
@@ -137,13 +139,13 @@ public class TransporterStack {
         }
 
         nbtTags.putInt(SerializationConstants.PROGRESS, progress);
-        nbtTags.put(SerializationConstants.ORIGINAL_LOCATION, NbtUtils.writeBlockPos(originalLocation));
+        nbtTags.putLong(SerializationConstants.ORIGINAL_LOCATION, originalLocation);
 
         if (idleDir != null) {
             NBTUtils.writeEnum(nbtTags, SerializationConstants.IDLE_DIR, idleDir);
         }
-        if (homeLocation != null) {
-            nbtTags.put(SerializationConstants.HOME_LOCATION, NbtUtils.writeBlockPos(homeLocation));
+        if (homeLocation != Long.MAX_VALUE) {
+            nbtTags.putLong(SerializationConstants.HOME_LOCATION, homeLocation);
         }
         if (pathType != null) {
             NBTUtils.writeEnum(nbtTags, SerializationConstants.PATH_TYPE, pathType);
@@ -156,12 +158,15 @@ public class TransporterStack {
     public void read(HolderLookup.Provider provider, CompoundTag nbtTags) {
         this.color = NBTUtils.getEnum(nbtTags, SerializationConstants.COLOR, EnumColor.BY_ID);
         progress = nbtTags.getInt(SerializationConstants.PROGRESS);
-        NBTUtils.setBlockPosIfPresent(nbtTags, SerializationConstants.ORIGINAL_LOCATION, coord -> originalLocation = coord);
+        NBTUtils.setBlockPosIfPresent(nbtTags, SerializationConstants.ORIGINAL_LOCATION, coord -> originalLocation = coord.asLong());//TODO 1.22 remove backcompat
+        NBTUtils.setLongIfPresent(nbtTags, SerializationConstants.ORIGINAL_LOCATION, coord -> originalLocation = coord);
         NBTUtils.setEnumIfPresent(nbtTags, SerializationConstants.IDLE_DIR, Direction::from3DDataValue, dir -> idleDir = dir);
-        NBTUtils.setBlockPosIfPresent(nbtTags, SerializationConstants.HOME_LOCATION, coord -> homeLocation = coord);
+        NBTUtils.setBlockPosIfPresent(nbtTags, SerializationConstants.HOME_LOCATION, coord -> homeLocation = coord.asLong());//TODO 1.22 remove backcompat
+        NBTUtils.setLongIfPresent(nbtTags, SerializationConstants.HOME_LOCATION, coord -> homeLocation = coord);
         NBTUtils.setEnumIfPresent(nbtTags, SerializationConstants.PATH_TYPE, Path.BY_ID, type -> pathType = type);
-        if (nbtTags.contains(SerializationConstants.ITEM_OVERSIZED)) {
-            itemStack = SerializerHelper.parseOversized(provider, nbtTags.get(SerializationConstants.ITEM_OVERSIZED)).orElse(ItemStack.EMPTY);
+        Tag oversizedTag = nbtTags.get(SerializationConstants.ITEM_OVERSIZED);
+        if (oversizedTag != null) {
+            itemStack = SerializerHelper.parseOversized(provider, oversizedTag).orElse(ItemStack.EMPTY);
         } else if (nbtTags.contains(SerializationConstants.ITEM, Tag.TAG_COMPOUND)) {//TODO - 1.22: Remove this legacy way of loading data
             itemStack = ItemStack.parseOptional(provider, nbtTags.getCompound(SerializationConstants.ITEM));
         } else {//TODO - 1.22: Remove this legacy way of loading data
@@ -248,7 +253,7 @@ public class TransporterStack {
             idleDir = null;
         }
         setPath(transporter.getLevel(), newPath.path(), newPath.type(), true);
-        originalLocation = transporter.getBlockPos();
+        originalLocation = transporter.getWorldPositionLong();
         initiatedPath = true;
         return true;
     }
@@ -258,18 +263,18 @@ public class TransporterStack {
     }
 
     //TODO - 1.20.5: Re-evaluate this method
-    public TransporterStack updateForPos(BlockPos pos) {
+    public TransporterStack updateForPos(long pos) {
         clientNext = getNext(pos);
-        clientPrev = getPrev(pos.asLong());
+        clientPrev = getPrev(pos);
         return this;
     }
 
     public long getNext(LogisticalTransporterBase transporter) {
-        return transporter.isRemote() ? clientNext : getNext(transporter.getBlockPos());
+        return transporter.isRemote() ? clientNext : getNext(transporter.getWorldPositionLong());
     }
 
-    private long getNext(BlockPos pos) {
-        int index = pathToTarget.indexOf(pos.asLong()) - 1;
+    private long getNext(long pos) {
+        int index = pathToTarget.indexOf(pos) - 1;
         if (index < 0) {
             return Long.MAX_VALUE;
         }
@@ -285,7 +290,7 @@ public class TransporterStack {
         if (index < pathToTarget.size()) {
             return pathToTarget.getLong(index);
         }
-        return originalLocation.asLong();
+        return originalLocation;
     }
 
     public Direction getSide(LogisticalTransporterBase transporter) {
@@ -308,10 +313,10 @@ public class TransporterStack {
         return side == null ? Direction.DOWN : side;
     }
 
-    public Direction getSide(BlockPos pos, long target) {
+    public Direction getSide(long pos, long target) {
         Direction side = null;
         if (target != Long.MAX_VALUE) {
-            side = WorldUtils.sideDifference(target, pos.asLong());
+            side = WorldUtils.sideDifference(target, pos);
         }
         //TODO: See getSide(Transporter) for why we null check and then return down
         return side == null ? Direction.DOWN : side;

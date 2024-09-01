@@ -113,6 +113,11 @@ public class PacketUtils {
         return WorldUtils.getTileEntity(context.player().level(), pos);
     }
 
+    @Nullable
+    public static BlockEntity blockEntity(IPayloadContext context, long pos) {
+        return WorldUtils.getTileEntity(context.player().level(), pos);
+    }
+
     /**
      * Send this message to the server.
      *
