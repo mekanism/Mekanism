@@ -77,7 +77,7 @@ public class TileComponentFrequency implements ITileComponent {
     }
 
     public void tickServer(Level level, BlockPos pos) {
-        if (level.getServer().getTickCount() % 5 == tickOffset) {
+        if (level.getGameTime() % 5 == tickOffset) {
             if (securityFrequency != null) {
                 updateFrequency(FrequencyType.SECURITY, securityFrequency);
             }
