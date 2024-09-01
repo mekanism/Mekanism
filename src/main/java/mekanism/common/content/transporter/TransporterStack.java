@@ -254,7 +254,7 @@ public class TransporterStack {
     }
 
     public boolean isFinal(LogisticalTransporterBase transporter) {
-        return pathToTarget.indexOf(transporter.getBlockPos().asLong()) == (getPathType().hasTarget() ? 1 : 0);
+        return transporter.getWorldPositionLong() == pathToTarget.get(getPathType().hasTarget() ? 1 : 0);
     }
 
     //TODO - 1.20.5: Re-evaluate this method
