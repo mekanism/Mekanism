@@ -424,7 +424,9 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
 
         //Only add to needsSync if true is being returned; otherwise it gets added to deletes
         needsSync.put(stackId, stack);
-        stack.originalLocation = from;
+        if (from != Long.MAX_VALUE) {
+            stack.originalLocation = from;
+        }
         return true;
     }
 
