@@ -370,6 +370,7 @@ public final class TransporterPathfinder {
         private final InventoryNetwork network;
         private final BlockPos start;
         private final BlockPos finalNode;
+        private final long finalNodeLong;
         private final TransporterStack transportStack;
         private final ItemStack data;
         private final DestChecker destChecker;
@@ -383,6 +384,7 @@ public final class TransporterPathfinder {
             this.network = network;
             this.world = world;
             this.finalNode = finalNode;
+            this.finalNodeLong = finalNode.asLong();
             this.start = start;
             transportStack = stack;
             this.data = data;
@@ -477,7 +479,7 @@ public final class TransporterPathfinder {
             if (startTransporter != null && neighbor.equals(finalNode)) {
                 BlockEntity neighborTile = WorldUtils.getTileEntity(world, chunkMap, neighbor);
                 if (destChecker.isValid(world, neighbor, neighborTile, transportStack, data, direction)) {
-                    if (startTransporter.canEmitTo(direction) || (finalNode.equals(transportStack.homeLocation) && startTransporter.canConnect(direction))) {
+                    if (startTransporter.canEmitTo(direction) || (finalNodeLong == transportStack.homeLocation && startTransporter.canConnect(direction))) {
                         //If it is, and we can emit to it (normal or push mode),
                         // or it is the home location of the stack (it is returning due to not having been able to get to its destination) and
                         // we can connect to it (normal, push, or pull (should always be pull as otherwise canEmitTo would have been true)),
