@@ -30,6 +30,11 @@ public interface IModModule {
     void resetClient();
 
     /**
+     * Called when dimension changed or returns to main menu.
+     */
+    void resetClientDimensionChanged();
+
+    /**
      * Called during the first tick after joining a game.
      */
     default void launchClient() {

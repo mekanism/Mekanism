@@ -95,6 +95,10 @@ public class MekanismAdditions implements IModModule {
     }
 
     @Override
+    public void resetClientDimensionChanged() {
+    }
+
+    @Override
     public void launchClient() {
         AdditionsClient.launch();
     }

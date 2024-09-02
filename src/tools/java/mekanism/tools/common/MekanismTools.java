@@ -64,4 +64,8 @@ public class MekanismTools implements IModModule {
     @Override
     public void resetClient() {
     }
+
+    @Override
+    public void resetClientDimensionChanged() {
+    }
 }

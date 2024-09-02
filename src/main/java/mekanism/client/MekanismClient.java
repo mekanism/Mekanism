@@ -19,8 +19,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import org.jetbrains.annotations.Nullable;
@@ -50,21 +52,32 @@ public class MekanismClient {
         }
     }
 
+    /**
+     * Reset things that aren't needed between levels or would leak
+     */
+    public static void resetDimensionChange() {
+        Mekanism.playerState.clear(true);
+        Mekanism.activeVibrators.clear();
+        RadiationManager.get().resetClient();
+        RenderSPS.clearBoltRenderers();
+        TransmitterNetworkRegistry.getInstance().clearClientNetworks();
+        RenderTickHandler.clearQueued();
+
+        for (IModModule module : Mekanism.modulesLoaded) {
+            module.resetClientDimensionChanged();
+        }
+    }
+
     public static void reset() {
         clientSecurityMap.clear();
         clientUUIDMap.clear();
 
         ClientTickHandler.portableTeleports.clear();
         ClientTickHandler.visionEnhancement = false;
-
-        Mekanism.playerState.clear(true);
-        Mekanism.activeVibrators.clear();
-        RadiationManager.get().resetClient();
         SoundHandler.radiationSoundMap.clear();
-        RenderSPS.clearBoltRenderers();
-        TransmitterNetworkRegistry.getInstance().clearClientNetworks();
-        RenderTickHandler.clearQueued();
         MekanismRecipeType.clearCache();
+
+        resetDimensionChange();
 
         for (IModModule module : Mekanism.modulesLoaded) {
             module.resetClient();
@@ -85,5 +98,12 @@ public class MekanismClient {
     @Nullable
     public static Player tryGetClientPlayer() {
         return Minecraft.getInstance().player;
+    }
+
+    @SubscribeEvent
+    public static void onCloneRespawn(ClientPlayerNetworkEvent.Clone event) {
+        if (event.getOldPlayer().level() != event.getNewPlayer().level()) {
+            resetDimensionChange();
+        }
     }
 }
