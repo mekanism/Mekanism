@@ -257,6 +257,23 @@ public class WorldUtils {
     }
 
     /**
+     * Gets a blockstate if the location is loaded
+     *
+     * @param world world
+     * @param pos   position
+     *
+     * @return the blockstate if found, null if not loaded
+     */
+    @Nullable
+    public static BlockState getBlockStateIfLoaded(@Nullable BlockGetter world, @NotNull BlockPos pos) {
+        if (!isBlockLoaded(world, pos)) {
+            //If the world is null, or it is a world reader and the block is not loaded, return empty
+            return null;
+        }
+        return world.getBlockState(pos);
+    }
+
+    /**
      * Gets a fluidstate if the location is loaded by getting the chunk from the passed in cache of chunks rather than directly using the world. We then store our chunk
      * we found back in the cache to more quickly be able to look up chunks if we are doing lots of lookups at once (For example multiblock structure validation)
      *

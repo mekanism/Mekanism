@@ -21,11 +21,13 @@ import java.util.function.Predicate;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
+import mekanism.api.MekanismAPI;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.CommonWorldTickHandler;
+import mekanism.common.Mekanism;
 import mekanism.common.attachments.FilterAware;
 import mekanism.common.attachments.OverflowAware;
 import mekanism.common.base.MekFakePlayer;
@@ -473,9 +475,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
                     target = chunk;
                 }
                 BlockPos pos = getOffsetForIndex(startingPos, diameter, index);
-                Optional<BlockState> blockState = WorldUtils.getBlockState(level, pos);
-                if (blockState.isPresent()) {
-                    BlockState state = blockState.get();
+                BlockState state = WorldUtils.getBlockStateIfLoaded(level, pos);
+                if (state != null) {
                     if (!state.isAir() && !state.is(MekanismTags.Blocks.MINER_BLACKLIST)) {
                         //Make sure the block is loaded and is not air, and is not in the blacklist of blocks the miner can break
                         // then check if the block matches one of our filters
@@ -517,8 +518,14 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
                             }
                             //Exit out. We either mined the block or don't have room so there is no reason to continue checking
                             return;
+                        } else if (MekanismAPI.debug) {
+                            Mekanism.logger.error("Filter failed or can't mine: {} @ {} {}", state, getWorldNN().dimension().location(), pos);
                         }
+                    } else if (MekanismAPI.debug) {
+                        Mekanism.logger.error("State was air or was blacklisted (mismatch between search and runtime): {} @ {} {}", state, getWorldNN().dimension().location(), pos);
                     }
+                } else if (MekanismAPI.debug) {
+                    Mekanism.logger.debug("Block was not loaded {} {}", getWorldNN().dimension().location(), pos);
                 }
                 //If we failed to mine the block, because it isn't loaded, is air, or we shouldn't mine it
                 // remove the block from our list of blocks to mine, and reduce the number of blocks we have to mine
@@ -579,6 +586,9 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         MekFakePlayer dummy = MekFakePlayer.setupFakePlayer((ServerLevel) level, this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ());
         dummy.setEmulatingUUID(getOwnerUUID());//pretend to be the owner
         boolean canMine = !NeoForge.EVENT_BUS.post(new BlockEvent.BreakEvent(level, pos, state, dummy)).isCanceled();
+        if (MekanismAPI.debug) {
+            Mekanism.logger.debug("Denied mining block: {} @ {} {}", state, level.dimension().location(), pos);
+        }
         dummy.cleanupFakePlayer((ServerLevel) level);
         return canMine;
     }
