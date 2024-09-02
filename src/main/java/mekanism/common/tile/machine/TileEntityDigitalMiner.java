@@ -586,7 +586,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         MekFakePlayer dummy = MekFakePlayer.setupFakePlayer((ServerLevel) level, this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ());
         dummy.setEmulatingUUID(getOwnerUUID());//pretend to be the owner
         boolean canMine = !NeoForge.EVENT_BUS.post(new BlockEvent.BreakEvent(level, pos, state, dummy)).isCanceled();
-        if (MekanismAPI.debug) {
+        if (MekanismAPI.debug && !canMine) {
             Mekanism.logger.debug("Denied mining block: {} @ {} {}", state, level.dimension().location(), pos);
         }
         dummy.cleanupFakePlayer((ServerLevel) level);
