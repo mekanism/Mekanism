@@ -64,7 +64,7 @@ public class ThreadMinerSearch extends Thread {
         Block info;
         BlockPos minerPos = tile.getBlockPos();
         for (int i = 0; i < size; i++) {
-            if (tile.isRemoved()) {
+            if (tile.isRemoved() || isInterrupted()) {
                 //Make sure the miner is still valid and something hasn't gone wrong
                 return;
             }
@@ -104,6 +104,9 @@ public class ThreadMinerSearch extends Thread {
 
         state = State.FINISHED;
         chunkCache = null;
+        if (interrupted()) {
+            return;//no point checking as we got cancelled
+        }
         if (tile.searcher == this) {
             //Only update search if we are still valid and didn't get replaced due to a reset call
             tile.updateFromSearch(oresToMine, found);

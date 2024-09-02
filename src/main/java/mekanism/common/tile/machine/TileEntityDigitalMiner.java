@@ -805,7 +805,9 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     }
 
     public void reset() {
-        //TODO: Should the old searcher thread be terminated somehow?
+        if (searcher != null && searcher.isAlive()) {
+            searcher.interrupt();
+        }
         searcher = new ThreadMinerSearch(this);
         running = false;
         cachedToMine = 0;
