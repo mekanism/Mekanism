@@ -114,6 +114,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
      */
     private void refreshChunkTickets(@NotNull ServerLevel world, @NotNull BlockPos pos, boolean ticketsChanged) {
         boolean canOperate = canOperate();
+        LOGGER.debug("refreshChunkTickets called for {}. Can operate = {}", pos, canOperate);
         if (hasRegistered && prevWorld != null && prevPos != null) {
             //Note: If we have already registered the previous world and previous position
             // should never be null, but we validate this just in case
