@@ -130,8 +130,8 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
                     registerChunkTickets(world);
                 } else {
                     //Otherwise, we need to do some more checks
-                    LongSet chunks = getTileChunks();
-                    if (chunks.isEmpty()) {
+                    LongSet newChunks = getTileChunks();
+                    if (newChunks.isEmpty()) {
                         //Probably never the case, but if we have no chunks that should be loaded anymore;
                         // just release them all normally
                         releaseChunkTickets(world, pos);
@@ -143,7 +143,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
                         LongIterator chunkIt = chunkSet.iterator();
                         while (chunkIt.hasNext()) {
                             long chunkPos = chunkIt.nextLong();
-                            if (!chunks.contains(chunkPos)) {
+                            if (!newChunks.contains(chunkPos)) {
                                 //If the chunk is no longer in our chunks we want loaded
                                 // then we need to unforce the chunk and remove it
                                 TICKET_CONTROLLER.forceChunk(world, pos, (int) chunkPos, (int) (chunkPos >> 32), false, forceTicks);
@@ -152,7 +152,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
                             }
                         }
                         //And add any that are valid now that weren't before
-                        for (long chunkPos : chunks) {
+                        for (long chunkPos : newChunks) {
                             if (chunkSet.add(chunkPos)) {
                                 //If we didn't already have it in our chunk set and added actually added it as it is new
                                 // then we also need to force the chunk
@@ -163,7 +163,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
                         if (removed != 0 || added != 0) {
                             markDirty();
                         }
-                        LOGGER.debug("Removed {} no longer valid chunk tickets, and added {} newly valid chunk tickets. Pos: {} World: {}", removed, added, pos,
+                        LOGGER.debug("refreshChunkTickets(): Removed {} no longer valid chunk tickets, and added {} newly valid chunk tickets. Pos: {} World: {}", removed, added, pos,
                               world.dimension().location());
                     }
                 }
@@ -337,7 +337,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
                                 chunkLoader.markDirty();
                                 //Note: Info level as this may be intended/expected when configs change (for example reducing max radius of digital miner),
                                 // or if some of it needs to be recalculated such as the miner no longer having a target chunk
-                                LOGGER.info("Removed {} no longer valid chunk tickets, and added {} newly valid chunk tickets. Pos: {} World: {}",
+                                LOGGER.info("validateTickets(): Removed {} no longer valid chunk tickets, and added {} newly valid chunk tickets. Pos: {} World: {}",
                                       removed, added, pos, worldName);
                             }
                         }
