@@ -8,6 +8,7 @@ import it.unimi.dsi.fastutil.longs.LongSets;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import mekanism.api.MekanismAPI;
 import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
 import mekanism.common.Mekanism;
@@ -165,6 +166,11 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
                         }
                         LOGGER.debug("refreshChunkTickets(): Removed {} no longer valid chunk tickets, and added {} newly valid chunk tickets. Pos: {} World: {}", removed, added, pos,
                               world.dimension().location());
+                        if (MekanismAPI.debug) {
+                            LOGGER.debug("Current set: {}", chunkSet);
+                            LOGGER.debug("Tile chunk: {}", ChunkPos.asLong(tile.getBlockPos()));
+                            LOGGER.debug("Tile requested: {}", newChunks);
+                        }
                     }
                 }
             }
@@ -339,6 +345,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
                                 // or if some of it needs to be recalculated such as the miner no longer having a target chunk
                                 LOGGER.info("validateTickets(): Removed {} no longer valid chunk tickets, and added {} newly valid chunk tickets. Pos: {} World: {}",
                                       removed, added, pos, worldName);
+
                             }
                         }
                     } else {
