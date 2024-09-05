@@ -40,6 +40,7 @@ import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.filter.SortableFilterManager;
 import mekanism.common.content.miner.MinerFilter;
+import mekanism.common.content.miner.MinerRegionCache;
 import mekanism.common.content.miner.ThreadMinerSearch;
 import mekanism.common.content.miner.ThreadMinerSearch.State;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
@@ -99,7 +100,6 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.PathNavigationRegion;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -794,7 +794,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         if (searcher.state == State.IDLE) {
             BlockPos startingPos = getStartingPos();
             int diameter = getDiameter();
-            searcher.setChunkCache(new PathNavigationRegion(getLevel(), startingPos, startingPos.offset(diameter, getMaxY() - getMinY() + 1, diameter)));
+            searcher.setChunkCache(new MinerRegionCache((ServerLevel) getLevel(), startingPos, startingPos.offset(diameter, getMaxY() - getMinY() + 1, diameter), this.upgradeComponent.isUpgradeInstalled(Upgrade.ANCHOR)));
             searcher.start();
         }
         running = true;

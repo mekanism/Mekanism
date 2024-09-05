@@ -22,7 +22,6 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.PathNavigationRegion;
 import net.minecraft.world.level.block.BedBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DoorBlock;
@@ -36,7 +35,7 @@ public class ThreadMinerSearch extends Thread {
 
     private final TileEntityDigitalMiner tile;
     private final Long2ObjectMap<BitSet> oresToMine = new Long2ObjectOpenHashMap<>();
-    private PathNavigationRegion chunkCache;
+    private MinerRegionCache chunkCache;
     public State state = State.IDLE;
     public int found = 0;
 
@@ -46,7 +45,7 @@ public class ThreadMinerSearch extends Thread {
         setDaemon(true);
     }
 
-    public void setChunkCache(PathNavigationRegion cache) {
+    public void setChunkCache(MinerRegionCache cache) {
         this.chunkCache = cache;
     }
 
