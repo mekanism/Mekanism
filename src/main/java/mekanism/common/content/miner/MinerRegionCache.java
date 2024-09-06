@@ -71,7 +71,9 @@ public class MinerRegionCache implements BlockGetter, CollisionGetter {
                     chunkAccess = chunksource.getChunkNow(x, z);// returns null if not loaded
                 }
                 this.chunks[x - this.centerX][z - this.centerZ] = chunkAccess;
-                LOGGER.error("Failed to load chunk for searcher cache: {}, {}", x, z);
+                if (chunkAccess == null) {
+                    LOGGER.error("Failed to load chunk for searcher cache: {}, {}", x, z);
+                }
             }
         }
 
