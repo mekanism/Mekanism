@@ -9,8 +9,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import mekanism.api.SerializationConstants;
 import mekanism.api.RelativeSide;
+import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IExtendedFluidTank;
@@ -30,7 +30,6 @@ import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
-import mekanism.common.tile.component.config.IPersistentConfigInfo;
 import mekanism.common.tile.component.config.slot.BaseSlotInfo;
 import mekanism.common.tile.component.config.slot.ChemicalSlotInfo;
 import mekanism.common.tile.component.config.slot.EnergySlotInfo;
@@ -306,6 +305,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
             ConfigInfo info = entry.getValue();
             int ordinalToUse = isLegacyData ? type.getLegacyOrdinal() : type.ordinal();
             NBTUtils.setBooleanIfPresent(configNBT, SerializationConstants.EJECT + ordinalToUse, info::setEjecting);
+            NBTUtils.setBooleanIfPresent(configNBT, SerializationConstants.ROUND_ROBIN + ordinalToUse, info::setRoundRobin);
             String configKey = SerializationConstants.CONFIG + ordinalToUse;
             if (configNBT.contains(configKey, Tag.TAG_INT_ARRAY)) {
                 readConfigSides(configNBT, onChange, configKey, info, type);
@@ -337,13 +337,16 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         return write(configInfo, true);
     }
 
-    public static CompoundTag write(Map<TransmissionType, ? extends IPersistentConfigInfo> configInfo, boolean full) {
+    public static CompoundTag write(Map<TransmissionType, ConfigInfo> configInfo, boolean full) {
         CompoundTag configNBT = new CompoundTag();
-        for (Entry<TransmissionType, ? extends IPersistentConfigInfo> entry : configInfo.entrySet()) {
+        for (Entry<TransmissionType, ConfigInfo> entry : configInfo.entrySet()) {
             TransmissionType type = entry.getKey();
-            IPersistentConfigInfo info = entry.getValue();
+            ConfigInfo info = entry.getValue();
             if (full) {
                 configNBT.putBoolean(SerializationConstants.EJECT + type.ordinal(), info.isEjecting());
+                if (type == TransmissionType.ITEM) {
+                    configNBT.putBoolean(SerializationConstants.ROUND_ROBIN + type.ordinal(), info.isRoundRobin());
+                }
             }
             int[] sideData = new int[EnumUtils.SIDES.length];
             for (int i = 0; i < EnumUtils.SIDES.length; i++) {

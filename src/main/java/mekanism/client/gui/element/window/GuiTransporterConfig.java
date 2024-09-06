@@ -47,6 +47,9 @@ public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfigu
         addChild(new ColorButton(gui, relativeX + 112, relativeY + 49, 16, 16, () -> this.tile.getEjector().getOutputColor(),
               (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketEjectColor(this.tile.getBlockPos(), MekClickType.left(Screen.hasShiftDown()))),
               (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketEjectColor(this.tile.getBlockPos(), MekClickType.RIGHT))));
+        addChild(new MekanismImageButton(gui, relativeX + 136, relativeY + 20, 14, getButtonLocation("round_robin"),
+              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.ROUND_ROBIN_BUTTON, this.tile))))
+              .setTooltip(MekanismLang.SORTER_ROUND_ROBIN_DESCRIPTION);
         addSideDataButton(RelativeSide.BOTTOM, 41, 64 + 16);
         addSideDataButton(RelativeSide.TOP, 41, 34);
         addSideDataButton(RelativeSide.FRONT, 41, 57);
