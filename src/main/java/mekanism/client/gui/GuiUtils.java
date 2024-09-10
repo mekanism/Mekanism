@@ -251,10 +251,6 @@ public class GuiUtils {
         boolean test(ELEMENT element, char c, int keyCode);
     }
 
-    public static int drawString(GuiGraphics guiGraphics, Font font, Component component, float x, float y, int color, boolean drawShadow) {
-        return guiGraphics.drawString(font, component.getVisualOrderText(), x, y, color, drawShadow);
-    }
-
     public static int drawStringNoFlush(GuiGraphics graphics, Font font, Component component, float x, float y, int color, boolean drawShadow) {
         return drawStringNoFlush(graphics, graphics.pose().last().pose(), font, component, x, y, color, drawShadow);
     }

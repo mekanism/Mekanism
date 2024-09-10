@@ -35,6 +35,7 @@ public class GuiUpgradeWindow extends GuiWindow {
     private final TileEntityMekanism tile;
     private final MekanismButton removeButton;
     private final GuiUpgradeScrollList scrollList;
+    private final GuiInnerScreen rightScreen;
 
     public GuiUpgradeWindow(IGuiWrapper gui, int x, int y, TileEntityMekanism tile, SelectedWindowData windowData) {
         super(gui, x, y, 156, 76 + 12 * GuiSupportedUpgrades.calculateNeededRows(), windowData);
@@ -45,7 +46,7 @@ public class GuiUpgradeWindow extends GuiWindow {
         interactionStrategy = InteractionStrategy.ALL;
         scrollList = addChild(new GuiUpgradeScrollList(gui, relativeX + 6, relativeY + 18, 66, 50, tile.getComponent(), this::updateEnabledButtons));
         addChild(new GuiSupportedUpgrades(gui, relativeX + 6, relativeY + 68, tile.getComponent().getSupportedTypes()));
-        addChild(new GuiInnerScreen(gui, relativeX + 72, relativeY + 18, 59, 50));
+        rightScreen = addChild(new GuiInnerScreen(gui, relativeX + 72, relativeY + 18, 59, 50));
         addChild(new GuiProgress(() -> this.tile.getComponent().getScaledUpgradeProgress(), ProgressType.INSTALLING, gui, relativeX + 134, relativeY + 37));
         addChild(new GuiProgress(() -> 0, ProgressType.UNINSTALLING, gui, relativeX + 134, relativeY + 59));
         removeButton = addChild(new DigitalButton(gui, relativeX + 73, relativeY + 54, 56, 12, MekanismLang.UPGRADE_UNINSTALL, (element, mouseX, mouseY) -> {
@@ -81,22 +82,24 @@ public class GuiUpgradeWindow extends GuiWindow {
         if (scrollList.hasSelection()) {
             Upgrade selectedType = scrollList.getSelection();
             int amount = tile.getComponent().getUpgrades(selectedType);
-            int textY = relativeY + 20;
             WrappedTextRenderer textRenderer = upgradeTypeData.get(selectedType);
             if (textRenderer == null) {
                 textRenderer = new WrappedTextRenderer(this, MekanismLang.UPGRADE_TYPE.translate(selectedType));
                 upgradeTypeData.put(selectedType, textRenderer);
             }
-            int lines = textRenderer.renderWithScale(guiGraphics, relativeX + 74, textY, screenTextColor(), 56, 0.6F);
-            textY += 6 * lines + 2;
-            drawTextWithScale(guiGraphics, MekanismLang.UPGRADE_COUNT.translate(amount, selectedType.getMax()), relativeX + 74, textY, screenTextColor(), 0.6F);
+            int screenWidth = rightScreen.getWidth() - 2;
+            int lines = textRenderer.renderWithScale(guiGraphics, rightScreen.getRelativeX() + 2, rightScreen.getRelativeY() + 2, screenTextColor(),
+                  screenWidth - 2, 0.6F);
+            int textY = 4 + 6 * lines;
+            rightScreen.drawScaledScrollingString(guiGraphics, MekanismLang.UPGRADE_COUNT.translate(amount, selectedType.getMax()), 0, textY,  TextAlignment.LEFT,
+                  screenTextColor(), screenWidth, 2, false, 0.6F);
             for (Component component : UpgradeUtils.getInfo(tile, selectedType)) {
                 //Note: We add the six here instead of after to account for the line above this for loop that draws the upgrade count
                 textY += 6;
-                drawTextWithScale(guiGraphics, component, relativeX + 74, textY, screenTextColor(), 0.6F);
+                rightScreen.drawScaledScrollingString(guiGraphics, component, 0, textY, TextAlignment.LEFT, screenTextColor(), screenWidth, 2, false, 0.6F);
             }
         } else {
-            noSelection.renderWithScale(guiGraphics, relativeX + 74, relativeY + 20, screenTextColor(), 56, 0.8F);
+            noSelection.renderWithScale(guiGraphics, rightScreen.getRelativeX() + 2, rightScreen.getRelativeY() + 2, screenTextColor(), 56, 0.8F);
         }
     }
 }

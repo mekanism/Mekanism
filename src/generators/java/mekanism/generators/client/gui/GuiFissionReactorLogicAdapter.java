@@ -48,8 +48,8 @@ public class GuiFissionReactorLogicAdapter extends GuiMekanismTile<TileEntityFis
     @Override
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
-        drawTextScaledBound(guiGraphics, GeneratorsLang.REACTOR_LOGIC_REDSTONE_MODE.translate(tile.logicType.getColor(), tile.logicType), 16, 123, titleTextColor(), 144);
-        drawCenteredText(guiGraphics, MekanismLang.STATUS.translate(EnumColor.RED, tile.getStatus()), 0, imageWidth, 136, titleTextColor());
+        drawScrollingString(guiGraphics, GeneratorsLang.REACTOR_LOGIC_REDSTONE_MODE.translate(tile.logicType.getColor(), tile.logicType), 0, 123, TextAlignment.CENTER, titleTextColor(), 16, false);
+        drawScrollingString(guiGraphics, MekanismLang.STATUS.translate(EnumColor.RED, tile.getStatus()), 0, 136, TextAlignment.CENTER, titleTextColor(), 16, false);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 

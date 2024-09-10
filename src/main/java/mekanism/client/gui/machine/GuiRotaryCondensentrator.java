@@ -1,6 +1,7 @@
 package mekanism.client.gui.machine;
 
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
+import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.GuiConfigurableTile;
 import mekanism.client.gui.element.GuiDownArrow;
 import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;
@@ -79,7 +80,8 @@ public class GuiRotaryCondensentrator extends GuiConfigurableTile<TileEntityRota
     @Override
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
-        drawString(guiGraphics, (tile.getMode() ? MekanismLang.DECONDENSENTRATING : MekanismLang.CONDENSENTRATING).translate(), 6, imageHeight - 92, titleTextColor());
+        ILangEntry modeLang = tile.getMode() ? MekanismLang.DECONDENSENTRATING : MekanismLang.CONDENSENTRATING;
+        drawScrollingString(guiGraphics, modeLang.translate(), 4, imageHeight - 92, TextAlignment.LEFT, titleTextColor(), 111, 2, false);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 }

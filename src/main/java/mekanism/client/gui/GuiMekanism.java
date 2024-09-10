@@ -13,7 +13,6 @@ import mekanism.client.gui.element.slot.GuiVirtualSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.tab.GuiWarningTab;
 import mekanism.client.gui.element.window.GuiWindow;
-import mekanism.client.render.IFancyFontRenderer;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.MekanismContainer;
@@ -48,7 +47,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
-public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> extends VirtualSlotContainerScreen<CONTAINER> implements IGuiWrapper, IFancyFontRenderer {
+public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> extends VirtualSlotContainerScreen<CONTAINER> implements IGuiWrapper {
 
     public static final ResourceLocation BASE_BACKGROUND = MekanismUtils.getResource(ResourceType.GUI, "base.png");
     public static final ResourceLocation SHADOW = MekanismUtils.getResource(ResourceType.GUI, "shadow.png");
@@ -170,6 +169,24 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
 
     protected void renderTitleText(GuiGraphics guiGraphics) {
         drawTitleText(guiGraphics, title, titleLabelY);
+    }
+
+    protected void renderTitleTextWithOffset(GuiGraphics guiGraphics, int startPad, int endPad, int maxLengthPad, TextAlignment alignment) {
+        drawTitleTextTextWithOffset(guiGraphics, title, 0, titleLabelY, startPad, endPad, maxLengthPad, alignment);
+    }
+
+    protected void renderInventoryText(GuiGraphics guiGraphics) {
+        drawScrollingString(guiGraphics, playerInventoryTitle, inventoryLabelX, inventoryLabelY, TextAlignment.LEFT, titleTextColor(), getXSize() - inventoryLabelX - 6, 0, false);
+    }
+
+    protected void renderInventoryTextAndOther(GuiGraphics guiGraphics, Component rightAlignedText) {
+        renderInventoryTextAndOther(guiGraphics, rightAlignedText, 0);
+    }
+
+    protected void renderInventoryTextAndOther(GuiGraphics guiGraphics, Component rightAlignedText, int rightEndPad) {
+        drawScrollingString(guiGraphics, playerInventoryTitle, inventoryLabelX, inventoryLabelY, TextAlignment.LEFT, titleTextColor(), 56, 0, false);
+        int rightStart = inventoryLabelX + 54;
+        drawScrollingString(guiGraphics, rightAlignedText, rightStart, inventoryLabelY, TextAlignment.RIGHT, titleTextColor(), getXSize() - rightStart - rightEndPad, 6, false);
     }
 
     protected ResourceLocation getButtonLocation(String name) {
@@ -670,7 +687,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         //Ensure the GL color is white as mods adding an overlay (such as JEI for bookmarks), might have left
         // it in an unexpected state.
         MekanismRenderer.resetColor(guiGraphics);
-        if (width < 8 || height < 8) {
+        if (getXSize() < 8 || getYSize() < 8) {
             Mekanism.logger.warn("Gui: {}, was too small to draw the background of. Unable to draw a background for a gui smaller than 8 by 8.", getClass().getSimpleName());
             return;
         }
@@ -678,10 +695,11 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     }
 
     @Override
-    @SuppressWarnings("ConstantValue")
-    public Font getFont() {
-        //In theory font is never null here, but we validate it in case we are called before init finishes happening
-        return font == null ? minecraft.font : font;
+    public Font font() {
+        //Note: In theory font is never null here, as we should only be calling it after init has happened
+        // Previously we checked if it was and then fell back to Minecraft's overall font. But as the minecraft
+        // object we queried was actually null as well, we know that this doesn't ever get called before init
+        return font;
     }
 
     @Override

@@ -55,7 +55,7 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
     @Override
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
-        drawString(guiGraphics, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
+        renderInventoryText(guiGraphics);
         if (tile.getDelay() > 0) {
             drawTextScaledBound(guiGraphics, MekanismLang.DELAY.translate(tile.getDelay()), 26, 30, titleTextColor(), 68);
         } else {

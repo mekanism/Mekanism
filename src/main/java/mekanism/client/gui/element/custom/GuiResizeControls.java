@@ -29,10 +29,10 @@ public class GuiResizeControls extends GuiSideHolder {
     private static final ResourceLocation PLUS = MekanismUtils.getResource(ResourceType.GUI_BUTTON, "plus.png");
 
     public <GUI extends IGuiWrapper & ResizeController> GuiResizeControls(GUI gui, int y) {
-        super(gui, -26, y, 39, true, false);
+        super(gui, -26, y, 40, true, false);
         expandButton = addChild(new MekanismImageButton(gui, relativeX + 4, relativeY + 5, 19, 9, 19, 9, PLUS,
               (element, mouseX, mouseY) -> handleResize(ResizeType.EXPAND_Y, Screen.hasShiftDown())));
-        shrinkButton = addChild(new MekanismImageButton(gui, relativeX + 4, relativeY + 25, 19, 9, 19, 9, MINUS,
+        shrinkButton = addChild(new MekanismImageButton(gui, relativeX + 4, relativeY + 26, 19, 9, 19, 9, MINUS,
               (element, mouseX, mouseY) -> handleResize(ResizeType.SHRINK_Y, Screen.hasShiftDown())));
         updateButtonState();
         active = true;
@@ -56,7 +56,7 @@ public class GuiResizeControls extends GuiSideHolder {
     @Override
     public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.renderForeground(guiGraphics, mouseX, mouseY);
-        drawScaledCenteredTextScaledBound(guiGraphics, MekanismLang.HEIGHT.translate(), relativeX + 13.5F, relativeY + 15.5F, titleTextColor(), width - 4, 0.7F);
+        drawScaledScrollingString(guiGraphics, MekanismLang.HEIGHT.translate(), 0, 16, TextAlignment.CENTER, titleTextColor(), 4, false, 0.60F);
     }
 
     @Override

@@ -52,7 +52,7 @@ public class GuiFusionReactorController extends GuiMekanismTile<TileEntityFusion
     @Override
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
-        drawString(guiGraphics, MekanismLang.MULTIBLOCK_FORMED.translate(), 8, 16, titleTextColor());
+        drawScrollingString(guiGraphics, MekanismLang.MULTIBLOCK_FORMED.translate(), 0, 16, TextAlignment.LEFT, titleTextColor(), 8, false);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 }

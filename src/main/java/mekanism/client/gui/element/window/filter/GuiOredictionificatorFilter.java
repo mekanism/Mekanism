@@ -35,7 +35,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilter<Oredictionificato
 
     @Override
     protected int getScreenHeight() {
-        return 53;
+        return 52;
     }
 
     @Override

@@ -34,7 +34,7 @@ public class GuiFusionReactorStats extends GuiFusionReactorInfo {
         renderTitleText(guiGraphics);
         FusionReactorMultiblockData multiblock = tile.getMultiblock();
         if (multiblock.isFormed()) {
-            drawString(guiGraphics, GeneratorsLang.REACTOR_PASSIVE.translateColored(EnumColor.DARK_GREEN), 6, 26, titleTextColor());
+            drawScrollingString(guiGraphics,GeneratorsLang.REACTOR_PASSIVE.translateColored(EnumColor.DARK_GREEN), 0, 26, TextAlignment.LEFT, titleTextColor(), 6, false);
             drawTextScaledBound(guiGraphics, GeneratorsLang.REACTOR_MIN_INJECTION.translate(multiblock.getMinInjectionRate(false)), 16, 36, titleTextColor(), 156);
             drawTextScaledBound(guiGraphics, GeneratorsLang.REACTOR_IGNITION.translate(MekanismUtils.getTemperatureDisplay(multiblock.getIgnitionTemperature(false),
                   TemperatureUnit.KELVIN, true)), 16, 46, titleTextColor(), 156);
@@ -45,7 +45,7 @@ public class GuiFusionReactorStats extends GuiFusionReactorInfo {
             drawTextScaledBound(guiGraphics, GeneratorsLang.REACTOR_PASSIVE_RATE.translate(EnergyDisplay.of(multiblock.getPassiveGeneration(false, false))),
                   16, 76, titleTextColor(), 156);
 
-            drawString(guiGraphics, GeneratorsLang.REACTOR_ACTIVE.translateColored(EnumColor.DARK_BLUE), 6, 92, titleTextColor());
+            drawScrollingString(guiGraphics,GeneratorsLang.REACTOR_ACTIVE.translateColored(EnumColor.DARK_BLUE), 0, 92, TextAlignment.LEFT, titleTextColor(), 6, false);
             drawTextScaledBound(guiGraphics, GeneratorsLang.REACTOR_MIN_INJECTION.translate(multiblock.getMinInjectionRate(true)), 16, 102, titleTextColor(), 156);
             drawTextScaledBound(guiGraphics, GeneratorsLang.REACTOR_IGNITION.translate(MekanismUtils.getTemperatureDisplay(multiblock.getIgnitionTemperature(true),
                   TemperatureUnit.KELVIN, true)), 16, 112, titleTextColor(), 156);

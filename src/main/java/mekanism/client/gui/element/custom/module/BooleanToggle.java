@@ -3,6 +3,7 @@ package mekanism.client.gui.element.custom.module;
 import mekanism.api.gear.config.ModuleBooleanConfig;
 import mekanism.client.gui.element.button.RadioButton;
 import mekanism.client.gui.element.scroll.GuiScrollList;
+import mekanism.client.render.IFancyFontRenderer.TextAlignment;
 import mekanism.common.MekanismLang;
 import mekanism.common.registries.MekanismSounds;
 import net.minecraft.client.Minecraft;
@@ -41,9 +42,15 @@ class BooleanToggle extends MiniElement<Boolean> {
     @Override
     protected void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         int textColor = parent.screenTextColor();
-        parent.drawScaledTextScaledBound(guiGraphics, description, getRelativeX() + 3, getRelativeY(), textColor, this.parent.getScreenWidth() - 3 - GuiScrollList.TEXTURE_WIDTH, 0.8F);
-        parent.drawTextWithScale(guiGraphics, MekanismLang.TRUE.translate(), getRelativeX() + 16, getRelativeY() + 11, textColor, 0.8F);
-        parent.drawTextWithScale(guiGraphics, MekanismLang.FALSE.translate(), getRelativeX() + 62, getRelativeY() + 11, textColor, 0.8F);
+        parent.drawScaledScrollingString(guiGraphics, description, xPos, yPos, TextAlignment.LEFT, textColor, parent.getScreenWidth() - GuiScrollList.TEXTURE_WIDTH,
+              2, false, 0.8F);
+
+        int trueShift = 4 + RADIO_SIZE;
+        int falseShift = 50 + RADIO_SIZE;
+        parent.drawScaledScrollingString(guiGraphics, MekanismLang.TRUE.translate(), xPos + trueShift, yPos + 11, TextAlignment.LEFT, textColor,
+              50 - trueShift, 3, false, 0.8F);
+        parent.drawScaledScrollingString(guiGraphics, MekanismLang.FALSE.translate(), xPos + falseShift, yPos + 11, TextAlignment.LEFT, textColor,
+              parent.getScreenWidth() - GuiScrollList.TEXTURE_WIDTH - falseShift, 3, false, 0.8F);
     }
 
     @Override

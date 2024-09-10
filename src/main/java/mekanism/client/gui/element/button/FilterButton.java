@@ -7,6 +7,7 @@ import java.util.function.IntSupplier;
 import java.util.function.ObjIntConsumer;
 import java.util.function.Predicate;
 import mekanism.api.text.EnumColor;
+import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.slot.GuiSequencedSlotDisplay;
@@ -147,16 +148,21 @@ public class FilterButton extends MekanismButton {
                 guiGraphics.fill(colorX + 1, colorY + 1, colorX + 5, colorY + 5, sorterFilter.color.getPackedColor());
             }
 
-            drawTextWithScale(guiGraphics, sorterFilter.color == null ? MekanismLang.NO_COLOR.translate() : sorterFilter.color.getName(), relativeX + 22 + 8, relativeY + 12,
-                  titleTextColor(), 0.5f);
+            Component color = sorterFilter.color == null ? MekanismLang.NO_COLOR.translate() : sorterFilter.color.getName();
+            drawScaledScrollingString(guiGraphics, color, 27, 12, TextAlignment.LEFT, titleTextColor(), getSmallTextWidth() - 8, 3, false, 0.7F);
         } else if (filter instanceof OredictionificatorItemFilter oreDictFilter) {
-            drawTextWithScale(guiGraphics, oreDictFilter.getResult().getHoverName().copy().append(" (" + BuiltInRegistries.ITEM.getKey(oreDictFilter.getResultElement()).getNamespace() + ")"), relativeX + 22, relativeY + 12,
-                  titleTextColor(), 0.5f);
+            ItemStack result = oreDictFilter.getResult();
+            Component text = TextComponentUtil.build(result, " (", BuiltInRegistries.ITEM.getKey(result.getItem()).getNamespace(), ")");
+            drawScaledScrollingString(guiGraphics, text, 19, 12, TextAlignment.LEFT, titleTextColor(), getSmallTextWidth(), 3, false, 0.7F);
         } else if (filter instanceof QIOItemStackFilter itemFilter) {
             if (itemFilter.fuzzyMode) {
-                drawTextWithScale(guiGraphics, MekanismLang.FUZZY_MODE.translate(), relativeX + 22, relativeY + 12, titleTextColor(), 0.5f);
+                drawScaledScrollingString(guiGraphics, MekanismLang.FUZZY_MODE.translate(), 19, 12, TextAlignment.LEFT, titleTextColor(), getSmallTextWidth(), 3, false, 0.7F);
             }
         }
+    }
+
+    private int getSmallTextWidth() {
+        return this.width - RadioButton.RADIO_SIZE - getToggleXShift() - 19;
     }
 
     private void drawFilterDescriptor(GuiGraphics guiGraphics, Component component, int x, int y) {

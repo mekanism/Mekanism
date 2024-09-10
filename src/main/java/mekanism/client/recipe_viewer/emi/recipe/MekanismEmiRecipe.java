@@ -189,7 +189,7 @@ public abstract class MekanismEmiRecipe<RECIPE> extends AbstractContainerEventHa
     }
 
     @Override
-    public Font getFont() {
+    public Font font() {
         return Minecraft.getInstance().font;
     }
 

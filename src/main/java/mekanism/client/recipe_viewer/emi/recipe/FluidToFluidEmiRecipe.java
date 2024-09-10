@@ -32,7 +32,7 @@ public class FluidToFluidEmiRecipe extends MekanismEmiHolderRecipe<FluidToFluidR
               MekanismLang.MULTIBLOCK_FORMED.translate(), MekanismLang.EVAPORATION_HEIGHT.translate(EvaporationMultiblockData.MAX_HEIGHT),
               MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(HeatAPI.AMBIENT_TEMP, TemperatureUnit.KELVIN, true)),
               MekanismLang.FLUID_PRODUCTION.translate(0.0))
-        ).spacing(1));
+        ).clearSpacing());
         addElement(widgetHolder, new GuiDownArrow(this, 32, 39));
         addElement(widgetHolder, new GuiDownArrow(this, 136, 39));
         addElement(widgetHolder, new GuiHorizontalRateBar(this, RecipeViewerUtils.FULL_BAR, 48, 63));

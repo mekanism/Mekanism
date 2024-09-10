@@ -80,8 +80,8 @@ public class GuiAntiprotonicNucleosynthesizer extends GuiConfigurableTile<TileEn
 
     @Override
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        drawString(guiGraphics, title, (imageWidth - getStringWidth(title)) / 2, titleLabelY, titleTextColor());
-        drawString(guiGraphics, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
+        renderTitleText(guiGraphics);
+        renderInventoryText(guiGraphics);
         drawTextScaledBound(guiGraphics, MekanismLang.PROCESS_RATE.translate(TextUtils.getPercent(tile.getProcessRate())), 48, 76, screenTextColor(), 100);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
         PoseStack pose = guiGraphics.pose();

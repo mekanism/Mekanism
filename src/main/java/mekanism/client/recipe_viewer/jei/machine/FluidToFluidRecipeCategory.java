@@ -35,7 +35,7 @@ public class FluidToFluidRecipeCategory extends HolderRecipeCategory<FluidToFlui
               MekanismLang.MULTIBLOCK_FORMED.translate(), MekanismLang.EVAPORATION_HEIGHT.translate(EvaporationMultiblockData.MAX_HEIGHT),
               MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(HeatAPI.AMBIENT_TEMP, TemperatureUnit.KELVIN, true)),
               MekanismLang.FLUID_PRODUCTION.translate(0.0))
-        ).spacing(1));
+        ).clearSpacing());
         addElement(new GuiDownArrow(this, 32, 39));
         addElement(new GuiDownArrow(this, 136, 39));
         addElement(new GuiHorizontalRateBar(this, RecipeViewerUtils.FULL_BAR, 48, 63));

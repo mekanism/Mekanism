@@ -44,13 +44,13 @@ public class GuiBoilerStats extends GuiMekanismTile<TileEntityBoilerCasing, Empt
 
     @Override
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        drawCenteredText(guiGraphics, title, 0, imageWidth, titleLabelY, titleTextColor());
+        renderTitleText(guiGraphics);
         BoilerMultiblockData multiblock = tile.getMultiblock();
-        drawString(guiGraphics, MekanismLang.BOILER_MAX_WATER.translate(TextUtils.format(multiblock.waterTank.getCapacity())), 8, 26, titleTextColor());
-        drawString(guiGraphics, MekanismLang.BOILER_MAX_STEAM.translate(TextUtils.format(multiblock.steamTank.getCapacity())), 8, 35, titleTextColor());
-        drawString(guiGraphics, MekanismLang.BOILER_HEAT_TRANSFER.translate(), 8, 49, subheadingTextColor());
-        drawString(guiGraphics, MekanismLang.BOILER_HEATERS.translate(multiblock.superheatingElements), 14, 58, titleTextColor());
-        drawString(guiGraphics, MekanismLang.BOILER_CAPACITY.translate(TextUtils.format(multiblock.getBoilCapacity())), 8, 72, titleTextColor());
+        drawScrollingString(guiGraphics, MekanismLang.BOILER_MAX_WATER.translate(TextUtils.format(multiblock.waterTank.getCapacity())), 0, 26, TextAlignment.LEFT, titleTextColor(), 8, false);
+        drawScrollingString(guiGraphics, MekanismLang.BOILER_MAX_STEAM.translate(TextUtils.format(multiblock.steamTank.getCapacity())), 0, 35, TextAlignment.LEFT, titleTextColor(), 8, false);
+        drawScrollingString(guiGraphics, MekanismLang.BOILER_HEAT_TRANSFER.translate(), 0, 49, TextAlignment.LEFT, subheadingTextColor(), 8, false);
+        drawScrollingString(guiGraphics, MekanismLang.BOILER_HEATERS.translate(multiblock.superheatingElements), 6, 58, TextAlignment.LEFT, titleTextColor(), getXSize() - 6, 8, false);
+        drawScrollingString(guiGraphics, MekanismLang.BOILER_CAPACITY.translate(TextUtils.format(multiblock.getBoilCapacity())), 0, 72, TextAlignment.LEFT, titleTextColor(), 8, false);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 

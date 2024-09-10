@@ -228,18 +228,12 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
     }
 
     @Override
-    public void drawTitleText(GuiGraphics guiGraphics, Component text, float y) {
+    public void drawTitleText(GuiGraphics guiGraphics, Component text, int y) {
         if (isFocusOverlay()) {
             super.drawTitleText(guiGraphics, text, y);
         } else {
             //Adjust spacing for close button and any other buttons like side config's auto eject
-            int leftShift = getTitlePadStart();
-            int xSize = getXSize() - leftShift - getTitlePadEnd();
-            int maxLength = xSize - 12;
-            float textWidth = getStringWidth(text);
-            float scale = Math.min(1, maxLength / textWidth);
-            float left = relativeX + xSize / 2F;
-            drawScaledCenteredText(guiGraphics, text, left + leftShift, relativeY + y, titleTextColor(), scale);
+            drawTitleTextTextWithOffset(guiGraphics, text, relativeX, relativeY + y, getTitlePadStart(), getTitlePadEnd());
         }
     }
 

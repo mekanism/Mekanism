@@ -15,7 +15,7 @@ public class GuiScreenSwitch extends GuiInnerScreen {
     private final IClickable onToggle;
 
     public GuiScreenSwitch(IGuiWrapper gui, int x, int y, int width, Component buttonName, BooleanSupplier stateSupplier, IClickable onToggle) {
-        super(gui, x, y, width, GuiDigitalSwitch.BUTTON_SIZE_Y * 2 + 5, () -> Collections.singletonList(buttonName));
+        super(gui, x, y, width, GuiDigitalSwitch.BUTTON_SIZE_Y * 2 + 6, () -> Collections.singletonList(buttonName));
         this.stateSupplier = stateSupplier;
         this.onToggle = onToggle;
         this.active = true;
@@ -28,15 +28,18 @@ public class GuiScreenSwitch extends GuiInnerScreen {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         int buttonSizeX = GuiDigitalSwitch.BUTTON_SIZE_X;
         int buttonSizeY = GuiDigitalSwitch.BUTTON_SIZE_Y;
-        guiGraphics.blit(GuiDigitalSwitch.SWITCH, relativeX + width - 2 - buttonSizeX, relativeY + 2, 0, stateSupplier.getAsBoolean() ? 0 : buttonSizeY, buttonSizeX, buttonSizeY, buttonSizeX, buttonSizeY * 2);
-        guiGraphics.blit(GuiDigitalSwitch.SWITCH, relativeX + width - 2 - buttonSizeX, relativeY + 2 + buttonSizeY + 1, 0, stateSupplier.getAsBoolean() ? buttonSizeY : 0, buttonSizeX, buttonSizeY, buttonSizeX, buttonSizeY * 2);
+        int buttonXOffset = width - 2 - buttonSizeX;
+        guiGraphics.blit(GuiDigitalSwitch.SWITCH, relativeX + buttonXOffset, relativeY + 2, 0, stateSupplier.getAsBoolean() ? 0 : buttonSizeY, buttonSizeX, buttonSizeY, buttonSizeX, buttonSizeY * 2);
+        guiGraphics.blit(GuiDigitalSwitch.SWITCH, relativeX + buttonXOffset, relativeY + 2 + buttonSizeY + 1, 0, stateSupplier.getAsBoolean() ? buttonSizeY : 0, buttonSizeX, buttonSizeY, buttonSizeX, buttonSizeY * 2);
     }
 
     @Override
     public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.renderForeground(guiGraphics, mouseX, mouseY);
-        drawScaledCenteredText(guiGraphics, MekanismLang.ON.translate(), relativeX + width - 9, relativeY + 2, 0x101010, 0.5F);
-        drawScaledCenteredText(guiGraphics, MekanismLang.OFF.translate(), relativeX + width - 9, relativeY + 11, 0x101010, 0.5F);
+        int buttonSizeX = GuiDigitalSwitch.BUTTON_SIZE_X;
+        int buttonXOffset = width - 2 - buttonSizeX;
+        drawScaledScrollingString(guiGraphics, MekanismLang.ON.translate(), buttonXOffset, 2, TextAlignment.CENTER, 0x101010, buttonSizeX, 1, false, 0.5F);
+        drawScaledScrollingString(guiGraphics, MekanismLang.OFF.translate(), buttonXOffset, 11, TextAlignment.CENTER, 0x101010, buttonSizeX, 1, false, 0.5F);
     }
 
     @Override

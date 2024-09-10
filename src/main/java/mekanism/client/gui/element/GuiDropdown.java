@@ -59,12 +59,11 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
     @Override
     public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.renderForeground(guiGraphics, mouseX, mouseY);
-        int maxWidth = width - 11;
         TYPE current = curType.get();
-        drawScaledTextScaledBound(guiGraphics, current.getShortName(), relativeX + 4, relativeY + 2, screenTextColor(), maxWidth, 0.8F);
+        drawScaledScrollingString(guiGraphics, current.getShortName(), 0, 2, TextAlignment.LEFT, screenTextColor(), 4, false, 0.8F);
         if (isOpen) {
             for (int i = 0; i < options.length; i++) {
-                drawScaledTextScaledBound(guiGraphics, options[i].getShortName(), relativeX + 4, relativeY + 11 + 2 + 10 * i, screenTextColor(), maxWidth, 0.8F);
+                drawScaledScrollingString(guiGraphics, options[i].getShortName(), 0, 11 + 2 + 10 * i, TextAlignment.LEFT, screenTextColor(), 4, false, 0.8F);
             }
         }
     }

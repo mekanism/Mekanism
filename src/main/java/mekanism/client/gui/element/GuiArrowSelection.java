@@ -40,7 +40,8 @@ public class GuiArrowSelection extends GuiTexturedElement {
             //Mirror vanilla's tooltip rendering offset
             pose.translate(0, 0, 400);
             GuiUtils.renderBackgroundTexture(guiGraphics, GuiInnerScreen.SCREEN, GuiInnerScreen.SCREEN_SIZE, GuiInnerScreen.SCREEN_SIZE, tooltipX - 3, tooltipY - 4, getStringWidth(component) + 6, 16, 256, 256);
-            drawString(guiGraphics, component, tooltipX, tooltipY, screenTextColor());
+            //Note: This doesn't need to be a scrolling string as the background is resized to fit it
+            drawString(guiGraphics, component, tooltipX, tooltipY, screenTextColor(), false);
             pose.popPose();
         }
     }

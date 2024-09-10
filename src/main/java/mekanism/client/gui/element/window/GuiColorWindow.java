@@ -125,7 +125,7 @@ public class GuiColorWindow extends GuiWindow {
         drawTitleText(guiGraphics, MekanismLang.COLOR_PICKER.translate(), 6);
         ILangEntry entry = handlesAlpha ? MekanismLang.RGBA : MekanismLang.RGB;
         int textOffset = handlesAlpha ? 6 : 0;
-        drawTextScaledBound(guiGraphics, entry.translate(), relativeX + 7, relativeY + height - 18F, titleTextColor(), 20 + textOffset);
+        drawTextScaledBound(guiGraphics, entry.translate(), relativeX + 7, relativeY + height - 18, titleTextColor(), 20 + textOffset);
     }
 
     private void drawTiledGradient(GuiGraphics guiGraphics, int x, int y, int width, int height) {

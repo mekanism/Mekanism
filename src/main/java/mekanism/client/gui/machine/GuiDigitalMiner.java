@@ -71,7 +71,7 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
             list.add(tile.searcher.state.getTextComponent());
             list.add(MekanismLang.MINER_TO_MINE.translate(TextUtils.format(tile.getToMine())));
             return list;
-        }).spacing(1).clearFormat());
+        }).clearSpacing().clearFormat());
         addRenderableWidget(new GuiDigitalSwitch(this, 19, 56, EJECT, tile::getDoEject, (element, mouseX, mouseY) ->
               PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.AUTO_EJECT_BUTTON, ((GuiDigitalMiner) element.gui()).tile)), SwitchType.LOWER_ICON))
               .setTooltip(MekanismLang.AUTO_EJECT);
@@ -128,7 +128,7 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
     @Override
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
-        drawString(guiGraphics, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
+        renderInventoryText(guiGraphics);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 }

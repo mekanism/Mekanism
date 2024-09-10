@@ -2,6 +2,7 @@ package mekanism.client.gui.machine;
 
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.client.gui.GuiConfigurableTile;
+import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiChemicalGauge;
@@ -19,6 +20,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class GuiPRC extends GuiConfigurableTile<TileEntityPressurizedReactionChamber, MekanismTileContainer<TileEntityPressurizedReactionChamber>> {
 
+    private GuiElement secondGauge;
+
     public GuiPRC(MekanismTileContainer<TileEntityPressurizedReactionChamber> container, Inventory inv, Component title) {
         super(container, inv, title);
         dynamicSlots = true;
@@ -30,7 +33,7 @@ public class GuiPRC extends GuiConfigurableTile<TileEntityPressurizedReactionCha
         addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::getActive));
         addRenderableWidget(new GuiFluidGauge(() -> tile.inputFluidTank, () -> tile.getFluidTanks(null), GaugeType.STANDARD, this, 5, 10)
               .warning(WarningType.NO_MATCHING_RECIPE, tile.getWarningCheck(TileEntityPressurizedReactionChamber.NOT_ENOUGH_FLUID_INPUT_ERROR)));
-        addRenderableWidget(new GuiChemicalGauge(() -> tile.inputGasTank, () -> tile.getChemicalTanks(null), GaugeType.STANDARD, this, 28, 10)
+        secondGauge = addRenderableWidget(new GuiChemicalGauge(() -> tile.inputGasTank, () -> tile.getChemicalTanks(null), GaugeType.STANDARD, this, 28, 10)
               .warning(WarningType.NO_MATCHING_RECIPE, tile.getWarningCheck(TileEntityPressurizedReactionChamber.NOT_ENOUGH_CHEMICAL_INPUT_ERROR)));
         addRenderableWidget(new GuiChemicalGauge(() -> tile.outputGasTank, () -> tile.getChemicalTanks(null), GaugeType.SMALL, this, 140, 40)
               .warning(WarningType.NO_SPACE_IN_OUTPUT, tile.getWarningCheck(TileEntityPressurizedReactionChamber.NOT_ENOUGH_SPACE_GAS_OUTPUT_ERROR)));
@@ -42,9 +45,8 @@ public class GuiPRC extends GuiConfigurableTile<TileEntityPressurizedReactionCha
 
     @Override
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        float widthThird = imageWidth / 3F;
-        drawTextScaledBound(guiGraphics, title, widthThird - 7, titleLabelY, titleTextColor(), 2 * widthThird);
-        drawString(guiGraphics, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
+        renderTitleTextWithOffset(guiGraphics, secondGauge.getRelativeX() + secondGauge.getWidth(), 2, 3, TextAlignment.LEFT);
+        renderInventoryText(guiGraphics);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 }

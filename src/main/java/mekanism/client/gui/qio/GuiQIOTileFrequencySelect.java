@@ -58,13 +58,8 @@ public class GuiQIOTileFrequencySelect extends GuiMekanismTile<TileEntityQIOComp
     }
 
     @Override
-    public void drawTitleText(GuiGraphics guiGraphics, Component text, float y) {
+    public void drawTitleText(GuiGraphics guiGraphics, Component text, int y) {
         //Adjust spacing for back button
-        int leftShift = 15;
-        int xSize = getXSize() - leftShift;
-        int maxLength = xSize - 12;
-        float textWidth = getStringWidth(text);
-        float scale = Math.min(1, maxLength / textWidth);
-        drawScaledCenteredText(guiGraphics, text, leftShift + xSize / 2F, y, titleTextColor(), scale);
+        drawTitleTextTextWithOffset(guiGraphics, text, 0, y, 15, 0);
     }
 }

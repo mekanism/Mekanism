@@ -134,21 +134,16 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
         renderTitleText(guiGraphics);
-        drawScaledTextScaledBound(guiGraphics, MekanismLang.FILTER_COUNT.translate(getFilterManager().count()), 14, 22, screenTextColor(), 76, 0.8F);
-        drawScaledTextScaledBound(guiGraphics, MekanismLang.MINER_RADIUS.translate(tile.getRadius()), 14, 35, screenTextColor(), 76, 0.8F);
-        drawScaledTextScaledBound(guiGraphics, MekanismLang.MIN_DIGITAL_MINER.translate(tile.getMinY()), 14, 61, screenTextColor(), 76, 0.8F);
-        drawScaledTextScaledBound(guiGraphics, MekanismLang.MAX_DIGITAL_MINER.translate(tile.getMaxY()), 14, 88, screenTextColor(), 76, 0.8F);
+        drawScreenText(guiGraphics, MekanismLang.FILTER_COUNT.translate(getFilterManager().count()), 5);
+        drawScreenText(guiGraphics, MekanismLang.MINER_RADIUS.translate(tile.getRadius()), 18);
+        drawScreenText(guiGraphics, MekanismLang.MIN_DIGITAL_MINER.translate(tile.getMinY()), 44);
+        drawScreenText(guiGraphics, MekanismLang.MAX_DIGITAL_MINER.translate(tile.getMaxY()), 71);
     }
 
     @Override
-    public void drawTitleText(GuiGraphics guiGraphics, Component text, float y) {
+    public void drawTitleText(GuiGraphics guiGraphics, Component text, int y) {
         //Adjust spacing for back button
-        int leftShift = 11;
-        int xSize = getXSize() - leftShift;
-        int maxLength = xSize - 12;
-        float textWidth = getStringWidth(text);
-        float scale = Math.min(1, maxLength / textWidth);
-        drawScaledCenteredText(guiGraphics, text, leftShift + xSize / 2F, y, titleTextColor(), scale);
+        drawTitleTextTextWithOffset(guiGraphics, text, 0, y, 11, 0);
     }
 
     @Override

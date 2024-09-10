@@ -31,6 +31,24 @@ public class UnitDisplayUtils {
     //TODO: Maybe at some point improve on the ITextComponents the two getDisplay methods build, and have them have better translation keys with formats
     // That would improve how well this handles en_ud as currently the order of the number and the unit is not reversed and the unit is not upside down
 
+    private static final Unit IGNORED_UNIT = new Unit() {
+
+        @Override
+        public Component appendTo(Object existing, boolean isShort, boolean spaceBetweenSymbol, boolean singular) {
+            return TextComponentUtil.build(existing);
+        }
+
+        @Override
+        public Object getSymbol(boolean singular) {
+            return null;
+        }
+
+        @Override
+        public ILangEntry getLabel(boolean singular) {
+            return null;
+        }
+    };
+
     public static Component getDisplayShort(double value, EnergyUnit unit) {
         return getDisplayBase(value, unit, 2, true, true);
     }
@@ -39,15 +57,13 @@ public class UnitDisplayUtils {
         return getDisplayBase(unit.convertFromK(temp, shift), unit, decimalPlaces, isShort, spaceBetweenSymbol);
     }
 
+    public static Component getDisplay(double value, int decimalPlaces) {
+        return getDisplayBase(value, IGNORED_UNIT, decimalPlaces, true, false);
+    }
+
     private static Component getDisplayBase(double value, Unit unit, int decimalPlaces, boolean isShort, boolean spaceBetweenSymbol) {
         if (value == 0) {
-            if (isShort) {
-                if (spaceBetweenSymbol) {
-                    return TextComponentUtil.build(value + " ", unit.getSymbol(false));
-                }
-                return TextComponentUtil.build(value, unit.getSymbol(false));
-            }
-            return TextComponentUtil.build(value, unit.getLabel(false));
+            return unit.appendTo(value, isShort, spaceBetweenSymbol, false);
         }
         boolean singular = Mth.equal(value, 1);
         boolean negative = value < 0;
@@ -100,6 +116,16 @@ public class UnitDisplayUtils {
     }
 
     private interface Unit {
+
+        default Component appendTo(Object existing, boolean isShort, boolean spaceBetweenSymbol, boolean singular) {
+            if (isShort) {
+                if (spaceBetweenSymbol) {
+                    return TextComponentUtil.build(existing + " ", getSymbol(singular));
+                }
+                return TextComponentUtil.build(existing, getSymbol(singular));
+            }
+            return TextComponentUtil.build(existing, getLabel(singular));
+        }
 
         Object getSymbol(boolean singular);
 
@@ -357,10 +383,8 @@ public class UnitDisplayUtils {
             if (spaceBetweenSymbol || !isShort) {
                 name = " " + name;
             }
-            if (isShort) {
-                return TextComponentUtil.build(rounded + name, unit.getSymbol(singular));
-            }
-            return TextComponentUtil.build(rounded + name, unit.getLabel(singular));
+            //Note: We handle the space between symbols above
+            return unit.appendTo(rounded + name, isShort, false, singular);
         }
     }
 }

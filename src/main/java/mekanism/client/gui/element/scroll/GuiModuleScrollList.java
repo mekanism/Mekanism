@@ -136,7 +136,7 @@ public class GuiModuleScrollList extends GuiScrollList {
                 if (instance != null) {
                     boolean enabled = instance.isEnabled();
                     int color = module.isExclusive(ExclusiveFlag.ANY) ? (enabled ? 0x635BD4 : 0x2E2A69) : (enabled ? titleTextColor() : 0x5E1D1D);
-                    drawScaledTextScaledBound(guiGraphics, TextComponentUtil.build(module), relativeX + 13, relativeY + 3 + multipliedElement, color, 86, 0.7F);
+                    drawScaledScrollingString(guiGraphics, TextComponentUtil.build(module), 12, 3 + multipliedElement, TextAlignment.LEFT, color, barXShift - 14, 2, false, 0.7F);
                 }
             }
         });
@@ -195,12 +195,10 @@ public class GuiModuleScrollList extends GuiScrollList {
     }
 
     private void forEachModule(ObjIntConsumer<ModuleData<?>> consumer) {
-        for (int i = 0; i < getFocusedElements(); i++) {
-            int index = getCurrentSelection() + i;
-            if (index > currentList.size() - 1) {
-                break;
-            }
-            consumer.accept(currentList.get(index), elementHeight * i);
+        int currentSelection = getCurrentSelection();
+        int max = Math.min(getFocusedElements(), currentList.size());
+        for (int i = 0; i < max; i++) {
+            consumer.accept(currentList.get(currentSelection + i), elementHeight * i);
         }
     }
 

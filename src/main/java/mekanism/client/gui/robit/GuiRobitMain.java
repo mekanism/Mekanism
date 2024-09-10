@@ -46,7 +46,6 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
         super(container, inv, title);
         robit = container.getEntity();
         dynamicSlots = true;
-        titleLabelX = 76;
     }
 
     private void openWindow(GuiWindow window, Supplier<? extends GuiElement> elementSupplier) {
@@ -103,7 +102,7 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
 
     @Override
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        drawString(guiGraphics, title, titleLabelX, titleLabelY, titleTextColor());
+        renderTitleText(guiGraphics);
         drawTextScaledBound(guiGraphics, MekanismLang.ROBIT_GREETING.translate(robit.getName()), 29, 18, screenTextColor(), 119);
         drawTextScaledBound(guiGraphics, MekanismLang.ENERGY.translate(EnergyDisplay.of(robit.getEnergyContainer())), 29, 36 - 4, screenTextColor(), 119);
         drawTextScaledBound(guiGraphics, MekanismLang.ROBIT_FOLLOWING.translate(robit.getFollowing()), 29, 45 - 4, screenTextColor(), 119);

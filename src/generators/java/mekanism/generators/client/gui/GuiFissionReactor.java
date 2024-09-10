@@ -66,7 +66,7 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
                   MekanismLang.TEMPERATURE.translate(tile.getTempColor(), MekanismUtils.getTemperatureDisplay(multiblock.heatCapacitor.getTemperature(), TemperatureUnit.KELVIN, true)),
                   GeneratorsLang.FISSION_DAMAGE.translate(tile.getDamageColor(), tile.getDamageString())
             );
-        }).spacing(2).recipeViewerCategories(GeneratorsRVRecipeType.FISSION));
+        }).spacing(1).recipeViewerCategories(GeneratorsRVRecipeType.FISSION));
         addRenderableWidget(new GuiMergedTankGauge<>(() -> tile.getMultiblock().coolantTank, tile::getMultiblock, GaugeType.STANDARD, this, 6, 13)
               .setLabel(GeneratorsLang.FISSION_COOLANT_TANK.translateColored(EnumColor.AQUA)));
         addRenderableWidget(new GuiChemicalGauge(() -> tile.getMultiblock().fuelTank, () -> tile.getMultiblock().getChemicalTanks((Direction) null), GaugeType.STANDARD, this, 25, 13)
@@ -133,9 +133,9 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
         updateButtons();
         renderTitleText(guiGraphics);
-        drawString(guiGraphics, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
-        drawString(guiGraphics, MekanismLang.TEMPERATURE_LONG.translate(""), 6, 93, titleTextColor());
-        drawString(guiGraphics, GeneratorsLang.FISSION_HEAT_GRAPH.translate(), 6, 114, titleTextColor());
+        renderInventoryText(guiGraphics);
+        drawScrollingString(guiGraphics, MekanismLang.TEMPERATURE_LONG.translate(""), 0, 93, TextAlignment.LEFT, titleTextColor(), 5, false);
+        drawScrollingString(guiGraphics, GeneratorsLang.FISSION_HEAT_GRAPH.translate(), 0, 114, TextAlignment.LEFT, titleTextColor(), 5, false);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 

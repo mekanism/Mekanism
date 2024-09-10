@@ -143,12 +143,9 @@ public class GuiUpgradeScrollList extends GuiScrollList {
     private void forEachUpgrade(ObjIntConsumer<Upgrade> consumer) {
         Upgrade[] upgrades = getCurrentUpgrades().toArray(new Upgrade[0]);
         int currentSelection = getCurrentSelection();
-        for (int i = 0; i < getFocusedElements(); i++) {
-            int index = currentSelection + i;
-            if (index > upgrades.length - 1) {
-                break;
-            }
-            consumer.accept(upgrades[index], elementHeight * i);
+        int max = Math.min(getFocusedElements(), upgrades.length);
+        for (int i = 0; i < max; i++) {
+            consumer.accept(upgrades[currentSelection + i], elementHeight * i);
         }
     }
 

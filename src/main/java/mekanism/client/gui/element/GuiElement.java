@@ -467,8 +467,8 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     }
 
     @Override
-    public Font getFont() {
-        return guiObj.getFont();
+    public Font font() {
+        return guiObj.font();
     }
 
     @Override
@@ -616,7 +616,11 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         //Only attempt to draw the message if we have a message to draw
         if (!text.getString().isEmpty()) {
             int color = getButtonTextColor(mouseX, mouseY) | Mth.ceil(alpha * 255.0F) << 24;
-            drawCenteredTextScaledBound(guiGraphics, text, width - 4, height / 2F - 4, color);
+            int buttonX = getButtonX();
+            int buttonY = getButtonY();
+            //TODO - 1.21: Do we want to be passing false to this so that it has no shadow? I believe previously we didn't render the shadow
+            //TODO - 1.21: Aka do we want to use the one in IFancyFontRenderer?
+            renderScrollingString(guiGraphics, font(), text, buttonX + 2, buttonY, buttonX + getButtonWidth() - 2, buttonY + getButtonHeight(), color);
         }
     }
 
@@ -667,7 +671,6 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     }
 
     private static void playClickSound(@NotNull SoundManager soundHandler, @NotNull Supplier<SoundEvent> sound, float clickVolume) {
-
         soundHandler.play(SimpleSoundInstance.forUI(sound.get(), 1.0F, clickVolume));
     }
 
@@ -677,8 +680,13 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     }
 
     @Override
-    public void drawCenteredTextScaledBound(GuiGraphics guiGraphics, Component text, float maxLength, float x, float y, int color) {
-        IFancyFontRenderer.super.drawCenteredTextScaledBound(guiGraphics, text, maxLength, relativeX + x, relativeY + y, color);
+    public void drawScrollingString(GuiGraphics guiGraphics, Component text, int x, int y, TextAlignment alignment, int color, int width, int maxLengthPad, boolean shadow) {
+        IFancyFontRenderer.super.drawScrollingString(guiGraphics, text, relativeX + x, relativeY + y, alignment, color, width, maxLengthPad, shadow);
+    }
+
+    @Override
+    public void drawScaledScrollingString(GuiGraphics guiGraphics, Component text, int x, int y, TextAlignment alignment, int color, int width, int maxLengthPad, boolean shadow, float scale) {
+        IFancyFontRenderer.super.drawScaledScrollingString(guiGraphics, text, relativeX + x, relativeY + y, alignment, color, width, maxLengthPad, shadow, scale);
     }
 
     public enum ButtonBackground {

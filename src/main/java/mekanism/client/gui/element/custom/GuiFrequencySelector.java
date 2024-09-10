@@ -37,6 +37,7 @@ import mekanism.common.util.text.InputValidator;
 import mekanism.common.util.text.OwnerDisplay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import org.jetbrains.annotations.Nullable;
 
@@ -212,19 +213,23 @@ public class GuiFrequencySelector<FREQ extends Frequency> extends GuiElement {
     public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.renderForeground(guiGraphics, mouseX, mouseY);
         FREQ frequency = frequencySelector.getFrequency();
+        Object frequencyName;
+        Component ownerComponent;
+        Object frequencySecurity;
         if (frequency == null) {
             MutableComponent noneComponent = MekanismLang.NONE.translateColored(EnumColor.DARK_RED);
-            drawString(guiGraphics, MekanismLang.FREQUENCY.translate(noneComponent), 27, yStart + 67, titleTextColor());
-            drawString(guiGraphics, MekanismLang.OWNER.translate(noneComponent), 27, yStart + 77, titleTextColor());
-            drawString(guiGraphics, MekanismLang.SECURITY.translate(noneComponent), 27, yStart + 87, titleTextColor());
+            frequencyName = noneComponent;
+            ownerComponent = MekanismLang.OWNER.translate(noneComponent);
+            frequencySecurity = noneComponent;
         } else {
             //Color the name the same as the subheading text color should be
-            MutableComponent name = TextComponentUtil.color(TextComponentUtil.getString(frequency.getName()), subheadingTextColor());
-            drawTextScaledBound(guiGraphics, MekanismLang.FREQUENCY.translate(name), 27, yStart + 67, titleTextColor(), getGuiWidth() - 36);
-            drawString(guiGraphics, OwnerDisplay.of(Minecraft.getInstance().player, frequency.getOwner(), frequency.getOwnerName(), false).getTextComponent(),
-                  27, yStart + 77, titleTextColor());
-            drawString(guiGraphics, MekanismLang.SECURITY.translate(frequency.getSecurity()), 27, yStart + 87, titleTextColor());
+            frequencyName = TextComponentUtil.color(TextComponentUtil.getString(frequency.getName()), subheadingTextColor());
+            ownerComponent = OwnerDisplay.of(Minecraft.getInstance().player, frequency.getOwner(), frequency.getOwnerName(), false).getTextComponent();
+            frequencySecurity = frequency.getSecurity();
         }
+        drawTextScaledBound(guiGraphics, MekanismLang.FREQUENCY.translate(frequencyName), 27, yStart + 67, titleTextColor(), getGuiWidth() - 36);
+        drawTextScaledBound(guiGraphics, ownerComponent, 27, yStart + 77, titleTextColor(), getGuiWidth() - 36);
+        drawTextScaledBound(guiGraphics, MekanismLang.SECURITY.translate(frequencySecurity), 27, yStart + 87, titleTextColor(), getGuiWidth() - 36);
         drawTextScaledBound(guiGraphics, MekanismLang.SET.translate(), 27, yStart + 100, titleTextColor(), 20);
     }
 

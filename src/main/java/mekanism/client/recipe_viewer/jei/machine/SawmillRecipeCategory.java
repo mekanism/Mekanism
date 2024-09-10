@@ -1,7 +1,7 @@
 package mekanism.client.recipe_viewer.jei.machine;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.api.recipes.SawmillRecipe;
-import mekanism.client.SpecialColors;
 import mekanism.client.gui.element.GuiUpArrow;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.progress.ProgressType;
@@ -49,7 +49,14 @@ public class SawmillRecipeCategory extends HolderRecipeCategory<SawmillRecipe> {
         super.draw(recipeHolder, recipeSlotView, guiGraphics, mouseX, mouseY);
         double secondaryChance = recipeHolder.value().getSecondaryChance();
         if (secondaryChance > 0) {
-            guiGraphics.drawString(getFont(), TextUtils.getPercent(secondaryChance), 104, 41, SpecialColors.TEXT_TITLE.argb(), false);
+            //Perform the same translations as super does
+            //TODO: Figure out how to replace this with using JEI's newer widget system
+            PoseStack pose = guiGraphics.pose();
+            pose.pushPose();
+            pose.translate(getGuiLeft(), getGuiTop(), 0);
+            drawScrollingString(guiGraphics, TextUtils.getPercent(secondaryChance), output.getRelativeX(), output.getRelativeY() + output.getHeight() + 1,
+                  TextAlignment.RIGHT, titleTextColor(), output.getWidth(), 1, false);
+            pose.popPose();
         }
     }
 }

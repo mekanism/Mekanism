@@ -51,7 +51,7 @@ public class GuiGasMode extends MekanismImageButton {
         //Draw the text next to the button
         Component component = gasModeSupplier.get().getTextComponent();
         if (left) {
-            drawTextScaledBound(guiGraphics, component, relativeX - 3 - (int) (getStringWidth(component) * getNeededScale(component, 66)), relativeY + 1, titleTextColor(), 66);
+            drawTextScaledBound(guiGraphics, component, relativeX - 3 - Math.min(getStringWidth(component), 66), relativeY + 1, titleTextColor(), 66);
         } else {
             drawTextScaledBound(guiGraphics, component, relativeX + width + 5, relativeY + 1, titleTextColor(), 66);
         }

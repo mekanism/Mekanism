@@ -60,21 +60,21 @@ public class GuiTurbineStats extends GuiMekanismTile<TileEntityTurbineCasing, Em
             int lowerVolume = multiblock.lowerVolume;
             int dispersers = multiblock.getDispersers();
             int vents = multiblock.vents;
-            drawString(guiGraphics, GeneratorsLang.TURBINE_TANK_VOLUME.translate(lowerVolume), 8, 26, titleTextColor());
+            drawScrollingString(guiGraphics, GeneratorsLang.TURBINE_TANK_VOLUME.translate(lowerVolume), 0, 26, TextAlignment.LEFT, titleTextColor(), 8, false);
             boolean dispersersLimiting = lowerVolume * dispersers * MekanismGeneratorsConfig.generators.turbineDisperserChemicalFlow.get()
                                          < vents * MekanismGeneratorsConfig.generators.turbineVentChemicalFlow.get();
             boolean ventsLimiting = lowerVolume * dispersers * MekanismGeneratorsConfig.generators.turbineDisperserChemicalFlow.get()
                                     > vents * MekanismGeneratorsConfig.generators.turbineVentChemicalFlow.get();
-            drawString(guiGraphics, GeneratorsLang.TURBINE_STEAM_FLOW.translate(), 8, 40, subheadingTextColor());
-            drawString(guiGraphics, GeneratorsLang.TURBINE_DISPERSERS.translate(dispersers, dispersersLimiting ? limiting : ""), 14, 49, titleTextColor());
-            drawString(guiGraphics, GeneratorsLang.TURBINE_VENTS.translate(vents, ventsLimiting ? limiting : ""), 14, 58, titleTextColor());
+            drawScrollingString(guiGraphics, GeneratorsLang.TURBINE_STEAM_FLOW.translate(), 0, 40, TextAlignment.LEFT, subheadingTextColor(), 8, false);
+            drawScrollingString(guiGraphics, GeneratorsLang.TURBINE_DISPERSERS.translate(dispersers, dispersersLimiting ? limiting : ""), 6, 49, TextAlignment.LEFT, titleTextColor(), getXSize() - 6, 8, false);
+            drawScrollingString(guiGraphics, GeneratorsLang.TURBINE_VENTS.translate(vents, ventsLimiting ? limiting : ""), 6, 58, TextAlignment.LEFT, titleTextColor(), getXSize() - 6, 8, false);
             int coils = multiblock.coils;
             int blades = multiblock.blades;
-            drawString(guiGraphics, GeneratorsLang.TURBINE_PRODUCTION.translate(), 8, 72, subheadingTextColor());
-            drawString(guiGraphics, GeneratorsLang.TURBINE_BLADES.translate(blades, coils * 4 > blades ? limiting : ""), 14, 81, titleTextColor());
-            drawString(guiGraphics, GeneratorsLang.TURBINE_COILS.translate(coils, coils * 4 < blades ? limiting : ""), 14, 90, titleTextColor());
-            drawTextScaledBound(guiGraphics, GeneratorsLang.TURBINE_MAX_PRODUCTION.translate(EnergyDisplay.of(multiblock.getMaxProduction())), 8, 104, titleTextColor(), 164);
-            drawTextScaledBound(guiGraphics, GeneratorsLang.TURBINE_MAX_WATER_OUTPUT.translate(TextUtils.format(multiblock.getMaxWaterOutput())), 8, 113, titleTextColor(), 164);
+            drawScrollingString(guiGraphics, GeneratorsLang.TURBINE_PRODUCTION.translate(), 0, 72, TextAlignment.LEFT, subheadingTextColor(), 8, false);
+            drawScrollingString(guiGraphics, GeneratorsLang.TURBINE_BLADES.translate(blades, coils * 4 > blades ? limiting : ""), 6, 81, TextAlignment.LEFT, titleTextColor(), getXSize() - 6, 8, false);
+            drawScrollingString(guiGraphics, GeneratorsLang.TURBINE_COILS.translate(coils, coils * 4 < blades ? limiting : ""), 6, 90, TextAlignment.LEFT, titleTextColor(), getXSize() - 6, 8, false);
+            drawScrollingString(guiGraphics, GeneratorsLang.TURBINE_MAX_PRODUCTION.translate(EnergyDisplay.of(multiblock.getMaxProduction())), 0, 104, TextAlignment.LEFT, titleTextColor(), 8, false);
+            drawScrollingString(guiGraphics, GeneratorsLang.TURBINE_MAX_WATER_OUTPUT.translate(TextUtils.format(multiblock.getMaxWaterOutput())), 0, 113, TextAlignment.LEFT, titleTextColor(), 8, false);
         }
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }

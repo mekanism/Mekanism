@@ -134,8 +134,8 @@ public class GuiDimensionalStabilizer extends GuiMekanismTile<TileEntityDimensio
     @Override
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
-        drawString(guiGraphics, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
-        drawTextExact(guiGraphics, MekanismLang.NORTH_SHORT.translate(), 53.5F, 41F, titleTextColor());
+        renderInventoryText(guiGraphics);
+        drawScrollingString(guiGraphics, MekanismLang.NORTH_SHORT.translate(), 49, 41, TextAlignment.CENTER, titleTextColor(), 15, 2, false);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 }

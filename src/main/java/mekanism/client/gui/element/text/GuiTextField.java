@@ -60,7 +60,7 @@ public class GuiTextField extends GuiElement {
         super(gui, x, y, width, height);
         this.parent = parent;
 
-        textField = new ClearingEditBox(getFont(), getX(), getY(), width, height, Component.empty());
+        textField = new ClearingEditBox(font(), getX(), getY(), width, height, Component.empty());
         textField.setBordered(false);
         textField.setResponder(s -> {
             if (responder != null) {
@@ -214,10 +214,9 @@ public class GuiTextField extends GuiElement {
             textField.render(guiGraphics, mouseX, mouseY, partialTicks);
         } else {
             // hacky. we should write our own renderer at some point.
-            float reverse = (1 / textScale) - 1;
-            float yAdd = 4 - (textScale * 8) / 2F;
+            float reverse = (1 - textScale) / textScale;
             pose.scale(textScale, textScale, textScale);
-            pose.translate(textField.getX() * reverse, textField.getY() * reverse + yAdd / textScale, 0);
+            pose.translate(textField.getX() * reverse, (textField.getY() + 4) * reverse, 0);
             textField.render(guiGraphics, mouseX, mouseY, partialTicks);
         }
         pose.popPose();

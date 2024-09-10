@@ -195,7 +195,7 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
     }
 
     @Override
-    public Font getFont() {
+    public Font font() {
         return Minecraft.getInstance().font;
     }
 

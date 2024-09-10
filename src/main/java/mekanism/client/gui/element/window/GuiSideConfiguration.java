@@ -88,12 +88,12 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
             DataType targetType = getTargetType(DataType::getPrevious);
             return PacketUtils.sendToServer(new PacketBatchConfiguration(this.tile.getBlockPos(), Screen.hasShiftDown() ? null : currentType, targetType));
         }, TooltipUtils.create(MekanismLang.SIDE_CONFIG_CLEAR, MekanismLang.SIDE_CONFIG_CLEAR_ALL), TooltipUtils.create(MekanismLang.SIDE_CONFIG_INCREMENT)));
-        addSideDataButton(RelativeSide.BOTTOM, 68, 92);
-        addSideDataButton(RelativeSide.TOP, 68, 46);
-        addSideDataButton(RelativeSide.FRONT, 68, 69);
-        addSideDataButton(RelativeSide.BACK, 45, 92);
-        addSideDataButton(RelativeSide.LEFT, 45, 69);
-        addSideDataButton(RelativeSide.RIGHT, 91, 69);
+        addSideDataButton(RelativeSide.BOTTOM, 67, 92);
+        addSideDataButton(RelativeSide.TOP, 67, 46);
+        addSideDataButton(RelativeSide.FRONT, 67, 69);
+        addSideDataButton(RelativeSide.BACK, 44, 92);
+        addSideDataButton(RelativeSide.LEFT, 44, 69);
+        addSideDataButton(RelativeSide.RIGHT, 90, 69);
         updateTabs();
         ((MekanismContainer) ((GuiMekanism<?>) gui()).getMenu()).startTracking(MekanismContainer.SIDE_CONFIG_WINDOW, this.tile.getConfig());
         PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_TRACK_SIDE_CONFIG, tile, MekanismContainer.SIDE_CONFIG_WINDOW));
@@ -171,7 +171,7 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
     public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.renderForeground(guiGraphics, mouseX, mouseY);
         drawTitleText(guiGraphics, MekanismLang.CONFIG_TYPE.translate(currentType), 5);
-        drawCenteredText(guiGraphics, MekanismLang.SLOTS.translate(), relativeX + 80, relativeY + 120, subheadingTextColor());
+        drawScrollingString(guiGraphics, MekanismLang.SLOTS.translate(), 0, 120, TextAlignment.CENTER, subheadingTextColor(), 4, false);
     }
 
     @Override
