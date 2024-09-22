@@ -133,17 +133,11 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
     @Override
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
-        renderTitleText(guiGraphics);
+        renderTitleTextWithOffset(guiGraphics, 14);//Adjust spacing for back button
         drawScreenText(guiGraphics, MekanismLang.FILTER_COUNT.translate(getFilterManager().count()), 5);
         drawScreenText(guiGraphics, MekanismLang.MINER_RADIUS.translate(tile.getRadius()), 18);
         drawScreenText(guiGraphics, MekanismLang.MIN_DIGITAL_MINER.translate(tile.getMinY()), 44);
         drawScreenText(guiGraphics, MekanismLang.MAX_DIGITAL_MINER.translate(tile.getMaxY()), 71);
-    }
-
-    @Override
-    public void drawTitleText(GuiGraphics guiGraphics, Component text, int y) {
-        //Adjust spacing for back button
-        drawTitleTextTextWithOffset(guiGraphics, text, 0, y, 11, 0);
     }
 
     @Override

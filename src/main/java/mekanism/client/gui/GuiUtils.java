@@ -73,7 +73,7 @@ public class GuiUtils {
     }
 
     public static void drawBackdrop(GuiGraphics guiGraphics, Minecraft minecraft, int x, int y, int width, int alpha) {
-        drawBackdrop(guiGraphics, minecraft, x, y, width, 9, alpha);
+        drawBackdrop(guiGraphics, minecraft, x, y, width, minecraft.font.lineHeight, alpha);
     }
 
     public static void drawBackdrop(GuiGraphics guiGraphics, Minecraft minecraft, int x, int y, int width, int height, int alpha) {

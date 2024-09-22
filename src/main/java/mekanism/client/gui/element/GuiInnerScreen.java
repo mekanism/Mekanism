@@ -65,6 +65,10 @@ public class GuiInnerScreen extends GuiScalableElement implements IRecipeViewerR
         return this;
     }
 
+    public GuiInnerScreen clearScale() {
+        return textScale(1);
+    }
+
     public GuiInnerScreen textScale(float textScale) {
         this.textScale = textScale;
         return this;

@@ -62,13 +62,16 @@ public interface IFancyFontRenderer {
         drawScrollingString(guiGraphics, text, 0, y, TextAlignment.CENTER, titleTextColor(), 4, false);
     }
 
-    default void drawTitleTextTextWithOffset(GuiGraphics guiGraphics, Component text, int x, int y, int startPad, int endPad) {
-        drawTitleTextTextWithOffset(guiGraphics, text, x, y, startPad, endPad, 4, TextAlignment.CENTER);
+    default void drawTitleTextTextWithOffset(GuiGraphics guiGraphics, Component text, int x, int y) {
+        drawTitleTextTextWithOffset(guiGraphics, text, x, y, getXSize());
     }
 
-    default void drawTitleTextTextWithOffset(GuiGraphics guiGraphics, Component text, int x, int y, int startPad, int endPad, int maxLengthPad, TextAlignment alignment) {
-        drawScrollingString(guiGraphics, text, x + maxLengthPad + startPad, y, x + getXSize() - maxLengthPad - endPad, y + getLineHeight(),
-              alignment, titleTextColor(), false);
+    default void drawTitleTextTextWithOffset(GuiGraphics guiGraphics, Component text, int x, int y, int end) {
+        drawTitleTextTextWithOffset(guiGraphics, text, x, y, end, 4, TextAlignment.CENTER);
+    }
+
+    default void drawTitleTextTextWithOffset(GuiGraphics guiGraphics, Component text, int x, int y, int end, int maxLengthPad, TextAlignment alignment) {
+        drawScrollingString(guiGraphics, text, x, y, alignment, titleTextColor(), end - x, maxLengthPad, false);
     }
 
     default void drawScrollingString(GuiGraphics guiGraphics, Component text, int x, int y, TextAlignment alignment, int color, int maxLengthPad, boolean shadow) {
@@ -76,7 +79,11 @@ public interface IFancyFontRenderer {
     }
 
     default void drawScrollingString(GuiGraphics guiGraphics, Component text, int x, int y, TextAlignment alignment, int color, int width, int maxLengthPad, boolean shadow) {
-        drawScrollingString(guiGraphics, text, x + maxLengthPad, y, x + width - maxLengthPad, y + getLineHeight(), alignment, color, shadow);
+        drawScrollingString(guiGraphics, text, x, y, alignment, color, width, getLineHeight(), maxLengthPad, shadow);
+    }
+
+    default void drawScrollingString(GuiGraphics guiGraphics, Component text, int x, int y, TextAlignment alignment, int color, int width, int height, int maxLengthPad, boolean shadow) {
+        drawScrollingString(guiGraphics, text, x + maxLengthPad, y, x + width - maxLengthPad, y + height, alignment, color, shadow);
     }
 
     default void drawScrollingString(GuiGraphics guiGraphics, Component text, int minX, int minY, int maxX, int maxY, TextAlignment alignment, int color, boolean shadow) {
@@ -100,12 +107,7 @@ public interface IFancyFontRenderer {
             drawString(guiGraphics, text, minX - (int) overflowedBy, targetY, color, shadow);
             guiGraphics.disableScissor();
         } else {
-            float targetX = switch (alignment) {
-                case LEFT -> minX;
-                case CENTER -> minX + (areaWidth - textWidth) / 2F;
-                case RIGHT -> maxX - textWidth;
-            };
-            drawString(guiGraphics, text, targetX, targetY, color, shadow);
+            drawString(guiGraphics, text, alignment.getTarget(minX, maxX, areaWidth, textWidth), targetY, color, shadow);
         }
     }
 
@@ -113,7 +115,13 @@ public interface IFancyFontRenderer {
         drawScaledScrollingString(guiGraphics, text, x, y, alignment, color, getXSize(), maxLengthPad, shadow, scale);
     }
 
-    default void drawScaledScrollingString(GuiGraphics guiGraphics, Component text, int x, int y, TextAlignment alignment, int color, int width, int maxLengthPad, boolean shadow, float scale) {
+    default void drawScaledScrollingString(GuiGraphics guiGraphics, Component text, int x, int y, TextAlignment alignment, int color, int width, int maxLengthPad,
+          boolean shadow, float scale) {
+        drawScaledScrollingString(guiGraphics, text, x, y, alignment, color, width, getLineHeight(), maxLengthPad, shadow, scale);
+    }
+
+    default void drawScaledScrollingString(GuiGraphics guiGraphics, Component text, int x, int y, TextAlignment alignment, int color, int width, int height, int maxLengthPad,
+          boolean shadow, float scale) {
         drawScaledScrollingString(guiGraphics, text, x + maxLengthPad, y, x + width - maxLengthPad, y + getLineHeight(), alignment, color, shadow, scale);
     }
 
@@ -144,23 +152,7 @@ public interface IFancyFontRenderer {
             drawTextWithScale(guiGraphics, text, minX - (int) overflowedBy, targetY, color, shadow, scale);
             guiGraphics.disableScissor();
         } else {
-            float targetX = switch (alignment) {
-                case LEFT -> minX;
-                case CENTER -> minX + (areaWidth - textWidth) / 2F;
-                case RIGHT -> maxX - textWidth;
-            };
-            drawTextWithScale(guiGraphics, text, targetX, targetY, color, shadow, scale);
-        }
-    }
-
-    //TODO: Call drawScrollingString directly
-    @Deprecated(forRemoval = true)
-    default void drawTextScaledBound(GuiGraphics guiGraphics, Component component, int x, int y, int color, int maxLength) {
-        int length = getStringWidth(component);
-        if (length <= maxLength) {
-            drawString(guiGraphics, component, x, y, color, false);
-        } else {
-            drawScrollingString(guiGraphics, component, x, y, x + maxLength, y + getLineHeight(), TextAlignment.LEFT, color, false);
+            drawTextWithScale(guiGraphics, text, alignment.getTarget(minX, maxX, areaWidth, textWidth), targetY, color, shadow, scale);
         }
     }
 
@@ -201,7 +193,15 @@ public interface IFancyFontRenderer {
     enum TextAlignment {
         LEFT,
         CENTER,
-        RIGHT
+        RIGHT;
+
+        public float getTarget(int minX, int maxX, float areaWidth, float textWidth) {
+            return switch (this) {
+                case LEFT -> minX;
+                case CENTER -> minX + (areaWidth - textWidth) / 2F;
+                case RIGHT -> maxX - textWidth;
+            };
+        }
     }
 
     // efficient tool to draw word-by-word wrapped text based on a horizontal bound. looks intimidating but runs in O(n)

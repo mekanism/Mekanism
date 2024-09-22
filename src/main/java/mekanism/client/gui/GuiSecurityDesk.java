@@ -189,7 +189,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
             frequencyText = MekanismLang.SECURITY.translate(frequency.getSecurity());
         }
         drawScrollingString(guiGraphics, frequencyText, 13, 103, TextAlignment.LEFT, titleTextColor(), 122, 0, false);
-        drawTextScaledBound(guiGraphics, MekanismLang.SECURITY_ADD.translate(), 13, 70, titleTextColor(), 20);
+        drawScrollingString(guiGraphics, MekanismLang.SECURITY_ADD.translate(), 1, 70, TextAlignment.RIGHT, titleTextColor(), trustedField.getRelativeX() - 1, 3, false);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 }

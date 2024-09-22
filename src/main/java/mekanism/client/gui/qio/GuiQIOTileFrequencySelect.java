@@ -43,7 +43,7 @@ public class GuiQIOTileFrequencySelect extends GuiMekanismTile<TileEntityQIOComp
 
     @Override
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        renderTitleText(guiGraphics);
+        renderTitleTextWithOffset(guiGraphics, 17);//Adjust spacing for back button
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 
@@ -55,11 +55,5 @@ public class GuiQIOTileFrequencySelect extends GuiMekanismTile<TileEntityQIOComp
     @Override
     public TileEntityQIOComponent getTileEntity() {
         return tile;
-    }
-
-    @Override
-    public void drawTitleText(GuiGraphics guiGraphics, Component text, int y) {
-        //Adjust spacing for back button
-        drawTitleTextTextWithOffset(guiGraphics, text, 0, y, 15, 0);
     }
 }

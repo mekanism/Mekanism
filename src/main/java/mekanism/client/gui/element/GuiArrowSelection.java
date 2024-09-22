@@ -16,10 +16,12 @@ public class GuiArrowSelection extends GuiTexturedElement {
     private static final ResourceLocation ARROW = MekanismUtils.getResource(ResourceType.GUI, "arrow_selection.png");
 
     private final Supplier<Component> textComponentSupplier;
+    private final Supplier<Component> targetText;
 
-    public GuiArrowSelection(IGuiWrapper gui, int x, int y, Supplier<Component> textComponentSupplier) {
+    public GuiArrowSelection(IGuiWrapper gui, int x, int y, Supplier<Component> textComponentSupplier, Supplier<Component> targetText) {
         super(ARROW, gui, x, y, 33, 19);
         this.textComponentSupplier = textComponentSupplier;
+        this.targetText = targetText;
     }
 
     @Override
@@ -43,6 +45,15 @@ public class GuiArrowSelection extends GuiTexturedElement {
             //Note: This doesn't need to be a scrolling string as the background is resized to fit it
             drawString(guiGraphics, component, tooltipX, tooltipY, screenTextColor(), false);
             pose.popPose();
+        }
+    }
+
+    @Override
+    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        super.renderForeground(guiGraphics, mouseX, mouseY);
+        Component component = targetText.get();
+        if (component != null) {
+            drawScrollingString(guiGraphics, component, getWidth(), 6, TextAlignment.LEFT, screenTextColor(), 15, 1, false);
         }
     }
 

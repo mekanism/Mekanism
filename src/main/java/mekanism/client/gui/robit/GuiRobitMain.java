@@ -1,5 +1,6 @@
 package mekanism.client.gui.robit;
 
+import java.util.List;
 import java.util.function.Supplier;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.GuiMekanism;
@@ -59,7 +60,14 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
         super.addGuiElements();
         addRenderableWidget(new GuiSecurityTab(this, robit, 120));
         addRenderableWidget(GuiSideHolder.create(this, imageWidth, 6, 106, false, false, SpecialColors.TAB_ROBIT_MENU));
-        addRenderableWidget(new GuiInnerScreen(this, 27, 16, 122, 56));
+        addRenderableWidget(new GuiInnerScreen(this, 27, 16, 122, 56, () -> List.of(
+              MekanismLang.ROBIT_GREETING.translate(robit.getName()),
+              Component.empty(),
+              MekanismLang.ENERGY.translate(EnergyDisplay.of(robit.getEnergyContainer())),
+              MekanismLang.ROBIT_FOLLOWING.translate(robit.getFollowing()),
+              MekanismLang.ROBIT_DROP_PICKUP.translate(robit.getDropPickup()),
+              MekanismLang.ROBIT_OWNER.translate(robit.getOwnerName())
+        ))).clearFormat().clearSpacing().clearScale().padding(2);
         addRenderableWidget(new GuiHorizontalPowerBar(this, robit.getEnergyContainer(), 27, 74, 120));
         addRenderableWidget(new MekanismImageButton(this, 6, 16, 18, getButtonLocation("home"), (element, mouseX, mouseY) -> {
             PacketUtils.sendToServer(new PacketGuiInteract(GuiInteractionEntity.GO_HOME, ((GuiRobitMain) element.gui()).robit));
@@ -103,12 +111,6 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
     @Override
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
-        drawTextScaledBound(guiGraphics, MekanismLang.ROBIT_GREETING.translate(robit.getName()), 29, 18, screenTextColor(), 119);
-        drawTextScaledBound(guiGraphics, MekanismLang.ENERGY.translate(EnergyDisplay.of(robit.getEnergyContainer())), 29, 36 - 4, screenTextColor(), 119);
-        drawTextScaledBound(guiGraphics, MekanismLang.ROBIT_FOLLOWING.translate(robit.getFollowing()), 29, 45 - 4, screenTextColor(), 119);
-        drawTextScaledBound(guiGraphics, MekanismLang.ROBIT_DROP_PICKUP.translate(robit.getDropPickup()), 29, 54 - 4, screenTextColor(), 119);
-        CharSequence owner = robit.getOwnerName().length() > 14 ? robit.getOwnerName().subSequence(0, 14) : robit.getOwnerName();
-        drawTextScaledBound(guiGraphics, MekanismLang.ROBIT_OWNER.translate(owner), 29, 63 - 4, screenTextColor(), 119);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 }

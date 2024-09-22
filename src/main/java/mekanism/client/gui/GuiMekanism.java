@@ -168,11 +168,20 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     }
 
     protected void renderTitleText(GuiGraphics guiGraphics) {
+        //TODO - 1.21: Evaluate what other ones should be moved to rendering with offset. For example the electrolytic separator
         drawTitleText(guiGraphics, title, titleLabelY);
     }
 
-    protected void renderTitleTextWithOffset(GuiGraphics guiGraphics, int startPad, int endPad, int maxLengthPad, TextAlignment alignment) {
-        drawTitleTextTextWithOffset(guiGraphics, title, 0, titleLabelY, startPad, endPad, maxLengthPad, alignment);
+    protected void renderTitleTextWithOffset(GuiGraphics guiGraphics, int x) {
+        drawTitleTextTextWithOffset(guiGraphics, title, x, titleLabelY);
+    }
+
+    protected void renderTitleTextWithOffset(GuiGraphics guiGraphics, int x, int end) {
+        drawTitleTextTextWithOffset(guiGraphics, title, x, titleLabelY, end);
+    }
+
+    protected void renderTitleTextWithOffset(GuiGraphics guiGraphics, int x, int end, int maxLengthPad, TextAlignment alignment) {
+        drawTitleTextTextWithOffset(guiGraphics, title, x, titleLabelY, end, maxLengthPad, alignment);
     }
 
     protected void renderInventoryText(GuiGraphics guiGraphics) {

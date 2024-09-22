@@ -233,7 +233,7 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
             super.drawTitleText(guiGraphics, text, y);
         } else {
             //Adjust spacing for close button and any other buttons like side config's auto eject
-            drawTitleTextTextWithOffset(guiGraphics, text, relativeX, relativeY + y, getTitlePadStart(), getTitlePadEnd());
+            drawTitleTextTextWithOffset(guiGraphics, text, getTitlePadStart(), y, getXSize() - getTitlePadEnd());
         }
     }
 

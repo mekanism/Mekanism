@@ -38,7 +38,7 @@ public class GuiUpgradeWindow extends GuiWindow {
     private final GuiInnerScreen rightScreen;
 
     public GuiUpgradeWindow(IGuiWrapper gui, int x, int y, TileEntityMekanism tile, SelectedWindowData windowData) {
-        super(gui, x, y, 156, 76 + 12 * GuiSupportedUpgrades.calculateNeededRows(), windowData);
+        super(gui, x, y, 156, 76 + 12 * GuiSupportedUpgrades.calculateNeededRows(gui), windowData);
         if (windowData.type != WindowType.UPGRADE) {
             throw new IllegalArgumentException("Upgrade windows must have an upgrade window type");
         }

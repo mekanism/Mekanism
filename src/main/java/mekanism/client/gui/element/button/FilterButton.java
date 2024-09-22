@@ -136,9 +136,12 @@ public class FilterButton extends MekanismButton {
             case ITagFilter<?> tag -> Component.literal(tag.getTagName());
             case IModIDFilter<?> modId -> Component.literal(modId.getModID());
             case OredictionificatorFilter<?, ?, ?> oredictionificatorFilter -> Component.literal(oredictionificatorFilter.getFilterText());
-            case null, default -> Component.empty();
+            case null, default -> null;
         };
-        drawFilterDescriptor(guiGraphics, filterDescriptor, relativeX, relativeY);
+        int textWidth = toggleButton.getRelativeX() - relativeX - 20;
+        if (filterDescriptor != null) {
+            drawScrollingString(guiGraphics, filterDescriptor, 19, 3, TextAlignment.LEFT, titleTextColor(), textWidth, 3, false);
+        }
 
         if (filter instanceof SorterFilter<?> sorterFilter) {
             int colorX = relativeX + 22;
@@ -149,27 +152,15 @@ public class FilterButton extends MekanismButton {
             }
 
             Component color = sorterFilter.color == null ? MekanismLang.NO_COLOR.translate() : sorterFilter.color.getName();
-            drawScaledScrollingString(guiGraphics, color, 27, 12, TextAlignment.LEFT, titleTextColor(), getSmallTextWidth() - 8, 3, false, 0.7F);
+            drawScaledScrollingString(guiGraphics, color, 27, 12, TextAlignment.LEFT, titleTextColor(), textWidth - 8, 3, false, 0.7F);
         } else if (filter instanceof OredictionificatorItemFilter oreDictFilter) {
             ItemStack result = oreDictFilter.getResult();
             Component text = TextComponentUtil.build(result, " (", BuiltInRegistries.ITEM.getKey(result.getItem()).getNamespace(), ")");
-            drawScaledScrollingString(guiGraphics, text, 19, 12, TextAlignment.LEFT, titleTextColor(), getSmallTextWidth(), 3, false, 0.7F);
+            drawScaledScrollingString(guiGraphics, text, 19, 12, TextAlignment.LEFT, titleTextColor(), textWidth, 3, false, 0.7F);
         } else if (filter instanceof QIOItemStackFilter itemFilter) {
             if (itemFilter.fuzzyMode) {
-                drawScaledScrollingString(guiGraphics, MekanismLang.FUZZY_MODE.translate(), 19, 12, TextAlignment.LEFT, titleTextColor(), getSmallTextWidth(), 3, false, 0.7F);
+                drawScaledScrollingString(guiGraphics, MekanismLang.FUZZY_MODE.translate(), 19, 12, TextAlignment.LEFT, titleTextColor(), textWidth, 3, false, 0.7F);
             }
         }
-    }
-
-    private int getSmallTextWidth() {
-        return this.width - RadioButton.RADIO_SIZE - getToggleXShift() - 19;
-    }
-
-    private void drawFilterDescriptor(GuiGraphics guiGraphics, Component component, int x, int y) {
-        drawTextScaledBound(guiGraphics, component, x + 22, y + 3, titleTextColor(), getMaxLength());
-    }
-
-    protected int getMaxLength() {
-        return width - 22 - RadioButton.RADIO_SIZE - 11;
     }
 }

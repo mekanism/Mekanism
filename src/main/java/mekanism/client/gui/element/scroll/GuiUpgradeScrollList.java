@@ -84,8 +84,8 @@ public class GuiUpgradeScrollList extends GuiScrollList {
     @Override
     public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.renderForeground(guiGraphics, mouseX, mouseY);
-        forEachUpgrade((upgrade, multipliedElement) -> drawTextScaledBound(guiGraphics, TextComponentUtil.build(upgrade), relativeX + 13, relativeY + 3 + multipliedElement,
-              titleTextColor(), 44));
+        forEachUpgrade((upgrade, multipliedElement) -> drawScrollingString(guiGraphics, TextComponentUtil.build(upgrade), 12, 3 + multipliedElement,
+              TextAlignment.LEFT, titleTextColor(), barXShift - 14, 2, false));
     }
 
     @NotNull

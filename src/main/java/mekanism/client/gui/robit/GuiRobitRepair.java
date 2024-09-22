@@ -77,7 +77,7 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements Co
 
     @Override
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        renderTitleTextWithOffset(guiGraphics, 60, 9, 0, TextAlignment.CENTER);
+        renderTitleTextWithOffset(guiGraphics, itemNameField.getRelativeX(), itemNameField.getRelativeX() + itemNameField.getWidth() + 4, 0, TextAlignment.CENTER);
         int maximumCost = menu.getCost();
         if (maximumCost > 0) {
             int textColor = 0x80FF20;
