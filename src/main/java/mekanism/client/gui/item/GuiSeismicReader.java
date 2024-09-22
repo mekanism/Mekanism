@@ -121,13 +121,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
         }));
         addRenderableWidget(new GuiInnerScreen(this, 74, 11, 51, 160));
         scrollBar = addRenderableWidget(new GuiScrollBar(this, 126, 25, 132, blockList::size, () -> 1));
-        addRenderableWidget(new GuiArrowSelection(this, 76, 81, () -> {
-            int currentLayer = scrollBar.getCurrentSelection();
-            if (currentLayer >= 0) {
-                return blockList.get(blockList.size() - 1 - currentLayer).block().getName();
-            }
-            return null;
-        }, () -> TextComponentUtil.build(minHeight + getCurrentLayer())));
+        addRenderableWidget(new GuiArrowSelection(this, 76, 81, () -> TextComponentUtil.build(minHeight + getCurrentLayer())));
         upButton = addRenderableWidget(new MekanismImageButton(this, 126, 11, 14,
               MekanismUtils.getResource(ResourceType.GUI_BUTTON, "up.png"), (element, mouseX, mouseY) -> scrollBar.adjustScroll(1)));
         downButton = addRenderableWidget(new MekanismImageButton(this, 126, 157, 14,
