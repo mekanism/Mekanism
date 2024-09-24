@@ -63,7 +63,7 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
         addRenderableWidget(new GuiInnerScreen(this, 27, 16, 122, 56, () -> List.of(
               MekanismLang.ROBIT_GREETING.translate(robit.getName()),
               Component.empty(),
-              MekanismLang.ENERGY.translate(EnergyDisplay.of(robit.getEnergyContainer())),
+              MekanismLang.ENERGY.translate(EnergyDisplay.of(robit.getEnergyContainer().getEnergy())),
               MekanismLang.ROBIT_FOLLOWING.translate(robit.getFollowing()),
               MekanismLang.ROBIT_DROP_PICKUP.translate(robit.getDropPickup()),
               MekanismLang.ROBIT_OWNER.translate(robit.getOwnerName())

@@ -59,7 +59,7 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
         setCurrentType(transmissions.getFirst());
         //TODO: Try to make the GUI look a bit better as it still seems a bit off with the scales and such
         // Maybe we want to eventually add some sort of "in world preview" type thing
-        addChild(new GuiInnerScreen(gui, relativeX + 41, relativeY + 25, 74, 12, () -> {
+        addChild(new GuiInnerScreen(gui, relativeX + 38, relativeY + 25, 80, 12, () -> {
             ConfigInfo config = getCurrentConfig();
             if (config == null || !config.canEject()) {
                 return Collections.singletonList(MekanismLang.NO_EJECT.translate());

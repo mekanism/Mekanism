@@ -196,6 +196,9 @@ public interface IFancyFontRenderer {
         RIGHT;
 
         public float getTarget(int minX, int maxX, float areaWidth, float textWidth) {
+            //TODO: Do we want to swap left and right when Font#isBidirectional is true?
+            // I believe in right to left languages text is meant to be aligned to the right
+            // but it likely would look odd in various GUIs
             return switch (this) {
                 case LEFT -> minX;
                 case CENTER -> minX + (areaWidth - textWidth) / 2F;

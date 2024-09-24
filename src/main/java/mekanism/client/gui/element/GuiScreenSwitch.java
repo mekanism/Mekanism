@@ -21,6 +21,7 @@ public class GuiScreenSwitch extends GuiInnerScreen {
         this.active = true;
         this.clickSound = () -> this.stateSupplier.getAsBoolean() ? MekanismSounds.BEEP_OFF.get() : MekanismSounds.BEEP_ON.get();
         this.clickVolume = 1.0F;
+        padding(4);
     }
 
     @Override

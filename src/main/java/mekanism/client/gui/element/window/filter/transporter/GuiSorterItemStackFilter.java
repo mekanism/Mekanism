@@ -14,18 +14,18 @@ import org.jetbrains.annotations.Nullable;
 public class GuiSorterItemStackFilter extends GuiItemStackFilter<SorterItemStackFilter, TileEntityLogisticalSorter> implements GuiSorterFilterHelper {
 
     public static GuiSorterItemStackFilter create(IGuiWrapper gui, TileEntityLogisticalSorter tile) {
-        return new GuiSorterItemStackFilter(gui, (gui.getXSize() - 195) / 2, 30, tile, null);
+        return new GuiSorterItemStackFilter(gui, (gui.getXSize() - SORTER_FILTER_WIDTH) / 2, 30, tile, null);
     }
 
     public static GuiSorterItemStackFilter edit(IGuiWrapper gui, TileEntityLogisticalSorter tile, SorterItemStackFilter filter) {
-        return new GuiSorterItemStackFilter(gui, (gui.getXSize() - 195) / 2, 30, tile, filter);
+        return new GuiSorterItemStackFilter(gui, (gui.getXSize() - SORTER_FILTER_WIDTH) / 2, 30, tile, filter);
     }
 
     private GuiTextField minField;
     private GuiTextField maxField;
 
     private GuiSorterItemStackFilter(IGuiWrapper gui, int x, int y, TileEntityLogisticalSorter tile, @Nullable SorterItemStackFilter origFilter) {
-        super(gui, x, y, 195, 90, tile, origFilter);
+        super(gui, x, y, SORTER_FILTER_WIDTH, 90, tile, origFilter);
     }
 
     @Override

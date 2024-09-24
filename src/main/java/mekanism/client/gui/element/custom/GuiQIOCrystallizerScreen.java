@@ -38,10 +38,10 @@ public class GuiQIOCrystallizerScreen extends GuiInnerScreen {
         super(gui, x, y, width, height);
         this.oreInfo = oreInfo;
         int slotX = relativeX + this.width - SlotType.ORE.getWidth();
-        this.slot = addChild(new GuiSlot(SlotType.ORE, gui, slotX, 13));
+        this.slot = addChild(new GuiSlot(SlotType.ORE, gui, slotX, relativeY));
         if (this.oreInfo.usesSequencedDisplay()) {
             this.iterStacks = new ArrayList<>();
-            this.slotDisplay = addChild(new GuiSequencedSlotDisplay(gui, slotX + 1, 14, () -> this.iterStacks));
+            this.slotDisplay = addChild(new GuiSequencedSlotDisplay(gui, slotX + 1, relativeY + 1, () -> this.iterStacks));
             updateSlotContents();
         } else {
             this.iterStacks = Collections.emptyList();

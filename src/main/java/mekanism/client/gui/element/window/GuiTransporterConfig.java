@@ -38,7 +38,7 @@ public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfigu
         }
         this.tile = tile;
         interactionStrategy = InteractionStrategy.ALL;
-        addChild(new GuiInnerScreen(gui, relativeX + 41, relativeY + 15, 74, 12,
+        addChild(new GuiInnerScreen(gui, relativeX + 38, relativeY + 15, 80, 12,
               () -> Collections.singletonList(MekanismLang.STRICT_INPUT_ENABLED.translate(OnOff.of(tile.getEjector().hasStrictInput())))));
         addChild(new GuiSlot(SlotType.NORMAL, gui, relativeX + 111, relativeY + 48));
         addChild(new MekanismImageButton(gui, relativeX + 136, relativeY + 6, 14, 16, getButtonLocation("exclamation"),

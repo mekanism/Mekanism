@@ -22,6 +22,8 @@ import net.minecraft.world.item.ItemStack;
 
 public interface GuiMinerFilterHelper extends GuiFilterHelper<TileEntityDigitalMiner> {
 
+    int MINER_FILTER_WIDTH = 173;
+
     @Override
     MinerFilter<?> getFilter();
 
