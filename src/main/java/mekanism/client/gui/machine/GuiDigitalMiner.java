@@ -57,6 +57,7 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
+        int missingStackX = 64;
         addRenderableWidget(new GuiInnerScreen(this, 7, 19, 77, 69, () -> {
             List<Component> list = new ArrayList<>();
             ILangEntry runningType;
@@ -71,7 +72,15 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
             list.add(tile.searcher.state.getTextComponent());
             list.add(MekanismLang.MINER_TO_MINE.translate(TextUtils.format(tile.getToMine())));
             return list;
-        }).clearSpacing().clearFormat());
+        }) {
+            @Override
+            protected int getMaxTextWidth(int row) {
+                if (row < 2) {
+                    return missingStackX - relativeX + 4;
+                }
+                return super.getMaxTextWidth(row);
+            }
+        }).clearSpacing().clearFormat();
         addRenderableWidget(new GuiDigitalSwitch(this, 19, 56, EJECT, tile::getDoEject, (element, mouseX, mouseY) ->
               PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.AUTO_EJECT_BUTTON, ((GuiDigitalMiner) element.gui()).tile)), SwitchType.LOWER_ICON))
               .setTooltip(MekanismLang.AUTO_EJECT);
@@ -87,7 +96,7 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
                   return energyContainer.getEnergyPerTick() > energyContainer.getEnergy();
               });
         addRenderableWidget(new GuiVisualsTab(this, tile));
-        addRenderableWidget(new GuiSlot(SlotType.DIGITAL, this, 64, 21).setRenderAboveSlots().validity(() -> tile.missingStack)
+        addRenderableWidget(new GuiSlot(SlotType.DIGITAL, this, missingStackX, 21).setRenderAboveSlots().validity(() -> tile.missingStack)
               .with(() -> tile.missingStack.isEmpty() ? SlotOverlay.CHECK : null)
               .hover(element -> ((GuiDigitalMiner) element.gui()).tile.missingStack.isEmpty() ? List.of(MekanismLang.MINER_WELL.translate()) : List.of(MekanismLang.MINER_MISSING_BLOCK.translate())));
         addRenderableWidget(new GuiEnergyTab(this, () -> {

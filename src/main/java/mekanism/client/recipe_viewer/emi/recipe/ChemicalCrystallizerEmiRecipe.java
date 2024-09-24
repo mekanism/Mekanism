@@ -58,10 +58,19 @@ public class ChemicalCrystallizerEmiRecipe extends MekanismEmiHolderRecipe<Chemi
         GaugeType type = GaugeType.STANDARD.with(DataType.INPUT);
         initTank(widgetHolder, GuiChemicalGauge.getDummy(type, this, 7, 4), input(0));
         addSlot(widgetHolder, SlotType.INPUT, 8, 65).with(SlotOverlay.PLUS);
-        addSlot(widgetHolder, SlotType.OUTPUT, 129, 57, output(0)).recipeContext(this);
+        int slotX = 128;
+        addSlot(widgetHolder, SlotType.OUTPUT, slotX + 1, 57, output(0)).recipeContext(this);
         addSimpleProgress(widgetHolder, ProgressType.LARGE_RIGHT, 53, 61, TileEntityChemicalCrystallizer.BASE_TICKS_REQUIRED);
-        addElement(widgetHolder, new GuiInnerScreen(this, 31, 13, 115, 42, () -> GuiChemicalCrystallizer.getScreenRenderStrings(this.oreInfo)));
-        GuiSlot slurryOreSlot = addElement(widgetHolder, new GuiSlot(SlotType.ORE, this, 128, 13).setRenderAboveSlots());
+        addElement(widgetHolder, new GuiInnerScreen(this, 31, 13, 115, 42, () -> GuiChemicalCrystallizer.getScreenRenderStrings(this.oreInfo)) {
+            @Override
+            protected int getMaxTextWidth(int row) {
+                if (row == 0) {
+                    return slotX - relativeX;
+                }
+                return super.getMaxTextWidth(row);
+            }
+        });
+        GuiSlot slurryOreSlot = addElement(widgetHolder, new GuiSlot(SlotType.ORE, this, slotX, 13).setRenderAboveSlots());
         initItem(widgetHolder, slurryOreSlot.getX(), slurryOreSlot.getY(), ingredient(displayItems));
     }
 }

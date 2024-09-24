@@ -11,6 +11,7 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.client.gui.GuiConfigurableTile;
+import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.gauge.GaugeType;
@@ -41,6 +42,7 @@ public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemi
     private final List<ItemStack> iterStacks = new ArrayList<>();
     private final IOreInfo oreInfo = new OreInfo();
     private GuiSequencedSlotDisplay slotDisplay;
+    private GuiElement inputGauge;
     @NotNull
     private Chemical prevSlurry = MekanismAPI.EMPTY_CHEMICAL;
 
@@ -56,21 +58,31 @@ public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemi
         addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 157, 23))
               .warning(WarningType.NOT_ENOUGH_ENERGY, tile.getWarningCheck(RecipeError.NOT_ENOUGH_ENERGY));
         addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::getActive));
-        addRenderableWidget(new GuiChemicalGauge(() -> tile.inputTank, () -> tile.getChemicalTanks(null), GaugeType.STANDARD, this, 7, 4))
+        inputGauge = addRenderableWidget(new GuiChemicalGauge(() -> tile.inputTank, () -> tile.getChemicalTanks(null), GaugeType.STANDARD, this, 7, 4))
               .warning(WarningType.NO_MATCHING_RECIPE, tile.getWarningCheck(RecipeError.NOT_ENOUGH_INPUT));
         addRenderableWidget(new GuiProgress(tile::getScaledProgress, ProgressType.LARGE_RIGHT, this, 53, 61).recipeViewerCategory(tile))
               .warning(WarningType.INPUT_DOESNT_PRODUCE_OUTPUT, tile.getWarningCheck(RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT));
+        //TODO - 1.21: Move this to being a custom gui element so that we don't have to copy this and the overrides to the recipe viewers
         //Init slot display before gui screen, so it can reference it, but add it after, so it renders above it
-        slotDisplay = new GuiSequencedSlotDisplay(this, 129, 14, () -> iterStacks);
+        int slotX = 128;
+        slotDisplay = new GuiSequencedSlotDisplay(this, slotX + 1, 14, () -> iterStacks);
         updateSlotContents();
-        addRenderableWidget(new GuiInnerScreen(this, 31, 13, 115, 42, () -> getScreenRenderStrings(this.oreInfo)));
-        addRenderableWidget(new GuiSlot(SlotType.ORE, this, 128, 13).setRenderAboveSlots());
+        addRenderableWidget(new GuiInnerScreen(this, 31, 13, 115, 42, () -> getScreenRenderStrings(this.oreInfo)) {
+            @Override
+            protected int getMaxTextWidth(int row) {
+                if (row == 0) {
+                    return slotX - relativeX;
+                }
+                return super.getMaxTextWidth(row);
+            }
+        });
+        addRenderableWidget(new GuiSlot(SlotType.ORE, this, slotX, 13).setRenderAboveSlots());
         addRenderableWidget(slotDisplay);
     }
 
     @Override
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        renderTitleText(guiGraphics);
+        renderTitleTextWithOffset(guiGraphics, inputGauge.getRelativeRight(), tile.getEnergySlotX());
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 

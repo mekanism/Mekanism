@@ -4,6 +4,7 @@ import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.GuiConfigurableTile;
 import mekanism.client.gui.element.GuiDownArrow;
+import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;
 import mekanism.client.gui.element.button.ToggleButton;
 import mekanism.client.gui.element.gauge.GaugeType;
@@ -28,6 +29,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class GuiRotaryCondensentrator extends GuiConfigurableTile<TileEntityRotaryCondensentrator, MekanismTileContainer<TileEntityRotaryCondensentrator>> {
 
+    private GuiElement energyBar;
+
     public GuiRotaryCondensentrator(MekanismTileContainer<TileEntityRotaryCondensentrator> container, Inventory inv, Component title) {
         super(container, inv, title);
         dynamicSlots = true;
@@ -38,7 +41,7 @@ public class GuiRotaryCondensentrator extends GuiConfigurableTile<TileEntityRota
     protected void addGuiElements() {
         super.addGuiElements();
         addRenderableWidget(new GuiDownArrow(this, 159, 44));
-        addRenderableWidget(new GuiHorizontalPowerBar(this, tile.getEnergyContainer(), 115, 75))
+        energyBar = addRenderableWidget(new GuiHorizontalPowerBar(this, tile.getEnergyContainer(), 115, 75))
               .warning(WarningType.NOT_ENOUGH_ENERGY, tile.getWarningCheck(RecipeError.NOT_ENOUGH_ENERGY))
               .warning(WarningType.NOT_ENOUGH_ENERGY_REDUCED_RATE, tile.getWarningCheck(RecipeError.NOT_ENOUGH_ENERGY_REDUCED_RATE));
         addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::getEnergyUsed));
@@ -81,7 +84,7 @@ public class GuiRotaryCondensentrator extends GuiConfigurableTile<TileEntityRota
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
         ILangEntry modeLang = tile.getMode() ? MekanismLang.DECONDENSENTRATING : MekanismLang.CONDENSENTRATING;
-        drawScrollingString(guiGraphics, modeLang.translate(), 4, imageHeight - 92, TextAlignment.LEFT, titleTextColor(), 111, 2, false);
+        drawScrollingString(guiGraphics, modeLang.translate(), 4, imageHeight - 92, TextAlignment.LEFT, titleTextColor(), energyBar.getRelativeX() - 4, 2, false);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 }

@@ -24,6 +24,7 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, E
 
     public GuiMatrixStats(EmptyTileContainer<TileEntityInductionCasing> container, Inventory inv, Component title) {
         super(container, inv, title);
+        titleLabelY -= 1;
     }
 
     @Override

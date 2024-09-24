@@ -2,6 +2,7 @@ package mekanism.client.gui.machine;
 
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.client.gui.GuiConfigurableTile;
+import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.button.GuiGasMode;
 import mekanism.client.gui.element.gauge.GaugeType;
@@ -20,6 +21,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class GuiElectrolyticSeparator extends GuiConfigurableTile<TileEntityElectrolyticSeparator, MekanismTileContainer<TileEntityElectrolyticSeparator>> {
 
+    private GuiElement fluidGauge;
+
     public GuiElectrolyticSeparator(MekanismTileContainer<TileEntityElectrolyticSeparator> container, Inventory inv, Component title) {
         super(container, inv, title);
         dynamicSlots = true;
@@ -29,7 +32,7 @@ public class GuiElectrolyticSeparator extends GuiConfigurableTile<TileEntityElec
     protected void addGuiElements() {
         super.addGuiElements();
         addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::getEnergyUsed));
-        addRenderableWidget(new GuiFluidGauge(() -> tile.fluidTank, () -> tile.getFluidTanks(null), GaugeType.STANDARD, this, 5, 10))
+        fluidGauge = addRenderableWidget(new GuiFluidGauge(() -> tile.fluidTank, () -> tile.getFluidTanks(null), GaugeType.STANDARD, this, 5, 10))
               .warning(WarningType.NO_MATCHING_RECIPE, tile.getWarningCheck(RecipeError.NOT_ENOUGH_INPUT));
         addRenderableWidget(new GuiChemicalGauge(() -> tile.leftTank, () -> tile.getChemicalTanks(null), GaugeType.SMALL, this, 58, 18))
               .warning(WarningType.NO_SPACE_IN_OUTPUT, tile.getWarningCheck(TileEntityElectrolyticSeparator.NOT_ENOUGH_SPACE_LEFT_OUTPUT_ERROR));
@@ -46,7 +49,7 @@ public class GuiElectrolyticSeparator extends GuiConfigurableTile<TileEntityElec
 
     @Override
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        renderTitleText(guiGraphics);
+        renderTitleTextWithOffset(guiGraphics, fluidGauge.getRelativeRight());
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 }

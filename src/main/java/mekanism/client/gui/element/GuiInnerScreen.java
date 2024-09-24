@@ -105,11 +105,12 @@ public class GuiInnerScreen extends GuiScalableElement implements IRecipeViewerR
                 minY = relativeY + Mth.floor(center);
                 maxY = relativeY + lineHeight + Mth.ceil(center);
             }
-            int maxTextWidth = getMaxTextWidth();
             int minX = relativeX + padding;
-            int maxX = relativeX + maxTextWidth - padding;
             int screenTextColor = screenTextColor();
-            for (Component text : renderStrings.get()) {
+            renderStrings.get();
+            for (int i = 0, size = list.size(); i < size; i++) {
+                Component text = list.get(i);
+                int maxX = relativeX + getMaxTextWidth(i) - padding;
                 drawScaledScrollingString(guiGraphics, text, minX, minY, maxX, maxY, TextAlignment.LEFT, screenTextColor, false, textScale);
                 minY += heightToNextLine;
                 maxY += heightToNextLine;
@@ -132,7 +133,7 @@ public class GuiInnerScreen extends GuiScalableElement implements IRecipeViewerR
         setTooltip(lastTooltip);
     }
 
-    protected int getMaxTextWidth() {
+    protected int getMaxTextWidth(int row) {
         return getWidth();
     }
 

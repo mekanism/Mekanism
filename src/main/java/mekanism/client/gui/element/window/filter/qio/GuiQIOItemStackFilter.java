@@ -46,6 +46,6 @@ public class GuiQIOItemStackFilter extends GuiItemStackFilter<QIOItemStackFilter
     @Override
     public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.renderForeground(guiGraphics, mouseX, mouseY);
-        drawScrollingString(guiGraphics, OnOff.of(filter.fuzzyMode).getTextComponent(), 159, 20, TextAlignment.LEFT, titleTextColor(), width - 159, 2, false);
+        drawScrollingString(guiGraphics, OnOff.of(filter.fuzzyMode).getTextComponent(), 159, 20, TextAlignment.LEFT, titleTextColor(), width - 161, 2, false);
     }
 }

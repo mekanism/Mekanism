@@ -17,6 +17,8 @@ import org.jetbrains.annotations.NotNull;
 public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, MekanismTileContainer<TileEntityTeleporter>>
       implements ITileGuiFrequencySelector<TeleporterFrequency, TileEntityTeleporter>, IGuiColorFrequencySelector<TeleporterFrequency> {
 
+    private GuiTeleporterStatus status;
+
     public GuiTeleporter(MekanismTileContainer<TileEntityTeleporter> container, Inventory inv, Component title) {
         super(container, inv, title);
         imageHeight += 74;
@@ -28,14 +30,14 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addRenderableWidget(new GuiTeleporterStatus(this, () -> getFrequency() != null, () -> tile.status));
+        status = addRenderableWidget(new GuiTeleporterStatus(this, () -> getFrequency() != null, () -> tile.status));
         addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 158, 26));
         addRenderableWidget(new GuiFrequencySelector<>(this, 14));
     }
 
     @Override
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        renderTitleText(guiGraphics);
+        renderTitleTextWithOffset(guiGraphics, status.getRelativeRight(), tile.getEnergySlotX());
         renderInventoryText(guiGraphics);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }

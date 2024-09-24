@@ -47,10 +47,19 @@ public class ChemicalCrystallizerRecipeCategory extends HolderRecipeCategory<Che
         GaugeType type = GaugeType.STANDARD.with(DataType.INPUT);
         gauge = addElement(GuiChemicalGauge.getDummy(type, this, 7, 4));
         addSlot(SlotType.INPUT, 8, 65).with(SlotOverlay.PLUS);
-        output = addSlot(SlotType.OUTPUT, 129, 57);
+        int slotX = 128;
+        output = addSlot(SlotType.OUTPUT, slotX + 1, 57);
         addSimpleProgress(ProgressType.LARGE_RIGHT, 53, 61);
-        addElement(new GuiInnerScreen(this, 31, 13, 115, 42, () -> GuiChemicalCrystallizer.getScreenRenderStrings(this.oreInfo)));
-        slurryOreSlot = addElement(new GuiSlot(SlotType.ORE, this, 128, 13).setRenderAboveSlots());
+        addElement(new GuiInnerScreen(this, 31, 13, 115, 42, () -> GuiChemicalCrystallizer.getScreenRenderStrings(this.oreInfo)) {
+            @Override
+            protected int getMaxTextWidth(int row) {
+                if (row == 0) {
+                    return slotX - relativeX;
+                }
+                return super.getMaxTextWidth(row);
+            }
+        });
+        slurryOreSlot = addElement(new GuiSlot(SlotType.ORE, this, slotX, 13).setRenderAboveSlots());
     }
 
     @Override

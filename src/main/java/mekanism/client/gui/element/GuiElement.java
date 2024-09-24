@@ -110,6 +110,14 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         return relativeY;
     }
 
+    public int getRelativeRight() {
+        return getRelativeX() + getWidth();
+    }
+
+    public int getRelativeBottom() {
+        return getRelativeY() + getHeight();
+    }
+
     /**
      * Transfers this {@link GuiElement} to a new parent {@link IGuiWrapper}, and moves elements as needed.
      */

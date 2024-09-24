@@ -133,9 +133,9 @@ public class FilterButton extends MekanismButton {
         }
         Component filterDescriptor = switch (filter) {
             case IItemStackFilter<?> item -> item.getItemStack().getHoverName();
-            case ITagFilter<?> tag -> Component.literal(tag.getTagName());
-            case IModIDFilter<?> modId -> Component.literal(modId.getModID());
-            case OredictionificatorFilter<?, ?, ?> oredictionificatorFilter -> Component.literal(oredictionificatorFilter.getFilterText());
+            case ITagFilter<?> tag -> TextComponentUtil.getString(tag.getTagName());
+            case IModIDFilter<?> modId -> TextComponentUtil.getString(modId.getModID());
+            case OredictionificatorFilter<?, ?, ?> oredictionificatorFilter -> TextComponentUtil.getString(oredictionificatorFilter.getFilterText());
             case null, default -> null;
         };
         int textWidth = toggleButton.getRelativeX() - relativeX - 20;

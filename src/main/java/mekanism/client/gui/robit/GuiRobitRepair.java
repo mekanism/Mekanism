@@ -77,7 +77,8 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements Co
 
     @Override
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        renderTitleTextWithOffset(guiGraphics, itemNameField.getRelativeX(), itemNameField.getRelativeX() + itemNameField.getWidth() + 4, 0, TextAlignment.CENTER);
+        renderTitleTextWithOffset(guiGraphics, itemNameField.getRelativeX(), itemNameField.getRelativeRight() + 4, 0, TextAlignment.CENTER);
+        renderInventoryText(guiGraphics, 60);
         int maximumCost = menu.getCost();
         if (maximumCost > 0) {
             int textColor = 0x80FF20;
@@ -95,11 +96,12 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements Co
             }
 
             if (component != null) {
-                guiGraphics.fill(Math.max(54 + 8, imageWidth - getStringWidth(component) - 10), 67, imageWidth - 8, 79, 0x4F000000);
-                drawScrollingString(guiGraphics, component, 54, 69, TextAlignment.RIGHT, textColor, getXSize() - 54, 9, true);
+                int min = Math.max(itemNameField.getRelativeX(), imageWidth - getStringWidth(component) - 10);
+                int max = imageWidth - 8;
+                guiGraphics.fill(min, 67, max, 79, 0x4F000000);
+                drawScrollingString(guiGraphics, component, min, 69, TextAlignment.RIGHT, textColor, max - min, 1, true);
             }
         }
-        renderInventoryText(guiGraphics);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 

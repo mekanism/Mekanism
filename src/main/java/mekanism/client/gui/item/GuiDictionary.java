@@ -60,7 +60,7 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
 
     @Override
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        renderTitleText(guiGraphics);
+        renderTitleTextWithOffset(guiGraphics, target.getRelativeRight());
         renderInventoryTextAndOther(guiGraphics, MekanismLang.DICTIONARY_TAG_TYPE.translate(), imageWidth - dropdown.getRelativeX() - 5);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }

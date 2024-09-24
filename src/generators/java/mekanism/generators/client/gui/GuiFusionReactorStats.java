@@ -31,7 +31,6 @@ public class GuiFusionReactorStats extends GuiFusionReactorInfo {
 
     @Override
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        renderTitleText(guiGraphics);
         FusionReactorMultiblockData multiblock = tile.getMultiblock();
         if (multiblock.isFormed()) {
             int textArea = getXSize() - 8;

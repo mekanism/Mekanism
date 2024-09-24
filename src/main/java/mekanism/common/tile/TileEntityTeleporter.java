@@ -645,6 +645,10 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         return energyContainer;
     }
 
+    public int getEnergySlotX() {
+        return energySlot.getGuiX();
+    }
+
     public EnumColor getColor() {
         return color;
     }

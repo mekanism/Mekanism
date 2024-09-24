@@ -3,6 +3,7 @@ package mekanism.client.gui.machine;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.client.gui.GuiConfigurableTile;
 import mekanism.client.gui.element.GuiDownArrow;
+import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
@@ -19,6 +20,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class GuiNutritionalLiquifier extends GuiConfigurableTile<TileEntityNutritionalLiquifier, MekanismTileContainer<TileEntityNutritionalLiquifier>> {
 
+    private GuiElement energyBar;
+
     public GuiNutritionalLiquifier(MekanismTileContainer<TileEntityNutritionalLiquifier> container, Inventory inv, Component title) {
         super(container, inv, title);
         dynamicSlots = true;
@@ -27,7 +30,7 @@ public class GuiNutritionalLiquifier extends GuiConfigurableTile<TileEntityNutri
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addRenderableWidget(new GuiHorizontalPowerBar(this, tile.getEnergyContainer(), 115, 75))
+        energyBar = addRenderableWidget(new GuiHorizontalPowerBar(this, tile.getEnergyContainer(), 115, 75))
               .warning(WarningType.NOT_ENOUGH_ENERGY, tile.getWarningCheck(RecipeError.NOT_ENOUGH_ENERGY));
         addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::getActive));
         addRenderableWidget(new GuiFluidGauge(() -> tile.fluidTank, () -> tile.getFluidTanks(null), GaugeType.STANDARD, this, 133, 13))
@@ -40,7 +43,7 @@ public class GuiNutritionalLiquifier extends GuiConfigurableTile<TileEntityNutri
     @Override
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
-        renderInventoryText(guiGraphics);
+        renderInventoryText(guiGraphics, energyBar.getRelativeX());
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 }

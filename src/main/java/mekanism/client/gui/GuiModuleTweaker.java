@@ -145,7 +145,7 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
 
     @Override
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        renderTitleText(guiGraphics);
+        renderTitleTextWithOffset(guiGraphics, 24);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 

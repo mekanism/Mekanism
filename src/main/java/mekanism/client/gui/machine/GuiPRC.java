@@ -45,7 +45,7 @@ public class GuiPRC extends GuiConfigurableTile<TileEntityPressurizedReactionCha
 
     @Override
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        renderTitleTextWithOffset(guiGraphics, secondGauge.getRelativeX() + secondGauge.getWidth(), getXSize(), 4, TextAlignment.LEFT);
+        renderTitleTextWithOffset(guiGraphics, secondGauge.getRelativeRight(), getXSize(), 4, TextAlignment.LEFT);
         renderInventoryText(guiGraphics);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }

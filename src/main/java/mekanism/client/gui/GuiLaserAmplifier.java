@@ -55,9 +55,9 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
 
     @Override
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        renderTitleText(guiGraphics);
+        renderTitleTextWithOffset(guiGraphics, energyGauge.getRelativeRight());
         renderInventoryText(guiGraphics);
-        int start = energyGauge.getRelativeX() + energyGauge.getWidth();
+        int start = energyGauge.getRelativeRight();
         Component delay;
         if (tile.getDelay() > 0) {
             delay = MekanismLang.DELAY.translate(tile.getDelay());

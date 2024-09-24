@@ -54,8 +54,8 @@ public class SawmillRecipeCategory extends HolderRecipeCategory<SawmillRecipe> {
             PoseStack pose = guiGraphics.pose();
             pose.pushPose();
             pose.translate(getGuiLeft(), getGuiTop(), 0);
-            drawScrollingString(guiGraphics, TextUtils.getPercent(secondaryChance), output.getRelativeX(), output.getRelativeY() + output.getHeight() + 1,
-                  TextAlignment.RIGHT, titleTextColor(), output.getWidth(), 1, false);
+            drawScrollingString(guiGraphics, TextUtils.getPercent(secondaryChance), output.getRelativeX(), output.getRelativeBottom() + 1, TextAlignment.RIGHT,
+                  titleTextColor(), output.getWidth(), 1, false);
             pose.popPose();
         }
     }

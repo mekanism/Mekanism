@@ -30,6 +30,9 @@ import org.jetbrains.annotations.Nullable;
 
 public class GuiDimensionalStabilizer extends GuiMekanismTile<TileEntityDimensionalStabilizer, MekanismTileContainer<TileEntityDimensionalStabilizer>> {
 
+    //Note: We need a component that is a space so that the line doesn't get trimmed out when splitting to fit within the screen space
+    private static final Component BLANK_LINE = Component.literal(" ");
+
     public GuiDimensionalStabilizer(MekanismTileContainer<TileEntityDimensionalStabilizer> container, Inventory inv, Component title) {
         super(container, inv, title);
         inventoryLabelY += 2;
@@ -83,16 +86,14 @@ public class GuiDimensionalStabilizer extends GuiMekanismTile<TileEntityDimensio
                             // for now it doesn't really matter as given we only support a radius of two it only checks at most the inner radius (8 extra boolean lookups)
                             for (int i = 1; i <= TileEntityDimensionalStabilizer.MAX_LOAD_RADIUS; i++) {
                                 if (hasAtRadius(i, false)) {
-                                    //Add an empty line for readability. Must be done by adding a string that just renders a space
-                                    tooltips.add(Component.literal(" "));
+                                    tooltips.add(BLANK_LINE);//Add an empty line for readability
                                     tooltips.add(MekanismLang.STABILIZER_ENABLE_RADIUS.translate(EnumColor.INDIGO, i, EnumColor.INDIGO, chunkX, EnumColor.INDIGO, chunkZ));
                                     break;
                                 }
                             }
                             for (int i = TileEntityDimensionalStabilizer.MAX_LOAD_RADIUS; i > 0; i--) {
                                 if (hasAtRadius(i, true)) {
-                                    //Add an empty line for readability. Must be done by adding a string that just renders a space
-                                    tooltips.add(Component.literal(" "));
+                                    tooltips.add(BLANK_LINE);//Add an empty line for readability
                                     tooltips.add(MekanismLang.STABILIZER_DISABLE_RADIUS.translate(EnumColor.INDIGO, i, EnumColor.INDIGO, chunkX, EnumColor.INDIGO, chunkZ));
                                     break;
                                 }

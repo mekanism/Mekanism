@@ -168,7 +168,6 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     }
 
     protected void renderTitleText(GuiGraphics guiGraphics) {
-        //TODO - 1.21: Evaluate what other ones should be moved to rendering with offset. For example the electrolytic separator
         drawTitleText(guiGraphics, title, titleLabelY);
     }
 
@@ -185,7 +184,11 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     }
 
     protected void renderInventoryText(GuiGraphics guiGraphics) {
-        drawScrollingString(guiGraphics, playerInventoryTitle, inventoryLabelX, inventoryLabelY, TextAlignment.LEFT, titleTextColor(), getXSize() - inventoryLabelX - 6, 0, false);
+        renderInventoryText(guiGraphics, getXSize());
+    }
+
+    protected void renderInventoryText(GuiGraphics guiGraphics, int end) {
+        drawScrollingString(guiGraphics, playerInventoryTitle, inventoryLabelX, inventoryLabelY, TextAlignment.LEFT, titleTextColor(), end - inventoryLabelX - 6, 0, false);
     }
 
     protected void renderInventoryTextAndOther(GuiGraphics guiGraphics, Component rightAlignedText) {

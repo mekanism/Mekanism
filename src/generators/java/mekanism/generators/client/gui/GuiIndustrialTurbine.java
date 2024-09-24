@@ -120,7 +120,7 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
     @Override
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
-        renderInventoryText(guiGraphics);
+        renderInventoryText(guiGraphics, 85);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 }

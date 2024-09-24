@@ -17,8 +17,10 @@ import mekanism.common.util.text.EnergyDisplay;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.content.fusion.FusionReactorMultiblockData;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorController;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class GuiFusionReactorInfo extends GuiMekanismTile<TileEntityFusionReactorController, EmptyTileContainer<TileEntityFusionReactorController>> {
 
@@ -44,5 +46,11 @@ public abstract class GuiFusionReactorInfo extends GuiMekanismTile<TileEntityFus
             Component environment = MekanismUtils.getTemperatureDisplay(multiblock.lastEnvironmentLoss, TemperatureUnit.KELVIN, false);
             return List.of(MekanismLang.TRANSFERRED_RATE.translate(transfer), MekanismLang.DISSIPATED_RATE.translate(environment));
         }));
+    }
+
+    @Override
+    protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        renderTitleTextWithOffset(guiGraphics, 18);//Adjust spacing for back button
+        super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 }

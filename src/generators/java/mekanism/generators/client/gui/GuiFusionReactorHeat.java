@@ -18,12 +18,10 @@ import mekanism.generators.client.gui.element.GuiFusionReactorTab.FusionReactorT
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.content.fusion.FusionReactorMultiblockData;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorController;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.level.material.Fluids;
-import org.jetbrains.annotations.NotNull;
 
 public class GuiFusionReactorHeat extends GuiFusionReactorInfo {
 
@@ -92,11 +90,5 @@ public class GuiFusionReactorHeat extends GuiFusionReactorInfo {
         addRenderableWidget(new GuiEnergyGauge(tile.getMultiblock().energyContainer, GaugeType.SMALL, this, 115, 46));
         addRenderableWidget(new GuiFusionReactorTab(this, tile, FusionReactorTab.FUEL));
         addRenderableWidget(new GuiFusionReactorTab(this, tile, FusionReactorTab.STAT));
-    }
-
-    @Override
-    protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        renderTitleText(guiGraphics);
-        super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 }

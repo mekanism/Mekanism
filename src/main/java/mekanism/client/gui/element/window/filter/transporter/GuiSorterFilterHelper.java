@@ -81,15 +81,16 @@ public interface GuiSorterFilterHelper extends GuiFilterHelper<TileEntityLogisti
     default void renderSorterForeground(GuiGraphics guiGraphics) {
         SorterFilter<?> filter = getFilter();
         int screenEnd = 29 + getScreenWidth();
-        drawScrollingString(guiGraphics, OnOff.of(filter.allowDefault).getTextComponent(), 159, 20, TextAlignment.LEFT, titleTextColor(), getXSize() - 159, 2, false);
+        drawScrollingString(guiGraphics, OnOff.of(filter.allowDefault).getTextComponent(), 159, 20, TextAlignment.LEFT, titleTextColor(), getXSize() - 161, 2, false);
         //Note: We add two to the length, as min and max have two spaces at the end given we aren't actually providing a parameter
         //TODO: Do we want to adjust this, and just have separate lang keys for them?
-        drawScrollingString(guiGraphics, MekanismLang.MIN.translate(""), screenEnd, 32, TextAlignment.LEFT, titleTextColor(), 169 - screenEnd + 2, 1, false);
-        drawScrollingString(guiGraphics, MekanismLang.MAX.translate(""), screenEnd, 44, TextAlignment.LEFT, titleTextColor(), 169 - screenEnd + 2, 1, false);
+        drawScrollingString(guiGraphics, MekanismLang.MIN.translate(""), screenEnd, 32, TextAlignment.LEFT, titleTextColor(), 168 - screenEnd, 1, false);
+        //TODO - 1.21: Make the gui slightly wider so that we can have it so max isn't scrolling ever so slightly be default?
+        drawScrollingString(guiGraphics, MekanismLang.MAX.translate(""), screenEnd, 44, TextAlignment.LEFT, titleTextColor(), 168 - screenEnd, 1, false);
         if (isSingleItem() && filter.sizeMode) {
             drawScrollingString(guiGraphics, MekanismLang.SORTER_FILTER_SIZE_MODE.translateColored(EnumColor.RED, OnOff.ON), 159, 58, TextAlignment.LEFT, titleTextColor(), getXSize() - 159, 2, false);
         } else {
-            drawScrollingString(guiGraphics, OnOff.of(filter.sizeMode).getTextComponent(), 159, 58, TextAlignment.LEFT, titleTextColor(), getXSize() - 159, 2, false);
+            drawScrollingString(guiGraphics, OnOff.of(filter.sizeMode).getTextComponent(), 159, 58, TextAlignment.LEFT, titleTextColor(), getXSize() - 161, 2, false);
         }
     }
 }

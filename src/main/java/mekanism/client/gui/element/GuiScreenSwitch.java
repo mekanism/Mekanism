@@ -48,7 +48,7 @@ public class GuiScreenSwitch extends GuiInnerScreen {
     }
 
     @Override
-    protected int getMaxTextWidth() {
-        return super.getMaxTextWidth() - 2 - GuiDigitalSwitch.BUTTON_SIZE_X;
+    protected int getMaxTextWidth(int row) {
+        return super.getMaxTextWidth(row) - 2 - GuiDigitalSwitch.BUTTON_SIZE_X;
     }
 }

@@ -176,6 +176,6 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
 
     @Override
     protected int getTitlePadEnd() {
-        return super.getTitlePadEnd() + 15;
+        return super.getTitlePadEnd() + 18;
     }
 }
