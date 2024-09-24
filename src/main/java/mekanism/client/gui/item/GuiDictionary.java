@@ -42,7 +42,7 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
         scrollList = addRenderableWidget(new GuiTextScrollList(this, 7, 29, 162, 42));
         //TODO: Ideally we would eventually replace this with some sort of tab system as it would probably look better
         // and could then be limited to just the tags the target supports
-        dropdown = addRenderableWidget(new GuiDropdown<>(this, 124, 73, 45, DictionaryTagType.class, () -> currentType, this::setCurrentType));
+        dropdown = addRenderableWidget(new GuiDropdown<>(this, 114, 73, 55, DictionaryTagType.class, () -> currentType, this::setCurrentType));
         target = addRenderableWidget(new GuiDictionaryTarget(this, 6, 6, this::updateScrollList));
     }
 

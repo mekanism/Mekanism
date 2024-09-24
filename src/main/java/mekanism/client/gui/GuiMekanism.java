@@ -196,8 +196,8 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     }
 
     protected void renderInventoryTextAndOther(GuiGraphics guiGraphics, Component rightAlignedText, int rightEndPad) {
-        drawScrollingString(guiGraphics, playerInventoryTitle, inventoryLabelX, inventoryLabelY, TextAlignment.LEFT, titleTextColor(), 56, 0, false);
-        int rightStart = inventoryLabelX + 54;
+        drawScrollingString(guiGraphics, playerInventoryTitle, inventoryLabelX, inventoryLabelY, TextAlignment.LEFT, titleTextColor(), 54, 0, false);
+        int rightStart = inventoryLabelX + 52;
         drawScrollingString(guiGraphics, rightAlignedText, rightStart, inventoryLabelY, TextAlignment.RIGHT, titleTextColor(), getXSize() - rightStart - rightEndPad, 6, false);
     }
 

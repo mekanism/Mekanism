@@ -18,6 +18,11 @@ import org.jetbrains.annotations.Nullable;
 
 public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends GuiTexturedElement {
 
+    private static final int ELEMENT_HEIGHT = 12;
+    private static final int ICON_SIZE = 6;
+    //one for the screen border, one for the hover border, and one more to have a spot between the hover border and the icon
+    private static final int ICON_OFFSET = ICON_SIZE + 3;
+
     private final Map<TYPE, Tooltip> typeTooltips;
     private final Consumer<TYPE> handler;
     private final Supplier<TYPE> curType;
@@ -29,7 +34,7 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
     private boolean isOpen;
 
     public GuiDropdown(IGuiWrapper gui, int x, int y, int width, Class<TYPE> enumClass, Supplier<TYPE> curType, Consumer<TYPE> handler) {
-        super(GuiInnerScreen.SCREEN, gui, x, y, width, 12);
+        super(GuiInnerScreen.SCREEN, gui, x, y, width, ELEMENT_HEIGHT);
         this.curType = curType;
         this.handler = handler;
         this.options = enumClass.getEnumConstants();
@@ -51,7 +56,10 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
         boolean wasDragging = isDragging();
         super.onRelease(mouseX, mouseY);
         if (wasDragging && isOpen && mouseY > getY() + 11) {
-            handler.accept(options[getHoveredIndex(mouseX, mouseY)]);
+            int hoveredIndex = getHoveredIndex(mouseX, mouseY);
+            if (hoveredIndex != -1) {
+                handler.accept(options[hoveredIndex]);
+            }
             setOpen(false);
         }
     }
@@ -59,13 +67,18 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
     @Override
     public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.renderForeground(guiGraphics, mouseX, mouseY);
-        TYPE current = curType.get();
-        drawScaledScrollingString(guiGraphics, current.getShortName(), 0, 2, TextAlignment.LEFT, screenTextColor(), 4, false, 0.8F);
+        drawOptionName(guiGraphics, curType.get(), 2);
         if (isOpen) {
             for (int i = 0; i < options.length; i++) {
-                drawScaledScrollingString(guiGraphics, options[i].getShortName(), 0, 11 + 2 + 10 * i, TextAlignment.LEFT, screenTextColor(), 4, false, 0.8F);
+                drawOptionName(guiGraphics, options[i], ELEMENT_HEIGHT + 1 + 10 * i);
             }
         }
+    }
+
+    private void drawOptionName(GuiGraphics guiGraphics, TYPE option, int y) {
+        //Note: We add one for if we are rendering with an icon so that we allow going closer to the icon
+        int maxWidth = option.getIcon() == null ? getWidth() : getWidth() - ICON_OFFSET + 1;
+        drawScaledScrollingString(guiGraphics, option.getShortName(), 0, y, TextAlignment.LEFT, screenTextColor(), maxWidth, 10, 3, false, 0.8F);
     }
 
     @Override
@@ -75,19 +88,19 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
 
         int index = getHoveredIndex(mouseX, mouseY);
         if (index != -1) {
-            GuiUtils.drawOutline(guiGraphics, relativeX + 1, relativeY + 12 + index * 10, width - 2, 10, screenTextColor());
+            GuiUtils.drawOutline(guiGraphics, relativeX + 1, relativeY + ELEMENT_HEIGHT + index * 10, width - 2, 10, screenTextColor());
         }
 
         TYPE current = curType.get();
         if (current.getIcon() != null) {
-            guiGraphics.blit(current.getIcon(), relativeX + width - 9, relativeY + 3, 0, 0, 6, 6, 6, 6);
+            guiGraphics.blit(current.getIcon(), relativeX + width - ICON_OFFSET, relativeY + 3, 0, 0, ICON_SIZE, ICON_SIZE, ICON_SIZE, ICON_SIZE);
         }
 
         if (isOpen) {
             for (int i = 0; i < options.length; i++) {
                 ResourceLocation icon = options[i].getIcon();
                 if (icon != null) {
-                    guiGraphics.blit(icon, relativeX + width - 9, relativeY + 12 + 2 + 10 * i, 0, 0, 6, 6, 6, 6);
+                    guiGraphics.blit(icon, relativeX + width - ICON_OFFSET, relativeY + ELEMENT_HEIGHT + 2 + 10 * i, 0, 0, ICON_SIZE, ICON_SIZE, ICON_SIZE, ICON_SIZE);
                 }
             }
         }
@@ -104,7 +117,7 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
         int index = getHoveredIndex(mouseX, mouseY);
         if (index != -1) {
             Tooltip text = typeTooltips.computeIfAbsent(options[index], t -> TooltipUtils.create(t.getTooltip()));
-            cachedTooltipRect = new ScreenRectangle(getX() + 1, getY() + 12 + index * 10, width - 2, 10);
+            cachedTooltipRect = new ScreenRectangle(getX() + 1, getY() + ELEMENT_HEIGHT + index * 10, width - 2, 10);
             setTooltip(text);
         } else {
             clearTooltip();
@@ -121,12 +134,12 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
 
     private void setOpen(boolean open) {
         if (isOpen != open) {
-            if (open) {
+            isOpen = open;
+            if (isOpen) {
                 height += options.length * 10 + 1;
             } else {
-                height -= options.length * 10 + 1;
+                height = ELEMENT_HEIGHT;
             }
         }
-        isOpen = open;
     }
 }
