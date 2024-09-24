@@ -33,7 +33,8 @@ public class GuiThermoelectricBoiler extends GuiMekanismTile<TileEntityBoilerCas
     public GuiThermoelectricBoiler(MekanismTileContainer<TileEntityBoilerCasing> container, Inventory inv, Component title) {
         super(container, inv, title);
         dynamicSlots = true;
-        imageWidth += 40;
+        imageWidth += 42;
+        inventoryLabelX += 21;
         inventoryLabelY += 2;
         titleLabelY = 5;
     }
@@ -41,11 +42,11 @@ public class GuiThermoelectricBoiler extends GuiMekanismTile<TileEntityBoilerCas
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addRenderableWidget(new GuiInnerScreen(this, 60, 23, 96, 40, () -> {
+        addRenderableWidget(new GuiInnerScreen(this, 54, 23, 110, 40, () -> {
             BoilerMultiblockData multiblock = tile.getMultiblock();
             return List.of(MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(multiblock.getTotalTemperature(), TemperatureUnit.KELVIN, true)),
                   MekanismLang.BOIL_RATE.translate(TextUtils.format(multiblock.lastBoilRate)), MekanismLang.MAX_BOIL_RATE.translate(TextUtils.format(multiblock.lastMaxBoil)));
-        }).recipeViewerCategories(RecipeViewerRecipeType.BOILER));
+        }).padding(3).recipeViewerCategories(RecipeViewerRecipeType.BOILER));
         addRenderableWidget(new GuiBoilerTab(this, tile, BoilerTab.STAT));
         addRenderableWidget(new GuiVerticalRateBar(this, new IBarInfoHandler() {
             @Override
@@ -71,14 +72,14 @@ public class GuiThermoelectricBoiler extends GuiMekanismTile<TileEntityBoilerCas
                 return Math.min(1, multiblock.lastMaxBoil * HeatUtils.getWaterThermalEnthalpy() /
                                    (multiblock.superheatingElements * MekanismConfig.general.superheatingHeatTransfer.get()));
             }
-        }, 164, 13));
+        }, 166, 13));
         addRenderableWidget(new GuiChemicalGauge(() -> tile.getMultiblock().superheatedCoolantTank, () -> tile.getMultiblock().getChemicalTanks((Direction) null), GaugeType.STANDARD, this, 6, 13)
               .setLabel(MekanismLang.BOILER_HEATED_COOLANT_TANK.translateColored(EnumColor.ORANGE)));
         addRenderableWidget(new GuiFluidGauge(() -> tile.getMultiblock().waterTank, () -> tile.getMultiblock().getFluidTanks(null), GaugeType.STANDARD, this, 26, 13)
               .setLabel(MekanismLang.BOILER_WATER_TANK.translateColored(EnumColor.INDIGO)));
-        addRenderableWidget(new GuiChemicalGauge(() -> tile.getMultiblock().steamTank, () -> tile.getMultiblock().getChemicalTanks((Direction) null), GaugeType.STANDARD, this, 172, 13)
+        addRenderableWidget(new GuiChemicalGauge(() -> tile.getMultiblock().steamTank, () -> tile.getMultiblock().getChemicalTanks((Direction) null), GaugeType.STANDARD, this, 174, 13)
               .setLabel(MekanismLang.BOILER_STEAM_TANK.translateColored(EnumColor.GRAY)));
-        addRenderableWidget(new GuiChemicalGauge(() -> tile.getMultiblock().cooledCoolantTank, () -> tile.getMultiblock().getChemicalTanks((Direction) null), GaugeType.STANDARD, this, 192, 13)
+        addRenderableWidget(new GuiChemicalGauge(() -> tile.getMultiblock().cooledCoolantTank, () -> tile.getMultiblock().getChemicalTanks((Direction) null), GaugeType.STANDARD, this, 194, 13)
               .setLabel(MekanismLang.BOILER_COOLANT_TANK.translateColored(EnumColor.AQUA)));
         addRenderableWidget(new GuiHeatTab(this, () -> {
             Component environment = MekanismUtils.getTemperatureDisplay(tile.getMultiblock().lastEnvironmentLoss, TemperatureUnit.KELVIN, false);

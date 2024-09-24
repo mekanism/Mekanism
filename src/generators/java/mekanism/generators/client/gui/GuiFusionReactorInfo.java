@@ -26,6 +26,7 @@ public abstract class GuiFusionReactorInfo extends GuiMekanismTile<TileEntityFus
 
     protected GuiFusionReactorInfo(EmptyTileContainer<TileEntityFusionReactorController> container, Inventory inv, Component title) {
         super(container, inv, title);
+        imageWidth += 10;
         titleLabelY = 5;
     }
 

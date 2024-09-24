@@ -43,7 +43,7 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
             return List.of(MekanismLang.MULTIBLOCK_FORMED.translate(), MekanismLang.EVAPORATION_HEIGHT.translate(multiblock.height()),
                   MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(multiblock.getTemperature(), TemperatureUnit.KELVIN, true)),
                   MekanismLang.FLUID_PRODUCTION.translate(Math.round(multiblock.lastGain * 100D) / 100D));
-        }).clearSpacing().recipeViewerCategories(RecipeViewerRecipeType.EVAPORATING));
+        }).padding(3).clearSpacing().recipeViewerCategories(RecipeViewerRecipeType.EVAPORATING));
         addRenderableWidget(new GuiDownArrow(this, 32, 39));
         addRenderableWidget(new GuiDownArrow(this, 136, 39));
         addRenderableWidget(new GuiHorizontalRateBar(this, new IBarInfoHandler() {

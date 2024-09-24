@@ -27,7 +27,7 @@ public class GuiFluidicPlenisher extends GuiMekanismTile<TileEntityFluidicPlenis
 
     public GuiFluidicPlenisher(MekanismTileContainer<TileEntityFluidicPlenisher> container, Inventory inv, Component title) {
         super(container, inv, title);
-        titleLabelY -= 1;
+        titleLabelY = 5;
         inventoryLabelY += 2;
         dynamicSlots = true;
     }

@@ -30,14 +30,14 @@ public class GuiFusionReactorFuel extends GuiFusionReactorInfo {
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addRenderableWidget(new GuiChemicalGauge(() -> tile.getMultiblock().deuteriumTank, () -> tile.getMultiblock().getChemicalTanks(null), GaugeType.SMALL, this, 25, 64));
-        addRenderableWidget(new GuiChemicalGauge(() -> tile.getMultiblock().fuelTank, () -> tile.getMultiblock().getChemicalTanks(null), GaugeType.STANDARD, this, 79, 50));
-        addRenderableWidget(new GuiChemicalGauge(() -> tile.getMultiblock().tritiumTank, () -> tile.getMultiblock().getChemicalTanks(null), GaugeType.SMALL, this, 133, 64));
-        addRenderableWidget(new GuiProgress(() -> tile.getMultiblock().isBurning(), ProgressType.SMALL_RIGHT, this, 47, 76));
-        addRenderableWidget(new GuiProgress(() -> tile.getMultiblock().isBurning(), ProgressType.SMALL_LEFT, this, 101, 76));
+        addRenderableWidget(new GuiChemicalGauge(() -> tile.getMultiblock().deuteriumTank, () -> tile.getMultiblock().getChemicalTanks(null), GaugeType.SMALL, this, 30, 64));
+        addRenderableWidget(new GuiChemicalGauge(() -> tile.getMultiblock().fuelTank, () -> tile.getMultiblock().getChemicalTanks(null), GaugeType.STANDARD, this, 84, 50));
+        addRenderableWidget(new GuiChemicalGauge(() -> tile.getMultiblock().tritiumTank, () -> tile.getMultiblock().getChemicalTanks(null), GaugeType.SMALL, this, 138, 64));
+        addRenderableWidget(new GuiProgress(() -> tile.getMultiblock().isBurning(), ProgressType.SMALL_RIGHT, this, 52, 76));
+        addRenderableWidget(new GuiProgress(() -> tile.getMultiblock().isBurning(), ProgressType.SMALL_LEFT, this, 106, 76));
         addRenderableWidget(new GuiFusionReactorTab(this, tile, FusionReactorTab.HEAT));
         addRenderableWidget(new GuiFusionReactorTab(this, tile, FusionReactorTab.STAT));
-        injectionRateField = addRenderableWidget(new GuiTextField(this, 98, 115, 26, 11));
+        injectionRateField = addRenderableWidget(new GuiTextField(this, 103, 115, 26, 11));
         injectionRateField.setInputValidator(InputValidator.DIGIT)
               .setEnterHandler(this::setInjection)
               .setMaxLength(2);
@@ -47,7 +47,7 @@ public class GuiFusionReactorFuel extends GuiFusionReactorInfo {
     @Override
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
         drawScrollingString(guiGraphics, GeneratorsLang.REACTOR_INJECTION_RATE.translate(tile.getMultiblock().getInjectionRate()), 0, 35, TextAlignment.CENTER, titleTextColor(), 16, false);
-        drawScrollingString(guiGraphics, GeneratorsLang.REACTOR_EDIT_RATE.translate(), 4, 117, TextAlignment.RIGHT, titleTextColor(), 94, 2, false);
+        drawScrollingString(guiGraphics, GeneratorsLang.REACTOR_EDIT_RATE.translate(), 4, 117, TextAlignment.RIGHT, titleTextColor(), 99, 2, false);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 
