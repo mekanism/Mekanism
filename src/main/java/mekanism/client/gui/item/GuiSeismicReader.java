@@ -51,7 +51,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
 
     public GuiSeismicReader(SeismicReaderContainer container, Inventory inv, Component title) {
         super(container, inv, title);
-        imageWidth = 147;
+        imageWidth = 150;
         imageHeight = 182;
         Player player = inv.player;
         Level level = player.level();
@@ -100,7 +100,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addRenderableWidget(new GuiInnerScreen(this, 7, 11, 63, 50, () -> {
+        addRenderableWidget(new GuiInnerScreen(this, 5, 11, 69, 50, () -> {
             // Get the name from the stack and render it
             int currentLayer = getCurrentLayer();
             if (currentLayer >= 0) {
@@ -118,13 +118,13 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
                 return text;
             }
             return Collections.emptyList();
-        }));
-        addRenderableWidget(new GuiInnerScreen(this, 74, 11, 51, 160));
-        scrollBar = addRenderableWidget(new GuiScrollBar(this, 126, 25, 132, blockList::size, () -> 1));
-        addRenderableWidget(new GuiArrowSelection(this, 76, 81, () -> TextComponentUtil.build(minHeight + getCurrentLayer())));
-        upButton = addRenderableWidget(new MekanismImageButton(this, 126, 11, 14,
+        }).padding(3));
+        addRenderableWidget(new GuiInnerScreen(this, 77, 11, 51, 160));
+        scrollBar = addRenderableWidget(new GuiScrollBar(this, 129, 25, 132, blockList::size, () -> 1));
+        addRenderableWidget(new GuiArrowSelection(this, 79, 81, () -> TextComponentUtil.build(minHeight + getCurrentLayer())));
+        upButton = addRenderableWidget(new MekanismImageButton(this, 129, 11, 14,
               MekanismUtils.getResource(ResourceType.GUI_BUTTON, "up.png"), (element, mouseX, mouseY) -> scrollBar.adjustScroll(1)));
-        downButton = addRenderableWidget(new MekanismImageButton(this, 126, 157, 14,
+        downButton = addRenderableWidget(new MekanismImageButton(this, 129, 157, 14,
               MekanismUtils.getResource(ResourceType.GUI_BUTTON, "down.png"), (element, mouseX, mouseY) -> scrollBar.adjustScroll(-1)));
         updateEnabledButtons();
     }
@@ -157,7 +157,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
                 if (info.renderTarget == null) {
                     continue;
                 }
-                int renderX = 92;
+                int renderX = 95;
                 int renderY = 146 - 16 * i;
                 if (i == 4) {
                     info.render(guiGraphics, renderX, renderY);

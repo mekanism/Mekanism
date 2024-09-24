@@ -32,7 +32,7 @@ import org.jetbrains.annotations.Nullable;
 public class GuiModuleScrollList extends GuiScrollList {
 
     private static final ResourceLocation MODULE_SELECTION = MekanismUtils.getResource(ResourceType.GUI, "module_selection.png");
-    private static final int TEXTURE_WIDTH = 100;
+    private static final int TEXTURE_WIDTH = 112;
     private static final int TEXTURE_HEIGHT = 36;
 
     private final Consumer<Module<?>> callback;
@@ -51,8 +51,8 @@ public class GuiModuleScrollList extends GuiScrollList {
     @Nullable
     private ScreenRectangle cachedTooltipRect;
 
-    public GuiModuleScrollList(IGuiWrapper gui, int x, int y, int width, int height, Supplier<ItemStack> itemSupplier, Consumer<Module<?>> callback) {
-        super(gui, x, y, width, height, TEXTURE_HEIGHT / 3, GuiElementHolder.HOLDER, GuiElementHolder.HOLDER_SIZE);
+    public GuiModuleScrollList(IGuiWrapper gui, int x, int y, int height, Supplier<ItemStack> itemSupplier, Consumer<Module<?>> callback) {
+        super(gui, x, y, TEXTURE_WIDTH + 8, height, TEXTURE_HEIGHT / 3, GuiElementHolder.HOLDER, GuiElementHolder.HOLDER_SIZE);
         this.itemSupplier = itemSupplier;
         this.callback = callback;
         updateItemAndList(itemSupplier.get());
@@ -136,7 +136,7 @@ public class GuiModuleScrollList extends GuiScrollList {
                 if (instance != null) {
                     boolean enabled = instance.isEnabled();
                     int color = module.isExclusive(ExclusiveFlag.ANY) ? (enabled ? 0x635BD4 : 0x2E2A69) : (enabled ? titleTextColor() : 0x5E1D1D);
-                    drawScaledScrollingString(guiGraphics, TextComponentUtil.build(module), 12, 3 + multipliedElement, TextAlignment.LEFT, color, barXShift - 14, 2, false, 0.7F);
+                    drawScaledScrollingString(guiGraphics, TextComponentUtil.build(module), 11, 3 + multipliedElement, TextAlignment.LEFT, color, barXShift - 12, 2, false, 0.7F);
                 }
             }
         });

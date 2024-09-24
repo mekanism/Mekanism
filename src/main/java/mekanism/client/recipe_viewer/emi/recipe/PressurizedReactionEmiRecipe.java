@@ -48,15 +48,15 @@ public class PressurizedReactionEmiRecipe extends MekanismEmiHolderRecipe<Pressu
 
     @Override
     public void addWidgets(WidgetHolder widgetHolder) {
-        addSlot(widgetHolder, SlotType.INPUT, 54, 35, input(0));
-        addSlot(widgetHolder, SlotType.OUTPUT, 116, 35, output(0)).recipeContext(this);
-        addSlot(widgetHolder, SlotType.POWER, 141, 17).with(SlotOverlay.POWER);
-        initTank(widgetHolder, GuiFluidGauge.getDummy(GaugeType.STANDARD.with(DataType.INPUT), this, 5, 10), input(1));
+        addSlot(widgetHolder, SlotType.INPUT, 54, 40, input(0));
+        addSlot(widgetHolder, SlotType.OUTPUT, 116, 40, output(0)).recipeContext(this);
+        addSlot(widgetHolder, SlotType.POWER, 141, 22).with(SlotOverlay.POWER);
+        initTank(widgetHolder, GuiFluidGauge.getDummy(GaugeType.STANDARD.with(DataType.INPUT), this, 5, 15), input(1));
         GaugeType type1 = GaugeType.STANDARD.with(DataType.INPUT);
-        initTank(widgetHolder, GuiChemicalGauge.getDummy(type1, this, 28, 10), input(2));
+        initTank(widgetHolder, GuiChemicalGauge.getDummy(type1, this, 28, 15), input(2));
         GaugeType type = GaugeType.SMALL.with(DataType.OUTPUT);
-        initTank(widgetHolder, GuiChemicalGauge.getDummy(type, this, 140, 40), output(1)).recipeContext(this);
-        addElement(widgetHolder, new GuiVerticalPowerBar(this, RecipeViewerUtils.FULL_BAR, 164, 15));
-        addSimpleProgress(widgetHolder, ProgressType.RIGHT, 77, 38, recipe.getDuration());
+        initTank(widgetHolder, GuiChemicalGauge.getDummy(type, this, 140, 45), output(1)).recipeContext(this);
+        addElement(widgetHolder, new GuiVerticalPowerBar(this, RecipeViewerUtils.FULL_BAR, 164, 21));
+        addSimpleProgress(widgetHolder, ProgressType.RIGHT, 77, 43, recipe.getDuration());
     }
 }

@@ -88,7 +88,7 @@ public class RecipeViewerRecipeType {
 
     //Note: This previously had a lang key for a shorter string. Though ideally especially due to translations we will eventually instead just make the text scale
     //TODO - 1.20.4: Re-evaluate ^^
-    public static final RVRecipeTypeWrapper<?, PressurizedReactionRecipe, ?> REACTION = new RVRecipeTypeWrapper<>(MekanismRecipeType.REACTION, PressurizedReactionRecipe.class, -3, -10, 170, 60, MekanismBlocks.PRESSURIZED_REACTION_CHAMBER);
+    public static final RVRecipeTypeWrapper<?, PressurizedReactionRecipe, ?> REACTION = new RVRecipeTypeWrapper<>(MekanismRecipeType.REACTION, PressurizedReactionRecipe.class, -3, -15, 170, 60, MekanismBlocks.PRESSURIZED_REACTION_CHAMBER);
 
     public static final RotaryRVRecipeType CONDENSENTRATING = new RotaryRVRecipeType(Mekanism.rl("condensentrating"), MekanismLang.CONDENSENTRATING);
     public static final RotaryRVRecipeType DECONDENSENTRATING = new RotaryRVRecipeType(Mekanism.rl("decondensentrating"), MekanismLang.DECONDENSENTRATING);

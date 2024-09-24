@@ -35,16 +35,16 @@ public class GuiModificationStation extends GuiMekanismTile<TileEntityModificati
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 154, 40));
+        addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 156, 40));
         addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::usedEnergy));
         addRenderableWidget(new GuiProgress(tile::getScaledProgress, ProgressType.LARGE_RIGHT, this, 65, 123));
-        removeButton = addRenderableWidget(new TranslationButton(this, 34, 96, 108, 17, MekanismLang.BUTTON_REMOVE, (element, mouseX, mouseY) -> {
+        removeButton = addRenderableWidget(new TranslationButton(this, 28, 96, 120, 17, MekanismLang.BUTTON_REMOVE, (element, mouseX, mouseY) -> {
             GuiModificationStation gui = (GuiModificationStation) element.gui();
             return PacketUtils.sendToServer(new PacketRemoveModule(gui.tile.getBlockPos(), gui.selectedModule.getData(), Screen.hasShiftDown()));
         })).setTooltip(MekanismLang.REMOVE_ALL_MODULES_TOOLTIP);
         removeButton.active = selectedModule != null;
 
-        addRenderableWidget(new GuiModuleScrollList(this, 34, 20, 108, 74, () -> tile.containerSlot.getStack().copy(), this::onModuleSelected));
+        addRenderableWidget(new GuiModuleScrollList(this, 28, 20, 74, () -> tile.containerSlot.getStack().copy(), this::onModuleSelected));
     }
 
     private void onModuleSelected(@Nullable IModule<?> module) {

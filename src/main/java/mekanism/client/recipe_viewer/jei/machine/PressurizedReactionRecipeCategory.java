@@ -41,16 +41,16 @@ public class PressurizedReactionRecipeCategory extends HolderRecipeCategory<Pres
 
     public PressurizedReactionRecipeCategory(IGuiHelper helper, IRecipeViewerRecipeType<PressurizedReactionRecipe> recipeType) {
         super(helper, recipeType);
-        inputItem = addSlot(SlotType.INPUT, 54, 35);
-        outputItem = addSlot(SlotType.OUTPUT, 116, 35);
-        addSlot(SlotType.POWER, 141, 17).with(SlotOverlay.POWER);
-        inputFluid = addElement(GuiFluidGauge.getDummy(GaugeType.STANDARD.with(DataType.INPUT), this, 5, 10));
+        inputItem = addSlot(SlotType.INPUT, 54, 40);
+        outputItem = addSlot(SlotType.OUTPUT, 116, 40);
+        addSlot(SlotType.POWER, 141, 22).with(SlotOverlay.POWER);
+        inputFluid = addElement(GuiFluidGauge.getDummy(GaugeType.STANDARD.with(DataType.INPUT), this, 5, 15));
         GaugeType type1 = GaugeType.STANDARD.with(DataType.INPUT);
-        inputChemical = addElement(GuiChemicalGauge.getDummy(type1, this, 28, 10));
+        inputChemical = addElement(GuiChemicalGauge.getDummy(type1, this, 28, 15));
         GaugeType type = GaugeType.SMALL.with(DataType.OUTPUT);
-        outputChemical = addElement(GuiChemicalGauge.getDummy(type, this, 140, 40));
-        addElement(new GuiVerticalPowerBar(this, RecipeViewerUtils.FULL_BAR, 164, 15));
-        addSimpleProgress(ProgressType.RIGHT, 77, 38);
+        outputChemical = addElement(GuiChemicalGauge.getDummy(type, this, 140, 45));
+        addElement(new GuiVerticalPowerBar(this, RecipeViewerUtils.FULL_BAR, 164, 21));
+        addSimpleProgress(ProgressType.RIGHT, 77, 43);
     }
 
     @Override

@@ -43,7 +43,7 @@ public class GuiModuleScreen extends GuiScrollableElement {
     private int maxElements;
 
     public GuiModuleScreen(IGuiWrapper gui, int x, int y, Supplier<ItemStack> itemSupplier, Consumer<ModuleConfig<?>> saveCallback, ArmorPreview armorPreview) {
-        this(gui, x, y, 102, 134, itemSupplier, saveCallback, armorPreview);
+        this(gui, x, y, 108, 134, itemSupplier, saveCallback, armorPreview);
     }
 
     private GuiModuleScreen(IGuiWrapper gui, int x, int y, int width, int height, Supplier<ItemStack> itemSupplier, Consumer<ModuleConfig<?>> saveCallback, ArmorPreview armorPreview) {
