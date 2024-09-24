@@ -186,7 +186,9 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
         }
         //Note: We don't care that onRenderForeground updates the maxZOffset in the mekanism gui as that is just used for rendering windows
         // and as our categories don't support windows we don't need to worry about that
-        int zOffset = 200;
+        //TODO: Re-evaluate this zOffset. We use 200 in GuiMekanism, but at least in JEI everything seems to render fine using zero.
+        // When using 200 the crystallizer screen's ore type slot ends up rendering in front of JEI's item rendering, so for now we are just setting this to zero
+        int zOffset = 0;//200;
         for (GuiElement element : guiElements) {
             pose.pushPose();
             element.onRenderForeground(guiGraphics, x, y, zOffset, zOffset);

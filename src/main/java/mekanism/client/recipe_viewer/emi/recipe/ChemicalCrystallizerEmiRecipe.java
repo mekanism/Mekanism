@@ -5,14 +5,12 @@ import java.util.List;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
-import mekanism.client.gui.element.GuiInnerScreen;
+import mekanism.client.gui.element.custom.GuiQIOCrystallizerScreen;
+import mekanism.client.gui.element.custom.GuiQIOCrystallizerScreen.IOreInfo;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiChemicalGauge;
 import mekanism.client.gui.element.progress.ProgressType;
-import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
-import mekanism.client.gui.machine.GuiChemicalCrystallizer;
-import mekanism.client.gui.machine.GuiChemicalCrystallizer.IOreInfo;
 import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.client.recipe_viewer.emi.MekanismEmiRecipeCategory;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -35,8 +33,9 @@ public class ChemicalCrystallizerEmiRecipe extends MekanismEmiHolderRecipe<Chemi
         List<ChemicalStack> inputRepresentations = input.getRepresentations();
         displayItems = RecipeViewerUtils.getDisplayItems(input);
         oreInfo = new IOreInfo() {
+            @NotNull
             @Override
-            public @NotNull ChemicalStack getInputChemical() {
+            public ChemicalStack getInputChemical() {
                 return inputRepresentations.isEmpty() ? ChemicalStack.EMPTY : RecipeViewerUtils.getCurrent(inputRepresentations);
             }
 
@@ -50,6 +49,11 @@ public class ChemicalCrystallizerEmiRecipe extends MekanismEmiHolderRecipe<Chemi
             public ItemStack getRenderStack() {
                 return displayItems.isEmpty() ? ItemStack.EMPTY : RecipeViewerUtils.getCurrent(displayItems);
             }
+
+            @Override
+            public boolean usesSequencedDisplay() {
+                return false;
+            }
         };
     }
 
@@ -58,19 +62,9 @@ public class ChemicalCrystallizerEmiRecipe extends MekanismEmiHolderRecipe<Chemi
         GaugeType type = GaugeType.STANDARD.with(DataType.INPUT);
         initTank(widgetHolder, GuiChemicalGauge.getDummy(type, this, 7, 4), input(0));
         addSlot(widgetHolder, SlotType.INPUT, 8, 65).with(SlotOverlay.PLUS);
-        int slotX = 128;
-        addSlot(widgetHolder, SlotType.OUTPUT, slotX + 1, 57, output(0)).recipeContext(this);
+        addSlot(widgetHolder, SlotType.OUTPUT, 129, 57, output(0)).recipeContext(this);
         addSimpleProgress(widgetHolder, ProgressType.LARGE_RIGHT, 53, 61, TileEntityChemicalCrystallizer.BASE_TICKS_REQUIRED);
-        addElement(widgetHolder, new GuiInnerScreen(this, 31, 13, 115, 42, () -> GuiChemicalCrystallizer.getScreenRenderStrings(this.oreInfo)) {
-            @Override
-            protected int getMaxTextWidth(int row) {
-                if (row == 0) {
-                    return slotX - relativeX;
-                }
-                return super.getMaxTextWidth(row);
-            }
-        });
-        GuiSlot slurryOreSlot = addElement(widgetHolder, new GuiSlot(SlotType.ORE, this, slotX, 13).setRenderAboveSlots());
-        initItem(widgetHolder, slurryOreSlot.getX(), slurryOreSlot.getY(), ingredient(displayItems));
+        GuiQIOCrystallizerScreen screen = addElement(widgetHolder, new GuiQIOCrystallizerScreen(this, 31, 13, 115, 42, oreInfo));
+        initItem(widgetHolder, screen.getSlotX(), screen.getSlotY(), ingredient(displayItems));
     }
 }

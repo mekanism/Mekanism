@@ -88,11 +88,15 @@ public class GuiInnerScreen extends GuiScalableElement implements IRecipeViewerR
         return padding(5).spacing(2).textScale(0.8F).centerY();
     }
 
+    protected List<Component> getRenderStrings() {
+        return renderStrings == null ? Collections.emptyList() : renderStrings.get();
+    }
+
     @Override
     public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.renderForeground(guiGraphics, mouseX, mouseY);
-        if (renderStrings != null) {
-            List<Component> list = renderStrings.get();
+        List<Component> list = getRenderStrings();
+        if (!list.isEmpty()) {
             int lineHeight = getLineHeight();
             int minY = relativeY + padding;
             int maxY = minY + lineHeight;
@@ -107,7 +111,6 @@ public class GuiInnerScreen extends GuiScalableElement implements IRecipeViewerR
             }
             int minX = relativeX + padding;
             int screenTextColor = screenTextColor();
-            renderStrings.get();
             for (int i = 0, size = list.size(); i < size; i++) {
                 Component text = list.get(i);
                 int maxX = relativeX + getMaxTextWidth(i) - padding;

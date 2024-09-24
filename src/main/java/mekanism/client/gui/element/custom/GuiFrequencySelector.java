@@ -110,7 +110,7 @@ public class GuiFrequencySelector<FREQ extends Frequency> extends GuiElement {
             return true;
         }));
         if (hasColor) {
-            addChild(new GuiSlot(SlotType.NORMAL, frequencySelector, relativeX + 104, relativeY + 113).setRenderAboveSlots());
+            addChild(new GuiSlot(SlotType.NORMAL, frequencySelector, relativeX + 104, relativeY + 113));
             IGuiColorFrequencySelector<?> colorFrequencySelector = (IGuiColorFrequencySelector<?>) frequencySelector;
             addChild(new ColorButton(frequencySelector, relativeX + 105, relativeY + 114, 16, 16, () -> {
                 IColorableFrequency frequency = colorFrequencySelector.getFrequency();
