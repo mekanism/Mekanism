@@ -56,7 +56,7 @@ public class GuiResizeControls extends GuiSideHolder {
     @Override
     public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.renderForeground(guiGraphics, mouseX, mouseY);
-        drawScaledScrollingString(guiGraphics, MekanismLang.HEIGHT.translate(), 0, 16, TextAlignment.CENTER, titleTextColor(), 4, false, 0.60F);
+        drawScaledScrollingString(guiGraphics, MekanismLang.HEIGHT.translate(), 0, 16, TextAlignment.CENTER, titleTextColor(), 4, false, 0.6F);
     }
 
     @Override

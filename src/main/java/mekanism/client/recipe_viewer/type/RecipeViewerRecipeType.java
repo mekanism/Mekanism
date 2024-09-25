@@ -54,7 +54,7 @@ public class RecipeViewerRecipeType {
 
     public static final RVRecipeTypeWrapper<?, FluidChemicalToChemicalRecipe, ?> WASHING = new RVRecipeTypeWrapper<>(MekanismRecipeType.WASHING, FluidChemicalToChemicalRecipe.class, -7, -13, 162, 60, MekanismBlocks.CHEMICAL_WASHER);
 
-    public static final RVRecipeTypeWrapper<?, FluidToFluidRecipe, ?> EVAPORATING = new RVRecipeTypeWrapper<>(MekanismRecipeType.EVAPORATING, FluidToFluidRecipe.class, -3, -12, 170, 62, MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER, MekanismBlocks.THERMAL_EVAPORATION_VALVE, MekanismBlocks.THERMAL_EVAPORATION_BLOCK);
+    public static final RVRecipeTypeWrapper<?, FluidToFluidRecipe, ?> EVAPORATING = new RVRecipeTypeWrapper<>(MekanismRecipeType.EVAPORATING, FluidToFluidRecipe.class, -3, -12, 176, 62, MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER, MekanismBlocks.THERMAL_EVAPORATION_VALVE, MekanismBlocks.THERMAL_EVAPORATION_BLOCK);
 
     public static final RVRecipeTypeWrapper<?, ChemicalToChemicalRecipe, ?> ACTIVATING = new RVRecipeTypeWrapper<>(MekanismRecipeType.ACTIVATING, ChemicalToChemicalRecipe.class, -4, -13, 168, 60, MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR);
     public static final RVRecipeTypeWrapper<?, ChemicalToChemicalRecipe, ?> CENTRIFUGING = new RVRecipeTypeWrapper<>(MekanismRecipeType.CENTRIFUGING, ChemicalToChemicalRecipe.class, -4, -13, 168, 60, MekanismBlocks.ISOTOPIC_CENTRIFUGE);
