@@ -99,7 +99,7 @@ class ColorSelection extends MiniElement<Integer> {
                     previewReset = () -> armorPreview.resetToDefault(slot);
                 }
             }
-            parent.gui().addWindow(new GuiColorWindow(parent.gui(), parent.getGuiWidth() / 2 - 160 / 2, parent.getGuiHeight() / 2 - 120 / 2, supportsAlpha,
+            parent.gui().addWindow(new GuiColorWindow(parent.gui(), (parent.getGuiWidth() - 160) / 2, (parent.getGuiHeight() - 120) / 2, supportsAlpha,
                               getColor(), color -> setData(color.argb()), armorPreview, updatePreviewColor, previewReset));
         }
     }

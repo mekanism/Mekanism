@@ -108,6 +108,6 @@ public class GuiCraftingWindowTab extends GuiWindowCreatorTab<Void, GuiCraftingW
     @Override
     protected GuiWindow createWindow(SelectedWindowData windowData) {
         openWindows[windowData.extraData] = true;
-        return new GuiCraftingWindow(gui(), getGuiWidth() / 2 - 156 / 2, 15, container, windowData);
+        return new GuiCraftingWindow(gui(), (getGuiWidth() - 124) / 2, 15, container, windowData);
     }
 }

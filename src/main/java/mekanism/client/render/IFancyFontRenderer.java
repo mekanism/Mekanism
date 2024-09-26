@@ -13,7 +13,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
-import org.joml.Vector3f;
 
 //TODO - 1.21: Document this class
 public interface IFancyFontRenderer {
@@ -93,18 +92,8 @@ public interface IFancyFontRenderer {
         float targetY = (minY + maxY - getLineHeight()) / 2F;
         int areaWidth = maxX - minX;
         if (textWidth > areaWidth) {
-            int overflowWidth = textWidth - areaWidth;
-            double seconds = Util.getMillis() / 1_000D;
-            double scrollPeriod = Math.max(overflowWidth * AbstractWidget.PERIOD_PER_SCROLLED_PIXEL, AbstractWidget.MIN_SCROLL_PERIOD);
-            double scrolledSoFar = Math.sin((Math.PI / 2) * Math.cos((2 * Math.PI) * seconds / scrollPeriod)) / 2.0 + AbstractWidget.PERIOD_PER_SCROLLED_PIXEL;
-            double overflowedBy = scrolledSoFar * overflowWidth;//Vanilla uses: Mth.lerp(d2, 0.0, overflowWidth); But that is equivalent to just multiplying performing the multiplication
-            //Note: We are drawing in relative coordinates, but GuiGraphics#enableScissor, is expecting absolute coordinates,
-            // so we need to get the translations from our pose stack
-            int left = getTranslationX(guiGraphics);
-            int top = getTranslationY(guiGraphics);
-            guiGraphics.enableScissor(left + minX, top + minY, left + maxX, top + maxY);
-            //TODO: Float?
-            drawString(guiGraphics, text, minX - (int) overflowedBy, targetY, color, shadow);
+            float targetX = prepScrollingString(guiGraphics, textWidth, areaWidth, minX, minY, maxX, maxY);
+            drawString(guiGraphics, text, targetX, targetY, color, shadow);
             guiGraphics.disableScissor();
         } else {
             drawString(guiGraphics, text, alignment.getTarget(minX, maxX, areaWidth, textWidth), targetY, color, shadow);
@@ -137,23 +126,37 @@ public interface IFancyFontRenderer {
         float targetY = (minY + maxY - getLineHeight()) / 2F;
         int areaWidth = maxX - minX;
         if (textWidth > areaWidth) {
-            float overflowWidth = textWidth - areaWidth;
-            double seconds = Util.getMillis() / 1_000D;
-            double scrollPeriod = Math.max(overflowWidth * AbstractWidget.PERIOD_PER_SCROLLED_PIXEL, AbstractWidget.MIN_SCROLL_PERIOD);
-            double scrolledSoFar = Math.sin((Math.PI / 2) * Math.cos((2 * Math.PI) * seconds / scrollPeriod)) / 2.0 + AbstractWidget.PERIOD_PER_SCROLLED_PIXEL;
-            double overflowedBy = scrolledSoFar * overflowWidth;//Vanilla uses: Mth.lerp(d2, 0.0, overflowWidth); But that is equivalent to just multiplying performing the multiplication
-            //Note: We are drawing in relative coordinates, but GuiGraphics#enableScissor, is expecting absolute coordinates,
-            // so we need to get the translations from our pose stack
-            int left = getTranslationX(guiGraphics);
-            int top = getTranslationY(guiGraphics);
-            guiGraphics.enableScissor(left + minX, top + minY, left + maxX, top + maxY);
-            //TODO: Should this cast to float? I believe this makes it less choppy, but a bit blurry?
-            // So we probably don't want to cast overflowedBy to float
-            drawTextWithScale(guiGraphics, text, minX - (int) overflowedBy, targetY, color, shadow, scale);
+            float targetX = prepScrollingString(guiGraphics, textWidth, areaWidth, minX, minY, maxX, maxY);
+            drawTextWithScale(guiGraphics, text, targetX, targetY, color, shadow, scale);
             guiGraphics.disableScissor();
         } else {
             drawTextWithScale(guiGraphics, text, alignment.getTarget(minX, maxX, areaWidth, textWidth), targetY, color, shadow, scale);
         }
+    }
+
+    /**
+     * Based off the logic for calculating the scissor area and draw target that vanilla does in
+     * {@link AbstractWidget#renderScrollingString(GuiGraphics, Font, Component, int, int, int, int, int, int)}
+     *
+     * @apiNote Call {@link GuiGraphics#disableScissor()} after using this method
+     */
+    private static float prepScrollingString(GuiGraphics guiGraphics, double textWidth, int areaWidth, int minX, int minY, int maxX, int maxY) {
+        double overflowWidth = textWidth - areaWidth;
+        double seconds = Util.getMillis() / 1_000D;
+        double scrollPeriod = Math.max(overflowWidth * AbstractWidget.PERIOD_PER_SCROLLED_PIXEL, AbstractWidget.MIN_SCROLL_PERIOD);
+        double scrolledSoFar = Math.sin((Math.PI / 2) * Math.cos((2 * Math.PI) * seconds / scrollPeriod)) / 2.0 + AbstractWidget.PERIOD_PER_SCROLLED_PIXEL;
+        //Vanilla uses: Mth.lerp(d2, 0.0, overflowWidth); to calculate overflowedBy. But that is equivalent to just multiplying performing the multiplication
+        double overflowedBy = scrolledSoFar * overflowWidth;
+        //Note: We are drawing in relative coordinates, but GuiGraphics#enableScissor, is expecting absolute coordinates,
+        // so we need to get the translations from our pose stack
+        //Note: This is equivalent to what Matrix4f#getTranslation(Vector3f) would do, without the extra allocations.
+        Matrix4f matrix4f = guiGraphics.pose().last().pose();
+        int left = (int) matrix4f.m30();
+        int top = (int) matrix4f.m31();
+        guiGraphics.enableScissor(left + minX, top + minY, left + maxX, top + maxY);
+        //TODO: Should this cast to float? I believe this makes it less choppy, but a bit blurry?
+        // So we probably don't want to cast overflowedBy to float
+        return minX - (int) overflowedBy;
     }
 
     private void drawTextWithScale(GuiGraphics guiGraphics, Component text, float x, float y, int color, boolean shadow, float scale) {
@@ -163,31 +166,18 @@ public interface IFancyFontRenderer {
     }
 
     //Note: As translate will implicitly cast x and y to being floats, we might as well pass these in as floats to reduce duplicate code
-    private static PoseStack prepTextScale(GuiGraphics guiGraphics, float x, float y, float scale) {
+    private PoseStack prepTextScale(GuiGraphics guiGraphics, float x, float y, float scale) {
         PoseStack pose = guiGraphics.pose();
         pose.pushPose();
         return prepTextScale(pose, x, y, scale);
     }
 
-    static PoseStack prepTextScale(PoseStack pose, float x, float y, float scale) {
-        float yAdd = 4 - 4 * scale;
+    private PoseStack prepTextScale(PoseStack pose, float x, float y, float scale) {
+        float halfLineHeight = getLineHeight() / 2F;
+        float yAdd = halfLineHeight - halfLineHeight * scale;
         pose.translate(x, y + yAdd, 0);
         pose.scale(scale, scale, scale);
         return pose;
-    }
-
-    /**
-     * Equivalent to what {@link Matrix4f#getTranslation(Vector3f)} would do, without the extra allocations.
-     */
-    private static int getTranslationX(GuiGraphics guiGraphics) {
-        return (int) guiGraphics.pose().last().pose().m30();
-    }
-
-    /**
-     * Equivalent to what {@link Matrix4f#getTranslation(Vector3f)} would do, without the extra allocations.
-     */
-    private static int getTranslationY(GuiGraphics guiGraphics) {
-        return (int) guiGraphics.pose().last().pose().m31();
     }
 
     enum TextAlignment {
@@ -241,7 +231,7 @@ public interface IFancyFontRenderer {
         public int renderWithScale(GuiGraphics guiGraphics, int x, int y, int color, int maxLength, float scale) {
             //Divide by scale for calculating actual max length so that when the text is scaled it has the proper total space available
             calculateLines(Mth.floor(maxLength / scale));
-            PoseStack pose = prepTextScale(guiGraphics, x, y, scale);
+            PoseStack pose = font.prepTextScale(guiGraphics, x, y, scale);
             int startY = 0;
             int lineHeight = font.getLineHeight();
             for (LineData line : linesToDraw) {
