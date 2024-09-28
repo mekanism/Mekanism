@@ -281,7 +281,7 @@ public interface IFancyFontRenderer {
                 lineLength = wordLength;
             } else {
                 if (spacingLength > 0) {
-                    lineBuilder.append(" ");
+                    lineBuilder.append(' ');
                 }
                 lineBuilder.append(wordBuilder);
                 lineLength += spacingLength + wordLength;

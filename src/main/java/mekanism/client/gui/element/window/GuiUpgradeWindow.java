@@ -38,18 +38,18 @@ public class GuiUpgradeWindow extends GuiWindow {
     private final GuiInnerScreen rightScreen;
 
     public GuiUpgradeWindow(IGuiWrapper gui, int x, int y, TileEntityMekanism tile, SelectedWindowData windowData) {
-        super(gui, x, y, 156, 76 + 12 * GuiSupportedUpgrades.calculateNeededRows(gui), windowData);
+        super(gui, x, y, 198, 76 + Math.max(18, 12 * GuiSupportedUpgrades.calculateNeededRows(gui)), windowData);
         if (windowData.type != WindowType.UPGRADE) {
             throw new IllegalArgumentException("Upgrade windows must have an upgrade window type");
         }
         this.tile = tile;
         interactionStrategy = InteractionStrategy.ALL;
-        scrollList = addChild(new GuiUpgradeScrollList(gui, relativeX + 6, relativeY + 18, 66, 50, tile.getComponent(), this::updateEnabledButtons));
+        scrollList = addChild(new GuiUpgradeScrollList(gui, relativeX + 6, relativeY + 18, 50, tile.getComponent(), this::updateEnabledButtons));
         addChild(new GuiSupportedUpgrades(gui, relativeX + 6, relativeY + 68, tile.getComponent().getSupportedTypes()));
-        rightScreen = addChild(new GuiInnerScreen(gui, relativeX + 72, relativeY + 18, 59, 50));
-        addChild(new GuiProgress(() -> this.tile.getComponent().getScaledUpgradeProgress(), ProgressType.INSTALLING, gui, relativeX + 134, relativeY + 37));
-        addChild(new GuiProgress(() -> 0, ProgressType.UNINSTALLING, gui, relativeX + 134, relativeY + 59));
-        removeButton = addChild(new DigitalButton(gui, relativeX + 73, relativeY + 54, 56, 12, MekanismLang.UPGRADE_UNINSTALL, (element, mouseX, mouseY) -> {
+        rightScreen = addChild(new GuiInnerScreen(gui, scrollList.getRelativeRight(), relativeY + 18, 59, 50));
+        addChild(new GuiProgress(() -> this.tile.getComponent().getScaledUpgradeProgress(), ProgressType.INSTALLING, gui, rightScreen.getRelativeRight() + 3, relativeY + 37));
+        addChild(new GuiProgress(() -> 0, ProgressType.UNINSTALLING, gui, rightScreen.getRelativeRight() + 3, relativeY + 58));
+        removeButton = addChild(new DigitalButton(gui, scrollList.getRelativeRight() + 1, relativeY + 54, 56, 12, MekanismLang.UPGRADE_UNINSTALL, (element, mouseX, mouseY) -> {
             if (scrollList.hasSelection()) {
                 return PacketUtils.sendToServer(new PacketGuiInteract(Screen.hasShiftDown() ? GuiInteraction.REMOVE_ALL_UPGRADE : GuiInteraction.REMOVE_UPGRADE,
                       this.tile, scrollList.getSelection().ordinal()));
@@ -57,8 +57,8 @@ public class GuiUpgradeWindow extends GuiWindow {
             return false;
         })).setTooltip(MekanismLang.UPGRADE_UNINSTALL_TOOLTIP);
         MekanismTileContainer<?> container = (MekanismTileContainer<?>) ((GuiMekanism<?>) gui()).getMenu();
-        addChild(new GuiVirtualSlot(this, SlotType.NORMAL, gui, relativeX + 133, relativeY + 18, container.getUpgradeSlot()));
-        addChild(new GuiVirtualSlot(this, SlotType.NORMAL, gui, relativeX + 133, relativeY + 73, container.getUpgradeOutputSlot()));
+        addChild(new GuiVirtualSlot(this, SlotType.NORMAL, gui, rightScreen.getRelativeRight() + 2, relativeY + 18, container.getUpgradeSlot()));
+        addChild(new GuiVirtualSlot(this, SlotType.NORMAL, gui, rightScreen.getRelativeRight() + 2, relativeY + 72, container.getUpgradeOutputSlot()));
         updateEnabledButtons();
         container.startTracking(MekanismContainer.UPGRADE_WINDOW, tile.getComponent());
         PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_TRACK_UPGRADES, tile, MekanismContainer.UPGRADE_WINDOW));
@@ -102,4 +102,9 @@ public class GuiUpgradeWindow extends GuiWindow {
             noSelection.renderWithScale(guiGraphics, rightScreen.getRelativeX() + 2, rightScreen.getRelativeY() + 2, screenTextColor(), 56, 0.8F);
         }
     }
+
+    /*@Override
+    protected int getTitlePadEnd() {
+        return super.getTitlePadEnd() + 22;
+    }*/
 }

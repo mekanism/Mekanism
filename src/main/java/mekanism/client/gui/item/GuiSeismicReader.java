@@ -37,13 +37,14 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 
 public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
 
     private final List<BlockInfo<?>> blockList = new ArrayList<>();
     private final Reference2IntMap<Block> blockFrequencies = new Reference2IntOpenHashMap<>();
-    private final Reference2IntMap<Fluid> fluidFrequencies = new Reference2IntOpenHashMap<>();
+    private final Reference2IntMap<FluidType> fluidFrequencies = new Reference2IntOpenHashMap<>();
     private final int minHeight;
     private MekanismButton upButton;
     private MekanismButton downButton;
@@ -77,21 +78,22 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
                 if (fluid == Fluids.EMPTY) {
                     blockList.add(new BlockInfo<>(state, state, null));
                 } else {
-                    blockList.add(new BlockInfo<>(state, fluid, (graphics, f, x, y) -> {
+                    FluidType fluidType = fluid.getFluidType();
+                    blockList.add(new BlockInfo<>(state, fluidType, (graphics, f, x, y) -> {
                         IClientFluidTypeExtensions properties = IClientFluidTypeExtensions.of(f);
                         MekanismRenderer.color(graphics, properties.getTintColor());
                         TextureAtlasSprite texture = MekanismRenderer.getSprite(properties.getStillTexture());
                         graphics.blit(x, y, 0, 16, 16, texture);
                         MekanismRenderer.resetColor(graphics);
                     }));
-                    fluidFrequencies.mergeInt(fluid, 1, Integer::sum);
+                    fluidFrequencies.mergeInt(fluidType, 1, Integer::sum);
                 }
             } else {
                 blockList.add(new BlockInfo<>(state, stack, this::renderItem));
                 FluidState fluid = state.getFluidState();
                 if (!fluid.isEmpty()) {//Take the fluid into account for frequency count
                     //TODO: Do we want to render the fact that it is fluid logged in some way?
-                    fluidFrequencies.mergeInt(fluid.getType(), 1, Integer::sum);
+                    fluidFrequencies.mergeInt(fluid.getFluidType(), 1, Integer::sum);
                 }
             }
         }
@@ -106,14 +108,19 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
             if (currentLayer >= 0) {
                 List<Component> text = new ArrayList<>(4);
                 BlockInfo<?> blockInfo = blockList.get(currentLayer);
-                Block block = blockInfo.block();
-                if (!(block instanceof LiquidBlock)) {//If the block is a liquid, let the fluid handling display and calculate the quantity
+                BlockState state = blockInfo.state();
+                Block block = state.getBlock();
+                if (!(block instanceof LiquidBlock)) {
+                    //If the block is a liquid, let the fluid handling display and calculate the quantity
+                    //Note: Bubble columns, still get counted so that we display it is a bubble column, and how many there are
+                    //TODO: Do we want to try and make it so that the first few lines of the block's name wraps instead of scrolls
+                    // for very long names like waxed oxidized copper stairs?
                     text.add(block.getName());
                     text.add(MekanismLang.ABUNDANCY.translate(blockFrequencies.getInt(block)));
                 }
-                if (blockInfo.type() instanceof Fluid fluid) {//TODO: Improve this so it actually displays for fluid logged blocks
-                    text.add(fluid.getFluidType().getDescription());
-                    text.add(MekanismLang.ABUNDANCY.translate(fluidFrequencies.getInt(fluid)));
+                if (blockInfo.type() instanceof FluidType fluidType) {//TODO: Improve this so it actually displays for fluid logged blocks
+                    text.add(fluidType.getDescription());
+                    text.add(MekanismLang.ABUNDANCY.translate(fluidFrequencies.getInt(fluidType)));
                 }
                 return text;
             }
@@ -185,10 +192,6 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
     }
 
     private record BlockInfo<TYPE>(BlockState state, TYPE type, RenderTarget<TYPE> renderTarget) {
-
-        public Block block() {
-            return state.getBlock();
-        }
 
         public void render(GuiGraphics guiGraphics, int x, int y) {
             renderTarget.render(guiGraphics, type, x, y);

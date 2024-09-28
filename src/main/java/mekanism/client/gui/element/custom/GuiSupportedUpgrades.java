@@ -25,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 public class GuiSupportedUpgrades extends GuiElement {
 
     private static final Component SUPPORTED = MekanismLang.UPGRADES_SUPPORTED.translate();
-    private static final int ELEMENT_WIDTH = 125;
+    private static final int ELEMENT_WIDTH = 167;
     private static final int PADDED_ELEMENT_WIDTH = ELEMENT_WIDTH - 2;
     private static final int ELEMENT_SIZE = 12;
     private static final int ROW_ROOM = PADDED_ELEMENT_WIDTH / ELEMENT_SIZE;
