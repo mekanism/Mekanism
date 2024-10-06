@@ -102,9 +102,4 @@ public class GuiUpgradeWindow extends GuiWindow {
             noSelection.renderWithScale(guiGraphics, rightScreen.getRelativeX() + 2, rightScreen.getRelativeY() + 2, screenTextColor(), 56, 0.8F);
         }
     }
-
-    /*@Override
-    protected int getTitlePadEnd() {
-        return super.getTitlePadEnd() + 22;
-    }*/
 }

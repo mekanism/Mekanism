@@ -36,6 +36,7 @@ import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.sounds.SoundManager;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -77,7 +78,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     private boolean isDragging;
 
     public GuiElement(IGuiWrapper gui, int x, int y, int width, int height) {
-        this(gui, x, y, width, height, Component.empty());
+        this(gui, x, y, width, height, CommonComponents.EMPTY);
     }
 
     public GuiElement(IGuiWrapper gui, int x, int y, int width, int height, Component text) {
@@ -619,15 +620,19 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         return getFGColor();
     }
 
+    protected boolean displayButtonTextShadow() {
+        return true;
+    }
+
     protected void drawButtonText(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         Component text = getMessage();
         //Only attempt to draw the message if we have a message to draw
         if (!text.getString().isEmpty()) {
             int color = getButtonTextColor(mouseX, mouseY) | Mth.ceil(alpha * 255.0F) << 24;
-            //TODO - 1.21: Do we want to be passing false to this so that it has no shadow? I believe previously we didn't render the shadow
-            // but vanilla does render the shadow for buttons, so I think we may want to be rendering it?
+            //Note: We add one to the button height as it is considered bounds, and we want to include the bottom pixel of the button in our calculations of where the text should land
             //Note: We call super as currently getButtonX and getButtonY already factor in the relative positioning
-            IFancyFontRenderer.super.drawScrollingString(guiGraphics, text, getButtonX(), getButtonY(), TextAlignment.CENTER, color, getButtonWidth(), getButtonHeight(), 2, true);
+            IFancyFontRenderer.super.drawScrollingString(guiGraphics, text, getButtonX(), getButtonY(), TextAlignment.CENTER, color, getButtonWidth(),
+                  getButtonHeight() + 1, 2, displayButtonTextShadow());
         }
     }
 

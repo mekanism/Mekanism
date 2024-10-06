@@ -8,6 +8,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
@@ -22,7 +23,7 @@ public class RadioButton extends MekanismButton {
     private final BooleanSupplier toggled;
 
     public RadioButton(IGuiWrapper gui, int x, int y, BooleanSupplier toggled, @NotNull IClickable onPress, Component toggledComponent, Component altComponent) {
-        super(gui, x, y, RADIO_SIZE, RADIO_SIZE, Component.empty(), onPress);
+        super(gui, x, y, RADIO_SIZE, RADIO_SIZE, CommonComponents.EMPTY, onPress);
         this.toggled = toggled;
         this.toggledComponent = TooltipUtils.create(toggledComponent);
         this.altComponent = TooltipUtils.create(altComponent);

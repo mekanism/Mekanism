@@ -17,7 +17,7 @@ import mekanism.generators.common.base.IReactorLogic;
 import mekanism.generators.common.base.IReactorLogicMode;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -42,7 +42,7 @@ public class ReactorLogicButton<TYPE extends Enum<TYPE> & IReactorLogicMode<TYPE
     }
 
     private ReactorLogicButton(IGuiWrapper gui, int x, int y, @NotNull IReactorLogic<TYPE> tile, Class<TYPE> clazz, Consumer<TYPE> onPress, Supplier<@Nullable TYPE> modeSupplier) {
-        super(gui, x, y, 128, 22, Component.empty(), (element, mouseX, mouseY) -> ((ReactorLogicButton<?>) element).click());
+        super(gui, x, y, 128, 22, CommonComponents.EMPTY, (element, mouseX, mouseY) -> ((ReactorLogicButton<?>) element).click());
         this.onPress = onPress;
         this.modeSupplier = modeSupplier;
         this.tile = tile;

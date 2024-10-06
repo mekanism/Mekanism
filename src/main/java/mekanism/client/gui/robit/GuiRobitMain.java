@@ -27,6 +27,7 @@ import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
@@ -62,7 +63,7 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
         addRenderableWidget(GuiSideHolder.create(this, imageWidth, 6, 106, false, false, SpecialColors.TAB_ROBIT_MENU));
         addRenderableWidget(new GuiInnerScreen(this, 27, 16, 122, 56, () -> List.of(
               MekanismLang.ROBIT_GREETING.translate(robit.getName()),
-              Component.empty(),
+              CommonComponents.EMPTY,
               MekanismLang.ENERGY.translate(EnergyDisplay.of(robit.getEnergyContainer().getEnergy())),
               MekanismLang.ROBIT_FOLLOWING.translate(robit.getFollowing()),
               MekanismLang.ROBIT_DROP_PICKUP.translate(robit.getDropPickup()),

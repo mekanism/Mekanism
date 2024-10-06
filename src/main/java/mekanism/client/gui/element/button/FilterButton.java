@@ -28,6 +28,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -59,7 +60,7 @@ public class FilterButton extends MekanismButton {
 
     public FilterButton(IGuiWrapper gui, int x, int y, int width, int height, int index, IntSupplier filterIndex, FilterManager<?> filterManager,
           ObjIntConsumer<IFilter<?>> onPress, IntConsumer toggleButtonPress, Function<IFilter<?>, List<ItemStack>> renderStackSupplier) {
-        super(gui, x, y, width, height, Component.empty(), (element, mouseX, mouseY) -> {
+        super(gui, x, y, width, height, CommonComponents.EMPTY, (element, mouseX, mouseY) -> {
             FilterButton button = (FilterButton) element;
             int actualIndex = button.filterIndex.getAsInt() + button.index;
             button.onPress.accept(getFilter(button.filterManager, actualIndex), actualIndex);

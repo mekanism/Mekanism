@@ -45,7 +45,7 @@ public interface IFancyFontRenderer {
         return SpecialColors.TEXT_INACTIVE_BUTTON.argb();
     }
 
-    default int drawString(GuiGraphics guiGraphics, Component component, float x, float y, int color, boolean shadow) {
+    private int drawString(GuiGraphics guiGraphics, Component component, float x, float y, int color, boolean shadow) {
         return guiGraphics.drawString(font(), component.getVisualOrderText(), x, y, color, shadow);
     }
 
@@ -87,16 +87,20 @@ public interface IFancyFontRenderer {
 
     default void drawScrollingString(GuiGraphics guiGraphics, Component text, int minX, int minY, int maxX, int maxY, TextAlignment alignment, int color, boolean shadow) {
         int textWidth = getStringWidth(text);
+        int areaWidth = maxX - minX;
+        boolean isScrolling = textWidth > areaWidth;
         //Note: Instead of doing what vanilla does, we divide to float, and don't add one
         // That way if min and max are not just lineHeight away they will be more accurate, and otherwise it won't render one line below where it should be
         float targetY = (minY + maxY - getLineHeight()) / 2F;
-        int areaWidth = maxX - minX;
-        if (textWidth > areaWidth) {
-            float targetX = prepScrollingString(guiGraphics, textWidth, areaWidth, minX, minY, maxX, maxY);
-            drawString(guiGraphics, text, targetX, targetY, color, shadow);
-            guiGraphics.disableScissor();
+        float targetX;
+        if (isScrolling) {
+            targetX = prepScrollingString(guiGraphics, textWidth, areaWidth, minX, minY, maxX, maxY);
         } else {
-            drawString(guiGraphics, text, alignment.getTarget(minX, maxX, areaWidth, textWidth), targetY, color, shadow);
+            targetX = alignment.getTarget(minX, maxX, areaWidth, textWidth);
+        }
+        drawString(guiGraphics, text, targetX, targetY, color, shadow);
+        if (isScrolling) {
+            guiGraphics.disableScissor();
         }
     }
 
@@ -121,16 +125,22 @@ public interface IFancyFontRenderer {
             return;
         }
         float textWidth = getStringWidth(text) * scale;
+        int areaWidth = maxX - minX;
+        boolean isScrolling = textWidth > areaWidth;
         //Note: Instead of doing what vanilla does, we divide to float, and don't add one
         // That way if min and max are not just lineHeight away they will be more accurate, and otherwise it won't render one line below where it should be
         float targetY = (minY + maxY - getLineHeight()) / 2F;
-        int areaWidth = maxX - minX;
-        if (textWidth > areaWidth) {
-            float targetX = prepScrollingString(guiGraphics, textWidth, areaWidth, minX, minY, maxX, maxY);
-            drawTextWithScale(guiGraphics, text, targetX, targetY, color, shadow, scale);
-            guiGraphics.disableScissor();
+        float targetX;
+        if (isScrolling) {
+            targetX = prepScrollingString(guiGraphics, textWidth, areaWidth, minX, minY, maxX, maxY);
         } else {
-            drawTextWithScale(guiGraphics, text, alignment.getTarget(minX, maxX, areaWidth, textWidth), targetY, color, shadow, scale);
+            targetX = alignment.getTarget(minX, maxX, areaWidth, textWidth);
+        }
+        PoseStack pose = prepTextScale(guiGraphics, targetX, targetY, scale);
+        drawString(guiGraphics, text, 0, 0, color, shadow);
+        pose.popPose();
+        if (isScrolling) {
+            guiGraphics.disableScissor();
         }
     }
 
@@ -142,10 +152,13 @@ public interface IFancyFontRenderer {
      */
     private static float prepScrollingString(GuiGraphics guiGraphics, double textWidth, int areaWidth, int minX, int minY, int maxX, int maxY) {
         double overflowWidth = textWidth - areaWidth;
+        //TODO: Some variable that keeps track of when the gui was initialized (init method called?) so that we can ensure it always starts
+        // the text all the way at the left. (For right to left languages we should probably start it all the way at the right)
         double seconds = Util.getMillis() / 1_000D;
         double scrollPeriod = Math.max(overflowWidth * AbstractWidget.PERIOD_PER_SCROLLED_PIXEL, AbstractWidget.MIN_SCROLL_PERIOD);
+        //TODO: Improve this, as it moves very slowly at the edges, and much quicker in the middle
         double scrolledSoFar = Math.sin((Math.PI / 2) * Math.cos((2 * Math.PI) * seconds / scrollPeriod)) / 2.0 + AbstractWidget.PERIOD_PER_SCROLLED_PIXEL;
-        //Vanilla uses: Mth.lerp(d2, 0.0, overflowWidth); to calculate overflowedBy. But that is equivalent to just multiplying performing the multiplication
+        //Vanilla uses: Mth.lerp(d2, 0.0, overflowWidth); to calculate overflowedBy. But that is equivalent to just performing the following multiplication
         double overflowedBy = scrolledSoFar * overflowWidth;
         //Note: We are drawing in relative coordinates, but GuiGraphics#enableScissor, is expecting absolute coordinates,
         // so we need to get the translations from our pose stack
@@ -159,20 +172,10 @@ public interface IFancyFontRenderer {
         return minX - (int) overflowedBy;
     }
 
-    private void drawTextWithScale(GuiGraphics guiGraphics, Component text, float x, float y, int color, boolean shadow, float scale) {
-        PoseStack pose = prepTextScale(guiGraphics, x, y, scale);
-        drawString(guiGraphics, text, 0, 0, color, shadow);
-        pose.popPose();
-    }
-
     //Note: As translate will implicitly cast x and y to being floats, we might as well pass these in as floats to reduce duplicate code
     private PoseStack prepTextScale(GuiGraphics guiGraphics, float x, float y, float scale) {
         PoseStack pose = guiGraphics.pose();
         pose.pushPose();
-        return prepTextScale(pose, x, y, scale);
-    }
-
-    private PoseStack prepTextScale(PoseStack pose, float x, float y, float scale) {
         float halfLineHeight = getLineHeight() / 2F;
         float yAdd = halfLineHeight - halfLineHeight * scale;
         pose.translate(x, y + yAdd, 0);

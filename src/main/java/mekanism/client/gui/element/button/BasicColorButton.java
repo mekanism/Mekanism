@@ -7,7 +7,7 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.lib.Color;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.CommonComponents;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,7 +20,7 @@ public class BasicColorButton extends MekanismButton {
     private final Supplier<EnumColor> colorSupplier;
 
     public BasicColorButton(IGuiWrapper gui, int x, int y, int size, Supplier<EnumColor> color, @NotNull IClickable onLeftClick, @Nullable IClickable onRightClick) {
-        super(gui, x, y, size, size, Component.empty(), onLeftClick, onRightClick);
+        super(gui, x, y, size, size, CommonComponents.EMPTY, onLeftClick, onRightClick);
         this.colorSupplier = color;
     }
 
