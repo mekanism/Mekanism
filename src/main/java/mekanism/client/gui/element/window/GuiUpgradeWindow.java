@@ -88,7 +88,7 @@ public class GuiUpgradeWindow extends GuiWindow {
                 upgradeTypeData.put(selectedType, textRenderer);
             }
             int screenWidth = rightScreen.getWidth() - 2;
-            int lines = textRenderer.renderWithScale(guiGraphics, rightScreen.getRelativeX() + 2, rightScreen.getRelativeY() + 2, screenTextColor(),
+            int lines = textRenderer.renderWithScale(guiGraphics, rightScreen.getRelativeX() + 2, rightScreen.getRelativeY() + 2, TextAlignment.LEFT, screenTextColor(),
                   screenWidth - 2, 0.6F);
             int textY = 4 + 6 * lines;
             rightScreen.drawScaledScrollingString(guiGraphics, MekanismLang.UPGRADE_COUNT.translate(amount, selectedType.getMax()), 0, textY,  TextAlignment.LEFT,
@@ -99,7 +99,7 @@ public class GuiUpgradeWindow extends GuiWindow {
                 rightScreen.drawScaledScrollingString(guiGraphics, component, 0, textY, TextAlignment.LEFT, screenTextColor(), screenWidth, 2, false, 0.6F);
             }
         } else {
-            noSelection.renderWithScale(guiGraphics, rightScreen.getRelativeX() + 2, rightScreen.getRelativeY() + 2, screenTextColor(), 56, 0.8F);
+            noSelection.renderWithScale(guiGraphics, rightScreen.getRelativeX() + 2, rightScreen.getRelativeY() + 2, TextAlignment.LEFT, screenTextColor(), 56, 0.8F);
         }
     }
 }

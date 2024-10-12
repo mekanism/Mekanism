@@ -92,7 +92,7 @@ public interface IFancyFontRenderer {
         if (isScrolling) {
             targetX = prepScrollingString(guiGraphics, textWidth, areaWidth, minX, minY, maxX, maxY);
         } else {
-            targetX = alignment.getTarget(minX, maxX, areaWidth, textWidth);
+            targetX = alignment.getTarget(font(), minX, maxX, textWidth);
         }
         guiGraphics.drawString(font(), text.getVisualOrderText(), targetX, targetY, color, shadow);
         if (isScrolling) {
@@ -130,7 +130,7 @@ public interface IFancyFontRenderer {
         if (isScrolling) {
             targetX = prepScrollingString(guiGraphics, textWidth, areaWidth, minX, minY, maxX, maxY);
         } else {
-            targetX = alignment.getTarget(minX, maxX, areaWidth, textWidth);
+            targetX = alignment.getTarget(font(), minX, maxX, textWidth);
         }
         PoseStack pose = prepTextScale(guiGraphics, targetX, targetY, scale);
         guiGraphics.drawString(font(), text, 0, 0, color, shadow);
@@ -182,16 +182,18 @@ public interface IFancyFontRenderer {
     enum TextAlignment {
         LEFT,
         CENTER,
-        RIGHT;
+        RIGHT,
+        /**
+         * Represents that for left to right languages this will be left aligned, and for right to left it will be right aligned.
+         */
+        RELATIVE;//TODO: Make use of this in various spots that make sense
 
-        public float getTarget(int minX, int maxX, float areaWidth, float textWidth) {
-            //TODO: Do we want to swap left and right when Font#isBidirectional is true?
-            // I believe in right to left languages text is meant to be aligned to the right
-            // but it likely would look odd in various GUIs
+        public float getTarget(Font font, int minX, int maxX, float textWidth) {
             return switch (this) {
                 case LEFT -> minX;
-                case CENTER -> minX + (areaWidth - textWidth) / 2F;
+                case CENTER -> minX + ((maxX - minX) - textWidth) / 2F;
                 case RIGHT -> maxX - textWidth;
+                case RELATIVE -> font.isBidirectional() ? maxX - textWidth : minX;
             };
         }
     }
@@ -211,30 +213,24 @@ public interface IFancyFontRenderer {
             this.text = text;
         }
 
-        public void renderCentered(GuiGraphics guiGraphics, int x, int y, int color, int maxLength) {
+        public void render(GuiGraphics guiGraphics, int x, int y, TextAlignment alignment, int color, int maxLength) {
             calculateLines(maxLength);
-            drawLines(guiGraphics, x, y, color, true);
+            drawLines(guiGraphics, x, y, maxLength, alignment, color, 1);
         }
 
-        public int renderWithScale(GuiGraphics guiGraphics, int x, int y, int color, int maxLength, float scale) {
+        public int renderWithScale(GuiGraphics guiGraphics, int x, int y, TextAlignment alignment, int color, int maxLength, float scale) {
             //Divide by scale for calculating actual max length so that when the text is scaled it has the proper total space available
             calculateLines(Mth.floor(maxLength / scale));
             PoseStack pose = fontRenderer.prepTextScale(guiGraphics, x, y, scale);
-            drawLines(guiGraphics, 0, 0, color, false);
+            drawLines(guiGraphics, 0, 0, maxLength, alignment, color, scale);
             pose.popPose();
             return linesToDraw.size();
         }
 
-        private void drawLines(GuiGraphics guiGraphics, int x, int startY, int color, boolean center) {
+        private void drawLines(GuiGraphics guiGraphics, int x, int startY, int maxLength, TextAlignment alignment, int color, float scale) {
             Font font = fontRenderer.font();
             for (FormattedCharSequence line : linesToDraw) {
-                float targetX;
-                if (center) {
-                    targetX = x + (fontRenderer.getXSize() - font.width(line)) / 2F;
-                } else {
-                    targetX = x;
-                }
-                guiGraphics.drawString(font, line, targetX, startY, color, false);
+                guiGraphics.drawString(font, line, alignment.getTarget(font, x, x + maxLength, font.width(line) * scale), startY, color, false);
                 startY += font.lineHeight;
             }
         }

@@ -11,6 +11,8 @@ import net.minecraft.network.chat.Component;
 
 public class GuiConfirmationDialog extends GuiWindow {
 
+    private static final int PADDING = 5;
+
     private final WrappedTextRenderer wrappedTextRenderer;
 
     private GuiConfirmationDialog(IGuiWrapper gui, int x, int y, int width, int height, ReplaceableWrappedTextRenderer renderer, Runnable onConfirm, DialogType type) {
@@ -28,14 +30,14 @@ public class GuiConfirmationDialog extends GuiWindow {
     public static void show(IGuiWrapper gui, Component title, Runnable onConfirm, DialogType type) {
         int width = 140;
         ReplaceableWrappedTextRenderer renderer = new ReplaceableWrappedTextRenderer(gui, width, title);
-        int height = 33 + renderer.getRequiredHeight(width - 10);
+        int height = 33 + renderer.getRequiredHeight(width - 2 * PADDING);
         gui.addWindow(new GuiConfirmationDialog(gui, (gui.getXSize() - width) / 2, (gui.getYSize() - height) / 2, width, height, renderer, onConfirm, type));
     }
 
     @Override
     public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.renderForeground(guiGraphics, mouseX, mouseY);
-        wrappedTextRenderer.renderCentered(guiGraphics, relativeX, relativeY + 6, titleTextColor(), width - 10);
+        wrappedTextRenderer.render(guiGraphics, relativeX + PADDING, relativeY + 6, TextAlignment.CENTER, titleTextColor(), width - 2 * PADDING);
     }
 
     @Override
