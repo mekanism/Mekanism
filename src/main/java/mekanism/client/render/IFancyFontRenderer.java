@@ -1,15 +1,15 @@
 package mekanism.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import mekanism.api.text.TextComponentUtil;
 import mekanism.client.SpecialColors;
 import net.minecraft.Util;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
@@ -43,10 +43,6 @@ public interface IFancyFontRenderer {
 
     default int inactiveButtonTextColor() {
         return SpecialColors.TEXT_INACTIVE_BUTTON.argb();
-    }
-
-    private int drawString(GuiGraphics guiGraphics, Component component, float x, float y, int color, boolean shadow) {
-        return guiGraphics.drawString(font(), component.getVisualOrderText(), x, y, color, shadow);
     }
 
     default int getStringWidth(Component component) {
@@ -98,7 +94,7 @@ public interface IFancyFontRenderer {
         } else {
             targetX = alignment.getTarget(minX, maxX, areaWidth, textWidth);
         }
-        drawString(guiGraphics, text, targetX, targetY, color, shadow);
+        guiGraphics.drawString(font(), text.getVisualOrderText(), targetX, targetY, color, shadow);
         if (isScrolling) {
             guiGraphics.disableScissor();
         }
@@ -137,7 +133,7 @@ public interface IFancyFontRenderer {
             targetX = alignment.getTarget(minX, maxX, areaWidth, textWidth);
         }
         PoseStack pose = prepTextScale(guiGraphics, targetX, targetY, scale);
-        drawString(guiGraphics, text, 0, 0, color, shadow);
+        guiGraphics.drawString(font(), text, 0, 0, color, shadow);
         pose.popPose();
         if (isScrolling) {
             guiGraphics.disableScissor();
@@ -200,113 +196,74 @@ public interface IFancyFontRenderer {
         }
     }
 
-    // efficient tool to draw word-by-word wrapped text based on a horizontal bound. looks intimidating but runs in O(n)
     class WrappedTextRenderer {
 
-        private final List<LineData> linesToDraw = new ArrayList<>();
-        private final IFancyFontRenderer font;
-        private final String text;
+        private final Component text;
+        private List<FormattedCharSequence> linesToDraw = Collections.emptyList();
+
+        IFancyFontRenderer fontRenderer;
         @Nullable
         private Font lastFont;
         private int lastMaxLength = -1;
-        private int lineLength = 0;
 
-        public WrappedTextRenderer(IFancyFontRenderer font, Component text) {
-            this(font, text.getString());
-        }
-
-        public WrappedTextRenderer(IFancyFontRenderer font, String text) {
-            this.font = font;
+        public WrappedTextRenderer(IFancyFontRenderer fontRenderer, Component text) {
+            this.fontRenderer = fontRenderer;
             this.text = text;
         }
 
         public void renderCentered(GuiGraphics guiGraphics, int x, int y, int color, int maxLength) {
             calculateLines(maxLength);
-            int startY = y;
-            int lineHeight = font.getLineHeight();
-            int width = font.getXSize();
-            for (LineData line : linesToDraw) {
-                font.drawString(guiGraphics, line.component(), x + (width - line.length()) / 2F, startY, color, false);
-                startY += lineHeight;
-            }
+            drawLines(guiGraphics, x, y, color, true);
         }
 
         public int renderWithScale(GuiGraphics guiGraphics, int x, int y, int color, int maxLength, float scale) {
             //Divide by scale for calculating actual max length so that when the text is scaled it has the proper total space available
             calculateLines(Mth.floor(maxLength / scale));
-            PoseStack pose = font.prepTextScale(guiGraphics, x, y, scale);
-            int startY = 0;
-            int lineHeight = font.getLineHeight();
-            for (LineData line : linesToDraw) {
-                font.drawString(guiGraphics, line.component(), 0, startY, color, false);
-                startY += lineHeight;
-            }
+            PoseStack pose = fontRenderer.prepTextScale(guiGraphics, x, y, scale);
+            drawLines(guiGraphics, 0, 0, color, false);
             pose.popPose();
             return linesToDraw.size();
         }
 
-        void calculateLines(int maxLength) {
+        private void drawLines(GuiGraphics guiGraphics, int x, int startY, int color, boolean center) {
+            Font font = fontRenderer.font();
+            for (FormattedCharSequence line : linesToDraw) {
+                float targetX;
+                if (center) {
+                    targetX = x + (fontRenderer.getXSize() - font.width(line)) / 2F;
+                } else {
+                    targetX = x;
+                }
+                guiGraphics.drawString(font, line, targetX, startY, color, false);
+                startY += font.lineHeight;
+            }
+        }
+
+        private void calculateLines(int maxLength) {
             //If something changed since the last time we calculated it
-            Font font = this.font.font();
+            Font font = fontRenderer.font();
             if (font != null && (lastFont != font || lastMaxLength != maxLength)) {
                 lastFont = font;
                 lastMaxLength = maxLength;
-                linesToDraw.clear();
-                StringBuilder lineBuilder = new StringBuilder();
-                StringBuilder wordBuilder = new StringBuilder();
-                int spaceLength = font.width(" ");
-                int wordLength = 0;
-                for (char c : text.toCharArray()) {
-                    if (c == ' ') {
-                        lineBuilder = addWord(lineBuilder, wordBuilder, maxLength, spaceLength, wordLength);
-                        wordBuilder = new StringBuilder();
-                        wordLength = 0;
-                        continue;
-                    }
-                    wordBuilder.append(c);
-                    wordLength += font.width(Character.toString(c));
-                }
-                if (!wordBuilder.isEmpty()) {
-                    lineBuilder = addWord(lineBuilder, wordBuilder, maxLength, spaceLength, wordLength);
-                }
-                if (!lineBuilder.isEmpty()) {
-                    linesToDraw.add(new LineData(lineBuilder, lineLength));
-                }
+                linesToDraw = font.split(text, maxLength);
             }
         }
 
-        StringBuilder addWord(StringBuilder lineBuilder, StringBuilder wordBuilder, int maxLength, int spaceLength, int wordLength) {
-            // ignore spacing if this is the first word of the line
-            int spacingLength = lineBuilder.isEmpty() ? 0 : spaceLength;
-            if (lineLength + spacingLength + wordLength > maxLength) {
-                linesToDraw.add(new LineData(lineBuilder, lineLength));
-                lineBuilder = new StringBuilder(wordBuilder);
-                lineLength = wordLength;
-            } else {
-                if (spacingLength > 0) {
-                    lineBuilder.append(' ');
-                }
-                lineBuilder.append(wordBuilder);
-                lineLength += spacingLength + wordLength;
-            }
-            return lineBuilder;
+        public int getRequiredHeight(int maxLength) {
+            calculateLines(maxLength);
+            return fontRenderer.getLineHeight() * linesToDraw.size();
+        }
+    }
+
+    class ReplaceableWrappedTextRenderer extends WrappedTextRenderer {
+
+        public ReplaceableWrappedTextRenderer(IFancyFontRenderer parent, int width, Component text) {
+            super(new SimpleFancyFontRenderer(parent.font(), width), text);
         }
 
-        public static int calculateHeightRequired(Font font, Component text, int width, int maxLength) {
-            //TODO: Come up with a better way of doing this (maybe allow it to somehow replace what the stored font is
-            // that way we can calculate, and then use the calculated values in our actual renderer without having to calculate once more
-            WrappedTextRenderer wrappedTextRenderer = new WrappedTextRenderer(new SimpleFancyFontRenderer(font, width), text);
-            wrappedTextRenderer.calculateLines(maxLength);
-            return font.lineHeight * wrappedTextRenderer.linesToDraw.size();
-        }
-
-        private record LineData(Component component, int length) {
-
-            private LineData(StringBuilder lineBuilder, int length) {
-                //TODO - 1.21: Make use of the style of the passed in parent component that we split during?
-                // Similar to StringSplitter$LineBreakFinder
-                this(TextComponentUtil.getString(lineBuilder.toString()), length);
-            }
+        public WrappedTextRenderer replaceFont(IFancyFontRenderer font) {
+            this.fontRenderer = font;
+            return this;
         }
 
         private record SimpleFancyFontRenderer(Font font, int getXSize) implements IFancyFontRenderer {

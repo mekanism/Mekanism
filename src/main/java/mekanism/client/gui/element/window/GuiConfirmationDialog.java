@@ -13,9 +13,9 @@ public class GuiConfirmationDialog extends GuiWindow {
 
     private final WrappedTextRenderer wrappedTextRenderer;
 
-    private GuiConfirmationDialog(IGuiWrapper gui, int x, int y, int width, int height, Component title, Runnable onConfirm, DialogType type) {
+    private GuiConfirmationDialog(IGuiWrapper gui, int x, int y, int width, int height, ReplaceableWrappedTextRenderer renderer, Runnable onConfirm, DialogType type) {
         super(gui, x, y, width, height, WindowType.CONFIRMATION);
-        this.wrappedTextRenderer = new WrappedTextRenderer(this, title);
+        this.wrappedTextRenderer = renderer.replaceFont(this);
         active = true;
 
         addChild(new TranslationButton(gui, relativeX + width / 2 - 51, relativeY + height - 24, 50, 18, MekanismLang.BUTTON_CANCEL, this::close));
@@ -27,8 +27,9 @@ public class GuiConfirmationDialog extends GuiWindow {
 
     public static void show(IGuiWrapper gui, Component title, Runnable onConfirm, DialogType type) {
         int width = 140;
-        int height = 33 + WrappedTextRenderer.calculateHeightRequired(gui.font(), title, width, width - 10);
-        gui.addWindow(new GuiConfirmationDialog(gui, (gui.getXSize() - width) / 2, (gui.getYSize() - height) / 2, width, height, title, onConfirm, type));
+        ReplaceableWrappedTextRenderer renderer = new ReplaceableWrappedTextRenderer(gui, width, title);
+        int height = 33 + renderer.getRequiredHeight(width - 10);
+        gui.addWindow(new GuiConfirmationDialog(gui, (gui.getXSize() - width) / 2, (gui.getYSize() - height) / 2, width, height, renderer, onConfirm, type));
     }
 
     @Override
