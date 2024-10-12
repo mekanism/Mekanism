@@ -3,13 +3,11 @@ package mekanism.client.gui.element.scroll;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.ObjIntConsumer;
 import java.util.function.Supplier;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.gear.ModuleData.ExclusiveFlag;
 import mekanism.api.text.EnumColor;
-import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiElementHolder;
@@ -26,14 +24,11 @@ import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class GuiModuleScrollList extends GuiScrollList {
+public class GuiModuleScrollList extends GuiInstallableScrollList<ModuleData<?>> {
 
     private static final ResourceLocation MODULE_SELECTION = MekanismUtils.getResource(ResourceType.GUI, "module_selection.png");
-    private static final int TEXTURE_WIDTH = 100;
-    private static final int TEXTURE_HEIGHT = 36;
 
     private final Consumer<Module<?>> callback;
     private final List<ModuleData<?>> currentList = new ArrayList<>();
@@ -41,18 +36,14 @@ public class GuiModuleScrollList extends GuiScrollList {
     private ItemStack currentItem;
     @Nullable
     private ModuleContainer currentContainer;
-    @Nullable
-    private ModuleData<?> selected;
 
     @Nullable
     private Component lastInfo = null;
     @Nullable
     private Tooltip lastTooltip;
-    @Nullable
-    private ScreenRectangle cachedTooltipRect;
 
-    public GuiModuleScrollList(IGuiWrapper gui, int x, int y, int width, int height, Supplier<ItemStack> itemSupplier, Consumer<Module<?>> callback) {
-        super(gui, x, y, width, height, TEXTURE_HEIGHT / 3, GuiElementHolder.HOLDER, GuiElementHolder.HOLDER_SIZE);
+    public GuiModuleScrollList(IGuiWrapper gui, int x, int y, int height, Supplier<ItemStack> itemSupplier, Consumer<Module<?>> callback) {
+        super(gui, x, y, height, GuiElementHolder.HOLDER, GuiElementHolder.HOLDER_SIZE, MODULE_SELECTION, 112, 36);
         this.itemSupplier = itemSupplier;
         this.callback = callback;
         updateItemAndList(itemSupplier.get());
@@ -85,74 +76,55 @@ public class GuiModuleScrollList extends GuiScrollList {
     }
 
     @Override
-    protected int getMaxElements() {
-        return currentList.size();
-    }
-
-    @Override
-    public boolean hasSelection() {
-        return selected != null;
-    }
-
-    @Override
-    protected void setSelected(int index) {
-        if (index >= 0 && index < currentList.size()) {
-            setSelected(currentList.get(index));
-        }
-    }
-
-    private void setSelected(@Nullable ModuleData<?> newData) {
-        if (selected != newData) {
-            selected = newData;
+    protected void setSelected(@Nullable ModuleData<?> newData) {
+        if (selectedType != newData) {
+            selectedType = newData;
             onSelectedChange();
         }
     }
 
     private void onSelectedChange() {
-        if (selected == null || currentContainer == null) {
+        if (selectedType == null || currentContainer == null) {
             callback.accept(null);
         } else {
-            callback.accept(currentContainer.get(selected));
+            callback.accept(currentContainer.get(selectedType));
         }
     }
 
-    @Nullable
-    public ModuleData<?> getSelection() {
-        return selected;
+    @Override
+    protected List<ModuleData<?>> getCurrentInstalled() {
+        return currentList;
     }
 
     @Override
-    public void clearSelection() {
-        setSelected(null);
+    protected void drawName(GuiGraphics guiGraphics, ModuleData<?> module, int y) {
+        if (currentContainer != null) {
+            IModule<?> instance = currentContainer.get(module);
+            if (instance != null) {
+                boolean enabled = instance.isEnabled();
+                int color = module.isExclusive(ExclusiveFlag.ANY) ? (enabled ? 0x635BD4 : 0x2E2A69) : (enabled ? titleTextColor() : 0x5E1D1D);
+                drawNameText(guiGraphics, y, module.getTextComponent(), color, 0.7F);
+            }
+        }
+    }
+
+    @Override
+    protected ItemStack getRenderStack(ModuleData<?> moduleData) {
+        return moduleData.getItemProvider().getItemStack();
     }
 
     @Override
     public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        super.renderForeground(guiGraphics, mouseX, mouseY);
         recheckItem();
-        forEachModule((module, multipliedElement) -> {
-            if (currentContainer != null) {
-                IModule<?> instance = currentContainer.get(module);
-                if (instance != null) {
-                    boolean enabled = instance.isEnabled();
-                    int color = module.isExclusive(ExclusiveFlag.ANY) ? (enabled ? 0x635BD4 : 0x2E2A69) : (enabled ? titleTextColor() : 0x5E1D1D);
-                    drawScaledTextScaledBound(guiGraphics, TextComponentUtil.build(module), relativeX + 13, relativeY + 3 + multipliedElement, color, 86, 0.7F);
-                }
-            }
-        });
-    }
-
-    @NotNull
-    @Override
-    protected ScreenRectangle getTooltipRectangle(int mouseX, int mouseY) {
-        return cachedTooltipRect == null ? super.getTooltipRectangle(mouseX, mouseY) : cachedTooltipRect;
+        super.renderForeground(guiGraphics, mouseX, mouseY);
     }
 
     @Override
     public void updateTooltip(int mouseX, int mouseY) {
         if (currentContainer != null && mouseX >= getX() + 1 && mouseX < getX() + barXShift - 1) {
-            for (int i = 0; i < getFocusedElements(); i++) {
-                int index = getCurrentSelection() + i;
+            int currentSelection = getCurrentSelection();
+            for (int i = 0, focused = getFocusedElements(); i < focused; i++) {
+                int index = currentSelection + i;
                 if (index > currentList.size() - 1) {
                     break;
                 }
@@ -177,34 +149,6 @@ public class GuiModuleScrollList extends GuiScrollList {
     }
 
     @Override
-    public void renderElements(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        //Draw elements
-        forEachModule((module, multipliedElement) -> {
-            int shiftedY = getY() + 1 + multipliedElement;
-            int j = 1;
-            if (module == getSelection()) {
-                j = 2;
-            } else if (mouseX >= getX() + 1 && mouseX < getX() + barXShift - 1 && mouseY >= shiftedY && mouseY < shiftedY + elementHeight) {
-                j = 0;
-            }
-            guiGraphics.blit(MODULE_SELECTION, relativeX + 1, relativeY + 1 + multipliedElement, 0, elementHeight * j, TEXTURE_WIDTH, elementHeight, TEXTURE_WIDTH, TEXTURE_HEIGHT);
-        });
-        //Note: This needs to be in its own loop as rendering the items is likely to cause the texture manager to be bound to a different texture
-        // and thus would make the selection area background get all screwed up
-        forEachModule((module, multipliedElement) -> gui().renderItem(guiGraphics, module.getItemProvider().getItemStack(), relativeX + 3, relativeY + 3 + multipliedElement, 0.5F));
-    }
-
-    private void forEachModule(ObjIntConsumer<ModuleData<?>> consumer) {
-        for (int i = 0; i < getFocusedElements(); i++) {
-            int index = getCurrentSelection() + i;
-            if (index > currentList.size() - 1) {
-                break;
-            }
-            consumer.accept(currentList.get(index), elementHeight * i);
-        }
-    }
-
-    @Override
     public void syncFrom(GuiElement element) {
         super.syncFrom(element);
         GuiModuleScrollList old = (GuiModuleScrollList) element;
@@ -212,12 +156,12 @@ public class GuiModuleScrollList extends GuiScrollList {
             //If the item is the same just change what module data we have as our selected
             // and don't notify the callback with a fresh read of the module data as it
             // should have the data it expects already
-            selected = old.selected;
-        } else if (old.selected != null) {
-            if (currentList.contains(old.selected)) {
+            selectedType = old.selectedType;
+        } else if (old.selectedType != null) {
+            if (currentList.contains(old.selectedType)) {
                 //If the item doesn't match (in general it will) and it still has the corresponding module,
                 // we need to update the selected value and fire the corresponding callbacks
-                setSelected(old.selected);
+                setSelected(old.selectedType);
             } else {
                 //If the data is no longer present we need to fire the callbacks to ensure we propagate the clear to the current selection
                 onSelectedChange();

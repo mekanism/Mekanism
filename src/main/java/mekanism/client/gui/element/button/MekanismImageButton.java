@@ -2,7 +2,7 @@ package mekanism.client.gui.element.button;
 
 import mekanism.client.gui.IGuiWrapper;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,7 +28,7 @@ public class MekanismImageButton extends MekanismButton {
 
     public MekanismImageButton(IGuiWrapper gui, int x, int y, int width, int height, int textureWidth, int textureHeight, ResourceLocation resource,
           @NotNull IClickable onLeftClick, @NotNull IClickable onRightClick) {
-        super(gui, x, y, width, height, Component.empty(), onLeftClick, onRightClick);
+        super(gui, x, y, width, height, CommonComponents.EMPTY, onLeftClick, onRightClick);
         this.resourceLocation = resource;
         this.textureWidth = textureWidth;
         this.textureHeight = textureHeight;

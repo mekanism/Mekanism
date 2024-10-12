@@ -20,4 +20,6 @@ public interface GuiFilterHelper<TILE extends TileEntityMekanism & ITileFilterHo
     int getRelativeY();
 
     IFilter<?> getFilter();
+
+    int getScreenWidth();
 }

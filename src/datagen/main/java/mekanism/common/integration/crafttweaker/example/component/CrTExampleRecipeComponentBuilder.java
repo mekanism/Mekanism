@@ -274,7 +274,7 @@ public class CrTExampleRecipeComponentBuilder<BUILDER_TYPE extends CrTExampleBui
         for (RecipeMethod method : methods) {
             if (!method.hasExample) {
                 StringBuilder signature = new StringBuilder(method.methodName);
-                signature.append("(");
+                signature.append('(');
                 method.appendParameters(signature, (sb, name, type, generic) -> {
                     sb.append(type.getSimpleName())
                           .append(' ')
@@ -285,7 +285,7 @@ public class CrTExampleRecipeComponentBuilder<BUILDER_TYPE extends CrTExampleBui
                               .append('>');
                     }
                 });
-                signature.append(")");
+                signature.append(')');
                 throw new RuntimeException("Recipe method: '" + signature + "' has no example usage declared.");
             }
         }

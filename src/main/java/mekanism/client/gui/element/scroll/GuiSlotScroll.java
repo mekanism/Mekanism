@@ -1,13 +1,12 @@
 package mekanism.client.gui.element.scroll;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 import mekanism.api.text.EnumColor;
+import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.slot.GuiSlot;
@@ -19,12 +18,13 @@ import mekanism.common.inventory.ISlotClickHandler.IScrollableSlot;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.text.TextUtils;
-import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
@@ -35,7 +35,6 @@ public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredient
 
     private static final ResourceLocation SLOTS = MekanismUtils.getResource(ResourceType.GUI_SLOT, "slots.png");
     private static final ResourceLocation SLOTS_DARK = MekanismUtils.getResource(ResourceType.GUI_SLOT, "slots_dark.png");
-    private static final DecimalFormat COUNT_FORMAT = Util.make(new DecimalFormat("#.#"), format -> format.setRoundingMode(RoundingMode.FLOOR));
 
     private final GuiScrollBar scrollBar;
 
@@ -67,8 +66,7 @@ public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredient
                 if (slot >= list.size()) {
                     break;
                 }
-                int slotX = relativeX + (i % xSlots) * 18, slotY = relativeY + (i / xSlots) * 18;
-                renderSlot(guiGraphics, list.get(slot), slotX, slotY);
+                renderSlot(guiGraphics, list.get(slot), 18 * (i % xSlots), 18 * (i / xSlots));
             }
         }
     }
@@ -139,9 +137,18 @@ public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredient
         if (isSlotEmpty(slot)) {
             return;
         }
-        gui().renderItemWithOverlay(guiGraphics, slot.item().getInternalStack(), slotX + 1, slotY + 1, 1, "");
-        if (slot.count() > 1) {
-            renderSlotText(guiGraphics, getCountText(slot.count()), slotX + 1, slotY + 1);
+        gui().renderItemWithOverlay(guiGraphics, slot.item().getInternalStack(), relativeX + slotX + 1, relativeY + slotY + 1, 1, "");
+        long count = slot.count();
+        if (count > 1) {
+            Component text;
+            //Note: For cases like 9,999,999 we intentionally display as 9999.9K instead of 10M so that people
+            // do not think they have more stored than they actually have just because it is rounding up
+            if (count < 10_000) {
+                text = TextComponentUtil.getString(Long.toString(count));
+            } else {
+                text = UnitDisplayUtils.getDisplay(count, 1);
+            }
+            renderSlotText(guiGraphics, text, slotX + 1, slotY + 1);
         }
     }
 
@@ -172,36 +179,19 @@ public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredient
         return item == null || item.getInternalStack().isEmpty();
     }
 
-    private void renderSlotText(GuiGraphics guiGraphics, String text, int x, int y) {
+    private void renderSlotText(GuiGraphics guiGraphics, Component text, int x, int y) {
+        float scale = 0.6F;
+        float scaledWidth = getStringWidth(text) * scale;
+        if (scaledWidth >= 16) {
+            //If we need a lower scale slightly due to having a lot of text, calculate it
+            //Note: If it would still overflow, then we just let the scrolling text handle it
+            scale = 0.5F;
+        }
         PoseStack pose = guiGraphics.pose();
         pose.pushPose();
-        float scale = 0.6F;
-        int width = getFont().width(text);
-        //If we need a lower scale due to having a lot of text, calculate it
-        scale = Math.min(1, 16F / (width * scale)) * scale;
-        float yAdd = 4 - (scale * 8) / 2F;
-        pose.translate(x + 16 - width * scale, y + 9 + yAdd, 200F);
-        pose.scale(scale, scale, scale);
-
-        guiGraphics.drawString(getFont(), text, 0, 0, 0xFFFFFF);
+        pose.translate(0, 0, 200);
+        drawScaledScrollingString(guiGraphics, text, x, y + 9, TextAlignment.RIGHT, 0xFFFFFF, 16, 0, true, scale);
         pose.popPose();
-    }
-
-    private String getCountText(long count) {
-        //Note: For cases like 9,999,999 we intentionally display as 9999.9K instead of 10M so that people
-        // do not think they have more stored than they actually have just because it is rounding up
-        if (count <= 1) {
-            return null;
-        } else if (count < 10_000) {
-            return Long.toString(count);
-        } else if (count < 10_000_000) {
-            return COUNT_FORMAT.format(count / 1_000D) + "K";
-        } else if (count < 10_000_000_000L) {
-            return COUNT_FORMAT.format(count / 1_000_000D) + "M";
-        } else if (count < 10_000_000_000_000L) {
-            return COUNT_FORMAT.format(count / 1_000_000_000D) + "B";
-        }
-        return ">10T";
     }
 
     private List<IScrollableSlot> getSlotList() {

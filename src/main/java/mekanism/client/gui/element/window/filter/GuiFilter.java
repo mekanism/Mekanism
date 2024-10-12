@@ -108,10 +108,11 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
     }
 
     protected int getScreenHeight() {
-        return 43;
+        return 42;
     }
 
-    protected int getScreenWidth() {
+    @Override
+    public int getScreenWidth() {
         return 116;
     }
 

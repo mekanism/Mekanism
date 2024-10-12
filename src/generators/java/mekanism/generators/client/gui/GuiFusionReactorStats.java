@@ -31,32 +31,37 @@ public class GuiFusionReactorStats extends GuiFusionReactorInfo {
 
     @Override
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        renderTitleText(guiGraphics);
         FusionReactorMultiblockData multiblock = tile.getMultiblock();
         if (multiblock.isFormed()) {
-            drawString(guiGraphics, GeneratorsLang.REACTOR_PASSIVE.translateColored(EnumColor.DARK_GREEN), 6, 26, titleTextColor());
-            drawTextScaledBound(guiGraphics, GeneratorsLang.REACTOR_MIN_INJECTION.translate(multiblock.getMinInjectionRate(false)), 16, 36, titleTextColor(), 156);
-            drawTextScaledBound(guiGraphics, GeneratorsLang.REACTOR_IGNITION.translate(MekanismUtils.getTemperatureDisplay(multiblock.getIgnitionTemperature(false),
-                  TemperatureUnit.KELVIN, true)), 16, 46, titleTextColor(), 156);
-            drawTextScaledBound(guiGraphics, GeneratorsLang.REACTOR_MAX_PLASMA.translate(MekanismUtils.getTemperatureDisplay(multiblock.getMaxPlasmaTemperature(false),
-                  TemperatureUnit.KELVIN, true)), 16, 56, titleTextColor(), 156);
-            drawTextScaledBound(guiGraphics, GeneratorsLang.REACTOR_MAX_CASING.translate(MekanismUtils.getTemperatureDisplay(multiblock.getMaxCasingTemperature(false),
-                  TemperatureUnit.KELVIN, true)), 16, 66, titleTextColor(), 156);
-            drawTextScaledBound(guiGraphics, GeneratorsLang.REACTOR_PASSIVE_RATE.translate(EnergyDisplay.of(multiblock.getPassiveGeneration(false, false))),
-                  16, 76, titleTextColor(), 156);
+            int indentation = 4;
+            int textArea = getXSize() - indentation;
+            drawScrollingString(guiGraphics,GeneratorsLang.REACTOR_PASSIVE.translateColored(EnumColor.DARK_GREEN),
+                  0, 26, TextAlignment.LEFT, titleTextColor(), 6, false);
+            drawScrollingString(guiGraphics, GeneratorsLang.REACTOR_MIN_INJECTION.translate(multiblock.getMinInjectionRate(false)),
+                  indentation, 36, TextAlignment.LEFT, titleTextColor(), textArea, 6, false);
+            drawScrollingString(guiGraphics, GeneratorsLang.REACTOR_IGNITION.translate(MekanismUtils.getTemperatureDisplay(multiblock.getIgnitionTemperature(false), TemperatureUnit.KELVIN, true)),
+                  indentation, 46, TextAlignment.LEFT, titleTextColor(), textArea, 6, false);
+            drawScrollingString(guiGraphics, GeneratorsLang.REACTOR_MAX_PLASMA.translate(MekanismUtils.getTemperatureDisplay(multiblock.getMaxPlasmaTemperature(false), TemperatureUnit.KELVIN, true)),
+                  indentation, 56, TextAlignment.LEFT, titleTextColor(), textArea, 6, false);
+            drawScrollingString(guiGraphics, GeneratorsLang.REACTOR_MAX_CASING.translate(MekanismUtils.getTemperatureDisplay(multiblock.getMaxCasingTemperature(false), TemperatureUnit.KELVIN, true)),
+                  indentation, 66, TextAlignment.LEFT, titleTextColor(), textArea, 6, false);
+            drawScrollingString(guiGraphics, GeneratorsLang.REACTOR_PASSIVE_RATE.translate(EnergyDisplay.of(multiblock.getPassiveGeneration(false, false))),
+                  indentation, 76, TextAlignment.LEFT, titleTextColor(), textArea, 6, false);
 
-            drawString(guiGraphics, GeneratorsLang.REACTOR_ACTIVE.translateColored(EnumColor.DARK_BLUE), 6, 92, titleTextColor());
-            drawTextScaledBound(guiGraphics, GeneratorsLang.REACTOR_MIN_INJECTION.translate(multiblock.getMinInjectionRate(true)), 16, 102, titleTextColor(), 156);
-            drawTextScaledBound(guiGraphics, GeneratorsLang.REACTOR_IGNITION.translate(MekanismUtils.getTemperatureDisplay(multiblock.getIgnitionTemperature(true),
-                  TemperatureUnit.KELVIN, true)), 16, 112, titleTextColor(), 156);
-            drawTextScaledBound(guiGraphics, GeneratorsLang.REACTOR_MAX_PLASMA.translate(MekanismUtils.getTemperatureDisplay(multiblock.getMaxPlasmaTemperature(true),
-                  TemperatureUnit.KELVIN, true)), 16, 122, titleTextColor(), 156);
-            drawTextScaledBound(guiGraphics, GeneratorsLang.REACTOR_MAX_CASING.translate(MekanismUtils.getTemperatureDisplay(multiblock.getMaxCasingTemperature(true),
-                  TemperatureUnit.KELVIN, true)), 16, 132, titleTextColor(), 156);
-            drawTextScaledBound(guiGraphics, GeneratorsLang.REACTOR_PASSIVE_RATE.translate(EnergyDisplay.of(multiblock.getPassiveGeneration(true, false))),
-                  16, 142, titleTextColor(), 156);
-            drawTextScaledBound(guiGraphics, GeneratorsLang.REACTOR_STEAM_PRODUCTION.translate(TextUtils.format(multiblock.getSteamPerTick(false))),
-                  16, 152, titleTextColor(), 156);
+            drawScrollingString(guiGraphics,GeneratorsLang.REACTOR_ACTIVE.translateColored(EnumColor.DARK_BLUE),
+                  0, 92, TextAlignment.LEFT, titleTextColor(), 6, false);
+            drawScrollingString(guiGraphics, GeneratorsLang.REACTOR_MIN_INJECTION.translate(multiblock.getMinInjectionRate(true)),
+                  indentation, 102, TextAlignment.LEFT, titleTextColor(), textArea, 6, false);
+            drawScrollingString(guiGraphics, GeneratorsLang.REACTOR_IGNITION.translate(MekanismUtils.getTemperatureDisplay(multiblock.getIgnitionTemperature(true), TemperatureUnit.KELVIN, true)),
+                  indentation, 112, TextAlignment.LEFT, titleTextColor(), textArea, 6, false);
+            drawScrollingString(guiGraphics, GeneratorsLang.REACTOR_MAX_PLASMA.translate(MekanismUtils.getTemperatureDisplay(multiblock.getMaxPlasmaTemperature(true), TemperatureUnit.KELVIN, true)),
+                  indentation, 122, TextAlignment.LEFT, titleTextColor(), textArea, 6, false);
+            drawScrollingString(guiGraphics, GeneratorsLang.REACTOR_MAX_CASING.translate(MekanismUtils.getTemperatureDisplay(multiblock.getMaxCasingTemperature(true), TemperatureUnit.KELVIN, true)),
+                  indentation, 132, TextAlignment.LEFT, titleTextColor(), textArea, 6, false);
+            drawScrollingString(guiGraphics, GeneratorsLang.REACTOR_PASSIVE_RATE.translate(EnergyDisplay.of(multiblock.getPassiveGeneration(true, false))),
+                  indentation, 142, TextAlignment.LEFT, titleTextColor(), textArea, 6, false);
+            drawScrollingString(guiGraphics, GeneratorsLang.REACTOR_STEAM_PRODUCTION.translate(TextUtils.format(multiblock.getSteamPerTick(false))),
+                  indentation, 152, TextAlignment.LEFT, titleTextColor(), textArea, 6, false);
         }
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }

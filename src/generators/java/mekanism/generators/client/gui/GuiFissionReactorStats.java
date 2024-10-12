@@ -84,16 +84,17 @@ public class GuiFissionReactorStats extends GuiMekanismTile<TileEntityFissionRea
         renderTitleText(guiGraphics);
         FissionReactorMultiblockData multiblock = tile.getMultiblock();
         // heat stats
-        drawTextScaledBound(guiGraphics, GeneratorsLang.FISSION_HEAT_STATISTICS.translate(), 6, 20, headingTextColor(), imageWidth - 12);
-        drawTextScaledBound(guiGraphics, GeneratorsLang.FISSION_HEAT_CAPACITY.translate(TextUtils.format((long) multiblock.heatCapacitor.getHeatCapacity())), 6, 32, titleTextColor(), imageWidth - 12);
-        drawTextScaledBound(guiGraphics, GeneratorsLang.FISSION_SURFACE_AREA.translate(TextUtils.format(multiblock.surfaceArea)), 6, 42, titleTextColor(), imageWidth - 12);
-        drawTextScaledBound(guiGraphics, GeneratorsLang.FISSION_BOIL_EFFICIENCY.translate(tile.getBoilEfficiency()), 6, 52, titleTextColor(), imageWidth - 12);
+        drawScrollingString(guiGraphics, GeneratorsLang.FISSION_HEAT_STATISTICS.translate(), 0, 20, TextAlignment.LEFT, headingTextColor(), 6, false);
+        drawScrollingString(guiGraphics, GeneratorsLang.FISSION_HEAT_CAPACITY.translate(TextUtils.format((long) multiblock.heatCapacitor.getHeatCapacity())), 0, 32, TextAlignment.LEFT, titleTextColor(), 6, false);
+        drawScrollingString(guiGraphics, GeneratorsLang.FISSION_SURFACE_AREA.translate(TextUtils.format(multiblock.surfaceArea)), 0, 42, TextAlignment.LEFT, titleTextColor(), 6, false);
+        drawScrollingString(guiGraphics, GeneratorsLang.FISSION_BOIL_EFFICIENCY.translate(tile.getBoilEfficiency()), 0, 52, TextAlignment.LEFT, titleTextColor(), 6, false);
         // fuel stats
-        drawTextScaledBound(guiGraphics, GeneratorsLang.FISSION_FUEL_STATISTICS.translate(), 6, 68, headingTextColor(), imageWidth - 12);
-        drawTextScaledBound(guiGraphics, GeneratorsLang.FISSION_MAX_BURN_RATE.translate(TextUtils.format(multiblock.getMaxBurnRate())), 6, 80, titleTextColor(), imageWidth - 12);
-        drawTextScaledBound(guiGraphics, GeneratorsLang.FISSION_RATE_LIMIT.translate(multiblock.rateLimit), 6, 90, titleTextColor(), imageWidth - 12);
-        drawTextScaledBound(guiGraphics, GeneratorsLang.FISSION_CURRENT_BURN_RATE.translate(), 6, 104, titleTextColor(), imageWidth - 12);
-        drawTextScaledBound(guiGraphics, GeneratorsLang.FISSION_SET_RATE_LIMIT.translate(), 6, 130, titleTextColor(), 69);
+        drawScrollingString(guiGraphics, GeneratorsLang.FISSION_FUEL_STATISTICS.translate(), 0, 68, TextAlignment.LEFT, headingTextColor(), 6, false);
+        drawScrollingString(guiGraphics, GeneratorsLang.FISSION_MAX_BURN_RATE.translate(TextUtils.format(multiblock.getMaxBurnRate())), 0, 80, TextAlignment.LEFT, titleTextColor(), 6, false);
+        drawScrollingString(guiGraphics, GeneratorsLang.FISSION_RATE_LIMIT.translate(multiblock.rateLimit), 0, 90, TextAlignment.LEFT, titleTextColor(), 6, false);
+        drawScrollingString(guiGraphics, GeneratorsLang.FISSION_CURRENT_BURN_RATE.translate(), 0, 104, TextAlignment.LEFT, titleTextColor(), 6, false);
+
+        drawScrollingString(guiGraphics, GeneratorsLang.FISSION_SET_RATE_LIMIT.translate(), 3, 130, TextAlignment.RIGHT, titleTextColor(), rateLimitField.getRelativeX() - 2, 3, false);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 }

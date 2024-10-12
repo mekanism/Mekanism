@@ -59,13 +59,13 @@ public class GuiMekaSuitHelmetOptions extends GuiWindow {
         super.renderForeground(guiGraphics, mouseX, mouseY);
 
         drawTitleText(guiGraphics, MekanismLang.HELMET_OPTIONS.translate(), 6);
-        drawTextExact(guiGraphics, MekanismLang.HUD_OVERLAY.translate(), relativeX + 7, relativeY + 20, headingTextColor());
+        drawScrollingString(guiGraphics, MekanismLang.HUD_OVERLAY.translate(), 0, 20, TextAlignment.LEFT, headingTextColor(), 7, false);
 
-        drawScaledCenteredText(guiGraphics, MekanismLang.DEFAULT.translate(), relativeX + 21, relativeY + 52, subheadingTextColor(), 0.8F);
-        drawScaledCenteredText(guiGraphics, MekanismLang.WARNING.translate(), relativeX + 70, relativeY + 52, subheadingTextColor(), 0.8F);
-        drawScaledCenteredText(guiGraphics, MekanismLang.DANGER.translate(), relativeX + 119, relativeY + 52, subheadingTextColor(), 0.8F);
+        drawScaledScrollingString(guiGraphics, MekanismLang.DEFAULT.translate(), 6, 52, TextAlignment.CENTER, subheadingTextColor(), 32, 0, false, 0.8F);
+        drawScaledScrollingString(guiGraphics, MekanismLang.WARNING.translate(), 55, 52, TextAlignment.CENTER, subheadingTextColor(), 32, 0, false, 0.8F);
+        drawScaledScrollingString(guiGraphics, MekanismLang.DANGER.translate(), 104, 52, TextAlignment.CENTER, subheadingTextColor(), 32, 0, false, 0.8F);
 
-        drawScaledCenteredText(guiGraphics, MekanismLang.OPACITY.translate(Math.round(MekanismConfig.client.hudOpacity.get() * 100)), relativeX + 70, relativeY + 75, subheadingTextColor(), 0.8F);
-        drawScaledCenteredText(guiGraphics, MekanismLang.JITTER.translate((int) MekanismConfig.client.hudJitter.get()), relativeX + 70, relativeY + 100, subheadingTextColor(), 0.8F);
+        drawScaledScrollingString(guiGraphics, MekanismLang.OPACITY.translate(Math.round(MekanismConfig.client.hudOpacity.get() * 100)), 0, 75, TextAlignment.CENTER, subheadingTextColor(), 4, false, 0.8F);
+        drawScaledScrollingString(guiGraphics, MekanismLang.JITTER.translate((int) MekanismConfig.client.hudJitter.get()), 0, 100, TextAlignment.CENTER, subheadingTextColor(), 4, false, 0.8F);
     }
 }

@@ -2132,7 +2132,7 @@
   "dictionary.mekanism.attribute.desc": "Display Attribute Tags",
   "dictionary.mekanism.block": "Block",
   "dictionary.mekanism.block.desc": "Display Block Tags",
-  "dictionary.mekanism.block_entity_type": "Block Entity Type",
+  "dictionary.mekanism.block_entity_type": "BE Type",
   "dictionary.mekanism.block_entity_type.desc": "Display Block Entity Type Tags",
   "dictionary.mekanism.chemical": "Chemical",
   "dictionary.mekanism.chemical.desc": "Display Chemical Tags",

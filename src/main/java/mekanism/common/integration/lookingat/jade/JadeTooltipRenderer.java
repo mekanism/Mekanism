@@ -1,6 +1,5 @@
 package mekanism.common.integration.lookingat.jade;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
@@ -8,13 +7,13 @@ import com.mojang.serialization.MapCodec;
 import java.util.Optional;
 import java.util.function.Function;
 import mekanism.api.SerializationConstants;
+import mekanism.client.render.IFancyFontRenderer.TextAlignment;
 import mekanism.common.integration.lookingat.ChemicalElement;
 import mekanism.common.integration.lookingat.EnergyElement;
 import mekanism.common.integration.lookingat.FluidElement;
 import mekanism.common.integration.lookingat.ILookingAtElement;
 import mekanism.common.integration.lookingat.LookingAtElement;
 import mekanism.common.integration.lookingat.TextElement;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -23,6 +22,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec2;
 import net.neoforged.neoforge.common.util.NeoForgeExtraCodecs;
 import org.jetbrains.annotations.Nullable;
@@ -125,16 +125,14 @@ public class JadeTooltipRenderer<ACCESSOR extends Accessor<?>> implements ICompo
         }
 
         @Override
-        public void render(GuiGraphics guiGraphics, float x, float y, float maxX, float maxY) {
+        public void render(GuiGraphics guiGraphics, float rawX, float rawY, float maxX, float maxY) {
+            int x = Mth.floor(rawX);
+            int y = Mth.floor(rawY);
             if (text != null) {
-                LookingAtElement.renderScaledText(Minecraft.getInstance(), guiGraphics, x + 4, y + 3, 0xFFFFFF, 92, text);
+                element.drawScrollingString(guiGraphics, text, x,y + 3, TextAlignment.LEFT, 0xFFFFFF, 4, false);
                 y += 13;
             }
-            PoseStack pose = guiGraphics.pose();
-            pose.pushPose();
-            pose.translate(x, y, 0);
-            element.render(guiGraphics, 0, 1);
-            pose.popPose();
+            element.render(guiGraphics, x, y + 1);
         }
     }
 }

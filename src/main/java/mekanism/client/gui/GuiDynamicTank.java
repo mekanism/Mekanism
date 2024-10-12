@@ -56,7 +56,7 @@ public class GuiDynamicTank extends GuiMekanismTile<TileEntityDynamicTank, Mekan
             ret.add(MekanismLang.CAPACITY.translate(""));
             ret.add(MekanismLang.GENERIC_MB.translate(TextUtils.format(capacity)));
             return ret;
-        }).spacing(2));
+        }).spacing(1));
         addRenderableWidget(new GuiDownArrow(this, 150, 39));
         addRenderableWidget(new GuiContainerEditModeTab<>(this, tile));
         addRenderableWidget(new GuiMergedTankGauge<>(() -> tile.getMultiblock().mergedTank, tile::getMultiblock, GaugeType.MEDIUM, this, 7, 16, 34, 56));
@@ -74,7 +74,7 @@ public class GuiDynamicTank extends GuiMekanismTile<TileEntityDynamicTank, Mekan
     @Override
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
-        drawString(guiGraphics, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
+        renderInventoryText(guiGraphics);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 }

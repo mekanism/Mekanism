@@ -1,6 +1,5 @@
 package mekanism.common.integration.lookingat.wthit;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mcp.mobius.waila.api.IBlockAccessor;
 import mcp.mobius.waila.api.IBlockComponentProvider;
 import mcp.mobius.waila.api.IDataReader;
@@ -9,11 +8,11 @@ import mcp.mobius.waila.api.IEntityComponentProvider;
 import mcp.mobius.waila.api.IPluginConfig;
 import mcp.mobius.waila.api.ITooltip;
 import mcp.mobius.waila.api.ITooltipComponent;
+import mekanism.client.render.IFancyFontRenderer.TextAlignment;
 import mekanism.common.integration.lookingat.ILookingAtElement;
 import mekanism.common.integration.lookingat.LookingAtElement;
 import mekanism.common.integration.lookingat.TextElement;
 import net.minecraft.client.DeltaTracker;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
@@ -80,14 +79,10 @@ public class WTHITTooltipRenderer implements IBlockComponentProvider, IEntityCom
         @Override
         public void render(GuiGraphics guiGraphics, int x, int y, DeltaTracker delta) {
             if (text != null) {
-                LookingAtElement.renderScaledText(Minecraft.getInstance(), guiGraphics, x + 4, y + 3, 0xFFFFFF, 92, text);
+                element.drawScrollingString(guiGraphics, text, x, y + 3, TextAlignment.LEFT, 0xFFFFFF, 4, false);
                 y += 13;
             }
-            PoseStack pose = guiGraphics.pose();
-            pose.pushPose();
-            pose.translate(x, y, 0);
-            element.render(guiGraphics, 0, 1);
-            pose.popPose();
+            element.render(guiGraphics, x, y + 1);
         }
     }
 }

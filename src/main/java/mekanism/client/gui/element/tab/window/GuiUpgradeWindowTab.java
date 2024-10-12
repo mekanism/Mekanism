@@ -30,7 +30,7 @@ public class GuiUpgradeWindowTab extends GuiWindowCreatorTab<TileEntityMekanism,
 
     @Override
     protected GuiWindow createWindow(SelectedWindowData windowData) {
-        return new GuiUpgradeWindow(gui(), getGuiWidth() / 2 - 156 / 2, 15, dataSource, windowData);
+        return new GuiUpgradeWindow(gui(), (getGuiWidth() - 198) / 2, 15, dataSource, windowData);
     }
 
     @Override

@@ -30,19 +30,20 @@ public class GuiFusionReactorLogicAdapter extends GuiMekanismTile<TileEntityFusi
 
     public GuiFusionReactorLogicAdapter(EmptyTileContainer<TileEntityFusionReactorLogicAdapter> container, Inventory inv, Component title) {
         super(container, inv, title);
+        imageWidth += 20;
     }
 
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addRenderableWidget(new GuiElementHolder(this, 16, 31, 130, 90));
-        addRenderableWidget(new ToggleButton(this, 16, 19, 11, tile::isActiveCooled,
+        addRenderableWidget(new GuiElementHolder(this, 26, 31, 130, 90));
+        addRenderableWidget(new ToggleButton(this, 26, 19, 11, tile::isActiveCooled,
               (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_MODE, ((GuiFusionReactorLogicAdapter) element.gui()).tile))))
               .setTooltip(GeneratorsLang.REACTOR_LOGIC_TOGGLE_COOLING);
-        scrollBar = addRenderableWidget(new GuiScrollBar(this, 146, 31, 90, () -> tile.getModes().length, () -> DISPLAY_COUNT));
+        scrollBar = addRenderableWidget(new GuiScrollBar(this, 156, 31, 90, () -> tile.getModes().length, () -> DISPLAY_COUNT));
         for (int i = 0; i < DISPLAY_COUNT; i++) {
             int typeShift = 22 * i;
-            addRenderableWidget(new ReactorLogicButton<>(this, 17, 32 + typeShift, i, tile, FusionReactorLogic.class, scrollBar::getCurrentSelection, tile::getModes, this::changeLogic));
+            addRenderableWidget(new ReactorLogicButton<>(this, 27, 32 + typeShift, i, tile, FusionReactorLogic.class, scrollBar::getCurrentSelection, tile::getModes, this::changeLogic));
         }
     }
 
@@ -55,10 +56,11 @@ public class GuiFusionReactorLogicAdapter extends GuiMekanismTile<TileEntityFusi
     @Override
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
-        drawTextScaledBound(guiGraphics, GeneratorsLang.REACTOR_LOGIC_ACTIVE_COOLING.translate(EnumColor.RED, OnOff.of(tile.isActiveCooled())), 29, 20, titleTextColor(), 117);
-        drawTextScaledBound(guiGraphics, GeneratorsLang.REACTOR_LOGIC_REDSTONE_MODE.translate(EnumColor.RED, tile.logicType), 16, 123, titleTextColor(), 144);
-        drawCenteredText(guiGraphics, MekanismLang.STATUS.translate(EnumColor.RED, tile.checkMode() ? GeneratorsLang.REACTOR_LOGIC_OUTPUTTING : MekanismLang.IDLE),
-              0, imageWidth, 136, titleTextColor());
+        drawScrollingString(guiGraphics, GeneratorsLang.REACTOR_LOGIC_ACTIVE_COOLING.translate(EnumColor.RED, OnOff.of(tile.isActiveCooled())), 23, 20, TextAlignment.LEFT,
+              titleTextColor(), getXSize() - 23, 16, false);
+        drawScrollingString(guiGraphics, GeneratorsLang.REACTOR_LOGIC_REDSTONE_MODE.translate(EnumColor.RED, tile.logicType), 0, 123, TextAlignment.CENTER, titleTextColor(), 4, false);
+        drawScrollingString(guiGraphics, MekanismLang.STATUS.translate(EnumColor.RED, tile.checkMode() ? GeneratorsLang.REACTOR_LOGIC_OUTPUTTING : MekanismLang.IDLE),
+              0, 136, TextAlignment.CENTER, titleTextColor(), 4, false);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 

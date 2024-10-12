@@ -33,7 +33,7 @@ public class GuiQIOFrequencyDataScreen extends GuiInnerScreen {
                 return freq == null ? null : MekanismLang.QIO_ITEMS_DETAIL.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
                       TextUtils.format(freq.getTotalItemCount()), TextUtils.format(freq.getTotalItemCountCapacity()));
             }
-        }, relativeX + (width / 4) - (50 / 2), relativeY + 20, 50));
+        }, relativeX + 11, relativeY + 20, 50));
         addChild(new GuiDigitalBar(gui, new IBarInfoHandler() {
             @Override
             public double getLevel() {
@@ -47,7 +47,7 @@ public class GuiQIOFrequencyDataScreen extends GuiInnerScreen {
                 return freq == null ? null : MekanismLang.QIO_TYPES_DETAIL.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
                       TextUtils.format(freq.getTotalItemTypes(true)), TextUtils.format(freq.getTotalItemTypeCapacity()));
             }
-        }, relativeX + (3 * width / 4) - (50 / 2), relativeY + 20, 50));
+        }, relativeX + 83, relativeY + 20, 50));
     }
 
     @Override
@@ -55,9 +55,9 @@ public class GuiQIOFrequencyDataScreen extends GuiInnerScreen {
         super.renderForeground(guiGraphics, mouseX, mouseY);
         QIOFrequency freq = frequencySupplier.get();
         if (freq != null) {
-            drawScaledTextScaledBound(guiGraphics, MekanismLang.FREQUENCY.translate(freq.getName()), relativeX + 5, relativeY + 5, screenTextColor(), width - 10, 0.8F);
+            drawScaledScrollingString(guiGraphics, MekanismLang.FREQUENCY.translate(freq.getName()), 0, 5, TextAlignment.LEFT, screenTextColor(), 5, false, 0.8F);
         }
-        drawScaledCenteredText(guiGraphics, MekanismLang.QIO_ITEMS.translate(), relativeX + (width / 4), relativeY + 32, screenTextColor(), 0.8F);
-        drawScaledCenteredText(guiGraphics, MekanismLang.QIO_TYPES.translate(), relativeX + (3 * width / 4), relativeY + 32, screenTextColor(), 0.8F);
+        drawScaledScrollingString(guiGraphics, MekanismLang.QIO_ITEMS.translate(), 11, 32, TextAlignment.CENTER, screenTextColor(), 50, 0, false, 0.8F);
+        drawScaledScrollingString(guiGraphics, MekanismLang.QIO_TYPES.translate(), 83, 32, TextAlignment.CENTER, screenTextColor(), 50, 0, false, 0.8F);
     }
 }

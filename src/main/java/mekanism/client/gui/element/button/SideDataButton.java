@@ -84,7 +84,7 @@ public class SideDataButton extends BasicColorButton {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
 
         if (!otherBlockItem.isEmpty()) {
-            GuiUtils.renderItem(guiGraphics, otherBlockItem, this.getRelativeX() + 3, this.getRelativeY() + 3, 1, getFont(), null, true);
+            GuiUtils.renderItem(guiGraphics, otherBlockItem, this.getRelativeX() + 3, this.getRelativeY() + 3, 1, font(), null, true);
         }
     }
 

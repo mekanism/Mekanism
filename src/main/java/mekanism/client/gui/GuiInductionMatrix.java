@@ -45,7 +45,7 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
                   MekanismLang.CAPACITY.translate(EnergyDisplay.of(multiblock.getStorageCap())),
                   MekanismLang.MATRIX_INPUT_AMOUNT.translate(MekanismLang.GENERIC_PER_TICK.translate(EnergyDisplay.of(multiblock.getLastInput()))),
                   MekanismLang.MATRIX_OUTPUT_AMOUNT.translate(MekanismLang.GENERIC_PER_TICK.translate(EnergyDisplay.of(multiblock.getLastOutput()))));
-        }).spacing(2));
+        }).spacing(1));
         addRenderableWidget(new GuiMatrixTab(this, tile, MatrixTab.STAT));
         addRenderableWidget(new GuiEnergyGauge(new IEnergyInfoHandler() {
             @Override
@@ -69,7 +69,7 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
     @Override
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
-        drawString(guiGraphics, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
+        renderInventoryText(guiGraphics);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 }

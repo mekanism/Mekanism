@@ -21,32 +21,29 @@ import org.jetbrains.annotations.Nullable;
 
 public class GuiOredictionificatorFilter extends GuiTextFilter<OredictionificatorItemFilter, TileEntityOredictionificator> {
 
+    private static final int WIDTH = 162;
+
     public static GuiOredictionificatorFilter create(IGuiWrapper gui, TileEntityOredictionificator tile) {
-        return new GuiOredictionificatorFilter(gui, (gui.getXSize() - 152) / 2, 15, tile, null);
+        return new GuiOredictionificatorFilter(gui, (gui.getXSize() - WIDTH) / 2, 15, tile, null);
     }
 
     public static GuiOredictionificatorFilter edit(IGuiWrapper gui, TileEntityOredictionificator tile, OredictionificatorItemFilter filter) {
-        return new GuiOredictionificatorFilter(gui, (gui.getXSize() - 152) / 2, 15, tile, filter);
+        return new GuiOredictionificatorFilter(gui, (gui.getXSize() - WIDTH) / 2, 15, tile, filter);
     }
 
     private GuiOredictionificatorFilter(IGuiWrapper gui, int x, int y, TileEntityOredictionificator tile, @Nullable OredictionificatorItemFilter origFilter) {
-        super(gui, x, y, 152, 100, MekanismLang.OREDICTIONIFICATOR_FILTER.translate(), tile, origFilter);
+        super(gui, x, y, WIDTH, 100, MekanismLang.OREDICTIONIFICATOR_FILTER.translate(), tile, origFilter);
     }
 
     @Override
     protected int getScreenHeight() {
-        return 53;
-    }
-
-    @Override
-    protected int getSlotOffset() {
-        return 32;
+        return 52;
     }
 
     @Override
     protected void init() {
         super.init();
-        addChild(new MekanismImageButton(gui(), relativeX + 10, relativeY + 18, 12, getButtonLocation("left"), (element, mouseX, mouseY) -> {
+        addChild(new MekanismImageButton(gui(), relativeX + 3, relativeY + 38, 12, getButtonLocation("left"), (element, mouseX, mouseY) -> {
             if (filter.hasFilter()) {
                 filter.previous();
                 slotDisplay.updateStackList();
@@ -54,7 +51,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilter<Oredictionificato
             }
             return false;
         })).setTooltip(MekanismLang.LAST_ITEM);
-        addChild(new MekanismImageButton(gui(), relativeX + 10, relativeY + 52, 12, getButtonLocation("right"), (element, mouseX, mouseY) -> {
+        addChild(new MekanismImageButton(gui(), relativeX + 16, relativeY + 38, 12, getButtonLocation("right"), (element, mouseX, mouseY) -> {
             if (filter.hasFilter()) {
                 filter.next();
                 slotDisplay.updateStackList();

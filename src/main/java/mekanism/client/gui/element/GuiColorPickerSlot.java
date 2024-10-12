@@ -52,6 +52,6 @@ public class GuiColorPickerSlot extends GuiElement {
 
     @Override
     public void onClick(double mouseX, double mouseY, int button) {
-        gui().addWindow(new GuiColorWindow(gui(), getGuiWidth() / 2 - 160 / 2, getGuiHeight() / 2 - 120 / 2, handlesAlpha, supplier.get(), consumer));
+        gui().addWindow(new GuiColorWindow(gui(), (getGuiWidth() - 160) / 2, (getGuiHeight() - 120) / 2, handlesAlpha, supplier.get(), consumer));
     }
 }

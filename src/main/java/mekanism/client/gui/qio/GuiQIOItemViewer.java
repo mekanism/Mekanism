@@ -48,6 +48,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
     protected final Inventory inv;
     private GuiTextField searchField;
     private GuiCraftingWindowTab craftingWindowTab;
+    private GuiDropdown<?> searchDropdown;
     private boolean loadPinned = true;
 
     protected GuiQIOItemViewer(CONTAINER container, Inventory inv, Component title) {
@@ -55,7 +56,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         this.inv = inv;
         imageWidth = 16 + MekanismConfig.client.qioItemViewerSlotsX.get() * 18 + 18;
         imageHeight = QIOItemViewerContainer.SLOTS_START_Y + MekanismConfig.client.qioItemViewerSlotsY.get() * 18 + 96;
-        inventoryLabelY = imageHeight - 94;
+        inventoryLabelY = imageHeight - 93;
         titleLabelY = 5;
         dynamicSlots = true;
     }
@@ -94,7 +95,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         }
         addRenderableWidget(new GuiSlotScroll(this, 7, QIOItemViewerContainer.SLOTS_START_Y, MekanismConfig.client.qioItemViewerSlotsX.get(), slotsY,
               menu::getQIOItemList, menu));
-        addRenderableWidget(new GuiDropdown<>(this, imageWidth - 9 - 54, QIOItemViewerContainer.SLOTS_START_Y + slotsY * 18 + 1,
+        searchDropdown = addRenderableWidget(new GuiDropdown<>(this, imageWidth - 9 - 54, QIOItemViewerContainer.SLOTS_START_Y + slotsY * 18 + 1,
               41, ListSortType.class, menu::getSortType, menu::setSortType));
         addRenderableWidget(new GuiDigitalIconToggle<>(this, imageWidth - 9 - 12, QIOItemViewerContainer.SLOTS_START_Y + slotsY * 18 + 1,
               12, 12, SortDirection.class, menu::getSortDirection, menu::setSortDirection));
@@ -112,10 +113,8 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
     @Override
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
-        drawString(guiGraphics, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
-        drawTextScaledBound(guiGraphics, MekanismLang.LIST_SEARCH.translate(), 7, 31, titleTextColor(), 41);
-        Component text = MekanismLang.LIST_SORT.translate();
-        drawString(guiGraphics, text, imageWidth - 66 - getStringWidth(text), imageHeight - 92, titleTextColor());
+        renderInventoryTextAndOther(guiGraphics, MekanismLang.LIST_SORT.translate(), imageWidth - searchDropdown.getRelativeX() - 5);
+        drawScrollingString(guiGraphics, MekanismLang.LIST_SEARCH.translate(), 4, 31, TextAlignment.RIGHT, titleTextColor(), searchField.getRelativeX() - 4, 3, false);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 

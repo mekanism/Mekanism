@@ -43,7 +43,7 @@ public class GuiModuleScreen extends GuiScrollableElement {
     private int maxElements;
 
     public GuiModuleScreen(IGuiWrapper gui, int x, int y, Supplier<ItemStack> itemSupplier, Consumer<ModuleConfig<?>> saveCallback, ArmorPreview armorPreview) {
-        this(gui, x, y, 102, 134, itemSupplier, saveCallback, armorPreview);
+        this(gui, x, y, 108, 134, itemSupplier, saveCallback, armorPreview);
     }
 
     private GuiModuleScreen(IGuiWrapper gui, int x, int y, int width, int height, Supplier<ItemStack> itemSupplier, Consumer<ModuleConfig<?>> saveCallback, ArmorPreview armorPreview) {
@@ -95,7 +95,7 @@ public class GuiModuleScreen extends GuiScrollableElement {
     }
 
     private static int getStartY(@Nullable IModule<?> module) {
-        int startY = 5;
+        int startY = ELEMENT_SPACER + 1;
         if (module != null) {
             if (module.getData().isExclusive(ExclusiveFlag.ANY)) {
                 startY += 13;
@@ -191,18 +191,19 @@ public class GuiModuleScreen extends GuiScrollableElement {
     public void renderForeground(GuiGraphics guiGraphics, int mx, int my) {
         super.renderForeground(guiGraphics, mx, my);
         scissorScreen(guiGraphics, mx, my, (g, mouseX, mouseY, module, shift) -> {
-            int startY = 5;
+            int startY = ELEMENT_SPACER + 1;
             if (module != null) {
                 if (module.getData().isExclusive(ExclusiveFlag.ANY)) {
                     if (startY + 13 > shift) {
-                        drawTextWithScale(g, MekanismLang.MODULE_EXCLUSIVE.translate(), relativeX + 5, relativeY + startY, 0x635BD4, 0.8F);
+                        drawScaledScrollingString(g, MekanismLang.MODULE_EXCLUSIVE.translate(), 2, startY, TextAlignment.LEFT, 0x635BD4,
+                              getScreenWidth() - GuiScrollList.TEXTURE_WIDTH, 2, false, 0.8F);
                     }
                     startY += 13;
                 }
                 if (module.getData().getMaxStackSize() > 1) {
                     if (startY + 13 > shift) {
-                        drawTextWithScale(g, MekanismLang.MODULE_INSTALLED.translate(module.getInstalledCount()), relativeX + 5, relativeY + startY,
-                              screenTextColor(), 0.8F);
+                        drawScaledScrollingString(g, MekanismLang.MODULE_INSTALLED.translate(module.getInstalledCount()), 2, startY, TextAlignment.LEFT, screenTextColor(),
+                              getScreenWidth() - GuiScrollList.TEXTURE_WIDTH, 2, false, 0.8F);
                     }
                     startY += 13;
                 }

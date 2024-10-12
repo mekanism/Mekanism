@@ -54,7 +54,7 @@ public class RecipeViewerRecipeType {
 
     public static final RVRecipeTypeWrapper<?, FluidChemicalToChemicalRecipe, ?> WASHING = new RVRecipeTypeWrapper<>(MekanismRecipeType.WASHING, FluidChemicalToChemicalRecipe.class, -7, -13, 162, 60, MekanismBlocks.CHEMICAL_WASHER);
 
-    public static final RVRecipeTypeWrapper<?, FluidToFluidRecipe, ?> EVAPORATING = new RVRecipeTypeWrapper<>(MekanismRecipeType.EVAPORATING, FluidToFluidRecipe.class, -3, -12, 170, 62, MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER, MekanismBlocks.THERMAL_EVAPORATION_VALVE, MekanismBlocks.THERMAL_EVAPORATION_BLOCK);
+    public static final RVRecipeTypeWrapper<?, FluidToFluidRecipe, ?> EVAPORATING = new RVRecipeTypeWrapper<>(MekanismRecipeType.EVAPORATING, FluidToFluidRecipe.class, -3, -12, 176, 62, MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER, MekanismBlocks.THERMAL_EVAPORATION_VALVE, MekanismBlocks.THERMAL_EVAPORATION_BLOCK);
 
     public static final RVRecipeTypeWrapper<?, ChemicalToChemicalRecipe, ?> ACTIVATING = new RVRecipeTypeWrapper<>(MekanismRecipeType.ACTIVATING, ChemicalToChemicalRecipe.class, -4, -13, 168, 60, MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR);
     public static final RVRecipeTypeWrapper<?, ChemicalToChemicalRecipe, ?> CENTRIFUGING = new RVRecipeTypeWrapper<>(MekanismRecipeType.CENTRIFUGING, ChemicalToChemicalRecipe.class, -4, -13, 168, 60, MekanismBlocks.ISOTOPIC_CENTRIFUGE);
@@ -88,7 +88,7 @@ public class RecipeViewerRecipeType {
 
     //Note: This previously had a lang key for a shorter string. Though ideally especially due to translations we will eventually instead just make the text scale
     //TODO - 1.20.4: Re-evaluate ^^
-    public static final RVRecipeTypeWrapper<?, PressurizedReactionRecipe, ?> REACTION = new RVRecipeTypeWrapper<>(MekanismRecipeType.REACTION, PressurizedReactionRecipe.class, -3, -10, 170, 60, MekanismBlocks.PRESSURIZED_REACTION_CHAMBER);
+    public static final RVRecipeTypeWrapper<?, PressurizedReactionRecipe, ?> REACTION = new RVRecipeTypeWrapper<>(MekanismRecipeType.REACTION, PressurizedReactionRecipe.class, -3, -15, 170, 60, MekanismBlocks.PRESSURIZED_REACTION_CHAMBER);
 
     public static final RotaryRVRecipeType CONDENSENTRATING = new RotaryRVRecipeType(Mekanism.rl("condensentrating"), MekanismLang.CONDENSENTRATING);
     public static final RotaryRVRecipeType DECONDENSENTRATING = new RotaryRVRecipeType(Mekanism.rl("decondensentrating"), MekanismLang.DECONDENSENTRATING);

@@ -9,7 +9,7 @@ import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.common.MekanismLang;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.CommonComponents;
 import org.jetbrains.annotations.NotNull;
 
 public class ColorButton extends MekanismButton {
@@ -20,7 +20,7 @@ public class ColorButton extends MekanismButton {
     private final Supplier<EnumColor> colorSupplier;
 
     public ColorButton(IGuiWrapper gui, int x, int y, int width, int height, Supplier<EnumColor> colorSupplier, @NotNull IClickable onPress, @NotNull IClickable onRightClick) {
-        super(gui, x, y, width, height, Component.empty(), onPress, onRightClick);
+        super(gui, x, y, width, height, CommonComponents.EMPTY, onPress, onRightClick);
         this.colorSupplier = colorSupplier;
     }
 

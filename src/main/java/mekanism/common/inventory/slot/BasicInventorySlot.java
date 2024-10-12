@@ -111,6 +111,10 @@ public class BasicInventorySlot implements IInventorySlot {
         this.y = y;
     }
 
+    public int getGuiX() {
+        return x;
+    }
+
     @Override
     public ItemStack getStack() {
         return current;

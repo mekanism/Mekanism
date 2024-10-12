@@ -124,6 +124,10 @@ public class TileEntityChemicalCrystallizer extends TileEntityProgressMachine<Ch
         return sendUpdatePacket;
     }
 
+    public int getEnergySlotX() {
+        return energySlot.getGuiX();
+    }
+
     @Override
     public @NotNull IMekanismRecipeTypeProvider<SingleChemicalRecipeInput, ChemicalCrystallizerRecipe, SingleChemical<ChemicalCrystallizerRecipe>> getRecipeType() {
         return MekanismRecipeType.CRYSTALLIZING;

@@ -6,6 +6,7 @@ import mekanism.api.gear.config.ModuleEnumConfig;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.element.scroll.GuiScrollList;
+import mekanism.client.render.IFancyFontRenderer.TextAlignment;
 import mekanism.common.MekanismLang;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -31,7 +32,7 @@ class EnumToggle<TYPE extends Enum<TYPE> & IHasTextComponent> extends MiniElemen
         BAR_LENGTH = this.parent.getScreenWidth() - 24;
         enumConstants = data.getEnumConstants();
         this.optionDistance = (BAR_LENGTH / (enumConstants.size() - 1));
-        this.usesIcons = enumConstants.stream().findFirst().filter(option -> option instanceof IHasModeIcon).isPresent();
+        this.usesIcons = !enumConstants.isEmpty() && enumConstants.getFirst() instanceof IHasModeIcon;
     }
 
     @Override
@@ -53,24 +54,11 @@ class EnumToggle<TYPE extends Enum<TYPE> & IHasTextComponent> extends MiniElemen
         if (usesIcons) {
             description = MekanismLang.GENERIC_STORED.translate(description, data.get());
         }
-        parent.drawScaledTextScaledBound(guiGraphics, description, getRelativeX() + 3, getRelativeY(), textColor, this.parent.getScreenWidth() - 3 - GuiScrollList.TEXTURE_WIDTH, 0.8F);
+        parent.drawScaledScrollingString(guiGraphics, description, xPos, yPos, TextAlignment.LEFT, textColor, parent.getScreenWidth() - GuiScrollList.TEXTURE_WIDTH,
+              2, false, 0.8F);
         for (TYPE option : enumConstants) {
             Component text = option.getTextComponent();
-            //Similar to logic for drawScaledCenteredText except shifts values slightly if they go past the max length
-            int textWidth = parent.getStringWidth(text);
-            float widthScaling = usesIcons ? 2.5F : (textWidth / 2F) * TEXT_SCALE;
             int optionCenter = BAR_START + optionDistance * option.ordinal();
-            float left = optionCenter - widthScaling;
-            if (left < 0) {
-                left = 0;
-            } else {
-                int max = parent.getScreenWidth() - 1;
-                float objectWidth = usesIcons ? 5 : textWidth * TEXT_SCALE;
-                int end = xPos + Mth.ceil(left + objectWidth);
-                if (end > max) {
-                    left -= end - max;
-                }
-            }
             int color = textColor;
             if (text.getStyle().getColor() != null) {
                 color = 0xFF000000 | text.getStyle().getColor().getValue();
@@ -80,7 +68,25 @@ class EnumToggle<TYPE extends Enum<TYPE> & IHasTextComponent> extends MiniElemen
                 IHasModeIcon hasModeIcon = (IHasModeIcon) option;
                 guiGraphics.blit(hasModeIcon.getModeIcon(), getRelativeX() + optionCenter - 8, getRelativeY() + 19, 0, 0, 16, 16, 16, 16);
             } else {
-                parent.drawTextWithScale(guiGraphics, text, getRelativeX() + left, getRelativeY() + 20, textColor, TEXT_SCALE);
+                //Similar to logic for drawScaledCenteredText except shifts values slightly if they go past the max length
+                int textWidth = parent.getStringWidth(text);
+                float objectWidth = textWidth * TEXT_SCALE;
+                if (optionCenter < objectWidth / 2) {
+                    //Note: We know it will overflow, so it doesn't actually matter if we center it here or not
+                    // We can also take some shortcuts calculating the width, as it goes all the way to zero
+                    parent.drawScaledScrollingString(guiGraphics, text, xPos, yPos + 20, TextAlignment.CENTER, textColor, BAR_START + optionDistance / 2,
+                          1, false, TEXT_SCALE);
+                } else {
+                    int max = parent.getScreenWidth() - 1;
+                    int start = xPos + optionCenter - optionDistance / 2;
+                    if (start + Mth.ceil(objectWidth) > max) {
+                        //Note: We know it will overflow, so it doesn't actually matter if we center it here or not
+                        parent.drawScaledScrollingString(guiGraphics, text, start, yPos + 20, TextAlignment.CENTER, textColor, max - start, 1, false, TEXT_SCALE);
+                    } else {
+                        //TODO: For some things like locomotive boosting unit, this is ever so slightly off-center. Do we care enough to adjust it?
+                        parent.drawScaledScrollingString(guiGraphics, text, start, yPos + 20, TextAlignment.CENTER, textColor, optionDistance, 1, false, TEXT_SCALE);
+                    }
+                }
             }
         }
     }

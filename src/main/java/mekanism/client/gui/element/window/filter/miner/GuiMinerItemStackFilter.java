@@ -12,15 +12,15 @@ import org.jetbrains.annotations.Nullable;
 public class GuiMinerItemStackFilter extends GuiItemStackFilter<MinerItemStackFilter, TileEntityDigitalMiner> implements GuiMinerFilterHelper {
 
     public static GuiMinerItemStackFilter create(IGuiWrapper gui, TileEntityDigitalMiner tile) {
-        return new GuiMinerItemStackFilter(gui, (gui.getXSize() - 173) / 2, 30, tile, null);
+        return new GuiMinerItemStackFilter(gui, (gui.getXSize() - MINER_FILTER_WIDTH) / 2, 30, tile, null);
     }
 
     public static GuiMinerItemStackFilter edit(IGuiWrapper gui, TileEntityDigitalMiner tile, MinerItemStackFilter filter) {
-        return new GuiMinerItemStackFilter(gui, (gui.getXSize() - 173) / 2, 30, tile, filter);
+        return new GuiMinerItemStackFilter(gui, (gui.getXSize() - MINER_FILTER_WIDTH) / 2, 30, tile, filter);
     }
 
     private GuiMinerItemStackFilter(IGuiWrapper gui, int x, int y, TileEntityDigitalMiner tile, @Nullable MinerItemStackFilter origFilter) {
-        super(gui, x, y, 173, 90, tile, origFilter);
+        super(gui, x, y, MINER_FILTER_WIDTH, 90, tile, origFilter);
     }
 
     @Override

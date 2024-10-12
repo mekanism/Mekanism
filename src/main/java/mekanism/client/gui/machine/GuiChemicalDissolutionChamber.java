@@ -2,6 +2,7 @@ package mekanism.client.gui.machine;
 
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.client.gui.GuiConfigurableTile;
+import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiChemicalGauge;
@@ -18,6 +19,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class GuiChemicalDissolutionChamber extends GuiConfigurableTile<TileEntityChemicalDissolutionChamber, MekanismTileContainer<TileEntityChemicalDissolutionChamber>> {
 
+    private GuiElement inputGauge;
+
     public GuiChemicalDissolutionChamber(MekanismTileContainer<TileEntityChemicalDissolutionChamber> container, Inventory inv, Component title) {
         super(container, inv, title);
         dynamicSlots = true;
@@ -31,7 +34,7 @@ public class GuiChemicalDissolutionChamber extends GuiConfigurableTile<TileEntit
               .warning(WarningType.NOT_ENOUGH_ENERGY, tile.getWarningCheck(RecipeError.NOT_ENOUGH_ENERGY))
               .warning(WarningType.NOT_ENOUGH_ENERGY_REDUCED_RATE, tile.getWarningCheck(RecipeError.NOT_ENOUGH_ENERGY_REDUCED_RATE));
         addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::getActive));
-        addRenderableWidget(new GuiChemicalGauge(() -> tile.injectTank, () -> tile.getChemicalTanks(null), GaugeType.STANDARD, this, 7, 4))
+        inputGauge = addRenderableWidget(new GuiChemicalGauge(() -> tile.injectTank, () -> tile.getChemicalTanks(null), GaugeType.STANDARD, this, 7, 4))
               .warning(WarningType.NO_MATCHING_RECIPE, tile.getWarningCheck(RecipeError.NOT_ENOUGH_SECONDARY_INPUT));
         addRenderableWidget(new GuiChemicalGauge(() -> tile.outputTank, () -> tile.getChemicalTanks(null), GaugeType.STANDARD, this, 131, 13))
               .warning(WarningType.NO_SPACE_IN_OUTPUT, tile.getWarningCheck(RecipeError.NOT_ENOUGH_OUTPUT_SPACE));
@@ -41,7 +44,7 @@ public class GuiChemicalDissolutionChamber extends GuiConfigurableTile<TileEntit
 
     @Override
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        renderTitleText(guiGraphics);
+        renderTitleTextWithOffset(guiGraphics, inputGauge.getRelativeRight());
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 }

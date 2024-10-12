@@ -26,6 +26,7 @@ import org.jetbrains.annotations.NotNull;
 public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier, MekanismTileContainer<TileEntityLaserAmplifier>> {
 
     private GuiTextField minField, maxField, timerField;
+    private GuiEnergyGauge energyGauge;
 
     public GuiLaserAmplifier(MekanismTileContainer<TileEntityLaserAmplifier> container, Inventory inv, Component title) {
         super(container, inv, title);
@@ -35,7 +36,7 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addRenderableWidget(new GuiEnergyGauge(tile.getEnergyContainer(), GaugeType.STANDARD, this, 6, 10));
+        energyGauge = addRenderableWidget(new GuiEnergyGauge(tile.getEnergyContainer(), GaugeType.STANDARD, this, 6, 10));
         addRenderableWidget(new GuiEnergyTab(this, () -> List.of(MekanismLang.STORING.translate(EnergyDisplay.of(tile.getEnergyContainer())))));
         addRenderableWidget(new GuiAmplifierTab(this, tile));
         timerField = addRenderableWidget(new GuiTextField(this, 96, 28, 36, 11));
@@ -54,15 +55,18 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
 
     @Override
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        renderTitleText(guiGraphics);
-        drawString(guiGraphics, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
+        renderTitleTextWithOffset(guiGraphics, energyGauge.getRelativeRight());
+        renderInventoryText(guiGraphics);
+        int start = energyGauge.getRelativeRight();
+        Component delay;
         if (tile.getDelay() > 0) {
-            drawTextScaledBound(guiGraphics, MekanismLang.DELAY.translate(tile.getDelay()), 26, 30, titleTextColor(), 68);
+            delay = MekanismLang.DELAY.translate(tile.getDelay());
         } else {
-            drawTextScaledBound(guiGraphics, MekanismLang.NO_DELAY.translate(), 26, 30, titleTextColor(), 68);
+            delay = MekanismLang.NO_DELAY.translate();
         }
-        drawTextScaledBound(guiGraphics, MekanismLang.MIN.translate(EnergyDisplay.of(tile.getMinThreshold())), 26, 45, titleTextColor(), 68);
-        drawTextScaledBound(guiGraphics, MekanismLang.MAX.translate(EnergyDisplay.of(tile.getMaxThreshold())), 26, 60, titleTextColor(), 68);
+        drawScrollingString(guiGraphics, delay, start, 30, TextAlignment.LEFT, titleTextColor(), timerField.getRelativeX() - start, 2, false);
+        drawScrollingString(guiGraphics, MekanismLang.MIN.translate(EnergyDisplay.of(tile.getMinThreshold())), start, 45, TextAlignment.LEFT, titleTextColor(), minField.getRelativeX() - start, 2, false);
+        drawScrollingString(guiGraphics, MekanismLang.MAX.translate(EnergyDisplay.of(tile.getMaxThreshold())), start, 60, TextAlignment.LEFT, titleTextColor(), maxField.getRelativeX() - start, 2, false);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 

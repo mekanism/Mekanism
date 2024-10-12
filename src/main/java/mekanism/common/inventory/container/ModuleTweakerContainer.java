@@ -37,7 +37,7 @@ public class ModuleTweakerContainer extends MekanismContainer {
             });
         }
         for (int slotY = 0; slotY < Inventory.getSelectionSize(); slotY++) {
-            addSlot(new HotBarSlot(inv, slotY, 43 + slotY * 18, 161) {
+            addSlot(new HotBarSlot(inv, slotY, 58 + slotY * 18, 161) {
                 @Override
                 public boolean mayPickup(@NotNull Player player) {
                     return false;

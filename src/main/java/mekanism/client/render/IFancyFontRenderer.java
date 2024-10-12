@@ -1,20 +1,25 @@
 package mekanism.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import mekanism.api.text.TextComponentUtil;
 import mekanism.client.SpecialColors;
+import net.minecraft.Util;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
 
+//TODO - 1.21: Document this class
 public interface IFancyFontRenderer {
 
     int getXSize();
 
-    Font getFont();
+    Font font();
 
     default int titleTextColor() {
         return SpecialColors.TEXT_TITLE.argb();
@@ -40,221 +45,224 @@ public interface IFancyFontRenderer {
         return SpecialColors.TEXT_INACTIVE_BUTTON.argb();
     }
 
-    default int drawString(GuiGraphics guiGraphics, Component component, int x, int y, int color) {
-        return guiGraphics.drawString(getFont(), component, x, y, color, false);
-    }
-
     default int getStringWidth(Component component) {
-        return getFont().width(component);
+        return font().width(component);
     }
 
-    default void drawCenteredText(GuiGraphics guiGraphics, Component component, float x, float y, int color) {
-        drawCenteredText(guiGraphics, component, x, 0, y, color);
+    default int getLineHeight() {
+        return font().lineHeight;
     }
 
-    default void drawCenteredText(GuiGraphics guiGraphics, Component component, float xStart, float areaWidth, float y, int color) {
-        int textWidth = getStringWidth(component);
-        float centerX = xStart + (areaWidth / 2F) - (textWidth / 2F);
-        drawTextExact(guiGraphics, component, centerX, y, color);
+    default void drawTitleText(GuiGraphics guiGraphics, Component text, int y) {
+        drawScrollingString(guiGraphics, text, 0, y, TextAlignment.CENTER, titleTextColor(), 4, false);
     }
 
-    default void drawTitleText(GuiGraphics guiGraphics, Component text, float y) {
-        drawCenteredTextScaledBound(guiGraphics, text, getXSize() - 8, y, titleTextColor());
+    default void drawTitleTextTextWithOffset(GuiGraphics guiGraphics, Component text, int x, int y) {
+        drawTitleTextTextWithOffset(guiGraphics, text, x, y, getXSize());
     }
 
-    default void drawScaledCenteredTextScaledBound(GuiGraphics guiGraphics, Component text, float left, float y, int color, float maxX, float textScale) {
-        float width = getStringWidth(text) * textScale;
-        float scale = Math.min(1, maxX / width) * textScale;
-        drawScaledCenteredText(guiGraphics, text, left, y, color, scale);
+    default void drawTitleTextTextWithOffset(GuiGraphics guiGraphics, Component text, int x, int y, int end) {
+        drawTitleTextTextWithOffset(guiGraphics, text, x, y, end, 4, TextAlignment.CENTER);
     }
 
-    default void drawScaledCenteredText(GuiGraphics guiGraphics, Component text, float left, float y, int color, float scale) {
+    default void drawTitleTextTextWithOffset(GuiGraphics guiGraphics, Component text, int x, int y, int end, int maxLengthPad, TextAlignment alignment) {
+        drawScrollingString(guiGraphics, text, x, y, alignment, titleTextColor(), end - x, maxLengthPad, false);
+    }
+
+    default void drawScrollingString(GuiGraphics guiGraphics, Component text, int x, int y, TextAlignment alignment, int color, int maxLengthPad, boolean shadow) {
+        drawScrollingString(guiGraphics, text, x, y, alignment, color, getXSize(), maxLengthPad, shadow);
+    }
+
+    default void drawScrollingString(GuiGraphics guiGraphics, Component text, int x, int y, TextAlignment alignment, int color, int width, int maxLengthPad, boolean shadow) {
+        drawScrollingString(guiGraphics, text, x, y, alignment, color, width, getLineHeight(), maxLengthPad, shadow);
+    }
+
+    default void drawScrollingString(GuiGraphics guiGraphics, Component text, int x, int y, TextAlignment alignment, int color, int width, int height, int maxLengthPad, boolean shadow) {
+        drawScrollingString(guiGraphics, text, x + maxLengthPad, y, x + width - maxLengthPad, y + height, alignment, color, shadow);
+    }
+
+    default void drawScrollingString(GuiGraphics guiGraphics, Component text, int minX, int minY, int maxX, int maxY, TextAlignment alignment, int color, boolean shadow) {
         int textWidth = getStringWidth(text);
-        float centerX = left - (textWidth / 2F) * scale;
-        drawTextWithScale(guiGraphics, text, centerX, y, color, scale);
-    }
-
-    default void drawCenteredTextScaledBound(GuiGraphics guiGraphics, Component text, float maxLength, float y, int color) {
-        drawCenteredTextScaledBound(guiGraphics, text, maxLength, 0, y, color);
-    }
-
-    default void drawCenteredTextScaledBound(GuiGraphics guiGraphics, Component text, float maxLength, float x, float y, int color) {
-        float scale = Math.min(1, maxLength / getStringWidth(text));
-        drawScaledCenteredText(guiGraphics, text, x + getXSize() / 2F, y, color, scale);
-    }
-
-    default void drawTextExact(GuiGraphics guiGraphics, Component text, float x, float y, int color) {
-        PoseStack pose = guiGraphics.pose();
-        pose.pushPose();
-        pose.translate(x, y, 0);
-        drawString(guiGraphics, text, 0, 0, color);
-        pose.popPose();
-    }
-
-    default float getNeededScale(Component text, float maxLength) {
-        int length = getStringWidth(text);
-        return length <= maxLength ? 1 : maxLength / length;
-    }
-
-    default void drawTextScaledBound(GuiGraphics guiGraphics, String text, float x, float y, int color, float maxLength) {
-        drawTextScaledBound(guiGraphics, TextComponentUtil.getString(text), x, y, color, maxLength);
-    }
-
-    default void drawTextScaledBound(GuiGraphics guiGraphics, Component component, float x, float y, int color, float maxLength) {
-        int length = getStringWidth(component);
-        if (length <= maxLength) {
-            drawTextExact(guiGraphics, component, x, y, color);
+        int areaWidth = maxX - minX;
+        boolean isScrolling = textWidth > areaWidth;
+        //Note: Instead of doing what vanilla does, we divide to float, and don't add one
+        // That way if min and max are not just lineHeight away they will be more accurate, and otherwise it won't render one line below where it should be
+        float targetY = (minY + maxY - getLineHeight()) / 2F;
+        float targetX;
+        if (isScrolling) {
+            targetX = prepScrollingString(guiGraphics, textWidth, areaWidth, minX, minY, maxX, maxY);
         } else {
-            drawTextWithScale(guiGraphics, component, x, y, color, maxLength / length);
+            targetX = alignment.getTarget(font(), minX, maxX, textWidth);
+        }
+        guiGraphics.drawString(font(), text.getVisualOrderText(), targetX, targetY, color, shadow);
+        if (isScrolling) {
+            guiGraphics.disableScissor();
         }
     }
 
-    default void drawScaledTextScaledBound(GuiGraphics guiGraphics, Component text, float x, float y, int color, float maxX, float textScale) {
-        float width = getStringWidth(text) * textScale;
-        float scale = Math.min(1, maxX / width) * textScale;
-        drawTextWithScale(guiGraphics, text, x, y, color, scale);
+    default void drawScaledScrollingString(GuiGraphics guiGraphics, Component text, int x, int y, TextAlignment alignment, int color, int maxLengthPad, boolean shadow, float scale) {
+        drawScaledScrollingString(guiGraphics, text, x, y, alignment, color, getXSize(), maxLengthPad, shadow, scale);
     }
 
-    default void drawTextWithScale(GuiGraphics guiGraphics, Component text, float x, float y, int color, float scale) {
-        PoseStack pose = prepTextScale(guiGraphics, x, y, scale);
-        drawString(guiGraphics, text, 0, 0, color);
+    default void drawScaledScrollingString(GuiGraphics guiGraphics, Component text, int x, int y, TextAlignment alignment, int color, int width, int maxLengthPad,
+          boolean shadow, float scale) {
+        drawScaledScrollingString(guiGraphics, text, x, y, alignment, color, width, getLineHeight(), maxLengthPad, shadow, scale);
+    }
+
+    default void drawScaledScrollingString(GuiGraphics guiGraphics, Component text, int x, int y, TextAlignment alignment, int color, int width, int height, int maxLengthPad,
+          boolean shadow, float scale) {
+        drawScaledScrollingString(guiGraphics, text, x + maxLengthPad, y, x + width - maxLengthPad, y + getLineHeight(), alignment, color, shadow, scale);
+    }
+
+    default void drawScaledScrollingString(GuiGraphics guiGraphics, Component text, int minX, int minY, int maxX, int maxY, TextAlignment alignment, int color, boolean shadow,
+          float scale) {
+        if (scale == 1.0F) {
+            drawScrollingString(guiGraphics, text, minX, minY, maxX, maxY, alignment, color, shadow);
+            return;
+        }
+        float textWidth = getStringWidth(text) * scale;
+        int areaWidth = maxX - minX;
+        boolean isScrolling = textWidth > areaWidth;
+        //Note: Instead of doing what vanilla does, we divide to float, and don't add one
+        // That way if min and max are not just lineHeight away they will be more accurate, and otherwise it won't render one line below where it should be
+        float targetY = (minY + maxY - getLineHeight()) / 2F;
+        float targetX;
+        if (isScrolling) {
+            targetX = prepScrollingString(guiGraphics, textWidth, areaWidth, minX, minY, maxX, maxY);
+        } else {
+            targetX = alignment.getTarget(font(), minX, maxX, textWidth);
+        }
+        PoseStack pose = prepTextScale(guiGraphics, targetX, targetY, scale);
+        guiGraphics.drawString(font(), text, 0, 0, color, shadow);
         pose.popPose();
+        if (isScrolling) {
+            guiGraphics.disableScissor();
+        }
     }
 
+    /**
+     * Based off the logic for calculating the scissor area and draw target that vanilla does in
+     * {@link AbstractWidget#renderScrollingString(GuiGraphics, Font, Component, int, int, int, int, int, int)}
+     *
+     * @apiNote Call {@link GuiGraphics#disableScissor()} after using this method
+     */
+    private static float prepScrollingString(GuiGraphics guiGraphics, double textWidth, int areaWidth, int minX, int minY, int maxX, int maxY) {
+        double overflowWidth = textWidth - areaWidth;
+        //TODO: Some variable that keeps track of when the gui was initialized (init method called?) so that we can ensure it always starts
+        // the text all the way at the left. (For right to left languages we should probably start it all the way at the right)
+        double seconds = Util.getMillis() / 1_000D;
+        double scrollPeriod = Math.max(overflowWidth * AbstractWidget.PERIOD_PER_SCROLLED_PIXEL, AbstractWidget.MIN_SCROLL_PERIOD);
+        //TODO: Improve this, as it moves very slowly at the edges, and much quicker in the middle
+        double scrolledSoFar = Math.sin((Math.PI / 2) * Math.cos((2 * Math.PI) * seconds / scrollPeriod)) / 2.0 + AbstractWidget.PERIOD_PER_SCROLLED_PIXEL;
+        //Vanilla uses: Mth.lerp(d2, 0.0, overflowWidth); to calculate overflowedBy. But that is equivalent to just performing the following multiplication
+        double overflowedBy = scrolledSoFar * overflowWidth;
+        //Note: We are drawing in relative coordinates, but GuiGraphics#enableScissor, is expecting absolute coordinates,
+        // so we need to get the translations from our pose stack
+        //Note: This is equivalent to what Matrix4f#getTranslation(Vector3f) would do, without the extra allocations.
+        Matrix4f matrix4f = guiGraphics.pose().last().pose();
+        int left = (int) matrix4f.m30();
+        int top = (int) matrix4f.m31();
+        guiGraphics.enableScissor(left + minX, top + minY, left + maxX, top + maxY);
+        //TODO: Should this cast to float? I believe this makes it less choppy, but a bit blurry?
+        // So we probably don't want to cast overflowedBy to float
+        return minX - (int) overflowedBy;
+    }
+
+    //Note: As translate will implicitly cast x and y to being floats, we might as well pass these in as floats to reduce duplicate code
     private PoseStack prepTextScale(GuiGraphics guiGraphics, float x, float y, float scale) {
-        float yAdd = 4 - (scale * 8) / 2F;
         PoseStack pose = guiGraphics.pose();
         pose.pushPose();
+        float halfLineHeight = getLineHeight() / 2F;
+        float yAdd = halfLineHeight - halfLineHeight * scale;
         pose.translate(x, y + yAdd, 0);
         pose.scale(scale, scale, scale);
         return pose;
     }
 
-    /**
-     * @apiNote Consider caching the {@link WrappedTextRenderer} instead of using this method.
-     */
-    default int drawWrappedTextWithScale(GuiGraphics guiGraphics, Component text, float x, float y, int color, float maxLength, float scale) {
-        return new WrappedTextRenderer(this, text).renderWithScale(guiGraphics, x, y, color, maxLength, scale);
+    enum TextAlignment {
+        LEFT,
+        CENTER,
+        RIGHT,
+        /**
+         * Represents that for left to right languages this will be left aligned, and for right to left it will be right aligned.
+         */
+        RELATIVE;//TODO: Make use of this in various spots that make sense
+
+        public float getTarget(Font font, int minX, int maxX, float textWidth) {
+            return switch (this) {
+                case LEFT -> minX;
+                case CENTER -> minX + ((maxX - minX) - textWidth) / 2F;
+                case RIGHT -> maxX - textWidth;
+                case RELATIVE -> font.isBidirectional() ? maxX - textWidth : minX;
+            };
+        }
     }
 
-    /**
-     * @apiNote Consider caching the {@link WrappedTextRenderer} instead of using this method.
-     */
-    default void drawWrappedCenteredText(GuiGraphics guiGraphics, Component text, float x, float y, int color, float maxLength) {
-        new WrappedTextRenderer(this, text).renderCentered(guiGraphics, x, y, color, maxLength);
-    }
-
-    // efficient tool to draw word-by-word wrapped text based on a horizontal bound. looks intimidating but runs in O(n)
     class WrappedTextRenderer {
 
-        private final List<LineData> linesToDraw = new ArrayList<>();
-        private final IFancyFontRenderer font;
-        private final String text;
+        private final Component text;
+        private List<FormattedCharSequence> linesToDraw = Collections.emptyList();
+
+        IFancyFontRenderer fontRenderer;
         @Nullable
         private Font lastFont;
-        private float lastMaxLength = -1;
-        private float lineLength = 0;
+        private int lastMaxLength = -1;
 
-        public WrappedTextRenderer(IFancyFontRenderer font, Component text) {
-            this(font, text.getString());
-        }
-
-        public WrappedTextRenderer(IFancyFontRenderer font, String text) {
-            this.font = font;
+        public WrappedTextRenderer(IFancyFontRenderer fontRenderer, Component text) {
+            this.fontRenderer = fontRenderer;
             this.text = text;
         }
 
-        public void renderCentered(GuiGraphics guiGraphics, float x, float y, int color, float maxLength) {
+        public void render(GuiGraphics guiGraphics, int x, int y, TextAlignment alignment, int color, int maxLength) {
             calculateLines(maxLength);
-            float startY = y;
-            for (LineData line : linesToDraw) {
-                font.drawTextExact(guiGraphics, line.component(), x - line.length() / 2, startY, color);
-                startY += 9;
-            }
+            drawLines(guiGraphics, x, y, maxLength, alignment, color, 1);
         }
 
-        public int renderWithScale(GuiGraphics guiGraphics, float x, float y, int color, float maxLength, float scale) {
+        public int renderWithScale(GuiGraphics guiGraphics, int x, int y, TextAlignment alignment, int color, int maxLength, float scale) {
             //Divide by scale for calculating actual max length so that when the text is scaled it has the proper total space available
-            calculateLines(maxLength / scale);
-            PoseStack pose = font.prepTextScale(guiGraphics, x, y, scale);
-            int startY = 0;
-            for (LineData line : linesToDraw) {
-                font.drawString(guiGraphics, line.component(), 0, startY, color);
-                startY += 9;
-            }
+            calculateLines(Mth.floor(maxLength / scale));
+            PoseStack pose = fontRenderer.prepTextScale(guiGraphics, x, y, scale);
+            drawLines(guiGraphics, 0, 0, maxLength, alignment, color, scale);
             pose.popPose();
             return linesToDraw.size();
         }
 
-        void calculateLines(float maxLength) {
+        private void drawLines(GuiGraphics guiGraphics, int x, int startY, int maxLength, TextAlignment alignment, int color, float scale) {
+            Font font = fontRenderer.font();
+            for (FormattedCharSequence line : linesToDraw) {
+                guiGraphics.drawString(font, line, alignment.getTarget(font, x, x + maxLength, font.width(line) * scale), startY, color, false);
+                startY += font.lineHeight;
+            }
+        }
+
+        private void calculateLines(int maxLength) {
             //If something changed since the last time we calculated it
-            Font font = this.font.getFont();
+            Font font = fontRenderer.font();
             if (font != null && (lastFont != font || lastMaxLength != maxLength)) {
                 lastFont = font;
                 lastMaxLength = maxLength;
-                linesToDraw.clear();
-                StringBuilder lineBuilder = new StringBuilder();
-                StringBuilder wordBuilder = new StringBuilder();
-                int spaceLength = lastFont.width(" ");
-                int wordLength = 0;
-                for (char c : text.toCharArray()) {
-                    if (c == ' ') {
-                        lineBuilder = addWord(lineBuilder, wordBuilder, maxLength, spaceLength, wordLength);
-                        wordBuilder = new StringBuilder();
-                        wordLength = 0;
-                        continue;
-                    }
-                    wordBuilder.append(c);
-                    wordLength += lastFont.width(Character.toString(c));
-                }
-                if (!wordBuilder.isEmpty()) {
-                    lineBuilder = addWord(lineBuilder, wordBuilder, maxLength, spaceLength, wordLength);
-                }
-                if (!lineBuilder.isEmpty()) {
-                    linesToDraw.add(new LineData(TextComponentUtil.getString(lineBuilder.toString()), lineLength));
-                }
+                linesToDraw = font.split(text, maxLength);
             }
         }
 
-        StringBuilder addWord(StringBuilder lineBuilder, StringBuilder wordBuilder, float maxLength, int spaceLength, int wordLength) {
-            // ignore spacing if this is the first word of the line
-            float spacingLength = lineBuilder.isEmpty() ? 0 : spaceLength;
-            if (lineLength + spacingLength + wordLength > maxLength) {
-                linesToDraw.add(new LineData(TextComponentUtil.getString(lineBuilder.toString()), lineLength));
-                lineBuilder = new StringBuilder(wordBuilder);
-                lineLength = wordLength;
-            } else {
-                if (spacingLength > 0) {
-                    lineBuilder.append(" ");
-                }
-                lineBuilder.append(wordBuilder);
-                lineLength += spacingLength + wordLength;
-            }
-            return lineBuilder;
+        public int getRequiredHeight(int maxLength) {
+            calculateLines(maxLength);
+            return fontRenderer.getLineHeight() * linesToDraw.size();
+        }
+    }
+
+    class ReplaceableWrappedTextRenderer extends WrappedTextRenderer {
+
+        public ReplaceableWrappedTextRenderer(IFancyFontRenderer parent, int width, Component text) {
+            super(new SimpleFancyFontRenderer(parent.font(), width), text);
         }
 
-        public static int calculateHeightRequired(Font font, Component text, int width, float maxLength) {
-            return calculateHeightRequired(font, text.getString(), width, maxLength);
+        public WrappedTextRenderer replaceFont(IFancyFontRenderer font) {
+            this.fontRenderer = font;
+            return this;
         }
 
-        public static int calculateHeightRequired(Font font, String text, int width, float maxLength) {
-            //TODO: Come up with a better way of doing this
-            WrappedTextRenderer wrappedTextRenderer = new WrappedTextRenderer(new IFancyFontRenderer() {
-                @Override
-                public int getXSize() {
-                    return width;
-                }
-
-                @Override
-                public Font getFont() {
-                    return font;
-                }
-            }, text);
-            wrappedTextRenderer.calculateLines(maxLength);
-            return 9 * wrappedTextRenderer.linesToDraw.size();
-        }
-
-        private record LineData(Component component, float length) {
+        private record SimpleFancyFontRenderer(Font font, int getXSize) implements IFancyFontRenderer {
         }
     }
 }

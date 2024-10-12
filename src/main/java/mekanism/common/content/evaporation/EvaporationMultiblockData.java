@@ -121,8 +121,8 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
         outputHandler = OutputHelper.getOutputHandler(outputTank, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
         inventorySlots.add(inputInputSlot = FluidInventorySlot.fill(inputTank, this, 28, 20));
         inventorySlots.add(outputInputSlot = OutputInventorySlot.at(this, 28, 51));
-        inventorySlots.add(inputOutputSlot = FluidInventorySlot.drain(outputTank, this, 132, 20));
-        inventorySlots.add(outputOutputSlot = OutputInventorySlot.at(this, 132, 51));
+        inventorySlots.add(inputOutputSlot = FluidInventorySlot.drain(outputTank, this, 152, 20));
+        inventorySlots.add(outputOutputSlot = OutputInventorySlot.at(this, 152, 51));
         inputInputSlot.setSlotType(ContainerSlotType.INPUT);
         inputOutputSlot.setSlotType(ContainerSlotType.INPUT);
         heatCapacitors.add(heatCapacitor = VariableHeatCapacitor.create(MekanismConfig.general.evaporationHeatCapacity.get() * 3, () -> biomeAmbientTemp, this));

@@ -90,9 +90,4 @@ public class MovableFilterButton extends FilterButton {
         }
         updateButtonVisibility(filter);
     }
-
-    @Override
-    protected int getMaxLength() {
-        return super.getMaxLength() - 12;
-    }
 }

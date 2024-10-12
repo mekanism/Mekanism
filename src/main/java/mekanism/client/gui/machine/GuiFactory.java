@@ -20,8 +20,12 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class GuiFactory extends GuiConfigurableTile<TileEntityFactory<?>, MekanismTileContainer<TileEntityFactory<?>>> {
+
+    @Nullable
+    private GuiDumpButton<?> dumpButton;
 
     public GuiFactory(MekanismTileContainer<TileEntityFactory<?>> container, Inventory inv, Component title) {
         super(container, inv, title);
@@ -54,7 +58,7 @@ public class GuiFactory extends GuiConfigurableTile<TileEntityFactory<?>, Mekani
                 addRenderableWidget(new GuiChemicalBar(this, GuiChemicalBar.getProvider(factory.getChemicalTank(), tile.getChemicalTanks(null)), 7, 76,
                       tile.tier == FactoryTier.ULTIMATE ? 172 : 138, 4, true))
                       .warning(WarningType.NO_MATCHING_RECIPE, tile.getWarningCheck(RecipeError.NOT_ENOUGH_SECONDARY_INPUT, 0));
-                addRenderableWidget(new GuiDumpButton<>(this, (TileEntityFactory<?> & IHasDumpButton) tile, tile.tier == FactoryTier.ULTIMATE ? 182 : 148, 76));
+                dumpButton = addRenderableWidget(new GuiDumpButton<>(this, (TileEntityFactory<?> & IHasDumpButton) tile, tile.tier == FactoryTier.ULTIMATE ? 182 : 148, 76));
             }
         }
 
@@ -72,7 +76,7 @@ public class GuiFactory extends GuiConfigurableTile<TileEntityFactory<?>, Mekani
     @Override
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
-        drawString(guiGraphics, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
+        renderInventoryText(guiGraphics, dumpButton == null ? getXSize() : dumpButton.getRelativeX());
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 }

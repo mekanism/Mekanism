@@ -38,7 +38,7 @@ public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfigu
         }
         this.tile = tile;
         interactionStrategy = InteractionStrategy.ALL;
-        addChild(new GuiInnerScreen(gui, relativeX + 41, relativeY + 15, 74, 12,
+        addChild(new GuiInnerScreen(gui, relativeX + 38, relativeY + 15, 80, 12,
               () -> Collections.singletonList(MekanismLang.STRICT_INPUT_ENABLED.translate(OnOff.of(tile.getEjector().hasStrictInput())))));
         addChild(new GuiSlot(SlotType.NORMAL, gui, relativeX + 111, relativeY + 48));
         addChild(new MekanismImageButton(gui, relativeX + 136, relativeY + 6, 14, 16, getButtonLocation("exclamation"),
@@ -76,12 +76,12 @@ public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfigu
     public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.renderForeground(guiGraphics, mouseX, mouseY);
         drawTitleText(guiGraphics, MekanismLang.TRANSPORTER_CONFIG.translate(), 5);
-        drawCenteredText(guiGraphics, MekanismLang.INPUT.translate(), relativeX + 51, relativeY + 105, subheadingTextColor());
-        drawCenteredText(guiGraphics, MekanismLang.OUTPUT.translate(), relativeX + 121, relativeY + 68, subheadingTextColor());
+        drawScrollingString(guiGraphics, MekanismLang.INPUT.translate(), 18, 105, TextAlignment.CENTER, subheadingTextColor(), 68, 0, false);
+        drawScrollingString(guiGraphics, MekanismLang.OUTPUT.translate(), 86, 68, TextAlignment.CENTER, subheadingTextColor(), width - 86, 4, false);
     }
 
     @Override
     protected int getTitlePadEnd() {
-        return super.getTitlePadEnd() + 15;
+        return super.getTitlePadEnd() + 18;
     }
 }

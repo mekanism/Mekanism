@@ -32,6 +32,7 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
      * The number of filters that can be displayed
      */
     private static final int FILTER_COUNT = 4;
+    protected GuiInnerScreen leftScreen;
     private GuiScrollBar scrollBar;
 
     protected GuiFilterHolder(CONTAINER container, Inventory inv, Component title) {
@@ -46,7 +47,7 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addRenderableWidget(new GuiInnerScreen(this, 9, 17, 85, 140));
+        leftScreen = addRenderableWidget(new GuiInnerScreen(this, 9, 17, 85, 140));
         //Filter holder
         addRenderableWidget(new GuiElementHolder(this, 95, 17, 158, 118));
         //new filter button border
@@ -66,6 +67,17 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
                     PacketUtils.sendToServer(new PacketGuiInteract(interaction, tile, index));
                 }
             }, this::onClick, index -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.TOGGLE_FILTER_STATE, tile, index)), this::getRenderStacks));
+        }
+    }
+
+    protected void drawScreenText(GuiGraphics guiGraphics, Component text, int y) {
+        drawScreenText(guiGraphics, text, 0, y);
+    }
+
+    protected void drawScreenText(GuiGraphics guiGraphics, Component text, int x, int y) {
+        //TODO: Do we want to make usages of this method eventually set the text to be rendered within the gui element for the screen?
+        if (leftScreen != null) {//Validate it was properly set
+            leftScreen.drawScaledScrollingString(guiGraphics, text, x, y, TextAlignment.LEFT, screenTextColor(), leftScreen.getXSize() - x, 5, false, 0.8F);
         }
     }
 
@@ -103,6 +115,6 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
     @Override
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
-        drawString(guiGraphics, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
+        renderInventoryText(guiGraphics);
     }
 }
