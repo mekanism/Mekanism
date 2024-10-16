@@ -160,7 +160,7 @@ public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredient
         ItemStack stack = slot.item().getInternalStack();
         long count = slot.count();
         if (count < 10_000) {
-            gui().renderItemTooltip(guiGraphics, stack, slotX, slotY);
+            guiGraphics.renderTooltip(font(), stack, slotX, slotY);
         } else {
             //If the slot's displayed count is truncated, make sure we also add the actual amount to the tooltip
             gui().renderItemTooltipWithExtra(guiGraphics, stack, slotX, slotY, Collections.singletonList(MekanismLang.QIO_STORED_COUNT.translateColored(EnumColor.GRAY,
@@ -181,7 +181,7 @@ public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredient
 
     private void renderSlotText(GuiGraphics guiGraphics, Component text, int x, int y) {
         float scale = 0.6F;
-        float scaledWidth = getStringWidth(text) * scale;
+        float scaledWidth = font().width(text) * scale;
         if (scaledWidth >= 16) {
             //If we need a lower scale slightly due to having a lot of text, calculate it
             //Note: If it would still overflow, then we just let the scrolling text handle it

@@ -37,8 +37,6 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.SharedConstants;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
@@ -194,11 +192,6 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
             element.onRenderForeground(guiGraphics, x, y, zOffset, zOffset);
             pose.popPose();
         }
-    }
-
-    @Override
-    public Font font() {
-        return Minecraft.getInstance().font;
     }
 
     @Override

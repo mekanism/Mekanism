@@ -31,7 +31,7 @@ public class GuiSupportedUpgrades extends GuiElement {
     private static final int ROW_ROOM = PADDED_ELEMENT_WIDTH / ELEMENT_SIZE;
 
     private static int getFirstRowStart(IFancyFontRenderer fontRenderer) {
-        return Math.min(fontRenderer.getStringWidth(SUPPORTED) + 1, PADDED_ELEMENT_WIDTH);
+        return Math.min(fontRenderer.font().width(SUPPORTED) + 1, PADDED_ELEMENT_WIDTH);
     }
 
     private static int getFirstRowRoom(int firstRowStart) {

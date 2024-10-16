@@ -30,6 +30,7 @@ import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.Util;
 import net.minecraft.client.gui.ComponentPath;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -59,6 +60,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     public boolean switchingToRecipeViewer;
     @Nullable
     private IWarningTracker warningTracker;
+    private long lastMSInitialized;
 
     private boolean hasClicked = false;
 
@@ -98,6 +100,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
             // clear out any tracked warnings, so we don't have duplicates being tracked when we add our elements again
             warningTracker.clearTrackedWarnings();
         }
+        lastMSInitialized = Util.getMillis();
         addGuiElements();
         if (warningTracker != null) {
             //If we have a warning tracker add it as a button, we do so via a method in case any of the sub GUIs need to reposition where it ends up
@@ -167,12 +170,17 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         windows.forEach(GuiWindow::tick);
     }
 
+    @Override
+    public long getTimeOpened() {
+        return lastMSInitialized;
+    }
+
     protected void renderTitleText(GuiGraphics guiGraphics) {
         drawTitleText(guiGraphics, title, titleLabelY);
     }
 
     protected void renderTitleTextWithOffset(GuiGraphics guiGraphics, int x) {
-        drawTitleTextTextWithOffset(guiGraphics, title, x, titleLabelY);
+        renderTitleTextWithOffset(guiGraphics, x, getXSize());
     }
 
     protected void renderTitleTextWithOffset(GuiGraphics guiGraphics, int x, int end) {

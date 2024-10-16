@@ -84,7 +84,7 @@ public class GuiAntiprotonicNucleosynthesizer extends GuiConfigurableTile<TileEn
         renderTitleText(guiGraphics);
         renderInventoryText(guiGraphics);
         screen.drawScrollingString(guiGraphics, MekanismLang.PROCESS_RATE.translate(TextUtils.getPercent(tile.getProcessRate())), 0,
-              screen.getHeight() - getLineHeight() - 2, TextAlignment.CENTER, screenTextColor(), 2, false);
+              screen.getHeight() - font().lineHeight - 2, TextAlignment.CENTER, screenTextColor(), 2, false);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
         PoseStack pose = guiGraphics.pose();
         pose.pushPose();

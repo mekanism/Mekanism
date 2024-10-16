@@ -69,7 +69,7 @@ class EnumToggle<TYPE extends Enum<TYPE> & IHasTextComponent> extends MiniElemen
                 guiGraphics.blit(hasModeIcon.getModeIcon(), getRelativeX() + optionCenter - 8, getRelativeY() + 19, 0, 0, 16, 16, 16, 16);
             } else {
                 //Similar to logic for drawScaledCenteredText except shifts values slightly if they go past the max length
-                int textWidth = parent.getStringWidth(text);
+                int textWidth = parent.font().width(text);
                 float objectWidth = textWidth * TEXT_SCALE;
                 if (optionCenter < objectWidth / 2) {
                     //Note: We know it will overflow, so it doesn't actually matter if we center it here or not

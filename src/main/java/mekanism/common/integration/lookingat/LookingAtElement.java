@@ -4,8 +4,6 @@ import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.GuiUtils.TilingDirection;
 import mekanism.client.render.IFancyFontRenderer;
 import mekanism.client.render.MekanismRenderer;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
@@ -55,11 +53,6 @@ public abstract class LookingAtElement implements ILookingAtElement, IFancyFontR
 
     public int getHeight() {
         return 13;
-    }
-
-    @Override
-    public Font font() {
-        return Minecraft.getInstance().font;
     }
 
     public abstract int getScaledLevel(int level);

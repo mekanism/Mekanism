@@ -64,13 +64,9 @@ public interface IGuiWrapper extends ContainerEventHandler, IFancyFontRenderer {
         GuiUtils.renderItem(guiGraphics, stack, xAxis, yAxis, scale, font(), null, false);
     }
 
-    default void renderItemTooltip(GuiGraphics guiGraphics, @NotNull ItemStack stack, int xAxis, int yAxis) {
-        guiGraphics.renderTooltip(font(), stack, xAxis, yAxis);
-    }
-
     default void renderItemTooltipWithExtra(GuiGraphics guiGraphics, @NotNull ItemStack stack, int xAxis, int yAxis, List<Component> toAppend) {
         if (toAppend.isEmpty()) {
-            renderItemTooltip(guiGraphics, stack, xAxis, yAxis);
+            guiGraphics.renderTooltip(font(), stack, xAxis, yAxis);
         } else {
             List<Component> tooltip = new ArrayList<>(Screen.getTooltipFromItem(Minecraft.getInstance(), stack));
             tooltip.addAll(toAppend);

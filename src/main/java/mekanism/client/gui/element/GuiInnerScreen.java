@@ -97,7 +97,7 @@ public class GuiInnerScreen extends GuiScalableElement implements IRecipeViewerR
         super.renderForeground(guiGraphics, mouseX, mouseY);
         List<Component> list = getRenderStrings();
         if (!list.isEmpty()) {
-            int lineHeight = getLineHeight();
+            int lineHeight = font().lineHeight;
             int minY = relativeY + padding;
             int maxY = minY + lineHeight;
             int heightToNextLine = lineHeight + spacing;
@@ -114,7 +114,7 @@ public class GuiInnerScreen extends GuiScalableElement implements IRecipeViewerR
             for (int i = 0, size = list.size(); i < size; i++) {
                 Component text = list.get(i);
                 int maxX = relativeX + getMaxTextWidth(i) - padding;
-                drawScaledScrollingString(guiGraphics, text, minX, minY, maxX, maxY, TextAlignment.LEFT, screenTextColor, false, textScale);
+                drawScaledScrollingString(guiGraphics, text, minX, minY, maxX, maxY, TextAlignment.LEFT, screenTextColor, false, textScale, getTimeOpened());
                 minY += heightToNextLine;
                 maxY += heightToNextLine;
             }

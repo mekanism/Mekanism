@@ -17,6 +17,7 @@ import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.inventory.container.SelectedWindowData.WindowPosition;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.lib.Color;
+import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -34,6 +35,7 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
 
     private Consumer<GuiWindow> closeListener;
     private Consumer<GuiWindow> reattachListener;
+    private final long msOpened;
 
     protected InteractionStrategy interactionStrategy = InteractionStrategy.CONTAINER;
 
@@ -79,12 +81,18 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
         this.pinned = calculatedPosition.pinned();
         isOverlay = true;
         active = true;
+        msOpened = Util.getMillis();
         if (!isFocusOverlay()) {
             addCloseButton();
             if (this.windowData.type.canPin()) {
                 addChild(new GuiPinButton(gui(), relativeX + 16, relativeY + 6, this));
             }
         }
+    }
+
+    @Override
+    public long getTimeOpened() {
+        return msOpened;
     }
 
     public void onFocusLost() {

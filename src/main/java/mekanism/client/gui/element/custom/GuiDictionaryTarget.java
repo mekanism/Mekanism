@@ -92,7 +92,7 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
     public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.renderToolTip(guiGraphics, mouseX, mouseY);
         if (target instanceof ItemStack stack) {
-            gui().renderItemTooltip(guiGraphics, stack, mouseX, mouseY);
+            guiGraphics.renderTooltip(font(), stack, mouseX, mouseY);
         }
     }
 

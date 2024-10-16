@@ -632,7 +632,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
             //Note: We add one to the button height as it is considered bounds, and we want to include the bottom pixel of the button in our calculations of where the text should land
             //Note: We call super as currently getButtonX and getButtonY already factor in the relative positioning
             IFancyFontRenderer.super.drawScrollingString(guiGraphics, text, getButtonX(), getButtonY(), TextAlignment.CENTER, color, getButtonWidth(),
-                  getButtonHeight() + 1, 2, displayButtonTextShadow());
+                  getButtonHeight() + 1, 2, displayButtonTextShadow(), getTimeOpened());
         }
     }
 
@@ -692,13 +692,20 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     }
 
     @Override
-    public final void drawScrollingString(GuiGraphics guiGraphics, Component text, int x, int y, TextAlignment alignment, int color, int width, int height, int maxLengthPad, boolean shadow) {
-        IFancyFontRenderer.super.drawScrollingString(guiGraphics, text, relativeX + x, relativeY + y, alignment, color, width, height, maxLengthPad, shadow);
+    public long getTimeOpened() {
+        return guiObj.getTimeOpened();
     }
 
     @Override
-    public final void drawScaledScrollingString(GuiGraphics guiGraphics, Component text, int x, int y, TextAlignment alignment, int color, int width, int height, int maxLengthPad, boolean shadow, float scale) {
-        IFancyFontRenderer.super.drawScaledScrollingString(guiGraphics, text, relativeX + x, relativeY + y, alignment, color, width, height, maxLengthPad, shadow, scale);
+    public final void drawScrollingString(GuiGraphics graphics, Component text, int x, int y, TextAlignment alignment, int color, int width, int height, int maxLengthPad,
+          boolean shadow, long msVisible) {
+        IFancyFontRenderer.super.drawScrollingString(graphics, text, relativeX + x, relativeY + y, alignment, color, width, height, maxLengthPad, shadow, msVisible);
+    }
+
+    @Override
+    public final void drawScaledScrollingString(GuiGraphics graphics, Component text, int x, int y, TextAlignment alignment, int color, int width, int height, int maxLengthPad,
+          boolean shadow, float scale, long msVisible) {
+        IFancyFontRenderer.super.drawScaledScrollingString(graphics, text, relativeX + x, relativeY + y, alignment, color, width, height, maxLengthPad, shadow, scale, msVisible);
     }
 
     public enum ButtonBackground {
