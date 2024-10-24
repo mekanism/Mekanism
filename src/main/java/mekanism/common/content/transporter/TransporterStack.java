@@ -17,6 +17,7 @@ import mekanism.common.content.transporter.TransporterPathfinder.IdlePathData;
 import mekanism.common.lib.inventory.IAdvancedTransportEjector;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
+import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.Direction;
@@ -233,7 +234,15 @@ public class TransporterStack {
         return recalculateRRPath(request, outputter, transporter, min, true);
     }
 
+    public <BE extends TileEntityConfigurableMachine> TransitResponse recalculateRRPath(TransitRequest request, BE outputter, LogisticalTransporterBase transporter, int min, boolean updateFlowing) {
+        return getTransitResponseInner(request, outputter.getEjector(), transporter, min, updateFlowing);
+    }
+
     public <BE extends BlockEntity & IAdvancedTransportEjector> TransitResponse recalculateRRPath(TransitRequest request, BE outputter, LogisticalTransporterBase transporter, int min, boolean updateFlowing) {
+        return getTransitResponseInner(request, outputter, transporter, min, updateFlowing);
+    }
+
+    public TransitResponse getTransitResponseInner(TransitRequest request, IAdvancedTransportEjector outputter, LogisticalTransporterBase transporter, int min, boolean updateFlowing) {
         Destination newPath = TransporterPathfinder.getNewRRPath(transporter, this, request, outputter, min);
         if (newPath == null) {
             return request.getEmptyResponse();

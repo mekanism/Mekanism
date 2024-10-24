@@ -11,6 +11,7 @@ import mekanism.common.capabilities.item.CursedTransporterItemHandler;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.lib.inventory.TransitRequest.ItemData;
+import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import mekanism.common.util.StackUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
@@ -77,6 +78,22 @@ public abstract class TransitRequest implements Iterable<ItemData> {
         } else if (target instanceof CursedTransporterItemHandler cursed) {
             LogisticalTransporterBase transporter = cursed.getTransporter();
             return transporter.insert(outputter, outputterPos, this, outputColor.apply(transporter), true, min);
+        }
+        return addToInventoryUnchecked(target, min);
+    }
+
+    public TransitResponse ejectMaybeRR(TileEntityConfigurableMachine outputter, @Nullable IItemHandler target, int min, Function<LogisticalTransporterBase, EnumColor> outputColor) {
+        return ejectMaybeRR(outputter, outputter.getBlockPos(), target, min, outputColor);
+    }
+
+    @NotNull
+    public TransitResponse ejectMaybeRR(TileEntityConfigurableMachine outputter, BlockPos outputterPos, @Nullable IItemHandler target, int min,
+          Function<LogisticalTransporterBase, EnumColor> outputColor) {
+        if (isEmpty()) {//Short circuit if our request is empty
+            return getEmptyResponse();
+        } else if (target instanceof CursedTransporterItemHandler cursed) {
+            LogisticalTransporterBase transporter = cursed.getTransporter();
+            return transporter.insertMaybeRR(outputter, outputterPos, this, outputColor.apply(transporter), true, min);
         }
         return addToInventoryUnchecked(target, min);
     }

@@ -24,6 +24,7 @@ public class ConfigInfo implements IPersistentConfigInfo {
     //TODO: Ejecting/can eject, how do we want to use these
     private boolean canEject;
     private boolean ejecting;
+    private boolean roundRobin;//items only
     private final Map<RelativeSide, DataType> sideConfig;
     private final Map<DataType, ISlotInfo> slotInfo;
     // used so slot & tank GUIs can quickly reference which color overlay to render
@@ -37,6 +38,7 @@ public class ConfigInfo implements IPersistentConfigInfo {
     public ConfigInfo() {
         canEject = true;
         ejecting = false;
+        roundRobin = false;
         sideConfig = new EnumMap<>(RelativeSide.class);
         for (RelativeSide side : EnumUtils.SIDES) {
             sideConfig.put(side, DataType.NONE);
@@ -60,6 +62,14 @@ public class ConfigInfo implements IPersistentConfigInfo {
 
     public void setEjecting(boolean ejecting) {
         this.ejecting = ejecting;
+    }
+
+    public boolean isRoundRobin() {
+        return roundRobin;
+    }
+
+    public void setRoundRobin(boolean newRR) {
+        this.roundRobin = newRR;
     }
 
     public void addDisabledSides(@NotNull RelativeSide... sides) {
