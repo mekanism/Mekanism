@@ -146,4 +146,16 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
             }
         }
     }
+
+    @Override
+    public void syncFrom(GuiElement element) {
+        super.syncFrom(element);
+        GuiDropdown<?> old = (GuiDropdown<?>) element;
+        if (old.isOpen) {
+            //Sync the fact it is open, and how long it has been open for
+            isOpen = true;
+            height += options.length * 10 + 1;
+            msOpened = old.msOpened;
+        }
+    }
 }

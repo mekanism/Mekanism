@@ -30,8 +30,6 @@ public interface IFancyFontRenderer {
     default long getTimeOpened() {
         //TODO: Try and improve how we handle the time opened concept for test in scrollable elements
         //TODO: Gui elements that are part of a GuiWindow, should use the window's time instead of the gui's time
-        //TODO: When resizing/re-init of a GUI, do we want to reset this? I think we currently do, but we probably don't want to be doing so
-        // we also then will need to make gui elements copy the value. Also when switchingToRecipeViewer is true, we want to reset it
         return 0;
     }
 
@@ -204,8 +202,10 @@ public interface IFancyFontRenderer {
         }
         //TODO: Do we want to improve this in some way or another, as it moves very slowly at the edges, and much quicker in the middle
         // Potentially replace this with a sigmoid function?
-        double scrolledSoFar = Math.sin((Math.PI / 2) * scrollSpeedModifier) / 2.0 + AbstractWidget.PERIOD_PER_SCROLLED_PIXEL;
-        //Vanilla uses: Mth.lerp(d2, 0.0, overflowWidth); to calculate overflowedBy. But that is equivalent to just performing the following multiplication
+        // It is particularly slow when there is a large amount of overflow
+        //Shift it so that the range is from [0, 1]
+        double scrolledSoFar = Math.sin((Math.PI / 2) * scrollSpeedModifier) / 2.0 + 0.5;
+        //Vanilla uses: Mth.lerp(scrolledSoFar, 0.0, overflowWidth); to calculate overflowedBy. But that is equivalent to just performing the following multiplication
         return scrolledSoFar * overflowWidth;
     }
 
