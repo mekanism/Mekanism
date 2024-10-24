@@ -25,7 +25,7 @@ public class GuiSortingTab extends GuiInsetElement<TileEntityFactory<?>> {
     @Override
     public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
-        drawTextScaledBound(guiGraphics, OnOff.of(dataSource.isSorting()).getTextComponent(), relativeX + 3, relativeY + 24, titleTextColor(), 21);
+        drawScrollingString(guiGraphics, OnOff.of(dataSource.isSorting()).getTextComponent(), 0, 24, TextAlignment.CENTER, titleTextColor(), 3, false);
     }
 
     @Override

@@ -13,6 +13,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,7 +31,7 @@ public class GuiInnerScreen extends GuiScalableElement implements IRecipeViewerR
 
     private IRecipeViewerRecipeType<?>[] recipeCategories;
     private boolean centerY;
-    private int spacing = 1;
+    private int spacing;
     private int padding = 3;
     private float textScale = 1.0F;
 
@@ -55,9 +56,17 @@ public class GuiInnerScreen extends GuiScalableElement implements IRecipeViewerR
         return this;
     }
 
+    public GuiInnerScreen clearSpacing() {
+        return spacing(0);
+    }
+
     public GuiInnerScreen padding(int padding) {
         this.padding = padding;
         return this;
+    }
+
+    public GuiInnerScreen clearScale() {
+        return textScale(1);
     }
 
     public GuiInnerScreen textScale(float textScale) {
@@ -76,23 +85,38 @@ public class GuiInnerScreen extends GuiScalableElement implements IRecipeViewerR
     }
 
     public GuiInnerScreen defaultFormat() {
-        return padding(5).spacing(3).textScale(0.8F).centerY();
+        return padding(5).spacing(2).textScale(0.8F).centerY();
+    }
+
+    protected List<Component> getRenderStrings() {
+        return renderStrings == null ? Collections.emptyList() : renderStrings.get();
     }
 
     @Override
     public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.renderForeground(guiGraphics, mouseX, mouseY);
-        if (renderStrings != null) {
-            List<Component> list = renderStrings.get();
-            float startY = relativeY + padding;
+        List<Component> list = getRenderStrings();
+        if (!list.isEmpty()) {
+            int lineHeight = font().lineHeight;
+            int minY = relativeY + padding;
+            int maxY = minY + lineHeight;
+            int heightToNextLine = lineHeight + spacing;
             if (centerY) {
-                int listSize = list.size();
-                int totalHeight = listSize * 8 + spacing * (listSize - 1);
-                startY = relativeY + (getHeight() - totalHeight) / 2F;
+                int totalHeight = heightToNextLine * list.size() - spacing;
+                float center = (getHeight() - totalHeight) / 2F;
+                //If center is not evenly divisible, this will make it so that when we divide to find the target y in scrolling string
+                // it gets the correct position
+                minY = relativeY + Mth.floor(center);
+                maxY = relativeY + lineHeight + Mth.ceil(center);
             }
-            for (Component text : renderStrings.get()) {
-                drawText(guiGraphics, text, relativeX + padding, startY);
-                startY += 8 + spacing;
+            int minX = relativeX + padding;
+            int screenTextColor = screenTextColor();
+            for (int i = 0, size = list.size(); i < size; i++) {
+                Component text = list.get(i);
+                int maxX = relativeX + getMaxTextWidth(i) - padding;
+                drawScaledScrollingString(guiGraphics, text, minX, minY, maxX, maxY, TextAlignment.LEFT, screenTextColor, false, textScale, getTimeOpened());
+                minY += heightToNextLine;
+                maxY += heightToNextLine;
             }
         }
     }
@@ -112,12 +136,8 @@ public class GuiInnerScreen extends GuiScalableElement implements IRecipeViewerR
         setTooltip(lastTooltip);
     }
 
-    private void drawText(GuiGraphics guiGraphics, Component text, float x, float y) {
-        drawScaledTextScaledBound(guiGraphics, text, x, y, screenTextColor(), getMaxTextWidth(), textScale);
-    }
-
-    protected int getMaxTextWidth() {
-        return getWidth() - padding * 2;
+    protected int getMaxTextWidth(int row) {
+        return getWidth();
     }
 
     @NotNull

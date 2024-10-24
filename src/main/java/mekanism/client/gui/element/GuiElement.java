@@ -36,6 +36,7 @@ import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.sounds.SoundManager;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -77,7 +78,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     private boolean isDragging;
 
     public GuiElement(IGuiWrapper gui, int x, int y, int width, int height) {
-        this(gui, x, y, width, height, Component.empty());
+        this(gui, x, y, width, height, CommonComponents.EMPTY);
     }
 
     public GuiElement(IGuiWrapper gui, int x, int y, int width, int height, Component text) {
@@ -108,6 +109,14 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
 
     public int getRelativeY() {
         return relativeY;
+    }
+
+    public int getRelativeRight() {
+        return getRelativeX() + getWidth();
+    }
+
+    public int getRelativeBottom() {
+        return getRelativeY() + getHeight();
     }
 
     /**
@@ -467,8 +476,8 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     }
 
     @Override
-    public Font getFont() {
-        return guiObj.getFont();
+    public Font font() {
+        return guiObj.font();
     }
 
     @Override
@@ -611,12 +620,19 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         return getFGColor();
     }
 
+    protected boolean displayButtonTextShadow() {
+        return true;
+    }
+
     protected void drawButtonText(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         Component text = getMessage();
         //Only attempt to draw the message if we have a message to draw
         if (!text.getString().isEmpty()) {
             int color = getButtonTextColor(mouseX, mouseY) | Mth.ceil(alpha * 255.0F) << 24;
-            drawCenteredTextScaledBound(guiGraphics, text, width - 4, height / 2F - 4, color);
+            //Note: We add one to the button height as it is considered bounds, and we want to include the bottom pixel of the button in our calculations of where the text should land
+            //Note: We call super as currently getButtonX and getButtonY already factor in the relative positioning
+            IFancyFontRenderer.super.drawScrollingString(guiGraphics, text, getButtonX(), getButtonY(), TextAlignment.CENTER, color, getButtonWidth(),
+                  getButtonHeight() + 1, 2, displayButtonTextShadow(), getTimeOpened());
         }
     }
 
@@ -667,7 +683,6 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     }
 
     private static void playClickSound(@NotNull SoundManager soundHandler, @NotNull Supplier<SoundEvent> sound, float clickVolume) {
-
         soundHandler.play(SimpleSoundInstance.forUI(sound.get(), 1.0F, clickVolume));
     }
 
@@ -677,8 +692,20 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     }
 
     @Override
-    public void drawCenteredTextScaledBound(GuiGraphics guiGraphics, Component text, float maxLength, float x, float y, int color) {
-        IFancyFontRenderer.super.drawCenteredTextScaledBound(guiGraphics, text, maxLength, relativeX + x, relativeY + y, color);
+    public long getTimeOpened() {
+        return guiObj.getTimeOpened();
+    }
+
+    @Override
+    public final void drawScrollingString(GuiGraphics graphics, Component text, int x, int y, TextAlignment alignment, int color, int width, int height, int maxLengthPad,
+          boolean shadow, long msVisible) {
+        IFancyFontRenderer.super.drawScrollingString(graphics, text, relativeX + x, relativeY + y, alignment, color, width, height, maxLengthPad, shadow, msVisible);
+    }
+
+    @Override
+    public final void drawScaledScrollingString(GuiGraphics graphics, Component text, int x, int y, TextAlignment alignment, int color, int width, int height, int maxLengthPad,
+          boolean shadow, float scale, long msVisible) {
+        IFancyFontRenderer.super.drawScaledScrollingString(graphics, text, relativeX + x, relativeY + y, alignment, color, width, height, maxLengthPad, shadow, scale, msVisible);
     }
 
     public enum ButtonBackground {

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.providers.IItemProvider;
+import mekanism.api.text.TextComponentUtil;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -25,7 +26,7 @@ public record VanillaRVRecipeType<RECIPE extends Recipe<?>>(
     @Override
     public Component getTextComponent() {
         //Fake value, doesn't really matter as we don't use it
-        return Component.literal(vanillaType.toString());
+        return TextComponentUtil.getString(vanillaType.toString());
     }
 
     @Override

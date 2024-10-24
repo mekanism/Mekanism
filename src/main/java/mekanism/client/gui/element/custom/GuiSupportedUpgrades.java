@@ -9,6 +9,7 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.tooltip.TooltipUtils;
+import mekanism.client.render.IFancyFontRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.lib.Color;
 import mekanism.common.util.EnumUtils;
@@ -23,20 +24,33 @@ import org.jetbrains.annotations.Nullable;
 
 public class GuiSupportedUpgrades extends GuiElement {
 
+    private static final Component SUPPORTED = MekanismLang.UPGRADES_SUPPORTED.translate();
+    private static final int ELEMENT_WIDTH = 167;
+    private static final int PADDED_ELEMENT_WIDTH = ELEMENT_WIDTH - 2;
     private static final int ELEMENT_SIZE = 12;
-    private static final int FIRST_ROW_ROOM = (123 - 55) / ELEMENT_SIZE;
-    private static final int ROW_ROOM = 123 / ELEMENT_SIZE;
+    private static final int ROW_ROOM = PADDED_ELEMENT_WIDTH / ELEMENT_SIZE;
 
-    public static int calculateNeededRows() {
+    private static int getFirstRowStart(IFancyFontRenderer fontRenderer) {
+        return Math.min(fontRenderer.font().width(SUPPORTED) + 1, PADDED_ELEMENT_WIDTH);
+    }
+
+    private static int getFirstRowRoom(int firstRowStart) {
+        return (PADDED_ELEMENT_WIDTH - firstRowStart) / ELEMENT_SIZE;
+    }
+
+    public static int calculateNeededRows(IFancyFontRenderer fontRenderer) {
         int count = EnumUtils.UPGRADES.length;
-        if (count <= FIRST_ROW_ROOM) {
+        int firstRowRoom = getFirstRowRoom(getFirstRowStart(fontRenderer));
+        if (count <= firstRowRoom) {
             return 1;
         }
-        count -= FIRST_ROW_ROOM;
+        count -= firstRowRoom;
         return 2 + count / ROW_ROOM;
     }
 
     private final Set<Upgrade> supportedUpgrades;
+    private final int firstRowRoom;
+    private final int firstRowStart;
 
     private List<Component> lastInfo = Collections.emptyList();
     @Nullable
@@ -45,8 +59,10 @@ public class GuiSupportedUpgrades extends GuiElement {
     private ScreenRectangle cachedTooltipRect;
 
     public GuiSupportedUpgrades(IGuiWrapper gui, int x, int y, Set<Upgrade> supportedUpgrades) {
-        super(gui, x, y, 125, ELEMENT_SIZE * calculateNeededRows() + 2);
+        super(gui, x, y, ELEMENT_WIDTH, ELEMENT_SIZE * calculateNeededRows(gui) + 2);
         this.supportedUpgrades = supportedUpgrades;
+        this.firstRowStart = getFirstRowStart(this);
+        this.firstRowRoom = getFirstRowRoom(this.firstRowStart);
     }
 
     @Override
@@ -71,7 +87,9 @@ public class GuiSupportedUpgrades extends GuiElement {
     @Override
     public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.renderForeground(guiGraphics, mouseX, mouseY);
-        drawTextScaledBound(guiGraphics, MekanismLang.UPGRADES_SUPPORTED.translate(), relativeX + 2, relativeY + 3, titleTextColor(), 54);
+        //Note: We don't have to specify where the upgrades start, because the upgrades get moved out of the way. This is only a scrolling string
+        // in case the translation needs more space than the entire width of the first row
+        drawScrollingString(guiGraphics, SUPPORTED, 0, 3, TextAlignment.LEFT, titleTextColor(), 2, false);
     }
 
     @NotNull
@@ -111,13 +129,13 @@ public class GuiSupportedUpgrades extends GuiElement {
     }
 
     private UpgradePos getUpgradePos(int index) {
-        int row = index < FIRST_ROW_ROOM ? 0 : 1 + (index - FIRST_ROW_ROOM) / ROW_ROOM;
+        int row = index < firstRowRoom ? 0 : 1 + (index - firstRowRoom) / ROW_ROOM;
         if (row == 0) {
             //First row has x start a lot further in
-            return new UpgradePos(55 + (index % FIRST_ROW_ROOM) * ELEMENT_SIZE, 0);
+            return new UpgradePos(firstRowStart + (index % firstRowRoom) * ELEMENT_SIZE, 0);
         }
         //Shift the index so that we don't have to deal with the weird first row in terms of counting
-        index -= FIRST_ROW_ROOM;
+        index -= firstRowRoom;
         return new UpgradePos((index % ROW_ROOM) * ELEMENT_SIZE, row * ELEMENT_SIZE);
     }
 

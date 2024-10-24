@@ -26,16 +26,17 @@ public class GuiFissionReactorLogicAdapter extends GuiMekanismTile<TileEntityFis
 
     public GuiFissionReactorLogicAdapter(EmptyTileContainer<TileEntityFissionReactorLogicAdapter> container, Inventory inv, Component title) {
         super(container, inv, title);
+        imageWidth += 20;
     }
 
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addRenderableWidget(new GuiElementHolder(this, 16, 31, 130, 90));
-        scrollBar = addRenderableWidget(new GuiScrollBar(this, 146, 31, 90, () -> tile.getModes().length, () -> DISPLAY_COUNT));
+        addRenderableWidget(new GuiElementHolder(this, 26, 31, 130, 90));
+        scrollBar = addRenderableWidget(new GuiScrollBar(this, 156, 31, 90, () -> tile.getModes().length, () -> DISPLAY_COUNT));
         for (int i = 0; i < DISPLAY_COUNT; i++) {
             int typeShift = 22 * i;
-            addRenderableWidget(new ReactorLogicButton<>(this, 17, 32 + typeShift, i, tile, FissionReactorLogic.class, scrollBar::getCurrentSelection, tile::getModes, this::changeLogic));
+            addRenderableWidget(new ReactorLogicButton<>(this, 27, 32 + typeShift, i, tile, FissionReactorLogic.class, scrollBar::getCurrentSelection, tile::getModes, this::changeLogic));
         }
     }
 
@@ -48,8 +49,8 @@ public class GuiFissionReactorLogicAdapter extends GuiMekanismTile<TileEntityFis
     @Override
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
-        drawTextScaledBound(guiGraphics, GeneratorsLang.REACTOR_LOGIC_REDSTONE_MODE.translate(tile.logicType.getColor(), tile.logicType), 16, 123, titleTextColor(), 144);
-        drawCenteredText(guiGraphics, MekanismLang.STATUS.translate(EnumColor.RED, tile.getStatus()), 0, imageWidth, 136, titleTextColor());
+        drawScrollingString(guiGraphics, GeneratorsLang.REACTOR_LOGIC_REDSTONE_MODE.translate(tile.logicType.getColor(), tile.logicType), 0, 123, TextAlignment.CENTER, titleTextColor(), 4, false);
+        drawScrollingString(guiGraphics, MekanismLang.STATUS.translate(EnumColor.RED, tile.getStatus()), 0, 136, TextAlignment.CENTER, titleTextColor(), 4, false);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 

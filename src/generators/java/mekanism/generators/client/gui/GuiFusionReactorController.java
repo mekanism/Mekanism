@@ -24,6 +24,8 @@ public class GuiFusionReactorController extends GuiMekanismTile<TileEntityFusion
     public GuiFusionReactorController(MekanismTileContainer<TileEntityFusionReactorController> container, Inventory inv, Component title) {
         super(container, inv, title);
         dynamicSlots = true;
+        imageWidth += 10;
+        inventoryLabelX += 5;
         titleLabelY = 5;
     }
 
@@ -52,7 +54,8 @@ public class GuiFusionReactorController extends GuiMekanismTile<TileEntityFusion
     @Override
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
-        drawString(guiGraphics, MekanismLang.MULTIBLOCK_FORMED.translate(), 8, 16, titleTextColor());
+        renderInventoryText(guiGraphics);
+        drawScrollingString(guiGraphics, MekanismLang.MULTIBLOCK_FORMED.translate(), 0, 16, TextAlignment.LEFT, titleTextColor(), 13, false);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 }

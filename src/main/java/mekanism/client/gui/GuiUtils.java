@@ -73,7 +73,7 @@ public class GuiUtils {
     }
 
     public static void drawBackdrop(GuiGraphics guiGraphics, Minecraft minecraft, int x, int y, int width, int alpha) {
-        drawBackdrop(guiGraphics, minecraft, x, y, width, 9, alpha);
+        drawBackdrop(guiGraphics, minecraft, x, y, width, minecraft.font.lineHeight, alpha);
     }
 
     public static void drawBackdrop(GuiGraphics guiGraphics, Minecraft minecraft, int x, int y, int width, int height, int alpha) {
@@ -249,10 +249,6 @@ public class GuiUtils {
     public interface CharTypedPredicate<ELEMENT> {
 
         boolean test(ELEMENT element, char c, int keyCode);
-    }
-
-    public static int drawString(GuiGraphics guiGraphics, Font font, Component component, float x, float y, int color, boolean drawShadow) {
-        return guiGraphics.drawString(font, component.getVisualOrderText(), x, y, color, drawShadow);
     }
 
     public static int drawStringNoFlush(GuiGraphics graphics, Font font, Component component, float x, float y, int color, boolean drawShadow) {

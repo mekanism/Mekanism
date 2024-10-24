@@ -22,4 +22,9 @@ public class DigitalButton extends TranslationButton {
         }
         return Color.argb(screenTextColor()).darken(0.4).argb();
     }
+
+    @Override
+    protected boolean displayButtonTextShadow() {
+        return false;
+    }
 }

@@ -28,6 +28,8 @@ import net.minecraft.world.item.Item;
 
 public interface GuiSorterFilterHelper extends GuiFilterHelper<TileEntityLogisticalSorter>, IFancyFontRenderer, ContainerEventHandler {
 
+    int SORTER_FILTER_WIDTH = 200;
+
     @Override
     SorterFilter<?> getFilter();
 
@@ -54,12 +56,12 @@ public interface GuiSorterFilterHelper extends GuiFilterHelper<TileEntityLogisti
             return true;
         })).setTooltip(MekanismLang.FILTER_ALLOW_DEFAULT);
         int maxStackSizeDigits = Integer.toString(Item.ABSOLUTE_MAX_STACK_SIZE).length();
-        GuiTextField minField = new GuiTextField(gui, this, relativeX + 169, relativeY + 31, 20, 11);
+        GuiTextField minField = new GuiTextField(gui, this, relativeX + 174, relativeY + 31, 20, 11);
         minField.setMaxLength(maxStackSizeDigits);
         minField.setInputValidator(InputValidator.DIGIT);
         minField.setText(Integer.toString(getFilter().min));
         childAdder.apply(minField);
-        GuiTextField maxField = new GuiTextField(gui, this, relativeX + 169, relativeY + 43, 20, 11);
+        GuiTextField maxField = new GuiTextField(gui, this, relativeX + 174, relativeY + 43, 20, 11);
         maxField.setMaxLength(maxStackSizeDigits);
         maxField.setInputValidator(InputValidator.DIGIT);
         maxField.setText(Integer.toString(getFilter().max));
@@ -79,16 +81,17 @@ public interface GuiSorterFilterHelper extends GuiFilterHelper<TileEntityLogisti
     }
 
     default void renderSorterForeground(GuiGraphics guiGraphics) {
-        int relativeX = getRelativeX();
-        int relativeY = getRelativeY();
         SorterFilter<?> filter = getFilter();
-        drawString(guiGraphics, OnOff.of(filter.allowDefault).getTextComponent(), relativeX + 161, relativeY + 20, titleTextColor());
-        drawString(guiGraphics, MekanismLang.MIN.translate(""), relativeX + 148, relativeY + 32, titleTextColor());
-        drawString(guiGraphics, MekanismLang.MAX.translate(""), relativeX + 148, relativeY + 44, titleTextColor());
+        int screenEnd = 30 + getScreenWidth();
+        drawScrollingString(guiGraphics, OnOff.of(filter.allowDefault).getTextComponent(), 159, 20, TextAlignment.LEFT, titleTextColor(), getXSize() - 161, 2, false);
+        //Note: We add two to the length, as min and max have two spaces at the end given we aren't actually providing a parameter
+        //TODO: Do we want to adjust this, and just have separate lang keys for them?
+        drawScrollingString(guiGraphics, MekanismLang.MIN.translate(""), screenEnd, 32, TextAlignment.LEFT, titleTextColor(), 173 - screenEnd, 2, false);
+        drawScrollingString(guiGraphics, MekanismLang.MAX.translate(""), screenEnd, 44, TextAlignment.LEFT, titleTextColor(), 173 - screenEnd, 2, false);
         if (isSingleItem() && filter.sizeMode) {
-            drawString(guiGraphics, MekanismLang.SORTER_FILTER_SIZE_MODE.translateColored(EnumColor.RED, OnOff.ON), relativeX + 161, relativeY + 58, titleTextColor());
+            drawScrollingString(guiGraphics, MekanismLang.SORTER_FILTER_SIZE_MODE.translateColored(EnumColor.RED, OnOff.ON), 159, 58, TextAlignment.LEFT, titleTextColor(), getXSize() - 159, 2, false);
         } else {
-            drawString(guiGraphics, OnOff.of(filter.sizeMode).getTextComponent(), relativeX + 161, relativeY + 58, titleTextColor());
+            drawScrollingString(guiGraphics, OnOff.of(filter.sizeMode).getTextComponent(), 159, 58, TextAlignment.LEFT, titleTextColor(), getXSize() - 161, 2, false);
         }
     }
 }

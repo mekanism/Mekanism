@@ -143,6 +143,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
 
     private static final TicketType<Integer> ROBIT_CHUNK_UNLOAD = TicketType.create("robit_chunk_unload", Integer::compareTo, SharedConstants.TICKS_PER_SECOND);
     private static final EntityDataAccessor<UUID> OWNER_UUID = define(MekanismDataSerializers.UUID.value());
+    //TODO: Ensure this properly updates if the user's name changes but uuid is the same
     private static final EntityDataAccessor<String> OWNER_NAME = define(EntityDataSerializers.STRING);
     private static final EntityDataAccessor<SecurityMode> SECURITY = define(MekanismDataSerializers.SECURITY.value());
     private static final EntityDataAccessor<Boolean> FOLLOW = define(EntityDataSerializers.BOOLEAN);

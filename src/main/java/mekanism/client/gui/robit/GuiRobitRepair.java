@@ -4,6 +4,7 @@ import mekanism.client.gui.element.text.BackgroundType;
 import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.entity.robit.RepairRobitContainer;
+import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.core.component.DataComponents;
@@ -27,12 +28,12 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements Co
     private static final ResourceLocation ANVIL_LOCATION = ResourceLocation.withDefaultNamespace("textures/gui/container/anvil.png");
     private final Player player;
     private GuiTextField itemNameField;
+    private long msDisplayCost;
 
     public GuiRobitRepair(RepairRobitContainer container, Inventory inv, Component title) {
         super(container, inv, title);
         this.player = inv.player;
         inventoryLabelY += 1;
-        titleLabelX = 60;
     }
 
     @Override
@@ -78,30 +79,37 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements Co
 
     @Override
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        drawString(guiGraphics, title, titleLabelX, titleLabelY, titleTextColor());
+        renderTitleTextWithOffset(guiGraphics, itemNameField.getRelativeX(), itemNameField.getRelativeRight() + 4, 0, TextAlignment.CENTER);
+        renderInventoryText(guiGraphics, 60);
         int maximumCost = menu.getCost();
         if (maximumCost > 0) {
-            int k = 0x80FF20;
+            if (msDisplayCost == 0) {
+                msDisplayCost = Util.getMillis();
+            }
+            int textColor = 0x80FF20;
             Component component = MekanismLang.REPAIR_COST.translate(maximumCost);
             if (maximumCost >= 40 && !getMinecraft().player.getAbilities().instabuild) {
                 component = MekanismLang.REPAIR_EXPENSIVE.translate();
-                k = 0xFF6060;
+                textColor = 0xFF6060;
             } else {
                 Slot slot = menu.getSlot(2);
                 if (!slot.hasItem()) {
                     component = null;
+                    msDisplayCost = 0;
                 } else if (!slot.mayPickup(player)) {
-                    k = 0xFF6060;
+                    textColor = 0xFF6060;
                 }
             }
 
             if (component != null) {
-                int width = imageWidth - 8 - getStringWidth(component) - 2;
-                guiGraphics.fill(width - 2, 67, imageWidth - 8, 79, 0x4F000000);
-                guiGraphics.drawString(getFont(), component, width, 69, k);
+                int min = Math.max(itemNameField.getRelativeX(), imageWidth - font().width(component) - 10);
+                int max = imageWidth - 8;
+                guiGraphics.fill(min, 67, max, 79, 0x4F000000);
+                drawScrollingString(guiGraphics, component, min, 69, TextAlignment.RIGHT, textColor, max - min, 1, true, msDisplayCost);
             }
+        } else {
+            msDisplayCost = 0;
         }
-        drawString(guiGraphics, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 

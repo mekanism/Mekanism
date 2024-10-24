@@ -37,7 +37,7 @@ public class GuiQIOItemFrequencySelect extends GuiMekanism<QIOFrequencySelectIte
 
     @Override
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        renderTitleText(guiGraphics);
+        renderTitleTextWithOffset(guiGraphics, 17);//Adjust spacing for back button
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 
@@ -49,16 +49,5 @@ public class GuiQIOItemFrequencySelect extends GuiMekanism<QIOFrequencySelectIte
     @Override
     public QIOFrequencySelectItemContainer getFrequencyContainer() {
         return menu;
-    }
-
-    @Override
-    public void drawTitleText(GuiGraphics guiGraphics, Component text, float y) {
-        //Adjust spacing for back button
-        int leftShift = 15;
-        int xSize = getXSize() - leftShift;
-        int maxLength = xSize - 12;
-        float textWidth = getStringWidth(text);
-        float scale = Math.min(1, maxLength / textWidth);
-        drawScaledCenteredText(guiGraphics, text, leftShift + xSize / 2F, y, titleTextColor(), scale);
     }
 }

@@ -32,7 +32,7 @@ public class GuiSolarGenerator<TILE extends TileEntitySolarGenerator> extends Gu
         //Add the side holder before the slots, as it holds a couple of the slots
         addRenderableWidget(GuiSideHolder.create(this, -26, 6, 98, true, true, SpecialColors.TAB_ARMOR_SLOTS));
         super.addGuiElements();
-        addRenderableWidget(new GuiInnerScreen(this, 48, 23, 80, 40, () -> List.of(
+        addRenderableWidget(new GuiInnerScreen(this, 40, 23, 96, 40, () -> List.of(
               EnergyDisplay.of(tile.getEnergyContainer()).getTextComponent(),
               GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getProductionRate())),
               GeneratorsLang.OUTPUT_RATE_SHORT.translate(EnergyDisplay.of(tile.getMaxOutput()))
@@ -47,7 +47,7 @@ public class GuiSolarGenerator<TILE extends TileEntitySolarGenerator> extends Gu
     @Override
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
-        drawString(guiGraphics, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
+        renderInventoryText(guiGraphics);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 }

@@ -7,9 +7,9 @@ import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.config.ModuleColorConfig;
 import mekanism.client.gui.GuiModuleTweaker;
 import mekanism.client.gui.GuiUtils;
-import mekanism.client.gui.element.scroll.GuiScrollList;
 import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.client.gui.element.window.GuiColorWindow;
+import mekanism.client.render.IFancyFontRenderer.TextAlignment;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.gear.shared.ModuleColorModulationUnit;
 import mekanism.common.lib.Color;
@@ -63,14 +63,15 @@ class ColorSelection extends MiniElement<Integer> {
     @Override
     protected void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         int textColor = parent.screenTextColor();
-        parent.drawScaledTextScaledBound(guiGraphics, description, getRelativeX() + 3, getRelativeY(), textColor, this.parent.getScreenWidth() - 3 - GuiScrollList.TEXTURE_WIDTH, 0.8F);
+        parent.drawScaledScrollingString(guiGraphics, description, xPos, yPos, TextAlignment.LEFT, textColor, OFFSET_X, 3, false, 0.8F);
         String hex;
         if (supportsAlpha) {
             hex = TextUtils.hex(false, 4, data.get());
         } else {
             hex = TextUtils.hex(false, 3, getColor().rgb());
         }
-        parent.drawTextExact(guiGraphics, MekanismLang.GENERIC_HEX.translate(hex), getRelativeX() + 3, getRelativeY() + 11, textColor);
+        //TODO: Do we want to draw the hex in the RGB color it is set to (intentionally ignore alpha)
+        parent.drawScrollingString(guiGraphics, MekanismLang.GENERIC_HEX.translate(hex), xPos, yPos + 11, TextAlignment.LEFT, textColor, OFFSET_X, 3, false);
     }
 
     @Override
@@ -98,7 +99,7 @@ class ColorSelection extends MiniElement<Integer> {
                     previewReset = () -> armorPreview.resetToDefault(slot);
                 }
             }
-            parent.gui().addWindow(new GuiColorWindow(parent.gui(), parent.getGuiWidth() / 2 - 160 / 2, parent.getGuiHeight() / 2 - 120 / 2, supportsAlpha,
+            parent.gui().addWindow(new GuiColorWindow(parent.gui(), (parent.getGuiWidth() - 160) / 2, (parent.getGuiHeight() - 120) / 2, supportsAlpha,
                               getColor(), color -> setData(color.argb()), armorPreview, updatePreviewColor, previewReset));
         }
     }

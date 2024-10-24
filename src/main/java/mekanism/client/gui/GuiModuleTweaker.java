@@ -61,7 +61,7 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
                 }
             }
         };
-        imageWidth = 248;
+        imageWidth = 266;
         imageHeight += 20;
     }
 
@@ -69,10 +69,10 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
     protected void addGuiElements() {
         super.addGuiElements();
         Supplier<ItemStack> itemSupplier = () -> getStack(selected);
-        moduleScreen = addRenderableWidget(new GuiModuleScreen(this, 138, 20, itemSupplier, saveCallback, armorPreview));
-        scrollList = addRenderableWidget(new GuiModuleScrollList(this, 30, 20, 108, 116, itemSupplier, this::onModuleSelected));
-        addRenderableWidget(new GuiElementHolder(this, 30, 136, 108, 18));
-        optionsButton = addRenderableWidget(new TranslationButton(this, 31, 137, 106, 16, MekanismLang.BUTTON_OPTIONS, (element, mouseX, mouseY) -> {
+        addRenderableWidget(new GuiElementHolder(this, 30, 136, 120, 18));
+        moduleScreen = addRenderableWidget(new GuiModuleScreen(this, 150, 20, itemSupplier, saveCallback, armorPreview));
+        scrollList = addRenderableWidget(new GuiModuleScrollList(this, 30, 20, 116, itemSupplier, this::onModuleSelected));
+        optionsButton = addRenderableWidget(new TranslationButton(this, 31, 137, 118, 16, MekanismLang.BUTTON_OPTIONS, (element, mouseX, mouseY) -> {
             ((GuiModuleTweaker) element.gui()).openOptions();
             return true;
         }));
@@ -97,7 +97,7 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
     }
 
     private void openOptions() {
-        addWindow(new GuiMekaSuitHelmetOptions(this, imageWidth / 2 - 140 / 2, imageHeight / 2 - 90 / 2));
+        addWindow(new GuiMekaSuitHelmetOptions(this, (imageWidth - 140) / 2, (imageHeight - 140) / 2));
     }
 
     @Override
@@ -145,7 +145,7 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
 
     @Override
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        renderTitleText(guiGraphics);
+        renderTitleTextWithOffset(guiGraphics, 24);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 

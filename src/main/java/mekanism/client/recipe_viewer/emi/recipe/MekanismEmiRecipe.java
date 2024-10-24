@@ -12,7 +12,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
@@ -28,8 +27,6 @@ import mekanism.client.recipe_viewer.emi.ChemicalEmiStack;
 import mekanism.client.recipe_viewer.emi.MekanismEmiRecipeCategory;
 import mekanism.client.recipe_viewer.emi.widget.MekanismEmiWidget;
 import mekanism.client.recipe_viewer.emi.widget.MekanismTankEmiWidget;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.resources.ResourceLocation;
@@ -186,11 +183,6 @@ public abstract class MekanismEmiRecipe<RECIPE> extends AbstractContainerEventHa
     public RecipeHolder<?> getBackingRecipe() {
         //Don't bother looking up the recipe. We will override this where we actually have holders
         return null;
-    }
-
-    @Override
-    public Font getFont() {
-        return Minecraft.getInstance().font;
     }
 
     @Override

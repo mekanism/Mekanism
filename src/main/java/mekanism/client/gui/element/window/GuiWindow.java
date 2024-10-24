@@ -17,6 +17,7 @@ import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.inventory.container.SelectedWindowData.WindowPosition;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.lib.Color;
+import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -34,6 +35,7 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
 
     private Consumer<GuiWindow> closeListener;
     private Consumer<GuiWindow> reattachListener;
+    private final long msOpened;
 
     protected InteractionStrategy interactionStrategy = InteractionStrategy.CONTAINER;
 
@@ -79,12 +81,18 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
         this.pinned = calculatedPosition.pinned();
         isOverlay = true;
         active = true;
+        msOpened = Util.getMillis();
         if (!isFocusOverlay()) {
             addCloseButton();
             if (this.windowData.type.canPin()) {
                 addChild(new GuiPinButton(gui(), relativeX + 16, relativeY + 6, this));
             }
         }
+    }
+
+    @Override
+    public long getTimeOpened() {
+        return msOpened;
     }
 
     public void onFocusLost() {
@@ -228,18 +236,12 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
     }
 
     @Override
-    public void drawTitleText(GuiGraphics guiGraphics, Component text, float y) {
+    public void drawTitleText(GuiGraphics guiGraphics, Component text, int y) {
         if (isFocusOverlay()) {
             super.drawTitleText(guiGraphics, text, y);
         } else {
             //Adjust spacing for close button and any other buttons like side config's auto eject
-            int leftShift = getTitlePadStart();
-            int xSize = getXSize() - leftShift - getTitlePadEnd();
-            int maxLength = xSize - 12;
-            float textWidth = getStringWidth(text);
-            float scale = Math.min(1, maxLength / textWidth);
-            float left = relativeX + xSize / 2F;
-            drawScaledCenteredText(guiGraphics, text, left + leftShift, relativeY + y, titleTextColor(), scale);
+            drawTitleTextTextWithOffset(guiGraphics, text, getTitlePadStart(), y, getXSize() - getTitlePadEnd());
         }
     }
 

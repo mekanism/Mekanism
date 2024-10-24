@@ -31,20 +31,21 @@ public class FluidToFluidRecipeCategory extends HolderRecipeCategory<FluidToFlui
 
     public FluidToFluidRecipeCategory(IGuiHelper helper, IRecipeViewerRecipeType<FluidToFluidRecipe> recipeType) {
         super(helper, recipeType);
-        addElement(new GuiInnerScreen(this, 48, 19, 80, 40, () -> List.of(
+        //Note: All these elements except for the inputs are in slightly different x positions than in the normal GUI so that they fit properly in JEI
+        addElement(new GuiInnerScreen(this, 48, 19, 86, 40, () -> List.of(
               MekanismLang.MULTIBLOCK_FORMED.translate(), MekanismLang.EVAPORATION_HEIGHT.translate(EvaporationMultiblockData.MAX_HEIGHT),
               MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(HeatAPI.AMBIENT_TEMP, TemperatureUnit.KELVIN, true)),
               MekanismLang.FLUID_PRODUCTION.translate(0.0))
-        ).spacing(1));
+        ).padding(3).clearSpacing());
         addElement(new GuiDownArrow(this, 32, 39));
-        addElement(new GuiDownArrow(this, 136, 39));
-        addElement(new GuiHorizontalRateBar(this, RecipeViewerUtils.FULL_BAR, 48, 63));
+        addElement(new GuiDownArrow(this, 142, 39));
+        addElement(new GuiHorizontalRateBar(this, RecipeViewerUtils.FULL_BAR, 51, 63));
         addSlot(SlotType.INPUT, 28, 20);
         addSlot(SlotType.OUTPUT, 28, 51);
-        addSlot(SlotType.INPUT, 132, 20);
-        addSlot(SlotType.OUTPUT, 132, 51);
+        addSlot(SlotType.INPUT, 138, 20);
+        addSlot(SlotType.OUTPUT, 138, 51);
         input = addElement(GuiFluidGauge.getDummy(GaugeType.STANDARD, this, 6, 13));
-        output = addElement(GuiFluidGauge.getDummy(GaugeType.STANDARD, this, 152, 13));
+        output = addElement(GuiFluidGauge.getDummy(GaugeType.STANDARD, this, 158, 13));
     }
 
     @Override

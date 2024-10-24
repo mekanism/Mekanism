@@ -13,7 +13,6 @@ import mekanism.client.gui.element.slot.GuiVirtualSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.tab.GuiWarningTab;
 import mekanism.client.gui.element.window.GuiWindow;
-import mekanism.client.render.IFancyFontRenderer;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.MekanismContainer;
@@ -31,6 +30,7 @@ import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.Util;
 import net.minecraft.client.gui.ComponentPath;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -48,7 +48,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
-public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> extends VirtualSlotContainerScreen<CONTAINER> implements IGuiWrapper, IFancyFontRenderer {
+public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> extends VirtualSlotContainerScreen<CONTAINER> implements IGuiWrapper {
 
     public static final ResourceLocation BASE_BACKGROUND = MekanismUtils.getResource(ResourceType.GUI, "base.png");
     public static final ResourceLocation SHADOW = MekanismUtils.getResource(ResourceType.GUI, "shadow.png");
@@ -60,6 +60,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     public boolean switchingToRecipeViewer;
     @Nullable
     private IWarningTracker warningTracker;
+    private long lastMSInitialized;
 
     private boolean hasClicked = false;
 
@@ -98,6 +99,9 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
             //If our warning tracker isn't null (so this isn't the first time we are initializing, such as after resizing)
             // clear out any tracked warnings, so we don't have duplicates being tracked when we add our elements again
             warningTracker.clearTrackedWarnings();
+        } else {
+            //If we haven't been initialized yet, we can initialize it here
+            lastMSInitialized = Util.getMillis();
         }
         addGuiElements();
         if (warningTracker != null) {
@@ -168,8 +172,43 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         windows.forEach(GuiWindow::tick);
     }
 
+    @Override
+    public long getTimeOpened() {
+        return lastMSInitialized;
+    }
+
     protected void renderTitleText(GuiGraphics guiGraphics) {
         drawTitleText(guiGraphics, title, titleLabelY);
+    }
+
+    protected void renderTitleTextWithOffset(GuiGraphics guiGraphics, int x) {
+        renderTitleTextWithOffset(guiGraphics, x, getXSize());
+    }
+
+    protected void renderTitleTextWithOffset(GuiGraphics guiGraphics, int x, int end) {
+        drawTitleTextTextWithOffset(guiGraphics, title, x, titleLabelY, end);
+    }
+
+    protected void renderTitleTextWithOffset(GuiGraphics guiGraphics, int x, int end, int maxLengthPad, TextAlignment alignment) {
+        drawTitleTextTextWithOffset(guiGraphics, title, x, titleLabelY, end, maxLengthPad, alignment);
+    }
+
+    protected void renderInventoryText(GuiGraphics guiGraphics) {
+        renderInventoryText(guiGraphics, getXSize());
+    }
+
+    protected void renderInventoryText(GuiGraphics guiGraphics, int end) {
+        drawScrollingString(guiGraphics, playerInventoryTitle, inventoryLabelX, inventoryLabelY, TextAlignment.LEFT, titleTextColor(), end - inventoryLabelX - 6, 0, false);
+    }
+
+    protected void renderInventoryTextAndOther(GuiGraphics guiGraphics, Component rightAlignedText) {
+        renderInventoryTextAndOther(guiGraphics, rightAlignedText, 0);
+    }
+
+    protected void renderInventoryTextAndOther(GuiGraphics guiGraphics, Component rightAlignedText, int rightEndPad) {
+        drawScrollingString(guiGraphics, playerInventoryTitle, inventoryLabelX, inventoryLabelY, TextAlignment.LEFT, titleTextColor(), 53, 0, false);
+        int rightStart = inventoryLabelX + 51;
+        drawScrollingString(guiGraphics, rightAlignedText, rightStart, inventoryLabelY, TextAlignment.RIGHT, titleTextColor(), getXSize() - rightStart - rightEndPad, 6, false);
     }
 
     protected ResourceLocation getButtonLocation(String name) {
@@ -268,12 +307,16 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
 
     @Override
     protected void repositionElements() {
-        //Mark that we are not switching to JEI if we start being initialized again
-        // Note: We can do this here as the screen will always have initialized as true, so we don't need to definalize init(mc, width, height)
-        // as it will never potentially have init() with no params be the call path
-        // Additionally, as the screen is not actively being used we shouldn't have cases this is called from resize while we are not present
-        // and setting this to false when it is already false does nothing
-        switchingToRecipeViewer = false;
+        if (switchingToRecipeViewer) {
+            //Mark that we are not switching to JEI if we start being initialized again
+            // Note: We can do this here as the screen will always have initialized as true, so we don't need to definalize init(mc, width, height)
+            // as it will never potentially have init() with no params be the call path
+            // Additionally, as the screen is not actively being used we shouldn't have cases this is called from resize while we are not present
+            // and setting this to false when it is already false does nothing
+            switchingToRecipeViewer = false;
+            //If we were switching to a recipe viewer, then we also want to restart the time the scrolling text is using
+            lastMSInitialized = Util.getMillis();
+        }
         super.repositionElements();
     }
 
@@ -670,7 +713,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         //Ensure the GL color is white as mods adding an overlay (such as JEI for bookmarks), might have left
         // it in an unexpected state.
         MekanismRenderer.resetColor(guiGraphics);
-        if (width < 8 || height < 8) {
+        if (getXSize() < 8 || getYSize() < 8) {
             Mekanism.logger.warn("Gui: {}, was too small to draw the background of. Unable to draw a background for a gui smaller than 8 by 8.", getClass().getSimpleName());
             return;
         }
@@ -678,10 +721,11 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     }
 
     @Override
-    @SuppressWarnings("ConstantValue")
-    public Font getFont() {
-        //In theory font is never null here, but we validate it in case we are called before init finishes happening
-        return font == null ? minecraft.font : font;
+    public Font font() {
+        //Note: In theory font is never null here, as we should only be calling it after init has happened
+        // Previously we checked if it was and then fell back to Minecraft's overall font. But as the minecraft
+        // object we queried was actually null as well, we know that this doesn't ever get called before init
+        return font;
     }
 
     @Override

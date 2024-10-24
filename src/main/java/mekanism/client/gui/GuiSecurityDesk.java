@@ -179,16 +179,17 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
         Component ownerComponent = OwnerDisplay.of(tile.getOwnerUUID(), tile.getOwnerName()).getTextComponent();
-        drawString(guiGraphics, ownerComponent, imageWidth - 7 - getStringWidth(ownerComponent), inventoryLabelY, titleTextColor());
-        drawString(guiGraphics, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
-        drawCenteredText(guiGraphics, MekanismLang.TRUSTED_PLAYERS.translate(), 74, 57, subheadingTextColor());
+        renderInventoryTextAndOther(guiGraphics, ownerComponent);
+        drawScrollingString(guiGraphics, MekanismLang.TRUSTED_PLAYERS.translate(), 13, 57, TextAlignment.CENTER, subheadingTextColor(), 122, 0, false);
         SecurityFrequency frequency = tile.getFreq();
-        if (frequency != null) {
-            drawString(guiGraphics, MekanismLang.SECURITY.translate(frequency.getSecurity()), 13, 103, titleTextColor());
+        Component frequencyText;
+        if (frequency == null) {
+            frequencyText = MekanismLang.SECURITY_OFFLINE.translateColored(EnumColor.RED);
         } else {
-            drawString(guiGraphics, MekanismLang.SECURITY_OFFLINE.translateColored(EnumColor.RED), 13, 103, titleTextColor());
+            frequencyText = MekanismLang.SECURITY.translate(frequency.getSecurity());
         }
-        drawTextScaledBound(guiGraphics, MekanismLang.SECURITY_ADD.translate(), 13, 70, titleTextColor(), 20);
+        drawScrollingString(guiGraphics, frequencyText, 13, 103, TextAlignment.LEFT, titleTextColor(), 122, 0, false);
+        drawScrollingString(guiGraphics, MekanismLang.SECURITY_ADD.translate(), 1, 70, TextAlignment.RIGHT, titleTextColor(), trustedField.getRelativeX() - 1, 3, false);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 }

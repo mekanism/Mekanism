@@ -1,17 +1,16 @@
 package mekanism.common.integration.lookingat;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.GuiUtils.TilingDirection;
+import mekanism.client.render.IFancyFontRenderer;
 import mekanism.client.render.MekanismRenderer;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class LookingAtElement implements ILookingAtElement {
+public abstract class LookingAtElement implements ILookingAtElement, IFancyFontRenderer {
 
     private final int borderColor;
     private final int textColor;
@@ -40,11 +39,16 @@ public abstract class LookingAtElement implements ILookingAtElement {
                 }
             }
         }
-        renderScaledText(Minecraft.getInstance(), guiGraphics, x + 4, y + 3, textColor, width - 8, getText());
+        drawScrollingString(guiGraphics, getText(), x, y + 3, TextAlignment.LEFT, textColor, 4, false);
     }
 
     public int getWidth() {
         return 100;
+    }
+
+    @Override
+    public int getXSize() {
+        return getWidth();
     }
 
     public int getHeight() {
@@ -60,21 +64,5 @@ public abstract class LookingAtElement implements ILookingAtElement {
 
     protected boolean applyRenderColor(GuiGraphics guiGraphics) {
         return false;
-    }
-
-    public static void renderScaledText(Minecraft mc, @NotNull GuiGraphics guiGraphics, float x, float y, int color, float maxWidth, Component component) {
-        int length = mc.font.width(component);
-        if (length <= maxWidth) {
-            GuiUtils.drawString(guiGraphics, mc.font, component, x, y, color, false);
-        } else {
-            float scale = maxWidth / length;
-            float reverse = 1 / scale;
-            float yAdd = 4 - (scale * 8) / 2F;
-            PoseStack pose = guiGraphics.pose();
-            pose.pushPose();
-            pose.scale(scale, scale, scale);
-            guiGraphics.drawString(mc.font, component, (int) (x * reverse), (int) ((y * reverse) + yAdd), color, false);
-            pose.popPose();
-        }
     }
 }

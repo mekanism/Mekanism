@@ -4,15 +4,14 @@ import java.util.List;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
-import mekanism.client.gui.element.GuiInnerScreen;
+import mekanism.client.gui.element.custom.GuiQIOCrystallizerScreen;
+import mekanism.client.gui.element.custom.GuiQIOCrystallizerScreen.IOreInfo;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiChemicalGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
-import mekanism.client.gui.machine.GuiChemicalCrystallizer;
-import mekanism.client.gui.machine.GuiChemicalCrystallizer.IOreInfo;
 import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.client.recipe_viewer.jei.HolderRecipeCategory;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
@@ -40,7 +39,7 @@ public class ChemicalCrystallizerRecipeCategory extends HolderRecipeCategory<Che
     private final OreInfo oreInfo = new OreInfo();
     private final GuiGauge<?> gauge;
     private final GuiSlot output;
-    private final GuiSlot slurryOreSlot;
+    private final GuiQIOCrystallizerScreen screen;
 
     public ChemicalCrystallizerRecipeCategory(IGuiHelper helper, IRecipeViewerRecipeType<ChemicalCrystallizerRecipe> recipeType) {
         super(helper, recipeType);
@@ -49,8 +48,7 @@ public class ChemicalCrystallizerRecipeCategory extends HolderRecipeCategory<Che
         addSlot(SlotType.INPUT, 8, 65).with(SlotOverlay.PLUS);
         output = addSlot(SlotType.OUTPUT, 129, 57);
         addSimpleProgress(ProgressType.LARGE_RIGHT, 53, 61);
-        addElement(new GuiInnerScreen(this, 31, 13, 115, 42, () -> GuiChemicalCrystallizer.getScreenRenderStrings(this.oreInfo)));
-        slurryOreSlot = addElement(new GuiSlot(SlotType.ORE, this, 128, 13).setRenderAboveSlots());
+        screen = addElement(new GuiQIOCrystallizerScreen(this, 31, 13, 115, 42, oreInfo));
     }
 
     @Override
@@ -78,7 +76,7 @@ public class ChemicalCrystallizerRecipeCategory extends HolderRecipeCategory<Che
               .setSlotName(CHEMICAL_INPUT);
         List<ItemStack> displayItems = RecipeViewerUtils.getDisplayItems(input);
         if (!displayItems.isEmpty()) {
-            initItem(builder, RecipeIngredientRole.RENDER_ONLY, slurryOreSlot, displayItems).setSlotName(DISPLAYED_ITEM);
+            initItem(builder, RecipeIngredientRole.RENDER_ONLY, screen.getSlotX(), screen.getSlotY(), displayItems).setSlotName(DISPLAYED_ITEM);
         }
     }
 
@@ -90,8 +88,9 @@ public class ChemicalCrystallizerRecipeCategory extends HolderRecipeCategory<Che
         private ChemicalStack ingredient;
         private ItemStack itemIngredient = ItemStack.EMPTY;
 
+        @NotNull
         @Override
-        public @NotNull ChemicalStack getInputChemical() {
+        public ChemicalStack getInputChemical() {
             if (ingredient == null || ingredient.isEmpty()) {
                 return ChemicalStack.EMPTY;
             }
@@ -108,6 +107,11 @@ public class ChemicalCrystallizerRecipeCategory extends HolderRecipeCategory<Che
         @Override
         public ItemStack getRenderStack() {
             return itemIngredient;
+        }
+
+        @Override
+        public boolean usesSequencedDisplay() {
+            return false;
         }
     }
 }

@@ -28,6 +28,7 @@ import org.jetbrains.annotations.NotNull;
 public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContainer> implements IItemGuiFrequencySelector<TeleporterFrequency, PortableTeleporterContainer>,
       IGuiColorFrequencySelector<TeleporterFrequency> {
 
+    private GuiTeleporterStatus status;
     private MekanismButton teleportButton;
 
     public GuiPortableTeleporter(PortableTeleporterContainer container, Inventory inv, Component title) {
@@ -39,7 +40,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addRenderableWidget(new GuiTeleporterStatus(this, () -> getFrequency() != null, menu::getStatus));
+        status = addRenderableWidget(new GuiTeleporterStatus(this, () -> getFrequency() != null, menu::getStatus));
         addRenderableWidget(new GuiVerticalPowerBar(this, new IBarInfoHandler() {
             @Override
             public Component getTooltip() {
@@ -82,7 +83,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
 
     @Override
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        renderTitleText(guiGraphics);
+        renderTitleTextWithOffset(guiGraphics, status.getRelativeRight());
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 
