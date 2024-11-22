@@ -82,6 +82,7 @@ import mekanism.common.integration.computer.MethodRestriction;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.ITrackableContainer;
 import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.container.sync.SyncableFluidStack;
@@ -908,6 +909,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
         if (supportsRedstone()) {
             container.track(SyncableEnum.create(RedstoneControl.BY_ID, RedstoneControl.DISABLED, () -> controlType, value -> controlType = value));
+            container.track(SyncableBoolean.create(this::isPowered, value -> redstone = value));
+            container.track(SyncableBoolean.create(this::wasPowered, value -> redstoneLastTick = value));
         }
         boolean isClient = isRemote();
         if (canHandleChemicals() && syncs(ContainerType.CHEMICAL)) {
@@ -1094,16 +1097,18 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
     }
 
-    public boolean canFunction() {
-        if (supportsRedstone()) {
-            return switch (controlType) {
+    public final boolean isRedstoneActivated() {
+        return !supportsRedstone() ||
+            switch (controlType) {
                 case DISABLED -> true;
                 case HIGH -> isPowered();
                 case LOW -> !isPowered();
                 case PULSE -> isPowered() && !redstoneLastTick;
             };
-        }
-        return true;
+    }
+
+    public boolean canFunction() {
+        return isRedstoneActivated();
     }
     //End methods ITileRedstone
 

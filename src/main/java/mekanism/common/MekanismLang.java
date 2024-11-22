@@ -301,6 +301,10 @@ public enum MekanismLang implements ILangEntry {
     ISSUE_INPUT_DOESNT_PRODUCE_OUTPUT("gui", "issues.input_doesnt_produce_output"),
     ISSUE_INVALID_OREDICTIONIFICATOR_FILTER("gui", "issues.invalid_oredictionificator_filter"),
     ISSUE_FILTER_HAS_BLACKLISTED_ELEMENT("gui", "issues.filter_has_blacklisted_element"),
+    //Redstone Activation
+    ISSUE_REDSTONE_SIGNAL_ABSENT("gui", "issues.redstone_signal_absent"),
+    ISSUE_REDSTONE_SIGNAL_PRESENT("gui", "issues.redstone_signal_present"),
+    ISSUE_REDSTONE_PULSE_REQUIRED("gui", "issues.redstone_pulse_required"),
     //Laser Amplifier
     ENTITY_DETECTION("laser_amplifier", "entity_detection"),
     ENERGY_CONTENTS("laser_amplifier", "energy_contents"),

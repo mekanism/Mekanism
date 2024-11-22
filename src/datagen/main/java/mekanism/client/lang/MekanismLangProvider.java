@@ -1189,6 +1189,10 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.ISSUE_INPUT_DOESNT_PRODUCE_OUTPUT, " - Input does not produce output");
         add(MekanismLang.ISSUE_INVALID_OREDICTIONIFICATOR_FILTER, " - Filter is no longer valid or supported");
         add(MekanismLang.ISSUE_FILTER_HAS_BLACKLISTED_ELEMENT, " - Filter contains at least one element that is blacklisted");
+        //Redstone Activation
+        add(MekanismLang.ISSUE_REDSTONE_SIGNAL_ABSENT, " - Redstone signal absent, provide one to activate.");
+        add(MekanismLang.ISSUE_REDSTONE_SIGNAL_PRESENT, " - Redstone signal present, remove it to activate.");
+        add(MekanismLang.ISSUE_REDSTONE_PULSE_REQUIRED, " - Redstone pulse required to activate.");
         //Laser Amplifier
         add(MekanismLang.ENTITY_DETECTION, "Entity Detection");
         add(MekanismLang.ENERGY_CONTENTS, "Energy Contents");
