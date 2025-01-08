@@ -114,7 +114,7 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
           @NotNull BlockHitResult hit) {
         if (player.isShiftKeyDown() && MekanismUtils.canUseAsWrench(player.getItemInHand(hand))) {
             if (!world.isClientSide) {
-                WorldUtils.dismantleBlock(state, world, pos);
+                WorldUtils.dismantleBlock(state, world, pos, player);
             }
             return InteractionResult.SUCCESS;
         }

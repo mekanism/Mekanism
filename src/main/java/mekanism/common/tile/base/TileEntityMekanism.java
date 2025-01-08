@@ -495,7 +495,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
                 return WrenchResult.NO_SECURITY;
             }
             if (player.isShiftKeyDown()) {
-                WorldUtils.dismantleBlock(state, getLevel(), worldPosition, this);
+                WorldUtils.dismantleBlock(state, getLevel(), worldPosition, this, player);
                 return WrenchResult.DISMANTLED;
             }
             //Special ITileDirectional handling
