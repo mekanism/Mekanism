@@ -5,7 +5,6 @@ import mekanism.common.block.prefab.BlockTile.BlockTileModel;
 import mekanism.common.content.blocktype.Machine;
 import mekanism.common.resource.BlockResourceInfo;
 import mekanism.common.tile.TileEntityFluidTank;
-import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.FluidUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
@@ -52,9 +51,11 @@ public class BlockFluidTank extends BlockTileModel<TileEntityFluidTank, Machine<
         if (tile == null) {
             return InteractionResult.PASS;
         } else if (world.isClientSide) {
-            return genericClientActivated(player, hand);
-        } else if (tile.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
-            return InteractionResult.SUCCESS;
+            return genericClientActivated(player, hand, tile);
+        }
+        InteractionResult wrenchResult = tile.tryWrench(state, player, hand, hit).getInteractionResult();
+        if (wrenchResult != InteractionResult.PASS) {
+            return wrenchResult;
         }
         //Handle filling fluid tank
         if (!player.isShiftKeyDown()) {

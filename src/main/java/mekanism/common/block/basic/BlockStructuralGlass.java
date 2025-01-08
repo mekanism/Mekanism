@@ -2,7 +2,6 @@ package mekanism.common.block.basic;
 
 import mekanism.common.block.prefab.BlockTileGlass;
 import mekanism.common.content.blocktype.BlockTypeTile;
-import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.tile.prefab.TileEntityStructuralMultiblock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
@@ -38,8 +37,10 @@ public class BlockStructuralGlass<TILE extends TileEntityStructuralMultiblock> e
                 }
             }
             return InteractionResult.SUCCESS;
-        } else if (tile.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
-            return InteractionResult.SUCCESS;
+        }
+        InteractionResult wrenchResult = tile.tryWrench(state, player, hand, hit).getInteractionResult();
+        if (wrenchResult != InteractionResult.PASS) {
+            return wrenchResult;
         }
         return tile.onActivate(player, hand, player.getItemInHand(hand));
     }
