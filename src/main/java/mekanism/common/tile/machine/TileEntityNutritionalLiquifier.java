@@ -195,7 +195,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
             return null;
         }
         FoodProperties food = stack.getFoodProperties(null);
-        if (food == null || food.nutrition() == 0) {
+        if (food == null || food.nutrition() <= 0) {
             //If the food provides no healing don't allow consuming it as it won't provide any paste
             return null;
         }
