@@ -12,7 +12,7 @@ public class EnergyTransmitterSaveTarget extends EnergySaveTarget<CableSaveHandl
     }
 
     @NothingNullByDefault
-    public static class CableSaveHandler extends SaveHandler {
+    public static class CableSaveHandler extends EnergySaveTarget.SaveHandler {
 
         private final UniversalCable transmitter;
 
