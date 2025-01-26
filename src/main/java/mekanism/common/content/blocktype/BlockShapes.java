@@ -337,7 +337,7 @@ public final class BlockShapes {
               box(14, 4, 6, 15, 5, 10), // thing5
               box(14, 4, 3, 15, 5, 5), // thing6
               box(6, 4, 14, 10, 5, 16), // energy_connector
-              box(4, 3, 0, 12, 11, 1), // port
+              box(4, 4, 0, 12, 12, 1), // port
               box(6, 14, 14, 10, 28, 16), // energy
               box(5, 14, 3, 11, 15, 9), // tray
               box(7, 14, 9, 9, 15, 14), // cable
