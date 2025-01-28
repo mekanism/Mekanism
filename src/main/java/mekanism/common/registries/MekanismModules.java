@@ -127,6 +127,8 @@ public class MekanismModules {
     public static final ModuleRegistryObject<ModuleElectrolyticBreathingUnit> ELECTROLYTIC_BREATHING_UNIT = MODULES.register("electrolytic_breathing_unit",
           ModuleElectrolyticBreathingUnit::new, () -> MekanismItems.MODULE_ELECTROLYTIC_BREATHING, builder -> builder.maxStackSize(4)
                 .addConfig(ModuleBooleanConfig.create(ModuleElectrolyticBreathingUnit.FILL_HELD, true))
+                .addConfig(ModuleBooleanConfig.create(ModuleElectrolyticBreathingUnit.FILL_HYDROGEN, true))
+                .addConfig(ModuleBooleanConfig.create(ModuleElectrolyticBreathingUnit.FILL_OXYGEN, false))
     );
     public static final ModuleRegistryObject<ModuleInhalationPurificationUnit> INHALATION_PURIFICATION_UNIT = MODULES.register("inhalation_purification_unit",
           ModuleInhalationPurificationUnit::new, () -> MekanismItems.MODULE_INHALATION_PURIFICATION, builder -> builder

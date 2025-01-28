@@ -28,12 +28,62 @@ import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.fluids.FluidType;
 
 @ParametersAreNotNullByDefault
-public record ModuleElectrolyticBreathingUnit(boolean fillHeld) implements ICustomModule<ModuleElectrolyticBreathingUnit> {
+public record ModuleElectrolyticBreathingUnit(boolean fillHeld, boolean fillHydrogen, boolean fillOxygen) implements ICustomModule<ModuleElectrolyticBreathingUnit> {
 
     public static final ResourceLocation FILL_HELD = Mekanism.rl("breathing.held");
+    public static final ResourceLocation FILL_HYDROGEN = Mekanism.rl("breathing.hydrogen");
+    public static final ResourceLocation FILL_OXYGEN = Mekanism.rl("breathing.oxygen");
 
     public ModuleElectrolyticBreathingUnit(IModule<ModuleElectrolyticBreathingUnit> module) {
-        this(module.getBooleanConfigOrFalse(FILL_HELD));
+        this(module.getBooleanConfigOrFalse(FILL_HELD), module.getBooleanConfigOrFalse(FILL_HYDROGEN), module.getBooleanConfigOrFalse(FILL_OXYGEN));
+    }
+
+    private long produceHydrogen(Player player, int maxRate) {
+        if (!fillHydrogen) {
+            return 0;
+        }
+        long hydrogenUsed = 0;
+        ChemicalStack hydrogenStack = MekanismChemicals.HYDROGEN.asStack(maxRate * 2L);
+        ItemStack chestStack = player.getItemBySlot(EquipmentSlot.CHEST);
+        if (checkChestPlate(chestStack)) {
+            IChemicalHandler chestCapability = Capabilities.CHEMICAL.getCapability(chestStack);
+            if (chestCapability != null) {
+                hydrogenUsed = maxRate * 2L - chestCapability.insertChemical(hydrogenStack, Action.EXECUTE).getAmount();
+                hydrogenStack.shrink(hydrogenUsed);
+            }
+        }
+        if (fillHeld) {
+            ItemStack handStack = player.getItemBySlot(EquipmentSlot.MAINHAND);
+            IChemicalHandler handCapability = Capabilities.CHEMICAL.getCapability(handStack);
+            if (handCapability != null) {
+                hydrogenUsed = maxRate * 2L - handCapability.insertChemical(hydrogenStack, Action.EXECUTE).getAmount();
+            }
+        }
+        return hydrogenUsed;
+    }
+
+    private long produceOxygen(Player player, int maxRate) {
+        if (!fillOxygen) {
+            int oxygenUsed = Math.min(maxRate, player.getMaxAirSupply() - player.getAirSupply());
+            player.setAirSupply(player.getAirSupply() + oxygenUsed);
+            return oxygenUsed;
+        }
+        long oxygenUsed = 0;
+        ChemicalStack oxygenStack = MekanismChemicals.OXYGEN.asStack(maxRate);
+        ItemStack chestStack = player.getItemBySlot(EquipmentSlot.CHEST);
+        IChemicalHandler chestCapability = Capabilities.CHEMICAL.getCapability(chestStack);
+        if (chestCapability != null) {
+            oxygenUsed = maxRate - chestCapability.insertChemical(oxygenStack, Action.EXECUTE).getAmount();
+            oxygenStack.shrink(oxygenUsed);
+        }
+        if (fillHeld) {
+            ItemStack handStack = player.getItemBySlot(EquipmentSlot.MAINHAND);
+            IChemicalHandler handCapability = Capabilities.CHEMICAL.getCapability(handStack);
+            if (handCapability != null) {
+                oxygenUsed = maxRate - handCapability.insertChemical(oxygenStack, Action.EXECUTE).getAmount();
+            }
+        }
+        return oxygenUsed;
     }
 
     @Override
@@ -61,27 +111,10 @@ public record ModuleElectrolyticBreathingUnit(boolean fillHeld) implements ICust
         if (productionRate > 0) {
             long usage = MathUtils.multiplyClamped(2, ChemicalUtil.hydrogenEnergyDensity());
             int maxRate = MathUtils.clampToInt(Math.min(productionRate, module.getContainerEnergy(stack) / usage));
-            long hydrogenUsed = 0;
-            ChemicalStack hydrogenStack = MekanismChemicals.HYDROGEN.asStack(maxRate * 2L);
-            ItemStack chestStack = player.getItemBySlot(EquipmentSlot.CHEST);
-            if (checkChestPlate(chestStack)) {
-                IChemicalHandler chestCapability = Capabilities.CHEMICAL.getCapability(chestStack);
-                if (chestCapability != null) {
-                    hydrogenUsed = maxRate * 2L - chestCapability.insertChemical(hydrogenStack, Action.EXECUTE).getAmount();
-                    hydrogenStack.shrink(hydrogenUsed);
-                }
-            }
-            if (fillHeld) {
-                ItemStack handStack = player.getItemBySlot(EquipmentSlot.MAINHAND);
-                IChemicalHandler handCapability = Capabilities.CHEMICAL.getCapability(handStack);
-                if (handCapability != null) {
-                    hydrogenUsed = maxRate * 2L - handCapability.insertChemical(hydrogenStack, Action.EXECUTE).getAmount();
-                }
-            }
-            int oxygenUsed = Math.min(maxRate, player.getMaxAirSupply() - player.getAirSupply());
+            long hydrogenUsed = produceHydrogen(player, maxRate);
+            long oxygenUsed = produceOxygen(player, maxRate);
             long used = Math.max(Mth.ceil(hydrogenUsed / 2D), oxygenUsed);
             module.useEnergy(player, stack, MathUtils.multiplyClamped(usage, used));
-            player.setAirSupply(player.getAirSupply() + oxygenUsed);
         }
     }
 

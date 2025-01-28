@@ -2696,6 +2696,8 @@
   "module.mekanism.blasting_unit": "Blasting Unit",
   "module.mekanism.bonus_attack_damage": "Bonus Attack Damage",
   "module.mekanism.breathing.held": "Fill Held",
+  "module.mekanism.breathing.hydrogen": "Fill Hydrogen",
+  "module.mekanism.breathing.oxygen": "Fill Oxygen & Isolate Player",
   "module.mekanism.charge_distribution_unit": "Charge Distribution Unit",
   "module.mekanism.charge_inventory": "Charge Inventory",
   "module.mekanism.charge_suit": "Charge Suit",
