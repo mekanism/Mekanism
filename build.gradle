@@ -282,9 +282,10 @@ neoForge {
             }
         }
         //Note: To enable logging into the client account, set the enable_devlogin property to true in your gradle user home
+        // You can also run gradlew runClient -Penable_devlogin=true
         client {
             client()
-            devLogin = Boolean.valueOf(project.enable_devlogin)
+            devLogin = Boolean.valueOf(findProperty("enable_devlogin") ?: "false")
         }
         clientAlt {
             client()
@@ -443,11 +444,6 @@ dependencies {
     //datagenMainRuntimeOnly("curse.maven:projecte-226410:${projecte_id}")
 
     datagenNonMod("com.thiakil:yaml-ops:${yamlops_version}")
-
-    // Enable dev login in clientAlt run
-    if (enable_devlogin) {
-        runtimeOnly "net.covers1624:DevLogin:0.1.0.4"
-    }
 }
 
 def getManifestAttributes(String title) {
