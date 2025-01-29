@@ -9,8 +9,9 @@ import mekanism.OptimizePng
 import mekanism.OutputChangelog
 import net.darkhax.curseforgegradle.TaskPublishCurseForge
 import net.darkhax.curseforgegradle.UploadArtifact
-
+import org.gradle.api.tasks.testing.Test
 import java.util.function.Consumer
+
 
 plugins {
     id('org.ajoberstar.grgit.service')//Version declared in buildSrc
@@ -83,7 +84,6 @@ configurations {
     extendConfigurations(compileOnly, apiCompileOnly, testCompileOnly)
     extendConfigurations(runtimeOnly, apiRuntimeOnly)
     extendConfigurations(localRuntime, apiLocalRuntime)
-    gameTestRuntimeClasspath.extendsFrom runtimeClasspath
     datagenNonMod
 }
 
@@ -161,7 +161,6 @@ SourceSet setupExtraSourceSet(SourceSet baseSourceSet, String extra) {
         extraSourceSet.compileClasspath += getExtraSourceSet(project.sourceSets.main, extra).get().output
         extraSourceSet.compileClasspath += baseSourceSet.output
         extraSourceSet.runtimeClasspath += baseSourceSet.runtimeClasspath
-        neoForge.mods.maybeCreate(name).modSourceSets.add(extraSourceSet)
     }
     return extraSourceSet
 }
@@ -237,6 +236,10 @@ java {
     withSourcesJar()
 }
 
+final getDatagenSourceSet(codeSourceSet) {
+    return sourceSets.named("datagen" + codeSourceSet.name.capitalize())
+}
+
 neoForge {
     // This enables modding tasks and configurations
     enable {
@@ -246,14 +249,25 @@ neoForge {
 
     mods {
         mekanism {
-            modSourceSets = [sourceSets.api, sourceSets.main, sourceSets.datagenMain]
+            sourceSet sourceSets.api
+            sourceSet sourceSets.main
+        }
+        // contains main mod + its datagen code
+        mekanismData {
+            modSourceSets = mods.mekanism.modSourceSets
+            sourceSet sourceSets.datagenMain
         }
         mekanismtests {
-            modSourceSets = [sourceSets.gameTest]
+            sourceSet sourceSets.gameTest
         }
     }
     for (String name : secondaryModules) {
-        mods.maybeCreate(name).modSourceSets.add(sourceSets.named(name))
+        final sourceSet = sourceSets.named(name)
+        mods.maybeCreate(name).modSourceSets.add(sourceSet)
+        // Create a secondary mod group for the modules main code + its datagen code
+        final datagenMod = mods.maybeCreate(name + "Data")
+        datagenMod.modSourceSets.add(sourceSet)
+        datagenMod.modSourceSets.add(getDatagenSourceSet(sourceSet))
     }
 
     accessTransformers = [
@@ -276,11 +290,13 @@ neoForge {
             for (String name : secondaryModules) {
                 loadedMods.add(mods.named(name))
             }
-
             //if the selected toolchain is a JBR, enable DCEVM
             if (javaToolchains.launcherFor(java.toolchain).map { it.metadata.vendor }.getOrElse('').contains('JetBrains')) {
                 jvmArguments.addAll('-XX:+IgnoreUnrecognizedVMOptions', '-XX:+AllowEnhancedClassRedefinition')
             }
+
+            // Uncomment this to get verbose debug logging
+            // logLevel = org.slf4j.event.Level.DEBUG
         }
         //Note: To enable logging into the client account, set the enable_devlogin property to true in your gradle user home
         // You can also run gradlew runClient -Penable_devlogin=true
@@ -300,12 +316,13 @@ neoForge {
         gameTestServer {
             type = "gameTestServer"
             sourceSet = sourceSets.gameTest
-            loadedMods = neoForge.mods
+            loadedMods.add(mods.mekanismtests)
         }
         gameTestClient {
             client()
             sourceSet = sourceSets.gameTest
-            loadedMods = neoForge.mods
+            loadedMods.add(mods.mekanismtests)
+            programArguments.addAll("--quickPlaySingleplayer", "GameTestWorld")
         }
         data {
             data()
@@ -313,11 +330,11 @@ neoForge {
                                     '--mod', 'mekanism', '--existing', file('src/main/resources/').absolutePath)
 
             sourceSet = sourceSets.datagenMain
-            loadedMods.add(mods.mekanism)
+            loadedMods = [mods.mekanismData]
 
             for (String name : secondaryModules) {
                 println("Adding $name")
-                loadedMods.add(mods.named(name))
+                loadedMods.add(mods.named(name + "Data"))
                 programArguments.addAll('--mod', 'mekanism' + name, '--existing', file("src/${name}/resources/").absolutePath)
             }
         }
@@ -326,9 +343,12 @@ neoForge {
     unitTest {
         enable()
         testedMod = mods.mekanism
+        loadedMods = runs.client.loadedMods
     }
 }
 
+// Ensure any jar without the necessary FML manifest attributes gets picked up via legacy classpath.
+// This configuration only exists after setting the neoForge version above.
 configurations.dataAdditionalRuntimeClasspath.extendsFrom configurations.datagenNonMod
 
 static void exclusiveRepo(RepositoryHandler handler, String url, String... groups) {
@@ -367,7 +387,7 @@ repositories { RepositoryHandler handler ->
     exclusiveRepo(handler, 'https://maven.parchmentmc.org/', 'org.parchmentmc.data')
 }
 
-tasks.named('test').configure {
+tasks.named('test', Test).configure {
     useJUnitPlatform()
 }
 
