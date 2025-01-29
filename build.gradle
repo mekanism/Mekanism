@@ -9,9 +9,8 @@ import mekanism.OptimizePng
 import mekanism.OutputChangelog
 import net.darkhax.curseforgegradle.TaskPublishCurseForge
 import net.darkhax.curseforgegradle.UploadArtifact
-import org.gradle.api.tasks.testing.Test
-import java.util.function.Consumer
 
+import java.util.function.Consumer
 
 plugins {
     id('org.ajoberstar.grgit.service')//Version declared in buildSrc
@@ -21,8 +20,7 @@ plugins {
     id('eclipse')
     id('idea')
     id('maven-publish')
-    //https://projects.neoforged.net/neoforged/moddevgradle
-    id('net.neoforged.moddev') version('2.0.75')
+    id('net.neoforged.moddev') version('2.0.75')//https://projects.neoforged.net/neoforged/moddevgradle
 }
 
 tasks.named('wrapper', Wrapper) {
@@ -171,10 +169,6 @@ static void extendConfigurations(Configuration base, Configuration... configurat
     }
 }
 
-Provider<SourceSet> getExtraSourceSet(String base, String name) {
-    return project.sourceSets.named(base).flatMap(sourceSet -> getExtraSourceSet(sourceSet, name))
-}
-
 Provider<SourceSet> getExtraSourceSet(SourceSet base, String name) {
     return project.sourceSets.named(base.getTaskName(name, null))
 }
@@ -198,8 +192,8 @@ def setupTasks(SourceSet sourceSet) {
     tasks.named(sourceSet.processResourcesTaskName, ProcessResources) {
         setGroup('process resources')
         duplicatesStrategy = DuplicatesStrategy.FAIL
-        var versionProperties = ['file': ['jarVersion': mod_version], 'mc_version': minecraft_version_range, 'forge_version': forge_version_range, 'loader_version': loader_version_range,
-                                 'jei_version': jei_version_range]
+        var versionProperties = ['file'       : ['jarVersion': mod_version], 'mc_version': minecraft_version_range, 'forge_version': forge_version_range,
+                                 'loader_version': loader_version_range, 'jei_version': jei_version_range]
         //Mark the properties as inputs so that when they change things update
         inputs.properties(versionProperties)
         filesMatching('META-INF/neoforge.mods.toml') { expand(versionProperties) }
@@ -236,10 +230,6 @@ java {
     withSourcesJar()
 }
 
-final getDatagenSourceSet(codeSourceSet) {
-    return sourceSets.named("datagen" + codeSourceSet.name.capitalize())
-}
-
 neoForge {
     // This enables modding tasks and configurations
     enable {
@@ -249,25 +239,25 @@ neoForge {
 
     mods {
         mekanism {
-            sourceSet sourceSets.api
-            sourceSet sourceSets.main
+            sourceSet((SourceSet) sourceSets.api)
+            sourceSet((SourceSet) sourceSets.main)
         }
         // contains main mod + its datagen code
         mekanismData {
             modSourceSets = mods.mekanism.modSourceSets
-            sourceSet sourceSets.datagenMain
+            sourceSet((SourceSet) sourceSets.datagenMain)
         }
         mekanismtests {
-            sourceSet sourceSets.gameTest
+            sourceSet((SourceSet) sourceSets.gameTest)
         }
     }
     for (String name : secondaryModules) {
         final sourceSet = sourceSets.named(name)
         mods.maybeCreate(name).modSourceSets.add(sourceSet)
         // Create a secondary mod group for the modules main code + its datagen code
-        final datagenMod = mods.maybeCreate(name + "Data")
+        final datagenMod = mods.maybeCreate(name + 'Data')
         datagenMod.modSourceSets.add(sourceSet)
-        datagenMod.modSourceSets.add(getDatagenSourceSet(sourceSet))
+        datagenMod.modSourceSets.add(sourceSet.flatMap(s -> getExtraSourceSet(s, 'datagen')))
     }
 
     accessTransformers = [
@@ -298,11 +288,13 @@ neoForge {
             // Uncomment this to get verbose debug logging
             // logLevel = org.slf4j.event.Level.DEBUG
         }
-        //Note: To enable logging into the client account, set the enable_devlogin property to true in your gradle user home
-        // You can also run gradlew runClient -Penable_devlogin=true
+        //Note: To enable logging into the client account, set the mc_devlogin property to true in your gradle user home
+        // You can also run gradlew runClient -Pmc_devlogin=true
         client {
             client()
-            devLogin = Boolean.valueOf(findProperty("enable_devlogin") ?: "false")
+            if (findProperty('mc_devlogin') ?: false) {
+                devLogin = true
+            }
         }
         clientAlt {
             client()
@@ -314,27 +306,30 @@ neoForge {
             server()
         }
         gameTestServer {
-            type = "gameTestServer"
+            type = 'gameTestServer'
             sourceSet = sourceSets.gameTest
             loadedMods.add(mods.mekanismtests)
         }
         gameTestClient {
             client()
+            if (findProperty('mc_devlogin') ?: false) {
+                devLogin = true
+            }
             sourceSet = sourceSets.gameTest
             loadedMods.add(mods.mekanismtests)
-            programArguments.addAll("--quickPlaySingleplayer", "GameTestWorld")
+            programArguments.addAll('--quickPlaySingleplayer', 'GameTestWorld')
         }
         data {
             data()
             programArguments.addAll('--all', '--output', file('src/datagen/generated/').absolutePath,
-                                    '--mod', 'mekanism', '--existing', file('src/main/resources/').absolutePath)
+                    '--mod', 'mekanism', '--existing', file('src/main/resources/').absolutePath)
 
             sourceSet = sourceSets.datagenMain
             loadedMods = [mods.mekanismData]
 
             for (String name : secondaryModules) {
-                println("Adding $name")
-                loadedMods.add(mods.named(name + "Data"))
+                //println("Adding $name")
+                loadedMods.add(mods.named(name + 'Data'))
                 programArguments.addAll('--mod', 'mekanism' + name, '--existing', file("src/${name}/resources/").absolutePath)
             }
         }
@@ -349,6 +344,7 @@ neoForge {
 
 // Ensure any jar without the necessary FML manifest attributes gets picked up via legacy classpath.
 // This configuration only exists after setting the neoForge version above.
+//TODO: Remove all this datagenNonMod stuff once we add FMLModType to yaml-ops
 configurations.dataAdditionalRuntimeClasspath.extendsFrom configurations.datagenNonMod
 
 static void exclusiveRepo(RepositoryHandler handler, String url, String... groups) {
@@ -387,7 +383,7 @@ repositories { RepositoryHandler handler ->
     exclusiveRepo(handler, 'https://maven.parchmentmc.org/', 'org.parchmentmc.data')
 }
 
-tasks.named('test', Test).configure {
+tasks.named('test', Test) {
     useJUnitPlatform()
 }
 
