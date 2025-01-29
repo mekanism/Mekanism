@@ -20,7 +20,8 @@ plugins {
     id('eclipse')
     id('idea')
     id('maven-publish')
-    id('net.neoforged.moddev')
+    //https://projects.neoforged.net/neoforged/moddevgradle
+    id('net.neoforged.moddev') version('2.0.75')
 }
 
 tasks.named('wrapper', Wrapper) {
