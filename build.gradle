@@ -230,6 +230,9 @@ java {
     withSourcesJar()
 }
 
+final runsFolder = layout.projectDirectory.dir('runs')
+final clientRunsFolder = runsFolder.dir('client')
+
 neoForge {
     // This enables modding tasks and configurations
     enable {
@@ -292,26 +295,31 @@ neoForge {
         // You can also run gradlew runClient -Pmc_devlogin=true
         client {
             client()
+            gameDirectory.value(clientRunsFolder)
             if (findProperty('mc_devlogin') ?: false) {
                 devLogin = true
             }
         }
         clientAlt {
             client()
+            gameDirectory.value(runsFolder.dir('clientAlt'))
             // Force dev login to be disabled for this run to allow using a secondary username
             devLogin = false
             programArguments.addAll('--username', 'AltDev')
         }
         server {
             server()
+            gameDirectory.value(runsFolder.dir('server'))
         }
         gameTestServer {
             type = 'gameTestServer'
+            gameDirectory.value(runsFolder.dir('gameTestServer'))
             sourceSet = sourceSets.gameTest
             loadedMods.add(mods.mekanismtests)
         }
         gameTestClient {
             client()
+            gameDirectory.value(clientRunsFolder)
             if (findProperty('mc_devlogin') ?: false) {
                 devLogin = true
             }
@@ -321,6 +329,7 @@ neoForge {
         }
         data {
             data()
+            gameDirectory.value(runsFolder.dir('data'))
             programArguments.addAll('--all', '--output', file('src/datagen/generated/').absolutePath,
                     '--mod', 'mekanism', '--existing', file('src/main/resources/').absolutePath)
 
