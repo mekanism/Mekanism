@@ -368,9 +368,6 @@ public class Mekanism {
 
         NeoForge.EVENT_BUS.register(RadiationManager.get());
 
-        //Register with TransmitterNetworkRegistry
-        TransmitterNetworkRegistry.initiate();
-
         //Fake player info
         logger.info("Fake player readout: UUID = {}, name = {}", gameProfile.getId(), gameProfile.getName());
         logger.info("Mod loaded.");

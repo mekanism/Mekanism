@@ -42,7 +42,7 @@ public record ModuleLocomotiveBoostingUnit(SprintBoost sprintBoost) implements I
             if (displayChangeMessage) {
                 module.displayModeChange(player, MekanismLang.MODULE_SPRINT_BOOST.translate(), newMode);
             }
-            moduleContainer.replaceModuleConfig(player.level().registryAccess(), stack, module.getData(), module.<SprintBoost>getConfigOrThrow(SPRINT_BOOST).with(newMode));
+            moduleContainer.replaceModuleConfig(player.registryAccess(), stack, module.getData(), module.<SprintBoost>getConfigOrThrow(SPRINT_BOOST).with(newMode));
         }
     }
 

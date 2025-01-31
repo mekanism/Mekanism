@@ -1,6 +1,7 @@
 package mekanism.common.network.to_server.button;
 
 import io.netty.buffer.ByteBuf;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import mekanism.common.Mekanism;
@@ -8,14 +9,13 @@ import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeGui;
 import mekanism.common.network.IMekanismPacket;
-import mekanism.common.network.to_server.button.PacketEntityButtonPress.ClickedEntityButton;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.multiblock.TileEntityBoilerCasing;
 import mekanism.common.tile.multiblock.TileEntityInductionCasing;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -24,6 +24,7 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -53,8 +54,12 @@ public record PacketTileButtonPress(ClickedTileButton buttonClicked, BlockPos po
     public void handle(IPayloadContext context) {
         Player player = context.player();
         TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, player.level(), pos);
-        if (tile != null) {
-            player.openMenu(buttonClicked.getProvider(tile), pos);
+        MenuProvider provider = buttonClicked.getProvider(tile);
+        if (provider != null) {
+            player.openMenu(provider, buf -> {
+                buf.writeBlockPos(pos);
+                buttonClicked.encodeExtraData(buf, tile);
+            });
         }
     }
 
@@ -66,6 +71,12 @@ public record PacketTileButtonPress(ClickedTileButton buttonClicked, BlockPos po
                 return attributeGui.getProvider(tile, false);
             }
             return null;
+        }, (buffer, tile) -> {
+            //Note: This should always be true, as otherwise we wouldn't have a provider at the various call sites
+            if (tile.hasGui()) {
+                //Mirror the logic from TileEntityMekanism#openGui for what data we write so that we properly reinitialize the initial GUI
+                tile.encodeExtraContainerData(buffer);
+            }
         }),
         QIO_FREQUENCY_SELECT(tile -> MekanismContainerTypes.QIO_FREQUENCY_SELECT_TILE.getProvider(MekanismLang.QIO_FREQUENCY_SELECT, tile)),
         DIGITAL_MINER_CONFIG(tile -> MekanismContainerTypes.DIGITAL_MINER_CONFIG.getProvider(MekanismLang.MINER_CONFIG, tile)),
@@ -91,14 +102,29 @@ public record PacketTileButtonPress(ClickedTileButton buttonClicked, BlockPos po
         public static final StreamCodec<ByteBuf, ClickedTileButton> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, ClickedTileButton::ordinal);
 
         private final Function<TileEntityMekanism, @Nullable MenuProvider> providerFromTile;
+        @Nullable
+        private final BiConsumer<RegistryFriendlyByteBuf, TileEntityMekanism> extraEncodingData;
 
         ClickedTileButton(Function<TileEntityMekanism, @Nullable MenuProvider> providerFromTile) {
+            this(providerFromTile, null);
+        }
+
+        ClickedTileButton(Function<TileEntityMekanism, @Nullable MenuProvider> providerFromTile,
+              @Nullable BiConsumer<RegistryFriendlyByteBuf, TileEntityMekanism> extraEncodingData) {
             this.providerFromTile = providerFromTile;
+            this.extraEncodingData = extraEncodingData;
         }
 
         @Nullable
-        public MenuProvider getProvider(TileEntityMekanism tile) {
-            return providerFromTile.apply(tile);
+        @Contract("null -> null")
+        public MenuProvider getProvider(@Nullable TileEntityMekanism tile) {
+            return tile == null ? null : providerFromTile.apply(tile);
+        }
+
+        private void encodeExtraData(RegistryFriendlyByteBuf buffer, TileEntityMekanism tile) {
+            if (extraEncodingData != null) {
+                extraEncodingData.accept(buffer, tile);
+            }
         }
     }
 }

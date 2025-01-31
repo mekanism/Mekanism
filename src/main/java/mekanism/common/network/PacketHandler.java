@@ -2,7 +2,6 @@ package mekanism.common.network;
 
 import mekanism.client.render.hud.MekanismStatusOverlay;
 import mekanism.common.Mekanism;
-import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.lib.Version;
 import mekanism.common.network.to_client.PacketHitBlockEffect;
@@ -14,7 +13,6 @@ import mekanism.common.network.to_client.configuration.SyncAllSecurityData;
 import mekanism.common.network.to_client.container.PacketUpdateContainer;
 import mekanism.common.network.to_client.player_data.PacketPlayerData;
 import mekanism.common.network.to_client.player_data.PacketResetPlayerClient;
-import mekanism.common.network.to_client.qio.PacketBatchItemViewerSync;
 import mekanism.common.network.to_client.qio.PacketUpdateItemViewer;
 import mekanism.common.network.to_client.radiation.PacketEnvironmentalRadiationData;
 import mekanism.common.network.to_client.radiation.PacketPlayerRadiationData;
@@ -69,7 +67,6 @@ import net.neoforged.neoforge.network.event.RegisterConfigurationTasksEvent;
 public class PacketHandler extends BasePacketHandler {
 
     //Client to server instanced packets
-    private SimplePacketPayLoad requestQIOData;
 
     //Server to client instanced packets
     private SimplePacketPayLoad showModeChange;
@@ -81,10 +78,6 @@ public class PacketHandler extends BasePacketHandler {
             ServerConfigurationPacketListener listener = event.getListener();
             event.register(new SyncAllSecurityData(listener));
         });
-    }
-
-    public void requestQIOData() {
-        PacketUtils.sendToServer(requestQIOData);
     }
 
     public void showModeChange(ServerPlayer player) {
@@ -135,14 +128,6 @@ public class PacketHandler extends BasePacketHandler {
         registrar.play(PacketQIOItemViewerSlotPlace.TYPE, PacketQIOItemViewerSlotPlace.STREAM_CODEC);
         registrar.play(PacketQIOItemViewerSlotTake.TYPE, PacketQIOItemViewerSlotTake.STREAM_CODEC);
         registrar.play(PacketQIOItemViewerSlotShiftTake.TYPE, PacketQIOItemViewerSlotShiftTake.STREAM_CODEC);
-        requestQIOData = registrar.playInstanced(Mekanism.rl("request_qio_data"), (ignored, context) -> {
-            if (context.player() instanceof ServerPlayer player && player.containerMenu instanceof QIOItemViewerContainer container) {
-                QIOFrequency freq = container.getFrequency();
-                if (freq != null) {
-                    freq.openItemViewer(player);
-                }
-            }
-        });
 
         //Configuration update packets
         registrar.play(PacketBatchConfiguration.TYPE, PacketBatchConfiguration.STREAM_CODEC);
@@ -172,7 +157,6 @@ public class PacketHandler extends BasePacketHandler {
         registrar.play(PacketSetDeltaMovement.TYPE, PacketSetDeltaMovement.STREAM_CODEC);
 
         //QIO
-        registrar.play(PacketBatchItemViewerSync.TYPE, PacketBatchItemViewerSync.STREAM_CODEC);
         registrar.play(PacketUpdateItemViewer.TYPE, PacketUpdateItemViewer.STREAM_CODEC);
         killItemViewer = registrar.playInstanced(Mekanism.rl("kill_qio"), (ignored, context) -> {
             if (context.player().containerMenu instanceof QIOItemViewerContainer container) {

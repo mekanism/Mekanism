@@ -43,7 +43,7 @@ public record PacketUpdateTile(BlockPos pos, CompoundTag updateTag) implements I
                 Mekanism.logger.warn("Update tile packet received for position: {} in world: {}, but no valid tile was found.", pos,
                       world.dimension().location());
             } else {
-                tile.handleUpdatePacket(updateTag, world.registryAccess());
+                tile.handleUpdateTag(updateTag, world.registryAccess());
             }
         }
     }

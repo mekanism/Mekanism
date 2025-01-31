@@ -48,7 +48,7 @@ public record PacketUpdateModuleSettings(int slotId, ModuleConfigTarget<?> targe
         //Validate the container still has the container, and it didn't end up somehow getting removed by the time the server received the packet
         if (container != null && container.has(target.moduleType())) {
             try {
-                container.replaceModuleConfig(player.level().registryAccess(), stack, target.moduleType(), target.config(), true);
+                container.replaceModuleConfig(player.registryAccess(), stack, target.moduleType(), target.config(), true);
             } catch (IllegalArgumentException | IllegalStateException e) {
                 //If the packet is invalid, for example if a config got sent setting to an enum value that is not in range
                 // or if a module config with the given name couldn't be found

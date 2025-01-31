@@ -120,9 +120,10 @@ public class DiversionTransporter extends LogisticalTransporterBase {
     }
 
     @Override
-    public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
-        super.handleUpdateTag(tag, provider);
+    public boolean handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
+        boolean refreshModelData = super.handleUpdateTag(tag, provider);
         readModes(tag);
+        return refreshModelData;
     }
 
     public void updateMode(Direction side, DiversionControl mode) {

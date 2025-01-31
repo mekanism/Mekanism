@@ -20,9 +20,9 @@ public class MekanismArmorMaterials {
 
     public static final MekanismDeferredRegister<ArmorMaterial> ARMOR_MATERIALS = new MekanismDeferredRegister<>(Registries.ARMOR_MATERIAL, Mekanism.MODID);
 
-    public static final MekanismDeferredHolder<ArmorMaterial, ArmorMaterial> HAZMAT = ARMOR_MATERIALS.register("hazmat", () -> new ArmorMaterial(
+    public static final MekanismDeferredHolder<ArmorMaterial, ArmorMaterial> HAZMAT = ARMOR_MATERIALS.register("hazmat", rl -> new ArmorMaterial(
           Collections.emptyMap(), 0, SoundEvents.ARMOR_EQUIP_GENERIC, () -> Ingredient.EMPTY,
-          List.of(new ArmorMaterial.Layer(Mekanism.rl("hazmat"))), 0, 0
+          List.of(new ArmorMaterial.Layer(rl)), 0, 0
     ));
     public static final MekanismDeferredHolder<ArmorMaterial, ArmorMaterial> SCUBA_GEAR = registerBaseSpecial("scuba_gear");
     public static final MekanismDeferredHolder<ArmorMaterial, ArmorMaterial> FREE_RUNNERS = registerBaseSpecial("free_runners");

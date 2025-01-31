@@ -115,14 +115,10 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
     @Override
     public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
         super.handleUpdateTag(tag, provider);
-        getTransmitter().handleUpdateTag(tag, provider);
-    }
-
-    @Override
-    public void handleUpdatePacket(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
-        super.handleUpdatePacket(tag, provider);
-        //Delay requesting the model data update and actually updating the packet until we have finished parsing the update tag
-        updateModelData();
+        if (getTransmitter().handleUpdateTag(tag, provider)) {
+            //Only update the model data if something got updated that caused the model data to change
+            updateModelData();
+        }
     }
 
     @Override

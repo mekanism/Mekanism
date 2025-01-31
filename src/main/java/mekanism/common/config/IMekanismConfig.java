@@ -18,9 +18,7 @@ public interface IMekanismConfig {
 
     ModConfig.Type getConfigType();
 
-    default void save() {
-        getConfigSpec().save();
-    }
+    void save();
 
     void clearCache(boolean unloading);
 

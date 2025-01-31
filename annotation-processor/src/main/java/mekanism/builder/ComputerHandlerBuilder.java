@@ -1,15 +1,15 @@
 package mekanism.builder;
 
-import com.squareup.javapoet.AnnotationSpec;
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.CodeBlock;
-import com.squareup.javapoet.FieldSpec;
-import com.squareup.javapoet.JavaFile;
-import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.ParameterSpec;
-import com.squareup.javapoet.ParameterizedTypeName;
-import com.squareup.javapoet.TypeName;
-import com.squareup.javapoet.TypeSpec;
+import com.palantir.javapoet.AnnotationSpec;
+import com.palantir.javapoet.ClassName;
+import com.palantir.javapoet.CodeBlock;
+import com.palantir.javapoet.FieldSpec;
+import com.palantir.javapoet.JavaFile;
+import com.palantir.javapoet.MethodSpec;
+import com.palantir.javapoet.ParameterSpec;
+import com.palantir.javapoet.ParameterizedTypeName;
+import com.palantir.javapoet.TypeName;
+import com.palantir.javapoet.TypeSpec;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.WrongMethodTypeException;
 import java.util.ArrayList;
@@ -451,7 +451,7 @@ public class ComputerHandlerBuilder {
               .returns(returnType)
               .beginControlFlow("try")
               //invoke the method handle
-              .addStatement("return ($T)$N.invokeExact($L)", returnType, methodHandleField, proxyParams.stream().map(param -> param.name).collect(Collectors.joining(", ")))
+              .addStatement("return ($T)$N.invokeExact($L)", returnType, methodHandleField, proxyParams.stream().map(ParameterSpec::name).collect(Collectors.joining(", ")))
               //catch a failing method handle (throw as RuntimeException)
               .nextControlFlow("catch ($T wmte)", WrongMethodTypeException.class)
               .addStatement("throw new $T($S, wmte)", RuntimeException.class, "Method not bound correctly")

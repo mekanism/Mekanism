@@ -1,10 +1,10 @@
 package mekanism;
 
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.CodeBlock;
-import com.squareup.javapoet.JavaFile;
-import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.TypeSpec;
+import com.palantir.javapoet.ClassName;
+import com.palantir.javapoet.CodeBlock;
+import com.palantir.javapoet.JavaFile;
+import com.palantir.javapoet.MethodSpec;
+import com.palantir.javapoet.TypeSpec;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -56,6 +56,7 @@ public class MethodFactoryProcessor extends AbstractProcessor {
         TypeSpec.Builder registryType = TypeSpec.classBuilder("ComputerMethodRegistry_" + mekModule)
               .addModifiers(Modifier.PUBLIC)
               .addSuperinterface(methodRegistryInterface);
+        boolean hasOriginatingElements = false;
 
         //this should only ever be 1 annotation
         for (Element element : roundEnvironment.getElementsAnnotatedWithAny(annotatedTypes.toArray(new TypeElement[0]))) {
@@ -73,12 +74,13 @@ public class MethodFactoryProcessor extends AbstractProcessor {
                     continue;
                 }
                 registryType.addOriginatingElement(factoryTypeEl);
+                hasOriginatingElements = true;
                 AnnotationHelper helper = new AnnotationHelper(processingEnv.getElementUtils(), annotationMirror);
                 addHandlerToRegistry((TypeElement) typeUtils().asElement(helper.getClassValue("target")), ClassName.get(factoryTypeEl));
             }
         }
 
-        if (!registryType.originatingElements.isEmpty()) {
+        if (hasOriginatingElements) {
             registryType.addMethod(registryInit.build());
             TypeSpec registrySpec = registryType.build();
             String packageName = "mekanism.generated." + mekModule;
@@ -88,7 +90,7 @@ public class MethodFactoryProcessor extends AbstractProcessor {
                 throw new RuntimeException(e);
             }
             try (Writer serviceWriter = processingEnv.getFiler().createResource(StandardLocation.CLASS_OUTPUT, "", "META-INF/services/" + methodRegistryInterface.canonicalName()).openWriter()) {
-                serviceWriter.write(packageName + "." + registrySpec.name);
+                serviceWriter.write(packageName + "." + registrySpec.name());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

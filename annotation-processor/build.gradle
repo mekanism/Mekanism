@@ -2,8 +2,8 @@ plugins {
     id 'java'
 }
 
-group 'mekanism.annotation-processor'
-version '2.0.0'
+group = 'mekanism.annotation-processor'
+version = '2.0.0'
 java.toolchain.languageVersion = JavaLanguageVersion.of("${java_version}")
 
 repositories {
@@ -24,5 +24,5 @@ dependencies {
     implementation('org.openzen.zencode:JavaAnnotations:0.3.8')
     //Version of GSON used by vanilla (and thus packed and already downloaded)
     implementation('com.google.code.gson:gson:2.10.1')
-    implementation('com.squareup:javapoet:1.13.0')
+    implementation('com.palantir.javapoet:javapoet:0.6.0')
 }

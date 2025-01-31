@@ -460,7 +460,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                     } else {
                         // Note: In theory the above path should always be done as vanilla only makes damage sources with reference holders
                         // but just in case have the fallback to look up the name from the registry
-                        Optional<Registry<DamageType>> registry = player.level().registryAccess().registry(Registries.DAMAGE_TYPE);
+                        Optional<Registry<DamageType>> registry = player.registryAccess().registry(Registries.DAMAGE_TYPE);
                         if (registry.isPresent()) {
                             absorptionData = registry.get().wrapAsHolder(source.type()).getData(MekanismDataMapTypes.MEKA_SUIT_ABSORPTION);
                         }

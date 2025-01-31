@@ -24,9 +24,9 @@ public record PacketPlayerData(UUID uuid, boolean activeJetpack, boolean activeS
 
     public PacketPlayerData(UUID uuid) {
         this(uuid,
-              Mekanism.playerState.getActiveJetpacks().contains(uuid),
-              Mekanism.playerState.getActiveScubaMasks().contains(uuid),
-              Mekanism.playerState.getActiveGravitationalModulators().contains(uuid)
+              Mekanism.playerState.isJetpackOn(uuid),
+              Mekanism.playerState.isScubaMaskOn(uuid),
+              Mekanism.playerState.isGravitationalModulationOn(uuid)
         );
     }
 

@@ -82,6 +82,7 @@ import mekanism.common.integration.computer.MethodRestriction;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.ITrackableContainer;
 import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.container.sync.SyncableFluidStack;
@@ -128,6 +129,7 @@ import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -366,10 +368,17 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     /**
-     * Should data related to the given type be persisted in this tile save and transferred to the item
+     * Should data related to the given type be persisted in this tile save
      */
     public boolean persists(ContainerType<?, ?, ?> type) {
         return type.canHandle(this);
+    }
+
+    /**
+     * Should data related to the given type be transferred to the item
+     */
+    public boolean persistsToItem(ContainerType<?, ?, ?> type) {
+        return persists(type);
     }
 
     /**
@@ -593,10 +602,16 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
                 return InteractionResult.PASS;
             }
 
-            player.openMenu(Attribute.getOrThrow(getBlockType(), AttributeGui.class).getProvider(this, true), worldPosition);
+            player.openMenu(Attribute.getOrThrow(getBlockType(), AttributeGui.class).getProvider(this, true), buffer -> {
+                buffer.writeBlockPos(worldPosition);
+                encodeExtraContainerData(buffer);
+            });
             return InteractionResult.CONSUME;
         }
         return InteractionResult.PASS;
+    }
+
+    public void encodeExtraContainerData(RegistryFriendlyByteBuf buffer) {
     }
 
     //TODO - 1.18: Optimize what gets ticks registered to it
@@ -809,7 +824,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
 
         for (ContainerType<?, ?, ?> type : ContainerType.TYPES) {
-            if (persists(type)) {
+            if (persistsToItem(type)) {
                 type.copyToTile(this, input);
             }
         }
@@ -832,7 +847,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             component.addRemapEntries(remapEntries);
         }
         for (ContainerType<?, ?, ?> type : ContainerType.TYPES) {
-            if (persists(type) && !remapEntries.contains(type.getComponentType().get())) {
+            if (persistsToItem(type) && !remapEntries.contains(type.getComponentType().get())) {
                 //Ensure we add any container types that we only conditionally added
                 remapEntries.add(type.getComponentType().get());
             }
@@ -872,7 +887,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             component.collectImplicitComponents(builder);
         }
         for (ContainerType<?, ?, ?> type : ContainerType.TYPES) {
-            if (persists(type)) {
+            if (persistsToItem(type)) {
                 type.copyFromTile(this, builder);
             }
         }
@@ -897,6 +912,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
         if (supportsRedstone()) {
             container.track(SyncableEnum.create(RedstoneControl.BY_ID, RedstoneControl.DISABLED, () -> controlType, value -> controlType = value));
+            container.track(SyncableBoolean.create(this::isPowered, value -> redstone = value));
+            container.track(SyncableBoolean.create(this::wasPowered, value -> redstoneLastTick = value));
         }
         boolean isClient = isRemote();
         if (canHandleChemicals() && syncs(ContainerType.CHEMICAL)) {
@@ -1083,16 +1100,18 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
     }
 
-    public boolean canFunction() {
-        if (supportsRedstone()) {
-            return switch (controlType) {
+    public final boolean isRedstoneActivated() {
+        return !supportsRedstone() ||
+            switch (controlType) {
                 case DISABLED -> true;
                 case HIGH -> isPowered();
                 case LOW -> !isPowered();
                 case PULSE -> isPowered() && !redstoneLastTick;
             };
-        }
-        return true;
+    }
+
+    public boolean canFunction() {
+        return isRedstoneActivated();
     }
     //End methods ITileRedstone
 

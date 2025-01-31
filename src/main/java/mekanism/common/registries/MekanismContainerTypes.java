@@ -79,7 +79,6 @@ import mekanism.common.tile.multiblock.TileEntityInductionCasing;
 import mekanism.common.tile.multiblock.TileEntitySPSCasing;
 import mekanism.common.tile.multiblock.TileEntityThermalEvaporationController;
 import mekanism.common.tile.qio.TileEntityQIOComponent;
-import mekanism.common.tile.qio.TileEntityQIODashboard;
 import mekanism.common.tile.qio.TileEntityQIODriveArray;
 import mekanism.common.tile.qio.TileEntityQIOExporter;
 import mekanism.common.tile.qio.TileEntityQIOImporter;
@@ -100,7 +99,7 @@ public class MekanismContainerTypes {
     public static final ContainerTypeRegistryObject<PortableTeleporterContainer> PORTABLE_TELEPORTER = CONTAINER_TYPES.register(MekanismItems.PORTABLE_TELEPORTER, ItemPortableTeleporter.class, PortableTeleporterContainer::new);
     public static final ContainerTypeRegistryObject<SeismicReaderContainer> SEISMIC_READER = CONTAINER_TYPES.register(MekanismItems.SEISMIC_READER, ItemSeismicReader.class, SeismicReaderContainer::new);
     public static final ContainerTypeRegistryObject<QIOFrequencySelectItemContainer> QIO_FREQUENCY_SELECT_ITEM = CONTAINER_TYPES.register("qio_frequency_select_item", ItemPortableQIODashboard.class, QIOFrequencySelectItemContainer::new);
-    public static final ContainerTypeRegistryObject<PortableQIODashboardContainer> PORTABLE_QIO_DASHBOARD = CONTAINER_TYPES.register(MekanismItems.PORTABLE_QIO_DASHBOARD, () -> MekanismItemContainerType.item(ItemPortableQIODashboard.class, PortableQIODashboardContainer::new));
+    public static final ContainerTypeRegistryObject<PortableQIODashboardContainer> PORTABLE_QIO_DASHBOARD = CONTAINER_TYPES.register(MekanismItems.PORTABLE_QIO_DASHBOARD, MekanismItemContainerType::qioDashboard);
 
     //Entity
     public static final ContainerTypeRegistryObject<MainRobitContainer> MAIN_ROBIT = CONTAINER_TYPES.registerEntity("main_robit", EntityRobit.class, MainRobitContainer::new);
@@ -151,7 +150,7 @@ public class MekanismContainerTypes {
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityPigmentMixer>> PIGMENT_MIXER = CONTAINER_TYPES.register(MekanismBlocks.PIGMENT_MIXER, TileEntityPigmentMixer.class);
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityPaintingMachine>> PAINTING_MACHINE = CONTAINER_TYPES.register(MekanismBlocks.PAINTING_MACHINE, TileEntityPaintingMachine.class);
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityQIODriveArray>> QIO_DRIVE_ARRAY = CONTAINER_TYPES.custom(MekanismBlocks.QIO_DRIVE_ARRAY, TileEntityQIODriveArray.class).offset(0, 40).build();
-    public static final ContainerTypeRegistryObject<QIODashboardContainer> QIO_DASHBOARD = CONTAINER_TYPES.register(MekanismBlocks.QIO_DASHBOARD, () -> MekanismContainerType.tile(TileEntityQIODashboard.class, QIODashboardContainer::new));
+    public static final ContainerTypeRegistryObject<QIODashboardContainer> QIO_DASHBOARD = CONTAINER_TYPES.register(MekanismBlocks.QIO_DASHBOARD, MekanismContainerType::qioDashboard);
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityQIOImporter>> QIO_IMPORTER = CONTAINER_TYPES.custom(MekanismBlocks.QIO_IMPORTER, TileEntityQIOImporter.class).offset(30, 74).build();
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityQIOExporter>> QIO_EXPORTER = CONTAINER_TYPES.custom(MekanismBlocks.QIO_EXPORTER, TileEntityQIOExporter.class).offset(30, 74).build();
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityQIORedstoneAdapter>> QIO_REDSTONE_ADAPTER = CONTAINER_TYPES.custom(MekanismBlocks.QIO_REDSTONE_ADAPTER, TileEntityQIORedstoneAdapter.class).offset(0, 26).build();

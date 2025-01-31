@@ -310,11 +310,18 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     @Override
     public void remove() {
         super.remove();
+        capabilityCache.clear();
         if (!isRemote()) {
             for (TransporterStack stack : getTransit()) {
                 TransporterManager.remove(getLevel(), stack);
             }
         }
+    }
+
+    @Override
+    public void refreshConnections() {
+        super.refreshConnections();
+        capabilityCache.clear();
     }
 
     @Override
@@ -345,8 +352,8 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     }
 
     @Override
-    public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
-        super.handleUpdateTag(tag, provider);
+    public boolean handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
+        boolean refreshModelData = super.handleUpdateTag(tag, provider);
         transit.clear();
         if (tag.contains(SerializationConstants.ITEMS, Tag.TAG_LIST)) {
             ListTag tagList = tag.getList(SerializationConstants.ITEMS, Tag.TAG_COMPOUND);
@@ -356,6 +363,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                 addStack(compound.getInt(SerializationConstants.INDEX), stack);
             }
         }
+        return refreshModelData;
     }
 
     @Override

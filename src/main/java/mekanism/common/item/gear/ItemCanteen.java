@@ -50,7 +50,7 @@ public class ItemCanteen extends Item implements ICustomCreativeTabContents {
 
     @Override
     public int getBarColor(@NotNull ItemStack stack) {
-        return FluidUtils.getRGBDurabilityForDisplay(stack).orElse(0);
+        return FluidUtils.getRGBDurabilityForDisplay(stack);
     }
 
     @Override

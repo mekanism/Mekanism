@@ -99,7 +99,7 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
                     //If we received some fluid and are able to insert it all, then actually extract it and insert it into our thing.
                     // Note: We extract first after simulating ourselves because if the target gave a faulty simulation value, we want to handle it properly
                     // and not accidentally dupe anything, and we know our simulation we just performed on taking it is valid
-                    takeFluid(connectedAcceptor.drain(received, FluidAction.EXECUTE), Action.EXECUTE);
+                    takeFluid(connectedAcceptor.drain(received.copy(), FluidAction.EXECUTE), Action.EXECUTE);
                 }
             }
         }

@@ -282,7 +282,7 @@ public class ItemSlotsBuilder {
                 if (fluidInTank.isEmpty()) {
                     return FluidInventorySlot.isNonFullFluidContainer(itemFluidHandler);
                 }
-                return itemFluidHandler.fill(fluidInTank, FluidAction.SIMULATE) > 0;
+                return itemFluidHandler.fill(fluidInTank.copy(), FluidAction.SIMULATE) > 0;
             }
             return false;
         }, BasicInventorySlot.alwaysTrue)));
@@ -313,6 +313,8 @@ public class ItemSlotsBuilder {
                 if (fluid.getAmount() < FluidType.BUCKET_VOLUME) {
                     //Workaround for buckets not being able to be filled until we have enough of our volume
                     fluid = fluid.copyWithAmount(FluidType.BUCKET_VOLUME);
+                } else {
+                    fluid = fluid.copy();//avoid handler modifying
                 }
                 return fluidHandlerItem.fill(fluid, FluidAction.SIMULATE) > 0;
             }

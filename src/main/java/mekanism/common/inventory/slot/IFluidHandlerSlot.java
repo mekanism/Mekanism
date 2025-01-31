@@ -58,7 +58,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
                     }
                     //If we have no valid fluids/can't fill the tank with it, we return if there is at least
                     // one empty tank in the item so that we can then drain into it
-                    else if (getFluidTank().isEmpty() && hasEmpty || isDraining() || fluidHandlerItem.fill(getFluidTank().getFluid(), FluidAction.SIMULATE) > 0) {
+                    else if (getFluidTank().isEmpty() && hasEmpty || isDraining() || fluidHandlerItem.fill(getFluidTank().getFluid().copy(), FluidAction.SIMULATE) > 0) {
                         //we return if there is at least one empty tank in the item so that we can then drain into it
                         drainTank(outputSlot);
                     }
@@ -127,14 +127,14 @@ public interface IFluidHandlerSlot extends IInventorySlot {
                 if (fluidHandlerItem != null) {
                     //Fill the stack, note our stack is a copy so this is how we simulate to get the proper "container" item,
                     // and it does not actually matter that we are directly executing on the item
-                    int toDrain = fluidHandlerItem.fill(fluidInTank, FluidAction.EXECUTE);
+                    int toDrain = fluidHandlerItem.fill(fluidInTank.copy(), FluidAction.EXECUTE);
                     if (toDrain == 0) {
                         //If we cannot actually fill the item then just exit early
                         return;
                     }
                     if (getCount() == 1) {
                         IFluidHandlerItem containerCap = Capabilities.FLUID.getCapability(fluidHandlerItem.getContainer());
-                        if (containerCap != null && containerCap.fill(fluidInTank, FluidAction.SIMULATE) > 0) {
+                        if (containerCap != null && containerCap.fill(fluidInTank.copy(), FluidAction.SIMULATE) > 0) {
                             //If we have a single item in the input slot, and we can continue to fill it after
                             // our current fill, then mark that we don't want to move it to the output slot, yet
                             // Additionally we replace our input item with its container
@@ -294,7 +294,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
                 FluidStack knownFluid = knownFluids.get(fluidInItem);
                 //If we have a fluid that can be drained from the item and is valid then we add it to our known fluids
                 if (knownFluid == null) {
-                    if (!itemFluidHandler.drain(fluidInItem, FluidAction.SIMULATE).isEmpty() && getFluidTank().isFluidValid(fluidInItem)) {
+                    if (!itemFluidHandler.drain(fluidInItem.copy(), FluidAction.SIMULATE).isEmpty() && getFluidTank().isFluidValid(fluidInItem)) {
                         //Note: While theoretically we could store the initial fluidInItem as they key as we don't mutate it...
                         // doing it this way allows for us to return the keySet from this method as the only thing we change (the amount)
                         // is not part of the hashCode or equals, so it will not cause things to break by mutating the key as well
@@ -320,7 +320,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
      */
     private boolean fillHandlerFromOther(IExtendedFluidTank handlerToFill, IFluidHandler handlerToDrain, FluidStack fluid) {
         //Check how much of this fluid type we are actually able to drain from the handler we are draining
-        FluidStack simulatedDrain = handlerToDrain.drain(fluid, FluidAction.SIMULATE);
+        FluidStack simulatedDrain = handlerToDrain.drain(fluid.copy(), FluidAction.SIMULATE);
         if (!simulatedDrain.isEmpty()) {
             //Check how much of it we will be able to put into the handler we are filling
             FluidStack simulatedRemainder = getFluidTank().insert(simulatedDrain, Action.SIMULATE, AutomationType.INTERNAL);

@@ -1,7 +1,7 @@
 package mekanism.common.content.qio;
 
 import mekanism.common.content.qio.SearchQueryParser.ISearchQuery;
-import mekanism.common.content.qio.SearchQueryParser.SearchQueryList;
+import mekanism.common.content.qio.SearchQueryParser.SearchQuerySet;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,7 +28,7 @@ class SearchQueryParserTest {
         // test two queries, both with lists
         queryAssert("(test | test1) | (test2 | test3)", "[{NAME=[test, test1]}, {NAME=[test2, test3]}]");
         // test various query types in lists
-        queryAssert("@(mod | mod1) (test | test1) $(tool | tool1) #(tag | tag1)", "[{MOD_ID=[mod, mod1], NAME=[test, test1], TOOLTIP=[tool, tool1], TAG=[tag, tag1]}]");
+        queryAssert("@(mod | mod1) (test | test1) $(tool | tool1) #(tag | tag1)", "[{NAME=[test, test1], MOD_ID=[mod, mod1], TOOLTIP=[tool, tool1], TAG=[tag, tag1]}]");
     }
 
     @Test
@@ -43,13 +43,13 @@ class SearchQueryParserTest {
     @Test
     @DisplayName("Test various query types")
     void testQueryTypes() {
-        queryAssert("@mod #tag $tool test", "[{MOD_ID=[mod], TAG=[tag], TOOLTIP=[tool], NAME=[test]}]");
+        queryAssert("@mod #tag $tool test", "[{NAME=[test], MOD_ID=[mod], TOOLTIP=[tool], TAG=[tag]}]");
         // with quotes
-        queryAssert("#tag $\"this is a tooltip\" @mod", "[{TAG=[tag], TOOLTIP=[this is a tooltip], MOD_ID=[mod]}]");
+        queryAssert("#tag $\"this is a tooltip\" @mod", "[{MOD_ID=[mod], TOOLTIP=[this is a tooltip], TAG=[tag]}]");
         // with list
-        queryAssert("$tool #(tag1 | tag2) test name", "[{TOOLTIP=[tool], TAG=[tag1, tag2], NAME=[test name]}]");
+        queryAssert("$tool #(tag1 | tag2) test name", "[{NAME=[test name], TOOLTIP=[tool], TAG=[tag1, tag2]}]");
         // quotes + list
-        queryAssert("$\"tooltip test\" test name #(tag1 | tag2) @mod", "[{TOOLTIP=[tooltip test], NAME=[test name], TAG=[tag1, tag2], MOD_ID=[mod]}]");
+        queryAssert("$\"tooltip test\" test name #(tag1 | tag2) @mod", "[{NAME=[test name], MOD_ID=[mod], TOOLTIP=[tooltip test], TAG=[tag1, tag2]}]");
     }
 
     @Test
@@ -57,7 +57,7 @@ class SearchQueryParserTest {
     void testSpacing() {
         queryAssert("       test     ", "[{NAME=[test]}]");
         // key immediately following quote of other type
-        queryAssert("@\"test mod\"mod", "[{MOD_ID=[test mod], NAME=[mod]}]");
+        queryAssert("@\"test mod\"mod", "[{NAME=[mod], MOD_ID=[test mod]}]");
     }
 
     @Test
@@ -67,7 +67,7 @@ class SearchQueryParserTest {
     }
 
     private void queryAssert(String query, String mapResult) {
-        Assertions.assertEquals(mapResult, SearchQueryParser.parse(query).toString());
+        Assertions.assertEquals(mapResult, SearchQueryParser.parseOrdered(query).toString());
     }
 
     private void queryInvalid(String query) {
@@ -76,8 +76,8 @@ class SearchQueryParserTest {
 
     @SuppressWarnings("unused")
     private void readout(String queryStr) {
-        ISearchQuery query = SearchQueryParser.parse(queryStr);
-        if (query instanceof SearchQueryList searchQueryList) {
+        ISearchQuery query = SearchQueryParser.parseOrdered(queryStr);
+        if (query instanceof SearchQuerySet searchQueryList) {
             System.out.println(searchQueryList.getQueries());
         }
         System.out.println(query.isInvalid());

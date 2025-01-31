@@ -15,11 +15,11 @@ import mekanism.common.MekanismLang;
 import mekanism.common.annotations.GLFWMouseButtons;
 import mekanism.common.inventory.ISlotClickHandler;
 import mekanism.common.inventory.ISlotClickHandler.IScrollableSlot;
-import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.text.TextUtils;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.Rect2i;
@@ -29,36 +29,35 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredientHelper {
 
     private static final ResourceLocation SLOTS = MekanismUtils.getResource(ResourceType.GUI_SLOT, "slots.png");
     private static final ResourceLocation SLOTS_DARK = MekanismUtils.getResource(ResourceType.GUI_SLOT, "slots_dark.png");
+    private static final Component ZERO = TextComponentUtil.build(ChatFormatting.YELLOW, 0);
 
     private final GuiScrollBar scrollBar;
 
     private final int xSlots, ySlots;
-    private final Supplier<@Nullable List<IScrollableSlot>> slotList;
+    private final Supplier<@NotNull List<IScrollableSlot>> slotList;
     private final ISlotClickHandler clickHandler;
 
-    public GuiSlotScroll(IGuiWrapper gui, int x, int y, int xSlots, int ySlots, Supplier<@Nullable List<IScrollableSlot>> slotList, ISlotClickHandler clickHandler) {
+    public GuiSlotScroll(IGuiWrapper gui, int x, int y, int xSlots, int ySlots, Supplier<@NotNull List<IScrollableSlot>> slotList, ISlotClickHandler clickHandler) {
         super(gui, x, y, xSlots * 18 + 18, ySlots * 18);
         this.xSlots = xSlots;
         this.ySlots = ySlots;
         this.slotList = slotList;
         this.clickHandler = clickHandler;
-        scrollBar = addChild(new GuiScrollBar(gui, relativeX + xSlots * 18 + 4, y, ySlots * 18,
-              () -> getSlotList() == null ? 0 : Mth.ceil((double) getSlotList().size() / xSlots), () -> ySlots));
+        scrollBar = addChild(new GuiScrollBar(gui, relativeX + xSlots * 18 + 4, y, ySlots * 18, () -> Mth.ceil((double) getSlotList().size() / this.xSlots),
+              () -> this.ySlots));
     }
 
     @Override
     public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         List<IScrollableSlot> list = getSlotList();
-        ResourceLocation resource = list == null ? SLOTS_DARK : SLOTS;
-        guiGraphics.blit(resource, relativeX, relativeY, 0, 0, xSlots * 18, ySlots * 18, 288, 288);
-        if (list != null) {
+        guiGraphics.blit(list.isEmpty() ? SLOTS_DARK : SLOTS, relativeX, relativeY, 0, 0, xSlots * 18, ySlots * 18, 288, 288);
+        if (!list.isEmpty()) {
             int slotStart = scrollBar.getCurrentSelection() * xSlots, max = xSlots * ySlots;
             for (int i = 0; i < max; i++) {
                 int slot = slotStart + i;
@@ -111,7 +110,7 @@ public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredient
 
     private IScrollableSlot getSlot(double mouseX, double mouseY) {
         List<IScrollableSlot> list = getSlotList();
-        if (list == null) {
+        if (list.isEmpty()) {
             return null;
         }
         int slotX = (int) ((mouseX - getX()) / 18), slotY = (int) ((mouseY - getY()) / 18);
@@ -133,14 +132,18 @@ public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredient
     }
 
     private void renderSlot(GuiGraphics guiGraphics, IScrollableSlot slot, int slotX, int slotY) {
-        // sanity checks
-        if (isSlotEmpty(slot)) {
+        ItemStack stack = slot.getInternalStack();
+        if (stack.isEmpty()) {//Sanity check
             return;
         }
-        gui().renderItemWithOverlay(guiGraphics, slot.item().getInternalStack(), relativeX + slotX + 1, relativeY + slotY + 1, 1, "");
+        gui().renderItemWithOverlay(guiGraphics, stack, relativeX + slotX + 1, relativeY + slotY + 1, 1, "");
         long count = slot.count();
-        if (count > 1) {
-            Component text;
+        Component text = null;
+        if (count == 0) {
+            //If there is no items stored, display the text in yellow, similar to what mojang does when it has to display a zero count
+            // See: AbstractContainerScreen#render(GuiGraphics, int, int, float) and rendering the dragging item
+            text = ZERO;
+        } else if (count > 1) {
             //Note: For cases like 9,999,999 we intentionally display as 9999.9K instead of 10M so that people
             // do not think they have more stored than they actually have just because it is rounding up
             if (count < 10_000) {
@@ -148,16 +151,17 @@ public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredient
             } else {
                 text = UnitDisplayUtils.getDisplay(count, 1);
             }
+        }
+        if (text != null) {
             renderSlotText(guiGraphics, text, slotX + 1, slotY + 1);
         }
     }
 
     private void renderSlotTooltip(GuiGraphics guiGraphics, IScrollableSlot slot, int slotX, int slotY) {
-        // sanity checks
-        if (isSlotEmpty(slot)) {
+        ItemStack stack = slot.getInternalStack();
+        if (stack.isEmpty()) {//Sanity check
             return;
         }
-        ItemStack stack = slot.item().getInternalStack();
         long count = slot.count();
         if (count < 10_000) {
             guiGraphics.renderTooltip(font(), stack, slotX, slotY);
@@ -166,17 +170,6 @@ public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredient
             gui().renderItemTooltipWithExtra(guiGraphics, stack, slotX, slotY, Collections.singletonList(MekanismLang.QIO_STORED_COUNT.translateColored(EnumColor.GRAY,
                   EnumColor.INDIGO, TextUtils.format(count))));
         }
-    }
-
-    private boolean isSlotEmpty(IScrollableSlot slot) {
-        if (slot.count() == 0) {
-            //Count is not expected to be zero, but validate it anyway
-            return true;
-        }
-        //Slot's item is not null in default impl, but check in case we make it null at some point
-        // and also validate if the internal stack is empty in case it is raw and there is some edge case
-        HashedItem item = slot.item();
-        return item == null || item.getInternalStack().isEmpty();
     }
 
     private void renderSlotText(GuiGraphics guiGraphics, Component text, int x, int y) {
@@ -194,6 +187,7 @@ public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredient
         pose.popPose();
     }
 
+    @NotNull
     private List<IScrollableSlot> getSlotList() {
         return slotList.get();
     }
@@ -201,13 +195,13 @@ public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredient
     @Override
     public Optional<?> getIngredient(double mouseX, double mouseY) {
         IScrollableSlot slot = getSlot(mouseX, mouseY);
-        return slot == null ? Optional.empty() : Optional.of(slot.item().getInternalStack());
+        return slot == null ? Optional.empty() : Optional.of(slot.getInternalStack());
     }
 
     @Override
     public Rect2i getIngredientBounds(double mouseX, double mouseY) {
         List<IScrollableSlot> list = getSlotList();
-        if (list != null) {
+        if (!list.isEmpty()) {
             int slotX = (int) ((mouseX - getX()) / 18), slotY = (int) ((mouseY - getY()) / 18);
             int slotStartX = getX() + slotX * 18 + 1, slotStartY = getY() + slotY * 18 + 1;
             if (mouseX >= slotStartX && mouseX < slotStartX + 16 && mouseY >= slotStartY && mouseY < slotStartY + 16) {

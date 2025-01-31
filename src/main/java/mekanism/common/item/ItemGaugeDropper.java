@@ -53,9 +53,9 @@ public class ItemGaugeDropper extends Item {
 
     @Override
     public int getBarColor(@NotNull ItemStack stack) {
-        OptionalInt color = FluidUtils.getRGBDurabilityForDisplay(stack);
-        if (color.isPresent()) {
-            return color.getAsInt();
+        FluidStack fluid = StorageUtils.getFirstFluidFromAttachment(stack);
+        if (!fluid.isEmpty()) {
+            return FluidUtils.getRGBDurabilityForDisplay(stack);
         }
         return ChemicalUtil.getRGBDurabilityForDisplay(stack);
     }

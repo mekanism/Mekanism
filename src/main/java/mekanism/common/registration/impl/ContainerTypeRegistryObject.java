@@ -5,6 +5,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.type.MekanismContainerType;
 import mekanism.common.inventory.container.type.MekanismItemContainerType;
+import mekanism.common.item.interfaces.IGuiItem;
 import mekanism.common.registration.MekanismDeferredHolder;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.registries.Registries;
@@ -83,6 +84,9 @@ public class ContainerTypeRegistryObject<CONTAINER extends AbstractContainerMenu
             player.openMenu(provider, buf -> {
                 buf.writeEnum(hand);
                 ItemStack.STREAM_CODEC.encode(buf, stack);
+                if (stack.getItem() instanceof IGuiItem guiItem) {//Should always be the case
+                    guiItem.encodeContainerData(buf, stack);
+                }
             });
         }
     }

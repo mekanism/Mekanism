@@ -1,6 +1,7 @@
 package mekanism.client.gui.qio;
 
 import com.google.common.collect.Sets;
+import com.mojang.blaze3d.platform.InputConstants;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -36,6 +37,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
+import org.lwjgl.glfw.GLFW;
 
 public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer> extends GuiMekanism<CONTAINER> implements ResizeController {
 
@@ -86,7 +88,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
               .setInputValidator(this::isValidSearchChar)
               .setBackground(BackgroundType.ELEMENT_HOLDER)
               //Note: This responder will also be called when the menu is resized/repositioned and the text gets copied
-              .setResponder(text -> menu.updateSearch(menu.getLevel(), text));
+              .setResponder(text -> menu.updateSearch(menu.getLevel(), text, true));
         searchField.setMaxLength(50);
         searchField.setVisible(true);
         searchField.setTextColor(0xFFFFFF);
@@ -120,6 +122,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
 
     @Override
     protected void repositionElements() {
+        boolean wasOnRecipeViewer = switchingToRecipeViewer;
         super.repositionElements();
         //Validate the height is still valid, and if it isn't recreate it
         int maxY = QIOItemViewerContainer.getSlotsYMax();
@@ -129,6 +132,9 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
             // save the updated config info
             MekanismConfig.client.save();
             recreateViewer();
+        } else if (wasOnRecipeViewer) {
+            //When switching back to the QIO Item Viewer from a recipe viewer, we want to ensure that we update the current pause state
+            menu.pauseSorting(hasShiftDown());
         }
     }
 
@@ -173,7 +179,6 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         getMinecraft().player.containerMenu = s.getMenu();
         getMinecraft().setScreen(s);
         s.searchField.setText(searchField.getText());
-        c.updateSearch(c.getLevel(), searchField.getText());
         //Transfer all the windows to the new GUI
         s.transferWindows(windows);
     }
@@ -200,4 +205,25 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
     }
 
     public abstract GuiQIOItemViewer<CONTAINER> recreate(CONTAINER container);
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (keyCode == GLFW.GLFW_KEY_LEFT_SHIFT || keyCode == GLFW.GLFW_KEY_RIGHT_SHIFT) {
+            menu.pauseSorting(true);
+        }
+        return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    @Override
+    public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
+        //Note: We only want to unpause sorting if they aren't pressing shift. If they were pressing both shift keys and then released one
+        // we want to make sure it stays paused. We just pass the value of if the other key is pressed and let the code that handles
+        // pausing/unpausing on value change handle determining if we should stay paused
+        if (keyCode == GLFW.GLFW_KEY_LEFT_SHIFT) {
+            menu.pauseSorting(InputConstants.isKeyDown(getMinecraft().getWindow().getWindow(), GLFW.GLFW_KEY_RIGHT_SHIFT));
+        } else if (keyCode == GLFW.GLFW_KEY_RIGHT_SHIFT) {
+            menu.pauseSorting(InputConstants.isKeyDown(getMinecraft().getWindow().getWindow(), GLFW.GLFW_KEY_LEFT_SHIFT));
+        }
+        return super.keyReleased(keyCode, scanCode, modifiers);
+    }
 }

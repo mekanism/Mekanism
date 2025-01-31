@@ -95,7 +95,11 @@ public abstract class OredictionificatorFilter<TYPE, STACK, FILTER extends Oredi
         if (filterTag == null) {
             setSelectedOutput(getFallbackElement());
         } else if (!filterTag.contains(selectedOutput)) {
-            filterTag.stream().findFirst().ifPresentOrElse(this::setSelectedOutput, this::setToFallback);
+            if (filterTag.size() == 0) {
+                setToFallback();
+            } else {
+                setSelectedOutput(filterTag.get(0));
+            }
         }
         //Note: Even though the tag instance may have changed, we don't need to reset the cached
         // stack if the tag still contains the selected output as that means it is not empty and

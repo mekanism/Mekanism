@@ -95,7 +95,7 @@ public record ModuleVeinMiningUnit(boolean extended, ExcavationRange excavationR
     public <MODE extends IRadialMode> boolean setMode(IModule<ModuleVeinMiningUnit> module, Player player, IModuleContainer moduleContainer, ItemStack stack, RadialData<MODE> radialData, MODE mode) {
         if (radialData == RADIAL_DATA && MekanismConfig.gear.mekaToolExtendedMining.get()) {
             if (extended == (mode != RADIAL_MODES.trueMode())) {
-                toggleExtended(module, moduleContainer, stack, player.level().registryAccess());
+                toggleExtended(module, moduleContainer, stack, player.registryAccess());
             }
         }
         return false;
@@ -120,7 +120,7 @@ public record ModuleVeinMiningUnit(boolean extended, ExcavationRange excavationR
             if (displayChangeMessage) {
                 player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.MODULE_MODE_CHANGE.translate(MekanismLang.MODULE_EXTENDED_MODE, EnumColor.INDIGO, !extended)));
             }
-            toggleExtended(module, moduleContainer, stack, player.level().registryAccess());
+            toggleExtended(module, moduleContainer, stack, player.registryAccess());
         }
     }
 

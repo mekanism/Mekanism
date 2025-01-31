@@ -14,18 +14,18 @@ import java.util.function.Consumer
 
 plugins {
     id('org.ajoberstar.grgit.service')//Version declared in buildSrc
-    id('net.darkhax.curseforgegradle') version('1.1.25')
+    id('net.darkhax.curseforgegradle') version('1.1.26')
     id('com.modrinth.minotaur') version('2.8.7')
     id('java')
     id('eclipse')
     id('idea')
     id('maven-publish')
-    id('net.neoforged.gradle.userdev') version('7.0.154')//https://projects.neoforged.net/neoforged/neogradle
+    id('net.neoforged.moddev') version('2.0.75')//https://projects.neoforged.net/neoforged/moddevgradle
 }
 
-tasks.named('wrapper', Wrapper).configure {
+tasks.named('wrapper', Wrapper) {
     //Define wrapper values here so as to not have to always do so when updating gradlew.properties
-    gradleVersion = '8.10'
+    gradleVersion = '8.12'
     distributionType = Wrapper.DistributionType.ALL
 }
 
@@ -71,7 +71,6 @@ sourceSets {
         compileClasspath += api.output
     }
     gameTest {
-        runs.modIdentifier = 'mekanismtests'
         compileClasspath += api.output
     }
 }
@@ -96,7 +95,6 @@ setupExtraSourceSets(sourceSets.gameTest, false)
 // based on the primary added source set
 for (String name : secondaryModules) {
     def sourceSet = sourceSets.create(name)
-    sourceSet.runs.modIdentifier = name
     sourceSet.resources {
         //Add the generated module resources
         srcDirs += ["src/datagen/generated/mekanism${name}"]
@@ -155,11 +153,12 @@ SourceSet setupExtraSourceSet(SourceSet baseSourceSet, String extra) {
     extraSourceSet.resources.srcDirs = ["src/${extra}/${name}/resources"]
     extraSourceSet.compileClasspath += project.sourceSets.api.output
     extraSourceSet.compileClasspath += project.sourceSets.main.output
+    extraSourceSet.runtimeClasspath += project.sourceSets.main.runtimeClasspath
     if (baseSourceSet != project.sourceSets.main) {
         //If the base sourceSet is main it already is the extra source set and has a reference to the base one from before this if statement
         extraSourceSet.compileClasspath += getExtraSourceSet(project.sourceSets.main, extra).get().output
         extraSourceSet.compileClasspath += baseSourceSet.output
-        extraSourceSet.runs.modIdentifier = name
+        extraSourceSet.runtimeClasspath += baseSourceSet.runtimeClasspath
     }
     return extraSourceSet
 }
@@ -168,10 +167,6 @@ static void extendConfigurations(Configuration base, Configuration... configurat
     for (def configuration : configurations) {
         configuration.extendsFrom(base)
     }
-}
-
-Provider<SourceSet> getExtraSourceSet(String base, String name) {
-    return project.sourceSets.named(base).flatMap(sourceSet -> getExtraSourceSet(sourceSet, name))
 }
 
 Provider<SourceSet> getExtraSourceSet(SourceSet base, String name) {
@@ -184,43 +179,42 @@ for (String name : secondaryModules) {
 }
 
 def setupTasks(SourceSet sourceSet) {
-    def compileTask = tasks.named(sourceSet.compileJavaTaskName, JavaCompile)
+    def compileTask = tasks.named(sourceSet.compileJavaTaskName, JavaCompile) {
+        //Configure specific compile tasks to have the proper annotation processor info
+        setGroup('compile')
+        options.annotationProcessorPath = configurations.annotationProcessor
+        options.compilerArgs.addAll([
+                "-AmekanismModule=mekanism${sourceSet == sourceSets.main ? '' : sourceSet.name}",//annotation processor param
+                '-parameters'
+        ])
+    }
     //Set the various variables/settings for the different process resources tasks
-    tasks.named(sourceSet.processResourcesTaskName, ProcessResources).configure { ProcessResources process ->
-        process.setGroup('process resources')
-        process.duplicatesStrategy(DuplicatesStrategy.FAIL)
-        var versionProperties = ['version': mod_version, 'mc_version': minecraft_version_range, 'forge_version': forge_version_range, 'loader_version': loader_version_range,
-                                 'jei_version': jei_version_range]
+    tasks.named(sourceSet.processResourcesTaskName, ProcessResources) {
+        setGroup('process resources')
+        duplicatesStrategy = DuplicatesStrategy.FAIL
+        var versionProperties = ['file'       : ['jarVersion': mod_version], 'mc_version': minecraft_version_range, 'forge_version': forge_version_range,
+                                 'loader_version': loader_version_range, 'jei_version': jei_version_range]
         //Mark the properties as inputs so that when they change things update
-        process.inputs.properties(versionProperties)
-        process.filesMatching('META-INF/neoforge.mods.toml') { expand(versionProperties) }
-        process.from("${projectDir}") { include('logo.png') }
+        inputs.properties(versionProperties)
+        filesMatching('META-INF/neoforge.mods.toml') { expand(versionProperties) }
+        from("${projectDir}") { include('logo.png') }
         //Depend on the compile task so that we can map the computer methods as needed
-        process.dependsOn(compileTask)
+        dependsOn(compileTask)
         def files = fileTree(dir: outputs.files.asPath, includes: ['**/*.json', '**/*.mcmeta'])
-        process.doLast {
+        doLast {
             for (def file : files) {
                 file.text = JsonOutput.toJson(new JsonSlurper().parse(file))
             }
         }
     }
-    tasks.named(sourceSet.compileJavaTaskName, JavaCompile).configure { setGroup('compile') }
+    tasks.named(sourceSet.compileJavaTaskName, JavaCompile) { setGroup('compile') }
     for (String extraType : extraTypes) {
         def extraSourceSet = getExtraSourceSet(sourceSet, extraType).get()
-        tasks.named(extraSourceSet.processResourcesTaskName, ProcessResources).configure {
+        tasks.named(extraSourceSet.processResourcesTaskName, ProcessResources) {
             setGroup('process resources')
             dependsOn(compileTask)
         }
-        tasks.named(extraSourceSet.compileJavaTaskName, JavaCompile).configure { setGroup('compile') }
-    }
-    //Configure specific compile tasks to have the proper annotation processor info
-    compileTask.configure { JavaCompile task ->
-        setGroup('compile')
-        task.options.annotationProcessorPath = configurations.annotationProcessor
-        task.options.compilerArgs.addAll([
-                "-AmekanismModule=mekanism${sourceSet == sourceSets.main ? '' : sourceSet.name}",//annotation processor param
-                '-parameters'
-        ])
+        tasks.named(extraSourceSet.compileJavaTaskName, JavaCompile) { setGroup('compile') }
     }
 }
 
@@ -236,75 +230,131 @@ java {
     withSourcesJar()
 }
 
-minecraft.accessTransformers.files(
-        file('src/main/resources/META-INF/accesstransformer.cfg'),
-        file('src/additions/resources/META-INF/accesstransformer.cfg'),
-        //Dev time only ATs so the file name doesn't have to match accesstransformer.cfg
-        file('src/datagen/main/resources/META-INF/datagen_ats.cfg'),
-        file('src/gameTest/resources/META-INF/gametest_ats.cfg')
-)
+final runsFolder = layout.projectDirectory.dir('runs')
+final clientRunsFolder = runsFolder.dir('client')
 
-runs {
-    configureEach {
-        if (hasProperty('forge_force_ansi')) {
-            //Force ansi if declared as a gradle variable, as the auto detection doesn't detect IntelliJ properly
-            // or eclipse's plugin that adds support for ansi escape in console
-            systemProperties.put('terminal.ansi', (String) property('forge_force_ansi'))
+neoForge {
+    // This enables modding tasks and configurations
+    enable {
+        version = forge_version
+        enabledSourceSets = sourceSets // All source sets use Minecraft code
+    }
+
+    mods {
+        mekanism {
+            sourceSet((SourceSet) sourceSets.api)
+            sourceSet((SourceSet) sourceSets.main)
         }
-
-        modSources.add((SourceSet[]) [sourceSets.main, sourceSets.api])
-
-        for (String name : secondaryModules) {
-            modSources.add((SourceSet) sourceSets.named(name).get())
+        // contains main mod + its datagen code
+        mekanismData {
+            modSourceSets = mods.mekanism.modSourceSets
+            sourceSet((SourceSet) sourceSets.datagenMain)
         }
-
-        //if the selected toolchain is a JBR, enable DCEVM
-        if (javaToolchains.launcherFor(java.toolchain).map { it.metadata.vendor }.getOrElse('').contains('JetBrains')) {
-            jvmArguments.add('-XX:+AllowEnhancedClassRedefinition')
+        mekanismtests {
+            sourceSet((SourceSet) sourceSets.gameTest)
         }
     }
-    //Note: To enable logging into the client account, set the neogradle.subsystems.devLogin.conventionForRun property to true in your gradle user home
-    // https://github.com/neoforged/NeoGradle?tab=readme-ov-file#per-run-configuration
-    client {
+    for (String name : secondaryModules) {
+        final sourceSet = sourceSets.named(name)
+        mods.maybeCreate(name).modSourceSets.add(sourceSet)
+        // Create a secondary mod group for the modules main code + its datagen code
+        final datagenMod = mods.maybeCreate(name + 'Data')
+        datagenMod.modSourceSets.add(sourceSet)
+        datagenMod.modSourceSets.add(sourceSet.flatMap(s -> getExtraSourceSet(s, 'datagen')))
     }
-    clientAlt {
-        configure('client')
-        //Force disable devLogin for clientAlt regardless of if it is enabled via gradle properties for the main gradle run
-        devLogin.enabled(false)
-        if (!(findProperty('neogradle.subsystems.devLogin.conventionForRun') ?: false)) {
-            //If the property is missing or set to false (so the normal runClient task would use Dev as the name),
-            // change the name of the alt client type so that it doesn't conflict with the main dev one
-            programArguments.addAll((String[]) ['--username', 'AltDev'])
+
+    accessTransformers = [
+            'src/main/resources/META-INF/accesstransformer.cfg',
+            'src/additions/resources/META-INF/accesstransformer.cfg',
+            //Dev time only ATs so the file name doesn't have to match accesstransformer.cfg
+            'src/datagen/main/resources/META-INF/datagen_ats.cfg',
+            'src/gameTest/resources/META-INF/gametest_ats.cfg',
+    ]
+
+    runs {
+        configureEach {
+            if (project.hasProperty('forge_force_ansi')) {
+                //Force ansi if declared as a gradle variable, as the auto detection doesn't detect IntelliJ properly
+                // or eclipse's plugin that adds support for ansi escape in console
+                systemProperties.put('terminal.ansi', (String) property('forge_force_ansi'))
+            }
+
+            loadedMods = [mods.mekanism]
+            for (String name : secondaryModules) {
+                loadedMods.add(mods.named(name))
+            }
+            //if the selected toolchain is a JBR, enable DCEVM
+            if (javaToolchains.launcherFor(java.toolchain).map { it.metadata.vendor }.getOrElse('').contains('JetBrains')) {
+                jvmArguments.addAll('-XX:+IgnoreUnrecognizedVMOptions', '-XX:+AllowEnhancedClassRedefinition')
+            }
+
+            // Uncomment this to get verbose debug logging
+            // logLevel = org.slf4j.event.Level.DEBUG
+        }
+        //Note: To enable logging into the client account, set the mc_devlogin property to true in your gradle user home
+        // You can also run gradlew runClient -Pmc_devlogin=true
+        client {
+            client()
+            gameDirectory.value(clientRunsFolder)
+            if (findProperty('mc_devlogin') ?: false) {
+                devLogin = true
+            }
+        }
+        clientAlt {
+            client()
+            gameDirectory.value(runsFolder.dir('clientAlt'))
+            // Force dev login to be disabled for this run to allow using a secondary username
+            devLogin = false
+            programArguments.addAll('--username', 'AltDev')
+        }
+        server {
+            server()
+            gameDirectory.value(runsFolder.dir('server'))
+        }
+        gameTestServer {
+            type = 'gameTestServer'
+            gameDirectory.value(runsFolder.dir('gameTestServer'))
+            sourceSet = sourceSets.gameTest
+            loadedMods.add(mods.mekanismtests)
+        }
+        gameTestClient {
+            client()
+            gameDirectory.value(clientRunsFolder)
+            if (findProperty('mc_devlogin') ?: false) {
+                devLogin = true
+            }
+            sourceSet = sourceSets.gameTest
+            loadedMods.add(mods.mekanismtests)
+            programArguments.addAll('--quickPlaySingleplayer', 'GameTestWorld')
+        }
+        data {
+            data()
+            gameDirectory.value(runsFolder.dir('data'))
+            programArguments.addAll('--all', '--output', file('src/datagen/generated/').absolutePath,
+                    '--mod', 'mekanism', '--existing', file('src/main/resources/').absolutePath)
+
+            sourceSet = sourceSets.datagenMain
+            loadedMods = [mods.mekanismData]
+
+            for (String name : secondaryModules) {
+                //println("Adding $name")
+                loadedMods.add(mods.named(name + 'Data'))
+                programArguments.addAll('--mod', 'mekanism' + name, '--existing', file("src/${name}/resources/").absolutePath)
+            }
         }
     }
-    server {
-    }
-    gameTestServer {
-        modSources.add((SourceSet) sourceSets.gameTest)
-    }
-    gameTestClient {
-        configure('client')
-        modSources.add((SourceSet) sourceSets.gameTest)
-    }
-    junit {
-        unitTestSources.add((SourceSet) sourceSets.test)
-    }
-    data {
-        programArguments.addAll((String[]) ['--all', '--output', file('src/datagen/generated/').absolutePath,
-                                            '--mod', 'mekanism', '--existing', file('src/main/resources/').absolutePath])
 
-        modSources.add((SourceSet) sourceSets.datagenMain)
-
-        for (String name : secondaryModules) {
-            modSources.add(getExtraSourceSet(name, 'datagen').get())
-            programArguments.addAll((String[]) ['--mod', "mekanism${name}", '--existing', file("src/${name}/resources/").absolutePath])
-        }
-
-        dependencies {
-            runtime(configurations.datagenNonMod)
-        }
+    unitTest {
+        enable()
+        testedMod = mods.mekanism
+        loadedMods = runs.client.loadedMods
     }
 }
+
+// Ensure any jar without the necessary FML manifest attributes gets picked up via legacy classpath.
+// This configuration only exists after setting the neoForge version above.
+//TODO: Remove all this datagenNonMod stuff once we add FMLModType to yaml-ops
+configurations.dataAdditionalRuntimeClasspath.extendsFrom configurations.datagenNonMod
 
 static void exclusiveRepo(RepositoryHandler handler, String url, String... groups) {
     exclusiveRepo(handler, url, filter -> {
@@ -325,7 +375,7 @@ static void exclusiveRepo(RepositoryHandler handler, String url, Consumer<Inclus
 
 repositories { RepositoryHandler handler ->
     exclusiveRepo(handler, 'https://maven.blamejared.com', filter -> {
-        filter.includeGroupByRegex('com\\.blamejared.*')
+        filter.includeGroupAndSubgroups('com.blamejared')
         filter.includeGroup('mezz.jei')
         filter.includeGroup('org.openzen.zencode')
     })
@@ -342,14 +392,11 @@ repositories { RepositoryHandler handler ->
     exclusiveRepo(handler, 'https://maven.parchmentmc.org/', 'org.parchmentmc.data')
 }
 
-tasks.named('test').configure {
-    //Disable builtin test task as we use and build uses testJunit so there is no point in having it also attempt to run an empty test task
-    enabled(false)
+tasks.named('test', Test) {
+    useJUnitPlatform()
 }
 
 dependencies {
-    implementation("net.neoforged:neoforge:${forge_version}")
-
     compileOnly(project(':annotation-processor'))
     localRuntime(project(':annotation-processor'))
     annotationProcessor(project(':annotation-processor'))
@@ -361,14 +408,14 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junit_version}")
     //We use https://github.com/jqwik-team/jqwik to allow for implementing property based testing
     testImplementation("net.jqwik:jqwik:${jqwik_version}")
-    
+
     compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
     if (recipe_viewer == 'jei' || recipe_viewer == 'hybrid') {
         localRuntime("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
     }
 
-    compileOnly("dev.emi:emi-neoforge:${emi_version}+${previous_minor_minecraft_version}:api")
-    def emi = "dev.emi:emi-neoforge:${emi_version}+${previous_minor_minecraft_version}"
+    compileOnly("dev.emi:emi-neoforge:${emi_version}+${minecraft_version}:api")
+    def emi = "dev.emi:emi-neoforge:${emi_version}+${minecraft_version}"
     //TODO: Re-evaluate (https://github.com/emilyploszaj/emi/issues/537) might allow us to not have to do this
     //Compile against full emi in datagen
     datagenMainCompileOnly(emi)
@@ -438,31 +485,31 @@ def getManifestAttributes(String title) {
     ]
 }
 
-tasks.named('jar', Jar).configure { Jar jar ->
-    jar.duplicatesStrategy(DuplicatesStrategy.FAIL)
-    jar.from([sourceSets.api.output, sourceSets.main.output])
-    jar.exclude('crafttweaker_parameter_names.json')
-    jar.manifest.attributes(getManifestAttributes('Mekanism'))
+tasks.named('jar', Jar) {
+    duplicatesStrategy = DuplicatesStrategy.FAIL
+    from([sourceSets.api.output, sourceSets.main.output])
+    exclude('crafttweaker_parameter_names.json')
+    manifest.attributes(getManifestAttributes('Mekanism'))
 }
 
-tasks.named('sourcesJar', Jar).configure { Jar jar ->
+tasks.named('sourcesJar', Jar) {
     dependsOn(classes, apiClasses, additionsClasses, generatorsClasses, toolsClasses)
-    jar.duplicatesStrategy(DuplicatesStrategy.FAIL)
+    duplicatesStrategy = DuplicatesStrategy.FAIL
     //Note: Already contains main source set's sources by default
-    jar.from(sourceSets.api.allJava, sourceSets.additions.allJava, sourceSets.generators.allJava, sourceSets.tools.allJava)
-    jar.manifest.attributes(getManifestAttributes('Mekanism'))
+    from(sourceSets.api.allJava, sourceSets.additions.allJava, sourceSets.generators.allJava, sourceSets.tools.allJava)
+    manifest.attributes(getManifestAttributes('Mekanism'))
 }
 
 def secondaryJar(SourceSet sourceSet, String title) {
-    return tasks.register(sourceSet.jarTaskName, Jar, {
-        duplicatesStrategy(DuplicatesStrategy.FAIL)
+    return tasks.register(sourceSet.jarTaskName, Jar) {
+        duplicatesStrategy = DuplicatesStrategy.FAIL
         archiveClassifier.set(sourceSet.name)
         from(sourceSet.output)
         if (!title.isEmpty()) {
             archiveFileName.set("${title}-${project.version}.jar")
         }
         manifest.attributes(getManifestAttributes(title.isEmpty() ? 'Mekanism' : title))
-    })
+    }
 }
 
 def apiJar = secondaryJar(sourceSets.api, '')
@@ -470,7 +517,7 @@ def additionsJar = secondaryJar(sourceSets.additions, 'MekanismAdditions')
 def generatorsJar = secondaryJar(sourceSets.generators, 'MekanismGenerators')
 def toolsJar = secondaryJar(sourceSets.tools, 'MekanismTools')
 
-def mergeModuleResources = tasks.register('mergeModuleResources', MergeModuleResources, {
+def mergeModuleResources = tasks.register('mergeModuleResources', MergeModuleResources) {
     dependsOn('classes', 'apiClasses', 'additionsClasses', 'generatorsClasses', 'toolsClasses')
     mustRunAfter('clean')
     //Note: Get the resources from the output of process resources, so that any expands that need to happen we know have already happened
@@ -485,11 +532,11 @@ def mergeModuleResources = tasks.register('mergeModuleResources', MergeModuleRes
     }
     //Only look at generated service files as a restriction for our input
     annotationGenerated = annotationGenerated.asFileTree.matching(serviceFilter)
-})
+}
 
-def allJar = tasks.register('allJar', AllJar, {
+def allJar = tasks.register('allJar', AllJar) {
     dependsOn(mergeModuleResources)
-    duplicatesStrategy(DuplicatesStrategy.FAIL)
+    duplicatesStrategy = DuplicatesStrategy.FAIL
     archiveClassifier.set('all')
     manifest.attributes(getManifestAttributes('MekanismAll'))
     pathsToExclude.set(mergeModuleResources.flatMap(m -> m.pathsToExclude))
@@ -498,7 +545,7 @@ def allJar = tasks.register('allJar', AllJar, {
     for (String name : secondaryModules) {
         secondaryModuleOutputs += sourceSets.named(name).get().output
     }
-})
+}
 
 tasks.withType(JavaCompile).configureEach({
     options.encoding = 'UTF-8'
@@ -603,7 +650,7 @@ outputChangelog.configure { OutputChangelog out ->
 
 if (System.getenv('CURSEFORGE_KEY') != null || project.hasProperty('curseforgeKey')) {
     logger.lifecycle('Enabling Curseforge config')
-    tasks.register('curseforge', TaskPublishCurseForge, { task ->
+    tasks.register('curseforge', TaskPublishCurseForge) { task ->
         dependsOn(outputChangelog)
         setGroup('publishing')
         setDescription('Upload Mekanism to CurseForge')
@@ -635,7 +682,7 @@ if (System.getenv('CURSEFORGE_KEY') != null || project.hasProperty('curseforgeKe
                     //World gen
                     'biomes-o-plenty',
                     //Misc
-                    'applied-energistics-2', 'ctm', 'curios-continuation', 'dark-mode-everywhere', 'farmers-delight', 'female-gender-forge', 'flux-networks',
+                    'applied-energistics-2', 'ctm', 'curios-continuation', 'dark-mode-everywhere', 'farmers-delight', 'female-gender-neoforge', 'flux-networks',
                     'framedblocks', 'grandpower', 'json-things', 'perviaminvenire', 'projecte', 'recipe-stages'
             )
         }
@@ -655,7 +702,7 @@ if (System.getenv('CURSEFORGE_KEY') != null || project.hasProperty('curseforgeKe
             logger.quiet('https://www.curseforge.com/minecraft/mc-mods/mekanism-generators/files/{}', (Object) generatorsCfUpload.curseFileId)
             logger.quiet('https://www.curseforge.com/minecraft/mc-mods/mekanism-tools/files/{}', (Object) toolsCfUpload.curseFileId)
         }
-    })
+    }
 }
 
 void setGenericCurseArtifactData(UploadArtifact artifact, Provider<RegularFile> changelog) {
@@ -679,7 +726,7 @@ if (System.getenv('MODRINTH_TOKEN') != null || project.hasProperty('modrinthToke
     def additionsModrinth = createSecondaryModrinthUpload('additions', 'a6F3uASn', additionsJar)
     def generatorsModrinth = createSecondaryModrinthUpload('generators', 'OFVYKsAk', generatorsJar)
     def toolsModrinth = createSecondaryModrinthUpload('tools', 'tqQpq1lt', toolsJar)
-    tasks.named('modrinth').configure {
+    tasks.named('modrinth') {
         dependsOn(jar, apiJar, outputChangelog)
         finalizedBy(additionsModrinth, generatorsModrinth, toolsModrinth)
         notCompatibleWithConfigurationCache('Not yet compatible')//TODO: Remove when possible
@@ -725,7 +772,7 @@ if (System.getenv('MODRINTH_TOKEN') != null || project.hasProperty('modrinthToke
 }
 
 def createSecondaryModrinthUpload(String output, String targetProjectId, TaskProvider<Jar> sourceSetJar) {
-    return tasks.register("${output}Modrinth", TaskModrinthUpload, {
+    return tasks.register("${output}Modrinth", TaskModrinthUpload) {
         setGroup('publishing')
         setDescription("Upload Mekanism ${output} to Modrinth")
         dependsOn(tasks.named('modrinth'), sourceSetJar)
@@ -747,5 +794,5 @@ def createSecondaryModrinthUpload(String output, String targetProjectId, TaskPro
             }
             logger.lifecycle('Updated Modrinth extension')
         }
-    })
+    }
 }

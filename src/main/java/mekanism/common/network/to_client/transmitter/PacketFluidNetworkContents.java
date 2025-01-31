@@ -33,7 +33,7 @@ public record PacketFluidNetworkContents(UUID networkID, FluidStack fluid) imple
     public void handle(IPayloadContext context) {
         //Note: We set the information even if opaque transmitters is true in case the client turns the config setting off
         // so that they will have the proper information to then render
-        DynamicNetwork<?, ?, ?> clientNetwork = TransmitterNetworkRegistry.getInstance().getClientNetwork(networkID);
+        DynamicNetwork<?, ?, ?> clientNetwork = TransmitterNetworkRegistry.getClientNetwork(networkID);
         if (clientNetwork instanceof FluidNetwork network) {
             network.setLastFluid(fluid);
         }

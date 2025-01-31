@@ -59,6 +59,9 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
           ProfilerFiller profiler) {
         MechanicalPipe pipe = tile.getTransmitter();
         FluidNetwork network = pipe.getTransmitterNetwork();
+        if (network == null) {
+            return;//race conditions
+        }
         FluidStack fluidStack = network.lastFluid;
         if (fluidStack.isEmpty()) {
             //Shouldn't be the case but validate it

@@ -337,13 +337,15 @@ public class QIOServerCraftingTransferHandler {
                     if (frequency.isStoring(entry.getKey())) {
                         //It is stored, check to make sure it isn't a type we are removing fully
                         UUID uuid = QIOGlobalItemLookup.INSTANCE.getUUIDForType(entry.getKey());
-                        FrequencySlotData slotData = frequencyAvailableItems.get(uuid);
-                        if (slotData != null && slotData.getAvailable() == 0) {
-                            // if it is, then we need to reclaim the item type as being available
-                            availableItemTypes--;
-                            if (availableItemTypes <= 0) {
-                                //Not enough room for types
-                                return false;
+                        if (uuid != null) {
+                            FrequencySlotData slotData = frequencyAvailableItems.get(uuid);
+                            if (slotData != null && slotData.getAvailable() == 0) {
+                                // if it is, then we need to reclaim the item type as being available
+                                availableItemTypes--;
+                                if (availableItemTypes <= 0) {
+                                    //Not enough room for types
+                                    return false;
+                                }
                             }
                         }
                     } else {

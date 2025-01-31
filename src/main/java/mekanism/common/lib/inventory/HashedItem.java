@@ -7,12 +7,12 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IHashedItem;
 import mekanism.common.util.StackUtils;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * A wrapper of an ItemStack which tests equality and hashes based on item type and NBT data, ignoring stack size.
@@ -101,52 +101,44 @@ public class HashedItem implements IHashedItem {
         return hashCode;
     }
 
+    //TODO: Eventually see if we can make it so instead of having this overarching HashedItem extension, make it just a record that is a pair?
     public static class UUIDAwareHashedItem extends HashedItem {
 
-        @Nullable
+        //TODO: Eventually we might want to make it so that we only need to sync the hashed item for types we haven't sent a given client yet so that then
+        // we can also send a smaller packet to each client until they disconnect and then we clear what packets they know
+        public static final StreamCodec<RegistryFriendlyByteBuf, UUIDAwareHashedItem> STREAM_CODEC = StreamCodec.composite(
+              ItemStack.STREAM_CODEC, HashedItem::getInternalStack,
+              UUIDUtil.STREAM_CODEC, UUIDAwareHashedItem::getUUID,
+              UUIDAwareHashedItem::new
+        );
+
+        @NotNull
         private final UUID uuid;
         private final int uuidBasedHash;
-        private final boolean overrideHash;
 
         /**
-         * @param uuid Should not be null unless something went wrong reading the packet.
-         *
          * @apiNote For use on the client side, hash is taken into account for equals and hashCode
          */
-        public UUIDAwareHashedItem(ItemStack stack, @Nullable UUID uuid) {
+        public UUIDAwareHashedItem(ItemStack stack, @NotNull UUID uuid) {
             super(stack.copyWithCount(1));
             this.uuid = uuid;
-            if (this.uuid == null) {
-                this.overrideHash = false;
-                this.uuidBasedHash = super.hashCode();
-            } else {
-                this.overrideHash = true;
-                this.uuidBasedHash = Objects.hash(super.hashCode(), this.uuid);
-            }
+            this.uuidBasedHash = Objects.hash(super.hashCode(), this.uuid);
         }
 
         public UUIDAwareHashedItem(HashedItem other, @NotNull UUID uuid) {
             super(other);
             this.uuid = uuid;
-            this.uuidBasedHash = super.hashCode();
-            this.overrideHash = false;
+            this.uuidBasedHash = Objects.hash(super.hashCode(), this.uuid);
         }
 
-        @Nullable
+        @NotNull
         public UUID getUUID() {
             return uuid;
         }
 
         @Override
         public boolean equals(Object obj) {
-            if (obj == this) {
-                return true;
-            } else if (overrideHash) {
-                //Note: UUID cannot be null if overrideHash is true
-                //noinspection DataFlowIssue
-                return obj instanceof UUIDAwareHashedItem uuidAware && uuid.equals(uuidAware.uuid) && super.equals(obj);
-            }
-            return super.equals(obj);
+            return obj == this || obj instanceof UUIDAwareHashedItem uuidAware && uuid.equals(uuidAware.uuid) && super.equals(obj);
         }
 
         @Override

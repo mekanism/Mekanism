@@ -1,12 +1,14 @@
 package mekanism.common.network.to_server.button;
 
 import io.netty.buffer.ByteBuf;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.registries.MekanismContainerTypes;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -15,6 +17,7 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -44,8 +47,12 @@ public record PacketEntityButtonPress(ClickedEntityButton buttonClicked, int ent
     public void handle(IPayloadContext context) {
         Player player = context.player();
         Entity entity = player.level().getEntity(entityID);
-        if (entity != null) {
-            player.openMenu(buttonClicked.getProvider(entity), buf -> buf.writeVarInt(entityID));
+        MenuProvider provider = buttonClicked.getProvider(entity);
+        if (provider != null) {
+            player.openMenu(provider, buf -> {
+                buf.writeVarInt(entityID);
+                buttonClicked.encodeExtraData(buf, entity);
+            });
         }
     }
 
@@ -60,14 +67,28 @@ public record PacketEntityButtonPress(ClickedEntityButton buttonClicked, int ent
         public static final StreamCodec<ByteBuf, ClickedEntityButton> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, ClickedEntityButton::ordinal);
 
         private final Function<Entity, @Nullable MenuProvider> providerFromEntity;
+        @Nullable
+        private final BiConsumer<RegistryFriendlyByteBuf, Entity> extraEncodingData;
 
         ClickedEntityButton(Function<Entity, @Nullable MenuProvider> providerFromEntity) {
+            this(providerFromEntity, null);
+        }
+
+        ClickedEntityButton(Function<Entity, @Nullable MenuProvider> providerFromEntity, @Nullable BiConsumer<RegistryFriendlyByteBuf, Entity> extraEncodingData) {
             this.providerFromEntity = providerFromEntity;
+            this.extraEncodingData = extraEncodingData;
         }
 
         @Nullable
-        public MenuProvider getProvider(Entity entity) {
-            return providerFromEntity.apply(entity);
+        @Contract("null -> null")
+        public MenuProvider getProvider(@Nullable Entity entity) {
+            return entity == null ? null : providerFromEntity.apply(entity);
+        }
+
+        private void encodeExtraData(RegistryFriendlyByteBuf buffer, Entity entity) {
+            if (extraEncodingData != null) {
+                extraEncodingData.accept(buffer, entity);
+            }
         }
     }
 }

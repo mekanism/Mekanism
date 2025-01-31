@@ -59,7 +59,7 @@ public class ForceRetrogenCommand {
         int chunkZEnd = SectionPos.blockToSectionCoord(zEnd);
         ServerLevel world = source.getLevel();
         ResourceKey<Level> registryKey = world.dimension();
-        boolean hasChunks = false;
+        int chunks = 0;
         for (int chunkX = chunkXStart; chunkX <= chunkXEnd; chunkX++) {
             for (int chunkZ = chunkZStart; chunkZ <= chunkZEnd; chunkZ++) {
                 if (world.hasChunk(chunkX, chunkZ)) {
@@ -67,13 +67,13 @@ public class ForceRetrogenCommand {
                     int finalChunkX = chunkX, finalChunkZ = chunkZ;
                     source.sendSuccess(() -> MekanismLang.COMMAND_RETROGEN_CHUNK_QUEUED.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
                           MekanismLang.GENERIC_WITH_COMMA.translate(finalChunkX, finalChunkZ), EnumColor.INDIGO, world), true);
-                    hasChunks = true;
+                    chunks++;
                 }
             }
         }
-        if (!hasChunks) {
+        if (chunks == 0) {
             throw NO_CHUNKS_QUEUED.create();
         }
-        return 0;
+        return chunks;
     }
 }

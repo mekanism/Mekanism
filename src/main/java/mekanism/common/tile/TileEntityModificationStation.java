@@ -128,7 +128,7 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
             if (installed > 0) {
                 int toRemove = removeAll ? installed : 1;
                 if (player.getInventory().add(type.getItemProvider().getItemStack(toRemove))) {
-                    container.removeModule(player.level().registryAccess(), stack, type, toRemove);
+                    container.removeModule(player.registryAccess(), stack, type, toRemove);
                     containerSlot.setStack(stack);
                 }
             }

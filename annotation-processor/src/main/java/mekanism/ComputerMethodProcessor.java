@@ -1,6 +1,6 @@
 package mekanism;
 
-import com.squareup.javapoet.JavaFile;
+import com.palantir.javapoet.JavaFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;

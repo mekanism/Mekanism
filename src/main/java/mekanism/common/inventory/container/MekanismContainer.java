@@ -641,7 +641,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         if (inv.player instanceof ServerPlayer player) {
             //Only check tracked data for changes if we actually have any listeners
             List<PropertyData> dirtyData = new ArrayList<>();
-            RegistryAccess registryAccess = player.level().registryAccess();
+            RegistryAccess registryAccess = player.registryAccess();
             for (short i = 0; i < trackedData.size(); i++) {
                 ISyncableData data = trackedData.get(i);
                 DirtyType dirtyType = data.isDirty();
@@ -665,7 +665,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         if (inv.player instanceof ServerPlayer player) {
             //Send all contents to the listener when it first gets added
             List<PropertyData> dirtyData = new ArrayList<>();
-            RegistryAccess registryAccess = player.level().registryAccess();
+            RegistryAccess registryAccess = player.registryAccess();
             for (short i = 0; i < syncableData.size(); i++) {
                 ISyncableData data = syncableData.get(i);
                 //Query if the data is dirty or not so that we update our last known value to the initial values

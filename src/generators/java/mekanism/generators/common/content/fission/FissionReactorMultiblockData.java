@@ -486,10 +486,13 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     private void radiateEntities(Level world) {
         IRadiationManager radiationManager = IRadiationManager.INSTANCE;
         if (radiationManager.isRadiationEnabled() && isBurning() && world.getRandom().nextInt() % SharedConstants.TICKS_PER_SECOND == 0) {
+            double wasteRadiation = getWasteTankRadioactivity(false) / 3_600F; // divide down to Sv/s
+            double magnitude = lastBurnRate + wasteRadiation;
+            if (magnitude <= RadiationManager.BASELINE) {
+                return;
+            }
             List<LivingEntity> entitiesToRadiate = getLevel().getEntitiesOfClass(LivingEntity.class, hotZone);
             if (!entitiesToRadiate.isEmpty()) {
-                double wasteRadiation = getWasteTankRadioactivity(false) / 3_600F; // divide down to Sv/s
-                double magnitude = lastBurnRate + wasteRadiation;
                 for (LivingEntity entity : entitiesToRadiate) {
                     radiationManager.radiate(entity, magnitude);
                 }

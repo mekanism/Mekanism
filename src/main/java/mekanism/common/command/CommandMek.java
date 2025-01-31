@@ -1,6 +1,7 @@
 package mekanism.common.command;
 
 
+import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
@@ -55,7 +56,7 @@ public class CommandMek {
                   .executes(ctx -> {
                       MekanismAPI.debug = !MekanismAPI.debug;
                       ctx.getSource().sendSuccess(() -> MekanismLang.COMMAND_DEBUG.translateColored(EnumColor.GRAY, OnOff.of(MekanismAPI.debug, true)), true);
-                      return 0;
+                      return Command.SINGLE_SUCCESS;
                   });
         }
     }
@@ -78,7 +79,7 @@ public class CommandMek {
                       //Act as if /weather clear was ran
                       source.getLevel().setWeatherParameters(ServerLevel.RAIN_DELAY.sample(server.overworld().getRandom()), 0, false, false);
                       source.sendSuccess(() -> MekanismLang.COMMAND_TEST_RULES.translateColored(EnumColor.GRAY), true);
-                      return 0;
+                      return Command.SINGLE_SUCCESS;
                   });
         }
     }
@@ -102,7 +103,7 @@ public class CommandMek {
                             // Teleport user to new location
                             player.connection.teleport(position.x(), position.y(), position.z(), player.getYRot(), player.getXRot());
                             source.sendSuccess(() -> MekanismLang.COMMAND_TP.translateColored(EnumColor.GRAY, EnumColor.INDIGO, getPosition(position)), true);
-                            return 0;
+                            return Command.SINGLE_SUCCESS;
                         })
                   );
         }
@@ -133,7 +134,7 @@ public class CommandMek {
                       BlockPos lastPos = playerLocations.pop();
                       player.connection.teleport(lastPos.getX(), lastPos.getY(), lastPos.getZ(), player.getYRot(), player.getXRot());
                       source.sendSuccess(() -> MekanismLang.COMMAND_TPOP.translateColored(EnumColor.GRAY, EnumColor.INDIGO, getPosition(lastPos), EnumColor.INDIGO, playerLocations.size()), true);
-                      return 0;
+                      return Command.SINGLE_SUCCESS;
                   });
         }
 

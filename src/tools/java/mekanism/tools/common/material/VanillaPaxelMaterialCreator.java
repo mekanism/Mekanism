@@ -1,5 +1,6 @@
 package mekanism.tools.common.material;
 
+import java.util.function.Supplier;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.config.IMekanismConfig;
 import mekanism.common.config.value.CachedFloatValue;
@@ -28,24 +29,7 @@ public class VanillaPaxelMaterialCreator implements IPaxelMaterial {
         // can effectively have zero damage for things like the hoe
         paxelDamage = CachedFloatValue.wrap(config, translations.damage().applyToBuilder(builder)
               .gameRestart()
-              .define(toolKey + "PaxelDamage", (double) materialDefaults.getPaxelDamage(), value -> {
-                  if (value instanceof Double) {
-                      double val = (double) value;
-                      float actualValue;
-                      if (val > Float.MAX_VALUE) {
-                          actualValue = Float.MAX_VALUE;
-                      } else if (val < -Float.MAX_VALUE) {
-                          //Note: Float.MIN_VALUE is the smallest positive value a float can represent
-                          // the smallest value a float can represent overall is -Float.MAX_VALUE
-                          actualValue = -Float.MAX_VALUE;
-                      } else {
-                          actualValue = (float) val;
-                      }
-                      float baseDamage = getVanillaTier().getAttackDamageBonus();
-                      return actualValue >= -baseDamage && actualValue <= Float.MAX_VALUE - baseDamage;
-                  }
-                  return false;
-              }));
+              .define(toolKey + "PaxelDamage", validateDefaultModifier(materialDefaults.getPaxelDamage()), this::validateDamageModifier));
         paxelAtkSpeed = CachedFloatValue.wrap(config, translations.attackSpeed().applyToBuilder(builder)
               .gameRestart()
               .define(toolKey + "PaxelAtkSpeed", (double) materialDefaults.getPaxelAtkSpeed()));
@@ -59,6 +43,34 @@ public class VanillaPaxelMaterialCreator implements IPaxelMaterial {
               .gameRestart()
               .defineInRange(toolKey + "PaxelDurability", materialDefaults.getPaxelDurability(), 1, Integer.MAX_VALUE));
         builder.pop();
+    }
+
+    private boolean validateDamageModifier(Object value) {
+        if (value instanceof Double) {
+            double val = (double) value;
+            float actualValue;
+            if (val > Float.MAX_VALUE) {
+                actualValue = Float.MAX_VALUE;
+            } else if (val < -Float.MAX_VALUE) {
+                //Note: Float.MIN_VALUE is the smallest positive value a float can represent
+                // the smallest value a float can represent overall is -Float.MAX_VALUE
+                actualValue = -Float.MAX_VALUE;
+            } else {
+                actualValue = (float) val;
+            }
+            float baseDamage = getVanillaTier().getAttackDamageBonus();
+            return actualValue >= -baseDamage && actualValue <= Float.MAX_VALUE - baseDamage;
+        }
+        return false;
+    }
+
+    private Supplier<Double> validateDefaultModifier(double defaultModifier) {
+        return () -> {
+            if (validateDamageModifier(defaultModifier)) {
+                return defaultModifier;
+            }
+            return (double) -getVanillaTier().getAttackDamageBonus();
+        };
     }
 
     public Tiers getVanillaTier() {

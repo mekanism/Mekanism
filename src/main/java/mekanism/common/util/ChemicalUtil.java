@@ -87,7 +87,7 @@ public class ChemicalUtil {
     }
 
     public static int getRGBDurabilityForDisplay(ItemStack stack) {
-        ChemicalStack chemicalStack = StorageUtils.getStoredChemicalFromAttachment(stack);
+        ChemicalStack chemicalStack = StorageUtils.getFirstChemicalFromAttachment(stack);
         return chemicalStack.isEmpty() ? 0 : chemicalStack.getChemicalColorRepresentation();
     }
 

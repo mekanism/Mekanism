@@ -42,13 +42,6 @@ jobs:
         with:
           file: gradle.properties
           all: true
-      - name: Cache NG outputs
-        uses: actions/cache@v4
-        with:
-          key: ${{ steps.gradle_props.outputs.minecraft_version }}-${{ steps.gradle_props.outputs.forge_version }}
-          path: |
-            build/neoForge
-            build/neoForm
       - name: Validate Gradle Wrapper
         uses: gradle/actions/wrapper-validation@v3
       - name: Setup Java

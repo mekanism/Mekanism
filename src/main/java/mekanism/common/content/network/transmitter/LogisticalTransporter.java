@@ -109,8 +109,14 @@ public class LogisticalTransporter extends LogisticalTransporterBase implements 
     }
 
     @Override
-    public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
-        super.handleUpdateTag(tag, provider);
-        setColor(NBTUtils.getEnum(tag, SerializationConstants.COLOR, EnumColor.BY_ID));
+    public boolean handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
+        boolean refreshModelData = super.handleUpdateTag(tag, provider);
+        EnumColor color = NBTUtils.getEnum(tag, SerializationConstants.COLOR, EnumColor.BY_ID);
+        if (this.color != color) {
+            setColor(color);
+            //Color changed, mark the model data as needing to be refreshed
+            refreshModelData = true;
+        }
+        return refreshModelData;
     }
 }

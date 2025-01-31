@@ -446,17 +446,36 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         return updateTag;
     }
 
-    public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
+    /**
+     * @return true if the model data was changed by this update
+     */
+    public boolean handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
+        boolean refreshModelData = false;
+        ConnectionType[] oldConnectionData = new ConnectionType[EnumUtils.DIRECTIONS.length];
+        for (Direction side : EnumUtils.DIRECTIONS) {
+            oldConnectionData[side.ordinal()] = getConnectionType(side);
+        }
+
         NBTUtils.setByteIfPresent(tag, SerializationConstants.CURRENT_CONNECTIONS, connections -> currentTransmitterConnections = connections);
         NBTUtils.setByteIfPresent(tag, SerializationConstants.CURRENT_ACCEPTORS, acceptors -> acceptorCache.currentAcceptorConnections = acceptors);
         readRawConnections(tag);
-        //Transmitter
-        NBTUtils.setUUIDIfPresentElse(tag, SerializationConstants.NETWORK, networkID -> {
-            if (hasTransmitterNetwork() && getTransmitterNetwork().getUUID().equals(networkID)) {
-                //Nothing needs to be done
-                return;
+
+        for (Direction side : EnumUtils.DIRECTIONS) {
+            //If the visible connection data changed, mark that we need to update the model data
+            if (getConnectionType(side) != oldConnectionData[side.ordinal()]) {
+                refreshModelData = true;
+                break;
             }
-            DynamicNetwork<?, ?, ?> clientNetwork = TransmitterNetworkRegistry.getInstance().getClientNetwork(networkID);
+        }
+
+        //Transmitter
+        if (tag.hasUUID(SerializationConstants.NETWORK)) {
+            UUID networkID = tag.getUUID(SerializationConstants.NETWORK);
+            if (hasTransmitterNetwork() && getTransmitterNetwork().getUUID().equals(networkID)) {
+                //Nothing needs to be done to update the client network
+                return refreshModelData;
+            }
+            DynamicNetwork<?, ?, ?> clientNetwork = TransmitterNetworkRegistry.getClientNetwork(networkID);
             if (clientNetwork == null) {
                 NETWORK network = createEmptyNetworkWithID(networkID);
                 network.register();
@@ -466,7 +485,10 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
                 //TODO: Validate network type?
                 updateClientNetwork((NETWORK) clientNetwork);
             }
-        }, () -> setTransmitterNetwork(null));
+        } else {
+            setTransmitterNetwork(null);
+        }
+        return refreshModelData;
     }
 
     protected void updateClientNetwork(@NotNull NETWORK network) {

@@ -6,9 +6,10 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.attachments.FrequencyAware;
 import mekanism.common.attachments.qio.PortableDashboardContents;
-import mekanism.common.capabilities.security.OwnerObject;
 import mekanism.common.capabilities.ICapabilityAware;
+import mekanism.common.capabilities.security.OwnerObject;
 import mekanism.common.content.qio.QIOFrequency;
+import mekanism.common.network.to_client.qio.BulkQIOData;
 import mekanism.common.inventory.container.item.PortableQIODashboardContainer;
 import mekanism.common.item.interfaces.IColoredItem;
 import mekanism.common.item.interfaces.IGuiItem;
@@ -23,6 +24,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -72,6 +74,12 @@ public class ItemPortableQIODashboard extends Item implements IFrequencyItem, IG
     }
 
     @Override
+    public void encodeContainerData(RegistryFriendlyByteBuf buf, ItemStack stack) {
+        FrequencyAware<QIOFrequency> frequencyAware = stack.get(getFrequencyComponent());
+        BulkQIOData.encodeToPacket(buf, frequencyAware == null ? null : frequencyAware.getFrequency(stack, getFrequencyComponent()));
+    }
+
+    @Override
     public ContainerTypeRegistryObject<PortableQIODashboardContainer> getContainerType() {
         return MekanismContainerTypes.PORTABLE_QIO_DASHBOARD;
     }
@@ -94,6 +102,7 @@ public class ItemPortableQIODashboard extends Item implements IFrequencyItem, IG
         event.registerItem(IItemSecurityUtils.INSTANCE.ownerCapability(), (stack, ctx) -> new OwnerObject(stack), this);
     }
 
+    @NotNull
     @Override
     public DataComponentType<FrequencyAware<QIOFrequency>> getFrequencyComponent() {
         return MekanismDataComponents.QIO_FREQUENCY.get();

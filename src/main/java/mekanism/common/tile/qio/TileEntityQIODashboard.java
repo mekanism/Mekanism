@@ -15,6 +15,7 @@ import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.network.to_client.qio.BulkQIOData;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.CraftingWindowOutputInventorySlot;
@@ -25,6 +26,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -124,6 +126,12 @@ public class TileEntityQIODashboard extends TileEntityQIOComponent implements IQ
             }
         }
         return needsUpdate;
+    }
+
+    @Override
+    public void encodeExtraContainerData(RegistryFriendlyByteBuf buffer) {
+        super.encodeExtraContainerData(buffer);
+        BulkQIOData.encodeToPacket(buffer, getFrequency());
     }
 
     @Override

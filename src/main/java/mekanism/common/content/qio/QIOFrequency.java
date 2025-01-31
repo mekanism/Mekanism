@@ -45,7 +45,6 @@ import mekanism.common.lib.frequency.IColorableFrequency;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.lib.inventory.HashedItem.UUIDAwareHashedItem;
 import mekanism.common.lib.security.SecurityFrequency;
-import mekanism.common.network.to_client.qio.PacketBatchItemViewerSync;
 import mekanism.common.network.to_client.qio.PacketUpdateItemViewer;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.SharedConstants;
@@ -228,9 +227,10 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         modItems.add(type);
         //Fuzzy item lookup has no wildcard cache related to it
         fuzzyItemLookupMap.computeIfAbsent(stack.getItem(), item -> new HashSet<>()).add(type);
+        QIOItemTypeData data = new QIOItemTypeData(type);
         //Ensure we have a matching uuid for this item
-        QIOGlobalItemLookup.INSTANCE.getOrTrackUUID(type);
-        return new QIOItemTypeData(type);
+        data.getItemUUID();
+        return data;
     }
 
     @Override
@@ -411,11 +411,6 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
 
     public void openItemViewer(ServerPlayer player) {
         playersViewingItems.add(player);
-        Object2LongMap<UUIDAwareHashedItem> map = new Object2LongOpenHashMap<>(itemDataMap.size());
-        for (QIOItemTypeData data : itemDataMap.values()) {
-            map.put(new UUIDAwareHashedItem(data.itemType, QIOGlobalItemLookup.INSTANCE.getOrTrackUUID(data.itemType)), data.count);
-        }
-        PacketDistributor.sendToPlayer(player, new PacketBatchItemViewerSync(totalCountCapacity, totalTypeCapacity, map));
     }
 
     public void closeItemViewer(ServerPlayer player) {
@@ -658,14 +653,20 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         if (!playersViewingItems.isEmpty()) {//Skip marking for update if there are no players viewing the items
             needsUpdate = true;
             if (changedItem != null) {
-                updatedItems.add(QIOGlobalItemLookup.INSTANCE.getUUIDForType(changedItem));
+                UUID uuid = QIOGlobalItemLookup.INSTANCE.getUUIDForType(changedItem);
+                if (uuid != null) {
+                    updatedItems.add(uuid);
+                }
             }
         }
     }
 
     private void markForUpdate(HashedItem changedItem) {
         if (!playersViewingItems.isEmpty()) {//Skip marking for update if there are no players viewing the items
-            updatedItems.add(QIOGlobalItemLookup.INSTANCE.getUUIDForType(changedItem));
+            UUID uuid = QIOGlobalItemLookup.INSTANCE.getUUIDForType(changedItem);
+            if (uuid != null) {
+                updatedItems.add(uuid);
+            }
         }
     }
 
@@ -675,9 +676,12 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
 
     public class QIOItemTypeData {
 
-        private final HashedItem itemType;
-        private long count = 0;
         private final Set<QIODriveKey> containingDrives = new HashSet<>();
+        private final HashedItem itemType;
+
+        @Nullable
+        private UUID itemUUID;
+        private long count = 0;
 
         public QIOItemTypeData(HashedItem itemType) {
             this.itemType = itemType;
@@ -756,6 +760,18 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
 
         public long getCount() {
             return count;
+        }
+
+        public UUID getItemUUID() {
+            if (itemUUID == null) {
+                //Lazily cache what the uuid for the stack is
+                itemUUID = QIOGlobalItemLookup.INSTANCE.getOrTrackUUID(itemType);
+            }
+            return itemUUID;
+        }
+
+        public HashedItem getItemType() {
+            return itemType;
         }
     }
 }

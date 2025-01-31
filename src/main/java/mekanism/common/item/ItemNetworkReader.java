@@ -81,7 +81,7 @@ public class ItemNetworkReader extends ItemEnergized {
                 return InteractionResult.CONSUME;
             } else if (player.isShiftKeyDown() && MekanismAPI.debug) {
                 displayBorder(player, MekanismLang.DEBUG_TITLE, true);
-                for (Component component : TransmitterNetworkRegistry.getInstance().toComponents()) {
+                for (Component component : TransmitterNetworkRegistry.toComponents()) {
                     player.sendSystemMessage(TextComponentUtil.build(EnumColor.DARK_GRAY, component));
                 }
                 displayEndBorder(player);

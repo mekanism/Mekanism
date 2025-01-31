@@ -1,6 +1,6 @@
 package mekanism;
 
-import com.squareup.javapoet.ClassName;
+import com.palantir.javapoet.ClassName;
 
 public class MekAnnotationProcessors {
 

@@ -1,5 +1,6 @@
 package mekanism.common.command.builders;
 
+import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -52,7 +53,7 @@ public class BuildCommand {
                           CommandSourceStack source = ctx.getSource();
                           destroy(source.getLevel(), rayTracePos(source));
                           source.sendSuccess(() -> MekanismLang.COMMAND_BUILD_REMOVED.translateColored(EnumColor.GRAY), true);
-                          return 0;
+                          return Command.SINGLE_SUCCESS;
                       }));
 
     public static void register(String name, ILangEntry localizedName, StructureBuilder builder) {
@@ -89,7 +90,7 @@ public class BuildCommand {
             ILangEntry builtEntry = empty ? MekanismLang.COMMAND_BUILD_BUILT_EMPTY : MekanismLang.COMMAND_BUILD_BUILT;
             return builtEntry.translateColored(EnumColor.GRAY, EnumColor.INDIGO, localizedName);
         }, true);
-        return 0;
+        return Command.SINGLE_SUCCESS;
     }
 
     private static void destroy(Level world, BlockPos pos) throws CommandSyntaxException {

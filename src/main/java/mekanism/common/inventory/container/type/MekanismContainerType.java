@@ -1,8 +1,11 @@
 package mekanism.common.inventory.container.type;
 
+import mekanism.common.network.to_client.qio.BulkQIOData;
 import mekanism.common.inventory.container.entity.IEntityContainer;
+import mekanism.common.inventory.container.tile.QIODashboardContainer;
 import mekanism.common.inventory.container.type.MekanismContainerType.IMekanismContainerFactory;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.qio.TileEntityQIODashboard;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -27,6 +30,13 @@ public class MekanismContainerType<T, CONTAINER extends AbstractContainerMenu> e
     public static <TILE extends TileEntityMekanism, CONTAINER extends AbstractContainerMenu> MekanismContainerType<TILE, CONTAINER> tile(Class<TILE> type,
           IMekanismSidedContainerFactory<TILE, CONTAINER> constructor) {
         return new MekanismContainerType<>(type, constructor, (id, inv, buf) -> constructor.create(id, inv, getTileFromBuf(buf, type), true));
+    }
+
+    public static  MekanismContainerType<TileEntityQIODashboard, QIODashboardContainer> qioDashboard() {
+        return new MekanismContainerType<>(TileEntityQIODashboard.class,
+              (id, inv, tile) -> new QIODashboardContainer(id, inv, tile, false, BulkQIOData.INITIAL_SERVER),
+              (id, inv, buf) -> new QIODashboardContainer(id, inv, getTileFromBuf(buf, TileEntityQIODashboard.class), true, BulkQIOData.fromPacket(buf))
+        );
     }
 
     public static <ENTITY extends Entity, CONTAINER extends AbstractContainerMenu & IEntityContainer<ENTITY>> MekanismContainerType<ENTITY, CONTAINER> entity(Class<ENTITY> type,

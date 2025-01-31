@@ -60,7 +60,7 @@ public class MekanismClient {
         Mekanism.activeVibrators.clear();
         RadiationManager.get().resetClient();
         RenderSPS.clearBoltRenderers();
-        TransmitterNetworkRegistry.getInstance().clearClientNetworks();
+        TransmitterNetworkRegistry.clearClientNetworks();
         RenderTickHandler.clearQueued();
 
         for (IModModule module : Mekanism.modulesLoaded) {

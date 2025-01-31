@@ -157,12 +157,8 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
         //Handle the update tag when we are on the client
         CompoundTag tag = pkt.getTag();
         if (!tag.isEmpty()) {
-            handleUpdatePacket(tag, provider);
+            handleUpdateTag(tag, provider);
         }
-    }
-
-    public void handleUpdatePacket(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
-        handleUpdateTag(tag, provider);
     }
 
     public void sendUpdatePacket() {

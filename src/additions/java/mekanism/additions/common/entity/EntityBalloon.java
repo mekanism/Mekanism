@@ -13,6 +13,7 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -22,6 +23,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -35,6 +37,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
 import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -194,6 +197,7 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
 
             move(MoverType.SELF, getDeltaMovement());
 
+            //Note: move may adjust the delta movement, so we need to requery it
             motion = getDeltaMovement();
             motion = motion.multiply(0.98, 0, 0.98);
 
@@ -201,40 +205,62 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
                 motion = motion.multiply(0.7, 0, 0.7);
             }
             if (motion.y() == 0) {
-                motion = new Vec3(motion.x(), 0.04, motion.z());
+                motion = motion.add(0, 0.04, 0);
             }
             setDeltaMovement(motion);
         } else if (latched != null) {
             setDeltaMovement(0, 0, 0);
         } else if (latchedEntity != null && latchedEntity.getHealth() > 0) {
-            int floor = getFloor(latchedEntity);
-            Vec3 motion = latchedEntity.getDeltaMovement();
-            if (latchedEntity.getY() - (floor + 1) < -0.1) {
-                latchedEntity.setDeltaMovement(motion.x(), Math.max(0.04, motion.y() * 1.015), motion.z());
-                latchedEntity.hasImpulse = true;
-            } else if (latchedEntity.getY() - (floor + 1) > 0.1) {
-                latchedEntity.setDeltaMovement(motion.x(), Math.min(-0.04, motion.y() * 1.015), motion.z());
-                latchedEntity.hasImpulse = true;
-            } else {
-                latchedEntity.setDeltaMovement(motion.x(), 0, motion.z());
+            if (!isFlying(latchedEntity)) {
+                //If an entity is flying (creative flight), don't adjust the height they are at
+                Vec3 motion = latchedEntity.getDeltaMovement();
+                double targetElevation = getTargetElevation(latchedEntity);
+                if (latchedEntity.getY() - Mth.EPSILON < targetElevation) {
+                    //The entity is below the target height, apply vertical motion to it
+                    // Note: We allow for a smaller level of precision than when comparing to if it is above the height
+                    // so that we can ensure entities move to above the position for purposes of pushing them over blocks
+                    latchedEntity.setDeltaMovement(motion.x(), Math.max(0.04, motion.y() * 1.015), motion.z());
+                    latchedEntity.hasImpulse = true;
+                } else if (latchedEntity.getY() - 0.1 > targetElevation) {
+                    //The entity is above the target height, apply negative vertical motion to it
+                    latchedEntity.setDeltaMovement(motion.x(), Math.min(-0.04, motion.y() * 1.015), motion.z());
+                    latchedEntity.hasImpulse = true;
+                } else {//The entity is at the target elevation, remove any vertical motion
+                    latchedEntity.setDeltaMovement(motion.x(), 0, motion.z());
+                }
             }
             setPos(latchedEntity.getX(), latchedEntity.getY() + getAddedHeight(), latchedEntity.getZ());
         }
+    }
+
+    private boolean isFlying(Entity entity) {
+        return entity instanceof Player player && player.getAbilities().flying;
     }
 
     public double getAddedHeight() {
         return latchedEntity.getBbHeight() + 0.8;
     }
 
-    private int getFloor(LivingEntity entity) {
+    private double getTargetElevation(LivingEntity entity) {
         BlockPos pos = BlockPos.containing(entity.position());
         BlockPos.MutableBlockPos posi = new BlockPos.MutableBlockPos(pos.getX(), pos.getY(), pos.getZ());
+        CollisionContext collisionContext = CollisionContext.of(entity);
         for (; posi.getY() > 0; posi.move(Direction.DOWN)) {
-            if (posi.getY() < level().getMaxBuildHeight() && !level().isEmptyBlock(posi)) {
-                return posi.getY() + 1 + (entity instanceof Player ? 1 : 0);
+            if (posi.getY() < level().getMaxBuildHeight()) {
+                BlockState state = level().getBlockState(posi);
+                if (!state.isAir()) {
+                    double stateOffset = state.getCollisionShape(level(), posi, collisionContext).max(Axis.Y);
+                    if (Double.isInfinite(stateOffset) || stateOffset == 0) {
+                        //Cannot determine, skip this block and go to the next one
+                        continue;
+                    }
+                    double floor = posi.getY() + stateOffset;
+                    //Note: Add some extra height to make entities float above blocks
+                    return floor + Math.min(4, Mth.ceil(entity.getBbHeight()));
+                }
             }
         }
-        return -1;
+        return 0;
     }
 
     private void pop() {

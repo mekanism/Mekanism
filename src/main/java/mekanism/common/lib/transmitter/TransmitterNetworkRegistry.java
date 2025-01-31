@@ -29,102 +29,96 @@ import net.minecraft.server.level.ChunkMap;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.level.ChunkTicketLevelUpdatedEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import org.jetbrains.annotations.Nullable;
 
+@EventBusSubscriber(modid = Mekanism.MODID)
 public class TransmitterNetworkRegistry {
 
-    private static final TransmitterNetworkRegistry INSTANCE = new TransmitterNetworkRegistry();
-    private static boolean loaderRegistered = false;
-    private final Multimap<Chunk3D, Transmitter<?, ?, ?>> transmitters = HashMultimap.create();
-    private Object2BooleanMap<Chunk3D> changedTicketChunks = new Object2BooleanOpenHashMap<>();
-    private final Set<DynamicNetwork<?, ?, ?>> networks = new ObjectOpenHashSet<>();
-    private final Map<UUID, DynamicNetwork<?, ?, ?>> clientNetworks = new Object2ObjectOpenHashMap<>();
-    private Map<GlobalPos, Transmitter<?, ?, ?>> newOrphanTransmitters = new Object2ObjectOpenHashMap<>();
-    private Set<Transmitter<?, ?, ?>> invalidTransmitters = new ObjectOpenHashSet<>();
-    private Set<DynamicNetwork<?, ?, ?>> networksToChange = new ObjectOpenHashSet<>();
+    private static final Multimap<Chunk3D, Transmitter<?, ?, ?>> transmitters = HashMultimap.create();
+    private static Object2BooleanMap<Chunk3D> changedTicketChunks = new Object2BooleanOpenHashMap<>();
+    private static final Set<DynamicNetwork<?, ?, ?>> networks = new ObjectOpenHashSet<>();
+    private static final Map<UUID, DynamicNetwork<?, ?, ?>> clientNetworks = new Object2ObjectOpenHashMap<>();
+    private static Map<GlobalPos, Transmitter<?, ?, ?>> newOrphanTransmitters = new Object2ObjectOpenHashMap<>();
+    private static Set<Transmitter<?, ?, ?>> invalidTransmitters = new ObjectOpenHashSet<>();
+    private static Set<DynamicNetwork<?, ?, ?>> networksToChange = new ObjectOpenHashSet<>();
 
-    public void addClientNetwork(UUID networkID, DynamicNetwork<?, ?, ?> network) {
+    public static void addClientNetwork(UUID networkID, DynamicNetwork<?, ?, ?> network) {
         if (!clientNetworks.containsKey(networkID)) {
             clientNetworks.put(networkID, network);
         }
     }
 
     @Nullable
-    public DynamicNetwork<?, ?, ?> getClientNetwork(UUID networkID) {
+    public static DynamicNetwork<?, ?, ?> getClientNetwork(UUID networkID) {
         return clientNetworks.get(networkID);
     }
 
-    public void removeClientNetwork(DynamicNetwork<?, ?, ?> network) {
+    public static void removeClientNetwork(DynamicNetwork<?, ?, ?> network) {
         clientNetworks.remove(network.getUUID());
     }
 
-    public void clearClientNetworks() {
+    public static void clearClientNetworks() {
         clientNetworks.clear();
     }
 
-    public static void initiate() {
-        if (!loaderRegistered) {
-            loaderRegistered = true;
-            NeoForge.EVENT_BUS.register(INSTANCE);
-        }
-    }
-
     public static void reset() {
-        getInstance().networks.clear();
-        getInstance().networksToChange.clear();
-        getInstance().invalidTransmitters.clear();
-        getInstance().newOrphanTransmitters.clear();
-        getInstance().transmitters.clear();
-        getInstance().changedTicketChunks.clear();
+        networks.clear();
+        networksToChange.clear();
+        invalidTransmitters.clear();
+        newOrphanTransmitters.clear();
+        transmitters.clear();
+        changedTicketChunks.clear();
     }
 
     public static void trackTransmitter(Transmitter<?, ?, ?> transmitter) {
-        getInstance().transmitters.put(transmitter.getTileChunk(), transmitter);
+        transmitters.put(transmitter.getTileChunk(), transmitter);
     }
 
     public static void untrackTransmitter(Transmitter<?, ?, ?> transmitter) {
-        getInstance().transmitters.remove(transmitter.getTileChunk(), transmitter);
+        transmitters.remove(transmitter.getTileChunk(), transmitter);
     }
 
     public static void invalidateTransmitter(Transmitter<?, ?, ?> transmitter) {
-        getInstance().invalidTransmitters.add(transmitter);
+        invalidTransmitters.add(transmitter);
+        GlobalPos coord = transmitter.getTileGlobalPos();
+        Transmitter<?, ?, ?> removed = newOrphanTransmitters.remove(coord);
+        if (removed != null && removed != transmitter) {
+            Mekanism.logger.error("Different orphan transmitter was registered at location during removal! {}", coord);
+            newOrphanTransmitters.put(coord, transmitter);//put it back?
+        }
     }
 
     public static void registerOrphanTransmitter(Transmitter<?, ?, ?> transmitter) {
-        if (!getInstance().invalidTransmitters.remove(transmitter)) {
+        if (!invalidTransmitters.remove(transmitter)) {
             //If we weren't an invalid transmitter, then we need to add it as a new orphan, otherwise removing it is good enough
             // as if it was an orphan before it still will be one, and if it wasn't then it still will be part of the network it
             // was in.
             GlobalPos pos = transmitter.getTileGlobalPos();
-            Transmitter<?, ?, ?> previous = getInstance().newOrphanTransmitters.put(pos, transmitter);
-            if (previous != null && previous != transmitter) {
+            Transmitter<?, ?, ?> previous = newOrphanTransmitters.put(pos, transmitter);
+            if (previous != null && previous != transmitter && previous.isValid()) {
                 Mekanism.logger.error("Different orphan transmitter was already registered at location! {}", pos);
             }
         }
     }
 
     public static void registerChangedNetwork(DynamicNetwork<?, ?, ?> network) {
-        getInstance().networksToChange.add(network);
+        networksToChange.add(network);
     }
 
-    public static TransmitterNetworkRegistry getInstance() {
-        return INSTANCE;
-    }
-
-    public void registerNetwork(DynamicNetwork<?, ?, ?> network) {
+    public static void registerNetwork(DynamicNetwork<?, ?, ?> network) {
         networks.add(network);
     }
 
-    public void removeNetwork(DynamicNetwork<?, ?, ?> network) {
+    public static void removeNetwork(DynamicNetwork<?, ?, ?> network) {
         networks.remove(network);
         networksToChange.remove(network);
     }
 
     @SubscribeEvent
-    public void onTick(ServerTickEvent.Post event) {
+    public static void onTick(ServerTickEvent.Post event) {
         handleChangedChunks();
         removeInvalidTransmitters();
         assignOrphans();
@@ -137,7 +131,7 @@ public class TransmitterNetworkRegistry {
     }
 
     @SubscribeEvent
-    public void onTicketLevelChange(ChunkTicketLevelUpdatedEvent event) {
+    public static void onTicketLevelChange(ChunkTicketLevelUpdatedEvent event) {
         int newTicketLevel = event.getNewTicketLevel();
         int oldTicketLevel = event.getOldTicketLevel();
         boolean loaded;
@@ -167,7 +161,7 @@ public class TransmitterNetworkRegistry {
         }
     }
 
-    private void handleChangedChunks() {
+    private static void handleChangedChunks() {
         if (!changedTicketChunks.isEmpty()) {
             Object2BooleanMap<Chunk3D> changed = changedTicketChunks;
             changedTicketChunks = new Object2BooleanOpenHashMap<>();
@@ -188,7 +182,7 @@ public class TransmitterNetworkRegistry {
         }
     }
 
-    private void removeInvalidTransmitters() {
+    private static void removeInvalidTransmitters() {
         if (!invalidTransmitters.isEmpty()) {
             //Ensure we copy the invalid transmitters, so that when we iterate and remove invalid ones
             // and add still valid ones as orphans, we actually add them as orphans rather than try
@@ -204,7 +198,7 @@ public class TransmitterNetworkRegistry {
         }
     }
 
-    private <NETWORK extends DynamicNetwork<?, NETWORK, TRANSMITTER>, TRANSMITTER extends Transmitter<?, NETWORK, TRANSMITTER>>
+    private static <NETWORK extends DynamicNetwork<?, NETWORK, TRANSMITTER>, TRANSMITTER extends Transmitter<?, NETWORK, TRANSMITTER>>
     void removeInvalidTransmitter(Transmitter<?, NETWORK, TRANSMITTER> invalid) {
         if (!invalid.isOrphan() || !invalid.isValid()) {
             NETWORK n = invalid.getTransmitterNetwork();
@@ -220,7 +214,7 @@ public class TransmitterNetworkRegistry {
         }
     }
 
-    private void assignOrphans() {
+    private static void assignOrphans() {
         if (!newOrphanTransmitters.isEmpty()) {
             Map<GlobalPos, Transmitter<?, ?, ?>> orphanTransmitters = newOrphanTransmitters;
             newOrphanTransmitters = new Object2ObjectOpenHashMap<>();
@@ -237,7 +231,7 @@ public class TransmitterNetworkRegistry {
         }
     }
 
-    private void commitChanges() {
+    private static void commitChanges() {
         if (!networksToChange.isEmpty()) {
             Set<DynamicNetwork<?, ?, ?>> networks = networksToChange;
             networksToChange = new ObjectOpenHashSet<>();
@@ -252,7 +246,7 @@ public class TransmitterNetworkRegistry {
         return "Network Registry:\n" + networks;
     }
 
-    public Component[] toComponents() {
+    public static Component[] toComponents() {
         Component[] components = new Component[networks.size()];
         int i = 0;
         for (DynamicNetwork<?, ?, ?> network : networks) {
@@ -343,5 +337,8 @@ public class TransmitterNetworkRegistry {
                 }
             }
         }
+    }
+
+    private TransmitterNetworkRegistry() {
     }
 }

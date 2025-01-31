@@ -58,6 +58,7 @@ public interface IEnergyCompat {
      *
      * @param handler Handler to wrap. Can be assumed to be the same type as this energy compat.
      */
+    @Nullable
     IStrictEnergyHandler wrapAsStrictEnergyHandler(Object handler);
 
     /**

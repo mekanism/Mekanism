@@ -1,6 +1,7 @@
 package mekanism.tools.common.material;
 
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.config.IMekanismConfig;
 import mekanism.common.config.value.CachedFloatValue;
@@ -69,60 +70,43 @@ public class MaterialCreator implements BaseMekanismMaterial {
               .defineInRange(toolKey + "Enchantability", materialDefaults.getEnchantmentValue(), 0, Integer.MAX_VALUE));
         //Note: Damage predicate to allow for tools to go negative to the value of the base tier so that a tool
         // can effectively have zero damage for things like the hoe
-        Predicate<Object> damageModifierPredicate = value -> {
-            if (value instanceof Double) {
-                double val = (double) value;
-                float actualValue;
-                if (val > Float.MAX_VALUE) {
-                    actualValue = Float.MAX_VALUE;
-                } else if (val < -Float.MAX_VALUE) {
-                    //Note: Float.MIN_VALUE is the smallest positive value a float can represent
-                    // the smallest value a float can represent overall is -Float.MAX_VALUE
-                    actualValue = -Float.MAX_VALUE;
-                } else {
-                    actualValue = (float) val;
-                }
-                float baseDamage = attackDamage.getOrDefault();
-                return actualValue >= -baseDamage && actualValue <= Float.MAX_VALUE - baseDamage;
-            }
-            return false;
-        };
+        Predicate<Object> damageModifierPredicate = this::validateDamageModifier;
         shieldDurability = CachedIntValue.wrap(config, translations.shieldDurability().applyToBuilder(builder)
               .gameRestart()
               .defineInRange(toolKey + "ShieldDurability", materialDefaults.getShieldDurability(), 0, Integer.MAX_VALUE));
         swordDamage = CachedFloatValue.wrap(config, translations.swordDamage().applyToBuilder(builder)
               .gameRestart()
-              .define(toolKey + "SwordDamage", (double) materialDefaults.getSwordDamage(), damageModifierPredicate));
+              .define(toolKey + "SwordDamage", validateDefaultModifier(materialDefaults.getSwordDamage()), damageModifierPredicate));
         swordAtkSpeed = CachedFloatValue.wrap(config, translations.swordAtkSpeed().applyToBuilder(builder)
               .gameRestart()
               .define(toolKey + "SwordAtkSpeed", (double) materialDefaults.getSwordAtkSpeed()));
         shovelDamage = CachedFloatValue.wrap(config, translations.shovelDamage().applyToBuilder(builder)
               .gameRestart()
-              .define(toolKey + "ShovelDamage", (double) materialDefaults.getShovelDamage(), damageModifierPredicate));
+              .define(toolKey + "ShovelDamage", validateDefaultModifier(materialDefaults.getShovelDamage()), damageModifierPredicate));
         shovelAtkSpeed = CachedFloatValue.wrap(config, translations.shovelAtkSpeed().applyToBuilder(builder)
               .gameRestart()
               .define(toolKey + "ShovelAtkSpeed", (double) materialDefaults.getShovelAtkSpeed()));
         axeDamage = CachedFloatValue.wrap(config, translations.axeDamage().applyToBuilder(builder)
               .gameRestart()
-              .define(toolKey + "AxeDamage", (double) materialDefaults.getAxeDamage(), damageModifierPredicate));
+              .define(toolKey + "AxeDamage", validateDefaultModifier(materialDefaults.getAxeDamage()), damageModifierPredicate));
         axeAtkSpeed = CachedFloatValue.wrap(config, translations.axeAtkSpeed().applyToBuilder(builder)
               .gameRestart()
               .define(toolKey + "AxeAtkSpeed", (double) materialDefaults.getAxeAtkSpeed()));
         pickaxeDamage = CachedFloatValue.wrap(config, translations.pickaxeDamage().applyToBuilder(builder)
               .gameRestart()
-              .define(toolKey + "PickaxeDamage", (double) materialDefaults.getPickaxeDamage(), damageModifierPredicate));
+              .define(toolKey + "PickaxeDamage", validateDefaultModifier(materialDefaults.getPickaxeDamage()), damageModifierPredicate));
         pickaxeAtkSpeed = CachedFloatValue.wrap(config, translations.pickaxeAtkSpeed().applyToBuilder(builder)
               .gameRestart()
               .define(toolKey + "PickaxeAtkSpeed", (double) materialDefaults.getPickaxeAtkSpeed()));
         hoeDamage = CachedFloatValue.wrap(config, translations.hoeDamage().applyToBuilder(builder)
               .gameRestart()
-              .define(toolKey + "HoeDamage", (double) materialDefaults.getHoeDamage(), damageModifierPredicate));
+              .define(toolKey + "HoeDamage", validateDefaultModifier(materialDefaults.getHoeDamage()), damageModifierPredicate));
         hoeAtkSpeed = CachedFloatValue.wrap(config, translations.hoeAtkSpeed().applyToBuilder(builder)
               .gameRestart()
               .define(toolKey + "HoeAtkSpeed", (double) materialDefaults.getHoeAtkSpeed()));
         paxelDamage = CachedFloatValue.wrap(config, translations.paxelDamage().applyToBuilder(builder)
               .gameRestart()
-              .define(toolKey + "PaxelDamage", (double) materialDefaults.getPaxelDamage(), damageModifierPredicate));
+              .define(toolKey + "PaxelDamage", validateDefaultModifier(materialDefaults.getPaxelDamage()), damageModifierPredicate));
         paxelAtkSpeed = CachedFloatValue.wrap(config, translations.paxelAtkSpeed().applyToBuilder(builder)
               .gameRestart()
               .define(toolKey + "PaxelAtkSpeed", (double) materialDefaults.getPaxelAtkSpeed()));
@@ -166,6 +150,34 @@ public class MaterialCreator implements BaseMekanismMaterial {
               .gameRestart()
               .defineInRange(toolKey + "HelmetArmor", materialDefaults.getDefense(ArmorItem.Type.HELMET), 0, Integer.MAX_VALUE));
         builder.pop();
+    }
+
+    private boolean validateDamageModifier(Object value) {
+        if (value instanceof Double) {
+            double val = (double) value;
+            float actualValue;
+            if (val > Float.MAX_VALUE) {
+                actualValue = Float.MAX_VALUE;
+            } else if (val < -Float.MAX_VALUE) {
+                //Note: Float.MIN_VALUE is the smallest positive value a float can represent
+                // the smallest value a float can represent overall is -Float.MAX_VALUE
+                actualValue = -Float.MAX_VALUE;
+            } else {
+                actualValue = (float) val;
+            }
+            float baseDamage = attackDamage.getOrDefault();
+            return actualValue >= -baseDamage && actualValue <= Float.MAX_VALUE - baseDamage;
+        }
+        return false;
+    }
+
+    private Supplier<Double> validateDefaultModifier(double defaultModifier) {
+        return () -> {
+            if (validateDamageModifier(defaultModifier)) {
+                return defaultModifier;
+            }
+            return (double) -attackDamage.getOrDefault();
+        };
     }
 
     @Override

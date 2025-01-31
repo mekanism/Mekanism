@@ -1,7 +1,9 @@
 package mekanism.common.command;
 
+import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
+import mekanism.api.math.MathUtils;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.radiation.capability.IRadiationEntity;
 import mekanism.api.text.EnumColor;
@@ -41,7 +43,7 @@ public class RadiationCommand {
                     .executes(ctx -> {
                         RadiationManager.get().clearSources();
                         ctx.getSource().sendSuccess(() -> MekanismLang.COMMAND_RADIATION_REMOVE_ALL.translateColored(EnumColor.GRAY), true);
-                        return 0;
+                        return Command.SINGLE_SUCCESS;
                     })
               );
     }
@@ -84,6 +86,7 @@ public class RadiationCommand {
                             cap.radiate(magnitude);
                             source.sendSuccess(() -> MekanismLang.COMMAND_RADIATION_ADD_ENTITY.translateColored(EnumColor.GRAY, RadiationScale.getSeverityColor(magnitude),
                                   UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SVH, 3)), true);
+                            return getReturnLevelFromRadiation(magnitude);
                         }
                         return 0;
                     })
@@ -144,7 +147,7 @@ public class RadiationCommand {
                       cap.set(RadiationManager.BASELINE);
                       source.sendSuccess(() -> MekanismLang.COMMAND_RADIATION_CLEAR.translateColored(EnumColor.GRAY), true);
                   }
-                  return 0;
+                  return Command.SINGLE_SUCCESS;
               }).then(Commands.argument("targets", EntityArgument.entities())
                     .requires(MekanismPermissions.COMMAND_RADIATION_HEAL_OTHERS)
                     .executes(ctx -> {
@@ -181,6 +184,7 @@ public class RadiationCommand {
                             cap.set(newValue);
                             source.sendSuccess(() -> MekanismLang.COMMAND_RADIATION_REDUCE.translateColored(EnumColor.GRAY, RadiationScale.getSeverityColor(reduced),
                                   UnitDisplayUtils.getDisplayShort(reduced, RadiationUnit.SVH, 3)), true);
+                            return getReturnLevelFromRadiation(reduced);
                         }
                         return 0;
                     })
@@ -221,7 +225,7 @@ public class RadiationCommand {
         IRadiationManager.INSTANCE.radiate(location, magnitude);
         source.sendSuccess(() -> MekanismLang.COMMAND_RADIATION_ADD.translateColored(EnumColor.GRAY, RadiationScale.getSeverityColor(magnitude),
               UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SVH, 3), EnumColor.INDIGO, getPosition(location.pos()), EnumColor.INDIGO, world), true);
-        return 0;
+        return getReturnLevelFromRadiation(magnitude);
     }
 
     private static int getRadiationLevel(CommandSourceStack source, Coordinates location, Level world) {
@@ -234,10 +238,18 @@ public class RadiationCommand {
         source.sendSuccess(() -> MekanismLang.COMMAND_RADIATION_GET.translateColored(EnumColor.GRAY, EnumColor.INDIGO, getPosition(location.pos()), EnumColor.INDIGO,
                     world, RadiationScale.getSeverityColor(magnitude), UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SVH, 3)),
               true);
-        return 0;
+        return getReturnLevelFromRadiation(magnitude);
     }
 
     private static Component getPosition(BlockPos pos) {
         return MekanismLang.GENERIC_BLOCK_POS.translate(pos.getX(), pos.getY(), pos.getZ());
+    }
+
+    private static int getReturnLevelFromRadiation(double magnitude) {
+        if (magnitude < RadiationManager.MIN_MAGNITUDE) {
+            return 0;
+        }
+        //Multiply to make it so that we can differentiate various levels based on what the micro sievert rate would be
+        return MathUtils.clampToInt(magnitude * 1_000_000);
     }
 }

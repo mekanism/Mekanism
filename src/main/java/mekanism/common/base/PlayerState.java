@@ -1,8 +1,9 @@
 package mekanism.common.base;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import java.util.Collections;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import mekanism.api.functions.ToFloatFunction;
 import mekanism.client.sound.PlayerSound.SoundType;
 import mekanism.client.sound.SoundHandler;
@@ -30,9 +31,10 @@ public class PlayerState {
 
     private static final ResourceLocation STEP_ASSIST_MODIFIER_ID = Mekanism.rl("step_assist");
 
-    private final Set<UUID> activeJetpacks = new ObjectOpenHashSet<>();
-    private final Set<UUID> activeScubaMasks = new ObjectOpenHashSet<>();
-    private final Set<UUID> activeGravitationalModulators = new ObjectOpenHashSet<>();
+    //these are read from the render thread on client, so use a map which is more resilient to that (even if data is 'outdated')
+    private final Set<UUID> activeJetpacks = Collections.newSetFromMap(new ConcurrentHashMap<>());
+    private final Set<UUID> activeScubaMasks = Collections.newSetFromMap(new ConcurrentHashMap<>());
+    private final Set<UUID> activeGravitationalModulators = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
     private LevelAccessor world;
 
@@ -72,7 +74,7 @@ public class PlayerState {
     // ----------------------
 
     public void setJetpackState(UUID uuid, boolean isActive, boolean isLocal) {
-        boolean alreadyActive = activeJetpacks.contains(uuid);
+        boolean alreadyActive = isJetpackOn(uuid);
         boolean changed = alreadyActive != isActive;
         if (alreadyActive && !isActive) {
             // On -> off
@@ -97,11 +99,11 @@ public class PlayerState {
     }
 
     public boolean isJetpackOn(Player p) {
-        return activeJetpacks.contains(p.getUUID());
+        return isJetpackOn(p.getUUID());
     }
 
-    public Set<UUID> getActiveJetpacks() {
-        return activeJetpacks;
+    public boolean isJetpackOn(UUID uuid) {
+        return activeJetpacks.contains(uuid);
     }
 
     // ----------------------
@@ -111,7 +113,7 @@ public class PlayerState {
     // ----------------------
 
     public void setScubaMaskState(UUID uuid, boolean isActive, boolean isLocal) {
-        boolean alreadyActive = activeScubaMasks.contains(uuid);
+        boolean alreadyActive = isScubaMaskOn(uuid);
         boolean changed = alreadyActive != isActive;
         if (alreadyActive && !isActive) {
             activeScubaMasks.remove(uuid); // On -> off
@@ -134,11 +136,11 @@ public class PlayerState {
     }
 
     public boolean isScubaMaskOn(Player p) {
-        return activeScubaMasks.contains(p.getUUID());
+        return isScubaMaskOn(p.getUUID());
     }
 
-    public Set<UUID> getActiveScubaMasks() {
-        return activeScubaMasks;
+    public boolean isScubaMaskOn(UUID uuid) {
+        return activeScubaMasks.contains(uuid);
     }
 
     // ----------------------
@@ -180,7 +182,7 @@ public class PlayerState {
     // ----------------------
 
     public void setGravitationalModulationState(UUID uuid, boolean isActive, boolean isLocal) {
-        boolean alreadyActive = activeGravitationalModulators.contains(uuid);
+        boolean alreadyActive = isGravitationalModulationOn(uuid);
         boolean changed = alreadyActive != isActive;
         if (alreadyActive && !isActive) {
             activeGravitationalModulators.remove(uuid); // On -> off
@@ -203,10 +205,10 @@ public class PlayerState {
     }
 
     public boolean isGravitationalModulationOn(Player p) {
-        return activeGravitationalModulators.contains(p.getUUID());
+        return isGravitationalModulationOn(p.getUUID());
     }
 
-    public Set<UUID> getActiveGravitationalModulators() {
-        return activeGravitationalModulators;
+    public boolean isGravitationalModulationOn(UUID uuid) {
+        return activeGravitationalModulators.contains(uuid);
     }
 }

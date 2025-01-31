@@ -172,9 +172,9 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
 
     public void register() {
         if (isRemote()) {
-            TransmitterNetworkRegistry.getInstance().addClientNetwork(getUUID(), this);
+            TransmitterNetworkRegistry.addClientNetwork(getUUID(), this);
         } else {
-            TransmitterNetworkRegistry.getInstance().registerNetwork(this);
+            TransmitterNetworkRegistry.registerNetwork(this);
         }
     }
 
@@ -184,9 +184,9 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         acceptorCache.deregister();
         transmitterValidator = null;
         if (isRemote()) {
-            TransmitterNetworkRegistry.getInstance().removeClientNetwork(this);
+            TransmitterNetworkRegistry.removeClientNetwork(this);
         } else {
-            TransmitterNetworkRegistry.getInstance().removeNetwork(this);
+            TransmitterNetworkRegistry.removeNetwork(this);
         }
     }
 

@@ -2,7 +2,9 @@ package mekanism.common.inventory.container.tile;
 
 import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
+import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.network.PacketUtils;
+import mekanism.common.network.to_client.qio.BulkQIOData;
 import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
 import mekanism.common.registries.MekanismContainerTypes;
@@ -12,23 +14,30 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class QIODashboardContainer extends QIOItemViewerContainer {
 
     private final TileEntityQIODashboard tile;
 
-    public QIODashboardContainer(int id, Inventory inv, TileEntityQIODashboard tile, boolean remote) {
-        super(MekanismContainerTypes.QIO_DASHBOARD, id, inv, remote, tile);
+    public QIODashboardContainer(int id, Inventory inv, TileEntityQIODashboard tile, boolean remote, BulkQIOData itemData) {
+        this(id, inv, tile, remote, itemData,
+              remote ? CachedSearchData.initialClient() : CachedSearchData.INITIAL_SERVER,
+              remote ? CachedSortingData.currentClient() : CachedSortingData.SERVER,
+              null);
+    }
+
+    private QIODashboardContainer(int id, Inventory inv, TileEntityQIODashboard tile, boolean remote, BulkQIOData itemData, CachedSearchData searchData,
+          CachedSortingData sortingData, @Nullable SelectedWindowData selectedWindow) {
+        super(MekanismContainerTypes.QIO_DASHBOARD, id, inv, remote, tile, itemData, searchData, sortingData, selectedWindow);
         this.tile = tile;
-        tile.addContainerTrackers(this);
+        this.tile.addContainerTrackers(this);
         addSlotsAndOpen();
     }
 
     @Override
-    public QIODashboardContainer recreate() {
-        QIODashboardContainer container = new QIODashboardContainer(containerId, inv, tile, true);
-        sync(container);
-        return container;
+    protected QIODashboardContainer recreateUnchecked() {
+        return new QIODashboardContainer(containerId, inv, tile, true, asBulkData(), asCachedSearchData(), currentSortingData(), getSelectedWindow());
     }
 
     @Override

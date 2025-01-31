@@ -26,6 +26,9 @@ public class RenderPressurizedTube extends RenderTransmitterBase<TileEntityPress
     protected void render(TileEntityPressurizedTube tile, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight,
           ProfilerFiller profiler) {
         ChemicalNetwork network = tile.getTransmitter().getTransmitterNetwork();
+        if (network == null) {
+            return;//race conditions, yay
+        }
         matrix.pushPose();
         matrix.translate(0.5, 0.5, 0.5);
         Chemical chemical = network.lastChemical.getChemical();

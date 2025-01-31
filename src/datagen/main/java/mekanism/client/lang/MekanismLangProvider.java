@@ -1054,12 +1054,19 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.HOLD_FOR_MODULES, "Hold %1$s for installed modules.");
         add(MekanismLang.HOLD_FOR_SUPPORTED_ITEMS, "Hold %1$s for supporting items and conflicting modules.");
         //Commands
+        add(MekanismLang.COMMAND_ERROR_NOT_WATCHED, "Chunk (%1$s) is not being watched.");
         add(MekanismLang.COMMAND_CHUNK_WATCH, "Chunk (%1$s) added to watch list.");
+        add(MekanismLang.COMMAND_CHUNK_WATCH_NAMED, "Chunk %1$s (%2$s) added to watch list.");
         add(MekanismLang.COMMAND_CHUNK_UNWATCH, "Chunk (%1$s) removed from watch list.");
+        add(MekanismLang.COMMAND_CHUNK_UNWATCH_NAMED, "Chunk %1$s (%2$s) removed from watch list.");
         add(MekanismLang.COMMAND_CHUNK_CLEAR, "%1$s chunks removed from watch list.");
         add(MekanismLang.COMMAND_CHUNK_FLUSH, "%1$s chunks unloaded.");
         add(MekanismLang.COMMAND_CHUNK_LOADED, "Loaded chunk (%1$s).");
+        add(MekanismLang.COMMAND_CHUNK_LOADED_NAMED, "Loaded chunk %1$s (%2$s).");
         add(MekanismLang.COMMAND_CHUNK_UNLOADED, "Unloaded chunk (%1$s).");
+        add(MekanismLang.COMMAND_CHUNK_UNLOADED_NAMED, "Unloaded chunk %1$s (%2$s).");
+        add(MekanismLang.COMMAND_CHUNK_TICKET_LEVEL_CHANGED, "Chunk (%1$s) ticket level changed from: %2$s to: %3$s.");
+        add(MekanismLang.COMMAND_CHUNK_TICKET_LEVEL_CHANGED_NAMED, "Chunk %1$s (%2$s) ticket level changed from: %3$s to: %4$s.");
         add(MekanismLang.COMMAND_DEBUG, "Toggled debug mode: %1$s.");
         add(MekanismLang.COMMAND_TEST_RULES, "Enabled keepInventory, and disabled doMobSpawning, doDaylightCycle, doWeatherCycle and mobGriefing!");
         add(MekanismLang.COMMAND_TP, "Teleported to (%1$s) - saved last position on stack.");
@@ -1183,6 +1190,10 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.ISSUE_INPUT_DOESNT_PRODUCE_OUTPUT, " - Input does not produce output");
         add(MekanismLang.ISSUE_INVALID_OREDICTIONIFICATOR_FILTER, " - Filter is no longer valid or supported");
         add(MekanismLang.ISSUE_FILTER_HAS_BLACKLISTED_ELEMENT, " - Filter contains at least one element that is blacklisted");
+        //Redstone Activation
+        add(MekanismLang.ISSUE_REDSTONE_SIGNAL_ABSENT, " - Redstone signal absent, provide one to activate.");
+        add(MekanismLang.ISSUE_REDSTONE_SIGNAL_PRESENT, " - Redstone signal present, remove it to activate.");
+        add(MekanismLang.ISSUE_REDSTONE_PULSE_REQUIRED, " - Redstone pulse required to activate.");
         //Laser Amplifier
         add(MekanismLang.ENTITY_DETECTION, "Entity Detection");
         add(MekanismLang.ENERGY_CONTENTS, "Energy Contents");

@@ -9,6 +9,7 @@ import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -18,11 +19,11 @@ import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
+import mekanism.common.inventory.ISlotClickHandler.IScrollableSlot;
 import mekanism.common.inventory.container.slot.HotBarSlot;
 import mekanism.common.inventory.container.slot.InsertableSlot;
 import mekanism.common.inventory.container.slot.MainInventorySlot;
 import mekanism.common.lib.inventory.HashedItem;
-import mekanism.common.lib.inventory.HashedItem.UUIDAwareHashedItem;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -41,13 +42,15 @@ public class QIOCraftingTransferHelper {
     private byte emptyInventorySlots;
     private boolean isValid;
 
-    public QIOCraftingTransferHelper(Object2LongMap<UUIDAwareHashedItem> cachedInventory, List<HotBarSlot> hotBarSlots, List<MainInventorySlot> mainInventorySlots,
+    public QIOCraftingTransferHelper(Collection<? extends IScrollableSlot> cachedInventory, List<HotBarSlot> hotBarSlots, List<MainInventorySlot> mainInventorySlots,
           QIOCraftingWindow craftingWindow, Player player) {
         isValid = true;
         reverseLookup = new HashMap<>();
-        for (Object2LongMap.Entry<UUIDAwareHashedItem> entry : cachedInventory.object2LongEntrySet()) {
-            UUIDAwareHashedItem source = entry.getKey();
-            reverseLookup.computeIfAbsent(source.asRawHashedItem(), item -> new HashedItemSource()).addQIOSlot(source.getUUID(), entry.getLongValue());
+        for (IScrollableSlot source : cachedInventory) {
+            //Skip any items that are only still in the cache due to sorting being paused, as we don't have any of it available for crafting
+            if (source.count() > 0) {
+                reverseLookup.computeIfAbsent(source.asRawHashedItem(), item -> new HashedItemSource()).addQIOSlot(source.itemUUID(), source.count());
+            }
         }
         byte inventorySlotIndex = 0;
         for (; inventorySlotIndex < 9; inventorySlotIndex++) {

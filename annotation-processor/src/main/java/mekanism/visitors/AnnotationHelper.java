@@ -1,6 +1,6 @@
 package mekanism.visitors;
 
-import com.squareup.javapoet.CodeBlock;
+import com.palantir.javapoet.CodeBlock;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

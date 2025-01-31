@@ -7,11 +7,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.UUID;
 import mekanism.api.RelativeSide;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.GuiRadialSelector;
@@ -47,6 +47,7 @@ import mekanism.common.util.WorldUtils;
 import mezz.jei.api.runtime.IRecipesGui;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.model.HumanoidModel.ArmPose;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -106,6 +107,7 @@ public class RenderTickHandler {
     private static final Map<Direction, Map<TransmissionType, Model3D>> cachedOverlays = new EnumMap<>(Direction.class);
     private static final List<LazyRender> transparentRenderers = new ArrayList<>();
     private static final BoltRenderer boltRenderer = new BoltRenderer();
+    private static final Map<Class<?>, Boolean> IS_EMI_SCREEN = new HashMap<>();
 
     private boolean outliningArea = false;
 
@@ -135,13 +137,22 @@ public class RenderTickHandler {
             }
             if (Mekanism.hooks.EmiLoaded) {
                 //If Emi is loaded and our current screen is a mekanism gui, check if the new screen is an Emi recipe screen
-                //TODO - 1.20.4: Figure out a better way to handle this https://github.com/emilyploszaj/emi/issues/481
-                if (event.getNewScreen() != null && event.getNewScreen().getClass().getPackageName().startsWith("dev.emi.emi")) {
+                // https://github.com/emilyploszaj/emi/issues/481
+                if (isEmiScreen(event.getNewScreen())) {
                     //If it is mark on our current screen that we are switching to EMI
                     screen.switchingToRecipeViewer = true;
                 }
             }
         }
+    }
+
+    private static boolean isEmiScreen(@Nullable Screen newScreen) {
+        return newScreen != null && IS_EMI_SCREEN.computeIfAbsent(newScreen.getClass(), cl -> {
+            if (cl.getName().startsWith("dev.emi.emi")) {
+                return Boolean.TRUE;
+            }
+            return Boolean.FALSE;
+        }) == Boolean.TRUE;
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -244,65 +255,25 @@ public class RenderTickHandler {
     public void tickEnd(ClientTickEvent.Post event) {
         //Note: We check that the game mode is not null as if it is that means the world is unloading, and we don't actually want to be rendering
         // as our data may be out of date or invalid. For example configs could unload while it is still unloading
-        if (minecraft.player != null && minecraft.player.level() != null && minecraft.gameMode != null && MekanismRenderer.isRunningNormally()) {
-            Level world = minecraft.player.level();
+        Level world;
+        //noinspection ConstantValue
+        if (minecraft.player != null && (world = minecraft.player.level()) != null && minecraft.gameMode != null && MekanismRenderer.isRunningNormally()) {
             float partialTicks = minecraft.getTimer().getGameTimeDeltaPartialTick(false);
-            //Traverse active jetpacks and do animations
-            for (UUID uuid : Mekanism.playerState.getActiveJetpacks()) {
-                Player p = world.getPlayerByUUID(uuid);
-                if (p != null) {
-                    Pos3D playerPos = new Pos3D(p).translate(0, p.getEyeHeight(), 0);
-                    //TODO - 1.21: Figure out why this is incorrect for other clients when they are hovering
-                    Vec3 playerMotion = p.getDeltaMovement();
-                    float random = (world.random.nextFloat() - 0.5F) * 0.1F;
-                    //This positioning code is somewhat cursed, but it seems to be mostly working and entity pose code seems cursed in general
-                    float xRot;
-                    if (p.isCrouching()) {
-                        xRot = 20;
-                        playerPos = playerPos.translate(0, 0.125, 0);
-                    } else {
-                        float f = p.getSwimAmount(partialTicks);
-                        if (p.isFallFlying()) {
-                            float f1 = (float) p.getFallFlyingTicks() + partialTicks;
-                            float f2 = Mth.clamp(f1 * f1 / 100.0F, 0.0F, 1.0F);
-                            xRot = f2 * (-90.0F - p.getXRot());
-                        } else {
-                            float f3 = p.isInWater() ? -90.0F - p.getXRot() : -90.0F;
-                            xRot = Mth.lerp(f, 0.0F, f3);
-                        }
-                        xRot = -xRot;
-                        Pos3D eyeAdjustments;
-                        if (p.isFallFlying() && (p != minecraft.player || !minecraft.options.getCameraType().isFirstPerson())) {
-                            eyeAdjustments = new Pos3D(0, p.getEyeHeight(Pose.STANDING), 0).xRot(xRot).yRot(p.yBodyRot);
-                        } else if (p.isVisuallySwimming()) {
-                            eyeAdjustments = new Pos3D(0, p.getEyeHeight(), 0).xRot(xRot).yRot(p.yBodyRot).translate(0, 0.5, 0);
-                        } else {
-                            eyeAdjustments = new Pos3D(0, p.getEyeHeight(), 0).xRot(xRot).yRot(p.yBodyRot);
-                        }
-                        playerPos = new Pos3D(p.getX() + eyeAdjustments.x, p.getY() + eyeAdjustments.y, p.getZ() + eyeAdjustments.z);
-                    }
-                    Pos3D vLeft = new Pos3D(-0.43, -0.55, -0.54).xRot(xRot).yRot(p.yBodyRot);
-                    renderJetpackSmoke(world, playerPos.translate(vLeft, playerMotion), vLeft.scale(0.2).translate(playerMotion, vLeft.scale(random)));
-                    Pos3D vRight = new Pos3D(0.43, -0.55, -0.54).xRot(xRot).yRot(p.yBodyRot);
-                    renderJetpackSmoke(world, playerPos.translate(vRight, playerMotion), vRight.scale(0.2).translate(playerMotion, vRight.scale(random)));
-                    Pos3D vCenter = new Pos3D((world.random.nextFloat() - 0.5) * 0.4, -0.86, -0.30).xRot(xRot).yRot(p.yBodyRot);
-                    renderJetpackSmoke(world, playerPos.translate(vCenter, playerMotion), vCenter.scale(0.2).translate(playerMotion));
+            for (Player p : world.players()) {
+                //Traverse active jetpacks and do animations
+                if (Mekanism.playerState.isJetpackOn(p)) {
+                    doJetpackRender(p, world, partialTicks);
                 }
-            }
 
-            if (world.getGameTime() % 4 == 0) {
-                //Traverse active scuba masks and do animations
-                for (UUID uuid : Mekanism.playerState.getActiveScubaMasks()) {
-                    Player p = world.getPlayerByUUID(uuid);
-                    if (p != null && p.isInWater()) {
-                        Pos3D vec = new Pos3D(0.4, 0.4, 0.4).multiply(p.getViewVector(1)).translate(0, -0.2, 0);
-                        Pos3D motion = vec.scale(0.2).translate(p.getDeltaMovement());
-                        Pos3D v = new Pos3D(p).translate(0, p.getEyeHeight(), 0).translate(vec);
-                        world.addParticle(MekanismParticleTypes.SCUBA_BUBBLE.get(), v.x, v.y, v.z, motion.x, motion.y + 0.2, motion.z);
+                if (world.getGameTime() % 4 == 0) {
+                    //Traverse active scuba masks and do animations
+                    if (Mekanism.playerState.isScubaMaskOn(p)) {
+                        if (p.isInWater()) {
+                            doScubaRender(p, world);
+                        }
                     }
-                }
-                //Traverse players and do animations for idle flamethrowers
-                for (Player p : world.players()) {
+
+                    //Traverse players and do animations for idle flamethrowers
                     if (!p.swinging) {
                         if (p.isUsingItem()) {
                             InteractionHand usedHand = p.getUsedItemHand();
@@ -320,6 +291,52 @@ public class RenderTickHandler {
                 }
             }
         }
+    }
+
+    private static void doScubaRender(Player p, Level world) {
+        Pos3D vec = new Pos3D(0.4, 0.4, 0.4).multiply(p.getViewVector(1)).translate(0, -0.2, 0);
+        Pos3D motion = vec.scale(0.2).translate(p.getDeltaMovement());
+        Pos3D v = new Pos3D(p).translate(0, p.getEyeHeight(), 0).translate(vec);
+        world.addParticle(MekanismParticleTypes.SCUBA_BUBBLE.get(), v.x, v.y, v.z, motion.x, motion.y + 0.2, motion.z);
+    }
+
+    private void doJetpackRender(Player p, Level world, float partialTicks) {
+        Pos3D playerPos = new Pos3D(p).translate(0, p.getEyeHeight(), 0);
+        //TODO - 1.21: Figure out why this is incorrect for other clients when they are hovering
+        Vec3 playerMotion = p.getDeltaMovement();
+        float random = (world.random.nextFloat() - 0.5F) * 0.1F;
+        //This positioning code is somewhat cursed, but it seems to be mostly working and entity pose code seems cursed in general
+        float xRot;
+        if (p.isCrouching()) {
+            xRot = 20;
+            playerPos = playerPos.translate(0, 0.125, 0);
+        } else {
+            float f = p.getSwimAmount(partialTicks);
+            if (p.isFallFlying()) {
+                float f1 = (float) p.getFallFlyingTicks() + partialTicks;
+                float f2 = Mth.clamp(f1 * f1 / 100.0F, 0.0F, 1.0F);
+                xRot = f2 * (-90.0F - p.getXRot());
+            } else {
+                float f3 = p.isInWater() ? -90.0F - p.getXRot() : -90.0F;
+                xRot = Mth.lerp(f, 0.0F, f3);
+            }
+            xRot = -xRot;
+            Pos3D eyeAdjustments;
+            if (p.isFallFlying() && (p != minecraft.player || !minecraft.options.getCameraType().isFirstPerson())) {
+                eyeAdjustments = new Pos3D(0, p.getEyeHeight(Pose.STANDING), 0).xRot(xRot).yRot(p.yBodyRot);
+            } else if (p.isVisuallySwimming()) {
+                eyeAdjustments = new Pos3D(0, p.getEyeHeight(), 0).xRot(xRot).yRot(p.yBodyRot).translate(0, 0.5, 0);
+            } else {
+                eyeAdjustments = new Pos3D(0, p.getEyeHeight(), 0).xRot(xRot).yRot(p.yBodyRot);
+            }
+            playerPos = new Pos3D(p.getX() + eyeAdjustments.x, p.getY() + eyeAdjustments.y, p.getZ() + eyeAdjustments.z);
+        }
+        Pos3D vLeft = new Pos3D(-0.43, -0.55, -0.54).xRot(xRot).yRot(p.yBodyRot);
+        renderJetpackSmoke(world, playerPos.translate(vLeft, playerMotion), vLeft.scale(0.2).translate(playerMotion, vLeft.scale(random)));
+        Pos3D vRight = new Pos3D(0.43, -0.55, -0.54).xRot(xRot).yRot(p.yBodyRot);
+        renderJetpackSmoke(world, playerPos.translate(vRight, playerMotion), vRight.scale(0.2).translate(playerMotion, vRight.scale(random)));
+        Pos3D vCenter = new Pos3D((world.random.nextFloat() - 0.5) * 0.4, -0.86, -0.30).xRot(xRot).yRot(p.yBodyRot);
+        renderJetpackSmoke(world, playerPos.translate(vCenter, playerMotion), vCenter.scale(0.2).translate(playerMotion));
     }
 
     private static boolean tryAddIdleFlamethrowerParticles(Minecraft minecraft, Player player, InteractionHand hand) {

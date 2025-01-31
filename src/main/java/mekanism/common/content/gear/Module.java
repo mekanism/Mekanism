@@ -326,7 +326,7 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
             message = MekanismLang.GENERIC_STORED.translate(modeName, EnumColor.BRIGHT_GREEN, MekanismLang.MODULE_ENABLED_LOWER);
         }
         player.displayClientMessage(message, true);
-        ((ModuleContainer) moduleContainer).toggleEnabled(player.level().registryAccess(), stack, data);
+        ((ModuleContainer) moduleContainer).toggleEnabled(player.registryAccess(), stack, data);
     }
 
     @Override

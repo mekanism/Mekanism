@@ -106,7 +106,7 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         //Bone block -> bone meal
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(Blocks.BONE_BLOCK),
-              new ItemStack(Items.BONE_MEAL, BONEMEAL_FROM_BONE * 3)//vanilla is 3 bone's worth
+              new ItemStack(Items.BONE_MEAL, 9)//must be the same as vanilla needs to make a block
         ).build(consumer, Mekanism.rl(basePath + "bone_block"));
         //Red Sandstone -> Sand
         RecipeProviderUtil.addSandStoneToSandRecipe(consumer, basePath + "red_sandstone_to_sand", null, Blocks.RED_SAND, Tags.Items.SANDSTONE_RED_BLOCKS);
