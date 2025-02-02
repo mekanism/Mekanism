@@ -312,8 +312,6 @@ neoForge {
                 jvmArguments.addAll('-XX:+IgnoreUnrecognizedVMOptions', '-XX:+AllowEnhancedClassRedefinition')
             }
 
-            gameDirectory = project.file("runs/$name")
-
             // Uncomment this to get verbose debug logging
             // logLevel = org.slf4j.event.Level.DEBUG
 
