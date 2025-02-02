@@ -140,6 +140,7 @@ def setupExtraSourceSets(SourceSet base, boolean includeExtra = true) {
         baseRuntimeOnly.extendsFrom(project.configurations.named('runtimeOnly').get())
         baseLocalRuntime.extendsFrom(project.configurations.named('localRuntime').get())
     }
+    base.runtimeClasspath += baseLocalRuntime
     if (includeExtra) {
         //And then setup and have all the extra sourceSets have their configurations extend the ones for the base module so that they can
         // properly access the dependency
