@@ -127,6 +127,10 @@ def setupExtraSourceSets(SourceSet base, boolean includeExtra = true) {
     if (base != project.sourceSets.gameTest) {
         project.sourceSets.gameTest.compileClasspath += base.output
     }
+    // Add the directory where Gradle would usually put the AP sources explicitly so IntelliJ picks it up
+    // If we don't do this, IJ seems to run a weird heuristic on where to put the AP sources and put them
+    // into the generated resource directory instead
+    base.java.srcDir project.file("build/generated/sources/annotationProcessor/java/${base.name}")
     //Setup and extend configurations for alternate modules. First by making the implementation, compileOnly, runtimeOnly equivalents
     // for those modules extend the main ones
     def baseImplementation = project.configurations.maybeCreate(base.getTaskName(null, 'implementation'))
