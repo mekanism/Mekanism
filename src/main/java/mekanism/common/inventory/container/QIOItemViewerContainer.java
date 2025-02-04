@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -623,7 +624,9 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         // searches should only be updated on the client-side
         if (level == null || !level.isClientSide()) {
             return;
-        } else if (skipSameQuery && rawSearchQuery.equals(queryText)) {
+        }
+        queryText = queryText.trim().toLowerCase(Locale.ROOT);
+        if (skipSameQuery && rawSearchQuery.equals(queryText)) {
             //Short circuit and skip updating the search if we already have the results
             //TODO: Do we want to compare if the search queries are equal here instead of just the raw text?
             // That way we can potentially handle ignoring things like lower vs uppercase of the same letter.

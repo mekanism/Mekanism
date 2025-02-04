@@ -55,6 +55,7 @@ public class ToolsTagProvider extends BaseTagProvider {
               BlockTags.MINEABLE_WITH_PICKAXE,
               BlockTags.MINEABLE_WITH_SHOVEL
         );
+        //TODO - 1.21: Re-evaluate these, as I am fairly certain it may not be being done correctly
         getBlockBuilder(ToolsTags.Blocks.INCORRECT_FOR_BRONZE_TOOL).add(BlockTags.INCORRECT_FOR_IRON_TOOL);
         getBlockBuilder(ToolsTags.Blocks.INCORRECT_FOR_LAPIS_LAZULI_TOOL).add(BlockTags.INCORRECT_FOR_STONE_TOOL);
         getBlockBuilder(ToolsTags.Blocks.INCORRECT_FOR_OSMIUM_TOOL).add(BlockTags.INCORRECT_FOR_IRON_TOOL);

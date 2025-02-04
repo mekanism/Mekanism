@@ -42,14 +42,14 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
     }
 
     private void addTags() {
-        addTag(GeneratorTags.Fluids.BIOETHANOL, "Bioethanol");
-        addTag(GeneratorTags.Fluids.DEUTERIUM, "Deuterium");
-        addTag(GeneratorTags.Fluids.TRITIUM, "Tritium");
-        addTag(GeneratorTags.Fluids.FUSION_FUEL, "D-T Fuels");
+        add(GeneratorTags.Fluids.BIOETHANOL, "Bioethanol");
+        add(GeneratorTags.Fluids.DEUTERIUM, "Deuterium");
+        add(GeneratorTags.Fluids.TRITIUM, "Tritium");
+        add(GeneratorTags.Fluids.FUSION_FUEL, "D-T Fuels");
 
-        addTag(GeneratorTags.Chemicals.DEUTERIUM, "Deuterium");
-        addTag(GeneratorTags.Chemicals.TRITIUM, "Tritium");
-        addTag(GeneratorTags.Chemicals.FUSION_FUEL, "D-T Fuels");
+        add(GeneratorTags.Chemicals.DEUTERIUM, "Deuterium");
+        add(GeneratorTags.Chemicals.TRITIUM, "Tritium");
+        add(GeneratorTags.Chemicals.FUSION_FUEL, "D-T Fuels");
     }
 
     private void addItems() {

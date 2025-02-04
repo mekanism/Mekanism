@@ -73,6 +73,20 @@ sourceSets {
     gameTest {
         compileClasspath += api.output
     }
+    // These source-sets only exist for the sake of assembling a dependency graph
+    // for IntelliJ. Each of these will become an IntelliJ module when the project is imported,
+    // and will be set as the "main module" for the IntelliJ runs. A compile dependency
+    // on the other source sets is enough, since runtime classpath is managed by MDG anyway.
+    runMain {
+        runtimeClasspath += main.runtimeClasspath
+        runtimeClasspath += api.runtimeClasspath
+        compileClasspath += main.output
+        compileClasspath += api.output
+    }
+    runData {
+        compileClasspath += runMain.compileClasspath
+        runtimeClasspath += runMain.runtimeClasspath
+    }
 }
 
 configurations {
@@ -113,6 +127,10 @@ def setupExtraSourceSets(SourceSet base, boolean includeExtra = true) {
     if (base != project.sourceSets.gameTest) {
         project.sourceSets.gameTest.compileClasspath += base.output
     }
+    // Add the directory where Gradle would usually put the AP sources explicitly so IntelliJ picks it up
+    // If we don't do this, IJ seems to run a weird heuristic on where to put the AP sources and put them
+    // into the generated resource directory instead
+    base.java.srcDir project.file("build/generated/sources/annotationProcessor/java/${base.name}")
     //Setup and extend configurations for alternate modules. First by making the implementation, compileOnly, runtimeOnly equivalents
     // for those modules extend the main ones
     def baseImplementation = project.configurations.maybeCreate(base.getTaskName(null, 'implementation'))
@@ -126,6 +144,7 @@ def setupExtraSourceSets(SourceSet base, boolean includeExtra = true) {
         baseRuntimeOnly.extendsFrom(project.configurations.named('runtimeOnly').get())
         baseLocalRuntime.extendsFrom(project.configurations.named('localRuntime').get())
     }
+    base.runtimeClasspath += baseLocalRuntime
     if (includeExtra) {
         //And then setup and have all the extra sourceSets have their configurations extend the ones for the base module so that they can
         // properly access the dependency
@@ -136,6 +155,8 @@ def setupExtraSourceSets(SourceSet base, boolean includeExtra = true) {
             def implExtends = [baseImplementation]
             if (extraType == 'datagen') {
                 implExtends.add(project.configurations.named('datagenNonMod').get())
+                sourceSets.runData.compileClasspath += extraSourceSet.output
+                sourceSets.runData.runtimeClasspath += extraSourceSet.runtimeClasspath
             }
             project.configurations.maybeCreate(extraSourceSet.getTaskName(null, 'implementation')).extendsFrom(*implExtends)
             project.configurations.maybeCreate(extraSourceSet.getTaskName(null, 'compileOnly')).extendsFrom(baseCompileOnly)
@@ -143,6 +164,9 @@ def setupExtraSourceSets(SourceSet base, boolean includeExtra = true) {
             project.configurations.maybeCreate(extraSourceSet.getTaskName(null, 'localRuntime')).extendsFrom(baseLocalRuntime)
         }
     }
+
+    sourceSets.runMain.compileClasspath += base.output
+    sourceSets.runMain.runtimeClasspath += base.runtimeClasspath
 }
 
 SourceSet setupExtraSourceSet(SourceSet baseSourceSet, String extra) {
@@ -290,6 +314,8 @@ neoForge {
 
             // Uncomment this to get verbose debug logging
             // logLevel = org.slf4j.event.Level.DEBUG
+
+            sourceSet = sourceSets.runMain
         }
         //Note: To enable logging into the client account, set the mc_devlogin property to true in your gradle user home
         // You can also run gradlew runClient -Pmc_devlogin=true
@@ -333,7 +359,7 @@ neoForge {
             programArguments.addAll('--all', '--output', file('src/datagen/generated/').absolutePath,
                     '--mod', 'mekanism', '--existing', file('src/main/resources/').absolutePath)
 
-            sourceSet = sourceSets.datagenMain
+            sourceSet = sourceSets.runData
             loadedMods = [mods.mekanismData]
 
             for (String name : secondaryModules) {

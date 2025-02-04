@@ -32,6 +32,9 @@ public class SearchQueryParser {
 
     private static final Set<Character> TERMINATORS = Set.of('|', '(', '\"', '\'');
 
+    /**
+     * @param query Expected to be lower case
+     */
     public static ISearchQuery parse(String query) {
         if (query == null || query.isEmpty()) {
             return ISearchQuery.INVALID;
@@ -44,7 +47,7 @@ public class SearchQueryParser {
         if (query == null || query.isEmpty()) {
             return ISearchQuery.INVALID;
         }
-        return parse(query, new LinkedHashSet<>());
+        return parse(query.trim().toLowerCase(Locale.ROOT), new LinkedHashSet<>());
     }
 
     private static ISearchQuery parse(String query, Set<SearchQuery> ret) {
@@ -79,9 +82,14 @@ public class SearchQueryParser {
             i = keyListResult.index();
         }
         if (!curQuery.isEmpty()) {
+            if (ret.isEmpty()) {
+                return curQuery;
+            }
             ret.add(curQuery);
+        } else if (ret.size() == 1) {
+            return ret.iterator().next();
         }
-        return new SearchQuerySet(ret);
+        return ret.isEmpty() ? ISearchQuery.INVALID : new SearchQuerySet(ret);
     }
 
     private static KeyListResult readKeyList(String query, int start, QueryType type, SearchQuery curQuery) {
@@ -201,26 +209,22 @@ public class SearchQueryParser {
         NAME('~') {
             @Override
             public boolean matches(@Nullable Level level, @Nullable Player player, String key, ItemStack stack) {
-                return stack.getHoverName().getString().toLowerCase(Locale.ROOT).contains(key.toLowerCase(Locale.ROOT));
+                return stack.getHoverName().getString().toLowerCase(Locale.ROOT).contains(key);
             }
         },
         MOD_ID('@') {
             @Override
             public boolean matches(@Nullable Level level, @Nullable Player player, String key, ItemStack stack) {
-                return MekanismUtils.getModId(stack).toLowerCase(Locale.ROOT).contains(key.toLowerCase(Locale.ROOT));
+                return MekanismUtils.getModId(stack).toLowerCase(Locale.ROOT).contains(key);
             }
         },
         TOOLTIP('$') {
             @Override
             public boolean matches(@Nullable Level level, @Nullable Player player, String key, ItemStack stack) {
-                List<Component> tooltipLines = stack.getTooltipLines(Item.TooltipContext.of(level), player, Default.NORMAL);
-                if (!tooltipLines.isEmpty()) {
-                    String lowerKey = key.toLowerCase(Locale.ROOT);
-                    for (Component tooltipLine : tooltipLines) {
-                        String tooltip = tooltipLine.getString().toLowerCase(Locale.ROOT);
-                        if (tooltip.contains(lowerKey)) {
-                            return true;
-                        }
+                for (Component tooltipLine : stack.getTooltipLines(Item.TooltipContext.of(level), player, Default.NORMAL)) {
+                    String tooltip = tooltipLine.getString().toLowerCase(Locale.ROOT);
+                    if (tooltip.contains(key)) {
+                        return true;
                     }
                 }
                 return false;
@@ -229,13 +233,9 @@ public class SearchQueryParser {
         TAG('#') {
             @Override
             public boolean matches(@Nullable Level level, @Nullable Player player, String key, ItemStack stack) {
-                List<String> itemTags = TagCache.getItemTags(stack);
-                if (!itemTags.isEmpty()) {
-                    String lowerKey = key.toLowerCase(Locale.ROOT);
-                    for (String tag : itemTags) {
-                        if (tag.toLowerCase(Locale.ROOT).contains(lowerKey)) {
-                            return true;
-                        }
+                for (String tag : TagCache.getItemTags(stack)) {
+                    if (tag.toLowerCase(Locale.ROOT).contains(key)) {
+                        return true;
                     }
                 }
                 return false;
@@ -272,8 +272,6 @@ public class SearchQueryParser {
     public static class SearchQuery implements ISearchQuery {
 
         //TODO: Do we want to allow adding to query strings of a query type after the fact and instead force using an query set if you don't want to use parenthesis
-        //TODO: As it seems all QueryType's end up doing a toLowerCase(Locale.ROOT) on the key, do we want to try and move that upwards and have the input expect
-        // it to be lower case. That way we don't have to convert them to lower case so much?
         private final Map<QueryType, List<String>> queryStrings = new EnumMap<>(QueryType.class);
 
         @Override

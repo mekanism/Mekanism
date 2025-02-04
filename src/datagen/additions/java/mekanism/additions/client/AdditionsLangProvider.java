@@ -49,26 +49,26 @@ public class AdditionsLangProvider extends BaseLanguageProvider {
     }
 
     private void addTags() {
-        addTag(AdditionsTags.Items.BALLOONS, "Balloons");
+        add(AdditionsTags.Items.BALLOONS, "Balloons");
 
-        addTag(AdditionsTags.Items.FENCES_PLASTIC, "Plastic Fences");
-        addTag(AdditionsTags.Items.FENCE_GATES_PLASTIC, "Plastic Fence Gates");
-        addTag(AdditionsTags.Items.STAIRS_PLASTIC, "Plastic Stairs");
-        addTag(AdditionsTags.Items.SLABS_PLASTIC, "Plastic Slabs");
-        addTag(AdditionsTags.Items.STAIRS_PLASTIC_GLOW, "Glow Plastic Stairs");
-        addTag(AdditionsTags.Items.SLABS_PLASTIC_GLOW, "Glow Plastic Slabs");
-        addTag(AdditionsTags.Items.STAIRS_PLASTIC_TRANSPARENT, "Transparent Plastic Stairs");
-        addTag(AdditionsTags.Items.SLABS_PLASTIC_TRANSPARENT, "Transparent Plastic Slabs");
+        add(AdditionsTags.Items.FENCES_PLASTIC, "Plastic Fences");
+        add(AdditionsTags.Items.FENCE_GATES_PLASTIC, "Plastic Fence Gates");
+        add(AdditionsTags.Items.STAIRS_PLASTIC, "Plastic Stairs");
+        add(AdditionsTags.Items.SLABS_PLASTIC, "Plastic Slabs");
+        add(AdditionsTags.Items.STAIRS_PLASTIC_GLOW, "Glow Plastic Stairs");
+        add(AdditionsTags.Items.SLABS_PLASTIC_GLOW, "Glow Plastic Slabs");
+        add(AdditionsTags.Items.STAIRS_PLASTIC_TRANSPARENT, "Transparent Plastic Stairs");
+        add(AdditionsTags.Items.SLABS_PLASTIC_TRANSPARENT, "Transparent Plastic Slabs");
 
-        addTag(AdditionsTags.Items.GLOW_PANELS, "Glow Panels");
+        add(AdditionsTags.Items.GLOW_PANELS, "Glow Panels");
 
-        addTag(AdditionsTags.Items.PLASTIC_BLOCKS, "All Types of Plastic Blocks");
-        addTag(AdditionsTags.Items.PLASTIC_BLOCKS_GLOW, "Glow Plastic Blocks");
-        addTag(AdditionsTags.Items.PLASTIC_BLOCKS_PLASTIC, "Plastic Blocks");
-        addTag(AdditionsTags.Items.PLASTIC_BLOCKS_REINFORCED, "Reinforced Plastic Blocks");
-        addTag(AdditionsTags.Items.PLASTIC_BLOCKS_ROAD, "Plastic Roads");
-        addTag(AdditionsTags.Items.PLASTIC_BLOCKS_SLICK, "Slick Plastic Blocks");
-        addTag(AdditionsTags.Items.PLASTIC_BLOCKS_TRANSPARENT, "Transparent Plastic Blocks");
+        add(AdditionsTags.Items.PLASTIC_BLOCKS, "All Types of Plastic Blocks");
+        add(AdditionsTags.Items.PLASTIC_BLOCKS_GLOW, "Glow Plastic Blocks");
+        add(AdditionsTags.Items.PLASTIC_BLOCKS_PLASTIC, "Plastic Blocks");
+        add(AdditionsTags.Items.PLASTIC_BLOCKS_REINFORCED, "Reinforced Plastic Blocks");
+        add(AdditionsTags.Items.PLASTIC_BLOCKS_ROAD, "Plastic Roads");
+        add(AdditionsTags.Items.PLASTIC_BLOCKS_SLICK, "Slick Plastic Blocks");
+        add(AdditionsTags.Items.PLASTIC_BLOCKS_TRANSPARENT, "Transparent Plastic Blocks");
 
     }
 

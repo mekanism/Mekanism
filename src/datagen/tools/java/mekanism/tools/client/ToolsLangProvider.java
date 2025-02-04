@@ -64,7 +64,7 @@ public class ToolsLangProvider extends BaseLanguageProvider {
     }
 
     private void addTags() {
-        addTag(ToolsTags.Items.TOOLS_PAXEL, "Paxels");
+        add(ToolsTags.Items.TOOLS_PAXEL, "Paxels");
     }
 
     private void addItems() {

@@ -24,17 +24,17 @@ class SearchQueryParserTest {
     @DisplayName("Test key lists")
     void testLists() {
         // test long list
-        queryAssert("(test | test1 | test2 test3 | test4)", "[{NAME=[test, test1, test2 test3, test4]}]");
+        queryAssert("(test | test1 | test2 test3 | test4)", "{NAME=[test, test1, test2 test3, test4]}");
         // test two queries, both with lists
         queryAssert("(test | test1) | (test2 | test3)", "[{NAME=[test, test1]}, {NAME=[test2, test3]}]");
         // test various query types in lists
-        queryAssert("@(mod | mod1) (test | test1) $(tool | tool1) #(tag | tag1)", "[{NAME=[test, test1], MOD_ID=[mod, mod1], TOOLTIP=[tool, tool1], TAG=[tag, tag1]}]");
+        queryAssert("@(mod | mod1) (test | test1) $(tool | tool1) #(tag | tag1)", "{NAME=[test, test1], MOD_ID=[mod, mod1], TOOLTIP=[tool, tool1], TAG=[tag, tag1]}");
     }
 
     @Test
     @DisplayName("Test quotes")
     void testQuotes() {
-        queryAssert("\"test with (parentheses)\"", "[{NAME=[test with (parentheses)]}]");
+        queryAssert("\"test with (parentheses)\"", "{NAME=[test with (parentheses)]}");
         queryAssert("\"test with (parentheses)\" | \"test2\"", "[{NAME=[test with (parentheses)]}, {NAME=[test2]}]");
         queryInvalid("\"no end quote");
         queryInvalid("quote at end\"");
@@ -43,21 +43,21 @@ class SearchQueryParserTest {
     @Test
     @DisplayName("Test various query types")
     void testQueryTypes() {
-        queryAssert("@mod #tag $tool test", "[{NAME=[test], MOD_ID=[mod], TOOLTIP=[tool], TAG=[tag]}]");
+        queryAssert("@mod #tag $tool test", "{NAME=[test], MOD_ID=[mod], TOOLTIP=[tool], TAG=[tag]}");
         // with quotes
-        queryAssert("#tag $\"this is a tooltip\" @mod", "[{MOD_ID=[mod], TOOLTIP=[this is a tooltip], TAG=[tag]}]");
+        queryAssert("#tag $\"this is a tooltip\" @mod", "{MOD_ID=[mod], TOOLTIP=[this is a tooltip], TAG=[tag]}");
         // with list
-        queryAssert("$tool #(tag1 | tag2) test name", "[{NAME=[test name], TOOLTIP=[tool], TAG=[tag1, tag2]}]");
+        queryAssert("$tool #(tag1 | tag2) test name", "{NAME=[test name], TOOLTIP=[tool], TAG=[tag1, tag2]}");
         // quotes + list
-        queryAssert("$\"tooltip test\" test name #(tag1 | tag2) @mod", "[{NAME=[test name], MOD_ID=[mod], TOOLTIP=[tooltip test], TAG=[tag1, tag2]}]");
+        queryAssert("$\"tooltip test\" test name #(tag1 | tag2) @mod", "{NAME=[test name], MOD_ID=[mod], TOOLTIP=[tooltip test], TAG=[tag1, tag2]}");
     }
 
     @Test
     @DisplayName("Test weird spacing")
     void testSpacing() {
-        queryAssert("       test     ", "[{NAME=[test]}]");
+        queryAssert("       test     ", "{NAME=[test]}");
         // key immediately following quote of other type
-        queryAssert("@\"test mod\"mod", "[{NAME=[mod], MOD_ID=[test mod]}]");
+        queryAssert("@\"test mod\"mod", "{NAME=[mod], MOD_ID=[test mod]}");
     }
 
     @Test
