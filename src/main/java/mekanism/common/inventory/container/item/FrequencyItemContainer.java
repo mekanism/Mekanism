@@ -38,6 +38,10 @@ public abstract class FrequencyItemContainer<FREQ extends Frequency> extends Mek
         return freq;
     }
 
+    public void setFrequency(FREQ frequency) {
+        freq = frequency;
+    }
+
     public List<FREQ> getPublicCache() {
         return publicCache;
     }
