@@ -168,9 +168,9 @@ public class NBTUtils {
         }
     }
 
-    public static void setChemicalIfPresent(HolderLookup.Provider provider, CompoundTag nbt, String key, Consumer<Chemical> setter) {
+    public static void setChemicalIfPresent(HolderLookup.Provider provider, CompoundTag nbt, String key, Consumer<Holder<Chemical>> setter) {
         if (nbt.contains(key, Tag.TAG_STRING)) {
-            setter.accept(Chemical.parseOptional(provider, nbt.getString(key)));
+            setter.accept(Chemical.parseOptionalHolder(provider, nbt.getString(key)));
         }
     }
 

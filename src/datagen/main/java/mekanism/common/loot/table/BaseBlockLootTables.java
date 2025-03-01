@@ -11,7 +11,6 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.block.BlockRadioactiveWasteBarrel;
@@ -24,7 +23,6 @@ import mekanism.common.lib.frequency.IFrequencyItem;
 import mekanism.common.resource.ore.OreBlockType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.TileEntityUpdateable;
-import mekanism.common.util.RegistryUtils;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -60,6 +58,7 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -87,9 +86,10 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
         return knownBlocks;
     }
 
-    protected void skip(IBlockProvider... blockProviders) {
-        for (IBlockProvider blockProvider : blockProviders) {
-            toSkip.add(blockProvider.getBlock());
+    @SafeVarargs
+    protected final void skip(Holder<Block>... blockProviders) {
+        for (Holder<Block> blockProvider : blockProviders) {
+            toSkip.add(blockProvider.value());
         }
     }
 
@@ -121,15 +121,16 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
         }
     }
 
-    protected void add(Function<Block, Builder> factory, Collection<? extends IBlockProvider> blockProviders) {
-        for (IBlockProvider blockProvider : blockProviders) {
-            add(blockProvider.getBlock(), factory);
+    protected void add(Function<Block, Builder> factory, Collection<? extends Holder<Block>> blockProviders) {
+        for (Holder<Block> blockProvider : blockProviders) {
+            add(blockProvider.value(), factory);
         }
     }
 
-    protected void add(Function<Block, Builder> factory, IBlockProvider... blockProviders) {
-        for (IBlockProvider blockProvider : blockProviders) {
-            add(blockProvider.getBlock(), factory);
+    @SafeVarargs
+    protected final void add(Function<Block, Builder> factory, Holder<Block>... blockProviders) {
+        for (Holder<Block> blockProvider : blockProviders) {
+            add(blockProvider.value(), factory);
         }
     }
 
@@ -140,10 +141,10 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
         }
     }
 
-    protected void dropSelfWithContents(Collection<? extends Holder<Block>> blockProviders) {
+    protected void dropSelfWithContents(Collection<? extends DeferredHolder<Block, ?>> blockProviders) {
         //TODO: See if there is other stuff we want to be transferring which we currently do not
         // For example, when writing this we added dump mode for chemical tanks to getting transferred to the item
-        for (Holder<Block> blockProvider : blockProviders) {
+        for (DeferredHolder<Block, ?> blockProvider : blockProviders) {
             Block block = blockProvider.value();
             if (skipBlock(block)) {
                 continue;
@@ -165,7 +166,7 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
                 if (!customFrequencies.isEmpty() && stack.getItem() instanceof IFrequencyItem frequencyItem) {
                     FrequencyType<?> frequencyType = frequencyItem.getFrequencyType();
                     if (!customFrequencies.contains(frequencyType)) {
-                        Mekanism.logger.warn("Block missing frequency type '{}' expected by item: {}", frequencyType.getName(), RegistryUtils.getName(block));
+                        Mekanism.logger.warn("Block missing frequency type '{}' expected by item: {}", frequencyType.getName(), blockProvider.getId());
                     }
                 }
             }
@@ -205,18 +206,18 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
                             //We don't want explosions causing personal storage items to be directly destroyed. It is also known that the attachment is missing
                             hasContents = true;
                         } else if (type != ContainerType.CHEMICAL || !(block instanceof BlockRadioactiveWasteBarrel)) {
-                            Mekanism.logger.warn("Container type: {}, item missing attachments: {}", type.getComponentName(), RegistryUtils.getName(block));
+                            Mekanism.logger.warn("Container type: {}, item missing attachments: {}", type.getComponentName(), blockProvider.getId());
                         }
                     } else if (containers.isEmpty()) {
-                        Mekanism.logger.warn("Container type: {}, item has attachments but block doesn't have containers: {}", type.getComponentName(), RegistryUtils.getName(block));
+                        Mekanism.logger.warn("Container type: {}, item has attachments but block doesn't have containers: {}", type.getComponentName(), blockProvider.getId());
                     } else {
                         Mekanism.logger.warn("Container type: {}, has {} item attachments and block has {} containers: {}", type.getComponentName(), attachmentContainers,
-                              containers.size(), RegistryUtils.getName(block));
+                              containers.size(), blockProvider.getId());
                     }
                 }
             }
             @SuppressWarnings("unchecked")
-            AttributeInventory<DelayedLootItemBuilder> attributeInventory = Attribute.get(block, AttributeInventory.class);
+            AttributeInventory<DelayedLootItemBuilder> attributeInventory = Attribute.get(blockProvider, AttributeInventory.class);
             if (attributeInventory != null) {
                 hasContents |= attributeInventory.applyLoot(delayedPool);
             }

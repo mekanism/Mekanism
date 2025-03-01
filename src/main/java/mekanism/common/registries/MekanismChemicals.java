@@ -9,13 +9,12 @@ import mekanism.api.chemical.attribute.ChemicalAttributes.CooledCoolant;
 import mekanism.api.chemical.attribute.ChemicalAttributes.Fuel;
 import mekanism.api.chemical.attribute.ChemicalAttributes.HeatedCoolant;
 import mekanism.api.chemical.attribute.ChemicalAttributes.Radiation;
-import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.common.ChemicalConstants;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.registration.impl.DeferredChemical;
 import mekanism.common.registration.impl.ChemicalDeferredRegister;
+import mekanism.common.registration.impl.DeferredChemical;
 import mekanism.common.registration.impl.SlurryRegistryObject;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.util.EnumUtils;
@@ -62,7 +61,7 @@ public class MekanismChemicals {
     public static final DeferredChemical<Chemical> POLONIUM = CHEMICALS.register("polonium", 0x1B9E7B, new Radiation(0.05));
     public static final DeferredChemical<Chemical> ANTIMATTER = CHEMICALS.register("antimatter", 0xA464B3);
 
-    public static Map<EnumColor, IChemicalProvider> PIGMENT_COLOR_LOOKUP = new EnumMap<>(EnumColor.class);
+    public static Map<EnumColor, DeferredChemical<Chemical>> PIGMENT_COLOR_LOOKUP = new EnumMap<>(EnumColor.class);
     public static final Map<PrimaryResource, SlurryRegistryObject<Chemical, Chemical>> PROCESSED_RESOURCES = new LinkedHashMap<>();
 
     static {

@@ -2,15 +2,18 @@ package mekanism.common.recipe.impl;
 
 import java.util.EnumMap;
 import java.util.Map;
+import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
-import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.ISubRecipeProvider;
+import mekanism.common.registration.impl.DeferredChemical;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.EnumUtils;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
@@ -174,19 +177,19 @@ public class PigmentExtractingRecipeProvider implements ISubRecipeProvider {
     }
 
     private static void addExtractionRecipes(RecipeOutput consumer, String basePath) {
-        for (Map.Entry<EnumColor, IChemicalProvider> entry : MekanismChemicals.PIGMENT_COLOR_LOOKUP.entrySet()) {
+        for (Map.Entry<EnumColor, DeferredChemical<Chemical>> entry : MekanismChemicals.PIGMENT_COLOR_LOOKUP.entrySet()) {
             EnumColor color = entry.getKey();
-            IChemicalProvider pigment = entry.getValue();
+            DeferredChemical<Chemical> pigment = entry.getValue();
             DyeColor dye = color.getDyeColor();
             if (dye != null) {
                 ItemStackToChemicalRecipeBuilder.pigmentExtracting(
                       IngredientCreatorAccess.item().from(dye.getTag()),
-                      pigment.getStack(DYE_RATE)
+                      new ChemicalStack(pigment, DYE_RATE)
                 ).build(consumer, Mekanism.rl(basePath + "dye/" + color.getRegistryPrefix()));
                 //TODO: Eventually we may want to consider taking patterns into account
                 ItemStackToChemicalRecipeBuilder.pigmentExtracting(
                       IngredientCreatorAccess.item().from(BannerBlock.byColor(dye)),
-                      pigment.getStack(BANNER_RATE)
+                      new ChemicalStack(pigment, BANNER_RATE)
                 ).build(consumer, Mekanism.rl(basePath + "banner/" + color.getRegistryPrefix()));
                 addExtractionRecipe(consumer, color, MekanismTags.Items.COLORABLE_CANDLE, pigment, CANDLE_RATE, basePath + "candle/");
                 addExtractionRecipe(consumer, color, MekanismTags.Items.COLORABLE_CONCRETE, pigment, CONCRETE_RATE, basePath + "concrete/");
@@ -200,13 +203,13 @@ public class PigmentExtractingRecipeProvider implements ISubRecipeProvider {
         }
     }
 
-    private static void addExtractionRecipe(RecipeOutput consumer, EnumColor color, TagKey<Item> input, IChemicalProvider pigment, long rate, String basePath) {
+    private static void addExtractionRecipe(RecipeOutput consumer, EnumColor color, TagKey<Item> input, Holder<Chemical> pigment, long rate, String basePath) {
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
               IngredientCreatorAccess.item().from(IntersectionIngredient.of(
                     Ingredient.of(input),
                     Ingredient.of(DYED_TAGS.get(color))
               )),
-              pigment.getStack(rate)
+              new ChemicalStack(pigment, rate)
         ).build(consumer, Mekanism.rl(basePath + color.getRegistryPrefix()));
     }
 }

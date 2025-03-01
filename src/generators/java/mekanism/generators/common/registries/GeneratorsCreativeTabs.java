@@ -21,7 +21,7 @@ public class GeneratorsCreativeTabs {
     public static final MekanismDeferredHolder<CreativeModeTab, CreativeModeTab> GENERATORS = CREATIVE_TABS.registerMain(GeneratorsLang.MEKANISM_GENERATORS, GeneratorsBlocks.HEAT_GENERATOR, builder ->
           builder.backgroundTexture(MekanismGenerators.rl("textures/gui/creative_tab.png"))
                 .withSearchBar(50)//Allow our tabs to be searchable for convenience purposes
-                .withTabsBefore(MekanismCreativeTabs.MEKANISM.getKey())
+                .withTabsBefore(MekanismCreativeTabs.MEKANISM.getId())
                 .displayItems((displayParameters, output) -> {
                     CreativeTabDeferredRegister.addToDisplay(GeneratorsItems.ITEMS, output);
                     CreativeTabDeferredRegister.addToDisplay(GeneratorsBlocks.BLOCKS, output);
@@ -35,10 +35,9 @@ public class GeneratorsCreativeTabs {
             CreativeTabDeferredRegister.addToDisplay(event, GeneratorsBlocks.HEAT_GENERATOR, GeneratorsBlocks.SOLAR_GENERATOR, GeneratorsBlocks.ADVANCED_SOLAR_GENERATOR,
                   GeneratorsBlocks.WIND_GENERATOR, GeneratorsBlocks.BIO_GENERATOR, GeneratorsBlocks.GAS_BURNING_GENERATOR);
         } else if (tabKey == CreativeModeTabs.REDSTONE_BLOCKS) {
-            for (Holder<Block> blockProvider : GeneratorsBlocks.BLOCKS.getPrimaryEntries()) {
-                Block block = blockProvider.value();
+            for (Holder<Block> block : GeneratorsBlocks.BLOCKS.getPrimaryEntries()) {
                 if (Attribute.has(block, AttributeComparator.class)) {
-                    CreativeTabDeferredRegister.addToDisplay(event, block);
+                    CreativeTabDeferredRegister.addToDisplay(event, block.value());
                 }
             }
         } else if (tabKey == CreativeModeTabs.TOOLS_AND_UTILITIES) {

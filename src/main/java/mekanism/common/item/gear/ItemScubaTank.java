@@ -1,19 +1,20 @@
 package mekanism.common.item.gear;
 
 import java.util.List;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
-import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IModeItem.IAttachmentBasedModeItem;
 import mekanism.common.registries.MekanismArmorMaterials;
-import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismChemicals;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
+import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -31,7 +32,7 @@ public class ItemScubaTank extends ItemChemicalArmor implements IItemHUDProvider
     }
 
     @Override
-    protected IChemicalProvider getChemicalType() {
+    protected Holder<Chemical> getChemicalType() {
         return MekanismChemicals.OXYGEN;
     }
 

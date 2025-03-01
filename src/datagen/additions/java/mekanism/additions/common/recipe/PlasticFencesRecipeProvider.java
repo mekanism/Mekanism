@@ -6,7 +6,6 @@ import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.block.plastic.BlockPlasticFence;
 import mekanism.additions.common.block.plastic.BlockPlasticFenceGate;
 import mekanism.additions.common.registries.AdditionsBlocks;
-import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.recipe.ISubRecipeProvider;
@@ -19,6 +18,7 @@ import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.world.level.ItemLike;
 
 public class PlasticFencesRecipeProvider implements ISubRecipeProvider {
 
@@ -43,7 +43,7 @@ public class PlasticFencesRecipeProvider implements ISubRecipeProvider {
         }
     }
 
-    private void registerPlasticFence(RecipeOutput consumer, BlockRegistryObject<? extends IColoredBlock, ?> result, IItemProvider plastic, String basePath) {
+    private void registerPlasticFence(RecipeOutput consumer, BlockRegistryObject<? extends IColoredBlock, ?> result, ItemLike plastic, String basePath) {
         EnumColor color = result.getBlock().getColor();
         ExtendedShapedRecipeBuilder.shapedRecipe(result, 3)
               .pattern(PLASTIC_FENCE)
@@ -61,7 +61,7 @@ public class PlasticFencesRecipeProvider implements ISubRecipeProvider {
         }
     }
 
-    private void registerPlasticFenceGate(RecipeOutput consumer, BlockRegistryObject<? extends IColoredBlock, ?> result, IItemProvider plastic, String basePath) {
+    private void registerPlasticFenceGate(RecipeOutput consumer, BlockRegistryObject<? extends IColoredBlock, ?> result, ItemLike plastic, String basePath) {
         EnumColor color = result.getBlock().getColor();
         ExtendedShapedRecipeBuilder.shapedRecipe(result)
               .pattern(PLASTIC_FENCE_GATE)

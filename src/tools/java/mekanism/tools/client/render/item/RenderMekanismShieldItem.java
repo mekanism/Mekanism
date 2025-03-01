@@ -5,7 +5,6 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import java.util.Objects;
 import mekanism.client.render.item.MekanismISTER;
 import mekanism.common.Mekanism;
-import mekanism.common.util.RegistryUtils;
 import mekanism.tools.client.ShieldTextures;
 import mekanism.tools.common.registries.ToolsItems;
 import net.minecraft.client.model.ShieldModel;
@@ -17,7 +16,6 @@ import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BannerPatternLayers;
@@ -37,22 +35,21 @@ public class RenderMekanismShieldItem extends MekanismISTER {
     @Override
     public void renderByItem(@NotNull ItemStack stack, @NotNull ItemDisplayContext displayContext, @NotNull PoseStack matrix, @NotNull MultiBufferSource renderer,
           int light, int overlayLight) {
-        Item item = stack.getItem();
         ShieldTextures textures;
-        if (item == ToolsItems.BRONZE_SHIELD.asItem()) {
+        if (stack.is(ToolsItems.BRONZE_SHIELD)) {
             textures = ShieldTextures.BRONZE;
-        } else if (item == ToolsItems.LAPIS_LAZULI_SHIELD.asItem()) {
+        } else if (stack.is(ToolsItems.LAPIS_LAZULI_SHIELD)) {
             textures = ShieldTextures.LAPIS_LAZULI;
-        } else if (item == ToolsItems.OSMIUM_SHIELD.asItem()) {
+        } else if (stack.is(ToolsItems.OSMIUM_SHIELD)) {
             textures = ShieldTextures.OSMIUM;
-        } else if (item == ToolsItems.REFINED_GLOWSTONE_SHIELD.asItem()) {
+        } else if (stack.is(ToolsItems.REFINED_GLOWSTONE_SHIELD)) {
             textures = ShieldTextures.REFINED_GLOWSTONE;
-        } else if (item == ToolsItems.REFINED_OBSIDIAN_SHIELD.asItem()) {
+        } else if (stack.is(ToolsItems.REFINED_OBSIDIAN_SHIELD)) {
             textures = ShieldTextures.REFINED_OBSIDIAN;
-        } else if (item == ToolsItems.STEEL_SHIELD.asItem()) {
+        } else if (stack.is(ToolsItems.STEEL_SHIELD)) {
             textures = ShieldTextures.STEEL;
         } else {
-            Mekanism.logger.warn("Unknown item for mekanism shield renderer: {}", RegistryUtils.getName(item));
+            Mekanism.logger.warn("Unknown item for mekanism shield renderer: {}", stack.getItem());
             return;
         }
         Material material = textures.getBase();

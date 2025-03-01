@@ -33,6 +33,7 @@ import mekanism.common.integration.crafttweaker.CrTRecipeComponents;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
+import net.minecraft.core.Holder;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -131,7 +132,7 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe<?>> im
             return CrTConstants.CLASS_CHEMICAL_STACK_INGREDIENT + ".from(" + tag.getCommandString() + ", " + amount + ")";
         }
         List<ICrTChemicalStack> list = new ArrayList<>();
-        for (Chemical chemical : ingredient.getChemicals()) {
+        for (Holder<Chemical> chemical : ingredient.getChemicalHolders()) {
             list.add(CrTUtils.fromChemical(chemical, 1));
         }
         if (list.size() == 1) {

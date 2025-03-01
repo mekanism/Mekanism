@@ -3,7 +3,6 @@ package mekanism.common.registries;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import mekanism.api.functions.ConstantPredicates;
-import mekanism.api.providers.IBlockProvider;
 import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockEnergyCube;
@@ -116,6 +115,8 @@ import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.tile.transmitter.TileEntityUniversalCable;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -658,6 +659,6 @@ public class MekanismTileEntityTypes {
     @FunctionalInterface
     private interface BlockEntityFactory<BE extends BlockEntity> {
 
-        BE create(IBlockProvider block, BlockPos pos, BlockState state);
+        BE create(Holder<Block> block, BlockPos pos, BlockState state);
     }
 }

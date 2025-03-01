@@ -37,16 +37,15 @@ public non-sealed class TagChemicalIngredient extends ChemicalIngredient {
     }
 
     @Override
-    public final boolean test(Chemical chemical) {
+    public final boolean test(Holder<Chemical> chemical) {
         return chemical.is(tag());
     }
 
     @Override
-    public final Stream<Chemical> generateChemicals() {
+    public final Stream<Holder<Chemical>> generateChemicalHolders() {
         return MekanismAPI.CHEMICAL_REGISTRY.getTag(tag())
               .stream()
-              .flatMap(HolderSet::stream)
-              .map(Holder::value);
+              .flatMap(HolderSet::stream);
     }
 
     @Override

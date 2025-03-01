@@ -1,6 +1,7 @@
 package mekanism.client.texture;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -13,6 +14,7 @@ import net.minecraft.client.renderer.texture.atlas.sources.SingleFile;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.common.data.SpriteSourceProvider;
@@ -37,9 +39,9 @@ public abstract class BaseSpriteSourceProvider extends SpriteSourceProvider {
 
     //TODO - 1.20: Re-evaluate doing this
     protected void addChemicalSprites(SourceList atlas) {
-        for (Chemical chemical : MekanismAPI.CHEMICAL_REGISTRY) {
-            if (chemical.getRegistryName().getNamespace().equals(modid)) {
-                addFiles(atlas, chemical.getIcon());
+        for (Map.Entry<ResourceKey<Chemical>, Chemical> entry : MekanismAPI.CHEMICAL_REGISTRY.entrySet()) {
+            if (entry.getKey().location().getNamespace().equals(modid)) {
+                addFiles(atlas, entry.getValue().getIcon());
             }
         }
     }

@@ -95,7 +95,7 @@ public class MekanismDatapackRegistryProvider extends BaseDatapackRegistryProvid
                   }
               }
               context.register(configuredFeature(Mekanism.rl("salt")), new ConfiguredFeature<>(MekanismFeatures.DISK.get(), new ResizableDiskConfig(
-                    RuleBasedBlockStateProvider.simple(MekanismBlocks.SALT_BLOCK.getBlock()),
+                    RuleBasedBlockStateProvider.simple(MekanismBlocks.SALT_BLOCK.value()),
                     BlockPredicate.matchesBlocks(Blocks.DIRT, Blocks.CLAY),
                     ConfigurableUniformInt.SALT
               )));

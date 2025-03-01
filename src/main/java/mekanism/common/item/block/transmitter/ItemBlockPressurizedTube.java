@@ -24,7 +24,7 @@ public class ItemBlockPressurizedTube extends ItemBlockTooltip<BlockSmallTransmi
     @NotNull
     @Override
     public TubeTier getTier() {
-        return Attribute.getTier(getBlock(), TubeTier.class);
+        return Attribute.getTier(getBlockHolder(), TubeTier.class);
     }
 
     @Override

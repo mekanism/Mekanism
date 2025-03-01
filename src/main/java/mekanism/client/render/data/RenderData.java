@@ -8,6 +8,7 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.common.lib.multiblock.MultiblockData;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -48,7 +49,7 @@ public abstract class RenderData {
 
     public static class Builder<DATA_TYPE extends RenderData> {
 
-        private final Chemical chemical;
+        private final Holder<Chemical> chemical;
         private final FluidStack fluid;
         @Nullable
         private BlockPos location;
@@ -56,7 +57,7 @@ public abstract class RenderData {
         private int length;
         private int width;
 
-        private Builder(Chemical chemical, FluidStack fluid) {
+        private Builder(Holder<Chemical> chemical, FluidStack fluid) {
             this.chemical = chemical;
             this.fluid = fluid;
         }
@@ -65,14 +66,14 @@ public abstract class RenderData {
             if (chemical.isEmpty()) {
                 throw new IllegalArgumentException("Chemical may not be empty");
             }
-            return new Builder<>(chemical.getChemical(), FluidStack.EMPTY);
+            return new Builder<>(chemical.getChemicalHolder(), FluidStack.EMPTY);
         }
 
         public static Builder<FluidRenderData> create(FluidStack fluid) {
             if (fluid.isEmpty()) {
                 throw new IllegalArgumentException("Fluid may not be empty");
             }
-            return new Builder<>(MekanismAPI.EMPTY_CHEMICAL, fluid);
+            return new Builder<>(MekanismAPI.EMPTY_CHEMICAL_HOLDER, fluid);
         }
 
         public Builder<DATA_TYPE> location(BlockPos renderLocation) {
@@ -111,7 +112,7 @@ public abstract class RenderData {
             RenderData data;
             if (!fluid.isEmpty()) {
                 data = new FluidRenderData(location, width, height, length, fluid);
-            } else if (!chemical.isEmptyType()) {
+            } else if (!chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
                 data = new ChemicalRenderData(location, width, height, length, chemical);
             } else {
                 throw new IllegalStateException("Incomplete render data builder, missing or unknown chemical or fluid.");

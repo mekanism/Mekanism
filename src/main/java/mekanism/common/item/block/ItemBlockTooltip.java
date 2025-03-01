@@ -30,7 +30,6 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.RegistryUtils;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.WorldUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
@@ -106,10 +105,10 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
         if (!fluidStack.isEmpty()) {
             tooltip.add(MekanismLang.GENERIC_STORED_MB.translateColored(EnumColor.PINK, fluidStack, EnumColor.GRAY, TextUtils.format(fluidStack.getAmount())));
         }
-        if (Attribute.has(getBlock(), AttributeInventory.class) && ContainerType.ITEM.supports(stack)) {
+        if (Attribute.has(getBlockHolder(), AttributeInventory.class) && ContainerType.ITEM.supports(stack)) {
             tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.hasInventory(stack)));
         }
-        if (Attribute.has(getBlock(), AttributeUpgradeSupport.class)) {
+        if (Attribute.has(getBlockHolder(), AttributeUpgradeSupport.class)) {
             UpgradeAware upgradeAware = stack.get(MekanismDataComponents.UPGRADES);
             if (upgradeAware != null) {
                 for (Entry<Upgrade, Integer> entry : upgradeAware.upgrades().entrySet()) {
@@ -155,17 +154,16 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
     }
 
     protected boolean exposesEnergyCapOrTooltips() {
-        return Attribute.has(getBlock(), AttributeEnergy.class);
+        return Attribute.has(getBlockHolder(), AttributeEnergy.class);
     }
 
     protected EnergyContainersBuilder addDefaultEnergyContainers(EnergyContainersBuilder builder) {
-        BLOCK block = getBlock();
-        AttributeEnergy attributeEnergy = Attribute.get(block, AttributeEnergy.class);
+        AttributeEnergy attributeEnergy = Attribute.get(getBlockHolder(), AttributeEnergy.class);
         if (attributeEnergy == null) {
-            throw new IllegalStateException("Expected block " + RegistryUtils.getName(block) + " to have the energy attribute");
+            throw new IllegalStateException("Expected block " + getBlock() + " to have the energy attribute");
         }
         LongSupplier maxEnergy = attributeEnergy::getStorage;
-        if (Attribute.matches(block, AttributeUpgradeSupport.class, attribute -> attribute.supportedUpgrades().contains(Upgrade.ENERGY))) {
+        if (Attribute.matches(getBlockHolder(), AttributeUpgradeSupport.class, attribute -> attribute.supportedUpgrades().contains(Upgrade.ENERGY))) {
             return builder.addContainer((type, attachedTo, containerIndex) -> {
                 //If our block supports energy upgrades, make a more dynamically updating cache for our item's max energy
                 LongSupplier capacity = new UpgradeBasedUnsignedLongCache(attachedTo, maxEnergy);
@@ -179,7 +177,7 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
 
     @Override
     public void attachCapabilities(RegisterCapabilitiesEvent event) {
-        if (Attribute.has(getBlock(), AttributeSecurity.class)) {
+        if (Attribute.has(getBlockHolder(), AttributeSecurity.class)) {
             event.registerItem(IItemSecurityUtils.INSTANCE.ownerCapability(), (stack, ctx) -> new SecurityObject(stack), this);
             event.registerItem(IItemSecurityUtils.INSTANCE.securityCapability(), (stack, ctx) -> new SecurityObject(stack), this);
         }
@@ -187,7 +185,7 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
 
     @Override
     public void attachAttachments(IEventBus eventBus) {
-        if (Attribute.has(getBlock(), AttributeEnergy.class)) {
+        if (Attribute.has(getBlockHolder(), AttributeEnergy.class)) {
             //Only expose the capability the required configs are loaded and the item wants to
             IEventBus energyEventBus = exposesEnergyCap() ? eventBus : null;
             ContainerType.ENERGY.addDefaultCreators(energyEventBus, this, () -> addDefaultEnergyContainers(EnergyContainersBuilder.builder()).build(),

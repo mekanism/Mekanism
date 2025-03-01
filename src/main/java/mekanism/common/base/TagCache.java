@@ -69,7 +69,7 @@ public final class TagCache {
         if (cache == null) {
             if (block instanceof IHasTileEntity<?> hasTileEntity) {
                 //If it is one of our blocks, short circuit and just lookup the tile's type directly
-                cache = getTagsAsStrings(RegistryUtils.getBEHolder(hasTileEntity.getTileType().get()));
+                cache = getTagsAsStrings(hasTileEntity.getTileType());
             } else {
                 BlockState state = block.defaultBlockState();
                 if (state.hasBlockEntity()) {
@@ -151,10 +151,9 @@ public final class TagCache {
         return blockModIDStacks.computeIfAbsent(modName, name -> {
             Set<Block> blocks = new ReferenceOpenHashSet<>();
             for (Entry<ResourceKey<Block>, Block> entry : BuiltInRegistries.BLOCK.entrySet()) {
-                Block block = entry.getValue();
                 //Ugly check to make sure we don't include our bounding block in render list. Eventually this should maybe just use getRenderShape() with a dummy BlockState
-                if (block != MekanismBlocks.BOUNDING_BLOCK.getBlock() && WildcardMatcher.matches(name, entry.getKey().location().getNamespace())) {
-                    blocks.add(block);
+                if (!MekanismBlocks.BOUNDING_BLOCK.is(entry.getKey()) && WildcardMatcher.matches(name, entry.getKey().location().getNamespace())) {
+                    blocks.add(entry.getValue());
                 }
             }
             return getMatching(blocks);

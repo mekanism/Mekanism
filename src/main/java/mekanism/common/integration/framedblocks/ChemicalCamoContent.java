@@ -4,6 +4,7 @@ import mekanism.api.chemical.Chemical;
 import mekanism.common.registration.impl.FluidDeferredRegister;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.Entity;
@@ -31,8 +32,8 @@ final class ChemicalCamoContent extends CamoContent<ChemicalCamoContent> {
         this.mapColor = FluidDeferredRegister.getClosestColor(chemical.getColorRepresentation());
     }
 
-    Chemical getChemical() {
-        return chemical;
+    Holder<Chemical> getChemicalHolder() {
+        return chemical.builtInRegistryHolder();
     }
 
     @Override
@@ -154,12 +155,12 @@ final class ChemicalCamoContent extends CamoContent<ChemicalCamoContent> {
 
     @Override
     public ParticleOptions makeRunningLandingParticles(BlockPos pos) {
-        return new ChemicalParticleOptions(chemical);
+        return new ChemicalParticleOptions(getChemicalHolder());
     }
 
     @Override
     public String getCamoId() {
-        return chemical.getRegistryName().toString();
+        return chemical.toString();
     }
 
     @Override

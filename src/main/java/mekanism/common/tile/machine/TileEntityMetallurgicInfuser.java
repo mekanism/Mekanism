@@ -217,7 +217,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Item
     @Override
     public boolean isConfigurationDataCompatible(Block blockType) {
         //Allow exact match or factories of the same type (as we will just ignore the extra data)
-        return super.isConfigurationDataCompatible(blockType) || MekanismUtils.isSameTypeFactory(getBlockType(), blockType);
+        return super.isConfigurationDataCompatible(blockType) || MekanismUtils.isSameTypeFactory(getBlockHolder(), blockType);
     }
 
     @Override

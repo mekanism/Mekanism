@@ -210,7 +210,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModule
     @Override
     public String getTranslationKey() {
         if (translationKey == null) {
-            translationKey = Util.makeDescriptionId("module", getRegistryName());
+            translationKey = Util.makeDescriptionId("module", MekanismAPI.MODULE_REGISTRY.getKey(this));
         }
         return translationKey;
     }
@@ -220,16 +220,14 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModule
      */
     public String getDescriptionTranslationKey() {
         if (descriptionTranslationKey == null) {
-            descriptionTranslationKey = Util.makeDescriptionId("description", getRegistryName());
+            descriptionTranslationKey = Util.makeDescriptionId("description", MekanismAPI.MODULE_REGISTRY.getKey(this));
         }
         return descriptionTranslationKey;
     }
 
     @Override
-    @SuppressWarnings("ConstantConditions")
-    public final ResourceLocation getRegistryName() {
-        //May be null if called before the object is registered
-        return MekanismAPI.MODULE_REGISTRY.getKey(this);
+    public final String toString() {
+        return Util.getRegisteredName(MekanismAPI.MODULE_REGISTRY, this);
     }
 
     private record ConstructedConfigData(List<ModuleConfig<?>> configs, Codec<List<ModuleConfig<?>>> codec,

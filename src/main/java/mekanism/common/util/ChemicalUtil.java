@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
+import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
@@ -16,7 +17,6 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.IMekanismChemicalHandler;
 import mekanism.api.chemical.attribute.ChemicalAttribute;
 import mekanism.api.functions.ConstantPredicates;
-import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
@@ -27,6 +27,7 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.ChemicalTankTier;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
@@ -51,7 +52,7 @@ public class ChemicalUtil {
      *
      * @return filled chemical tank
      */
-    public static ItemStack getFullChemicalTank(ChemicalTankTier tier, @NotNull Chemical chemical) {
+    public static ItemStack getFullChemicalTank(ChemicalTankTier tier, @NotNull Holder<Chemical> chemical) {
         return getFilledVariant(getEmptyChemicalTank(tier), chemical);
     }
 
@@ -70,16 +71,16 @@ public class ChemicalUtil {
         };
     }
 
-    public static ItemStack getFilledVariant(ItemLike toFill, IChemicalProvider provider) {
+    public static ItemStack getFilledVariant(ItemLike toFill, Holder<Chemical> provider) {
         return getFilledVariant(new ItemStack(toFill), provider);
     }
 
-    public static ItemStack getFilledVariant(ItemStack toFill, IChemicalProvider provider) {
+    public static ItemStack getFilledVariant(ItemStack toFill, Holder<Chemical> provider) {
         IMekanismChemicalHandler attachment = ContainerType.CHEMICAL.createHandler(toFill);
         if (attachment != null) {
             for (IChemicalTank tank : attachment.getChemicalTanks(null)) {
                 long amount = tank.getCapacity();
-                tank.setStack(provider.getStack(amount));
+                tank.setStack(new ChemicalStack(provider, amount));
             }
         }
         //The item is now filled return it for convenience
@@ -112,35 +113,25 @@ public class ChemicalUtil {
         return false;
     }
 
-    public static void addAttributeTooltips(Chemical chemical, Consumer<Component> tooltipAdder) {
-        for (ChemicalAttribute attr : chemical.getAttributes()) {
+    public static void addAttributeTooltips(Holder<Chemical> chemical, Consumer<Component> tooltipAdder) {
+        for (ChemicalAttribute attr : chemical.value().getAttributes()) {
             attr.collectTooltips(tooltipAdder);
         }
     }
 
     public static void addChemicalDataToTooltip(List<Component> tooltips, ChemicalStack chemical, boolean advanced) {
-        addChemicalDataToTooltip(tooltips, chemical.getChemical(), advanced);
+        addChemicalDataToTooltip(chemical.getChemicalHolder(), advanced, tooltips::add);
     }
 
-    public static void addChemicalDataToTooltip(List<Component> tooltips, Chemical chemical, boolean advanced) {
-        if (!chemical.isEmptyType()) {
-            addChemicalDataToTooltip(chemical, advanced, tooltips::add);
-        }
-    }
-
-    public static void addChemicalDataToTooltip(ChemicalStack chemical, boolean advanced, Consumer<Component> tooltipAdder) {
-        addChemicalDataToTooltip(chemical.getChemical(), advanced, tooltipAdder);
-    }
-
-    private static void addChemicalDataToTooltip(Chemical chemical, boolean advanced, Consumer<Component> tooltipAdder) {
-        if (!chemical.isEmptyType()) {
-            addAttributeTooltips(chemical.getChemical(), tooltipAdder);
+    public static void addChemicalDataToTooltip(Holder<Chemical> chemical, boolean advanced, Consumer<Component> tooltipAdder) {
+        if (!chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
+            addAttributeTooltips(chemical, tooltipAdder);
             if (chemical.is(MekanismAPITags.Chemicals.WASTE_BARREL_DECAY_BLACKLIST)) {
                 tooltipAdder.accept(MekanismLang.DECAY_IMMUNE.translateColored(EnumColor.AQUA));
             }
             if (advanced) {
                 //If advanced tooltips are on, display the registry name
-                tooltipAdder.accept(TextComponentUtil.build(ChatFormatting.DARK_GRAY, chemical.getRegistryName()));
+                tooltipAdder.accept(TextComponentUtil.build(ChatFormatting.DARK_GRAY, chemical.getRegisteredName()));
             }
         }
     }

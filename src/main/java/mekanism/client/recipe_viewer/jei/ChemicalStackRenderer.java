@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
+import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.math.MathUtils;
@@ -21,6 +22,7 @@ import mezz.jei.api.ingredients.IIngredientRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.TooltipFlag;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -62,10 +64,9 @@ public class ChemicalStackRenderer implements IIngredientRenderer<ChemicalStack>
             if (desiredHeight > height) {
                 desiredHeight = height;
             }
-            Chemical chemical = stack.getChemical();
-            MekanismRenderer.color(guiGraphics, chemical);
+            MekanismRenderer.color(guiGraphics, stack);
             //Tile upwards and to the right as the majority of things we render are gauges which look better when tiling upwards
-            GuiUtils.drawTiledSprite(guiGraphics, 0, 0, height, width, desiredHeight, MekanismRenderer.getSprite(chemical.getIcon()),
+            GuiUtils.drawTiledSprite(guiGraphics, 0, 0, height, width, desiredHeight, MekanismRenderer.getChemicalTexture(stack),
                   TEXTURE_SIZE, TEXTURE_SIZE, 100, TilingDirection.UP_RIGHT);
             MekanismRenderer.resetColor(guiGraphics);
         }
@@ -74,8 +75,8 @@ public class ChemicalStackRenderer implements IIngredientRenderer<ChemicalStack>
     @Override
     @Deprecated(forRemoval = true)
     public List<Component> getTooltip(ChemicalStack stack, TooltipFlag tooltipFlag) {
-        Chemical chemical = stack.getChemical();
-        if (chemical.isEmptyType()) {
+        Holder<Chemical> chemical = stack.getChemicalHolder();
+        if (chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
             return Collections.emptyList();
         }
         List<Component> tooltips = new ArrayList<>();
@@ -90,15 +91,15 @@ public class ChemicalStackRenderer implements IIngredientRenderer<ChemicalStack>
     }
 
     private void collectTooltips(ChemicalStack stack, TooltipFlag tooltipFlag, Consumer<Component> tooltipAdder) {
-        Chemical chemical = stack.getChemical();
-        if (!chemical.isEmptyType()) {
+        Holder<Chemical> chemical = stack.getChemicalHolder();
+        if (!chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
             tooltipAdder.accept(TextComponentUtil.build(chemical));
             if (tooltipMode == TooltipMode.SHOW_AMOUNT_AND_CAPACITY) {
                 tooltipAdder.accept(MekanismLang.JEI_AMOUNT_WITH_CAPACITY.translateColored(EnumColor.GRAY, TextUtils.format(stack.getAmount()), TextUtils.format(capacityMb)));
             } else if (tooltipMode == TooltipMode.SHOW_AMOUNT) {
                 tooltipAdder.accept(MekanismLang.GENERIC_MB.translateColored(EnumColor.GRAY, TextUtils.format(stack.getAmount())));
             }
-            ChemicalUtil.addChemicalDataToTooltip(stack, tooltipFlag.isAdvanced(), tooltipAdder);
+            ChemicalUtil.addChemicalDataToTooltip(chemical, tooltipFlag.isAdvanced(), tooltipAdder);
         }
     }
 

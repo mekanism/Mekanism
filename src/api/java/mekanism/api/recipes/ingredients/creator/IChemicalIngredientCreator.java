@@ -111,9 +111,12 @@ public interface IChemicalIngredientCreator {
      * Creates a {@link mekanism.api.recipes.ingredients.chemical.SingleChemicalIngredient} matching the chemical for the given provider.
      *
      * @param chemicalProvider Chemical to match
+     *
+     * @deprecated Prefer using {@link #of(Holder)}
      */
+    @Deprecated(forRemoval = true, since = "10.7.11")
     default ChemicalIngredient of(IChemicalProvider chemicalProvider) {
-        return of(chemicalProvider.getChemical().getAsHolder());
+        return of(chemicalProvider.getChemicalHolder());
     }
 
     /**
@@ -139,7 +142,7 @@ public interface IChemicalIngredientCreator {
      * element, this will return a {@link mekanism.api.recipes.ingredients.chemical.SingleChemicalIngredient}.
      */
     default ChemicalIngredient of(ChemicalStack... chemicals) {
-        return of(Arrays.stream(chemicals).map(ChemicalStack::getChemical));
+        return ofHolders(Arrays.stream(chemicals).map(ChemicalStack::getChemicalHolder));
     }
 
     /**
@@ -149,7 +152,10 @@ public interface IChemicalIngredientCreator {
      *
      * @implNote This method is subtly different from {@link #compound(List)} as if there is no elements this method will return {@link #empty()}, and if there is one
      * element, this will return a {@link mekanism.api.recipes.ingredients.chemical.SingleChemicalIngredient}.
+     *
+     * @deprecated Prefer using {@link #ofHolders(Holder[])}
      */
+    @Deprecated(forRemoval = true, since = "10.7.11")
     default ChemicalIngredient of(IChemicalProvider... chemicalProviders) {
         return of(Arrays.stream(chemicalProviders));
     }
@@ -161,9 +167,40 @@ public interface IChemicalIngredientCreator {
      *
      * @implNote This method is subtly different from {@link #compound(List)} as if there is no elements this method will return {@link #empty()}, and if there is one
      * element, this will return a {@link mekanism.api.recipes.ingredients.chemical.SingleChemicalIngredient}.
+     *
+     * @deprecated Prefer using {@link #ofHolders(Stream)}
      */
+    @Deprecated(forRemoval = true, since = "10.7.11")
     default ChemicalIngredient of(Stream<? extends IChemicalProvider> chemicalProviders) {
         return ofIngredients(chemicalProviders.map(this::of));
+    }
+
+    /**
+     * Creates a {@link mekanism.api.recipes.ingredients.chemical.CompoundChemicalIngredient} matching the chemicals for the given providers.
+     *
+     * @param chemicalProviders Chemicals to match
+     *
+     * @implNote This method is subtly different from {@link #compound(List)} as if there is no elements this method will return {@link #empty()}, and if there is one
+     * element, this will return a {@link mekanism.api.recipes.ingredients.chemical.SingleChemicalIngredient}.
+     *
+     * @since 10.7.11
+     */
+    default ChemicalIngredient ofHolders(Holder<Chemical>... chemicalProviders) {
+        return ofHolders(Arrays.stream(chemicalProviders));
+    }
+
+    /**
+     * Creates a {@link mekanism.api.recipes.ingredients.chemical.CompoundChemicalIngredient} matching the chemicals for the given holders.
+     *
+     * @param chemicalHolders Chemicals to match
+     *
+     * @implNote This method is subtly different from {@link #compound(List)} as if there is no elements this method will return {@link #empty()}, and if there is one
+     * element, this will return a {@link mekanism.api.recipes.ingredients.chemical.SingleChemicalIngredient}.
+     *
+     * @since 10.7.11
+     */
+    default ChemicalIngredient ofHolders(Stream<? extends Holder<Chemical>> chemicalHolders) {
+        return ofIngredients(chemicalHolders.map(this::of));
     }
 
     /**

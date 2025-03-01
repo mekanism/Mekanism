@@ -2,7 +2,6 @@ package mekanism.tools.common.recipe;
 
 import java.util.concurrent.CompletableFuture;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.providers.IItemProvider;
 import mekanism.common.recipe.BaseRecipeProvider;
 import mekanism.common.recipe.RecipeProviderUtil;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
@@ -28,6 +27,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
@@ -110,9 +110,8 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
         SpecialRecipeBuilder.special(MekBannerShieldRecipe::new).save(consumer, ToolsRecipeSerializers.BANNER_SHIELD.getId());
     }
 
-    private void registerRecipeSet(RecipeOutput consumer, String name, IItemProvider helmet, IItemProvider chestplate, IItemProvider leggings,
-          IItemProvider boots, IItemProvider sword, IItemProvider pickaxe, IItemProvider axe, IItemProvider shovel, IItemProvider hoe, IItemProvider paxel,
-          IItemProvider shield, TagKey<Item> ingot, TagKey<Item> rod, @Nullable IItemProvider nugget) {
+    private void registerRecipeSet(RecipeOutput consumer, String name, ItemLike helmet, ItemLike chestplate, ItemLike leggings, ItemLike boots, ItemLike sword,
+          ItemLike pickaxe, ItemLike axe, ItemLike shovel, ItemLike hoe, ItemLike paxel, ItemLike shield, TagKey<Item> ingot, TagKey<Item> rod, @Nullable ItemLike nugget) {
         String baseArmorPath = name + "/armor/";
         armor(HELMET, helmet, ingot).build(consumer, MekanismTools.rl(baseArmorPath + "helmet"));
         armor(CHESTPLATE, chestplate, ingot).build(consumer, MekanismTools.rl(baseArmorPath + "chestplate"));
@@ -155,7 +154,7 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
         ExtendedSmithingRecipeBuilder.smithing(Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE, ToolsItems.DIAMOND_PAXEL, Items.NETHERITE_INGOT, ToolsItems.NETHERITE_PAXEL).build(consumer);
     }
 
-    private void registerVanillaPaxel(RecipeOutput consumer, IItemProvider paxel, Item axe, Item pickaxe, Item shovel, @Nullable Item nugget) {
+    private void registerVanillaPaxel(RecipeOutput consumer, ItemLike paxel, Item axe, Item pickaxe, Item shovel, @Nullable Item nugget) {
         PaxelShapedRecipeBuilder.shapedRecipe(paxel)
               .pattern(PAXEL)
               .key(AXE_CHAR, axe)
@@ -171,14 +170,14 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
         }
     }
 
-    private ExtendedShapedRecipeBuilder armor(RecipePattern pattern, IItemProvider armor, TagKey<Item> ingot) {
+    private ExtendedShapedRecipeBuilder armor(RecipePattern pattern, ItemLike armor, TagKey<Item> ingot) {
         return ExtendedShapedRecipeBuilder.shapedRecipe(armor)
               .pattern(pattern)
               .key(Pattern.INGOT, ingot)
               .category(RecipeCategory.COMBAT);
     }
 
-    private ExtendedShapedRecipeBuilder tool(RecipePattern pattern, IItemProvider tool, TagKey<Item> ingot, TagKey<Item> rod) {
+    private ExtendedShapedRecipeBuilder tool(RecipePattern pattern, ItemLike tool, TagKey<Item> ingot, TagKey<Item> rod) {
         return ExtendedShapedRecipeBuilder.shapedRecipe(tool)
               .pattern(pattern)
               .key(Pattern.INGOT, ingot)

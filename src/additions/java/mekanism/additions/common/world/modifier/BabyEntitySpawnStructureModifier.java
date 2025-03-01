@@ -8,9 +8,9 @@ import mekanism.additions.common.entity.baby.BabyType;
 import mekanism.additions.common.registries.AdditionsStructureModifierSerializers;
 import mekanism.api.SerializationConstants;
 import mekanism.common.Mekanism;
-import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.levelgen.structure.Structure;
@@ -36,8 +36,9 @@ public record BabyEntitySpawnStructureModifier(BabyType babyType, AdditionsConfi
             if (spawnOverrides != null && !structure.is(babyType.structureBlacklist)) {
                 for (MobSpawnSettings.SpawnerData spawner : spawnConfig.getSpawnersToAdd(spawnOverrides.getSpawns())) {
                     spawnOverrides.addSpawn(spawner);
+                    ResourceKey<Structure> structureKey = structure.getKey();
                     Mekanism.logger.debug("Adding spawn rate for '{}' in structure '{}', with weight: {}, minSize: {}, maxSize: {}",
-                          RegistryUtils.getName(spawner.type), structure.unwrapKey().map(ResourceKey::location).orElse(null), spawner.getWeight(),
+                          EntityType.getKey(spawner.type), structureKey == null ? null : structureKey.location(), spawner.getWeight(),
                           spawner.minCount, spawner.maxCount);
                 }
             }

@@ -4,7 +4,6 @@ import com.mojang.blaze3d.shaders.FogShape;
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.lang.ref.WeakReference;
 import mekanism.api.providers.IBlockProvider;
-import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.machine.GuiAdvancedElectricMachine;
 import mekanism.client.gui.machine.GuiElectricMachine;
@@ -43,6 +42,7 @@ import net.minecraft.util.FastColor;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
@@ -161,12 +161,12 @@ public class ClientRegistrationUtil {
         }
     }
 
-    public static void setPropertyOverride(IItemProvider itemProvider, ResourceLocation override, ItemPropertyFunction propertyGetter) {
-        ItemProperties.register(itemProvider.asItem(), override, propertyGetter);
+    public static void setPropertyOverride(ItemLike itemLike, ResourceLocation override, ItemPropertyFunction propertyGetter) {
+        ItemProperties.register(itemLike.asItem(), override, propertyGetter);
     }
 
-    public static void registerItemColorHandler(RegisterColorHandlersEvent.Item event, ItemColor itemColor, IItemProvider... items) {
-        for (IItemProvider itemProvider : items) {
+    public static void registerItemColorHandler(RegisterColorHandlersEvent.Item event, ItemColor itemColor, ItemLike... items) {
+        for (ItemLike itemProvider : items) {
             event.register(itemColor, itemProvider.asItem());
         }
     }
@@ -191,12 +191,12 @@ public class ClientRegistrationUtil {
         }
     }
 
-    public static void registerIColoredItemHandler(RegisterColorHandlersEvent.Item event, IItemProvider... items) {
+    public static void registerIColoredItemHandler(RegisterColorHandlersEvent.Item event, ItemLike... items) {
         registerItemColorHandler(event, COLORED_ITEM_COLOR, items);
     }
 
-    public static void registerItemExtensions(RegisterClientExtensionsEvent event, IClientItemExtensions extension, IItemProvider... items) {
-        for (IItemProvider item : items) {
+    public static void registerItemExtensions(RegisterClientExtensionsEvent event, IClientItemExtensions extension, ItemLike... items) {
+        for (ItemLike item : items) {
             event.registerItem(extension, item.asItem());
         }
     }

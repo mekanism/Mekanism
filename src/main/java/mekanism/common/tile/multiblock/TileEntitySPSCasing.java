@@ -12,8 +12,10 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,7 +30,7 @@ public class TileEntitySPSCasing extends TileEntityMultiblock<SPSMultiblockData>
         this(MekanismBlocks.SPS_CASING, pos, state);
     }
 
-    public TileEntitySPSCasing(IBlockProvider provider, BlockPos pos, BlockState state) {
+    public TileEntitySPSCasing(Holder<Block> provider, BlockPos pos, BlockState state) {
         super(provider, pos, state);
     }
 

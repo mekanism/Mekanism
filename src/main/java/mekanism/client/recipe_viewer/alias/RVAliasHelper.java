@@ -4,12 +4,11 @@ import java.util.Collection;
 import java.util.List;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.gear.IModuleHelper;
-import mekanism.api.providers.IChemicalProvider;
-import mekanism.api.providers.IFluidProvider;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.Mekanism;
 import mekanism.common.content.gear.IModuleItem;
 import mekanism.common.registration.impl.ItemDeferredRegister;
+import net.minecraft.core.Holder;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -26,19 +25,19 @@ public interface RVAliasHelper<ITEM, FLUID, CHEMICAL> {
 
     List<ITEM> itemTagContents(TagKey<Item> tag);
 
-    FLUID ingredient(IFluidProvider fluidProvider);
+    FLUID fluidIngredient(Holder<Fluid> fluid);
 
     FLUID ingredient(FluidStack fluid);
 
     List<FLUID> fluidTagContents(TagKey<Fluid> tag);
 
-    CHEMICAL ingredient(IChemicalProvider chemicalProvider);
+    CHEMICAL chemicalIngredient(Holder<Chemical> chemical);
 
     List<CHEMICAL> chemicalTagContents(TagKey<Chemical> tag);
 
-    default void addAliases(IFluidProvider fluidProvider, IChemicalProvider chemicalProvider, IHasTranslationKey... aliases) {
-        addAliases(fluidProvider, aliases);
-        addAliases(chemicalProvider, aliases);
+    default void addAliases(Holder<Fluid> fluidProvider, Holder<Chemical> chemicalProvider, IHasTranslationKey... aliases) {
+        addFluidAliases(fluidProvider, aliases);
+        addChemicalAliases(chemicalProvider, aliases);
     }
 
     default void addAliases(ItemLike item, IHasTranslationKey... aliases) {
@@ -65,8 +64,8 @@ public interface RVAliasHelper<ITEM, FLUID, CHEMICAL> {
         }
     }
 
-    default void addAliases(IFluidProvider fluidProvider, IHasTranslationKey... aliases) {
-        addFluidAliases(List.of(ingredient(fluidProvider)), aliases);
+    default void addFluidAliases(Holder<Fluid> fluid, IHasTranslationKey... aliases) {
+        addFluidAlias(fluidIngredient(fluid), aliases);
     }
 
     default void addAliases(FluidStack stack, IHasTranslationKey... aliases) {
@@ -81,8 +80,8 @@ public interface RVAliasHelper<ITEM, FLUID, CHEMICAL> {
         }
     }
 
-    default void addAliases(IChemicalProvider chemicalProvider, IHasTranslationKey... aliases) {
-        addChemicalAliases(List.of(ingredient(chemicalProvider)), aliases);
+    default void addChemicalAliases(Holder<Chemical> chemical, IHasTranslationKey... aliases) {
+        addChemicalAliases(List.of(chemicalIngredient(chemical)), aliases);
     }
 
     default void addChemicalAliases(TagKey<Chemical> tag, IHasTranslationKey... aliases) {

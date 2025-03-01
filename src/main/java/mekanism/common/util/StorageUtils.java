@@ -1,7 +1,6 @@
 package mekanism.common.util;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import mekanism.api.Action;
@@ -15,7 +14,6 @@ import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.math.MathUtils;
-import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
 import mekanism.api.text.TextComponentUtil;
@@ -25,6 +23,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextUtils;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
@@ -79,7 +78,7 @@ public class StorageUtils {
                               MekanismLang.GENERIC_MB.translate(TextUtils.format(chemicalInTank.getAmount()))));
                     }
                     if (showAttributes) {
-                        ChemicalUtil.addAttributeTooltips(chemicalInTank.getChemical(), tooltipAdder);
+                        ChemicalUtil.addAttributeTooltips(chemicalInTank.getChemicalHolder(), tooltipAdder);
                     }
                 }
             }
@@ -148,24 +147,19 @@ public class StorageUtils {
     }
 
     @NotNull
-    public static ChemicalStack getContainedChemical(ItemStack stack, IChemicalProvider type) {
+    public static ChemicalStack getContainedChemical(ItemStack stack, Holder<Chemical> type) {
         return getContainedChemical(Capabilities.CHEMICAL.getCapability(stack), type);
     }
 
     @NotNull
-    public static ChemicalStack getContainedChemical(IChemicalHandler gasHandler, IChemicalProvider type) {
-        return getContainedChemical(gasHandler, type.getChemical()).orElse(ChemicalStack.EMPTY);
-    }
-
-    @NotNull
-    public static Optional<ChemicalStack> getContainedChemical(IChemicalHandler handler, Chemical type) {
+    public static ChemicalStack getContainedChemical(IChemicalHandler handler, Holder<Chemical> type) {
         for (int tank = 0, tanks = handler.getChemicalTanks(); tank < tanks; tank++) {
             ChemicalStack chemicalInTank = handler.getChemicalInTank(tank);
             if (chemicalInTank.is(type)) {
-                return Optional.of(chemicalInTank);
+                return chemicalInTank;
             }
         }
-        return Optional.empty();
+        return ChemicalStack.EMPTY;
     }
 
     public static FluidStack getContainedFluid(@NotNull IFluidHandlerItem fluidHandlerItem, FluidStack type) {

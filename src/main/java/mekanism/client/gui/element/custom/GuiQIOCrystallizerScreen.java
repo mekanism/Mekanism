@@ -32,7 +32,7 @@ public class GuiQIOCrystallizerScreen extends GuiInnerScreen {
     private final GuiSlot slot;
 
     @NotNull
-    private Chemical prevSlurry = MekanismAPI.EMPTY_CHEMICAL;
+    private Holder<Chemical> prevSlurry = MekanismAPI.EMPTY_CHEMICAL_HOLDER;
 
     public GuiQIOCrystallizerScreen(IGuiWrapper gui, int x, int y, int width, int height, IOreInfo oreInfo) {
         super(gui, x, y, width, height);
@@ -68,12 +68,11 @@ public class GuiQIOCrystallizerScreen extends GuiInnerScreen {
         if (oreInfo.usesSequencedDisplay() && slotDisplay != null) {//Note: If we use the sequenced display, slotDisplay should never be null
             ChemicalStack chemical = oreInfo.getInputChemical();
             if (!chemical.isEmpty()) {
-                Chemical inputSlurry = chemical.getChemical();
-                if (prevSlurry != inputSlurry) {
-                    prevSlurry = inputSlurry;
+                if (!chemical.is(prevSlurry)) {
+                    prevSlurry = chemical.getChemicalHolder();
                     iterStacks.clear();
-                    if (!prevSlurry.isEmptyType() && !prevSlurry.is(MekanismAPITags.Chemicals.DIRTY)) {
-                        TagKey<Item> oreTag = prevSlurry.getOreTag();
+                    if (!prevSlurry.is(MekanismAPI.EMPTY_CHEMICAL_KEY) && !prevSlurry.is(MekanismAPITags.Chemicals.DIRTY)) {
+                        TagKey<Item> oreTag = prevSlurry.value().getOreTag();
                         if (oreTag != null) {
                             for (Holder<Item> ore : BuiltInRegistries.ITEM.getTagOrEmpty(oreTag)) {
                                 iterStacks.add(new ItemStack(ore));
@@ -82,8 +81,8 @@ public class GuiQIOCrystallizerScreen extends GuiInnerScreen {
                     }
                     slotDisplay.updateStackList();
                 }
-            } else if (!prevSlurry.isEmptyType()) {
-                prevSlurry = MekanismAPI.EMPTY_CHEMICAL;
+            } else if (!prevSlurry.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
+                prevSlurry = MekanismAPI.EMPTY_CHEMICAL_HOLDER;
                 iterStacks.clear();
                 slotDisplay.updateStackList();
             }

@@ -9,9 +9,9 @@ import mekanism.additions.common.entity.baby.BabyType;
 import mekanism.additions.common.registries.AdditionsBiomeModifierSerializers;
 import mekanism.api.SerializationConstants;
 import mekanism.common.Mekanism;
-import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.MobSpawnSettings;
@@ -31,6 +31,7 @@ public record BabyEntitySpawnBiomeModifier(BabyType babyType, AdditionsConfig.Sp
             //Note: We need to run after addition in case we ran after any mods added their skeletons,
             // but we run before after everything to make it easier for another mod to remove us
             if (!biome.is(babyType.biomeBlacklist)) {
+                ResourceKey<Biome> biomeKey = biome.getKey();
                 MobSpawnSettingsBuilder mobSpawnSettings = builder.getMobSpawnSettings();
                 List<MobSpawnSettings.SpawnerData> monsterSpawns = mobSpawnSettings.getSpawner(MobCategory.MONSTER);
                 for (MobSpawnSettings.SpawnerData spawner : spawnConfig.getSpawnersToAdd(monsterSpawns)) {
@@ -38,13 +39,13 @@ public record BabyEntitySpawnBiomeModifier(BabyType babyType, AdditionsConfig.Sp
                     MobSpawnSettings.MobSpawnCost parentCost = mobSpawnSettings.getCost(spawnConfig.parentType);
                     if (parentCost == null) {
                         Mekanism.logger.debug("Adding spawn rate for '{}' in biome '{}', with weight: {}, minSize: {}, maxSize: {}",
-                              RegistryUtils.getName(spawner.type), biome.unwrapKey().map(ResourceKey::location).orElse(null), spawner.getWeight(), spawner.minCount, spawner.maxCount);
+                              EntityType.getKey(spawner.type), biomeKey == null ? null : biomeKey.location(), spawner.getWeight(), spawner.minCount, spawner.maxCount);
                     } else {
                         double spawnCostPerEntity = parentCost.charge() * spawnConfig.spawnCostPerEntityPercentage.get();
                         double maxSpawnCost = parentCost.energyBudget() * spawnConfig.maxSpawnCostPercentage.get();
                         mobSpawnSettings.addMobCharge(spawner.type, spawnCostPerEntity, maxSpawnCost);
                         Mekanism.logger.debug("Adding spawn rate for '{}' in biome '{}', with weight: {}, minSize: {}, maxSize: {}, spawnCostPerEntity: {}, maxSpawnCost: {}",
-                              RegistryUtils.getName(spawner.type), biome.unwrapKey().map(ResourceKey::location).orElse(null), spawner.getWeight(), spawner.minCount, spawner.maxCount, spawnCostPerEntity, maxSpawnCost);
+                              EntityType.getKey(spawner.type), biomeKey == null ? null : biomeKey.location(), spawner.getWeight(), spawner.minCount, spawner.maxCount, spawnCostPerEntity, maxSpawnCost);
                     }
                 }
             }

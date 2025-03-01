@@ -3,19 +3,20 @@ package mekanism.common.integration.framedblocks;
 import com.mojang.serialization.MapCodec;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.Chemical;
+import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import org.jetbrains.annotations.NotNull;
 
-record ChemicalParticleOptions(Chemical chemical) implements ParticleOptions {
+record ChemicalParticleOptions(Holder<Chemical> chemical) implements ParticleOptions {
 
-    private static final MapCodec<ChemicalParticleOptions> CODEC = Chemical.CODEC
+    private static final MapCodec<ChemicalParticleOptions> CODEC = Chemical.HOLDER_CODEC
             .xmap(ChemicalParticleOptions::new, ChemicalParticleOptions::chemical)
             .fieldOf(SerializationConstants.CHEMICAL);
     private static final StreamCodec<RegistryFriendlyByteBuf, ChemicalParticleOptions> STREAM_CODEC =
-            Chemical.STREAM_CODEC.map(ChemicalParticleOptions::new, ChemicalParticleOptions::chemical);
+            Chemical.HOLDER_STREAM_CODEC.map(ChemicalParticleOptions::new, ChemicalParticleOptions::chemical);
 
     @NotNull
     @Override

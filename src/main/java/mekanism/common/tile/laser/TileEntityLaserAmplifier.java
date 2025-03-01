@@ -102,7 +102,7 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     @Override
     protected void notifyComparatorChange() {
         //Notify neighbors instead of just comparators as we also allow for direct redstone levels
-        level.updateNeighborsAt(getBlockPos(), getBlockType());
+        level.updateNeighborsAt(getBlockPos(), getBlockState().getBlock());
     }
 
     public void setDelay(int delay) {

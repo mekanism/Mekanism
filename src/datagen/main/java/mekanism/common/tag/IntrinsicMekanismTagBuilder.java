@@ -7,14 +7,15 @@ import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagBuilder;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 //Based off of IntrinsicHolderTagsProvider.IntrinsicTagAppender but with a few shortcuts for forge registry entries and also a few more helpers and addition of SafeVarargs annotations
 public class IntrinsicMekanismTagBuilder<TYPE> extends MekanismTagBuilder<TYPE, IntrinsicMekanismTagBuilder<TYPE>> {
 
     private final Function<TYPE, ResourceKey<TYPE>> keyExtractor;
 
-    public IntrinsicMekanismTagBuilder(Function<TYPE, ResourceKey<TYPE>> keyExtractor, TagBuilder builder, String modID) {
-        super(builder, modID);
+    public IntrinsicMekanismTagBuilder(Function<TYPE, ResourceKey<TYPE>> keyExtractor, TagBuilder builder) {
+        super(builder);
         this.keyExtractor = keyExtractor;
     }
 
@@ -22,13 +23,17 @@ public class IntrinsicMekanismTagBuilder<TYPE> extends MekanismTagBuilder<TYPE, 
         return addTyped(Supplier::get, elements);
     }
 
-    @SafeVarargs
-    public final IntrinsicMekanismTagBuilder<TYPE> add(Supplier<TYPE>... elements) {
-        return addTyped(Supplier::get, elements);
-    }
-
     private ResourceLocation getKey(TYPE element) {
         return keyExtractor.apply(element).location();
+    }
+
+    public final IntrinsicMekanismTagBuilder<TYPE> addHolders(Collection<? extends DeferredHolder<TYPE, ?>> elements) {
+        return add(DeferredHolder::getId, elements);
+    }
+
+    @SafeVarargs
+    public final IntrinsicMekanismTagBuilder<TYPE> add(DeferredHolder<TYPE, ?>... elements) {
+        return add(DeferredHolder::getId, elements);
     }
 
     @SafeVarargs

@@ -11,6 +11,7 @@ import mekanism.common.recipe.pattern.RecipePattern.DoubleLine;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismItems;
+import mekanism.common.resource.BlockResourceInfo;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -54,7 +55,7 @@ class StorageRecipeProvider implements ISubRecipeProvider {
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CHARCOAL_BLOCK)
               .pattern(MekanismRecipeProvider.STORAGE_PATTERN)
               .key(Pattern.CONSTANT, Items.CHARCOAL)
-              .build(consumer, Mekanism.rl(basePath + MekanismBlocks.CHARCOAL_BLOCK.getBlock().getResourceInfo().getRegistrySuffix()));
+              .build(consumer, Mekanism.rl(basePath + BlockResourceInfo.CHARCOAL.getRegistrySuffix()));
         //Salt
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.SALT_BLOCK)
               .pattern(RecipePattern.createPattern(
@@ -69,7 +70,7 @@ class StorageRecipeProvider implements ISubRecipeProvider {
         addStorageBlockRecipe(consumer, block, ingot, ingotTag, basePath, block.getBlock().getResourceInfo().getRegistrySuffix());
     }
 
-    private void addStorageBlockRecipe(RecipeOutput consumer, BlockRegistryObject<?, ?> block, ItemLike ingot, TagKey<Item> ingotTag,
+    private void addStorageBlockRecipe(RecipeOutput consumer, ItemLike block, ItemLike ingot, TagKey<Item> ingotTag,
           String basePath, String suffix) {
         ExtendedShapedRecipeBuilder.shapedRecipe(block)
               .pattern(MekanismRecipeProvider.TYPED_STORAGE_PATTERN)

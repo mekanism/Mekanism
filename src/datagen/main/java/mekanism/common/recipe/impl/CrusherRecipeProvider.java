@@ -509,7 +509,7 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
             ItemStackToItemStackRecipeBuilder.crushing(
                   IngredientCreatorAccess.item().from(entry.getKey()),
                   new ItemStack(result)
-            ).build(consumer, Mekanism.rl(basePath + RegistryUtils.getPath(result.asItem())));
+            ).build(consumer, Mekanism.rl(basePath + RegistryUtils.getPath(result)));
         }
     }
 }

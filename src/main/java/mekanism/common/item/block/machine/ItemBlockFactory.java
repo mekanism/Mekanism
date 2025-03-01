@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 public class ItemBlockFactory extends ItemBlockTooltip<BlockTile<?, ?>> {
 
     private static AttachedSideConfig getSideConfig(BlockFactory<?> block) {
-        return switch (Attribute.getOrThrow(block, AttributeFactoryType.class).getFactoryType()) {
+        return switch (Attribute.getOrThrow(block.builtInRegistryHolder(), AttributeFactoryType.class).getFactoryType()) {
             case SMELTING, ENRICHING, CRUSHING, SAWING -> AttachedSideConfig.ELECTRIC_MACHINE;
             case COMPRESSING, INFUSING -> AttachedSideConfig.ADVANCED_MACHINE;
             case COMBINING -> AttachedSideConfig.EXTRA_MACHINE;
@@ -39,13 +39,13 @@ public class ItemBlockFactory extends ItemBlockTooltip<BlockTile<?, ?>> {
 
     @Override
     public FactoryTier getTier() {
-        return Attribute.getTier(getBlock(), FactoryTier.class);
+        return Attribute.getTier(getBlockHolder(), FactoryTier.class);
     }
 
     @Override
     protected void addTypeDetails(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         //Should always be present but validate it just in case
-        AttributeFactoryType factoryType = Attribute.get(getBlock(), AttributeFactoryType.class);
+        AttributeFactoryType factoryType = Attribute.get(getBlockHolder(), AttributeFactoryType.class);
         if (factoryType != null) {
             tooltip.add(MekanismLang.FACTORY_TYPE.translateColored(EnumColor.INDIGO, EnumColor.GRAY, factoryType.getFactoryType()));
         }

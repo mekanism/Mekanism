@@ -66,7 +66,7 @@ public record PacketTileButtonPress(ClickedTileButton buttonClicked, BlockPos po
     public enum ClickedTileButton {
         BACK_BUTTON(tile -> {
             //Special handling to basically reset to the tiles default gui container
-            AttributeGui attributeGui = Attribute.get(tile.getBlockType(), AttributeGui.class);
+            AttributeGui attributeGui = Attribute.get(tile.getBlockHolder(), AttributeGui.class);
             if (attributeGui != null) {
                 return attributeGui.getProvider(tile, false);
             }

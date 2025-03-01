@@ -5,7 +5,6 @@ import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IChemicalConstant;
-import mekanism.common.registration.MekanismDeferredRegister;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -76,9 +75,9 @@ public class FluidDeferredRegister {
     private final ItemDeferredRegister itemRegister;
 
     public FluidDeferredRegister(String modid) {
-        blockRegister = MekanismDeferredRegister.create(Registries.BLOCK, modid);
-        fluidRegister = MekanismDeferredRegister.create(Registries.FLUID, modid);
-        fluidTypeRegister = MekanismDeferredRegister.create(NeoForgeRegistries.Keys.FLUID_TYPES, modid);
+        blockRegister = DeferredRegister.create(Registries.BLOCK, modid);
+        fluidRegister = DeferredRegister.create(Registries.FLUID, modid);
+        fluidTypeRegister = DeferredRegister.create(NeoForgeRegistries.Keys.FLUID_TYPES, modid);
         //Note: We use our own deferred register so that we also can automatically attach any capability aware buckets we register
         itemRegister = new ItemDeferredRegister(modid);
     }

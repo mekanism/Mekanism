@@ -23,7 +23,7 @@ public class ToolsCreativeTabs {
     public static final MekanismDeferredHolder<CreativeModeTab, CreativeModeTab> TOOLS = CREATIVE_TABS.registerMain(ToolsLang.MEKANISM_TOOLS, ToolsItems.DIAMOND_PAXEL, builder ->
           builder.backgroundTexture(MekanismTools.rl("textures/gui/creative_tab.png"))
                 .withSearchBar(80)//Allow our tabs to be searchable for convenience purposes
-                .withTabsBefore(MekanismCreativeTabs.MEKANISM.getKey())
+                .withTabsBefore(MekanismCreativeTabs.MEKANISM.getId())
                 .displayItems((displayParameters, output) -> CreativeTabDeferredRegister.addToDisplay(ToolsItems.ITEMS, output))
     );
 

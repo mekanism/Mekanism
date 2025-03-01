@@ -151,14 +151,15 @@ public class MekanismJEI implements IModPlugin {
     @Override
     public void registerIngredients(IModIngredientRegistration registry) {
         //Note: We register the ingredient types regardless of if EMI is loaded so that we don't crash any addons that are trying to reference them
-        List<ChemicalStack> types = MekanismAPI.CHEMICAL_REGISTRY.stream()
-              .filter(chemical -> !chemical.isEmptyType())//Don't add the empty type. We will allow JEI to filter out any that are hidden from recipe viewers
-              .map(chemical -> chemical.getStack(FluidType.BUCKET_VOLUME))
+        List<ChemicalStack> types = MekanismAPI.CHEMICAL_REGISTRY.holders()
+              //Don't add the empty type. We will allow JEI to filter out any that are hidden from recipe viewers
+              .filter(chemical -> !chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY))
+              .map(chemical -> new ChemicalStack(chemical, FluidType.BUCKET_VOLUME))
               .toList();
         CHEMICAL_STACK_HELPER.setColorHelper(registry.getColorHelper());
-        registry.register(TYPE_CHEMICAL, types, CHEMICAL_STACK_HELPER, new ChemicalStackRenderer(), Chemical.CODEC.xmap(
-              chemical -> chemical.getStack(FluidType.BUCKET_VOLUME),
-              ChemicalStack::getChemical
+        registry.register(TYPE_CHEMICAL, types, CHEMICAL_STACK_HELPER, new ChemicalStackRenderer(), Chemical.HOLDER_CODEC.xmap(
+              chemical -> new ChemicalStack(chemical, FluidType.BUCKET_VOLUME),
+              ChemicalStack::getChemicalHolder
         ));
     }
 

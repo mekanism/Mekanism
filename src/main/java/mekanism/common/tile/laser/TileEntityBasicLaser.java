@@ -9,7 +9,6 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.lasers.ILaserDissipation;
 import mekanism.api.lasers.ILaserReceptor;
 import mekanism.api.math.MathUtils;
-import mekanism.api.providers.IBlockProvider;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.base.MekFakePlayer;
 import mekanism.common.capabilities.Capabilities;
@@ -29,6 +28,7 @@ import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
@@ -70,7 +70,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     private long diggingProgress = 0;
     private long lastFired = 0;
 
-    public TileEntityBasicLaser(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
+    public TileEntityBasicLaser(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
     }
 

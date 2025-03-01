@@ -1,5 +1,7 @@
 package mekanism.api.providers;
 
+import java.util.Objects;
+import mekanism.api.MekanismAPI;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.ModuleData;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -15,7 +17,7 @@ public interface IModuleDataProvider<MODULE extends ICustomModule<MODULE>> exten
 
     @Override
     default ResourceLocation getRegistryName() {
-        return getModuleData().getRegistryName();
+        return Objects.requireNonNull(MekanismAPI.MODULE_REGISTRY.getKey(getModuleData()), "Unregistered module data");
     }
 
     @Override

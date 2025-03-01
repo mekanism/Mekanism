@@ -12,17 +12,17 @@ public class ToolsGenderCapabilityHelper {
     public static void addGenderCapability(ItemMekanismArmor item, RegisterCapabilitiesEvent event) {
         //Validate the mod is loaded and that this is for the correct slot
         if (Mekanism.hooks.WildfireGenderModLoaded && item.getType() == ArmorItem.Type.CHESTPLATE) {
-            if (item == ToolsItems.BRONZE_CHESTPLATE.asItem()) {
+            if (ToolsItems.BRONZE_CHESTPLATE.is(item)) {
                 ArmorSettings.BRONZE.register(event, item);
-            } else if (item == ToolsItems.LAPIS_LAZULI_CHESTPLATE.asItem()) {
+            } else if (ToolsItems.LAPIS_LAZULI_CHESTPLATE.is(item)) {
                 ArmorSettings.LAPIS_LAZULI.register(event, item);
-            } else if (item == ToolsItems.OSMIUM_CHESTPLATE.asItem()) {
+            } else if (ToolsItems.OSMIUM_CHESTPLATE.is(item)) {
                 ArmorSettings.OSMIUM.register(event, item);
-            } else if (item == ToolsItems.REFINED_GLOWSTONE_CHESTPLATE.asItem()) {
+            } else if (ToolsItems.REFINED_GLOWSTONE_CHESTPLATE.is(item)) {
                 ArmorSettings.REFINED_GLOWSTONE.register(event, item);
-            } else if (item == ToolsItems.REFINED_OBSIDIAN_CHESTPLATE.asItem()) {
+            } else if (ToolsItems.REFINED_OBSIDIAN_CHESTPLATE.is(item)) {
                 ArmorSettings.REFINED_OBSIDIAN.register(event, item);
-            } else if (item == ToolsItems.STEEL_CHESTPLATE.asItem()) {
+            } else if (ToolsItems.STEEL_CHESTPLATE.is(item)) {
                 ArmorSettings.STEEL.register(event, item);
             }
         }

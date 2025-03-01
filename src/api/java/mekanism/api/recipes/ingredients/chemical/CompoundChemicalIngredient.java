@@ -7,6 +7,7 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
+import net.minecraft.core.Holder;
 import net.neoforged.neoforge.common.crafting.CompoundIngredient;
 import net.neoforged.neoforge.common.util.NeoForgeExtraCodecs;
 import org.jetbrains.annotations.Nullable;
@@ -40,14 +41,14 @@ public non-sealed class CompoundChemicalIngredient extends ChemicalIngredient {
     }
 
     @Override
-    public final Stream<Chemical> generateChemicals() {
+    public final Stream<Holder<Chemical>> generateChemicalHolders() {
         return children().stream()
-              .flatMap(ChemicalIngredient::generateChemicals)
-              .distinct();//Ensure we don't include the same chemical multiple times
+              .flatMap(ChemicalIngredient::generateChemicalHolders)
+              .distinct();//Ensure we don't include the same chemical multiple times. Holder overrides #equals at least within same kind of holder
     }
 
     @Override
-    public final boolean test(Chemical chemical) {
+    public final boolean test(Holder<Chemical> chemical) {
         for (ChemicalIngredient child : children()) {
             if (child.test(chemical)) {
                 return true;

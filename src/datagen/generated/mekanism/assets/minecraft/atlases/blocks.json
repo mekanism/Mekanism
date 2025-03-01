@@ -50,11 +50,11 @@
     },
     {
       "type": "minecraft:single",
-      "resource": "mekanism:infuse_type/bio"
+      "resource": "mekanism:liquid/liquid"
     },
     {
       "type": "minecraft:single",
-      "resource": "mekanism:infuse_type/fungi"
+      "resource": "mekanism:slurry/dirty"
     },
     {
       "type": "minecraft:single",
@@ -62,7 +62,7 @@
     },
     {
       "type": "minecraft:single",
-      "resource": "mekanism:liquid/liquid"
+      "resource": "mekanism:pigment/base"
     },
     {
       "type": "minecraft:single",
@@ -70,11 +70,11 @@
     },
     {
       "type": "minecraft:single",
-      "resource": "mekanism:pigment/base"
+      "resource": "mekanism:infuse_type/bio"
     },
     {
       "type": "minecraft:single",
-      "resource": "mekanism:slurry/dirty"
+      "resource": "mekanism:infuse_type/fungi"
     },
     {
       "type": "minecraft:single",

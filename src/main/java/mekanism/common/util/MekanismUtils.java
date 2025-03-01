@@ -49,6 +49,7 @@ import net.minecraft.SharedConstants;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
@@ -616,7 +617,7 @@ public final class MekanismUtils {
         }
     }
 
-    public static boolean isSameTypeFactory(Block block, Block factoryBlockType) {
+    public static boolean isSameTypeFactory(Holder<Block> block, Block factoryBlockType) {
         AttributeFactoryType attribute = Attribute.get(block, AttributeFactoryType.class);
         if (attribute != null) {
             AttributeFactoryType otherType = Attribute.get(factoryBlockType, AttributeFactoryType.class);

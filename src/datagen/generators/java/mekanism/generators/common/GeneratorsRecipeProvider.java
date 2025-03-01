@@ -4,13 +4,12 @@ import java.util.concurrent.CompletableFuture;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.datagen.recipe.builder.ChemicalChemicalToChemicalRecipeBuilder;
-import mekanism.api.datagen.recipe.builder.ElectrolysisRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ChemicalToChemicalRecipeBuilder;
+import mekanism.api.datagen.recipe.builder.ElectrolysisRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.RotaryRecipeBuilder;
-import mekanism.api.providers.IChemicalProvider;
-import mekanism.api.providers.IFluidProvider;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.recipe.BaseRecipeProvider;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
@@ -19,6 +18,7 @@ import mekanism.common.recipe.impl.MekanismRecipeProvider;
 import mekanism.common.recipe.pattern.Pattern;
 import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.recipe.pattern.RecipePattern.TripleLine;
+import mekanism.common.registration.impl.DeferredChemical;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismItems;
@@ -26,9 +26,10 @@ import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import mekanism.generators.common.registries.GeneratorsBlocks;
-import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.registries.GeneratorsChemicals;
+import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.registries.GeneratorsItems;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -39,6 +40,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 @NothingNullByDefault
 public class GeneratorsRecipeProvider extends BaseRecipeProvider {
@@ -86,13 +88,13 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
         addRotaryCondensentratorRecipe(consumer, basePath, GeneratorsChemicals.TRITIUM, GeneratorsFluids.TRITIUM, GeneratorTags.Fluids.TRITIUM, GeneratorTags.Chemicals.TRITIUM);
     }
 
-    private void addRotaryCondensentratorRecipe(RecipeOutput consumer, String basePath, IChemicalProvider gas, IFluidProvider fluidOutput,
+    private void addRotaryCondensentratorRecipe(RecipeOutput consumer, String basePath, DeferredChemical<Chemical> gas, Holder<Fluid> fluidOutput,
           TagKey<Fluid> fluidInput, TagKey<Chemical> gasInput) {
         RotaryRecipeBuilder.rotary(
               IngredientCreatorAccess.fluid().from(fluidInput, 1),
               IngredientCreatorAccess.chemicalStack().from(gasInput, 1),
-              gas.getStack(1),
-              fluidOutput.getFluidStack(1)
+              new ChemicalStack(gas, 1),
+              new FluidStack(fluidOutput, 1)
         ).build(consumer, MekanismGenerators.rl(basePath + gas.getName()));
     }
 
@@ -100,8 +102,8 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
         String basePath = "chemical_infusing/";
         //DT Fuel
         ChemicalChemicalToChemicalRecipeBuilder.chemicalInfusing(
-              IngredientCreatorAccess.chemicalStack().from(GeneratorsChemicals.DEUTERIUM, 1),
-              IngredientCreatorAccess.chemicalStack().from(GeneratorsChemicals.TRITIUM, 1),
+              IngredientCreatorAccess.chemicalStack().fromHolder(GeneratorsChemicals.DEUTERIUM, 1),
+              IngredientCreatorAccess.chemicalStack().fromHolder(GeneratorsChemicals.TRITIUM, 1),
               GeneratorsChemicals.FUSION_FUEL.getStack(2)
         ).build(consumer, MekanismGenerators.rl(basePath + "fusion_fuel"));
     }
@@ -109,7 +111,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
     private void addSolarNeutronActivatorRecipes(RecipeOutput consumer) {
         String basePath = "activating/";
         ChemicalToChemicalRecipeBuilder.activating(
-              IngredientCreatorAccess.chemicalStack().from(MekanismChemicals.LITHIUM, 1),
+              IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.LITHIUM, 1),
               GeneratorsChemicals.TRITIUM.getStack(1)
         ).build(consumer, MekanismGenerators.rl(basePath + "tritium"));
     }

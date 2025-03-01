@@ -69,7 +69,7 @@ public class BlockObsidianTNT extends TntBlock implements IStateFluidLoggable {
     @Nullable
     @Override
     public BlockState getStateForPlacement(@NotNull BlockPlaceContext context) {
-        return BlockStateHelper.getStateForPlacement(this, super.getStateForPlacement(context), context);
+        return BlockStateHelper.getStateForPlacement(super.getStateForPlacement(context), context);
     }
 
     @Override

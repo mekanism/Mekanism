@@ -13,8 +13,10 @@ import mekanism.common.attachments.containers.creator.IContainerCreator;
 import mekanism.common.capabilities.ICapabilityAware;
 import mekanism.common.config.IMekanismConfig;
 import mekanism.common.registration.MekanismDeferredHolder;
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
@@ -38,6 +40,18 @@ public class ItemRegistryObject<ITEM extends Item> extends MekanismDeferredHolde
     @Override
     public ITEM asItem() {
         return value();
+    }
+
+    @NotNull
+    @Override
+    public ResourceLocation getRegistryName() {
+        return getId();
+    }
+
+    @NotNull
+    @Override
+    public Holder<Item> getItemHolder() {
+        return this;
     }
 
     @Internal
@@ -66,13 +80,13 @@ public class ItemRegistryObject<ITEM extends Item> extends MekanismDeferredHolde
         if (containerCapabilities == null) {
             containerCapabilities = new ArrayList<>();
         }
-        containerCapabilities.add(event -> containerType.registerItemCapabilities(event, asItem(), false, requiredConfigs));
+        containerCapabilities.add(event -> containerType.registerItemCapabilities(event, get(), false, requiredConfigs));
         return this;
     }
 
     @Internal
     void registerCapabilities(RegisterCapabilitiesEvent event) {
-        if (asItem() instanceof ICapabilityAware capabilityAware) {
+        if (get() instanceof ICapabilityAware capabilityAware) {
             capabilityAware.attachCapabilities(event);
         }
         if (containerCapabilities != null) {
@@ -87,7 +101,7 @@ public class ItemRegistryObject<ITEM extends Item> extends MekanismDeferredHolde
     @Internal
     @SuppressWarnings({"unchecked", "rawtypes"})
     void attachDefaultContainers(IEventBus eventBus) {
-        ITEM item = asItem();
+        ITEM item = get();
         if (item instanceof IAttachmentAware attachmentAware) {
             attachmentAware.attachAttachments(eventBus);
         }

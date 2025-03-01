@@ -129,7 +129,7 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
           ModuleConfig<?> config, boolean fromPacket) {
         Module<MODULE> module = get(type);
         if (module == null) {
-            throw new IllegalArgumentException("Module container does not contain any modules of type " + type.getRegistryName());
+            throw new IllegalArgumentException("Module container does not contain any modules of type " + type);
         }
         if (config.name().equals(ModuleConfig.ENABLED_KEY)) {
             if (module.isEnabled() == (boolean) config.get()) {
@@ -161,7 +161,7 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
     <MODULE extends ICustomModule<MODULE>> ModuleContainer toggleEnabled(HolderLookup.Provider provider, ItemStack stack, ModuleData<MODULE> type) {
         Module<MODULE> module = get(type);
         if (module == null) {
-            throw new IllegalArgumentException("Module container does not contain any modules of type " + type.getRegistryName());
+            throw new IllegalArgumentException("Module container does not contain any modules of type " + type);
         }
         return toggleEnabled(provider, stack, type, module);
     }

@@ -7,7 +7,6 @@ import mekanism.client.render.armor.ICustomArmor;
 import mekanism.client.render.armor.ISpecialGear;
 import mekanism.common.Mekanism;
 import mekanism.common.registries.MekanismItems;
-import mekanism.common.util.RegistryUtils;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
@@ -36,7 +35,7 @@ public class CuriosIntegration {
                 ICustomArmor customArmor = gear.gearModel();
                 CuriosRendererRegistry.register(armor, () -> new MekanismCurioRenderer(customArmor));
             } else {
-                Mekanism.logger.warn("Attempted to register Curios renderer for non-special gear item: {}.", RegistryUtils.getName(item.asItem()));
+                Mekanism.logger.warn("Attempted to register Curios renderer for non-special gear item: {}.", item.asItem());
             }
         }
     }

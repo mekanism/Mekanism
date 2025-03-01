@@ -280,7 +280,7 @@ public class InventoryNetworkTest {
 
         test.onGameTest(TransmitterTestHelper.class, helper -> helper.startSequence()
               //Wait a few seconds for it to pull some items out, and add a transporter to create a shorter destination
-              .thenExecuteAfter(4 * SharedConstants.TICKS_PER_SECOND, () -> helper.setBlock(1, 1, 2, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.getBlock()))
+              .thenExecuteAfter(4 * SharedConstants.TICKS_PER_SECOND, () -> helper.setBlock(1, 1, 2, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState()))
               //Validate original destination has expected count
               .thenExecuteAfter(10 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(0, 1, 5, Items.STONE, 8))
               //Validate new destination has expected count

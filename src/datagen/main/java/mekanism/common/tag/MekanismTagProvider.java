@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.chemical.Chemical;
-import mekanism.api.providers.IItemProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.content.gear.IModuleItem;
 import mekanism.common.registration.impl.BlockRegistryObject;
@@ -27,7 +26,6 @@ import mekanism.common.resource.ResourceType;
 import mekanism.common.resource.ore.OreBlockType;
 import mekanism.common.resource.ore.OreType;
 import mekanism.common.tags.MekanismTags;
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BiomeTags;
@@ -42,11 +40,13 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.BannerBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Nullable;
 
 public class MekanismTagProvider extends BaseTagProvider {
@@ -56,7 +56,7 @@ public class MekanismTagProvider extends BaseTagProvider {
     }
 
     @Override
-    protected Collection<? extends Holder<Block>> getAllBlocks() {
+    protected Collection<? extends DeferredHolder<Block, ?>> getAllBlocks() {
         return MekanismBlocks.BLOCKS.getPrimaryEntries();
     }
 
@@ -212,7 +212,7 @@ public class MekanismTagProvider extends BaseTagProvider {
         }
     }
 
-    private TagKey<Item> addToTag(ResourceType type, PrimaryResource resource, IItemProvider... items) {
+    private TagKey<Item> addToTag(ResourceType type, PrimaryResource resource, ItemLike... items) {
         TagKey<Item> tag = MekanismTags.Items.PROCESSED_RESOURCES.get(type, resource);
         addToTag(tag, items);
         return tag;
@@ -313,14 +313,14 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismItems.MEKASUIT_PANTS,
               MekanismItems.MEKASUIT_BOOTS
         );
-        IItemProvider[] providers = {
+        ItemRegistryObject<?>[] providers = {
               MekanismItems.MEKASUIT_HELMET,
               MekanismItems.MEKASUIT_BODYARMOR,
               MekanismItems.MEKASUIT_PANTS,
               MekanismItems.MEKASUIT_BOOTS
         };
-        getItemBuilder(ItemTags.DURABILITY_ENCHANTABLE).remove(IItemProvider::getRegistryName, providers);
-        getItemBuilder(ItemTags.EQUIPPABLE_ENCHANTABLE).remove(IItemProvider::getRegistryName, providers);
+        getItemBuilder(ItemTags.DURABILITY_ENCHANTABLE).remove(DeferredHolder::getId, providers);
+        getItemBuilder(ItemTags.EQUIPPABLE_ENCHANTABLE).remove(DeferredHolder::getId, providers);
         getItemBuilder(ItemTags.HEAD_ARMOR_ENCHANTABLE).remove(MekanismItems.MEKASUIT_HELMET);
         getItemBuilder(ItemTags.CHEST_ARMOR_ENCHANTABLE).remove(MekanismItems.MEKASUIT_BODYARMOR);
         getItemBuilder(ItemTags.LEG_ARMOR_ENCHANTABLE).remove(MekanismItems.MEKASUIT_PANTS);

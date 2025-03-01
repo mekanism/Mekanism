@@ -4,7 +4,6 @@ import mekanism.api.text.TextComponentUtil;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.Mekanism;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
-import mekanism.common.advancements.triggers.UseGaugeDropperTrigger;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeUpgradeable;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -13,6 +12,7 @@ import mekanism.common.tile.interfaces.ITileDirectional;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
@@ -66,7 +66,7 @@ public class ItemTierInstaller extends Item {
         }
         BlockPos pos = context.getClickedPos();
         BlockState state = world.getBlockState(pos);
-        Block block = state.getBlock();
+        Holder<Block> block = state.getBlockHolder();
         AttributeUpgradeable upgradeableBlock = Attribute.get(block, AttributeUpgradeable.class);
         if (upgradeableBlock != null) {
             BaseTier baseTier = Attribute.getBaseTier(block);

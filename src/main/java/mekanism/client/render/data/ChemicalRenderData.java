@@ -6,15 +6,16 @@ import mekanism.api.chemical.Chemical;
 import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import org.jetbrains.annotations.Nullable;
 
 //TODO - 1.18: Make it possible for chemicals to define a "glow/light" value and then use that here
 @NothingNullByDefault
 public class ChemicalRenderData extends RenderData {
 
-    public final Chemical chemical;
+    public final Holder<Chemical> chemical;
 
-    public ChemicalRenderData(BlockPos renderLocation, int width, int height, int length, Chemical chemical) {
+    public ChemicalRenderData(BlockPos renderLocation, int width, int height, int length, Holder<Chemical> chemical) {
         super(renderLocation, width, height, length);
         this.chemical = chemical;
     }
@@ -31,7 +32,7 @@ public class ChemicalRenderData extends RenderData {
 
     @Override
     public boolean isGaseous() {
-        return chemical.isGaseous();
+        return chemical.value().isGaseous();
     }
 
     @Override
@@ -46,6 +47,6 @@ public class ChemicalRenderData extends RenderData {
         } else if (o == null || getClass() != o.getClass() || !super.equals(o)) {
             return false;
         }
-        return chemical == ((ChemicalRenderData) o).chemical;
+        return chemical.is(((ChemicalRenderData) o).chemical);
     }
 }

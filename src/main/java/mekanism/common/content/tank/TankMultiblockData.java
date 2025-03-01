@@ -9,6 +9,7 @@ import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
@@ -55,7 +56,7 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
         IContentsListener saveAndComparator = createSaveAndComparator();
         mergedTank = MergedTank.create(
               VariableCapacityFluidTank.create(this, this::getTankCapacity, BasicFluidTank.alwaysTrue, saveAndComparator),
-              VariableCapacityChemicalTank.create(this, this::getChemicalTankCapacity, BasicChemicalTank.alwaysTrue, saveAndComparator)
+              VariableCapacityChemicalTank.create(this, this::getChemicalTankCapacity, ConstantPredicates.alwaysTrue(), saveAndComparator)
         );
         fluidTanks.add(mergedTank.getFluidTank());
         chemicalTanks.add(mergedTank.getChemicalTank());

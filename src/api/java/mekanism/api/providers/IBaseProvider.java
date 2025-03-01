@@ -15,11 +15,13 @@ public interface IBaseProvider extends IHasTextComponent, IHasTranslationKey {
      *
      * @return Registry name.
      */
+    @Deprecated(forRemoval = true, since = "10.7.11")
     ResourceLocation getRegistryName();
 
     /**
      * Gets the "name" or "path" of the registry name.
      */
+    @Deprecated(forRemoval = true, since = "10.7.11")
     default String getName() {
         return getRegistryName().getPath();
     }

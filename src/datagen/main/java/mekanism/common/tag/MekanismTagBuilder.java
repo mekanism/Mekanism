@@ -13,11 +13,9 @@ import net.minecraft.tags.TagKey;
 public class MekanismTagBuilder<TYPE, BUILDER extends MekanismTagBuilder<TYPE, BUILDER>> {
 
     protected final TagBuilder builder;
-    protected final String modID;
 
-    public MekanismTagBuilder(TagBuilder builder, String modID) {
+    public MekanismTagBuilder(TagBuilder builder) {
         this.builder = builder;
-        this.modID = modID;
     }
 
     @SuppressWarnings("unchecked")
@@ -92,13 +90,13 @@ public class MekanismTagBuilder<TYPE, BUILDER extends MekanismTagBuilder<TYPE, B
 
     @SafeVarargs
     public final <T> BUILDER remove(Function<T, ResourceLocation> locationGetter, T... elements) {
-        return apply(rl -> builder.removeElement(rl, modID), locationGetter, elements);
+        return apply(builder::removeElement, locationGetter, elements);
     }
 
     @SafeVarargs
     public final BUILDER remove(TagKey<TYPE>... tags) {
         for (TagKey<TYPE> tag : tags) {
-            builder.removeTag(tag.location(), modID);
+            builder.removeTag(tag.location());
         }
         return self();
     }

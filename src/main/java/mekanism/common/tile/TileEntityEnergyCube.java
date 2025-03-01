@@ -3,7 +3,6 @@ package mekanism.common.tile;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
-import mekanism.api.providers.IBlockProvider;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.capabilities.energy.EnergyCubeEnergyContainer;
@@ -29,8 +28,10 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.client.model.data.ModelProperty;
@@ -55,7 +56,7 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
     /**
      * A block used to store and transfer electricity.
      */
-    public TileEntityEnergyCube(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
+    public TileEntityEnergyCube(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
         configComponent.setupIOConfig(TransmissionType.ITEM, chargeSlot, dischargeSlot, RelativeSide.FRONT, true).setCanEject(false);
         configComponent.setupIOConfig(TransmissionType.ENERGY, energyContainer, RelativeSide.FRONT);
@@ -66,7 +67,7 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
     @Override
     protected void presetVariables() {
         super.presetVariables();
-        tier = Attribute.getTier(getBlockType(), EnergyCubeTier.class);
+        tier = Attribute.getTier(getBlockHolder(), EnergyCubeTier.class);
     }
 
     @NotNull

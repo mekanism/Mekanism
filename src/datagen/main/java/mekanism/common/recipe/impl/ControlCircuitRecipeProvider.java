@@ -3,7 +3,6 @@ package mekanism.common.recipe.impl;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBuilder;
-import mekanism.api.providers.IItemProvider;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.ISubRecipeProvider;
@@ -19,6 +18,8 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 
 class ControlCircuitRecipeProvider implements ISubRecipeProvider {
 
@@ -43,7 +44,7 @@ class ControlCircuitRecipeProvider implements ISubRecipeProvider {
         addCircuitInfusionUpgrade(consumer, MekanismItems.ULTIMATE_CONTROL_CIRCUIT, MekanismTags.Items.CIRCUITS_ELITE, MekanismAPITags.Chemicals.REFINED_OBSIDIAN, 40, basePath, "ultimate");
     }
 
-    private void addCircuitUpgradeRecipe(RecipeOutput consumer, IItemProvider output, TagKey<Item> circuitTag, TagKey<Item> alloyTag, String basePath,
+    private void addCircuitUpgradeRecipe(RecipeOutput consumer, ItemLike output, TagKey<Item> circuitTag, TagKey<Item> alloyTag, String basePath,
           String name) {
         ExtendedShapedRecipeBuilder.shapedRecipe(output)
               .pattern(circuitPattern)
@@ -52,11 +53,11 @@ class ControlCircuitRecipeProvider implements ISubRecipeProvider {
               .build(consumer, Mekanism.rl(basePath + name));
     }
 
-    private void addCircuitInfusionUpgrade(RecipeOutput consumer, IItemProvider output, TagKey<Item> circuitTag, TagKey<Chemical> infusionType, int singleAlloyAmount, String basePath, String name) {
+    private void addCircuitInfusionUpgrade(RecipeOutput consumer, ItemLike output, TagKey<Item> circuitTag, TagKey<Chemical> infusionType, int singleAlloyAmount, String basePath, String name) {
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               IngredientCreatorAccess.item().from(circuitTag),
               IngredientCreatorAccess.chemicalStack().from(infusionType, singleAlloyAmount * 6), /* 3x 2 alloys */
-              output.getItemStack(),
+              new ItemStack(output),
               false
         ).build(consumer, Mekanism.rl(basePath + "infused_" + name));
     }

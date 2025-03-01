@@ -4,7 +4,6 @@ import java.util.Map;
 import mekanism.additions.common.AdditionsTags;
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.registries.AdditionsBlocks;
-import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
@@ -16,6 +15,7 @@ import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
 
 public class PlasticSlabsRecipeProvider implements ISubRecipeProvider {
 
@@ -32,15 +32,15 @@ public class PlasticSlabsRecipeProvider implements ISubRecipeProvider {
               basePath + "glow/");
     }
 
-    private void registerPlasticSlabs(RecipeOutput consumer, Map<EnumColor, ? extends IItemProvider> blocks, Map<EnumColor, ? extends IItemProvider> plastic,
+    private void registerPlasticSlabs(RecipeOutput consumer, Map<EnumColor, ? extends ItemLike> blocks, Map<EnumColor, ? extends ItemLike> plastic,
           TagKey<Item> blockType, boolean transparent, String basePath) {
-        for (Map.Entry<EnumColor, ? extends IItemProvider> entry : blocks.entrySet()) {
+        for (Map.Entry<EnumColor, ? extends ItemLike> entry : blocks.entrySet()) {
             EnumColor color = entry.getKey();
             registerPlasticSlab(consumer, color, entry.getValue(), plastic.get(color), blockType, transparent, basePath);
         }
     }
 
-    private void registerPlasticSlab(RecipeOutput consumer, EnumColor color, IItemProvider slab, IItemProvider plastic, TagKey<Item> blockType, boolean transparent, String basePath) {
+    private void registerPlasticSlab(RecipeOutput consumer, EnumColor color, ItemLike slab, ItemLike plastic, TagKey<Item> blockType, boolean transparent, String basePath) {
         ExtendedShapedRecipeBuilder.shapedRecipe(slab, 6)
               .pattern(PLASTIC_SLAB)
               .key(Pattern.CONSTANT, plastic)

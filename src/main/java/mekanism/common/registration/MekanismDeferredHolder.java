@@ -21,4 +21,8 @@ public class MekanismDeferredHolder<R, T extends R> extends DeferredHolder<R, T>
     public String getName() {
         return INamedEntry.super.getName();
     }
+
+    public boolean is(R other) {
+        return get() == other;
+    }
 }

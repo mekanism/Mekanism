@@ -2,7 +2,6 @@ package mekanism.common.tile.qio;
 
 import java.util.Collection;
 import mekanism.api.SerializationConstants;
-import mekanism.api.providers.IBlockProvider;
 import mekanism.api.security.SecurityMode;
 import mekanism.api.text.EnumColor;
 import mekanism.common.content.qio.IQIOFrequencyHolder;
@@ -16,8 +15,10 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -27,7 +28,7 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
     @Nullable
     private EnumColor lastColor;
 
-    public TileEntityQIOComponent(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
+    public TileEntityQIOComponent(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
         frequencyComponent.track(FrequencyType.QIO, true, true, true);
     }

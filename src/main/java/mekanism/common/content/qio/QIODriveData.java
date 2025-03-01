@@ -8,7 +8,6 @@ import mekanism.common.attachments.qio.DriveContents;
 import mekanism.common.attachments.qio.DriveMetadata;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.registries.MekanismDataComponents;
-import mekanism.common.util.RegistryUtils;
 import net.minecraft.world.item.ItemStack;
 
 public class QIODriveData {
@@ -110,7 +109,7 @@ public class QIODriveData {
             if (stack.getItem() instanceof IQIODriveItem) {
                 stack.set(MekanismDataComponents.DRIVE_METADATA, new DriveMetadata(data));
             } else {
-                Mekanism.logger.error("Tried to update QIO meta values on an invalid ItemStack ({}). Something has gone very wrong!", RegistryUtils.getName(stack.getItem()));
+                Mekanism.logger.error("Tried to update QIO meta values on an invalid ItemStack ({}). Something has gone very wrong!", stack.getItem());
             }
         }
 

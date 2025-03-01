@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
-import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.TextComponentUtil;
@@ -23,7 +23,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 
-public class GuiChemicalGauge extends GuiTankGauge<Chemical, IChemicalTank> {
+public class GuiChemicalGauge extends GuiTankGauge<ChemicalStack, IChemicalTank> {
 
     public static GuiChemicalGauge getDummy(GaugeType type, IGuiWrapper gui, int x, int y) {
         GuiChemicalGauge gauge = new GuiChemicalGauge(null, type, gui, x, y, type.getGaugeOverlay().getWidth() + 2, type.getGaugeOverlay().getHeight() + 2);
@@ -35,6 +35,8 @@ public class GuiChemicalGauge extends GuiTankGauge<Chemical, IChemicalTank> {
 
     public GuiChemicalGauge(ITankInfoHandler<IChemicalTank> handler, GaugeType type, IGuiWrapper gui, int x, int y, int sizeX, int sizeY) {
         super(type, gui, x, y, sizeX, sizeY, handler, TankType.CHEMICAL_TANK);
+        //Ensure it isn't null
+        setDummyType(ChemicalStack.EMPTY);
     }
 
     public GuiChemicalGauge(Supplier<IChemicalTank> tankSupplier, Supplier<List<IChemicalTank>> tanksSupplier, GaugeType type, IGuiWrapper gui, int x, int y) {
@@ -81,7 +83,7 @@ public class GuiChemicalGauge extends GuiTankGauge<Chemical, IChemicalTank> {
             return MekanismRenderer.getChemicalTexture(dummyType);
         }
         IChemicalTank tank = getTank();
-        return tank == null || tank.isEmpty() ? null : MekanismRenderer.getChemicalTexture(tank.getType());
+        return tank == null || tank.isEmpty() ? null : MekanismRenderer.getChemicalTexture(tank.getTypeHolder());
     }
 
     @Override
@@ -101,9 +103,9 @@ public class GuiChemicalGauge extends GuiTankGauge<Chemical, IChemicalTank> {
         List<Component> list = new ArrayList<>();
         long amount = tank.getStored();
         if (amount == Long.MAX_VALUE) {
-            list.add(MekanismLang.GENERIC_STORED.translate(tank.getType(), MekanismLang.INFINITE));
+            list.add(MekanismLang.GENERIC_STORED.translate(tank.getStack(), MekanismLang.INFINITE));
         } else {
-            list.add(MekanismLang.GENERIC_STORED_MB.translate(tank.getType(), TextUtils.format(amount)));
+            list.add(MekanismLang.GENERIC_STORED_MB.translate(tank.getStack(), TextUtils.format(amount)));
         }
         ChemicalUtil.addChemicalDataToTooltip(list, tank.getStack(), Minecraft.getInstance().options.advancedItemTooltips);
         return list;

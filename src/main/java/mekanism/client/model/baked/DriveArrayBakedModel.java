@@ -110,7 +110,7 @@ public class DriveArrayBakedModel extends ExtensionOverrideBakedModel<byte[]> {
         @Nullable
         @Override
         public BakedModel resolve(BakedModel model, ItemStack stack, @Nullable ClientLevel world, @Nullable LivingEntity entity, int seed) {
-            if (!stack.isEmpty() && stack.is(MekanismBlocks.QIO_DRIVE_ARRAY.asItem())) {
+            if (!stack.isEmpty() && stack.is(MekanismBlocks.QIO_DRIVE_ARRAY.getItemHolder())) {
                 List<IInventorySlot> inventorySlots = ContainerType.ITEM.getAttachmentContainersIfPresent(stack);
                 byte[] driveStatus = new byte[TileEntityQIODriveArray.DRIVE_SLOTS];
                 boolean hasFrequency = hasFrequency(stack);

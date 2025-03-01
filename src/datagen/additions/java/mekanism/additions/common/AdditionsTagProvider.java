@@ -3,18 +3,12 @@ package mekanism.additions.common;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import mekanism.additions.common.block.plastic.BlockPlasticTransparent;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
 import mekanism.additions.common.registries.AdditionsItems;
-import mekanism.api.providers.IBlockProvider;
-import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.EnumColor;
-import mekanism.common.item.block.ItemBlockMekanism;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.tag.BaseTagProvider;
-import mekanism.common.tag.IntrinsicMekanismTagBuilder;
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
@@ -26,9 +20,11 @@ import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Nullable;
 
 public class AdditionsTagProvider extends BaseTagProvider {
@@ -38,7 +34,7 @@ public class AdditionsTagProvider extends BaseTagProvider {
     }
 
     @Override
-    protected Collection<? extends Holder<Block>> getAllBlocks() {
+    protected Collection<? extends DeferredHolder<Block, ?>> getAllBlocks() {
         return AdditionsBlocks.BLOCKS.getPrimaryEntries();
     }
 
@@ -142,10 +138,7 @@ public class AdditionsTagProvider extends BaseTagProvider {
               AdditionsTags.Blocks.PLASTIC_BLOCKS_REINFORCED, AdditionsTags.Blocks.PLASTIC_BLOCKS_ROAD, AdditionsTags.Blocks.PLASTIC_BLOCKS_SLICK,
               AdditionsTags.Blocks.PLASTIC_BLOCKS_TRANSPARENT);
 
-        IntrinsicMekanismTagBuilder<Block> frameable = getBlockBuilder(FRAMEABLE);
-        for (BlockRegistryObject<BlockPlasticTransparent, ItemBlockMekanism<BlockPlasticTransparent>> holder : AdditionsBlocks.TRANSPARENT_PLASTIC_BLOCKS.values()) {
-            frameable.add(holder.getBlock());
-        }
+        getBlockBuilder(FRAMEABLE).add(AdditionsBlocks.TRANSPARENT_PLASTIC_BLOCKS.values());
     }
 
     private void addHarvestRequirements() {
@@ -155,9 +148,9 @@ public class AdditionsTagProvider extends BaseTagProvider {
               AdditionsBlocks.PLASTIC_STAIRS, AdditionsBlocks.PLASTIC_GLOW_STAIRS, AdditionsBlocks.TRANSPARENT_PLASTIC_STAIRS);
     }
 
-    private void addToTags(TagKey<Item> itemTag, TagKey<Block> blockTag, Map<EnumColor, ? extends IBlockProvider> blockProviders) {
-        addToTags(itemTag, blockTag, blockProviders.values().toArray(new IBlockProvider[0]));
-        for (Map.Entry<EnumColor, ? extends IBlockProvider> entry : blockProviders.entrySet()) {
+    private void addToTags(TagKey<Item> itemTag, TagKey<Block> blockTag, Map<EnumColor, ? extends BlockRegistryObject<?, ?>> blockProviders) {
+        addToTags(itemTag, blockTag, blockProviders.values().toArray(new BlockRegistryObject[0]));
+        for (Map.Entry<EnumColor, ? extends BlockRegistryObject<?, ?>> entry : blockProviders.entrySet()) {
             DyeColor dyeColor = entry.getKey().getDyeColor();
             if (dyeColor != null) {
                 addToTags(Tags.Items.DYED, Tags.Blocks.DYED, entry.getValue());
@@ -166,9 +159,9 @@ public class AdditionsTagProvider extends BaseTagProvider {
         }
     }
 
-    private void addToTag(TagKey<Item> itemTag, Map<EnumColor, ? extends IItemProvider> itemProviders) {
-        addToTag(itemTag, itemProviders.values().toArray(new IItemProvider[0]));
-        for (Map.Entry<EnumColor, ? extends IItemProvider> entry : itemProviders.entrySet()) {
+    private void addToTag(TagKey<Item> itemTag, Map<EnumColor, ? extends ItemLike> itemProviders) {
+        addToTag(itemTag, itemProviders.values().toArray(new ItemLike[0]));
+        for (Map.Entry<EnumColor, ? extends ItemLike> entry : itemProviders.entrySet()) {
             DyeColor dyeColor = entry.getKey().getDyeColor();
             if (dyeColor != null) {
                 addToTag(Tags.Items.DYED, entry.getValue());

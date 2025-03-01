@@ -4,7 +4,6 @@ import java.util.Map;
 import mekanism.additions.common.AdditionsTags;
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.registries.AdditionsBlocks;
-import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
@@ -16,6 +15,7 @@ import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
 
 public class PlasticStairsRecipeProvider implements ISubRecipeProvider {
 
@@ -34,15 +34,15 @@ public class PlasticStairsRecipeProvider implements ISubRecipeProvider {
               basePath + "glow/");
     }
 
-    private void registerPlasticStairs(RecipeOutput consumer, Map<EnumColor, ? extends IItemProvider> blocks, Map<EnumColor, ? extends IItemProvider> plastic,
+    private void registerPlasticStairs(RecipeOutput consumer, Map<EnumColor, ? extends ItemLike> blocks, Map<EnumColor, ? extends ItemLike> plastic,
           TagKey<Item> blockType, boolean transparent, String basePath) {
-        for (Map.Entry<EnumColor, ? extends IItemProvider> entry : blocks.entrySet()) {
+        for (Map.Entry<EnumColor, ? extends ItemLike> entry : blocks.entrySet()) {
             EnumColor color = entry.getKey();
             registerPlasticStairs(consumer, color, entry.getValue(), plastic.get(color), blockType, transparent, basePath);
         }
     }
 
-    private void registerPlasticStairs(RecipeOutput consumer, EnumColor color, IItemProvider result, IItemProvider plastic, TagKey<Item> blockType,
+    private void registerPlasticStairs(RecipeOutput consumer, EnumColor color, ItemLike result, ItemLike plastic, TagKey<Item> blockType,
           boolean transparent, String basePath) {
         ExtendedShapedRecipeBuilder.shapedRecipe(result, 4)
               .pattern(PLASTIC_STAIRS)

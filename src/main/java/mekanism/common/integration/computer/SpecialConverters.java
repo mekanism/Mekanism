@@ -224,7 +224,7 @@ public class SpecialConverters {
             elements++;
         }
         Map<String, Object> wrapped = new HashMap<>(elements);
-        wrapped.put(SerializationConstants.NAME, name == null ? "unknown" : name.toString());
+        wrapped.put(SerializationConstants.NAME, name == null ? "unregistered" : name.toString());
         wrapped.put(sizeKey, amount);
         if (hasComponents) {
             wrapped.put(SerializationConstants.COMPONENTS, wrapComponents(components));

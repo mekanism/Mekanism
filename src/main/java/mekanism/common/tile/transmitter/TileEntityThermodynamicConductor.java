@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.List;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.heat.IMekanismHeatHandler;
-import mekanism.api.providers.IBlockProvider;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
@@ -15,6 +14,8 @@ import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.registries.MekanismBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -23,7 +24,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter {
 
     private final HeatHandlerManager heatHandlerManager;
 
-    public TileEntityThermodynamicConductor(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
+    public TileEntityThermodynamicConductor(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
         addCapabilityResolver(heatHandlerManager = new HeatHandlerManager(direction -> {
             ThermodynamicConductor conductor = getTransmitter();
@@ -47,7 +48,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter {
     }
 
     @Override
-    protected ThermodynamicConductor createTransmitter(IBlockProvider blockProvider) {
+    protected ThermodynamicConductor createTransmitter(Holder<Block> blockProvider) {
         return new ThermodynamicConductor(blockProvider, this);
     }
 

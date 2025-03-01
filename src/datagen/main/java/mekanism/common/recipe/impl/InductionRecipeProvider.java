@@ -1,6 +1,5 @@
 package mekanism.common.recipe.impl;
 
-import mekanism.api.providers.IItemProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.interfaces.ITypeBlock;
@@ -18,6 +17,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
 
 class InductionRecipeProvider implements ISubRecipeProvider {
 
@@ -72,8 +72,8 @@ class InductionRecipeProvider implements ISubRecipeProvider {
     }
 
     private void addTieredInductionCellRecipe(RecipeOutput consumer, String basePath, BlockRegistryObject<? extends ITypeBlock, ?> cell,
-          IItemProvider previousCell, IItemProvider energyCube) {
-        String tierName = Attribute.getBaseTier(cell.getBlock()).getLowerName();
+          ItemLike previousCell, ItemLike energyCube) {
+        String tierName = Attribute.getBaseTier(cell).getLowerName();
         MekDataShapedRecipeBuilder.shapedRecipe(cell)
               .pattern(INDUCTION_CELL_PATTERN)
               .key(Pattern.PREVIOUS, previousCell)
@@ -99,8 +99,8 @@ class InductionRecipeProvider implements ISubRecipeProvider {
     }
 
     private void addTieredInductionProviderRecipe(RecipeOutput consumer, String basePath, BlockRegistryObject<? extends ITypeBlock, ?> provider,
-          IItemProvider previousProvider, IItemProvider energyCube, TagKey<Item> circuitTag) {
-        String tierName = Attribute.getBaseTier(provider.getBlock()).getLowerName();
+          ItemLike previousProvider, ItemLike energyCube, TagKey<Item> circuitTag) {
+        String tierName = Attribute.getBaseTier(provider).getLowerName();
         ExtendedShapedRecipeBuilder.shapedRecipe(provider)
               .pattern(INDUCTION_PROVIDER_PATTERN)
               .key(Pattern.PREVIOUS, previousProvider)

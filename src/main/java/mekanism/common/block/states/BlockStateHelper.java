@@ -38,12 +38,12 @@ public class BlockStateHelper {
     public static final BlockBehaviour.StatePredicate ALWAYS_PREDICATE = (state, world, pos) -> true;
 
     public static BlockState getDefaultState(@NotNull BlockState state) {
-        Block block = state.getBlock();
-        for (Attribute attr : Attribute.getAll(block)) {
+        for (Attribute attr : Attribute.getAll(state.getBlockHolder())) {
             if (attr instanceof AttributeState atr) {
                 state = atr.getDefaultState(state);
             }
         }
+        Block block = state.getBlock();
         if (block instanceof IStateFluidLoggable fluidLoggable) {
             //Default the blocks to not being waterlogged, they have code to force waterlogging to true if being placed in water
             state = fluidLoggable.setState(state, Fluids.EMPTY);
@@ -56,7 +56,7 @@ public class BlockStateHelper {
 
     public static void fillBlockStateContainer(Block block, StateDefinition.Builder<Block, BlockState> builder) {
         List<Property<?>> properties = new ArrayList<>();
-        for (Attribute attr : Attribute.getAll(block)) {
+        for (Attribute attr : Attribute.getAll(block.builtInRegistryHolder())) {
             if (attr instanceof AttributeState atr) {
                 atr.fillBlockStateContainer(block, properties);
             }
@@ -91,22 +91,22 @@ public class BlockStateHelper {
         return properties.lightLevel(state -> Math.max(existingLightLevelFunction.applyAsInt(state), toApply.applyAsInt(state)));
     }
 
-    @Contract("_, null, _ -> null")
-    public static BlockState getStateForPlacement(Block block, @Nullable BlockState state, BlockPlaceContext context) {
-        return getStateForPlacement(block, state, context.getLevel(), context.getClickedPos(), context.getPlayer(), context.getClickedFace());
+    @Contract("null, _ -> null")
+    public static BlockState getStateForPlacement(@Nullable BlockState state, BlockPlaceContext context) {
+        return getStateForPlacement(state, context.getLevel(), context.getClickedPos(), context.getPlayer(), context.getClickedFace());
     }
 
-    @Contract("_, null, _, _, _, _ -> null")
-    public static BlockState getStateForPlacement(Block block, @Nullable BlockState state, @NotNull LevelAccessor world, @NotNull BlockPos pos, @Nullable Player player, @NotNull Direction face) {
+    @Contract("null, _, _, _, _ -> null")
+    public static BlockState getStateForPlacement(@Nullable BlockState state, @NotNull LevelAccessor world, @NotNull BlockPos pos, @Nullable Player player, @NotNull Direction face) {
         if (state == null) {
             return null;
         }
-        for (Attribute attr : Attribute.getAll(block)) {
+        for (Attribute attr : Attribute.getAll(state.getBlockHolder())) {
             if (attr instanceof AttributeState atr) {
-                state = atr.getStateForPlacement(block, state, world, pos, player, face);
+                state = atr.getStateForPlacement(state, world, pos, player, face);
             }
         }
-        if (block instanceof IStateFluidLoggable fluidLoggable) {
+        if (state.getBlock() instanceof IStateFluidLoggable fluidLoggable) {
             FluidState fluidState = world.getFluidState(pos);
             state = fluidLoggable.setState(state, fluidState.getType());
         }
@@ -123,7 +123,7 @@ public class BlockStateHelper {
     public static BlockState copyStateData(BlockState oldState, BlockState newState) {
         Block oldBlock = oldState.getBlock();
         Block newBlock = newState.getBlock();
-        for (Attribute attr : Attribute.getAll(oldBlock)) {
+        for (Attribute attr : Attribute.getAll(oldState.getBlockHolder())) {
             if (attr instanceof AttributeState atr) {
                 newState = atr.copyStateData(oldState, newState);
             }

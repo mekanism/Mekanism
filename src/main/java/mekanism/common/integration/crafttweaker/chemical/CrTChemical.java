@@ -27,6 +27,7 @@ public class CrTChemical {
      */
     @ZenCodeType.Method
     @ZenCodeType.Getter("empty")
+    @Deprecated(forRemoval = true, since = "10.7.11")
     public static boolean isEmptyType(Chemical _this) {
         return _this.isEmptyType();
     }

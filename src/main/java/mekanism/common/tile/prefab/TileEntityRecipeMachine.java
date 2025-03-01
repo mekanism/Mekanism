@@ -6,7 +6,6 @@ import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.BooleanSupplier;
 import mekanism.api.IContentsListener;
-import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.common.capabilities.heat.CachedAmbientTemperature;
@@ -21,6 +20,8 @@ import mekanism.common.recipe.lookup.monitor.RecipeCacheLookupMonitor;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,7 +41,7 @@ public abstract class TileEntityRecipeMachine<RECIPE extends MekanismRecipe<?>> 
     @Nullable
     private IContentsListener recipeCacheUnpauseSaveOnlyListener;
 
-    protected TileEntityRecipeMachine(IBlockProvider blockProvider, BlockPos pos, BlockState state, List<RecipeError> errorTypes) {
+    protected TileEntityRecipeMachine(Holder<Block> blockProvider, BlockPos pos, BlockState state, List<RecipeError> errorTypes) {
         super(blockProvider, pos, state);
         //Copy the list if it is mutable to ensure it doesn't get changed, otherwise just use the list
         this.errorTypes = List.copyOf(errorTypes);

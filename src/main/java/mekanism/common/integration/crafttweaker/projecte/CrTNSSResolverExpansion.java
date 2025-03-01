@@ -30,11 +30,7 @@ public class CrTNSSResolverExpansion {
      */
     @ZenCodeType.StaticExpansionMethod
     public static NormalizedSimpleStack fromChemical(Chemical chemical) {
-        if (chemical.isEmptyType()) {
-            //Note: We check this here to provide a better error than we would get in the NSS create method
-            throw new IllegalArgumentException("Cannot make an NSS Representation using an empty chemical.");
-        }
-        return NSSChemical.createChemical(chemical.getChemical());
+        return NSSChemical.createChemical(chemical);
     }
 
     /**

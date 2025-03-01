@@ -45,7 +45,7 @@ public class ItemBlockChemicalTank extends ItemBlockTooltip<BlockTileModel<TileE
 
     @Override
     public ChemicalTankTier getTier() {
-        return Attribute.getTier(getBlock(), ChemicalTankTier.class);
+        return Attribute.getTier(getBlockHolder(), ChemicalTankTier.class);
     }
 
     @Override

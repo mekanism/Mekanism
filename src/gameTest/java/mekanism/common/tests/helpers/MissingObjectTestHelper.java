@@ -10,9 +10,9 @@ import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.providers.IBaseProvider;
-import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.providers.IFluidProvider;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.EnumColor;
@@ -33,6 +33,7 @@ import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismItems;
+import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.gametest.framework.GameTestAssertException;
 import net.minecraft.gametest.framework.GameTestInfo;
@@ -40,21 +41,22 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 
 @NothingNullByDefault
 public class MissingObjectTestHelper extends MekGameTestHelper {
 
-    private static final IItemProvider ITEM_TO_REPLACE = MekanismItems.INFUSED_ALLOY;
-    private static final IFluidProvider FLUID_TO_REPLACE = MekanismFluids.HYDROGEN;
-    private static final IChemicalProvider CHEMICAL_TO_REPLACE = MekanismChemicals.HYDROGEN;
+    private static final Holder<Item> ITEM_TO_REPLACE = MekanismItems.INFUSED_ALLOY;
+    private static final Holder<Fluid> FLUID_TO_REPLACE = MekanismFluids.HYDROGEN;
+    private static final Holder<Chemical> CHEMICAL_TO_REPLACE = MekanismChemicals.HYDROGEN;
     public static final UnaryOperator<String> REPLACE_TO_INVALID_ITEM = replaceInvalid(ITEM_TO_REPLACE);
     public static final UnaryOperator<String> REPLACE_TO_INVALID_FLUID = replaceInvalid(FLUID_TO_REPLACE);
     public static final UnaryOperator<String> REPLACE_TO_INVALID_CHEMICAL = replaceInvalid(CHEMICAL_TO_REPLACE);
 
-    private static UnaryOperator<String> replaceInvalid(IBaseProvider providerToReplace) {
-        return rawJson -> rawJson.replaceAll(providerToReplace.getRegistryName().toString(), "mekanism:invalid");
+    private static UnaryOperator<String> replaceInvalid(Holder<?> providerToReplace) {
+        return rawJson -> rawJson.replaceAll(providerToReplace.getRegisteredName(), "mekanism:invalid");
     }
 
     public MissingObjectTestHelper(GameTestInfo info) {
@@ -70,7 +72,7 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
     }
 
     public ItemStack failureItem(int count) {
-        return ITEM_TO_REPLACE.getItemStack(count);
+        return new ItemStack(ITEM_TO_REPLACE, count);
     }
 
     public FluidStack failureFluid() {
@@ -78,7 +80,7 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
     }
 
     public FluidStack failureFluid(int amount) {
-        return FLUID_TO_REPLACE.getFluidStack(amount);
+        return new FluidStack(FLUID_TO_REPLACE, amount);
     }
 
     public ChemicalStack failureChemical() {
@@ -86,7 +88,7 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
     }
 
     public ChemicalStack failureChemical(long amount) {
-        return CHEMICAL_TO_REPLACE.getStack(amount);
+        return new ChemicalStack(CHEMICAL_TO_REPLACE, amount);
     }
 
     public <TYPE> void succeedIfInvalidItemSerializationCycle(Codec<TYPE> codec, Function<MissingObjectTestHelper, TYPE> sourceSupplier, Predicate<TYPE> resultValidator) {
@@ -205,7 +207,7 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
             ItemStack smelterItem = MekanismBlocks.ENERGIZED_SMELTER.getItemStack();
             smelterItem.set(MekanismDataComponents.UPGRADES, help.makeUpgrades(validFirstSlot, validSecondSlot));
             return smelterItem;
-        }, smelterItem -> smelterItem.is(MekanismBlocks.ENERGIZED_SMELTER.asItem()) &&
+        }, smelterItem -> smelterItem.is(MekanismBlocks.ENERGIZED_SMELTER.getItemHolder()) &&
                           validateUpgrades(smelterItem.getOrDefault(MekanismDataComponents.UPGRADES, UpgradeAware.EMPTY), validFirstSlot, validSecondSlot));
     }
 

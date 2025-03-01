@@ -24,7 +24,6 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tile.machine.TileEntityNutritionalLiquifier;
 import mekanism.common.util.ChemicalUtil;
-import mekanism.common.util.RegistryUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.HolderSet.Named;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -70,8 +69,11 @@ public class RecipeViewerUtils {
         };
     }
 
-    public static ResourceLocation synthetic(ResourceLocation id, String prefix, String namespace) {
-        return synthetic(ResourceLocation.fromNamespaceAndPath(namespace, id.toString().replace(':', '_')), prefix);
+    public static ResourceLocation synthetic(String id, String prefix, String namespace) {
+        if (id.equals("[unregistered]")) {
+            return synthetic(ResourceLocation.fromNamespaceAndPath(namespace, "_unregistered_sad_face_"), prefix);
+        }
+        return synthetic(ResourceLocation.fromNamespaceAndPath(namespace, id.replace(':', '_')), prefix);
     }
 
     public static ResourceLocation synthetic(ResourceLocation id, String prefix) {
@@ -103,7 +105,7 @@ public class RecipeViewerUtils {
         List<ItemStack> stacks = new ArrayList<>();
         //Always include the chemical tank of the type to portray that we accept items
         for (Chemical type : supportedTypes) {
-            stacks.add(ChemicalUtil.getFullChemicalTank(ChemicalTankTier.BASIC, type));
+            stacks.add(ChemicalUtil.getFullChemicalTank(ChemicalTankTier.BASIC, type.builtInRegistryHolder()));
         }
         //See if there are any chemical to item mappings
         if (recipeType != null) {
@@ -130,7 +132,7 @@ public class RecipeViewerUtils {
         for (Item item : BuiltInRegistries.ITEM) {
             BasicItemStackToFluidOptionalItemRecipe recipe = TileEntityNutritionalLiquifier.getRecipe(item.getDefaultInstance());
             if (recipe != null) {
-                liquification.put(RecipeViewerUtils.synthetic(RegistryUtils.getName(item), "liquification", Mekanism.MODID), recipe);
+                liquification.put(RecipeViewerUtils.synthetic(item.toString(), "liquification", Mekanism.MODID), recipe);
             }
         }
         return liquification;

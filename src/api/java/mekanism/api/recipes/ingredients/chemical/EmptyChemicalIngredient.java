@@ -2,8 +2,10 @@ package mekanism.api.recipes.ingredients.chemical;
 
 import com.mojang.serialization.MapCodec;
 import java.util.stream.Stream;
+import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
+import net.minecraft.core.Holder;
 
 /**
  * Base Chemical ingredient implementation for a singleton that represents an empty chemical ingredient.
@@ -25,12 +27,12 @@ public final class EmptyChemicalIngredient extends ChemicalIngredient {
     }
 
     @Override
-    public boolean test(Chemical chemical) {
-        return chemical.isEmptyType();
+    public boolean test(Holder<Chemical> chemical) {
+        return chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY);
     }
 
     @Override
-    public Stream<Chemical> generateChemicals() {
+    public Stream<Holder<Chemical>> generateChemicalHolders() {
         return Stream.empty();
     }
 

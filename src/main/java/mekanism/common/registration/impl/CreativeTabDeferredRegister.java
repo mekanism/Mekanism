@@ -2,7 +2,6 @@ package mekanism.common.registration.impl;
 
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
-import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.SpecialColors;
 import mekanism.common.block.BlockBounding;
@@ -42,18 +41,18 @@ public class CreativeTabDeferredRegister extends MekanismDeferredRegister<Creati
     /**
      * @apiNote We manually require the title and icon to be passed so that we ensure all tabs have one.
      */
-    public MekanismDeferredHolder<CreativeModeTab, CreativeModeTab> registerMain(ILangEntry title, IItemProvider icon, UnaryOperator<CreativeModeTab.Builder> operator) {
+    public MekanismDeferredHolder<CreativeModeTab, CreativeModeTab> registerMain(ILangEntry title, ItemLike icon, UnaryOperator<CreativeModeTab.Builder> operator) {
         return register(getNamespace(), title, icon, operator);
     }
 
     /**
      * @apiNote We manually require the title and icon to be passed so that we ensure all tabs have one.
      */
-    public MekanismDeferredHolder<CreativeModeTab, CreativeModeTab> register(String name, ILangEntry title, IItemProvider icon, UnaryOperator<CreativeModeTab.Builder> operator) {
+    public MekanismDeferredHolder<CreativeModeTab, CreativeModeTab> register(String name, ILangEntry title, ItemLike icon, UnaryOperator<CreativeModeTab.Builder> operator) {
         return register(name, () -> {
             CreativeModeTab.Builder builder = CreativeModeTab.builder()
                   .title(title.translate())
-                  .icon(icon::getItemStack)
+                  .icon(() -> new ItemStack(icon))
                   .withTabFactory(MekanismCreativeTab::new);
             return operator.apply(builder).build();
         });

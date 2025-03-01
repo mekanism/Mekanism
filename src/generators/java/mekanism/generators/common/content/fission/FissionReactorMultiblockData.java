@@ -149,15 +149,15 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         LongSupplier fuelCapacitySupplier = () -> fuelCapacity;
         coolantTank = MergedTank.create(
               VariableCapacityFluidTank.input(this, () -> cooledCoolantCapacity, fluid -> fluid.is(FluidTags.WATER), this),
-              VariableCapacityChemicalTank.input(this, () -> cooledCoolantCapacity, gas -> gas.has(CooledCoolant.class), this)
+              VariableCapacityChemicalTank.input(this, () -> cooledCoolantCapacity, chemical -> chemical.value().has(CooledCoolant.class), this)
         );
         fluidTanks.add(coolantTank.getFluidTank());
-        fuelTank = VariableCapacityChemicalTank.input(this, fuelCapacitySupplier, gas -> gas == MekanismChemicals.FISSILE_FUEL.getChemical(),
+        fuelTank = VariableCapacityChemicalTank.input(this, fuelCapacitySupplier, MekanismChemicals.FISSILE_FUEL::keyMatches,
               ChemicalAttributeValidator.ALWAYS_ALLOW, createSaveAndComparator());
         heatedCoolantTank = VariableCapacityChemicalTank.output(this, () -> heatedCoolantCapacity,
-              gas -> gas == MekanismChemicals.STEAM.get() || gas.has(HeatedCoolant.class), this);
-        wasteTank = VariableCapacityChemicalTank.output(this, fuelCapacitySupplier,
-              gas -> gas == MekanismChemicals.NUCLEAR_WASTE.getChemical(), ChemicalAttributeValidator.ALWAYS_ALLOW, this);
+              gas -> MekanismChemicals.STEAM.keyMatches(gas) || gas.value().has(HeatedCoolant.class), this);
+        wasteTank = VariableCapacityChemicalTank.output(this, fuelCapacitySupplier, MekanismChemicals.NUCLEAR_WASTE::keyMatches,
+              ChemicalAttributeValidator.ALWAYS_ALLOW, this);
         inputTanks = List.of(fuelTank, coolantTank.getChemicalTank());
         outputWasteTanks = List.of(wasteTank);
         outputCoolantTanks = List.of(heatedCoolantTank);

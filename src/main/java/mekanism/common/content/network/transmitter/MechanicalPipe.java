@@ -10,7 +10,6 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.math.MathUtils;
-import mekanism.api.providers.IBlockProvider;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
@@ -29,8 +28,10 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
@@ -45,7 +46,7 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
     private final List<IExtendedFluidTank> tanks;
     public final BasicFluidTank buffer;
 
-    public MechanicalPipe(IBlockProvider blockProvider, TileEntityTransmitter tile) {
+    public MechanicalPipe(Holder<Block> blockProvider, TileEntityTransmitter tile) {
         super(tile, TransmissionType.FLUID);
         this.tier = Attribute.getTier(blockProvider, PipeTier.class);
         //TODO: If we make fluids support longs then adjust this

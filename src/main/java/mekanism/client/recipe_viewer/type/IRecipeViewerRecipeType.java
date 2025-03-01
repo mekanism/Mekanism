@@ -1,10 +1,10 @@
 package mekanism.client.recipe_viewer.type;
 
 import java.util.List;
-import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.IHasTextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.Nullable;
 
 public interface IRecipeViewerRecipeType<RECIPE> extends IHasTextComponent {
@@ -34,5 +34,5 @@ public interface IRecipeViewerRecipeType<RECIPE> extends IHasTextComponent {
 
     int height();
 
-    List<IItemProvider> workstations();
+    List<ItemLike> workstations();
 }

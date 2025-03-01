@@ -7,9 +7,10 @@ import com.blamejared.crafttweaker.api.tag.type.KnownTag;
 import com.blamejared.crafttweaker.api.util.Many;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
-import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.chemical.ChemicalIngredient;
 import mekanism.api.recipes.ingredients.chemical.CompoundChemicalIngredient;
@@ -17,6 +18,7 @@ import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
+import net.minecraft.core.Holder;
 import net.minecraft.tags.TagKey;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -30,18 +32,19 @@ public class CrTChemicalStackIngredient {
     /**
      * Creates a {@link ChemicalStackIngredient} that matches a given chemical type and amount.
      *
-     * @param instance Chemical type to match
+     * @param chemical Chemical type to match
      * @param amount   Amount needed
      *
      * @return A {@link ChemicalStackIngredient} that matches a given chemical and amount.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static ChemicalStackIngredient from(Chemical instance, long amount) {
+    public static ChemicalStackIngredient from(Chemical chemical, long amount) {
         assertValidAmount(amount);
-        if (instance.isEmptyType()) {
+        Holder<Chemical> instance = chemical.builtInRegistryHolder();
+        if (instance.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
             throw new IllegalArgumentException("ChemicalStackIngredients cannot be created from an empty chemical.");
         }
-        return IngredientCreatorAccess.chemicalStack().from(instance, amount);
+        return IngredientCreatorAccess.chemicalStack().fromHolder(instance, amount);
     }
 
     /**
@@ -69,8 +72,7 @@ public class CrTChemicalStackIngredient {
      */
     @ZenCodeType.StaticExpansionMethod
     public static ChemicalStackIngredient from(long amount, Chemical... chemicals) {
-        assertMultiple(amount, chemicals);
-        return IngredientCreatorAccess.chemicalStack().from(amount, chemicals);
+        return from(amount, Arrays.stream(chemicals).map(Chemical::builtInRegistryHolder).toArray(Holder[]::new));
     }
 
     /**
@@ -83,8 +85,20 @@ public class CrTChemicalStackIngredient {
      */
     @ZenCodeType.StaticExpansionMethod
     public static ChemicalStackIngredient from(long amount, ICrTChemicalStack... chemicals) {
-        assertMultiple(amount, chemicals);
-        return IngredientCreatorAccess.chemicalStack().from(amount, chemicals);
+        return from(amount, Arrays.stream(chemicals).map(stack -> stack.getInternal().getChemicalHolder()).toArray(Holder[]::new));
+    }
+
+    private static ChemicalStackIngredient from(long amount, Holder<Chemical>... chemicals) {
+        assertValidAmount(amount);
+        if (chemicals == null || chemicals.length == 0) {
+            throw new IllegalArgumentException("ChemicalStackIngredients cannot be created from zero chemicals.");
+        }
+        for (Holder<Chemical> instance : chemicals) {
+            if (instance.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
+                throw new IllegalArgumentException("ChemicalStackIngredients cannot be created from an empty chemical.");
+            }
+        }
+        return IngredientCreatorAccess.chemicalStack().fromHolders(amount, chemicals);
     }
 
     /**
@@ -99,6 +113,7 @@ public class CrTChemicalStackIngredient {
         if (chemicals == null || chemicals.length == 0) {
             throw new IllegalArgumentException("ChemicalStackIngredients cannot be created from zero chemicals.");
         }
+        List<ChemicalIngredient> ingredients = new ArrayList<>(chemicals.length);
         long amount = 0;
         for (ICrTChemicalStack instance : chemicals) {
             if (instance.isEmpty()) {
@@ -106,9 +121,10 @@ public class CrTChemicalStackIngredient {
             } else if (amount == 0) {
                 amount = instance.getAmount();
             }
+            ingredients.add(IngredientCreatorAccess.chemical().of(instance.getInternal().getChemicalHolder()));
         }
         assertValidAmount(amount);
-        return IngredientCreatorAccess.chemicalStack().from(amount, chemicals);
+        return IngredientCreatorAccess.chemicalStack().from(IngredientCreatorAccess.chemical().ofIngredients(ingredients), amount);
     }
 
     /**
@@ -170,7 +186,7 @@ public class CrTChemicalStackIngredient {
      */
     @ZenCodeType.Method
     public static boolean testType(ChemicalStackIngredient _this, Chemical chemical) {
-        return _this.testType(chemical);
+        return _this.testType(chemical.builtInRegistryHolder());
     }
 
     /**
@@ -220,21 +236,6 @@ public class CrTChemicalStackIngredient {
     private static void assertValidAmount(long amount) {
         if (amount <= 0) {
             throw new IllegalArgumentException("ChemicalStackIngredients can only be created with a size of at least one. Received size was: " + amount);
-        }
-    }
-
-    /**
-     * Validates that the amount is greater than zero and that given chemical is not the empty variant. If one of these is not true, an error is thrown.
-     */
-    private static void assertMultiple(long amount, IChemicalProvider... instances) {
-        assertValidAmount(amount);
-        if (instances == null || instances.length == 0) {
-            throw new IllegalArgumentException("ChemicalStackIngredients cannot be created from zero chemicals.");
-        }
-        for (IChemicalProvider instance : instances) {
-            if (instance.getChemical().isEmptyType()) {
-                throw new IllegalArgumentException("ChemicalStackIngredients cannot be created from an empty chemical.");
-            }
         }
     }
 

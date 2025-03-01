@@ -142,7 +142,7 @@ public class MissingObjectSerializationTest {
             ItemStack binItem = MekanismBlocks.BASIC_BIN.getItemStack();
             binItem.set(MekanismDataComponents.LOCK, LockData.create(help.failureItem()));
             return binItem;
-        }, binItem -> binItem.is(MekanismBlocks.BASIC_BIN.asItem()) && LockData.EMPTY.equals(binItem.get(MekanismDataComponents.LOCK)) &&
+        }, binItem -> binItem.is(MekanismBlocks.BASIC_BIN.getItemHolder()) && LockData.EMPTY.equals(binItem.get(MekanismDataComponents.LOCK)) &&
                       binItem.getComponentsPatch().get(MekanismDataComponents.LOCK.get()) == null);
     }
 
@@ -157,7 +157,7 @@ public class MissingObjectSerializationTest {
             adapter.set(MekanismDataComponents.LONG_AMOUNT, 5L);
             return adapter;
         }, adapter -> {
-            if (adapter.is(MekanismBlocks.QIO_REDSTONE_ADAPTER.asItem())) {
+            if (adapter.is(MekanismBlocks.QIO_REDSTONE_ADAPTER.getItemHolder())) {
                 Optional<HashedItem> itemTarget = adapter.get(MekanismDataComponents.ITEM_TARGET);
                 return itemTarget != null && itemTarget.isEmpty() && adapter.getComponentsPatch().get(MekanismDataComponents.ITEM_TARGET.get()) == null &&
                        adapter.getOrDefault(MekanismDataComponents.LONG_AMOUNT, 0L) == 5;
@@ -181,7 +181,7 @@ public class MissingObjectSerializationTest {
             ItemStack minerItem = MekanismBlocks.DIGITAL_MINER.getItemStack();
             minerItem.set(MekanismDataComponents.OVERFLOW_AWARE, help.makeOverflow());
             return minerItem;
-        }, minerItem -> minerItem.is(MekanismBlocks.DIGITAL_MINER.asItem()) &&
+        }, minerItem -> minerItem.is(MekanismBlocks.DIGITAL_MINER.getItemHolder()) &&
                         helper.validateOverflow(minerItem.getOrDefault(MekanismDataComponents.OVERFLOW_AWARE, OverflowAware.EMPTY)));
     }
 

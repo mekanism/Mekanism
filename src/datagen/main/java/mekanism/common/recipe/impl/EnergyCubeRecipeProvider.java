@@ -1,6 +1,5 @@
 package mekanism.common.recipe.impl;
 
-import mekanism.api.providers.IItemProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockEnergyCube;
 import mekanism.common.block.attribute.Attribute;
@@ -19,6 +18,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.Tags;
 
 class EnergyCubeRecipeProvider implements ISubRecipeProvider {
@@ -38,8 +38,8 @@ class EnergyCubeRecipeProvider implements ISubRecipeProvider {
     }
 
     private void addTieredEnergyCube(RecipeOutput consumer, String basePath, BlockRegistryObject<BlockEnergyCube, ?> energyCube,
-          IItemProvider previousEnergyCube, TagKey<Item> ingotTag, TagKey<Item> alloyTag) {
-        String tierName = Attribute.getBaseTier(energyCube.getBlock()).getLowerName();
+          ItemLike previousEnergyCube, TagKey<Item> ingotTag, TagKey<Item> alloyTag) {
+        String tierName = Attribute.getBaseTier(energyCube).getLowerName();
         MekDataShapedRecipeBuilder.shapedRecipe(energyCube)
               .pattern(ENERGY_CUBE_PATTERN)
               .key(Pattern.PREVIOUS, previousEnergyCube)

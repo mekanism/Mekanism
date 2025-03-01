@@ -10,7 +10,6 @@ import java.util.Set;
 import java.util.UUID;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismIMC;
-import mekanism.api.providers.IItemProvider;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.base.IModModule;
 import mekanism.common.base.KeySync;
@@ -76,6 +75,7 @@ import mekanism.common.registries.MekanismArmorMaterials;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismChemicalIngredientTypes;
+import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismCreativeTabs;
 import mekanism.common.registries.MekanismDataComponents;
@@ -85,7 +85,6 @@ import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.registries.MekanismFeatures;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismGameEvents;
-import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismHeightProviderTypes;
 import mekanism.common.registries.MekanismIntProviderTypes;
 import mekanism.common.registries.MekanismItems;
@@ -98,7 +97,6 @@ import mekanism.common.registries.MekanismSounds;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.tile.machine.TileEntityOredictionificator.ODConfigValueInvalidationListener;
-import mekanism.common.util.RegistryUtils;
 import mekanism.common.world.GenHandler;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.cauldron.CauldronInteraction;
@@ -106,6 +104,7 @@ import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.neoforged.bus.api.EventPriority;
@@ -373,15 +372,15 @@ public class Mekanism {
         logger.info("Mod loaded.");
     }
 
-    private static void registerDispenseBehavior(DispenseItemBehavior behavior, IItemProvider... itemProviders) {
-        for (IItemProvider itemProvider : itemProviders) {
+    private static void registerDispenseBehavior(DispenseItemBehavior behavior, ItemLike... itemProviders) {
+        for (ItemLike itemProvider : itemProviders) {
             DispenserBlock.registerBehavior(itemProvider.asItem(), behavior);
         }
     }
 
-    private static void registerFluidTankBehaviors(IItemProvider... itemProviders) {
+    private static void registerFluidTankBehaviors(ItemLike... itemProviders) {
         registerDispenseBehavior(FluidTankItemDispenseBehavior.INSTANCE);
-        for (IItemProvider itemProvider : itemProviders) {
+        for (ItemLike itemProvider : itemProviders) {
             Item item = itemProvider.asItem();
             CauldronInteraction.EMPTY.map().put(item, BasicCauldronInteraction.EMPTY);
             CauldronInteraction.WATER.map().put(item, BasicDrainCauldronInteraction.WATER);
@@ -399,13 +398,13 @@ public class Mekanism {
 
     private void onChemicalTransferred(ChemicalTransferEvent event) {
         UUID networkID = event.network.getUUID();
-        PacketUtils.log("Sending type '{}' update message for chemical network with id {}", event.transferType.getChemical().getRegistryName(), networkID);
+        PacketUtils.log("Sending type '{}' update message for chemical network with id {}", event.transferType.getRegisteredName(), networkID);
         PacketUtils.sendToAllTracking(event.network, new PacketNetworkScale(event.network), new PacketChemicalNetworkContents(networkID, event.transferType));
     }
 
     private void onLiquidTransferred(FluidTransferEvent event) {
         UUID networkID = event.network.getUUID();
-        PacketUtils.log("Sending type '{}' update message for fluid network with id {}", RegistryUtils.getName(event.fluidType.getFluid()), networkID);
+        PacketUtils.log("Sending type '{}' update message for fluid network with id {}", event.fluidType.getFluidHolder().getRegisteredName(), networkID);
         PacketUtils.sendToAllTracking(event.network, new PacketNetworkScale(event.network), new PacketFluidNetworkContents(networkID, event.fluidType));
     }
 

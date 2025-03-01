@@ -1,6 +1,5 @@
 package mekanism.common.recipe.impl;
 
-import mekanism.api.providers.IItemProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.interfaces.ITypeBlock;
@@ -17,6 +16,7 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
 
@@ -94,7 +94,7 @@ class TransmitterRecipeProvider implements ISubRecipeProvider {
               .pattern(BASIC_TRANSMITTER_PATTERN)
               .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.CONSTANT, itemTag)
-              .build(consumer, Mekanism.rl(basePath + Attribute.getBaseTier(transmitter.getBlock()).getLowerName()));
+              .build(consumer, Mekanism.rl(basePath + Attribute.getBaseTier(transmitter).getLowerName()));
     }
 
     private void addBasicTransmitterRecipe(RecipeOutput consumer, String basePath, BlockRegistryObject<? extends ITypeBlock, ?> transmitter, Item item) {
@@ -102,15 +102,15 @@ class TransmitterRecipeProvider implements ISubRecipeProvider {
               .pattern(BASIC_TRANSMITTER_PATTERN)
               .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.CONSTANT, item)
-              .build(consumer, Mekanism.rl(basePath + Attribute.getBaseTier(transmitter.getBlock()).getLowerName()));
+              .build(consumer, Mekanism.rl(basePath + Attribute.getBaseTier(transmitter).getLowerName()));
     }
 
     private void addTransmitterUpgradeRecipe(RecipeOutput consumer, String basePath, BlockRegistryObject<? extends ITypeBlock, ?> transmitter,
-          IItemProvider previousTransmitter, TagKey<Item> alloyTag) {
+          ItemLike previousTransmitter, TagKey<Item> alloyTag) {
         ExtendedShapedRecipeBuilder.shapedRecipe(transmitter, 8)
               .pattern(TRANSMITTER_UPGRADE_PATTERN)
               .key(Pattern.PREVIOUS, previousTransmitter)
               .key(Pattern.ALLOY, alloyTag)
-              .build(consumer, Mekanism.rl(basePath + Attribute.getBaseTier(transmitter.getBlock()).getLowerName()));
+              .build(consumer, Mekanism.rl(basePath + Attribute.getBaseTier(transmitter).getLowerName()));
     }
 }

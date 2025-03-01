@@ -109,7 +109,7 @@ public abstract class MekanismEmiRecipe<RECIPE> extends AbstractContainerEventHa
     }
 
     protected void addChemicalOutputDefinition(List<ChemicalStack> definition) {
-        addOutputDefinition(definition.stream().<EmiStack>map(ChemicalEmiStack::create).toList());
+        addOutputDefinition(definition.stream().<EmiStack>map(ChemicalEmiStack::new).toList());
     }
 
     protected void addOutputDefinition(List<EmiStack> stacks) {
@@ -245,7 +245,7 @@ public abstract class MekanismEmiRecipe<RECIPE> extends AbstractContainerEventHa
     }
 
     protected EmiIngredient chemicalIngredient(ChemicalStackIngredient ingredient) {
-        return EmiIngredient.of(ingredient.getRepresentations().stream().map(ChemicalEmiStack::create).toList());
+        return EmiIngredient.of(ingredient.getRepresentations().stream().map(ChemicalEmiStack::new).toList());
     }
 
     protected EmiIngredient chemicalIngredient(ChemicalStackIngredient ingredient, int scalar) {
@@ -255,7 +255,7 @@ public abstract class MekanismEmiRecipe<RECIPE> extends AbstractContainerEventHa
         }
         List<ChemicalEmiStack> list = new ArrayList<>(representations.size());
         for (ChemicalStack stack : representations) {
-            list.add(ChemicalEmiStack.create(stack.getChemical(), stack.getAmount() * scalar));
+            list.add(new ChemicalEmiStack(stack.getChemicalHolder(), stack.getAmount() * scalar));
         }
         return EmiIngredient.of(list);
     }

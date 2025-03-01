@@ -23,7 +23,7 @@ public class ItemBlockThermodynamicConductor extends ItemBlockTooltip<BlockSmall
     @NotNull
     @Override
     public ConductorTier getTier() {
-        return Attribute.getTier(getBlock(), ConductorTier.class);
+        return Attribute.getTier(getBlockHolder(), ConductorTier.class);
     }
 
     @Override

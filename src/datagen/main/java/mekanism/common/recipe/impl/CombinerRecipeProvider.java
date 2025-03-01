@@ -145,7 +145,7 @@ class CombinerRecipeProvider implements ISubRecipeProvider {
                   IngredientCreatorAccess.item().from(entry.getKey()),
                   wax,
                   new ItemStack(result)
-            ).build(consumer, Mekanism.rl(basePath + RegistryUtils.getPath(result.asItem())));
+            ).build(consumer, Mekanism.rl(basePath + RegistryUtils.getPath(result)));
         }
     }
 }

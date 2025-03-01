@@ -12,6 +12,8 @@ import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.IdMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -27,24 +29,29 @@ import xfacthd.framedblocks.api.util.ConfigView;
 
 final class ChemicalCamoContainerFactory extends CamoContainerFactory<ChemicalCamoContainer> {
 
-    private static final MapCodec<ChemicalCamoContainer> CODEC = Chemical.CODEC
-            .xmap(ChemicalCamoContainer::new, ChemicalCamoContainer::getChemical)
+    private static final MapCodec<ChemicalCamoContainer> CODEC = Chemical.HOLDER_CODEC.xmap(ChemicalCamoContainer::new, ChemicalCamoContainer::getChemicalHolder)
             .fieldOf(SerializationConstants.CHEMICAL);
-    private static final StreamCodec<RegistryFriendlyByteBuf, ChemicalCamoContainer> STREAM_CODEC =
-            Chemical.STREAM_CODEC.map(ChemicalCamoContainer::new, ChemicalCamoContainer::getChemical);
+    private static final StreamCodec<RegistryFriendlyByteBuf, ChemicalCamoContainer> STREAM_CODEC = Chemical.HOLDER_STREAM_CODEC.map(
+          ChemicalCamoContainer::new,
+          ChemicalCamoContainer::getChemicalHolder
+    );
+    private static final IdMap<Holder<Chemical>> CHEMICAL_HOLDER_ID_MAP = MekanismAPI.CHEMICAL_REGISTRY.asHolderIdMap();
     private static final Component MSG_HAS_SPECIAL_HANDLING = TextComponentUtil.translate(
             MekanismLang.FRAMEDBLOCKS_CAMO_HAS_SPECIAL_HANDLING.getTranslationKey()
     );
 
     @Override
     protected void writeToNetwork(CompoundTag tag, ChemicalCamoContainer camo) {
-        Chemical chemical = camo.getChemical();
-        tag.putInt(SerializationConstants.CHEMICAL, MekanismAPI.CHEMICAL_REGISTRY.getId(chemical));
+        Holder<Chemical> chemical = camo.getChemicalHolder();
+        tag.putInt(SerializationConstants.CHEMICAL, CHEMICAL_HOLDER_ID_MAP.getId(chemical));
     }
 
     @Override
     protected ChemicalCamoContainer readFromNetwork(CompoundTag tag) {
-        Chemical chemical = MekanismAPI.CHEMICAL_REGISTRY.byId(tag.getInt(SerializationConstants.CHEMICAL));
+        Holder<Chemical> chemical = CHEMICAL_HOLDER_ID_MAP.byId(tag.getInt(SerializationConstants.CHEMICAL));
+        if (chemical == null) {
+            chemical = MekanismAPI.EMPTY_CHEMICAL_HOLDER;
+        }
         return new ChemicalCamoContainer(chemical);
     }
 
@@ -58,7 +65,8 @@ final class ChemicalCamoContainerFactory extends CamoContainerFactory<ChemicalCa
 
         for (int tank = 0; tank < handler.getChemicalTanks(); tank++) {
             ChemicalStack chemical = handler.getChemicalInTank(tank);
-            if (!isValidChemical(chemical.getChemical(), player)) {
+            Holder<Chemical> chemicalHolder = chemical.getChemicalHolder();
+            if (!isValidChemical(chemicalHolder, player)) {
                 continue;
             }
 
@@ -73,7 +81,7 @@ final class ChemicalCamoContainerFactory extends CamoContainerFactory<ChemicalCa
                 }
             }
 
-            return new ChemicalCamoContainer(chemical.getChemical());
+            return new ChemicalCamoContainer(chemicalHolder);
         }
         return null;
     }
@@ -89,7 +97,7 @@ final class ChemicalCamoContainerFactory extends CamoContainerFactory<ChemicalCa
             return false;
         }
 
-        ChemicalStack chemical = camo.getChemical().getStack(FramedBlocksIntegration.Constants.CHEMICAL_AMOUNT);
+        ChemicalStack chemical = new ChemicalStack(camo.getChemicalHolder(), FramedBlocksIntegration.Constants.CHEMICAL_AMOUNT);
         if (!isValidForHandler(handler, chemical)) {
             return false;
         }
@@ -110,7 +118,7 @@ final class ChemicalCamoContainerFactory extends CamoContainerFactory<ChemicalCa
                 continue;
             }
             ChemicalStack inTank = handler.getChemicalInTank(tank);
-            if (inTank.isEmpty() || inTank.is(chemical.getChemical())) {
+            if (inTank.isEmpty() || inTank.is(chemical.getChemicalHolder())) {
                 return true;
             }
         }
@@ -129,18 +137,16 @@ final class ChemicalCamoContainerFactory extends CamoContainerFactory<ChemicalCa
 
     @Override
     public boolean validateCamo(ChemicalCamoContainer camo) {
-        return isValidChemical(camo.getChemical(), null);
+        return isValidChemical(camo.getChemicalHolder(), null);
     }
 
-    private static boolean isValidChemical(Chemical chemical, @Nullable Player player) {
-        if (chemical.isEmptyType()) {
+    private static boolean isValidChemical(Holder<Chemical> chemical, @Nullable Player player) {
+        if (chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
             return false;
-        }
-        if (chemical.hasAttributesWithValidation()) {
+        } else if (chemical.value().hasAttributesWithValidation()) {
             displayValidationMessage(player, MSG_HAS_SPECIAL_HANDLING, CamoMessageVerbosity.DEFAULT);
             return false;
-        }
-        if (chemical.is(MekanismAPITags.Chemicals.FRAMEDBLOCKS_BLACKLISTED)) {
+        } else if (chemical.is(MekanismAPITags.Chemicals.FRAMEDBLOCKS_BLACKLISTED)) {
             displayValidationMessage(player, MSG_BLACKLISTED, CamoMessageVerbosity.DEFAULT);
             return false;
         }

@@ -16,12 +16,12 @@ class ChemicalCrystallizerRecipeProvider implements ISubRecipeProvider {
         String basePath = "crystallizing/";
         //Salt
         ChemicalCrystallizerRecipeBuilder.crystallizing(
-              IngredientCreatorAccess.chemicalStack().from(MekanismChemicals.BRINE, 15),
+              IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.BRINE, 15),
               MekanismItems.SALT.getItemStack()
         ).build(consumer, Mekanism.rl(basePath + "salt"));
         //Lithium
         ChemicalCrystallizerRecipeBuilder.crystallizing(
-              IngredientCreatorAccess.chemicalStack().from(MekanismChemicals.LITHIUM, 100),
+              IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.LITHIUM, 100),
               MekanismItems.LITHIUM_DUST.getItemStack()
         ).build(consumer, Mekanism.rl(basePath + "lithium"));
     }

@@ -11,7 +11,6 @@ import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.functions.ConstantPredicates;
-import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.block.attribute.Attribute;
@@ -46,6 +45,7 @@ import mekanism.common.util.NBTUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
@@ -62,6 +62,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
@@ -102,7 +103,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     private int lastLightLevel;
     private int lightUpdateDelay;
 
-    public TileEntityFluidTank(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
+    public TileEntityFluidTank(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
         delaySupplier = NO_DELAY;
     }
@@ -110,7 +111,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     @Override
     protected void presetVariables() {
         super.presetVariables();
-        tier = Attribute.getTier(getBlockType(), FluidTankTier.class);
+        tier = Attribute.getTier(getBlockHolder(), FluidTankTier.class);
     }
 
     @NotNull
@@ -142,7 +143,8 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
         if (lightUpdateDelay > 0) {
             lightUpdateDelay--;
             if (lightUpdateDelay == 0) {
-                int lightLevel = getBlockType().getLightEmission(getBlockState(), level, worldPosition);
+                BlockState state = getBlockState();
+                int lightLevel = state.getBlock().getLightEmission(state, level, worldPosition);
                 if (lightLevel != lastLightLevel) {
                     lastLightLevel = lightLevel;
                     level.getLightEngine().checkBlock(worldPosition);

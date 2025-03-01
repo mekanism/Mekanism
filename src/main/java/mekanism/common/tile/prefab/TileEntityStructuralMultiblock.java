@@ -4,7 +4,6 @@ import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
 import java.util.Map;
 import mekanism.api.IConfigurable;
 import mekanism.api.SerializationConstants;
-import mekanism.api.providers.IBlockProvider;
 import mekanism.common.lib.multiblock.FormationProtocol.FormationResult;
 import mekanism.common.lib.multiblock.IMultiblock;
 import mekanism.common.lib.multiblock.IStructuralMultiblock;
@@ -13,6 +12,7 @@ import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.lib.multiblock.Structure;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
@@ -40,7 +40,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     private boolean hasFormedMultiblock = false;
     private boolean canAccessGui = false;
 
-    public TileEntityStructuralMultiblock(IBlockProvider provider, BlockPos pos, BlockState state) {
+    public TileEntityStructuralMultiblock(Holder<Block> provider, BlockPos pos, BlockState state) {
         super(provider, pos, state);
     }
 

@@ -1,7 +1,6 @@
 package mekanism.common.recipe.impl;
 
 import java.util.Objects;
-import mekanism.api.providers.IItemProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.interfaces.ITypeBlock;
@@ -20,6 +19,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
 
 class ChemicalTankRecipeProvider implements ISubRecipeProvider {
 
@@ -45,9 +45,9 @@ class ChemicalTankRecipeProvider implements ISubRecipeProvider {
         addTieredChemicalTank(consumer, basePath, MekanismBlocks.ULTIMATE_CHEMICAL_TANK, MekanismBlocks.ELITE_CHEMICAL_TANK, MekanismTags.Items.ALLOYS_ATOMIC);
     }
 
-    private void addTieredChemicalTank(RecipeOutput consumer, String basePath, BlockRegistryObject<? extends ITypeBlock, ?> tank, IItemProvider previousTank,
+    private void addTieredChemicalTank(RecipeOutput consumer, String basePath, BlockRegistryObject<? extends ITypeBlock, ?> tank, ItemLike previousTank,
           TagKey<Item> alloyTag) {
-        String tierName = Attribute.getBaseTier(tank.getBlock()).getLowerName();
+        String tierName = Attribute.getBaseTier(tank).getLowerName();
         MekDataShapedRecipeBuilder.shapedRecipe(tank)
               .pattern(CHEMICAL_TANK_PATTERN)
               .key(Pattern.PREVIOUS, previousTank)

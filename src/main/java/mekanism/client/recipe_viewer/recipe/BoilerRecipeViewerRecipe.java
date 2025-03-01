@@ -61,8 +61,8 @@ public record BoilerRecipeViewerRecipe(ResourceLocation id, @Nullable ChemicalSt
                 Chemical cooledCoolant = heatedCoolant.getCooledChemical();
                 long coolantAmount = Math.round(WATER_AMOUNT * waterToSteamEfficiency / heatedCoolant.getThermalEnthalpy());
                 recipes.add(new BoilerRecipeViewerRecipe(
-                      RecipeViewerUtils.synthetic(gas.getRegistryName(), "boiler", Mekanism.MODID),
-                      IngredientCreatorAccess.chemicalStack().from(gas, coolantAmount), water,
+                      RecipeViewerUtils.synthetic(gas.toString(), "boiler", Mekanism.MODID),
+                      IngredientCreatorAccess.chemicalStack().fromHolder(gas.builtInRegistryHolder(), coolantAmount), water,
                       steam, cooledCoolant.getStack(coolantAmount),
                       HeatUtils.BASE_BOIL_TEMP
                 ));

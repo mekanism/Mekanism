@@ -9,13 +9,15 @@ import java.util.stream.Stream;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.attribute.ChemicalAttribute;
-import mekanism.api.chemical.attribute.IChemicalAttributeContainer;
 import mekanism.api.chemical.attribute.ChemicalAttributes.Radiation;
+import mekanism.api.chemical.attribute.IChemicalAttributeContainer;
 import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.text.TextComponentUtil;
 import net.minecraft.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderLookup.Provider;
+import net.minecraft.core.HolderLookup.RegistryLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
@@ -23,13 +25,14 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@NothingNullByDefault
+@NothingNullByDefault//TODO - 1.22: Debate if we want to remove the non holder based codecs. Maybe we even want to just make chemicals a data pack registry
 public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<Chemical> {
 
     /**
@@ -39,17 +42,31 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
      */
     public static final Codec<Chemical> CODEC = MekanismAPI.CHEMICAL_REGISTRY.byNameCodec();
     /**
+     * A codec which can (de)encode chemical holders.
+     *
+     * @since 10.7.11
+     */
+    public static final Codec<Holder<Chemical>> HOLDER_CODEC = MekanismAPI.CHEMICAL_REGISTRY.holderByNameCodec();
+    /**
      * A stream codec which can be used to encode and decode chemicals over the network.
      *
      * @since 10.6.0
      */
     public static final StreamCodec<RegistryFriendlyByteBuf, Chemical> STREAM_CODEC = ByteBufCodecs.registry(MekanismAPI.CHEMICAL_REGISTRY_NAME);
+    /**
+     * A stream codec which can be used to encode and decode chemical holders over the network.
+     *
+     * @since 10.7.9
+     */
+    public static final StreamCodec<RegistryFriendlyByteBuf, Holder<Chemical>> HOLDER_STREAM_CODEC = ByteBufCodecs.holderRegistry(MekanismAPI.CHEMICAL_REGISTRY_NAME);
 
     /**
      * Tries to parse a chemical.
      *
      * @since 10.7.0
+     * @deprecated Prefer accessing via holders {@link #parseHolder(Provider, Tag)}
      */
+    @Deprecated(forRemoval = true, since = "10.7.11")
     public static Optional<Chemical> parse(HolderLookup.Provider lookupProvider, Tag tag) {
         return CODEC.parse(lookupProvider.createSerializationContext(NbtOps.INSTANCE), tag)
               .resultOrPartial(error -> MekanismAPI.logger.error("Tried to load invalid chemical: '{}'", error));
@@ -57,18 +74,48 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
 
 
     /**
-     * Tries to parse a chemical stack, defaulting to {@link MekanismAPI#EMPTY_CHEMICAL} on parsing failure.
+     * Tries to parse a chemical, defaulting to the empty chemical on parsing failure.
      *
      * @since 10.7.0
+     * @deprecated Prefer accessing via holders {@link #parseOptionalHolder(Provider, String)}
      */
+    @Deprecated(forRemoval = true, since = "10.7.11")
     public static Chemical parseOptional(HolderLookup.Provider lookupProvider, String tag) {
-        if (tag.isEmpty()) {
-            return MekanismAPI.EMPTY_CHEMICAL;
-        }
-        ResourceLocation name = ResourceLocation.tryParse(tag);
-        return name == null ? MekanismAPI.EMPTY_CHEMICAL : MekanismAPI.CHEMICAL_REGISTRY.get(name);
+        return parseOptionalHolder(lookupProvider, tag).value();
     }
 
+    /**
+     * Tries to parse a chemical holder.
+     *
+     * @since 10.7.11
+     */
+    public static Optional<Holder<Chemical>> parseHolder(HolderLookup.Provider lookupProvider, Tag tag) {
+        return HOLDER_CODEC.parse(lookupProvider.createSerializationContext(NbtOps.INSTANCE), tag)
+              .resultOrPartial(error -> MekanismAPI.logger.error("Tried to load invalid chemical: '{}'", error));
+    }
+
+    /**
+     * Tries to parse a chemical, defaulting to {@link MekanismAPI#EMPTY_CHEMICAL_HOLDER} on parsing failure.
+     *
+     * @since 10.7.11
+     */
+    public static Holder<Chemical> parseOptionalHolder(HolderLookup.Provider lookupProvider, String tag) {
+        if (tag.isEmpty()) {
+            return MekanismAPI.EMPTY_CHEMICAL_HOLDER;
+        }
+        Optional<RegistryLookup<Chemical>> chemicalLookup = lookupProvider.lookup(MekanismAPI.CHEMICAL_REGISTRY_NAME);
+        //noinspection OptionalIsPresent - Capturing lambda
+        if (chemicalLookup.isEmpty()) {
+            return MekanismAPI.EMPTY_CHEMICAL_HOLDER;
+        }
+        return Optional.ofNullable(ResourceLocation.tryParse(tag))
+              .map(rl -> ResourceKey.create(MekanismAPI.CHEMICAL_REGISTRY_NAME, rl))
+              .<Holder<Chemical>>flatMap(chemicalLookup.get()::get)
+              .orElse(MekanismAPI.EMPTY_CHEMICAL_HOLDER);
+    }
+
+    //TODO - 1.21: Switch stream codecs to acting on holders
+    private final Holder.Reference<Chemical> builtInRegistryHolder = MekanismAPI.CHEMICAL_REGISTRY.createIntrusiveHolder(this);
     private final Map<Class<? extends ChemicalAttribute>, ChemicalAttribute> attributeMap;
 
     private final ResourceLocation iconLocation;
@@ -94,20 +141,20 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
     }
 
     @Override
-    public String toString() {
-        return "[Chemical: " + getRegistryName() + "]";
+    public final String toString() {
+        return builtInRegistryHolder().getRegisteredName();
     }
 
     @NotNull
     @Override
-    public Chemical getChemical() {
+    public final Chemical getChemical() {
         return this;
     }
 
     @Override
     public String getTranslationKey() {
         if (translationKey == null) {
-            translationKey = Util.makeDescriptionId("chemical", getRegistryName());
+            translationKey = Util.makeDescriptionId("chemical", MekanismAPI.CHEMICAL_REGISTRY.getKey(this));
         }
         return translationKey;
     }
@@ -214,7 +261,7 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
      */
     @Deprecated(forRemoval = true, since = "10.7.9")
     public boolean is(TagKey<Chemical> tag) {
-        return getAsHolder().is(tag);
+        return builtInRegistryHolder.is(tag);
     }
 
     /**
@@ -226,36 +273,40 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
      */
     @Deprecated(forRemoval = true, since = "10.7.9")
     public Stream<TagKey<Chemical>> getTags() {
-        return getAsHolder().tags();
+        return builtInRegistryHolder.tags();
     }
 
     /**
-     * Helper method to get the holder for this chemical. Unlike {@link net.minecraft.world.item.Item#builtInRegistryHolder()} and similar, this looks up the holder from
-     * the registry when called.
+     * Helper method to get the holder for this chemical.
      *
      * @since 10.6.0
+     * @deprecated If a holder is necessary use {@link #builtInRegistryHolder()}
      */
+    @Deprecated(forRemoval = true, since = "10.7.11")
     public Holder<Chemical> getAsHolder() {
-        return MekanismAPI.CHEMICAL_REGISTRY.wrapAsHolder(this);
+        return builtInRegistryHolder();
+    }
+
+    /**
+     * Intrusive holder, similar to vanilla this is deprecated and will eventually be moved away from.
+     *
+     * @since 10.7.11
+     */
+    @Deprecated
+    public Holder.Reference<Chemical> builtInRegistryHolder() {
+        return this.builtInRegistryHolder;
     }
 
     /**
      * Gets whether this chemical is the empty instance.
      *
      * @return {@code true} if this chemical is the empty instance, {@code false} otherwise.
+     *
+     * @deprecated Prefer checking if against {@link MekanismAPI#EMPTY_CHEMICAL_KEY}
      */
-    public boolean isEmptyType() {
+    @Deprecated(forRemoval = true, since = "10.7.11")
+    public boolean isEmptyType() {//TODO - 1.21: Re-evaluate
         return this == MekanismAPI.EMPTY_CHEMICAL;
-    }
-
-    @Override
-    public ResourceLocation getRegistryName() {
-        return MekanismAPI.CHEMICAL_REGISTRY.getKey(this);
-    }
-
-    @Override
-    public ChemicalStack getStack(long size) {
-        return new ChemicalStack(this, size);
     }
 
     /**
@@ -273,7 +324,7 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
      *
      * @since 10.7.0
      */
-    public boolean isGaseous() {
+    public boolean isGaseous() {//TODO - 1.22: Replace this with a tag
         return isGaseous;
     }
 
@@ -283,6 +334,7 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
      * @throws IllegalStateException if this chemical is empty
      * @since 10.7.0
      */
+    @Deprecated(forRemoval = true, since = "10.7.11")
     public Tag save(HolderLookup.Provider lookupProvider) {
         if (isEmptyType()) {
             throw new IllegalStateException("Cannot encode empty Chemical");
@@ -295,6 +347,7 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
      *
      * @since 10.7.0
      */
+    @Deprecated(forRemoval = true, since = "10.7.11")
     public Tag saveOptional(HolderLookup.Provider lookupProvider) {
         return isEmptyType() ? new CompoundTag() : save(lookupProvider);
     }

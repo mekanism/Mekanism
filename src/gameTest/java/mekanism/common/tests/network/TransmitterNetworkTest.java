@@ -39,7 +39,7 @@ public class TransmitterNetworkTest {
     //Note: Our template is lazy so that we ensure the universal cable is registered
     @RegisterStructureTemplate(STRAIGHT_CABLE)
     public static final Supplier<StructureTemplate> STRAIGHT_CABLE_TEMPLATE = StructureTemplateBuilder.lazy(3 * 16, 1, 1,
-          builder -> builder.fill(0, 0, 0, 3 * 16 - 1, 0, 0, MekanismBlocks.BASIC_UNIVERSAL_CABLE.getBlock())
+          builder -> builder.fill(0, 0, 0, 3 * 16 - 1, 0, 0, MekanismBlocks.BASIC_UNIVERSAL_CABLE.defaultState())
     );
 
     @GameTest(setupTicks = SharedConstants.TICKS_PER_SECOND)

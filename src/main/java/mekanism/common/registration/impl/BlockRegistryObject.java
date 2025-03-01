@@ -3,6 +3,8 @@ package mekanism.common.registration.impl;
 import java.util.function.Consumer;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.registration.DoubleWrappedRegistryObject;
+import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -17,7 +19,7 @@ public class BlockRegistryObject<BLOCK extends Block, ITEM extends Item> extends
     @NotNull
     @Override
     public BLOCK getBlock() {
-        return getPrimary();
+        return get();
     }
 
     @NotNull
@@ -32,5 +34,23 @@ public class BlockRegistryObject<BLOCK extends Block, ITEM extends Item> extends
             return this;
         }
         throw new IllegalStateException("Called method requires an ItemRegistryObject");
+    }
+
+    @NotNull
+    @Override
+    public ResourceLocation getRegistryName() {
+        return getId();
+    }
+
+    @NotNull
+    @Override
+    public Holder<Block> getBlockHolder() {
+        return this;
+    }
+
+    @NotNull
+    @Override
+    public DeferredHolder<Item, ITEM> getItemHolder() {
+        return secondaryRO;
     }
 }

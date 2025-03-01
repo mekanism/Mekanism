@@ -11,6 +11,8 @@ import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,7 +22,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<BoilerMultibloc
         this(MekanismBlocks.BOILER_CASING, pos, state);
     }
 
-    public TileEntityBoilerCasing(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
+    public TileEntityBoilerCasing(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
     }
 

@@ -13,9 +13,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class ItemBlockMechanicalPipe extends ItemBlockTooltip<BlockLargeTransmitter<TileEntityMechanicalPipe>> {
 
@@ -26,7 +24,7 @@ public class ItemBlockMechanicalPipe extends ItemBlockTooltip<BlockLargeTransmit
     @NotNull
     @Override
     public PipeTier getTier() {
-        return Attribute.getTier(getBlock(), PipeTier.class);
+        return Attribute.getTier(getBlockHolder(), PipeTier.class);
     }
 
     @Override

@@ -5,7 +5,6 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -27,7 +26,7 @@ public abstract class StructureBuilder {
 
     protected void buildPartialFrame(Level world, BlockPos start, int cutoff) {
         BlockPos.MutableBlockPos mutablePos = new BlockPos.MutableBlockPos();
-        BlockState casingState = getCasing().defaultBlockState();
+        BlockState casingState = getCasing();
         for (int x = 0; x < sizeX; x++) {
             if (x > cutoff && x < sizeX - 1 - cutoff) {
                 mutablePos.setWithOffset(start, x, 0, 0);
@@ -73,71 +72,71 @@ public abstract class StructureBuilder {
             for (int z = 1; z < sizeZ - 1; z++) {
                 mutablePos.set(x, 0, z);
                 mutableStart.setWithOffset(start, mutablePos);
-                world.setBlockAndUpdate(mutableStart, getFloorBlock(mutablePos).defaultBlockState());
+                world.setBlockAndUpdate(mutableStart, getFloorBlock(mutablePos));
                 mutablePos.set(x, sizeY - 1, z);
                 mutableStart.setWithOffset(start, mutablePos);
-                world.setBlockAndUpdate(mutableStart, getRoofBlock(mutablePos).defaultBlockState());
+                world.setBlockAndUpdate(mutableStart, getRoofBlock(mutablePos));
             }
         }
         for (int y = 1; y < sizeY - 1; y++) {
             for (int x = 1; x < sizeZ - 1; x++) {
                 mutablePos.set(x, y, 0);
                 mutableStart.setWithOffset(start, mutablePos);
-                world.setBlockAndUpdate(mutableStart, getWallBlock(mutablePos).defaultBlockState());
+                world.setBlockAndUpdate(mutableStart, getWallBlock(mutablePos));
                 mutablePos.set(x, y, sizeZ - 1);
                 mutableStart.setWithOffset(start, mutablePos);
-                world.setBlockAndUpdate(mutableStart, getWallBlock(mutablePos).defaultBlockState());
+                world.setBlockAndUpdate(mutableStart, getWallBlock(mutablePos));
             }
             for (int z = 1; z < sizeZ - 1; z++) {
                 mutablePos.set(0, y, z);
                 mutableStart.setWithOffset(start, mutablePos);
-                world.setBlockAndUpdate(mutableStart, getWallBlock(mutablePos).defaultBlockState());
+                world.setBlockAndUpdate(mutableStart, getWallBlock(mutablePos));
                 mutablePos.set(sizeZ - 1, y, z);
                 mutableStart.setWithOffset(start, mutablePos);
-                world.setBlockAndUpdate(mutableStart, getWallBlock(mutablePos).defaultBlockState());
+                world.setBlockAndUpdate(mutableStart, getWallBlock(mutablePos));
             }
         }
     }
 
-    protected void buildInteriorLayers(Level world, BlockPos start, int yMin, int yMax, Block block) {
+    protected void buildInteriorLayers(Level world, BlockPos start, int yMin, int yMax, BlockState state) {
         for (int y = yMin; y <= yMax; y++) {
-            buildInteriorLayer(world, start, y, block);
+            buildInteriorLayer(world, start, y, state);
         }
     }
 
-    protected void buildInteriorLayer(Level world, BlockPos start, int yLevel, Block block) {
+    protected void buildInteriorLayer(Level world, BlockPos start, int yLevel, BlockState state) {
         BlockPos.MutableBlockPos mutablePos = new BlockPos.MutableBlockPos();
         for (int x = 1; x < sizeX - 1; x++) {
             for (int z = 1; z < sizeZ - 1; z++) {
                 mutablePos.setWithOffset(start, x, yLevel, z);
-                world.setBlockAndUpdate(mutablePos, block.defaultBlockState());
+                world.setBlockAndUpdate(mutablePos, state);
             }
         }
     }
 
-    protected void buildPlane(Level world, BlockPos start, int x1, int z1, int x2, int z2, int yLevel, Block block) {
+    protected void buildPlane(Level world, BlockPos start, int x1, int z1, int x2, int z2, int yLevel, BlockState state) {
         BlockPos.MutableBlockPos mutablePos = new BlockPos.MutableBlockPos();
         for (int x = x1; x < x2 - 1; x++) {
             for (int z = z1; z < z2 - 1; z++) {
                 mutablePos.setWithOffset(start, x, yLevel, z);
-                world.setBlockAndUpdate(mutablePos, block.defaultBlockState());
+                world.setBlockAndUpdate(mutablePos, state);
             }
         }
     }
 
-    protected void buildColumn(Level world, BlockPos start, BlockPos pos, int height, Block block) {
+    protected void buildColumn(Level world, BlockPos start, BlockPos pos, int height, BlockState state) {
         BlockPos.MutableBlockPos mutablePos = new BlockPos.MutableBlockPos();
         for (int y = 0; y < height; y++) {
             mutablePos.setWithOffset(start, pos.getX(), pos.getY() + y, pos.getZ());
-            world.setBlockAndUpdate(mutablePos, block.defaultBlockState());
+            world.setBlockAndUpdate(mutablePos, state);
         }
     }
 
-    protected <T extends BlockEntity> void buildColumn(Level world, BlockPos start, BlockPos pos, int height, Block block, Class<T> tileClass, Consumer<T> tileConsumer) {
+    protected <T extends BlockEntity> void buildColumn(Level world, BlockPos start, BlockPos pos, int height, BlockState state, Class<T> tileClass, Consumer<T> tileConsumer) {
         BlockPos.MutableBlockPos mutablePos = new BlockPos.MutableBlockPos();
         for (int y = 0; y < height; y++) {
             mutablePos.setWithOffset(start, pos.getX(), pos.getY() + y, pos.getZ());
-            world.setBlockAndUpdate(mutablePos, block.defaultBlockState());
+            world.setBlockAndUpdate(mutablePos, state);
             T tile = WorldUtils.getTileEntity(tileClass, world, mutablePos);
             if (tile != null) {
                 tileConsumer.accept(tile);
@@ -145,17 +144,17 @@ public abstract class StructureBuilder {
         }
     }
 
-    protected Block getWallBlock(BlockPos pos) {
-        return MekanismBlocks.STRUCTURAL_GLASS.getBlock();
+    protected BlockState getWallBlock(BlockPos pos) {
+        return MekanismBlocks.STRUCTURAL_GLASS.defaultState();
     }
 
-    protected Block getFloorBlock(BlockPos pos) {
+    protected BlockState getFloorBlock(BlockPos pos) {
         return getCasing();
     }
 
-    protected Block getRoofBlock(BlockPos pos) {
+    protected BlockState getRoofBlock(BlockPos pos) {
         return getWallBlock(pos);
     }
 
-    protected abstract Block getCasing();
+    protected abstract BlockState getCasing();
 }

@@ -9,7 +9,6 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleHelper;
-import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.api.tier.BaseTier;
 import mekanism.client.gui.GuiBoilerStats;
@@ -160,6 +159,7 @@ import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.item.block.machine.ItemBlockFluidTank;
 import mekanism.common.lib.FieldReflectionHelper;
 import mekanism.common.lib.radiation.RadiationManager;
+import mekanism.common.registration.INamedEntry;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
@@ -507,7 +507,7 @@ public class ClientRegistration {
     public static void registerBlockColorHandlers(RegisterColorHandlersEvent.Block event) {
         ClientRegistrationUtil.registerBlockColorHandler(event, (state, world, pos, tintIndex) -> {
                   if (tintIndex == 1) {
-                      BaseTier tier = Attribute.getBaseTier(state.getBlock());
+                      BaseTier tier = Attribute.getBaseTier(state.getBlockHolder());
                       if (tier != null) {
                           return tier.getPackedColor();
                       }
@@ -615,7 +615,7 @@ public class ClientRegistration {
         ClientRegistrationUtil.registerItemExtensions(event, new MekRenderProperties(RenderFluidTankItem.RENDERER), MekanismBlocks.BASIC_FLUID_TANK,
               MekanismBlocks.ADVANCED_FLUID_TANK, MekanismBlocks.ELITE_FLUID_TANK, MekanismBlocks.ULTIMATE_FLUID_TANK, MekanismBlocks.CREATIVE_FLUID_TANK);
 
-        event.registerBlock(RenderPropertiesProvider.boundingParticles(), MekanismBlocks.BOUNDING_BLOCK.getBlock());
+        event.registerBlock(RenderPropertiesProvider.boundingParticles(), MekanismBlocks.BOUNDING_BLOCK);
         ClientRegistrationUtil.registerBlockExtensions(event, MekanismBlocks.BLOCKS);
         ClientRegistrationUtil.registerFluidExtensions(event, MekanismFluids.FLUIDS);
     }
@@ -671,13 +671,13 @@ public class ClientRegistration {
         }
     }
 
-    public static void addCustomModel(IItemProvider provider, CustomModelRegistryObject object) {
-        customModels.put(provider.getRegistryName(), object);
+    public static void addCustomModel(INamedEntry provider, CustomModelRegistryObject object) {
+        customModels.put(provider.getId(), object);
     }
 
-    public static void addLitModel(IItemProvider... providers) {
-        for (IItemProvider provider : providers) {
-            addCustomModel(provider, (orig, evt) -> lightBakedModel(orig));
+    public static void addLitModel(INamedEntry... entries) {
+        for (INamedEntry namedEntry : entries) {
+            addCustomModel(namedEntry, (orig, evt) -> lightBakedModel(orig));
         }
     }
 

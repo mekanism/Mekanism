@@ -10,11 +10,11 @@ public class GenderCapabilityHelper {
     public static void addGenderCapability(RegisterCapabilitiesEvent event, ArmorItem item) {
         //Validate the mod is loaded and that this is for the correct slot
         if (Mekanism.hooks.WildfireGenderModLoaded && item.getType() == ArmorItem.Type.CHESTPLATE) {
-            if (item == MekanismItems.HAZMAT_GOWN.asItem()) {
+            if (MekanismItems.HAZMAT_GOWN.is(item)) {
                 MekanismGenderArmor.HAZMAT.register(event, item);
-            } else if (item == MekanismItems.JETPACK.asItem() || item == MekanismItems.SCUBA_TANK.asItem()) {
+            } else if (MekanismItems.JETPACK.is(item) || MekanismItems.SCUBA_TANK.is(item)) {
                 MekanismGenderArmor.OPEN_FRONT.register(event, item);
-            } else if (item == MekanismItems.ARMORED_JETPACK.asItem() || item == MekanismItems.MEKASUIT_BODYARMOR.asItem()) {
+            } else if (MekanismItems.ARMORED_JETPACK.is(item) || MekanismItems.MEKASUIT_BODYARMOR.is(item)) {
                 MekanismGenderArmor.HIDES_BREASTS.register(event, item);
             }
         }

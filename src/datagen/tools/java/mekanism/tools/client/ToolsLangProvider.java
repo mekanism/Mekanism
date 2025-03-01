@@ -1,7 +1,7 @@
 package mekanism.tools.client;
 
-import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.EnumColor;
+import mekanism.api.text.IHasTranslationKey;
 import mekanism.client.lang.BaseLanguageProvider;
 import mekanism.common.util.EnumUtils;
 import mekanism.tools.client.recipe_viewer.aliases.ToolsAliases;
@@ -108,8 +108,9 @@ public class ToolsLangProvider extends BaseLanguageProvider {
         add(ToolsLang.HP, "HP: %1$s");
     }
 
-    private void addSet(String type, IItemProvider helmet, IItemProvider chestplate, IItemProvider leggings, IItemProvider boots, IItemProvider sword,
-          IItemProvider pickaxe, IItemProvider axe, IItemProvider shovel, IItemProvider hoe, IItemProvider paxel, IItemProvider shield) {
+    private void addSet(String type, IHasTranslationKey helmet, IHasTranslationKey chestplate, IHasTranslationKey leggings, IHasTranslationKey boots,
+          IHasTranslationKey sword, IHasTranslationKey pickaxe, IHasTranslationKey axe, IHasTranslationKey shovel, IHasTranslationKey hoe, IHasTranslationKey paxel,
+          IHasTranslationKey shield) {
         add(helmet, type + " Helmet");
         add(chestplate, type + " Chestplate");
         add(leggings, type + " Leggings");
@@ -123,7 +124,7 @@ public class ToolsLangProvider extends BaseLanguageProvider {
         addShield(shield, type + " Shield");
     }
 
-    private void addShield(IItemProvider shield, String name) {
+    private void addShield(IHasTranslationKey shield, String name) {
         add(shield, name);
         //Add names for all the bannered overlay types
         for (EnumColor color : EnumUtils.COLORS) {

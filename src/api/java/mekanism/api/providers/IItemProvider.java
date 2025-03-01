@@ -1,13 +1,26 @@
 package mekanism.api.providers;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 
 @MethodsReturnNonnullByDefault
 public interface IItemProvider extends IBaseProvider, ItemLike {
+
+    /**
+     * Helper method to get the holder that corresponds to this provider.
+     *
+     * @since 10.7.11
+     */
+    @SuppressWarnings("deprecation")
+    default Holder<Item> getItemHolder() {
+        return asItem().builtInRegistryHolder();
+    }
 
     /**
      * Creates an item stack of size one using the item this provider represents.
@@ -33,5 +46,10 @@ public interface IItemProvider extends IBaseProvider, ItemLike {
     @Override
     default String getTranslationKey() {
         return asItem().getDescriptionId();
+    }
+
+    @Override
+    default Component getTextComponent() {
+        return asItem().getDescription();
     }
 }

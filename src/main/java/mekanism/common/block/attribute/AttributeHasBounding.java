@@ -1,11 +1,9 @@
 package mekanism.common.block.attribute;
 
 import mekanism.common.Mekanism;
-import mekanism.common.block.BlockBounding;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.TileEntityBoundingBlock;
-import mekanism.common.util.RegistryUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -35,11 +33,11 @@ public class AttributeHasBounding implements Attribute {
             BlockState boundingState = level.getBlockState(p);
             if (!boundingState.isAir()) {
                 //The state might be air if we broke a bounding block first
-                if (boundingState.is(MekanismBlocks.BOUNDING_BLOCK.getBlock())) {
+                if (boundingState.is(MekanismBlocks.BOUNDING_BLOCK)) {
                     level.removeBlock(p, false);
                 } else {
                     Mekanism.logger.warn("Skipping removing block, expected bounding block but the block at {} in {} was {}", p, level.dimension().location(),
-                          RegistryUtils.getName(boundingState.getBlock()));
+                          boundingState.getBlockHolder().getRegisteredName());
                 }
             }
             return true;
@@ -48,8 +46,7 @@ public class AttributeHasBounding implements Attribute {
 
     public void placeBoundingBlocks(Level world, BlockPos orig, BlockState state) {
         boundingPosHandlers.handle(world, orig, state, orig, (level, boundingLocation, data) -> {
-            BlockBounding boundingBlock = MekanismBlocks.BOUNDING_BLOCK.getBlock();
-            BlockState newState = BlockStateHelper.getStateForPlacement(boundingBlock, boundingBlock.defaultBlockState(), level, boundingLocation, null, Direction.NORTH);
+            BlockState newState = BlockStateHelper.getStateForPlacement(MekanismBlocks.BOUNDING_BLOCK.defaultState(), level, boundingLocation, null, Direction.NORTH);
             level.setBlock(boundingLocation, newState, Block.UPDATE_ALL);
             if (!level.isClientSide()) {
                 TileEntityBoundingBlock tile = WorldUtils.getTileEntity(TileEntityBoundingBlock.class, level, boundingLocation);

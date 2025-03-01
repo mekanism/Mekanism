@@ -37,13 +37,13 @@ public non-sealed class SingleChemicalIngredient extends ChemicalIngredient {
     }
 
     @Override
-    public final boolean test(Chemical chemical) {
-        return chemical == this.chemical.value();
+    public final boolean test(Holder<Chemical> chemical) {
+        return chemical.is(this.chemical);
     }
 
     @Override
-    public final Stream<Chemical> generateChemicals() {
-        return Stream.of(chemical.value());
+    public final Stream<Holder<Chemical>> generateChemicalHolders() {
+        return Stream.of(chemical);
     }
 
     /**
@@ -70,6 +70,6 @@ public non-sealed class SingleChemicalIngredient extends ChemicalIngredient {
         } else if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        return chemical.is(((SingleChemicalIngredient) obj).chemical);
+        return test(((SingleChemicalIngredient) obj).chemical);
     }
 }

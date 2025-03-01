@@ -13,9 +13,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class ItemBlockInductionProvider extends ItemBlockTooltip<BlockTile<TileEntityInductionProvider, BlockTypeTile<TileEntityInductionProvider>>> {
 
@@ -26,7 +24,7 @@ public class ItemBlockInductionProvider extends ItemBlockTooltip<BlockTile<TileE
     @Override
     @NotNull
     public InductionProviderTier getTier() {
-        return Attribute.getTier(getBlock(), InductionProviderTier.class);
+        return Attribute.getTier(getBlockHolder(), InductionProviderTier.class);
     }
 
     @Override

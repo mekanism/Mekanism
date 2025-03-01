@@ -9,6 +9,7 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
+import net.minecraft.core.Holder;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,7 +39,7 @@ public non-sealed class IntersectionChemicalIngredient extends ChemicalIngredien
     }
 
     @Override
-    public final boolean test(Chemical chemical) {
+    public final boolean test(Holder<Chemical> chemical) {
         for (ChemicalIngredient child : children) {
             if (!child.test(chemical)) {
                 return false;
@@ -48,11 +49,12 @@ public non-sealed class IntersectionChemicalIngredient extends ChemicalIngredien
     }
 
     @Override
-    public final Stream<Chemical> generateChemicals() {
+    public final Stream<Holder<Chemical>> generateChemicalHolders() {
         return children.stream()
-              .flatMap(ChemicalIngredient::generateChemicals)
-              .distinct()//Ensure we don't include the same chemical multiple times
-              .filter(this);
+              .flatMap(ChemicalIngredient::generateChemicalHolders)
+              .distinct()//Ensure we don't include the same chemical multiple times. Holder overrides #equals at least within same kind of holder
+              .filter(this::test);
+              //.filter(this);//TODO - 1.22: Use this to filter
     }
 
     /**

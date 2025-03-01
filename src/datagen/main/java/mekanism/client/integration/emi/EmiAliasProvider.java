@@ -26,8 +26,6 @@ import java.util.function.Supplier;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
-import mekanism.api.providers.IChemicalProvider;
-import mekanism.api.providers.IFluidProvider;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.client.recipe_viewer.alias.IAliasMapping;
 import mekanism.client.recipe_viewer.alias.RVAliasHelper;
@@ -35,6 +33,7 @@ import mekanism.client.recipe_viewer.emi.ChemicalEmiStack;
 import mekanism.common.DataGenSerializationConstants;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.lib.collection.HashList;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
@@ -114,8 +113,8 @@ public class EmiAliasProvider implements DataProvider, RVAliasHelper<EmiIngredie
     }
 
     @Override
-    public EmiIngredient ingredient(IFluidProvider fluidProvider) {
-        return EmiStack.of(fluidProvider.getFluid(), 1);
+    public EmiIngredient fluidIngredient(Holder<Fluid> fluid) {
+        return EmiStack.of(fluid.value(), 1);
     }
 
     @Override
@@ -129,8 +128,8 @@ public class EmiAliasProvider implements DataProvider, RVAliasHelper<EmiIngredie
     }
 
     @Override
-    public EmiIngredient ingredient(IChemicalProvider chemicalProvider) {
-        return ChemicalEmiStack.create(chemicalProvider, 1);
+    public EmiIngredient chemicalIngredient(Holder<Chemical> chemical) {
+        return new ChemicalEmiStack(chemical, 1);
     }
 
     @Override
@@ -139,8 +138,8 @@ public class EmiAliasProvider implements DataProvider, RVAliasHelper<EmiIngredie
     }
 
     @Override
-    public void addAliases(IFluidProvider fluidProvider, IChemicalProvider chemicalProvider, IHasTranslationKey... aliases) {
-        addAliases(List.of(ingredient(fluidProvider), ingredient(chemicalProvider)), aliases);
+    public void addAliases(Holder<Fluid> fluidProvider, Holder<Chemical> chemicalProvider, IHasTranslationKey... aliases) {
+        addAliases(List.of(fluidIngredient(fluidProvider), chemicalIngredient(chemicalProvider)), aliases);
     }
 
     @Override

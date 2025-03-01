@@ -2,7 +2,6 @@ package mekanism.common.registries;
 
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPITags;
-import mekanism.api.providers.IItemProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
@@ -26,6 +25,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTab.ItemDisplayParameters;
 import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.common.Tags;
@@ -54,7 +54,7 @@ public class MekanismCreativeTabs {
                       .filterElements(fluid -> fluid != Fluids.EMPTY && fluid.isSource(fluid.defaultFluidState()))
                       .listElements()
                       .filter(holder -> !holder.is(Tags.Fluids.HIDDEN_FROM_RECIPE_VIEWERS))
-                      .forEach(holder -> output.accept(FluidUtils.getFilledVariant(MekanismBlocks.CREATIVE_FLUID_TANK, holder.value())));
+                      .forEach(holder -> output.accept(FluidUtils.getFilledVariant(MekanismBlocks.CREATIVE_FLUID_TANK, holder)));
             }
             if (chemical) {
                 //Chemical Tanks
@@ -62,7 +62,7 @@ public class MekanismCreativeTabs {
                     parameters.holders().lookupOrThrow(MekanismAPI.CHEMICAL_REGISTRY_NAME)
                           .listElements()
                           .filter(holder -> !holder.is(MekanismAPITags.Chemicals.HIDDEN_FROM_RECIPE_VIEWERS) && !holder.is(MekanismAPI.EMPTY_CHEMICAL_NAME))
-                          .forEach(holder -> output.accept(ChemicalUtil.getFilledVariant(MekanismBlocks.CREATIVE_CHEMICAL_TANK, holder.value())));
+                          .forEach(holder -> output.accept(ChemicalUtil.getFilledVariant(MekanismBlocks.CREATIVE_CHEMICAL_TANK, holder)));
                 }
             }
         }
@@ -98,10 +98,10 @@ public class MekanismCreativeTabs {
             CreativeTabDeferredRegister.addToDisplay(event, MekanismBlocks.INDUSTRIAL_ALARM);
             for (Holder<Block> blockProvider : MekanismBlocks.BLOCKS.getPrimaryEntries()) {
                 Block block = blockProvider.value();
-                if (Attribute.has(block, AttributeComparator.class)) {
+                if (Attribute.has(blockProvider, AttributeComparator.class)) {
                     CreativeTabDeferredRegister.addToDisplay(event, block);
                 } else if (block instanceof BlockTransmitter) {
-                    AttributeTier<?> attribute = Attribute.get(block, AttributeTier.class);
+                    AttributeTier<?> attribute = Attribute.get(blockProvider, AttributeTier.class);
                     if (attribute != null && !(attribute.tier() instanceof TransporterTier)) {
                         CreativeTabDeferredRegister.addToDisplay(event, block);
                     }
@@ -149,7 +149,7 @@ public class MekanismCreativeTabs {
                   MekanismItems.BRONZE_NUGGET, MekanismItems.STEEL_NUGGET, MekanismItems.REFINED_OBSIDIAN_NUGGET, MekanismItems.REFINED_GLOWSTONE_NUGGET,
                   MekanismItems.BRONZE_INGOT, MekanismItems.STEEL_INGOT, MekanismItems.REFINED_OBSIDIAN_INGOT, MekanismItems.REFINED_GLOWSTONE_INGOT
             );
-            for (IItemProvider item : MekanismItems.PROCESSED_RESOURCES.values()) {
+            for (ItemLike item : MekanismItems.PROCESSED_RESOURCES.values()) {
                 CreativeTabDeferredRegister.addToDisplay(event, item);
             }
         }

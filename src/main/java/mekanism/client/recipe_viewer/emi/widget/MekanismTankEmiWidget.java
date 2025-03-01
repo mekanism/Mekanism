@@ -7,6 +7,7 @@ import dev.emi.emi.api.widget.Bounds;
 import dev.emi.emi.api.widget.SlotWidget;
 import java.util.List;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.math.MathUtils;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.GuiUtils.TilingDirection;
@@ -51,8 +52,9 @@ public class MekanismTankEmiWidget extends SlotWidget {
         if (!stack.isEmpty() && ingredient.getAmount() > 0) {
             TextureAtlasSprite sprite;
             if (stack.getKey() instanceof Chemical chemical) {
-                MekanismRenderer.color(graphics, chemical);
-                sprite = MekanismRenderer.getChemicalTexture(chemical);
+                ChemicalStack chemicalStack = new ChemicalStack(chemical, MathUtils.clampToInt(ingredient.getAmount()));
+                MekanismRenderer.color(graphics, chemicalStack);
+                sprite = MekanismRenderer.getChemicalTexture(chemicalStack);
             } else if (stack.getKey() instanceof Fluid fluid) {
                 FluidStack fluidStack = new FluidStack(fluid.builtInRegistryHolder(), MathUtils.clampToInt(ingredient.getAmount()), stack.getComponentChanges());
                 MekanismRenderer.color(graphics, fluidStack);

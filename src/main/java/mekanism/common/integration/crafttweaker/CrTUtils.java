@@ -27,6 +27,7 @@ import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -55,6 +56,13 @@ public class CrTUtils {
      */
     public static ICrTChemicalStack fromChemical(Chemical chemical, int size) {
         return new CrTChemicalStack(chemical.getStack(size));
+    }
+
+    /**
+     * Helper method to convert a {@link Chemical} holder to an {@link ICrTChemicalStack}.
+     */
+    public static ICrTChemicalStack fromChemical(Holder<Chemical> chemical, int size) {
+        return new CrTChemicalStack(new ChemicalStack(chemical, size));
     }
 
     /**

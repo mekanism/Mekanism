@@ -7,12 +7,9 @@ import java.util.stream.Collectors;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.providers.IChemicalProvider;
-import mekanism.api.providers.IFluidProvider;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.client.recipe_viewer.alias.RVAliasHelper;
 import mekanism.common.Mekanism;
-import mekanism.common.util.RegistryUtils;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.neoforge.NeoForgeTypes;
@@ -32,8 +29,8 @@ import net.neoforged.neoforge.fluids.FluidType;
 public class JEIAliasHelper implements RVAliasHelper<ItemStack, FluidStack, ChemicalStack> {
 
     private static final Function<ItemStack, String> ITEM_TO_STRING = stack -> stack.getItem().toString();
-    private static final Function<FluidStack, String> FLUID_TO_STRING = stack -> RegistryUtils.getName(stack.getFluid()).toString();
-    private static final Function<ChemicalStack, String> CHEMICAL_TO_STRING = stack -> stack.getChemical().getRegistryName().toString();
+    private static final Function<FluidStack, String> FLUID_TO_STRING = stack -> stack.getFluid().toString();
+    private static final Function<ChemicalStack, String> CHEMICAL_TO_STRING = stack -> stack.getChemical().toString();
 
     private final IIngredientAliasRegistration registration;
 
@@ -57,8 +54,8 @@ public class JEIAliasHelper implements RVAliasHelper<ItemStack, FluidStack, Chem
     }
 
     @Override
-    public FluidStack ingredient(IFluidProvider fluidProvider) {
-        return fluidProvider.getFluidStack(FluidType.BUCKET_VOLUME);
+    public FluidStack fluidIngredient(Holder<Fluid> fluid) {
+        return new FluidStack(fluid, FluidType.BUCKET_VOLUME);
     }
 
     @Override
@@ -72,8 +69,8 @@ public class JEIAliasHelper implements RVAliasHelper<ItemStack, FluidStack, Chem
     }
 
     @Override
-    public ChemicalStack ingredient(IChemicalProvider chemicalProvider) {
-        return chemicalProvider.getStack(FluidType.BUCKET_VOLUME);
+    public ChemicalStack chemicalIngredient(Holder<Chemical> chemical) {
+        return new ChemicalStack(chemical, FluidType.BUCKET_VOLUME);
     }
 
     @Override

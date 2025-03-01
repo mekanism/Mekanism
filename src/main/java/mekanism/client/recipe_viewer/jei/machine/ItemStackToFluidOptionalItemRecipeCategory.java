@@ -22,7 +22,6 @@ import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.impl.NutritionalLiquifierIRecipe;
 import mekanism.common.tile.component.config.DataType;
-import mekanism.common.util.RegistryUtils;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.ICodecHelper;
 import mezz.jei.api.helpers.IGuiHelper;
@@ -79,7 +78,7 @@ public class ItemStackToFluidOptionalItemRecipeCategory extends BaseRecipeCatego
     public ResourceLocation getRegistryName(@NotNull BasicItemStackToFluidOptionalItemRecipe recipe) {
         List<@NotNull ItemStack> representations = recipe.getInput().getRepresentations();
         if (representations.size() == 1) {
-            return RecipeViewerUtils.synthetic(RegistryUtils.getName(representations.getFirst().getItem()), "liquification", Mekanism.MODID);
+            return RecipeViewerUtils.synthetic(representations.getFirst().getItem().toString(), "liquification", Mekanism.MODID);
         }
         return null;
     }

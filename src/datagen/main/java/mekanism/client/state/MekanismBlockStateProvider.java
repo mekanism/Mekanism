@@ -41,7 +41,7 @@ public class MekanismBlockStateProvider extends BaseBlockStateProvider<MekanismB
                 file = models().withExistingParent("block/storage/" + registrySuffix, modLoc("block/colored_cube"))
                       .texture("all", modLoc("block/resource_block"));
             }
-            simpleBlock(entry.getValue().getBlock(), file);
+            simpleBlock(entry.getValue(), file);
 
             models().withExistingParent("item/block_" + registrySuffix, modLoc("block/storage/" + registrySuffix));
         }
@@ -59,7 +59,7 @@ public class MekanismBlockStateProvider extends BaseBlockStateProvider<MekanismB
         );
         BlockModelBuilder openBarrel = models().getBuilder(MekanismBlocks.PERSONAL_BARREL.getName() + "_open").parent(barrelModel)
               .texture("top", Mekanism.rl("block/personal_barrel/top_open"));
-        directionalBlock(MekanismBlocks.PERSONAL_BARREL.getBlock(), state -> state.getValue(BlockStateProperties.OPEN) ? openBarrel : barrelModel);
+        directionalBlock(MekanismBlocks.PERSONAL_BARREL, state -> state.getValue(BlockStateProperties.OPEN) ? openBarrel : barrelModel);
         simpleBlockItem(MekanismBlocks.PERSONAL_BARREL, barrelModel);
 
         BlockModelBuilder stabilizerModel = models().cubeBottomTop(MekanismBlocks.DIMENSIONAL_STABILIZER.getName(),
@@ -71,14 +71,14 @@ public class MekanismBlockStateProvider extends BaseBlockStateProvider<MekanismB
               .texture("top", Mekanism.rl("block/dimensional_stabilizer/top_active"))
               .texture("side", Mekanism.rl("block/dimensional_stabilizer/side_active"));
         simpleBlockItem(MekanismBlocks.DIMENSIONAL_STABILIZER, stabilizerModel);
-        getVariantBuilder(MekanismBlocks.DIMENSIONAL_STABILIZER.getBlock())
+        getVariantBuilder(MekanismBlocks.DIMENSIONAL_STABILIZER)
               .forAllStates(state -> new ConfiguredModel[]{new ConfiguredModel(Attribute.isActive(state) ? activeStabilizer : stabilizerModel)});
     }
 
     private void addOreBlock(BlockRegistryObject<BlockOre, ?> oreBlock, String path) {
         String name = oreBlock.getName();
         ModelFile file = models().cubeAll(path, modLoc("block/" + name));
-        simpleBlock(oreBlock.getBlock(), file);
+        simpleBlock(oreBlock, file);
         simpleBlockItem(oreBlock, file);
     }
 }

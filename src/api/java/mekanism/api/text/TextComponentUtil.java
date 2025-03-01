@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
@@ -18,7 +19,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.common.TranslatableEnum;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 public class TextComponentUtil {
@@ -59,6 +59,9 @@ public class TextComponentUtil {
             if (component == null) {
                 //If the component doesn't exist just skip it
                 continue;
+            } else if (component instanceof Holder<?> holder) {
+                //Try to get the value of a holder if it has one and get the translation based on the stored value
+                component = holder.value();
             }
             MutableComponent current = null;
             switch (component) {
@@ -189,6 +192,9 @@ public class TextComponentUtil {
                 args.add(TEXT_NULL);
                 cachedStyle = Style.EMPTY;
                 continue;
+            } else if (component instanceof Holder<?> holder) {
+                //Try to get the value of a holder if it has one and get the translation based on the stored value
+                component = holder.value();
             }
             MutableComponent current = null;
             if (component instanceof Component c) {

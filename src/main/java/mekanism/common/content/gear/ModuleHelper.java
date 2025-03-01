@@ -23,7 +23,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.item.ItemModule;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.InventoryUtils;
-import mekanism.common.util.RegistryUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.network.chat.Component;
@@ -68,15 +67,16 @@ public class ModuleHelper implements IModuleHelper {
         Map<Item, String> moduleContainers = new Reference2ObjectArrayMap<>(5);
         Set<String> imcMethods = new HashSet<>(5);
         event.getIMCStream(MekanismIMC.ADD_MODULE_CONTAINER::equals).forEach(message -> {
-            if (message.messageSupplier().get() instanceof ModuleContainerTarget target) {
-                Mekanism.logger.debug("Received IMC message '{}' from '{}' for new module container '{}'.", MekanismIMC.ADD_MODULE_CONTAINER, message.senderModId(), target);
-                if (moduleContainers.put(target.container(), target.imcMethod()) != null) {
+            if (message.messageSupplier().get() instanceof ModuleContainerTarget(Item container, String imcMethod)) {
+                Mekanism.logger.debug("Received IMC message '{}' from '{}' for new module container '{}' with an imcMethod '{}'.", MekanismIMC.ADD_MODULE_CONTAINER,
+                      message.senderModId(), container, imcMethod);
+                if (moduleContainers.put(container, imcMethod) != null) {
                     Mekanism.logger.error("Received IMC message for '{}' from mod '{}' for an item '{}' that has already been registered as a container.",
-                          MekanismIMC.ADD_MODULE_CONTAINER, message.senderModId(), RegistryUtils.getName(target.container()));
+                          MekanismIMC.ADD_MODULE_CONTAINER, message.senderModId(), container);
                 }
-                if (!imcMethods.add(target.imcMethod())) {
+                if (!imcMethods.add(imcMethod)) {
                     Mekanism.logger.error("Received IMC message for '{}' from mod '{}' for an item '{}' with an imcMethod '{}' that that has already been registered.",
-                          MekanismIMC.ADD_MODULE_CONTAINER, message.senderModId(), RegistryUtils.getName(target.container()), target.imcMethod());
+                          MekanismIMC.ADD_MODULE_CONTAINER, message.senderModId(), container, imcMethod);
                 }
             } else {
                 Mekanism.logger.warn("Received IMC message for '{}' from mod '{}' with an invalid body.", MekanismIMC.ADD_MODULE_CONTAINER, message.senderModId());
@@ -91,12 +91,14 @@ public class ModuleHelper implements IModuleHelper {
         event.getIMCStream(imcMethod::equals).forEach(message -> {
             Object body = message.messageSupplier().get();
             if (body instanceof IModuleDataProvider<?> moduleDataProvider) {
-                supportedModulesBuilder.add(moduleDataProvider.getModuleData());
-                logDebugReceivedIMC(imcMethod, message.senderModId(), moduleDataProvider);
+                ModuleData<?> moduleData = moduleDataProvider.getModuleData();
+                supportedModulesBuilder.add(moduleData);
+                logDebugReceivedIMC(imcMethod, message.senderModId(), moduleData);
             } else if (body instanceof IModuleDataProvider<?>[] providers) {
                 for (IModuleDataProvider<?> moduleDataProvider : providers) {
-                    supportedModulesBuilder.add(moduleDataProvider.getModuleData());
-                    logDebugReceivedIMC(imcMethod, message.senderModId(), moduleDataProvider);
+                    ModuleData<?> moduleData = moduleDataProvider.getModuleData();
+                    supportedModulesBuilder.add(moduleData);
+                    logDebugReceivedIMC(imcMethod, message.senderModId(), moduleData);
                 }
             } else {
                 Mekanism.logger.warn("Received IMC message for '{}' from mod '{}' with an invalid body.", imcMethod, message.senderModId());
@@ -111,8 +113,8 @@ public class ModuleHelper implements IModuleHelper {
         }
     }
 
-    private void logDebugReceivedIMC(String imcMethod, String senderModId, IModuleDataProvider<?> moduleDataProvider) {
-        Mekanism.logger.debug("Received IMC message '{}' from '{}' for module '{}'.", imcMethod, senderModId, moduleDataProvider.getRegistryName());
+    private void logDebugReceivedIMC(String imcMethod, String senderModId, ModuleData<?> moduleData) {
+        Mekanism.logger.debug("Received IMC message '{}' from '{}' for module '{}'.", imcMethod, senderModId, moduleData);
     }
 
     @Override

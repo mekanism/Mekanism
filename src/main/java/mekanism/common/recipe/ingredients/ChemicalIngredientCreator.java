@@ -95,10 +95,10 @@ public class ChemicalIngredientCreator implements IChemicalIngredientCreator {
         });
     }
 
-    private static final StreamCodec<RegistryFriendlyByteBuf, ChemicalIngredient> STREAM_CODEC = Chemical.STREAM_CODEC
-          .apply(ByteBufCodecs.<RegistryFriendlyByteBuf, Chemical, List<Chemical>>collection(NonNullList::createWithCapacity)).map(
-                chemicals -> INSTANCE.of(chemicals.stream()),
-                ChemicalIngredient::getChemicals
+    private static final StreamCodec<RegistryFriendlyByteBuf, ChemicalIngredient> STREAM_CODEC = Chemical.HOLDER_STREAM_CODEC
+          .apply(ByteBufCodecs.<RegistryFriendlyByteBuf, Holder<Chemical>, List<Holder<Chemical>>>collection(NonNullList::createWithCapacity)).map(
+                chemicals -> INSTANCE.ofHolders(chemicals.stream()),
+                ChemicalIngredient::getChemicalHolders
           );
 
     @Override

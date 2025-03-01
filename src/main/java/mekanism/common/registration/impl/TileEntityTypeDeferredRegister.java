@@ -42,7 +42,7 @@ public class TileEntityTypeDeferredRegister extends MekanismDeferredRegister<Blo
     }
 
     public <BE extends TileEntityMekanism> BlockEntityTypeBuilder<BE> mekBuilder(BlockRegistryObject<?, ?> block, BlockEntitySupplier<? extends BE> factory) {
-        BooleanSupplier hasSecurity = () -> Attribute.has(block.getBlock(), AttributeSecurity.class);
+        BooleanSupplier hasSecurity = () -> Attribute.has(block, AttributeSecurity.class);
         BlockEntityTypeBuilder<BE> builder = this.<BE>builder(block, factory)
               //Delay the attachment of these and only attach them if we know they should be exposed rather than filtering in the provider itself
               .withSimple(IBlockSecurityUtils.INSTANCE.ownerCapability(), hasSecurity)
@@ -54,7 +54,7 @@ public class TileEntityTypeDeferredRegister extends MekanismDeferredRegister<Blo
               .with(Capabilities.FLUID.block(), CapabilityTileEntity.FLUID_HANDLER_PROVIDER);
         EnergyCompatUtils.addBlockCapabilities(builder);
         if (Mekanism.hooks.computerCompatEnabled()) {
-            ComputerCapabilityHelper.addComputerCapabilities(builder, () -> Attribute.has(block.getBlock(), AttributeComputerIntegration.class));
+            ComputerCapabilityHelper.addComputerCapabilities(builder, () -> Attribute.has(block, AttributeComputerIntegration.class));
         }
         return builder;
     }

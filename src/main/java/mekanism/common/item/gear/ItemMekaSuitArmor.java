@@ -104,7 +104,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         switch (armorType) {
             case HELMET -> {
                 fluidTankSpecs.add(FluidTankSpec.createFillOnly(MekanismConfig.gear.mekaSuitNutritionalTransferRate, MekanismConfig.gear.mekaSuitNutritionalMaxStorage,
-                      fluid -> fluid.is(MekanismFluids.NUTRITIONAL_PASTE.getFluid()), stack -> hasModule(stack, MekanismModules.NUTRITIONAL_INJECTION_UNIT)));
+                      fluid -> fluid.is(MekanismFluids.NUTRITIONAL_PASTE), stack -> hasModule(stack, MekanismModules.NUTRITIONAL_INJECTION_UNIT)));
                 absorption = 0.15F;
                 laserDissipation = 0.15;
                 laserRefraction = 0.2;
@@ -114,7 +114,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                     //Note: We intentionally don't require the module to be enabled for purposes of calculating capacity
                     IModule<ModuleJetpackUnit> module = IModuleHelper.INSTANCE.getModule(stack, MekanismModules.JETPACK_UNIT);
                     return module != null ? MekanismConfig.gear.mekaSuitJetpackMaxStorage.get() * module.getInstalledCount() : 0L;
-                }, gas -> gas == MekanismChemicals.HYDROGEN.get(), stack -> hasModule(stack, MekanismModules.JETPACK_UNIT)));
+                }, MekanismChemicals.HYDROGEN::keyMatches, stack -> hasModule(stack, MekanismModules.JETPACK_UNIT)));
                 absorption = 0.4F;
                 laserDissipation = 0.3;
                 laserRefraction = 0.4;
@@ -454,7 +454,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                     }
                     // Next lookup the ratio at which we can absorb the given damage type from the data map
                     MekaSuitAbsorption absorptionData = null;
-                    if (source.typeHolder().unwrapKey().isPresent()) {
+                    if (source.typeHolder().kind() == Holder.Kind.REFERENCE) {
                         // Reference holders can query data map values
                         absorptionData = source.typeHolder().getData(MekanismDataMapTypes.MEKA_SUIT_ABSORPTION);
                     } else {

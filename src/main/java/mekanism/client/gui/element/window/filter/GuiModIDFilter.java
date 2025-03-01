@@ -76,12 +76,12 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
                     if (stack.isEmpty()) {
                         return null;
                     }
-                    registryName = RegistryUtils.getName(stack.getFluid());
+                    registryName = RegistryUtils.getName(stack.getFluidHolder());
                 } else if (ingredient instanceof ChemicalStack stack) {
                     if (stack.isEmpty()) {
                         return null;
                     }
-                    registryName = stack.getTypeRegistryName();
+                    registryName = RegistryUtils.getName(stack.getChemicalHolder());
                 } else {
                     registryName = RegistryUtils.getNameGeneric(ingredient);
                 }

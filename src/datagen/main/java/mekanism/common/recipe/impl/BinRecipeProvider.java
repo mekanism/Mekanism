@@ -1,6 +1,5 @@
 package mekanism.common.recipe.impl;
 
-import mekanism.api.providers.IItemProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.basic.BlockBin;
@@ -21,6 +20,7 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.SpecialRecipeBuilder;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
 
 class BinRecipeProvider implements ISubRecipeProvider {
 
@@ -51,9 +51,9 @@ class BinRecipeProvider implements ISubRecipeProvider {
         addTieredBin(consumer, basePath, MekanismBlocks.ULTIMATE_BIN, MekanismBlocks.ELITE_BIN, MekanismTags.Items.CIRCUITS_ULTIMATE, MekanismTags.Items.ALLOYS_ATOMIC);
     }
 
-    private void addTieredBin(RecipeOutput consumer, String basePath, BlockRegistryObject<BlockBin, ?> bin, IItemProvider previousBin, TagKey<Item> circuitTag,
+    private void addTieredBin(RecipeOutput consumer, String basePath, BlockRegistryObject<BlockBin, ?> bin, ItemLike previousBin, TagKey<Item> circuitTag,
           TagKey<Item> alloyTag) {
-        String tierName = Attribute.getBaseTier(bin.getBlock()).getLowerName();
+        String tierName = Attribute.getBaseTier(bin).getLowerName();
         MekDataShapedRecipeBuilder.shapedRecipe(bin)
               .pattern(BIN_PATTERN)
               .key(Pattern.PREVIOUS, previousBin)

@@ -16,12 +16,12 @@ public interface IChemicalStackIngredientCreator extends IIngredientCreator<Chem
     @Override
     default ChemicalStackIngredient from(ChemicalStack instance) {
         Objects.requireNonNull(instance, "ChemicalStackIngredients cannot be created from a null ChemicalStack.");
-        return from(instance.getChemical(), instance.getAmount());
+        return fromHolder(instance.getChemicalHolder(), instance.getAmount());
     }
 
     @Override
     default ChemicalStackIngredient from(Chemical instance, int amount) {
-        return from(instance, (long) amount);
+        return fromHolder(instance.builtInRegistryHolder(), (long) amount);
     }
 
     /**
@@ -32,7 +32,10 @@ public interface IChemicalStackIngredientCreator extends IIngredientCreator<Chem
      *
      * @throws NullPointerException     if the given provider is null.
      * @throws IllegalArgumentException if the given provider is empty or an amount smaller than one.
+     *
+     * @deprecated Prefer using {@link #fromHolder(Holder, long)}
      */
+    @Deprecated(forRemoval = true, since = "10.7.11")
     default ChemicalStackIngredient from(IChemicalProvider provider, long amount) {
         Objects.requireNonNull(provider, "ChemicalStackIngredients cannot be created from a null chemical provider.");
         return from(IngredientCreatorAccess.chemical().of(provider), amount);
@@ -52,7 +55,10 @@ public interface IChemicalStackIngredientCreator extends IIngredientCreator<Chem
      * @throws NullPointerException     if the given instance is null.
      * @throws IllegalArgumentException if the given instance is empty or an amount smaller than one; or if no chemicals are passed.
      * @since 10.6.0
+     *
+     * @deprecated Prefer using {@link #fromHolders(long, Holder[])}
      */
+    @Deprecated(forRemoval = true, since = "10.7.11")
     default ChemicalStackIngredient from(long amount, IChemicalProvider... chemicals) {
         if (chemicals.length == 0) {
             throw new IllegalArgumentException("Attempted to create an ChemicalStackIngredients with no chemicals.");
@@ -71,7 +77,25 @@ public interface IChemicalStackIngredientCreator extends IIngredientCreator<Chem
      * @since 10.5.0
      */
     default ChemicalStackIngredient fromHolder(Holder<Chemical> instance, long amount) {
-        return from(instance.value(), amount);
+        Objects.requireNonNull(instance, "ChemicalStackIngredients cannot be created from a null chemical provider.");
+        return from(IngredientCreatorAccess.chemical().of(instance), amount);
+    }
+
+    /**
+     * Creates a Chemical Stack Ingredient that matches any of the provided chemicals.
+     *
+     * @param amount    Amount needed.
+     * @param chemicals Chemicals to match.
+     *
+     * @throws NullPointerException     if the given instance is null.
+     * @throws IllegalArgumentException if the given instance is empty or an amount smaller than one; or if no chemicals are passed.
+     * @since 10.7.11
+     */
+    default ChemicalStackIngredient fromHolders(long amount, Holder<Chemical>... chemicals) {
+        if (chemicals.length == 0) {
+            throw new IllegalArgumentException("Attempted to create an ChemicalStackIngredients with no chemicals.");
+        }
+        return from(IngredientCreatorAccess.chemical().ofHolders(chemicals), amount);
     }
 
     @Override

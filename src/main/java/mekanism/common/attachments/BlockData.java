@@ -28,7 +28,6 @@ import net.minecraft.world.level.block.DecoratedPotBlock;
 import net.minecraft.world.level.block.SpawnerBlock;
 import net.minecraft.world.level.block.TrialSpawnerBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.PotDecorations;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
@@ -104,13 +103,14 @@ public record BlockData(BlockState blockState, @Nullable CompoundTag blockEntity
         Block block = blockState.getBlock();
         consumer.accept(MekanismLang.BLOCK.translateColored(EnumColor.INDIGO, EnumColor.GRAY, block));
         if (blockEntityTag != null) {
-            Optional<BlockEntityType<?>> blockEntityType = RegistryUtils.getById(blockEntityTag, BuiltInRegistries.BLOCK_ENTITY_TYPE);
-            Object beName = blockEntityType.isPresent() ? RegistryUtils.getName(blockEntityType.get()) : MekanismLang.UNKNOWN;
+            Object beName = RegistryUtils.getHolderById(blockEntityTag, BuiltInRegistries.BLOCK_ENTITY_TYPE)
+                  .<Object>map(RegistryUtils::getName)
+                  .orElse(MekanismLang.UNKNOWN);
             consumer.accept(MekanismLang.BLOCK_ENTITY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, beName));
             if (blockEntityTag != null) {
                 if (block instanceof SpawnerBlock || block instanceof TrialSpawnerBlock) {
                     String key = block instanceof SpawnerBlock ? SerializationConstants.SPAWN_DATA_LEGACY : SerializationConstants.SPAWN_DATA;
-                    RegistryUtils.getById(blockEntityTag.getCompound(key).getCompound(SerializationConstants.ENTITY), BuiltInRegistries.ENTITY_TYPE)
+                    RegistryUtils.getHolderById(blockEntityTag.getCompound(key).getCompound(SerializationConstants.ENTITY), BuiltInRegistries.ENTITY_TYPE)
                           .map(entity -> MekanismLang.BLOCK_ENTITY_SPAWN_TYPE.translateColored(EnumColor.INDIGO, EnumColor.GRAY, entity))
                           .ifPresent(consumer);
                 } else if (block instanceof DecoratedPotBlock) {

@@ -2,7 +2,6 @@ package mekanism.common.tile.qio;
 
 import java.util.Collection;
 import mekanism.api.Upgrade;
-import mekanism.api.providers.IBlockProvider;
 import mekanism.common.content.filter.SortableFilterManager;
 import mekanism.common.content.qio.filter.QIOFilter;
 import mekanism.common.integration.computer.ComputerException;
@@ -10,8 +9,10 @@ import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,7 +23,7 @@ public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implement
     private int maxTransitCount = 64;
     private int maxTransitTypes = 1;
 
-    public TileEntityQIOFilterHandler(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
+    public TileEntityQIOFilterHandler(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
     }
 

@@ -129,7 +129,7 @@ public final class MekanismAliasMapping implements IAliasMapping {
               MekanismItems.MEKASUIT_PANTS
         ), MekanismAliases.MEKA_SUIT_POWER_ARMOR);
 
-        rv.addAliases(FluidUtils.getFilledVariant(MekanismItems.CANTEEN, MekanismFluids.NUTRITIONAL_PASTE.getFluid()),
+        rv.addAliases(FluidUtils.getFilledVariant(MekanismItems.CANTEEN, MekanismFluids.NUTRITIONAL_PASTE),
               MekanismAliases.CANTEEN_EDIBLE,
               MekanismAliases.CANTEEN_FOOD_STORAGE
         );

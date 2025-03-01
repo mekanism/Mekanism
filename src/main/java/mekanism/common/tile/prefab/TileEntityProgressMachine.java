@@ -3,7 +3,6 @@ package mekanism.common.tile.prefab;
 import java.util.List;
 import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
-import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
@@ -12,9 +11,11 @@ import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UpgradeUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,7 +25,7 @@ public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe<?>
     protected int baseTicksRequired;
     public int ticksRequired;
 
-    protected TileEntityProgressMachine(IBlockProvider blockProvider, BlockPos pos, BlockState state, List<RecipeError> errorTypes, int baseTicksRequired) {
+    protected TileEntityProgressMachine(Holder<Block> blockProvider, BlockPos pos, BlockState state, List<RecipeError> errorTypes, int baseTicksRequired) {
         super(blockProvider, pos, state, errorTypes);
         this.baseTicksRequired = baseTicksRequired;
         ticksRequired = this.baseTicksRequired;

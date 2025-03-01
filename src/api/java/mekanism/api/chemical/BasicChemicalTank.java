@@ -10,6 +10,7 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.functions.ConstantPredicates;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import org.jetbrains.annotations.NotNull;
@@ -266,7 +267,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
         return new BasicChemicalTank(capacity, canExtract, canInsert, validator, attributeValidator, listener);
     }
 
-    //TODO - 1.22: Change this to being a Predicate<Holder<Chemical>> or Predicate<ChemicalStack>?
+    //TODO - 1.22: Change this to being a Predicate<Holder<Chemical>> or Predicate<ChemicalStack>? See VariableCapacityChemicalTank for how we started
     private final Predicate<Chemical> validator;
     protected final BiPredicate<Chemical, @NotNull AutomationType> canExtract;
     protected final BiPredicate<Chemical, @NotNull AutomationType> canInsert;
@@ -350,7 +351,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
         } else {
             //Throws a RuntimeException as specified is allowed when something unexpected happens
             // As setStack is more meant to be used as an internal method
-            throw new RuntimeException("Invalid chemical for tank: " + stack.getTypeRegistryName() + " " + stack.getAmount());
+            throw new RuntimeException("Invalid chemical for tank: " + stack);
         }
         onContentsChanged();
     }
@@ -492,6 +493,17 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
      * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getStack()}, we can optimize out the copying.
      */
     @Override
+    public Holder<Chemical> getTypeHolder() {
+        return stored.getChemicalHolder();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getStack()}, we can optimize out the copying.
+     */
+    @Override
+    @Deprecated(forRemoval = true, since = "10.7.11")
     public Chemical getType() {
         return stored.getChemical();
     }
@@ -514,6 +526,16 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
     @Override
     public boolean isTypeEqual(Chemical other) {
         return stored.is(other);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getStack()}, we can optimize out the copying.
+     */
+    @Override
+    public boolean isType(Holder<Chemical> holder) {
+        return stored.is(holder);
     }
 
     @Override

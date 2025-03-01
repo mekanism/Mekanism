@@ -47,7 +47,7 @@ public class GuiChemicalBar extends GuiTankBar<ChemicalStack> {
 
     @Override
     protected TextureAtlasSprite getIcon(ChemicalStack stack) {
-        return MekanismRenderer.getChemicalTexture(stack.getChemical());
+        return MekanismRenderer.getChemicalTexture(stack);
     }
 
     public static TankInfoProvider<ChemicalStack> getProvider(IChemicalTank tank, List<IChemicalTank> tanks) {
@@ -68,9 +68,9 @@ public class GuiChemicalBar extends GuiTankBar<ChemicalStack> {
                 if (tank.isEmpty()) {
                     return MekanismLang.EMPTY.translate();
                 } else if (tank.getStored() == Long.MAX_VALUE) {
-                    return MekanismLang.GENERIC_STORED.translate(tank.getType(), MekanismLang.INFINITE);
+                    return MekanismLang.GENERIC_STORED.translate(tank.getStack(), MekanismLang.INFINITE);
                 }
-                return MekanismLang.GENERIC_STORED_MB.translate(tank.getType(), TextUtils.format(tank.getStored()));
+                return MekanismLang.GENERIC_STORED_MB.translate(tank.getStack(), TextUtils.format(tank.getStored()));
             }
 
             @Override

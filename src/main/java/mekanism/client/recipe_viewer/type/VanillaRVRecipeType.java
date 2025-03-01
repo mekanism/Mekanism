@@ -3,7 +3,6 @@ package mekanism.client.recipe_viewer.type;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.TextComponentUtil;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -16,10 +15,10 @@ import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public record VanillaRVRecipeType<RECIPE extends Recipe<?>>(
-      ResourceLocation id, RecipeType<RECIPE> vanillaType, Class<? extends RECIPE> recipeClass, ItemStack iconStack, List<IItemProvider> workstations
+      ResourceLocation id, RecipeType<RECIPE> vanillaType, Class<? extends RECIPE> recipeClass, ItemStack iconStack, List<ItemLike> workstations
 ) implements IRecipeViewerRecipeType<RECIPE> {
 
-    public VanillaRVRecipeType(RecipeType<RECIPE> vanillaType, Class<? extends RECIPE> recipeClass, ItemLike item, IItemProvider... altWorkstations) {
+    public VanillaRVRecipeType(RecipeType<RECIPE> vanillaType, Class<? extends RECIPE> recipeClass, ItemLike item, ItemLike... altWorkstations) {
         this(Objects.requireNonNull(BuiltInRegistries.RECIPE_TYPE.getKey(vanillaType)), vanillaType, recipeClass, new ItemStack(item), List.of(altWorkstations));
     }
 

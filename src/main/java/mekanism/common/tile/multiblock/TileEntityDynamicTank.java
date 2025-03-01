@@ -9,11 +9,13 @@ import mekanism.common.tile.interfaces.IFluidContainerManager;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.FluidUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
@@ -23,7 +25,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<TankMultiblockDa
         this(MekanismBlocks.DYNAMIC_TANK, pos, state);
     }
 
-    public TileEntityDynamicTank(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
+    public TileEntityDynamicTank(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
     }
 

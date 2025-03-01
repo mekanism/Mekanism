@@ -6,11 +6,10 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.gear.config.ModuleConfig;
-import mekanism.api.providers.IChemicalProvider;
-import mekanism.api.providers.IItemProvider;
 import mekanism.api.robit.RobitSkin;
 import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
+import mekanism.api.text.IHasTranslationKey;
 import mekanism.client.recipe_viewer.alias.MekanismAliases;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -42,6 +41,7 @@ import mekanism.common.integration.lookingat.jade.JadeConstants;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType.ConfigSaveData;
 import mekanism.common.registration.impl.BlockRegistryObject;
+import mekanism.common.registration.impl.DeferredChemical;
 import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.common.registration.impl.SlurryRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
@@ -589,7 +589,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
     }
 
     private void addGases() {
-        add(MekanismAPI.EMPTY_CHEMICAL, "Empty");
+        addHolder(MekanismAPI.EMPTY_CHEMICAL_HOLDER, "Empty");
         add(MekanismChemicals.HYDROGEN, "Hydrogen");
         add(MekanismChemicals.OXYGEN, "Oxygen");
         add(MekanismChemicals.STEAM, "Steam");
@@ -628,7 +628,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
     }
 
     private void addPigments() {
-        for (Map.Entry<EnumColor, IChemicalProvider> entry : MekanismChemicals.PIGMENT_COLOR_LOOKUP.entrySet()) {
+        for (Map.Entry<EnumColor, DeferredChemical<Chemical>> entry : MekanismChemicals.PIGMENT_COLOR_LOOKUP.entrySet()) {
             add(entry.getValue(), entry.getKey().getEnglishName() + " Pigment");
         }
     }
@@ -640,8 +640,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
     }
 
     private void addSlurry(SlurryRegistryObject<Chemical, Chemical> slurryRO, String name) {
-        add(slurryRO.getDirtySlurry(), "Dirty " + name + " Slurry");
-        add(slurryRO.getCleanSlurry(), "Clean " + name + " Slurry");
+        addHolder(slurryRO.getDirtySlurry(), "Dirty " + name + " Slurry");
+        addHolder(slurryRO.getCleanSlurry(), "Clean " + name + " Slurry");
     }
 
     private void addDamageSources() {
@@ -1813,14 +1813,14 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismTags.Items.ORES.get(type), name + " Ores");
     }
 
-    private void addTiered(IItemProvider basic, IItemProvider advanced, IItemProvider elite, IItemProvider ultimate, String name) {
+    private void addTiered(IHasTranslationKey basic, IHasTranslationKey advanced, IHasTranslationKey elite, IHasTranslationKey ultimate, String name) {
         add(basic, "Basic " + name);
         add(advanced, "Advanced " + name);
         add(elite, "Elite " + name);
         add(ultimate, "Ultimate " + name);
     }
 
-    private void addTiered(IItemProvider basic, IItemProvider advanced, IItemProvider elite, IItemProvider ultimate, IItemProvider creative, String name) {
+    private void addTiered(IHasTranslationKey basic, IHasTranslationKey advanced, IHasTranslationKey elite, IHasTranslationKey ultimate, IHasTranslationKey creative, String name) {
         addTiered(basic, advanced, elite, ultimate, name);
         add(creative, "Creative " + name);
     }

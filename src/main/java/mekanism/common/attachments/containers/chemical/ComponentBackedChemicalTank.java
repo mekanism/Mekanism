@@ -13,6 +13,7 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.common.attachments.containers.ComponentBackedContainer;
 import mekanism.common.attachments.containers.ContainerType;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
@@ -22,16 +23,16 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class ComponentBackedChemicalTank extends ComponentBackedContainer<ChemicalStack, AttachedChemicals> implements IChemicalTank {
 
-    private final BiPredicate<Chemical, @NotNull AutomationType> canExtract;
-    private final BiPredicate<Chemical, @NotNull AutomationType> canInsert;
-    private final Predicate<Chemical> validator;
+    private final BiPredicate<Holder<Chemical>, @NotNull AutomationType> canExtract;
+    private final BiPredicate<Holder<Chemical>, @NotNull AutomationType> canInsert;
+    private final Predicate<Holder<Chemical>> validator;
     @Nullable
     private final ChemicalAttributeValidator attributeValidator;
     private final LongSupplier capacity;
     private final LongSupplier rate;
 
-    public ComponentBackedChemicalTank(ItemStack attachedTo, int tankIndex, BiPredicate<Chemical, @NotNull AutomationType> canExtract,
-          BiPredicate<Chemical, @NotNull AutomationType> canInsert, Predicate<Chemical> validator, LongSupplier rate, LongSupplier capacity,
+    public ComponentBackedChemicalTank(ItemStack attachedTo, int tankIndex, BiPredicate<Holder<Chemical>, @NotNull AutomationType> canExtract,
+          BiPredicate<Holder<Chemical>, @NotNull AutomationType> canInsert, Predicate<Holder<Chemical>> validator, LongSupplier rate, LongSupplier capacity,
           @Nullable ChemicalAttributeValidator attributeValidator) {
         super(attachedTo, tankIndex);
         this.canExtract = canExtract;
@@ -99,14 +100,14 @@ public class ComponentBackedChemicalTank extends ComponentBackedContainer<Chemic
 
     @Override
     public boolean isValid(ChemicalStack stack) {
-        return getAttributeValidator().process(stack) && validator.test(stack.getChemical());
+        return getAttributeValidator().process(stack) && validator.test(stack.getChemicalHolder());
     }
 
     @Override
     public ChemicalStack insert(ChemicalStack stack, Action action, AutomationType automationType) {
         //TODO - 1.21: Items do the is valid and canInsert check after checking the needed amount. Should we do the same for fluids
         // or should items have the order flipped? In general calculating the needed amount is likely cheaper which is likely why items do it first
-        if (stack.isEmpty() || !isValid(stack) || !canInsert.test(stack.getChemical(), automationType)) {
+        if (stack.isEmpty() || !isValid(stack) || !canInsert.test(stack.getChemicalHolder(), automationType)) {
             //"Fail quick" if the given stack is empty, or we can never insert the fluid or currently are unable to insert it
             return stack;
         }
@@ -141,7 +142,7 @@ public class ComponentBackedChemicalTank extends ComponentBackedContainer<Chemic
     }
 
     protected ChemicalStack extract(AttachedChemicals attachedChemicals, ChemicalStack stored, long amount, Action action, AutomationType automationType) {
-        if (amount < 1 || stored.isEmpty() || !canExtract.test(stored.getChemical(), automationType)) {
+        if (amount < 1 || stored.isEmpty() || !canExtract.test(stored.getChemicalHolder(), automationType)) {
             //"Fail quick" if we don't can never extract from this tank, have a fluid stored, or the amount being requested is less than one
             return ChemicalStack.EMPTY;
         }

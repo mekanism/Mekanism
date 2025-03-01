@@ -17,7 +17,7 @@ import net.minecraft.network.chat.Component;
 /**
  * @since 10.7.0 Previously was GasAttributes
  */
-public class ChemicalAttributes {
+public class ChemicalAttributes {//TODO - 1.22: Move these to a data map?
 
     private ChemicalAttributes() {
     }
@@ -142,6 +142,7 @@ public class ChemicalAttributes {
      */
     public static non-sealed class CooledCoolant extends Coolant {
 
+        //TODO - 1.22: Replace this with a Holder<Chemical>
         private final IChemicalProvider heatedChemical;
 
         /**
@@ -171,6 +172,7 @@ public class ChemicalAttributes {
      */
     public static non-sealed class HeatedCoolant extends Coolant {
 
+        //TODO - 1.22: Replace this with a Holder<Chemical>
         private final IChemicalProvider cooledChemical;
 
         /**

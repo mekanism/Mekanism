@@ -9,13 +9,13 @@ import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsChemicals;
 import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.registries.GeneratorsItems;
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Nullable;
 
 public class GeneratorsTagProvider extends BaseTagProvider {
@@ -25,7 +25,7 @@ public class GeneratorsTagProvider extends BaseTagProvider {
     }
 
     @Override
-    protected Collection<? extends Holder<Block>> getAllBlocks() {
+    protected Collection<? extends DeferredHolder<Block, ?>> getAllBlocks() {
         return GeneratorsBlocks.BLOCKS.getPrimaryEntries();
     }
 

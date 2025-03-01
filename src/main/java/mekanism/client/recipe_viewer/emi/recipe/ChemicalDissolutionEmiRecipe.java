@@ -22,7 +22,7 @@ public class ChemicalDissolutionEmiRecipe extends MekanismEmiHolderRecipe<Chemic
         super(category, recipeHolder);
         addInputDefinition(recipe.getItemInput());
         addInputDefinition(recipe.getChemicalInput(), recipe.perTickUsage() ? TileEntityChemicalDissolutionChamber.BASE_TICKS_REQUIRED : 1);
-        addOutputDefinition(recipe.getOutputDefinition().stream().<EmiStack>map(ChemicalEmiStack::create).toList());
+        addOutputDefinition(recipe.getOutputDefinition().stream().<EmiStack>map(ChemicalEmiStack::new).toList());
     }
 
     @Override

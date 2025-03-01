@@ -29,6 +29,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.ExtraCodecs;
@@ -46,26 +47,26 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
     public static final ChemicalStack EMPTY = new ChemicalStack(null);
 
     /**
-     * A standard codec for non-empty Chemicals.
-     *
-     * @since 10.6.0
-     */
-    public static final Codec<Chemical> CHEMICAL_NON_EMPTY_CODEC = Chemical.CODEC
-          .validate(chemical -> chemical.isEmptyType() ? DataResult.error(() -> "Chemical must not be mekanism:empty") : DataResult.success(chemical));
-    /**
      * A standard codec for non-empty Chemical holders.
      *
      * @since 10.6.0
      */
-    public static final Codec<Holder<Chemical>> CHEMICAL_NON_EMPTY_HOLDER_CODEC = MekanismAPI.CHEMICAL_REGISTRY.holderByNameCodec()
-          .validate(chemical -> chemical.value().isEmptyType() ? DataResult.error(() -> "Chemical must not be mekanism:empty") : DataResult.success(chemical));
+    public static final Codec<Holder<Chemical>> CHEMICAL_NON_EMPTY_HOLDER_CODEC = Chemical.HOLDER_CODEC
+          .validate(chemical -> chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY) ? DataResult.error(() -> "Chemical must not be mekanism:empty") : DataResult.success(chemical));
+    /**
+     * A standard codec for non-empty Chemicals.
+     *
+     * @since 10.6.0
+     */
+    @Deprecated(forRemoval = true, since = "10.7.11")
+    public static final Codec<Chemical> CHEMICAL_NON_EMPTY_CODEC = CHEMICAL_NON_EMPTY_HOLDER_CODEC.xmap(Holder::value, Chemical::builtInRegistryHolder);
     /**
      * A standard map codec for Chemical stacks that does not accept empty stacks.
      *
      * @since 10.6.0
      */
     public static final MapCodec<ChemicalStack> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-          CHEMICAL_NON_EMPTY_CODEC.fieldOf(SerializationConstants.ID).forGetter(ChemicalStack::getChemical),
+          CHEMICAL_NON_EMPTY_HOLDER_CODEC.fieldOf(SerializationConstants.ID).forGetter(ChemicalStack::getChemicalHolder),
           SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(SerializationConstants.AMOUNT).forGetter(ChemicalStack::getAmount)
     ).apply(instance, ChemicalStack::new));
     /**
@@ -99,14 +100,14 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
             if (amount <= 0) {
                 return EMPTY;
             }
-            return new ChemicalStack(Chemical.STREAM_CODEC.decode(buffer), amount);
+            return new ChemicalStack(Chemical.HOLDER_STREAM_CODEC.decode(buffer), amount);
         }
 
         @Override
         public void encode(RegistryFriendlyByteBuf buffer, ChemicalStack stack) {
             buffer.writeVarLong(stack.getAmount());
             if (!stack.isEmpty()) {
-                Chemical.STREAM_CODEC.encode(buffer, stack.getChemical());
+                Chemical.HOLDER_STREAM_CODEC.encode(buffer, stack.getChemicalHolder());
             }
         }
     };
@@ -143,21 +144,23 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
      */
     public static Codec<ChemicalStack> fixedAmountCodec(long amount) {
         return RecordCodecBuilder.create(instance -> instance.group(
-              CHEMICAL_NON_EMPTY_CODEC.fieldOf(SerializationConstants.ID).forGetter(ChemicalStack::getChemical)
+              CHEMICAL_NON_EMPTY_HOLDER_CODEC.fieldOf(SerializationConstants.ID).forGetter(ChemicalStack::getChemicalHolder)
         ).apply(instance, holder -> new ChemicalStack(holder, amount)));
     }
 
-    private final Chemical chemical;
+    @Nullable
+    private final Holder<Chemical> chemical;
     private long amount;
 
+    //TODO - 1.21: Do we want to error if created with a direct holder?
     public ChemicalStack(Holder<Chemical> chemical, long amount) {
-        this(chemical.value(), amount);
-    }
-
-    public ChemicalStack(Chemical chemical, long amount) {
         Objects.requireNonNull(chemical, "Cannot create a ChemicalStack from a null chemical");
         this.chemical = chemical;
         this.amount = amount;
+    }
+
+    public ChemicalStack(Chemical chemical, long amount) {
+        this(chemical.builtInRegistryHolder(), amount);
     }
 
     private ChemicalStack(@Nullable Void unused) {
@@ -171,7 +174,7 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
         if (isEmpty()) {
             return EMPTY;
         }
-        return new ChemicalStack(getChemical(), getAmount());
+        return new ChemicalStack(getChemicalHolder(), getAmount());
     }
 
     /**
@@ -185,7 +188,7 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
         if (isEmpty() || amount == 0) {
             return EMPTY;
         }
-        return new ChemicalStack(getChemical(), amount);
+        return new ChemicalStack(getChemicalHolder(), amount);
     }
 
     /**
@@ -222,7 +225,7 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
      * @since 10.6.0 Previously was getType
      */
     public Chemical getChemical() {
-        return isEmpty() ? MekanismAPI.EMPTY_CHEMICAL : chemical;
+        return getChemicalHolder().value();
     }
 
     /**
@@ -233,7 +236,7 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
      * @since 10.6.0
      */
     public Holder<Chemical> getChemicalHolder() {
-        return getChemical().getAsHolder();
+        return isEmpty() ? MekanismAPI.EMPTY_CHEMICAL_HOLDER : chemical;
     }
 
     /**
@@ -348,6 +351,7 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
      *
      * @return The registry name of the stored chemical.
      */
+    @Deprecated(forRemoval = true, since = "10.7.11")
     public ResourceLocation getTypeRegistryName() {
         return getChemical().getRegistryName();
     }
@@ -382,7 +386,7 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
      */
     public boolean isEmpty() {
         //Empty instance has the chemical being null
-        return chemical == null || chemical.isEmptyType() || this.amount <= 0;
+        return chemical == null || chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY) || this.amount <= 0;
     }
 
     /**
@@ -474,10 +478,12 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
 
     @Override
     public int hashCode() {
-        int code = 1;
-        code = 31 * code + getChemical().hashCode();
-        code = 31 * code + Long.hashCode(getAmount());
-        return code;
+        if (isEmpty()) {
+            return 0;
+        }
+        //Note: chemical is not null here, and we know it isn't empty so we can just directly reference it
+        // rather than having to check if it is empty again
+        return Objects.hash(chemical, amount);
     }
 
     @Override
@@ -488,12 +494,14 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
             return false;
         }
         ChemicalStack other = (ChemicalStack) o;
-        return getChemical() == other.getChemical() && getAmount() == other.getAmount();
+        return getAmount() == other.getAmount() && is(other.getChemicalHolder());
     }
 
     @Override
     public String toString() {
-        return "[" + getChemical() + ", " + amount + "]";
+        Holder<Chemical> holder = getChemicalHolder();
+        ResourceKey<Chemical> key = holder.getKey();
+        return amount + " " + (key == null && holder.isBound() ? holder.value() : key);
     }
 
     @Override
@@ -516,7 +524,7 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
      * @since 10.6.0 Previously was isTypeEqual
      */
     public static boolean isSameChemical(ChemicalStack first, ChemicalStack second) {
-        return first.is(second.getChemical());
+        return first.is(second.getChemicalHolder());
     }
 
     /**
