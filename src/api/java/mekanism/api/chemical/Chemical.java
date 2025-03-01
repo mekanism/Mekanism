@@ -7,10 +7,13 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismAPITags;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.attribute.ChemicalAttribute;
 import mekanism.api.chemical.attribute.ChemicalAttributes.Radiation;
 import mekanism.api.chemical.attribute.IChemicalAttributeContainer;
+import mekanism.api.datamaps.ChemicalOreTag;
+import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.text.TextComponentUtil;
 import net.minecraft.Util;
@@ -29,6 +32,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -123,7 +127,12 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
     private boolean isRadioactive;
     private boolean hasAttributesWithValidation;
     @Nullable
-    private final TagKey<Item> oreTag;
+    @Deprecated(forRemoval = true, since = "10.7.11")
+    private final TagKey<Item> legacyOreTag;
+    @Nullable
+    @Deprecated(forRemoval = true, since = "10.7.11")
+    private TagKey<Item> oreTag;
+    @Deprecated(forRemoval = true, since = "10.7.11")
     private final boolean isGaseous;
 
     @Nullable
@@ -136,7 +145,7 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
         this.tint = builder.getTint();
         this.isRadioactive = attributeMap.containsKey(Radiation.class);
         this.hasAttributesWithValidation = isRadioactive || attributeMap.values().stream().anyMatch(ChemicalAttribute::needsValidation);
-        this.oreTag = builder.getOreTag();
+        this.oreTag = this.legacyOreTag = builder.getOreTag();
         this.isGaseous = builder.isGaseous();
     }
 
@@ -318,9 +327,13 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
      * Gets the item tag representing the ore for this slurry.
      *
      * @return The tag for the item the slurry goes with. May be null.
+     *
+     * @deprecated 10.7.11 Prefer checking against {@link IMekanismDataMapTypes#chemicalOreTag()}, though note it may not contain entries from mods that haven't updated
+     * to declaring via datamaps.
      */
     @Nullable
-    public TagKey<Item> getOreTag() {//TODO - 1.22: Move to a datamap
+    @Deprecated(forRemoval = true, since = "10.7.11")
+    public TagKey<Item> getOreTag() {
         return oreTag;
     }
 
@@ -328,9 +341,19 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
      * {@return whether this chemical should render as a gas or more like a fluid}
      *
      * @since 10.7.0
+     * @deprecated 10.7.11 Prefer checking against {@link MekanismAPITags.Chemicals#GASEOUS}, though note it may not contain entries from mods that haven't updated to
+     * declaring via tags.
      */
-    public boolean isGaseous() {//TODO - 1.22: Replace this with a tag
-        return isGaseous;
+    @Deprecated(forRemoval = true, since = "10.7.11")
+    public boolean isGaseous() {
+        return isGaseous || is(MekanismAPITags.Chemicals.GASEOUS);
+    }
+
+    @Internal
+    @Deprecated(forRemoval = true, since = "10.7.11")
+    public final void updateFromDataMap() {
+        ChemicalOreTag tag = builtInRegistryHolder().getData(IMekanismDataMapTypes.INSTANCE.chemicalOreTag());
+        oreTag = tag == null ? legacyOreTag : tag.oreTag();
     }
 
     /**

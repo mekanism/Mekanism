@@ -32,7 +32,9 @@ public class ChemicalRenderData extends RenderData {
 
     @Override
     public boolean isGaseous() {
+        //TODO - 1.22: Replace this with the commented check
         return chemical.value().isGaseous();
+        //return chemical.is(MekanismAPITags.Chemicals.GASEOUS);
     }
 
     @Override

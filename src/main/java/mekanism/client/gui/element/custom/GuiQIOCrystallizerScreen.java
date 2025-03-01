@@ -72,12 +72,21 @@ public class GuiQIOCrystallizerScreen extends GuiInnerScreen {
                     prevSlurry = chemical.getChemicalHolder();
                     iterStacks.clear();
                     if (!prevSlurry.is(MekanismAPI.EMPTY_CHEMICAL_KEY) && !prevSlurry.is(MekanismAPITags.Chemicals.DIRTY)) {
+                        //TODO - 1.22: Replace this with the commented out code
                         TagKey<Item> oreTag = prevSlurry.value().getOreTag();
                         if (oreTag != null) {
                             for (Holder<Item> ore : BuiltInRegistries.ITEM.getTagOrEmpty(oreTag)) {
                                 iterStacks.add(new ItemStack(ore));
                             }
                         }
+                        //Note: We know prevSlurry is a reference holder as that is the only kind chemical stack allows
+                        /*ChemicalOreTag tag = prevSlurry.getData(IMekanismDataMapTypes.INSTANCE.chemicalOreTag());
+                        if (tag != null) {
+                            tag.lookupTag().stream()
+                                  .flatMap(ListBacked::stream)
+                                  .map(ItemStack::new)
+                                  .forEach(iterStacks::add);
+                        }*/
                     }
                     slotDisplay.updateStackList();
                 }

@@ -277,6 +277,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismTags.Chemicals.WATER_VAPOR, "Water Vapor");
         add(MekanismAPITags.Chemicals.WASTE_BARREL_DECAY_BLACKLIST, "Waste Barrel Does Not Decay");
 
+        add(MekanismAPITags.Chemicals.GASEOUS, "Gaseous");
+
         add(MekanismAPITags.Chemicals.CARBON, "Carbon");
         add(MekanismAPITags.Chemicals.REDSTONE, "Redstone");
         add(MekanismAPITags.Chemicals.DIAMOND, "Diamond");

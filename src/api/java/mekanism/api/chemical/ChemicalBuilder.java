@@ -74,7 +74,10 @@ public class ChemicalBuilder {
      * Sets the tag that represents the ore that goes with this {@link Chemical}.
      *
      * @param oreTagLocation {@link ResourceLocation} of the item tag representing the ore.
+     *
+     * @deprecated Please see {@link mekanism.api.datamaps.ChemicalOreTag}
      */
+    @Deprecated(forRemoval = true, since = "10.7.11")
     public ChemicalBuilder ore(ResourceLocation oreTagLocation) {
         return ore(ItemTags.create(Objects.requireNonNull(oreTagLocation)));
     }
@@ -83,7 +86,10 @@ public class ChemicalBuilder {
      * Sets the tag that represents the ore that goes with this {@link Chemical}.
      *
      * @param oreTag Tag representing the ore.
+     *
+     * @deprecated Please see {@link mekanism.api.datamaps.ChemicalOreTag}
      */
+    @Deprecated(forRemoval = true, since = "10.7.11")
     public ChemicalBuilder ore(TagKey<Item> oreTag) {
         this.oreTag = Objects.requireNonNull(oreTag);
         return this;
@@ -91,8 +97,11 @@ public class ChemicalBuilder {
 
     /**
      * Gets the item tag that represents the ore that goes with this {@link Chemical}.
+     *
+     * @deprecated Please see {@link mekanism.api.datamaps.ChemicalOreTag}
      */
     @Nullable
+    @Deprecated(forRemoval = true, since = "10.7.11")
     public TagKey<Item> getOreTag() {
         return oreTag;
     }
@@ -101,7 +110,9 @@ public class ChemicalBuilder {
      * Set this chemical should render as a gas. Omit to leave as fluid-like
      *
      * @since 10.7.0
+     * @deprecated Please add your chemicals to {@link mekanism.api.MekanismAPITags.Chemicals#GASEOUS}
      */
+    @Deprecated(forRemoval = true, since = "10.7.11")
     public ChemicalBuilder gaseous() {
         this.isGaseous = true;
         return this;
@@ -111,7 +122,10 @@ public class ChemicalBuilder {
      * {@return whether this chemical should render as a gas or more like a fluid}
      *
      * @since 10.7.0
+     *
+     * @deprecated Please add your chemicals to {@link mekanism.api.MekanismAPITags.Chemicals#GASEOUS}
      */
+    @Deprecated(forRemoval = true, since = "10.7.11")
     public boolean isGaseous() {
         return isGaseous;
     }

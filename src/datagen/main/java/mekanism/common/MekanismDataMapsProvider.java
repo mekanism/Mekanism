@@ -1,12 +1,18 @@
 package mekanism.common;
 
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import mekanism.api.MekanismAPITags;
+import mekanism.api.chemical.Chemical;
+import mekanism.api.datamaps.ChemicalOreTag;
+import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.MekaSuitAbsorption;
+import mekanism.common.registration.impl.SlurryRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.registries.MekanismDataMapTypes;
+import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismGameEvents;
 import mekanism.common.registries.MekanismItems;
+import mekanism.common.resource.PrimaryResource;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -45,9 +51,14 @@ public class MekanismDataMapsProvider extends DataMapProvider {
               .add(MekanismBlocks.BIO_FUEL_BLOCK.getId(), new FurnaceFuel(10 * bioFuelBurnTime), false)
         ;
 
-        builder(MekanismDataMapTypes.MEKA_SUIT_ABSORPTION)
-                .add(DamageTypes.SONIC_BOOM, new MekaSuitAbsorption(0.75f), false)
-                .add(MekanismAPITags.DamageTypes.MEKASUIT_ALWAYS_SUPPORTED, new MekaSuitAbsorption(1f), false)
+        builder(IMekanismDataMapTypes.INSTANCE.mekaSuitAbsorption())
+                .add(DamageTypes.SONIC_BOOM, new MekaSuitAbsorption(0.75F), false)
+                .add(MekanismAPITags.DamageTypes.MEKASUIT_ALWAYS_SUPPORTED, new MekaSuitAbsorption(1F), false)
         ;
+
+        Builder<ChemicalOreTag, Chemical> chemicalOreTagBuilder = builder(IMekanismDataMapTypes.INSTANCE.chemicalOreTag());
+        for (Map.Entry<PrimaryResource, SlurryRegistryObject<Chemical, Chemical>> entry : MekanismChemicals.PROCESSED_RESOURCES.entrySet()) {
+            chemicalOreTagBuilder.add(entry.getValue(), new ChemicalOreTag(entry.getKey().getOreTag()), false);
+        }
     }
 }

@@ -601,6 +601,18 @@ public class MekanismTagProvider extends BaseTagProvider {
             cleanTagBuilder.add(slurryRO.getCleanSlurry());
         }
 
+        addToTag(MekanismAPITags.Chemicals.GASEOUS,
+              MekanismChemicals.WATER_VAPOR,
+              MekanismChemicals.STEAM,
+              MekanismChemicals.BRINE,
+              MekanismChemicals.HYDROGEN,
+              MekanismChemicals.OXYGEN,
+              MekanismChemicals.SULFUR_DIOXIDE,
+              MekanismChemicals.SULFUR_TRIOXIDE,
+              MekanismChemicals.HYDROGEN_CHLORIDE,
+              MekanismChemicals.ETHENE
+        );
+
         addToTag(MekanismAPITags.Chemicals.CARBON, MekanismChemicals.CARBON);
         addToTag(MekanismAPITags.Chemicals.REDSTONE, MekanismChemicals.REDSTONE);
         addToTag(MekanismAPITags.Chemicals.DIAMOND, MekanismChemicals.DIAMOND);

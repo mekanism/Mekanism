@@ -236,6 +236,7 @@ public class MekanismRenderer {
         if (chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
             return -1;
         }
+        //TODO - 1.22: Replace the gaseous check with chemical.is(MekanismAPITags.Chemicals.GASEOUS)
         return getColorARGB(getTint(chemical), chemical.value().isGaseous() ? Math.min(1, scale + 0.2F) : 1);
     }
 

@@ -13,7 +13,7 @@ public class GeneratorsChemicals {
 
     public static final ChemicalDeferredRegister CHEMICALS = new ChemicalDeferredRegister(MekanismGenerators.MODID);
 
-    public static final DeferredChemical<Chemical> DEUTERIUM = CHEMICALS.registerGas(GeneratorsChemicalConstants.DEUTERIUM);
-    public static final DeferredChemical<Chemical> TRITIUM = CHEMICALS.registerGas("tritium", 0x64FF70);
-    public static final DeferredChemical<Chemical> FUSION_FUEL = CHEMICALS.registerGas("fusion_fuel", 0x7E007D);
+    public static final DeferredChemical<Chemical> DEUTERIUM = CHEMICALS.register(GeneratorsChemicalConstants.DEUTERIUM);
+    public static final DeferredChemical<Chemical> TRITIUM = CHEMICALS.register("tritium", 0x64FF70);
+    public static final DeferredChemical<Chemical> FUSION_FUEL = CHEMICALS.register("fusion_fuel", 0x7E007D);
 }

@@ -1,6 +1,9 @@
 package mekanism.common.registration.impl;
 
 import com.mojang.serialization.Codec;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.UnaryOperator;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
@@ -9,12 +12,9 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.datamaps.DataMapType;
 import net.neoforged.neoforge.registries.datamaps.RegisterDataMapTypesEvent;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.UnaryOperator;
-
 @NothingNullByDefault
 public final class DataMapTypeRegister {
+
     private final String namespace;
 
     public DataMapTypeRegister(String namespace) {
@@ -23,13 +23,17 @@ public final class DataMapTypeRegister {
 
     private final List<DataMapType<?, ?>> types = new ArrayList<>();
 
-    public <R, T> DataMapType<R, T> register(String name, ResourceKey<Registry<R>> registryKey, Codec<T> codec, UnaryOperator<DataMapType.Builder<T, R>> builder) {
-        final DataMapType<R, T> type = builder.apply(DataMapType.builder(ResourceLocation.fromNamespaceAndPath(namespace, name), registryKey, codec)).build();
-        this.types.add(type);
-        return type;
+    public <R, T> DataMapType<R, T> register(ResourceLocation name, ResourceKey<Registry<R>> registryKey, Codec<T> codec, UnaryOperator<DataMapType.Builder<T, R>> builder) {
+        if (name.getNamespace().equals(namespace)) {
+            final DataMapType<R, T> type = builder.apply(DataMapType.builder(name, registryKey, codec)).build();
+            this.types.add(type);
+            return type;
+        }
+        throw new IllegalArgumentException("Trying to register data map type with the wrong namespace. Expected: '" + namespace + "', but received: '" +
+                                           name.getNamespace() + "'");
     }
 
-    public <R, T> DataMapType<R, T> registerSimple(String name, ResourceKey<Registry<R>> registryKey, Codec<T> codec) {
+    public <R, T> DataMapType<R, T> registerSimple(ResourceLocation name, ResourceKey<Registry<R>> registryKey, Codec<T> codec) {
         return register(name, registryKey, codec, UnaryOperator.identity());
     }
 

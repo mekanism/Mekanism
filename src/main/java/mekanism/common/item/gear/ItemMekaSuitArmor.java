@@ -4,7 +4,6 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.LongSupplier;
 import mekanism.api.Action;
@@ -12,6 +11,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
+import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.MekaSuitAbsorption;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.gear.ICustomModule;
@@ -46,9 +46,8 @@ import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
 import mekanism.common.item.interfaces.IJetpackItem;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.registries.MekanismArmorMaterials;
-import mekanism.common.registries.MekanismDataMapTypes;
-import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismChemicals;
+import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
@@ -56,13 +55,10 @@ import mekanism.common.util.StorageUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup.RegistryLookup;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -453,22 +449,11 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                         break;
                     }
                     // Next lookup the ratio at which we can absorb the given damage type from the data map
-                    MekaSuitAbsorption absorptionData = null;
-                    if (source.typeHolder().kind() == Holder.Kind.REFERENCE) {
-                        // Reference holders can query data map values
-                        absorptionData = source.typeHolder().getData(MekanismDataMapTypes.MEKA_SUIT_ABSORPTION);
-                    } else {
-                        // Note: In theory the above path should always be done as vanilla only makes damage sources with reference holders
-                        // but just in case have the fallback to look up the name from the registry
-                        Optional<Registry<DamageType>> registry = player.registryAccess().registry(Registries.DAMAGE_TYPE);
-                        if (registry.isPresent()) {
-                            absorptionData = registry.get().wrapAsHolder(source.type()).getData(MekanismDataMapTypes.MEKA_SUIT_ABSORPTION);
-                        }
-                    }
-                    if (absorptionData != null) {
-                        absorbRatio = absorptionData.absorption();
-                    } else {
+                    MekaSuitAbsorption absorptionData = IMekanismDataMapTypes.INSTANCE.getMekaSuitAbsorption(player.registryAccess(), source.typeHolder());
+                    if (absorptionData == null) {
                         absorbRatio = MekanismConfig.gear.mekaSuitUnspecifiedDamageRatio.get();
+                    } else {
+                        absorbRatio = absorptionData.absorption();
                     }
                     if (absorbRatio == 0) {
                         //If the config or the data map specifies that the damage type shouldn't be blocked at all

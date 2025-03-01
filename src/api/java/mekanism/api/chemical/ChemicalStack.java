@@ -34,10 +34,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.registries.datamaps.DataMapType;
+import net.neoforged.neoforge.registries.datamaps.IWithData;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public final class ChemicalStack implements IHasTextComponent, IHasTranslationKey, IChemicalAttributeContainer<ChemicalStack> {
+public final class ChemicalStack implements IHasTextComponent, IHasTranslationKey, IChemicalAttributeContainer<ChemicalStack>, IWithData<Chemical> {
 
     private static final Consumer<String> ON_STACK_LOAD_ERROR = error -> MekanismAPI.logger.error("Tried to load invalid chemical: '{}'", error);
 
@@ -482,6 +484,13 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
     @Override
     public Collection<Class<? extends ChemicalAttribute>> getAttributeTypes() {
         return getChemical().getAttributeTypes();
+    }
+
+    @Nullable
+    @Override
+    public <T> T getData(DataMapType<Chemical, T> type) {
+        //Note: We only accept reference holders, and reference holders can be queried directly for data
+        return getChemicalHolder().getData(type);
     }
 
     @Override

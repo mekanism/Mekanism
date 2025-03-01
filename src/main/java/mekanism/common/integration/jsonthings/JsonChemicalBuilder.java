@@ -58,6 +58,7 @@ public final class JsonChemicalBuilder extends BaseBuilder<Chemical, JsonChemica
      *
      * @param oreTag {@link ResourceLocation} of the item tag representing the ore.
      */
+    @Deprecated(forRemoval = true, since = "10.7.11")
     public JsonChemicalBuilder ore(ResourceLocation oreTag) {
         return baseData(builder -> builder.ore(oreTag));
     }
@@ -65,6 +66,7 @@ public final class JsonChemicalBuilder extends BaseBuilder<Chemical, JsonChemica
     /**
      * Set this chemical should render as a gas. Omit to leave as fluid-like
      */
+    @Deprecated(forRemoval = true, since = "10.7.11")
     public JsonChemicalBuilder gaseous() {
         return baseData(ChemicalBuilder::gaseous);
     }

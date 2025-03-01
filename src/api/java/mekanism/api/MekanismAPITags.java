@@ -87,6 +87,11 @@ public class MekanismAPITags {
         public static final TagKey<Chemical> WASTE_BARREL_DECAY_BLACKLIST = tag("waste_barrel_decay_blacklist");
 
         /**
+         * Chemicals in this tag will be rendered as a gas, rather than similarly to fluids.
+         */
+        public static final TagKey<Chemical> GASEOUS = tag("gaseous");
+
+        /**
          * Represents an infuse type that is equivalent to carbon.
          */
         public static final TagKey<Chemical> CARBON = tag("carbon");

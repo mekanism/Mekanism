@@ -1,0 +1,11 @@
+{
+  "values": {
+    "mekanism:dirty_copper": "c:ores/copper",
+    "mekanism:dirty_gold": "c:ores/gold",
+    "mekanism:dirty_iron": "c:ores/iron",
+    "mekanism:dirty_lead": "c:ores/lead",
+    "mekanism:dirty_osmium": "c:ores/osmium",
+    "mekanism:dirty_tin": "c:ores/tin",
+    "mekanism:dirty_uranium": "c:ores/uranium"
+  }
+}

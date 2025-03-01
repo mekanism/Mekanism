@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.UUID;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismIMC;
+import mekanism.api.chemical.Chemical;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.base.IModModule;
 import mekanism.common.base.KeySync;
@@ -125,6 +126,7 @@ import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
+import net.neoforged.neoforge.registries.datamaps.DataMapsUpdatedEvent;
 import org.slf4j.Logger;
 
 @Mod(Mekanism.MODID)
@@ -197,6 +199,7 @@ public class Mekanism {
         NeoForge.EVENT_BUS.addListener(this::serverStopped);
         NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::addReloadListenersLowest);
         NeoForge.EVENT_BUS.addListener(this::onTagsReload);
+        NeoForge.EVENT_BUS.addListener(this::onDataMapsUpdated);
         NeoForge.EVENT_BUS.addListener(MekanismPermissions::registerPermissionNodes);
         modEventBus.addListener(Capabilities::registerCapabilities);
         modEventBus.addListener(this::commonSetup);
@@ -278,6 +281,14 @@ public class Mekanism {
 
     private void onTagsReload(TagsUpdatedEvent event) {
         TagCache.resetTagCaches();
+    }
+
+    private void onDataMapsUpdated(DataMapsUpdatedEvent event) {
+        event.ifRegistry(MekanismAPI.CHEMICAL_REGISTRY_NAME, registry -> {
+            for (Chemical chemical : registry) {
+                chemical.updateFromDataMap();
+            }
+        });
     }
 
     private void addReloadListenersLowest(AddReloadListenerEvent event) {
