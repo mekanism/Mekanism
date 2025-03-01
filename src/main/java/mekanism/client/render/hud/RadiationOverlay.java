@@ -2,7 +2,6 @@ package mekanism.client.render.hud;
 
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.util.MekanismUtils;
@@ -44,7 +43,7 @@ public class RadiationOverlay implements LayeredDraw.Layer {
                     prevRadiation = Math.max(severity, prevRadiation - 0.01);
                 }
             }
-            if (severity > RadiationManager.BASELINE) {
+            if (severity > IRadiationManager.INSTANCE.baselineRadiation()) {
                 int effect = (int) (prevRadiation * 255);
                 int color = (0x701E1E << 8) + effect;
                 MekanismRenderer.renderColorOverlay(graphics, 0, 0, color);

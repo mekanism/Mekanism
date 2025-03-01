@@ -7,6 +7,7 @@ import java.util.Objects;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.attribute.ChemicalAttribute;
+import mekanism.api.datamaps.chemical.ChemicalOreTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
@@ -75,7 +76,7 @@ public class ChemicalBuilder {
      *
      * @param oreTagLocation {@link ResourceLocation} of the item tag representing the ore.
      *
-     * @deprecated Please see {@link mekanism.api.datamaps.ChemicalOreTag}
+     * @deprecated Please see {@link ChemicalOreTag}
      */
     @Deprecated(forRemoval = true, since = "10.7.11")
     public ChemicalBuilder ore(ResourceLocation oreTagLocation) {
@@ -87,7 +88,7 @@ public class ChemicalBuilder {
      *
      * @param oreTag Tag representing the ore.
      *
-     * @deprecated Please see {@link mekanism.api.datamaps.ChemicalOreTag}
+     * @deprecated Please see {@link ChemicalOreTag}
      */
     @Deprecated(forRemoval = true, since = "10.7.11")
     public ChemicalBuilder ore(TagKey<Item> oreTag) {
@@ -98,7 +99,7 @@ public class ChemicalBuilder {
     /**
      * Gets the item tag that represents the ore that goes with this {@link Chemical}.
      *
-     * @deprecated Please see {@link mekanism.api.datamaps.ChemicalOreTag}
+     * @deprecated Please see {@link ChemicalOreTag}
      */
     @Nullable
     @Deprecated(forRemoval = true, since = "10.7.11")

@@ -26,6 +26,7 @@ public class CrTFuelAttribute {
      * @return Attribute representing the stats a substance has as a fuel.
      */
     @ZenCodeType.StaticExpansionMethod
+    @Deprecated(forRemoval = true, since = "10.7.11")
     public static ChemicalAttributes.Fuel create(int burnTicks, long energyDensity) {
         //Note: We don't allow suppliers from CrT as there is no real reason to allow them to change at runtime from the
         // context of CrT, the only real reason the values are suppliers is so that they can be adjusted via configs

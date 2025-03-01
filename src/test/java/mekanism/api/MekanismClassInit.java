@@ -1,5 +1,6 @@
 package mekanism.api;
 
+import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.energy.IEnergyConversionHelper;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.radial.IRadialDataHelper;
@@ -22,6 +23,7 @@ public class MekanismClassInit {//TODO: Remove this as soon as possible
 
     public MekanismClassInit() {
         forceInit(IMekanismAccess.INSTANCE);
+        forceInit(IMekanismDataMapTypes.INSTANCE);
         forceInit(IModuleHelper.INSTANCE);
         forceInit(IRadialDataHelper.INSTANCE);
         forceInit(IRadiationManager.INSTANCE);

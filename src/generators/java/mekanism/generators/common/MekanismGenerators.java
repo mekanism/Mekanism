@@ -1,17 +1,12 @@
 package mekanism.generators.common;
 
 import mekanism.api.MekanismIMC;
-import mekanism.api.chemical.attribute.ChemicalAttributes.Fuel;
-import mekanism.api.math.MathUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IModModule;
 import mekanism.common.command.builders.BuildCommand;
-import mekanism.common.config.MekanismConfig;
-import mekanism.common.config.listener.ConfigBasedCachedLongSupplier;
 import mekanism.common.lib.Version;
 import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.recipe.ClearConfigurationRecipe;
-import mekanism.common.registries.MekanismChemicals;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.fission.FissionReactorCache;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
@@ -27,11 +22,11 @@ import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsBuilders.FissionReactorBuilder;
 import mekanism.generators.common.registries.GeneratorsBuilders.FusionReactorBuilder;
 import mekanism.generators.common.registries.GeneratorsBuilders.TurbineBuilder;
+import mekanism.generators.common.registries.GeneratorsChemicals;
 import mekanism.generators.common.registries.GeneratorsContainerTypes;
 import mekanism.generators.common.registries.GeneratorsCreativeTabs;
 import mekanism.generators.common.registries.GeneratorsDataComponents;
 import mekanism.generators.common.registries.GeneratorsFluids;
-import mekanism.generators.common.registries.GeneratorsChemicals;
 import mekanism.generators.common.registries.GeneratorsItems;
 import mekanism.generators.common.registries.GeneratorsModules;
 import mekanism.generators.common.registries.GeneratorsSounds;
@@ -47,12 +42,6 @@ import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
 public class MekanismGenerators implements IModModule {
 
     public static final String MODID = "mekanismgenerators";
-    private static final ConfigBasedCachedLongSupplier ETHENE_ENERGY_DENSITY = new ConfigBasedCachedLongSupplier(() -> {
-        long bioGeneration = MekanismGeneratorsConfig.generators.bioGeneration.get();
-        double etheneDensity = MekanismGeneratorsConfig.generators.etheneDensityMultiplier.get();
-        long energy = MathUtils.clampToLong(MathUtils.multiplyClamped(bioGeneration, 2) * etheneDensity);
-        return energy + MekanismConfig.general.FROM_H2.get();
-    }, MekanismConfig.general.FROM_H2, MekanismGeneratorsConfig.generators.bioGeneration, MekanismGeneratorsConfig.generators.etheneDensityMultiplier);
 
     public static MekanismGenerators instance;
 
@@ -101,8 +90,6 @@ public class MekanismGenerators implements IModModule {
 
     private void commonSetup(FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
-            //Add fuel attribute to ethene
-            MekanismChemicals.ETHENE.get().addAttribute(new Fuel(MekanismGeneratorsConfig.generators.etheneBurnTicks, ETHENE_ENERGY_DENSITY));
             //Register dispenser behaviors
             GeneratorsFluids.FLUIDS.registerBucketDispenserBehavior();
             //Register extended build commands (in enqueue as it is not thread safe)

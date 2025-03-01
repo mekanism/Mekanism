@@ -33,12 +33,12 @@ public class ModuleDosimeterUnit implements ICustomModule<ModuleDosimeterUnit> {
         if (module.isEnabled()) {
             double radiation = IRadiationManager.INSTANCE.isRadiationEnabled() ? player.getData(MekanismAttachmentTypes.RADIATION) : 0;
             Component text = UnitDisplayUtils.getDisplayShort(radiation, RadiationUnit.SV, 2);
-            if (MekanismConfig.common.enableDecayTimers.get() && radiation > RadiationManager.MIN_MAGNITUDE) {
+            if (MekanismConfig.common.enableDecayTimers.get() && radiation > IRadiationManager.INSTANCE.minRadiationMagnitude()) {
                 text = MekanismLang.GENERIC_WITH_PARENTHESIS.translate(text, TextUtils.getHoursMinutes(player.level(),
                       RadiationManager.get().getDecayTime(radiation, false)));
             }
             HUDColor color;
-            if (radiation < RadiationManager.MIN_MAGNITUDE) {
+            if (radiation < IRadiationManager.INSTANCE.minRadiationMagnitude()) {
                 color = HUDColor.REGULAR;
             } else {
                 color = radiation < 0.1 ? HUDColor.WARNING : HUDColor.DANGER;

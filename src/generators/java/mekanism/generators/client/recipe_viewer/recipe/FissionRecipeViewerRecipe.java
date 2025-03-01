@@ -54,6 +54,7 @@ public record FissionRecipeViewerRecipe(ResourceLocation id, @Nullable ChemicalS
               null, IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.FISSILE_FUEL, 1),
               MekanismChemicals.STEAM.getStack(coolantAmount), MekanismChemicals.NUCLEAR_WASTE.getStack(1)
         ));
+        //TODO - 1.22: Replace this with the below commented code
         //Go through all gases and add each coolant
         for (Chemical chemical : MekanismAPI.CHEMICAL_REGISTRY) {
             CooledCoolant cooledCoolant = chemical.get(CooledCoolant.class);
@@ -69,6 +70,19 @@ public record FissionRecipeViewerRecipe(ResourceLocation id, @Nullable ChemicalS
                 ));
             }
         }
+        //Add recipes for all cooled coolants
+        /*for (Map.Entry<ResourceKey<Chemical>, CooledCoolant> entry : MekanismAPI.CHEMICAL_REGISTRY.getDataMap(IMekanismDataMapTypes.INSTANCE.cooledChemicalCoolant()).entrySet()) {
+            ResourceKey<Chemical> key = entry.getKey();
+            CooledCoolant coolant = entry.getValue();
+            Holder<Chemical> heatedCoolant = coolant.otherVariant();
+            long amount = Math.round(energyPerFuel / coolant.thermalEnthalpy());
+            recipes.add(new FissionRecipeViewerRecipe(
+                  RecipeViewerUtils.synthetic(key.location(), "fission", MekanismGenerators.MODID),
+                  IngredientCreatorAccess.chemicalStack().fromHolder(MekanismAPI.CHEMICAL_REGISTRY.getHolderOrThrow(key), amount),
+                  IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.FISSILE_FUEL, 1),
+                  new ChemicalStack(heatedCoolant, amount), MekanismChemicals.NUCLEAR_WASTE.getStack(1)
+            ));
+        }*/
         return recipes;
     }
 }

@@ -1,12 +1,15 @@
 package mekanism.generators.common.tile;
 
+import java.util.function.Predicate;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributes.Fuel;
+import mekanism.api.datamaps.IMekanismDataMapTypes;
+import mekanism.api.datamaps.chemical.attribute.ChemicalFuel;
 import mekanism.api.math.MathUtils;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
@@ -14,7 +17,6 @@ import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
@@ -26,22 +28,28 @@ import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.chemical.ChemicalInventorySlot;
+import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TileEntityGasGenerator extends TileEntityGenerator {
 
+    //TODO - 1.22: Switch to the new attribute types
+    public static final Predicate<Holder<Chemical>> HAS_FUEL = chemical -> chemical.value().has(Fuel.class);
+    //chemical -> chemical.getData(IMekanismDataMapTypes.INSTANCE.chemicalFuel()) != null;
+
     /**
      * The tank this block is storing fuel in.
      */
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getFuel", "getFuelCapacity", "getFuelNeeded",
                                                                                         "getFuelFilledPercentage"}, docPlaceholder = "fuel tank")
-    public IChemicalTank fuelTank;
+    public FuelTank fuelTank;
     private long burnTicks;
     private int maxBurnTicks;
     private long generationRate = 0;
@@ -53,7 +61,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
     EnergyInventorySlot energySlot;
 
     public TileEntityGasGenerator(BlockPos pos, BlockState state) {
-        super(GeneratorsBlocks.GAS_BURNING_GENERATOR, pos, state, MekanismConfig.general.FROM_H2);
+        super(GeneratorsBlocks.GAS_BURNING_GENERATOR, pos, state, ChemicalUtil::hydrogenEnergyDensity);
     }
 
     @NotNull
@@ -84,17 +92,17 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
         if (!fuelTank.isEmpty() && canFunction() && getEnergyContainer().insert(generationRate, Action.SIMULATE, AutomationType.INTERNAL) == 0L) {
             setActive(true);
             if (!fuelTank.isEmpty()) {
-                Fuel fuel = fuelTank.getStack().get(Fuel.class);
+                ChemicalFuel fuel = fuelTank.getFuel();
                 if (fuel != null) {
                     //Ensure valid data
-                    maxBurnTicks = Math.max(1, fuel.getBurnTicks());
-                    generationRate = fuel.getEnergyPerTick();
+                    maxBurnTicks = Math.max(1, fuel.burnTicks());
+                    generationRate = fuel.energyPerTick();
                 }
             }
 
             long toUse = getToUse();
             long toUseGeneration = MathUtils.multiplyClamped(generationRate, toUse);
-            updateMaxOutputRaw(Math.max(MekanismConfig.general.FROM_H2.get(), toUseGeneration));
+            updateMaxOutputRaw(Math.max(ChemicalUtil.hydrogenEnergyDensity(), toUseGeneration));
 
             long total = burnTicks + fuelTank.getStored() * maxBurnTicks;
             total -= toUse;
@@ -119,7 +127,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
         burnTicks = 0;
         maxBurnTicks = 0;
         generationRate = 0L;
-        updateMaxOutputRaw(MekanismConfig.general.FROM_H2.get());
+        updateMaxOutputRaw(ChemicalUtil.hydrogenEnergyDensity());
     }
 
     private long getToUse() {
@@ -172,10 +180,10 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
     //End methods IComputerTile
 
     //Implementation of gas tank that on no longer being empty updates the output rate of this generator
-    private class FuelTank extends VariableCapacityChemicalTank {
+    public class FuelTank extends VariableCapacityChemicalTank {
 
         protected FuelTank(@Nullable IContentsListener listener) {
-            super(MekanismGeneratorsConfig.generators.gbgTankCapacity, notExternal, alwaysTrueBi, gas -> gas.value().has(Fuel.class), null, listener);
+            super(MekanismGeneratorsConfig.generators.gbgTankCapacity, notExternal, alwaysTrueBi, HAS_FUEL, null, listener);
         }
 
         @Override
@@ -194,11 +202,29 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
 
         private void recheckOutput(@NotNull ChemicalStack stack, boolean wasEmpty) {
             if (wasEmpty && !stack.isEmpty()) {
-                Fuel fuel = getStack().get(Fuel.class);
+                ChemicalFuel fuel = getFuel();
                 if (fuel != null) {
-                    updateMaxOutputRaw(fuel.getEnergyPerTick());
+                    updateMaxOutputRaw(fuel.energyPerTick());
                 }
             }
+        }
+
+        @Nullable
+        public ChemicalFuel getFuel() {
+            if (isEmpty()) {
+                return null;
+            }
+            ChemicalStack stack = getStack();
+            ChemicalFuel fuel = stack.getData(IMekanismDataMapTypes.INSTANCE.chemicalFuel());
+            if (fuel == null) {//TODO - 1.22: Remove this handling of legacy data
+                //If there is no fuel in the data map, see if one was set manually on the stack
+                Fuel legacyFuel = stack.get(Fuel.class);
+                if (legacyFuel != null) {
+                    //If it was, convert it to the non legacy type
+                    return legacyFuel.asModern();
+                }
+            }
+            return fuel;
         }
     }
 }

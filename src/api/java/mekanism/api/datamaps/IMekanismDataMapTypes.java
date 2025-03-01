@@ -3,6 +3,11 @@ package mekanism.api.datamaps;
 import java.util.ServiceLoader;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.datamaps.chemical.attribute.ChemicalFuel;
+import mekanism.api.datamaps.chemical.ChemicalOreTag;
+import mekanism.api.datamaps.chemical.attribute.ChemicalRadioactivity;
+import mekanism.api.datamaps.chemical.attribute.CooledCoolant;
+import mekanism.api.datamaps.chemical.attribute.HeatedCoolant;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
@@ -24,7 +29,10 @@ public interface IMekanismDataMapTypes {
      */
     IMekanismDataMapTypes INSTANCE = ServiceLoader.load(IMekanismDataMapTypes.class).findFirst().orElseThrow(() -> new IllegalStateException("No valid ServiceImpl for IMekanismDataMapTypes found"));
 
-    //TODO - 1.21: Docs
+    //TODO - 1.21: Docs for this and all other classes in this package and subpackages
+    @Nullable
+    <TYPE, DATA> DATA getData(RegistryAccess registryAccess, ResourceKey<? extends Registry<? extends TYPE>> registryName, Holder<TYPE> holder, DataMapType<TYPE, DATA> type);
+
     DataMapType<DamageType, MekaSuitAbsorption> mekaSuitAbsorption();
 
     @Nullable
@@ -39,6 +47,31 @@ public interface IMekanismDataMapTypes {
         return getData(registryAccess, MekanismAPI.CHEMICAL_REGISTRY_NAME, holder, chemicalOreTag());
     }
 
+    DataMapType<Chemical, ChemicalFuel> chemicalFuel();
+
     @Nullable
-    <TYPE, DATA> DATA getData(RegistryAccess registryAccess, ResourceKey<? extends Registry<? extends TYPE>> registryName, Holder<TYPE> holder, DataMapType<TYPE, DATA> type);
+    default ChemicalFuel getChemicalFuel(RegistryAccess registryAccess, Holder<Chemical> holder) {
+        return getData(registryAccess, MekanismAPI.CHEMICAL_REGISTRY_NAME, holder, chemicalFuel());
+    }
+
+    DataMapType<Chemical, ChemicalRadioactivity> chemicalRadioactivity();
+
+    @Nullable
+    default ChemicalRadioactivity getChemicalRadioactivity(RegistryAccess registryAccess, Holder<Chemical> holder) {
+        return getData(registryAccess, MekanismAPI.CHEMICAL_REGISTRY_NAME, holder, chemicalRadioactivity());
+    }
+
+    DataMapType<Chemical, CooledCoolant> cooledChemicalCoolant();
+
+    @Nullable
+    default CooledCoolant getCooledChemicalCoolant(RegistryAccess registryAccess, Holder<Chemical> holder) {
+        return getData(registryAccess, MekanismAPI.CHEMICAL_REGISTRY_NAME, holder, cooledChemicalCoolant());
+    }
+
+    DataMapType<Chemical, HeatedCoolant> heatedChemicalCoolant();
+
+    @Nullable
+    default HeatedCoolant getHeatedChemicalCoolant(RegistryAccess registryAccess, Holder<Chemical> holder) {
+        return getData(registryAccess, MekanismAPI.CHEMICAL_REGISTRY_NAME, holder, heatedChemicalCoolant());
+    }
 }

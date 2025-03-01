@@ -16,6 +16,8 @@ import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.IMekanismChemicalHandler;
 import mekanism.api.chemical.attribute.ChemicalAttribute;
+import mekanism.api.datamaps.IMekanismDataMapTypes;
+import mekanism.api.datamaps.chemical.attribute.ChemicalFuel;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
@@ -24,6 +26,7 @@ import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.network.distribution.ChemicalHandlerTarget;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.tier.ChemicalTankTier;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
@@ -114,6 +117,7 @@ public class ChemicalUtil {
     }
 
     public static void addAttributeTooltips(Holder<Chemical> chemical, Consumer<Component> tooltipAdder) {
+        //TODO - 1.22: Move this to a method on chemical?
         for (ChemicalAttribute attr : chemical.value().getAttributes()) {
             attr.collectTooltips(tooltipAdder);
         }
@@ -193,6 +197,12 @@ public class ChemicalUtil {
 
     public static boolean canInsert(IChemicalHandler handler, @NotNull ChemicalStack stack) {
         return handler.insertChemical(stack, Action.SIMULATE).getAmount() < stack.getAmount();
+    }
+
+    public static long hydrogenEnergyDensity() {
+        ChemicalFuel fuel = MekanismChemicals.HYDROGEN.getData(IMekanismDataMapTypes.INSTANCE.chemicalFuel());
+        //TODO - 1.22: Re-evaluate callers and see if this should really be energyPerTick in case a datapack makes hydrogen burn for more than one tick
+        return fuel == null ? 0 : fuel.energyDensity();
     }
 
     public static Chemical chemical(ChemicalBuilder builder, @Nullable Integer colorRepresentation) {

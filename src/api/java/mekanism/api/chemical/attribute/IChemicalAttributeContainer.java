@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 10.3.9
  */
-public interface IChemicalAttributeContainer<SELF extends IChemicalAttributeContainer<SELF>> {
+public interface IChemicalAttributeContainer<SELF extends IChemicalAttributeContainer<SELF>> {//TODO - 1.22: Most likely we want to remove this
 
     /**
      * Whether this chemical has an attribute of a certain type.

@@ -1137,8 +1137,6 @@
   "configuration.mekanism.general.energy_conversion.button": "Edit Conversion Rates",
   "configuration.mekanism.general.energy_conversion.forge_energy": "FE Conversion Rate",
   "configuration.mekanism.general.energy_conversion.forge_energy.tooltip": "Conversion multiplier from Forge Energy to Joules (FE * feConversionRate = Joules)",
-  "configuration.mekanism.general.energy_conversion.hydrogen": "Hydrogen Energy Density",
-  "configuration.mekanism.general.energy_conversion.hydrogen.tooltip": "How much energy is produced per mB of Hydrogen, also affects Electrolytic Separator usage, Ethene burn rate and Gas-Burning Generator energy capacity.",
   "configuration.mekanism.general.energy_conversion.steam": "Steam Energy Density",
   "configuration.mekanism.general.energy_conversion.steam.tooltip": "Maximum Joules per mB of Steam. Also affects Thermoelectric Boiler.",
   "configuration.mekanism.general.energy_conversion.tooltip": "Settings for configuring Energy Conversions",

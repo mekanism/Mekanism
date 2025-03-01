@@ -26,7 +26,10 @@ public class CrTRadiationAttribute {
      * @return Attribute representing the radioactivity of a substance.
      */
     @ZenCodeType.StaticExpansionMethod
+    @Deprecated(forRemoval = true, since = "10.7.11")
     public static ChemicalAttributes.Radiation create(double radioactivity) {
+        //TODO - 1.22: Rethink how we expose chemical attributes to CrT. We definitely don't want to deal with adding,
+        // but being able to query them might be useful? See if CrT has builtin support for data map stuff
         return new ChemicalAttributes.Radiation(radioactivity);
     }
 

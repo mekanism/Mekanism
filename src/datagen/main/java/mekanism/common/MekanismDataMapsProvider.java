@@ -4,9 +4,13 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.chemical.Chemical;
-import mekanism.api.datamaps.ChemicalOreTag;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.MekaSuitAbsorption;
+import mekanism.api.datamaps.chemical.ChemicalOreTag;
+import mekanism.api.datamaps.chemical.attribute.ChemicalFuel;
+import mekanism.api.datamaps.chemical.attribute.ChemicalRadioactivity;
+import mekanism.api.datamaps.chemical.attribute.CooledCoolant;
+import mekanism.api.datamaps.chemical.attribute.HeatedCoolant;
 import mekanism.common.registration.impl.SlurryRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismChemicals;
@@ -24,6 +28,8 @@ import net.neoforged.neoforge.registries.datamaps.builtin.VibrationFrequency;
 import org.jetbrains.annotations.NotNull;
 
 public class MekanismDataMapsProvider extends DataMapProvider {
+
+    public static final long HYDROGEN_ENERGY_DENSITY = 200;
 
     public MekanismDataMapsProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider) {
         super(packOutput, lookupProvider);
@@ -52,13 +58,41 @@ public class MekanismDataMapsProvider extends DataMapProvider {
         ;
 
         builder(IMekanismDataMapTypes.INSTANCE.mekaSuitAbsorption())
-                .add(DamageTypes.SONIC_BOOM, new MekaSuitAbsorption(0.75F), false)
-                .add(MekanismAPITags.DamageTypes.MEKASUIT_ALWAYS_SUPPORTED, new MekaSuitAbsorption(1F), false)
+              .add(DamageTypes.SONIC_BOOM, new MekaSuitAbsorption(0.75F), false)
+              .add(MekanismAPITags.DamageTypes.MEKASUIT_ALWAYS_SUPPORTED, new MekaSuitAbsorption(1F), false)
         ;
 
         Builder<ChemicalOreTag, Chemical> chemicalOreTagBuilder = builder(IMekanismDataMapTypes.INSTANCE.chemicalOreTag());
         for (Map.Entry<PrimaryResource, SlurryRegistryObject<Chemical, Chemical>> entry : MekanismChemicals.PROCESSED_RESOURCES.entrySet()) {
             chemicalOreTagBuilder.add(entry.getValue(), new ChemicalOreTag(entry.getKey().getOreTag()), false);
         }
+
+        builder(IMekanismDataMapTypes.INSTANCE.chemicalFuel())
+              //GENERAL_ENERGY_CONVERSION_HYDROGEN("general.energy_conversion.hydrogen", "Hydrogen Energy Density",
+              //"How much energy is produced per mB of Hydrogen, also affects Electrolytic Separator usage, Ethene burn rate and Gas-Burning Generator energy capacity."),
+              .add(MekanismChemicals.HYDROGEN, new ChemicalFuel(1, HYDROGEN_ENERGY_DENSITY), false)
+              //TODO - 1.21: Decide if we want to define this here or via a data map in MekanismGenerators
+              .add(MekanismChemicals.ETHENE, new ChemicalFuel(2 * SharedConstants.TICKS_PER_SECOND, getEtheneEnergyDensity()), false)
+        ;
+
+        builder(IMekanismDataMapTypes.INSTANCE.chemicalRadioactivity())
+              .add(MekanismChemicals.NUCLEAR_WASTE, new ChemicalRadioactivity(0.01), false)
+              .add(MekanismChemicals.SPENT_NUCLEAR_WASTE, new ChemicalRadioactivity(0.01), false)
+              .add(MekanismChemicals.PLUTONIUM, new ChemicalRadioactivity(0.02), false)
+              .add(MekanismChemicals.POLONIUM, new ChemicalRadioactivity(0.05), false)
+        ;
+
+        builder(IMekanismDataMapTypes.INSTANCE.cooledChemicalCoolant())
+              .add(MekanismChemicals.SODIUM, new CooledCoolant(MekanismChemicals.SUPERHEATED_SODIUM, 5, 1), false)
+        ;
+        builder(IMekanismDataMapTypes.INSTANCE.heatedChemicalCoolant())
+              .add(MekanismChemicals.SUPERHEATED_SODIUM, new HeatedCoolant(MekanismChemicals.SODIUM, 5, 1), false)
+        ;
+    }
+
+    private static long getEtheneEnergyDensity() {
+        long bioGeneration = 350;//Default bio generator value
+        long energy = Math.multiplyExact(40, Math.multiplyExact(2, bioGeneration));
+        return Math.addExact(energy, MekanismDataMapsProvider.HYDROGEN_ENERGY_DENSITY);
     }
 }

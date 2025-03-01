@@ -33,6 +33,14 @@ public final class DataMapTypeRegister {
                                            name.getNamespace() + "'");
     }
 
+    public <R, T> DataMapType<R, T> registerSynced(ResourceLocation name, ResourceKey<Registry<R>> registryKey, Codec<T> codec, Codec<T> networkCodec) {
+        return register(name, registryKey, codec, builder -> builder.synced(networkCodec, true));
+    }
+
+    public <R, T> DataMapType<R, T> registerSimpleSynced(ResourceLocation name, ResourceKey<Registry<R>> registryKey, Codec<T> codec) {
+        return registerSynced(name, registryKey, codec, codec);
+    }
+
     public <R, T> DataMapType<R, T> registerSimple(ResourceLocation name, ResourceKey<Registry<R>> registryKey, Codec<T> codec) {
         return register(name, registryKey, codec, UnaryOperator.identity());
     }

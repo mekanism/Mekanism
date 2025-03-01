@@ -53,6 +53,7 @@ public record BoilerRecipeViewerRecipe(ResourceLocation id, @Nullable ChemicalSt
               steam, ChemicalStack.EMPTY,
               temperature
         ));
+        //TODO - 1.22: Replace this with the below commented code
         //Go through all gases and add each coolant
         for (Chemical gas : MekanismAPI.CHEMICAL_REGISTRY) {
             HeatedCoolant heatedCoolant = gas.get(HeatedCoolant.class);
@@ -68,6 +69,19 @@ public record BoilerRecipeViewerRecipe(ResourceLocation id, @Nullable ChemicalSt
                 ));
             }
         }
+        //Add recipes for all heated coolants
+        /*for (Map.Entry<ResourceKey<Chemical>, HeatedCoolant> entry : MekanismAPI.CHEMICAL_REGISTRY.getDataMap(IMekanismDataMapTypes.INSTANCE.heatedChemicalCoolant()).entrySet()) {
+            ResourceKey<Chemical> key = entry.getKey();
+            HeatedCoolant coolant = entry.getValue();
+            Holder<Chemical> cooledCoolant = coolant.otherVariant();
+            long coolantAmount = Math.round(WATER_AMOUNT * waterToSteamEfficiency / coolant.thermalEnthalpy());
+            recipes.add(new BoilerRecipeViewerRecipe(
+                  RecipeViewerUtils.synthetic(key.location(), "boiler", Mekanism.MODID),
+                  IngredientCreatorAccess.chemicalStack().fromHolder(MekanismAPI.CHEMICAL_REGISTRY.getHolderOrThrow(key), coolantAmount), water,
+                  steam, new ChemicalStack(cooledCoolant, coolantAmount),
+                  HeatUtils.BASE_BOIL_TEMP
+            ));
+        }*/
         return recipes;
     }
 }

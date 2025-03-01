@@ -6,7 +6,6 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalBuilder;
-import mekanism.api.chemical.attribute.ChemicalAttribute;
 import mekanism.common.base.IChemicalConstant;
 import mekanism.common.registration.MekanismDeferredRegister;
 import mekanism.common.resource.PrimaryResource;
@@ -20,18 +19,12 @@ public class ChemicalDeferredRegister extends MekanismDeferredRegister<Chemical>
         super(MekanismAPI.CHEMICAL_REGISTRY_NAME, modid, DeferredChemical::new);
     }
 
-    public DeferredChemical<Chemical> register(IChemicalConstant constants, ChemicalAttribute... attributes) {
-        return register(constants.getName(), constants.getColor(), attributes);
+    public DeferredChemical<Chemical> register(IChemicalConstant constants) {
+        return register(constants.getName(), constants.getColor());
     }
 
-    public DeferredChemical<Chemical> register(String name, int color, ChemicalAttribute... attributes) {
-        return register(name, () -> {
-            ChemicalBuilder builder = ChemicalBuilder.builder().tint(color);
-            for (ChemicalAttribute attribute : attributes) {
-                builder.with(attribute);
-            }
-            return new Chemical(builder);
-        });
+    public DeferredChemical<Chemical> register(String name, int color) {
+        return register(name, () -> new Chemical(ChemicalBuilder.builder().tint(color)));
     }
 
     public DeferredChemical<Chemical> registerPigment(String name, int color) {

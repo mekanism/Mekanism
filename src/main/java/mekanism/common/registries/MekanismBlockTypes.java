@@ -4,6 +4,7 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import java.util.function.Supplier;
 import mekanism.api.Upgrade;
+import mekanism.api.math.MathUtils;
 import mekanism.api.text.ILangEntry;
 import mekanism.api.tier.ITier;
 import mekanism.common.MekanismLang;
@@ -139,6 +140,7 @@ import mekanism.common.tile.transmitter.TileEntityRestrictiveTransporter;
 import mekanism.common.tile.transmitter.TileEntityThermodynamicConductor;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.tile.transmitter.TileEntityUniversalCable;
+import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
@@ -316,7 +318,7 @@ public class MekanismBlockTypes {
           .createMachine(() -> MekanismTileEntityTypes.ELECTROLYTIC_SEPARATOR, MekanismLang.DESCRIPTION_ELECTROLYTIC_SEPARATOR)
           .withGui(() -> MekanismContainerTypes.ELECTROLYTIC_SEPARATOR)
           .withSound(MekanismSounds.ELECTROLYTIC_SEPARATOR)
-          .withEnergyConfig(() -> 2 * MekanismConfig.general.FROM_H2.get(), MekanismConfig.storage.electrolyticSeparator)
+          .withEnergyConfig(() -> MathUtils.multiplyClamped(2, ChemicalUtil.hydrogenEnergyDensity()), MekanismConfig.storage.electrolyticSeparator)
           .withSideConfig(TransmissionType.FLUID, TransmissionType.CHEMICAL, TransmissionType.ITEM, TransmissionType.ENERGY)
           .withCustomShape(BlockShapes.ELECTROLYTIC_SEPARATOR)
           .withComputerSupport("electrolyticSeparator")

@@ -144,7 +144,7 @@ public class RadiationCommand {
                   CommandSourceStack source = ctx.getSource();
                   IRadiationEntity cap = source.getPlayerOrException().getCapability(Capabilities.RADIATION_ENTITY);
                   if (cap != null) {
-                      cap.set(RadiationManager.BASELINE);
+                      cap.set(IRadiationManager.INSTANCE.baselineRadiation());
                       source.sendSuccess(() -> MekanismLang.COMMAND_RADIATION_CLEAR.translateColored(EnumColor.GRAY), true);
                   }
                   return Command.SINGLE_SUCCESS;
@@ -157,7 +157,7 @@ public class RadiationCommand {
                             if (entity instanceof LivingEntity) {
                                 IRadiationEntity cap = entity.getCapability(Capabilities.RADIATION_ENTITY);
                                 if (cap != null) {
-                                    cap.set(RadiationManager.BASELINE);
+                                    cap.set(IRadiationManager.INSTANCE.baselineRadiation());
                                     source.sendSuccess(() -> MekanismLang.COMMAND_RADIATION_CLEAR_ENTITY.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
                                           entity.getDisplayName()), true);
                                 }
@@ -179,7 +179,7 @@ public class RadiationCommand {
                         IRadiationEntity cap = source.getPlayerOrException().getCapability(Capabilities.RADIATION_ENTITY);
                         if (cap != null) {
                             double radiation = cap.getRadiation();
-                            double newValue = Math.max(RadiationManager.BASELINE, radiation - magnitude);
+                            double newValue = Math.max(IRadiationManager.INSTANCE.baselineRadiation(), radiation - magnitude);
                             double reduced = radiation - newValue;
                             cap.set(newValue);
                             source.sendSuccess(() -> MekanismLang.COMMAND_RADIATION_REDUCE.translateColored(EnumColor.GRAY, RadiationScale.getSeverityColor(reduced),
@@ -200,7 +200,7 @@ public class RadiationCommand {
                                       IRadiationEntity cap = entity.getCapability(Capabilities.RADIATION_ENTITY);
                                       if (cap != null) {
                                           double radiation = cap.getRadiation();
-                                          double newValue = Math.max(RadiationManager.BASELINE, radiation - magnitude);
+                                          double newValue = Math.max(IRadiationManager.INSTANCE.baselineRadiation(), radiation - magnitude);
                                           double reduced = radiation - newValue;
                                           cap.set(newValue);
                                           source.sendSuccess(() -> MekanismLang.COMMAND_RADIATION_REDUCE_TARGET.translateColored(EnumColor.GRAY,
@@ -246,7 +246,7 @@ public class RadiationCommand {
     }
 
     private static int getReturnLevelFromRadiation(double magnitude) {
-        if (magnitude < RadiationManager.MIN_MAGNITUDE) {
+        if (magnitude < IRadiationManager.INSTANCE.minRadiationMagnitude()) {
             return 0;
         }
         //Multiply to make it so that we can differentiate various levels based on what the micro sievert rate would be

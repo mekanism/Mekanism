@@ -3,9 +3,13 @@ package mekanism.common.registries;
 import java.util.Optional;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
-import mekanism.api.datamaps.ChemicalOreTag;
+import mekanism.api.datamaps.chemical.ChemicalOreTag;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.MekaSuitAbsorption;
+import mekanism.api.datamaps.chemical.attribute.ChemicalFuel;
+import mekanism.api.datamaps.chemical.attribute.ChemicalRadioactivity;
+import mekanism.api.datamaps.chemical.attribute.CooledCoolant;
+import mekanism.api.datamaps.chemical.attribute.HeatedCoolant;
 import mekanism.common.Mekanism;
 import mekanism.common.registration.impl.DataMapTypeRegister;
 import net.minecraft.core.Holder;
@@ -22,8 +26,14 @@ public class MekanismDataMapTypes implements IMekanismDataMapTypes {
     public static final DataMapTypeRegister REGISTER = new DataMapTypeRegister(Mekanism.MODID);
 
     private static final DataMapType<DamageType, MekaSuitAbsorption> MEKA_SUIT_ABSORPTION = REGISTER.registerSimple(MekaSuitAbsorption.ID, Registries.DAMAGE_TYPE, MekaSuitAbsorption.CODEC);
-    private static final DataMapType<Chemical, ChemicalOreTag> CHEMICAL_ORE_TAG = REGISTER.register(ChemicalOreTag.ID, MekanismAPI.CHEMICAL_REGISTRY_NAME, ChemicalOreTag.CODEC,
-          builder -> builder.synced(ChemicalOreTag.CODEC, true));
+    private static final DataMapType<Chemical, ChemicalOreTag> CHEMICAL_ORE_TAG = REGISTER.registerSynced(ChemicalOreTag.ID, MekanismAPI.CHEMICAL_REGISTRY_NAME, ChemicalOreTag.CODEC, ChemicalOreTag.ORE_TAG_CODEC);
+
+    //Chemical Attributes
+    private static final DataMapType<Chemical, ChemicalFuel> CHEMICAL_FUEL = REGISTER.registerSimpleSynced(ChemicalFuel.ID, MekanismAPI.CHEMICAL_REGISTRY_NAME, ChemicalFuel.CODEC);
+    private static final DataMapType<Chemical, ChemicalRadioactivity> CHEMICAL_RADIOACTIVITY = REGISTER.registerSynced(ChemicalRadioactivity.ID, MekanismAPI.CHEMICAL_REGISTRY_NAME,
+          ChemicalRadioactivity.CODEC, ChemicalRadioactivity.RADIOACTIVITY_CODEC);
+    private static final DataMapType<Chemical, CooledCoolant> COOLED_CHEMICAL_COOLANT = REGISTER.registerSimpleSynced(CooledCoolant.ID, MekanismAPI.CHEMICAL_REGISTRY_NAME, CooledCoolant.CODEC);
+    private static final DataMapType<Chemical, HeatedCoolant> HEATED_CHEMICAL_COOLANT = REGISTER.registerSimpleSynced(HeatedCoolant.ID, MekanismAPI.CHEMICAL_REGISTRY_NAME, HeatedCoolant.CODEC);
 
     @Override
     public DataMapType<DamageType, MekaSuitAbsorption> mekaSuitAbsorption() {
@@ -33,6 +43,26 @@ public class MekanismDataMapTypes implements IMekanismDataMapTypes {
     @Override
     public DataMapType<Chemical, ChemicalOreTag> chemicalOreTag() {
         return CHEMICAL_ORE_TAG;
+    }
+
+    @Override
+    public DataMapType<Chemical, ChemicalFuel> chemicalFuel() {
+        return CHEMICAL_FUEL;
+    }
+
+    @Override
+    public DataMapType<Chemical, ChemicalRadioactivity> chemicalRadioactivity() {
+        return CHEMICAL_RADIOACTIVITY;
+    }
+
+    @Override
+    public DataMapType<Chemical, CooledCoolant> cooledChemicalCoolant() {
+        return COOLED_CHEMICAL_COOLANT;
+    }
+
+    @Override
+    public DataMapType<Chemical, HeatedCoolant> heatedChemicalCoolant() {
+        return HEATED_CHEMICAL_COOLANT;
     }
 
     @Nullable

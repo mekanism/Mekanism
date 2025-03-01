@@ -1,9 +1,9 @@
 package mekanism.common.lib.radiation.capability;
 
+import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.radiation.capability.IRadiationEntity;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismDamageTypes;
@@ -42,7 +42,7 @@ public class RadiationEntity implements IRadiationEntity {
             return;
         }
         double radiation = getRadiation();
-        if (radiation <= RadiationManager.BASELINE) {
+        if (radiation <= IRadiationManager.INSTANCE.baselineRadiation()) {
             //NO-OP, the entity isn't actually irradiated
             return;
         }
@@ -80,7 +80,7 @@ public class RadiationEntity implements IRadiationEntity {
 
     @Override
     public void set(double magnitude) {
-        entity.setData(MekanismAttachmentTypes.RADIATION, Math.max(RadiationManager.BASELINE, magnitude));
+        entity.setData(MekanismAttachmentTypes.RADIATION, Math.max(IRadiationManager.INSTANCE.baselineRadiation(), magnitude));
     }
 
     @Override

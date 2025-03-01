@@ -169,8 +169,6 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
     GENERAL_ENERGY_CONVERSION_BLACKLIST_GP("general.energy_conversion.blacklist.grandpower", "Blacklist GrandPower",
           "Disables Grand Power's higher throughput Forge Energy (FE/RF) power integration. Note: Blacklisting Forge Energy also disables this."),
     GENERAL_ENERGY_CONVERSION_FE("general.energy_conversion.forge_energy", "FE Conversion Rate", "Conversion multiplier from Forge Energy to Joules (FE * feConversionRate = Joules)"),
-    GENERAL_ENERGY_CONVERSION_HYDROGEN("general.energy_conversion.hydrogen", "Hydrogen Energy Density",
-          "How much energy is produced per mB of Hydrogen, also affects Electrolytic Separator usage, Ethene burn rate and Gas-Burning Generator energy capacity."),
     GENERAL_ENERGY_CONVERSION_STEAM("general.energy_conversion.steam", "Steam Energy Density", "Maximum Joules per mB of Steam. Also affects Thermoelectric Boiler."),
 
     GENERAL_RADIATION("general.radiation", "Radiation Settings", "Settings for configuring Radiation", true),

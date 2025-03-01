@@ -54,7 +54,7 @@
     },
     {
       "type": "minecraft:single",
-      "resource": "mekanism:slurry/clean"
+      "resource": "mekanism:liquid/steam"
     },
     {
       "type": "minecraft:single",
@@ -62,11 +62,11 @@
     },
     {
       "type": "minecraft:single",
-      "resource": "mekanism:infuse_type/base"
+      "resource": "mekanism:slurry/dirty"
     },
     {
       "type": "minecraft:single",
-      "resource": "mekanism:liquid/steam"
+      "resource": "mekanism:slurry/clean"
     },
     {
       "type": "minecraft:single",
@@ -74,7 +74,7 @@
     },
     {
       "type": "minecraft:single",
-      "resource": "mekanism:slurry/dirty"
+      "resource": "mekanism:infuse_type/base"
     },
     {
       "type": "minecraft:single",

@@ -3,8 +3,9 @@ package mekanism.api.chemical.attribute;
 import java.util.Set;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
+import net.minecraft.core.Holder;
 
-public interface ChemicalAttributeValidator {
+public interface ChemicalAttributeValidator {//TODO - 1.22: Re-evaluate how this class functions
 
     ChemicalAttributeValidator DEFAULT = new ChemicalAttributeValidator() {
         @Override
@@ -41,6 +42,19 @@ public interface ChemicalAttributeValidator {
     /**
      * Determines if a Chemical is considered valid for this validator.
      *
+     * @param chemical holder representing the chemical to test
+     *
+     * @return if the chemical is valid
+     *
+     * @since 10.7.11
+     */
+    default boolean process(Holder<Chemical> chemical) {
+        return process(chemical.value());
+    }
+
+    /**
+     * Determines if a Chemical is considered valid for this validator.
+     *
      * @param chemical chemical to test
      *
      * @return if the chemical is valid
@@ -66,7 +80,7 @@ public interface ChemicalAttributeValidator {
      * @since 10.2.3
      */
     default boolean process(ChemicalStack stack) {
-        return process(stack.getChemical());
+        return process(stack.getChemicalHolder());
     }
 
     /**

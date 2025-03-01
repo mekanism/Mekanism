@@ -154,10 +154,18 @@ public final class SerializationConstants {
     public static final String COMPONENT_UPGRADE = "component_upgrade";
     public static final String COMPONENTS = "components";
     public static final String CONDITION = "condition";
+    /**
+     * @since 10.7.11
+     */
+    public static final String CONDUCTIVITY = "conductivity";
     public static final String CONFIG = "config";
     public static final String CONNECTION = "connection";
     public static final String CONTAINER = "container";
     public static final String CONTROL_TYPE = "control_type";
+    /**
+     * @since 10.7.11
+     */
+    public static final String COOL_VARIANT = "cool_variant";
     public static final String COULD_OPERATE = "could_operate";
     public static final String CURRENT_REDSTONE = "current_redstone";
     public static final String CUSTOM_MODEL = "custom_model";
@@ -182,6 +190,10 @@ public final class SerializationConstants {
     public static final String ENCHANTMENTS = "enchantments";
     public static final String ENERGY_CONTAINERS = "energy_containers";
     public static final String ENERGY = "energy";
+    /**
+     * @since 10.7.11
+     */
+    public static final String ENERGY_DENSITY = "energy_density";
     public static final String ENERGY_USAGE = "energy_usage";
     public static final String ENUMS = "enums";
     public static final String EXTENDS = "extends";
@@ -211,6 +223,10 @@ public final class SerializationConstants {
     public static final String HEAT_CAPACITY = "heat_capacity";
     public static final String HEAT_STORED = "heat";
     public static final String HOME_LOCATION = "home_location";
+    /**
+     * @since 10.7.11
+     */
+    public static final String HOT_VARIANT = "hot_variant";
     public static final String HUMAN_NAME = "human_name";
     public static final String IDENTITY = "identity";
     public static final String IDLE_DIR = "idle_dir";
@@ -271,6 +287,10 @@ public final class SerializationConstants {
     public static final String PULSE = "pulse";
     public static final String RADIATION = "radiation";
     public static final String RADIATION_LIST = "radList";
+    /**
+     * @since 10.7.11
+     */
+    public static final String RADIOACTIVITY = "radioactivity";
     public static final String RADIUS = "radius";
     public static final String REACTOR_DAMAGE = "reactor_damage";
     public static final String RECEIVED_COORDS = "received_coords";
@@ -308,6 +328,10 @@ public final class SerializationConstants {
     public static final String TEMPERATURE = "temperature";
     public static final String TEXT = "text";
     public static final String TEXTURES = "textures";
+    /**
+     * @since 10.7.11
+     */
+    public static final String THERMAL_ENTHALPY = "thermal_enthalpy";
     public static final String TIME = "time";
     public static final String TRUSTED = "trusted";
     public static final String TYPES = "types";

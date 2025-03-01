@@ -1,5 +1,6 @@
 package mekanism.generators.common.registries;
 
+import mekanism.api.math.MathUtils;
 import mekanism.common.block.attribute.AttributeCustomSelectionBox;
 import mekanism.common.block.attribute.AttributeHasBounding.HandleBoundingBlock;
 import mekanism.common.block.attribute.AttributeHasBounding.TriBooleanFunction;
@@ -9,10 +10,10 @@ import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.block.attribute.Attributes;
 import mekanism.common.block.attribute.Attributes.AttributeMobSpawn;
 import mekanism.common.block.attribute.Attributes.AttributeRedstoneEmitter;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.content.blocktype.BlockTypeTile.BlockTileBuilder;
 import mekanism.common.lib.math.Pos3D;
+import mekanism.common.util.ChemicalUtil;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.block.attribute.AttributeStateFissionPortMode;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
@@ -119,7 +120,7 @@ public class GeneratorsBlockTypes {
     public static final Generator<TileEntityGasGenerator> GAS_BURNING_GENERATOR = GeneratorBuilder
           .createGenerator(() -> GeneratorsTileEntityTypes.GAS_BURNING_GENERATOR, GeneratorsLang.DESCRIPTION_GAS_BURNING_GENERATOR)
           .withGui(() -> GeneratorsContainerTypes.GAS_BURNING_GENERATOR)
-          .withEnergyConfig(() -> 1_000 * MekanismConfig.general.FROM_H2.get())
+          .withEnergyConfig(() -> MathUtils.multiplyClamped(1_000, ChemicalUtil.hydrogenEnergyDensity()))
           .withCustomShape(BlockShapes.GAS_BURNING_GENERATOR)
           .with(AttributeCustomSelectionBox.JSON)
           .withSound(GeneratorsSounds.GAS_BURNING_GENERATOR)

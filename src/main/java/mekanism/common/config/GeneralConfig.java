@@ -60,7 +60,6 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedDoubleValue forgeConversionRate;
     public final CachedBooleanValue blacklistFluxNetworks;
     public final CachedBooleanValue blacklistGrandPower;
-    public final CachedLongValue FROM_H2;
     public final CachedLongValue maxEnergyPerSteam;
     //Radiation
     public final CachedBooleanValue radiationEnabled;
@@ -200,8 +199,6 @@ public class GeneralConfig extends BaseMekanismConfig {
         blacklistGrandPower = CachedBooleanValue.wrap(this, MekanismConfigTranslations.GENERAL_ENERGY_CONVERSION_BLACKLIST_GP.applyToBuilder(builder)
               .worldRestart()
               .define("blacklistGrandPower", false));
-        FROM_H2 = CachedLongValue.define(this, builder, MekanismConfigTranslations.GENERAL_ENERGY_CONVERSION_HYDROGEN,
-              "hydrogenEnergyDensity", 200, 1, Long.MAX_VALUE / 100_000);
         maxEnergyPerSteam = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.GENERAL_ENERGY_CONVERSION_STEAM, "maxEnergyPerSteam", 10);
         builder.pop();
 

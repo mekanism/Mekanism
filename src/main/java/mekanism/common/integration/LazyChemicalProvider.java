@@ -5,20 +5,13 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.providers.IChemicalProvider;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class LazyChemicalProvider implements IChemicalProvider {
+@Deprecated(forRemoval = true, since = "10.7.11")
+public class LazyChemicalProvider implements IChemicalProvider {//TODO - 1.21: Figure out how to replace the CrT uses of this with holders
 
     private Supplier<Chemical> chemicalSupplier;
     private Holder<Chemical> chemical = MekanismAPI.EMPTY_CHEMICAL_HOLDER;
-
-    /**
-     * Helper class to cache the result of the {@link Chemical} supplier after doing a registry lookup once it has properly been added to the registry.
-     */
-    public LazyChemicalProvider(ResourceLocation chemicalRegistryName) {
-        this(() -> MekanismAPI.CHEMICAL_REGISTRY.get(chemicalRegistryName));
-    }
 
     /**
      * Helper class to cache the result of the {@link Chemical} supplier, so that we don't have to do registry lookups once it has properly been added to the registry.

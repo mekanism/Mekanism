@@ -1,11 +1,25 @@
 {
   "values": {
-    "mekanism:dirty_copper": "c:ores/copper",
-    "mekanism:dirty_gold": "c:ores/gold",
-    "mekanism:dirty_iron": "c:ores/iron",
-    "mekanism:dirty_lead": "c:ores/lead",
-    "mekanism:dirty_osmium": "c:ores/osmium",
-    "mekanism:dirty_tin": "c:ores/tin",
-    "mekanism:dirty_uranium": "c:ores/uranium"
+    "mekanism:dirty_copper": {
+      "ore_type": "c:ores/copper"
+    },
+    "mekanism:dirty_gold": {
+      "ore_type": "c:ores/gold"
+    },
+    "mekanism:dirty_iron": {
+      "ore_type": "c:ores/iron"
+    },
+    "mekanism:dirty_lead": {
+      "ore_type": "c:ores/lead"
+    },
+    "mekanism:dirty_osmium": {
+      "ore_type": "c:ores/osmium"
+    },
+    "mekanism:dirty_tin": {
+      "ore_type": "c:ores/tin"
+    },
+    "mekanism:dirty_uranium": {
+      "ore_type": "c:ores/uranium"
+    }
   }
 }

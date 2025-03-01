@@ -7,8 +7,6 @@ import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.IChemicalHandler;
-import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttribute;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.chemical.attribute.ChemicalAttributes;
@@ -19,7 +17,7 @@ import mekanism.common.util.WorldUtils;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class StackedWasteBarrel extends VariableCapacityChemicalTank implements IChemicalHandler, IChemicalTank {
+public class StackedWasteBarrel extends VariableCapacityChemicalTank {
 
     private static final ChemicalAttributeValidator ATTRIBUTE_VALIDATOR = new ChemicalAttributeValidator() {
         @Override

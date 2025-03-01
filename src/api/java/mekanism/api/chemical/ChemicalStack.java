@@ -470,6 +470,15 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
         return getChemical().isRadioactive();
     }
 
+    /**
+     * {@return radiation level of this chemical (scaled based on amount), or zero if it is not radioactive}
+     *
+     * @since 10.7.11
+     */
+    public double getRadioactivity() {
+        return getChemical().getRadioactivity() * getAmount();
+    }
+
     @Nullable
     @Override
     public <ATTRIBUTE extends ChemicalAttribute> ATTRIBUTE get(Class<ATTRIBUTE> type) {

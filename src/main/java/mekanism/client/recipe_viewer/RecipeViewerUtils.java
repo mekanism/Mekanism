@@ -69,6 +69,10 @@ public class RecipeViewerUtils {
         };
     }
 
+    public static ResourceLocation synthetic(ResourceLocation id, String prefix, String namespace) {
+        return synthetic(ResourceLocation.fromNamespaceAndPath(namespace, id.toString().replace(':', '_')), prefix);
+    }
+
     public static ResourceLocation synthetic(String id, String prefix, String namespace) {
         if (id.equals("[unregistered]")) {
             return synthetic(ResourceLocation.fromNamespaceAndPath(namespace, "_unregistered_sad_face_"), prefix);
