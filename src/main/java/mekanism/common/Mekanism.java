@@ -257,7 +257,7 @@ public class Mekanism {
 
     private void registerEventListener(RegisterEvent event) {
         //Register the empty chemical
-        event.register(MekanismAPI.CHEMICAL_REGISTRY_NAME, MekanismAPI.EMPTY_CHEMICAL_NAME, () -> MekanismAPI.EMPTY_CHEMICAL);
+        event.register(MekanismAPI.CHEMICAL_REGISTRY_NAME, MekanismAPI.EMPTY_CHEMICAL_KEY.location(), () -> MekanismAPI.EMPTY_CHEMICAL);
     }
 
     public static ResourceLocation rl(String path) {

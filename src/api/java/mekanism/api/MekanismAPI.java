@@ -53,19 +53,29 @@ public class MekanismAPI {
     }
 
     /**
-     * Constant location representing the name all empty chemicals will be registered under.
-     *
-     * @since 10.6.0
-     */
-    public static final ResourceLocation EMPTY_CHEMICAL_NAME = rl("empty");
-
-    /**
      * Gets the {@link ResourceKey} representing the name of the Registry for {@link Chemical chemicals}.
      *
      * @apiNote When registering {@link Chemical chemicals} using {@link DeferredRegister}, use this field to get access to the {@link ResourceKey}.
      * @since 10.7.0
      */
     public static final ResourceKey<Registry<Chemical>> CHEMICAL_REGISTRY_NAME = registryKey(Chemical.class, "chemical");
+
+    /**
+     * Constant location representing the name all empty chemicals will be registered under.
+     *
+     * @since 10.6.0
+     */
+    public static final ResourceKey<Chemical> EMPTY_CHEMICAL_KEY = ResourceKey.create(CHEMICAL_REGISTRY_NAME, rl("empty"));
+
+    /**
+     * Constant location representing the name all empty chemicals will be registered under.
+     *
+     * @since 10.6.0
+     *
+     * @deprecated Prefer using {@link #EMPTY_CHEMICAL_KEY}
+     */
+    @Deprecated(forRemoval = true, since = "10.7.11")
+    public static final ResourceLocation EMPTY_CHEMICAL_NAME = EMPTY_CHEMICAL_KEY.location();
 
     /**
      * Gets the {@link ResourceKey} representing the name of the Registry for {@link ChemicalIngredient} ingredient type serializers.
@@ -104,7 +114,7 @@ public class MekanismAPI {
      * @since 10.7.0
      */
     public static final DefaultedRegistry<Chemical> CHEMICAL_REGISTRY = (DefaultedRegistry<Chemical>) new RegistryBuilder<>(CHEMICAL_REGISTRY_NAME)
-          .defaultKey(EMPTY_CHEMICAL_NAME)
+          .defaultKey(EMPTY_CHEMICAL_KEY)
           .sync(true)
           .withIntrusiveHolders()
           .create();
@@ -137,12 +147,6 @@ public class MekanismAPI {
     public static final Registry<MapCodec<? extends RobitSkin>> ROBIT_SKIN_SERIALIZER_REGISTRY = new RegistryBuilder<>(ROBIT_SKIN_SERIALIZER_REGISTRY_NAME)
           .create();
 
-    /**
-     * Constant location representing the name all empty chemicals will be registered under.
-     *
-     * @since 10.6.0
-     */
-    public static final ResourceKey<Chemical> EMPTY_CHEMICAL_KEY = ResourceKey.create(CHEMICAL_REGISTRY_NAME, EMPTY_CHEMICAL_NAME);
     /**
      * Empty Chemical instance.
      *

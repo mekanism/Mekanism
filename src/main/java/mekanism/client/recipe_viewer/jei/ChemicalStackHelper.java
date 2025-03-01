@@ -2,7 +2,6 @@ package mekanism.client.recipe_viewer.jei;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
-import com.mojang.datafixers.util.Pair;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -108,8 +107,8 @@ public class ChemicalStackHelper implements IIngredientHelper<ChemicalStack> {
         if (stacks.size() < 2) {
             return Optional.empty();
         }
-        List<Chemical> values = stacks.stream()
-              .map(ChemicalStack::getChemical)
+        List<Holder<Chemical>> values = stacks.stream()
+              .map(ChemicalStack::getChemicalHolder)
               .distinct()
               .toList();
         int expected = values.size();
@@ -117,20 +116,16 @@ public class ChemicalStackHelper implements IIngredientHelper<ChemicalStack> {
             //One of the chemicals is there more than once, definitely not a tag
             return Optional.empty();
         }
-        return MekanismAPI.CHEMICAL_REGISTRY.getTags()
-              .filter(pair -> {
-                  Named<Chemical> tag = pair.getSecond();
-                  if (tag.size() != expected) {
-                      return false;
-                  }
-                  for (int i = 0; i < expected; i++) {
-                      if (tag.get(i).value() != values.get(i)) {
-                          return false;
-                      }
-                  }
-                  return true;
-              }).<TagKey<?>>map(Pair::getFirst)
-              .findFirst();
+        for (TagKey<Chemical> tagKey : values.getFirst().tags().toList()) {
+            Optional<Named<Chemical>> optionalTag = MekanismAPI.CHEMICAL_REGISTRY.getTag(tagKey);
+            if (optionalTag.isPresent()) {
+                Named<Chemical> tag = optionalTag.get();
+                if (tag.size() == expected && values.stream().allMatch(tag::contains)) {
+                    return Optional.of(tagKey);
+                }
+            }
+        }
+        return Optional.empty();
     }
 
     @Override

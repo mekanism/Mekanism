@@ -45,7 +45,8 @@ public non-sealed class TagChemicalIngredient extends ChemicalIngredient {
     public final Stream<Holder<Chemical>> generateChemicalHolders() {
         return MekanismAPI.CHEMICAL_REGISTRY.getTag(tag())
               .stream()
-              .flatMap(HolderSet::stream);
+              .flatMap(HolderSet::stream)
+              .distinct();//Ensure we don't include the same chemical multiple times. Holder overrides #equals at least within same kind of holder
     }
 
     @Override

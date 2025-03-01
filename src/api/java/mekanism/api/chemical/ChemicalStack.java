@@ -152,9 +152,17 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
     private final Holder<Chemical> chemical;
     private long amount;
 
-    //TODO - 1.21: Do we want to error if created with a direct holder?
     public ChemicalStack(Holder<Chemical> chemical, long amount) {
-        Objects.requireNonNull(chemical, "Cannot create a ChemicalStack from a null chemical");
+        Objects.requireNonNull(chemical, "Cannot create a ChemicalStack from a null chemical holder");
+        if (chemical.kind() == Holder.Kind.DIRECT) {
+            if (!chemical.isBound()) {//This should always be true, unless someone made a custom direct holder for some reason
+                throw new IllegalArgumentException("Cannot create a ChemicalStack from an unbound direct holder");
+            }
+            chemical = MekanismAPI.CHEMICAL_REGISTRY.wrapAsHolder(chemical.value());
+            if (chemical.kind() == Holder.Kind.DIRECT) {
+                throw new IllegalArgumentException("Cannot create a ChemicalStack from a direct holder for a chemical that is not yet registered");
+            }
+        }
         this.chemical = chemical;
         this.amount = amount;
     }

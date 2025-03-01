@@ -30,7 +30,7 @@ public non-sealed class SingleChemicalIngredient extends ChemicalIngredient {
      * @param chemical Holder for the chemical to match.
      */
     public SingleChemicalIngredient(Holder<Chemical> chemical) {
-        if (chemical.is(MekanismAPI.EMPTY_CHEMICAL_NAME)) {
+        if (chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
             throw new IllegalStateException("SingleChemicalIngredient must not be constructed with mekanism:empty, use IChemicalIngredientCreator.empty() instead!");
         }
         this.chemical = chemical;
