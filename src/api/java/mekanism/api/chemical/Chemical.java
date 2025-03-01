@@ -154,7 +154,12 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
     @Override
     public String getTranslationKey() {
         if (translationKey == null) {
-            translationKey = Util.makeDescriptionId("chemical", MekanismAPI.CHEMICAL_REGISTRY.getKey(this));
+            //Note: Because chemical registry has a default key, we have to query the name via the resource key so that we can pass null
+            // to makeDescriptionId in cases when our chemical is unregistered
+            translationKey = Util.makeDescriptionId("chemical", MekanismAPI.CHEMICAL_REGISTRY.getResourceKey(this)
+                  .map(ResourceKey::location)
+                  .orElse(null)
+            );
         }
         return translationKey;
     }
@@ -315,7 +320,7 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
      * @return The tag for the item the slurry goes with. May be null.
      */
     @Nullable
-    public TagKey<Item> getOreTag() {
+    public TagKey<Item> getOreTag() {//TODO - 1.22: Move to a datamap
         return oreTag;
     }
 

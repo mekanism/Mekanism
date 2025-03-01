@@ -11,6 +11,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.gear.IHUDElement.HUDColor;
 import mekanism.api.providers.IModuleDataProvider;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageSource;
@@ -81,6 +82,19 @@ public interface IModuleHelper {
      * @return Set of supported module types.
      */
     Set<ModuleData<?>> getSupported(Item item);
+
+    /**
+     * Gets all the module types a given item support.
+     *
+     * @param item Module container, for example a Meka-Tool or MekaSuit piece.
+     *
+     * @return Set of supported module types.
+     *
+     * @since 10.7.11
+     */
+    default Set<ModuleData<?>> getSupported(Holder<Item> item) {
+        return getSupported(item.value());
+    }
 
     /**
      * Helper to get the various items that support a given module type.
@@ -207,7 +221,7 @@ public interface IModuleHelper {
      * @since 10.5.0
      */
     default boolean isModuleContainer(ItemStack stack) {
-        return !stack.isEmpty() && isModuleContainer(stack.getItem());
+        return !stack.isEmpty() && isModuleContainer(stack.getItemHolder());
     }
 
     /**
@@ -220,6 +234,19 @@ public interface IModuleHelper {
      * @since 10.5.0
      */
     boolean isModuleContainer(Item item);
+
+    /**
+     * Checks if the item is a module container and can store modules.
+     *
+     * @param item Item to check.
+     *
+     * @return {@code true} if the item is a module container.
+     *
+     * @since 10.7.11
+     */
+    default boolean isModuleContainer(Holder<Item> item) {
+        return isModuleContainer(item.value());
+    }
 
     /**
      * {@return all the installed modules on an item stack, or empty if the item doesn't support modules}

@@ -230,8 +230,7 @@ public abstract class BaseComputerHelper {
             return null;
         }
         Map<String, Object> wrapped = new HashMap<>(2);
-        ResourceLocation name = RegistryUtils.getName(stack.getChemicalHolder());
-        wrapped.put(SerializationConstants.NAME, name == null ? "unregistered" : name.toString());
+        wrapped.put(SerializationConstants.NAME, stack.getChemicalHolder().getRegisteredName());
         wrapped.put(SerializationConstants.AMOUNT, stack.getAmount());
         return wrapped;
     }
@@ -240,14 +239,14 @@ public abstract class BaseComputerHelper {
         if (stack == null) {
             return null;
         }
-        return SpecialConverters.wrapStack(RegistryUtils.getName(stack.getFluidHolder()), SerializationConstants.AMOUNT, stack.getAmount(), stack.getComponentsPatch());
+        return SpecialConverters.wrapStack(stack.getFluidHolder().getRegisteredName(), SerializationConstants.AMOUNT, stack.getAmount(), stack.getComponentsPatch());
     }
 
     public Object convert(@Nullable ItemStack stack) {
         if (stack == null) {
             return null;
         }
-        return SpecialConverters.wrapStack(RegistryUtils.getName(stack.getItemHolder()), SerializationConstants.COUNT, stack.getCount(), stack.getComponentsPatch());
+        return SpecialConverters.wrapStack(stack.getItemHolder().getRegisteredName(), SerializationConstants.COUNT, stack.getCount(), stack.getComponentsPatch());
     }
 
     public Object convert(@Nullable BlockState state) {
@@ -256,8 +255,7 @@ public abstract class BaseComputerHelper {
         }
 
         Map<String, Object> wrapped = new HashMap<>(2);
-        ResourceLocation name = RegistryUtils.getName(state.getBlockHolder());
-        wrapped.put(SerializationConstants.BLOCK, name == null ? "unregistered" : convert(name));
+        wrapped.put(SerializationConstants.BLOCK, state.getBlockHolder().getRegisteredName());
         Map<String, Object> stateData = new HashMap<>();
         for (Map.Entry<Property<?>, Comparable<?>> entry : state.getValues().entrySet()) {
             Property<?> property = entry.getKey();

@@ -3,7 +3,6 @@ package mekanism.common.tile;
 import com.mojang.serialization.DataResult;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import mekanism.api.Action;
 import mekanism.api.IConfigurable;
@@ -42,6 +41,7 @@ import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.FluidUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import mekanism.common.util.RegistryUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -54,7 +54,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -369,20 +368,23 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
         if (!fluid.isEmpty()) {
             //Note: This should never be null as it returns a reference holder
             // We throw if it is, so that we can find the bug if it gets introduced during porting
-            ResourceKey<Fluid> key = Objects.requireNonNull(fluid.getFluidHolder().getKey(), "Resource key should always be present");
-            fluidData.putString(SerializationConstants.ID, key.location().toString());
-            if (!fluid.isComponentsPatchEmpty()) {
-                //Note: This isn't necessarily optimal, but it does mean in general we can avoid codecs unless it happens to be a fluid that
-                // does have component data
-                DataResult<Tag> componentData = DataComponentPatch.CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), fluid.getComponentsPatch());
-                if (componentData.isSuccess()) {
-                    fluidData.put(SerializationConstants.DATA, componentData.getOrThrow());
-                } else {
-                    componentData.ifError(error -> Mekanism.logger.error("Failed to encode fluid stack component data: {}", error.message()));
+            ResourceLocation key = RegistryUtils.getName(fluid.getFluidHolder());
+            if (key != null) {
+                fluidData.putString(SerializationConstants.ID, key.toString());
+                if (!fluid.isComponentsPatchEmpty()) {
+                    //Note: This isn't necessarily optimal, but it does mean in general we can avoid codecs unless it happens to be a fluid that
+                    // does have component data
+                    DataResult<Tag> componentData = DataComponentPatch.CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), fluid.getComponentsPatch());
+                    if (componentData.isSuccess()) {
+                        fluidData.put(SerializationConstants.DATA, componentData.getOrThrow());
+                    } else {
+                        componentData.ifError(error -> Mekanism.logger.error("Failed to encode fluid stack component data: {}", error.message()));
+                    }
                 }
+                fluidData.putBoolean(SerializationConstants.VALVE, !valveFluid.isEmpty());
+                //Skip adding it if the fluid isn't registered
+                updateTag.put(SerializationConstants.FLUID, fluidData);
             }
-            fluidData.putBoolean(SerializationConstants.VALVE, !valveFluid.isEmpty());
-            updateTag.put(SerializationConstants.FLUID, fluidData);
         }
         return updateTag;
     }

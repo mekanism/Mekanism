@@ -40,7 +40,7 @@ import org.jetbrains.annotations.Nullable;
  * @apiNote Do not instantiate this class directly as it will be done via the service loader. Instead, access instances of this via {@link IModuleHelper#INSTANCE}
  */
 @NothingNullByDefault
-public class ModuleHelper implements IModuleHelper {
+public class ModuleHelper implements IModuleHelper {//TODO - 1.22: Evaluate moving at least some of this stuff to being defined via datamaps
 
     public static ModuleHelper get() {
         return (ModuleHelper) INSTANCE;

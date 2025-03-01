@@ -56,7 +56,7 @@ public class ChemicalStackHelper implements IIngredientHelper<ChemicalStack> {
 
     @Override
     public ResourceLocation getResourceLocation(ChemicalStack ingredient) {
-        return Objects.requireNonNull(RegistryUtils.getName(ingredient.getChemicalHolder()), "Unregistered chemical");
+        return Objects.requireNonNullElse(RegistryUtils.getName(ingredient.getChemicalHolder()), MekanismAPI.CHEMICAL_REGISTRY.getDefaultKey());
     }
 
     @Override

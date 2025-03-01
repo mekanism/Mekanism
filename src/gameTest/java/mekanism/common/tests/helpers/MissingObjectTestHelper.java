@@ -12,9 +12,6 @@ import mekanism.api.Upgrade;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.providers.IBaseProvider;
-import mekanism.api.providers.IFluidProvider;
-import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.common.attachments.FilterAware;
 import mekanism.common.attachments.FormulaAttachment;
@@ -40,7 +37,6 @@ import net.minecraft.gametest.framework.GameTestInfo;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -222,7 +218,7 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
     }
 
     public boolean testFilter(MinerItemStackFilter filter) {
-        return filter.replaceTargetMatches(Items.COBBLESTONE) && filter.getItemStack().is(Items.STONE) == filter.requiresReplacement;
+        return filter.replaceTargetMatches(Items.COBBLESTONE) && isStone(filter) == filter.requiresReplacement;
     }
 
     public SorterItemStackFilter makeSorterFilter(Item item) {
@@ -239,7 +235,7 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
     }
 
     public boolean testFilter(SorterItemStackFilter filter) {
-        return filter.min == 2 && filter.max == 3 && filter.color == EnumColor.AQUA && filter.sizeMode && !filter.allowDefault && filter.getItemStack().is(Items.STONE) == filter.fuzzyMode;
+        return filter.min == 2 && filter.max == 3 && filter.color == EnumColor.AQUA && filter.sizeMode && !filter.allowDefault && isStone(filter) == filter.fuzzyMode;
     }
 
     public QIOItemStackFilter makeQIOFilter(Item item) {
@@ -251,14 +247,18 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
         return filter;
     }
 
+    private boolean isStone(IItemStackFilter<?> filter) {
+        return filter.getItemStack().is(Items.STONE);
+    }
+
     public boolean testFilter(QIOItemStackFilter filter) {
-        return filter.getItemStack().is(Items.STONE) == filter.fuzzyMode;
+        return isStone(filter) == filter.fuzzyMode;
     }
 
     private <FILTER extends BaseFilter<FILTER> & IItemStackFilter<FILTER>> FilterAware makeFilters(Function<Item, FILTER> filterCreator) {
         return new FilterAware(List.of(
               filterCreator.apply(Items.STICK),
-              filterCreator.apply(ITEM_TO_REPLACE.asItem()),
+              filterCreator.apply(ITEM_TO_REPLACE.value()),
               filterCreator.apply(Items.STONE)
         ));
     }
@@ -270,7 +270,7 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
             FILTER stickFilter = (FILTER) filters.getFirst();
             FILTER stoneFilter = (FILTER) filters.getLast();
             return stickFilter.getItemStack().is(Items.STICK) && filterTester.test(stickFilter) &&
-                   stoneFilter.getItemStack().is(Items.STONE) && filterTester.test(stoneFilter);
+                   isStone(stoneFilter) && filterTester.test(stoneFilter);
         }
         return false;
     }
@@ -280,12 +280,12 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
               filterAware -> validateFilters(filterAware, filterTester));
     }
 
-    public <FILTER extends BaseFilter<FILTER> & IItemStackFilter<FILTER>> void testFilterAwareOnItem(ItemLike item, Function<Item, FILTER> filterCreator,
+    public <FILTER extends BaseFilter<FILTER> & IItemStackFilter<FILTER>> void testFilterAwareOnItem(Holder<Item> item, Function<Item, FILTER> filterCreator,
           Predicate<FILTER> filterTester) {
         succeedIfInvalidItemSerializationCycle(ItemStack.CODEC, help -> {
             ItemStack stack = new ItemStack(item);
             stack.set(MekanismDataComponents.FILTER_AWARE, help.makeFilters(filterCreator));
             return stack;
-        }, stack -> stack.is(item.asItem()) && validateFilters(stack.getOrDefault(MekanismDataComponents.FILTER_AWARE, FilterAware.EMPTY), filterTester));
+        }, stack -> stack.is(item) && validateFilters(stack.getOrDefault(MekanismDataComponents.FILTER_AWARE, FilterAware.EMPTY), filterTester));
     }
 }

@@ -2,7 +2,7 @@ package mekanism.common.registration.impl;
 
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.providers.IFluidProvider;
-import mekanism.common.registration.INamedEntry;
+import mekanism.common.registration.MekanismDeferredHolder;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BucketItem;
@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 @NothingNullByDefault
 public class FluidRegistryObject<TYPE extends FluidType, STILL extends Fluid, FLOWING extends Fluid, BLOCK extends LiquidBlock, BUCKET extends BucketItem>
-    extends DeferredHolder<Fluid, STILL> implements IFluidProvider, INamedEntry {
+    extends MekanismDeferredHolder<Fluid, STILL> implements IFluidProvider {
 
     private final DeferredHolder<FluidType, TYPE> fluidType;
     private final DeferredHolder<Fluid, FLOWING> flowing;
@@ -58,11 +58,6 @@ public class FluidRegistryObject<TYPE extends FluidType, STILL extends Fluid, FL
     @Override
     public Holder<Fluid> getFluidHolder() {
         return this;
-    }
-
-    @Override
-    public String getName() {
-        return INamedEntry.super.getName();
     }
 
     @NotNull

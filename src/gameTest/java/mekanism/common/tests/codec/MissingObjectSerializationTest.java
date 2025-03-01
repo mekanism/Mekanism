@@ -257,7 +257,7 @@ public class MissingObjectSerializationTest {
     @EmptyTemplate
     @TestHolder(description = "Tests to make sure that when an item storing miner filters has an invalid filter, it gets properly skipped.")
     public static void testMinerFilterAwareOnItem(final MissingObjectTestHelper helper) {
-        helper.testFilterAwareOnItem(MekanismBlocks.DIGITAL_MINER, helper::makeMinerFilter, helper::testFilter);
+        helper.testFilterAwareOnItem(MekanismBlocks.DIGITAL_MINER.getItemHolder(), helper::makeMinerFilter, helper::testFilter);
     }
 
     @GameTest
@@ -271,7 +271,7 @@ public class MissingObjectSerializationTest {
     @EmptyTemplate
     @TestHolder(description = "Tests to make sure that when an item storing sorter filters has an invalid filter, it gets properly skipped.")
     public static void testSorterFilterAwareOnItem(final MissingObjectTestHelper helper) {
-        helper.testFilterAwareOnItem(MekanismBlocks.LOGISTICAL_SORTER, helper::makeSorterFilter, helper::testFilter);
+        helper.testFilterAwareOnItem(MekanismBlocks.LOGISTICAL_SORTER.getItemHolder(), helper::makeSorterFilter, helper::testFilter);
     }
 
     @GameTest
@@ -285,7 +285,7 @@ public class MissingObjectSerializationTest {
     @EmptyTemplate
     @TestHolder(description = "Tests to make sure that when an item storing QIO filters has an invalid filter, it gets properly skipped.")
     public static void testQIOFilterAwareOnItem(final MissingObjectTestHelper helper) {
-        helper.testFilterAwareOnItem(MekanismBlocks.QIO_IMPORTER, helper::makeQIOFilter, helper::testFilter);
+        helper.testFilterAwareOnItem(MekanismBlocks.QIO_IMPORTER.getItemHolder(), helper::makeQIOFilter, helper::testFilter);
     }
 
     @GameTest
