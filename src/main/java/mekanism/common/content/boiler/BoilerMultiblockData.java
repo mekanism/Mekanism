@@ -54,11 +54,11 @@ import org.jetbrains.annotations.Nullable;
 
 public class BoilerMultiblockData extends MultiblockData implements IValveHandler {
 
-    //TODO - 1.22: Replace these with checking against the data map
-    public static final Predicate<Holder<Chemical>> IS_HEATED_COOLANT = chemical -> chemical.value().has(ChemicalAttributes.HeatedCoolant.class);
-    //chemical -> chemical.getData(IMekanismDataMapTypes.INSTANCE.heatedChemicalCoolant()) != null;
-    public static final Predicate<Holder<Chemical>> IS_COOLED_COOLANT = chemical -> chemical.value().has(ChemicalAttributes.CooledCoolant.class);
-    //chemical -> chemical.getData(IMekanismDataMapTypes.INSTANCE.cooledChemicalCoolant()) != null;
+    //TODO - 1.22: Replace the legacy checks for these predicates
+    public static final Predicate<Holder<Chemical>> IS_HEATED_COOLANT = chemical -> chemical.getData(IMekanismDataMapTypes.INSTANCE.heatedChemicalCoolant()) != null
+                                                                                    || chemical.value().hasLegacy(ChemicalAttributes.HeatedCoolant.class);
+    public static final Predicate<Holder<Chemical>> IS_COOLED_COOLANT = chemical -> chemical.getData(IMekanismDataMapTypes.INSTANCE.cooledChemicalCoolant()) != null
+                                                                                    || chemical.value().hasLegacy(ChemicalAttributes.CooledCoolant.class);
     public static final Object2BooleanMap<UUID> hotMap = new Object2BooleanOpenHashMap<>();
 
     public static final double CASING_HEAT_CAPACITY = 50;
@@ -161,7 +161,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         }
         HeatedCoolant coolant = stack.getData(IMekanismDataMapTypes.INSTANCE.heatedChemicalCoolant());
         if (coolant == null) {//TODO - 1.22: Remove this handling of legacy data
-            ChemicalAttributes.HeatedCoolant legacyCoolant = stack.get(ChemicalAttributes.HeatedCoolant.class);
+            ChemicalAttributes.HeatedCoolant legacyCoolant = stack.getLegacy(ChemicalAttributes.HeatedCoolant.class);
             if (legacyCoolant != null) {
                 return legacyCoolant.asModern();
             }

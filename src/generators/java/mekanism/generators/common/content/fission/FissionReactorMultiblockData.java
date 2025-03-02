@@ -412,7 +412,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         }
         CooledCoolant coolant = stack.getData(IMekanismDataMapTypes.INSTANCE.cooledChemicalCoolant());
         if (coolant == null) {//TODO - 1.22: Remove this handling of legacy data
-            ChemicalAttributes.CooledCoolant legacyCoolant = stack.get(ChemicalAttributes.CooledCoolant.class);
+            ChemicalAttributes.CooledCoolant legacyCoolant = stack.getLegacy(ChemicalAttributes.CooledCoolant.class);
             if (legacyCoolant != null) {
                 return legacyCoolant.asModern();
             }

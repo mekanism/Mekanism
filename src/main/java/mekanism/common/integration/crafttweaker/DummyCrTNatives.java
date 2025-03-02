@@ -2,6 +2,7 @@ package mekanism.common.integration.crafttweaker;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
+import mekanism.api.chemical.attribute.ChemicalAttribute;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.providers.IBaseProvider;
 import mekanism.api.providers.IChemicalProvider;
@@ -32,6 +33,15 @@ public class DummyCrTNatives {
     public static class CrTNativeModuleDataProvider {
 
         private CrTNativeModuleDataProvider() {
+        }
+    }
+
+    @ZenRegister
+    @Deprecated(forRemoval = true, since = "10.7.11")
+    @NativeTypeRegistration(value = ChemicalAttribute.class, zenCodeName = CrTConstants.CLASS_ATTRIBUTE_CHEMICAL + DUMMY)
+    public static class CrTNativeChemicalAttribute {
+
+        private CrTNativeChemicalAttribute() {
         }
     }
 

@@ -4,12 +4,15 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.attribute.ChemicalAttributes;
+import mekanism.api.datamaps.IMekanismDataMapTypes;
+import mekanism.api.datamaps.chemical.attribute.HeatedCoolant;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
@@ -20,6 +23,8 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.boiler.BoilerMultiblockData;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.util.HeatUtils;
+import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
 import org.jetbrains.annotations.Nullable;
@@ -53,10 +58,23 @@ public record BoilerRecipeViewerRecipe(ResourceLocation id, @Nullable ChemicalSt
               steam, ChemicalStack.EMPTY,
               temperature
         ));
-        //TODO - 1.22: Replace this with the below commented code
-        //Go through all gases and add each coolant
+        //Add recipes for all heated coolants
+        for (Map.Entry<ResourceKey<Chemical>, HeatedCoolant> entry : MekanismAPI.CHEMICAL_REGISTRY.getDataMap(IMekanismDataMapTypes.INSTANCE.heatedChemicalCoolant()).entrySet()) {
+            ResourceKey<Chemical> key = entry.getKey();
+            HeatedCoolant coolant = entry.getValue();
+            Holder<Chemical> cooledCoolant = coolant.otherVariant();
+            long coolantAmount = Math.round(WATER_AMOUNT * waterToSteamEfficiency / coolant.thermalEnthalpy());
+            recipes.add(new BoilerRecipeViewerRecipe(
+                  RecipeViewerUtils.synthetic(key.location(), "boiler", Mekanism.MODID),
+                  IngredientCreatorAccess.chemicalStack().fromHolder(MekanismAPI.CHEMICAL_REGISTRY.getHolderOrThrow(key), coolantAmount), water,
+                  steam, new ChemicalStack(cooledCoolant, coolantAmount),
+                  HeatUtils.BASE_BOIL_TEMP
+            ));
+        }
+        //TODO - 1.22: Remove this handling of legacy attributes
+        //Go through all gases and add each legacy coolant
         for (Chemical gas : MekanismAPI.CHEMICAL_REGISTRY) {
-            ChemicalAttributes.HeatedCoolant heatedCoolant = gas.get(ChemicalAttributes.HeatedCoolant.class);
+            ChemicalAttributes.HeatedCoolant heatedCoolant = gas.getLegacy(ChemicalAttributes.HeatedCoolant.class);
             if (heatedCoolant != null) {
                 //If it is a cooled coolant add a recipe for it
                 Chemical cooledCoolant = heatedCoolant.getCooledChemical();
@@ -69,19 +87,6 @@ public record BoilerRecipeViewerRecipe(ResourceLocation id, @Nullable ChemicalSt
                 ));
             }
         }
-        //Add recipes for all heated coolants
-        /*for (Map.Entry<ResourceKey<Chemical>, HeatedCoolant> entry : MekanismAPI.CHEMICAL_REGISTRY.getDataMap(IMekanismDataMapTypes.INSTANCE.heatedChemicalCoolant()).entrySet()) {
-            ResourceKey<Chemical> key = entry.getKey();
-            HeatedCoolant coolant = entry.getValue();
-            Holder<Chemical> cooledCoolant = coolant.otherVariant();
-            long coolantAmount = Math.round(WATER_AMOUNT * waterToSteamEfficiency / coolant.thermalEnthalpy());
-            recipes.add(new BoilerRecipeViewerRecipe(
-                  RecipeViewerUtils.synthetic(key.location(), "boiler", Mekanism.MODID),
-                  IngredientCreatorAccess.chemicalStack().fromHolder(MekanismAPI.CHEMICAL_REGISTRY.getHolderOrThrow(key), coolantAmount), water,
-                  steam, new ChemicalStack(cooledCoolant, coolantAmount),
-                  HeatUtils.BASE_BOIL_TEMP
-            ));
-        }*/
         return recipes;
     }
 }

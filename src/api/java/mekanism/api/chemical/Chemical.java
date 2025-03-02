@@ -3,6 +3,7 @@ package mekanism.api.chemical;
 import com.mojang.serialization.Codec;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +43,7 @@ import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.TooltipFlag;
 import net.neoforged.neoforge.registries.datamaps.DataMapType;
 import org.jetbrains.annotations.ApiStatus.Internal;
+import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -130,6 +132,7 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
     private final Holder.Reference<Chemical> builtInRegistryHolder = MekanismAPI.CHEMICAL_REGISTRY.createIntrusiveHolder(this);
     //TODO - 1.22: Should we keep this cache or remove it?
     private final List<IChemicalAttribute> attributes = new ArrayList<>();
+    private final List<IChemicalAttribute> attributesView = Collections.unmodifiableList(attributes);
     private final ResourceLocation iconLocation;
     private final int tint;
     private double radioactivity;
@@ -138,6 +141,7 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
 
     @Deprecated(forRemoval = true, since = "10.7.11")
     private final Map<Class<? extends ChemicalAttribute>, ChemicalAttribute> legacyAttributeMap;
+    @Nullable
     @Deprecated(forRemoval = true, since = "10.7.11")
     private Map<Class<? extends ChemicalAttribute>, ChemicalAttribute> attributeMap;
     @Deprecated(forRemoval = true, since = "10.7.11")
@@ -158,7 +162,7 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
 
     public Chemical(ChemicalBuilder builder) {
         //Copy the map to support addAttribute
-        this.attributeMap = this.legacyAttributeMap = new HashMap<>(builder.getAttributeMap());
+        this.legacyAttributeMap = new HashMap<>(builder.getAttributeMap());
         this.iconLocation = builder.getTexture();
         this.tint = builder.getTint();
         for (ChemicalAttribute legacyAttribute : legacyAttributeMap.values()) {
@@ -198,9 +202,30 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
         return translationKey;
     }
 
+    @Deprecated(forRemoval = true, since = "10.7.11")
+    private Map<Class<? extends ChemicalAttribute>, ChemicalAttribute> getAllAttributes() {
+        if (attributes.isEmpty()) {//If we have not attributes attached, just return the legacy attributes
+            return legacyAttributeMap;
+        }
+        if (attributeMap == null) {
+            attributeMap = new HashMap<>(legacyAttributeMap);
+            for (IChemicalAttribute attribute : attributes) {
+                ChemicalAttribute legacyAttribute = attribute.toLegacyAttribute();
+                attributeMap.put(legacyAttribute.getClass(), legacyAttribute);
+            }
+        }
+        return attributeMap;
+    }
+
     @Override
+    @Deprecated(forRemoval = true, since = "10.7.11")
     public boolean has(Class<? extends ChemicalAttribute> type) {
-        return attributeMap.containsKey(type);
+        return getAllAttributes().containsKey(type);
+    }
+
+    @Deprecated(forRemoval = true, since = "10.7.11")
+    public boolean hasLegacy(Class<? extends ChemicalAttribute> type) {
+        return legacyAttributeMap.containsKey(type);
     }
 
     /**
@@ -238,8 +263,17 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
     @Nullable
     @Override
     @SuppressWarnings("unchecked")
+    @Deprecated(forRemoval = true, since = "10.7.11")
     public <ATTRIBUTE extends ChemicalAttribute> ATTRIBUTE get(Class<ATTRIBUTE> type) {
-        return (ATTRIBUTE) attributeMap.get(type);
+        return (ATTRIBUTE) getAllAttributes().get(type);
+    }
+
+    @Nullable
+    @Override
+    @SuppressWarnings("unchecked")
+    @Deprecated(forRemoval = true, since = "10.7.11")
+    public <ATTRIBUTE extends ChemicalAttribute> ATTRIBUTE getLegacy(Class<ATTRIBUTE> type) {
+        return (ATTRIBUTE) legacyAttributeMap.get(type);
     }
 
     /**
@@ -248,9 +282,9 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
      * @param attribute attribute to add to this chemical
      */
     public void addAttribute(ChemicalAttribute attribute) {
-        //In code attribute adding needs to be added to both maps
         legacyAttributeMap.put(attribute.getClass(), attribute);
-        attributeMap.put(attribute.getClass(), attribute);
+        //Clear the merged cache if it has already been initialized, and just reinitialize it when needed
+        attributeMap = null;
         if (attribute instanceof Radiation radiation) {
             radioactivity = legacyRadioactivity = radiation.getRadioactivity();
             //Note: We don't mark radiation as needing validation here, as we handle it separately, so that if the radiation manager is disabled
@@ -260,15 +294,33 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
         }
     }
 
+    /**
+     * Gets all attribute instances associated with this chemical type.
+     *
+     * @return collection of attribute instances.
+     *
+     * @since 10.7.11
+     */
+    public List<IChemicalAttribute> getModernAttributes() {
+        //TODO - 1.22: Rename this to getAttributes
+        return attributesView;
+    }
+
     @Override
+    @Deprecated(forRemoval = true, since = "10.7.11")
     public Collection<ChemicalAttribute> getAttributes() {
-        return attributeMap.values();
+        return getAllAttributes().values();
+    }
+
+    @Deprecated(forRemoval = true, since = "10.7.11")
+    public Collection<ChemicalAttribute> getLegacyAttributes() {
+        return getAttributes();
     }
 
     @Override
     @Deprecated(forRemoval = true, since = "10.7.11")
     public Collection<Class<? extends ChemicalAttribute>> getAttributeTypes() {
-        return attributeMap.keySet();
+        return getAllAttributes().keySet();
     }
 
     @Override
@@ -389,25 +441,31 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
     }
 
     @Internal//TODO - 1.22: Evaluate if we want to get rid of this or if caching the state of some of this is useful from a performance standpoint
-    public final void updateFromDataMap() {
+    @MustBeInvokedByOverriders
+    public void updateFromDataMap() {
         ChemicalOreTag tag = builtInRegistryHolder().getData(IMekanismDataMapTypes.INSTANCE.chemicalOreTag());
         oreTag = tag == null ? legacyOreTag : tag.oreTag();
-        attributeMap = new HashMap<>(legacyAttributeMap);
+        attributeMap = null;//Clear cached map
         hasAttributesWithValidation = hasLegacyAttributesWithValidation;
         radioactivity = legacyRadioactivity;
         attributes.clear();
-        trackAsLegacy(IMekanismDataMapTypes.INSTANCE.chemicalFuel());
-        trackAsLegacy(IMekanismDataMapTypes.INSTANCE.chemicalRadioactivity());
-        trackAsLegacy(IMekanismDataMapTypes.INSTANCE.cooledChemicalCoolant());
-        trackAsLegacy(IMekanismDataMapTypes.INSTANCE.heatedChemicalCoolant());
+        trackAttribute(IMekanismDataMapTypes.INSTANCE.chemicalFuel());
+        trackAttribute(IMekanismDataMapTypes.INSTANCE.chemicalRadioactivity());
+        trackAttribute(IMekanismDataMapTypes.INSTANCE.cooledChemicalCoolant());
+        trackAttribute(IMekanismDataMapTypes.INSTANCE.heatedChemicalCoolant());
     }
 
-    private void trackAsLegacy(DataMapType<Chemical, ? extends IChemicalAttribute> dataMapType) {
+    /**
+     * Tracks an attribute if it is present, and update any related cached states.
+     *
+     * @param dataMapType The type of the attribute to check for and track.
+     *
+     * @since 10.7.11
+     */
+    protected void trackAttribute(DataMapType<Chemical, ? extends IChemicalAttribute> dataMapType) {
         IChemicalAttribute attribute = builtInRegistryHolder().getData(dataMapType);
         if (attribute != null) {
             attributes.add(attribute);
-            ChemicalAttribute legacyAttribute = attribute.toLegacyAttribute();
-            attributeMap.put(legacyAttribute.getClass(), legacyAttribute);
             if (attribute instanceof ChemicalRadioactivity(double rads)) {
                 radioactivity = rads;
             } else {

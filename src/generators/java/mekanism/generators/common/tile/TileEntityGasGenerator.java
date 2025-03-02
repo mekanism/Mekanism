@@ -40,9 +40,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class TileEntityGasGenerator extends TileEntityGenerator {
 
-    //TODO - 1.22: Switch to the new attribute types
-    public static final Predicate<Holder<Chemical>> HAS_FUEL = chemical -> chemical.value().has(Fuel.class);
-    //chemical -> chemical.getData(IMekanismDataMapTypes.INSTANCE.chemicalFuel()) != null;
+    public static final Predicate<Holder<Chemical>> HAS_FUEL = chemical -> chemical.getData(IMekanismDataMapTypes.INSTANCE.chemicalFuel()) != null
+                                                                           || chemical.value().hasLegacy(Fuel.class);//TODO - 1.22 Remove this legacy check
 
     /**
      * The tank this block is storing fuel in.
@@ -218,7 +217,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
             ChemicalFuel fuel = stack.getData(IMekanismDataMapTypes.INSTANCE.chemicalFuel());
             if (fuel == null) {//TODO - 1.22: Remove this handling of legacy data
                 //If there is no fuel in the data map, see if one was set manually on the stack
-                Fuel legacyFuel = stack.get(Fuel.class);
+                Fuel legacyFuel = stack.getLegacy(Fuel.class);
                 if (legacyFuel != null) {
                     //If it was, convert it to the non legacy type
                     return legacyFuel.asModern();

@@ -26,6 +26,7 @@ public interface IChemicalAttributeContainer<SELF extends IChemicalAttributeCont
      *
      * @return if this chemical has the attribute.
      */
+    @Deprecated(forRemoval = true, since = "10.7.11")
     boolean has(Class<? extends ChemicalAttribute> type);
 
     /**
@@ -35,13 +36,20 @@ public interface IChemicalAttributeContainer<SELF extends IChemicalAttributeCont
      *
      * @return attribute instance.
      */
-    @Nullable <ATTRIBUTE extends ChemicalAttribute> ATTRIBUTE get(Class<ATTRIBUTE> type);
+    @Nullable
+    @Deprecated(forRemoval = true, since = "10.7.11")
+    <ATTRIBUTE extends ChemicalAttribute> ATTRIBUTE get(Class<ATTRIBUTE> type);
+
+    @Nullable
+    @Deprecated(forRemoval = true, since = "10.7.11")
+    <ATTRIBUTE extends ChemicalAttribute> ATTRIBUTE getLegacy(Class<ATTRIBUTE> type);
 
     /**
      * Gets all attribute instances associated with this chemical type.
      *
      * @return collection of attribute instances.
      */
+    @Deprecated(forRemoval = true, since = "10.7.11")
     Collection<ChemicalAttribute> getAttributes();
 
     /**
