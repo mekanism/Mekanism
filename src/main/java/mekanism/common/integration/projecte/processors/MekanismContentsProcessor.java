@@ -115,7 +115,7 @@ public class MekanismContentsProcessor implements IDataComponentProcessor {
         }
         moduleDataEmc = new Reference2LongOpenHashMap<>();
         for (ModuleData<?> moduleData : MekanismAPI.MODULE_REGISTRY) {
-            long emc = emcLookup.applyAsLong(ItemInfo.fromItem(moduleData.getItemProvider()));
+            long emc = emcLookup.applyAsLong(ItemInfo.fromItem(moduleData.getItemHolder()));
             if (emc > 0) {
                 moduleDataEmc.put(moduleData, emc);
             }

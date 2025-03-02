@@ -6,8 +6,6 @@ import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.content.gear.mekasuit.ModuleGeothermalGeneratorUnit;
 import mekanism.generators.common.content.gear.mekasuit.ModuleSolarRechargingUnit;
 
-//Note: We need to declare our item providers like we do so that they don't end up being null due to us referencing these objects from the items
-@SuppressWarnings({"Convert2MethodRef", "FunctionalExpressionCanBeFolded"})
 public class GeneratorsModules {
 
     private GeneratorsModules() {
@@ -17,9 +15,9 @@ public class GeneratorsModules {
 
     //Helmet
     public static final ModuleRegistryObject<ModuleSolarRechargingUnit> SOLAR_RECHARGING_UNIT = MODULES.registerInstanced("solar_recharging_unit",
-          ModuleSolarRechargingUnit::new, () -> GeneratorsItems.MODULE_SOLAR_RECHARGING.asItem(), builder -> builder.maxStackSize(8));
+          ModuleSolarRechargingUnit::new, () -> GeneratorsItems.MODULE_SOLAR_RECHARGING, builder -> builder.maxStackSize(8));
 
     //Pants
     public static final ModuleRegistryObject<ModuleGeothermalGeneratorUnit> GEOTHERMAL_GENERATOR_UNIT = MODULES.registerInstanced("geothermal_generator_unit",
-          ModuleGeothermalGeneratorUnit::new, () -> GeneratorsItems.MODULE_GEOTHERMAL_GENERATOR.asItem(), builder -> builder.maxStackSize(8));
+          ModuleGeothermalGeneratorUnit::new, () -> GeneratorsItems.MODULE_GEOTHERMAL_GENERATOR, builder -> builder.maxStackSize(8));
 }

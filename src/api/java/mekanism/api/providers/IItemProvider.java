@@ -10,6 +10,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 
 @MethodsReturnNonnullByDefault
+@Deprecated(forRemoval = true, since = "10.7.11")
 public interface IItemProvider extends IBaseProvider, ItemLike {
 
     /**
@@ -17,7 +18,6 @@ public interface IItemProvider extends IBaseProvider, ItemLike {
      *
      * @since 10.7.11
      */
-    @SuppressWarnings("deprecation")
     default Holder<Item> getItemHolder() {
         return asItem().builtInRegistryHolder();
     }

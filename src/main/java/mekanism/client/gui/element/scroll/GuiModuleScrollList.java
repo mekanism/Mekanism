@@ -110,7 +110,7 @@ public class GuiModuleScrollList extends GuiInstallableScrollList<ModuleData<?>>
 
     @Override
     protected ItemStack getRenderStack(ModuleData<?> moduleData) {
-        return moduleData.getItemProvider().getItemStack();
+        return new ItemStack(moduleData.getItemHolder());
     }
 
     @Override

@@ -6,18 +6,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import mekanism.api.providers.IItemProvider;
 import mekanism.common.attachments.IAttachmentAware;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.attachments.containers.creator.IContainerCreator;
 import mekanism.common.capabilities.ICapabilityAware;
 import mekanism.common.config.IMekanismConfig;
 import mekanism.common.registration.MekanismDeferredHolder;
-import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.util.INBTSerializable;
@@ -25,7 +23,7 @@ import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ItemRegistryObject<ITEM extends Item> extends MekanismDeferredHolder<Item, ITEM> implements IItemProvider {
+public class ItemRegistryObject<ITEM extends Item> extends MekanismDeferredHolder<Item, ITEM> implements ItemLike {
 
     @Nullable
     private Map<ContainerType<?, ?, ?>, Supplier<? extends IContainerCreator<?, ?>>> defaultCreators;
@@ -40,18 +38,6 @@ public class ItemRegistryObject<ITEM extends Item> extends MekanismDeferredHolde
     @Override
     public ITEM asItem() {
         return value();
-    }
-
-    @NotNull
-    @Override
-    public ResourceLocation getRegistryName() {
-        return getId();
-    }
-
-    @NotNull
-    @Override
-    public Holder<Item> getItemHolder() {
-        return this;
     }
 
     @Internal

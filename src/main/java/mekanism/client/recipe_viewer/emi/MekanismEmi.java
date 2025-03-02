@@ -23,6 +23,7 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
+import mekanism.api.gear.ModuleData;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.RotaryRecipe;
@@ -276,7 +277,10 @@ public class MekanismEmi implements EmiPlugin {
         registry.addRecipe(new EmiInfoRecipe(List.of(EmiStack.of(MekanismFluids.HEAVY_WATER.value())), List.of(
               MekanismLang.RECIPE_VIEWER_INFO_HEAVY_WATER.translate(MekanismConfig.general.pumpHeavyWaterAmount.get())
         ), Mekanism.rl("info/heavy_water")));
-        registry.addRecipe(new EmiInfoRecipe(MekanismAPI.MODULE_REGISTRY.stream().<EmiIngredient>map(data -> EmiStack.of(data.getItemProvider())).toList(), List.of(
+        registry.addRecipe(new EmiInfoRecipe(MekanismAPI.MODULE_REGISTRY.stream()
+              .map(ModuleData::getItemHolder)
+              .<EmiIngredient>map(item -> EmiStack.of(item.value()))
+              .toList(), List.of(
               MekanismLang.RECIPE_VIEWER_INFO_MODULE_INSTALLATION.translate()
         ), Mekanism.rl("info/module_installation")));
     }
