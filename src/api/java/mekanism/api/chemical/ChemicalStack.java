@@ -371,7 +371,8 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
      */
     @Deprecated(forRemoval = true, since = "10.7.11")
     public ResourceLocation getTypeRegistryName() {
-        return getChemical().getRegistryName();
+        ResourceKey<?> key = getChemicalHolder().getKey();
+        return key == null ? MekanismAPI.CHEMICAL_REGISTRY.getDefaultKey() : key.location();
     }
 
     /**

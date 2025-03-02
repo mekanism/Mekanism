@@ -89,7 +89,7 @@ public class ChemicalEmiStack extends EmiStack {
     @Override
     public ResourceLocation getId() {
         ResourceKey<Chemical> key = chemical.getKey();
-        return key == null ? MekanismAPI.EMPTY_CHEMICAL_KEY.location() : key.location();
+        return key == null ? MekanismAPI.CHEMICAL_REGISTRY.getDefaultKey() : key.location();
     }
 
     @Override
