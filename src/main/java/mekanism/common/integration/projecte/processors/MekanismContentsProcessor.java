@@ -89,7 +89,7 @@ public class MekanismContentsProcessor implements IDataComponentProcessor {
         }
         //Stored modules
         for (IModule<?> module : IModuleHelper.INSTANCE.getAllModules(stack)) {
-            long moduleEmc = moduleDataEmc.getLong(module.getData());
+            long moduleEmc = moduleDataEmc.getLong(module.getUntypedData());
             if (moduleEmc == 0) {
                 //A module is stored that doesn't have an emc value. Don't allow consuming it
                 return 0;

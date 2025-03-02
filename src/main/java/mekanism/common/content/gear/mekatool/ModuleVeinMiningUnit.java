@@ -102,7 +102,7 @@ public record ModuleVeinMiningUnit(boolean extended, ExcavationRange excavationR
     }
 
     private void toggleExtended(IModule<ModuleVeinMiningUnit> module, IModuleContainer moduleContainer, ItemStack stack, HolderLookup.Provider provider) {
-        moduleContainer.replaceModuleConfig(provider, stack, module.getData(), module.<Boolean>getConfigOrThrow(EXTENDED_MODE).with(!extended));
+        moduleContainer.replaceModuleConfig(provider, stack, module.getDataHolder(), module.<Boolean>getConfigOrThrow(EXTENDED_MODE).with(!extended));
     }
 
     @Override

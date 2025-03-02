@@ -516,7 +516,7 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
         if (!legacyAttributeMap.isEmpty()) {
             //Only loop the legacy attributes if we have any, don't bother looping the attribute map that contains the modern attributes as legacy ones
             Consumer<Component> tooltipAdder = tooltips::add;
-            for (ChemicalAttribute attr : legacyAttributeMap.values()) {
+            for (ChemicalAttribute attr : getLegacyAttributes()) {
                 attr.collectTooltips(tooltipAdder);
             }
         }

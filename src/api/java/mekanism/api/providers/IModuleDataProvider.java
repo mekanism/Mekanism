@@ -8,6 +8,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.resources.ResourceLocation;
 
 @MethodsReturnNonnullByDefault
+@Deprecated(forRemoval = true, since = "10.7.11")
 public interface IModuleDataProvider<MODULE extends ICustomModule<MODULE>> extends IBaseProvider {
 
     /**

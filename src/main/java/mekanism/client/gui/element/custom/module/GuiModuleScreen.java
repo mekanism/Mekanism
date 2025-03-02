@@ -67,12 +67,12 @@ public class GuiModuleScreen extends GuiScrollableElement {
                 ResourceLocation name = configItem.name();
                 MiniElement<?> element = switch (configItem) {
                     // Don't show the enabled option if this is enabled by default
-                    case ModuleBooleanConfig config when !name.equals(ModuleConfig.ENABLED_KEY) || !module.getData().isNoDisable() ->
+                    case ModuleBooleanConfig config when !name.equals(ModuleConfig.ENABLED_KEY) || !module.getUntypedData().isNoDisable() ->
                           new BooleanToggle(this, config, description, 2, startY);
                     case ModuleEnumConfig<?> config -> {
                         EnumToggle<?> toggle = new EnumToggle<>(this, config, description, 2, startY);
                         // allow the dragger to continue sliding, even when we reset the config element
-                        if (currentModule != null && currentModule.getData() == module.getData() && miniElements.get(name) instanceof EnumToggle<?> enumToggle) {
+                        if (currentModule != null && currentModule.getUntypedData() == module.getUntypedData() && miniElements.get(name) instanceof EnumToggle<?> enumToggle) {
                             toggle.dragging = enumToggle.dragging;
                         }
                         yield toggle;
@@ -97,10 +97,10 @@ public class GuiModuleScreen extends GuiScrollableElement {
     private static int getStartY(@Nullable IModule<?> module) {
         int startY = ELEMENT_SPACER + 1;
         if (module != null) {
-            if (module.getData().isExclusive(ExclusiveFlag.ANY)) {
+            if (module.getUntypedData().isExclusive(ExclusiveFlag.ANY)) {
                 startY += 13;
             }
-            if (module.getData().getMaxStackSize() > 1) {
+            if (module.getUntypedData().getMaxStackSize() > 1) {
                 startY += 13;
             }
         }
@@ -193,14 +193,14 @@ public class GuiModuleScreen extends GuiScrollableElement {
         scissorScreen(guiGraphics, mx, my, (g, mouseX, mouseY, module, shift) -> {
             int startY = ELEMENT_SPACER + 1;
             if (module != null) {
-                if (module.getData().isExclusive(ExclusiveFlag.ANY)) {
+                if (module.getUntypedData().isExclusive(ExclusiveFlag.ANY)) {
                     if (startY + 13 > shift) {
                         drawScaledScrollingString(g, MekanismLang.MODULE_EXCLUSIVE.translate(), 2, startY, TextAlignment.LEFT, 0x635BD4,
                               getScreenWidth() - GuiScrollList.TEXTURE_WIDTH, 2, false, 0.8F);
                     }
                     startY += 13;
                 }
-                if (module.getData().getMaxStackSize() > 1) {
+                if (module.getUntypedData().getMaxStackSize() > 1) {
                     if (startY + 13 > shift) {
                         drawScaledScrollingString(g, MekanismLang.MODULE_INSTALLED.translate(module.getInstalledCount()), 2, startY, TextAlignment.LEFT, screenTextColor(),
                               getScreenWidth() - GuiScrollList.TEXTURE_WIDTH, 2, false, 0.8F);

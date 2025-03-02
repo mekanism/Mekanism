@@ -336,7 +336,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
             if (isModuleEnabled(stack, MekanismModules.JETPACK_UNIT)) {
                 return ChemicalUtil.hasChemicalOfType(stack, MekanismChemicals.HYDROGEN.get());
             }
-            return getModules(stack).stream().anyMatch(module -> module.isEnabled() && module.getData().isExclusive(ExclusiveFlag.OVERRIDE_JUMP.getMask()));
+            return getModules(stack).stream().anyMatch(module -> module.isEnabled() && module.getUntypedData().isExclusive(ExclusiveFlag.OVERRIDE_JUMP.getMask()));
         }
         return false;
     }

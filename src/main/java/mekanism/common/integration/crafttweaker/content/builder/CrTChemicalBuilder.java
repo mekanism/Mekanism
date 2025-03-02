@@ -32,6 +32,7 @@ public class CrTChemicalBuilder {
      * @param attribute Attribute to add.
      */
     @ZenCodeType.Method
+    @Deprecated(forRemoval = true, since = "10.7.11")
     public CrTChemicalBuilder with(ChemicalAttribute attribute) {
         builder.with(attribute);
         return this;

@@ -33,6 +33,7 @@ public class ChemicalBuilder {
      *
      * @param attribute Attribute to add.
      */
+    @Deprecated(forRemoval = true, since = "10.7.11")
     public ChemicalBuilder with(ChemicalAttribute attribute) {
         attributeMap.put(attribute.getClass(), attribute);
         return this;
@@ -41,6 +42,7 @@ public class ChemicalBuilder {
     /**
      * Gets the attributes this chemical will have.
      */
+    @Deprecated(forRemoval = true, since = "10.7.11")
     public Map<Class<? extends ChemicalAttribute>, ChemicalAttribute> getAttributeMap() {
         return Collections.unmodifiableMap(attributeMap);
     }

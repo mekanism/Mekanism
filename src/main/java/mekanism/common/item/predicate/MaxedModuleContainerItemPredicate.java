@@ -39,7 +39,7 @@ public class MaxedModuleContainerItemPredicate implements ItemSubPredicate {
             IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainer(stack);
             if (container != null && container.moduleTypes().containsAll(supportedModules)) {
                 for (IModule<?> module : container.modules()) {
-                    if (module.getInstalledCount() != module.getData().getMaxStackSize()) {
+                    if (module.getInstalledCount() != module.getUntypedData().getMaxStackSize()) {
                         return false;
                     }
                 }

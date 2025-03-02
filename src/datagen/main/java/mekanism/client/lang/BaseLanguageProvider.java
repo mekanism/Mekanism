@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 import mekanism.api.gear.ModuleData;
-import mekanism.api.providers.IModuleDataProvider;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.client.lang.FormatSplitter.Component;
 import mekanism.client.recipe_viewer.alias.IAliasedTranslation;
@@ -100,8 +99,8 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
         }
     }
 
-    protected void add(IModuleDataProvider<?> moduleDataProvider, String name, String description) {
-        ModuleData<?> moduleData = moduleDataProvider.getModuleData();
+    protected void add(Holder<ModuleData<?>> moduleDataProvider, String name, String description) {
+        ModuleData<?> moduleData = moduleDataProvider.value();
         add(moduleData.getTranslationKey(), name);
         add(moduleData.getDescriptionTranslationKey(), description);
     }

@@ -9,6 +9,7 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import mekanism.api.MekanismIMC;
 import mekanism.api.MekanismIMC.ModuleContainerTarget;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -25,6 +26,8 @@ import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.TextUtils;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageSource;
@@ -32,6 +35,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.fml.event.lifecycle.InterModProcessEvent;
 import org.jetbrains.annotations.Nullable;
@@ -40,7 +44,7 @@ import org.jetbrains.annotations.Nullable;
  * @apiNote Do not instantiate this class directly as it will be done via the service loader. Instead, access instances of this via {@link IModuleHelper#INSTANCE}
  */
 @NothingNullByDefault
-public class ModuleHelper implements IModuleHelper {//TODO - 1.22: Evaluate moving at least some of this stuff to being defined via datamaps
+public class ModuleHelper implements IModuleHelper {//TODO - 1.22: Evaluate moving at least some of this stuff to being defined via datamaps or at least datapack
 
     public static ModuleHelper get() {
         return (ModuleHelper) INSTANCE;
@@ -90,7 +94,28 @@ public class ModuleHelper implements IModuleHelper {//TODO - 1.22: Evaluate movi
         ImmutableSet.Builder<ModuleData<?>> supportedModulesBuilder = ImmutableSet.builder();
         event.getIMCStream(imcMethod::equals).forEach(message -> {
             Object body = message.messageSupplier().get();
-            if (body instanceof IModuleDataProvider<?> moduleDataProvider) {
+            if (body instanceof Holder<?> holder) {
+                if (holder.value() instanceof ModuleData<?> moduleData) {
+                    supportedModulesBuilder.add(moduleData);
+                    logDebugReceivedIMC(imcMethod, message.senderModId(), moduleData);
+                } else {
+                    //Holder for something other than modules
+                    Mekanism.logger.warn("Received IMC message for '{}' from mod '{}' with an invalid body.", imcMethod, message.senderModId());
+                }
+            } else if (body instanceof HolderSet<?> holderSet) {
+                for (Holder<?> holder : holderSet) {
+                    if (holder.value() instanceof ModuleData<?> moduleData) {
+                        supportedModulesBuilder.add(moduleData);
+                        logDebugReceivedIMC(imcMethod, message.senderModId(), moduleData);
+                    } else {
+                        //Holder set for something other than modules
+                        Mekanism.logger.warn("Received IMC message for '{}' from mod '{}' with an invalid body.", imcMethod, message.senderModId());
+                        break;
+                    }
+                }
+            }
+            //TODO - 1.22: Remove these two deprecated branches
+            else if (body instanceof IModuleDataProvider<?> moduleDataProvider) {
                 ModuleData<?> moduleData = moduleDataProvider.getModuleData();
                 supportedModulesBuilder.add(moduleData);
                 logDebugReceivedIMC(imcMethod, message.senderModId(), moduleData);
@@ -118,8 +143,8 @@ public class ModuleHelper implements IModuleHelper {//TODO - 1.22: Evaluate movi
     }
 
     @Override
-    public ItemModule createModuleItem(IModuleDataProvider<?> moduleDataProvider, Item.Properties properties) {
-        return new ItemModule(moduleDataProvider, properties);
+    public ItemModule createModuleItem(Supplier<Holder<ModuleData<?>>> moduleDataSupplier, Properties properties) {
+        return new ItemModule(moduleDataSupplier, properties);
     }
 
     @Override
@@ -138,17 +163,17 @@ public class ModuleHelper implements IModuleHelper {//TODO - 1.22: Evaluate movi
     }
 
     @Override
-    public Set<Item> getSupported(IModuleDataProvider<?> typeProvider) {
-        return supportedContainers.getOrDefault(typeProvider.getModuleData(), Collections.emptySet());
+    public Set<Item> getSupportedItems(Holder<ModuleData<?>> typeProvider) {
+        return supportedContainers.getOrDefault(typeProvider.value(), Collections.emptySet());
     }
 
     @Override
-    public Set<ModuleData<?>> getConflicting(IModuleDataProvider<?> typeProvider) {
-        ModuleData<?> moduleType = typeProvider.getModuleData();
+    public Set<ModuleData<?>> getConflicting(Holder<ModuleData<?>> type) {
+        ModuleData<?> moduleType = type.value();
         Set<ModuleData<?>> conflicting = conflictingModules.get(moduleType);
         if (conflicting == null) {
             conflicting = new ReferenceOpenHashSet<>();
-            for (Item item : getSupported(moduleType)) {
+            for (Item item : getSupportedItems(type)) {
                 for (ModuleData<?> other : getSupported(item)) {
                     if (moduleType != other && moduleType.isExclusive(other.getExclusiveFlags())) {
                         conflicting.add(other);
@@ -193,7 +218,7 @@ public class ModuleHelper implements IModuleHelper {//TODO - 1.22: Evaluate movi
     }
 
     @Override
-    public synchronized void addMekaSuitModuleModelSpec(String name, IModuleDataProvider<?> moduleDataProvider, EquipmentSlot slotType, Predicate<LivingEntity> isActive) {
-        MekaSuitArmor.registerModule(name, moduleDataProvider, slotType, isActive);
+    public synchronized void addMekaSuitModuleModelSpec(String name, Holder<ModuleData<?>> moduleData, EquipmentSlot slotType, Predicate<LivingEntity> isActive) {
+        MekaSuitArmor.registerModule(name, moduleData, slotType, isActive);
     }
 }

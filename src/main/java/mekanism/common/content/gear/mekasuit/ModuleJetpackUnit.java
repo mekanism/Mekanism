@@ -63,7 +63,7 @@ public record ModuleJetpackUnit(JetpackMode mode, ThrustMultiplier thrustMultipl
             if (displayChangeMessage) {
                 module.displayModeChange(player, MekanismLang.MODULE_JETPACK_MODE.translate(), newMode);
             }
-            moduleContainer.replaceModuleConfig(player.registryAccess(), stack, module.getData(), module.<JetpackMode>getConfigOrThrow(JETPACK_MODE).with(newMode));
+            moduleContainer.replaceModuleConfig(player.registryAccess(), stack, module.getDataHolder(), module.<JetpackMode>getConfigOrThrow(JETPACK_MODE).with(newMode));
         }
     }
 

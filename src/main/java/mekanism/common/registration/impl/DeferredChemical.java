@@ -5,7 +5,6 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.registration.MekanismDeferredHolder;
-import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import org.jetbrains.annotations.NotNull;
@@ -30,9 +29,5 @@ public class DeferredChemical<TYPE extends Chemical> extends MekanismDeferredHol
 
     public ChemicalStack asStack(long size) {
         return new ChemicalStack(this, size);
-    }
-
-    public boolean keyMatches(Holder<Chemical> holder) {
-        return holder.is(getKey());
     }
 }

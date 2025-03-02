@@ -113,7 +113,7 @@ public interface RVAliasHelper<ITEM, FLUID, CHEMICAL> {
     default void addModuleAliases(ItemDeferredRegister items) {
         for (DeferredHolder<Item, ? extends Item> entry : items.getEntries()) {
             if (entry.get() instanceof IModuleItem module) {
-                addAliases(entry.get(), IModuleHelper.INSTANCE.getSupported(module.getModuleData())
+                addAliases(entry.get(), IModuleHelper.INSTANCE.getSupportedItems(module.getModuleData())
                       .stream()
                       .map(item -> (IHasTranslationKey) item::getDescriptionId)
                       .toArray(IHasTranslationKey[]::new)

@@ -46,7 +46,7 @@ public class GuiModificationStation extends GuiMekanismTile<TileEntityModificati
         addRenderableWidget(new GuiProgress(tile::getScaledProgress, ProgressType.LARGE_RIGHT, this, 65, 123));
         removeButton = addRenderableWidget(new TranslationButton(this, 28, 96, 120, 17, MekanismLang.BUTTON_REMOVE, (element, mouseX, mouseY) -> {
             GuiModificationStation gui = (GuiModificationStation) element.gui();
-            return PacketUtils.sendToServer(new PacketRemoveModule(gui.tile.getBlockPos(), gui.selectedModule.getData(), Screen.hasShiftDown()));
+            return PacketUtils.sendToServer(new PacketRemoveModule(gui.tile.getBlockPos(), gui.selectedModule.getDataHolder(), Screen.hasShiftDown()));
         })).setTooltip(MekanismLang.REMOVE_ALL_MODULES_TOOLTIP);
         removeButton.active = selectedModule != null;
 

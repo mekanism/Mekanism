@@ -7,6 +7,7 @@ import mekanism.common.network.IMekanismPacket;
 import mekanism.common.tile.TileEntityModificationStation;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -15,12 +16,12 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-public record PacketRemoveModule(BlockPos pos, ModuleData<?> moduleType, boolean removeAll) implements IMekanismPacket {
+public record PacketRemoveModule(BlockPos pos, Holder<ModuleData<?>> moduleType, boolean removeAll) implements IMekanismPacket {
 
     public static final CustomPacketPayload.Type<PacketRemoveModule> TYPE = new CustomPacketPayload.Type<>(Mekanism.rl("remove_module"));
     public static final StreamCodec<RegistryFriendlyByteBuf, PacketRemoveModule> STREAM_CODEC = StreamCodec.composite(
           BlockPos.STREAM_CODEC, PacketRemoveModule::pos,
-          ByteBufCodecs.registry(MekanismAPI.MODULE_REGISTRY_NAME), PacketRemoveModule::moduleType,
+          ByteBufCodecs.holderRegistry(MekanismAPI.MODULE_REGISTRY_NAME), PacketRemoveModule::moduleType,
           ByteBufCodecs.BOOL, PacketRemoveModule::removeAll,
           PacketRemoveModule::new
     );

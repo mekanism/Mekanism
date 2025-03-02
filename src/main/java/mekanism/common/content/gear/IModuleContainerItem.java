@@ -7,18 +7,19 @@ import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData;
-import mekanism.api.providers.IModuleDataProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
 import mekanism.common.item.interfaces.IHasConditionalAttributes;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IModeItem;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -52,13 +53,13 @@ public interface IModuleContainerItem extends IModeItem, IItemHUDProvider, IHasC
     }
 
     @Nullable
-    default <MODULE extends ICustomModule<MODULE>> IModule<MODULE> getEnabledModule(ItemStack stack, IModuleDataProvider<MODULE> typeProvider) {
-        return IModuleHelper.INSTANCE.getIfEnabled(stack, typeProvider);
+    default <MODULE extends ICustomModule<MODULE>> IModule<MODULE> getEnabledModule(ItemStack stack, DeferredHolder<ModuleData<?>, ModuleData<MODULE>> type) {
+        return IModuleHelper.INSTANCE.getIfEnabled(stack, type);
     }
 
     default void addModuleDetails(ItemStack stack, List<Component> tooltip) {
         for (IModule<?> module : getModules(stack)) {
-            ModuleData<?> data = module.getData();
+            ModuleData<?> data = module.getUntypedData();
             if (module.getInstalledCount() > 1) {
                 Component amount = MekanismLang.GENERIC_FRACTION.translate(module.getInstalledCount(), data.getMaxStackSize());
                 tooltip.add(MekanismLang.GENERIC_WITH_PARENTHESIS.translateColored(EnumColor.GRAY, data, amount));
@@ -68,12 +69,12 @@ public interface IModuleContainerItem extends IModeItem, IItemHUDProvider, IHasC
         }
     }
 
-    default boolean hasModule(ItemStack stack, IModuleDataProvider<?> type) {
+    default boolean hasModule(ItemStack stack, Holder<ModuleData<?>> type) {
         IModuleContainer container = moduleContainer(stack);
         return container != null && container.has(type);
     }
 
-    default boolean isModuleEnabled(ItemStack stack, IModuleDataProvider<?> type) {
+    default boolean isModuleEnabled(ItemStack stack, Holder<ModuleData<?>> type) {
         return IModuleHelper.INSTANCE.isEnabled(stack, type);
     }
 
