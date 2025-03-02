@@ -1,6 +1,5 @@
 package mekanism.common.tile.multiblock;
 
-import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.content.matrix.MatrixMultiblockData;
 import mekanism.common.inventory.container.MekanismContainer;

@@ -58,21 +58,21 @@ class MetallurgicInfuserRecipeProvider implements ISubRecipeProvider {
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               IngredientCreatorAccess.item().from(Tags.Items.INGOTS_COPPER),
               IngredientCreatorAccess.chemicalStack().from(MekanismAPITags.Chemicals.REDSTONE, 10),
-              MekanismItems.INFUSED_ALLOY.getItemStack(),
+              MekanismItems.INFUSED_ALLOY.asStack(),
               false
         ).build(consumer, Mekanism.rl(basePath + "infused"));
         //Reinforced
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               IngredientCreatorAccess.item().from(MekanismTags.Items.ALLOYS_INFUSED),
               IngredientCreatorAccess.chemicalStack().from(MekanismAPITags.Chemicals.DIAMOND, 20),
-              MekanismItems.REINFORCED_ALLOY.getItemStack(),
+              MekanismItems.REINFORCED_ALLOY.asStack(),
               false
         ).build(consumer, Mekanism.rl(basePath + "reinforced"));
         //Atomic
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               IngredientCreatorAccess.item().from(MekanismTags.Items.ALLOYS_REINFORCED),
               IngredientCreatorAccess.chemicalStack().from(MekanismAPITags.Chemicals.REFINED_OBSIDIAN, 40),
-              MekanismItems.ATOMIC_ALLOY.getItemStack(),
+              MekanismItems.ATOMIC_ALLOY.asStack(),
               false
         ).build(consumer, Mekanism.rl(basePath + "atomic"));
     }

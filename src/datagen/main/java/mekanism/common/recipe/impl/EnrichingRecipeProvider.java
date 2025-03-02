@@ -38,7 +38,7 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
         //Charcoal dust
         ItemStackToItemStackRecipeBuilder.enriching(
               IngredientCreatorAccess.item().from(MekanismTags.Items.DUSTS_WOOD, 8),
-              MekanismItems.CHARCOAL_DUST.getItemStack()
+              MekanismItems.CHARCOAL_DUST.asStack()
         ).build(consumer, Mekanism.rl(basePath + "charcoal_dust"));
         //Clay ball
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -53,12 +53,12 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
         //HDPE Sheet
         ItemStackToItemStackRecipeBuilder.enriching(
               IngredientCreatorAccess.item().from(MekanismItems.HDPE_PELLET, 3),
-              MekanismItems.HDPE_SHEET.getItemStack()
+              MekanismItems.HDPE_SHEET.asStack()
         ).build(consumer, Mekanism.rl(basePath + "hdpe_sheet"));
         //Salt
         ItemStackToItemStackRecipeBuilder.enriching(
               IngredientCreatorAccess.item().from(MekanismBlocks.SALT_BLOCK),
-              MekanismItems.SALT.getItemStack(4)
+              MekanismItems.SALT.asStack(4)
         ).build(consumer, Mekanism.rl(basePath + "salt"));
         //String
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -580,32 +580,32 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
         //Carbon
         ItemStackToItemStackRecipeBuilder.enriching(
               IngredientCreatorAccess.item().from(ItemTags.COALS),
-              MekanismItems.ENRICHED_CARBON.getItemStack()
+              MekanismItems.ENRICHED_CARBON.asStack()
         ).build(consumer, Mekanism.rl(basePath + "carbon"));
         //Diamond
         ItemStackToItemStackRecipeBuilder.enriching(
               IngredientCreatorAccess.item().from(Tags.Items.GEMS_DIAMOND),
-              MekanismItems.ENRICHED_DIAMOND.getItemStack()
+              MekanismItems.ENRICHED_DIAMOND.asStack()
         ).build(consumer, Mekanism.rl(basePath + "diamond"));
         //Redstone
         ItemStackToItemStackRecipeBuilder.enriching(
               IngredientCreatorAccess.item().from(Tags.Items.DUSTS_REDSTONE),
-              MekanismItems.ENRICHED_REDSTONE.getItemStack()
+              MekanismItems.ENRICHED_REDSTONE.asStack()
         ).build(consumer, Mekanism.rl(basePath + "redstone"));
         //Refined Obsidian
         ItemStackToItemStackRecipeBuilder.enriching(
               IngredientCreatorAccess.item().from(MekanismTags.Items.DUSTS_REFINED_OBSIDIAN),
-              MekanismItems.ENRICHED_OBSIDIAN.getItemStack()
+              MekanismItems.ENRICHED_OBSIDIAN.asStack()
         ).build(consumer, Mekanism.rl(basePath + "refined_obsidian"));
         //Gold
         ItemStackToItemStackRecipeBuilder.enriching(
               IngredientCreatorAccess.item().from(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.GOLD)),
-              MekanismItems.ENRICHED_GOLD.getItemStack()
+              MekanismItems.ENRICHED_GOLD.asStack()
         ).build(consumer, Mekanism.rl(basePath + "gold"));
         //Tin
         ItemStackToItemStackRecipeBuilder.enriching(
               IngredientCreatorAccess.item().from(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.TIN)),
-              MekanismItems.ENRICHED_TIN.getItemStack()
+              MekanismItems.ENRICHED_TIN.asStack()
         ).build(consumer, Mekanism.rl(basePath + "tin"));
     }
 }

@@ -1647,7 +1647,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               IngredientCreatorAccess.fluid().from(FluidTags.WATER, 1_000),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.PLUTONIUM, 1_000),
               100,
-              MekanismItems.PLUTONIUM_PELLET.getItemStack(),
+              MekanismItems.PLUTONIUM_PELLET.asStack(),
               MekanismChemicals.SPENT_NUCLEAR_WASTE.getStack(1_000)
         ).build(consumer, Mekanism.rl(basePath + "plutonium_pellet/from_reaction"));
         //polonium pellet
@@ -1656,14 +1656,14 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               IngredientCreatorAccess.fluid().from(FluidTags.WATER, 1_000),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.POLONIUM, 1_000),
               100,
-              MekanismItems.POLONIUM_PELLET.getItemStack(),
+              MekanismItems.POLONIUM_PELLET.asStack(),
               MekanismChemicals.SPENT_NUCLEAR_WASTE.getStack(1_000)
         ).build(consumer, Mekanism.rl(basePath + "polonium_pellet/from_reaction"));
 
         //antimatter pellet
         ChemicalCrystallizerRecipeBuilder.crystallizing(
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.ANTIMATTER, 1_000),
-              MekanismItems.ANTIMATTER_PELLET.getItemStack()
+              MekanismItems.ANTIMATTER_PELLET.asStack()
         ).build(consumer, Mekanism.rl(basePath + "antimatter_pellet/from_gas"));
 
         //back to antimatter

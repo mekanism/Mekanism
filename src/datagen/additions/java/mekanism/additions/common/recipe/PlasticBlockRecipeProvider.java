@@ -185,7 +185,7 @@ public class PlasticBlockRecipeProvider implements ISubRecipeProvider {
         //Enriching recipes
         ItemStackToItemStackRecipeBuilder.enriching(
               IngredientCreatorAccess.item().from(plastic),
-              result.getItemStack()
+              new ItemStack(result)
         ).build(consumer, MekanismAdditions.rl(basePath + "enriching/" + colorString));
         //Recolor recipes
         registerRecolor(consumer, result, AdditionsTags.Items.PLASTIC_BLOCKS_SLICK, color, basePath);

@@ -6,7 +6,6 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.math.MathUtils;
-import mekanism.api.providers.IBlockProvider;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;

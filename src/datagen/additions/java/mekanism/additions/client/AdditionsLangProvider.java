@@ -15,8 +15,8 @@ import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
 import mekanism.additions.common.registries.AdditionsItems;
 import mekanism.additions.common.registries.AdditionsSounds;
-import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
+import mekanism.api.text.IHasTranslationKey;
 import mekanism.client.lang.BaseLanguageProvider;
 import mekanism.common.registration.impl.ItemRegistryObject;
 import net.minecraft.data.PackOutput;
@@ -151,8 +151,8 @@ public class AdditionsLangProvider extends BaseLanguageProvider {
         add(AdditionsLang.DESCRIPTION_OBSIDIAN_TNT, "An extremely powerful, obsidian-infused block of TNT. Use at your own peril.");
     }
 
-    private void addColoredBlocks(Map<EnumColor, ? extends IBlockProvider> blocks, String suffix) {
-        for (Map.Entry<EnumColor, ? extends IBlockProvider> entry : blocks.entrySet()) {
+    private void addColoredBlocks(Map<EnumColor, ? extends IHasTranslationKey> blocks, String suffix) {
+        for (Map.Entry<EnumColor, ? extends IHasTranslationKey> entry : blocks.entrySet()) {
             add(entry.getValue(), entry.getKey().getEnglishName() + " " + suffix);
         }
     }

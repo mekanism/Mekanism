@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import mekanism.api.text.IHasTextComponent;
+import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.attachments.IAttachmentAware;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.attachments.containers.creator.IContainerCreator;
@@ -13,8 +15,10 @@ import mekanism.common.capabilities.ICapabilityAware;
 import mekanism.common.config.IMekanismConfig;
 import mekanism.common.registration.MekanismDeferredHolder;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
@@ -23,7 +27,7 @@ import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ItemRegistryObject<ITEM extends Item> extends MekanismDeferredHolder<Item, ITEM> implements ItemLike {
+public class ItemRegistryObject<ITEM extends Item> extends MekanismDeferredHolder<Item, ITEM> implements ItemLike, IHasTextComponent, IHasTranslationKey {
 
     @Nullable
     private Map<ContainerType<?, ?, ?>, Supplier<? extends IContainerCreator<?, ?>>> defaultCreators;
@@ -38,6 +42,26 @@ public class ItemRegistryObject<ITEM extends Item> extends MekanismDeferredHolde
     @Override
     public ITEM asItem() {
         return value();
+    }
+
+    public ItemStack asStack() {
+        return asStack(1);
+    }
+
+    public ItemStack asStack(int count) {
+        return new ItemStack(asItem(), count);
+    }
+
+    @NotNull
+    @Override
+    public String getTranslationKey() {
+        return asItem().getDescriptionId();
+    }
+
+    @NotNull
+    @Override
+    public Component getTextComponent() {
+        return asItem().getDescription();
     }
 
     @Internal

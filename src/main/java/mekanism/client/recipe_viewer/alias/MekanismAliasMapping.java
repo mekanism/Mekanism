@@ -21,6 +21,7 @@ import mekanism.common.util.StorageUtils;
 import net.minecraft.Util;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -233,10 +234,10 @@ public final class MekanismAliasMapping implements IAliasMapping {
         );
 
         rv.addItemAliases(List.of(
-              MekanismBlocks.BASIC_ENERGY_CUBE.getItemStack(),
-              MekanismBlocks.ADVANCED_ENERGY_CUBE.getItemStack(),
-              MekanismBlocks.ELITE_ENERGY_CUBE.getItemStack(),
-              MekanismBlocks.ULTIMATE_ENERGY_CUBE.getItemStack(),
+              new ItemStack(MekanismBlocks.BASIC_ENERGY_CUBE),
+              new ItemStack(MekanismBlocks.ADVANCED_ENERGY_CUBE),
+                    new ItemStack(MekanismBlocks.ELITE_ENERGY_CUBE),
+                          new ItemStack(MekanismBlocks.ULTIMATE_ENERGY_CUBE),
               StorageUtils.getFilledEnergyVariant(
                     ItemBlockEnergyCube.withEnergyCubeSideConfig(MekanismBlocks.CREATIVE_ENERGY_CUBE, ItemBlockEnergyCube.ALL_OUTPUT)
               )
@@ -244,9 +245,9 @@ public final class MekanismAliasMapping implements IAliasMapping {
         rv.addAliases(MekanismItems.ENERGY_TABLET, MekanismAliases.ENERGY_STORAGE, MekanismAliases.ENERGY_STORAGE_BATTERY);
 
         rv.addItemAliases(List.of(
-              MekanismBlocks.CREATIVE_BIN.getItemStack(),
-              MekanismBlocks.CREATIVE_FLUID_TANK.getItemStack(),
-              MekanismBlocks.CREATIVE_CHEMICAL_TANK.getItemStack(),
+              new ItemStack(MekanismBlocks.CREATIVE_BIN),
+              new ItemStack(MekanismBlocks.CREATIVE_FLUID_TANK),
+              new ItemStack(MekanismBlocks.CREATIVE_CHEMICAL_TANK),
               ItemBlockEnergyCube.withEnergyCubeSideConfig(MekanismBlocks.CREATIVE_ENERGY_CUBE, ItemBlockEnergyCube.ALL_INPUT)
         ), MekanismAliases.STORAGE_TRASHCAN, MekanismAliases.STORAGE_VOID);
     }

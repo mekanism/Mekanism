@@ -24,7 +24,7 @@ public class ItemBlockInductionProvider extends ItemBlockTooltip<BlockTile<TileE
     @Override
     @NotNull
     public InductionProviderTier getTier() {
-        return Attribute.getTier(getBlockHolder(), InductionProviderTier.class);
+        return Attribute.getTier(getBlock(), InductionProviderTier.class);
     }
 
     @Override

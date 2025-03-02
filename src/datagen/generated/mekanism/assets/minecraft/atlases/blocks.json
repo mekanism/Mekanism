@@ -50,14 +50,6 @@
     },
     {
       "type": "minecraft:single",
-      "resource": "mekanism:pigment/base"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:liquid/steam"
-    },
-    {
-      "type": "minecraft:single",
       "resource": "mekanism:liquid/liquid"
     },
     {
@@ -66,11 +58,7 @@
     },
     {
       "type": "minecraft:single",
-      "resource": "mekanism:slurry/clean"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:infuse_type/fungi"
+      "resource": "mekanism:pigment/base"
     },
     {
       "type": "minecraft:single",
@@ -78,7 +66,19 @@
     },
     {
       "type": "minecraft:single",
+      "resource": "mekanism:infuse_type/fungi"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanism:slurry/clean"
+    },
+    {
+      "type": "minecraft:single",
       "resource": "mekanism:infuse_type/bio"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanism:liquid/steam"
     },
     {
       "type": "minecraft:single",

@@ -5,7 +5,6 @@ import java.util.Set;
 import mekanism.api.IContentsListener;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
-import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;

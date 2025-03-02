@@ -60,7 +60,7 @@ public class RecipeProviderUtil {
             if (shouldHandle.test(name.getNamespace())) {
                 ItemStackToItemStackRecipeBuilder builder = ItemStackToItemStackRecipeBuilder.crushing(
                       IngredientCreatorAccess.item().from(input),
-                      MekanismItems.BIO_FUEL.getItemStack(Math.round(chance.getFloatValue() * 8))
+                      MekanismItems.BIO_FUEL.asStack(Math.round(chance.getFloatValue() * 8))
                 );
                 if (condition != null) {
                     builder.addCondition(condition);
@@ -112,7 +112,7 @@ public class RecipeProviderUtil {
             build(consumer, SawmillRecipeBuilder.sawing(
                   IngredientCreatorAccess.item().from(log),
                   new ItemStack(planks, 6),
-                  MekanismItems.SAWDUST.getItemStack(),
+                  MekanismItems.SAWDUST.asStack(),
                   0.25
             ), basePath + "log/" + name, condition);
         }
@@ -121,7 +121,7 @@ public class RecipeProviderUtil {
             build(consumer, SawmillRecipeBuilder.sawing(
                   IngredientCreatorAccess.item().from(hangingSign),
                   new ItemStack(planks, 2),
-                  MekanismItems.SAWDUST.getItemStack(),
+                  MekanismItems.SAWDUST.asStack(),
                   0.5
             ), basePath + "hanging_sign/" + name, condition);
         }
@@ -129,7 +129,7 @@ public class RecipeProviderUtil {
         build(consumer, SawmillRecipeBuilder.sawing(
               IngredientCreatorAccess.item().from(pressurePlate),
               new ItemStack(planks, 1),
-              MekanismItems.SAWDUST.getItemStack(2),
+              MekanismItems.SAWDUST.asStack(2),
               0.25
         ), basePath + "pressure_plate/" + name, condition);
         //Trapdoor

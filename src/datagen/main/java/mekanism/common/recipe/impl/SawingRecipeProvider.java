@@ -128,7 +128,7 @@ class SawingRecipeProvider implements ISubRecipeProvider {
         SawmillRecipeBuilder.sawing(
               IngredientCreatorAccess.item().from(ItemTags.PLANKS),
               new ItemStack(Items.STICK, 6),
-              MekanismItems.SAWDUST.getItemStack(),
+              MekanismItems.SAWDUST.asStack(),
               0.25
         ).build(consumer, Mekanism.rl(basePath + "planks"));
         //Pumpkin
@@ -149,26 +149,26 @@ class SawingRecipeProvider implements ISubRecipeProvider {
         SawmillRecipeBuilder.sawing(
               IngredientCreatorAccess.item().from(ItemTags.WOODEN_SLABS),
               new ItemStack(Items.STICK, 3),
-              MekanismItems.SAWDUST.getItemStack(),
+              MekanismItems.SAWDUST.asStack(),
               0.125
         ).build(consumer, Mekanism.rl(basePath + "slabs"));
         //Stairs
         SawmillRecipeBuilder.sawing(
               IngredientCreatorAccess.item().from(ItemTags.WOODEN_STAIRS),
               new ItemStack(Items.STICK, 9),
-              MekanismItems.SAWDUST.getItemStack(),
+              MekanismItems.SAWDUST.asStack(),
               0.375
         ).build(consumer, Mekanism.rl(basePath + "stairs"));
         //Stick
         SawmillRecipeBuilder.sawing(
               IngredientCreatorAccess.item().from(Tags.Items.RODS_WOODEN),
-              MekanismItems.SAWDUST.getItemStack()
+              MekanismItems.SAWDUST.asStack()
         ).build(consumer, Mekanism.rl(basePath + "stick"));
         //Buttons
         SawmillRecipeBuilder.sawing(
               IngredientCreatorAccess.item().from(ItemTags.WOODEN_BUTTONS),
-              MekanismItems.SAWDUST.getItemStack(),
-              MekanismItems.SAWDUST.getItemStack(),
+              MekanismItems.SAWDUST.asStack(),
+              MekanismItems.SAWDUST.asStack(),
               0.25
         ).build(consumer, Mekanism.rl(basePath + "button"));
         //Signs
@@ -177,7 +177,7 @@ class SawingRecipeProvider implements ISubRecipeProvider {
               // as the only usage of the item tag, so it seems safe to assume any added ones are likely to be burnable
               IngredientCreatorAccess.item().from(ItemTags.SIGNS),
               new ItemStack(Items.STICK, 3),
-              MekanismItems.SAWDUST.getItemStack(),
+              MekanismItems.SAWDUST.asStack(),
               0.25
         ).build(consumer, Mekanism.rl(basePath + "sign"));
         //Torch

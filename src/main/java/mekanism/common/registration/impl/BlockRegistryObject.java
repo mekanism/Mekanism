@@ -1,25 +1,32 @@
 package mekanism.common.registration.impl;
 
 import java.util.function.Consumer;
-import mekanism.api.providers.IBlockProvider;
+import mekanism.api.text.IHasTextComponent;
+import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.registration.DoubleWrappedRegistryObject;
-import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.NotNull;
 
-public class BlockRegistryObject<BLOCK extends Block, ITEM extends Item> extends DoubleWrappedRegistryObject<Block, BLOCK, Item, ITEM> implements IBlockProvider {
+public class BlockRegistryObject<BLOCK extends Block, ITEM extends Item> extends DoubleWrappedRegistryObject<Block, BLOCK, Item, ITEM> implements ItemLike,
+      IHasTextComponent, IHasTranslationKey {
 
     public BlockRegistryObject(DeferredHolder<Block, BLOCK> blockRegistryObject, DeferredHolder<Item, ITEM> itemRegistryObject) {
         super(blockRegistryObject, itemRegistryObject);
     }
 
     @NotNull
-    @Override
     public BLOCK getBlock() {
         return get();
+    }
+
+    @NotNull
+    public BlockState defaultState() {
+        return getBlock().defaultBlockState();
     }
 
     @NotNull
@@ -37,20 +44,19 @@ public class BlockRegistryObject<BLOCK extends Block, ITEM extends Item> extends
     }
 
     @NotNull
-    @Override
-    public ResourceLocation getRegistryName() {
-        return getId();
-    }
-
-    @NotNull
-    @Override
-    public Holder<Block> getBlockHolder() {
-        return this;
-    }
-
-    @NotNull
-    @Override
     public DeferredHolder<Item, ITEM> getItemHolder() {
         return secondaryRO;
+    }
+
+    @NotNull
+    @Override
+    public String getTranslationKey() {
+        return getBlock().getDescriptionId();
+    }
+
+    @NotNull
+    @Override
+    public Component getTextComponent() {
+        return getBlock().getName();
     }
 }

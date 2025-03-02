@@ -3,9 +3,9 @@ package mekanism.common.block.states;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.ToIntFunction;
-import mekanism.api.providers.IBlockProvider;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeState;
+import mekanism.common.registration.impl.BlockRegistryObject;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
@@ -113,7 +113,7 @@ public class BlockStateHelper {
         return state;
     }
 
-    public static BlockState copyStateData(BlockState oldState, @Nullable IBlockProvider newBlockProvider) {
+    public static BlockState copyStateData(BlockState oldState, @Nullable BlockRegistryObject<?, ?> newBlockProvider) {
         if (newBlockProvider == null) {
             return oldState;
         }

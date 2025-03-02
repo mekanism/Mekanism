@@ -36,7 +36,7 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
               IngredientCreatorAccess.fluid().from(FluidTags.WATER, 1_000),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 1_000),
               900,
-              MekanismItems.SULFUR_DUST.getItemStack(9),
+              MekanismItems.SULFUR_DUST.asStack(9),
               MekanismChemicals.HYDROGEN.getStack(1_000)
         ).build(consumer, Mekanism.rl(basePath + "blocks_coals"));
         //Coals
@@ -45,7 +45,7 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
               IngredientCreatorAccess.fluid().from(FluidTags.WATER, 100),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 100),
               100,
-              MekanismItems.SULFUR_DUST.getItemStack(),
+              MekanismItems.SULFUR_DUST.asStack(),
               MekanismChemicals.HYDROGEN.getStack(100)
         ).build(consumer, Mekanism.rl(basePath + "coals"));
         //Dusts
@@ -57,7 +57,7 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
               IngredientCreatorAccess.fluid().from(FluidTags.WATER, 100),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 100),
               100,
-              MekanismItems.SULFUR_DUST.getItemStack(),
+              MekanismItems.SULFUR_DUST.asStack(),
               MekanismChemicals.HYDROGEN.getStack(100)
         ).build(consumer, Mekanism.rl(basePath + "dusts_coals"));
 
@@ -80,7 +80,7 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
               IngredientCreatorAccess.fluid().from(FluidTags.WATER, 400),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 400),
               600,
-              MekanismItems.CHARCOAL_DUST.getItemStack(),
+              MekanismItems.CHARCOAL_DUST.asStack(),
               MekanismChemicals.HYDROGEN.getStack(400)
         ).build(consumer, Mekanism.rl(basePath + "logs"));
         //Planks, each worth a 5th of a log.
@@ -93,7 +93,7 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
               IngredientCreatorAccess.fluid().from(FluidTags.WATER, 400),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 400),
               600,
-              MekanismItems.CHARCOAL_DUST.getItemStack(),
+              MekanismItems.CHARCOAL_DUST.asStack(),
               MekanismChemicals.HYDROGEN.getStack(400)
         ).build(consumer, Mekanism.rl(basePath + "planks"));
         //Rods, each worth a 30th of a log.
@@ -137,7 +137,7 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
                     IngredientCreatorAccess.fluid().from(MekanismTags.Fluids.ETHENE, 50),
                     IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 10),
                     60,
-                    MekanismItems.HDPE_PELLET.getItemStack()
+                    MekanismItems.HDPE_PELLET.asStack()
               ).energyRequired(1_000)
               .build(consumer, Mekanism.rl(basePath + "ethene_oxygen"));
         //Water + ethene
@@ -146,7 +146,7 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
                     IngredientCreatorAccess.fluid().from(FluidTags.WATER, 200),
                     IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.ETHENE, 100),
                     400,
-                    MekanismItems.SUBSTRATE.getItemStack(8),
+                    MekanismItems.SUBSTRATE.asStack(8),
                     MekanismChemicals.OXYGEN.getStack(10)
               ).energyRequired(200)
               .build(consumer, Mekanism.rl(basePath + "water_ethene"));
@@ -156,7 +156,7 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
               IngredientCreatorAccess.fluid().from(FluidTags.WATER, 10),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.HYDROGEN, 100),
               100,
-              MekanismItems.SUBSTRATE.getItemStack(),
+              MekanismItems.SUBSTRATE.asStack(),
               MekanismChemicals.ETHENE.getStack(100)
         ).build(consumer, Mekanism.rl(basePath + "water_hydrogen"));
     }

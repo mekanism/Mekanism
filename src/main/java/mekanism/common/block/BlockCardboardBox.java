@@ -16,6 +16,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -49,7 +50,7 @@ public class BlockCardboardBox extends BlockMekanism implements IStateStorage, I
                     //Can't place it into the world, skip
                     return InteractionResult.PASS;
                 }
-                popResource(world, pos, MekanismBlocks.CARDBOARD_BOX.getItemStack());
+                popResource(world, pos, new ItemStack(MekanismBlocks.CARDBOARD_BOX));
                 MekanismCriteriaTriggers.UNBOX_CARDBOARD_BOX.value().trigger((ServerPlayer) player);
             }
         }

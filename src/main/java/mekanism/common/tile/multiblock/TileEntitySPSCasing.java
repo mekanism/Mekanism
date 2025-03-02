@@ -3,7 +3,6 @@ package mekanism.common.tile.multiblock;
 import java.util.LinkedList;
 import java.util.Queue;
 import mekanism.api.SerializationConstants;
-import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.content.sps.SPSMultiblockData;
 import mekanism.common.lib.multiblock.MultiblockManager;

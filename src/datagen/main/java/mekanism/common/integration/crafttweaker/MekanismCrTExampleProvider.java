@@ -133,7 +133,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               ).blankLine()
               .recipe(ChemicalCrystallizerRecipeManager.INSTANCE)
               .addExample("osmium_ingotification", IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OSMIUM, 200),
-                    MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM).getItemStack())
+                    MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM).asStack())
               .addExample("gold_infusion_to_gold", IngredientCreatorAccess.chemicalStack().from(MekanismAPITags.Chemicals.GOLD, 9), new ItemStack(Items.GOLD_NUGGET))
               .end()
               .comment("Removes two Crystallizing Recipes:",
@@ -421,16 +421,16 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .addExample("reaction/sawdust", IngredientCreatorAccess.item().from(MekanismTags.Items.DUSTS_WOOD), IngredientCreatorAccess.fluid().from(FluidTags.WATER, 350),
                     IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.HYDROGEN_CHLORIDE, 50), 45, new ItemStack(Items.PAPER, 2), 25L)
               .addExample("reaction/sand", IngredientCreatorAccess.item().from(Tags.Items.SANDS), IngredientCreatorAccess.fluid().from(MekanismTags.Fluids.CHLORINE, 100),
-                    IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.HYDROGEN, 100), 300, MekanismBlocks.SALT_BLOCK.getItemStack())
+                    IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.HYDROGEN, 100), 300, new ItemStack(MekanismBlocks.SALT_BLOCK))
               .addExample("reaction/wooden_buttons", IngredientCreatorAccess.item().from(ItemTags.WOODEN_BUTTONS, 8), IngredientCreatorAccess.fluid().from(FluidTags.WATER, 25),
                     IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 25), 37, MekanismChemicals.HYDROGEN.getStack(25))
               .addExample("reaction/wooden_pressure_plates", IngredientCreatorAccess.item().from(ItemTags.WOODEN_PRESSURE_PLATES, 8), IngredientCreatorAccess.fluid().from(FluidTags.WATER, 50),
                     IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 50), 74, MekanismChemicals.HYDROGEN.getStack(50), 100L)
               .addExample("reaction/wooden_fences", IngredientCreatorAccess.item().from(ItemTags.WOODEN_FENCES, 20), IngredientCreatorAccess.fluid().from(FluidTags.WATER, 400),
-                    IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 400), 600, MekanismItems.CHARCOAL_DUST.getItemStack(), MekanismChemicals.HYDROGEN.getStack(400),
+                    IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 400), 600, MekanismItems.CHARCOAL_DUST.asStack(), MekanismChemicals.HYDROGEN.getStack(400),
                     300L)
               .addExample("reaction/boat", IngredientCreatorAccess.item().from(ItemTags.BOATS, 4), IngredientCreatorAccess.fluid().from(FluidTags.WATER, 400),
-                    IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 400), 600, MekanismItems.CHARCOAL_DUST.getItemStack(), MekanismChemicals.HYDROGEN.getStack(400))
+                    IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 400), 600, MekanismItems.CHARCOAL_DUST.asStack(), MekanismChemicals.HYDROGEN.getStack(400))
               .end()
               .comment("Removes the Reaction Recipe for producing Substrate from Bio Fuel.")
               .blankLine()
@@ -474,7 +474,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .recipe(SawmillRecipeManager.INSTANCE)
               .addExample("sawing/melon_to_seeds", IngredientCreatorAccess.item().from(Items.MELON_SLICE), new WeightedItemStack(Items.MELON_SEEDS))
               .addExample("sawing/leaves", IngredientCreatorAccess.item().from(ItemTags.LEAVES, 15), new WeightedItemStack(MekanismItems.SAWDUST, 0.5))
-              .addExample("sawing/saplings", IngredientCreatorAccess.item().from(ItemTags.SAPLINGS, 5), MekanismItems.SAWDUST.getItemStack(), 0.75)
+              .addExample("sawing/saplings", IngredientCreatorAccess.item().from(ItemTags.SAPLINGS, 5), MekanismItems.SAWDUST.asStack(), 0.75)
               .addExample("sawing/shield", IngredientCreatorAccess.item().from(Items.SHIELD), new WeightedItemStack(new ItemStack(Items.OAK_PLANKS, 4), 1.5))
               .addExample("sawing/workbench", IngredientCreatorAccess.item().from(Blocks.CRAFTING_TABLE), new ItemStack(Items.OAK_PLANKS, 5),
                     new WeightedItemStack(MekanismItems.SAWDUST, 0.25))

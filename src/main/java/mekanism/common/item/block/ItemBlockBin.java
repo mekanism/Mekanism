@@ -26,7 +26,7 @@ public class ItemBlockBin extends ItemBlockTooltip<BlockBin> implements IDroppab
 
     @Override
     public BinTier getTier() {
-        return Attribute.getTier(getBlockHolder(), BinTier.class);
+        return Attribute.getTier(getBlock(), BinTier.class);
     }
 
     @Override

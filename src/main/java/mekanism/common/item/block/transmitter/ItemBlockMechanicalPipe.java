@@ -24,7 +24,7 @@ public class ItemBlockMechanicalPipe extends ItemBlockTooltip<BlockLargeTransmit
     @NotNull
     @Override
     public PipeTier getTier() {
-        return Attribute.getTier(getBlockHolder(), PipeTier.class);
+        return Attribute.getTier(getBlock(), PipeTier.class);
     }
 
     @Override

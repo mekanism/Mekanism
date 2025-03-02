@@ -41,7 +41,7 @@ public record RotaryRVRecipeType(ResourceLocation id, IHasTranslationKey name, L
 
     @Override
     public ItemStack iconStack() {
-        return MekanismBlocks.ROTARY_CONDENSENTRATOR.getItemStack();
+        return new ItemStack(MekanismBlocks.ROTARY_CONDENSENTRATOR);
     }
 
     @Nullable

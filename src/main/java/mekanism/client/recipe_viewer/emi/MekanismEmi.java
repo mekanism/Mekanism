@@ -24,7 +24,6 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.gear.ModuleData;
-import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.client.recipe_viewer.RecipeViewerUtils;
@@ -77,6 +76,7 @@ import mekanism.common.tile.machine.TileEntityNutritionalLiquifier;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.ItemLike;
@@ -319,8 +319,8 @@ public class MekanismEmi implements EmiPlugin {
     private static void addWorkstations(EmiRegistry registry, EmiRecipeCategory category, List<ItemLike> workstations) {
         for (ItemLike workstation : workstations) {
             registry.addWorkstation(category, EmiStack.of(workstation));
-            if (workstation instanceof IBlockProvider mekanismBlock) {
-                AttributeFactoryType factoryType = Attribute.get(mekanismBlock.getBlockHolder(), AttributeFactoryType.class);
+            if (workstation.asItem() instanceof BlockItem blockItem) {
+                AttributeFactoryType factoryType = Attribute.get(blockItem.getBlock(), AttributeFactoryType.class);
                 if (factoryType != null) {
                     for (FactoryTier tier : EnumUtils.FACTORY_TIERS) {
                         registry.addWorkstation(category, EmiStack.of(MekanismBlocks.getFactory(tier, factoryType.getFactoryType())));

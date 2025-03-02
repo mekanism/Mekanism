@@ -38,6 +38,6 @@ public class NutritionalLiquifierIRecipe extends BasicItemStackToFluidOptionalIt
 
     @Override
     public ItemStack getToastSymbol() {
-        return MekanismBlocks.NUTRITIONAL_LIQUIFIER.getItemStack();
+        return new ItemStack(MekanismBlocks.NUTRITIONAL_LIQUIFIER);
     }
 }

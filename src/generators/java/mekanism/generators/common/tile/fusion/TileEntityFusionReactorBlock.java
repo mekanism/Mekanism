@@ -1,6 +1,5 @@
 package mekanism.generators.common.tile.fusion;
 
-import mekanism.api.providers.IBlockProvider;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
 import mekanism.common.lib.multiblock.MultiblockManager;

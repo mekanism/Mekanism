@@ -43,7 +43,7 @@ class ChemicalInjectorRecipeProvider implements ISubRecipeProvider {
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
               IngredientCreatorAccess.item().from(Tags.Items.GUNPOWDERS),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.HYDROGEN_CHLORIDE, 1),
-              MekanismItems.SULFUR_DUST.getItemStack(),
+              MekanismItems.SULFUR_DUST.asStack(),
               true
         ).build(consumer, Mekanism.rl(basePath + "gunpowder_to_sulfur"));
         //Terracotta -> clay

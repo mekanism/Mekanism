@@ -35,6 +35,7 @@ public abstract class BaseSpriteSourceProvider extends SpriteSourceProvider {
                 atlas.addSource(new SingleFile(rl, Optional.empty()));
             }
         }
+        //TODO - 1.21: Make this have a consistent ordering
     }
 
     //TODO - 1.20: Re-evaluate doing this

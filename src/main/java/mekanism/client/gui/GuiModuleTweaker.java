@@ -27,6 +27,7 @@ import mekanism.common.registries.MekanismSounds;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -35,6 +36,7 @@ import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
@@ -184,13 +186,13 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
                     ItemStack stack = Minecraft.getInstance().player.getItemBySlot(armorSlot);
                     if (stack.isEmpty()) {
                         //Fall back to MekaSuit for rendering purposes of if not wearing a full set of stuff
-                        return (switch (armorSlot) {
+                        return new ItemStack((Holder<Item>) switch (armorSlot) {
                             case FEET -> MekanismItems.MEKASUIT_BOOTS;
                             case LEGS -> MekanismItems.MEKASUIT_PANTS;
                             case CHEST -> MekanismItems.MEKASUIT_BODYARMOR;
                             case HEAD -> MekanismItems.MEKASUIT_HELMET;
                             default -> throw new IllegalStateException("Unknown armor slot: " + armorSlot.getName());
-                        }).getItemStack();
+                        });
                     }
                     return stack;
                 });

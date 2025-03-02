@@ -1,7 +1,6 @@
 package mekanism.client.recipe_viewer.jei;
 
 import java.util.List;
-import mekanism.api.providers.IBlockProvider;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeFactoryType;
@@ -10,6 +9,7 @@ import mekanism.common.tier.FactoryTier;
 import mekanism.common.util.EnumUtils;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.ItemLike;
 
 public class CatalystRegistryHelper {
@@ -26,8 +26,8 @@ public class CatalystRegistryHelper {
     public static void register(IRecipeCatalystRegistration registry, RecipeType<?> recipeType, List<ItemLike> workstations) {
         for (ItemLike workstation : workstations) {
             registry.addRecipeCatalyst(workstation, recipeType);
-            if (workstation instanceof IBlockProvider mekanismBlock) {
-                AttributeFactoryType factoryType = Attribute.get(mekanismBlock.getBlockHolder(), AttributeFactoryType.class);
+            if (workstation.asItem() instanceof BlockItem blockItem) {
+                AttributeFactoryType factoryType = Attribute.get(blockItem.getBlock(), AttributeFactoryType.class);
                 if (factoryType != null) {
                     for (FactoryTier tier : EnumUtils.FACTORY_TIERS) {
                         registry.addRecipeCatalyst(MekanismBlocks.getFactory(tier, factoryType.getFactoryType()), recipeType);

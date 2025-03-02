@@ -168,7 +168,7 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock impleme
         if (!isRemote()) {
             int amount = getHousedBlades();
             if (amount > 0) {
-                Block.popResource(level, worldPosition, GeneratorsItems.TURBINE_BLADE.getItemStack(amount));
+                Block.popResource(level, worldPosition, GeneratorsItems.TURBINE_BLADE.asStack(amount));
             }
         }
     }

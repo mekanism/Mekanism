@@ -52,7 +52,7 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         //Charcoal -> Charcoal Dust
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(Items.CHARCOAL),
-              MekanismItems.CHARCOAL_DUST.getItemStack()
+              MekanismItems.CHARCOAL_DUST.asStack()
         ).build(consumer, Mekanism.rl(basePath + "charcoal_dust"));
         //Cobblestone -> Gravel
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -82,7 +82,7 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         //Obsidian -> obsidian dust
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(Tags.Items.OBSIDIANS_NORMAL),
-              MekanismItems.OBSIDIAN_DUST.getItemStack(4)
+              MekanismItems.OBSIDIAN_DUST.asStack(4)
         ).build(consumer, Mekanism.rl(basePath + "obsidian_to_dust"));
         //Blaze Rod -> blaze powder
         ItemStackToItemStackRecipeBuilder.crushing(

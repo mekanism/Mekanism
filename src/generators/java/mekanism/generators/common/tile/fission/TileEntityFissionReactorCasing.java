@@ -1,7 +1,6 @@
 package mekanism.generators.common.tile.fission;
 
 import mekanism.api.SerializationConstants;
-import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.lib.multiblock.MultiblockManager;

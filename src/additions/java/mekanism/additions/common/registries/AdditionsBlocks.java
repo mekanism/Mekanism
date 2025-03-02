@@ -16,7 +16,6 @@ import mekanism.additions.common.block.plastic.BlockPlasticStairs;
 import mekanism.additions.common.block.plastic.BlockPlasticTransparent;
 import mekanism.additions.common.block.plastic.BlockPlasticTransparentSlab;
 import mekanism.additions.common.block.plastic.BlockPlasticTransparentStairs;
-import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.block.states.BlockStateHelper;
@@ -90,7 +89,7 @@ public class AdditionsBlocks {
         return registerColoredBlock(c -> new BlockPlasticSlab(c, propertyModifier), blockTypeSuffix, color);
     }
 
-    private static BlockRegistryObject<BlockPlasticStairs, ItemBlockMekanism<BlockPlasticStairs>> registerPlasticStairs(IBlockProvider baseBlock, EnumColor color, String blockTypeSuffix,
+    private static BlockRegistryObject<BlockPlasticStairs, ItemBlockMekanism<BlockPlasticStairs>> registerPlasticStairs(BlockRegistryObject<?, ?> baseBlock, EnumColor color, String blockTypeSuffix,
           UnaryOperator<BlockBehaviour.Properties> propertyModifier) {
         return registerColoredBlock(c -> new BlockPlasticStairs(baseBlock, c, propertyModifier), blockTypeSuffix, color);
     }

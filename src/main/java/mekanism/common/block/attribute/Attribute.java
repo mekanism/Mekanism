@@ -67,6 +67,10 @@ public interface Attribute {
     }
 
     static <ATTRIBUTE extends Attribute> boolean matches(Holder<Block> block, Class<ATTRIBUTE> type, Predicate<? super ATTRIBUTE> checker) {
+        return matches(block.value(), type, checker);
+    }
+
+    static <ATTRIBUTE extends Attribute> boolean matches(Block block, Class<ATTRIBUTE> type, Predicate<? super ATTRIBUTE> checker) {
         ATTRIBUTE attribute = get(block, type);
         return attribute != null && checker.test(attribute);
     }
@@ -103,6 +107,11 @@ public interface Attribute {
 
     @Nullable
     static <TIER extends ITier> TIER getTier(Holder<Block> block, Class<TIER> tierClass) {
+        return getTier(block.value(), tierClass);
+    }
+
+    @Nullable
+    static <TIER extends ITier> TIER getTier(Block block, Class<TIER> tierClass) {
         AttributeTier<?> attr = get(block, AttributeTier.class);
         return attr == null ? null : tierClass.cast(attr.tier());
     }

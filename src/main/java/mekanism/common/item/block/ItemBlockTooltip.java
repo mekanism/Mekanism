@@ -105,10 +105,10 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
         if (!fluidStack.isEmpty()) {
             tooltip.add(MekanismLang.GENERIC_STORED_MB.translateColored(EnumColor.PINK, fluidStack, EnumColor.GRAY, TextUtils.format(fluidStack.getAmount())));
         }
-        if (Attribute.has(getBlockHolder(), AttributeInventory.class) && ContainerType.ITEM.supports(stack)) {
+        if (Attribute.has(getBlock(), AttributeInventory.class) && ContainerType.ITEM.supports(stack)) {
             tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.hasInventory(stack)));
         }
-        if (Attribute.has(getBlockHolder(), AttributeUpgradeSupport.class)) {
+        if (Attribute.has(getBlock(), AttributeUpgradeSupport.class)) {
             UpgradeAware upgradeAware = stack.get(MekanismDataComponents.UPGRADES);
             if (upgradeAware != null) {
                 for (Entry<Upgrade, Integer> entry : upgradeAware.upgrades().entrySet()) {
@@ -154,16 +154,16 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
     }
 
     protected boolean exposesEnergyCapOrTooltips() {
-        return Attribute.has(getBlockHolder(), AttributeEnergy.class);
+        return Attribute.has(getBlock(), AttributeEnergy.class);
     }
 
     protected EnergyContainersBuilder addDefaultEnergyContainers(EnergyContainersBuilder builder) {
-        AttributeEnergy attributeEnergy = Attribute.get(getBlockHolder(), AttributeEnergy.class);
+        AttributeEnergy attributeEnergy = Attribute.get(getBlock(), AttributeEnergy.class);
         if (attributeEnergy == null) {
             throw new IllegalStateException("Expected block " + getBlock() + " to have the energy attribute");
         }
         LongSupplier maxEnergy = attributeEnergy::getStorage;
-        if (Attribute.matches(getBlockHolder(), AttributeUpgradeSupport.class, attribute -> attribute.supportedUpgrades().contains(Upgrade.ENERGY))) {
+        if (Attribute.matches(getBlock(), AttributeUpgradeSupport.class, attribute -> attribute.supportedUpgrades().contains(Upgrade.ENERGY))) {
             return builder.addContainer((type, attachedTo, containerIndex) -> {
                 //If our block supports energy upgrades, make a more dynamically updating cache for our item's max energy
                 LongSupplier capacity = new UpgradeBasedUnsignedLongCache(attachedTo, maxEnergy);
@@ -177,7 +177,7 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
 
     @Override
     public void attachCapabilities(RegisterCapabilitiesEvent event) {
-        if (Attribute.has(getBlockHolder(), AttributeSecurity.class)) {
+        if (Attribute.has(getBlock(), AttributeSecurity.class)) {
             event.registerItem(IItemSecurityUtils.INSTANCE.ownerCapability(), (stack, ctx) -> new SecurityObject(stack), this);
             event.registerItem(IItemSecurityUtils.INSTANCE.securityCapability(), (stack, ctx) -> new SecurityObject(stack), this);
         }
@@ -185,7 +185,7 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
 
     @Override
     public void attachAttachments(IEventBus eventBus) {
-        if (Attribute.has(getBlockHolder(), AttributeEnergy.class)) {
+        if (Attribute.has(getBlock(), AttributeEnergy.class)) {
             //Only expose the capability the required configs are loaded and the item wants to
             IEventBus energyEventBus = exposesEnergyCap() ? eventBus : null;
             ContainerType.ENERGY.addDefaultCreators(energyEventBus, this, () -> addDefaultEnergyContainers(EnergyContainersBuilder.builder()).build(),

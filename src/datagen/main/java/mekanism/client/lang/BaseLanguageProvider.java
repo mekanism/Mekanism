@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 import mekanism.api.gear.ModuleData;
-import mekanism.api.providers.IBlockProvider;
 import mekanism.api.providers.IModuleDataProvider;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.client.lang.FormatSplitter.Component;
@@ -17,6 +16,7 @@ import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeGui;
 import mekanism.common.config.IConfigTranslation;
 import mekanism.common.config.IMekanismConfig;
+import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.FluidRegistryObject;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.Util;
@@ -26,7 +26,6 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 import org.jetbrains.annotations.NotNull;
@@ -84,8 +83,7 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
     }
 
     protected void add(IHasTranslationKey key, String value) {
-        if (key instanceof IBlockProvider blockProvider) {
-            Holder<Block> blockHolder = blockProvider.getBlockHolder();
+        if (key instanceof BlockRegistryObject<?, ?> blockHolder) {
             if (Attribute.matches(blockHolder, AttributeGui.class, attribute -> !attribute.hasCustomName())) {
                 add(Util.makeDescriptionId("container", RegistryUtils.getName(blockHolder)), value);
             }
@@ -93,13 +91,12 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
         add(key.getTranslationKey(), value);
     }
 
-    protected void add(IBlockProvider blockProvider, String value, String containerName) {
-        Holder<Block> blockHolder = blockProvider.getBlockHolder();
-        if (Attribute.matches(blockHolder, AttributeGui.class, attribute -> !attribute.hasCustomName())) {
-            add(Util.makeDescriptionId("container", RegistryUtils.getName(blockHolder)), containerName);
-            add(blockProvider.getTranslationKey(), value);
+    protected void add(BlockRegistryObject<?, ?> blockRO, String value, String containerName) {
+        if (Attribute.matches(blockRO, AttributeGui.class, attribute -> !attribute.hasCustomName())) {
+            add(Util.makeDescriptionId("container", RegistryUtils.getName(blockRO)), containerName);
+            add(blockRO.getTranslationKey(), value);
         } else {
-            throw new IllegalArgumentException(blockProvider + " does not have a container name set.");
+            throw new IllegalArgumentException(blockRO + " does not have a container name set.");
         }
     }
 

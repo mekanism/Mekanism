@@ -1,6 +1,5 @@
 package mekanism.generators.common.tile.turbine;
 
-import mekanism.api.providers.IBlockProvider;
 import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.tile.interfaces.IHasGasMode;
 import mekanism.common.tile.prefab.TileEntityMultiblock;

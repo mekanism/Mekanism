@@ -3,7 +3,6 @@ package mekanism.client;
 import com.mojang.blaze3d.shaders.FogShape;
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.lang.ref.WeakReference;
-import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.machine.GuiAdvancedElectricMachine;
 import mekanism.client.gui.machine.GuiElectricMachine;
@@ -14,6 +13,7 @@ import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.item.interfaces.IColoredItem;
 import mekanism.common.registration.impl.BlockDeferredRegister;
+import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.registration.impl.FluidDeferredRegister;
 import mekanism.common.registration.impl.FluidDeferredRegister.MekanismFluidType;
@@ -171,9 +171,10 @@ public class ClientRegistrationUtil {
         }
     }
 
-    public static void registerBlockColorHandler(RegisterColorHandlersEvent.Block event, BlockColor blockColor, IBlockProvider... blocks) {
-        for (IBlockProvider blockProvider : blocks) {
-            event.register(blockColor, blockProvider.getBlock());
+    @SafeVarargs
+    public static void registerBlockColorHandler(RegisterColorHandlersEvent.Block event, BlockColor blockColor, Holder<Block>... blocks) {
+        for (Holder<Block> blockProvider : blocks) {
+            event.register(blockColor, blockProvider.value());
         }
     }
 
@@ -183,7 +184,7 @@ public class ClientRegistrationUtil {
         }
     }
 
-    public static void registerIColoredBlockHandler(RegisterColorHandlersEvent event, IBlockProvider... blocks) {
+    public static void registerIColoredBlockHandler(RegisterColorHandlersEvent event, BlockRegistryObject<?, ?>... blocks) {
         if (event instanceof RegisterColorHandlersEvent.Block blockEvent) {
             registerBlockColorHandler(blockEvent, COLORED_BLOCK_COLOR, blocks);
         } else if (event instanceof RegisterColorHandlersEvent.Item itemEvent) {

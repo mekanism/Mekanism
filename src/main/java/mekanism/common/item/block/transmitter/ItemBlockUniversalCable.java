@@ -24,7 +24,7 @@ public class ItemBlockUniversalCable extends ItemBlockTooltip<BlockSmallTransmit
     @NotNull
     @Override
     public CableTier getTier() {
-        return Attribute.getTier(getBlockHolder(), CableTier.class);
+        return Attribute.getTier(getBlock(), CableTier.class);
     }
 
     @Override

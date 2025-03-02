@@ -449,7 +449,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     }
 
     private ItemStack getItemVariant() {
-        ItemStack stack = MekanismItems.ROBIT.getItemStack();
+        ItemStack stack = MekanismItems.ROBIT.asStack();
         IStrictEnergyHandler energyHandlerItem = Capabilities.STRICT_ENERGY.getCapability(stack);
         if (energyHandlerItem != null && energyHandlerItem.getEnergyContainerCount() > 0) {
             energyHandlerItem.setEnergy(0, energyContainer.getEnergy());

@@ -1,7 +1,6 @@
 package mekanism.common.tile.multiblock;
 
 import mekanism.api.IContentsListener;
-import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.heat.CachedAmbientTemperature;

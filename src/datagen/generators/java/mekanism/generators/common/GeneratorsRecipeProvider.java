@@ -272,7 +272,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               IngredientCreatorAccess.item().from(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.GOLD), 4),
               IngredientCreatorAccess.chemicalStack().from(MekanismAPITags.Chemicals.CARBON, 10),
-              GeneratorsItems.HOHLRAUM.getItemStack(),
+              GeneratorsItems.HOHLRAUM.asStack(),
               false
         ).build(consumer);
         //Laser Focus Matrix

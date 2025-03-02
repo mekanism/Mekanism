@@ -264,7 +264,7 @@ public class MekanismJEI implements IModPlugin {
         RecipeRegistryHelper.register(registry, RecipeViewerRecipeType.BOILER, BoilerRecipeViewerRecipe.getBoilerRecipes());
         RecipeRegistryHelper.register(registry, RecipeViewerRecipeType.ENERGY_CONVERSION, MekanismRecipeType.ENERGY_CONVERSION);
         RecipeRegistryHelper.register(registry, RecipeViewerRecipeType.CHEMICAL_CONVERSION, MekanismRecipeType.CHEMICAL_CONVERSION);
-        RecipeRegistryHelper.addAnvilRecipes(registry, MekanismItems.HDPE_REINFORCED_ELYTRA, item -> new ItemStack[]{MekanismItems.HDPE_SHEET.getItemStack()});
+        RecipeRegistryHelper.addAnvilRecipes(registry, MekanismItems.HDPE_REINFORCED_ELYTRA, item -> new ItemStack[]{MekanismItems.HDPE_SHEET.asStack()});
         //Note: Use a "full" bucket's worth of heavy water, so that JEI renders it as desired in the info page
         registry.addIngredientInfo(MekanismFluids.HEAVY_WATER.getFluidStack(FluidType.BUCKET_VOLUME), NeoForgeTypes.FLUID_STACK,
               MekanismLang.RECIPE_VIEWER_INFO_HEAVY_WATER.translate(MekanismConfig.general.pumpHeavyWaterAmount.get()));

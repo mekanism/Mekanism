@@ -39,13 +39,13 @@ public class ItemBlockFactory extends ItemBlockTooltip<BlockTile<?, ?>> {
 
     @Override
     public FactoryTier getTier() {
-        return Attribute.getTier(getBlockHolder(), FactoryTier.class);
+        return Attribute.getTier(getBlock(), FactoryTier.class);
     }
 
     @Override
     protected void addTypeDetails(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         //Should always be present but validate it just in case
-        AttributeFactoryType factoryType = Attribute.get(getBlockHolder(), AttributeFactoryType.class);
+        AttributeFactoryType factoryType = Attribute.get(getBlock(), AttributeFactoryType.class);
         if (factoryType != null) {
             tooltip.add(MekanismLang.FACTORY_TYPE.translateColored(EnumColor.INDIGO, EnumColor.GRAY, factoryType.getFactoryType()));
         }

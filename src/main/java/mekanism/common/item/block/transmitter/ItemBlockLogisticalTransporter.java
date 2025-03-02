@@ -26,7 +26,7 @@ public class ItemBlockLogisticalTransporter extends ItemBlockTransporter<TileEnt
     @NotNull
     @Override
     public TransporterTier getTier() {
-        return Attribute.getTier(getBlockHolder(), TransporterTier.class);
+        return Attribute.getTier(getBlock(), TransporterTier.class);
     }
 
     @Override
