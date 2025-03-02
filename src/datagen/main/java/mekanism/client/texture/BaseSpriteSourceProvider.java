@@ -1,6 +1,8 @@
 package mekanism.client.texture;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -28,6 +30,10 @@ public abstract class BaseSpriteSourceProvider extends SpriteSourceProvider {
         super(output, lookupProvider, modid, fileHelper);
     }
 
+    protected void addFiles(SourceList atlas, List<ResourceLocation> resourceLocations) {
+        addFiles(atlas, resourceLocations.stream().sorted(ResourceLocation::compareNamespaced).toArray(ResourceLocation[]::new));
+    }
+
     protected void addFiles(SourceList atlas, ResourceLocation... resourceLocations) {
         for (ResourceLocation rl : resourceLocations) {
             //Only add this source if we haven't already added it as a direct single file source
@@ -35,25 +41,30 @@ public abstract class BaseSpriteSourceProvider extends SpriteSourceProvider {
                 atlas.addSource(new SingleFile(rl, Optional.empty()));
             }
         }
-        //TODO - 1.21: Make this have a consistent ordering
     }
 
     //TODO - 1.20: Re-evaluate doing this
     protected void addChemicalSprites(SourceList atlas) {
+        List<ResourceLocation> icons = new ArrayList<>();
         for (Map.Entry<ResourceKey<Chemical>, Chemical> entry : MekanismAPI.CHEMICAL_REGISTRY.entrySet()) {
             if (entry.getKey().location().getNamespace().equals(modid)) {
-                addFiles(atlas, entry.getValue().getIcon());
+                icons.add(entry.getKey().location());
             }
         }
+        addFiles(atlas, icons);
     }
 
     protected void addFluids(SourceList atlas, FluidDeferredRegister register) {
+        List<ResourceLocation> icons = new ArrayList<>();
         for (Holder<FluidType> holder : register.getFluidTypeEntries()) {
             //Note: This should always be the case
             if (holder.value() instanceof MekanismFluidType fluidType) {
-                addFiles(atlas, fluidType.stillTexture, fluidType.flowingTexture, fluidType.overlayTexture);
+                icons.add(fluidType.stillTexture);
+                icons.add(fluidType.flowingTexture);
+                icons.add(fluidType.overlayTexture);
             }
         }
+        addFiles(atlas, icons);
     }
 
     protected void addDirectory(SourceList atlas, String directory, String spritePrefix) {
