@@ -4,7 +4,7 @@ import com.mojang.datafixers.Products;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mojang.serialization.codecs.RecordCodecBuilder.Mu;
-import java.util.function.Consumer;
+import java.util.List;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -14,6 +14,8 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.ITooltipHelper;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item.TooltipContext;
+import net.minecraft.world.item.TooltipFlag;
 
 //TODO - 1.22: Do we want to allow applying coolants to fluids so that we can define water directly that way?
 public sealed interface IChemicalCoolant extends IChemicalAttribute permits CooledCoolant, HeatedCoolant {
@@ -32,10 +34,10 @@ public sealed interface IChemicalCoolant extends IChemicalAttribute permits Cool
     Holder<Chemical> otherVariant();
 
     @Override
-    default void collectTooltips(Consumer<Component> adder) {
+    default void collectTooltips(TooltipContext context, List<Component> tooltips, TooltipFlag tooltipFlag) {
         ITooltipHelper tooltipHelper = ITooltipHelper.INSTANCE;
-        adder.accept(APILang.CHEMICAL_ATTRIBUTE_COOLANT_EFFICIENCY.translateColored(EnumColor.GRAY, EnumColor.INDIGO, tooltipHelper.getPercent(conductivity())));
-        adder.accept(APILang.CHEMICAL_ATTRIBUTE_COOLANT_ENTHALPY.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
+        tooltips.add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_EFFICIENCY.translateColored(EnumColor.GRAY, EnumColor.INDIGO, tooltipHelper.getPercent(conductivity())));
+        tooltips.add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_ENTHALPY.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
               tooltipHelper.getEnergyPerMBDisplayShort(MathUtils.clampToLong(thermalEnthalpy()))));
     }
 

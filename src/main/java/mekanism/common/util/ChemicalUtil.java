@@ -1,13 +1,9 @@
 package mekanism.common.util;
 
 import java.util.Collection;
-import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.MekanismAPI;
-import mekanism.api.MekanismAPITags;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalBuilder;
@@ -15,23 +11,17 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.IMekanismChemicalHandler;
-import mekanism.api.chemical.attribute.ChemicalAttribute;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.chemical.attribute.ChemicalFuel;
 import mekanism.api.functions.ConstantPredicates;
-import mekanism.api.text.EnumColor;
-import mekanism.api.text.TextComponentUtil;
-import mekanism.common.MekanismLang;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.network.distribution.ChemicalHandlerTarget;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.tier.ChemicalTankTier;
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
@@ -114,30 +104,6 @@ public class ChemicalUtil {
             }
         }
         return false;
-    }
-
-    public static void addAttributeTooltips(Holder<Chemical> chemical, Consumer<Component> tooltipAdder) {
-        //TODO - 1.22: Move this to a method on chemical?
-        for (ChemicalAttribute attr : chemical.value().getAttributes()) {
-            attr.collectTooltips(tooltipAdder);
-        }
-    }
-
-    public static void addChemicalDataToTooltip(List<Component> tooltips, ChemicalStack chemical, boolean advanced) {
-        addChemicalDataToTooltip(chemical.getChemicalHolder(), advanced, tooltips::add);
-    }
-
-    public static void addChemicalDataToTooltip(Holder<Chemical> chemical, boolean advanced, Consumer<Component> tooltipAdder) {
-        if (!chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
-            addAttributeTooltips(chemical, tooltipAdder);
-            if (chemical.is(MekanismAPITags.Chemicals.WASTE_BARREL_DECAY_BLACKLIST)) {
-                tooltipAdder.accept(MekanismLang.DECAY_IMMUNE.translateColored(EnumColor.AQUA));
-            }
-            if (advanced) {
-                //If advanced tooltips are on, display the registry name
-                tooltipAdder.accept(TextComponentUtil.build(ChatFormatting.DARK_GRAY, chemical.getRegisteredName()));
-            }
-        }
     }
 
     public static void emit(Collection<BlockCapabilityCache<IChemicalHandler, @Nullable Direction>> targets, IChemicalTank tank) {

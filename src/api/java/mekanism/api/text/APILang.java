@@ -74,6 +74,8 @@ public enum APILang implements ILangEntry {
     PUBLIC("security", "public"),
     TRUSTED("security", "trusted"),
     PRIVATE("security", "private"),
+    //Tooltip
+    DECAY_IMMUNE("tooltip", "decay_immune"),
     ;
 
     private final String key;

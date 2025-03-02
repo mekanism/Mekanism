@@ -7,19 +7,25 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.handler.codec.DecoderException;
 import io.netty.handler.codec.EncoderException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismAPITags;
 import mekanism.api.SerializationConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.attribute.ChemicalAttribute;
 import mekanism.api.chemical.attribute.IChemicalAttributeContainer;
+import mekanism.api.text.APILang;
+import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.IHasTranslationKey;
+import mekanism.api.text.TextComponentUtil;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
@@ -33,7 +39,9 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.ExtraCodecs;
+import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.neoforged.neoforge.registries.datamaps.DataMapType;
 import net.neoforged.neoforge.registries.datamaps.IWithData;
 import org.jetbrains.annotations.Nullable;
@@ -491,8 +499,33 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
     }
 
     @Override
+    @Deprecated(forRemoval = true, since = "10.7.11")
     public Collection<Class<? extends ChemicalAttribute>> getAttributeTypes() {
         return getChemical().getAttributeTypes();
+    }
+
+    /**
+     * Gathers any tooltips this chemical stack has, and adds them to the list.
+     *
+     * @param context     Current tooltip context.
+     * @param tooltips    List of tooltips to add to.
+     * @param tooltipFlag Flag representing if advanced tooltips are to be shown.
+     *
+     * @since 10.7.11
+     */
+    public void appendHoverText(TooltipContext context, List<Component> tooltips, TooltipFlag tooltipFlag) {
+        Holder<Chemical> chemicalHolder = getChemicalHolder();
+        if (chemicalHolder.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
+            return;
+        }
+        chemicalHolder.value().appendHoverText(this, context, tooltips, tooltipFlag);
+        if (chemicalHolder.is(MekanismAPITags.Chemicals.WASTE_BARREL_DECAY_BLACKLIST)) {
+            tooltips.add(APILang.DECAY_IMMUNE.translateColored(EnumColor.AQUA));
+        }
+        if (tooltipFlag.isAdvanced()) {
+            //If advanced tooltips are on, display the registry name
+            tooltips.add(TextComponentUtil.build(ChatFormatting.DARK_GRAY, toString()));
+        }
     }
 
     @Nullable

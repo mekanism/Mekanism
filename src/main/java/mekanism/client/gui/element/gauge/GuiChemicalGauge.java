@@ -14,13 +14,13 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.network.to_server.PacketDropperUse.TankType;
-import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.text.TextUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item.TooltipContext;
+import net.minecraft.world.item.TooltipFlag;
 import org.jetbrains.annotations.Nullable;
 
 public class GuiChemicalGauge extends GuiTankGauge<ChemicalStack, IChemicalTank> {
@@ -107,7 +107,7 @@ public class GuiChemicalGauge extends GuiTankGauge<ChemicalStack, IChemicalTank>
         } else {
             list.add(MekanismLang.GENERIC_STORED_MB.translate(tank.getStack(), TextUtils.format(amount)));
         }
-        ChemicalUtil.addChemicalDataToTooltip(list, tank.getStack(), Minecraft.getInstance().options.advancedItemTooltips);
+        tank.getStack().appendHoverText(TooltipContext.of(minecraft.level), list, minecraft.options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL);
         return list;
     }
 

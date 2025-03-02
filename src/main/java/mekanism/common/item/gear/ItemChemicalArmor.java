@@ -27,7 +27,7 @@ public abstract class ItemChemicalArmor extends ItemSpecialArmor implements IChe
 
     @Override
     public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-        StorageUtils.addStoredChemical(stack, tooltip, true, false);
+        StorageUtils.addStoredChemical(stack, tooltip);
     }
 
     @Override

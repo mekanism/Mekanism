@@ -2,7 +2,6 @@ package mekanism.common.util;
 
 import java.util.List;
 import java.util.function.BiFunction;
-import java.util.function.Consumer;
 import mekanism.api.Action;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -59,7 +58,7 @@ public class StorageUtils {
         }
     }
 
-    public static void addStoredChemical(@NotNull ItemStack stack, @NotNull List<Component> tooltip, boolean showMissingCap, boolean showAttributes) {
+    public static void addStoredChemical(@NotNull ItemStack stack, @NotNull List<Component> tooltip) {
         IChemicalHandler handler = Capabilities.CHEMICAL.getCapability(stack);
         if (handler == null) {
             //Fall back to trying to look up the stored chemical by the container type if the stack doesn't expose it
@@ -67,32 +66,26 @@ public class StorageUtils {
         }
         if (handler != null) {
             int tanks = handler.getChemicalTanks();
-            if (tanks > 0) {
-                Consumer<Component> tooltipAdder = tooltip::add;
-                for (int tank = 0; tank < tanks; tank++) {
-                    ChemicalStack chemicalInTank = handler.getChemicalInTank(tank);
-                    if (chemicalInTank.isEmpty()) {
-                        tooltip.add(MekanismLang.NO_CHEMICAL.translateColored(EnumColor.GRAY));
-                    } else {
-                        tooltip.add(MekanismLang.STORED.translateColored(EnumColor.ORANGE, EnumColor.ORANGE, chemicalInTank, EnumColor.GRAY,
-                              MekanismLang.GENERIC_MB.translate(TextUtils.format(chemicalInTank.getAmount()))));
-                    }
-                    if (showAttributes) {
-                        ChemicalUtil.addAttributeTooltips(chemicalInTank.getChemicalHolder(), tooltipAdder);
-                    }
+            for (int tank = 0; tank < tanks; tank++) {
+                ChemicalStack chemicalInTank = handler.getChemicalInTank(tank);
+                if (chemicalInTank.isEmpty()) {
+                    tooltip.add(MekanismLang.NO_CHEMICAL.translateColored(EnumColor.GRAY));
+                } else {
+                    tooltip.add(MekanismLang.STORED.translateColored(EnumColor.ORANGE, EnumColor.ORANGE, chemicalInTank, EnumColor.GRAY,
+                          MekanismLang.GENERIC_MB.translate(TextUtils.format(chemicalInTank.getAmount()))));
                 }
             }
-        } else if (showMissingCap) {
+        } else {
             tooltip.add(MekanismLang.NO_CHEMICAL.translate());
         }
     }
 
-    public static void addStoredFluid(@NotNull ItemStack stack, @NotNull List<Component> tooltip, boolean showMissingCap) {
-        addStoredFluid(stack, tooltip, showMissingCap, MekanismLang.NO_FLUID_TOOLTIP);
+    public static void addStoredFluid(@NotNull ItemStack stack, @NotNull List<Component> tooltip) {
+        addStoredFluid(stack, tooltip, MekanismLang.NO_FLUID_TOOLTIP);
     }
 
-    public static void addStoredFluid(@NotNull ItemStack stack, @NotNull List<Component> tooltip, boolean showMissingCap, ILangEntry emptyLangEntry) {
-        addStoredFluid(stack, tooltip, showMissingCap, emptyLangEntry, (stored, emptyLang) -> {
+    public static void addStoredFluid(@NotNull ItemStack stack, @NotNull List<Component> tooltip, ILangEntry emptyLangEntry) {
+        addStoredFluid(stack, tooltip, emptyLangEntry, (stored, emptyLang) -> {
             if (stored.isEmpty()) {
                 return emptyLang.translateColored(EnumColor.GRAY);
             }
@@ -101,7 +94,7 @@ public class StorageUtils {
         });
     }
 
-    public static void addStoredFluid(@NotNull ItemStack stack, @NotNull List<Component> tooltip, boolean showMissingCap, ILangEntry emptyLangEntry,
+    public static void addStoredFluid(@NotNull ItemStack stack, @NotNull List<Component> tooltip, ILangEntry emptyLangEntry,
           BiFunction<FluidStack, ILangEntry, Component> storedFunction) {
         IFluidHandlerItem handler = Capabilities.FLUID.getCapability(stack);
         if (handler == null) {
@@ -112,7 +105,7 @@ public class StorageUtils {
             for (int tank = 0, tanks = handler.getTanks(); tank < tanks; tank++) {
                 tooltip.add(storedFunction.apply(handler.getFluidInTank(tank), emptyLangEntry));
             }
-        } else if (showMissingCap) {
+        } else {
             tooltip.add(emptyLangEntry.translate());
         }
     }

@@ -25,6 +25,7 @@ import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tile.machine.TileEntityNutritionalLiquifier;
 import mekanism.common.util.ChemicalUtil;
 import net.minecraft.SharedConstants;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.HolderSet.Named;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -32,6 +33,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.Nullable;
@@ -162,5 +164,17 @@ public class RecipeViewerUtils {
             return tags.getFirst().stream().map(ItemStack::new).toList();
         }
         return Collections.emptyList();
+    }
+
+    public static TooltipContext getRVTooltipContext() {
+        //Similar to how ItemEmiStack works
+        Minecraft minecraft = Minecraft.getInstance();
+        if (minecraft.level == null) {
+            return TooltipContext.EMPTY;
+        } else if (minecraft.isSameThread()) {
+            return Item.TooltipContext.of(minecraft.level);
+        }
+        // Don't provide world as context, as it is not thread safe
+        return Item.TooltipContext.of(minecraft.level.registryAccess());
     }
 }

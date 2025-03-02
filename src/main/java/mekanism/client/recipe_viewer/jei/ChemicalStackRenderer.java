@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Consumer;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -13,9 +12,9 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.GuiUtils.TilingDirection;
+import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
-import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.text.TextUtils;
 import mezz.jei.api.gui.builder.ITooltipBuilder;
 import mezz.jei.api.ingredients.IIngredientRenderer;
@@ -80,26 +79,28 @@ public class ChemicalStackRenderer implements IIngredientRenderer<ChemicalStack>
             return Collections.emptyList();
         }
         List<Component> tooltips = new ArrayList<>();
-        collectTooltips(stack, tooltipFlag, tooltips::add);
+        collectTooltips(stack, tooltips, tooltipFlag);
         return tooltips;
     }
 
     @Override
-    public void getTooltip(ITooltipBuilder tooltip, ChemicalStack stack, TooltipFlag tooltipFlag) {
+    public void getTooltip(ITooltipBuilder builder, ChemicalStack stack, TooltipFlag tooltipFlag) {
         //TODO - 1.22: Flatten the collectTooltips into this method
-        collectTooltips(stack, tooltipFlag, tooltip::add);
+        List<Component> tooltips = new ArrayList<>();
+        collectTooltips(stack, tooltips, tooltipFlag);
+        builder.addAll(tooltips);
     }
 
-    private void collectTooltips(ChemicalStack stack, TooltipFlag tooltipFlag, Consumer<Component> tooltipAdder) {
+    private void collectTooltips(ChemicalStack stack, List<Component> tooltips, TooltipFlag tooltipFlag) {
         Holder<Chemical> chemical = stack.getChemicalHolder();
         if (!chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
-            tooltipAdder.accept(TextComponentUtil.build(chemical));
+            tooltips.add(TextComponentUtil.build(chemical));
             if (tooltipMode == TooltipMode.SHOW_AMOUNT_AND_CAPACITY) {
-                tooltipAdder.accept(MekanismLang.JEI_AMOUNT_WITH_CAPACITY.translateColored(EnumColor.GRAY, TextUtils.format(stack.getAmount()), TextUtils.format(capacityMb)));
+                tooltips.add(MekanismLang.JEI_AMOUNT_WITH_CAPACITY.translateColored(EnumColor.GRAY, TextUtils.format(stack.getAmount()), TextUtils.format(capacityMb)));
             } else if (tooltipMode == TooltipMode.SHOW_AMOUNT) {
-                tooltipAdder.accept(MekanismLang.GENERIC_MB.translateColored(EnumColor.GRAY, TextUtils.format(stack.getAmount())));
+                tooltips.add(MekanismLang.GENERIC_MB.translateColored(EnumColor.GRAY, TextUtils.format(stack.getAmount())));
             }
-            ChemicalUtil.addChemicalDataToTooltip(chemical, tooltipFlag.isAdvanced(), tooltipAdder);
+            stack.appendHoverText(RecipeViewerUtils.getRVTooltipContext(), tooltips, tooltipFlag);
         }
     }
 

@@ -1,8 +1,10 @@
 package mekanism.api.datamaps.chemical.attribute;
 
-import java.util.function.Consumer;
+import java.util.List;
 import mekanism.api.chemical.attribute.ChemicalAttribute;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item.TooltipContext;
+import net.minecraft.world.item.TooltipFlag;
 
 //TODO - 1.21: Docs
 public interface IChemicalAttribute {
@@ -22,8 +24,10 @@ public interface IChemicalAttribute {
     /**
      * Add text components to this chemical attribute's tooltip.
      *
-     * @param adder Method reference to add tooltips to be displayed.
+     * @param context Current tooltip context
+     * @param tooltips List of tooltips to add to.
+     * @param tooltipFlag Flag representing if advanced tooltips are to be shown.
      */
-    default void collectTooltips(Consumer<Component> adder) {
+    default void collectTooltips(TooltipContext context, List<Component> tooltips, TooltipFlag tooltipFlag) {
     }
 }

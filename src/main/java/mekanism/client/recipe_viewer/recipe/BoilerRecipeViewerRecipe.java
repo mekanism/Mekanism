@@ -9,7 +9,7 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.attribute.ChemicalAttributes.HeatedCoolant;
+import mekanism.api.chemical.attribute.ChemicalAttributes;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
@@ -56,7 +56,7 @@ public record BoilerRecipeViewerRecipe(ResourceLocation id, @Nullable ChemicalSt
         //TODO - 1.22: Replace this with the below commented code
         //Go through all gases and add each coolant
         for (Chemical gas : MekanismAPI.CHEMICAL_REGISTRY) {
-            HeatedCoolant heatedCoolant = gas.get(HeatedCoolant.class);
+            ChemicalAttributes.HeatedCoolant heatedCoolant = gas.get(ChemicalAttributes.HeatedCoolant.class);
             if (heatedCoolant != null) {
                 //If it is a cooled coolant add a recipe for it
                 Chemical cooledCoolant = heatedCoolant.getCooledChemical();

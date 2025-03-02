@@ -13,9 +13,9 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
+import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
-import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
@@ -25,6 +25,7 @@ import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.TooltipFlag;
 
 @NothingNullByDefault
 public class ChemicalEmiStack extends EmiStack {
@@ -98,7 +99,8 @@ public class ChemicalEmiStack extends EmiStack {
         }
         List<Component> tooltips = new ArrayList<>();
         tooltips.add(getName());
-        ChemicalUtil.addChemicalDataToTooltip(chemical, false, tooltips::add);
+        ChemicalStack stack = new ChemicalStack(chemical, amount > 1 ? amount : 1);
+        stack.appendHoverText(RecipeViewerUtils.getRVTooltipContext(), tooltips, TooltipFlag.NORMAL);
         return tooltips;
     }
 

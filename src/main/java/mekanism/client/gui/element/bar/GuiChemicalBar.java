@@ -7,12 +7,12 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.network.to_server.PacketDropperUse.TankType;
-import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.text.TextUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item.TooltipContext;
+import net.minecraft.world.item.TooltipFlag;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,7 +36,7 @@ public class GuiChemicalBar extends GuiTankBar<ChemicalStack> {
     @Override
     protected List<Component> getTooltip(ChemicalStack stack) {
         List<Component> tooltips = super.getTooltip(stack);
-        ChemicalUtil.addChemicalDataToTooltip(tooltips, stack, Minecraft.getInstance().options.advancedItemTooltips);
+        stack.appendHoverText(TooltipContext.of(minecraft.level), tooltips, minecraft.options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL);
         return tooltips;
     }
 

@@ -60,7 +60,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
 
     @Override
     public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-        StorageUtils.addStoredChemical(stack, tooltip, true, false);
+        StorageUtils.addStoredChemical(stack, tooltip);
         tooltip.add(MekanismLang.MODE.translateColored(EnumColor.GRAY, getMode(stack)));
     }
 

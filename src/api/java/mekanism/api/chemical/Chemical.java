@@ -1,10 +1,13 @@
 package mekanism.api.chemical;
 
 import com.mojang.serialization.Codec;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPITags;
@@ -35,6 +38,8 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Item.TooltipContext;
+import net.minecraft.world.item.TooltipFlag;
 import net.neoforged.neoforge.registries.datamaps.DataMapType;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
@@ -123,17 +128,22 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
     }
 
     private final Holder.Reference<Chemical> builtInRegistryHolder = MekanismAPI.CHEMICAL_REGISTRY.createIntrusiveHolder(this);
-    @Deprecated(forRemoval = true, since = "10.7.11")
-    private final Map<Class<? extends ChemicalAttribute>, ChemicalAttribute> legacyAttributeMap;
-    //TODO - 1.22: Should we keep this cache or remove it? At the very least it should become immutable
-    private Map<Class<? extends ChemicalAttribute>, ChemicalAttribute> attributeMap;
-
+    //TODO - 1.22: Should we keep this cache or remove it?
+    private final List<IChemicalAttribute> attributes = new ArrayList<>();
     private final ResourceLocation iconLocation;
     private final int tint;
     private double radioactivity;
     private boolean hasAttributesWithValidation;
-    private double radioactivityData;
-    private boolean hasAttributesWithValidationData;
+
+
+    @Deprecated(forRemoval = true, since = "10.7.11")
+    private final Map<Class<? extends ChemicalAttribute>, ChemicalAttribute> legacyAttributeMap;
+    @Deprecated(forRemoval = true, since = "10.7.11")
+    private Map<Class<? extends ChemicalAttribute>, ChemicalAttribute> attributeMap;
+    @Deprecated(forRemoval = true, since = "10.7.11")
+    private double legacyRadioactivity;
+    @Deprecated(forRemoval = true, since = "10.7.11")
+    private boolean hasLegacyAttributesWithValidation;
     @Nullable
     @Deprecated(forRemoval = true, since = "10.7.11")
     private final TagKey<Item> legacyOreTag;
@@ -151,15 +161,15 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
         this.attributeMap = this.legacyAttributeMap = new HashMap<>(builder.getAttributeMap());
         this.iconLocation = builder.getTexture();
         this.tint = builder.getTint();
-        Radiation radiation = (Radiation) attributeMap.get(Radiation.class);
-        if (radiation != null) {
-            radioactivity = radiation.getRadioactivity();
+        for (ChemicalAttribute legacyAttribute : legacyAttributeMap.values()) {
+            if (legacyAttribute instanceof Radiation radiation) {
+                this.radioactivity = this.legacyRadioactivity = radiation.getRadioactivity();
+            } else if (legacyAttribute.needsValidation()) {
+                //Skip radioactive attributes when checking if we have any that need validation, so that we properly return false
+                // when the radiation manager is disabled
+                this.hasAttributesWithValidation = this.hasLegacyAttributesWithValidation = true;
+            }
         }
-        this.hasAttributesWithValidation = attributeMap.values().stream()
-              //Skip radioactive attributes when checking if we have any that need validation, so that we properly return false
-              // when the radiation manager is disabled
-              .filter(attribute -> !(attribute instanceof Radiation))
-              .anyMatch(ChemicalAttribute::needsValidation);
         this.oreTag = this.legacyOreTag = builder.getOreTag();
         this.isGaseous = builder.isGaseous();
     }
@@ -201,7 +211,7 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
      * @since 10.5.15
      */
     public boolean isRadioactive() {
-        return radioactivityData > 0 || radioactivity > 0;
+        return radioactivity > 0;
     }
 
     /**
@@ -210,9 +220,6 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
      * @since 10.7.11
      */
     public double getRadioactivity() {//TODO - 1.22: Do we want this to return the baseline instead of zero if it is missing?
-        if (radioactivityData > 0) {
-            return radioactivityData;
-        }
         return radioactivity;
     }
 
@@ -225,7 +232,7 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
      */
     public boolean hasAttributesWithValidation() {
         //Note: We only treat radiation as needing validation if the radiation manager is enabled
-        return hasAttributesWithValidationData || hasAttributesWithValidation || isRadioactive() && IRadiationManager.INSTANCE.isRadiationEnabled();
+        return hasAttributesWithValidation || isRadioactive() && IRadiationManager.INSTANCE.isRadiationEnabled();
     }
 
     @Nullable
@@ -245,11 +252,11 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
         legacyAttributeMap.put(attribute.getClass(), attribute);
         attributeMap.put(attribute.getClass(), attribute);
         if (attribute instanceof Radiation radiation) {
-            radioactivity = radiation.getRadioactivity();
+            radioactivity = legacyRadioactivity = radiation.getRadioactivity();
             //Note: We don't mark radiation as needing validation here, as we handle it separately, so that if the radiation manager is disabled
             // we return false for if we have any attributes that need validation
         } else if (attribute.needsValidation()) {
-            hasAttributesWithValidation = true;
+            this.hasAttributesWithValidation = this.hasLegacyAttributesWithValidation = true;
         }
     }
 
@@ -259,6 +266,7 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
     }
 
     @Override
+    @Deprecated(forRemoval = true, since = "10.7.11")
     public Collection<Class<? extends ChemicalAttribute>> getAttributeTypes() {
         return attributeMap.keySet();
     }
@@ -380,14 +388,14 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
         return isGaseous || is(MekanismAPITags.Chemicals.GASEOUS);
     }
 
-    @Internal
-    @Deprecated//TODO - 1.22: Evaluate if we want to get rid of this or if caching the state of some of this is useful from a performance standpoint
+    @Internal//TODO - 1.22: Evaluate if we want to get rid of this or if caching the state of some of this is useful from a performance standpoint
     public final void updateFromDataMap() {
         ChemicalOreTag tag = builtInRegistryHolder().getData(IMekanismDataMapTypes.INSTANCE.chemicalOreTag());
         oreTag = tag == null ? legacyOreTag : tag.oreTag();
         attributeMap = new HashMap<>(legacyAttributeMap);
-        hasAttributesWithValidationData = false;
-        radioactivityData = 0;
+        hasAttributesWithValidation = hasLegacyAttributesWithValidation;
+        radioactivity = legacyRadioactivity;
+        attributes.clear();
         trackAsLegacy(IMekanismDataMapTypes.INSTANCE.chemicalFuel());
         trackAsLegacy(IMekanismDataMapTypes.INSTANCE.chemicalRadioactivity());
         trackAsLegacy(IMekanismDataMapTypes.INSTANCE.cooledChemicalCoolant());
@@ -397,12 +405,13 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
     private void trackAsLegacy(DataMapType<Chemical, ? extends IChemicalAttribute> dataMapType) {
         IChemicalAttribute attribute = builtInRegistryHolder().getData(dataMapType);
         if (attribute != null) {
+            attributes.add(attribute);
             ChemicalAttribute legacyAttribute = attribute.toLegacyAttribute();
             attributeMap.put(legacyAttribute.getClass(), legacyAttribute);
             if (attribute instanceof ChemicalRadioactivity(double rads)) {
-                radioactivityData = rads;
+                radioactivity = rads;
             } else {
-                hasAttributesWithValidationData |= attribute.needsValidation();
+                hasAttributesWithValidation |= attribute.needsValidation();
             }
         }
     }
@@ -429,5 +438,29 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
     @Deprecated(forRemoval = true, since = "10.7.11")
     public Tag saveOptional(HolderLookup.Provider lookupProvider) {
         return isEmptyType() ? new CompoundTag() : save(lookupProvider);
+    }
+
+    /**
+     * Gathers any tooltips this chemical has, and adds them to the list.
+     *
+     * @param stack       Chemical stack.
+     * @param context     Current tooltip context.
+     * @param tooltips    List of tooltips to add to.
+     * @param tooltipFlag Flag representing if advanced tooltips are to be shown.
+     *
+     * @since 10.7.11
+     */
+    protected void appendHoverText(ChemicalStack stack, TooltipContext context, List<Component> tooltips, TooltipFlag tooltipFlag) {
+        for (IChemicalAttribute attribute : attributes) {
+            attribute.collectTooltips(context, tooltips, tooltipFlag);
+        }
+        //TODO - 1.22: Remove this legacy handling
+        if (!legacyAttributeMap.isEmpty()) {
+            //Only loop the legacy attributes if we have any, don't bother looping the attribute map that contains the modern attributes as legacy ones
+            Consumer<Component> tooltipAdder = tooltips::add;
+            for (ChemicalAttribute attr : legacyAttributeMap.values()) {
+                attr.collectTooltips(tooltipAdder);
+            }
+        }
     }
 }

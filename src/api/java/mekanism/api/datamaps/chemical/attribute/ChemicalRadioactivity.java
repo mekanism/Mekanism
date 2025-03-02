@@ -3,7 +3,7 @@ package mekanism.api.datamaps.chemical.attribute;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import java.util.function.Consumer;
+import java.util.List;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.attribute.ChemicalAttributes;
@@ -14,6 +14,8 @@ import mekanism.api.text.ITooltipHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item.TooltipContext;
+import net.minecraft.world.item.TooltipFlag;
 
 /**
  * A {@link MekanismAPI#CHEMICAL_REGISTRY chemical} data map that allows defining radioactivity values for a chemical. If the radiation manager is enabled, this attribute
@@ -51,11 +53,11 @@ public record ChemicalRadioactivity(double radioactivity) implements IChemicalAt
     }
 
     @Override
-    public void collectTooltips(Consumer<Component> adder) {
+    public void collectTooltips(TooltipContext context, List<Component> tooltips, TooltipFlag tooltipFlag) {
         if (needsValidation()) {
             //Only show the radioactive tooltip information if radiation is actually enabled
             ITooltipHelper tooltipHelper = ITooltipHelper.INSTANCE;
-            adder.accept(APILang.CHEMICAL_ATTRIBUTE_RADIATION.translateColored(EnumColor.GRAY, EnumColor.INDIGO, tooltipHelper.getRadioactivityDisplayShort(radioactivity)));
+            tooltips.add(APILang.CHEMICAL_ATTRIBUTE_RADIATION.translateColored(EnumColor.GRAY, EnumColor.INDIGO, tooltipHelper.getRadioactivityDisplayShort(radioactivity)));
         }
     }
 
