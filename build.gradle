@@ -434,8 +434,12 @@ dependencies {
     annotationProcessor(project(':annotation-processor'))
 
     def testFrameWork = "net.neoforged:testframework:${neo_version}"
-    gameTestImplementation(testFrameWork)
-    testImplementation(testFrameWork)
+    gameTestImplementation(testFrameWork) {
+        transitive = false
+    }
+    testImplementation(testFrameWork) {
+        transitive = false
+    }
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junit_version}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junit_version}")
     //We use https://github.com/jqwik-team/jqwik to allow for implementing property based testing
