@@ -1,9 +1,5 @@
 package mekanism.common.recipe;
 
-import it.unimi.dsi.fastutil.objects.Object2FloatMap;
-import it.unimi.dsi.fastutil.objects.Object2FloatMaps;
-import it.unimi.dsi.fastutil.objects.ObjectIterator;
-import java.util.function.Predicate;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.datagen.recipe.RecipeCriterion;
@@ -13,7 +9,6 @@ import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.builder.ExtendedCookingRecipeBuilder;
 import mekanism.common.registries.MekanismItems;
-import mekanism.common.util.RegistryUtils;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -24,7 +19,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.ComposterBlock;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import org.jetbrains.annotations.Nullable;
 
@@ -48,26 +42,6 @@ public class RecipeProviderUtil {
         }
         blastingRecipe.build(consumer, blastingLocation);
         smeltingRecipe.build(consumer, smeltingLocation);
-    }
-
-    public static void addCrusherBioFuelRecipes(RecipeOutput consumer, String basePath, Predicate<String> shouldHandle, @Nullable ICondition condition) {
-        //Generate baseline recipes from Composter recipe set
-        //TODO - 1.21: Move these to being "generated" recipes at runtime (maybe behind a config option) that uses the compostable datamap?
-        for (ObjectIterator<Object2FloatMap.Entry<ItemLike>> iterator = Object2FloatMaps.fastIterator(ComposterBlock.COMPOSTABLES); iterator.hasNext(); ) {
-            Object2FloatMap.Entry<ItemLike> chance = iterator.next();
-            Item input = chance.getKey().asItem();
-            ResourceLocation name = RegistryUtils.getName(input);
-            if (shouldHandle.test(name.getNamespace())) {
-                ItemStackToItemStackRecipeBuilder builder = ItemStackToItemStackRecipeBuilder.crushing(
-                      IngredientCreatorAccess.item().from(input),
-                      MekanismItems.BIO_FUEL.getItemStack(Math.round(chance.getFloatValue() * 8))
-                );
-                if (condition != null) {
-                    builder.addCondition(condition);
-                }
-                builder.build(consumer, Mekanism.rl(basePath + name.getPath()));
-            }
-        }
     }
 
     public static void addPrecisionSawmillWoodTypeRecipes(RecipeOutput consumer, String basePath, ItemLike planks, @Nullable ItemLike boat,

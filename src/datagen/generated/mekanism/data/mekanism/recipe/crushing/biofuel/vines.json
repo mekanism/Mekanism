@@ -1,0 +1,22 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "type": "neoforge:compound",
+    "children": [
+      {
+        "item": "minecraft:vine"
+      },
+      {
+        "item": "minecraft:twisting_vines"
+      },
+      {
+        "item": "minecraft:weeping_vines"
+      }
+    ],
+    "count": 1
+  },
+  "output": {
+    "count": 1,
+    "id": "mekanism:bio_fuel"
+  }
+}

@@ -1,11 +1,11 @@
 {
   "type": "mekanism:crushing",
   "input": {
-    "count": 1,
-    "item": "minecraft:warped_wart_block"
+    "count": 10,
+    "tag": "minecraft:leaves"
   },
   "output": {
-    "count": 4,
+    "count": 1,
     "id": "mekanism:bio_fuel"
   }
 }

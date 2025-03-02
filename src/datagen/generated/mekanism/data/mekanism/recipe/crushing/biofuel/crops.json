@@ -1,0 +1,34 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "type": "neoforge:compound",
+    "children": [
+      {
+        "item": "minecraft:carrot"
+      },
+      {
+        "item": "minecraft:cactus"
+      },
+      {
+        "item": "minecraft:potato"
+      },
+      {
+        "item": "minecraft:poisonous_potato"
+      },
+      {
+        "item": "minecraft:wheat"
+      },
+      {
+        "item": "minecraft:beetroot"
+      },
+      {
+        "item": "minecraft:nether_wart"
+      }
+    ],
+    "count": 1
+  },
+  "output": {
+    "count": 2,
+    "id": "mekanism:bio_fuel"
+  }
+}

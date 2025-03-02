@@ -11,9 +11,12 @@ import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.HoneycombItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
@@ -23,7 +26,7 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
     @Override
     public void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
         String basePath = "crushing/";
-        RecipeProviderUtil.addCrusherBioFuelRecipes(consumer, basePath + "biofuel/", mod -> mod.equals("minecraft") || mod.startsWith(Mekanism.MODID), null);
+        addCrusherBioFuelRecipes(consumer, basePath + "biofuel/");
         addCrusherDewaxingRecipes(consumer, basePath + "dewax/");
         addCrusherStoneRecipes(consumer, basePath + "stone/");
         addCrusherTuffRecipes(consumer, basePath + "tuff/");
@@ -511,5 +514,69 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
                   new ItemStack(result)
             ).build(consumer, Mekanism.rl(basePath + RegistryUtils.getPath(result.asItem())));
         }
+    }
+
+    private void addCrusherBioFuelRecipes(RecipeOutput consumer, String basePath) {
+        biofuel(consumer, basePath, "apple", 2, 1, Items.APPLE);
+        biofuel(consumer, basePath, "baked_potato", 2, 1, Items.BAKED_POTATO);
+        biofuel(consumer, basePath, "bamboo", 2, 1, Items.BAMBOO);
+        biofuel(consumer, basePath, "berries", 1, 1, Tags.Items.FOODS_BERRY);
+        biofuel(consumer, basePath, "big_dripleaf", 2, 1, Items.BIG_DRIPLEAF);
+        biofuel(consumer, basePath, "bread", 4, 1, Items.BREAD);
+        biofuel(consumer, basePath, "cake", 6, 1, Items.CAKE);
+        biofuel(consumer, basePath, "carved_pumpkin", 2, 1, Items.CARVED_PUMPKIN);//pumpkin minus 4 seeds (sawmill)
+        biofuel(consumer, basePath, "crimson_roots", 1, 1, Items.CRIMSON_ROOTS);
+        biofuel(consumer, basePath, "crops", 2, 1, Items.CARROT, Items.CACTUS, Items.POTATO, Items.POISONOUS_POTATO, Items.WHEAT, Items.BEETROOT, Items.NETHER_WART);
+        biofuel(consumer, basePath, "dried_kelp", 1, 1, Items.DRIED_KELP);
+        biofuel(consumer, basePath, "dried_kelp_block", 9, 1, Items.DRIED_KELP_BLOCK);
+        biofuel(consumer, basePath, "fern", 2, 1, Items.FERN);
+        biofuel(consumer, basePath, "fungus", 1, 1, Items.CRIMSON_FUNGUS, Items.WARPED_FUNGUS);
+        biofuel(consumer, basePath, "glow_lichen", 1, 1, Items.GLOW_LICHEN);
+        biofuel(consumer, basePath, "hanging_roots", 1, 1, Items.HANGING_ROOTS);
+        biofuel(consumer, basePath, "hay_block", 9 * 2, 1, Items.HAY_BLOCK);
+        biofuel(consumer, basePath, "kelp", 2, 1, Items.KELP);
+        biofuel(consumer, basePath, "large_fern", 3, 1, Items.LARGE_FERN);
+        biofuel(consumer, basePath, "leaves", 1, 10, ItemTags.LEAVES);
+        biofuel(consumer, basePath, "lily_pad", 1, 1, Items.LILY_PAD);
+        biofuel(consumer, basePath, "melon", 6, 1, Items.MELON);
+        biofuel(consumer, basePath, "melon_slice", 1, 1, Items.MELON_SLICE);
+        biofuel(consumer, basePath, "moss_block", 2, 1, Items.MOSS_BLOCK);
+        biofuel(consumer, basePath, "mushroom_blocks", 4, 1, Items.BROWN_MUSHROOM_BLOCK, Items.RED_MUSHROOM_BLOCK, Items.MUSHROOM_STEM);
+        biofuel(consumer, basePath, "mushrooms", 1, 1, Tags.Items.MUSHROOMS);
+        biofuel(consumer, basePath, "nether_sprouts", 1, 1, Items.NETHER_SPROUTS);
+        biofuel(consumer, basePath, "nether_wart_block", 9 * 2, 1, Items.NETHER_WART_BLOCK);
+        biofuel(consumer, basePath, "pitcher_pod", 1, 1, Items.PITCHER_POD);
+        biofuel(consumer, basePath, "pumpkin", 6, 1, Items.PUMPKIN);
+        biofuel(consumer, basePath, "rotten_flesh", 1, 1, Items.ROTTEN_FLESH);
+        biofuel(consumer, basePath, "saplings", 1, 1, ItemTags.SAPLINGS);
+        biofuel(consumer, basePath, "sea_pickle", 1, 1, Items.SEA_PICKLE);
+        biofuel(consumer, basePath, "seagrass", 1, 1, Items.SEAGRASS);
+        biofuel(consumer, basePath, "seeds", 1, 1, Tags.Items.SEEDS);
+        biofuel(consumer, basePath, "short_grass", 1, 1, Items.SHORT_GRASS);
+        biofuel(consumer, basePath, "shroomlight", 4, 1, Items.SHROOMLIGHT);
+        biofuel(consumer, basePath, "small_dripleaf", 1, 1, Items.SMALL_DRIPLEAF);
+        biofuel(consumer, basePath, "small_flowers", 1, 1, ItemTags.SMALL_FLOWERS);
+        biofuel(consumer, basePath, "spore_blossom", 2, 1, Items.SPORE_BLOSSOM);
+        biofuel(consumer, basePath, "sugar_cane", 1, 1, Items.SUGAR_CANE);
+        biofuel(consumer, basePath, "tall_flowers", 2, 1, ItemTags.TALL_FLOWERS);
+        biofuel(consumer, basePath, "tall_grass", 2, 1, Items.TALL_GRASS);
+        biofuel(consumer, basePath, "torchflower_seeds", 1, 1, Items.TORCHFLOWER_SEEDS);
+        biofuel(consumer, basePath, "vines", 1, 1, Items.VINE, Items.TWISTING_VINES, Items.WEEPING_VINES);
+        biofuel(consumer, basePath, "warped_roots", 1, 1, Items.WARPED_ROOTS);
+        biofuel(consumer, basePath, "warped_wart_block", 4, 1, Items.WARPED_WART_BLOCK);
+    }
+
+    private static void biofuel(RecipeOutput consumer, String basePath, String filename, int countOutput, int countInput, ItemLike... items) {
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(countInput, items),
+              MekanismItems.BIO_FUEL.getItemStack(countOutput)
+        ).build(consumer, Mekanism.rl(basePath + filename));
+    }
+
+    private static void biofuel(RecipeOutput consumer, String basePath, String filename, int countOutput, int countInput, TagKey<Item> tag) {
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(tag, countInput),
+              MekanismItems.BIO_FUEL.getItemStack(countOutput)
+        ).build(consumer, Mekanism.rl(basePath + filename));
     }
 }
