@@ -167,7 +167,6 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidChemi
         return sendUpdatePacket;
     }
 
-    @NotNull
     @ComputerMethod(nameOverride = "getEnergyUsage", methodDescription = ComputerConstants.DESCRIPTION_GET_ENERGY_USAGE)
     public long getEnergyUsed() {
         return clientEnergyUsed;

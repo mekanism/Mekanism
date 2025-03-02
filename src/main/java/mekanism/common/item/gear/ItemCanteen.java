@@ -89,7 +89,7 @@ public class ItemCanteen extends Item implements ICustomCreativeTabContents {
     private FluidStack getFluid(ItemStack stack) {
         IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID.getCapability(stack);
         if (fluidHandlerItem != null) {
-            return StorageUtils.getContainedFluid(fluidHandlerItem, MekanismFluids.NUTRITIONAL_PASTE.getFluidStack(1));
+            return StorageUtils.getContainedFluid(fluidHandlerItem, MekanismFluids.NUTRITIONAL_PASTE.asStack(1));
         }
         return FluidStack.EMPTY;
     }

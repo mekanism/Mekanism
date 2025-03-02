@@ -28,7 +28,7 @@ public record SPSRecipeViewerRecipe(ResourceLocation id, ChemicalStackIngredient
         return Collections.singletonList(new SPSRecipeViewerRecipe(
               RecipeViewerUtils.synthetic(Mekanism.rl("antimatter"), "sps"),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.POLONIUM, MekanismConfig.general.spsInputPerAntimatter.get()),
-              MekanismChemicals.ANTIMATTER.getStack(1)
+              MekanismChemicals.ANTIMATTER.asStack(1)
         ));
     }
 }

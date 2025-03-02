@@ -1,22 +1,22 @@
 package mekanism.common.registration.impl;
 
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.providers.IFluidProvider;
+import mekanism.api.text.IHasTextComponent;
+import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.registration.MekanismDeferredHolder;
-import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredHolder;
-import org.jetbrains.annotations.NotNull;
 
 @NothingNullByDefault
 public class FluidRegistryObject<TYPE extends FluidType, STILL extends Fluid, FLOWING extends Fluid, BLOCK extends LiquidBlock, BUCKET extends BucketItem>
-    extends MekanismDeferredHolder<Fluid, STILL> implements IFluidProvider {
+    extends MekanismDeferredHolder<Fluid, STILL> implements IHasTextComponent, IHasTranslationKey {
 
     private final DeferredHolder<FluidType, TYPE> fluidType;
     private final DeferredHolder<Fluid, FLOWING> flowing;
@@ -49,20 +49,17 @@ public class FluidRegistryObject<TYPE extends FluidType, STILL extends Fluid, FL
         return bucket.get();
     }
 
-    @Override
-    public STILL getFluid() {
-        return get();
+    public FluidStack asStack(int amount) {
+        return new FluidStack(get(), amount);
     }
 
-    @NotNull
     @Override
-    public Holder<Fluid> getFluidHolder() {
-        return this;
+    public Component getTextComponent() {
+        return getFluidType().getDescription(asStack(1));
     }
 
-    @NotNull
     @Override
-    public ResourceLocation getRegistryName() {
-        return getId();
+    public String getTranslationKey() {
+        return getFluidType().getDescriptionId();
     }
 }

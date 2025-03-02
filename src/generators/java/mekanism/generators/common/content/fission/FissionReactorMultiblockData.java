@@ -434,7 +434,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
                 if (lastBoilRate > 0) {
                     MekanismUtils.logMismatchedStackSize(fluidCoolantTank.shrinkStack((int) lastBoilRate, Action.EXECUTE), lastBoilRate);
                     // extra steam is dumped
-                    heatedCoolantTank.insert(MekanismChemicals.STEAM.getStack(lastBoilRate), Action.EXECUTE, AutomationType.INTERNAL);
+                    heatedCoolantTank.insert(MekanismChemicals.STEAM.asStack(lastBoilRate), Action.EXECUTE, AutomationType.INTERNAL);
                     caseCoolantHeat = lastBoilRate * HeatUtils.getWaterThermalEnthalpy() / HeatUtils.getSteamEnergyEfficiency();
                     heatCapacitor.handleHeat(-caseCoolantHeat);
                 } else {
@@ -485,7 +485,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         if (newWaste > 0) {
             partialWaste %= 1;
             long leftoverWaste = Math.max(0, newWaste - wasteTank.getNeeded());
-            ChemicalStack wasteToAdd = MekanismChemicals.NUCLEAR_WASTE.getStack(newWaste);
+            ChemicalStack wasteToAdd = MekanismChemicals.NUCLEAR_WASTE.asStack(newWaste);
             wasteTank.insert(wasteToAdd, Action.EXECUTE, AutomationType.INTERNAL);
             if (leftoverWaste > 0 && IRadiationManager.INSTANCE.isRadiationEnabled()) {
                 //Check if radiation is enabled in order to allow for short-circuiting when it will NO-OP further down the line anyway

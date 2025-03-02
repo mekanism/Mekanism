@@ -52,7 +52,7 @@ public record FissionRecipeViewerRecipe(ResourceLocation id, @Nullable ChemicalS
         recipes.add(new FissionRecipeViewerRecipe(
               RecipeViewerUtils.synthetic(MekanismGenerators.rl("water"), "fission"),
               null, IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.FISSILE_FUEL, 1),
-              MekanismChemicals.STEAM.getStack(coolantAmount), MekanismChemicals.NUCLEAR_WASTE.getStack(1)
+              MekanismChemicals.STEAM.asStack(coolantAmount), MekanismChemicals.NUCLEAR_WASTE.asStack(1)
         ));
         //TODO - 1.22: Replace this with the below commented code
         //Go through all gases and add each coolant
@@ -66,7 +66,7 @@ public record FissionRecipeViewerRecipe(ResourceLocation id, @Nullable ChemicalS
                       RecipeViewerUtils.synthetic(chemical.toString(), "fission", MekanismGenerators.MODID),
                       IngredientCreatorAccess.chemicalStack().fromHolder(chemical.builtInRegistryHolder(), amount),
                       IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.FISSILE_FUEL, 1),
-                      heatedCoolant.getStack(amount), MekanismChemicals.NUCLEAR_WASTE.getStack(1)
+                      new ChemicalStack(heatedCoolant, amount), MekanismChemicals.NUCLEAR_WASTE.asStack(1)
                 ));
             }
         }

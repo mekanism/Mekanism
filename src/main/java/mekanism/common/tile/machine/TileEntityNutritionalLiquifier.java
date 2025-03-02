@@ -201,7 +201,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<Ba
         }
         return new NutritionalLiquifierIRecipe(
               IngredientCreatorAccess.item().from(stack, 1),
-              MekanismFluids.NUTRITIONAL_PASTE.getFluidStack(food.nutrition() * 50),
+              MekanismFluids.NUTRITIONAL_PASTE.asStack(food.nutrition() * 50),
               food.usingConvertsTo().orElse(ItemStack.EMPTY)
         );
     }

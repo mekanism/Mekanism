@@ -37,7 +37,7 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 1_000),
               900,
               MekanismItems.SULFUR_DUST.asStack(9),
-              MekanismChemicals.HYDROGEN.getStack(1_000)
+              MekanismChemicals.HYDROGEN.asStack(1_000)
         ).build(consumer, Mekanism.rl(basePath + "blocks_coals"));
         //Coals
         PressurizedReactionRecipeBuilder.reaction(
@@ -46,7 +46,7 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 100),
               100,
               MekanismItems.SULFUR_DUST.asStack(),
-              MekanismChemicals.HYDROGEN.getStack(100)
+              MekanismChemicals.HYDROGEN.asStack(100)
         ).build(consumer, Mekanism.rl(basePath + "coals"));
         //Dusts
         PressurizedReactionRecipeBuilder.reaction(
@@ -58,7 +58,7 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 100),
               100,
               MekanismItems.SULFUR_DUST.asStack(),
-              MekanismChemicals.HYDROGEN.getStack(100)
+              MekanismChemicals.HYDROGEN.asStack(100)
         ).build(consumer, Mekanism.rl(basePath + "dusts_coals"));
 
     }
@@ -72,7 +72,7 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
               IngredientCreatorAccess.fluid().from(FluidTags.WATER, 25),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 25),
               37,
-              MekanismChemicals.HYDROGEN.getStack(25)
+              MekanismChemicals.HYDROGEN.asStack(25)
         ).build(consumer, Mekanism.rl(basePath + "dusts_wood"));
         //Logs, each worth one log.
         PressurizedReactionRecipeBuilder.reaction(
@@ -81,7 +81,7 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 400),
               600,
               MekanismItems.CHARCOAL_DUST.asStack(),
-              MekanismChemicals.HYDROGEN.getStack(400)
+              MekanismChemicals.HYDROGEN.asStack(400)
         ).build(consumer, Mekanism.rl(basePath + "logs"));
         //Planks, each worth a 5th of a log.
         PressurizedReactionRecipeBuilder.reaction(
@@ -94,7 +94,7 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 400),
               600,
               MekanismItems.CHARCOAL_DUST.asStack(),
-              MekanismChemicals.HYDROGEN.getStack(400)
+              MekanismChemicals.HYDROGEN.asStack(400)
         ).build(consumer, Mekanism.rl(basePath + "planks"));
         //Rods, each worth a 30th of a log.
         PressurizedReactionRecipeBuilder.reaction(
@@ -102,7 +102,7 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
               IngredientCreatorAccess.fluid().from(FluidTags.WATER, 10),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 10),
               15,
-              MekanismChemicals.HYDROGEN.getStack(10)
+              MekanismChemicals.HYDROGEN.asStack(10)
         ).build(consumer, Mekanism.rl(basePath + "rods_wooden"));
         //Slabs, each worth a 10th of a log.
         PressurizedReactionRecipeBuilder.reaction(
@@ -114,7 +114,7 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
               IngredientCreatorAccess.fluid().from(FluidTags.WATER, 10),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 10),
               15,
-              MekanismChemicals.HYDROGEN.getStack(10)
+              MekanismChemicals.HYDROGEN.asStack(10)
         ).build(consumer, Mekanism.rl(basePath + "wooden_slabs"));
         //Stairs, each worth a 6⅔th of a log.
         PressurizedReactionRecipeBuilder.reaction(
@@ -126,7 +126,7 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
               IngredientCreatorAccess.fluid().from(FluidTags.WATER, 15),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 15),
               22,
-              MekanismChemicals.HYDROGEN.getStack(15)
+              MekanismChemicals.HYDROGEN.asStack(15)
         ).build(consumer, Mekanism.rl(basePath + "wooden_stairs"));
     }
 
@@ -147,7 +147,7 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
                     IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.ETHENE, 100),
                     400,
                     MekanismItems.SUBSTRATE.asStack(8),
-                    MekanismChemicals.OXYGEN.getStack(10)
+                    MekanismChemicals.OXYGEN.asStack(10)
               ).energyRequired(200)
               .build(consumer, Mekanism.rl(basePath + "water_ethene"));
         //Water + hydrogen
@@ -157,7 +157,7 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.HYDROGEN, 100),
               100,
               MekanismItems.SUBSTRATE.asStack(),
-              MekanismChemicals.ETHENE.getStack(100)
+              MekanismChemicals.ETHENE.asStack(100)
         ).build(consumer, Mekanism.rl(basePath + "water_hydrogen"));
     }
 }

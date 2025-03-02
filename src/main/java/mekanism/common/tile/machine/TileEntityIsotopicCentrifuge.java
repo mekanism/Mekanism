@@ -144,7 +144,6 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<Chemic
         return sendUpdatePacket;
     }
 
-    @NotNull
     @ComputerMethod(nameOverride = "getEnergyUsage", methodDescription = ComputerConstants.DESCRIPTION_GET_ENERGY_USAGE)
     public long getEnergyUsed() {
         return clientEnergyUsed;

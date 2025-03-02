@@ -23,15 +23,9 @@ public class LazyChemicalProvider implements IChemicalProvider {//TODO - 1.21: F
     @NotNull
     @Override
     public Chemical getChemical() {
-        return getChemicalHolder().value();
-    }
-
-    @NotNull
-    @Override
-    public Holder<Chemical> getChemicalHolder() {
         if (chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
             //If our gas hasn't actually been set yet, set it from the gas supplier we have
-            chemical = chemicalSupplier.get().getChemicalHolder();
+            chemical = chemicalSupplier.get().builtInRegistryHolder();
             if (chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
                 //If it is still empty (because the supplier was for an empty gas which we couldn't
                 // evaluate initially, throw an illegal state exception)
@@ -40,6 +34,6 @@ public class LazyChemicalProvider implements IChemicalProvider {//TODO - 1.21: F
             //Free memory of the supplier
             chemicalSupplier = null;
         }
-        return chemical;
+        return chemical.value();
     }
 }

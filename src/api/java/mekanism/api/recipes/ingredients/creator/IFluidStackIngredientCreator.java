@@ -5,6 +5,7 @@ import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.providers.IFluidProvider;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
+import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentPredicate;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
@@ -27,6 +28,7 @@ public interface IFluidStackIngredientCreator extends IIngredientCreator<Fluid, 
      * @implNote This wraps via {@link #from(FluidIngredient, int)} so if there is any durability or default NBT it will <strong>NOT</strong> be included in the
      * ingredient. If this is not desired, manually create the ingredient via {@link DataComponentFluidIngredient} and call {@link #from(FluidIngredient, int)}.
      */
+    @Deprecated(forRemoval = true, since = "10.7.11")
     default FluidStackIngredient from(IFluidProvider provider, int amount) {
         Objects.requireNonNull(provider, "FluidStackIngredients cannot be created from a null fluid provider.");
         return from(provider.getFluidStack(amount));
@@ -42,8 +44,23 @@ public interface IFluidStackIngredientCreator extends IIngredientCreator<Fluid, 
      * ingredient. If this is not desired, manually create the ingredient via {@link DataComponentFluidIngredient} and call {@link #from(FluidIngredient, int)}.
      * @since 10.6.0
      */
+    @Deprecated(forRemoval = true, since = "10.7.11")
     default FluidStackIngredient from(int amount, IFluidProvider... fluids) {
         return from(amount, Arrays.stream(fluids).map(IFluidProvider::getFluid).toArray(Fluid[]::new));
+    }
+
+    /**
+     * Creates an Item Stack Ingredient that matches a provided items and amount.
+     *
+     * @param amount Amount needed.
+     * @param fluids Fluid providers that provides the items to match.
+     *
+     * @implNote This wraps via {@link #from(FluidIngredient, int)} so if there is any durability or default NBT it will <strong>NOT</strong> be included in the
+     * ingredient. If this is not desired, manually create the ingredient via {@link DataComponentFluidIngredient} and call {@link #from(FluidIngredient, int)}.
+     * @since 10.7.11
+     */
+    default FluidStackIngredient fromHolders(int amount, Holder<Fluid>... fluids) {
+        return from(amount, Arrays.stream(fluids).map(Holder::value).toArray(Fluid[]::new));
     }
 
     /**

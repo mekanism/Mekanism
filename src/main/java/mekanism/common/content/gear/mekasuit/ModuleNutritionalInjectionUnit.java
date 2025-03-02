@@ -33,12 +33,12 @@ public class ModuleNutritionalInjectionUnit implements ICustomModule<ModuleNutri
             //Check if we can use a single iteration of it
             IFluidHandlerItem handler = Capabilities.FLUID.getCapability(stack);
             if (handler != null) {
-                int contained = StorageUtils.getContainedFluid(handler, MekanismFluids.NUTRITIONAL_PASTE.getFluidStack(1)).getAmount();
+                int contained = StorageUtils.getContainedFluid(handler, MekanismFluids.NUTRITIONAL_PASTE.asStack(1)).getAmount();
                 int needed = Math.min(20 - player.getFoodData().getFoodLevel(), contained / MekanismConfig.general.nutritionalPasteMBPerFood.get());
                 int toFeed = Math.min(MathUtils.clampToInt(module.getContainerEnergy(stack) / usage), needed);
                 if (toFeed > 0) {
                     module.useEnergy(player, stack, usage * toFeed);
-                    handler.drain(MekanismFluids.NUTRITIONAL_PASTE.getFluidStack(toFeed * MekanismConfig.general.nutritionalPasteMBPerFood.get()), FluidAction.EXECUTE);
+                    handler.drain(MekanismFluids.NUTRITIONAL_PASTE.asStack(toFeed * MekanismConfig.general.nutritionalPasteMBPerFood.get()), FluidAction.EXECUTE);
                     player.getFoodData().eat(needed, MekanismConfig.general.nutritionalPasteSaturation.get());
                 }
             }
@@ -52,8 +52,8 @@ public class ModuleNutritionalInjectionUnit implements ICustomModule<ModuleNutri
             double ratio = 0;
             if (handler != null) {
                 int max = MekanismConfig.gear.mekaSuitNutritionalMaxStorage.getAsInt();
-                handler.drain(MekanismFluids.NUTRITIONAL_PASTE.getFluidStack(max), FluidAction.SIMULATE);
-                FluidStack stored = StorageUtils.getContainedFluid(handler, MekanismFluids.NUTRITIONAL_PASTE.getFluidStack(1));
+                handler.drain(MekanismFluids.NUTRITIONAL_PASTE.asStack(max), FluidAction.SIMULATE);
+                FluidStack stored = StorageUtils.getContainedFluid(handler, MekanismFluids.NUTRITIONAL_PASTE.asStack(1));
                 ratio = StorageUtils.getRatio(stored.getAmount(), MekanismConfig.gear.mekaSuitNutritionalMaxStorage.get());
             }
             hudElementAdder.accept(IModuleHelper.INSTANCE.hudElementPercent(icon, ratio));

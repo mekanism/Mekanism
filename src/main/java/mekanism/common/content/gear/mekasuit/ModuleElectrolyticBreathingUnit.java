@@ -62,7 +62,7 @@ public record ModuleElectrolyticBreathingUnit(boolean fillHeld) implements ICust
             long usage = MathUtils.multiplyClamped(2, ChemicalUtil.hydrogenEnergyDensity());
             int maxRate = MathUtils.clampToInt(Math.min(productionRate, module.getContainerEnergy(stack) / usage));
             long hydrogenUsed = 0;
-            ChemicalStack hydrogenStack = MekanismChemicals.HYDROGEN.getStack(maxRate * 2L);
+            ChemicalStack hydrogenStack = MekanismChemicals.HYDROGEN.asStack(maxRate * 2L);
             ItemStack chestStack = player.getItemBySlot(EquipmentSlot.CHEST);
             if (checkChestPlate(chestStack)) {
                 IChemicalHandler chestCapability = Capabilities.CHEMICAL.getCapability(chestStack);

@@ -179,15 +179,15 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
 
     private UpgradeAware makeUpgrades(boolean validFirstSlot, boolean validSecondSlot) {
         return new UpgradeAware(getUpgrades(),
-              validFirstSlot ? MekanismItems.SPEED_UPGRADE.getItemStack(3) : failureItem(3),
-              validSecondSlot ? MekanismItems.ENERGY_UPGRADE.getItemStack(5) : failureItem(5)
+              validFirstSlot ? MekanismItems.SPEED_UPGRADE.asStack(3) : failureItem(3),
+              validSecondSlot ? MekanismItems.ENERGY_UPGRADE.asStack(5) : failureItem(5)
         );
     }
 
     private boolean validateUpgrades(UpgradeAware upgradeAware, boolean validFirstSlot, boolean validSecondSlot) {
         if (upgradeAware.upgrades().equals(getUpgrades())) {
-            boolean firstSlot = validFirstSlot ? ItemStack.matches(MekanismItems.SPEED_UPGRADE.getItemStack(3), upgradeAware.inputSlot()) : upgradeAware.inputSlot().isEmpty();
-            boolean secondSlot = validSecondSlot ? ItemStack.matches(MekanismItems.ENERGY_UPGRADE.getItemStack(5), upgradeAware.outputSlot()) : upgradeAware.outputSlot().isEmpty();
+            boolean firstSlot = validFirstSlot ? ItemStack.matches(MekanismItems.SPEED_UPGRADE.asStack(3), upgradeAware.inputSlot()) : upgradeAware.inputSlot().isEmpty();
+            boolean secondSlot = validSecondSlot ? ItemStack.matches(MekanismItems.ENERGY_UPGRADE.asStack(5), upgradeAware.outputSlot()) : upgradeAware.outputSlot().isEmpty();
             return firstSlot && secondSlot;
         }
         return false;
@@ -200,7 +200,7 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
 
     public void testUpgradeAwareOnItem(boolean validFirstSlot, boolean validSecondSlot) {
         succeedIfInvalidItemSerializationCycle(ItemStack.CODEC, help -> {
-            ItemStack smelterItem = MekanismBlocks.ENERGIZED_SMELTER.getItemStack();
+            ItemStack smelterItem = new ItemStack(MekanismBlocks.ENERGIZED_SMELTER);
             smelterItem.set(MekanismDataComponents.UPGRADES, help.makeUpgrades(validFirstSlot, validSecondSlot));
             return smelterItem;
         }, smelterItem -> smelterItem.is(MekanismBlocks.ENERGIZED_SMELTER.getItemHolder()) &&

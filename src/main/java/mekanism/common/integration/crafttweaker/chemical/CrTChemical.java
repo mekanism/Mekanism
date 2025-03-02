@@ -7,6 +7,7 @@ import com.blamejared.crafttweaker_annotations.annotations.TaggableElement;
 import java.util.Collection;
 import java.util.List;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.attribute.ChemicalAttribute;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
@@ -85,7 +86,7 @@ public class CrTChemical {
     @ZenCodeType.Method
     @ZenCodeType.Operator(ZenCodeType.OperatorType.MUL)
     public static ICrTChemicalStack makeStack(Chemical _this, long amount) {
-        return new CrTChemicalStack(_this.getStack(amount));
+        return new CrTChemicalStack(new ChemicalStack(_this, amount));
     }
 
     /**

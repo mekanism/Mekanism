@@ -276,7 +276,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
 
     private FluidStack getOutput(Fluid sourceFluid, boolean hasFilter) {
         if (hasFilter && sourceFluid == Fluids.WATER) {
-            return MekanismFluids.HEAVY_WATER.getFluidStack(MekanismConfig.general.pumpHeavyWaterAmount.get());
+            return MekanismFluids.HEAVY_WATER.asStack(MekanismConfig.general.pumpHeavyWaterAmount.get());
         }
         return new FluidStack(sourceFluid, FluidType.BUCKET_VOLUME);
     }

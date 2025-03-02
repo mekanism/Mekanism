@@ -1633,12 +1633,12 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //plutonium
         ChemicalToChemicalRecipeBuilder.centrifuging(
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.NUCLEAR_WASTE, 10),
-              MekanismChemicals.PLUTONIUM.getStack(1)
+              MekanismChemicals.PLUTONIUM.asStack(1)
         ).build(consumer, Mekanism.rl(basePath + "plutonium"));
         //polonium
         ChemicalToChemicalRecipeBuilder.activating(
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.NUCLEAR_WASTE, 10),
-              MekanismChemicals.POLONIUM.getStack(1)
+              MekanismChemicals.POLONIUM.asStack(1)
         ).build(consumer, Mekanism.rl(basePath + "polonium"));
 
         //plutonium pellet
@@ -1648,7 +1648,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.PLUTONIUM, 1_000),
               100,
               MekanismItems.PLUTONIUM_PELLET.asStack(),
-              MekanismChemicals.SPENT_NUCLEAR_WASTE.getStack(1_000)
+              MekanismChemicals.SPENT_NUCLEAR_WASTE.asStack(1_000)
         ).build(consumer, Mekanism.rl(basePath + "plutonium_pellet/from_reaction"));
         //polonium pellet
         PressurizedReactionRecipeBuilder.reaction(
@@ -1657,7 +1657,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.POLONIUM, 1_000),
               100,
               MekanismItems.POLONIUM_PELLET.asStack(),
-              MekanismChemicals.SPENT_NUCLEAR_WASTE.getStack(1_000)
+              MekanismChemicals.SPENT_NUCLEAR_WASTE.asStack(1_000)
         ).build(consumer, Mekanism.rl(basePath + "polonium_pellet/from_reaction"));
 
         //antimatter pellet
@@ -1669,7 +1669,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //back to antimatter
         ItemStackToChemicalRecipeBuilder.oxidizing(
               IngredientCreatorAccess.item().from(MekanismTags.Items.PELLETS_ANTIMATTER),
-              MekanismChemicals.ANTIMATTER.getStack(1_000)
+              MekanismChemicals.ANTIMATTER.asStack(1_000)
         ).build(consumer, Mekanism.rl(basePath + "antimatter/from_pellet"));
     }
 }

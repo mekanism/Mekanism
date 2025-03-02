@@ -147,14 +147,14 @@ public interface ITripleRecipeLookupHandler<INPUT_A, INPUT_B, INPUT_C, RECIPE ex
          * and cleaner.
          */
         default boolean containsRecipeCAB(INPUT_A inputA, INPUT_B inputB, Chemical inputC) {
-            return containsRecipeCAB(inputA, inputB, inputC.getStack(1));
+            return containsRecipeCAB(inputA, inputB, new ChemicalStack(inputC, 1));
         }
 
         /**
          * Helper wrapper to convert a chemical to a chemical stack and pass it to {@link #containsRecipeC(Object)} to make validity predicates easier and cleaner.
          */
         default boolean containsRecipeC(Chemical input) {
-            return containsRecipeC(input.getStack(1));
+            return containsRecipeC(new ChemicalStack(input, 1));
         }
     }
 

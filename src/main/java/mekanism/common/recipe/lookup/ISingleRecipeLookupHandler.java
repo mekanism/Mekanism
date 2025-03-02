@@ -76,7 +76,7 @@ public interface ISingleRecipeLookupHandler<INPUT, RECIPE extends MekanismRecipe
          * Helper wrapper to convert a chemical to a chemical stack and pass it to {@link #containsRecipe(Object)} to make validity predicates easier and cleaner.
          */
         default boolean containsRecipe(Chemical input) {
-            return containsRecipe(input.getStack(1));
+            return containsRecipe(new ChemicalStack(input, 1));
         }
     }
 }

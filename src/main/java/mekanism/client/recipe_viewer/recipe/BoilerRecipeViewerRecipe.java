@@ -32,7 +32,7 @@ public record BoilerRecipeViewerRecipe(ResourceLocation id, @Nullable ChemicalSt
           ResourceLocation.CODEC.fieldOf(SerializationConstants.ID).forGetter(BoilerRecipeViewerRecipe::id),
           ChemicalStackIngredient.CODEC.optionalFieldOf(SerializationConstants.CHEMICAL_INPUT).forGetter(recipe -> Optional.ofNullable(recipe.superHeatedCoolant())),
           FluidStackIngredient.CODEC.optionalFieldOf(SerializationConstants.FLUID_INPUT, IngredientCreatorAccess.fluid().from(FluidTags.WATER, WATER_AMOUNT)).forGetter(BoilerRecipeViewerRecipe::water),
-          ChemicalStack.CODEC.optionalFieldOf(SerializationConstants.MAIN_OUTPUT, MekanismChemicals.STEAM.getStack(WATER_AMOUNT)).forGetter(BoilerRecipeViewerRecipe::steam),
+          ChemicalStack.CODEC.optionalFieldOf(SerializationConstants.MAIN_OUTPUT, MekanismChemicals.STEAM.asStack(WATER_AMOUNT)).forGetter(BoilerRecipeViewerRecipe::steam),
           ChemicalStack.CODEC.optionalFieldOf(SerializationConstants.SECONDARY_OUTPUT, ChemicalStack.EMPTY).forGetter(BoilerRecipeViewerRecipe::cooledCoolant),
           Codec.DOUBLE.optionalFieldOf(SerializationConstants.TEMPERATURE, HeatUtils.BASE_BOIL_TEMP).forGetter(BoilerRecipeViewerRecipe::temperature)
     ).apply(instance, (id, superHeatedCoolant, water, steam, cooledCoolant, temperature) ->
@@ -46,7 +46,7 @@ public record BoilerRecipeViewerRecipe(ResourceLocation id, @Nullable ChemicalSt
         double temperature = WATER_AMOUNT * waterToSteamEfficiency / (BoilerMultiblockData.CASING_HEAT_CAPACITY * MekanismConfig.general.boilerWaterConductivity.get()) +
                              HeatUtils.BASE_BOIL_TEMP;
         FluidStackIngredient water = IngredientCreatorAccess.fluid().from(FluidTags.WATER, WATER_AMOUNT);
-        ChemicalStack steam = MekanismChemicals.STEAM.getStack(WATER_AMOUNT);
+        ChemicalStack steam = MekanismChemicals.STEAM.asStack(WATER_AMOUNT);
         recipes.add(new BoilerRecipeViewerRecipe(
               RecipeViewerUtils.synthetic(Mekanism.rl("water"), "boiler"),
               null, water,
@@ -64,7 +64,7 @@ public record BoilerRecipeViewerRecipe(ResourceLocation id, @Nullable ChemicalSt
                 recipes.add(new BoilerRecipeViewerRecipe(
                       RecipeViewerUtils.synthetic(gas.toString(), "boiler", Mekanism.MODID),
                       IngredientCreatorAccess.chemicalStack().fromHolder(gas.builtInRegistryHolder(), coolantAmount), water,
-                      steam, cooledCoolant.getStack(coolantAmount),
+                      steam, new ChemicalStack(cooledCoolant, coolantAmount),
                       HeatUtils.BASE_BOIL_TEMP
                 ));
             }

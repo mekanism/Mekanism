@@ -89,8 +89,8 @@ public class MissingObjectSerializationTest {
     @EmptyTemplate
     @TestHolder(description = "Tests to make sure that attached chemicals load as best as they can when a chemical is missing.")
     public static void testAttachedChemicals(final MissingObjectTestHelper helper) {
-        ChemicalStack initialAntimatter = MekanismChemicals.ANTIMATTER.getStack(10);
-        ChemicalStack initialGold = MekanismChemicals.GOLD.getStack(5);
+        ChemicalStack initialAntimatter = MekanismChemicals.ANTIMATTER.asStack(10);
+        ChemicalStack initialGold = MekanismChemicals.GOLD.asStack(5);
         helper.succeedIfInvalidChemicalSerializationCycle(AttachedChemicals.CODEC, help -> new AttachedChemicals(NonNullList.of(ChemicalStack.EMPTY,
               initialAntimatter.copy(),
               help.failureChemical(3),
@@ -114,7 +114,7 @@ public class MissingObjectSerializationTest {
     @TestHolder(description = "Tests to make sure that formula items that have formulas that contain invalid items will load as having no formula.")
     public static void testFormulaAttachmentOnItem(final MissingObjectTestHelper helper) {
         helper.succeedIfInvalidItemSerializationCycle(ItemStack.CODEC, help -> {
-            ItemStack formulaItem = MekanismItems.CRAFTING_FORMULA.getItemStack();
+            ItemStack formulaItem = MekanismItems.CRAFTING_FORMULA.asStack();
             formulaItem.set(MekanismDataComponents.FORMULA_HOLDER, help.makeFormula());
             return formulaItem;
         }, formulaItem -> {
@@ -139,7 +139,7 @@ public class MissingObjectSerializationTest {
     @TestHolder(description = "Tests to make sure that bins that are locked to an invalid item will load as not being locked.")
     public static void testLockDataOnItem(final MissingObjectTestHelper helper) {
         helper.succeedIfInvalidItemSerializationCycle(ItemStack.CODEC, help -> {
-            ItemStack binItem = MekanismBlocks.BASIC_BIN.getItemStack();
+            ItemStack binItem = new ItemStack(MekanismBlocks.BASIC_BIN);
             binItem.set(MekanismDataComponents.LOCK, LockData.create(help.failureItem()));
             return binItem;
         }, binItem -> binItem.is(MekanismBlocks.BASIC_BIN.getItemHolder()) && LockData.EMPTY.equals(binItem.get(MekanismDataComponents.LOCK)) &&
@@ -152,7 +152,7 @@ public class MissingObjectSerializationTest {
     @TestHolder(description = "Tests to make sure that redstone adapters with a target that are targeting an invalid item, will load sa if they have no target.")
     public static void testItemTarget(final MissingObjectTestHelper helper) {
         helper.succeedIfInvalidItemSerializationCycle(ItemStack.CODEC, help -> {
-            ItemStack adapter = MekanismBlocks.QIO_REDSTONE_ADAPTER.getItemStack();
+            ItemStack adapter = new ItemStack(MekanismBlocks.QIO_REDSTONE_ADAPTER);
             adapter.set(MekanismDataComponents.ITEM_TARGET, Optional.of(help.failureHashedItem()));
             adapter.set(MekanismDataComponents.LONG_AMOUNT, 5L);
             return adapter;
@@ -178,7 +178,7 @@ public class MissingObjectSerializationTest {
     @TestHolder(description = "Tests to make sure that overflow that contain invalid items, will load all still valid items and ignore the invalid ones.")
     public static void testOverflowAwareOnItem(final MissingObjectTestHelper helper) {
         helper.succeedIfInvalidItemSerializationCycle(ItemStack.CODEC, help -> {
-            ItemStack minerItem = MekanismBlocks.DIGITAL_MINER.getItemStack();
+            ItemStack minerItem = new ItemStack(MekanismBlocks.DIGITAL_MINER);
             minerItem.set(MekanismDataComponents.OVERFLOW_AWARE, help.makeOverflow());
             return minerItem;
         }, minerItem -> minerItem.is(MekanismBlocks.DIGITAL_MINER.getItemHolder()) &&
@@ -197,7 +197,7 @@ public class MissingObjectSerializationTest {
     @TestHolder(description = "Tests to make sure that portable dashboards that contain invalid items, will load all still valid items and ignore the invalid ones.")
     public static void testDashboardContentsOnItem(final MissingObjectTestHelper helper) {
         helper.succeedIfInvalidItemSerializationCycle(ItemStack.CODEC, help -> {
-            ItemStack dashboardItem = MekanismItems.PORTABLE_QIO_DASHBOARD.getItemStack();
+            ItemStack dashboardItem = MekanismItems.PORTABLE_QIO_DASHBOARD.asStack();
             dashboardItem.set(MekanismDataComponents.QIO_DASHBOARD, help.makeDashboard());
             return dashboardItem;
         }, dashboardItem -> dashboardItem.is(MekanismItems.PORTABLE_QIO_DASHBOARD) &&

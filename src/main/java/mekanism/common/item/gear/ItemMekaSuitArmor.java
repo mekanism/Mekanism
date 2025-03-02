@@ -378,7 +378,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
             IChemicalHandler gasHandlerItem = Capabilities.CHEMICAL.getCapability(stack);
             if (gasHandlerItem != null) {
                 int amount = Mth.ceil(module.getCustomInstance().getThrustMultiplier());
-                gasHandlerItem.extractChemical(MekanismChemicals.HYDROGEN.getStack(amount), Action.EXECUTE);
+                gasHandlerItem.extractChemical(MekanismChemicals.HYDROGEN.asStack(amount), Action.EXECUTE);
             }
         }
     }

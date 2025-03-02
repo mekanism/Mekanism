@@ -116,7 +116,7 @@ public interface IChemicalIngredientCreator {
      */
     @Deprecated(forRemoval = true, since = "10.7.11")
     default ChemicalIngredient of(IChemicalProvider chemicalProvider) {
-        return of(chemicalProvider.getChemicalHolder());
+        return of(chemicalProvider.getChemical().builtInRegistryHolder());
     }
 
     /**

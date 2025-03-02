@@ -1,7 +1,6 @@
 package mekanism.api.providers;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -9,6 +8,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 @MethodsReturnNonnullByDefault
+@Deprecated(forRemoval = true, since = "10.7.11")
 public interface IFluidProvider extends IBaseProvider {
 
     /**
@@ -17,22 +17,12 @@ public interface IFluidProvider extends IBaseProvider {
     Fluid getFluid();
 
     /**
-     * Helper method to get the holder that corresponds to this provider.
-     *
-     * @since 10.7.11
-     */
-    @SuppressWarnings("deprecation")
-    default Holder<Fluid> getFluidHolder() {
-        return getFluid().builtInRegistryHolder();
-    }
-
-    /**
      * Creates a fluid stack of the given size using the fluid this provider represents.
      *
      * @param size Size of the stack.
      */
     default FluidStack getFluidStack(int size) {
-        return new FluidStack(getFluidHolder(), size);
+        return new FluidStack(getFluid(), size);
     }
 
     @Override

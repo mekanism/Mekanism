@@ -18,12 +18,12 @@ class EvaporatingRecipeProvider implements ISubRecipeProvider {
         //Brine
         FluidToFluidRecipeBuilder.evaporating(
               IngredientCreatorAccess.fluid().from(FluidTags.WATER, 10),
-              MekanismFluids.BRINE.getFluidStack(1)
+              MekanismFluids.BRINE.asStack(1)
         ).build(consumer, Mekanism.rl(basePath + "brine"));
         //Lithium
         FluidToFluidRecipeBuilder.evaporating(
               IngredientCreatorAccess.fluid().from(MekanismTags.Fluids.BRINE, 10),
-              MekanismFluids.LITHIUM.getFluidStack(1)
+              MekanismFluids.LITHIUM.asStack(1)
         ).build(consumer, Mekanism.rl(basePath + "lithium"));
     }
 }

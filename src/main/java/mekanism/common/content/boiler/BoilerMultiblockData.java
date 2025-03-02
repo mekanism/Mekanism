@@ -203,7 +203,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
                 waterTank.shrinkStack(amountToBoil, Action.EXECUTE);
             }
             if (steamTank.isEmpty()) {
-                steamTank.setStack(MekanismChemicals.STEAM.getStack(amountToBoil));
+                steamTank.setStack(MekanismChemicals.STEAM.asStack(amountToBoil));
             } else {
                 steamTank.growStack(amountToBoil, Action.EXECUTE);
             }

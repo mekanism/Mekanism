@@ -175,7 +175,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
         inputProcessed += MathUtils.clampToInt(processed);
         final int inputPerAntimatter = MekanismConfig.general.spsInputPerAntimatter.get();
         if (inputProcessed >= inputPerAntimatter) {
-            ChemicalStack toAdd = MekanismChemicals.ANTIMATTER.getStack(inputProcessed / inputPerAntimatter);
+            ChemicalStack toAdd = MekanismChemicals.ANTIMATTER.asStack(inputProcessed / inputPerAntimatter);
             outputTank.insert(toAdd, Action.EXECUTE, AutomationType.INTERNAL);
             inputProcessed %= inputPerAntimatter;
         }

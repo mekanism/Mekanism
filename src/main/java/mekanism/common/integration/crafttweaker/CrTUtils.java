@@ -55,7 +55,7 @@ public class CrTUtils {
      * Helper method to convert a {@link Chemical} to an {@link ICrTChemicalStack}.
      */
     public static ICrTChemicalStack fromChemical(Chemical chemical, int size) {
-        return new CrTChemicalStack(chemical.getStack(size));
+        return new CrTChemicalStack(new ChemicalStack(chemical, size));
     }
 
     /**

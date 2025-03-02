@@ -118,14 +118,14 @@ public interface IDoubleRecipeLookupHandler<INPUT_A, INPUT_B, RECIPE extends Mek
          * cleaner.
          */
         default boolean containsRecipeBA(INPUT inputA, Chemical inputB) {
-            return containsRecipeBA(inputA, inputB.getStack(1));
+            return containsRecipeBA(inputA, new ChemicalStack(inputB, 1));
         }
 
         /**
          * Helper wrapper to convert a chemical to a chemical stack and pass it to {@link #containsRecipeB(Object)} to make validity predicates easier and cleaner.
          */
         default boolean containsRecipeB(Chemical input) {
-            return containsRecipeB(input.getStack(1));
+            return containsRecipeB(new ChemicalStack(input, 1));
         }
     }
 

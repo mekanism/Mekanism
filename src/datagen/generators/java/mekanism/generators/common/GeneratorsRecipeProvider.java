@@ -75,8 +75,8 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
         //Heavy water
         ElectrolysisRecipeBuilder.separating(
                     IngredientCreatorAccess.fluid().from(MekanismTags.Fluids.HEAVY_WATER, 2),
-                    GeneratorsChemicals.DEUTERIUM.getStack(2),
-                    MekanismChemicals.OXYGEN.getStack(1)
+                    GeneratorsChemicals.DEUTERIUM.asStack(2),
+                    MekanismChemicals.OXYGEN.asStack(1)
               ).energyMultiplier(2)
               .build(consumer, MekanismGenerators.rl(basePath + "heavy_water"));
     }
@@ -104,7 +104,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
         ChemicalChemicalToChemicalRecipeBuilder.chemicalInfusing(
               IngredientCreatorAccess.chemicalStack().fromHolder(GeneratorsChemicals.DEUTERIUM, 1),
               IngredientCreatorAccess.chemicalStack().fromHolder(GeneratorsChemicals.TRITIUM, 1),
-              GeneratorsChemicals.FUSION_FUEL.getStack(2)
+              GeneratorsChemicals.FUSION_FUEL.asStack(2)
         ).build(consumer, MekanismGenerators.rl(basePath + "fusion_fuel"));
     }
 
@@ -112,7 +112,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
         String basePath = "activating/";
         ChemicalToChemicalRecipeBuilder.activating(
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.LITHIUM, 1),
-              GeneratorsChemicals.TRITIUM.getStack(1)
+              GeneratorsChemicals.TRITIUM.asStack(1)
         ).build(consumer, MekanismGenerators.rl(basePath + "tritium"));
     }
 

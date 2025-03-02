@@ -150,6 +150,7 @@ public class ChemicalAttributes {//TODO - 1.22: Remove this class in favor of sp
 
         @Nullable
         private final mekanism.api.datamaps.chemical.attribute.CooledCoolant modernRepresentation;
+        @Deprecated(forRemoval = true, since = "10.7.11")
         private final IChemicalProvider heatedChemical;
 
         /**
@@ -159,6 +160,7 @@ public class ChemicalAttributes {//TODO - 1.22: Remove this class in favor of sp
          * @param conductivity    Defines the proportion of a reactor's available heat that can be used at an instant to convert this coolant's cool variant to its heated
          *                        variant. This value should be greater than zero, and at most one.
          */
+        @Deprecated(forRemoval = true, since = "10.7.11")
         public CooledCoolant(IChemicalProvider heatedChemical, double thermalEnthalpy, double conductivity) {
             super(thermalEnthalpy, conductivity);
             this.heatedChemical = heatedChemical;
@@ -223,6 +225,7 @@ public class ChemicalAttributes {//TODO - 1.22: Remove this class in favor of sp
 
         @Nullable
         private final mekanism.api.datamaps.chemical.attribute.HeatedCoolant modernRepresentation;
+        @Deprecated(forRemoval = true, since = "10.7.11")
         private final IChemicalProvider cooledChemical;
 
         /**
@@ -232,6 +235,7 @@ public class ChemicalAttributes {//TODO - 1.22: Remove this class in favor of sp
          * @param conductivity    Defines the proportion of a reactor's available heat that can be used at an instant to convert this coolant's cool variant to its heated
          *                        variant. This value should be greater than zero, and at most one.
          */
+        @Deprecated(forRemoval = true, since = "10.7.11")
         public HeatedCoolant(IChemicalProvider cooledChemical, double thermalEnthalpy, double conductivity) {
             super(thermalEnthalpy, conductivity);
             this.cooledChemical = cooledChemical;

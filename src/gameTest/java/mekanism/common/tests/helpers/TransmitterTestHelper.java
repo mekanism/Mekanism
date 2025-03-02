@@ -30,7 +30,7 @@ public class TransmitterTestHelper extends MekGameTestHelper {
     public void useConfigurator(int x, int y, int z, Direction side, int times, boolean shift) {
         Player player = makeMockPlayerLookingAt(x, y, z, side.getOpposite());
         player.setShiftKeyDown(shift);
-        useOn(new BlockPos(x, y, z), MekanismItems.CONFIGURATOR.getItemStack(), player, side, times);
+        useOn(new BlockPos(x, y, z), MekanismItems.CONFIGURATOR.asStack(), player, side, times);
     }
 
     public void applyAlloyUpgrade(BlockPos relativePos, AlloyTier tier) {
@@ -39,6 +39,6 @@ public class TransmitterTestHelper extends MekGameTestHelper {
             case INFUSED -> MekanismItems.INFUSED_ALLOY;
             case REINFORCED -> MekanismItems.REINFORCED_ALLOY;
             case ATOMIC -> MekanismItems.ATOMIC_ALLOY;
-        }).getItemStack(), makeMockPlayer(), Direction.UP);
+        }).asStack(), makeMockPlayer(), Direction.UP);
     }
 }

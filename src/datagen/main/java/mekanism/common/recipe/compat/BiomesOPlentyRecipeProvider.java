@@ -128,7 +128,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
         long flowerRate = 3 * PigmentExtractingRecipeProvider.DYE_RATE;
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
                     inputIngredient,
-                    MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(color).getStack(flowerRate)
+                    MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(color).asStack(flowerRate)
               ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "pigment_extracting/" + color.getRegistryPrefix()));
     }
@@ -144,7 +144,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
         long largeFlowerRate = 6 * PigmentExtractingRecipeProvider.DYE_RATE;
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
                     inputIngredient,
-                    MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(color).getStack(largeFlowerRate)
+                    MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(color).asStack(largeFlowerRate)
               ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "pigment_extracting/large_" + color.getRegistryPrefix()));
     }

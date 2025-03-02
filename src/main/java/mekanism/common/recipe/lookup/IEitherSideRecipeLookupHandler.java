@@ -80,14 +80,14 @@ public interface IEitherSideRecipeLookupHandler<INPUT, RECIPE extends MekanismRe
          * Helper wrapper to convert a chemical to a chemical stack and pass it to {@link #containsRecipe(Object)} to make validity predicates easier and cleaner.
          */
         default boolean containsRecipe(Chemical input) {
-            return containsRecipe(input.getStack(1));
+            return containsRecipe(new ChemicalStack(input, 1));
         }
 
         /**
          * Helper wrapper to convert a chemical to a chemical stack and pass it to {@link #containsRecipe(Object)} to make validity predicates easier and cleaner.
          */
         default boolean containsRecipe(Chemical inputA, ChemicalStack inputB) {
-            return containsRecipe(inputA.getStack(1), inputB);
+            return containsRecipe(new ChemicalStack(inputA, 1), inputB);
         }
     }
 }

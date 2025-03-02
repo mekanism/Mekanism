@@ -155,7 +155,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
     }
 
     private boolean isValidGas(@NotNull Chemical gas) {
-        return getRecipeType().getInputCache().containsInput(level, gas.getStack(1));
+        return getRecipeType().getInputCache().containsInput(level, new ChemicalStack(gas, 1));
     }
 
     @NotNull
@@ -228,7 +228,6 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
         nextMode();
     }
 
-    @NotNull
     @ComputerMethod(nameOverride = "getEnergyUsage", methodDescription = ComputerConstants.DESCRIPTION_GET_ENERGY_USAGE)
     public long getEnergyUsed() {
         return clientEnergyUsed;
