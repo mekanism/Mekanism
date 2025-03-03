@@ -72,16 +72,17 @@ sourceSets {
     }
     gameTest {
         compileClasspath += api.output
+        resources {
+            srcDirs += ["src/gameTest/generated"]
+        }
     }
     // These source-sets only exist for the sake of assembling a dependency graph
     // for IntelliJ. Each of these will become an IntelliJ module when the project is imported,
     // and will be set as the "main module" for the IntelliJ runs. A compile dependency
     // on the other source sets is enough, since runtime classpath is managed by MDG anyway.
     runMain {
-        runtimeClasspath += main.runtimeClasspath
-        runtimeClasspath += api.runtimeClasspath
-        compileClasspath += main.output
-        compileClasspath += api.output
+        runtimeClasspath += main.runtimeClasspath + api.runtimeClasspath
+        compileClasspath += main.output + api.output
     }
     runData {
         compileClasspath += runMain.compileClasspath
@@ -353,6 +354,19 @@ neoForge {
             sourceSet = sourceSets.gameTest
             loadedMods.add(mods.mekanismtests)
             programArguments.addAll('--quickPlaySingleplayer', 'GameTestWorld')
+        }
+        dataGameTest {
+            data()
+            gameDirectory.value(runsFolder.dir('gameTestServer'))
+            programArguments.addAll('--all', '--output', file('src/gameTest/generated/').absolutePath,
+                    '--mod', 'mekanismtests', '--existing', file('src/gameTest/resources/').absolutePath,
+                    '--existing-mod', 'mekanism')
+            for (String name : secondaryModules) {
+                programArguments.addAll('--existing-mod', 'mekanism' + name)
+            }
+
+            sourceSet = sourceSets.gameTest
+            loadedMods.add(mods.mekanismtests)
         }
         data {
             data()
