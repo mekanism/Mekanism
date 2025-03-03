@@ -141,23 +141,23 @@ public class GeneratorsConfig extends BaseMekanismConfig {
         turbineBladesPerCoil = CachedIntValue.wrap(this, GeneratorsConfigTranslations.SERVER_TURBINE_BLADES.applyToBuilder(builder)
               .defineInRange("bladesPerCoil", 4, 1, 12));
         turbineVentChemicalFlow = CachedDoubleValue.wrap(this, GeneratorsConfigTranslations.SERVER_TURBINE_RATE_VENT.applyToBuilder(builder)
-              .defineInRange("ventChemicalFlow", 3.2D * FluidType.BUCKET_VOLUME, 0.1, 1_024 * FluidType.BUCKET_VOLUME));
+              .defineInRange("ventChemicalFlow", 32D * FluidType.BUCKET_VOLUME, 0.1, 1_024 * FluidType.BUCKET_VOLUME));
         turbineDisperserChemicalFlow = CachedDoubleValue.wrap(this, GeneratorsConfigTranslations.SERVER_TURBINE_RATE_DISPERSER.applyToBuilder(builder)
               .defineInRange("disperserChemicalFlow", 1_280D, 0.1, 1_024 * FluidType.BUCKET_VOLUME));
         condenserRate = CachedIntValue.wrap(this, GeneratorsConfigTranslations.SERVER_TURBINE_RATE_CONDENSER.applyToBuilder(builder)
               .defineInRange("condenserRate", 64 * FluidType.BUCKET_VOLUME, 1, 2_000 * FluidType.BUCKET_VOLUME));
         turbineEnergyCapacityPerVolume = CachedLongValue.define(this, builder, GeneratorsConfigTranslations.SERVER_TURBINE_ENERGY_CAPACITY,
-              "energyCapacityPerVolume", 100L, 1L, 1_000_000_000_000L);
+              "energyCapacityPerVolume", 16_000_000L, 1L, 1_000_000_000_000L);
         //Note: We use maxVolume as it still is a large number, and we have no reason to go higher even if some things we technically could
         int maxTurbine = 17 * 17 * 18;
         turbineChemicalPerTank = CachedLongValue.wrap(this, GeneratorsConfigTranslations.SERVER_TURBINE_CHEMICAL_CAPACITY.applyToBuilder(builder)
-              .defineInRange("chemicalPerTank", 2 * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE / maxTurbine));
+              .defineInRange("chemicalPerTank", 64L * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE / maxTurbine));
         turbineJoulesPerSteam = CachedLongValue.definePositive(this, builder, GeneratorsConfigTranslations.SERVER_TURBINE_JOULES_PER_STEAM, "joulesPerSteam", 5);
         turbineSteamDivisor = CachedIntValue.wrap(this, GeneratorsConfigTranslations.SERVER_TURBINE_STEAM_DIVISOR.applyToBuilder(builder).defineInRange("steamDivisor", 100, 1, Integer.MAX_VALUE));
         builder.pop();
 
         GeneratorsConfigTranslations.SERVER_FISSION.applyToBuilder(builder).push("fission_reactor");
-        energyPerFissionFuel = CachedLongValue.definePositive(this, builder, GeneratorsConfigTranslations.SERVER_FISSION_FUEL_ENERGY, "energyPerFissionFuel", 20_000L);
+        energyPerFissionFuel = CachedLongValue.definePositive(this, builder, GeneratorsConfigTranslations.SERVER_FISSION_FUEL_ENERGY, "energyPerFissionFuel", 1_000_000L);
         fissionCasingHeatCapacity = CachedDoubleValue.wrap(this, GeneratorsConfigTranslations.SERVER_FISSION__CASING_HEAT_CAPACITY.applyToBuilder(builder)
               .defineInRange("casingHeatCapacity", 1_000D, 1, 1_000_000));
         fissionSurfaceAreaTarget = CachedDoubleValue.wrap(this, GeneratorsConfigTranslations.SERVER_FISSION_SURFACE_AREA.applyToBuilder(builder)
@@ -167,12 +167,12 @@ public class GeneratorsConfig extends BaseMekanismConfig {
         burnPerAssembly = CachedLongValue.wrap(this, GeneratorsConfigTranslations.SERVER_FISSION_BURN_PER_ASSEMBLY.applyToBuilder(builder)
               .defineInRange("burnPerAssembly", 1L, 1, 1_000_000));
         maxFuelPerAssembly = CachedLongValue.wrap(this, GeneratorsConfigTranslations.SERVER_FISSION_FUEL_CAPACITY.applyToBuilder(builder)
-              .defineInRange("maxFuelPerAssembly", 100, 1, Long.MAX_VALUE / 4_096));
+              .defineInRange("maxFuelPerAssembly", 8L * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE / 4_096));
         int maxVolume = 18 * 18 * 18;
         fissionCooledCoolantPerTank = CachedIntValue.wrap(this, GeneratorsConfigTranslations.SERVER_FISSION_COOLED_COOLANT_CAPACITY.applyToBuilder(builder)
-              .defineInRange("cooledCoolantPerTank", 100, 1, Integer.MAX_VALUE / maxVolume));
+              .defineInRange("cooledCoolantPerTank", 100 * FluidType.BUCKET_VOLUME, 1, Integer.MAX_VALUE / maxVolume));
         fissionHeatedCoolantPerTank = CachedLongValue.wrap(this, GeneratorsConfigTranslations.SERVER_FISSION_HEATED_COOLANT_CAPACITY.applyToBuilder(builder)
-              .defineInRange("heatedCoolantPerTank", 100, 1, Long.MAX_VALUE / maxVolume));
+              .defineInRange("heatedCoolantPerTank", 1_000L * FluidType.BUCKET_VOLUME, 1_000, Long.MAX_VALUE / maxVolume));
         fissionExcessWasteRatio = CachedDoubleValue.wrap(this, GeneratorsConfigTranslations.SERVER_FISSION_EXCESS_WASTE.applyToBuilder(builder)
               .defineInRange("excessWaste", 0.9D, 0.001D, 1D));
 
