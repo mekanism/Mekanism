@@ -987,7 +987,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         super.notifyComparatorChange();
         Direction facing = getDirection();
         Direction left = MekanismUtils.getLeft(facing);
-        BlockBounding boundingBlock = MekanismBlocks.BOUNDING_BLOCK.getBlock();
+        BlockBounding boundingBlock = MekanismBlocks.BOUNDING_BLOCK.value();
         //Proxy the comparator updates to the various ports we expose comparators to
         level.updateNeighbourForOutputSignal(worldPosition.relative(left), boundingBlock);
         level.updateNeighbourForOutputSignal(worldPosition.relative(left.getOpposite()), boundingBlock);

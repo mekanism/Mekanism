@@ -20,13 +20,8 @@ public class BlockRegistryObject<BLOCK extends Block, ITEM extends Item> extends
     }
 
     @NotNull
-    public BLOCK getBlock() {
-        return get();
-    }
-
-    @NotNull
     public BlockState defaultState() {
-        return getBlock().defaultBlockState();
+        return value().defaultBlockState();
     }
 
     @NotNull
@@ -51,12 +46,12 @@ public class BlockRegistryObject<BLOCK extends Block, ITEM extends Item> extends
     @NotNull
     @Override
     public String getTranslationKey() {
-        return getBlock().getDescriptionId();
+        return value().getDescriptionId();
     }
 
     @NotNull
     @Override
     public Component getTextComponent() {
-        return getBlock().getName();
+        return value().getName();
     }
 }

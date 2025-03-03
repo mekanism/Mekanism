@@ -14,6 +14,7 @@ import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
+import mekanism.common.recipe.BaseRecipeProvider;
 import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.recipe.RecipeProviderUtil;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
@@ -39,6 +40,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.Nullable;
@@ -93,18 +95,18 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
     private void addDynamicOreProcessingIngotRecipes(RecipeOutput consumer, String basePath, PrimaryResource resource) {
         //TODO - 1.18: Take into account if the ore is a single drop or multi like vanilla copper is?
         // We may want to consider this at least for the silk touched ore to ingot?
-        ItemLike ingot = MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, resource);
+        Holder<Item> ingot = MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, resource);
         TagKey<Item> ingotTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, resource);
-        ItemLike nugget = MekanismItems.PROCESSED_RESOURCES.get(ResourceType.NUGGET, resource);
+        Holder<Item> nugget = MekanismItems.PROCESSED_RESOURCES.get(ResourceType.NUGGET, resource);
         TagKey<Item> nuggetTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.NUGGET, resource);
-        ItemLike block = MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(resource);
-        ItemLike raw = MekanismItems.PROCESSED_RESOURCES.get(ResourceType.RAW, resource);
+        Holder<Block> block = MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(resource);
+        Holder<Item> raw = MekanismItems.PROCESSED_RESOURCES.get(ResourceType.RAW, resource);
         TagKey<Item> rawTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.RAW, resource);
-        ItemLike rawBlock = MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(resource.getRawResourceBlockInfo());
+        Holder<Block> rawBlock = MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(resource.getRawResourceBlockInfo());
         TagKey<Item> rawBlockTag = MekanismTags.Items.PROCESSED_RESOURCE_BLOCKS.get(resource.getRawResourceBlockInfo());
         OreBlockType oreBlockType = MekanismBlocks.ORES.get(OreType.get(resource));
-        ItemLike ore = oreBlockType == null ? null : oreBlockType.stone();
-        ItemLike deepslateOre = oreBlockType == null ? null : oreBlockType.deepslate();
+        Block ore = oreBlockType == null ? null : oreBlockType.stone().value();
+        Block deepslateOre = oreBlockType == null ? null : oreBlockType.deepslate().value();
         TagKey<Item> oreTag = resource.getOreTag();
         float dustExperience = 0.3F;
         int toOre = 8;
@@ -112,33 +114,33 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
             //Note: We only bother setting types we actually use
             switch (resource) {
                 case IRON -> {
-                    ingot = Items.IRON_INGOT;
+                    ingot = Items.IRON_INGOT.builtInRegistryHolder();
                     ingotTag = Tags.Items.INGOTS_IRON;
-                    raw = Items.RAW_IRON;
+                    raw = Items.RAW_IRON.builtInRegistryHolder();
                     rawTag = Tags.Items.RAW_MATERIALS_IRON;
-                    rawBlock = Items.RAW_IRON_BLOCK;
+                    rawBlock = Blocks.RAW_IRON_BLOCK.builtInRegistryHolder();
                     rawBlockTag = Tags.Items.STORAGE_BLOCKS_RAW_IRON;
                     ore = Blocks.IRON_ORE;
                     deepslateOre = Blocks.DEEPSLATE_IRON_ORE;
                     dustExperience = 0.35F;
                 }
                 case GOLD -> {
-                    ingot = Items.GOLD_INGOT;
+                    ingot = Items.GOLD_INGOT.builtInRegistryHolder();
                     ingotTag = Tags.Items.INGOTS_GOLD;
-                    raw = Items.RAW_GOLD;
+                    raw = Items.RAW_GOLD.builtInRegistryHolder();
                     rawTag = Tags.Items.RAW_MATERIALS_GOLD;
-                    rawBlock = Items.RAW_GOLD_BLOCK;
+                    rawBlock = Blocks.RAW_GOLD_BLOCK.builtInRegistryHolder();
                     rawBlockTag = Tags.Items.STORAGE_BLOCKS_RAW_GOLD;
                     ore = Blocks.GOLD_ORE;
                     deepslateOre = Blocks.DEEPSLATE_GOLD_ORE;
                     dustExperience = 0.5F;
                 }
                 case COPPER -> {
-                    ingot = Items.COPPER_INGOT;
+                    ingot = Items.COPPER_INGOT.builtInRegistryHolder();
                     ingotTag = Tags.Items.INGOTS_COPPER;
-                    raw = Items.RAW_COPPER;
+                    raw = Items.RAW_COPPER.builtInRegistryHolder();
                     rawTag = Tags.Items.RAW_MATERIALS_COPPER;
-                    rawBlock = Items.RAW_COPPER_BLOCK;
+                    rawBlock = Blocks.RAW_COPPER_BLOCK.builtInRegistryHolder();
                     rawBlockTag = Tags.Items.STORAGE_BLOCKS_RAW_COPPER;
                     ore = Blocks.COPPER_ORE;
                     deepslateOre = Blocks.DEEPSLATE_COPPER_ORE;
@@ -188,7 +190,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
             RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, Ingredient.of(ore, deepslateOre), ingot, dustExperience * 2, 200,
                   Mekanism.rl(basePath + "ingot/from_ore_blasting"), Mekanism.rl(basePath + "ingot/from_ore_smelting"));
             // from raw
-            RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, Ingredient.of(raw), ingot, dustExperience * 2, 200,
+            RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, BaseRecipeProvider.of(raw), ingot, dustExperience * 2, 200,
                   Mekanism.rl(basePath + "ingot/from_raw_blasting"), Mekanism.rl(basePath + "ingot/from_raw_smelting"));
             // raw from raw block
             ExtendedShapelessRecipeBuilder.shapelessRecipe(raw, 9)
@@ -222,7 +224,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
 
         // Intermediate Steps
         // Ingot from Dust
-        RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, Ingredient.of(dust.value()), ingot, dustExperience, 200,
+        RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, BaseRecipeProvider.of(dust), ingot, dustExperience, 200,
               Mekanism.rl(basePath + "ingot/from_dust_blasting"), Mekanism.rl(basePath + "ingot/from_dust_smelting"));
         // Dust from Dirty Dust
         ItemStackToItemStackRecipeBuilder.enriching(IngredientCreatorAccess.item().from(dirtyDustTag), new ItemStack(dust))
@@ -428,7 +430,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
               false
         ).build(consumer, Mekanism.rl(basePath + "scrap_to_dust"));
         //Netherite Dust to Netherite Ingot
-        RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, Ingredient.of(MekanismItems.NETHERITE_DUST), Items.NETHERITE_INGOT, 1, 200,
+        RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, Ingredient.of(MekanismItems.NETHERITE_DUST), Items.NETHERITE_INGOT.builtInRegistryHolder(), 1, 200,
               Mekanism.rl(basePath + "ingot_from_dust_blasting"), Mekanism.rl(basePath + "ingot_from_dust_smelting"));
         //Netherite Ingot to Netherite Dust
         ItemStackToItemStackRecipeBuilder.crushing(

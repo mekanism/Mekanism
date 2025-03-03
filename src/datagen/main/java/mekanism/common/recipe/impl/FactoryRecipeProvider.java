@@ -16,11 +16,12 @@ import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.util.EnumUtils;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
 
 class FactoryRecipeProvider implements ISubRecipeProvider {
@@ -44,8 +45,8 @@ class FactoryRecipeProvider implements ISubRecipeProvider {
         }
     }
 
-    private void addFactoryRecipe(RecipeOutput consumer, String basePath, BlockRegistryObject<BlockFactory<?>, ?> factory, ItemLike toUpgrade,
-          TagKey<Item> ingotTag, TagKey<Item> alloyTag, TagKey<Item> circuitTag) {
+    private void addFactoryRecipe(RecipeOutput consumer, String basePath, Holder<Block> factory, Holder<Block> toUpgrade, TagKey<Item> ingotTag, TagKey<Item> alloyTag,
+          TagKey<Item> circuitTag) {
         MekDataShapedRecipeBuilder.shapedRecipe(factory)
               .pattern(MekanismRecipeProvider.TIER_PATTERN)
               .key(Pattern.PREVIOUS, toUpgrade)

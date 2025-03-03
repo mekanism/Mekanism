@@ -201,13 +201,13 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
                 }
             }
             return null;
-        }, MekanismBlocks.BOUNDING_BLOCK.getBlock());
+        }, MekanismBlocks.BOUNDING_BLOCK.value());
     }
 
     public static <CAP, CONTEXT> void alwaysProxyCapability(RegisterCapabilitiesEvent event, BlockCapability<CAP, CONTEXT> capability) {
         event.registerBlock(capability, (level, pos, state, blockEntity, context) -> {
             BlockPos mainPos = BlockBounding.getMainBlockPos(level, pos);
             return mainPos == null ? null : WorldUtils.getCapability(level, capability, mainPos, context);
-        }, MekanismBlocks.BOUNDING_BLOCK.getBlock());
+        }, MekanismBlocks.BOUNDING_BLOCK.value());
     }
 }

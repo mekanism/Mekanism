@@ -14,6 +14,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.recipe.builder.ExtendedCookingRecipeBuilder;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.util.RegistryUtils;
+import net.minecraft.core.Holder;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -37,10 +38,11 @@ public class RecipeProviderUtil {
     private RecipeProviderUtil() {
     }
 
-    public static void addSmeltingBlastingRecipes(RecipeOutput consumer, Ingredient smeltingInput, ItemLike output, float experience, int smeltingTime,
+    public static void addSmeltingBlastingRecipes(RecipeOutput consumer, Ingredient smeltingInput, Holder<? extends ItemLike> output, float experience, int smeltingTime,
           ResourceLocation blastingLocation, ResourceLocation smeltingLocation, RecipeCriterion... criteria) {
-        ExtendedCookingRecipeBuilder blastingRecipe = ExtendedCookingRecipeBuilder.blasting(output, smeltingInput, smeltingTime / 2).experience(experience);
-        ExtendedCookingRecipeBuilder smeltingRecipe = ExtendedCookingRecipeBuilder.smelting(output, smeltingInput, smeltingTime).experience(experience);
+        ItemLike out = output.value();
+        ExtendedCookingRecipeBuilder blastingRecipe = ExtendedCookingRecipeBuilder.blasting(out, smeltingInput, smeltingTime / 2).experience(experience);
+        ExtendedCookingRecipeBuilder smeltingRecipe = ExtendedCookingRecipeBuilder.smelting(out, smeltingInput, smeltingTime).experience(experience);
         //If there are any criteria add them
         for (RecipeCriterion criterion : criteria) {
             blastingRecipe.unlockedBy(criterion);

@@ -1097,7 +1097,7 @@ public class MekanismBlocks {
         String name = ore.getResource().getRegistrySuffix() + "_ore";
         BlockRegistryObject<BlockOre, ItemBlockTooltip<BlockOre>> stoneOre = registerBlock(name, () -> new BlockOre(ore));
         BlockRegistryObject<BlockOre, ItemBlockTooltip<BlockOre>> deepslateOre = BLOCKS.register("deepslate_" + name,
-              () -> new BlockOre(ore, Properties.ofLegacyCopy(stoneOre.getBlock()).mapColor(MapColor.DEEPSLATE)
+              () -> new BlockOre(ore, Properties.ofLegacyCopy(stoneOre.value()).mapColor(MapColor.DEEPSLATE)
                     .strength(4.5F, 3).sound(SoundType.DEEPSLATE)), ItemBlockTooltip::new);
         return new OreBlockType(stoneOre, deepslateOre);
     }

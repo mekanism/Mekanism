@@ -23,6 +23,7 @@ import mekanism.common.item.block.ItemBlockMekanism;
 import mekanism.common.registration.impl.BlockDeferredRegister;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.util.EnumUtils;
+import net.minecraft.core.Holder;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -89,9 +90,9 @@ public class AdditionsBlocks {
         return registerColoredBlock(c -> new BlockPlasticSlab(c, propertyModifier), blockTypeSuffix, color);
     }
 
-    private static BlockRegistryObject<BlockPlasticStairs, ItemBlockMekanism<BlockPlasticStairs>> registerPlasticStairs(BlockRegistryObject<?, ?> baseBlock, EnumColor color, String blockTypeSuffix,
+    private static BlockRegistryObject<BlockPlasticStairs, ItemBlockMekanism<BlockPlasticStairs>> registerPlasticStairs(Holder<Block> baseBlock, EnumColor color, String blockTypeSuffix,
           UnaryOperator<BlockBehaviour.Properties> propertyModifier) {
-        return registerColoredBlock(c -> new BlockPlasticStairs(baseBlock.defaultState(), c, propertyModifier), blockTypeSuffix, color);
+        return registerColoredBlock(c -> new BlockPlasticStairs(baseBlock.value().defaultBlockState(), c, propertyModifier), blockTypeSuffix, color);
     }
 
     private static <BLOCK extends Block & IColoredBlock> BlockRegistryObject<BLOCK, ItemBlockMekanism<BLOCK>> registerColoredBlock(Function<EnumColor, BLOCK> blockCreator,

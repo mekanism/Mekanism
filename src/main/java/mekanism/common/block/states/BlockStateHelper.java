@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.function.ToIntFunction;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeState;
-import mekanism.common.registration.impl.BlockRegistryObject;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.LevelAccessor;
@@ -113,11 +113,11 @@ public class BlockStateHelper {
         return state;
     }
 
-    public static BlockState copyStateData(BlockState oldState, @Nullable BlockRegistryObject<?, ?> newBlockProvider) {
+    public static BlockState copyStateData(BlockState oldState, @Nullable Holder<Block> newBlockProvider) {
         if (newBlockProvider == null) {
             return oldState;
         }
-        return copyStateData(oldState, newBlockProvider.defaultState());
+        return copyStateData(oldState, newBlockProvider.value().defaultBlockState());
     }
 
     public static BlockState copyStateData(BlockState oldState, BlockState newState) {

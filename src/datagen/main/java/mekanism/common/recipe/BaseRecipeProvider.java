@@ -13,6 +13,7 @@ import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.advancements.Advancement.Builder;
 import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -93,8 +94,13 @@ public abstract class BaseRecipeProvider extends RecipeProvider {
         return Ingredient.fromValues(Arrays.stream(tags).map(Ingredient.TagValue::new));
     }
 
-    public static Ingredient difference(TagKey<Item> base, ItemLike subtracted) {
-        return DifferenceIngredient.of(Ingredient.of(base), Ingredient.of(subtracted));
+    @SafeVarargs
+    public static Ingredient of(Holder<? extends ItemLike>... items) {
+        return Ingredient.of(Arrays.stream(items).map(Holder::value).toArray(ItemLike[]::new));
+    }
+
+    public static Ingredient difference(TagKey<Item> base, Holder<? extends ItemLike> subtracted) {
+        return DifferenceIngredient.of(Ingredient.of(base), Ingredient.of(subtracted.value()));
     }
 
     public static TagKey<Item> osmiumIngot() {

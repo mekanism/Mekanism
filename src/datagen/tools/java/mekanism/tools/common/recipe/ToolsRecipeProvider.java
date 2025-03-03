@@ -18,6 +18,7 @@ import mekanism.common.util.RegistryUtils;
 import mekanism.tools.common.MekanismTools;
 import mekanism.tools.common.registries.ToolsItems;
 import mekanism.tools.common.registries.ToolsRecipeSerializers;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
@@ -26,8 +27,6 @@ import net.minecraft.data.recipes.SpecialRecipeBuilder;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
@@ -110,8 +109,9 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
         SpecialRecipeBuilder.special(MekBannerShieldRecipe::new).save(consumer, ToolsRecipeSerializers.BANNER_SHIELD.getId());
     }
 
-    private void registerRecipeSet(RecipeOutput consumer, String name, ItemLike helmet, ItemLike chestplate, ItemLike leggings, ItemLike boots, ItemLike sword,
-          ItemLike pickaxe, ItemLike axe, ItemLike shovel, ItemLike hoe, ItemLike paxel, ItemLike shield, TagKey<Item> ingot, TagKey<Item> rod, @Nullable ItemLike nugget) {
+    private void registerRecipeSet(RecipeOutput consumer, String name, Holder<Item> helmet, Holder<Item> chestplate, Holder<Item> leggings, Holder<Item> boots,
+          Holder<Item> sword, Holder<Item> pickaxe, Holder<Item> axe, Holder<Item> shovel, Holder<Item> hoe, Holder<Item> paxel, Holder<Item> shield,
+          TagKey<Item> ingot, TagKey<Item> rod, @Nullable Holder<Item> nugget) {
         String baseArmorPath = name + "/armor/";
         armor(HELMET, helmet, ingot).build(consumer, MekanismTools.rl(baseArmorPath + "helmet"));
         armor(CHESTPLATE, chestplate, ingot).build(consumer, MekanismTools.rl(baseArmorPath + "chestplate"));
@@ -140,7 +140,7 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
         //If we have a nugget that means we also want to add recipes for smelting tools/armor into the nugget
         if (nugget != null) {
             String baseNuggetFrom = name + "/nugget_from_";
-            RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, Ingredient.of(helmet, chestplate, leggings, boots, sword, pickaxe, axe, shovel, hoe, paxel),
+            RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, BaseRecipeProvider.of(helmet, chestplate, leggings, boots, sword, pickaxe, axe, shovel, hoe, paxel),
                   nugget, 0.1F, 200, MekanismTools.rl(baseNuggetFrom + "blasting"), MekanismTools.rl(baseNuggetFrom + "smelting"));
         }
     }
@@ -154,7 +154,7 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
         ExtendedSmithingRecipeBuilder.smithing(Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE, ToolsItems.DIAMOND_PAXEL, Items.NETHERITE_INGOT, ToolsItems.NETHERITE_PAXEL).build(consumer);
     }
 
-    private void registerVanillaPaxel(RecipeOutput consumer, ItemLike paxel, Item axe, Item pickaxe, Item shovel, @Nullable Item nugget) {
+    private void registerVanillaPaxel(RecipeOutput consumer, Holder<Item> paxel, Item axe, Item pickaxe, Item shovel, @Nullable Item nugget) {
         PaxelShapedRecipeBuilder.shapedRecipe(paxel)
               .pattern(PAXEL)
               .key(AXE_CHAR, axe)
@@ -165,19 +165,19 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
         //If we have a nugget that means we also want to add recipes for smelting tools/armor into the nugget
         if (nugget != null) {
             String baseNuggetFrom = RegistryUtils.getPath(nugget) + "_from_";
-            RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, Ingredient.of(paxel), nugget, 0.1F, 200,
+            RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, BaseRecipeProvider.of(paxel), nugget.builtInRegistryHolder(), 0.1F, 200,
                   MekanismTools.rl(baseNuggetFrom + "blasting"), MekanismTools.rl(baseNuggetFrom + "smelting"));
         }
     }
 
-    private ExtendedShapedRecipeBuilder armor(RecipePattern pattern, ItemLike armor, TagKey<Item> ingot) {
+    private ExtendedShapedRecipeBuilder armor(RecipePattern pattern, Holder<Item> armor, TagKey<Item> ingot) {
         return ExtendedShapedRecipeBuilder.shapedRecipe(armor)
               .pattern(pattern)
               .key(Pattern.INGOT, ingot)
               .category(RecipeCategory.COMBAT);
     }
 
-    private ExtendedShapedRecipeBuilder tool(RecipePattern pattern, ItemLike tool, TagKey<Item> ingot, TagKey<Item> rod) {
+    private ExtendedShapedRecipeBuilder tool(RecipePattern pattern, Holder<Item> tool, TagKey<Item> ingot, TagKey<Item> rod) {
         return ExtendedShapedRecipeBuilder.shapedRecipe(tool)
               .pattern(pattern)
               .key(Pattern.INGOT, ingot)

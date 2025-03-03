@@ -7,7 +7,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagBuilder;
-import net.neoforged.neoforge.registries.DeferredHolder;
 
 //Based off of IntrinsicHolderTagsProvider.IntrinsicTagAppender but with a few shortcuts for forge registry entries and also a few more helpers and addition of SafeVarargs annotations
 public class IntrinsicMekanismTagBuilder<TYPE> extends MekanismTagBuilder<TYPE, IntrinsicMekanismTagBuilder<TYPE>> {
@@ -27,13 +26,13 @@ public class IntrinsicMekanismTagBuilder<TYPE> extends MekanismTagBuilder<TYPE, 
         return keyExtractor.apply(element).location();
     }
 
-    public final IntrinsicMekanismTagBuilder<TYPE> addHolders(Collection<? extends DeferredHolder<TYPE, ?>> elements) {
-        return add(DeferredHolder::getId, elements);
+    @SafeVarargs
+    public final IntrinsicMekanismTagBuilder<TYPE> addHolders(Holder<TYPE>... elements) {
+        return addTyped(Holder::value, elements);
     }
 
-    @SafeVarargs
-    public final IntrinsicMekanismTagBuilder<TYPE> add(DeferredHolder<TYPE, ?>... elements) {
-        return add(DeferredHolder::getId, elements);
+    public final IntrinsicMekanismTagBuilder<TYPE> addHolders(Collection<? extends Holder<TYPE>> elements) {
+        return addTyped(Holder::value, elements);
     }
 
     @SafeVarargs

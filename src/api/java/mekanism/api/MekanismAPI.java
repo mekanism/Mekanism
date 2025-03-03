@@ -9,6 +9,7 @@ import mekanism.api.gear.ModuleData;
 import mekanism.api.recipes.ingredients.chemical.ChemicalIngredient;
 import mekanism.api.robit.RobitSkin;
 import net.minecraft.core.DefaultedRegistry;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -161,6 +162,6 @@ public class MekanismAPI {
      *
      * @since 10.7.11
      */
-    public static final DeferredHolder<Chemical, Chemical> EMPTY_CHEMICAL_HOLDER = DeferredHolder.create(EMPTY_CHEMICAL_KEY);
+    public static final Holder<Chemical> EMPTY_CHEMICAL_HOLDER = DeferredHolder.create(EMPTY_CHEMICAL_KEY);
 
 }

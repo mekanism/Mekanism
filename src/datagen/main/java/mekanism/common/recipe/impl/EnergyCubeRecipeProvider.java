@@ -1,24 +1,23 @@
 package mekanism.common.recipe.impl;
 
 import mekanism.common.Mekanism;
-import mekanism.common.block.BlockEnergyCube;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.recipe.builder.MekDataShapedRecipeBuilder;
 import mekanism.common.recipe.pattern.Pattern;
 import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.recipe.pattern.RecipePattern.TripleLine;
-import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
 
 class EnergyCubeRecipeProvider implements ISubRecipeProvider {
@@ -37,8 +36,8 @@ class EnergyCubeRecipeProvider implements ISubRecipeProvider {
         addTieredEnergyCube(consumer, basePath, MekanismBlocks.ULTIMATE_ENERGY_CUBE, MekanismBlocks.ELITE_ENERGY_CUBE, Tags.Items.GEMS_DIAMOND, MekanismTags.Items.ALLOYS_ATOMIC);
     }
 
-    private void addTieredEnergyCube(RecipeOutput consumer, String basePath, BlockRegistryObject<BlockEnergyCube, ?> energyCube,
-          ItemLike previousEnergyCube, TagKey<Item> ingotTag, TagKey<Item> alloyTag) {
+    private void addTieredEnergyCube(RecipeOutput consumer, String basePath, Holder<Block> energyCube, Holder<Block> previousEnergyCube, TagKey<Item> ingotTag,
+          TagKey<Item> alloyTag) {
         String tierName = Attribute.getBaseTier(energyCube).getLowerName();
         MekDataShapedRecipeBuilder.shapedRecipe(energyCube)
               .pattern(ENERGY_CUBE_PATTERN)

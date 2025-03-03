@@ -14,6 +14,7 @@ import mekanism.common.registries.MekanismItems;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
@@ -44,7 +45,7 @@ class ControlCircuitRecipeProvider implements ISubRecipeProvider {
         addCircuitInfusionUpgrade(consumer, MekanismItems.ULTIMATE_CONTROL_CIRCUIT, MekanismTags.Items.CIRCUITS_ELITE, MekanismAPITags.Chemicals.REFINED_OBSIDIAN, 40, basePath, "ultimate");
     }
 
-    private void addCircuitUpgradeRecipe(RecipeOutput consumer, ItemLike output, TagKey<Item> circuitTag, TagKey<Item> alloyTag, String basePath,
+    private void addCircuitUpgradeRecipe(RecipeOutput consumer, Holder<Item> output, TagKey<Item> circuitTag, TagKey<Item> alloyTag, String basePath,
           String name) {
         ExtendedShapedRecipeBuilder.shapedRecipe(output)
               .pattern(circuitPattern)

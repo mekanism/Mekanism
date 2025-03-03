@@ -15,10 +15,12 @@ import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.recipe.pattern.RecipePattern.TripleLine;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.tags.MekanismTags;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 public class PlasticFencesRecipeProvider implements ISubRecipeProvider {
 
@@ -43,8 +45,8 @@ public class PlasticFencesRecipeProvider implements ISubRecipeProvider {
         }
     }
 
-    private void registerPlasticFence(RecipeOutput consumer, BlockRegistryObject<? extends IColoredBlock, ?> result, ItemLike plastic, String basePath) {
-        EnumColor color = result.getBlock().getColor();
+    private void registerPlasticFence(RecipeOutput consumer, DeferredHolder<Block, ? extends IColoredBlock> result, Holder<Block> plastic, String basePath) {
+        EnumColor color = result.value().getColor();
         ExtendedShapedRecipeBuilder.shapedRecipe(result, 3)
               .pattern(PLASTIC_FENCE)
               .key(AdditionsRecipeProvider.PLASTIC_ROD_CHAR, MekanismTags.Items.RODS_PLASTIC)
@@ -61,8 +63,8 @@ public class PlasticFencesRecipeProvider implements ISubRecipeProvider {
         }
     }
 
-    private void registerPlasticFenceGate(RecipeOutput consumer, BlockRegistryObject<? extends IColoredBlock, ?> result, ItemLike plastic, String basePath) {
-        EnumColor color = result.getBlock().getColor();
+    private void registerPlasticFenceGate(RecipeOutput consumer, DeferredHolder<Block, ? extends IColoredBlock> result, Holder<Block> plastic, String basePath) {
+        EnumColor color = result.value().getColor();
         ExtendedShapedRecipeBuilder.shapedRecipe(result)
               .pattern(PLASTIC_FENCE_GATE)
               .key(AdditionsRecipeProvider.PLASTIC_ROD_CHAR, MekanismTags.Items.RODS_PLASTIC)

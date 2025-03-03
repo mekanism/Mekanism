@@ -36,9 +36,9 @@ public class GeneratorsTagProvider extends BaseTagProvider {
         addFluids();
         addGases();
         addHarvestRequirements();
-        addToTag(BlockTags.IMPERMEABLE, GeneratorsBlocks.REACTOR_GLASS);
+        addBlocksToTag(BlockTags.IMPERMEABLE, GeneratorsBlocks.REACTOR_GLASS);
 
-        addToTag(BlockTags.SNOW_LAYER_CANNOT_SURVIVE_ON,
+        addBlocksToTag(BlockTags.SNOW_LAYER_CANNOT_SURVIVE_ON,
               GeneratorsBlocks.REACTOR_GLASS,
 
               GeneratorsBlocks.FISSION_REACTOR_CASING,
@@ -61,21 +61,21 @@ public class GeneratorsTagProvider extends BaseTagProvider {
               GeneratorsBlocks.FUSION_REACTOR_LOGIC_ADAPTER,
               GeneratorsBlocks.LASER_FOCUS_MATRIX);
 
-        addToTag(FRAMEABLE, GeneratorsBlocks.REACTOR_GLASS, GeneratorsBlocks.LASER_FOCUS_MATRIX);
-        addToTag(FB_BE_WHITELIST, GeneratorsBlocks.REACTOR_GLASS, GeneratorsBlocks.LASER_FOCUS_MATRIX);
+        addBlocksToTag(FRAMEABLE, GeneratorsBlocks.REACTOR_GLASS, GeneratorsBlocks.LASER_FOCUS_MATRIX);
+        addBlocksToTag(FB_BE_WHITELIST, GeneratorsBlocks.REACTOR_GLASS, GeneratorsBlocks.LASER_FOCUS_MATRIX);
 
         getItemBuilder(MekanismAPITags.Items.MEKA_UNITS).add(GeneratorsItems.ITEMS.getEntries().stream().filter(item -> item.get() instanceof IModuleItem).toList());
     }
 
     private void addBoxBlacklist() {
-        addToTag(Tags.Blocks.RELOCATION_NOT_SUPPORTED,
+        addBlocksToTag(Tags.Blocks.RELOCATION_NOT_SUPPORTED,
               GeneratorsBlocks.ADVANCED_SOLAR_GENERATOR,
               GeneratorsBlocks.WIND_GENERATOR
         );
     }
 
     private void addEndermanBlacklist() {
-        addToTag(Tags.Blocks.ENDERMAN_PLACE_ON_BLACKLIST,
+        addBlocksToTag(Tags.Blocks.ENDERMAN_PLACE_ON_BLACKLIST,
               GeneratorsBlocks.TURBINE_CASING,
               GeneratorsBlocks.TURBINE_VALVE,
               GeneratorsBlocks.TURBINE_VENT,
@@ -106,11 +106,11 @@ public class GeneratorsTagProvider extends BaseTagProvider {
     }
 
     private void addGases() {
-        addToTag(GeneratorTags.Chemicals.DEUTERIUM, GeneratorsChemicals.DEUTERIUM);
-        addToTag(GeneratorTags.Chemicals.TRITIUM, GeneratorsChemicals.TRITIUM);
-        addToTag(GeneratorTags.Chemicals.FUSION_FUEL, GeneratorsChemicals.FUSION_FUEL);
+        addChemicalsToTag(GeneratorTags.Chemicals.DEUTERIUM, GeneratorsChemicals.DEUTERIUM);
+        addChemicalsToTag(GeneratorTags.Chemicals.TRITIUM, GeneratorsChemicals.TRITIUM);
+        addChemicalsToTag(GeneratorTags.Chemicals.FUSION_FUEL, GeneratorsChemicals.FUSION_FUEL);
 
-        addToTag(MekanismAPITags.Chemicals.GASEOUS,
+        addChemicalsToTag(MekanismAPITags.Chemicals.GASEOUS,
               GeneratorsChemicals.DEUTERIUM,
               GeneratorsChemicals.TRITIUM,
               GeneratorsChemicals.FUSION_FUEL

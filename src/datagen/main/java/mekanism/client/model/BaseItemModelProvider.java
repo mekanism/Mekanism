@@ -3,9 +3,12 @@ package mekanism.client.model;
 import mekanism.common.item.ItemModule;
 import mekanism.common.registration.impl.FluidDeferredRegister;
 import mekanism.common.registration.impl.ItemDeferredRegister;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.models.ItemModelGenerators;
 import net.minecraft.data.models.ItemModelGenerators.TrimModelData;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.world.item.ArmorItem;
@@ -16,7 +19,6 @@ import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
 import net.neoforged.neoforge.client.model.generators.loaders.DynamicFluidContainerModelBuilder;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.internal.versions.neoforge.NeoForgeVersion;
-import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class BaseItemModelProvider extends ItemModelProvider {
@@ -34,20 +36,28 @@ public abstract class BaseItemModelProvider extends ItemModelProvider {
     public boolean textureExists(ResourceLocation texture) {
         return existingFileHelper.exists(texture, PackType.CLIENT_RESOURCES, ".png", "textures");
     }
+    
+    protected String getPath(Holder<Item> holder) {
+        ResourceKey<Item> key = holder.getKey();
+        if (key == null) {
+            return BuiltInRegistries.ITEM.getKey(holder.value()).getPath();
+        }
+        return key.location().getPath();
+    }
 
-    protected ResourceLocation itemTexture(DeferredHolder<Item, ?> item) {
-        return modLoc("item/" + item.getId().getPath());
+    protected ResourceLocation itemTexture(Holder<Item> item) {
+        return modLoc("item/" + getPath(item));
     }
 
     @SafeVarargs
-    protected final void registerGenerated(DeferredHolder<Item, ?>... itemProviders) {
-        for (DeferredHolder<Item, ?> itemLike : itemProviders) {
+    protected final void registerGenerated(Holder<Item>... itemProviders) {
+        for (Holder<Item> itemLike : itemProviders) {
             generated(itemLike);
         }
     }
 
     protected void registerModules(ItemDeferredRegister register) {
-        for (DeferredHolder<Item, ?> itemProvider : register.getEntries()) {
+        for (Holder<Item> itemProvider : register.getEntries()) {
             if (itemProvider.value() instanceof ItemModule) {
                 generated(itemProvider);
             }
@@ -55,25 +65,25 @@ public abstract class BaseItemModelProvider extends ItemModelProvider {
     }
 
     protected void registerBuckets(FluidDeferredRegister register) {
-        for (DeferredHolder<Item, ? extends Item> holder : register.getBucketEntries()) {
+        for (Holder<Item> holder : register.getBucketEntries()) {
             //Note: We expect this to always be the case
             if (holder.value() instanceof BucketItem bucket) {
-                withExistingParent(holder.getId().getPath(), ResourceLocation.fromNamespaceAndPath(NeoForgeVersion.MOD_ID, "item/bucket"))
+                withExistingParent(getPath(holder), ResourceLocation.fromNamespaceAndPath(NeoForgeVersion.MOD_ID, "item/bucket"))
                       .customLoader(DynamicFluidContainerModelBuilder::begin)
                       .fluid(bucket.content);
             }
         }
     }
 
-    protected ItemModelBuilder generated(DeferredHolder<Item, ?> item) {
+    protected ItemModelBuilder generated(Holder<Item> item) {
         return generated(item, itemTexture(item));
     }
 
-    protected ItemModelBuilder generated(DeferredHolder<Item, ?> item, ResourceLocation texture) {
-        return withExistingParent(item.getId().getPath(), "item/generated").texture("layer0", texture);
+    protected ItemModelBuilder generated(Holder<Item> item, ResourceLocation texture) {
+        return withExistingParent(getPath(item), "item/generated").texture("layer0", texture);
     }
 
-    protected ItemModelBuilder resource(DeferredHolder<Item, ?> item, String type) {
+    protected ItemModelBuilder resource(Holder<Item> item, String type) {
         //TODO: Try to come up with a better solution to this. Currently we have an empty texture for layer zero so that we can set
         // the tint only on layer one so that we only end up having the tint show for this fallback texture
         ItemModelBuilder modelBuilder = generated(item, modLoc("item/empty")).texture("layer1", modLoc("item/" + type));
@@ -86,21 +96,21 @@ public abstract class BaseItemModelProvider extends ItemModelProvider {
     }
 
     @SafeVarargs
-    protected final void registerHandheld(DeferredHolder<Item, ?>... itemProviders) {
-        for (DeferredHolder<Item, ?> itemLike : itemProviders) {
+    protected final void registerHandheld(Holder<Item>... itemProviders) {
+        for (Holder<Item> itemLike : itemProviders) {
             handheld(itemLike);
         }
     }
 
-    protected ItemModelBuilder handheld(DeferredHolder<Item, ?> item) {
+    protected ItemModelBuilder handheld(Holder<Item> item) {
         return handheld(item, itemTexture(item));
     }
 
-    protected ItemModelBuilder handheld(DeferredHolder<Item, ?> item, ResourceLocation texture) {
-        return withExistingParent(item.getId().getPath(), "item/handheld").texture("layer0", texture);
+    protected ItemModelBuilder handheld(Holder<Item> item, ResourceLocation texture) {
+        return withExistingParent(getPath(item), "item/handheld").texture("layer0", texture);
     }
 
-    protected ItemModelBuilder armorOrHandheld(DeferredHolder<Item, ?> holder, ResourceLocation texture) {
+    protected ItemModelBuilder armorOrHandheld(Holder<Item> holder, ResourceLocation texture) {
         if (holder.value() instanceof ArmorItem armorItem) {
             ItemModelBuilder builder = generated(holder, texture);
             for (TrimModelData trimModelData : ItemModelGenerators.GENERATED_TRIM_MODELS) {

@@ -8,7 +8,9 @@ import mekanism.common.registration.impl.FluidDeferredRegister;
 import mekanism.common.registration.impl.FluidDeferredRegister.MekanismFluidType;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -43,6 +45,14 @@ public abstract class BaseBlockStateProvider<PROVIDER extends BaseBlockModelProv
     @Override
     public PROVIDER models() {
         return modelProvider;
+    }
+
+    protected String getPath(Holder<Block> holder) {
+        ResourceKey<Block> key = holder.getKey();
+        if (key == null) {
+            return BuiltInRegistries.BLOCK.getKey(holder.value()).getPath();
+        }
+        return key.location().getPath();
     }
 
     protected VariantBlockStateBuilder getVariantBuilder(Holder<Block> blockProvider) {

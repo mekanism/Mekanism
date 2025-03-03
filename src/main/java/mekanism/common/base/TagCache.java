@@ -107,7 +107,7 @@ public final class TagCache {
 
     public static MatchingStacks getBlockTagStacks(@NotNull String tagName) {
         return blockTagStacks.computeIfAbsent(tagName, name -> {
-            Set<Block> blocks = collectTagStacks(BuiltInRegistries.BLOCK, name, block -> block != MekanismBlocks.BOUNDING_BLOCK.getBlock());
+            Set<Block> blocks = collectTagStacks(BuiltInRegistries.BLOCK, name, block -> !MekanismBlocks.BOUNDING_BLOCK.is(block));
             return getMatching(blocks);
         });
     }

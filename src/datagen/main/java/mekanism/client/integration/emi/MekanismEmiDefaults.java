@@ -10,15 +10,16 @@ import mekanism.common.Mekanism;
 import mekanism.common.block.basic.BlockResource;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.item.ItemModule;
-import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.util.EnumUtils;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
@@ -96,8 +97,8 @@ public class MekanismEmiDefaults extends BaseEmiDefaults {
 
     }
 
-    private void addStorageBlockRecipe(String basePath, BlockRegistryObject<BlockResource, ?> block) {
-        addRecipe(basePath + block.getBlock().getResourceInfo().getRegistrySuffix());
+    private void addStorageBlockRecipe(String basePath, DeferredHolder<Block, BlockResource> block) {
+        addRecipe(basePath + block.value().getResourceInfo().getRegistrySuffix());
     }
 
     private void addFactoryRecipes() {
@@ -292,8 +293,8 @@ public class MekanismEmiDefaults extends BaseEmiDefaults {
 
     private void addGearModuleRecipes() {
         addRecipe(MekanismItems.MODULE_BASE);
-        for (DeferredHolder<Item, ? extends Item> entry : MekanismItems.ITEMS.getEntries()) {
-            Item item = entry.get();
+        for (Holder<Item> entry : MekanismItems.ITEMS.getEntries()) {
+            Item item = entry.value();
             if (item instanceof ItemModule) {
                 addRecipe(item);
             }

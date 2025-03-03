@@ -15,7 +15,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.registries.DeferredHolder;
 
 public interface RVAliasHelper<ITEM, FLUID, CHEMICAL> {
 
@@ -111,9 +110,9 @@ public interface RVAliasHelper<ITEM, FLUID, CHEMICAL> {
     void addChemicalAliases(List<CHEMICAL> stacks, IHasTranslationKey... aliases);
 
     default void addModuleAliases(ItemDeferredRegister items) {
-        for (DeferredHolder<Item, ? extends Item> entry : items.getEntries()) {
-            if (entry.get() instanceof IModuleItem module) {
-                addAliases(entry.get(), IModuleHelper.INSTANCE.getSupportedItems(module.getModuleData())
+        for (Holder<Item> entry : items.getEntries()) {
+            if (entry.value() instanceof IModuleItem module) {
+                addAliases(entry.value(), IModuleHelper.INSTANCE.getSupportedItems(module.getModuleData())
                       .stream()
                       .map(item -> (IHasTranslationKey) item::getDescriptionId)
                       .toArray(IHasTranslationKey[]::new)

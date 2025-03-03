@@ -10,12 +10,13 @@ import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
 import mekanism.common.recipe.pattern.Pattern;
 import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.recipe.pattern.RecipePattern.TripleLine;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
 
 public class PlasticSlabsRecipeProvider implements ISubRecipeProvider {
 
@@ -32,15 +33,16 @@ public class PlasticSlabsRecipeProvider implements ISubRecipeProvider {
               basePath + "glow/");
     }
 
-    private void registerPlasticSlabs(RecipeOutput consumer, Map<EnumColor, ? extends ItemLike> blocks, Map<EnumColor, ? extends ItemLike> plastic,
+    private void registerPlasticSlabs(RecipeOutput consumer, Map<EnumColor, ? extends Holder<Block>> blocks, Map<EnumColor, ? extends Holder<Block>> plastic,
           TagKey<Item> blockType, boolean transparent, String basePath) {
-        for (Map.Entry<EnumColor, ? extends ItemLike> entry : blocks.entrySet()) {
+        for (Map.Entry<EnumColor, ? extends Holder<Block>> entry : blocks.entrySet()) {
             EnumColor color = entry.getKey();
             registerPlasticSlab(consumer, color, entry.getValue(), plastic.get(color), blockType, transparent, basePath);
         }
     }
 
-    private void registerPlasticSlab(RecipeOutput consumer, EnumColor color, ItemLike slab, ItemLike plastic, TagKey<Item> blockType, boolean transparent, String basePath) {
+    private void registerPlasticSlab(RecipeOutput consumer, EnumColor color, Holder<Block> slab, Holder<Block> plastic, TagKey<Item> blockType, boolean transparent,
+          String basePath) {
         ExtendedShapedRecipeBuilder.shapedRecipe(slab, 6)
               .pattern(PLASTIC_SLAB)
               .key(Pattern.CONSTANT, plastic)

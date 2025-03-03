@@ -8,12 +8,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.tier.BaseTier;
 import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.common.DataGenSerializationConstants;
 import mekanism.common.integration.MekanismHooks;
-import mekanism.common.registration.impl.DeferredChemical;
+import mekanism.common.registration.INamedEntry;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -83,7 +82,7 @@ public abstract class BaseEmiDefaults implements DataProvider {
         addRecipe(registryName);
     }
 
-    protected void addRotaryRecipe(DeferredChemical<Chemical> gas) {
+    protected void addRotaryRecipe(INamedEntry gas) {
         //Allow showing all gas -> fluid rotary recipes by default, in case someone needs a fluid variant that then it consistently gets them to the gas
         // But we don't bother with the decondensentrating ones
         addUncheckedRecipe(RecipeViewerUtils.synthetic(ResourceLocation.fromNamespaceAndPath(modid, "rotary/" + gas.getName()), "condensentrating"));

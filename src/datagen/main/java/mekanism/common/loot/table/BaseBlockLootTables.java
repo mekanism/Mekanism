@@ -98,6 +98,10 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
         return knownBlocks.contains(block) || toSkip.contains(block);
     }
 
+    protected void add(Holder<Block> block, Function<Block, LootTable.Builder> factory) {
+        add(block.value(), factory);
+    }
+
     protected LootTable.Builder createOreDrop(Block block, ItemLike item) {
         return createSilkTouchDispatchTable(block, applyExplosionDecay(block, LootItem.lootTableItem(item.asItem())
               .apply(ApplyBonusCount.addOreBonusCount(this.registries.holderOrThrow(Enchantments.FORTUNE)))
@@ -136,8 +140,8 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
 
     protected void add(Function<Block, Builder> factory, OreBlockType... oreTypes) {
         for (OreBlockType oreType : oreTypes) {
-            add(oreType.stoneBlock(), factory);
-            add(oreType.deepslateBlock(), factory);
+            add(oreType.stone(), factory);
+            add(oreType.deepslate(), factory);
         }
     }
 

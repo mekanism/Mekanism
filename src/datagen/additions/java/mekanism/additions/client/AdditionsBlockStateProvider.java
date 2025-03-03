@@ -53,7 +53,7 @@ public class AdditionsBlockStateProvider extends BaseBlockStateProvider<Addition
         ModelFile model = models().getExistingFile(modLoc("block/glow_panel"));
         Function<BlockState, ModelFile> modelFunc = state -> model;
         for (BlockRegistryObject<BlockGlowPanel, ?> blockRO : AdditionsBlocks.GLOW_PANELS.values()) {
-            directionalBlock(blockRO, modelFunc, 180, blockRO.getBlock().getFluidLoggedProperty());
+            directionalBlock(blockRO, modelFunc, 180, blockRO.value().getFluidLoggedProperty());
         }
     }
 
@@ -101,7 +101,7 @@ public class AdditionsBlockStateProvider extends BaseBlockStateProvider<Addition
                       .rotationY(yRot)
                       .uvLock(uvlock)
                       .build();
-            }, StairBlock.WATERLOGGED, stair.getBlock().getFluidLoggedProperty());
+            }, StairBlock.WATERLOGGED, stair.value().getFluidLoggedProperty());
         }
     }
 
@@ -132,7 +132,7 @@ public class AdditionsBlockStateProvider extends BaseBlockStateProvider<Addition
                       .rotationY((int) state.getValue(FenceGateBlock.FACING).toYRot())
                       .uvLock(true)
                       .build();
-            }, FenceGateBlock.POWERED, fenceGate.getBlock().getFluidLoggedProperty());
+            }, FenceGateBlock.POWERED, fenceGate.value().getFluidLoggedProperty());
         }
     }
 }

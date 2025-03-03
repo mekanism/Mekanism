@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.recipe.pattern.RecipePattern;
+import net.minecraft.core.Holder;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -27,15 +28,15 @@ public class ExtendedShapedRecipeBuilder extends BaseRecipeBuilder<ExtendedShape
     private final List<String> pattern = new ArrayList<>();
     private boolean showNotification = true;
 
-    protected ExtendedShapedRecipeBuilder(ItemLike result, int count) {
-        super(result, count);
+    protected ExtendedShapedRecipeBuilder(Holder<? extends ItemLike> result, int count) {
+        super(result.value(), count);
     }
 
-    public static ExtendedShapedRecipeBuilder shapedRecipe(ItemLike result) {
+    public static ExtendedShapedRecipeBuilder shapedRecipe(Holder<? extends ItemLike> result) {
         return shapedRecipe(result, 1);
     }
 
-    public static ExtendedShapedRecipeBuilder shapedRecipe(ItemLike result, int count) {
+    public static ExtendedShapedRecipeBuilder shapedRecipe(Holder<? extends ItemLike> result, int count) {
         return new ExtendedShapedRecipeBuilder(result, count);
     }
 
@@ -57,8 +58,12 @@ public class ExtendedShapedRecipeBuilder extends BaseRecipeBuilder<ExtendedShape
         return key(symbol, Ingredient.of(tag));
     }
 
-    public ExtendedShapedRecipeBuilder key(char symbol, ItemLike item) {
+    public ExtendedShapedRecipeBuilder key(char symbol, Item item) {
         return key(symbol, Ingredient.of(item));
+    }
+
+    public ExtendedShapedRecipeBuilder key(char symbol, Holder<? extends ItemLike> item) {
+        return key(symbol, item.value().asItem());
     }
 
     public ExtendedShapedRecipeBuilder key(char symbol, Ingredient ingredient) {

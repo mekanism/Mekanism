@@ -2,22 +2,20 @@ package mekanism.common.recipe.impl;
 
 import mekanism.common.Mekanism;
 import mekanism.common.block.attribute.Attribute;
-import mekanism.common.block.interfaces.ITypeBlock;
 import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
 import mekanism.common.recipe.pattern.Pattern;
 import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.recipe.pattern.RecipePattern.TripleLine;
-import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tags.MekanismTags;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
 
 class TransmitterRecipeProvider implements ISubRecipeProvider {
@@ -44,13 +42,13 @@ class TransmitterRecipeProvider implements ISubRecipeProvider {
                     TripleLine.of(Pattern.REDSTONE, Pattern.REDSTONE, Pattern.REDSTONE))
               ).key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.REDSTONE, Tags.Items.DUSTS_REDSTONE)
-              .key(Pattern.CONSTANT, Blocks.IRON_BARS)
+              .key(Pattern.CONSTANT, Items.IRON_BARS)
               .build(consumer, Mekanism.rl(basePath + "diversion_transporter"));
         //Restrictive
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.RESTRICTIVE_TRANSPORTER, 2)
               .pattern(BASIC_TRANSMITTER_PATTERN)
               .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
-              .key(Pattern.CONSTANT, Blocks.IRON_BARS)
+              .key(Pattern.CONSTANT, Items.IRON_BARS)
               .build(consumer, Mekanism.rl(basePath + "restrictive_transporter"));
     }
 
@@ -89,7 +87,7 @@ class TransmitterRecipeProvider implements ISubRecipeProvider {
         addTransmitterUpgradeRecipe(consumer, basePath, MekanismBlocks.ULTIMATE_UNIVERSAL_CABLE, MekanismBlocks.ELITE_UNIVERSAL_CABLE, MekanismTags.Items.ALLOYS_ATOMIC);
     }
 
-    private void addBasicTransmitterRecipe(RecipeOutput consumer, String basePath, BlockRegistryObject<? extends ITypeBlock, ?> transmitter, TagKey<Item> itemTag) {
+    private void addBasicTransmitterRecipe(RecipeOutput consumer, String basePath, Holder<Block> transmitter, TagKey<Item> itemTag) {
         ExtendedShapedRecipeBuilder.shapedRecipe(transmitter, 8)
               .pattern(BASIC_TRANSMITTER_PATTERN)
               .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
@@ -97,7 +95,7 @@ class TransmitterRecipeProvider implements ISubRecipeProvider {
               .build(consumer, Mekanism.rl(basePath + Attribute.getBaseTier(transmitter).getLowerName()));
     }
 
-    private void addBasicTransmitterRecipe(RecipeOutput consumer, String basePath, BlockRegistryObject<? extends ITypeBlock, ?> transmitter, Item item) {
+    private void addBasicTransmitterRecipe(RecipeOutput consumer, String basePath, Holder<Block> transmitter, Item item) {
         ExtendedShapedRecipeBuilder.shapedRecipe(transmitter, 8)
               .pattern(BASIC_TRANSMITTER_PATTERN)
               .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
@@ -105,8 +103,7 @@ class TransmitterRecipeProvider implements ISubRecipeProvider {
               .build(consumer, Mekanism.rl(basePath + Attribute.getBaseTier(transmitter).getLowerName()));
     }
 
-    private void addTransmitterUpgradeRecipe(RecipeOutput consumer, String basePath, BlockRegistryObject<? extends ITypeBlock, ?> transmitter,
-          ItemLike previousTransmitter, TagKey<Item> alloyTag) {
+    private void addTransmitterUpgradeRecipe(RecipeOutput consumer, String basePath, Holder<Block> transmitter, Holder<Block> previousTransmitter, TagKey<Item> alloyTag) {
         ExtendedShapedRecipeBuilder.shapedRecipe(transmitter, 8)
               .pattern(TRANSMITTER_UPGRADE_PATTERN)
               .key(Pattern.PREVIOUS, previousTransmitter)

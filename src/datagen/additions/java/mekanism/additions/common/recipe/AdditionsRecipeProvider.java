@@ -33,10 +33,12 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 @NothingNullByDefault
 public class AdditionsRecipeProvider extends BaseRecipeProvider {
@@ -76,7 +78,7 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(TNT_CHAR, TNT_CHAR, TNT_CHAR),
                     TripleLine.of(OBSIDIAN_CHAR, OBSIDIAN_CHAR, OBSIDIAN_CHAR))
               ).key(OBSIDIAN_CHAR, Tags.Items.OBSIDIANS_NORMAL)
-              .key(TNT_CHAR, Blocks.TNT)
+              .key(TNT_CHAR, Items.TNT)
               .category(RecipeCategory.REDSTONE)
               .build(consumer);
         registerBalloons(consumer);
@@ -132,8 +134,8 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
         }
     }
 
-    private void registerGlowPanel(RecipeOutput consumer, BlockRegistryObject<? extends IColoredBlock, ?> result, String basePath) {
-        EnumColor color = result.getBlock().getColor();
+    private void registerGlowPanel(RecipeOutput consumer, DeferredHolder<Block, ? extends IColoredBlock> result, String basePath) {
+        EnumColor color = result.value().getColor();
         DyeColor dye = color.getDyeColor();
         if (dye != null) {
             ExtendedShapedRecipeBuilder.shapedRecipe(result, 2)

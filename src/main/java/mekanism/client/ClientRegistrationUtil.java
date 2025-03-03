@@ -55,7 +55,6 @@ import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.model.DynamicFluidContainerModel;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
@@ -203,16 +202,16 @@ public class ClientRegistrationUtil {
     }
 
     public static void registerBlockExtensions(RegisterClientExtensionsEvent event, BlockDeferredRegister allBlocks) {
-        for (DeferredHolder<Block, ? extends Block> primaryEntry : allBlocks.getPrimaryEntries()) {
-            if (primaryEntry.get() instanceof BlockMekanism) {
+        for (Holder<Block> primaryEntry : allBlocks.getPrimaryEntries()) {
+            if (primaryEntry.value() instanceof BlockMekanism) {
                 event.registerBlock(RenderPropertiesProvider.PARTICLE_HANDLER, primaryEntry);
             }
         }
     }
 
     public static void registerFluidExtensions(RegisterClientExtensionsEvent event, FluidDeferredRegister allFluids) {
-        for (DeferredHolder<FluidType, ? extends FluidType> fluidTypeEntry : allFluids.getFluidTypeEntries()) {
-            if (fluidTypeEntry.get() instanceof MekanismFluidType fluidType) {
+        for (Holder<FluidType> fluidTypeEntry : allFluids.getFluidTypeEntries()) {
+            if (fluidTypeEntry.value() instanceof MekanismFluidType fluidType) {
                 event.registerFluidType(new IClientFluidTypeExtensions() {
                     @NotNull
                     @Override

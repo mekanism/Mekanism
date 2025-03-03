@@ -36,7 +36,6 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
@@ -183,7 +182,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.INGOT, Tags.Items.INGOTS_IRON)
               .key(Pattern.OSMIUM, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM))
               .key(COPPER_CHAR, Tags.Items.INGOTS_COPPER)
-              .key(FURNACE_CHAR, Blocks.FURNACE)
+              .key(FURNACE_CHAR, Items.FURNACE)
               .build(consumer, MekanismGenerators.rl("generator/heat"));
         //Wind
         MekDataShapedRecipeBuilder.shapedRecipe(GeneratorsBlocks.WIND_GENERATOR)
@@ -409,7 +408,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.CONSTANT, IRON_BARS_CHAR, Pattern.CONSTANT),
                     TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY))
               ).key(Pattern.CONSTANT, GeneratorsBlocks.TURBINE_CASING)
-              .key(IRON_BARS_CHAR, Blocks.IRON_BARS)
+              .key(IRON_BARS_CHAR, Items.IRON_BARS)
               .build(consumer, MekanismGenerators.rl("turbine/vent"));
     }
 }

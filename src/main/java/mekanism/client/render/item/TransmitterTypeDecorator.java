@@ -15,14 +15,14 @@ public class TransmitterTypeDecorator implements IItemDecorator {
 
     public static void registerDecorators(RegisterItemDecorationsEvent event, BlockRegistryObject<?, ?>... blocks) {
         for (BlockRegistryObject<?, ?> block : blocks) {
-            event.register(block, new TransmitterTypeDecorator(block));
+            event.register(block, new TransmitterTypeDecorator(block.getId()));
         }
     }
 
     private final ResourceLocation texture;
 
-    private TransmitterTypeDecorator(BlockRegistryObject<?, ?> block) {
-        this.texture = MekanismUtils.getResource(ResourceType.GUI_ICONS, block.getId().getPath() + ".png");
+    private TransmitterTypeDecorator(ResourceLocation blockId) {
+        this.texture = MekanismUtils.getResource(ResourceType.GUI_ICONS, blockId.getPath() + ".png");
     }
 
     @Override
