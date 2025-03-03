@@ -72,7 +72,7 @@ public class ChemicalStackRenderer implements IIngredientRenderer<ChemicalStack>
     }
 
     @Override
-    @Deprecated(forRemoval = true)
+    @Deprecated(forRemoval = true, since = "19.5.4")
     public List<Component> getTooltip(ChemicalStack stack, TooltipFlag tooltipFlag) {
         Holder<Chemical> chemical = stack.getChemicalHolder();
         if (chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {

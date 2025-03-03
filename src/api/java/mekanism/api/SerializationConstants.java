@@ -215,7 +215,7 @@ public final class SerializationConstants {
      * @since 10.7.0
      */
     public static final String CHEMICAL_STORED_ALT_2 = "chemical_2";
-    @Deprecated(since = "10.7.0", forRemoval = true)
+    @Deprecated(forRemoval = true, since = "10.7.0")
     public static final String GAS_TANKS = "gas_tanks";
     public static final String GUI = "gui";
     public static final String HANDLE_SOUND = "handle_sound";
@@ -231,7 +231,7 @@ public final class SerializationConstants {
     public static final String IDENTITY = "identity";
     public static final String IDLE_DIR = "idle_dir";
     public static final String INDEX = "index";
-    @Deprecated(since = "10.7.0", forRemoval = true)
+    @Deprecated(forRemoval = true, since = "10.7.0")
     public static final String INFUSION_TANKS = "infusion_tanks";
     public static final String INJECTION_RATE = "injection_rate";
     public static final String INPUT_COLOR = "input_color";
@@ -276,7 +276,7 @@ public final class SerializationConstants {
     public static final String PATH_TYPE = "path_type";
     public static final String PERSONAL_STORAGE_ID = "personal_storage_id";
     public static final String PICKUP_DROPS = "pickup_drops";
-    @Deprecated(since = "10.7.0", forRemoval = true)
+    @Deprecated(forRemoval = true, since = "10.7.0")
     public static final String PIGMENT_TANKS = "pigment_tanks";
     public static final String PLASMA_TEMP = "plasma_temp";
     public static final String POSITION = "position";
@@ -312,7 +312,7 @@ public final class SerializationConstants {
     public static final String SINGLE_ITEM = "single_item";
     public static final String SIZE = "size";
     public static final String SLOT = "slot";
-    @Deprecated(since = "10.7.0", forRemoval = true)
+    @Deprecated(forRemoval = true, since = "10.7.0")
     public static final String SLURRY_TANKS = "slurry_tanks";
     public static final String SORTING = "sorting";
     public static final String STABILIZER_CHUNKS_TO_LOAD = "stabilizer_chunks_to_load";

@@ -3,7 +3,6 @@ package mekanism.additions.common.block.plastic;
 import mekanism.api.text.EnumColor;
 import mekanism.common.block.attribute.Attributes.AttributeMobSpawn;
 import mekanism.common.block.states.BlockStateHelper;
-import mekanism.common.registration.impl.BlockRegistryObject;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
@@ -13,8 +12,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class BlockPlasticTransparentStairs extends BlockPlasticStairs {
 
-    public BlockPlasticTransparentStairs(BlockRegistryObject<?, ?> blockProvider, EnumColor color) {
-        super(blockProvider, color, properties -> properties.noOcclusion().isValidSpawn(AttributeMobSpawn.NEVER_PREDICATE).isSuffocating(BlockStateHelper.NEVER_PREDICATE)
+    public BlockPlasticTransparentStairs(BlockState baseState, EnumColor color) {
+        super(baseState, color, properties -> properties.noOcclusion().isValidSpawn(AttributeMobSpawn.NEVER_PREDICATE).isSuffocating(BlockStateHelper.NEVER_PREDICATE)
               .isViewBlocking(BlockStateHelper.NEVER_PREDICATE));
     }
 

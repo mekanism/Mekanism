@@ -1290,22 +1290,22 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     //TODO - 1.22: remove backcompat
-    @Deprecated(forRemoval = true)
+    @Deprecated(forRemoval = true, since = "10.7.0")
     public List<IChemicalTank> getLegacyGasTanks() {
         return getChemicalTanks(null);
     }
 
-    @Deprecated(forRemoval = true)
+    @Deprecated(forRemoval = true, since = "10.7.0")
     public List<IChemicalTank> getLegacyInfuseTanks() {
         return getChemicalTanks(null);
     }
 
-    @Deprecated(forRemoval = true)
+    @Deprecated(forRemoval = true, since = "10.7.0")
     public List<IChemicalTank> getLegacyPigmentTanks() {
         return getChemicalTanks(null);
     }
 
-    @Deprecated(forRemoval = true)
+    @Deprecated(forRemoval = true, since = "10.7.0")
     public List<IChemicalTank> getLegacySlurryTanks() {
         return getChemicalTanks(null);
     }

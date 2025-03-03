@@ -48,7 +48,7 @@ public interface IEnergyConversion {
      *
      * @return Amount of energy clamped to a long. (Units matching this conversion)
      */
-    @Deprecated(forRemoval = true)
+    @Deprecated(forRemoval = true, since = "10.6.6")
     default long convertToAsLong(long joules) {
         return convertTo(joules);
     }

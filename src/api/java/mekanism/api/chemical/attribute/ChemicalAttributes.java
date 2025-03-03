@@ -67,7 +67,7 @@ public class ChemicalAttributes {//TODO - 1.22: Remove this class in favor of sp
         }
 
         @Override
-        @Deprecated(since = "10.7.4", forRemoval = true)
+        @Deprecated(forRemoval = true, since = "10.7.4")
         public List<Component> addTooltipText(List<Component> list) {
             collectTooltips(list::add);
             return list;
@@ -124,7 +124,7 @@ public class ChemicalAttributes {//TODO - 1.22: Remove this class in favor of sp
         }
 
         @Override
-        @Deprecated(since = "10.7.4", forRemoval = true)
+        @Deprecated(forRemoval = true, since = "10.7.4")
         public List<Component> addTooltipText(List<Component> list) {
             collectTooltips(list::add);
             return list;
@@ -384,7 +384,7 @@ public class ChemicalAttributes {//TODO - 1.22: Remove this class in favor of sp
         }
 
         @Override
-        @Deprecated(since = "10.7.4", forRemoval = true)
+        @Deprecated(forRemoval = true, since = "10.7.4")
         public List<Component> addTooltipText(List<Component> list) {
             collectTooltips(list::add);
             return list;
