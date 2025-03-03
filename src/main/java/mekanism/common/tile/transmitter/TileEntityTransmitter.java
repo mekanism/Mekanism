@@ -151,7 +151,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
     public void onChunkUnloaded() {
         if (!isRemote()) {
             //Only take the transmitter's share if it was unloaded and not if we are being removed
-            getTransmitter().takeShare();
+            getTransmitter().validateAndTakeShare();
         }
         super.onChunkUnloaded();
     }
