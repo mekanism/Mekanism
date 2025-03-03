@@ -17,11 +17,15 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class ChemicalBuilder {
 
+    @SuppressWarnings("removal")
+    @Deprecated(forRemoval = true, since = "10.7.11")
     private final Map<Class<? extends ChemicalAttribute>, ChemicalAttribute> attributeMap = new Object2ObjectOpenHashMap<>();
     private final ResourceLocation texture;
     private int tint = 0xFFFFFF;
     @Nullable
+    @Deprecated(forRemoval = true, since = "10.7.11")
     private TagKey<Item> oreTag;
+    @Deprecated(forRemoval = true, since = "10.7.11")
     private boolean isGaseous = false;
 
     protected ChemicalBuilder(ResourceLocation texture) {
@@ -32,7 +36,10 @@ public class ChemicalBuilder {
      * Adds a {@link ChemicalAttribute} to the set of attributes this chemical has.
      *
      * @param attribute Attribute to add.
+     *
+     * @deprecated Prefer adding attributes via data map.
      */
+    @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
     public ChemicalBuilder with(ChemicalAttribute attribute) {
         attributeMap.put(attribute.getClass(), attribute);
@@ -42,6 +49,7 @@ public class ChemicalBuilder {
     /**
      * Gets the attributes this chemical will have.
      */
+    @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
     public Map<Class<? extends ChemicalAttribute>, ChemicalAttribute> getAttributeMap() {
         return Collections.unmodifiableMap(attributeMap);

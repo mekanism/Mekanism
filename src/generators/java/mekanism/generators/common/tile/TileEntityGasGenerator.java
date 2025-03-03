@@ -7,7 +7,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.attribute.ChemicalAttributes.Fuel;
+import mekanism.api.chemical.attribute.ChemicalAttributes;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.chemical.attribute.ChemicalFuel;
 import mekanism.api.math.MathUtils;
@@ -40,8 +40,9 @@ import org.jetbrains.annotations.Nullable;
 
 public class TileEntityGasGenerator extends TileEntityGenerator {
 
+    @SuppressWarnings("removal")
     public static final Predicate<Holder<Chemical>> HAS_FUEL = chemical -> chemical.getData(IMekanismDataMapTypes.INSTANCE.chemicalFuel()) != null
-                                                                           || chemical.value().hasLegacy(Fuel.class);//TODO - 1.22 Remove this legacy check
+                                                                           || chemical.value().hasLegacy(ChemicalAttributes.Fuel.class);//TODO - 1.22 Remove this legacy check
 
     /**
      * The tank this block is storing fuel in.
@@ -209,6 +210,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
         }
 
         @Nullable
+        @SuppressWarnings("removal")
         public ChemicalFuel getFuel() {
             if (isEmpty()) {
                 return null;
@@ -217,7 +219,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
             ChemicalFuel fuel = stack.getData(IMekanismDataMapTypes.INSTANCE.chemicalFuel());
             if (fuel == null) {//TODO - 1.22: Remove this handling of legacy data
                 //If there is no fuel in the data map, see if one was set manually on the stack
-                Fuel legacyFuel = stack.getLegacy(Fuel.class);
+                ChemicalAttributes.Fuel legacyFuel = stack.getLegacy(ChemicalAttributes.Fuel.class);
                 if (legacyFuel != null) {
                     //If it was, convert it to the non legacy type
                     return legacyFuel.asModern();

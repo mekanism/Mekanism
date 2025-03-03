@@ -11,6 +11,7 @@ import org.openzen.zencode.java.ZenCodeType;
  * this attribute by default. Radioactivity is measured in Sv/h.
  */
 @ZenRegister
+@SuppressWarnings("removal")
 @NativeTypeRegistration(value = ChemicalAttributes.Radiation.class, zenCodeName = CrTConstants.CLASS_ATTRIBUTE_RADIATION)
 public class CrTRadiationAttribute {
 

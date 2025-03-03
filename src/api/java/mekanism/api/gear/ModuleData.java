@@ -22,7 +22,6 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.gear.config.ModuleBooleanConfig;
 import mekanism.api.gear.config.ModuleConfig;
 import mekanism.api.providers.IItemProvider;
-import mekanism.api.providers.IModuleDataProvider;
 import net.minecraft.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -35,7 +34,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModuleDataProvider<MODULE> {
+@SuppressWarnings("removal")
+public class ModuleData<MODULE extends ICustomModule<MODULE>> implements mekanism.api.providers.IModuleDataProvider<MODULE> {
 
     private final Function<@NotNull IModule<MODULE>, @NotNull MODULE> constructor;
     private final Int2ObjectMap<ConstructedConfigData> configData;

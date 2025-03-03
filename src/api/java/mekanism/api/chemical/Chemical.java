@@ -139,9 +139,11 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
     private boolean hasAttributesWithValidation;
 
 
+    @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
     private final Map<Class<? extends ChemicalAttribute>, ChemicalAttribute> legacyAttributeMap;
     @Nullable
+    @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
     private Map<Class<? extends ChemicalAttribute>, ChemicalAttribute> attributeMap;
     @Deprecated(forRemoval = true, since = "10.7.11")
@@ -160,6 +162,7 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
     @Nullable
     private String translationKey;
 
+    @SuppressWarnings("removal")
     public Chemical(ChemicalBuilder builder) {
         //Copy the map to support addAttribute
         this.legacyAttributeMap = new HashMap<>(builder.getAttributeMap());
@@ -202,6 +205,7 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
         return translationKey;
     }
 
+    @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
     private Map<Class<? extends ChemicalAttribute>, ChemicalAttribute> getAllAttributes() {
         if (attributes.isEmpty()) {//If we have not attributes attached, just return the legacy attributes
@@ -218,11 +222,13 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
     }
 
     @Override
+    @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
     public boolean has(Class<? extends ChemicalAttribute> type) {
         return getAllAttributes().containsKey(type);
     }
 
+    @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
     public boolean hasLegacy(Class<? extends ChemicalAttribute> type) {
         return legacyAttributeMap.containsKey(type);
@@ -262,7 +268,7 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
 
     @Nullable
     @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "removal"})
     @Deprecated(forRemoval = true, since = "10.7.11")
     public <ATTRIBUTE extends ChemicalAttribute> ATTRIBUTE get(Class<ATTRIBUTE> type) {
         return (ATTRIBUTE) getAllAttributes().get(type);
@@ -270,7 +276,7 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
 
     @Nullable
     @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "removal"})
     @Deprecated(forRemoval = true, since = "10.7.11")
     public <ATTRIBUTE extends ChemicalAttribute> ATTRIBUTE getLegacy(Class<ATTRIBUTE> type) {
         return (ATTRIBUTE) legacyAttributeMap.get(type);
@@ -280,7 +286,11 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
      * Adds an attribute to this chemical's attribute map. Will overwrite any existing attribute with the same type.
      *
      * @param attribute attribute to add to this chemical
+     *
+     * @deprecated Prefer adding attributes via datamaps.
      */
+    @SuppressWarnings("removal")
+    @Deprecated(forRemoval = true, since = "10.7.11")
     public void addAttribute(ChemicalAttribute attribute) {
         legacyAttributeMap.put(attribute.getClass(), attribute);
         //Clear the merged cache if it has already been initialized, and just reinitialize it when needed
@@ -307,17 +317,20 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
     }
 
     @Override
+    @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
     public Collection<ChemicalAttribute> getAttributes() {
         return getAllAttributes().values();
     }
 
+    @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
     public Collection<ChemicalAttribute> getLegacyAttributes() {
         return getAttributes();
     }
 
     @Override
+    @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
     public Collection<Class<? extends ChemicalAttribute>> getAttributeTypes() {
         return getAllAttributes().keySet();
@@ -409,8 +422,9 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
      *
      * @deprecated Prefer checking if against {@link MekanismAPI#EMPTY_CHEMICAL_KEY}
      */
+    @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
-    public boolean isEmptyType() {//TODO - 1.21: Re-evaluate
+    public boolean isEmptyType() {
         return this == MekanismAPI.EMPTY_CHEMICAL;
     }
 
@@ -508,6 +522,7 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
      *
      * @since 10.7.11
      */
+    @SuppressWarnings("removal")
     protected void appendHoverText(ChemicalStack stack, TooltipContext context, List<Component> tooltips, TooltipFlag tooltipFlag) {
         for (IChemicalAttribute attribute : attributes) {
             attribute.collectTooltips(context, tooltips, tooltipFlag);

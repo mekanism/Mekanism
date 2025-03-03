@@ -122,6 +122,7 @@ public class ChemicalTankWrapper implements IChemicalTank {
     }
 
     @Override
+    @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
     public Chemical getType() {
         return internal.getType();

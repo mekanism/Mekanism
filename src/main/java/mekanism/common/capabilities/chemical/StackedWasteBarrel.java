@@ -8,8 +8,6 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
-import mekanism.api.chemical.attribute.ChemicalAttributeValidator.ChemicalAttributeValidatorLegacyAdapter;
-import mekanism.api.chemical.attribute.ChemicalAttributes;
 import mekanism.api.datamaps.chemical.attribute.ChemicalRadioactivity;
 import mekanism.api.datamaps.chemical.attribute.IChemicalAttribute;
 import mekanism.api.functions.ConstantPredicates;
@@ -21,11 +19,12 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class StackedWasteBarrel extends VariableCapacityChemicalTank {
 
-    private static final ChemicalAttributeValidator ATTRIBUTE_VALIDATOR = new ChemicalAttributeValidatorLegacyAdapter() {
+    @SuppressWarnings("removal")
+    private static final ChemicalAttributeValidator ATTRIBUTE_VALIDATOR = new mekanism.api.chemical.attribute.ChemicalAttributeValidator.ChemicalAttributeValidatorLegacyAdapter() {
         @Override
         public boolean validate(IChemicalAttribute attr) {
             //TODO - 1.22: Remove the legacy check from this
-            return attr instanceof ChemicalRadioactivity || attr instanceof ChemicalAttributes.Radiation;
+            return attr instanceof ChemicalRadioactivity || attr instanceof mekanism.api.chemical.attribute.ChemicalAttributes.Radiation;
         }
 
         @Override

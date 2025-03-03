@@ -7,6 +7,7 @@ import mekanism.api.gear.ModuleData;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.resources.ResourceLocation;
 
+@SuppressWarnings("removal")
 @MethodsReturnNonnullByDefault
 @Deprecated(forRemoval = true, since = "10.7.11")
 public interface IModuleDataProvider<MODULE extends ICustomModule<MODULE>> extends IBaseProvider {

@@ -47,7 +47,8 @@ public record CooledCoolant(Holder<Chemical> otherVariant, double thermalEnthalp
     }
 
     @Override
-    @Deprecated
+    @SuppressWarnings("removal")
+    @Deprecated(forRemoval = true, since = "10.7.11")
     public ChemicalAttributes.CooledCoolant toLegacyAttribute() {
         return new ChemicalAttributes.CooledCoolant(this);
     }

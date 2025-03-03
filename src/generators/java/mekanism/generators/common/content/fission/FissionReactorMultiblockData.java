@@ -406,6 +406,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     }
 
     @Nullable
+    @SuppressWarnings("removal")
     private CooledCoolant getCooledCoolant(ChemicalStack stack) {
         if (stack.isEmpty()) {
             return null;

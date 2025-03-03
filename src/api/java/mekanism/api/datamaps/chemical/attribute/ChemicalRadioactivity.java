@@ -68,7 +68,8 @@ public record ChemicalRadioactivity(double radioactivity) implements IChemicalAt
     }
 
     @Override
-    @Deprecated
+    @SuppressWarnings("removal")
+    @Deprecated(forRemoval = true, since = "10.7.11")
     public ChemicalAttributes.Radiation toLegacyAttribute() {
         return new ChemicalAttributes.Radiation(radioactivity);
     }

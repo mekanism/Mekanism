@@ -15,6 +15,7 @@ import org.openzen.zencode.java.ZenCodeType;
  * proportion of a reactor's available heat that can be used at an instant to convert this coolant's cool variant to its heated variant.
  */
 @ZenRegister
+@SuppressWarnings("removal")
 @NativeTypeRegistration(value = ChemicalAttributes.Coolant.class, zenCodeName = CrTConstants.CLASS_ATTRIBUTE_COOLANT)
 public class CrTCoolantAttribute {
 

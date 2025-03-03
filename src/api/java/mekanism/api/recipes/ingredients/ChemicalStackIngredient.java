@@ -127,6 +127,7 @@ public final class ChemicalStackIngredient implements InputIngredient<ChemicalSt
      *
      * @deprecated Prefer calling via the holder testType method {@link #testType(Holder)}
      */
+    @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
     public boolean testType(Chemical chemical) {
         Objects.requireNonNull(chemical);

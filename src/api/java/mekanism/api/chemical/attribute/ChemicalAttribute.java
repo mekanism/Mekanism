@@ -53,7 +53,8 @@ public abstract class ChemicalAttribute implements IChemicalAttribute {
     }
 
     @Override
-    @Deprecated
+    @SuppressWarnings("removal")
+    @Deprecated(forRemoval = true, since = "10.7.11")
     public final ChemicalAttribute toLegacyAttribute() {
         return this;
     }

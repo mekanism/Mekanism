@@ -11,6 +11,7 @@ import org.openzen.zencode.java.ZenCodeType;
  * can be burned for before being depleted, and 'energyDensity', defining how much energy is stored in one mB of fuel.
  */
 @ZenRegister
+@SuppressWarnings("removal")
 @NativeTypeRegistration(value = ChemicalAttributes.Fuel.class, zenCodeName = CrTConstants.CLASS_ATTRIBUTE_FUEL)
 public class CrTFuelAttribute {
 

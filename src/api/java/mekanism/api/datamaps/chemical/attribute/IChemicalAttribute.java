@@ -9,7 +9,8 @@ import net.minecraft.world.item.TooltipFlag;
 //TODO - 1.21: Docs
 public interface IChemicalAttribute {
 
-    @Deprecated
+    @SuppressWarnings("removal")
+    @Deprecated(forRemoval = true, since = "10.7.11")
     ChemicalAttribute toLegacyAttribute();
 
     /**

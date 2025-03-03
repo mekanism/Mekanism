@@ -64,7 +64,8 @@ public record ChemicalFuel(int burnTicks, long energyDensity) implements IChemic
     }
 
     @Override
-    @Deprecated
+    @SuppressWarnings("removal")
+    @Deprecated(forRemoval = true, since = "10.7.11")
     public ChemicalAttributes.Fuel toLegacyAttribute() {
         return new ChemicalAttributes.Fuel(this);
     }

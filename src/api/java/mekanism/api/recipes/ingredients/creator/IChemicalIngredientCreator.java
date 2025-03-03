@@ -114,6 +114,7 @@ public interface IChemicalIngredientCreator {
      *
      * @deprecated Prefer using {@link #of(Holder)}
      */
+    @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
     default ChemicalIngredient of(IChemicalProvider chemicalProvider) {
         return of(chemicalProvider.getChemical().builtInRegistryHolder());
@@ -155,6 +156,7 @@ public interface IChemicalIngredientCreator {
      *
      * @deprecated Prefer using {@link #ofHolders(Holder[])}
      */
+    @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
     default ChemicalIngredient of(IChemicalProvider... chemicalProviders) {
         return of(Arrays.stream(chemicalProviders));
@@ -170,6 +172,7 @@ public interface IChemicalIngredientCreator {
      *
      * @deprecated Prefer using {@link #ofHolders(Stream)}
      */
+    @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
     default ChemicalIngredient of(Stream<? extends IChemicalProvider> chemicalProviders) {
         return ofIngredients(chemicalProviders.map(this::of));

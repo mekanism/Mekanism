@@ -89,6 +89,7 @@ public class ModuleHelper implements IModuleHelper {//TODO - 1.22: Evaluate movi
         return moduleContainers;
     }
 
+    @SuppressWarnings("removal")
     private void mapSupportedModules(InterModProcessEvent event, String imcMethod, Item moduleContainer,
           Map<ModuleData<?>, ImmutableSet.Builder<Item>> supportedContainersBuilderMap) {
         ImmutableSet.Builder<ModuleData<?>> supportedModulesBuilder = ImmutableSet.builder();

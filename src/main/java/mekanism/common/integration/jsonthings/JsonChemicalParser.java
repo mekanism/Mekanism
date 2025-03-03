@@ -40,6 +40,7 @@ public class JsonChemicalParser extends ThingParser<JsonChemicalBuilder> {
     }
 
     @Override
+    @SuppressWarnings("removal")
     protected JsonChemicalBuilder processThing(ResourceLocation key, JsonObject data, Consumer<JsonChemicalBuilder> builderModification) {
         JsonChemicalBuilder builder = new JsonChemicalBuilder(this, key);
         JParse.begin(data)
@@ -60,6 +61,7 @@ public class JsonChemicalParser extends ThingParser<JsonChemicalBuilder> {
               .typeError();
     }
 
+    @SuppressWarnings("removal")
     private void processAttribute(JsonChemicalBuilder builder, ObjValue rawAttribute) {
         //Note: We chain ifKeys here as while there shouldn't be an overlap as it doesn't make sense, there is also nothing wrong
         // with allowing multiple attribute types to be defined in each block

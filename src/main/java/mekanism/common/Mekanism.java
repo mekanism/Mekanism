@@ -258,6 +258,7 @@ public class Mekanism {
         event.register(MekanismAPI.ROBIT_SKIN_SERIALIZER_REGISTRY);
     }
 
+    @SuppressWarnings("removal")
     private void registerEventListener(RegisterEvent event) {
         //Register the empty chemical
         event.register(MekanismAPI.CHEMICAL_REGISTRY_NAME, MekanismAPI.EMPTY_CHEMICAL_KEY.location(), () -> MekanismAPI.EMPTY_CHEMICAL);

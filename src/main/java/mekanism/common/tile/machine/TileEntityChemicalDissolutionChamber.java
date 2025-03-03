@@ -237,12 +237,14 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
     //End methods IComputerTile
 
     @Override
+    @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.0")
     public List<IChemicalTank> getLegacyGasTanks() {
         return Collections.singletonList(injectTank);
     }
 
     @Override
+    @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.0")
     public List<IChemicalTank> getLegacySlurryTanks() {
         return Collections.singletonList(outputTank);

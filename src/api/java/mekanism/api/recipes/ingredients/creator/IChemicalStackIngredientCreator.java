@@ -35,6 +35,7 @@ public interface IChemicalStackIngredientCreator extends IIngredientCreator<Chem
      *
      * @deprecated Prefer using {@link #fromHolder(Holder, long)}
      */
+    @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
     default ChemicalStackIngredient from(IChemicalProvider provider, long amount) {
         Objects.requireNonNull(provider, "ChemicalStackIngredients cannot be created from a null chemical provider.");
@@ -58,6 +59,7 @@ public interface IChemicalStackIngredientCreator extends IIngredientCreator<Chem
      *
      * @deprecated Prefer using {@link #fromHolders(long, Holder[])}
      */
+    @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
     default ChemicalStackIngredient from(long amount, IChemicalProvider... chemicals) {
         if (chemicals.length == 0) {

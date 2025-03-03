@@ -71,6 +71,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class InventoryFrequency extends Frequency implements IMekanismInventory, IMekanismFluidHandler, IMekanismStrictEnergyHandler, ITileHeatHandler, IChemicalTracker {
 
+    @SuppressWarnings("removal")
     public static final Codec<InventoryFrequency> CODEC = RecordCodecBuilder.create(instance -> instance.group(
           ExtraCodecs.NON_EMPTY_STRING.fieldOf(SerializationConstants.NAME).forGetter(Frequency::getName),
           UUIDUtil.CODEC.optionalFieldOf(SerializationConstants.OWNER_UUID).forGetter(freq -> Optional.ofNullable(freq.getOwner())),

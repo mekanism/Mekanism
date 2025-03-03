@@ -73,7 +73,7 @@ public class GuiQIOCrystallizerScreen extends GuiInnerScreen {
                     iterStacks.clear();
                     if (!prevSlurry.is(MekanismAPI.EMPTY_CHEMICAL_KEY) && !prevSlurry.is(MekanismAPITags.Chemicals.DIRTY)) {
                         //TODO - 1.22: Replace this with the commented out code
-                        TagKey<Item> oreTag = prevSlurry.value().getOreTag();
+                        @SuppressWarnings("removal") TagKey<Item> oreTag = prevSlurry.value().getOreTag();
                         if (oreTag != null) {
                             for (Holder<Item> ore : BuiltInRegistries.ITEM.getTagOrEmpty(oreTag)) {
                                 iterStacks.add(new ItemStack(ore));

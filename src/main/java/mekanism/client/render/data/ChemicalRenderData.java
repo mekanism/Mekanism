@@ -31,6 +31,7 @@ public class ChemicalRenderData extends RenderData {
     }
 
     @Override
+    @SuppressWarnings("removal")
     public boolean isGaseous() {
         //TODO - 1.22: Replace this with the commented check
         return chemical.value().isGaseous();

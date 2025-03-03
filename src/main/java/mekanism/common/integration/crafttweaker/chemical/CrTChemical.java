@@ -28,6 +28,7 @@ public class CrTChemical {
      */
     @ZenCodeType.Method
     @ZenCodeType.Getter("empty")
+    @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
     public static boolean isEmptyType(Chemical _this) {
         return _this.isEmptyType();
@@ -61,7 +62,9 @@ public class CrTChemical {
      * @return collection of attribute instances.
      */
     @ZenCodeType.Method
+    @SuppressWarnings("removal")
     @ZenCodeType.Getter("attributes")
+    @Deprecated(forRemoval = true, since = "10.7.11")
     public static Collection<ChemicalAttribute> getAttributes(Chemical _this) {
         return _this.getAttributes();
     }
@@ -72,6 +75,8 @@ public class CrTChemical {
      * @param attribute attribute to add to this chemical
      */
     @ZenCodeType.Method
+    @SuppressWarnings("removal")
+    @Deprecated(forRemoval = true, since = "10.7.11")
     public static void addAttribute(Chemical _this, ChemicalAttribute attribute) {
         _this.addAttribute(attribute);
     }

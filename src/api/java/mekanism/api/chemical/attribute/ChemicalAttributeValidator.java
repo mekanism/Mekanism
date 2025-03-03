@@ -39,6 +39,7 @@ public interface ChemicalAttributeValidator {//TODO - 1.22: Re-evaluate how this
      * @return if the attribute is valid
      * @deprecated Prefer using {@link #validate(IChemicalAttribute)}
      */
+    @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
     boolean validate(ChemicalAttribute attribute);
 
@@ -51,6 +52,7 @@ public interface ChemicalAttributeValidator {//TODO - 1.22: Re-evaluate how this
      *
      * @since 10.7.11
      */
+    @SuppressWarnings("removal")
     default boolean validate(IChemicalAttribute attribute) {
         return validate(attribute.toLegacyAttribute());
     }
@@ -127,6 +129,7 @@ public interface ChemicalAttributeValidator {//TODO - 1.22: Re-evaluate how this
      * Helper interface for prioritizing checking against modern attributes before checking against only the in code legacy attributes.
      * @since 10.7.11
      */
+    @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
     interface ChemicalAttributeValidatorLegacyAdapter extends ChemicalAttributeValidator {
 

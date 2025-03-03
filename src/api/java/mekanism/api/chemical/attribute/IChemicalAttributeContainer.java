@@ -17,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 10.3.9
  */
+@SuppressWarnings("removal")
 public interface IChemicalAttributeContainer<SELF extends IChemicalAttributeContainer<SELF>> {//TODO - 1.22: Re-evaluate, but most likely we want to remove this
 
     /**

@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * @since 10.7.0 Previously was GasAttributes
  */
+@SuppressWarnings("removal")
 @Deprecated(forRemoval = true, since = "10.7.11")
 public class ChemicalAttributes {//TODO - 1.22: Remove this class in favor of specifying these as datamaps
 

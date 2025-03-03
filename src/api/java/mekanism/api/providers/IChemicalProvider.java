@@ -7,6 +7,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
+@SuppressWarnings("removal")
 @MethodsReturnNonnullByDefault
 @Deprecated(forRemoval = true, since = "10.7.11")
 public interface IChemicalProvider extends IBaseProvider {

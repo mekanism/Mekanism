@@ -9,6 +9,7 @@ import net.minecraft.world.level.ItemLike;
 
 @MethodsReturnNonnullByDefault
 @Deprecated(forRemoval = true, since = "10.7.11")
+@SuppressWarnings("removal")
 public interface IItemProvider extends IBaseProvider, ItemLike {
 
     /**

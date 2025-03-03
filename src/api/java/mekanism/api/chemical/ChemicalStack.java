@@ -464,6 +464,7 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
     }
 
     @Override
+    @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
     public boolean has(Class<? extends ChemicalAttribute> type) {
         return getChemical().has(type);
@@ -491,6 +492,7 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
 
     @Nullable
     @Override
+    @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
     public <ATTRIBUTE extends ChemicalAttribute> ATTRIBUTE get(Class<ATTRIBUTE> type) {
         return getChemical().get(type);
@@ -498,18 +500,21 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
 
     @Nullable
     @Override
+    @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
     public <ATTRIBUTE extends ChemicalAttribute> ATTRIBUTE getLegacy(Class<ATTRIBUTE> type) {
         return getChemical().getLegacy(type);
     }
 
     @Override
+    @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
     public Collection<ChemicalAttribute> getAttributes() {
         return getChemical().getAttributes();
     }
 
     @Override
+    @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
     public Collection<Class<? extends ChemicalAttribute>> getAttributeTypes() {
         return getChemical().getAttributeTypes();

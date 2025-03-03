@@ -232,6 +232,7 @@ public class MekanismRenderer {
         return chemical.value().getTint();
     }
 
+    @SuppressWarnings("removal")
     public static int getColorARGB(@NotNull Holder<Chemical> chemical, float scale) {
         if (chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
             return -1;

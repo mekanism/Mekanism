@@ -47,6 +47,7 @@ public record FissionRecipeViewerRecipe(ResourceLocation id, @Nullable ChemicalS
         return IngredientCreatorAccess.fluid().from(FluidTags.WATER, MathUtils.clampToInt(outputCoolant().getAmount()));
     }
 
+    @SuppressWarnings("removal")
     public static List<FissionRecipeViewerRecipe> getFissionRecipes() {
         //Note: The recipes below ignore thermal conductivity and just take enthalpy into account and it rounds the amount of coolant
         //TODO: Eventually we may want to try and improve on that but for now this should be fine

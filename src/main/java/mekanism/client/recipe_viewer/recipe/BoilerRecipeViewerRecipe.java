@@ -43,6 +43,7 @@ public record BoilerRecipeViewerRecipe(ResourceLocation id, @Nullable ChemicalSt
     ).apply(instance, (id, superHeatedCoolant, water, steam, cooledCoolant, temperature) ->
           new BoilerRecipeViewerRecipe(id, superHeatedCoolant.orElse(null), water, steam, cooledCoolant, temperature)));
 
+    @SuppressWarnings("removal")
     public static List<BoilerRecipeViewerRecipe> getBoilerRecipes() {
         //Note: The recipes below ignore the boiler's efficiency and rounds the amount of coolant
         double waterToSteamEfficiency = HeatUtils.getWaterThermalEnthalpy() / HeatUtils.getSteamEnergyEfficiency();

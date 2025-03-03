@@ -149,7 +149,7 @@ public class RecipeViewerUtils {
         for (ChemicalStack chemicalStack : ingredient.getRepresentations()) {
             if (!chemicalStack.is(MekanismAPITags.Chemicals.DIRTY)) {
                 //TODO - 1.22: Replace this with the commented out code
-                TagKey<Item> oreTag = chemicalStack.getChemical().getOreTag();
+                @SuppressWarnings("removal") TagKey<Item> oreTag = chemicalStack.getChemical().getOreTag();
                 if (oreTag != null) {
                     BuiltInRegistries.ITEM.getTag(oreTag).ifPresent(tags::add);
                 }

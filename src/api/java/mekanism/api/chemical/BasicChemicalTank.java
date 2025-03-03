@@ -503,6 +503,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
      * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getStack()}, we can optimize out the copying.
      */
     @Override
+    @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
     public Chemical getType() {
         return stored.getChemical();

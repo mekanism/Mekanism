@@ -3,12 +3,12 @@ package mekanism.common.integration;
 import java.util.function.Supplier;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
-import mekanism.api.providers.IChemicalProvider;
 import net.minecraft.core.Holder;
 import org.jetbrains.annotations.NotNull;
 
+@SuppressWarnings("removal")
 @Deprecated(forRemoval = true, since = "10.7.11")
-public class LazyChemicalProvider implements IChemicalProvider {//TODO - 1.21: Figure out how to replace the CrT uses of this with holders
+public class LazyChemicalProvider implements mekanism.api.providers.IChemicalProvider {
 
     private Supplier<Chemical> chemicalSupplier;
     private Holder<Chemical> chemical = MekanismAPI.EMPTY_CHEMICAL_HOLDER;

@@ -55,8 +55,10 @@ import org.jetbrains.annotations.Nullable;
 public class BoilerMultiblockData extends MultiblockData implements IValveHandler {
 
     //TODO - 1.22: Replace the legacy checks for these predicates
+    @SuppressWarnings("removal")
     public static final Predicate<Holder<Chemical>> IS_HEATED_COOLANT = chemical -> chemical.getData(IMekanismDataMapTypes.INSTANCE.heatedChemicalCoolant()) != null
                                                                                     || chemical.value().hasLegacy(ChemicalAttributes.HeatedCoolant.class);
+    @SuppressWarnings("removal")
     public static final Predicate<Holder<Chemical>> IS_COOLED_COOLANT = chemical -> chemical.getData(IMekanismDataMapTypes.INSTANCE.cooledChemicalCoolant()) != null
                                                                                     || chemical.value().hasLegacy(ChemicalAttributes.CooledCoolant.class);
     public static final Object2BooleanMap<UUID> hotMap = new Object2BooleanOpenHashMap<>();
@@ -154,6 +156,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
     }
 
     @Nullable
+    @SuppressWarnings("removal")
     private HeatedCoolant getHeatedCoolant() {
         ChemicalStack stack = superheatedCoolantTank.getStack();
         if (stack.isEmpty()) {
