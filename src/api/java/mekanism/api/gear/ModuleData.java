@@ -106,7 +106,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModule
      */
     @NotNull
     public final Holder<Item> getItemHolder() {
-        return itemHolder == null ? itemProvider.getItemHolder() : itemHolder;
+        return itemHolder == null ? itemProvider.asItem().builtInRegistryHolder() : itemHolder;
     }
 
     /**

@@ -1,7 +1,6 @@
 package mekanism.api.providers;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -14,16 +13,6 @@ import org.jetbrains.annotations.NotNull;
 public interface IBlockProvider extends IItemProvider {
 
     Block getBlock();
-
-    /**
-     * Helper method to get the holder that corresponds to this provider.
-     *
-     * @since 10.7.11
-     */
-    @SuppressWarnings("deprecation")
-    default Holder<Block> getBlockHolder() {
-        return getBlock().builtInRegistryHolder();
-    }
 
     /**
      * Helper to get the default block state for the provided block.
