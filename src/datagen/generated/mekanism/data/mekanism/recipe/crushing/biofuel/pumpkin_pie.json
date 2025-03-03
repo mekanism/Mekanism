@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "count": 1,
+    "item": "minecraft:pumpkin_pie"
+  },
+  "output": {
+    "count": 7,
+    "id": "mekanism:bio_fuel"
+  }
+}

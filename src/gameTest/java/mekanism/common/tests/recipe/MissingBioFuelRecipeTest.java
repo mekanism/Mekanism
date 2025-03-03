@@ -52,14 +52,7 @@ public class MissingBioFuelRecipeTest {
             @Override
             protected void addTags(@NotNull HolderLookup.Provider provider) {
                 //TODO: Figure out if we want to add bio fuel recipes for any of these
-                tag(KNOWN_MISSING).add(
-                      Items.COCOA_BEANS,
-                      Items.COOKIE,
-                      Items.MANGROVE_ROOTS,
-                      Items.MOSS_CARPET,
-                      Items.PINK_PETALS,
-                      Items.PUMPKIN_PIE
-                );
+                tag(KNOWN_MISSING);
             }
         });
         test.onGameTest(MekGameTestHelper.class, helper -> helper.startSequence()

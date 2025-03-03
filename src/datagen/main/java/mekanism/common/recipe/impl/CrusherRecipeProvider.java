@@ -543,6 +543,7 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         biofuel(consumer, basePath, "melon", 6, 1, Items.MELON);
         biofuel(consumer, basePath, "melon_slice", 1, 1, Items.MELON_SLICE);
         biofuel(consumer, basePath, "moss_block", 2, 1, Items.MOSS_BLOCK);
+        biofuel(consumer, basePath, "moss_carpet", 4, 3, Items.MOSS_CARPET);
         biofuel(consumer, basePath, "mushroom_blocks", 4, 1, Items.BROWN_MUSHROOM_BLOCK, Items.RED_MUSHROOM_BLOCK, Items.MUSHROOM_STEM);
         biofuel(consumer, basePath, "mushrooms", 1, 1, Tags.Items.MUSHROOMS);
         biofuel(consumer, basePath, "nether_sprouts", 1, 1, Items.NETHER_SPROUTS);
@@ -560,6 +561,7 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         biofuel(consumer, basePath, "shroomlight", 4, 1, Items.SHROOMLIGHT);
         biofuel(consumer, basePath, "small_dripleaf", 1, 1, Items.SMALL_DRIPLEAF);
         biofuel(consumer, basePath, "small_flowers", 1, 1, ItemTags.SMALL_FLOWERS);
+        biofuel(consumer, basePath, "pink_petals", 1, 1, Items.PINK_PETALS);//not in small_flowers tag
         biofuel(consumer, basePath, "spore_blossom", 2, 1, Items.SPORE_BLOSSOM);
         biofuel(consumer, basePath, "sugar_cane", 1, 1, Items.SUGAR_CANE);
         biofuel(consumer, basePath, "tall_flowers", 2, 1, ItemTags.TALL_FLOWERS);
