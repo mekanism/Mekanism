@@ -1,4 +1,4 @@
-// 1.21.1	2025-03-03T11:30:49.9412044	Recipes
+// 1.21.1	2025-03-03T12:10:06.0493454	Recipes
 0fc9e539372429b3e5df0dc0595978c4fc45d201 data/mekanism/recipe/antiprotonic_nucleosynthesizer.json
 6d20b08ca1cc993d4c39a761361dce522fe45a7a data/mekanism/recipe/atomic_disassembler.json
 00928ea6e8b57d257c773343c0dc0d337c9d4f5f data/mekanism/recipe/bin/advanced.json
@@ -656,12 +656,12 @@ c646108a5cccc0838e36fbc4f27194057b2e0673 data/mekanism/recipe/crushing/biofuel/c
 0b32880464e9abdcfc4ad1cb3813bcd53939ea05 data/mekanism/recipe/crushing/biofuel/crimson_roots.json
 3248841b9462d7362b258ba6439959b4df93b3cc data/mekanism/recipe/crushing/biofuel/crops.json
 f66b4de1132bd40e06ccc748944ba0fc92c14f10 data/mekanism/recipe/crushing/biofuel/dried_kelp.json
-e62a8112ac9be2fabfcb2dbab5607256705f3be2 data/mekanism/recipe/crushing/biofuel/dried_kelp_block.json
+158d1c26afe481880fe06b7560fcce39d9f93fbc data/mekanism/recipe/crushing/biofuel/dried_kelp_block.json
 7a88cb56ffe9f0bd5c307f589690fe8c3336621f data/mekanism/recipe/crushing/biofuel/fern.json
 034bbce87fb1ac34fe7eff5939347fe0097aa92b data/mekanism/recipe/crushing/biofuel/fungus.json
 2ee51cdbd046107cc45e06b59bb986cc133e8b9b data/mekanism/recipe/crushing/biofuel/glow_lichen.json
 b331efd2f9cd783914aa4b90d66efe912f41c185 data/mekanism/recipe/crushing/biofuel/hanging_roots.json
-558f70f2a0cc89046355abf465723a7ebd00452d data/mekanism/recipe/crushing/biofuel/hay_block.json
+c9a44e13c449ae92632b6c9d06d3ad8f6ddc4e00 data/mekanism/recipe/crushing/biofuel/hay_block.json
 49a4b33e46c1258a3628d5a21c1ef59d5ad8b247 data/mekanism/recipe/crushing/biofuel/kelp.json
 7c41101a3115063fa26930e98e2e1265f8614d1a data/mekanism/recipe/crushing/biofuel/large_fern.json
 19e57528a66775dd441346c9366328517a253d7e data/mekanism/recipe/crushing/biofuel/leaves.json
@@ -674,7 +674,7 @@ c55fe4aee48254c3ef8ba6c5d7f58ec19f955efc data/mekanism/recipe/crushing/biofuel/m
 b6d593b2d3e49c96e2cd3b9ed105592f98580967 data/mekanism/recipe/crushing/biofuel/mushrooms.json
 f8b0615e7712076171c6b7625395fc761e6e1f17 data/mekanism/recipe/crushing/biofuel/mushroom_blocks.json
 d092cf5f1294088fa8380cbc4d450e6ec54ef7a4 data/mekanism/recipe/crushing/biofuel/nether_sprouts.json
-f12fdf86147c9769c646ee1f37162c99183e8a0e data/mekanism/recipe/crushing/biofuel/nether_wart_block.json
+2c03335e0c14b8ab8dac869c4b3d6b4de104fc10 data/mekanism/recipe/crushing/biofuel/nether_wart_block.json
 7df4cb1226342435a81eb71a4d3bc1d39965a367 data/mekanism/recipe/crushing/biofuel/pink_petals.json
 c012958819393463d6173ac88718ff9c85b59625 data/mekanism/recipe/crushing/biofuel/pitcher_pod.json
 7f54ac63f5856d2139cd1a6cd5a71fc6ef99f144 data/mekanism/recipe/crushing/biofuel/pumpkin.json

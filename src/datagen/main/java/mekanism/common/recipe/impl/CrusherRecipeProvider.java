@@ -2,10 +2,12 @@ package mekanism.common.recipe.impl;
 
 import java.util.Map;
 import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
+import mekanism.api.providers.IItemProvider;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.recipe.RecipeProviderUtil;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.HolderLookup;
@@ -529,12 +531,12 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         biofuel(consumer, basePath, "cookie", 3, 4, Items.COOKIE);
         biofuel(consumer, basePath, "crops", 2, 1, Items.CARROT, Items.CACTUS, Items.POTATO, Items.POISONOUS_POTATO, Items.WHEAT, Items.BEETROOT, Items.NETHER_WART, Items.COCOA_BEANS);
         biofuel(consumer, basePath, "dried_kelp", 1, 1, Items.DRIED_KELP);
-        biofuel(consumer, basePath, "dried_kelp_block", 9, 1, Items.DRIED_KELP_BLOCK);
+        biofuelBlock(consumer, basePath, "dried_kelp_block", 1, 1, Items.DRIED_KELP_BLOCK);
         biofuel(consumer, basePath, "fern", 2, 1, Items.FERN);
         biofuel(consumer, basePath, "fungus", 1, 1, Items.CRIMSON_FUNGUS, Items.WARPED_FUNGUS);
         biofuel(consumer, basePath, "glow_lichen", 1, 1, Items.GLOW_LICHEN);
         biofuel(consumer, basePath, "hanging_roots", 1, 1, Items.HANGING_ROOTS);
-        biofuel(consumer, basePath, "hay_block", 9 * 2, 1, Items.HAY_BLOCK);
+        biofuelBlock(consumer, basePath, "hay_block", 2, 1, Items.HAY_BLOCK);
         biofuel(consumer, basePath, "kelp", 2, 1, Items.KELP);
         biofuel(consumer, basePath, "large_fern", 3, 1, Items.LARGE_FERN);
         biofuel(consumer, basePath, "leaves", 1, 10, ItemTags.LEAVES);
@@ -547,7 +549,7 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         biofuel(consumer, basePath, "mushroom_blocks", 4, 1, Items.BROWN_MUSHROOM_BLOCK, Items.RED_MUSHROOM_BLOCK, Items.MUSHROOM_STEM);
         biofuel(consumer, basePath, "mushrooms", 1, 1, Tags.Items.MUSHROOMS);
         biofuel(consumer, basePath, "nether_sprouts", 1, 1, Items.NETHER_SPROUTS);
-        biofuel(consumer, basePath, "nether_wart_block", 9 * 2, 1, Items.NETHER_WART_BLOCK);
+        biofuelBlock(consumer, basePath, "nether_wart_block", 2, 1, Items.NETHER_WART_BLOCK);
         biofuel(consumer, basePath, "pitcher_pod", 1, 1, Items.PITCHER_POD);
         final int pumpkinOutput = 6;
         biofuel(consumer, basePath, "pumpkin", pumpkinOutput, 1, Items.PUMPKIN);
@@ -573,9 +575,17 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
     }
 
     private static void biofuel(RecipeOutput consumer, String basePath, String filename, int countOutput, int countInput, ItemLike... items) {
+        biofuel(consumer, basePath, filename, countOutput, countInput, MekanismItems.BIO_FUEL, items);
+    }
+
+    private static void biofuelBlock(RecipeOutput consumer, String basePath, String filename, int countOutput, int countInput, ItemLike... items) {
+        biofuel(consumer, basePath, filename, countOutput, countInput, MekanismBlocks.BIO_FUEL_BLOCK, items);
+    }
+
+    private static void biofuel(RecipeOutput consumer, String basePath, String filename, int countOutput, int countInput, IItemProvider bioFuelType, ItemLike... items) {
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(countInput, items),
-              MekanismItems.BIO_FUEL.getItemStack(countOutput)
+              bioFuelType.getItemStack(countOutput)
         ).build(consumer, Mekanism.rl(basePath + filename));
     }
 
