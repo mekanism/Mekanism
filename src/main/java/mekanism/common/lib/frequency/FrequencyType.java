@@ -1,6 +1,7 @@
 package mekanism.common.lib.frequency;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
 import java.util.HashMap;
@@ -9,6 +10,7 @@ import java.util.Objects;
 import java.util.UUID;
 import mekanism.api.SerializationConstants;
 import mekanism.api.security.SecurityMode;
+import mekanism.common.Mekanism;
 import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.content.teleporter.TeleporterFrequency;
@@ -107,11 +109,17 @@ public class FrequencyType<FREQ extends Frequency> {
         return codec;
     }
 
+    @Nullable
     public FREQ create(HolderLookup.Provider provider, CompoundTag identityTag) {
-        FrequencyIdentity identity = getIdentitySerializer().codec().decode(provider.createSerializationContext(NbtOps.INSTANCE), identityTag).getOrThrow().getFirst();
-        FREQ frequency = create(identity.key(), identity.ownerUUID(), identity.securityMode());
-        frequency.setValid(false);
-        return frequency;
+        DataResult<FrequencyIdentity> parsedIdentity = getIdentitySerializer().codec().parse(provider.createSerializationContext(NbtOps.INSTANCE), identityTag);
+        if (parsedIdentity.isSuccess()) {
+            FrequencyIdentity identity = parsedIdentity.getOrThrow();
+            FREQ frequency = create(identity.key(), identity.ownerUUID(), identity.securityMode());
+            frequency.setValid(false);
+            return frequency;
+        }
+        parsedIdentity.ifError(error -> Mekanism.logger.warn("Failed to deserialize frequency identity: {}", error.message()));
+        return null;
     }
 
     public FREQ create(Object key, UUID ownerUUID, SecurityMode securityMode) {

@@ -1,7 +1,5 @@
 {
   "values": [
-    "#c:stairs/plastic",
-    "#c:stairs/plastic/glow",
-    "#c:stairs/plastic/transparent"
+    "#c:stairs/plastic"
   ]
 }

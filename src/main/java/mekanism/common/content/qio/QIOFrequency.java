@@ -8,6 +8,7 @@ import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongMaps;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -598,7 +599,8 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
             totalCountCapacity += data.getCountCapacity();
             totalTypeCapacity += data.getTypeCapacity();
             driveMap.put(key, data);
-            for (Object2LongMap.Entry<HashedItem> entry : data.getItemMap().object2LongEntrySet()) {
+            for (ObjectIterator<Object2LongMap.Entry<HashedItem>> iterator = Object2LongMaps.fastIterator(data.getItemMap()); iterator.hasNext(); ) {
+                Object2LongMap.Entry<HashedItem> entry = iterator.next();
                 HashedItem storedKey = entry.getKey();
                 itemDataMap.computeIfAbsent(storedKey, this::createTypeDataForAbsent).addFromDrive(data, entry.getLongValue());
                 markForUpdate(storedKey);
@@ -613,7 +615,8 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         }
         QIODriveData data = driveMap.get(key);
         if (updateItemMap) {
-            for (Object2LongMap.Entry<HashedItem> entry : data.getItemMap().object2LongEntrySet()) {
+            for (ObjectIterator<Object2LongMap.Entry<HashedItem>> iterator = Object2LongMaps.fastIterator(data.getItemMap()); iterator.hasNext(); ) {
+                Object2LongMap.Entry<HashedItem> entry = iterator.next();
                 HashedItem storedKey = entry.getKey();
                 long value = entry.getLongValue();
                 QIOItemTypeData itemData = itemDataMap.get(storedKey);

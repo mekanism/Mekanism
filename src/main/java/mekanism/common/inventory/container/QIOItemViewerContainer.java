@@ -1,6 +1,8 @@
 package mekanism.common.inventory.container;
 
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.Object2LongMaps;
+import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -379,7 +381,8 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
             // just short circuit a lot of logic
             return;
         }
-        for (Object2LongMap.Entry<UUIDAwareHashedItem> entry : itemMap.object2LongEntrySet()) {
+        for (ObjectIterator<Object2LongMap.Entry<UUIDAwareHashedItem>> iterator = Object2LongMaps.fastIterator(itemMap); iterator.hasNext(); ) {
+            Object2LongMap.Entry<UUIDAwareHashedItem> entry = iterator.next();
             UUIDAwareHashedItem itemKey = entry.getKey();
             UUID itemUUID = itemKey.getUUID();
             long value = entry.getLongValue();

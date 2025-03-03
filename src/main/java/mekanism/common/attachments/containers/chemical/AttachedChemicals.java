@@ -19,7 +19,7 @@ public record AttachedChemicals(List<ChemicalStack> containers) implements IAtta
     public static final AttachedChemicals EMPTY = new AttachedChemicals(Collections.emptyList());
 
     public static final Codec<AttachedChemicals> ACTUAL_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          ChemicalStack.OPTIONAL_CODEC.listOf().fieldOf(SerializationConstants.CHEMICAL_TANKS).forGetter(AttachedChemicals::containers)
+          ChemicalStack.LENIENT_OPTIONAL_CODEC.listOf().fieldOf(SerializationConstants.CHEMICAL_TANKS).forGetter(AttachedChemicals::containers)
     ).apply(instance, AttachedChemicals::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, AttachedChemicals> STREAM_CODEC =
           ChemicalStack.OPTIONAL_STREAM_CODEC.<List<ChemicalStack>>apply(ByteBufCodecs.collection(NonNullList::createWithCapacity))
@@ -28,19 +28,19 @@ public record AttachedChemicals(List<ChemicalStack> containers) implements IAtta
     //TODO - 1.22: delete backcompat, rename ACTUAL_CODEC to CODEC
     @Deprecated(forRemoval = true)
     public static final Codec<AttachedChemicals> GAS_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          ChemicalStack.OPTIONAL_CODEC.listOf().fieldOf(SerializationConstants.GAS_TANKS).forGetter(AttachedChemicals::containers)
+          ChemicalStack.LENIENT_OPTIONAL_CODEC.listOf().fieldOf(SerializationConstants.GAS_TANKS).forGetter(AttachedChemicals::containers)
     ).apply(instance, AttachedChemicals::new));
     @Deprecated(forRemoval = true)
     public static final Codec<AttachedChemicals> INFUSE_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          ChemicalStack.OPTIONAL_CODEC.listOf().fieldOf(SerializationConstants.INFUSION_TANKS).forGetter(AttachedChemicals::containers)
+          ChemicalStack.LENIENT_OPTIONAL_CODEC.listOf().fieldOf(SerializationConstants.INFUSION_TANKS).forGetter(AttachedChemicals::containers)
     ).apply(instance, AttachedChemicals::new));
     @Deprecated(forRemoval = true)
     public static final Codec<AttachedChemicals> PIGMENT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          ChemicalStack.OPTIONAL_CODEC.listOf().fieldOf(SerializationConstants.PIGMENT_TANKS).forGetter(AttachedChemicals::containers)
+          ChemicalStack.LENIENT_OPTIONAL_CODEC.listOf().fieldOf(SerializationConstants.PIGMENT_TANKS).forGetter(AttachedChemicals::containers)
     ).apply(instance, AttachedChemicals::new));
     @Deprecated(forRemoval = true)
     public static final Codec<AttachedChemicals> SLURRY_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          ChemicalStack.OPTIONAL_CODEC.listOf().fieldOf(SerializationConstants.SLURRY_TANKS).forGetter(AttachedChemicals::containers)
+          ChemicalStack.LENIENT_OPTIONAL_CODEC.listOf().fieldOf(SerializationConstants.SLURRY_TANKS).forGetter(AttachedChemicals::containers)
     ).apply(instance, AttachedChemicals::new));
     public static final Codec<AttachedChemicals> CODEC = Codec.withAlternative(ACTUAL_CODEC, Codec.withAlternative(GAS_CODEC, Codec.withAlternative(INFUSE_CODEC, Codec.withAlternative(PIGMENT_CODEC, SLURRY_CODEC))));
 

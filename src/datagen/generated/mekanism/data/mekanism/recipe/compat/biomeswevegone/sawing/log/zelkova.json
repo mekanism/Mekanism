@@ -1,0 +1,22 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "biomeswevegone"
+    }
+  ],
+  "type": "mekanism:sawing",
+  "input": {
+    "count": 1,
+    "tag": "biomeswevegone:zelkova_logs"
+  },
+  "main_output": {
+    "count": 6,
+    "id": "biomeswevegone:zelkova_planks"
+  },
+  "secondary_chance": 0.25,
+  "secondary_output": {
+    "count": 1,
+    "id": "mekanism:sawdust"
+  }
+}

@@ -98,7 +98,7 @@ public class ChemicalStackRenderer implements IIngredientRenderer<ChemicalStack>
             } else if (tooltipMode == TooltipMode.SHOW_AMOUNT) {
                 tooltipAdder.accept(MekanismLang.GENERIC_MB.translateColored(EnumColor.GRAY, TextUtils.format(stack.getAmount())));
             }
-            ChemicalUtil.addChemicalDataToTooltip(stack.getChemical(), tooltipFlag.isAdvanced(), tooltipAdder);
+            ChemicalUtil.addChemicalDataToTooltip(stack, tooltipFlag.isAdvanced(), tooltipAdder);
         }
     }
 

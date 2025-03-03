@@ -1,14 +1,14 @@
 package mekanism.common.content.filter;
 
-import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.DataResult;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import mekanism.api.SerializationConstants;
+import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.list.SyncableFilterList;
 import mekanism.common.lib.collection.HashList;
@@ -138,6 +138,7 @@ public class FilterManager<FILTER extends IFilter<?>> {
     }
 
     private void editFilter(FILTER currentFilter, FILTER newFilter) {
+        //TODO: Add in validation so that if a filter tries to be saved that is invalid we don't add it/save it?
         if (filters.replace(currentFilter, newFilter)) {
             //Save the filters
             markForSave.run();
@@ -165,9 +166,13 @@ public class FilterManager<FILTER extends IFilter<?>> {
             ListTag filterTags = new ListTag();
             RegistryOps<Tag> serializationContext = provider.createSerializationContext(NbtOps.INSTANCE);
             for (FILTER filter : filters) {
-                filterTags.add(BaseFilter.GENERIC_CODEC.encodeStart(serializationContext, filter).getOrThrow());
+                DataResult<Tag> encoded = BaseFilter.GENERIC_CODEC.encodeStart(serializationContext, filter);
+                encoded.ifSuccess(filterTags::add);
+                encoded.ifError(error -> Mekanism.logger.warn("Failed to serialize filter: {}", error.message()));
             }
-            nbt.put(SerializationConstants.FILTERS, filterTags);
+            if (!filterTags.isEmpty()) {
+                nbt.put(SerializationConstants.FILTERS, filterTags);
+            }
         }
     }
 
@@ -179,10 +184,11 @@ public class FilterManager<FILTER extends IFilter<?>> {
         NBTUtils.setListIfPresent(nbt, SerializationConstants.FILTERS, Tag.TAG_COMPOUND, tagList -> {
             RegistryOps<Tag> serializationContext = provider.createSerializationContext(NbtOps.INSTANCE);
             for (int i = 0, size = tagList.size(); i < size; i++) {
-                Optional<Pair<IFilter<?>, Tag>> result = BaseFilter.GENERIC_CODEC.decode(serializationContext, tagList.getCompound(i)).result();
-                //noinspection OptionalIsPresent - Capturing lambda
-                if (result.isPresent()) {
-                    tryAddFilter(result.get().getFirst(), false);
+                DataResult<IFilter<?>> decoded = BaseFilter.GENERIC_CODEC.parse(serializationContext, tagList.getCompound(i));
+                if (decoded.isSuccess()) {
+                    tryAddFilter(decoded.getOrThrow(), false);
+                } else {
+                    decoded.ifError(error -> Mekanism.logger.warn("Failed to deserialize stored filter: {}", error.message()));
                 }
             }
         });

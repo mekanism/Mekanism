@@ -20,7 +20,6 @@ import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.content.network.FluidNetwork;
 import mekanism.common.content.network.transmitter.MechanicalPipe;
-import mekanism.common.lib.collection.FluidHashStrategy;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
 import mekanism.common.util.EnumUtils;
@@ -34,6 +33,7 @@ import net.minecraft.core.Direction.AxisDirection;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStackLinkedSet;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -145,7 +145,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
         } else {
             sideOrdinal = side.ordinal();
         }
-        Int2ObjectMap<Model3D> modelMap = cachedLiquids.computeIfAbsent(sideOrdinal, s -> new Object2ObjectOpenCustomHashMap<>(FluidHashStrategy.INSTANCE))
+        Int2ObjectMap<Model3D> modelMap = cachedLiquids.computeIfAbsent(sideOrdinal, s -> new Object2ObjectOpenCustomHashMap<>(FluidStackLinkedSet.TYPE_AND_COMPONENTS))
               .computeIfAbsent(fluid, f -> new Int2ObjectOpenHashMap<>());
         Model3D model = modelMap.get(stage);
         if (model == null) {

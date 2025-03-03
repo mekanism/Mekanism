@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.functions.ConstantPredicates;
-import mekanism.api.recipes.ItemStackToFluidOptionalItemRecipe;
 import mekanism.api.recipes.ItemStackToFluidOptionalItemRecipe.FluidOptionalItemOutput;
+import mekanism.api.recipes.basic.BasicItemStackToFluidOptionalItemRecipe;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
 import mekanism.client.gui.element.progress.ProgressType;
@@ -17,11 +17,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 
-public class ItemStackToFluidOptionalItemEmiRecipe extends MekanismEmiRecipe<ItemStackToFluidOptionalItemRecipe> {
+public class ItemStackToFluidOptionalItemEmiRecipe extends MekanismEmiRecipe<BasicItemStackToFluidOptionalItemRecipe> {
 
     private final int processTime;
 
-    public ItemStackToFluidOptionalItemEmiRecipe(MekanismEmiRecipeCategory category, ResourceLocation id, ItemStackToFluidOptionalItemRecipe recipe, int processTime) {
+    public ItemStackToFluidOptionalItemEmiRecipe(MekanismEmiRecipeCategory category, ResourceLocation id, BasicItemStackToFluidOptionalItemRecipe recipe, int processTime) {
         super(category, id, recipe);
         this.processTime = processTime;
         addInputDefinition(recipe.getInput());

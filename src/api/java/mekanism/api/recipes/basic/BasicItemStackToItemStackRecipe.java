@@ -62,4 +62,23 @@ public abstract class BasicItemStackToItemStackRecipe extends ItemStackToItemSta
     public ItemStack getOutputRaw() {
         return output;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        } else if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        BasicItemStackToItemStackRecipe other = (BasicItemStackToItemStackRecipe) o;
+        return input.equals(other.input) && ItemStack.matches(output, other.output);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = input.hashCode();
+        hash = 31 * hash + ItemStack.hashItemAndComponents(output);
+        hash = 31 * hash + output.getCount();
+        return hash;
+    }
 }

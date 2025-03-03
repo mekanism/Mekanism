@@ -189,6 +189,21 @@ public class EmiQIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContai
             //TODO - 1.20.4: ?? Improve/fix implementation of this?? such as for a ListIngredient to properly cycle?
             return itemStacks.getFirst();
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o == this) {
+                return true;
+            } else if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            return ingredient.equals(((EmiRecipeSlot) o).ingredient);
+        }
+
+        @Override
+        public int hashCode() {
+            return ingredient.hashCode();
+        }
     }
 
     private record TransferResult(@Nullable Component tooltip, @Nullable List<EmiRecipeSlot> missingSlots) {

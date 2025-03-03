@@ -5,16 +5,22 @@ import mekanism.api.chemical.ChemicalStack;
 
 public class PigmentMixerColorDetails extends RecipeViewerColorDetails {
 
+    private final Supplier<ChemicalStack> defaultOutput;
     private Supplier<ChemicalStack> outputIngredient;
 
     public PigmentMixerColorDetails() {
-        setOutputIngredient(EMPTY);
+        this(EMPTY);
+    }
+
+    public PigmentMixerColorDetails(Supplier<ChemicalStack> defaultOutput) {
+        this.defaultOutput = defaultOutput;
+        setOutputIngredient(defaultOutput);
     }
 
     @Override
     public void reset() {
         super.reset();
-        setOutputIngredient(EMPTY);
+        setOutputIngredient(defaultOutput);
     }
 
     @Override

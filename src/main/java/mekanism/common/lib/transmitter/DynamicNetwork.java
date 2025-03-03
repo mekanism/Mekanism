@@ -1,7 +1,9 @@
 package mekanism.common.lib.transmitter;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -146,9 +148,10 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     public List<TRANSMITTER> adoptTransmittersAndAcceptorsFrom(NETWORK net) {
         positionedTransmitters.putAll(net.positionedTransmitters);
         List<TRANSMITTER> transmittersToUpdate = new ArrayList<>();
-        for (Long2ObjectMap.Entry<TRANSMITTER> entry : net.positionedTransmitters.long2ObjectEntrySet()) {
+        for (ObjectIterator<Long2ObjectMap.Entry<TRANSMITTER>> iterator = Long2ObjectMaps.fastIterator(net.positionedTransmitters); iterator.hasNext(); ) {
+            Long2ObjectMap.Entry<TRANSMITTER> entry = iterator.next();
             TRANSMITTER transmitter = entry.getValue();
-            positionedTransmitters.put(entry.getKey(), transmitter);
+            positionedTransmitters.put(entry.getLongKey(), transmitter);
             if (transmitter.setTransmitterNetwork(getNetwork(), false)) {
                 transmittersToUpdate.add(transmitter);
             }

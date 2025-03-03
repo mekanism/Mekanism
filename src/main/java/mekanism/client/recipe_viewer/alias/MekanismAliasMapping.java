@@ -13,6 +13,7 @@ import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.resource.IResource;
+import mekanism.common.tags.MekanismTags;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.FluidUtils;
@@ -76,19 +77,19 @@ public final class MekanismAliasMapping implements IAliasMapping {
     private <ITEM, FLUID, CHEMICAL> void addFactoryAliases(RVAliasHelper<ITEM, FLUID, CHEMICAL> rv) {
         for (FactoryType factoryType : EnumUtils.FACTORY_TYPES) {
             //Allow searching for factories by the name of the base block
-            rv.addAlias(factoryType.getBaseBlock(),
+            rv.addAliases(List.of(
                   MekanismBlocks.getFactory(FactoryTier.BASIC, factoryType),
                   MekanismBlocks.getFactory(FactoryTier.ADVANCED, factoryType),
                   MekanismBlocks.getFactory(FactoryTier.ELITE, factoryType),
                   MekanismBlocks.getFactory(FactoryTier.ULTIMATE, factoryType)
-            );
+            ), factoryType.getBaseBlock());
             //Add the type as a way to look-up the base block
             rv.addAliases(factoryType.getBaseBlock(), () -> Util.makeDescriptionId("alias", Mekanism.rl(factoryType.getRegistryNameComponent())));
         }
     }
 
     private <ITEM, FLUID, CHEMICAL> void addGearAliases(RVAliasHelper<ITEM, FLUID, CHEMICAL> rv) {
-        rv.addAliases(MekanismItems.ATOMIC_DISASSEMBLER, MekanismItems.MEKA_TOOL,
+        rv.addAliases(List.of(MekanismItems.ATOMIC_DISASSEMBLER, MekanismItems.MEKA_TOOL),
               MekanismAliases.TOOL_MULTI,
               MekanismAliases.TOOL_AXE,
               MekanismAliases.TOOL_PICKAXE,
@@ -98,10 +99,22 @@ public final class MekanismAliasMapping implements IAliasMapping {
         );
 
         rv.addAliases(MekanismItems.CONFIGURATOR, MekanismAliases.TOOL_DIAGNOSTIC, MekanismAliases.TOOL_WRENCH);
-        rv.addAlias(MekanismAliases.TOOL_DIAGNOSTIC, MekanismItems.NETWORK_READER, MekanismItems.CONFIGURATION_CARD);
+        rv.addAliases(List.of(
+              MekanismItems.NETWORK_READER,
+              MekanismItems.CONFIGURATION_CARD
+        ), MekanismAliases.TOOL_DIAGNOSTIC);
 
-        rv.addAlias(MekanismAliases.FLIGHT, MekanismItems.JETPACK, MekanismItems.ARMORED_JETPACK, MekanismItems.MODULE_JETPACK);
-        rv.addAlias(MekanismAliases.RADIATION_PROTECTION, MekanismItems.HAZMAT_MASK, MekanismItems.HAZMAT_GOWN, MekanismItems.HAZMAT_PANTS, MekanismItems.HAZMAT_BOOTS);
+        rv.addAliases(List.of(
+              MekanismItems.JETPACK,
+              MekanismItems.ARMORED_JETPACK,
+              MekanismItems.MODULE_JETPACK
+        ), MekanismAliases.FLIGHT);
+        rv.addAliases(List.of(
+              MekanismItems.HAZMAT_MASK,
+              MekanismItems.HAZMAT_GOWN,
+              MekanismItems.HAZMAT_PANTS,
+              MekanismItems.HAZMAT_BOOTS
+        ), MekanismAliases.RADIATION_PROTECTION);
 
         rv.addAliases(List.of(MekanismItems.FREE_RUNNERS, MekanismItems.ARMORED_FREE_RUNNERS),
               MekanismAliases.FREE_RUNNER_LONG_FALL,
@@ -110,7 +123,11 @@ public final class MekanismAliasMapping implements IAliasMapping {
               MekanismAliases.STEP_ASSIST
         );
         rv.addAliases(MekanismItems.MEKASUIT_BOOTS, MekanismAliases.FREE_RUNNER_LONG_FALL, MekanismAliases.FREE_RUNNER_FALL_PROTECTION, MekanismAliases.MEKA_SUIT_POWER_ARMOR);
-        rv.addAlias(MekanismAliases.MEKA_SUIT_POWER_ARMOR, MekanismItems.MEKASUIT_HELMET, MekanismItems.MEKASUIT_BODYARMOR, MekanismItems.MEKASUIT_PANTS);
+        rv.addAliases(List.of(
+              MekanismItems.MEKASUIT_HELMET,
+              MekanismItems.MEKASUIT_BODYARMOR,
+              MekanismItems.MEKASUIT_PANTS
+        ), MekanismAliases.MEKA_SUIT_POWER_ARMOR);
 
         rv.addAliases(FluidUtils.getFilledVariant(MekanismItems.CANTEEN, MekanismFluids.NUTRITIONAL_PASTE.getFluid()),
               MekanismAliases.CANTEEN_EDIBLE,
@@ -119,19 +136,19 @@ public final class MekanismAliasMapping implements IAliasMapping {
     }
 
     private <ITEM, FLUID, CHEMICAL> void addMultiblockAliases(RVAliasHelper<ITEM, FLUID, CHEMICAL> rv) {
-        rv.addAlias(MekanismAliases.BOILER_COMPONENT,
+        rv.addAliases(List.of(
               MekanismBlocks.BOILER_CASING,
               MekanismBlocks.BOILER_VALVE,
               MekanismBlocks.PRESSURE_DISPERSER,
               MekanismBlocks.SUPERHEATING_ELEMENT,
               MekanismBlocks.STRUCTURAL_GLASS
-        );
-        rv.addAlias(MekanismAliases.EVAPORATION_COMPONENT,
+        ), MekanismAliases.BOILER_COMPONENT);
+        rv.addAliases(List.of(
               MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER,
               MekanismBlocks.THERMAL_EVAPORATION_BLOCK,
               MekanismBlocks.THERMAL_EVAPORATION_VALVE,
               MekanismBlocks.STRUCTURAL_GLASS
-        );
+        ), MekanismAliases.EVAPORATION_COMPONENT);
 
         rv.addAliases(List.of(
               MekanismBlocks.INDUCTION_CASING,
@@ -190,10 +207,7 @@ public final class MekanismAliasMapping implements IAliasMapping {
               MekanismBlocks.ULTIMATE_BIN,
               MekanismBlocks.CREATIVE_BIN
         ), MekanismAliases.BIN_DRAWER, MekanismAliases.ITEM_STORAGE);
-        rv.addAliases(List.of(
-              MekanismBlocks.PERSONAL_BARREL,
-              MekanismBlocks.PERSONAL_CHEST
-        ), MekanismAliases.PERSONAL_BACKPACK, MekanismAliases.ITEM_STORAGE, MekanismAliases.STORAGE_PORTABLE);
+        rv.addItemAliases(MekanismTags.Items.PERSONAL_STORAGE, MekanismAliases.PERSONAL_BACKPACK, MekanismAliases.ITEM_STORAGE, MekanismAliases.STORAGE_PORTABLE);
 
         rv.addAliases(List.of(
               MekanismBlocks.BASIC_FLUID_TANK,
@@ -252,7 +266,7 @@ public final class MekanismAliasMapping implements IAliasMapping {
     private <ITEM, FLUID, CHEMICAL> void addQIOAliases(RVAliasHelper<ITEM, FLUID, CHEMICAL> rv) {
         rv.addAliases(MekanismBlocks.QIO_REDSTONE_ADAPTER, MekanismAliases.QIO_FULL, MekanismAliases.QIO_ADAPTER_EMITTER);
         rv.addAliases(MekanismBlocks.QIO_DRIVE_ARRAY, MekanismAliases.QIO_FULL, MekanismAliases.QIO_DRIVE_BAY);
-        rv.addAliases(MekanismItems.PORTABLE_QIO_DASHBOARD, MekanismAliases.PORTABLE_CRAFTING_TABLE, MekanismAliases.QIO_FULL, MekanismAliases.QIO_DASHBOARD_WIRELESS_TERMINAL);
+        rv.addAliases(MekanismItems.PORTABLE_QIO_DASHBOARD, MekanismAliases.PORTABLE_CRAFTING_TABLE, MekanismAliases.QIO_DASHBOARD_WIRELESS_TERMINAL);
         rv.addAliases(List.of(
               MekanismBlocks.QIO_DASHBOARD,
               MekanismItems.PORTABLE_QIO_DASHBOARD

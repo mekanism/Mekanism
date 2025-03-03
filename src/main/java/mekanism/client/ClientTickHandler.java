@@ -58,6 +58,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.FogType;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.InputEvent.MouseScrollingEvent;
 import net.neoforged.neoforge.client.event.RecipesUpdatedEvent;
@@ -77,10 +78,9 @@ public class ClientTickHandler {
     public static final Map<Player, TeleportData> portableTeleports = new Object2ObjectArrayMap<>(1);
     private static final ScrollIncrementer scrollIncrementer = new ScrollIncrementer(true);
 
-    public static boolean firstTick = true;
     public static boolean visionEnhancement = false;
 
-    public boolean shouldReset = false;
+    private boolean isConnected;
 
     public static boolean isJetpackInUse(Player player, ItemStack jetpack) {
         if (!player.isSpectator() && !jetpack.isEmpty()) {
@@ -145,110 +145,116 @@ public class ClientTickHandler {
     }
 
     @SubscribeEvent
-    public void onTick(ClientTickEvent.Pre event) {
-        if (firstTick && minecraft.level != null) {
-            MekanismClient.launchClient();
-            firstTick = false;
+    public void onJoinServer(ClientPlayerNetworkEvent.LoggingIn event) {
+        if (!isConnected) {//Note: This should always be true when the event is fired
+            isConnected = true;
+            MekanismClient.launchClient(event.getConnection());
         }
+    }
 
-        if (minecraft.level != null) {
-            shouldReset = true;
-        } else if (shouldReset) {
+    @SubscribeEvent
+    public void onLeaveServer(ClientPlayerNetworkEvent.LoggingOut event) {
+        //Note: We check if the client has actually connected before handling this, as this event is also called when the client is setting up the server
+        if (isConnected) {
+            isConnected = false;
             MekanismClient.reset();
-            shouldReset = false;
+        }
+    }
+
+    @SubscribeEvent
+    public void onTick(ClientTickEvent.Pre event) {
+        if (minecraft.level == null || minecraft.player == null) {
+            return;
+        }
+        boolean tickingNormally = MekanismRenderer.isRunningNormally();
+        HolidayManager.notify(minecraft.player);
+
+        //Reboot player sounds if needed
+        SoundHandler.restartSounds();
+
+        if (tickingNormally) {
+            RadiationManager.get().tickClient(minecraft.player);
         }
 
-        if (minecraft.level != null && minecraft.player != null) {
-            boolean tickingNormally = MekanismRenderer.isRunningNormally();
-            HolidayManager.notify(minecraft.player);
+        UUID playerUUID = minecraft.player.getUUID();
+        // Update player's state for various items; this also automatically notifies server if something changed and
+        // kicks off sounds as necessary
+        ItemStack jetpack = IJetpackItem.getActiveJetpack(minecraft.player);
+        boolean jetpackInUse = isJetpackInUse(minecraft.player, jetpack);
+        Mekanism.playerState.setJetpackState(playerUUID, jetpackInUse, true);
+        Mekanism.playerState.setScubaMaskState(playerUUID, isScubaMaskOn(minecraft.player), true);
+        Mekanism.playerState.setGravitationalModulationState(playerUUID, isGravitationalModulationOn(minecraft.player), true);
 
-            //Reboot player sounds if needed
-            SoundHandler.restartSounds();
-
-            if (tickingNormally) {
-                RadiationManager.get().tickClient(minecraft.player);
-            }
-
-            UUID playerUUID = minecraft.player.getUUID();
-            // Update player's state for various items; this also automatically notifies server if something changed and
-            // kicks off sounds as necessary
-            ItemStack jetpack = IJetpackItem.getActiveJetpack(minecraft.player);
-            boolean jetpackInUse = isJetpackInUse(minecraft.player, jetpack);
-            Mekanism.playerState.setJetpackState(playerUUID, jetpackInUse, true);
-            Mekanism.playerState.setScubaMaskState(playerUUID, isScubaMaskOn(minecraft.player), true);
-            Mekanism.playerState.setGravitationalModulationState(playerUUID, isGravitationalModulationOn(minecraft.player), true);
-
-            if (tickingNormally) {
-                //Note: If we aren't ticking normally we can skip adding the particles or checking if the time matches as we know the time hasn't changed
-                for (Iterator<Entry<Player, TeleportData>> iter = portableTeleports.entrySet().iterator(); iter.hasNext(); ) {
-                    Entry<Player, TeleportData> entry = iter.next();
-                    Player player = entry.getKey();
-                    for (int i = 0; i < 100; i++) {
-                        double x = player.getX() + rand.nextDouble() - 0.5D;
-                        double y = player.getY() + rand.nextDouble() * 2 - 2D;
-                        double z = player.getZ() + rand.nextDouble() - 0.5D;
-                        minecraft.level.addParticle(ParticleTypes.PORTAL, x, y, z, 0, 1, 0);
-                    }
-                    TeleportData data = entry.getValue();
-                    if (minecraft.level.getGameTime() == data.teleportTime) {
-                        PacketUtils.sendToServer(new PacketPortableTeleporterTeleport(data.hand, data.identity));
-                        iter.remove();
-                    }
+        if (tickingNormally) {
+            //Note: If we aren't ticking normally we can skip adding the particles or checking if the time matches as we know the time hasn't changed
+            for (Iterator<Entry<Player, TeleportData>> iter = portableTeleports.entrySet().iterator(); iter.hasNext(); ) {
+                Entry<Player, TeleportData> entry = iter.next();
+                Player player = entry.getKey();
+                for (int i = 0; i < 100; i++) {
+                    double x = player.getX() + rand.nextDouble() - 0.5D;
+                    double y = player.getY() + rand.nextDouble() * 2 - 2D;
+                    double z = player.getZ() + rand.nextDouble() - 0.5D;
+                    minecraft.level.addParticle(ParticleTypes.PORTAL, x, y, z, 0, 1, 0);
+                }
+                TeleportData data = entry.getValue();
+                if (minecraft.level.getGameTime() == data.teleportTime) {
+                    PacketUtils.sendToServer(new PacketPortableTeleporterTeleport(data.hand, data.identity));
+                    iter.remove();
                 }
             }
+        }
 
-            if (!jetpack.isEmpty()) {
-                ItemStack primaryJetpack = IJetpackItem.getPrimaryJetpack(minecraft.player);
-                if (!primaryJetpack.isEmpty()) {
-                    JetpackMode primaryMode = ((IJetpackItem) primaryJetpack.getItem()).getJetpackMode(primaryJetpack);
-                    JetpackMode mode = IJetpackItem.getPlayerJetpackMode(minecraft.player, primaryMode, p -> p.input.jumping);
-                    MekanismClient.updateKey(minecraft.player.input.jumping, KeySync.ASCEND);
-                    double jetpackThrust = ((IJetpackItem) primaryJetpack.getItem()).getJetpackThrust(primaryJetpack);
-                    if (jetpackInUse && IJetpackItem.handleJetpackMotion(minecraft.player, mode, jetpackThrust, p -> p.input.jumping)) {
-                        minecraft.player.resetFallDistance();
+        if (!jetpack.isEmpty()) {
+            ItemStack primaryJetpack = IJetpackItem.getPrimaryJetpack(minecraft.player);
+            if (!primaryJetpack.isEmpty()) {
+                JetpackMode primaryMode = ((IJetpackItem) primaryJetpack.getItem()).getJetpackMode(primaryJetpack);
+                JetpackMode mode = IJetpackItem.getPlayerJetpackMode(minecraft.player, primaryMode, p -> p.input.jumping);
+                MekanismClient.updateKey(minecraft.player.input.jumping, KeySync.ASCEND);
+                double jetpackThrust = ((IJetpackItem) primaryJetpack.getItem()).getJetpackThrust(primaryJetpack);
+                if (jetpackInUse && IJetpackItem.handleJetpackMotion(minecraft.player, mode, jetpackThrust, p -> p.input.jumping)) {
+                    minecraft.player.resetFallDistance();
+                }
+            }
+        }
+
+        if (isScubaMaskOn(minecraft.player) && minecraft.player.getAirSupply() == minecraft.player.getMaxAirSupply()) {
+            for (MobEffectInstance effect : minecraft.player.getActiveEffects()) {
+                if (MekanismUtils.shouldSpeedUpEffect(effect)) {
+                    for (int i = 0; i < 9; i++) {
+                        MekanismUtils.speedUpEffectSafely(minecraft.player, effect);
                     }
                 }
             }
+        }
 
-            if (isScubaMaskOn(minecraft.player) && minecraft.player.getAirSupply() == minecraft.player.getMaxAirSupply()) {
-                for (MobEffectInstance effect : minecraft.player.getActiveEffects()) {
-                    if (MekanismUtils.shouldSpeedUpEffect(effect)) {
-                        for (int i = 0; i < 9; i++) {
-                            MekanismUtils.speedUpEffectSafely(minecraft.player, effect);
-                        }
-                    }
+        if (isVisionEnhancementOn(minecraft.player)) {
+            visionEnhancement = true;
+            // adds if it doesn't exist, otherwise tops off duration to 220. equal or less than 200 will make vision flickers
+            minecraft.player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 11 * SharedConstants.TICKS_PER_SECOND, 0, false, false, false));
+        } else if (visionEnhancement) {
+            visionEnhancement = false;
+            MobEffectInstance effect = minecraft.player.getEffect(MobEffects.NIGHT_VISION);
+            if (effect != null && effect.getDuration() <= 11 * SharedConstants.TICKS_PER_SECOND) {
+                //Only remove it if it is our effect and not one that has a longer remaining duration
+                minecraft.player.removeEffect(MobEffects.NIGHT_VISION);
+            }
+        }
+
+        if (minecraft.screen == null || minecraft.screen instanceof GuiRadialSelector) {
+            if (!MekKeyHandler.isRadialPressed() || (!updateSelectorRenderer(EquipmentSlot.MAINHAND) && !updateSelectorRenderer(EquipmentSlot.OFFHAND))) {
+                if (minecraft.screen != null) {
+                    //If we currently have a radial selector gui open but shouldn't close it
+                    minecraft.setScreen(null);
                 }
             }
+        }
 
-            if (isVisionEnhancementOn(minecraft.player)) {
-                visionEnhancement = true;
-                // adds if it doesn't exist, otherwise tops off duration to 220. equal or less than 200 will make vision flickers
-                minecraft.player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 11 * SharedConstants.TICKS_PER_SECOND, 0, false, false, false));
-            } else if (visionEnhancement) {
-                visionEnhancement = false;
-                MobEffectInstance effect = minecraft.player.getEffect(MobEffects.NIGHT_VISION);
-                if (effect != null && effect.getDuration() <= 11 * SharedConstants.TICKS_PER_SECOND) {
-                    //Only remove it if it is our effect and not one that has a longer remaining duration
-                    minecraft.player.removeEffect(MobEffects.NIGHT_VISION);
-                }
-            }
-
-            if (minecraft.screen == null || minecraft.screen instanceof GuiRadialSelector) {
-                if (!MekKeyHandler.isRadialPressed() || (!updateSelectorRenderer(EquipmentSlot.MAINHAND) && !updateSelectorRenderer(EquipmentSlot.OFFHAND))) {
-                    if (minecraft.screen != null) {
-                        //If we currently have a radial selector gui open but shouldn't close it
-                        minecraft.setScreen(null);
-                    }
-                }
-            }
-
-            if (tickingNormally && MekanismConfig.client.enablePlayerSounds.get()) {
-                RadiationScale scale = RadiationManager.get().getClientScale();
-                if (scale != RadiationScale.NONE && !SoundHandler.radiationSoundMap.containsKey(scale)) {
-                    GeigerSound sound = GeigerSound.create(minecraft.player, scale);
-                    SoundHandler.radiationSoundMap.put(scale, sound);
-                    SoundHandler.playSound(sound);
-                }
+        if (tickingNormally && MekanismConfig.client.enablePlayerSounds.get()) {
+            RadiationScale scale = RadiationManager.get().getClientScale();
+            if (scale != RadiationScale.NONE && !SoundHandler.radiationSoundMap.containsKey(scale)) {
+                GeigerSound sound = GeigerSound.create(minecraft.player, scale);
+                SoundHandler.radiationSoundMap.put(scale, sound);
+                SoundHandler.playSound(sound);
             }
         }
     }

@@ -1,0 +1,17 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "biomeswevegone"
+    }
+  ],
+  "type": "mekanism:crushing",
+  "input": {
+    "count": 1,
+    "item": "biomeswevegone:dacite_wall"
+  },
+  "output": {
+    "count": 1,
+    "id": "biomeswevegone:dacite_cobblestone_wall"
+  }
+}

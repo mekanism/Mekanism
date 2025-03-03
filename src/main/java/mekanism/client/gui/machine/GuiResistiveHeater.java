@@ -8,7 +8,9 @@ import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.client.gui.element.tab.GuiHeatTab;
 import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.common.MekanismLang;
+import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
+import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.PacketGuiSetEnergy;
 import mekanism.common.network.to_server.PacketGuiSetEnergy.GuiEnergyValue;
@@ -39,7 +41,14 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
               MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(tile.getTotalTemperature(), TemperatureUnit.KELVIN, true)),
               MekanismLang.RESISTIVE_HEATER_USAGE.translate(EnergyDisplay.of(tile.getEnergyContainer().getEnergyPerTick()))
         )).clearFormat());
-        addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
+        addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15))
+              .warning(WarningType.NOT_ENOUGH_ENERGY, () -> {
+                  MachineEnergyContainer<TileEntityResistiveHeater> energyContainer = tile.getEnergyContainer();
+                  return energyContainer.isEmpty() && energyContainer.getEnergyPerTick() > 0;
+              }).warning(WarningType.NOT_ENOUGH_ENERGY_REDUCED_RATE, () -> {
+                  MachineEnergyContainer<TileEntityResistiveHeater> energyContainer = tile.getEnergyContainer();
+                  return energyContainer.getEnergyPerTick() > energyContainer.getEnergy();
+              });
         addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::getEnergyUsed));
         addRenderableWidget(new GuiHeatTab(this, () -> {
             Component temp = MekanismUtils.getTemperatureDisplay(tile.getTotalTemperature(), TemperatureUnit.KELVIN, true);

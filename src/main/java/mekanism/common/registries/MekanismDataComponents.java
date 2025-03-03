@@ -1,5 +1,6 @@
 package mekanism.common.registries;
 
+import java.util.Optional;
 import java.util.UUID;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -50,6 +51,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Item;
 import org.jetbrains.annotations.Nullable;
 
@@ -184,9 +186,11 @@ public class MekanismDataComponents {
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Long>> LONG_AMOUNT = DATA_COMPONENTS.registerNonNegativeLong("long_amount");
     //Note: We can't directly use ItemStack as it needs to override equals and hashcode, but as our only use case converts it to a HashedItem, we just use that
     // We don't add this by default to the redstone adapter, so that the default state is there is no target set
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<HashedItem>> ITEM_TARGET = DATA_COMPONENTS.simple("item_target",
-          builder -> builder.persistent(HashedItem.CODEC)
-                .networkSynchronized(HashedItem.STREAM_CODEC)
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Optional<HashedItem>>> ITEM_TARGET = DATA_COMPONENTS.simple("item_target",
+          builder -> builder.persistent(ExtraCodecs.optionalEmptyMap(HashedItem.CODEC)
+                .promotePartial(error -> Mekanism.logger.error("Failed to load item target: {}", error))
+                .orElse(Optional.empty())
+          ).networkSynchronized(ByteBufCodecs.optional(HashedItem.STREAM_CODEC))
     );
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<DriveMetadata>> DRIVE_METADATA = DATA_COMPONENTS.simple("drive_metadata",
           builder -> builder.persistent(DriveMetadata.CODEC)

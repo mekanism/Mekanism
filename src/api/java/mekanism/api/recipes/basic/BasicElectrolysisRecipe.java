@@ -86,4 +86,21 @@ public class BasicElectrolysisRecipe extends ElectrolysisRecipe {
     public RecipeSerializer<BasicElectrolysisRecipe> getSerializer() {
         return MekanismRecipeSerializers.SEPARATING.get();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        } else if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        BasicElectrolysisRecipe other = (BasicElectrolysisRecipe) o;
+        return energyMultiplier == other.energyMultiplier && input.equals(other.input) && leftChemicalOutput.equals(other.leftChemicalOutput) &&
+               rightChemicalOutput.equals(other.rightChemicalOutput);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(input, leftChemicalOutput, rightChemicalOutput, energyMultiplier);
+    }
 }

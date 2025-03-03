@@ -103,6 +103,29 @@ public class BasicSawmillRecipe extends SawmillRecipe {
         return MekanismRecipeSerializers.SAWING.get();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        } else if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        BasicSawmillRecipe other = (BasicSawmillRecipe) o;
+        return secondaryChance == other.secondaryChance && input.equals(other.input) && ItemStack.matches(mainOutput, other.mainOutput) &&
+               ItemStack.matches(secondaryOutput, other.secondaryOutput);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = Objects.hash(input, secondaryChance);
+        hash = 31 * hash + ItemStack.hashItemAndComponents(mainOutput);
+        hash = 31 * hash + mainOutput.getCount();
+        if (!secondaryOutput.isEmpty()) {
+            hash = 31 * hash + ItemStack.hashItemAndComponents(secondaryOutput);
+            hash = 31 * hash + secondaryOutput.getCount();
+        }
+        return hash;
+    }
 
     public class BasicChanceOutput implements ChanceOutput {
 

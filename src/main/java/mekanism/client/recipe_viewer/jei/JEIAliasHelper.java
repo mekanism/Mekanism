@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import mekanism.api.MekanismAPI;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.providers.IFluidProvider;
@@ -15,8 +17,15 @@ import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.registration.IIngredientAliasRegistration;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 
@@ -43,6 +52,11 @@ public class JEIAliasHelper implements RVAliasHelper<ItemStack, FluidStack, Chem
     }
 
     @Override
+    public List<ItemStack> itemTagContents(TagKey<Item> tag) {
+        return tagContents(BuiltInRegistries.ITEM, tag, ItemStack::new);
+    }
+
+    @Override
     public FluidStack ingredient(IFluidProvider fluidProvider) {
         return fluidProvider.getFluidStack(FluidType.BUCKET_VOLUME);
     }
@@ -53,8 +67,26 @@ public class JEIAliasHelper implements RVAliasHelper<ItemStack, FluidStack, Chem
     }
 
     @Override
+    public List<FluidStack> fluidTagContents(TagKey<Fluid> tag) {
+        return tagContents(BuiltInRegistries.FLUID, tag, holder -> new FluidStack(holder, FluidType.BUCKET_VOLUME));
+    }
+
+    @Override
     public ChemicalStack ingredient(IChemicalProvider chemicalProvider) {
         return chemicalProvider.getStack(FluidType.BUCKET_VOLUME);
+    }
+
+    @Override
+    public List<ChemicalStack> chemicalTagContents(TagKey<Chemical> tag) {
+        return tagContents(MekanismAPI.CHEMICAL_REGISTRY, tag, holder -> new ChemicalStack(holder, FluidType.BUCKET_VOLUME));
+    }
+
+    private <TYPE, STACK> List<STACK> tagContents(Registry<TYPE> registry, TagKey<TYPE> tag, Function<Holder<TYPE>, STACK> stackFunction) {
+        return registry.getTag(tag)
+              .stream()
+              .flatMap(HolderSet::stream)
+              .map(stackFunction)
+              .toList();
     }
 
     @Override

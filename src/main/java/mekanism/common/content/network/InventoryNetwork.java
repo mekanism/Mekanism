@@ -1,6 +1,7 @@
 package mekanism.common.content.network;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
@@ -45,7 +46,8 @@ public class InventoryNetwork extends DynamicNetwork<IItemHandler, InventoryNetw
     public List<AcceptorData> calculateAcceptors(TransitRequest request, TransporterStack stack, Long2ObjectMap<ChunkAccess> chunkMap,
           Map<GlobalPos, Set<TransporterStack>> additionalFlowingStacks, LogisticalTransporterBase start) {
         List<AcceptorData> toReturn = new ArrayList<>();
-        for (Long2ObjectMap.Entry<Map<Direction, IItemHandler>> entry : acceptorCache.getAcceptorEntrySet()) {
+        for (ObjectIterator<Long2ObjectMap.Entry<Map<Direction, IItemHandler>>> iterator = acceptorCache.getAcceptorFastIterator(); iterator.hasNext(); ) {
+            Long2ObjectMap.Entry<Map<Direction, IItemHandler>> entry = iterator.next();
             long pos = entry.getLongKey();
             if (pos != stack.homeLocation) {
                 BlockPos blockPos = BlockPos.of(pos);

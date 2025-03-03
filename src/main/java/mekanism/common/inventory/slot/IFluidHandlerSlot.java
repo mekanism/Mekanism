@@ -8,11 +8,11 @@ import mekanism.api.AutomationType;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.lib.collection.FluidHashStrategy;
 import mekanism.common.tile.interfaces.IFluidContainerManager.ContainerEditMode;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStackLinkedSet;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
@@ -286,7 +286,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
     }
 
     private Collection<FluidStack> gatherKnownFluids(IFluidHandlerItem itemFluidHandler, int tanks) {
-        Map<FluidStack, FluidStack> knownFluids = new Object2ObjectOpenCustomHashMap<>(FluidHashStrategy.INSTANCE);
+        Map<FluidStack, FluidStack> knownFluids = new Object2ObjectOpenCustomHashMap<>(FluidStackLinkedSet.TYPE_AND_COMPONENTS);
         for (int tank = 0; tank < tanks; tank++) {
             FluidStack fluidInItem = itemFluidHandler.getFluidInTank(tank);
             if (!fluidInItem.isEmpty()) {

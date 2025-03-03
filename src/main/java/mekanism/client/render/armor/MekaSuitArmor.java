@@ -13,6 +13,7 @@ import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMaps;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -359,7 +360,8 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
             Map<MekanismModelData, Set<String>> allMatchedParts = new Object2ObjectOpenHashMap<>();
             for (ModuleOBJModelData modelData : MekanismModelCache.INSTANCE.MEKASUIT_MODULES) {
                 Set<String> matchedParts = allMatchedParts.computeIfAbsent(modelData, d -> new HashSet<>());
-                for (Object2BooleanMap.Entry<ModuleModelSpec> entry : modules.object2BooleanEntrySet()) {
+                for (ObjectIterator<Object2BooleanMap.Entry<ModuleModelSpec>> iterator = Object2BooleanMaps.fastIterator(modules); iterator.hasNext(); ) {
+                    Object2BooleanMap.Entry<ModuleModelSpec> entry = iterator.next();
                     ModuleModelSpec spec = entry.getKey();
                     for (String name : modelData.getPartsForSpec(spec, entry.getBooleanValue())) {
                         if (name.contains(OVERRIDDEN_TAG)) {

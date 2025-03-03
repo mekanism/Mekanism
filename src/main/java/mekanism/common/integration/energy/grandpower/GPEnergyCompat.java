@@ -64,7 +64,7 @@ public class GPEnergyCompat implements IEnergyCompat {
     @Override
     @Nullable
     public IStrictEnergyHandler wrapAsStrictEnergyHandler(Object handler) {
-        if (NON_LONG_WRAPPER == null || NON_LONG_WRAPPER.isInstance(handler)) {
+        if (NON_LONG_WRAPPER != null && NON_LONG_WRAPPER.isInstance(handler)) {
             return null;//prevent double wrapping of FE by GP
         }
         return new GPStrictEnergyHandler((ILongEnergyStorage) handler);

@@ -3,7 +3,7 @@
   "category": "redstone",
   "key": {
     "O": {
-      "tag": "c:obsidians"
+      "tag": "c:obsidians/normal"
     },
     "T": {
       "item": "minecraft:tnt"

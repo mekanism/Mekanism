@@ -75,7 +75,7 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(OBSIDIAN_CHAR, OBSIDIAN_CHAR, OBSIDIAN_CHAR),
                     TripleLine.of(TNT_CHAR, TNT_CHAR, TNT_CHAR),
                     TripleLine.of(OBSIDIAN_CHAR, OBSIDIAN_CHAR, OBSIDIAN_CHAR))
-              ).key(OBSIDIAN_CHAR, Tags.Items.OBSIDIANS)
+              ).key(OBSIDIAN_CHAR, Tags.Items.OBSIDIANS_NORMAL)
               .key(TNT_CHAR, Blocks.TNT)
               .category(RecipeCategory.REDSTONE)
               .build(consumer);

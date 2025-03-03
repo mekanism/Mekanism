@@ -75,4 +75,23 @@ public class BasicCombinerRecipe extends CombinerRecipe {
     public RecipeSerializer<BasicCombinerRecipe> getSerializer() {
         return MekanismRecipeSerializers.COMBINING.get();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        } else if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        BasicCombinerRecipe other = (BasicCombinerRecipe) o;
+        return mainInput.equals(other.mainInput) && extraInput.equals(other.extraInput) && ItemStack.matches(output, other.output);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = Objects.hash(mainInput, extraInput);
+        hash = 31 * hash + ItemStack.hashItemAndComponents(output);
+        hash = 31 * hash + output.getCount();
+        return hash;
+    }
 }

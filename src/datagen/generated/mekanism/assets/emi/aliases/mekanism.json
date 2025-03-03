@@ -362,15 +362,17 @@
       "text": "alias.mekanism.sawing"
     },
     {
-      "stacks": "item:mekanism:atomic_disassembler",
+      "stacks": [
+        "item:mekanism:atomic_disassembler",
+        "item:mekanism:meka_tool"
+      ],
       "text": [
         "alias.mekanism.tool.axe",
         "alias.mekanism.tool.multi",
         "alias.mekanism.tool.pickaxe",
         "alias.mekanism.tool.shovel",
         "alias.mekanism.tool.sword",
-        "alias.mekanism.tool.weapon",
-        "item.mekanism.meka_tool"
+        "alias.mekanism.tool.weapon"
       ]
     },
     {
@@ -598,8 +600,7 @@
       "stacks": "item:mekanism:portable_qio_dashboard",
       "text": [
         "alias.mekanism.crafting.portable",
-        "alias.mekanism.qio.dashboard.wireless",
-        "alias.mekanism.qio.full"
+        "alias.mekanism.qio.dashboard.wireless"
       ]
     },
     {
@@ -652,10 +653,7 @@
       ]
     },
     {
-      "stacks": [
-        "item:mekanism:personal_barrel",
-        "item:mekanism:personal_chest"
-      ],
+      "stacks": "#item:mekanism:personal_storage",
       "text": [
         "alias.mekanism.personal_storage.backpack",
         "alias.mekanism.storage.item",

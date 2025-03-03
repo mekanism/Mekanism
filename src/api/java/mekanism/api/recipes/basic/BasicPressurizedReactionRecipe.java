@@ -112,4 +112,26 @@ public class BasicPressurizedReactionRecipe extends PressurizedReactionRecipe {
     public RecipeSerializer<BasicPressurizedReactionRecipe> getSerializer() {
         return MekanismRecipeSerializers.REACTION.get();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        } else if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        BasicPressurizedReactionRecipe other = (BasicPressurizedReactionRecipe) o;
+        return energyRequired == other.energyRequired && duration == other.duration && inputSolid.equals(other.inputSolid) && inputFluid.equals(other.inputFluid) &&
+               inputChemical.equals(other.inputChemical) && ItemStack.matches(outputItem, other.outputItem) && outputChemical.equals(other.outputChemical);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = Objects.hash(inputSolid, inputFluid, inputChemical, energyRequired, duration, outputChemical);
+        if (!outputItem.isEmpty()) {
+            hash = 31 * hash + ItemStack.hashItemAndComponents(outputItem);
+            hash = 31 * hash + outputItem.getCount();
+        }
+        return hash;
+    }
 }

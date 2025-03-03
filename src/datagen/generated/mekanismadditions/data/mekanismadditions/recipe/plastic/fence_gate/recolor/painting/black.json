@@ -7,7 +7,7 @@
   "item_input": {
     "type": "neoforge:difference",
     "base": {
-      "tag": "c:fence_gates/plastic"
+      "tag": "mekanismadditions:plastic_fence_gates/normal"
     },
     "count": 1,
     "subtracted": {

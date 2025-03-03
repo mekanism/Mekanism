@@ -102,11 +102,15 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     private double getMultiplier() {
         if (level != null) {
             BlockPos top = getBlockPos().above(4);
+            //Validate it isn't fluid logged to help try and prevent https://github.com/mekanism/Mekanism/issues/7344
+            //Clamp the height limits as the logical bounds of the world
             if (level.getFluidState(top).isEmpty() && level.canSeeSky(top)) {
-                //Validate it isn't fluid logged to help try and prevent https://github.com/mekanism/Mekanism/issues/7344
-                //Clamp the height limits as the logical bounds of the world
-                int minY = Math.max(MekanismGeneratorsConfig.generators.windGenerationMinY.get(), level.getMinBuildHeight());
-                int maxY = Math.min(MekanismGeneratorsConfig.generators.windGenerationMaxY.get(), level.dimensionType().logicalHeight());
+                int minBuildHeight = level.getMinBuildHeight();
+                //Based off of how PortalForcer#createPortal calculates
+                // The minus one is to handle that the max level height is treated as exclusive
+                int maxLevelHeight = Math.min(level.getMaxBuildHeight(), minBuildHeight + level.dimensionType().logicalHeight()) - 1;
+                int minY = Math.max(MekanismGeneratorsConfig.generators.windGenerationMinY.get(), minBuildHeight);
+                int maxY = Math.min(MekanismGeneratorsConfig.generators.windGenerationMaxY.get(), maxLevelHeight);
                 int clampedY = Math.min(maxY, Math.max(minY, top.getY()));
                 long minG = MekanismGeneratorsConfig.generators.windGenerationMin.get();
                 long maxG = MekanismGeneratorsConfig.generators.windGenerationMax.get();

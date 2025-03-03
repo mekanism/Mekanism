@@ -1,4 +1,4 @@
-// 1.21.1	2024-08-16T20:25:50.0143043	Tags: mekanismadditions
+// 1.21.1	2025-02-24T18:55:03.222233	Tags: mekanismadditions
 56facda135aff10b73eb8fe66c50a57b81e2004f data/c/tags/block/dyed.json
 c0a3434189d007f164cd4c931b0a892a6837b5a1 data/c/tags/block/dyed/black.json
 64a804c0d747716198c47794e47fc07ff26cc005 data/c/tags/block/dyed/blue.json
@@ -47,15 +47,11 @@ e61f28eacd946dbe32f3cc8b8609b337f8bc8cbd data/c/tags/item/dyed/red.json
 dad02ff7fda7729841d3ddf189f20e0a67992194 data/c/tags/item/dyed/white.json
 34814d5bad95083407abf3a39794583a3615f339 data/c/tags/item/dyed/yellow.json
 49c90df09fb9803707e99d724517e2eb441dbe57 data/c/tags/item/fences.json
-6e1bbbf4944812dcbac28a3d31386a9073bad6e1 data/c/tags/item/fences/plastic.json
+547add43bbdf3b10974da035e4be8b4c2285abf9 data/c/tags/item/fences/plastic.json
 6c72a079835fe22d3553edb0f05d066ca238eebe data/c/tags/item/fence_gates.json
-6a9dd62c72abc7647872f5db960bd994404a3ba0 data/c/tags/item/fence_gates/plastic.json
-49c6eea742d5ffaea585d6e00c9786ddc34105e7 data/c/tags/item/slabs/plastic.json
-0d376632af19baad1be5943b976d2f3a4b33029d data/c/tags/item/slabs/plastic/glow.json
-d466c697d6cca4ab74f4320ea9ab404242d11aee data/c/tags/item/slabs/plastic/transparent.json
-20c68f9f2dd3ab1e769854666edbfb4767da2b0d data/c/tags/item/stairs/plastic.json
-c9004193eb0e4aa50fc6fbecbefbf257d580c5c0 data/c/tags/item/stairs/plastic/glow.json
-6e03d50a4f81d832be0a76fbfa1e6e6172f9ddfc data/c/tags/item/stairs/plastic/transparent.json
+75b312f4e94cb51336501ae99b27e4a863ec5e10 data/c/tags/item/fence_gates/plastic.json
+2fa119d923445545c3dc4f3ecc4bcbb1baf07256 data/c/tags/item/slabs/plastic.json
+787dc8ac6796fb77cc2b0f723cb080eaaf1b9cd3 data/c/tags/item/stairs/plastic.json
 e45a8082f976d0bb7eab6c111551cd0a80c2e02b data/framedblocks/tags/block/frameable.json
 4c471d26a66b2106a526de2bac37e312b368f4e9 data/mekanismadditions/tags/block/glow_panels.json
 f5e309f4408030391e366c31dfd143fd4c0b0a10 data/mekanismadditions/tags/block/plastic_blocks.json
@@ -75,6 +71,18 @@ b81c3240742375d9e07e80f2462764bad9eed3a4 data/mekanismadditions/tags/item/plasti
 ce4ae9c3434a8abaec228934afdc9aa0395985bc data/mekanismadditions/tags/item/plastic_blocks/road.json
 44c7168bcd411ba21ad1b4e1cfd6db322a085b7a data/mekanismadditions/tags/item/plastic_blocks/slick.json
 e45a8082f976d0bb7eab6c111551cd0a80c2e02b data/mekanismadditions/tags/item/plastic_blocks/transparent.json
+b6db561b05d6f9e0580f8d8be984eb88e6c83284 data/mekanismadditions/tags/item/plastic_fences.json
+6e1bbbf4944812dcbac28a3d31386a9073bad6e1 data/mekanismadditions/tags/item/plastic_fences/normal.json
+b272ab31c889779238cc4edb44a6a2bdd0369e4e data/mekanismadditions/tags/item/plastic_fence_gates.json
+6a9dd62c72abc7647872f5db960bd994404a3ba0 data/mekanismadditions/tags/item/plastic_fence_gates/normal.json
+48707d28ccc635077f6d8bcc21180499015f1d60 data/mekanismadditions/tags/item/plastic_slabs.json
+0d376632af19baad1be5943b976d2f3a4b33029d data/mekanismadditions/tags/item/plastic_slabs/glow.json
+49c6eea742d5ffaea585d6e00c9786ddc34105e7 data/mekanismadditions/tags/item/plastic_slabs/normal.json
+d466c697d6cca4ab74f4320ea9ab404242d11aee data/mekanismadditions/tags/item/plastic_slabs/transparent.json
+dc8bc92147066211415451157f23629e42df3da3 data/mekanismadditions/tags/item/plastic_stairs.json
+c9004193eb0e4aa50fc6fbecbefbf257d580c5c0 data/mekanismadditions/tags/item/plastic_stairs/glow.json
+20c68f9f2dd3ab1e769854666edbfb4767da2b0d data/mekanismadditions/tags/item/plastic_stairs/normal.json
+6e03d50a4f81d832be0a76fbfa1e6e6172f9ddfc data/mekanismadditions/tags/item/plastic_stairs/transparent.json
 49c90df09fb9803707e99d724517e2eb441dbe57 data/minecraft/tags/block/fences.json
 6c72a079835fe22d3553edb0f05d066ca238eebe data/minecraft/tags/block/fence_gates.json
 e45a8082f976d0bb7eab6c111551cd0a80c2e02b data/minecraft/tags/block/impermeable.json
@@ -87,6 +95,6 @@ bf113affffb3861c37792b9ea8bd1564e1af8d6a data/minecraft/tags/block/stairs.json
 6dfec3264850363eaf8423124b38ca20748c91e4 data/minecraft/tags/entity_type/skeletons.json
 49c90df09fb9803707e99d724517e2eb441dbe57 data/minecraft/tags/item/fences.json
 6c72a079835fe22d3553edb0f05d066ca238eebe data/minecraft/tags/item/fence_gates.json
-0727994833549dd1ecb13bc6163a5bef159b1131 data/minecraft/tags/item/slabs.json
-bf113affffb3861c37792b9ea8bd1564e1af8d6a data/minecraft/tags/item/stairs.json
+aea35239906ec82e25999e826651b83d2a77a219 data/minecraft/tags/item/slabs.json
+07c1b673153a745dd278af6f56e3f0a2c47da121 data/minecraft/tags/item/stairs.json
 fd4476443818c2cceacdb8adb0af103d8ee3b87b data/per-viam-invenire/tags/entity_type/replace_vanilla_navigator.json

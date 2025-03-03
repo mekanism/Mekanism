@@ -1,9 +1,11 @@
 package mekanism.common.tile.qio;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -388,7 +390,8 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
                 }
             }
             // actually remove the items from the QIO frequency
-            for (Object2IntMap.Entry<HashedItem> entry : removed.object2IntEntrySet()) {
+            for (ObjectIterator<Object2IntMap.Entry<HashedItem>> iterator = Object2IntMaps.fastIterator(removed); iterator.hasNext(); ) {
+                Object2IntMap.Entry<HashedItem> entry = iterator.next();
                 int amount = entry.getIntValue();
                 ItemStack ret = freq.removeByType(entry.getKey(), amount);
                 if (ret.getCount() != amount) {

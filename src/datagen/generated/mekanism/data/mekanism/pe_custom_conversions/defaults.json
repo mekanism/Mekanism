@@ -1,10 +1,22 @@
 {
   "comment": "Default values for Mekanism items.",
   "values": {
-    "before": {
-      "mekanism:fluorite_gem": 576,
-      "mekanism:hdpe_pellet": 32,
-      "mekanism:salt": 8
-    }
+    "before": [
+      {
+        "type": "projecte:item",
+        "emc_value": 8,
+        "id": "mekanism:salt"
+      },
+      {
+        "type": "projecte:item",
+        "emc_value": 576,
+        "id": "mekanism:fluorite_gem"
+      },
+      {
+        "type": "projecte:item",
+        "emc_value": 32,
+        "id": "mekanism:hdpe_pellet"
+      }
+    ]
   }
 }

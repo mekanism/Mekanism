@@ -30,6 +30,7 @@ import mekanism.common.block.attribute.AttributeFactoryType;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
@@ -209,7 +210,7 @@ public class TileEntityItemStackChemicalToItemStackFactory extends TileEntityIte
     }
 
     private boolean useStatisticalMechanics() {
-        return type == FactoryType.INJECTING || type == FactoryType.PURIFYING;
+        return MekanismConfig.usage.randomizedConsumption.get() && (type == FactoryType.INJECTING || type == FactoryType.PURIFYING);
     }
 
     @Nullable

@@ -7,6 +7,8 @@ import com.mojang.authlib.GameProfile;
 import it.unimi.dsi.fastutil.longs.Long2DoubleArrayMap;
 import it.unimi.dsi.fastutil.longs.Long2DoubleMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMaps;
+import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -779,7 +781,8 @@ public final class MekanismUtils {
         //Subtract from our available energy the amount that we will require to break the target block
         energyAvailable = energyAvailable - energyRequired;
         Stat<Item> itemStat = Stats.ITEM_USED.get(usedTool);
-        for (Object2IntMap.Entry<BlockPos> foundEntry : found.object2IntEntrySet()) {
+        for (ObjectIterator<Object2IntMap.Entry<BlockPos>> iterator = Object2IntMaps.fastIterator(found); iterator.hasNext(); ) {
+            Object2IntMap.Entry<BlockPos> foundEntry = iterator.next();
             BlockPos foundPos = foundEntry.getKey();
             if (pos.equals(foundPos)) {
                 continue;
@@ -789,7 +792,7 @@ public final class MekanismUtils {
                 continue;
             }
             float hardness = targetState.getDestroySpeed(world, foundPos);
-            if (hardness == -1) {
+            if (hardness == Block.INDESTRUCTIBLE) {
                 continue;
             }
             int distance = foundEntry.getIntValue();

@@ -11,6 +11,7 @@ import dev.emi.emi.api.EmiInitRegistry;
 import dev.emi.emi.api.neoforge.NeoForgeEmiStack;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
+import dev.emi.emi.api.stack.TagEmiIngredient;
 import dev.emi.emi.api.stack.serializer.EmiIngredientSerializer;
 import dev.emi.emi.platform.EmiAgnos;
 import dev.emi.emi.registry.EmiInitRegistryImpl;
@@ -24,6 +25,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.providers.IFluidProvider;
 import mekanism.api.text.IHasTranslationKey;
@@ -40,9 +42,12 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.PackOutput.PathProvider;
 import net.minecraft.data.PackOutput.Target;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.ExtraCodecs;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 @NothingNullByDefault
@@ -87,6 +92,12 @@ public class EmiAliasProvider implements DataProvider, RVAliasHelper<EmiIngredie
         });
     }
 
+    @SuppressWarnings("UnstableApiUsage")
+    private List<EmiIngredient> tagContents(TagKey<?> tag) {
+        //Note: We can't use the method in EmiIngredient as it does checks against things that aren't initialized in datagen
+        return List.of(new TagEmiIngredient(tag, 1));
+    }
+
     @Override
     public EmiIngredient ingredient(ItemLike itemLike) {
         return EmiStack.of(itemLike);
@@ -95,6 +106,11 @@ public class EmiAliasProvider implements DataProvider, RVAliasHelper<EmiIngredie
     @Override
     public EmiIngredient ingredient(ItemStack item) {
         return EmiStack.of(item);
+    }
+
+    @Override
+    public List<EmiIngredient> itemTagContents(TagKey<Item> tag) {
+        return tagContents(tag);
     }
 
     @Override
@@ -108,8 +124,18 @@ public class EmiAliasProvider implements DataProvider, RVAliasHelper<EmiIngredie
     }
 
     @Override
+    public List<EmiIngredient> fluidTagContents(TagKey<Fluid> tag) {
+        return tagContents(tag);
+    }
+
+    @Override
     public EmiIngredient ingredient(IChemicalProvider chemicalProvider) {
         return ChemicalEmiStack.create(chemicalProvider, 1);
+    }
+
+    @Override
+    public List<EmiIngredient> chemicalTagContents(TagKey<Chemical> tag) {
+        return tagContents(tag);
     }
 
     @Override

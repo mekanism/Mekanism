@@ -5,8 +5,8 @@ import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
 import mekanism.api.fluid.IExtendedFluidTank;
-import mekanism.api.recipes.ItemStackToFluidOptionalItemRecipe;
 import mekanism.api.recipes.ItemStackToFluidOptionalItemRecipe.FluidOptionalItemOutput;
+import mekanism.api.recipes.basic.BasicItemStackToFluidOptionalItemRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.api.recipes.cache.OneInputCachedRecipe;
@@ -59,7 +59,7 @@ import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<ItemStackToFluidOptionalItemRecipe> {
+public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<BasicItemStackToFluidOptionalItemRecipe> {
 
     public static final RecipeError NOT_ENOUGH_SPACE_ITEM_OUTPUT_ERROR = RecipeError.create();
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
@@ -173,24 +173,24 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
 
     @NotNull
     @Override
-    public MekanismRecipeType<SingleRecipeInput, ItemStackToFluidOptionalItemRecipe, IInputRecipeCache> getRecipeType() {
+    public MekanismRecipeType<SingleRecipeInput, BasicItemStackToFluidOptionalItemRecipe, IInputRecipeCache> getRecipeType() {
         //TODO - V11: See comment in NutritionalLiquifierIRecipe. Note if either containsRecipe and findFirstRecipe get called a null pointer will occur
         return null;
     }
 
     @Override
-    public IRecipeViewerRecipeType<ItemStackToFluidOptionalItemRecipe> recipeViewerType() {
+    public IRecipeViewerRecipeType<BasicItemStackToFluidOptionalItemRecipe> recipeViewerType() {
         return RecipeViewerRecipeType.NUTRITIONAL_LIQUIFICATION;
     }
 
     @Nullable
     @Override
-    public ItemStackToFluidOptionalItemRecipe getRecipe(int cacheIndex) {
+    public BasicItemStackToFluidOptionalItemRecipe getRecipe(int cacheIndex) {
         return getRecipe(inputHandler.getInput());
     }
 
     @Nullable
-    public static ItemStackToFluidOptionalItemRecipe getRecipe(ItemStack stack) {
+    public static BasicItemStackToFluidOptionalItemRecipe getRecipe(ItemStack stack) {
         if (stack.isEmpty()) {
             return null;
         }
@@ -208,7 +208,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
 
     @NotNull
     @Override
-    public CachedRecipe<ItemStackToFluidOptionalItemRecipe> createNewCachedRecipe(@NotNull ItemStackToFluidOptionalItemRecipe recipe, int cacheIndex) {
+    public CachedRecipe<BasicItemStackToFluidOptionalItemRecipe> createNewCachedRecipe(@NotNull BasicItemStackToFluidOptionalItemRecipe recipe, int cacheIndex) {
         return OneInputCachedRecipe.itemToFluidOptionalItem(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
               .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(this::canFunction)

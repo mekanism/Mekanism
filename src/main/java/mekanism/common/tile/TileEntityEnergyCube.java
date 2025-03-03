@@ -196,7 +196,7 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
             }
             sideStates[side.ordinal()] = state;
         }
-        return ModelData.builder().with(SIDE_STATE_PROPERTY, sideStates).build();
+        return ModelData.of(SIDE_STATE_PROPERTY, sideStates);
     }
 
     public enum CubeSideState {

@@ -2,6 +2,7 @@ package mekanism.client.recipe_viewer;
 
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectArrayMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
+import it.unimi.dsi.fastutil.bytes.Byte2ObjectMaps;
 import it.unimi.dsi.fastutil.bytes.ByteArrayList;
 import it.unimi.dsi.fastutil.bytes.ByteArraySet;
 import it.unimi.dsi.fastutil.bytes.ByteIterator;
@@ -11,6 +12,8 @@ import it.unimi.dsi.fastutil.objects.Object2BooleanArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMaps;
+import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -183,7 +186,8 @@ public class QIOCraftingTransferHandler {
         // calculate the split for how we handle maxTransfer by quickly being able to see how many of each type we have
         Map<HashedItem, ByteList> matchedItems = new HashMap<>(inputCount);
         ByteSet missingSlots = new ByteArraySet(inputCount);
-        for (Byte2ObjectMap.Entry<TrackedIngredients<SLOT>> entry : hashedIngredients.byte2ObjectEntrySet()) {
+        for (ObjectIterator<Byte2ObjectMap.Entry<TrackedIngredients<SLOT>>> iterator = Byte2ObjectMaps.fastIterator(hashedIngredients); iterator.hasNext(); ) {
+            Byte2ObjectMap.Entry<TrackedIngredients<SLOT>> entry = iterator.next();
             //TODO: Eventually we probably will want to add in some handling for if an item is valid for more than one slot and one combination
             // has it being valid and one combination it is not valid. For example if we have a single piece of stone and it is valid in either
             // slot 1 or 2 but slot 2 only allows for stone, and slot 1 can accept granite instead and we have granite available. When coming
@@ -430,7 +434,8 @@ public class QIOCraftingTransferHandler {
                     }
                     usedQIOSource.put(source, usedQIO);
                 }
-                for (Object2IntMap.Entry<HashedItem> entry : stillLeftOver.object2IntEntrySet()) {
+                for (ObjectIterator<Object2IntMap.Entry<HashedItem>> iterator = Object2IntMaps.fastIterator(stillLeftOver); iterator.hasNext(); ) {
+                    Object2IntMap.Entry<HashedItem> entry = iterator.next();
                     availableItemSpace -= entry.getIntValue();
                     if (availableItemSpace <= 0) {
                         //No room for all our items, fail

@@ -22,6 +22,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Position;
 import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
+import net.minecraft.network.Connection;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
@@ -95,12 +96,8 @@ public class MekanismAdditions implements IModModule {
     }
 
     @Override
-    public void resetClientDimensionChanged() {
-    }
-
-    @Override
-    public void launchClient() {
-        AdditionsClient.launch();
+    public void launchClient(Connection connection) {
+        AdditionsClient.launch(connection);
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {

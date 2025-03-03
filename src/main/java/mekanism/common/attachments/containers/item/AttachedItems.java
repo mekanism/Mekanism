@@ -19,7 +19,7 @@ public record AttachedItems(List<ItemStack> containers) implements IAttachedCont
     public static final AttachedItems EMPTY = new AttachedItems(Collections.emptyList());
 
     public static final Codec<AttachedItems> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          SerializerHelper.OVERSIZED_ITEM_OPTIONAL_CODEC.listOf().fieldOf(SerializationConstants.ITEMS).forGetter(AttachedItems::containers)
+          SerializerHelper.LENIENT_OVERSIZED_ITEM_OPTIONAL_CODEC.listOf().fieldOf(SerializationConstants.ITEMS).forGetter(AttachedItems::containers)
     ).apply(instance, AttachedItems::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, AttachedItems> STREAM_CODEC = ItemStack.OPTIONAL_LIST_STREAM_CODEC
           .map(AttachedItems::new, AttachedItems::containers);

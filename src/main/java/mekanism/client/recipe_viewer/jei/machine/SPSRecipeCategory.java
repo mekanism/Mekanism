@@ -1,5 +1,6 @@
 package mekanism.client.recipe_viewer.jei.machine;
 
+import com.mojang.serialization.Codec;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,8 +19,10 @@ import mekanism.common.lib.Color;
 import mekanism.common.lib.Color.ColorFunction;
 import mekanism.common.util.text.EnergyDisplay;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.helpers.ICodecHelper;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
+import mezz.jei.api.recipe.IRecipeManager;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -57,5 +60,11 @@ public class SPSRecipeCategory extends BaseRecipeCategory<SPSRecipeViewerRecipe>
     @Override
     public ResourceLocation getRegistryName(@NotNull SPSRecipeViewerRecipe recipe) {
         return recipe.id();
+    }
+
+    @NotNull
+    @Override
+    public Codec<SPSRecipeViewerRecipe> getCodec(@NotNull ICodecHelper codecHelper, @NotNull IRecipeManager recipeManager) {
+        return SPSRecipeViewerRecipe.CODEC;
     }
 }

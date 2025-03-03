@@ -10,9 +10,11 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
+import mekanism.api.recipes.ChemicalToChemicalRecipe;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.ElectrolysisRecipe.ElectrolysisRecipeOutput;
 import mekanism.api.recipes.FluidToFluidRecipe;
+import mekanism.api.recipes.ItemStackToChemicalRecipe;
 import mekanism.api.recipes.ItemStackToFluidOptionalItemRecipe;
 import mekanism.api.recipes.ItemStackToFluidOptionalItemRecipe.FluidOptionalItemOutput;
 import mekanism.api.recipes.ItemStackToFluidRecipe;
@@ -20,8 +22,6 @@ import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.SawmillRecipe;
 import mekanism.api.recipes.SawmillRecipe.ChanceOutput;
-import mekanism.api.recipes.ChemicalToChemicalRecipe;
-import mekanism.api.recipes.ItemStackToChemicalRecipe;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
@@ -188,9 +188,8 @@ public class OneInputCachedRecipe<INPUT, OUTPUT, RECIPE extends MekanismRecipe<?
      *
      * @since 10.6.3
      */
-    public static OneInputCachedRecipe<@NotNull ItemStack, @NotNull FluidOptionalItemOutput, ItemStackToFluidOptionalItemRecipe> itemToFluidOptionalItem(
-          ItemStackToFluidOptionalItemRecipe recipe, BooleanSupplier recheckAllErrors, IInputHandler<@NotNull ItemStack> inputHandler,
-          IOutputHandler<@NotNull FluidOptionalItemOutput> outputHandler) {
+    public static <RECIPE extends ItemStackToFluidOptionalItemRecipe> OneInputCachedRecipe<@NotNull ItemStack, @NotNull FluidOptionalItemOutput, RECIPE> itemToFluidOptionalItem(
+          RECIPE recipe, BooleanSupplier recheckAllErrors, IInputHandler<@NotNull ItemStack> inputHandler, IOutputHandler<@NotNull FluidOptionalItemOutput> outputHandler) {
         return new OneInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, outputHandler, recipe::getInput, recipe::getOutput, ConstantPredicates.ITEM_EMPTY,
               FLUID_OPTIONAL_ITEM_OUTPUT_EMPTY);
     }

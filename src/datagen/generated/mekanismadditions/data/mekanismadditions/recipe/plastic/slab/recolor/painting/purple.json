@@ -7,7 +7,7 @@
   "item_input": {
     "type": "neoforge:difference",
     "base": {
-      "tag": "c:slabs/plastic"
+      "tag": "mekanismadditions:plastic_slabs/normal"
     },
     "count": 1,
     "subtracted": {

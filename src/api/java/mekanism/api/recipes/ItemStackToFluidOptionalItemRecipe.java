@@ -1,8 +1,11 @@
 package mekanism.api.recipes;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.world.item.ItemStack;
@@ -23,7 +26,6 @@ import org.jetbrains.annotations.NotNull;
  * <ul>
  *     <li>Nutritional Liquification: These cannot currently be created, but are processed in the Nutritional Liquifier.</li>
  * </ul>
- *
  * @since 10.6.3
  */
 @NothingNullByDefault
@@ -74,6 +76,11 @@ public abstract class ItemStackToFluidOptionalItemRecipe extends MekanismRecipe<
      */
     public record FluidOptionalItemOutput(FluidStack fluid, ItemStack optionalItem) {
 
+        public static final Codec<FluidOptionalItemOutput> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+              FluidStack.CODEC.fieldOf(SerializationConstants.FLUID).forGetter(FluidOptionalItemOutput::fluid),
+              ItemStack.CODEC.optionalFieldOf(SerializationConstants.ITEM, ItemStack.EMPTY).forGetter(FluidOptionalItemOutput::optionalItem)
+        ).apply(instance, FluidOptionalItemOutput::new));
+
         public FluidOptionalItemOutput {
             Objects.requireNonNull(fluid, "Fluid output cannot be null.");
             Objects.requireNonNull(optionalItem, "Item output cannot be null.");
@@ -87,6 +94,28 @@ public abstract class ItemStackToFluidOptionalItemRecipe extends MekanismRecipe<
          */
         public FluidOptionalItemOutput copy() {
             return new FluidOptionalItemOutput(fluid.copy(), optionalItem.copy());
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o == this) {
+                return true;
+            } else if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            FluidOptionalItemOutput other = (FluidOptionalItemOutput) o;
+            return FluidStack.matches(fluid, other.fluid) && ItemStack.matches(optionalItem, other.optionalItem);
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = FluidStack.hashFluidAndComponents(fluid);
+            hash = 31 * hash + fluid.getAmount();
+            if (!optionalItem.isEmpty()) {
+                hash = 31 * hash + ItemStack.hashItemAndComponents(optionalItem);
+                hash = 31 * hash + optionalItem.getCount();
+            }
+            return hash;
         }
     }
 }

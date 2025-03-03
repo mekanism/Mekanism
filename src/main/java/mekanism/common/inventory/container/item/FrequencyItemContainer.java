@@ -34,8 +34,22 @@ public abstract class FrequencyItemContainer<FREQ extends Frequency> extends Mek
     protected abstract FrequencyType<FREQ> getFrequencyType();
 
     @Nullable
-    public FREQ getFrequency() {
+    public FREQ getClientFrequency() {
         return freq;
+    }
+
+    @Nullable
+    protected FREQ getFrequencyFromStack() {
+        DataComponentType<FrequencyAware<FREQ>> frequencyComponent = MekanismDataComponents.getFrequencyComponent(getFrequencyType());
+        if (frequencyComponent != null) {
+            //Note: It should never be null, but we check just in case
+            FrequencyAware<FREQ> frequencyAware = stack.get(frequencyComponent);
+            if (frequencyAware != null) {
+                //Start it out at what the value on the stack is
+                return frequencyAware.getFrequency(stack, frequencyComponent);
+            }
+        }
+        return null;
     }
 
     public List<FREQ> getPublicCache() {
@@ -50,28 +64,24 @@ public abstract class FrequencyItemContainer<FREQ extends Frequency> extends Mek
         return trustedCache;
     }
 
+    private void setFrequency(FREQ frequency) {
+        this.freq = frequency;
+    }
+
     @Override
     protected void addContainerTrackers() {
         super.addContainerTrackers();
         FrequencyType<FREQ> frequencyType = getFrequencyType();
-        DataComponentType<FrequencyAware<FREQ>> frequencyComponent = MekanismDataComponents.getFrequencyComponent(frequencyType);
-        if (frequencyComponent != null) {
-            //Note: It should never be null, but we check just in case
-            FrequencyAware<FREQ> frequencyAware = stack.get(frequencyComponent);
-            if (frequencyAware != null) {
-                //Start it out at what the value on the stack is
-                freq = frequencyAware.getFrequency(stack, frequencyComponent);
-            }
-            track(SyncableFrequency.create(frequencyType, this::getFrequency, f -> freq = f));
-        }
         if (getLevel().isClientSide()) {
             //Client side sync handling
+            track(SyncableFrequency.create(frequencyType, this::getClientFrequency, this::setFrequency));
             track(SyncableFrequencyList.create(frequencyType, this::getPublicCache, value -> publicCache = value));
             track(SyncableFrequencyList.create(frequencyType, this::getPrivateCache, value -> privateCache = value));
             track(SyncableFrequencyList.create(frequencyType, this::getTrustedCache, value -> trustedCache = value));
         } else {
             //Server side sync handling
             //Note: It is important these are in the same order as the client side trackers
+            track(SyncableFrequency.create(frequencyType, this::getFrequencyFromStack, this::setFrequency));
             track(SyncableFrequencyList.create(frequencyType, () -> frequencyType.getManager(null, SecurityMode.PUBLIC).getFrequencies(), value -> publicCache = value));
             track(SyncableFrequencyList.create(frequencyType, () -> frequencyType.getManager(getPlayerUUID(), SecurityMode.PRIVATE).getFrequencies(), value -> privateCache = value));
             track(SyncableFrequencyList.create(frequencyType, () -> frequencyType.getManager(getPlayerUUID(), SecurityMode.TRUSTED).getFrequencies(), value -> trustedCache = value));

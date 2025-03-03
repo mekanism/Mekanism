@@ -2,9 +2,9 @@ package mekanism.common.recipe.lookup.cache.type;
 
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
-import mekanism.common.lib.collection.FluidHashStrategy;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStackLinkedSet;
 import net.neoforged.neoforge.fluids.crafting.CompoundFluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.DataComponentFluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
@@ -12,7 +12,7 @@ import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 public class FluidInputCache<RECIPE extends MekanismRecipe<?>> extends ComponentSensitiveInputCache<Fluid, FluidStack, FluidStackIngredient, RECIPE> {
 
     public FluidInputCache() {
-        super(FluidHashStrategy.INSTANCE);
+        super(FluidStackLinkedSet.TYPE_AND_COMPONENTS);
     }
 
     @Override

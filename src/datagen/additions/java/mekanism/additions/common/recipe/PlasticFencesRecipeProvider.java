@@ -51,7 +51,7 @@ public class PlasticFencesRecipeProvider implements ISubRecipeProvider {
               .key(Pattern.CONSTANT, plastic)
               .category(RecipeCategory.DECORATIONS)
               .build(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
-        PlasticBlockRecipeProvider.registerRecolor(consumer, result, AdditionsTags.Items.FENCES_PLASTIC, color, basePath);
+        PlasticBlockRecipeProvider.registerRecolor(consumer, result, AdditionsTags.Items.FENCES_PLASTIC_NORMAL, color, basePath);
     }
 
     private void registerPlasticFenceGates(RecipeOutput consumer, String basePath) {
@@ -69,6 +69,6 @@ public class PlasticFencesRecipeProvider implements ISubRecipeProvider {
               .key(Pattern.CONSTANT, plastic)
               .category(RecipeCategory.REDSTONE)
               .build(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
-        PlasticBlockRecipeProvider.registerRecolor(consumer, result, AdditionsTags.Items.FENCE_GATES_PLASTIC, color, basePath);
+        PlasticBlockRecipeProvider.registerRecolor(consumer, result, AdditionsTags.Items.FENCE_GATES_PLASTIC_NORMAL, color, basePath);
     }
 }

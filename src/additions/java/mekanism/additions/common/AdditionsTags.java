@@ -22,14 +22,27 @@ public class AdditionsTags {
 
         public static final TagKey<Item> BALLOONS = tag("balloons");
 
-        public static final TagKey<Item> FENCES_PLASTIC = commonTag("fences/plastic");
-        public static final TagKey<Item> FENCE_GATES_PLASTIC = commonTag("fence_gates/plastic");
-        public static final TagKey<Item> STAIRS_PLASTIC = commonTag("stairs/plastic");
-        public static final TagKey<Item> SLABS_PLASTIC = commonTag("slabs/plastic");
-        public static final TagKey<Item> STAIRS_PLASTIC_GLOW = commonTag("stairs/plastic/glow");
-        public static final TagKey<Item> SLABS_PLASTIC_GLOW = commonTag("slabs/plastic/glow");
-        public static final TagKey<Item> STAIRS_PLASTIC_TRANSPARENT = commonTag("stairs/plastic/transparent");
-        public static final TagKey<Item> SLABS_PLASTIC_TRANSPARENT = commonTag("slabs/plastic/transparent");
+        public static final TagKey<Item> COMMON_FENCES_PLASTIC = commonTag("fences/plastic");
+        public static final TagKey<Item> COMMON_FENCE_GATES_PLASTIC = commonTag("fence_gates/plastic");
+        public static final TagKey<Item> COMMON_STAIRS_PLASTIC = commonTag("stairs/plastic");
+        public static final TagKey<Item> COMMON_SLABS_PLASTIC = commonTag("slabs/plastic");
+        public static final TagKey<Item> COMMON_STAIRS_PLASTIC_GLOW = commonTag("stairs/plastic/glow");
+        public static final TagKey<Item> COMMON_SLABS_PLASTIC_GLOW = commonTag("slabs/plastic/glow");
+        public static final TagKey<Item> COMMON_STAIRS_PLASTIC_TRANSPARENT = commonTag("stairs/plastic/transparent");
+        public static final TagKey<Item> COMMON_SLABS_PLASTIC_TRANSPARENT = commonTag("slabs/plastic/transparent");
+
+        public static final TagKey<Item> FENCES_PLASTIC = tag("plastic_fences");
+        public static final TagKey<Item> FENCES_PLASTIC_NORMAL = tag("plastic_fences/normal");
+        public static final TagKey<Item> FENCE_GATES_PLASTIC = tag("plastic_fence_gates");
+        public static final TagKey<Item> FENCE_GATES_PLASTIC_NORMAL = tag("plastic_fence_gates/normal");
+        public static final TagKey<Item> STAIRS_PLASTIC = tag("plastic_stairs");
+        public static final TagKey<Item> STAIRS_PLASTIC_NORMAL = tag("plastic_stairs/normal");
+        public static final TagKey<Item> SLABS_PLASTIC = tag("plastic_slabs");
+        public static final TagKey<Item> SLABS_PLASTIC_NORMAL = tag("plastic_slabs/normal");
+        public static final TagKey<Item> STAIRS_PLASTIC_GLOW = tag("plastic_stairs/glow");
+        public static final TagKey<Item> SLABS_PLASTIC_GLOW = tag("plastic_slabs/glow");
+        public static final TagKey<Item> STAIRS_PLASTIC_TRANSPARENT = tag("plastic_stairs/transparent");
+        public static final TagKey<Item> SLABS_PLASTIC_TRANSPARENT = tag("plastic_slabs/transparent");
 
         public static final TagKey<Item> GLOW_PANELS = tag("glow_panels");
 

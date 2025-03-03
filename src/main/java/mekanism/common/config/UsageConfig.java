@@ -1,5 +1,6 @@
 package mekanism.common.config;
 
+import mekanism.common.config.value.CachedBooleanValue;
 import mekanism.common.config.value.CachedLongValue;
 import net.neoforged.fml.config.ModConfig.Type;
 import net.neoforged.neoforge.common.ModConfigSpec;
@@ -39,7 +40,7 @@ public class UsageConfig extends BaseMekanismConfig {
     public final CachedLongValue pigmentMixer;
     public final CachedLongValue paintingMachine;
     public final CachedLongValue dimensionalStabilizer;
-
+    public final CachedBooleanValue randomizedConsumption;
     public final CachedLongValue teleporterBase;
     public final CachedLongValue teleporterDistance;
     public final CachedLongValue teleporterDimensionPenalty;
@@ -78,6 +79,9 @@ public class UsageConfig extends BaseMekanismConfig {
         pigmentMixer = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_PIGMENT_MIXER, "pigmentMixer", 5L);
         paintingMachine = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_PAINTING, "paintingMachine", 5L);
         dimensionalStabilizer = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.ENERGY_USAGE_DIMENSIONAL_STABILIZER, "dimensionalStabilizer", 15L);
+        randomizedConsumption = CachedBooleanValue.wrap(this, MekanismConfigTranslations.SECONDARY_CHEMICAL_USAGE_RANDOMIZED.applyToBuilder(builder)
+              .worldRestart()
+              .define("randomizedConsumption", true));
 
         MekanismConfigTranslations.USAGE_TELEPORTER.applyToBuilder(builder).push("teleporter");
         teleporterBase = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.USAGE_TELEPORTER_BASE, "base", 100L);

@@ -10,6 +10,7 @@ import mekanism.common.registries.MekanismItems;
 import mekanism.common.tile.interfaces.IUpgradeTile;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class UpgradeUtils {
@@ -22,14 +23,18 @@ public class UpgradeUtils {
     }
 
     public static ItemStack getStack(Upgrade upgrade, int count) {
+        return new ItemStack(getItem(upgrade), count);
+    }
+
+    public static ItemLike getItem(Upgrade upgrade) {
         return switch (upgrade) {
-            case SPEED -> MekanismItems.SPEED_UPGRADE.getItemStack(count);
-            case ENERGY -> MekanismItems.ENERGY_UPGRADE.getItemStack(count);
-            case FILTER -> MekanismItems.FILTER_UPGRADE.getItemStack(count);
-            case MUFFLING -> MekanismItems.MUFFLING_UPGRADE.getItemStack(count);
-            case CHEMICAL -> MekanismItems.CHEMICAL_UPGRADE.getItemStack(count);
-            case ANCHOR -> MekanismItems.ANCHOR_UPGRADE.getItemStack(count);
-            case STONE_GENERATOR -> MekanismItems.STONE_GENERATOR_UPGRADE.getItemStack(count);
+            case SPEED -> MekanismItems.SPEED_UPGRADE;
+            case ENERGY -> MekanismItems.ENERGY_UPGRADE;
+            case FILTER -> MekanismItems.FILTER_UPGRADE;
+            case MUFFLING -> MekanismItems.MUFFLING_UPGRADE;
+            case CHEMICAL -> MekanismItems.CHEMICAL_UPGRADE;
+            case ANCHOR -> MekanismItems.ANCHOR_UPGRADE;
+            case STONE_GENERATOR -> MekanismItems.STONE_GENERATOR_UPGRADE;
         };
     }
 

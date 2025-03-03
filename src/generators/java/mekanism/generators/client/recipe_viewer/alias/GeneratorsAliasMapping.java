@@ -35,14 +35,14 @@ public class GeneratorsAliasMapping implements IAliasMapping {
               MekanismAliases.TANK_COMPONENT
         );
         rv.addAliases(GeneratorsBlocks.ADVANCED_SOLAR_GENERATOR, MekanismAliases.EVAPORATION_COMPONENT);
-        rv.addAlias(GeneratorsAliases.FISSION_COMPONENT,
+        rv.addAliases(List.of(
               GeneratorsBlocks.FISSION_REACTOR_CASING,
               GeneratorsBlocks.FISSION_REACTOR_PORT,
               GeneratorsBlocks.FISSION_REACTOR_LOGIC_ADAPTER,
               GeneratorsBlocks.FISSION_FUEL_ASSEMBLY,
               GeneratorsBlocks.CONTROL_ROD_ASSEMBLY,
               GeneratorsBlocks.REACTOR_GLASS
-        );
+        ), GeneratorsAliases.FISSION_COMPONENT);
         rv.addItemAliases(List.of(
               GeneratorsBlocks.FUSION_REACTOR_CONTROLLER.getItemStack(),
               GeneratorsBlocks.FUSION_REACTOR_FRAME.getItemStack(),
@@ -52,7 +52,7 @@ public class GeneratorsAliasMapping implements IAliasMapping {
               GeneratorsBlocks.REACTOR_GLASS.getItemStack(),
               ChemicalUtil.getFilledVariant(GeneratorsItems.HOHLRAUM, GeneratorsChemicals.FUSION_FUEL)
         ), GeneratorsAliases.FUSION_COMPONENT);
-        rv.addAlias(GeneratorsAliases.TURBINE_COMPONENT,
+        rv.addAliases(List.of(
               GeneratorsBlocks.TURBINE_CASING,
               GeneratorsBlocks.TURBINE_VENT,
               GeneratorsBlocks.TURBINE_VALVE,
@@ -64,6 +64,6 @@ public class GeneratorsAliasMapping implements IAliasMapping {
               GeneratorsBlocks.REACTOR_GLASS,
               MekanismBlocks.PRESSURE_DISPERSER,
               MekanismBlocks.STRUCTURAL_GLASS
-        );
+        ), GeneratorsAliases.TURBINE_COMPONENT);
     }
 }

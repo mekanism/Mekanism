@@ -11,6 +11,7 @@ import com.mojang.serialization.MapLike;
 import com.mojang.serialization.codecs.PrimitiveCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -24,6 +25,7 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 //TODO - 1.21: Update the wiki docs to fix the syntax
@@ -112,6 +114,39 @@ public class SerializerHelper {
           LEGACY_CODEC_FLOATING_LONG.validate(val -> val == 0 ? DataResult.error(() -> "Value must be greater than zero") : DataResult.success(val))
     );
 
+    private static final Consumer<String> ON_STACK_LOAD_ERROR = error -> MekanismAPI.logger.error("Tried to load invalid item: '{}'", error);
+    /**
+     * Helper codec to deserialize an optional item stack and fall back to the empty stack if an error is encountered in deserialization.
+     *
+     * @since 10.7.9
+     */
+    public static final Codec<ItemStack> LENIENT_OPTIONAL_STACK_CODEC = ItemStack.OPTIONAL_CODEC
+          .promotePartial(ON_STACK_LOAD_ERROR)
+          .orElse(ItemStack.EMPTY);
+    /**
+     * Helper codec to deserialize an optional item stack and fall back to the empty stack if an error is encountered in deserialization.
+     *
+     * @since 10.7.9
+     */
+    public static final Codec<ItemStack> OPTIONAL_SINGLE_ITEM_CODEC =  ExtraCodecs.optionalEmptyMap(ItemStack.SINGLE_ITEM_CODEC)
+          .xmap(stack -> stack.orElse(ItemStack.EMPTY), stack -> stack.isEmpty() ? Optional.empty() : Optional.of(stack));
+    /**
+     * Helper codec to deserialize an optional item stack with a constant count of one and fall back to the empty stack if an error is encountered in deserialization.
+     *
+     * @since 10.7.9
+     */
+    public static final Codec<ItemStack> LENIENT_OPTIONAL_SINGLE_ITEM_CODEC = OPTIONAL_SINGLE_ITEM_CODEC
+          .promotePartial(ON_STACK_LOAD_ERROR)
+          .orElse(ItemStack.EMPTY);
+    /**
+     * Helper codec to deserialize an optional fluid stack and fall back to the empty stack if an error is encountered in deserialization.
+     *
+     * @since 10.7.9
+     */
+    public static final Codec<FluidStack> LENIENT_OPTIONAL_FLUID_CODEC = FluidStack.OPTIONAL_CODEC
+          .promotePartial(error -> MekanismAPI.logger.error("Tried to load invalid fluid: '{}'", error))
+          .orElse(FluidStack.EMPTY);
+
     /**
      * Custom codec to allow serializing an item stack without the upper bounds.
      *
@@ -132,6 +167,15 @@ public class SerializerHelper {
           .xmap(optional -> optional.orElse(ItemStack.EMPTY), stack -> stack.isEmpty() ? Optional.empty() : Optional.of(stack));
 
     /**
+     * Custom codec to allow serializing an item stack without the upper bounds. Allows empty items, and falls back to empty on invalid stacks.
+     *
+     * @since 10.7.9
+     */
+    public static final Codec<ItemStack> LENIENT_OVERSIZED_ITEM_OPTIONAL_CODEC = OVERSIZED_ITEM_OPTIONAL_CODEC
+          .promotePartial(ON_STACK_LOAD_ERROR)
+          .orElse(ItemStack.EMPTY);
+
+    /**
      * Helper similar to {@link ItemStack#save(Provider)} but with support for oversized stacks.
      *
      * @since 10.6.1
@@ -149,8 +193,7 @@ public class SerializerHelper {
      * @since 10.6.1
      */
     public static Optional<ItemStack> parseOversized(HolderLookup.Provider pLookupProvider, Tag pTag) {
-        return OVERSIZED_ITEM_CODEC.parse(pLookupProvider.createSerializationContext(NbtOps.INSTANCE), pTag)
-              .resultOrPartial(p_330102_ -> MekanismAPI.logger.error("Tried to load invalid item: '{}'", p_330102_));
+        return OVERSIZED_ITEM_CODEC.parse(pLookupProvider.createSerializationContext(NbtOps.INSTANCE), pTag).resultOrPartial(ON_STACK_LOAD_ERROR);
     }
 
     /**

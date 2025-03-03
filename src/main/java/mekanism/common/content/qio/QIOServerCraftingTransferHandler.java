@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.bytes.Byte2ObjectMaps;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.ArrayList;
@@ -94,7 +95,8 @@ public class QIOServerCraftingTransferHandler {
                 availableItems.put(slot, new SlotData(available));
             }
         }
-        for (Byte2ObjectMap.Entry<List<SingularHashedItemSource>> entry : sources.byte2ObjectEntrySet()) {
+        for (ObjectIterator<Byte2ObjectMap.Entry<List<SingularHashedItemSource>>> iterator = Byte2ObjectMaps.fastIterator(sources); iterator.hasNext(); ) {
+            Byte2ObjectMap.Entry<List<SingularHashedItemSource>> entry = iterator.next();
             byte targetSlot = entry.getByteKey();
             if (targetSlot < 0 || targetSlot >= 9) {
                 Mekanism.logger.warn("Received transfer request from: {}, for: {}, with an invalid target slot id: {}.", player, recipeID, targetSlot);
@@ -328,7 +330,8 @@ public class QIOServerCraftingTransferHandler {
                         availableItemTypes++;
                     }
                 }
-                for (Object2IntMap.Entry<HashedItem> entry : stillLeftOver.object2IntEntrySet()) {
+                for (ObjectIterator<Object2IntMap.Entry<HashedItem>> iterator = Object2IntMaps.fastIterator(stillLeftOver); iterator.hasNext(); ) {
+                    Object2IntMap.Entry<HashedItem> entry = iterator.next();
                     availableItemSpace -= entry.getIntValue();
                     if (availableItemSpace <= 0) {
                         //No room for all our items, fail
@@ -376,7 +379,8 @@ public class QIOServerCraftingTransferHandler {
                         }
                     }
                 }
-                for (Object2IntMap.Entry<HashedItem> entry : stillLeftOver.object2IntEntrySet()) {
+                for (ObjectIterator<Object2IntMap.Entry<HashedItem>> iterator = Object2IntMaps.fastIterator(stillLeftOver); iterator.hasNext(); ) {
+                    Object2IntMap.Entry<HashedItem> entry = iterator.next();
                     HashedItem item = entry.getKey();
                     int toAdd = entry.getIntValue();
                     //Start by trying to add to ones it can stack with
@@ -412,7 +416,8 @@ public class QIOServerCraftingTransferHandler {
         SelectedWindowData windowData = craftingWindow.getWindowData();
         //Extract items that will be put into the crafting window
         Byte2ObjectMap<ItemStack> targetContents = new Byte2ObjectArrayMap<>(sources.size());
-        for (Byte2ObjectMap.Entry<List<SingularHashedItemSource>> entry : sources.byte2ObjectEntrySet()) {
+        for (ObjectIterator<Byte2ObjectMap.Entry<List<SingularHashedItemSource>>> iterator = Byte2ObjectMaps.fastIterator(sources); iterator.hasNext(); ) {
+            Byte2ObjectMap.Entry<List<SingularHashedItemSource>> entry = iterator.next();
             for (SingularHashedItemSource source : entry.getValue()) {
                 byte slot = source.getSlot();
                 ItemStack stack;
@@ -508,14 +513,14 @@ public class QIOServerCraftingTransferHandler {
             }
         }
         //Insert items for the crafting window into it
-        for (ObjectIterator<Byte2ObjectMap.Entry<ItemStack>> iter = targetContents.byte2ObjectEntrySet().iterator(); iter.hasNext(); ) {
-            Byte2ObjectMap.Entry<ItemStack> entry = iter.next();
+        for (ObjectIterator<Byte2ObjectMap.Entry<ItemStack>> iterator = Byte2ObjectMaps.fastIterator(targetContents); iterator.hasNext(); ) {
+            Byte2ObjectMap.Entry<ItemStack> entry = iterator.next();
             byte targetSlot = entry.getByteKey();
             IInventorySlot inputSlot = craftingWindow.getInputSlot(targetSlot);
             ItemStack remainder = inputSlot.insertItem(entry.getValue(), Action.EXECUTE, AutomationType.MANUAL);
             if (remainder.isEmpty()) {
                 //If it was fully inserted, remove the entry from what we have left to deal with
-                iter.remove();
+                iterator.remove();
             } else {
                 // otherwise, update the stack for what is remaining and also print a warning as this should have been caught earlier,
                 // as we then will handle any remaining contents at the end (though we shouldn't have any)
@@ -527,7 +532,8 @@ public class QIOServerCraftingTransferHandler {
             }
         }
         //Put the items that were in the crafting window in the player's inventory
-        for (Byte2ObjectMap.Entry<ItemStack> entry : remainingCraftingGridContents.byte2ObjectEntrySet()) {
+        for (ObjectIterator<Byte2ObjectMap.Entry<ItemStack>> iterator = Byte2ObjectMaps.fastIterator(remainingCraftingGridContents); iterator.hasNext(); ) {
+            Byte2ObjectMap.Entry<ItemStack> entry = iterator.next();
             ItemStack stack = entry.getValue();
             if (rejectToInventory) {
                 //If we prioritize inserting back into the player's inventory, start by doing so
@@ -592,7 +598,8 @@ public class QIOServerCraftingTransferHandler {
             returnItem(stack, windowData);
         }
         //Put the items that were in the crafting window in the player's inventory
-        for (Byte2ObjectMap.Entry<ItemStack> entry : remainingCraftingGridContents.byte2ObjectEntrySet()) {
+        for (ObjectIterator<Byte2ObjectMap.Entry<ItemStack>> iterator = Byte2ObjectMaps.fastIterator(remainingCraftingGridContents); iterator.hasNext(); ) {
+            Byte2ObjectMap.Entry<ItemStack> entry = iterator.next();
             ItemStack stack = entry.getValue();
             IInventorySlot inputSlot = craftingWindow.getInputSlot(entry.getByteKey());
             if (ItemStack.isSameItemSameComponents(inputSlot.getStack(), stack)) {

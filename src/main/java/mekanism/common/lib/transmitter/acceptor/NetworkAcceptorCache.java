@@ -1,8 +1,10 @@
 package mekanism.common.lib.transmitter.acceptor;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -40,7 +42,8 @@ public class NetworkAcceptorCache<ACCEPTOR> {
     }
 
     public void adoptAcceptors(NetworkAcceptorCache<ACCEPTOR> other) {
-        for (Long2ObjectMap.Entry<Map<Direction, ACCEPTOR>> entry : other.cachedAcceptors.long2ObjectEntrySet()) {
+        for (ObjectIterator<Long2ObjectMap.Entry<Map<Direction, ACCEPTOR>>> iterator = other.getAcceptorFastIterator(); iterator.hasNext(); ) {
+            Long2ObjectMap.Entry<Map<Direction, ACCEPTOR>> entry = iterator.next();
             long pos = entry.getLongKey();
             if (cachedAcceptors.containsKey(pos)) {
                 cachedAcceptors.get(pos).putAll(entry.getValue());
@@ -86,8 +89,8 @@ public class NetworkAcceptorCache<ACCEPTOR> {
     /**
      * @apiNote Listeners should not be added to these LazyOptionals here as they may not correspond to an actual handler and may not get invalidated.
      */
-    public Set<Long2ObjectMap.Entry<Map<Direction, ACCEPTOR>>> getAcceptorEntrySet() {
-        return cachedAcceptors.long2ObjectEntrySet();
+    public ObjectIterator<Long2ObjectMap.Entry<Map<Direction, ACCEPTOR>>> getAcceptorFastIterator() {
+        return Long2ObjectMaps.fastIterator(cachedAcceptors);
     }
 
     /**

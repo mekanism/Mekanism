@@ -162,7 +162,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
     private void addTags() {
         add(MekanismAPITags.Items.MEKA_UNITS, "Meka Units");
         add(MekanismTags.Items.CONFIGURATORS, "Configurators");
-        add(MekanismTags.Items.TOOLS_WRENCH, "Wrenches");
         add(MekanismTags.Items.PERSONAL_STORAGE, "Personal Storage");
 
         add(MekanismTags.Items.RODS_PLASTIC, "Plastic Rods");
@@ -901,7 +900,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         for (EnumColor color : EnumUtils.COLORS) {
             add(color.getLangEntry(), color.getEnglishName());
         }
-        addModInfo("Mekanism is a Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, armor, and weapons.");
+        addModInfo(modName + " is a Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, armor, and weapons.");
         addPackData(MekanismLang.MEKANISM, MekanismLang.PACK_DESCRIPTION);
         add(MekanismLang.DEBUG_TITLE, modName + " Debug");
         add(MekanismLang.LOG_FORMAT, "[%1$s] %2$s");

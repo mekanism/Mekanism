@@ -5,7 +5,7 @@
     "#": {
       "type": "neoforge:difference",
       "base": {
-        "tag": "c:fences/plastic"
+        "tag": "mekanismadditions:plastic_fences/normal"
       },
       "subtracted": {
         "item": "mekanismadditions:red_plastic_fence"

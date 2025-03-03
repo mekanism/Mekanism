@@ -3,7 +3,9 @@ package mekanism.api.gear;
 import com.mojang.serialization.Codec;
 import io.netty.handler.codec.EncoderException;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -56,7 +58,8 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModule
         this.configData = new Int2ObjectOpenHashMap<>(maxStackSize);
         //Handle copying the configs and ensuring the lists are immutable
         builder.ensureConfigsInitialized();
-        for (Int2ObjectMap.Entry<ConfigData> entry : builder.configData.int2ObjectEntrySet()) {
+        for (ObjectIterator<Int2ObjectMap.Entry<ConfigData>> iterator = Int2ObjectMaps.fastIterator(builder.configData); iterator.hasNext(); ) {
+            Int2ObjectMap.Entry<ConfigData> entry = iterator.next();
             this.configData.put(entry.getIntKey(), entry.getValue().construct());
         }
         if (this.configData.size() < maxStackSize) {

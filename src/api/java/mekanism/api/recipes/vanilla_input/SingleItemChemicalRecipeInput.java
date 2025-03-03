@@ -37,4 +37,23 @@ public record SingleItemChemicalRecipeInput(ItemStack item, ChemicalStack chemic
     public boolean isEmpty() {
         return item.isEmpty() || chemical.isEmpty();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        } else if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        SingleItemChemicalRecipeInput other = (SingleItemChemicalRecipeInput) o;
+        return chemical.equals(other.chemical) && ItemStack.matches(item, other.item);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = chemical.hashCode();
+        hash = 31 * hash + ItemStack.hashItemAndComponents(item);
+        hash = 31 + hash + item.getCount();
+        return hash;
+    }
 }

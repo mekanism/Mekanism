@@ -1,6 +1,7 @@
 package mekanism.common.lib.frequency;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,6 +12,7 @@ import java.util.Set;
 import java.util.UUID;
 import mekanism.api.SerializationConstants;
 import mekanism.api.security.SecurityMode;
+import mekanism.common.Mekanism;
 import mekanism.common.lib.MekanismSavedData;
 import mekanism.common.lib.collection.HashList;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
@@ -221,7 +223,9 @@ public class FrequencyManager<FREQ extends Frequency> {
             Codec<FREQ> codec = frequencyType.codec();
             RegistryOps<Tag> registryOps = provider.createSerializationContext(NbtOps.INSTANCE);
             for (int i = 0; i < list.size(); i++) {
-                loadedFrequencies.add(codec.decode(registryOps, list.getCompound(i)).getOrThrow().getFirst());
+                DataResult<FREQ> parsed = codec.parse(registryOps, list.getCompound(i));
+                parsed.ifSuccess(loadedFrequencies::add);
+                parsed.ifError(error -> Mekanism.logger.warn("Failed to deserialize frequency: {}", error.message()));
             }
         }
 
@@ -235,7 +239,9 @@ public class FrequencyManager<FREQ extends Frequency> {
             RegistryOps<Tag> registryOps = provider.createSerializationContext(NbtOps.INSTANCE);
             ListTag list = new ListTag();
             for (FREQ freq : frequencies.values()) {
-                list.add(codec.encodeStart(registryOps, freq).getOrThrow());
+                DataResult<Tag> encoded = codec.encodeStart(registryOps, freq);
+                encoded.ifSuccess(list::add);
+                encoded.ifError(error -> Mekanism.logger.warn("Failed to serialize frequency: {}", error.message()));
             }
             nbtTags.put(SerializationConstants.FREQUENCY_LIST, list);
             return nbtTags;

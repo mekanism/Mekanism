@@ -4,6 +4,7 @@ import com.mojang.serialization.MapCodec;
 import mekanism.api.Action;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPITags;
+import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
@@ -28,7 +29,7 @@ final class ChemicalCamoContainerFactory extends CamoContainerFactory<ChemicalCa
 
     private static final MapCodec<ChemicalCamoContainer> CODEC = Chemical.CODEC
             .xmap(ChemicalCamoContainer::new, ChemicalCamoContainer::getChemical)
-            .fieldOf("chemical");
+            .fieldOf(SerializationConstants.CHEMICAL);
     private static final StreamCodec<RegistryFriendlyByteBuf, ChemicalCamoContainer> STREAM_CODEC =
             Chemical.STREAM_CODEC.map(ChemicalCamoContainer::new, ChemicalCamoContainer::getChemical);
     private static final Component MSG_HAS_SPECIAL_HANDLING = TextComponentUtil.translate(
@@ -38,12 +39,12 @@ final class ChemicalCamoContainerFactory extends CamoContainerFactory<ChemicalCa
     @Override
     protected void writeToNetwork(CompoundTag tag, ChemicalCamoContainer camo) {
         Chemical chemical = camo.getChemical();
-        tag.putInt("chemical", MekanismAPI.CHEMICAL_REGISTRY.getId(chemical));
+        tag.putInt(SerializationConstants.CHEMICAL, MekanismAPI.CHEMICAL_REGISTRY.getId(chemical));
     }
 
     @Override
     protected ChemicalCamoContainer readFromNetwork(CompoundTag tag) {
-        Chemical chemical = MekanismAPI.CHEMICAL_REGISTRY.byId(tag.getInt("chemical"));
+        Chemical chemical = MekanismAPI.CHEMICAL_REGISTRY.byId(tag.getInt(SerializationConstants.CHEMICAL));
         return new ChemicalCamoContainer(chemical);
     }
 

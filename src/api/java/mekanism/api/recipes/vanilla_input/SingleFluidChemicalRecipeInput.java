@@ -37,4 +37,23 @@ public record SingleFluidChemicalRecipeInput(FluidStack fluid, ChemicalStack che
     public boolean isEmpty() {
         return fluid.isEmpty() || chemical.isEmpty();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        } else if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        SingleFluidChemicalRecipeInput other = (SingleFluidChemicalRecipeInput) o;
+        return chemical.equals(other.chemical) && FluidStack.matches(fluid, other.fluid);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = chemical.hashCode();
+        hash = 31 * hash + FluidStack.hashFluidAndComponents(fluid);
+        hash = 31 * hash + fluid.getAmount();
+        return hash;
+    }
 }

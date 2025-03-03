@@ -1,5 +1,6 @@
 package mekanism.generators.client.recipe_viewer.jei;
 
+import com.mojang.serialization.Codec;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.heat.HeatAPI;
@@ -19,8 +20,10 @@ import mekanism.common.util.text.TextUtils;
 import mekanism.generators.client.recipe_viewer.recipe.FissionRecipeViewerRecipe;
 import mekanism.generators.common.GeneratorsLang;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.helpers.ICodecHelper;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
+import mezz.jei.api.recipe.IRecipeManager;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
@@ -65,5 +68,11 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<FissionReci
     @Override
     public ResourceLocation getRegistryName(@NotNull FissionRecipeViewerRecipe recipe) {
         return recipe.id();
+    }
+
+    @NotNull
+    @Override
+    public Codec<FissionRecipeViewerRecipe> getCodec(@NotNull ICodecHelper codecHelper, @NotNull IRecipeManager recipeManager) {
+        return FissionRecipeViewerRecipe.CODEC;
     }
 }

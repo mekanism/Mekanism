@@ -51,7 +51,7 @@ public class RenderEnergyCubeItem extends MekanismISTER {
             }
             sideStates[side.ordinal()] = state;
         }
-        ModelData modelData = ModelData.builder().with(TileEntityEnergyCube.SIDE_STATE_PROPERTY, sideStates).build();
+        ModelData modelData = ModelData.of(TileEntityEnergyCube.SIDE_STATE_PROPERTY, sideStates);
         renderBlockItem(stack, displayContext, matrix, renderer, light, overlayLight, modelData);
         double energyPercentage = StorageUtils.getEnergyRatio(stack);
         if (energyPercentage > 0) {

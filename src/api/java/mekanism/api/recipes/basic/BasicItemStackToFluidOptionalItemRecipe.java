@@ -45,8 +45,28 @@ public abstract class BasicItemStackToFluidOptionalItemRecipe extends ItemStackT
         return output.copy();
     }
 
+    public FluidOptionalItemOutput getOutputRaw() {
+        return output;
+    }
+
     @Override
     public List<FluidOptionalItemOutput> getOutputDefinition() {
         return Collections.singletonList(output);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        } else if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        BasicItemStackToFluidOptionalItemRecipe other = (BasicItemStackToFluidOptionalItemRecipe) o;
+        return input.equals(other.input) && output.equals(other.output);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(input, output);
     }
 }

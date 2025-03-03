@@ -4,9 +4,12 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 import mekanism.api.SerializationConstants;
+import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.common.Mekanism;
 import mekanism.common.content.assemblicator.RecipeFormula;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -19,10 +22,13 @@ public record FormulaAttachment(List<ItemStack> inventory, boolean invalid) {
 
     public static final FormulaAttachment EMPTY = new FormulaAttachment(NonNullList.withSize(9, ItemStack.EMPTY), false);
 
-    public static final Codec<FormulaAttachment> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          ItemStack.OPTIONAL_CODEC.listOf(9, 9).fieldOf(SerializationConstants.ITEMS).forGetter(FormulaAttachment::inventory),
-          Codec.BOOL.fieldOf(SerializationConstants.INVALID).forGetter(FormulaAttachment::invalid)
-    ).apply(instance, FormulaAttachment::new));
+    public static final Codec<FormulaAttachment> CODEC = RecordCodecBuilder.<FormulaAttachment>create(instance -> instance.group(
+          SerializerHelper.OPTIONAL_SINGLE_ITEM_CODEC.listOf(9, 9).fieldOf(SerializationConstants.ITEMS).forGetter(FormulaAttachment::inventory),
+          Codec.BOOL.optionalFieldOf(SerializationConstants.INVALID, false).forGetter(FormulaAttachment::invalid)
+    ).apply(instance, FormulaAttachment::new)).orElse(
+          (Consumer<String>) error -> Mekanism.logger.error("Failed to load stored formula: {}", error),
+          EMPTY
+    );
     public static final StreamCodec<RegistryFriendlyByteBuf, FormulaAttachment> STREAM_CODEC = StreamCodec.composite(
           ItemStack.OPTIONAL_LIST_STREAM_CODEC, FormulaAttachment::inventory,
           ByteBufCodecs.BOOL, FormulaAttachment::invalid,

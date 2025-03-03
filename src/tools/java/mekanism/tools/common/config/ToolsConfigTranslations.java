@@ -111,7 +111,7 @@ public enum ToolsConfigTranslations implements IConfigTranslation {
                         "The chance that mobs will spawn with " + name + " swords rather than " + name + " shovels. Requires canSpawnWeapon to be enabled."),
                   new ConfigTranslation(getKey(registryPrefix, "chance.helmet"), "Helmet Chance", "The chance that mobs can spawn with " + name + " helmets."),
                   new ConfigTranslation(getKey(registryPrefix, "chance.chestplate"), "Chestplate Chance", "The chance that mobs can spawn with " + name + " chestplates."),
-                  new ConfigTranslation(getKey(registryPrefix, "chance.leggings"), "Legging Chance", "The chance that mobs can spawn with " + name + " leggings."),
+                  new ConfigTranslation(getKey(registryPrefix, "chance.leggings"), "Leggings Chance", "The chance that mobs can spawn with " + name + " leggings."),
                   new ConfigTranslation(getKey(registryPrefix, "chance.boots"), "Boots Chance", "The chance that mobs can spawn with " + name + " boots."),
                   new ConfigTranslation(getKey(registryPrefix, "chance.multiple_piece"), "Multiple Pieces Chance",
                         "The chance that after each piece of " + name + " armor a mob spawns with no more pieces will be added. Order of pieces tried is boots, "
@@ -230,12 +230,12 @@ public enum ToolsConfigTranslations implements IConfigTranslation {
                   new ConfigTranslation(getKey(registryPrefix, "knockback_resistance"), "Knockback Resistance", "Base armor knockback resistance value of " + name + " armor."),
                   new ConfigTranslation(getKey(registryPrefix, "durability.boots"), "Boots Durability", "Maximum durability of " + name + " boots."),
                   new ConfigTranslation(getKey(registryPrefix, "armor.boots"), "Boots Armor", "Protection value of " + name + " boots."),
-                  new ConfigTranslation(getKey(registryPrefix, "durability.leggings"), "Legging Durability", "Maximum durability of " + name + " leggings."),
-                  new ConfigTranslation(getKey(registryPrefix, "armor.leggings"), "Legging Armor", "Protection value of " + name + " leggings."),
+                  new ConfigTranslation(getKey(registryPrefix, "durability.leggings"), "Leggings Durability", "Maximum durability of " + name + " leggings."),
+                  new ConfigTranslation(getKey(registryPrefix, "armor.leggings"), "Leggings Armor", "Protection value of " + name + " leggings."),
                   new ConfigTranslation(getKey(registryPrefix, "durability.chestplate"), "Chestplate Durability", "Maximum durability of " + name + " chestplates."),
                   new ConfigTranslation(getKey(registryPrefix, "armor.chestplate"), "Chestplate Armor", "Protection value of " + name + " chestplates."),
                   new ConfigTranslation(getKey(registryPrefix, "durability.helmet"), "Helmet Durability", "Maximum durability of " + name + " helmets."),
-                  new ConfigTranslation(getKey(registryPrefix, "armor.helmet"), "Helmer Armor", "Protection value of " + name + " helmets.")
+                  new ConfigTranslation(getKey(registryPrefix, "armor.helmet"), "Helmet Armor", "Protection value of " + name + " helmets.")
             );
         }
     }

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.SerializationConstants;
+import mekanism.api.SerializerHelper;
 import mekanism.common.content.qio.IQIOCraftingWindowHolder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -20,7 +21,7 @@ public record PortableDashboardContents(List<ItemStack> contents) {
     public static final PortableDashboardContents EMPTY = new PortableDashboardContents(NonNullList.withSize(TOTAL_SLOTS, ItemStack.EMPTY));
 
     public static final Codec<PortableDashboardContents> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          ItemStack.OPTIONAL_CODEC.listOf(TOTAL_SLOTS, TOTAL_SLOTS).fieldOf(SerializationConstants.ITEMS).forGetter(PortableDashboardContents::contents)
+          SerializerHelper.LENIENT_OPTIONAL_STACK_CODEC.listOf(TOTAL_SLOTS, TOTAL_SLOTS).fieldOf(SerializationConstants.ITEMS).forGetter(PortableDashboardContents::contents)
     ).apply(instance, PortableDashboardContents::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, PortableDashboardContents> STREAM_CODEC = ItemStack.OPTIONAL_LIST_STREAM_CODEC
           .map(PortableDashboardContents::new, PortableDashboardContents::contents);
@@ -32,8 +33,16 @@ public record PortableDashboardContents(List<ItemStack> contents) {
 
     public PortableDashboardContents with(int window, int index, ItemStack stack) {
         List<ItemStack> copy = new ArrayList<>(contents);
-        copy.set(9 * window + index, stack);
+        copy.set(getIndex(window, index), stack);
         return new PortableDashboardContents(copy);
+    }
+
+    public ItemStack getSlotContents(int window, int index) {
+        return contents.get(getIndex(window, index)).copy();
+    }
+
+    private static int getIndex(int window, int index) {
+        return 9 * window + index;
     }
 
     @Override

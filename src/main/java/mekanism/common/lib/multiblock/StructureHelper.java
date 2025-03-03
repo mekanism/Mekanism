@@ -1,8 +1,10 @@
 package mekanism.common.lib.multiblock;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
 import it.unimi.dsi.fastutil.ints.Int2ObjectSortedMap;
 import it.unimi.dsi.fastutil.objects.ObjectBidirectionalIterator;
+import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import it.unimi.dsi.fastutil.objects.ObjectSortedSet;
 import java.util.Set;
 import mekanism.common.lib.math.voxel.VoxelCuboid;
@@ -159,7 +161,8 @@ public class StructureHelper {
      * @return {@code true} if there are minor planes sticking out.
      */
     private static boolean hasOutOfBoundsNegativeMinor(Int2ObjectSortedMap<VoxelPlane> minorAxisMap, int majorKey) {
-        for (Int2ObjectMap.Entry<VoxelPlane> minorEntry : minorAxisMap.int2ObjectEntrySet()) {
+        for (ObjectIterator<Int2ObjectMap.Entry<VoxelPlane>> iterator = Int2ObjectMaps.fastIterator(minorAxisMap); iterator.hasNext(); ) {
+            Int2ObjectMap.Entry<VoxelPlane> minorEntry = iterator.next();
             int minorKey = minorEntry.getIntKey();
             if (minorKey >= majorKey) {
                 //If our outer minor plane is in the bounds of our major plane

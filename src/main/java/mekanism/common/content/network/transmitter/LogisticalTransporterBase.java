@@ -1,6 +1,7 @@
 package mekanism.common.content.network.transmitter;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
@@ -53,7 +54,7 @@ import org.jetbrains.annotations.Nullable;
 
 public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler, InventoryNetwork, LogisticalTransporterBase> {
 
-    protected final Int2ObjectOpenHashMap<TransporterStack> transit = new Int2ObjectOpenHashMap<>();
+    protected final Int2ObjectMap<TransporterStack> transit = new Int2ObjectOpenHashMap<>();
     protected final Int2ObjectMap<TransporterStack> needsSync = new Int2ObjectOpenHashMap<>();
     public final TransporterTier tier;
     protected int nextId = 0;
@@ -180,14 +181,10 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                 //Note: Our calls to getTileEntity are not done with a chunkMap as we don't tend to have that many tiles we
                 // are checking at once from here and given this gets called each tick, it would cause unnecessary garbage
                 // collection to occur actually causing the tick time to go up slightly.
-                for (ObjectIterator<Int2ObjectMap.Entry<TransporterStack>> iterator = transit.int2ObjectEntrySet().fastIterator(); iterator.hasNext(); ) {
-                    int stackId;
-                    TransporterStack stack;
-                    {
-                        Int2ObjectMap.Entry<TransporterStack> entry = iterator.next();//don't store it anywhere
-                        stackId = entry.getIntKey();
-                        stack = entry.getValue();
-                    }
+                for (ObjectIterator<Int2ObjectMap.Entry<TransporterStack>> iterator = Int2ObjectMaps.fastIterator(transit); iterator.hasNext(); ) {
+                    Int2ObjectMap.Entry<TransporterStack> entry = iterator.next();//don't store it anywhere
+                    int stackId = entry.getIntKey();
+                    TransporterStack stack = entry.getValue();
                     if (!stack.initiatedPath) {//Initiate any paths and remove things that can't go places
                         if (stack.itemStack.isEmpty() || !recalculate(stackId, stack, Long.MAX_VALUE)) {
                             deletes.add(stackId);
@@ -339,7 +336,8 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider, CompoundTag updateTag) {
         updateTag = super.getReducedUpdateTag(provider, updateTag);
         ListTag stacks = new ListTag();
-        for (Int2ObjectMap.Entry<TransporterStack> entry : transit.int2ObjectEntrySet()) {
+        for (ObjectIterator<Int2ObjectMap.Entry<TransporterStack>> iterator = Int2ObjectMaps.fastIterator(transit); iterator.hasNext(); ) {
+            Int2ObjectMap.Entry<TransporterStack> entry = iterator.next();
             CompoundTag tagCompound = new CompoundTag();
             tagCompound.putInt(SerializationConstants.INDEX, entry.getIntKey());
             entry.getValue().writeToUpdateTag(provider, this, tagCompound);

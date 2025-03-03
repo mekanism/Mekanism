@@ -1,36 +1,25 @@
 package mekanism.common.integration.projecte.mappers;
 
-import java.util.List;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe.PressurizedReactionRecipeOutput;
-import mekanism.common.integration.projecte.IngredientHelper;
+import mekanism.api.recipes.basic.BasicPressurizedReactionRecipe;
+import mekanism.common.config.MekanismConfigTranslations;
 import mekanism.common.integration.projecte.NSSChemical;
 import mekanism.common.recipe.MekanismRecipeType;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.api.mapper.recipe.RecipeTypeMapper;
-import moze_intel.projecte.api.nss.NSSFluid;
 import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.fluids.FluidStack;
-import org.jetbrains.annotations.NotNull;
 
 @RecipeTypeMapper
 public class PressurizedReactionRecipeMapper extends TypedMekanismRecipeMapper<PressurizedReactionRecipe> {
 
     public PressurizedReactionRecipeMapper() {
-        super(PressurizedReactionRecipe.class, MekanismRecipeType.REACTION);
-    }
-
-    @Override
-    public String getName() {
-        return "MekPressurizedReaction";
-    }
-
-    @Override
-    public String getDescription() {
-        return "Maps Mekanism pressurized reaction recipes.";
+        super(MekanismConfigTranslations.PE_MAPPER_PRESSURIZED_REACTION, PressurizedReactionRecipe.class, MekanismRecipeType.REACTION);
     }
 
     @Override
@@ -39,56 +28,46 @@ public class PressurizedReactionRecipeMapper extends TypedMekanismRecipeMapper<P
     }
 
     @Override
-    protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, PressurizedReactionRecipe recipe) {
-        boolean handled = false;
-        List<@NotNull ItemStack> itemRepresentations = recipe.getInputSolid().getRepresentations();
-        List<@NotNull FluidStack> fluidRepresentations = recipe.getInputFluid().getRepresentations();
-        List<@NotNull ChemicalStack> chemicalRepresentations = recipe.getInputChemical().getRepresentations();
-        for (ItemStack itemRepresentation : itemRepresentations) {
-            NormalizedSimpleStack nssItem = NSSItem.createItem(itemRepresentation);
-            for (FluidStack fluidRepresentation : fluidRepresentations) {
-                NormalizedSimpleStack nssFluid = NSSFluid.createFluid(fluidRepresentation);
-                for (ChemicalStack chemicalRepresentation : chemicalRepresentations) {
-                    NormalizedSimpleStack nssChemical = NSSChemical.createChemical(chemicalRepresentation);
-                    PressurizedReactionRecipeOutput output = recipe.getOutput(itemRepresentation, fluidRepresentation, chemicalRepresentation);
-                    ItemStack itemOutput = output.item();
-                    ChemicalStack chemicalOutput = output.chemical();
-                    IngredientHelper ingredientHelper = new IngredientHelper(mapper);
-                    ingredientHelper.put(nssItem, itemRepresentation.getCount());
-                    ingredientHelper.put(nssFluid, fluidRepresentation.getAmount());
-                    ingredientHelper.put(nssChemical, chemicalRepresentation.getAmount());
-                    if (itemOutput.isEmpty()) {
-                        //We only have a chemical output
-                        if (!chemicalOutput.isEmpty() && ingredientHelper.addAsConversion(chemicalOutput)) {
-                            handled = true;
-                        }
-                    } else if (chemicalOutput.isEmpty()) {
-                        //We only have an item output
-                        if (ingredientHelper.addAsConversion(itemOutput)) {
-                            handled = true;
-                        }
-                    } else {
-                        NormalizedSimpleStack nssItemOutput = NSSItem.createItem(itemOutput);
-                        NormalizedSimpleStack nssChemicalOutput = NSSChemical.createChemical(chemicalOutput);
-                        //We have both so do our best guess
-                        //Add trying to calculate the item output (using it as if we needed negative of chemical output)
-                        ingredientHelper.put(nssChemicalOutput, -chemicalOutput.getAmount());
-                        if (ingredientHelper.addAsConversion(nssItemOutput, itemOutput.getCount())) {
-                            handled = true;
-                        }
-                        //Add trying to calculate chemical output (using it as if we needed negative of item output)
-                        ingredientHelper.resetHelper();
-                        ingredientHelper.put(nssItem, itemRepresentation.getCount());
-                        ingredientHelper.put(nssFluid, fluidRepresentation.getAmount());
-                        ingredientHelper.put(nssChemical, chemicalRepresentation.getAmount());
-                        ingredientHelper.put(nssItemOutput, -itemOutput.getCount());
-                        if (ingredientHelper.addAsConversion(nssChemicalOutput, chemicalOutput.getAmount())) {
-                            handled = true;
-                        }
-                    }
-                }
+    protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, PressurizedReactionRecipe recipe, MekFakeGroupHelper fakeGroupHelper) {
+        if (OPTIMIZE_BASIC && recipe instanceof BasicPressurizedReactionRecipe basicRecipe) {
+            //This will be the case for the majority of our recipes
+            ItemStack outputItem = basicRecipe.getOutputItem();
+            ChemicalStack outputChemical = basicRecipe.getOutputChemical();
+            if (outputItem.isEmpty() && outputChemical.isEmpty()) {
+                return false;
             }
+            return addConversions(mapper, new PressurizedReactionRecipeOutput(outputItem, outputChemical), fakeGroupHelper.forIngredients(
+                  recipe.getInputSolid(),
+                  recipe.getInputFluid(),
+                  recipe.getInputChemical()
+            ));
         }
-        return handled;
+        return addConversions(mapper, recipe.getInputSolid(), recipe.getInputFluid(), recipe.getInputChemical(), recipe::getOutput,
+              ConstantPredicates.alwaysFalse(), fakeGroupHelper::forItems, fakeGroupHelper::forFluids, fakeGroupHelper::forChemicals, null,
+              PressurizedReactionRecipeMapper::addConversions);
+    }
+
+    private static boolean addConversions(IMappingCollector<NormalizedSimpleStack, Long> mapper, PressurizedReactionRecipeOutput output,
+          Object2IntMap<NormalizedSimpleStack> inputs) {
+        if (inputs.isEmpty()) {
+            return false;
+        }
+        ItemStack outputItem = output.item();
+        ChemicalStack outputChemical = output.chemical();
+        if (outputItem.isEmpty()) {
+            return addConversion(mapper, outputChemical, inputs);
+        } else if (outputChemical.isEmpty()) {
+            return addConversion(mapper, outputItem, inputs);
+        } else if (outputChemical.getAmount() > Integer.MAX_VALUE) {
+            return false;
+        }
+        //Use bitwise or as we want to try and add both of them
+        return addConversion(mapper, outputItem, forIngredients(
+              inputs,
+              NSSChemical.createChemical(outputChemical), (int) -outputChemical.getAmount()
+        )) | addConversion(mapper, outputChemical, forIngredients(
+              inputs,
+              NSSItem.createItem(outputItem), -outputItem.getCount()
+        ));
     }
 }

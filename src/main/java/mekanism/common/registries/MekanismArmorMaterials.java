@@ -24,6 +24,7 @@ public class MekanismArmorMaterials {
           Collections.emptyMap(), 0, SoundEvents.ARMOR_EQUIP_GENERIC, () -> Ingredient.EMPTY,
           List.of(new ArmorMaterial.Layer(rl)), 0, 0
     ));
+    public static final MekanismDeferredHolder<ArmorMaterial, ArmorMaterial> SCUBA_MASK = registerEnchantableSpecial("scuba_mask");
     public static final MekanismDeferredHolder<ArmorMaterial, ArmorMaterial> SCUBA_GEAR = registerBaseSpecial("scuba_gear");
     public static final MekanismDeferredHolder<ArmorMaterial, ArmorMaterial> FREE_RUNNERS = registerBaseSpecial("free_runners");
     public static final MekanismDeferredHolder<ArmorMaterial, ArmorMaterial> ARMORED_FREE_RUNNERS = ARMOR_MATERIALS.register("armored_free_runners", () -> new ArmorMaterial(
@@ -53,7 +54,16 @@ public class MekanismArmorMaterials {
     ));
 
     private static MekanismDeferredHolder<ArmorMaterial, ArmorMaterial> registerBaseSpecial(String name) {
-        return ARMOR_MATERIALS.register(name, () -> new ArmorMaterial(Collections.emptyMap(), 0, SoundEvents.ARMOR_EQUIP_GENERIC,
+        return registerBaseSpecial(name, 0);
+    }
+
+    private static MekanismDeferredHolder<ArmorMaterial, ArmorMaterial> registerEnchantableSpecial(String name) {
+        //Same enchantment value as iron and turtle
+        return registerBaseSpecial(name, 9);
+    }
+
+    private static MekanismDeferredHolder<ArmorMaterial, ArmorMaterial> registerBaseSpecial(String name, int enchantmentValue) {
+        return ARMOR_MATERIALS.register(name, () -> new ArmorMaterial(Collections.emptyMap(), enchantmentValue, SoundEvents.ARMOR_EQUIP_GENERIC,
               () -> Ingredient.EMPTY, Collections.emptyList(), 0, 0));
     }
 }

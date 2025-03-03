@@ -5,6 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.SerializationConstants;
+import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.attachments.containers.IAttachedContainers;
 import net.minecraft.core.NonNullList;
@@ -19,7 +20,7 @@ public record AttachedFluids(List<FluidStack> containers) implements IAttachedCo
     public static final AttachedFluids EMPTY = new AttachedFluids(Collections.emptyList());
 
     public static final Codec<AttachedFluids> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          FluidStack.OPTIONAL_CODEC.listOf().fieldOf(SerializationConstants.FLUID_TANKS).forGetter(AttachedFluids::containers)
+          SerializerHelper.LENIENT_OPTIONAL_FLUID_CODEC.listOf().fieldOf(SerializationConstants.FLUID_TANKS).forGetter(AttachedFluids::containers)
     ).apply(instance, AttachedFluids::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, AttachedFluids> STREAM_CODEC =
           FluidStack.OPTIONAL_STREAM_CODEC.<List<FluidStack>>apply(ByteBufCodecs.collection(NonNullList::createWithCapacity))

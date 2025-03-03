@@ -126,10 +126,6 @@ public class MekanismGenerators implements IModModule {
     }
 
     @Override
-    public void resetClient() {
-    }
-
-    @Override
     public void resetClientDimensionChanged() {
         TurbineMultiblockData.clientRotationMap.clear();
     }

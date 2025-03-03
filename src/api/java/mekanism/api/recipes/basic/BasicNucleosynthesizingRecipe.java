@@ -97,4 +97,24 @@ public class BasicNucleosynthesizingRecipe extends NucleosynthesizingRecipe impl
     public RecipeSerializer<BasicNucleosynthesizingRecipe> getSerializer() {
         return MekanismRecipeSerializers.NUCLEOSYNTHESIZING.get();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        } else if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        BasicNucleosynthesizingRecipe other = (BasicNucleosynthesizingRecipe) o;
+        return duration == other.duration && perTickUsage == other.perTickUsage && itemInput.equals(other.itemInput) && chemicalInput.equals(other.chemicalInput) &&
+               ItemStack.matches(output, other.output);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = Objects.hash(itemInput, chemicalInput, duration, perTickUsage);
+        hash = 31 * hash + ItemStack.hashItemAndComponents(output);
+        hash = 31 * hash + output.getCount();
+        return hash;
+    }
 }

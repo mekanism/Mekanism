@@ -14,6 +14,7 @@ import net.minecraft.core.GlobalPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 public class PortableTeleporterContainer extends FrequencyItemContainer<TeleporterFrequency> implements IEmptyContainer {
 
@@ -23,8 +24,9 @@ public class PortableTeleporterContainer extends FrequencyItemContainer<Teleport
         super(MekanismContainerTypes.PORTABLE_TELEPORTER, id, inv, hand, stack);
     }
 
-    public ItemStack getStack() {
-        return stack;
+    @Nullable
+    public IEnergyContainer getEnergyContainer() {
+        return StorageUtils.getEnergyContainer(stack, 0);
     }
 
     public byte getStatus() {
@@ -48,11 +50,11 @@ public class PortableTeleporterContainer extends FrequencyItemContainer<Teleport
             //Note: It is important these are in the same order as the client side trackers
             track(SyncableByte.create(() -> {
                 byte status = 3;
-                TeleporterFrequency freq = getFrequency();
+                TeleporterFrequency freq = getFrequencyFromStack();
                 if (freq != null && !freq.getActiveCoords().isEmpty()) {
                     status = 1;
                     if (!inv.player.isCreative()) {
-                        IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
+                        IEnergyContainer energyContainer = getEnergyContainer();
                         if (energyContainer == null) {
                             status = 4;
                         } else {

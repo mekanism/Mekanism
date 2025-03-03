@@ -50,4 +50,22 @@ public abstract class BasicItemStackToFluidRecipe extends ItemStackToFluidRecipe
         return Collections.singletonList(output);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        } else if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        BasicItemStackToFluidRecipe other = (BasicItemStackToFluidRecipe) o;
+        return input.equals(other.input) && FluidStack.matches(output, other.output);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = input.hashCode();
+        hash = 31 * hash + FluidStack.hashFluidAndComponents(output);
+        hash = 31 * hash + output.getAmount();
+        return hash;
+    }
 }

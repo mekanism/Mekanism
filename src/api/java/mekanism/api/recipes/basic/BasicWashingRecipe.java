@@ -95,4 +95,20 @@ public class BasicWashingRecipe extends FluidChemicalToChemicalRecipe {
     public RecipeSerializer<BasicWashingRecipe> getSerializer() {
         return MekanismRecipeSerializers.WASHING.get();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        } else if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        BasicWashingRecipe other = (BasicWashingRecipe) o;
+        return fluidInput.equals(other.fluidInput) && chemicalInput.equals(other.chemicalInput) && output.equals(other.output);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(fluidInput, chemicalInput, output);
+    }
 }

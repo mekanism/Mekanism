@@ -327,7 +327,7 @@ public class GuiFrequencySelector<FREQ extends Frequency> extends GuiElement {
         @Nullable
         @Override
         default FREQ getFrequency() {
-            return getFrequencyContainer().getFrequency();
+            return getFrequencyContainer().getClientFrequency();
         }
 
         @Override

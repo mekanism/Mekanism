@@ -59,4 +59,23 @@ public class BasicFluidToFluidRecipe extends FluidToFluidRecipe {
     public RecipeSerializer<BasicFluidToFluidRecipe> getSerializer() {
         return MekanismRecipeSerializers.EVAPORATING.get();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        } else if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        BasicFluidToFluidRecipe other = (BasicFluidToFluidRecipe) o;
+        return input.equals(other.input) && FluidStack.matches(output, other.output);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = input.hashCode();
+        hash = 31 * hash + FluidStack.hashFluidAndComponents(output);
+        hash = 31 * hash + output.getAmount();
+        return hash;
+    }
 }

@@ -20,12 +20,12 @@ plugins {
     id('eclipse')
     id('idea')
     id('maven-publish')
-    id('net.neoforged.moddev') version('2.0.75')//https://projects.neoforged.net/neoforged/moddevgradle
+    id('net.neoforged.moddev') version('2.0.78')//https://projects.neoforged.net/neoforged/moddevgradle
 }
 
 tasks.named('wrapper', Wrapper) {
     //Define wrapper values here so as to not have to always do so when updating gradlew.properties
-    gradleVersion = '8.12'
+    gradleVersion = '8.13'
     distributionType = Wrapper.DistributionType.ALL
 }
 
@@ -164,9 +164,10 @@ def setupExtraSourceSets(SourceSet base, boolean includeExtra = true) {
             project.configurations.maybeCreate(extraSourceSet.getTaskName(null, 'localRuntime')).extendsFrom(baseLocalRuntime)
         }
     }
-
-    sourceSets.runMain.compileClasspath += base.output
-    sourceSets.runMain.runtimeClasspath += base.runtimeClasspath
+    if (base != project.sourceSets.gameTest) {
+        sourceSets.runMain.compileClasspath += base.output
+        sourceSets.runMain.runtimeClasspath += base.runtimeClasspath
+    }
 }
 
 SourceSet setupExtraSourceSet(SourceSet baseSourceSet, String extra) {
@@ -216,7 +217,7 @@ def setupTasks(SourceSet sourceSet) {
     tasks.named(sourceSet.processResourcesTaskName, ProcessResources) {
         setGroup('process resources')
         duplicatesStrategy = DuplicatesStrategy.FAIL
-        var versionProperties = ['file'       : ['jarVersion': mod_version], 'mc_version': minecraft_version_range, 'forge_version': forge_version_range,
+        var versionProperties = ['file'       : ['jarVersion': mod_version], 'mc_version': minecraft_version_range, 'neo_version': neo_version_range,
                                  'loader_version': loader_version_range, 'jei_version': jei_version_range]
         //Mark the properties as inputs so that when they change things update
         inputs.properties(versionProperties)
@@ -260,7 +261,7 @@ final clientRunsFolder = runsFolder.dir('client')
 neoForge {
     // This enables modding tasks and configurations
     enable {
-        version = forge_version
+        version = neo_version
         enabledSourceSets = sourceSets // All source sets use Minecraft code
     }
 
@@ -379,7 +380,6 @@ neoForge {
 
 // Ensure any jar without the necessary FML manifest attributes gets picked up via legacy classpath.
 // This configuration only exists after setting the neoForge version above.
-//TODO: Remove all this datagenNonMod stuff once we add FMLModType to yaml-ops
 configurations.dataAdditionalRuntimeClasspath.extendsFrom configurations.datagenNonMod
 
 static void exclusiveRepo(RepositoryHandler handler, String url, String... groups) {
@@ -406,16 +406,22 @@ repositories { RepositoryHandler handler ->
         filter.includeGroup('org.openzen.zencode')
     })
     exclusiveRepo(handler, 'https://maven.terraformersmc.com/', 'dev.emi')
-    exclusiveRepo(handler, 'https://maven.octo-studios.com/releases/', 'top.theillusivec4.curios')
+    exclusiveRepo(handler, 'https://maven.theillusivec4.top/', 'top.theillusivec4.curios')
     exclusiveRepo(handler, 'https://maven.tterrag.com/', 'team.chisel.ctm')
     exclusiveRepo(handler, 'https://squiddev.cc/maven/', 'cc.tweaked', 'org.squiddev')
     exclusiveRepo(handler, 'https://dogforce-games.com/maven/', 'dev.gigaherz.jsonthings')
     exclusiveRepo(handler, 'https://maven2.bai.lol', 'lol.bai', 'mcp.mobius.waila')//WTHIT
     exclusiveRepo(handler, 'https://www.cursemaven.com', 'curse.maven')
-    exclusiveRepo(handler, 'https://modmaven.dev/', 'appeng', 'mcjty.theoneprobe', 'dev.technici4n')
+    exclusiveRepo(handler, 'https://modmaven.dev/', 'mcjty.theoneprobe', 'dev.technici4n')
     exclusiveRepo(handler, 'https://maven.minecraftforge.net/releases/', 'com.github.glitchfiend')
-    exclusiveRepo(handler, 'https://maven.thiakil.com', 'com.thiakil', 'moze_intel')
+    exclusiveRepo(handler, 'https://maven.thiakil.com', 'com.thiakil', 'moze_intel.projecte')
     exclusiveRepo(handler, 'https://maven.parchmentmc.org/', 'org.parchmentmc.data')
+    handler.exclusiveContent {
+        it.forRepositories(handler.mavenCentral())
+        it.filter {
+            includeGroup('org.appliedenergistics')
+        }
+    }
 }
 
 tasks.named('test', Test) {
@@ -427,7 +433,7 @@ dependencies {
     localRuntime(project(':annotation-processor'))
     annotationProcessor(project(':annotation-processor'))
 
-    def testFrameWork = "net.neoforged:testframework:${forge_version}"
+    def testFrameWork = "net.neoforged:testframework:${neo_version}"
     gameTestImplementation(testFrameWork)
     testImplementation(testFrameWork)
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junit_version}")
@@ -470,11 +476,11 @@ dependencies {
     //TODO: Re-enable when it updates
     //localRuntime(jeiTweaker)
 
-    compileOnly("dev.gigaherz.jsonthings:JsonThings-${previous_minor_minecraft_version}:${json_things_version}")
+    compileOnly("dev.gigaherz.jsonthings:JsonThings-${minecraft_version}:${json_things_version}")
 
     //Mods we have dependencies on but don't bother loading into the dev environment
     //compileOnly("curse.maven:projecte-api-226410:${projecte_api_id}")
-    compileOnly('moze_intel:ProjectE-api:1.0.1')
+    compileOnly('moze_intel.projecte:ProjectE:1.0.1:api')
     compileOnly("curse.maven:flux-networks-248020:${flux_networks_id}")
     compileOnly("dev.technici4n:GrandPower:${grand_power_version}")
     compileOnly("top.theillusivec4.curios:curios-neoforge:${curios_version}:api")
@@ -486,15 +492,20 @@ dependencies {
     compileOnly("curse.maven:framedblocks-441647:${framedblocks_mod_id}")
 
     //Dependencies for data generators for mod compat reference
-    datagenMainImplementation("appeng:appliedenergistics2:${ae2_version}")
-    datagenMainRuntimeOnly("com.github.glitchfiend:GlitchCore-neoforge:${previous_minor_minecraft_version}-${glitchcore_version}")
-    datagenMainRuntimeOnly("com.github.glitchfiend:TerraBlender-neoforge:${previous_minor_minecraft_version}-${terrablender_version}")
-    datagenMainImplementation("com.github.glitchfiend:BiomesOPlenty-neoforge:${previous_minor_minecraft_version}-${biomesoplenty_version}")
-    //TODO: Switch back to datagenMainImplementation after it doesn't crash when default components are modified in datagen
-    datagenMainCompileOnly("curse.maven:farmers-delight-398521:${farmers_delight_id}")
-    //TODO - 1.20.2: Re-enable after projecte is updated
+    datagenMainImplementation("org.appliedenergistics:appliedenergistics2:${ae2_version}")
+    datagenMainRuntimeOnly("com.github.glitchfiend:GlitchCore-neoforge:${minecraft_version}-${glitchcore_version}")
+    datagenMainRuntimeOnly("com.github.glitchfiend:TerraBlender-neoforge:${minecraft_version}-${terrablender_version}")
+    datagenMainImplementation("com.github.glitchfiend:BiomesOPlenty-neoforge:${minecraft_version}-${biomesoplenty_version}")
+    datagenMainRuntimeOnly("curse.maven:corgilib-693313:${corgilib_id}")
+    datagenMainRuntimeOnly("curse.maven:geckolib-388172:${geckolib_id}")
+    datagenMainRuntimeOnly("curse.maven:oh-the-trees-youll-grow-962544:${ohthetreesyoullgrow_id}")
+    datagenMainImplementation("curse.maven:oh-the-biomes-weve-gone-1070751:${biomeswevegone_id}")
+    datagenMainImplementation("curse.maven:farmers-delight-398521:${farmers_delight_id}")
+    //TODO - 1.21: Re-enable after projecte is updated
     //datagenMainRuntimeOnly("curse.maven:projecte-226410:${projecte_id}")
+    datagenMainRuntimeOnly('moze_intel.projecte:ProjectE:1.0.1')
 
+    //Note: Even though yaml ops defines a FMLModType we have to pretend FML doesn't know how to handle it due to a lib yaml ops bundles not defining it
     datagenNonMod("com.thiakil:yaml-ops:${yamlops_version}")
 }
 
@@ -706,7 +717,7 @@ if (System.getenv('CURSEFORGE_KEY') != null || project.hasProperty('curseforgeKe
                     //Tweakers
                     'crafttweaker', 'jeitweaker',
                     //World gen
-                    'biomes-o-plenty',
+                    'biomes-o-plenty', 'oh-the-biomes-weve-gone',
                     //Misc
                     'applied-energistics-2', 'ctm', 'curios-continuation', 'dark-mode-everywhere', 'farmers-delight', 'female-gender-neoforge', 'flux-networks',
                     'framedblocks', 'grandpower', 'json-things', 'perviaminvenire', 'projecte', 'recipe-stages'
@@ -781,6 +792,7 @@ if (System.getenv('MODRINTH_TOKEN') != null || project.hasProperty('modrinthToke
         //Note: Can't use nested dependency configuration as we have no way to clear it for the secondary uploads
         dependencies.value([
                 new ModDependency('XxWD5pD3', 'optional'),//AE2
+                new ModDependency('NTi7d3Xc', 'optional'),//Biomes We've Gone
                 new ModDependency('gu7yAYhd', 'optional'),//CC: Tweaked
                 new ModDependency('Xg35A4rS', 'optional'),//CraftTweaker
                 new ModDependency('fRiHVvU7', 'optional'),//EMI

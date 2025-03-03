@@ -72,4 +72,21 @@ public abstract class BasicChemicalChemicalToChemicalRecipe extends ChemicalChem
     public ChemicalStack getOutputRaw() {
         return output;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        } else if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        BasicChemicalChemicalToChemicalRecipe other = (BasicChemicalChemicalToChemicalRecipe) o;
+        //Note: We don't need to compare the recipe type as that gets covered by the explicit class type check above
+        return leftInput.equals(other.leftInput) && rightInput.equals(other.rightInput) && output.equals(other.output);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(leftInput, rightInput, output);
+    }
 }

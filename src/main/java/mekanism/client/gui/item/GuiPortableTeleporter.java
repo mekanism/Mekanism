@@ -16,7 +16,6 @@ import mekanism.common.MekanismLang;
 import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.inventory.container.item.PortableTeleporterContainer;
 import mekanism.common.lib.frequency.FrequencyType;
-import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -44,13 +43,13 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
         addRenderableWidget(new GuiVerticalPowerBar(this, new IBarInfoHandler() {
             @Override
             public Component getTooltip() {
-                IEnergyContainer container = StorageUtils.getEnergyContainer(menu.getStack(), 0);
+                IEnergyContainer container = menu.getEnergyContainer();
                 return container == null ? EnergyDisplay.ZERO.getTextComponent() : EnergyDisplay.of(container).getTextComponent();
             }
 
             @Override
             public double getLevel() {
-                IEnergyContainer container = StorageUtils.getEnergyContainer(menu.getStack(), 0);
+                IEnergyContainer container = menu.getEnergyContainer();
                 return container == null ? 0 : MathUtils.divideToLevel(container.getEnergy(), container.getMaxEnergy());
             }
         }, 158, 26));

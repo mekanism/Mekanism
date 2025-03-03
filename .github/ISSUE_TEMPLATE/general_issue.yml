@@ -33,7 +33,7 @@ body:
     attributes:
       label: NeoForge version
       description: What version of NeoForge are you using?
-      placeholder: e.g. 21.1.21
+      placeholder: e.g. 21.1.118
     validations:
       required: true
   - type: dropdown
@@ -42,7 +42,10 @@ body:
       label: Mekanism version
       description: What version of Mekanism are you using?
       options:
-        - 10.7.7 (Latest)
+        - 10.7.10 (Latest)
+        - 10.7.9 (GrandPower bugged)
+        - 10.7.8
+        - 10.7.7
         - 10.7.6
         - 10.7.5
         - 10.7.4

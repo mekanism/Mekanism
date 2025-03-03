@@ -25,12 +25,12 @@ public class CatalystRegistryHelper {
 
     public static void register(IRecipeCatalystRegistration registry, RecipeType<?> recipeType, List<IItemProvider> workstations) {
         for (IItemProvider workstation : workstations) {
-            registry.addRecipeCatalyst(workstation.getItemStack(), recipeType);
+            registry.addRecipeCatalyst(workstation, recipeType);
             if (workstation instanceof IBlockProvider mekanismBlock) {
                 AttributeFactoryType factoryType = Attribute.get(mekanismBlock.getBlock(), AttributeFactoryType.class);
                 if (factoryType != null) {
                     for (FactoryTier tier : EnumUtils.FACTORY_TIERS) {
-                        registry.addRecipeCatalyst(MekanismBlocks.getFactory(tier, factoryType.getFactoryType()).getItemStack(), recipeType);
+                        registry.addRecipeCatalyst(MekanismBlocks.getFactory(tier, factoryType.getFactoryType()), recipeType);
                     }
                 }
             }

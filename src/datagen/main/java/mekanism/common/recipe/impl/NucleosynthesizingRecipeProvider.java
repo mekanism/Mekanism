@@ -161,7 +161,7 @@ class NucleosynthesizingRecipeProvider implements ISubRecipeProvider {
               false
         ).build(consumer, Mekanism.rl(basePath + "iron"));
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
-              IngredientCreatorAccess.item().from(Tags.Items.OBSIDIANS),
+              IngredientCreatorAccess.item().from(Tags.Items.OBSIDIANS_NORMAL),
               IngredientCreatorAccess.chemicalStack().from(MekanismChemicals.ANTIMATTER, 1),
               new ItemStack(Blocks.CRYING_OBSIDIAN),
               200,

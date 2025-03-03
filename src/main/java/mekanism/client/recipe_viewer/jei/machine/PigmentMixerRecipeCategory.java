@@ -15,11 +15,12 @@ public class PigmentMixerRecipeCategory extends ChemicalChemicalToChemicalRecipe
 
     private final PigmentMixerColorDetails leftColorDetails;
     private final PigmentMixerColorDetails rightColorDetails;
+    private final OutputSupplier outputSupplier = new OutputSupplier();
 
     public PigmentMixerRecipeCategory(IGuiHelper helper, IRecipeViewerRecipeType<ChemicalChemicalToChemicalRecipe> recipeType) {
         super(helper, recipeType);
-        rightArrow.colored(leftColorDetails = new PigmentMixerColorDetails());
-        leftArrow.colored(rightColorDetails = new PigmentMixerColorDetails());
+        rightArrow.colored(leftColorDetails = new PigmentMixerColorDetails(outputSupplier));
+        leftArrow.colored(rightColorDetails = new PigmentMixerColorDetails(outputSupplier));
     }
 
     @Override
@@ -27,12 +28,20 @@ public class PigmentMixerRecipeCategory extends ChemicalChemicalToChemicalRecipe
         //Set what the "current" recipe is for our color details, before bothering to draw the arrow
         leftColorDetails.setIngredient(getDisplayedStack(recipeSlotsView, LEFT_INPUT, MekanismJEI.TYPE_CHEMICAL, ChemicalStack.EMPTY));
         rightColorDetails.setIngredient(getDisplayedStack(recipeSlotsView, RIGHT_INPUT, MekanismJEI.TYPE_CHEMICAL, ChemicalStack.EMPTY));
-        ChemicalStack outputStack = getDisplayedStack(recipeSlotsView, OUTPUT, MekanismJEI.TYPE_CHEMICAL, ChemicalStack.EMPTY);
-        Supplier<ChemicalStack> outputSupplier = () -> outputStack;
-        leftColorDetails.setOutputIngredient(outputSupplier);
-        rightColorDetails.setOutputIngredient(outputSupplier);
+        outputSupplier.output = getDisplayedStack(recipeSlotsView, OUTPUT, MekanismJEI.TYPE_CHEMICAL, ChemicalStack.EMPTY);
         super.draw(recipeHolder, recipeSlotsView, guiGraphics, mouseX, mouseY);
         leftColorDetails.reset();
         rightColorDetails.reset();
+        outputSupplier.output = ChemicalStack.EMPTY;
+    }
+
+    private static class OutputSupplier implements Supplier<ChemicalStack> {
+
+        private ChemicalStack output = ChemicalStack.EMPTY;
+
+        @Override
+        public ChemicalStack get() {
+            return output;
+        }
     }
 }

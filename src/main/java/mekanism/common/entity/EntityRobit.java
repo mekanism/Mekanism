@@ -782,7 +782,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
      */
     public ModelData getModelData() {
         //TODO: Eventually we might want to evaluate caching this model data object
-        return ModelData.builder().with(SKIN_TEXTURE_PROPERTY, getModelTexture()).build();
+        return ModelData.of(SKIN_TEXTURE_PROPERTY, getModelTexture());
     }
 
     /**
@@ -791,8 +791,11 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     private ResourceLocation getModelTexture() {
         Registry<RobitSkin> robitSkins = level().registryAccess().registryOrThrow(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME);
         ResourceKey<RobitSkin> skinKey = getSkin();
-        RobitSkin skin = robitSkins.get(skinKey);
-        if (skin == null) {
+        Optional<RobitSkin> optionalSkin = robitSkins.getOptional(skinKey);
+        RobitSkin skin;
+        if (optionalSkin.isPresent()) {
+            skin = optionalSkin.get();
+        } else {
             Mekanism.logger.error("Unknown Robit Skin: {}; resetting skin to base.", skinKey.location());
             setSkin(skinKey = MekanismRobitSkins.BASE, null);
             skin = robitSkins.getOrThrow(skinKey);

@@ -84,7 +84,7 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "break_disc_5"));
         //Obsidian -> obsidian dust
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Tags.Items.OBSIDIANS),
+              IngredientCreatorAccess.item().from(Tags.Items.OBSIDIANS_NORMAL),
               MekanismItems.OBSIDIAN_DUST.getItemStack(4)
         ).build(consumer, Mekanism.rl(basePath + "obsidian_to_dust"));
         //Blaze Rod -> blaze powder

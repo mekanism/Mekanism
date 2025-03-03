@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 public class MekanismCustomConversions extends CustomConversionProvider {
 
     public MekanismCustomConversions(PackOutput output, CompletableFuture<Provider> lookupProvider) {
-        super(output, lookupProvider);
+        super(output, lookupProvider, Mekanism.MODID);
     }
 
     @Override
@@ -24,11 +24,5 @@ public class MekanismCustomConversions extends CustomConversionProvider {
               //Give hdpe pellets a lowish emc value so that things like plastic have EMC values
               .before(MekanismItems.HDPE_PELLET, 32)
         ;
-    }
-
-    @NotNull
-    @Override
-    public String getName() {
-        return super.getName() + ": " + Mekanism.MODID;
     }
 }

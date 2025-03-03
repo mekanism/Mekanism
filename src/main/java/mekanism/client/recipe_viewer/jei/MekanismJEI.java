@@ -96,7 +96,7 @@ public class MekanismJEI implements IModPlugin {
     public static RecipeType<?> genericRecipeType(IRecipeViewerRecipeType<?> recipeType) {
         return recipeTypeInstanceCache.computeIfAbsent(recipeType, r -> {
             if (r.requiresHolder()) {
-                return new RecipeType<>(r.id(), RecipeHolder.class);
+                return RecipeType.createRecipeHolderType(r.id());
             }
             return new RecipeType<>(r.id(), r.recipeClass());
         });

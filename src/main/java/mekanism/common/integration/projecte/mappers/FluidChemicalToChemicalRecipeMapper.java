@@ -1,53 +1,31 @@
 package mekanism.common.integration.projecte.mappers;
 
-import java.util.List;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.FluidChemicalToChemicalRecipe;
-import mekanism.common.integration.projecte.IngredientHelper;
+import mekanism.api.recipes.basic.BasicWashingRecipe;
+import mekanism.common.config.MekanismConfigTranslations;
 import mekanism.common.recipe.MekanismRecipeType;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.api.mapper.recipe.RecipeTypeMapper;
-import moze_intel.projecte.api.nss.NSSFluid;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-import net.neoforged.neoforge.fluids.FluidStack;
-import org.jetbrains.annotations.NotNull;
 
 @RecipeTypeMapper
 public class FluidChemicalToChemicalRecipeMapper extends TypedMekanismRecipeMapper<FluidChemicalToChemicalRecipe> {
 
     public FluidChemicalToChemicalRecipeMapper() {
-        super(FluidChemicalToChemicalRecipe.class, MekanismRecipeType.WASHING);
+        super(MekanismConfigTranslations.PE_MAPPER_WASHING, FluidChemicalToChemicalRecipe.class, MekanismRecipeType.WASHING);
     }
 
     @Override
-    public String getName() {
-        return "MekWashing";
-    }
-
-    @Override
-    public String getDescription() {
-        return "Maps Mekanism washing recipes.";
-    }
-
-    @Override
-    protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, FluidChemicalToChemicalRecipe recipe) {
-        boolean handled = false;
-        List<@NotNull FluidStack> fluidRepresentations = recipe.getFluidInput().getRepresentations();
-        List<@NotNull ChemicalStack> slurryRepresentations = recipe.getChemicalInput().getRepresentations();
-        for (FluidStack fluidRepresentation : fluidRepresentations) {
-            NormalizedSimpleStack nssFluid = NSSFluid.createFluid(fluidRepresentation);
-            for (ChemicalStack slurryRepresentation : slurryRepresentations) {
-                ChemicalStack output = recipe.getOutput(fluidRepresentation, slurryRepresentation);
-                if (!output.isEmpty()) {
-                    IngredientHelper ingredientHelper = new IngredientHelper(mapper);
-                    ingredientHelper.put(nssFluid, fluidRepresentation.getAmount());
-                    ingredientHelper.put(slurryRepresentation);
-                    if (ingredientHelper.addAsConversion(output)) {
-                        handled = true;
-                    }
-                }
-            }
+    protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, FluidChemicalToChemicalRecipe recipe, MekFakeGroupHelper fakeGroupHelper) {
+        if (OPTIMIZE_BASIC && recipe instanceof BasicWashingRecipe basicRecipe) {
+            //This will be the case for the majority of our recipes
+            return addConversion(mapper, basicRecipe.getOutputRaw(), fakeGroupHelper.forIngredients(
+                  recipe.getFluidInput(),
+                  recipe.getChemicalInput()
+            ));
         }
-        return handled;
+        return addConversions(mapper, recipe.getFluidInput(), recipe.getChemicalInput(), recipe::getOutput, ChemicalStack::isEmpty,
+              fakeGroupHelper::forFluids, fakeGroupHelper::forChemicals, null, TypedMekanismRecipeMapper::addConversion);
     }
 }

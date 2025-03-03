@@ -150,7 +150,7 @@ public class DriveArrayBakedModel extends ExtensionOverrideBakedModel<byte[]> {
                     driveStatus[i] = status.status();
                 }
                 if (!allEmpty) {//Only bother actually applying an override if there are some drives that aren't empty
-                    ModelData modelData = ModelData.builder().with(TileEntityQIODriveArray.DRIVE_STATUS_PROPERTY, driveStatus).build();
+                    ModelData modelData = ModelData.of(TileEntityQIODriveArray.DRIVE_STATUS_PROPERTY, driveStatus);
                     //TODO: At some point we may want to evaluate caching this
                     return wrap(model, stack, world, entity, seed, modelData, DriveStatusBakedModel::new);
                 }

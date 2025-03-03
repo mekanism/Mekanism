@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 public class MinerItemStackFilter extends MinerFilter<MinerItemStackFilter> implements IItemStackFilter<MinerItemStackFilter> {
 
     public static final MapCodec<MinerItemStackFilter> CODEC = RecordCodecBuilder.mapCodec(instance -> baseMinerCodec(instance)
-          .and(ItemStack.OPTIONAL_CODEC.fieldOf(SerializationConstants.TARGET_STACK).forGetter(MinerItemStackFilter::getItemStack))
+          .and(ItemStack.SINGLE_ITEM_CODEC.fieldOf(SerializationConstants.TARGET_STACK).forGetter(MinerItemStackFilter::getItemStack))
           .apply(instance, MinerItemStackFilter::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, MinerItemStackFilter> STREAM_CODEC = StreamCodec.composite(
           baseMinerStreamCodec(MinerItemStackFilter::new), Function.identity(),
@@ -51,7 +51,7 @@ public class MinerItemStackFilter extends MinerFilter<MinerItemStackFilter> impl
         if (itemStack.isEmpty()) {
             return false;
         }
-        return itemType.getItem() == itemStack.getItem();
+        return itemType.is(itemStack.getItem());
     }
 
     @Override

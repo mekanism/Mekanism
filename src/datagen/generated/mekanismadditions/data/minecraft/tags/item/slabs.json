@@ -1,7 +1,5 @@
 {
   "values": [
-    "#c:slabs/plastic",
-    "#c:slabs/plastic/glow",
-    "#c:slabs/plastic/transparent"
+    "#c:slabs/plastic"
   ]
 }

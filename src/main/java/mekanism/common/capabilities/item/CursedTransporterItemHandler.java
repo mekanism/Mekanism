@@ -2,8 +2,7 @@ package mekanism.common.capabilities.item;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import java.util.Collections;
-import java.util.IdentityHashMap;
+import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.LongSupplier;
@@ -24,8 +23,8 @@ public class CursedTransporterItemHandler implements IItemHandler {
     // this is because if a stack is simulated it is likely the same stack may be used for actually inserting, but we
     // want to make sure that if a mod is just trying to insert without simulating across the different slots that we
     // can short circuit if we couldn't insert it
-    private final Set<ItemStack> seenStacks = Collections.newSetFromMap(new IdentityHashMap<>());
-    private final Set<ItemStack> seenExecutedStacks = Collections.newSetFromMap(new IdentityHashMap<>());
+    private final Set<ItemStack> seenStacks = new ReferenceOpenHashSet<>();
+    private final Set<ItemStack> seenExecutedStacks = new ReferenceOpenHashSet<>();
     private final LogisticalTransporterBase transporter;
     private final LongSupplier currentTickSupplier;
     private final long fromPos;

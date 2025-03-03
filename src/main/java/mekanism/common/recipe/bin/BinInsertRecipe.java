@@ -2,6 +2,8 @@ package mekanism.common.recipe.bin;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
+import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.Action;
@@ -14,7 +16,6 @@ import mekanism.common.registries.MekanismRecipeSerializersInternal;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.Container;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
@@ -154,7 +155,8 @@ public class BinInsertRecipe extends BinRecipe {
         //Copy the stack
         binStack = binStack.copy();
         ComponentBackedBinInventorySlot slot = convertToSlot(binStack);
-        for (Int2ObjectMap.Entry<ItemStack> entry : foundSlots.int2ObjectEntrySet()) {
+        for (ObjectIterator<Int2ObjectMap.Entry<ItemStack>> iterator = Int2ObjectMaps.fastIterator(foundSlots); iterator.hasNext(); ) {
+            Int2ObjectMap.Entry<ItemStack> entry = iterator.next();
             ItemStack slotItem = entry.getValue();
             //Only try inserting a single item into the bin. We execute on a copy of the bin stack so that we can mutate it and chain insertions
             // to validate if we can insert across multiple slots

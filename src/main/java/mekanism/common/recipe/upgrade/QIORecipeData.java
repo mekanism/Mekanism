@@ -2,8 +2,9 @@ package mekanism.common.recipe.upgrade;
 
 import it.unimi.dsi.fastutil.objects.Object2LongLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
-import it.unimi.dsi.fastutil.objects.Object2LongMap.Entry;
+import it.unimi.dsi.fastutil.objects.Object2LongMaps;
 import it.unimi.dsi.fastutil.objects.Object2LongSortedMap;
+import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.UUID;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.attachments.qio.DriveContents;
@@ -50,7 +51,8 @@ public class QIORecipeData implements RecipeUpgradeData<QIORecipeData> {
             }
             //Add smaller to larger, so we have to iterate fewer elements
             Object2LongSortedMap<UUID> fullItemMap = new Object2LongLinkedOpenHashMap<>(largerMap);
-            for (Entry<UUID> entry : smallerMap.object2LongEntrySet()) {
+            for (ObjectIterator<Object2LongMap.Entry<UUID>> iterator = Object2LongMaps.fastIterator(smallerMap); iterator.hasNext(); ) {
+                Object2LongMap.Entry<UUID> entry = iterator.next();
                 fullItemMap.mergeLong(entry.getKey(), entry.getLongValue(), Long::sum);
             }
             return new QIORecipeData(fullItemMap, itemCount + other.itemCount);

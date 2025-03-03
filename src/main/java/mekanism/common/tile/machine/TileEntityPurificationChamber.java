@@ -4,6 +4,7 @@ import mekanism.api.recipes.ItemStackChemicalToItemStackRecipe;
 import mekanism.api.recipes.vanilla_input.SingleItemChemicalRecipeInput;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.ItemChemical;
@@ -32,6 +33,6 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 
     @Override
     protected boolean useStatisticalMechanics() {
-        return true;
+        return MekanismConfig.usage.randomizedConsumption.get();
     }
 }

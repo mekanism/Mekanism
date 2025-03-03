@@ -4,6 +4,7 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -876,6 +877,7 @@ public class MekanismBlocks {
                 .component(MekanismDataComponents.FUZZY, false)
                 .component(MekanismDataComponents.INVERSE, false)
                 .component(MekanismDataComponents.LONG_AMOUNT, 0L)
+                .component(MekanismDataComponents.ITEM_TARGET, Optional.empty())
           ));
 
     public static final BlockRegistryObject<BlockEnergyCube, ItemBlockEnergyCube> BASIC_ENERGY_CUBE = registerEnergyCube(MekanismBlockTypes.BASIC_ENERGY_CUBE);

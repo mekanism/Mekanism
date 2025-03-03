@@ -1,5 +1,6 @@
 package mekanism.client.recipe_viewer.jei.machine;
 
+import com.mojang.serialization.Codec;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.heat.HeatAPI;
@@ -19,8 +20,10 @@ import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.common.util.text.TextUtils;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
+import mezz.jei.api.helpers.ICodecHelper;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
+import mezz.jei.api.recipe.IRecipeManager;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
@@ -81,6 +84,12 @@ public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerRecipeViewerR
     @Override
     public ResourceLocation getRegistryName(@NotNull BoilerRecipeViewerRecipe recipe) {
         return recipe.id();
+    }
+
+    @NotNull
+    @Override
+    public Codec<BoilerRecipeViewerRecipe> getCodec(@NotNull ICodecHelper codecHelper, @NotNull IRecipeManager recipeManager) {
+        return BoilerRecipeViewerRecipe.CODEC;
     }
 
     @Override

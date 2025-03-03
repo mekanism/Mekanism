@@ -76,17 +76,17 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
           UUIDUtil.CODEC.optionalFieldOf(SerializationConstants.OWNER_UUID).forGetter(freq -> Optional.ofNullable(freq.getOwner())),
           SecurityMode.CODEC.fieldOf(SerializationConstants.SECURITY_MODE).forGetter(Frequency::getSecurity),
           SerializerHelper.POSITIVE_LONG_CODEC_LEGACY.fieldOf(SerializationConstants.ENERGY).forGetter(freq -> freq.storedEnergy.getEnergy()),
-          FluidStack.OPTIONAL_CODEC.fieldOf(SerializationConstants.FLUID).forGetter(freq -> freq.storedFluid.getFluid()),
-          ChemicalStack.OPTIONAL_CODEC.optionalFieldOf(SerializationConstants.CHEMICAL).forGetter(freq -> Optional.of(freq.storedChemical.getStack())),
-          ItemStack.OPTIONAL_CODEC.fieldOf(SerializationConstants.ITEM).forGetter(freq -> freq.storedItem.getStack()),
+          SerializerHelper.LENIENT_OPTIONAL_FLUID_CODEC.fieldOf(SerializationConstants.FLUID).forGetter(freq -> freq.storedFluid.getFluid()),
+          ChemicalStack.LENIENT_OPTIONAL_CODEC.optionalFieldOf(SerializationConstants.CHEMICAL).forGetter(freq -> Optional.of(freq.storedChemical.getStack())),
+          SerializerHelper.LENIENT_OPTIONAL_STACK_CODEC.fieldOf(SerializationConstants.ITEM).forGetter(freq -> freq.storedItem.getStack()),
           Codec.DOUBLE.fieldOf(SerializationConstants.HEAT_STORED).forGetter(freq -> freq.storedHeat.getHeat()),
           Codec.DOUBLE.fieldOf(SerializationConstants.HEAT_CAPACITY).forGetter(freq -> freq.storedHeat.getHeatCapacity()),
 
           //TODO - 1.22: remove backcompat and change Chemical field to non-optional
-          ChemicalStack.OPTIONAL_CODEC.optionalFieldOf("gas").forGetter(freq -> Optional.empty()),
-          ChemicalStack.OPTIONAL_CODEC.optionalFieldOf("infuse_type").forGetter(freq -> Optional.empty()),
-          ChemicalStack.OPTIONAL_CODEC.optionalFieldOf("pigment").forGetter(freq -> Optional.empty()),
-          ChemicalStack.OPTIONAL_CODEC.optionalFieldOf("slurry").forGetter(freq -> Optional.empty())
+          ChemicalStack.LENIENT_OPTIONAL_CODEC.optionalFieldOf("gas").forGetter(freq -> Optional.empty()),
+          ChemicalStack.LENIENT_OPTIONAL_CODEC.optionalFieldOf("infuse_type").forGetter(freq -> Optional.empty()),
+          ChemicalStack.LENIENT_OPTIONAL_CODEC.optionalFieldOf("pigment").forGetter(freq -> Optional.empty()),
+          ChemicalStack.LENIENT_OPTIONAL_CODEC.optionalFieldOf("slurry").forGetter(freq -> Optional.empty())
     ).apply(instance, (name, owner, securityMode, energy, fluid, chemical, item, heat, heatCapacity, legacyGas, legacyInfuse, legacyPigment, legacySlurry) -> {
         InventoryFrequency frequency = new InventoryFrequency(name, owner.orElse(null), securityMode);
         frequency.storedEnergy.setEnergy(energy);
@@ -115,10 +115,10 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
           ChemicalStack.OPTIONAL_STREAM_CODEC, freq -> freq.storedChemical.getStack(),
           ItemStack.OPTIONAL_STREAM_CODEC, freq -> freq.storedItem.getStack(),
           ByteBufCodecs.DOUBLE, freq -> freq.storedHeat.getHeat(),
-          (frequency, energy, fluid, gas, item, heat) -> {
+          (frequency, energy, fluid, chemical, item, heat) -> {
               frequency.storedEnergy.setEnergy(energy);
               frequency.storedFluid.setStack(fluid);
-              frequency.storedChemical.setStack(gas);
+              frequency.storedChemical.setStack(chemical);
               frequency.storedItem.setStack(item);
               frequency.storedHeat.setHeat(heat);
               return frequency;

@@ -217,4 +217,36 @@ public class BasicRotaryRecipe extends RotaryRecipe {
     public RecipeSerializer<BasicRotaryRecipe> getSerializer() {
         return MekanismRecipeSerializers.ROTARY.get();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        } else if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        BasicRotaryRecipe other = (BasicRotaryRecipe) o;
+        if (hasChemicalToFluid == other.hasChemicalToFluid && hasFluidToChemical == other.hasFluidToChemical) {
+            boolean equal = true;
+            if (hasChemicalToFluid) {
+                equal = chemicalInput.equals(other.chemicalInput) && FluidStack.matches(fluidOutput, other.fluidOutput);
+            }
+            if (hasFluidToChemical) {
+                equal |= fluidInput.equals(other.fluidInput) && chemicalOutput.equals(other.chemicalOutput);
+            }
+            return equal;
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = hasFluidToChemical ? Objects.hash(fluidInput, chemicalOutput) : 1;
+        if (hasChemicalToFluid) {
+            hash = 31 * hash + chemicalInput.hashCode();
+            hash = 31 * hash + FluidStack.hashFluidAndComponents(fluidOutput);
+            hash = 31 * hash + fluidOutput.getAmount();
+        }
+        return hash;
+    }
 }

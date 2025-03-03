@@ -6,13 +6,14 @@ import org.gradle.api.file.FileType
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.TaskAction
+import org.gradle.process.ExecOperations
 import org.gradle.work.ChangeType
 import org.gradle.work.Incremental
 import org.gradle.work.InputChanges
 
 import javax.inject.Inject
 
-class OptimizePng extends DefaultTask {
+abstract class OptimizePng extends DefaultTask {
 
     @InputFiles
     @Incremental
@@ -22,6 +23,9 @@ class OptimizePng extends DefaultTask {
     OptimizePng(ObjectFactory objects) {
         this.inputFiles = objects.fileCollection()
     }
+
+    @Inject
+    protected abstract ExecOperations getExecOperations()
 
     @TaskAction
     void execute(InputChanges inputChanges) {
@@ -34,10 +38,7 @@ class OptimizePng extends DefaultTask {
             //Minimize/optimize all png files, requires optipng on the PATH
             // Credits: BrainStone
             long size = file.length()
-            project.exec {
-                executable('optipng')
-                args('-q', '-o7', '-zm1-9', '-strip', 'all', file)
-            }
+            execOperations.exec { spec -> spec.commandLine('optipng', '-q', '-o7', '-zm1-9', '-strip', 'all', file) }
             long newSize = file.length()
             if (newSize < size) {
                 System.out.format(Locale.ROOT, 'Reduced File size of %s from %d bytes to %d bytes (reduced by %.2f%%)\n',

@@ -62,4 +62,21 @@ public abstract class BasicItemStackToChemicalRecipe extends ItemStackToChemical
     public final RecipeType<ItemStackToChemicalRecipe> getType() {
         return recipeType;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        } else if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        BasicItemStackToChemicalRecipe other = (BasicItemStackToChemicalRecipe) o;
+        //Note: We don't need to compare the recipe type as that gets covered by the explicit class type check above
+        return input.equals(other.input) && output.equals(other.output);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(input, output);
+    }
 }

@@ -2,10 +2,12 @@ package mekanism.common.content.qio;
 
 import it.unimi.dsi.fastutil.bytes.Byte2IntArrayMap;
 import it.unimi.dsi.fastutil.bytes.Byte2IntMap;
+import it.unimi.dsi.fastutil.bytes.Byte2IntMaps;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.Object2LongMaps;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.ArrayList;
@@ -167,13 +169,13 @@ public class QIOCraftingTransferHelper {
             if (slots != null) {
                 //Note: This checks it in the order crafting grid, hotbar, main inventory
                 // because it is an array map, and we insert in the order that we expect
-                for (ObjectIterator<Byte2IntMap.Entry> iter = slots.byte2IntEntrySet().iterator(); iter.hasNext(); ) {
-                    Byte2IntMap.Entry entry = iter.next();
+                for (ObjectIterator<Byte2IntMap.Entry> iterator = Byte2IntMaps.fastIterator(slots); iterator.hasNext(); ) {
+                    Byte2IntMap.Entry entry = iterator.next();
                     int stored = entry.getIntValue();
                     byte slot = entry.getByteKey();
                     if (stored > toUse) {
                         //We have more stored than we need, use it and return
-                        //Note: We need to use put, as entry#setValue is not supported in fastutil maps
+                        //Note: We need to use put, as entry#setValue is not supported in Byte2IntArrayMaps
                         slots.put(slot, stored - toUse);
                         available -= toUse;
                         sources.add(new SingularHashedItemSource(slot, toUse));
@@ -182,7 +184,7 @@ public class QIOCraftingTransferHelper {
                     //We have less stored than we need, use what we can and remove the source
                     available -= stored;
                     sources.add(new SingularHashedItemSource(slot, MathUtils.clampToInt(stored)));
-                    iter.remove();
+                    iterator.remove();
                     if (stored == toUse) {
                         //If we had the exact amount we needed then return our sources
                         return sources;
@@ -196,14 +198,13 @@ public class QIOCraftingTransferHelper {
                 //TODO: This needs more thought at some point if we want to allow sending ones that have different UUIDs to the
                 // server as we know they won't end up as stackable on the server, but if we are also sending some items, then
                 // one of our matching QIO stacks might be able to stack with it and we won't have a good way of knowing which
-                for (ObjectIterator<Object2LongMap.Entry<UUID>> iter = qioSources.object2LongEntrySet().iterator(); iter.hasNext(); ) {
+                for (ObjectIterator<Object2LongMap.Entry<UUID>> iter = Object2LongMaps.fastIterator(qioSources); iter.hasNext(); ) {
                     Object2LongMap.Entry<UUID> entry = iter.next();
                     long stored = entry.getLongValue();
                     UUID key = entry.getKey();
                     if (stored > toUse) {
                         //We have more stored than we need, use it and return
-                        //Note: We need to use put, as entry#setValue is not supported in fastutil maps
-                        qioSources.put(key, stored - toUse);
+                        entry.setValue(stored - toUse);
                         available -= toUse;
                         sources.add(new SingularHashedItemSource(key, toUse));
                         return sources;
@@ -366,7 +367,8 @@ public class QIOCraftingTransferHelper {
         @Nullable
         public Object2IntMap<HashedItem> shuffleInputs(Object2IntMap<HashedItem> leftOverInput, boolean hasFrequency) {
             Object2IntMap<HashedItem> stillLeftOver = hasFrequency ? new Object2IntArrayMap<>(leftOverInput.size()) : Object2IntMaps.emptyMap();
-            for (Object2IntMap.Entry<HashedItem> entry : leftOverInput.object2IntEntrySet()) {
+            for (ObjectIterator<Object2IntMap.Entry<HashedItem>> iterator = Object2IntMaps.fastIterator(leftOverInput); iterator.hasNext(); ) {
+                Object2IntMap.Entry<HashedItem> entry = iterator.next();
                 // And try to shuffle the remaining contents into the simulation updating as we go
                 int remaining = shuffleItem(entry.getKey(), entry.getIntValue());
                 if (remaining > 0) {

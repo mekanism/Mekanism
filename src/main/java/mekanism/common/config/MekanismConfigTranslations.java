@@ -352,6 +352,8 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
     ENERGY_USAGE_PIGMENT_MIXER(TranslationPreset.ENERGY_USAGE, "Pigment Mixer"),
     ENERGY_USAGE_PAINTING(TranslationPreset.ENERGY_USAGE, "Painting Machine"),
     ENERGY_USAGE_DIMENSIONAL_STABILIZER("usage.stabilizer.energy", "Dimensional Stabilizer Energy Usage", "Energy per chunk per tick in Joules."),
+    SECONDARY_CHEMICAL_USAGE_RANDOMIZED("usage.secondary.chemical.random", "Randomized  Secondary Chemical Usage",
+          "If enabled, Chemical Injectors and Purification Chambers will consume a semi randomized amount of chemical each operation."),
 
     USAGE_TELEPORTER("usage.teleporter", "Teleporter", "Settings for configuring Teleporter Energy Usage", true),
     USAGE_TELEPORTER_BASE("usage.teleporter.base", "Base Energy Usage", "Base cost in Joules for teleporting an entity."),
@@ -538,6 +540,31 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
     STARTUP_MEKA_SUIT_ARMOR_BOOTS("gear.meka_suit.armor.boots", "Boots Armor", "Armor value of MekaSuit Boots."),
     STARTUP_MEKA_SUIT_TOUGHNESS(".gear.meka_suit.toughness", "Toughness", "Toughness value of the MekaSuit."),
     STARTUP_MEKA_SUIT_KNOCKBACK_RESISTANCE("gear.meka_suit.knockback_resistance", "Knockback Resistance", "Knockback resistance value of the MekaSuit."),
+
+    //ProjectE integration configs
+    PE_CONTENTS_PROCESSOR("projecte.data_component_processor.contents", "Mek Contents Processor",
+          "Increases the EMC value of any Mekanism items by the value of the stored or installed contents", true),
+
+    PE_MAPPER_CHEMICAL_CHEMICAL_TO_CHEMICAL("projecte.mapper.chemical_chemical_to_chemical", Mekanism.MOD_NAME + " CC2C",
+          "Maps Mekanism chemical infuser and pigment mixer recipes.", true),
+    PE_MAPPER_CRYSTALLIZER("projecte.mapper.chemical_crystallizer", Mekanism.MOD_NAME + " Crystallizer", "Maps Mekanism crystallizing recipes.", true),
+    PE_MAPPER_DISSOLUTION("projecte.mapper.chemical_dissolution", Mekanism.MOD_NAME + " Dissolution", "Maps Mekanism dissolution recipes.", true),
+    PE_MAPPER_CHEMICAL_TO_CHEMICAL("projecte.mapper.chemical_to_chemical", Mekanism.MOD_NAME + " C2C",
+          "Maps Mekanism activating and centrifuging recipes.", true),
+    PE_MAPPER_COMBINER("projecte.mapper.combiner", Mekanism.MOD_NAME + " Combiner", "Maps Mekanism combiner recipes.", true),
+    PE_MAPPER_ELECTROLYSIS("projecte.mapper.electrolysis", Mekanism.MOD_NAME + " Electrolysis", "Maps Mekanism electrolytic separator recipes.", true),
+    PE_MAPPER_WASHING("projecte.mapper.todo", Mekanism.MOD_NAME + " Washing", "Maps Mekanism washing recipes.", true),
+    PE_MAPPER_EVAPORATING("projecte.mapper.evaporating", Mekanism.MOD_NAME + " Evaporating", "Maps Mekanism evaporating recipes.", true),
+    PE_MAPPER_ITEM_CHEMICAL_TO_ITEM("projecte.mapper.item_chemical_to_item", Mekanism.MOD_NAME + " IC2I",
+          "Maps Mekanism Machine recipes that go from item, chemical to item. (Compressing, Purifying, Injecting, Metallurgic Infusing, Painting, Nucleosynthesizing)", true),
+    PE_MAPPER_ITEM_TO_CHEMICAL("projecte.mapper.item_to_chemical", Mekanism.MOD_NAME + " I2C",
+          "Maps Mekanism item stack to chemical recipes. (Chemical conversion, Oxidizing, Pigment Extracting)", true),
+    PE_MAPPER_ITEM_TO_ITEM("projecte.mapper.item_to_item", Mekanism.MOD_NAME + " Item To Item",
+          "Maps Mekanism Machine recipes that go from item to item. (Crushing, Enriching, Smelting)", true),
+    PE_MAPPER_PRESSURIZED_REACTION("projecte.mapper.pressurized_reaction", Mekanism.MOD_NAME + " PRC", "Maps Mekanism pressurized reaction recipes. (Disabled by default)", true),
+    PE_MAPPER_ROTARY("projecte.mapper.rotary", Mekanism.MOD_NAME + " Rotary", "Maps Mekanism rotary condensentrator recipes.", true),
+    PE_MAPPER_SAWING("projecte.mapper.sawing", Mekanism.MOD_NAME + " Sawing",
+          "Maps Mekanism sawmill recipes. (Disabled by default, due to causing various EMC values to be removed pertaining to charcoal/wood)", true),
     ;
 
     private final String key;

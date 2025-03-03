@@ -2,6 +2,7 @@ package mekanism.common.registration;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import mekanism.api.MekanismAPI;
 import mekanism.api.robit.RobitSkin;
@@ -13,6 +14,7 @@ import net.neoforged.neoforge.common.world.BiomeModifier;
 import net.neoforged.neoforge.common.world.StructureModifier;
 import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.neoforged.neoforge.registries.RegistryBuilder;
 import org.jetbrains.annotations.Nullable;
 
 public class DatapackDeferredRegister<T> extends DeferredMapCodecRegister<T> {
@@ -49,6 +51,15 @@ public class DatapackDeferredRegister<T> extends DeferredMapCodecRegister<T> {
         register(bus);
         //Create a new datapack registry using the direct codec that is created based on the serializer's codec
         bus.addListener((DataPackRegistryEvent.NewRegistry event) -> event.dataPackRegistry(datapackRegistryName, directCodec, networkCodec));
+    }
+
+    /**
+     * Only call this from mekanism and for custom datapack registries
+     */
+    public void createAndRegisterDatapack(IEventBus bus, Codec<T> directCodec, @Nullable Codec<T> networkCodec, Consumer<RegistryBuilder<T>> consumer) {
+        register(bus);
+        //Create a new datapack registry using the direct codec that is created based on the serializer's codec
+        bus.addListener((DataPackRegistryEvent.NewRegistry event) -> event.dataPackRegistry(datapackRegistryName, directCodec, networkCodec, consumer));
     }
 
     public ResourceKey<T> dataKey(String name) {

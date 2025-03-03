@@ -1,7 +1,6 @@
 package mekanism.common.config;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableList.Builder;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -85,7 +84,7 @@ public class WorldConfig extends BaseMekanismConfig {
             translations.topLevel().applyToBuilder(builder).push(ore);
             this.shouldGenerate = CachedBooleanValue.wrap(config, translations.shouldGenerate().applyToBuilder(builder).define("shouldGenerate", true));
 
-            Builder<OreVeinConfig> veinBuilder = ImmutableList.builder();
+            ImmutableList.Builder<OreVeinConfig> veinBuilder = ImmutableList.builder();
             for (BaseOreConfig baseConfig : oreType.getBaseConfigs()) {
                 OreVeinConfigTranslations veinTranslations = OreVeinConfigTranslations.create(ore, baseConfig.name());
                 veinTranslations.topLevel().applyToBuilder(builder).push(baseConfig.name());

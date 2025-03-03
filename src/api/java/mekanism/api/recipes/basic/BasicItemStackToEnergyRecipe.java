@@ -1,6 +1,5 @@
 package mekanism.api.recipes.basic;
 
-import java.util.Collections;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
@@ -61,5 +60,21 @@ public class BasicItemStackToEnergyRecipe extends ItemStackToEnergyRecipe {
     @Override
     public RecipeSerializer<BasicItemStackToEnergyRecipe> getSerializer() {
         return MekanismRecipeSerializers.ENERGY_CONVERSION.get();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        } else if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        BasicItemStackToEnergyRecipe other = (BasicItemStackToEnergyRecipe) o;
+        return output == other.output && input.equals(other.input);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(input, output);
     }
 }

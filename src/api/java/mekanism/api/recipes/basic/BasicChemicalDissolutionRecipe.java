@@ -80,4 +80,20 @@ public class BasicChemicalDissolutionRecipe extends ChemicalDissolutionRecipe {
     public RecipeSerializer<BasicChemicalDissolutionRecipe> getSerializer() {
         return MekanismRecipeSerializers.DISSOLUTION.get();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        } else if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        BasicChemicalDissolutionRecipe other = (BasicChemicalDissolutionRecipe) o;
+        return perTickUsage == other.perTickUsage && itemInput.equals(other.itemInput) && chemicalInput.equals(other.chemicalInput) && output.equals(other.output);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(itemInput, chemicalInput, output, perTickUsage);
+    }
 }

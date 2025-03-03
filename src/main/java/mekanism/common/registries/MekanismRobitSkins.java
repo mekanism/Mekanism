@@ -3,6 +3,7 @@ package mekanism.common.registries;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Optional;
 import mekanism.api.MekanismAPI;
 import mekanism.api.robit.AdvancementBasedRobitSkin;
 import mekanism.api.robit.RobitSkin;
@@ -26,10 +27,6 @@ public class MekanismRobitSkins {
 
     private static final DatapackDeferredRegister<RobitSkin> ROBIT_SKINS = DatapackDeferredRegister.robitSkins(Mekanism.MODID);
 
-    public static void createAndRegisterDatapack(IEventBus modEventBus) {
-        ROBIT_SKINS.createAndRegisterDatapack(modEventBus, RobitSkinSerializationHelper.DIRECT_CODEC, RobitSkinSerializationHelper.NETWORK_CODEC.codec());
-    }
-
     public static final DeferredMapCodecHolder<RobitSkin, RobitSkin> BASIC_SERIALIZER = ROBIT_SKINS.registerCodec("basic", () -> RobitSkinSerializationHelper.NETWORK_CODEC);
     public static final DeferredMapCodecHolder<RobitSkin, AdvancementBasedRobitSkin> ADVANCEMENT_BASED_SERIALIZER = ROBIT_SKINS.registerCodec("advancement_based", () -> RobitSkinSerializationHelper.ADVANCEMENT_BASED_ROBIT_SKIN_CODEC);
 
@@ -44,13 +41,19 @@ public class MekanismRobitSkins {
         return Collections.unmodifiableMap(internal);
     });
 
+    public static void createAndRegisterDatapack(IEventBus modEventBus) {
+        ROBIT_SKINS.createAndRegisterDatapack(modEventBus, RobitSkinSerializationHelper.DIRECT_CODEC, RobitSkinSerializationHelper.NETWORK_CODEC.codec(),
+              registryBuilder -> registryBuilder.defaultKey(BASE));
+    }
+
     public static SkinLookup lookup(RegistryAccess registryAccess, ResourceKey<RobitSkin> key) {
         Registry<RobitSkin> robitSkins = registryAccess.registryOrThrow(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME);
-        RobitSkin skin = robitSkins.get(key);
-        if (skin == null) {
+        Optional<RobitSkin> skin = robitSkins.getOptional(key);
+        //noinspection OptionalIsPresent - Capturing lambda
+        if (skin.isEmpty()) {
             return new SkinLookup(BASE, robitSkins.getOrThrow(BASE));
         }
-        return new SkinLookup(key, skin);
+        return new SkinLookup(key, skin.get());
     }
 
     public record SkinLookup(ResourceKey<RobitSkin> name, RobitSkin skin) {

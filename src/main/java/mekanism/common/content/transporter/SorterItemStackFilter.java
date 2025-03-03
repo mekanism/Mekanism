@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 public class SorterItemStackFilter extends SorterFilter<SorterItemStackFilter> implements IItemStackFilter<SorterItemStackFilter> {
 
     public static final MapCodec<SorterItemStackFilter> CODEC = RecordCodecBuilder.mapCodec(instance -> baseSorterCodec(instance)
-          .and(ItemStack.OPTIONAL_CODEC.fieldOf(SerializationConstants.TARGET_STACK).forGetter(SorterItemStackFilter::getItemStack))
+          .and(ItemStack.SINGLE_ITEM_CODEC.fieldOf(SerializationConstants.TARGET_STACK).forGetter(SorterItemStackFilter::getItemStack))
           .and(Codec.BOOL.optionalFieldOf(SerializationConstants.FUZZY, false).forGetter(filter -> filter.fuzzyMode))
           .apply(instance, SorterItemStackFilter::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, SorterItemStackFilter> STREAM_CODEC = StreamCodec.composite(
@@ -73,7 +73,7 @@ public class SorterItemStackFilter extends SorterFilter<SorterItemStackFilter> i
         SorterItemStackFilter other = (SorterItemStackFilter) o;
         if (fuzzyMode == other.fuzzyMode) {
             if (fuzzyMode) {
-                return itemType.getItem() == other.itemType.getItem();
+                return itemType.is(other.itemType.getItemHolder());
             }
             return ItemStack.isSameItemSameComponents(itemType, other.itemType);
         }

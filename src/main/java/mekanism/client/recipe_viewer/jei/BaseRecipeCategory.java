@@ -1,6 +1,7 @@
 package mekanism.client.recipe_viewer.jei;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.serialization.Codec;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
@@ -29,10 +30,12 @@ import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IRecipeSlotView;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.gui.widgets.IRecipeExtrasBuilder;
+import mezz.jei.api.helpers.ICodecHelper;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.recipe.IFocusGroup;
+import mezz.jei.api.recipe.IRecipeManager;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
@@ -66,11 +69,12 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
     private final List<GuiElement> guiElements = new ArrayList<>();
     private final Component component;
     private final IGuiHelper guiHelper;
-    private final IDrawable background;
     private final RecipeType<RECIPE> recipeType;
     private final IDrawable icon;
     private final int xOffset;
     private final int yOffset;
+    private final int width;
+    private final int height;
     @Nullable
     private Map<GaugeOverlay, IDrawable> overlayLookup;
     @Nullable
@@ -87,7 +91,8 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
         this.icon = icon;
         this.xOffset = xOffset;
         this.yOffset = yOffset;
-        this.background = new NOOPDrawable(width, height);
+        this.width = width;
+        this.height = height;
     }
 
     protected <ELEMENT extends GuiElement> ELEMENT addElement(ELEMENT element) {
@@ -143,13 +148,23 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
     }
 
     @Override
+    public int getWidth() {
+        return width;
+    }
+
+    @Override
+    public int getHeight() {
+        return height;
+    }
+
+    @Override
     public int getXSize() {
-        return background.getWidth();
+        return getWidth();
     }
 
     @Override
     public int getYSize() {
-        return background.getHeight();
+        return getHeight();
     }
 
     @Override
@@ -195,11 +210,6 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
     }
 
     @Override
-    public IDrawable getBackground() {
-        return background;
-    }
-
-    @Override
     public IDrawable getIcon() {
         return icon;
     }
@@ -207,6 +217,9 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
     @Nullable
     @Override
     public abstract ResourceLocation getRegistryName(RECIPE recipe);
+
+    @Override
+    public abstract Codec<RECIPE> getCodec(ICodecHelper codecHelper, IRecipeManager recipeManager);
 
     protected IProgressInfoHandler getSimpleProgressTimer() {
         if (timer == null) {
@@ -251,11 +264,19 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
               .build();
     }
 
+    protected ChemicalStack getDisplayedChemicalStack(IRecipeSlotView recipeSlot) {
+        return recipeSlot.getDisplayedIngredient(MekanismJEI.TYPE_CHEMICAL).orElse(ChemicalStack.EMPTY);
+    }
+
+    protected <STACK> STACK getDisplayedStack(IRecipeSlotView recipeSlot, IIngredientType<STACK> type, STACK empty) {
+        return recipeSlot.getDisplayedIngredient(type).orElse(empty);
+    }
+
     protected <STACK> STACK getDisplayedStack(IRecipeSlotsView recipeSlotsView, String slotName, IIngredientType<STACK> type, STACK empty) {
         Optional<IRecipeSlotView> slotByName = recipeSlotsView.findSlotByName(slotName);
         //noinspection OptionalIsPresent - Capturing lambda
         if (slotByName.isPresent()) {
-            return slotByName.get().getDisplayedIngredient(type).orElse(empty);
+            return getDisplayedStack(slotByName.get(), type, empty);
         }
         return empty;
     }

@@ -266,6 +266,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
         return new BasicChemicalTank(capacity, canExtract, canInsert, validator, attributeValidator, listener);
     }
 
+    //TODO - 1.22: Change this to being a Predicate<Holder<Chemical>> or Predicate<ChemicalStack>?
     private final Predicate<Chemical> validator;
     protected final BiPredicate<Chemical, @NotNull AutomationType> canExtract;
     protected final BiPredicate<Chemical, @NotNull AutomationType> canInsert;

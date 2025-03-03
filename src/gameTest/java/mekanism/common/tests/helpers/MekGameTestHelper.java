@@ -1,5 +1,12 @@
 package mekanism.common.tests.helpers;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.JsonOps;
+import java.util.function.Function;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.WorldUtils;
@@ -9,10 +16,12 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTestAssertException;
 import net.minecraft.gametest.framework.GameTestInfo;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.server.level.ChunkHolder;
 import net.minecraft.server.level.ChunkLevel;
 import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.DistanceManager;
+import net.minecraft.util.GsonHelper;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -183,5 +192,26 @@ public class MekGameTestHelper extends ExtendedGameTestHelper {
     private BlockHitResult createHitResult(BlockPos relativePos, Direction direction, boolean inside) {
         BlockPos absolutePos = absolutePos(relativePos);
         return new BlockHitResult(absolutePos.getCenter().relative(direction, 0.5), direction, absolutePos, inside);
+    }
+
+    public <TYPE> TYPE cycleSerialization(Codec<TYPE> codec, TYPE sourceObject, Function<String, String> rawJsonReplacer) {
+        RegistryOps<JsonElement> serializationContext = getLevel().registryAccess().createSerializationContext(JsonOps.INSTANCE);
+        DataResult<JsonElement> encodedResult = codec.encodeStart(serializationContext, sourceObject);
+        //Note: Theoretically encoding shouldn't have any issues, but if it does, throw them
+        JsonElement encoded = encodedResult.getOrThrow(GameTestAssertException::new);
+
+        String asString = GsonHelper.toStableString(encoded);
+        String replacedString = rawJsonReplacer.apply(asString);
+        if (asString.equals(replacedString)) {
+            fail("Could not find target to replace in: " + asString);
+        }
+        JsonElement toDecode = switch (encoded) {
+            case JsonObject json -> GsonHelper.parse(replacedString);
+            case JsonArray json -> GsonHelper.parseArray(replacedString);
+            case null, default -> throw new GameTestAssertException("Unable to determine type of json element to decode");
+        };
+
+        DataResult<TYPE> decoded = codec.parse(serializationContext, toDecode);
+        return decoded.getOrThrow(GameTestAssertException::new);
     }
 }

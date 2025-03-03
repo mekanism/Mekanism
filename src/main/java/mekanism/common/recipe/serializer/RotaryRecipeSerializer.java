@@ -114,5 +114,24 @@ public class RotaryRecipeSerializer implements RecipeSerializer<BasicRotaryRecip
         private ChemicalToFluid(BasicRotaryRecipe recipe) {
             this(recipe.getChemicalInput(), recipe.getFluidOutputRaw());
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o == this) {
+                return true;
+            } else if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            ChemicalToFluid other = (ChemicalToFluid) o;
+            return FluidStack.matches(output, other.output) && input.equals(other.input);
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = input.hashCode();
+            hash = 31 * hash + FluidStack.hashFluidAndComponents(output);
+            hash = 31 * hash + output.getAmount();
+            return hash;
+        }
     }
 }

@@ -7,7 +7,7 @@
   "duration": 200,
   "item_input": {
     "count": 1,
-    "tag": "c:obsidians"
+    "tag": "c:obsidians/normal"
   },
   "output": {
     "count": 1,

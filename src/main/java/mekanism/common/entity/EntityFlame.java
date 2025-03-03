@@ -265,8 +265,9 @@ public class EntityFlame extends Projectile implements IEntityWithComplexSpawn {
     private void burn(Entity entity) {
         if (!(entity instanceof ItemEntity) || MekanismConfig.gear.flamethrowerDestroyItems.get()) {
             //Only actually burn the entity if it is not an item, or we allow destroying items
-            entity.setRemainingFireTicks(SharedConstants.TICKS_PER_SECOND);
-            entity.hurt(damageSources().thrown(this, getOwner()), DAMAGE);
+            if (entity.hurt(damageSources().thrown(this, getOwner()), DAMAGE)) {
+                entity.setRemainingFireTicks(SharedConstants.TICKS_PER_SECOND);
+            }
         }
     }
 

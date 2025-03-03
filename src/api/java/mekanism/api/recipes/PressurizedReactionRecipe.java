@@ -131,5 +131,26 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe<ReactionR
                 throw new IllegalArgumentException("At least one output must be present.");
             }
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o == this) {
+                return true;
+            } else if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            PressurizedReactionRecipeOutput other = (PressurizedReactionRecipeOutput) o;
+            return ItemStack.matches(item, other.item) && chemical.equals(other.chemical);
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = chemical.hashCode();
+            if (!item.isEmpty()) {
+                hash = 31 * hash + ItemStack.hashItemAndComponents(item);
+                hash = 31 * hash + item.getCount();
+            }
+            return hash;
+        }
     }
 }

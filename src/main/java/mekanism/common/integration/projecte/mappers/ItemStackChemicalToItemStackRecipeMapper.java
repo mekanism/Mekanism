@@ -1,59 +1,54 @@
 package mekanism.common.integration.projecte.mappers;
 
-import java.util.List;
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ItemStackChemicalToItemStackRecipe;
-import mekanism.common.integration.projecte.IngredientHelper;
-import mekanism.common.integration.projecte.NSSChemical;
+import mekanism.api.recipes.NucleosynthesizingRecipe;
+import mekanism.api.recipes.basic.BasicItemStackChemicalToItemStackRecipe;
+import mekanism.api.recipes.basic.BasicNucleosynthesizingRecipe;
+import mekanism.common.config.MekanismConfigTranslations;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.tile.machine.TileEntityAntiprotonicNucleosynthesizer;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.api.mapper.recipe.RecipeTypeMapper;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.world.item.ItemStackLinkedSet;
 
 @RecipeTypeMapper
 public class ItemStackChemicalToItemStackRecipeMapper extends TypedMekanismRecipeMapper<ItemStackChemicalToItemStackRecipe> {
 
     public ItemStackChemicalToItemStackRecipeMapper() {
-        super(ItemStackChemicalToItemStackRecipe.class, MekanismRecipeType.COMPRESSING, MekanismRecipeType.PURIFYING, MekanismRecipeType.INJECTING,
-              MekanismRecipeType.PAINTING, MekanismRecipeType.METALLURGIC_INFUSING);
+        super(MekanismConfigTranslations.PE_MAPPER_ITEM_CHEMICAL_TO_ITEM, ItemStackChemicalToItemStackRecipe.class, MekanismRecipeType.COMPRESSING,
+              MekanismRecipeType.PURIFYING, MekanismRecipeType.INJECTING, MekanismRecipeType.PAINTING, MekanismRecipeType.METALLURGIC_INFUSING,
+              MekanismRecipeType.NUCLEOSYNTHESIZING);
     }
 
     @Override
-    public String getName() {
-        return "MekItemStackChemicalToItemStack";
-    }
-
-    @Override
-    public String getDescription() {
-        return "Maps Mekanism Machine recipes that go from item, chemical to item. (Compressing, Purifying, Injecting, Metallurgic Infusing, Painting)";
-    }
-
-    @Override
-    protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, ItemStackChemicalToItemStackRecipe recipe) {
-        boolean handled = false;
-        List<@NotNull ItemStack> itemRepresentations = recipe.getItemInput().getRepresentations();
-        List<@NotNull ChemicalStack> chemicalRepresentations = recipe.getChemicalInput().getRepresentations();
-        for (ChemicalStack chemicalRepresentation : chemicalRepresentations) {
-            NSSChemical nssChemical = NSSChemical.createChemical(chemicalRepresentation);
-            long chemicalAmount = chemicalRepresentation.getAmount();
-            if (recipe.perTickUsage()) {
-                chemicalAmount *= TileEntityAdvancedElectricMachine.BASE_TICKS_REQUIRED;
-            }
-            for (ItemStack itemRepresentation : itemRepresentations) {
-                ItemStack output = recipe.getOutput(itemRepresentation, chemicalRepresentation);
-                if (!output.isEmpty()) {
-                    IngredientHelper ingredientHelper = new IngredientHelper(mapper);
-                    ingredientHelper.put(itemRepresentation);
-                    ingredientHelper.put(nssChemical, chemicalAmount);
-                    if (ingredientHelper.addAsConversion(output)) {
-                        handled = true;
-                    }
-                }
+    protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, ItemStackChemicalToItemStackRecipe recipe, MekFakeGroupHelper fakeGroupHelper) {
+        int scale;
+        if (recipe.perTickUsage()) {
+            scale = recipe instanceof NucleosynthesizingRecipe ? TileEntityAntiprotonicNucleosynthesizer.BASE_TICKS_REQUIRED : TileEntityAdvancedElectricMachine.BASE_TICKS_REQUIRED;
+        } else {
+            scale = 1;
+        }
+        ItemStack output = null;
+        if (OPTIMIZE_BASIC) {
+            if (recipe instanceof BasicItemStackChemicalToItemStackRecipe basicRecipe) {
+                //This will be the case for the majority of our recipes
+                output = basicRecipe.getOutputRaw();
+            } else if (recipe instanceof BasicNucleosynthesizingRecipe basicRecipe) {
+                //This will be the case for the majority of our recipes
+                output = basicRecipe.getOutputRaw();
             }
         }
-        return handled;
+        if (output != null) {
+            return addConversion(mapper, output, forIngredients(
+                  fakeGroupHelper.forIngredient(recipe.getItemInput()),
+                  fakeGroupHelper.forIngredient(recipe.getChemicalInput()),
+                  scale
+            ));
+        }
+        return addConversions(mapper, recipe.getItemInput(), recipe.getChemicalInput(), recipe::getOutput, ItemStack::isEmpty,
+              fakeGroupHelper::forItems, fakeGroupHelper::forChemicals, ItemStackLinkedSet.TYPE_AND_TAG, TypedMekanismRecipeMapper::addConversion, scale);
     }
 }

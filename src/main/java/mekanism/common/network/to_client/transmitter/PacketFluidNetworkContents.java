@@ -38,4 +38,23 @@ public record PacketFluidNetworkContents(UUID networkID, FluidStack fluid) imple
             network.setLastFluid(fluid);
         }
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        } else if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        PacketFluidNetworkContents other = (PacketFluidNetworkContents) o;
+        return networkID.equals(other.networkID) && FluidStack.matches(fluid, other.fluid);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = networkID.hashCode();
+        hash = 31 * hash + FluidStack.hashFluidAndComponents(fluid);
+        hash = 31 * hash + fluid.getAmount();
+        return hash;
+    }
 }

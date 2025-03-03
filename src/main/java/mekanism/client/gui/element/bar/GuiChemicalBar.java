@@ -36,7 +36,7 @@ public class GuiChemicalBar extends GuiTankBar<ChemicalStack> {
     @Override
     protected List<Component> getTooltip(ChemicalStack stack) {
         List<Component> tooltips = super.getTooltip(stack);
-        ChemicalUtil.addChemicalDataToTooltip(tooltips, stack.getChemical(), Minecraft.getInstance().options.advancedItemTooltips);
+        ChemicalUtil.addChemicalDataToTooltip(tooltips, stack, Minecraft.getInstance().options.advancedItemTooltips);
         return tooltips;
     }
 

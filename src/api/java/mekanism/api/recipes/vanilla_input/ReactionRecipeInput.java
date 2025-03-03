@@ -46,4 +46,25 @@ public record ReactionRecipeInput(ItemStack item, FluidStack fluid, ChemicalStac
     public boolean isEmpty() {
         return item.isEmpty() || fluid.isEmpty() || chemical.isEmpty();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        } else if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ReactionRecipeInput other = (ReactionRecipeInput) o;
+        return chemical.equals(other.chemical) && ItemStack.matches(item, other.item) && FluidStack.matches(fluid, other.fluid);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = chemical.hashCode();
+        hash = 31 * hash + ItemStack.hashItemAndComponents(item);
+        hash = 31 + hash + item.getCount();
+        hash = 31 * hash + FluidStack.hashFluidAndComponents(fluid);
+        hash = 31 + hash + fluid.getAmount();
+        return hash;
+    }
 }

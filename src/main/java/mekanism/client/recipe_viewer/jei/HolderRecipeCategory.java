@@ -1,7 +1,10 @@
 package mekanism.client.recipe_viewer.jei;
 
+import com.mojang.serialization.Codec;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
+import mezz.jei.api.helpers.ICodecHelper;
 import mezz.jei.api.helpers.IGuiHelper;
+import mezz.jei.api.recipe.IRecipeManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -17,5 +20,10 @@ public abstract class HolderRecipeCategory<RECIPE extends Recipe<?>> extends Bas
     @Override
     public ResourceLocation getRegistryName(RecipeHolder<RECIPE> recipe) {
         return recipe.id();
+    }
+
+    @Override
+    public Codec<RecipeHolder<RECIPE>> getCodec(ICodecHelper codecHelper, IRecipeManager recipeManager) {
+        return codecHelper.getRecipeHolderCodec();
     }
 }

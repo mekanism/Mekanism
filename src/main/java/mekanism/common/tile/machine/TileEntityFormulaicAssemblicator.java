@@ -4,7 +4,7 @@ import it.unimi.dsi.fastutil.ints.IntArraySet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntMap.Entry;
+import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -616,7 +616,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
 
     private boolean setSlotIfChanged(Object2IntMap<HashedItem> storedMap, IInventorySlot inputSlot) {
         boolean empty = false;
-        ObjectIterator<Entry<HashedItem>> iterator = storedMap.object2IntEntrySet().iterator();
+        ObjectIterator<Object2IntMap.Entry<HashedItem>> iterator = Object2IntMaps.fastIterator(storedMap);
         Object2IntMap.Entry<HashedItem> next = iterator.next();
         HashedItem item = next.getKey();
         int stored = next.getIntValue();

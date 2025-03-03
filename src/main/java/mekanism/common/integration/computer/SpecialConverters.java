@@ -243,7 +243,7 @@ public class SpecialConverters {
         } catch (CommandSyntaxException ex) {
             throw new ComputerException("Invalid SNBT: " + ex.getMessage());
         }
-        return DataComponentPatch.CODEC.decode(getRegistryNbtOps(), nbt).getOrThrow(ComputerException::new).getFirst();
+        return DataComponentPatch.CODEC.parse(getRegistryNbtOps(), nbt).getOrThrow(ComputerException::new);
     }
 
     private static DynamicOps<Tag> getRegistryNbtOps() {

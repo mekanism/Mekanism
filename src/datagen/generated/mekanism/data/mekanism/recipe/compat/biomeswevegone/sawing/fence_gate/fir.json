@@ -1,0 +1,22 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "biomeswevegone"
+    }
+  ],
+  "type": "mekanism:sawing",
+  "input": {
+    "count": 1,
+    "item": "biomeswevegone:fir_fence_gate"
+  },
+  "main_output": {
+    "count": 2,
+    "id": "biomeswevegone:fir_planks"
+  },
+  "secondary_chance": 1.0,
+  "secondary_output": {
+    "count": 4,
+    "id": "minecraft:stick"
+  }
+}

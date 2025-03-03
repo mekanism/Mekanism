@@ -1,15 +1,16 @@
 package mekanism.common.lib.multiblock;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
 import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectSortedMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.ToIntFunction;
 import mekanism.common.lib.math.voxel.BlockPosBuilder;
@@ -139,18 +140,19 @@ public class Structure {
             }
             //Merge nodes, and update their structure to point to our structure
             MultiblockManager<?> manager = getManager();
-            for (Entry<BlockPos, IMultiblockBase> e : s.nodes.entrySet()) {
+            for (Map.Entry<BlockPos, IMultiblockBase> e : s.nodes.entrySet()) {
                 IMultiblockBase v = e.getValue();
                 nodes.put(e.getKey(), v);
                 v.setStructure(manager, this);
             }
             //Iterate through the over the other structure's minor plane map and merge
             // the minor planes into our structure.
-            for (Entry<Axis, Int2ObjectSortedMap<VoxelPlane>> entry : s.minorPlaneMap.entrySet()) {
+            for (Map.Entry<Axis, Int2ObjectSortedMap<VoxelPlane>> entry : s.minorPlaneMap.entrySet()) {
                 Axis axis = entry.getKey();
                 Int2ObjectSortedMap<VoxelPlane> minorMap = getMinorAxisMap(axis);
                 Int2ObjectSortedMap<VoxelPlane> majorMap = getMajorAxisMap(axis);
-                for (Int2ObjectMap.Entry<VoxelPlane> e : entry.getValue().int2ObjectEntrySet()) {
+                for (ObjectIterator<Int2ObjectMap.Entry<VoxelPlane>> iterator = Int2ObjectMaps.fastIterator(entry.getValue()); iterator.hasNext(); ) {
+                    Int2ObjectMap.Entry<VoxelPlane> e = iterator.next();
                     int key = e.getIntKey();
                     VoxelPlane value = e.getValue();
                     VoxelPlane majorPlane = majorMap.get(key);
@@ -178,11 +180,12 @@ public class Structure {
             }
             //Iterate through the over the other structure's major plane map and merge
             // the major planes into our structure.
-            for (Entry<Axis, Int2ObjectSortedMap<VoxelPlane>> entry : s.planeMap.entrySet()) {
+            for (Map.Entry<Axis, Int2ObjectSortedMap<VoxelPlane>> entry : s.planeMap.entrySet()) {
                 Axis axis = entry.getKey();
                 Int2ObjectSortedMap<VoxelPlane> minorMap = getMinorAxisMap(axis);
                 Int2ObjectSortedMap<VoxelPlane> majorMap = getMajorAxisMap(axis);
-                for (Int2ObjectMap.Entry<VoxelPlane> e : entry.getValue().int2ObjectEntrySet()) {
+                for (ObjectIterator<Int2ObjectMap.Entry<VoxelPlane>> iterator = Int2ObjectMaps.fastIterator(entry.getValue()); iterator.hasNext(); ) {
+                    Int2ObjectMap.Entry<VoxelPlane> e = iterator.next();
                     int key = e.getIntKey();
                     VoxelPlane value = e.getValue();
                     VoxelPlane majorPlane = majorMap.get(key);

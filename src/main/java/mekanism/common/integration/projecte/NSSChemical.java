@@ -1,15 +1,16 @@
 package mekanism.common.integration.projecte;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
+import java.util.Optional;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.providers.IChemicalProvider;
-import moze_intel.projecte.api.codec.NSSCodecHolder;
 import moze_intel.projecte.api.nss.AbstractNSSTag;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import org.jetbrains.annotations.NotNull;
@@ -19,17 +20,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class NSSChemical extends AbstractNSSTag<Chemical> {
 
-    private static final boolean ALLOW_DEFAULT = false;
-
-    /**
-     * Codec for encoding NSSChemicals to and from strings.
-     */
-    public static final Codec<NSSChemical> LEGACY_CODEC = createLegacyCodec(MekanismAPI.CHEMICAL_REGISTRY, ALLOW_DEFAULT, "CHEMICAL|", NSSChemical::new);
-
-    public static final MapCodec<NSSChemical> EXPLICIT_MAP_CODEC = createExplicitCodec(MekanismAPI.CHEMICAL_REGISTRY, ALLOW_DEFAULT, NSSChemical::new);
-    public static final Codec<NSSChemical> EXPLICIT_CODEC = EXPLICIT_MAP_CODEC.codec();
-
-    public static final NSSCodecHolder<NSSChemical> CODECS = new NSSCodecHolder<>("CHEMICAL", LEGACY_CODEC, EXPLICIT_CODEC);
+    public static final MapCodec<NSSChemical> CODEC = createCodec(MekanismAPI.CHEMICAL_REGISTRY, false, NSSChemical::new);
 
     private NSSChemical(@NotNull ResourceLocation resourceLocation, boolean isTag) {
         super(resourceLocation, isTag);
@@ -65,10 +56,33 @@ public final class NSSChemical extends AbstractNSSTag<Chemical> {
     }
 
     /**
+     * Helper method to create an {@link NSSChemical} representing a chemical from a {@link Holder}.
+     */
+    @NotNull
+    public static NSSChemical createChemical(@NotNull Holder<Chemical> chemical) {
+        ResourceKey<Chemical> key = chemical.getKey();
+        if (key == null) {
+            if (!chemical.isBound()) {
+                throw new IllegalArgumentException("Can't make an NSSChemical with an unbound direct holder");
+            }
+            Optional<ResourceKey<Chemical>> registryKey = MekanismAPI.CHEMICAL_REGISTRY.getResourceKey(chemical.value());
+            if (registryKey.isEmpty()) {
+                throw new IllegalArgumentException("Can't make an NSSChemical with an unregistered chemical");
+            }
+            key = registryKey.get();
+        }
+        //This should never be null, or it would have crashed on being registered
+        return createChemical(key.location());
+    }
+
+    /**
      * Helper method to create an {@link NSSChemical} representing a chemical from a {@link ResourceLocation}
      */
     @NotNull
     public static NSSChemical createChemical(@NotNull ResourceLocation chemicalId) {
+        if (chemicalId.equals(MekanismAPI.CHEMICAL_REGISTRY.getDefaultKey())) {
+            throw new IllegalArgumentException("Can't make NSSChemical with an empty stack");
+        }
         return new NSSChemical(chemicalId, false);
     }
 
@@ -95,12 +109,12 @@ public final class NSSChemical extends AbstractNSSTag<Chemical> {
     }
 
     @Override
-    protected NSSChemical createNew(Chemical chemical) {
+    protected NormalizedSimpleStack createNew(Holder<Chemical> chemical) {
         return createChemical(chemical);
     }
 
     @Override
-    public NSSCodecHolder<NSSChemical> codecs() {
-        return CODECS;
+    public MapCodec<? extends NormalizedSimpleStack> codec() {
+        return CODEC;
     }
 }

@@ -38,4 +38,27 @@ public record RotaryRecipeInput(Either<FluidStack, ChemicalStack> input) impleme
     public boolean isEmpty() {
         return input.map(FluidStack::isEmpty, ChemicalStack::isEmpty);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        } else if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        RotaryRecipeInput other = (RotaryRecipeInput) o;
+        if (input.left().isPresent() && other.input.left().isPresent()) {
+            return FluidStack.matches(input.left().get(), other.input.left().get());
+        }
+        //If at least one has a chemical, just check if the eithers are equal
+        return input.equals(other.input);
+    }
+
+    @Override
+    public int hashCode() {
+        return input.map(fluid -> {
+            int hash = FluidStack.hashFluidAndComponents(fluid);
+            return 31 * hash + fluid.getAmount();
+        }, ChemicalStack::hashCode);
+    }
 }

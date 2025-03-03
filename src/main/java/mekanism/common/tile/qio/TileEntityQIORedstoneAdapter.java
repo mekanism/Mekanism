@@ -1,6 +1,6 @@
 package mekanism.common.tile.qio;
 
-import java.util.List;
+import java.util.Optional;
 import mekanism.api.SerializationConstants;
 import mekanism.client.model.data.DataBasedModelLoader;
 import mekanism.common.content.qio.QIOFrequency;
@@ -18,7 +18,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -135,7 +134,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     @Override
     public ModelData getModelData() {
         if (isEmitting) {
-            return ModelData.builder().with(DataBasedModelLoader.EMITTING, null).build();
+            return ModelData.of(DataBasedModelLoader.EMITTING, null);
         }
         return super.getModelData();
     }
@@ -159,18 +158,9 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     }
 
     @Override
-    public List<DataComponentType<?>> getRemapEntries() {
-        List<DataComponentType<?>> remapEntries = super.getRemapEntries();
-        remapEntries.add(MekanismDataComponents.ITEM_TARGET.get());
-        return remapEntries;
-    }
-
-    @Override
     protected void collectImplicitComponents(@NotNull DataComponentMap.Builder builder) {
         super.collectImplicitComponents(builder);
-        if (itemType != null) {
-            builder.set(MekanismDataComponents.ITEM_TARGET, itemType);
-        }
+        builder.set(MekanismDataComponents.ITEM_TARGET, Optional.ofNullable(itemType));
         builder.set(MekanismDataComponents.LONG_AMOUNT, count);
         builder.set(MekanismDataComponents.FUZZY, fuzzy);
         builder.set(MekanismDataComponents.INVERSE, inverted);
@@ -179,7 +169,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     @Override
     protected void applyImplicitComponents(@NotNull BlockEntity.DataComponentInput input) {
         super.applyImplicitComponents(input);
-        itemType = input.get(MekanismDataComponents.ITEM_TARGET);
+        itemType = input.getOrDefault(MekanismDataComponents.ITEM_TARGET, Optional.empty()).orElse(null);
         count = input.getOrDefault(MekanismDataComponents.LONG_AMOUNT, count);
         fuzzy = input.getOrDefault(MekanismDataComponents.FUZZY, fuzzy);
         inverted = input.getOrDefault(MekanismDataComponents.INVERSE, inverted);

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismAPITags;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.text.TextComponentUtil;
@@ -92,7 +93,12 @@ public class ChemicalStackHelper implements IIngredientHelper<ChemicalStack> {
 
     @Override
     public Stream<ResourceLocation> getTagStream(ChemicalStack ingredient) {
-        return ingredient.getChemical().getTags().map(TagKey::location);
+        return ingredient.getTags().map(TagKey::location);
+    }
+
+    @Override
+    public boolean isHiddenFromRecipeViewersByTags(ChemicalStack ingredient) {
+        return ingredient.is(MekanismAPITags.Chemicals.HIDDEN_FROM_RECIPE_VIEWERS);
     }
 
     @Override

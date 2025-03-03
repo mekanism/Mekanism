@@ -1,0 +1,17 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "biomeswevegone"
+    }
+  ],
+  "type": "mekanism:sawing",
+  "input": {
+    "count": 1,
+    "item": "biomeswevegone:cika_boat"
+  },
+  "main_output": {
+    "count": 5,
+    "id": "biomeswevegone:cika_planks"
+  }
+}

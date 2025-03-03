@@ -1,11 +1,14 @@
 package mekanism.common.tile.machine;
 
+import com.mojang.serialization.DataResult;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMaps;
+import it.unimi.dsi.fastutil.objects.Object2IntSortedMap;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.ArrayList;
 import java.util.BitSet;
@@ -88,6 +91,7 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -142,7 +146,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
 
     private final Predicate<ItemStack> overflowCollector = this::trackOverflow;
     //Note: Linked map to ensure each call to save is in the same order so that there is more uniformity
-    private final Object2IntMap<HashedItem> overflow = new Object2IntLinkedOpenHashMap<>();
+    private final Object2IntSortedMap<HashedItem> overflow = new Object2IntLinkedOpenHashMap<>();
     private boolean hasOverflow;
     private boolean recheckOverflow;
 
@@ -444,8 +448,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         BlockPos startingPos = getStartingPos();
         int diameter = getDiameter();
         long target = targetChunk == null ? ChunkPos.INVALID_CHUNK_POS : targetChunk.toLong();
-        for (ObjectIterator<Long2ObjectMap.Entry<BitSet>> it = oresToMine.long2ObjectEntrySet().iterator(); it.hasNext(); ) {
-            Long2ObjectMap.Entry<BitSet> entry = it.next();
+        for (ObjectIterator<Long2ObjectMap.Entry<BitSet>> iterator = Long2ObjectMaps.fastIterator(oresToMine); iterator.hasNext(); ) {
+            Long2ObjectMap.Entry<BitSet> entry = iterator.next();
             long chunk = entry.getLongKey();
             BitSet chunkToMine = entry.getValue();
             ChunkPos currentChunk = null;
@@ -466,7 +470,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
                 int index = chunkToMine.previousSetBit(previous);
                 if (index == -1) {
                     //If there is no found index, remove it and continue on
-                    it.remove();
+                    iterator.remove();
                     break;
                 } else if (currentChunk == null) {
                     //Lazy init the current chunk so that if it is empty, and we are just going to remove it
@@ -507,7 +511,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
                                     if (chunkToMine.isEmpty()) {
                                         // if we are out of stored elements then we remove this chunk and continue to check other chunks
                                         // remove it so that we don't have to check the chunk next time around
-                                        it.remove();
+                                        iterator.remove();
                                         // we no longer have a chunk we are targeting, so remove it. We might get a new chunk to target
                                         // next time we try to mine but there is no reason to keep the old chunk in memory in the meantime
                                         updateTargetChunk(null);
@@ -533,7 +537,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
                 chunkToMine.clear(index);
                 if (chunkToMine.isEmpty()) {
                     // if we are out of stored elements then we remove this chunk and continue to check other chunks
-                    it.remove();
+                    iterator.remove();
                     break;
                 }
                 // if we still have elements in this chunk that can potentially be mined, decrement our index
@@ -760,7 +764,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         if (hasOverflow) {
             //Try to add any existing overflow to our inventory
             boolean recheck = false;
-            for (ObjectIterator<Object2IntMap.Entry<HashedItem>> iter = overflow.object2IntEntrySet().iterator(); iter.hasNext(); ) {
+            for (ObjectIterator<Object2IntMap.Entry<HashedItem>> iter = Object2IntMaps.fastIterator(overflow); iter.hasNext(); ) {
                 Object2IntMap.Entry<HashedItem> entry = iter.next();
                 int amount = entry.getIntValue();
                 ItemStack stack = entry.getKey().createStack(amount);
@@ -901,7 +905,12 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         NBTUtils.writeEnum(nbtTags, SerializationConstants.STATE, searcher.state);
         if (!overflow.isEmpty()) {
             //Persist any items that are stored as overflow
-            nbtTags.put(SerializationConstants.OVERFLOW, OverflowAware.writeOverflow(provider, overflow));
+            DataResult<Tag> encoded = OverflowAware.CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), new OverflowAware(overflow));
+            if (encoded.isSuccess()) {
+                nbtTags.put(SerializationConstants.OVERFLOW, encoded.getOrThrow());
+            } else {
+                encoded.ifError(error -> Mekanism.logger.warn("Failed to encode overflowed items: {}", error.message()));
+            }
         }
     }
 
@@ -1044,7 +1053,10 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         NBTUtils.setListIfPresent(dataMap, SerializationConstants.OVERFLOW, Tag.TAG_COMPOUND, overflowTag -> {
             //Clear any existing overflow and read what is the actual overflow from NBT
             overflow.clear();
-            OverflowAware.readOverflow(provider, overflow, overflowTag);
+            DataResult<Object2IntMap<HashedItem>> decoded = OverflowAware.CODEC.parse(provider.createSerializationContext(NbtOps.INSTANCE), overflowTag)
+                  .map(OverflowAware::overflow);
+            decoded.ifSuccess(overflow::putAll);
+            decoded.ifError(error -> Mekanism.logger.warn("Failed to decode overflowed items: {}", error.message()));
             hasOverflow = !overflow.isEmpty();
             //Note: Marking rechecking if any of the overflow can fit probably isn't strictly necessary here as in theory it already tried
             // to insert anything before when it was saving, but it doesn't really hurt and then if the last tick had it get overflow or

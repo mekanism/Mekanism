@@ -213,7 +213,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
         pose.mulPose(Axis.ZP.rotationDegrees(180));
         pose.rotateAround(rotation,  0.5F, 0.0F, 0.5F);
         PoseStack.Pose matrixEntry = pose.last();
-        ModelData modelData = ModelData.builder().with(EntityRobit.SKIN_TEXTURE_PROPERTY, MathUtils.getByIndexMod(textures, index)).build();
+        ModelData modelData = ModelData.of(EntityRobit.SKIN_TEXTURE_PROPERTY, MathUtils.getByIndexMod(textures, index));
         for (BakedQuad quad : model.getQuads(null, null, robit.level().random, modelData, null)) {
             builder.putBulkData(matrixEntry, quad, 1, 1, 1, 1, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
         }

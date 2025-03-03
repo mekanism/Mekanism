@@ -1,6 +1,5 @@
 package mekanism.common.lib.frequency;
 
-import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
 import java.util.ArrayList;
@@ -17,6 +16,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import mekanism.api.SerializationConstants;
 import mekanism.api.security.SecurityMode;
+import mekanism.common.Mekanism;
 import mekanism.common.attachments.FrequencyAware;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableFrequency;
@@ -345,11 +345,15 @@ public class TileComponentFrequency implements ITileComponent {
     private static void serializeFrequency(DynamicOps<Tag> ops, FrequencyType<?> type, FrequencyData frequencyData, CompoundTag frequencyNBT) {
         Frequency frequency = frequencyData.selectedFrequency;
         if (frequency != null) {
-            Tag frequencyTag = type.getIdentitySerializer().codec().encodeStart(ops, frequency.getIdentity()).getOrThrow();
-            //Note: While we save the full frequency data, and do make some use of it in reading
-            // in general this isn't needed and won't be used as the frequency will be grabbed
-            // from the frequency manager
-            frequencyNBT.put(frequency.getType().getName(), frequencyTag);
+            DataResult<Tag> encodedIdentity = type.getIdentitySerializer().codec().encodeStart(ops, frequency.getIdentity());
+            if (encodedIdentity.isSuccess()) {
+                //Note: While we save the full frequency data, and do make some use of it in reading
+                // in general this isn't needed and won't be used as the frequency will be grabbed
+                // from the frequency manager
+                frequencyNBT.put(frequency.getType().getName(), encodedIdentity.getOrThrow());
+            } else {
+                encodedIdentity.ifError(error -> Mekanism.logger.warn("Failed to serialize frequency identity: {}", error.message()));
+            }
         }
     }
 
@@ -365,9 +369,9 @@ public class TileComponentFrequency implements ITileComponent {
                 }
                 if (frequencyNBT.contains(type.getName(), Tag.TAG_COMPOUND)) {
                     CompoundTag frequencyData = frequencyNBT.getCompound(type.getName());
-                    DataResult<Pair<FrequencyIdentity, Tag>> decoded = type.getIdentitySerializer().codec().decode(registryOps, frequencyData);
-                    if (decoded.isSuccess()) {
-                        FrequencyIdentity identity = decoded.getOrThrow().getFirst();
+                    DataResult<FrequencyIdentity> decodedIdentity = type.getIdentitySerializer().codec().parse(registryOps, frequencyData);
+                    if (decodedIdentity.isSuccess()) {
+                        FrequencyIdentity identity = decodedIdentity.getOrThrow();
                         if (identity.ownerUUID() != null) {
                             if (identity.securityMode() == SecurityMode.PUBLIC || identity.ownerUUID().equals(player.getUUID())) {
                                 //If the frequency is public or the player is the owner allow setting the frequency
@@ -375,6 +379,8 @@ public class TileComponentFrequency implements ITileComponent {
                             }
                             continue;
                         }
+                    } else {
+                        decodedIdentity.ifError(error -> Mekanism.logger.warn("Failed to deserialize frequency identity: {}", error.message()));
                     }
                 }
                 //If our stored data doesn't have a frequency for the specific type or there was some issue parsing the data, unset the frequency
@@ -391,7 +397,12 @@ public class TileComponentFrequency implements ITileComponent {
             Frequency frequency = entry.getValue().selectedFrequency;
             if (frequency != null && type != FrequencyType.SECURITY) {
                 //Don't allow transferring security data via config cards
-                frequencyNBT.put(type.getName(), type.getIdentitySerializer().codec().encodeStart(registryOps, frequency.getIdentity()).getOrThrow());
+                DataResult<Tag> encoded = type.getIdentitySerializer().codec().encodeStart(registryOps, frequency.getIdentity());
+                if (encoded.isSuccess()) {
+                    frequencyNBT.put(type.getName(), encoded.getOrThrow());
+                } else {
+                    encoded.ifError(error -> Mekanism.logger.warn("Failed to encode frequency identity: {}", error.message()));
+                }
             }
         }
         if (!frequencyNBT.isEmpty()) {

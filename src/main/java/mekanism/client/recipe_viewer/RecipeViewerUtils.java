@@ -12,8 +12,8 @@ import java.util.stream.Collectors;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.recipes.ItemStackToFluidOptionalItemRecipe;
 import mekanism.api.recipes.ItemStackToChemicalRecipe;
+import mekanism.api.recipes.basic.BasicItemStackToFluidOptionalItemRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.progress.IProgressInfoHandler;
@@ -120,15 +120,15 @@ public class RecipeViewerUtils {
         return stacks;
     }
 
-    public static Map<ResourceLocation, ItemStackToFluidOptionalItemRecipe> getLiquificationRecipes() {
-        Map<ResourceLocation, ItemStackToFluidOptionalItemRecipe> liquification = new HashMap<>();
+    public static Map<ResourceLocation, BasicItemStackToFluidOptionalItemRecipe> getLiquificationRecipes() {
+        Map<ResourceLocation, BasicItemStackToFluidOptionalItemRecipe> liquification = new HashMap<>();
         //TODO: Do we want to loop creative tabs or something instead?
         // In theory recipe loaders should init the creative tabs before we are called so we wouldn't need to call
         // CreativeModeTab#buildContents, and in theory we only need to care about things in search so could use:
         // CreativeModeTabs.searchTab().getDisplayItems(). The bigger issue is how to come up with unique synthetic
         // names for the recipes as EMI requires they be unique. (Maybe index them?)
         for (Item item : BuiltInRegistries.ITEM) {
-            ItemStackToFluidOptionalItemRecipe recipe = TileEntityNutritionalLiquifier.getRecipe(item.getDefaultInstance());
+            BasicItemStackToFluidOptionalItemRecipe recipe = TileEntityNutritionalLiquifier.getRecipe(item.getDefaultInstance());
             if (recipe != null) {
                 liquification.put(RecipeViewerUtils.synthetic(RegistryUtils.getName(item), "liquification", Mekanism.MODID), recipe);
             }
@@ -139,9 +139,8 @@ public class RecipeViewerUtils {
     public static List<ItemStack> getDisplayItems(ChemicalStackIngredient ingredient) {
         SequencedSet<Named<Item>> tags = new LinkedHashSet<>();
         for (ChemicalStack chemicalStack : ingredient.getRepresentations()) {
-            Chemical chemical = chemicalStack.getChemical();
-            if (!chemical.is(MekanismAPITags.Chemicals.DIRTY)) {
-                TagKey<Item> oreTag = chemical.getOreTag();
+            if (!chemicalStack.is(MekanismAPITags.Chemicals.DIRTY)) {
+                TagKey<Item> oreTag = chemicalStack.getChemical().getOreTag();
                 if (oreTag != null) {
                     BuiltInRegistries.ITEM.getTag(oreTag).ifPresent(tags::add);
                 }

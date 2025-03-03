@@ -1,9 +1,11 @@
 package mekanism.common.network.to_client.transmitter;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
+import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import mekanism.common.Mekanism;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.content.transporter.TransporterStack;
@@ -44,7 +46,8 @@ public record PacketTransporterBatch(long pos, IntSet deletes, Int2ObjectMap<Tra
     public void handle(IPayloadContext context) {
         if (PacketUtils.blockEntity(context, pos) instanceof TileEntityLogisticalTransporterBase tile) {
             LogisticalTransporterBase transporter = tile.getTransmitter();
-            for (Int2ObjectMap.Entry<TransporterStack> entry : updates.int2ObjectEntrySet()) {
+            for (ObjectIterator<Int2ObjectMap.Entry<TransporterStack>> iterator = Int2ObjectMaps.fastIterator(updates); iterator.hasNext(); ) {
+                Int2ObjectMap.Entry<TransporterStack> entry = iterator.next();
                 transporter.addStack(entry.getIntKey(), entry.getValue());
             }
             for (int toDelete : deletes) {

@@ -5,7 +5,7 @@
     "#": {
       "type": "neoforge:difference",
       "base": {
-        "tag": "c:stairs/plastic/glow"
+        "tag": "mekanismadditions:plastic_stairs/glow"
       },
       "subtracted": {
         "item": "mekanismadditions:orange_plastic_glow_stairs"

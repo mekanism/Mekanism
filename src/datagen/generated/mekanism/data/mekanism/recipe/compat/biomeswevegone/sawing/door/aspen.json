@@ -1,0 +1,17 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "biomeswevegone"
+    }
+  ],
+  "type": "mekanism:sawing",
+  "input": {
+    "count": 1,
+    "item": "biomeswevegone:aspen_door"
+  },
+  "main_output": {
+    "count": 2,
+    "id": "biomeswevegone:aspen_planks"
+  }
+}

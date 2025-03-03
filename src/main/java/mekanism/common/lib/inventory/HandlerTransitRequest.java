@@ -2,6 +2,7 @@ package mekanism.common.lib.inventory;
 
 import it.unimi.dsi.fastutil.ints.Int2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
+import it.unimi.dsi.fastutil.ints.Int2IntMaps;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.Collection;
 import java.util.Collections;
@@ -68,7 +69,7 @@ public class HandlerTransitRequest extends CollectionTransitRequest {
             if (handler != null && !slotMap.isEmpty()) {
                 HashedItem itemType = getItemType();
                 ItemStack itemStack = itemType.getInternalStack();
-                for (ObjectIterator<Int2IntMap.Entry> iterator = slotMap.int2IntEntrySet().iterator(); iterator.hasNext(); )  {
+                for (ObjectIterator<Int2IntMap.Entry> iterator = Int2IntMaps.fastIterator(slotMap); iterator.hasNext(); ) {
                     Int2IntMap.Entry entry = iterator.next();
                     int slot = entry.getIntKey();
                     int currentCount = entry.getIntValue();

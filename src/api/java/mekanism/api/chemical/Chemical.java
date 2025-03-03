@@ -209,7 +209,10 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
      * @param tag The tag to check.
      *
      * @return {@code true} if the chemical is in the tag, {@code false} otherwise.
+     *
+     * @deprecated Access via {@link ChemicalStack#is(TagKey)} or as a holder.
      */
+    @Deprecated(forRemoval = true, since = "10.7.9")
     public boolean is(TagKey<Chemical> tag) {
         return getAsHolder().is(tag);
     }
@@ -218,7 +221,10 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
      * Gets the tags that this chemical is a part of.
      *
      * @return All the tags this chemical is a part of.
+     *
+     * @deprecated Access via {@link ChemicalStack#getTags()} or as a holder.
      */
+    @Deprecated(forRemoval = true, since = "10.7.9")
     public Stream<TagKey<Chemical>> getTags() {
         return getAsHolder().tags();
     }

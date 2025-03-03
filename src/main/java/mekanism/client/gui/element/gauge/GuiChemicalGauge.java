@@ -105,7 +105,7 @@ public class GuiChemicalGauge extends GuiTankGauge<Chemical, IChemicalTank> {
         } else {
             list.add(MekanismLang.GENERIC_STORED_MB.translate(tank.getType(), TextUtils.format(amount)));
         }
-        ChemicalUtil.addChemicalDataToTooltip(list, tank.getType(), Minecraft.getInstance().options.advancedItemTooltips);
+        ChemicalUtil.addChemicalDataToTooltip(list, tank.getStack(), Minecraft.getInstance().options.advancedItemTooltips);
         return list;
     }
 

@@ -12,7 +12,6 @@ import mekanism.client.recipe_viewer.interfaces.IRecipeViewerRecipeArea;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mezz.jei.api.gui.handlers.IGuiClickableArea;
 import mezz.jei.api.gui.handlers.IGuiContainerHandler;
-import mezz.jei.api.ingredients.ITypedIngredient;
 import mezz.jei.api.runtime.IClickableIngredient;
 import mezz.jei.api.runtime.IIngredientManager;
 import net.minecraft.client.gui.components.events.ContainerEventHandler;
@@ -34,15 +33,8 @@ public class JeiGuiElementHandler implements IGuiContainerHandler<GuiMekanism<?>
 
     @Override
     public Optional<IClickableIngredient<?>> getClickableIngredientUnderMouse(GuiMekanism<?> gui, double mouseX, double mouseY) {
-        return GuiElementHandler.getClickableIngredientUnderMouse(gui, mouseX, mouseY, (helper, ingredient) -> {
-            Optional<ITypedIngredient<Object>> typedIngredient = ingredientManager.createTypedIngredient(ingredient);
-            if (typedIngredient.isPresent()) {
-                record ClickableIngredient<T>(ITypedIngredient<T> getTypedIngredient, Rect2i getArea) implements IClickableIngredient<T> {
-                }
-                return new ClickableIngredient<>(typedIngredient.get(), helper.getIngredientBounds(mouseX, mouseY));
-            }
-            return null;
-        });
+        return GuiElementHandler.getClickableIngredientUnderMouse(gui, mouseX, mouseY, (helper, ingredient) ->
+              ingredientManager.createClickableIngredient(ingredient, helper.getIngredientBounds(mouseX, mouseY), false).orElse(null));
     }
 
     @Override
@@ -75,7 +67,7 @@ public class JeiGuiElementHandler implements IGuiContainerHandler<GuiMekanism<?>
                     //Note: We do not need to check if there is a window over the child as if we are currently hovering any window
                     // we only check the children that are part of that window
                     if (categories != null && recipeArea.isMouseOverRecipeViewerArea(mouseX, mouseY)) {
-                        //TODO: Decide if we want our own implementation to overwrite the getTooltipStrings and have it show something like "Crusher Recipes"
+                        //TODO: Decide if we want our own implementation to overwrite the getTooltip and have it show something like "Crusher Recipes"
                         IGuiClickableArea clickableArea = IGuiClickableArea.createBasic(element.getRelativeX(), element.getRelativeY(),
                               element.getWidth(), element.getHeight(), MekanismJEI.recipeType(categories));
                         return Collections.singleton(clickableArea);

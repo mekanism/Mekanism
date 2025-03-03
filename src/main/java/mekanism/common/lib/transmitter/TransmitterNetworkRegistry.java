@@ -5,8 +5,10 @@ import com.google.common.collect.Multimap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
+import it.unimi.dsi.fastutil.objects.Object2BooleanMaps;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
 import java.util.Deque;
@@ -168,7 +170,8 @@ public class TransmitterNetworkRegistry {
             if (MekanismAPI.debug) {
                 Mekanism.logger.info("Dealing with {} changed chunks", changed.size());
             }
-            for (Object2BooleanMap.Entry<Chunk3D> entry : changed.object2BooleanEntrySet()) {
+            for (ObjectIterator<Object2BooleanMap.Entry<Chunk3D>> iterator = Object2BooleanMaps.fastIterator(changed); iterator.hasNext(); ) {
+                Object2BooleanMap.Entry<Chunk3D> entry = iterator.next();
                 Chunk3D chunk = entry.getKey();
                 boolean loaded = entry.getBooleanValue();
                 Collection<Transmitter<?, ?, ?>> chunkTransmitters = transmitters.get(chunk);

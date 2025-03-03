@@ -1,6 +1,7 @@
 package mekanism.common.base;
 
 import mekanism.common.lib.Version;
+import net.minecraft.network.Connection;
 
 /**
  * Implement in your main class if your mod happens to be completely reliant on Mekanism, or in other words, is a Mekanism module.
@@ -27,16 +28,18 @@ public interface IModModule {
     /**
      * Called when the player returns to the main menu.
      */
-    void resetClient();
+    default void resetClient() {
+    }
 
     /**
      * Called when dimension changed or returns to main menu.
      */
-    void resetClientDimensionChanged();
+    default void resetClientDimensionChanged() {
+    }
 
     /**
      * Called during the first tick after joining a game.
      */
-    default void launchClient() {
+    default void launchClient(Connection connection) {
     }
 }

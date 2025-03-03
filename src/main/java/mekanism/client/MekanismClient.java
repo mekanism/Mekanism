@@ -16,6 +16,7 @@ import mekanism.common.network.to_server.PacketKey;
 import mekanism.common.recipe.MekanismRecipeType;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.Connection;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
@@ -84,9 +85,9 @@ public class MekanismClient {
         }
     }
 
-    public static void launchClient() {
+    public static void launchClient(Connection connection) {
         for (IModModule module : Mekanism.modulesLoaded) {
-            module.launchClient();
+            module.launchClient(connection);
         }
     }
 

@@ -12,6 +12,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -25,7 +26,7 @@ public class HashedItem implements IHashedItem {
     /**
      * @implNote This codec does not copy any uuid information if the hashed item is a {@link UUIDAwareHashedItem}
      */
-    public static final Codec<HashedItem> CODEC = ItemStack.CODEC.xmap(HashedItem::raw, HashedItem::getInternalStack);
+    public static final Codec<HashedItem> CODEC = ItemStack.SINGLE_ITEM_CODEC.xmap(HashedItem::raw, HashedItem::getInternalStack);
     /**
      * @implNote This codec does not copy any uuid information if the hashed item is a {@link UUIDAwareHashedItem}
      */
@@ -33,6 +34,10 @@ public class HashedItem implements IHashedItem {
 
     public static HashedItem create(ItemStack stack) {
         return new HashedItem(stack.copyWithCount(1));
+    }
+
+    public static HashedItem create(ItemLike item) {
+        return new HashedItem(new ItemStack(item));
     }
 
     /**

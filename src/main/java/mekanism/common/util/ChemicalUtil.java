@@ -118,15 +118,23 @@ public class ChemicalUtil {
         }
     }
 
+    public static void addChemicalDataToTooltip(List<Component> tooltips, ChemicalStack chemical, boolean advanced) {
+        addChemicalDataToTooltip(tooltips, chemical.getChemical(), advanced);
+    }
+
     public static void addChemicalDataToTooltip(List<Component> tooltips, Chemical chemical, boolean advanced) {
         if (!chemical.isEmptyType()) {
             addChemicalDataToTooltip(chemical, advanced, tooltips::add);
         }
     }
 
-    public static void addChemicalDataToTooltip(Chemical chemical, boolean advanced, Consumer<Component> tooltipAdder) {
+    public static void addChemicalDataToTooltip(ChemicalStack chemical, boolean advanced, Consumer<Component> tooltipAdder) {
+        addChemicalDataToTooltip(chemical.getChemical(), advanced, tooltipAdder);
+    }
+
+    private static void addChemicalDataToTooltip(Chemical chemical, boolean advanced, Consumer<Component> tooltipAdder) {
         if (!chemical.isEmptyType()) {
-            addAttributeTooltips(chemical, tooltipAdder);
+            addAttributeTooltips(chemical.getChemical(), tooltipAdder);
             if (chemical.is(MekanismAPITags.Chemicals.WASTE_BARREL_DECAY_BLACKLIST)) {
                 tooltipAdder.accept(MekanismLang.DECAY_IMMUNE.translateColored(EnumColor.AQUA));
             }

@@ -35,10 +35,10 @@ public class ChemicalIngredientCreator implements IChemicalIngredientCreator {
     private static final MapCodec<ChemicalIngredient> SINGLE_OR_TAG_CODEC = NeoForgeExtraCodecs.xor(SingleChemicalIngredient.CODEC, TagChemicalIngredient.CODEC).flatXmap(
           either -> DataResult.success(either.map(i -> i, ChemicalIngredient.class::cast)),
           ingredient -> {
-              if (ingredient instanceof SingleChemicalIngredient) {
-                  return DataResult.success(Either.left((SingleChemicalIngredient) ingredient));
-              } else if (ingredient instanceof TagChemicalIngredient) {
-                  return DataResult.success(Either.right((TagChemicalIngredient) ingredient));
+              if (ingredient instanceof SingleChemicalIngredient singleIngredient) {
+                  return DataResult.success(Either.left(singleIngredient));
+              } else if (ingredient instanceof TagChemicalIngredient tagIngredient) {
+                  return DataResult.success(Either.right(tagIngredient));
               }
               return DataResult.error(() -> "Basic chemical ingredient should be either a chemical or a tag!");
           });

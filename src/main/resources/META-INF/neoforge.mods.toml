@@ -21,7 +21,7 @@ license="MIT"
 [[dependencies.mekanism]]
     modId="neoforge"
     type="required"
-    versionRange="${forge_version}"
+    versionRange="${neo_version}"
     side="BOTH"
 [[dependencies.mekanism]]
     modId="jei"

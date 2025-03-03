@@ -28,4 +28,20 @@ public record SingleFluidRecipeInput(FluidStack fluid) implements FluidRecipeInp
     public boolean isEmpty() {
         return fluid.isEmpty();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        } else if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        return FluidStack.matches(fluid, ((SingleFluidRecipeInput) o).fluid);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = FluidStack.hashFluidAndComponents(fluid);
+        return 31 * hash + fluid.getAmount();
+    }
 }

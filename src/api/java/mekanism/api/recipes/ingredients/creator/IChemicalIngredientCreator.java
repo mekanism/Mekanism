@@ -104,7 +104,7 @@ public interface IChemicalIngredientCreator {
      * @param stack Chemical to match
      */
     default ChemicalIngredient of(ChemicalStack stack) {
-        return of(stack.getChemical());
+        return of(stack.getChemicalHolder());
     }
 
     /**

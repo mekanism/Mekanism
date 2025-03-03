@@ -38,7 +38,7 @@ public class ItemBlockThermodynamicConductor extends ItemBlockTooltip<BlockSmall
         super.addStats(stack, context, tooltip, flag);
         ConductorTier tier = getTier();
         tooltip.add(MekanismLang.CONDUCTION.translateColored(EnumColor.INDIGO, EnumColor.GRAY, tier.getInverseConduction()));
-        tooltip.add(MekanismLang.INSULATION.translateColored(EnumColor.INDIGO, EnumColor.GRAY, tier.getBaseConductionInsulation()));
+        tooltip.add(MekanismLang.INSULATION.translateColored(EnumColor.INDIGO, EnumColor.GRAY, tier.getInverseConductionInsulation()));
         tooltip.add(MekanismLang.HEAT_CAPACITY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, tier.getHeatCapacity()));
     }
 }

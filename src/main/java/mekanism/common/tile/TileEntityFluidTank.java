@@ -1,6 +1,5 @@
 package mekanism.common.tile;
 
-import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DataResult;
 import java.util.Collections;
 import java.util.List;
@@ -374,13 +373,10 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
                 //Note: This isn't necessarily optimal, but it does mean in general we can avoid codecs unless it happens to be a fluid that
                 // does have component data
                 DataResult<Tag> componentData = DataComponentPatch.CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), fluid.getComponentsPatch());
-                if (componentData.isError()) {
-                    componentData.mapError(error -> {
-                        Mekanism.logger.error("Failed to encode fluid stack component data: {}", error);
-                        return error;
-                    });
-                } else {
+                if (componentData.isSuccess()) {
                     fluidData.put(SerializationConstants.DATA, componentData.getOrThrow());
+                } else {
+                    componentData.ifError(error -> Mekanism.logger.error("Failed to encode fluid stack component data: {}", error.message()));
                 }
             }
             fluidData.putBoolean(SerializationConstants.VALVE, !valveFluid.isEmpty());
@@ -419,18 +415,15 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
                     DataComponentPatch patch = DataComponentPatch.EMPTY;
                     int amount = fluidData.getInt(SerializationConstants.AMOUNT);
                     if (fluidData.contains(SerializationConstants.DATA)) {
-                        DataResult<Pair<DataComponentPatch, Tag>> componentPatch = DataComponentPatch.CODEC.decode(
+                        DataResult<DataComponentPatch> componentPatch = DataComponentPatch.CODEC.parse(
                               provider.createSerializationContext(NbtOps.INSTANCE),
                               fluidData.get(SerializationConstants.DATA)
                         );
                         if (componentPatch.isSuccess()) {
-                            patch = componentPatch.getOrThrow().getFirst();
+                            patch = componentPatch.getOrThrow();
                         } else {
-                            componentPatch.mapError(error -> {
-                                Mekanism.logger.info("Received update packet for a fluid tank storing {}, and could not decode the data component patch: {}",
-                                      fluidId, error);
-                                return error;
-                            });
+                            componentPatch.ifError(error -> Mekanism.logger.info(
+                                  "Received update packet for a fluid tank storing {}, and could not decode the data component patch: {}", fluidId, error.message()));
                         }
                     }
                     //We actually have something to set, so mark that we shouldn't reset the stored fluid data

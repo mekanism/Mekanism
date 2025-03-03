@@ -3,6 +3,8 @@ package mekanism.common.network.to_server.qio;
 import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectArrayMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
+import it.unimi.dsi.fastutil.bytes.Byte2ObjectMaps;
+import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -71,7 +73,8 @@ public record PacketQIOFillCraftingWindow(ResourceLocation recipeID, boolean tra
         buffer.writeBoolean(rejectToInventory);
         //Cast to byte as this should always be at most 9
         buffer.writeByte((byte) sources.size());
-        for (Byte2ObjectMap.Entry<List<SingularHashedItemSource>> entry : sources.byte2ObjectEntrySet()) {
+        for (ObjectIterator<Byte2ObjectMap.Entry<List<SingularHashedItemSource>>> iterator = Byte2ObjectMaps.fastIterator(sources); iterator.hasNext(); ) {
+            Byte2ObjectMap.Entry<List<SingularHashedItemSource>> entry = iterator.next();
             //Target Slot
             buffer.writeByte(entry.getByteKey());
             //Source slot

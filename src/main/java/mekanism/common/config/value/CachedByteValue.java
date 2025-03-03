@@ -51,7 +51,7 @@ public class CachedByteValue extends CachedValue<Byte> implements ByteSupplier {
         }
         byte oldCachedValue = cachedValue;
         resolved = false;
-        //Return if we are meant to check the changed ones, and it is different than it used to be
+        //Return if we are meant to check the changed ones, and it is different then it used to be
         return checkChanged && oldCachedValue != get();
     }
 }

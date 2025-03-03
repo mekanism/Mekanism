@@ -302,7 +302,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
     public ModelData getModelData() {
         TransmitterModelData data = initModelData();
         updateModelData(data);
-        return ModelData.builder().with(TRANSMITTER_PROPERTY, data).build();
+        return ModelData.of(TRANSMITTER_PROPERTY, data);
     }
 
     protected void updateModelData(TransmitterModelData modelData) {

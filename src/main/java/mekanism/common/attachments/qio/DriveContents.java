@@ -4,8 +4,10 @@ import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.objects.Object2LongLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.Object2LongMaps;
 import it.unimi.dsi.fastutil.objects.Object2LongSortedMap;
 import it.unimi.dsi.fastutil.objects.Object2LongSortedMaps;
+import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.UUID;
 import java.util.function.LongBinaryOperator;
 import java.util.stream.LongStream;
@@ -42,7 +44,8 @@ public record DriveContents(Object2LongSortedMap<UUID> namedItemMap) {
             return EMPTY;
         }
         Object2LongSortedMap<UUID> namedItemMap = new Object2LongLinkedOpenHashMap<>(itemMap.size());
-        for (Object2LongMap.Entry<HashedItem> entry : data.getItemMap().object2LongEntrySet()) {
+        for (ObjectIterator<Object2LongMap.Entry<HashedItem>> iterator = Object2LongMaps.fastIterator(data.getItemMap()); iterator.hasNext(); ) {
+            Object2LongMap.Entry<HashedItem> entry = iterator.next();
             namedItemMap.put(QIOGlobalItemLookup.INSTANCE.getOrTrackUUID(entry.getKey()), entry.getLongValue());
         }
         return new DriveContents(namedItemMap);
@@ -50,7 +53,8 @@ public record DriveContents(Object2LongSortedMap<UUID> namedItemMap) {
 
     public void loadItemMap(QIODriveData data) {
         Object2LongMap<HashedItem> itemMap = data.getItemMap();
-        for (Object2LongMap.Entry<UUID> entry : namedItemMap.object2LongEntrySet()) {
+        for (ObjectIterator<Object2LongMap.Entry<UUID>> iterator = Object2LongMaps.fastIterator(namedItemMap); iterator.hasNext(); ) {
+            Object2LongMap.Entry<UUID> entry = iterator.next();
             HashedItem type = QIOGlobalItemLookup.INSTANCE.getTypeByUUID(entry.getKey());
             if (type != null) {
                 //Only add the item if the item type is known. If it can't that means the mod adding the item was probably removed
@@ -69,7 +73,8 @@ public record DriveContents(Object2LongSortedMap<UUID> namedItemMap) {
     private long[] serializeItemMap() {
         int i = 0;
         long[] serializedItemMap = new long[3 * namedItemMap.size()];
-        for (Object2LongMap.Entry<UUID> entry : namedItemMap.object2LongEntrySet()) {
+        for (ObjectIterator<Object2LongMap.Entry<UUID>> iterator = Object2LongMaps.fastIterator(namedItemMap); iterator.hasNext(); ) {
+            Object2LongMap.Entry<UUID> entry = iterator.next();
             UUID uuid = entry.getKey();
             serializedItemMap[i++] = uuid.getMostSignificantBits();
             serializedItemMap[i++] = uuid.getLeastSignificantBits();

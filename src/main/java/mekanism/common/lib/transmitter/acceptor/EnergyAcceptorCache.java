@@ -57,7 +57,10 @@ public class EnergyAcceptorCache extends AbstractAcceptorCache<IStrictEnergyHand
                     if (capability != null) {
                         //TODO: If creating these wrappers ends up showing as a performance hotspot/causing issues for the GC
                         // we should look into seeing if we can somehow cache the wrapped object
-                        return energyCompat.wrapAsStrictEnergyHandler(capability);
+                        IStrictEnergyHandler wrapped = energyCompat.wrapAsStrictEnergyHandler(capability);
+                        if (wrapped != null) {
+                            return wrapped;
+                        }
                     }
                 }
             }

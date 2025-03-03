@@ -60,12 +60,4 @@ public class MekanismTools implements IModModule {
     public String getName() {
         return "Tools";
     }
-
-    @Override
-    public void resetClient() {
-    }
-
-    @Override
-    public void resetClientDimensionChanged() {
-    }
 }

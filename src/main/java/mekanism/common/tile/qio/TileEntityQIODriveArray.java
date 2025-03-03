@@ -110,7 +110,7 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
     @NotNull
     @Override
     public ModelData getModelData() {
-        return ModelData.builder().with(DRIVE_STATUS_PROPERTY, driveStatus).build();
+        return ModelData.of(DRIVE_STATUS_PROPERTY, driveStatus);
     }
 
     @NotNull

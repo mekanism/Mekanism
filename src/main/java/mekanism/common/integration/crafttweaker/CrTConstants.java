@@ -115,6 +115,6 @@ public class CrTConstants {
     private static final String EXPANSION_TARGET_MANY = "crafttweaker.api.util.Many";
     private static final String EXPANSION_TARGET_TAG = "crafttweaker.api.tag.type.KnownTag";
     public static final String EXPANSION_TARGET_NSS_RESOLVER = "mods.projecte.NSSResolver";
-    private static final String EXPANSION_TARGET_CHEMICAL_TAG = EXPANSION_TARGET_TAG + "<" + CLASS_CHEMICAL + ">";
+    public static final String EXPANSION_TARGET_CHEMICAL_TAG = EXPANSION_TARGET_TAG + "<" + CLASS_CHEMICAL + ">";
     public static final String EXPANSION_TARGET_CHEMICAL_AMOUNT_TAG = EXPANSION_TARGET_MANY + "<" + EXPANSION_TARGET_CHEMICAL_TAG + ">";
 }

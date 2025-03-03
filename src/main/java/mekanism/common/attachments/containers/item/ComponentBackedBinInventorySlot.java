@@ -92,7 +92,7 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
         if (stack.isEmpty()) {
             attachedTo.remove(MekanismDataComponents.LOCK);
         } else {
-            attachedTo.set(MekanismDataComponents.LOCK, new LockData(stack.copyWithCount(1)));
+            attachedTo.set(MekanismDataComponents.LOCK, LockData.create(stack));
         }
     }
 

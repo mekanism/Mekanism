@@ -7,7 +7,7 @@
   "item_input": {
     "type": "neoforge:difference",
     "base": {
-      "tag": "c:stairs/plastic"
+      "tag": "mekanismadditions:plastic_stairs/normal"
     },
     "count": 1,
     "subtracted": {
