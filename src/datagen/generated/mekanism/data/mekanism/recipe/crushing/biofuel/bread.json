@@ -5,7 +5,7 @@
     "item": "minecraft:bread"
   },
   "output": {
-    "count": 7,
+    "count": 4,
     "id": "mekanism:bio_fuel"
   }
 }

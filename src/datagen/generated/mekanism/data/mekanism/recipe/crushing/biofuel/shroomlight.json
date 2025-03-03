@@ -5,7 +5,7 @@
     "item": "minecraft:shroomlight"
   },
   "output": {
-    "count": 5,
+    "count": 4,
     "id": "mekanism:bio_fuel"
   }
 }

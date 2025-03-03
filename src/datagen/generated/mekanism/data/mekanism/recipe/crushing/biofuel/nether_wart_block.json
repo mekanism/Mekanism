@@ -5,7 +5,7 @@
     "item": "minecraft:nether_wart_block"
   },
   "output": {
-    "count": 7,
+    "count": 18,
     "id": "mekanism:bio_fuel"
   }
 }

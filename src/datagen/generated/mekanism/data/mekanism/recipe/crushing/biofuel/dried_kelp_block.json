@@ -5,7 +5,7 @@
     "item": "minecraft:dried_kelp_block"
   },
   "output": {
-    "count": 4,
+    "count": 9,
     "id": "mekanism:bio_fuel"
   }
 }

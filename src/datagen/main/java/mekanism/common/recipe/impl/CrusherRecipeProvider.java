@@ -526,7 +526,8 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         biofuel(consumer, basePath, "cake", 6, 1, Items.CAKE);
         biofuel(consumer, basePath, "carved_pumpkin", 2, 1, Items.CARVED_PUMPKIN);//pumpkin minus 4 seeds (sawmill)
         biofuel(consumer, basePath, "crimson_roots", 1, 1, Items.CRIMSON_ROOTS);
-        biofuel(consumer, basePath, "crops", 2, 1, Items.CARROT, Items.CACTUS, Items.POTATO, Items.POISONOUS_POTATO, Items.WHEAT, Items.BEETROOT, Items.NETHER_WART);
+        biofuel(consumer, basePath, "cookie", 3, 4, Items.COOKIE);
+        biofuel(consumer, basePath, "crops", 2, 1, Items.CARROT, Items.CACTUS, Items.POTATO, Items.POISONOUS_POTATO, Items.WHEAT, Items.BEETROOT, Items.NETHER_WART, Items.COCOA_BEANS);
         biofuel(consumer, basePath, "dried_kelp", 1, 1, Items.DRIED_KELP);
         biofuel(consumer, basePath, "dried_kelp_block", 9, 1, Items.DRIED_KELP_BLOCK);
         biofuel(consumer, basePath, "fern", 2, 1, Items.FERN);
@@ -538,6 +539,7 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         biofuel(consumer, basePath, "large_fern", 3, 1, Items.LARGE_FERN);
         biofuel(consumer, basePath, "leaves", 1, 10, ItemTags.LEAVES);
         biofuel(consumer, basePath, "lily_pad", 1, 1, Items.LILY_PAD);
+        biofuel(consumer, basePath, "mangrove_roots", 1, 1, Items.MANGROVE_ROOTS);
         biofuel(consumer, basePath, "melon", 6, 1, Items.MELON);
         biofuel(consumer, basePath, "melon_slice", 1, 1, Items.MELON_SLICE);
         biofuel(consumer, basePath, "moss_block", 2, 1, Items.MOSS_BLOCK);
@@ -546,7 +548,9 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         biofuel(consumer, basePath, "nether_sprouts", 1, 1, Items.NETHER_SPROUTS);
         biofuel(consumer, basePath, "nether_wart_block", 9 * 2, 1, Items.NETHER_WART_BLOCK);
         biofuel(consumer, basePath, "pitcher_pod", 1, 1, Items.PITCHER_POD);
-        biofuel(consumer, basePath, "pumpkin", 6, 1, Items.PUMPKIN);
+        final int pumpkinOutput = 6;
+        biofuel(consumer, basePath, "pumpkin", pumpkinOutput, 1, Items.PUMPKIN);
+        biofuel(consumer, basePath, "pumpkin_pie", pumpkinOutput + 1, 1, Items.PUMPKIN_PIE);
         biofuel(consumer, basePath, "rotten_flesh", 1, 1, Items.ROTTEN_FLESH);
         biofuel(consumer, basePath, "saplings", 1, 1, ItemTags.SAPLINGS);
         biofuel(consumer, basePath, "sea_pickle", 1, 1, Items.SEA_PICKLE);
