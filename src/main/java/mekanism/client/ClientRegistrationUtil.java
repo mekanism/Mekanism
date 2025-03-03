@@ -160,13 +160,13 @@ public class ClientRegistrationUtil {
         }
     }
 
-    public static void setPropertyOverride(ItemLike itemLike, ResourceLocation override, ItemPropertyFunction propertyGetter) {
-        ItemProperties.register(itemLike.asItem(), override, propertyGetter);
+    public static void setPropertyOverride(Holder<Item> item, ResourceLocation override, ItemPropertyFunction propertyGetter) {
+        ItemProperties.register(item.value(), override, propertyGetter);
     }
 
     public static void registerItemColorHandler(RegisterColorHandlersEvent.Item event, ItemColor itemColor, ItemLike... items) {
         for (ItemLike itemProvider : items) {
-            event.register(itemColor, itemProvider.asItem());
+            event.register(itemColor, itemProvider);
         }
     }
 

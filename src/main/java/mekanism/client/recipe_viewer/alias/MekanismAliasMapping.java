@@ -48,25 +48,25 @@ public final class MekanismAliasMapping implements IAliasMapping {
 
     private <ITEM, FLUID, CHEMICAL> void addUnitAliases(RVAliasHelper<ITEM, FLUID, CHEMICAL> rv) {
         rv.addAliases(MekanismBlocks.MODIFICATION_STATION, MekanismAliases.UNIT_INSTALLER, MekanismAliases.UNIT_INSTALLER_MODULE);
-        rv.addAliases(MekanismItems.MODULE_RADIATION_SHIELDING, MekanismAliases.RADIATION_PROTECTION);
-        rv.addAliases(MekanismItems.MODULE_ENERGY, MekanismAliases.ENERGY_STORAGE);
+        rv.addItemAliases(MekanismItems.MODULE_RADIATION_SHIELDING, MekanismAliases.RADIATION_PROTECTION);
+        rv.addItemAliases(MekanismItems.MODULE_ENERGY, MekanismAliases.ENERGY_STORAGE);
 
-        rv.addAliases(MekanismItems.MODULE_FORTUNE, getTranslationKey(Enchantments.FORTUNE));
-        rv.addAliases(MekanismItems.MODULE_ATTACK_AMPLIFICATION, MekanismAliases.UNIT_DAMAGE, getTranslationKey(Enchantments.SHARPNESS));
-        rv.addAliases(MekanismItems.MODULE_EXCAVATION_ESCALATION, MekanismAliases.UNIT_DIG_SPEED, getTranslationKey(Enchantments.EFFICIENCY));
-        rv.addAliases(MekanismItems.MODULE_BLASTING, MekanismAliases.TOOL_HAMMER, MekanismAliases.UNIT_AOE, MekanismAliases.UNIT_AOE_LONG);
-        rv.addAliases(MekanismItems.MODULE_FARMING, MekanismAliases.TOOL_AXE, MekanismAliases.TOOL_HOE, MekanismAliases.TOOL_SHOVEL);
+        rv.addItemAliases(MekanismItems.MODULE_FORTUNE, getTranslationKey(Enchantments.FORTUNE));
+        rv.addItemAliases(MekanismItems.MODULE_ATTACK_AMPLIFICATION, MekanismAliases.UNIT_DAMAGE, getTranslationKey(Enchantments.SHARPNESS));
+        rv.addItemAliases(MekanismItems.MODULE_EXCAVATION_ESCALATION, MekanismAliases.UNIT_DIG_SPEED, getTranslationKey(Enchantments.EFFICIENCY));
+        rv.addItemAliases(MekanismItems.MODULE_BLASTING, MekanismAliases.TOOL_HAMMER, MekanismAliases.UNIT_AOE, MekanismAliases.UNIT_AOE_LONG);
+        rv.addItemAliases(MekanismItems.MODULE_FARMING, MekanismAliases.TOOL_AXE, MekanismAliases.TOOL_HOE, MekanismAliases.TOOL_SHOVEL);
 
-        rv.addAliases(MekanismItems.MODULE_VISION_ENHANCEMENT, MobEffects.NIGHT_VISION.value()::getDescriptionId);
-        rv.addAliases(MekanismItems.MODULE_NUTRITIONAL_INJECTION, MekanismAliases.UNIT_FEEDER);
+        rv.addItemAliases(MekanismItems.MODULE_VISION_ENHANCEMENT, MobEffects.NIGHT_VISION.value()::getDescriptionId);
+        rv.addItemAliases(MekanismItems.MODULE_NUTRITIONAL_INJECTION, MekanismAliases.UNIT_FEEDER);
         //Note: Jetpack module pairing with normal flight alias is in done in the gear section
-        rv.addAliases(MekanismItems.MODULE_GRAVITATIONAL_MODULATING, MekanismAliases.CREATIVE_FLIGHT);
-        rv.addAliases(MekanismItems.MODULE_CHARGE_DISTRIBUTION, MekanismAliases.ITEM_CHARGER);
-        rv.addAliases(MekanismItems.MODULE_HYDRAULIC_PROPULSION, MekanismAliases.AUTO_STEP, MekanismAliases.STEP_ASSIST, MobEffects.JUMP.value()::getDescriptionId);
-        rv.addAliases(MekanismItems.MODULE_HYDROSTATIC_REPULSOR, MekanismAliases.UNIT_HYDROSTATIC_SPEED, getTranslationKey(Enchantments.DEPTH_STRIDER));
-        rv.addAliases(MekanismItems.MODULE_MOTORIZED_SERVO, getTranslationKey(Enchantments.SWIFT_SNEAK));
-        rv.addAliases(MekanismItems.MODULE_LOCOMOTIVE_BOOSTING, MobEffects.MOVEMENT_SPEED.value()::getDescriptionId);
-        rv.addAliases(MekanismItems.MODULE_SOUL_SURFER, getTranslationKey(Enchantments.SOUL_SPEED));
+        rv.addItemAliases(MekanismItems.MODULE_GRAVITATIONAL_MODULATING, MekanismAliases.CREATIVE_FLIGHT);
+        rv.addItemAliases(MekanismItems.MODULE_CHARGE_DISTRIBUTION, MekanismAliases.ITEM_CHARGER);
+        rv.addItemAliases(MekanismItems.MODULE_HYDRAULIC_PROPULSION, MekanismAliases.AUTO_STEP, MekanismAliases.STEP_ASSIST, MobEffects.JUMP.value()::getDescriptionId);
+        rv.addItemAliases(MekanismItems.MODULE_HYDROSTATIC_REPULSOR, MekanismAliases.UNIT_HYDROSTATIC_SPEED, getTranslationKey(Enchantments.DEPTH_STRIDER));
+        rv.addItemAliases(MekanismItems.MODULE_MOTORIZED_SERVO, getTranslationKey(Enchantments.SWIFT_SNEAK));
+        rv.addItemAliases(MekanismItems.MODULE_LOCOMOTIVE_BOOSTING, MobEffects.MOVEMENT_SPEED.value()::getDescriptionId);
+        rv.addItemAliases(MekanismItems.MODULE_SOUL_SURFER, getTranslationKey(Enchantments.SOUL_SPEED));
 
         rv.addModuleAliases(MekanismItems.ITEMS);
     }
@@ -99,7 +99,7 @@ public final class MekanismAliasMapping implements IAliasMapping {
               MekanismAliases.TOOL_WEAPON
         );
 
-        rv.addAliases(MekanismItems.CONFIGURATOR, MekanismAliases.TOOL_DIAGNOSTIC, MekanismAliases.TOOL_WRENCH);
+        rv.addItemAliases(MekanismItems.CONFIGURATOR, MekanismAliases.TOOL_DIAGNOSTIC, MekanismAliases.TOOL_WRENCH);
         rv.addAliases(List.of(
               MekanismItems.NETWORK_READER,
               MekanismItems.CONFIGURATION_CARD
@@ -123,7 +123,7 @@ public final class MekanismAliasMapping implements IAliasMapping {
               MekanismAliases.AUTO_STEP,
               MekanismAliases.STEP_ASSIST
         );
-        rv.addAliases(MekanismItems.MEKASUIT_BOOTS, MekanismAliases.FREE_RUNNER_LONG_FALL, MekanismAliases.FREE_RUNNER_FALL_PROTECTION, MekanismAliases.MEKA_SUIT_POWER_ARMOR);
+        rv.addItemAliases(MekanismItems.MEKASUIT_BOOTS, MekanismAliases.FREE_RUNNER_LONG_FALL, MekanismAliases.FREE_RUNNER_FALL_PROTECTION, MekanismAliases.MEKA_SUIT_POWER_ARMOR);
         rv.addAliases(List.of(
               MekanismItems.MEKASUIT_HELMET,
               MekanismItems.MEKASUIT_BODYARMOR,
@@ -239,16 +239,16 @@ public final class MekanismAliasMapping implements IAliasMapping {
                     new ItemStack(MekanismBlocks.ELITE_ENERGY_CUBE),
                           new ItemStack(MekanismBlocks.ULTIMATE_ENERGY_CUBE),
               StorageUtils.getFilledEnergyVariant(
-                    ItemBlockEnergyCube.withEnergyCubeSideConfig(MekanismBlocks.CREATIVE_ENERGY_CUBE, ItemBlockEnergyCube.ALL_OUTPUT)
+                    ItemBlockEnergyCube.withCreativeSideConfig(ItemBlockEnergyCube.ALL_OUTPUT)
               )
         ), MekanismAliases.ENERGY_STORAGE, MekanismAliases.ENERGY_STORAGE_BATTERY, MekanismAliases.ITEM_CHARGER);
-        rv.addAliases(MekanismItems.ENERGY_TABLET, MekanismAliases.ENERGY_STORAGE, MekanismAliases.ENERGY_STORAGE_BATTERY);
+        rv.addItemAliases(MekanismItems.ENERGY_TABLET, MekanismAliases.ENERGY_STORAGE, MekanismAliases.ENERGY_STORAGE_BATTERY);
 
         rv.addItemAliases(List.of(
               new ItemStack(MekanismBlocks.CREATIVE_BIN),
               new ItemStack(MekanismBlocks.CREATIVE_FLUID_TANK),
               new ItemStack(MekanismBlocks.CREATIVE_CHEMICAL_TANK),
-              ItemBlockEnergyCube.withEnergyCubeSideConfig(MekanismBlocks.CREATIVE_ENERGY_CUBE, ItemBlockEnergyCube.ALL_INPUT)
+              ItemBlockEnergyCube.withCreativeSideConfig(ItemBlockEnergyCube.ALL_INPUT)
         ), MekanismAliases.STORAGE_TRASHCAN, MekanismAliases.STORAGE_VOID);
     }
 
@@ -267,7 +267,7 @@ public final class MekanismAliasMapping implements IAliasMapping {
     private <ITEM, FLUID, CHEMICAL> void addQIOAliases(RVAliasHelper<ITEM, FLUID, CHEMICAL> rv) {
         rv.addAliases(MekanismBlocks.QIO_REDSTONE_ADAPTER, MekanismAliases.QIO_FULL, MekanismAliases.QIO_ADAPTER_EMITTER);
         rv.addAliases(MekanismBlocks.QIO_DRIVE_ARRAY, MekanismAliases.QIO_FULL, MekanismAliases.QIO_DRIVE_BAY);
-        rv.addAliases(MekanismItems.PORTABLE_QIO_DASHBOARD, MekanismAliases.PORTABLE_CRAFTING_TABLE, MekanismAliases.QIO_DASHBOARD_WIRELESS_TERMINAL);
+        rv.addItemAliases(MekanismItems.PORTABLE_QIO_DASHBOARD, MekanismAliases.PORTABLE_CRAFTING_TABLE, MekanismAliases.QIO_DASHBOARD_WIRELESS_TERMINAL);
         rv.addAliases(List.of(
               MekanismBlocks.QIO_DASHBOARD,
               MekanismItems.PORTABLE_QIO_DASHBOARD
@@ -373,13 +373,13 @@ public final class MekanismAliasMapping implements IAliasMapping {
     }
 
     private <ITEM, FLUID, CHEMICAL> void addUpgradeAliases(RVAliasHelper<ITEM, FLUID, CHEMICAL> rv) {
-        rv.addAliases(MekanismItems.SPEED_UPGRADE, MekanismAliases.UPGRADE_AUGMENT, MekanismAliases.UPGRADE_OVERCLOCK);
-        rv.addAliases(MekanismItems.ENERGY_UPGRADE, MekanismAliases.UPGRADE_AUGMENT, MekanismAliases.ENERGY_STORAGE);
-        rv.addAliases(MekanismItems.FILTER_UPGRADE, MekanismAliases.UPGRADE_AUGMENT);
-        rv.addAliases(MekanismItems.MUFFLING_UPGRADE, MekanismAliases.UPGRADE_AUGMENT, MekanismAliases.UPGRADE_MUFFLER);
-        rv.addAliases(MekanismItems.CHEMICAL_UPGRADE, MekanismAliases.UPGRADE_AUGMENT);
-        rv.addAliases(MekanismItems.ANCHOR_UPGRADE, MekanismAliases.UPGRADE_AUGMENT, MekanismAliases.CHUNK_LOADER);
-        rv.addAliases(MekanismItems.STONE_GENERATOR_UPGRADE, MekanismAliases.UPGRADE_AUGMENT, MekanismAliases.UPGRADE_HOLE_FILLER);
+        rv.addItemAliases(MekanismItems.SPEED_UPGRADE, MekanismAliases.UPGRADE_AUGMENT, MekanismAliases.UPGRADE_OVERCLOCK);
+        rv.addItemAliases(MekanismItems.ENERGY_UPGRADE, MekanismAliases.UPGRADE_AUGMENT, MekanismAliases.ENERGY_STORAGE);
+        rv.addItemAliases(MekanismItems.FILTER_UPGRADE, MekanismAliases.UPGRADE_AUGMENT);
+        rv.addItemAliases(MekanismItems.MUFFLING_UPGRADE, MekanismAliases.UPGRADE_AUGMENT, MekanismAliases.UPGRADE_MUFFLER);
+        rv.addItemAliases(MekanismItems.CHEMICAL_UPGRADE, MekanismAliases.UPGRADE_AUGMENT);
+        rv.addItemAliases(MekanismItems.ANCHOR_UPGRADE, MekanismAliases.UPGRADE_AUGMENT, MekanismAliases.CHUNK_LOADER);
+        rv.addItemAliases(MekanismItems.STONE_GENERATOR_UPGRADE, MekanismAliases.UPGRADE_AUGMENT, MekanismAliases.UPGRADE_HOLE_FILLER);
         rv.addAliases(List.of(
               MekanismItems.BASIC_TIER_INSTALLER,
               MekanismItems.ADVANCED_TIER_INSTALLER,
@@ -389,7 +389,7 @@ public final class MekanismAliasMapping implements IAliasMapping {
     }
 
     private <ITEM, FLUID, CHEMICAL> void addMiscAliases(RVAliasHelper<ITEM, FLUID, CHEMICAL> rv) {
-        rv.addAliases(MekanismItems.CRAFTING_FORMULA, MekanismAliases.CRAFTING_PATTERN);
+        rv.addItemAliases(MekanismItems.CRAFTING_FORMULA, MekanismAliases.CRAFTING_PATTERN);
         rv.addAliases(MekanismBlocks.FORMULAIC_ASSEMBLICATOR, MekanismAliases.AUTO_CRAFTER);
         rv.addAliases(MekanismBlocks.DIMENSIONAL_STABILIZER, MekanismAliases.CHUNK_LOADER);
         rv.addAliases(MekanismBlocks.FLUIDIC_PLENISHER, MekanismAliases.PLENISHER_PLACER, MekanismAliases.PLENISHER_REVERSE);

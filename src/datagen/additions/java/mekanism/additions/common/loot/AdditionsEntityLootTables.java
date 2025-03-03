@@ -8,7 +8,6 @@ import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potions;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -101,7 +100,7 @@ public class AdditionsEntityLootTables extends BaseEntityLootTables {
               ).withPool(LootPool.lootPool()
                     .name("skulls")
                     .setRolls(ConstantValue.exactly(1))
-                    .add(LootItem.lootTableItem(Blocks.WITHER_SKELETON_SKULL))
+                    .add(LootItem.lootTableItem(Items.WITHER_SKELETON_SKULL))
                     .when(LootItemKilledByPlayerCondition.killedByPlayer())
                     //Double vanilla's skull drop chance due to being "younger and less brittle"
                     .when(LootItemRandomChanceWithEnchantedBonusCondition.randomChanceAndLootingBoost(this.registries, 0.05F, 0.01F))

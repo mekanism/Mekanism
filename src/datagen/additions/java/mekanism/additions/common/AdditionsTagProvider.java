@@ -9,6 +9,7 @@ import mekanism.additions.common.registries.AdditionsItems;
 import mekanism.api.text.EnumColor;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.tag.BaseTagProvider;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
@@ -20,7 +21,6 @@ import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
@@ -159,13 +159,13 @@ public class AdditionsTagProvider extends BaseTagProvider {
         }
     }
 
-    private void addToTag(TagKey<Item> itemTag, Map<EnumColor, ? extends ItemLike> itemProviders) {
-        addToTag(itemTag, itemProviders.values().toArray(new ItemLike[0]));
-        for (Map.Entry<EnumColor, ? extends ItemLike> entry : itemProviders.entrySet()) {
+    private void addToTag(TagKey<Item> itemTag, Map<EnumColor, ? extends Holder<Item>> itemProviders) {
+        getItemBuilder(itemTag).addHolders(itemProviders.values());
+        for (Map.Entry<EnumColor, ? extends Holder<Item>> entry : itemProviders.entrySet()) {
             DyeColor dyeColor = entry.getKey().getDyeColor();
             if (dyeColor != null) {
-                addToTag(Tags.Items.DYED, entry.getValue());
-                addToTag(dyeColor.getDyedTag(), entry.getValue());
+                addItemsToTag(Tags.Items.DYED, entry.getValue());
+                addItemsToTag(dyeColor.getDyedTag(), entry.getValue());
             }
         }
     }

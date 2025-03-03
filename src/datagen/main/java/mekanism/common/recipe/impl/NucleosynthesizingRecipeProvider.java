@@ -13,7 +13,6 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
 
 class NucleosynthesizingRecipeProvider implements ISubRecipeProvider {
@@ -68,7 +67,7 @@ class NucleosynthesizingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "trident"));
 
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
-              IngredientCreatorAccess.item().from(Blocks.BEACON),
+              IngredientCreatorAccess.item().from(Items.BEACON),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.ANTIMATTER, 3),
               new ItemStack(Items.END_CRYSTAL),
               750,
@@ -77,7 +76,7 @@ class NucleosynthesizingRecipeProvider implements ISubRecipeProvider {
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
               IngredientCreatorAccess.item().from(ItemTags.BEDS),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.ANTIMATTER, 3),
-              new ItemStack(Blocks.RESPAWN_ANCHOR),
+              new ItemStack(Items.RESPAWN_ANCHOR),
               750,
               false
         ).build(consumer, Mekanism.rl(basePath + "respawn_anchor"));
@@ -104,44 +103,44 @@ class NucleosynthesizingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "phantom_membrane"));
 
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
-              IngredientCreatorAccess.item().from(Blocks.RED_WOOL),
+              IngredientCreatorAccess.item().from(Items.RED_WOOL),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.ANTIMATTER, 2),
-              new ItemStack(Blocks.REDSTONE_BLOCK),
+              new ItemStack(Items.REDSTONE_BLOCK),
               500,
               false
         ).build(consumer, Mekanism.rl(basePath + "redstone_block"));
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
-              IngredientCreatorAccess.item().from(Blocks.YELLOW_WOOL),
+              IngredientCreatorAccess.item().from(Items.YELLOW_WOOL),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.ANTIMATTER, 2),
-              new ItemStack(Blocks.GLOWSTONE),
+              new ItemStack(Items.GLOWSTONE),
               500,
               false
         ).build(consumer, Mekanism.rl(basePath + "glowstone_block"));
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
-              IngredientCreatorAccess.item().from(Blocks.BLUE_WOOL),
+              IngredientCreatorAccess.item().from(Items.BLUE_WOOL),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.ANTIMATTER, 2),
-              new ItemStack(Blocks.LAPIS_BLOCK),
+              new ItemStack(Items.LAPIS_BLOCK),
               500,
               false
         ).build(consumer, Mekanism.rl(basePath + "lapis_block"));
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
-              IngredientCreatorAccess.item().from(Blocks.LIGHT_GRAY_WOOL),
+              IngredientCreatorAccess.item().from(Items.LIGHT_GRAY_WOOL),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.ANTIMATTER, 2),
-              new ItemStack(Blocks.QUARTZ_BLOCK),
+              new ItemStack(Items.QUARTZ_BLOCK),
               500,
               false
         ).build(consumer, Mekanism.rl(basePath + "quartz_block"));
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
               IngredientCreatorAccess.item().from(ItemTags.SMALL_FLOWERS),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.ANTIMATTER, 2),
-              new ItemStack(Blocks.CHORUS_FLOWER),
+              new ItemStack(Items.CHORUS_FLOWER),
               500,
               false
         ).build(consumer, Mekanism.rl(basePath + "chorus_flower"));
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
               IngredientCreatorAccess.item().from(Tags.Items.CHESTS_WOODEN),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.ANTIMATTER, 2),
-              new ItemStack(Blocks.ENDER_CHEST),
+              new ItemStack(Items.ENDER_CHEST),
               500,
               false
         ).build(consumer, Mekanism.rl(basePath + "ender_chest"));
@@ -163,7 +162,7 @@ class NucleosynthesizingRecipeProvider implements ISubRecipeProvider {
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
               IngredientCreatorAccess.item().from(Tags.Items.OBSIDIANS_NORMAL),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.ANTIMATTER, 1),
-              new ItemStack(Blocks.CRYING_OBSIDIAN),
+              new ItemStack(Items.CRYING_OBSIDIAN),
               200,
               false
         ).build(consumer, Mekanism.rl(basePath + "crying_obsidian"));

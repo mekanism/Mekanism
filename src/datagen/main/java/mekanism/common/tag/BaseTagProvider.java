@@ -36,10 +36,8 @@ import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.Tags;
@@ -164,10 +162,6 @@ public abstract class BaseTagProvider implements DataProvider {
         return getBuilder(BuiltInRegistries.FLUID, tag);
     }
 
-    protected IntrinsicMekanismTagBuilder<BlockEntityType<?>> getTileEntityTypeBuilder(TagKey<BlockEntityType<?>> tag) {
-        return getBuilder(BuiltInRegistries.BLOCK_ENTITY_TYPE, tag);
-    }
-
     protected MekanismTagBuilder<GameEvent, ?> getGameEventBuilder(TagKey<GameEvent> tag) {
         return getBuilder(Registries.GAME_EVENT, tag);
     }
@@ -188,8 +182,9 @@ public abstract class BaseTagProvider implements DataProvider {
         return getBuilder(BuiltInRegistries.MOB_EFFECT, tag);
     }
 
-    protected void addToTag(TagKey<Item> tag, ItemLike... itemProviders) {
-        getItemBuilder(tag).addTyped(ItemLike::asItem, itemProviders);
+    @SafeVarargs
+    protected final void addItemsToTag(TagKey<Item> tag, Holder<Item>... itemProviders) {
+        getItemBuilder(tag).addHolders(itemProviders);
     }
 
     @SafeVarargs
@@ -253,7 +248,7 @@ public abstract class BaseTagProvider implements DataProvider {
         IntrinsicMekanismTagBuilder<Fluid> tagBuilder = getFluidBuilder(tag);
         for (FluidRegistryObject<?, ?, ?, ?, ?> fluidRO : fluidRegistryObjects) {
             tagBuilder.addHolders(fluidRO, fluidRO.getFlowingFluid());
-            addToTag(ItemTags.create(Tags.Items.BUCKETS.location().withSuffix("/" + fluidRO.getName())), fluidRO.getBucket());
+            addItemsToTag(ItemTags.create(Tags.Items.BUCKETS.location().withSuffix("/" + fluidRO.getName())), fluidRO.getBucket());
         }
     }
 

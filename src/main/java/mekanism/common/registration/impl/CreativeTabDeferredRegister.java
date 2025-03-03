@@ -1,19 +1,21 @@
 package mekanism.common.registration.impl;
 
+import java.util.Collection;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.SpecialColors;
-import mekanism.common.block.BlockBounding;
 import mekanism.common.registration.MekanismDeferredHolder;
 import mekanism.common.registration.MekanismDeferredRegister;
+import mekanism.common.registries.MekanismBlocks;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.block.Block;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import org.jetbrains.annotations.NotNull;
@@ -58,13 +60,16 @@ public class CreativeTabDeferredRegister extends MekanismDeferredRegister<Creati
         });
     }
 
-    public static void addToDisplay(CreativeModeTab.Output output, ItemLike... items) {
-        for (ItemLike item : items) {
-            addToDisplay(output, item);
+    public static void addToDisplay(CreativeModeTab.Output output, Collection<? extends Holder<Item>> items, Predicate<Holder<Item>> shouldSkip) {
+        for (Holder<Item> itemProvider : items) {
+            if (!shouldSkip.test(itemProvider)) {
+                addToDisplay(output, itemProvider);
+            }
         }
     }
 
-    public static void addToDisplay(CreativeModeTab.Output output, ItemLike itemLike) {
+    @SafeVarargs
+    public static void addToDisplay(CreativeModeTab.Output output, Holder<? extends ItemLike>... items) {
         CreativeModeTab.TabVisibility visibility;
         if (output instanceof BuildCreativeModeTabContentsEvent) {
             //If we are added from the event, only add the item to the parent tab, as we will already be contained in the search tab
@@ -73,36 +78,30 @@ public class CreativeTabDeferredRegister extends MekanismDeferredRegister<Creati
         } else {
             visibility = CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS;
         }
-        if (itemLike.asItem() instanceof ICustomCreativeTabContents contents) {
-            if (contents.addDefault()) {
+        for (Holder<? extends ItemLike> item : items) {
+            ItemLike itemLike = item.value();
+            if (itemLike.asItem() instanceof ICustomCreativeTabContents contents) {
+                if (contents.addDefault()) {
+                    output.accept(itemLike, visibility);
+                }
+                contents.addItems(stack -> output.accept(stack, visibility));
+            } else {
                 output.accept(itemLike, visibility);
             }
-            contents.addItems(stack -> output.accept(stack, visibility));
-        } else {
-            output.accept(itemLike, visibility);
         }
     }
 
     public static void addToDisplay(ItemDeferredRegister register, CreativeModeTab.Output output) {
-        for (Holder<Item> itemProvider : register.getEntries()) {
-            addToDisplay(output, itemProvider.value());
-        }
+        addToDisplay(output, register.getEntries(), ConstantPredicates.alwaysFalse());
     }
 
     public static void addToDisplay(BlockDeferredRegister register, CreativeModeTab.Output output) {
-        for (Holder<Block> blockProvider : register.getPrimaryEntries()) {
-            Block block = blockProvider.value();
-            //Don't add bounding blocks to the creative tab
-            if (!(block instanceof BlockBounding)) {
-                addToDisplay(output, block);
-            }
-        }
+        //Don't add bounding blocks to the creative tab
+        addToDisplay(output, register.getSecondaryEntries(), MekanismBlocks.BOUNDING_BLOCK::secondaryKeyMatches);
     }
 
     public static void addToDisplay(FluidDeferredRegister register, CreativeModeTab.Output output) {
-        for (Holder<Item> bucket : register.getBucketEntries()) {
-            addToDisplay(output, bucket.value());
-        }
+        addToDisplay(output, register.getBucketEntries(), ConstantPredicates.alwaysFalse());
     }
 
     public interface ICustomCreativeTabContents {

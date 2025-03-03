@@ -49,19 +49,19 @@ public class ItemRegistryObject<ITEM extends Item> extends MekanismDeferredHolde
     }
 
     public ItemStack asStack(int count) {
-        return new ItemStack(asItem(), count);
+        return new ItemStack(value(), count);
     }
 
     @NotNull
     @Override
     public String getTranslationKey() {
-        return asItem().getDescriptionId();
+        return value().getDescriptionId();
     }
 
     @NotNull
     @Override
     public Component getTextComponent() {
-        return asItem().getDescription();
+        return value().getDescription();
     }
 
     @Internal

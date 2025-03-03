@@ -11,7 +11,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.jetbrains.annotations.Nullable;
@@ -46,10 +45,6 @@ public class RegistryUtils {
 
     public static ResourceLocation getName(Item element) {
         return BuiltInRegistries.ITEM.getKey(element);
-    }
-
-    public static String getPath(ItemLike element) {
-        return getName(element.asItem()).getPath();
     }
 
     public static String getPath(Block element) {

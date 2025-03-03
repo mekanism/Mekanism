@@ -14,7 +14,6 @@ import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.ShapedRecipe;
@@ -29,7 +28,7 @@ public class ExtendedShapedRecipeBuilder extends BaseRecipeBuilder<ExtendedShape
     private boolean showNotification = true;
 
     protected ExtendedShapedRecipeBuilder(Holder<? extends ItemLike> result, int count) {
-        super(result.value(), count);
+        super(result, count);
     }
 
     public static ExtendedShapedRecipeBuilder shapedRecipe(Holder<? extends ItemLike> result) {
@@ -63,7 +62,7 @@ public class ExtendedShapedRecipeBuilder extends BaseRecipeBuilder<ExtendedShape
     }
 
     public ExtendedShapedRecipeBuilder key(char symbol, Holder<? extends ItemLike> item) {
-        return key(symbol, item.value().asItem());
+        return key(symbol, Ingredient.of(item.value()));
     }
 
     public ExtendedShapedRecipeBuilder key(char symbol, Ingredient ingredient) {
@@ -110,7 +109,7 @@ public class ExtendedShapedRecipeBuilder extends BaseRecipeBuilder<ExtendedShape
               Objects.requireNonNullElse(this.group, ""),
               RecipeBuilder.determineBookCategory(this.category),
               ShapedRecipePattern.of(this.key, this.pattern),
-              new ItemStack(this.result, this.count),
+              resultStack(),
               this.showNotification
         ));
     }

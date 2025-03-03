@@ -10,6 +10,7 @@ import mekanism.common.util.EnumUtils;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 
 public class CatalystRegistryHelper {
@@ -25,8 +26,9 @@ public class CatalystRegistryHelper {
 
     public static void register(IRecipeCatalystRegistration registry, RecipeType<?> recipeType, List<ItemLike> workstations) {
         for (ItemLike workstation : workstations) {
-            registry.addRecipeCatalyst(workstation, recipeType);
-            if (workstation.asItem() instanceof BlockItem blockItem) {
+            Item item = workstation.asItem();
+            registry.addRecipeCatalyst(item, recipeType);
+            if (item instanceof BlockItem blockItem) {
                 AttributeFactoryType factoryType = Attribute.get(blockItem.getBlock(), AttributeFactoryType.class);
                 if (factoryType != null) {
                     for (FactoryTier tier : EnumUtils.FACTORY_TIERS) {

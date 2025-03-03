@@ -100,6 +100,7 @@ import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.tile.machine.TileEntityOredictionificator.ODConfigValueInvalidationListener;
 import mekanism.common.world.GenHandler;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.resources.ResourceLocation;
@@ -384,16 +385,17 @@ public class Mekanism {
         logger.info("Mod loaded.");
     }
 
-    private static void registerDispenseBehavior(DispenseItemBehavior behavior, ItemLike... itemProviders) {
-        for (ItemLike itemProvider : itemProviders) {
-            DispenserBlock.registerBehavior(itemProvider.asItem(), behavior);
+    @SafeVarargs
+    private static void registerDispenseBehavior(DispenseItemBehavior behavior, Holder<Item>... items) {
+        for (Holder<Item> item : items) {
+            DispenserBlock.registerBehavior(item.value(), behavior);
         }
     }
 
     private static void registerFluidTankBehaviors(ItemLike... itemProviders) {
-        registerDispenseBehavior(FluidTankItemDispenseBehavior.INSTANCE);
         for (ItemLike itemProvider : itemProviders) {
             Item item = itemProvider.asItem();
+            DispenserBlock.registerBehavior(item, FluidTankItemDispenseBehavior.INSTANCE);
             CauldronInteraction.EMPTY.map().put(item, BasicCauldronInteraction.EMPTY);
             CauldronInteraction.WATER.map().put(item, BasicDrainCauldronInteraction.WATER);
             CauldronInteraction.LAVA.map().put(item, BasicDrainCauldronInteraction.LAVA);

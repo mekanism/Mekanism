@@ -39,13 +39,13 @@ public class JEIAliasHelper implements RVAliasHelper<ItemStack, FluidStack, Chem
     }
 
     @Override
-    public ItemStack ingredient(ItemLike itemLike) {
-        return new ItemStack(itemLike);
+    public ItemStack ingredient(ItemStack item) {
+        return item;
     }
 
     @Override
-    public ItemStack ingredient(ItemStack item) {
-        return item;
+    public ItemStack itemIngredient(Holder<Item> item) {
+        return new ItemStack(item);
     }
 
     @Override

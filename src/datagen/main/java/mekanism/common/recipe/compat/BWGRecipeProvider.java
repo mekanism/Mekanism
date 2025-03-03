@@ -10,7 +10,6 @@ import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.FieldReflectionHelper;
-import mekanism.common.recipe.BaseRecipeProvider;
 import mekanism.common.recipe.RecipeProviderUtil;
 import mekanism.common.recipe.impl.PigmentExtractingRecipeProvider;
 import mekanism.common.registries.MekanismChemicals;
@@ -21,8 +20,9 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.block.Blocks;
 import net.potionstudios.biomeswevegone.world.level.block.BWGBlocks;
 import net.potionstudios.biomeswevegone.world.level.block.sand.BWGSandSet;
 import net.potionstudios.biomeswevegone.world.level.block.set.BWGBlockSet;
@@ -71,11 +71,8 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
         }
     }
 
-    private void dye(RecipeOutput consumer, String basePath, ItemLike output, boolean large, EnumColor color, ItemLike... extraInputs) {
-        ItemStackIngredient inputIngredient = IngredientCreatorAccess.item().from(BaseRecipeProvider.createIngredient(
-              tag("dye/makes_" + color.getRegistryPrefix() + "_dye"),
-              extraInputs
-        ));
+    private void dye(RecipeOutput consumer, String basePath, ItemLike output, boolean large, EnumColor color) {
+        ItemStackIngredient inputIngredient = IngredientCreatorAccess.item().from(Ingredient.of(tag("dye/makes_" + color.getRegistryPrefix() + "_dye")));
         String name = large ? "large_" + color.getRegistryPrefix() : color.getRegistryPrefix();
         ItemStackToItemStackRecipeBuilder.enriching(
                     inputIngredient,
@@ -149,10 +146,10 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
     private void addMossyStoneEnrichingRecipes(RecipeOutput consumer, String basePath) {
         BWGBlockSet from = BWGBlocks.MOSSY_STONE_SET;
         String name = BuiltInRegistries.BLOCK.getKey(from.getBase()).getPath();
-        enriching(consumer, from.getBase(), Blocks.STONE, basePath + "conversion_" + name);
-        enriching(consumer, from.getSlab(), Blocks.STONE_SLAB, basePath + "slabs_conversion_" + name);
-        enriching(consumer, from.getStairs(), Blocks.STONE_STAIRS, basePath + "stairs_conversion_" + name);
-        //enriching(consumer, from.getWall(), Blocks.STONE_WALL, basePath + "walls_conversion_" + name);
+        enriching(consumer, from.getBase(), Items.STONE, basePath + "conversion_" + name);
+        enriching(consumer, from.getSlab(), Items.STONE_SLAB, basePath + "slabs_conversion_" + name);
+        enriching(consumer, from.getStairs(), Items.STONE_STAIRS, basePath + "stairs_conversion_" + name);
+        //enriching(consumer, from.getWall(), Items.STONE_WALL, basePath + "walls_conversion_" + name);
     }
 
     private void addDaciteEnrichingRecipes(RecipeOutput consumer, String basePath) {
@@ -203,10 +200,10 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
     private void addMossyStoneInfusingRecipes(RecipeOutput consumer, String basePath) {
         String name = "stone";
         BWGBlockSet to = BWGBlocks.MOSSY_STONE_SET;
-        infuseMoss(consumer, Blocks.STONE, to.getBase(), basePath + "conversion_" + name);
-        infuseMoss(consumer, Blocks.STONE_SLAB, to.getSlab(), basePath + "slabs_conversion_" + name);
-        infuseMoss(consumer, Blocks.STONE_STAIRS, to.getStairs(), basePath + "stairs_conversion_" + name);
-        //infuseMoss(consumer, Blocks.STONE_WALL, to.getWall(), basePath + "walls_conversion_" + name);
+        infuseMoss(consumer, Items.STONE, to.getBase(), basePath + "conversion_" + name);
+        infuseMoss(consumer, Items.STONE_SLAB, to.getSlab(), basePath + "slabs_conversion_" + name);
+        infuseMoss(consumer, Items.STONE_STAIRS, to.getStairs(), basePath + "stairs_conversion_" + name);
+        //infuseMoss(consumer, Items.STONE_WALL, to.getWall(), basePath + "walls_conversion_" + name);
     }
 
     private void infuseMoss(RecipeOutput consumer, String basePath, BWGBlockSet from, BWGBlockSet to) {

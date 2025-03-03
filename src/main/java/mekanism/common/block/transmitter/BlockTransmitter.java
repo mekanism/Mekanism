@@ -74,7 +74,7 @@ public abstract class BlockTransmitter<TILE extends TileEntityTransmitter> exten
     @NotNull
     @Override
     protected VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context) {
-        if (!context.isHoldingItem(MekanismItems.CONFIGURATOR.asItem())) {
+        if (!context.isHoldingItem(MekanismItems.CONFIGURATOR.value())) {
             return getRealShape(world, pos);
         }
         //Get the partial selection box if we are holding a configurator

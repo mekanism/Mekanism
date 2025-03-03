@@ -10,6 +10,7 @@ import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
 import mekanism.common.recipe.pattern.Pattern;
 import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.recipe.pattern.RecipePattern.TripleLine;
+import mekanism.common.registration.impl.BlockRegistryObject;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeCategory;
@@ -33,15 +34,15 @@ public class PlasticSlabsRecipeProvider implements ISubRecipeProvider {
               basePath + "glow/");
     }
 
-    private void registerPlasticSlabs(RecipeOutput consumer, Map<EnumColor, ? extends Holder<Block>> blocks, Map<EnumColor, ? extends Holder<Block>> plastic,
+    private void registerPlasticSlabs(RecipeOutput consumer, Map<EnumColor, ? extends BlockRegistryObject<?, ?>> blocks, Map<EnumColor, ? extends Holder<Block>> plastic,
           TagKey<Item> blockType, boolean transparent, String basePath) {
-        for (Map.Entry<EnumColor, ? extends Holder<Block>> entry : blocks.entrySet()) {
+        for (Map.Entry<EnumColor, ? extends BlockRegistryObject<?, ?>> entry : blocks.entrySet()) {
             EnumColor color = entry.getKey();
-            registerPlasticSlab(consumer, color, entry.getValue(), plastic.get(color), blockType, transparent, basePath);
+            registerPlasticSlab(consumer, color, entry.getValue().getItemHolder(), plastic.get(color), blockType, transparent, basePath);
         }
     }
 
-    private void registerPlasticSlab(RecipeOutput consumer, EnumColor color, Holder<Block> slab, Holder<Block> plastic, TagKey<Item> blockType, boolean transparent,
+    private void registerPlasticSlab(RecipeOutput consumer, EnumColor color, Holder<Item> slab, Holder<Block> plastic, TagKey<Item> blockType, boolean transparent,
           String basePath) {
         ExtendedShapedRecipeBuilder.shapedRecipe(slab, 6)
               .pattern(PLASTIC_SLAB)

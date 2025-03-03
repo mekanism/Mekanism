@@ -31,15 +31,15 @@ public class ToolsCreativeTabs {
         ResourceKey<CreativeModeTab> tabKey = event.getTabKey();
         if (tabKey == CreativeModeTabs.TOOLS_AND_UTILITIES) {
             for (Holder<Item> holder : ToolsItems.ITEMS.getEntries()) {
-                if (holder.value() instanceof DiggerItem item) {
-                    CreativeTabDeferredRegister.addToDisplay(event, item);
+                if (holder.value() instanceof DiggerItem) {
+                    CreativeTabDeferredRegister.addToDisplay(event, holder);
                 }
             }
         } else if (tabKey == CreativeModeTabs.COMBAT) {
             for (Holder<Item> itemProvider : ToolsItems.ITEMS.getEntries()) {
                 Item item = itemProvider.value();
                 if (item instanceof ItemMekanismArmor || item instanceof SwordItem || item instanceof ShieldItem) {
-                    CreativeTabDeferredRegister.addToDisplay(event, item);
+                    CreativeTabDeferredRegister.addToDisplay(event, itemProvider);
                 }
             }
         }

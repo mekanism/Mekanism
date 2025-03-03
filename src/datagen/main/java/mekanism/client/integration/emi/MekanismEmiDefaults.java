@@ -294,9 +294,8 @@ public class MekanismEmiDefaults extends BaseEmiDefaults {
     private void addGearModuleRecipes() {
         addRecipe(MekanismItems.MODULE_BASE);
         for (Holder<Item> entry : MekanismItems.ITEMS.getEntries()) {
-            Item item = entry.value();
-            if (item instanceof ItemModule) {
-                addRecipe(item);
+            if (entry.value() instanceof ItemModule) {
+                addRecipe(entry);
             }
         }
     }

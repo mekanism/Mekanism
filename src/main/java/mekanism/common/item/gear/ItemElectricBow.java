@@ -14,6 +14,7 @@ import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IModeItem.IAttachmentBasedModeItem;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.registries.MekanismDataComponents;
+import mekanism.common.registries.MekanismItems;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.core.Holder;
@@ -142,7 +143,7 @@ public class ItemElectricBow extends BowItem implements IItemHUDProvider, ICusto
 
     @Override
     public void addItems(Consumer<ItemStack> tabOutput) {
-        tabOutput.accept(StorageUtils.getFilledEnergyVariant(this));
+        tabOutput.accept(StorageUtils.getFilledEnergyVariant(MekanismItems.ELECTRIC_BOW));
     }
 
     @Override

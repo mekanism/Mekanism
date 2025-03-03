@@ -162,6 +162,7 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
     private final Holder<Chemical> chemical;
     private long amount;
 
+    //TODO - 1.21: Docs and mention when it fails
     public ChemicalStack(Holder<Chemical> chemical, long amount) {
         Objects.requireNonNull(chemical, "Cannot create a ChemicalStack from a null chemical holder");
         if (chemical.kind() == Holder.Kind.DIRECT) {

@@ -12,8 +12,8 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,12 +24,12 @@ public class TransporterTestUtils {
     private TransporterTestUtils() {
     }
 
-    public static CompoundTag containing(ItemLike itemLike) {
-        return containing(new ItemStack(itemLike));
+    public static CompoundTag containing(Item item) {
+        return containing(new ItemStack(item));
     }
 
-    public static CompoundTag containing(ItemLike itemLike, int amount) {
-        return containing(new ItemStack(itemLike, amount));
+    public static CompoundTag containing(Item item, int amount) {
+        return containing(new ItemStack(item, amount));
     }
 
     public static CompoundTag containing(ItemStack... stacks) {

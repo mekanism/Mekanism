@@ -12,8 +12,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.fml.loading.FMLEnvironment;
@@ -31,7 +31,7 @@ public final class FluidUtils {
     private FluidUtils() {
     }
 
-    public static ItemStack getFilledVariant(ItemLike toFill, Holder<Fluid> fluid) {
+    public static ItemStack getFilledVariant(Holder<Item> toFill, Holder<Fluid> fluid) {
         return getFilledVariant(new ItemStack(toFill), fluid);
     }
 

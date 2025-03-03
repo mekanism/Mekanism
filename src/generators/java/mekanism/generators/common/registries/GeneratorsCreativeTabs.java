@@ -37,7 +37,7 @@ public class GeneratorsCreativeTabs {
         } else if (tabKey == CreativeModeTabs.REDSTONE_BLOCKS) {
             for (Holder<Block> block : GeneratorsBlocks.BLOCKS.getPrimaryEntries()) {
                 if (Attribute.has(block, AttributeComparator.class)) {
-                    CreativeTabDeferredRegister.addToDisplay(event, block.value());
+                    CreativeTabDeferredRegister.addToDisplay(event, block);
                 }
             }
         } else if (tabKey == CreativeModeTabs.TOOLS_AND_UTILITIES) {

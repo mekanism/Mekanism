@@ -1,6 +1,7 @@
 package mekanism.common.registration;
 
 import mekanism.api.annotations.NothingNullByDefault;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
@@ -21,5 +22,13 @@ public class DoubleWrappedRegistryObject<PRIMARY_REGISTRY, PRIMARY extends PRIMA
 
     public SECONDARY getSecondary() {
         return secondaryRO.get();
+    }
+
+    public boolean secondaryKeyMatches(Holder<SECONDARY_REGISTRY> holder) {
+        return holder.is(secondaryRO.getKey());
+    }
+
+    public boolean isSecondary(SECONDARY_REGISTRY other) {
+        return getSecondary() == other;
     }
 }

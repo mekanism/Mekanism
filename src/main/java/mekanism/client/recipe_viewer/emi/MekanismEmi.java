@@ -77,6 +77,7 @@ import mekanism.common.util.EnumUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.ItemLike;
@@ -203,10 +204,10 @@ public class MekanismEmi implements EmiPlugin {
         registerItemSubtypes(registry, MekanismBlocks.BLOCKS.getSecondaryEntries());
     }
 
-    public static void registerItemSubtypes(EmiRegistry registry, Collection<? extends Holder<? extends ItemLike>> itemProviders) {
-        for (Holder<? extends ItemLike> itemProvider : itemProviders) {
+    public static void registerItemSubtypes(EmiRegistry registry, Collection<? extends Holder<Item>> items) {
+        for (Holder<Item> item : items) {
             //Handle items
-            ItemStack stack = new ItemStack(itemProvider.value());
+            ItemStack stack = new ItemStack(item);
             if (Capabilities.STRICT_ENERGY.hasCapability(stack) || Capabilities.CHEMICAL.hasCapability(stack) || Capabilities.FLUID.hasCapability(stack)) {
                 registry.setDefaultComparison(stack.getItem(), MEKANISM_COMPARISON);
             }
@@ -318,8 +319,9 @@ public class MekanismEmi implements EmiPlugin {
 
     private static void addWorkstations(EmiRegistry registry, EmiRecipeCategory category, List<ItemLike> workstations) {
         for (ItemLike workstation : workstations) {
-            registry.addWorkstation(category, EmiStack.of(workstation));
-            if (workstation.asItem() instanceof BlockItem blockItem) {
+            Item item = workstation.asItem();
+            registry.addWorkstation(category, EmiStack.of(item));
+            if (item instanceof BlockItem blockItem) {
                 AttributeFactoryType factoryType = Attribute.get(blockItem.getBlock(), AttributeFactoryType.class);
                 if (factoryType != null) {
                     for (FactoryTier tier : EnumUtils.FACTORY_TIERS) {

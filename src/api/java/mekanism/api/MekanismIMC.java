@@ -62,7 +62,7 @@ public class MekanismIMC {
      * @apiNote Call this method during the {@link InterModEnqueueEvent}.
      * @see #addModuleContainer(ModuleContainerTarget)
      */
-    public static void addModuleContainer(ItemLike container, String imcMethod) {
+    public static void addModuleContainer(ItemLike container, String imcMethod) {//TODO - 1.22: Switch this to taking a Holder<Item>
         addModuleContainer(new ModuleContainerTarget(container, imcMethod));
     }
 
@@ -334,7 +334,7 @@ public class MekanismIMC {
          * @param container Item that will be the module container.
          * @param imcMethod Method used to add modules as supported to the container.
          */
-        public ModuleContainerTarget(ItemLike container, String imcMethod) {
+        public ModuleContainerTarget(ItemLike container, String imcMethod) {//TODO - 1.22: Switch this to taking a Holder<Item>
             this(Objects.requireNonNull(container, "Item cannot be null").asItem(), imcMethod);
         }
 

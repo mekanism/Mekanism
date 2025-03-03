@@ -127,7 +127,7 @@ class PaintingRecipeProvider implements ISubRecipeProvider {
         addDyeRecipe(consumer, EnumColor.BLACK, Items.BLACK_DYE, basePath);
     }
 
-    private static void addDyeRecipe(RecipeOutput consumer, EnumColor color, ItemLike dye, String basePath) {
+    private static void addDyeRecipe(RecipeOutput consumer, EnumColor color, Item dye, String basePath) {
         ItemStackChemicalToItemStackRecipeBuilder.painting(
               IngredientCreatorAccess.item().from(MekanismItems.DYE_BASE),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(color), PigmentExtractingRecipeProvider.DYE_RATE),

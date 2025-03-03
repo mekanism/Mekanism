@@ -39,7 +39,7 @@ public class ToolsJEI implements IModPlugin {
         if (MekanismJEI.shouldLoad()) {
             //Add the Anvil repair recipes to JEI for all the different tools and armors in Mekanism Tools
             for (Holder<Item> toolsItem : ToolsItems.ITEMS.getEntries()) {
-                RecipeRegistryHelper.addAnvilRecipes(registry, toolsItem.value(), item -> {
+                RecipeRegistryHelper.addAnvilRecipes(registry, toolsItem, item -> {
                     if (item instanceof ItemMekanismShield shieldItem) {
                         return shieldItem.getRepairMaterial().getItems();
                     } else if (item instanceof ArmorItem armorItem) {

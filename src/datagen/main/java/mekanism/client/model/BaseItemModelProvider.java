@@ -50,9 +50,9 @@ public abstract class BaseItemModelProvider extends ItemModelProvider {
     }
 
     @SafeVarargs
-    protected final void registerGenerated(Holder<Item>... itemProviders) {
-        for (Holder<Item> itemLike : itemProviders) {
-            generated(itemLike);
+    protected final void registerGenerated(Holder<Item>... items) {
+        for (Holder<Item> item : items) {
+            generated(item);
         }
     }
 
@@ -96,9 +96,9 @@ public abstract class BaseItemModelProvider extends ItemModelProvider {
     }
 
     @SafeVarargs
-    protected final void registerHandheld(Holder<Item>... itemProviders) {
-        for (Holder<Item> itemLike : itemProviders) {
-            handheld(itemLike);
+    protected final void registerHandheld(Holder<Item>... items) {
+        for (Holder<Item> item : items) {
+            handheld(item);
         }
     }
 

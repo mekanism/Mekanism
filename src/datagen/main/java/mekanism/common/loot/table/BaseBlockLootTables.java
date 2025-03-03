@@ -13,10 +13,10 @@ import java.util.stream.Collectors;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.Mekanism;
 import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.block.BlockPersonalStorage;
 import mekanism.common.block.BlockRadioactiveWasteBarrel;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.Attributes.AttributeInventory;
-import mekanism.common.item.block.ItemBlockPersonalStorage;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IFrequencyHandler;
 import mekanism.common.lib.frequency.IFrequencyItem;
@@ -32,6 +32,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.flag.FeatureFlags;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ItemLike;
@@ -102,14 +103,14 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
         add(block.value(), factory);
     }
 
-    protected LootTable.Builder createOreDrop(Block block, ItemLike item) {
-        return createSilkTouchDispatchTable(block, applyExplosionDecay(block, LootItem.lootTableItem(item.asItem())
+    protected LootTable.Builder createOreDrop(Block block, Holder<Item> item) {
+        return createSilkTouchDispatchTable(block, applyExplosionDecay(block, LootItem.lootTableItem(item.value())
               .apply(ApplyBonusCount.addOreBonusCount(this.registries.holderOrThrow(Enchantments.FORTUNE)))
         ));
     }
 
-    protected LootTable.Builder droppingWithFortuneOrRandomly(Block block, ItemLike item, UniformGenerator range) {
-        return createSilkTouchDispatchTable(block, applyExplosionDecay(block, LootItem.lootTableItem(item.asItem())
+    protected LootTable.Builder droppingWithFortuneOrRandomly(Block block, Holder<Item> item, UniformGenerator range) {
+        return createSilkTouchDispatchTable(block, applyExplosionDecay(block, LootItem.lootTableItem(item.value())
               .apply(SetItemCountFunction.setCount(range))
               .apply(ApplyBonusCount.addOreBonusCount(this.registries.holderOrThrow(Enchantments.FORTUNE)))
         ));
@@ -206,7 +207,7 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
                         }
                     } else if (attachmentContainers == 0) {
                         //TODO: Improve how we handle skipping warnings for known missing types
-                        if (type == ContainerType.ITEM && block.asItem() instanceof ItemBlockPersonalStorage) {
+                        if (type == ContainerType.ITEM && block instanceof BlockPersonalStorage<?, ?>) {
                             //We don't want explosions causing personal storage items to be directly destroyed. It is also known that the attachment is missing
                             hasContents = true;
                         } else if (type != ContainerType.CHEMICAL || !(block instanceof BlockRadioactiveWasteBarrel)) {

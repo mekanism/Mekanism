@@ -9,11 +9,12 @@ import mekanism.tools.common.registries.ToolsItems;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.renderer.item.ClampedItemPropertyFunction;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ItemLike;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -37,8 +38,9 @@ public class ToolsClientRegistration {
               ToolsItems.REFINED_OBSIDIAN_SHIELD, ToolsItems.STEEL_SHIELD));
     }
 
-    private static void addShieldPropertyOverrides(ResourceLocation override, ClampedItemPropertyFunction propertyGetter, ItemLike... shields) {
-        for (ItemLike shield : shields) {
+    @SafeVarargs
+    private static void addShieldPropertyOverrides(ResourceLocation override, ClampedItemPropertyFunction propertyGetter, Holder<Item>... shields) {
+        for (Holder<Item> shield : shields) {
             ClientRegistrationUtil.setPropertyOverride(shield, override, propertyGetter);
         }
     }

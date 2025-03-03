@@ -22,8 +22,8 @@ import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.tier.ChemicalTankTier;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -54,17 +54,17 @@ public class ChemicalUtil {
      *
      * @return empty chemical tank
      */
-    private static ItemLike getEmptyChemicalTank(ChemicalTankTier tier) {
-        return switch (tier) {
+    private static Holder<Item> getEmptyChemicalTank(ChemicalTankTier tier) {
+        return (switch (tier) {
             case BASIC -> MekanismBlocks.BASIC_CHEMICAL_TANK;
             case ADVANCED -> MekanismBlocks.ADVANCED_CHEMICAL_TANK;
             case ELITE -> MekanismBlocks.ELITE_CHEMICAL_TANK;
             case ULTIMATE -> MekanismBlocks.ULTIMATE_CHEMICAL_TANK;
             case CREATIVE -> MekanismBlocks.CREATIVE_CHEMICAL_TANK;
-        };
+        }).getItemHolder();
     }
 
-    public static ItemStack getFilledVariant(ItemLike toFill, Holder<Chemical> provider) {
+    public static ItemStack getFilledVariant(Holder<Item> toFill, Holder<Chemical> provider) {
         return getFilledVariant(new ItemStack(toFill), provider);
     }
 

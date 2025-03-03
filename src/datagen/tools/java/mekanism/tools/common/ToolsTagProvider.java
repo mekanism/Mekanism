@@ -15,7 +15,6 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
@@ -29,7 +28,7 @@ public class ToolsTagProvider extends BaseTagProvider {
     @Override
     protected void registerTags(HolderLookup.Provider registries) {
         addToolTags();
-        addToTag(ItemTags.PIGLIN_LOVED,
+        addItemsToTag(ItemTags.PIGLIN_LOVED,
               ToolsItems.GOLD_PAXEL,
               ToolsItems.REFINED_GLOWSTONE_PICKAXE,
               ToolsItems.REFINED_GLOWSTONE_AXE,
@@ -44,7 +43,7 @@ public class ToolsTagProvider extends BaseTagProvider {
               ToolsItems.REFINED_GLOWSTONE_SHIELD
         );
         //Make refined glowstone armor make you immune to freezing because of the light it gives off
-        addToTag(ItemTags.FREEZE_IMMUNE_WEARABLES,
+        addItemsToTag(ItemTags.FREEZE_IMMUNE_WEARABLES,
               ToolsItems.REFINED_GLOWSTONE_HELMET,
               ToolsItems.REFINED_GLOWSTONE_CHESTPLATE,
               ToolsItems.REFINED_GLOWSTONE_LEGGINGS,
@@ -74,7 +73,8 @@ public class ToolsTagProvider extends BaseTagProvider {
         addPickaxes();
         addShovels();
         addHoes();
-        addShields();
+        addShields(ToolsItems.BRONZE_SHIELD, ToolsItems.LAPIS_LAZULI_SHIELD, ToolsItems.OSMIUM_SHIELD, ToolsItems.REFINED_GLOWSTONE_SHIELD,
+              ToolsItems.REFINED_OBSIDIAN_SHIELD, ToolsItems.STEEL_SHIELD);
         //Armor
         addHelmets();
         addChestplates();
@@ -90,7 +90,7 @@ public class ToolsTagProvider extends BaseTagProvider {
         getItemBuilder(ItemTags.MINING_LOOT_ENCHANTABLE).add(ToolsTags.Items.TOOLS_PAXEL);
         getItemBuilder(ItemTags.DURABILITY_ENCHANTABLE).add(ToolsTags.Items.TOOLS_PAXEL);
         getItemBuilder(Tags.Items.TOOLS).add(ToolsTags.Items.TOOLS_PAXEL);
-        addToTag(ToolsTags.Items.TOOLS_PAXEL,
+        addItemsToTag(ToolsTags.Items.TOOLS_PAXEL,
               //Vanilla Paxels
               ToolsItems.WOOD_PAXEL,
               ToolsItems.STONE_PAXEL,
@@ -109,7 +109,7 @@ public class ToolsTagProvider extends BaseTagProvider {
     }
 
     private void addSwords() {
-        addToTag(ItemTags.SWORDS,
+        addItemsToTag(ItemTags.SWORDS,
               ToolsItems.BRONZE_SWORD,
               ToolsItems.LAPIS_LAZULI_SWORD,
               ToolsItems.OSMIUM_SWORD,
@@ -120,7 +120,7 @@ public class ToolsTagProvider extends BaseTagProvider {
     }
 
     private void addAxes() {
-        addToTag(ItemTags.AXES,
+        addItemsToTag(ItemTags.AXES,
               ToolsItems.BRONZE_AXE,
               ToolsItems.LAPIS_LAZULI_AXE,
               ToolsItems.OSMIUM_AXE,
@@ -131,7 +131,7 @@ public class ToolsTagProvider extends BaseTagProvider {
     }
 
     private void addPickaxes() {
-        addToTag(ItemTags.PICKAXES,
+        addItemsToTag(ItemTags.PICKAXES,
               ToolsItems.BRONZE_PICKAXE,
               ToolsItems.LAPIS_LAZULI_PICKAXE,
               ToolsItems.OSMIUM_PICKAXE,
@@ -142,7 +142,7 @@ public class ToolsTagProvider extends BaseTagProvider {
     }
 
     private void addShovels() {
-        addToTag(ItemTags.SHOVELS,
+        addItemsToTag(ItemTags.SHOVELS,
               ToolsItems.BRONZE_SHOVEL,
               ToolsItems.LAPIS_LAZULI_SHOVEL,
               ToolsItems.OSMIUM_SHOVEL,
@@ -153,7 +153,7 @@ public class ToolsTagProvider extends BaseTagProvider {
     }
 
     private void addHoes() {
-        addToTag(ItemTags.HOES,
+        addItemsToTag(ItemTags.HOES,
               ToolsItems.BRONZE_HOE,
               ToolsItems.LAPIS_LAZULI_HOE,
               ToolsItems.OSMIUM_HOE,
@@ -163,21 +163,14 @@ public class ToolsTagProvider extends BaseTagProvider {
         );
     }
 
-    private void addShields() {
-        ItemLike[] shields = {
-              ToolsItems.BRONZE_SHIELD,
-              ToolsItems.LAPIS_LAZULI_SHIELD,
-              ToolsItems.OSMIUM_SHIELD,
-              ToolsItems.REFINED_GLOWSTONE_SHIELD,
-              ToolsItems.REFINED_OBSIDIAN_SHIELD,
-              ToolsItems.STEEL_SHIELD
-        };
-        addToTag(Tags.Items.TOOLS_SHIELD, shields);
-        addToTag(ItemTags.DURABILITY_ENCHANTABLE, shields);
+    @SafeVarargs
+    private void addShields(Holder<Item>... shields) {
+        addItemsToTag(Tags.Items.TOOLS_SHIELD, shields);
+        addItemsToTag(ItemTags.DURABILITY_ENCHANTABLE, shields);
     }
 
     private void addHelmets() {
-        addToTag(ItemTags.HEAD_ARMOR,
+        addItemsToTag(ItemTags.HEAD_ARMOR,
               ToolsItems.BRONZE_HELMET,
               ToolsItems.LAPIS_LAZULI_HELMET,
               ToolsItems.OSMIUM_HELMET,
@@ -188,7 +181,7 @@ public class ToolsTagProvider extends BaseTagProvider {
     }
 
     private void addChestplates() {
-        addToTag(ItemTags.CHEST_ARMOR,
+        addItemsToTag(ItemTags.CHEST_ARMOR,
               ToolsItems.BRONZE_CHESTPLATE,
               ToolsItems.LAPIS_LAZULI_CHESTPLATE,
               ToolsItems.OSMIUM_CHESTPLATE,
@@ -199,7 +192,7 @@ public class ToolsTagProvider extends BaseTagProvider {
     }
 
     private void addLeggings() {
-        addToTag(ItemTags.LEG_ARMOR,
+        addItemsToTag(ItemTags.LEG_ARMOR,
               ToolsItems.BRONZE_LEGGINGS,
               ToolsItems.LAPIS_LAZULI_LEGGINGS,
               ToolsItems.OSMIUM_LEGGINGS,
@@ -210,7 +203,7 @@ public class ToolsTagProvider extends BaseTagProvider {
     }
 
     private void addBoots() {
-        addToTag(ItemTags.FOOT_ARMOR,
+        addItemsToTag(ItemTags.FOOT_ARMOR,
               ToolsItems.BRONZE_BOOTS,
               ToolsItems.LAPIS_LAZULI_BOOTS,
               ToolsItems.OSMIUM_BOOTS,

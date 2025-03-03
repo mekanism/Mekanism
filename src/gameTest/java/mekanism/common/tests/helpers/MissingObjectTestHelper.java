@@ -132,19 +132,19 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
 
     public OverflowAware makeOverflow() {
         Object2IntSortedMap<HashedItem> overflow = new Object2IntLinkedOpenHashMap<>();
-        overflow.put(HashedItem.create(Items.DIAMOND), 10);
-        overflow.put(HashedItem.create(Items.STICK), 4);
+        overflow.put(hashedStack(Items.DIAMOND), 10);
+        overflow.put(hashedStack(Items.STICK), 4);
         overflow.put(failureHashedItem(), 7);
-        overflow.put(HashedItem.create(Items.STONE), 2);
+        overflow.put(hashedStack(Items.STONE), 2);
         return new OverflowAware(overflow);
     }
 
     public boolean validateOverflow(OverflowAware overflowAware) {
         Object2IntSortedMap<HashedItem> overflow = overflowAware.overflow();
         return overflow.size() == 3 &&
-               overflow.getInt(HashedItem.create(Items.DIAMOND)) == 10 &&
-               overflow.getInt(HashedItem.create(Items.STICK)) == 4 &&
-               overflow.getInt(HashedItem.create(Items.STONE)) == 2;
+               overflow.getInt(hashedStack(Items.DIAMOND)) == 10 &&
+               overflow.getInt(hashedStack(Items.STICK)) == 4 &&
+               overflow.getInt(hashedStack(Items.STONE)) == 2;
     }
 
     public PortableDashboardContents makeDashboard() {

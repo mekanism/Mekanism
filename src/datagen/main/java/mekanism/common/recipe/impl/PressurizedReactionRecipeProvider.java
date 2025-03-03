@@ -1,6 +1,5 @@
 package mekanism.common.recipe.impl;
 
-import java.util.List;
 import mekanism.api.datagen.recipe.builder.PressurizedReactionRecipeBuilder;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
@@ -13,7 +12,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.common.Tags;
 
 class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
@@ -29,10 +28,10 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
     private void addCoalGasificationRecipes(RecipeOutput consumer, String basePath) {
         //Blocks
         PressurizedReactionRecipeBuilder.reaction(
-              IngredientCreatorAccess.item().from(BaseRecipeProvider.createIngredient(List.of(
+              IngredientCreatorAccess.item().from(BaseRecipeProvider.createIngredient(
                     Tags.Items.STORAGE_BLOCKS_COAL,
                     MekanismTags.Items.STORAGE_BLOCKS_CHARCOAL
-              ))),
+              )),
               IngredientCreatorAccess.fluid().from(FluidTags.WATER, 1_000),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 1_000),
               900,
@@ -88,7 +87,7 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
               IngredientCreatorAccess.item().from(BaseRecipeProvider.createIngredient(
                     ItemTags.PLANKS,
                     //Allow mosaic as it can be smelted, so it makes sense it can be used in wood gasification
-                    Blocks.BAMBOO_MOSAIC
+                    Items.BAMBOO_MOSAIC
               ), 20),
               IngredientCreatorAccess.fluid().from(FluidTags.WATER, 400),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 400),
@@ -109,7 +108,7 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
               IngredientCreatorAccess.item().from(BaseRecipeProvider.createIngredient(
                     ItemTags.WOODEN_SLABS,
                     //Allow mosaic as it can be smelted, so it makes sense it can be used in wood gasification
-                    Blocks.BAMBOO_MOSAIC_SLAB
+                    Items.BAMBOO_MOSAIC_SLAB
               )),
               IngredientCreatorAccess.fluid().from(FluidTags.WATER, 10),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 10),
@@ -121,7 +120,7 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
               IngredientCreatorAccess.item().from(BaseRecipeProvider.createIngredient(
                     ItemTags.WOODEN_STAIRS,
                     //Allow mosaic as it can be smelted, so it makes sense it can be used in wood gasification
-                    Blocks.BAMBOO_MOSAIC_STAIRS
+                    Items.BAMBOO_MOSAIC_STAIRS
               )),
               IngredientCreatorAccess.fluid().from(FluidTags.WATER, 15),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 15),

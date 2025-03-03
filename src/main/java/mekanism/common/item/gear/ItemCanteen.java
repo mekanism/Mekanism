@@ -7,6 +7,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.registries.MekanismFluids;
+import mekanism.common.registries.MekanismItems;
 import mekanism.common.util.FluidUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
@@ -55,7 +56,7 @@ public class ItemCanteen extends Item implements ICustomCreativeTabContents {
 
     @Override
     public void addItems(Consumer<ItemStack> tabOutput) {
-        tabOutput.accept(FluidUtils.getFilledVariant(this, MekanismFluids.NUTRITIONAL_PASTE));
+        tabOutput.accept(FluidUtils.getFilledVariant(MekanismItems.CANTEEN, MekanismFluids.NUTRITIONAL_PASTE));
     }
 
     @NotNull

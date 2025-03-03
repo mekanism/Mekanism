@@ -140,7 +140,7 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
         //If we have a nugget that means we also want to add recipes for smelting tools/armor into the nugget
         if (nugget != null) {
             String baseNuggetFrom = name + "/nugget_from_";
-            RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, BaseRecipeProvider.of(helmet, chestplate, leggings, boots, sword, pickaxe, axe, shovel, hoe, paxel),
+            RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, BaseRecipeProvider.createIngredient(helmet, chestplate, leggings, boots, sword, pickaxe, axe, shovel, hoe, paxel),
                   nugget, 0.1F, 200, MekanismTools.rl(baseNuggetFrom + "blasting"), MekanismTools.rl(baseNuggetFrom + "smelting"));
         }
     }
@@ -148,13 +148,13 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
     private void registerVanillaPaxels(RecipeOutput consumer) {
         registerVanillaPaxel(consumer, ToolsItems.WOOD_PAXEL, Items.WOODEN_AXE, Items.WOODEN_PICKAXE, Items.WOODEN_SHOVEL, null);
         registerVanillaPaxel(consumer, ToolsItems.STONE_PAXEL, Items.STONE_AXE, Items.STONE_PICKAXE, Items.STONE_SHOVEL, null);
-        registerVanillaPaxel(consumer, ToolsItems.IRON_PAXEL, Items.IRON_AXE, Items.IRON_PICKAXE, Items.IRON_SHOVEL, Items.IRON_NUGGET);
-        registerVanillaPaxel(consumer, ToolsItems.GOLD_PAXEL, Items.GOLDEN_AXE, Items.GOLDEN_PICKAXE, Items.GOLDEN_SHOVEL, Items.GOLD_NUGGET);
+        registerVanillaPaxel(consumer, ToolsItems.IRON_PAXEL, Items.IRON_AXE, Items.IRON_PICKAXE, Items.IRON_SHOVEL, Items.IRON_NUGGET.builtInRegistryHolder());
+        registerVanillaPaxel(consumer, ToolsItems.GOLD_PAXEL, Items.GOLDEN_AXE, Items.GOLDEN_PICKAXE, Items.GOLDEN_SHOVEL, Items.GOLD_NUGGET.builtInRegistryHolder());
         registerVanillaPaxel(consumer, ToolsItems.DIAMOND_PAXEL, Items.DIAMOND_AXE, Items.DIAMOND_PICKAXE, Items.DIAMOND_SHOVEL, null);
         ExtendedSmithingRecipeBuilder.smithing(Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE, ToolsItems.DIAMOND_PAXEL, Items.NETHERITE_INGOT, ToolsItems.NETHERITE_PAXEL).build(consumer);
     }
 
-    private void registerVanillaPaxel(RecipeOutput consumer, Holder<Item> paxel, Item axe, Item pickaxe, Item shovel, @Nullable Item nugget) {
+    private void registerVanillaPaxel(RecipeOutput consumer, Holder<Item> paxel, Item axe, Item pickaxe, Item shovel, @Nullable Holder<Item> nugget) {
         PaxelShapedRecipeBuilder.shapedRecipe(paxel)
               .pattern(PAXEL)
               .key(AXE_CHAR, axe)
@@ -164,8 +164,8 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
               .build(consumer);
         //If we have a nugget that means we also want to add recipes for smelting tools/armor into the nugget
         if (nugget != null) {
-            String baseNuggetFrom = RegistryUtils.getPath(nugget) + "_from_";
-            RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, BaseRecipeProvider.of(paxel), nugget.builtInRegistryHolder(), 0.1F, 200,
+            String baseNuggetFrom = RegistryUtils.getName(nugget).getPath() + "_from_";
+            RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, BaseRecipeProvider.createIngredient(paxel), nugget, 0.1F, 200,
                   MekanismTools.rl(baseNuggetFrom + "blasting"), MekanismTools.rl(baseNuggetFrom + "smelting"));
         }
     }

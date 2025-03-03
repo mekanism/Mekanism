@@ -7,10 +7,11 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.registration.MekanismDeferredHolder;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister;
 import mekanism.common.registries.MekanismCreativeTabs;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
-import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 
 public class AdditionsCreativeTabs {
@@ -49,9 +50,9 @@ public class AdditionsCreativeTabs {
     }
 
     @SafeVarargs
-    private static void addToDisplay(CreativeModeTab.Output output, Map<EnumColor, ? extends ItemLike>... blocks) {
-        for (Map<EnumColor, ? extends ItemLike> blockMap : blocks) {
-            for (ItemLike block : blockMap.values()) {
+    private static void addToDisplay(CreativeModeTab.Output output, Map<EnumColor, ? extends Holder<Block>>... blocks) {
+        for (Map<EnumColor, ? extends Holder<Block>> blockMap : blocks) {
+            for (Holder<Block> block : blockMap.values()) {
                 CreativeTabDeferredRegister.addToDisplay(output, block);
             }
         }

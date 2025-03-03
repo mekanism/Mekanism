@@ -1,7 +1,6 @@
 package mekanism.common.recipe;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -24,8 +23,8 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Ingredient.ItemValue;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import net.neoforged.neoforge.common.crafting.DifferenceIngredient;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
@@ -78,28 +77,28 @@ public abstract class BaseRecipeProvider extends RecipeProvider {
         return Collections.emptyList();
     }
 
-    public static Ingredient createIngredient(TagKey<Item> itemTag, ItemLike... items) {
-        return createIngredient(Collections.singleton(itemTag), items);
+    public static Ingredient createIngredient(TagKey<Item> itemTag, Item... items) {
+        return createIngredient(Stream.of(itemTag), Arrays.stream(items).map(ItemStack::new));
     }
 
-    public static Ingredient createIngredient(Collection<TagKey<Item>> itemTags, ItemLike... items) {
+    private static Ingredient createIngredient(Stream<TagKey<Item>> itemTags, Stream<ItemStack> items) {
         return Ingredient.fromValues(Stream.concat(
-              itemTags.stream().map(Ingredient.TagValue::new),
-              Arrays.stream(items).map(item -> new Ingredient.ItemValue(new ItemStack(item)))
+              itemTags.map(Ingredient.TagValue::new),
+              items.map(ItemValue::new)
         ));
     }
 
     @SafeVarargs
     public static Ingredient createIngredient(TagKey<Item>... tags) {
-        return Ingredient.fromValues(Arrays.stream(tags).map(Ingredient.TagValue::new));
+        return createIngredient(Arrays.stream(tags), Stream.empty());
     }
 
     @SafeVarargs
-    public static Ingredient of(Holder<? extends ItemLike>... items) {
-        return Ingredient.of(Arrays.stream(items).map(Holder::value).toArray(ItemLike[]::new));
+    public static Ingredient createIngredient(Holder<Item>... items) {
+        return Ingredient.of(Arrays.stream(items).map(ItemStack::new));
     }
 
-    public static Ingredient difference(TagKey<Item> base, Holder<? extends ItemLike> subtracted) {
+    public static Ingredient difference(TagKey<Item> base, Holder<Item> subtracted) {
         return DifferenceIngredient.of(Ingredient.of(base), Ingredient.of(subtracted.value()));
     }
 

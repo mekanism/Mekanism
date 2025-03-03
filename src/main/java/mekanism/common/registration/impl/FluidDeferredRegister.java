@@ -128,7 +128,7 @@ public class FluidDeferredRegister {
 
         DeferredHolder<Fluid, Source> stillFluid = fluidRegister.register(name, () -> new Source(fluidProperties));
         DeferredHolder<Fluid, Flowing> flowingFluid = fluidRegister.register("flowing_" + name, () -> new Flowing(fluidProperties));
-        DeferredHolder<Item, BUCKET> bucket = itemRegister.register(name + "_bucket", () -> bucketCreator.create(stillFluid.get(), new Item.Properties().stacksTo(1).craftRemainder(Items.BUCKET)));
+        ItemRegistryObject<BUCKET> bucket = itemRegister.register(name + "_bucket", () -> bucketCreator.create(stillFluid.get(), new Item.Properties().stacksTo(1).craftRemainder(Items.BUCKET)));
         MapColor color = getClosestColor(renderProperties.color);
         //Note: The block properties used here is a copy of the ones for water
         DeferredHolder<Block, LiquidBlock> block = blockRegister.register(name, () -> new LiquidBlock(stillFluid.get(), BlockBehaviour.Properties.of()

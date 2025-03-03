@@ -62,7 +62,7 @@ public class ChemicalStackHelper implements IIngredientHelper<ChemicalStack> {
 
     @Override
     public ItemStack getCheatItemStack(ChemicalStack ingredient) {
-        return ChemicalUtil.getFilledVariant(MekanismBlocks.CREATIVE_CHEMICAL_TANK, ingredient.getChemicalHolder());
+        return ChemicalUtil.getFilledVariant(MekanismBlocks.CREATIVE_CHEMICAL_TANK.getItemHolder(), ingredient.getChemicalHolder());
     }
 
     @Override

@@ -98,13 +98,13 @@ public class EmiAliasProvider implements DataProvider, RVAliasHelper<EmiIngredie
     }
 
     @Override
-    public EmiIngredient ingredient(ItemLike itemLike) {
-        return EmiStack.of(itemLike);
+    public EmiIngredient ingredient(ItemStack item) {
+        return EmiStack.of(item);
     }
 
     @Override
-    public EmiIngredient ingredient(ItemStack item) {
-        return EmiStack.of(item);
+    public EmiIngredient itemIngredient(Holder<Item> item) {
+        return EmiStack.of(item.value());
     }
 
     @Override

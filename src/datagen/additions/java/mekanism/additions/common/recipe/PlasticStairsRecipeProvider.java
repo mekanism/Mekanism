@@ -10,6 +10,7 @@ import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
 import mekanism.common.recipe.pattern.Pattern;
 import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.recipe.pattern.RecipePattern.TripleLine;
+import mekanism.common.registration.impl.BlockRegistryObject;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeCategory;
@@ -35,15 +36,15 @@ public class PlasticStairsRecipeProvider implements ISubRecipeProvider {
               basePath + "glow/");
     }
 
-    private void registerPlasticStairs(RecipeOutput consumer, Map<EnumColor, ? extends Holder<Block>> blocks, Map<EnumColor, ? extends Holder<Block>> plastic,
+    private void registerPlasticStairs(RecipeOutput consumer, Map<EnumColor, ? extends BlockRegistryObject<?, ?>> blocks, Map<EnumColor, ? extends Holder<Block>> plastic,
           TagKey<Item> blockType, boolean transparent, String basePath) {
-        for (Map.Entry<EnumColor, ? extends Holder<Block>> entry : blocks.entrySet()) {
+        for (Map.Entry<EnumColor, ? extends BlockRegistryObject<?, ?>> entry : blocks.entrySet()) {
             EnumColor color = entry.getKey();
-            registerPlasticStairs(consumer, color, entry.getValue(), plastic.get(color), blockType, transparent, basePath);
+            registerPlasticStairs(consumer, color, entry.getValue().getItemHolder(), plastic.get(color), blockType, transparent, basePath);
         }
     }
 
-    private void registerPlasticStairs(RecipeOutput consumer, EnumColor color, Holder<Block> result, Holder<Block> plastic, TagKey<Item> blockType,
+    private void registerPlasticStairs(RecipeOutput consumer, EnumColor color, Holder<Item> result, Holder<Block> plastic, TagKey<Item> blockType,
           boolean transparent, String basePath) {
         ExtendedShapedRecipeBuilder.shapedRecipe(result, 4)
               .pattern(PLASTIC_STAIRS)

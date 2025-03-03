@@ -38,6 +38,7 @@ import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentPatch;
@@ -49,7 +50,6 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
@@ -291,8 +291,8 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
         return stack.has(component) || knownDefaultCreators.containsKey(stack.getItem());
     }
 
-    public void addDefault(ItemLike item, DataComponentPatch.Builder builder) {
-        Lazy<? extends IContainerCreator<? extends CONTAINER, ATTACHED>> lazy = knownDefaultCreators.get(item);
+    public void addDefault(Holder<Item> item, DataComponentPatch.Builder builder) {
+        Lazy<? extends IContainerCreator<? extends CONTAINER, ATTACHED>> lazy = knownDefaultCreators.get(item.value());
         if (lazy != null) {
             //Supports the type
             IContainerCreator<? extends CONTAINER, ATTACHED> containerCreator = lazy.get();
@@ -303,9 +303,9 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
         }
     }
 
-    public static boolean anySupports(ItemLike itemLike) {
+    public static boolean anySupports(Holder<Item> item) {
         for (ContainerType<?, ?, ?> type : TYPES) {
-            if (type.knownDefaultCreators.containsKey(itemLike.asItem())) {
+            if (type.knownDefaultCreators.containsKey(item.value())) {
                 return true;
             }
         }

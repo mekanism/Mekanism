@@ -18,9 +18,9 @@ import net.neoforged.neoforge.fluids.FluidStack;
 
 public interface RVAliasHelper<ITEM, FLUID, CHEMICAL> {
 
-    ITEM ingredient(ItemLike itemLike);
-
     ITEM ingredient(ItemStack item);
+
+    ITEM itemIngredient(Holder<Item> item);
 
     List<ITEM> itemTagContents(TagKey<Item> tag);
 
@@ -48,7 +48,11 @@ public interface RVAliasHelper<ITEM, FLUID, CHEMICAL> {
     }
 
     default void addAliases(Collection<? extends ItemLike> stacks, IHasTranslationKey... aliases) {
-        addItemAliases(stacks.stream().map(this::ingredient).toList(), aliases);
+        addItemAliases(stacks.stream().map(ItemStack::new).toList(), aliases);
+    }
+
+    default void addItemAliases(Holder<Item> item, IHasTranslationKey... aliases) {
+        addItemAliases(List.of(itemIngredient(item)), aliases);
     }
 
     default void addItemAliases(Collection<ItemStack> stacks, IHasTranslationKey... aliases) {
@@ -112,7 +116,7 @@ public interface RVAliasHelper<ITEM, FLUID, CHEMICAL> {
     default void addModuleAliases(ItemDeferredRegister items) {
         for (Holder<Item> entry : items.getEntries()) {
             if (entry.value() instanceof IModuleItem module) {
-                addAliases(entry.value(), IModuleHelper.INSTANCE.getSupportedItems(module.getModuleData())
+                addItemAliases(entry, IModuleHelper.INSTANCE.getSupportedItems(module.getModuleData())
                       .stream()
                       .map(item -> (IHasTranslationKey) item::getDescriptionId)
                       .toArray(IHasTranslationKey[]::new)

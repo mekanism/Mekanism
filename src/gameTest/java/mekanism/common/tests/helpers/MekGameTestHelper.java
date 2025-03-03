@@ -9,6 +9,7 @@ import com.mojang.serialization.JsonOps;
 import java.util.function.Function;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
@@ -45,6 +46,10 @@ public class MekGameTestHelper extends ExtendedGameTestHelper {
 
     public MekGameTestHelper(GameTestInfo info) {
         super(info);
+    }
+
+    public static HashedItem hashedStack(Item item) {
+        return HashedItem.raw(new ItemStack(item));
     }
 
     public ChunkMap getChunkMap() {

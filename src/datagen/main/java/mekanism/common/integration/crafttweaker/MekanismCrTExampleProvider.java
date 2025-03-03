@@ -56,7 +56,6 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -179,9 +178,9 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               ).blankLine()
               .recipe(CombinerRecipeManager.INSTANCE)
               .addExample("combining/bookshelf", IngredientCreatorAccess.item().from(Items.BOOK, 3), IngredientCreatorAccess.item().from(ItemTags.PLANKS, 6),
-                    new ItemStack(Blocks.BOOKSHELF))
+                    new ItemStack(Items.BOOKSHELF))
               .addExample("combining/dark_prismarine", IngredientCreatorAccess.item().from(Items.PRISMARINE_SHARD, 8), IngredientCreatorAccess.item().from(Tags.Items.DYES_BLACK),
-                    new ItemStack(Blocks.DARK_PRISMARINE))
+                    new ItemStack(Items.DARK_PRISMARINE))
               .end()
               .comment("Removes two Combining Recipes:",
                     "1) The recipe for producing Fluorite Ore.",
@@ -265,8 +264,8 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .comment("Adds an Injecting Recipe that injects 1,000 mB of Water Vapor (5 mB per tick) into a Dry Sponge to make it Wet.")
               .blankLine()
               .recipe(ChemicalInjectionRecipeManager.INSTANCE)
-              .addExample("inject_water_to_sponge", IngredientCreatorAccess.item().from(Blocks.SPONGE), IngredientCreatorAccess.chemicalStack().from(MekanismTags.Chemicals.WATER_VAPOR, 5),
-                    new ItemStack(Blocks.WET_SPONGE), true)
+              .addExample("inject_water_to_sponge", IngredientCreatorAccess.item().from(Items.SPONGE), IngredientCreatorAccess.chemicalStack().from(MekanismTags.Chemicals.WATER_VAPOR, 5),
+                    new ItemStack(Items.WET_SPONGE), true)
               .end()
               .comment("Removes the Injecting Recipe that creates Gold Shards from Gold Ore.")
               .blankLine()
@@ -276,8 +275,8 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .comment("Adds a Purifying Recipe that uses 200 mB of Oxygen (1 mB per tick) Basalt into Polished Basalt.")
               .blankLine()
               .recipe(PurificationRecipeManager.INSTANCE)
-              .addExample("purify_basalt", IngredientCreatorAccess.item().from(Blocks.BASALT), IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 1),
-                    new ItemStack(Blocks.POLISHED_BASALT), true)
+              .addExample("purify_basalt", IngredientCreatorAccess.item().from(Items.BASALT), IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 1),
+                    new ItemStack(Items.POLISHED_BASALT), true)
               .end()
               .comment("Removes the Purifying Recipe that creates Gold Clumps from Gold Ore.")
               .blankLine()
@@ -287,8 +286,8 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .comment("Adds a Metallurgic Infusing Recipe that uses 10 mB of Fungi Infuse Type to convert any Oak Planks into Crimson Planks.")
               .blankLine()
               .recipe(MetallurgicInfuserRecipeManager.INSTANCE)
-              .addExample("infuse_planks", IngredientCreatorAccess.item().from(Blocks.OAK_PLANKS), IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.FUNGI, 10),
-                    new ItemStack(Blocks.CRIMSON_PLANKS), false)
+              .addExample("infuse_planks", IngredientCreatorAccess.item().from(Items.OAK_PLANKS), IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.FUNGI, 10),
+                    new ItemStack(Items.CRIMSON_PLANKS), false)
               .end()
               .comment("Removes the Metallurgic Infusing Recipe that allows creating Dirt from Sand.")
               .blankLine()
@@ -300,7 +299,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .recipe(PaintingRecipeManager.INSTANCE)
               .addExample("paint_sand", IngredientCreatorAccess.item().from(Tags.Items.SANDS_COLORLESS),
                     IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(EnumColor.RED), 256),
-                    new ItemStack(Blocks.RED_SAND), false)
+                    new ItemStack(Items.RED_SAND), false)
               .end()
               .comment("Removes the Painting Recipe that allows creating White Dye.")
               .blankLine()
@@ -351,7 +350,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .comment("Adds a Crushing Recipe to crush Brick Blocks into four Bricks.")
               .blankLine()
               .recipe(CrusherRecipeManager.INSTANCE)
-              .addExample("crush_bricks", IngredientCreatorAccess.item().from(Blocks.BRICKS), new ItemStack(Items.BRICK, 4))
+              .addExample("crush_bricks", IngredientCreatorAccess.item().from(Items.BRICKS), new ItemStack(Items.BRICK, 4))
               .end()
               .comment("Removes the Crushing Recipe that produces String from Wool.")
               .blankLine()
@@ -361,7 +360,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .comment("Adds an Enriching Recipe to convert 20 Oak Leaves into an Oak Sapling.")
               .blankLine()
               .recipe(EnrichmentChamberRecipeManager.INSTANCE)
-              .addExample("oak_leaves_to_saplings", IngredientCreatorAccess.item().from(Blocks.OAK_LEAVES, 20), new ItemStack(Blocks.OAK_SAPLING))
+              .addExample("oak_leaves_to_saplings", IngredientCreatorAccess.item().from(Items.OAK_LEAVES, 20), new ItemStack(Items.OAK_SAPLING))
               .end()
               .comment("Removes the Enriching Recipe that creates Gold Dust from Gold Ore.")
               .blankLine()
@@ -371,7 +370,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .comment("Adds a Smelting Recipe that works in Mekanism machines but won't work in a regular furnace to smelt Stone Slabs into Smooth Stone Slabs.")
               .blankLine()
               .recipe(EnergizedSmelterRecipeManager.INSTANCE)
-              .addExample("smelt_stone_slab", IngredientCreatorAccess.item().from(Blocks.STONE_SLAB), new ItemStack(Blocks.SMOOTH_STONE_SLAB))
+              .addExample("smelt_stone_slab", IngredientCreatorAccess.item().from(Items.STONE_SLAB), new ItemStack(Items.SMOOTH_STONE_SLAB))
               .end()
         ;
         exampleBuilder("mekanism/pigment_extracting")
@@ -390,7 +389,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .blankLine()
               .recipe(NucleosynthesizingRecipeManager.INSTANCE)
               .addExample("coal_block_to_diamond_block", IngredientCreatorAccess.item().from(Tags.Items.STORAGE_BLOCKS_COAL),
-                    IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.ANTIMATTER, 36), new ItemStack(Blocks.DIAMOND_BLOCK), 9_000, false)
+                    IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.ANTIMATTER, 36), new ItemStack(Items.DIAMOND_BLOCK), 9_000, false)
               .end()
               .comment("Removes the Nucleosynthesizing Recipe that converts Tin Ingots into Iron Ingots.")
               .blankLine()
@@ -472,11 +471,11 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
                     "6) Adds a recipe for sawing Books into Paper and Leather."
               ).blankLine()
               .recipe(SawmillRecipeManager.INSTANCE)
-              .addExample("sawing/melon_to_seeds", IngredientCreatorAccess.item().from(Items.MELON_SLICE), new WeightedItemStack(Items.MELON_SEEDS))
+              .addExample("sawing/melon_to_seeds", IngredientCreatorAccess.item().from(Items.MELON_SLICE), new WeightedItemStack(Items.MELON_SEEDS.builtInRegistryHolder()))
               .addExample("sawing/leaves", IngredientCreatorAccess.item().from(ItemTags.LEAVES, 15), new WeightedItemStack(MekanismItems.SAWDUST, 0.5))
               .addExample("sawing/saplings", IngredientCreatorAccess.item().from(ItemTags.SAPLINGS, 5), MekanismItems.SAWDUST.asStack(), 0.75)
               .addExample("sawing/shield", IngredientCreatorAccess.item().from(Items.SHIELD), new WeightedItemStack(new ItemStack(Items.OAK_PLANKS, 4), 1.5))
-              .addExample("sawing/workbench", IngredientCreatorAccess.item().from(Blocks.CRAFTING_TABLE), new ItemStack(Items.OAK_PLANKS, 5),
+              .addExample("sawing/workbench", IngredientCreatorAccess.item().from(Items.CRAFTING_TABLE), new ItemStack(Items.OAK_PLANKS, 5),
                     new WeightedItemStack(MekanismItems.SAWDUST, 0.25))
               .addExample("sawing/book", IngredientCreatorAccess.item().from(Items.BOOK), new ItemStack(Items.PAPER, 3), new ItemStack(Items.LEATHER, 6), 1.0)
               .end()

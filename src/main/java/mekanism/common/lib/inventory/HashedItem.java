@@ -12,7 +12,6 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -34,10 +33,6 @@ public class HashedItem implements IHashedItem {
 
     public static HashedItem create(ItemStack stack) {
         return new HashedItem(stack.copyWithCount(1));
-    }
-
-    public static HashedItem create(ItemLike item) {
-        return new HashedItem(new ItemStack(item));
     }
 
     /**

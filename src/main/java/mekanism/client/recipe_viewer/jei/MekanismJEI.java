@@ -72,10 +72,10 @@ import mezz.jei.api.registration.IRecipeTransferRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 
@@ -130,10 +130,10 @@ public class MekanismJEI implements IModPlugin {
         return ResourceLocation.fromNamespaceAndPath(Mekanism.MODID, "jei_plugin");
     }
 
-    public static void registerItemSubtypes(ISubtypeRegistration registry, Collection<? extends Holder<? extends ItemLike>> itemProviders) {
-        for (Holder<? extends ItemLike> itemProvider : itemProviders) {
+    public static void registerItemSubtypes(ISubtypeRegistration registry, Collection<? extends Holder<Item>> items) {
+        for (Holder<Item> item : items) {
             //Handle items
-            ItemStack stack = new ItemStack(itemProvider.value());
+            ItemStack stack = new ItemStack(item);
             if (Capabilities.STRICT_ENERGY.hasCapability(stack) || Capabilities.CHEMICAL.hasCapability(stack) || Capabilities.FLUID.hasCapability(stack)) {
                 registry.registerSubtypeInterpreter(stack.getItem(), MEKANISM_DATA_INTERPRETER);
             }

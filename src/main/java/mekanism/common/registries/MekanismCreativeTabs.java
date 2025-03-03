@@ -25,7 +25,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTab.ItemDisplayParameters;
 import net.minecraft.world.item.CreativeModeTabs;
-import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.common.Tags;
@@ -54,7 +54,7 @@ public class MekanismCreativeTabs {
                       .filterElements(fluid -> fluid != Fluids.EMPTY && fluid.isSource(fluid.defaultFluidState()))
                       .listElements()
                       .filter(holder -> !holder.is(Tags.Fluids.HIDDEN_FROM_RECIPE_VIEWERS))
-                      .forEach(holder -> output.accept(FluidUtils.getFilledVariant(MekanismBlocks.CREATIVE_FLUID_TANK, holder)));
+                      .forEach(holder -> output.accept(FluidUtils.getFilledVariant(MekanismBlocks.CREATIVE_FLUID_TANK.getItemHolder(), holder)));
             }
             if (chemical) {
                 //Chemical Tanks
@@ -62,7 +62,7 @@ public class MekanismCreativeTabs {
                     parameters.holders().lookupOrThrow(MekanismAPI.CHEMICAL_REGISTRY_NAME)
                           .listElements()
                           .filter(holder -> !holder.is(MekanismAPITags.Chemicals.HIDDEN_FROM_RECIPE_VIEWERS) && !holder.is(MekanismAPI.EMPTY_CHEMICAL_KEY))
-                          .forEach(holder -> output.accept(ChemicalUtil.getFilledVariant(MekanismBlocks.CREATIVE_CHEMICAL_TANK, holder)));
+                          .forEach(holder -> output.accept(ChemicalUtil.getFilledVariant(MekanismBlocks.CREATIVE_CHEMICAL_TANK.getItemHolder(), holder)));
                 }
             }
         }
@@ -87,7 +87,7 @@ public class MekanismCreativeTabs {
             for (Holder<Block> blockProvider : MekanismBlocks.BLOCKS.getPrimaryEntries()) {
                 Block block = blockProvider.value();
                 if (block instanceof BlockTransmitter || block instanceof BlockBase<?> base && base.getType() instanceof Machine) {
-                    CreativeTabDeferredRegister.addToDisplay(event, block);
+                    CreativeTabDeferredRegister.addToDisplay(event, blockProvider);
                 }
             }
             CreativeTabDeferredRegister.addToDisplay(event, MekanismBlocks.SECURITY_DESK, MekanismBlocks.RADIOACTIVE_WASTE_BARREL, MekanismBlocks.PERSONAL_CHEST,
@@ -97,13 +97,12 @@ public class MekanismCreativeTabs {
         } else if (tabKey == CreativeModeTabs.REDSTONE_BLOCKS) {
             CreativeTabDeferredRegister.addToDisplay(event, MekanismBlocks.INDUSTRIAL_ALARM);
             for (Holder<Block> blockProvider : MekanismBlocks.BLOCKS.getPrimaryEntries()) {
-                Block block = blockProvider.value();
                 if (Attribute.has(blockProvider, AttributeComparator.class)) {
-                    CreativeTabDeferredRegister.addToDisplay(event, block);
-                } else if (block instanceof BlockTransmitter) {
+                    CreativeTabDeferredRegister.addToDisplay(event, blockProvider);
+                } else if (blockProvider.value() instanceof BlockTransmitter) {
                     AttributeTier<?> attribute = Attribute.get(blockProvider, AttributeTier.class);
                     if (attribute != null && !(attribute.tier() instanceof TransporterTier)) {
-                        CreativeTabDeferredRegister.addToDisplay(event, block);
+                        CreativeTabDeferredRegister.addToDisplay(event, blockProvider);
                     }
                 }
             }
@@ -149,7 +148,7 @@ public class MekanismCreativeTabs {
                   MekanismItems.BRONZE_NUGGET, MekanismItems.STEEL_NUGGET, MekanismItems.REFINED_OBSIDIAN_NUGGET, MekanismItems.REFINED_GLOWSTONE_NUGGET,
                   MekanismItems.BRONZE_INGOT, MekanismItems.STEEL_INGOT, MekanismItems.REFINED_OBSIDIAN_INGOT, MekanismItems.REFINED_GLOWSTONE_INGOT
             );
-            for (ItemLike item : MekanismItems.PROCESSED_RESOURCES.values()) {
+            for (Holder<Item> item : MekanismItems.PROCESSED_RESOURCES.values()) {
                 CreativeTabDeferredRegister.addToDisplay(event, item);
             }
         }

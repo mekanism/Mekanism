@@ -14,18 +14,17 @@ import mekanism.common.DataGenSerializationConstants;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.registration.INamedEntry;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.RegistryUtils;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.PackOutput.PathProvider;
 import net.minecraft.data.PackOutput.Target;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.util.ExtraCodecs;
-import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 @NothingNullByDefault
@@ -75,10 +74,11 @@ public abstract class BaseEmiDefaults implements DataProvider {
         }
     }
 
-    protected void addRecipe(ItemLike output) {
-        ResourceLocation registryName = BuiltInRegistries.ITEM.getResourceKey(output.asItem())
-              .map(ResourceKey::location)
-              .orElseThrow(() -> new IllegalStateException("Could not retrieve registry name for output."));
+    protected void addRecipe(Holder<?> output) {
+        ResourceLocation registryName = RegistryUtils.getName(output);
+        if (registryName == null) {
+            throw new IllegalStateException("Could not retrieve registry name for output.");
+        }
         addRecipe(registryName);
     }
 

@@ -14,7 +14,6 @@ import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
 
 //TODO: Try to cleanup some of the duplicate code in this class?
@@ -77,8 +76,8 @@ class InfusionConversionRecipeProvider implements ISubRecipeProvider {
         infusionConversion(consumer, IngredientCreatorAccess.item().from(BaseRecipeProvider.createIngredient(
               Tags.Items.MUSHROOMS,
               //TODO: If these get added to the mushroom tag then we can remove them from here
-              Blocks.WARPED_FUNGUS,
-              Blocks.CRIMSON_FUNGUS
+              Items.WARPED_FUNGUS,
+              Items.CRIMSON_FUNGUS
         )), MekanismChemicals.FUNGI.asStack(10), basePath, "from_mushrooms");
     }
 

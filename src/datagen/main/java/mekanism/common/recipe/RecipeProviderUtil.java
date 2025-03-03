@@ -24,7 +24,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ComposterBlock;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import org.jetbrains.annotations.Nullable;
@@ -38,11 +37,10 @@ public class RecipeProviderUtil {
     private RecipeProviderUtil() {
     }
 
-    public static void addSmeltingBlastingRecipes(RecipeOutput consumer, Ingredient smeltingInput, Holder<? extends ItemLike> output, float experience, int smeltingTime,
+    public static void addSmeltingBlastingRecipes(RecipeOutput consumer, Ingredient smeltingInput, Holder<Item> output, float experience, int smeltingTime,
           ResourceLocation blastingLocation, ResourceLocation smeltingLocation, RecipeCriterion... criteria) {
-        ItemLike out = output.value();
-        ExtendedCookingRecipeBuilder blastingRecipe = ExtendedCookingRecipeBuilder.blasting(out, smeltingInput, smeltingTime / 2).experience(experience);
-        ExtendedCookingRecipeBuilder smeltingRecipe = ExtendedCookingRecipeBuilder.smelting(out, smeltingInput, smeltingTime).experience(experience);
+        ExtendedCookingRecipeBuilder blastingRecipe = ExtendedCookingRecipeBuilder.blasting(output, smeltingInput, smeltingTime / 2).experience(experience);
+        ExtendedCookingRecipeBuilder smeltingRecipe = ExtendedCookingRecipeBuilder.smelting(output, smeltingInput, smeltingTime).experience(experience);
         //If there are any criteria add them
         for (RecipeCriterion criterion : criteria) {
             blastingRecipe.unlockedBy(criterion);
@@ -92,7 +90,7 @@ public class RecipeProviderUtil {
                 build(consumer, SawmillRecipeBuilder.sawing(
                       IngredientCreatorAccess.item().from(chestBoat),
                       new ItemStack(boat),
-                      new ItemStack(Blocks.CHEST),
+                      new ItemStack(Items.CHEST),
                       1
                 ), basePath + "chest_boat/" + name, condition);
             }
@@ -164,25 +162,16 @@ public class RecipeProviderUtil {
         builder.build(consumer, Mekanism.rl(path));
     }
 
-    public static void addPrecisionSawmillBedRecipe(RecipeOutput consumer, String basePath, ItemLike bed, DyeColor color) {
-        addPrecisionSawmillBedRecipe(consumer, basePath, bed, Blocks.OAK_PLANKS, color, null);
-    }
-
-    public static void addPrecisionSawmillBedRecipe(RecipeOutput consumer, String basePath, ItemLike bed, ItemLike planks, DyeColor color,
-          @Nullable ICondition condition) {
-        SawmillRecipeBuilder bedRecipeBuilder = SawmillRecipeBuilder.sawing(
+    public static void addPrecisionSawmillBedRecipe(RecipeOutput consumer, String basePath, Item bed, DyeColor color) {
+        SawmillRecipeBuilder.sawing(
               IngredientCreatorAccess.item().from(bed),
-              new ItemStack(planks, 3),
+              new ItemStack(Items.OAK_PLANKS, 3),
               new ItemStack(getWool(color), 3),
               1
-        );
-        if (condition != null) {
-            bedRecipeBuilder.addCondition(condition);
-        }
-        bedRecipeBuilder.build(consumer, Mekanism.rl(basePath + color));
+        ).build(consumer, Mekanism.rl(basePath + color));
     }
 
-    private static ItemLike getWool(DyeColor color) {
+    private static Item getWool(DyeColor color) {
         return switch (color) {
             case WHITE -> Items.WHITE_WOOL;
             case ORANGE -> Items.ORANGE_WOOL;
