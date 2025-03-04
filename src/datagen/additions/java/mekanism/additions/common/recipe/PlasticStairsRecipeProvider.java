@@ -17,7 +17,6 @@ import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
 
 public class PlasticStairsRecipeProvider implements ISubRecipeProvider {
 
@@ -36,15 +35,15 @@ public class PlasticStairsRecipeProvider implements ISubRecipeProvider {
               basePath + "glow/");
     }
 
-    private void registerPlasticStairs(RecipeOutput consumer, Map<EnumColor, ? extends BlockRegistryObject<?, ?>> blocks, Map<EnumColor, ? extends Holder<Block>> plastic,
-          TagKey<Item> blockType, boolean transparent, String basePath) {
+    private void registerPlasticStairs(RecipeOutput consumer, Map<EnumColor, ? extends BlockRegistryObject<?, ?>> blocks,
+          Map<EnumColor, ? extends BlockRegistryObject<?, ?>> plastic, TagKey<Item> blockType, boolean transparent, String basePath) {
         for (Map.Entry<EnumColor, ? extends BlockRegistryObject<?, ?>> entry : blocks.entrySet()) {
             EnumColor color = entry.getKey();
-            registerPlasticStairs(consumer, color, entry.getValue().getItemHolder(), plastic.get(color), blockType, transparent, basePath);
+            registerPlasticStairs(consumer, color, entry.getValue().getItemHolder(), plastic.get(color).getItemHolder(), blockType, transparent, basePath);
         }
     }
 
-    private void registerPlasticStairs(RecipeOutput consumer, EnumColor color, Holder<Item> result, Holder<Block> plastic, TagKey<Item> blockType,
+    private void registerPlasticStairs(RecipeOutput consumer, EnumColor color, Holder<Item> result, Holder<Item> plastic, TagKey<Item> blockType,
           boolean transparent, String basePath) {
         ExtendedShapedRecipeBuilder.shapedRecipe(result, 4)
               .pattern(PLASTIC_STAIRS)

@@ -19,7 +19,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
 
 public class PlasticFencesRecipeProvider implements ISubRecipeProvider {
 
@@ -41,11 +40,11 @@ public class PlasticFencesRecipeProvider implements ISubRecipeProvider {
         basePath += "fence/";
         for (Map.Entry<EnumColor, ? extends BlockRegistryObject<BlockPlasticFence, ?>> entry : AdditionsBlocks.PLASTIC_FENCES.entrySet()) {
             EnumColor color = entry.getKey();
-            registerPlasticFence(consumer, color, entry.getValue().getItemHolder(), AdditionsBlocks.PLASTIC_BLOCKS.get(color), basePath);
+            registerPlasticFence(consumer, color, entry.getValue().getItemHolder(), AdditionsBlocks.PLASTIC_BLOCKS.get(color).getItemHolder(), basePath);
         }
     }
 
-    private void registerPlasticFence(RecipeOutput consumer, EnumColor color, Holder<Item> result, Holder<Block> plastic, String basePath) {
+    private void registerPlasticFence(RecipeOutput consumer, EnumColor color, Holder<Item> result, Holder<Item> plastic, String basePath) {
         ExtendedShapedRecipeBuilder.shapedRecipe(result, 3)
               .pattern(PLASTIC_FENCE)
               .key(AdditionsRecipeProvider.PLASTIC_ROD_CHAR, MekanismTags.Items.RODS_PLASTIC)
@@ -59,11 +58,11 @@ public class PlasticFencesRecipeProvider implements ISubRecipeProvider {
         basePath += "fence_gate/";
         for (Map.Entry<EnumColor, ? extends BlockRegistryObject<BlockPlasticFenceGate, ?>> entry : AdditionsBlocks.PLASTIC_FENCE_GATES.entrySet()) {
             EnumColor color = entry.getKey();
-            registerPlasticFenceGate(consumer, color, entry.getValue().getItemHolder(), AdditionsBlocks.PLASTIC_BLOCKS.get(color), basePath);
+            registerPlasticFenceGate(consumer, color, entry.getValue().getItemHolder(), AdditionsBlocks.PLASTIC_BLOCKS.get(color).getItemHolder(), basePath);
         }
     }
 
-    private void registerPlasticFenceGate(RecipeOutput consumer, EnumColor color, Holder<Item> result, Holder<Block> plastic, String basePath) {
+    private void registerPlasticFenceGate(RecipeOutput consumer, EnumColor color, Holder<Item> result, Holder<Item> plastic, String basePath) {
         ExtendedShapedRecipeBuilder.shapedRecipe(result)
               .pattern(PLASTIC_FENCE_GATE)
               .key(AdditionsRecipeProvider.PLASTIC_ROD_CHAR, MekanismTags.Items.RODS_PLASTIC)

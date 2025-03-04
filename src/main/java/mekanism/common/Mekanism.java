@@ -19,6 +19,7 @@ import mekanism.common.base.MekanismPermissions;
 import mekanism.common.base.PlayerState;
 import mekanism.common.base.TagCache;
 import mekanism.common.base.holiday.HolidayManager;
+import mekanism.common.block.basic.BlockFluidTank;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.command.CommandMek;
 import mekanism.common.command.builders.BuildCommand;
@@ -50,6 +51,7 @@ import mekanism.common.content.tank.TankValidator;
 import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.integration.MekanismHooks;
+import mekanism.common.item.block.machine.ItemBlockFluidTank;
 import mekanism.common.item.block.machine.ItemBlockFluidTank.BasicCauldronInteraction;
 import mekanism.common.item.block.machine.ItemBlockFluidTank.BasicDrainCauldronInteraction;
 import mekanism.common.item.block.machine.ItemBlockFluidTank.FluidTankItemDispenseBehavior;
@@ -72,6 +74,7 @@ import mekanism.common.network.to_client.transmitter.PacketFluidNetworkContents;
 import mekanism.common.network.to_client.transmitter.PacketNetworkScale;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.condition.MekanismRecipeConditions;
+import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registries.MekanismArmorMaterials;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismBlocks;
@@ -106,7 +109,6 @@ import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.neoforged.bus.api.EventPriority;
@@ -392,9 +394,10 @@ public class Mekanism {
         }
     }
 
-    private static void registerFluidTankBehaviors(ItemLike... itemProviders) {
-        for (ItemLike itemProvider : itemProviders) {
-            Item item = itemProvider.asItem();
+    @SafeVarargs
+    private static void registerFluidTankBehaviors(BlockRegistryObject<BlockFluidTank, ItemBlockFluidTank>... tanks) {
+        for (BlockRegistryObject<?, ?> tank : tanks) {
+            Item item = tank.getItemHolder().value();
             DispenserBlock.registerBehavior(item, FluidTankItemDispenseBehavior.INSTANCE);
             CauldronInteraction.EMPTY.map().put(item, BasicCauldronInteraction.EMPTY);
             CauldronInteraction.WATER.map().put(item, BasicDrainCauldronInteraction.WATER);

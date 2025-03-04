@@ -200,11 +200,11 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               .save(consumer);
         advancement(MekanismAdvancements.ENVIRONMENTAL_RADIATION)
               .display(MekanismItems.GEIGER_COUNTER, AdvancementType.TASK, false)
-              .addCriterion("use_geiger_counter", CriteriaTriggers.USING_ITEM.createCriterion(new UsingItemTrigger.TriggerInstance(Optional.empty(), predicate(MekanismItems.GEIGER_COUNTER))))
+              .addCriterion("use_geiger_counter", CriteriaTriggers.USING_ITEM.createCriterion(new UsingItemTrigger.TriggerInstance(Optional.empty(), Optional.of(predicate(MekanismItems.GEIGER_COUNTER)))))
               .save(consumer);
         advancement(MekanismAdvancements.PERSONAL_RADIATION)
               .display(MekanismItems.DOSIMETER, AdvancementType.TASK, false)
-              .addCriterion("use_dosimeter", CriteriaTriggers.USING_ITEM.createCriterion(new UsingItemTrigger.TriggerInstance(Optional.empty(), predicate(MekanismItems.DOSIMETER))))
+              .addCriterion("use_dosimeter", CriteriaTriggers.USING_ITEM.createCriterion(new UsingItemTrigger.TriggerInstance(Optional.empty(), Optional.of(predicate(MekanismItems.DOSIMETER)))))
               .save(consumer);
         advancement(MekanismAdvancements.RADIATION_PREVENTION)
               .display(MekanismItems.HAZMAT_GOWN, AdvancementType.TASK, true)

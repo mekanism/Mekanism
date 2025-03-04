@@ -17,7 +17,6 @@ import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
 
 public class PlasticSlabsRecipeProvider implements ISubRecipeProvider {
 
@@ -34,15 +33,15 @@ public class PlasticSlabsRecipeProvider implements ISubRecipeProvider {
               basePath + "glow/");
     }
 
-    private void registerPlasticSlabs(RecipeOutput consumer, Map<EnumColor, ? extends BlockRegistryObject<?, ?>> blocks, Map<EnumColor, ? extends Holder<Block>> plastic,
-          TagKey<Item> blockType, boolean transparent, String basePath) {
+    private void registerPlasticSlabs(RecipeOutput consumer, Map<EnumColor, ? extends BlockRegistryObject<?, ?>> blocks,
+          Map<EnumColor, ? extends BlockRegistryObject<?, ?>> plastic, TagKey<Item> blockType, boolean transparent, String basePath) {
         for (Map.Entry<EnumColor, ? extends BlockRegistryObject<?, ?>> entry : blocks.entrySet()) {
             EnumColor color = entry.getKey();
-            registerPlasticSlab(consumer, color, entry.getValue().getItemHolder(), plastic.get(color), blockType, transparent, basePath);
+            registerPlasticSlab(consumer, color, entry.getValue().getItemHolder(), plastic.get(color).getItemHolder(), blockType, transparent, basePath);
         }
     }
 
-    private void registerPlasticSlab(RecipeOutput consumer, EnumColor color, Holder<Item> slab, Holder<Block> plastic, TagKey<Item> blockType, boolean transparent,
+    private void registerPlasticSlab(RecipeOutput consumer, EnumColor color, Holder<Item> slab, Holder<Item> plastic, TagKey<Item> blockType, boolean transparent,
           String basePath) {
         ExtendedShapedRecipeBuilder.shapedRecipe(slab, 6)
               .pattern(PLASTIC_SLAB)

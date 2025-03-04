@@ -1,5 +1,6 @@
 package mekanism.common.recipe.impl;
 
+import java.util.Objects;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.datagen.recipe.builder.ChemicalChemicalToChemicalRecipeBuilder;
@@ -40,8 +41,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.Nullable;
 
@@ -92,75 +91,85 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         addUraniumRecipes(consumer, basePath + "uranium/");
     }
 
+    @SuppressWarnings("deprecation")
     private void addDynamicOreProcessingIngotRecipes(RecipeOutput consumer, String basePath, PrimaryResource resource) {
         //TODO - 1.18: Take into account if the ore is a single drop or multi like vanilla copper is?
         // We may want to consider this at least for the silk touched ore to ingot?
-        Holder<Item> ingot = MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, resource);
-        TagKey<Item> ingotTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, resource);
-        Holder<Item> nugget = MekanismItems.PROCESSED_RESOURCES.get(ResourceType.NUGGET, resource);
-        TagKey<Item> nuggetTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.NUGGET, resource);
-        Holder<Block> block = MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(resource);
-        Holder<Item> raw = MekanismItems.PROCESSED_RESOURCES.get(ResourceType.RAW, resource);
-        TagKey<Item> rawTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.RAW, resource);
-        Holder<Block> rawBlock = MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(resource.getRawResourceBlockInfo());
-        TagKey<Item> rawBlockTag = MekanismTags.Items.PROCESSED_RESOURCE_BLOCKS.get(resource.getRawResourceBlockInfo());
-        OreBlockType oreBlockType = MekanismBlocks.ORES.get(OreType.get(resource));
-        Block ore = oreBlockType == null ? null : oreBlockType.stone().value();
-        Block deepslateOre = oreBlockType == null ? null : oreBlockType.deepslate().value();
+        Holder<Item> ingot, nugget, block, raw, rawBlock, ore, deepslateOre;
+        TagKey<Item> ingotTag, nuggetTag, rawTag, rawBlockTag;
         TagKey<Item> oreTag = resource.getOreTag();
         float dustExperience = 0.3F;
         int toOre = 8;
-        if (resource.isVanilla()) {
-            //Note: We only bother setting types we actually use
-            switch (resource) {
-                case IRON -> {
-                    ingot = Items.IRON_INGOT.builtInRegistryHolder();
-                    ingotTag = Tags.Items.INGOTS_IRON;
-                    raw = Items.RAW_IRON.builtInRegistryHolder();
-                    rawTag = Tags.Items.RAW_MATERIALS_IRON;
-                    rawBlock = Blocks.RAW_IRON_BLOCK.builtInRegistryHolder();
-                    rawBlockTag = Tags.Items.STORAGE_BLOCKS_RAW_IRON;
-                    ore = Blocks.IRON_ORE;
-                    deepslateOre = Blocks.DEEPSLATE_IRON_ORE;
-                    dustExperience = 0.35F;
-                }
-                case GOLD -> {
-                    ingot = Items.GOLD_INGOT.builtInRegistryHolder();
-                    ingotTag = Tags.Items.INGOTS_GOLD;
-                    raw = Items.RAW_GOLD.builtInRegistryHolder();
-                    rawTag = Tags.Items.RAW_MATERIALS_GOLD;
-                    rawBlock = Blocks.RAW_GOLD_BLOCK.builtInRegistryHolder();
-                    rawBlockTag = Tags.Items.STORAGE_BLOCKS_RAW_GOLD;
-                    ore = Blocks.GOLD_ORE;
-                    deepslateOre = Blocks.DEEPSLATE_GOLD_ORE;
-                    dustExperience = 0.5F;
-                }
-                case COPPER -> {
-                    ingot = Items.COPPER_INGOT.builtInRegistryHolder();
-                    ingotTag = Tags.Items.INGOTS_COPPER;
-                    raw = Items.RAW_COPPER.builtInRegistryHolder();
-                    rawTag = Tags.Items.RAW_MATERIALS_COPPER;
-                    rawBlock = Blocks.RAW_COPPER_BLOCK.builtInRegistryHolder();
-                    rawBlockTag = Tags.Items.STORAGE_BLOCKS_RAW_COPPER;
-                    ore = Blocks.COPPER_ORE;
-                    deepslateOre = Blocks.DEEPSLATE_COPPER_ORE;
-                    dustExperience = 0.35F;
-                    toOre = 20;//8 * 2.5
-                }
-                default -> throw new IllegalStateException("Unknown defaults for primary resource: " + resource.getRegistrySuffix());
+        switch (resource) {
+            case IRON -> {
+                ingot = Items.IRON_INGOT.builtInRegistryHolder();
+                ingotTag = Tags.Items.INGOTS_IRON;
+                nugget = Items.IRON_NUGGET.builtInRegistryHolder();
+                nuggetTag = Tags.Items.NUGGETS_IRON;
+                block = Items.IRON_BLOCK.builtInRegistryHolder();
+                raw = Items.RAW_IRON.builtInRegistryHolder();
+                rawTag = Tags.Items.RAW_MATERIALS_IRON;
+                rawBlock = Items.RAW_IRON_BLOCK.builtInRegistryHolder();
+                rawBlockTag = Tags.Items.STORAGE_BLOCKS_RAW_IRON;
+                ore = Items.IRON_ORE.builtInRegistryHolder();
+                deepslateOre = Items.DEEPSLATE_IRON_ORE.builtInRegistryHolder();
+                dustExperience = 0.35F;
+            }
+            case GOLD -> {
+                ingot = Items.GOLD_INGOT.builtInRegistryHolder();
+                ingotTag = Tags.Items.INGOTS_GOLD;
+                nugget = Items.GOLD_NUGGET.builtInRegistryHolder();
+                nuggetTag = Tags.Items.NUGGETS_GOLD;
+                block = Items.GOLD_BLOCK.builtInRegistryHolder();
+                raw = Items.RAW_GOLD.builtInRegistryHolder();
+                rawTag = Tags.Items.RAW_MATERIALS_GOLD;
+                rawBlock = Items.RAW_GOLD_BLOCK.builtInRegistryHolder();
+                rawBlockTag = Tags.Items.STORAGE_BLOCKS_RAW_GOLD;
+                ore = Items.GOLD_ORE.builtInRegistryHolder();
+                deepslateOre = Items.DEEPSLATE_GOLD_ORE.builtInRegistryHolder();
+                dustExperience = 0.5F;
+            }
+            case COPPER -> {
+                ingot = Items.COPPER_INGOT.builtInRegistryHolder();
+                ingotTag = Tags.Items.INGOTS_COPPER;
+                nugget = null;
+                nuggetTag = null;
+                block = Items.COPPER_BLOCK.builtInRegistryHolder();
+                raw = Items.RAW_COPPER.builtInRegistryHolder();
+                rawTag = Tags.Items.RAW_MATERIALS_COPPER;
+                rawBlock = Items.RAW_COPPER_BLOCK.builtInRegistryHolder();
+                rawBlockTag = Tags.Items.STORAGE_BLOCKS_RAW_COPPER;
+                ore = Items.COPPER_ORE.builtInRegistryHolder();
+                deepslateOre = Items.DEEPSLATE_COPPER_ORE.builtInRegistryHolder();
+                dustExperience = 0.35F;
+                toOre = 20;//8 * 2.5
+            }
+            default -> {
+                ingot = Objects.requireNonNull(MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, resource));
+                ingotTag = Objects.requireNonNull(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, resource));
+                nugget = Objects.requireNonNull(MekanismItems.PROCESSED_RESOURCES.get(ResourceType.NUGGET, resource));
+                nuggetTag = Objects.requireNonNull(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.NUGGET, resource));
+                block = Objects.requireNonNull(MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(resource)).getItemHolder();
+                raw = Objects.requireNonNull(MekanismItems.PROCESSED_RESOURCES.get(ResourceType.RAW, resource));
+                rawTag = Objects.requireNonNull(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.RAW, resource));
+                rawBlock = Objects.requireNonNull(MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(resource.getRawResourceBlockInfo())).getItemHolder();
+                rawBlockTag = Objects.requireNonNull(MekanismTags.Items.PROCESSED_RESOURCE_BLOCKS.get(resource.getRawResourceBlockInfo()));
+                OreBlockType oreBlockType = Objects.requireNonNull(MekanismBlocks.ORES.get(OreType.get(resource)));
+                ore = oreBlockType.stone().getItemHolder();
+                deepslateOre = oreBlockType.deepslate().getItemHolder();
             }
         }
 
-        Holder<Item> dust = MekanismItems.PROCESSED_RESOURCES.get(ResourceType.DUST, resource);
-        Holder<Item> dirtyDust = MekanismItems.PROCESSED_RESOURCES.get(ResourceType.DIRTY_DUST, resource);
-        Holder<Item> clump = MekanismItems.PROCESSED_RESOURCES.get(ResourceType.CLUMP, resource);
-        Holder<Item> crystal = MekanismItems.PROCESSED_RESOURCES.get(ResourceType.CRYSTAL, resource);
-        Holder<Item> shard = MekanismItems.PROCESSED_RESOURCES.get(ResourceType.SHARD, resource);
-        TagKey<Item> dustTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, resource);
-        TagKey<Item> dirtyDustTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DIRTY_DUST, resource);
-        TagKey<Item> clumpTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.CLUMP, resource);
-        TagKey<Item> shardTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.SHARD, resource);
-        TagKey<Item> crystalTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.CRYSTAL, resource);
+        Holder<Item> dust = Objects.requireNonNull(MekanismItems.PROCESSED_RESOURCES.get(ResourceType.DUST, resource));
+        Holder<Item> dirtyDust = Objects.requireNonNull(MekanismItems.PROCESSED_RESOURCES.get(ResourceType.DIRTY_DUST, resource));
+        Holder<Item> clump = Objects.requireNonNull(MekanismItems.PROCESSED_RESOURCES.get(ResourceType.CLUMP, resource));
+        Holder<Item> crystal = Objects.requireNonNull(MekanismItems.PROCESSED_RESOURCES.get(ResourceType.CRYSTAL, resource));
+        Holder<Item> shard = Objects.requireNonNull(MekanismItems.PROCESSED_RESOURCES.get(ResourceType.SHARD, resource));
+        TagKey<Item> dustTag = Objects.requireNonNull(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, resource));
+        TagKey<Item> dirtyDustTag = Objects.requireNonNull(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DIRTY_DUST, resource));
+        TagKey<Item> clumpTag = Objects.requireNonNull(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.CLUMP, resource));
+        TagKey<Item> shardTag = Objects.requireNonNull(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.SHARD, resource));
+        TagKey<Item> crystalTag = Objects.requireNonNull(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.CRYSTAL, resource));
 
         SlurryRegistryObject<?, ?> slurry = MekanismChemicals.PROCESSED_RESOURCES.get(resource);
 
@@ -187,7 +196,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
                   .addIngredient(ingot)
                   .build(consumer, Mekanism.rl(basePath + "nugget/from_ingot"));
             // from ore
-            RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, Ingredient.of(ore, deepslateOre), ingot, dustExperience * 2, 200,
+            RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, BaseRecipeProvider.createIngredient(ore, deepslateOre), ingot, dustExperience * 2, 200,
                   Mekanism.rl(basePath + "ingot/from_ore_blasting"), Mekanism.rl(basePath + "ingot/from_ore_smelting"));
             // from raw
             RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, BaseRecipeProvider.createIngredient(raw), ingot, dustExperience * 2, 200,

@@ -10,16 +10,15 @@ import mekanism.common.recipe.builder.MekDataShapedRecipeBuilder;
 import mekanism.common.recipe.pattern.Pattern;
 import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.recipe.pattern.RecipePattern.TripleLine;
+import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismRecipeSerializersInternal;
 import mekanism.common.tags.MekanismTags;
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.SpecialRecipeBuilder;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
 
 class BinRecipeProvider implements ISubRecipeProvider {
 
@@ -50,7 +49,8 @@ class BinRecipeProvider implements ISubRecipeProvider {
         addTieredBin(consumer, basePath, MekanismBlocks.ULTIMATE_BIN, MekanismBlocks.ELITE_BIN, MekanismTags.Items.CIRCUITS_ULTIMATE, MekanismTags.Items.ALLOYS_ATOMIC);
     }
 
-    private void addTieredBin(RecipeOutput consumer, String basePath, Holder<Block> bin, Holder<Block> previousBin, TagKey<Item> circuitTag, TagKey<Item> alloyTag) {
+    private void addTieredBin(RecipeOutput consumer, String basePath, BlockRegistryObject<?, ?> bin, BlockRegistryObject<?, ?> previousBin, TagKey<Item> circuitTag,
+          TagKey<Item> alloyTag) {
         String tierName = Attribute.getBaseTier(bin).getLowerName();
         MekDataShapedRecipeBuilder.shapedRecipe(bin)
               .pattern(BIN_PATTERN)

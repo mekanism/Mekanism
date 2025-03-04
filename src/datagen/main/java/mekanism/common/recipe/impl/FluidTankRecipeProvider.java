@@ -8,14 +8,13 @@ import mekanism.common.recipe.builder.MekDataShapedRecipeBuilder;
 import mekanism.common.recipe.pattern.Pattern;
 import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.recipe.pattern.RecipePattern.TripleLine;
+import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tags.MekanismTags;
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
 
 class FluidTankRecipeProvider implements ISubRecipeProvider {
@@ -42,7 +41,7 @@ class FluidTankRecipeProvider implements ISubRecipeProvider {
         addTieredFluidTank(consumer, basePath, MekanismBlocks.ULTIMATE_FLUID_TANK, MekanismBlocks.ELITE_FLUID_TANK, MekanismTags.Items.ALLOYS_ATOMIC);
     }
 
-    private void addTieredFluidTank(RecipeOutput consumer, String basePath, Holder<Block> tank, Holder<Block> previousTank, TagKey<Item> alloyTag) {
+    private void addTieredFluidTank(RecipeOutput consumer, String basePath, BlockRegistryObject<?, ?> tank, BlockRegistryObject<?, ?> previousTank, TagKey<Item> alloyTag) {
         String tierName = Attribute.getBaseTier(tank).getLowerName();
         MekDataShapedRecipeBuilder.shapedRecipe(tank)
               .pattern(FLUID_TANK_PATTERN)

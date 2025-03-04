@@ -7,10 +7,10 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.registries.MekanismFluids;
-import mekanism.common.registries.MekanismItems;
 import mekanism.common.util.FluidUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -55,8 +55,8 @@ public class ItemCanteen extends Item implements ICustomCreativeTabContents {
     }
 
     @Override
-    public void addItems(Consumer<ItemStack> tabOutput) {
-        tabOutput.accept(FluidUtils.getFilledVariant(MekanismItems.CANTEEN, MekanismFluids.NUTRITIONAL_PASTE));
+    public void addItems(Holder<Item> item, Consumer<ItemStack> tabOutput) {
+        tabOutput.accept(FluidUtils.getFilledVariant(item, MekanismFluids.NUTRITIONAL_PASTE));
     }
 
     @NotNull

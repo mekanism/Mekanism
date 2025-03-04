@@ -7,6 +7,7 @@ import mekanism.api.gear.IModuleHelper;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.Mekanism;
 import mekanism.common.content.gear.IModuleItem;
+import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import net.minecraft.core.Holder;
 import net.minecraft.tags.TagKey;
@@ -39,8 +40,8 @@ public interface RVAliasHelper<ITEM, FLUID, CHEMICAL> {
         addChemicalAliases(chemicalProvider, aliases);
     }
 
-    default void addAliases(ItemLike item, IHasTranslationKey... aliases) {
-        addAliases(new ItemStack(item), aliases);
+    default void addAliases(BlockRegistryObject<?, ?> block, IHasTranslationKey... aliases) {
+        addItemAliases(block.getItemHolder(), aliases);
     }
 
     default void addAliases(ItemStack stack, IHasTranslationKey... aliases) {
@@ -49,6 +50,10 @@ public interface RVAliasHelper<ITEM, FLUID, CHEMICAL> {
 
     default void addAliases(Collection<? extends ItemLike> stacks, IHasTranslationKey... aliases) {
         addItemAliases(stacks.stream().map(ItemStack::new).toList(), aliases);
+    }
+
+    default void addItemHolderAliases(Collection<? extends Holder<Item>> items, IHasTranslationKey... aliases) {
+        addItemAliases(items.stream().map(ItemStack::new).toList(), aliases);
     }
 
     default void addItemAliases(Holder<Item> item, IHasTranslationKey... aliases) {

@@ -25,6 +25,7 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.Util;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -98,14 +99,14 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> imple
     }
 
     @Override
-    public void addItems(Consumer<ItemStack> tabOutput) {
+    public void addItems(Holder<Item> item, Consumer<ItemStack> tabOutput) {
         EnergyCubeTier tier = getTier();
         if (tier == EnergyCubeTier.CREATIVE) {
             //Add the empty and charged variants
             tabOutput.accept(withCreativeSideConfig(ALL_INPUT));
             tabOutput.accept(StorageUtils.getFilledEnergyVariant(withCreativeSideConfig(ALL_OUTPUT)));
         } else {
-            tabOutput.accept(StorageUtils.getFilledEnergyVariant(new ItemStack(this)));
+            tabOutput.accept(StorageUtils.getFilledEnergyVariant(item));
         }
     }
 

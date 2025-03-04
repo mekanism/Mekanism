@@ -12,7 +12,6 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBuilder;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.api.text.EnumColor;
-import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.recipe.BaseRecipeProvider;
 import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
@@ -132,16 +131,14 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
 
     private void registerGlowPanels(RecipeOutput consumer) {
         for (BlockRegistryObject<BlockGlowPanel, ?> glowPanel : AdditionsBlocks.GLOW_PANELS.values()) {
-            registerGlowPanel(consumer, glowPanel, "glow_panel/");
+            registerGlowPanel(consumer, glowPanel.value().getColor(), glowPanel.getItemHolder(), "glow_panel/");
         }
     }
 
-    private void registerGlowPanel(RecipeOutput consumer, BlockRegistryObject<? extends IColoredBlock, ?> result, String basePath) {
-        EnumColor color = result.value().getColor();
-        Holder<Item> itemHolder = result.getItemHolder();
+    private void registerGlowPanel(RecipeOutput consumer, EnumColor color, Holder<Item> result, String basePath) {
         DyeColor dye = color.getDyeColor();
         if (dye != null) {
-            ExtendedShapedRecipeBuilder.shapedRecipe(itemHolder, 2)
+            ExtendedShapedRecipeBuilder.shapedRecipe(result, 2)
                   .pattern(GLOW_PANEL)
                   .key(PLASTIC_SHEET_CHAR, MekanismItems.HDPE_SHEET)
                   .key(GLASS_PANES_CHAR, Tags.Items.GLASS_PANES)
@@ -150,6 +147,6 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
                   .category(RecipeCategory.BUILDING_BLOCKS)
                   .build(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
         }
-        PlasticBlockRecipeProvider.registerRecolor(consumer, itemHolder, AdditionsTags.Items.GLOW_PANELS, color, basePath);
+        PlasticBlockRecipeProvider.registerRecolor(consumer, result, AdditionsTags.Items.GLOW_PANELS, color, basePath);
     }
 }

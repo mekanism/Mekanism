@@ -2,6 +2,7 @@ package mekanism.common.recipe.builder;
 
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.common.registration.impl.BlockRegistryObject;
 import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.data.recipes.RecipeBuilder;
@@ -10,7 +11,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
-import net.minecraft.world.level.ItemLike;
 
 @NothingNullByDefault
 public class ExtendedShapelessRecipeBuilder extends BaseRecipeBuilder<ExtendedShapelessRecipeBuilder> {
@@ -45,11 +45,19 @@ public class ExtendedShapelessRecipeBuilder extends BaseRecipeBuilder<ExtendedSh
         return addIngredient(Ingredient.of(item), quantity);
     }
 
-    public ExtendedShapelessRecipeBuilder addIngredient(Holder<? extends ItemLike> item) {
+    public ExtendedShapelessRecipeBuilder addIngredient(BlockRegistryObject<?, ?> block) {
+        return addIngredient(block, 1);
+    }
+
+    public ExtendedShapelessRecipeBuilder addIngredient(BlockRegistryObject<?, ?> block, int quantity) {
+        return addIngredient(block.getItemHolder(), quantity);
+    }
+
+    public ExtendedShapelessRecipeBuilder addIngredient(Holder<Item> item) {
         return addIngredient(item, 1);
     }
 
-    public ExtendedShapelessRecipeBuilder addIngredient(Holder<? extends ItemLike> item, int quantity) {
+    public ExtendedShapelessRecipeBuilder addIngredient(Holder<Item> item, int quantity) {
         return addIngredient(Ingredient.of(item.value()), quantity);
     }
 

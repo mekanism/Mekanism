@@ -1,5 +1,6 @@
 package mekanism.common.registration.impl;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -15,7 +16,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ItemLike;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import org.jetbrains.annotations.NotNull;
@@ -43,14 +43,14 @@ public class CreativeTabDeferredRegister extends MekanismDeferredRegister<Creati
     /**
      * @apiNote We manually require the title and icon to be passed so that we ensure all tabs have one.
      */
-    public MekanismDeferredHolder<CreativeModeTab, CreativeModeTab> registerMain(ILangEntry title, ItemLike icon, UnaryOperator<CreativeModeTab.Builder> operator) {
+    public MekanismDeferredHolder<CreativeModeTab, CreativeModeTab> registerMain(ILangEntry title, Holder<Item> icon, UnaryOperator<CreativeModeTab.Builder> operator) {
         return register(getNamespace(), title, icon, operator);
     }
 
     /**
      * @apiNote We manually require the title and icon to be passed so that we ensure all tabs have one.
      */
-    public MekanismDeferredHolder<CreativeModeTab, CreativeModeTab> register(String name, ILangEntry title, ItemLike icon, UnaryOperator<CreativeModeTab.Builder> operator) {
+    public MekanismDeferredHolder<CreativeModeTab, CreativeModeTab> register(String name, ILangEntry title, Holder<Item> icon, UnaryOperator<CreativeModeTab.Builder> operator) {
         return register(name, () -> {
             CreativeModeTab.Builder builder = CreativeModeTab.builder()
                   .title(title.translate())
@@ -68,8 +68,13 @@ public class CreativeTabDeferredRegister extends MekanismDeferredRegister<Creati
         }
     }
 
+    @SuppressWarnings("unchecked")
+    public static void addToDisplay(CreativeModeTab.Output output, BlockRegistryObject<?, ?>... blocks) {
+        addToDisplay(output, Arrays.stream(blocks).map(BlockRegistryObject::getItemHolder).toArray(Holder[]::new));
+    }
+
     @SafeVarargs
-    public static void addToDisplay(CreativeModeTab.Output output, Holder<? extends ItemLike>... items) {
+    public static void addToDisplay(CreativeModeTab.Output output, Holder<Item>... items) {
         CreativeModeTab.TabVisibility visibility;
         if (output instanceof BuildCreativeModeTabContentsEvent) {
             //If we are added from the event, only add the item to the parent tab, as we will already be contained in the search tab
@@ -78,13 +83,13 @@ public class CreativeTabDeferredRegister extends MekanismDeferredRegister<Creati
         } else {
             visibility = CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS;
         }
-        for (Holder<? extends ItemLike> item : items) {
-            ItemLike itemLike = item.value();
-            if (itemLike.asItem() instanceof ICustomCreativeTabContents contents) {
+        for (Holder<Item> item : items) {
+            Item itemLike = item.value();
+            if (itemLike instanceof ICustomCreativeTabContents contents) {
                 if (contents.addDefault()) {
                     output.accept(itemLike, visibility);
                 }
-                contents.addItems(stack -> output.accept(stack, visibility));
+                contents.addItems(item, stack -> output.accept(stack, visibility));
             } else {
                 output.accept(itemLike, visibility);
             }
@@ -106,7 +111,7 @@ public class CreativeTabDeferredRegister extends MekanismDeferredRegister<Creati
 
     public interface ICustomCreativeTabContents {
 
-        void addItems(Consumer<ItemStack> addToTab);
+        void addItems(Holder<Item> item, Consumer<ItemStack> addToTab);
 
         default boolean addDefault() {
             return true;

@@ -23,7 +23,6 @@ import mekanism.common.item.interfaces.IModeItem.IAttachmentBasedModeItem;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismDataComponents;
-import mekanism.common.registries.MekanismItems;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
@@ -146,8 +145,8 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
     }
 
     @Override
-    public void addItems(Consumer<ItemStack> tabOutput) {
-        tabOutput.accept(ChemicalUtil.getFilledVariant(MekanismItems.FLAMETHROWER, MekanismChemicals.HYDROGEN));
+    public void addItems(Holder<Item> item, Consumer<ItemStack> tabOutput) {
+        tabOutput.accept(ChemicalUtil.getFilledVariant(item, MekanismChemicals.HYDROGEN));
     }
 
     @Override

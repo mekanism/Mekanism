@@ -5,20 +5,20 @@ import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public abstract class BaseRecipeBuilder<BUILDER extends BaseRecipeBuilder<BUILDER>> extends MekanismRecipeBuilder<BUILDER> {
 
-    private final Holder<? extends ItemLike> result;
+    private final Holder<Item> result;
     private final int count;
     protected RecipeCategory category = RecipeCategory.MISC;
     @Nullable
     protected String group;
 
-    protected BaseRecipeBuilder(Holder<? extends ItemLike> result, int count) {
+    protected BaseRecipeBuilder(Holder<Item> result, int count) {
         this.result = result;
         this.count = count;
     }
@@ -39,7 +39,7 @@ public abstract class BaseRecipeBuilder<BUILDER extends BaseRecipeBuilder<BUILDE
     }
 
     public void build(RecipeOutput recipeOutput) {
-        build(recipeOutput, result.value());
+        build(recipeOutput, result);
     }
 
     protected ItemStack resultStack() {
