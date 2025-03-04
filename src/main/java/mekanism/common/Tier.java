@@ -18,14 +18,14 @@ import codechicken.lib.colour.ColourRGBA;
  */
 public final class Tier
 {
-	private static List<ITier> tierTypes = new ArrayList<ITier>();
+	private static final List<ITier> tierTypes = new ArrayList<ITier>();
 	
 	private static boolean initiated = false;
 	
 	/** The default tiers used in Mekanism.
 	 * @author aidancbrady
 	 */
-	public static enum BaseTier
+	public enum BaseTier
 	{
 		BASIC("Basic", EnumColor.BRIGHT_GREEN),
 		ADVANCED("Advanced", EnumColor.DARK_RED),
@@ -53,17 +53,17 @@ public final class Tier
 			return this != CREATIVE;
 		}
 		
-		private String name;
-		private EnumColor color;
+		private final String name;
+		private final EnumColor color;
 		
-		private BaseTier(String s, EnumColor c)
+		BaseTier(String s, EnumColor c)
 		{
 			name = s;
 			color = c;
 		}
 	}
 	
-	public static enum EnergyCubeTier implements ITier
+	public enum EnergyCubeTier implements ITier
 	{
 		BASIC(2000000, 800),
 		ADVANCED(8000000, 3200),
@@ -72,12 +72,12 @@ public final class Tier
 		CREATIVE(Double.MAX_VALUE, Double.MAX_VALUE);
 
 		public double maxEnergy;
-		private double baseMaxEnergy;
+		private final double baseMaxEnergy;
 		
 		public double output;
-		private double baseOutput;
+		private final double baseOutput;
 		
-		private EnergyCubeTier(double max, double out)
+		EnergyCubeTier(double max, double out)
 		{
 			baseMaxEnergy = maxEnergy = max;
 			baseOutput = output = out;
@@ -133,7 +133,7 @@ public final class Tier
 		}
 	}
 	
-	public static enum InductionCellTier implements ITier
+	public enum InductionCellTier implements ITier
 	{
 		BASIC(1E9D),
 		ADVANCED(8E9D),
@@ -141,9 +141,9 @@ public final class Tier
 		ULTIMATE(512E9D);
 
 		public double maxEnergy;
-		private double baseMaxEnergy;
+		private final double baseMaxEnergy;
 		
-		private InductionCellTier(double max)
+		InductionCellTier(double max)
 		{
 			baseMaxEnergy = maxEnergy = max;
 		}
@@ -173,7 +173,7 @@ public final class Tier
 		}
 	}
 	
-	public static enum InductionProviderTier implements ITier
+	public enum InductionProviderTier implements ITier
 	{
 		BASIC(64000),
 		ADVANCED(512000),
@@ -181,9 +181,9 @@ public final class Tier
 		ULTIMATE(32768000);
 
 		public double output;
-		private double baseOutput;
+		private final double baseOutput;
 		
-		private InductionProviderTier(double out)
+		InductionProviderTier(double out)
 		{
 			baseOutput = output = out;
 		}
@@ -213,14 +213,14 @@ public final class Tier
 		}
 	}
 
-	public static enum FactoryTier
+	public enum FactoryTier
 	{
 		BASIC(3, new ResourceLocation("mekanism", "gui/factory/GuiBasicFactory.png")),
 		ADVANCED(5, new ResourceLocation("mekanism", "gui/factory/GuiAdvancedFactory.png")),
 		ELITE(7, new ResourceLocation("mekanism", "gui/factory/GuiEliteFactory.png"));
 
-		public int processes;
-		public ResourceLocation guiLocation;
+		public final int processes;
+		public final ResourceLocation guiLocation;
 
 		public static FactoryTier getFromName(String tierName)
 		{
@@ -241,14 +241,14 @@ public final class Tier
 			return BaseTier.values()[ordinal()];
 		}
 
-		private FactoryTier(int process, ResourceLocation gui)
+		FactoryTier(int process, ResourceLocation gui)
 		{
 			processes = process;
 			guiLocation = gui;
 		}
 	}
 
-	public static enum CableTier implements ITier
+	public enum CableTier implements ITier
 	{
 		BASIC(3200, TransmitterType.UNIVERSAL_CABLE_BASIC),
 		ADVANCED(12800, TransmitterType.UNIVERSAL_CABLE_ADVANCED),
@@ -256,11 +256,11 @@ public final class Tier
 		ULTIMATE(320000, TransmitterType.UNIVERSAL_CABLE_ULTIMATE);
 
 		public int cableCapacity;
-		private int baseCapacity;
+		private final int baseCapacity;
 		
-		public TransmitterType type;
+		public final TransmitterType type;
 
-		private CableTier(int capacity, TransmitterType transmitterType)
+		CableTier(int capacity, TransmitterType transmitterType)
 		{
 			baseCapacity = cableCapacity = capacity;
 			
@@ -305,7 +305,7 @@ public final class Tier
 		}
 	}
 
-	public static enum PipeTier implements ITier
+	public enum PipeTier implements ITier
 	{
 		BASIC(1000, 100, TransmitterType.MECHANICAL_PIPE_BASIC),
 		ADVANCED(4000, 400, TransmitterType.MECHANICAL_PIPE_ADVANCED),
@@ -313,14 +313,14 @@ public final class Tier
 		ULTIMATE(64000, 6400, TransmitterType.MECHANICAL_PIPE_ULTIMATE);
 
 		public int pipeCapacity;
-		private int baseCapacity;
+		private final int baseCapacity;
 		
 		public int pipePullAmount;
-		private int basePull;
+		private final int basePull;
 		
-		public TransmitterType type;
+		public final TransmitterType type;
 
-		private PipeTier(int capacity, int pullAmount, TransmitterType transmitterType)
+		PipeTier(int capacity, int pullAmount, TransmitterType transmitterType)
 		{
 			baseCapacity = pipeCapacity = capacity;
 			basePull = pipePullAmount = pullAmount;
@@ -369,7 +369,7 @@ public final class Tier
 		}
 	}
 
-	public static enum TubeTier implements ITier
+	public enum TubeTier implements ITier
 	{
 		BASIC(256, 64, TransmitterType.PRESSURIZED_TUBE_BASIC),
 		ADVANCED(1024, 256, TransmitterType.PRESSURIZED_TUBE_ADVANCED),
@@ -377,14 +377,14 @@ public final class Tier
 		ULTIMATE(16384, 4096, TransmitterType.PRESSURIZED_TUBE_ULTIMATE);
 
 		public int tubeCapacity;
-		private int baseCapacity;
+		private final int baseCapacity;
 		
 		public int tubePullAmount;
-		private int basePull;
+		private final int basePull;
 		
-		public TransmitterType type;
+		public final TransmitterType type;
 
-		private TubeTier(int capacity, int pullAmount, TransmitterType transmitterType)
+		TubeTier(int capacity, int pullAmount, TransmitterType transmitterType)
 		{
 			baseCapacity = tubeCapacity = capacity;
 			basePull = tubePullAmount = pullAmount;
@@ -433,7 +433,7 @@ public final class Tier
 		}
 	}
 	
-	public static enum TransporterTier implements ITier
+	public enum TransporterTier implements ITier
 	{
 		BASIC(1, 5, TransmitterType.LOGISTICAL_TRANSPORTER_BASIC),
 		ADVANCED(16, 10, TransmitterType.LOGISTICAL_TRANSPORTER_ADVANCED),
@@ -441,14 +441,14 @@ public final class Tier
 		ULTIMATE(64, 50, TransmitterType.LOGISTICAL_TRANSPORTER_ULTIMATE);
 
 		public int pullAmount;
-		private int basePull;
+		private final int basePull;
 		
 		public int speed;
-		private int baseSpeed;
+		private final int baseSpeed;
 		
-		public TransmitterType type;
+		public final TransmitterType type;
 
-		private TransporterTier(int pull, int s, TransmitterType transmitterType)
+		TransporterTier(int pull, int s, TransmitterType transmitterType)
 		{
 			basePull = pullAmount = pull;
 			baseSpeed = speed = s;
@@ -497,7 +497,7 @@ public final class Tier
 		}
 	}
 	
-	public static enum ConductorTier implements ITier
+	public enum ConductorTier implements ITier
 	{
 		BASIC(5, 1, 10, new ColourRGBA(0.2, 0.2, 0.2, 1), TransmitterType.THERMODYNAMIC_CONDUCTOR_BASIC),
 		ADVANCED(5, 1, 400, new ColourRGBA(0.2, 0.2, 0.2, 1), TransmitterType.THERMODYNAMIC_CONDUCTOR_ADVANCED),
@@ -505,19 +505,19 @@ public final class Tier
 		ULTIMATE(5, 1, 100000, new ColourRGBA(0.2, 0.2, 0.2, 1), TransmitterType.THERMODYNAMIC_CONDUCTOR_ULTIMATE);
 
 		public double inverseConduction;
-		private double baseConduction;
+		private final double baseConduction;
 		
 		public double inverseHeatCapacity;
-		private double baseHeatCapacity;
+		private final double baseHeatCapacity;
 		
 		public double inverseConductionInsulation;
-		private double baseConductionInsulation;
+		private final double baseConductionInsulation;
 		
-		public ColourRGBA baseColour;
+		public final ColourRGBA baseColour;
 		
-		public TransmitterType type;
+		public final TransmitterType type;
 
-		private ConductorTier(double inversek, double inverseC, double insulationInversek, ColourRGBA colour, TransmitterType transmitterType)
+		ConductorTier(double inversek, double inverseC, double insulationInversek, ColourRGBA colour, TransmitterType transmitterType)
 		{
 			baseConduction = inverseConduction = inversek;
 			baseHeatCapacity = inverseHeatCapacity = inverseC;
@@ -572,7 +572,7 @@ public final class Tier
 		}
 	}
 	
-	public static enum FluidTankTier implements ITier
+	public enum FluidTankTier implements ITier
 	{
 		BASIC(14000, 400),
 		ADVANCED(28000, 800),
@@ -580,12 +580,12 @@ public final class Tier
 		ULTIMATE(112000, 3200);
 
 		public int storage;
-		private int baseStorage;
+		private final int baseStorage;
 		
 		public int output;
-		private int baseOutput;
+		private final int baseOutput;
 
-		private FluidTankTier(int s, int o)
+		FluidTankTier(int s, int o)
 		{
 			baseStorage = storage = s;
 			baseOutput = output = o;
@@ -619,7 +619,7 @@ public final class Tier
 		}
 	}
 
-	public static enum GasTankTier implements ITier
+	public enum GasTankTier implements ITier
 	{
 		BASIC(64000, 256),
 		ADVANCED(128000, 512),
@@ -627,12 +627,12 @@ public final class Tier
 		ULTIMATE(512000, 2056);
 
 		public int storage;
-		private int baseStorage;
+		private final int baseStorage;
 		
 		public int output;
-		private int baseOutput;
+		private final int baseOutput;
 
-		private GasTankTier(int s, int o)
+		GasTankTier(int s, int o)
 		{
 			baseStorage = storage = s;
 			baseOutput = output = o;
@@ -666,7 +666,7 @@ public final class Tier
 		}
 	}
 	
-	public static enum BinTier implements ITier
+	public enum BinTier implements ITier
 	{
 		BASIC(4096),
 		ADVANCED(8192),
@@ -674,9 +674,9 @@ public final class Tier
 		ULTIMATE(262144);
 
 		public int storage;
-		private int baseStorage;
+		private final int baseStorage;
 
-		private BinTier(int s)
+		BinTier(int s)
 		{
 			baseStorage = storage = s;
 		}
@@ -703,6 +703,46 @@ public final class Tier
 		public void writeConfig(ByteBuf dataStream)
 		{
 			dataStream.writeInt(storage);
+		}
+	}
+
+	public enum EquipmentTier implements ITier
+	{
+		BASIC(60000), // Configurator, Network Reader, Seismic Reader
+		ADVANCED(120000), // Electric Bow
+		ELITE(1000000), // Portable Teleporter
+		ULTIMATE(1000000); // Atomic Dissassembler
+
+		public int energy;
+		private final int maxEnergy;
+
+		EquipmentTier(int s)
+		{
+			maxEnergy = energy = s;
+		}
+
+		@Override
+		public BaseTier getBaseTier()
+		{
+			return BaseTier.values()[ordinal()];
+		}
+
+		@Override
+		public void loadConfig()
+		{
+			energy = Mekanism.configuration.get("tier", getBaseTier().getName() + "Equipment", maxEnergy).getInt();
+		}
+
+		@Override
+		public void readConfig(ByteBuf dataStream)
+		{
+			energy = dataStream.readInt();
+		}
+
+		@Override
+		public void writeConfig(ByteBuf dataStream)
+		{
+			dataStream.writeInt(energy);
 		}
 	}
 	
@@ -758,14 +798,14 @@ public final class Tier
 		}
 	}
 	
-	public static interface ITier
+	public interface ITier
 	{
-		public BaseTier getBaseTier();
+		BaseTier getBaseTier();
 		
-		public void loadConfig();
+		void loadConfig();
 		
-		public void readConfig(ByteBuf dataStream);
+		void readConfig(ByteBuf dataStream);
 		
-		public void writeConfig(ByteBuf dataStream);
+		void writeConfig(ByteBuf dataStream);
 	}
 }

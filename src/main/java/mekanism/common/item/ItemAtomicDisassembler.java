@@ -11,6 +11,7 @@ import mekanism.api.EnumColor;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.MekanismConfig.mekce;
 import mekanism.api.util.ListUtils;
+import mekanism.common.Tier;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
@@ -34,7 +35,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 
 	public ItemAtomicDisassembler()
 	{
-		super(1000000);
+		super(Tier.EquipmentTier.ULTIMATE.energy);
 	}
 
 	@Override

@@ -11,6 +11,7 @@ import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.ITransmitterTile;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
+import mekanism.common.Tier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -20,11 +21,11 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 public class ItemNetworkReader extends ItemEnergized
 {
-	public static double ENERGY_PER_USE = 400;
+	public final int ENERGY_PER_USE = (int) (MAX_ELECTRICITY/150);
 
 	public ItemNetworkReader()
 	{
-		super(60000);
+		super(Tier.EquipmentTier.BASIC.energy);
 	}
 
 	@Override

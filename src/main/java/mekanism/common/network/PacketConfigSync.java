@@ -50,6 +50,9 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeDouble(general.ENERGY_PER_REDSTONE);
 			dataStream.writeDouble(general.DISASSEMBLER_USAGE);
 			dataStream.writeInt(general.maxUpgradeMultiplier);
+			dataStream.writeInt(general.costTeleporter);
+			dataStream.writeInt(general.robitEnergyPerHP);
+			dataStream.writeInt(general.ELECTRICBOW_USAGE);
 			dataStream.writeInt(general.energyUnit.ordinal());
 			dataStream.writeDouble(general.minerSilkMultiplier);
 			dataStream.writeBoolean(general.blacklistIC2);
@@ -251,6 +254,9 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			general.ENERGY_PER_REDSTONE = dataStream.readDouble();
 			general.DISASSEMBLER_USAGE = dataStream.readDouble();
 			general.maxUpgradeMultiplier = dataStream.readInt();
+			general.costTeleporter = dataStream.readInt();
+			general.robitEnergyPerHP = dataStream.readInt();
+			general.ELECTRICBOW_USAGE = dataStream.readInt();
 			general.energyUnit = EnergyType.values()[dataStream.readInt()];
 			general.minerSilkMultiplier = dataStream.readDouble();
 			general.blacklistIC2 = dataStream.readBoolean();

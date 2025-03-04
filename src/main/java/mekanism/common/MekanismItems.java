@@ -41,7 +41,7 @@ public class MekanismItems
 	public static final Item MufflingUpgrade = new ItemUpgrade(Upgrade.MUFFLING).setUnlocalizedName("MufflingUpgrade");
 	public static final Item GasUpgrade = new ItemUpgrade(Upgrade.GAS).setUnlocalizedName("GasUpgrade");
 	public static final Item TierInstaller = new ItemTierInstaller().setUnlocalizedName("FactoryInstaller");
-	public static final ItemEnergized EnergyTablet = (ItemEnergized)new ItemEnergized(1000000).setUnlocalizedName("EnergyTablet");
+	public static final ItemEnergized EnergyTablet = (ItemEnergized)new ItemEnergized(Tier.EquipmentTier.ADVANCED.energy).setUnlocalizedName("EnergyTablet");
 	public static final ItemRobit Robit = (ItemRobit)new ItemRobit().setUnlocalizedName("Robit");
 	public static final ItemAtomicDisassembler AtomicDisassembler = (ItemAtomicDisassembler)new ItemAtomicDisassembler().setUnlocalizedName("AtomicDisassembler");
 	public static final ItemPortableTeleporter PortableTeleporter = (ItemPortableTeleporter)new ItemPortableTeleporter().setUnlocalizedName("PortableTeleporter");

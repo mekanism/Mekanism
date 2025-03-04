@@ -4,7 +4,9 @@ import java.util.List;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.MekanismConfig;
 import mekanism.common.Mekanism;
+import mekanism.common.Tier;
 import mekanism.common.security.IOwnerItem;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.util.LangUtils;
@@ -18,11 +20,13 @@ import net.minecraft.world.World;
 
 public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem
 {
+	static final int baseCost = MekanismConfig.general.costTeleporter;
+
 	public ItemPortableTeleporter()
 	{
-		super(1000000);
+		super(Tier.EquipmentTier.ELITE.energy);
 	}
-	
+
 	@Override
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
 	{
@@ -78,18 +82,16 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem
 			return 0;
 		}
 
-		int neededEnergy = 1000;
+		int distance = (int)entity.getDistance(coords.xCoord, coords.yCoord, coords.zCoord);
+
+		int cost = distance * baseCost/100;
 
 		if(entity.worldObj.provider.dimensionId != coords.dimensionId)
 		{
-			neededEnergy+=10000;
+			cost += baseCost * 10;
 		}
 
-		int distance = (int)entity.getDistance(coords.xCoord, coords.yCoord, coords.zCoord);
-
-		neededEnergy+=(distance*10);
-
-		return neededEnergy;
+		return cost;
 	}
 
 	@Override

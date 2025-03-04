@@ -9,6 +9,7 @@ import mekanism.api.*;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
+import mekanism.common.Tier;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityBasicBlock;
@@ -39,14 +40,14 @@ import java.util.Random;
 })
 public class ItemConfigurator extends ItemEnergized implements IMekWrench, IToolWrench, IToolHammer
 {
-	public final int ENERGY_PER_CONFIGURE = 400;
-	public final int ENERGY_PER_ITEM_DUMP = 8;
+	public final int ENERGY_PER_CONFIGURE = (int) (MAX_ELECTRICITY/150);
+	public final int ENERGY_PER_ITEM_DUMP = (int) (MAX_ELECTRICITY/500);
 
 	private Random random = new Random();
 
 	public ItemConfigurator()
 	{
-		super(60000);
+		super(Tier.EquipmentTier.BASIC.energy);
 	}
 
 	@Override

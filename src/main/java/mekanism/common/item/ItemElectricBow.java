@@ -1,6 +1,8 @@
 package mekanism.common.item;
 
 import mekanism.api.EnumColor;
+import mekanism.api.MekanismConfig;
+import mekanism.common.Tier;
 import mekanism.common.util.LangUtils;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -16,9 +18,12 @@ import java.util.List;
 
 public class ItemElectricBow extends ItemEnergized
 {
+
+	public final int ENERGY_PER_USE = (int) (MAX_ELECTRICITY/1000);
+
 	public ItemElectricBow()
 	{
-		super(120000);
+		super(Tier.EquipmentTier.ADVANCED.energy);
 		setFull3D();
 	}
 
@@ -62,7 +67,7 @@ public class ItemElectricBow extends ItemEnergized
 
 				if(!player.capabilities.isCreativeMode)
 				{
-					setEnergy(itemstack, getEnergy(itemstack) - (getFireState(itemstack) ? 1200 : 120));
+					setEnergy(itemstack, getEnergy(itemstack) - (getFireState(itemstack) ? MekanismConfig.general.ELECTRICBOW_USAGE * 10 : MekanismConfig.general.ELECTRICBOW_USAGE));
 				}
 
 				world.playSoundAtEntity(player, "random.bow", 1.0F, 1.0F / (itemRand.nextFloat() * 0.4F + 1.2F) + f * 0.5F);
