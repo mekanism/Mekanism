@@ -38,7 +38,7 @@ public class AdditionsEntityLootTables extends BaseEntityLootTables {
                           )
               ).withPool(LootPool.lootPool()
                     .name("music_discs")
-                    .add(TagEntry.expandTag(ItemTags.MUSIC_DISCS))
+                    .add(TagEntry.expandTag(ItemTags.CREEPER_DROP_MUSIC_DISCS))
                     .when(LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.KILLER, EntityPredicate.Builder.entity().of(EntityTypeTags.SKELETONS)))
               )
         );

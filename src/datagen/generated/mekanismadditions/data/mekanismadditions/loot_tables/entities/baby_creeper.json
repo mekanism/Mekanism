@@ -46,7 +46,7 @@
         {
           "type": "minecraft:tag",
           "expand": true,
-          "name": "minecraft:music_discs"
+          "name": "minecraft:creeper_drop_music_discs"
         }
       ],
       "name": "music_discs",
