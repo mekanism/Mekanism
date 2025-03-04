@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.LongSupplier;
 import java.util.function.Predicate;
+import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.common.attachments.containers.ContainsRecipe;
 import mekanism.common.attachments.containers.creator.BaseContainerCreator;
@@ -43,7 +43,7 @@ public class ChemicalTanksBuilder {
 
     public ChemicalTanksBuilder addBasic(LongSupplier capacity, Predicate<Holder<Chemical>> isValid) {
         return addTank((type, attachedTo, containerIndex) -> new ComponentBackedChemicalTank(attachedTo,
-              containerIndex, ConstantPredicates.manualOnly(), ConstantPredicates.alwaysTrueBi(), isValid, MekanismConfig.general.chemicalItemFillRate, capacity, null));
+              containerIndex, BasicChemicalTank.holderManualOnly, BasicChemicalTank.holderAlwaysTrueBi, isValid, MekanismConfig.general.chemicalItemFillRate, capacity, null));
     }
 
     public ChemicalTanksBuilder addBasic(long capacity) {
@@ -52,13 +52,13 @@ public class ChemicalTanksBuilder {
 
     public ChemicalTanksBuilder addBasic(LongSupplier capacity) {
         return addTank((type, attachedTo, containerIndex) -> new ComponentBackedChemicalTank(attachedTo,
-              containerIndex, ConstantPredicates.manualOnly(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(),
+              containerIndex, BasicChemicalTank.holderManualOnly, BasicChemicalTank.holderAlwaysTrueBi, BasicChemicalTank.holderAlwaysTrue,
               MekanismConfig.general.chemicalItemFillRate, capacity, null));
     }
 
     public ChemicalTanksBuilder addInternalStorage(LongSupplier rate, LongSupplier capacity, Predicate<Holder<Chemical>> isValid) {
         return addTank((type, attachedTo, containerIndex) -> new ComponentBackedChemicalTank(attachedTo,
-              containerIndex, ConstantPredicates.notExternal(), ConstantPredicates.alwaysTrueBi(), isValid, rate, capacity, null));
+              containerIndex, BasicChemicalTank.holderNotExternal, BasicChemicalTank.holderAlwaysTrueBi, isValid, rate, capacity, null));
     }
 
     public ChemicalTanksBuilder addTank(IBasicContainerCreator<? extends ComponentBackedChemicalTank> tank) {

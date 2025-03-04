@@ -120,9 +120,9 @@ public class TileEntityItemStackChemicalToItemStackFactory extends TileEntityIte
         // if they are not still valid
         long capacity = Attribute.getOrThrow(getBlockHolder(), AttributeFactoryType.class).getFactoryType() == FactoryType.INFUSING ? TileEntityMetallurgicInfuser.MAX_INFUSE : TileEntityAdvancedElectricMachine.MAX_GAS;
         if (allowExtractingChemical()) {
-            chemicalTank = BasicChemicalTank.create(capacity * tier.processes, this::containsRecipeB, markAllMonitorsChanged(listener));
+            chemicalTank = BasicChemicalTank.createModern(capacity * tier.processes, this::containsRecipeB, markAllMonitorsChanged(listener));
         } else {
-            chemicalTank = BasicChemicalTank.input(capacity * tier.processes, this::containsRecipeB, markAllMonitorsChanged(listener));
+            chemicalTank = BasicChemicalTank.inputModern(capacity * tier.processes, this::containsRecipeB, markAllMonitorsChanged(listener));
         }
         builder.addTank(chemicalTank);
         return builder.build();

@@ -10,7 +10,6 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.datamaps.chemical.attribute.ChemicalRadioactivity;
 import mekanism.api.datamaps.chemical.attribute.IChemicalAttribute;
-import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.TileEntityRadioactiveWasteBarrel;
 import mekanism.common.util.WorldUtils;
@@ -41,7 +40,7 @@ public class StackedWasteBarrel extends VariableCapacityChemicalTank {
     private final TileEntityRadioactiveWasteBarrel tile;
 
     protected StackedWasteBarrel(TileEntityRadioactiveWasteBarrel tile, @Nullable IContentsListener listener) {
-        super(MekanismConfig.general.radioactiveWasteBarrelMaxChemical, alwaysTrueBi, alwaysTrueBi, ConstantPredicates.alwaysTrue(), ATTRIBUTE_VALIDATOR, listener);
+        super(MekanismConfig.general.radioactiveWasteBarrelMaxChemical, holderAlwaysTrueBi, holderAlwaysTrueBi, holderAlwaysTrue, ATTRIBUTE_VALIDATOR, listener);
         this.tile = tile;
     }
 

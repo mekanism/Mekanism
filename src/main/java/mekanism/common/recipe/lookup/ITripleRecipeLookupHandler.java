@@ -7,6 +7,7 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.common.recipe.lookup.IRecipeLookupHandler.IRecipeTypedLookupHandler;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.ItemFluidChemical;
 import mekanism.common.recipe.lookup.cache.TripleInputRecipeCache;
+import net.minecraft.core.Holder;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.util.TriPredicate;
@@ -146,14 +147,14 @@ public interface ITripleRecipeLookupHandler<INPUT_A, INPUT_B, INPUT_C, RECIPE ex
          * Helper wrapper to convert a chemical to a chemical stack and pass it to {@link #containsRecipeCAB(Object, Object, Object)} to make validity predicates easier
          * and cleaner.
          */
-        default boolean containsRecipeCAB(INPUT_A inputA, INPUT_B inputB, Chemical inputC) {
+        default boolean containsRecipeCAB(INPUT_A inputA, INPUT_B inputB, Holder<Chemical> inputC) {
             return containsRecipeCAB(inputA, inputB, new ChemicalStack(inputC, 1));
         }
 
         /**
          * Helper wrapper to convert a chemical to a chemical stack and pass it to {@link #containsRecipeC(Object)} to make validity predicates easier and cleaner.
          */
-        default boolean containsRecipeC(Chemical input) {
+        default boolean containsRecipeC(Holder<Chemical> input) {
             return containsRecipeC(new ChemicalStack(input, 1));
         }
     }

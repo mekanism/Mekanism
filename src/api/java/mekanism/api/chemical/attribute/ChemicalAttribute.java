@@ -37,9 +37,7 @@ public abstract class ChemicalAttribute implements IChemicalAttribute {
      *
      * @since 10.7.4
      */
-    @Deprecated(forRemoval = true, since = "10.7.11")
     public void collectTooltips(Consumer<Component> adder) {
-        //TODO - 1.22: When removing this legacy handling, make overriders call super
         List<Component> list = new ArrayList<>();
         addTooltipText(list);
         for (Component component : list) {
@@ -54,7 +52,6 @@ public abstract class ChemicalAttribute implements IChemicalAttribute {
 
     @Override
     @SuppressWarnings("removal")
-    @Deprecated(forRemoval = true, since = "10.7.11")
     public final ChemicalAttribute toLegacyAttribute() {
         return this;
     }

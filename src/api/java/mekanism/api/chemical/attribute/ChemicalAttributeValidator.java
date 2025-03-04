@@ -109,6 +109,7 @@ public interface ChemicalAttributeValidator {//TODO - 1.22: Re-evaluate how this
      * @return simple attribute validator
      */
     @SafeVarargs
+    @SuppressWarnings("removal")
     static ChemicalAttributeValidator create(Class<? extends ChemicalAttribute>... validAttributes) {
         return new SimpleAttributeValidator(validAttributes, true);
     }
@@ -121,6 +122,7 @@ public interface ChemicalAttributeValidator {//TODO - 1.22: Re-evaluate how this
      * @return simple attribute validator
      */
     @SafeVarargs
+    @SuppressWarnings("removal")
     static ChemicalAttributeValidator createStrict(Class<? extends ChemicalAttribute>... validAttributes) {
         return new SimpleAttributeValidator(validAttributes, false);
     }
@@ -158,6 +160,7 @@ public interface ChemicalAttributeValidator {//TODO - 1.22: Re-evaluate how this
         }
     }
 
+    @SuppressWarnings("removal")//Note: As some mods do make use of this validator, we just let it keep acting on legacy attributes
     class SimpleAttributeValidator implements ChemicalAttributeValidator {
 
         private final Set<Class<? extends ChemicalAttribute>> validTypes;
@@ -170,7 +173,7 @@ public interface ChemicalAttributeValidator {//TODO - 1.22: Re-evaluate how this
 
         @Override
         public boolean validate(ChemicalAttribute attribute) {
-            return validTypes.contains(attribute.getClass()) || (allowNoValidation && !attribute.needsValidation());
+            return (allowNoValidation && !attribute.needsValidation()) || validTypes.contains(attribute.getClass());
         }
     }
 }

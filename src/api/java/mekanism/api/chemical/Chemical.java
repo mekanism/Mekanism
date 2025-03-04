@@ -305,14 +305,16 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
     }
 
     /**
-     * Gets all attribute instances associated with this chemical type.
+     * Gets an unmodifiable view of all attribute instances associated with this chemical type.
      *
      * @return collection of attribute instances.
      *
      * @since 10.7.11
+     *
+     * @implNote This method only returns the modern attributes and not any legacy ones that were defined in code.
      */
     public List<IChemicalAttribute> getModernAttributes() {
-        //TODO - 1.22: Rename this to getAttributes
+        //TODO - 1.22: Rename this to getAttributes and maybe move it into IChemicalAttributeContainer? (Also Update/remove implNote)
         return attributesView;
     }
 

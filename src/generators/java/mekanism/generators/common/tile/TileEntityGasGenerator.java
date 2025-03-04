@@ -183,7 +183,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
     public class FuelTank extends VariableCapacityChemicalTank {
 
         protected FuelTank(@Nullable IContentsListener listener) {
-            super(MekanismGeneratorsConfig.generators.gbgTankCapacity, notExternal, alwaysTrueBi, HAS_FUEL, null, listener);
+            super(MekanismGeneratorsConfig.generators.gbgTankCapacity, holderNotExternal, holderAlwaysTrueBi, HAS_FUEL, null, listener);
         }
 
         @Override

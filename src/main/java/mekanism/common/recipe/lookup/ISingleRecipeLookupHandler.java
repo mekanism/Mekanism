@@ -10,6 +10,7 @@ import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleChemical;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleFluid;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleItem;
 import mekanism.common.recipe.lookup.cache.SingleInputRecipeCache;
+import net.minecraft.core.Holder;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
@@ -75,7 +76,7 @@ public interface ISingleRecipeLookupHandler<INPUT, RECIPE extends MekanismRecipe
         /**
          * Helper wrapper to convert a chemical to a chemical stack and pass it to {@link #containsRecipe(Object)} to make validity predicates easier and cleaner.
          */
-        default boolean containsRecipe(Chemical input) {
+        default boolean containsRecipe(Holder<Chemical> input) {
             return containsRecipe(new ChemicalStack(input, 1));
         }
     }

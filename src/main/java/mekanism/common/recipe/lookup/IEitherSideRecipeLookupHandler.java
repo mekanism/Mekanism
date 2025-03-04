@@ -9,6 +9,7 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.common.recipe.lookup.IRecipeLookupHandler.IRecipeTypedLookupHandler;
 import mekanism.common.recipe.lookup.cache.EitherSideInputRecipeCache;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.EitherSideChemical;
+import net.minecraft.core.Holder;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
@@ -79,14 +80,14 @@ public interface IEitherSideRecipeLookupHandler<INPUT, RECIPE extends MekanismRe
         /**
          * Helper wrapper to convert a chemical to a chemical stack and pass it to {@link #containsRecipe(Object)} to make validity predicates easier and cleaner.
          */
-        default boolean containsRecipe(Chemical input) {
+        default boolean containsRecipe(Holder<Chemical> input) {
             return containsRecipe(new ChemicalStack(input, 1));
         }
 
         /**
          * Helper wrapper to convert a chemical to a chemical stack and pass it to {@link #containsRecipe(Object)} to make validity predicates easier and cleaner.
          */
-        default boolean containsRecipe(Chemical inputA, ChemicalStack inputB) {
+        default boolean containsRecipe(Holder<Chemical> inputA, ChemicalStack inputB) {
             return containsRecipe(new ChemicalStack(inputA, 1), inputB);
         }
     }

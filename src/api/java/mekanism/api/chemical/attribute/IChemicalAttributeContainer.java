@@ -36,11 +36,23 @@ public interface IChemicalAttributeContainer<SELF extends IChemicalAttributeCont
      * @param type The type of the attribute to get.
      *
      * @return attribute instance.
+     *
+     * @implNote This method will try to retrieve the attribute, and convert and modern attributes into the legacy type so that they can be returned by this method.
      */
     @Nullable
     @Deprecated(forRemoval = true, since = "10.7.11")
     <ATTRIBUTE extends ChemicalAttribute> ATTRIBUTE get(Class<ATTRIBUTE> type);
 
+    /**
+     * Gets the legacy attribute instance of a certain type, or null if it doesn't exist. This method explicitly only checks legacy (in code) defined attributes, and
+     * will return null in cases where there is only a modern attribute declared via a data map.
+     *
+     * @param type The type of the attribute to get.
+     *
+     * @return attribute instance.
+     *
+     * @since 10.7.11
+     */
     @Nullable
     @Deprecated(forRemoval = true, since = "10.7.11")
     <ATTRIBUTE extends ChemicalAttribute> ATTRIBUTE getLegacy(Class<ATTRIBUTE> type);
@@ -49,6 +61,8 @@ public interface IChemicalAttributeContainer<SELF extends IChemicalAttributeCont
      * Gets all attribute instances associated with this chemical type.
      *
      * @return collection of attribute instances.
+     *
+     * @implNote This method will retrieve all attributes, both the legacy ones, and legacy versions of any modern attributes.
      */
     @Deprecated(forRemoval = true, since = "10.7.11")
     Collection<ChemicalAttribute> getAttributes();
@@ -57,6 +71,8 @@ public interface IChemicalAttributeContainer<SELF extends IChemicalAttributeCont
      * Gets all attribute types associated with this chemical type.
      *
      * @return collection of attribute types.
+     *
+     * @implNote This method will retrieve all attributes, both the legacy ones, and legacy versions of any modern attributes.
      */
     @Deprecated(forRemoval = true, since = "10.7.11")
     Collection<Class<? extends ChemicalAttribute>> getAttributeTypes();

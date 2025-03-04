@@ -24,7 +24,7 @@ public class ChemicalTankChemicalTank extends BasicChemicalTank {
     private final LongSupplier rate;
 
     private ChemicalTankChemicalTank(ChemicalTankTier tier, @Nullable IContentsListener listener) {
-        super(tier.getStorage(), alwaysTrueBi, alwaysTrueBi, alwaysTrue, tier == ChemicalTankTier.CREATIVE ? ChemicalAttributeValidator.ALWAYS_ALLOW : null, listener);
+        super(tier.getStorage(), holderAlwaysTrueBi, holderAlwaysTrueBi, holderAlwaysTrue, tier == ChemicalTankTier.CREATIVE ? ChemicalAttributeValidator.ALWAYS_ALLOW : null, listener, null);
         isCreative = tier == ChemicalTankTier.CREATIVE;
         rate = tier::getOutput;
     }
