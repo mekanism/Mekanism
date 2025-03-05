@@ -13,8 +13,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.jetbrains.annotations.Nullable;
 
-//TODO - 1.21: Re-evaluate this class and the fact that the getNames don't bother handling that for defaulted registries the default key is returned
-// See also Util#getRegisteredName
 public class RegistryUtils {
 
     private RegistryUtils() {

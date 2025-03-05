@@ -72,7 +72,7 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
           RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
     );
     public static final int BASE_TICKS_REQUIRED = 20 * SharedConstants.TICKS_PER_SECOND;
-    public static final long MAX_GAS = 10 * FluidType.BUCKET_VOLUME;
+    public static final long MAX_GAS = 10L * FluidType.BUCKET_VOLUME;
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getInputChemical", "getInputChemicalCapacity", "getInputChemicalNeeded",
                                                                                         "getInputChemicalFilledPercentage"}, docPlaceholder = "input gas tank")

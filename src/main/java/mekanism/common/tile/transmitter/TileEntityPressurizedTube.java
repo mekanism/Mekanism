@@ -96,19 +96,14 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
         CompoundTag updateTag = super.getUpdateTag(provider);
         if (getTransmitter().hasTransmitterNetwork()) {
             ChemicalNetwork network = getTransmitter().getTransmitterNetwork();
-            Tag serializedChemical;
-            if (network.lastChemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
-                serializedChemical = new CompoundTag();
-            } else {
+            if (!network.lastChemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
                 DataResult<Tag> encoded = Chemical.HOLDER_CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), network.lastChemical);
                 if (encoded.isSuccess()) {
-                    serializedChemical = encoded.getOrThrow();
+                    updateTag.put(SerializationConstants.CHEMICAL, encoded.getOrThrow());
                 } else {
                     encoded.ifError(error -> Mekanism.logger.warn("Failed to encode last chemical: {}", error.message()));
-                    serializedChemical = new CompoundTag();
                 }
             }
-            updateTag.put(SerializationConstants.CHEMICAL, serializedChemical);
             updateTag.putFloat(SerializationConstants.SCALE, network.currentScale);
         }
         return updateTag;

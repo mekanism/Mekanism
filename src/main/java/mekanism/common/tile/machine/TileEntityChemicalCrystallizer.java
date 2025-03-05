@@ -57,7 +57,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityProgressMachine<Ch
           RecipeError.NOT_ENOUGH_OUTPUT_SPACE,
           RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
     );
-    public static final long MAX_CHEMICAL = 10 * FluidType.BUCKET_VOLUME;
+    public static final long MAX_CHEMICAL = 10L * FluidType.BUCKET_VOLUME;
     public static final int BASE_TICKS_REQUIRED = 10 * SharedConstants.TICKS_PER_SECOND;
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getInput", "getInputCapacity", "getInputNeeded",

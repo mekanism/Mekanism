@@ -72,7 +72,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
           RecipeError.NOT_ENOUGH_OUTPUT_SPACE,
           RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
     );
-    public static final long MAX_CHEMICAL = 10 * FluidType.BUCKET_VOLUME;
+    public static final long MAX_CHEMICAL = 10L * FluidType.BUCKET_VOLUME;
     public static final int BASE_TICKS_REQUIRED = 5 * SharedConstants.TICKS_PER_SECOND;
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getGasInput", "getGasInputCapacity", "getGasInputNeeded",

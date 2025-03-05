@@ -167,7 +167,7 @@ public class ChemicalUtil {
 
     public static long hydrogenEnergyDensity() {
         ChemicalFuel fuel = MekanismChemicals.HYDROGEN.getData(IMekanismDataMapTypes.INSTANCE.chemicalFuel());
-        //TODO - 1.22: Re-evaluate callers and see if this should really be energyPerTick in case a datapack makes hydrogen burn for more than one tick
+        //TODO - HOLDERS: Re-evaluate callers and see if this should really be energyPerTick in case a datapack makes hydrogen burn for more than one tick
         return fuel == null ? 0 : fuel.energyDensity();
     }
 

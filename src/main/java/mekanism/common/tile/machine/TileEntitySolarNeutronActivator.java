@@ -60,7 +60,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Che
           RecipeError.NOT_ENOUGH_OUTPUT_SPACE,
           RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
     );
-    public static final long MAX_GAS = 10 * FluidType.BUCKET_VOLUME;
+    public static final long MAX_GAS = 10L * FluidType.BUCKET_VOLUME;
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getInput", "getInputCapacity", "getInputNeeded",
                                                                                         "getInputFilledPercentage"}, docPlaceholder = "input tank")

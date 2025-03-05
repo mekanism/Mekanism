@@ -298,7 +298,11 @@ public class PressurizedTube extends BufferedTransmitter<IChemicalHandler, Chemi
     protected void handleContentsUpdateTag(@NotNull ChemicalNetwork network, @NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
         super.handleContentsUpdateTag(network, tag, provider);
         NBTUtils.setFloatIfPresent(tag, SerializationConstants.SCALE, scale -> network.currentScale = scale);
-        NBTUtils.setChemicalIfPresent(provider, tag, SerializationConstants.CHEMICAL, network::setLastChemical);
+        if (tag.contains(SerializationConstants.CHEMICAL, Tag.TAG_STRING)) {
+            network.setLastChemical(Chemical.parseOptionalHolder(provider, tag.getString(SerializationConstants.CHEMICAL)));
+        } else {
+            network.setLastChemical(MekanismAPI.EMPTY_CHEMICAL_HOLDER);
+        }
     }
 
     public IChemicalTank getChemicalTank() {
