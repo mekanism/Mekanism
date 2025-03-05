@@ -2,7 +2,7 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "item": "minecraft:pumpkin"
+    "tag": "c:crops/pumpkin"
   },
   "output": {
     "count": 6,

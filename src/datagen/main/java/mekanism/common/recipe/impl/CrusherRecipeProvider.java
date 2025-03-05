@@ -1,5 +1,6 @@
 package mekanism.common.recipe.impl;
 
+import java.util.List;
 import java.util.Map;
 import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
 import mekanism.api.providers.IItemProvider;
@@ -529,20 +530,21 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         biofuel(consumer, basePath, "carved_pumpkin", 2, 1, Items.CARVED_PUMPKIN);//pumpkin minus 4 seeds (sawmill)
         biofuel(consumer, basePath, "crimson_roots", 1, 1, Items.CRIMSON_ROOTS);
         biofuel(consumer, basePath, "cookie", 3, 4, Items.COOKIE);
-        biofuel(consumer, basePath, "crops", 2, 1, Items.CARROT, Items.CACTUS, Items.POTATO, Items.POISONOUS_POTATO, Items.WHEAT, Items.BEETROOT, Items.NETHER_WART, Items.COCOA_BEANS);
+        biofuel(consumer, basePath, "crops_tags", 2, 1, List.of(Tags.Items.CROPS_CARROT, Tags.Items.CROPS_CACTUS, Tags.Items.CROPS_POTATO, Tags.Items.CROPS_WHEAT, Tags.Items.CROPS_BEETROOT, Tags.Items.CROPS_NETHER_WART, Tags.Items.CROPS_COCOA_BEAN));
+        biofuel(consumer, basePath, "crops", 2, 1, Items.POISONOUS_POTATO);
         biofuel(consumer, basePath, "dried_kelp", 1, 1, Items.DRIED_KELP);
-        biofuelBlock(consumer, basePath, "dried_kelp_block", 1, 1, Items.DRIED_KELP_BLOCK);
+        biofuelBlock(consumer, basePath, "dried_kelp_block", 1, 1, Tags.Items.STORAGE_BLOCKS_DRIED_KELP);
         biofuel(consumer, basePath, "fern", 2, 1, Items.FERN);
         biofuel(consumer, basePath, "fungus", 1, 1, Items.CRIMSON_FUNGUS, Items.WARPED_FUNGUS);
         biofuel(consumer, basePath, "glow_lichen", 1, 1, Items.GLOW_LICHEN);
         biofuel(consumer, basePath, "hanging_roots", 1, 1, Items.HANGING_ROOTS);
-        biofuelBlock(consumer, basePath, "hay_block", 2, 1, Items.HAY_BLOCK);
+        biofuelBlock(consumer, basePath, "hay_block", 2, 1, Tags.Items.STORAGE_BLOCKS_WHEAT);
         biofuel(consumer, basePath, "kelp", 2, 1, Items.KELP);
         biofuel(consumer, basePath, "large_fern", 3, 1, Items.LARGE_FERN);
         biofuel(consumer, basePath, "leaves", 1, 10, ItemTags.LEAVES);
         biofuel(consumer, basePath, "lily_pad", 1, 1, Items.LILY_PAD);
         biofuel(consumer, basePath, "mangrove_roots", 1, 1, Items.MANGROVE_ROOTS);
-        biofuel(consumer, basePath, "melon", 6, 1, Items.MELON);
+        biofuel(consumer, basePath, "melon", 6, 1, Tags.Items.CROPS_MELON);
         biofuel(consumer, basePath, "melon_slice", 1, 1, Items.MELON_SLICE);
         biofuel(consumer, basePath, "moss_block", 2, 1, Items.MOSS_BLOCK);
         biofuel(consumer, basePath, "moss_carpet", 4, 3, Items.MOSS_CARPET);
@@ -552,7 +554,7 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         biofuelBlock(consumer, basePath, "nether_wart_block", 2, 1, Items.NETHER_WART_BLOCK);
         biofuel(consumer, basePath, "pitcher_pod", 1, 1, Items.PITCHER_POD);
         final int pumpkinOutput = 6;
-        biofuel(consumer, basePath, "pumpkin", pumpkinOutput, 1, Items.PUMPKIN);
+        biofuel(consumer, basePath, "pumpkin", pumpkinOutput, 1, Tags.Items.CROPS_PUMPKIN);
         biofuel(consumer, basePath, "pumpkin_pie", pumpkinOutput + 1, 1, Items.PUMPKIN_PIE);
         biofuel(consumer, basePath, "rotten_flesh", 1, 1, Items.ROTTEN_FLESH);
         biofuel(consumer, basePath, "saplings", 1, 1, ItemTags.SAPLINGS);
@@ -565,10 +567,9 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         biofuel(consumer, basePath, "small_flowers", 1, 1, ItemTags.SMALL_FLOWERS);
         biofuel(consumer, basePath, "pink_petals", 1, 1, Items.PINK_PETALS);//not in small_flowers tag
         biofuel(consumer, basePath, "spore_blossom", 2, 1, Items.SPORE_BLOSSOM);
-        biofuel(consumer, basePath, "sugar_cane", 1, 1, Items.SUGAR_CANE);
+        biofuel(consumer, basePath, "sugar_cane", 1, 1, Tags.Items.CROPS_SUGAR_CANE);
         biofuel(consumer, basePath, "tall_flowers", 2, 1, ItemTags.TALL_FLOWERS);
         biofuel(consumer, basePath, "tall_grass", 2, 1, Items.TALL_GRASS);
-        biofuel(consumer, basePath, "torchflower_seeds", 1, 1, Items.TORCHFLOWER_SEEDS);
         biofuel(consumer, basePath, "vines", 1, 1, Items.VINE, Items.TWISTING_VINES, Items.WEEPING_VINES);
         biofuel(consumer, basePath, "warped_roots", 1, 1, Items.WARPED_ROOTS);
         biofuel(consumer, basePath, "warped_wart_block", 4, 1, Items.WARPED_WART_BLOCK);
@@ -590,8 +591,23 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
     }
 
     private static void biofuel(RecipeOutput consumer, String basePath, String filename, int countOutput, int countInput, TagKey<Item> tag) {
+        biofuel(consumer, basePath, filename, countOutput, countInput, tag, MekanismItems.BIO_FUEL);
+    }
+
+    private static void biofuelBlock(RecipeOutput consumer, String basePath, String filename, int countOutput, int countInput, TagKey<Item> tag) {
+        biofuel(consumer, basePath, filename, countOutput, countInput, tag, MekanismBlocks.BIO_FUEL_BLOCK);
+    }
+
+    private static void biofuel(RecipeOutput consumer, String basePath, String filename, int countOutput, int countInput, TagKey<Item> tag, IItemProvider bioFuelType) {
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(tag, countInput),
+              bioFuelType.getItemStack(countOutput)
+        ).build(consumer, Mekanism.rl(basePath + filename));
+    }
+
+    private static void biofuel(RecipeOutput consumer, String basePath, String filename, int countOutput, int countInput, List<TagKey<Item>> tags) {
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(countInput, tags),
               MekanismItems.BIO_FUEL.getItemStack(countOutput)
         ).build(consumer, Mekanism.rl(basePath + filename));
     }

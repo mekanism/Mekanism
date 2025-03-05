@@ -2,7 +2,7 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "item": "minecraft:hay_block"
+    "tag": "c:storage_blocks/wheat"
   },
   "output": {
     "count": 2,

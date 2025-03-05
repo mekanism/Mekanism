@@ -2,7 +2,7 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "item": "minecraft:dried_kelp_block"
+    "tag": "c:storage_blocks/dried_kelp"
   },
   "output": {
     "count": 1,
