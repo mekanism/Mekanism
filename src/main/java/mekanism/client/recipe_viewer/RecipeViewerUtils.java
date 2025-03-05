@@ -12,6 +12,8 @@ import java.util.stream.Collectors;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.datamaps.IMekanismDataMapTypes;
+import mekanism.api.datamaps.chemical.ChemicalSolidTag;
 import mekanism.api.recipes.ItemStackToChemicalRecipe;
 import mekanism.api.recipes.basic.BasicItemStackToFluidOptionalItemRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
@@ -147,16 +149,16 @@ public class RecipeViewerUtils {
     public static List<ItemStack> getDisplayItems(ChemicalStackIngredient ingredient) {
         SequencedSet<Named<Item>> tags = new LinkedHashSet<>();
         for (ChemicalStack chemicalStack : ingredient.getRepresentations()) {
-            if (!chemicalStack.is(MekanismAPITags.Chemicals.DIRTY)) {
-                //TODO - 1.22: Replace this with the commented out code
+            ChemicalSolidTag tag = chemicalStack.getData(IMekanismDataMapTypes.INSTANCE.chemicalSolidTag());
+            if (tag != null) {
+                tag.lookupTag().ifPresent(tags::add);
+            }
+            //TODO - 1.22: Remove this legacy branch
+            else if (!chemicalStack.is(MekanismAPITags.Chemicals.DIRTY)) {
                 @SuppressWarnings("removal") TagKey<Item> oreTag = chemicalStack.getChemical().getOreTag();
                 if (oreTag != null) {
                     BuiltInRegistries.ITEM.getTag(oreTag).ifPresent(tags::add);
                 }
-                /*ChemicalOreTag tag = chemicalStack.getData(IMekanismDataMapTypes.INSTANCE.chemicalOreTag());
-                if (tag != null) {
-                    tag.lookupTag().ifPresent(tags::add);
-                }*/
             }
         }
         if (tags.size() == 1) {

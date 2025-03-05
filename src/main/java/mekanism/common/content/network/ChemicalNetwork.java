@@ -83,7 +83,7 @@ public class ChemicalNetwork extends DynamicBufferedNetwork<IChemicalHandler, Ch
                     adoptBuffer(net);
                 } else {
                     // compare the chemicals themselves
-                    if (this.chemicalTank.isType(net.chemicalTank.getTypeHolder())) {
+                    if (this.chemicalTank.isTypeEqual(net.chemicalTank.getStack())) {
                         long amount = net.chemicalTank.getStored();
                         MekanismUtils.logMismatchedStackSize(this.chemicalTank.growStack(amount, Action.EXECUTE), amount);
                     } else {
@@ -118,7 +118,7 @@ public class ChemicalNetwork extends DynamicBufferedNetwork<IChemicalHandler, Ch
         if (!transmitterReleased.isEmpty()) {
             if (chemicalTank.isEmpty()) {
                 chemicalTank.setStack(transmitterReleased.copy());
-            } else if (chemicalTank.isType(transmitterReleased.getChemicalHolder())) {
+            } else if (chemicalTank.isTypeEqual(transmitterReleased)) {
                 long amount = transmitterReleased.getAmount();
                 MekanismUtils.logMismatchedStackSize(chemicalTank.growStack(amount, Action.EXECUTE), amount);
             }
@@ -236,7 +236,7 @@ public class ChemicalNetwork extends DynamicBufferedNetwork<IChemicalHandler, Ch
             if (chemicalTank.isEmpty()) {
                 return true;
             }
-            return other.chemicalTank.isEmpty() || chemicalTank.isType(other.chemicalTank.getTypeHolder());
+            return other.chemicalTank.isEmpty() || chemicalTank.isTypeEqual(other.chemicalTank.getStack());
         }
         return false;
     }
@@ -255,7 +255,7 @@ public class ChemicalNetwork extends DynamicBufferedNetwork<IChemicalHandler, Ch
     @Override
     public void onContentsChanged() {
         markDirty();
-        if (!chemicalTank.isType(lastChemical)) {
+        if (!chemicalTank.isTypeEqual(lastChemical)) {
             //If the chemical type does not match update it, and mark that we need an update
             if (!chemicalTank.isEmpty()) {
                 lastChemical = chemicalTank.getTypeHolder();

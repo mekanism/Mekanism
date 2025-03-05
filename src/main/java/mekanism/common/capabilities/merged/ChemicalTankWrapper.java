@@ -134,13 +134,15 @@ public class ChemicalTankWrapper implements IChemicalTank {
     }
 
     @Override
+    @SuppressWarnings("removal")
+    @Deprecated(forRemoval = true, since = "10.7.11")
     public boolean isTypeEqual(Chemical other) {
         return internal.isTypeEqual(other);
     }
 
     @Override
-    public boolean isType(Holder<Chemical> holder) {
-        return internal.isType(holder);
+    public boolean isTypeEqual(Holder<Chemical> holder) {
+        return internal.isTypeEqual(holder);
     }
 
     @Override

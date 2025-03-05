@@ -7,6 +7,8 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.datamaps.IMekanismDataMapTypes;
+import mekanism.api.datamaps.chemical.ChemicalSolidTag;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInnerScreen;
@@ -15,6 +17,7 @@ import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.common.MekanismLang;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet.ListBacked;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
@@ -71,22 +74,23 @@ public class GuiQIOCrystallizerScreen extends GuiInnerScreen {
                 if (!chemical.is(prevSlurry)) {
                     prevSlurry = chemical.getChemicalHolder();
                     iterStacks.clear();
-                    if (!prevSlurry.is(MekanismAPI.EMPTY_CHEMICAL_KEY) && !prevSlurry.is(MekanismAPITags.Chemicals.DIRTY)) {
-                        //TODO - 1.22: Replace this with the commented out code
-                        @SuppressWarnings("removal") TagKey<Item> oreTag = prevSlurry.value().getOreTag();
-                        if (oreTag != null) {
-                            for (Holder<Item> ore : BuiltInRegistries.ITEM.getTagOrEmpty(oreTag)) {
-                                iterStacks.add(new ItemStack(ore));
-                            }
-                        }
-                        //Note: We know prevSlurry is a reference holder as that is the only kind chemical stack allows
-                        /*ChemicalOreTag tag = prevSlurry.getData(IMekanismDataMapTypes.INSTANCE.chemicalOreTag());
+                    if (!prevSlurry.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
+                        ChemicalSolidTag tag = chemical.getData(IMekanismDataMapTypes.INSTANCE.chemicalSolidTag());
                         if (tag != null) {
                             tag.lookupTag().stream()
                                   .flatMap(ListBacked::stream)
                                   .map(ItemStack::new)
                                   .forEach(iterStacks::add);
-                        }*/
+                        }
+                        //TODO - 1.22: Remove this legacy branch
+                        else if (!prevSlurry.is(MekanismAPITags.Chemicals.DIRTY)) {
+                            @SuppressWarnings("removal") TagKey<Item> oreTag = prevSlurry.value().getOreTag();
+                            if (oreTag != null) {
+                                for (Holder<Item> ore : BuiltInRegistries.ITEM.getTagOrEmpty(oreTag)) {
+                                    iterStacks.add(new ItemStack(ore));
+                                }
+                            }
+                        }
                     }
                     slotDisplay.updateStackList();
                 }

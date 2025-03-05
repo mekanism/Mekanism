@@ -26,6 +26,8 @@ public interface IChemicalAttributeContainer<SELF extends IChemicalAttributeCont
      * @param type The type of the attribute to check for.
      *
      * @return if this chemical has the attribute.
+     *
+     * @implNote This method will try to check the attribute, and convert any modern attributes into the legacy type so that they can be returned by this method.
      */
     @Deprecated(forRemoval = true, since = "10.7.11")
     boolean has(Class<? extends ChemicalAttribute> type);
@@ -37,7 +39,7 @@ public interface IChemicalAttributeContainer<SELF extends IChemicalAttributeCont
      *
      * @return attribute instance.
      *
-     * @implNote This method will try to retrieve the attribute, and convert and modern attributes into the legacy type so that they can be returned by this method.
+     * @implNote This method will try to retrieve the attribute, and convert any modern attributes into the legacy type so that they can be returned by this method.
      */
     @Nullable
     @Deprecated(forRemoval = true, since = "10.7.11")

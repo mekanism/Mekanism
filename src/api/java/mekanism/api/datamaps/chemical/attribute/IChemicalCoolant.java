@@ -17,8 +17,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.TooltipFlag;
 
-//TODO - 1.22: Do we want to allow applying coolants to fluids so that we can define water directly that way?
+/**
+ * Represents the base information that coolants keep track of.
+ *
+ * @since 10.7.11
+ */
 public sealed interface IChemicalCoolant extends IChemicalAttribute permits CooledCoolant, HeatedCoolant {
+    //TODO - 1.22: Do we want to allow applying coolants to fluids so that we can define water directly that way?
 
     /**
      * Gets the thermal enthalpy of this coolant. Thermal Enthalpy defines how much energy one mB of the chemical can store.
@@ -31,6 +36,9 @@ public sealed interface IChemicalCoolant extends IChemicalAttribute permits Cool
      */
     double conductivity();
 
+    /**
+     * Gets the other chemical this coolant transforms into after it undergoes a temperature change.
+     */
     Holder<Chemical> otherVariant();
 
     @Override
@@ -43,7 +51,7 @@ public sealed interface IChemicalCoolant extends IChemicalAttribute permits Cool
 
     static <COOLANT extends IChemicalCoolant> Products.P3<Mu<COOLANT>, Holder<Chemical>, Double, Double> createBaseCodec(RecordCodecBuilder.Instance<COOLANT> instance,
           String otherFormName) {
-        //TODO - 1.21: Figure out how to prevent the chemical from referencing itself
+        //TODO - HOLDERS: Figure out how to prevent the chemical from referencing itself
         return instance.group(
               ChemicalStack.CHEMICAL_NON_EMPTY_HOLDER_CODEC.fieldOf(otherFormName).forGetter(IChemicalCoolant::otherVariant),
               Codec.doubleRange(Double.MIN_VALUE, Double.MAX_VALUE).fieldOf(SerializationConstants.THERMAL_ENTHALPY).forGetter(IChemicalCoolant::thermalEnthalpy),
@@ -51,8 +59,16 @@ public sealed interface IChemicalCoolant extends IChemicalAttribute permits Cool
         );
     }
 
-    //TODO - 1.22: Move the non empty holder check to here
+    /**
+     * Validates that the parameters are valid as values in coolants.
+     *
+     * @param thermalEnthalpy Must be greater than zero.
+     * @param conductivity    This value should be greater than zero, and at most one.
+     *
+     * @throws IllegalArgumentException If thermal enthalpy or conductivity are invalid values.
+     */
     static void validateCoolantParams(double thermalEnthalpy, double conductivity) {
+        //TODO - 1.22: Move the non empty holder check to here
         if (thermalEnthalpy <= 0) {
             throw new IllegalArgumentException("Coolant attributes must have a thermal enthalpy greater than zero! Thermal Enthalpy: " + thermalEnthalpy);
         } else if (conductivity <= 0 || conductivity > 1) {

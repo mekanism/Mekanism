@@ -50,263 +50,15 @@
     },
     {
       "type": "minecraft:single",
-      "resource": "mekanism:antimatter"
+      "resource": "mekanism:infuse_type/base"
     },
     {
       "type": "minecraft:single",
-      "resource": "mekanism:aqua"
+      "resource": "mekanism:infuse_type/bio"
     },
     {
       "type": "minecraft:single",
-      "resource": "mekanism:bio"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:black"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:blue"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:brine"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:brown"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:carbon"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:chlorine"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:clean_copper"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:clean_gold"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:clean_iron"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:clean_lead"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:clean_osmium"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:clean_tin"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:clean_uranium"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:cyan"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:dark_red"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:diamond"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:dirty_copper"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:dirty_gold"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:dirty_iron"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:dirty_lead"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:dirty_osmium"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:dirty_tin"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:dirty_uranium"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:empty"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:ethene"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:fissile_fuel"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:fungi"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:gold"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:gray"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:green"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:hydrofluoric_acid"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:hydrogen"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:hydrogen_chloride"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:light_blue"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:light_gray"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:lime"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:lithium"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:magenta"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:nuclear_waste"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:orange"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:osmium"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:oxygen"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:pink"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:plutonium"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:polonium"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:purple"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:red"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:redstone"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:refined_obsidian"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:sodium"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:spent_nuclear_waste"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:steam"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:sulfur_dioxide"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:sulfur_trioxide"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:sulfuric_acid"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:superheated_sodium"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:tin"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:uranium_hexafluoride"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:uranium_oxide"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:water_vapor"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:white"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:yellow"
+      "resource": "mekanism:infuse_type/fungi"
     },
     {
       "type": "minecraft:single",
@@ -314,11 +66,23 @@
     },
     {
       "type": "minecraft:single",
-      "resource": "mekanism:liquid/liquid_flow"
+      "resource": "mekanism:liquid/steam"
     },
     {
       "type": "minecraft:single",
-      "resource": "mekanism:liquid/steam"
+      "resource": "mekanism:pigment/base"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanism:slurry/clean"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanism:slurry/dirty"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanism:liquid/liquid_flow"
     },
     {
       "type": "minecraft:single",

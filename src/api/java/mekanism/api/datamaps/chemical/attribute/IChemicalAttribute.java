@@ -1,17 +1,22 @@
 package mekanism.api.datamaps.chemical.attribute;
 
 import java.util.List;
-import mekanism.api.chemical.attribute.ChemicalAttribute;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.TooltipFlag;
 
-//TODO - 1.21: Docs
+/**
+ * Represents a chemical attribute.
+ * @since 10.7.11
+ */
 public interface IChemicalAttribute {
 
+    /**
+     * Converts this attribute into a legacy variant.
+     */
     @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
-    ChemicalAttribute toLegacyAttribute();
+    mekanism.api.chemical.attribute.ChemicalAttribute toLegacyAttribute();
 
     /**
      * If this returns true, chemicals possessing this attribute will not be accepted by any prefab handlers by default unless validated.

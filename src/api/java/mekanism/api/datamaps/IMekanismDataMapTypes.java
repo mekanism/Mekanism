@@ -1,10 +1,9 @@
 package mekanism.api.datamaps;
 
 import java.util.ServiceLoader;
-import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.datamaps.chemical.ChemicalSolidTag;
 import mekanism.api.datamaps.chemical.attribute.ChemicalFuel;
-import mekanism.api.datamaps.chemical.ChemicalOreTag;
 import mekanism.api.datamaps.chemical.attribute.ChemicalRadioactivity;
 import mekanism.api.datamaps.chemical.attribute.CooledCoolant;
 import mekanism.api.datamaps.chemical.attribute.HeatedCoolant;
@@ -29,49 +28,102 @@ public interface IMekanismDataMapTypes {
      */
     IMekanismDataMapTypes INSTANCE = ServiceLoader.load(IMekanismDataMapTypes.class).findFirst().orElseThrow(() -> new IllegalStateException("No valid ServiceImpl for IMekanismDataMapTypes found"));
 
-    //TODO - 1.21: Docs for this and all other classes in this package and subpackages
+    /**
+     * Helper to get data from a holder. This method supports both reference and direct holders.
+     *
+     * @param registryAccess Registry access to look up the reference if a direct holder was provided.
+     * @param registryName   Name of the registry that contains the holder.
+     * @param holder         Holder to query.
+     * @param type           Type of data to lookup.
+     *
+     * @return Absorption values or null if there are no absorption values defined for the damage type.
+     */
     @Nullable
     <TYPE, DATA> DATA getData(RegistryAccess registryAccess, ResourceKey<? extends Registry<? extends TYPE>> registryName, Holder<TYPE> holder, DataMapType<TYPE, DATA> type);
 
+    /**
+     * The {@linkplain DamageType} data map that defines how much of a particular damage type the MekaSuit can absorb.
+     * <p>
+     * The location of this data map is {@code mekanism/data_maps/damage_type/mekasuit_absorption.json}, and the value is a float between zero and one inclusive that
+     * defines the ratio of the given damage type the MekaSuit can absorb.
+     *
+     * @implNote This data map is not synced to the client.
+     */
     DataMapType<DamageType, MekaSuitAbsorption> mekaSuitAbsorption();
 
+    /**
+     * Helper to get the MekaSuit absorption data from a damage type holder. This method supports both reference and direct holders.
+     *
+     * @param registryAccess Registry access to look up the damage type if a direct holder was provided.
+     * @param holder         Damage Type.
+     *
+     * @return Absorption values or null if there are no absorption values defined for the damage type.
+     */
     @Nullable
     default MekaSuitAbsorption getMekaSuitAbsorption(RegistryAccess registryAccess, Holder<DamageType> holder) {
         return getData(registryAccess, Registries.DAMAGE_TYPE, holder, mekaSuitAbsorption());
     }
 
-    DataMapType<Chemical, ChemicalOreTag> chemicalOreTag();
+    /**
+     * The {@linkplain Chemical} data map that defines how radioactive a chemical is.
+     * <p>
+     * The location of this data map is {@code mekanism/data_maps/mekanism/chemical/chemical_solid_tag.json}, and the values are objects with 1 field:
+     * <ul>
+     * <li>{@code representation}, an item tag key - the item representations of a chemical for display in a chemical crystallizer</li>
+     * </ul>
+     *
+     * The use of a tag key as the value is also possible, though discouraged in case more options are added in the future.
+     */
+    DataMapType<Chemical, ChemicalSolidTag> chemicalSolidTag();
 
-    @Nullable
-    default ChemicalOreTag getChemicalOreTag(RegistryAccess registryAccess, Holder<Chemical> holder) {
-        return getData(registryAccess, MekanismAPI.CHEMICAL_REGISTRY_NAME, holder, chemicalOreTag());
-    }
-
+    /**
+     * The {@linkplain Chemical} data map that defines fuel properties of a chemical.
+     * <p>
+     * The location of this data map is {@code mekanism/data_maps/mekanism/chemical/chemical_attribute_fuel.json}, and the values are objects with 2 fields:
+     * <ul>
+     * <li>{@code burn_time}, a positive integer - how long the fuel will burn, in ticks</li>
+     * <li>{@code energy_density}, a positive long - how much energy will the fuel produce over the duration of its burn</li>
+     * </ul>
+     */
     DataMapType<Chemical, ChemicalFuel> chemicalFuel();
 
-    @Nullable
-    default ChemicalFuel getChemicalFuel(RegistryAccess registryAccess, Holder<Chemical> holder) {
-        return getData(registryAccess, MekanismAPI.CHEMICAL_REGISTRY_NAME, holder, chemicalFuel());
-    }
-
+    /**
+     * The {@linkplain Chemical} data map that defines how radioactive a chemical is.
+     * <p>
+     * The location of this data map is {@code mekanism/data_maps/mekanism/chemical/chemical_attribute_radioactivity.json}, and the values are objects with 1 field:
+     * <ul>
+     * <li>{@code radioactivity}, a double greater than or equal the baseline radiation - radioactivity of the chemical measured in Sv/h</li>
+     * </ul>
+     *
+     * The use of a double as the value is also possible, though discouraged in case more options are added in the future.
+     */
     DataMapType<Chemical, ChemicalRadioactivity> chemicalRadioactivity();
 
-    @Nullable
-    default ChemicalRadioactivity getChemicalRadioactivity(RegistryAccess registryAccess, Holder<Chemical> holder) {
-        return getData(registryAccess, MekanismAPI.CHEMICAL_REGISTRY_NAME, holder, chemicalRadioactivity());
-    }
-
+    /**
+     * The {@linkplain Chemical} data map that defines coolant properties of a chemical.
+     * <p>
+     * The location of this data map is {@code mekanism/data_maps/mekanism/chemical/chemical_attribute_cooled_coolant.json}, and the values are objects with 3 fields:
+     * <ul>
+     * <li>{@code hot_variant}, a chemical holder - the registry name of the hot variant of this coolant</li>
+     * <li>{@code thermal_enthalpy}, a positive double - the amount of energy one mB of the chemical can store; lower values will cause reactors to require more of the
+     * chemical to stay cool</li>
+     * <li>{@code conductivity}, a positive double that is at most one - the proportion of a reactor's available heat that can be used at an instant to convert this
+     * coolant's cool variant to its heated variant</li>
+     * </ul>
+     */
     DataMapType<Chemical, CooledCoolant> cooledChemicalCoolant();
 
-    @Nullable
-    default CooledCoolant getCooledChemicalCoolant(RegistryAccess registryAccess, Holder<Chemical> holder) {
-        return getData(registryAccess, MekanismAPI.CHEMICAL_REGISTRY_NAME, holder, cooledChemicalCoolant());
-    }
-
+    /**
+     * The {@linkplain Chemical} data map that defines heated coolant properties of a chemical.
+     * <p>
+     * The location of this data map is {@code mekanism/data_maps/mekanism/chemical/chemical_attribute_heated_coolant.json}, and the values are objects with 3 fields:
+     * <ul>
+     * <li>{@code cool_variant}, a chemical holder - the registry name of the cold variant of this coolant</li>
+     * <li>{@code thermal_enthalpy}, a positive double - the amount of energy one mB of the chemical can store; lower values will cause boilers to require more of the
+     * chemical to produce steam</li>
+     * <li>{@code conductivity}, a positive double that is at most one - the proportion of this coolant's heat that can be used at an instant to heat up a boiler and
+     * turn convert this coolant to its cool variant</li>
+     * </ul>
+     */
     DataMapType<Chemical, HeatedCoolant> heatedChemicalCoolant();
-
-    @Nullable
-    default HeatedCoolant getHeatedChemicalCoolant(RegistryAccess registryAccess, Holder<Chemical> holder) {
-        return getData(registryAccess, MekanismAPI.CHEMICAL_REGISTRY_NAME, holder, heatedChemicalCoolant());
-    }
 }

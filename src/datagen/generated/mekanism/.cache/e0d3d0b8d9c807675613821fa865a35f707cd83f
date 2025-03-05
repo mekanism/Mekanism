@@ -1,9 +1,9 @@
-// 1.21.1	2025-03-01T17:11:42.5836152	Data Maps
+// 1.21.1	2025-03-05T11:05:04.995334	Data Maps
 5e3084499e3a732b532019a5879a4e98e4e561e0 data/mekanism/data_maps/damage_type/mekasuit_absorption.json
 4931d0e2d14cef3b1278349e6948d2ec999e43ef data/mekanism/data_maps/mekanism/chemical/chemical_attribute_cooled_coolant.json
 85845ba14621fb8ed6edd1d2c355ad6dc9326bf8 data/mekanism/data_maps/mekanism/chemical/chemical_attribute_fuel.json
 caf50ce6e5b339041cbc71f8e41d1c8421a16551 data/mekanism/data_maps/mekanism/chemical/chemical_attribute_heated_coolant.json
 28278d9876869f23e3b1a6f98cdfebccc8de9299 data/mekanism/data_maps/mekanism/chemical/chemical_attribute_radioactivity.json
-2c7946abb5c73ef667d319640f8126428b28f61f data/mekanism/data_maps/mekanism/chemical/chemical_ore_tag.json
+ef87b2bf8e136bbe95f7ceab869684b93147974b data/mekanism/data_maps/mekanism/chemical/chemical_solid_tag.json
 5ad5f28bab5d31e92cbbf10d2cca56ed6e45683d data/neoforge/data_maps/game_event/vibration_frequencies.json
 46fff677a09ce5ef6f5f3a853d1238bba4b4aa8e data/neoforge/data_maps/item/furnace_fuels.json

@@ -422,8 +422,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     }
 
     private void handleCoolant() {
-        double temp = heatCapacitor.getTemperature();
-        double heat = getBoilEfficiency() * (temp - HeatUtils.BASE_BOIL_TEMP) * heatCapacitor.getHeatCapacity();
+        double heat = getBoilEfficiency() * (heatCapacitor.getHeat() - HeatUtils.BASE_BOIL_TEMP * heatCapacitor.getHeatCapacity());
 
         switch (coolantTank.getCurrentType()) {
             case EMPTY -> lastBoilRate = 0;
@@ -462,13 +461,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     }
 
     private long clampCoolantHeated(double heated, long stored) {
-        long heatedLong = MathUtils.clampToLong(heated);
-        if (heatedLong < 0) {
-            return 0;
-        } else if (heatedLong > stored) {
-            return stored;
-        }
-        return heatedLong;
+        return Mth.clamp(MathUtils.clampToLong(heated), 0, stored);
     }
 
     private void burnFuel(Level world) {

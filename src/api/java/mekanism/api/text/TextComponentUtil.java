@@ -59,7 +59,7 @@ public class TextComponentUtil {
             if (component == null) {
                 //If the component doesn't exist just skip it
                 continue;
-            } else if (component instanceof Holder<?> holder) {
+            } else if (component instanceof Holder<?> holder && holder.isBound()) {
                 //Try to get the value of a holder if it has one and get the translation based on the stored value
                 component = holder.value();
             }
@@ -192,7 +192,7 @@ public class TextComponentUtil {
                 args.add(TEXT_NULL);
                 cachedStyle = Style.EMPTY;
                 continue;
-            } else if (component instanceof Holder<?> holder) {
+            } else if (component instanceof Holder<?> holder && holder.isBound()) {
                 //Try to get the value of a holder if it has one and get the translation based on the stored value
                 component = holder.value();
             }

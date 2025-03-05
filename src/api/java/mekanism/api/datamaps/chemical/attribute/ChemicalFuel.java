@@ -1,6 +1,7 @@
 package mekanism.api.datamaps.chemical.attribute;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.List;
 import mekanism.api.MekanismAPI;
@@ -34,10 +35,31 @@ public record ChemicalFuel(int burnTicks, long energyDensity) implements IChemic
      */
     public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "chemical_attribute_fuel");
 
-    public static final Codec<ChemicalFuel> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          ExtraCodecs.POSITIVE_INT.fieldOf(SerializationConstants.BURN_TIME).forGetter(ChemicalFuel::burnTicks),
-          SerializerHelper.POSITIVE_NONZERO_LONG_CODEC.fieldOf(SerializationConstants.ENERGY_DENSITY).forGetter(ChemicalFuel::energyDensity)
-    ).apply(instance, ChemicalFuel::new));
+    /**
+     * Helper class to allow for intermediary validation on the division for energy per tick.
+     * @param burnTicks
+     * @param energyDensity
+     */
+    private record FuelData(int burnTicks, long energyDensity) {
+
+        public static final Codec<FuelData> CODEC = RecordCodecBuilder.<FuelData>create(instance -> instance.group(
+              ExtraCodecs.POSITIVE_INT.fieldOf(SerializationConstants.BURN_TIME).forGetter(FuelData::burnTicks),
+              SerializerHelper.POSITIVE_NONZERO_LONG_CODEC.fieldOf(SerializationConstants.ENERGY_DENSITY).forGetter(FuelData::energyDensity)
+        ).apply(instance, FuelData::new)).validate(data -> {
+            if (data.energyDensity() / data.burnTicks() == 0L) {
+                return DataResult.error(() -> "Energy density per tick must be greater than zero! (integer division)");
+            }
+            return DataResult.success(data);
+        });
+    }
+
+    /**
+     * Codec for serializing and deserializing chemical fuel.
+     */
+    public static final Codec<ChemicalFuel> CODEC = FuelData.CODEC.xmap(
+          data -> new ChemicalFuel(data.burnTicks(), data.energyDensity()),
+          fuel -> new FuelData(fuel.burnTicks(), fuel.energyDensity())
+    );
 
     public ChemicalFuel {
         if (burnTicks < 1) {

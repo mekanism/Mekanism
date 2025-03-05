@@ -268,7 +268,7 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
     }
 
     public boolean canInstall(ItemStack stack, Holder<ModuleData<?>> type) {
-        if (IModuleHelper.INSTANCE.supports(stack.getItem(), type)) {
+        if (IModuleHelper.INSTANCE.supports(stack.getItemHolder(), type)) {
             IModule<?> module = get(type);
             return module == null || module.getInstalledCount() < type.value().getMaxStackSize();
         }

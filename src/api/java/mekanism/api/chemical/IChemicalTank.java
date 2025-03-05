@@ -319,6 +319,7 @@ public interface IChemicalTank extends INBTSerializable<CompoundTag>, IContentsL
      *
      * @implNote If your implementation of {@link #getStack()} returns a copy, this should be overridden to directly check against the internal stack.
      */
+    @Deprecated(forRemoval = true, since = "10.7.11")
     default boolean isTypeEqual(Chemical other) {
         return getStack().is(other);
     }
@@ -333,7 +334,7 @@ public interface IChemicalTank extends INBTSerializable<CompoundTag>, IContentsL
      * @implNote If your implementation of {@link #getStack()} returns a copy, this should be overridden to directly check against the internal stack.
      * @since 10.7.11
      */
-    default boolean isType(Holder<Chemical> holder) {
+    default boolean isTypeEqual(Holder<Chemical> holder) {
         return getStack().is(holder);
     }
 

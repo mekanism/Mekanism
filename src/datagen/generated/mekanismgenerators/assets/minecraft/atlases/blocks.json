@@ -2,18 +2,6 @@
   "sources": [
     {
       "type": "minecraft:single",
-      "resource": "mekanismgenerators:deuterium"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanismgenerators:fusion_fuel"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanismgenerators:tritium"
-    },
-    {
-      "type": "minecraft:single",
       "resource": "mekanism:liquid/liquid"
     },
     {

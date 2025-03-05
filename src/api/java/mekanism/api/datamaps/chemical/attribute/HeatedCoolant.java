@@ -15,9 +15,9 @@ import net.minecraft.resources.ResourceLocation;
  * A {@link MekanismAPI#CHEMICAL_REGISTRY chemical} data map that allows defining fuel values for a chemical.
  *
  * @param otherVariant    Chemical representing the cooled variant of this heated coolant.
- * @param thermalEnthalpy Defines how much energy one mB of the chemical can store; lower values will cause reactors to require more of the chemical to stay cool. Must be
- *                        greater than zero.
- * @param conductivity    Defines the proportion of a reactor's available heat that can be used at an instant to convert this coolant's cool variant to its heated
+ * @param thermalEnthalpy Defines how much energy one mB of the chemical can store; lower values will cause boilers to require more of the chemical to produce steam. Must
+ *                        be greater than zero.
+ * @param conductivity    Defines the proportion of this coolant's heat that can be used at an instant to heat up a boiler and turn convert this coolant to its cool
  *                        variant. This value should be greater than zero, and at most one.
  *
  * @since 10.7.11
@@ -31,6 +31,9 @@ public record HeatedCoolant(Holder<Chemical> otherVariant, double thermalEnthalp
      */
     public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "chemical_attribute_heated_coolant");
 
+    /**
+     * Codec for serializing and deserializing heated coolants.
+     */
     public static final Codec<HeatedCoolant> CODEC = RecordCodecBuilder.create(instance -> IChemicalCoolant.createBaseCodec(instance,
           SerializationConstants.COOL_VARIANT
     ).apply(instance, HeatedCoolant::new));
@@ -42,6 +45,13 @@ public record HeatedCoolant(Holder<Chemical> otherVariant, double thermalEnthalp
         }
     }
 
+    /**
+     * Produce the given amount of the cold variant of this coolant.
+     *
+     * @param amountCooled Amount of heated coolant to cool.
+     *
+     * @return Chemical stack representing the cooled coolant.
+     */
     public ChemicalStack cool(long amountCooled) {
         return new ChemicalStack(otherVariant, amountCooled);
     }

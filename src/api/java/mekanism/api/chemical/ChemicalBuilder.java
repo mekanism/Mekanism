@@ -7,7 +7,7 @@ import java.util.Objects;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.attribute.ChemicalAttribute;
-import mekanism.api.datamaps.chemical.ChemicalOreTag;
+import mekanism.api.datamaps.chemical.ChemicalSolidTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
@@ -17,11 +17,12 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class ChemicalBuilder {
 
+    private final ResourceLocation texture;
+    private int tint = 0xFFFFFF;
+
     @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
     private final Map<Class<? extends ChemicalAttribute>, ChemicalAttribute> attributeMap = new Object2ObjectOpenHashMap<>();
-    private final ResourceLocation texture;
-    private int tint = 0xFFFFFF;
     @Nullable
     @Deprecated(forRemoval = true, since = "10.7.11")
     private TagKey<Item> oreTag;
@@ -86,7 +87,7 @@ public class ChemicalBuilder {
      *
      * @param oreTagLocation {@link ResourceLocation} of the item tag representing the ore.
      *
-     * @deprecated Please see {@link ChemicalOreTag}
+     * @deprecated Please see {@link ChemicalSolidTag}
      */
     @Deprecated(forRemoval = true, since = "10.7.11")
     public ChemicalBuilder ore(ResourceLocation oreTagLocation) {
@@ -98,7 +99,7 @@ public class ChemicalBuilder {
      *
      * @param oreTag Tag representing the ore.
      *
-     * @deprecated Please see {@link ChemicalOreTag}
+     * @deprecated Please see {@link ChemicalSolidTag}
      */
     @Deprecated(forRemoval = true, since = "10.7.11")
     public ChemicalBuilder ore(TagKey<Item> oreTag) {
@@ -109,7 +110,7 @@ public class ChemicalBuilder {
     /**
      * Gets the item tag that represents the ore that goes with this {@link Chemical}.
      *
-     * @deprecated Please see {@link ChemicalOreTag}
+     * @deprecated Please see {@link ChemicalSolidTag}
      */
     @Nullable
     @Deprecated(forRemoval = true, since = "10.7.11")

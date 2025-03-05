@@ -151,7 +151,7 @@ public interface IModuleHelper {
      * @param typeProvider Module type
      *
      * @since 10.6.0
-     * @deprecated Call via {@link #supports(Item, Holder)}
+     * @deprecated Call via {@link #supports(Holder, Holder)}
      */
     @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
@@ -167,7 +167,7 @@ public interface IModuleHelper {
      *
      * @since 10.7.11
      */
-    default boolean supports(Item item, Holder<ModuleData<?>> type) {
+    default boolean supports(Holder<Item> item, Holder<ModuleData<?>> type) {
         return getSupported(item).contains(type.value());
     }
 

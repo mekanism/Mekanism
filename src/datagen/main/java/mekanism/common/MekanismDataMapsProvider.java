@@ -6,7 +6,7 @@ import mekanism.api.MekanismAPITags;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.MekaSuitAbsorption;
-import mekanism.api.datamaps.chemical.ChemicalOreTag;
+import mekanism.api.datamaps.chemical.ChemicalSolidTag;
 import mekanism.api.datamaps.chemical.attribute.ChemicalFuel;
 import mekanism.api.datamaps.chemical.attribute.ChemicalRadioactivity;
 import mekanism.api.datamaps.chemical.attribute.CooledCoolant;
@@ -62,9 +62,9 @@ public class MekanismDataMapsProvider extends DataMapProvider {
               .add(MekanismAPITags.DamageTypes.MEKASUIT_ALWAYS_SUPPORTED, new MekaSuitAbsorption(1F), false)
         ;
 
-        Builder<ChemicalOreTag, Chemical> chemicalOreTagBuilder = builder(IMekanismDataMapTypes.INSTANCE.chemicalOreTag());
+        Builder<ChemicalSolidTag, Chemical> chemicalSolidTagBuilder = builder(IMekanismDataMapTypes.INSTANCE.chemicalSolidTag());
         for (Map.Entry<PrimaryResource, SlurryRegistryObject<Chemical, Chemical>> entry : MekanismChemicals.PROCESSED_RESOURCES.entrySet()) {
-            chemicalOreTagBuilder.add(entry.getValue(), new ChemicalOreTag(entry.getKey().getOreTag()), false);
+            chemicalSolidTagBuilder.add(entry.getValue().getCleanSlurry(), new ChemicalSolidTag(entry.getKey().getOreTag()), false);
         }
 
         builder(IMekanismDataMapTypes.INSTANCE.chemicalFuel())
@@ -93,6 +93,6 @@ public class MekanismDataMapsProvider extends DataMapProvider {
     private static long getEtheneEnergyDensity() {
         long bioGeneration = 350;//Default bio generator value
         long energy = Math.multiplyExact(40, Math.multiplyExact(2, bioGeneration));
-        return Math.addExact(energy, MekanismDataMapsProvider.HYDROGEN_ENERGY_DENSITY);
+        return Math.addExact(energy, HYDROGEN_ENERGY_DENSITY);
     }
 }

@@ -48,7 +48,7 @@ public abstract class BaseSpriteSourceProvider extends SpriteSourceProvider {
         List<ResourceLocation> icons = new ArrayList<>();
         for (Map.Entry<ResourceKey<Chemical>, Chemical> entry : MekanismAPI.CHEMICAL_REGISTRY.entrySet()) {
             if (entry.getKey().location().getNamespace().equals(modid)) {
-                icons.add(entry.getKey().location());
+                icons.add(entry.getValue().getIcon());
             }
         }
         addFiles(atlas, icons);

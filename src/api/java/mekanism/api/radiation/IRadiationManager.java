@@ -71,7 +71,7 @@ public interface IRadiationManager {
      * @implNote 10 uSv/h
      * @since 10.7.11
      */
-    double minRadiationMagnitude();//TODO - 1.21: Fix the docs on this method
+    double minRadiationMagnitude();//TODO - TODO - HOLDERS: Fix the docs on this method
 
     /**
      * Helper to access Mekanism's internal radiation damage source.

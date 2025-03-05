@@ -297,6 +297,10 @@ public final class SerializationConstants {
     public static final String RECURRING_NODES = "recurring_nodes";
     public static final String REDSTONE = "redstone";
     public static final String REPLACE_TARGET = "replace_target";
+    /**
+     * @since 10.7.11
+     */
+    public static final String REPRESENTATION = "representation";
     public static final String REQUIRES_REPLACEMENT = "requires_replacement";
     public static final String REQUIRES_PUBLIC_SECURITY = "requires_public_security";
     public static final String RESTRICTION = "restriction";

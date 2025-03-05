@@ -59,14 +59,15 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
     /**
      * A standard codec for non-empty Chemical holders.
      *
-     * @since 10.6.0
+     * @since 10.7.11
      */
-    public static final Codec<Holder<Chemical>> CHEMICAL_NON_EMPTY_HOLDER_CODEC = Chemical.HOLDER_CODEC
+    public static final Codec<Holder<Chemical>> CHEMICAL_NON_EMPTY_HOLDER_CODEC = Chemical.HOLDER_CODEC//TODO - 1.22: Rename this to CHEMICAL_NON_EMPTY_CODEC
           .validate(chemical -> chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY) ? DataResult.error(() -> "Chemical must not be mekanism:empty") : DataResult.success(chemical));
     /**
      * A standard codec for non-empty Chemicals.
      *
      * @since 10.6.0
+     * @deprecated Prefer using {@link #CHEMICAL_NON_EMPTY_HOLDER_CODEC}
      */
     @Deprecated(forRemoval = true, since = "10.7.11")
     public static final Codec<Chemical> CHEMICAL_NON_EMPTY_CODEC = CHEMICAL_NON_EMPTY_HOLDER_CODEC.xmap(Holder::value, Chemical::builtInRegistryHolder);
@@ -162,7 +163,18 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
     private final Holder<Chemical> chemical;
     private long amount;
 
-    //TODO - 1.21: Docs and mention when it fails
+    /**
+     * Creates a chemical stack from a holder and a given amount.
+     *
+     * @param chemical Holder representing the chemical this stack is for. It is recommended to use a reference holder ({@link net.minecraft.core.Holder.Reference} or
+     *                 {@link net.neoforged.neoforge.registries.DeferredHolder}, but if a direct holder is used the stack will attempt to look up the corresponding
+     *                 reference holder.
+     * @param amount   Amount of chemical in this stack. If this is less than or equal to zero the stack will be considered empty.
+     *
+     * @throws NullPointerException     If the chemical holder is null.
+     * @throws IllegalArgumentException If the chemical holder is a direct holder that is either: not bound, the value it is bound to doesn't have a registered reference
+     *                                  in the chemical registry.
+     */
     public ChemicalStack(Holder<Chemical> chemical, long amount) {
         Objects.requireNonNull(chemical, "Cannot create a ChemicalStack from a null chemical holder");
         if (chemical.kind() == Holder.Kind.DIRECT) {
@@ -178,8 +190,16 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
         this.amount = amount;
     }
 
+    /**
+     * Creates a chemical stack from a chemical and a given amount.
+     *
+     * @param chemical Chemical this stack is for.
+     * @param amount   Amount of chemical in this stack. If this is less than or equal to zero the stack will be considered empty.
+     *
+     * @throws NullPointerException If the chemical is null.
+     */
     public ChemicalStack(Chemical chemical, long amount) {
-        this(chemical.builtInRegistryHolder(), amount);
+        this(Objects.requireNonNull(chemical, "Cannot create a ChemicalStack from a null chemical").builtInRegistryHolder(), amount);
     }
 
     private ChemicalStack(@Nullable Void unused) {
@@ -255,6 +275,7 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
      * @since 10.6.0
      */
     public Holder<Chemical> getChemicalHolder() {
+        //Note: We know chemical is not null here as that gets checked as part of isEmpty
         return isEmpty() ? MekanismAPI.EMPTY_CHEMICAL_HOLDER : chemical;
     }
 
@@ -522,12 +543,13 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
     }
 
     /**
-     * Gathers any tooltips this chemical stack has, and adds them to the list.
+     * Gathers any tooltips this chemical stack has, and adds them to the list. This includes things like if the chemical is immune to decay, or the registry name
      *
      * @param context     Current tooltip context.
      * @param tooltips    List of tooltips to add to.
      * @param tooltipFlag Flag representing if advanced tooltips are to be shown.
      *
+     * @see Chemical#appendHoverText(ChemicalStack, TooltipContext, List, TooltipFlag)
      * @since 10.7.11
      */
     public void appendHoverText(TooltipContext context, List<Component> tooltips, TooltipFlag tooltipFlag) {
@@ -541,7 +563,7 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
         }
         if (tooltipFlag.isAdvanced()) {
             //If advanced tooltips are on, display the registry name
-            tooltips.add(TextComponentUtil.build(ChatFormatting.DARK_GRAY, toString()));
+            tooltips.add(TextComponentUtil.build(ChatFormatting.DARK_GRAY, getChemicalHolder().getRegisteredName()));
         }
     }
 
@@ -575,9 +597,7 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
 
     @Override
     public String toString() {
-        Holder<Chemical> holder = getChemicalHolder();
-        ResourceKey<Chemical> key = holder.getKey();
-        return amount + " " + (key == null && holder.isBound() ? holder.value() : key);
+        return getAmount() + " " + getChemicalHolder().getRegisteredName();
     }
 
     @Override

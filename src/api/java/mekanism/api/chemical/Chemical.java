@@ -17,7 +17,7 @@ import mekanism.api.chemical.attribute.ChemicalAttribute;
 import mekanism.api.chemical.attribute.ChemicalAttributes.Radiation;
 import mekanism.api.chemical.attribute.IChemicalAttributeContainer;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
-import mekanism.api.datamaps.chemical.ChemicalOreTag;
+import mekanism.api.datamaps.chemical.ChemicalSolidTag;
 import mekanism.api.datamaps.chemical.attribute.ChemicalRadioactivity;
 import mekanism.api.datamaps.chemical.attribute.IChemicalAttribute;
 import mekanism.api.providers.IChemicalProvider;
@@ -47,26 +47,30 @@ import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@NothingNullByDefault//TODO - 1.22: Debate if we want to remove the non holder based codecs. Maybe we even want to just make chemicals a data pack registry
+@NothingNullByDefault//TODO - 1.22: Investigate making chemicals a datapack registry
 public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<Chemical> {
 
     /**
      * A codec which can (de)encode chemicals.
      *
      * @since 10.6.0
+     * @deprecated Prefer using {@link #HOLDER_CODEC}
      */
+    @Deprecated(forRemoval = true, since = "!0.7.11")
     public static final Codec<Chemical> CODEC = MekanismAPI.CHEMICAL_REGISTRY.byNameCodec();
     /**
      * A codec which can (de)encode chemical holders.
      *
      * @since 10.7.11
      */
-    public static final Codec<Holder<Chemical>> HOLDER_CODEC = MekanismAPI.CHEMICAL_REGISTRY.holderByNameCodec();
+    public static final Codec<Holder<Chemical>> HOLDER_CODEC = MekanismAPI.CHEMICAL_REGISTRY.holderByNameCodec();//TODO - 1.22: Rename this to just CODEC
     /**
      * A stream codec which can be used to encode and decode chemicals over the network.
      *
      * @since 10.6.0
+     * @deprecated Prefer using {@link #HOLDER_STREAM_CODEC}
      */
+    @Deprecated(forRemoval = true, since = "!0.7.11")
     public static final StreamCodec<RegistryFriendlyByteBuf, Chemical> STREAM_CODEC = ByteBufCodecs.registry(MekanismAPI.CHEMICAL_REGISTRY_NAME);
     /**
      * A stream codec which can be used to encode and decode chemical holders over the network.
@@ -130,13 +134,16 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
     }
 
     private final Holder.Reference<Chemical> builtInRegistryHolder = MekanismAPI.CHEMICAL_REGISTRY.createIntrusiveHolder(this);
-    //TODO - 1.22: Should we keep this cache or remove it?
+    //TODO - 1.22: Figure out if we should we keep this cache or remove it?
     private final List<IChemicalAttribute> attributes = new ArrayList<>();
     private final List<IChemicalAttribute> attributesView = Collections.unmodifiableList(attributes);
     private final ResourceLocation iconLocation;
     private final int tint;
     private double radioactivity;
     private boolean hasAttributesWithValidation;
+
+    @Nullable
+    private String translationKey;
 
 
     @SuppressWarnings("removal")
@@ -159,15 +166,13 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
     @Deprecated(forRemoval = true, since = "10.7.11")
     private final boolean isGaseous;
 
-    @Nullable
-    private String translationKey;
-
     @SuppressWarnings("removal")
     public Chemical(ChemicalBuilder builder) {
-        //Copy the map to support addAttribute
-        this.legacyAttributeMap = new HashMap<>(builder.getAttributeMap());
         this.iconLocation = builder.getTexture();
         this.tint = builder.getTint();
+        //TODO - 1.22: Remove constructor logic that is below here
+        //Copy the map to support addAttribute
+        this.legacyAttributeMap = new HashMap<>(builder.getAttributeMap());
         for (ChemicalAttribute legacyAttribute : legacyAttributeMap.values()) {
             if (legacyAttribute instanceof Radiation radiation) {
                 this.radioactivity = this.legacyRadioactivity = radiation.getRadioactivity();
@@ -228,6 +233,16 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
         return getAllAttributes().containsKey(type);
     }
 
+    /**
+     * Whether this chemical has a legacy attribute of a certain type. This method explicitly only checks legacy (in code) defined attributes, and will return false in
+     * cases where there is only a modern attribute declared via a data map.
+     *
+     * @param type The type of the attribute to check for.
+     *
+     * @return if this chemical has the attribute.
+     *
+     * @since 10.7.11
+     */
     @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
     public boolean hasLegacy(Class<? extends ChemicalAttribute> type) {
@@ -309,9 +324,8 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
      *
      * @return collection of attribute instances.
      *
-     * @since 10.7.11
-     *
      * @implNote This method only returns the modern attributes and not any legacy ones that were defined in code.
+     * @since 10.7.11
      */
     public List<IChemicalAttribute> getModernAttributes() {
         //TODO - 1.22: Rename this to getAttributes and maybe move it into IChemicalAttributeContainer? (Also Update/remove implNote)
@@ -435,7 +449,7 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
      *
      * @return The tag for the item the slurry goes with. May be null.
      *
-     * @deprecated 10.7.11 Prefer checking against {@link IMekanismDataMapTypes#chemicalOreTag()}, though note it may not contain entries from mods that haven't updated
+     * @deprecated 10.7.11 Prefer checking against {@link IMekanismDataMapTypes#chemicalSolidTag()}, though note it may not contain entries from mods that haven't updated
      * to declaring via datamaps.
      */
     @Nullable
@@ -459,8 +473,8 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
     @Internal//TODO - 1.22: Evaluate if we want to get rid of this or if caching the state of some of this is useful from a performance standpoint
     @MustBeInvokedByOverriders
     public void updateFromDataMap() {
-        ChemicalOreTag tag = builtInRegistryHolder().getData(IMekanismDataMapTypes.INSTANCE.chemicalOreTag());
-        oreTag = tag == null ? legacyOreTag : tag.oreTag();
+        ChemicalSolidTag tag = builtInRegistryHolder().getData(IMekanismDataMapTypes.INSTANCE.chemicalSolidTag());
+        oreTag = tag == null ? legacyOreTag : tag.solidRepresentation();
         attributeMap = null;//Clear cached map
         hasAttributesWithValidation = hasLegacyAttributesWithValidation;
         radioactivity = legacyRadioactivity;
@@ -522,6 +536,7 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
      * @param tooltips    List of tooltips to add to.
      * @param tooltipFlag Flag representing if advanced tooltips are to be shown.
      *
+     * @see ChemicalStack#appendHoverText(TooltipContext, List, TooltipFlag)
      * @since 10.7.11
      */
     @SuppressWarnings("removal")

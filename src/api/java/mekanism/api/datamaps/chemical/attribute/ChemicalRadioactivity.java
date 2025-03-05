@@ -34,14 +34,20 @@ public record ChemicalRadioactivity(double radioactivity) implements IChemicalAt
      */
     public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "chemical_attribute_radioactivity");
 
-    //TODO - 1.22: Should this be baselineRadiation or minRadiationMagnitude, and if minMagnitude, is it inclusive or exclusive
+    //TODO - HOLDERS: Should this be baselineRadiation or minRadiationMagnitude, and if minMagnitude, is it inclusive or exclusive
     private static final Codec<Double> RADIATION_CODEC = Codec.doubleRange(IRadiationManager.INSTANCE.baselineRadiation(), Double.MAX_VALUE).validate(val -> {
         if (val == IRadiationManager.INSTANCE.baselineRadiation()) {
             return DataResult.error(() -> "Radiation must be greater than the baseline value");
         }
         return DataResult.success(val);
     });
+    /**
+     * Compressed codec for serializing and deserializing chemical radioactivity for use over the network.
+     */
     public static final Codec<ChemicalRadioactivity> RADIOACTIVITY_CODEC = RADIATION_CODEC.xmap(ChemicalRadioactivity::new, ChemicalRadioactivity::radioactivity);
+    /**
+     * Codec for serializing and deserializing chemical radioactivity.
+     */
     public static final Codec<ChemicalRadioactivity> CODEC = Codec.withAlternative(RecordCodecBuilder.create(in -> in.group(
           RADIATION_CODEC.fieldOf(SerializationConstants.RADIOACTIVITY).forGetter(ChemicalRadioactivity::radioactivity)
     ).apply(in, ChemicalRadioactivity::new)), RADIOACTIVITY_CODEC);

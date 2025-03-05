@@ -1,0 +1,25 @@
+{
+  "values": {
+    "mekanism:clean_copper": {
+      "representation": "c:ores/copper"
+    },
+    "mekanism:clean_gold": {
+      "representation": "c:ores/gold"
+    },
+    "mekanism:clean_iron": {
+      "representation": "c:ores/iron"
+    },
+    "mekanism:clean_lead": {
+      "representation": "c:ores/lead"
+    },
+    "mekanism:clean_osmium": {
+      "representation": "c:ores/osmium"
+    },
+    "mekanism:clean_tin": {
+      "representation": "c:ores/tin"
+    },
+    "mekanism:clean_uranium": {
+      "representation": "c:ores/uranium"
+    }
+  }
+}

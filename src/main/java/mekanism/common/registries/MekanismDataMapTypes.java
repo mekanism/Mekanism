@@ -3,7 +3,7 @@ package mekanism.common.registries;
 import java.util.Optional;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
-import mekanism.api.datamaps.chemical.ChemicalOreTag;
+import mekanism.api.datamaps.chemical.ChemicalSolidTag;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.MekaSuitAbsorption;
 import mekanism.api.datamaps.chemical.attribute.ChemicalFuel;
@@ -26,7 +26,8 @@ public class MekanismDataMapTypes implements IMekanismDataMapTypes {
     public static final DataMapTypeRegister REGISTER = new DataMapTypeRegister(Mekanism.MODID);
 
     private static final DataMapType<DamageType, MekaSuitAbsorption> MEKA_SUIT_ABSORPTION = REGISTER.registerSimple(MekaSuitAbsorption.ID, Registries.DAMAGE_TYPE, MekaSuitAbsorption.CODEC);
-    private static final DataMapType<Chemical, ChemicalOreTag> CHEMICAL_ORE_TAG = REGISTER.registerSynced(ChemicalOreTag.ID, MekanismAPI.CHEMICAL_REGISTRY_NAME, ChemicalOreTag.CODEC, ChemicalOreTag.ORE_TAG_CODEC);
+    private static final DataMapType<Chemical, ChemicalSolidTag> CHEMICAL_SOLID_TAG = REGISTER.registerSynced(ChemicalSolidTag.ID, MekanismAPI.CHEMICAL_REGISTRY_NAME,
+          ChemicalSolidTag.CODEC, ChemicalSolidTag.SOLID_TAG_CODEC);
 
     //Chemical Attributes
     private static final DataMapType<Chemical, ChemicalFuel> CHEMICAL_FUEL = REGISTER.registerSimpleSynced(ChemicalFuel.ID, MekanismAPI.CHEMICAL_REGISTRY_NAME, ChemicalFuel.CODEC);
@@ -41,8 +42,8 @@ public class MekanismDataMapTypes implements IMekanismDataMapTypes {
     }
 
     @Override
-    public DataMapType<Chemical, ChemicalOreTag> chemicalOreTag() {
-        return CHEMICAL_ORE_TAG;
+    public DataMapType<Chemical, ChemicalSolidTag> chemicalSolidTag() {
+        return CHEMICAL_SOLID_TAG;
     }
 
     @Override

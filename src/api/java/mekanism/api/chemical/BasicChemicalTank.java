@@ -777,18 +777,6 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
      * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getStack()}, we can optimize out the copying.
      */
     @Override
-    @SuppressWarnings("removal")
-    @Deprecated(forRemoval = true, since = "10.7.11")
-    public Chemical getType() {
-        return stored.getChemical();
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getStack()}, we can optimize out the copying.
-     */
-    @Override
     public boolean isTypeEqual(ChemicalStack other) {
         return ChemicalStack.isSameChemical(stored, other);
     }
@@ -799,17 +787,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
      * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getStack()}, we can optimize out the copying.
      */
     @Override
-    public boolean isTypeEqual(Chemical other) {
-        return stored.is(other);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getStack()}, we can optimize out the copying.
-     */
-    @Override
-    public boolean isType(Holder<Chemical> holder) {
+    public boolean isTypeEqual(Holder<Chemical> holder) {
         return stored.is(holder);
     }
 

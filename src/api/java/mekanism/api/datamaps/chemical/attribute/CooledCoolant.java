@@ -14,7 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 /**
  * A {@link MekanismAPI#CHEMICAL_REGISTRY chemical} data map that allows defining fuel values for a chemical.
  *
- * @param otherVariant      Chemical representing the heated variant of this cooled coolant.
+ * @param otherVariant    Chemical representing the heated variant of this cooled coolant.
  * @param thermalEnthalpy Defines how much energy one mB of the chemical can store; lower values will cause reactors to require more of the chemical to stay cool. Must be
  *                        greater than zero.
  * @param conductivity    Defines the proportion of a reactor's available heat that can be used at an instant to convert this coolant's cool variant to its heated
@@ -31,6 +31,9 @@ public record CooledCoolant(Holder<Chemical> otherVariant, double thermalEnthalp
      */
     public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "chemical_attribute_cooled_coolant");
 
+    /**
+     * Codec for serializing and deserializing cooled coolants.
+     */
     public static final Codec<CooledCoolant> CODEC = RecordCodecBuilder.create(instance -> IChemicalCoolant.createBaseCodec(instance,
           SerializationConstants.HOT_VARIANT
     ).apply(instance, CooledCoolant::new));
@@ -42,6 +45,13 @@ public record CooledCoolant(Holder<Chemical> otherVariant, double thermalEnthalp
         }
     }
 
+    /**
+     * Produce the given amount of the hot variant of this coolant.
+     *
+     * @param amountHeated Amount of coolant to heat.
+     *
+     * @return Chemical stack representing the heated coolant.
+     */
     public ChemicalStack heat(long amountHeated) {
         return new ChemicalStack(otherVariant, amountHeated);
     }

@@ -133,7 +133,7 @@ public interface IModuleContainer {
      *
      * @param typeProvider Module type.
      *
-     * @deprecated Call via {@link #get(DeferredHolder)}
+     * @deprecated Call via {@link #get(DeferredHolder)}, {@link #get(Holder)}, or {@link #getUnchecked(Holder)}
      */
     @Nullable
     @SuppressWarnings("removal")
@@ -179,7 +179,7 @@ public interface IModuleContainer {
      *
      * @param typeProvider Module type.
      *
-     * @deprecated Call via {@link #getIfEnabled(DeferredHolder)}
+     * @deprecated Call via {@link #getIfEnabled(DeferredHolder)} or {@link #getIfEnabled(Holder)}
      */
     @Nullable
     @SuppressWarnings("removal")

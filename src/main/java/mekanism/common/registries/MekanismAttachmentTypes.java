@@ -21,8 +21,8 @@ public class MekanismAttachmentTypes {
     //Note: We do not specify copy on death as we want radiation to reset to baseline on death
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Double>> RADIATION = ATTACHMENT_TYPES.register("radiation",
           () -> AttachmentType.builder(IRadiationManager.INSTANCE::baselineRadiation)
-                .serialize(Codec.doubleRange(IRadiationManager.INSTANCE.baselineRadiation(), Double.MAX_VALUE), radiation -> radiation != IRadiationManager.INSTANCE.baselineRadiation())
-                .copyHandler((radiation, holder, provider) -> radiation == IRadiationManager.INSTANCE.baselineRadiation() ? null : radiation)
+                .serialize(Codec.doubleRange(IRadiationManager.INSTANCE.baselineRadiation(), Double.MAX_VALUE), radiation -> radiation > IRadiationManager.INSTANCE.baselineRadiation())
+                .copyHandler((radiation, holder, provider) -> radiation > IRadiationManager.INSTANCE.baselineRadiation() ? radiation : null)
                 .build()
     );
 
