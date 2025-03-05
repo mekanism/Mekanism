@@ -5,7 +5,7 @@
     "item": "minecraft:tall_grass"
   },
   "output": {
-    "count": 4,
+    "count": 2,
     "id": "mekanism:bio_fuel"
   }
 }

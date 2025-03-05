@@ -1,0 +1,3 @@
+// 1.21.1	2025-03-03T10:54:13.1993226	mekanismtests_test_missing_composter_recipes generator Tags for minecraft:item mod id mekanismtests_test_missing_composter_recipes
+35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/mekanismtests_test_missing_composter_recipes/tags/item/known_missing.json
+ecf8677c05c95b6ed2585bd3d2580725f13934eb data/mekanismtests_test_missing_composter_recipes/tags/item/valid_output.json

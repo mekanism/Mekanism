@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "count": 1,
+    "item": "minecraft:bamboo"
+  },
+  "output": {
+    "count": 2,
+    "id": "mekanism:bio_fuel"
+  }
+}

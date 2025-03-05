@@ -1,11 +1,11 @@
 {
   "type": "mekanism:crushing",
   "input": {
-    "count": 1,
+    "count": 4,
     "item": "minecraft:cookie"
   },
   "output": {
-    "count": 7,
+    "count": 3,
     "id": "mekanism:bio_fuel"
   }
 }

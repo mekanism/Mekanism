@@ -1,0 +1,34 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "type": "neoforge:compound",
+    "children": [
+      {
+        "tag": "c:crops/carrot"
+      },
+      {
+        "tag": "c:crops/cactus"
+      },
+      {
+        "tag": "c:crops/potato"
+      },
+      {
+        "tag": "c:crops/wheat"
+      },
+      {
+        "tag": "c:crops/beetroot"
+      },
+      {
+        "tag": "c:crops/nether_wart"
+      },
+      {
+        "tag": "c:crops/cocoa_bean"
+      }
+    ],
+    "count": 1
+  },
+  "output": {
+    "count": 2,
+    "id": "mekanism:bio_fuel"
+  }
+}

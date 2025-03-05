@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "count": 1,
+    "tag": "c:seeds"
+  },
+  "output": {
+    "count": 1,
+    "id": "mekanism:bio_fuel"
+  }
+}

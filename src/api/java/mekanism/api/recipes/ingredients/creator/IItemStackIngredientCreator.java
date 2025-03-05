@@ -1,5 +1,6 @@
 package mekanism.api.recipes.ingredients.creator;
 
+import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
@@ -162,6 +163,18 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
     default ItemStackIngredient from(TagKey<Item> tag, int amount) {
         Objects.requireNonNull(tag, "ItemStackIngredients cannot be created from a null tag.");
         return from(Ingredient.of(tag), amount);
+    }
+
+    /**
+     * Creates an Item Stack Ingredient that matches any of the given Item tags.
+     *
+     * @param tags Tag to match.
+     */
+    default ItemStackIngredient from(int amount, List<TagKey<Item>> tags) {
+        if (tags == null || tags.isEmpty()) {
+            throw new IllegalArgumentException("Attempted to create an ItemStackIngredient with no tags.");
+        }
+        return from(Ingredient.fromValues(tags.stream().map(Ingredient.TagValue::new)), amount);
     }
 
     /**

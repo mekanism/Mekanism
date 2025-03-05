@@ -2,10 +2,10 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "item": "minecraft:melon"
+    "tag": "c:crops/melon"
   },
   "output": {
-    "count": 5,
+    "count": 6,
     "id": "mekanism:bio_fuel"
   }
 }

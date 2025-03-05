@@ -1,11 +1,11 @@
 {
   "type": "mekanism:crushing",
   "input": {
-    "count": 1,
+    "count": 3,
     "item": "minecraft:moss_carpet"
   },
   "output": {
-    "count": 2,
+    "count": 4,
     "id": "mekanism:bio_fuel"
   }
 }

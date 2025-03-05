@@ -1,0 +1,22 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "type": "neoforge:compound",
+    "children": [
+      {
+        "item": "minecraft:brown_mushroom_block"
+      },
+      {
+        "item": "minecraft:red_mushroom_block"
+      },
+      {
+        "item": "minecraft:mushroom_stem"
+      }
+    ],
+    "count": 1
+  },
+  "output": {
+    "count": 4,
+    "id": "mekanism:bio_fuel"
+  }
+}

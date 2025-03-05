@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "count": 1,
+    "tag": "minecraft:saplings"
+  },
+  "output": {
+    "count": 1,
+    "id": "mekanism:bio_fuel"
+  }
+}
