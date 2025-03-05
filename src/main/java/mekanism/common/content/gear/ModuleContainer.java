@@ -88,6 +88,11 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
         return typedModules.get(type.value());
     }
 
+    @Nullable
+    public Module<?> getRaw(ModuleData<?> type) {
+        return typedModules.get(type);
+    }
+
     @Override
     public List<IHUDElement> getHUDElements(Player player, ItemStack stack) {
         if (typedModules.isEmpty()) {
@@ -265,6 +270,11 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
         }
 
         return updateContainer(stack, copiedModules, null);
+    }
+
+    public int installedCount(ModuleData<?> type) {
+        Module<?> module = typedModules.get(type);
+        return module == null ? 0 : module.getInstalledCount();
     }
 
     public boolean canInstall(ItemStack stack, Holder<ModuleData<?>> type) {

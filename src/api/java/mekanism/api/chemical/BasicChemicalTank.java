@@ -313,7 +313,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be at least zero");
         }
-        return new BasicChemicalTank(capacity, alwaysTrueBi, internalOnly, alwaysTrue, ChemicalAttributeValidator.ALWAYS_ALLOW, listener);
+        return new BasicChemicalTank(capacity, holderAlwaysTrueBi, holderInternalOnly, holderAlwaysTrue, ChemicalAttributeValidator.ALWAYS_ALLOW, listener, null);
     }
 
     /**

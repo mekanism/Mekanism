@@ -1,7 +1,6 @@
 package mekanism.common.recipe.impl;
 
 import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.datagen.recipe.builder.RotaryRecipeBuilder;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
@@ -47,7 +46,7 @@ class RotaryRecipeProvider implements ISubRecipeProvider {
         RotaryRecipeBuilder.rotary(
               IngredientCreatorAccess.fluid().from(fluidInput, 1),
               IngredientCreatorAccess.chemicalStack().fromHolder(gas, 1),
-              new ChemicalStack(gas, 1),
+              gas.asStack(1),
               new FluidStack(fluidOutput, 1)
         ).build(consumer, Mekanism.rl(basePath + gas.getName()));
     }

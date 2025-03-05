@@ -11,6 +11,7 @@ import mekanism.common.registries.MekanismItems;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -110,7 +111,7 @@ class ChemicalInjectorRecipeProvider implements ISubRecipeProvider {
               IngredientCreatorAccess.chemicalStack().from(MekanismTags.Chemicals.WATER_VAPOR, water),
               new ItemStack(living),
               true
-        ).build(consumer, Mekanism.rl(basePath + RegistryUtils.getName(living).getPath()));
+        ).build(consumer, Mekanism.rl(basePath + BuiltInRegistries.ITEM.getKey(living).getPath()));
     }
 
     private void addChemicalInjectorOxidizingRecipe(RecipeOutput consumer, String basePath) {

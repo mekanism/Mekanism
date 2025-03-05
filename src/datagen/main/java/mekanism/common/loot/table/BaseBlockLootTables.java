@@ -14,12 +14,12 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.Mekanism;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.block.BlockPersonalStorage;
-import mekanism.common.block.BlockRadioactiveWasteBarrel;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.Attributes.AttributeInventory;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IFrequencyHandler;
 import mekanism.common.lib.frequency.IFrequencyItem;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.resource.ore.OreBlockType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.TileEntityUpdateable;
@@ -94,7 +94,8 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
         }
     }
 
-    protected boolean skipBlock(Block block) {
+    protected boolean skipBlock(Holder<Block> holder) {
+        Block block = holder.value();
         //Skip any blocks that we already registered a table for or have marked to skip
         return knownBlocks.contains(block) || toSkip.contains(block);
     }
@@ -116,12 +117,11 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
         ));
     }
 
-    //IBlockProvider versions of BlockLootTable methods, modified to support varargs
-    protected void dropSelf(Collection<? extends Holder<Block>> blockProviders) {
-        for (Holder<Block> blockProvider : blockProviders) {
-            Block block = blockProvider.value();
+    //Holder versions of BlockLootTable methods, modified to support varargs/lists
+    protected void dropSelf(Collection<? extends Holder<Block>> blocks) {
+        for (Holder<Block> block : blocks) {
             if (!skipBlock(block)) {
-                dropSelf(block);
+                dropSelf(block.value());
             }
         }
     }
@@ -150,10 +150,10 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
         //TODO: See if there is other stuff we want to be transferring which we currently do not
         // For example, when writing this we added dump mode for chemical tanks to getting transferred to the item
         for (DeferredHolder<Block, ?> blockProvider : blockProviders) {
-            Block block = blockProvider.value();
-            if (skipBlock(block)) {
+            if (skipBlock(blockProvider)) {
                 continue;
             }
+            Block block = blockProvider.value();
             boolean hasComponents = false;
             CopyComponentsFunction.Builder componentsBuilder = CopyComponentsFunction.copyComponents(CopyComponentsFunction.Source.BLOCK_ENTITY);
             boolean hasContents = false;
@@ -210,7 +210,7 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
                         if (type == ContainerType.ITEM && block instanceof BlockPersonalStorage<?, ?>) {
                             //We don't want explosions causing personal storage items to be directly destroyed. It is also known that the attachment is missing
                             hasContents = true;
-                        } else if (type != ContainerType.CHEMICAL || !(block instanceof BlockRadioactiveWasteBarrel)) {
+                        } else if (type != ContainerType.CHEMICAL || !MekanismBlocks.RADIOACTIVE_WASTE_BARREL.keyMatches(blockProvider)) {
                             Mekanism.logger.warn("Container type: {}, item missing attachments: {}", type.getComponentName(), blockProvider.getId());
                         }
                     } else if (containers.isEmpty()) {

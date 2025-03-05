@@ -588,11 +588,10 @@ public class MekanismTagProvider extends BaseTagProvider {
         addChemicalsToTag(MekanismTags.Chemicals.WATER_VAPOR, MekanismChemicals.WATER_VAPOR, MekanismChemicals.STEAM);
         addChemicalsToTag(MekanismAPITags.Chemicals.WASTE_BARREL_DECAY_BLACKLIST, MekanismChemicals.PLUTONIUM, MekanismChemicals.POLONIUM);
 
-        IntrinsicMekanismTagBuilder<Chemical> dirtyTagBuilder = getChemicalBuilder(MekanismAPITags.Chemicals.DIRTY);
-        IntrinsicMekanismTagBuilder<Chemical> cleanTagBuilder = getChemicalBuilder(MekanismAPITags.Chemicals.CLEAN);
         // add dynamic slurry tags
+        getChemicalBuilder(MekanismAPITags.Chemicals.DIRTY).addHolders(MekanismChemicals.PROCESSED_RESOURCES.values());
+        IntrinsicMekanismTagBuilder<Chemical> cleanTagBuilder = getChemicalBuilder(MekanismAPITags.Chemicals.CLEAN);
         for (SlurryRegistryObject<?, ?> slurryRO : MekanismChemicals.PROCESSED_RESOURCES.values()) {
-            dirtyTagBuilder.addHolders(slurryRO.getDirtySlurry());
             cleanTagBuilder.addHolders(slurryRO.getCleanSlurry());
         }
 

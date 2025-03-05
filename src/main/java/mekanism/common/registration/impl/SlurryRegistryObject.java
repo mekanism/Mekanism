@@ -12,11 +12,6 @@ public class SlurryRegistryObject<DIRTY extends Chemical, CLEAN extends Chemical
     }
 
     @NotNull
-    public DeferredHolder<Chemical, DIRTY> getDirtySlurry() {
-        return this;
-    }
-
-    @NotNull
     public DeferredHolder<Chemical, CLEAN> getCleanSlurry() {
         return secondaryRO;
     }

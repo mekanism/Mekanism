@@ -4,7 +4,6 @@ import java.util.concurrent.CompletableFuture;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.datagen.recipe.builder.ChemicalChemicalToChemicalRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ChemicalToChemicalRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ElectrolysisRecipeBuilder;
@@ -92,7 +91,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
         RotaryRecipeBuilder.rotary(
               IngredientCreatorAccess.fluid().from(fluidInput, 1),
               IngredientCreatorAccess.chemicalStack().from(gasInput, 1),
-              new ChemicalStack(gas, 1),
+              gas.asStack(1),
               new FluidStack(fluidOutput, 1)
         ).build(consumer, MekanismGenerators.rl(basePath + gas.getName()));
     }

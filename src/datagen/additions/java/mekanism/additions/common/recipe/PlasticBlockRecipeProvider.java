@@ -5,7 +5,6 @@ import mekanism.additions.common.AdditionsTags;
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.block.plastic.BlockPlastic;
 import mekanism.additions.common.block.plastic.BlockPlasticRoad;
-import mekanism.additions.common.block.plastic.BlockPlasticTransparent;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
@@ -92,8 +91,8 @@ public class PlasticBlockRecipeProvider implements ISubRecipeProvider {
 
     private void registerPlasticTransparent(RecipeOutput consumer, String basePath) {
         basePath += "transparent/";
-        for (BlockRegistryObject<BlockPlasticTransparent, ?> blockRO : AdditionsBlocks.TRANSPARENT_PLASTIC_BLOCKS.values()) {
-            registerPlasticTransparent(consumer, blockRO.value().getColor(), blockRO.getItemHolder(), basePath);
+        for (Map.Entry<EnumColor, ? extends BlockRegistryObject<?, ?>> entry : AdditionsBlocks.TRANSPARENT_PLASTIC_BLOCKS.entrySet()) {
+            registerPlasticTransparent(consumer, entry.getKey(), entry.getValue().getItemHolder(), basePath);
         }
     }
 

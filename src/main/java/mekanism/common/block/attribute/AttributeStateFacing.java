@@ -102,7 +102,7 @@ public class AttributeStateFacing implements AttributeState {
         if (state == null) {
             return null;
         }
-        AttributeStateFacing blockFacing = Attribute.get(state.getBlockHolder(), AttributeStateFacing.class);
+        AttributeStateFacing blockFacing = Attribute.get(state, AttributeStateFacing.class);
         Direction newDirection = Direction.SOUTH;
         if (blockFacing.getPlacementType() == FacePlacementType.PLAYER_LOCATION) {
             //TODO: Somehow weight this stuff towards context.getFace(), so that it has a higher likelihood of going with the face that was clicked on

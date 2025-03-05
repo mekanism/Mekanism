@@ -73,10 +73,6 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
         add("module." + configKey.getNamespace() + "." + configKey.getPath(), value);
     }
 
-    protected void addModuleConfig(String configKey, String value) {
-        add("module." + modid + "." + configKey, value);
-    }
-
     protected void addHolder(Holder<? extends IHasTranslationKey> key, String value) {
         add(key.value(), value);
     }

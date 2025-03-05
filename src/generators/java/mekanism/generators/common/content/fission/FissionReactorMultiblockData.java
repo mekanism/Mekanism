@@ -483,6 +483,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
             wasteTank.insert(wasteToAdd, Action.EXECUTE, AutomationType.INTERNAL);
             if (leftoverWaste > 0 && IRadiationManager.INSTANCE.isRadiationEnabled()) {
                 //Check if radiation is enabled in order to allow for short-circuiting when it will NO-OP further down the line anyway
+                //Note: We query the radioactivity from the chemical instead of the stack so that we don't multiply it by the stack's size
                 double wasteRadioactivity = wasteToAdd.getChemical().getRadioactivity();
                 if (wasteRadioactivity > 0) {
                     IRadiationManager.INSTANCE.radiate(GlobalPos.of(world.dimension(), getBounds().getCenter()), leftoverWaste * wasteRadioactivity);

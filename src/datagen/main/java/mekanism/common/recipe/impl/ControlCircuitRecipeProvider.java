@@ -20,7 +20,6 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ItemLike;
 
 class ControlCircuitRecipeProvider implements ISubRecipeProvider {
 
@@ -54,7 +53,7 @@ class ControlCircuitRecipeProvider implements ISubRecipeProvider {
               .build(consumer, Mekanism.rl(basePath + name));
     }
 
-    private void addCircuitInfusionUpgrade(RecipeOutput consumer, ItemLike output, TagKey<Item> circuitTag, TagKey<Chemical> infusionType, int singleAlloyAmount, String basePath, String name) {
+    private void addCircuitInfusionUpgrade(RecipeOutput consumer, Holder<Item> output, TagKey<Item> circuitTag, TagKey<Chemical> infusionType, int singleAlloyAmount, String basePath, String name) {
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               IngredientCreatorAccess.item().from(circuitTag),
               IngredientCreatorAccess.chemicalStack().from(infusionType, singleAlloyAmount * 6), /* 3x 2 alloys */

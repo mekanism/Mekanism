@@ -69,7 +69,7 @@ public record PacketUpdateModuleSettings(int slotId, ModuleConfigTarget<?> targe
             ResourceLocation name = ResourceLocation.STREAM_CODEC.decode(buffer);
             ModuleConfig<?> defaultConfig = moduleType.value().getNamedConfig(installed, name);
             if (defaultConfig == null) {
-                throw new DecoderException("Unknown config " + name + " for module type: " + moduleType + " with " + installed + " modules installed");
+                throw new DecoderException("Unknown config " + name + " for module type: " + moduleType.getRegisteredName() + " with " + installed + " modules installed");
             }
             return new ModuleConfigTarget<>(moduleType, installed, defaultConfig.namedStreamCodec(name).decode(buffer));
         }

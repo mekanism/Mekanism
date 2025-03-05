@@ -8,7 +8,6 @@ import java.util.function.Supplier;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.math.MathUtils;
-import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
@@ -79,11 +78,8 @@ public class GuiChemicalGauge extends GuiTankGauge<ChemicalStack, IChemicalTank>
     @Nullable
     @Override
     public TextureAtlasSprite getIcon() {
-        if (dummy) {
-            return MekanismRenderer.getChemicalTexture(dummyType);
-        }
-        IChemicalTank tank = getTank();
-        return tank == null || tank.isEmpty() ? null : MekanismRenderer.getChemicalTexture(tank.getTypeHolder());
+        ChemicalStack stack = getStackOrDummy();
+        return stack.isEmpty() ? null : MekanismRenderer.getChemicalTexture(stack);
     }
 
     @Override
@@ -91,33 +87,34 @@ public class GuiChemicalGauge extends GuiTankGauge<ChemicalStack, IChemicalTank>
         return label;
     }
 
-    @Override
-    public List<Component> getTooltipText() {
+    private ChemicalStack getStackOrDummy() {
         if (dummy) {
-            return Collections.singletonList(TextComponentUtil.build(dummyType));
+            return dummyType;
         }
         IChemicalTank tank = getTank();
-        if (tank == null || tank.isEmpty()) {
+        return tank == null ? dummyType : tank.getStack();
+    }
+
+    @Override
+    public List<Component> getTooltipText() {
+        ChemicalStack stack = getStackOrDummy();
+        if (stack.isEmpty()) {
             return Collections.singletonList(MekanismLang.EMPTY.translate());
         }
         List<Component> list = new ArrayList<>();
-        long amount = tank.getStored();
+        long amount = stack.getAmount();
         if (amount == Long.MAX_VALUE) {
-            list.add(MekanismLang.GENERIC_STORED.translate(tank.getStack(), MekanismLang.INFINITE));
+            list.add(MekanismLang.GENERIC_STORED.translate(stack, MekanismLang.INFINITE));
         } else {
-            list.add(MekanismLang.GENERIC_STORED_MB.translate(tank.getStack(), TextUtils.format(amount)));
+            list.add(MekanismLang.GENERIC_STORED_MB.translate(stack, TextUtils.format(amount)));
         }
-        tank.getStack().appendHoverText(TooltipContext.of(minecraft.level), list, minecraft.options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL);
+        stack.appendHoverText(TooltipContext.of(minecraft.level), list, minecraft.options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL);
         return list;
     }
 
     @Override
     protected void applyRenderColor(GuiGraphics guiGraphics) {
-        if (dummy || getTank() == null) {
-            MekanismRenderer.color(guiGraphics, dummyType);
-        } else {
-            MekanismRenderer.color(guiGraphics, getTank().getStack());
-        }
+        MekanismRenderer.color(guiGraphics, getStackOrDummy());
     }
 
     @Override

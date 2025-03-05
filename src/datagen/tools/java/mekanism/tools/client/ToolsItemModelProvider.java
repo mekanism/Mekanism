@@ -7,13 +7,13 @@ import mekanism.tools.common.MekanismTools;
 import mekanism.tools.common.item.ItemMekanismPaxel;
 import mekanism.tools.common.item.ItemMekanismShield;
 import mekanism.tools.common.registries.ToolsItems;
+import net.minecraft.core.Holder;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.client.model.generators.ItemModelBuilder;
 import net.neoforged.neoforge.client.model.generators.ModelFile.ExistingModelFile;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import net.neoforged.neoforge.registries.DeferredHolder;
 
 public class ToolsItemModelProvider extends BaseItemModelProvider {
 
@@ -31,16 +31,16 @@ public class ToolsItemModelProvider extends BaseItemModelProvider {
         addShieldModel(ToolsItems.REFINED_OBSIDIAN_SHIELD, Mekanism.rl("block/block_refined_obsidian"));
         addShieldModel(ToolsItems.STEEL_SHIELD, Mekanism.rl("block/block_steel"));
         //Armor items are generated textures, all other tools module items are handheld
-        for (DeferredHolder<Item, ?> holder : ToolsItems.ITEMS.getEntries()) {
+        for (Holder<Item> holder : ToolsItems.ITEMS.getEntries()) {
             if (holder.value() instanceof ItemMekanismShield) {
                 //Skip shields, we manually handle them above
                 continue;
             }
+            String name = getPath(holder);
             ResourceLocation texture;
-            if (isVanilla(holder)) {
+            if (isVanilla(holder, name)) {
                 texture = itemTexture(holder);
             } else {
-                String name = holder.getId().getPath();
                 int index = name.lastIndexOf('_');
                 texture = modLoc("item/" + name.substring(0, index) + '/' + name.substring(index + 1));
             }
@@ -48,9 +48,8 @@ public class ToolsItemModelProvider extends BaseItemModelProvider {
         }
     }
 
-    private boolean isVanilla(DeferredHolder<Item, ?> item) {
+    private boolean isVanilla(Holder<Item> item, String name) {
         if (item.value() instanceof ItemMekanismPaxel) {
-            String name = item.getId().getPath();
             return name.startsWith("netherite") || name.startsWith("diamond") || name.startsWith("gold") || name.startsWith("iron") ||
                    name.startsWith("stone") || name.startsWith("wood");
         }

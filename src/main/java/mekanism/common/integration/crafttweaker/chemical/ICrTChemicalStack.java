@@ -27,7 +27,7 @@ public interface ICrTChemicalStack extends CommandStringDisplayable {
     @ZenCodeType.Method
     @ZenCodeType.Getter("registryName")
     default ResourceLocation getRegistryName() {
-        return Objects.requireNonNullElse(RegistryUtils.getName(getInternal().getChemicalHolder()), MekanismAPI.CHEMICAL_REGISTRY.getDefaultKey());
+        return MekanismAPI.CHEMICAL_REGISTRY.getKey(getChemical());
     }
 
     /**

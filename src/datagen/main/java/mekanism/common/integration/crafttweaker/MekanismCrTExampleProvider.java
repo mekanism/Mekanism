@@ -216,7 +216,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .blankLine()
               .recipe(ChemicalWasherRecipeManager.INSTANCE)
               .addExample("cleaning_uranium_slurry", IngredientCreatorAccess.fluid().from(FluidTags.WATER, 10),
-                    IngredientCreatorAccess.chemicalStack().fromHolder(uraniumSlurryRO.getDirtySlurry(), 1), new ChemicalStack(uraniumSlurryRO.getCleanSlurry(), 1))
+                    IngredientCreatorAccess.chemicalStack().fromHolder(uraniumSlurryRO, 1), new ChemicalStack(uraniumSlurryRO.getCleanSlurry(), 1))
               .end()
         ;
         exampleBuilder("mekanism/evaporating")

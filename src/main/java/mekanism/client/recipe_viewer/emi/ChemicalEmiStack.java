@@ -73,7 +73,7 @@ public class ChemicalEmiStack extends EmiStack {
 
     @Override
     public boolean isEmpty() {
-        return amount == 0 || chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY);
+        return amount <= 0 || chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY);
     }
 
     @Override

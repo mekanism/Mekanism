@@ -1,11 +1,10 @@
 package mekanism.additions.common.recipe;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import mekanism.additions.common.AdditionsTags;
 import mekanism.additions.common.MekanismAdditions;
-import mekanism.additions.common.block.BlockGlowPanel;
-import mekanism.additions.common.item.ItemBalloon;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.additions.common.registries.AdditionsItems;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -21,7 +20,6 @@ import mekanism.common.recipe.pattern.Pattern;
 import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.recipe.pattern.RecipePattern.TripleLine;
 import mekanism.common.registration.impl.BlockRegistryObject;
-import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.resource.PrimaryResource;
@@ -39,7 +37,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import net.neoforged.neoforge.registries.DeferredHolder;
 
 @NothingNullByDefault
 public class AdditionsRecipeProvider extends BaseRecipeProvider {
@@ -98,55 +95,52 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
     }
 
     private void registerBalloons(RecipeOutput consumer) {
-        for (ItemRegistryObject<ItemBalloon> balloon : AdditionsItems.BALLOONS.values()) {
-            registerBalloon(consumer, balloon, "balloon/");
+        final String basePath = "balloon/";
+        for (Map.Entry<EnumColor, ? extends Holder<Item>> entry : AdditionsItems.BALLOONS.entrySet()) {
+            EnumColor color = entry.getKey();
+            Holder<Item> balloon = entry.getValue();
+            String colorString = color.getRegistryPrefix();
+            Ingredient recolorInput = difference(AdditionsTags.Items.BALLOONS, balloon);
+            DyeColor dye = color.getDyeColor();
+            if (dye != null) {
+                ExtendedShapelessRecipeBuilder.shapelessRecipe(balloon, 2)
+                      .addIngredient(Tags.Items.LEATHERS)
+                      .addIngredient(Tags.Items.STRINGS)
+                      .addIngredient(dye.getTag())
+                      .category(RecipeCategory.DECORATIONS)
+                      .build(consumer, MekanismAdditions.rl(basePath + colorString));
+                ExtendedShapelessRecipeBuilder.shapelessRecipe(balloon)
+                      .addIngredient(recolorInput)
+                      .addIngredient(dye.getTag())
+                      .category(RecipeCategory.DECORATIONS)
+                      .build(consumer, MekanismAdditions.rl(basePath + "recolor/" + colorString));
+            }
+            ItemStackChemicalToItemStackRecipeBuilder.painting(
+                  IngredientCreatorAccess.item().from(recolorInput),
+                  IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(color), PigmentExtractingRecipeProvider.DYE_RATE),
+                  new ItemStack(balloon),
+                  false
+            ).build(consumer, MekanismAdditions.rl(basePath + "recolor/painting/" + colorString));
         }
-    }
-
-    private void registerBalloon(RecipeOutput consumer, DeferredHolder<Item, ItemBalloon> result, String basePath) {
-        EnumColor color = result.value().getColor();
-        String colorString = color.getRegistryPrefix();
-        Ingredient recolorInput = difference(AdditionsTags.Items.BALLOONS, result);
-        DyeColor dye = color.getDyeColor();
-        if (dye != null) {
-            ExtendedShapelessRecipeBuilder.shapelessRecipe(result, 2)
-                  .addIngredient(Tags.Items.LEATHERS)
-                  .addIngredient(Tags.Items.STRINGS)
-                  .addIngredient(dye.getTag())
-                  .category(RecipeCategory.DECORATIONS)
-                  .build(consumer, MekanismAdditions.rl(basePath + colorString));
-            ExtendedShapelessRecipeBuilder.shapelessRecipe(result)
-                  .addIngredient(recolorInput)
-                  .addIngredient(dye.getTag())
-                  .category(RecipeCategory.DECORATIONS)
-                  .build(consumer, MekanismAdditions.rl(basePath + "recolor/" + colorString));
-        }
-        ItemStackChemicalToItemStackRecipeBuilder.painting(
-              IngredientCreatorAccess.item().from(recolorInput),
-              IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(color), PigmentExtractingRecipeProvider.DYE_RATE),
-              new ItemStack(result),
-              false
-        ).build(consumer, MekanismAdditions.rl(basePath + "recolor/painting/" + colorString));
     }
 
     private void registerGlowPanels(RecipeOutput consumer) {
-        for (BlockRegistryObject<BlockGlowPanel, ?> glowPanel : AdditionsBlocks.GLOW_PANELS.values()) {
-            registerGlowPanel(consumer, glowPanel.value().getColor(), glowPanel.getItemHolder(), "glow_panel/");
+        final String basePath = "glow_panel/";
+        for (Map.Entry<EnumColor, ? extends BlockRegistryObject<?, ?>> entry : AdditionsBlocks.GLOW_PANELS.entrySet()) {
+            EnumColor color = entry.getKey();
+            Holder<Item> glowPanel = entry.getValue().getItemHolder();
+            DyeColor dye = color.getDyeColor();
+            if (dye != null) {
+                ExtendedShapedRecipeBuilder.shapedRecipe(glowPanel, 2)
+                      .pattern(GLOW_PANEL)
+                      .key(PLASTIC_SHEET_CHAR, MekanismItems.HDPE_SHEET)
+                      .key(GLASS_PANES_CHAR, Tags.Items.GLASS_PANES)
+                      .key(Pattern.GLOWSTONE, Tags.Items.DUSTS_GLOWSTONE)
+                      .key(Pattern.DYE, dye.getTag())
+                      .category(RecipeCategory.BUILDING_BLOCKS)
+                      .build(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
+            }
+            PlasticBlockRecipeProvider.registerRecolor(consumer, glowPanel, AdditionsTags.Items.GLOW_PANELS, color, basePath);
         }
-    }
-
-    private void registerGlowPanel(RecipeOutput consumer, EnumColor color, Holder<Item> result, String basePath) {
-        DyeColor dye = color.getDyeColor();
-        if (dye != null) {
-            ExtendedShapedRecipeBuilder.shapedRecipe(result, 2)
-                  .pattern(GLOW_PANEL)
-                  .key(PLASTIC_SHEET_CHAR, MekanismItems.HDPE_SHEET)
-                  .key(GLASS_PANES_CHAR, Tags.Items.GLASS_PANES)
-                  .key(Pattern.GLOWSTONE, Tags.Items.DUSTS_GLOWSTONE)
-                  .key(Pattern.DYE, dye.getTag())
-                  .category(RecipeCategory.BUILDING_BLOCKS)
-                  .build(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
-        }
-        PlasticBlockRecipeProvider.registerRecolor(consumer, result, AdditionsTags.Items.GLOW_PANELS, color, basePath);
     }
 }

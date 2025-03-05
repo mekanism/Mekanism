@@ -183,12 +183,12 @@ public class PigmentExtractingRecipeProvider implements ISubRecipeProvider {
             if (dye != null) {
                 ItemStackToChemicalRecipeBuilder.pigmentExtracting(
                       IngredientCreatorAccess.item().from(dye.getTag()),
-                      new ChemicalStack(pigment, DYE_RATE)
+                      pigment.asStack(DYE_RATE)
                 ).build(consumer, Mekanism.rl(basePath + "dye/" + color.getRegistryPrefix()));
                 //TODO: Eventually we may want to consider taking patterns into account
                 ItemStackToChemicalRecipeBuilder.pigmentExtracting(
                       IngredientCreatorAccess.item().from(BannerBlock.byColor(dye)),
-                      new ChemicalStack(pigment, BANNER_RATE)
+                      pigment.asStack(BANNER_RATE)
                 ).build(consumer, Mekanism.rl(basePath + "banner/" + color.getRegistryPrefix()));
                 addExtractionRecipe(consumer, color, MekanismTags.Items.COLORABLE_CANDLE, pigment, CANDLE_RATE, basePath + "candle/");
                 addExtractionRecipe(consumer, color, MekanismTags.Items.COLORABLE_CONCRETE, pigment, CONCRETE_RATE, basePath + "concrete/");

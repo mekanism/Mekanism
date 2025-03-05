@@ -71,7 +71,7 @@ public class MekanismDataMapsProvider extends DataMapProvider {
               //GENERAL_ENERGY_CONVERSION_HYDROGEN("general.energy_conversion.hydrogen", "Hydrogen Energy Density",
               //"How much energy is produced per mB of Hydrogen, also affects Electrolytic Separator usage, Ethene burn rate and Gas-Burning Generator energy capacity."),
               .add(MekanismChemicals.HYDROGEN, new ChemicalFuel(1, HYDROGEN_ENERGY_DENSITY), false)
-              //TODO - 1.21: Decide if we want to define this here or via a data map in MekanismGenerators
+              //TODO - HOLDERS: Decide if we want to define this here or via a data map in MekanismGenerators
               .add(MekanismChemicals.ETHENE, new ChemicalFuel(2 * SharedConstants.TICKS_PER_SECOND, getEtheneEnergyDensity()), false)
         ;
 

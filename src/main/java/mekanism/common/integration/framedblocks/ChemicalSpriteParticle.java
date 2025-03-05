@@ -31,7 +31,7 @@ final class ChemicalSpriteParticle extends TextureSheetParticle {
         this.brightness = 0;
 
         int tint = MekanismRenderer.getTint(chemical);
-        this.rCol = .06F * MekanismRenderer.getRed(tint);
+        this.rCol = 0.6F * MekanismRenderer.getRed(tint);
         this.gCol = 0.6F * MekanismRenderer.getGreen(tint);
         this.bCol = 0.6F * MekanismRenderer.getBlue(tint);
 

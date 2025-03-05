@@ -67,6 +67,8 @@ public record ChemicalFuel(int burnTicks, long energyDensity) implements IChemic
         } else if (energyDensity < 1) {
             throw new IllegalArgumentException("Fuel attributes must have an energy density greater than zero!");
         } else if (energyDensity / burnTicks == 0L) {
+            //TODO - HOLDERS: Would we rather just specify the energy per tick
+            // probably as that will fix bugs of energyPerTick*burnTicks != energyDensity if it doesn't divide evenly
             throw new IllegalArgumentException("Energy density per tick must be greater than zero! (integer division)");
         }
     }

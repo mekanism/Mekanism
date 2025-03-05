@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import mekanism.api.MekanismAPI;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.gear.ModuleData.ExclusiveFlag;
@@ -23,18 +22,17 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
-import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-public class GuiModuleScrollList extends GuiInstallableScrollList<Holder<ModuleData<?>>> {
+public class GuiModuleScrollList extends GuiInstallableScrollList<ModuleData<?>> {
 
     private static final ResourceLocation MODULE_SELECTION = MekanismUtils.getResource(ResourceType.GUI, "module_selection.png");
 
     private final Consumer<Module<?>> callback;
-    private final List<Holder<ModuleData<?>>> currentList = new ArrayList<>();
+    private final List<ModuleData<?>> currentList = new ArrayList<>();
     private final Supplier<ItemStack> itemSupplier;
     private ItemStack currentItem;
     @Nullable
@@ -57,10 +55,7 @@ public class GuiModuleScrollList extends GuiInstallableScrollList<Holder<ModuleD
         currentContainer = ModuleHelper.get().getModuleContainer(stack);
         currentList.clear();
         if (currentContainer != null) {
-            for (ModuleData<?> moduleType : currentContainer.moduleTypes()) {
-                //TODO - 1.21: Re-evaluate this
-                currentList.add(MekanismAPI.MODULE_REGISTRY.wrapAsHolder(moduleType));
-            }
+            currentList.addAll(currentContainer.moduleTypes());
         }
     }
 
@@ -68,7 +63,7 @@ public class GuiModuleScrollList extends GuiInstallableScrollList<Holder<ModuleD
         ItemStack stack = itemSupplier.get();
         if (!ItemStack.matches(currentItem, stack)) {
             updateItemAndList(stack);
-            Holder<ModuleData<?>> prevSelect = getSelection();
+            ModuleData<?> prevSelect = getSelection();
             if (prevSelect != null) {
                 if (currentList.contains(prevSelect)) {
                     //The item still supports the existing selection, mark that the selected data changed
@@ -82,7 +77,7 @@ public class GuiModuleScrollList extends GuiInstallableScrollList<Holder<ModuleD
     }
 
     @Override
-    protected void setSelected(@Nullable Holder<ModuleData<?>> newData) {
+    protected void setSelected(@Nullable ModuleData<?> newData) {
         if (selectedType != newData) {
             selectedType = newData;
             onSelectedChange();
@@ -90,33 +85,35 @@ public class GuiModuleScrollList extends GuiInstallableScrollList<Holder<ModuleD
     }
 
     private void onSelectedChange() {
-        if (selectedType == null || currentContainer == null) {
-            callback.accept(null);
-        } else {
-            callback.accept(currentContainer.get(selectedType));
+        callback.accept(getModule(selectedType));
+    }
+
+    @Nullable
+    private Module<?> getModule(@Nullable ModuleData<?> data) {
+        if (data == null || currentContainer == null) {
+            return null;
         }
+        return currentContainer.getRaw(data);
     }
 
     @Override
-    protected List<Holder<ModuleData<?>>> getCurrentInstalled() {
+    protected List<ModuleData<?>> getCurrentInstalled() {
         return currentList;
     }
 
     @Override
-    protected void drawName(GuiGraphics guiGraphics, Holder<ModuleData<?>> module, int y) {
-        if (currentContainer != null) {
-            IModule<?> instance = currentContainer.get(module);
-            if (instance != null) {
-                boolean enabled = instance.isEnabled();
-                int color = module.value().isExclusive(ExclusiveFlag.ANY) ? (enabled ? 0x635BD4 : 0x2E2A69) : (enabled ? titleTextColor() : 0x5E1D1D);
-                drawNameText(guiGraphics, y, TextComponentUtil.build(module), color, 0.7F);
-            }
+    protected void drawName(GuiGraphics guiGraphics, ModuleData<?> module, int y) {
+        IModule<?> instance = getModule(module);
+        if (instance != null) {
+            boolean enabled = instance.isEnabled();
+            int color = module.isExclusive(ExclusiveFlag.ANY) ? (enabled ? 0x635BD4 : 0x2E2A69) : (enabled ? titleTextColor() : 0x5E1D1D);
+            drawNameText(guiGraphics, y, TextComponentUtil.build(module), color, 0.7F);
         }
     }
 
     @Override
-    protected ItemStack getRenderStack(Holder<ModuleData<?>> moduleData) {
-        return new ItemStack(moduleData.value().getItemHolder());
+    protected ItemStack getRenderStack(ModuleData<?> moduleData) {
+        return new ItemStack(moduleData.getItemHolder());
     }
 
     @Override
@@ -134,11 +131,11 @@ public class GuiModuleScrollList extends GuiInstallableScrollList<Holder<ModuleD
                 if (index > currentList.size() - 1) {
                     break;
                 }
-                Holder<ModuleData<?>> module = currentList.get(index);
+                ModuleData<?> module = currentList.get(index);
                 int installed = currentContainer.installedCount(module);
                 int multipliedElement = elementHeight * i;
                 if (installed > 0 && mouseY >= getY() + 1 + multipliedElement && mouseY < getY() + 1 + multipliedElement + elementHeight) {
-                    Component info = MekanismLang.MODULE_INSTALLED.translate(MekanismLang.GENERIC_FRACTION.translateColored(EnumColor.GRAY, installed, module.value().getMaxStackSize()));
+                    Component info = MekanismLang.MODULE_INSTALLED.translate(MekanismLang.GENERIC_FRACTION.translateColored(EnumColor.GRAY, installed, module.getMaxStackSize()));
                     if (!info.equals(lastInfo)) {
                         lastInfo = info;
                         lastTooltip = TooltipUtils.create(info);

@@ -261,7 +261,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         // Clean Slurry from Dirty Slurry
         FluidChemicalToChemicalRecipeBuilder.washing(
               IngredientCreatorAccess.fluid().from(FluidTags.WATER, 5),
-              IngredientCreatorAccess.chemicalStack().fromHolder(slurry.getDirtySlurry(), 1),
+              IngredientCreatorAccess.chemicalStack().fromHolder(slurry, 1),
               new ChemicalStack(slurry.getCleanSlurry(), 1)
         ).build(consumer, Mekanism.rl(basePath + "slurry/clean"));
 
@@ -287,7 +287,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         ChemicalDissolutionRecipeBuilder.dissolution(
               IngredientCreatorAccess.item().from(oreTag),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.SULFURIC_ACID, 1),
-              new ChemicalStack(slurry.getDirtySlurry(), 1_000),
+              new ChemicalStack(slurry, 1_000),
               true
         ).build(consumer, Mekanism.rl(basePath + "slurry/dirty/from_ore"));
 
@@ -313,7 +313,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         ChemicalDissolutionRecipeBuilder.dissolution(
               IngredientCreatorAccess.item().from(rawTag, 3),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.SULFURIC_ACID, 1),
-              new ChemicalStack(slurry.getDirtySlurry(), 2_000),
+              new ChemicalStack(slurry, 2_000),
               true
         ).build(consumer, Mekanism.rl(basePath + "slurry/dirty/from_raw_ore"));
 
@@ -339,7 +339,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         ChemicalDissolutionRecipeBuilder.dissolution(
               IngredientCreatorAccess.item().from(rawBlockTag),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.SULFURIC_ACID, 2),
-              new ChemicalStack(slurry.getDirtySlurry(), 6_000),
+              new ChemicalStack(slurry, 6_000),
               true
         ).build(consumer, Mekanism.rl(basePath + "slurry/dirty/from_raw_block"));
     }
@@ -376,13 +376,13 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
     }
 
     private void addOreProcessingGemRecipes(RecipeOutput consumer, String basePath, ItemLike ore, @Nullable ItemLike deepslateOre, TagKey<Item> oreTag,
-          ItemLike dust, TagKey<Item> dustTag, ItemLike gem, TagKey<Item> gemTag, int fromOre, int toOre, TagKey<Item> combineType) {
+          Holder<Item> dust, TagKey<Item> dustTag, ItemLike gem, TagKey<Item> gemTag, int fromOre, int toOre, TagKey<Item> combineType) {
         addOreProcessingGemRecipes(consumer, basePath, ore, deepslateOre, oreTag, dust, dustTag, gem, gemTag, fromOre, toOre,
               IngredientCreatorAccess.item().from(combineType));
     }
 
     private void addOreProcessingGemRecipes(RecipeOutput consumer, String basePath, ItemLike ore, @Nullable ItemLike deepslateOre, TagKey<Item> oreTag,
-          ItemLike dust, TagKey<Item> dustTag, ItemLike gem, TagKey<Item> gemTag, int fromOre, int toOre, ItemStackIngredient combineType) {
+          Holder<Item> dust, TagKey<Item> dustTag, ItemLike gem, TagKey<Item> gemTag, int fromOre, int toOre, ItemStackIngredient combineType) {
         //from dust
         ItemStackToItemStackRecipeBuilder.enriching(
               IngredientCreatorAccess.item().from(dustTag),

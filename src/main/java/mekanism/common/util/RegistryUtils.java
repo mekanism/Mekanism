@@ -9,8 +9,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.jetbrains.annotations.Nullable;
@@ -37,14 +35,6 @@ public class RegistryUtils {
               .map(tag -> tag.getString(SerializationConstants.ID))
               .map(ResourceLocation::tryParse)
               .flatMap(registry::getHolder);
-    }
-
-    public static ResourceLocation getName(MenuType<?> element) {
-        return BuiltInRegistries.MENU.getKey(element);
-    }
-
-    public static ResourceLocation getName(Item element) {
-        return BuiltInRegistries.ITEM.getKey(element);
     }
 
     public static String getPath(Block element) {

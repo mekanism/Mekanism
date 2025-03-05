@@ -83,9 +83,9 @@ public record FissionRecipeViewerRecipe(ResourceLocation id, @Nullable ChemicalS
                 long amount = Math.round(energyPerFuel / cooledCoolant.getThermalEnthalpy());
                 recipes.add(new FissionRecipeViewerRecipe(
                       RecipeViewerUtils.synthetic(chemical.toString(), "fission", MekanismGenerators.MODID),
-                      IngredientCreatorAccess.chemicalStack().fromHolder(chemical.builtInRegistryHolder(), amount),
+                      IngredientCreatorAccess.chemicalStack().from(chemical, amount),
                       IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.FISSILE_FUEL, 1),
-                      new ChemicalStack(heatedCoolant, amount), MekanismChemicals.NUCLEAR_WASTE.asStack(1)
+                      heatedCoolant.getStack(amount), MekanismChemicals.NUCLEAR_WASTE.asStack(1)
                 ));
             }
         }

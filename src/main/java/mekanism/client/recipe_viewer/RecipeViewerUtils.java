@@ -31,6 +31,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.HolderSet.Named;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.TimeUtil;
@@ -137,10 +138,10 @@ public class RecipeViewerUtils {
         // CreativeModeTab#buildContents, and in theory we only need to care about things in search so could use:
         // CreativeModeTabs.searchTab().getDisplayItems(). The bigger issue is how to come up with unique synthetic
         // names for the recipes as EMI requires they be unique. (Maybe index them?)
-        for (Item item : BuiltInRegistries.ITEM) {
-            BasicItemStackToFluidOptionalItemRecipe recipe = TileEntityNutritionalLiquifier.getRecipe(item.getDefaultInstance());
+        for (Map.Entry<ResourceKey<Item>, Item> entry : BuiltInRegistries.ITEM.entrySet()) {
+            BasicItemStackToFluidOptionalItemRecipe recipe = TileEntityNutritionalLiquifier.getRecipe(entry.getValue().getDefaultInstance());
             if (recipe != null) {
-                liquification.put(RecipeViewerUtils.synthetic(item.toString(), "liquification", Mekanism.MODID), recipe);
+                liquification.put(RecipeViewerUtils.synthetic(entry.getKey().location(), "liquification", Mekanism.MODID), recipe);
             }
         }
         return liquification;

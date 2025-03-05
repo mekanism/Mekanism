@@ -158,12 +158,13 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
     }
 
     protected EnergyContainersBuilder addDefaultEnergyContainers(EnergyContainersBuilder builder) {
-        AttributeEnergy attributeEnergy = Attribute.get(getBlock(), AttributeEnergy.class);
+        BLOCK block = getBlock();
+        AttributeEnergy attributeEnergy = Attribute.get(block, AttributeEnergy.class);
         if (attributeEnergy == null) {
-            throw new IllegalStateException("Expected block " + getBlock() + " to have the energy attribute");
+            throw new IllegalStateException("Expected block " + block + " to have the energy attribute");
         }
         LongSupplier maxEnergy = attributeEnergy::getStorage;
-        if (Attribute.matches(getBlock(), AttributeUpgradeSupport.class, attribute -> attribute.supportedUpgrades().contains(Upgrade.ENERGY))) {
+        if (Attribute.matches(block, AttributeUpgradeSupport.class, attribute -> attribute.supportedUpgrades().contains(Upgrade.ENERGY))) {
             return builder.addContainer((type, attachedTo, containerIndex) -> {
                 //If our block supports energy upgrades, make a more dynamically updating cache for our item's max energy
                 LongSupplier capacity = new UpgradeBasedUnsignedLongCache(attachedTo, maxEnergy);
