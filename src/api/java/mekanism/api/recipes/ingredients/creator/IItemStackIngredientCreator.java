@@ -169,9 +169,13 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
      * Creates an Item Stack Ingredient that matches any of the given Item tags.
      *
      * @param tags Tag to match.
+     *
+     * @throws NullPointerException     if the list of tags is null.
+     * @throws IllegalArgumentException if the list of tags is empty.
+     * @since 10.7.11
      */
     default ItemStackIngredient from(int amount, List<TagKey<Item>> tags) {
-        if (tags == null || tags.isEmpty()) {
+        if (tags.isEmpty()) {
             throw new IllegalArgumentException("Attempted to create an ItemStackIngredient with no tags.");
         }
         return from(Ingredient.fromValues(tags.stream().map(Ingredient.TagValue::new)), amount);

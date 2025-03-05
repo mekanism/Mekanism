@@ -89,11 +89,6 @@ public abstract class BaseRecipeProvider extends RecipeProvider {
     }
 
     @SafeVarargs
-    public static Ingredient createIngredient(TagKey<Item>... tags) {
-        return createIngredient(Arrays.stream(tags), Stream.empty());
-    }
-
-    @SafeVarargs
     public static Ingredient createIngredient(Holder<Item>... items) {
         return Ingredient.of(Arrays.stream(items).map(ItemStack::new));
     }

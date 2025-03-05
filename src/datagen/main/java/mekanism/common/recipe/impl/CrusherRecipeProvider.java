@@ -1,9 +1,9 @@
 package mekanism.common.recipe.impl;
 
-import java.util.List;
+import java.util.Arrays;
 import java.util.Map;
 import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
-import mekanism.api.providers.IItemProvider;
+import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.ISubRecipeProvider;
@@ -11,6 +11,7 @@ import mekanism.common.recipe.RecipeProviderUtil;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.util.RegistryUtils;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.ItemTags;
@@ -19,7 +20,6 @@ import net.minecraft.world.item.HoneycombItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
 
@@ -529,7 +529,7 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         biofuel(consumer, basePath, "carved_pumpkin", 2, 1, Items.CARVED_PUMPKIN);//pumpkin minus 4 seeds (sawmill)
         biofuel(consumer, basePath, "crimson_roots", 1, 1, Items.CRIMSON_ROOTS);
         biofuel(consumer, basePath, "cookie", 3, 4, Items.COOKIE);
-        biofuel(consumer, basePath, "crops_tags", 2, 1, List.of(Tags.Items.CROPS_CARROT, Tags.Items.CROPS_CACTUS, Tags.Items.CROPS_POTATO, Tags.Items.CROPS_WHEAT, Tags.Items.CROPS_BEETROOT, Tags.Items.CROPS_NETHER_WART, Tags.Items.CROPS_COCOA_BEAN));
+        biofuel(consumer, basePath, "crops_tags", 2, 1, Tags.Items.CROPS_CARROT, Tags.Items.CROPS_CACTUS, Tags.Items.CROPS_POTATO, Tags.Items.CROPS_WHEAT, Tags.Items.CROPS_BEETROOT, Tags.Items.CROPS_NETHER_WART, Tags.Items.CROPS_COCOA_BEAN);
         biofuel(consumer, basePath, "crops", 2, 1, Items.POISONOUS_POTATO);
         biofuel(consumer, basePath, "dried_kelp", 1, 1, Items.DRIED_KELP);
         biofuelBlock(consumer, basePath, "dried_kelp_block", 1, 1, Tags.Items.STORAGE_BLOCKS_DRIED_KELP);
@@ -574,40 +574,37 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         biofuel(consumer, basePath, "warped_wart_block", 4, 1, Items.WARPED_WART_BLOCK);
     }
 
-    private static void biofuel(RecipeOutput consumer, String basePath, String filename, int countOutput, int countInput, ItemLike... items) {
-        biofuel(consumer, basePath, filename, countOutput, countInput, MekanismItems.BIO_FUEL, items);
+    private static void biofuel(RecipeOutput consumer, String basePath, String filename, int countOutput, int countInput, Item... items) {
+        biofuel(consumer, basePath, filename, MekanismItems.BIO_FUEL, countOutput, countInput, items);
     }
 
-    private static void biofuelBlock(RecipeOutput consumer, String basePath, String filename, int countOutput, int countInput, ItemLike... items) {
-        biofuel(consumer, basePath, filename, countOutput, countInput, MekanismBlocks.BIO_FUEL_BLOCK, items);
+    private static void biofuelBlock(RecipeOutput consumer, String basePath, String filename, int countOutput, int countInput, Item... items) {
+        biofuel(consumer, basePath, filename, MekanismBlocks.BIO_FUEL_BLOCK.getItemHolder(), countOutput, countInput, items);
     }
 
-    private static void biofuel(RecipeOutput consumer, String basePath, String filename, int countOutput, int countInput, IItemProvider bioFuelType, ItemLike... items) {
+    private static void biofuel(RecipeOutput consumer, String basePath, String filename, Holder<Item> bioFuelType, int countOutput, int countInput, Item... items) {
+        biofuel(consumer, basePath, filename, bioFuelType, countOutput, IngredientCreatorAccess.item().from(countInput, items));
+    }
+
+    @SafeVarargs
+    private static void biofuelBlock(RecipeOutput consumer, String basePath, String filename, int countOutput, int countInput, TagKey<Item>... tags) {
+        biofuel(consumer, basePath, filename, MekanismBlocks.BIO_FUEL_BLOCK.getItemHolder(), countOutput, countInput, tags);
+    }
+
+    @SafeVarargs
+    private static void biofuel(RecipeOutput consumer, String basePath, String filename, int countOutput, int countInput, TagKey<Item>... tags) {
+        biofuel(consumer, basePath, filename, MekanismItems.BIO_FUEL, countOutput, countInput, tags);
+    }
+
+    @SafeVarargs
+    private static void biofuel(RecipeOutput consumer, String basePath, String filename, Holder<Item> bioFuelType, int countOutput, int countInput, TagKey<Item>... tags) {
+        biofuel(consumer, basePath, filename, bioFuelType, countOutput, IngredientCreatorAccess.item().from(countInput, Arrays.asList(tags)));
+    }
+
+    private static void biofuel(RecipeOutput consumer, String basePath, String filename, Holder<Item> bioFuelType, int countOutput, ItemStackIngredient input) {
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(countInput, items),
-              bioFuelType.getItemStack(countOutput)
-        ).build(consumer, Mekanism.rl(basePath + filename));
-    }
-
-    private static void biofuel(RecipeOutput consumer, String basePath, String filename, int countOutput, int countInput, TagKey<Item> tag) {
-        biofuel(consumer, basePath, filename, countOutput, countInput, tag, MekanismItems.BIO_FUEL);
-    }
-
-    private static void biofuelBlock(RecipeOutput consumer, String basePath, String filename, int countOutput, int countInput, TagKey<Item> tag) {
-        biofuel(consumer, basePath, filename, countOutput, countInput, tag, MekanismBlocks.BIO_FUEL_BLOCK);
-    }
-
-    private static void biofuel(RecipeOutput consumer, String basePath, String filename, int countOutput, int countInput, TagKey<Item> tag, IItemProvider bioFuelType) {
-        ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(tag, countInput),
-              bioFuelType.getItemStack(countOutput)
-        ).build(consumer, Mekanism.rl(basePath + filename));
-    }
-
-    private static void biofuel(RecipeOutput consumer, String basePath, String filename, int countOutput, int countInput, List<TagKey<Item>> tags) {
-        ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(countInput, tags),
-              MekanismItems.BIO_FUEL.getItemStack(countOutput)
+              input,
+              new ItemStack(bioFuelType, countOutput)
         ).build(consumer, Mekanism.rl(basePath + filename));
     }
 }
