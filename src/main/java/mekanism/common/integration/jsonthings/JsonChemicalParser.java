@@ -89,7 +89,7 @@ public class JsonChemicalParser extends ThingParser<JsonChemicalBuilder> {
                 throw new ThingParseException("Coolants cannot be created pointing to the empty chemical");
             }
             if (hasCooledGas) {
-                builder.with(new ChemicalAttributes.HeatedCoolant(otherVariantHolder, coolantData.thermalEnthalpy, coolantData.conductivity));
+                builder.with(new ChemicalAttributes.HeatedCoolant(otherVariantHolder, coolantData.thermalEnthalpy));
             } else {
                 builder.with(new ChemicalAttributes.CooledCoolant(otherVariantHolder, coolantData.thermalEnthalpy, coolantData.conductivity));
             }

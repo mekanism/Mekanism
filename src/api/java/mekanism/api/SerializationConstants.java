@@ -117,6 +117,10 @@ public final class SerializationConstants {
     public static final String VOLUME = "volume";
 
     //Generic constants
+    /**
+     * @since 10.7.11
+     */
+    public static final String ABSORPTION = "absorption";
     public static final String ACTIVE_COOLED = "active_cooled";
     public static final String ACTIVE_NODES = "active_nodes";
     public static final String ACTIVE_STATE = "active_state";

@@ -584,6 +584,7 @@
   "chemical.mekanism.aqua": "ʇuǝɯᵷᴉԀ ɐnbⱯ",
   "chemical.mekanism.attribute.coolant.efficiency": "%s :ʎɔuǝᴉɔᴉɟɟƎ ʇuɐꞁooƆ - ",
   "chemical.mekanism.attribute.coolant.heat_capacity": "%s :ʎdꞁɐɥʇuƎ ꞁɐɯɹǝɥ⟘ - ",
+  "chemical.mekanism.attribute.coolant.temperature": "%s :ǝɹnʇɐɹǝdɯǝ⟘ - ",
   "chemical.mekanism.attribute.fuel.burn_ticks": "ʇ %s :ǝɯᴉ⟘ uɹnᗺ - ",
   "chemical.mekanism.attribute.fuel.energy_density": "%s :ʎʇᴉsuǝᗡ ʎᵷɹǝuƎ - ",
   "chemical.mekanism.attribute.radiation": "%s :ʎʇᴉʌᴉʇɔɐoᴉpɐᴚ - ",

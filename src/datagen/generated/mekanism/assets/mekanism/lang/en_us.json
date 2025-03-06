@@ -585,6 +585,7 @@
   "chemical.mekanism.aqua": "Aqua Pigment",
   "chemical.mekanism.attribute.coolant.efficiency": " - Coolant Efficiency: %1$s",
   "chemical.mekanism.attribute.coolant.heat_capacity": " - Thermal Enthalpy: %1$s",
+  "chemical.mekanism.attribute.coolant.temperature": " - Temperature: %1$s",
   "chemical.mekanism.attribute.fuel.burn_ticks": " - Burn Time: %1$s t",
   "chemical.mekanism.attribute.fuel.energy_density": " - Energy Density: %1$s",
   "chemical.mekanism.attribute.radiation": " - Radioactivity: %1$s",

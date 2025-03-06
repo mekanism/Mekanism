@@ -44,8 +44,12 @@ public interface IMekanismDataMapTypes {
     /**
      * The {@linkplain DamageType} data map that defines how much of a particular damage type the MekaSuit can absorb.
      * <p>
-     * The location of this data map is {@code mekanism/data_maps/damage_type/mekasuit_absorption.json}, and the value is a float between zero and one inclusive that
-     * defines the ratio of the given damage type the MekaSuit can absorb.
+     * The location of this data map is {@code mekanism/data_maps/damage_type/mekasuit_absorption.json}, and the values are objects with 1 field:
+     * <ul>
+     * <li>{@code radioactivity}, a float between zero and one inclusive - defines the ratio of the given damage type the MekaSuit can absorb</li>
+     * </ul>
+     *
+     * The use of a float as the value is also possible, though discouraged in case more options are added in the future.
      *
      * @implNote This data map is not synced to the client.
      */
@@ -110,20 +114,25 @@ public interface IMekanismDataMapTypes {
      * <li>{@code conductivity}, a positive double that is at most one - the proportion of a reactor's available heat that can be used at an instant to convert this
      * coolant's cool variant to its heated variant</li>
      * </ul>
+     *
+     * @apiNote While having the coolant reference itself as a target works, it is highly discouraged.
      */
     DataMapType<Chemical, CooledCoolant> cooledChemicalCoolant();
 
     /**
      * The {@linkplain Chemical} data map that defines heated coolant properties of a chemical.
      * <p>
-     * The location of this data map is {@code mekanism/data_maps/mekanism/chemical/chemical_attribute_heated_coolant.json}, and the values are objects with 3 fields:
+     * The location of this data map is {@code mekanism/data_maps/mekanism/chemical/chemical_attribute_heated_coolant.json}, and the values are objects with four fields:
      * <ul>
      * <li>{@code cool_variant}, a chemical holder - the registry name of the cold variant of this coolant</li>
      * <li>{@code thermal_enthalpy}, a positive double - the amount of energy one mB of the chemical can store; lower values will cause boilers to require more of the
      * chemical to produce steam</li>
-     * <li>{@code conductivity}, a positive double that is at most one - the proportion of this coolant's heat that can be used at an instant to heat up a boiler and
-     * turn convert this coolant to its cool variant</li>
+     * <li>{@code conductivity}, a positive double that is at most one; optional, defaults to 0.4 - the proportion of this coolant that can be used at an instant to heat up a boiler and in turn
+     * convert this coolant to its cool variant</li>
+     * <li>{@code temperature}, a positive double that is at most 1,000,000; optional, defaults to 100,000 - the temperature of this heated coolant that is used in calculating the difference between the boiler's heat and the coolant when determining how much heat can be extracted at once</li>
      * </ul>
+     *
+     * @apiNote While having the coolant reference itself as a target works, it is highly discouraged.
      */
     DataMapType<Chemical, HeatedCoolant> heatedChemicalCoolant();
 }

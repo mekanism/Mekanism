@@ -895,6 +895,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(APILang.CHEMICAL_ATTRIBUTE_RADIATION, " - Radioactivity: %1$s");
         add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_EFFICIENCY, " - Coolant Efficiency: %1$s");
         add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_ENTHALPY, " - Thermal Enthalpy: %1$s");
+        add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_TEMPERATURE, " - Temperature: %1$s");
         add(APILang.CHEMICAL_ATTRIBUTE_FUEL_BURN_TICKS, " - Burn Time: %1$s t");
         add(APILang.CHEMICAL_ATTRIBUTE_FUEL_ENERGY_DENSITY, " - Energy Density: %1$s");
         //Colors

@@ -86,7 +86,7 @@ public class MekanismDataMapsProvider extends DataMapProvider {
               .add(MekanismChemicals.SODIUM, new CooledCoolant(MekanismChemicals.SUPERHEATED_SODIUM, 5, 1), false)
         ;
         builder(IMekanismDataMapTypes.INSTANCE.heatedChemicalCoolant())
-              .add(MekanismChemicals.SUPERHEATED_SODIUM, new HeatedCoolant(MekanismChemicals.SODIUM, 5, 1), false)
+              .add(MekanismChemicals.SUPERHEATED_SODIUM, new HeatedCoolant(MekanismChemicals.SODIUM, 5), false)
         ;
     }
 

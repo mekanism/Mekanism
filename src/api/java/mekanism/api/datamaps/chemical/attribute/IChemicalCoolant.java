@@ -5,6 +5,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mojang.serialization.codecs.RecordCodecBuilder.Mu;
 import java.util.List;
+import mekanism.api.MekanismAPI;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -50,26 +51,27 @@ public sealed interface IChemicalCoolant extends IChemicalAttribute permits Cool
     }
 
     static <COOLANT extends IChemicalCoolant> Products.P3<Mu<COOLANT>, Holder<Chemical>, Double, Double> createBaseCodec(RecordCodecBuilder.Instance<COOLANT> instance,
-          String otherFormName) {
-        //TODO - HOLDERS: Figure out how to prevent the chemical from referencing itself
+          String otherFormName, double defaultConductivity) {
         return instance.group(
               ChemicalStack.CHEMICAL_NON_EMPTY_HOLDER_CODEC.fieldOf(otherFormName).forGetter(IChemicalCoolant::otherVariant),
               Codec.doubleRange(Double.MIN_VALUE, Double.MAX_VALUE).fieldOf(SerializationConstants.THERMAL_ENTHALPY).forGetter(IChemicalCoolant::thermalEnthalpy),
-              Codec.doubleRange(Double.MIN_VALUE, 1).fieldOf(SerializationConstants.CONDUCTIVITY).forGetter(IChemicalCoolant::conductivity)
+              Codec.doubleRange(Double.MIN_VALUE, 1).optionalFieldOf(SerializationConstants.CONDUCTIVITY, defaultConductivity).forGetter(IChemicalCoolant::conductivity)
         );
     }
 
     /**
      * Validates that the parameters are valid as values in coolants.
      *
+     * @param otherVariant Must not represent the empty chemical.
      * @param thermalEnthalpy Must be greater than zero.
      * @param conductivity    This value should be greater than zero, and at most one.
      *
      * @throws IllegalArgumentException If thermal enthalpy or conductivity are invalid values.
      */
-    static void validateCoolantParams(double thermalEnthalpy, double conductivity) {
-        //TODO - 1.22: Move the non empty holder check to here
-        if (thermalEnthalpy <= 0) {
+    static void validateCoolantParams(Holder<Chemical> otherVariant, double thermalEnthalpy, double conductivity) {
+        if (otherVariant.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
+            throw new IllegalArgumentException("Coolants can not be made that point to the empty chemical");
+        } else if (thermalEnthalpy <= 0) {
             throw new IllegalArgumentException("Coolant attributes must have a thermal enthalpy greater than zero! Thermal Enthalpy: " + thermalEnthalpy);
         } else if (conductivity <= 0 || conductivity > 1) {
             throw new IllegalArgumentException("Coolant attributes must have a conductivity greater than zero and at most one! Conductivity: " + conductivity);

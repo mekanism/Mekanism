@@ -1,7 +1,6 @@
 {
   "values": {
     "mekanism:sodium": {
-      "conductivity": 1.0,
       "hot_variant": "mekanism:superheated_sodium",
       "thermal_enthalpy": 5.0
     }

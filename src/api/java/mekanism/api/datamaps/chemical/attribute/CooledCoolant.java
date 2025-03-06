@@ -8,7 +8,6 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.attribute.ChemicalAttributes;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 
 /**
@@ -27,7 +26,7 @@ public record CooledCoolant(Holder<Chemical> otherVariant, double thermalEnthalp
     /**
      * The ID of the data map.
      *
-     * @see net.neoforged.neoforge.registries.RegistryManager#getDataMap(ResourceKey, ResourceLocation)
+     * @see mekanism.api.datamaps.IMekanismDataMapTypes#cooledChemicalCoolant()
      */
     public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "chemical_attribute_cooled_coolant");
 
@@ -35,14 +34,11 @@ public record CooledCoolant(Holder<Chemical> otherVariant, double thermalEnthalp
      * Codec for serializing and deserializing cooled coolants.
      */
     public static final Codec<CooledCoolant> CODEC = RecordCodecBuilder.create(instance -> IChemicalCoolant.createBaseCodec(instance,
-          SerializationConstants.HOT_VARIANT
+          SerializationConstants.HOT_VARIANT, 1
     ).apply(instance, CooledCoolant::new));
 
     public CooledCoolant {
-        IChemicalCoolant.validateCoolantParams(thermalEnthalpy, conductivity);
-        if (otherVariant.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
-            throw new IllegalArgumentException("Coolants can not be made that point to the empty chemical");
-        }
+        IChemicalCoolant.validateCoolantParams(otherVariant, thermalEnthalpy, conductivity);
     }
 
     /**

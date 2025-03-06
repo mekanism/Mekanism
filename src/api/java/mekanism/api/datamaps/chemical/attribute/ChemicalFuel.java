@@ -12,7 +12,6 @@ import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ITooltipHelper;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Item.TooltipContext;
@@ -31,7 +30,7 @@ public record ChemicalFuel(int burnTicks, long energyDensity) implements IChemic
     /**
      * The ID of the data map.
      *
-     * @see net.neoforged.neoforge.registries.RegistryManager#getDataMap(ResourceKey, ResourceLocation)
+     * @see mekanism.api.datamaps.IMekanismDataMapTypes#chemicalFuel()
      */
     public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "chemical_attribute_fuel");
 

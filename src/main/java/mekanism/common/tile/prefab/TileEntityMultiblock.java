@@ -69,7 +69,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     private UUID cachedID = null;
 
     // start at 100 to make sure we run the animation
-    private long unformedTicks = 5 * SharedConstants.TICKS_PER_SECOND;
+    private long unformedTicks = 5L * SharedConstants.TICKS_PER_SECOND;
 
     public TileEntityMultiblock(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);

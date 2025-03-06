@@ -12,7 +12,6 @@ import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ITooltipHelper;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.TooltipFlag;
@@ -30,7 +29,7 @@ public record ChemicalRadioactivity(double radioactivity) implements IChemicalAt
     /**
      * The ID of the data map.
      *
-     * @see net.neoforged.neoforge.registries.RegistryManager#getDataMap(ResourceKey, ResourceLocation)
+     * @see mekanism.api.datamaps.IMekanismDataMapTypes#chemicalRadioactivity()
      */
     public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "chemical_attribute_radioactivity");
 

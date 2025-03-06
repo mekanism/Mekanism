@@ -67,10 +67,6 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
     private static final double CASING_INVERSE_INSULATION_COEFFICIENT = 100_000;
     private static final double CASING_INVERSE_CONDUCTION_COEFFICIENT = 1;
 
-    //TODO - 1.22: Do we want to define these two values as part of the heated coolant attribute?
-    private static final double COOLANT_COOLING_EFFICIENCY = 0.4;
-    private static final double HEATED_COOLANT_TEMP = 100_000D;
-
     private final List<AdvancedCapabilityOutputTarget<IChemicalHandler, BoilerValveMode>> chemicalOutputTargets = new ArrayList<>();
     private final List<IChemicalTank> inputTanks;
     private final List<IChemicalTank> outputSteamTanks;
@@ -186,9 +182,8 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         if (!superheatedCoolantTank.isEmpty()) {
             HeatedCoolant coolantType = getHeatedCoolant();
             if (coolantType != null) {
-                //TODO - 1.22: Figure out how to take the heated coolant's conductivity into account, is it really the coolant's cooling efficiency field?
-                long toCool = Math.round(COOLANT_COOLING_EFFICIENCY * superheatedCoolantTank.getStored());
-                toCool = MathUtils.clampToLong(toCool * (1 - heatCapacitor.getTemperature() / HEATED_COOLANT_TEMP));
+                double portionToCool = coolantType.conductivity() * superheatedCoolantTank.getStored();
+                long toCool = Math.round(portionToCool * (1 - heatCapacitor.getTemperature() / coolantType.temperature()));
                 ChemicalStack cooledCoolant = coolantType.cool(toCool);
                 long amountCooled = toCool - cooledCoolantTank.insert(cooledCoolant, Action.EXECUTE, AutomationType.INTERNAL).getAmount();
                 if (amountCooled > 0) {

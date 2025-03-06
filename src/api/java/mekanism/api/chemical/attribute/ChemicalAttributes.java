@@ -7,7 +7,6 @@ import java.util.function.LongSupplier;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.datamaps.chemical.attribute.ChemicalFuel;
-import mekanism.api.datamaps.chemical.attribute.IChemicalCoolant;
 import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.radiation.IRadiationManager;
@@ -104,7 +103,11 @@ public class ChemicalAttributes {
          *                        variant. This value should be greater than zero, and at most one.
          */
         private Coolant(double thermalEnthalpy, double conductivity) {
-            IChemicalCoolant.validateCoolantParams(thermalEnthalpy, conductivity);
+            if (thermalEnthalpy <= 0) {
+                throw new IllegalArgumentException("Coolant attributes must have a thermal enthalpy greater than zero! Thermal Enthalpy: " + thermalEnthalpy);
+            } else if (conductivity <= 0 || conductivity > 1) {
+                throw new IllegalArgumentException("Coolant attributes must have a conductivity greater than zero and at most one! Conductivity: " + conductivity);
+            }
             this.thermalEnthalpy = thermalEnthalpy;
             this.conductivity = conductivity;
         }
@@ -246,15 +249,17 @@ public class ChemicalAttributes {
         /**
          * @since 10.7.11
          */
-        public HeatedCoolant(Holder<Chemical> cooledChemical, double thermalEnthalpy, double conductivity) {
-            this(new mekanism.api.datamaps.chemical.attribute.HeatedCoolant(cooledChemical, thermalEnthalpy, conductivity));
+        public HeatedCoolant(Holder<Chemical> cooledChemical, double thermalEnthalpy) {
+            //Note: The value for conductivity used to have a different meaning/none so we ignore it here
+            this(new mekanism.api.datamaps.chemical.attribute.HeatedCoolant(cooledChemical, thermalEnthalpy));
         }
 
         /**
          * @since 10.7.11
          */
         public HeatedCoolant(mekanism.api.datamaps.chemical.attribute.HeatedCoolant coolant) {
-            super(coolant.thermalEnthalpy(), coolant.conductivity());
+            //Note: The value for conductivity used to have a different meaning/none so we ignore it here
+            super(coolant.thermalEnthalpy(), 1);
             this.modernRepresentation = coolant;
             this.cooledChemical = () -> this.modernRepresentation.otherVariant().value();
         }
@@ -283,7 +288,7 @@ public class ChemicalAttributes {
                 return null;
             }
             try {
-                return new mekanism.api.datamaps.chemical.attribute.HeatedCoolant(chemical.builtInRegistryHolder(), getThermalEnthalpy(), getConductivity());
+                return new mekanism.api.datamaps.chemical.attribute.HeatedCoolant(chemical.builtInRegistryHolder(), getThermalEnthalpy());
             } catch (IllegalArgumentException ignored) {
             }
             return null;
