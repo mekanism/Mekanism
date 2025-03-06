@@ -51,7 +51,7 @@ public class MekanismModules {
     //Meka-Tool
     public static final ModuleRegistryObject<ModuleExcavationEscalationUnit> EXCAVATION_ESCALATION_UNIT = MODULES.register("excavation_escalation_unit",
           ModuleExcavationEscalationUnit::new, () -> MekanismItems.MODULE_EXCAVATION_ESCALATION.asItem(), builder -> builder.maxStackSize(4).rarity(Rarity.UNCOMMON)
-                .handlesModeChange().rendersHUD());
+                .rendersHUD());
     public static final ModuleRegistryObject<ModuleAttackAmplificationUnit> ATTACK_AMPLIFICATION_UNIT = MODULES.register("attack_amplification_unit",
           ModuleAttackAmplificationUnit::new, () -> MekanismItems.MODULE_ATTACK_AMPLIFICATION.asItem(), builder -> builder.maxStackSize(4).rarity(Rarity.UNCOMMON)
                 .rendersHUD());

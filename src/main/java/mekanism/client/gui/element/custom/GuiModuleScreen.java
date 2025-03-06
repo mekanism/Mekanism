@@ -49,6 +49,10 @@ public class GuiModuleScreen extends GuiElement {
         return () -> {
             if (currentModule != null) {//Shouldn't be null but validate just in case
                 Mekanism.packetHandler().sendToServer(PacketUpdateModuleSettings.create(slotIdSupplier.getAsInt(), currentModule.getData(), dataIndex, configData));
+                // If we want to have it sync changes to current mode from the client we would put it here
+                // if (currentModule.getContainer().getItem() instanceof ISaveModeItem saveModeItem /* TODO && MekanismConfig.client.mekaModeSync.get() */) {
+                //     Mekanism.packetHandler().sendToServer(new PacketSaveMode(slotIdSupplier.getAsInt(), ItemDataUtils.getInt(currentModule.getContainer(), NBTConstants.MODE)));
+                // }
             }
         };
     }

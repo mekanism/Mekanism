@@ -36,6 +36,7 @@ import mekanism.common.network.to_server.PacketQIOItemViewerSlotInteract;
 import mekanism.common.network.to_server.PacketRadialModeChange;
 import mekanism.common.network.to_server.PacketRemoveModule;
 import mekanism.common.network.to_server.PacketRobit;
+import mekanism.common.network.to_server.PacketSaveMode;
 import mekanism.common.network.to_server.PacketSecurityMode;
 import mekanism.common.network.to_server.PacketUpdateModuleSettings;
 import mekanism.common.network.to_server.PacketWindowSelect;
@@ -78,6 +79,7 @@ public class PacketHandler extends BasePacketHandler {
         registerClientToServer(PacketSecurityMode.class, PacketSecurityMode::decode);
         registerClientToServer(PacketUpdateModuleSettings.class, PacketUpdateModuleSettings::decode);
         registerClientToServer(PacketWindowSelect.class, PacketWindowSelect::decode);
+        registerClientToServer(PacketSaveMode.class, PacketSaveMode::decode);
 
         //Server to client messages
         registerServerToClient(PacketFlyingSync.class, PacketFlyingSync::decode);

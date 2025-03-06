@@ -1,8 +1,11 @@
 package mekanism.common.config;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import mekanism.common.config.value.CachedBooleanValue;
+import mekanism.common.config.value.CachedConfigValue;
 import mekanism.common.config.value.CachedEnumValue;
 import mekanism.common.config.value.CachedFloatValue;
 import mekanism.common.config.value.CachedIntValue;
@@ -49,6 +52,7 @@ public class ClientConfig extends BaseMekanismConfig {
     public final CachedFloatValue hudJitter;
     public final CachedBooleanValue hudCompassEnabled;
     public final Map<String, CachedWindowPosition> lastWindowPositions = new HashMap<>();
+    public final CachedConfigValue<List<String>> mekaModeNames;
 
     public final CachedEnumValue<ListSortType> qioItemViewerSortType;
     public final CachedEnumValue<SortDirection> qioItemViewerSortDirection;
@@ -110,6 +114,8 @@ public class ClientConfig extends BaseMekanismConfig {
               .defineInRange("hudJitter", 6F, 1F, 100F));
         hudCompassEnabled = CachedBooleanValue.wrap(this, builder.comment("Display a fancy compass when the MekaSuit is worn.")
               .define("mekaSuitHelmetCompass", true));
+        mekaModeNames = CachedConfigValue.wrap(this, builder.comment("Meka Tool mode names.")
+              .define("mekaModeNames", new ArrayList<>(List.of("Mode1", "Mode2", "Mode3", "Mode4", "Mode5", "Mode6"))));
         builder.comment("Last Window Positions. In general these values should not be modified manually.").push(GUI_WINDOW_CATEGORY);
         for (WindowType windowType : WindowType.values()) {
             for (String savePath : windowType.getSavePaths()) {

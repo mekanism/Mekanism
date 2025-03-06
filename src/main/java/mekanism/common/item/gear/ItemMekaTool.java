@@ -15,11 +15,18 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
+import mekanism.api.NBTConstants;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
+import mekanism.api.gear.config.ModuleBooleanData;
+import mekanism.api.gear.config.ModuleConfigData;
+import mekanism.api.gear.config.ModuleEnumData;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
+import mekanism.api.text.IHasTextComponent;
+import mekanism.api.text.TextComponentUtil;
 import mekanism.client.key.MekKeyHandler;
 import mekanism.client.key.MekanismKeyHandler;
 import mekanism.common.Mekanism;
@@ -28,6 +35,8 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.IBlastingItem;
 import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.content.gear.Module;
+import mekanism.common.content.gear.ModuleConfigItem;
+import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.content.gear.mekatool.ModuleAttackAmplificationUnit;
 import mekanism.common.content.gear.mekatool.ModuleBlastingUnit;
 import mekanism.common.content.gear.mekatool.ModuleExcavationEscalationUnit;
@@ -35,14 +44,20 @@ import mekanism.common.content.gear.mekatool.ModuleTeleportationUnit;
 import mekanism.common.content.gear.mekatool.ModuleVeinMiningUnit;
 import mekanism.common.content.gear.shared.ModuleEnergyUnit;
 import mekanism.common.item.ItemEnergized;
-import mekanism.common.item.interfaces.IModeItem;
+import mekanism.common.item.gear.ItemMekaTool.MekaToolMode;
+import mekanism.common.item.interfaces.IRadialModeItem;
+import mekanism.common.item.interfaces.IRadialSelectorEnum;
+import mekanism.common.item.interfaces.ISaveModeItem;
 import mekanism.common.network.to_client.PacketPortalFX;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.tags.MekanismTags;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -74,7 +89,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.common.ToolAction;
 import net.minecraftforge.fluids.IFluidBlock;
 
-public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem, IModeItem, IBlastingItem {
+public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem, IRadialModeItem<MekaToolMode>, ISaveModeItem, IBlastingItem {
 
     private final Multimap<Attribute, AttributeModifier> attributes;
 
@@ -378,18 +393,44 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
         return false;
     }
 
-    @Override
-    public boolean supportsSlotType(ItemStack stack, @Nonnull EquipmentSlot slotType) {
-        return IModeItem.super.supportsSlotType(stack, slotType) && getModules(stack).stream().anyMatch(Module::handlesModeChange);
-    }
+    public enum MekaToolMode implements IRadialSelectorEnum<MekaToolMode>, IHasTextComponent {
+        ONE(),
+        TWO(),
+        THREE(),
+        FOUR(),
+        FIVE(),
+        SIX();
 
-    @Override
-    public void changeMode(@Nonnull Player player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage) {
-        for (Module<?> module : getModules(stack)) {
-            if (module.handlesModeChange()) {
-                module.changeMode(player, stack, shift, displayChangeMessage);
-                return;
-            }
+        public String getKey() {
+            return NBTConstants.MODULE_PROFILE + ordinal();
+        }
+
+        public boolean isEnabled() {
+            return true;
+        }
+
+        public static MekaToolMode byIndexStatic(int index) {
+            return MathUtils.getByIndexMod(values(), index);
+        }
+
+        @Override
+        public @Nonnull MekaToolMode byIndex(int index) {
+            return byIndexStatic(index);
+        }
+
+        @Override
+        public Component getTextComponent() {
+            return TextComponentUtil.getString(MekanismConfig.client.mekaModeNames.get().get(ordinal()));
+        }
+
+        @Override
+        public Component getShortText() {
+            return getTextComponent();
+        }
+
+        @Override
+        public ResourceLocation getIcon() {
+            return MekanismUtils.getResource(MekanismUtils.ResourceType.GUI, "void.png");
         }
     }
 
@@ -403,5 +444,71 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
     protected FloatingLong getChargeRate(ItemStack stack) {
         IModule<ModuleEnergyUnit> module = getModule(stack, MekanismModules.ENERGY_UNIT);
         return module == null ? MekanismConfig.gear.mekaToolBaseChargeRate.get() : module.getCustomInstance().getChargeRate(module);
+    }
+
+    @Override
+    public MekaToolMode getMode(ItemStack itemStack) {
+        return MekaToolMode.byIndexStatic(ItemDataUtils.getInt(itemStack, NBTConstants.MODE));
+    }
+
+    @Override
+    public MekaToolMode getModeByIndex(int ordinal) {
+        return MekaToolMode.byIndexStatic(ordinal);
+    }
+
+    @Override
+    public void setMode(ItemStack stack, Player player, MekaToolMode mode) {
+        ItemDataUtils.setInt(stack, NBTConstants.MODE, mode.ordinal());
+
+        CompoundTag modeTag = ItemDataUtils.getCompound(stack, mode.getKey());
+        for (Module<?> m : ModuleHelper.INSTANCE.loadAll(stack)) {
+            CompoundTag modeNBT = modeTag.getCompound(m.getData().getRegistryName().toString());
+            for (ModuleConfigItem<?> item : m.getConfigItems()) {
+                if (modeNBT.contains(item.getName())) {
+                    setValue(item, modeNBT);
+                }
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private <TYPE> void setValue(ModuleConfigItem<TYPE> moduleConfigItem, CompoundTag valueContainer) {
+        ModuleConfigData<TYPE> configData = moduleConfigItem.getData();
+        if (configData instanceof ModuleBooleanData) {
+            ((ModuleConfigItem<Boolean>) moduleConfigItem).set(valueContainer.getBoolean(moduleConfigItem.getName()));
+        } else if (configData instanceof ModuleEnumData) {
+            moduleConfigItem.set((TYPE) MathUtils.getByIndexMod(((ModuleEnumData<?>) configData).getEnums(), valueContainer.getInt(moduleConfigItem.getName())));
+        }
+    }
+
+    @Override
+    public Class<MekaToolMode> getModeClass() {
+        return MekaToolMode.class;
+    }
+
+    @Override
+    public void changeMode(@Nonnull Player player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage) {
+        setMode(stack, player, shift == 0 ? getMode(stack).getPrevious() : getMode(stack).getNext());
+    }
+
+    @Override
+    public void saveMode(@Nonnull ItemStack stack, int modeId) {
+        MekaToolMode mode = MekaToolMode.byIndexStatic(modeId);
+        CompoundTag modeTag = new CompoundTag();
+        for (Module<?> m : ModuleHelper.INSTANCE.loadAll(stack)) {
+            CompoundTag modeNBT = new CompoundTag();
+            for (ModuleConfigItem<?> item : m.getConfigItems()) {
+                item.write(modeNBT);
+            }
+            modeTag.put(m.getData().getRegistryName().toString(), modeNBT);
+        }
+        ItemDataUtils.setCompound(stack, mode.getKey(), modeTag);
+    }
+
+    @Override
+    public void addHUDStrings(List<Component> list, Player player, ItemStack stack, EquipmentSlot slotType) {
+        IModuleContainerItem.super.addHUDStrings(list, player, stack, slotType);
+
+        list.add(MekanismLang.MODULE_PROFILE_SELECTED.translateColored(EnumColor.DARK_GRAY, EnumColor.INDIGO, getMode(stack).getShortText()));
     }
 }

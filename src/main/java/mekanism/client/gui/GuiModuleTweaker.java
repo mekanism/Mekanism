@@ -11,6 +11,7 @@ import mekanism.client.gui.element.scroll.GuiModuleScrollList;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.window.GuiMekaSuitHelmetOptions;
+import mekanism.client.gui.element.window.GuiMekaToolOptions;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.gear.Module;
 import mekanism.common.inventory.container.ModuleTweakerContainer;
@@ -19,6 +20,7 @@ import mekanism.common.registries.MekanismItems;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.lwjgl.glfw.GLFW;
 
@@ -64,7 +66,12 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
     }
 
     private void openOptions() {
-        addWindow(new GuiMekaSuitHelmetOptions(this, getWidth() / 2 - 140 / 2, getHeight() / 2 - 90 / 2));
+        Item item = getStack(selected).getItem();
+        if(item == MekanismItems.MEKASUIT_HELMET.get()) {
+            addWindow(new GuiMekaSuitHelmetOptions(this, getWidth() / 2 - 140 / 2, getHeight() / 2 - 90 / 2));
+        } else if(item == MekanismItems.MEKA_TOOL.get()) {
+            addWindow(new GuiMekaToolOptions(this, getWidth() / 2 - 140 / 2, getHeight() / 2 - 90 / 2, menu.slots.get(selected).getSlotIndex()));
+        }
     }
 
     @Override
@@ -121,7 +128,7 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
             selected = index;
             ItemStack stack = getStack(index);
             scrollList.updateList(stack, true);
-            optionsButton.active = stack.getItem() == MekanismItems.MEKASUIT_HELMET.get();
+            optionsButton.active = (stack.getItem() == MekanismItems.MEKASUIT_HELMET.get()) || (stack.getItem() == MekanismItems.MEKA_TOOL.get());
         }
     }
 
