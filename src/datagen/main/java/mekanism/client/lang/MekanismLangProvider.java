@@ -1114,6 +1114,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         //Free runner modes
         add(MekanismLang.FREE_RUNNER_MODE_CHANGE, "Free runner mode changed to: %1$s");
         add(MekanismLang.FREE_RUNNER_NORMAL, "Regular");
+        add(MekanismLang.FREE_RUNNER_SAFETY, "Safety");
         add(MekanismLang.FREE_RUNNER_DISABLED, "Disabled");
         //Jetpack Modes
         add(MekanismLang.JETPACK_MODE_CHANGE, "Jetpack mode changed to: %1$s");
