@@ -6,6 +6,7 @@ import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.heat.IMekanismHeatHandler;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.tier.BaseTier;
+import mekanism.api.tier.IBasicTier;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
@@ -63,8 +64,8 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter {
 
     @NotNull
     @Override
-    protected BlockState upgradeResult(@NotNull BlockState current, @NotNull BaseTier tier) {
-        return BlockStateHelper.copyStateData(current, switch (tier) {
+    protected BlockState upgradeResult(@NotNull BlockState current, @NotNull IBasicTier tier) {
+        return BlockStateHelper.copyStateData(current, switch ((BaseTier) tier) {
             case BASIC -> MekanismBlocks.BASIC_THERMODYNAMIC_CONDUCTOR;
             case ADVANCED -> MekanismBlocks.ADVANCED_THERMODYNAMIC_CONDUCTOR;
             case ELITE -> MekanismBlocks.ELITE_THERMODYNAMIC_CONDUCTOR;

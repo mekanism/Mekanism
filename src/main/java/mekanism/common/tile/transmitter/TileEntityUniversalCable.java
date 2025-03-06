@@ -7,6 +7,7 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.tier.BaseTier;
+import mekanism.api.tier.IBasicTier;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.capabilities.energy.DynamicStrictEnergyHandler;
@@ -66,8 +67,8 @@ public class TileEntityUniversalCable extends TileEntityTransmitter implements I
 
     @NotNull
     @Override
-    protected BlockState upgradeResult(@NotNull BlockState current, @NotNull BaseTier tier) {
-        return BlockStateHelper.copyStateData(current, switch (tier) {
+    protected BlockState upgradeResult(@NotNull BlockState current, @NotNull IBasicTier tier) {
+        return BlockStateHelper.copyStateData(current, switch ((BaseTier) tier) {
             case BASIC -> MekanismBlocks.BASIC_UNIVERSAL_CABLE;
             case ADVANCED -> MekanismBlocks.ADVANCED_UNIVERSAL_CABLE;
             case ELITE -> MekanismBlocks.ELITE_UNIVERSAL_CABLE;

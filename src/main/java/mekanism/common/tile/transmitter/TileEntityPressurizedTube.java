@@ -10,6 +10,7 @@ import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.tier.BaseTier;
+import mekanism.api.tier.IBasicTier;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
@@ -72,8 +73,8 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
 
     @NotNull
     @Override
-    protected BlockState upgradeResult(@NotNull BlockState current, @NotNull BaseTier tier) {
-        return BlockStateHelper.copyStateData(current, switch (tier) {
+    protected BlockState upgradeResult(@NotNull BlockState current, @NotNull IBasicTier tier) {
+        return BlockStateHelper.copyStateData(current, switch ((BaseTier) tier) {
             case BASIC -> MekanismBlocks.BASIC_PRESSURIZED_TUBE;
             case ADVANCED -> MekanismBlocks.ADVANCED_PRESSURIZED_TUBE;
             case ELITE -> MekanismBlocks.ELITE_PRESSURIZED_TUBE;

@@ -8,6 +8,7 @@ import mekanism.api.IConfigurable;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.api.tier.BaseTier;
+import mekanism.api.tier.IBasicTier;
 import mekanism.api.tier.ITier;
 import mekanism.client.model.data.TransmitterModelData;
 import mekanism.common.Mekanism;
@@ -399,7 +400,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
     }
 
     @NotNull
-    protected BlockState upgradeResult(@NotNull BlockState current, @NotNull BaseTier tier) {
+    protected BlockState upgradeResult(@NotNull BlockState current, @NotNull IBasicTier tier) {
         return current;
     }
 

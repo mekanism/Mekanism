@@ -6,6 +6,7 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.tier.BaseTier;
+import mekanism.api.tier.IBasicTier;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
@@ -66,8 +67,8 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter implements I
 
     @NotNull
     @Override
-    protected BlockState upgradeResult(@NotNull BlockState current, @NotNull BaseTier tier) {
-        return BlockStateHelper.copyStateData(current, switch (tier) {
+    protected BlockState upgradeResult(@NotNull BlockState current, @NotNull IBasicTier tier) {
+        return BlockStateHelper.copyStateData(current, switch ((BaseTier) tier) {
             case BASIC -> MekanismBlocks.BASIC_MECHANICAL_PIPE;
             case ADVANCED -> MekanismBlocks.ADVANCED_MECHANICAL_PIPE;
             case ELITE -> MekanismBlocks.ELITE_MECHANICAL_PIPE;

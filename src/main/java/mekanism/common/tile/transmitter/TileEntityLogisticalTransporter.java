@@ -2,6 +2,7 @@ package mekanism.common.tile.transmitter;
 
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.tier.BaseTier;
+import mekanism.api.tier.IBasicTier;
 import mekanism.client.model.data.TransmitterModelData;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
@@ -40,8 +41,8 @@ public class TileEntityLogisticalTransporter extends TileEntityLogisticalTranspo
 
     @NotNull
     @Override
-    protected BlockState upgradeResult(@NotNull BlockState current, @NotNull BaseTier tier) {
-        return BlockStateHelper.copyStateData(current, switch (tier) {
+    protected BlockState upgradeResult(@NotNull BlockState current, @NotNull IBasicTier tier) {
+        return BlockStateHelper.copyStateData(current, switch ((BaseTier) tier) {
             case BASIC -> MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER;
             case ADVANCED -> MekanismBlocks.ADVANCED_LOGISTICAL_TRANSPORTER;
             case ELITE -> MekanismBlocks.ELITE_LOGISTICAL_TRANSPORTER;
