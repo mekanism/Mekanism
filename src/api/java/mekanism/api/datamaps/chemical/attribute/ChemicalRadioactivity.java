@@ -33,7 +33,6 @@ public record ChemicalRadioactivity(double radioactivity) implements IChemicalAt
      */
     public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "chemical_attribute_radioactivity");
 
-    //TODO - HOLDERS: Should this be baselineRadiation or minRadiationMagnitude, and if minMagnitude, is it inclusive or exclusive
     private static final Codec<Double> RADIATION_CODEC = Codec.doubleRange(IRadiationManager.INSTANCE.baselineRadiation(), Double.MAX_VALUE).validate(val -> {
         if (val == IRadiationManager.INSTANCE.baselineRadiation()) {
             return DataResult.error(() -> "Radiation must be greater than the baseline value");

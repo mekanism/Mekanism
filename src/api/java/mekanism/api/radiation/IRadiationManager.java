@@ -66,12 +66,12 @@ public interface IRadiationManager {
     double baselineRadiation();
 
     /**
-     * {@return the minimum radiation level that has a noticeable effect}
+     * {@return the minimum radiation level that has a noticeable effect on entities}
      *
      * @implNote 10 uSv/h
      * @since 10.7.11
      */
-    double minRadiationMagnitude();//TODO - TODO - HOLDERS: Fix the docs on this method
+    double minRadiationMagnitude();
 
     /**
      * Helper to access Mekanism's internal radiation damage source.

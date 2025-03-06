@@ -42,14 +42,14 @@ public class RadiationEntity implements IRadiationEntity {
             return;
         }
         double radiation = getRadiation();
-        if (radiation <= IRadiationManager.INSTANCE.baselineRadiation()) {
-            //NO-OP, the entity isn't actually irradiated
+        double severityScale = RadiationScale.getScaledDoseSeverity(radiation);
+        if (severityScale <= IRadiationManager.INSTANCE.baselineRadiation()) {
+            //NO-OP, the entity isn't actually irradiated enough to notice
             return;
         }
 
         RandomSource rand = entity.level().getRandom();
         double minSeverity = MekanismConfig.general.radiationNegativeEffectsMinSeverity.get();
-        double severityScale = RadiationScale.getScaledDoseSeverity(radiation);
         double chance = minSeverity + rand.nextDouble() * (1 - minSeverity);
 
         if (severityScale > chance) {
