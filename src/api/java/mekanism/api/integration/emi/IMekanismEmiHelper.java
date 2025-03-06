@@ -26,9 +26,10 @@ public interface IMekanismEmiHelper {
      *
      * @deprecated Prefer using the holder overload. {@link #createEmiStack(Holder, long)}
      */
+    @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
     default EmiStack createEmiStack(Chemical chemical, long size) {
-        return createEmiStack(chemical.builtInRegistryHolder(), size);
+        return createEmiStack(chemical.getAsHolder(), size);
     }
 
     /**

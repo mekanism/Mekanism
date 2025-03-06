@@ -211,7 +211,7 @@ public class ChemicalAttributes {
                 return null;
             }
             try {
-                return new mekanism.api.datamaps.chemical.attribute.CooledCoolant(chemical.builtInRegistryHolder(), getThermalEnthalpy(), getConductivity());
+                return new mekanism.api.datamaps.chemical.attribute.CooledCoolant(chemical.getAsHolder(), getThermalEnthalpy(), getConductivity());
             } catch (IllegalArgumentException ignored) {
             }
             return null;
@@ -288,7 +288,7 @@ public class ChemicalAttributes {
                 return null;
             }
             try {
-                return new mekanism.api.datamaps.chemical.attribute.HeatedCoolant(chemical.builtInRegistryHolder(), getThermalEnthalpy());
+                return new mekanism.api.datamaps.chemical.attribute.HeatedCoolant(chemical.getAsHolder(), getThermalEnthalpy());
             } catch (IllegalArgumentException ignored) {
             }
             return null;

@@ -35,15 +35,6 @@ public final class NSSChemical extends AbstractNSSTag<Chemical> {
     }
 
     /**
-     * Helper method to create an {@link NSSChemical} representing a chemical from a {@link Chemical}
-     */
-    @NotNull
-    @SuppressWarnings("deprecation")
-    public static NSSChemical createChemical(@NotNull Chemical chemical) {
-        return createChemical(chemical.builtInRegistryHolder());
-    }
-
-    /**
      * Helper method to create an {@link NSSChemical} representing a chemical from a {@link Holder}.
      */
     @NotNull

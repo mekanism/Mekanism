@@ -40,9 +40,10 @@ public abstract sealed class ChemicalIngredient implements Predicate<Chemical> p
      * @deprecated Prefer calling via the holder method {@link #test(Holder)}
      */
     @Override
+    @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
     public final boolean test(Chemical chemical) {//TODO - 1.22: Remove this method and make ChemicalIngredient be a predicate of Holder<Chemical>
-        return test(chemical.builtInRegistryHolder());
+        return test(chemical.getAsHolder());
     }
 
     /**

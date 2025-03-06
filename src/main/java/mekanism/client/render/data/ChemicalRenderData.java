@@ -1,6 +1,7 @@
 package mekanism.client.render.data;
 
 import java.util.Objects;
+import mekanism.api.MekanismAPITags;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.client.render.MekanismRenderer;
@@ -33,9 +34,8 @@ public class ChemicalRenderData extends RenderData {
     @Override
     @SuppressWarnings("removal")
     public boolean isGaseous() {
-        //TODO - 1.22: Replace this with the commented check
-        return chemical.value().isGaseous();
-        //return chemical.is(MekanismAPITags.Chemicals.GASEOUS);
+        //TODO - 1.22: Remove the legacy check
+        return chemical.is(MekanismAPITags.Chemicals.GASEOUS) || chemical.value().isGaseousLegacy();
     }
 
     @Override

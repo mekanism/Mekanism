@@ -37,7 +37,7 @@ public class ChemicalEmiStack extends EmiStack {
     }
 
     public ChemicalEmiStack(Chemical chemical, DataComponentPatch ignored, long amount) {
-        this(chemical.builtInRegistryHolder(), amount);
+        this(MekanismAPI.CHEMICAL_REGISTRY.wrapAsHolder(chemical), amount);
     }
 
     public ChemicalEmiStack(Holder<Chemical> chemical, long amount) {
@@ -69,6 +69,13 @@ public class ChemicalEmiStack extends EmiStack {
         if ((flags & RENDER_REMAINDER) != 0) {
             EmiRender.renderRemainderIcon(this, graphics, x, y);
         }
+    }
+
+    public ChemicalStack getStack() {
+        if (isEmpty()) {
+            return ChemicalStack.EMPTY;
+        }
+        return new ChemicalStack(chemical, amount);
     }
 
     @Override

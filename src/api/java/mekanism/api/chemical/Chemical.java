@@ -133,7 +133,6 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
               .orElse(MekanismAPI.EMPTY_CHEMICAL_HOLDER);
     }
 
-    private final Holder.Reference<Chemical> builtInRegistryHolder = MekanismAPI.CHEMICAL_REGISTRY.createIntrusiveHolder(this);
     //TODO - 1.22: Figure out if we should we keep this cache or remove it?
     private final List<IChemicalAttribute> attributes = new ArrayList<>();
     private final List<IChemicalAttribute> attributesView = Collections.unmodifiableList(attributes);
@@ -188,7 +187,7 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
 
     @Override
     public final String toString() {
-        return builtInRegistryHolder().getRegisteredName();
+        return MekanismAPI.CHEMICAL_REGISTRY.wrapAsHolder(this).getRegisteredName();
     }
 
     @NotNull
@@ -395,7 +394,7 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
      */
     @Deprecated(forRemoval = true, since = "10.7.9")
     public boolean is(TagKey<Chemical> tag) {
-        return builtInRegistryHolder.is(tag);
+        return getAsHolder().is(tag);
     }
 
     /**
@@ -407,28 +406,19 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
      */
     @Deprecated(forRemoval = true, since = "10.7.9")
     public Stream<TagKey<Chemical>> getTags() {
-        return builtInRegistryHolder.tags();
+        return getAsHolder().tags();
     }
 
     /**
-     * Helper method to get the holder for this chemical.
+     * Helper method to get the holder for this chemical. Unlike {@link net.minecraft.world.item.Item#builtInRegistryHolder()} and similar, this looks up the holder from
+     * the registry when called.
      *
      * @since 10.6.0
-     * @deprecated If a holder is necessary use {@link #builtInRegistryHolder()}
+     * @deprecated If a holder is necessary get it from {@link ChemicalStack#getChemicalHolder()} or direct from the {@link MekanismAPI#CHEMICAL_REGISTRY}.
      */
     @Deprecated(forRemoval = true, since = "10.7.11")
     public Holder<Chemical> getAsHolder() {
-        return builtInRegistryHolder();
-    }
-
-    /**
-     * Intrusive holder, similar to vanilla this is deprecated and will eventually be moved away from.
-     *
-     * @since 10.7.11
-     */
-    @Deprecated
-    public Holder.Reference<Chemical> builtInRegistryHolder() {
-        return this.builtInRegistryHolder;
+        return MekanismAPI.CHEMICAL_REGISTRY.wrapAsHolder(this);
     }
 
     /**
@@ -467,33 +457,46 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
      */
     @Deprecated(forRemoval = true, since = "10.7.11")
     public boolean isGaseous() {
-        return isGaseous || is(MekanismAPITags.Chemicals.GASEOUS);
+        return isGaseousLegacy() || is(MekanismAPITags.Chemicals.GASEOUS);
+    }
+
+    /**
+     * {@return whether this chemical declares in code that it should render as a gas or more like a fluid}
+     *
+     * @since 10.7.11
+     * @deprecated 10.7.11 Prefer checking against {@link MekanismAPITags.Chemicals#GASEOUS}, though note it may not contain entries from mods that haven't updated to
+     * declaring via tags.
+     */
+    @Deprecated(forRemoval = true, since = "10.7.11")
+    public boolean isGaseousLegacy() {
+        return isGaseous;
     }
 
     @Internal//TODO - 1.22: Evaluate if we want to get rid of this or if caching the state of some of this is useful from a performance standpoint
     @MustBeInvokedByOverriders
-    public void updateFromDataMap() {
-        ChemicalSolidTag tag = builtInRegistryHolder().getData(IMekanismDataMapTypes.INSTANCE.chemicalSolidTag());
+    public void updateFromDataMap(Holder<Chemical> holder) {
+        ChemicalSolidTag tag = holder.getData(IMekanismDataMapTypes.INSTANCE.chemicalSolidTag());
         oreTag = tag == null ? legacyOreTag : tag.solidRepresentation();
         attributeMap = null;//Clear cached map
         hasAttributesWithValidation = hasLegacyAttributesWithValidation;
         radioactivity = legacyRadioactivity;
         attributes.clear();
-        trackAttribute(IMekanismDataMapTypes.INSTANCE.chemicalFuel());
-        trackAttribute(IMekanismDataMapTypes.INSTANCE.chemicalRadioactivity());
-        trackAttribute(IMekanismDataMapTypes.INSTANCE.cooledChemicalCoolant());
-        trackAttribute(IMekanismDataMapTypes.INSTANCE.heatedChemicalCoolant());
+        trackAttribute(holder, IMekanismDataMapTypes.INSTANCE.chemicalFuel());
+        trackAttribute(holder, IMekanismDataMapTypes.INSTANCE.chemicalRadioactivity());
+        trackAttribute(holder, IMekanismDataMapTypes.INSTANCE.cooledChemicalCoolant());
+        trackAttribute(holder, IMekanismDataMapTypes.INSTANCE.heatedChemicalCoolant());
     }
 
     /**
      * Tracks an attribute if it is present, and update any related cached states.
      *
+     * @param holder      The reference holder for this chemical.
      * @param dataMapType The type of the attribute to check for and track.
      *
      * @since 10.7.11
      */
-    protected void trackAttribute(DataMapType<Chemical, ? extends IChemicalAttribute> dataMapType) {
-        IChemicalAttribute attribute = builtInRegistryHolder().getData(dataMapType);
+    protected void trackAttribute(Holder<Chemical> holder, DataMapType<Chemical, ? extends IChemicalAttribute> dataMapType) {
+        IChemicalAttribute attribute = holder.getData(dataMapType);
         if (attribute != null) {
             attributes.add(attribute);
             if (attribute instanceof ChemicalRadioactivity(double rads)) {

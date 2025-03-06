@@ -6,7 +6,6 @@ import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.Bounds;
 import dev.emi.emi.api.widget.SlotWidget;
 import java.util.List;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.math.MathUtils;
 import mekanism.client.gui.GuiUtils;
@@ -14,6 +13,7 @@ import mekanism.client.gui.GuiUtils.TilingDirection;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.recipe_viewer.RecipeViewerUtils;
+import mekanism.client.recipe_viewer.emi.ChemicalEmiStack;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidTextureType;
 import net.minecraft.client.gui.GuiGraphics;
@@ -51,8 +51,8 @@ public class MekanismTankEmiWidget extends SlotWidget {
         EmiStack stack = stacks.isEmpty() ? EmiStack.EMPTY : RecipeViewerUtils.getCurrent(stacks);
         if (!stack.isEmpty() && ingredient.getAmount() > 0) {
             TextureAtlasSprite sprite;
-            if (stack.getKey() instanceof Chemical chemical) {
-                ChemicalStack chemicalStack = new ChemicalStack(chemical, MathUtils.clampToInt(ingredient.getAmount()));
+            if (stack instanceof ChemicalEmiStack chemicalEmiStack) {
+                ChemicalStack chemicalStack = chemicalEmiStack.getStack();
                 MekanismRenderer.color(graphics, chemicalStack);
                 sprite = MekanismRenderer.getChemicalTexture(chemicalStack);
             } else if (stack.getKey() instanceof Fluid fluid) {

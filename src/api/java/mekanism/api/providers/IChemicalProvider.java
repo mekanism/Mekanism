@@ -23,7 +23,7 @@ public interface IChemicalProvider extends IBaseProvider {
      * @param size Size of the stack.
      */
     default ChemicalStack getStack(long size) {
-        return new ChemicalStack(getChemical(), size);
+        return new ChemicalStack(getChemical().getAsHolder(), size);
     }
 
     @Override

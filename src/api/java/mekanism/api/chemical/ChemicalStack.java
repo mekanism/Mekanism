@@ -69,8 +69,9 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
      * @since 10.6.0
      * @deprecated Prefer using {@link #CHEMICAL_NON_EMPTY_HOLDER_CODEC}
      */
+    @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
-    public static final Codec<Chemical> CHEMICAL_NON_EMPTY_CODEC = CHEMICAL_NON_EMPTY_HOLDER_CODEC.xmap(Holder::value, Chemical::builtInRegistryHolder);
+    public static final Codec<Chemical> CHEMICAL_NON_EMPTY_CODEC = CHEMICAL_NON_EMPTY_HOLDER_CODEC.xmap(Holder::value, Chemical::getAsHolder);
     /**
      * A standard map codec for Chemical stacks that does not accept empty stacks.
      *
@@ -197,9 +198,11 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
      * @param amount   Amount of chemical in this stack. If this is less than or equal to zero the stack will be considered empty.
      *
      * @throws NullPointerException If the chemical is null.
+     * @deprecated Prefer creating a chemical stack using the chemical's holder
      */
+    @Deprecated(forRemoval = true, since = "10.7.11")
     public ChemicalStack(Chemical chemical, long amount) {
-        this(Objects.requireNonNull(chemical, "Cannot create a ChemicalStack from a null chemical").builtInRegistryHolder(), amount);
+        this(Objects.requireNonNull(chemical, "Cannot create a ChemicalStack from a null chemical").getAsHolder(), amount);
     }
 
     private ChemicalStack(@Nullable Void unused) {

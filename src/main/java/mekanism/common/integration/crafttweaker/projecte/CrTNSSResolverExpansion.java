@@ -2,6 +2,7 @@ package mekanism.common.integration.crafttweaker.projecte;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.tag.type.KnownTag;
+import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.crafttweaker.CrTConstants;
@@ -30,7 +31,7 @@ public class CrTNSSResolverExpansion {
      */
     @ZenCodeType.StaticExpansionMethod
     public static NormalizedSimpleStack fromChemical(Chemical chemical) {
-        return NSSChemical.createChemical(chemical);
+        return NSSChemical.createChemical(MekanismAPI.CHEMICAL_REGISTRY.wrapAsHolder(chemical));
     }
 
     /**

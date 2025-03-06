@@ -40,7 +40,7 @@ public class CrTChemicalStackIngredient {
     @ZenCodeType.StaticExpansionMethod
     public static ChemicalStackIngredient from(Chemical chemical, long amount) {
         assertValidAmount(amount);
-        Holder<Chemical> instance = chemical.builtInRegistryHolder();
+        Holder<Chemical> instance = MekanismAPI.CHEMICAL_REGISTRY.wrapAsHolder(chemical);
         if (instance.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
             throw new IllegalArgumentException("ChemicalStackIngredients cannot be created from an empty chemical.");
         }
@@ -72,7 +72,7 @@ public class CrTChemicalStackIngredient {
      */
     @ZenCodeType.StaticExpansionMethod
     public static ChemicalStackIngredient from(long amount, Chemical... chemicals) {
-        return from(amount, Arrays.stream(chemicals).map(Chemical::builtInRegistryHolder).toArray(Holder[]::new));
+        return from(amount, Arrays.stream(chemicals).map(MekanismAPI.CHEMICAL_REGISTRY::wrapAsHolder).toArray(Holder[]::new));
     }
 
     /**
@@ -88,6 +88,7 @@ public class CrTChemicalStackIngredient {
         return from(amount, Arrays.stream(chemicals).map(stack -> stack.getInternal().getChemicalHolder()).toArray(Holder[]::new));
     }
 
+    @SafeVarargs
     private static ChemicalStackIngredient from(long amount, Holder<Chemical>... chemicals) {
         assertValidAmount(amount);
         if (chemicals == null || chemicals.length == 0) {
@@ -186,7 +187,7 @@ public class CrTChemicalStackIngredient {
      */
     @ZenCodeType.Method
     public static boolean testType(ChemicalStackIngredient _this, Chemical chemical) {
-        return _this.testType(chemical.builtInRegistryHolder());
+        return _this.testType(MekanismAPI.CHEMICAL_REGISTRY.wrapAsHolder(chemical));
     }
 
     /**

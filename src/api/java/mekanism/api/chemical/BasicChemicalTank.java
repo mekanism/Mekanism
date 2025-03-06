@@ -491,12 +491,13 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
         return new BasicChemicalTank(capacity, canExtract, canInsert, validator, attributeValidator, listener, null);
     }
 
+    @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
     private static BiPredicate<Chemical, @NotNull AutomationType> wrapAutomationPredicate(BiPredicate<Holder<Chemical>, @NotNull AutomationType> predicate) {
         if (predicate == holderAlwaysTrueBi || predicate == holderInternalOnly || predicate == holderNotExternal || predicate == holderManualOnly) {
             return (BiPredicate<Chemical, @NotNull AutomationType>) (BiPredicate<?, @NotNull AutomationType>) predicate;
         }
-        return (chemical, automationType) -> predicate.test(chemical.builtInRegistryHolder(), automationType);
+        return (chemical, automationType) -> predicate.test(chemical.getAsHolder(), automationType);
     }
 
     @Deprecated(forRemoval = true, since = "10.7.11")

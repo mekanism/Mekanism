@@ -20,8 +20,15 @@ public interface IChemicalStackIngredientCreator extends IIngredientCreator<Chem
     }
 
     @Override
+    @SuppressWarnings("removal")
+    @Deprecated(forRemoval = true, since = "10.7.11")
     default ChemicalStackIngredient from(Chemical instance, int amount) {
-        return fromHolder(instance.builtInRegistryHolder(), (long) amount);
+        return fromHolder(instance.getAsHolder(), (long) amount);
+    }
+
+    @Override
+    default ChemicalStackIngredient fromHolder(Holder<Chemical> instance, int amount) {
+        return fromHolder(instance, (long) amount);
     }
 
     /**
@@ -43,8 +50,15 @@ public interface IChemicalStackIngredientCreator extends IIngredientCreator<Chem
     }
 
     @Override
+    @SuppressWarnings("removal")
+    @Deprecated(forRemoval = true, since = "10.7.11")
     default ChemicalStackIngredient from(int amount, Chemical... chemicals) {
         return from((long) amount, chemicals);
+    }
+
+    @Override
+    default ChemicalStackIngredient fromHolders(int amount, Holder<Chemical>... holders) {
+        return fromHolders((long) amount, holders);
     }
 
     /**
@@ -63,7 +77,7 @@ public interface IChemicalStackIngredientCreator extends IIngredientCreator<Chem
     @Deprecated(forRemoval = true, since = "10.7.11")
     default ChemicalStackIngredient from(long amount, IChemicalProvider... chemicals) {
         if (chemicals.length == 0) {
-            throw new IllegalArgumentException("Attempted to create an ChemicalStackIngredients with no chemicals.");
+            throw new IllegalArgumentException("Attempted to create a ChemicalStackIngredient with no chemicals.");
         }
         return from(IngredientCreatorAccess.chemical().of(chemicals), amount);
     }
@@ -95,7 +109,7 @@ public interface IChemicalStackIngredientCreator extends IIngredientCreator<Chem
      */
     default ChemicalStackIngredient fromHolders(long amount, Holder<Chemical>... chemicals) {
         if (chemicals.length == 0) {
-            throw new IllegalArgumentException("Attempted to create an ChemicalStackIngredients with no chemicals.");
+            throw new IllegalArgumentException("Attempted to create a ChemicalStackIngredient with no chemicals.");
         }
         return from(IngredientCreatorAccess.chemical().ofHolders(chemicals), amount);
     }

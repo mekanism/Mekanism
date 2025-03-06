@@ -24,8 +24,8 @@ public class MekanismEmiHelper implements IMekanismEmiHelper {
 
     @Override
     public Optional<ChemicalStack> asChemicalStack(EmiStack stack) {
-        if (stack.getKey() instanceof Chemical chemical) {
-            return Optional.of(new ChemicalStack(chemical, stack.getAmount()));
+        if (stack instanceof ChemicalEmiStack chemicalEmiStack) {
+            return Optional.of(chemicalEmiStack.getStack());
         }
         return Optional.empty();
     }

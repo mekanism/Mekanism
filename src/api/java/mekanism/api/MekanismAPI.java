@@ -117,7 +117,6 @@ public class MekanismAPI {
     public static final DefaultedRegistry<Chemical> CHEMICAL_REGISTRY = (DefaultedRegistry<Chemical>) new RegistryBuilder<>(CHEMICAL_REGISTRY_NAME)
           .defaultKey(EMPTY_CHEMICAL_KEY)
           .sync(true)
-          .withIntrusiveHolders()
           .create();
 
     /**

@@ -10,7 +10,6 @@ import java.util.Set;
 import java.util.UUID;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismIMC;
-import mekanism.api.chemical.Chemical;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.base.IModModule;
 import mekanism.common.base.KeySync;
@@ -288,11 +287,9 @@ public class Mekanism {
     }
 
     private void onDataMapsUpdated(DataMapsUpdatedEvent event) {
-        event.ifRegistry(MekanismAPI.CHEMICAL_REGISTRY_NAME, registry -> {
-            for (Chemical chemical : registry) {
-                chemical.updateFromDataMap();
-            }
-        });
+        event.ifRegistry(MekanismAPI.CHEMICAL_REGISTRY_NAME, registry -> registry.holders().forEach(
+              holder -> holder.value().updateFromDataMap(holder)
+        ));
     }
 
     private void addReloadListenersLowest(AddReloadListenerEvent event) {

@@ -9,7 +9,7 @@ import xfacthd.framedblocks.api.camo.CamoContainerFactory;
 final class ChemicalCamoContainer extends CamoContainer<ChemicalCamoContent, ChemicalCamoContainer> {
 
     ChemicalCamoContainer(Holder<Chemical> chemical) {
-        super(new ChemicalCamoContent(chemical.value()));
+        super(new ChemicalCamoContent(chemical));
     }
 
     Holder<Chemical> getChemicalHolder() {

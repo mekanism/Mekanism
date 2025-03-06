@@ -28,6 +28,7 @@ import mekanism.common.tile.machine.TileEntityNutritionalLiquifier;
 import mekanism.common.util.ChemicalUtil;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet.Named;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -106,15 +107,15 @@ public class RecipeViewerUtils {
     }
 
     public static List<ItemStack> getStacksFor(ChemicalStackIngredient ingredient, boolean displayConversions) {
-        Set<Chemical> chemicals = ingredient.getRepresentations().stream().map(ChemicalStack::getChemical).collect(Collectors.toSet());
+        Set<Holder<Chemical>> chemicals = ingredient.getRepresentations().stream().map(ChemicalStack::getChemicalHolder).collect(Collectors.toSet());
         return getStacksFor(chemicals, displayConversions ? MekanismRecipeType.CHEMICAL_CONVERSION : null);
     }
 
-    private static List<ItemStack> getStacksFor(Set<Chemical> supportedTypes, @Nullable IMekanismRecipeTypeProvider<?, ? extends ItemStackToChemicalRecipe, ?> recipeType) {
+    private static List<ItemStack> getStacksFor(Set<Holder<Chemical>> supportedTypes, @Nullable IMekanismRecipeTypeProvider<?, ? extends ItemStackToChemicalRecipe, ?> recipeType) {
         List<ItemStack> stacks = new ArrayList<>();
         //Always include the chemical tank of the type to portray that we accept items
-        for (Chemical type : supportedTypes) {
-            stacks.add(ChemicalUtil.getFullChemicalTank(ChemicalTankTier.BASIC, type.builtInRegistryHolder()));
+        for (Holder<Chemical> type : supportedTypes) {
+            stacks.add(ChemicalUtil.getFullChemicalTank(ChemicalTankTier.BASIC, type));
         }
         //See if there are any chemical to item mappings
         if (recipeType != null) {
