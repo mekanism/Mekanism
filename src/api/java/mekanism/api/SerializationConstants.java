@@ -194,10 +194,6 @@ public final class SerializationConstants {
     public static final String ENCHANTMENTS = "enchantments";
     public static final String ENERGY_CONTAINERS = "energy_containers";
     public static final String ENERGY = "energy";
-    /**
-     * @since 10.7.11
-     */
-    public static final String ENERGY_DENSITY = "energy_density";
     public static final String ENERGY_USAGE = "energy_usage";
     public static final String ENUMS = "enums";
     public static final String EXTENDS = "extends";

@@ -2,11 +2,11 @@
   "values": {
     "mekanism:ethene": {
       "burn_time": 40,
-      "energy_density": 28200
+      "energy": 705
     },
     "mekanism:hydrogen": {
       "burn_time": 1,
-      "energy_density": 200
+      "energy": 200
     }
   }
 }

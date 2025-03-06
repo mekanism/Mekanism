@@ -317,7 +317,16 @@ public class ChemicalAttributes {
          * @since 10.4.0
          */
         public Fuel(int burnTicks, long energyDensity) {
-            this(new ChemicalFuel(burnTicks, energyDensity));
+            long energyPerTick = energyDensity / burnTicks;
+            if (energyPerTick < 0) {
+                this.modernRepresentation = null;
+                this.burnTicks = () -> burnTicks;
+                this.energyDensity = () -> energyDensity;
+            } else {
+                this.modernRepresentation = new ChemicalFuel(burnTicks, energyPerTick);
+                this.burnTicks = modernRepresentation::burnTicks;
+                this.energyDensity = modernRepresentation::energyDensity;
+            }
         }
 
         /**
@@ -382,8 +391,14 @@ public class ChemicalAttributes {
                 MekanismAPI.logger.warn("Invalid tick count ({}) for Fuel attribute, this number should be at least 1.", ticks);
                 return null;
             }
+            long density = energyDensity.getAsLong();
+            long energyPerTick = density / ticks;
+            if (energyPerTick == 0) {
+                MekanismAPI.logger.warn("Invalid energy density ({}) for Fuel attribute, this number when divided by ticks should be at least 1.", density);
+                return null;
+            }
             try {
-                return new ChemicalFuel(ticks, energyDensity.getAsLong());
+                return new ChemicalFuel(ticks, energyPerTick);
             } catch (IllegalArgumentException ignored) {
             }
             return null;

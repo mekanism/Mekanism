@@ -86,7 +86,7 @@ public interface IMekanismDataMapTypes {
      * The location of this data map is {@code mekanism/data_maps/mekanism/chemical/chemical_attribute_fuel.json}, and the values are objects with 2 fields:
      * <ul>
      * <li>{@code burn_time}, a positive integer - how long the fuel will burn, in ticks</li>
-     * <li>{@code energy_density}, a positive long - how much energy will the fuel produce over the duration of its burn</li>
+     * <li>{@code energy}, a positive long - how much energy will the fuel produce each tick of its burn</li>
      * </ul>
      */
     DataMapType<Chemical, ChemicalFuel> chemicalFuel();

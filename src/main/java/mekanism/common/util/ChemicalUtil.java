@@ -167,8 +167,12 @@ public class ChemicalUtil {
 
     public static long hydrogenEnergyDensity() {
         ChemicalFuel fuel = MekanismChemicals.HYDROGEN.getData(IMekanismDataMapTypes.INSTANCE.chemicalFuel());
-        //TODO - HOLDERS: Re-evaluate callers and see if this should really be energyPerTick in case a datapack makes hydrogen burn for more than one tick
         return fuel == null ? 0 : fuel.energyDensity();
+    }
+
+    public static long hydrogenEnergyPerTick() {
+        ChemicalFuel fuel = MekanismChemicals.HYDROGEN.getData(IMekanismDataMapTypes.INSTANCE.chemicalFuel());
+        return fuel == null ? 0 : fuel.energyPerTick();
     }
 
     public static Chemical chemical(ChemicalBuilder builder, @Nullable Integer colorRepresentation) {

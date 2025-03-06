@@ -71,8 +71,7 @@ public class MekanismDataMapsProvider extends DataMapProvider {
               //GENERAL_ENERGY_CONVERSION_HYDROGEN("general.energy_conversion.hydrogen", "Hydrogen Energy Density",
               //"How much energy is produced per mB of Hydrogen, also affects Electrolytic Separator usage, Ethene burn rate and Gas-Burning Generator energy capacity."),
               .add(MekanismChemicals.HYDROGEN, new ChemicalFuel(1, HYDROGEN_ENERGY_DENSITY), false)
-              //TODO - HOLDERS: Decide if we want to define this here or via a data map in MekanismGenerators
-              .add(MekanismChemicals.ETHENE, new ChemicalFuel(2 * SharedConstants.TICKS_PER_SECOND, getEtheneEnergyDensity()), false)
+              .add(MekanismChemicals.ETHENE, new ChemicalFuel(getEtheneBurnTime(), getEtheneEnergyPerTick()), false)
         ;
 
         builder(IMekanismDataMapTypes.INSTANCE.chemicalRadioactivity())
@@ -90,9 +89,13 @@ public class MekanismDataMapsProvider extends DataMapProvider {
         ;
     }
 
-    private static long getEtheneEnergyDensity() {
+    private static long getEtheneEnergyPerTick() {
         long bioGeneration = 350;//Default bio generator value
         long energy = Math.multiplyExact(40, Math.multiplyExact(2, bioGeneration));
-        return Math.addExact(energy, HYDROGEN_ENERGY_DENSITY);
+        return Math.addExact(energy, HYDROGEN_ENERGY_DENSITY) / getEtheneBurnTime();
+    }
+
+    private static int getEtheneBurnTime() {
+        return 2 * SharedConstants.TICKS_PER_SECOND;
     }
 }

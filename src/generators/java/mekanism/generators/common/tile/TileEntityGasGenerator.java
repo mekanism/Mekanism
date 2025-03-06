@@ -61,7 +61,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
     EnergyInventorySlot energySlot;
 
     public TileEntityGasGenerator(BlockPos pos, BlockState state) {
-        super(GeneratorsBlocks.GAS_BURNING_GENERATOR, pos, state, ChemicalUtil::hydrogenEnergyDensity);
+        super(GeneratorsBlocks.GAS_BURNING_GENERATOR, pos, state, ChemicalUtil::hydrogenEnergyPerTick);
     }
 
     @NotNull
@@ -102,7 +102,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
 
             long toUse = getToUse();
             long toUseGeneration = MathUtils.multiplyClamped(generationRate, toUse);
-            updateMaxOutputRaw(Math.max(ChemicalUtil.hydrogenEnergyDensity(), toUseGeneration));
+            updateMaxOutputRaw(Math.max(ChemicalUtil.hydrogenEnergyPerTick(), toUseGeneration));
 
             long total = burnTicks + fuelTank.getStored() * maxBurnTicks;
             total -= toUse;
@@ -127,7 +127,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
         burnTicks = 0;
         maxBurnTicks = 0;
         generationRate = 0L;
-        updateMaxOutputRaw(ChemicalUtil.hydrogenEnergyDensity());
+        updateMaxOutputRaw(ChemicalUtil.hydrogenEnergyPerTick());
     }
 
     private long getToUse() {
