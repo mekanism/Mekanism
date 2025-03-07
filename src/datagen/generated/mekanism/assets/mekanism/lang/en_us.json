@@ -2756,7 +2756,7 @@
   "multiblock.mekanism.incomplete": "Incomplete",
   "multiblock.mekanism.invalid_controller_conflict": "Controller conflict: found extra controller at %1$s.",
   "multiblock.mekanism.invalid_frame": "Couldn't create frame, invalid block at %1$s.",
-  "multiblock.mekanism.invalid_inner": "Couldn't validate center, found invalid block at %1$s.",
+  "multiblock.mekanism.invalid_inner": "Inner structure contains an illegal block (%2$s) located at %1$s.",
   "multiblock.mekanism.invalid_no_controller": "Couldn't form, no controller found.",
   "network.mekanism.chemical": "ChemicalNetwork",
   "network.mekanism.description": "[%1$s] %2$s transmitters, %3$s acceptors.",

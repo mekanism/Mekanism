@@ -26,6 +26,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.phys.Vec3;
 
@@ -157,6 +158,10 @@ public class FormationProtocol<T extends MultiblockData> {
         return MekanismLang.GENERIC_PARENTHESIS.translate(MekanismLang.GENERIC_BLOCK_POS.translate(pos.getX(), pos.getY(), pos.getZ()));
     }
 
+    protected static Component text(BlockState state) {
+        return state.getBlock().getName();
+    }
+
     @FunctionalInterface
     public interface FormationChecker<NODE> {
 
@@ -216,6 +221,14 @@ public class FormationProtocol<T extends MultiblockData> {
 
         public static FormationResult fail(ILangEntry text, BlockPos pos, boolean noIgnore) {
             return fail(text.translateColored(EnumColor.GRAY, EnumColor.INDIGO, text(pos)), noIgnore);
+        }
+
+        public static FormationResult fail(ILangEntry text, BlockPos pos, BlockState state) {
+            return fail(text, pos, state, false);
+        }
+
+        public static FormationResult fail(ILangEntry text, BlockPos pos, BlockState state, boolean noIgnore) {
+            return fail(text.translateColored(EnumColor.GRAY, EnumColor.INDIGO, text(pos), EnumColor.WHITE, text(state)), noIgnore);
         }
 
         public static FormationResult fail(ILangEntry text) {

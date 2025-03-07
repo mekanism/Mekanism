@@ -917,7 +917,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.OFFHAND, "Hand 2");
         //Multiblock
         add(MekanismLang.MULTIBLOCK_INVALID_FRAME, "Couldn't create frame, invalid block at %1$s.");
-        add(MekanismLang.MULTIBLOCK_INVALID_INNER, "Couldn't validate center, found invalid block at %1$s.");
+        add(MekanismLang.MULTIBLOCK_INVALID_INNER, "Inner structure contains an illegal block (%2$s) located at %1$s.");
         add(MekanismLang.MULTIBLOCK_INVALID_CONTROLLER_CONFLICT, "Controller conflict: found extra controller at %1$s.");
         add(MekanismLang.MULTIBLOCK_INVALID_NO_CONTROLLER, "Couldn't form, no controller found.");
         //SPS
