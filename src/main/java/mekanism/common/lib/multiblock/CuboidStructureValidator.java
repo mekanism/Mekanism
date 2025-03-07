@@ -82,7 +82,7 @@ public abstract class CuboidStructureValidator<T extends MultiblockData> impleme
                 return ret;
             }
         } else if (!validateInner(state, chunkMap, pos)) {
-            return FormationResult.fail(MekanismLang.MULTIBLOCK_INVALID_INNER, pos);
+            return FormationResult.fail(MekanismLang.MULTIBLOCK_INVALID_INNER, pos, state);
         } else if (!state.isAir()) {
             //Make sure the position is immutable before we store it
             ctx.internalLocations.add(pos.immutable());
