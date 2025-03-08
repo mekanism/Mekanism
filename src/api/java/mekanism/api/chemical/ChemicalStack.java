@@ -495,6 +495,13 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
         return getChemical().has(type);
     }
 
+    @Override
+    @SuppressWarnings("removal")
+    @Deprecated(forRemoval = true, since = "10.7.11")
+    public boolean hasLegacy(Class<? extends ChemicalAttribute> type) {
+        return getChemical().hasLegacy(type);
+    }
+
     /**
      * Helper to check if this chemical is radioactive without having to look it up from the attributes.
      *

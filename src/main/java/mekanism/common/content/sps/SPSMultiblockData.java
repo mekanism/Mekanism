@@ -70,10 +70,10 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
 
     public SPSMultiblockData(TileEntitySPSCasing tile) {
         super(tile);
-        chemicalTanks.add(inputTank = VariableCapacityChemicalTank.input(this, this::getMaxInputGas, MekanismChemicals.POLONIUM::keyMatches,
+        chemicalTanks.add(inputTank = VariableCapacityChemicalTank.input(this, this::getMaxInputGas, chemical -> chemical.is(MekanismChemicals.POLONIUM),
               ChemicalAttributeValidator.ALWAYS_ALLOW, createSaveAndComparator()));
         chemicalTanks.add(outputTank = VariableCapacityChemicalTank.output(this, MekanismConfig.general.spsOutputTankCapacity,
-              MekanismChemicals.ANTIMATTER::keyMatches, ChemicalAttributeValidator.ALWAYS_ALLOW, this));
+              chemical -> chemical.is(MekanismChemicals.ANTIMATTER), ChemicalAttributeValidator.ALWAYS_ALLOW, this));
     }
 
     @Override

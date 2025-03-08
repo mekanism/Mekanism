@@ -144,7 +144,7 @@ public class MekanismItems {
           );
     public static final ItemRegistryObject<ItemFlamethrower> FLAMETHROWER = ITEMS.registerItem("flamethrower", ItemFlamethrower::new)
           .addAttachedContainerCapabilities(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder()
-                .addInternalStorage(MekanismConfig.gear.flamethrowerFillRate, MekanismConfig.gear.flamethrowerCapacity, MekanismChemicals.HYDROGEN::keyMatches
+                .addInternalStorage(MekanismConfig.gear.flamethrowerFillRate, MekanismConfig.gear.flamethrowerCapacity, chemical -> chemical.is(MekanismChemicals.HYDROGEN)
                 ).build(), MekanismConfig.gear
           );
     public static final ItemRegistryObject<ItemMekaTool> MEKA_TOOL = ITEMS.registerUnburnable("meka_tool", ItemMekaTool::new)
@@ -168,17 +168,17 @@ public class MekanismItems {
     public static final ItemRegistryObject<ItemScubaMask> SCUBA_MASK = ITEMS.registerItem("scuba_mask", ItemScubaMask::new);
     public static final ItemRegistryObject<ItemScubaTank> SCUBA_TANK = ITEMS.registerItem("scuba_tank", ItemScubaTank::new)
           .addAttachedContainerCapabilities(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder()
-                .addInternalStorage(MekanismConfig.gear.scubaFillRate, MekanismConfig.gear.scubaTankCapacity, MekanismChemicals.OXYGEN::keyMatches)
+                .addInternalStorage(MekanismConfig.gear.scubaFillRate, MekanismConfig.gear.scubaTankCapacity, chemical -> chemical.is(MekanismChemicals.OXYGEN))
                 .build(), MekanismConfig.gear
           );
     public static final ItemRegistryObject<ItemJetpack> JETPACK = ITEMS.registerItem("jetpack", ItemJetpack::new)
           .addAttachedContainerCapabilities(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder()
-                .addInternalStorage(MekanismConfig.gear.jetpackFillRate, MekanismConfig.gear.jetpackCapacity, MekanismChemicals.HYDROGEN::keyMatches)
+                .addInternalStorage(MekanismConfig.gear.jetpackFillRate, MekanismConfig.gear.jetpackCapacity, chemical -> chemical.is(MekanismChemicals.HYDROGEN))
                 .build(), MekanismConfig.gear
           );
     public static final ItemRegistryObject<ItemArmoredJetpack> ARMORED_JETPACK = ITEMS.registerItem("jetpack_armored", ItemArmoredJetpack::new)
           .addAttachedContainerCapabilities(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder()
-                .addInternalStorage(MekanismConfig.gear.jetpackFillRate, MekanismConfig.gear.jetpackCapacity, MekanismChemicals.HYDROGEN::keyMatches)
+                .addInternalStorage(MekanismConfig.gear.jetpackFillRate, MekanismConfig.gear.jetpackCapacity, chemical -> chemical.is(MekanismChemicals.HYDROGEN))
                 .build(), MekanismConfig.gear
           );
     public static final ItemRegistryObject<ItemHDPEElytra> HDPE_REINFORCED_ELYTRA = ITEMS.registerItem("hdpe_elytra", props -> new ItemHDPEElytra(props.durability(648).rarity(Rarity.RARE)));

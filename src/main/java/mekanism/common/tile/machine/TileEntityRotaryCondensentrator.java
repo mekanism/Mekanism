@@ -8,7 +8,6 @@ import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.chemical.BasicChemicalTank;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
@@ -60,7 +59,6 @@ import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
@@ -155,8 +153,8 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
         return builder.build();
     }
 
-    private boolean isValidGas(@NotNull Holder<Chemical> gas) {
-        return getRecipeType().getInputCache().containsInput(level, new ChemicalStack(gas, 1));
+    private boolean isValidGas(@NotNull ChemicalStack chemical) {
+        return getRecipeType().getInputCache().containsInput(level, chemical);
     }
 
     @NotNull

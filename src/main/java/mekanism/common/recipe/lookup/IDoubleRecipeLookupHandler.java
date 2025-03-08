@@ -1,7 +1,6 @@
 package mekanism.common.recipe.lookup;
 
 import java.util.function.BiPredicate;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
@@ -10,7 +9,6 @@ import mekanism.common.recipe.lookup.cache.DoubleInputRecipeCache;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.DoubleItem;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.FluidChemical;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.ItemChemical;
-import net.minecraft.core.Holder;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -108,39 +106,16 @@ public interface IDoubleRecipeLookupHandler<INPUT_A, INPUT_B, RECIPE extends Mek
     }
 
     /**
-     * Helper interface to make the generics that we have to pass to {@link IDoubleRecipeLookupHandler} not as messy, and reduce the duplicate code in the other chemical
-     * based helper interfaces.
-     */
-    interface ObjectChemicalRecipeLookupHandler<INPUT, RECIPE extends MekanismRecipe<?> & BiPredicate<INPUT, ChemicalStack>,
-          INPUT_CACHE extends DoubleInputRecipeCache<INPUT, ?, ChemicalStack, ?, RECIPE, ?, ?>> extends IDoubleRecipeLookupHandler<INPUT, ChemicalStack, RECIPE, INPUT_CACHE> {
-
-        /**
-         * Helper wrapper to convert a chemical to a chemical stack and pass it to {@link #containsRecipeBA(Object, Object)} to make validity predicates easier and
-         * cleaner.
-         */
-        default boolean containsRecipeBA(INPUT inputA, Holder<Chemical> inputB) {
-            return containsRecipeBA(inputA, new ChemicalStack(inputB, 1));
-        }
-
-        /**
-         * Helper wrapper to convert a chemical to a chemical stack and pass it to {@link #containsRecipeB(Object)} to make validity predicates easier and cleaner.
-         */
-        default boolean containsRecipeB(Holder<Chemical> input) {
-            return containsRecipeB(new ChemicalStack(input, 1));
-        }
-    }
-
-    /**
      * Helper interface to make the generics that we have to pass to {@link IDoubleRecipeLookupHandler} not as messy.
      */
     interface ItemChemicalRecipeLookupHandler<RECIPE extends MekanismRecipe<?> & BiPredicate<ItemStack, ChemicalStack>> extends
-          ObjectChemicalRecipeLookupHandler<ItemStack, RECIPE, ItemChemical<RECIPE>> {
+          IDoubleRecipeLookupHandler<ItemStack, ChemicalStack, RECIPE, ItemChemical<RECIPE>> {
     }
 
     /**
      * Helper interface to make the generics that we have to pass to {@link IDoubleRecipeLookupHandler} not as messy.
      */
     interface FluidChemicalRecipeLookupHandler<RECIPE extends MekanismRecipe<?> & BiPredicate<FluidStack, ChemicalStack>> extends
-          ObjectChemicalRecipeLookupHandler<FluidStack, RECIPE, FluidChemical<RECIPE>> {
+          IDoubleRecipeLookupHandler<FluidStack, ChemicalStack, RECIPE, FluidChemical<RECIPE>> {
     }
 }

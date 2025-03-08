@@ -110,7 +110,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                     //Note: We intentionally don't require the module to be enabled for purposes of calculating capacity
                     IModule<ModuleJetpackUnit> module = IModuleHelper.INSTANCE.getModule(stack, MekanismModules.JETPACK_UNIT);
                     return module != null ? MekanismConfig.gear.mekaSuitJetpackMaxStorage.get() * module.getInstalledCount() : 0L;
-                }, MekanismChemicals.HYDROGEN::keyMatches, stack -> hasModule(stack, MekanismModules.JETPACK_UNIT)));
+                }, chemical -> chemical.is(MekanismChemicals.HYDROGEN), stack -> hasModule(stack, MekanismModules.JETPACK_UNIT)));
                 absorption = 0.4F;
                 laserDissipation = 0.3;
                 laserRefraction = 0.4;

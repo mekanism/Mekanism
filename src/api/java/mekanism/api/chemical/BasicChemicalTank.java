@@ -139,7 +139,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
      * @implNote The created tank will always allow {@link AutomationType#MANUAL} extraction, and allow any {@link AutomationType} to insert into it.
      * @since 10.7.11
      */
-    public static IChemicalTank createModern(long capacity, Predicate<Holder<Chemical>> canExtract, Predicate<Holder<Chemical>> canInsert, @Nullable IContentsListener listener) {
+    public static IChemicalTank createModern(long capacity, Predicate<ChemicalStack> canExtract, Predicate<ChemicalStack> canInsert, @Nullable IContentsListener listener) {
         //TODO - 1.22: Rename this back to create and remove the deprecated version
         return createModern(capacity, canExtract, canInsert, ConstantPredicates.alwaysTrue(), listener);
     }
@@ -174,7 +174,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
      *
      * @since 10.7.11
      */
-    public static IChemicalTank createModern(long capacity, Predicate<Holder<Chemical>> validator, @Nullable IContentsListener listener) {
+    public static IChemicalTank createModern(long capacity, Predicate<ChemicalStack> validator, @Nullable IContentsListener listener) {
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be at least zero");
         }
@@ -212,7 +212,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
      *
      * @since 10.7.11
      */
-    public static IChemicalTank inputModern(long capacity, Predicate<Holder<Chemical>> validator, @Nullable IContentsListener listener) {
+    public static IChemicalTank inputModern(long capacity, Predicate<ChemicalStack> validator, @Nullable IContentsListener listener) {
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be at least zero");
         }
@@ -253,7 +253,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
      *
      * @since 10.7.11
      */
-    public static IChemicalTank inputModern(long capacity, Predicate<Holder<Chemical>> canInsert, Predicate<Holder<Chemical>> validator, @Nullable IContentsListener listener) {
+    public static IChemicalTank inputModern(long capacity, Predicate<ChemicalStack> canInsert, Predicate<ChemicalStack> validator, @Nullable IContentsListener listener) {
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be at least zero");
         }
@@ -313,7 +313,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
      * @implNote The created tank will always allow {@link AutomationType#MANUAL} extraction, and allow any {@link AutomationType} to insert into it.
      * @since 10.7.11
      */
-    public static IChemicalTank createModern(long capacity, Predicate<Holder<Chemical>> canExtract, Predicate<Holder<Chemical>> canInsert, Predicate<Holder<Chemical>> validator,
+    public static IChemicalTank createModern(long capacity, Predicate<ChemicalStack> canExtract, Predicate<ChemicalStack> canInsert, Predicate<ChemicalStack> validator,
           @Nullable IContentsListener listener) {
         return createModern(capacity, canExtract, canInsert, validator, null, listener);
     }
@@ -349,8 +349,8 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
      *
      * @since 10.7.11
      */
-    public static IChemicalTank createModern(long capacity, BiPredicate<Holder<Chemical>, @NotNull AutomationType> canExtract,
-          BiPredicate<Holder<Chemical>, @NotNull AutomationType> canInsert, Predicate<Holder<Chemical>> validator, @Nullable IContentsListener listener) {
+    public static IChemicalTank createModern(long capacity, BiPredicate<ChemicalStack, @NotNull AutomationType> canExtract,
+          BiPredicate<ChemicalStack, @NotNull AutomationType> canInsert, Predicate<ChemicalStack> validator, @Nullable IContentsListener listener) {
         return createModern(capacity, canExtract, canInsert, validator, null, listener);
     }
 
@@ -394,8 +394,8 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
      * @implNote The created tank will always allow {@link AutomationType#MANUAL} extraction, and allow any {@link AutomationType} to insert into it.
      * @since 10.7.11
      */
-    public static IChemicalTank createModern(long capacity, Predicate<Holder<Chemical>> canExtract, Predicate<Holder<Chemical>> canInsert,
-          Predicate<Holder<Chemical>> validator, @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener) {
+    public static IChemicalTank createModern(long capacity, Predicate<ChemicalStack> canExtract, Predicate<ChemicalStack> canInsert,
+          Predicate<ChemicalStack> validator, @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener) {
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be at least zero");
         }
@@ -443,8 +443,8 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
      *
      * @since 10.7.11
      */
-    public static IChemicalTank createModern(long capacity, BiPredicate<Holder<Chemical>, @NotNull AutomationType> canExtract,
-          BiPredicate<Holder<Chemical>, @NotNull AutomationType> canInsert, Predicate<Holder<Chemical>> validator,
+    public static IChemicalTank createModern(long capacity, BiPredicate<ChemicalStack, @NotNull AutomationType> canExtract,
+          BiPredicate<ChemicalStack, @NotNull AutomationType> canInsert, Predicate<ChemicalStack> validator,
           @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener) {
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be at least zero");
@@ -457,28 +457,28 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
 
     @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
-    private static BiPredicate<Chemical, @NotNull AutomationType> wrapAutomationPredicate(BiPredicate<Holder<Chemical>, @NotNull AutomationType> predicate) {
-        if (predicate == ConstantPredicates.<Holder<Chemical>, AutomationType>alwaysTrueBi() ||
-            predicate == ConstantPredicates.<Holder<Chemical>>internalOnly() ||
-            predicate == ConstantPredicates.<Holder<Chemical>>notExternal() ||
-            predicate == ConstantPredicates.<Holder<Chemical>>manualOnly()) {
+    private static BiPredicate<Chemical, @NotNull AutomationType> wrapAutomationPredicate(BiPredicate<ChemicalStack, @NotNull AutomationType> predicate) {
+        if (predicate == ConstantPredicates.<ChemicalStack, AutomationType>alwaysTrueBi() ||
+            predicate == ConstantPredicates.<ChemicalStack>internalOnly() ||
+            predicate == ConstantPredicates.<ChemicalStack>notExternal() ||
+            predicate == ConstantPredicates.<ChemicalStack>manualOnly()) {
             return (BiPredicate<Chemical, @NotNull AutomationType>) (BiPredicate<?, @NotNull AutomationType>) predicate;
         }
-        return (chemical, automationType) -> predicate.test(chemical.getAsHolder(), automationType);
+        return (chemical, automationType) -> predicate.test(new ChemicalStack(chemical, 1), automationType);
     }
 
     @Deprecated(forRemoval = true, since = "10.7.11")
-    private static BiPredicate<Holder<Chemical>, @NotNull AutomationType> wrapAutomationPredicateToModern(BiPredicate<Chemical, @NotNull AutomationType> predicate) {
+    private static BiPredicate<ChemicalStack, @NotNull AutomationType> wrapAutomationPredicateToModern(BiPredicate<Chemical, @NotNull AutomationType> predicate) {
         if (predicate == alwaysTrueBi || predicate == internalOnly || predicate == notExternal || predicate == manualOnly) {
-            return (BiPredicate<Holder<Chemical>, @NotNull AutomationType>) (BiPredicate<?, @NotNull AutomationType>) predicate;
+            return (BiPredicate<ChemicalStack, @NotNull AutomationType>) (BiPredicate<?, @NotNull AutomationType>) predicate;
         }
-        return (chemical, automationType) -> predicate.test(chemical.value(), automationType);
+        return (chemical, automationType) -> predicate.test(chemical.getChemical(), automationType);
     }
 
-    private final Predicate<Holder<Chemical>> validator;
+    private final Predicate<ChemicalStack> validator;
     //TODO - 1.22: Rename these to canExtract and canInsert
-    protected final BiPredicate<Holder<Chemical>, @NotNull AutomationType> canExtractModern;
-    protected final BiPredicate<Holder<Chemical>, @NotNull AutomationType> canInsertModern;
+    protected final BiPredicate<ChemicalStack, @NotNull AutomationType> canExtractModern;
+    protected final BiPredicate<ChemicalStack, @NotNull AutomationType> canInsertModern;
     /**
      * @deprecated Use {@link #canExtractModern} instead
      */
@@ -513,17 +513,17 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
         this.canExtractModern = wrapAutomationPredicateToModern(canExtract);
         this.canInsertModern = wrapAutomationPredicateToModern(canInsert);
         if (validator == alwaysTrue || validator == alwaysFalse) {
-            this.validator = (Predicate<Holder<Chemical>>) (Predicate<?>) validator;
+            this.validator = (Predicate<ChemicalStack>) (Predicate<?>) validator;
         } else {
-            this.validator = chemical -> validator.test(chemical.value());
+            this.validator = chemical -> validator.test(chemical.getChemical());
         }
         this.attributeValidator = attributeValidator;
         this.listener = listener;
         this.stored = ChemicalStack.EMPTY;
     }
 
-    protected BasicChemicalTank(long capacity, BiPredicate<Holder<Chemical>, @NotNull AutomationType> canExtract,
-          BiPredicate<Holder<Chemical>, @NotNull AutomationType> canInsert, Predicate<Holder<Chemical>> validator,
+    protected BasicChemicalTank(long capacity, BiPredicate<ChemicalStack, @NotNull AutomationType> canExtract,
+          BiPredicate<ChemicalStack, @NotNull AutomationType> canInsert, Predicate<ChemicalStack> validator,
           @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener, @Nullable Void ignored) {
         this.capacity = capacity;
         this.canExtractModern = canExtract;
@@ -611,7 +611,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
             //Fail if we are a full tank or our rate is zero
             return stack;
         }
-        if (!isValid(stack) || !canInsertModern.test(stack.getChemicalHolder(), automationType)) {
+        if (!isValid(stack) || !canInsertModern.test(stack, automationType)) {
             //we can never insert the chemical or currently are unable to insert it
             return stack;
         }
@@ -634,7 +634,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
 
     @Override
     public ChemicalStack extract(long amount, Action action, AutomationType automationType) {
-        if (isEmpty() || amount < 1 || !canExtractModern.test(stored.getChemicalHolder(), automationType)) {
+        if (isEmpty() || amount < 1 || !canExtractModern.test(stored, automationType)) {
             //"Fail quick" if we don't can never extract from this tank, have a chemical stored, or the amount being requested is less than one
             return ChemicalStack.EMPTY;
         }
@@ -655,7 +655,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
 
     @Override
     public boolean isValid(ChemicalStack stack) {
-        return getAttributeValidator().process(stack) && validator.test(stack.getChemicalHolder());
+        return getAttributeValidator().process(stack) && validator.test(stack);
     }
 
     /**

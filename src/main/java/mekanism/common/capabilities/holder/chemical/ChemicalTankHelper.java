@@ -4,12 +4,11 @@ import java.util.function.BiPredicate;
 import java.util.function.Supplier;
 import mekanism.api.AutomationType;
 import mekanism.api.RelativeSide;
-import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Holder;
 import org.jetbrains.annotations.NotNull;
 
 public class ChemicalTankHelper {
@@ -21,11 +20,11 @@ public class ChemicalTankHelper {
         this.slotHolder = slotHolder;
     }
 
-    public static BiPredicate<Holder<Chemical>, @NotNull AutomationType> radioactiveInputTankPredicate(Supplier<IChemicalTank> outputTank) {
+    public static BiPredicate<ChemicalStack, @NotNull AutomationType> radioactiveInputTankPredicate(Supplier<IChemicalTank> outputTank) {
         //Allow extracting out of the input gas tank if it isn't external OR the output tank is empty AND the input is radioactive
         //Note: This only is the case if radiation is enabled as otherwise things like gauge droppers can work as the way to remove radioactive contents
         return (type, automationType) -> automationType != AutomationType.EXTERNAL ||
-                                         (outputTank.get().isEmpty() && type.value().isRadioactive() && IRadiationManager.INSTANCE.isRadiationEnabled());
+                                         (outputTank.get().isEmpty() && type.isRadioactive() && IRadiationManager.INSTANCE.isRadiationEnabled());
     }
 
     public static ChemicalTankHelper forSide(Supplier<Direction> facingSupplier) {

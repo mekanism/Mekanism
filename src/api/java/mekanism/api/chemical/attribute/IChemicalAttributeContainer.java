@@ -33,6 +33,20 @@ public interface IChemicalAttributeContainer<SELF extends IChemicalAttributeCont
     boolean has(Class<? extends ChemicalAttribute> type);
 
     /**
+     * Whether this chemical has a legacy attribute of a certain type. This method explicitly only checks legacy (in code) defined attributes, and will return false in
+     * cases where there is only a modern attribute declared via a data map.
+     *
+     * @param type The type of the attribute to check for.
+     *
+     * @return if this chemical has the attribute.
+     *
+     * @since 10.7.11
+     */
+    @SuppressWarnings("removal")
+    @Deprecated(forRemoval = true, since = "10.7.11")
+    boolean hasLegacy(Class<? extends ChemicalAttribute> type);
+
+    /**
      * Gets the attribute instance of a certain type, or null if it doesn't exist.
      *
      * @param type The type of the attribute to get.

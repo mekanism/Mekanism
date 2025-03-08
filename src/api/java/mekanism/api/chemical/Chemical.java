@@ -242,16 +242,7 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
         return getAllAttributes().containsKey(type);
     }
 
-    /**
-     * Whether this chemical has a legacy attribute of a certain type. This method explicitly only checks legacy (in code) defined attributes, and will return false in
-     * cases where there is only a modern attribute declared via a data map.
-     *
-     * @param type The type of the attribute to check for.
-     *
-     * @return if this chemical has the attribute.
-     *
-     * @since 10.7.11
-     */
+    @Override
     @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
     public boolean hasLegacy(Class<? extends ChemicalAttribute> type) {

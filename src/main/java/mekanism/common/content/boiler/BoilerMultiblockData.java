@@ -10,7 +10,6 @@ import java.util.function.Predicate;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
@@ -43,7 +42,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -56,11 +54,11 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
 
     //TODO - 1.22: Replace the legacy checks for these predicates
     @SuppressWarnings("removal")
-    public static final Predicate<Holder<Chemical>> IS_HEATED_COOLANT = chemical -> chemical.getData(IMekanismDataMapTypes.INSTANCE.heatedChemicalCoolant()) != null
-                                                                                    || chemical.value().hasLegacy(ChemicalAttributes.HeatedCoolant.class);
+    public static final Predicate<ChemicalStack> IS_HEATED_COOLANT = chemical -> chemical.getData(IMekanismDataMapTypes.INSTANCE.heatedChemicalCoolant()) != null
+                                                                                    || chemical.hasLegacy(ChemicalAttributes.HeatedCoolant.class);
     @SuppressWarnings("removal")
-    public static final Predicate<Holder<Chemical>> IS_COOLED_COOLANT = chemical -> chemical.getData(IMekanismDataMapTypes.INSTANCE.cooledChemicalCoolant()) != null
-                                                                                    || chemical.value().hasLegacy(ChemicalAttributes.CooledCoolant.class);
+    public static final Predicate<ChemicalStack> IS_COOLED_COOLANT = chemical -> chemical.getData(IMekanismDataMapTypes.INSTANCE.cooledChemicalCoolant()) != null
+                                                                                    || chemical.hasLegacy(ChemicalAttributes.CooledCoolant.class);
     public static final Object2BooleanMap<UUID> hotMap = new Object2BooleanOpenHashMap<>();
 
     public static final double CASING_HEAT_CAPACITY = 50;
@@ -128,7 +126,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         waterTank = VariableCapacityFluidTank.input(this, () -> waterTankCapacity, fluid -> fluid.is(FluidTags.WATER),
               createSaveAndComparator());
         fluidTanks.add(waterTank);
-        steamTank = VariableCapacityChemicalTank.output(this, () -> steamTankCapacity, MekanismChemicals.STEAM::keyMatches, this);
+        steamTank = VariableCapacityChemicalTank.output(this, () -> steamTankCapacity, chemical -> chemical.is(MekanismChemicals.STEAM), this);
         cooledCoolantTank = VariableCapacityChemicalTank.output(this, () -> cooledCoolantCapacity, IS_COOLED_COOLANT, this);
         inputTanks = List.of(superheatedCoolantTank);
         outputSteamTanks = List.of(steamTank);

@@ -154,11 +154,11 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
               VariableCapacityChemicalTank.input(this, () -> cooledCoolantCapacity, BoilerMultiblockData.IS_COOLED_COOLANT, this)
         );
         fluidTanks.add(coolantTank.getFluidTank());
-        fuelTank = VariableCapacityChemicalTank.input(this, fuelCapacitySupplier, MekanismChemicals.FISSILE_FUEL::keyMatches,
+        fuelTank = VariableCapacityChemicalTank.input(this, fuelCapacitySupplier, chemical -> chemical.is(MekanismChemicals.FISSILE_FUEL),
               ChemicalAttributeValidator.ALWAYS_ALLOW, createSaveAndComparator());
         heatedCoolantTank = VariableCapacityChemicalTank.output(this, () -> heatedCoolantCapacity,
-              gas -> MekanismChemicals.STEAM.keyMatches(gas) || BoilerMultiblockData.IS_HEATED_COOLANT.test(gas), this);
-        wasteTank = VariableCapacityChemicalTank.output(this, fuelCapacitySupplier, MekanismChemicals.NUCLEAR_WASTE::keyMatches,
+              chemical -> chemical.is(MekanismChemicals.STEAM) || BoilerMultiblockData.IS_HEATED_COOLANT.test(chemical), this);
+        wasteTank = VariableCapacityChemicalTank.output(this, fuelCapacitySupplier, chemical -> chemical.is(MekanismChemicals.NUCLEAR_WASTE),
               ChemicalAttributeValidator.ALWAYS_ALLOW, this);
         inputTanks = List.of(fuelTank, coolantTank.getChemicalTank());
         outputWasteTanks = List.of(wasteTank);
