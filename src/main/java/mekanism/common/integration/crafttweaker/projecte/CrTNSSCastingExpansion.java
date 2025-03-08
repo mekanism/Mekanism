@@ -19,22 +19,6 @@ public class CrTNSSCastingExpansion {
     }
 
     @ZenRegister(modDeps = MekanismHooks.PROJECTE_MOD_ID)
-    @TypedExpansion(Chemical.class)
-    public static class ICrTChemicalExpansion {
-
-        private ICrTChemicalExpansion() {
-        }
-
-        /**
-         * Allows for casting {@link Chemical}s to {@link NormalizedSimpleStack} without needing to specify the cast.
-         */
-        @ZenCodeType.Caster(implicit = true)
-        public static NormalizedSimpleStack asNormalizedSimpleStack(Chemical _this) {
-            return CrTNSSResolverExpansion.fromChemical(_this);
-        }
-    }
-
-    @ZenRegister(modDeps = MekanismHooks.PROJECTE_MOD_ID)
     @TypedExpansion(ICrTChemicalStack.class)
     public static class ICrTChemicalStackExpansion {
 

@@ -182,6 +182,7 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
             if (!chemical.isBound()) {//This should always be true, unless someone made a custom direct holder for some reason
                 throw new IllegalArgumentException("Cannot create a ChemicalStack from an unbound direct holder");
             }
+            //Try to look up the reference holder from the registry
             chemical = MekanismAPI.CHEMICAL_REGISTRY.wrapAsHolder(chemical.value());
             if (chemical.kind() == Holder.Kind.DIRECT) {
                 throw new IllegalArgumentException("Cannot create a ChemicalStack from a direct holder for a chemical that is not yet registered");
@@ -200,6 +201,7 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
      * @throws NullPointerException If the chemical is null.
      * @deprecated Use {@link #ChemicalStack(Holder, long)} instead
      */
+    @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
     public ChemicalStack(Chemical chemical, long amount) {
         this(Objects.requireNonNull(chemical, "Cannot create a ChemicalStack from a null chemical").getAsHolder(), amount);

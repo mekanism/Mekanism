@@ -2,14 +2,13 @@ package mekanism.common.integration.crafttweaker.chemical;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.bracket.CommandStringDisplayable;
-import java.util.Objects;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.ingredient.CrTChemicalStackIngredient;
-import mekanism.common.util.RegistryUtils;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import org.openzen.zencode.java.ZenCodeType;
@@ -162,6 +161,15 @@ public interface ICrTChemicalStack extends CommandStringDisplayable {
      * @return The actual ChemicalStack.
      */
     ChemicalStack getInternal();
+
+    /**
+     * Mod devs should use this to get the chemical holder.
+     *
+     * @since 10.7.11
+     */
+    default Holder<Chemical> getChemicalHolder() {
+        return getInternal().getChemicalHolder();
+    }
 
     /**
      * Mod devs should use this to get the actual ChemicalStack.

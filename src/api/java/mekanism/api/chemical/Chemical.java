@@ -136,6 +136,7 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
         return MekanismAPI.EMPTY_CHEMICAL_HOLDER;
     }
 
+    private final Holder.Reference<Chemical> builtInRegistryHolder = MekanismAPI.CHEMICAL_REGISTRY.createIntrusiveHolder(this);
     //TODO - 1.22: Figure out if we should we keep this cache or remove it?
     private final List<IChemicalAttribute> attributes = new ArrayList<>();
     private final List<IChemicalAttribute> attributesView = Collections.unmodifiableList(attributes);
@@ -197,6 +198,7 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
 
     @Override
     public final String toString() {
+        //Note: Similar to vanilla we look up the holder and registered name from teh registry
         return MekanismAPI.CHEMICAL_REGISTRY.wrapAsHolder(this).getRegisteredName();
     }
 
@@ -413,15 +415,14 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
     }
 
     /**
-     * Helper method to get the holder for this chemical. Unlike {@link net.minecraft.world.item.Item#builtInRegistryHolder()} and similar, this looks up the holder from
-     * the registry when called.
+     * Helper method to get the intrusive holder for this chemical.
      *
      * @since 10.6.0
      * @deprecated If a holder is necessary get it from {@link ChemicalStack#getChemicalHolder()} or direct from the {@link MekanismAPI#CHEMICAL_REGISTRY}.
      */
     @Deprecated(forRemoval = true, since = "10.7.11")
     public Holder<Chemical> getAsHolder() {
-        return MekanismAPI.CHEMICAL_REGISTRY.wrapAsHolder(this);
+        return builtInRegistryHolder;
     }
 
     /**

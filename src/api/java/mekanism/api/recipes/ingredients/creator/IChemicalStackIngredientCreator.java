@@ -23,7 +23,7 @@ public interface IChemicalStackIngredientCreator extends IIngredientCreator<Chem
     @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
     default ChemicalStackIngredient from(Chemical instance, int amount) {
-        return fromHolder(instance.getAsHolder(), (long) amount);
+        return fromHolder(instance.getAsHolder(), amount);
     }
 
     @Override

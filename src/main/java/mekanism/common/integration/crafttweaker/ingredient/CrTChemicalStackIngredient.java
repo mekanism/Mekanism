@@ -9,6 +9,7 @@ import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistratio
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
@@ -37,14 +38,15 @@ public class CrTChemicalStackIngredient {
      *
      * @return A {@link ChemicalStackIngredient} that matches a given chemical and amount.
      */
+    @SuppressWarnings("removal")
     @ZenCodeType.StaticExpansionMethod
+    @Deprecated(forRemoval = true, since = "10.7.11")//TODO - 1.22: Replace with method that accepts holders once jared adds holder support in CrT
     public static ChemicalStackIngredient from(Chemical chemical, long amount) {
         assertValidAmount(amount);
-        Holder<Chemical> instance = MekanismAPI.CHEMICAL_REGISTRY.wrapAsHolder(chemical);
-        if (instance.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
+        if (chemical.isEmptyType()) {
             throw new IllegalArgumentException("ChemicalStackIngredients cannot be created from an empty chemical.");
         }
-        return IngredientCreatorAccess.chemicalStack().fromHolder(instance, amount);
+        return IngredientCreatorAccess.chemicalStack().from(chemical, amount);
     }
 
     /**
@@ -70,9 +72,11 @@ public class CrTChemicalStackIngredient {
      *
      * @return A {@link ChemicalStackIngredient} that matches the given chemicals and amount.
      */
+    @SuppressWarnings("removal")
     @ZenCodeType.StaticExpansionMethod
+    @Deprecated(forRemoval = true, since = "10.7.11")//TODO - 1.22: Replace with method that accepts holders once jared adds holder support in CrT
     public static ChemicalStackIngredient from(long amount, Chemical... chemicals) {
-        return from(amount, Arrays.stream(chemicals).map(MekanismAPI.CHEMICAL_REGISTRY::wrapAsHolder).toArray(Holder[]::new));
+        return from(amount, Arrays.stream(chemicals).map(Chemical::getAsHolder));
     }
 
     /**
@@ -85,13 +89,13 @@ public class CrTChemicalStackIngredient {
      */
     @ZenCodeType.StaticExpansionMethod
     public static ChemicalStackIngredient from(long amount, ICrTChemicalStack... chemicals) {
-        return from(amount, Arrays.stream(chemicals).map(stack -> stack.getInternal().getChemicalHolder()).toArray(Holder[]::new));
+        return from(amount, Arrays.stream(chemicals).map(ICrTChemicalStack::getChemicalHolder));
     }
 
-    @SafeVarargs
-    private static ChemicalStackIngredient from(long amount, Holder<Chemical>... chemicals) {
+    private static ChemicalStackIngredient from(long amount, Stream<Holder<Chemical>> holders) {
         assertValidAmount(amount);
-        if (chemicals == null || chemicals.length == 0) {
+        Holder<Chemical>[] chemicals = holders.toArray(Holder[]::new);
+        if (chemicals.length == 0) {
             throw new IllegalArgumentException("ChemicalStackIngredients cannot be created from zero chemicals.");
         }
         for (Holder<Chemical> instance : chemicals) {
@@ -122,7 +126,7 @@ public class CrTChemicalStackIngredient {
             } else if (amount == 0) {
                 amount = instance.getAmount();
             }
-            ingredients.add(IngredientCreatorAccess.chemical().of(instance.getInternal().getChemicalHolder()));
+            ingredients.add(IngredientCreatorAccess.chemical().of(instance.getChemicalHolder()));
         }
         assertValidAmount(amount);
         return IngredientCreatorAccess.chemicalStack().from(IngredientCreatorAccess.chemical().ofIngredients(ingredients), amount);
@@ -186,8 +190,10 @@ public class CrTChemicalStackIngredient {
      * @return {@code true} if the type is supported by this {@link ChemicalStackIngredient}.
      */
     @ZenCodeType.Method
+    @SuppressWarnings("removal")
+    @Deprecated(forRemoval = true, since = "10.7.11")//TODO - 1.22: Replace with method that accepts holders once jared adds holder support in CrT
     public static boolean testType(ChemicalStackIngredient _this, Chemical chemical) {
-        return _this.testType(MekanismAPI.CHEMICAL_REGISTRY.wrapAsHolder(chemical));
+        return _this.testType(chemical);
     }
 
     /**
