@@ -111,6 +111,7 @@ public class RadiationManager implements IRadiationManager {
     private static final String DATA_HANDLER_NAME = "radiation_manager";
     private static final RandomSource RAND = RandomSource.create();
 
+    private static final double BASELINE = 0.000_000_100; // 100 nSv/h
     private static final double MIN_MAGNITUDE = 0.000_010; // 10 uSv/h
 
     private boolean loaded;
@@ -147,7 +148,7 @@ public class RadiationManager implements IRadiationManager {
 
     @Override
     public double baselineRadiation() {
-        return 0.000_000_100;//100 nSv/h
+        return BASELINE;
     }
 
     @Override
@@ -568,7 +569,7 @@ public class RadiationManager implements IRadiationManager {
 
     public record LevelAndMaxMagnitude(double level, double maxMagnitude) {
 
-        private static final LevelAndMaxMagnitude BASELINE = new LevelAndMaxMagnitude(IRadiationManager.INSTANCE.baselineRadiation(), IRadiationManager.INSTANCE.baselineRadiation());
+        private static final LevelAndMaxMagnitude BASELINE = new LevelAndMaxMagnitude(RadiationManager.BASELINE, RadiationManager.BASELINE);
     }
 
     public enum RadiationScale {
