@@ -22,8 +22,7 @@ public class StackedWasteBarrel extends VariableCapacityChemicalTank {
     private static final ChemicalAttributeValidator ATTRIBUTE_VALIDATOR = new mekanism.api.chemical.attribute.ChemicalAttributeValidator.ChemicalAttributeValidatorLegacyAdapter() {
         @Override
         public boolean validate(IChemicalAttribute attr) {
-            //TODO - 1.22: Remove the legacy check from this
-            return attr instanceof ChemicalRadioactivity || attr instanceof mekanism.api.chemical.attribute.ChemicalAttributes.Radiation;
+            return attr instanceof ChemicalRadioactivity;
         }
 
         @Override

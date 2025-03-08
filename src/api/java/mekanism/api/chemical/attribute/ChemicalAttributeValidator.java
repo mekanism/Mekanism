@@ -52,7 +52,6 @@ public interface ChemicalAttributeValidator {//TODO - 1.22: Re-evaluate how this
      *
      * @since 10.7.11
      */
-    @SuppressWarnings("removal")
     default boolean validate(IChemicalAttribute attribute) {
         return validate(attribute.toLegacyAttribute());
     }
@@ -152,7 +151,14 @@ public interface ChemicalAttributeValidator {//TODO - 1.22: Re-evaluate how this
                 }
             }
             for (ChemicalAttribute chemicalAttribute : chemical.getLegacyAttributes()) {
-                if (!validate(chemicalAttribute)) {
+                IChemicalAttribute modernVersion = chemicalAttribute.asModern();
+                if (modernVersion != null) {
+                    //Try to get the modern version for validation
+                    if (!validate(modernVersion)) {
+                        return false;
+                    }
+                } else if (!validate(chemicalAttribute)) {
+                    //If that fails just validate against the old version
                     return false;
                 }
             }
