@@ -61,8 +61,24 @@ public class MekanismIMC {
      *
      * @apiNote Call this method during the {@link InterModEnqueueEvent}.
      * @see #addModuleContainer(ModuleContainerTarget)
+     * @deprecated Use {@link #addModuleContainer(Holder, String)} instead
      */
-    public static void addModuleContainer(ItemLike container, String imcMethod) {//TODO - 1.22: Switch this to taking a Holder<Item>
+    @Deprecated(forRemoval = true, since = "10.7.11")
+    public static void addModuleContainer(ItemLike container, String imcMethod) {
+        addModuleContainer(new ModuleContainerTarget(container, imcMethod));
+    }
+
+    /**
+     * Helper method to register a new module container (for example the MekaSuit and Meka-Tool).
+     *
+     * @param container Item that will be the module container.
+     * @param imcMethod Method used to add modules as supported to the container.
+     *
+     * @apiNote Call this method during the {@link InterModEnqueueEvent}.
+     * @see #addModuleContainer(ModuleContainerTarget)
+     * @since 10.7.11
+     */
+    public static void addModuleContainer(Holder<Item> container, String imcMethod) {
         addModuleContainer(new ModuleContainerTarget(container, imcMethod));
     }
 
@@ -72,7 +88,7 @@ public class MekanismIMC {
      * @param moduleContainer Targeting information for the module container.
      *
      * @apiNote Call this method during the {@link InterModEnqueueEvent}.
-     * @see #addModuleContainer(ItemLike, String)
+     * @see #addModuleContainer(Holder, String)
      * @since 10.5.0
      */
     public static void addModuleContainer(ModuleContainerTarget moduleContainer) {
@@ -328,14 +344,28 @@ public class MekanismIMC {
      *
      * @since 10.5.0
      */
-    public record ModuleContainerTarget(Item container, String imcMethod) {
+    public record ModuleContainerTarget(Holder<Item> container, String imcMethod) {
 
         /**
          * @param container Item that will be the module container.
          * @param imcMethod Method used to add modules as supported to the container.
+         *
+         * @deprecated Use {@link #ModuleContainerTarget(Holder, String)} instead
          */
-        public ModuleContainerTarget(ItemLike container, String imcMethod) {//TODO - 1.22: Switch this to taking a Holder<Item>
+        @Deprecated(forRemoval = true, since = "10.7.11")
+        public ModuleContainerTarget(ItemLike container, String imcMethod) {
             this(Objects.requireNonNull(container, "Item cannot be null").asItem(), imcMethod);
+        }
+
+        /**
+         * @param container Item that will be the module container.
+         * @param imcMethod Method used to add modules as supported to the container.
+         *
+         * @deprecated Use {@link #ModuleContainerTarget(Holder, String)} instead
+         */
+        @Deprecated(forRemoval = true, since = "10.7.11")
+        public ModuleContainerTarget(Item container, String imcMethod) {
+            this(Objects.requireNonNull(container, "Item cannot be null").builtInRegistryHolder(), imcMethod);
         }
 
         public ModuleContainerTarget {

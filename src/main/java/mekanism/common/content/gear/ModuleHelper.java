@@ -71,16 +71,16 @@ public class ModuleHelper implements IModuleHelper {//TODO - 1.22: Evaluate movi
         Map<Item, String> moduleContainers = new Reference2ObjectArrayMap<>(5);
         Set<String> imcMethods = new HashSet<>(5);
         event.getIMCStream(MekanismIMC.ADD_MODULE_CONTAINER::equals).forEach(message -> {
-            if (message.messageSupplier().get() instanceof ModuleContainerTarget(Item container, String imcMethod)) {
+            if (message.messageSupplier().get() instanceof ModuleContainerTarget(Holder<Item> container, String imcMethod)) {
                 Mekanism.logger.debug("Received IMC message '{}' from '{}' for new module container '{}' with an imcMethod '{}'.", MekanismIMC.ADD_MODULE_CONTAINER,
-                      message.senderModId(), container, imcMethod);
-                if (moduleContainers.put(container, imcMethod) != null) {
+                      message.senderModId(), container.getRegisteredName(), imcMethod);
+                if (moduleContainers.put(container.value(), imcMethod) != null) {
                     Mekanism.logger.error("Received IMC message for '{}' from mod '{}' for an item '{}' that has already been registered as a container.",
-                          MekanismIMC.ADD_MODULE_CONTAINER, message.senderModId(), container);
+                          MekanismIMC.ADD_MODULE_CONTAINER, message.senderModId(), container.getRegisteredName());
                 }
                 if (!imcMethods.add(imcMethod)) {
                     Mekanism.logger.error("Received IMC message for '{}' from mod '{}' for an item '{}' with an imcMethod '{}' that that has already been registered.",
-                          MekanismIMC.ADD_MODULE_CONTAINER, message.senderModId(), container, imcMethod);
+                          MekanismIMC.ADD_MODULE_CONTAINER, message.senderModId(), container.getRegisteredName(), imcMethod);
                 }
             } else {
                 Mekanism.logger.warn("Received IMC message for '{}' from mod '{}' with an invalid body.", MekanismIMC.ADD_MODULE_CONTAINER, message.senderModId());
