@@ -15,6 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.TooltipFlag;
+import org.jetbrains.annotations.ApiStatus.Internal;
 
 /**
  * A {@link MekanismAPI#CHEMICAL_REGISTRY chemical} data map that allows defining fuel values for a chemical.
@@ -63,9 +64,9 @@ public record ChemicalFuel(int burnTicks, long energyPerTick) implements IChemic
         tooltips.add(APILang.CHEMICAL_ATTRIBUTE_FUEL_ENERGY_DENSITY.translateColored(EnumColor.GRAY, EnumColor.INDIGO, tooltipHelper.getEnergyPerMBDisplayShort(energyDensity())));
     }
 
+    @Internal
     @Override
     @SuppressWarnings("removal")
-    @Deprecated(forRemoval = true, since = "10.7.11")
     public ChemicalAttributes.Fuel toLegacyAttribute() {
         return new ChemicalAttributes.Fuel(this);
     }

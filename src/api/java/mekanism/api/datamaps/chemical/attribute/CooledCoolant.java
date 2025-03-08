@@ -9,6 +9,7 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.attribute.ChemicalAttributes;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.ApiStatus.Internal;
 
 /**
  * A {@link MekanismAPI#CHEMICAL_REGISTRY chemical} data map that allows defining fuel values for a chemical.
@@ -52,9 +53,9 @@ public record CooledCoolant(Holder<Chemical> otherVariant, double thermalEnthalp
         return new ChemicalStack(otherVariant, amountHeated);
     }
 
+    @Internal
     @Override
     @SuppressWarnings("removal")
-    @Deprecated(forRemoval = true, since = "10.7.11")
     public ChemicalAttributes.CooledCoolant toLegacyAttribute() {
         return new ChemicalAttributes.CooledCoolant(this);
     }

@@ -4,6 +4,7 @@ import java.util.List;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.TooltipFlag;
+import org.jetbrains.annotations.ApiStatus.Internal;
 
 /**
  * Represents a chemical attribute.
@@ -14,8 +15,8 @@ public interface IChemicalAttribute {
     /**
      * Converts this attribute into a legacy variant.
      */
+    @Internal
     @SuppressWarnings("removal")
-    @Deprecated(forRemoval = true, since = "10.7.11")
     mekanism.api.chemical.attribute.ChemicalAttribute toLegacyAttribute();
 
     /**

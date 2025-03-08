@@ -17,7 +17,7 @@ import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.common.MekanismLang;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderSet.ListBacked;
+import net.minecraft.core.HolderSet.Named;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
@@ -77,10 +77,12 @@ public class GuiQIOCrystallizerScreen extends GuiInnerScreen {
                     if (!prevSlurry.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
                         ChemicalSolidTag tag = chemical.getData(IMekanismDataMapTypes.INSTANCE.chemicalSolidTag());
                         if (tag != null) {
-                            tag.lookupTag().stream()
-                                  .flatMap(ListBacked::stream)
-                                  .map(ItemStack::new)
-                                  .forEach(iterStacks::add);
+                            Named<Item> tagContents = tag.lookupTag().orElse(null);
+                            if (tagContents != null) {
+                                for (Holder<Item> tagContent : tagContents) {
+                                    iterStacks.add(new ItemStack(tagContent));
+                                }
+                            }
                         }
                         //TODO - 1.22: Remove this legacy branch
                         else if (!prevSlurry.is(MekanismAPITags.Chemicals.DIRTY)) {

@@ -147,10 +147,9 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
     @Nullable
     private String translationKey;
 
-
     @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
-    private final Map<Class<? extends ChemicalAttribute>, ChemicalAttribute> legacyAttributeMap;
+    private Map<Class<? extends ChemicalAttribute>, ChemicalAttribute> legacyAttributeMap;
     @Nullable
     @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
@@ -161,30 +160,38 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
     private boolean hasLegacyAttributesWithValidation;
     @Nullable
     @Deprecated(forRemoval = true, since = "10.7.11")
-    private final TagKey<Item> legacyOreTag;
+    private TagKey<Item> legacyOreTag;
     @Nullable
     @Deprecated(forRemoval = true, since = "10.7.11")
     private TagKey<Item> oreTag;
     @Deprecated(forRemoval = true, since = "10.7.11")
-    private final boolean isGaseous;
+    private boolean isGaseous;
 
     @SuppressWarnings("removal")
     public Chemical(ChemicalBuilder builder) {
         this.iconLocation = builder.getTexture();
         this.tint = builder.getTint();
-        //TODO - 1.22: Remove constructor logic that is below here
+        initLegacy(builder);
+    }
+
+    @SuppressWarnings("removal")
+    @Deprecated(forRemoval = true, since = "10.7.11")
+    private void initLegacy(ChemicalBuilder builder) {
         //Copy the map to support addAttribute
         this.legacyAttributeMap = new HashMap<>(builder.getAttributeMap());
         for (ChemicalAttribute legacyAttribute : legacyAttributeMap.values()) {
             if (legacyAttribute instanceof Radiation radiation) {
-                this.radioactivity = this.legacyRadioactivity = radiation.getRadioactivity();
+                this.legacyRadioactivity = radiation.getRadioactivity();
+                this.radioactivity = this.legacyRadioactivity;
             } else if (legacyAttribute.needsValidation()) {
                 //Skip radioactive attributes when checking if we have any that need validation, so that we properly return false
                 // when the radiation manager is disabled
-                this.hasAttributesWithValidation = this.hasLegacyAttributesWithValidation = true;
+                this.hasLegacyAttributesWithValidation = true;
+                this.hasAttributesWithValidation = true;
             }
         }
-        this.oreTag = this.legacyOreTag = builder.getOreTag();
+        this.legacyOreTag = builder.getOreTag();
+        this.oreTag = this.legacyOreTag;
         this.isGaseous = builder.isGaseous();
     }
 
@@ -313,11 +320,13 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
         //Clear the merged cache if it has already been initialized, and just reinitialize it when needed
         attributeMap = null;
         if (attribute instanceof Radiation radiation) {
-            radioactivity = legacyRadioactivity = radiation.getRadioactivity();
+            legacyRadioactivity = radiation.getRadioactivity();
+            radioactivity = legacyRadioactivity;
             //Note: We don't mark radiation as needing validation here, as we handle it separately, so that if the radiation manager is disabled
             // we return false for if we have any attributes that need validation
         } else if (attribute.needsValidation()) {
-            this.hasAttributesWithValidation = this.hasLegacyAttributesWithValidation = true;
+            this.hasLegacyAttributesWithValidation = true;
+            this.hasAttributesWithValidation = true;
         }
     }
 

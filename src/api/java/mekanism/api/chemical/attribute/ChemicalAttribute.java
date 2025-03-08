@@ -7,6 +7,8 @@ import mekanism.api.datamaps.chemical.attribute.IChemicalAttribute;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.TooltipFlag;
+import org.jetbrains.annotations.ApiStatus.Internal;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * All chemical attributes should inherit from this class. No specific implementation is required.
@@ -50,9 +52,16 @@ public abstract class ChemicalAttribute implements IChemicalAttribute {
         collectTooltips(tooltips::add);
     }
 
+    @Internal
     @Override
     @SuppressWarnings("removal")
     public final ChemicalAttribute toLegacyAttribute() {
         return this;
+    }
+
+    @Nullable
+    @Internal
+    public IChemicalAttribute asModern() {
+        return null;
     }
 }

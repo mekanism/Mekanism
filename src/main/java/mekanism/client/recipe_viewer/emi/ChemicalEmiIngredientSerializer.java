@@ -29,10 +29,11 @@ public class ChemicalEmiIngredientSerializer implements EmiStackSerializer<Chemi
     }
 
     void addEmiStacks(EmiRegistry emiRegistry) {
-        MekanismAPI.CHEMICAL_REGISTRY.holders()
-              //Don't add the empty type. We will allow EMI to filter out any that are hidden from recipe viewers
-              .filter(chemical -> !chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY))
-              .map(chemical -> new ChemicalEmiStack(chemical, 1))
-              .forEach(emiRegistry::addEmiStack);
+        MekanismAPI.CHEMICAL_REGISTRY.holders().forEach(chemical -> {
+            //Don't add the empty type. We will allow EMI to filter out any that are hidden from recipe viewers
+            if (!chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
+                emiRegistry.addEmiStack(new ChemicalEmiStack(chemical, 1));
+            }
+        });
     }
 }

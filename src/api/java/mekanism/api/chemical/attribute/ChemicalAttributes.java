@@ -1,12 +1,14 @@
 package mekanism.api.chemical.attribute;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.IntSupplier;
 import java.util.function.LongSupplier;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.datamaps.chemical.attribute.ChemicalFuel;
+import mekanism.api.datamaps.chemical.attribute.ChemicalRadioactivity;
 import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.radiation.IRadiationManager;
@@ -15,6 +17,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.ITooltipHelper;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -38,6 +41,8 @@ public class ChemicalAttributes {
     @Deprecated(forRemoval = true, since = "10.7.11")
     public static class Radiation extends ChemicalAttribute {
 
+        @Nullable
+        private final ChemicalRadioactivity modernRepresentation;
         private final double radioactivity;
 
         /**
@@ -48,6 +53,26 @@ public class ChemicalAttributes {
                 throw new IllegalArgumentException("Radiation attribute should only be used when there actually is radiation! Radioactivity: " + radioactivity);
             }
             this.radioactivity = radioactivity;
+            if (radioactivity <= IRadiationManager.INSTANCE.baselineRadiation()) {
+                modernRepresentation = null;
+            } else {
+                modernRepresentation = new ChemicalRadioactivity(radioactivity);
+            }
+        }
+
+        /**
+         * @since 10.7.11
+         */
+        public Radiation(ChemicalRadioactivity modern) {
+            this.modernRepresentation = Objects.requireNonNull(modern);
+            this.radioactivity = modern.radioactivity();
+        }
+
+        @Internal
+        @Nullable
+        @Override
+        public ChemicalRadioactivity asModern() {
+            return modernRepresentation;
         }
 
         /**
@@ -199,7 +224,9 @@ public class ChemicalAttributes {
          *
          * @since 10.7.11
          */
+        @Internal
         @Nullable
+        @Override
         public mekanism.api.datamaps.chemical.attribute.CooledCoolant asModern() {
             if (modernRepresentation != null) {
                 //CrT and JsonThings fuels will use this
@@ -276,7 +303,9 @@ public class ChemicalAttributes {
          *
          * @since 10.7.11
          */
+        @Internal
         @Nullable
+        @Override
         public mekanism.api.datamaps.chemical.attribute.HeatedCoolant asModern() {
             if (modernRepresentation != null) {
                 //CrT and JsonThings fuels will use this
@@ -378,7 +407,9 @@ public class ChemicalAttributes {
          *
          * @since 10.7.11
          */
+        @Internal
         @Nullable
+        @Override
         public ChemicalFuel asModern() {
             if (modernRepresentation != null) {
                 //CrT and JsonThings fuels will use this

@@ -16,6 +16,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.TooltipFlag;
+import org.jetbrains.annotations.ApiStatus.Internal;
 
 /**
  * A {@link MekanismAPI#CHEMICAL_REGISTRY chemical} data map that allows defining fuel values for a chemical.
@@ -81,9 +82,9 @@ public record HeatedCoolant(Holder<Chemical> otherVariant, double thermalEnthalp
         tooltips.add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_TEMPERATURE.translateColored(EnumColor.GRAY, EnumColor.INDIGO, ITooltipHelper.INSTANCE.getTemperatureDisplayShort(temperature)));
     }
 
+    @Internal
     @Override
     @SuppressWarnings("removal")
-    @Deprecated(forRemoval = true, since = "10.7.11")
     public ChemicalAttributes.HeatedCoolant toLegacyAttribute() {
         return new ChemicalAttributes.HeatedCoolant(this);
     }
