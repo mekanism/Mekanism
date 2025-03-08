@@ -73,7 +73,7 @@ public class MekanismAPI {
      *
      * @since 10.6.0
      *
-     * @deprecated Prefer using {@link #EMPTY_CHEMICAL_KEY}
+     * @deprecated Use {@link #EMPTY_CHEMICAL_KEY} instead
      */
     @Deprecated(forRemoval = true, since = "10.7.11")
     public static final ResourceLocation EMPTY_CHEMICAL_NAME = EMPTY_CHEMICAL_KEY.location();

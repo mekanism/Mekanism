@@ -58,7 +58,7 @@ public interface IModuleContainer {
      *
      * @throws IllegalStateException If no module of the given type is installed, or there is no config with the same name is not found installed on the module of the
      *                               given type.
-     * @deprecated Prefer calling via {@link #replaceModuleConfig(Provider, ItemStack, Holder, ModuleConfig)}
+     * @deprecated Use {@link #replaceModuleConfig(Provider, ItemStack, Holder, ModuleConfig)} instead
      */
     @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
@@ -107,7 +107,7 @@ public interface IModuleContainer {
      * {@return the number of modules of a given type that are installed}
      *
      * @param typeProvider Module type.
-     * @deprecated Call via {@link #installedCount(Holder)}
+     * @deprecated Use {@link #installedCount(Holder)} instead
      */
     @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
@@ -133,7 +133,7 @@ public interface IModuleContainer {
      *
      * @param typeProvider Module type.
      *
-     * @deprecated Call via {@link #get(DeferredHolder)}, {@link #get(Holder)}, or {@link #getUnchecked(Holder)}
+     * @deprecated Use {@link #get(DeferredHolder)}, {@link #get(Holder)}, or {@link #getUnchecked(Holder)} instead
      */
     @Nullable
     @SuppressWarnings("removal")
@@ -179,7 +179,7 @@ public interface IModuleContainer {
      *
      * @param typeProvider Module type.
      *
-     * @deprecated Call via {@link #getIfEnabled(DeferredHolder)} or {@link #getIfEnabled(Holder)}
+     * @deprecated Use {@link #getIfEnabled(DeferredHolder)} or {@link #getIfEnabled(Holder)} instead
      */
     @Nullable
     @SuppressWarnings("removal")
@@ -220,7 +220,7 @@ public interface IModuleContainer {
      *
      * @param typeProvider Module type.
      *
-     * @deprecated Call via {@link #has(Holder)}
+     * @deprecated Use {@link #has(Holder)} instead
      */
     @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
@@ -244,7 +244,7 @@ public interface IModuleContainer {
      *
      * @param typeProvider Module type.
      *
-     * @deprecated Call via {@link #hasEnabled(Holder)}
+     * @deprecated Use {@link #hasEnabled(Holder)} instead
      */
     @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")

@@ -112,7 +112,7 @@ public interface IChemicalIngredientCreator {
      *
      * @param chemicalProvider Chemical to match
      *
-     * @deprecated Prefer using {@link #of(Holder)}
+     * @deprecated Use {@link #of(Holder)} instead
      */
     @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
@@ -154,7 +154,7 @@ public interface IChemicalIngredientCreator {
      * @implNote This method is subtly different from {@link #compound(List)} as if there is no elements this method will return {@link #empty()}, and if there is one
      * element, this will return a {@link mekanism.api.recipes.ingredients.chemical.SingleChemicalIngredient}.
      *
-     * @deprecated Prefer using {@link #ofHolders(Holder[])}
+     * @deprecated Use {@link #ofHolders(Holder[])} instead
      */
     @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
@@ -170,7 +170,7 @@ public interface IChemicalIngredientCreator {
      * @implNote This method is subtly different from {@link #compound(List)} as if there is no elements this method will return {@link #empty()}, and if there is one
      * element, this will return a {@link mekanism.api.recipes.ingredients.chemical.SingleChemicalIngredient}.
      *
-     * @deprecated Prefer using {@link #ofHolders(Stream)}
+     * @deprecated Use {@link #ofHolders(Stream)} instead
      */
     @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")

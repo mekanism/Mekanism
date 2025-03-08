@@ -23,7 +23,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
      * A predicate that returns {@code true} for any input.
      *
      * @since 10.7.0 Previously was in ChemicalTankBuilder
-     * @deprecated Prefer using the holder variant of methods and fields.
+     * @deprecated Use {@link #holderAlwaysTrue} instead
      */
     @Deprecated(forRemoval = true, since = "10.7.11")
     public static final Predicate<Chemical> alwaysTrue = ConstantPredicates.alwaysTrue();
@@ -31,7 +31,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
      * A predicate that returns {@code false} for any input.
      *
      * @since 10.7.0 Previously was in ChemicalTankBuilder
-     * @deprecated Prefer using the holder variant of methods and fields.
+     * @deprecated Use {@link #holderAlwaysFalse} instead
      */
     @Deprecated(forRemoval = true, since = "10.7.11")
     public static final Predicate<Chemical> alwaysFalse = ConstantPredicates.alwaysFalse();
@@ -39,7 +39,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
      * A bi predicate that returns {@code true} for any input.
      *
      * @since 10.7.0 Previously was in ChemicalTankBuilder
-     * @deprecated Prefer using the holder variant of methods and fields.
+     * @deprecated Use {@link #holderAlwaysTrueBi} instead
      */
     @Deprecated(forRemoval = true, since = "10.7.11")
     public static final BiPredicate<Chemical, @NotNull AutomationType> alwaysTrueBi = ConstantPredicates.alwaysTrueBi();
@@ -47,7 +47,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
      * A bi predicate that returns {@code true} for any input when the automation type is internal.
      *
      * @since 10.7.0 Previously was in ChemicalTankBuilder
-     * @deprecated Prefer using the holder variant of methods and fields.
+     * @deprecated Use {@link #holderInternalOnly} instead
      */
     @Deprecated(forRemoval = true, since = "10.7.11")
     public static final BiPredicate<Chemical, @NotNull AutomationType> internalOnly = ConstantPredicates.internalOnly();
@@ -55,7 +55,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
      * A bi predicate that returns {@code true} for any input when the automation type is not external.
      *
      * @since 10.7.0 Previously was in ChemicalTankBuilder
-     * @deprecated Prefer using the holder variant of methods and fields.
+     * @deprecated Use {@link #holderNotExternal} instead
      */
     @Deprecated(forRemoval = true, since = "10.7.11")
     public static final BiPredicate<Chemical, @NotNull AutomationType> notExternal = ConstantPredicates.notExternal();
@@ -63,7 +63,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
      * A bi predicate that returns {@code true} for any input when the automation type is manual.
      *
      * @since 10.7.0 Previously was in ChemicalTankBuilder
-     * @deprecated Prefer using the holder variant of methods and fields.
+     * @deprecated Use {@link #holderManualOnly} instead
      */
     @Deprecated(forRemoval = true, since = "10.7.11")
     public static final BiPredicate<Chemical, @NotNull AutomationType> manualOnly = ConstantPredicates.manualOnly();
@@ -157,7 +157,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
      *
      * @implNote The created tank will always allow {@link AutomationType#MANUAL} extraction, and allow any {@link AutomationType} to insert into it.
      * @since 10.7.0 Previously was in ChemicalTankBuilder
-     * @deprecated Prefer using holders and calling {@link #createModern(long, Predicate, Predicate, IContentsListener)}
+     * @deprecated Use {@link #createModern(long, Predicate, Predicate, IContentsListener)} instead
      */
     @Deprecated(forRemoval = true, since = "10.7.11")
     public static IChemicalTank create(long capacity, Predicate<Chemical> canExtract, Predicate<Chemical> canInsert, @Nullable IContentsListener listener) {
@@ -190,7 +190,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
      * @param listener  Contents change listener.
      *
      * @since 10.7.0 Previously was in ChemicalTankBuilder
-     * @deprecated Prefer using holders and calling {@link #createModern(long, Predicate, IContentsListener)}
+     * @deprecated Use {@link #createModern(long, Predicate, IContentsListener)} instead
      */
     @Deprecated(forRemoval = true, since = "10.7.11")
     public static IChemicalTank create(long capacity, Predicate<Chemical> validator, @Nullable IContentsListener listener) {
@@ -228,7 +228,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
      * @param listener  Contents change listener.
      *
      * @since 10.7.0 Previously was in ChemicalTankBuilder
-     * @deprecated Prefer using holders and calling {@link #inputModern(long, Predicate, IContentsListener)}
+     * @deprecated Use {@link #inputModern(long, Predicate, IContentsListener)} instead
      */
     @Deprecated(forRemoval = true, since = "10.7.11")
     public static IChemicalTank input(long capacity, Predicate<Chemical> validator, @Nullable IContentsListener listener) {
@@ -267,7 +267,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
      * @param listener  Contents change listener.
      *
      * @since 10.7.0 Previously was in ChemicalTankBuilder
-     * @deprecated Prefer using holders and calling {@link #inputModern(long, Predicate, Predicate, IContentsListener)}
+     * @deprecated Use {@link #inputModern(long, Predicate, Predicate, IContentsListener)} instead
      */
     @Deprecated(forRemoval = true, since = "10.7.11")
     public static IChemicalTank input(long capacity, Predicate<Chemical> canInsert, Predicate<Chemical> validator, @Nullable IContentsListener listener) {
@@ -328,7 +328,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
      *
      * @implNote The created tank will always allow {@link AutomationType#MANUAL} extraction, and allow any {@link AutomationType} to insert into it.
      * @since 10.7.0 Previously was in ChemicalTankBuilder
-     * @deprecated Prefer using holders and calling {@link #createModern(long, Predicate, Predicate, Predicate, IContentsListener)}
+     * @deprecated Use {@link #createModern(long, Predicate, Predicate, Predicate, IContentsListener)} instead
      */
     @Deprecated(forRemoval = true, since = "10.7.11")
     public static IChemicalTank create(long capacity, Predicate<Chemical> canExtract, Predicate<Chemical> canInsert, Predicate<Chemical> validator,
@@ -365,7 +365,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
      * @param listener   Contents change listener.
      *
      * @since 10.7.0 Previously was in ChemicalTankBuilder
-     * @deprecated Prefer using holders and calling {@link #createModern(long, BiPredicate, BiPredicate, Predicate, IContentsListener)}
+     * @deprecated Use {@link #createModern(long, BiPredicate, BiPredicate, Predicate, IContentsListener)} instead
      */
     @Deprecated(forRemoval = true, since = "10.7.11")
     public static IChemicalTank create(long capacity, BiPredicate<Chemical, @NotNull AutomationType> canExtract,
@@ -402,7 +402,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
      *
      * @implNote The created tank will always allow {@link AutomationType#MANUAL} extraction, and allow any {@link AutomationType} to insert into it.
      * @since 10.7.0 Previously was in ChemicalTankBuilder
-     * @deprecated Prefer using holders and calling {@link #createModern(long, Predicate, Predicate, Predicate, ChemicalAttributeValidator, IContentsListener)}
+     * @deprecated Use {@link #createModern(long, Predicate, Predicate, Predicate, ChemicalAttributeValidator, IContentsListener)} instead
      */
     @Deprecated(forRemoval = true, since = "10.7.11")
     public static IChemicalTank create(long capacity, Predicate<Chemical> canExtract, Predicate<Chemical> canInsert, Predicate<Chemical> validator,
@@ -453,7 +453,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
      * @param listener           Contents change listener.
      *
      * @since 10.7.0 Previously was in ChemicalTankBuilder
-     * @deprecated Prefer using holders and calling {@link #createModern(long, BiPredicate, BiPredicate, Predicate, ChemicalAttributeValidator, IContentsListener)}
+     * @deprecated Use {@link #createModern(long, BiPredicate, BiPredicate, Predicate, ChemicalAttributeValidator, IContentsListener)} instead
      */
     @Deprecated(forRemoval = true, since = "10.7.11")
     public static IChemicalTank create(long capacity, BiPredicate<Chemical, @NotNull AutomationType> canExtract, BiPredicate<Chemical, @NotNull AutomationType> canInsert,
@@ -513,12 +513,12 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
     protected final BiPredicate<Holder<Chemical>, @NotNull AutomationType> canExtractModern;
     protected final BiPredicate<Holder<Chemical>, @NotNull AutomationType> canInsertModern;
     /**
-     * @deprecated Prefer using {@link #canExtractModern}
+     * @deprecated Use {@link #canExtractModern} instead
      */
     @Deprecated(forRemoval = true, since = "10.7.11")
     protected final BiPredicate<Chemical, @NotNull AutomationType> canExtract;
     /**
-     * @deprecated Prefer using {@link #canInsertModern}
+     * @deprecated Use {@link #canInsertModern} instead
      */
     @Deprecated(forRemoval = true, since = "10.7.11")
     protected final BiPredicate<Chemical, @NotNull AutomationType> canInsert;

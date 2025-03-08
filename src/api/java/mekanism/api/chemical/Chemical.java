@@ -54,7 +54,7 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
      * A codec which can (de)encode chemicals.
      *
      * @since 10.6.0
-     * @deprecated Prefer using {@link #HOLDER_CODEC}
+     * @deprecated Use {@link #HOLDER_CODEC} instead
      */
     @Deprecated(forRemoval = true, since = "!0.7.11")
     public static final Codec<Chemical> CODEC = MekanismAPI.CHEMICAL_REGISTRY.byNameCodec();
@@ -68,9 +68,9 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
      * A stream codec which can be used to encode and decode chemicals over the network.
      *
      * @since 10.6.0
-     * @deprecated Prefer using {@link #HOLDER_STREAM_CODEC}
+     * @deprecated Use {@link #HOLDER_STREAM_CODEC} instead
      */
-    @Deprecated(forRemoval = true, since = "!0.7.11")
+    @Deprecated(forRemoval = true, since = "10.7.11")
     public static final StreamCodec<RegistryFriendlyByteBuf, Chemical> STREAM_CODEC = ByteBufCodecs.registry(MekanismAPI.CHEMICAL_REGISTRY_NAME);
     /**
      * A stream codec which can be used to encode and decode chemical holders over the network.
@@ -83,7 +83,7 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
      * Tries to parse a chemical.
      *
      * @since 10.7.0
-     * @deprecated Prefer accessing via holders {@link #parseHolder(Provider, Tag)}
+     * @deprecated Use {@link #parseHolder(Provider, Tag)} instead
      */
     @Deprecated(forRemoval = true, since = "10.7.11")
     public static Optional<Chemical> parse(HolderLookup.Provider lookupProvider, Tag tag) {
@@ -96,7 +96,7 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
      * Tries to parse a chemical, defaulting to the empty chemical on parsing failure.
      *
      * @since 10.7.0
-     * @deprecated Prefer accessing via holders {@link #parseOptionalHolder(Provider, String)}
+     * @deprecated Use {@link #parseOptionalHolder(Provider, String)} instead
      */
     @Deprecated(forRemoval = true, since = "10.7.11")
     public static Chemical parseOptional(HolderLookup.Provider lookupProvider, String tag) {
@@ -390,7 +390,7 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
      *
      * @return {@code true} if the chemical is in the tag, {@code false} otherwise.
      *
-     * @deprecated Access via {@link ChemicalStack#is(TagKey)} or as a holder.
+     * @deprecated Use {@link ChemicalStack#is(TagKey)} instead.
      */
     @Deprecated(forRemoval = true, since = "10.7.9")
     public boolean is(TagKey<Chemical> tag) {
@@ -402,7 +402,7 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
      *
      * @return All the tags this chemical is a part of.
      *
-     * @deprecated Access via {@link ChemicalStack#getTags()} or as a holder.
+     * @deprecated Use {@link ChemicalStack#getTags()} instead
      */
     @Deprecated(forRemoval = true, since = "10.7.9")
     public Stream<TagKey<Chemical>> getTags() {
@@ -439,8 +439,8 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
      *
      * @return The tag for the item the slurry goes with. May be null.
      *
-     * @deprecated 10.7.11 Prefer checking against {@link IMekanismDataMapTypes#chemicalSolidTag()}, though note it may not contain entries from mods that haven't updated
-     * to declaring via datamaps.
+     * @deprecated Prefer checking against {@link IMekanismDataMapTypes#chemicalSolidTag()}, though note it may not contain entries from mods that haven't updated to
+     * declaring via datamaps.
      */
     @Nullable
     @Deprecated(forRemoval = true, since = "10.7.11")
@@ -452,8 +452,8 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
      * {@return whether this chemical should render as a gas or more like a fluid}
      *
      * @since 10.7.0
-     * @deprecated 10.7.11 Prefer checking against {@link MekanismAPITags.Chemicals#GASEOUS}, though note it may not contain entries from mods that haven't updated to
-     * declaring via tags.
+     * @deprecated Prefer checking against {@link MekanismAPITags.Chemicals#GASEOUS}, though note it may not contain entries from mods that haven't updated to declaring
+     * via tags.
      */
     @Deprecated(forRemoval = true, since = "10.7.11")
     public boolean isGaseous() {
@@ -464,8 +464,8 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
      * {@return whether this chemical declares in code that it should render as a gas or more like a fluid}
      *
      * @since 10.7.11
-     * @deprecated 10.7.11 Prefer checking against {@link MekanismAPITags.Chemicals#GASEOUS}, though note it may not contain entries from mods that haven't updated to
-     * declaring via tags.
+     * @deprecated Prefer checking against {@link MekanismAPITags.Chemicals#GASEOUS}, though note it may not contain entries from mods that haven't updated to declaring
+     * via tags.
      */
     @Deprecated(forRemoval = true, since = "10.7.11")
     public boolean isGaseousLegacy() {

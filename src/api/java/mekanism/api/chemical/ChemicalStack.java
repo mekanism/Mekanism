@@ -67,7 +67,7 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
      * A standard codec for non-empty Chemicals.
      *
      * @since 10.6.0
-     * @deprecated Prefer using {@link #CHEMICAL_NON_EMPTY_HOLDER_CODEC}
+     * @deprecated Use {@link #CHEMICAL_NON_EMPTY_HOLDER_CODEC} instead
      */
     @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
@@ -198,7 +198,7 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
      * @param amount   Amount of chemical in this stack. If this is less than or equal to zero the stack will be considered empty.
      *
      * @throws NullPointerException If the chemical is null.
-     * @deprecated Prefer creating a chemical stack using the chemical's holder
+     * @deprecated Use {@link #ChemicalStack(Holder, long)} instead
      */
     @Deprecated(forRemoval = true, since = "10.7.11")
     public ChemicalStack(Chemical chemical, long amount) {

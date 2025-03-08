@@ -54,7 +54,7 @@ public interface IModuleHelper {
      *
      * @apiNote This method specifically uses {@link IModuleDataProvider} rather than {@link java.util.function.Supplier<ModuleData>} to make it harder to accidentally
      * have a {@code null} reference when using {@link DeferredRegister}s where both the {@link ModuleData} and the {@link Item} need references of each other.
-     * @deprecated Call via {@link #createModuleItem(Supplier, Properties)}
+     * @deprecated Use {@link #createModuleItem(Supplier, Properties)} instead
      */
     @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
@@ -125,7 +125,7 @@ public interface IModuleHelper {
      *
      * @return Set of items that support the given module type.
      *
-     * @deprecated Call via {@link #getSupportedItems(Holder)}
+     * @deprecated Use {@link #getSupportedItems(Holder)} instead
      */
     @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
@@ -151,7 +151,7 @@ public interface IModuleHelper {
      * @param typeProvider Module type
      *
      * @since 10.6.0
-     * @deprecated Call via {@link #supports(Holder, Holder)}
+     * @deprecated Use {@link #supports(Holder, Holder)} instead
      */
     @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
@@ -179,7 +179,7 @@ public interface IModuleHelper {
      * @return Set of conflicting module types.
      *
      * @since 10.2.3
-     * @deprecated Call via {@link #getConflicting(Holder)}
+     * @deprecated Use {@link #getConflicting(Holder)} instead
      */
     @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
@@ -206,7 +206,7 @@ public interface IModuleHelper {
      *
      * @return {@code true} if the item has the module installed and enabled.
      *
-     * @deprecated Call via {@link #isEnabled(ItemStack, Holder)}
+     * @deprecated Use {@link #isEnabled(ItemStack, Holder)} instead
      */
     @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
@@ -237,7 +237,7 @@ public interface IModuleHelper {
      *
      * @return Module, or {@code null} if no module of the given type is installed.
      *
-     * @deprecated Call via {@link #getModule(ItemStack, DeferredHolder)}
+     * @deprecated Use {@link #getModule(ItemStack, DeferredHolder)} instead
      */
     @Nullable
     @SuppressWarnings("removal")
@@ -270,7 +270,7 @@ public interface IModuleHelper {
      * @param typeProvider Module type.
      *
      * @since 10.5.15
-     * @deprecated Call via {@link #getIfEnabled(ItemStack, DeferredHolder)}
+     * @deprecated Use {@link #getIfEnabled(ItemStack, DeferredHolder)} instead
      */
     @Nullable
     @SuppressWarnings("removal")
@@ -302,7 +302,7 @@ public interface IModuleHelper {
      * @param typeProvider Module type.
      *
      * @since 10.5.15
-     * @deprecated Call via {@link #getIfEnabled(LivingEntity, EquipmentSlot, DeferredHolder)}
+     * @deprecated Use {@link #getIfEnabled(LivingEntity, EquipmentSlot, DeferredHolder)} instead
      */
     @Nullable
     @SuppressWarnings("removal")
@@ -485,7 +485,7 @@ public interface IModuleHelper {
      *
      * @apiNote Must only be called on the client side and from {@link FMLClientSetupEvent}.
      * @see #addMekaSuitModuleModelSpec(String, IModuleDataProvider, EquipmentSlot, Predicate)
-     * @deprecated Call via {@link #addMekaSuitModuleModelSpec(String, Holder, EquipmentSlot)}
+     * @deprecated Use {@link #addMekaSuitModuleModelSpec(String, Holder, EquipmentSlot)} instead
      */
     @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
@@ -518,7 +518,7 @@ public interface IModuleHelper {
      * @param isActive           Predicate to check if an entity should use the active or inactive model.
      *
      * @apiNote Must only be called on the client side and from {@link FMLClientSetupEvent}.
-     * @deprecated Call via {{@link #addMekaSuitModuleModelSpec(String, Holder, EquipmentSlot, Predicate)}}
+     * @deprecated Use {{@link #addMekaSuitModuleModelSpec(String, Holder, EquipmentSlot, Predicate)}} instead
      */
     @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")

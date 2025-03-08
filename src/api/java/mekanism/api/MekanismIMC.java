@@ -87,7 +87,7 @@ public class MekanismIMC {
      *
      * @apiNote Call this method during the {@link InterModEnqueueEvent}.
      * @since 10.5.0
-     * @deprecated Call via {@link #addModulesToAll(Holder[])}
+     * @deprecated Use {@link #addModulesToAll(Holder[])} instead
      */
     @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
@@ -149,7 +149,7 @@ public class MekanismIMC {
      * @param moduleDataProviders Modules to register as supported.
      *
      * @apiNote Call this method during the {@link InterModEnqueueEvent}.
-     * @deprecated Call via {@link #addMekaToolModules(Holder[])}
+     * @deprecated Use {@link #addMekaToolModules(Holder[])} instead
      */
     @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
@@ -176,7 +176,7 @@ public class MekanismIMC {
      * @param moduleDataProviders Modules to register as supported.
      *
      * @apiNote Call this method during the {@link InterModEnqueueEvent}.
-     * @deprecated Call via {@link #addMekaSuitHelmetModules(Holder[])}
+     * @deprecated Use {@link #addMekaSuitHelmetModules(Holder[])} instead
      */
     @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
@@ -203,7 +203,7 @@ public class MekanismIMC {
      * @param moduleDataProviders Modules to register as supported.
      *
      * @apiNote Call this method during the {@link InterModEnqueueEvent}.
-     * @deprecated Call via {@link #addMekaSuitBodyarmorModules(Holder[])}
+     * @deprecated Use {@link #addMekaSuitBodyarmorModules(Holder[])} instead
      */
     @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
@@ -230,7 +230,7 @@ public class MekanismIMC {
      * @param moduleDataProviders Modules to register as supported.
      *
      * @apiNote Call this method during the {@link InterModEnqueueEvent}.
-     * @deprecated Call via {@link #addMekaSuitPantsModules(Holder[])}
+     * @deprecated Use {@link #addMekaSuitPantsModules(Holder[])} instead
      */
     @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
@@ -257,7 +257,7 @@ public class MekanismIMC {
      * @param moduleDataProviders Modules to register as supported.
      *
      * @apiNote Call this method during the {@link InterModEnqueueEvent}.
-     * @deprecated Call via {@link #addMekaSuitBootsModules(Holder[])}
+     * @deprecated Use {@link #addMekaSuitBootsModules(Holder[])} instead
      */
     @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
@@ -286,7 +286,7 @@ public class MekanismIMC {
      *
      * @apiNote Call this method during the {@link InterModEnqueueEvent}.
      * @since 10.5.0
-     * @deprecated Call via {@link #sendModuleIMC(String, Holder[])}
+     * @deprecated Use {@link #sendModuleIMC(String, Holder[])} instead
      */
     @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")

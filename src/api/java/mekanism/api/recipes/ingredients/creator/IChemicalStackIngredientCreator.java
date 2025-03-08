@@ -40,7 +40,7 @@ public interface IChemicalStackIngredientCreator extends IIngredientCreator<Chem
      * @throws NullPointerException     if the given provider is null.
      * @throws IllegalArgumentException if the given provider is empty or an amount smaller than one.
      *
-     * @deprecated Prefer using {@link #fromHolder(Holder, long)}
+     * @deprecated Use {@link #fromHolder(Holder, long)} instead
      */
     @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
@@ -71,7 +71,7 @@ public interface IChemicalStackIngredientCreator extends IIngredientCreator<Chem
      * @throws IllegalArgumentException if the given instance is empty or an amount smaller than one; or if no chemicals are passed.
      * @since 10.6.0
      *
-     * @deprecated Prefer using {@link #fromHolders(long, Holder[])}
+     * @deprecated Use {@link #fromHolders(long, Holder[])} instead
      */
     @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")

@@ -37,7 +37,7 @@ public interface ChemicalAttributeValidator {//TODO - 1.22: Re-evaluate how this
      * @param attribute attribute to check
      *
      * @return if the attribute is valid
-     * @deprecated Prefer using {@link #validate(IChemicalAttribute)}
+     * @deprecated Use {@link #validate(IChemicalAttribute)} instead
      */
     @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")

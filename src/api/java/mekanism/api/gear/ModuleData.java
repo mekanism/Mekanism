@@ -91,7 +91,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements mekanis
     /**
      * Gets the provider for the item that this module type corresponds to and is used in the Modification Station to install this module type.
      *
-     * @deprecated Prefer calling via {@link #getItemHolder()}
+     * @deprecated Use {@link #getItemHolder()} instead
      */
     @NotNull
     @Deprecated(forRemoval = true, since = "10.7.11")
@@ -322,7 +322,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements mekanis
          *
          * @param itemProvider Provider for the item that this module corresponds to and is used in the Modification Station to install this module.
          *
-         * @deprecated Prefer using {@link #marker(Holder)}
+         * @deprecated Use {@link #marker(Holder)} instead
          */
         @SuppressWarnings({"rawtypes", "unchecked"})
         @Deprecated(forRemoval = true, since = "10.7.11")
@@ -354,7 +354,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements mekanis
          *
          * @since 10.6.0
          *
-         * @deprecated Prefer using {@link #customInstanced(Supplier, Holder)}
+         * @deprecated Use {@link #customInstanced(Supplier, Holder)} instead
          */
         @Deprecated(forRemoval = true, since = "10.7.11")
         public static <MODULE extends ICustomModule<MODULE>> ModuleDataBuilder<MODULE> customInstanced(Supplier<@NotNull MODULE> customModule, IItemProvider itemProvider) {
@@ -389,7 +389,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements mekanis
          *
          * @since 10.6.0
          *
-         * @deprecated Prefer using {@link #custom(Function, Holder)}
+         * @deprecated Use {@link #custom(Function, Holder)} instead
          */
         @Deprecated(forRemoval = true, since = "10.7.11")
         public static <MODULE extends ICustomModule<MODULE>> ModuleDataBuilder<MODULE> custom(Function<IModule<MODULE>, @NotNull MODULE> customModule,

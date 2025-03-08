@@ -106,7 +106,7 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
      *
      * @param recipeOutput Finished Recipe Consumer.
      * @param output       Output to base the recipe name off of.
-     * @deprecated Prefer calling {@link #build(RecipeOutput, Holder)}
+     * @deprecated Use {@link #build(RecipeOutput, Holder)} instead
      */
     @Deprecated(forRemoval = true, since = "10.7.11")
     protected void build(RecipeOutput recipeOutput, ItemLike output) {

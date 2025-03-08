@@ -125,7 +125,7 @@ public final class ChemicalStackIngredient implements InputIngredient<ChemicalSt
      *
      * @return {@code true} if the input argument matches the predicate, otherwise {@code false}
      *
-     * @deprecated Prefer calling via the holder testType method {@link #testType(Holder)}
+     * @deprecated Use {@link #testType(Holder)} instead
      */
     @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")

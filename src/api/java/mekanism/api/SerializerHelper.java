@@ -96,7 +96,7 @@ public class SerializerHelper {
      * Long Codec which accepts a number >= 0
      *
      * @since 10.6.6
-     * @deprecated Prefer {@link #POSITIVE_LONG_CODEC}. This field just exists for people who want to be able to load legacy data that was stored as a FloatingLong/
+     * @deprecated Use {@link #POSITIVE_LONG_CODEC} instead. This field just exists for people who want to be able to load legacy data that was stored as a FloatingLong.
      */
     @Deprecated(forRemoval = true, since = "10.6.6")//TODO - 1.22: Remove
     //Note: We use vanilla's withAlternative instead of Neo's as we always want to encode with the non legacy codec
@@ -106,7 +106,7 @@ public class SerializerHelper {
      * Long Codec which accepts a number > 0
      *
      * @since 10.6.6
-     * @deprecated Prefer {@link #POSITIVE_LONG_CODEC}. This field just exists for people who want to be able to load legacy data that was stored as a FloatingLong/
+     * @deprecated Use {@link #POSITIVE_LONG_CODEC} instead. This field just exists for people who want to be able to load legacy data that was stored as a FloatingLong.
      */
     @Deprecated(forRemoval = true, since = "10.6.6")//TODO - 1.22: Remove
     //Note: We use vanilla's withAlternative instead of Neo's as we always want to encode with the non legacy codec

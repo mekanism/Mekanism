@@ -24,7 +24,7 @@ public interface IMekanismEmiHelper {
     /**
      * Creates an EmiStack of the given size for the given chemical.
      *
-     * @deprecated Prefer using the holder overload. {@link #createEmiStack(Holder, long)}
+     * @deprecated Use {@link #createEmiStack(Holder, long)} instead
      */
     @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")

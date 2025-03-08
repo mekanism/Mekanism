@@ -23,7 +23,7 @@ public abstract class ChemicalAttribute implements IChemicalAttribute {
      *
      * @return updated list of tooltips
      *
-     * @deprecated since 10.7.4. Use {@link #collectTooltips(Consumer)} instead.
+     * @deprecated Use {@link #collectTooltips(Consumer)} instead.
      */
     @Deprecated(forRemoval = true, since = "10.7.4")
     public List<Component> addTooltipText(List<Component> list) {

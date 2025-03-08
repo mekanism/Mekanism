@@ -30,7 +30,7 @@ public interface IIngredientCreator<TYPE, STACK, INGREDIENT extends InputIngredi
      *
      * @throws NullPointerException     if the given instance is null.
      * @throws IllegalArgumentException if the given instance is empty or an amount smaller than one.
-     * @deprecated Prefer using {@link #fromHolder(Holder, int)}
+     * @deprecated Use {@link #fromHolder(Holder, int)} instead
      */
     @Deprecated(forRemoval = true, since = "10.7.11")
     INGREDIENT from(TYPE instance, int amount);
@@ -44,7 +44,7 @@ public interface IIngredientCreator<TYPE, STACK, INGREDIENT extends InputIngredi
      * @throws NullPointerException     if the given instance is null.
      * @throws IllegalArgumentException if the given instance is empty or an amount smaller than one; or if no types are passed.
      * @since 10.6.0
-     * @deprecated Prefer using {@link #fromHolders(int, Holder[])}
+     * @deprecated Use {@link #fromHolders(int, Holder[])} instead
      */
     @Deprecated(forRemoval = true, since = "10.7.11")
     INGREDIENT from(int amount, TYPE... items);

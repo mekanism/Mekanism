@@ -37,7 +37,7 @@ public abstract sealed class ChemicalIngredient implements Predicate<Chemical> p
      *
      * @return {@code true} if the chemical matches, {@code false} otherwise
      *
-     * @deprecated Prefer calling via the holder method {@link #test(Holder)}
+     * @deprecated Use {@link #test(Holder)} instead
      */
     @Override
     @SuppressWarnings("removal")
@@ -99,7 +99,7 @@ public abstract sealed class ChemicalIngredient implements Predicate<Chemical> p
      *
      * @see #generateChemicals()
      *
-     * @deprecated Use {@link #getChemicalHolders()}
+     * @deprecated Use {@link #getChemicalHolders()} instead
      */
     @Deprecated(forRemoval = true, since = "10.7.11")
     public final List<Chemical> getChemicals() {
