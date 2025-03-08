@@ -16,6 +16,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.CommonWorldTickHandler;
 import mekanism.common.Mekanism;
@@ -168,7 +169,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                         }
                     }
                     return formula.isValidIngredient(level, stack);
-                }, BasicInventorySlot.alwaysTrue, inputSlotChanged, 8 + slotX * 18, 98 + slotY * 18);
+                }, ConstantPredicates.alwaysTrue(), inputSlotChanged, 8 + slotX * 18, 98 + slotY * 18);
                 inputSlots.add(builder.addSlot(inputSlot));
             }
         }

@@ -1,6 +1,7 @@
 package mekanism.common.inventory.slot;
 
 import mekanism.api.IContentsListener;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -13,7 +14,7 @@ public class EntangloporterInventorySlot extends BasicInventorySlot {
     }
 
     private EntangloporterInventorySlot(@Nullable IContentsListener listener) {
-        super(alwaysTrueBi, alwaysTrueBi, alwaysTrue, listener, 0, 0);
+        super(ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(), listener, 0, 0);
     }
 
     @Nullable

@@ -11,6 +11,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.ItemStackToChemicalRecipe;
 import mekanism.common.capabilities.Capabilities;
@@ -177,7 +178,7 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
 
     protected ChemicalInventorySlot(IChemicalTank chemicalTank, Supplier<Level> worldSupplier, Predicate<@NotNull ItemStack> canExtract,
           Predicate<@NotNull ItemStack> canInsert, @Nullable IContentsListener listener, int x, int y) {
-        this(chemicalTank, worldSupplier, canExtract, canInsert, alwaysTrue, listener, x, y);
+        this(chemicalTank, worldSupplier, canExtract, canInsert, ConstantPredicates.alwaysTrue(), listener, x, y);
         //Note: We pass alwaysTrue as the validator, so that if a mod only exposes a chemical handler when an item isn't stacked
         // then we don't crash and burn when it is stacked
         //TODO: Eventually maybe we want to somehow enforce what the max stack size is for a given item and mark it as able to be accepted

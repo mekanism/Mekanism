@@ -6,7 +6,6 @@ import java.util.function.Predicate;
 import java.util.function.ToLongFunction;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
@@ -69,7 +68,7 @@ public class ChemicalTankSpec extends GenericTankSpec<Holder<Chemical>> {
     }
 
     public static ChemicalTankSpec create(LongSupplier rate, LongSupplier capacity) {
-        return new ChemicalTankSpec(rate, capacity, BasicChemicalTank.holderAlwaysTrueBi, ConstantPredicates.alwaysTrueTri(), BasicChemicalTank.holderAlwaysTrue,
+        return new ChemicalTankSpec(rate, capacity, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueTri(), ConstantPredicates.alwaysTrue(),
               null, ConstantPredicates.alwaysTrue());
     }
 
@@ -78,12 +77,12 @@ public class ChemicalTankSpec extends GenericTankSpec<Holder<Chemical>> {
     }
 
     public static ChemicalTankSpec createFillOnly(LongSupplier rate, LongSupplier capacity, Predicate<@NotNull Holder<Chemical>> isValid, Predicate<@NotNull ItemStack> supportsStack) {
-        return new ChemicalTankSpec(rate, capacity, BasicChemicalTank.holderNotExternal, (chemical, automation, stack) -> supportsStack.test(stack), isValid, null, supportsStack);
+        return new ChemicalTankSpec(rate, capacity, ConstantPredicates.notExternal(), (chemical, automation, stack) -> supportsStack.test(stack), isValid, null, supportsStack);
     }
 
     public static ChemicalTankSpec createFillOnly(LongSupplier rate, ToLongFunction<ItemStack> stackBasedCapacity, Predicate<Holder<Chemical>> isValid,
           Predicate<@NotNull ItemStack> supportsStack) {
-        return new ChemicalTankSpec(rate, stackBasedCapacity, BasicChemicalTank.holderNotExternal,
+        return new ChemicalTankSpec(rate, stackBasedCapacity, ConstantPredicates.notExternal(),
               (chemical, automation, stack) -> supportsStack.test(stack), isValid, null, supportsStack);
     }
 

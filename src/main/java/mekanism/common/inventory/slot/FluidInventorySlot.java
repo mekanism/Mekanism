@@ -9,6 +9,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import net.minecraft.core.HolderLookup;
@@ -32,7 +33,7 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
      */
     public static FluidInventorySlot input(IExtendedFluidTank fluidTank, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(fluidTank, "Fluid tank cannot be null");
-        return new FluidInventorySlot(fluidTank, alwaysFalse, getInputPredicate(fluidTank), listener, x, y);
+        return new FluidInventorySlot(fluidTank, ConstantPredicates.alwaysFalse(), getInputPredicate(fluidTank), listener, x, y);
     }
 
     protected static Predicate<ItemStack> getInputPredicate(IExtendedFluidTank fluidTank) {
@@ -73,7 +74,7 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
     public static FluidInventorySlot rotary(IExtendedFluidTank fluidTank, BooleanSupplier modeSupplier, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(fluidTank, "Fluid tank cannot be null");
         Objects.requireNonNull(modeSupplier, "Mode supplier cannot be null");
-        return new FluidInventorySlot(fluidTank, alwaysFalse, stack -> {
+        return new FluidInventorySlot(fluidTank, ConstantPredicates.alwaysFalse(), stack -> {
             IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID.getCapability(stack);
             if (fluidHandlerItem != null) {
                 boolean mode = modeSupplier.getAsBoolean();
@@ -101,7 +102,7 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
      */
     public static FluidInventorySlot fill(IExtendedFluidTank fluidTank, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(fluidTank, "Fluid tank cannot be null");
-        return new FluidInventorySlot(fluidTank, alwaysFalse, getFillPredicate(fluidTank), listener, x, y);
+        return new FluidInventorySlot(fluidTank, ConstantPredicates.alwaysFalse(), getFillPredicate(fluidTank), listener, x, y);
     }
 
     public static Predicate<ItemStack> getFillPredicate(IExtendedFluidTank fluidTank) {
@@ -129,7 +130,7 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
      */
     public static FluidInventorySlot drain(IExtendedFluidTank fluidTank, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(fluidTank, "Fluid handler cannot be null");
-        return new FluidInventorySlot(fluidTank, alwaysFalse, stack -> {
+        return new FluidInventorySlot(fluidTank, ConstantPredicates.alwaysFalse(), stack -> {
             IFluidHandlerItem itemFluidHandler = tryGetFluidHandlerUnstacked(stack);
             if (itemFluidHandler != null) {
                 FluidStack fluidInTank = fluidTank.getFluid();
@@ -174,7 +175,7 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
 
     protected FluidInventorySlot(IExtendedFluidTank fluidTank, Predicate<@NotNull ItemStack> canExtract, Predicate<@NotNull ItemStack> canInsert,
           @Nullable IContentsListener listener, int x, int y) {
-        this(fluidTank, canExtract, canInsert, alwaysTrue, listener, x, y);
+        this(fluidTank, canExtract, canInsert, ConstantPredicates.alwaysTrue(), listener, x, y);
         //Note: We pass alwaysTrue as the validator, so that if a mod only exposes a fluid handler on the filled item
         // then we don't have it all of a sudden being invalid after it is emptied
     }

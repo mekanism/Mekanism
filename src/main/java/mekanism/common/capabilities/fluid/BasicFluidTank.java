@@ -19,18 +19,11 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class BasicFluidTank implements IExtendedFluidTank {
 
-    public static final Predicate<@NotNull FluidStack> alwaysTrue = ConstantPredicates.alwaysTrue();
-    public static final Predicate<@NotNull FluidStack> alwaysFalse = ConstantPredicates.alwaysFalse();
-    public static final BiPredicate<@NotNull FluidStack, @NotNull AutomationType> alwaysTrueBi = ConstantPredicates.alwaysTrueBi();
-    public static final BiPredicate<@NotNull FluidStack, @NotNull AutomationType> internalOnly = ConstantPredicates.internalOnly();
-    public static final BiPredicate<@NotNull FluidStack, @NotNull AutomationType> notExternal = ConstantPredicates.notExternal();
-    public static final BiPredicate<@NotNull FluidStack, @NotNull AutomationType> manualOnly = ConstantPredicates.manualOnly();
-
     public static BasicFluidTank create(int capacity, @Nullable IContentsListener listener) {
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be at least zero");
         }
-        return new BasicFluidTank(capacity, alwaysTrueBi, alwaysTrueBi, alwaysTrue, listener);
+        return new BasicFluidTank(capacity, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(), listener);
     }
 
     public static BasicFluidTank create(int capacity, Predicate<@NotNull FluidStack> validator, @Nullable IContentsListener listener) {
@@ -38,12 +31,12 @@ public class BasicFluidTank implements IExtendedFluidTank {
             throw new IllegalArgumentException("Capacity must be at least zero");
         }
         Objects.requireNonNull(validator, "Fluid validity check cannot be null");
-        return new BasicFluidTank(capacity, alwaysTrueBi, alwaysTrueBi, validator, listener);
+        return new BasicFluidTank(capacity, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), validator, listener);
     }
 
     public static BasicFluidTank create(int capacity, Predicate<@NotNull FluidStack> canExtract, Predicate<@NotNull FluidStack> canInsert,
           @Nullable IContentsListener listener) {
-        return create(capacity, canExtract, canInsert, alwaysTrue, listener);
+        return create(capacity, canExtract, canInsert, ConstantPredicates.alwaysTrue(), listener);
     }
 
     public static BasicFluidTank input(int capacity, Predicate<@NotNull FluidStack> validator, @Nullable IContentsListener listener) {
@@ -51,7 +44,7 @@ public class BasicFluidTank implements IExtendedFluidTank {
             throw new IllegalArgumentException("Capacity must be at least zero");
         }
         Objects.requireNonNull(validator, "Fluid validity check cannot be null");
-        return new BasicFluidTank(capacity, notExternal, alwaysTrueBi, validator, listener);
+        return new BasicFluidTank(capacity, ConstantPredicates.notExternal(), ConstantPredicates.alwaysTrueBi(), validator, listener);
     }
 
     public static BasicFluidTank input(int capacity, Predicate<@NotNull FluidStack> canInsert, Predicate<@NotNull FluidStack> validator, @Nullable IContentsListener listener) {
@@ -60,14 +53,14 @@ public class BasicFluidTank implements IExtendedFluidTank {
         }
         Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
         Objects.requireNonNull(validator, "Fluid validity check cannot be null");
-        return new BasicFluidTank(capacity, notExternal, (stack, automationType) -> canInsert.test(stack), validator, listener);
+        return new BasicFluidTank(capacity, ConstantPredicates.notExternal(), (stack, automationType) -> canInsert.test(stack), validator, listener);
     }
 
     public static BasicFluidTank output(int capacity, @Nullable IContentsListener listener) {
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be at least zero");
         }
-        return new BasicFluidTank(capacity, alwaysTrueBi, internalOnly, alwaysTrue, listener);
+        return new BasicFluidTank(capacity, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.internalOnly(), ConstantPredicates.alwaysTrue(), listener);
     }
 
     public static BasicFluidTank create(int capacity, Predicate<@NotNull FluidStack> canExtract, Predicate<@NotNull FluidStack> canInsert,

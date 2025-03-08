@@ -3,10 +3,10 @@ package mekanism.common.recipe.upgrade;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.attachments.containers.ContainerType;
-import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.item.block.ItemBlockPersonalStorage;
 import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
 import net.minecraft.core.Direction;
@@ -42,7 +42,7 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
             //Add the slots in the same way we would for a PersonalStorageItemInventory and if we can transfer to the item,
             // we will copy them over directly
             List<IInventorySlot> stackSlots = new ArrayList<>();
-            PersonalStorageManager.createSlots(stackSlots::add, BasicInventorySlot.alwaysTrueBi, null);
+            PersonalStorageManager.createSlots(stackSlots::add, ConstantPredicates.alwaysTrueBi(), null);
             //TODO: Improve the logic so that it maybe tries multiple different slot combinations
             IMekanismInventory outputHandler = new IMekanismInventory() {
                 @NotNull

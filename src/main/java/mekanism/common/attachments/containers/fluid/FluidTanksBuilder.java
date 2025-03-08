@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.IntSupplier;
 import java.util.function.Predicate;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.common.attachments.containers.ContainsRecipe;
 import mekanism.common.attachments.containers.creator.BaseContainerCreator;
 import mekanism.common.attachments.containers.creator.IBasicContainerCreator;
-import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.lookup.cache.IInputRecipeCache;
@@ -41,8 +41,8 @@ public class FluidTanksBuilder {
     }
 
     public FluidTanksBuilder addBasic(IntSupplier capacity, Predicate<@NotNull FluidStack> isValid) {
-        return addTank((type, attachedTo, containerIndex) -> new ComponentBackedFluidTank(attachedTo, containerIndex, BasicFluidTank.manualOnly, BasicFluidTank.alwaysTrueBi,
-              isValid, MekanismConfig.general.fluidItemFillRate, capacity));
+        return addTank((type, attachedTo, containerIndex) -> new ComponentBackedFluidTank(attachedTo,
+              containerIndex, ConstantPredicates.manualOnly(), ConstantPredicates.alwaysTrueBi(), isValid, MekanismConfig.general.fluidItemFillRate, capacity));
     }
 
     public FluidTanksBuilder addBasic(int capacity) {
@@ -50,13 +50,14 @@ public class FluidTanksBuilder {
     }
 
     public FluidTanksBuilder addBasic(IntSupplier capacity) {
-        return addTank((type, attachedTo, containerIndex) -> new ComponentBackedFluidTank(attachedTo, containerIndex, BasicFluidTank.manualOnly, BasicFluidTank.alwaysTrueBi,
-              BasicFluidTank.alwaysTrue, MekanismConfig.general.fluidItemFillRate, capacity));
+        return addTank((type, attachedTo, containerIndex) -> new ComponentBackedFluidTank(attachedTo,
+              containerIndex, ConstantPredicates.manualOnly(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(),
+              MekanismConfig.general.fluidItemFillRate, capacity));
     }
 
     public FluidTanksBuilder addBasicExtractable(IntSupplier rate, IntSupplier capacity, Predicate<@NotNull FluidStack> isValid) {
-        return addTank((type, attachedTo, containerIndex) -> new ComponentBackedFluidTank(attachedTo, containerIndex, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrueBi,
-              isValid, rate, capacity));
+        return addTank((type, attachedTo, containerIndex) -> new ComponentBackedFluidTank(attachedTo,
+              containerIndex, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), isValid, rate, capacity));
     }
 
     public FluidTanksBuilder addTank(IBasicContainerCreator<? extends ComponentBackedFluidTank> tank) {

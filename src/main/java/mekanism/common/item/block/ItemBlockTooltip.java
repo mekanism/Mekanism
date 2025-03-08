@@ -6,6 +6,7 @@ import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.Upgrade;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.client.key.MekKeyHandler;
@@ -146,7 +147,7 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
     }
 
     protected Predicate<@NotNull AutomationType> getEnergyCapInsertPredicate() {
-        return BasicEnergyContainer.alwaysTrue;
+        return ConstantPredicates.alwaysTrue();
     }
 
     protected boolean exposesEnergyCap() {

@@ -10,6 +10,7 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.content.network.EnergyNetwork;
@@ -42,7 +43,7 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
     public UniversalCable(Holder<Block> blockProvider, TileEntityTransmitter tile) {
         super(tile, TransmissionType.ENERGY);
         this.tier = Attribute.getTier(blockProvider, CableTier.class);
-        buffer = BasicEnergyContainer.create(getCapacity(), BasicEnergyContainer.alwaysFalse, BasicEnergyContainer.alwaysTrue, this);
+        buffer = BasicEnergyContainer.create(getCapacity(), ConstantPredicates.alwaysFalse(), ConstantPredicates.alwaysTrue(), this);
         energyContainers = Collections.singletonList(buffer);
     }
 

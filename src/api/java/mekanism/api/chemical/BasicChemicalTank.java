@@ -23,7 +23,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
      * A predicate that returns {@code true} for any input.
      *
      * @since 10.7.0 Previously was in ChemicalTankBuilder
-     * @deprecated Use {@link #holderAlwaysTrue} instead
+     * @deprecated Use {@link ConstantPredicates#alwaysTrue()} instead
      */
     @Deprecated(forRemoval = true, since = "10.7.11")
     public static final Predicate<Chemical> alwaysTrue = ConstantPredicates.alwaysTrue();
@@ -31,7 +31,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
      * A predicate that returns {@code false} for any input.
      *
      * @since 10.7.0 Previously was in ChemicalTankBuilder
-     * @deprecated Use {@link #holderAlwaysFalse} instead
+     * @deprecated Use {@link ConstantPredicates#alwaysFalse()} instead
      */
     @Deprecated(forRemoval = true, since = "10.7.11")
     public static final Predicate<Chemical> alwaysFalse = ConstantPredicates.alwaysFalse();
@@ -39,7 +39,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
      * A bi predicate that returns {@code true} for any input.
      *
      * @since 10.7.0 Previously was in ChemicalTankBuilder
-     * @deprecated Use {@link #holderAlwaysTrueBi} instead
+     * @deprecated Use {@link ConstantPredicates#alwaysTrueBi()} instead
      */
     @Deprecated(forRemoval = true, since = "10.7.11")
     public static final BiPredicate<Chemical, @NotNull AutomationType> alwaysTrueBi = ConstantPredicates.alwaysTrueBi();
@@ -47,7 +47,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
      * A bi predicate that returns {@code true} for any input when the automation type is internal.
      *
      * @since 10.7.0 Previously was in ChemicalTankBuilder
-     * @deprecated Use {@link #holderInternalOnly} instead
+     * @deprecated Use {@link ConstantPredicates#internalOnly()} instead
      */
     @Deprecated(forRemoval = true, since = "10.7.11")
     public static final BiPredicate<Chemical, @NotNull AutomationType> internalOnly = ConstantPredicates.internalOnly();
@@ -55,7 +55,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
      * A bi predicate that returns {@code true} for any input when the automation type is not external.
      *
      * @since 10.7.0 Previously was in ChemicalTankBuilder
-     * @deprecated Use {@link #holderNotExternal} instead
+     * @deprecated Use {@link ConstantPredicates#notExternal()} instead
      */
     @Deprecated(forRemoval = true, since = "10.7.11")
     public static final BiPredicate<Chemical, @NotNull AutomationType> notExternal = ConstantPredicates.notExternal();
@@ -63,48 +63,10 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
      * A bi predicate that returns {@code true} for any input when the automation type is manual.
      *
      * @since 10.7.0 Previously was in ChemicalTankBuilder
-     * @deprecated Use {@link #holderManualOnly} instead
+     * @deprecated Use {@link ConstantPredicates#manualOnly()} instead
      */
     @Deprecated(forRemoval = true, since = "10.7.11")
     public static final BiPredicate<Chemical, @NotNull AutomationType> manualOnly = ConstantPredicates.manualOnly();
-    //TODO - 1.22: Remove the above predicates and rename the below ones to not have to have holder in the name
-
-    /**
-     * A predicate that returns {@code true} for any input.
-     *
-     * @since 10.7.11
-     */
-    public static final Predicate<Holder<Chemical>> holderAlwaysTrue = ConstantPredicates.alwaysTrue();
-    /**
-     * A predicate that returns {@code false} for any input.
-     *
-     * @since 10.7.11
-     */
-    public static final Predicate<Holder<Chemical>> holderAlwaysFalse = ConstantPredicates.alwaysFalse();
-    /**
-     * A bi predicate that returns {@code true} for any input.
-     *
-     * @since 10.7.11
-     */
-    public static final BiPredicate<Holder<Chemical>, @NotNull AutomationType> holderAlwaysTrueBi = ConstantPredicates.alwaysTrueBi();
-    /**
-     * A bi predicate that returns {@code true} for any input when the automation type is internal.
-     *
-     * @since 10.7.11
-     */
-    public static final BiPredicate<Holder<Chemical>, @NotNull AutomationType> holderInternalOnly = ConstantPredicates.internalOnly();
-    /**
-     * A bi predicate that returns {@code true} for any input when the automation type is not external.
-     *
-     * @since 10.7.11
-     */
-    public static final BiPredicate<Holder<Chemical>, @NotNull AutomationType> holderNotExternal = ConstantPredicates.notExternal();
-    /**
-     * A bi predicate that returns {@code true} for any input when the automation type is manual.
-     *
-     * @since 10.7.11
-     */
-    public static final BiPredicate<Holder<Chemical>, @NotNull AutomationType> holderManualOnly = ConstantPredicates.manualOnly();
 
     /**
      * Creates a tank with a given capacity, and content listener, using the default attribute validator {@link ChemicalAttributeValidator#DEFAULT}.
@@ -131,7 +93,8 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be at least zero");
         }
-        return new BasicChemicalTank(capacity, holderAlwaysTrueBi, holderAlwaysTrueBi, holderAlwaysTrue, attributeValidator, listener, null);
+        return new BasicChemicalTank(capacity, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(), attributeValidator,
+              listener, null);
     }
 
     /**
@@ -178,7 +141,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
      */
     public static IChemicalTank createModern(long capacity, Predicate<Holder<Chemical>> canExtract, Predicate<Holder<Chemical>> canInsert, @Nullable IContentsListener listener) {
         //TODO - 1.22: Rename this back to create and remove the deprecated version
-        return createModern(capacity, canExtract, canInsert, holderAlwaysTrue, listener);
+        return createModern(capacity, canExtract, canInsert, ConstantPredicates.alwaysTrue(), listener);
     }
 
     /**
@@ -216,7 +179,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
             throw new IllegalArgumentException("Capacity must be at least zero");
         }
         Objects.requireNonNull(validator, "Chemical validity check cannot be null");
-        return new BasicChemicalTank(capacity, holderAlwaysTrueBi, holderAlwaysTrueBi, validator, null, listener, null);
+        return new BasicChemicalTank(capacity, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), validator, null, listener, null);
     }
 
     /**
@@ -254,7 +217,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
             throw new IllegalArgumentException("Capacity must be at least zero");
         }
         Objects.requireNonNull(validator, "Chemical validity check cannot be null");
-        return new BasicChemicalTank(capacity, holderNotExternal, holderAlwaysTrueBi, validator, null, listener, null);
+        return new BasicChemicalTank(capacity, ConstantPredicates.notExternal(), ConstantPredicates.alwaysTrueBi(), validator, null, listener, null);
     }
 
     /**
@@ -296,7 +259,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
         }
         Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
         Objects.requireNonNull(validator, "Chemical validity check cannot be null");
-        return new BasicChemicalTank(capacity, holderNotExternal, (stack, automationType) -> canInsert.test(stack), validator,
+        return new BasicChemicalTank(capacity, ConstantPredicates.notExternal(), (stack, automationType) -> canInsert.test(stack), validator,
               null, listener, null);
     }
 
@@ -313,7 +276,8 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be at least zero");
         }
-        return new BasicChemicalTank(capacity, holderAlwaysTrueBi, holderInternalOnly, holderAlwaysTrue, ChemicalAttributeValidator.ALWAYS_ALLOW, listener, null);
+        return new BasicChemicalTank(capacity, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.internalOnly(), ConstantPredicates.alwaysTrue(),
+              ChemicalAttributeValidator.ALWAYS_ALLOW, listener, null);
     }
 
     /**
@@ -494,7 +458,10 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
     @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "10.7.11")
     private static BiPredicate<Chemical, @NotNull AutomationType> wrapAutomationPredicate(BiPredicate<Holder<Chemical>, @NotNull AutomationType> predicate) {
-        if (predicate == holderAlwaysTrueBi || predicate == holderInternalOnly || predicate == holderNotExternal || predicate == holderManualOnly) {
+        if (predicate == ConstantPredicates.<Holder<Chemical>, AutomationType>alwaysTrueBi() ||
+            predicate == ConstantPredicates.<Holder<Chemical>>internalOnly() ||
+            predicate == ConstantPredicates.<Holder<Chemical>>notExternal() ||
+            predicate == ConstantPredicates.<Holder<Chemical>>manualOnly()) {
             return (BiPredicate<Chemical, @NotNull AutomationType>) (BiPredicate<?, @NotNull AutomationType>) predicate;
         }
         return (chemical, automationType) -> predicate.test(chemical.getAsHolder(), automationType);
@@ -545,10 +512,8 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
         this.canInsert = canInsert;
         this.canExtractModern = wrapAutomationPredicateToModern(canExtract);
         this.canInsertModern = wrapAutomationPredicateToModern(canInsert);
-        if (validator == alwaysTrue) {
-            this.validator = holderAlwaysTrue;
-        } else if (validator == alwaysFalse) {
-            this.validator = holderAlwaysFalse;
+        if (validator == alwaysTrue || validator == alwaysFalse) {
+            this.validator = (Predicate<Holder<Chemical>>) (Predicate<?>) validator;
         } else {
             this.validator = chemical -> validator.test(chemical.value());
         }

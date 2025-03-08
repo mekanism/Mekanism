@@ -6,6 +6,7 @@ import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.content.qio.IQIODriveHolder;
 import mekanism.common.content.qio.IQIODriveItem;
 import mekanism.common.content.qio.QIODriveData.QIODriveKey;
@@ -24,7 +25,7 @@ public class QIODriveSlot extends BasicInventorySlot {
     private final QIODriveKey key;
 
     public QIODriveSlot(IQIODriveHolder driveHolder, int slot, Supplier<@Nullable Level> levelSupplier, @Nullable IContentsListener listener, int x, int y) {
-        super(notExternal, notExternal, IS_QIO_ITEM, listener, x, y);
+        super(ConstantPredicates.notExternal(), ConstantPredicates.notExternal(), IS_QIO_ITEM, listener, x, y);
         this.driveHolder = driveHolder;
         this.levelSupplier = levelSupplier;
         this.key = new QIODriveKey(this.driveHolder, slot);

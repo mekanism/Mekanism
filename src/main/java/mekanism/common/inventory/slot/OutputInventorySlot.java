@@ -2,6 +2,7 @@ package mekanism.common.inventory.slot;
 
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,7 +14,7 @@ public class OutputInventorySlot extends BasicInventorySlot {
     }
 
     private OutputInventorySlot(@Nullable IContentsListener listener, int x, int y) {
-        super(alwaysTrueBi, internalOnly, alwaysTrue, listener, x, y);
+        super(ConstantPredicates.alwaysTrueBi(), ConstantPredicates.internalOnly(), ConstantPredicates.alwaysTrue(), listener, x, y);
         setSlotType(ContainerSlotType.OUTPUT);
     }
 }

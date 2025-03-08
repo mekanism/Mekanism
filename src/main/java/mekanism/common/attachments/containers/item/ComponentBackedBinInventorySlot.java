@@ -5,9 +5,9 @@ import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.attachments.LockData;
 import mekanism.common.attachments.containers.ContainerType;
-import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.BinInventorySlot;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.registries.MekanismDataComponents;
@@ -31,7 +31,7 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
     }
 
     private ComponentBackedBinInventorySlot(ItemStack attachedTo, int slotIndex, BinTier tier) {
-        super(attachedTo, slotIndex, BasicInventorySlot.alwaysTrueBi, BasicInventorySlot.alwaysTrueBi, BinInventorySlot.validator);
+        super(attachedTo, slotIndex, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), BinInventorySlot.validator);
         isCreative = tier == BinTier.CREATIVE;
     }
 

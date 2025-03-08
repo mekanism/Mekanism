@@ -20,22 +20,20 @@ import org.jetbrains.annotations.Range;
 @NothingNullByDefault
 public class BasicEnergyContainer implements IEnergyContainer {
 
-    public static final Predicate<@NotNull AutomationType> alwaysTrue = ConstantPredicates.alwaysTrue();
-    public static final Predicate<@NotNull AutomationType> alwaysFalse = ConstantPredicates.alwaysFalse();
     public static final Predicate<@NotNull AutomationType> internalOnly = automationType -> automationType == AutomationType.INTERNAL;
     public static final Predicate<@NotNull AutomationType> manualOnly = automationType -> automationType == AutomationType.MANUAL;
     public static final Predicate<@NotNull AutomationType> notExternal = automationType -> automationType != AutomationType.EXTERNAL;
 
     public static BasicEnergyContainer create(long maxEnergy, @Nullable IContentsListener listener) {
-        return new BasicEnergyContainer(maxEnergy, alwaysTrue, alwaysTrue, listener);
+        return new BasicEnergyContainer(maxEnergy, ConstantPredicates.alwaysTrue(), ConstantPredicates.alwaysTrue(), listener);
     }
 
     public static BasicEnergyContainer input(long maxEnergy, @Nullable IContentsListener listener) {
-        return new BasicEnergyContainer(maxEnergy, notExternal, alwaysTrue, listener);
+        return new BasicEnergyContainer(maxEnergy, notExternal, ConstantPredicates.alwaysTrue(), listener);
     }
 
     public static BasicEnergyContainer output(long maxEnergy, @Nullable IContentsListener listener) {
-        return new BasicEnergyContainer(maxEnergy, alwaysTrue, internalOnly, listener);
+        return new BasicEnergyContainer(maxEnergy, ConstantPredicates.alwaysTrue(), internalOnly, listener);
     }
 
     public static BasicEnergyContainer create(long maxEnergy, Predicate<@NotNull AutomationType> canExtract, Predicate<@NotNull AutomationType> canInsert,

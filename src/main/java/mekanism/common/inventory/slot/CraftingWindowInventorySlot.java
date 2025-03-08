@@ -4,10 +4,10 @@ import java.util.function.BiPredicate;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.content.qio.QIOCraftingWindow;
 import mekanism.common.inventory.container.slot.VirtualInventoryContainerSlot;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
 public class CraftingWindowInventorySlot extends BasicInventorySlot {
 
     public static CraftingWindowInventorySlot input(QIOCraftingWindow window, @Nullable IContentsListener saveListener) {
-        return new CraftingWindowInventorySlot(notExternal, alwaysTrueBi, window, saveListener, window);
+        return new CraftingWindowInventorySlot(ConstantPredicates.notExternal(), ConstantPredicates.alwaysTrueBi(), window, saveListener, window);
     }
 
     protected final QIOCraftingWindow craftingWindow;
@@ -27,7 +27,7 @@ public class CraftingWindowInventorySlot extends BasicInventorySlot {
     protected CraftingWindowInventorySlot(BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canExtract,
           BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canInsert, QIOCraftingWindow craftingWindow, @Nullable IContentsListener saveListener,
           @Nullable IContentsListener inputTypeChange) {
-        super(canExtract, canInsert, alwaysTrue, saveListener, 0, 0);
+        super(canExtract, canInsert, ConstantPredicates.alwaysTrue(), saveListener, 0, 0);
         this.craftingWindow = craftingWindow;
         this.inputTypeChange = inputTypeChange;
     }
