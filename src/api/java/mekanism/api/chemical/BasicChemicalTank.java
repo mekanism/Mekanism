@@ -533,6 +533,9 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
     @Nullable
     private final IContentsListener listener;
 
+    /**
+     * @deprecated Use {@link #BasicChemicalTank(long, BiPredicate, BiPredicate, Predicate, ChemicalAttributeValidator, IContentsListener, Void)} instead
+     */
     @Deprecated(forRemoval = true, since = "10.7.11")
     protected BasicChemicalTank(long capacity, BiPredicate<Chemical, @NotNull AutomationType> canExtract,
           BiPredicate<Chemical, @NotNull AutomationType> canInsert, Predicate<Chemical> validator,

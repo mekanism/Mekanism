@@ -25,6 +25,7 @@ import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.text.TextComponentUtil;
 import net.minecraft.Util;
 import net.minecraft.core.Holder;
+import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.HolderLookup.RegistryLookup;
@@ -123,14 +124,16 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
             return MekanismAPI.EMPTY_CHEMICAL_HOLDER;
         }
         Optional<RegistryLookup<Chemical>> chemicalLookup = lookupProvider.lookup(MekanismAPI.CHEMICAL_REGISTRY_NAME);
-        //noinspection OptionalIsPresent - Capturing lambda
-        if (chemicalLookup.isEmpty()) {
-            return MekanismAPI.EMPTY_CHEMICAL_HOLDER;
+        if (chemicalLookup.isPresent()) {
+            ResourceLocation rl = ResourceLocation.tryParse(tag);
+            if (rl != null) {
+                Optional<Reference<Chemical>> chemicalReference = chemicalLookup.get().get(ResourceKey.create(MekanismAPI.CHEMICAL_REGISTRY_NAME, rl));
+                if (chemicalReference.isPresent()) {
+                    return chemicalReference.get();
+                }
+            }
         }
-        return Optional.ofNullable(ResourceLocation.tryParse(tag))
-              .map(rl -> ResourceKey.create(MekanismAPI.CHEMICAL_REGISTRY_NAME, rl))
-              .<Holder<Chemical>>flatMap(chemicalLookup.get()::get)
-              .orElse(MekanismAPI.EMPTY_CHEMICAL_HOLDER);
+        return MekanismAPI.EMPTY_CHEMICAL_HOLDER;
     }
 
     //TODO - 1.22: Figure out if we should we keep this cache or remove it?
