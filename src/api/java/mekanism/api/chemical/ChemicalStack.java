@@ -591,7 +591,8 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
         }
         //Note: chemical is not null here, and we know it isn't empty so we can just directly reference it
         // rather than having to check if it is empty again
-        return Objects.hash(chemical, amount);
+        int hash = chemical.hashCode();
+        return 31 * hash + Long.hashCode(amount);
     }
 
     @Override
