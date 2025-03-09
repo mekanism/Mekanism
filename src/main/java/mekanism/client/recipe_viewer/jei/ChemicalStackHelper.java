@@ -44,7 +44,7 @@ public class ChemicalStackHelper implements IIngredientHelper<ChemicalStack> {
 
     @Override
     @SuppressWarnings("removal")
-    @Deprecated(forRemoval = true, since = "19.9.0")
+    @Deprecated(forRemoval = true, since = "JEI version 19.9.0")
     public String getUniqueId(ChemicalStack ingredient, UidContext context) {
         return "chemical:" + ingredient.getChemical();
     }
