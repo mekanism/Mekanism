@@ -1,4 +1,4 @@
-// 1.21.1	2025-03-09T10:46:31.3147877	Recipes
+// 1.21.1	2025-03-16T13:18:15.6269978	Recipes
 0fc9e539372429b3e5df0dc0595978c4fc45d201 data/mekanism/recipe/antiprotonic_nucleosynthesizer.json
 6d20b08ca1cc993d4c39a761361dce522fe45a7a data/mekanism/recipe/atomic_disassembler.json
 00928ea6e8b57d257c773343c0dc0d337c9d4f5f data/mekanism/recipe/bin/advanced.json
@@ -1918,9 +1918,9 @@ e781128e8c33fa234d5da120398b6e9837d8c04f data/mekanism/recipe/qio_redstone_adapt
 2b7ce3b2bb4e86637fd2fee4bca41fd87d5a86d8 data/mekanism/recipe/reaction/coal_gasification/blocks_coals.json
 9974c701c660270de36fb0c56c59007e522989f9 data/mekanism/recipe/reaction/coal_gasification/coals.json
 6ea7ba9b0765c7e9d5a3fc549e8c2f760688d1bb data/mekanism/recipe/reaction/coal_gasification/dusts_coals.json
-a7669ad974ce355dd861ce9caaa2242870188241 data/mekanism/recipe/reaction/substrate/ethene_oxygen.json
-525a30d20ec8cfd0f53ff44480bea4b8af04fad7 data/mekanism/recipe/reaction/substrate/water_ethene.json
-a791cd8b77c9485e318d632ece8fa235ed70fa5a data/mekanism/recipe/reaction/substrate/water_hydrogen.json
+376613ed4577a2db6c71e787782427c16d22eb59 data/mekanism/recipe/reaction/substrate/ethene_oxygen.json
+b6c57a0d6134c4261065f7da4997f0386746ddbe data/mekanism/recipe/reaction/substrate/water_ethene.json
+a96576009497b67d2f08beeb3a48a53ff75764f5 data/mekanism/recipe/reaction/substrate/water_hydrogen.json
 f4178d5e581cc83ff244f02dd0a92b7a252aeff9 data/mekanism/recipe/reaction/wood_gasification/dusts_wood.json
 f5a27bb88078a08571f7799afff5373eafc4a732 data/mekanism/recipe/reaction/wood_gasification/logs.json
 bad6a8d73da87b0794e393ec6751cefd63c22875 data/mekanism/recipe/reaction/wood_gasification/planks.json

@@ -1,12 +1,12 @@
 {
   "values": {
     "mekanism:ethene": {
-      "burn_time": 40,
-      "energy": 705
+      "energy": 8,
+      "maxBurnPerTick": 10
     },
     "mekanism:hydrogen": {
-      "burn_time": 1,
-      "energy": 200
+      "energy": 2,
+      "maxBurnPerTick": 10
     }
   }
 }
