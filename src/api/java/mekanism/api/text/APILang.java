@@ -69,7 +69,7 @@ public enum APILang implements ILangEntry {
     CHEMICAL_ATTRIBUTE_COOLANT_EFFICIENCY("chemical", "attribute.coolant.efficiency"),
     CHEMICAL_ATTRIBUTE_COOLANT_ENTHALPY("chemical", "attribute.coolant.heat_capacity"),
     CHEMICAL_ATTRIBUTE_COOLANT_TEMPERATURE("chemical", "attribute.coolant.temperature"),
-    CHEMICAL_ATTRIBUTE_FUEL_BURN_TICKS("chemical", "attribute.fuel.burn_ticks"),
+    CHEMICAL_ATTRIBUTE_FUEL_MAX_BURN("chemical", "attribute.fuel.max_burn"),
     CHEMICAL_ATTRIBUTE_FUEL_ENERGY_DENSITY("chemical", "attribute.fuel.energy_density"),
     CHEMICAL_ATTRIBUTE_FUEL_ENERGY_MAX_TOTAL("chemical", "attribute.fuel.energy_max_total"),
     //Security

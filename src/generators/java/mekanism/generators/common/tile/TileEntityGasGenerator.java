@@ -95,7 +95,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
             //maximum amount that can be produced AND stored
             long maxJoulesThisTick;
             long energyDensity = cachedFuel.energyDensity();
-            maxJoulesThisTick = energyDensity * Math.min((long) Math.ceil(/*TODO add max burn */cachedFuel.getMaxBurnPerTick() * fullness), fuelTank.getStored());
+            maxJoulesThisTick = energyDensity * Math.min((long) Math.ceil(cachedFuel.maxBurnPerTick() * fullness), fuelTank.getStored());
             if (maxJoulesThisTick > 0) {
                 maxJoulesThisTick -= getEnergyContainer().insert(maxJoulesThisTick, Action.SIMULATE, AutomationType.INTERNAL);
             }
