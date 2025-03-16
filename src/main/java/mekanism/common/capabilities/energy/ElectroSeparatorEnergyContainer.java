@@ -5,6 +5,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.functions.LongObjectToLongFunction;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.tile.machine.TileEntityElectrolyticSeparator;
@@ -17,7 +18,7 @@ public class ElectroSeparatorEnergyContainer extends MachineEnergyContainer<Tile
     public static ElectroSeparatorEnergyContainer input(TileEntityElectrolyticSeparator tile, LongObjectToLongFunction<TileEntityElectrolyticSeparator> baseEnergyCalculator,
           @Nullable IContentsListener listener) {
         AttributeEnergy electricBlock = validateBlock(tile);
-        return new ElectroSeparatorEnergyContainer(electricBlock.getUsage() * 4, electricBlock.getUsage(), notExternal, alwaysTrue, tile, baseEnergyCalculator, listener);
+        return new ElectroSeparatorEnergyContainer(electricBlock.getUsage() * 4, electricBlock.getUsage(), notExternal, ConstantPredicates.alwaysTrue(), tile, baseEnergyCalculator, listener);
     }
 
     private final LongObjectToLongFunction<TileEntityElectrolyticSeparator> baseEnergyCalculator;
