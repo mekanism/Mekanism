@@ -5,6 +5,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.UnitDisplayUtils.RadiationUnit;
+import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.network.chat.Component;
 
 /**
@@ -20,6 +21,11 @@ public class TooltipHelper implements ITooltipHelper {
     @Override
     public Component getRadioactivityDisplayShort(double radioactivity) {
         return UnitDisplayUtils.getDisplayShort(radioactivity, RadiationUnit.SVH, 2);
+    }
+
+    @Override
+    public Component getTemperatureDisplayShort(double temperature) {
+        return MekanismUtils.getTemperatureDisplay(temperature, TemperatureUnit.KELVIN, true);
     }
 
     @Override

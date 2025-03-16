@@ -12,10 +12,10 @@ import mekanism.api.gear.IModuleHelper;
 import mekanism.api.math.MathUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismModules;
+import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.FluidInDetails;
 import net.minecraft.resources.ResourceLocation;
@@ -59,10 +59,10 @@ public record ModuleElectrolyticBreathingUnit(boolean fillHeld) implements ICust
             productionRate = getMaxRate(module) / 2;
         }
         if (productionRate > 0) {
-            long usage = 2 * MekanismConfig.general.FROM_H2.get();
+            long usage = MathUtils.multiplyClamped(2, ChemicalUtil.hydrogenEnergyDensity());
             int maxRate = MathUtils.clampToInt(Math.min(productionRate, module.getContainerEnergy(stack) / usage));
             long hydrogenUsed = 0;
-            ChemicalStack hydrogenStack = MekanismChemicals.HYDROGEN.getStack(maxRate * 2L);
+            ChemicalStack hydrogenStack = MekanismChemicals.HYDROGEN.asStack(maxRate * 2L);
             ItemStack chestStack = player.getItemBySlot(EquipmentSlot.CHEST);
             if (checkChestPlate(chestStack)) {
                 IChemicalHandler chestCapability = Capabilities.CHEMICAL.getCapability(chestStack);

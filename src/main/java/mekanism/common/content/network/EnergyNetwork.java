@@ -10,9 +10,9 @@ import mekanism.api.AutomationType;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.math.MathUtils;
 import mekanism.common.MekanismLang;
-import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
 import mekanism.common.content.network.distribution.EnergyAcceptorTarget;
 import mekanism.common.content.network.distribution.EnergyTransmitterSaveTarget;
@@ -37,7 +37,7 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
 
     public EnergyNetwork(UUID networkID) {
         super(networkID);
-        energyContainer = VariableCapacityEnergyContainer.create(this::getCapacity, BasicEnergyContainer.alwaysTrue, BasicEnergyContainer.alwaysTrue, this);
+        energyContainer = VariableCapacityEnergyContainer.create(this::getCapacity, ConstantPredicates.alwaysTrue(), ConstantPredicates.alwaysTrue(), this);
         energyContainers = Collections.singletonList(energyContainer);
     }
 

@@ -1,15 +1,18 @@
 package mekanism.common.tile.transmitter;
 
+import com.mojang.serialization.DataResult;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
+import mekanism.api.MekanismAPI;
 import mekanism.api.SerializationConstants;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.math.MathUtils;
-import mekanism.api.providers.IBlockProvider;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.tier.BaseTier;
+import mekanism.common.Mekanism;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
@@ -24,8 +27,12 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.interfaces.ITileRadioactive;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -34,7 +41,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
 
     private final ChemicalHandlerManager chemicalHandlerManager;
 
-    public TileEntityPressurizedTube(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
+    public TileEntityPressurizedTube(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
         Predicate<@Nullable Direction> canExtract = getExtractPredicate();
         Predicate<@Nullable Direction> canInsert = getInsertPredicate();
@@ -50,7 +57,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
     }
 
     @Override
-    protected PressurizedTube createTransmitter(IBlockProvider blockProvider) {
+    protected PressurizedTube createTransmitter(Holder<Block> blockProvider) {
         return new PressurizedTube(blockProvider, this);
     }
 
@@ -89,7 +96,14 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
         CompoundTag updateTag = super.getUpdateTag(provider);
         if (getTransmitter().hasTransmitterNetwork()) {
             ChemicalNetwork network = getTransmitter().getTransmitterNetwork();
-            updateTag.put(SerializationConstants.CHEMICAL, network.lastChemical.saveOptional(provider));
+            if (!network.lastChemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
+                DataResult<Tag> encoded = Chemical.HOLDER_CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), network.lastChemical);
+                if (encoded.isSuccess()) {
+                    updateTag.put(SerializationConstants.CHEMICAL, encoded.getOrThrow());
+                } else {
+                    encoded.ifError(error -> Mekanism.logger.warn("Failed to encode last chemical: {}", error.message()));
+                }
+            }
             updateTag.putFloat(SerializationConstants.SCALE, network.currentScale);
         }
         return updateTag;
@@ -102,7 +116,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
             if (isRemote()) {
                 if (tube.hasTransmitterNetwork()) {
                     ChemicalNetwork network = tube.getTransmitterNetwork();
-                    if (!network.lastChemical.isEmptyType() && !network.getChemicalTank().isEmpty() && network.lastChemical.getChemical().isRadioactive()) {
+                    if (!network.lastChemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY) && !network.getChemicalTank().isEmpty() && network.lastChemical.value().isRadioactive()) {
                         //Note: This may act as full when the network isn't actually full if there is radioactive stuff
                         // going through it, but it shouldn't matter too much
                         return network.currentScale;

@@ -20,10 +20,10 @@ import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.gear.config.ModuleConfig;
-import mekanism.api.providers.IModuleDataProvider;
 import mekanism.common.lib.codec.SequencedCollectionCodec;
 import mekanism.common.lib.collection.EmptySequencedMap;
 import mekanism.common.registries.MekanismDataComponents;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -55,7 +55,7 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
     private static ModuleContainer create(SequencedCollection<Module<?>> modules, ItemEnchantments enchantments) {
         SequencedMap<ModuleData<?>, Module<?>> typedModules = new LinkedHashMap<>(modules.size());
         for (Module<?> module : modules) {
-            typedModules.put(module.getData(), module);
+            typedModules.put(module.getUntypedData(), module);
         }
         return new ModuleContainer(typedModules, enchantments);
     }
@@ -78,8 +78,19 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
     @Nullable
     @Override
     @SuppressWarnings("unchecked")
-    public <MODULE extends ICustomModule<MODULE>> Module<MODULE> get(IModuleDataProvider<MODULE> typeProvider) {
-        return (Module<MODULE>) typedModules.get(typeProvider.getModuleData());
+    public <MODULE extends ICustomModule<MODULE>> Module<MODULE> getUnchecked(Holder<ModuleData<?>> type) {
+        return (Module<MODULE>) get(type);
+    }
+
+    @Nullable
+    @Override
+    public Module<?> get(Holder<ModuleData<?>> type) {
+        return typedModules.get(type.value());
+    }
+
+    @Nullable
+    public Module<?> getRaw(ModuleData<?> type) {
+        return typedModules.get(type);
     }
 
     @Override
@@ -107,9 +118,8 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
     }
 
     @Override
-    public <MODULE extends ICustomModule<MODULE>> ModuleContainer replaceModuleConfig(HolderLookup.Provider provider, ItemStack stack, IModuleDataProvider<MODULE> type,
-          ModuleConfig<?> config) {
-        return replaceModuleConfig(provider, stack, type.getModuleData(), config, false);
+    public ModuleContainer replaceModuleConfig(HolderLookup.Provider provider, ItemStack stack, Holder<ModuleData<?>> type, ModuleConfig<?> config) {
+        return replaceModuleConfig(provider, stack, type, config, false);
     }
 
     /**
@@ -125,11 +135,10 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
      *                                  given type.
      * @throws IllegalArgumentException If fromPacket is true, and the config does not represent a value that is valid for the module.
      */
-    public <MODULE extends ICustomModule<MODULE>> ModuleContainer replaceModuleConfig(HolderLookup.Provider provider, ItemStack stack, ModuleData<MODULE> type,
-          ModuleConfig<?> config, boolean fromPacket) {
-        Module<MODULE> module = get(type);
+    public ModuleContainer replaceModuleConfig(HolderLookup.Provider provider, ItemStack stack, Holder<ModuleData<?>> type, ModuleConfig<?> config, boolean fromPacket) {
+        Module<?> module = get(type);
         if (module == null) {
-            throw new IllegalArgumentException("Module container does not contain any modules of type " + type.getRegistryName());
+            throw new IllegalArgumentException("Module container does not contain any modules of type " + type);
         }
         if (config.name().equals(ModuleConfig.ENABLED_KEY)) {
             if (module.isEnabled() == (boolean) config.get()) {
@@ -145,35 +154,34 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
                 return this;
             }
             //Toggle the handle mode state including any side effects changing that config may have
-            return toggleHandlesModeChange(stack, type, module);
+            return toggleHandlesModeChange(stack, type.value(), module);
         }
 
-        Module<MODULE> replacedModule = module.withReplacedConfig(config, fromPacket);
+        Module<?> replacedModule = module.withReplacedConfig(config, fromPacket);
         if (module == replacedModule) {
             //If nothing actually changed we don't need to bother updating the instance on the stack
             return this;
         }
         SequencedMap<ModuleData<?>, Module<?>> copiedModules = new LinkedHashMap<>(typedModules);
-        copiedModules.put(type, replacedModule);
+        copiedModules.put(type.value(), replacedModule);
         return updateContainer(stack, copiedModules, null);
     }
 
-    <MODULE extends ICustomModule<MODULE>> ModuleContainer toggleEnabled(HolderLookup.Provider provider, ItemStack stack, ModuleData<MODULE> type) {
-        Module<MODULE> module = get(type);
+    ModuleContainer toggleEnabled(HolderLookup.Provider provider, ItemStack stack, Holder<ModuleData<?>> type) {
+        Module<?> module = get(type);
         if (module == null) {
-            throw new IllegalArgumentException("Module container does not contain any modules of type " + type.getRegistryName());
+            throw new IllegalArgumentException("Module container does not contain any modules of type " + type);
         }
         return toggleEnabled(provider, stack, type, module);
     }
 
-    private <MODULE extends ICustomModule<MODULE>> ModuleContainer toggleEnabled(HolderLookup.Provider provider, ItemStack stack, ModuleData<MODULE> type,
-          Module<MODULE> module) {
+    private ModuleContainer toggleEnabled(HolderLookup.Provider provider, ItemStack stack, Holder<ModuleData<?>> type, Module<?> module) {
         boolean setEnabled = !module.isEnabled();
         module = module.withReplacedConfig(module.<Boolean>getConfigOrThrow(ModuleConfig.ENABLED_KEY).with(setEnabled));
 
         ItemEnchantments.Mutable adjustedEnchantments = updateEnchantment(provider, module, null);
         SequencedMap<ModuleData<?>, Module<?>> copiedModules = new LinkedHashMap<>(typedModules);
-        copiedModules.put(type, module);
+        copiedModules.put(type.value(), module);
 
         //If we are becoming enabled, and we handle mode change or have some exclusivity flags
         // then we will need to recheck other installed modules
@@ -185,13 +193,13 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
     }
 
     @Nullable
-    private <MODULE extends ICustomModule<MODULE>> ItemEnchantments.Mutable disableOtherExclusives(HolderLookup.Provider provider, ModuleData<MODULE> type,
-          Module<MODULE> module, SequencedMap<ModuleData<?>, Module<?>> copiedModules, @Nullable ItemEnchantments.Mutable adjustedEnchantments) {
+    private ItemEnchantments.Mutable disableOtherExclusives(HolderLookup.Provider provider, Holder<ModuleData<?>> type, Module<?> module,
+          SequencedMap<ModuleData<?>, Module<?>> copiedModules, @Nullable ItemEnchantments.Mutable adjustedEnchantments) {
         boolean handlesModeChange = module.handlesModeChange();
-        int exclusiveFlags = type.getExclusiveFlags();
+        int exclusiveFlags = type.value().getExclusiveFlags();
         if (handlesModeChange || exclusiveFlags != 0) {
             for (Module<?> otherModule : modules()) {
-                ModuleData<?> otherType = otherModule.getData();
+                ModuleData<?> otherType = otherModule.getUntypedData();
                 if (otherType != type) {
                     // disable other exclusive modules if this is an exclusive module, as this one will now be active
                     if (otherType.isExclusive(exclusiveFlags) && otherModule.isEnabled()) {
@@ -220,8 +228,7 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
     }
 
     @Nullable
-    private <MODULE extends ICustomModule<MODULE>> ItemEnchantments.Mutable updateEnchantment(HolderLookup.Provider provider, Module<MODULE> module,
-          @Nullable ItemEnchantments.Mutable adjustedEnchantments) {
+    private ItemEnchantments.Mutable updateEnchantment(HolderLookup.Provider provider, Module<?> module, @Nullable ItemEnchantments.Mutable adjustedEnchantments) {
         if (module.getCustomInstance() instanceof EnchantmentAwareModule<?> enchantmentBased) {
             Optional<Reference<Enchantment>> enchantment = provider.holder(enchantmentBased.enchantment());
             int level = getEnchantmentLevel(module);
@@ -241,7 +248,7 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
         return enchantBased.getCustomInstance().getLevelFor(enchantBased);
     }
 
-    private <MODULE extends ICustomModule<MODULE>> ModuleContainer toggleHandlesModeChange(ItemStack stack, ModuleData<MODULE> type, Module<MODULE> module) {
+    private <MODULE extends ICustomModule<MODULE>> ModuleContainer toggleHandlesModeChange(ItemStack stack, ModuleData<?> type, Module<MODULE> module) {
         boolean setHandles = !module.handlesModeChange();
         module = module.withReplacedConfig(module.<Boolean>getConfigOrThrow(ModuleConfig.HANDLES_MODE_CHANGE_KEY).with(setHandles));
 
@@ -251,7 +258,7 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
         //If we are becoming enabled, and we handle mode change then we need to force disable it for other installed modules
         if (setHandles && module.handlesModeChange()) {
             for (Module<?> otherModule : modules()) {
-                ModuleData<?> otherType = otherModule.getData();
+                ModuleData<?> otherType = otherModule.getUntypedData();
                 //If it is a different module, and it handles mode change then we want to disable it handling mode changes
                 //TODO - 1.21: Validate this functionality compared to how 1.20.4 worked. Mainly what was the behavior when enabling a module
                 // that had its mode handling set to false because of this
@@ -265,11 +272,15 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
         return updateContainer(stack, copiedModules, null);
     }
 
-    public boolean canInstall(ItemStack stack, IModuleDataProvider<?> typeProvider) {
-        ModuleData<?> type = typeProvider.getModuleData();
-        if (IModuleHelper.INSTANCE.supports(stack.getItem(), type)) {
+    public int installedCount(ModuleData<?> type) {
+        Module<?> module = typedModules.get(type);
+        return module == null ? 0 : module.getInstalledCount();
+    }
+
+    public boolean canInstall(ItemStack stack, Holder<ModuleData<?>> type) {
+        if (IModuleHelper.INSTANCE.supports(stack.getItemHolder(), type)) {
             IModule<?> module = get(type);
-            return module == null || module.getInstalledCount() < type.getMaxStackSize();
+            return module == null || module.getInstalledCount() < type.value().getMaxStackSize();
         }
         return false;
     }
@@ -279,13 +290,13 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
      *
      * @return number installed
      */
-    public <MODULE extends ICustomModule<MODULE>> int addModule(HolderLookup.Provider provider, ItemStack stack, IModuleDataProvider<MODULE> typeProvider, int toInstall) {
-        ModuleData<MODULE> type = typeProvider.getModuleData();
-        Module<MODULE> module = get(type);
+    public <MODULE extends ICustomModule<MODULE>> int addModule(HolderLookup.Provider provider, ItemStack stack, Holder<ModuleData<?>> typeProvider, int toInstall) {
+        ModuleData<?> type = typeProvider.value();
+        Module<MODULE> module = getUnchecked(typeProvider);
         boolean wasFirst = module == null;
         if (wasFirst) {
             toInstall = Math.min(toInstall, type.getMaxStackSize());
-            module = new Module<>(type, toInstall);
+            module = new Module<>(typeProvider, toInstall);
         } else {
             //Clamp based on how many modules we have room to add
             toInstall = Math.min(toInstall, type.getMaxStackSize() - module.getInstalledCount());
@@ -301,7 +312,7 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
         //Update what the enchantment level is at after the installation
         ItemEnchantments.Mutable adjustedEnchantments = updateEnchantment(provider, module, null);
         //Disable any other modules that are exclusive in regard to the newly installed module
-        adjustedEnchantments = disableOtherExclusives(provider, type, module, copiedModules, adjustedEnchantments);
+        adjustedEnchantments = disableOtherExclusives(provider, typeProvider, module, copiedModules, adjustedEnchantments);
 
         ModuleContainer replacedContainer = updateContainer(stack, copiedModules, adjustedEnchantments);
         //Call the added method on the new module instance with the new container
@@ -309,10 +320,10 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
         return toInstall;
     }
 
-    public <MODULE extends ICustomModule<MODULE>> void removeModule(HolderLookup.Provider provider, ItemStack stack, IModuleDataProvider<MODULE> typeProvider,
+    public <MODULE extends ICustomModule<MODULE>> void removeModule(HolderLookup.Provider provider, ItemStack stack, Holder<ModuleData<?>> typeProvider,
           @Range(from = 1, to = Integer.MAX_VALUE) int toRemove) {
-        ModuleData<MODULE> type = typeProvider.getModuleData();
-        Module<MODULE> module = get(type);
+        ModuleData<?> type = typeProvider.value();
+        Module<MODULE> module = getUnchecked(typeProvider);
         if (module != null) {
             //Theoretically we are only calling this within the max stack size, but double check
             toRemove = Math.min(toRemove, type.getMaxStackSize());

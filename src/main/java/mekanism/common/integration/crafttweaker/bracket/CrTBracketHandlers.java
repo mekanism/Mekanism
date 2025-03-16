@@ -8,7 +8,7 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.robit.RobitSkin;
 import mekanism.common.integration.crafttweaker.CrTConstants;
-import mekanism.common.integration.crafttweaker.CrTUtils;
+import mekanism.common.integration.crafttweaker.chemical.CrTChemical;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
@@ -29,7 +29,7 @@ public class CrTBracketHandlers {
     @ZenCodeType.Method
     @BracketResolver(CrTConstants.BRACKET_CHEMICAL)
     public static ICrTChemicalStack getChemicalStack(String tokens) {
-        return CrTUtils.fromChemical(getValue(CrTConstants.BRACKET_CHEMICAL, tokens, MekanismAPI.CHEMICAL_REGISTRY), 1);
+        return CrTChemical.makeStack(getValue(CrTConstants.BRACKET_CHEMICAL, tokens, MekanismAPI.CHEMICAL_REGISTRY_NAME), 1);
     }
 
     /**
@@ -55,25 +55,22 @@ public class CrTBracketHandlers {
     @ZenCodeType.Method
     @BracketResolver(CrTConstants.BRACKET_MODULE_DATA)
     public static ModuleData<?> getModuleData(String tokens) {
-        return getValue(CrTConstants.BRACKET_MODULE_DATA, tokens, MekanismAPI.MODULE_REGISTRY);
+        return getValue(CrTConstants.BRACKET_MODULE_DATA, tokens, MekanismAPI.MODULE_REGISTRY_NAME);
     }
 
     private static <V> V getValue(String bracket, String tokens, ResourceKey<? extends Registry<? extends V>> registryKey) {
-        Registry<V> registry = CraftTweakerAPI.getAccessibleElementsProvider()
-              .registryAccess()
-              .registryOrThrow(registryKey);
-        return getValue(bracket, tokens, registry);
-    }
-
-    private static <V> V getValue(String bracket, String tokens, Registry<V> registry) {
         ResourceLocation registryName = ResourceLocation.tryParse(tokens);
         if (registryName == null) {
             String typeName = bracket.replace("_", " ");
             throw new IllegalArgumentException("Could not get " + typeName + " for <" + bracket + ":" + tokens + ">. Syntax is <" + bracket + ":modid:" + bracket + "_name>");
-        } else if (!registry.containsKey(registryName)) {
-            String typeName = bracket.replace("_", " ");
-            throw new IllegalArgumentException("Could not get " + typeName + " for <" + bracket + ":" + tokens + ">, " + typeName + " does not appear to exist!");
         }
-        return registry.get(registryName);
+        Registry<V> registry = CraftTweakerAPI.getAccessibleElementsProvider()
+              .registryAccess()
+              .registryOrThrow(registryKey);
+        if (registry.containsKey(registryName)) {
+            return registry.get(registryName);
+        }
+        String typeName = bracket.replace("_", " ");
+        throw new IllegalArgumentException("Could not get " + typeName + " for <" + bracket + ":" + tokens + ">, " + typeName + " does not appear to exist!");
     }
 }

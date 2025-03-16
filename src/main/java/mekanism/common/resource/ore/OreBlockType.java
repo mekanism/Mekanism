@@ -6,12 +6,4 @@ import mekanism.common.registration.impl.BlockRegistryObject;
 
 public record OreBlockType(BlockRegistryObject<BlockOre, ItemBlockTooltip<BlockOre>> stone,
                            BlockRegistryObject<BlockOre, ItemBlockTooltip<BlockOre>> deepslate) {
-
-    public BlockOre stoneBlock() {
-        return stone.getBlock();
-    }
-
-    public BlockOre deepslateBlock() {
-        return deepslate.getBlock();
-    }
 }

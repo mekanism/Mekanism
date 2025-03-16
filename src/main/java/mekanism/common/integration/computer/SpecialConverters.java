@@ -217,14 +217,14 @@ public class SpecialConverters {
         itemFilter.setItemStack(stack);
     }
 
-    static Map<String, Object> wrapStack(ResourceLocation name, String sizeKey, int amount, @NotNull DataComponentPatch components) {
+    static Map<String, Object> wrapStack(String name, String sizeKey, int amount, @NotNull DataComponentPatch components) {
         int elements = 2;
         boolean hasComponents = !components.isEmpty() && amount > 0;
         if (hasComponents) {
             elements++;
         }
         Map<String, Object> wrapped = new HashMap<>(elements);
-        wrapped.put(SerializationConstants.NAME, name == null ? "unknown" : name.toString());
+        wrapped.put(SerializationConstants.NAME, name);
         wrapped.put(sizeKey, amount);
         if (hasComponents) {
             wrapped.put(SerializationConstants.COMPONENTS, wrapComponents(components));

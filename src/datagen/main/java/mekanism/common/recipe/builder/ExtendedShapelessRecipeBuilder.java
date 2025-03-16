@@ -2,30 +2,30 @@ package mekanism.common.recipe.builder;
 
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.common.registration.impl.BlockRegistryObject;
+import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
-import net.minecraft.world.level.ItemLike;
 
 @NothingNullByDefault
 public class ExtendedShapelessRecipeBuilder extends BaseRecipeBuilder<ExtendedShapelessRecipeBuilder> {
 
     private final NonNullList<Ingredient> ingredients = NonNullList.create();
 
-    private ExtendedShapelessRecipeBuilder(ItemLike result, int count) {
+    private ExtendedShapelessRecipeBuilder(Holder<Item> result, int count) {
         super(result, count);
     }
 
-    public static ExtendedShapelessRecipeBuilder shapelessRecipe(ItemLike result) {
+    public static ExtendedShapelessRecipeBuilder shapelessRecipe(Holder<Item> result) {
         return shapelessRecipe(result, 1);
     }
 
-    public static ExtendedShapelessRecipeBuilder shapelessRecipe(ItemLike result, int count) {
+    public static ExtendedShapelessRecipeBuilder shapelessRecipe(Holder<Item> result, int count) {
         return new ExtendedShapelessRecipeBuilder(result, count);
     }
 
@@ -37,12 +37,28 @@ public class ExtendedShapelessRecipeBuilder extends BaseRecipeBuilder<ExtendedSh
         return addIngredient(Ingredient.of(tag), quantity);
     }
 
-    public ExtendedShapelessRecipeBuilder addIngredient(ItemLike item) {
+    public ExtendedShapelessRecipeBuilder addIngredient(Item item) {
         return addIngredient(item, 1);
     }
 
-    public ExtendedShapelessRecipeBuilder addIngredient(ItemLike item, int quantity) {
+    public ExtendedShapelessRecipeBuilder addIngredient(Item item, int quantity) {
         return addIngredient(Ingredient.of(item), quantity);
+    }
+
+    public ExtendedShapelessRecipeBuilder addIngredient(BlockRegistryObject<?, ?> block) {
+        return addIngredient(block, 1);
+    }
+
+    public ExtendedShapelessRecipeBuilder addIngredient(BlockRegistryObject<?, ?> block, int quantity) {
+        return addIngredient(block.getItemHolder(), quantity);
+    }
+
+    public ExtendedShapelessRecipeBuilder addIngredient(Holder<Item> item) {
+        return addIngredient(item, 1);
+    }
+
+    public ExtendedShapelessRecipeBuilder addIngredient(Holder<Item> item, int quantity) {
+        return addIngredient(Ingredient.of(item.value()), quantity);
     }
 
     public ExtendedShapelessRecipeBuilder addIngredient(Ingredient ingredient) {
@@ -68,7 +84,7 @@ public class ExtendedShapelessRecipeBuilder extends BaseRecipeBuilder<ExtendedSh
         return new ShapelessRecipe(
               Objects.requireNonNullElse(this.group, ""),
               RecipeBuilder.determineBookCategory(this.category),
-              new ItemStack(this.result, this.count),
+              resultStack(),
               this.ingredients
         );
     }

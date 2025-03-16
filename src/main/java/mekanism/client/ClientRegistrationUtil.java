@@ -3,8 +3,6 @@ package mekanism.client;
 import com.mojang.blaze3d.shaders.FogShape;
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.lang.ref.WeakReference;
-import mekanism.api.providers.IBlockProvider;
-import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.machine.GuiAdvancedElectricMachine;
 import mekanism.client.gui.machine.GuiElectricMachine;
@@ -15,6 +13,7 @@ import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.item.interfaces.IColoredItem;
 import mekanism.common.registration.impl.BlockDeferredRegister;
+import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.registration.impl.FluidDeferredRegister;
 import mekanism.common.registration.impl.FluidDeferredRegister.MekanismFluidType;
@@ -43,6 +42,7 @@ import net.minecraft.util.FastColor;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
@@ -55,7 +55,6 @@ import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.model.DynamicFluidContainerModel;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
@@ -161,19 +160,20 @@ public class ClientRegistrationUtil {
         }
     }
 
-    public static void setPropertyOverride(IItemProvider itemProvider, ResourceLocation override, ItemPropertyFunction propertyGetter) {
-        ItemProperties.register(itemProvider.asItem(), override, propertyGetter);
+    public static void setPropertyOverride(Holder<Item> item, ResourceLocation override, ItemPropertyFunction propertyGetter) {
+        ItemProperties.register(item.value(), override, propertyGetter);
     }
 
-    public static void registerItemColorHandler(RegisterColorHandlersEvent.Item event, ItemColor itemColor, IItemProvider... items) {
-        for (IItemProvider itemProvider : items) {
-            event.register(itemColor, itemProvider.asItem());
+    public static void registerItemColorHandler(RegisterColorHandlersEvent.Item event, ItemColor itemColor, ItemLike... items) {
+        for (ItemLike itemProvider : items) {
+            event.register(itemColor, itemProvider);
         }
     }
 
-    public static void registerBlockColorHandler(RegisterColorHandlersEvent.Block event, BlockColor blockColor, IBlockProvider... blocks) {
-        for (IBlockProvider blockProvider : blocks) {
-            event.register(blockColor, blockProvider.getBlock());
+    @SafeVarargs
+    public static void registerBlockColorHandler(RegisterColorHandlersEvent.Block event, BlockColor blockColor, Holder<Block>... blocks) {
+        for (Holder<Block> blockProvider : blocks) {
+            event.register(blockColor, blockProvider.value());
         }
     }
 
@@ -183,7 +183,7 @@ public class ClientRegistrationUtil {
         }
     }
 
-    public static void registerIColoredBlockHandler(RegisterColorHandlersEvent event, IBlockProvider... blocks) {
+    public static void registerIColoredBlockHandler(RegisterColorHandlersEvent event, BlockRegistryObject<?, ?>... blocks) {
         if (event instanceof RegisterColorHandlersEvent.Block blockEvent) {
             registerBlockColorHandler(blockEvent, COLORED_BLOCK_COLOR, blocks);
         } else if (event instanceof RegisterColorHandlersEvent.Item itemEvent) {
@@ -191,27 +191,27 @@ public class ClientRegistrationUtil {
         }
     }
 
-    public static void registerIColoredItemHandler(RegisterColorHandlersEvent.Item event, IItemProvider... items) {
+    public static void registerIColoredItemHandler(RegisterColorHandlersEvent.Item event, ItemLike... items) {
         registerItemColorHandler(event, COLORED_ITEM_COLOR, items);
     }
 
-    public static void registerItemExtensions(RegisterClientExtensionsEvent event, IClientItemExtensions extension, IItemProvider... items) {
-        for (IItemProvider item : items) {
+    public static void registerItemExtensions(RegisterClientExtensionsEvent event, IClientItemExtensions extension, ItemLike... items) {
+        for (ItemLike item : items) {
             event.registerItem(extension, item.asItem());
         }
     }
 
     public static void registerBlockExtensions(RegisterClientExtensionsEvent event, BlockDeferredRegister allBlocks) {
-        for (DeferredHolder<Block, ? extends Block> primaryEntry : allBlocks.getPrimaryEntries()) {
-            if (primaryEntry.get() instanceof BlockMekanism) {
+        for (Holder<Block> primaryEntry : allBlocks.getPrimaryEntries()) {
+            if (primaryEntry.value() instanceof BlockMekanism) {
                 event.registerBlock(RenderPropertiesProvider.PARTICLE_HANDLER, primaryEntry);
             }
         }
     }
 
     public static void registerFluidExtensions(RegisterClientExtensionsEvent event, FluidDeferredRegister allFluids) {
-        for (DeferredHolder<FluidType, ? extends FluidType> fluidTypeEntry : allFluids.getFluidTypeEntries()) {
-            if (fluidTypeEntry.get() instanceof MekanismFluidType fluidType) {
+        for (Holder<FluidType> fluidTypeEntry : allFluids.getFluidTypeEntries()) {
+            if (fluidTypeEntry.value() instanceof MekanismFluidType fluidType) {
                 event.registerFluidType(new IClientFluidTypeExtensions() {
                     @NotNull
                     @Override

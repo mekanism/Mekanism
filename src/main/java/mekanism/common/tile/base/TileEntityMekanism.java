@@ -29,7 +29,6 @@ import mekanism.api.heat.IHeatHandler;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.math.MathUtils;
-import mekanism.api.providers.IBlockProvider;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.api.security.SecurityMode;
@@ -124,14 +123,15 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionResult;
@@ -164,7 +164,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     public int ticker;
     private final List<ITileComponent> components = new ArrayList<>();
 
-    protected final IBlockProvider blockProvider;
+    private final Holder<Block> blockProvider;
 
     private boolean supportsComparator;
     private boolean supportsComputers;
@@ -269,11 +269,10 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     private int playSoundCooldown = 0;
     //End variables ITileSound
 
-    public TileEntityMekanism(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
-        super(((IHasTileEntity<? extends BlockEntity>) blockProvider.getBlock()).getTileType(), pos, state);
+    public TileEntityMekanism(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
+        super(((IHasTileEntity<? extends BlockEntity>) blockProvider.value()).getTileType(), pos, state);
         this.blockProvider = blockProvider;
-        Block block = this.blockProvider.getBlock();
-        setSupportedTypes(block);
+        setSupportedTypes(this.blockProvider);
         presetVariables();
         IContentsListener saveOnlyListener = this::markForSave;
 
@@ -330,10 +329,10 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         if (hasSecurity()) {
             securityComponent = new TileComponentSecurity(this);
         }
-        soundEvent = hasSound() ? Attribute.getOrThrow(block, AttributeSound.class).getSound() : null;
+        soundEvent = hasSound() ? Attribute.getOrThrow(this.blockProvider, AttributeSound.class).getSound() : null;
     }
 
-    private void setSupportedTypes(Block block) {
+    private void setSupportedTypes(Holder<Block> block) {
         //Used to get any data we may need
         supportsUpgrades = Attribute.has(block, AttributeUpgradeSupport.class);
         canBeUpgraded = Attribute.has(block, AttributeUpgradeable.class);
@@ -347,11 +346,11 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         supportsComparator = Attribute.has(block, AttributeComparator.class);
         supportsComputers = Mekanism.hooks.computerCompatEnabled() && Attribute.has(block, AttributeComputerIntegration.class);
         hasChunkloader = this instanceof IChunkLoader;
-        nameable = hasGui() && !Attribute.getOrThrow(getBlockType(), AttributeGui.class).hasCustomName();
+        nameable = hasGui() && !Attribute.getOrThrow(getBlockHolder(), AttributeGui.class).hasCustomName();
     }
 
     /**
-     * Sets variables up, called immediately after {@link #setSupportedTypes(Block)} but before any things start being created.
+     * Sets variables up, called immediately after {@link #setSupportedTypes(Holder)} but before any things start being created.
      *
      * @implNote This method should be used for setting any variables that would normally be set directly, except that gets run too late to set things up properly in our
      * constructor.
@@ -359,12 +358,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     protected void presetVariables() {
     }
 
-    public Block getBlockType() {
-        return blockProvider.getBlock();
-    }
-
-    public ResourceLocation getBlockTypeRegistryName() {
-        return blockProvider.getRegistryName();
+    public final Holder<Block> getBlockHolder() {
+        return blockProvider;
     }
 
     /**
@@ -477,7 +472,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Override
     @SuppressWarnings("ConstantConditions")
     public Component getName() {
-        return hasCustomName() ? getCustomName() : TextComponentUtil.build(getBlockType());
+        return hasCustomName() ? getCustomName() : TextComponentUtil.build(getBlockHolder());
     }
 
     @NotNull
@@ -487,12 +482,12 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         if (isNameable()) {
             return hasCustomName() ? getCustomName() : TextComponentUtil.translate(getContainerDescription());
         }
-        return TextComponentUtil.build(getBlockType());
+        return TextComponentUtil.build(getBlockHolder());
     }
 
     private String getContainerDescription() {
         if (containerDescription == null) {
-            containerDescription = Util.makeDescriptionId("container", getBlockTypeRegistryName());
+            containerDescription = Util.makeDescriptionId("container", RegistryUtils.getName(getBlockHolder()));
         }
         return containerDescription;
     }
@@ -527,7 +522,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     protected void notifyComparatorChange() {
-        level.updateNeighbourForOutputSignal(worldPosition, getBlockType());
+        level.updateNeighbourForOutputSignal(worldPosition, getBlockState().getBlock());
     }
 
     protected WrenchResult tryWrenchDismantle(BlockState state, Player player, ItemStack stack) {
@@ -545,7 +540,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     protected WrenchResult tryWrenchRotate(BlockState state, Player player, ItemStack stack) {
         //Special ITileDirectional handling
         if (isDirectional()) {
-            AttributeStateFacing attribute = Attribute.getOrThrow(getBlockType(), AttributeStateFacing.class);
+            AttributeStateFacing attribute = Attribute.getOrThrow(getBlockHolder(), AttributeStateFacing.class);
             if (attribute.canRotate()) {
                 setFacing(MekanismUtils.rotate(getDirection(), attribute.getFacingProperty() == BlockStateProperties.FACING));
                 return WrenchResult.SUCCESS;
@@ -602,7 +597,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
                 return InteractionResult.PASS;
             }
 
-            player.openMenu(Attribute.getOrThrow(getBlockType(), AttributeGui.class).getProvider(this, true), buffer -> {
+            player.openMenu(Attribute.getOrThrow(getBlockHolder(), AttributeGui.class).getProvider(this, true), buffer -> {
                 buffer.writeBlockPos(worldPosition);
                 encodeExtraContainerData(buffer);
             });
@@ -1021,7 +1016,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
                 // but double check just in case before logging
                 Mekanism.logger.warn("Error invalid block for tile {} at {} in {}. Unable to get direction, falling back to north, "
                                      + "things will probably not work correctly. This is almost certainly due to another mod incorrectly "
-                                     + "trying to move this tile and not properly updating the position.", RegistryUtils.getName(getType()), worldPosition, level);
+                                     + "trying to move this tile and not properly updating the position.",
+                      Util.getRegisteredName(BuiltInRegistries.BLOCK_ENTITY_TYPE, getType()), worldPosition, level);
             }
         }
         //TODO: Remove, give it some better default, or allow it to be null
@@ -1102,12 +1098,12 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     public final boolean isRedstoneActivated() {
         return !supportsRedstone() ||
-            switch (controlType) {
-                case DISABLED -> true;
-                case HIGH -> isPowered();
-                case LOW -> !isPowered();
-                case PULSE -> isPowered() && !redstoneLastTick;
-            };
+               switch (controlType) {
+                   case DISABLED -> true;
+                   case HIGH -> isPowered();
+                   case LOW -> !isPowered();
+                   case PULSE -> isPowered() && !redstoneLastTick;
+               };
     }
 
     public boolean canFunction() {
@@ -1158,7 +1154,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Override
     public Set<Upgrade> getSupportedUpgrade() {
         if (supportsUpgrades()) {
-            return Attribute.getOrThrow(getBlockType(), AttributeUpgradeSupport.class).supportedUpgrades();
+            return Attribute.getOrThrow(getBlockHolder(), AttributeUpgradeSupport.class).supportedUpgrades();
         }
         return Collections.emptySet();
     }
@@ -1299,22 +1295,22 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     //TODO - 1.22: remove backcompat
-    @Deprecated(forRemoval = true)
+    @Deprecated(forRemoval = true, since = "10.7.0")
     public List<IChemicalTank> getLegacyGasTanks() {
         return getChemicalTanks(null);
     }
 
-    @Deprecated(forRemoval = true)
+    @Deprecated(forRemoval = true, since = "10.7.0")
     public List<IChemicalTank> getLegacyInfuseTanks() {
         return getChemicalTanks(null);
     }
 
-    @Deprecated(forRemoval = true)
+    @Deprecated(forRemoval = true, since = "10.7.0")
     public List<IChemicalTank> getLegacyPigmentTanks() {
         return getChemicalTanks(null);
     }
 
-    @Deprecated(forRemoval = true)
+    @Deprecated(forRemoval = true, since = "10.7.0")
     public List<IChemicalTank> getLegacySlurryTanks() {
         return getChemicalTanks(null);
     }
@@ -1496,7 +1492,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     @Override
     public Block getConfigurationDataType() {
-        return getBlockType();
+        return getBlockState().getBlock();
     }
 
     @Override
@@ -1618,7 +1614,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Override
     public String getComputerName() {
         if (hasComputerSupport()) {
-            return Attribute.getOrThrow(getBlockType(), AttributeComputerIntegration.class).name();
+            return Attribute.getOrThrow(getBlockHolder(), AttributeComputerIntegration.class).name();
         }
         return "";
     }

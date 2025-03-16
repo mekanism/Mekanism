@@ -89,8 +89,8 @@ public class MissingObjectSerializationTest {
     @EmptyTemplate
     @TestHolder(description = "Tests to make sure that attached chemicals load as best as they can when a chemical is missing.")
     public static void testAttachedChemicals(final MissingObjectTestHelper helper) {
-        ChemicalStack initialAntimatter = MekanismChemicals.ANTIMATTER.getStack(10);
-        ChemicalStack initialGold = MekanismChemicals.GOLD.getStack(5);
+        ChemicalStack initialAntimatter = MekanismChemicals.ANTIMATTER.asStack(10);
+        ChemicalStack initialGold = MekanismChemicals.GOLD.asStack(5);
         helper.succeedIfInvalidChemicalSerializationCycle(AttachedChemicals.CODEC, help -> new AttachedChemicals(NonNullList.of(ChemicalStack.EMPTY,
               initialAntimatter.copy(),
               help.failureChemical(3),
@@ -114,7 +114,7 @@ public class MissingObjectSerializationTest {
     @TestHolder(description = "Tests to make sure that formula items that have formulas that contain invalid items will load as having no formula.")
     public static void testFormulaAttachmentOnItem(final MissingObjectTestHelper helper) {
         helper.succeedIfInvalidItemSerializationCycle(ItemStack.CODEC, help -> {
-            ItemStack formulaItem = MekanismItems.CRAFTING_FORMULA.getItemStack();
+            ItemStack formulaItem = MekanismItems.CRAFTING_FORMULA.asStack();
             formulaItem.set(MekanismDataComponents.FORMULA_HOLDER, help.makeFormula());
             return formulaItem;
         }, formulaItem -> {
@@ -139,10 +139,10 @@ public class MissingObjectSerializationTest {
     @TestHolder(description = "Tests to make sure that bins that are locked to an invalid item will load as not being locked.")
     public static void testLockDataOnItem(final MissingObjectTestHelper helper) {
         helper.succeedIfInvalidItemSerializationCycle(ItemStack.CODEC, help -> {
-            ItemStack binItem = MekanismBlocks.BASIC_BIN.getItemStack();
+            ItemStack binItem = new ItemStack(MekanismBlocks.BASIC_BIN);
             binItem.set(MekanismDataComponents.LOCK, LockData.create(help.failureItem()));
             return binItem;
-        }, binItem -> binItem.is(MekanismBlocks.BASIC_BIN.asItem()) && LockData.EMPTY.equals(binItem.get(MekanismDataComponents.LOCK)) &&
+        }, binItem -> binItem.is(MekanismBlocks.BASIC_BIN.getItemHolder()) && LockData.EMPTY.equals(binItem.get(MekanismDataComponents.LOCK)) &&
                       binItem.getComponentsPatch().get(MekanismDataComponents.LOCK.get()) == null);
     }
 
@@ -152,12 +152,12 @@ public class MissingObjectSerializationTest {
     @TestHolder(description = "Tests to make sure that redstone adapters with a target that are targeting an invalid item, will load sa if they have no target.")
     public static void testItemTarget(final MissingObjectTestHelper helper) {
         helper.succeedIfInvalidItemSerializationCycle(ItemStack.CODEC, help -> {
-            ItemStack adapter = MekanismBlocks.QIO_REDSTONE_ADAPTER.getItemStack();
+            ItemStack adapter = new ItemStack(MekanismBlocks.QIO_REDSTONE_ADAPTER);
             adapter.set(MekanismDataComponents.ITEM_TARGET, Optional.of(help.failureHashedItem()));
             adapter.set(MekanismDataComponents.LONG_AMOUNT, 5L);
             return adapter;
         }, adapter -> {
-            if (adapter.is(MekanismBlocks.QIO_REDSTONE_ADAPTER.asItem())) {
+            if (adapter.is(MekanismBlocks.QIO_REDSTONE_ADAPTER.getItemHolder())) {
                 Optional<HashedItem> itemTarget = adapter.get(MekanismDataComponents.ITEM_TARGET);
                 return itemTarget != null && itemTarget.isEmpty() && adapter.getComponentsPatch().get(MekanismDataComponents.ITEM_TARGET.get()) == null &&
                        adapter.getOrDefault(MekanismDataComponents.LONG_AMOUNT, 0L) == 5;
@@ -178,10 +178,10 @@ public class MissingObjectSerializationTest {
     @TestHolder(description = "Tests to make sure that overflow that contain invalid items, will load all still valid items and ignore the invalid ones.")
     public static void testOverflowAwareOnItem(final MissingObjectTestHelper helper) {
         helper.succeedIfInvalidItemSerializationCycle(ItemStack.CODEC, help -> {
-            ItemStack minerItem = MekanismBlocks.DIGITAL_MINER.getItemStack();
+            ItemStack minerItem = new ItemStack(MekanismBlocks.DIGITAL_MINER);
             minerItem.set(MekanismDataComponents.OVERFLOW_AWARE, help.makeOverflow());
             return minerItem;
-        }, minerItem -> minerItem.is(MekanismBlocks.DIGITAL_MINER.asItem()) &&
+        }, minerItem -> minerItem.is(MekanismBlocks.DIGITAL_MINER.getItemHolder()) &&
                         helper.validateOverflow(minerItem.getOrDefault(MekanismDataComponents.OVERFLOW_AWARE, OverflowAware.EMPTY)));
     }
 
@@ -197,7 +197,7 @@ public class MissingObjectSerializationTest {
     @TestHolder(description = "Tests to make sure that portable dashboards that contain invalid items, will load all still valid items and ignore the invalid ones.")
     public static void testDashboardContentsOnItem(final MissingObjectTestHelper helper) {
         helper.succeedIfInvalidItemSerializationCycle(ItemStack.CODEC, help -> {
-            ItemStack dashboardItem = MekanismItems.PORTABLE_QIO_DASHBOARD.getItemStack();
+            ItemStack dashboardItem = MekanismItems.PORTABLE_QIO_DASHBOARD.asStack();
             dashboardItem.set(MekanismDataComponents.QIO_DASHBOARD, help.makeDashboard());
             return dashboardItem;
         }, dashboardItem -> dashboardItem.is(MekanismItems.PORTABLE_QIO_DASHBOARD) &&
@@ -257,7 +257,7 @@ public class MissingObjectSerializationTest {
     @EmptyTemplate
     @TestHolder(description = "Tests to make sure that when an item storing miner filters has an invalid filter, it gets properly skipped.")
     public static void testMinerFilterAwareOnItem(final MissingObjectTestHelper helper) {
-        helper.testFilterAwareOnItem(MekanismBlocks.DIGITAL_MINER, helper::makeMinerFilter, helper::testFilter);
+        helper.testFilterAwareOnItem(MekanismBlocks.DIGITAL_MINER.getItemHolder(), helper::makeMinerFilter, helper::testFilter);
     }
 
     @GameTest
@@ -271,7 +271,7 @@ public class MissingObjectSerializationTest {
     @EmptyTemplate
     @TestHolder(description = "Tests to make sure that when an item storing sorter filters has an invalid filter, it gets properly skipped.")
     public static void testSorterFilterAwareOnItem(final MissingObjectTestHelper helper) {
-        helper.testFilterAwareOnItem(MekanismBlocks.LOGISTICAL_SORTER, helper::makeSorterFilter, helper::testFilter);
+        helper.testFilterAwareOnItem(MekanismBlocks.LOGISTICAL_SORTER.getItemHolder(), helper::makeSorterFilter, helper::testFilter);
     }
 
     @GameTest
@@ -285,7 +285,7 @@ public class MissingObjectSerializationTest {
     @EmptyTemplate
     @TestHolder(description = "Tests to make sure that when an item storing QIO filters has an invalid filter, it gets properly skipped.")
     public static void testQIOFilterAwareOnItem(final MissingObjectTestHelper helper) {
-        helper.testFilterAwareOnItem(MekanismBlocks.QIO_IMPORTER, helper::makeQIOFilter, helper::testFilter);
+        helper.testFilterAwareOnItem(MekanismBlocks.QIO_IMPORTER.getItemHolder(), helper::makeQIOFilter, helper::testFilter);
     }
 
     @GameTest

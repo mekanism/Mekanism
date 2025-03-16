@@ -5,10 +5,9 @@ import java.util.List;
 import java.util.function.Predicate;
 import mekanism.api.IAlloyInteraction;
 import mekanism.api.IConfigurable;
-import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
-import mekanism.api.tier.AlloyTier;
 import mekanism.api.tier.BaseTier;
+import mekanism.api.tier.IAlloyTier;
 import mekanism.client.model.data.TransmitterModelData;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -37,6 +36,7 @@ import mekanism.common.util.MultipartUtils.AdvancedRayTraceResult;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -45,6 +45,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
@@ -65,13 +66,13 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
     private boolean loaded = false;
     private boolean markJoined = false;
 
-    public TileEntityTransmitter(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
-        super(((IHasTileEntity<? extends TileEntityTransmitter>) blockProvider.getBlock()).getTileType(), pos, state);
+    public TileEntityTransmitter(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
+        super(((IHasTileEntity<? extends TileEntityTransmitter>) blockProvider.value()).getTileType(), pos, state);
         this.transmitter = createTransmitter(blockProvider);
         cacheCoord();
     }
 
-    protected abstract Transmitter<?, ?, ?> createTransmitter(IBlockProvider blockProvider);
+    protected abstract Transmitter<?, ?, ?> createTransmitter(Holder<Block> blockProvider);
 
     public Transmitter<?, ?, ?> getTransmitter() {
         return transmitter;
@@ -318,7 +319,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
     }
 
     @Override
-    public void onAlloyInteraction(Player player, ItemStack stack, @NotNull AlloyTier tier) {
+    public void onAlloyInteraction(Player player, ItemStack stack, @NotNull IAlloyTier tier) {
         if (getLevel() != null && getTransmitter().hasTransmitterNetwork()) {
             DynamicNetwork<?, ?, ?> transmitterNetwork = getTransmitter().getTransmitterNetwork();
             List<Transmitter<?, ?, ?>> list = new ArrayList<>(transmitterNetwork.getTransmitters());
@@ -334,7 +335,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
                 if (transmitter instanceof IUpgradeableTransmitter<?> upgradeableTransmitter && upgradeableTransmitter.canUpgrade(tier)) {
                     TileEntityTransmitter transmitterTile = transmitter.getTransmitterTile();
                     BlockState state = transmitterTile.getBlockState();
-                    BlockState upgradeState = transmitterTile.upgradeResult(state, tier.getBaseTier());
+                    BlockState upgradeState = transmitterTile.upgradeResult(state, tier.getBaseTierLevel());
                     if (state == upgradeState) {
                         //Skip if it would not actually upgrade anything
                         continue;
@@ -392,6 +393,15 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
         } else {
             Mekanism.logger.warn("Unhandled upgrade data.", new IllegalStateException());
         }
+    }
+
+    @NotNull
+    protected BlockState upgradeResult(@NotNull BlockState current, int tierLevel) {
+        BaseTier tier = BaseTier.getTier(tierLevel);
+        if (tier == null) {
+            return current;
+        }
+        return upgradeResult(current, tier);
     }
 
     @NotNull

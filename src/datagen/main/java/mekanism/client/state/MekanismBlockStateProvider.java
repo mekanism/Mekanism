@@ -3,16 +3,16 @@ package mekanism.client.state;
 import java.util.Map;
 import mekanism.client.model.MekanismBlockModelProvider;
 import mekanism.common.Mekanism;
-import mekanism.common.block.BlockOre;
 import mekanism.common.block.attribute.Attribute;
-import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.resource.IResource;
 import mekanism.common.resource.ore.OreBlockType;
 import mekanism.common.resource.ore.OreType;
+import net.minecraft.core.Holder;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.neoforged.neoforge.client.model.generators.BlockModelBuilder;
 import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
@@ -29,7 +29,7 @@ public class MekanismBlockStateProvider extends BaseBlockStateProvider<MekanismB
     protected void registerStatesAndModels() {
         registerFluidBlockStates(MekanismFluids.FLUIDS);
 
-        for (Map.Entry<IResource, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
+        for (Map.Entry<IResource, ? extends Holder<Block>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
             String registrySuffix = entry.getKey().getRegistrySuffix();
             ResourceLocation texture = modLoc("block/block_" + registrySuffix);
             ModelFile file;
@@ -41,7 +41,7 @@ public class MekanismBlockStateProvider extends BaseBlockStateProvider<MekanismB
                 file = models().withExistingParent("block/storage/" + registrySuffix, modLoc("block/colored_cube"))
                       .texture("all", modLoc("block/resource_block"));
             }
-            simpleBlock(entry.getValue().getBlock(), file);
+            simpleBlock(entry.getValue(), file);
 
             models().withExistingParent("item/block_" + registrySuffix, modLoc("block/storage/" + registrySuffix));
         }
@@ -59,7 +59,7 @@ public class MekanismBlockStateProvider extends BaseBlockStateProvider<MekanismB
         );
         BlockModelBuilder openBarrel = models().getBuilder(MekanismBlocks.PERSONAL_BARREL.getName() + "_open").parent(barrelModel)
               .texture("top", Mekanism.rl("block/personal_barrel/top_open"));
-        directionalBlock(MekanismBlocks.PERSONAL_BARREL.getBlock(), state -> state.getValue(BlockStateProperties.OPEN) ? openBarrel : barrelModel);
+        directionalBlock(MekanismBlocks.PERSONAL_BARREL, state -> state.getValue(BlockStateProperties.OPEN) ? openBarrel : barrelModel);
         simpleBlockItem(MekanismBlocks.PERSONAL_BARREL, barrelModel);
 
         BlockModelBuilder stabilizerModel = models().cubeBottomTop(MekanismBlocks.DIMENSIONAL_STABILIZER.getName(),
@@ -71,14 +71,13 @@ public class MekanismBlockStateProvider extends BaseBlockStateProvider<MekanismB
               .texture("top", Mekanism.rl("block/dimensional_stabilizer/top_active"))
               .texture("side", Mekanism.rl("block/dimensional_stabilizer/side_active"));
         simpleBlockItem(MekanismBlocks.DIMENSIONAL_STABILIZER, stabilizerModel);
-        getVariantBuilder(MekanismBlocks.DIMENSIONAL_STABILIZER.getBlock())
+        getVariantBuilder(MekanismBlocks.DIMENSIONAL_STABILIZER)
               .forAllStates(state -> new ConfiguredModel[]{new ConfiguredModel(Attribute.isActive(state) ? activeStabilizer : stabilizerModel)});
     }
 
-    private void addOreBlock(BlockRegistryObject<BlockOre, ?> oreBlock, String path) {
-        String name = oreBlock.getName();
-        ModelFile file = models().cubeAll(path, modLoc("block/" + name));
-        simpleBlock(oreBlock.getBlock(), file);
+    private void addOreBlock(Holder<Block> oreBlock, String path) {
+        ModelFile file = models().cubeAll(path, modLoc("block/" + getPath(oreBlock)));
+        simpleBlock(oreBlock, file);
         simpleBlockItem(oreBlock, file);
     }
 }

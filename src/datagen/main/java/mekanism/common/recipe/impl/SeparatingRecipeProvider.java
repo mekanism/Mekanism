@@ -18,14 +18,14 @@ class SeparatingRecipeProvider implements ISubRecipeProvider {
         //Brine
         ElectrolysisRecipeBuilder.separating(
               IngredientCreatorAccess.fluid().from(MekanismTags.Fluids.BRINE, 10),
-              MekanismChemicals.SODIUM.getStack(1),
-              MekanismChemicals.CHLORINE.getStack(1)
+              MekanismChemicals.SODIUM.asStack(1),
+              MekanismChemicals.CHLORINE.asStack(1)
         ).build(consumer, Mekanism.rl(basePath + "brine"));
         //Water
         ElectrolysisRecipeBuilder.separating(
               IngredientCreatorAccess.fluid().from(FluidTags.WATER, 2),
-              MekanismChemicals.HYDROGEN.getStack(2),
-              MekanismChemicals.OXYGEN.getStack(1)
+              MekanismChemicals.HYDROGEN.asStack(2),
+              MekanismChemicals.OXYGEN.asStack(1)
         ).build(consumer, Mekanism.rl(basePath + "water"));
     }
 }

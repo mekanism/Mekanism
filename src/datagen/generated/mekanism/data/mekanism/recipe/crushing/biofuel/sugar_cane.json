@@ -2,7 +2,7 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "item": "minecraft:sugar_cane"
+    "tag": "c:crops/sugar_cane"
   },
   "output": {
     "count": 1,

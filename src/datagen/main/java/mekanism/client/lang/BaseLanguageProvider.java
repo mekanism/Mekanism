@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 import mekanism.api.gear.ModuleData;
-import mekanism.api.providers.IBlockProvider;
-import mekanism.api.providers.IModuleDataProvider;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.client.lang.FormatSplitter.Component;
 import mekanism.client.recipe_viewer.alias.IAliasedTranslation;
@@ -17,8 +15,9 @@ import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeGui;
 import mekanism.common.config.IConfigTranslation;
 import mekanism.common.config.IMekanismConfig;
+import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.FluidRegistryObject;
-import mekanism.common.util.RegistryUtils;
+import mekanism.common.registration.impl.MekanismDamageType;
 import net.minecraft.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.data.CachedOutput;
@@ -26,7 +25,6 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 import org.jetbrains.annotations.NotNull;
@@ -72,35 +70,33 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
     }
 
     protected void addModuleConfig(ResourceLocation configKey, String value) {
-        add("module." + configKey.getNamespace() + "." + configKey.getPath(), value);
+        add(configKey.toLanguageKey("module"), value);
     }
 
-    protected void addModuleConfig(String configKey, String value) {
-        add("module." + modid + "." + configKey, value);
+    protected void addHolder(Holder<? extends IHasTranslationKey> key, String value) {
+        add(key.value(), value);
     }
 
     protected void add(IHasTranslationKey key, String value) {
-        if (key instanceof IBlockProvider blockProvider) {
-            Block block = blockProvider.getBlock();
-            if (Attribute.matches(block, AttributeGui.class, attribute -> !attribute.hasCustomName())) {
-                add(Util.makeDescriptionId("container", RegistryUtils.getName(block)), value);
+        if (key instanceof BlockRegistryObject<?, ?> blockHolder) {
+            if (Attribute.matches(blockHolder, AttributeGui.class, attribute -> !attribute.hasCustomName())) {
+                add(Util.makeDescriptionId("container", blockHolder.getId()), value);
             }
         }
         add(key.getTranslationKey(), value);
     }
 
-    protected void add(IBlockProvider blockProvider, String value, String containerName) {
-        Block block = blockProvider.getBlock();
-        if (Attribute.matches(block, AttributeGui.class, attribute -> !attribute.hasCustomName())) {
-            add(Util.makeDescriptionId("container", RegistryUtils.getName(block)), containerName);
-            add(blockProvider.getTranslationKey(), value);
+    protected void add(BlockRegistryObject<?, ?> blockRO, String value, String containerName) {
+        if (Attribute.matches(blockRO, AttributeGui.class, attribute -> !attribute.hasCustomName())) {
+            add(Util.makeDescriptionId("container", blockRO.getId()), containerName);
+            add(blockRO.getTranslationKey(), value);
         } else {
-            throw new IllegalArgumentException("Block " + blockProvider.getRegistryName() + " does not have a container name set.");
+            throw new IllegalArgumentException(blockRO + " does not have a container name set.");
         }
     }
 
-    protected void add(IModuleDataProvider<?> moduleDataProvider, String name, String description) {
-        ModuleData<?> moduleData = moduleDataProvider.getModuleData();
+    protected void add(Holder<ModuleData<?>> moduleDataProvider, String name, String description) {
+        ModuleData<?> moduleData = moduleDataProvider.value();
         add(moduleData.getTranslationKey(), name);
         add(moduleData.getDescriptionTranslationKey(), description);
     }
@@ -114,6 +110,11 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
     protected void add(MekanismAdvancement advancement, String title, String description) {
         add(advancement.title(), title);
         add(advancement.description(), description);
+    }
+
+    protected void add(MekanismDamageType damageType, String value, String valueEscaping) {
+        add(damageType, value);
+        add(damageType.getTranslationKey() + ".player", valueEscaping);
     }
 
     private String getConfigSectionTranslationPath(IMekanismConfig config) {

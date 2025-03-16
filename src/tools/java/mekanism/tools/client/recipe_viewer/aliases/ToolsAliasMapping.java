@@ -5,9 +5,9 @@ import mekanism.client.recipe_viewer.alias.IAliasMapping;
 import mekanism.client.recipe_viewer.alias.MekanismAliases;
 import mekanism.client.recipe_viewer.alias.RVAliasHelper;
 import mekanism.tools.common.registries.ToolsItems;
+import net.minecraft.core.Holder;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.ItemLike;
 
 public class ToolsAliasMapping implements IAliasMapping {
 
@@ -28,12 +28,12 @@ public class ToolsAliasMapping implements IAliasMapping {
         addPaxelAliases(rv, ToolsItems.STEEL_PAXEL, ToolsItems.STEEL_AXE, ToolsItems.STEEL_PICKAXE, ToolsItems.STEEL_SHOVEL);
     }
 
-    private <ITEM, FLUID, CHEMICAL> void addPaxelAliases(RVAliasHelper<ITEM, FLUID, CHEMICAL> rv, ItemLike paxel, IHasTranslationKey axe, IHasTranslationKey pickaxe,
+    private <ITEM, FLUID, CHEMICAL> void addPaxelAliases(RVAliasHelper<ITEM, FLUID, CHEMICAL> rv, Holder<Item> paxel, IHasTranslationKey axe, IHasTranslationKey pickaxe,
           IHasTranslationKey shovel) {
-        rv.addAliases(paxel, axe, pickaxe, shovel, MekanismAliases.TOOL_MULTI);
+        rv.addItemAliases(paxel, axe, pickaxe, shovel, MekanismAliases.TOOL_MULTI);
     }
 
-    private <ITEM, FLUID, CHEMICAL> void addVanillaPaxelAliases(RVAliasHelper<ITEM, FLUID, CHEMICAL> rv, ItemLike paxel, Item axe, Item pickaxe, Item shovel) {
+    private <ITEM, FLUID, CHEMICAL> void addVanillaPaxelAliases(RVAliasHelper<ITEM, FLUID, CHEMICAL> rv, Holder<Item> paxel, Item axe, Item pickaxe, Item shovel) {
         addPaxelAliases(rv, paxel, axe::getDescriptionId, pickaxe::getDescriptionId, shovel::getDescriptionId);
     }
 }

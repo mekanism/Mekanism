@@ -32,7 +32,8 @@ public class GeneratorsDataGenerator {
         DataGenerator gen = event.getGenerator();
         PackOutput output = gen.getPackOutput();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
-        CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
+        GeneratorsDatapackRegistryProvider drProvider = new GeneratorsDatapackRegistryProvider(output, event.getLookupProvider());
+        CompletableFuture<HolderLookup.Provider> lookupProvider = drProvider.getRegistryProvider();
         gen.addProvider(true, new BasePackMetadataGenerator(output, GeneratorsLang.PACK_DESCRIPTION));
         //Client side data generators
         gen.addProvider(event.includeClient(), new GeneratorsLangProvider(output));
@@ -43,6 +44,7 @@ public class GeneratorsDataGenerator {
         //Server side data generators
         gen.addProvider(event.includeServer(), new GeneratorsTagProvider(output, lookupProvider, existingFileHelper));
         gen.addProvider(event.includeServer(), new GeneratorsLootProvider(output, lookupProvider));
+        gen.addProvider(event.includeServer(), drProvider);
         gen.addProvider(event.includeServer(), new GeneratorsRecipeProvider(output, lookupProvider, existingFileHelper));
         gen.addProvider(event.includeServer(), new GeneratorsAdvancementProvider(output, lookupProvider, existingFileHelper));
         //Data generator to help with persisting data when porting across MC versions when optional deps aren't updated yet

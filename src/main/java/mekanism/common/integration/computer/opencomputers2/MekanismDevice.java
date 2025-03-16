@@ -22,8 +22,7 @@ import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.Nullable;
 
 @MethodsReturnNonnullByDefault
-@ParametersAreNotNullByDefault
-//TODO - 1.20.2: reimplement RPCDevice if OC updates to NF
+@ParametersAreNotNullByDefault//TODO: reimplement RPCDevice if OC updates to NF
 public class MekanismDevice<TILE extends BlockEntity & IComputerTile> extends BoundMethodHolder /*implements RPCDevice*/ {
 
     public static <TILE extends BlockEntity & IComputerTile> MekanismDevice<TILE> create(TILE tile) {

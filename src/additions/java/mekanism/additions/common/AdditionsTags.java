@@ -114,7 +114,6 @@ public class AdditionsTags {
         }
 
         public static final TagKey<EntityType<?>> BOGGED = commonTag("bogged");
-        public static final TagKey<EntityType<?>> CREEPERS = commonTag("creepers");
         public static final TagKey<EntityType<?>> ENDERMEN = commonTag("endermen");
 
         private static TagKey<EntityType<?>> commonTag(String name) {

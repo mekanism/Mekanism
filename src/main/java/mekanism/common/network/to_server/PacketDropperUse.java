@@ -72,7 +72,7 @@ public record PacketDropperUse(BlockPos pos, DropperAction action, TankType tank
                             //If the dropper is being used to dump the tank and the player is not in creative
                             // check if the block the tank is in is a tiered block and if it is, and it is creative
                             // don't allow clearing the tank
-                            if (Attribute.getBaseTier(tile.getBlockType()) == BaseTier.CREATIVE) {
+                            if (Attribute.getBaseTier(tile.getBlockHolder()) == BaseTier.CREATIVE) {
                                 return;
                             }
                         }

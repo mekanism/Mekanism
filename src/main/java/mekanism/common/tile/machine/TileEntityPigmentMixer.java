@@ -133,9 +133,9 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<ChemicalChem
     @Override
     public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this);
-        builder.addTank(leftInputTank = BasicChemicalTank.input(MAX_INPUT_PIGMENT, pigment -> containsRecipe(pigment, rightInputTank.getStack()),
+        builder.addTank(leftInputTank = BasicChemicalTank.inputModern(MAX_INPUT_PIGMENT, pigment -> containsRecipe(pigment, rightInputTank.getStack()),
               this::containsRecipe, recipeCacheListener));
-        builder.addTank(rightInputTank = BasicChemicalTank.input(MAX_INPUT_PIGMENT, pigment -> containsRecipe(pigment, leftInputTank.getStack()),
+        builder.addTank(rightInputTank = BasicChemicalTank.inputModern(MAX_INPUT_PIGMENT, pigment -> containsRecipe(pigment, leftInputTank.getStack()),
               this::containsRecipe, recipeCacheListener));
         builder.addTank(outputTank = BasicChemicalTank.output(MAX_OUTPUT_PIGMENT, recipeCacheUnpauseListener));
         return builder.build();
@@ -177,7 +177,6 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<ChemicalChem
         return sendUpdatePacket;
     }
 
-    @NotNull
     @ComputerMethod(nameOverride = "getEnergyUsage", methodDescription = ComputerConstants.DESCRIPTION_GET_ENERGY_USAGE)
     public long getEnergyUsed() {
         return clientEnergyUsed;

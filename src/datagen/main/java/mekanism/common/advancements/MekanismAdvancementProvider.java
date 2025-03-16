@@ -11,6 +11,7 @@ import mekanism.common.advancements.triggers.BlockLaserTrigger;
 import mekanism.common.advancements.triggers.ChangeRobitSkinTrigger;
 import mekanism.common.advancements.triggers.ConfigurationCardTrigger;
 import mekanism.common.advancements.triggers.MekanismDamageTrigger;
+import mekanism.common.advancements.triggers.SPSExperimentTrigger;
 import mekanism.common.advancements.triggers.UnboxCardboardBoxTrigger;
 import mekanism.common.advancements.triggers.UseGaugeDropperTrigger;
 import mekanism.common.advancements.triggers.UseTierInstallerTrigger;
@@ -41,6 +42,7 @@ import net.minecraft.advancements.critereon.SummonedEntityTrigger;
 import net.minecraft.advancements.critereon.UsingItemTrigger;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
@@ -200,11 +202,11 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               .save(consumer);
         advancement(MekanismAdvancements.ENVIRONMENTAL_RADIATION)
               .display(MekanismItems.GEIGER_COUNTER, AdvancementType.TASK, false)
-              .addCriterion("use_geiger_counter", CriteriaTriggers.USING_ITEM.createCriterion(new UsingItemTrigger.TriggerInstance(Optional.empty(), predicate(MekanismItems.GEIGER_COUNTER))))
+              .addCriterion("use_geiger_counter", CriteriaTriggers.USING_ITEM.createCriterion(new UsingItemTrigger.TriggerInstance(Optional.empty(), Optional.of(predicate(MekanismItems.GEIGER_COUNTER)))))
               .save(consumer);
         advancement(MekanismAdvancements.PERSONAL_RADIATION)
               .display(MekanismItems.DOSIMETER, AdvancementType.TASK, false)
-              .addCriterion("use_dosimeter", CriteriaTriggers.USING_ITEM.createCriterion(new UsingItemTrigger.TriggerInstance(Optional.empty(), predicate(MekanismItems.DOSIMETER))))
+              .addCriterion("use_dosimeter", CriteriaTriggers.USING_ITEM.createCriterion(new UsingItemTrigger.TriggerInstance(Optional.empty(), Optional.of(predicate(MekanismItems.DOSIMETER)))))
               .save(consumer);
         advancement(MekanismAdvancements.RADIATION_PREVENTION)
               .display(MekanismItems.HAZMAT_GOWN, AdvancementType.TASK, true)
@@ -238,6 +240,7 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
         advancement(MekanismAdvancements.NUCLEOSYNTHESIZER)
               .displayAndCriterion(MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER, AdvancementType.CHALLENGE, true)
               .save(consumer);
+        addExperiments(consumer);
 
         advancement(MekanismAdvancements.POLONIUM)
               .displayAndCriterion(MekanismItems.POLONIUM_PELLET, AdvancementType.TASK, true)
@@ -292,7 +295,7 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               .display(MekanismItems.ROBIT, AdvancementType.GOAL, true)
               .addCriterion("summon", SummonedEntityTrigger.TriggerInstance.summonedEntity(EntityPredicate.Builder.entity().of(MekanismEntityTypes.ROBIT.value())))
               .save(consumer);
-        ItemStack skinnedRobit = MekanismItems.ROBIT.getItemStack();
+        ItemStack skinnedRobit = MekanismItems.ROBIT.asStack();
         skinnedRobit.set(MekanismDataComponents.ROBIT_SKIN, MekanismRobitSkins.PRIDE_SKINS.get(RobitPrideSkinData.TRANS));
         advancement(MekanismAdvancements.ROBIT_AESTHETICS)
               .display(skinnedRobit, null, AdvancementType.TASK, true, false, true)
@@ -421,6 +424,25 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
         advancement(MekanismAdvancements.FULL_CANTEEN)
               .display(MekanismItems.CANTEEN, null, AdvancementType.GOAL, true, true, true)
               .addCriterion("full_canteen", hasItems(ItemPredicate.Builder.item().withSubPredicate(MekanismItemPredicates.FULL_CANTEEN.value(), FullCanteenItemPredicate.INSTANCE).build()))
+              .save(consumer);
+    }
+
+    private void addExperiments(@NotNull Consumer<AdvancementHolder> consumer) {
+        advancement(MekanismAdvancements.SPS_EXPERIMENT_CREEPER)
+              .display(Items.CREEPER_HEAD, null, AdvancementType.CHALLENGE, true, true, true)
+              .addCriterion("experiment", SPSExperimentTrigger.TriggerInstance.create(MekanismTags.Entities.CREEPERS))
+              .save(consumer);
+        advancement(MekanismAdvancements.SPS_EXPERIMENT_MOOSHROOM)
+              .display(Items.MOOSHROOM_SPAWN_EGG, null, AdvancementType.CHALLENGE, true, true, true)
+              .addCriterion("experiment", SPSExperimentTrigger.TriggerInstance.create(EntityType.MOOSHROOM))
+              .save(consumer);
+        advancement(MekanismAdvancements.SPS_EXPERIMENT_PIG)
+              .display(Items.PIG_SPAWN_EGG, null, AdvancementType.CHALLENGE, true, true, true)
+              .addCriterion("experiment", SPSExperimentTrigger.TriggerInstance.create(EntityType.PIG))
+              .save(consumer);
+        advancement(MekanismAdvancements.SPS_EXPERIMENT_VILLAGER)
+              .display(Items.VILLAGER_SPAWN_EGG, null, AdvancementType.CHALLENGE, true, true, true)
+              .addCriterion("experiment", SPSExperimentTrigger.TriggerInstance.create(EntityType.VILLAGER))
               .save(consumer);
     }
 }

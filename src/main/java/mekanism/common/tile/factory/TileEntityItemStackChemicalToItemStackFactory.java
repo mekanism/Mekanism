@@ -12,7 +12,6 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
-import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.ItemStackChemicalToItemStackRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
@@ -54,10 +53,12 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StatUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -91,7 +92,7 @@ public class TileEntityItemStackChemicalToItemStackFactory extends TileEntityIte
     private double chemicalPerTickMeanMultiplier = 1;
     private long baseTotalUsage;
 
-    public TileEntityItemStackChemicalToItemStackFactory(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
+    public TileEntityItemStackChemicalToItemStackFactory(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state, TRACKED_ERROR_TYPES, GLOBAL_ERROR_TYPES);
         chemicalInputHandler = InputHelper.getConstantInputHandler(chemicalTank);
         if (allowExtractingChemical()) {
@@ -117,11 +118,11 @@ public class TileEntityItemStackChemicalToItemStackFactory extends TileEntityIte
         //If the tank's contents change make sure to call our extended content listener that also marks sorting as being needed
         // as maybe the valid recipes have changed, and we need to sort again and have all recipes know they may need to be rechecked
         // if they are not still valid
-        long capacity = Attribute.getOrThrow(blockProvider, AttributeFactoryType.class).getFactoryType() == FactoryType.INFUSING ? TileEntityMetallurgicInfuser.MAX_INFUSE : TileEntityAdvancedElectricMachine.MAX_GAS;
+        long capacity = Attribute.getOrThrow(getBlockHolder(), AttributeFactoryType.class).getFactoryType() == FactoryType.INFUSING ? TileEntityMetallurgicInfuser.MAX_INFUSE : TileEntityAdvancedElectricMachine.MAX_GAS;
         if (allowExtractingChemical()) {
-            chemicalTank = BasicChemicalTank.create(capacity * tier.processes, this::containsRecipeB, markAllMonitorsChanged(listener));
+            chemicalTank = BasicChemicalTank.createModern(capacity * tier.processes, this::containsRecipeB, markAllMonitorsChanged(listener));
         } else {
-            chemicalTank = BasicChemicalTank.input(capacity * tier.processes, this::containsRecipeB, markAllMonitorsChanged(listener));
+            chemicalTank = BasicChemicalTank.inputModern(capacity * tier.processes, this::containsRecipeB, markAllMonitorsChanged(listener));
         }
         builder.addTank(chemicalTank);
         return builder.build();
@@ -163,7 +164,7 @@ public class TileEntityItemStackChemicalToItemStackFactory extends TileEntityIte
     protected boolean isCachedRecipeValid(@Nullable CachedRecipe<ItemStackChemicalToItemStackRecipe> cached, @NotNull ItemStack stack) {
         if (cached != null) {
             ItemStackChemicalToItemStackRecipe cachedRecipe = cached.getRecipe();
-            return cachedRecipe.getItemInput().testType(stack) && (chemicalTank.isEmpty() || cachedRecipe.getChemicalInput().testType(chemicalTank.getType()));
+            return cachedRecipe.getItemInput().testType(stack) && (chemicalTank.isEmpty() || cachedRecipe.getChemicalInput().testType(chemicalTank.getTypeHolder()));
         }
         return false;
     }
@@ -205,7 +206,7 @@ public class TileEntityItemStackChemicalToItemStackFactory extends TileEntityIte
 
     private boolean allowExtractingChemical() {
         //Note: We can't use type directly as when this is being used for creating the chemical tank the type field hasn't been set yet
-        FactoryType factoryType = Attribute.getOrThrow(blockProvider, AttributeFactoryType.class).getFactoryType();
+        FactoryType factoryType = Attribute.getOrThrow(getBlockHolder(), AttributeFactoryType.class).getFactoryType();
         return factoryType == FactoryType.COMPRESSING || factoryType == FactoryType.INFUSING;
     }
 

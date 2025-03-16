@@ -3,23 +3,20 @@ package mekanism.api.chemical.attribute;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import mekanism.api.datamaps.chemical.attribute.IChemicalAttribute;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item.TooltipContext;
+import net.minecraft.world.item.TooltipFlag;
+import org.jetbrains.annotations.ApiStatus.Internal;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * All chemical attributes should inherit from this class. No specific implementation is required.
  *
  * @author aidancbrady
  */
-public abstract class ChemicalAttribute {
-
-    /**
-     * If this returns true, chemicals possessing this attribute will not be accepted by any prefab handlers by default unless validated.
-     *
-     * @return if chemicals with this attribute require validation before being accepted
-     */
-    public boolean needsValidation() {
-        return false;
-    }
+@Deprecated(forRemoval = true, since = "10.7.11")
+public abstract class ChemicalAttribute implements IChemicalAttribute {
 
     /**
      * Add text components to this chemical attribute's tooltip.
@@ -28,9 +25,9 @@ public abstract class ChemicalAttribute {
      *
      * @return updated list of tooltips
      *
-     * @deprecated since 10.7.4. Use {@link #collectTooltips(Consumer)} instead.
+     * @deprecated Use {@link #collectTooltips(Consumer)} instead.
      */
-    @Deprecated(since = "10.7.4", forRemoval = true)
+    @Deprecated(forRemoval = true, since = "10.7.4")
     public List<Component> addTooltipText(List<Component> list) {
         return list;
     }
@@ -43,11 +40,28 @@ public abstract class ChemicalAttribute {
      * @since 10.7.4
      */
     public void collectTooltips(Consumer<Component> adder) {
-        //TODO - 1.22: When removing this legacy handling, make overriders call super
         List<Component> list = new ArrayList<>();
         addTooltipText(list);
         for (Component component : list) {
             adder.accept(component);
         }
+    }
+
+    @Override
+    public void collectTooltips(TooltipContext context, List<Component> tooltips, TooltipFlag tooltipFlag) {
+        collectTooltips(tooltips::add);
+    }
+
+    @Internal
+    @Override
+    @SuppressWarnings("removal")
+    public final ChemicalAttribute toLegacyAttribute() {
+        return this;
+    }
+
+    @Nullable
+    @Internal
+    public IChemicalAttribute asModern() {
+        return null;
     }
 }

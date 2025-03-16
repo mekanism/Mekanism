@@ -9,9 +9,11 @@ import mekanism.api.gear.ModuleData;
 import mekanism.api.recipes.ingredients.chemical.ChemicalIngredient;
 import mekanism.api.robit.RobitSkin;
 import net.minecraft.core.DefaultedRegistry;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.RegistryBuilder;
 import org.slf4j.Logger;
@@ -25,7 +27,7 @@ public class MekanismAPI {
     /**
      * The version of the api classes - may not always match the mod's version
      */
-    public static final String API_VERSION = "10.7.9";
+    public static final String API_VERSION = "10.7.11";
     /**
      * Mekanism's Mod ID
      */
@@ -52,19 +54,29 @@ public class MekanismAPI {
     }
 
     /**
-     * Constant location representing the name all empty chemicals will be registered under.
-     *
-     * @since 10.6.0
-     */
-    public static final ResourceLocation EMPTY_CHEMICAL_NAME = rl("empty");
-
-    /**
      * Gets the {@link ResourceKey} representing the name of the Registry for {@link Chemical chemicals}.
      *
      * @apiNote When registering {@link Chemical chemicals} using {@link DeferredRegister}, use this field to get access to the {@link ResourceKey}.
      * @since 10.7.0
      */
     public static final ResourceKey<Registry<Chemical>> CHEMICAL_REGISTRY_NAME = registryKey(Chemical.class, "chemical");
+
+    /**
+     * Constant location representing the name all empty chemicals will be registered under.
+     *
+     * @since 10.6.0
+     */
+    public static final ResourceKey<Chemical> EMPTY_CHEMICAL_KEY = ResourceKey.create(CHEMICAL_REGISTRY_NAME, rl("empty"));
+
+    /**
+     * Constant location representing the name all empty chemicals will be registered under.
+     *
+     * @since 10.6.0
+     *
+     * @deprecated Use {@link #EMPTY_CHEMICAL_KEY} instead
+     */
+    @Deprecated(forRemoval = true, since = "10.7.11")
+    public static final ResourceLocation EMPTY_CHEMICAL_NAME = EMPTY_CHEMICAL_KEY.location();
 
     /**
      * Gets the {@link ResourceKey} representing the name of the Registry for {@link ChemicalIngredient} ingredient type serializers.
@@ -103,8 +115,9 @@ public class MekanismAPI {
      * @since 10.7.0
      */
     public static final DefaultedRegistry<Chemical> CHEMICAL_REGISTRY = (DefaultedRegistry<Chemical>) new RegistryBuilder<>(CHEMICAL_REGISTRY_NAME)
-          .defaultKey(EMPTY_CHEMICAL_NAME)
+          .defaultKey(EMPTY_CHEMICAL_KEY)
           .sync(true)
+          .withIntrusiveHolders()
           .create();
 
     /**
@@ -135,12 +148,20 @@ public class MekanismAPI {
     public static final Registry<MapCodec<? extends RobitSkin>> ROBIT_SKIN_SERIALIZER_REGISTRY = new RegistryBuilder<>(ROBIT_SKIN_SERIALIZER_REGISTRY_NAME)
           .create();
 
-    //TODO: Potentially define this with DeferredHolder for purposes of fully defining them outside of the API
     /**
      * Empty Chemical instance.
      *
      * @since 10.7.0
+     *
+     * @deprecated Use {@link #EMPTY_CHEMICAL_HOLDER}
      */
+    @Deprecated(forRemoval = true, since = "10.7.11")//TODO - 1.22: Inline creation instead of creating the instance in the API
     public static final Chemical EMPTY_CHEMICAL = new Chemical(ChemicalBuilder.builder());
+    /**
+     * Holder for the empty Chemical instance.
+     *
+     * @since 10.7.11
+     */
+    public static final Holder<Chemical> EMPTY_CHEMICAL_HOLDER = DeferredHolder.create(EMPTY_CHEMICAL_KEY);
 
 }

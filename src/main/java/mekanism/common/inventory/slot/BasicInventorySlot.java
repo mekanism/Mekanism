@@ -23,19 +23,12 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+//TODO: Should we make some sort of "ITickableSlot" or something that lets us tick a bunch of slots at once instead of having to manually call the relevant methods
 @NothingNullByDefault
 public class BasicInventorySlot implements IInventorySlot {
 
-    //TODO: Should we make some sort of "ITickableSlot" or something that lets us tick a bunch of slots at once instead of having to manually call the relevant methods
-    public static final Predicate<@NotNull ItemStack> alwaysTrue = ConstantPredicates.alwaysTrue();
-    public static final Predicate<@NotNull ItemStack> alwaysFalse = ConstantPredicates.alwaysFalse();
-    public static final BiPredicate<@NotNull ItemStack, @NotNull AutomationType> alwaysTrueBi = ConstantPredicates.alwaysTrueBi();
-    public static final BiPredicate<@NotNull ItemStack, @NotNull AutomationType> manualOnly = ConstantPredicates.manualOnly();
-    public static final BiPredicate<@NotNull ItemStack, @NotNull AutomationType> internalOnly = ConstantPredicates.internalOnly();
-    public static final BiPredicate<@NotNull ItemStack, @NotNull AutomationType> notExternal = ConstantPredicates.notExternal();
-
     public static BasicInventorySlot at(@Nullable IContentsListener listener, int x, int y) {
-        return at(alwaysTrue, listener, x, y);
+        return at(ConstantPredicates.alwaysTrue(), listener, x, y);
     }
 
     public static BasicInventorySlot at(Predicate<@NotNull ItemStack> validator, @Nullable IContentsListener listener, int x, int y) {
@@ -47,18 +40,18 @@ public class BasicInventorySlot implements IInventorySlot {
         if (limit < 1) {
             throw new IllegalArgumentException("Slots with a custom limit must allow at least one item");
         }
-        return new BasicInventorySlot(limit, alwaysTrueBi, alwaysTrueBi, validator, listener, x, y);
+        return new BasicInventorySlot(limit, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), validator, listener, x, y);
     }
 
     public static BasicInventorySlot at(Predicate<@NotNull ItemStack> canExtract, Predicate<@NotNull ItemStack> canInsert, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
         Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
-        return new BasicInventorySlot(canExtract, canInsert, alwaysTrue, listener, x, y);
+        return new BasicInventorySlot(canExtract, canInsert, ConstantPredicates.alwaysTrue(), listener, x, y);
     }
 
     public static BasicInventorySlot at(BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canExtract,
           BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canInsert, @Nullable IContentsListener listener, int x, int y) {
-        return at(canExtract, canInsert, alwaysTrue, listener, x, y);
+        return at(canExtract, canInsert, ConstantPredicates.alwaysTrue(), listener, x, y);
     }
 
     public static BasicInventorySlot at(BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canExtract,

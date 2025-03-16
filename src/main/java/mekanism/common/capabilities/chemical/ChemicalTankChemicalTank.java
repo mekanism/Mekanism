@@ -9,6 +9,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.tier.ChemicalTankTier;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,7 +25,8 @@ public class ChemicalTankChemicalTank extends BasicChemicalTank {
     private final LongSupplier rate;
 
     private ChemicalTankChemicalTank(ChemicalTankTier tier, @Nullable IContentsListener listener) {
-        super(tier.getStorage(), alwaysTrueBi, alwaysTrueBi, alwaysTrue, tier == ChemicalTankTier.CREATIVE ? ChemicalAttributeValidator.ALWAYS_ALLOW : null, listener);
+        super(tier.getStorage(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(),
+              tier == ChemicalTankTier.CREATIVE ? ChemicalAttributeValidator.ALWAYS_ALLOW : null, listener, null);
         isCreative = tier == ChemicalTankTier.CREATIVE;
         rate = tier::getOutput;
     }

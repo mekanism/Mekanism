@@ -4,6 +4,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -15,8 +16,11 @@ import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger.TriggerInstance;
 import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.component.DataComponentPredicate;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
@@ -25,7 +29,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
 
@@ -79,12 +82,16 @@ public abstract class BaseAdvancementProvider implements DataProvider {
         return InventoryChangeTrigger.TriggerInstance.hasItems(predicates);
     }
 
-    public static Criterion<InventoryChangeTrigger.TriggerInstance> hasAllItems(ItemLike... items) {
-        return InventoryChangeTrigger.TriggerInstance.hasItems(items);
+    @SafeVarargs
+    public static Criterion<InventoryChangeTrigger.TriggerInstance> hasAllItems(Holder<Item>... items) {
+        //return InventoryChangeTrigger.TriggerInstance.hasItems(items);
+        return hasItems(Arrays.stream(items).map(BaseAdvancementProvider::predicate).toArray(ItemPredicate[]::new));
     }
 
-    protected static Optional<ItemPredicate> predicate(ItemLike... items) {
-        return Optional.of(ItemPredicate.Builder.item().of(items).build());
+    @SafeVarargs
+    protected static ItemPredicate predicate(Holder<Item>... items) {
+        //return ItemPredicate.Builder.item().of(items).build();
+        return new ItemPredicate(Optional.of(HolderSet.direct(items)), MinMaxBounds.Ints.ANY, DataComponentPredicate.EMPTY, Collections.emptyMap());
     }
 
     @SafeVarargs
@@ -94,10 +101,10 @@ public abstract class BaseAdvancementProvider implements DataProvider {
               .toArray(ItemPredicate[]::new));
     }
 
-    protected static ItemLike[] getItems(Collection<? extends Holder<? extends ItemLike>> items, Predicate<Item> matcher) {
+    protected static Item[] getItems(Collection<? extends Holder<Item>> items, Predicate<Item> matcher) {
         return items.stream()
-              .map(holder -> holder.value().asItem())
+              .map(Holder::value)
               .filter(matcher)
-              .toArray(ItemLike[]::new);
+              .toArray(Item[]::new);
     }
 }

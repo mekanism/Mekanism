@@ -230,7 +230,7 @@ public abstract class BaseComputerHelper {
             return null;
         }
         Map<String, Object> wrapped = new HashMap<>(2);
-        wrapped.put(SerializationConstants.NAME, convert(stack.getTypeRegistryName()));
+        wrapped.put(SerializationConstants.NAME, stack.getChemicalHolder().getRegisteredName());
         wrapped.put(SerializationConstants.AMOUNT, stack.getAmount());
         return wrapped;
     }
@@ -239,14 +239,14 @@ public abstract class BaseComputerHelper {
         if (stack == null) {
             return null;
         }
-        return SpecialConverters.wrapStack(RegistryUtils.getName(stack.getFluid()), SerializationConstants.AMOUNT, stack.getAmount(), stack.getComponentsPatch());
+        return SpecialConverters.wrapStack(stack.getFluidHolder().getRegisteredName(), SerializationConstants.AMOUNT, stack.getAmount(), stack.getComponentsPatch());
     }
 
     public Object convert(@Nullable ItemStack stack) {
         if (stack == null) {
             return null;
         }
-        return SpecialConverters.wrapStack(RegistryUtils.getName(stack.getItem()), SerializationConstants.COUNT, stack.getCount(), stack.getComponentsPatch());
+        return SpecialConverters.wrapStack(stack.getItemHolder().getRegisteredName(), SerializationConstants.COUNT, stack.getCount(), stack.getComponentsPatch());
     }
 
     public Object convert(@Nullable BlockState state) {
@@ -255,10 +255,7 @@ public abstract class BaseComputerHelper {
         }
 
         Map<String, Object> wrapped = new HashMap<>(2);
-        ResourceLocation name = RegistryUtils.getName(state.getBlock());
-        if (name != null) {
-            wrapped.put(SerializationConstants.BLOCK, convert(name));
-        }
+        wrapped.put(SerializationConstants.BLOCK, state.getBlockHolder().getRegisteredName());
         Map<String, Object> stateData = new HashMap<>();
         for (Map.Entry<Property<?>, Comparable<?>> entry : state.getValues().entrySet()) {
             Property<?> property = entry.getKey();
@@ -398,7 +395,7 @@ public abstract class BaseComputerHelper {
         if (item == null) {
             return null;
         }
-        return convert(RegistryUtils.getName(item));
+        return convert(RegistryUtils.getName(item.builtInRegistryHolder()));
     }
 
     public Object convert(@Nullable Convertable<?> convertable) {

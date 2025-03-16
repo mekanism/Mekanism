@@ -8,6 +8,7 @@ import mekanism.api.gear.IModule;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.gear.ModuleData.ExclusiveFlag;
 import mekanism.api.text.EnumColor;
+import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiElementHolder;
@@ -84,11 +85,15 @@ public class GuiModuleScrollList extends GuiInstallableScrollList<ModuleData<?>>
     }
 
     private void onSelectedChange() {
-        if (selectedType == null || currentContainer == null) {
-            callback.accept(null);
-        } else {
-            callback.accept(currentContainer.get(selectedType));
+        callback.accept(getModule(selectedType));
+    }
+
+    @Nullable
+    private Module<?> getModule(@Nullable ModuleData<?> data) {
+        if (data == null || currentContainer == null) {
+            return null;
         }
+        return currentContainer.getRaw(data);
     }
 
     @Override
@@ -98,19 +103,17 @@ public class GuiModuleScrollList extends GuiInstallableScrollList<ModuleData<?>>
 
     @Override
     protected void drawName(GuiGraphics guiGraphics, ModuleData<?> module, int y) {
-        if (currentContainer != null) {
-            IModule<?> instance = currentContainer.get(module);
-            if (instance != null) {
-                boolean enabled = instance.isEnabled();
-                int color = module.isExclusive(ExclusiveFlag.ANY) ? (enabled ? 0x635BD4 : 0x2E2A69) : (enabled ? titleTextColor() : 0x5E1D1D);
-                drawNameText(guiGraphics, y, module.getTextComponent(), color, 0.7F);
-            }
+        IModule<?> instance = getModule(module);
+        if (instance != null) {
+            boolean enabled = instance.isEnabled();
+            int color = module.isExclusive(ExclusiveFlag.ANY) ? (enabled ? 0x635BD4 : 0x2E2A69) : (enabled ? titleTextColor() : 0x5E1D1D);
+            drawNameText(guiGraphics, y, TextComponentUtil.build(module), color, 0.7F);
         }
     }
 
     @Override
     protected ItemStack getRenderStack(ModuleData<?> moduleData) {
-        return moduleData.getItemProvider().getItemStack();
+        return new ItemStack(moduleData.getItemHolder());
     }
 
     @Override

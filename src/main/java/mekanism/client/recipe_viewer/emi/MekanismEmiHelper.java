@@ -5,6 +5,7 @@ import java.util.Optional;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.integration.emi.IMekanismEmiHelper;
+import net.minecraft.core.Holder;
 
 public class MekanismEmiHelper implements IMekanismEmiHelper {
 
@@ -14,17 +15,17 @@ public class MekanismEmiHelper implements IMekanismEmiHelper {
     }
 
     @Override
-    public EmiStack createEmiStack(Chemical chemical, long size) {
+    public EmiStack createEmiStack(Holder<Chemical> chemical, long size) {
         if (size < 1) {
             return EmiStack.EMPTY;
         }
-        return ChemicalEmiStack.create(chemical, size);
+        return new ChemicalEmiStack(chemical, size);
     }
 
     @Override
     public Optional<ChemicalStack> asChemicalStack(EmiStack stack) {
-        if (stack.getKey() instanceof Chemical chemical) {
-            return Optional.of(chemical.getStack(stack.getAmount()));
+        if (stack instanceof ChemicalEmiStack chemicalEmiStack) {
+            return Optional.of(chemicalEmiStack.getStack());
         }
         return Optional.empty();
     }

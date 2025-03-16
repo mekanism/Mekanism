@@ -14,7 +14,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.WorldConfig.OreVeinConfig;
 import mekanism.common.entity.RobitPrideSkinData;
-import mekanism.common.registries.MekanismDamageTypes.MekanismDamageType;
+import mekanism.common.registration.impl.MekanismDamageType;
 import mekanism.common.resource.ore.OreBlockType;
 import mekanism.common.resource.ore.OreType;
 import mekanism.common.resource.ore.OreType.OreVeinType;
@@ -38,7 +38,6 @@ import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.GenerationStep;
@@ -75,8 +74,8 @@ public class MekanismDatapackRegistryProvider extends BaseDatapackRegistryProvid
         List<TargetBlockState> targetStates = ORE_STONE_TARGETS.computeIfAbsent(oreVeinType.type(), oreType -> {
             OreBlockType oreBlockType = MekanismBlocks.ORES.get(oreType);
             return List.of(
-                  OreConfiguration.target(STONE_ORE_REPLACEABLES, oreBlockType.stoneBlock().defaultBlockState()),
-                  OreConfiguration.target(DEEPSLATE_ORE_REPLACEABLES, oreBlockType.deepslateBlock().defaultBlockState())
+                  OreConfiguration.target(STONE_ORE_REPLACEABLES, oreBlockType.stone().defaultState()),
+                  OreConfiguration.target(DEEPSLATE_ORE_REPLACEABLES, oreBlockType.deepslate().defaultState())
             );
         });
         return new ConfiguredFeature<>(featureRO.get(), new ResizableOreFeatureConfig(targetStates, oreVeinType, oreVeinConfig.maxVeinSize(),
@@ -95,7 +94,7 @@ public class MekanismDatapackRegistryProvider extends BaseDatapackRegistryProvid
                   }
               }
               context.register(configuredFeature(Mekanism.rl("salt")), new ConfiguredFeature<>(MekanismFeatures.DISK.get(), new ResizableDiskConfig(
-                    RuleBasedBlockStateProvider.simple(MekanismBlocks.SALT_BLOCK.getBlock()),
+                    RuleBasedBlockStateProvider.simple(MekanismBlocks.SALT_BLOCK.value()),
                     BlockPredicate.matchesBlocks(Blocks.DIRT, Blocks.CLAY),
                     ConfigurableUniformInt.SALT
               )));
@@ -144,8 +143,8 @@ public class MekanismDatapackRegistryProvider extends BaseDatapackRegistryProvid
                     GenerationStep.Decoration.UNDERGROUND_ORES));
           })
           .add(Registries.DAMAGE_TYPE, context -> {
-              for (MekanismDamageType damageType : MekanismDamageTypes.damageTypes()) {
-                  context.register(damageType.key(), new DamageType(damageType.getMsgId(), damageType.exhaustion()));
+              for (MekanismDamageType damageType : MekanismDamageTypes.DAMAGE_TYPES.damageTypes()) {
+                  context.register(damageType.key(), damageType.toVanilla());
               }
           })
           .add(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME, context -> {

@@ -1,18 +1,18 @@
 package mekanism.common.integration.framedblocks;
 
+import com.google.common.base.Preconditions;
+import com.mojang.math.Transformation;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-import com.google.common.base.Preconditions;
-import com.mojang.math.Transformation;
 import mekanism.api.chemical.Chemical;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelBakery;
@@ -96,10 +96,10 @@ final class ChemicalModel implements BakedModel {
         Preconditions.checkNotNull(bareModel, "Bare chemical model not loaded!");
 
         ModelResourceLocation modelName = new ModelResourceLocation(
-                Mekanism.rl("chemical/" + chemical.getRegistryName().toString().replace(":", "_")),
+                Mekanism.rl("chemical/" + chemical.toString().replace(":", "_")),
                 "mekanism_framedblocks_dynamic_chemical"
         );
-        TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(chemical.getIcon());
+        TextureAtlasSprite sprite = MekanismRenderer.getSprite(chemical.getIcon());
         BakedModel model = bareModel.bake(
                 modelBakery.new ModelBakerImpl(
                         (modelLoc, material) -> sprite,

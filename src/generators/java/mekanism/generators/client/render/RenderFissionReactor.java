@@ -30,7 +30,7 @@ import net.minecraft.util.profiling.ProfilerFiller;
 public class RenderFissionReactor extends MultiblockTileEntityRenderer<FissionReactorMultiblockData, TileEntityFissionReactorCasing> {
 
     private static final Map<RenderData, Model3D> cachedHeatedCoolantModels = new Object2ObjectOpenHashMap<>();
-    private static final int GLOW_ARGB = MekanismRenderer.getColorARGB(0.466F, 0.882F, 0.929F, 0.6F);
+    private static final int GLOW_ARGB = MekanismRenderer.getColorARGB(0x76E0EC, 0.6F);
     //TODO: Replace using a model here for the glow with using FuelAssemblyBakedModel as it should provide a performance boost
     // The issue and reason it doesn't use it yet is because rendering the coolant hides the FuelAssemblyBakedModel due to
     // transparency sort ordering

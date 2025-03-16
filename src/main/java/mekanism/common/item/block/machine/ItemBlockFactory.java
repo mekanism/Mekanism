@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 public class ItemBlockFactory extends ItemBlockTooltip<BlockTile<?, ?>> {
 
     private static AttachedSideConfig getSideConfig(BlockFactory<?> block) {
-        return switch (Attribute.getOrThrow(block, AttributeFactoryType.class).getFactoryType()) {
+        return switch (Attribute.getOrThrow(block.builtInRegistryHolder(), AttributeFactoryType.class).getFactoryType()) {
             case SMELTING, ENRICHING, CRUSHING, SAWING -> AttachedSideConfig.ELECTRIC_MACHINE;
             case COMPRESSING, INFUSING -> AttachedSideConfig.ADVANCED_MACHINE;
             case COMBINING -> AttachedSideConfig.EXTRA_MACHINE;

@@ -4,13 +4,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import mekanism.api.providers.IBlockProvider;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
 import mekanism.common.block.interfaces.ITypeBlock;
 import mekanism.common.tile.base.TileEntityUpdateable;
-import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -25,7 +24,11 @@ public interface Attribute {
     }
 
     static boolean has(BlockState state, Class<? extends Attribute> type) {
-        return has(state.getBlock(), type);
+        return has(state.getBlockHolder(), type);
+    }
+
+    static boolean has(Holder<Block> block, Class<? extends Attribute> type) {
+        return has(block.value(), type);
     }
 
     static boolean has(Block block, Class<? extends Attribute> type) {
@@ -34,7 +37,12 @@ public interface Attribute {
 
     @Nullable
     static <ATTRIBUTE extends Attribute> ATTRIBUTE get(BlockState state, Class<ATTRIBUTE> type) {
-        return get(state.getBlock(), type);
+        return get(state.getBlockHolder(), type);
+    }
+
+    @Nullable
+    static <ATTRIBUTE extends Attribute> ATTRIBUTE get(Holder<Block> block, Class<ATTRIBUTE> type) {
+        return get(block.value(), type);
     }
 
     @Nullable
@@ -43,23 +51,23 @@ public interface Attribute {
     }
 
     static <ATTRIBUTE extends Attribute> ATTRIBUTE getOrThrow(BlockState state, Class<ATTRIBUTE> type) {
-        return getOrThrow(state.getBlock(), type);
+        return getOrThrow(state.getBlockHolder(), type);
     }
 
-    static <ATTRIBUTE extends Attribute> ATTRIBUTE getOrThrow(IBlockProvider blockProvider, Class<ATTRIBUTE> type) {
-        return getOrThrow(blockProvider.getBlock(), type);
-    }
-
-    static <ATTRIBUTE extends Attribute> ATTRIBUTE getOrThrow(Block block, Class<ATTRIBUTE> type) {
+    static <ATTRIBUTE extends Attribute> ATTRIBUTE getOrThrow(Holder<Block> block, Class<ATTRIBUTE> type) {
         ATTRIBUTE attribute = get(block, type);
         if (attribute == null) {
-            throw new IllegalStateException("Expected " + RegistryUtils.getName(block) + " to have an attribute of type " + type.getSimpleName());
+            throw new IllegalStateException("Expected " + block.value() + " to have an attribute of type " + type.getSimpleName());
         }
         return attribute;
     }
 
-    static Collection<Attribute> getAll(Block block) {
-        return block instanceof ITypeBlock typeBlock ? typeBlock.getType().getAll() : Collections.emptyList();
+    static Collection<Attribute> getAll(Holder<Block> block) {
+        return block.value() instanceof ITypeBlock typeBlock ? typeBlock.getType().getAll() : Collections.emptyList();
+    }
+
+    static <ATTRIBUTE extends Attribute> boolean matches(Holder<Block> block, Class<ATTRIBUTE> type, Predicate<? super ATTRIBUTE> checker) {
+        return matches(block.value(), type, checker);
     }
 
     static <ATTRIBUTE extends Attribute> boolean matches(Block block, Class<ATTRIBUTE> type, Predicate<? super ATTRIBUTE> checker) {
@@ -67,7 +75,7 @@ public interface Attribute {
         return attribute != null && checker.test(attribute);
     }
 
-    static <ATTRIBUTE extends Attribute> void ifPresent(Block block, Class<ATTRIBUTE> type, Consumer<? super ATTRIBUTE> action) {
+    static <ATTRIBUTE extends Attribute> void ifPresent(Holder<Block> block, Class<ATTRIBUTE> type, Consumer<? super ATTRIBUTE> action) {
         ATTRIBUTE attribute = get(block, type);
         if (attribute != null) {
             action.accept(attribute);
@@ -98,8 +106,8 @@ public interface Attribute {
     }
 
     @Nullable
-    static <TIER extends ITier> TIER getTier(IBlockProvider blockProvider, Class<TIER> tierClass) {
-        return getTier(blockProvider.getBlock(), tierClass);
+    static <TIER extends ITier> TIER getTier(Holder<Block> block, Class<TIER> tierClass) {
+        return getTier(block.value(), tierClass);
     }
 
     @Nullable
@@ -109,7 +117,7 @@ public interface Attribute {
     }
 
     @Nullable
-    static BaseTier getBaseTier(Block block) {
+    static BaseTier getBaseTier(Holder<Block> block) {
         AttributeTier<?> attr = get(block, AttributeTier.class);
         return attr == null ? null : attr.tier().getBaseTier();
     }

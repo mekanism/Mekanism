@@ -1,6 +1,5 @@
 package mekanism.common.tile.multiblock;
 
-import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.content.matrix.MatrixMultiblockData;
 import mekanism.common.inventory.container.MekanismContainer;
@@ -10,6 +9,8 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,7 +20,7 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<MatrixMultib
         this(MekanismBlocks.INDUCTION_CASING, pos, state);
     }
 
-    public TileEntityInductionCasing(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
+    public TileEntityInductionCasing(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
     }
 

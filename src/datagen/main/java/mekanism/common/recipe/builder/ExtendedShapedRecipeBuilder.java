@@ -9,16 +9,16 @@ import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.recipe.pattern.RecipePattern;
+import mekanism.common.registration.impl.BlockRegistryObject;
+import net.minecraft.core.Holder;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.ShapedRecipePattern;
-import net.minecraft.world.level.ItemLike;
 
 @NothingNullByDefault
 public class ExtendedShapedRecipeBuilder extends BaseRecipeBuilder<ExtendedShapedRecipeBuilder> {
@@ -27,15 +27,23 @@ public class ExtendedShapedRecipeBuilder extends BaseRecipeBuilder<ExtendedShape
     private final List<String> pattern = new ArrayList<>();
     private boolean showNotification = true;
 
-    protected ExtendedShapedRecipeBuilder(ItemLike result, int count) {
+    protected ExtendedShapedRecipeBuilder(Holder<Item> result, int count) {
         super(result, count);
     }
 
-    public static ExtendedShapedRecipeBuilder shapedRecipe(ItemLike result) {
+    public static ExtendedShapedRecipeBuilder shapedRecipe(BlockRegistryObject<?, ?> result) {
         return shapedRecipe(result, 1);
     }
 
-    public static ExtendedShapedRecipeBuilder shapedRecipe(ItemLike result, int count) {
+    public static ExtendedShapedRecipeBuilder shapedRecipe(BlockRegistryObject<?, ?> result, int count) {
+        return shapedRecipe(result.getItemHolder(), count);
+    }
+
+    public static ExtendedShapedRecipeBuilder shapedRecipe(Holder<Item> result) {
+        return shapedRecipe(result, 1);
+    }
+
+    public static ExtendedShapedRecipeBuilder shapedRecipe(Holder<Item> result, int count) {
         return new ExtendedShapedRecipeBuilder(result, count);
     }
 
@@ -57,8 +65,16 @@ public class ExtendedShapedRecipeBuilder extends BaseRecipeBuilder<ExtendedShape
         return key(symbol, Ingredient.of(tag));
     }
 
-    public ExtendedShapedRecipeBuilder key(char symbol, ItemLike item) {
+    public ExtendedShapedRecipeBuilder key(char symbol, Item item) {
         return key(symbol, Ingredient.of(item));
+    }
+
+    public ExtendedShapedRecipeBuilder key(char symbol, BlockRegistryObject<?, ?> block) {
+        return key(symbol, block.getItemHolder());
+    }
+
+    public ExtendedShapedRecipeBuilder key(char symbol, Holder<Item> item) {
+        return key(symbol, Ingredient.of(item.value()));
     }
 
     public ExtendedShapedRecipeBuilder key(char symbol, Ingredient ingredient) {
@@ -105,7 +121,7 @@ public class ExtendedShapedRecipeBuilder extends BaseRecipeBuilder<ExtendedShape
               Objects.requireNonNullElse(this.group, ""),
               RecipeBuilder.determineBookCategory(this.category),
               ShapedRecipePattern.of(this.key, this.pattern),
-              new ItemStack(this.result, this.count),
+              resultStack(),
               this.showNotification
         ));
     }

@@ -1,8 +1,10 @@
 package mekanism.common.integration.crafttweaker.chemical;
 
 import java.util.function.Function;
+import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.common.integration.crafttweaker.CrTConstants;
+import mekanism.common.util.RegistryUtils;
 
 public abstract class BaseCrTChemicalStack implements ICrTChemicalStack {
 
@@ -18,7 +20,7 @@ public abstract class BaseCrTChemicalStack implements ICrTChemicalStack {
         return new StringBuilder().append('<')
               .append(CrTConstants.BRACKET_CHEMICAL)
               .append(':')
-              .append(stack.getTypeRegistryName())
+              .append(RegistryUtils.getName(stack.getChemicalHolder(), MekanismAPI.CHEMICAL_REGISTRY))
               .append('>');
     }
 

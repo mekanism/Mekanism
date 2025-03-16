@@ -3,7 +3,6 @@ package mekanism.common.item.gear;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.ICapabilityAware;
 import mekanism.common.capabilities.radiation.item.RadiationShieldingHandler;
-import mekanism.common.integration.gender.GenderCapabilityHelper;
 import mekanism.common.registries.MekanismArmorMaterials;
 import net.minecraft.core.Holder;
 import net.minecraft.world.item.ArmorItem;
@@ -32,7 +31,6 @@ public class ItemHazmatSuitArmor extends ArmorItem implements ICapabilityAware {
     @Override
     public void attachCapabilities(RegisterCapabilitiesEvent event) {
         event.registerItem(Capabilities.RADIATION_SHIELDING, (stack, ctx) -> RadiationShieldingHandler.create(getShieldingByArmor(getType())), this);
-        GenderCapabilityHelper.addGenderCapability(event, this);
     }
 
     @Override

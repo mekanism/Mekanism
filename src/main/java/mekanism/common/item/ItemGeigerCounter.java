@@ -1,5 +1,6 @@
 package mekanism.common.item;
 
+import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
@@ -37,7 +38,7 @@ public class ItemGeigerCounter extends Item {
                 EnumColor severityColor = RadiationScale.getSeverityColor(magnitude);
                 player.sendSystemMessage(MekanismLang.RADIATION_EXPOSURE.translateColored(EnumColor.GRAY, severityColor,
                       UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SVH, 3)));
-                if (MekanismConfig.common.enableDecayTimers.get() && magnitude > RadiationManager.BASELINE) {
+                if (MekanismConfig.common.enableDecayTimers.get() && magnitude > IRadiationManager.INSTANCE.baselineRadiation()) {
                     player.sendSystemMessage(MekanismLang.RADIATION_DECAY_TIME.translateColored(EnumColor.GRAY,
                           severityColor, TextUtils.getHoursMinutes(world, RadiationManager.get().getDecayTime(levelAndMaxMagnitude.maxMagnitude(), true))));
                 }

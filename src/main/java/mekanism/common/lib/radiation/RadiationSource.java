@@ -3,6 +3,7 @@ package mekanism.common.lib.radiation;
 import java.util.Objects;
 import java.util.Optional;
 import mekanism.api.SerializationConstants;
+import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.radiation.IRadiationSource;
 import mekanism.common.config.MekanismConfig;
 import net.minecraft.core.GlobalPos;
@@ -41,7 +42,7 @@ public class RadiationSource implements IRadiationSource {
     @Override
     public boolean decay() {
         magnitude *= MekanismConfig.general.radiationSourceDecayRate.get();
-        return magnitude < RadiationManager.MIN_MAGNITUDE;
+        return magnitude < IRadiationManager.INSTANCE.minRadiationMagnitude();
     }
 
     public static Optional<RadiationSource> load(RegistryOps<Tag> registryOps, CompoundTag tag) {

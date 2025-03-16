@@ -45,8 +45,10 @@ import mekanism.common.network.to_server.PacketWindowSelect;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.RegistryUtils;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
@@ -530,7 +532,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
             return trackedData.get(property);
         }
         Mekanism.logger.warn("Received out of bounds window property {} for container {}. There are currently {} tracked properties.", property,
-              RegistryUtils.getName(getType()), trackedData.size());
+              Util.getRegisteredName(BuiltInRegistries.MENU, getType()), trackedData.size());
         return null;
     }
 

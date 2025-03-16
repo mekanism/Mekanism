@@ -322,13 +322,12 @@ public class QIOCraftingTransferHelper {
             if (amount == 0) {
                 return 0;
             }
-            ItemStack stack = type.getInternalStack();
             //Start by checking for slots it can stack with
             for (int slot = 0; slot < inventory.length; slot++) {
                 int currentAmount = stackSizes[slot];
                 int max = slotLimits[slot];
                 //If the slot has any room left, and our stack is able to stack with it
-                if (currentAmount < max && ItemStack.isSameItemSameComponents(inventory[slot], stack)) {
+                if (currentAmount < max && type.isSameItemSameComponents(inventory[slot])) {
                     int toPlace = Math.min(max - currentAmount, amount);
                     stackSizes[slot] = currentAmount + toPlace;
                     amount -= toPlace;
@@ -350,8 +349,8 @@ public class QIOCraftingTransferHelper {
                         // stored and is no longer stored
                         //Note: We also can use the raw backing stack in this array as we do not do any mutations,
                         // and this allows us to then avoid an extra copy call
-                        inventory[slot] = stack;
-                        slotLimits[slot] = max = Math.min(max, stack.getMaxStackSize());
+                        inventory[slot] = type.getInternalStack();
+                        slotLimits[slot] = max = Math.min(max, type.getMaxStackSize());
                         int toPlace = stackSizes[slot] = Math.min(amount, max);
                         amount -= toPlace;
                         if (amount == 0) {

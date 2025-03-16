@@ -7,7 +7,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 
+@SuppressWarnings({"removal"})
 @MethodsReturnNonnullByDefault
+@Deprecated(forRemoval = true, since = "10.7.11")
 public interface IFluidProvider extends IBaseProvider {
 
     /**

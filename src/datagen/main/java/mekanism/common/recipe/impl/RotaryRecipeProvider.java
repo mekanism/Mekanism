@@ -1,20 +1,22 @@
 package mekanism.common.recipe.impl;
 
+import mekanism.api.chemical.Chemical;
 import mekanism.api.datagen.recipe.builder.RotaryRecipeBuilder;
-import mekanism.api.providers.IChemicalProvider;
-import mekanism.api.providers.IFluidProvider;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.ISubRecipeProvider;
-import mekanism.common.registries.MekanismFluids;
+import mekanism.common.registration.impl.DeferredChemical;
 import mekanism.common.registries.MekanismChemicals;
+import mekanism.common.registries.MekanismFluids;
 import mekanism.common.tags.MekanismTags;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 class RotaryRecipeProvider implements ISubRecipeProvider {
 
@@ -37,15 +39,15 @@ class RotaryRecipeProvider implements ISubRecipeProvider {
         addRotaryCondensentratorRecipe(consumer, basePath, MekanismChemicals.HYDROFLUORIC_ACID, MekanismFluids.HYDROFLUORIC_ACID, MekanismTags.Fluids.HYDROFLUORIC_ACID);
         addRotaryCondensentratorRecipe(consumer, basePath, MekanismChemicals.URANIUM_OXIDE, MekanismFluids.URANIUM_OXIDE, MekanismTags.Fluids.URANIUM_OXIDE);
         addRotaryCondensentratorRecipe(consumer, basePath, MekanismChemicals.URANIUM_HEXAFLUORIDE, MekanismFluids.URANIUM_HEXAFLUORIDE, MekanismTags.Fluids.URANIUM_HEXAFLUORIDE);
-        addRotaryCondensentratorRecipe(consumer, basePath, MekanismChemicals.WATER_VAPOR, () -> Fluids.WATER, FluidTags.WATER);
+        addRotaryCondensentratorRecipe(consumer, basePath, MekanismChemicals.WATER_VAPOR, Fluids.WATER.builtInRegistryHolder(), FluidTags.WATER);
     }
 
-    private void addRotaryCondensentratorRecipe(RecipeOutput consumer, String basePath, IChemicalProvider gas, IFluidProvider fluidOutput, TagKey<Fluid> fluidInput) {
+    private void addRotaryCondensentratorRecipe(RecipeOutput consumer, String basePath, DeferredChemical<Chemical> gas, Holder<Fluid> fluidOutput, TagKey<Fluid> fluidInput) {
         RotaryRecipeBuilder.rotary(
               IngredientCreatorAccess.fluid().from(fluidInput, 1),
-              IngredientCreatorAccess.chemicalStack().from(gas, 1),
-              gas.getStack(1),
-              fluidOutput.getFluidStack(1)
+              IngredientCreatorAccess.chemicalStack().fromHolder(gas, 1),
+              gas.asStack(1),
+              new FluidStack(fluidOutput, 1)
         ).build(consumer, Mekanism.rl(basePath + gas.getName()));
     }
 }

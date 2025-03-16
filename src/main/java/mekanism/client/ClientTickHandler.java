@@ -73,12 +73,17 @@ import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
  */
 public class ClientTickHandler {
 
-    public static final Minecraft minecraft = Minecraft.getInstance();
-    public static final RandomSource rand = RandomSource.create();
-    public static final Map<Player, TeleportData> portableTeleports = new Object2ObjectArrayMap<>(1);
+    private static final Minecraft minecraft = Minecraft.getInstance();
+    private static final RandomSource rand = RandomSource.create();
+    private static final Map<Player, TeleportData> portableTeleports = new Object2ObjectArrayMap<>(1);
     private static final ScrollIncrementer scrollIncrementer = new ScrollIncrementer(true);
 
-    public static boolean visionEnhancement = false;
+    private static boolean visionEnhancement = false;
+
+    public static void reset() {
+        portableTeleports.clear();
+        visionEnhancement = false;
+    }
 
     private boolean isConnected;
 
@@ -327,7 +332,7 @@ public class ClientTickHandler {
                     event.setFarPlaneDistance(Math.min(192, scalar));
                 }
                 //Scale the distance based on the number of installed modules
-                event.scaleFarPlaneDistance(((float) Math.pow(module.getInstalledCount(), 1.25)) / module.getData().getMaxStackSize());
+                event.scaleFarPlaneDistance(((float) Math.pow(module.getInstalledCount(), 1.25)) / module.getUntypedData().getMaxStackSize());
                 //Cancel the event to ensure our changes are applied
                 event.setCanceled(true);
             }

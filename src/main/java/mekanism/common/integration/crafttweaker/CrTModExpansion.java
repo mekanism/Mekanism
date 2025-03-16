@@ -4,8 +4,9 @@ import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.mod.Mod;
 import com.blamejared.crafttweaker_annotations.annotations.TypedExpansion;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 import mekanism.api.MekanismAPI;
@@ -61,10 +62,12 @@ public class CrTModExpansion {
     }
 
     private static <TYPE> Collection<TYPE> getModSpecific(Mod mod, Set<Entry<ResourceKey<TYPE>, TYPE>> allElements) {
-        String modid = mod.id();
-        return allElements.stream()
-              .filter(entry -> entry.getKey().location().getNamespace().equals(modid))
-              .map(Map.Entry::getValue)
-              .toList();
+        List<TYPE> list = new ArrayList<>();
+        for (Entry<ResourceKey<TYPE>, TYPE> entry : allElements) {
+            if (entry.getKey().location().getNamespace().equals(mod.id())) {
+                list.add(entry.getValue());
+            }
+        }
+        return list;
     }
 }

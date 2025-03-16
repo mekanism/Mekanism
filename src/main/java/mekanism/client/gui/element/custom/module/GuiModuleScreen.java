@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import mekanism.api.gear.IModule;
+import mekanism.api.gear.ModuleData;
 import mekanism.api.gear.ModuleData.ExclusiveFlag;
 import mekanism.api.gear.config.ModuleBooleanConfig;
 import mekanism.api.gear.config.ModuleColorConfig;
@@ -57,7 +58,8 @@ public class GuiModuleScreen extends GuiScrollableElement {
         Map<ResourceLocation, MiniElement<?>> newElements = new LinkedHashMap<>();
 
         if (module != null) {
-            int startY = getStartY(module);
+            ModuleData<?> untypedData = module.getUntypedData();
+            int startY = getStartY(untypedData);
             for (ModuleConfig<?> configItem : module.getConfigs()) {
                 if (configItem.isConfigDisabled()) {
                     //Skip options that are force disabled by the config
@@ -67,12 +69,12 @@ public class GuiModuleScreen extends GuiScrollableElement {
                 ResourceLocation name = configItem.name();
                 MiniElement<?> element = switch (configItem) {
                     // Don't show the enabled option if this is enabled by default
-                    case ModuleBooleanConfig config when !name.equals(ModuleConfig.ENABLED_KEY) || !module.getData().isNoDisable() ->
+                    case ModuleBooleanConfig config when !name.equals(ModuleConfig.ENABLED_KEY) || !untypedData.isNoDisable() ->
                           new BooleanToggle(this, config, description, 2, startY);
                     case ModuleEnumConfig<?> config -> {
                         EnumToggle<?> toggle = new EnumToggle<>(this, config, description, 2, startY);
                         // allow the dragger to continue sliding, even when we reset the config element
-                        if (currentModule != null && currentModule.getData() == module.getData() && miniElements.get(name) instanceof EnumToggle<?> enumToggle) {
+                        if (currentModule != null && currentModule.getUntypedData() == untypedData && miniElements.get(name) instanceof EnumToggle<?> enumToggle) {
                             toggle.dragging = enumToggle.dragging;
                         }
                         yield toggle;
@@ -95,14 +97,19 @@ public class GuiModuleScreen extends GuiScrollableElement {
     }
 
     private static int getStartY(@Nullable IModule<?> module) {
+        if (module == null) {
+            return ELEMENT_SPACER + 1;
+        }
+        return getStartY(module.getUntypedData());
+    }
+
+    private static int getStartY(ModuleData<?> untypedData) {
         int startY = ELEMENT_SPACER + 1;
-        if (module != null) {
-            if (module.getData().isExclusive(ExclusiveFlag.ANY)) {
-                startY += 13;
-            }
-            if (module.getData().getMaxStackSize() > 1) {
-                startY += 13;
-            }
+        if (untypedData.isExclusive(ExclusiveFlag.ANY)) {
+            startY += 13;
+        }
+        if (untypedData.getMaxStackSize() > 1) {
+            startY += 13;
         }
         return startY;
     }
@@ -193,14 +200,14 @@ public class GuiModuleScreen extends GuiScrollableElement {
         scissorScreen(guiGraphics, mx, my, (g, mouseX, mouseY, module, shift) -> {
             int startY = ELEMENT_SPACER + 1;
             if (module != null) {
-                if (module.getData().isExclusive(ExclusiveFlag.ANY)) {
+                if (module.getUntypedData().isExclusive(ExclusiveFlag.ANY)) {
                     if (startY + 13 > shift) {
                         drawScaledScrollingString(g, MekanismLang.MODULE_EXCLUSIVE.translate(), 2, startY, TextAlignment.LEFT, 0x635BD4,
                               getScreenWidth() - GuiScrollList.TEXTURE_WIDTH, 2, false, 0.8F);
                     }
                     startY += 13;
                 }
-                if (module.getData().getMaxStackSize() > 1) {
+                if (module.getUntypedData().getMaxStackSize() > 1) {
                     if (startY + 13 > shift) {
                         drawScaledScrollingString(g, MekanismLang.MODULE_INSTALLED.translate(module.getInstalledCount()), 2, startY, TextAlignment.LEFT, screenTextColor(),
                               getScreenWidth() - GuiScrollList.TEXTURE_WIDTH, 2, false, 0.8F);

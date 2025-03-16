@@ -7,7 +7,6 @@ import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.util.RegistryUtils;
 import mezz.jei.api.ingredients.subtypes.ISubtypeInterpreter;
 import mezz.jei.api.ingredients.subtypes.UidContext;
 import net.minecraft.world.item.ItemStack;
@@ -98,7 +97,7 @@ public class MekanismSubtypeInterpreter implements ISubtypeInterpreter<ItemStack
             for (int tank = 0, tanks = chemicalHandler.getChemicalTanks(); tank < tanks; tank++) {
                 ChemicalStack chemicalStack = chemicalHandler.getChemicalInTank(tank);
                 if (!chemicalStack.isEmpty()) {
-                    component = addInterpretation(component, chemicalStack.getTypeRegistryName().toString());
+                    component = addInterpretation(component, chemicalStack.getChemical().toString());
                 } else if (tanks > 1) {
                     component = addInterpretation(component, "empty");
                 }
@@ -116,7 +115,7 @@ public class MekanismSubtypeInterpreter implements ISubtypeInterpreter<ItemStack
             for (int tank = 0, tanks = handler.getTanks(); tank < tanks; tank++) {
                 FluidStack fluidStack = handler.getFluidInTank(tank);
                 if (!fluidStack.isEmpty()) {
-                    component = addInterpretation(component, RegistryUtils.getName(fluidStack.getFluid()).toString());
+                    component = addInterpretation(component, fluidStack.getFluid().toString());
                 } else if (tanks > 1) {
                     component = addInterpretation(component, "empty");
                 }

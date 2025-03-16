@@ -80,7 +80,7 @@ public class MekanismKeyHandler {
             if (IModeItem.isModeItem(player, slot)) {
                 PacketUtils.sendToServer(new PacketModeChange(slot, player.isShiftKeyDown()));
                 SoundHandler.playSound(MekanismSounds.HYDRAULIC);
-            } else if (Mekanism.hooks.CuriosLoaded) {
+            } else if (Mekanism.hooks.curios.isLoaded()) {
                 Optional<SlotResult> curiosResult = CuriosIntegration.findFirstCurioAsResult(player, stack -> {
                     if (stack.canEquip(slot, player) && IModeItem.isModeItem(stack, slot)) {
                         return !(stack.getItem() instanceof IChemicalItem item) || item.hasChemical(stack);

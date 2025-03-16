@@ -5,7 +5,6 @@ import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IChemicalConstant;
-import mekanism.common.registration.MekanismDeferredRegister;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -76,9 +75,9 @@ public class FluidDeferredRegister {
     private final ItemDeferredRegister itemRegister;
 
     public FluidDeferredRegister(String modid) {
-        blockRegister = MekanismDeferredRegister.create(Registries.BLOCK, modid);
-        fluidRegister = MekanismDeferredRegister.create(Registries.FLUID, modid);
-        fluidTypeRegister = MekanismDeferredRegister.create(NeoForgeRegistries.Keys.FLUID_TYPES, modid);
+        blockRegister = DeferredRegister.create(Registries.BLOCK, modid);
+        fluidRegister = DeferredRegister.create(Registries.FLUID, modid);
+        fluidTypeRegister = DeferredRegister.create(NeoForgeRegistries.Keys.FLUID_TYPES, modid);
         //Note: We use our own deferred register so that we also can automatically attach any capability aware buckets we register
         itemRegister = new ItemDeferredRegister(modid);
     }
@@ -129,7 +128,7 @@ public class FluidDeferredRegister {
 
         DeferredHolder<Fluid, Source> stillFluid = fluidRegister.register(name, () -> new Source(fluidProperties));
         DeferredHolder<Fluid, Flowing> flowingFluid = fluidRegister.register("flowing_" + name, () -> new Flowing(fluidProperties));
-        DeferredHolder<Item, BUCKET> bucket = itemRegister.register(name + "_bucket", () -> bucketCreator.create(stillFluid.get(), new Item.Properties().stacksTo(1).craftRemainder(Items.BUCKET)));
+        ItemRegistryObject<BUCKET> bucket = itemRegister.register(name + "_bucket", () -> bucketCreator.create(stillFluid.get(), new Item.Properties().stacksTo(1).craftRemainder(Items.BUCKET)));
         MapColor color = getClosestColor(renderProperties.color);
         //Note: The block properties used here is a copy of the ones for water
         DeferredHolder<Block, LiquidBlock> block = blockRegister.register(name, () -> new LiquidBlock(stillFluid.get(), BlockBehaviour.Properties.of()

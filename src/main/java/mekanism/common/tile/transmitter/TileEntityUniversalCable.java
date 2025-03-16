@@ -5,7 +5,6 @@ import java.util.List;
 import mekanism.api.SerializationConstants;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.MathUtils;
-import mekanism.api.providers.IBlockProvider;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
@@ -20,8 +19,10 @@ import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.registries.MekanismBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -30,7 +31,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter implements I
 
     private final EnergyHandlerManager energyHandlerManager;
 
-    public TileEntityUniversalCable(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
+    public TileEntityUniversalCable(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
         addCapabilityResolver(energyHandlerManager = new EnergyHandlerManager(direction -> {
             UniversalCable cable = getTransmitter();
@@ -44,7 +45,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter implements I
     }
 
     @Override
-    protected UniversalCable createTransmitter(IBlockProvider blockProvider) {
+    protected UniversalCable createTransmitter(Holder<Block> blockProvider) {
         return new UniversalCable(blockProvider, this);
     }
 

@@ -4,45 +4,44 @@ import java.util.Collection;
 import java.util.List;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.gear.IModuleHelper;
-import mekanism.api.providers.IChemicalProvider;
-import mekanism.api.providers.IFluidProvider;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.Mekanism;
 import mekanism.common.content.gear.IModuleItem;
+import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.ItemDeferredRegister;
+import net.minecraft.core.Holder;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.registries.DeferredHolder;
 
 public interface RVAliasHelper<ITEM, FLUID, CHEMICAL> {
 
-    ITEM ingredient(ItemLike itemLike);
-
     ITEM ingredient(ItemStack item);
+
+    ITEM itemIngredient(Holder<Item> item);
 
     List<ITEM> itemTagContents(TagKey<Item> tag);
 
-    FLUID ingredient(IFluidProvider fluidProvider);
+    FLUID fluidIngredient(Holder<Fluid> fluid);
 
     FLUID ingredient(FluidStack fluid);
 
     List<FLUID> fluidTagContents(TagKey<Fluid> tag);
 
-    CHEMICAL ingredient(IChemicalProvider chemicalProvider);
+    CHEMICAL chemicalIngredient(Holder<Chemical> chemical);
 
     List<CHEMICAL> chemicalTagContents(TagKey<Chemical> tag);
 
-    default void addAliases(IFluidProvider fluidProvider, IChemicalProvider chemicalProvider, IHasTranslationKey... aliases) {
-        addAliases(fluidProvider, aliases);
-        addAliases(chemicalProvider, aliases);
+    default void addAliases(Holder<Fluid> fluidProvider, Holder<Chemical> chemicalProvider, IHasTranslationKey... aliases) {
+        addFluidAliases(fluidProvider, aliases);
+        addChemicalAliases(chemicalProvider, aliases);
     }
 
-    default void addAliases(ItemLike item, IHasTranslationKey... aliases) {
-        addAliases(new ItemStack(item), aliases);
+    default void addAliases(BlockRegistryObject<?, ?> block, IHasTranslationKey... aliases) {
+        addItemAliases(block.getItemHolder(), aliases);
     }
 
     default void addAliases(ItemStack stack, IHasTranslationKey... aliases) {
@@ -50,7 +49,15 @@ public interface RVAliasHelper<ITEM, FLUID, CHEMICAL> {
     }
 
     default void addAliases(Collection<? extends ItemLike> stacks, IHasTranslationKey... aliases) {
-        addItemAliases(stacks.stream().map(this::ingredient).toList(), aliases);
+        addItemAliases(stacks.stream().map(ItemStack::new).toList(), aliases);
+    }
+
+    default void addItemHolderAliases(Collection<? extends Holder<Item>> items, IHasTranslationKey... aliases) {
+        addItemAliases(items.stream().map(ItemStack::new).toList(), aliases);
+    }
+
+    default void addItemAliases(Holder<Item> item, IHasTranslationKey... aliases) {
+        addItemAliases(List.of(itemIngredient(item)), aliases);
     }
 
     default void addItemAliases(Collection<ItemStack> stacks, IHasTranslationKey... aliases) {
@@ -65,8 +72,8 @@ public interface RVAliasHelper<ITEM, FLUID, CHEMICAL> {
         }
     }
 
-    default void addAliases(IFluidProvider fluidProvider, IHasTranslationKey... aliases) {
-        addFluidAliases(List.of(ingredient(fluidProvider)), aliases);
+    default void addFluidAliases(Holder<Fluid> fluid, IHasTranslationKey... aliases) {
+        addFluidAlias(fluidIngredient(fluid), aliases);
     }
 
     default void addAliases(FluidStack stack, IHasTranslationKey... aliases) {
@@ -81,8 +88,8 @@ public interface RVAliasHelper<ITEM, FLUID, CHEMICAL> {
         }
     }
 
-    default void addAliases(IChemicalProvider chemicalProvider, IHasTranslationKey... aliases) {
-        addChemicalAliases(List.of(ingredient(chemicalProvider)), aliases);
+    default void addChemicalAliases(Holder<Chemical> chemical, IHasTranslationKey... aliases) {
+        addChemicalAliases(List.of(chemicalIngredient(chemical)), aliases);
     }
 
     default void addChemicalAliases(TagKey<Chemical> tag, IHasTranslationKey... aliases) {
@@ -112,9 +119,9 @@ public interface RVAliasHelper<ITEM, FLUID, CHEMICAL> {
     void addChemicalAliases(List<CHEMICAL> stacks, IHasTranslationKey... aliases);
 
     default void addModuleAliases(ItemDeferredRegister items) {
-        for (DeferredHolder<Item, ? extends Item> entry : items.getEntries()) {
-            if (entry.get() instanceof IModuleItem module) {
-                addAliases(entry.get(), IModuleHelper.INSTANCE.getSupported(module.getModuleData())
+        for (Holder<Item> entry : items.getEntries()) {
+            if (entry.value() instanceof IModuleItem module) {
+                addItemAliases(entry, IModuleHelper.INSTANCE.getSupportedItems(module.getModuleData())
                       .stream()
                       .map(item -> (IHasTranslationKey) item::getDescriptionId)
                       .toArray(IHasTranslationKey[]::new)

@@ -1,0 +1,8 @@
+{
+  "values": {
+    "mekanism:superheated_sodium": {
+      "cool_variant": "mekanism:sodium",
+      "thermal_enthalpy": 5.0
+    }
+  }
+}

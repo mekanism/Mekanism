@@ -8,11 +8,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.common.integration.crafttweaker.CrTConstants;
-import mekanism.common.integration.crafttweaker.CrTUtils;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -27,7 +25,7 @@ public class CrTBracketDumpers {
      */
     @BracketDumper(value = CrTConstants.BRACKET_CHEMICAL, subCommandName = "chemicals")
     public static Collection<String> getChemicalStackDump() {
-        return getDump(MekanismAPI.CHEMICAL_REGISTRY, chemical -> CrTUtils.fromChemical(chemical, 1).getCommandString());
+        return getDump(MekanismAPI.CHEMICAL_REGISTRY_NAME, CrTConstants.BRACKET_CHEMICAL);
     }
     
     /**
@@ -43,15 +41,7 @@ public class CrTBracketDumpers {
      */
     @BracketDumper(value = CrTConstants.BRACKET_MODULE_DATA, subCommandName = "moduleData")
     public static Collection<String> getModuleDataDump() {
-        return getDump(MekanismAPI.MODULE_REGISTRY, CrTConstants.BRACKET_MODULE_DATA);
-    }
-
-    private static <V> Collection<String> getDump(Registry<V> registry, String bracket) {
-        return getDump(registry, v -> "<" + bracket + ":" + registry.getKey(v) + ">");
-    }
-
-    private static <V> Collection<String> getDump(Registry<V> registry, Function<V, String> getter) {
-        return registry.stream().map(getter).toList();
+        return getDump(MekanismAPI.MODULE_REGISTRY_NAME, CrTConstants.BRACKET_MODULE_DATA);
     }
 
     private static Collection<String> getDump(ResourceKey<? extends Registry<?>> registryKey, String bracket) {
@@ -62,7 +52,7 @@ public class CrTBracketDumpers {
             return Collections.emptyList();
         }
         Registry<?> registry = optionalRegistry.get();
-        List<String> list = new ArrayList<>();
+        List<String> list = new ArrayList<>(registry.size());
         for (ResourceLocation v : registry.keySet()) {
             list.add("<" + bracket + ":" + v + ">");
         }

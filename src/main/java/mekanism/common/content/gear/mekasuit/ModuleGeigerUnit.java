@@ -8,6 +8,7 @@ import mekanism.api.gear.IHUDElement.HUDColor;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
+import mekanism.api.radiation.IRadiationManager;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.radiation.RadiationManager;
@@ -31,13 +32,13 @@ public class ModuleGeigerUnit implements ICustomModule<ModuleGeigerUnit> {
         if (module.isEnabled()) {
             double magnitude = RadiationManager.get().getClientEnvironmentalRadiation();
             Component text = UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SV, 2);
-            if (MekanismConfig.common.enableDecayTimers.get() && magnitude > RadiationManager.BASELINE) {
+            if (MekanismConfig.common.enableDecayTimers.get() && magnitude > IRadiationManager.INSTANCE.baselineRadiation()) {
                 double maxMagnitude = RadiationManager.get().getClientMaxMagnitude();
                 text = MekanismLang.GENERIC_WITH_PARENTHESIS.translate(text, TextUtils.getHoursMinutes(player.level(),
                       RadiationManager.get().getDecayTime(maxMagnitude, true)));
             }
             HUDColor color;
-            if (magnitude <= RadiationManager.BASELINE) {
+            if (magnitude <= IRadiationManager.INSTANCE.baselineRadiation()) {
                 color = HUDColor.REGULAR;
             } else {
                 color = magnitude < 0.1 ? HUDColor.WARNING : HUDColor.DANGER;

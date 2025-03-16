@@ -7,7 +7,6 @@ import mekanism.common.inventory.container.type.MekanismContainerType;
 import mekanism.common.inventory.container.type.MekanismItemContainerType;
 import mekanism.common.item.interfaces.IGuiItem;
 import mekanism.common.registration.MekanismDeferredHolder;
-import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -44,12 +43,11 @@ public class ContainerTypeRegistryObject<CONTAINER extends AbstractContainerMenu
     @Nullable
     public MenuProvider getProvider(Component name, Object object, boolean resetMousePosition) {
         MenuConstructor constructor = null;
-        MenuType<CONTAINER> containerType = get();
-        if (containerType instanceof MekanismContainerType<?, CONTAINER> mekanismContainerType) {
+        if (get() instanceof MekanismContainerType<?, CONTAINER> mekanismContainerType) {
             constructor = mekanismContainerType.create(object);
         }
         if (constructor == null) {
-            Mekanism.logger.info("Unable to create container for type: {}", RegistryUtils.getName(containerType));
+            Mekanism.logger.info("Unable to create container for type: {}", getId());
         }
         return constructor == null ? null : new ContainerProvider(name, constructor, resetMousePosition);
     }
@@ -67,12 +65,11 @@ public class ContainerTypeRegistryObject<CONTAINER extends AbstractContainerMenu
     @Nullable
     public MenuProvider getProvider(Component name, InteractionHand hand, ItemStack stack, boolean resetMousePosition) {
         MenuConstructor constructor = null;
-        MenuType<CONTAINER> containerType = get();
-        if (containerType instanceof MekanismItemContainerType<?, ?> mekanismItemContainerType) {
+        if (get() instanceof MekanismItemContainerType<?, ?> mekanismItemContainerType) {
             constructor = mekanismItemContainerType.create(hand, stack);
         }
         if (constructor == null) {
-            Mekanism.logger.info("Unable to create container for type: {}", RegistryUtils.getName(containerType));
+            Mekanism.logger.info("Unable to create container for type: {}", getId());
         }
         return constructor == null ? null : new ContainerProvider(name, constructor, resetMousePosition);
     }

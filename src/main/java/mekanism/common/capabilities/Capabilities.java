@@ -82,7 +82,7 @@ public class Capabilities {
     public static final ResourceLocation SECURITY_OBJECT_NAME = Mekanism.rl("security_object");
 
     public static void registerCapabilities(RegisterCapabilitiesEvent event) {
-        Mekanism.hooks.hookCapabilityRegistration();
+        Mekanism.hooks.hookCapabilityRegistration(event);
 
         EntityType<EntityRobit> robitEntityType = MekanismEntityTypes.ROBIT.get();
         event.registerEntity(IEntitySecurityUtils.INSTANCE.ownerCapability(), robitEntityType, (robit, ctx) -> robit);

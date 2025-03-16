@@ -73,8 +73,7 @@ public class MekanismClient {
         clientSecurityMap.clear();
         clientUUIDMap.clear();
 
-        ClientTickHandler.portableTeleports.clear();
-        ClientTickHandler.visionEnhancement = false;
+        ClientTickHandler.reset();
         SoundHandler.radiationSoundMap.clear();
         MekanismRecipeType.clearCache();
 

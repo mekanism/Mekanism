@@ -15,18 +15,18 @@ public class DoubleDeferredRegister<PRIMARY, SECONDARY> {
     private final DeferredRegister<PRIMARY> primaryRegister;
     private final DeferredRegister<SECONDARY> secondaryRegister;
 
-    public DoubleDeferredRegister(DeferredRegister<PRIMARY> primaryRegistry, DeferredRegister<SECONDARY> secondaryRegistry) {
+    protected DoubleDeferredRegister(DeferredRegister<PRIMARY> primaryRegistry, DeferredRegister<SECONDARY> secondaryRegistry) {
         this.primaryRegister = primaryRegistry;
         this.secondaryRegister = secondaryRegistry;
     }
 
     protected DoubleDeferredRegister(String modid, ResourceKey<? extends Registry<PRIMARY>> primaryRegistryName,
           ResourceKey<? extends Registry<SECONDARY>> secondaryRegistryName) {
-        this(modid, primaryRegistryName, MekanismDeferredRegister.create(secondaryRegistryName, modid));
+        this(modid, primaryRegistryName, DeferredRegister.create(secondaryRegistryName, modid));
     }
 
     protected DoubleDeferredRegister(String modid, ResourceKey<? extends Registry<PRIMARY>> primaryRegistryName, DeferredRegister<SECONDARY> secondaryRegistry) {
-        this(MekanismDeferredRegister.create(primaryRegistryName, modid), secondaryRegistry);
+        this(DeferredRegister.create(primaryRegistryName, modid), secondaryRegistry);
     }
 
     public <P extends PRIMARY, S extends SECONDARY, W extends DoubleWrappedRegistryObject<PRIMARY, P, SECONDARY, S>> W register(String name,

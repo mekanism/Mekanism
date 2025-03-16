@@ -30,7 +30,9 @@ public interface IIngredientCreator<TYPE, STACK, INGREDIENT extends InputIngredi
      *
      * @throws NullPointerException     if the given instance is null.
      * @throws IllegalArgumentException if the given instance is empty or an amount smaller than one.
+     * @deprecated Use {@link #fromHolder(Holder, int)} instead
      */
+    @Deprecated(forRemoval = true, since = "10.7.11")
     INGREDIENT from(TYPE instance, int amount);
 
     /**
@@ -42,7 +44,9 @@ public interface IIngredientCreator<TYPE, STACK, INGREDIENT extends InputIngredi
      * @throws NullPointerException     if the given instance is null.
      * @throws IllegalArgumentException if the given instance is empty or an amount smaller than one; or if no types are passed.
      * @since 10.6.0
+     * @deprecated Use {@link #fromHolders(int, Holder[])} instead
      */
+    @Deprecated(forRemoval = true, since = "10.7.11")
     INGREDIENT from(int amount, TYPE... items);
 
     /**
@@ -57,6 +61,19 @@ public interface IIngredientCreator<TYPE, STACK, INGREDIENT extends InputIngredi
      */
     default INGREDIENT fromHolder(Holder<TYPE> instance, int amount) {
         return from(instance.value(), amount);
+    }
+
+    /**
+     * Creates an Item Stack Ingredient that matches a provided items and amount.
+     *
+     * @param amount  Amount needed.
+     * @param holders Types to match.
+     *
+     * @since 10.7.11
+     */
+    default INGREDIENT fromHolders(int amount, Holder<TYPE>... holders) {
+        //TODO - 1.22: Make this not be defaulted, we only default it on the off chance someone is implementing their own ingredient creator using this interface
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     /**

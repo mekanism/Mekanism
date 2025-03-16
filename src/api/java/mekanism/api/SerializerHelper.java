@@ -51,7 +51,7 @@ public class SerializerHelper {
         return Codec.LONG.flatXmap(checker, checker);
     });
 
-    @Deprecated(since = "10.6.6", forRemoval = true)//TODO - 1.22: Remove
+    @Deprecated(forRemoval = true, since = "10.6.6")//TODO - 1.22: Remove
     private static final Codec<Long> LEGACY_CODEC_FLOATING_LONG = new PrimitiveCodec<>() {
         @Override
         public <T> DataResult<Long> read(DynamicOps<T> ops, T input) {
@@ -96,9 +96,9 @@ public class SerializerHelper {
      * Long Codec which accepts a number >= 0
      *
      * @since 10.6.6
-     * @deprecated Prefer {@link #POSITIVE_LONG_CODEC}. This field just exists for people who want to be able to load legacy data that was stored as a FloatingLong/
+     * @deprecated Use {@link #POSITIVE_LONG_CODEC} instead. This field just exists for people who want to be able to load legacy data that was stored as a FloatingLong.
      */
-    @Deprecated(since = "10.6.6", forRemoval = true)//TODO - 1.22: Remove
+    @Deprecated(forRemoval = true, since = "10.6.6")//TODO - 1.22: Remove
     //Note: We use vanilla's withAlternative instead of Neo's as we always want to encode with the non legacy codec
     public static final Codec<Long> POSITIVE_LONG_CODEC_LEGACY = Codec.withAlternative(POSITIVE_LONG_CODEC, LEGACY_CODEC_FLOATING_LONG);
 
@@ -106,9 +106,9 @@ public class SerializerHelper {
      * Long Codec which accepts a number > 0
      *
      * @since 10.6.6
-     * @deprecated Prefer {@link #POSITIVE_LONG_CODEC}. This field just exists for people who want to be able to load legacy data that was stored as a FloatingLong/
+     * @deprecated Use {@link #POSITIVE_LONG_CODEC} instead. This field just exists for people who want to be able to load legacy data that was stored as a FloatingLong.
      */
-    @Deprecated(since = "10.6.6", forRemoval = true)//TODO - 1.22: Remove
+    @Deprecated(forRemoval = true, since = "10.6.6")//TODO - 1.22: Remove
     //Note: We use vanilla's withAlternative instead of Neo's as we always want to encode with the non legacy codec
     public static final Codec<Long> POSITIVE_NONZERO_LONG_CODEC_LEGACY = Codec.withAlternative(POSITIVE_NONZERO_LONG_CODEC,
           LEGACY_CODEC_FLOATING_LONG.validate(val -> val == 0 ? DataResult.error(() -> "Value must be greater than zero") : DataResult.success(val))

@@ -5,7 +5,6 @@ import java.util.UUID;
 import mekanism.api.IConfigurable;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
-import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.client.SparkleAnimation;
 import mekanism.common.MekanismLang;
@@ -33,6 +32,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
@@ -69,9 +69,9 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     private UUID cachedID = null;
 
     // start at 100 to make sure we run the animation
-    private long unformedTicks = 5 * SharedConstants.TICKS_PER_SECOND;
+    private long unformedTicks = 5L * SharedConstants.TICKS_PER_SECOND;
 
-    public TileEntityMultiblock(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
+    public TileEntityMultiblock(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
         cacheCoord();
     }

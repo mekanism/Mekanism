@@ -11,10 +11,12 @@ import net.minecraft.advancements.AdvancementRequirements;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.conditions.ICondition;
@@ -104,11 +106,29 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
      *
      * @param recipeOutput Finished Recipe Consumer.
      * @param output       Output to base the recipe name off of.
+     * @deprecated Use {@link #build(RecipeOutput, Holder)} instead
      */
+    @Deprecated(forRemoval = true, since = "10.7.11")
     protected void build(RecipeOutput recipeOutput, ItemLike output) {
-        ResourceLocation registryName = BuiltInRegistries.ITEM.getResourceKey(output.asItem())
-              .map(ResourceKey::location)
-              .orElseThrow(() -> new IllegalStateException("Could not retrieve registry name for output."));
+        ResourceLocation registryName = BuiltInRegistries.ITEM.getKeyOrNull(output.asItem());
+        if (registryName == null) {
+            throw new IllegalStateException("Could not retrieve registry name for output.");
+        }
         build(recipeOutput, registryName);
+    }
+
+    /**
+     * Builds this recipe basing the name on the output item.
+     *
+     * @param recipeOutput Finished Recipe Consumer.
+     * @param output       Output to base the recipe name off of.
+     * @since 10.7.11
+     */
+    protected void build(RecipeOutput recipeOutput, Holder<Item> output) {
+        ResourceKey<Item> key = output.getKey();
+        if (key == null) {
+            throw new IllegalStateException("Could not retrieve registry name for output.");
+        }
+        build(recipeOutput, key.location());
     }
 }

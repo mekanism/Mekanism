@@ -2,12 +2,15 @@ package mekanism.api.providers;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
+@SuppressWarnings({"removal"})
 @MethodsReturnNonnullByDefault
+@Deprecated(forRemoval = true, since = "10.7.11")
 public interface IBlockProvider extends IItemProvider {
 
     Block getBlock();
@@ -31,5 +34,10 @@ public interface IBlockProvider extends IItemProvider {
     @Override
     default String getTranslationKey() {
         return getBlock().getDescriptionId();
+    }
+
+    @Override
+    default Component getTextComponent() {
+        return getBlock().getName();
     }
 }

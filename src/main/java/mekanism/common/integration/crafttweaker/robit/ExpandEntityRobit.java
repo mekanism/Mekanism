@@ -54,7 +54,7 @@ public class ExpandEntityRobit {
     @ZenCodeType.Method
     public static boolean setSkin(EntityRobit internal, RobitSkin skin, @ZenCodeType.Nullable Player player) {
         ResourceKey<Registry<RobitSkin>> registryName = MekanismAPI.ROBIT_SKIN_REGISTRY_NAME;
-        ResourceLocation skinName = internal.level().registryAccess().registryOrThrow(registryName).getKey(skin);
+        ResourceLocation skinName = internal.level().registryAccess().registryOrThrow(registryName).getKeyOrNull(skin);
         if (skinName == null) {
             throw new IllegalArgumentException("Unregistered robit skin");
         }

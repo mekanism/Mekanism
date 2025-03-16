@@ -27,12 +27,12 @@ final class ChemicalCamoClientHandler extends CamoClientHandler<ChemicalCamoCont
 
     @Override
     public BakedModel getOrCreateModel(ChemicalCamoContent camo) {
-        return CHEMICAL_MODEL_CACHE.computeIfAbsent(camo.getChemical(), ChemicalModel::create);
+        return CHEMICAL_MODEL_CACHE.computeIfAbsent(camo.getChemicalHolder().value(), ChemicalModel::create);
     }
 
     @Override
     public Particle makeHitDestroyParticle(ClientLevel level, double x, double y, double z, double sx, double sy, double sz, ChemicalCamoContent camo, BlockPos pos) {
-        return new ChemicalSpriteParticle(level, x, y, z, sx, sy, sz, camo.getChemical());
+        return new ChemicalSpriteParticle(level, x, y, z, sx, sy, sz, camo.getChemicalHolder());
     }
 
     static void clearModelCache() {

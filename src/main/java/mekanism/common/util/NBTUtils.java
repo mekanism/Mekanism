@@ -168,12 +168,6 @@ public class NBTUtils {
         }
     }
 
-    public static void setChemicalIfPresent(HolderLookup.Provider provider, CompoundTag nbt, String key, Consumer<Chemical> setter) {
-        if (nbt.contains(key, Tag.TAG_STRING)) {
-            setter.accept(Chemical.parseOptional(provider, nbt.getString(key)));
-        }
-    }
-
     public static void setChemicalStackIfPresent(HolderLookup.Provider provider, CompoundTag nbt, String key, Consumer<ChemicalStack> setter) {
         if (nbt.contains(key, Tag.TAG_COMPOUND)) {
             setter.accept(ChemicalStack.parseOptional(provider, nbt.getCompound(key)));
@@ -290,8 +284,8 @@ public class NBTUtils {
     }
 
     public static <V> void writeRegistryEntry(CompoundTag nbt, String key, Registry<V> registry, V entry) {
-        ResourceLocation registryName = registry.getKey(entry);
-        if (registryName != null) {//Should not be null but validate it
+        ResourceLocation registryName = registry.getKeyOrNull(entry);
+        if (registryName != null) {//We expect the registry to have the entry, but if it doesn't then don't add it
             nbt.putString(key, registryName.toString());
         }
     }

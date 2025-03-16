@@ -9,7 +9,7 @@ public class AdditionsAliasMapping implements IAliasMapping {
 
     @Override
     public <ITEM, FLUID, CHEMICAL> void addAliases(RVAliasHelper<ITEM, FLUID, CHEMICAL> rv) {
-        rv.addAliases(AdditionsItems.WALKIE_TALKIE, AdditionsAliases.WALKIE_TALKIE_RADIO);
+        rv.addItemAliases(AdditionsItems.WALKIE_TALKIE, AdditionsAliases.WALKIE_TALKIE_RADIO);
         rv.addItemAliases(AdditionsTags.Items.GLOW_PANELS, AdditionsAliases.GLOW_PANEL_LIGHT_SOURCE);
         rv.addItemAliases(AdditionsTags.Items.PLASTIC_BLOCKS_ROAD, AdditionsAliases.PLASTIC_ROAD_PATH);
     }

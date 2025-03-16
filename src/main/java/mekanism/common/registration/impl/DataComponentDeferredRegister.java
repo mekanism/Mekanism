@@ -56,6 +56,7 @@ public class DataComponentDeferredRegister extends MekanismDeferredRegister<Data
               .networkSynchronized(ByteBufCodecs.VAR_INT));
     }
 
+    @SuppressWarnings("removal")
     public MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Long>> registerNonNegativeLong(String name) {
         return simple(name, builder -> builder.persistent(SerializerHelper.POSITIVE_LONG_CODEC_LEGACY)
               .networkSynchronized(ByteBufCodecs.VAR_LONG));

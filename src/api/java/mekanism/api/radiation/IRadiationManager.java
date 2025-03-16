@@ -58,6 +58,22 @@ public interface IRadiationManager {
     boolean isRadiationEnabled();
 
     /**
+     * {@return the baseline radiation level (inclusive) of the world and all things in it}
+     *
+     * @implNote 100 nSv/h
+     * @since 10.7.11
+     */
+    double baselineRadiation();
+
+    /**
+     * {@return the minimum radiation level that has a noticeable effect on entities}
+     *
+     * @implNote 10 uSv/h
+     * @since 10.7.11
+     */
+    double minRadiationMagnitude();
+
+    /**
      * Helper to access Mekanism's internal radiation damage source.
      *
      * @param registryAccess Registry access to create the damage source with.

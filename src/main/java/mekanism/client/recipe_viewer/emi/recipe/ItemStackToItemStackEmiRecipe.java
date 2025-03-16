@@ -18,7 +18,7 @@ public class ItemStackToItemStackEmiRecipe extends MekanismEmiHolderRecipe<ItemS
 
     public ItemStackToItemStackEmiRecipe(MekanismEmiRecipeCategory category, RecipeHolder<ItemStackToItemStackRecipe> recipeHolder) {
         super(category, recipeHolder);
-        this.hideCraftable = getId().getPath().startsWith("mekanism_generated/");
+        this.hideCraftable = recipeHolder.id().getPath().startsWith("/mekanism_generated/");
         addInputDefinition(recipe.getInput());
         addItemOutputDefinition(recipe.getOutputDefinition());
     }
@@ -36,7 +36,7 @@ public class ItemStackToItemStackEmiRecipe extends MekanismEmiHolderRecipe<ItemS
     }
 
     @Override
-    public boolean hideCraftable() {//TODO - 1.20.4: Validate this behavior
+    public boolean hideCraftable() {
         return hideCraftable;
     }
 }

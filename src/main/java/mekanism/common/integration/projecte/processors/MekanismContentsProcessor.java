@@ -89,7 +89,7 @@ public class MekanismContentsProcessor implements IDataComponentProcessor {
         }
         //Stored modules
         for (IModule<?> module : IModuleHelper.INSTANCE.getAllModules(stack)) {
-            long moduleEmc = moduleDataEmc.getLong(module.getData());
+            long moduleEmc = moduleDataEmc.getLong(module.getUntypedData());
             if (moduleEmc == 0) {
                 //A module is stored that doesn't have an emc value. Don't allow consuming it
                 return 0;
@@ -115,7 +115,7 @@ public class MekanismContentsProcessor implements IDataComponentProcessor {
         }
         moduleDataEmc = new Reference2LongOpenHashMap<>();
         for (ModuleData<?> moduleData : MekanismAPI.MODULE_REGISTRY) {
-            long emc = emcLookup.applyAsLong(ItemInfo.fromItem(moduleData.getItemProvider()));
+            long emc = emcLookup.applyAsLong(ItemInfo.fromItem(moduleData.getItemHolder()));
             if (emc > 0) {
                 moduleDataEmc.put(moduleData, emc);
             }

@@ -10,6 +10,7 @@ import mekanism.common.registries.MekanismFluids;
 import mekanism.common.util.FluidUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -35,7 +36,7 @@ public class ItemCanteen extends Item implements ICustomCreativeTabContents {
 
     @Override
     public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-        StorageUtils.addStoredFluid(stack, tooltip, true, MekanismLang.EMPTY);
+        StorageUtils.addStoredFluid(stack, tooltip, MekanismLang.EMPTY);
     }
 
     @Override
@@ -54,8 +55,8 @@ public class ItemCanteen extends Item implements ICustomCreativeTabContents {
     }
 
     @Override
-    public void addItems(Consumer<ItemStack> tabOutput) {
-        tabOutput.accept(FluidUtils.getFilledVariant(this, MekanismFluids.NUTRITIONAL_PASTE.getFluid()));
+    public void addItems(Holder<Item> item, Consumer<ItemStack> tabOutput) {
+        tabOutput.accept(FluidUtils.getFilledVariant(item, MekanismFluids.NUTRITIONAL_PASTE));
     }
 
     @NotNull
@@ -89,7 +90,7 @@ public class ItemCanteen extends Item implements ICustomCreativeTabContents {
     private FluidStack getFluid(ItemStack stack) {
         IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID.getCapability(stack);
         if (fluidHandlerItem != null) {
-            return StorageUtils.getContainedFluid(fluidHandlerItem, MekanismFluids.NUTRITIONAL_PASTE.getFluidStack(1));
+            return StorageUtils.getContainedFluid(fluidHandlerItem, MekanismFluids.NUTRITIONAL_PASTE.asStack(1));
         }
         return FluidStack.EMPTY;
     }

@@ -7,6 +7,7 @@ import java.util.Objects;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.attribute.ChemicalAttribute;
+import mekanism.api.datamaps.chemical.ChemicalSolidTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
@@ -16,11 +17,16 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class ChemicalBuilder {
 
-    private final Map<Class<? extends ChemicalAttribute>, ChemicalAttribute> attributeMap = new Object2ObjectOpenHashMap<>();
     private final ResourceLocation texture;
     private int tint = 0xFFFFFF;
+
+    @SuppressWarnings("removal")
+    @Deprecated(forRemoval = true, since = "10.7.11")
+    private final Map<Class<? extends ChemicalAttribute>, ChemicalAttribute> attributeMap = new Object2ObjectOpenHashMap<>();
     @Nullable
+    @Deprecated(forRemoval = true, since = "10.7.11")
     private TagKey<Item> oreTag;
+    @Deprecated(forRemoval = true, since = "10.7.11")
     private boolean isGaseous = false;
 
     protected ChemicalBuilder(ResourceLocation texture) {
@@ -31,7 +37,11 @@ public class ChemicalBuilder {
      * Adds a {@link ChemicalAttribute} to the set of attributes this chemical has.
      *
      * @param attribute Attribute to add.
+     *
+     * @deprecated Prefer adding attributes via data map.
      */
+    @SuppressWarnings("removal")
+    @Deprecated(forRemoval = true, since = "10.7.11")
     public ChemicalBuilder with(ChemicalAttribute attribute) {
         attributeMap.put(attribute.getClass(), attribute);
         return this;
@@ -40,6 +50,8 @@ public class ChemicalBuilder {
     /**
      * Gets the attributes this chemical will have.
      */
+    @SuppressWarnings("removal")
+    @Deprecated(forRemoval = true, since = "10.7.11")
     public Map<Class<? extends ChemicalAttribute>, ChemicalAttribute> getAttributeMap() {
         return Collections.unmodifiableMap(attributeMap);
     }
@@ -74,7 +86,10 @@ public class ChemicalBuilder {
      * Sets the tag that represents the ore that goes with this {@link Chemical}.
      *
      * @param oreTagLocation {@link ResourceLocation} of the item tag representing the ore.
+     *
+     * @deprecated Please see {@link ChemicalSolidTag}
      */
+    @Deprecated(forRemoval = true, since = "10.7.11")
     public ChemicalBuilder ore(ResourceLocation oreTagLocation) {
         return ore(ItemTags.create(Objects.requireNonNull(oreTagLocation)));
     }
@@ -83,7 +98,10 @@ public class ChemicalBuilder {
      * Sets the tag that represents the ore that goes with this {@link Chemical}.
      *
      * @param oreTag Tag representing the ore.
+     *
+     * @deprecated Please see {@link ChemicalSolidTag}
      */
+    @Deprecated(forRemoval = true, since = "10.7.11")
     public ChemicalBuilder ore(TagKey<Item> oreTag) {
         this.oreTag = Objects.requireNonNull(oreTag);
         return this;
@@ -91,8 +109,11 @@ public class ChemicalBuilder {
 
     /**
      * Gets the item tag that represents the ore that goes with this {@link Chemical}.
+     *
+     * @deprecated Please see {@link ChemicalSolidTag}
      */
     @Nullable
+    @Deprecated(forRemoval = true, since = "10.7.11")
     public TagKey<Item> getOreTag() {
         return oreTag;
     }
@@ -101,7 +122,9 @@ public class ChemicalBuilder {
      * Set this chemical should render as a gas. Omit to leave as fluid-like
      *
      * @since 10.7.0
+     * @deprecated Please add your chemicals to {@link mekanism.api.MekanismAPITags.Chemicals#GASEOUS}
      */
+    @Deprecated(forRemoval = true, since = "10.7.11")
     public ChemicalBuilder gaseous() {
         this.isGaseous = true;
         return this;
@@ -111,7 +134,10 @@ public class ChemicalBuilder {
      * {@return whether this chemical should render as a gas or more like a fluid}
      *
      * @since 10.7.0
+     *
+     * @deprecated Please add your chemicals to {@link mekanism.api.MekanismAPITags.Chemicals#GASEOUS}
      */
+    @Deprecated(forRemoval = true, since = "10.7.11")
     public boolean isGaseous() {
         return isGaseous;
     }

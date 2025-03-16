@@ -41,7 +41,7 @@ public class BlockDeferredRegister extends DoubleDeferredRegister<Block, Item> {
 
     public <BLOCK extends Block, ITEM extends BlockItem> BlockRegistryObject<BLOCK, ITEM> register(String name, Supplier<? extends BLOCK> blockSupplier,
           BiFunction<BLOCK, Item.Properties, ITEM> itemCreator) {
-        return register(name, blockSupplier, block -> {
+        return registerAdvanced(name, blockSupplier, block -> {
             Item.Properties properties = new Item.Properties();
             if (Attribute.has(block, AttributeSecurity.class)) {
                 properties.component(MekanismDataComponents.SECURITY, SecurityMode.PUBLIC);
@@ -52,7 +52,7 @@ public class BlockDeferredRegister extends DoubleDeferredRegister<Block, Item> {
             if (Attribute.has(block, AttributeUpgradeSupport.class)) {
                 properties.component(MekanismDataComponents.UPGRADES, UpgradeAware.EMPTY);
             }
-            return itemCreator.apply(block, properties);
+            return itemCreator.apply(block.get(), properties);
         }, BlockRegistryObject::new);
     }
 }

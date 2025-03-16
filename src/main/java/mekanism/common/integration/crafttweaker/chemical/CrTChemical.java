@@ -6,10 +6,13 @@ import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistratio
 import com.blamejared.crafttweaker_annotations.annotations.TaggableElement;
 import java.util.Collection;
 import java.util.List;
+import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.attribute.ChemicalAttribute;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
+import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -27,8 +30,21 @@ public class CrTChemical {
      */
     @ZenCodeType.Method
     @ZenCodeType.Getter("empty")
+    @SuppressWarnings("removal")
+    @Deprecated(forRemoval = true, since = "10.7.11")
     public static boolean isEmptyType(Chemical _this) {
         return _this.isEmptyType();
+    }
+
+    /**
+     * Gets the registry name of the element represented by this chemical.
+     *
+     * @return Registry name.
+     */
+    @ZenCodeType.Method
+    @ZenCodeType.Getter("registryName")
+    public static ResourceLocation getRegistryName(Chemical _this) {
+        return MekanismAPI.CHEMICAL_REGISTRY.getKey(_this);
     }
 
     /**
@@ -59,7 +75,9 @@ public class CrTChemical {
      * @return collection of attribute instances.
      */
     @ZenCodeType.Method
+    @SuppressWarnings("removal")
     @ZenCodeType.Getter("attributes")
+    @Deprecated(forRemoval = true, since = "10.7.11")
     public static Collection<ChemicalAttribute> getAttributes(Chemical _this) {
         return _this.getAttributes();
     }
@@ -70,6 +88,8 @@ public class CrTChemical {
      * @param attribute attribute to add to this chemical
      */
     @ZenCodeType.Method
+    @SuppressWarnings("removal")
+    @Deprecated(forRemoval = true, since = "10.7.11")
     public static void addAttribute(Chemical _this, ChemicalAttribute attribute) {
         _this.addAttribute(attribute);
     }
@@ -84,7 +104,7 @@ public class CrTChemical {
     @ZenCodeType.Method
     @ZenCodeType.Operator(ZenCodeType.OperatorType.MUL)
     public static ICrTChemicalStack makeStack(Chemical _this, long amount) {
-        return new CrTChemicalStack(_this.getStack(amount));
+        return new CrTChemicalStack(new ChemicalStack(MekanismAPI.CHEMICAL_REGISTRY.wrapAsHolder(_this), amount));
     }
 
     /**

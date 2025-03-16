@@ -45,7 +45,7 @@ public abstract class ModuleConfig<DATA> {
      * Helper method to get the base part of a codec that contains all the parts necessary by this parent class.
      */
     protected static <DATA, CONFIG extends ModuleConfig<DATA>> P1<Mu<CONFIG>, ResourceLocation> baseCodec(Instance<CONFIG> instance) {
-        //TODO - 1.21: In a couple builds remove this hacky way to make old modules load
+        //TODO - 1.22: Remove this hacky way to make old modules load
         // Note: This legacy method only supports mekanism configs and not modded configs, as there is no clean way to know what namespace it should actually be in
         return instance.group(ResourceLocation.CODEC.xmap(rl -> rl.getNamespace().equals("minecraft") ? rl(rl.getPath()) : rl, Function.identity())
               .fieldOf(SerializationConstants.NAME).forGetter(ModuleConfig::name));

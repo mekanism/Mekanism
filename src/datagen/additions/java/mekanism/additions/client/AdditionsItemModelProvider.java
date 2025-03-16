@@ -4,8 +4,8 @@ import java.util.Map;
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.additions.common.registries.AdditionsItems;
-import mekanism.api.providers.IItemProvider;
 import mekanism.client.model.BaseItemModelProvider;
+import mekanism.common.registration.INamedEntry;
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
@@ -36,9 +36,9 @@ public class AdditionsItemModelProvider extends BaseItemModelProvider {
         withParent(AdditionsBlocks.TRANSPARENT_PLASTIC_SLABS, "block/plastic/transparent_slab");
     }
 
-    private void withParent(Map<?, ? extends IItemProvider> items, String modelName) {
+    private void withParent(Map<?, ? extends INamedEntry> items, String modelName) {
         ModelFile parent = getExistingFile(modLoc(modelName));
-        for (IItemProvider item : items.values()) {
+        for (INamedEntry item : items.values()) {
             getBuilder(item.getName()).parent(parent);
         }
     }

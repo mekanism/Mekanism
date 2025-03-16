@@ -1,0 +1,31 @@
+{
+  "parent": "mekanism:sps",
+  "criteria": {
+    "experiment": {
+      "conditions": {
+        "type": "minecraft:mooshroom"
+      },
+      "trigger": "mekanism:sps_experiment"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanism.sps_experiment_mooshroom.description"
+    },
+    "frame": "challenge",
+    "hidden": true,
+    "icon": {
+      "count": 1,
+      "id": "minecraft:mooshroom_spawn_egg"
+    },
+    "title": {
+      "translate": "advancements.mekanism.sps_experiment_mooshroom.title"
+    }
+  },
+  "requirements": [
+    [
+      "experiment"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

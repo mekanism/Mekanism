@@ -30,20 +30,20 @@ public non-sealed class SingleChemicalIngredient extends ChemicalIngredient {
      * @param chemical Holder for the chemical to match.
      */
     public SingleChemicalIngredient(Holder<Chemical> chemical) {
-        if (chemical.is(MekanismAPI.EMPTY_CHEMICAL_NAME)) {
+        if (chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
             throw new IllegalStateException("SingleChemicalIngredient must not be constructed with mekanism:empty, use IChemicalIngredientCreator.empty() instead!");
         }
         this.chemical = chemical;
     }
 
     @Override
-    public final boolean test(Chemical chemical) {
-        return chemical == this.chemical.value();
+    public final boolean test(Holder<Chemical> chemical) {
+        return chemical.is(this.chemical);
     }
 
     @Override
-    public final Stream<Chemical> generateChemicals() {
-        return Stream.of(chemical.value());
+    public final Stream<Holder<Chemical>> generateChemicalHolders() {
+        return Stream.of(chemical);
     }
 
     /**
@@ -70,6 +70,6 @@ public non-sealed class SingleChemicalIngredient extends ChemicalIngredient {
         } else if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        return chemical.is(((SingleChemicalIngredient) obj).chemical);
+        return test(((SingleChemicalIngredient) obj).chemical);
     }
 }

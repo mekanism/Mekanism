@@ -8,7 +8,6 @@ import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.chemical.BasicChemicalTank;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
@@ -149,13 +148,13 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
     public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this);
         //Only allow extraction
-        builder.addTank(gasTank = BasicChemicalTank.create(CAPACITY, (gas, automationType) -> automationType == AutomationType.MANUAL || mode,
+        builder.addTank(gasTank = BasicChemicalTank.createModern(CAPACITY, (gas, automationType) -> automationType == AutomationType.MANUAL || mode,
               (gas, automationType) -> automationType == AutomationType.INTERNAL || !mode, this::isValidGas, ChemicalAttributeValidator.ALWAYS_ALLOW, recipeCacheListener));
         return builder.build();
     }
 
-    private boolean isValidGas(@NotNull Chemical gas) {
-        return getRecipeType().getInputCache().containsInput(level, gas.getStack(1));
+    private boolean isValidGas(@NotNull ChemicalStack chemical) {
+        return getRecipeType().getInputCache().containsInput(level, chemical);
     }
 
     @NotNull
@@ -228,7 +227,6 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
         nextMode();
     }
 
-    @NotNull
     @ComputerMethod(nameOverride = "getEnergyUsage", methodDescription = ComputerConstants.DESCRIPTION_GET_ENERGY_USAGE)
     public long getEnergyUsed() {
         return clientEnergyUsed;

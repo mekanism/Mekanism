@@ -43,6 +43,6 @@ public class ChemicalCrystallizerRecipeBuilder extends MekanismRecipeBuilder<Che
      * @param recipeOutput Finished Recipe Consumer.
      */
     public void build(RecipeOutput recipeOutput) {
-        build(recipeOutput, output.getItem());
+        build(recipeOutput, output.getItemHolder());
     }
 }

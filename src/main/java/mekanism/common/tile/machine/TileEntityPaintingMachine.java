@@ -68,7 +68,7 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<ItemSta
           RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
     );
 
-    public static final long MAX_PIGMENT = 15 * FluidType.BUCKET_VOLUME;
+    public static final long MAX_PIGMENT = 15L * FluidType.BUCKET_VOLUME;
     public static final int BASE_TICKS_REQUIRED = 10 * SharedConstants.TICKS_PER_SECOND;
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getPigmentInput", "getPigmentInputCapacity", "getPigmentInputNeeded",
@@ -110,7 +110,7 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<ItemSta
     @Override
     public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this);
-        builder.addTank(pigmentTank = BasicChemicalTank.input(MAX_PIGMENT, pigment -> containsRecipeBA(inputSlot.getStack(), pigment),
+        builder.addTank(pigmentTank = BasicChemicalTank.inputModern(MAX_PIGMENT, pigment -> containsRecipeBA(inputSlot.getStack(), pigment),
               this::containsRecipeB, recipeCacheListener));
         return builder.build();
     }

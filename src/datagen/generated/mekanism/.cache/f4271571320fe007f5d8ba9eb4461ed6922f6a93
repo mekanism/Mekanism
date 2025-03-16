@@ -1,4 +1,4 @@
-// 1.21.1	2025-02-23T13:37:24.7794784	Tags: mekanism
+// 1.21.1	2025-03-12T12:16:50.5574131	Tags: mekanism
 8a89da3b810e00ad44b7ee4d062a88db6298c8fe data/create/tags/fluid/no_infinite_draining.json
 b881c0bb158879ac88758c2b0562b422271e6397 data/c/tags/block/barrels.json
 adb3ecfd3180c123cdc984320eab5ce930bdc5be data/c/tags/block/barrels/personal.json
@@ -32,6 +32,7 @@ a2316de7395edfd30bb8271ff596240f453f2986 data/c/tags/block/storage_blocks/refine
 f5cef9314ee390feebf4b2036219d1c3df23e351 data/c/tags/block/storage_blocks/steel.json
 65a28a53b7a60e660859cecfa32ce0c8f7771b30 data/c/tags/block/storage_blocks/tin.json
 8e745c5f7a6a8b0bc07f373181a241c6c2ea9a01 data/c/tags/block/storage_blocks/uranium.json
+da9ec5f7ed64a0d225e00ee60b8e6d6408b431fb data/c/tags/entity_type/creepers.json
 903060898e7790a3059ae8734191a498ce75e0cb data/c/tags/entity_type/radiation_immune.json
 88a67aad1e1becece2f0fa1763e5491173a9a577 data/c/tags/fluid/brine.json
 f84e9ea02956bff6cb8a6f42a996f4fd76b5b6e9 data/c/tags/fluid/chlorine.json
@@ -67,7 +68,7 @@ f8ee05e8b52f6c89aed431594951332341dce16c data/c/tags/item/buckets/lithium.json
 a835502a6850bc072132465eabedb3f788eb7424 data/c/tags/item/buckets/nutritional_paste.json
 5e0a1a98f9edda15917e0a0c6f827a21ad616275 data/c/tags/item/buckets/oxygen.json
 7b4041ffc866593db2cb803d171cdeaa2e3af5d0 data/c/tags/item/buckets/sodium.json
-b7f42867549430953dcca68329acc982cf764aa9 data/c/tags/item/buckets/steam.json
+27dd32432b3f7c4204f4a877f788cff9574dbd5f data/c/tags/item/buckets/steam.json
 884e710bc7f2759f56763e155a662a2ebeb3f3f2 data/c/tags/item/buckets/sulfuric_acid.json
 da5dfe17f04b3a29b546dd0c1849d305535ae335 data/c/tags/item/buckets/sulfur_dioxide.json
 9d6ad856dbaa7dbcf7ceb88ce62aadae936e9c85 data/c/tags/item/buckets/sulfur_trioxide.json
@@ -206,6 +207,7 @@ f549715bfd65ed54ca643077696fcff45e31cb72 data/mekanism/tags/block/farming_overri
 10324698ef50d9ab1c367abd0d46152a26bf5ed5 data/mekanism/tags/damage_type/is_preventable_magic.json
 bf457102006e4f901e6858ec33bb241e55c4724c data/mekanism/tags/damage_type/mekasuit_always_supported.json
 4b67fc6179cbe96b6cb9674c9d5a9ee562b63b59 data/mekanism/tags/entity_type/radiation_immune.json
+8e31f21fe2a9c86403af7a98e3d163b5513a83a1 data/mekanism/tags/entity_type/valid_sps_experiment.json
 ab7a3106f18b6b47d54a87a099ddd43adfa77368 data/mekanism/tags/item/alloys.json
 8d0882c2fa47568769848724b8575c57124925d0 data/mekanism/tags/item/alloys/atomic.json
 5db69586b6c50b2befacf44de1aedc4a5af092fe data/mekanism/tags/item/alloys/basic.json
@@ -244,6 +246,7 @@ c0fa4c502fa4977bb024aa5c59ab99d00fb853ff data/mekanism/tags/item/unit.json
 e5e1cb4e8e915c4c78c3ad064d3ba7219c029355 data/mekanism/tags/mekanism/chemical/diamond.json
 61af0ea7c8d297d714e770d36434a317500d15e9 data/mekanism/tags/mekanism/chemical/dirty.json
 5c914c224222cfa7a0f313dba526f184fa6edea9 data/mekanism/tags/mekanism/chemical/fungi.json
+9997959b37122ce728beccbe0b0fddf3299a6337 data/mekanism/tags/mekanism/chemical/gaseous.json
 36354cb6d883774cf407b601fa7054686fb647d1 data/mekanism/tags/mekanism/chemical/gold.json
 af8ca69893bd56125e9204b0bdd702767d9db9ab data/mekanism/tags/mekanism/chemical/redstone.json
 b52afb060e54f9fa521b82346af5cb3cd4378697 data/mekanism/tags/mekanism/chemical/refined_obsidian.json
@@ -267,15 +270,21 @@ eb49540974a606ef95d77f140b9b9bdd083e1549 data/minecraft/tags/block/replaceable.j
 b79a9a1e0ddcf1344df98002024bc070480b51d7 data/minecraft/tags/block/sculk_replaceable.json
 126bb288e656325f718c704f6e9d414c37adbc2a data/minecraft/tags/block/snaps_goat_horn.json
 77057c97184a9efc4bf336a1947832a6362b3761 data/minecraft/tags/block/snow_layer_cannot_survive_on.json
-b1755f575eaf88f8b903d525d0f11aad3467e94c data/minecraft/tags/damage_type/always_kills_armor_stands.json
-87b902979fae3b74fea0244d63fdc6b8cd2ecd0d data/minecraft/tags/damage_type/bypasses_armor.json
-b1755f575eaf88f8b903d525d0f11aad3467e94c data/minecraft/tags/damage_type/bypasses_cooldown.json
-87b902979fae3b74fea0244d63fdc6b8cd2ecd0d data/minecraft/tags/damage_type/bypasses_resistance.json
-87b902979fae3b74fea0244d63fdc6b8cd2ecd0d data/minecraft/tags/damage_type/bypasses_shield.json
-87b902979fae3b74fea0244d63fdc6b8cd2ecd0d data/minecraft/tags/damage_type/bypasses_wolf_armor.json
-608fa6a0eb351686fe8844b0c18155858317425d data/minecraft/tags/damage_type/no_knockback.json
-b1755f575eaf88f8b903d525d0f11aad3467e94c data/minecraft/tags/damage_type/panic_causes.json
-87b902979fae3b74fea0244d63fdc6b8cd2ecd0d data/minecraft/tags/damage_type/panic_environmental_causes.json
+d451e484febbddaf23af8d8dc2331f0f5fc6f320 data/minecraft/tags/damage_type/always_hurts_ender_dragons.json
+25459ccb98c75127cef5885e11d6f2a7b835e096 data/minecraft/tags/damage_type/always_kills_armor_stands.json
+b43dbbb6d0fcaf41f77b1449ade419e30521402a data/minecraft/tags/damage_type/bypasses_armor.json
+c82f2e6153947cc3c231d2fbba2cf2534edbef46 data/minecraft/tags/damage_type/bypasses_cooldown.json
+b43dbbb6d0fcaf41f77b1449ade419e30521402a data/minecraft/tags/damage_type/bypasses_effects.json
+b43dbbb6d0fcaf41f77b1449ade419e30521402a data/minecraft/tags/damage_type/bypasses_enchantments.json
+b43dbbb6d0fcaf41f77b1449ade419e30521402a data/minecraft/tags/damage_type/bypasses_resistance.json
+b43dbbb6d0fcaf41f77b1449ade419e30521402a data/minecraft/tags/damage_type/bypasses_shield.json
+b43dbbb6d0fcaf41f77b1449ade419e30521402a data/minecraft/tags/damage_type/bypasses_wolf_armor.json
+bb5a20680a0dd6f1a391f77b1363f3b4de0bcc66 data/minecraft/tags/damage_type/is_fire.json
+0527eea5e9b48ff1c39e586c500347aefe501e62 data/minecraft/tags/damage_type/is_lightning.json
+bb5a20680a0dd6f1a391f77b1363f3b4de0bcc66 data/minecraft/tags/damage_type/is_projectile.json
+45019171787f87f6a7b984371c809dbd32ecbfb6 data/minecraft/tags/damage_type/no_knockback.json
+cfa4bf6224a4792f97ea1ff1fef3cb66fb2b9ac5 data/minecraft/tags/damage_type/panic_causes.json
+b43dbbb6d0fcaf41f77b1449ade419e30521402a data/minecraft/tags/damage_type/panic_environmental_causes.json
 cdd9432141724cd18387fa09ce115dac26127f8d data/minecraft/tags/entity_type/can_breathe_under_water.json
 903060898e7790a3059ae8734191a498ce75e0cb data/minecraft/tags/entity_type/fall_damage_immune.json
 903060898e7790a3059ae8734191a498ce75e0cb data/minecraft/tags/entity_type/freeze_immune_entity_types.json
@@ -309,3 +318,4 @@ c0ce6a50075da89bf71f5aebe24272ed6f32b70f data/minecraft/tags/item/enchantable/he
 2a7a0ca44ecbdfdfcda188a4fee34692dc24e2cf data/neoforge/tags/block/enderman_place_on_blacklist.json
 87b902979fae3b74fea0244d63fdc6b8cd2ecd0d data/neoforge/tags/damage_type/is_environment.json
 903060898e7790a3059ae8734191a498ce75e0cb data/per-viam-invenire/tags/entity_type/replace_vanilla_navigator.json
+b79a9a1e0ddcf1344df98002024bc070480b51d7 data/projecte/tags/block/vein/shovel.json

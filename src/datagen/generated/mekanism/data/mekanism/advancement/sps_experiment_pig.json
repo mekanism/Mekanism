@@ -1,0 +1,31 @@
+{
+  "parent": "mekanism:sps",
+  "criteria": {
+    "experiment": {
+      "conditions": {
+        "type": "minecraft:pig"
+      },
+      "trigger": "mekanism:sps_experiment"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanism.sps_experiment_pig.description"
+    },
+    "frame": "challenge",
+    "hidden": true,
+    "icon": {
+      "count": 1,
+      "id": "minecraft:pig_spawn_egg"
+    },
+    "title": {
+      "translate": "advancements.mekanism.sps_experiment_pig.title"
+    }
+  },
+  "requirements": [
+    [
+      "experiment"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

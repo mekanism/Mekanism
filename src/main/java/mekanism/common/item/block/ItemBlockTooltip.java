@@ -6,6 +6,7 @@ import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.Upgrade;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.client.key.MekKeyHandler;
@@ -30,7 +31,6 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.RegistryUtils;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.WorldUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
@@ -147,7 +147,7 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
     }
 
     protected Predicate<@NotNull AutomationType> getEnergyCapInsertPredicate() {
-        return BasicEnergyContainer.alwaysTrue;
+        return ConstantPredicates.alwaysTrue();
     }
 
     protected boolean exposesEnergyCap() {
@@ -162,7 +162,7 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
         BLOCK block = getBlock();
         AttributeEnergy attributeEnergy = Attribute.get(block, AttributeEnergy.class);
         if (attributeEnergy == null) {
-            throw new IllegalStateException("Expected block " + RegistryUtils.getName(block) + " to have the energy attribute");
+            throw new IllegalStateException("Expected block " + block + " to have the energy attribute");
         }
         LongSupplier maxEnergy = attributeEnergy::getStorage;
         if (Attribute.matches(block, AttributeUpgradeSupport.class, attribute -> attribute.supportedUpgrades().contains(Upgrade.ENERGY))) {

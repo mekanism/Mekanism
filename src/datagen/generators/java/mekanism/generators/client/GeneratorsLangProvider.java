@@ -10,6 +10,7 @@ import mekanism.generators.common.config.GeneratorsConfigTranslations;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsChemicals;
+import mekanism.generators.common.registries.GeneratorsDamageTypes;
 import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.registries.GeneratorsItems;
 import mekanism.generators.common.registries.GeneratorsModules;
@@ -30,6 +31,7 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
         addBlocks();
         addFluids();
         addGases();
+        addDamageSources();
         addSubtitles();
         addAdvancements();
         addMisc();
@@ -96,6 +98,10 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
         add(GeneratorsChemicals.DEUTERIUM, "Deuterium");
         add(GeneratorsChemicals.FUSION_FUEL, "D-T Fuel");
         add(GeneratorsChemicals.TRITIUM, "Tritium");
+    }
+
+    private void addDamageSources() {
+        add(GeneratorsDamageTypes.FUSION, "%1$s was fused into oblivion.", "%1$s was fused into oblivion whilst trying to escape %2$s.");
     }
 
     private void addSubtitles() {

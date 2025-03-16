@@ -98,7 +98,7 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock {
     public IHeatHandler getAdjacent(@NotNull Direction side) {
         if (canHandleHeat() && getHeatCapacitorCount(side) > 0) {
             if (WorldUtils.getBlockState(level, getBlockPos().relative(side))
-                  .filter(state -> !state.is(GeneratorsBlocks.FUSION_REACTOR_PORT.getBlock()))
+                  .filter(state -> !state.is(GeneratorsBlocks.FUSION_REACTOR_PORT))
                   .isPresent()) {
                 return getAdjacentUnchecked(side);
             }

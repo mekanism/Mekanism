@@ -2,7 +2,7 @@ package mekanism.common.item.gear;
 
 import java.util.List;
 import java.util.function.Consumer;
-import mekanism.api.providers.IChemicalProvider;
+import mekanism.api.chemical.Chemical;
 import mekanism.common.item.interfaces.IChemicalItem;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.util.ChemicalUtil;
@@ -23,11 +23,11 @@ public abstract class ItemChemicalArmor extends ItemSpecialArmor implements IChe
         super(material, armorType, properties.rarity(Rarity.RARE).setNoRepair().stacksTo(1));
     }
 
-    protected abstract IChemicalProvider getChemicalType();
+    protected abstract Holder<Chemical> getChemicalType();
 
     @Override
     public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-        StorageUtils.addStoredChemical(stack, tooltip, true, false);
+        StorageUtils.addStoredChemical(stack, tooltip);
     }
 
     @Override
@@ -46,7 +46,7 @@ public abstract class ItemChemicalArmor extends ItemSpecialArmor implements IChe
     }
 
     @Override
-    public void addItems(Consumer<ItemStack> tabOutput) {
-        tabOutput.accept(ChemicalUtil.getFilledVariant(this, getChemicalType()));
+    public void addItems(Holder<Item> item, Consumer<ItemStack> tabOutput) {
+        tabOutput.accept(ChemicalUtil.getFilledVariant(item, getChemicalType()));
     }
 }

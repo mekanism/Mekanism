@@ -1,9 +1,7 @@
 package mekanism.common.recipe.impl;
 
-import mekanism.api.providers.IItemProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.block.attribute.Attribute;
-import mekanism.common.block.interfaces.ITypeBlock;
 import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
 import mekanism.common.recipe.builder.MekDataShapedRecipeBuilder;
@@ -71,9 +69,9 @@ class InductionRecipeProvider implements ISubRecipeProvider {
         addTieredInductionCellRecipe(consumer, basePath, MekanismBlocks.ULTIMATE_INDUCTION_CELL, MekanismBlocks.ELITE_INDUCTION_CELL, MekanismBlocks.ULTIMATE_ENERGY_CUBE);
     }
 
-    private void addTieredInductionCellRecipe(RecipeOutput consumer, String basePath, BlockRegistryObject<? extends ITypeBlock, ?> cell,
-          IItemProvider previousCell, IItemProvider energyCube) {
-        String tierName = Attribute.getBaseTier(cell.getBlock()).getLowerName();
+    private void addTieredInductionCellRecipe(RecipeOutput consumer, String basePath, BlockRegistryObject<?, ?> cell, BlockRegistryObject<?, ?> previousCell,
+          BlockRegistryObject<?, ?> energyCube) {
+        String tierName = Attribute.getBaseTier(cell).getLowerName();
         MekDataShapedRecipeBuilder.shapedRecipe(cell)
               .pattern(INDUCTION_CELL_PATTERN)
               .key(Pattern.PREVIOUS, previousCell)
@@ -98,9 +96,9 @@ class InductionRecipeProvider implements ISubRecipeProvider {
         addTieredInductionProviderRecipe(consumer, basePath, MekanismBlocks.ULTIMATE_INDUCTION_PROVIDER, MekanismBlocks.ELITE_INDUCTION_PROVIDER, MekanismBlocks.ULTIMATE_ENERGY_CUBE, MekanismTags.Items.CIRCUITS_ULTIMATE);
     }
 
-    private void addTieredInductionProviderRecipe(RecipeOutput consumer, String basePath, BlockRegistryObject<? extends ITypeBlock, ?> provider,
-          IItemProvider previousProvider, IItemProvider energyCube, TagKey<Item> circuitTag) {
-        String tierName = Attribute.getBaseTier(provider.getBlock()).getLowerName();
+    private void addTieredInductionProviderRecipe(RecipeOutput consumer, String basePath, BlockRegistryObject<?, ?> provider, BlockRegistryObject<?, ?> previousProvider,
+          BlockRegistryObject<?, ?> energyCube, TagKey<Item> circuitTag) {
+        String tierName = Attribute.getBaseTier(provider).getLowerName();
         ExtendedShapedRecipeBuilder.shapedRecipe(provider)
               .pattern(INDUCTION_PROVIDER_PATTERN)
               .key(Pattern.PREVIOUS, previousProvider)

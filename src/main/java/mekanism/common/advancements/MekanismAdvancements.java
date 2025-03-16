@@ -69,6 +69,11 @@ public class MekanismAdvancements {
     public static final MekanismAdvancement ANTIMATTER = advancement(SPS, "antimatter");
     public static final MekanismAdvancement NUCLEOSYNTHESIZER = advancement(ANTIMATTER, "nucleosynthesizer");
 
+    public static final MekanismAdvancement SPS_EXPERIMENT_CREEPER = advancement(SPS, "sps_experiment_creeper");
+    public static final MekanismAdvancement SPS_EXPERIMENT_MOOSHROOM = advancement(SPS, "sps_experiment_mooshroom");
+    public static final MekanismAdvancement SPS_EXPERIMENT_PIG = advancement(SPS, "sps_experiment_pig");
+    public static final MekanismAdvancement SPS_EXPERIMENT_VILLAGER = advancement(SPS, "sps_experiment_villager");
+
     public static final MekanismAdvancement POLONIUM = advancement(WASTE_REMOVAL, "polonium");
 
     public static final MekanismAdvancement TELEPORTATION_CORE = advancement(ATOMIC_ALLOY, "teleportation_core");

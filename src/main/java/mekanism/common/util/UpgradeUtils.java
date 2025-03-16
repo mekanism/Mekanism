@@ -8,9 +8,10 @@ import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tile.interfaces.IUpgradeTile;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class UpgradeUtils {
@@ -26,7 +27,7 @@ public class UpgradeUtils {
         return new ItemStack(getItem(upgrade), count);
     }
 
-    public static ItemLike getItem(Upgrade upgrade) {
+    public static Holder<Item> getItem(Upgrade upgrade) {
         return switch (upgrade) {
             case SPEED -> MekanismItems.SPEED_UPGRADE;
             case ENERGY -> MekanismItems.ENERGY_UPGRADE;

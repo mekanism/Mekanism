@@ -1,7 +1,7 @@
 package mekanism.common.item;
 
 import mekanism.api.IAlloyInteraction;
-import mekanism.api.tier.AlloyTier;
+import mekanism.api.tier.IAlloyTier;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.WorldUtils;
@@ -15,9 +15,9 @@ import org.jetbrains.annotations.NotNull;
 
 public class ItemAlloy extends Item {
 
-    private final AlloyTier tier;
+    private final IAlloyTier tier;
 
-    public ItemAlloy(AlloyTier tier, Properties properties) {
+    public ItemAlloy(IAlloyTier tier, Properties properties) {
         super(properties);
         this.tier = tier;
     }
@@ -40,7 +40,7 @@ public class ItemAlloy extends Item {
         return InteractionResult.PASS;
     }
 
-    public AlloyTier getTier() {
+    public IAlloyTier getTier() {
         return tier;
     }
 }

@@ -14,7 +14,6 @@ import net.minecraft.world.item.HoneycombItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
 
 class CombinerRecipeProvider implements ISubRecipeProvider {
@@ -29,31 +28,31 @@ class CombinerRecipeProvider implements ISubRecipeProvider {
         CombinerRecipeBuilder.combining(
               IngredientCreatorAccess.item().from(Items.FLINT),
               IngredientCreatorAccess.item().from(Tags.Items.COBBLESTONES_NORMAL),
-              new ItemStack(Blocks.GRAVEL)
+              new ItemStack(Items.GRAVEL)
         ).build(consumer, Mekanism.rl(basePath + "gravel"));
         //Obsidian
         CombinerRecipeBuilder.combining(
               IngredientCreatorAccess.item().from(MekanismTags.Items.DUSTS_OBSIDIAN, 4),
               IngredientCreatorAccess.item().from(Tags.Items.COBBLESTONES_DEEPSLATE),
-              new ItemStack(Blocks.OBSIDIAN)
+              new ItemStack(Items.OBSIDIAN)
         ).build(consumer, Mekanism.rl(basePath + "obsidian"));
         //Rooted Dirt
         CombinerRecipeBuilder.combining(
               IngredientCreatorAccess.item().from(Items.HANGING_ROOTS, 3),
-              IngredientCreatorAccess.item().from(Blocks.DIRT),
-              new ItemStack(Blocks.ROOTED_DIRT)
+              IngredientCreatorAccess.item().from(Items.DIRT),
+              new ItemStack(Items.ROOTED_DIRT)
         ).build(consumer, Mekanism.rl(basePath + "rooted_dirt"));
         //Packed mud
         CombinerRecipeBuilder.combining(
               IngredientCreatorAccess.item().from(Tags.Items.CROPS_WHEAT),
-              IngredientCreatorAccess.item().from(Blocks.MUD),
-              new ItemStack(Blocks.PACKED_MUD)
+              IngredientCreatorAccess.item().from(Items.MUD),
+              new ItemStack(Items.PACKED_MUD)
         ).build(consumer, Mekanism.rl(basePath + "packed_mud"));
         //Muddy mangrove roots
         CombinerRecipeBuilder.combining(
-              IngredientCreatorAccess.item().from(Blocks.MANGROVE_ROOTS),
-              IngredientCreatorAccess.item().from(Blocks.MUD),
-              new ItemStack(Blocks.MUDDY_MANGROVE_ROOTS)
+              IngredientCreatorAccess.item().from(Items.MANGROVE_ROOTS),
+              IngredientCreatorAccess.item().from(Items.MUD),
+              new ItemStack(Items.MUDDY_MANGROVE_ROOTS)
         ).build(consumer, Mekanism.rl(basePath + "muddy_mangrove_roots"));
     }
 
@@ -145,7 +144,7 @@ class CombinerRecipeProvider implements ISubRecipeProvider {
                   IngredientCreatorAccess.item().from(entry.getKey()),
                   wax,
                   new ItemStack(result)
-            ).build(consumer, Mekanism.rl(basePath + RegistryUtils.getPath(result.asItem())));
+            ).build(consumer, Mekanism.rl(basePath + RegistryUtils.getPath(result)));
         }
     }
 }

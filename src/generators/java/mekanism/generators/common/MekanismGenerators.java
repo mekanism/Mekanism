@@ -1,15 +1,12 @@
 package mekanism.generators.common;
 
 import mekanism.api.MekanismIMC;
-import mekanism.api.chemical.attribute.ChemicalAttributes.Fuel;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IModModule;
 import mekanism.common.command.builders.BuildCommand;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.Version;
 import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.recipe.ClearConfigurationRecipe;
-import mekanism.common.registries.MekanismChemicals;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.fission.FissionReactorCache;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
@@ -93,9 +90,6 @@ public class MekanismGenerators implements IModModule {
 
     private void commonSetup(FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
-            //Add fuel attribute to ethene+hydrogen
-            MekanismChemicals.HYDROGEN.get().addAttribute(new Fuel(MekanismGeneratorsConfig.generators.hydrogenMaxBurnPerTick, MekanismConfig.general.FROM_H2));
-            MekanismChemicals.ETHENE.get().addAttribute(new Fuel(MekanismGeneratorsConfig.generators.etheneMaxBurnPerTick, MekanismGeneratorsConfig.generators.etheneDensity));
             //Register dispenser behaviors
             GeneratorsFluids.FLUIDS.registerBucketDispenserBehavior();
             //Register extended build commands (in enqueue as it is not thread safe)

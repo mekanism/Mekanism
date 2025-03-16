@@ -46,7 +46,7 @@ public class FluidElement extends LookingAtElement {
         if (capacity == 0 || stored.getAmount() == Integer.MAX_VALUE) {
             return level;
         }
-        return MathUtils.clampToInt(level * (double) stored.getAmount() / capacity);
+        return MathUtils.clampToInt(level * MathUtils.divideToLevel(stored.getAmount(), capacity));
     }
 
     @NotNull

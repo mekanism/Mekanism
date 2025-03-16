@@ -10,6 +10,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.content.gear.ModuleContainer;
 import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.network.IMekanismPacket;
+import net.minecraft.core.Holder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -30,7 +31,7 @@ public record PacketUpdateModuleSettings(int slotId, ModuleConfigTarget<?> targe
           PacketUpdateModuleSettings::new
     );
 
-    public static PacketUpdateModuleSettings create(int slotId, ModuleData<?> moduleType, int installed, ModuleConfig<?> config) {
+    public static PacketUpdateModuleSettings create(int slotId, Holder<ModuleData<?>> moduleType, int installed, ModuleConfig<?> config) {
         return new PacketUpdateModuleSettings(slotId, new ModuleConfigTarget<>(moduleType, installed, config));
     }
 
@@ -57,18 +58,18 @@ public record PacketUpdateModuleSettings(int slotId, ModuleConfigTarget<?> targe
         }
     }
 
-    public record ModuleConfigTarget<C>(ModuleData<?> moduleType, int installed, ModuleConfig<C> config) {
+    public record ModuleConfigTarget<C>(Holder<ModuleData<?>> moduleType, int installed, ModuleConfig<C> config) {
 
-        private static final StreamCodec<RegistryFriendlyByteBuf, ModuleData<?>> REGISTRY_CODEC = ByteBufCodecs.registry(MekanismAPI.MODULE_REGISTRY_NAME);
+        private static final StreamCodec<RegistryFriendlyByteBuf, Holder<ModuleData<?>>> REGISTRY_CODEC = ByteBufCodecs.holderRegistry(MekanismAPI.MODULE_REGISTRY_NAME);
         public static final StreamCodec<RegistryFriendlyByteBuf, ModuleConfigTarget<?>> STREAM_CODEC = StreamCodec.ofMember(ModuleConfigTarget::encode, ModuleConfigTarget::decode);
 
         private static ModuleConfigTarget<?> decode(RegistryFriendlyByteBuf buffer) {
-            ModuleData<?> moduleType = REGISTRY_CODEC.decode(buffer);
+            Holder<ModuleData<?>> moduleType = REGISTRY_CODEC.decode(buffer);
             int installed = buffer.readVarInt();
             ResourceLocation name = ResourceLocation.STREAM_CODEC.decode(buffer);
-            ModuleConfig<?> defaultConfig = moduleType.getNamedConfig(installed, name);
+            ModuleConfig<?> defaultConfig = moduleType.value().getNamedConfig(installed, name);
             if (defaultConfig == null) {
-                throw new DecoderException("Unknown config " + name + " for module type: " + moduleType + " with " + installed + " modules installed");
+                throw new DecoderException("Unknown config " + name + " for module type: " + moduleType.getRegisteredName() + " with " + installed + " modules installed");
             }
             return new ModuleConfigTarget<>(moduleType, installed, defaultConfig.namedStreamCodec(name).decode(buffer));
         }

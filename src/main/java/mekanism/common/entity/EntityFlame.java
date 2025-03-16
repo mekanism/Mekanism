@@ -6,6 +6,7 @@ import mekanism.common.item.gear.ItemFlamethrower.FlamethrowerMode;
 import mekanism.common.lib.math.Pos3D;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismAttachmentTypes;
+import mekanism.common.registries.MekanismDamageTypes;
 import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.SharedConstants;
@@ -265,8 +266,9 @@ public class EntityFlame extends Projectile implements IEntityWithComplexSpawn {
     private void burn(Entity entity) {
         if (!(entity instanceof ItemEntity) || MekanismConfig.gear.flamethrowerDestroyItems.get()) {
             //Only actually burn the entity if it is not an item, or we allow destroying items
-            if (entity.hurt(damageSources().thrown(this, getOwner()), DAMAGE)) {
-                entity.setRemainingFireTicks(SharedConstants.TICKS_PER_SECOND);
+            if (entity.hurt(MekanismDamageTypes.FLAMETHROWER.source(registryAccess(), this, getOwner()), DAMAGE)) {
+                //Mirror flame enchant of igniting for 5 seconds
+                entity.igniteForSeconds(5);
             }
         }
     }

@@ -20,6 +20,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
@@ -229,6 +230,27 @@ public class MekanismTags {
 
         private static TagKey<Biome> tag(String name) {
             return TagKey.create(Registries.BIOME, Mekanism.rl(name));
+        }
+    }
+
+    public static class Entities {
+
+        private Entities() {
+        }
+
+        public static final TagKey<EntityType<?>> CREEPERS = commonTag("creepers");
+        public static final TagKey<EntityType<?>> VALID_SPS_EXPERIMENT = tag("valid_sps_experiment");
+
+        private static TagKey<EntityType<?>> commonTag(String name) {
+            return tag(ResourceLocation.fromNamespaceAndPath("c", name));
+        }
+
+        private static TagKey<EntityType<?>> tag(String name) {
+            return tag(Mekanism.rl(name));
+        }
+
+        private static TagKey<EntityType<?>> tag(ResourceLocation tag) {
+            return TagKey.create(Registries.ENTITY_TYPE, tag);
         }
     }
 

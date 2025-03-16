@@ -1,6 +1,7 @@
 package mekanism.api.inventory;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.Holder;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
@@ -37,6 +38,16 @@ public interface IHashedItem {
      */
     default Item getItem() {
         return getInternalStack().getItem();
+    }
+
+    /**
+     * Helper to get the holder for the {@link Item} that this item type represents.
+     *
+     * @return The holder for the {@link Item} that this item type represents.
+     * @since 10.7.11
+     */
+    default Holder<Item> getItemHolder() {
+        return getInternalStack().getItemHolder();
     }
 
     /**

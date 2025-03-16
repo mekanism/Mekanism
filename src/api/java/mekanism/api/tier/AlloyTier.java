@@ -3,7 +3,7 @@ package mekanism.api.tier;
 /**
  * Enum representing the different tiers of alloys.
  */
-public enum AlloyTier implements ITier {
+public enum AlloyTier implements ITier, IAlloyTier {
     INFUSED("infused", BaseTier.ADVANCED),
     REINFORCED("reinforced", BaseTier.ELITE),
     ATOMIC("atomic", BaseTier.ULTIMATE);
@@ -26,5 +26,10 @@ public enum AlloyTier implements ITier {
     @Override
     public BaseTier getBaseTier() {
         return baseTier;
+    }
+
+    @Override
+    public int getBaseTierLevel() {
+        return ITier.super.getBaseTierLevel();
     }
 }

@@ -2,9 +2,9 @@ package mekanism.common.registries;
 
 import com.mojang.serialization.Codec;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.radiation.IRadiationManager;
 import mekanism.common.Mekanism;
 import mekanism.common.item.gear.ItemFlamethrower.FlamethrowerMode;
-import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.registration.MekanismDeferredHolder;
 import mekanism.common.registration.MekanismDeferredRegister;
 import net.neoforged.neoforge.attachment.AttachmentType;
@@ -20,9 +20,9 @@ public class MekanismAttachmentTypes {
 
     //Note: We do not specify copy on death as we want radiation to reset to baseline on death
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Double>> RADIATION = ATTACHMENT_TYPES.register("radiation",
-          () -> AttachmentType.builder(() -> RadiationManager.BASELINE)
-                .serialize(Codec.doubleRange(RadiationManager.BASELINE, Double.MAX_VALUE), radiation -> radiation != RadiationManager.BASELINE)
-                .copyHandler((radiation, holder, provider) -> radiation == RadiationManager.BASELINE ? null : radiation)
+          () -> AttachmentType.builder(IRadiationManager.INSTANCE::baselineRadiation)
+                .serialize(Codec.doubleRange(IRadiationManager.INSTANCE.baselineRadiation(), Double.MAX_VALUE), radiation -> radiation > IRadiationManager.INSTANCE.baselineRadiation())
+                .copyHandler((radiation, holder, provider) -> radiation > IRadiationManager.INSTANCE.baselineRadiation() ? radiation : null)
                 .build()
     );
 

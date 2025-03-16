@@ -8,7 +8,6 @@ import java.util.function.Consumer;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalBuilder;
-import mekanism.api.chemical.attribute.ChemicalAttribute;
 import mekanism.common.util.ChemicalUtil;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
@@ -58,6 +57,8 @@ public final class JsonChemicalBuilder extends BaseBuilder<Chemical, JsonChemica
      *
      * @param oreTag {@link ResourceLocation} of the item tag representing the ore.
      */
+    @SuppressWarnings("removal")
+    @Deprecated(forRemoval = true, since = "10.7.11")
     public JsonChemicalBuilder ore(ResourceLocation oreTag) {
         return baseData(builder -> builder.ore(oreTag));
     }
@@ -65,6 +66,8 @@ public final class JsonChemicalBuilder extends BaseBuilder<Chemical, JsonChemica
     /**
      * Set this chemical should render as a gas. Omit to leave as fluid-like
      */
+    @SuppressWarnings("removal")
+    @Deprecated(forRemoval = true, since = "10.7.11")
     public JsonChemicalBuilder gaseous() {
         return baseData(ChemicalBuilder::gaseous);
     }
@@ -90,11 +93,12 @@ public final class JsonChemicalBuilder extends BaseBuilder<Chemical, JsonChemica
     }
 
     /**
-     * Adds a {@link ChemicalAttribute} to the set of attributes this chemical has.
+     * Adds a {@link mekanism.api.chemical.attribute.ChemicalAttribute} to the set of attributes this chemical has.
      *
      * @param attribute Attribute to add.
      */
-    public JsonChemicalBuilder with(ChemicalAttribute attribute) {
+    @SuppressWarnings("removal")
+    public JsonChemicalBuilder with(mekanism.api.chemical.attribute.ChemicalAttribute attribute) {
         return baseData(builder -> builder.with(attribute));
     }
 }

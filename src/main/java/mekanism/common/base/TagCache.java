@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -29,7 +28,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
@@ -69,7 +67,7 @@ public final class TagCache {
         if (cache == null) {
             if (block instanceof IHasTileEntity<?> hasTileEntity) {
                 //If it is one of our blocks, short circuit and just lookup the tile's type directly
-                cache = getTagsAsStrings(RegistryUtils.getBEHolder(hasTileEntity.getTileType().get()));
+                cache = getTagsAsStrings(hasTileEntity.getTileType());
             } else {
                 BlockState state = block.defaultBlockState();
                 if (state.hasBlockEntity()) {
@@ -100,19 +98,19 @@ public final class TagCache {
 
     public static List<ItemStack> getItemTagStacks(@NotNull String tagName) {
         return itemTagStacks.computeIfAbsent(tagName, name -> {
-            Set<Item> items = collectTagStacks(BuiltInRegistries.ITEM, name, item -> item != MekanismBlocks.BOUNDING_BLOCK.asItem());
+            Set<Item> items = collectTagStacks(BuiltInRegistries.ITEM, name, item -> !MekanismBlocks.BOUNDING_BLOCK.isSecondary(item));
             return items.stream().map(ItemStack::new).filter(stack -> !stack.isEmpty()).toList();
         });
     }
 
     public static MatchingStacks getBlockTagStacks(@NotNull String tagName) {
         return blockTagStacks.computeIfAbsent(tagName, name -> {
-            Set<Block> blocks = collectTagStacks(BuiltInRegistries.BLOCK, name, block -> block != MekanismBlocks.BOUNDING_BLOCK.getBlock());
+            Set<Block> blocks = collectTagStacks(BuiltInRegistries.BLOCK, name, block -> !MekanismBlocks.BOUNDING_BLOCK.is(block));
             return getMatching(blocks);
         });
     }
 
-    private static <TYPE extends ItemLike> Set<TYPE> collectTagStacks(Registry<TYPE> registry, String tagName, Predicate<TYPE> validElement) {
+    private static <TYPE> Set<TYPE> collectTagStacks(Registry<TYPE> registry, String tagName, Predicate<TYPE> validElement) {
         return registry.getTags()
               .filter(pair -> WildcardMatcher.matches(tagName, pair.getFirst()))
               .flatMap(pair -> pair.getSecond().stream())
@@ -132,12 +130,12 @@ public final class TagCache {
     public static List<ItemStack> getItemModIDStacks(@NotNull String modName) {
         return itemModIDStacks.computeIfAbsent(modName, name -> {
             List<ItemStack> stacks = new ArrayList<>();
-            for (Item item : BuiltInRegistries.ITEM) {
+            for (Map.Entry<ResourceKey<Item>, Item> entry : BuiltInRegistries.ITEM.entrySet()) {
                 //Ugly check to make sure we don't include our bounding block in render list. Eventually this should maybe just use getRenderShape() with a dummy BlockState
-                if (item != MekanismBlocks.BOUNDING_BLOCK.asItem()) {
+                if (!MekanismBlocks.BOUNDING_BLOCK.getItemHolder().is(entry.getKey())) {
                     //Note: We get the modid based on the stack so that if there is a mod that has a different modid for an item
                     // that isn't based on NBT it can properly change the modid (this is unlikely to happen, but you never know)
-                    ItemStack stack = new ItemStack(item);
+                    ItemStack stack = new ItemStack(entry.getValue());
                     if (!stack.isEmpty() && WildcardMatcher.matches(name, MekanismUtils.getModId(stack))) {
                         stacks.add(stack);
                     }
@@ -150,11 +148,10 @@ public final class TagCache {
     public static MatchingStacks getBlockModIDStacks(@NotNull String modName) {
         return blockModIDStacks.computeIfAbsent(modName, name -> {
             Set<Block> blocks = new ReferenceOpenHashSet<>();
-            for (Entry<ResourceKey<Block>, Block> entry : BuiltInRegistries.BLOCK.entrySet()) {
-                Block block = entry.getValue();
+            for (Map.Entry<ResourceKey<Block>, Block> entry : BuiltInRegistries.BLOCK.entrySet()) {
                 //Ugly check to make sure we don't include our bounding block in render list. Eventually this should maybe just use getRenderShape() with a dummy BlockState
-                if (block != MekanismBlocks.BOUNDING_BLOCK.getBlock() && WildcardMatcher.matches(name, entry.getKey().location().getNamespace())) {
-                    blocks.add(block);
+                if (!MekanismBlocks.BOUNDING_BLOCK.is(entry.getKey()) && WildcardMatcher.matches(name, entry.getKey().location().getNamespace())) {
+                    blocks.add(entry.getValue());
                 }
             }
             return getMatching(blocks);

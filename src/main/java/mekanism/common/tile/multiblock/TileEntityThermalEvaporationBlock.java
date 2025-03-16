@@ -1,12 +1,13 @@
 package mekanism.common.tile.multiblock;
 
-import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.content.evaporation.EvaporationMultiblockData;
 import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityThermalEvaporationBlock extends TileEntityMultiblock<EvaporationMultiblockData> {
@@ -15,7 +16,7 @@ public class TileEntityThermalEvaporationBlock extends TileEntityMultiblock<Evap
         this(MekanismBlocks.THERMAL_EVAPORATION_BLOCK, pos, state);
     }
 
-    public TileEntityThermalEvaporationBlock(IBlockProvider provider, BlockPos pos, BlockState state) {
+    public TileEntityThermalEvaporationBlock(Holder<Block> provider, BlockPos pos, BlockState state) {
         super(provider, pos, state);
     }
 

@@ -3,6 +3,13 @@
     {
       "type": "neoforge:mod_loaded",
       "modid": "biomeswevegone"
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "biomeswevegone:dye/makes_light_gray_dye"
+      }
     }
   ],
   "type": "mekanism:enriching",

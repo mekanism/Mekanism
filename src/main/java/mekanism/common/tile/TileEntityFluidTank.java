@@ -3,7 +3,6 @@ package mekanism.common.tile;
 import com.mojang.serialization.DataResult;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import mekanism.api.Action;
 import mekanism.api.IConfigurable;
@@ -11,7 +10,6 @@ import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.functions.ConstantPredicates;
-import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.block.attribute.Attribute;
@@ -43,9 +41,11 @@ import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.FluidUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import mekanism.common.util.RegistryUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
@@ -54,7 +54,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -62,6 +61,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
@@ -102,7 +102,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     private int lastLightLevel;
     private int lightUpdateDelay;
 
-    public TileEntityFluidTank(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
+    public TileEntityFluidTank(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
         delaySupplier = NO_DELAY;
     }
@@ -110,7 +110,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     @Override
     protected void presetVariables() {
         super.presetVariables();
-        tier = Attribute.getTier(getBlockType(), FluidTankTier.class);
+        tier = Attribute.getTier(getBlockHolder(), FluidTankTier.class);
     }
 
     @NotNull
@@ -142,7 +142,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
         if (lightUpdateDelay > 0) {
             lightUpdateDelay--;
             if (lightUpdateDelay == 0) {
-                int lightLevel = getBlockType().getLightEmission(getBlockState(), level, worldPosition);
+                int lightLevel = getBlockState().getLightEmission(level, worldPosition);
                 if (lightLevel != lastLightLevel) {
                     lastLightLevel = lightLevel;
                     level.getLightEngine().checkBlock(worldPosition);
@@ -365,22 +365,26 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
             fluidData.putInt(SerializationConstants.AMOUNT, fluid.getAmount());
         }
         if (!fluid.isEmpty()) {
-            //Note: This should never be null as it returns a reference holder
-            // We throw if it is, so that we can find the bug if it gets introduced during porting
-            ResourceKey<Fluid> key = Objects.requireNonNull(fluid.getFluidHolder().getKey(), "Resource key should always be present");
-            fluidData.putString(SerializationConstants.ID, key.location().toString());
-            if (!fluid.isComponentsPatchEmpty()) {
-                //Note: This isn't necessarily optimal, but it does mean in general we can avoid codecs unless it happens to be a fluid that
-                // does have component data
-                DataResult<Tag> componentData = DataComponentPatch.CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), fluid.getComponentsPatch());
-                if (componentData.isSuccess()) {
-                    fluidData.put(SerializationConstants.DATA, componentData.getOrThrow());
-                } else {
-                    componentData.ifError(error -> Mekanism.logger.error("Failed to encode fluid stack component data: {}", error.message()));
+            ResourceLocation key = RegistryUtils.getName(fluid.getFluidHolder());
+            if (key == null) {
+                //Note: This should never be null as it returns a reference holder, but if it is, log an error
+                Mekanism.logger.error("Attempted to sync a fluid tank that is storing an unregistered fluid. This should not happen, and likely indicates a porting bug.");
+            } else {
+                fluidData.putString(SerializationConstants.ID, key.toString());
+                if (!fluid.isComponentsPatchEmpty()) {
+                    //Note: This isn't necessarily optimal, but it does mean in general we can avoid codecs unless it happens to be a fluid that
+                    // does have component data
+                    DataResult<Tag> componentData = DataComponentPatch.CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), fluid.getComponentsPatch());
+                    if (componentData.isSuccess()) {
+                        fluidData.put(SerializationConstants.DATA, componentData.getOrThrow());
+                    } else {
+                        componentData.ifError(error -> Mekanism.logger.error("Failed to encode fluid stack component data: {}", error.message()));
+                    }
                 }
+                fluidData.putBoolean(SerializationConstants.VALVE, !valveFluid.isEmpty());
+                //Skip adding it if the fluid isn't registered
+                updateTag.put(SerializationConstants.FLUID, fluidData);
             }
-            fluidData.putBoolean(SerializationConstants.VALVE, !valveFluid.isEmpty());
-            updateTag.put(SerializationConstants.FLUID, fluidData);
         }
         return updateTag;
     }
@@ -407,7 +411,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
             CompoundTag fluidData = tag.getCompound(SerializationConstants.FLUID);
             if (!fluidData.isEmpty()) {
                 String fluidId = fluidData.getString(SerializationConstants.ID);
-                Optional<Reference<Fluid>> holder = BuiltInRegistries.FLUID.getHolder(ResourceLocation.parse(fluidId));
+                Optional<Reference<Fluid>> holder = Optional.ofNullable(ResourceLocation.tryParse(fluidId)).flatMap(BuiltInRegistries.FLUID::getHolder);
                 if (holder.isEmpty()) {
                     Mekanism.logger.info("Received update packet for a fluid tank for an unregistered fluid with expected id: {}", fluidId);
                 } else {

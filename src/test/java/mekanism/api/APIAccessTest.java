@@ -1,5 +1,6 @@
 package mekanism.api;
 
+import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.radial.IRadialDataHelper;
 import mekanism.api.radiation.IRadiationManager;
@@ -15,6 +16,7 @@ import mekanism.common.lib.security.BlockSecurityUtils;
 import mekanism.common.lib.security.EntitySecurityUtils;
 import mekanism.common.lib.security.ItemSecurityUtils;
 import mekanism.common.lib.security.SecurityUtils;
+import mekanism.common.registries.MekanismDataMapTypes;
 import mekanism.common.service.MekanismAccess;
 import mekanism.common.util.text.TooltipHelper;
 import org.junit.jupiter.api.Assertions;
@@ -28,6 +30,12 @@ class APIAccessTest {
     @DisplayName("Test getting access to Mekanism internals")
     void testMekanismAccess() {
         Assertions.assertInstanceOf(MekanismAccess.class, IMekanismAccess.INSTANCE);
+    }
+
+    @Test
+    @DisplayName("Test getting Mekanism's Data Map Types")
+    void testMekanismDataMapTypes() {
+        Assertions.assertInstanceOf(MekanismDataMapTypes.class, IMekanismDataMapTypes.INSTANCE);
     }
 
     @Test

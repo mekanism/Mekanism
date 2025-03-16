@@ -185,7 +185,7 @@ public class QIOCraftingWindow implements IContentsListener {
 
     private ItemStack assembleRecipe(CraftingInput craftingInput, CraftingRecipe recipe, RegistryAccess registryAccess) {
         //TODO - RecipeStages: Reinstate this when RecipeStages updates
-        /*if (Mekanism.hooks.RecipeStagesLoaded) {
+        /*if (Mekanism.hooks.recipeStages.isLoaded()) {
             if (recipe instanceof IStagedRecipe stagedRecipe) {
                 //Force assemble it as we handle validating if specific players can see/grab the output ourselves
                 return stagedRecipe.forceAssemble(craftingInput, registryAccess);
@@ -202,7 +202,7 @@ public class QIOCraftingWindow implements IContentsListener {
             return false;
         }
         //TODO - RecipeStages: Reinstate this when RecipeStages updates
-        /*if (Mekanism.hooks.RecipeStagesLoaded) {
+        /*if (Mekanism.hooks.recipeStages.isLoaded()) {
             //If recipe stages is loaded check if the player has access to the recipe
             if (!RecipeStagesUtil.hasStageForRecipe(lastRecipe.value(), player)) {
                 return false;

@@ -1,29 +1,32 @@
 package mekanism.common.registration.impl;
 
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.providers.IFluidProvider;
+import mekanism.api.text.IHasTextComponent;
+import mekanism.api.text.IHasTranslationKey;
+import mekanism.common.registration.MekanismDeferredHolder;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BucketItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 @NothingNullByDefault
 public class FluidRegistryObject<TYPE extends FluidType, STILL extends Fluid, FLOWING extends Fluid, BLOCK extends LiquidBlock, BUCKET extends BucketItem>
-      implements IFluidProvider {
+    extends MekanismDeferredHolder<Fluid, STILL> implements IHasTextComponent, IHasTranslationKey {
 
     private final DeferredHolder<FluidType, TYPE> fluidType;
-    private final DeferredHolder<Fluid, STILL> still;
     private final DeferredHolder<Fluid, FLOWING> flowing;
-    private final DeferredHolder<Item, BUCKET> bucket;
+    private final ItemRegistryObject<BUCKET> bucket;
     private final DeferredHolder<Block, BLOCK> block;
 
     FluidRegistryObject(DeferredHolder<FluidType, TYPE> fluidType, DeferredHolder<Fluid, STILL> still, DeferredHolder<Fluid, FLOWING> flowing,
-          DeferredHolder<Item, BUCKET> bucket, DeferredHolder<Block, BLOCK> block) {
+          ItemRegistryObject<BUCKET> bucket, DeferredHolder<Block, BLOCK> block) {
+        //Default our fluid to being the still variant
+        super(still.getKey());
         this.fluidType = fluidType;
-        this.still = still;
         this.flowing = flowing;
         this.bucket = bucket;
         this.block = block;
@@ -33,25 +36,29 @@ public class FluidRegistryObject<TYPE extends FluidType, STILL extends Fluid, FL
         return fluidType.get();
     }
 
-    public STILL getStillFluid() {
-        return still.get();
-    }
-
-    public FLOWING getFlowingFluid() {
-        return flowing.get();
+    public DeferredHolder<Fluid, FLOWING> getFlowingFluid() {
+        return flowing;
     }
 
     public BLOCK getBlock() {
         return block.get();
     }
 
-    public BUCKET getBucket() {
-        return bucket.get();
+    public ItemRegistryObject<BUCKET> getBucket() {
+        return bucket;
+    }
+
+    public FluidStack asStack(int amount) {
+        return new FluidStack(get(), amount);
     }
 
     @Override
-    public STILL getFluid() {
-        //Default our fluid to being the still variant
-        return getStillFluid();
+    public Component getTextComponent() {
+        return getFluidType().getDescription(asStack(1));
+    }
+
+    @Override
+    public String getTranslationKey() {
+        return getFluidType().getDescriptionId();
     }
 }

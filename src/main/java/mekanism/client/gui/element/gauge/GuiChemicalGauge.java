@@ -5,25 +5,24 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
-import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.math.MathUtils;
-import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.network.to_server.PacketDropperUse.TankType;
-import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.text.TextUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item.TooltipContext;
+import net.minecraft.world.item.TooltipFlag;
 import org.jetbrains.annotations.Nullable;
 
-public class GuiChemicalGauge extends GuiTankGauge<Chemical, IChemicalTank> {
+public class GuiChemicalGauge extends GuiTankGauge<ChemicalStack, IChemicalTank> {
 
     public static GuiChemicalGauge getDummy(GaugeType type, IGuiWrapper gui, int x, int y) {
         GuiChemicalGauge gauge = new GuiChemicalGauge(null, type, gui, x, y, type.getGaugeOverlay().getWidth() + 2, type.getGaugeOverlay().getHeight() + 2);
@@ -35,6 +34,8 @@ public class GuiChemicalGauge extends GuiTankGauge<Chemical, IChemicalTank> {
 
     public GuiChemicalGauge(ITankInfoHandler<IChemicalTank> handler, GaugeType type, IGuiWrapper gui, int x, int y, int sizeX, int sizeY) {
         super(type, gui, x, y, sizeX, sizeY, handler, TankType.CHEMICAL_TANK);
+        //Ensure it isn't null
+        setDummyType(ChemicalStack.EMPTY);
     }
 
     public GuiChemicalGauge(Supplier<IChemicalTank> tankSupplier, Supplier<List<IChemicalTank>> tanksSupplier, GaugeType type, IGuiWrapper gui, int x, int y) {
@@ -77,11 +78,8 @@ public class GuiChemicalGauge extends GuiTankGauge<Chemical, IChemicalTank> {
     @Nullable
     @Override
     public TextureAtlasSprite getIcon() {
-        if (dummy) {
-            return MekanismRenderer.getChemicalTexture(dummyType);
-        }
-        IChemicalTank tank = getTank();
-        return tank == null || tank.isEmpty() ? null : MekanismRenderer.getChemicalTexture(tank.getType());
+        ChemicalStack stack = getStackOrDummy();
+        return stack.isEmpty() ? null : MekanismRenderer.getChemicalTexture(stack);
     }
 
     @Override
@@ -89,33 +87,34 @@ public class GuiChemicalGauge extends GuiTankGauge<Chemical, IChemicalTank> {
         return label;
     }
 
-    @Override
-    public List<Component> getTooltipText() {
+    private ChemicalStack getStackOrDummy() {
         if (dummy) {
-            return Collections.singletonList(TextComponentUtil.build(dummyType));
+            return dummyType;
         }
         IChemicalTank tank = getTank();
-        if (tank == null || tank.isEmpty()) {
+        return tank == null ? dummyType : tank.getStack();
+    }
+
+    @Override
+    public List<Component> getTooltipText() {
+        ChemicalStack stack = getStackOrDummy();
+        if (stack.isEmpty()) {
             return Collections.singletonList(MekanismLang.EMPTY.translate());
         }
         List<Component> list = new ArrayList<>();
-        long amount = tank.getStored();
+        long amount = stack.getAmount();
         if (amount == Long.MAX_VALUE) {
-            list.add(MekanismLang.GENERIC_STORED.translate(tank.getType(), MekanismLang.INFINITE));
+            list.add(MekanismLang.GENERIC_STORED.translate(stack, MekanismLang.INFINITE));
         } else {
-            list.add(MekanismLang.GENERIC_STORED_MB.translate(tank.getType(), TextUtils.format(amount)));
+            list.add(MekanismLang.GENERIC_STORED_MB.translate(stack, TextUtils.format(amount)));
         }
-        ChemicalUtil.addChemicalDataToTooltip(list, tank.getStack(), Minecraft.getInstance().options.advancedItemTooltips);
+        stack.appendHoverText(TooltipContext.of(minecraft.level), list, minecraft.options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL);
         return list;
     }
 
     @Override
     protected void applyRenderColor(GuiGraphics guiGraphics) {
-        if (dummy || getTank() == null) {
-            MekanismRenderer.color(guiGraphics, dummyType);
-        } else {
-            MekanismRenderer.color(guiGraphics, getTank().getStack());
-        }
+        MekanismRenderer.color(guiGraphics, getStackOrDummy());
     }
 
     @Override

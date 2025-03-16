@@ -34,7 +34,7 @@ public class ItemCraftingFormula extends Item {
         if (!stacks.isEmpty()) {
             tooltip.add(MekanismLang.INGREDIENTS.translateColored(EnumColor.GRAY));
             for (Entry<HashedItem, Integer> entry : stacks.entrySet()) {
-                tooltip.add(MekanismLang.GENERIC_TRANSFER.translateColored(EnumColor.GRAY, entry.getKey().getInternalStack(), entry.getValue()));
+                tooltip.add(MekanismLang.GENERIC_TRANSFER.translateColored(EnumColor.GRAY, entry.getKey(), entry.getValue()));
             }
         }
     }

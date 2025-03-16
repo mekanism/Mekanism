@@ -1,0 +1,16 @@
+{
+  "values": {
+    "mekanism:nuclear_waste": {
+      "radioactivity": 0.01
+    },
+    "mekanism:plutonium": {
+      "radioactivity": 0.02
+    },
+    "mekanism:polonium": {
+      "radioactivity": 0.05
+    },
+    "mekanism:spent_nuclear_waste": {
+      "radioactivity": 0.01
+    }
+  }
+}

@@ -23,8 +23,7 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
-import mekanism.api.providers.IBlockProvider;
-import mekanism.api.providers.IItemProvider;
+import mekanism.api.gear.ModuleData;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.client.recipe_viewer.RecipeViewerUtils;
@@ -77,6 +76,8 @@ import mekanism.common.tile.machine.TileEntityNutritionalLiquifier;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.ItemLike;
@@ -203,10 +204,10 @@ public class MekanismEmi implements EmiPlugin {
         registerItemSubtypes(registry, MekanismBlocks.BLOCKS.getSecondaryEntries());
     }
 
-    public static void registerItemSubtypes(EmiRegistry registry, Collection<? extends Holder<? extends ItemLike>> itemProviders) {
-        for (Holder<? extends ItemLike> itemProvider : itemProviders) {
+    public static void registerItemSubtypes(EmiRegistry registry, Collection<? extends Holder<Item>> items) {
+        for (Holder<Item> item : items) {
             //Handle items
-            ItemStack stack = new ItemStack(itemProvider.value());
+            ItemStack stack = new ItemStack(item);
             if (Capabilities.STRICT_ENERGY.hasCapability(stack) || Capabilities.CHEMICAL.hasCapability(stack) || Capabilities.FLUID.hasCapability(stack)) {
                 registry.setDefaultComparison(stack.getItem(), MEKANISM_COMPARISON);
             }
@@ -274,10 +275,13 @@ public class MekanismEmi implements EmiPlugin {
         addCategoryAndRecipes(registry, RecipeViewerRecipeType.ENERGY_CONVERSION, ItemStackToEnergyEmiRecipe::new);
         addCategoryAndRecipes(registry, RecipeViewerRecipeType.CHEMICAL_CONVERSION, (category, recipeHolder) -> new ItemStackToChemicalEmiRecipe<>(category, recipeHolder, 0));
 
-        registry.addRecipe(new EmiInfoRecipe(List.of(EmiStack.of(MekanismFluids.HEAVY_WATER.getFluid())), List.of(
+        registry.addRecipe(new EmiInfoRecipe(List.of(EmiStack.of(MekanismFluids.HEAVY_WATER.value())), List.of(
               MekanismLang.RECIPE_VIEWER_INFO_HEAVY_WATER.translate(MekanismConfig.general.pumpHeavyWaterAmount.get())
         ), Mekanism.rl("info/heavy_water")));
-        registry.addRecipe(new EmiInfoRecipe(MekanismAPI.MODULE_REGISTRY.stream().<EmiIngredient>map(data -> EmiStack.of(data.getItemProvider())).toList(), List.of(
+        registry.addRecipe(new EmiInfoRecipe(MekanismAPI.MODULE_REGISTRY.stream()
+              .map(ModuleData::getItemHolder)
+              .<EmiIngredient>map(item -> EmiStack.of(item.value()))
+              .toList(), List.of(
               MekanismLang.RECIPE_VIEWER_INFO_MODULE_INSTALLATION.translate()
         ), Mekanism.rl("info/module_installation")));
     }
@@ -313,11 +317,12 @@ public class MekanismEmi implements EmiPlugin {
         return category;
     }
 
-    private static void addWorkstations(EmiRegistry registry, EmiRecipeCategory category, List<IItemProvider> workstations) {
-        for (IItemProvider workstation : workstations) {
-            registry.addWorkstation(category, EmiStack.of(workstation));
-            if (workstation instanceof IBlockProvider mekanismBlock) {
-                AttributeFactoryType factoryType = Attribute.get(mekanismBlock.getBlock(), AttributeFactoryType.class);
+    private static void addWorkstations(EmiRegistry registry, EmiRecipeCategory category, List<ItemLike> workstations) {
+        for (ItemLike workstation : workstations) {
+            Item item = workstation.asItem();
+            registry.addWorkstation(category, EmiStack.of(item));
+            if (item instanceof BlockItem blockItem) {
+                AttributeFactoryType factoryType = Attribute.get(blockItem.getBlock(), AttributeFactoryType.class);
                 if (factoryType != null) {
                     for (FactoryTier tier : EnumUtils.FACTORY_TIERS) {
                         registry.addWorkstation(category, EmiStack.of(MekanismBlocks.getFactory(tier, factoryType.getFactoryType())));

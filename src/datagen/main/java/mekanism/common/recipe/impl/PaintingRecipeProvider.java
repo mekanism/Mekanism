@@ -13,6 +13,7 @@ import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.EnumUtils;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
@@ -22,57 +23,56 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.BannerBlock;
-import net.minecraft.world.level.block.Blocks;
 
 class PaintingRecipeProvider implements ISubRecipeProvider {
 
-    private static final Map<EnumColor, ItemLike> BEDS = new EnumMap<>(EnumColor.class);
-    private static final Map<EnumColor, ItemLike> CANDLES = new EnumMap<>(EnumColor.class);
-    private static final Map<EnumColor, ItemLike> CONCRETE = new EnumMap<>(EnumColor.class);
-    private static final Map<EnumColor, ItemLike> CONCRETE_POWDER = new EnumMap<>(EnumColor.class);
-    private static final Map<EnumColor, ItemLike> CARPETS = new EnumMap<>(EnumColor.class);
-    private static final Map<EnumColor, ItemLike> STAINED_GLASS = new EnumMap<>(EnumColor.class);
-    private static final Map<EnumColor, ItemLike> STAINED_GLASS_PANES = new EnumMap<>(EnumColor.class);
-    private static final Map<EnumColor, ItemLike> TERRACOTTA = new EnumMap<>(EnumColor.class);
-    private static final Map<EnumColor, ItemLike> WOOL = new EnumMap<>(EnumColor.class);
+    private static final Map<EnumColor, Item> BEDS = new EnumMap<>(EnumColor.class);
+    private static final Map<EnumColor, Item> CANDLES = new EnumMap<>(EnumColor.class);
+    private static final Map<EnumColor, Item> CONCRETE = new EnumMap<>(EnumColor.class);
+    private static final Map<EnumColor, Item> CONCRETE_POWDER = new EnumMap<>(EnumColor.class);
+    private static final Map<EnumColor, Item> CARPETS = new EnumMap<>(EnumColor.class);
+    private static final Map<EnumColor, Item> STAINED_GLASS = new EnumMap<>(EnumColor.class);
+    private static final Map<EnumColor, Item> STAINED_GLASS_PANES = new EnumMap<>(EnumColor.class);
+    private static final Map<EnumColor, Item> TERRACOTTA = new EnumMap<>(EnumColor.class);
+    private static final Map<EnumColor, Item> WOOL = new EnumMap<>(EnumColor.class);
 
     static {
-        addTypes(EnumColor.WHITE, Blocks.WHITE_BED, Blocks.WHITE_CANDLE, Blocks.WHITE_CONCRETE, Blocks.WHITE_CONCRETE_POWDER, Blocks.WHITE_CARPET, Blocks.WHITE_STAINED_GLASS,
-              Blocks.WHITE_STAINED_GLASS_PANE, Blocks.WHITE_TERRACOTTA, Blocks.WHITE_WOOL);
-        addTypes(EnumColor.ORANGE, Blocks.ORANGE_BED, Blocks.ORANGE_CANDLE, Blocks.ORANGE_CONCRETE, Blocks.ORANGE_CONCRETE_POWDER, Blocks.ORANGE_CARPET, Blocks.ORANGE_STAINED_GLASS,
-              Blocks.ORANGE_STAINED_GLASS_PANE, Blocks.ORANGE_TERRACOTTA, Blocks.ORANGE_WOOL);
-        addTypes(EnumColor.PINK, Blocks.MAGENTA_BED, Blocks.MAGENTA_CANDLE, Blocks.MAGENTA_CONCRETE, Blocks.MAGENTA_CONCRETE_POWDER, Blocks.MAGENTA_CARPET, Blocks.MAGENTA_STAINED_GLASS,
-              Blocks.MAGENTA_STAINED_GLASS_PANE, Blocks.MAGENTA_TERRACOTTA, Blocks.MAGENTA_WOOL);
-        addTypes(EnumColor.INDIGO, Blocks.LIGHT_BLUE_BED, Blocks.LIGHT_BLUE_CANDLE, Blocks.LIGHT_BLUE_CONCRETE, Blocks.LIGHT_BLUE_CONCRETE_POWDER, Blocks.LIGHT_BLUE_CARPET,
-              Blocks.LIGHT_BLUE_STAINED_GLASS, Blocks.LIGHT_BLUE_STAINED_GLASS_PANE, Blocks.LIGHT_BLUE_TERRACOTTA, Blocks.LIGHT_BLUE_WOOL);
-        addTypes(EnumColor.YELLOW, Blocks.YELLOW_BED, Blocks.YELLOW_CANDLE, Blocks.YELLOW_CONCRETE, Blocks.YELLOW_CONCRETE_POWDER, Blocks.YELLOW_CARPET, Blocks.YELLOW_STAINED_GLASS,
-              Blocks.YELLOW_STAINED_GLASS_PANE, Blocks.YELLOW_TERRACOTTA, Blocks.YELLOW_WOOL);
-        addTypes(EnumColor.BRIGHT_GREEN, Blocks.LIME_BED, Blocks.LIME_CANDLE, Blocks.LIME_CONCRETE, Blocks.LIME_CONCRETE_POWDER, Blocks.LIME_CARPET, Blocks.LIME_STAINED_GLASS,
-              Blocks.LIME_STAINED_GLASS_PANE, Blocks.LIME_TERRACOTTA, Blocks.LIME_WOOL);
-        addTypes(EnumColor.BRIGHT_PINK, Blocks.PINK_BED, Blocks.PINK_CANDLE, Blocks.PINK_CONCRETE, Blocks.PINK_CONCRETE_POWDER, Blocks.PINK_CARPET, Blocks.PINK_STAINED_GLASS,
-              Blocks.PINK_STAINED_GLASS_PANE, Blocks.PINK_TERRACOTTA, Blocks.PINK_WOOL);
-        addTypes(EnumColor.DARK_GRAY, Blocks.GRAY_BED, Blocks.GRAY_CANDLE, Blocks.GRAY_CONCRETE, Blocks.GRAY_CONCRETE_POWDER, Blocks.GRAY_CARPET, Blocks.GRAY_STAINED_GLASS,
-              Blocks.GRAY_STAINED_GLASS_PANE, Blocks.GRAY_TERRACOTTA, Blocks.GRAY_WOOL);
-        addTypes(EnumColor.GRAY, Blocks.LIGHT_GRAY_BED, Blocks.LIGHT_GRAY_CANDLE, Blocks.LIGHT_GRAY_CONCRETE, Blocks.LIGHT_GRAY_CONCRETE_POWDER, Blocks.LIGHT_GRAY_CARPET,
-              Blocks.LIGHT_GRAY_STAINED_GLASS, Blocks.LIGHT_GRAY_STAINED_GLASS_PANE, Blocks.LIGHT_GRAY_TERRACOTTA, Blocks.LIGHT_GRAY_WOOL);
-        addTypes(EnumColor.DARK_AQUA, Blocks.CYAN_BED, Blocks.CYAN_CANDLE, Blocks.CYAN_CONCRETE, Blocks.CYAN_CONCRETE_POWDER, Blocks.CYAN_CARPET, Blocks.CYAN_STAINED_GLASS,
-              Blocks.CYAN_STAINED_GLASS_PANE, Blocks.CYAN_TERRACOTTA, Blocks.CYAN_WOOL);
-        addTypes(EnumColor.PURPLE, Blocks.PURPLE_BED, Blocks.PURPLE_CANDLE, Blocks.PURPLE_CONCRETE, Blocks.PURPLE_CONCRETE_POWDER, Blocks.PURPLE_CARPET, Blocks.PURPLE_STAINED_GLASS,
-              Blocks.PURPLE_STAINED_GLASS_PANE, Blocks.PURPLE_TERRACOTTA, Blocks.PURPLE_WOOL);
-        addTypes(EnumColor.DARK_BLUE, Blocks.BLUE_BED, Blocks.BLUE_CANDLE, Blocks.BLUE_CONCRETE, Blocks.BLUE_CONCRETE_POWDER, Blocks.BLUE_CARPET, Blocks.BLUE_STAINED_GLASS,
-              Blocks.BLUE_STAINED_GLASS_PANE, Blocks.BLUE_TERRACOTTA, Blocks.BLUE_WOOL);
-        addTypes(EnumColor.BROWN, Blocks.BROWN_BED, Blocks.BROWN_CANDLE, Blocks.BROWN_CONCRETE, Blocks.BROWN_CONCRETE_POWDER, Blocks.BROWN_CARPET, Blocks.BROWN_STAINED_GLASS,
-              Blocks.BROWN_STAINED_GLASS_PANE, Blocks.BROWN_TERRACOTTA, Blocks.BROWN_WOOL);
-        addTypes(EnumColor.DARK_GREEN, Blocks.GREEN_BED, Blocks.GREEN_CANDLE, Blocks.GREEN_CONCRETE, Blocks.GREEN_CONCRETE_POWDER, Blocks.GREEN_CARPET, Blocks.GREEN_STAINED_GLASS,
-              Blocks.GREEN_STAINED_GLASS_PANE, Blocks.GREEN_TERRACOTTA, Blocks.GREEN_WOOL);
-        addTypes(EnumColor.RED, Blocks.RED_BED, Blocks.RED_CANDLE, Blocks.RED_CONCRETE, Blocks.RED_CONCRETE_POWDER, Blocks.RED_CARPET, Blocks.RED_STAINED_GLASS, Blocks.RED_STAINED_GLASS_PANE,
-              Blocks.RED_TERRACOTTA, Blocks.RED_WOOL);
-        addTypes(EnumColor.BLACK, Blocks.BLACK_BED, Blocks.BLACK_CANDLE, Blocks.BLACK_CONCRETE, Blocks.BLACK_CONCRETE_POWDER, Blocks.BLACK_CARPET, Blocks.BLACK_STAINED_GLASS,
-              Blocks.BLACK_STAINED_GLASS_PANE, Blocks.BLACK_TERRACOTTA, Blocks.BLACK_WOOL);
+        addTypes(EnumColor.WHITE, Items.WHITE_BED, Items.WHITE_CANDLE, Items.WHITE_CONCRETE, Items.WHITE_CONCRETE_POWDER, Items.WHITE_CARPET, Items.WHITE_STAINED_GLASS,
+              Items.WHITE_STAINED_GLASS_PANE, Items.WHITE_TERRACOTTA, Items.WHITE_WOOL);
+        addTypes(EnumColor.ORANGE, Items.ORANGE_BED, Items.ORANGE_CANDLE, Items.ORANGE_CONCRETE, Items.ORANGE_CONCRETE_POWDER, Items.ORANGE_CARPET, Items.ORANGE_STAINED_GLASS,
+              Items.ORANGE_STAINED_GLASS_PANE, Items.ORANGE_TERRACOTTA, Items.ORANGE_WOOL);
+        addTypes(EnumColor.PINK, Items.MAGENTA_BED, Items.MAGENTA_CANDLE, Items.MAGENTA_CONCRETE, Items.MAGENTA_CONCRETE_POWDER, Items.MAGENTA_CARPET, Items.MAGENTA_STAINED_GLASS,
+              Items.MAGENTA_STAINED_GLASS_PANE, Items.MAGENTA_TERRACOTTA, Items.MAGENTA_WOOL);
+        addTypes(EnumColor.INDIGO, Items.LIGHT_BLUE_BED, Items.LIGHT_BLUE_CANDLE, Items.LIGHT_BLUE_CONCRETE, Items.LIGHT_BLUE_CONCRETE_POWDER, Items.LIGHT_BLUE_CARPET,
+              Items.LIGHT_BLUE_STAINED_GLASS, Items.LIGHT_BLUE_STAINED_GLASS_PANE, Items.LIGHT_BLUE_TERRACOTTA, Items.LIGHT_BLUE_WOOL);
+        addTypes(EnumColor.YELLOW, Items.YELLOW_BED, Items.YELLOW_CANDLE, Items.YELLOW_CONCRETE, Items.YELLOW_CONCRETE_POWDER, Items.YELLOW_CARPET, Items.YELLOW_STAINED_GLASS,
+              Items.YELLOW_STAINED_GLASS_PANE, Items.YELLOW_TERRACOTTA, Items.YELLOW_WOOL);
+        addTypes(EnumColor.BRIGHT_GREEN, Items.LIME_BED, Items.LIME_CANDLE, Items.LIME_CONCRETE, Items.LIME_CONCRETE_POWDER, Items.LIME_CARPET, Items.LIME_STAINED_GLASS,
+              Items.LIME_STAINED_GLASS_PANE, Items.LIME_TERRACOTTA, Items.LIME_WOOL);
+        addTypes(EnumColor.BRIGHT_PINK, Items.PINK_BED, Items.PINK_CANDLE, Items.PINK_CONCRETE, Items.PINK_CONCRETE_POWDER, Items.PINK_CARPET, Items.PINK_STAINED_GLASS,
+              Items.PINK_STAINED_GLASS_PANE, Items.PINK_TERRACOTTA, Items.PINK_WOOL);
+        addTypes(EnumColor.DARK_GRAY, Items.GRAY_BED, Items.GRAY_CANDLE, Items.GRAY_CONCRETE, Items.GRAY_CONCRETE_POWDER, Items.GRAY_CARPET, Items.GRAY_STAINED_GLASS,
+              Items.GRAY_STAINED_GLASS_PANE, Items.GRAY_TERRACOTTA, Items.GRAY_WOOL);
+        addTypes(EnumColor.GRAY, Items.LIGHT_GRAY_BED, Items.LIGHT_GRAY_CANDLE, Items.LIGHT_GRAY_CONCRETE, Items.LIGHT_GRAY_CONCRETE_POWDER, Items.LIGHT_GRAY_CARPET,
+              Items.LIGHT_GRAY_STAINED_GLASS, Items.LIGHT_GRAY_STAINED_GLASS_PANE, Items.LIGHT_GRAY_TERRACOTTA, Items.LIGHT_GRAY_WOOL);
+        addTypes(EnumColor.DARK_AQUA, Items.CYAN_BED, Items.CYAN_CANDLE, Items.CYAN_CONCRETE, Items.CYAN_CONCRETE_POWDER, Items.CYAN_CARPET, Items.CYAN_STAINED_GLASS,
+              Items.CYAN_STAINED_GLASS_PANE, Items.CYAN_TERRACOTTA, Items.CYAN_WOOL);
+        addTypes(EnumColor.PURPLE, Items.PURPLE_BED, Items.PURPLE_CANDLE, Items.PURPLE_CONCRETE, Items.PURPLE_CONCRETE_POWDER, Items.PURPLE_CARPET, Items.PURPLE_STAINED_GLASS,
+              Items.PURPLE_STAINED_GLASS_PANE, Items.PURPLE_TERRACOTTA, Items.PURPLE_WOOL);
+        addTypes(EnumColor.DARK_BLUE, Items.BLUE_BED, Items.BLUE_CANDLE, Items.BLUE_CONCRETE, Items.BLUE_CONCRETE_POWDER, Items.BLUE_CARPET, Items.BLUE_STAINED_GLASS,
+              Items.BLUE_STAINED_GLASS_PANE, Items.BLUE_TERRACOTTA, Items.BLUE_WOOL);
+        addTypes(EnumColor.BROWN, Items.BROWN_BED, Items.BROWN_CANDLE, Items.BROWN_CONCRETE, Items.BROWN_CONCRETE_POWDER, Items.BROWN_CARPET, Items.BROWN_STAINED_GLASS,
+              Items.BROWN_STAINED_GLASS_PANE, Items.BROWN_TERRACOTTA, Items.BROWN_WOOL);
+        addTypes(EnumColor.DARK_GREEN, Items.GREEN_BED, Items.GREEN_CANDLE, Items.GREEN_CONCRETE, Items.GREEN_CONCRETE_POWDER, Items.GREEN_CARPET, Items.GREEN_STAINED_GLASS,
+              Items.GREEN_STAINED_GLASS_PANE, Items.GREEN_TERRACOTTA, Items.GREEN_WOOL);
+        addTypes(EnumColor.RED, Items.RED_BED, Items.RED_CANDLE, Items.RED_CONCRETE, Items.RED_CONCRETE_POWDER, Items.RED_CARPET, Items.RED_STAINED_GLASS, Items.RED_STAINED_GLASS_PANE,
+              Items.RED_TERRACOTTA, Items.RED_WOOL);
+        addTypes(EnumColor.BLACK, Items.BLACK_BED, Items.BLACK_CANDLE, Items.BLACK_CONCRETE, Items.BLACK_CONCRETE_POWDER, Items.BLACK_CARPET, Items.BLACK_STAINED_GLASS,
+              Items.BLACK_STAINED_GLASS_PANE, Items.BLACK_TERRACOTTA, Items.BLACK_WOOL);
     }
 
-    private static void addTypes(EnumColor color, ItemLike bed, ItemLike candle, ItemLike concrete, ItemLike concretePowder, ItemLike carpet, ItemLike stainedGlass,
-          ItemLike stainedGlassPane, ItemLike terracotta, ItemLike wool) {
+    private static void addTypes(EnumColor color, Item bed, Item candle, Item concrete, Item concretePowder, Item carpet, Item stainedGlass, Item stainedGlassPane,
+          Item terracotta, Item wool) {
         BEDS.put(color, bed);
         CANDLES.put(color, candle);
         CONCRETE.put(color, concrete);
@@ -127,10 +127,10 @@ class PaintingRecipeProvider implements ISubRecipeProvider {
         addDyeRecipe(consumer, EnumColor.BLACK, Items.BLACK_DYE, basePath);
     }
 
-    private static void addDyeRecipe(RecipeOutput consumer, EnumColor color, ItemLike dye, String basePath) {
+    private static void addDyeRecipe(RecipeOutput consumer, EnumColor color, Item dye, String basePath) {
         ItemStackChemicalToItemStackRecipeBuilder.painting(
               IngredientCreatorAccess.item().from(MekanismItems.DYE_BASE),
-              IngredientCreatorAccess.chemicalStack().from(MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(color), PigmentExtractingRecipeProvider.DYE_RATE),
+              IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(color), PigmentExtractingRecipeProvider.DYE_RATE),
               new ItemStack(dye),
               false
         ).build(consumer, Mekanism.rl(basePath + color.getRegistryPrefix()));
@@ -140,21 +140,21 @@ class PaintingRecipeProvider implements ISubRecipeProvider {
         for (EnumColor color : EnumUtils.COLORS) {
             DyeColor dye = color.getDyeColor();
             if (dye != null) {
-                addRecoloringRecipe(consumer, color, input, output.apply(dye), rate, basePath);
+                addRecoloringRecipe(consumer, color, input, output.apply(dye).asItem().builtInRegistryHolder(), rate, basePath);
             }
         }
     }
 
-    private static void addRecoloringRecipes(RecipeOutput consumer, TagKey<Item> input, long rate, Map<EnumColor, ItemLike> outputs, String basePath) {
-        for (Map.Entry<EnumColor, ItemLike> entry : outputs.entrySet()) {
-            addRecoloringRecipe(consumer, entry.getKey(), input, entry.getValue(), rate, basePath);
+    private static void addRecoloringRecipes(RecipeOutput consumer, TagKey<Item> input, long rate, Map<EnumColor, Item> outputs, String basePath) {
+        for (Map.Entry<EnumColor, Item> entry : outputs.entrySet()) {
+            addRecoloringRecipe(consumer, entry.getKey(), input, entry.getValue().builtInRegistryHolder(), rate, basePath);
         }
     }
 
-    private static void addRecoloringRecipe(RecipeOutput consumer, EnumColor color, TagKey<Item> input, ItemLike result, long rate, String basePath) {
+    private static void addRecoloringRecipe(RecipeOutput consumer, EnumColor color, TagKey<Item> input, Holder<Item> result, long rate, String basePath) {
         ItemStackChemicalToItemStackRecipeBuilder.painting(
               IngredientCreatorAccess.item().from(BaseRecipeProvider.difference(input, result)),
-              IngredientCreatorAccess.chemicalStack().from(MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(color), rate),
+              IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(color), rate),
               new ItemStack(result),
               false
         ).build(consumer, Mekanism.rl(basePath + color.getRegistryPrefix()));

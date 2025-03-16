@@ -79,7 +79,7 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
         if (this instanceof IColoredBlock coloredBlock) {
             return TextComponentUtil.build(coloredBlock.getColor(), super.getName());
         }
-        BaseTier baseTier = Attribute.getBaseTier(this);
+        BaseTier baseTier = Attribute.getBaseTier(builtInRegistryHolder());
         if (baseTier == null) {
             return super.getName();
         }

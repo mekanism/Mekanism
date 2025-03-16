@@ -29,12 +29,9 @@ public class RenderDigitalMiner extends MekanismTileEntityRenderer<TileEntityDig
     private static final int[] colors = new int[EnumUtils.DIRECTIONS.length];
 
     static {
-        colors[Direction.DOWN.ordinal()] = MekanismRenderer.getColorARGB(255, 255, 255, 0.82F);
-        colors[Direction.UP.ordinal()] = MekanismRenderer.getColorARGB(255, 255, 255, 0.82F);
-        colors[Direction.NORTH.ordinal()] = MekanismRenderer.getColorARGB(255, 255, 255, 0.8F);
-        colors[Direction.SOUTH.ordinal()] = MekanismRenderer.getColorARGB(255, 255, 255, 0.8F);
-        colors[Direction.WEST.ordinal()] = MekanismRenderer.getColorARGB(255, 255, 255, 0.78F);
-        colors[Direction.EAST.ordinal()] = MekanismRenderer.getColorARGB(255, 255, 255, 0.78F);
+        colors[Direction.UP.ordinal()] = colors[Direction.DOWN.ordinal()] = MekanismRenderer.getColorARGB(0xFFFFFF, 0.82F);
+        colors[Direction.SOUTH.ordinal()] = colors[Direction.NORTH.ordinal()] = MekanismRenderer.getColorARGB(0xFFFFFF, 0.8F);
+        colors[Direction.EAST.ordinal()] = colors[Direction.WEST.ordinal()] = MekanismRenderer.getColorARGB(0xFFFFFF, 0.78F);
     }
 
     public static void resetCachedVisuals() {

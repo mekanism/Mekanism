@@ -29,7 +29,7 @@ public class FNEnergyCompat implements IEnergyCompat {
 
     @Override
     public boolean capabilityExists() {
-        return Mekanism.hooks.FluxNetworksLoaded;
+        return Mekanism.hooks.fluxNetworks.isLoaded();
     }
 
     @Override

@@ -1,8 +1,6 @@
 package mekanism.common.recipe.impl;
 
-import mekanism.api.providers.IItemProvider;
 import mekanism.common.Mekanism;
-import mekanism.common.block.BlockEnergyCube;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.recipe.builder.MekDataShapedRecipeBuilder;
@@ -37,9 +35,9 @@ class EnergyCubeRecipeProvider implements ISubRecipeProvider {
         addTieredEnergyCube(consumer, basePath, MekanismBlocks.ULTIMATE_ENERGY_CUBE, MekanismBlocks.ELITE_ENERGY_CUBE, Tags.Items.GEMS_DIAMOND, MekanismTags.Items.ALLOYS_ATOMIC);
     }
 
-    private void addTieredEnergyCube(RecipeOutput consumer, String basePath, BlockRegistryObject<BlockEnergyCube, ?> energyCube,
-          IItemProvider previousEnergyCube, TagKey<Item> ingotTag, TagKey<Item> alloyTag) {
-        String tierName = Attribute.getBaseTier(energyCube.getBlock()).getLowerName();
+    private void addTieredEnergyCube(RecipeOutput consumer, String basePath, BlockRegistryObject<?, ?> energyCube, BlockRegistryObject<?, ?> previousEnergyCube,
+          TagKey<Item> ingotTag, TagKey<Item> alloyTag) {
+        String tierName = Attribute.getBaseTier(energyCube).getLowerName();
         MekDataShapedRecipeBuilder.shapedRecipe(energyCube)
               .pattern(ENERGY_CUBE_PATTERN)
               .key(Pattern.PREVIOUS, previousEnergyCube)

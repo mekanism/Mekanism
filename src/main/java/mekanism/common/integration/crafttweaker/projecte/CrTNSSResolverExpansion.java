@@ -22,22 +22,6 @@ public class CrTNSSResolverExpansion {
     }
 
     /**
-     * Create a {@link NormalizedSimpleStack} representing a given {@link Chemical}.
-     *
-     * @param chemical Chemical to represent
-     *
-     * @return A {@link NormalizedSimpleStack} representing a given {@link Chemical}.
-     */
-    @ZenCodeType.StaticExpansionMethod
-    public static NormalizedSimpleStack fromChemical(Chemical chemical) {
-        if (chemical.isEmptyType()) {
-            //Note: We check this here to provide a better error than we would get in the NSS create method
-            throw new IllegalArgumentException("Cannot make an NSS Representation using an empty chemical.");
-        }
-        return NSSChemical.createChemical(chemical.getChemical());
-    }
-
-    /**
      * Create a {@link NormalizedSimpleStack} representing a given {@link ICrTChemicalStack}.
      *
      * @param stack Chemical Stack to represent

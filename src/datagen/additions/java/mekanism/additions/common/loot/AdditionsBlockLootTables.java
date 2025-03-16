@@ -4,7 +4,6 @@ import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.common.loot.table.BaseBlockLootTables;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.TntBlock;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -31,15 +30,13 @@ public class AdditionsBlockLootTables extends BaseBlockLootTables {
     }
 
     private void registerObsidianTNT() {
-        Block tnt = AdditionsBlocks.OBSIDIAN_TNT.getBlock();
-        add(tnt, LootTable.lootTable().withPool(applyExplosionCondition(tnt, LootPool.lootPool()
-                    .name("main")
-                    .setRolls(ConstantValue.exactly(1))
-                    .add(LootItem.lootTableItem(tnt)
-                          .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(tnt)
-                                .setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(TntBlock.UNSTABLE, false)))
-                    )
-              ))
-        );
+        add(AdditionsBlocks.OBSIDIAN_TNT, tnt -> LootTable.lootTable().withPool(applyExplosionCondition(tnt, LootPool.lootPool()
+              .name("main")
+              .setRolls(ConstantValue.exactly(1))
+              .add(LootItem.lootTableItem(tnt)
+                    .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(tnt)
+                          .setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(TntBlock.UNSTABLE, false)))
+              )
+        )));
     }
 }

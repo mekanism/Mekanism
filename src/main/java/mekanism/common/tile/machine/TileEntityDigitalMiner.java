@@ -34,6 +34,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.attachments.FilterAware;
 import mekanism.common.attachments.OverflowAware;
 import mekanism.common.base.MekFakePlayer;
+import mekanism.common.block.BlockBounding;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MinerEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
@@ -986,10 +987,11 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         super.notifyComparatorChange();
         Direction facing = getDirection();
         Direction left = MekanismUtils.getLeft(facing);
+        BlockBounding boundingBlock = MekanismBlocks.BOUNDING_BLOCK.value();
         //Proxy the comparator updates to the various ports we expose comparators to
-        level.updateNeighbourForOutputSignal(worldPosition.relative(left), MekanismBlocks.BOUNDING_BLOCK.getBlock());
-        level.updateNeighbourForOutputSignal(worldPosition.relative(left.getOpposite()), MekanismBlocks.BOUNDING_BLOCK.getBlock());
-        level.updateNeighbourForOutputSignal(worldPosition.relative(facing.getOpposite()).above(), MekanismBlocks.BOUNDING_BLOCK.getBlock());
+        level.updateNeighbourForOutputSignal(worldPosition.relative(left), boundingBlock);
+        level.updateNeighbourForOutputSignal(worldPosition.relative(left.getOpposite()), boundingBlock);
+        level.updateNeighbourForOutputSignal(worldPosition.relative(facing.getOpposite()).above(), boundingBlock);
     }
 
     @Override

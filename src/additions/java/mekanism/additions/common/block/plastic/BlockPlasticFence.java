@@ -46,7 +46,7 @@ public class BlockPlasticFence extends FenceBlock implements IColoredBlock, ISta
 
     @Override
     public BlockState getStateForPlacement(@NotNull BlockPlaceContext context) {
-        return BlockStateHelper.getStateForPlacement(this, super.getStateForPlacement(context), context);
+        return BlockStateHelper.getStateForPlacement(super.getStateForPlacement(context), context);
     }
 
     @NotNull

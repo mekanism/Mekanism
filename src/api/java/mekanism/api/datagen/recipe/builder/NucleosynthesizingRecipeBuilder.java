@@ -56,6 +56,6 @@ public class NucleosynthesizingRecipeBuilder extends MekanismRecipeBuilder<Nucle
      * @param recipeOutput Finished Recipe Consumer.
      */
     public void build(RecipeOutput recipeOutput) {
-        build(recipeOutput, output.getItem());
+        build(recipeOutput, output.getItemHolder());
     }
 }

@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
-//TODO - 1.21: Heavily re-evaluate this class/make sure nothing has gotten broken
+//TODO - 1.22: Heavily re-evaluate this class/make sure nothing has gotten broken
 public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu> extends AbstractContainerScreen<T> {
 
     public VirtualSlotContainerScreen(T container, Inventory inv, Component titleIn) {
@@ -131,7 +131,7 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
         long time = Util.getMillis();
         this.doubleclick = this.lastClickSlot == slot && time - this.lastClickTime < 250L && this.lastClickButton == button;
         this.skipNextRelease = false;
-        if (button != 0 && button != 1 && !pickBlockButton) {
+        if (button != GLFW.GLFW_MOUSE_BUTTON_LEFT && button != GLFW.GLFW_MOUSE_BUTTON_RIGHT && !pickBlockButton) {
             checkHotbarMouseClicked(button);
         } else if (slot.index != -1) {
             if (minecraft.options.touchscreen().get()) {
@@ -160,11 +160,11 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
                     this.quickCraftingButton = button;
                     this.quickCraftSlots.clear();
                     if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
-                        this.quickCraftingType = 0;
+                        this.quickCraftingType = AbstractContainerMenu.QUICKCRAFT_TYPE_CHARITABLE;
                     } else if (button == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
-                        this.quickCraftingType = 1;
-                    } else if (pickBlockButton) {
-                        this.quickCraftingType = 2;
+                        this.quickCraftingType = AbstractContainerMenu.QUICKCRAFT_TYPE_GREEDY;
+                    } else { //pickBlockButton
+                        this.quickCraftingType = AbstractContainerMenu.QUICKCRAFT_TYPE_CLONE;
                     }
                 }
             }

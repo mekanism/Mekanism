@@ -3,8 +3,10 @@ package mekanism.api.text;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import mekanism.api.inventory.IHashedItem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
@@ -18,7 +20,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.common.TranslatableEnum;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 public class TextComponentUtil {
@@ -59,6 +60,9 @@ public class TextComponentUtil {
             if (component == null) {
                 //If the component doesn't exist just skip it
                 continue;
+            } else if (component instanceof Holder<?> holder && holder.isBound()) {
+                //Try to get the value of a holder if it has one and get the translation based on the stored value
+                component = holder.value();
             }
             MutableComponent current = null;
             switch (component) {
@@ -74,6 +78,7 @@ public class TextComponentUtil {
                 case Block block -> current = block.getName().copy();
                 case Item item -> current = item.getDescription().copy();
                 case ItemStack stack -> current = stack.getHoverName().copy();
+                case IHashedItem item -> current = item.getInternalStack().getHoverName().copy();
                 case FluidStack stack -> current = stack.getHoverName().copy();
                 case Fluid fluid -> current = fluid.getFluidType().getDescription().copy();
                 case EntityType<?> entityType -> current = entityType.getDescription().copy();
@@ -189,6 +194,9 @@ public class TextComponentUtil {
                 args.add(TEXT_NULL);
                 cachedStyle = Style.EMPTY;
                 continue;
+            } else if (component instanceof Holder<?> holder && holder.isBound()) {
+                //Try to get the value of a holder if it has one and get the translation based on the stored value
+                component = holder.value();
             }
             MutableComponent current = null;
             if (component instanceof Component c) {
@@ -204,6 +212,8 @@ public class TextComponentUtil {
                 current = item.getDescription().copy();
             } else if (component instanceof ItemStack stack) {
                 current = stack.getHoverName().copy();
+            } else if (component instanceof IHashedItem item) {
+                current = item.getInternalStack().getHoverName().copy();
             } else if (component instanceof FluidStack stack) {
                 current = stack.getHoverName().copy();
             } else if (component instanceof Fluid fluid) {

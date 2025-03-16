@@ -12,6 +12,7 @@ import mekanism.common.integration.crafttweaker.CrTConstants;
 @NativeMethod(name = "isExclusive", parameters = {
       @MethodParameter(type = int.class, name = "mask", description = "Mask of all flags to check exclusivity against.")
 }, getterName = "exclusive")
+@NativeMethod(name = "getRegistryName", parameters = {}, getterName = "registryName")
 @NativeTypeRegistration(value = ModuleData.class, zenCodeName = CrTConstants.CLASS_MODULE_DATA)
 public class CrTModuleData {
 }

@@ -25,7 +25,7 @@ public class ComponentBackedResistiveEnergyContainer extends ComponentBackedEner
     }
 
     private ComponentBackedResistiveEnergyContainer(ItemStack attachedTo, int containerIndex) {
-        super(attachedTo, containerIndex, BasicEnergyContainer.manualOnly, BasicEnergyContainer.alwaysTrue, ConstantPredicates.ZERO_LONG, ConstantPredicates.ZERO_LONG);
+        super(attachedTo, containerIndex, BasicEnergyContainer.manualOnly, ConstantPredicates.alwaysTrue(), ConstantPredicates.ZERO_LONG, ConstantPredicates.ZERO_LONG);
     }
 
     @Override

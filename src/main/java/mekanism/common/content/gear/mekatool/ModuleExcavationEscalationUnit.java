@@ -86,7 +86,7 @@ public record ModuleExcavationEscalationUnit(ExcavationMode excavationMode) impl
         if (radialData == getRadialData(module)) {
             ExcavationMode newMode = (ExcavationMode) mode;
             if (excavationMode != newMode) {
-                moduleContainer.replaceModuleConfig(player.registryAccess(), stack, module.getData(), module.<ExcavationMode>getConfigOrThrow(EXCAVATION_MODE).with(newMode));
+                moduleContainer.replaceModuleConfig(player.registryAccess(), stack, module.getDataHolder(), module.<ExcavationMode>getConfigOrThrow(EXCAVATION_MODE).with(newMode));
             }
         }
         return false;
@@ -104,7 +104,7 @@ public record ModuleExcavationEscalationUnit(ExcavationMode excavationMode) impl
             if (displayChangeMessage) {
                 module.displayModeChange(player, MekanismLang.MODULE_EFFICIENCY.translate(), newMode);
             }
-            moduleContainer.replaceModuleConfig(player.registryAccess(), stack, module.getData(), module.<ExcavationMode>getConfigOrThrow(EXCAVATION_MODE).with(newMode));
+            moduleContainer.replaceModuleConfig(player.registryAccess(), stack, module.getDataHolder(), module.<ExcavationMode>getConfigOrThrow(EXCAVATION_MODE).with(newMode));
         }
     }
 

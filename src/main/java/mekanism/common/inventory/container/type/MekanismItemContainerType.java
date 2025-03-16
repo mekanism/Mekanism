@@ -1,10 +1,9 @@
 package mekanism.common.inventory.container.type;
 
-import mekanism.common.network.to_client.qio.BulkQIOData;
 import mekanism.common.inventory.container.item.PortableQIODashboardContainer;
 import mekanism.common.inventory.container.type.MekanismItemContainerType.IMekanismItemContainerFactory;
 import mekanism.common.item.ItemPortableQIODashboard;
-import mekanism.common.util.RegistryUtils;
+import mekanism.common.network.to_client.qio.BulkQIOData;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
@@ -66,7 +65,7 @@ public class MekanismItemContainerType<ITEM extends Item, CONTAINER extends Abst
         if (type.isInstance(stack.getItem())) {
             return stack;
         }
-        throw new IllegalStateException("Client received invalid stack (" + RegistryUtils.getName(stack.getItem()) + ") for item container.");
+        throw new IllegalStateException("Client received invalid stack (" + stack.getItem() + ") for item container.");
     }
 
     @FunctionalInterface

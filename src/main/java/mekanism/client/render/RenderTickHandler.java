@@ -128,14 +128,14 @@ public class RenderTickHandler {
     //Note: This listener is only registered if a recipe viewer is loaded
     public static void guiOpening(ScreenEvent.Opening event) {
         if (event.getCurrentScreen() instanceof GuiMekanism<?> screen) {
-            if (Mekanism.hooks.JEILoaded) {
+            if (Mekanism.hooks.jei.isLoaded()) {
                 //If JEI is loaded and our current screen is a mekanism gui, check if the new screen is a JEI recipe screen
                 if (event.getNewScreen() instanceof IRecipesGui) {
                     //If it is mark on our current screen that we are switching to JEI
                     screen.switchingToRecipeViewer = true;
                 }
             }
-            if (Mekanism.hooks.EmiLoaded) {
+            if (Mekanism.hooks.emi.isLoaded()) {
                 //If Emi is loaded and our current screen is a mekanism gui, check if the new screen is an Emi recipe screen
                 // https://github.com/emilyploszaj/emi/issues/481
                 if (isEmiScreen(event.getNewScreen())) {

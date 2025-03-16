@@ -1,4 +1,4 @@
-// 1.21.1	2024-08-17T10:41:21.1257669	Advancements: mekanism
+// 1.21.1	2025-03-12T12:16:50.5655696	Advancements: mekanism
 3a2f5d1f072fc9f3329d78b373ad22b388f201a6 data/mekanism/advancement/advanced_control_circuit.json
 933630e10a3785e731fc362ba0d8f98cdd70394e data/mekanism/advancement/advanced_qio_drive.json
 a8e9b9fc41a2a07212d5a1f160c849624065ead0 data/mekanism/advancement/alarm.json
@@ -80,6 +80,10 @@ a73b2c121ff493deffaacad1d31105650143e143 data/mekanism/advancement/root.json
 e85a0b5f32d0cb4868692fa23f5697a10d54b8cf data/mekanism/advancement/simple_mass_storage.json
 e767e004c5b3477e3a521d4fa7b2fdde190bf376 data/mekanism/advancement/sna.json
 62b8838a2b8b25e7b4f556045f9cbb064e1adfd1 data/mekanism/advancement/sps.json
+5275a4d068e622f0ccb705517c7976449e2335b1 data/mekanism/advancement/sps_experiment_creeper.json
+87ca2c0ae43b80860185df4e43c2f3e07c95fa09 data/mekanism/advancement/sps_experiment_mooshroom.json
+47a6acef06d1c8ad85e67233d3d4e8c8d7ad661d data/mekanism/advancement/sps_experiment_pig.json
+614baa69c203d3aee7143482e2bafe32ab44db35 data/mekanism/advancement/sps_experiment_villager.json
 21f6db806cc5fa2de5d66564b84fa0e7b920f29b data/mekanism/advancement/stabilizing_chunks.json
 ec9833f76b8cf5988a5cf86d85cbb8f6533f091d data/mekanism/advancement/steel_casing.json
 ec806258955297ade2eb6761ba27dfdcc5eda90b data/mekanism/advancement/steel_ingot.json

@@ -72,10 +72,10 @@ import mezz.jei.api.registration.IRecipeTransferRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 
@@ -90,7 +90,7 @@ public class MekanismJEI implements IModPlugin {
 
     public static boolean shouldLoad() {
         //Skip handling if both EMI and JEI are loaded as otherwise some things behave strangely
-        return !Mekanism.hooks.EmiLoaded;
+        return !Mekanism.hooks.emi.isLoaded();
     }
 
     public static RecipeType<?> genericRecipeType(IRecipeViewerRecipeType<?> recipeType) {
@@ -130,10 +130,10 @@ public class MekanismJEI implements IModPlugin {
         return ResourceLocation.fromNamespaceAndPath(Mekanism.MODID, "jei_plugin");
     }
 
-    public static void registerItemSubtypes(ISubtypeRegistration registry, Collection<? extends Holder<? extends ItemLike>> itemProviders) {
-        for (Holder<? extends ItemLike> itemProvider : itemProviders) {
+    public static void registerItemSubtypes(ISubtypeRegistration registry, Collection<? extends Holder<Item>> items) {
+        for (Holder<Item> item : items) {
             //Handle items
-            ItemStack stack = new ItemStack(itemProvider.value());
+            ItemStack stack = new ItemStack(item);
             if (Capabilities.STRICT_ENERGY.hasCapability(stack) || Capabilities.CHEMICAL.hasCapability(stack) || Capabilities.FLUID.hasCapability(stack)) {
                 registry.registerSubtypeInterpreter(stack.getItem(), MEKANISM_DATA_INTERPRETER);
             }
@@ -151,14 +151,15 @@ public class MekanismJEI implements IModPlugin {
     @Override
     public void registerIngredients(IModIngredientRegistration registry) {
         //Note: We register the ingredient types regardless of if EMI is loaded so that we don't crash any addons that are trying to reference them
-        List<ChemicalStack> types = MekanismAPI.CHEMICAL_REGISTRY.stream()
-              .filter(chemical -> !chemical.isEmptyType())//Don't add the empty type. We will allow JEI to filter out any that are hidden from recipe viewers
-              .map(chemical -> chemical.getStack(FluidType.BUCKET_VOLUME))
+        List<ChemicalStack> types = MekanismAPI.CHEMICAL_REGISTRY.holders()
+              //Don't add the empty type. We will allow JEI to filter out any that are hidden from recipe viewers
+              .filter(chemical -> !chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY))
+              .map(chemical -> new ChemicalStack(chemical, FluidType.BUCKET_VOLUME))
               .toList();
         CHEMICAL_STACK_HELPER.setColorHelper(registry.getColorHelper());
-        registry.register(TYPE_CHEMICAL, types, CHEMICAL_STACK_HELPER, new ChemicalStackRenderer(), Chemical.CODEC.xmap(
-              chemical -> chemical.getStack(FluidType.BUCKET_VOLUME),
-              ChemicalStack::getChemical
+        registry.register(TYPE_CHEMICAL, types, CHEMICAL_STACK_HELPER, new ChemicalStackRenderer(), Chemical.HOLDER_CODEC.xmap(
+              chemical -> new ChemicalStack(chemical, FluidType.BUCKET_VOLUME),
+              ChemicalStack::getChemicalHolder
         ));
     }
 
@@ -263,11 +264,11 @@ public class MekanismJEI implements IModPlugin {
         RecipeRegistryHelper.register(registry, RecipeViewerRecipeType.BOILER, BoilerRecipeViewerRecipe.getBoilerRecipes());
         RecipeRegistryHelper.register(registry, RecipeViewerRecipeType.ENERGY_CONVERSION, MekanismRecipeType.ENERGY_CONVERSION);
         RecipeRegistryHelper.register(registry, RecipeViewerRecipeType.CHEMICAL_CONVERSION, MekanismRecipeType.CHEMICAL_CONVERSION);
-        RecipeRegistryHelper.addAnvilRecipes(registry, MekanismItems.HDPE_REINFORCED_ELYTRA, item -> new ItemStack[]{MekanismItems.HDPE_SHEET.getItemStack()});
+        RecipeRegistryHelper.addAnvilRecipes(registry, MekanismItems.HDPE_REINFORCED_ELYTRA, item -> new ItemStack[]{MekanismItems.HDPE_SHEET.asStack()});
         //Note: Use a "full" bucket's worth of heavy water, so that JEI renders it as desired in the info page
-        registry.addIngredientInfo(MekanismFluids.HEAVY_WATER.getFluidStack(FluidType.BUCKET_VOLUME), NeoForgeTypes.FLUID_STACK,
+        registry.addIngredientInfo(MekanismFluids.HEAVY_WATER.asStack(FluidType.BUCKET_VOLUME), NeoForgeTypes.FLUID_STACK,
               MekanismLang.RECIPE_VIEWER_INFO_HEAVY_WATER.translate(MekanismConfig.general.pumpHeavyWaterAmount.get()));
-        registry.addIngredientInfo(MekanismAPI.MODULE_REGISTRY.stream().map(data -> data.getItemProvider().getItemStack()).toList(),
+        registry.addIngredientInfo(MekanismAPI.MODULE_REGISTRY.stream().map(data -> new ItemStack(data.getItemHolder())).toList(),
               VanillaTypes.ITEM_STACK, MekanismLang.RECIPE_VIEWER_INFO_MODULE_INSTALLATION.translate());
     }
 

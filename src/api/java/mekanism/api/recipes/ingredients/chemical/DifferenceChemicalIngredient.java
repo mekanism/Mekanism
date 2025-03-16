@@ -8,6 +8,7 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
+import net.minecraft.core.Holder;
 import net.neoforged.neoforge.common.crafting.DifferenceIngredient;
 import org.jetbrains.annotations.Nullable;
 
@@ -39,8 +40,10 @@ public non-sealed class DifferenceChemicalIngredient extends ChemicalIngredient 
     }
 
     @Override
-    public final Stream<Chemical> generateChemicals() {
-        return base().generateChemicals().filter(subtracted().negate());
+    public final Stream<Holder<Chemical>> generateChemicalHolders() {
+        //return base().generateChemicalHolders().filter(subtracted().negate());
+        //TODO - 1.22: Use the above
+        return base().generateChemicalHolders().filter(holder -> !subtracted().test(holder));
     }
 
     @Override
@@ -49,7 +52,7 @@ public non-sealed class DifferenceChemicalIngredient extends ChemicalIngredient 
     }
 
     @Override
-    public final boolean test(Chemical chemical) {
+    public final boolean test(Holder<Chemical> chemical) {
         return base().test(chemical) && !subtracted().test(chemical);
     }
 

@@ -17,14 +17,15 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.chemical.IChemicalTracker;
 import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
-import mekanism.common.content.network.distribution.ChemicalTransmitterSaveTarget;
 import mekanism.common.content.network.distribution.ChemicalHandlerTarget;
+import mekanism.common.content.network.distribution.ChemicalTransmitterSaveTarget;
 import mekanism.common.content.network.transmitter.PressurizedTube;
 import mekanism.common.lib.transmitter.DynamicBufferedNetwork;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.common.NeoForge;
 import org.jetbrains.annotations.NotNull;
@@ -37,7 +38,7 @@ public class ChemicalNetwork extends DynamicBufferedNetwork<IChemicalHandler, Ch
 
     public final IChemicalTank chemicalTank;
     private final List<IChemicalTank> chemicalTanks;
-    public Chemical lastChemical = MekanismAPI.EMPTY_CHEMICAL;
+    public Holder<Chemical> lastChemical = MekanismAPI.EMPTY_CHEMICAL_HOLDER;
     private long prevTransferAmount;
 
     public ChemicalNetwork(UUID networkID) {
@@ -82,7 +83,7 @@ public class ChemicalNetwork extends DynamicBufferedNetwork<IChemicalHandler, Ch
                     adoptBuffer(net);
                 } else {
                     // compare the chemicals themselves
-                    if (this.chemicalTank.getType() == net.chemicalTank.getType()) {
+                    if (this.chemicalTank.isTypeEqual(net.chemicalTank.getStack())) {
                         long amount = net.chemicalTank.getStored();
                         MekanismUtils.logMismatchedStackSize(this.chemicalTank.growStack(amount, Action.EXECUTE), amount);
                     } else {
@@ -117,11 +118,9 @@ public class ChemicalNetwork extends DynamicBufferedNetwork<IChemicalHandler, Ch
         if (!transmitterReleased.isEmpty()) {
             if (chemicalTank.isEmpty()) {
                 chemicalTank.setStack(transmitterReleased.copy());
-            } else {
-                if (transmitterReleased.getChemical() == chemicalTank.getType()) {
-                    long amount = transmitterReleased.getAmount();
-                    MekanismUtils.logMismatchedStackSize(chemicalTank.growStack(amount, Action.EXECUTE), amount);
-                }
+            } else if (chemicalTank.isTypeEqual(transmitterReleased)) {
+                long amount = transmitterReleased.getAmount();
+                MekanismUtils.logMismatchedStackSize(chemicalTank.growStack(amount, Action.EXECUTE), amount);
             }
         }
     }
@@ -237,7 +236,7 @@ public class ChemicalNetwork extends DynamicBufferedNetwork<IChemicalHandler, Ch
             if (chemicalTank.isEmpty()) {
                 return true;
             }
-            return other.chemicalTank.isEmpty() || chemicalTank.getType() == other.chemicalTank.getType();
+            return other.chemicalTank.isEmpty() || chemicalTank.isTypeEqual(other.chemicalTank.getStack());
         }
         return false;
     }
@@ -256,24 +255,23 @@ public class ChemicalNetwork extends DynamicBufferedNetwork<IChemicalHandler, Ch
     @Override
     public void onContentsChanged() {
         markDirty();
-        Chemical type = chemicalTank.getType();
-        if (!lastChemical.equals(type)) {
+        if (!chemicalTank.isTypeEqual(lastChemical)) {
             //If the chemical type does not match update it, and mark that we need an update
-            if (!type.isEmptyType()) {
-                lastChemical = type;
+            if (!chemicalTank.isEmpty()) {
+                lastChemical = chemicalTank.getTypeHolder();
             }
             needsUpdate = true;
         }
     }
 
-    public void setLastChemical(@NotNull Chemical chemical) {
-        if (chemical.isEmptyType()) {
+    public void setLastChemical(@NotNull Holder<Chemical> chemical) {
+        if (chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
             if (!chemicalTank.isEmpty()) {
                 chemicalTank.setEmpty();
             }
         } else {
             lastChemical = chemical;
-            chemicalTank.setStack(lastChemical.getChemical().getStack(1));
+            chemicalTank.setStack(new ChemicalStack(lastChemical, 1));
         }
     }
 
@@ -285,9 +283,9 @@ public class ChemicalNetwork extends DynamicBufferedNetwork<IChemicalHandler, Ch
 
     public static class ChemicalTransferEvent extends TransferEvent<ChemicalNetwork> {
 
-        public final Chemical transferType;
+        public final Holder<Chemical> transferType;
 
-        public ChemicalTransferEvent(ChemicalNetwork network, Chemical type) {
+        public ChemicalTransferEvent(ChemicalNetwork network, Holder<Chemical> type) {
             super(network);
             transferType = type;
         }

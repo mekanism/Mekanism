@@ -1,6 +1,5 @@
 package mekanism.common.tile.transmitter;
 
-import mekanism.api.providers.IBlockProvider;
 import mekanism.api.tier.BaseTier;
 import mekanism.client.model.data.TransmitterModelData;
 import mekanism.common.block.states.BlockStateHelper;
@@ -8,17 +7,19 @@ import mekanism.common.block.states.TransmitterType;
 import mekanism.common.content.network.transmitter.LogisticalTransporter;
 import mekanism.common.registries.MekanismBlocks;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
 public class TileEntityLogisticalTransporter extends TileEntityLogisticalTransporterBase {
 
-    public TileEntityLogisticalTransporter(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
+    public TileEntityLogisticalTransporter(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
     }
 
     @Override
-    protected LogisticalTransporter createTransmitter(IBlockProvider blockProvider) {
+    protected LogisticalTransporter createTransmitter(Holder<Block> blockProvider) {
         return new LogisticalTransporter(blockProvider, this);
     }
 

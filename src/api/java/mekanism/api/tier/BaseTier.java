@@ -12,6 +12,7 @@ import net.minecraft.util.FastColor;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.material.MapColor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * The default tiers used in Mekanism.
@@ -114,5 +115,23 @@ public enum BaseTier implements StringRepresentable, SupportsColorMap {
     @Override
     public String getSerializedName() {
         return name().toLowerCase(Locale.ROOT);
+    }
+
+    /**
+     * Helper to lookup what base tier corresponds to the given integer value.
+     * @param tier Ordinal of the tier level to get.
+     * @return the corresponding Base Tier.
+     * @since 10.7.11
+     */
+    @Nullable
+    public static BaseTier getTier(int tier) {
+        return switch (tier) {
+            case 0 -> BASIC;
+            case 1 -> ADVANCED;
+            case 2 -> ELITE;
+            case 3 -> ULTIMATE;
+            case 4 -> CREATIVE;
+            default -> null;
+        };
     }
 }

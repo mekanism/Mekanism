@@ -2,7 +2,6 @@ package mekanism.client.recipe_viewer.type;
 
 import java.util.List;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.providers.IItemProvider;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.vanilla_input.RotaryRecipeInput;
 import mekanism.api.text.IHasTranslationKey;
@@ -14,10 +13,11 @@ import mekanism.common.registries.MekanismBlocks;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public record RotaryRVRecipeType(ResourceLocation id, IHasTranslationKey name, List<IItemProvider> workstations) implements IRecipeViewerRecipeType<RotaryRecipe>,
+public record RotaryRVRecipeType(ResourceLocation id, IHasTranslationKey name, List<ItemLike> workstations) implements IRecipeViewerRecipeType<RotaryRecipe>,
       IMekanismRecipeTypeProvider<RotaryRecipeInput, RotaryRecipe, RotaryInputRecipeCache> {
 
     public RotaryRVRecipeType(ResourceLocation id, IHasTranslationKey name) {
@@ -41,7 +41,7 @@ public record RotaryRVRecipeType(ResourceLocation id, IHasTranslationKey name, L
 
     @Override
     public ItemStack iconStack() {
-        return MekanismBlocks.ROTARY_CONDENSENTRATOR.getItemStack();
+        return new ItemStack(MekanismBlocks.ROTARY_CONDENSENTRATOR);
     }
 
     @Nullable

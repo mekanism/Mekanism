@@ -17,6 +17,8 @@ public interface ITooltipHelper {
 
     Component getRadioactivityDisplayShort(double radioactivity);
 
+    Component getTemperatureDisplayShort(double temperature);
+
     String getFormattedNumber(long number);
 
     Component getPercent(double ratio);

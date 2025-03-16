@@ -22,8 +22,8 @@ public interface AttributeState extends Attribute {
         return state;
     }
 
-    @Contract("_, null, _, _, _, _ -> null")
-    default BlockState getStateForPlacement(Block block, @Nullable BlockState state, @NotNull LevelAccessor world, @NotNull BlockPos pos, @Nullable Player player,
+    @Contract("null, _, _, _, _ -> null")
+    default BlockState getStateForPlacement(@Nullable BlockState state, @NotNull LevelAccessor world, @NotNull BlockPos pos, @Nullable Player player,
           @NotNull Direction face) {
         return state;
     }

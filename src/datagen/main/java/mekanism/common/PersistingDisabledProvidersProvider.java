@@ -20,7 +20,6 @@ import mekanism.client.integration.emi.EmiAliasProvider;
 import mekanism.client.integration.emi.MekanismEmiDefaults;
 import mekanism.client.recipe_viewer.alias.IAliasMapping;
 import mekanism.client.recipe_viewer.alias.MekanismAliasMapping;
-import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.crafttweaker.MekanismCrTExampleProvider;
 import mekanism.common.integration.projecte.MekanismCustomConversions;
 import mekanism.common.lib.FieldReflectionHelper;
@@ -31,7 +30,6 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.data.HashCache;
 import net.minecraft.data.HashCache.ProviderCache;
 import net.minecraft.data.PackOutput;
-import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import org.jetbrains.annotations.NotNull;
@@ -52,10 +50,9 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
         DataGenerator gen = event.getGenerator();
         PackOutput output = gen.getPackOutput();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
-        ModList modList = ModList.get();
         Set<String> pathsToSkip = new HashSet<>();
         List<String> fakeProviders = new ArrayList<>();
-        if (modList.isLoaded(MekanismHooks.EMI_MOD_ID)) {
+        if (Mekanism.hooks.emi.isLoaded()) {
             gen.addProvider(event.includeClient(), new EmiAliasProvider(output, lookupProvider, Mekanism.MODID, MekanismAliasMapping::new));
             gen.addProvider(event.includeClient(), new MekanismEmiDefaults(output, existingFileHelper, lookupProvider));
         } else {
@@ -64,13 +61,13 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
             fakeProviders.add("EMI Alias Provider: mekanism");
             fakeProviders.add("EMI Default Recipe Provider: mekanism");
         }
-        if (modList.isLoaded(MekanismHooks.PROJECTE_MOD_ID)) {
+        if (Mekanism.hooks.projecte.isLoaded()) {
             gen.addProvider(event.includeServer(), new MekanismCustomConversions(output, lookupProvider));
         } else {
             pathsToSkip.add("pe_custom_conversions");
             fakeProviders.add("Custom EMC Conversions: mekanism");
         }
-        if (modList.isLoaded(MekanismHooks.CRAFTTWEAKER_MOD_ID)) {
+        if (Mekanism.hooks.craftTweaker.isLoaded()) {
             gen.addProvider(event.includeServer(), new MekanismCrTExampleProvider(output, existingFileHelper));
         } else {
             pathsToSkip.add("scripts");
@@ -86,10 +83,9 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
           Supplier<IAliasMapping> mappings, Supplier<ExistingFileProvider> defaultsProviderFunction) {
         DataGenerator gen = event.getGenerator();
         PackOutput output = gen.getPackOutput();
-        ModList modList = ModList.get();
         Set<String> pathsToSkip = new HashSet<>();
         List<String> fakeProviders = new ArrayList<>();
-        if (modList.isLoaded(MekanismHooks.EMI_MOD_ID)) {
+        if (Mekanism.hooks.emi.isLoaded()) {
             gen.addProvider(event.includeClient(), new EmiAliasProvider(output, lookupProvider, modid, mappings));
             gen.addProvider(event.includeClient(), defaultsProviderFunction.get().create(output, event.getExistingFileHelper(), lookupProvider));
         } else {

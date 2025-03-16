@@ -3,7 +3,6 @@ package mekanism.common.integration.framedblocks;
 import mekanism.api.chemical.Chemical;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
@@ -11,8 +10,9 @@ import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import org.jetbrains.annotations.NotNull;
 
 final class ChemicalSpriteParticle extends TextureSheetParticle {
 
@@ -21,7 +21,7 @@ final class ChemicalSpriteParticle extends TextureSheetParticle {
     private final float vo;
     private final int brightness;
 
-    ChemicalSpriteParticle(ClientLevel level, double x, double y, double z, double sx, double sy, double sz, Chemical chemical) {
+    ChemicalSpriteParticle(ClientLevel level, double x, double y, double z, double sx, double sy, double sz, Holder<Chemical> chemical) {
         super(level, x, y, z, sx, sy, sz);
         this.pos = BlockPos.containing(x, y, z);
         this.gravity = 1F;
@@ -30,14 +30,15 @@ final class ChemicalSpriteParticle extends TextureSheetParticle {
         this.vo = random.nextFloat() * 3F;
         this.brightness = 0;
 
-        int tint = chemical.getTint();
-        this.rCol = .6F * MekanismRenderer.getRed(tint);
-        this.gCol = .6F * MekanismRenderer.getGreen(tint);
-        this.bCol = .6F * MekanismRenderer.getBlue(tint);
+        int tint = MekanismRenderer.getTint(chemical);
+        this.rCol = 0.6F * MekanismRenderer.getRed(tint);
+        this.gCol = 0.6F * MekanismRenderer.getGreen(tint);
+        this.bCol = 0.6F * MekanismRenderer.getBlue(tint);
 
-        setSprite(Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(chemical.getIcon()));
+        setSprite(MekanismRenderer.getChemicalTexture(chemical));
     }
 
+    @NotNull
     @Override
     public ParticleRenderType getRenderType() {
         return ParticleRenderType.TERRAIN_SHEET;

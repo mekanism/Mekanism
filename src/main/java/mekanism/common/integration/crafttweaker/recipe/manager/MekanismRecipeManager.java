@@ -10,8 +10,8 @@ import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import java.util.List;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.MekanismRecipe;
+import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.CrTConstants;
-import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import net.minecraft.resources.ResourceLocation;
@@ -35,7 +35,7 @@ public abstract class MekanismRecipeManager<INPUT extends RecipeInput, RECIPE ex
     protected abstract String describeOutputs(RECIPE recipe);
 
     protected void addRecipe(String recipeName, RECIPE recipe) {
-        RecipeHolder<RECIPE> recipeHolder = createHolder(getAndValidateName(recipeName), recipe);
+        RecipeHolder<RECIPE> recipeHolder = createHolder(Mekanism.hooks.craftTweaker.rl(fixRecipeName(recipeName)), recipe);
         CraftTweakerAPI.apply(new ActionAddRecipe<>(this, recipeHolder).outputDescriber(holder -> describeOutputs(holder.value())));
     }
 
@@ -60,10 +60,6 @@ public abstract class MekanismRecipeManager<INPUT extends RecipeInput, RECIPE ex
     @Deprecated
     public void remove(IIngredient output) {
         throw new UnsupportedOperationException("Mekanism's recipe managers don't support removal by output, please remove by recipe name.");
-    }
-
-    protected ResourceLocation getAndValidateName(String path) {
-        return CrTUtils.rl(fixRecipeName(path));
     }
 
     protected ItemStack getAndValidateNotEmpty(IItemStack stack) {

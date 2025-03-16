@@ -27,6 +27,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.Holder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -42,58 +43,59 @@ import org.jetbrains.annotations.Nullable;
 @MethodsReturnNonnullByDefault
 public final class Module<MODULE extends ICustomModule<MODULE>> implements IModule<MODULE> {
 
-    private record InstalledData<MODULE extends ICustomModule<MODULE>>(ModuleData<MODULE> data, int installed) {
+    private record InstalledData(Holder<ModuleData<?>> holder, int installed) {
 
-        private static final Codec<InstalledData<?>> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-              MekanismAPI.MODULE_REGISTRY.byNameCodec().fieldOf(SerializationConstants.TYPE).forGetter(InstalledData::data),
+        private static final Codec<InstalledData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+              MekanismAPI.MODULE_REGISTRY.holderByNameCodec().fieldOf(SerializationConstants.TYPE).forGetter(InstalledData::holder),
               ExtraCodecs.POSITIVE_INT.fieldOf(SerializationConstants.AMOUNT).forGetter(InstalledData::installed)
         ).apply(instance, InstalledData::new));
-        private static final StreamCodec<RegistryFriendlyByteBuf, InstalledData<?>> STREAM_CODEC = StreamCodec.composite(
-              ByteBufCodecs.registry(MekanismAPI.MODULE_REGISTRY_NAME), InstalledData::data,
+        private static final StreamCodec<RegistryFriendlyByteBuf, InstalledData> STREAM_CODEC = StreamCodec.composite(
+              ByteBufCodecs.holderRegistry(MekanismAPI.MODULE_REGISTRY_NAME), InstalledData::holder,
               ByteBufCodecs.VAR_INT, InstalledData::installed,
               InstalledData::new
         );
 
-        public Module<MODULE> create(List<ModuleConfig<?>> configs) {
-            return new Module<>(data, installed, configs);
+        public Module<?> create(List<ModuleConfig<?>> configs) {
+            return new Module<>(holder, installed, configs);
         }
 
         public MapCodec<List<ModuleConfig<?>>> configCodecs() {
+            ModuleData<?> data = holder.value();
             return data.configCodecs(installed).optionalFieldOf(SerializationConstants.CONFIG, data.defaultConfigs(installed));
         }
 
         public StreamCodec<RegistryFriendlyByteBuf, List<ModuleConfig<?>>> configStreamCodecs() {
-            return data.configStreamCodecs(installed);
+            return holder.value().configStreamCodecs(installed);
         }
     }
 
     public static final Codec<Module<?>> CODEC = InstalledData.CODEC.dispatch(
-          module -> new InstalledData<>(module.getData(), module.getInstalledCount()),
+          module -> new InstalledData(module.getDataHolder(), module.getInstalledCount()),
           installedData -> RecordCodecBuilder.mapCodec(instance -> instance.group(
                 installedData.configCodecs().forGetter(Module::getConfigs)
           ).apply(instance, installedData::create))
     );
     public static final StreamCodec<RegistryFriendlyByteBuf, Module<?>> STREAM_CODEC = InstalledData.STREAM_CODEC.dispatch(
-          module -> new InstalledData<>(module.getData(), module.getInstalledCount()),
+          module -> new InstalledData(module.getDataHolder(), module.getInstalledCount()),
           installedData -> installedData.configStreamCodecs().map(installedData::create, Module::getConfigs)
     );
 
     private final Map<ResourceLocation, ModuleConfig<?>> configItemsByName = new HashMap<>();
     private final List<ModuleConfig<?>> configItems;
 
-    private final ModuleData<MODULE> data;
+    private final Holder<ModuleData<?>> holder;
     private final MODULE customModule;
     private final boolean enabled;
     private final boolean handleModeChange;
     private final boolean renderHUD;
     private final int installed;
 
-    Module(ModuleData<MODULE> data, int installed) {
-        this(data, installed, data.defaultConfigs(installed));
+    Module(Holder<ModuleData<?>> holder, int installed) {
+        this(holder, installed, holder.value().defaultConfigs(installed));
     }
 
-    Module(ModuleData<MODULE> data, int installed, List<ModuleConfig<?>> configItems) {
-        this.data = data;
+    private Module(Holder<ModuleData<?>> holder, int installed, List<ModuleConfig<?>> configItems) {
+        this.holder = holder;
         this.installed = installed;
         this.configItems = configItems;
         for (ModuleConfig<?> configItem : this.configItems) {
@@ -102,7 +104,7 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
         this.enabled = this.getBooleanConfigOrFalse(ModuleConfig.ENABLED_KEY);
         this.handleModeChange = getBooleanConfigOrFalse(ModuleConfig.HANDLES_MODE_CHANGE_KEY);
         this.renderHUD = getBooleanConfigOrFalse(ModuleConfig.RENDER_HUD_KEY);
-        this.customModule = data.create(this);
+        this.customModule = getData().create(this);
     }
 
     @Override
@@ -186,8 +188,13 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
     }
 
     @Override
-    public ModuleData<MODULE> getData() {
-        return data;
+    public ModuleData<?> getUntypedData() {
+        return holder.value();
+    }
+
+    @Override
+    public Holder<ModuleData<?>> getDataHolder() {
+        return holder;
     }
 
     @Nullable
@@ -212,7 +219,7 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
     }
 
     Module<MODULE> withReplacedInstallCount(int installed) {
-        List<ModuleConfig<?>> moduleConfigs = data.defaultConfigs(installed);
+        List<ModuleConfig<?>> moduleConfigs = getUntypedData().defaultConfigs(installed);
         List<ModuleConfig<?>> copiedConfigs = new ArrayList<>(moduleConfigs.size());
         for (ModuleConfig<?> moduleConfig : moduleConfigs) {
             ResourceLocation name = moduleConfig.name();
@@ -225,7 +232,7 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
                 throw new IllegalStateException("Expected module config " + name + " to have the same class regardless of installed count.");
             }
         }
-        return new Module<>(data, installed, List.copyOf(copiedConfigs));
+        return new Module<>(holder, installed, List.copyOf(copiedConfigs));
     }
 
     @SuppressWarnings("unchecked")
@@ -264,7 +271,7 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
                 }
                 List<ModuleConfig<?>> copiedConfigs = new ArrayList<>(configItems);
                 copiedConfigs.set(i, config);
-                return new Module<>(data, installed, List.copyOf(copiedConfigs));
+                return new Module<>(holder, installed, List.copyOf(copiedConfigs));
             }
         }
         throw new IllegalStateException("Could not find an existing config with name: " + config.name());
@@ -326,7 +333,7 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
             message = MekanismLang.GENERIC_STORED.translate(modeName, EnumColor.BRIGHT_GREEN, MekanismLang.MODULE_ENABLED_LOWER);
         }
         player.displayClientMessage(message, true);
-        ((ModuleContainer) moduleContainer).toggleEnabled(player.registryAccess(), stack, data);
+        ((ModuleContainer) moduleContainer).toggleEnabled(player.registryAccess(), stack, holder);
     }
 
     @Override
@@ -337,11 +344,11 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
             return false;
         }
         Module<?> module = (Module<?>) o;
-        return installed == module.installed && Objects.equals(configItems, module.configItems) && Objects.equals(data, module.data);
+        return installed == module.installed && getUntypedData() == module.getUntypedData() && configItems.equals(module.configItems);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(configItems, data, installed);
+        return Objects.hash(configItems, getUntypedData(), installed);
     }
 }

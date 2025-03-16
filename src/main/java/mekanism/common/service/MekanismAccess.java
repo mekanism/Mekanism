@@ -22,18 +22,14 @@ public class MekanismAccess implements IMekanismAccess {
 
     @Override
     public IMekanismJEIHelper jeiHelper() {
-        if (Mekanism.hooks.JEILoaded) {
-            return MekanismJEIHelper.INSTANCE;
-        }
-        throw new IllegalStateException("JEI is not loaded.");
+        Mekanism.hooks.jei.assertLoaded();
+        return MekanismJEIHelper.INSTANCE;
     }
 
     @Override
     public IMekanismEmiHelper emiHelper() {
-        if (Mekanism.hooks.EmiLoaded) {
-            return MekanismEmiHelper.INSTANCE;
-        }
-        throw new IllegalStateException("EMI is not loaded.");
+        Mekanism.hooks.emi.assertLoaded();
+        return MekanismEmiHelper.INSTANCE;
     }
 
     @Override

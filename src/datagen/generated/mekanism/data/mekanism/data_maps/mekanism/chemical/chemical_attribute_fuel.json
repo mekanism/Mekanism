@@ -1,0 +1,12 @@
+{
+  "values": {
+    "mekanism:ethene": {
+      "burn_time": 40,
+      "energy": 705
+    },
+    "mekanism:hydrogen": {
+      "burn_time": 1,
+      "energy": 200
+    }
+  }
+}

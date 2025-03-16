@@ -1,6 +1,7 @@
 package mekanism.common.registration;
 
 import mekanism.api.annotations.NothingNullByDefault;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -20,5 +21,13 @@ public class MekanismDeferredHolder<R, T extends R> extends DeferredHolder<R, T>
     @Override
     public String getName() {
         return INamedEntry.super.getName();
+    }
+
+    public boolean is(R other) {
+        return get() == other;
+    }
+
+    public boolean keyMatches(Holder<R> holder) {
+        return holder.is(getKey());
     }
 }

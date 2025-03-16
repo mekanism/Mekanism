@@ -1,7 +1,6 @@
 package mekanism.common.util;
 
 import java.util.Collection;
-import java.util.OptionalInt;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.fluid.IExtendedFluidTank;
@@ -10,10 +9,11 @@ import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.network.distribution.FluidHandlerTarget;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.fml.loading.FMLEnvironment;
@@ -31,11 +31,11 @@ public final class FluidUtils {
     private FluidUtils() {
     }
 
-    public static ItemStack getFilledVariant(ItemLike toFill, Fluid fluid) {
+    public static ItemStack getFilledVariant(Holder<Item> toFill, Holder<Fluid> fluid) {
         return getFilledVariant(new ItemStack(toFill), fluid);
     }
 
-    public static ItemStack getFilledVariant(ItemStack toFill, Fluid fluid) {
+    public static ItemStack getFilledVariant(ItemStack toFill, Holder<Fluid> fluid) {
         IMekanismFluidHandler attachment = ContainerType.FLUID.createHandler(toFill);
         if (attachment != null) {
             for (IExtendedFluidTank fluidTank : attachment.getFluidTanks(null)) {

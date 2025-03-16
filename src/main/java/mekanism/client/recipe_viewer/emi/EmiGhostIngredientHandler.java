@@ -5,7 +5,6 @@ import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import java.util.Collections;
 import java.util.List;
-import mekanism.api.chemical.Chemical;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.recipe_viewer.GhostIngredientHandler;
@@ -53,8 +52,8 @@ public class EmiGhostIngredientHandler implements EmiDragDropHandler<Screen> {
                 raw = emiStack.getItemStack();
             } else if (emiStack.getKey() instanceof Fluid fluid) {
                 raw = new FluidStack(fluid.builtInRegistryHolder(), FluidType.BUCKET_VOLUME, emiStack.getComponentChanges());
-            } else if (emiStack.getKey() instanceof Chemical chemical) {
-                raw = chemical.getStack(emiStack.getAmount());
+            } else if (emiStack instanceof ChemicalEmiStack chemicalEmiStack) {
+                raw = chemicalEmiStack.getStack();
             }
             if (raw != null) {
                 Object stack = handler.supportedTarget(raw);

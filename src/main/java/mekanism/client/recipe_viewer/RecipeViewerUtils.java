@@ -12,9 +12,12 @@ import java.util.stream.Collectors;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.datamaps.IMekanismDataMapTypes;
+import mekanism.api.datamaps.chemical.ChemicalSolidTag;
 import mekanism.api.recipes.ItemStackToChemicalRecipe;
 import mekanism.api.recipes.basic.BasicItemStackToFluidOptionalItemRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
+import mekanism.client.MekanismClient;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.progress.IProgressInfoHandler;
 import mekanism.common.Mekanism;
@@ -24,17 +27,21 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tile.machine.TileEntityNutritionalLiquifier;
 import mekanism.common.util.ChemicalUtil;
-import mekanism.common.util.RegistryUtils;
 import net.minecraft.SharedConstants;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet.Named;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 public class RecipeViewerUtils {
@@ -74,6 +81,13 @@ public class RecipeViewerUtils {
         return synthetic(ResourceLocation.fromNamespaceAndPath(namespace, id.toString().replace(':', '_')), prefix);
     }
 
+    public static ResourceLocation synthetic(String id, String prefix, String namespace) {
+        if (id.equals("[unregistered]")) {
+            return synthetic(ResourceLocation.fromNamespaceAndPath(namespace, "_unregistered_sad_face_"), prefix);
+        }
+        return synthetic(ResourceLocation.fromNamespaceAndPath(namespace, id.replace(':', '_')), prefix);
+    }
+
     public static ResourceLocation synthetic(ResourceLocation id, String prefix) {
         return id.withPrefix("/" + prefix + "/");
     }
@@ -95,14 +109,14 @@ public class RecipeViewerUtils {
     }
 
     public static List<ItemStack> getStacksFor(ChemicalStackIngredient ingredient, boolean displayConversions) {
-        Set<Chemical> chemicals = ingredient.getRepresentations().stream().map(ChemicalStack::getChemical).collect(Collectors.toSet());
+        Set<Holder<Chemical>> chemicals = ingredient.getRepresentations().stream().map(ChemicalStack::getChemicalHolder).collect(Collectors.toSet());
         return getStacksFor(chemicals, displayConversions ? MekanismRecipeType.CHEMICAL_CONVERSION : null);
     }
 
-    private static List<ItemStack> getStacksFor(Set<Chemical> supportedTypes, @Nullable IMekanismRecipeTypeProvider<?, ? extends ItemStackToChemicalRecipe, ?> recipeType) {
+    private static List<ItemStack> getStacksFor(Set<Holder<Chemical>> supportedTypes, @Nullable IMekanismRecipeTypeProvider<?, ? extends ItemStackToChemicalRecipe, ?> recipeType) {
         List<ItemStack> stacks = new ArrayList<>();
         //Always include the chemical tank of the type to portray that we accept items
-        for (Chemical type : supportedTypes) {
+        for (Holder<Chemical> type : supportedTypes) {
             stacks.add(ChemicalUtil.getFullChemicalTank(ChemicalTankTier.BASIC, type));
         }
         //See if there are any chemical to item mappings
@@ -127,10 +141,10 @@ public class RecipeViewerUtils {
         // CreativeModeTab#buildContents, and in theory we only need to care about things in search so could use:
         // CreativeModeTabs.searchTab().getDisplayItems(). The bigger issue is how to come up with unique synthetic
         // names for the recipes as EMI requires they be unique. (Maybe index them?)
-        for (Item item : BuiltInRegistries.ITEM) {
-            BasicItemStackToFluidOptionalItemRecipe recipe = TileEntityNutritionalLiquifier.getRecipe(item.getDefaultInstance());
+        for (Map.Entry<ResourceKey<Item>, Item> entry : BuiltInRegistries.ITEM.entrySet()) {
+            BasicItemStackToFluidOptionalItemRecipe recipe = TileEntityNutritionalLiquifier.getRecipe(entry.getValue().getDefaultInstance());
             if (recipe != null) {
-                liquification.put(RecipeViewerUtils.synthetic(RegistryUtils.getName(item), "liquification", Mekanism.MODID), recipe);
+                liquification.put(RecipeViewerUtils.synthetic(entry.getKey().location(), "liquification", Mekanism.MODID), recipe);
             }
         }
         return liquification;
@@ -139,8 +153,13 @@ public class RecipeViewerUtils {
     public static List<ItemStack> getDisplayItems(ChemicalStackIngredient ingredient) {
         SequencedSet<Named<Item>> tags = new LinkedHashSet<>();
         for (ChemicalStack chemicalStack : ingredient.getRepresentations()) {
-            if (!chemicalStack.is(MekanismAPITags.Chemicals.DIRTY)) {
-                TagKey<Item> oreTag = chemicalStack.getChemical().getOreTag();
+            ChemicalSolidTag tag = chemicalStack.getData(IMekanismDataMapTypes.INSTANCE.chemicalSolidTag());
+            if (tag != null) {
+                tag.lookupTag().ifPresent(tags::add);
+            }
+            //TODO - 1.22: Remove this legacy branch
+            else if (!chemicalStack.is(MekanismAPITags.Chemicals.DIRTY)) {
+                @SuppressWarnings("removal") TagKey<Item> oreTag = chemicalStack.getChemical().getOreTag();
                 if (oreTag != null) {
                     BuiltInRegistries.ITEM.getTag(oreTag).ifPresent(tags::add);
                 }
@@ -151,5 +170,17 @@ public class RecipeViewerUtils {
             return tags.getFirst().stream().map(ItemStack::new).toList();
         }
         return Collections.emptyList();
+    }
+
+    public static TooltipContext getRVTooltipContext() {
+        //Similar to how ItemEmiStack works
+        Level level = MekanismClient.tryGetClientWorld();
+        if (level == null) {
+            return TooltipContext.EMPTY;
+        } else if (Minecraft.getInstance().isSameThread()) {
+            return Item.TooltipContext.of(level);
+        }
+        // Don't provide world as context, as it is not thread safe
+        return Item.TooltipContext.of(level.registryAccess());
     }
 }

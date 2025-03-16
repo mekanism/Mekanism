@@ -1,7 +1,6 @@
 package mekanism.common.content.network.transmitter;
 
 import mekanism.api.SerializationConstants;
-import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
@@ -13,10 +12,12 @@ import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,7 +26,7 @@ public class LogisticalTransporter extends LogisticalTransporterBase implements 
     @Nullable
     private EnumColor color;
 
-    public LogisticalTransporter(IBlockProvider blockProvider, TileEntityTransmitter tile) {
+    public LogisticalTransporter(Holder<Block> blockProvider, TileEntityTransmitter tile) {
         super(tile, Attribute.getTier(blockProvider, TransporterTier.class));
     }
 

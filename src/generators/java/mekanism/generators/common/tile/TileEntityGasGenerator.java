@@ -1,13 +1,16 @@
 package mekanism.generators.common.tile;
 
+import java.util.function.Predicate;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.attribute.ChemicalAttributes.Fuel;
+import mekanism.api.chemical.attribute.ChemicalAttributes;
+import mekanism.api.datamaps.IMekanismDataMapTypes;
+import mekanism.api.datamaps.chemical.attribute.ChemicalFuel;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.math.MathUtils;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
@@ -28,21 +31,25 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TileEntityGasGenerator extends TileEntityGenerator {
 
+    @SuppressWarnings("removal")
+    public static final Predicate<ChemicalStack> HAS_FUEL = chemical -> chemical.getData(IMekanismDataMapTypes.INSTANCE.chemicalFuel()) != null
+                                                                        || chemical.hasLegacy(ChemicalAttributes.Fuel.class);//TODO - 1.22 Remove this legacy check
+
     /**
      * The tank this block is storing fuel in.
      */
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getFuel", "getFuelCapacity", "getFuelNeeded",
                                                                                         "getFuelFilledPercentage"}, docPlaceholder = "fuel tank")
-    public IChemicalTank fuelTank;
+    public FuelTank fuelTank;
     @Nullable
-    private Fuel cachedFuel = null;
-
+    private ChemicalFuel cachedFuel = null;
     private long gasUsedLastTick;
 
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFuelItem", docPlaceholder = "fuel item slot")
@@ -87,8 +94,8 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
 
             //maximum amount that can be produced AND stored
             long maxJoulesThisTick;
-            long energyDensity = cachedFuel.getEnergyDensity();
-            maxJoulesThisTick = energyDensity * Math.min((long) Math.ceil(cachedFuel.getMaxBurnPerTick() * fullness), fuelTank.getStored());
+            long energyDensity = cachedFuel.energyDensity();
+            maxJoulesThisTick = energyDensity * Math.min((long) Math.ceil(/*TODO add max burn */cachedFuel.getMaxBurnPerTick() * fullness), fuelTank.getStored());
             if (maxJoulesThisTick > 0) {
                 maxJoulesThisTick -= getEnergyContainer().insert(maxJoulesThisTick, Action.SIMULATE, AutomationType.INTERNAL);
             }
@@ -128,7 +135,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
     }
 
     @Nullable
-    public Fuel getCachedFuel() {
+    public ChemicalFuel getCachedFuel() {
         return this.cachedFuel;
     }
 
@@ -138,7 +145,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
         if (cachedFuel == null) {
             return 0;
         }
-        return MathUtils.clampToLong(cachedFuel.getEnergyDensity() * getUsed());
+        return MathUtils.clampToLong(cachedFuel.energyDensity() * getUsed());
     }
     //End methods IComputerTile
 
@@ -146,27 +153,46 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
     private class FuelTank extends VariableCapacityChemicalTank {
 
         protected FuelTank(@Nullable IContentsListener listener) {
-            super(MekanismGeneratorsConfig.generators.gbgTankCapacity, notExternal, alwaysTrueBi, gas -> gas.has(Fuel.class), null, listener);
+            super(MekanismGeneratorsConfig.generators.gbgTankCapacity, ConstantPredicates.notExternal(), ConstantPredicates.alwaysTrueBi(), HAS_FUEL, null, listener);
         }
 
         @Override
         public void setStack(@NotNull ChemicalStack stack) {
-            Chemical oldChemical = getType();
+            Holder<Chemical> oldChemical = getTypeHolder();
             super.setStack(stack);
             recheckOutput(stack, oldChemical);
         }
 
         @Override
         public void setStackUnchecked(@NotNull ChemicalStack stack) {
-            Chemical oldChemical = getType();
+            Holder<Chemical> oldChemical = getTypeHolder();
             super.setStackUnchecked(stack);
             recheckOutput(stack, oldChemical);
         }
 
-        private void recheckOutput(@NotNull ChemicalStack stack, Chemical oldChemical) {
-            if (oldChemical != getType() && !stack.isEmpty()) {
-                cachedFuel = getType().get(Fuel.class);
+        private void recheckOutput(@NotNull ChemicalStack stack, Holder<Chemical> oldChemical) {
+            if (!isTypeEqual(oldChemical) && !stack.isEmpty()) {
+                cachedFuel = getFuel();
             }
+        }
+
+        @Nullable
+        @SuppressWarnings("removal")
+        public ChemicalFuel getFuel() {
+            if (isEmpty()) {
+                return null;
+            }
+            ChemicalStack stack = getStack();
+            ChemicalFuel fuel = stack.getData(IMekanismDataMapTypes.INSTANCE.chemicalFuel());
+            if (fuel == null) {//TODO - 1.22: Remove this handling of legacy data
+                //If there is no fuel in the data map, see if one was set manually on the stack
+                ChemicalAttributes.Fuel legacyFuel = stack.getLegacy(ChemicalAttributes.Fuel.class);
+                if (legacyFuel != null) {
+                    //If it was, convert it to the non legacy type
+                    return legacyFuel.asModern();
+                }
+            }
+            return fuel;
         }
     }
 }

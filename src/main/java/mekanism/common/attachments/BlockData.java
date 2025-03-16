@@ -17,6 +17,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -28,7 +29,6 @@ import net.minecraft.world.level.block.DecoratedPotBlock;
 import net.minecraft.world.level.block.SpawnerBlock;
 import net.minecraft.world.level.block.TrialSpawnerBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.PotDecorations;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
@@ -48,6 +48,7 @@ public record BlockData(BlockState blockState, @Nullable CompoundTag blockEntity
           ByteBufCodecs.optional(ByteBufCodecs.TRUSTED_COMPOUND_TAG), data -> Optional.ofNullable(data.blockEntityTag()),
           (state, tag) -> new BlockData(state, tag.orElse(null))
     );
+    private static final Component UNKNOWN = MekanismLang.UNKNOWN.translate();
 
     public BlockData(HolderLookup.Provider provider, BlockState state, @Nullable BlockEntity blockEntity) {
         this(state, blockEntity == null ? null : blockEntity.saveWithFullMetadata(provider));
@@ -104,24 +105,29 @@ public record BlockData(BlockState blockState, @Nullable CompoundTag blockEntity
         Block block = blockState.getBlock();
         consumer.accept(MekanismLang.BLOCK.translateColored(EnumColor.INDIGO, EnumColor.GRAY, block));
         if (blockEntityTag != null) {
-            Optional<BlockEntityType<?>> blockEntityType = RegistryUtils.getById(blockEntityTag, BuiltInRegistries.BLOCK_ENTITY_TYPE);
-            Object beName = blockEntityType.isPresent() ? RegistryUtils.getName(blockEntityType.get()) : MekanismLang.UNKNOWN;
-            consumer.accept(MekanismLang.BLOCK_ENTITY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, beName));
-            if (blockEntityTag != null) {
-                if (block instanceof SpawnerBlock || block instanceof TrialSpawnerBlock) {
-                    String key = block instanceof SpawnerBlock ? SerializationConstants.SPAWN_DATA_LEGACY : SerializationConstants.SPAWN_DATA;
-                    RegistryUtils.getById(blockEntityTag.getCompound(key).getCompound(SerializationConstants.ENTITY), BuiltInRegistries.ENTITY_TYPE)
-                          .map(entity -> MekanismLang.BLOCK_ENTITY_SPAWN_TYPE.translateColored(EnumColor.INDIGO, EnumColor.GRAY, entity))
-                          .ifPresent(consumer);
-                } else if (block instanceof DecoratedPotBlock) {
-                    PotDecorations decorations = PotDecorations.load(blockEntityTag);
-                    //Copy from DecoratedPotBlock#appendHoverText
-                    if (!decorations.equals(PotDecorations.EMPTY)) {
-                        consumer.accept(MekanismLang.BLOCK_ENTITY_DECORATION.translateColored(EnumColor.INDIGO));
-                        Stream.of(decorations.front(), decorations.left(), decorations.right(), decorations.back())
-                              .map(decoration -> MekanismLang.GENERIC_LIST.translateColored(EnumColor.INDIGO, EnumColor.GRAY, decoration))
-                              .forEach(consumer);
-                    }
+            consumer.accept(MekanismLang.BLOCK_ENTITY.translateColored(EnumColor.INDIGO, EnumColor.GRAY,
+                  RegistryUtils.getHolderById(blockEntityTag, BuiltInRegistries.BLOCK_ENTITY_TYPE)
+                        .<Object>map(RegistryUtils::getName)
+                        .orElse(UNKNOWN)
+            ));
+            if (block instanceof SpawnerBlock || block instanceof TrialSpawnerBlock) {
+                String key = block instanceof SpawnerBlock ? SerializationConstants.SPAWN_DATA_LEGACY : SerializationConstants.SPAWN_DATA;
+                CompoundTag spawnData = blockEntityTag.getCompound(key);
+                if (spawnData.contains(SerializationConstants.ENTITY, Tag.TAG_COMPOUND)) {
+                    consumer.accept(MekanismLang.BLOCK_ENTITY_SPAWN_TYPE.translateColored(EnumColor.INDIGO, EnumColor.GRAY,
+                          RegistryUtils.getHolderById(spawnData.getCompound(SerializationConstants.ENTITY), BuiltInRegistries.ENTITY_TYPE)
+                                .map(holder -> holder.value().getDescription())
+                                .orElse(UNKNOWN)
+                    ));
+                }
+            } else if (block instanceof DecoratedPotBlock) {
+                PotDecorations decorations = PotDecorations.load(blockEntityTag);
+                //Copy from DecoratedPotBlock#appendHoverText
+                if (!decorations.equals(PotDecorations.EMPTY)) {
+                    consumer.accept(MekanismLang.BLOCK_ENTITY_DECORATION.translateColored(EnumColor.INDIGO));
+                    Stream.of(decorations.front(), decorations.left(), decorations.right(), decorations.back())
+                          .map(decoration -> MekanismLang.GENERIC_LIST.translateColored(EnumColor.INDIGO, EnumColor.GRAY, decoration))
+                          .forEach(consumer);
                 }
             }
         }

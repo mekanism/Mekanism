@@ -299,7 +299,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     }
 
     public static void read(CompoundTag configNBT, Map<TransmissionType, ConfigInfo> configInfo, BiConsumer<TransmissionType, RelativeSide> onChange) {
-        //todo 1.22 remove backcompat - check for old ITEM ordinal, switch to legacy ordinals if found
+        //TODO -  1.22 remove backcompat - check for old ITEM ordinal, switch to legacy ordinals if found
         boolean isLegacyData = configNBT.contains(LEGACY_ITEM_CONFIG_KEY) || configNBT.contains(LEGACY_ITEM_EJECT_KEY);
         for (Entry<TransmissionType, ConfigInfo> entry : configInfo.entrySet()) {
             TransmissionType type = entry.getKey();

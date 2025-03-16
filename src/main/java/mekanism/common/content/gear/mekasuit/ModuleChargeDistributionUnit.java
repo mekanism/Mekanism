@@ -83,7 +83,7 @@ public record ModuleChargeDistributionUnit(boolean chargeSuit, boolean chargeInv
                     }
                 }
             }
-            if (Mekanism.hooks.CuriosLoaded) {
+            if (Mekanism.hooks.curios.isLoaded()) {
                 IItemHandler handler = CuriosIntegration.getCuriosInventory(player);
                 if (handler != null) {
                     for (int slot = 0, slots = handler.getSlots(); slot < slots; slot++) {

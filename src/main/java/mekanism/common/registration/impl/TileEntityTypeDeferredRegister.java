@@ -21,7 +21,9 @@ import mekanism.common.registration.MekanismDeferredRegister;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject.CapabilityData;
 import mekanism.common.tile.base.CapabilityTileEntity;
 import mekanism.common.tile.base.TileEntityMekanism;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -41,8 +43,8 @@ public class TileEntityTypeDeferredRegister extends MekanismDeferredRegister<Blo
         super(Registries.BLOCK_ENTITY_TYPE, modid, TileEntityTypeRegistryObject::new);
     }
 
-    public <BE extends TileEntityMekanism> BlockEntityTypeBuilder<BE> mekBuilder(BlockRegistryObject<?, ?> block, BlockEntitySupplier<? extends BE> factory) {
-        BooleanSupplier hasSecurity = () -> Attribute.has(block.getBlock(), AttributeSecurity.class);
+    public <BE extends TileEntityMekanism> BlockEntityTypeBuilder<BE> mekBuilder(DeferredHolder<Block, ?> block, BlockEntitySupplier<? extends BE> factory) {
+        BooleanSupplier hasSecurity = () -> Attribute.has(block, AttributeSecurity.class);
         BlockEntityTypeBuilder<BE> builder = this.<BE>builder(block, factory)
               //Delay the attachment of these and only attach them if we know they should be exposed rather than filtering in the provider itself
               .withSimple(IBlockSecurityUtils.INSTANCE.ownerCapability(), hasSecurity)
@@ -54,12 +56,12 @@ public class TileEntityTypeDeferredRegister extends MekanismDeferredRegister<Blo
               .with(Capabilities.FLUID.block(), CapabilityTileEntity.FLUID_HANDLER_PROVIDER);
         EnergyCompatUtils.addBlockCapabilities(builder);
         if (Mekanism.hooks.computerCompatEnabled()) {
-            ComputerCapabilityHelper.addComputerCapabilities(builder, () -> Attribute.has(block.getBlock(), AttributeComputerIntegration.class));
+            ComputerCapabilityHelper.addComputerCapabilities(builder, () -> Attribute.has(block, AttributeComputerIntegration.class));
         }
         return builder;
     }
 
-    public <BE extends BlockEntity> BlockEntityTypeBuilder<BE> builder(BlockRegistryObject<?, ?> block, BlockEntitySupplier<? extends BE> factory) {
+    public <BE extends BlockEntity> BlockEntityTypeBuilder<BE> builder(DeferredHolder<Block, ?> block, BlockEntitySupplier<? extends BE> factory) {
         return new BlockEntityTypeBuilder<>(block, factory);
     }
 
@@ -75,7 +77,7 @@ public class TileEntityTypeDeferredRegister extends MekanismDeferredRegister<Blo
     }
 
     private void registerCapabilities(RegisterCapabilitiesEvent event) {
-        for (DeferredHolder<BlockEntityType<?>, ? extends BlockEntityType<?>> entry : getEntries()) {
+        for (Holder<BlockEntityType<?>> entry : getEntries()) {
             //Note: All entries should be of this type
             if (entry instanceof TileEntityTypeRegistryObject<?> tileRO) {
                 tileRO.registerCapabilityProviders(event);
@@ -87,7 +89,7 @@ public class TileEntityTypeDeferredRegister extends MekanismDeferredRegister<Blo
 
     public class BlockEntityTypeBuilder<BE extends BlockEntity> {
 
-        private final BlockRegistryObject<?, ?> block;
+        private final DeferredHolder<Block, ?> block;
         private final BlockEntityType.BlockEntitySupplier<? extends BE> factory;
         private final List<CapabilityData<BE, ?, ?>> capabilityProviders = new ArrayList<>();
         @Nullable
@@ -95,7 +97,7 @@ public class TileEntityTypeDeferredRegister extends MekanismDeferredRegister<Blo
         @Nullable
         private BlockEntityTicker<BE> serverTicker;
 
-        BlockEntityTypeBuilder(BlockRegistryObject<?, ?> block, BlockEntityType.BlockEntitySupplier<? extends BE> factory) {
+        BlockEntityTypeBuilder(DeferredHolder<Block, ?> block, BlockEntityType.BlockEntitySupplier<? extends BE> factory) {
             this.block = block;
             this.factory = factory;
         }
@@ -170,7 +172,7 @@ public class TileEntityTypeDeferredRegister extends MekanismDeferredRegister<Blo
         @SuppressWarnings("ConstantConditions")
         public TileEntityTypeRegistryObject<BE> build() {
             //Note: There is no data fixer type as forge does not currently have a way exposing data fixers to mods yet
-            TileEntityTypeRegistryObject<BE> holder = registerMek(block.getName(), () -> BlockEntityType.Builder.<BE>of(factory, block.getBlock()).build(null));
+            TileEntityTypeRegistryObject<BE> holder = registerMek(block.getId().getPath(), () -> BlockEntityType.Builder.<BE>of(factory, block.value()).build(null));
             holder.tickers(clientTicker, serverTicker);
             holder.capabilities(capabilityProviders.isEmpty() ? null : capabilityProviders);
             return holder;

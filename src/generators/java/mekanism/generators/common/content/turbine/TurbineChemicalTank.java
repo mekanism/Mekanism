@@ -16,8 +16,8 @@ public class TurbineChemicalTank extends VariableCapacityChemicalTank {
     private final TurbineMultiblockData multiblock;
 
     public TurbineChemicalTank(TurbineMultiblockData multiblock, @Nullable IContentsListener listener) {
-        super(multiblock::getSteamCapacity, multiblock.notExternalFormedBiPred(), multiblock.formedBiPred(), gas -> gas == MekanismChemicals.STEAM.getChemical(),
-              null, listener);
+        super(multiblock::getSteamCapacity, multiblock.notExternalFormedBiPred(), multiblock.formedBiPred(),
+              chemical -> chemical.is(MekanismChemicals.STEAM), null, listener);
         this.multiblock = multiblock;
     }
 

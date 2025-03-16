@@ -6,13 +6,13 @@ import java.util.List;
 import java.util.UUID;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
+import mekanism.api.MekanismAPI;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.providers.IBlockProvider;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.chemical.IChemicalTracker;
@@ -31,9 +31,11 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -46,7 +48,7 @@ public class PressurizedTube extends BufferedTransmitter<IChemicalHandler, Chemi
     @NotNull
     public ChemicalStack saveShare = ChemicalStack.EMPTY;
 
-    public PressurizedTube(IBlockProvider blockProvider, TileEntityTransmitter tile) {
+    public PressurizedTube(Holder<Block> blockProvider, TileEntityTransmitter tile) {
         super(tile, TransmissionType.CHEMICAL);
         this.tier = Attribute.getTier(blockProvider, TubeTier.class);
         chemicalTank = BasicChemicalTank.createAllValid(getCapacity(), this);
@@ -194,17 +196,22 @@ public class PressurizedTube extends BufferedTransmitter<IChemicalHandler, Chemi
     @Override
     public boolean isValidTransmitter(TileEntityTransmitter transmitter, Direction side) {
         if (super.isValidTransmitter(transmitter, side) && transmitter.getTransmitter() instanceof PressurizedTube other) {
-            Chemical buffer = getBufferWithFallback().getChemical();
-            if (buffer.isEmptyType() && hasTransmitterNetwork() && getTransmitterNetwork().getPrevTransferAmount() > 0) {
-                buffer = getTransmitterNetwork().lastChemical;
+            Holder<Chemical> buffer = getBufferOrFallback(this);
+            if (buffer.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
+                return true;
             }
-            Chemical otherBuffer = other.getBufferWithFallback().getChemical();
-            if (otherBuffer.isEmptyType() && other.hasTransmitterNetwork() && other.getTransmitterNetwork().getPrevTransferAmount() > 0) {
-                otherBuffer = other.getTransmitterNetwork().lastChemical;
-            }
-            return buffer.isEmptyType() || otherBuffer.isEmptyType() || buffer.equals(otherBuffer);
+            Holder<Chemical> otherBuffer = getBufferOrFallback(other);
+            return otherBuffer.is(MekanismAPI.EMPTY_CHEMICAL_KEY) || buffer.is(otherBuffer);
         }
         return false;
+    }
+
+    private static Holder<Chemical> getBufferOrFallback(PressurizedTube tube) {
+        Holder<Chemical> buffer = tube.getBufferWithFallback().getChemicalHolder();
+        if (buffer.is(MekanismAPI.EMPTY_CHEMICAL_KEY) && tube.hasTransmitterNetwork() && tube.getTransmitterNetwork().getPrevTransferAmount() > 0) {
+            return tube.getTransmitterNetwork().lastChemical;
+        }
+        return buffer;
     }
 
     @Override
@@ -291,7 +298,11 @@ public class PressurizedTube extends BufferedTransmitter<IChemicalHandler, Chemi
     protected void handleContentsUpdateTag(@NotNull ChemicalNetwork network, @NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
         super.handleContentsUpdateTag(network, tag, provider);
         NBTUtils.setFloatIfPresent(tag, SerializationConstants.SCALE, scale -> network.currentScale = scale);
-        NBTUtils.setChemicalIfPresent(provider, tag, SerializationConstants.CHEMICAL, network::setLastChemical);
+        if (tag.contains(SerializationConstants.CHEMICAL, Tag.TAG_STRING)) {
+            network.setLastChemical(Chemical.parseOptionalHolder(provider, tag.getString(SerializationConstants.CHEMICAL)));
+        } else {
+            network.setLastChemical(MekanismAPI.EMPTY_CHEMICAL_HOLDER);
+        }
     }
 
     public IChemicalTank getChemicalTank() {

@@ -7,11 +7,11 @@ import mekanism.client.render.armor.ICustomArmor;
 import mekanism.client.render.armor.ISpecialGear;
 import mekanism.common.Mekanism;
 import mekanism.common.registries.MekanismItems;
-import mekanism.common.util.RegistryUtils;
+import net.minecraft.core.Holder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ItemLike;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
@@ -30,13 +30,14 @@ public class CuriosIntegration {
         bus.addListener((FMLClientSetupEvent event) -> registerRenderers(MekanismItems.JETPACK, MekanismItems.ARMORED_JETPACK));
     }
 
-    private static void registerRenderers(ItemLike... items) {
-        for (ItemLike item : items) {
-            if (item.asItem() instanceof ArmorItem armor && IClientItemExtensions.of(armor) instanceof ISpecialGear gear) {
+    @SafeVarargs
+    private static void registerRenderers(Holder<Item>... items) {
+        for (Holder<Item> item : items) {
+            if (item.value() instanceof ArmorItem armor && IClientItemExtensions.of(armor) instanceof ISpecialGear gear) {
                 ICustomArmor customArmor = gear.gearModel();
                 CuriosRendererRegistry.register(armor, () -> new MekanismCurioRenderer(customArmor));
             } else {
-                Mekanism.logger.warn("Attempted to register Curios renderer for non-special gear item: {}.", RegistryUtils.getName(item.asItem()));
+                Mekanism.logger.warn("Attempted to register Curios renderer for non-special gear item: {}.", item.getRegisteredName());
             }
         }
     }

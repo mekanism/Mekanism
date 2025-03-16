@@ -356,7 +356,7 @@ public class QIOCraftingTransferHandler {
     }
 
     private static <RESULT> RESULT invalidSource(RVRecipeInfo<RESULT, ?, ?> recipeHelper, @NotNull HashedItem type) {
-        Mekanism.logger.warn("Error finding source for: {} with components: {}. This should not be possible.", type.getItem(), type.getInternalStack().getComponentsPatch());
+        Mekanism.logger.warn("Error finding source for: {}. This should not be possible.", type);
         return recipeHelper.createInternalError();
     }
 

@@ -435,14 +435,13 @@ public class QIOServerCraftingTransferHandler {
                     }
                     stack = frequency.removeByType(storedItem, source.getUsed());
                     if (stack.isEmpty()) {
-                        bail(targetContents, "Received transfer request from: {}, for: {}, but could not extract item: {} with components: {} from the QIO.",
-                              player, recipeID, storedItem.getItem(), storedItem.getInternalStack().getComponentsPatch());
+                        bail(targetContents, "Received transfer request from: {}, for: {}, but could not extract item: {} from the QIO.",
+                              player, recipeID, storedItem);
                         return;
                     } else if (stack.getCount() < source.getUsed()) {
-                        Mekanism.logger.warn("Received transfer request from: {}, for: {}, but was unable to extract the expected amount: {} of item: {} "
-                                             + "with components: {} from the QIO. This should not be possible as it should have been caught during simulation. "
-                                             + "Attempting to continue anyways with the actual extracted amount of {}.", player, recipeID, source.getUsed(),
-                              storedItem.getItem(), storedItem.getInternalStack().getComponentsPatch(), stack.getCount());
+                        Mekanism.logger.warn("Received transfer request from: {}, for: {}, but was unable to extract the expected amount: {} of item: {} from the QIO. "
+                                             + "This should not be possible as it should have been caught during simulation. Attempting to continue anyways with the actual "
+                                             + "extracted amount of {}.", player, recipeID, source.getUsed(), storedItem, stack.getCount());
                     }
                 } else {
                     int actualSlot;

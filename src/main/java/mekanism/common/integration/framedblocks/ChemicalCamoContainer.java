@@ -1,18 +1,19 @@
 package mekanism.common.integration.framedblocks;
 
 import mekanism.api.chemical.Chemical;
+import net.minecraft.core.Holder;
 import org.jetbrains.annotations.Nullable;
 import xfacthd.framedblocks.api.camo.CamoContainer;
 import xfacthd.framedblocks.api.camo.CamoContainerFactory;
 
 final class ChemicalCamoContainer extends CamoContainer<ChemicalCamoContent, ChemicalCamoContainer> {
 
-    ChemicalCamoContainer(Chemical chemical) {
+    ChemicalCamoContainer(Holder<Chemical> chemical) {
         super(new ChemicalCamoContent(chemical));
     }
 
-    Chemical getChemical() {
-        return content.getChemical();
+    Holder<Chemical> getChemicalHolder() {
+        return content.getChemicalHolder();
     }
 
     @Override

@@ -1,10 +1,10 @@
 package mekanism.tools.common;
 
-import mekanism.api.providers.IItemProvider;
 import mekanism.common.config.value.CachedFloatValue;
 import mekanism.tools.common.config.MekanismToolsConfig;
 import mekanism.tools.common.config.ToolsConfig.ArmorSpawnChanceConfig;
 import mekanism.tools.common.registries.ToolsItems;
+import net.minecraft.core.Holder;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
@@ -16,6 +16,7 @@ import net.minecraft.world.entity.monster.Stray;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.monster.ZombifiedPiglin;
 import net.minecraft.world.entity.monster.piglin.Piglin;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.providers.VanillaEnchantmentProviders;
@@ -64,7 +65,7 @@ public class MobEquipmentHelper {
                         gearType = getGearType(random.nextInt(6));
                     }
                     if (gearType.spawnChance.canSpawnWeapon.get()) {
-                        IItemProvider weapon = random.nextFloat() < gearType.spawnChance.swordWeight.get() ? gearType.sword : gearType.shovel;
+                        Holder<Item> weapon = random.nextFloat() < gearType.spawnChance.swordWeight.get() ? gearType.sword : gearType.shovel;
                         setStackIfEmpty(entity, random, gearType.spawnChance.weaponEnchantmentChance.get(), difficulty, EquipmentSlot.MAINHAND, weapon);
                     }
                 }
@@ -74,12 +75,12 @@ public class MobEquipmentHelper {
 
     private static GearType getGearType(int type) {
         return switch (type) {
-            default -> REFINED_GLOWSTONE;
             case 1 -> LAPIS_LAZULI;
             case 2 -> REFINED_OBSIDIAN;
             case 3 -> STEEL;
             case 4 -> BRONZE;
             case 5 -> OSMIUM;
+            default -> REFINED_GLOWSTONE;
         };
     }
 
@@ -109,9 +110,9 @@ public class MobEquipmentHelper {
         }
     }
 
-    private static void setStackIfEmpty(LivingEntity entity, RandomSource random, float baseChance, DifficultyInstance difficulty, EquipmentSlot slot, IItemProvider item) {
+    private static void setStackIfEmpty(LivingEntity entity, RandomSource random, float baseChance, DifficultyInstance difficulty, EquipmentSlot slot, Holder<Item> item) {
         if (entity.getItemBySlot(slot).isEmpty()) {
-            ItemStack stack = item.getItemStack();
+            ItemStack stack = new ItemStack(item);
             if (random.nextFloat() < baseChance * difficulty.getSpecialMultiplier()) {
                 //Copy of vanilla's enchant item level logic
                 EnchantmentHelper.enchantItemFromProvider(stack, entity.level().registryAccess(), VanillaEnchantmentProviders.MOB_SPAWN_EQUIPMENT, difficulty, random);
@@ -120,7 +121,7 @@ public class MobEquipmentHelper {
         }
     }
 
-    private record GearType(IItemProvider sword, IItemProvider shovel, IItemProvider helmet, IItemProvider chestplate, IItemProvider leggings, IItemProvider boots,
+    private record GearType(Holder<Item> sword, Holder<Item> shovel, Holder<Item> helmet, Holder<Item> chestplate, Holder<Item> leggings, Holder<Item> boots,
                             ArmorSpawnChanceConfig spawnChance) {
     }
 }

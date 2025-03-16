@@ -1,6 +1,5 @@
 package mekanism.common.tile.transmitter;
 
-import mekanism.api.providers.IBlockProvider;
 import mekanism.client.model.data.TransmitterModelData;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.content.network.transmitter.DiversionTransporter;
@@ -9,17 +8,19 @@ import mekanism.common.integration.computer.IComputerTile;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
 public class TileEntityDiversionTransporter extends TileEntityLogisticalTransporterBase implements IComputerTile {
 
-    public TileEntityDiversionTransporter(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
+    public TileEntityDiversionTransporter(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
     }
 
     @Override
-    protected DiversionTransporter createTransmitter(IBlockProvider blockProvider) {
+    protected DiversionTransporter createTransmitter(Holder<Block> blockProvider) {
         return new DiversionTransporter(this);
     }
 

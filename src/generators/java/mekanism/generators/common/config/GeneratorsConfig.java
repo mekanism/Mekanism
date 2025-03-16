@@ -31,9 +31,6 @@ public class GeneratorsConfig extends BaseMekanismConfig {
     public final CachedIntValue heatGenerationFluidRate;
 
     public final CachedLongValue gbgTankCapacity;
-    public final CachedIntValue etheneMaxBurnPerTick;
-    public final CachedIntValue hydrogenMaxBurnPerTick;
-    public final CachedLongValue etheneDensity;
 
     public final CachedLongValue solarGeneration;
     public final CachedIntValue turbineBladesPerCoil;
@@ -117,12 +114,6 @@ public class GeneratorsConfig extends BaseMekanismConfig {
         GeneratorsConfigTranslations.SERVER_GENERATOR_GAS.applyToBuilder(builder).push("gas_generator");
         gbgTankCapacity = CachedLongValue.wrap(this, GeneratorsConfigTranslations.SERVER_GENERATOR_GAS_TANK_CAPACITY.applyToBuilder(builder)
               .defineInRange("tankCapacity", FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE));
-        etheneMaxBurnPerTick = CachedIntValue.wrap(this, GeneratorsConfigTranslations.SERVER_GENERATOR_GAS_ETHENE_MAX_BURN_PER_TICK.applyToBuilder(builder)
-              .defineInRange("etheneMaxBurnPerTick", 5, 1, Integer.MAX_VALUE));
-        etheneDensity = CachedLongValue.wrap(this, GeneratorsConfigTranslations.SERVER_GENERATOR_GAS_ETHENE_DENSITY.applyToBuilder(builder)
-              .defineInRange("etheneDensity", 16L, 1, Integer.MAX_VALUE));
-        hydrogenMaxBurnPerTick = CachedIntValue.wrap(this, GeneratorsConfigTranslations.SERVER_GENERATOR_GAS_HYDROGEN_MAX_BURN_PER_TICK.applyToBuilder(builder)
-              .defineInRange("hydrogenMaxBurnPerTick", 512, 1, Integer.MAX_VALUE));
         builder.pop();
 
         GeneratorsConfigTranslations.SERVER_GENERATOR_WIND.applyToBuilder(builder).push("wind_generator");

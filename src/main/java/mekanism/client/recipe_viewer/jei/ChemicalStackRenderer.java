@@ -4,7 +4,7 @@ import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Consumer;
+import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.math.MathUtils;
@@ -12,15 +12,16 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.GuiUtils.TilingDirection;
+import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
-import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.text.TextUtils;
 import mezz.jei.api.gui.builder.ITooltipBuilder;
 import mezz.jei.api.ingredients.IIngredientRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.TooltipFlag;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -62,43 +63,45 @@ public class ChemicalStackRenderer implements IIngredientRenderer<ChemicalStack>
             if (desiredHeight > height) {
                 desiredHeight = height;
             }
-            Chemical chemical = stack.getChemical();
-            MekanismRenderer.color(guiGraphics, chemical);
+            MekanismRenderer.color(guiGraphics, stack);
             //Tile upwards and to the right as the majority of things we render are gauges which look better when tiling upwards
-            GuiUtils.drawTiledSprite(guiGraphics, 0, 0, height, width, desiredHeight, MekanismRenderer.getSprite(chemical.getIcon()),
+            GuiUtils.drawTiledSprite(guiGraphics, 0, 0, height, width, desiredHeight, MekanismRenderer.getChemicalTexture(stack),
                   TEXTURE_SIZE, TEXTURE_SIZE, 100, TilingDirection.UP_RIGHT);
             MekanismRenderer.resetColor(guiGraphics);
         }
     }
 
     @Override
-    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
+    @Deprecated(forRemoval = true, since = "19.5.4")
     public List<Component> getTooltip(ChemicalStack stack, TooltipFlag tooltipFlag) {
-        Chemical chemical = stack.getChemical();
-        if (chemical.isEmptyType()) {
+        Holder<Chemical> chemical = stack.getChemicalHolder();
+        if (chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
             return Collections.emptyList();
         }
         List<Component> tooltips = new ArrayList<>();
-        collectTooltips(stack, tooltipFlag, tooltips::add);
+        collectTooltips(stack, tooltips, tooltipFlag);
         return tooltips;
     }
 
     @Override
-    public void getTooltip(ITooltipBuilder tooltip, ChemicalStack stack, TooltipFlag tooltipFlag) {
+    public void getTooltip(ITooltipBuilder builder, ChemicalStack stack, TooltipFlag tooltipFlag) {
         //TODO - 1.22: Flatten the collectTooltips into this method
-        collectTooltips(stack, tooltipFlag, tooltip::add);
+        List<Component> tooltips = new ArrayList<>();
+        collectTooltips(stack, tooltips, tooltipFlag);
+        builder.addAll(tooltips);
     }
 
-    private void collectTooltips(ChemicalStack stack, TooltipFlag tooltipFlag, Consumer<Component> tooltipAdder) {
-        Chemical chemical = stack.getChemical();
-        if (!chemical.isEmptyType()) {
-            tooltipAdder.accept(TextComponentUtil.build(chemical));
+    private void collectTooltips(ChemicalStack stack, List<Component> tooltips, TooltipFlag tooltipFlag) {
+        Holder<Chemical> chemical = stack.getChemicalHolder();
+        if (!chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
+            tooltips.add(TextComponentUtil.build(chemical));
             if (tooltipMode == TooltipMode.SHOW_AMOUNT_AND_CAPACITY) {
-                tooltipAdder.accept(MekanismLang.JEI_AMOUNT_WITH_CAPACITY.translateColored(EnumColor.GRAY, TextUtils.format(stack.getAmount()), TextUtils.format(capacityMb)));
+                tooltips.add(MekanismLang.JEI_AMOUNT_WITH_CAPACITY.translateColored(EnumColor.GRAY, TextUtils.format(stack.getAmount()), TextUtils.format(capacityMb)));
             } else if (tooltipMode == TooltipMode.SHOW_AMOUNT) {
-                tooltipAdder.accept(MekanismLang.GENERIC_MB.translateColored(EnumColor.GRAY, TextUtils.format(stack.getAmount())));
+                tooltips.add(MekanismLang.GENERIC_MB.translateColored(EnumColor.GRAY, TextUtils.format(stack.getAmount())));
             }
-            ChemicalUtil.addChemicalDataToTooltip(stack, tooltipFlag.isAdvanced(), tooltipAdder);
+            stack.appendHoverText(RecipeViewerUtils.getRVTooltipContext(), tooltips, tooltipFlag);
         }
     }
 

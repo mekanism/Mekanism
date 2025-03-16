@@ -50,15 +50,15 @@
     },
     {
       "type": "minecraft:single",
+      "resource": "mekanism:infuse_type/base"
+    },
+    {
+      "type": "minecraft:single",
       "resource": "mekanism:infuse_type/bio"
     },
     {
       "type": "minecraft:single",
       "resource": "mekanism:infuse_type/fungi"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:infuse_type/base"
     },
     {
       "type": "minecraft:single",
@@ -74,11 +74,11 @@
     },
     {
       "type": "minecraft:single",
-      "resource": "mekanism:slurry/dirty"
+      "resource": "mekanism:slurry/clean"
     },
     {
       "type": "minecraft:single",
-      "resource": "mekanism:slurry/clean"
+      "resource": "mekanism:slurry/dirty"
     },
     {
       "type": "minecraft:single",
@@ -86,19 +86,19 @@
     },
     {
       "type": "minecraft:single",
-      "resource": "minecraft:block/water_overlay"
-    },
-    {
-      "type": "minecraft:single",
       "resource": "mekanism:liquid/steam_flow"
     },
     {
       "type": "minecraft:single",
-      "resource": "minecraft:block/water_still"
+      "resource": "minecraft:block/water_flow"
     },
     {
       "type": "minecraft:single",
-      "resource": "minecraft:block/water_flow"
+      "resource": "minecraft:block/water_overlay"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "minecraft:block/water_still"
     }
   ]
 }

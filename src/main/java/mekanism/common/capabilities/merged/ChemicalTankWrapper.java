@@ -8,6 +8,7 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 
@@ -116,6 +117,13 @@ public class ChemicalTankWrapper implements IChemicalTank {
     }
 
     @Override
+    public Holder<Chemical> getTypeHolder() {
+        return internal.getTypeHolder();
+    }
+
+    @Override
+    @SuppressWarnings("removal")
+    @Deprecated(forRemoval = true, since = "10.7.11")
     public Chemical getType() {
         return internal.getType();
     }
@@ -126,8 +134,15 @@ public class ChemicalTankWrapper implements IChemicalTank {
     }
 
     @Override
+    @SuppressWarnings("removal")
+    @Deprecated(forRemoval = true, since = "10.7.11")
     public boolean isTypeEqual(Chemical other) {
         return internal.isTypeEqual(other);
+    }
+
+    @Override
+    public boolean isTypeEqual(Holder<Chemical> holder) {
+        return internal.isTypeEqual(holder);
     }
 
     @Override

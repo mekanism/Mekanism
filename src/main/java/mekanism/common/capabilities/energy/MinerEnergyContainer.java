@@ -2,6 +2,7 @@ package mekanism.common.capabilities.energy;
 
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.math.MathUtils;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.config.MekanismConfig;
@@ -20,7 +21,7 @@ public class MinerEnergyContainer extends MachineEnergyContainer<TileEntityDigit
     private long minerEnergyPerTick;
 
     private MinerEnergyContainer(long maxEnergy, long energyPerTick, TileEntityDigitalMiner tile, @Nullable IContentsListener listener) {
-        super(maxEnergy, energyPerTick, notExternal, alwaysTrue, tile, listener);
+        super(maxEnergy, energyPerTick, notExternal, ConstantPredicates.alwaysTrue(), tile, listener);
         this.minerEnergyPerTick = getBaseEnergyPerTick();
     }
 

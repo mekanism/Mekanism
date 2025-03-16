@@ -1,7 +1,7 @@
 package mekanism.client.render.item;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import mekanism.api.providers.IBlockProvider;
+import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.Font;
@@ -13,16 +13,16 @@ import net.neoforged.neoforge.client.event.RegisterItemDecorationsEvent;
 
 public class TransmitterTypeDecorator implements IItemDecorator {
 
-    public static void registerDecorators(RegisterItemDecorationsEvent event, IBlockProvider... blocks) {
-        for (IBlockProvider block : blocks) {
-            event.register(block, new TransmitterTypeDecorator(block));
+    public static void registerDecorators(RegisterItemDecorationsEvent event, BlockRegistryObject<?, ?>... blocks) {
+        for (BlockRegistryObject<?, ?> block : blocks) {
+            event.register(block, new TransmitterTypeDecorator(block.getId()));
         }
     }
 
     private final ResourceLocation texture;
 
-    private TransmitterTypeDecorator(IBlockProvider block) {
-        this.texture = MekanismUtils.getResource(ResourceType.GUI_ICONS, block.getRegistryName().getPath() + ".png");
+    private TransmitterTypeDecorator(ResourceLocation blockId) {
+        this.texture = MekanismUtils.getResource(ResourceType.GUI_ICONS, blockId.getPath() + ".png");
     }
 
     @Override

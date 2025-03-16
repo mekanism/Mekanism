@@ -1,6 +1,5 @@
 package mekanism.tools.client;
 
-import mekanism.api.providers.IItemProvider;
 import mekanism.client.ClientRegistrationUtil;
 import mekanism.client.render.RenderPropertiesProvider.MekRenderProperties;
 import mekanism.tools.client.render.GlowArmor;
@@ -10,9 +9,11 @@ import mekanism.tools.common.registries.ToolsItems;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.renderer.item.ClampedItemPropertyFunction;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -37,8 +38,9 @@ public class ToolsClientRegistration {
               ToolsItems.REFINED_OBSIDIAN_SHIELD, ToolsItems.STEEL_SHIELD));
     }
 
-    private static void addShieldPropertyOverrides(ResourceLocation override, ClampedItemPropertyFunction propertyGetter, IItemProvider... shields) {
-        for (IItemProvider shield : shields) {
+    @SafeVarargs
+    private static void addShieldPropertyOverrides(ResourceLocation override, ClampedItemPropertyFunction propertyGetter, Holder<Item>... shields) {
+        for (Holder<Item> shield : shields) {
             ClientRegistrationUtil.setPropertyOverride(shield, override, propertyGetter);
         }
     }

@@ -6,6 +6,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -276,10 +277,22 @@ public interface IChemicalTank extends INBTSerializable<CompoundTag>, IContentsL
     }
 
     /**
+     * Convenience method for getting the holder of the {@link Chemical} stored in this tank.
+     *
+     * @return Backing chemical's holder.
+     *
+     * @since 10.7.11
+     */
+    default Holder<Chemical> getTypeHolder() {
+        return getStack().getChemicalHolder();
+    }
+
+    /**
      * Convenience method for getting the type of the {@link Chemical} stored in this tank.
      *
      * @return chemical type contained
      */
+    @Deprecated(forRemoval = true, since = "10.7.11")
     default Chemical getType() {
         return getStack().getChemical();
     }
@@ -306,8 +319,23 @@ public interface IChemicalTank extends INBTSerializable<CompoundTag>, IContentsL
      *
      * @implNote If your implementation of {@link #getStack()} returns a copy, this should be overridden to directly check against the internal stack.
      */
+    @Deprecated(forRemoval = true, since = "10.7.11")
     default boolean isTypeEqual(Chemical other) {
         return getStack().is(other);
+    }
+
+    /**
+     * Convenience method for checking if the type {@link Chemical} stored in this tank is equal to the given holder.
+     *
+     * @param holder Holder to check for the type matching.
+     *
+     * @return True if the tank's contents are equal, false otherwise.
+     *
+     * @implNote If your implementation of {@link #getStack()} returns a copy, this should be overridden to directly check against the internal stack.
+     * @since 10.7.11
+     */
+    default boolean isTypeEqual(Holder<Chemical> holder) {
+        return getStack().is(holder);
     }
 
     /**

@@ -1,16 +1,14 @@
 package mekanism.common.item;
 
 import java.util.List;
-import java.util.OptionalInt;
-import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.fluid.IExtendedFluidHandler;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.attachments.containers.chemical.ComponentBackedChemicalTank;
 import mekanism.common.attachments.containers.chemical.merged.MergedTankCreator;
 import mekanism.common.attachments.containers.fluid.ComponentBackedFluidTank;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.FluidUtils;
@@ -31,10 +29,14 @@ import org.jetbrains.annotations.NotNull;
 public class ItemGaugeDropper extends Item {
 
     public static final MergedTankCreator MERGED_TANK_CREATOR = new MergedTankCreator(
-          (type, attachedTo, containerIndex) -> new ComponentBackedChemicalTank(attachedTo, containerIndex, BasicChemicalTank.alwaysTrueBi, BasicChemicalTank.alwaysTrueBi,
-                BasicChemicalTank.alwaysTrue, MekanismConfig.gear.gaugeDroppedTransferRate, MekanismConfig.gear.gaugeDropperCapacity, null),
-          (type, attachedTo, containerIndex) -> new ComponentBackedFluidTank(attachedTo, containerIndex, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrueBi,
-                BasicFluidTank.alwaysTrue, MekanismConfig.gear.gaugeDroppedTransferRate, MekanismConfig.gear.gaugeDropperCapacity)
+          (type, attachedTo, containerIndex) -> new ComponentBackedChemicalTank(attachedTo, containerIndex,
+                ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(),
+                MekanismConfig.gear.gaugeDroppedTransferRate, MekanismConfig.gear.gaugeDropperCapacity, null
+          ),
+          (type, attachedTo, containerIndex) -> new ComponentBackedFluidTank(attachedTo, containerIndex,
+                ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(),
+                MekanismConfig.gear.gaugeDroppedTransferRate, MekanismConfig.gear.gaugeDropperCapacity
+          )
     );
 
     public ItemGaugeDropper(Properties properties) {

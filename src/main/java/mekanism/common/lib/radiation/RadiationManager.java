@@ -21,7 +21,6 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.attribute.ChemicalAttributes.Radiation;
 import mekanism.api.math.MathUtils;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.radiation.IRadiationSource;
@@ -112,8 +111,8 @@ public class RadiationManager implements IRadiationManager {
     private static final String DATA_HANDLER_NAME = "radiation_manager";
     private static final RandomSource RAND = RandomSource.create();
 
-    public static final double BASELINE = 0.000_000_100; // 100 nSv/h
-    public static final double MIN_MAGNITUDE = 0.000_010; // 10 uSv/h
+    private static final double BASELINE = 0.000_000_100; // 100 nSv/h
+    private static final double MIN_MAGNITUDE = 0.000_010; // 10 uSv/h
 
     private boolean loaded;
 
@@ -126,8 +125,8 @@ public class RadiationManager implements IRadiationManager {
 
     // client fields
     private RadiationScale clientRadiationScale = RadiationScale.NONE;
-    private double clientEnvironmentalRadiation = BASELINE;
-    private double clientMaxMagnitude = BASELINE;
+    private double clientEnvironmentalRadiation = baselineRadiation();
+    private double clientMaxMagnitude = baselineRadiation();
 
     /**
      * Note: This can and will be null on the client side
@@ -148,6 +147,16 @@ public class RadiationManager implements IRadiationManager {
     }
 
     @Override
+    public double baselineRadiation() {
+        return BASELINE;
+    }
+
+    @Override
+    public double minRadiationMagnitude() {
+        return MIN_MAGNITUDE;
+    }
+
+    @Override
     public DamageSource getRadiationDamageSource(RegistryAccess registryAccess) {
         return MekanismDamageTypes.RADIATION.source(registryAccess);
     }
@@ -160,7 +169,7 @@ public class RadiationManager implements IRadiationManager {
     @Override
     public double getRadiationLevel(Entity entity) {
         if (radiationTable.isEmpty()) {//Short circuit when the radiation table is empty
-            return BASELINE;
+            return baselineRadiation();
         }
         return getRadiationLevel(GlobalPos.of(entity.level().dimension(), entity.blockPosition()));
     }
@@ -175,7 +184,7 @@ public class RadiationManager implements IRadiationManager {
         double decayRate = source ? MekanismConfig.general.radiationSourceDecayRate.get() : MekanismConfig.general.radiationTargetDecayRate.get();
         long ticks = 0;
         double localMagnitude = magnitude;
-        while (localMagnitude > RadiationManager.MIN_MAGNITUDE) {
+        while (localMagnitude > minRadiationMagnitude()) {
             localMagnitude *= decayRate;
             ticks += SharedConstants.TICKS_PER_SECOND;
         }
@@ -210,7 +219,7 @@ public class RadiationManager implements IRadiationManager {
     @Override
     public double getRadiationLevel(GlobalPos pos) {
         if (radiationTable.isEmpty()) {//Short circuit when the radiation table is empty
-            return BASELINE;
+            return baselineRadiation();
         }
         return getRadiationLevelAndMaxMagnitude(pos).level();
     }
@@ -226,8 +235,8 @@ public class RadiationManager implements IRadiationManager {
         if (radiationTable.isEmpty()) {//Short circuit when the radiation table is empty
             return LevelAndMaxMagnitude.BASELINE;
         }
-        double level = BASELINE;
-        double maxMagnitude = BASELINE;
+        double level = baselineRadiation();
+        double maxMagnitude = baselineRadiation();
         Chunk3D center = new Chunk3D(pos);
         int radius = MekanismConfig.general.radiationChunkCheckRadius.get();
         // we only compute exposure when within the MAX_RANGE bounds
@@ -305,7 +314,7 @@ public class RadiationManager implements IRadiationManager {
         //Note: We only attempt to dump and mark that we did if radiation is enabled in order to allow persisting radioactive
         // substances when radiation is disabled
         if (isRadiationEnabled() && !stack.isEmpty()) {
-            double radioactivity = stack.mapAttributeToDouble(Radiation.class, (stored, attribute) -> stored.getAmount() * attribute.getRadioactivity());
+            double radioactivity = stack.getRadioactivity();
             if (radioactivity > 0) {
                 radiate(pos, radioactivity);
                 return true;
@@ -342,7 +351,7 @@ public class RadiationManager implements IRadiationManager {
                 }
             }
         }
-        if (resistance < 1 && Mekanism.hooks.CuriosLoaded) {
+        if (resistance < 1 && Mekanism.hooks.curios.isLoaded()) {
             IItemHandler handler = CuriosIntegration.getCuriosInventory(entity);
             if (handler != null) {
                 for (int i = 0, slots = handler.getSlots(); i < slots; i++) {
@@ -399,11 +408,11 @@ public class RadiationManager implements IRadiationManager {
     }
 
     public double getClientEnvironmentalRadiation() {
-        return isRadiationEnabled() ? clientEnvironmentalRadiation : BASELINE;
+        return isRadiationEnabled() ? clientEnvironmentalRadiation : baselineRadiation();
     }
 
     public double getClientMaxMagnitude() {
-        return isRadiationEnabled() ? clientMaxMagnitude : BASELINE;
+        return isRadiationEnabled() ? clientMaxMagnitude : baselineRadiation();
     }
 
     public RadiationScale getClientScale() {
@@ -443,7 +452,7 @@ public class RadiationManager implements IRadiationManager {
         // this helps distribute the CPU load across ticks, and makes exposure slightly inconsistent
         if (entity.level().getRandom().nextInt(SharedConstants.TICKS_PER_SECOND) == 0) {
             double magnitude = getRadiationLevel(entity);
-            if (magnitude > BASELINE && (!(entity instanceof Player player) || MekanismUtils.isPlayingMode(player))) {
+            if (magnitude > baselineRadiation() && (!(entity instanceof Player player) || MekanismUtils.isPlayingMode(player))) {
                 // apply radiation to the player
                 radiate(entity, magnitude / 3_600D); // convert to Sv/s
             }
@@ -539,7 +548,7 @@ public class RadiationManager implements IRadiationManager {
     }
 
     public void resetClient() {
-        setClientEnvironmentalRadiation(BASELINE, BASELINE);
+        setClientEnvironmentalRadiation(baselineRadiation(), baselineRadiation());
     }
 
     public void resetPlayer(UUID uuid) {
@@ -593,7 +602,7 @@ public class RadiationManager implements IRadiationManager {
          * For both Sv and Sv/h.
          */
         public static EnumColor getSeverityColor(double magnitude) {
-            if (magnitude <= BASELINE) {
+            if (magnitude <= IRadiationManager.INSTANCE.baselineRadiation()) {
                 return EnumColor.BRIGHT_GREEN;
             } else if (magnitude < 0.00001) { // 10 uSv/h
                 return EnumColor.GRAY;
@@ -615,7 +624,7 @@ public class RadiationManager implements IRadiationManager {
          * Gets the severity of a dose (between 0 and 1) from a provided dosage in Sv.
          */
         public static double getScaledDoseSeverity(double magnitude) {
-            if (magnitude < MIN_MAGNITUDE) {
+            if (magnitude < IRadiationManager.INSTANCE.minRadiationMagnitude()) {
                 return 0;
             }
             return Math.min(1, Math.max(0, (-LOG_BASELINE + Math.log10(magnitude)) / SCALE));

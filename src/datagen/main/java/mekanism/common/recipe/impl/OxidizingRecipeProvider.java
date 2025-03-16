@@ -17,17 +17,17 @@ class OxidizingRecipeProvider implements ISubRecipeProvider {
         //Brine
         ItemStackToChemicalRecipeBuilder.oxidizing(
               IngredientCreatorAccess.item().from(MekanismTags.Items.DUSTS_SALT),
-              MekanismChemicals.BRINE.getStack(15)
+              MekanismChemicals.BRINE.asStack(15)
         ).build(consumer, Mekanism.rl(basePath + "brine"));
         //Lithium
         ItemStackToChemicalRecipeBuilder.oxidizing(
               IngredientCreatorAccess.item().from(MekanismTags.Items.DUSTS_LITHIUM),
-              MekanismChemicals.LITHIUM.getStack(100)
+              MekanismChemicals.LITHIUM.asStack(100)
         ).build(consumer, Mekanism.rl(basePath + "lithium"));
         //Sulfur dioxide
         ItemStackToChemicalRecipeBuilder.oxidizing(
               IngredientCreatorAccess.item().from(MekanismTags.Items.DUSTS_SULFUR),
-              MekanismChemicals.SULFUR_DIOXIDE.getStack(100)
+              MekanismChemicals.SULFUR_DIOXIDE.asStack(100)
         ).build(consumer, Mekanism.rl(basePath + "sulfur_dioxide"));
     }
 }

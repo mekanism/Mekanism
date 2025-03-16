@@ -8,25 +8,23 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.tier.BaseTier;
 import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.common.DataGenSerializationConstants;
-import mekanism.common.integration.MekanismHooks;
+import mekanism.common.Mekanism;
+import mekanism.common.registration.INamedEntry;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.PackOutput.PathProvider;
 import net.minecraft.data.PackOutput.Target;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.util.ExtraCodecs;
-import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 @NothingNullByDefault
 public abstract class BaseEmiDefaults implements DataProvider {
@@ -60,7 +58,7 @@ public abstract class BaseEmiDefaults implements DataProvider {
             //Sort to make the output more stable
             List<ResourceLocation> sortedRecipes = new ArrayList<>(recipes);
             sortedRecipes.sort(ResourceLocation::compareNamespaced);
-            Path path = pathProvider.json(ResourceLocation.fromNamespaceAndPath(MekanismHooks.EMI_MOD_ID, modid));
+            Path path = pathProvider.json(Mekanism.hooks.emi.rl(modid));
             return DataProvider.saveStable(cachedOutput, lookupProvider, CODEC, sortedRecipes, path);
         });
     }
@@ -75,14 +73,11 @@ public abstract class BaseEmiDefaults implements DataProvider {
         }
     }
 
-    protected void addRecipe(ItemLike output) {
-        ResourceLocation registryName = BuiltInRegistries.ITEM.getResourceKey(output.asItem())
-              .map(ResourceKey::location)
-              .orElseThrow(() -> new IllegalStateException("Could not retrieve registry name for output."));
-        addRecipe(registryName);
+    protected void addRecipe(DeferredHolder<?, ?> output) {
+        addRecipe(output.getId());
     }
 
-    protected void addRotaryRecipe(IChemicalProvider gas) {
+    protected void addRotaryRecipe(INamedEntry gas) {
         //Allow showing all gas -> fluid rotary recipes by default, in case someone needs a fluid variant that then it consistently gets them to the gas
         // But we don't bother with the decondensentrating ones
         addUncheckedRecipe(RecipeViewerUtils.synthetic(ResourceLocation.fromNamespaceAndPath(modid, "rotary/" + gas.getName()), "condensentrating"));

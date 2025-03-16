@@ -4,11 +4,14 @@ import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import mekanism.api.MekanismAPI;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
+import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData;
 import mekanism.common.integration.crafttweaker.CrTConstants;
+import net.minecraft.core.Holder;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.openzen.zencode.java.ZenCodeType;
@@ -26,7 +29,7 @@ public class CrTModuleHelper {
      */
     @ZenCodeType.Method
     public static Set<ModuleData<?>> getSupported(ItemStack stack) {
-        return IModuleHelper.INSTANCE.getSupported(stack.getItem());
+        return IModuleHelper.INSTANCE.getSupported(stack.getItemHolder());
     }
 
     /**
@@ -38,7 +41,7 @@ public class CrTModuleHelper {
      */
     @ZenCodeType.Method
     public static Set<Item> getSupported(ModuleData<?> type) {
-        return IModuleHelper.INSTANCE.getSupported(type);
+        return IModuleHelper.INSTANCE.getSupportedItems(asHolder(type));
     }
 
     /**
@@ -51,7 +54,7 @@ public class CrTModuleHelper {
      */
     @ZenCodeType.Method
     public static boolean isEnabled(ItemStack stack, ModuleData<?> type) {
-        return IModuleHelper.INSTANCE.isEnabled(stack, type);
+        return IModuleHelper.INSTANCE.isEnabled(stack, asHolder(type));
     }
 
     /**
@@ -65,7 +68,8 @@ public class CrTModuleHelper {
     @ZenCodeType.Nullable
     @ZenCodeType.Method
     public static <MODULE extends ICustomModule<MODULE>> IModule<MODULE> load(ItemStack stack, ModuleData<MODULE> type) {
-        return IModuleHelper.INSTANCE.getModule(stack, type);
+        IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainer(stack);
+        return container == null ? null : container.getUnchecked(asHolder(type));
     }
 
     /**
@@ -92,5 +96,10 @@ public class CrTModuleHelper {
     @ZenCodeType.Method
     public static Set<ModuleData<?>> loadAllTypes(ItemStack stack) {
         return IModuleHelper.INSTANCE.getAllTypes(stack);
+    }
+
+    @Deprecated(forRemoval = true, since = "10.7.11")
+    private static Holder<ModuleData<?>> asHolder(ModuleData<?> data) {
+        return MekanismAPI.MODULE_REGISTRY.wrapAsHolder(data);
     }
 }

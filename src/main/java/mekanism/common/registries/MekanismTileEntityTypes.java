@@ -3,7 +3,6 @@ package mekanism.common.registries;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import mekanism.api.functions.ConstantPredicates;
-import mekanism.api.providers.IBlockProvider;
 import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockEnergyCube;
@@ -14,11 +13,8 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.integration.computer.ComputerCapabilityHelper;
 import mekanism.common.integration.energy.EnergyCompatUtils;
-import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.item.block.ItemBlockChemicalTank;
-import mekanism.common.item.block.ItemBlockEnergyCube;
 import mekanism.common.item.block.machine.ItemBlockFactory;
-import mekanism.common.item.block.machine.ItemBlockFluidTank;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.TileEntityTypeDeferredRegister;
 import mekanism.common.registration.impl.TileEntityTypeDeferredRegister.BlockEntityTypeBuilder;
@@ -116,8 +112,11 @@ import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.tile.transmitter.TileEntityUniversalCable;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 public class MekanismTileEntityTypes {
 
@@ -524,17 +523,17 @@ public class MekanismTileEntityTypes {
         return builder.build();
     }
 
-    private static <BE extends TileEntityLogisticalTransporterBase> TileEntityTypeRegistryObject<BE> registerTransporter(BlockRegistryObject<?, ?> block, BlockEntityFactory<BE> factory) {
+    private static <BE extends TileEntityLogisticalTransporterBase> TileEntityTypeRegistryObject<BE> registerTransporter(DeferredHolder<Block, ?> block, BlockEntityFactory<BE> factory) {
         return transporterBuilder(block, factory).build();
     }
 
-    private static <BE extends TileEntityLogisticalTransporterBase> BlockEntityTypeBuilder<BE> transporterBuilder(BlockRegistryObject<?, ?> block, BlockEntityFactory<BE> factory) {
+    private static <BE extends TileEntityLogisticalTransporterBase> BlockEntityTypeBuilder<BE> transporterBuilder(DeferredHolder<Block, ?> block, BlockEntityFactory<BE> factory) {
         return transmitterBuilder(block, factory)
               .clientTicker(TileEntityLogisticalTransporterBase::tickClient)
               .with(Capabilities.ITEM.block(), CapabilityTileEntity.ITEM_HANDLER_PROVIDER);
     }
 
-    private static TileEntityTypeRegistryObject<TileEntityMechanicalPipe> registerPipe(BlockRegistryObject<?, ?> block) {
+    private static TileEntityTypeRegistryObject<TileEntityMechanicalPipe> registerPipe(DeferredHolder<Block, ?> block) {
         BlockEntityTypeBuilder<TileEntityMechanicalPipe> builder = transmitterBuilder(block, TileEntityMechanicalPipe::new)
               .with(Capabilities.FLUID.block(), CapabilityTileEntity.FLUID_HANDLER_PROVIDER);
         if (Mekanism.hooks.computerCompatEnabled()) {
@@ -543,7 +542,7 @@ public class MekanismTileEntityTypes {
         return builder.build();
     }
 
-    private static TileEntityTypeRegistryObject<TileEntityPressurizedTube> registerTube(BlockRegistryObject<?, ?> block) {
+    private static TileEntityTypeRegistryObject<TileEntityPressurizedTube> registerTube(DeferredHolder<Block, ?> block) {
         BlockEntityTypeBuilder<TileEntityPressurizedTube> builder = transmitterBuilder(block, TileEntityPressurizedTube::new)
               .with(Capabilities.CHEMICAL.block(), CapabilityTileEntity.CHEMICAL_HANDLER_PROVIDER);
         if (Mekanism.hooks.computerCompatEnabled()) {
@@ -552,13 +551,13 @@ public class MekanismTileEntityTypes {
         return builder.build();
     }
 
-    private static TileEntityTypeRegistryObject<TileEntityThermodynamicConductor> registerConductor(BlockRegistryObject<?, ?> block) {
+    private static TileEntityTypeRegistryObject<TileEntityThermodynamicConductor> registerConductor(DeferredHolder<Block, ?> block) {
         return transmitterBuilder(block, TileEntityThermodynamicConductor::new)
               .with(Capabilities.HEAT, CapabilityTileEntity.HEAT_HANDLER_PROVIDER)
               .build();
     }
 
-    private static TileEntityTypeRegistryObject<TileEntityUniversalCable> registerCable(BlockRegistryObject<?, ?> block) {
+    private static TileEntityTypeRegistryObject<TileEntityUniversalCable> registerCable(DeferredHolder<Block, ?> block) {
         BlockEntityTypeBuilder<TileEntityUniversalCable> builder = transmitterBuilder(block, TileEntityUniversalCable::new);
         EnergyCompatUtils.addBlockCapabilities(builder);
         if (Mekanism.hooks.computerCompatEnabled()) {
@@ -567,7 +566,7 @@ public class MekanismTileEntityTypes {
         return builder.build();
     }
 
-    private static <BE extends TileEntityTransmitter> BlockEntityTypeBuilder<BE> transmitterBuilder(BlockRegistryObject<?, ?> block, BlockEntityFactory<BE> factory) {
+    private static <BE extends TileEntityTransmitter> BlockEntityTypeBuilder<BE> transmitterBuilder(DeferredHolder<Block, ?> block, BlockEntityFactory<BE> factory) {
         return TILE_ENTITY_TYPES.builder(block, (pos, state) -> factory.create(block, pos, state))
               .serverTicker(TileEntityTransmitter::tickServer)
               .withSimple(Capabilities.ALLOY_INTERACTION)
@@ -582,7 +581,7 @@ public class MekanismTileEntityTypes {
     public static final TileEntityTypeRegistryObject<TileEntityEnergyCube> ULTIMATE_ENERGY_CUBE = registerEnergyCube(MekanismBlocks.ULTIMATE_ENERGY_CUBE);
     public static final TileEntityTypeRegistryObject<TileEntityEnergyCube> CREATIVE_ENERGY_CUBE = registerEnergyCube(MekanismBlocks.CREATIVE_ENERGY_CUBE);
 
-    private static TileEntityTypeRegistryObject<TileEntityEnergyCube> registerEnergyCube(BlockRegistryObject<BlockEnergyCube, ItemBlockEnergyCube> block) {
+    private static TileEntityTypeRegistryObject<TileEntityEnergyCube> registerEnergyCube(DeferredHolder<Block, BlockEnergyCube> block) {
         return TILE_ENTITY_TYPES.mekBuilder(block, (pos, state) -> new TileEntityEnergyCube(block, pos, state))
               .serverTicker(TileEntityMekanism::tickServer)
               .withSimple(Capabilities.CONFIG_CARD)
@@ -610,7 +609,7 @@ public class MekanismTileEntityTypes {
     public static final TileEntityTypeRegistryObject<TileEntityFluidTank> ULTIMATE_FLUID_TANK = registerFluidTank(MekanismBlocks.ULTIMATE_FLUID_TANK);
     public static final TileEntityTypeRegistryObject<TileEntityFluidTank> CREATIVE_FLUID_TANK = registerFluidTank(MekanismBlocks.CREATIVE_FLUID_TANK);
 
-    private static TileEntityTypeRegistryObject<TileEntityFluidTank> registerFluidTank(BlockRegistryObject<BlockFluidTank, ItemBlockFluidTank> block) {
+    private static TileEntityTypeRegistryObject<TileEntityFluidTank> registerFluidTank(DeferredHolder<Block, BlockFluidTank> block) {
         return TILE_ENTITY_TYPES.mekBuilder(block, (pos, state) -> new TileEntityFluidTank(block, pos, state))
               .clientTicker(TileEntityMekanism::tickClient)
               .serverTicker(TileEntityMekanism::tickServer)
@@ -626,7 +625,7 @@ public class MekanismTileEntityTypes {
     public static final TileEntityTypeRegistryObject<TileEntityBin> ULTIMATE_BIN = registerBin(MekanismBlocks.ULTIMATE_BIN);
     public static final TileEntityTypeRegistryObject<TileEntityBin> CREATIVE_BIN = registerBin(MekanismBlocks.CREATIVE_BIN);
 
-    private static TileEntityTypeRegistryObject<TileEntityBin> registerBin(BlockRegistryObject<BlockBin, ItemBlockBin> block) {
+    private static TileEntityTypeRegistryObject<TileEntityBin> registerBin(DeferredHolder<Block, BlockBin> block) {
         return TILE_ENTITY_TYPES.mekBuilder(block, (pos, state) -> new TileEntityBin(block, pos, state))
               .serverTicker(TileEntityMekanism::tickServer)
               .withSimple(Capabilities.CONFIGURABLE)
@@ -658,6 +657,6 @@ public class MekanismTileEntityTypes {
     @FunctionalInterface
     private interface BlockEntityFactory<BE extends BlockEntity> {
 
-        BE create(IBlockProvider block, BlockPos pos, BlockState state);
+        BE create(Holder<Block> block, BlockPos pos, BlockState state);
     }
 }

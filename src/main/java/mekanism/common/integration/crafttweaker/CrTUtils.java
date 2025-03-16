@@ -24,11 +24,10 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
-import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -37,24 +36,13 @@ import net.neoforged.neoforge.fluids.FluidStack;
 
 public class CrTUtils {
 
-    public static final Function<ChemicalStack, ICrTChemicalStack> CHEMICAL_CONVERTER = CrTChemicalStack::new;
+    private static final Function<ChemicalStack, ICrTChemicalStack> CHEMICAL_CONVERTER = CrTChemicalStack::new;
 
     /**
-     * Creates a {@link ResourceLocation} in CraftTweaker's domain from the given path.
-     *
-     * @param path Path of the resource location
-     *
-     * @return Resource location in CraftTweaker's domain.
+     * Helper method to convert a {@link Chemical} holder to an {@link ICrTChemicalStack}.
      */
-    public static ResourceLocation rl(String path) {
-        return ResourceLocation.fromNamespaceAndPath(MekanismHooks.CRAFTTWEAKER_MOD_ID, path);
-    }
-
-    /**
-     * Helper method to convert a {@link Chemical} to an {@link ICrTChemicalStack}.
-     */
-    public static ICrTChemicalStack fromChemical(Chemical chemical, int size) {
-        return new CrTChemicalStack(chemical.getStack(size));
+    public static ICrTChemicalStack fromChemical(Holder<Chemical> chemical, int size) {
+        return new CrTChemicalStack(new ChemicalStack(chemical, size));
     }
 
     /**

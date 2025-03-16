@@ -16,7 +16,6 @@ import mekanism.additions.common.block.plastic.BlockPlasticStairs;
 import mekanism.additions.common.block.plastic.BlockPlasticTransparent;
 import mekanism.additions.common.block.plastic.BlockPlasticTransparentSlab;
 import mekanism.additions.common.block.plastic.BlockPlasticTransparentStairs;
-import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.block.states.BlockStateHelper;
@@ -24,6 +23,7 @@ import mekanism.common.item.block.ItemBlockMekanism;
 import mekanism.common.registration.impl.BlockDeferredRegister;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.util.EnumUtils;
+import net.minecraft.core.Holder;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -74,7 +74,7 @@ public class AdditionsBlocks {
             PLASTIC_FENCE_GATES.put(color, registerColoredBlock(BlockPlasticFenceGate::new, "_plastic_fence_gate", color));
             PLASTIC_GLOW_STAIRS.put(color, registerPlasticStairs(plasticGlowBlockRO, color, "_plastic_glow_stairs", properties -> properties.lightLevel(state -> 10).emissiveRendering(BlockStateHelper.ALWAYS_PREDICATE)));
             PLASTIC_GLOW_SLABS.put(color, registerPlasticSlab(color, "_plastic_glow_slab", properties -> properties.lightLevel(state -> 10).emissiveRendering(BlockStateHelper.ALWAYS_PREDICATE)));
-            TRANSPARENT_PLASTIC_STAIRS.put(color, registerColoredBlock(c -> new BlockPlasticTransparentStairs(transparentPlasticRO, c),
+            TRANSPARENT_PLASTIC_STAIRS.put(color, registerColoredBlock(c -> new BlockPlasticTransparentStairs(transparentPlasticRO.defaultState(), c),
                   "_plastic_transparent_stairs", color));
             TRANSPARENT_PLASTIC_SLABS.put(color, registerColoredBlock(BlockPlasticTransparentSlab::new, "_plastic_transparent_slab", color));
         }
@@ -90,9 +90,9 @@ public class AdditionsBlocks {
         return registerColoredBlock(c -> new BlockPlasticSlab(c, propertyModifier), blockTypeSuffix, color);
     }
 
-    private static BlockRegistryObject<BlockPlasticStairs, ItemBlockMekanism<BlockPlasticStairs>> registerPlasticStairs(IBlockProvider baseBlock, EnumColor color, String blockTypeSuffix,
+    private static BlockRegistryObject<BlockPlasticStairs, ItemBlockMekanism<BlockPlasticStairs>> registerPlasticStairs(Holder<Block> baseBlock, EnumColor color, String blockTypeSuffix,
           UnaryOperator<BlockBehaviour.Properties> propertyModifier) {
-        return registerColoredBlock(c -> new BlockPlasticStairs(baseBlock, c, propertyModifier), blockTypeSuffix, color);
+        return registerColoredBlock(c -> new BlockPlasticStairs(baseBlock.value().defaultBlockState(), c, propertyModifier), blockTypeSuffix, color);
     }
 
     private static <BLOCK extends Block & IColoredBlock> BlockRegistryObject<BLOCK, ItemBlockMekanism<BLOCK>> registerColoredBlock(Function<EnumColor, BLOCK> blockCreator,

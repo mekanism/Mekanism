@@ -19,6 +19,7 @@ public record AttachedEnergy(List<Long> containers) implements IAttachedContaine
 
     public static final AttachedEnergy EMPTY = new AttachedEnergy(Collections.emptyList());
 
+    @SuppressWarnings("removal")
     public static final Codec<AttachedEnergy> CODEC = RecordCodecBuilder.create(instance -> instance.group(
           SerializerHelper.POSITIVE_LONG_CODEC_LEGACY.listOf().fieldOf(SerializationConstants.ENERGY_CONTAINERS).forGetter(AttachedEnergy::containers)
     ).apply(instance, AttachedEnergy::new));

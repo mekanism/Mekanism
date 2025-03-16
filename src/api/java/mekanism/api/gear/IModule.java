@@ -5,6 +5,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.gear.config.ModuleConfig;
 import mekanism.api.text.IHasTextComponent;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
@@ -23,7 +24,24 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
     /**
      * Gets the data/module type of this module instance.
      */
-    ModuleData<MODULE> getData();
+    @SuppressWarnings("unchecked")
+    default ModuleData<MODULE> getData() {
+        return (ModuleData<MODULE>) getUntypedData();
+    }
+
+    /**
+     * Gets the data/module type of this module instance.
+     *
+     * @since 10.7.11
+     */
+    ModuleData<?> getUntypedData();
+
+    /**
+     * Gets the holder for the data/module type of this module instance.
+     *
+     * @since 10.7.11
+     */
+    Holder<ModuleData<?>> getDataHolder();
 
     /**
      * Gets the config with the given name.
@@ -224,8 +242,8 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
     long useEnergy(LivingEntity wearer, ItemStack stack, long energy);
 
     /**
-     * Helper to use energy from the item this module is installed on. If {@code checkCreative} is {@code false} this method will return 0 for
-     * players in creative or spectator.
+     * Helper to use energy from the item this module is installed on. If {@code checkCreative} is {@code false} this method will return 0 for players in creative or
+     * spectator.
      *
      * @param wearer       Wearer/User of the item the module is installed on.
      * @param stack        The stack this module is installed on.
@@ -237,8 +255,8 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
     long useEnergy(LivingEntity wearer, ItemStack stack, long energy, boolean freeCreative);
 
     /**
-     * Helper to use energy from the given energy container. If the {@code energyContainer} is null this will return 0. If {@code checkCreative}
-     * is {@code false} this method will return 0 for players in creative or spectator.
+     * Helper to use energy from the given energy container. If the {@code energyContainer} is null this will return 0. If {@code checkCreative} is {@code false} this
+     * method will return 0 for players in creative or spectator.
      *
      * @param wearer          Wearer/User of the item the module is installed on.
      * @param energyContainer Energy container, most likely retrieved from {@link #getEnergyContainer(ItemStack)}.

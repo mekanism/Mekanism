@@ -54,7 +54,7 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
     public IHeatHandler getAdjacent(@NotNull Direction side) {
         if (canHandleHeat() && getHeatCapacitorCount(side) > 0) {
             if (WorldUtils.getBlockState(level, getBlockPos().relative(side))
-                  .filter(state -> !state.is(GeneratorsBlocks.FISSION_REACTOR_PORT.getBlock()))
+                  .filter(state -> !state.is(GeneratorsBlocks.FISSION_REACTOR_PORT))
                   .isPresent()) {
                 return getAdjacentUnchecked(side);
             }

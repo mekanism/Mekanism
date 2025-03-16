@@ -9,7 +9,9 @@ import com.mojang.serialization.JsonOps;
 import java.util.function.Function;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.util.WorldUtils;
+import net.minecraft.Util;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -45,6 +47,10 @@ public class MekGameTestHelper extends ExtendedGameTestHelper {
 
     public MekGameTestHelper(GameTestInfo info) {
         super(info);
+    }
+
+    public static HashedItem hashedStack(Item item) {
+        return HashedItem.raw(new ItemStack(item));
     }
 
     public ChunkMap getChunkMap() {
@@ -108,7 +114,8 @@ public class MekGameTestHelper extends ExtendedGameTestHelper {
         } else {
             IItemHandler handler = getCapability(Capabilities.ITEM.block(), relativePos, null);
             if (handler == null) {
-                throw new GameTestAssertException("Expected a container or item handler at " + relativePos + ", found " + BuiltInRegistries.BLOCK_ENTITY_TYPE.getKey(blockentity.getType()));
+                throw new GameTestAssertException("Expected a container or item handler at " + relativePos + ", found " +
+                                                  Util.getRegisteredName(BuiltInRegistries.BLOCK_ENTITY_TYPE, blockentity.getType()));
             }
             int found = 0;
             for (int i = 0, slots = handler.getSlots(); i < slots; i++) {

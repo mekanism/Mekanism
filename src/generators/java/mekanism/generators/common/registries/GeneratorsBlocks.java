@@ -1,7 +1,6 @@
 package mekanism.generators.common.registries;
 
 import java.util.function.Supplier;
-import mekanism.api.chemical.attribute.ChemicalAttributes.Fuel;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.attachments.containers.chemical.ChemicalTanksBuilder;
 import mekanism.common.attachments.containers.fluid.FluidTanksBuilder;
@@ -81,7 +80,7 @@ public class GeneratorsBlocks {
           BLOCKS.registerDetails("gas_burning_generator", () -> new BlockTileModel<>(GeneratorsBlockTypes.GAS_BURNING_GENERATOR, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())))
                 .forItemHolder(holder -> holder
                       .addAttachmentOnlyContainers(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder()
-                            .addBasic(MekanismGeneratorsConfig.generators.gbgTankCapacity, gas -> gas.has(Fuel.class))
+                            .addBasic(MekanismGeneratorsConfig.generators.gbgTankCapacity, TileEntityGasGenerator.HAS_FUEL)
                             .build()
                       ).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
                             .addChemicalFillSlot(0)

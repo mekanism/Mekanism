@@ -6,14 +6,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Predicate;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.attribute.ChemicalAttributes.CooledCoolant;
-import mekanism.api.chemical.attribute.ChemicalAttributes.HeatedCoolant;
+import mekanism.api.chemical.attribute.ChemicalAttributes;
+import mekanism.api.datamaps.IMekanismDataMapTypes;
+import mekanism.api.datamaps.chemical.attribute.HeatedCoolant;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.math.MathUtils;
 import mekanism.common.block.attribute.AttributeStateBoilerValveMode.BoilerValveMode;
@@ -46,16 +48,22 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 
 public class BoilerMultiblockData extends MultiblockData implements IValveHandler {
 
+    //TODO - 1.22: Replace the legacy checks for these predicates
+    @SuppressWarnings("removal")
+    public static final Predicate<ChemicalStack> IS_HEATED_COOLANT = chemical -> chemical.getData(IMekanismDataMapTypes.INSTANCE.heatedChemicalCoolant()) != null
+                                                                                    || chemical.hasLegacy(ChemicalAttributes.HeatedCoolant.class);
+    @SuppressWarnings("removal")
+    public static final Predicate<ChemicalStack> IS_COOLED_COOLANT = chemical -> chemical.getData(IMekanismDataMapTypes.INSTANCE.cooledChemicalCoolant()) != null
+                                                                                    || chemical.hasLegacy(ChemicalAttributes.CooledCoolant.class);
     public static final Object2BooleanMap<UUID> hotMap = new Object2BooleanOpenHashMap<>();
 
     public static final double CASING_HEAT_CAPACITY = 50;
     private static final double CASING_INVERSE_INSULATION_COEFFICIENT = 100_000;
     private static final double CASING_INVERSE_CONDUCTION_COEFFICIENT = 1;
-
-    private static final double COOLANT_COOLING_EFFICIENCY = 0.4;
 
     private final List<AdvancedCapabilityOutputTarget<IChemicalHandler, BoilerValveMode>> chemicalOutputTargets = new ArrayList<>();
     private final List<IChemicalTank> inputTanks;
@@ -114,12 +122,12 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         super(tile);
         //Default biome temp to the ambient temperature at the block we are at
         biomeAmbientTemp = HeatAPI.getAmbientTemp(tile.getLevel(), tile.getBlockPos());
-        superheatedCoolantTank = VariableCapacityChemicalTank.input(this, () -> superheatedCoolantCapacity, chemical -> chemical.has(HeatedCoolant.class), this);
+        superheatedCoolantTank = VariableCapacityChemicalTank.input(this, () -> superheatedCoolantCapacity, IS_HEATED_COOLANT, this);
         waterTank = VariableCapacityFluidTank.input(this, () -> waterTankCapacity, fluid -> fluid.is(FluidTags.WATER),
               createSaveAndComparator());
         fluidTanks.add(waterTank);
-        steamTank = VariableCapacityChemicalTank.output(this, () -> steamTankCapacity, chemical -> chemical == MekanismChemicals.STEAM.getChemical(), this);
-        cooledCoolantTank = VariableCapacityChemicalTank.output(this, () -> cooledCoolantCapacity, chemical -> chemical.has(CooledCoolant.class), this);
+        steamTank = VariableCapacityChemicalTank.output(this, () -> steamTankCapacity, chemical -> chemical.is(MekanismChemicals.STEAM), this);
+        cooledCoolantTank = VariableCapacityChemicalTank.output(this, () -> cooledCoolantCapacity, IS_COOLED_COOLANT, this);
         inputTanks = List.of(superheatedCoolantTank);
         outputSteamTanks = List.of(steamTank);
         outputCoolantTanks = List.of(cooledCoolantTank);
@@ -143,6 +151,23 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         super.remove(world, oldStructure);
     }
 
+    @Nullable
+    @SuppressWarnings("removal")
+    private HeatedCoolant getHeatedCoolant() {
+        ChemicalStack stack = superheatedCoolantTank.getStack();
+        if (stack.isEmpty()) {
+            return null;
+        }
+        HeatedCoolant coolant = stack.getData(IMekanismDataMapTypes.INSTANCE.heatedChemicalCoolant());
+        if (coolant == null) {//TODO - 1.22: Remove this handling of legacy data
+            ChemicalAttributes.HeatedCoolant legacyCoolant = stack.getLegacy(ChemicalAttributes.HeatedCoolant.class);
+            if (legacyCoolant != null) {
+                return legacyCoolant.asModern();
+            }
+        }
+        return coolant;
+    }
+
     @Override
     public boolean tick(Level world) {
         boolean needsPacket = super.tick(world);
@@ -153,16 +178,16 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         updateHeatCapacitors(null);
         // handle coolant heat transfer
         if (!superheatedCoolantTank.isEmpty()) {
-            HeatedCoolant coolantType = superheatedCoolantTank.getStack().get(HeatedCoolant.class);
+            HeatedCoolant coolantType = getHeatedCoolant();
             if (coolantType != null) {
-                long toCool = Math.round(BoilerMultiblockData.COOLANT_COOLING_EFFICIENCY * superheatedCoolantTank.getStored());
-                toCool = MathUtils.clampToLong(toCool * (1 - heatCapacitor.getTemperature() / HeatUtils.HEATED_COOLANT_TEMP));
-                ChemicalStack cooledCoolant = coolantType.getCooledChemical().getStack(toCool);
-                toCool = Math.min(toCool, toCool - cooledCoolantTank.insert(cooledCoolant, Action.EXECUTE, AutomationType.INTERNAL).getAmount());
-                if (toCool > 0) {
-                    double heatEnergy = toCool * coolantType.getThermalEnthalpy();
+                double portionToCool = coolantType.conductivity() * superheatedCoolantTank.getStored();
+                long toCool = Math.round(portionToCool * (1 - heatCapacitor.getTemperature() / coolantType.temperature()));
+                ChemicalStack cooledCoolant = coolantType.cool(toCool);
+                long amountCooled = toCool - cooledCoolantTank.insert(cooledCoolant, Action.EXECUTE, AutomationType.INTERNAL).getAmount();
+                if (amountCooled > 0) {
+                    double heatEnergy = amountCooled * coolantType.thermalEnthalpy();
                     heatCapacitor.handleHeat(heatEnergy);
-                    superheatedCoolantTank.shrinkStack(toCool, Action.EXECUTE);
+                    superheatedCoolantTank.shrinkStack(amountCooled, Action.EXECUTE);
                 }
             }
         }
@@ -177,7 +202,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
                 waterTank.shrinkStack(amountToBoil, Action.EXECUTE);
             }
             if (steamTank.isEmpty()) {
-                steamTank.setStack(MekanismChemicals.STEAM.getStack(amountToBoil));
+                steamTank.setStack(MekanismChemicals.STEAM.asStack(amountToBoil));
             } else {
                 steamTank.growStack(amountToBoil, Action.EXECUTE);
             }

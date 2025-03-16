@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismAPITags;
 import mekanism.api.SupportsColorMap;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -45,6 +47,7 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
 import net.minecraft.world.level.material.Fluid;
@@ -100,8 +103,12 @@ public class MekanismRenderer {
         return getSprite(spriteLocation);
     }
 
-    public static TextureAtlasSprite getChemicalTexture(@NotNull Chemical chemical) {
-        return getSprite(chemical.getIcon());
+    public static TextureAtlasSprite getChemicalTexture(@NotNull ChemicalStack stack) {
+        return getChemicalTexture(stack.getChemicalHolder());
+    }
+
+    public static TextureAtlasSprite getChemicalTexture(@NotNull Holder<Chemical> chemical) {
+        return getSprite(chemical.value().getIcon());
     }
 
     public static TextureAtlasSprite getSprite(ResourceLocation spriteLocation) {
@@ -161,7 +168,11 @@ public class MekanismRenderer {
     }
 
     public static void color(GuiGraphics guiGraphics, int color) {
-        guiGraphics.setColor(getRed(color), getGreen(color), getBlue(color), getAlpha(color));
+        color(guiGraphics, color, getAlpha(color));
+    }
+
+    public static void color(GuiGraphics guiGraphics, int color, float alpha) {
+        guiGraphics.setColor(getRed(color), getGreen(color), getBlue(color), alpha);
     }
 
     public static void color(GuiGraphics guiGraphics, ColorRegistryObject colorRO) {
@@ -180,14 +191,7 @@ public class MekanismRenderer {
 
     public static void color(GuiGraphics guiGraphics, @NotNull ChemicalStack chemicalStack) {
         if (!chemicalStack.isEmpty()) {
-            color(guiGraphics, chemicalStack.getChemical());
-        }
-    }
-
-    public static void color(GuiGraphics guiGraphics, @NotNull Chemical chemical) {
-        if (!chemical.isEmptyType()) {
-            int color = chemical.getTint();
-            guiGraphics.setColor(getRed(color), getGreen(color), getBlue(color), 1);
+            color(guiGraphics, chemicalStack.getChemicalTint(), 1F);
         }
     }
 
@@ -202,10 +206,7 @@ public class MekanismRenderer {
     }
 
     public static int getColorARGB(SupportsColorMap color, float alpha) {
-        if (alpha == 1) {
-            return color.getPackedColor();
-        }
-        return getColorARGB(color.getRgbCode()[0], color.getRgbCode()[1], color.getRgbCode()[2], alpha);
+        return getColorARGB(color.getPackedColor(), alpha);
     }
 
     public static int getColorARGB(@NotNull FluidStack fluidStack) {
@@ -219,34 +220,37 @@ public class MekanismRenderer {
         int color = getColorARGB(fluidStack);
         if (MekanismUtils.lighterThanAirGas(fluidStack)) {
             //TODO: We probably want to factor in the fluid's alpha value somehow
-            return getColorARGB(FastColor.ARGB32.red(color), FastColor.ARGB32.green(color), FastColor.ARGB32.blue(color), Math.min(1, fluidScale + 0.2F));
+            return getColorARGB(color, Math.min(1, fluidScale + 0.2F));
         }
         return color;
     }
 
     public static int getColorARGB(@NotNull ChemicalStack stack, float scale) {
-        return getColorARGB(stack.getChemical(), scale);
+        return getColorARGB(stack.getChemicalHolder(), scale);
     }
 
-    public static int getColorARGB(@NotNull Chemical chemical, float scale) {
-        if (chemical.isEmptyType()) {
+    public static int getTint(@NotNull Holder<Chemical> chemical) {
+        return chemical.value().getTint();
+    }
+
+    @SuppressWarnings("removal")
+    public static int getColorARGB(@NotNull Holder<Chemical> chemical, float scale) {
+        if (chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
             return -1;
+        } else if (chemical.is(MekanismAPITags.Chemicals.GASEOUS) || chemical.value().isGaseousLegacy()) {
+            //TODO - 1.22: Remove the legacy gaseous check
+            return getColorARGB(getTint(chemical), Math.min(1, scale + 0.2F));
         }
-        int color = chemical.getTint();
-        return getColorARGB(FastColor.ARGB32.red(color), FastColor.ARGB32.green(color), FastColor.ARGB32.blue(color), chemical.isGaseous() ? Math.min(1, scale + 0.2F) : 1);
+        return FastColor.ARGB32.opaque(getTint(chemical));
     }
 
-    public static int getColorARGB(float red, float green, float blue, float alpha) {
-        return getColorARGB((int) (255 * red), (int) (255 * green), (int) (255 * blue), alpha);
-    }
-
-    public static int getColorARGB(int red, int green, int blue, float alpha) {
-        if (alpha < 0) {
+    public static int getColorARGB(int rgb, float alpha) {
+        if (alpha >= 1) {
+            return FastColor.ARGB32.opaque(rgb);
+        } else if (alpha < 0) {
             alpha = 0;
-        } else if (alpha > 1) {
-            alpha = 1;
         }
-        return FastColor.ARGB32.color((int) (255 * alpha), red, green, blue);
+        return FastColor.ARGB32.color(FastColor.as8BitChannel(alpha), rgb);
     }
 
     public static int calculateGlowLight(int combinedLight, @NotNull FluidStack fluid) {

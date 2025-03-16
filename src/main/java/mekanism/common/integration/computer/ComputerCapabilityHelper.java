@@ -11,22 +11,22 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 public class ComputerCapabilityHelper {
 
     public static <TILE extends CapabilityTileEntity & IComputerTile> void addComputerCapabilities(BlockEntityTypeBuilder<TILE> builder, BooleanSupplier supportsComputer) {
-        if (Mekanism.hooks.CCLoaded) {
+        if (Mekanism.hooks.computerCraft.isLoaded()) {
             //If ComputerCraft is loaded add the capability for it
             CCCapabilityHelper.addCapability(builder, supportsComputer);
         }
-        if (Mekanism.hooks.OC2Loaded) {
+        if (Mekanism.hooks.oc2.isLoaded()) {
             //If OpenComputers2 is loaded add the capability for it
             OC2CapabilityHelper.addCapability(builder, supportsComputer);
         }
     }
 
     public static void addBoundingComputerCapabilities(RegisterCapabilitiesEvent event) {
-        if (Mekanism.hooks.CCLoaded) {
+        if (Mekanism.hooks.computerCraft.isLoaded()) {
             //If ComputerCraft is loaded add the capability for it
             CCCapabilityHelper.addBoundingComputerCapabilities(event);
         }
-        if (Mekanism.hooks.OC2Loaded) {
+        if (Mekanism.hooks.oc2.isLoaded()) {
             //If OpenComputers2 is loaded add the capability for it
             OC2CapabilityHelper.addBoundingComputerCapabilities(event);
         }

@@ -65,7 +65,7 @@ public class MekanismHUD implements LayeredDraw.Layer {
                     count += makeComponent(hudProvider, player, stack, slotType, renderStrings, IItemHUDProvider::addHUDStrings);
                 }
             }
-            if (Mekanism.hooks.CuriosLoaded) {
+            if (Mekanism.hooks.curios.isLoaded()) {
                 IItemHandler inv = CuriosIntegration.getCuriosInventory(player);
                 if (inv != null) {
                     for (int i = 0, slots = inv.getSlots(); i < slots; i++) {

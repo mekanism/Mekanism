@@ -5,10 +5,12 @@ import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.providers.IFluidProvider;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
+import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentPredicate;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.crafting.CompoundFluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.DataComponentFluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
@@ -24,9 +26,11 @@ public interface IFluidStackIngredientCreator extends IIngredientCreator<Fluid, 
      *
      * @throws NullPointerException     if the given instance is null.
      * @throws IllegalArgumentException if the given instance is empty or an amount smaller than one.
-     * @implNote This wraps via {@link #from(FluidIngredient, int)} so if there is any durability or default NBT it will <strong>NOT</strong> be included in the
+     * @implNote This wraps via {@link #from(FluidIngredient, int)} so if there are any default components it will <strong>NOT</strong> be included in the
      * ingredient. If this is not desired, manually create the ingredient via {@link DataComponentFluidIngredient} and call {@link #from(FluidIngredient, int)}.
      */
+    @SuppressWarnings("removal")
+    @Deprecated(forRemoval = true, since = "10.7.11")
     default FluidStackIngredient from(IFluidProvider provider, int amount) {
         Objects.requireNonNull(provider, "FluidStackIngredients cannot be created from a null fluid provider.");
         return from(provider.getFluidStack(amount));
@@ -38,21 +42,40 @@ public interface IFluidStackIngredientCreator extends IIngredientCreator<Fluid, 
      * @param amount Amount needed.
      * @param fluids Fluid providers that provides the items to match.
      *
-     * @implNote This wraps via {@link #from(FluidIngredient, int)} so if there is any durability or default NBT it will <strong>NOT</strong> be included in the
+     * @implNote This wraps via {@link #from(FluidIngredient, int)} so if there are any default components it will <strong>NOT</strong> be included in the
      * ingredient. If this is not desired, manually create the ingredient via {@link DataComponentFluidIngredient} and call {@link #from(FluidIngredient, int)}.
      * @since 10.6.0
      */
+    @SuppressWarnings("removal")
+    @Deprecated(forRemoval = true, since = "10.7.11")
     default FluidStackIngredient from(int amount, IFluidProvider... fluids) {
-        return from(amount, Arrays.stream(fluids).map(IFluidProvider::getFluid).toArray(Fluid[]::new));
+        return from(CompoundFluidIngredient.of(Arrays.stream(fluids).map(IFluidProvider::getFluid).map(FluidIngredient::single)), amount);
     }
 
     /**
      * {@inheritDoc}
      *
-     * @implNote This wraps via {@link #from(FluidIngredient, int)} so if there is any durability or default NBT it will <strong>NOT</strong> be included in the
+     * @implNote This wraps via {@link #from(FluidIngredient, int)} so if there are any default components it will <strong>NOT</strong> be included in the
      * ingredient. If this is not desired, manually create the ingredient via {@link DataComponentFluidIngredient} and call {@link #from(FluidIngredient, int)}.
+     * @since 10.7.11
      */
     @Override
+    default FluidStackIngredient fromHolders(int amount, Holder<Fluid>... fluids) {
+        if (fluids.length == 0) {
+            throw new IllegalArgumentException("Attempted to create a FluidStackIngredient with no fluids.");
+        }
+        return from(CompoundFluidIngredient.of(Arrays.stream(fluids).map(FluidIngredient::single)), amount);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @implNote This wraps via {@link #from(FluidIngredient, int)} so if there are any default components it will <strong>NOT</strong> be included in the ingredient. If
+     * this is not desired, manually create the ingredient via {@link DataComponentFluidIngredient} and call {@link #from(FluidIngredient, int)}.
+     */
+    @Override
+    @SuppressWarnings("removal")
+    @Deprecated(forRemoval = true, since = "10.7.11")
     default FluidStackIngredient from(Fluid instance, int amount) {
         return from(SizedFluidIngredient.of(instance, amount));
     }
@@ -60,11 +83,24 @@ public interface IFluidStackIngredientCreator extends IIngredientCreator<Fluid, 
     /**
      * {@inheritDoc}
      *
-     * @implNote This wraps via {@link #from(FluidIngredient, int)} so if there is any durability or default NBT it will <strong>NOT</strong> be included in the
+     * @implNote This wraps via {@link #from(FluidIngredient, int)} so if there are any default components it will <strong>NOT</strong> be included in the ingredient. If
+     * this is not desired, manually create the ingredient via {@link DataComponentFluidIngredient} and call {@link #from(FluidIngredient, int)}.
+     */
+    @Override
+    default FluidStackIngredient fromHolder(Holder<Fluid> instance, int amount) {
+        return from(FluidIngredient.single(instance), amount);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @implNote This wraps via {@link #from(FluidIngredient, int)} so if there are any default components it will <strong>NOT</strong> be included in the
      * ingredient. If this is not desired, manually create the ingredient via {@link DataComponentFluidIngredient} and call {@link #from(FluidIngredient, int)}.
      * @since 10.6.0
      */
     @Override
+    @SuppressWarnings("removal")
+    @Deprecated(forRemoval = true, since = "10.7.11")
     default FluidStackIngredient from(int amount, Fluid... fluids) {
         if (fluids.length == 0) {
             throw new IllegalArgumentException("Attempted to create an FluidStackIngredient with no fluids.");

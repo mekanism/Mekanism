@@ -29,6 +29,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
@@ -88,7 +89,7 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
         if (canFunction()) {
             boolean operated = false;
             if (energyContainer.getEnergy() >= energyContainer.getEnergyPerTick() && !moduleSlot.isEmpty() && !containerSlot.isEmpty()) {
-                ModuleData<?> data = ((IModuleItem) moduleSlot.getStack().getItem()).getModuleData();
+                Holder<ModuleData<?>> data = ((IModuleItem) moduleSlot.getStack().getItem()).getModuleData();
                 ItemStack stack = containerSlot.getStack();
                 ModuleContainer container = ModuleHelper.get().getModuleContainer(stack);
                 if (container != null) {
@@ -120,14 +121,14 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
         return usedEnergy;
     }
 
-    public void removeModule(Player player, ModuleData<?> type, boolean removeAll) {
+    public  void removeModule(Player player, Holder<ModuleData<?>> type, boolean removeAll) {
         ItemStack stack = containerSlot.getStack();
         ModuleContainer container = ModuleHelper.get().getModuleContainer(stack);
         if (container != null) {
             int installed = container.installedCount(type);
             if (installed > 0) {
                 int toRemove = removeAll ? installed : 1;
-                if (player.getInventory().add(type.getItemProvider().getItemStack(toRemove))) {
+                if (player.getInventory().add(new ItemStack(type.value().getItemHolder(), toRemove))) {
                     container.removeModule(player.registryAccess(), stack, type, toRemove);
                     containerSlot.setStack(stack);
                 }

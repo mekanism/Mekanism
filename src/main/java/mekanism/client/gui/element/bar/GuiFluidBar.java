@@ -2,6 +2,7 @@ package mekanism.client.gui.element.bar;
 
 import java.util.List;
 import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.math.MathUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidTextureType;
@@ -65,7 +66,7 @@ public class GuiFluidBar extends GuiTankBar<FluidStack> {
 
             @Override
             public double getLevel() {
-                return tank.getFluidAmount() / (double) tank.getCapacity();
+                return MathUtils.divideToLevel(tank.getFluidAmount(), tank.getCapacity());
             }
         };
     }

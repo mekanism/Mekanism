@@ -10,19 +10,23 @@ import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.FieldReflectionHelper;
-import mekanism.common.recipe.BaseRecipeProvider;
 import mekanism.common.recipe.RecipeProviderUtil;
 import mekanism.common.recipe.impl.PigmentExtractingRecipeProvider;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.DyeItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.block.Blocks;
+import net.neoforged.neoforge.common.conditions.ICondition;
+import net.neoforged.neoforge.common.conditions.NotCondition;
+import net.neoforged.neoforge.common.conditions.TagEmptyCondition;
 import net.potionstudios.biomeswevegone.world.level.block.BWGBlocks;
 import net.potionstudios.biomeswevegone.world.level.block.sand.BWGSandSet;
 import net.potionstudios.biomeswevegone.world.level.block.set.BWGBlockSet;
@@ -66,28 +70,36 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
         for (EnumColor color : EnumUtils.COLORS) {
             DyeColor dyeColor = color.getDyeColor();
             if (dyeColor != null) {
-                dye(consumer, basePath, DyeItem.byColor(dyeColor), false, color);
+                Item dye = DyeItem.byColor(dyeColor);
+                dye(consumer, basePath, dye, false, color);
+                dye(consumer, basePath, dye, true, color);
             }
         }
     }
 
-    private void dye(RecipeOutput consumer, String basePath, ItemLike output, boolean large, EnumColor color, ItemLike... extraInputs) {
-        ItemStackIngredient inputIngredient = IngredientCreatorAccess.item().from(BaseRecipeProvider.createIngredient(
-              tag("dye/makes_" + color.getRegistryPrefix() + "_dye"),
-              extraInputs
-        ));
-        String name = large ? "large_" + color.getRegistryPrefix() : color.getRegistryPrefix();
+    private void dye(RecipeOutput consumer, String basePath, ItemLike output, boolean large, EnumColor color) {
+        String name = color.getRegistryPrefix();
+        String makeTarget = name;
+        if (large) {
+            makeTarget = "2_" + makeTarget;
+            name = "large_" + name;
+        }
+        TagKey<Item> makesDyeTag = tag("dye/makes_" + makeTarget + "_dye");
+        ICondition tagNotEmpty = new NotCondition(new TagEmptyCondition(makesDyeTag));
+        ItemStackIngredient inputIngredient = IngredientCreatorAccess.item().from(makesDyeTag);
         ItemStackToItemStackRecipeBuilder.enriching(
                     inputIngredient,
                     new ItemStack(output, large ? 4 : 2)
               ).addCondition(modLoaded)
+              .addCondition(tagNotEmpty)
               .build(consumer, Mekanism.rl(basePath + "dye/" + name));
         //Flowers -> 4x dye output (See PigmentExtractingRecipeProvider#addFlowerExtractionRecipes for note)
         long flowerRate = 3 * PigmentExtractingRecipeProvider.DYE_RATE;
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
                     inputIngredient,
-                    MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(color).getStack(large ? 2 * flowerRate : flowerRate)
+                    MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(color).asStack(large ? 2 * flowerRate : flowerRate)
               ).addCondition(modLoaded)
+              .addCondition(tagNotEmpty)
               .build(consumer, Mekanism.rl(basePath + "pigment_extracting/" + name));
     }
 
@@ -125,7 +137,7 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
     }
 
     private void crushing(RecipeOutput consumer, String basePath, BWGBlockSet from, BWGBlockSet to) {
-        String name = BuiltInRegistries.BLOCK.getKey(from.getBase()).getPath();
+        String name = RegistryUtils.getPath(from.getBase());
         crushing(consumer, from.getBase(), to.getBase(), basePath + "conversion_" + name);
         crushing(consumer, from.getSlab(), to.getSlab(), basePath + "slabs_conversion_" + name);
         crushing(consumer, from.getStairs(), to.getStairs(), basePath + "stairs_conversion_" + name);
@@ -148,11 +160,11 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
 
     private void addMossyStoneEnrichingRecipes(RecipeOutput consumer, String basePath) {
         BWGBlockSet from = BWGBlocks.MOSSY_STONE_SET;
-        String name = BuiltInRegistries.BLOCK.getKey(from.getBase()).getPath();
-        enriching(consumer, from.getBase(), Blocks.STONE, basePath + "conversion_" + name);
-        enriching(consumer, from.getSlab(), Blocks.STONE_SLAB, basePath + "slabs_conversion_" + name);
-        enriching(consumer, from.getStairs(), Blocks.STONE_STAIRS, basePath + "stairs_conversion_" + name);
-        //enriching(consumer, from.getWall(), Blocks.STONE_WALL, basePath + "walls_conversion_" + name);
+        String name = RegistryUtils.getPath(from.getBase());
+        enriching(consumer, from.getBase(), Items.STONE, basePath + "conversion_" + name);
+        enriching(consumer, from.getSlab(), Items.STONE_SLAB, basePath + "slabs_conversion_" + name);
+        enriching(consumer, from.getStairs(), Items.STONE_STAIRS, basePath + "stairs_conversion_" + name);
+        //enriching(consumer, from.getWall(), Items.STONE_WALL, basePath + "walls_conversion_" + name);
     }
 
     private void addDaciteEnrichingRecipes(RecipeOutput consumer, String basePath) {
@@ -180,7 +192,7 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
     }
 
     private void enriching(RecipeOutput consumer, String basePath, BWGBlockSet from, BWGBlockSet to) {
-        String name = BuiltInRegistries.BLOCK.getKey(from.getBase()).getPath();
+        String name = RegistryUtils.getPath(from.getBase());
         enriching(consumer, from.getBase(), to.getBase(), basePath + "conversion_" + name);
         enriching(consumer, from.getSlab(), to.getSlab(), basePath + "slabs_conversion_" + name);
         enriching(consumer, from.getStairs(), to.getStairs(), basePath + "stairs_conversion_" + name);
@@ -203,14 +215,14 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
     private void addMossyStoneInfusingRecipes(RecipeOutput consumer, String basePath) {
         String name = "stone";
         BWGBlockSet to = BWGBlocks.MOSSY_STONE_SET;
-        infuseMoss(consumer, Blocks.STONE, to.getBase(), basePath + "conversion_" + name);
-        infuseMoss(consumer, Blocks.STONE_SLAB, to.getSlab(), basePath + "slabs_conversion_" + name);
-        infuseMoss(consumer, Blocks.STONE_STAIRS, to.getStairs(), basePath + "stairs_conversion_" + name);
-        //infuseMoss(consumer, Blocks.STONE_WALL, to.getWall(), basePath + "walls_conversion_" + name);
+        infuseMoss(consumer, Items.STONE, to.getBase(), basePath + "conversion_" + name);
+        infuseMoss(consumer, Items.STONE_SLAB, to.getSlab(), basePath + "slabs_conversion_" + name);
+        infuseMoss(consumer, Items.STONE_STAIRS, to.getStairs(), basePath + "stairs_conversion_" + name);
+        //infuseMoss(consumer, Items.STONE_WALL, to.getWall(), basePath + "walls_conversion_" + name);
     }
 
     private void infuseMoss(RecipeOutput consumer, String basePath, BWGBlockSet from, BWGBlockSet to) {
-        String name = BuiltInRegistries.BLOCK.getKey(from.getBase()).getPath();
+        String name = RegistryUtils.getPath(from.getBase());
         infuseMoss(consumer, from.getBase(), to.getBase(), basePath + "conversion_" + name);
         infuseMoss(consumer, from.getSlab(), to.getSlab(), basePath + "slabs_conversion_" + name);
         infuseMoss(consumer, from.getStairs(), to.getStairs(), basePath + "stairs_conversion_" + name);

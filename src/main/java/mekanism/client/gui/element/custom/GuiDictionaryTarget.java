@@ -83,7 +83,7 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
             MekanismRenderer.resetColor(guiGraphics);
         } else if (target instanceof ChemicalStack stack) {
             MekanismRenderer.color(guiGraphics, stack);
-            drawTiledSprite(guiGraphics, relativeX, relativeY, height, width, height, MekanismRenderer.getChemicalTexture(stack.getChemical()), TilingDirection.DOWN_RIGHT);
+            drawTiledSprite(guiGraphics, relativeX, relativeY, height, width, height, MekanismRenderer.getChemicalTexture(stack), TilingDirection.DOWN_RIGHT);
             MekanismRenderer.resetColor(guiGraphics);
         }
     }

@@ -7,11 +7,12 @@ import mekanism.additions.common.block.BlockGlowPanel;
 import mekanism.additions.common.block.plastic.BlockPlasticFenceGate;
 import mekanism.additions.common.block.plastic.BlockPlasticStairs;
 import mekanism.additions.common.registries.AdditionsBlocks;
-import mekanism.api.providers.IBlockProvider;
 import mekanism.client.state.BaseBlockStateProvider;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.data.PackOutput;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.FenceGateBlock;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.StairBlock;
@@ -52,23 +53,22 @@ public class AdditionsBlockStateProvider extends BaseBlockStateProvider<Addition
         ModelFile model = models().getExistingFile(modLoc("block/glow_panel"));
         Function<BlockState, ModelFile> modelFunc = state -> model;
         for (BlockRegistryObject<BlockGlowPanel, ?> blockRO : AdditionsBlocks.GLOW_PANELS.values()) {
-            BlockGlowPanel glowPanel = blockRO.getBlock();
-            directionalBlock(glowPanel, modelFunc, 180, glowPanel.getFluidLoggedProperty());
+            directionalBlock(blockRO, modelFunc, 180, blockRO.value().getFluidLoggedProperty());
         }
     }
 
-    private void coloredBlocks(Map<?, ? extends IBlockProvider> blocks, String modelName) {
+    private void coloredBlocks(Map<?, ? extends Holder<Block>> blocks, String modelName) {
         ConfiguredModel model = new ConfiguredModel(models().getExistingFile(modLoc("block/plastic/" + modelName)));
-        for (IBlockProvider block : blocks.values()) {
+        for (Holder<Block> block : blocks.values()) {
             getVariantBuilder(block).partialState().addModels(model);
         }
     }
 
-    private void coloredSlabs(Map<?, ? extends IBlockProvider> slabs, String existingPrefix, String doubleType) {
+    private void coloredSlabs(Map<?, ? extends Holder<Block>> slabs, String existingPrefix, String doubleType) {
         ConfiguredModel bottomModel = new ConfiguredModel(models().getExistingFile(modLoc("block/plastic/" + existingPrefix + "slab")));
         ConfiguredModel topModel = new ConfiguredModel(models().getExistingFile(modLoc("block/plastic/" + existingPrefix + "slab_top")));
         ConfiguredModel doubleModel = new ConfiguredModel(models().getExistingFile(modLoc("block/plastic/" + doubleType)));
-        for (IBlockProvider slab : slabs.values()) {
+        for (Holder<Block> slab : slabs.values()) {
             getVariantBuilder(slab)
                   .partialState().with(SlabBlock.TYPE, SlabType.BOTTOM).addModels(bottomModel)
                   .partialState().with(SlabBlock.TYPE, SlabType.TOP).addModels(topModel)
@@ -81,9 +81,8 @@ public class AdditionsBlockStateProvider extends BaseBlockStateProvider<Addition
         ModelFile stairsInner = models().getExistingFile(modLoc("block/plastic/" + existingPrefix + "stairs_inner"));
         ModelFile stairsOuter = models().getExistingFile(modLoc("block/plastic/" + existingPrefix + "stairs_outer"));
         for (BlockRegistryObject<? extends BlockPlasticStairs, ?> stair : stairs.values()) {
-            BlockPlasticStairs block = stair.getBlock();
             //Copy of BlockStateProvider#stairsBlock, except also ignores our fluid logging extension
-            getVariantBuilder(block).forAllStatesExcept(state -> {
+            getVariantBuilder(stair).forAllStatesExcept(state -> {
                 Direction facing = state.getValue(StairBlock.FACING);
                 Half half = state.getValue(StairBlock.HALF);
                 StairsShape shape = state.getValue(StairBlock.SHAPE);
@@ -102,15 +101,15 @@ public class AdditionsBlockStateProvider extends BaseBlockStateProvider<Addition
                       .rotationY(yRot)
                       .uvLock(uvlock)
                       .build();
-            }, StairBlock.WATERLOGGED, block.getFluidLoggedProperty());
+            }, StairBlock.WATERLOGGED, stair.value().getFluidLoggedProperty());
         }
     }
 
-    private void coloredFences(Map<?, ? extends IBlockProvider> fences, String existingPrefix) {
+    private void coloredFences(Map<?, ? extends Holder<Block>> fences, String existingPrefix) {
         ModelFile post = models().getExistingFile(modLoc("block/plastic/" + existingPrefix + "fence_post"));
         ModelFile side = models().getExistingFile(modLoc("block/plastic/" + existingPrefix + "fence_side"));
-        for (IBlockProvider fence : fences.values()) {
-            fourWayMultipart(getMultipartBuilder(fence.getBlock()).part().modelFile(post).addModel().end(), side);
+        for (Holder<Block> fence : fences.values()) {
+            fourWayMultipart(getMultipartBuilder(fence.value()).part().modelFile(post).addModel().end(), side);
         }
     }
 
@@ -120,8 +119,7 @@ public class AdditionsBlockStateProvider extends BaseBlockStateProvider<Addition
         ModelFile gateWall = models().getExistingFile(modLoc("block/plastic/" + existingPrefix + "fence_gate_wall"));
         ModelFile gateWallOpen = models().getExistingFile(modLoc("block/plastic/" + existingPrefix + "fence_gate_wall_open"));
         for (BlockRegistryObject<? extends BlockPlasticFenceGate, ?> fenceGate : fenceGates.values()) {
-            BlockPlasticFenceGate block = fenceGate.getBlock();
-            getVariantBuilder(block).forAllStatesExcept(state -> {
+            getVariantBuilder(fenceGate).forAllStatesExcept(state -> {
                 ModelFile model = gate;
                 if (state.getValue(FenceGateBlock.IN_WALL)) {
                     model = gateWall;
@@ -134,7 +132,7 @@ public class AdditionsBlockStateProvider extends BaseBlockStateProvider<Addition
                       .rotationY((int) state.getValue(FenceGateBlock.FACING).toYRot())
                       .uvLock(true)
                       .build();
-            }, FenceGateBlock.POWERED, block.getFluidLoggedProperty());
+            }, FenceGateBlock.POWERED, fenceGate.value().getFluidLoggedProperty());
         }
     }
 }

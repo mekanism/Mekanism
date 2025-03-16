@@ -8,6 +8,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.merged.MergedTank;
 import mekanism.common.inventory.slot.chemical.ChemicalInventorySlot;
@@ -74,7 +75,7 @@ public class HybridInventorySlot extends BasicInventorySlot implements IFluidHan
 
     private HybridInventorySlot(MergedTank mergedTank, BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canExtract,
           BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canInsert, @Nullable IContentsListener listener, int x, int y) {
-        super(canExtract, canInsert, alwaysTrue, listener, x, y);
+        super(canExtract, canInsert, ConstantPredicates.alwaysTrue(), listener, x, y);
         this.mergedTank = mergedTank;
     }
 

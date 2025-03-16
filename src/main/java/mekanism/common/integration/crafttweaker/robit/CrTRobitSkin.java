@@ -17,13 +17,13 @@ public class CrTRobitSkin {
 
     @ZenCodeType.Method
     public static ResourceLocation getRegistryName(RobitSkin _this) {
-        Optional<ResourceKey<RobitSkin>> skinName = CraftTweakerAPI.getAccessibleElementsProvider()
+        ResourceLocation skinName = CraftTweakerAPI.getAccessibleElementsProvider()
               .registryAccess()
               .registryOrThrow(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME)
-              .getResourceKey(_this);
-        if (skinName.isEmpty()) {
+              .getKeyOrNull(_this);
+        if (skinName == null) {
             throw new IllegalArgumentException("Unregistered robit skin");
         }
-        return skinName.get().location();
+        return skinName;
     }
 }

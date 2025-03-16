@@ -4,7 +4,6 @@ import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.annotation.BracketValidator;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import java.util.Optional;
-import java.util.function.Predicate;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.common.integration.crafttweaker.CrTConstants;
@@ -27,7 +26,7 @@ public class CrTBracketValidators {
     @ZenCodeType.Method
     @BracketValidator(CrTConstants.BRACKET_CHEMICAL)
     public static boolean validateChemicalStack(String tokens) {
-        return validate(CrTConstants.BRACKET_CHEMICAL, tokens, MekanismAPI.CHEMICAL_REGISTRY);
+        return validate(CrTConstants.BRACKET_CHEMICAL, tokens, MekanismAPI.CHEMICAL_REGISTRY_NAME);
     }
 
     /**
@@ -53,29 +52,19 @@ public class CrTBracketValidators {
     @ZenCodeType.Method
     @BracketValidator(CrTConstants.BRACKET_MODULE_DATA)
     public static boolean validateModuleData(String tokens) {
-        return validate(CrTConstants.BRACKET_MODULE_DATA, tokens, MekanismAPI.MODULE_REGISTRY);
-    }
-
-    private static boolean validate(String bracket, String tokens, Registry<?> registry) {
-        return validate(bracket, tokens, registry::containsKey);
+        return validate(CrTConstants.BRACKET_MODULE_DATA, tokens, MekanismAPI.MODULE_REGISTRY_NAME);
     }
 
     private static boolean validate(String bracket, String tokens, ResourceKey<? extends Registry<?>> registryKey) {
-        return validate(bracket, tokens, registryName -> {
-            Optional<Registry<Object>> registry = CraftTweakerAPI.getAccessibleElementsProvider()
-                  .registryAccess()
-                  .registry(registryKey);
-            return registry.isEmpty() || registry.get().containsKey(registryName);
-        });
-    }
-
-    private static boolean validate(String bracket, String tokens, Predicate<ResourceLocation> unlockedOrHas) {
         ResourceLocation registryName = ResourceLocation.tryParse(tokens);
         if (registryName == null) {
             CrTConstants.CRT_LOGGER.error("Could not get BEP <{}:{}>. Syntax is <{}:modid:{}_name>", bracket, tokens, bracket, bracket);
             return false;
         }
-        if (unlockedOrHas.test(registryName)) {
+        Optional<Registry<Object>> registry = CraftTweakerAPI.getAccessibleElementsProvider()
+              .registryAccess()
+              .registry(registryKey);
+        if (registry.isEmpty() || registry.get().containsKey(registryName)) {
             return true;
         }
         String typeName = bracket.replace("_", " ");

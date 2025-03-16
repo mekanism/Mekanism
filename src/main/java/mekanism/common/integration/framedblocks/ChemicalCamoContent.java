@@ -1,9 +1,11 @@
 package mekanism.common.integration.framedblocks;
 
 import mekanism.api.chemical.Chemical;
+import mekanism.api.text.TextComponentUtil;
 import mekanism.common.registration.impl.FluidDeferredRegister;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.Entity;
@@ -23,16 +25,16 @@ import xfacthd.framedblocks.api.camo.CamoContent;
 
 final class ChemicalCamoContent extends CamoContent<ChemicalCamoContent> {
 
-    private final Chemical chemical;
+    private final Holder<Chemical> chemicalHolder;
     private final MapColor mapColor;
 
-    ChemicalCamoContent(Chemical chemical) {
-        this.chemical = chemical;
-        this.mapColor = FluidDeferredRegister.getClosestColor(chemical.getColorRepresentation());
+    ChemicalCamoContent(Holder<Chemical> chemicalHolder) {
+        this.chemicalHolder = chemicalHolder;
+        this.mapColor = FluidDeferredRegister.getClosestColor(this.chemicalHolder.value().getColorRepresentation());
     }
 
-    Chemical getChemical() {
-        return chemical;
+    Holder<Chemical> getChemicalHolder() {
+        return chemicalHolder;
     }
 
     @Override
@@ -109,12 +111,12 @@ final class ChemicalCamoContent extends CamoContent<ChemicalCamoContent> {
 
     @Override
     public int getTintColor(BlockAndTintGetter blockAndTintGetter, BlockPos pos, int tintIdx) {
-        return chemical.getTint();
+        return chemicalHolder.value().getTint();
     }
 
     @Override
     public Integer getBeaconColorMultiplier(LevelReader levelReader, BlockPos pos, BlockPos beaconPos) {
-        return chemical.getColorRepresentation();
+        return chemicalHolder.value().getColorRepresentation();
     }
 
     @Override
@@ -154,17 +156,17 @@ final class ChemicalCamoContent extends CamoContent<ChemicalCamoContent> {
 
     @Override
     public ParticleOptions makeRunningLandingParticles(BlockPos pos) {
-        return new ChemicalParticleOptions(chemical);
+        return new ChemicalParticleOptions(chemicalHolder);
     }
 
     @Override
     public String getCamoId() {
-        return chemical.getRegistryName().toString();
+        return chemicalHolder.getRegisteredName();
     }
 
     @Override
     public MutableComponent getCamoName() {
-        return (MutableComponent) chemical.getTextComponent();
+        return TextComponentUtil.build(chemicalHolder);
     }
 
     @Override
@@ -174,18 +176,18 @@ final class ChemicalCamoContent extends CamoContent<ChemicalCamoContent> {
 
     @Override
     public int hashCode() {
-        return chemical.hashCode();
+        return chemicalHolder.hashCode();
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj == this) return true;
         if (obj == null || obj.getClass() != ChemicalCamoContent.class) return false;
-        return chemical == ((ChemicalCamoContent) obj).chemical;
+        return chemicalHolder.is(((ChemicalCamoContent) obj).chemicalHolder);
     }
 
     @Override
     public String toString() {
-        return "ChemicalCamoContent{" + chemical.toString() + "}";
+        return "ChemicalCamoContent{" + getCamoId() + "}";
     }
 }

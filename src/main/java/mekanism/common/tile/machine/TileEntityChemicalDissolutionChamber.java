@@ -72,7 +72,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
           RecipeError.NOT_ENOUGH_OUTPUT_SPACE,
           RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
     );
-    public static final long MAX_CHEMICAL = 10 * FluidType.BUCKET_VOLUME;
+    public static final long MAX_CHEMICAL = 10L * FluidType.BUCKET_VOLUME;
     public static final int BASE_TICKS_REQUIRED = 5 * SharedConstants.TICKS_PER_SECOND;
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getGasInput", "getGasInputCapacity", "getGasInputNeeded",
@@ -120,7 +120,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
     @Override
     public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this);
-        builder.addTank(injectTank = BasicChemicalTank.input(MAX_CHEMICAL, gas -> containsRecipeBA(inputSlot.getStack(), gas), this::containsRecipeB, recipeCacheListener));
+        builder.addTank(injectTank = BasicChemicalTank.inputModern(MAX_CHEMICAL, gas -> containsRecipeBA(inputSlot.getStack(), gas), this::containsRecipeB, recipeCacheListener));
         builder.addTank(outputTank = BasicChemicalTank.output(MAX_CHEMICAL, recipeCacheUnpauseListener));
         return builder.build();
     }
@@ -237,13 +237,15 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
     //End methods IComputerTile
 
     @Override
-    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
+    @Deprecated(forRemoval = true, since = "10.7.0")
     public List<IChemicalTank> getLegacyGasTanks() {
         return Collections.singletonList(injectTank);
     }
 
     @Override
-    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
+    @Deprecated(forRemoval = true, since = "10.7.0")
     public List<IChemicalTank> getLegacySlurryTanks() {
         return Collections.singletonList(outputTank);
     }

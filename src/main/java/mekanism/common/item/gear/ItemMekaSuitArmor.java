@@ -4,7 +4,6 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.LongSupplier;
 import mekanism.api.Action;
@@ -12,6 +11,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
+import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.MekaSuitAbsorption;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.gear.ICustomModule;
@@ -32,6 +32,7 @@ import mekanism.common.attachments.containers.chemical.ComponentBackedChemicalTa
 import mekanism.common.attachments.containers.fluid.ComponentBackedFluidTank;
 import mekanism.common.attachments.containers.fluid.FluidTanksBuilder;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.ICapabilityAware;
 import mekanism.common.capabilities.chemical.item.ChemicalTankSpec;
 import mekanism.common.capabilities.fluid.item.FluidTankSpec;
 import mekanism.common.capabilities.laser.item.LaserDissipationHandler;
@@ -46,9 +47,8 @@ import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
 import mekanism.common.item.interfaces.IJetpackItem;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.registries.MekanismArmorMaterials;
-import mekanism.common.registries.MekanismDataMapTypes;
-import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismChemicals;
+import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
@@ -56,13 +56,10 @@ import mekanism.common.util.StorageUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup.RegistryLookup;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -85,7 +82,7 @@ import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContainerItem, IJetpackItem, ICustomCreativeTabContents, IAttachmentAware {
+public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContainerItem, IJetpackItem, ICustomCreativeTabContents, IAttachmentAware, ICapabilityAware {
 
     //TODO: Expand this system so that modules can maybe define needed tanks?
     private final List<ChemicalTankSpec> chemicalTankSpecs = new ArrayList<>();
@@ -104,7 +101,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         switch (armorType) {
             case HELMET -> {
                 fluidTankSpecs.add(FluidTankSpec.createFillOnly(MekanismConfig.gear.mekaSuitNutritionalTransferRate, MekanismConfig.gear.mekaSuitNutritionalMaxStorage,
-                      fluid -> fluid.is(MekanismFluids.NUTRITIONAL_PASTE.getFluid()), stack -> hasModule(stack, MekanismModules.NUTRITIONAL_INJECTION_UNIT)));
+                      fluid -> fluid.is(MekanismFluids.NUTRITIONAL_PASTE), stack -> hasModule(stack, MekanismModules.NUTRITIONAL_INJECTION_UNIT)));
                 absorption = 0.15F;
                 laserDissipation = 0.15;
                 laserRefraction = 0.2;
@@ -114,7 +111,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                     //Note: We intentionally don't require the module to be enabled for purposes of calculating capacity
                     IModule<ModuleJetpackUnit> module = IModuleHelper.INSTANCE.getModule(stack, MekanismModules.JETPACK_UNIT);
                     return module != null ? MekanismConfig.gear.mekaSuitJetpackMaxStorage.get() * module.getInstalledCount() : 0L;
-                }, gas -> gas == MekanismChemicals.HYDROGEN.get(), stack -> hasModule(stack, MekanismModules.JETPACK_UNIT)));
+                }, chemical -> chemical.is(MekanismChemicals.HYDROGEN), stack -> hasModule(stack, MekanismModules.JETPACK_UNIT)));
                 absorption = 0.4F;
                 laserDissipation = 0.3;
                 laserRefraction = 0.4;
@@ -151,10 +148,10 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         } else {
             StorageUtils.addStoredEnergy(stack, tooltip, true);
             if (!chemicalTankSpecs.isEmpty()) {
-                StorageUtils.addStoredChemical(stack, tooltip, true, false);
+                StorageUtils.addStoredChemical(stack, tooltip);
             }
             if (!fluidTankSpecs.isEmpty()) {
-                StorageUtils.addStoredFluid(stack, tooltip, true);
+                StorageUtils.addStoredFluid(stack, tooltip);
             }
             tooltip.add(MekanismLang.HOLD_FOR_MODULES.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.getTranslatedKeyMessage()));
         }
@@ -226,8 +223,8 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     @Override
-    public void addItems(Consumer<ItemStack> tabOutput) {
-        tabOutput.accept(StorageUtils.getFilledEnergyVariant(this));
+    public void addItems(Holder<Item> item, Consumer<ItemStack> tabOutput) {
+        tabOutput.accept(StorageUtils.getFilledEnergyVariant(item));
     }
 
     @Override
@@ -267,7 +264,6 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
 
     @Override
     public void attachCapabilities(RegisterCapabilitiesEvent event) {
-        super.attachCapabilities(event);
         //Note: The all our providers only expose the capabilities (both those via attachments and those here) if the required configs for initializing that capability are loaded
         event.registerItem(Capabilities.RADIATION_SHIELDING, (stack, ctx) -> {
             if (!MekanismConfig.gear.isLoaded() || !isModuleEnabled(stack, MekanismModules.RADIATION_SHIELDING_UNIT)) {
@@ -340,7 +336,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
             if (isModuleEnabled(stack, MekanismModules.JETPACK_UNIT)) {
                 return ChemicalUtil.hasChemicalOfType(stack, MekanismChemicals.HYDROGEN.get());
             }
-            return getModules(stack).stream().anyMatch(module -> module.isEnabled() && module.getData().isExclusive(ExclusiveFlag.OVERRIDE_JUMP.getMask()));
+            return getModules(stack).stream().anyMatch(module -> module.isEnabled() && module.getUntypedData().isExclusive(ExclusiveFlag.OVERRIDE_JUMP.getMask()));
         }
         return false;
     }
@@ -382,7 +378,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
             IChemicalHandler gasHandlerItem = Capabilities.CHEMICAL.getCapability(stack);
             if (gasHandlerItem != null) {
                 int amount = Mth.ceil(module.getCustomInstance().getThrustMultiplier());
-                gasHandlerItem.extractChemical(MekanismChemicals.HYDROGEN.getStack(amount), Action.EXECUTE);
+                gasHandlerItem.extractChemical(MekanismChemicals.HYDROGEN.asStack(amount), Action.EXECUTE);
             }
         }
     }
@@ -453,22 +449,11 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                         break;
                     }
                     // Next lookup the ratio at which we can absorb the given damage type from the data map
-                    MekaSuitAbsorption absorptionData = null;
-                    if (source.typeHolder().unwrapKey().isPresent()) {
-                        // Reference holders can query data map values
-                        absorptionData = source.typeHolder().getData(MekanismDataMapTypes.MEKA_SUIT_ABSORPTION);
-                    } else {
-                        // Note: In theory the above path should always be done as vanilla only makes damage sources with reference holders
-                        // but just in case have the fallback to look up the name from the registry
-                        Optional<Registry<DamageType>> registry = player.registryAccess().registry(Registries.DAMAGE_TYPE);
-                        if (registry.isPresent()) {
-                            absorptionData = registry.get().wrapAsHolder(source.type()).getData(MekanismDataMapTypes.MEKA_SUIT_ABSORPTION);
-                        }
-                    }
-                    if (absorptionData != null) {
-                        absorbRatio = absorptionData.absorption();
-                    } else {
+                    MekaSuitAbsorption absorptionData = IMekanismDataMapTypes.INSTANCE.getMekaSuitAbsorption(player.registryAccess(), source.typeHolder());
+                    if (absorptionData == null) {
                         absorbRatio = MekanismConfig.gear.mekaSuitUnspecifiedDamageRatio.get();
+                    } else {
+                        absorbRatio = absorptionData.absorption();
                     }
                     if (absorbRatio == 0) {
                         //If the config or the data map specifies that the damage type shouldn't be blocked at all

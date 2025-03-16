@@ -3,8 +3,8 @@ package mekanism.common.attachments.containers.energy;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.attachments.containers.ContainerType;
-import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.item.block.ItemBlockEnergyCube;
 import mekanism.common.tier.EnergyCubeTier;
 import net.minecraft.world.item.ItemStack;
@@ -22,7 +22,7 @@ public class ComponentBackedEnergyCubeContainer extends ComponentBackedEnergyCon
     private final boolean isCreative;
 
     private ComponentBackedEnergyCubeContainer(ItemStack attachedTo, int containerIndex, EnergyCubeTier tier) {
-        super(attachedTo, containerIndex, BasicEnergyContainer.alwaysTrue, BasicEnergyContainer.alwaysTrue, tier::getOutput, tier::getMaxEnergy);
+        super(attachedTo, containerIndex, ConstantPredicates.alwaysTrue(), ConstantPredicates.alwaysTrue(), tier::getOutput, tier::getMaxEnergy);
         isCreative = tier == EnergyCubeTier.CREATIVE;
     }
 

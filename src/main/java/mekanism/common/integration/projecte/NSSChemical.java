@@ -5,7 +5,6 @@ import java.util.Optional;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.providers.IChemicalProvider;
 import moze_intel.projecte.api.nss.AbstractNSSTag;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import net.minecraft.core.Holder;
@@ -32,27 +31,7 @@ public final class NSSChemical extends AbstractNSSTag<Chemical> {
     @NotNull
     public static NSSChemical createChemical(@NotNull ChemicalStack stack) {
         //Don't bother checking if it is empty as getType returns EMPTY which will then fail anyway for being empty
-        return createChemical(stack.getChemical());
-    }
-
-    /**
-     * Helper method to create an {@link NSSChemical} representing a chemical from an {@link IChemicalProvider}
-     */
-    @NotNull
-    public static NSSChemical createChemical(@NotNull IChemicalProvider chemicalProvider) {
-        return createChemical(chemicalProvider.getChemical());
-    }
-
-    /**
-     * Helper method to create an {@link NSSChemical} representing a chemical from a {@link Chemical}
-     */
-    @NotNull
-    public static NSSChemical createChemical(@NotNull Chemical chemical) {
-        if (chemical.isEmptyType()) {
-            throw new IllegalArgumentException("Can't make NSSChemical with an empty chemical");
-        }
-        //This should never be null, or it would have crashed on being registered
-        return createChemical(chemical.getRegistryName());
+        return createChemical(stack.getChemicalHolder());
     }
 
     /**
@@ -81,7 +60,7 @@ public final class NSSChemical extends AbstractNSSTag<Chemical> {
     @NotNull
     public static NSSChemical createChemical(@NotNull ResourceLocation chemicalId) {
         if (chemicalId.equals(MekanismAPI.CHEMICAL_REGISTRY.getDefaultKey())) {
-            throw new IllegalArgumentException("Can't make NSSChemical with an empty stack");
+            throw new IllegalArgumentException("Can't make NSSChemical with an empty chemical");
         }
         return new NSSChemical(chemicalId, false);
     }

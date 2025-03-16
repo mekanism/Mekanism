@@ -12,12 +12,14 @@ import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.attribute.ChemicalAttributes;
+import mekanism.api.radiation.IRadiationManager;
 import mekanism.common.Mekanism;
-import mekanism.common.integration.LazyChemicalProvider;
-import mekanism.common.lib.radiation.RadiationManager;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,6 +40,7 @@ public class JsonChemicalParser extends ThingParser<JsonChemicalBuilder> {
     }
 
     @Override
+    @SuppressWarnings("removal")
     protected JsonChemicalBuilder processThing(ResourceLocation key, JsonObject data, Consumer<JsonChemicalBuilder> builderModification) {
         JsonChemicalBuilder builder = new JsonChemicalBuilder(this, key);
         JParse.begin(data)
@@ -58,11 +61,12 @@ public class JsonChemicalParser extends ThingParser<JsonChemicalBuilder> {
               .typeError();
     }
 
+    @SuppressWarnings("removal")
     private void processAttribute(JsonChemicalBuilder builder, ObjValue rawAttribute) {
         //Note: We chain ifKeys here as while there shouldn't be an overlap as it doesn't make sense, there is also nothing wrong
         // with allowing multiple attribute types to be defined in each block
         rawAttribute.ifKey("radioactivity", attribute -> attribute.doubleValue()
-              .min(RadiationManager.MIN_MAGNITUDE)
+              .min(IRadiationManager.INSTANCE.minRadiationMagnitude())
               .handle(radioactivity -> builder.with(new ChemicalAttributes.Radiation(radioactivity)))
         ).ifKey("coolant", attribute -> {
             ObjValue coolant = attribute.obj();
@@ -79,10 +83,15 @@ public class JsonChemicalParser extends ThingParser<JsonChemicalBuilder> {
             coolant.key("thermal_enthalpy", thermalEnthalpy -> thermalEnthalpy.doubleValue().handle(enthalpy -> coolantData.thermalEnthalpy = enthalpy))
                   .key("conductivity", conductivity -> conductivity.doubleValue().handle(c -> coolantData.conductivity = c))
                   .key(hasCooledGas ? "cooled_gas" : "heated_gas", gas -> gas.string().map(ResourceLocation::parse).handle(g -> coolantData.gas = g));
+            //We know we set it in one of the two cases
+            Holder<Chemical> otherVariantHolder = DeferredHolder.create(MekanismAPI.CHEMICAL_REGISTRY_NAME, coolantData.gas);
+            if (otherVariantHolder.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
+                throw new ThingParseException("Coolants cannot be created pointing to the empty chemical");
+            }
             if (hasCooledGas) {
-                builder.with(new ChemicalAttributes.HeatedCoolant(new LazyChemicalProvider(coolantData.gas), coolantData.thermalEnthalpy, coolantData.conductivity));
+                builder.with(new ChemicalAttributes.HeatedCoolant(otherVariantHolder, coolantData.thermalEnthalpy));
             } else {
-                builder.with(new ChemicalAttributes.CooledCoolant(new LazyChemicalProvider(coolantData.gas), coolantData.thermalEnthalpy, coolantData.conductivity));
+                builder.with(new ChemicalAttributes.CooledCoolant(otherVariantHolder, coolantData.thermalEnthalpy, coolantData.conductivity));
             }
         }).ifKey("fuel", attribute -> {
             FuelData fuelData = new FuelData();

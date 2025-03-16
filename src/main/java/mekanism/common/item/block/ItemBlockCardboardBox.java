@@ -19,6 +19,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -74,8 +75,11 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
         if (!stack.has(MekanismDataComponents.BLOCK_DATA) && !player.isShiftKeyDown()) {
             BlockState state = world.getBlockState(pos);
             if (!state.isAir() && state.getDestroySpeed(world, pos) != Block.INDESTRUCTIBLE) {
-                if (state.is(MekanismTags.Blocks.CARDBOARD_BLACKLIST) ||
-                    MekanismConfig.general.cardboardModBlacklist.get().contains(RegistryUtils.getNamespace(state.getBlock())) ||
+                if (state.is(MekanismTags.Blocks.CARDBOARD_BLACKLIST)) {
+                    return InteractionResult.FAIL;
+                }
+                ResourceLocation stateName = RegistryUtils.getName(state.getBlockHolder());
+                if (stateName == null || MekanismConfig.general.cardboardModBlacklist.get().contains(stateName.getNamespace()) ||
                     !canReplace(world, player, pos, context.getClickedFace(), state, stack)) {
                     return InteractionResult.FAIL;
                 }
@@ -94,7 +98,7 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
                     // and then replace the block with the cardboard box, which will cause items to drop and then get
                     // cancelled by our listener in CommonWorldTickHandler
                     CommonWorldTickHandler.monitoringCardboardBox = true;
-                    world.setBlock(pos, defaultState().setValue(BlockStateHelper.storageProperty, true), Block.UPDATE_ALL | Block.UPDATE_SUPPRESS_DROPS);
+                    world.setBlock(pos, getBlock().defaultBlockState().setValue(BlockStateHelper.storageProperty, true), Block.UPDATE_ALL | Block.UPDATE_SUPPRESS_DROPS);
                     CommonWorldTickHandler.monitoringCardboardBox = false;
                     TileEntityCardboardBox box = WorldUtils.getTileEntity(TileEntityCardboardBox.class, world, pos);
                     if (box != null) {

@@ -3,7 +3,7 @@ package mekanism.common.advancements;
 import java.util.Optional;
 import java.util.function.Consumer;
 import mekanism.api.datagen.recipe.RecipeCriterion;
-import mekanism.common.util.RegistryUtils;
+import mekanism.common.registration.INamedEntry;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementRequirements;
@@ -52,7 +52,7 @@ public class ExtendedAdvancementBuilder {
         return display(item, null, type, true, announceToChat, false);
     }
 
-    public ExtendedAdvancementBuilder displayAndCriterion(ItemLike item, AdvancementType type, boolean announceToChat) {
+    public <ITEM extends ItemLike & INamedEntry> ExtendedAdvancementBuilder displayAndCriterion(ITEM item, AdvancementType type, boolean announceToChat) {
         display(item, type, announceToChat);
         return addCriterion(item);
     }
@@ -88,8 +88,9 @@ public class ExtendedAdvancementBuilder {
         return addCriterion(key, criterion);
     }
 
-    public ExtendedAdvancementBuilder andCriteria(ItemLike... items) {
-        for (ItemLike item : items) {
+    @SafeVarargs
+    public final <ITEM extends ItemLike & INamedEntry> ExtendedAdvancementBuilder andCriteria(ITEM... items) {
+        for (ITEM item : items) {
             addCriterion(item);
         }
         return this;
@@ -109,8 +110,8 @@ public class ExtendedAdvancementBuilder {
         return runInternal(builder -> builder.addCriterion(key, criterion));
     }
 
-    public ExtendedAdvancementBuilder addCriterion(ItemLike item) {
-        return addCriterion(RegistryUtils.getPath(item.asItem()), InventoryChangeTrigger.TriggerInstance.hasItems(item));
+    public <ITEM extends ItemLike & INamedEntry> ExtendedAdvancementBuilder addCriterion(ITEM item) {
+        return addCriterion(item.getName(), InventoryChangeTrigger.TriggerInstance.hasItems(item));
     }
 
     public ExtendedAdvancementBuilder requirements(AdvancementRequirements requirements) {

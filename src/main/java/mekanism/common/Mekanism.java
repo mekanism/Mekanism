@@ -10,7 +10,6 @@ import java.util.Set;
 import java.util.UUID;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismIMC;
-import mekanism.api.providers.IItemProvider;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.base.IModModule;
 import mekanism.common.base.KeySync;
@@ -19,6 +18,7 @@ import mekanism.common.base.MekanismPermissions;
 import mekanism.common.base.PlayerState;
 import mekanism.common.base.TagCache;
 import mekanism.common.base.holiday.HolidayManager;
+import mekanism.common.block.basic.BlockFluidTank;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.command.CommandMek;
 import mekanism.common.command.builders.BuildCommand;
@@ -50,6 +50,7 @@ import mekanism.common.content.tank.TankValidator;
 import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.integration.MekanismHooks;
+import mekanism.common.item.block.machine.ItemBlockFluidTank;
 import mekanism.common.item.block.machine.ItemBlockFluidTank.BasicCauldronInteraction;
 import mekanism.common.item.block.machine.ItemBlockFluidTank.BasicDrainCauldronInteraction;
 import mekanism.common.item.block.machine.ItemBlockFluidTank.FluidTankItemDispenseBehavior;
@@ -72,10 +73,12 @@ import mekanism.common.network.to_client.transmitter.PacketFluidNetworkContents;
 import mekanism.common.network.to_client.transmitter.PacketNetworkScale;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.condition.MekanismRecipeConditions;
+import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registries.MekanismArmorMaterials;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismChemicalIngredientTypes;
+import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismCreativeTabs;
 import mekanism.common.registries.MekanismDataComponents;
@@ -85,7 +88,6 @@ import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.registries.MekanismFeatures;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismGameEvents;
-import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismHeightProviderTypes;
 import mekanism.common.registries.MekanismIntProviderTypes;
 import mekanism.common.registries.MekanismItems;
@@ -98,9 +100,9 @@ import mekanism.common.registries.MekanismSounds;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.tile.machine.TileEntityOredictionificator.ODConfigValueInvalidationListener;
-import mekanism.common.util.RegistryUtils;
 import mekanism.common.world.GenHandler;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.resources.ResourceLocation;
@@ -126,6 +128,7 @@ import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
+import net.neoforged.neoforge.registries.datamaps.DataMapsUpdatedEvent;
 import org.slf4j.Logger;
 
 @Mod(Mekanism.MODID)
@@ -198,6 +201,7 @@ public class Mekanism {
         NeoForge.EVENT_BUS.addListener(this::serverStopped);
         NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::addReloadListenersLowest);
         NeoForge.EVENT_BUS.addListener(this::onTagsReload);
+        NeoForge.EVENT_BUS.addListener(this::onDataMapsUpdated);
         NeoForge.EVENT_BUS.addListener(MekanismPermissions::registerPermissionNodes);
         modEventBus.addListener(Capabilities::registerCapabilities);
         modEventBus.addListener(this::commonSetup);
@@ -205,6 +209,24 @@ public class Mekanism {
         modEventBus.addListener(MekanismConfig::onConfigLoad);
         modEventBus.addListener(this::imcQueue);
         modEventBus.addListener(this::imcHandle);
+        addRegistrationListeners(modEventBus);
+        packetHandler = new PacketHandler(modEventBus, versionNumber);
+        //Super early hooks, only reliable thing is for checking dependencies that we declare we are after
+        hooks.hookConstructor(modEventBus);
+    }
+
+    public static synchronized void addModule(IModModule modModule) {
+        modulesLoaded.add(modModule);
+    }
+
+    public static PacketHandler packetHandler() {
+        return instance.packetHandler;
+    }
+
+    private void addRegistrationListeners(IEventBus modEventBus) {
+        modEventBus.addListener(this::registerEventListener);
+        modEventBus.addListener(this::registerRegistries);
+
         MekanismItems.ITEMS.register(modEventBus);
         MekanismBlocks.BLOCKS.register(modEventBus);
         MekanismFluids.FLUIDS.register(modEventBus);
@@ -234,19 +256,6 @@ public class Mekanism {
         MekanismRecipeConditions.CONDITION_CODECS.register(modEventBus);
         MekanismItemPredicates.PREDICATES.register(modEventBus);
         MekanismDataMapTypes.REGISTER.register(modEventBus);
-        modEventBus.addListener(this::registerEventListener);
-        modEventBus.addListener(this::registerRegistries);
-        packetHandler = new PacketHandler(modEventBus, versionNumber);
-        //Super early hooks, only reliable thing is for checking dependencies that we declare we are after
-        hooks.hookConstructor(modEventBus);
-    }
-
-    public static synchronized void addModule(IModModule modModule) {
-        modulesLoaded.add(modModule);
-    }
-
-    public static PacketHandler packetHandler() {
-        return instance.packetHandler;
     }
 
     private void registerRegistries(NewRegistryEvent event) {
@@ -256,9 +265,10 @@ public class Mekanism {
         event.register(MekanismAPI.ROBIT_SKIN_SERIALIZER_REGISTRY);
     }
 
+    @SuppressWarnings("removal")
     private void registerEventListener(RegisterEvent event) {
         //Register the empty chemical
-        event.register(MekanismAPI.CHEMICAL_REGISTRY_NAME, MekanismAPI.EMPTY_CHEMICAL_NAME, () -> MekanismAPI.EMPTY_CHEMICAL);
+        event.register(MekanismAPI.CHEMICAL_REGISTRY_NAME, MekanismAPI.EMPTY_CHEMICAL_KEY.location(), () -> MekanismAPI.EMPTY_CHEMICAL);
     }
 
     public static ResourceLocation rl(String path) {
@@ -279,6 +289,12 @@ public class Mekanism {
 
     private void onTagsReload(TagsUpdatedEvent event) {
         TagCache.resetTagCaches();
+    }
+
+    private void onDataMapsUpdated(DataMapsUpdatedEvent event) {
+        event.ifRegistry(MekanismAPI.CHEMICAL_REGISTRY_NAME, registry -> registry.holders().forEach(
+              holder -> holder.value().updateFromDataMap(holder)
+        ));
     }
 
     private void addReloadListenersLowest(AddReloadListenerEvent event) {
@@ -319,11 +335,11 @@ public class Mekanism {
         //IMC messages we send to other mods
         hooks.sendIMCMessages(event);
         //IMC messages that we are sending to ourselves
-        MekanismIMC.addModuleContainer(MekanismItems.MEKA_TOOL, MekanismIMC.ADD_MEKA_TOOL_MODULES);
-        MekanismIMC.addModuleContainer(MekanismItems.MEKASUIT_HELMET, MekanismIMC.ADD_MEKA_SUIT_HELMET_MODULES);
-        MekanismIMC.addModuleContainer(MekanismItems.MEKASUIT_BODYARMOR, MekanismIMC.ADD_MEKA_SUIT_BODYARMOR_MODULES);
-        MekanismIMC.addModuleContainer(MekanismItems.MEKASUIT_PANTS, MekanismIMC.ADD_MEKA_SUIT_PANTS_MODULES);
-        MekanismIMC.addModuleContainer(MekanismItems.MEKASUIT_BOOTS, MekanismIMC.ADD_MEKA_SUIT_BOOTS_MODULES);
+        MekanismIMC.addModuleContainer((Holder<Item>) MekanismItems.MEKA_TOOL, MekanismIMC.ADD_MEKA_TOOL_MODULES);
+        MekanismIMC.addModuleContainer((Holder<Item>) MekanismItems.MEKASUIT_HELMET, MekanismIMC.ADD_MEKA_SUIT_HELMET_MODULES);
+        MekanismIMC.addModuleContainer((Holder<Item>) MekanismItems.MEKASUIT_BODYARMOR, MekanismIMC.ADD_MEKA_SUIT_BODYARMOR_MODULES);
+        MekanismIMC.addModuleContainer((Holder<Item>) MekanismItems.MEKASUIT_PANTS, MekanismIMC.ADD_MEKA_SUIT_PANTS_MODULES);
+        MekanismIMC.addModuleContainer((Holder<Item>) MekanismItems.MEKASUIT_BOOTS, MekanismIMC.ADD_MEKA_SUIT_BOOTS_MODULES);
         MekanismIMC.addModulesToAll(MekanismModules.ENERGY_UNIT);
         MekanismIMC.addMekaSuitModules(MekanismModules.COLOR_MODULATION_UNIT, MekanismModules.LASER_DISSIPATION_UNIT, MekanismModules.RADIATION_SHIELDING_UNIT);
         MekanismIMC.addMekaToolModules(MekanismModules.ATTACK_AMPLIFICATION_UNIT, MekanismModules.SILK_TOUCH_UNIT, MekanismModules.FORTUNE_UNIT, MekanismModules.BLASTING_UNIT, MekanismModules.VEIN_MINING_UNIT,
@@ -373,16 +389,18 @@ public class Mekanism {
         logger.info("Mod loaded.");
     }
 
-    private static void registerDispenseBehavior(DispenseItemBehavior behavior, IItemProvider... itemProviders) {
-        for (IItemProvider itemProvider : itemProviders) {
-            DispenserBlock.registerBehavior(itemProvider.asItem(), behavior);
+    @SafeVarargs
+    private static void registerDispenseBehavior(DispenseItemBehavior behavior, Holder<Item>... items) {
+        for (Holder<Item> item : items) {
+            DispenserBlock.registerBehavior(item.value(), behavior);
         }
     }
 
-    private static void registerFluidTankBehaviors(IItemProvider... itemProviders) {
-        registerDispenseBehavior(FluidTankItemDispenseBehavior.INSTANCE);
-        for (IItemProvider itemProvider : itemProviders) {
-            Item item = itemProvider.asItem();
+    @SafeVarargs
+    private static void registerFluidTankBehaviors(BlockRegistryObject<BlockFluidTank, ItemBlockFluidTank>... tanks) {
+        for (BlockRegistryObject<?, ?> tank : tanks) {
+            Item item = tank.getItemHolder().value();
+            DispenserBlock.registerBehavior(item, FluidTankItemDispenseBehavior.INSTANCE);
             CauldronInteraction.EMPTY.map().put(item, BasicCauldronInteraction.EMPTY);
             CauldronInteraction.WATER.map().put(item, BasicDrainCauldronInteraction.WATER);
             CauldronInteraction.LAVA.map().put(item, BasicDrainCauldronInteraction.LAVA);
@@ -399,13 +417,13 @@ public class Mekanism {
 
     private void onChemicalTransferred(ChemicalTransferEvent event) {
         UUID networkID = event.network.getUUID();
-        PacketUtils.log("Sending type '{}' update message for chemical network with id {}", event.transferType.getChemical().getRegistryName(), networkID);
+        PacketUtils.log("Sending type '{}' update message for chemical network with id {}", event.transferType.getRegisteredName(), networkID);
         PacketUtils.sendToAllTracking(event.network, new PacketNetworkScale(event.network), new PacketChemicalNetworkContents(networkID, event.transferType));
     }
 
     private void onLiquidTransferred(FluidTransferEvent event) {
         UUID networkID = event.network.getUUID();
-        PacketUtils.log("Sending type '{}' update message for fluid network with id {}", RegistryUtils.getName(event.fluidType.getFluid()), networkID);
+        PacketUtils.log("Sending type '{}' update message for fluid network with id {}", event.fluidType.getFluidHolder().getRegisteredName(), networkID);
         PacketUtils.sendToAllTracking(event.network, new PacketNetworkScale(event.network), new PacketFluidNetworkContents(networkID, event.fluidType));
     }
 

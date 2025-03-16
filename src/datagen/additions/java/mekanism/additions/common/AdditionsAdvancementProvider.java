@@ -1,5 +1,6 @@
 package mekanism.additions.common;
 
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import mekanism.additions.common.advancements.AdditionsAdvancements;
@@ -80,7 +81,7 @@ public class AdditionsAdvancementProvider extends BaseAdvancementProvider {
     }
 
     private String getName(Holder<?> holder) {
-        return holder.unwrapKey().orElseThrow().location().getPath();
+        return Objects.requireNonNull(holder.getKey()).location().getPath();
     }
 
     private Criterion<EntityHurtPlayerTrigger.TriggerInstance> damaged(Holder<EntityType<?>> type) {

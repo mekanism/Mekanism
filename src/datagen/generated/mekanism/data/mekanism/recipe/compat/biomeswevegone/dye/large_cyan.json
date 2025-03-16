@@ -1,0 +1,24 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "biomeswevegone"
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "biomeswevegone:dye/makes_2_cyan_dye"
+      }
+    }
+  ],
+  "type": "mekanism:enriching",
+  "input": {
+    "count": 1,
+    "tag": "biomeswevegone:dye/makes_2_cyan_dye"
+  },
+  "output": {
+    "count": 4,
+    "id": "minecraft:cyan_dye"
+  }
+}

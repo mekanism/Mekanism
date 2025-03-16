@@ -582,7 +582,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
             return cachedIsFrame.getBoolean(pos);
         }
         boolean isFrame = WorldUtils.getBlockState(level, chunkMap, pos)
-              .filter(blockState -> blockState.is(MekanismBlocks.TELEPORTER_FRAME.getBlock()))
+              .filter(blockState -> blockState.is(MekanismBlocks.TELEPORTER_FRAME))
               .isPresent();
         cachedIsFrame.put(pos.immutable(), isFrame);
         return isFrame;

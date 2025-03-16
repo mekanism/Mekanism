@@ -1,6 +1,7 @@
 package mekanism.common.inventory.slot;
 
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.content.qio.QIOCraftingWindow;
 import mekanism.common.inventory.container.slot.VirtualCraftingOutputSlot;
 import mekanism.common.inventory.container.slot.VirtualInventoryContainerSlot;
@@ -14,7 +15,7 @@ public class CraftingWindowOutputInventorySlot extends CraftingWindowInventorySl
     }
 
     private CraftingWindowOutputInventorySlot(QIOCraftingWindow window) {
-        super(manualOnly, internalOnly, window, null, null);
+        super(ConstantPredicates.manualOnly(), ConstantPredicates.internalOnly(), window, null, null);
     }
 
     @NotNull

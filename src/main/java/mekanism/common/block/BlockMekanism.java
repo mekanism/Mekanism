@@ -105,7 +105,7 @@ public abstract class BlockMekanism extends Block {
     @Nullable
     @Override
     public BlockState getStateForPlacement(@NotNull BlockPlaceContext context) {
-        return BlockStateHelper.getStateForPlacement(this, super.getStateForPlacement(context), context);
+        return BlockStateHelper.getStateForPlacement(super.getStateForPlacement(context), context);
     }
 
     @NotNull
@@ -201,7 +201,7 @@ public abstract class BlockMekanism extends Block {
 
     @Override
     protected boolean hasAnalogOutputSignal(@NotNull BlockState blockState) {
-        return Attribute.has(this, AttributeComparator.class);
+        return Attribute.has(blockState.getBlockHolder(), AttributeComparator.class);
     }
 
     @Override

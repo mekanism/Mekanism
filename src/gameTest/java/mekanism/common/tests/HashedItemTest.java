@@ -5,7 +5,6 @@ import java.util.function.Function;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.lib.inventory.HashedItem.UUIDAwareHashedItem;
 import mekanism.common.tests.helpers.MekGameTestHelper;
-import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.gametest.framework.GameTest;
@@ -31,8 +30,8 @@ public class HashedItemTest {
     private static void doSequence(MekGameTestHelper helper, Function<ItemStack, HashedItem> hashConstructor1, Function<ItemStack, HashedItem> hashConstructor2, boolean allShouldFail) {
         helper.startSequence()
               .thenExecute(getTest(helper, hashConstructor1, hashConstructor2, "identical item", new ItemStack(Items.STICK, 1), new ItemStack(Items.STICK, 1), !allShouldFail))
-              .thenExecute(getTest(helper, hashConstructor1, hashConstructor2, "identical item, one with components", new ItemStack(Items.STICK, 1), new ItemStack(Holder.direct(Items.STICK), 1, DataComponentPatch.builder().set(DataComponents.MAX_STACK_SIZE, 16).build()), false))
-              .thenExecute(getTest(helper, hashConstructor1, hashConstructor2, "identical item, 1st with components", new ItemStack(Holder.direct(Items.STICK), 1, DataComponentPatch.builder().set(DataComponents.MAX_STACK_SIZE, 16).build()), new ItemStack(Items.STICK, 1), false))
+              .thenExecute(getTest(helper, hashConstructor1, hashConstructor2, "identical item, one with components", new ItemStack(Items.STICK, 1), new ItemStack(Items.STICK.builtInRegistryHolder(), 1, DataComponentPatch.builder().set(DataComponents.MAX_STACK_SIZE, 16).build()), false))
+              .thenExecute(getTest(helper, hashConstructor1, hashConstructor2, "identical item, 1st with components", new ItemStack(Items.STICK.builtInRegistryHolder(), 1, DataComponentPatch.builder().set(DataComponents.MAX_STACK_SIZE, 16).build()), new ItemStack(Items.STICK, 1), false))
               .thenExecute(getTest(helper, hashConstructor1, hashConstructor2, "identical item with count", new ItemStack(Items.STICK, 50), new ItemStack(Items.STICK, 50), !allShouldFail))
               .thenExecute(getTest(helper, hashConstructor1, hashConstructor2, "identical item with count", new ItemStack(Items.STICK, 1), new ItemStack(Items.STICK, 50), !allShouldFail))
               .thenExecute(getTest(helper, hashConstructor1, hashConstructor2, "different item", new ItemStack(Items.PORKCHOP, 1), new ItemStack(Items.BAKED_POTATO, 1), false))

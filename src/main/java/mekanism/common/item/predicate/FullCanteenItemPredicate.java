@@ -8,7 +8,6 @@ import mekanism.common.item.gear.ItemCanteen;
 import mekanism.common.registries.MekanismFluids;
 import net.minecraft.advancements.critereon.ItemSubPredicate;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.advancements.critereon.PiglinCurrencyItemPredicate;
 import org.jetbrains.annotations.NotNull;
 
 public class FullCanteenItemPredicate implements ItemSubPredicate {
@@ -24,7 +23,7 @@ public class FullCanteenItemPredicate implements ItemSubPredicate {
     public boolean matches(@NotNull ItemStack stack) {
         if (stack.getItem() instanceof ItemCanteen) {
             List<IExtendedFluidTank> tanks = ContainerType.FLUID.getAttachmentContainersIfPresent(stack);
-            return !tanks.isEmpty() && tanks.stream().allMatch(tank -> tank.getNeeded() == 0 && tank.getFluid().is(MekanismFluids.NUTRITIONAL_PASTE.getFluid()));
+            return !tanks.isEmpty() && tanks.stream().allMatch(tank -> tank.getNeeded() == 0 && tank.getFluid().is(MekanismFluids.NUTRITIONAL_PASTE));
         }
         return false;
     }

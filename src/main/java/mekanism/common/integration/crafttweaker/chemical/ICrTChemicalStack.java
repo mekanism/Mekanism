@@ -4,17 +4,17 @@ import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.bracket.CommandStringDisplayable;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.ingredient.CrTChemicalStackIngredient;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
 @ZenCodeType.Name(CrTConstants.CLASS_CHEMICAL_STACK)
-public interface ICrTChemicalStack extends CommandStringDisplayable, IChemicalProvider {
+public interface ICrTChemicalStack extends CommandStringDisplayable {
 
     /**
      * Gets the registry name for the chemical this stack is representing.
@@ -22,11 +22,10 @@ public interface ICrTChemicalStack extends CommandStringDisplayable, IChemicalPr
      * @return A MCResourceLocation representing the registry name.
      */
     @NotNull
-    @Override
     @ZenCodeType.Method
     @ZenCodeType.Getter("registryName")
     default ResourceLocation getRegistryName() {
-        return getInternal().getTypeRegistryName();
+        return CrTChemical.getRegistryName(getChemical());
     }
 
     /**
@@ -148,7 +147,6 @@ public interface ICrTChemicalStack extends CommandStringDisplayable, IChemicalPr
      *
      * @return The chemical.
      */
-    @Override
     @ZenCodeType.Method("getType")
     @ZenCodeType.Getter("type")
     @ZenCodeType.Caster(implicit = true)
@@ -162,6 +160,15 @@ public interface ICrTChemicalStack extends CommandStringDisplayable, IChemicalPr
      * @return The actual ChemicalStack.
      */
     ChemicalStack getInternal();
+
+    /**
+     * Mod devs should use this to get the chemical holder.
+     *
+     * @since 10.7.11
+     */
+    default Holder<Chemical> getChemicalHolder() {
+        return getInternal().getChemicalHolder();
+    }
 
     /**
      * Mod devs should use this to get the actual ChemicalStack.

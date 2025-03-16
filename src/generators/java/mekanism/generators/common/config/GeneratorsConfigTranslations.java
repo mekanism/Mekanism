@@ -37,12 +37,6 @@ public enum GeneratorsConfigTranslations implements IConfigTranslation {
 
     SERVER_GENERATOR_GAS("server.generator.gas", "Gas-Burning Generator", "Settings for configuring Gas-Burning Generators", true),
     SERVER_GENERATOR_GAS_TANK_CAPACITY("server.generator.gas.tank_capacity", "Tank Capacity", "The capacity in mB of the chemical tank in the Gas-Burning Generator."),
-    SERVER_GENERATOR_GAS_ETHENE_MAX_BURN_PER_TICK("server.generator.gas.ethene.max_per_tick", "Max Ethene Burned per Tick",
-          "Maximum mB of Ethene to burn in a tick (when tank full). A fraction of this will be burned at maximum each tick depending on how full the fuel tank is."),
-    SERVER_GENERATOR_GAS_HYDROGEN_MAX_BURN_PER_TICK("server.generator.gas.hydrogen.max_per_tick", "Max Hydrogen Burned per Tick",
-          "Maximum mB of Hydrogen to burn in a tick (when tank full). A fraction of this will be burned at maximum each tick depending on how full the fuel tank is."),
-    SERVER_GENERATOR_GAS_ETHENE_DENSITY("server.generator.gas.ethene.density2", "Ethene Energy Density",
-          "How many Joules should 1mB of Ethene generate."),
 
     SERVER_GENERATOR_WIND("server.generator.wind", "Wind Generator", "Settings for configuring Wind Generators", true),
     SERVER_GENERATOR_WIND_GEN_MIN("server.generator.wind.gen.min", "Min Energy Generation", "Minimum energy generation in Joules/t that the Wind Generator can produce."),

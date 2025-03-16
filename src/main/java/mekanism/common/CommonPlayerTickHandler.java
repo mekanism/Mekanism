@@ -45,9 +45,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.damagesource.DamageContainer;
 import net.neoforged.neoforge.event.entity.EntityInvulnerabilityCheckEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEvent.LivingJumpEvent;
 import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
@@ -148,10 +150,18 @@ public class CommonPlayerTickHandler {
         return false;
     }
 
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public void onLivingDeath(LivingDeathEvent event) {
+        if (!event.getEntity().isOnFire() && !event.getEntity().fireImmune() && MekanismDamageTypes.FLAMETHROWER.is(event.getSource())) {
+            //If they took damage from a flamethrower, set that they are on fire so that they drop cooked food
+            event.getEntity().igniteForSeconds(1);
+        }
+    }
+
     @SubscribeEvent
     public void checkEntityInvulnerability(EntityInvulnerabilityCheckEvent event) {
         if (!event.isInvulnerable() && event.getEntity() instanceof LivingEntity entity) {
-            if (event.getSource().is(MekanismDamageTypes.RADIATION.key())) {
+            if (MekanismDamageTypes.RADIATION.is(event.getSource())) {
                 //Note: As we only enter this block if it isn't invulnerable, there is no chance that this call makes it go from invulnerable to not
                 event.setInvulnerable(entity.getType().is(MekanismAPITags.Entities.MEK_RADIATION_IMMUNE));
             }

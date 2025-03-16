@@ -45,7 +45,7 @@ public class GPEnergyCompat implements IEnergyCompat {
 
     @Override
     public boolean capabilityExists() {
-        return Mekanism.hooks.GrandPowerLoaded;
+        return Mekanism.hooks.grandPower.isLoaded();
     }
 
     @Override

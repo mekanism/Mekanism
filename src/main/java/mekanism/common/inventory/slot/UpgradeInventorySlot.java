@@ -7,6 +7,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -33,11 +34,11 @@ public class UpgradeInventorySlot extends BasicInventorySlot {
     }
 
     public static UpgradeInventorySlot output(@Nullable IContentsListener listener) {
-        return new UpgradeInventorySlot(listener, internalOnly);
+        return new UpgradeInventorySlot(listener, ConstantPredicates.internalOnly());
     }
 
     private UpgradeInventorySlot(@Nullable IContentsListener listener, BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canInsert) {
-        super(manualOnly, canInsert, stack -> stack.getItem() instanceof IUpgradeItem, listener, 0, 0);
+        super(ConstantPredicates.manualOnly(), canInsert, stack -> stack.getItem() instanceof IUpgradeItem, listener, 0, 0);
         setSlotOverlay(SlotOverlay.UPGRADE);
     }
 

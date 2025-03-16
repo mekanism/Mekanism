@@ -38,6 +38,7 @@ import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import mekanism.common.integration.crafttweaker.example.component.CrTImportsComponent;
+import net.minecraft.core.Holder;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
@@ -46,8 +47,8 @@ import net.minecraft.data.PackOutput.Target;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
@@ -289,11 +290,11 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
         private final ItemStack stack;
         private final double chance;
 
-        public WeightedItemStack(ItemLike item) {
+        public WeightedItemStack(Holder<Item> item) {
             this(item, 1);
         }
 
-        public WeightedItemStack(ItemLike item, double chance) {
+        public WeightedItemStack(Holder<Item> item, double chance) {
             this(new ItemStack(item), chance);
         }
 

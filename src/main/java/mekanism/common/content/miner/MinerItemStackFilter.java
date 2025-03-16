@@ -51,7 +51,7 @@ public class MinerItemStackFilter extends MinerFilter<MinerItemStackFilter> impl
         if (itemStack.isEmpty()) {
             return false;
         }
-        return itemType.is(itemStack.getItem());
+        return itemType.is(itemStack.getItemHolder());
     }
 
     @Override

@@ -1,0 +1,24 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "biomeswevegone"
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "biomeswevegone:dye/makes_2_orange_dye"
+      }
+    }
+  ],
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "count": 1,
+    "tag": "biomeswevegone:dye/makes_2_orange_dye"
+  },
+  "output": {
+    "amount": 1536,
+    "id": "mekanism:orange"
+  }
+}

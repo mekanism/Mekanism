@@ -17,6 +17,7 @@ import mekanism.common.block.attribute.Attribute;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tile.component.config.DataType;
@@ -24,11 +25,11 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.Util;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> implements ICustomCreativeTabContents {
@@ -98,14 +99,14 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> imple
     }
 
     @Override
-    public void addItems(Consumer<ItemStack> tabOutput) {
+    public void addItems(Holder<Item> item, Consumer<ItemStack> tabOutput) {
         EnergyCubeTier tier = getTier();
         if (tier == EnergyCubeTier.CREATIVE) {
             //Add the empty and charged variants
-            tabOutput.accept(withEnergyCubeSideConfig(this, ALL_INPUT));
-            tabOutput.accept(StorageUtils.getFilledEnergyVariant(withEnergyCubeSideConfig(this, ALL_OUTPUT)));
+            tabOutput.accept(withCreativeSideConfig(ALL_INPUT));
+            tabOutput.accept(StorageUtils.getFilledEnergyVariant(withCreativeSideConfig(ALL_OUTPUT)));
         } else {
-            tabOutput.accept(StorageUtils.getFilledEnergyVariant(this));
+            tabOutput.accept(StorageUtils.getFilledEnergyVariant(item));
         }
     }
 
@@ -114,8 +115,8 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> imple
         return getTier() != EnergyCubeTier.CREATIVE;
     }
 
-    public static ItemStack withEnergyCubeSideConfig(ItemLike item, AttachedSideConfig config) {
-        ItemStack stack = new ItemStack(item);
+    public static ItemStack withCreativeSideConfig(AttachedSideConfig config) {
+        ItemStack stack = new ItemStack(MekanismBlocks.CREATIVE_ENERGY_CUBE);
         stack.set(MekanismDataComponents.SIDE_CONFIG, config);
         return stack;
     }

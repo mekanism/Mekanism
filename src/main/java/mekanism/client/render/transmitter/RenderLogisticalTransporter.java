@@ -52,7 +52,7 @@ import org.jetbrains.annotations.Nullable;
 public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntityLogisticalTransporterBase> {
 
     private static final Map<Direction, Model3D> cachedOverlays = new EnumMap<>(Direction.class);
-    private static final int DIVERSION_OVERLAY_ARGB = MekanismRenderer.getColorARGB(255, 255, 255, 0.8F);
+    private static final int DIVERSION_OVERLAY_ARGB = MekanismRenderer.getColorARGB(0xFFFFFF, 0.8F);
     @Nullable
     private static TextureAtlasSprite gunpowderIcon;
     @Nullable

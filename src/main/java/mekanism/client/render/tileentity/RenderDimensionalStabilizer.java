@@ -42,10 +42,8 @@ public class RenderDimensionalStabilizer extends MekanismTileEntityRenderer<Tile
 
     static {
         //Note: We skip up and down as we never render them so no need to set the color
-        colors[Direction.NORTH.ordinal()] = MekanismRenderer.getColorARGB(255, 255, 255, 0.82F);
-        colors[Direction.SOUTH.ordinal()] = MekanismRenderer.getColorARGB(255, 255, 255, 0.82F);
-        colors[Direction.WEST.ordinal()] = MekanismRenderer.getColorARGB(255, 255, 255, 0.78F);
-        colors[Direction.EAST.ordinal()] = MekanismRenderer.getColorARGB(255, 255, 255, 0.78F);
+        colors[Direction.SOUTH.ordinal()] = colors[Direction.NORTH.ordinal()] = MekanismRenderer.getColorARGB(0xFFFFFF, 0.82F);
+        colors[Direction.EAST.ordinal()] = colors[Direction.WEST.ordinal()] = MekanismRenderer.getColorARGB(0xFFFFFF, 0.78F);
         //TODO: At some point experiment with different colors to try and improve rendering of it when in a checkerboard pattern
         // so that it is clearer which ones are rendering and which are not, or maybe evaluate actually having the top and bottom render
     }

@@ -129,7 +129,7 @@ public interface IJetpackItem {
         ItemStack chest = entity.getItemBySlot(EquipmentSlot.CHEST);
         if (matcher.test(chest)) {
             return chest;
-        } else if (Mekanism.hooks.CuriosLoaded) {
+        } else if (Mekanism.hooks.curios.isLoaded()) {
             return CuriosIntegration.findFirstCurio(entity, matcher);
         }
         return ItemStack.EMPTY;

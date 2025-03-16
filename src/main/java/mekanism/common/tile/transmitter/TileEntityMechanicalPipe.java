@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.List;
 import mekanism.api.SerializationConstants;
 import mekanism.api.fluid.IExtendedFluidTank;
-import mekanism.api.providers.IBlockProvider;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
@@ -19,8 +18,10 @@ import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.registries.MekanismBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
@@ -30,7 +31,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter implements I
 
     private final FluidHandlerManager fluidHandlerManager;
 
-    public TileEntityMechanicalPipe(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
+    public TileEntityMechanicalPipe(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
         addCapabilityResolver(fluidHandlerManager = new FluidHandlerManager(direction -> {
             MechanicalPipe pipe = getTransmitter();
@@ -44,7 +45,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter implements I
     }
 
     @Override
-    protected MechanicalPipe createTransmitter(IBlockProvider blockProvider) {
+    protected MechanicalPipe createTransmitter(Holder<Block> blockProvider) {
         return new MechanicalPipe(blockProvider, this);
     }
 

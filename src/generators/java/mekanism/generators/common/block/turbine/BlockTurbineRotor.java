@@ -52,7 +52,7 @@ public class BlockTurbineRotor extends BlockTileModel<TileEntityTurbineRotor, Bl
         } else if (stack.isEmpty()) {
             if (tile.removeBlade()) {
                 if (!player.isCreative()) {
-                    player.setItemInHand(hand, GeneratorsItems.TURBINE_BLADE.getItemStack());
+                    player.setItemInHand(hand, GeneratorsItems.TURBINE_BLADE.asStack());
                     player.getInventory().setChanged();
                 }
                 return ItemInteractionResult.CONSUME;

@@ -7,7 +7,6 @@ import java.util.UUID;
 import mekanism.api.SerializationConstants;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.heat.IHeatHandler;
-import mekanism.api.providers.IBlockProvider;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.capabilities.Capabilities;
@@ -25,8 +24,10 @@ import mekanism.common.upgrade.transmitter.ThermodynamicConductorUpgradeData;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -41,7 +42,7 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
     private final List<IHeatCapacitor> capacitors;
     public final VariableHeatCapacitor buffer;
 
-    public ThermodynamicConductor(IBlockProvider blockProvider, TileEntityTransmitter tile) {
+    public ThermodynamicConductor(Holder<Block> blockProvider, TileEntityTransmitter tile) {
         super(tile, TransmissionType.HEAT);
         this.tier = Attribute.getTier(blockProvider, ConductorTier.class);
         buffer = VariableHeatCapacitor.create(tier.getHeatCapacity(), tier::getInverseConduction, tier::getInverseConductionInsulation, ambientTemperature, this);
