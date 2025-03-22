@@ -33,7 +33,7 @@ import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.item.gear.ItemAtomicDisassembler.DisassemblerMode;
 import mekanism.common.item.gear.ItemFlamethrower.FlamethrowerMode;
-import mekanism.common.item.gear.ItemFreeRunners.FreeRunnerMode;
+import mekanism.common.item.interfaces.IFreeRunnersItem.FreeRunnersMode;
 import mekanism.common.item.interfaces.IJetpackItem.JetpackMode;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.FrequencyType;
@@ -116,9 +116,9 @@ public class MekanismDataComponents {
           builder -> builder.persistent(FlamethrowerMode.CODEC)
                 .networkSynchronized(FlamethrowerMode.STREAM_CODEC)
     );
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<FreeRunnerMode>> FREE_RUNNER_MODE = DATA_COMPONENTS.simple("free_runner_mode",
-          builder -> builder.persistent(FreeRunnerMode.CODEC)
-                .networkSynchronized(FreeRunnerMode.STREAM_CODEC)
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<FreeRunnersMode>> FREE_RUNNER_MODE = DATA_COMPONENTS.simple("free_runner_mode",
+          builder -> builder.persistent(FreeRunnersMode.CODEC)
+                .networkSynchronized(FreeRunnersMode.STREAM_CODEC)
     );
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<JetpackMode>> JETPACK_MODE = DATA_COMPONENTS.simple("jetpack_mode",
           builder -> builder.persistent(JetpackMode.CODEC)

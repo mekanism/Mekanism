@@ -23,6 +23,7 @@ import mekanism.common.item.gear.ItemFreeRunners;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.item.gear.ItemScubaMask;
 import mekanism.common.item.gear.ItemScubaTank;
+import mekanism.common.item.interfaces.IFreeRunnersItem;
 import mekanism.common.item.interfaces.IJetpackItem;
 import mekanism.common.item.interfaces.IJetpackItem.JetpackMode;
 import mekanism.common.lib.radiation.RadiationManager;
@@ -73,10 +74,10 @@ public class CommonPlayerTickHandler {
         if (player.isShiftKeyDown()) {
             return 0;
         }
-        ItemStack stack = player.getItemBySlot(EquipmentSlot.FEET);
+        ItemStack stack = IFreeRunnersItem.getFreeRunners(player);
         if (stack.isEmpty()) {
             return 0;
-        } else if (stack.getItem() instanceof ItemFreeRunners freeRunners && freeRunners.getMode(stack).providesStepBoost()) {
+        } else if (stack.getItem() instanceof IFreeRunnersItem freeRunners && freeRunners.getFreeRunnersMode(stack).providesStepBoost()) {
             return 0.5F;
         }
         IModule<ModuleHydraulicPropulsionUnit> hydraulic = IModuleHelper.INSTANCE.getIfEnabled(stack, MekanismModules.HYDRAULIC_PROPULSION_UNIT);
@@ -289,18 +290,22 @@ public class CommonPlayerTickHandler {
      */
     @Nullable
     private FallEnergyInfo getFallAbsorptionEnergyInfo(LivingEntity base) {
+        ItemStack freeRunners = IFreeRunnersItem.getFreeRunners(base);
+        if (!freeRunners.isEmpty()) {
+            if (freeRunners.getItem() instanceof IFreeRunnersItem boots && boots.getFreeRunnersMode(freeRunners).preventsFallDamage()) {
+                return new FallEnergyInfo(StorageUtils.getEnergyContainer(freeRunners, 0), MekanismConfig.gear.freeRunnerFallDamageRatio,
+                          MekanismConfig.gear.freeRunnerFallEnergyCost);
+            }
+        }
+
         ItemStack feetStack = base.getItemBySlot(EquipmentSlot.FEET);
         if (!feetStack.isEmpty()) {
-            if (feetStack.getItem() instanceof ItemFreeRunners boots) {
-                if (boots.getMode(feetStack).preventsFallDamage()) {
-                    return new FallEnergyInfo(StorageUtils.getEnergyContainer(feetStack, 0), MekanismConfig.gear.freeRunnerFallDamageRatio,
-                          MekanismConfig.gear.freeRunnerFallEnergyCost);
-                }
-            } else if (feetStack.getItem() instanceof ItemMekaSuitArmor) {
+            if (feetStack.getItem() instanceof ItemMekaSuitArmor) {
                 return new FallEnergyInfo(StorageUtils.getEnergyContainer(feetStack, 0), MekanismConfig.gear.mekaSuitFallDamageRatio,
                       MekanismConfig.gear.mekaSuitEnergyUsageFall);
             }
         }
+
         return null;
     }
 
