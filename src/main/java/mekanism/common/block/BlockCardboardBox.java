@@ -189,7 +189,7 @@ public class BlockCardboardBox extends BlockContainer
 
     @Override
     public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune) {
-        return new ArrayList<ItemStack>(Arrays.asList(getPickBlock(null, world, x, y, z, null)));
+        return world.isAirBlock(x, y, z) ? new ArrayList<ItemStack>() : new ArrayList<ItemStack>(Arrays.asList(getPickBlock(null, world, x, y, z, null)));
     }
 
 	public static class BlockData
