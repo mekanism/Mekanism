@@ -9,6 +9,7 @@ import mekanism.tools.common.ToolsTags;
 import mekanism.tools.common.material.IPaxelMaterial;
 import mekanism.tools.common.material.MaterialCreator;
 import mekanism.tools.common.material.VanillaPaxelMaterialCreator;
+import mekanism.tools.common.registries.ToolsItems;
 import mekanism.tools.common.util.ToolsUtils;
 import net.minecraft.Util;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -48,14 +49,14 @@ public class ItemMekanismPaxel extends DiggerItem {
 
     private final IPaxelMaterial material;
 
-    public ItemMekanismPaxel(MaterialCreator material, Item.Properties properties) {
-        super(material, ToolsTags.Blocks.MINEABLE_WITH_PAXEL, properties.
+    public ItemMekanismPaxel(MaterialCreator material, ToolsItems.LockableProperties properties) {
+        super(material, ToolsTags.Blocks.MINEABLE_WITH_PAXEL, properties.durability(material.getPaxelDurability()).lockDurability().
               attributes(createAttributes(material, material.getPaxelDamage(), material.getPaxelAtkSpeed())));
         this.material = material;
     }
 
-    public ItemMekanismPaxel(VanillaPaxelMaterialCreator material, Item.Properties properties) {
-        super(material.getVanillaTier(), ToolsTags.Blocks.MINEABLE_WITH_PAXEL, properties.
+    public ItemMekanismPaxel(VanillaPaxelMaterialCreator material, ToolsItems.LockableProperties properties) {
+        super(material.getVanillaTier(), ToolsTags.Blocks.MINEABLE_WITH_PAXEL, properties.durability(material.getPaxelDurability()).lockDurability().
               attributes(createAttributes(material.getVanillaTier(), material.getPaxelDamage(), material.getPaxelAtkSpeed())));
         this.material = material;
     }

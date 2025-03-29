@@ -139,9 +139,9 @@ public class ToolsItems {
 
     private static ItemRegistryObject<ItemMekanismPaxel> registerPaxel(VanillaPaxelMaterialCreator material) {
         if (material.getVanillaTier() == Tiers.NETHERITE) {
-            return ITEMS.registerUnburnable(material.getRegistryPrefix() + "_paxel", properties -> new ItemMekanismPaxel(material, properties));
+            return ITEMS.register(material.getRegistryPrefix() + "_paxel", () -> new ItemMekanismPaxel(material, new LockableProperties().fireResistant()));
         }
-        return ITEMS.registerItem(material.getRegistryPrefix() + "_paxel", properties -> new ItemMekanismPaxel(material, properties));
+        return ITEMS.register(material.getRegistryPrefix() + "_paxel", () -> new ItemMekanismPaxel(material, new LockableProperties()));
     }
 
     private static ItemRegistryObject<ItemMekanismArmor> registerArmor(Holder<ArmorMaterial> armorMaterial, MaterialCreator material, ArmorItem.Type armorType) {
@@ -153,15 +153,15 @@ public class ToolsItems {
               .durability(material.getDurabilityForType(armorType))));
     }
 
-    private static <ITEM extends Item> ItemRegistryObject<ITEM> register(BiFunction<MaterialCreator, Item.Properties, ITEM> itemCreator, String suffix,
+    private static <ITEM extends Item> ItemRegistryObject<ITEM> register(BiFunction<MaterialCreator, LockableProperties, ITEM> itemCreator, String suffix,
           MaterialCreator material) {
         return ITEMS.register(material.getRegistryPrefix() + suffix, () -> itemCreator.apply(material, getBaseProperties(material)));
     }
 
-    private static Item.Properties getBaseProperties(BaseMekanismMaterial material) {
-        Item.Properties properties = new Item.Properties();
+    private static LockableProperties getBaseProperties(BaseMekanismMaterial material) {
+        LockableProperties properties = new LockableProperties();
         if (!material.burnsInFire()) {
-            properties = properties.fireResistant();
+            properties.fireResistant();
         }
         return properties;
     }
@@ -170,5 +170,29 @@ public class ToolsItems {
     private interface ArmorCreator {
 
         ItemMekanismArmor create(Holder<ArmorMaterial> material, ArmorItem.Type armorType, Item.Properties properties);
+    }
+
+    public static class LockableProperties extends Item.Properties {
+
+        private boolean durabilityLocked = false;
+
+        public LockableProperties lockDurability() {
+            durabilityLocked = true;
+            return this;
+        }
+
+        @Override
+        public LockableProperties durability(int maxDamage) {
+            if (!durabilityLocked) {
+                super.durability(maxDamage);
+            }
+            return this;
+        }
+
+        @Override
+        public LockableProperties fireResistant() {
+            super.fireResistant();
+            return this;
+        }
     }
 }
