@@ -38,9 +38,22 @@ public sealed interface IChemicalCoolant extends IChemicalAttribute permits Cool
     double conductivity();
 
     /**
-     * Gets the other chemical this coolant transforms into after it undergoes a temperature change.
+     * Gets the other substance this coolant transforms into after it undergoes a temperature change.
      */
-    Holder<Chemical> otherVariant();
+    Holder<?> otherVariant();
+
+    /**
+     * Tries to obtain the other variant as a chemical.
+     *
+     * @throws UnsupportedOperationException if the variant was not a chemical.
+     */
+    default Holder<Chemical> otherChemical() {
+        if (otherVariant().value() instanceof Chemical) {
+            //noinspection unchecked
+            return (Holder<Chemical>) otherVariant();
+        }
+        throw new UnsupportedOperationException("Substance is not a chemical");
+    }
 
     @Override
     default void collectTooltips(TooltipContext context, List<Component> tooltips, TooltipFlag tooltipFlag) {
@@ -53,7 +66,7 @@ public sealed interface IChemicalCoolant extends IChemicalAttribute permits Cool
     static <COOLANT extends IChemicalCoolant> Products.P3<Mu<COOLANT>, Holder<Chemical>, Double, Double> createBaseCodec(RecordCodecBuilder.Instance<COOLANT> instance,
           String otherFormName, double defaultConductivity) {
         return instance.group(
-              ChemicalStack.CHEMICAL_NON_EMPTY_HOLDER_CODEC.fieldOf(otherFormName).forGetter(IChemicalCoolant::otherVariant),
+              ChemicalStack.CHEMICAL_NON_EMPTY_HOLDER_CODEC.fieldOf(otherFormName).forGetter(IChemicalCoolant::otherChemical),
               Codec.doubleRange(Double.MIN_VALUE, Double.MAX_VALUE).fieldOf(SerializationConstants.THERMAL_ENTHALPY).forGetter(IChemicalCoolant::thermalEnthalpy),
               Codec.doubleRange(Double.MIN_VALUE, 1).optionalFieldOf(SerializationConstants.CONDUCTIVITY, defaultConductivity).forGetter(IChemicalCoolant::conductivity)
         );

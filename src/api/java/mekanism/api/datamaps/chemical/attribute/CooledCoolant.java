@@ -22,7 +22,7 @@ import org.jetbrains.annotations.ApiStatus.Internal;
  *
  * @since 10.7.11
  */
-public record CooledCoolant(Holder<Chemical> otherVariant, double thermalEnthalpy, double conductivity) implements IChemicalCoolant {
+public record CooledCoolant(Holder<?> otherVariant, double thermalEnthalpy, double conductivity) implements IChemicalCoolant {
 
     /**
      * The ID of the data map.
@@ -38,8 +38,9 @@ public record CooledCoolant(Holder<Chemical> otherVariant, double thermalEnthalp
           SerializationConstants.HOT_VARIANT, 1
     ).apply(instance, CooledCoolant::new));
 
-    public CooledCoolant {
+    public static CooledCoolant create(Holder<Chemical> otherVariant, double thermalEnthalpy, double conductivity) {
         IChemicalCoolant.validateCoolantParams(otherVariant, thermalEnthalpy, conductivity);
+        return new CooledCoolant(otherVariant, thermalEnthalpy, conductivity);
     }
 
     /**
@@ -50,7 +51,7 @@ public record CooledCoolant(Holder<Chemical> otherVariant, double thermalEnthalp
      * @return Chemical stack representing the heated coolant.
      */
     public ChemicalStack heat(long amountHeated) {
-        return new ChemicalStack(otherVariant, amountHeated);
+        return new ChemicalStack(otherChemical(), amountHeated);
     }
 
     @Internal

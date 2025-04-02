@@ -209,7 +209,7 @@ public class ChemicalAttributes {
         public CooledCoolant(mekanism.api.datamaps.chemical.attribute.CooledCoolant coolant) {
             super(coolant.thermalEnthalpy(), coolant.conductivity());
             this.modernRepresentation = coolant;
-            this.heatedChemical = () -> this.modernRepresentation.otherVariant().value();
+            this.heatedChemical = () -> this.modernRepresentation.otherChemical().value();
         }
 
         /**
@@ -288,7 +288,7 @@ public class ChemicalAttributes {
             //Note: The value for conductivity used to have a different meaning/none so we ignore it here
             super(coolant.thermalEnthalpy(), 1);
             this.modernRepresentation = coolant;
-            this.cooledChemical = () -> this.modernRepresentation.otherVariant().value();
+            this.cooledChemical = () -> this.modernRepresentation.otherChemical().value();
         }
 
         /**

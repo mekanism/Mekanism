@@ -31,7 +31,7 @@ import org.jetbrains.annotations.ApiStatus.Internal;
  *
  * @since 10.7.11
  */
-public record HeatedCoolant(Holder<Chemical> otherVariant, double thermalEnthalpy, double conductivity, double temperature) implements IChemicalCoolant {
+public record HeatedCoolant(Holder<?> otherVariant, double thermalEnthalpy, double conductivity, double temperature) implements IChemicalCoolant {
 
     private static final double BASE_COOLING_EFFICIENCY = 0.4;
     private static final double BASE_COOLANT_TEMP = 100_000;
@@ -59,7 +59,7 @@ public record HeatedCoolant(Holder<Chemical> otherVariant, double thermalEnthalp
     }
 
     public HeatedCoolant {
-        IChemicalCoolant.validateCoolantParams(otherVariant, thermalEnthalpy, conductivity);
+        IChemicalCoolant.validateCoolantParams(otherChemical(), thermalEnthalpy, conductivity);
         if (temperature <= 0 || temperature > MAX_COOLANT_TEMP) {
             throw new IllegalArgumentException("Coolant attributes must have a temperature greater than zero and at most " + MAX_COOLANT_TEMP + "! Temperature: " + temperature);
         }
@@ -73,7 +73,7 @@ public record HeatedCoolant(Holder<Chemical> otherVariant, double thermalEnthalp
      * @return Chemical stack representing the cooled coolant.
      */
     public ChemicalStack cool(long amountCooled) {
-        return new ChemicalStack(otherVariant, amountCooled);
+        return new ChemicalStack(otherChemical(), amountCooled);
     }
 
     @Override
