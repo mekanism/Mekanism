@@ -17,6 +17,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.material.Fluid;
 
 /**
  * Represents the base information that coolants keep track of.
@@ -24,7 +25,13 @@ import net.minecraft.world.item.TooltipFlag;
  * @since 10.7.11
  */
 public sealed interface IChemicalCoolant extends IChemicalAttribute permits CooledCoolant, HeatedCoolant {
-    //TODO - 1.22: Do we want to allow applying coolants to fluids so that we can define water directly that way?
+    //TODO - 1.22: Rename this to `ICoolant`, and maybe move it to a more generic package than `chemical.attribute`
+
+    enum CoolantType {
+        FLUID,
+        CHEMICAL,
+        UNKNOWN
+    }
 
     /**
      * Gets the thermal enthalpy of this coolant. Thermal Enthalpy defines how much energy one mB of the chemical can store.
@@ -43,6 +50,33 @@ public sealed interface IChemicalCoolant extends IChemicalAttribute permits Cool
     Holder<?> otherVariant();
 
     /**
+     * Determines the type of the other variant. Convenient for switches.
+     */
+    default CoolantType otherType() {
+        final Object other = otherVariant().value();
+        if (other instanceof Fluid) {
+            return CoolantType.FLUID;
+        }
+        if (other instanceof Chemical) {
+            return CoolantType.CHEMICAL;
+        }
+        return CoolantType.UNKNOWN;
+    }
+
+    /**
+     * Tries to obtain the other variant as a fluid.
+     *
+     * @throws UnsupportedOperationException if the variant was not a fluid.
+     */
+    default Holder<Fluid> otherFluid() {
+        if (otherVariant().value() instanceof Fluid) {
+            //noinspection unchecked
+            return (Holder<Fluid>) otherVariant();
+        }
+        throw new UnsupportedOperationException("Variant is not a fluid");
+    }
+
+    /**
      * Tries to obtain the other variant as a chemical.
      *
      * @throws UnsupportedOperationException if the variant was not a chemical.
@@ -52,7 +86,7 @@ public sealed interface IChemicalCoolant extends IChemicalAttribute permits Cool
             //noinspection unchecked
             return (Holder<Chemical>) otherVariant();
         }
-        throw new UnsupportedOperationException("Substance is not a chemical");
+        throw new UnsupportedOperationException("Variant is not a chemical");
     }
 
     @Override
