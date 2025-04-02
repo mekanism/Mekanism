@@ -72,6 +72,7 @@ public record HeatedCoolant(Holder<?> otherVariant, double thermalEnthalpy, doub
      *
      * @return Chemical stack representing the cooled coolant.
      */
+    @Deprecated(forRemoval = true)
     public ChemicalStack cool(long amountCooled) {
         return new ChemicalStack(otherChemical(), amountCooled);
     }
