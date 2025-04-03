@@ -54,12 +54,12 @@ public record HeatedCoolant(Holder<?> otherVariant, double thermalEnthalpy, doub
           Codec.doubleRange(Double.MIN_VALUE, MAX_COOLANT_TEMP).optionalFieldOf(SerializationConstants.TEMPERATURE, BASE_COOLANT_TEMP).forGetter(HeatedCoolant::temperature)
     ).apply(instance, HeatedCoolant::new));
 
-    public HeatedCoolant(Holder<Chemical> otherVariant, double thermalEnthalpy) {
+    public HeatedCoolant(Holder<?> otherVariant, double thermalEnthalpy) {
         this(otherVariant, thermalEnthalpy, BASE_COOLING_EFFICIENCY, BASE_COOLANT_TEMP);
     }
 
     public HeatedCoolant {
-        IChemicalCoolant.validateCoolantParams(otherChemical(), thermalEnthalpy, conductivity);
+        IChemicalCoolant.validateCoolantParams(otherVariant, thermalEnthalpy, conductivity);
         if (temperature <= 0 || temperature > MAX_COOLANT_TEMP) {
             throw new IllegalArgumentException("Coolant attributes must have a temperature greater than zero and at most " + MAX_COOLANT_TEMP + "! Temperature: " + temperature);
         }

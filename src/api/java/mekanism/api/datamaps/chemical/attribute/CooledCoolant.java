@@ -38,9 +38,8 @@ public record CooledCoolant(Holder<?> otherVariant, double thermalEnthalpy, doub
           SerializationConstants.HOT_VARIANT, 1
     ).apply(instance, CooledCoolant::new));
 
-    public static CooledCoolant create(Holder<?> otherVariant, double thermalEnthalpy, double conductivity) {
+    public CooledCoolant {
         IChemicalCoolant.validateCoolantParams(otherVariant, thermalEnthalpy, conductivity);
-        return new CooledCoolant(otherVariant, thermalEnthalpy, conductivity);
     }
 
     /**

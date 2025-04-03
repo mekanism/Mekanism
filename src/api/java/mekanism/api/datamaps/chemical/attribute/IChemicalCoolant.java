@@ -16,7 +16,9 @@ import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ITooltipHelper;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.material.Fluid;
@@ -72,7 +74,7 @@ public sealed interface IChemicalCoolant extends IChemicalAttribute permits Cool
      * @throws UnsupportedOperationException if the variant was not a fluid.
      */
     default Holder<Fluid> otherFluid() {
-        if (otherVariant().value() instanceof Fluid) {
+        if (otherVariant().getKey().isFor(Registries.FLUID)) {
             //noinspection unchecked
             return (Holder<Fluid>) otherVariant();
         }
@@ -85,7 +87,7 @@ public sealed interface IChemicalCoolant extends IChemicalAttribute permits Cool
      * @throws UnsupportedOperationException if the variant was not a chemical.
      */
     default Holder<Chemical> otherChemical() {
-        if (otherVariant().value() instanceof Chemical) {
+        if (otherVariant().getKey().isFor(MekanismAPI.CHEMICAL_REGISTRY_NAME)) {
             //noinspection unchecked
             return (Holder<Chemical>) otherVariant();
         }
@@ -96,11 +98,11 @@ public sealed interface IChemicalCoolant extends IChemicalAttribute permits Cool
           FluidStack.FLUID_NON_EMPTY_CODEC.fieldOf(SerializationConstants.FLUID).codec(),
           ChemicalStack.CHEMICAL_NON_EMPTY_HOLDER_CODEC.fieldOf(SerializationConstants.CHEMICAL).codec()
     ).flatComapMap(Either::unwrap, holder -> {
-        if (holder.value() instanceof Fluid) {
+        if (holder.getKey().isFor(Registries.FLUID)) {
             //noinspection unchecked
             return DataResult.success(Either.left((Holder<Fluid>) holder));
         }
-        if (holder.value() instanceof Chemical) {
+        if (holder.getKey().isFor(MekanismAPI.CHEMICAL_REGISTRY_NAME)) {
             //noinspection unchecked
             return DataResult.success(Either.right((Holder<Chemical>) holder));
         }
@@ -134,8 +136,8 @@ public sealed interface IChemicalCoolant extends IChemicalAttribute permits Cool
      * @throws IllegalArgumentException If thermal enthalpy or conductivity are invalid values.
      */
     static void validateCoolantParams(Holder<?> otherVariant, double thermalEnthalpy, double conductivity) {
-        //noinspection unchecked
-        if (otherVariant.value() instanceof Chemical && ((Holder<Chemical>) otherVariant).is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
+        //noinspection unchecked,rawtypes
+        if (otherVariant.is((ResourceKey) MekanismAPI.EMPTY_CHEMICAL_KEY)) {
             throw new IllegalArgumentException("Coolants cannot have an empty chemical variant");
         }
         if (thermalEnthalpy <= 0) {
