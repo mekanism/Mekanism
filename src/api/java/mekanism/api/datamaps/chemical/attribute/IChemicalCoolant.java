@@ -1,7 +1,9 @@
 package mekanism.api.datamaps.chemical.attribute;
 
 import com.mojang.datafixers.Products;
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mojang.serialization.codecs.RecordCodecBuilder.Mu;
 import java.util.List;
@@ -18,6 +20,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 /**
  * Represents the base information that coolants keep track of.
@@ -89,6 +92,21 @@ public sealed interface IChemicalCoolant extends IChemicalAttribute permits Cool
         throw new UnsupportedOperationException("Variant is not a chemical");
     }
 
+    Codec<Holder<?>> FLUID_OR_CHEMICAL = Codec.xor(
+          FluidStack.FLUID_NON_EMPTY_CODEC.fieldOf(SerializationConstants.FLUID).codec(),
+          ChemicalStack.CHEMICAL_NON_EMPTY_HOLDER_CODEC.fieldOf(SerializationConstants.CHEMICAL).codec()
+    ).flatComapMap(Either::unwrap, holder -> {
+        if (holder.value() instanceof Fluid) {
+            //noinspection unchecked
+            return DataResult.success(Either.left((Holder<Fluid>) holder));
+        }
+        if (holder.value() instanceof Chemical) {
+            //noinspection unchecked
+            return DataResult.success(Either.right((Holder<Chemical>) holder));
+        }
+        return DataResult.error(() -> "Holder holds neither a fluid nor a chemical");
+    });
+
     @Override
     default void collectTooltips(TooltipContext context, List<Component> tooltips, TooltipFlag tooltipFlag) {
         ITooltipHelper tooltipHelper = ITooltipHelper.INSTANCE;
@@ -97,10 +115,10 @@ public sealed interface IChemicalCoolant extends IChemicalAttribute permits Cool
               tooltipHelper.getEnergyPerMBDisplayShort(MathUtils.clampToLong(thermalEnthalpy()))));
     }
 
-    static <COOLANT extends IChemicalCoolant> Products.P3<Mu<COOLANT>, Holder<Chemical>, Double, Double> createBaseCodec(RecordCodecBuilder.Instance<COOLANT> instance,
+    static <COOLANT extends IChemicalCoolant> Products.P3<Mu<COOLANT>, Holder<?>, Double, Double> createBaseCodec(RecordCodecBuilder.Instance<COOLANT> instance,
           String otherFormName, double defaultConductivity) {
         return instance.group(
-              ChemicalStack.CHEMICAL_NON_EMPTY_HOLDER_CODEC.fieldOf(otherFormName).forGetter(IChemicalCoolant::otherChemical),
+              FLUID_OR_CHEMICAL.fieldOf(otherFormName).forGetter(IChemicalCoolant::otherVariant),
               Codec.doubleRange(Double.MIN_VALUE, Double.MAX_VALUE).fieldOf(SerializationConstants.THERMAL_ENTHALPY).forGetter(IChemicalCoolant::thermalEnthalpy),
               Codec.doubleRange(Double.MIN_VALUE, 1).optionalFieldOf(SerializationConstants.CONDUCTIVITY, defaultConductivity).forGetter(IChemicalCoolant::conductivity)
         );
