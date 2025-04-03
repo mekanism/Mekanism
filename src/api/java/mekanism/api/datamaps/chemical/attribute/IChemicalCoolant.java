@@ -32,12 +32,6 @@ import net.neoforged.neoforge.fluids.FluidStack;
 public sealed interface IChemicalCoolant extends IChemicalAttribute permits CooledCoolant, HeatedCoolant {
     //TODO - 1.22: Rename this to `ICoolant`, and maybe move it to a more generic package than `chemical.attribute`
 
-    enum CoolantType {
-        FLUID,
-        CHEMICAL,
-        UNKNOWN
-    }
-
     /**
      * Gets the thermal enthalpy of this coolant. Thermal Enthalpy defines how much energy one mB of the chemical can store.
      */
@@ -53,20 +47,6 @@ public sealed interface IChemicalCoolant extends IChemicalAttribute permits Cool
      * Gets the other substance this coolant transforms into after it undergoes a temperature change.
      */
     Holder<?> otherVariant();
-
-    /**
-     * Determines the type of the other variant. Convenient for switches.
-     */
-    default CoolantType otherType() {
-        final Object other = otherVariant().value();
-        if (other instanceof Fluid) {
-            return CoolantType.FLUID;
-        }
-        if (other instanceof Chemical) {
-            return CoolantType.CHEMICAL;
-        }
-        return CoolantType.UNKNOWN;
-    }
 
     /**
      * Tries to obtain the other variant as a fluid.
