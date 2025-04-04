@@ -32,6 +32,43 @@ import net.neoforged.neoforge.fluids.FluidStack;
 public sealed interface IChemicalCoolant extends IChemicalAttribute permits CooledCoolant, HeatedCoolant {
     //TODO - 1.22: Rename this to `ICoolant`, and maybe move it to a more generic package than `chemical.attribute`
 
+    enum HolderType {
+        FLUID,
+        CHEMICAL;
+
+        static HolderType forHolder(Holder<?> holder) {
+            final ResourceKey<?> key = holder.getKey();
+            //Prioritize checking the value over the key
+            if (holder.isBound() || key == null) {
+                final Object value = holder.value();
+                if (value instanceof Fluid) {
+                    return FLUID;
+                } else if (value instanceof Chemical) {
+                    return CHEMICAL;
+                }
+            } else {
+                if (key.isFor(Registries.FLUID)) {
+                    return FLUID;
+                } else if (key.isFor(MekanismAPI.CHEMICAL_REGISTRY_NAME)) {
+                    return CHEMICAL;
+                }
+            }
+            throw new IllegalArgumentException("Holder isn't for fluids or chemicals");
+        }
+    }
+
+    /**
+     * Gets the other substance this coolant transforms into after it undergoes a temperature change.
+     */
+    Holder<?> otherVariant();
+
+    /**
+     * Gets the representative type of the other variant.
+     *
+     * @apiNote When getting the variant as a specific type (e.g.: {@link #otherFluid()} or {@link #otherChemical()}), use this to check beforehand, or risk an exception.
+     */
+    HolderType otherType();
+
     /**
      * Gets the thermal enthalpy of this coolant. Thermal Enthalpy defines how much energy one mB of the chemical can store.
      */
@@ -44,21 +81,16 @@ public sealed interface IChemicalCoolant extends IChemicalAttribute permits Cool
     double conductivity();
 
     /**
-     * Gets the other substance this coolant transforms into after it undergoes a temperature change.
-     */
-    Holder<?> otherVariant();
-
-    /**
      * Tries to obtain the other variant as a fluid.
      *
      * @throws UnsupportedOperationException if the variant was not a fluid.
      */
     default Holder<Fluid> otherFluid() {
-        if (otherVariant().getKey().isFor(Registries.FLUID)) {
-            //noinspection unchecked
-            return (Holder<Fluid>) otherVariant();
+        if (otherType() != HolderType.FLUID) {
+            throw new UnsupportedOperationException("Variant is not a fluid");
         }
-        throw new UnsupportedOperationException("Variant is not a fluid");
+        //noinspection unchecked
+        return (Holder<Fluid>) otherVariant();
     }
 
     /**
@@ -67,27 +99,23 @@ public sealed interface IChemicalCoolant extends IChemicalAttribute permits Cool
      * @throws UnsupportedOperationException if the variant was not a chemical.
      */
     default Holder<Chemical> otherChemical() {
-        if (otherVariant().getKey().isFor(MekanismAPI.CHEMICAL_REGISTRY_NAME)) {
-            //noinspection unchecked
-            return (Holder<Chemical>) otherVariant();
+        if (otherType() != HolderType.CHEMICAL) {
+            throw new UnsupportedOperationException("Variant is not a chemical");
         }
-        throw new UnsupportedOperationException("Variant is not a chemical");
+        //noinspection unchecked
+        return (Holder<Chemical>) otherVariant();
     }
 
+    @SuppressWarnings("unchecked")
     Codec<Holder<?>> FLUID_OR_CHEMICAL = Codec.xor(
           FluidStack.FLUID_NON_EMPTY_CODEC.fieldOf(SerializationConstants.FLUID).codec(),
           ChemicalStack.CHEMICAL_NON_EMPTY_HOLDER_CODEC.fieldOf(SerializationConstants.CHEMICAL).codec()
-    ).flatComapMap(Either::unwrap, holder -> {
-        if (holder.getKey().isFor(Registries.FLUID)) {
-            //noinspection unchecked
-            return DataResult.success(Either.left((Holder<Fluid>) holder));
-        }
-        if (holder.getKey().isFor(MekanismAPI.CHEMICAL_REGISTRY_NAME)) {
-            //noinspection unchecked
-            return DataResult.success(Either.right((Holder<Chemical>) holder));
-        }
-        return DataResult.error(() -> "Holder holds neither a fluid nor a chemical");
+    ).flatComapMap(Either::unwrap, holder -> switch (HolderType.forHolder(holder)) {
+        case FLUID -> DataResult.success(Either.left((Holder<Fluid>) holder));
+        case CHEMICAL -> DataResult.success(Either.right((Holder<Chemical>) holder));
     });
+
+    Codec<Holder<?>> FLUID_OR_CHEMICAL_LEGACY = Codec.withAlternative(FLUID_OR_CHEMICAL, ChemicalStack.CHEMICAL_NON_EMPTY_HOLDER_CODEC);
 
     @Override
     default void collectTooltips(TooltipContext context, List<Component> tooltips, TooltipFlag tooltipFlag) {
@@ -100,7 +128,7 @@ public sealed interface IChemicalCoolant extends IChemicalAttribute permits Cool
     static <COOLANT extends IChemicalCoolant> Products.P3<Mu<COOLANT>, Holder<?>, Double, Double> createBaseCodec(RecordCodecBuilder.Instance<COOLANT> instance,
           String otherFormName, double defaultConductivity) {
         return instance.group(
-              FLUID_OR_CHEMICAL.fieldOf(otherFormName).forGetter(IChemicalCoolant::otherVariant),
+              FLUID_OR_CHEMICAL_LEGACY.fieldOf(otherFormName).forGetter(IChemicalCoolant::otherVariant),
               Codec.doubleRange(Double.MIN_VALUE, Double.MAX_VALUE).fieldOf(SerializationConstants.THERMAL_ENTHALPY).forGetter(IChemicalCoolant::thermalEnthalpy),
               Codec.doubleRange(Double.MIN_VALUE, 1).optionalFieldOf(SerializationConstants.CONDUCTIVITY, defaultConductivity).forGetter(IChemicalCoolant::conductivity)
         );

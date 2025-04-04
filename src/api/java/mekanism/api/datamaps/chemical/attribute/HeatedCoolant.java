@@ -5,7 +5,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.List;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializationConstants;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.attribute.ChemicalAttributes;
 import mekanism.api.text.APILang;
@@ -31,7 +30,7 @@ import org.jetbrains.annotations.ApiStatus.Internal;
  *
  * @since 10.7.11
  */
-public record HeatedCoolant(Holder<?> otherVariant, double thermalEnthalpy, double conductivity, double temperature) implements IChemicalCoolant {
+public record HeatedCoolant(Holder<?> otherVariant, HolderType otherType, double thermalEnthalpy, double conductivity, double temperature) implements IChemicalCoolant {
 
     private static final double BASE_COOLING_EFFICIENCY = 0.4;
     private static final double BASE_COOLANT_TEMP = 100_000;
@@ -56,6 +55,10 @@ public record HeatedCoolant(Holder<?> otherVariant, double thermalEnthalpy, doub
 
     public HeatedCoolant(Holder<?> otherVariant, double thermalEnthalpy) {
         this(otherVariant, thermalEnthalpy, BASE_COOLING_EFFICIENCY, BASE_COOLANT_TEMP);
+    }
+
+    public HeatedCoolant(Holder<?> otherVariant, double thermalEnthalpy, double conductivity, double temperature) {
+        this(otherVariant, HolderType.forHolder(otherVariant), thermalEnthalpy, conductivity, temperature);
     }
 
     public HeatedCoolant {

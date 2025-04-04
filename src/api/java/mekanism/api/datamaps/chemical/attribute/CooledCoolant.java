@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializationConstants;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.attribute.ChemicalAttributes;
 import net.minecraft.core.Holder;
@@ -22,7 +21,7 @@ import org.jetbrains.annotations.ApiStatus.Internal;
  *
  * @since 10.7.11
  */
-public record CooledCoolant(Holder<?> otherVariant, double thermalEnthalpy, double conductivity) implements IChemicalCoolant {
+public record CooledCoolant(Holder<?> otherVariant, HolderType otherType, double thermalEnthalpy, double conductivity) implements IChemicalCoolant {
 
     /**
      * The ID of the data map.
@@ -37,6 +36,10 @@ public record CooledCoolant(Holder<?> otherVariant, double thermalEnthalpy, doub
     public static final Codec<CooledCoolant> CODEC = RecordCodecBuilder.create(instance -> IChemicalCoolant.createBaseCodec(instance,
           SerializationConstants.HOT_VARIANT, 1
     ).apply(instance, CooledCoolant::new));
+
+    public CooledCoolant(Holder<?> otherVariant, double thermalEnthalpy, double conductivity) {
+        this(otherVariant, HolderType.forHolder(otherVariant), thermalEnthalpy, conductivity);
+    }
 
     public CooledCoolant {
         IChemicalCoolant.validateCoolantParams(otherVariant, thermalEnthalpy, conductivity);
