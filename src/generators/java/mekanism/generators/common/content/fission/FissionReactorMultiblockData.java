@@ -449,7 +449,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
                     lastBoilRate = clampCoolantHeated(caseCoolantHeat / coolantType.thermalEnthalpy(), chemicalCoolantTank.getStored());
                     if (lastBoilRate > 0) {
                         MekanismUtils.logMismatchedStackSize(chemicalCoolantTank.shrinkStack(lastBoilRate, Action.EXECUTE), lastBoilRate);
-                        heatedCoolantTank.insert(coolantType.heat(lastBoilRate), Action.EXECUTE, AutomationType.INTERNAL);
+                        heatedCoolantTank.insert(new ChemicalStack(coolantType.otherChemical(), lastBoilRate), Action.EXECUTE, AutomationType.INTERNAL);
                         caseCoolantHeat = lastBoilRate * coolantType.thermalEnthalpy();
                         heatCapacitor.handleHeat(-caseCoolantHeat);
                     }

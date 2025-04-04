@@ -68,7 +68,7 @@ public record FissionRecipeViewerRecipe(ResourceLocation id, @Nullable ChemicalS
                   RecipeViewerUtils.synthetic(key.location(), "fission", MekanismGenerators.MODID),
                   IngredientCreatorAccess.chemicalStack().fromHolder(MekanismAPI.CHEMICAL_REGISTRY.getHolderOrThrow(key), amount),
                   IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.FISSILE_FUEL, 1),
-                  coolant.heat(amount), MekanismChemicals.NUCLEAR_WASTE.asStack(1)
+                  new ChemicalStack(coolant.otherChemical(), amount), MekanismChemicals.NUCLEAR_WASTE.asStack(1)
             ));
         }
         //TODO - 1.22: Remove this handling of legacy attributes
