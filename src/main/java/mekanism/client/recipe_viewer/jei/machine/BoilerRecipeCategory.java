@@ -3,8 +3,12 @@ package mekanism.client.recipe_viewer.jei.machine;
 import com.mojang.serialization.Codec;
 import java.util.Collections;
 import java.util.List;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.math.MathUtils;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
+import mekanism.api.recipes.ingredients.FluidStackIngredient;
+import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.gauge.GaugeType;
@@ -27,6 +31,7 @@ import mezz.jei.api.recipe.IRecipeManager;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -74,7 +79,7 @@ public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerRecipeViewerR
     @Override
     protected void renderElements(BoilerRecipeViewerRecipe recipe, IRecipeSlotsView recipeSlotView, GuiGraphics guiGraphics, int x, int y) {
         super.renderElements(recipe, recipeSlotView, guiGraphics, x, y);
-        if (recipe.superHeatedCoolant() == null) {
+        if (recipe.heatedCoolant() == null) {
             superHeatedCoolantTank.drawBarOverlay(guiGraphics);
             cooledCoolantTank.drawBarOverlay(guiGraphics);
         }
@@ -95,12 +100,23 @@ public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerRecipeViewerR
     @Override
     public void setRecipe(@NotNull IRecipeLayoutBuilder builder, BoilerRecipeViewerRecipe recipe, @NotNull IFocusGroup focusGroup) {
         initFluid(builder, RecipeIngredientRole.INPUT, waterTank, recipe.water().getRepresentations());
-        if (recipe.superHeatedCoolant() == null) {
+        if (recipe.heatedCoolant() == null) {
             initChemical(builder, RecipeIngredientRole.OUTPUT, steamTank, Collections.singletonList(recipe.steam()));
         } else {
-            initChemical(builder, RecipeIngredientRole.INPUT, superHeatedCoolantTank, recipe.superHeatedCoolant().getRepresentations());
+            final InputIngredient<?> heatedCoolant = recipe.heatedCoolant();
+            switch (heatedCoolant) {
+                case FluidStackIngredient fluid -> initFluid(builder, RecipeIngredientRole.INPUT, superHeatedCoolantTank, fluid.getRepresentations());
+                case ChemicalStackIngredient chemical -> initChemical(builder, RecipeIngredientRole.INPUT, superHeatedCoolantTank, chemical.getRepresentations());
+                default -> throw new IllegalStateException("Bad heated coolant: expected fluid or chemical, got " + heatedCoolant);
+            }
             initChemical(builder, RecipeIngredientRole.OUTPUT, steamTank, Collections.singletonList(recipe.steam()));
-            initChemical(builder, RecipeIngredientRole.OUTPUT, cooledCoolantTank, Collections.singletonList(recipe.cooledCoolant()));
+            final Object cooledCoolant = recipe.cooledCoolant();
+            switch (cooledCoolant) {
+                case FluidStack fluid -> initFluid(builder, RecipeIngredientRole.OUTPUT, cooledCoolantTank, Collections.singletonList(fluid));
+                case ChemicalStack chemical -> initChemical(builder, RecipeIngredientRole.OUTPUT, cooledCoolantTank, Collections.singletonList(chemical));
+                default -> throw new IllegalStateException("Bad cooled coolant: expected fluid or chemical, got " + cooledCoolant);
+            }
+
         }
     }
 }
