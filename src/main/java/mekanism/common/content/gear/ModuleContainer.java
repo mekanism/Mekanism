@@ -196,11 +196,12 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
     private ItemEnchantments.Mutable disableOtherExclusives(HolderLookup.Provider provider, Holder<ModuleData<?>> type, Module<?> module,
           SequencedMap<ModuleData<?>, Module<?>> copiedModules, @Nullable ItemEnchantments.Mutable adjustedEnchantments) {
         boolean handlesModeChange = module.handlesModeChange();
-        int exclusiveFlags = type.value().getExclusiveFlags();
+        ModuleData<?> moduleType = type.value();
+        int exclusiveFlags = moduleType.getExclusiveFlags();
         if (handlesModeChange || exclusiveFlags != 0) {
             for (Module<?> otherModule : modules()) {
                 ModuleData<?> otherType = otherModule.getUntypedData();
-                if (otherType != type.value()) {
+                if (otherType != moduleType) {
                     // disable other exclusive modules if this is an exclusive module, as this one will now be active
                     if (otherType.isExclusive(exclusiveFlags) && otherModule.isEnabled()) {
                         ModuleConfig<Boolean> disabledConfig = otherModule.<Boolean>getConfigOrThrow(ModuleConfig.ENABLED_KEY).with(false);
