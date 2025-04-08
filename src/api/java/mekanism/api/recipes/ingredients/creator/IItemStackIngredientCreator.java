@@ -165,6 +165,7 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     default ItemStackIngredient fromHolders(int amount, Holder<Item>... items) {
         if (items.length == 0) {
             throw new IllegalArgumentException("Attempted to create a ItemStackIngredient with no items.");

@@ -12,6 +12,6 @@ public record QuickHash(Object... objs) {
 
     @Override
     public boolean equals(Object obj) {
-        return obj == this || obj instanceof QuickHash other && Arrays.deepEquals(objs, other.objs);
+        return obj == this || obj instanceof QuickHash(Object[] otherObjs) && Arrays.deepEquals(objs, otherObjs);
     }
 }

@@ -403,7 +403,7 @@ public class CrTExampleRecipeComponentBuilder<BUILDER_TYPE extends CrTExampleBui
             if (this == o) {
                 return true;
             }
-            return o instanceof RecipeExample other && method.equals(other.method) && Arrays.deepEquals(params, other.params);
+            return o instanceof RecipeExample(RecipeMethod otherMethod, Object[] otherParams) && method.equals(otherMethod) && Arrays.deepEquals(params, otherParams);
         }
 
         @Override

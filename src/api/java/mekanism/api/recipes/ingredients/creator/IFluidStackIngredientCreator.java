@@ -60,6 +60,7 @@ public interface IFluidStackIngredientCreator extends IIngredientCreator<Fluid, 
      * @since 10.7.11
      */
     @Override
+    @SuppressWarnings("unchecked")
     default FluidStackIngredient fromHolders(int amount, Holder<Fluid>... fluids) {
         if (fluids.length == 0) {
             throw new IllegalArgumentException("Attempted to create a FluidStackIngredient with no fluids.");

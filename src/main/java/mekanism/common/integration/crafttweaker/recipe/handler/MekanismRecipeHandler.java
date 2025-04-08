@@ -113,8 +113,8 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe<?>> im
             //Outputs sometimes are as arrays, try wrapping them into a single element
             // eventually we may want to try listing them all somehow?
             return convertParam(longs[0]);
-        } else if (param instanceof ElectrolysisRecipeOutput output) {
-            return convertParam(output.left()) + ", " + convertParam(output.right());
+        } else if (param instanceof ElectrolysisRecipeOutput(ChemicalStack left, ChemicalStack right)) {
+            return convertParam(left) + ", " + convertParam(right);
         }
         //Shouldn't happen
         return "Unimplemented: " + param;
@@ -181,16 +181,16 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe<?>> im
                 outputs.addFluid(IFluidStack.of(stack));
             } else if (data instanceof ChemicalStack stack) {
                 outputs.addChemical(stack);
-            } else if (data instanceof PressurizedReactionRecipeOutput output) {
-                if (!output.item().isEmpty()) {
-                    outputs.addItem(IItemStack.of(output.item()));
+            } else if (data instanceof PressurizedReactionRecipeOutput(ItemStack item, ChemicalStack chemical)) {
+                if (!item.isEmpty()) {
+                    outputs.addItem(IItemStack.of(item));
                 }
-                if (!output.chemical().isEmpty()) {
-                    outputs.addChemical(output.chemical());
+                if (!chemical.isEmpty()) {
+                    outputs.addChemical(chemical);
                 }
-            } else if (data instanceof ElectrolysisRecipeOutput output) {
-                outputs.addChemical(output.left());
-                outputs.addChemical(output.right());
+            } else if (data instanceof ElectrolysisRecipeOutput(ChemicalStack left, ChemicalStack right)) {
+                outputs.addChemical(left);
+                outputs.addChemical(right);
             } else if (data instanceof Boolean b) {
                 if (perTickUsage != null) {
                     //Fail if we have multiple per tick usages specified

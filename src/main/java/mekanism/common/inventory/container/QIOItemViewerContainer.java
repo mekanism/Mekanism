@@ -296,16 +296,21 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     @Override
     public ItemStack quickMoveStack(@NotNull Player player, int slotID) {
         Slot currentSlot = slots.get(slotID);
-        if (currentSlot == null) {
-            return ItemStack.EMPTY;
-        }
-        if (currentSlot instanceof VirtualCraftingOutputSlot virtualSlot) {
-            //If we are clicking an output crafting slot, allow the slot itself to handle the transferring
-            return virtualSlot.shiftClickSlot(player, hotBarSlots, mainInventorySlots);
-        } else if (currentSlot instanceof InventoryContainerSlot) {
-            //Otherwise, if we are an inventory container slot (crafting input slots in this case)
-            // use our normal handling to attempt and transfer the contents to the player's inventory
-            return super.quickMoveStack(player, slotID);
+        switch (currentSlot) {
+            case null -> {
+                return ItemStack.EMPTY;
+            }
+            case VirtualCraftingOutputSlot virtualSlot -> {
+                //If we are clicking an output crafting slot, allow the slot itself to handle the transferring
+                return virtualSlot.shiftClickSlot(player, hotBarSlots, mainInventorySlots);
+            }
+            case InventoryContainerSlot inventoryContainerSlot -> {
+                //Otherwise, if we are an inventory container slot (crafting input slots in this case)
+                // use our normal handling to attempt and transfer the contents to the player's inventory
+                return super.quickMoveStack(player, slotID);
+            }
+            default -> {
+            }
         }
         // special handling for shift-clicking into GUI
         if (!player.level().isClientSide()) {

@@ -188,6 +188,7 @@ public interface IChemicalIngredientCreator {
      *
      * @since 10.7.11
      */
+    @SuppressWarnings("unchecked")
     default ChemicalIngredient ofHolders(Holder<Chemical>... chemicalProviders) {
         return ofHolders(Arrays.stream(chemicalProviders));
     }

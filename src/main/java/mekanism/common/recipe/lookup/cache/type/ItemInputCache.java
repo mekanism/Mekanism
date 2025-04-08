@@ -1,5 +1,6 @@
 package mekanism.common.recipe.lookup.cache.type;
 
+import java.util.List;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.world.item.Item;
@@ -30,11 +31,11 @@ public class ItemInputCache<RECIPE extends MekanismRecipe<?>> extends ComponentS
                     addInputCache(item.getItem(), recipe);
                 }
             }
-        } else if (input.getCustomIngredient() instanceof CompoundIngredient compoundIngredient) {
+        } else if (input.getCustomIngredient() instanceof CompoundIngredient(List<Ingredient> children)) {
             //Special handling for neo's compound ingredient to map all children as best as we can
             // as maybe some of them are simple
             boolean result = false;
-            for (Ingredient child : compoundIngredient.children()) {
+            for (Ingredient child : children) {
                 result |= mapIngredient(recipe, child);
             }
             return result;

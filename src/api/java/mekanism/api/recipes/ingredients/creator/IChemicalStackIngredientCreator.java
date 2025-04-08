@@ -57,6 +57,7 @@ public interface IChemicalStackIngredientCreator extends IIngredientCreator<Chem
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     default ChemicalStackIngredient fromHolders(int amount, Holder<Chemical>... holders) {
         return fromHolders((long) amount, holders);
     }
@@ -107,6 +108,7 @@ public interface IChemicalStackIngredientCreator extends IIngredientCreator<Chem
      * @throws IllegalArgumentException if the given instance is empty or an amount smaller than one; or if no chemicals are passed.
      * @since 10.7.11
      */
+    @SuppressWarnings("unchecked")
     default ChemicalStackIngredient fromHolders(long amount, Holder<Chemical>... chemicals) {
         if (chemicals.length == 0) {
             throw new IllegalArgumentException("Attempted to create a ChemicalStackIngredient with no chemicals.");
