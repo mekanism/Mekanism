@@ -54,7 +54,7 @@ public class UpgradeUtils {
     public static List<Component> getMultScaledInfo(IUpgradeTile tile, Upgrade upgrade) {
         List<Component> ret = new ArrayList<>();
         if (tile.supportsUpgrades() && upgrade.getMax() > 1) {
-            double effect = Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), (float) tile.getComponent().getUpgrades(upgrade) / (float) upgrade.getMax());
+            double effect = Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), tile.getComponent().getUpgrades(upgrade) / (float) upgrade.getMax());
             ret.add(MekanismLang.UPGRADES_EFFECT.translate(Math.round(effect * 100) / 100F));
         }
         return ret;

@@ -56,7 +56,7 @@ public class RecipeViewerUtils {
     public static IProgressInfoHandler progressHandler(int processTime) {
         int time = SharedConstants.MILLIS_PER_TICK * processTime;
         return () -> {
-            double subTime = System.currentTimeMillis() % (long) time;
+            double subTime = System.currentTimeMillis() % time;
             return subTime / time;
         };
     }
@@ -72,7 +72,7 @@ public class RecipeViewerUtils {
 
             @Override
             public double getLevel() {
-                double subTime = System.currentTimeMillis() % (long) time;
+                double subTime = System.currentTimeMillis() % time;
                 return subTime / time;
             }
         };

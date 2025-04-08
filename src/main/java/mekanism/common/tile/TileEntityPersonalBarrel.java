@@ -33,9 +33,9 @@ public class TileEntityPersonalBarrel extends TileEntityPersonalStorage {
 
     private void playSound(@NotNull Level level, BlockState state, SoundEvent sound) {
         Vec3i vec3i = state.getValue(BarrelBlock.FACING).getNormal();
-        double d0 = (double) this.worldPosition.getX() + 0.5D + (double) vec3i.getX() / 2.0D;
-        double d1 = (double) this.worldPosition.getY() + 0.5D + (double) vec3i.getY() / 2.0D;
-        double d2 = (double) this.worldPosition.getZ() + 0.5D + (double) vec3i.getZ() / 2.0D;
+        double d0 = this.worldPosition.getX() + 0.5D + vec3i.getX() / 2.0D;
+        double d1 = this.worldPosition.getY() + 0.5D + vec3i.getY() / 2.0D;
+        double d2 = this.worldPosition.getZ() + 0.5D + vec3i.getZ() / 2.0D;
         level.playSound(null, d0, d1, d2, sound, SoundSource.BLOCKS, 0.5F, level.random.nextFloat() * 0.1F + 0.9F);
     }
 

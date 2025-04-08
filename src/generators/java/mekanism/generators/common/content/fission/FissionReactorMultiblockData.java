@@ -563,7 +563,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
             // just return that it can't boil
             return 0;
         }
-        double avgSurfaceArea = (double) surfaceArea / (double) fuelAssemblies;
+        double avgSurfaceArea = surfaceArea / (double) fuelAssemblies;
         return Math.min(1, avgSurfaceArea / MekanismGeneratorsConfig.generators.fissionSurfaceAreaTarget.get());
     }
 

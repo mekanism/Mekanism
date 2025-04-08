@@ -130,10 +130,10 @@ public class GuiProgress extends GuiTexturedElement implements IRecipeViewerReci
         int x2 = x + width;
         int y2 = y + height;
         Matrix4f matrix = guiGraphics.pose().last().pose();
-        float minU = uOffset / (float) textureWidth;
-        float maxU = (uOffset + width) / (float) textureWidth;
-        float minV = vOffset / (float) textureHeight;
-        float maxV = (vOffset + height) / (float) textureHeight;
+        float minU = uOffset / textureWidth;
+        float maxU = (uOffset + width) / textureWidth;
+        float minV = vOffset / textureHeight;
+        float maxV = (vOffset + height) / textureHeight;
 
         float alphaFrom = MekanismRenderer.getAlpha(colorFrom);
         float redFrom = MekanismRenderer.getRed(colorFrom);
