@@ -1,7 +1,6 @@
 package mekanism.client.gui.qio;
 
 import mekanism.client.gui.element.GuiScreenSwitch;
-import mekanism.client.gui.machine.GuiFormulaicAssemblicator;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.network.PacketUtils;

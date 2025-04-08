@@ -6,7 +6,6 @@ import it.unimi.dsi.fastutil.longs.LongSet;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
-import java.util.function.LongConsumer;
 import mekanism.common.content.network.transmitter.BufferedTransmitter;
 import mekanism.common.lib.math.Range3D;
 import mekanism.common.util.WorldUtils;

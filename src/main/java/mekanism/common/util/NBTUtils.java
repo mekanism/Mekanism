@@ -13,7 +13,6 @@ import java.util.function.IntConsumer;
 import java.util.function.IntFunction;
 import java.util.function.LongConsumer;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;

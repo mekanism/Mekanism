@@ -1,7 +1,5 @@
 package mekanism.common.block.states;
 
-import mekanism.api.math.MathUtils;
-
 public enum TransmitterType {
     UNIVERSAL_CABLE(Size.SMALL),
     MECHANICAL_PIPE(Size.LARGE),

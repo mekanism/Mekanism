@@ -10,7 +10,6 @@ import mekanism.api.security.ISecurityObject;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.security.PacketSyncSecurity;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.OwnerDisplay;
