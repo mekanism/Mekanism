@@ -96,7 +96,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
             if (getActive()) {
                 //Note: We can't just pass "this" and have to instead look up the capability to make sure we respect any sidedness
                 // we short circuit looking it up from the world though, and just query the provider we add to the tile directly
-                IItemHandler capability = CapabilityTileEntity.ITEM_HANDLER_PROVIDER.getCapability(this, Direction.DOWN);
+                IItemHandler capability = ITEM_HANDLER_PROVIDER.getCapability(this, Direction.DOWN);
                 HandlerTransitRequest request = new HandlerTransitRequest(capability);
                 request.addItem(binSlot.getBottomStack(), 0);
                 if (targetInventory == null) {

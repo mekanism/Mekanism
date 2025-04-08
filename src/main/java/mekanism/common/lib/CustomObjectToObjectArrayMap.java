@@ -14,7 +14,6 @@ import org.jetbrains.annotations.NotNull;
 public class CustomObjectToObjectArrayMap<KEY, VALUE> extends Object2ObjectArrayMap<KEY, VALUE> {
 
     public CustomObjectToObjectArrayMap() {
-        super();
     }
 
     public CustomObjectToObjectArrayMap(Map<? extends KEY, ? extends VALUE> m) {

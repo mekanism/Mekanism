@@ -149,7 +149,7 @@ public class FrequencyType<FREQ extends Frequency> {
             return null;
         }
         FrequencyManagerWrapper<FREQ> manager = getManagerWrapper();
-        if (freq.getType() == FrequencyType.SECURITY) {
+        if (freq.getType() == SECURITY) {
             //Frequency#getSecurity means something slightly different for security frequencies. They are always public
             return manager.getPublicManager();
         }

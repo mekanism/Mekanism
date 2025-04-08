@@ -55,7 +55,7 @@ public class BasicSawmillRecipe extends SawmillRecipe {
     }
 
     @Override
-    @Contract(value = "_ -> new")
+    @Contract("_ -> new")
     public ChanceOutput getOutput(ItemStack input) {
         return new BasicChanceOutput(secondaryChance > 0 ? RANDOM.nextDouble() : 0);
     }

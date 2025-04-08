@@ -44,7 +44,7 @@ public class MekanismTools implements IModModule {
     }
 
     public static ResourceLocation rl(String path) {
-        return ResourceLocation.fromNamespaceAndPath(MekanismTools.MODID, path);
+        return ResourceLocation.fromNamespaceAndPath(MODID, path);
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {

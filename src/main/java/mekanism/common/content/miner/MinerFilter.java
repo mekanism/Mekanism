@@ -31,7 +31,7 @@ public abstract class MinerFilter<FILTER extends MinerFilter<FILTER>> extends Ba
 
     protected static <FILTER extends MinerFilter<FILTER>> StreamCodec<RegistryFriendlyByteBuf, FILTER> baseMinerStreamCodec(Supplier<FILTER> constructor) {
         return StreamCodec.composite(
-              BaseFilter.baseStreamCodec(constructor), Function.identity(),
+              baseStreamCodec(constructor), Function.identity(),
               ByteBufCodecs.registry(Registries.ITEM), filter -> filter.replaceTarget,
               ByteBufCodecs.BOOL, filter -> filter.requiresReplacement,
               (filter, replaceTarget, requiresReplacement) -> {

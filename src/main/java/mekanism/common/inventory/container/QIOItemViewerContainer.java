@@ -269,7 +269,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
             // can be extracted at once so even if they somehow have an oversized stack it will be fine
             ItemStack slotItem = slot.getItem();
             if (InventoryUtils.areItemsStackable(lastStack, slotItem)) {
-                QIOItemViewerContainer.this.transferSuccess(slot, player, slotItem, freq.addItem(slotItem));
+                this.transferSuccess(slot, player, slotItem, freq.addItem(slotItem));
             }
         }
     }

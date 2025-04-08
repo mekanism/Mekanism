@@ -53,7 +53,7 @@ public abstract class SawmillRecipe extends MekanismRecipe<SingleRecipeInput> im
      * outputs where things like NBT may be different.
      * @implNote The passed in input should <strong>NOT</strong> be modified.
      */
-    @Contract(value = "_ -> new")
+    @Contract("_ -> new")
     public abstract ChanceOutput getOutput(ItemStack input);
 
     /**

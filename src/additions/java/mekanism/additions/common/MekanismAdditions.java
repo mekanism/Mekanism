@@ -77,7 +77,7 @@ public class MekanismAdditions implements IModModule {
     }
 
     public static ResourceLocation rl(String path) {
-        return ResourceLocation.fromNamespaceAndPath(MekanismAdditions.MODID, path);
+        return ResourceLocation.fromNamespaceAndPath(MODID, path);
     }
 
     @Override

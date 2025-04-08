@@ -42,7 +42,7 @@ public abstract class Frequency implements IFrequency {
 
     protected boolean dirty;
     private boolean removed;
-    private String name;
+    private final String name;
 
     @Nullable
     private final UUID ownerUUID;

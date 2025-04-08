@@ -40,7 +40,7 @@ public abstract class SorterFilter<FILTER extends SorterFilter<FILTER>> extends 
 
     protected static <FILTER extends SorterFilter<FILTER>> StreamCodec<ByteBuf, FILTER> baseSorterStreamCodec(Supplier<FILTER> constructor) {
         return StreamCodec.composite(
-              BaseFilter.baseStreamCodec(constructor), Function.identity(),
+              baseStreamCodec(constructor), Function.identity(),
               ByteBufCodecs.BOOL, filter -> filter.allowDefault,
               ByteBufCodecs.BOOL, filter -> filter.sizeMode,
               ByteBufCodecs.VAR_INT, filter -> filter.min,

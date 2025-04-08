@@ -249,7 +249,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
             }
         };
 
-        @SuppressWarnings({"unchecked"})
+        @SuppressWarnings("unchecked")
         public static final CacheSubstance<?, INBTSerializable<CompoundTag>>[] VALUES = new CacheSubstance[]{
               CHEMICAL,
               ITEMS,

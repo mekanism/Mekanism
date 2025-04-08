@@ -56,7 +56,7 @@ public class VoiceConnection extends Thread {
                                 }
                             }
                             retryCount++;
-                            Thread.sleep(50);
+                            sleep(50);
                         } catch (Exception ignored) {
                         }
                     }
@@ -79,11 +79,11 @@ public class VoiceConnection extends Thread {
         new Thread(() -> {
             while (open) {
                 try {
-                    short byteCount = VoiceConnection.this.input.readShort();
+                    short byteCount = this.input.readShort();
                     byte[] audioData = new byte[byteCount];
-                    VoiceConnection.this.input.readFully(audioData);
+                    this.input.readFully(audioData);
                     if (byteCount > 0) {
-                        MekanismAdditions.voiceManager.sendToPlayers(byteCount, audioData, VoiceConnection.this);
+                        MekanismAdditions.voiceManager.sendToPlayers(byteCount, audioData, this);
                     }
                 } catch (Exception e) {
                     open = false;

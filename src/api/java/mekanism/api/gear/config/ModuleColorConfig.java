@@ -114,10 +114,10 @@ public class ModuleColorConfig extends ModuleConfig<Integer> {
     public StreamCodec<ByteBuf, ModuleConfig<Integer>> namedStreamCodec(ResourceLocation name) {
         if (supportsAlpha) {
             //Note: We don't do varint as we include alpha data
-            return ByteBufCodecs.INT.map(val -> ModuleColorConfig.argb(name, val), ModuleConfig::get);
+            return ByteBufCodecs.INT.map(val -> argb(name, val), ModuleConfig::get);
         }
         //Note: We can use var int here and just not send the alpha data over the network
-        return ByteBufCodecs.VAR_INT.map(val -> ModuleColorConfig.rgb(name, val), module -> module.get() & 0x00FFFFFF);
+        return ByteBufCodecs.VAR_INT.map(val -> rgb(name, val), module -> module.get() & 0x00FFFFFF);
     }
 
     /**

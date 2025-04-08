@@ -22,6 +22,6 @@ public class ResizableDiskReplaceFeature extends Feature<ResizableDiskConfig> {
               context.origin(),
               context.config().asVanillaConfig()
         );
-        return Feature.DISK.place(vanillaContext);
+        return DISK.place(vanillaContext);
     }
 }

@@ -148,7 +148,7 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
                         this.slotClicked(slot, slot.index, button, ClickType.CLONE);
                     } else {
                         ClickType clicktype = ClickType.PICKUP;
-                        if (Screen.hasShiftDown()) {
+                        if (hasShiftDown()) {
                             this.lastQuickMoved = slot.hasItem() ? slot.getItem().copy() : ItemStack.EMPTY;
                             clicktype = ClickType.QUICK_MOVE;
                         }

@@ -8,13 +8,13 @@ import org.jetbrains.annotations.NotNull;
 
 public record AttributeUpgradeSupport(@NotNull Set<Upgrade> supportedUpgrades) implements Attribute {
 
-    public static final AttributeUpgradeSupport DEFAULT_MACHINE_UPGRADES = AttributeUpgradeSupport.create(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.MUFFLING);
-    public static final AttributeUpgradeSupport DEFAULT_ADVANCED_MACHINE_UPGRADES = AttributeUpgradeSupport.create(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.MUFFLING, Upgrade.CHEMICAL);
-    public static final AttributeUpgradeSupport SPEED_ENERGY = AttributeUpgradeSupport.create(Upgrade.SPEED, Upgrade.ENERGY);
-    public static final AttributeUpgradeSupport MUFFLING_ONLY = AttributeUpgradeSupport.create(Upgrade.MUFFLING);
-    public static final AttributeUpgradeSupport ENERGY_ONLY = AttributeUpgradeSupport.create(Upgrade.ENERGY);
-    public static final AttributeUpgradeSupport SPEED_ONLY = AttributeUpgradeSupport.create(Upgrade.SPEED);
-    public static final AttributeUpgradeSupport ANCHOR_ONLY = AttributeUpgradeSupport.create(Upgrade.ANCHOR);
+    public static final AttributeUpgradeSupport DEFAULT_MACHINE_UPGRADES = create(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.MUFFLING);
+    public static final AttributeUpgradeSupport DEFAULT_ADVANCED_MACHINE_UPGRADES = create(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.MUFFLING, Upgrade.CHEMICAL);
+    public static final AttributeUpgradeSupport SPEED_ENERGY = create(Upgrade.SPEED, Upgrade.ENERGY);
+    public static final AttributeUpgradeSupport MUFFLING_ONLY = create(Upgrade.MUFFLING);
+    public static final AttributeUpgradeSupport ENERGY_ONLY = create(Upgrade.ENERGY);
+    public static final AttributeUpgradeSupport SPEED_ONLY = create(Upgrade.SPEED);
+    public static final AttributeUpgradeSupport ANCHOR_ONLY = create(Upgrade.ANCHOR);
 
     public static AttributeUpgradeSupport create(Upgrade... supportedUpgrades) {
         if (supportedUpgrades.length == 0) {

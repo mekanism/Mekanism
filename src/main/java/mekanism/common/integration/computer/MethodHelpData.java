@@ -155,7 +155,7 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
                 }
                 return new Returns(getHumanType(data.returnType(), data.returnExtra()), data.returnType(), data.returnExtra(), enumConstantNames);
             }
-            return Returns.NOTHING;
+            return NOTHING;
         }
 
         @Override

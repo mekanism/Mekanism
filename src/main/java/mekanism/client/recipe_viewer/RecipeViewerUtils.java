@@ -155,7 +155,7 @@ public class RecipeViewerUtils {
         for (Map.Entry<ResourceKey<Item>, Item> entry : BuiltInRegistries.ITEM.entrySet()) {
             BasicItemStackToFluidOptionalItemRecipe recipe = TileEntityNutritionalLiquifier.getRecipe(entry.getValue().getDefaultInstance());
             if (recipe != null) {
-                liquification.put(RecipeViewerUtils.synthetic(entry.getKey().location(), "liquification", Mekanism.MODID), recipe);
+                liquification.put(synthetic(entry.getKey().location(), "liquification", Mekanism.MODID), recipe);
             }
         }
         return liquification;

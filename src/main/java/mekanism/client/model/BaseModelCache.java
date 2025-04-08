@@ -191,7 +191,7 @@ public class BaseModelCache {
                   (modelLoc, material) -> material.sprite(),
                   mrl
             );
-            if (BaseModelCache.getUnbakedModel(evt.getModelBakery(), baker, mrl) instanceof BlockModel blockModel) {
+            if (getUnbakedModel(evt.getModelBakery(), baker, mrl) instanceof BlockModel blockModel) {
                 model = blockModel.customData.getCustomGeometry();
             }
         }

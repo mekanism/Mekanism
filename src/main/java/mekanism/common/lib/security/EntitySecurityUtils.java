@@ -67,7 +67,7 @@ public class EntitySecurityUtils implements IEntitySecurityUtils {
         @Nullable
         ISecurityObject securityCapability() {
             if (securityObject == null) {
-                securityObject = IEntitySecurityUtils.INSTANCE.securityCapability(target);
+                securityObject = INSTANCE.securityCapability(target);
             }
             return securityObject;
         }
@@ -75,7 +75,7 @@ public class EntitySecurityUtils implements IEntitySecurityUtils {
         @Nullable
         IOwnerObject ownerCapability() {
             if (ownerObject == null) {
-                ownerObject = IEntitySecurityUtils.INSTANCE.ownerCapability(target);
+                ownerObject = INSTANCE.ownerCapability(target);
             }
             return ownerObject;
         }

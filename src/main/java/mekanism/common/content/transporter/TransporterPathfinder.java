@@ -219,7 +219,7 @@ public final class TransporterPathfinder {
             }
             TransitRequest request = TransitRequest.simple(transportStack.itemStack);
             if (startTransmitter != null) {
-                Destination newPath = TransporterPathfinder.getNewBasePath(startTransmitter, transportStack, request, 0);
+                Destination newPath = getNewBasePath(startTransmitter, transportStack, request, 0);
                 if (newPath != null && newPath.getResponse() != null) {
                     transportStack.idleDir = null;
                     newPath.setPathType(Path.DEST);

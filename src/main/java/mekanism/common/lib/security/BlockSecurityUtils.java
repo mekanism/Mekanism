@@ -134,7 +134,7 @@ public class BlockSecurityUtils implements IBlockSecurityUtils {
         ISecurityObject securityCapability() {
             if (securityObject == null) {
                 BlockTarget blockTarget = getTarget();
-                securityObject = IBlockSecurityUtils.INSTANCE.securityCapability(level, pos, blockTarget.state(), blockTarget.blockEntity());
+                securityObject = INSTANCE.securityCapability(level, pos, blockTarget.state(), blockTarget.blockEntity());
             }
             return securityObject;
         }
@@ -143,7 +143,7 @@ public class BlockSecurityUtils implements IBlockSecurityUtils {
         IOwnerObject ownerCapability() {
             if (ownerObject == null) {
                 BlockTarget blockTarget = getTarget();
-                ownerObject = IBlockSecurityUtils.INSTANCE.ownerCapability(level, pos, blockTarget.state(), blockTarget.blockEntity());
+                ownerObject = INSTANCE.ownerCapability(level, pos, blockTarget.state(), blockTarget.blockEntity());
             }
             return ownerObject;
         }

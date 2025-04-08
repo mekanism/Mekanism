@@ -558,7 +558,7 @@ public class RenderTickHandler {
         return model;
     }
 
-    public static abstract class LazyRender {
+    public abstract static class LazyRender {
 
         public double distance;
 

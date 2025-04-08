@@ -602,7 +602,7 @@ public class RadiationManager implements IRadiationManager {
          * For both Sv and Sv/h.
          */
         public static EnumColor getSeverityColor(double magnitude) {
-            if (magnitude <= IRadiationManager.INSTANCE.baselineRadiation()) {
+            if (magnitude <= INSTANCE.baselineRadiation()) {
                 return EnumColor.BRIGHT_GREEN;
             } else if (magnitude < 0.00001) { // 10 uSv/h
                 return EnumColor.GRAY;
@@ -624,7 +624,7 @@ public class RadiationManager implements IRadiationManager {
          * Gets the severity of a dose (between 0 and 1) from a provided dosage in Sv.
          */
         public static double getScaledDoseSeverity(double magnitude) {
-            if (magnitude < IRadiationManager.INSTANCE.minRadiationMagnitude()) {
+            if (magnitude < INSTANCE.minRadiationMagnitude()) {
                 return 0;
             }
             return Math.min(1, Math.max(0, (-LOG_BASELINE + Math.log10(magnitude)) / SCALE));
@@ -685,7 +685,7 @@ public class RadiationManager implements IRadiationManager {
         public void setManagerAndSync(RadiationManager m) {
             manager = m;
             // don't sync the manager if radiation has been disabled
-            if (IRadiationManager.INSTANCE.isRadiationEnabled()) {
+            if (INSTANCE.isRadiationEnabled()) {
                 for (RadiationSource source : loadedSources) {
                     manager.radiationTable.put(new Chunk3D(source.getPos()), source.getPos(), source);
                 }

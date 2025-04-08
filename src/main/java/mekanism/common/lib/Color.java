@@ -260,7 +260,7 @@ public class Color {
 
     public interface ColorFunction {
 
-        ColorFunction HEAT = level -> Color.rgbai((int) Math.min(200, 400 * level), (int) Math.max(0, 200 - Math.max(0, -200 + 400 * level)), 0, 255);
+        ColorFunction HEAT = level -> rgbai((int) Math.min(200, 400 * level), (int) Math.max(0, 200 - Math.max(0, -200 + 400 * level)), 0, 255);
 
         static ColorFunction scale(Color from, Color to) {
             return level -> from.blend(to, level);

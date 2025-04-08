@@ -155,7 +155,7 @@ public class EmiQIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContai
 
         @Override
         public TransferResult createMissingSlotsError(List<EmiRecipeSlot> missing) {
-            return new TransferResult(EmiRecipeHandler.NOT_ENOUGH_INGREDIENTS, missing);
+            return new TransferResult(NOT_ENOUGH_INGREDIENTS, missing);
         }
 
         @Override

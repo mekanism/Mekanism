@@ -41,7 +41,7 @@ public abstract class OredictionificatorFilter<TYPE, STACK, FILTER extends Oredi
     protected static <TYPE, STACK, FILTER extends OredictionificatorFilter<TYPE, STACK, FILTER>> StreamCodec<RegistryFriendlyByteBuf, FILTER>
     baseOredictionificatorStreamCodec(Supplier<FILTER> constructor, ResourceKey<? extends Registry<TYPE>> registry) {
         return StreamCodec.composite(
-              BaseFilter.baseStreamCodec(constructor), Function.identity(),
+              baseStreamCodec(constructor), Function.identity(),
               //Realistically the filter location shouldn't be null except when the filter is first being created
               // but handle it being null just in case
               ByteBufCodecs.optional(ResourceLocation.STREAM_CODEC), filter -> Optional.ofNullable(filter.filterLocation).map(TagKey::location),

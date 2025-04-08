@@ -574,7 +574,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
 
     @ComputerMethod
     public long getDamagePercent() {
-        return Math.round((reactorDamage / FissionReactorMultiblockData.MAX_DAMAGE) * 100);
+        return Math.round((reactorDamage / MAX_DAMAGE) * 100);
     }
 
     public void setAssemblies(int assemblies) {
