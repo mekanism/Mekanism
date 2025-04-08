@@ -94,42 +94,40 @@ public class ModuleHelper implements IModuleHelper {//TODO - 1.22: Evaluate movi
           Map<ModuleData<?>, ImmutableSet.Builder<Item>> supportedContainersBuilderMap) {
         ImmutableSet.Builder<ModuleData<?>> supportedModulesBuilder = ImmutableSet.builder();
         event.getIMCStream(imcMethod::equals).forEach(message -> {
-            switch (message.messageSupplier().get()) {
-                case Holder<?> holder -> {
+            Object body = message.messageSupplier().get();
+            if (body instanceof Holder<?> holder) {
+                if (holder.value() instanceof ModuleData<?> moduleData) {
+                    supportedModulesBuilder.add(moduleData);
+                    logDebugReceivedIMC(imcMethod, message.senderModId(), moduleData);
+                } else {
+                    //Holder for something other than modules
+                    Mekanism.logger.warn("Received IMC message for '{}' from mod '{}' with an invalid body.", imcMethod, message.senderModId());
+                }
+            } else if (body instanceof HolderSet<?> holderSet) {
+                for (Holder<?> holder : holderSet) {
                     if (holder.value() instanceof ModuleData<?> moduleData) {
                         supportedModulesBuilder.add(moduleData);
                         logDebugReceivedIMC(imcMethod, message.senderModId(), moduleData);
                     } else {
-                        //Holder for something other than modules
+                        //Holder set for something other than modules
                         Mekanism.logger.warn("Received IMC message for '{}' from mod '{}' with an invalid body.", imcMethod, message.senderModId());
+                        break;
                     }
                 }
-                case HolderSet<?> holderSet -> {
-                    for (Holder<?> holder : holderSet) {
-                        if (holder.value() instanceof ModuleData<?> moduleData) {
-                            supportedModulesBuilder.add(moduleData);
-                            logDebugReceivedIMC(imcMethod, message.senderModId(), moduleData);
-                        } else {
-                            //Holder set for something other than modules
-                            Mekanism.logger.warn("Received IMC message for '{}' from mod '{}' with an invalid body.", imcMethod, message.senderModId());
-                            break;
-                        }
-                    }
-                }
-                //TODO - 1.22: Remove these two deprecated branches
-                case IModuleDataProvider<?> moduleDataProvider -> {
+            }
+            //TODO - 1.22: Remove these two deprecated branches
+            else if (body instanceof IModuleDataProvider<?> moduleDataProvider) {
+                ModuleData<?> moduleData = moduleDataProvider.getModuleData();
+                supportedModulesBuilder.add(moduleData);
+                logDebugReceivedIMC(imcMethod, message.senderModId(), moduleData);
+            } else if (body instanceof IModuleDataProvider<?>[] providers) {
+                for (IModuleDataProvider<?> moduleDataProvider : providers) {
                     ModuleData<?> moduleData = moduleDataProvider.getModuleData();
                     supportedModulesBuilder.add(moduleData);
                     logDebugReceivedIMC(imcMethod, message.senderModId(), moduleData);
                 }
-                case IModuleDataProvider<?>[] providers -> {
-                    for (IModuleDataProvider<?> moduleDataProvider : providers) {
-                        ModuleData<?> moduleData = moduleDataProvider.getModuleData();
-                        supportedModulesBuilder.add(moduleData);
-                        logDebugReceivedIMC(imcMethod, message.senderModId(), moduleData);
-                    }
-                }
-                case null, default -> Mekanism.logger.warn("Received IMC message for '{}' from mod '{}' with an invalid body.", imcMethod, message.senderModId());
+            } else {
+                Mekanism.logger.warn("Received IMC message for '{}' from mod '{}' with an invalid body.", imcMethod, message.senderModId());
             }
         });
         Set<ModuleData<?>> supported = supportedModulesBuilder.build();
