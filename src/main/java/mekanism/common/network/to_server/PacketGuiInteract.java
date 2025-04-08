@@ -204,7 +204,7 @@ public class PacketGuiInteract implements IMekanismPacket {
         }),
         CONTAINER_TRACK_UPGRADES((tile, player, extra) -> {
             if (player.containerMenu instanceof MekanismContainer container) {//tile instanceof IUpgradeTile
-                container.startTrackingServer(extra, ((IUpgradeTile) tile).getComponent());
+                container.startTrackingServer(extra, tile.getComponent());
             }
         }),
         QIO_REDSTONE_ADAPTER_COUNT((tile, player, extra) -> {

@@ -106,7 +106,7 @@ public class LongTransferUtils {
                 emptyContainers.add(energyContainer);
             } else {
                 long remainder = energyContainer.insert(toInsert, action, automationType);
-                if (remainder <= 0L) {
+                if (remainder == 0L) {
                     //If we have no remainder, return that we fit it all
                     return 0L;
                 }
@@ -116,7 +116,7 @@ public class LongTransferUtils {
         }
         for (IEnergyContainer container : emptyContainers) {
             long remainder = container.insert(toInsert, action, automationType);
-            if (remainder <= 0L) {
+            if (remainder == 0L) {
                 //If we have no remainder, return that we fit it all
                 return 0L;
             }
