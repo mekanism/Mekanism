@@ -106,11 +106,6 @@ public class ChemicalStackRenderer implements IIngredientRenderer<ChemicalStack>
     }
 
     @Override
-    public Font getFontRenderer(Minecraft minecraft, ChemicalStack stack) {
-        return minecraft.font;
-    }
-
-    @Override
     public int getWidth() {
         return width;
     }
