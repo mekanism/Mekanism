@@ -410,7 +410,6 @@ public class GuiUtils {
 
     /**
      * Returns an iterator for dividing a value into slices of a specified size.
-     * <p>
      *
      * @param pTarget the value to be divided.
      * @param pTotal  the size of each slice.

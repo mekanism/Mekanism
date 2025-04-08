@@ -23,8 +23,6 @@ import net.neoforged.neoforge.common.crafting.SizedIngredient;
 public interface IItemStackIngredientCreator extends IIngredientCreator<Item, ItemStack, ItemStackIngredient> {
 
     /**
-     * {@inheritDoc}
-     *
      * @implNote If the stack has any non-default data components, a non-strict component matching those additions will be used.
      */
     @Override

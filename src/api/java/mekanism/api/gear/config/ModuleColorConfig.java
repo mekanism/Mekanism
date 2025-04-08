@@ -121,8 +121,6 @@ public class ModuleColorConfig extends ModuleConfig<Integer> {
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @implNote If this config does not support alpha, the alpha component is locked to {@code 0xFF} instead of being missing.
      */
     @Override

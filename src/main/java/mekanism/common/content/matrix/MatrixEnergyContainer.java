@@ -144,8 +144,6 @@ public class MatrixEnergyContainer implements IEnergyContainer {
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @return The energy post queue when this container next actually updates/saves to disk
      */
     @Override

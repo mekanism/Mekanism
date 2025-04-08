@@ -53,8 +53,6 @@ public interface IFluidStackIngredientCreator extends IIngredientCreator<Fluid, 
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @implNote This wraps via {@link #from(FluidIngredient, int)} so if there are any default components it will <strong>NOT</strong> be included in the
      * ingredient. If this is not desired, manually create the ingredient via {@link DataComponentFluidIngredient} and call {@link #from(FluidIngredient, int)}.
      * @since 10.7.11
@@ -69,8 +67,6 @@ public interface IFluidStackIngredientCreator extends IIngredientCreator<Fluid, 
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @implNote This wraps via {@link #from(FluidIngredient, int)} so if there are any default components it will <strong>NOT</strong> be included in the ingredient. If
      * this is not desired, manually create the ingredient via {@link DataComponentFluidIngredient} and call {@link #from(FluidIngredient, int)}.
      */
@@ -82,8 +78,6 @@ public interface IFluidStackIngredientCreator extends IIngredientCreator<Fluid, 
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @implNote This wraps via {@link #from(FluidIngredient, int)} so if there are any default components it will <strong>NOT</strong> be included in the ingredient. If
      * this is not desired, manually create the ingredient via {@link DataComponentFluidIngredient} and call {@link #from(FluidIngredient, int)}.
      */
@@ -93,8 +87,6 @@ public interface IFluidStackIngredientCreator extends IIngredientCreator<Fluid, 
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @implNote This wraps via {@link #from(FluidIngredient, int)} so if there are any default components it will <strong>NOT</strong> be included in the
      * ingredient. If this is not desired, manually create the ingredient via {@link DataComponentFluidIngredient} and call {@link #from(FluidIngredient, int)}.
      * @since 10.6.0
@@ -110,8 +102,6 @@ public interface IFluidStackIngredientCreator extends IIngredientCreator<Fluid, 
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @implNote If the stack has any non-default data components, a non-strict component matching those additions will be used.
      */
     @Override

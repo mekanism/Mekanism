@@ -247,8 +247,6 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @return The contents in this slot AFTER transferring items away.
      */
     @NotNull

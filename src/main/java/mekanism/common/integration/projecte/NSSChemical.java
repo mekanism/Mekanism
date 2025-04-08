@@ -74,7 +74,7 @@ public final class NSSChemical extends AbstractNSSTag<Chemical> {
     }
 
     /**
-     * Helper method to create an {@link NSSChemical} representing a tag from a {@link TagKey< Chemical >}
+     * Helper method to create an {@link NSSChemical} representing a tag from a {@link TagKey}&lt;{@link Chemical}&gt;
      */
     @NotNull
     public static NSSChemical createTag(@NotNull TagKey<Chemical> tag) {

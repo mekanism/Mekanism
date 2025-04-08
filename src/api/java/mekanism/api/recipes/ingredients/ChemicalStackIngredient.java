@@ -39,8 +39,6 @@ public final class ChemicalStackIngredient implements InputIngredient<ChemicalSt
      *     "amount": 250
      * }
      * }</pre>
-     *
-     * <p>
      * <p>
      * Compound chemical ingredients are always serialized using the map codec, i.e.
      *

@@ -237,8 +237,6 @@ public class BasicFluidTank implements IExtendedFluidTank {
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getFluid()}, we can optimize out the copying, and can also
      * directly modify our stack instead of having to make a copy.
      */
@@ -266,8 +264,6 @@ public class BasicFluidTank implements IExtendedFluidTank {
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @implNote Overwritten so that we can make this obey the rate limit our tank may have
      */
     @Override
@@ -289,8 +285,6 @@ public class BasicFluidTank implements IExtendedFluidTank {
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getFluid()}, we can optimize out the copying.
      */
     @Override
@@ -299,8 +293,6 @@ public class BasicFluidTank implements IExtendedFluidTank {
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getFluid()}, we can optimize out the copying.
      */
     @Override
@@ -309,8 +301,6 @@ public class BasicFluidTank implements IExtendedFluidTank {
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getFluid()}, we can optimize out the copying.
      */
     @Override
@@ -324,8 +314,6 @@ public class BasicFluidTank implements IExtendedFluidTank {
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getFluid()}, we can optimize out the copying.
      */
     @Override
