@@ -72,7 +72,10 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     private IItemHandler getCapForSide(Direction logisticalSide) {
         BlockCapabilityCache<IItemHandler, Direction> cache = capabilityCache.get(logisticalSide);
         if (cache == null) {
-            cache = Capabilities.ITEM.createCache((ServerLevel) getLevel(), getBlockPos().relative(logisticalSide), logisticalSide.getOpposite(), this::isValid);
+            cache = Capabilities.ITEM.createCache((ServerLevel) getLevel(), getBlockPos().relative(logisticalSide), logisticalSide.getOpposite(), this::isValid, () -> {
+                // It's possible this will run before the put() call, and this will silently fail.
+                capabilityCache.remove(logisticalSide);
+            });
             capabilityCache.put(logisticalSide, cache);
         }
         return cache.getCapability();
@@ -83,7 +86,10 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
         EnumMap<Direction, BlockCapabilityCache<IItemHandler, Direction>> sideCache = fallbackHandlerCache.computeIfAbsent(pos, k -> new EnumMap<>(Direction.class));
         BlockCapabilityCache<IItemHandler, Direction> cache = sideCache.get(handlerSide);
         if (cache == null) {
-            cache = Capabilities.ITEM.createCache((ServerLevel) getLevel(), BlockPos.of(pos), handlerSide, this::isValid);
+            cache = Capabilities.ITEM.createCache((ServerLevel) getLevel(), BlockPos.of(pos), handlerSide, this::isValid, () -> {
+                // It's possible this will run before the put() call, and this will silently fail.
+                capabilityCache.remove(handlerSide);
+            });
             sideCache.put(handlerSide, cache);
         }
         return cache.getCapability();
