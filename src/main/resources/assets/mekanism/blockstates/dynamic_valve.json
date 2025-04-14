@@ -1,7 +1,10 @@
 {
   "variants": {
-    "": {
-      "model": "mekanism:block/dynamic_valve"
+    "mode=input": {
+    "model": "mekanism:block/dynamic_valve_input"
+    },
+    "mode=output": {
+      "model": "mekanism:block/dynamic_valve_output"
     }
   }
 }
