@@ -618,6 +618,10 @@ public enum MekanismLang implements ILangEntry {
     BOILER_COOLANT_TANK("boiler", "coolant_tank"),
     BOILER_STEAM_TANK("boiler", "steam_tank"),
     BOILER_HEATED_COOLANT_TANK("fission", "heated_coolant_tank"),
+    //Common multiblock valve modes
+    COMMON_VALVE_MODE_CHANGE("common_valve", "valve_mode_change"),
+    COMMON_VALVE_MODE_INPUT("common_valve", "valve_mode_input"),
+    COMMON_VALVE_MODE_OUTPUT("common_valve", "valve_mode_output"),
     //Temperature
     TEMPERATURE("temperature", "short"),
     TEMPERATURE_LONG("temperature", "long"),
