@@ -6,10 +6,12 @@ import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.common.block.attribute.AttributeStateCommonValveMode;
 import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.capabilities.merged.MergedTank;
@@ -25,18 +27,28 @@ import mekanism.common.inventory.slot.HybridInventorySlot;
 import mekanism.common.lib.multiblock.IValveHandler;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.tile.interfaces.IFluidContainerManager.ContainerEditMode;
+import mekanism.common.tile.multiblock.TileEntityDynamicValve;
 import mekanism.common.tile.multiblock.TileEntityDynamicTank;
+import mekanism.common.util.ChemicalUtil;
+import mekanism.common.util.FluidUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 public class TankMultiblockData extends MultiblockData implements IValveHandler {
 
     @ContainerSync
     public final MergedTank mergedTank;
+
+    //TODO figure out a more graceful way to do this
+    private final List<AdvancedCapabilityOutputTarget<IChemicalHandler, AttributeStateCommonValveMode.CommonValveMode>> chemicalOutputTargets = new ArrayList<>();
+    private final List<AdvancedCapabilityOutputTarget<IFluidHandler, AttributeStateCommonValveMode.CommonValveMode>> fluidOutputTargets = new ArrayList<>();
+
     @ContainerSync
     @SyntheticComputerMethod(getter = "getContainerEditMode")
     public ContainerEditMode editMode = ContainerEditMode.BOTH;
@@ -73,23 +85,55 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
     @Override
     public boolean tick(Level world) {
         boolean needsPacket = super.tick(world);
+
+        // main update
         CurrentType type = mergedTank.getCurrentType();
+
         if (type == CurrentType.EMPTY) {
+            // empty tank behavior
             inputSlot.handleTank(outputSlot, editMode);
             inputSlot.drainChemicalTank();//todo will this do anything if empty??
             outputSlot.fillChemicalTank();
+
         } else if (type == CurrentType.FLUID) {
+            // FLUID tank behavior
             inputSlot.handleTank(outputSlot, editMode);
-        } else { //Chemicals
+
+            // output valves
+            if (!fluidOutputTargets.isEmpty()) {
+                FluidUtils.emit(getActiveOutputs(fluidOutputTargets, AttributeStateCommonValveMode.CommonValveMode.OUTPUT), mergedTank.getFluidTank());
+            }
+
+        } else {
+            // CHEMICAL tank behavior
             inputSlot.drainChemicalTank();
             outputSlot.fillChemicalTank();
+
+            // output valves
+            if (!chemicalOutputTargets.isEmpty()) {
+                ChemicalUtil.emit(getActiveOutputs(chemicalOutputTargets, AttributeStateCommonValveMode.CommonValveMode.OUTPUT), mergedTank.getChemicalTank());
+            }
         }
+
+        // scale
         float scale = getScale();
         if (MekanismUtils.scaleChanged(scale, prevScale)) {
             prevScale = scale;
             needsPacket = true;
         }
         return needsPacket;
+    }
+
+    @Override
+    protected void updateEjectors(Level world) {
+        chemicalOutputTargets.clear();
+        fluidOutputTargets.clear();
+        for (ValveData valve : valves) {
+            TileEntityDynamicValve tile = WorldUtils.getTileEntity(TileEntityDynamicValve.class, world, valve.location);
+            if (tile != null) {
+                tile.addValveTargetCapability(chemicalOutputTargets, fluidOutputTargets, valve.side);
+            }
+        }
     }
 
     @Override

@@ -19,6 +19,7 @@ import mekanism.common.block.attribute.AttributeParticleFX;
 import mekanism.common.block.attribute.AttributeSideConfig;
 import mekanism.common.block.attribute.AttributeStateActive;
 import mekanism.common.block.attribute.AttributeStateBoilerValveMode;
+import mekanism.common.block.attribute.AttributeStateCommonValveMode;
 import mekanism.common.block.attribute.AttributeStateFacing;
 import mekanism.common.block.attribute.AttributeStateFacing.FacePlacementType;
 import mekanism.common.block.attribute.AttributeStateOpen;
@@ -680,7 +681,7 @@ public class MekanismBlockTypes {
     public static final BlockTypeTile<TileEntityDynamicValve> DYNAMIC_VALVE = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.DYNAMIC_VALVE, MekanismLang.DESCRIPTION_DYNAMIC_VALVE)
           .withGui(() -> MekanismContainerTypes.DYNAMIC_TANK, MekanismLang.DYNAMIC_TANK)
-          .with(Attributes.INVENTORY, Attributes.COMPARATOR)
+          .with(Attributes.INVENTORY, Attributes.COMPARATOR, new AttributeStateCommonValveMode())
           .externalMultiblock()
           .withComputerSupport("dynamicValve")
           .build();
