@@ -26,6 +26,7 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -49,13 +50,13 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank {
     @NotNull
     @Override
     protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener) {
-        return side -> getMultiblock().getFluidTanks(side);
+        return side -> getMultiblock().getFluidTanks(getMode());
     }
 
     @NotNull
     @Override
     public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener) {
-        return side -> getMultiblock().getChemicalTanks(side);
+        return side -> getMultiblock().getChemicalTanks(getMode());
     }
     
     @Override

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
+import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
@@ -13,6 +14,7 @@ import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.block.attribute.AttributeStateCommonValveMode;
 import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
+import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.capabilities.merged.MergedTank;
 import mekanism.common.capabilities.merged.MergedTank.CurrentType;
@@ -38,12 +40,17 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.IFluidTank;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 public class TankMultiblockData extends MultiblockData implements IValveHandler {
 
     @ContainerSync
     public final MergedTank mergedTank;
+
+    // currently used for valves in output mode to prevent backfeeding
+    private final List<IExtendedFluidTank> fakeOutputFluidTank = List.of(BasicFluidTank.output(0, null));
+    private final List<IChemicalTank> fakeOutputChemicalTank = List.of(BasicChemicalTank.output(0, null));
 
     //TODO figure out a more graceful way to do this
     private final List<AdvancedCapabilityOutputTarget<IChemicalHandler, AttributeStateCommonValveMode.CommonValveMode>> chemicalOutputTargets = new ArrayList<>();
@@ -134,6 +141,18 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
                 tile.addValveTargetCapability(chemicalOutputTargets, fluidOutputTargets, valve.side);
             }
         }
+    }
+
+    public List<IExtendedFluidTank> getFluidTanks(AttributeStateCommonValveMode.CommonValveMode valveMode)
+    {
+        return valveMode == AttributeStateCommonValveMode.CommonValveMode.INPUT ?
+                this.fluidTanks : this.fakeOutputFluidTank;
+    }
+
+    public List<IChemicalTank> getChemicalTanks(AttributeStateCommonValveMode.CommonValveMode valveMode)
+    {
+        return valveMode == AttributeStateCommonValveMode.CommonValveMode.INPUT ?
+                this.chemicalTanks : this.fakeOutputChemicalTank;
     }
 
     @Override
