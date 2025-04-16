@@ -143,13 +143,13 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
         }
     }
 
-    public List<IExtendedFluidTank> getFluidTanks(AttributeStateCommonValveMode.CommonValveMode valveMode)
+    public List<IExtendedFluidTank> getValveModeFluidTanks(AttributeStateCommonValveMode.CommonValveMode valveMode)
     {
         return valveMode == AttributeStateCommonValveMode.CommonValveMode.INPUT ?
                 this.fluidTanks : this.fakeOutputFluidTank;
     }
 
-    public List<IChemicalTank> getChemicalTanks(AttributeStateCommonValveMode.CommonValveMode valveMode)
+    public List<IChemicalTank> getValveModeChemicalTanks(AttributeStateCommonValveMode.CommonValveMode valveMode)
     {
         return valveMode == AttributeStateCommonValveMode.CommonValveMode.INPUT ?
                 this.chemicalTanks : this.fakeOutputChemicalTank;
