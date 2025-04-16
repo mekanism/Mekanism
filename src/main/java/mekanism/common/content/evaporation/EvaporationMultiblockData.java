@@ -2,11 +2,14 @@ package mekanism.common.content.evaporation;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 import mekanism.api.IEvaporationSolar;
 import mekanism.api.SerializationConstants;
+import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.recipes.FluidToFluidRecipe;
@@ -20,6 +23,7 @@ import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.recipes.vanilla_input.SingleFluidRecipeInput;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
+import mekanism.common.block.attribute.AttributeStateCommonValveMode;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
@@ -42,11 +46,14 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.ISingleRecipeLookupHandler.FluidRecipeLookupHandler;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleFluid;
 import mekanism.common.recipe.lookup.monitor.RecipeCacheLookupMonitor;
+import mekanism.common.tile.multiblock.TileEntityThermalEvaporationValve;
 import mekanism.common.tile.multiblock.TileEntityThermalEvaporationBlock;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.tile.prefab.TileEntityStructuralMultiblock;
+import mekanism.common.util.FluidUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -55,6 +62,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -78,6 +86,11 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     public BasicFluidTank outputTank;
     @ContainerSync
     public VariableHeatCapacitor heatCapacitor;
+
+    // valve input and output mode fluid separation
+    private final List<AdvancedCapabilityOutputTarget<IFluidHandler, AttributeStateCommonValveMode.CommonValveMode>> fluidOutputTargets = new ArrayList<>();
+    //private final List<IExtendedFluidTank> inputTanks;
+    private final List<IExtendedFluidTank> outputTanks;
 
     private double biomeAmbientTemp;
     private double tempMultiplier;
@@ -118,6 +131,8 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
         biomeAmbientTemp = HeatAPI.getAmbientTemp(tile.getLevel(), tile.getBlockPos());
         fluidTanks.add(inputTank = VariableCapacityFluidTank.input(this, this::getMaxFluid, this::containsRecipe, createSaveAndComparator(recipeCacheLookupMonitor)));
         fluidTanks.add(outputTank = VariableCapacityFluidTank.output(this, MekanismConfig.general.evaporationOutputTankCapacity, ConstantPredicates.alwaysTrue(), this));
+        //inputTanks = List.of(inputTank);
+        outputTanks = List.of(outputTank);
         inputHandler = InputHelper.getInputHandler(inputTank, RecipeError.NOT_ENOUGH_INPUT);
         outputHandler = OutputHelper.getOutputHandler(outputTank, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
         inventorySlots.add(inputInputSlot = FluidInventorySlot.fill(inputTank, this, 28, 20));
@@ -157,15 +172,40 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
         // Note: We use the ambient temperature without taking our biome into account as we want to have a consistent multiplier
         tempMultiplier = (Math.min(MAX_MULTIPLIER_TEMP, getTemperature()) - HeatAPI.AMBIENT_TEMP) * MekanismConfig.general.evaporationTempMultiplier.get() *
                          ((double) height() / MAX_HEIGHT);
+        // flow tanks
         inputOutputSlot.drainTank(outputOutputSlot);
         inputInputSlot.fillTank(outputInputSlot);
+        // push to out valves
+        if (!fluidOutputTargets.isEmpty() && !outputTank.isEmpty()) {
+            FluidUtils.emit(getActiveOutputs(fluidOutputTargets, AttributeStateCommonValveMode.CommonValveMode.OUTPUT), outputTank);
+        }
+        // run recipe
         recipeCacheLookupMonitor.updateAndProcess();
+        // scale scale
         float scale = MekanismUtils.getScale(prevScale, inputTank);
         if (!Mth.equal(scale, prevScale)) {
             prevScale = scale;
             needsPacket = true;
         }
         return needsPacket;
+    }
+
+    @Override
+    protected void updateEjectors(Level world) {
+        fluidOutputTargets.clear();
+        for (ValveData valve : valves) {
+            TileEntityThermalEvaporationValve tile = WorldUtils.getTileEntity(TileEntityThermalEvaporationValve.class, world, valve.location);
+            if (tile != null) {
+                tile.addValveTargetCapability(fluidOutputTargets, valve.side);
+            }
+        }
+    }
+
+    public List<IExtendedFluidTank> getValveModeFluidTanks(AttributeStateCommonValveMode.CommonValveMode valveMode)
+    {
+        // TODO: this currently returns both the input and output tanks for valves left at input, as to not break existing user setups
+        return valveMode == AttributeStateCommonValveMode.CommonValveMode.INPUT ?
+                this.fluidTanks : this.outputTanks;
     }
 
     @Override

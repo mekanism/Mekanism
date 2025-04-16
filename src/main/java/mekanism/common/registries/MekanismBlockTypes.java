@@ -736,7 +736,7 @@ public class MekanismBlockTypes {
     // Thermal Evaporation Valve
     public static final BlockTypeTile<TileEntityThermalEvaporationValve> THERMAL_EVAPORATION_VALVE = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.THERMAL_EVAPORATION_VALVE, MekanismLang.DESCRIPTION_THERMAL_EVAPORATION_VALVE)
-          .with(Attributes.COMPARATOR, new AttributeCustomResistance(9))
+          .with(Attributes.COMPARATOR, new AttributeStateCommonValveMode(), new AttributeCustomResistance(9))
           .externalMultiblock()
           .withComputerSupport("thermalEvaporationValve")
           .build();

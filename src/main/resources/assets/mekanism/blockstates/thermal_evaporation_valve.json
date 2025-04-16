@@ -1,7 +1,10 @@
 {
   "variants": {
-    "": {
-      "model": "mekanism:block/thermal_evaporation/valve"
+    "mode=input": {
+      "model": "mekanism:block/thermal_evaporation/valve_input"
+    },
+    "mode=output": {
+      "model": "mekanism:block/thermal_evaporation/valve_output"
     }
   }
 }
