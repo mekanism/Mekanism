@@ -326,6 +326,9 @@ enums:
   - INPUT
   - OUTPUT_STEAM
   - OUTPUT_COOLANT
+  mekanism.common.block.attribute.AttributeStateCommonValveMode$CommonValveMode:
+  - INPUT
+  - OUTPUT
   mekanism.common.content.filter.FilterType:
   - MINER_ITEMSTACK_FILTER
   - MINER_MODID_FILTER
@@ -1590,6 +1593,24 @@ methods:
     - java_type: mekanism.common.tile.interfaces.IFluidContainerManager$ContainerEditMode
       name: mode
       type: String (ContainerEditMode)
+  Dynamic Valve:
+  - description: Toggle the current valve configuration to the previous option in
+      the list
+    methodName: decrementMode
+  - description: Get the current configuration of this valve
+    methodName: getMode
+    returns:
+      java_type: mekanism.common.block.attribute.AttributeStateCommonValveMode$CommonValveMode
+      type: String (CommonValveMode)
+  - description: Toggle the current valve configuration to the next option in the
+      list
+    methodName: incrementMode
+  - description: Change the configuration of this valve
+    methodName: setMode
+    params:
+    - java_type: mekanism.common.block.attribute.AttributeStateCommonValveMode$CommonValveMode
+      name: mode
+      type: String (CommonValveMode)
   Electric Machine:
   - description: Get the contents of the energy slot.
     methodName: getEnergyItem
@@ -4468,6 +4489,24 @@ methods:
     returns:
       java_type: double
       type: Number (double)
+  Thermal Evaporation Valve:
+  - description: Toggle the current valve configuration to the previous option in
+      the list
+    methodName: decrementMode
+  - description: Get the current configuration of this valve
+    methodName: getMode
+    returns:
+      java_type: mekanism.common.block.attribute.AttributeStateCommonValveMode$CommonValveMode
+      type: String (CommonValveMode)
+  - description: Toggle the current valve configuration to the next option in the
+      list
+    methodName: incrementMode
+  - description: Change the configuration of this valve
+    methodName: setMode
+    params:
+    - java_type: mekanism.common.block.attribute.AttributeStateCommonValveMode$CommonValveMode
+      name: mode
+      type: String (CommonValveMode)
   Universal Cable:
   - methodName: getBuffer
     returns:

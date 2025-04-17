@@ -46,6 +46,10 @@
     "OUTPUT_STEAM",
     "OUTPUT_COOLANT"
   ],
+  "mekanism.common.block.attribute.AttributeStateCommonValveMode$CommonValveMode": [
+    "INPUT",
+    "OUTPUT"
+  ],
   "mekanism.common.content.filter.FilterType": [
     "MINER_ITEMSTACK_FILTER",
     "MINER_MODID_FILTER",

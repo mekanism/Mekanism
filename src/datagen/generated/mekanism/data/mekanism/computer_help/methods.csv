@@ -208,6 +208,10 @@ Dynamic Tank Multiblock (formed),getStored,,Table (ChemicalStack) or Table (Flui
 Dynamic Tank Multiblock (formed),getTankCapacity,,Number (int),,false,
 Dynamic Tank Multiblock (formed),incrementContainerEditMode,,,,false,
 Dynamic Tank Multiblock (formed),setContainerEditMode,mode: String (ContainerEditMode),,,false,
+Dynamic Valve,decrementMode,,,,false,Toggle the current valve configuration to the previous option in the list
+Dynamic Valve,getMode,,String (CommonValveMode),,false,Get the current configuration of this valve
+Dynamic Valve,incrementMode,,,,false,Toggle the current valve configuration to the next option in the list
+Dynamic Valve,setMode,mode: String (CommonValveMode),,,false,Change the configuration of this valve
 Electric Machine,getEnergyItem,,Table (ItemStack),,false,Get the contents of the energy slot.
 Electric Machine,getEnergyUsage,,Number (long),,false,Get the energy used in the last tick by the machine
 Electric Machine,getInput,,Table (ItemStack),,false,Get the contents of the input slot.
@@ -769,6 +773,10 @@ Thermal Evaporation Multiblock (formed),getOutputItemOutput,,Table (ItemStack),,
 Thermal Evaporation Multiblock (formed),getOutputNeeded,,Number (int),,false,Get the amount needed to fill the output tank.
 Thermal Evaporation Multiblock (formed),getProductionAmount,,Number (double),,false,
 Thermal Evaporation Multiblock (formed),getTemperature,,Number (double),,false,
+Thermal Evaporation Valve,decrementMode,,,,false,Toggle the current valve configuration to the previous option in the list
+Thermal Evaporation Valve,getMode,,String (CommonValveMode),,false,Get the current configuration of this valve
+Thermal Evaporation Valve,incrementMode,,,,false,Toggle the current valve configuration to the next option in the list
+Thermal Evaporation Valve,setMode,mode: String (CommonValveMode),,,false,Change the configuration of this valve
 Universal Cable,getBuffer,,Number (long),,false,
 Universal Cable,getCapacity,,Number (long),,false,
 Universal Cable,getFilledPercentage,,Number (double),,false,

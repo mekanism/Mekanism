@@ -1889,6 +1889,35 @@
       ]
     }
   ],
+  "Dynamic Valve": [
+    {
+      "description": "Toggle the current valve configuration to the previous option in the list",
+      "methodName": "decrementMode"
+    },
+    {
+      "description": "Get the current configuration of this valve",
+      "methodName": "getMode",
+      "returns": {
+        "type": "String (CommonValveMode)",
+        "java_type": "mekanism.common.block.attribute.AttributeStateCommonValveMode$CommonValveMode"
+      }
+    },
+    {
+      "description": "Toggle the current valve configuration to the next option in the list",
+      "methodName": "incrementMode"
+    },
+    {
+      "description": "Change the configuration of this valve",
+      "methodName": "setMode",
+      "params": [
+        {
+          "type": "String (CommonValveMode)",
+          "java_type": "mekanism.common.block.attribute.AttributeStateCommonValveMode$CommonValveMode",
+          "name": "mode"
+        }
+      ]
+    }
+  ],
   "Electric Machine": [
     {
       "description": "Get the contents of the energy slot.",
@@ -6739,6 +6768,35 @@
         "type": "Number (double)",
         "java_type": "double"
       }
+    }
+  ],
+  "Thermal Evaporation Valve": [
+    {
+      "description": "Toggle the current valve configuration to the previous option in the list",
+      "methodName": "decrementMode"
+    },
+    {
+      "description": "Get the current configuration of this valve",
+      "methodName": "getMode",
+      "returns": {
+        "type": "String (CommonValveMode)",
+        "java_type": "mekanism.common.block.attribute.AttributeStateCommonValveMode$CommonValveMode"
+      }
+    },
+    {
+      "description": "Toggle the current valve configuration to the next option in the list",
+      "methodName": "incrementMode"
+    },
+    {
+      "description": "Change the configuration of this valve",
+      "methodName": "setMode",
+      "params": [
+        {
+          "type": "String (CommonValveMode)",
+          "java_type": "mekanism.common.block.attribute.AttributeStateCommonValveMode$CommonValveMode",
+          "name": "mode"
+        }
+      ]
     }
   ],
   "Universal Cable": [
