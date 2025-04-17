@@ -1522,6 +1522,10 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.BOILER_STEAM_TANK, "Steam Tank");
         add(MekanismLang.BOILER_HEATED_COOLANT_TANK, "Heated Coolant Tank");
         add(MekanismLang.BOILER_COOLANT_TANK, "Coolant Tank");
+        //Common valve modes
+        add(MekanismLang.COMMON_VALVE_MODE_CHANGE, "Valve mode changed to: %1$s");
+        add(MekanismLang.COMMON_VALVE_MODE_INPUT, "input only");
+        add(MekanismLang.COMMON_VALVE_MODE_OUTPUT, "output only");
         //Temperature
         add(MekanismLang.TEMPERATURE, "Temp: %1$s");
         add(MekanismLang.TEMPERATURE_LONG, "Temperature: %1$s");
