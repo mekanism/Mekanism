@@ -2,6 +2,6 @@
   "parent": "mekanism:block/template/cube_all_led",
   "textures": {
     "all": "mekanism:block/thermal_evaporation_valve",
-    "led": "mekanism:block/boiler_valve_input_led"
+    "led": "mekanism:block/common_valve_input_led"
   }
 }
