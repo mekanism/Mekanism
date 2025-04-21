@@ -312,7 +312,6 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         }
     }
 
-    // test method to fix last-tick-lost-contents issue
     private void forceSyncCaches()
     {
         T multiblock = getMultiblock();
@@ -324,8 +323,8 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     @Override
     public void saveAdditional(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
 
-        // this currently seems to work alright at fixing the last-tick-loss issue, but needs testing if theres any side effects
-        // the reason being that on the very last tick of the server when it closes, the caches can be out of date
+        // force sync the caches since they tend to be one tick out of date,
+        // due to how multiblocks and tube networks can tick in different orders both within mekanism and other mods
         forceSyncCaches();
 
         // continue as normal
