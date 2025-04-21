@@ -312,8 +312,23 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         }
     }
 
+    // test method to fix last-tick-lost-contents issue
+    private void forceSyncCaches()
+    {
+        T multiblock = getMultiblock();
+        if (isMaster() && multiblock.isFormed()) {
+            getManager().handleDirtyMultiblock(multiblock);
+        }
+    }
+
     @Override
     public void saveAdditional(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
+
+        // this currently seems to work alright at fixing the last-tick-loss issue, but needs testing if theres any side effects
+        // the reason being that on the very last tick of the server when it closes, the caches can be out of date
+        forceSyncCaches();
+
+        // continue as normal
         super.saveAdditional(nbtTags, provider);
         if (cachedID != null) {
             //Note: We don't bother validating here the cache still exists as it is irrelevant and unused until attempting to form the multiblock
