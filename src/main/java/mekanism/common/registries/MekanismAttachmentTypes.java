@@ -1,10 +1,12 @@
 package mekanism.common.registries;
 
 import com.mojang.serialization.Codec;
+import java.util.function.Supplier;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.common.Mekanism;
 import mekanism.common.item.gear.ItemFlamethrower.FlamethrowerMode;
+import mekanism.common.lib.radiation.MeltdownLevelData;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -30,4 +32,6 @@ public class MekanismAttachmentTypes {
           AttachmentType.builder(() -> FlamethrowerMode.COMBAT)
                 .serialize(FlamethrowerMode.CODEC, mode -> mode != FlamethrowerMode.COMBAT)
                 .build());
+
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<MeltdownLevelData>> MELTDOWN_DATA = ATTACHMENT_TYPES.register("meltdown_data", () -> AttachmentType.serializable(() -> new MeltdownLevelData()).build());
 }

@@ -37,7 +37,7 @@ import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.lib.multiblock.IValveHandler;
 import mekanism.common.lib.multiblock.MultiblockCache;
 import mekanism.common.lib.multiblock.MultiblockData;
-import mekanism.common.lib.radiation.RadiationManager;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.HeatUtils;
@@ -52,7 +52,6 @@ import mekanism.generators.common.content.fission.FissionReactorValidator.Formed
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorPort;
 import net.minecraft.SharedConstants;
-import net.minecraft.core.GlobalPos;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -330,8 +329,8 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     }
 
     private void createMeltdown(Level world) {
-        RadiationManager.get().createMeltdown(world, getMinPos(), getMaxPos(), heatCapacitor.getHeat(), EXPLOSION_CHANCE,
-              MekanismGeneratorsConfig.generators.fissionMeltdownRadius.get(), inventoryID);
+        float radius = MekanismGeneratorsConfig.generators.fissionMeltdownRadius.get();
+        world.getData(MekanismAttachmentTypes.MELTDOWN_DATA).createMeltdown(getMinPos(), getMaxPos(), heatCapacitor.getHeat(), EXPLOSION_CHANCE, radius, inventoryID);
     }
 
     @Override
