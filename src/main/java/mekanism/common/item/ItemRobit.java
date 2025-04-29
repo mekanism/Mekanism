@@ -23,7 +23,7 @@ public class ItemRobit extends ItemEnergized implements ISustainedInventory
 {
 	public ItemRobit()
 	{
-		super(MekanismConfig.general.robitEnergyPerHP * 100);
+		super(MekanismConfig.mekce.robitEnergyPerHP * 100);
 	}
 
 	@Override

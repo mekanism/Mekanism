@@ -277,11 +277,8 @@ public class CommonProxy implements IGuiProvider
 		general.METHANE_BURN_TIME = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "MethaneBurnTime", 10).getInt();
 		general.ENERGY_PER_REDSTONE = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EnergyPerRedstone", 10000D).getDouble();
 		general.DISASSEMBLER_USAGE = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "DisassemblerEnergyUsage", 10).getInt();
-		general.ELECTRICBOW_USAGE = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ElectricBowJoulesPerShot", 120, null, 1, Integer.MAX_VALUE).getInt();
 		//If this is less than 1, upgrades make machines worse. If less than 0, I don't even know.
 		general.maxUpgradeMultiplier = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "UpgradeModifier", 10, null, 1, Integer.MAX_VALUE).getInt();
-		general.costTeleporter = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "TeleporterCost", 1000, null, 1, Integer.MAX_VALUE).getInt();
-		general.robitEnergyPerHP = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "RobitJoulesPerHP", 1000, null, 1, Integer.MAX_VALUE).getInt();
 		general.minerSilkMultiplier = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "MinerSilkMultiplier", 6).getDouble();
 		general.prefilledFluidTanks = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "PrefilledFluidTanks", false).getBoolean();
 		general.prefilledGasTanks = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "PrefilledGasTanks", false).getBoolean();
@@ -324,7 +321,10 @@ public class CommonProxy implements IGuiProvider
         mekce.atomicDisassemblerPoweredDamage = Mekanism.configurationce.get("mekce", "atomicDisassemblerPoweredDamage", 20, "Attack Damage of a powered Atomic Disassembler. Default is 20").getInt();
         mekce.atomicDisassemblerUnpoweredDamage = Mekanism.configurationce.get("mekce", "atomicDisassemblerUnpoweredDamage", 4, "Attack Damage of an unpowered Atomic Disassembler. Default is 4").getInt();
         mekce.atomicDisassemblerAttackPowerCost = Mekanism.configurationce.get("mekce", "atomicDisassemblerAttackPowerCost", 2000, "Energy cost of attacking entities with the Atomic Disassembler. Default is 2000").getInt();
-		
+		mekce.electricBowPowerCost = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ElectricBowJoulesPerShot", 120, "Base energy cost of shooting arrows with the Electric Bow. Default is 120", 1, Integer.MAX_VALUE).getInt();
+		mekce.robitEnergyPerHP = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "robitEnergyPerHP", 1000, "Energy equivalency of 1HP of health for Robit", 1, Integer.MAX_VALUE).getInt();
+		mekce.teleporterBasePowerCost = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "BaseTeleporterCost", 1000, "Base energy cost of using teleporters. Default is 1000", 1, Integer.MAX_VALUE).getInt();
+
 		mekce.IC2SinkTier = Mekanism.configurationce.get("mekce", "IC2SinkTier", 4, "Tier level for machines, we recommend setting it to tier 2 for ic2 classic", 1, 4).getInt();
 		mekce.IC2SourceTier = Mekanism.configurationce.get("mekce", "IC2SourceTier", 4, "Tier level for generators, we recommend setting it to tier 2 for ic2 classic", 1, 4).getInt();
 

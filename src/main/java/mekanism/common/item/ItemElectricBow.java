@@ -67,7 +67,7 @@ public class ItemElectricBow extends ItemEnergized
 
 				if(!player.capabilities.isCreativeMode)
 				{
-					setEnergy(itemstack, getEnergy(itemstack) - (getFireState(itemstack) ? MekanismConfig.general.ELECTRICBOW_USAGE * 10 : MekanismConfig.general.ELECTRICBOW_USAGE));
+					setEnergy(itemstack, getEnergy(itemstack) - (getFireState(itemstack) ? MekanismConfig.mekce.electricBowPowerCost * 10 : MekanismConfig.mekce.electricBowPowerCost));
 				}
 
 				world.playSoundAtEntity(player, "random.bow", 1.0F, 1.0F / (itemRand.nextFloat() * 0.4F + 1.2F) + f * 0.5F);

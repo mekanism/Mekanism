@@ -51,7 +51,6 @@ import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import scala.Int;
 
 public class TileEntityTeleporter extends TileEntityElectricBlock implements IComputerIntegration, IChunkLoader, IFrequencyHandler, IRedstoneControl, ISecurityTile
 {
@@ -69,7 +68,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 	
 	public Frequency frequency;
 
-	static final int baseCost = MekanismConfig.general.costTeleporter;
+	static final int baseCost = MekanismConfig.mekce.teleporterBasePowerCost;
 
 	public List<Frequency> publicCache = new ArrayList<Frequency>();
 	public List<Frequency> privateCache = new ArrayList<Frequency>();

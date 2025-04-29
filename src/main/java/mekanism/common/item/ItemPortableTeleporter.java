@@ -20,7 +20,7 @@ import net.minecraft.world.World;
 
 public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem
 {
-	static final int baseCost = MekanismConfig.general.costTeleporter;
+	static final int baseCost = MekanismConfig.mekce.teleporterBasePowerCost;
 
 	public ItemPortableTeleporter()
 	{

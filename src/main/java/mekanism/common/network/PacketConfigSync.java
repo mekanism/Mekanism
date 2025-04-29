@@ -50,9 +50,6 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeDouble(general.ENERGY_PER_REDSTONE);
 			dataStream.writeDouble(general.DISASSEMBLER_USAGE);
 			dataStream.writeInt(general.maxUpgradeMultiplier);
-			dataStream.writeInt(general.costTeleporter);
-			dataStream.writeInt(general.robitEnergyPerHP);
-			dataStream.writeInt(general.ELECTRICBOW_USAGE);
 			dataStream.writeInt(general.energyUnit.ordinal());
 			dataStream.writeDouble(general.minerSilkMultiplier);
 			dataStream.writeBoolean(general.blacklistIC2);
@@ -93,6 +90,10 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
             dataStream.writeInt(mekce.atomicDisassemblerPoweredDamage);
             dataStream.writeInt(mekce.atomicDisassemblerUnpoweredDamage);
             dataStream.writeInt(mekce.atomicDisassemblerAttackPowerCost);
+			dataStream.writeInt(mekce.electricBowPowerCost);
+			dataStream.writeInt(mekce.robitEnergyPerHP);
+			dataStream.writeInt(mekce.teleporterBasePowerCost);
+
 
 			for(MachineType type : MachineType.getValidMachines())
 			{
@@ -254,9 +255,6 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			general.ENERGY_PER_REDSTONE = dataStream.readDouble();
 			general.DISASSEMBLER_USAGE = dataStream.readDouble();
 			general.maxUpgradeMultiplier = dataStream.readInt();
-			general.costTeleporter = dataStream.readInt();
-			general.robitEnergyPerHP = dataStream.readInt();
-			general.ELECTRICBOW_USAGE = dataStream.readInt();
 			general.energyUnit = EnergyType.values()[dataStream.readInt()];
 			general.minerSilkMultiplier = dataStream.readDouble();
 			general.blacklistIC2 = dataStream.readBoolean();
@@ -297,6 +295,9 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			mekce.atomicDisassemblerPoweredDamage = dataStream.readInt();
 			mekce.atomicDisassemblerUnpoweredDamage = dataStream.readInt();
 			mekce.atomicDisassemblerAttackPowerCost = dataStream.readInt();
+			mekce.electricBowPowerCost = dataStream.readInt();
+			mekce.teleporterBasePowerCost = dataStream.readInt();
+			mekce.robitEnergyPerHP = dataStream.readInt();
 
 			for(MachineType type : MachineType.getValidMachines())
 			{

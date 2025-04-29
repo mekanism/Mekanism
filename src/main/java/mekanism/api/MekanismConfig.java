@@ -26,14 +26,11 @@ public class MekanismConfig
 		public static int obsidianTNTDelay = 100;
 		public static int UPDATE_DELAY = 10;
 		public static int maxUpgradeMultiplier = 10;
-		public static int costTeleporter = 1000;
-		public static int robitEnergyPerHP = 1000;
 		public static int userWorldGenVersion = 0;
 		public static double ENERGY_PER_REDSTONE = 10000;
 		public static int ETHENE_BURN_TIME = 40;
 		public static int METHANE_BURN_TIME = 10;
 		public static double DISASSEMBLER_USAGE = 10;
-		public static int ELECTRICBOW_USAGE = 120;
 		public static EnergyType energyUnit = EnergyType.J;
 		public static TempType tempUnit =	TempType.K;
 		public static double TO_IC2;
@@ -94,6 +91,9 @@ public class MekanismConfig
         public static int atomicDisassemblerPoweredDamage;
         public static int atomicDisassemblerUnpoweredDamage;
         public static int atomicDisassemblerAttackPowerCost;
+		public static int electricBowPowerCost;
+		public static int teleporterBasePowerCost;
+		public static int robitEnergyPerHP;
 	}
 
 
@@ -120,7 +120,7 @@ public class MekanismConfig
 	
 	public static class machines
 	{
-		private static Map<String, Boolean> config = new HashMap<String, Boolean>();
+		private static final Map<String, Boolean> config = new HashMap<String, Boolean>();
 		
 		public static boolean isEnabled(String type)
 		{

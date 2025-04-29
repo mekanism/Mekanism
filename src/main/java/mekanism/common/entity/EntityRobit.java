@@ -49,7 +49,7 @@ import cpw.mods.fml.common.Optional.Interface;
 public class EntityRobit extends EntityCreature implements IInventory, ISustainedInventory, IEntityBreathable
 {
 	public final double MAX_ELECTRICITY = HP_ENERGY_COST * 100;
-	public static int HP_ENERGY_COST = MekanismConfig.general.robitEnergyPerHP;
+	public static int HP_ENERGY_COST = MekanismConfig.mekce.robitEnergyPerHP;
 
 	public Coord4D homeLocation;
 
