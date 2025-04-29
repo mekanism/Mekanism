@@ -1,5 +1,6 @@
 package mekanism.generators.common.block;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -565,12 +566,6 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 	}
 
 	@Override
-	public int quantityDropped(Random random)
-	{
-		return 0;
-	}
-
-	@Override
 	public TileEntity createTileEntity(World world, int metadata)
 	{
 		GeneratorType type = GeneratorType.getFromMetadata(metadata);
@@ -583,11 +578,16 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 		return null;
 	}
 
-	@Override
-	public Item getItemDropped(int i, Random random, int j)
-	{
-		return null;
-	}
+    /*This method is not used, metadata manipulation is required to create a Tile Entity.*/
+    @Override
+    public TileEntity createNewTileEntity(World world, int meta) {
+        return null;
+    }
+
+    @Override
+    public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune) {
+        return world.isAirBlock(x, y, z) ? new ArrayList<ItemStack>() : new ArrayList<ItemStack>(Arrays.asList(getPickBlock(null, world, x, y, z, null)));
+    }
 
 	@Override
 	public boolean renderAsNormalBlock()
@@ -605,13 +605,6 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 	public int getRenderType()
 	{
 		return Mekanism.proxy.CTM_RENDER_ID;
-	}
-
-	/*This method is not used, metadata manipulation is required to create a Tile Entity.*/
-	@Override
-	public TileEntity createNewTileEntity(World world, int meta)
-	{
-		return null;
 	}
 
 	@Override

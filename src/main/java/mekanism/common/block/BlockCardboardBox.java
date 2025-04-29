@@ -1,5 +1,7 @@
 package mekanism.common.block;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 import mekanism.api.MekanismConfig;
@@ -185,17 +187,10 @@ public class BlockCardboardBox extends BlockContainer
 		return world.setBlockToAir(x, y, z);
 	}
 
-	@Override
-	public int quantityDropped(Random random)
-	{
-		return 0;
-	}
-
-	@Override
-	public Item getItemDropped(int i, Random random, int j)
-	{
-		return null;
-	}
+    @Override
+    public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune) {
+        return world.isAirBlock(x, y, z) ? new ArrayList<ItemStack>() : new ArrayList<ItemStack>(Arrays.asList(getPickBlock(null, world, x, y, z, null)));
+    }
 
 	public static class BlockData
 	{

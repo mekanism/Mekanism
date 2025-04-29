@@ -1,7 +1,5 @@
 package mekanism.common.block;
 
-import java.util.Random;
-
 import mekanism.api.gas.IGasItem;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
@@ -28,6 +26,10 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import buildcraft.api.tools.IToolWrench;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -154,6 +156,11 @@ public class BlockGasTank extends BlockContainer
 		return false;
 	}
 
+    @Override
+    public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune) {
+        return world.isAirBlock(x, y, z) ? new ArrayList<ItemStack>() : new ArrayList<ItemStack>(Arrays.asList(getPickBlock(null, world, x, y, z, null)));
+    }
+
 	@Override
 	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean willHarvest)
 	{
@@ -191,18 +198,6 @@ public class BlockGasTank extends BlockContainer
 		}
 
 		return itemStack;
-	}
-
-	@Override
-	public int quantityDropped(Random random)
-	{
-		return 0;
-	}
-
-	@Override
-	public Item getItemDropped(int i, Random random, int j)
-	{
-		return null;
 	}
 
 	@Override

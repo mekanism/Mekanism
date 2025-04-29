@@ -507,7 +507,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 					continue stacks;
 				}
-				else if(ItemStack.areItemStacksEqual(testInv[i], stack) && testInv[i].stackSize+stack.stackSize <= stack.getMaxStackSize())
+				else if(InventoryUtils.areItemsStackable(testInv[i], stack) && testInv[i].stackSize+stack.stackSize <= stack.getMaxStackSize())
 				{
 					testInv[i].stackSize += stack.stackSize;
 					added++;
@@ -555,7 +555,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 					continue stacks;
 				}
-				else if(ItemStack.areItemStacksEqual(inventory[i], stack) && inventory[i].stackSize+stack.stackSize <= stack.getMaxStackSize())
+				else if(InventoryUtils.areItemsStackable(inventory[i], stack) && inventory[i].stackSize+stack.stackSize <= stack.getMaxStackSize())
 				{
 					inventory[i].stackSize += stack.stackSize;
 

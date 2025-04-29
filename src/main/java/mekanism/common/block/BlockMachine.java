@@ -738,6 +738,11 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 		return null;
 	}
 
+    @Override
+    public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune) {
+        return world.isAirBlock(x, y, z) ? new ArrayList<ItemStack>() : new ArrayList<ItemStack>(Arrays.asList(getPickBlock(null, world, x, y, z, null)));
+    }
+
 	@Override
 	public boolean renderAsNormalBlock()
 	{
@@ -748,12 +753,6 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 	public boolean isOpaqueCube()
 	{
 		return false;
-	}
-	
-	@Override
-	public Item getItemDropped(int i, Random random, int j)
-	{
-		return null;
 	}
 
 	@Override
@@ -787,8 +786,6 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 	{
 		if(!player.capabilities.isCreativeMode && !world.isRemote && willHarvest)
 		{
-			TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
-
 			float motion = 0.7F;
 			double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 			double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
