@@ -166,23 +166,6 @@ public class RadiationManager implements IRadiationManager {
         return getRadiationLevel(GlobalPos.of(entity.level().dimension(), entity.blockPosition()));
     }
 
-    /**
-     * Calculates approximately how long in ticks radiation will take to decay
-     *
-     * @param magnitude Magnitude
-     * @param source    {@code true} for if it is a {@link IRadiationSource} or an {@link IRadiationEntity} decaying
-     */
-    public long getDecayTime(double magnitude, boolean source) {
-        double decayRate = source ? MekanismConfig.general.radiationSourceDecayRate.get() : MekanismConfig.general.radiationTargetDecayRate.get();
-        long ticks = 0;
-        double localMagnitude = magnitude;
-        while (localMagnitude > minRadiationMagnitude()) {
-            localMagnitude *= decayRate;
-            ticks += SharedConstants.TICKS_PER_SECOND;
-        }
-        return ticks;
-    }
-
     @Override
     public Table<Chunk3D, GlobalPos, IRadiationSource> getRadiationSources() {
         return radiationView;
