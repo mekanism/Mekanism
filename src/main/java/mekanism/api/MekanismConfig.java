@@ -91,6 +91,9 @@ public class MekanismConfig
         public static int atomicDisassemblerPoweredDamage;
         public static int atomicDisassemblerUnpoweredDamage;
         public static int atomicDisassemblerAttackPowerCost;
+		public static int electricBowPowerCost;
+		public static int teleporterBasePowerCost;
+		public static int robitEnergyPerHP;
 	}
 
 
@@ -117,7 +120,7 @@ public class MekanismConfig
 	
 	public static class machines
 	{
-		private static Map<String, Boolean> config = new HashMap<String, Boolean>();
+		private static final Map<String, Boolean> config = new HashMap<String, Boolean>();
 		
 		public static boolean isEnabled(String type)
 		{

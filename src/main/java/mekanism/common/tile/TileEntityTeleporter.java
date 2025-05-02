@@ -11,6 +11,7 @@ import java.util.UUID;
 
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismConfig;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
@@ -50,11 +51,10 @@ import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import scala.Int;
 
 public class TileEntityTeleporter extends TileEntityElectricBlock implements IComputerIntegration, IChunkLoader, IFrequencyHandler, IRedstoneControl, ISecurityTile
 {
-	private MinecraftServer server = MinecraftServer.getServer();
+	private final MinecraftServer server = MinecraftServer.getServer();
 
 	public AxisAlignedBB teleportBounds = null;
 
@@ -67,7 +67,9 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 	public boolean prevShouldRender;
 	
 	public Frequency frequency;
-	
+
+	static final int baseCost = MekanismConfig.mekce.teleporterBasePowerCost;
+
 	public List<Frequency> publicCache = new ArrayList<Frequency>();
 	public List<Frequency> privateCache = new ArrayList<Frequency>();
 	public List<Frequency> protectedCache = new ArrayList<Frequency>();
@@ -537,17 +539,16 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 
 	public int calculateEnergyCost(Entity entity, Coord4D coords)
 	{
-		int energyCost = 1000;
+		int distance = (int)entity.getDistance(coords.xCoord, coords.yCoord, coords.zCoord);
+
+		int cost = distance * baseCost/100;
 
 		if(entity.worldObj.provider.dimensionId != coords.dimensionId)
 		{
-			energyCost+=10000;
+			cost += baseCost * 10;
 		}
 
-		int distance = (int)entity.getDistance(coords.xCoord, coords.yCoord, coords.zCoord);
-		energyCost+=(distance*10);
-
-		return energyCost;
+		return cost;
 	}
 
 	public boolean hasFrame()

@@ -3,6 +3,7 @@ package mekanism.common.item;
 import mekanism.api.Chunk3D;
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
+import mekanism.common.Tier;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,11 +13,11 @@ import net.minecraft.world.World;
 
 public class ItemSeismicReader extends ItemEnergized
 {
-	public static final double ENERGY_USAGE = 250;
+	public final double ENERGY_USAGE = MAX_ELECTRICITY/250;
 	
 	public ItemSeismicReader()
 	{
-		super(12000);
+		super(Tier.EquipmentTier.BASIC.energy);
 	}
 	
 	@Override

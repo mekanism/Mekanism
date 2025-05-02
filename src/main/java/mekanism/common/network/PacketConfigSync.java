@@ -90,6 +90,10 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
             dataStream.writeInt(mekce.atomicDisassemblerPoweredDamage);
             dataStream.writeInt(mekce.atomicDisassemblerUnpoweredDamage);
             dataStream.writeInt(mekce.atomicDisassemblerAttackPowerCost);
+			dataStream.writeInt(mekce.electricBowPowerCost);
+			dataStream.writeInt(mekce.robitEnergyPerHP);
+			dataStream.writeInt(mekce.teleporterBasePowerCost);
+
 
 			for(MachineType type : MachineType.getValidMachines())
 			{
@@ -291,6 +295,9 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			mekce.atomicDisassemblerPoweredDamage = dataStream.readInt();
 			mekce.atomicDisassemblerUnpoweredDamage = dataStream.readInt();
 			mekce.atomicDisassemblerAttackPowerCost = dataStream.readInt();
+			mekce.electricBowPowerCost = dataStream.readInt();
+			mekce.teleporterBasePowerCost = dataStream.readInt();
+			mekce.robitEnergyPerHP = dataStream.readInt();
 
 			for(MachineType type : MachineType.getValidMachines())
 			{

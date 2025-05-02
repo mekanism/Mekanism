@@ -8,6 +8,7 @@ import java.math.RoundingMode;
 import java.util.List;
 
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismConfig;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.EnergizedItemManager;
 import mekanism.api.energy.IEnergizedItem;
@@ -47,7 +48,8 @@ import cpw.mods.fml.common.Optional.Interface;
 @Interface(iface = "micdoodle8.mods.galacticraft.api.entity.IEntityBreathable", modid = "Galacticraft API")
 public class EntityRobit extends EntityCreature implements IInventory, ISustainedInventory, IEntityBreathable
 {
-	public double MAX_ELECTRICITY = 100000;
+	public final double MAX_ELECTRICITY = HP_ENERGY_COST * 100;
+	public static int HP_ENERGY_COST = MekanismConfig.mekce.robitEnergyPerHP;
 
 	public Coord4D homeLocation;
 
@@ -498,7 +500,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 		amount = applyPotionDamageCalculations(damageSource, amount);
 		float j = getHealth();
 
-		setEnergy(Math.max(0, getEnergy() - (amount*1000)));
+		setEnergy(Math.max(0, getEnergy() - (amount * HP_ENERGY_COST)));
 		func_110142_aN().func_94547_a(damageSource, j, amount);
 	}
 

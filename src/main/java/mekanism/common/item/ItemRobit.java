@@ -4,6 +4,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.MekanismConfig;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.tile.TileEntityChargepad;
@@ -22,7 +23,7 @@ public class ItemRobit extends ItemEnergized implements ISustainedInventory
 {
 	public ItemRobit()
 	{
-		super(100000);
+		super(MekanismConfig.mekce.robitEnergyPerHP * 100);
 	}
 
 	@Override
