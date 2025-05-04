@@ -2,7 +2,7 @@ package mekanism.common.network.to_client.radiation;
 
 import io.netty.buffer.ByteBuf;
 import mekanism.common.Mekanism;
-import mekanism.common.lib.radiation.RadiationManager;
+import mekanism.common.lib.radiation.ClientRadiation;
 import mekanism.common.lib.radiation.RadiationManager.LevelAndMaxMagnitude;
 import mekanism.common.network.IMekanismPacket;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -32,6 +32,6 @@ public record PacketEnvironmentalRadiationData(double radiation, double maxMagni
 
     @Override
     public void handle(IPayloadContext context) {
-        RadiationManager.get().setClientEnvironmentalRadiation(radiation, maxMagnitude);
+        ClientRadiation.setClientEnvironmentalRadiation(radiation, maxMagnitude);
     }
 }

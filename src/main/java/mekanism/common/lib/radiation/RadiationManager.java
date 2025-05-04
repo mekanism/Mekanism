@@ -21,7 +21,6 @@ import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.radiation.IRadiationSource;
 import mekanism.api.radiation.capability.IRadiationEntity;
 import mekanism.api.radiation.capability.IRadiationShielding;
-import mekanism.api.text.EnumColor;
 import mekanism.api.text.ITooltipHelper;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
@@ -32,8 +31,6 @@ import mekanism.common.lib.collection.HashList;
 import mekanism.common.network.to_client.radiation.PacketEnvironmentalRadiationData;
 import mekanism.common.network.to_client.radiation.PacketPlayerRadiationData;
 import mekanism.common.registries.MekanismDamageTypes;
-import mekanism.common.registries.MekanismParticleTypes;
-import mekanism.common.registries.MekanismSounds;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.SharedConstants;
@@ -49,7 +46,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
@@ -114,11 +110,6 @@ public class RadiationManager implements IRadiationManager {
 
     private final Map<UUID, PreviousRadiationData> playerEnvironmentalExposureMap = new Object2ObjectOpenHashMap<>();
     private final Map<UUID, PreviousRadiationData> playerExposureMap = new Object2ObjectOpenHashMap<>();
-
-    // client fields
-    private RadiationScale clientRadiationScale = RadiationScale.NONE;
-    private double clientEnvironmentalRadiation = baselineRadiation();
-    private double clientMaxMagnitude = baselineRadiation();
 
     /**
      * Note: This can and will be null on the client side
@@ -371,43 +362,6 @@ public class RadiationManager implements IRadiationManager {
         }
     }
 
-    public void setClientEnvironmentalRadiation(double radiation, double maxMagnitude) {
-        clientEnvironmentalRadiation = radiation;
-        clientMaxMagnitude = maxMagnitude;
-        clientRadiationScale = RadiationScale.get(clientEnvironmentalRadiation);
-    }
-
-    public double getClientEnvironmentalRadiation() {
-        return isRadiationEnabled() ? clientEnvironmentalRadiation : baselineRadiation();
-    }
-
-    public double getClientMaxMagnitude() {
-        return isRadiationEnabled() ? clientMaxMagnitude : baselineRadiation();
-    }
-
-    public RadiationScale getClientScale() {
-        return isRadiationEnabled() ? clientRadiationScale : RadiationScale.NONE;
-    }
-
-    public void tickClient(Player player) {
-        // terminate early if we're disabled
-        if (!isRadiationEnabled()) {
-            return;
-        }
-        // perhaps also play Geiger counter sound effect, even when not using item (similar to fallout)
-        RandomSource randomSource = player.level().getRandom();
-        if (clientRadiationScale != RadiationScale.NONE && MekanismConfig.client.radiationParticleCount.get() != 0 && randomSource.nextInt(2) == 0) {
-            int count = randomSource.nextInt(clientRadiationScale.ordinal() * MekanismConfig.client.radiationParticleCount.get());
-            int radius = MekanismConfig.client.radiationParticleRadius.get();
-            for (int i = 0; i < count; i++) {
-                double x = player.getX() + randomSource.nextDouble() * radius * 2 - radius;
-                double y = player.getY() + randomSource.nextDouble() * radius * 2 - radius;
-                double z = player.getZ() + randomSource.nextDouble() * radius * 2 - radius;
-                player.level().addParticle(MekanismParticleTypes.RADIATION.get(), x, y, z, 0, 0, 0);
-            }
-        }
-    }
-
     public void tickServer(ServerPlayer player) {
         updateEntityRadiation(player);
     }
@@ -501,10 +455,6 @@ public class RadiationManager implements IRadiationManager {
         loaded = false;
     }
 
-    public void resetClient() {
-        setClientEnvironmentalRadiation(baselineRadiation(), baselineRadiation());
-    }
-
     public void resetPlayer(UUID uuid) {
         playerEnvironmentalExposureMap.remove(uuid);
         playerExposureMap.remove(uuid);
@@ -524,75 +474,6 @@ public class RadiationManager implements IRadiationManager {
     public record LevelAndMaxMagnitude(double level, double maxMagnitude) {
 
         private static final LevelAndMaxMagnitude BASELINE = new LevelAndMaxMagnitude(RadiationManager.BASELINE, RadiationManager.BASELINE);
-    }
-
-    public enum RadiationScale {
-        NONE,
-        LOW,
-        MEDIUM,
-        ELEVATED,
-        HIGH,
-        EXTREME;
-
-        /**
-         * Get the corresponding RadiationScale from an equivalent dose rate (Sv/h)
-         */
-        public static RadiationScale get(double magnitude) {
-            if (magnitude < 0.00001) { // 10 uSv/h
-                return NONE;
-            } else if (magnitude < 0.001) { // 1 mSv/h
-                return LOW;
-            } else if (magnitude < 0.1) { // 100 mSv/h
-                return MEDIUM;
-            } else if (magnitude < 10) { // 100 Sv/h
-                return ELEVATED;
-            } else if (magnitude < 100) {
-                return HIGH;
-            }
-            return EXTREME;
-        }
-
-        /**
-         * For both Sv and Sv/h.
-         */
-        public static EnumColor getSeverityColor(double magnitude) {
-            if (magnitude <= IRadiationManager.INSTANCE.baselineRadiation()) {
-                return EnumColor.BRIGHT_GREEN;
-            } else if (magnitude < 0.00001) { // 10 uSv/h
-                return EnumColor.GRAY;
-            } else if (magnitude < 0.001) { // 1 mSv/h
-                return EnumColor.YELLOW;
-            } else if (magnitude < 0.1) { // 100 mSv/h
-                return EnumColor.ORANGE;
-            } else if (magnitude < 10) { // 100 Sv/h
-                return EnumColor.RED;
-            }
-            return EnumColor.DARK_RED;
-        }
-
-        private static final double LOG_BASELINE = Math.log10(MIN_MAGNITUDE);
-        private static final double LOG_MAX = Math.log10(100); // 100 Sv
-        private static final double SCALE = LOG_MAX - LOG_BASELINE;
-
-        /**
-         * Gets the severity of a dose (between 0 and 1) from a provided dosage in Sv.
-         */
-        public static double getScaledDoseSeverity(double magnitude) {
-            if (magnitude < IRadiationManager.INSTANCE.minRadiationMagnitude()) {
-                return 0;
-            }
-            return Math.min(1, Math.max(0, (-LOG_BASELINE + Math.log10(magnitude)) / SCALE));
-        }
-
-        public SoundEvent getSoundEvent() {
-            return switch (this) {
-                case LOW -> MekanismSounds.GEIGER_SLOW.get();
-                case MEDIUM -> MekanismSounds.GEIGER_MEDIUM.get();
-                case ELEVATED, HIGH -> MekanismSounds.GEIGER_ELEVATED.get();
-                case EXTREME -> MekanismSounds.GEIGER_FAST.get();
-                default -> null;
-            };
-        }
     }
 
     private record PreviousRadiationData(double magnitude, int power, double base) {

@@ -2,7 +2,7 @@ package mekanism.client.render.hud;
 
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
+import mekanism.common.lib.radiation.RadiationScale;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.DeltaTracker;

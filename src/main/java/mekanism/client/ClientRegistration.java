@@ -158,7 +158,7 @@ import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.item.block.machine.ItemBlockFluidTank;
 import mekanism.common.lib.FieldReflectionHelper;
-import mekanism.common.lib.radiation.RadiationManager;
+import mekanism.common.lib.radiation.ClientRadiation;
 import mekanism.common.registration.INamedEntry;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.ItemRegistryObject;
@@ -281,7 +281,7 @@ public class ClientRegistration {
 
             ClientRegistrationUtil.setPropertyOverride(MekanismItems.GEIGER_COUNTER, Mekanism.rl("radiation"), (stack, world, entity, seed) -> {
                 if (entity instanceof Player) {
-                    return RadiationManager.get().getClientScale().ordinal();
+                    return ClientRadiation.getClientScale().ordinal();
                 }
                 return 0;
             });
