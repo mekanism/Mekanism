@@ -322,7 +322,6 @@ public class Mekanism {
 
         //Reset consistent managers
         QIOGlobalItemLookup.INSTANCE.reset();
-        RadiationManager.get().reset();
         PlayerExposure.clear();
         MultiblockManager.reset();
         FrequencyManager.reset();

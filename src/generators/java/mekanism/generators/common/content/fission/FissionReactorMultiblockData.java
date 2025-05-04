@@ -53,7 +53,6 @@ import mekanism.generators.common.content.fission.FissionReactorValidator.Formed
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorPort;
 import net.minecraft.SharedConstants;
-import net.minecraft.core.GlobalPos;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -345,7 +344,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
                                    getTankRadioactivityAndDump(coolantTank.getChemicalTank()) + getTankRadioactivityAndDump(heatedCoolantTank);
                 radiation *= MekanismGeneratorsConfig.generators.fissionMeltdownRadiationMultiplier.get();
                 //When the meltdown actually happens, release radiation into the atmosphere
-                IRadiationManager.INSTANCE.radiate(GlobalPos.of(world.dimension(), getBounds().getCenter()), radiation);
+                IRadiationManager.INSTANCE.radiate(world, getBounds().getCenter(), radiation);
             }
             //Dump the heated coolant as "loss" that didn't survive the meltdown
             heatedCoolantTank.setEmpty();
@@ -486,7 +485,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
                 //Note: We query the radioactivity from the chemical instead of the stack so that we don't multiply it by the stack's size
                 double wasteRadioactivity = wasteToAdd.getChemical().getRadioactivity();
                 if (wasteRadioactivity > 0) {
-                    IRadiationManager.INSTANCE.radiate(GlobalPos.of(world.dimension(), getBounds().getCenter()), leftoverWaste * wasteRadioactivity);
+                    IRadiationManager.INSTANCE.radiate(world, getBounds().getCenter(), leftoverWaste * wasteRadioactivity);
                 }
             }
         }

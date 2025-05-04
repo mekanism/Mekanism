@@ -3,7 +3,6 @@ package mekanism.common.lib.radiation;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.common.Mekanism;
@@ -32,14 +31,13 @@ public class MeltdownLevelData implements INBTSerializable<ListTag> {
         meltdowns.add(new Meltdown(minPos, maxPos, magnitude, chance, radius, multiblockID));
     }
 
-    //todo de-optional when available
     @SubscribeEvent
     public static void tickWorld(LevelTickEvent.Post event) {
         Level level = event.getLevel();
         if (level instanceof ServerLevel serverLevel) {
-            Optional<MeltdownLevelData> existingData = level.getExistingData(MekanismAttachmentTypes.MELTDOWN_DATA);
-            if (existingData.isPresent()) {
-                existingData.get().tick(serverLevel);
+            MeltdownLevelData existingData = level.getExistingDataOrNull(MekanismAttachmentTypes.MELTDOWN_DATA);
+            if (existingData != null) {
+                existingData.tick(serverLevel);
             }
         }
     }

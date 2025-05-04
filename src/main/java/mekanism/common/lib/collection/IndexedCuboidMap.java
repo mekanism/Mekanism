@@ -1,11 +1,17 @@
 package mekanism.common.lib.collection;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
+import java.util.function.Predicate;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.util.ChunkUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
@@ -16,12 +22,13 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Stores a map of BoundingBox+Centre to VALUE, indexed by chunk for quickly determining relevant boxes to scan.
  * <p>
- * Values MUST support hashcode & equals.
+ * Values MUST support equals.
  */
+@NothingNullByDefault
 public class IndexedCuboidMap<VALUE> {
 
     private final BiMultiLongmap<CentredBoundingBox> chunkIndex = new BiMultiLongmap<>();
-    private final BiMap<CentredBoundingBox, VALUE> valueMap = HashBiMap.create();
+    private final Map<CentredBoundingBox, VALUE> valueMap = new HashMap<>();
 
     /**
      * Add a value to the map with a fixed radius in all axes
@@ -55,6 +62,9 @@ public class IndexedCuboidMap<VALUE> {
     public void track(VALUE value, BlockPos center, int minX, int minY, int minZ, int maxX, int maxY, int maxZ){
 
         CentredBoundingBox box = new CentredBoundingBox(center, minX, minY, minZ, maxX, maxY, maxZ);
+        if (!box.isInside(center)) {
+            throw new IllegalArgumentException("center must be within the box");
+        }
         VALUE previous = valueMap.put(box, value);
         if (previous != null) {
             return;//chunks should already be baked
@@ -77,8 +87,37 @@ public class IndexedCuboidMap<VALUE> {
      * @param value value to remove
      */
     public void remove(VALUE value) {
-        CentredBoundingBox box = valueMap.inverse().remove(value);
-        chunkIndex.removeValue(box);
+        List<CentredBoundingBox> toRemove = new ArrayList<>(valueMap.size());
+        for (Entry<CentredBoundingBox, VALUE> valueEntry : valueMap.entrySet()) {
+            if (valueEntry.getValue().equals(value)) {
+                toRemove.add(valueEntry.getKey());
+            }
+        }
+        for (CentredBoundingBox box : toRemove) {
+            valueMap.remove(box);
+            chunkIndex.removeValue(box);
+        }
+    }
+
+    /**
+     * Remove values from the map with a specified centre pos
+     *
+     * @param center centre position to remove
+     *
+     * @return true if a value was removed
+     */
+    public boolean removeAt(BlockPos center) {
+        List<CentredBoundingBox> toRemove = new ArrayList<>(valueMap.size());
+        for (Entry<CentredBoundingBox, VALUE> valueEntry : valueMap.entrySet()) {
+            if (valueEntry.getKey().center.equals(center)) {
+                toRemove.add(valueEntry.getKey());
+            }
+        }
+        for (CentredBoundingBox box : toRemove) {
+            valueMap.remove(box);
+            chunkIndex.removeValue(box);
+        }
+        return !toRemove.isEmpty();
     }
 
     /**
@@ -100,6 +139,27 @@ public class IndexedCuboidMap<VALUE> {
                 return null;
             }
         };
+    }
+
+    /**
+     * Finds the FIRST value with a centre position, regardless of its box (aside from searching with it).
+     *
+     * @param centre the centre pos to check
+     *
+     * @return the first value found, or null
+     */
+    @Nullable
+    public VALUE findFirstAt(BlockPos centre) {
+        Set<CentredBoundingBox> values = chunkIndex.getValues(ChunkPos.asLong(centre));
+        if (values == null) {
+            return null;
+        }
+        for (CentredBoundingBox box : values) {
+            if (centre.equals(box.center)) {
+                return Objects.requireNonNull(valueMap.get(box), "Box existed with no value??");
+            }
+        }
+        return null;
     }
 
     /**
@@ -138,6 +198,26 @@ public class IndexedCuboidMap<VALUE> {
      */
     public Collection<VALUE> values() {
         return valueMap.values();
+    }
+
+    public boolean isEmpty() {
+        return valueMap.isEmpty();
+    }
+
+    public void removeIf(Predicate<VALUE> predicate) {
+        Iterator<Entry<CentredBoundingBox, VALUE>> iterator = valueMap.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Entry<CentredBoundingBox, VALUE> entry = iterator.next();
+            if (predicate.test(entry.getValue())) {
+                iterator.remove();
+                chunkIndex.removeValue(entry.getKey());
+            }
+        }
+    }
+
+    public void clear() {
+        this.valueMap.clear();
+        this.chunkIndex.clear();
     }
 
     /**

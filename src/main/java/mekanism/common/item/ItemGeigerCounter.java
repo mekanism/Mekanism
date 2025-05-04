@@ -5,7 +5,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.radiation.RadiationManager;
-import mekanism.common.lib.radiation.RadiationManager.LevelAndMaxMagnitude;
+import mekanism.common.lib.radiation.LevelAndMaxMagnitude;
 import mekanism.common.lib.radiation.RadiationScale;
 import mekanism.common.lib.radiation.RadiationUtil;
 import mekanism.common.util.UnitDisplayUtils;

@@ -161,7 +161,7 @@ public class ChemicalNetwork extends DynamicBufferedNetwork<IChemicalHandler, Ch
 
     protected void disperse(@NotNull PressurizedTube triggerTransmitter, ChemicalStack stack) {
         // Handle radiation leakage
-        IRadiationManager.INSTANCE.dumpRadiation(triggerTransmitter.getTileGlobalPos(), stack);
+        IRadiationManager.INSTANCE.dumpRadiation(triggerTransmitter.getLevel(), triggerTransmitter.getBlockPos(), stack);
     }
 
     private long tickEmit(@NotNull ChemicalStack stack) {

@@ -172,7 +172,6 @@ public class CommonWorldTickHandler {
             FrequencyManager.load();
             MultiblockManager.createOrLoadAll();
             QIOGlobalItemLookup.INSTANCE.createOrLoad();
-            RadiationManager.get().createOrLoad();
         }
     }
 
@@ -180,7 +179,6 @@ public class CommonWorldTickHandler {
     public void onTick(ServerTickEvent.Post event) {
         boolean tickingNormally = event.getServer().tickRateManager().runsNormally();
         FrequencyManager.tick(tickingNormally);
-        RadiationManager.get().tickServer(tickingNormally);
     }
 
     @SubscribeEvent

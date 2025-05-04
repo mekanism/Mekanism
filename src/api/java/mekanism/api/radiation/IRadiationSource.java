@@ -1,5 +1,6 @@
 package mekanism.api.radiation;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import org.jetbrains.annotations.NotNull;
 
@@ -12,6 +13,9 @@ public interface IRadiationSource {
      * Gets the location of this {@link IRadiationSource}.
      */
     @NotNull
+    BlockPos getPosition();
+
+    @Deprecated(forRemoval = true)
     GlobalPos getPos();
 
     /**

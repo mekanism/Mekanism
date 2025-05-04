@@ -8,13 +8,19 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
+import org.jetbrains.annotations.ApiStatus.Internal;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * The RadiationManager handles radiation across all in-game dimensions. Radiation exposure levels are provided in _sieverts, defining a rate of accumulation of
@@ -98,7 +104,17 @@ public interface IRadiationManager {
      *
      * @return radiation level (in Sv/h).
      */
-    double getRadiationLevel(GlobalPos pos);
+    double getRadiationLevel(Level level, BlockPos pos);
+
+    /** @deprecated Replace with {@link #getRadiationLevel(Level, BlockPos)} */
+    @Deprecated(forRemoval = true)
+    default double getRadiationLevel(GlobalPos pos) {
+        Level level = backCompat$getLevel(pos.dimension());
+        if (level != null) {
+            return getRadiationLevel(level, pos.pos());
+        }
+        return baselineRadiation();
+    }
 
     /**
      * Get the radiation level (in Sv/h) at an entity's location. To get the radiation level of an entity use
@@ -114,22 +130,38 @@ public interface IRadiationManager {
      * Gets an unmodifiable table of the radiation sources tracked by this manager. This table keeps track of radiation sources on both a chunk and position based level.
      *
      * @return Unmodifiable table of radiation sources.
+     * @deprecated please tell us how you use this so we can provide an alternative
      */
+    @Deprecated(forRemoval = true)
     Table<Chunk3D, GlobalPos, IRadiationSource> getRadiationSources();
 
     /**
      * Removes all radiation sources in a given chunk.
-     *
-     * @param chunk Chunk to clear radiation sources of.
      */
-    void removeRadiationSources(Chunk3D chunk);
+    void removeRadiationSources(Level level, int chunkX, int chunkZ);
+
+    @Deprecated(forRemoval = true)
+    default void removeRadiationSources(Chunk3D chunk) {
+        Level level = backCompat$getLevel(chunk.dimension);
+        if (level != null) {
+            removeRadiationSources(level, chunk.x, chunk.z);
+        }
+    }
 
     /**
      * Removes the radiation source at the given location.
      *
      * @param pos Location.
      */
-    void removeRadiationSource(GlobalPos pos);
+    void removeRadiationSource(Level level, BlockPos pos);
+
+    @Deprecated(forRemoval = true)
+    default void removeRadiationSource(GlobalPos pos) {
+        Level level = backCompat$getLevel(pos.dimension());
+        if (level != null) {
+            removeRadiationSource(level, pos.pos());
+        }
+    }
 
     /**
      * Applies a radiation source (Sv) of the given magnitude to a given location.
@@ -137,7 +169,15 @@ public interface IRadiationManager {
      * @param pos       Location to release radiation.
      * @param magnitude Amount of radiation to apply (Sv).
      */
-    void radiate(GlobalPos pos, double magnitude);
+    void radiate(Level level, BlockPos pos, double magnitude);
+
+    @Deprecated(forRemoval = true)
+    default void radiate(GlobalPos pos, double magnitude) {
+        Level level = backCompat$getLevel(pos.dimension());
+        if (level != null) {
+            radiate(level, pos.pos(), magnitude);
+        }
+    }
 
     /**
      * Applies an additional magnitude of radiation (Sv) to the given entity after taking into account the radiation resistance provided to the entity by its armor.
@@ -159,7 +199,15 @@ public interface IRadiationManager {
      * @throws RuntimeException if {@code clearRadioactive = true} and the passed in handler does not expect to have
      *                          {@link IChemicalHandler#setChemicalInTank(int, ChemicalStack)} called wth an empty stack.
      */
-    void dumpRadiation(GlobalPos pos, IChemicalHandler chemicalHandler, boolean clearRadioactive);
+    void dumpRadiation(Level level, BlockPos pos, IChemicalHandler chemicalHandler, boolean clearRadioactive);
+
+    @Deprecated(forRemoval = true)
+    default void dumpRadiation(GlobalPos pos, IChemicalHandler chemicalHandler, boolean clearRadioactive) {
+        Level level = backCompat$getLevel(pos.dimension());
+        if (level != null) {
+            dumpRadiation(level, pos.pos(), chemicalHandler, clearRadioactive);
+        }
+    }
 
     /**
      * Helper to "dump" any radioactive chemicals stored in the given chemical tanks.
@@ -168,8 +216,15 @@ public interface IRadiationManager {
      * @param chemicalTanks    Tanks to process.
      * @param clearRadioactive {@code true} to clear any chemical tanks that have radioactive substances.
      */
-    void dumpRadiation(GlobalPos pos, List<IChemicalTank> chemicalTanks, boolean clearRadioactive);
+    void dumpRadiation(Level level, BlockPos pos, List<IChemicalTank> chemicalTanks, boolean clearRadioactive);
 
+    @Deprecated(forRemoval = true)
+    default void dumpRadiation(GlobalPos pos, List<IChemicalTank> chemicalTanks, boolean clearRadioactive) {
+        Level level = backCompat$getLevel(pos.dimension());
+        if (level != null) {
+            dumpRadiation(level, pos.pos(), chemicalTanks, clearRadioactive);
+        }
+    }
     /**
      * Checks if the given {@link ChemicalStack} is radioactive and if it is dumps a proportionate amount of radiation at the given location.
      *
@@ -180,5 +235,24 @@ public interface IRadiationManager {
      *
      * @apiNote If radiation is disabled this may still return {@code true}.
      */
-    boolean dumpRadiation(GlobalPos pos, ChemicalStack stack);
+    boolean dumpRadiation(Level level, BlockPos pos, ChemicalStack stack);
+
+    @Deprecated(forRemoval = true)
+    default boolean dumpRadiation(GlobalPos pos, ChemicalStack stack) {
+        Level level = backCompat$getLevel(pos.dimension());
+        if (level != null) {
+            return dumpRadiation(level, pos.pos(), stack);
+        }
+        return false;
+    }
+
+    @Internal
+    @Nullable
+    static Level backCompat$getLevel(ResourceKey<Level> dimension) {
+        MinecraftServer currentServer = ServerLifecycleHooks.getCurrentServer();
+        if (currentServer == null) {
+            return null;
+        }
+        return currentServer.getLevel(dimension);
+    }
 }

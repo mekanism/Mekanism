@@ -7,7 +7,6 @@ import mekanism.api.math.MathUtils;
 import mekanism.api.radiation.capability.IRadiationEntity;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.lib.radiation.RadiationManager.LevelAndMaxMagnitude;
 import mekanism.common.network.to_client.radiation.PacketEnvironmentalRadiationData;
 import mekanism.common.network.to_client.radiation.PacketPlayerRadiationData;
 import mekanism.common.util.MekanismUtils;

@@ -9,7 +9,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.curios.CuriosIntegration;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.SharedConstants;
-import net.minecraft.core.GlobalPos;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -63,7 +63,7 @@ public class RadiationUtil {
         return resistance;
     }
 
-    public static double computeExposure(GlobalPos pos, RadiationSource source) {
-        return source.getMagnitude() / Math.max(1, pos.pos().distSqr(source.getPos().pos()));
+    public static double computeExposure(RadiationSource source, BlockPos blockPos) {
+        return source.getMagnitude() / Math.max(1, blockPos.distSqr(source.getPosition()));
     }
 }

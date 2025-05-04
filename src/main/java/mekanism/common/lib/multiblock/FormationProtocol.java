@@ -20,7 +20,6 @@ import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -127,8 +126,7 @@ public class FormationProtocol<T extends MultiblockData> {
                         radiation += rejectedChemical.getRadioactivity();
                     }
                     if (radiation > 0) {
-                        GlobalPos dumpLocation = GlobalPos.of(world.dimension(), structureFound.getBounds().getCenter());
-                        IRadiationManager.INSTANCE.radiate(dumpLocation, radiation);
+                        IRadiationManager.INSTANCE.radiate(world, structureFound.getBounds().getCenter(), radiation);
                     }
                 }
             }
