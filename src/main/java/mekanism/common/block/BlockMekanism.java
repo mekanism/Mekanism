@@ -1,6 +1,5 @@
 package mekanism.common.block;
 
-import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeGui;
@@ -14,6 +13,7 @@ import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.lib.radiation.Meltdown.MeltdownExplosion;
+import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.lib.security.ISecurityTile;
 import mekanism.common.network.to_client.security.PacketSyncSecurity;
 import mekanism.common.registries.MekanismParticleTypes;
@@ -237,7 +237,7 @@ public abstract class BlockMekanism extends Block {
         }
         //Call super variant of player relative hardness to get default
         float speed = super.getDestroyProgress(state, player, blockGetter, pos);
-        if (IRadiationManager.INSTANCE.isRadiationEnabled() && tile instanceof ITileRadioactive radioactiveTile && radioactiveTile.getRadiationScale() > 0) {
+        if (RadiationManager.isGlobalRadiationEnabled() && tile instanceof ITileRadioactive radioactiveTile && radioactiveTile.getRadiationScale() > 0) {
             //Our tile has some radioactive substance in it; slow down breaking it
             //Note: Technically our getRadiationScale impls validate that radiation is enabled, but we do so here as well
             // to make intentions clearer
@@ -249,7 +249,7 @@ public abstract class BlockMekanism extends Block {
     @Override
     public void animateTick(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull RandomSource random) {
         super.animateTick(state, world, pos, random);
-        if (IRadiationManager.INSTANCE.isRadiationEnabled()) {//Skip getting the tile if radiation is disabled in the config
+        if (RadiationManager.isGlobalRadiationEnabled()) {//Skip getting the tile if radiation is disabled in the config
             BlockEntity tile = WorldUtils.getTileEntity(world, pos);
             if (tile instanceof ITileRadioactive radioactiveTile) {
                 int count = radioactiveTile.getRadiationParticleCount();

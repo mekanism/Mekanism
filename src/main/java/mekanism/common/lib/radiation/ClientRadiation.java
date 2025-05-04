@@ -18,20 +18,20 @@ public class ClientRadiation {
     }
 
     public static double getClientEnvironmentalRadiation() {
-        return RadiationManager.get().isRadiationEnabled() ? clientEnvironmentalRadiation : RadiationManager.get().baselineRadiation();
+        return RadiationManager.isGlobalRadiationEnabled() ? clientEnvironmentalRadiation : RadiationManager.get().baselineRadiation();
     }
 
     public static double getClientMaxMagnitude() {
-        return RadiationManager.get().isRadiationEnabled() ? clientMaxMagnitude : RadiationManager.get().baselineRadiation();
+        return RadiationManager.isGlobalRadiationEnabled() ? clientMaxMagnitude : RadiationManager.get().baselineRadiation();
     }
 
     public static RadiationScale getClientScale() {
-        return RadiationManager.get().isRadiationEnabled() ? clientRadiationScale : RadiationScale.NONE;
+        return RadiationManager.isGlobalRadiationEnabled() ? clientRadiationScale : RadiationScale.NONE;
     }
 
     public static void tickClient(Player player) {
         // terminate early if we're disabled
-        if (!RadiationManager.get().isRadiationEnabled()) {
+        if (!RadiationManager.isGlobalRadiationEnabled()) {
             return;
         }
         // perhaps also play Geiger counter sound effect, even when not using item (similar to fallout)

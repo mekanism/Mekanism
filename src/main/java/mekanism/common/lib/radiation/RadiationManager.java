@@ -119,6 +119,10 @@ public class RadiationManager implements IRadiationManager {
 
     @Override
     public boolean isRadiationEnabled() {
+        return isGlobalRadiationEnabled();
+    }
+
+    public static boolean isGlobalRadiationEnabled() {
         //Get the default value for cases when we may call this early such as via chemical attributes
         return MekanismConfig.general.radiationEnabled.getOrDefault();
     }
@@ -229,7 +233,7 @@ public class RadiationManager implements IRadiationManager {
 
     @Override
     public void radiate(GlobalPos pos, double magnitude) {
-        if (!isRadiationEnabled()) {
+        if (!isGlobalRadiationEnabled()) {
             return;
         }
         Map<GlobalPos, RadiationSource> radiationSourceMap = radiationTable.row(new Chunk3D(pos));
@@ -246,7 +250,7 @@ public class RadiationManager implements IRadiationManager {
 
     @Override
     public void radiate(LivingEntity entity, double magnitude) {
-        if (!isRadiationEnabled()) {
+        if (!isGlobalRadiationEnabled()) {
             return;
         }
         if (!(entity instanceof Player player) || MekanismUtils.isPlayingMode(player)) {
@@ -279,7 +283,7 @@ public class RadiationManager implements IRadiationManager {
     public boolean dumpRadiation(GlobalPos pos, ChemicalStack stack) {
         //Note: We only attempt to dump and mark that we did if radiation is enabled in order to allow persisting radioactive
         // substances when radiation is disabled
-        if (isRadiationEnabled() && !stack.isEmpty()) {
+        if (isGlobalRadiationEnabled() && !stack.isEmpty()) {
             double radioactivity = stack.getRadioactivity();
             if (radioactivity > 0) {
                 radiate(pos, radioactivity);
@@ -368,7 +372,7 @@ public class RadiationManager implements IRadiationManager {
 
     private void updateEntityRadiation(LivingEntity entity) {
         // terminate early if we're disabled
-        if (!isRadiationEnabled()) {
+        if (!isGlobalRadiationEnabled()) {
             return;
         }
         IRadiationEntity radiationCap = entity.getCapability(Capabilities.RADIATION_ENTITY);
@@ -401,7 +405,7 @@ public class RadiationManager implements IRadiationManager {
 
     public void tickServerWorld(ServerLevel world) {
         // terminate early if we're disabled or the world isn't ticking
-        if (!isRadiationEnabled() || !world.tickRateManager().runsNormally()) {
+        if (!isGlobalRadiationEnabled() || !world.tickRateManager().runsNormally()) {
             return;
         }
         if (!loaded) {
@@ -411,7 +415,7 @@ public class RadiationManager implements IRadiationManager {
 
     public void tickServer(boolean tickingNormally) {
         // terminate early if we're disabled or there is no radiation spots
-        if (!isRadiationEnabled() || radiationTable.isEmpty()) {
+        if (!isGlobalRadiationEnabled() || radiationTable.isEmpty()) {
             return;
         }
         // each tick, there's a 1/20 chance we'll decay radiation sources (averages to 1 decay operation per second)
@@ -519,7 +523,7 @@ public class RadiationManager implements IRadiationManager {
         public void setManagerAndSync(RadiationManager m) {
             manager = m;
             // don't sync the manager if radiation has been disabled
-            if (IRadiationManager.INSTANCE.isRadiationEnabled()) {
+            if (RadiationManager.isGlobalRadiationEnabled()) {
                 for (RadiationSource source : loadedSources) {
                     manager.radiationTable.put(new Chunk3D(source.getPos()), source.getPos(), source);
                 }
