@@ -27,7 +27,7 @@ import mekanism.common.item.gear.ItemScubaMask;
 import mekanism.common.item.gear.ItemScubaTank;
 import mekanism.common.item.interfaces.IJetpackItem;
 import mekanism.common.item.interfaces.IJetpackItem.JetpackMode;
-import mekanism.common.lib.radiation.RadiationManager;
+import mekanism.common.lib.radiation.PlayerExposure;
 import mekanism.common.registries.MekanismDamageTypes;
 import mekanism.common.registries.MekanismGameEvents;
 import mekanism.common.registries.MekanismModules;
@@ -99,7 +99,7 @@ public class CommonPlayerTickHandler {
     private void tickEnd(Player player) {
         Mekanism.playerState.updateStepAssist(player);
         if (player instanceof ServerPlayer serverPlayer) {
-            RadiationManager.get().tickServer(serverPlayer);
+            PlayerExposure.tickServer(serverPlayer);
         }
 
         ItemStack jetpack = IJetpackItem.getActiveJetpack(player);

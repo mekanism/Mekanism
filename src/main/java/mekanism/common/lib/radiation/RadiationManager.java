@@ -3,35 +3,25 @@ package mekanism.common.lib.radiation;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 import mekanism.api.Chunk3D;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.math.MathUtils;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.radiation.IRadiationSource;
 import mekanism.api.radiation.capability.IRadiationEntity;
-import mekanism.api.radiation.capability.IRadiationShielding;
-import mekanism.api.text.ITooltipHelper;
-import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.integration.curios.CuriosIntegration;
 import mekanism.common.lib.MekanismSavedData;
 import mekanism.common.lib.collection.HashList;
-import mekanism.common.network.to_client.radiation.PacketEnvironmentalRadiationData;
-import mekanism.common.network.to_client.radiation.PacketPlayerRadiationData;
 import mekanism.common.registries.MekanismDamageTypes;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.GlobalPos;
@@ -43,24 +33,14 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.event.tick.EntityTickEvent;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -85,7 +65,7 @@ import org.jetbrains.annotations.Nullable;
  * <li>~500 Sv/h: irradiation inside primary containment vessel of Fukushima power station (at this rate, it takes 30 seconds to accumulate a median lethal dose)</li>
  * </ul>
  *
- * @apiNote Do not instantiate this class directly as it will be done via the service loader. Instead, access instances of this via {@link ITooltipHelper#INSTANCE}
+ * @apiNote Do not instantiate this class directly as it will be done via the service loader. Instead, access instances of this via {@link IRadiationManager#INSTANCE}
  */
 @NothingNullByDefault
 public class RadiationManager implements IRadiationManager {
@@ -107,9 +87,6 @@ public class RadiationManager implements IRadiationManager {
 
     private final Table<Chunk3D, GlobalPos, RadiationSource> radiationTable = HashBasedTable.create();
     private final Table<Chunk3D, GlobalPos, IRadiationSource> radiationView = Tables.unmodifiableTable(radiationTable);
-
-    private final Map<UUID, PreviousRadiationData> playerEnvironmentalExposureMap = new Object2ObjectOpenHashMap<>();
-    private final Map<UUID, PreviousRadiationData> playerExposureMap = new Object2ObjectOpenHashMap<>();
 
     /**
      * Note: This can and will be null on the client side
@@ -172,7 +149,7 @@ public class RadiationManager implements IRadiationManager {
         if (!chunkSources.isEmpty()) {
             chunkSources.clear();
             markDirty();
-            updateClientRadiationForAll(chunk.dimension);
+            PlayerExposure.updateClientRadiationForAll(chunk.dimension);
         }
     }
 
@@ -182,7 +159,7 @@ public class RadiationManager implements IRadiationManager {
         if (radiationTable.contains(chunk, pos)) {
             radiationTable.remove(chunk, pos);
             markDirty();
-            updateClientRadiationForAll(pos.dimension());
+            PlayerExposure.updateClientRadiationForAll(pos.dimension());
         }
     }
 
@@ -222,7 +199,7 @@ public class RadiationManager implements IRadiationManager {
                 for (Map.Entry<GlobalPos, RadiationSource> entry : radiationTable.row(chunk).entrySet()) {
                     if (entry.getKey().pos().distSqr(pos.pos()) <= maxRange) {
                         RadiationSource source = entry.getValue();
-                        level += computeExposure(pos, source);
+                        level += RadiationUtil.computeExposure(pos, source);
                         maxMagnitude = Math.max(maxMagnitude, source.getMagnitude());
                     }
                 }
@@ -245,7 +222,7 @@ public class RadiationManager implements IRadiationManager {
         }
         markDirty();
         //Update radiation levels immediately
-        updateClientRadiationForAll(pos.dimension());
+        PlayerExposure.updateClientRadiationForAll(pos.dimension());
     }
 
     @Override
@@ -256,7 +233,7 @@ public class RadiationManager implements IRadiationManager {
         if (!(entity instanceof Player player) || MekanismUtils.isPlayingMode(player)) {
             IRadiationEntity radiationEntity = entity.getCapability(Capabilities.RADIATION_ENTITY);
             if (radiationEntity != null) {
-                radiationEntity.radiate(magnitude * (1 - Math.min(1, getRadiationResistance(entity))));
+                radiationEntity.radiate(magnitude * (1 - Math.min(1, RadiationUtil.getRadiationResistance(entity))));
             }
         }
     }
@@ -297,109 +274,7 @@ public class RadiationManager implements IRadiationManager {
         if (!radiationTable.isEmpty()) {
             radiationTable.clear();
             markDirty();
-            updateClientRadiationForAll();
-        }
-    }
-
-    private double computeExposure(GlobalPos pos, RadiationSource source) {
-        return source.getMagnitude() / Math.max(1, pos.pos().distSqr(source.getPos().pos()));
-    }
-
-    private double getRadiationResistance(LivingEntity entity) {
-        double resistance = 0;
-        for (EquipmentSlot type : EnumUtils.ARMOR_SLOTS) {
-            ItemStack stack = entity.getItemBySlot(type);
-            if (!stack.isEmpty()) {
-                IRadiationShielding shielding = stack.getCapability(Capabilities.RADIATION_SHIELDING);
-                if (shielding != null) {
-                    resistance += shielding.getRadiationShielding();
-                }
-            }
-        }
-        if (resistance < 1 && Mekanism.hooks.curios.isLoaded()) {
-            IItemHandler handler = CuriosIntegration.getCuriosInventory(entity);
-            if (handler != null) {
-                for (int i = 0, slots = handler.getSlots(); i < slots; i++) {
-                    ItemStack stack = handler.getStackInSlot(i);
-                    IRadiationShielding shielding = stack.getCapability(Capabilities.RADIATION_SHIELDING);
-                    if (shielding != null) {
-                        resistance += shielding.getRadiationShielding();
-                        if (resistance >= 1) {
-                            return 1;
-                        }
-                    }
-                }
-            }
-        }
-        return resistance;
-    }
-
-    private void updateClientRadiationForAll(ResourceKey<Level> dimension) {
-        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-        if (server != null) {
-            //Validate it is not null in case we somehow are being called from the client or at some other unexpected time
-            for (ServerPlayer player : server.getPlayerList().getPlayers()) {
-                if (player.level().dimension() == dimension) {
-                    updateClientRadiation(player);
-                }
-            }
-        }
-    }
-
-    private void updateClientRadiationForAll() {
-        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-        if (server != null) {
-            //Validate it is not null in case we somehow are being called from the client or at some other unexpected time
-            for (ServerPlayer player : server.getPlayerList().getPlayers()) {
-                updateClientRadiation(player);
-            }
-        }
-    }
-
-    public void updateClientRadiation(ServerPlayer player) {
-        LevelAndMaxMagnitude levelAndMaxMagnitude = getRadiationLevelAndMaxMagnitude(player);
-        PreviousRadiationData previousRadiationData = playerEnvironmentalExposureMap.get(player.getUUID());
-        PreviousRadiationData relevantData = PreviousRadiationData.compareTo(previousRadiationData, levelAndMaxMagnitude.level());
-        if (relevantData != null) {
-            playerEnvironmentalExposureMap.put(player.getUUID(), relevantData);
-            PacketDistributor.sendToPlayer(player, new PacketEnvironmentalRadiationData(levelAndMaxMagnitude));
-        }
-    }
-
-    public void tickServer(ServerPlayer player) {
-        updateEntityRadiation(player);
-    }
-
-    private void updateEntityRadiation(LivingEntity entity) {
-        // terminate early if we're disabled
-        if (!isGlobalRadiationEnabled()) {
-            return;
-        }
-        IRadiationEntity radiationCap = entity.getCapability(Capabilities.RADIATION_ENTITY);
-        // each tick, there is a 1/20 chance we will apply radiation to each player
-        // this helps distribute the CPU load across ticks, and makes exposure slightly inconsistent
-        if (entity.level().getRandom().nextInt(SharedConstants.TICKS_PER_SECOND) == 0) {
-            double magnitude = getRadiationLevel(entity);
-            if (magnitude > baselineRadiation() && (!(entity instanceof Player player) || MekanismUtils.isPlayingMode(player))) {
-                // apply radiation to the player
-                radiate(entity, magnitude / 3_600D); // convert to Sv/s
-            }
-            if (radiationCap != null) {
-                radiationCap.decay();
-            }
-        }
-        // update the radiation capability (decay, sync, effects)
-        if (radiationCap != null) {
-            radiationCap.update();
-            if (entity instanceof ServerPlayer player) {
-                double radiation = radiationCap.getRadiation();
-                PreviousRadiationData previousRadiationData = playerExposureMap.get(player.getUUID());
-                PreviousRadiationData relevantData = PreviousRadiationData.compareTo(previousRadiationData, radiation);
-                if (relevantData != null) {
-                    playerExposureMap.put(player.getUUID(), relevantData);
-                    PacketDistributor.sendToPlayer(player, new PacketPlayerRadiationData(radiation));
-                }
-            }
+            PlayerExposure.updateClientRadiationForAll();
         }
     }
 
@@ -431,7 +306,7 @@ public class RadiationManager implements IRadiationManager {
                     markDirty();
                 }
                 //Update radiation levels for any players where it has changed
-                updateClientRadiationForAll();
+                PlayerExposure.updateClientRadiationForAll();
             }
         }
     }
@@ -453,65 +328,13 @@ public class RadiationManager implements IRadiationManager {
     public void reset() {
         //Clear the table directly instead of via the method, so it doesn't mark it as dirty
         radiationTable.clear();
-        playerEnvironmentalExposureMap.clear();
-        playerExposureMap.clear();
         dataHandler = null;
         loaded = false;
-    }
-
-    public void resetPlayer(UUID uuid) {
-        playerEnvironmentalExposureMap.remove(uuid);
-        playerExposureMap.remove(uuid);
-    }
-
-    @SubscribeEvent
-    public void onLivingTick(EntityTickEvent.Post event) {
-        Level world = event.getEntity().level();
-        if (!world.isClientSide() && event.getEntity() instanceof LivingEntity living && !(living instanceof Player) && !world.tickRateManager().isEntityFrozen(living)) {
-            //If it is a living entity that isn't a player, and the tick rate manager is functioning
-            // and the entity is frozen (doesn't have a player as a passenger), then we need to update
-            // the radiation level of the entity
-            updateEntityRadiation(living);
-        }
     }
 
     public record LevelAndMaxMagnitude(double level, double maxMagnitude) {
 
         private static final LevelAndMaxMagnitude BASELINE = new LevelAndMaxMagnitude(RadiationManager.BASELINE, RadiationManager.BASELINE);
-    }
-
-    private record PreviousRadiationData(double magnitude, int power, double base) {
-
-        private static int getPower(double magnitude) {
-            return MathUtils.clampToInt(Math.floor(Math.log10(magnitude)));
-        }
-
-        @Nullable
-        private static PreviousRadiationData compareTo(@Nullable PreviousRadiationData previousRadiationData, double magnitude) {
-            if (previousRadiationData == null || Math.abs(magnitude - previousRadiationData.magnitude) >= previousRadiationData.base) {
-                //No cached value or the magnitude changed by more than the smallest unit we display
-                return getData(magnitude, getPower(magnitude));
-            } else if (magnitude < previousRadiationData.magnitude) {
-                //Magnitude has decreased, and by a smaller amount than the smallest unit we currently are displaying
-                int power = getPower(magnitude);
-                if (power < previousRadiationData.power) {
-                    //Check if the number of digits decreased, in which case even if we potentially only decreased by a tiny amount
-                    // we still need to sync and update it
-                    return getData(magnitude, power);
-                }
-            }
-            //No need to sync
-            return null;
-        }
-
-        private static PreviousRadiationData getData(double magnitude, int power) {
-            //Unit display happens using SI units which is in factors of 1,000 (10^3) convert our power to the current SI unit it is for
-            int siPower = Math.floorDiv(power, 3) * 3;
-            //Note: We subtract two from the power because for places we sync to and read from on the client side
-            // we have two decimal places, so we need to shift our target to include those decimals
-            double base = Math.pow(10, siPower - 2);
-            return new PreviousRadiationData(magnitude, power, base);
-        }
     }
 
     public static class RadiationDataHandler extends MekanismSavedData {

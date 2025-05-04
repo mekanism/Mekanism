@@ -6,7 +6,7 @@ import mekanism.common.block.BlockBounding;
 import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.block.BlockMekanism;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.lib.radiation.RadiationManager;
+import mekanism.common.lib.radiation.PlayerExposure;
 import mekanism.common.network.to_client.player_data.PacketPlayerData;
 import mekanism.common.network.to_client.player_data.PacketResetPlayerClient;
 import mekanism.common.network.to_client.radiation.PacketPlayerRadiationData;
@@ -62,7 +62,7 @@ public class CommonPlayerTracker {
         ServerPlayer player = (ServerPlayer) event.getEntity();
         Mekanism.playerState.clearPlayer(player.getUUID(), false);
         PacketDistributor.sendToPlayer(player, new PacketPlayerRadiationData(player));
-        RadiationManager.get().updateClientRadiation(player);
+        PlayerExposure.updateClientRadiation(player);
     }
 
     @SubscribeEvent
@@ -76,7 +76,7 @@ public class CommonPlayerTracker {
     public void respawnEvent(PlayerEvent.PlayerRespawnEvent event) {
         ServerPlayer player = (ServerPlayer) event.getEntity();
         PacketDistributor.sendToPlayer(player, new PacketPlayerRadiationData(player));
-        RadiationManager.get().updateClientRadiation(player);
+        PlayerExposure.updateClientRadiation(player);
         PacketDistributor.sendToAllPlayers(new PacketResetPlayerClient(player.getUUID()));
     }
 

@@ -64,6 +64,7 @@ import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
 import mekanism.common.lib.multiblock.MultiblockCache;
 import mekanism.common.lib.multiblock.MultiblockManager;
+import mekanism.common.lib.radiation.PlayerExposure;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
 import mekanism.common.network.PacketHandler;
@@ -322,6 +323,7 @@ public class Mekanism {
         //Reset consistent managers
         QIOGlobalItemLookup.INSTANCE.reset();
         RadiationManager.get().reset();
+        PlayerExposure.clear();
         MultiblockManager.reset();
         FrequencyManager.reset();
         TransporterManager.reset();
