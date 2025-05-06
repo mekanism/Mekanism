@@ -87,6 +87,9 @@ public class BiMultiLongmap<V> {
             Set<V> vs = map.get(key);
             if (vs != null) {
                 changed |= vs.remove(value);
+                if (vs.isEmpty()) {
+                    map.remove(key);
+                }
             }
         }
         reverseMap.remove(value);
