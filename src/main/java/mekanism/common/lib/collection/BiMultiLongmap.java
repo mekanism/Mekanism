@@ -116,4 +116,8 @@ public class BiMultiLongmap<V> {
         map.clear();
         reverseMap.clear();
     }
+
+    public boolean isEmpty() {
+        return map.isEmpty() && reverseMap.isEmpty();
+    }
 }

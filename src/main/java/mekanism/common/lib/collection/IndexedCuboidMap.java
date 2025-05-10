@@ -18,11 +18,12 @@ import net.minecraft.core.SectionPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.ChunkPos;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.VisibleForTesting;
 
 /**
  * Stores a map of BoundingBox+Centre to VALUE, indexed by chunk for quickly determining relevant boxes to scan.
  * <p>
- * Values MUST support equals.
+ * Values MUST support equals, else removal by value will not work.
  */
 @NothingNullByDefault
 public class IndexedCuboidMap<VALUE> {
@@ -51,7 +52,7 @@ public class IndexedCuboidMap<VALUE> {
     /**
      * Adds a value to the map with an explicitly defined box
      * @param value value to add to the map
-     * @param center centre or controlling position
+     * @param center centre or controlling position. Must be within the defined box.
      * @param minX minimum X pos of the box (inclusive)
      * @param minY minimum Y pos of the box (inclusive)
      * @param minZ minimum Z pos of the box (inclusive)
@@ -202,6 +203,11 @@ public class IndexedCuboidMap<VALUE> {
 
     public boolean isEmpty() {
         return valueMap.isEmpty();
+    }
+
+    @VisibleForTesting
+    boolean indexIsEmpty() {
+        return chunkIndex.isEmpty();
     }
 
     public void removeIf(Predicate<VALUE> predicate) {
