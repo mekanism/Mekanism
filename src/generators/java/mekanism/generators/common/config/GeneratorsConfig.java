@@ -137,7 +137,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
         condenserRate = CachedIntValue.wrap(this, GeneratorsConfigTranslations.SERVER_TURBINE_RATE_CONDENSER.applyToBuilder(builder)
               .defineInRange("condenserRate", 64 * FluidType.BUCKET_VOLUME, 1, 2_000 * FluidType.BUCKET_VOLUME));
         turbineEnergyCapacityPerVolume = CachedLongValue.define(this, builder, GeneratorsConfigTranslations.SERVER_TURBINE_ENERGY_CAPACITY,
-              "energyCapacityPerVolume", 16_000_000L, 1L, 1_000_000_000_000L);
+              "energyCapacityPerVolume", 100, 1L, 1_000_000_000_000L);
         //Note: We use maxVolume as it still is a large number, and we have no reason to go higher even if some things we technically could
         int maxTurbine = 17 * 17 * 18;
         turbineChemicalPerTank = CachedLongValue.wrap(this, GeneratorsConfigTranslations.SERVER_TURBINE_CHEMICAL_CAPACITY.applyToBuilder(builder)
