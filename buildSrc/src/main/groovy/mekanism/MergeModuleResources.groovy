@@ -99,9 +99,9 @@ abstract class MergeModuleResources extends DefaultTask {
             if (split.length == 2) {
                 //Theoretically this should always be the case
                 String trimmedPath = prefix + split[1]
-                def paths = reverseLookup.get(trimmedPath)
+                def paths = reverseLookup[trimmedPath]
                 if (paths == null) {
-                    reverseLookup.put(trimmedPath, paths = [])
+                    reverseLookup[trimmedPath] = paths = []
                 }
                 paths.add(file.path)
             } else {

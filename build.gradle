@@ -73,7 +73,7 @@ sourceSets {
     gameTest {
         compileClasspath += api.output
         resources {
-            srcDirs += ["src/gameTest/generated"]
+            srcDirs += ['src/gameTest/generated']
         }
     }
     // These source-sets only exist for the sake of assembling a dependency graph
@@ -535,7 +535,7 @@ def getManifestAttributes(String title) {
             'Implementation-Title'    : title,
             'Implementation-Version'  : "${project.mod_version}",
             'Implementation-Vendor'   : 'Mekanism',
-            'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+            'Implementation-Timestamp': new Date().format('yyyy-MM-dd\'T\'HH:mm:ssZ'),
             'Automatic-Module-Name'   : title.toLowerCase(Locale.ROOT)
     ]
 }
