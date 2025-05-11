@@ -26,4 +26,9 @@ public class TileEntityLaser extends TileEntityBasicLaser {
     protected long toFire() {
         return MekanismConfig.usage.laser.get();
     }
+
+    @Override
+    public float getInitialVolume() {
+        return 0.3f;
+    }
 }
