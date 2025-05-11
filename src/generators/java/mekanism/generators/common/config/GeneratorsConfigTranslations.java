@@ -56,8 +56,7 @@ public enum GeneratorsConfigTranslations implements IConfigTranslation {
           "Amount of energy in Joules that each block of the turbine contributes to the total energy capacity. Max = volume * energyCapacityPerVolume"),
     SERVER_TURBINE_CHEMICAL_CAPACITY("server.turbine.capacity.chemical", "Chemical Per Tank",
           "Amount of chemical (mB) that each block of the turbine's steam cavity contributes to the volume. Max = volume * chemicalPerTank"),
-    SERVER_TURBINE_JOULES_PER_STEAM("server.turbine.energy_conversion.steam", "Joules Per Steam", "Maximum Joules per tick generated per Steam unit in the Industrial Turbine."),
-    SERVER_TURBINE_STEAM_DIVISOR("server.turbine.energy_conversion.steam_divisor", "Steam Divisor", "Divisor for Steam rate to create a Steam unit. The Steam flow will be divided by this amount and then multiplied by the Joules Per Steam amount to calculate the generation rate."),
+    SERVER_TURBINE_STEAM_DIVISOR("server.turbine.energy_conversion.steam_divisor", "Steam Divisor", "Divisor for Steam rate to create a Steam unit. The Steam flow will be divided by this amount and then used for the generation logarithmic calculation."),
 
     SERVER_FISSION("server.fission", "Fission Reactor", "Settings for configuring Fission Reactors", "Edit Reactor Settings"),
     SERVER_FISSION_FUEL_ENERGY("server.fission.fuel_energy", "Energy Per Fissile Fuel",
