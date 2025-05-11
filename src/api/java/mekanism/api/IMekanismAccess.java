@@ -1,6 +1,5 @@
 package mekanism.api;
 
-import java.util.ServiceLoader;
 import mekanism.api.integration.emi.IMekanismEmiHelper;
 import mekanism.api.integration.jei.IMekanismJEIHelper;
 import mekanism.api.recipes.ingredients.creator.IChemicalIngredientCreator;
@@ -18,7 +17,7 @@ public interface IMekanismAccess {
     /**
      * Provides access to Mekanism's internals.
      */
-    IMekanismAccess INSTANCE = ServiceLoader.load(IMekanismAccess.class).findFirst().orElseThrow(() -> new IllegalStateException("No valid ServiceImpl for IMekanismAccess found"));
+    IMekanismAccess INSTANCE = MekanismAPI.getService(IMekanismAccess.class);
 
     /**
      * Gets a helper to interact with some of Mekanism's JEI integration internals. This should only be called if JEI is loaded.

@@ -1,6 +1,5 @@
 package mekanism.common.registration.impl;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import java.util.function.Supplier;
 import mekanism.api.annotations.NothingNullByDefault;

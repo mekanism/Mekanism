@@ -696,6 +696,9 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     public void remove() {
     }
 
+    public void onWorldSeparate(boolean stillPresent) {
+    }
+
     public ConnectionType getConnectionType(Direction side) {
         return getConnectionType(side, getAllCurrentConnections(), currentTransmitterConnections, connectionTypes);
     }

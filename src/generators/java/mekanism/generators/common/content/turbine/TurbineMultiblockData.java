@@ -155,7 +155,7 @@ public class TurbineMultiblockData extends MultiblockData {
                     flowRate = rate / origRate;
                     energyContainer.insert(amountGenerated, Action.EXECUTE, AutomationType.INTERNAL);
                     chemicalTank.shrinkStack(clientFlow, Action.EXECUTE);
-                    ventTank.setStack(new FluidStack(Fluids.WATER, Math.min(MathUtils.clampToInt(rate), condensers * MekanismGeneratorsConfig.generators.condenserRate.get())));
+                    ventTank.insert(new FluidStack(Fluids.WATER, Math.min(MathUtils.clampToInt(rate), condensers * MekanismGeneratorsConfig.generators.condenserRate.get())), Action.EXECUTE, AutomationType.INTERNAL);
                 } else {
                     clientFlow = 0;
                 }

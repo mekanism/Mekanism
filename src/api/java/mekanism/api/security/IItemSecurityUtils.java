@@ -1,7 +1,7 @@
 package mekanism.api.security;
 
 import java.util.List;
-import java.util.ServiceLoader;
+import mekanism.api.MekanismAPI;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.ItemCapability;
@@ -20,7 +20,7 @@ public interface IItemSecurityUtils extends ITypedSecurityUtils<ItemStack> {
      *
      * @since 10.5.0
      */
-    IItemSecurityUtils INSTANCE = ServiceLoader.load(IItemSecurityUtils.class).findFirst().orElseThrow(() -> new IllegalStateException("No valid ServiceImpl for IItemSecurityUtils found"));
+    IItemSecurityUtils INSTANCE = MekanismAPI.getService(IItemSecurityUtils.class);
 
     /**
      * {@return the item capability representing security objects}

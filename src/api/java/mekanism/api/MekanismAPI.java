@@ -2,6 +2,8 @@ package mekanism.api;
 
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.MapCodec;
+import java.util.Iterator;
+import java.util.ServiceLoader;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalBuilder;
@@ -16,6 +18,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.RegistryBuilder;
+import org.jetbrains.annotations.ApiStatus.Internal;
 import org.slf4j.Logger;
 
 @NothingNullByDefault
@@ -163,5 +166,31 @@ public class MekanismAPI {
      * @since 10.7.11
      */
     public static final Holder<Chemical> EMPTY_CHEMICAL_HOLDER = DeferredHolder.create(EMPTY_CHEMICAL_KEY);
+
+    @Internal
+    private static final ClassLoader SERVICE_CL = MekanismAPI.class.getClassLoader();
+
+    /**
+     * Loads a Mekanism service from ServiceLoader, ensuring that the correct classloader is used instead of relying on the context classloader, which may not be correct
+     *
+     * @param serviceClass the interface class to search for
+     *
+     * @return the concrete implementation
+     *
+     * @throws IllegalStateException when an implementation is not found
+     */
+    @Internal
+    public static <SERVICE> SERVICE getService(Class<SERVICE> serviceClass) {
+        Iterator<SERVICE> service = ServiceLoader.load(serviceClass, SERVICE_CL).iterator();
+        if (service.hasNext()) {
+            return service.next();
+        }
+
+        IllegalStateException illegalStateException = new IllegalStateException("No valid ServiceImpl for " + serviceClass.getSimpleName() + " found");
+        MekanismAPI.logger.error("Failed to load service", illegalStateException);
+        MekanismAPI.logger.error("CL: {} CCL: {}", SERVICE_CL, Thread.currentThread().getContextClassLoader());
+        throw illegalStateException;
+
+    }
 
 }

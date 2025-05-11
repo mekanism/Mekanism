@@ -1,8 +1,8 @@
 package mekanism.api.security;
 
-import java.util.ServiceLoader;
 import java.util.UUID;
 import java.util.function.Supplier;
+import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
@@ -26,7 +26,7 @@ public interface IBlockSecurityUtils {
      *
      * @since 10.5.0
      */
-    IBlockSecurityUtils INSTANCE = ServiceLoader.load(IBlockSecurityUtils.class).findFirst().orElseThrow(() -> new IllegalStateException("No valid ServiceImpl for IBlockEntitySecurityUtils found"));
+    IBlockSecurityUtils INSTANCE = MekanismAPI.getService(IBlockSecurityUtils.class);
 
     /**
      * {@return the block capability representing owner objects}

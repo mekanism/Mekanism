@@ -199,6 +199,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
                 TransmitterNetworkRegistry.invalidateTransmitter(getTransmitter());
             }
         }
+        getTransmitter().onWorldSeparate(stillPresent);
     }
 
     public void chunkAccessibilityChange(boolean loaded) {

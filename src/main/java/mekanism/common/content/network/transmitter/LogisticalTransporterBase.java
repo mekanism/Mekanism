@@ -307,7 +307,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     @Override
     public void remove() {
         super.remove();
-        capabilityCache.clear();
+        clearCapabilityCaches();
         if (!isRemote()) {
             for (TransporterStack stack : getTransit()) {
                 TransporterManager.remove(getLevel(), stack);
@@ -316,9 +316,20 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     }
 
     @Override
-    public void refreshConnections() {
-        super.refreshConnections();
+    public void onWorldSeparate(boolean stillPresent) {
+        super.onWorldSeparate(stillPresent);
+        clearCapabilityCaches();//may still be "loaded" but caches will likely be invalidated
+    }
+
+    private void clearCapabilityCaches() {
         capabilityCache.clear();
+        fallbackHandlerCache.clear();
+    }
+
+    @Override
+    public void refreshConnections() {
+        clearCapabilityCaches();
+        super.refreshConnections();
     }
 
     @Override

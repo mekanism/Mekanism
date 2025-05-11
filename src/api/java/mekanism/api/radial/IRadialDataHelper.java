@@ -1,7 +1,7 @@
 package mekanism.api.radial;
 
 import java.util.Objects;
-import java.util.ServiceLoader;
+import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.radial.mode.IRadialMode;
 import net.minecraft.resources.ResourceLocation;
@@ -20,7 +20,7 @@ public interface IRadialDataHelper {
      *
      * @since 10.4.0
      */
-    IRadialDataHelper INSTANCE = ServiceLoader.load(IRadialDataHelper.class).findFirst().orElseThrow(() -> new IllegalStateException("No valid ServiceImpl for IRadialDataHelper found"));
+    IRadialDataHelper INSTANCE = MekanismAPI.getService(IRadialDataHelper.class);
 
     /**
      * Creates an Enum based Radial Data implementation with the given default mode.

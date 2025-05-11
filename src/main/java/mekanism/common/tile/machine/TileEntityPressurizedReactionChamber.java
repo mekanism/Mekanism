@@ -222,7 +222,8 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
               .setRequiredTicks(this::getTicksRequired)
               .setOnFinish(this::markForSave)
-              .setOperatingTicksChanged(this::setOperatingTicks);
+              .setOperatingTicksChanged(this::setOperatingTicks)
+              .setBaselineMaxOperations(this::getOperationsPerTick);
     }
 
     public PRCEnergyContainer getEnergyContainer() {

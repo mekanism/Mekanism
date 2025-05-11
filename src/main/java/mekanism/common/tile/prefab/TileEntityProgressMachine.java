@@ -24,6 +24,7 @@ public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe<?>
     private int operatingTicks;
     protected int baseTicksRequired;
     public int ticksRequired;
+    private int operationsPerTick = 1;//will increase for modified upgrade multipliers
 
     protected TileEntityProgressMachine(Holder<Block> blockProvider, BlockPos pos, BlockState state, List<RecipeError> errorTypes, int baseTicksRequired) {
         super(blockProvider, pos, state, errorTypes);
@@ -70,8 +71,13 @@ public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe<?>
     public void recalculateUpgrades(Upgrade upgrade) {
         if (upgrade == Upgrade.SPEED) {
             ticksRequired = MekanismUtils.getTicks(this, baseTicksRequired);
+            operationsPerTick = MekanismUtils.getOperationsPerTick(this, baseTicksRequired, 1);
         }
         super.recalculateUpgrades(upgrade);
+    }
+
+    public int getOperationsPerTick() {
+        return this.operationsPerTick;
     }
 
     @NotNull

@@ -1,14 +1,17 @@
 package mekanism.common.content.entangloporter;
 
+import com.google.common.collect.Table;
+import com.google.common.collect.Tables;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.TreeMap;
 import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -53,16 +56,18 @@ import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.FluidUtils;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.GlobalPos;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -126,7 +131,8 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
           }
     );
 
-    private final Map<GlobalPos, TileEntityQuantumEntangloporter> activeQEs = new Object2ObjectOpenHashMap<>();
+    //nb: we don't need to store these BLockPos as longs because they already exist on the Tiles as a field
+    private final Table<ResourceKey<Level>, BlockPos, TileEntityQuantumEntangloporter> activeQEs = Tables.newCustomTable(new IdentityHashMap<>(), TreeMap::new);
     private long lastEject = -1;
 
     private BasicFluidTank storedFluid;
@@ -203,9 +209,9 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         boolean changedData = super.update(tile);
         if (tile instanceof TileEntityQuantumEntangloporter entangloporter) {
             //This should always be the case, but validate it and remove if it isn't
-            activeQEs.put(entangloporter.getTileGlobalPos(), entangloporter);
+            activeQEs.put(tile.getLevel().dimension(), entangloporter.getBlockPos(), entangloporter);
         } else {
-            activeQEs.remove(GlobalPos.of(tile.getLevel().dimension(), tile.getBlockPos()));
+            activeQEs.remove(tile.getLevel().dimension(), tile.getBlockPos());
         }
         return changedData;
     }
@@ -213,7 +219,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     @Override
     public boolean onDeactivate(BlockEntity tile) {
         boolean changedData = super.onDeactivate(tile);
-        activeQEs.remove(GlobalPos.of(tile.getLevel().dimension(), tile.getBlockPos()));
+        activeQEs.remove(tile.getLevel().dimension(), tile.getBlockPos());
         return changedData;
     }
 

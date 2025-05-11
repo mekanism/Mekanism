@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.function.LongSupplier;
+import java.util.function.Predicate;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.MekanismAPITags;
@@ -19,6 +20,7 @@ import mekanism.common.content.gear.IBlastingItem;
 import mekanism.common.content.gear.mekasuit.ModuleGravitationalModulatingUnit;
 import mekanism.common.content.gear.mekasuit.ModuleHydraulicPropulsionUnit;
 import mekanism.common.content.gear.mekasuit.ModuleLocomotiveBoostingUnit;
+import mekanism.common.integration.curios.CuriosIntegration;
 import mekanism.common.item.gear.ItemFreeRunners;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.item.gear.ItemScubaMask;
@@ -55,9 +57,12 @@ import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.BreakSpeed;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class CommonPlayerTickHandler {
+
+    private static final Predicate<ItemStack> FREE_RUNNERS_PREDICATE = itemStack -> itemStack.getItem() instanceof ItemFreeRunners boots && boots.getMode(itemStack).preventsFallDamage();
 
     public static boolean isOnGroundOrSleeping(Player player) {
         return player.onGround() || player.isSleeping() || player.getAbilities().flying;
@@ -291,17 +296,25 @@ public class CommonPlayerTickHandler {
     private FallEnergyInfo getFallAbsorptionEnergyInfo(LivingEntity base) {
         ItemStack feetStack = base.getItemBySlot(EquipmentSlot.FEET);
         if (!feetStack.isEmpty()) {
-            if (feetStack.getItem() instanceof ItemFreeRunners boots) {
-                if (boots.getMode(feetStack).preventsFallDamage()) {
-                    return new FallEnergyInfo(StorageUtils.getEnergyContainer(feetStack, 0), MekanismConfig.gear.freeRunnerFallDamageRatio,
-                          MekanismConfig.gear.freeRunnerFallEnergyCost);
-                }
+            if (FREE_RUNNERS_PREDICATE.test(feetStack)) {
+                return freeRunnerFallInfo(feetStack);
             } else if (feetStack.getItem() instanceof ItemMekaSuitArmor) {
                 return new FallEnergyInfo(StorageUtils.getEnergyContainer(feetStack, 0), MekanismConfig.gear.mekaSuitFallDamageRatio,
                       MekanismConfig.gear.mekaSuitEnergyUsageFall);
             }
         }
+        if (Mekanism.hooks.curios.isLoaded()) {
+            ItemStack curio = CuriosIntegration.findFirstCurio(base, FREE_RUNNERS_PREDICATE);
+            if (!curio.isEmpty()) {
+                return freeRunnerFallInfo(curio);
+            }
+        }
         return null;
+    }
+
+    private static @NotNull FallEnergyInfo freeRunnerFallInfo(ItemStack feetStack) {
+        return new FallEnergyInfo(StorageUtils.getEnergyContainer(feetStack, 0), MekanismConfig.gear.freeRunnerFallDamageRatio,
+              MekanismConfig.gear.freeRunnerFallEnergyCost);
     }
 
     private record FallEnergyInfo(@Nullable IEnergyContainer container, FloatSupplier damageRatio, LongSupplier energyCost) {

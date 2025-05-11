@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -41,7 +40,7 @@ public interface IModuleHelper {
      *
      * @since 10.4.0
      */
-    IModuleHelper INSTANCE = ServiceLoader.load(IModuleHelper.class).findFirst().orElseThrow(() -> new IllegalStateException("No valid ServiceImpl for IModuleHelper found"));
+    IModuleHelper INSTANCE = MekanismAPI.getService(IModuleHelper.class);
 
     /**
      * Helper method used to create Module items that can then be registered. When Mekanism is not installed a dummy Item should be registered instead of calling this

@@ -1,6 +1,6 @@
 package mekanism.api.energy;
 
-import java.util.ServiceLoader;
+import mekanism.api.MekanismAPI;
 
 /**
  * Helper that provides access to Mekanism's configured energy conversion rates.
@@ -12,7 +12,7 @@ public interface IEnergyConversionHelper {
     /**
      * Provides access to Mekanism's implementation of {@link IEnergyConversionHelper}.
      */
-    IEnergyConversionHelper INSTANCE = ServiceLoader.load(IEnergyConversionHelper.class).findFirst().orElseThrow(() -> new IllegalStateException("No valid ServiceImpl for IEnergyConversionHelper found"));
+    IEnergyConversionHelper INSTANCE = MekanismAPI.getService(IEnergyConversionHelper.class);
 
     /**
      * @return The conversion rate config between Joules and Joules.

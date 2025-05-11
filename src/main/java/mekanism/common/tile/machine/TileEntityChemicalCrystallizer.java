@@ -152,7 +152,8 @@ public class TileEntityChemicalCrystallizer extends TileEntityProgressMachine<Ch
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
               .setRequiredTicks(this::getTicksRequired)
               .setOnFinish(this::markForSave)
-              .setOperatingTicksChanged(this::setOperatingTicks);
+              .setOperatingTicksChanged(this::setOperatingTicks)
+              .setBaselineMaxOperations(this::getOperationsPerTick);
     }
 
     public MachineEnergyContainer<TileEntityChemicalCrystallizer> getEnergyContainer() {

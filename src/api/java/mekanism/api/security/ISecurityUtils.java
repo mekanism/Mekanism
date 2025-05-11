@@ -1,9 +1,9 @@
 package mekanism.api.security;
 
-import java.util.ServiceLoader;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Nullable;
@@ -24,7 +24,7 @@ public interface ISecurityUtils {
      *
      * @since 10.4.0
      */
-    ISecurityUtils INSTANCE = ServiceLoader.load(ISecurityUtils.class).findFirst().orElseThrow(() -> new IllegalStateException("No valid ServiceImpl for ISecurityUtils found"));
+    ISecurityUtils INSTANCE = MekanismAPI.getService(ISecurityUtils.class);
 
     /**
      * Checks if a player can access the given capability provider; validating that protection is enabled in the config. Additionally, this method also checks to see if

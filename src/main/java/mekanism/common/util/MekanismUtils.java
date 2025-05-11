@@ -309,9 +309,38 @@ public final class MekanismUtils {
      */
     public static int getTicks(IUpgradeTile tile, int def) {
         if (tile.supportsUpgrades()) {
-            return Math.max(1, MathUtils.clampToInt(def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), -fractionUpgrades(tile, Upgrade.SPEED))));
+            return Math.max(1, MathUtils.clampToInt(getTicksD(tile, def)));
         }
         return def;
+    }
+
+    /**
+     * Gets the operating ticks required for a machine via its upgrades.
+     *
+     * @param tile - tile containing upgrades
+     * @param def  - the original, default ticks required
+     *
+     * @return required operating ticks
+     */
+    public static double getTicksD(IUpgradeTile tile, int def) {
+        return def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), -fractionUpgrades(tile, Upgrade.SPEED));
+    }
+
+    /**
+     * Get the amount of operations per tick, accounting for bonus operations from non-default upgrade modifiers. Fractional operations are ignored
+     *
+     * @param tile              - tile containing upgrades
+     * @param defTicks          - the original, default ticks required
+     * @param defaultOperations - the original, default operations (usually 1)
+     *
+     * @return max operations to do in one tick. If speed is not < 1 tick return the default
+     */
+    public static int getOperationsPerTick(IUpgradeTile tile, int defTicks, int defaultOperations) {
+        double ticksD = getTicksD(tile, defTicks);
+        if (ticksD >= 1) {
+            return defaultOperations;
+        }
+        return MathUtils.clampToInt(Math.max(1, 1 / ticksD) * defaultOperations);
     }
 
     /**

@@ -96,6 +96,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
      * How many ticks it takes, with upgrades, to run an operation
      */
     private int ticksRequired = BASE_TICKS_REQUIRED;
+    private int operationsPerTick = 1;//will increase for modified upgrade multipliers
     private boolean sorting;
     private boolean sortingNeeded = true;
     private long lastUsage = 0L;
@@ -376,6 +377,10 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
         return ticksRequired;
     }
 
+    public int getOperationsPerTick() {
+        return this.operationsPerTick;
+    }
+
     @Override
     public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
         super.loadAdditional(nbt, provider);
@@ -425,6 +430,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
         super.recalculateUpgrades(upgrade);
         if (upgrade == Upgrade.SPEED) {
             ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
+            operationsPerTick = MekanismUtils.getOperationsPerTick(this, BASE_TICKS_REQUIRED, 1);
         }
     }
 

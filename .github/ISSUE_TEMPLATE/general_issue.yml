@@ -42,14 +42,8 @@ body:
       label: Mekanism version
       description: What version of Mekanism are you using?
       options:
-        - 10.7.12 (Latest)
-        - 10.7.11 (Crash on Dedicated servers)
-        - 10.7.10
-        - 10.7.9 (GrandPower bugged)
-        - 10.7.8
-        - 10.7.7
-        - 10.7.6
-        - 10.7.5
+        - 10.7.14 (Latest)
+        - 10.7.13
         - Older
         - Current Dev Branch (Manually Compiled, specify git commit hash)
     validations:

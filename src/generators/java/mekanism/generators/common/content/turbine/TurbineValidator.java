@@ -118,8 +118,10 @@ public class TurbineValidator extends CuboidStructureValidator<TurbineMultiblock
 
         BlockPos.MutableBlockPos mutablePos = new BlockPos.MutableBlockPos();
         //Make sure a flat, horizontal plane of dispersers exists within the multiblock around the complex
-        for (int x = complex.getX() - innerRadius; x <= complex.getX() + innerRadius; x++) {
-            for (int z = complex.getZ() - innerRadius; z <= complex.getZ() + innerRadius; z++) {
+        final int innerRadiusX = (structure.length() - 3) / 2;
+        final int innerRadiusZ = (structure.width() - 3) / 2;
+        for (int x = complex.getX() - innerRadiusX; x <= complex.getX() + innerRadiusX; x++) {
+            for (int z = complex.getZ() - innerRadiusZ; z <= complex.getZ() + innerRadiusZ; z++) {
                 if (x != centerX || z != centerZ) {
                     mutablePos.set(x, complex.getY(), z);
                     TileEntityPressureDisperser tile = WorldUtils.getTileEntity(TileEntityPressureDisperser.class, world, chunkMap, mutablePos);

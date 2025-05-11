@@ -1,6 +1,6 @@
 package mekanism.api.datamaps;
 
-import java.util.ServiceLoader;
+import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.datamaps.chemical.ChemicalSolidTag;
 import mekanism.api.datamaps.chemical.attribute.ChemicalFuel;
@@ -26,7 +26,7 @@ public interface IMekanismDataMapTypes {
     /**
      * Provides access to Mekanism's data map types.
      */
-    IMekanismDataMapTypes INSTANCE = ServiceLoader.load(IMekanismDataMapTypes.class).findFirst().orElseThrow(() -> new IllegalStateException("No valid ServiceImpl for IMekanismDataMapTypes found"));
+    IMekanismDataMapTypes INSTANCE = MekanismAPI.getService(IMekanismDataMapTypes.class);
 
     /**
      * Helper to get data from a holder. This method supports both reference and direct holders.

@@ -109,7 +109,7 @@ public class ComputerHelpProvider implements DataProvider {
     @NotNull
     private CompletableFuture<?> makeJekyllData(CachedOutput output, Map<Class<?>, List<MethodHelpData>> methods, Map<Class<?>, List<String>> enumValues) {
         return CompletableFuture.runAsync(() -> {
-            JekyllData jekyllData = new JekyllData(Mekanism.instance.versionNumber, methods, enumValues, BaseComputerHelper.BUILTIN_TABLES.get());
+            JekyllData jekyllData = new JekyllData(methods, enumValues, BaseComputerHelper.BUILTIN_TABLES.get());
             Node frontMatterNode = YamlHelper.sortMappingKeys(JekyllData.CODEC.encodeStart(new SnakeYamlOps(), jekyllData).getOrThrow(), Comparator.naturalOrder());
             MekanismDataGenerator.save(output, os -> {
                 try (Writer writer = new BufferedWriter(new OutputStreamWriter(os, StandardCharsets.UTF_8))) {
@@ -296,11 +296,9 @@ public class ComputerHelpProvider implements DataProvider {
         dop.setLineBreak(DumperOptions.LineBreak.UNIX);
     });
 
-    record JekyllData(Version version, Map<Class<?>, List<MethodHelpData>> methods, Map<Class<?>, List<String>> enums, Map<Class<?>, TableType> builtInTables) {
+    record JekyllData(Map<Class<?>, List<MethodHelpData>> methods, Map<Class<?>, List<String>> enums, Map<Class<?>, TableType> builtInTables) {
 
-        static Codec<Version> VERSION_CODEC = Codec.stringResolver(Version::toString, Version::get);
         static Codec<JekyllData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-              VERSION_CODEC.fieldOf(SerializationConstants.VERSION).forGetter(JekyllData::version),
               METHODS_DATA_CODEC.fieldOf(SerializationConstants.METHODS).forGetter(JekyllData::methods),
               ENUMS_CODEC.fieldOf(SerializationConstants.ENUMS).forGetter(JekyllData::enums),
               TableType.TABLE_MAP_CODEC.fieldOf(SerializationConstants.BUILT_IN_TABLES).forGetter(JekyllData::builtInTables)

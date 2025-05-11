@@ -1,6 +1,6 @@
 package mekanism.api.security;
 
-import java.util.ServiceLoader;
+import mekanism.api.MekanismAPI;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.neoforge.capabilities.EntityCapability;
 import org.jetbrains.annotations.Nullable;
@@ -18,7 +18,7 @@ public interface IEntitySecurityUtils extends ITypedSecurityUtils<Entity> {
      *
      * @since 10.5.0
      */
-    IEntitySecurityUtils INSTANCE = ServiceLoader.load(IEntitySecurityUtils.class).findFirst().orElseThrow(() -> new IllegalStateException("No valid ServiceImpl for IEntitySecurityUtils found"));
+    IEntitySecurityUtils INSTANCE = MekanismAPI.getService(IEntitySecurityUtils.class);
 
     /**
      * {@return the entity capability representing owner objects}

@@ -2,8 +2,8 @@ package mekanism.api.radiation;
 
 import com.google.common.collect.Table;
 import java.util.List;
-import java.util.ServiceLoader;
 import mekanism.api.Chunk3D;
+import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
@@ -50,7 +50,7 @@ public interface IRadiationManager {
      *
      * @since 10.4.0
      */
-    IRadiationManager INSTANCE = ServiceLoader.load(IRadiationManager.class).findFirst().orElseThrow(() -> new IllegalStateException("No valid ServiceImpl for IRadiationManager found"));
+    IRadiationManager INSTANCE = MekanismAPI.getService(IRadiationManager.class);
 
     /**
      * Helper to expose the ability to check if Mekanism's radiation system is enabled in the config.
