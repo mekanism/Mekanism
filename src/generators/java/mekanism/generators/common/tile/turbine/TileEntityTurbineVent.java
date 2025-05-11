@@ -1,6 +1,5 @@
 package mekanism.generators.common.tile.turbine;
 
-import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -8,7 +7,6 @@ import mekanism.api.IContentsListener;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
-import mekanism.generators.common.content.turbine.TurbineMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -30,10 +28,7 @@ public class TileEntityTurbineVent extends TileEntityTurbineCasing {
     @NotNull
     @Override
     protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener) {
-        return side -> {
-            TurbineMultiblockData multiblock = getMultiblock();
-            return multiblock.isFormed() ? multiblock.ventTanks : Collections.emptyList();
-        };
+        return side -> getMultiblock().getFluidTanks(side);
     }
 
     @Override

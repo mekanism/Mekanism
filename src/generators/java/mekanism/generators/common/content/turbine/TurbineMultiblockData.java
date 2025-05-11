@@ -62,7 +62,6 @@ public class TurbineMultiblockData extends MultiblockData {
     public IChemicalTank chemicalTank;
     @ContainerSync
     public IExtendedFluidTank ventTank;
-    public final List<IExtendedFluidTank> ventTanks;
     @ContainerSync
     public IEnergyContainer energyContainer;
     @ContainerSync
@@ -103,9 +102,8 @@ public class TurbineMultiblockData extends MultiblockData {
     public TurbineMultiblockData(TileEntityTurbineCasing tile) {
         super(tile);
         chemicalTanks.add(chemicalTank = new TurbineChemicalTank(this, createSaveAndComparator()));
-        ventTank = VariableCapacityFluidTank.output(this, () -> isFormed() ? condensers * MekanismGeneratorsConfig.generators.condenserRate.get() : FluidType.BUCKET_VOLUME,
-              fluid -> fluid.is(FluidTags.WATER), this);
-        ventTanks = Collections.singletonList(ventTank);
+        fluidTanks.add(ventTank = VariableCapacityFluidTank.output(this, () -> isFormed() ? condensers * MekanismGeneratorsConfig.generators.condenserRate.get() : FluidType.BUCKET_VOLUME,
+              fluid -> fluid.is(FluidTags.WATER), this));
         energyContainer = VariableCapacityEnergyContainer.create(this::getEnergyCapacity, automationType -> isFormed(),
               automationType -> automationType == AutomationType.INTERNAL && isFormed(), this);
         energyContainers.add(energyContainer);
@@ -225,6 +223,7 @@ public class TurbineMultiblockData extends MultiblockData {
         NBTUtils.setIntIfPresent(tag, SerializationConstants.VOLUME, this::setVolume);
         NBTUtils.setIntIfPresent(tag, SerializationConstants.LOWER_VOLUME, value -> lowerVolume = value);
         NBTUtils.setChemicalStackIfPresent(provider, tag, SerializationConstants.CHEMICAL, value -> chemicalTank.setStack(value));
+        NBTUtils.setFluidStackIfPresent(provider, tag, SerializationConstants.FLUID, ventTank::setStack);
         NBTUtils.setBlockPosIfPresent(tag, SerializationConstants.COMPLEX, value -> complex = value);
         NBTUtils.setFloatIfPresent(tag, SerializationConstants.ROTATION, value -> clientRotation = value);
         clientRotationMap.put(inventoryID, clientRotation);
@@ -237,6 +236,7 @@ public class TurbineMultiblockData extends MultiblockData {
         tag.putInt(SerializationConstants.VOLUME, getVolume());
         tag.putInt(SerializationConstants.LOWER_VOLUME, lowerVolume);
         tag.put(SerializationConstants.CHEMICAL, chemicalTank.getStack().saveOptional(provider));
+        tag.put(SerializationConstants.FLUID, ventTank.getFluid().saveOptional(provider));
         tag.put(SerializationConstants.COMPLEX, NbtUtils.writeBlockPos(complex));
         tag.putFloat(SerializationConstants.ROTATION, clientRotation);
     }
