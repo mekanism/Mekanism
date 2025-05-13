@@ -100,13 +100,22 @@ public interface IRadiationManager {
     /**
      * Get the radiation level (in Sv/h) at a certain location.
      *
-     * @param pos Location
+     * @param level the level to check
+     * @param pos   Location
      *
      * @return radiation level (in Sv/h).
      */
     double getRadiationLevel(Level level, BlockPos pos);
 
-    /** @deprecated Replace with {@link #getRadiationLevel(Level, BlockPos)} */
+    /**
+     * Get the radiation level (in Sv/h) at a certain location.
+     *
+     * @param pos Location
+     *
+     * @return radiation level (in Sv/h).
+     *
+     * @deprecated Replace with {@link #getRadiationLevel(Level, BlockPos)}
+     */
     @Deprecated(forRemoval = true)
     default double getRadiationLevel(GlobalPos pos) {
         Level level = backCompat$getLevel(pos.dimension());
@@ -130,6 +139,7 @@ public interface IRadiationManager {
      * Gets an unmodifiable table of the radiation sources tracked by this manager. This table keeps track of radiation sources on both a chunk and position based level.
      *
      * @return Unmodifiable table of radiation sources.
+     *
      * @deprecated please tell us how you use this so we can provide an alternative
      */
     @Deprecated(forRemoval = true)
@@ -140,6 +150,11 @@ public interface IRadiationManager {
      */
     void removeRadiationSources(Level level, int chunkX, int chunkZ);
 
+    /**
+     * Removes all radiation sources in a given chunk.
+     *
+     * @deprecated Replace with {@link #removeRadiationSources(Level, int, int)}
+     */
     @Deprecated(forRemoval = true)
     default void removeRadiationSources(Chunk3D chunk) {
         Level level = backCompat$getLevel(chunk.dimension);
@@ -151,10 +166,18 @@ public interface IRadiationManager {
     /**
      * Removes the radiation source at the given location.
      *
-     * @param pos Location.
+     * @param level The level on which to act
+     * @param pos   The location on which to act
      */
     void removeRadiationSource(Level level, BlockPos pos);
 
+    /**
+     * Removes the radiation source at the given location.
+     *
+     * @param pos Location.
+     *
+     * @deprecated Replace with {@link #removeRadiationSource(Level, BlockPos)}
+     */
     @Deprecated(forRemoval = true)
     default void removeRadiationSource(GlobalPos pos) {
         Level level = backCompat$getLevel(pos.dimension());
@@ -166,11 +189,20 @@ public interface IRadiationManager {
     /**
      * Applies a radiation source (Sv) of the given magnitude to a given location.
      *
+     * @param level     The level on which to act
      * @param pos       Location to release radiation.
      * @param magnitude Amount of radiation to apply (Sv).
      */
     void radiate(Level level, BlockPos pos, double magnitude);
 
+    /**
+     * Applies a radiation source (Sv) of the given magnitude to a given location.
+     *
+     * @param pos       Location to release radiation.
+     * @param magnitude Amount of radiation to apply (Sv).
+     *
+     * @deprecated Replace with {@link #radiate(Level, BlockPos, double)}
+     */
     @Deprecated(forRemoval = true)
     default void radiate(GlobalPos pos, double magnitude) {
         Level level = backCompat$getLevel(pos.dimension());
@@ -192,6 +224,7 @@ public interface IRadiationManager {
     /**
      * Helper to "dump" any radioactive chemicals stored in the tanks handled by the given chemical handler.
      *
+     * @param level            The level on which to act
      * @param pos              Location to dump radiation at.
      * @param chemicalHandler  Chemical handler to process the tanks of.
      * @param clearRadioactive {@code true} to clear any chemical tanks that have radioactive substances.
@@ -201,6 +234,17 @@ public interface IRadiationManager {
      */
     void dumpRadiation(Level level, BlockPos pos, IChemicalHandler chemicalHandler, boolean clearRadioactive);
 
+    /**
+     * Helper to "dump" any radioactive chemicals stored in the tanks handled by the given chemical handler.
+     *
+     * @param pos              Location to dump radiation at.
+     * @param chemicalHandler  Chemical handler to process the tanks of.
+     * @param clearRadioactive {@code true} to clear any chemical tanks that have radioactive substances.
+     *
+     * @throws RuntimeException if {@code clearRadioactive = true} and the passed in handler does not expect to have
+     *                          {@link IChemicalHandler#setChemicalInTank(int, ChemicalStack)} called wth an empty stack.
+     * @deprecated Replace with {@link #dumpRadiation(Level, BlockPos, IChemicalHandler, boolean)}
+     */
     @Deprecated(forRemoval = true)
     default void dumpRadiation(GlobalPos pos, IChemicalHandler chemicalHandler, boolean clearRadioactive) {
         Level level = backCompat$getLevel(pos.dimension());
@@ -212,12 +256,22 @@ public interface IRadiationManager {
     /**
      * Helper to "dump" any radioactive chemicals stored in the given chemical tanks.
      *
+     * @param level            The level on which to act
      * @param pos              Location to dump radiation at.
      * @param chemicalTanks    Tanks to process.
      * @param clearRadioactive {@code true} to clear any chemical tanks that have radioactive substances.
      */
     void dumpRadiation(Level level, BlockPos pos, List<IChemicalTank> chemicalTanks, boolean clearRadioactive);
 
+    /**
+     * Helper to "dump" any radioactive chemicals stored in the given chemical tanks.
+     *
+     * @param pos              Location to dump radiation at.
+     * @param chemicalTanks    Tanks to process.
+     * @param clearRadioactive {@code true} to clear any chemical tanks that have radioactive substances.
+     *
+     * @deprecated Replace with {@link #dumpRadiation(Level, BlockPos, List, boolean)}
+     */
     @Deprecated(forRemoval = true)
     default void dumpRadiation(GlobalPos pos, List<IChemicalTank> chemicalTanks, boolean clearRadioactive) {
         Level level = backCompat$getLevel(pos.dimension());
@@ -225,9 +279,11 @@ public interface IRadiationManager {
             dumpRadiation(level, pos.pos(), chemicalTanks, clearRadioactive);
         }
     }
+
     /**
      * Checks if the given {@link ChemicalStack} is radioactive and if it is dumps a proportionate amount of radiation at the given location.
      *
+     * @param level The level on which to act
      * @param pos   Location to dump radiation at.
      * @param stack Stack to check.
      *
@@ -237,6 +293,17 @@ public interface IRadiationManager {
      */
     boolean dumpRadiation(Level level, BlockPos pos, ChemicalStack stack);
 
+    /**
+     * Checks if the given {@link ChemicalStack} is radioactive and if it is dumps a proportionate amount of radiation at the given location.
+     *
+     * @param pos   Location to dump radiation at.
+     * @param stack Stack to check.
+     *
+     * @return {@code true} if the stack was radioactive and radiation got dumped.
+     *
+     * @apiNote If radiation is disabled this may still return {@code true}.
+     * @deprecated Replace with {@link #dumpRadiation(Level, BlockPos, ChemicalStack)}
+     */
     @Deprecated(forRemoval = true)
     default boolean dumpRadiation(GlobalPos pos, ChemicalStack stack) {
         Level level = backCompat$getLevel(pos.dimension());
@@ -248,7 +315,7 @@ public interface IRadiationManager {
 
     @Internal
     @Nullable
-    static Level backCompat$getLevel(ResourceKey<Level> dimension) {
+    private static Level backCompat$getLevel(ResourceKey<Level> dimension) {
         MinecraftServer currentServer = ServerLifecycleHooks.getCurrentServer();
         if (currentServer == null) {
             return null;
