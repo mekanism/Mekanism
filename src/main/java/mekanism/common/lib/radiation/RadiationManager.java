@@ -2,6 +2,9 @@ package mekanism.common.lib.radiation;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import mekanism.api.Chunk3D;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -120,6 +123,7 @@ public final class RadiationManager implements IRadiationManager {
 
     @SuppressWarnings("removal")//backcompat
     @Deprecated(forRemoval = true)
+    @Override
     public Table<Chunk3D, GlobalPos, IRadiationSource> getRadiationSources() {
         HashBasedTable<Chunk3D, GlobalPos, IRadiationSource> table = HashBasedTable.create();
 
@@ -145,6 +149,23 @@ public final class RadiationManager implements IRadiationManager {
         }
 
         return table;
+    }
+
+    @Override
+    public List<IRadiationSource> getRadiationSources(Level level, int chunkX, int chunkZ) {
+        RadiationLevelData radiationLevelData = getData(level);
+        if (radiationLevelData == null) {//Short circuit when the radiation table is empty
+            return Collections.emptyList();
+        }
+        Iterator<RadiationSource> sourceIterator = radiationLevelData.getSources(chunkX, chunkZ);
+        if (!sourceIterator.hasNext()) {
+            return Collections.emptyList();
+        }
+        List<IRadiationSource> sources = new ArrayList<>();
+        while (sourceIterator.hasNext()) {
+            sources.add(sourceIterator.next());
+        }
+        return sources;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package mekanism.api.radiation;
 
 import com.google.common.collect.Table;
+import java.util.Collections;
 import java.util.List;
 import mekanism.api.Chunk3D;
 import mekanism.api.MekanismAPI;
@@ -136,14 +137,25 @@ public interface IRadiationManager {
     double getRadiationLevel(Entity entity);
 
     /**
-     * Gets an unmodifiable table of the radiation sources tracked by this manager. This table keeps track of radiation sources on both a chunk and position based level.
+     * Generates a table of the radiation sources tracked by this manager. This table keeps track of radiation sources on both a chunk and position based level.
      *
-     * @return Unmodifiable table of radiation sources.
+     * @return Generated table of radiation sources.
      *
-     * @deprecated please tell us how you use this so we can provide an alternative
+     * @deprecated Replace with {@link #getRadiationSources(Level, int, int)}
      */
     @Deprecated(forRemoval = true)
     Table<Chunk3D, GlobalPos, IRadiationSource> getRadiationSources();
+
+    /**
+     * Gets a list of the radiation sources with a source point in the chunk. Minimise calling in hot paths.
+     *
+     * @param level  The level to check
+     * @param chunkX The X position of the Chunk
+     * @param chunkZ The Z position of the Chunk
+     *
+     * @return A new list containing the relevant sources, or {@link Collections#emptyList()} when there are none.
+     */
+    List<IRadiationSource> getRadiationSources(Level level, int chunkX, int chunkZ);
 
     /**
      * Removes all radiation sources in a given chunk.

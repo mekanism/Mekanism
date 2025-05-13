@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.IntSupplier;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.radiation.IRadiationSource;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.listener.ConfigBasedCachedIntSupplier;
 import mekanism.common.lib.collection.IndexedCuboidMap;
@@ -98,6 +99,10 @@ public class RadiationLevelData implements INBTSerializable<ListTag> {
     @Deprecated(forRemoval = true) //backcompat
     public Collection<RadiationSource> values() {
         return sources.values();
+    }
+
+    public Iterator<RadiationSource> getSources(int chunkX, int chunkZ) {
+        return sources.allCentredInChunk(chunkX, chunkZ);
     }
 
     @Override
