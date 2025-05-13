@@ -15,6 +15,14 @@ public interface IRadiationSource {
     @NotNull
     BlockPos getPosition();
 
+    /**
+     * Gets the location of this {@link IRadiationSource}.
+     * <p>
+     * Only available when retrieved via {@link IRadiationManager#getRadiationSources()}
+     *
+     * @throws UnsupportedOperationException when retrieved via non-deprecated methods
+     * @deprecated Replace with {@link #getPosition()}
+     */
     @Deprecated(forRemoval = true)
     GlobalPos getPos();
 
