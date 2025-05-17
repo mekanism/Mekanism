@@ -195,7 +195,8 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
                 }
                 return InteractionResult.SUCCESS;
             } else if (mode == ConfiguratorMode.WRENCH) { //Wrench
-                return InteractionResult.PASS;
+                IConfigurable config = WorldUtils.getCapability(world, Capabilities.CONFIGURABLE, pos, null, tile, side);
+                return config != null ? config.onSneakRightClick(player) : InteractionResult.PASS;
             }
         }
         return InteractionResult.PASS;
