@@ -39,6 +39,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
     public final CachedLongValue turbineEnergyCapacityPerVolume;
     public final CachedLongValue turbineChemicalPerTank;
     public final CachedIntValue condenserRate;
+    public final CachedLongValue turbineJoulesPerSteam;
     public final CachedIntValue turbineSteamDivisor;
 
     public final CachedLongValue energyPerFusionFuel;
@@ -142,7 +143,8 @@ public class GeneratorsConfig extends BaseMekanismConfig {
         int maxTurbine = 17 * 17 * 18;
         turbineChemicalPerTank = CachedLongValue.wrap(this, GeneratorsConfigTranslations.SERVER_TURBINE_CHEMICAL_CAPACITY.applyToBuilder(builder)
               .defineInRange("chemicalPerTank", 64L * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE / maxTurbine));
-        turbineSteamDivisor = CachedIntValue.wrap(this, GeneratorsConfigTranslations.SERVER_TURBINE_STEAM_DIVISOR.applyToBuilder(builder).defineInRange("steamDivisor", 1000, 1, Integer.MAX_VALUE));
+        turbineJoulesPerSteam = CachedLongValue.definePositive(this, builder, GeneratorsConfigTranslations.SERVER_TURBINE_JOULES_PER_STEAM, "joulesPerSteam", 5);
+        turbineSteamDivisor = CachedIntValue.wrap(this, GeneratorsConfigTranslations.SERVER_TURBINE_STEAM_DIVISOR.applyToBuilder(builder).defineInRange("steamDivisor", 100, 1, Integer.MAX_VALUE));
         builder.pop();
 
         GeneratorsConfigTranslations.SERVER_FISSION.applyToBuilder(builder).push("fission_reactor");
