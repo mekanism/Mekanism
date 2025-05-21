@@ -90,6 +90,11 @@ public abstract class ChemicalToChemicalRecipe<CHEMICAL extends Chemical<CHEMICA
     }
 
     @Override
+    public void logMissingTags() {
+        input.logMissingTags();
+    }
+
+    @Override
     public void write(FriendlyByteBuf buffer) {
         input.write(buffer);
         output.writeToPacket(buffer);

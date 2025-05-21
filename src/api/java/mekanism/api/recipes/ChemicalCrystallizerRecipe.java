@@ -143,6 +143,11 @@ public abstract class ChemicalCrystallizerRecipe extends MekanismRecipe implemen
     }
 
     @Override
+    public void logMissingTags() {
+        input.logMissingTags();
+    }
+
+    @Override
     public void write(FriendlyByteBuf buffer) {
         buffer.writeEnum(chemicalType);
         input.write(buffer);

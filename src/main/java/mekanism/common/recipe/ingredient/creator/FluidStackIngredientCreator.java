@@ -18,6 +18,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.api.recipes.ingredients.creator.IFluidStackIngredientCreator;
+import mekanism.common.Mekanism;
 import mekanism.common.network.BasePacketHandler;
 import mekanism.common.recipe.ingredient.IMultiIngredient;
 import mekanism.common.tags.TagUtils;
@@ -196,6 +197,10 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
         }
 
         @Override
+        public void logMissingTags() {
+        }
+
+        @Override
         public List<@NotNull FluidStack> getRepresentations() {
             return representations;
         }
@@ -284,6 +289,13 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
         @Override
         public boolean hasNoMatchingInstances() {
             return tag.isEmpty();
+        }
+
+        @Override
+        public void logMissingTags() {
+            if (tag.isEmpty()) {
+                Mekanism.logger.error("Empty tag: {}", tag.getKey());
+            }
         }
 
         @Override
@@ -387,6 +399,13 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
         @Override
         public boolean hasNoMatchingInstances() {
             return Arrays.stream(ingredients).allMatch(InputIngredient::hasNoMatchingInstances);
+        }
+
+        @Override
+        public void logMissingTags() {
+            for (FluidStackIngredient ingredient : ingredients) {
+                ingredient.logMissingTags();
+            }
         }
 
         @Override

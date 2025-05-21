@@ -106,6 +106,11 @@ public abstract class ElectrolysisRecipe extends MekanismRecipe implements Predi
     }
 
     @Override
+    public void logMissingTags() {
+        input.logMissingTags();
+    }
+
+    @Override
     public void write(FriendlyByteBuf buffer) {
         input.write(buffer);
         energyMultiplier.writeToBuffer(buffer);

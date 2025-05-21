@@ -84,6 +84,13 @@ public abstract class MultiChemicalStackIngredient<CHEMICAL extends Chemical<CHE
         return Arrays.stream(ingredients).allMatch(InputIngredient::hasNoMatchingInstances);
     }
 
+    @Override
+    public void logMissingTags() {
+        for (INGREDIENT ingredient : ingredients) {
+            ingredient.logMissingTags();
+        }
+    }
+
     @NotNull
     @Override
     public List<@NotNull STACK> getRepresentations() {

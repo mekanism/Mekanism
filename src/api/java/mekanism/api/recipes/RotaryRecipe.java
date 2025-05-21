@@ -256,6 +256,16 @@ public abstract class RotaryRecipe extends MekanismRecipe {
     }
 
     @Override
+    public void logMissingTags() {
+        if (hasFluidToGas) {
+            fluidInput.logMissingTags();
+        }
+        if (hasGasToFluid) {
+            gasInput.logMissingTags();
+        }
+    }
+
+    @Override
     public void write(FriendlyByteBuf buffer) {
         buffer.writeBoolean(hasFluidToGas);
         if (hasFluidToGas) {

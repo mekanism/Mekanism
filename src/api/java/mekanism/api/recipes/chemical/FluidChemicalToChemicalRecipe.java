@@ -103,6 +103,12 @@ public abstract class FluidChemicalToChemicalRecipe<CHEMICAL extends Chemical<CH
     }
 
     @Override
+    public void logMissingTags() {
+        fluidInput.logMissingTags();
+        chemicalInput.logMissingTags();
+    }
+
+    @Override
     public void write(FriendlyByteBuf buffer) {
         fluidInput.write(buffer);
         chemicalInput.write(buffer);

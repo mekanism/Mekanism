@@ -83,6 +83,11 @@ public abstract class ItemStackToEnergyRecipe extends MekanismRecipe implements 
     }
 
     @Override
+    public void logMissingTags() {
+        input.logMissingTags();
+    }
+
+    @Override
     public void write(FriendlyByteBuf buffer) {
         input.write(buffer);
         output.writeToBuffer(buffer);

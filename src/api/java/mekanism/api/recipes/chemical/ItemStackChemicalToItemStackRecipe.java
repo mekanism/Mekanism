@@ -110,6 +110,12 @@ public abstract class ItemStackChemicalToItemStackRecipe<CHEMICAL extends Chemic
     }
 
     @Override
+    public void logMissingTags() {
+        itemInput.logMissingTags();
+        chemicalInput.logMissingTags();
+    }
+
+    @Override
     public void write(FriendlyByteBuf buffer) {
         itemInput.write(buffer);
         chemicalInput.write(buffer);

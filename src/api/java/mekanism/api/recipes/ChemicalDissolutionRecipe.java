@@ -100,6 +100,12 @@ public abstract class ChemicalDissolutionRecipe extends MekanismRecipe implement
     }
 
     @Override
+    public void logMissingTags() {
+        itemInput.logMissingTags();
+        gasInput.logMissingTags();
+    }
+
+    @Override
     public void write(FriendlyByteBuf buffer) {
         itemInput.write(buffer);
         gasInput.write(buffer);

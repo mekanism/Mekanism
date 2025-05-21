@@ -12,6 +12,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismIMC;
 import mekanism.api.providers.IItemProvider;
+import mekanism.client.IncompleteRecipeScanner;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.base.IModModule;
 import mekanism.common.base.KeySync;
@@ -193,6 +194,7 @@ public class Mekanism {
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::addReloadListenersLowest);
         MinecraftForge.EVENT_BUS.addListener(this::onTagsReload);
         MinecraftForge.EVENT_BUS.addListener(MekanismPermissions::registerPermissionNodes);
+        MinecraftForge.EVENT_BUS.register(IncompleteRecipeScanner.class);
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::onConfigLoad);

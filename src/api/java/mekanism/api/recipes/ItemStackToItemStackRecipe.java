@@ -95,6 +95,11 @@ public abstract class ItemStackToItemStackRecipe extends MekanismRecipe implemen
     }
 
     @Override
+    public void logMissingTags() {
+        input.logMissingTags();
+    }
+
+    @Override
     public void write(FriendlyByteBuf buffer) {
         input.write(buffer);
         buffer.writeItem(output);

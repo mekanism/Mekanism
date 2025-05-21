@@ -16,6 +16,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IItemStackIngredientCreator;
+import mekanism.common.Mekanism;
 import mekanism.common.network.BasePacketHandler;
 import mekanism.common.recipe.ingredient.IMultiIngredient;
 import net.minecraft.network.FriendlyByteBuf;
@@ -176,6 +177,13 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
         }
 
         @Override
+        public void logMissingTags() {
+            if (hasNoMatchingInstances()) {
+                Mekanism.logger.error("Empty item ingredient: {}", ingredient.toJson());
+            }
+        }
+
+        @Override
         public List<@NotNull ItemStack> getRepresentations() {
             //TODO: Can this be cached somehow
             List<@NotNull ItemStack> representations = new ArrayList<>();
@@ -264,6 +272,13 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
         @Override
         public boolean hasNoMatchingInstances() {
             return Arrays.stream(ingredients).allMatch(InputIngredient::hasNoMatchingInstances);
+        }
+
+        @Override
+        public void logMissingTags() {
+            for (ItemStackIngredient ingredient : ingredients) {
+                ingredient.logMissingTags();
+            }
         }
 
         @Override

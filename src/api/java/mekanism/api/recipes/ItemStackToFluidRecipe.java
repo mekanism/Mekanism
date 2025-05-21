@@ -89,6 +89,11 @@ public abstract class ItemStackToFluidRecipe extends MekanismRecipe implements P
     }
 
     @Override
+    public void logMissingTags() {
+        input.logMissingTags();
+    }
+
+    @Override
     public void write(FriendlyByteBuf buffer) {
         input.write(buffer);
         output.writeToPacket(buffer);

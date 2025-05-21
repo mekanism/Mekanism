@@ -83,6 +83,11 @@ public abstract class FluidToFluidRecipe extends MekanismRecipe implements Predi
     }
 
     @Override
+    public void logMissingTags() {
+        input.logMissingTags();
+    }
+
+    @Override
     public void write(FriendlyByteBuf buffer) {
         input.write(buffer);
         output.writeToPacket(buffer);

@@ -551,6 +551,7 @@
   "constants.mekanism.log_format": "[%1$s] %2$s",
   "constants.mekanism.mod_name": "Mekanism",
   "constants.mekanism.pack_description": "Resources used for Mekanism",
+  "constants.mekanism.recipe_warning": "Broken tags in Mekanism recipes detected, please check server logs for details. You will be missing some recipes and machines may not accept expected inputs.",
   "container.mekanism.advanced_chemical_tank": "Advanced Chemical Tank",
   "container.mekanism.advanced_combining_factory": "Advanced Combining Factory",
   "container.mekanism.advanced_compressing_factory": "Advanced Compressing Factory",

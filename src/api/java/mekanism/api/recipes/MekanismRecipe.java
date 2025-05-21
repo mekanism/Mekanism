@@ -55,6 +55,8 @@ public abstract class MekanismRecipe implements Recipe<IgnoredIInventory> {//TOD
     @Override
     public abstract boolean isIncomplete();
 
+    public void logMissingTags() {}
+
     @NotNull
     @Override
     public ItemStack assemble(@NotNull IgnoredIInventory inv, @NotNull RegistryAccess registryAccess) {

@@ -51,6 +51,8 @@ public interface InputIngredient<TYPE> extends Predicate<TYPE> {
         return getRepresentations().isEmpty();
     }
 
+    default void logMissingTags(){}
+
     /**
      * Primarily for JEI, a list of valid instances of the type
      *

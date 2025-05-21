@@ -122,6 +122,11 @@ public abstract class SawmillRecipe extends MekanismRecipe implements Predicate<
     }
 
     @Override
+    public void logMissingTags() {
+        input.logMissingTags();
+    }
+
+    @Override
     public void write(FriendlyByteBuf buffer) {
         input.write(buffer);
         buffer.writeItem(mainOutput);

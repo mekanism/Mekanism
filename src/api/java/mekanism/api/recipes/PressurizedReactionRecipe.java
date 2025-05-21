@@ -151,6 +151,13 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe implement
     }
 
     @Override
+    public void logMissingTags() {
+        inputSolid.logMissingTags();
+        inputFluid.logMissingTags();
+        inputGas.logMissingTags();
+    }
+
+    @Override
     public void write(FriendlyByteBuf buffer) {
         inputSolid.write(buffer);
         inputFluid.write(buffer);

@@ -66,6 +66,10 @@ public abstract class SingleChemicalStackIngredient<CHEMICAL extends Chemical<CH
         return false;
     }
 
+    @Override
+    public void logMissingTags() {
+    }
+
     @NotNull
     @Override
     public List<@NotNull STACK> getRepresentations() {

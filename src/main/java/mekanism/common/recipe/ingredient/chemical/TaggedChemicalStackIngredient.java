@@ -10,6 +10,7 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
+import mekanism.common.Mekanism;
 import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer.IngredientType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.tags.TagKey;
@@ -67,6 +68,13 @@ public abstract class TaggedChemicalStackIngredient<CHEMICAL extends Chemical<CH
     @Override
     public boolean hasNoMatchingInstances() {
         return tag.isEmpty();
+    }
+
+    @Override
+    public void logMissingTags() {
+        if (tag.isEmpty()) {
+            Mekanism.logger.error("Empty tag: {}", tag.getKey());
+        }
     }
 
     @NotNull

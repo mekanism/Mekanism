@@ -103,6 +103,12 @@ public abstract class CombinerRecipe extends MekanismRecipe implements BiPredica
     }
 
     @Override
+    public void logMissingTags() {
+        mainInput.logMissingTags();
+        extraInput.logMissingTags();
+    }
+
+    @Override
     public void write(FriendlyByteBuf buffer) {
         mainInput.write(buffer);
         extraInput.write(buffer);
