@@ -4,6 +4,7 @@ import mekanism.api.IAlloyInteraction;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.IConfigurable;
 import mekanism.api.IEvaporationSolar;
+import mekanism.api.IWrenchable;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.heat.IHeatHandler;
@@ -77,6 +78,8 @@ public class Capabilities {
     public static final ItemCapability<IRadiationShielding, Void> RADIATION_SHIELDING = ItemCapability.createVoid(Mekanism.rl("radiation_shielding"), IRadiationShielding.class);
 
     public static final EntityCapability<IRadiationEntity, Void> RADIATION_ENTITY = EntityCapability.createVoid(Mekanism.rl("radiation"), IRadiationEntity.class);
+
+    public static final BlockCapability<IWrenchable, @Nullable Direction> WRENCHABLE = BlockCapability.createSided(Mekanism.rl("wrenchable"), IWrenchable.class);
 
     public static final ResourceLocation OWNER_OBJECT_NAME = Mekanism.rl("owner_object");
     public static final ResourceLocation SECURITY_OBJECT_NAME = Mekanism.rl("security_object");

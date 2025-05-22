@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.function.Predicate;
 import mekanism.api.Action;
 import mekanism.api.IContentsListener;
+import mekanism.api.WrenchResult;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
@@ -22,7 +23,6 @@ import mekanism.common.registries.MekanismBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.BlockCapability;
@@ -94,13 +94,13 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
     }
 
     @Override
-    public InteractionResult onSneakRightClick(Player player) {
+    public WrenchResult onSneakRightClick(Player player) {
         if (!isRemote()) {
             BoilerValveMode mode = getMode().getNext();
             setMode(mode);
             player.displayClientMessage(MekanismLang.BOILER_VALVE_MODE_CHANGE.translateColored(EnumColor.GRAY, mode), true);
         }
-        return InteractionResult.SUCCESS;
+        return WrenchResult.CONFIGURED;
     }
 
     @NotNull

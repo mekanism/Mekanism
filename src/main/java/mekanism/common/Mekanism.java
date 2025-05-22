@@ -100,16 +100,21 @@ import mekanism.common.registries.MekanismSounds;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.tile.machine.TileEntityOredictionificator.ODConfigValueInvalidationListener;
+import mekanism.common.util.WrenchUtils;
 import mekanism.common.world.GenHandler;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
+import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -124,6 +129,7 @@ import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.TagsUpdatedEvent;
+import net.neoforged.neoforge.event.entity.player.UseItemOnBlockEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
@@ -203,6 +209,7 @@ public class Mekanism {
         NeoForge.EVENT_BUS.addListener(this::onTagsReload);
         NeoForge.EVENT_BUS.addListener(this::onDataMapsUpdated);
         NeoForge.EVENT_BUS.addListener(MekanismPermissions::registerPermissionNodes);
+        NeoForge.EVENT_BUS.addListener(this::onUseItemOnBlock);
         NeoForge.EVENT_BUS.register(IncompleteRecipeScanner.class);
         modEventBus.addListener(Capabilities::registerCapabilities);
         modEventBus.addListener(this::commonSetup);
@@ -296,6 +303,16 @@ public class Mekanism {
         event.ifRegistry(MekanismAPI.CHEMICAL_REGISTRY_NAME, registry -> registry.holders().forEach(
               holder -> holder.value().updateFromDataMap(holder)
         ));
+    }
+
+    private void onUseItemOnBlock(UseItemOnBlockEvent event) {
+        final Level world = event.getLevel();
+        final BlockPos pos = event.getPos();
+        final BlockState state = world.getBlockState(pos);
+        final ItemInteractionResult result = WrenchUtils.useWrench(event.getPlayer(), world, pos, event.getItemStack(), state);
+        if (result.result() != InteractionResult.PASS) {
+            event.cancelWithResult(result);
+        }
     }
 
     private void addReloadListenersLowest(AddReloadListenerEvent event) {

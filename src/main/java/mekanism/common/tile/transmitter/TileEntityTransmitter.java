@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import mekanism.api.IAlloyInteraction;
 import mekanism.api.IConfigurable;
+import mekanism.api.WrenchResult;
 import mekanism.api.text.EnumColor;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.IAlloyTier;
@@ -41,7 +42,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -241,14 +241,13 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
         return null;
     }
 
-    @NotNull
     @Override
-    public InteractionResult onSneakRightClick(@NotNull Player player, @NotNull Direction side) {
+    public WrenchResult onSneakRightClick(@NotNull Player player, @NotNull Direction side) {
         if (!isRemote()) {
             Direction hitSide = getSideLookingAt(player);
             if (hitSide == null) {
                 if (transmitter.getConnectionTypeRaw(side) != ConnectionType.NONE) {
-                    InteractionResult result = onConfigure(player, side);
+                    WrenchResult result = onConfigure(player, side);
                     if (result.consumesAction()) {
                         //Refresh/notify so that we actually update the block and how it can connect given color or things might have changed
                         getTransmitter().refreshConnections();
@@ -267,17 +266,16 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
             player.displayClientMessage(MekanismLang.CONNECTION_TYPE.translateColored(EnumColor.GRAY, transmitter.getConnectionTypeRaw(hitSide)), true);
             sendUpdatePacket();
         }
-        return InteractionResult.SUCCESS;
+        return WrenchResult.CONFIGURED;
     }
 
-    protected InteractionResult onConfigure(Player player, Direction side) {
+    protected WrenchResult onConfigure(Player player, Direction side) {
         //TODO: Move some of this stuff back into the tiles?
         return getTransmitter().onConfigure(player, side);
     }
 
-    @NotNull
     @Override
-    public InteractionResult onRightClick(@NotNull Player player, @NotNull Direction side) {
+    public WrenchResult onRightClick(@NotNull Player player, @NotNull Direction side) {
         return getTransmitter().onRightClick(player, side);
     }
 

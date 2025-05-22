@@ -30,7 +30,7 @@ import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.base.WrenchResult;
+import mekanism.api.WrenchResult;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.InventoryUtils;
@@ -311,7 +311,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
         }
         setFacing(change);
         level.updateNeighborsAt(worldPosition, state.getBlock());
-        return WrenchResult.SUCCESS;
+        return WrenchResult.ROTATED;
     }
 
     @Override

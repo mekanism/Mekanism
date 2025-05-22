@@ -4,6 +4,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import mekanism.api.IContentsListener;
+import mekanism.api.WrenchResult;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.attachments.containers.ContainerType;
@@ -17,7 +18,6 @@ import mekanism.common.util.text.BooleanStateDisplay.InputOutput;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
@@ -57,13 +57,13 @@ public class TileEntityInductionPort extends TileEntityInductionCasing {
     }
 
     @Override
-    public InteractionResult onSneakRightClick(Player player) {
+    public WrenchResult onSneakRightClick(Player player) {
         if (!isRemote()) {
             boolean oldMode = getActive();
             setActive(!oldMode);
             player.displayClientMessage(MekanismLang.INDUCTION_PORT_MODE.translateColored(EnumColor.GRAY, InputOutput.of(oldMode, true)), true);
         }
-        return InteractionResult.SUCCESS;
+        return WrenchResult.CONFIGURED;
     }
 
     @Override

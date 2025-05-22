@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
 import java.util.Map;
 import mekanism.api.IConfigurable;
 import mekanism.api.SerializationConstants;
+import mekanism.api.WrenchResult;
 import mekanism.common.lib.multiblock.FormationProtocol.FormationResult;
 import mekanism.common.lib.multiblock.IMultiblock;
 import mekanism.common.lib.multiblock.IStructuralMultiblock;
@@ -185,9 +186,9 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     }
 
     @Override
-    public InteractionResult onRightClick(Player player) {
+    public WrenchResult onRightClick(Player player) {
         if (isRemote()) {
-            return InteractionResult.PASS;
+            return WrenchResult.PASS;
         }
         for (Structure structure : structures.values()) {
             if (structure.getController() != null) {
@@ -196,17 +197,12 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
                     FormationResult result = structure.runUpdate(this);
                     if (!result.isFormed() && result.getResultText() != null) {
                         player.sendSystemMessage(result.getResultText());
-                        return InteractionResult.sidedSuccess(isRemote());
+                        return WrenchResult.PROBED;
                     }
                 }
             }
         }
-        return InteractionResult.PASS;
-    }
-
-    @Override
-    public InteractionResult onSneakRightClick(Player player) {
-        return InteractionResult.PASS;
+        return WrenchResult.PASS;
     }
 
     @NotNull

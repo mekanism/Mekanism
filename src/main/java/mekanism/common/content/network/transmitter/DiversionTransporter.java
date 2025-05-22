@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.function.IntFunction;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.SerializationConstants;
+import mekanism.api.WrenchResult;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent.IHasEnumNameTextComponent;
@@ -23,7 +24,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ByIdMap;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -154,12 +154,12 @@ public class DiversionTransporter extends LogisticalTransporterBase {
     }
 
     @Override
-    public InteractionResult onRightClick(Player player, Direction side) {
+    public WrenchResult onRightClick(Player player, Direction side) {
         side = getTransmitterTile().getSideLookingAt(player, side);
         DiversionControl newMode = modes[side.ordinal()].getNext();
         updateMode(side, newMode);
         player.displayClientMessage(MekanismLang.TOGGLE_DIVERTER.translateColored(EnumColor.GRAY, EnumColor.RED, newMode), true);
-        return InteractionResult.SUCCESS;
+        return WrenchResult.CONFIGURED;
     }
 
     @Override

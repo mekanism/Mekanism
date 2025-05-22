@@ -13,6 +13,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
+import mekanism.api.WrenchResult;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.attachments.containers.ContainerType;
@@ -52,7 +53,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
@@ -338,15 +338,10 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     }
 
     @Override
-    public InteractionResult onSneakRightClick(Player player) {
+    public WrenchResult onSneakRightClick(Player player) {
         reset();
         player.displayClientMessage(MekanismLang.PUMP_RESET.translate(), true);
-        return InteractionResult.SUCCESS;
-    }
-
-    @Override
-    public InteractionResult onRightClick(Player player) {
-        return InteractionResult.PASS;
+        return WrenchResult.CONFIGURED;
     }
 
     @Override

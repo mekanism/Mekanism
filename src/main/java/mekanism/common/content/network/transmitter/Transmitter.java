@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.UUID;
 import mekanism.api.Chunk3D;
 import mekanism.api.SerializationConstants;
+import mekanism.api.WrenchResult;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.lib.transmitter.CompatibleTransmitterValidator;
@@ -27,7 +28,6 @@ import net.minecraft.core.GlobalPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -707,18 +707,18 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         return isConnectionType(side, getAllCurrentConnections(), currentTransmitterConnections, connectionTypes, typeToCheck);
     }
 
-    public InteractionResult onConfigure(Player player, Direction side) {
-        return InteractionResult.PASS;
+    public WrenchResult onConfigure(Player player, Direction side) {
+        return WrenchResult.PASS;
     }
 
-    public InteractionResult onRightClick(Player player, Direction side) {
+    public WrenchResult onRightClick(Player player, Direction side) {
         if (handlesRedstone()) {
             redstoneReactive = !redstoneReactive;
             refreshConnections();
             notifyTileChange();
             player.displayClientMessage(MekanismLang.REDSTONE_SENSITIVITY.translateColored(EnumColor.GRAY, EnumColor.INDIGO, OnOff.of(redstoneReactive)), true);
         }
-        return InteractionResult.SUCCESS;
+        return WrenchResult.CONFIGURED;
     }
 
     public void notifyTileChange() {

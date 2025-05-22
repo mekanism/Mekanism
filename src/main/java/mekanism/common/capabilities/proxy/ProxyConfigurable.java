@@ -1,9 +1,9 @@
 package mekanism.common.capabilities.proxy;
 
 import mekanism.api.IConfigurable;
+import mekanism.api.WrenchResult;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.core.Direction;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,29 +18,29 @@ public class ProxyConfigurable extends ProxyHandler implements IConfigurable {
     }
 
     @Override
-    public InteractionResult onSneakRightClick(Player player) {
-        return readOnly || side == null ? InteractionResult.PASS : configurable.onSneakRightClick(player, side);
+    public WrenchResult onSneakRightClick(Player player) {
+        return readOnly || side == null ? WrenchResult.PASS : configurable.onSneakRightClick(player, side);
     }
 
     @Override
-    public InteractionResult onRightClick(Player player) {
-        return readOnly || side == null ? InteractionResult.PASS : configurable.onRightClick(player, side);
+    public WrenchResult onRightClick(Player player) {
+        return readOnly || side == null ? WrenchResult.PASS : configurable.onRightClick(player, side);
     }
 
     public interface ISidedConfigurable extends IConfigurable {
 
-        InteractionResult onSneakRightClick(Player player, Direction side);
+        WrenchResult onSneakRightClick(Player player, Direction side);
 
         @Override
-        default InteractionResult onSneakRightClick(Player player) {
-            return InteractionResult.PASS;
+        default WrenchResult onSneakRightClick(Player player) {
+            return WrenchResult.PASS;
         }
 
-        InteractionResult onRightClick(Player player, Direction side);
+        WrenchResult onRightClick(Player player, Direction side);
 
         @Override
-        default InteractionResult onRightClick(Player player) {
-            return InteractionResult.PASS;
+        default WrenchResult onRightClick(Player player) {
+            return WrenchResult.PASS;
         }
     }
 }

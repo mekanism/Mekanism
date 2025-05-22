@@ -14,9 +14,11 @@ import java.util.function.ToLongFunction;
 import mekanism.api.Action;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.IContentsListener;
+import mekanism.api.IWrenchable;
 import mekanism.api.MekanismItemAbilities;
 import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
+import mekanism.api.WrenchResult;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.IMekanismChemicalHandler;
@@ -151,7 +153,7 @@ import org.jetbrains.annotations.Nullable;
 //TODO: We need to move the "supports" methods into the source interfaces so that we make sure they get checked before being used
 public abstract class TileEntityMekanism extends CapabilityTileEntity implements IFrequencyHandler, ITileDirectional, IConfigCardAccess, ITileActive, ITileSound,
       ITileRedstone, ISecurityTile, IMekanismInventory, ITileUpgradable, ITierUpgradable, IComparatorSupport, ITrackableContainer, IMekanismFluidHandler,
-      IMekanismStrictEnergyHandler, ITileHeatHandler, IMekanismChemicalHandler, IComputerTile, ITileRadioactive, Nameable {
+      IMekanismStrictEnergyHandler, ITileHeatHandler, IMekanismChemicalHandler, IComputerTile, ITileRadioactive, Nameable, IWrenchable {
 
     /**
      * The players currently using this block.
@@ -543,12 +545,13 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             AttributeStateFacing attribute = Attribute.getOrThrow(getBlockHolder(), AttributeStateFacing.class);
             if (attribute.canRotate()) {
                 setFacing(MekanismUtils.rotate(getDirection(), attribute.getFacingProperty() == BlockStateProperties.FACING));
-                return WrenchResult.SUCCESS;
+                return WrenchResult.ROTATED;
             }
         }
         return WrenchResult.PASS;
     }
 
+    @Override
     public WrenchResult tryWrench(BlockState state, Player player, ItemStack stack) {
         if (stack.isEmpty()) {
             return WrenchResult.PASS;
@@ -567,7 +570,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
         if (canRotate || canDismantle) {
             if (hasSecurity() && !IBlockSecurityUtils.INSTANCE.canAccessOrDisplayError(player, getWorldNN(), worldPosition, this)) {
-                return WrenchResult.NO_SECURITY;
+                return WrenchResult.NOT_ALLOWED;
             } else if (canDismantle) {
                 result = tryWrenchDismantle(state, player, stack);
             }

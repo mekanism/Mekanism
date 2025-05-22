@@ -6,43 +6,27 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.function.IntFunction;
-import mekanism.api.IConfigurable;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.MekanismItemAbilities;
-import mekanism.api.RelativeSide;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.inventory.IInventorySlot;
-import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.radial.IRadialDataHelper;
 import mekanism.api.radial.RadialData;
 import mekanism.api.radial.mode.IRadialMode;
-import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent.IHasEnumNameTextComponent;
 import mekanism.api.text.ILangEntry;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.block.attribute.Attribute;
-import mekanism.common.block.attribute.AttributeStateFacing;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.lib.radial.IRadialModeItem;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismDataComponents;
-import mekanism.common.tier.BinTier;
-import mekanism.common.tile.TileEntityBin;
-import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.component.config.ConfigInfo;
-import mekanism.common.tile.component.config.DataType;
-import mekanism.common.tile.interfaces.ISideConfiguration;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.common.util.WorldUtils;
+import mekanism.common.util.WrenchUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -60,8 +44,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.NotNull;
@@ -114,92 +96,14 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
         return super.canPerformAction(stack, action);
     }
 
-    @NotNull
     @Override
-    public InteractionResult useOn(UseOnContext context) {
-        Player player = context.getPlayer();
-        Level world = context.getLevel();
-        if (!world.isClientSide && player != null) {
-            BlockPos pos = context.getClickedPos();
-            Direction side = context.getClickedFace();
-            ItemStack stack = context.getItemInHand();
-            BlockEntity tile = WorldUtils.getTileEntity(world, pos);
-            ConfiguratorMode mode = getMode(stack);
-            if (mode.isConfigurating()) { //Configurate
-                TransmissionType transmissionType = Objects.requireNonNull(mode.getTransmission(), "Configurating state requires transmission type");
-                if (tile instanceof ISideConfiguration config && config.getConfig().supports(transmissionType)) {
-                    ConfigInfo info = config.getConfig().getConfig(transmissionType);
-                    if (info != null) {
-                        RelativeSide relativeSide = RelativeSide.fromDirections(config.getDirection(), side);
-                        DataType dataType = info.getDataType(relativeSide);
-                        if (!player.isShiftKeyDown()) {
-                            player.displayClientMessage(MekanismLang.CONFIGURATOR_VIEW_MODE.translateColored(EnumColor.GRAY, transmissionType, dataType.getColor(),
-                                  dataType, dataType.getColor().getColoredName()), true);
-                        } else if (!IBlockSecurityUtils.INSTANCE.canAccessOrDisplayError(player, world, pos, tile)) {
-                            return InteractionResult.FAIL;
-                        } else {
-                            DataType old = dataType;
-                            dataType = info.incrementDataType(relativeSide);
-                            if (dataType != old) {
-                                player.displayClientMessage(MekanismLang.CONFIGURATOR_TOGGLE_MODE.translateColored(EnumColor.GRAY, transmissionType, dataType.getColor(),
-                                      dataType, dataType.getColor().getColoredName()), true);
-                                config.getConfig().sideChanged(transmissionType, relativeSide);
-                            }
-                        }
-                    }
-                    return InteractionResult.SUCCESS;
-                }
-                if (!IBlockSecurityUtils.INSTANCE.canAccessOrDisplayError(player, world, pos, tile)) {
-                    return InteractionResult.FAIL;
-                }
-                IConfigurable config = WorldUtils.getCapability(world, Capabilities.CONFIGURABLE, pos, null, tile, side);
-                if (config != null) {
-                    if (player.isShiftKeyDown()) {
-                        return config.onSneakRightClick(player);
-                    }
-                    return config.onRightClick(player);
-                }
-            } else if (mode == ConfiguratorMode.EMPTY) { //Empty
-                if (tile instanceof IMekanismInventory inv && inv.hasInventory()) {
-                    if (!IBlockSecurityUtils.INSTANCE.canAccessOrDisplayError(player, world, pos, tile)) {
-                        return InteractionResult.FAIL;
-                    }
-                    boolean creative = player.isCreative();
-                    if (tile instanceof TileEntityBin bin && bin.getTier() == BinTier.CREATIVE) {
-                        //If the tile is a creative bin only allow clearing it if the player is in creative
-                        // and don't bother popping the stack out
-                        if (creative) {
-                            bin.getBinSlot().setEmpty();
-                            return InteractionResult.SUCCESS;
-                        }
-                        return InteractionResult.FAIL;
-                    }
-                    //TODO: Switch this to items being handled by TileEntityMekanism, energy handled here (via lambdas?)
-                    for (IInventorySlot inventorySlot : inv.getInventorySlots(null)) {
-                        if (!inventorySlot.isEmpty()) {
-                            InventoryUtils.dropStack(world, pos, side, inventorySlot.getStack().copy(), Block::popResourceFromFace);
-                            inventorySlot.setEmpty();
-                        }
-                    }
-                    return InteractionResult.SUCCESS;
-                }
-            } else if (mode == ConfiguratorMode.ROTATE) { //Rotate
-                if (tile instanceof TileEntityMekanism tileMekanism) {
-                    if (!tileMekanism.isDirectional()) {
-                        return InteractionResult.PASS;
-                    } else if (!IBlockSecurityUtils.INSTANCE.canAccessOrDisplayError(player, world, pos, tile)) {
-                        return InteractionResult.FAIL;
-                    } else if (Attribute.matches(tileMekanism.getBlockHolder(), AttributeStateFacing.class, AttributeStateFacing::canRotate)) {
-                        tileMekanism.setFacing(player.isShiftKeyDown() ? side.getOpposite() : side);
-                    }
-                }
-                return InteractionResult.SUCCESS;
-            } else if (mode == ConfiguratorMode.WRENCH) { //Wrench
-                IConfigurable config = WorldUtils.getCapability(world, Capabilities.CONFIGURABLE, pos, null, tile, side);
-                return config != null ? config.onSneakRightClick(player) : InteractionResult.PASS;
-            }
-        }
-        return InteractionResult.PASS;
+    public @NotNull InteractionResult useOn(UseOnContext context) {
+        final Player player = context.getPlayer();
+        final Level world = context.getLevel();
+        final ItemStack stack = context.getItemInHand();
+        final ConfiguratorMode mode = getMode(stack);
+        final boolean isClientSide = world.isClientSide;
+        return WrenchUtils.useConfigurator(player, world, context.getClickedPos(), context.getClickedFace(), mode).getInteractionResult(isClientSide);
     }
 
     @Override

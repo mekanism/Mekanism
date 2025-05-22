@@ -5,6 +5,7 @@ import java.util.UUID;
 import mekanism.api.IConfigurable;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
+import mekanism.api.WrenchResult;
 import mekanism.api.text.EnumColor;
 import mekanism.client.SparkleAnimation;
 import mekanism.common.MekanismLang;
@@ -362,20 +363,15 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     }
 
     @Override
-    public InteractionResult onRightClick(Player player) {
+    public WrenchResult onRightClick(Player player) {
         if (!isRemote() && !getMultiblock().isFormed()) {
             FormationResult result = getStructure().runUpdate(this);
             if (!result.isFormed() && result.getResultText() != null) {
                 player.sendSystemMessage(result.getResultText());
-                return InteractionResult.sidedSuccess(isRemote());
+                return WrenchResult.PROBED;
             }
         }
-        return InteractionResult.PASS;
-    }
-
-    @Override
-    public InteractionResult onSneakRightClick(Player player) {
-        return InteractionResult.PASS;
+        return WrenchResult.PASS;
     }
 
     //Methods relating to IComputerTile

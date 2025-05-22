@@ -8,6 +8,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
+import mekanism.api.WrenchResult;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.functions.ConstantPredicates;
@@ -32,7 +33,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -127,7 +127,7 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
     }
 
     @Override
-    public InteractionResult onSneakRightClick(Player player) {
+    public WrenchResult onSneakRightClick(Player player) {
         if (!isRemote()) {
             setActive(!getActive());
             Level world = getLevel();
@@ -135,12 +135,7 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
                 world.playSound(null, getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), SoundEvents.UI_BUTTON_CLICK.value(), SoundSource.BLOCKS, 0.3F, 1);
             }
         }
-        return InteractionResult.SUCCESS;
-    }
-
-    @Override
-    public InteractionResult onRightClick(Player player) {
-        return InteractionResult.PASS;
+        return WrenchResult.CONFIGURED;
     }
 
     @NotNull

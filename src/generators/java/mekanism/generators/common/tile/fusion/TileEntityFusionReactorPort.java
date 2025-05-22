@@ -4,6 +4,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import mekanism.api.IContentsListener;
+import mekanism.api.WrenchResult;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.text.EnumColor;
@@ -25,7 +26,6 @@ import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
@@ -107,13 +107,13 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock {
     }
 
     @Override
-    public InteractionResult onSneakRightClick(Player player) {
+    public WrenchResult onSneakRightClick(Player player) {
         if (!isRemote()) {
             boolean oldMode = getActive();
             setActive(!oldMode);
             player.displayClientMessage(GeneratorsLang.REACTOR_PORT_EJECT.translateColored(EnumColor.GRAY, InputOutput.of(oldMode, true)), true);
         }
-        return InteractionResult.SUCCESS;
+        return WrenchResult.CONFIGURED;
     }
 
     @Override

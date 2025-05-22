@@ -1,6 +1,7 @@
 package mekanism.common.content.network.transmitter;
 
 import mekanism.api.SerializationConstants;
+import mekanism.api.WrenchResult;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
@@ -15,7 +16,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
@@ -46,17 +46,17 @@ public class LogisticalTransporter extends LogisticalTransporterBase implements 
     }
 
     @Override
-    public InteractionResult onConfigure(Player player, Direction side) {
+    public WrenchResult onConfigure(Player player, Direction side) {
         setColor(TransporterUtils.increment(getColor()));
         PathfinderCache.onChanged(getTransmitterNetwork());
         getTransmitterTile().sendUpdatePacket();
         EnumColor color = getColor();
         player.displayClientMessage(MekanismLang.TOGGLE_COLOR.translateColored(EnumColor.GRAY, color == null ? MekanismLang.NONE.translateColored(EnumColor.WHITE) : color.getColoredName()), true);
-        return InteractionResult.SUCCESS;
+        return WrenchResult.CONFIGURED;
     }
 
     @Override
-    public InteractionResult onRightClick(Player player, Direction side) {
+    public WrenchResult onRightClick(Player player, Direction side) {
         EnumColor color = getColor();
         player.displayClientMessage(MekanismLang.CURRENT_COLOR.translateColored(EnumColor.GRAY, color == null ? MekanismLang.NONE.translateColored(EnumColor.WHITE) : color.getColoredName()), true);
         return super.onRightClick(player, side);

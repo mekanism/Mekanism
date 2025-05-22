@@ -14,7 +14,6 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -79,10 +78,7 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
             //No tile, we can just skip trying to use without an item
             return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
         }
-        ItemInteractionResult wrenchResult = bin.tryWrench(state, player, stack).getInteractionResult();
-        if (wrenchResult.result() != InteractionResult.PASS) {
-            return wrenchResult;
-        } else if (hit.getDirection() != bin.getDirection()) {
+        if (hit.getDirection() != bin.getDirection()) {
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
         if (stack.isEmpty() && player.isShiftKeyDown()) {
