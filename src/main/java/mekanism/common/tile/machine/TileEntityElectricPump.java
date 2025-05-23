@@ -53,7 +53,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameRules;
@@ -338,9 +337,12 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     }
 
     @Override
-    public WrenchResult onSneakRightClick(Player player) {
+    public WrenchResult onConfigure(ConfigureContext context) { //onSneakRightClick
+        if (!context.is(ConfigureAction.RESET)) {
+            return WrenchResult.PASS;
+        }
         reset();
-        player.displayClientMessage(MekanismLang.PUMP_RESET.translate(), true);
+        context.player().displayClientMessage(MekanismLang.PUMP_RESET.translate(), true);
         return WrenchResult.CONFIGURED;
     }
 

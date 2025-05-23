@@ -35,7 +35,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -120,7 +119,10 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     }
 
     @Override
-    public WrenchResult onSneakRightClick(Player player) {
+    public WrenchResult onConfigure(ConfigureContext context) { //onSneakRightClick
+        if (!context.is(ConfigureAction.ACTIVATE)) {
+            return WrenchResult.PASS;
+        }
         setActive(!getActive());
         Level world = getLevel();
         if (world != null) {

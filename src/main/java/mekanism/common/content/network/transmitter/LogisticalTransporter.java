@@ -6,17 +6,17 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.content.transporter.PathfinderCache;
+import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tier.TransporterTier;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.upgrade.transmitter.LogisticalTransporterUpgradeData;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.TransporterUtils;
-import net.minecraft.core.Direction;
+import mekanism.common.util.WrenchUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -45,21 +45,32 @@ public class LogisticalTransporter extends LogisticalTransporterBase implements 
         color = c;
     }
 
-    @Override
-    public WrenchResult onConfigure(Player player, Direction side) {
+    private WrenchResult onConfigureColor(ConfigureContext context) {
+        if (!context.is(ConfigureAction.COLOR)) {
+            return WrenchResult.PASS;
+        }
         setColor(TransporterUtils.increment(getColor()));
         PathfinderCache.onChanged(getTransmitterNetwork());
         getTransmitterTile().sendUpdatePacket();
         EnumColor color = getColor();
-        player.displayClientMessage(MekanismLang.TOGGLE_COLOR.translateColored(EnumColor.GRAY, color == null ? MekanismLang.NONE.translateColored(EnumColor.WHITE) : color.getColoredName()), true);
+        context.player().displayClientMessage(MekanismLang.TOGGLE_COLOR.translateColored(EnumColor.GRAY, color == null ? MekanismLang.NONE.translateColored(EnumColor.WHITE) : color.getColoredName()), true);
         return WrenchResult.CONFIGURED;
     }
 
+    private WrenchResult onConfigureProbe(ConfigureContext context) {
+        if (context.is(ConfigureAction.PROBE)) {
+            EnumColor color = getColor();
+            context.player().displayClientMessage(MekanismLang.CURRENT_COLOR.translateColored(EnumColor.GRAY, color == null ? MekanismLang.NONE.translateColored(EnumColor.WHITE) : color.getColoredName()), true);
+        }
+        return WrenchResult.PASS; //Defer to super::onConfigure
+    }
+
     @Override
-    public WrenchResult onRightClick(Player player, Direction side) {
-        EnumColor color = getColor();
-        player.displayClientMessage(MekanismLang.CURRENT_COLOR.translateColored(EnumColor.GRAY, color == null ? MekanismLang.NONE.translateColored(EnumColor.WHITE) : color.getColoredName()), true);
-        return super.onRightClick(player, side);
+    public WrenchResult onConfigure(ConfigureContext context) {
+        if (!WrenchUtils.checkType(context, TransmissionType.ITEM)) {
+            return WrenchResult.PASS;
+        }
+        return context.chain(this::onConfigureColor, this::onConfigureProbe, super::onConfigure);
     }
 
     @Nullable

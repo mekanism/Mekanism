@@ -6,6 +6,7 @@ import java.util.EnumSet;
 import java.util.Set;
 import java.util.UUID;
 import mekanism.api.Chunk3D;
+import mekanism.api.IConfigurable;
 import mekanism.api.SerializationConstants;
 import mekanism.api.WrenchResult;
 import mekanism.api.text.EnumColor;
@@ -28,14 +29,13 @@ import net.minecraft.core.GlobalPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK, TRANSMITTER>,
-      TRANSMITTER extends Transmitter<ACCEPTOR, NETWORK, TRANSMITTER>> implements ITileWrapper {
+      TRANSMITTER extends Transmitter<ACCEPTOR, NETWORK, TRANSMITTER>> implements ITileWrapper, IConfigurable {
 
     public static boolean connectionMapContainsSide(byte connections, Direction side) {
         return connectionMapContainsSide(connections, side.ordinal());
@@ -707,16 +707,16 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         return isConnectionType(side, getAllCurrentConnections(), currentTransmitterConnections, connectionTypes, typeToCheck);
     }
 
-    public WrenchResult onConfigure(Player player, Direction side) {
-        return WrenchResult.PASS;
-    }
-
-    public WrenchResult onRightClick(Player player, Direction side) {
+    @Override
+    public WrenchResult onConfigure(ConfigureContext context) {
+        if (!context.is(ConfigureAction.SENSE)) {
+            return WrenchResult.PASS;
+        }
         if (handlesRedstone()) {
             redstoneReactive = !redstoneReactive;
             refreshConnections();
             notifyTileChange();
-            player.displayClientMessage(MekanismLang.REDSTONE_SENSITIVITY.translateColored(EnumColor.GRAY, EnumColor.INDIGO, OnOff.of(redstoneReactive)), true);
+            context.player().displayClientMessage(MekanismLang.REDSTONE_SENSITIVITY.translateColored(EnumColor.GRAY, EnumColor.INDIGO, OnOff.of(redstoneReactive)), true);
         }
         return WrenchResult.CONFIGURED;
     }

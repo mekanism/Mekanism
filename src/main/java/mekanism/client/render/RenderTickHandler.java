@@ -474,7 +474,7 @@ public class RenderTickHandler {
             }
             profiler.push(ProfilerConstants.CONFIGURABLE_MACHINE);
             ConfiguratorMode state = ((ItemConfigurator) stack.getItem()).getMode(stack);
-            if (state.isConfigurating()) {
+            if (state.configurating) {
                 TransmissionType type = Objects.requireNonNull(state.getTransmission(), "Configurating state requires transmission type");
                 BlockEntity tile = WorldUtils.getTileEntity(world, pos);
                 if (tile instanceof ISideConfiguration configurable) {

@@ -42,7 +42,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.common.util.Lazy;
@@ -75,7 +74,7 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
     @Override
     public boolean canPerformAction(@NotNull ItemStack stack, @NotNull ItemAbility action) {
         if (action == MekanismItemAbilities.WRENCH_CONFIGURE) {
-            return getMode(stack).isConfigurating();
+            return getMode(stack).configurating;
         } else if (action == MekanismItemAbilities.WRENCH_CONFIGURE_CHEMICALS) {
             return getMode(stack) == ConfiguratorMode.CONFIGURATE_CHEMICALS;
         } else if (action == MekanismItemAbilities.WRENCH_CONFIGURE_ENERGY) {
@@ -97,13 +96,8 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
     }
 
     @Override
-    public @NotNull InteractionResult useOn(UseOnContext context) {
-        final Player player = context.getPlayer();
-        final Level world = context.getLevel();
-        final ItemStack stack = context.getItemInHand();
-        final ConfiguratorMode mode = getMode(stack);
-        final boolean isClientSide = world.isClientSide;
-        return WrenchUtils.useConfigurator(player, world, context.getClickedPos(), context.getClickedFace(), mode).getInteractionResult(isClientSide);
+    public @NotNull InteractionResult useOn(@NotNull UseOnContext context) {
+        return WrenchUtils.useConfigurator(context, this).getInteractionResult(context.getLevel().isClientSide);
     }
 
     @Override
@@ -150,14 +144,14 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
 
     @NothingNullByDefault
     public enum ConfiguratorMode implements IIncrementalEnum<ConfiguratorMode>, IHasEnumNameTextComponent, IRadialMode, StringRepresentable {
-        CONFIGURATE_ITEMS(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.ITEM, EnumColor.BRIGHT_GREEN, true, null),
-        CONFIGURATE_FLUIDS(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.FLUID, EnumColor.BRIGHT_GREEN, true, null),
-        CONFIGURATE_CHEMICALS(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.CHEMICAL, EnumColor.BRIGHT_GREEN, true, null),
-        CONFIGURATE_ENERGY(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.ENERGY, EnumColor.BRIGHT_GREEN, true, null),
-        CONFIGURATE_HEAT(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.HEAT, EnumColor.BRIGHT_GREEN, true, null),
-        EMPTY(MekanismLang.CONFIGURATOR_EMPTY, null, EnumColor.DARK_RED, false, MekanismUtils.getResource(ResourceType.GUI_RADIAL, "empty.png")),
-        ROTATE(MekanismLang.CONFIGURATOR_ROTATE, null, EnumColor.YELLOW, false, MekanismUtils.getResource(ResourceType.GUI_RADIAL, "rotate.png")),
-        WRENCH(MekanismLang.CONFIGURATOR_WRENCH, null, EnumColor.PINK, false, MekanismUtils.getResource(ResourceType.GUI_RADIAL, "wrench.png"));
+        CONFIGURATE_ITEMS(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.ITEM, EnumColor.BRIGHT_GREEN, null),
+        CONFIGURATE_FLUIDS(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.FLUID, EnumColor.BRIGHT_GREEN, null),
+        CONFIGURATE_CHEMICALS(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.CHEMICAL, EnumColor.BRIGHT_GREEN, null),
+        CONFIGURATE_ENERGY(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.ENERGY, EnumColor.BRIGHT_GREEN, null),
+        CONFIGURATE_HEAT(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.HEAT, EnumColor.BRIGHT_GREEN, null),
+        EMPTY(MekanismLang.CONFIGURATOR_EMPTY, null, EnumColor.DARK_RED, MekanismUtils.getResource(ResourceType.GUI_RADIAL, "empty.png")),
+        ROTATE(MekanismLang.CONFIGURATOR_ROTATE, null, EnumColor.YELLOW, MekanismUtils.getResource(ResourceType.GUI_RADIAL, "rotate.png")),
+        WRENCH(MekanismLang.CONFIGURATOR_WRENCH, null, EnumColor.PINK, MekanismUtils.getResource(ResourceType.GUI_RADIAL, "wrench.png"));
 
         public static final Codec<ConfiguratorMode> CODEC = StringRepresentable.fromEnum(ConfiguratorMode::values);
         public static final IntFunction<ConfiguratorMode> BY_ID = ByIdMap.continuous(ConfiguratorMode::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
@@ -168,15 +162,15 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
         @Nullable
         private final TransmissionType transmissionType;
         private final EnumColor color;
-        private final boolean configurating;
+        public final boolean configurating;
         private final ResourceLocation icon;
 
-        ConfiguratorMode(ILangEntry langEntry, @Nullable TransmissionType transmissionType, EnumColor color, boolean configurating, @Nullable ResourceLocation icon) {
+        ConfiguratorMode(ILangEntry langEntry, @Nullable TransmissionType transmissionType, EnumColor color, @Nullable ResourceLocation icon) {
             this.serializedName = name().toLowerCase(Locale.ROOT);
             this.langEntry = langEntry;
             this.transmissionType = transmissionType;
             this.color = color;
-            this.configurating = configurating;
+            this.configurating = transmissionType != null;
             if (transmissionType == null) {
                 this.icon = Objects.requireNonNull(icon, "Icon should only be null if there is a transmission type present.");
             } else {
@@ -195,10 +189,6 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
         @Override
         public EnumColor color() {
             return color;
-        }
-
-        public boolean isConfigurating() {
-            return configurating;
         }
 
         @Nullable

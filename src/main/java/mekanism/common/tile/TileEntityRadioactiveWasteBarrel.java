@@ -33,7 +33,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
@@ -127,7 +126,10 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
     }
 
     @Override
-    public WrenchResult onSneakRightClick(Player player) {
+    public WrenchResult onConfigure(ConfigureContext context) { //onSneakRightClick
+        if (!context.is(ConfigureAction.ACTIVATE)) {
+            return WrenchResult.PASS;
+        }
         if (!isRemote()) {
             setActive(!getActive());
             Level world = getLevel();

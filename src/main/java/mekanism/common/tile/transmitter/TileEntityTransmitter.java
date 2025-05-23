@@ -20,7 +20,6 @@ import mekanism.common.block.transmitter.BlockLargeTransmitter;
 import mekanism.common.block.transmitter.BlockSmallTransmitter;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.proxy.ProxyConfigurable;
-import mekanism.common.capabilities.proxy.ProxyConfigurable.ISidedConfigurable;
 import mekanism.common.capabilities.resolver.BasicSidedCapabilityResolver;
 import mekanism.common.content.network.transmitter.BufferedTransmitter;
 import mekanism.common.content.network.transmitter.IUpgradeableTransmitter;
@@ -54,7 +53,7 @@ import net.neoforged.neoforge.client.model.data.ModelProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class TileEntityTransmitter extends CapabilityTileEntity implements ISidedConfigurable, IAlloyInteraction {
+public abstract class TileEntityTransmitter extends CapabilityTileEntity implements IConfigurable, IAlloyInteraction {
 
     public static final ICapabilityProvider<TileEntityTransmitter, @Nullable Direction, IConfigurable> CONFIGURABLE_PROVIDER =
           capabilityProvider(Capabilities.CONFIGURABLE, (tile, cap) -> new BasicSidedCapabilityResolver<>(tile, cap, ProxyConfigurable::new));
@@ -242,41 +241,28 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
     }
 
     @Override
-    public WrenchResult onSneakRightClick(@NotNull Player player, @NotNull Direction side) {
-        if (!isRemote()) {
-            Direction hitSide = getSideLookingAt(player);
+    public WrenchResult onConfigure(ConfigureContext context) { //onSneakRightClick
+        if (context.is(ConfigureAction.COLOR, ConfigureAction.PROBE)) {
+            return getTransmitter().onConfigure(context);
+        }
+        final boolean disconnect = context.is(ConfigureAction.CONNECT);
+        if ((disconnect || context.is(ConfigureAction.PLUMB)) && !isRemote()) {
+            Direction hitSide = getSideLookingAt(context.player());
             if (hitSide == null) {
-                if (transmitter.getConnectionTypeRaw(side) != ConnectionType.NONE) {
-                    WrenchResult result = onConfigure(player, side);
-                    if (result.consumesAction()) {
-                        //Refresh/notify so that we actually update the block and how it can connect given color or things might have changed
-                        getTransmitter().refreshConnections();
-                        getTransmitter().notifyTileChange();
-                        return result;
-                    }
-                }
-                hitSide = side;
+                hitSide = context.side();
             }
-            transmitter.setConnectionTypeRaw(hitSide, transmitter.getConnectionTypeRaw(hitSide).getNext());
+            final ConnectionType currentType = transmitter.getConnectionTypeRaw(hitSide);
+            final ConnectionType nextType = disconnect ? currentType.cycle(ConnectionType.NONE) : currentType.getNext();
+            transmitter.setConnectionTypeRaw(hitSide, nextType);
             //Note: This stuff happens here and not in sideChanged because we don't want it to happen on load
             // or things which also would cause sideChanged to be called
             getTransmitter().onModeChange(Direction.from3DDataValue(hitSide.ordinal()));
             getTransmitter().refreshConnections();
             getTransmitter().notifyTileChange();
-            player.displayClientMessage(MekanismLang.CONNECTION_TYPE.translateColored(EnumColor.GRAY, transmitter.getConnectionTypeRaw(hitSide)), true);
+            context.player().displayClientMessage(MekanismLang.CONNECTION_TYPE.translateColored(EnumColor.GRAY, transmitter.getConnectionTypeRaw(hitSide)), true);
             sendUpdatePacket();
         }
         return WrenchResult.CONFIGURED;
-    }
-
-    protected WrenchResult onConfigure(Player player, Direction side) {
-        //TODO: Move some of this stuff back into the tiles?
-        return getTransmitter().onConfigure(player, side);
-    }
-
-    @Override
-    public WrenchResult onRightClick(@NotNull Player player, @NotNull Direction side) {
-        return getTransmitter().onRightClick(player, side);
     }
 
     public List<VoxelShape> getCollisionBoxes() {

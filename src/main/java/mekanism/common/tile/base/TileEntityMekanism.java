@@ -136,6 +136,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.Nameable;
 import net.minecraft.world.entity.player.Player;
@@ -539,7 +540,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return WrenchResult.PASS;
     }
 
-    protected WrenchResult tryWrenchRotate(BlockState state, Player player, ItemStack stack) {
+    protected WrenchResult tryWrenchRotate(BlockState state, Player player, ItemStack stack, InteractionHand hand) {
         //Special ITileDirectional handling
         if (isDirectional()) {
             AttributeStateFacing attribute = Attribute.getOrThrow(getBlockHolder(), AttributeStateFacing.class);
@@ -552,7 +553,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Override
-    public WrenchResult tryWrench(BlockState state, Player player, ItemStack stack) {
+    public WrenchResult tryWrench(BlockState state, Player player, ItemStack stack, InteractionHand hand) {
         if (stack.isEmpty()) {
             return WrenchResult.PASS;
         }
@@ -571,11 +572,10 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         if (canRotate || canDismantle) {
             if (hasSecurity() && !IBlockSecurityUtils.INSTANCE.canAccessOrDisplayError(player, getWorldNN(), worldPosition, this)) {
                 return WrenchResult.NOT_ALLOWED;
-            } else if (canDismantle) {
-                result = tryWrenchDismantle(state, player, stack);
-            }
-            if (result == WrenchResult.PASS && canRotate) {
-                result = tryWrenchRotate(state, player, stack);
+            } else if (canDismantle && (result = tryWrenchDismantle(state, player, stack)) != WrenchResult.PASS) {
+                return result;
+            } else if (canRotate && (result = tryWrenchRotate(state, player, stack, hand)) != WrenchResult.PASS) {
+                return result;
             }
         }
         return result;

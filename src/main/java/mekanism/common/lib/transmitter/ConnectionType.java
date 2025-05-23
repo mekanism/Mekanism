@@ -14,6 +14,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ByIdMap;
+import net.minecraft.util.ByIdMap.OutOfBoundsStrategy;
 import net.minecraft.util.StringRepresentable;
 
 @NothingNullByDefault
@@ -23,7 +24,7 @@ public enum ConnectionType implements IIncrementalEnum<ConnectionType>, StringRe
     PULL(MekanismLang.CONNECTION_PULL, EnumColor.YELLOW),
     NONE(MekanismLang.CONNECTION_NONE, EnumColor.WHITE);
 
-    public static final IntFunction<ConnectionType> BY_ID = ByIdMap.continuous(ConnectionType::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+    public static final IntFunction<ConnectionType> BY_ID = ByIdMap.continuous(ConnectionType::ordinal, values(), OutOfBoundsStrategy.WRAP);
     public static final StreamCodec<ByteBuf, ConnectionType> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, ConnectionType::ordinal);
 
     private final ILangEntry langEntry;
@@ -66,5 +67,18 @@ public enum ConnectionType implements IIncrementalEnum<ConnectionType>, StringRe
      */
     public boolean canSendTo() {
         return this == NORMAL || this == PUSH;
+    }
+
+    public ConnectionType opposite() {
+        return switch (this) {
+            case NORMAL -> NONE;
+            case PUSH -> PULL;
+            case PULL -> PUSH;
+            case NONE -> NORMAL;
+        };
+    }
+
+    public ConnectionType cycle(ConnectionType first) {
+        return this != first ? first : first.opposite();
     }
 }

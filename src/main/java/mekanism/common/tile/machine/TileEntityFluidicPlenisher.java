@@ -46,7 +46,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.LiquidBlockContainer;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -270,9 +269,12 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     }
 
     @Override
-    public WrenchResult onSneakRightClick(Player player) {
+    public WrenchResult onConfigure(ConfigureContext context) { //onSneakRightClick
+        if (!context.is(ConfigureAction.RESET)) {
+            return WrenchResult.PASS;
+        }
         reset();
-        player.displayClientMessage(MekanismLang.PLENISHER_RESET.translate(), true);
+        context.player().displayClientMessage(MekanismLang.PLENISHER_RESET.translate(), true);
         return WrenchResult.CONFIGURED;
     }
 

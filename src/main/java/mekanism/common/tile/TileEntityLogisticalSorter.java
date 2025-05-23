@@ -46,6 +46,7 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -298,7 +299,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
     }
 
     @Override
-    protected WrenchResult tryWrenchRotate(BlockState state, Player player, ItemStack stack) {
+    protected WrenchResult tryWrenchRotate(BlockState state, Player player, ItemStack stack, InteractionHand hand) {
         Direction change = MekanismUtils.rotate(getDirection(), true);
         if (!hasConnectedInventory()) {
             for (Direction dir : EnumUtils.DIRECTIONS) {

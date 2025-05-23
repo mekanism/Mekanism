@@ -26,7 +26,6 @@ import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import org.jetbrains.annotations.NotNull;
@@ -107,11 +106,14 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock {
     }
 
     @Override
-    public WrenchResult onSneakRightClick(Player player) {
+    public WrenchResult onConfigure(ConfigureContext context) { //onSneakRightClick
+        if (!context.is(ConfigureAction.ACTIVATE)) {
+            return WrenchResult.PASS;
+        }
         if (!isRemote()) {
             boolean oldMode = getActive();
             setActive(!oldMode);
-            player.displayClientMessage(GeneratorsLang.REACTOR_PORT_EJECT.translateColored(EnumColor.GRAY, InputOutput.of(oldMode, true)), true);
+            context.player().displayClientMessage(GeneratorsLang.REACTOR_PORT_EJECT.translateColored(EnumColor.GRAY, InputOutput.of(oldMode, true)), true);
         }
         return WrenchResult.CONFIGURED;
     }

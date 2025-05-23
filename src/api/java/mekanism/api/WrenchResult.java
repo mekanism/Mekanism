@@ -22,13 +22,6 @@ public enum WrenchResult {
         };
     }
 
-    public boolean consumesAction() {
-        return switch (this) {
-            case PASS, NOT_ALLOWED, RADIOACTIVE -> false;
-            default -> true;
-        };
-    }
-
     public ItemInteractionResult getItemInteractionResult() {
         return switch (this) {
             case PASS -> ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;

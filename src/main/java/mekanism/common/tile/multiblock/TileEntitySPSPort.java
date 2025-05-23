@@ -24,7 +24,6 @@ import mekanism.common.util.text.BooleanStateDisplay.InputOutput;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import org.jetbrains.annotations.NotNull;
@@ -84,11 +83,14 @@ public class TileEntitySPSPort extends TileEntitySPSCasing {
     }
 
     @Override
-    public WrenchResult onSneakRightClick(Player player) {
+    public WrenchResult onConfigure(ConfigureContext context) { //onSneakRightClick
+        if (!context.is(ConfigureAction.ACTIVATE)) {
+            return WrenchResult.PASS;
+        }
         if (!isRemote()) {
             boolean oldMode = getActive();
             setActive(!oldMode);
-            player.displayClientMessage(MekanismLang.SPS_PORT_MODE.translateColored(EnumColor.GRAY, InputOutput.of(oldMode, true)), true);
+            context.player().displayClientMessage(MekanismLang.SPS_PORT_MODE.translateColored(EnumColor.GRAY, InputOutput.of(oldMode, true)), true);
         }
         return WrenchResult.CONFIGURED;
     }

@@ -363,11 +363,14 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     }
 
     @Override
-    public WrenchResult onRightClick(Player player) {
+    public WrenchResult onConfigure(ConfigureContext context) { //onRightClick
+        if (!context.is(ConfigureAction.PROBE)) {
+            return WrenchResult.PASS;
+        }
         if (!isRemote() && !getMultiblock().isFormed()) {
             FormationResult result = getStructure().runUpdate(this);
             if (!result.isFormed() && result.getResultText() != null) {
-                player.sendSystemMessage(result.getResultText());
+                context.player().sendSystemMessage(result.getResultText());
                 return WrenchResult.PROBED;
             }
         }

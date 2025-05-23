@@ -1,11 +1,11 @@
 package mekanism.generators.common.tile.fusion;
 
+import mekanism.api.IConfigurable;
 import mekanism.api.WrenchResult;
 import mekanism.api.lasers.ILaserReceptor;
 import mekanism.generators.common.content.fusion.FusionReactorMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityLaserFocusMatrix extends TileEntityFusionReactorBlock implements ILaserReceptor {
@@ -23,15 +23,18 @@ public class TileEntityLaserFocusMatrix extends TileEntityFusionReactorBlock imp
     }
 
     @Override
-    public WrenchResult onRightClick(Player player) {
-        if (!isRemote() && player.isCreative()) {
+    public WrenchResult onConfigure(ConfigureContext context) { //onRightClick
+        if (!context.is(ConfigureAction.ACTIVATE)) {
+            return WrenchResult.PASS;
+        }
+        if (!isRemote() && context.player().isCreative()) {
             FusionReactorMultiblockData multiblock = getMultiblock();
             if (multiblock.isFormed()) {
                 multiblock.setPlasmaTemp(1_000_000_000);
                 return WrenchResult.PROBED;
             }
         }
-        return super.onRightClick(player);
+        return WrenchResult.PASS;
     }
 
     @Override

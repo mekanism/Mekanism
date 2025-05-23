@@ -154,9 +154,13 @@ public class DiversionTransporter extends LogisticalTransporterBase {
     }
 
     @Override
-    public WrenchResult onRightClick(Player player, Direction side) {
-        side = getTransmitterTile().getSideLookingAt(player, side);
-        DiversionControl newMode = modes[side.ordinal()].getNext();
+    public WrenchResult onConfigure(ConfigureContext context) {
+        if (!context.is(ConfigureAction.SENSE)) {
+            return WrenchResult.PASS;
+        }
+        final Player player = context.player();
+        final Direction side = getTransmitterTile().getSideLookingAt(player, context.side());
+        final DiversionControl newMode = modes[side.ordinal()].getNext();
         updateMode(side, newMode);
         player.displayClientMessage(MekanismLang.TOGGLE_DIVERTER.translateColored(EnumColor.GRAY, EnumColor.RED, newMode), true);
         return WrenchResult.CONFIGURED;

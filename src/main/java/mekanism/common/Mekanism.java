@@ -103,6 +103,7 @@ import mekanism.common.tile.machine.TileEntityOredictionificator.ODConfigValueIn
 import mekanism.common.util.WrenchUtils;
 import mekanism.common.world.GenHandler;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.cauldron.CauldronInteraction;
@@ -308,8 +309,9 @@ public class Mekanism {
     private void onUseItemOnBlock(UseItemOnBlockEvent event) {
         final Level world = event.getLevel();
         final BlockPos pos = event.getPos();
+        final Direction side = event.getFace();
         final BlockState state = world.getBlockState(pos);
-        final ItemInteractionResult result = WrenchUtils.useWrench(event.getPlayer(), world, pos, event.getItemStack(), state);
+        final ItemInteractionResult result = WrenchUtils.useWrench(event.getPlayer(), world, pos, side, event.getItemStack(), state, event.getHand());
         if (result.result() != InteractionResult.PASS) {
             event.cancelWithResult(result);
         }

@@ -186,19 +186,20 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     }
 
     @Override
-    public WrenchResult onRightClick(Player player) {
-        if (isRemote()) {
+    public WrenchResult onConfigure(ConfigureContext context) { //Right-click
+        if (!context.is(ConfigureAction.PROBE) || isRemote()) {
             return WrenchResult.PASS;
         }
         for (Structure structure : structures.values()) {
-            if (structure.getController() != null) {
-                MultiblockData multiblock = getMultiblockData(structure);
-                if (multiblock == null || !multiblock.isFormed()) {
-                    FormationResult result = structure.runUpdate(this);
-                    if (!result.isFormed() && result.getResultText() != null) {
-                        player.sendSystemMessage(result.getResultText());
-                        return WrenchResult.PROBED;
-                    }
+            if (structure.getController() == null) {
+                continue;
+            }
+            MultiblockData multiblock = getMultiblockData(structure);
+            if (multiblock == null || !multiblock.isFormed()) {
+                FormationResult result = structure.runUpdate(this);
+                if (!result.isFormed() && result.getResultText() != null) {
+                    context.player().sendSystemMessage(result.getResultText());
+                    return WrenchResult.PROBED;
                 }
             }
         }
