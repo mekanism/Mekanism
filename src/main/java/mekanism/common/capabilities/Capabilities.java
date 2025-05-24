@@ -105,8 +105,8 @@ public class Capabilities {
             TileEntityBoundingBlock.proxyCapability(event, capability);
         }
         //Note: Common caps we may eventually want to proxy but currently have no use for doing so
-        /*TileEntityBoundingBlock.proxyCapability(event, FluidHandler.BLOCK);
-        TileEntityBoundingBlock.proxyCapability(event, CHEMICAL_HANDLER.block());
-        TileEntityBoundingBlock.proxyCapability(event, HEAT_HANDLER.block());*/
+        TileEntityBoundingBlock.proxyCapability(event, FluidHandler.BLOCK);
+        TileEntityBoundingBlock.proxyCapability(event, CHEMICAL.block());
+        TileEntityBoundingBlock.proxyCapability(event, HEAT);
     }
 }

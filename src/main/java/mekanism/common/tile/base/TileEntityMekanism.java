@@ -224,18 +224,18 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     //Variables for handling IMekanismChemicalHandler
     @Nullable
-    private final ChemicalHandlerManager chemicalHandlerManager;
+    protected final ChemicalHandlerManager chemicalHandlerManager;
     private float radiationScale;
     //End variables IMekanismChemicalHandler
 
     //Variables for handling IMekanismFluidHandler
     @Nullable
-    private final FluidHandlerManager fluidHandlerManager;
+    protected final FluidHandlerManager fluidHandlerManager;
     //End variables IMekanismFluidHandler
 
     //Variables for handling IMekanismStrictEnergyHandler
     @Nullable
-    private final EnergyHandlerManager energyHandlerManager;
+    protected final EnergyHandlerManager energyHandlerManager;
     private final LastEnergyTracker lastEnergyTracker = new LastEnergyTracker();
     //End variables IMekanismStrictEnergyHandler
 
