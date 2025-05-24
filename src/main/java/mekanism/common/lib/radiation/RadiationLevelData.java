@@ -96,7 +96,7 @@ public class RadiationLevelData implements INBTSerializable<ListTag> {
         this.sources.clear();
     }
 
-    @Deprecated(forRemoval = true) //backcompat
+    @Deprecated(forRemoval = true, since = "10.7.15") //backcompat
     public Collection<RadiationSource> values() {
         return sources.values();
     }

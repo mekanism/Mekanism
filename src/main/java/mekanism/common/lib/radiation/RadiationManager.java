@@ -122,7 +122,7 @@ public final class RadiationManager implements IRadiationManager {
     }
 
     @SuppressWarnings("removal")//backcompat
-    @Deprecated(forRemoval = true)
+    @Deprecated(forRemoval = true, since = "10.7.15")
     @Override
     public Table<Chunk3D, GlobalPos, IRadiationSource> getRadiationSources() {
         HashBasedTable<Chunk3D, GlobalPos, IRadiationSource> table = HashBasedTable.create();

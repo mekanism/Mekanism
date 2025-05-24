@@ -23,7 +23,7 @@ public interface IRadiationSource {
      * @throws UnsupportedOperationException when retrieved via non-deprecated methods
      * @deprecated Replace with {@link #getPosition()}
      */
-    @Deprecated(forRemoval = true)
+    @Deprecated(forRemoval = true, since = "10.7.15")
     GlobalPos getPos();
 
     /**

@@ -117,7 +117,7 @@ public interface IRadiationManager {
      *
      * @deprecated Replace with {@link #getRadiationLevel(Level, BlockPos)}
      */
-    @Deprecated(forRemoval = true)
+    @Deprecated(forRemoval = true, since = "10.7.15")
     default double getRadiationLevel(GlobalPos pos) {
         Level level = backCompat$getLevel(pos.dimension());
         if (level != null) {
@@ -143,7 +143,7 @@ public interface IRadiationManager {
      *
      * @deprecated Replace with {@link #getRadiationSources(Level, int, int)}
      */
-    @Deprecated(forRemoval = true)
+    @Deprecated(forRemoval = true, since = "10.7.15")
     Table<Chunk3D, GlobalPos, IRadiationSource> getRadiationSources();
 
     /**
@@ -167,7 +167,7 @@ public interface IRadiationManager {
      *
      * @deprecated Replace with {@link #removeRadiationSources(Level, int, int)}
      */
-    @Deprecated(forRemoval = true)
+    @Deprecated(forRemoval = true, since = "10.7.15")
     default void removeRadiationSources(Chunk3D chunk) {
         Level level = backCompat$getLevel(chunk.dimension);
         if (level != null) {
@@ -190,7 +190,7 @@ public interface IRadiationManager {
      *
      * @deprecated Replace with {@link #removeRadiationSource(Level, BlockPos)}
      */
-    @Deprecated(forRemoval = true)
+    @Deprecated(forRemoval = true, since = "10.7.15")
     default void removeRadiationSource(GlobalPos pos) {
         Level level = backCompat$getLevel(pos.dimension());
         if (level != null) {
@@ -215,7 +215,7 @@ public interface IRadiationManager {
      *
      * @deprecated Replace with {@link #radiate(Level, BlockPos, double)}
      */
-    @Deprecated(forRemoval = true)
+    @Deprecated(forRemoval = true, since = "10.7.15")
     default void radiate(GlobalPos pos, double magnitude) {
         Level level = backCompat$getLevel(pos.dimension());
         if (level != null) {
@@ -257,7 +257,7 @@ public interface IRadiationManager {
      *                          {@link IChemicalHandler#setChemicalInTank(int, ChemicalStack)} called wth an empty stack.
      * @deprecated Replace with {@link #dumpRadiation(Level, BlockPos, IChemicalHandler, boolean)}
      */
-    @Deprecated(forRemoval = true)
+    @Deprecated(forRemoval = true, since = "10.7.15")
     default void dumpRadiation(GlobalPos pos, IChemicalHandler chemicalHandler, boolean clearRadioactive) {
         Level level = backCompat$getLevel(pos.dimension());
         if (level != null) {
@@ -284,7 +284,7 @@ public interface IRadiationManager {
      *
      * @deprecated Replace with {@link #dumpRadiation(Level, BlockPos, List, boolean)}
      */
-    @Deprecated(forRemoval = true)
+    @Deprecated(forRemoval = true, since = "10.7.15")
     default void dumpRadiation(GlobalPos pos, List<IChemicalTank> chemicalTanks, boolean clearRadioactive) {
         Level level = backCompat$getLevel(pos.dimension());
         if (level != null) {
@@ -316,7 +316,7 @@ public interface IRadiationManager {
      * @apiNote If radiation is disabled this may still return {@code true}.
      * @deprecated Replace with {@link #dumpRadiation(Level, BlockPos, ChemicalStack)}
      */
-    @Deprecated(forRemoval = true)
+    @Deprecated(forRemoval = true, since = "10.7.15")
     default boolean dumpRadiation(GlobalPos pos, ChemicalStack stack) {
         Level level = backCompat$getLevel(pos.dimension());
         if (level != null) {
