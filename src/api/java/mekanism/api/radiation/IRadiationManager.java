@@ -105,6 +105,8 @@ public interface IRadiationManager {
      * @param pos   Location
      *
      * @return radiation level (in Sv/h).
+     *
+     * @since 10.7.15
      */
     double getRadiationLevel(Level level, BlockPos pos);
 
@@ -154,11 +156,15 @@ public interface IRadiationManager {
      * @param chunkZ The Z position of the Chunk
      *
      * @return A new list containing the relevant sources, or {@link Collections#emptyList()} when there are none.
+     *
+     * @since 10.7.15
      */
     List<IRadiationSource> getRadiationSources(Level level, int chunkX, int chunkZ);
 
     /**
      * Removes all radiation sources in a given chunk.
+     *
+     * @since 10.7.15
      */
     void removeRadiationSources(Level level, int chunkX, int chunkZ);
 
@@ -180,6 +186,8 @@ public interface IRadiationManager {
      *
      * @param level The level on which to act
      * @param pos   The location on which to act
+     *
+     * @since 10.7.15
      */
     void removeRadiationSource(Level level, BlockPos pos);
 
@@ -204,6 +212,8 @@ public interface IRadiationManager {
      * @param level     The level on which to act
      * @param pos       Location to release radiation.
      * @param magnitude Amount of radiation to apply (Sv).
+     *
+     * @since 10.7.15
      */
     void radiate(Level level, BlockPos pos, double magnitude);
 
@@ -243,6 +253,7 @@ public interface IRadiationManager {
      *
      * @throws RuntimeException if {@code clearRadioactive = true} and the passed in handler does not expect to have
      *                          {@link IChemicalHandler#setChemicalInTank(int, ChemicalStack)} called wth an empty stack.
+     * @since 10.7.15
      */
     void dumpRadiation(Level level, BlockPos pos, IChemicalHandler chemicalHandler, boolean clearRadioactive);
 
@@ -272,6 +283,8 @@ public interface IRadiationManager {
      * @param pos              Location to dump radiation at.
      * @param chemicalTanks    Tanks to process.
      * @param clearRadioactive {@code true} to clear any chemical tanks that have radioactive substances.
+     *
+     * @since 10.7.15
      */
     void dumpRadiation(Level level, BlockPos pos, List<IChemicalTank> chemicalTanks, boolean clearRadioactive);
 
@@ -302,6 +315,7 @@ public interface IRadiationManager {
      * @return {@code true} if the stack was radioactive and radiation got dumped.
      *
      * @apiNote If radiation is disabled this may still return {@code true}.
+     * @since 10.7.15
      */
     boolean dumpRadiation(Level level, BlockPos pos, ChemicalStack stack);
 

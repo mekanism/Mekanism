@@ -11,6 +11,8 @@ public interface IRadiationSource {
 
     /**
      * Gets the location of this {@link IRadiationSource}.
+     *
+     * @since 10.7.15
      */
     @NotNull
     BlockPos getPosition();
