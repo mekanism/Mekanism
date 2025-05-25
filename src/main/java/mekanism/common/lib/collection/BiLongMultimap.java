@@ -17,7 +17,7 @@ import java.util.Set;
  * Like {@link BiMultimap} but with long as key, using FastUtils
  * @param <V> the value type
  */
-public class BiMultiLongmap<V> {
+public class BiLongMultimap<V> {
 
     private final Long2ObjectSortedMap<Set<V>> map = new Long2ObjectAVLTreeMap<>();
     private final Map<V, LongSortedSet> reverseMap = new HashMap<>();

@@ -28,7 +28,7 @@ import org.jetbrains.annotations.VisibleForTesting;
 @NothingNullByDefault
 public class IndexedCuboidMap<VALUE> {
 
-    private final BiMultiLongmap<CentredBoundingBox> chunkIndex = new BiMultiLongmap<>();
+    private final BiLongMultimap<CentredBoundingBox> chunkIndex = new BiLongMultimap<>();
     private final Map<CentredBoundingBox, VALUE> valueMap = new HashMap<>();
 
     /**

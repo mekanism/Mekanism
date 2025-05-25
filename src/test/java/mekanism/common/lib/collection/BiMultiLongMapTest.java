@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 public class BiMultiLongMapTest {
     @Test
     void testSingleValue() {
-        BiMultiLongmap<String> map = new BiMultiLongmap<>();
+        BiLongMultimap<String> map = new BiLongMultimap<>();
         String first = "first";
         map.put(1, first);
         map.putAll(new long[]{2, 3}, first);
@@ -32,7 +32,7 @@ public class BiMultiLongMapTest {
 
     @Test
     void testMultipleValues() {
-        BiMultiLongmap<String> map = new BiMultiLongmap<>();
+        BiLongMultimap<String> map = new BiLongMultimap<>();
         String first = "first";
         String second = "second";
         String third = "third";
