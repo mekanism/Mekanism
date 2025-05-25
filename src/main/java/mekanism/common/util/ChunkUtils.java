@@ -2,12 +2,11 @@ package mekanism.common.util;
 
 import net.minecraft.world.level.ChunkPos;
 
-/**
- * Created by Thiakil on 2/05/2025.
- */
 public class ChunkUtils {
 
-    //adapted from ChunkPos.rangeClosed
+    /**
+     * Adapted from {@link ChunkPos#rangeClosed} to avoid Stream city
+     */
     public static long[] rangeClosed(final int startX, int startZ, final int endX, final int endZ) {
         int sizeX = Math.abs(startX - endX) + 1;
         int sizeZ = Math.abs(startZ - endZ) + 1;

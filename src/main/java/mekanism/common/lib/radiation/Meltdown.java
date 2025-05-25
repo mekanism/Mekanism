@@ -72,7 +72,8 @@ public class Meltdown {
         );
     }
 
-    public void write(CompoundTag tag) {
+    public CompoundTag write() {
+        CompoundTag tag = new CompoundTag();
         tag.put(SerializationConstants.MIN, NbtUtils.writeBlockPos(minPos));
         tag.put(SerializationConstants.MAX, NbtUtils.writeBlockPos(maxPos));
         tag.putDouble(SerializationConstants.MAGNITUDE, magnitude);
@@ -80,6 +81,7 @@ public class Meltdown {
         tag.putFloat(SerializationConstants.RADIUS, radius);
         tag.putUUID(SerializationConstants.INVENTORY_ID, multiblockID);
         tag.putInt(SerializationConstants.AGE, ticksExisted);
+        return tag;
     }
 
     public boolean update(ServerLevel world) {

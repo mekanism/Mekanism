@@ -1,8 +1,5 @@
 package mekanism.common.lib.collection;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import net.minecraft.core.BlockPos;
@@ -12,12 +9,12 @@ import org.junit.jupiter.api.Test;
 
 public class IndexedCuboidMapTest {
 
-    static String value1 = "test";
-    static String value2 = "foo";
-    static BlockPos center1 = new BlockPos(8, 8, 8);
-    static BlockPos center2 = new BlockPos(16+8, 8, 8);
-    static int radiusSmall = 4;
-    static int radiusLarge = 16;
+    static final String value1 = "test";
+    static final String value2 = "foo";
+    static final BlockPos center1 = new BlockPos(8, 8, 8);
+    static final BlockPos center2 = new BlockPos(16 + 8, 8, 8);
+    static final int radiusSmall = 4;
+    static final int radiusLarge = 16;
 
     @Test
     void testSingleValueSingleChunk() {
@@ -51,7 +48,7 @@ public class IndexedCuboidMapTest {
         int myRadius = radiusSmall;
         IndexedCuboidMap<String> map = singleValue(myRadius);
 
-        map.removeIf(v->v.equals(value1));
+        map.removeIf(value1::equals);
 
         assertNotPresent(map, myRadius, center1, value1);
         assertEmpty(map);
@@ -100,7 +97,7 @@ public class IndexedCuboidMapTest {
         int myRadius = radiusLarge;
         IndexedCuboidMap<String> map = singleValue(myRadius);
 
-        map.removeIf(v->v.equals(value1));
+        map.removeIf(value1::equals);
 
         assertNotPresent(map, myRadius, center1, value1);
         assertEmpty(map);
@@ -159,7 +156,7 @@ public class IndexedCuboidMapTest {
         int myRadius = radiusSmall;
         IndexedCuboidMap<String> map = dualValue(myRadius);
 
-        map.removeIf(v->v.equals(value1));
+        map.removeIf(value1::equals);
 
         assertNotPresent(map, myRadius, center1, value1);
         assertPresent(center2, myRadius, value2, map);
@@ -224,12 +221,12 @@ public class IndexedCuboidMapTest {
         int myRadius = radiusLarge;
         IndexedCuboidMap<String> map = dualValue(myRadius);
 
-        map.removeIf(v->v.equals(value1));
+        map.removeIf(value1::equals);
 
         assertNotPresent(map, myRadius, center1, value1);
         assertPresent(center2, myRadius, value2, map);
 
-        map.removeIf(v->v.equals(value2));
+        map.removeIf(value2::equals);
         assertNotPresent(map, myRadius, center2, value2);
         assertEmpty(map);
     }
@@ -275,41 +272,42 @@ public class IndexedCuboidMapTest {
         Assertions.assertTrue(map.values().contains(value));
         Assertions.assertEquals(value, map.findFirstAt(centre), "expected value we added");
 
-        Assertions.assertTrue(collect(map.find(centre)).contains(value));
-        Assertions.assertTrue(collect(map.allCenteredInChunk(ChunkPos.asLong(centre))).contains(value));
+        Assertions.assertTrue(contains(map.find(centre), value));
+        Assertions.assertTrue(contains(map.allCenteredInChunk(ChunkPos.asLong(centre)), value));
 
         for (BlockPos checkPos : BlockPos.betweenClosed(centre.offset(-radius, -radius, -radius), centre.offset(radius, radius, radius))) {
-            Assertions.assertTrue(collect(map.find(checkPos)).contains(value), "expected to find value in search grid");
+            Assertions.assertTrue(contains(map.find(checkPos), value), "expected to find value in search grid");
         }
 
-        Assertions.assertFalse(collect(map.find(centre.offset(radius + 1, 0, 0))).contains(value), "position outside should not contain value");
+        Assertions.assertFalse(contains(map.find(centre.offset(radius + 1, 0, 0)), value), "position outside should not contain value");
     }
 
     private static void assertNotPresent(IndexedCuboidMap<String> map, int myRadius, BlockPos centre, String value) {
         Assertions.assertNotEquals(value, map.findFirstAt(centre), "expected no match");
 
-        Assertions.assertFalse(collect(map.find(centre)).contains(value));
-        Assertions.assertFalse(collect(map.allCenteredInChunk(ChunkPos.asLong(centre))).contains(value));
+        Assertions.assertFalse(contains(map.find(centre), value));
+        Assertions.assertFalse(contains(map.allCenteredInChunk(ChunkPos.asLong(centre)), value));
 
         for (BlockPos checkPos : BlockPos.betweenClosed(centre.offset(-myRadius, -myRadius, -myRadius), centre.offset(myRadius, myRadius, myRadius))) {
-            Assertions.assertFalse(collect(map.find(checkPos)).contains(value), "expected to not find value in search grid");
+            Assertions.assertFalse(contains(map.find(checkPos), value), "expected to not find value in search grid");
         }
 
-        Assertions.assertFalse(collect(map.find(centre.offset(myRadius + 1, 0, 0))).contains(value), "position outside should not contain value");
+        Assertions.assertFalse(contains(map.find(centre.offset(myRadius + 1, 0, 0)), value), "position outside should not contain value");
     }
 
     private static void assertEmpty(IndexedCuboidMap<String> map) {
         Assertions.assertTrue(map.isEmpty());
         Assertions.assertTrue(map.indexIsEmpty());
-        Assertions.assertIterableEquals(Collections.emptyList(), map.values());
+        Assertions.assertTrue(map.values().isEmpty());
     }
 
-    private static <T> Collection<T> collect(Iterator<T> iterator) {
-        Collection<T> ret = new ArrayList<>();
+    private static boolean contains(Iterator<String> iterator, String value) {
         while (iterator.hasNext()) {
-            ret.add(iterator.next());
+            if (value.equals(iterator.next())) {
+                return true;
+            }
         }
-        return ret;
+        return false;
     }
 
     private record AsIterable<T>(Iterator<T> iterator) implements Iterable<T> {}

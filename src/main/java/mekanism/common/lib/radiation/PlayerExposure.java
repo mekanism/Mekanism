@@ -41,7 +41,7 @@ public class PlayerExposure {
             //If it is a living entity that isn't a player, and the tick rate manager is functioning
             // and the entity is frozen (doesn't have a player as a passenger), then we need to update
             // the radiation level of the entity
-            PlayerExposure.updateEntityRadiation(living);
+            updateEntityRadiation(living);
         }
     }
 

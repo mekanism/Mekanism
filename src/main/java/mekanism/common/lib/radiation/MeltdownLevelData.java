@@ -10,7 +10,6 @@ import mekanism.common.registries.MekanismAttachmentTypes;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
@@ -74,9 +73,7 @@ public class MeltdownLevelData implements INBTSerializable<ListTag> {
 
         ListTag list = new ListTag();
         for (Meltdown meltdown : meltdowns) {
-            CompoundTag compound = new CompoundTag();
-            meltdown.write(compound);
-            list.add(compound);
+            list.add(meltdown.write());
         }
         return list;
     }

@@ -108,6 +108,9 @@ public class IndexedCuboidMap<VALUE> {
      * @return true if a value was removed
      */
     public boolean removeAt(BlockPos center) {
+        if (valueMap.isEmpty()) {
+            return false;
+        }
         List<CenteredBoundingBox> toRemove = new ArrayList<>(valueMap.size());
         for (Entry<CenteredBoundingBox, VALUE> valueEntry : valueMap.entrySet()) {
             if (valueEntry.getKey().center.equals(center)) {

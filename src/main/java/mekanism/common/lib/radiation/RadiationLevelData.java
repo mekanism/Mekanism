@@ -40,7 +40,7 @@ public class RadiationLevelData implements INBTSerializable<ListTag> {
             maxMagnitude = Math.max(maxMagnitude, source.getMagnitude());
         }
 
-        if (level == LevelAndMaxMagnitude.BASELINE.level() && maxMagnitude == LevelAndMaxMagnitude.BASELINE.maxMagnitude()) {
+        if (Mth.equal(level, LevelAndMaxMagnitude.BASELINE.level()) && Mth.equal(maxMagnitude, LevelAndMaxMagnitude.BASELINE.maxMagnitude())) {
             return LevelAndMaxMagnitude.BASELINE;
         }
 
@@ -77,9 +77,6 @@ public class RadiationLevelData implements INBTSerializable<ListTag> {
     }
 
     public boolean removeRadiationSource(BlockPos pos) {
-        if (isEmpty()) {
-            return false;
-        }
         return sources.removeAt(pos);
     }
 
