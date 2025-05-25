@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.IntSupplier;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.radiation.IRadiationSource;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.listener.ConfigBasedCachedIntSupplier;
 import mekanism.common.lib.collection.IndexedCuboidMap;
@@ -67,7 +66,7 @@ public class RadiationLevelData implements INBTSerializable<ListTag> {
             return false;
         }
         List<RadiationSource> toRemove = new ArrayList<>();
-        Iterator<RadiationSource> centredInChunk = sources.allCentredInChunk(chunkX, chunkZ);
+        Iterator<RadiationSource> centredInChunk = sources.allCenteredInChunk(chunkX, chunkZ);
         while (centredInChunk.hasNext()) {
             toRemove.add(centredInChunk.next());
         }
@@ -102,7 +101,7 @@ public class RadiationLevelData implements INBTSerializable<ListTag> {
     }
 
     public Iterator<RadiationSource> getSources(int chunkX, int chunkZ) {
-        return sources.allCentredInChunk(chunkX, chunkZ);
+        return sources.allCenteredInChunk(chunkX, chunkZ);
     }
 
     @Override

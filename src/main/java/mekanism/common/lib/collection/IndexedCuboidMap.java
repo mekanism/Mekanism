@@ -28,8 +28,8 @@ import org.jetbrains.annotations.VisibleForTesting;
 @NothingNullByDefault
 public class IndexedCuboidMap<VALUE> {
 
-    private final BiLongMultimap<CentredBoundingBox> chunkIndex = new BiLongMultimap<>();
-    private final Map<CentredBoundingBox, VALUE> valueMap = new HashMap<>();
+    private final BiLongMultimap<CenteredBoundingBox> chunkIndex = new BiLongMultimap<>();
+    private final Map<CenteredBoundingBox, VALUE> valueMap = new HashMap<>();
 
     /**
      * Add a value to the map with a fixed radius in all axes
@@ -62,7 +62,7 @@ public class IndexedCuboidMap<VALUE> {
      */
     public void track(VALUE value, BlockPos center, int minX, int minY, int minZ, int maxX, int maxY, int maxZ){
 
-        CentredBoundingBox box = new CentredBoundingBox(center, minX, minY, minZ, maxX, maxY, maxZ);
+        CenteredBoundingBox box = new CenteredBoundingBox(center, minX, minY, minZ, maxX, maxY, maxZ);
         if (!box.isInside(center)) {
             throw new IllegalArgumentException("center must be within the box");
         }
@@ -88,13 +88,13 @@ public class IndexedCuboidMap<VALUE> {
      * @param value value to remove
      */
     public void remove(VALUE value) {
-        List<CentredBoundingBox> toRemove = new ArrayList<>(valueMap.size());
-        for (Entry<CentredBoundingBox, VALUE> valueEntry : valueMap.entrySet()) {
+        List<CenteredBoundingBox> toRemove = new ArrayList<>(valueMap.size());
+        for (Entry<CenteredBoundingBox, VALUE> valueEntry : valueMap.entrySet()) {
             if (valueEntry.getValue().equals(value)) {
                 toRemove.add(valueEntry.getKey());
             }
         }
-        for (CentredBoundingBox box : toRemove) {
+        for (CenteredBoundingBox box : toRemove) {
             valueMap.remove(box);
             chunkIndex.removeValue(box);
         }
@@ -108,13 +108,13 @@ public class IndexedCuboidMap<VALUE> {
      * @return true if a value was removed
      */
     public boolean removeAt(BlockPos center) {
-        List<CentredBoundingBox> toRemove = new ArrayList<>(valueMap.size());
-        for (Entry<CentredBoundingBox, VALUE> valueEntry : valueMap.entrySet()) {
+        List<CenteredBoundingBox> toRemove = new ArrayList<>(valueMap.size());
+        for (Entry<CenteredBoundingBox, VALUE> valueEntry : valueMap.entrySet()) {
             if (valueEntry.getKey().center.equals(center)) {
                 toRemove.add(valueEntry.getKey());
             }
         }
-        for (CentredBoundingBox box : toRemove) {
+        for (CenteredBoundingBox box : toRemove) {
             valueMap.remove(box);
             chunkIndex.removeValue(box);
         }
@@ -127,13 +127,13 @@ public class IndexedCuboidMap<VALUE> {
      * @return an iterator of matching values
      */
     public Iterator<VALUE> find(BlockPos searchPos) {
-        Set<CentredBoundingBox> values = chunkIndex.getValues(ChunkPos.asLong(searchPos));
+        Set<CenteredBoundingBox> values = chunkIndex.getValues(ChunkPos.asLong(searchPos));
         if (values == null) {
             return Collections.emptyIterator();
         }
         return new FilterTransformIterator<>(values.iterator()) {
             @Override
-            protected @Nullable VALUE filterTransform(CentredBoundingBox box) {
+            protected @Nullable VALUE filterTransform(CenteredBoundingBox box) {
                 if (box.isInside(searchPos)) {
                     return valueMap.get(box);
                 }
@@ -151,11 +151,11 @@ public class IndexedCuboidMap<VALUE> {
      */
     @Nullable
     public VALUE findFirstAt(BlockPos centre) {
-        Set<CentredBoundingBox> values = chunkIndex.getValues(ChunkPos.asLong(centre));
+        Set<CenteredBoundingBox> values = chunkIndex.getValues(ChunkPos.asLong(centre));
         if (values == null) {
             return null;
         }
-        for (CentredBoundingBox box : values) {
+        for (CenteredBoundingBox box : values) {
             if (centre.equals(box.center)) {
                 return Objects.requireNonNull(valueMap.get(box), "Box existed with no value??");
             }
@@ -169,8 +169,8 @@ public class IndexedCuboidMap<VALUE> {
      * @param chunkZ the Z pos of the chunk to check
      * @return an iterator of matching values
      */
-    public Iterator<VALUE> allCentredInChunk(int chunkX, int chunkZ) {
-        return allCentredInChunk(ChunkPos.asLong(chunkX, chunkZ));
+    public Iterator<VALUE> allCenteredInChunk(int chunkX, int chunkZ) {
+        return allCenteredInChunk(ChunkPos.asLong(chunkX, chunkZ));
     }
 
     /**
@@ -178,14 +178,14 @@ public class IndexedCuboidMap<VALUE> {
      * @param chunkPos the packed chunk position
      * @return an iterator of matching values
      */
-    public Iterator<VALUE> allCentredInChunk(long chunkPos) {
-        Set<CentredBoundingBox> values = chunkIndex.getValues(chunkPos);
+    public Iterator<VALUE> allCenteredInChunk(long chunkPos) {
+        Set<CenteredBoundingBox> values = chunkIndex.getValues(chunkPos);
         if (values == null) {
             return Collections.emptyIterator();
         }
         return new FilterTransformIterator<>(values.iterator()) {
             @Override
-            protected @Nullable VALUE filterTransform(CentredBoundingBox box) {
+            protected @Nullable VALUE filterTransform(CenteredBoundingBox box) {
                 if (ChunkPos.asLong(box.center) == chunkPos) {
                     return valueMap.get(box);
                 }
@@ -211,9 +211,9 @@ public class IndexedCuboidMap<VALUE> {
     }
 
     public void removeIf(Predicate<VALUE> predicate) {
-        Iterator<Entry<CentredBoundingBox, VALUE>> iterator = valueMap.entrySet().iterator();
+        Iterator<Entry<CenteredBoundingBox, VALUE>> iterator = valueMap.entrySet().iterator();
         while (iterator.hasNext()) {
-            Entry<CentredBoundingBox, VALUE> entry = iterator.next();
+            Entry<CenteredBoundingBox, VALUE> entry = iterator.next();
             if (predicate.test(entry.getValue())) {
                 iterator.remove();
                 chunkIndex.removeValue(entry.getKey());
@@ -229,7 +229,11 @@ public class IndexedCuboidMap<VALUE> {
     /**
      * Like BoundingBox, but with a centre/controlling position
      */
-    private record CentredBoundingBox(BlockPos center, int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
+    private record CenteredBoundingBox(BlockPos center, int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
+
+        CenteredBoundingBox {
+            center = center.immutable();
+        }
         public boolean isInside(Vec3i vector) {
             return this.isInside(vector.getX(), vector.getY(), vector.getZ());
         }
