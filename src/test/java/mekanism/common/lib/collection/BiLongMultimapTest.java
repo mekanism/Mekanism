@@ -3,10 +3,12 @@ package mekanism.common.lib.collection;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class BiMultiLongMapTest {
+class BiLongMultimapTest {
     @Test
+    @DisplayName("Test BiLongMultimaps with a single value")
     void testSingleValue() {
         BiLongMultimap<String> map = new BiLongMultimap<>();
         String first = "first";
@@ -31,6 +33,7 @@ public class BiMultiLongMapTest {
     }
 
     @Test
+    @DisplayName("Test BiLongMultimaps with multiple values")
     void testMultipleValues() {
         BiLongMultimap<String> map = new BiLongMultimap<>();
         String first = "first";

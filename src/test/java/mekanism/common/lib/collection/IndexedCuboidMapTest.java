@@ -5,23 +5,26 @@ import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.ChunkPos;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class IndexedCuboidMapTest {
+class IndexedCuboidMapTest {
 
-    static final String value1 = "test";
-    static final String value2 = "foo";
-    static final BlockPos center1 = new BlockPos(8, 8, 8);
-    static final BlockPos center2 = new BlockPos(16 + 8, 8, 8);
-    static final int radiusSmall = 4;
-    static final int radiusLarge = 16;
+    private static final String value1 = "test";
+    private static final String value2 = "foo";
+    private static final BlockPos center1 = new BlockPos(8, 8, 8);
+    private static final BlockPos center2 = new BlockPos(16 + 8, 8, 8);
+    private static final int radiusSmall = 4;
+    private static final int radiusLarge = 16;
 
     @Test
+    @DisplayName("Test storing a single value in an indexed cuboid map with a single chunk")
     void testSingleValueSingleChunk() {
         singleValue(radiusSmall);
     }
 
     @Test
+    @DisplayName("Test removing by center chunk from an indexed cuboid map with one value and chunk")
     void testSingleValueSingleChunkRemoveCenter() {
         int myRadius = radiusSmall;
         IndexedCuboidMap<String> map = singleValue(myRadius);
@@ -33,6 +36,7 @@ public class IndexedCuboidMapTest {
     }
 
     @Test
+    @DisplayName("Test removing by value from an indexed cuboid map with one value and chunk")
     void testSingleValueSingleChunkRemoveValue() {
         int myRadius = radiusSmall;
         IndexedCuboidMap<String> map = singleValue(myRadius);
@@ -44,6 +48,7 @@ public class IndexedCuboidMapTest {
     }
 
     @Test
+    @DisplayName("Test removing by predicate from an indexed cuboid map with one value and chunk")
     void testSingleValueSingleChunkRemoveIf() {
         int myRadius = radiusSmall;
         IndexedCuboidMap<String> map = singleValue(myRadius);
@@ -55,6 +60,7 @@ public class IndexedCuboidMapTest {
     }
 
     @Test
+    @DisplayName("Test clearing an indexed cuboid map with one value and chunk")
     void testSingleValueSingleChunkClear() {
         int myRadius = radiusSmall;
         IndexedCuboidMap<String> map = singleValue(myRadius);
@@ -66,11 +72,13 @@ public class IndexedCuboidMapTest {
     }
     
     @Test
+    @DisplayName("Test storing a single value in an indexed cuboid map with multiple chunks")
     void testSingleValueMultiChunk() {
         singleValue(radiusLarge);
     }
 
     @Test
+    @DisplayName("Test removing by center chunk from an indexed cuboid map with one value and multiple chunks")
     void testSingleValueMultiChunkRemoveCenter() {
         int myRadius = radiusLarge;
         IndexedCuboidMap<String> map = singleValue(myRadius);
@@ -82,6 +90,7 @@ public class IndexedCuboidMapTest {
     }
 
     @Test
+    @DisplayName("Test removing by value from an indexed cuboid map with one value and multiple chunks")
     void testSingleValueMultiChunkRemoveValue() {
         int myRadius = radiusLarge;
         IndexedCuboidMap<String> map = singleValue(myRadius);
@@ -93,6 +102,7 @@ public class IndexedCuboidMapTest {
     }
 
     @Test
+    @DisplayName("Test removing by predicate from an indexed cuboid map with one value and multiple chunks")
     void testSingleValueMultiChunkRemoveIf() {
         int myRadius = radiusLarge;
         IndexedCuboidMap<String> map = singleValue(myRadius);
@@ -104,6 +114,7 @@ public class IndexedCuboidMapTest {
     }
 
     @Test
+    @DisplayName("Test clearing an indexed cuboid map with one value and multiple chunks")
     void testSingleValueMultiChunkClear() {
         int myRadius = radiusLarge;
         IndexedCuboidMap<String> map = singleValue(myRadius);
@@ -115,11 +126,13 @@ public class IndexedCuboidMapTest {
     }
 
     @Test
+    @DisplayName("Test storing multiple values in an indexed cuboid map with a single chunk")
     void testDualValueSingleChunk() {
         dualValue(radiusSmall);
     }
 
     @Test
+    @DisplayName("Test removing by center chunk from an indexed cuboid map with multiple values and one chunk")
     void testDualValueSingleChunkRemoveCenter() {
         int myRadius = radiusSmall;
         IndexedCuboidMap<String> map = dualValue(myRadius);
@@ -136,6 +149,7 @@ public class IndexedCuboidMapTest {
     }
 
     @Test
+    @DisplayName("Test removing by value from an indexed cuboid map with multiple values and one chunk")
     void testDualValueSingleChunkRemoveValue() {
         int myRadius = radiusSmall;
         IndexedCuboidMap<String> map = dualValue(myRadius);
@@ -152,6 +166,7 @@ public class IndexedCuboidMapTest {
     }
 
     @Test
+    @DisplayName("Test removing by predicate from an indexed cuboid map with multiple values and one chunk")
     void testDualValueSingleChunkRemoveIf() {
         int myRadius = radiusSmall;
         IndexedCuboidMap<String> map = dualValue(myRadius);
@@ -168,6 +183,7 @@ public class IndexedCuboidMapTest {
     }
 
     @Test
+    @DisplayName("Test clearing an indexed cuboid map with multiple values and one chunk")
     void testDualValueSingleChunkClear() {
         int myRadius = radiusSmall;
         IndexedCuboidMap<String> map = dualValue(myRadius);
@@ -180,11 +196,13 @@ public class IndexedCuboidMapTest {
     }
     
     @Test
+    @DisplayName("Test storing multiple values in an indexed cuboid map with multiple chunks")
     void testDualValueMultiChunk() {
         dualValue(radiusLarge);
     }
 
     @Test
+    @DisplayName("Test removing by center chunk from an indexed cuboid map with multiple values and chunks")
     void testDualValueMultiChunkRemoveCenter() {
         int myRadius = radiusLarge;
         IndexedCuboidMap<String> map = dualValue(myRadius);
@@ -201,6 +219,7 @@ public class IndexedCuboidMapTest {
     }
 
     @Test
+    @DisplayName("Test removing by value from an indexed cuboid map with multiple values and chunks")
     void testDualValueMultiChunkRemoveValue() {
         int myRadius = radiusLarge;
         IndexedCuboidMap<String> map = dualValue(myRadius);
@@ -217,6 +236,7 @@ public class IndexedCuboidMapTest {
     }
 
     @Test
+    @DisplayName("Test removing by predicate from an indexed cuboid map with multiple values and chunks")
     void testDualValueMultiChunkRemoveIf() {
         int myRadius = radiusLarge;
         IndexedCuboidMap<String> map = dualValue(myRadius);
@@ -232,6 +252,7 @@ public class IndexedCuboidMapTest {
     }
 
     @Test
+    @DisplayName("Test clearing an indexed cuboid map with multiple values and chunks")
     void testDualValueMultiChunkClear() {
         int myRadius = radiusLarge;
         IndexedCuboidMap<String> map = dualValue(myRadius);
