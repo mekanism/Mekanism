@@ -13,9 +13,12 @@ public class MathUtils {
      * Clamp a double to int without using{@link Math#min(double, double)} due to double representation issues. Primary use: power systems that use int, where Mek uses
      * doubles internally
      * <pre>{@code
-     * double d = 1e300; // way bigger than longs, so the long should always be what's returned by Math.min System.out.println((long)Math.min(123456781234567812L, d));
-     * // result is 123456781234567808 - 4 less than what you'd expect System.out.println((long)Math.min(123456789012345678L, d));
+     * // way bigger than longs, so the long should always be what's returned by Math.min
+     * double d = 1e300;
+     * // result is 123456781234567808 - 4 less than what you'd expect
+     * System.out.println((long)Math.min(123456781234567812L, d));
      * // result is 123456789012345680 - 2 more than what you'd expect
+     * System.out.println((long)Math.min(123456789012345678L, d));
      * }</pre>
      *
      * @param d double to clamp
