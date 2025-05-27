@@ -113,13 +113,17 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
             structure.tick(this, ticker % MekanismUtils.TICKS_PER_HALF_SECOND == 0);
         }
         T multiblock = getMultiblock();
-        if (multiblock.isFormed()) {
-            if (isMaster() && multiblock.recheckStructure) {
-                multiblock.recheckStructure = false;
-                getStructure().doImmediateUpdate(this, ticker % MekanismUtils.TICKS_PER_HALF_SECOND == 0);
-                multiblock = getMultiblock();
+        if (isMaster() && multiblock.isFormed() && multiblock.recheckStructure) {
+            multiblock.recheckStructure = false;
+            getStructure().doImmediateUpdate(this, ticker % MekanismUtils.TICKS_PER_HALF_SECOND == 0);
+            T newMultiblock = getMultiblock();
+            if (newMultiblock != multiblock && !newMultiblock.isFormed()) {
+                //force it to sync if it just unformed
+                getManager().handleDirtyMultiblock(multiblock);
             }
-
+            multiblock = newMultiblock;
+        }
+        if (multiblock.isFormed()) {
             if (!prevStructure) {
                 structureChanged(multiblock);
                 prevStructure = true;
