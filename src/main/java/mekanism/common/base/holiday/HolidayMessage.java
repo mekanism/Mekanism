@@ -10,7 +10,7 @@ record HolidayMessage(Component themedLines, Component... lines) {
         if (this == o) {
             return true;
         }
-        return o instanceof HolidayMessage(Component otherThemed, Component[] otherLines) && themedLines.equals(otherThemed) && Arrays.equals(lines, otherLines);
+        return o instanceof HolidayMessage other && themedLines.equals(other.themedLines) && Arrays.equals(lines, other.lines);
     }
 
     @Override
