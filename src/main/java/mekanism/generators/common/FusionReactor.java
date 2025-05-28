@@ -63,6 +63,7 @@ public class FusionReactor implements IFusionReactor
 	public static double enthalpyOfVaporization = 10;
 	public static double thermocoupleEfficiency = mekce_generators.fusionThermocoupleEfficiency;
 	public static double steamTransferEfficiency = mekce_generators.fusionSteamTransferEfficiency;
+	public static double laserHeatCoefficient = mekce_generators.laserHeatCoefficient;
 
 	//Heat transfer metrics
 	public static double plasmaCaseConductivity = 0.2;
@@ -84,7 +85,7 @@ public class FusionReactor implements IFusionReactor
 	@Override
 	public void addTemperatureFromEnergyInput(double energyAdded)
 	{
-		plasmaTemperature += energyAdded / plasmaHeatCapacity * (isBurning() ? 1 : 10);
+		plasmaTemperature += laserHeatCoefficient * energyAdded / plasmaHeatCapacity * (isBurning() ? 1 : 10);
 	}
 
 	public boolean hasHohlraum()

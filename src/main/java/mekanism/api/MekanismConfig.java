@@ -189,6 +189,7 @@ public class MekanismConfig
 		public static double ethanolMultiplier;
 		public static boolean enableWindmillWhitelist;
 		public static List<String> winddimensionids;
+		public static double laserHeatCoefficient;
         public static double fusionThermocoupleEfficiency;
         public static double fusionSteamTransferEfficiency;
 	}
