@@ -118,7 +118,8 @@ public class GeneratorsCommonProxy implements IGuiProvider
 		generators.turbineDisperserGasFlow = Mekanism.configurationgenerators.get("generation", "TurbineDisperserGasFlow", 640D).getDouble();
 		generators.condenserRate = Mekanism.configurationgenerators.get("generation", "TurbineCondenserFlowRate", 32000).getInt();
 		mekce_generators.enableWindmillWhitelist = Mekanism.configurationce.get("mekce_generation", "EnableWindmillWhitelist", true).getBoolean();
-        mekce_generators.fusionThermocoupleEfficiency = Mekanism.configurationce.get("mekce_generation", "FusionReactorEnergyEfficiency", 0.00125, "Fusion Reactor Energy Generation efficiency multiplier, Community Edition default is 0.00125, Legacy Mekanism default is 0.05").getDouble();
+		mekce_generators.laserHeatCoefficient = Mekanism.configurationce.get("mekce_generation", "laserHeatCoefficient", 1.0, "Laser Thermal Transfer Efficiency Multiplier. Default is 1.0").getDouble();
+		mekce_generators.fusionThermocoupleEfficiency = Mekanism.configurationce.get("mekce_generation", "FusionReactorEnergyEfficiency", 0.00125, "Fusion Reactor Energy Generation efficiency multiplier, Community Edition default is 0.00125, Legacy Mekanism default is 0.05").getDouble();
         mekce_generators.fusionSteamTransferEfficiency = Mekanism.configurationce.get("mekce_generation", "FusionReactorSteamTransferEfficiency", 0.0025, "Fusion Reactor Steam Transfer efficiency multiplier, Community Edition default is 0.0025, Legacy Mekanism default is 0.1").getDouble();
 
 		generatorsrecipes.enableHeatGenerator = Mekanism.configurationrecipes.get("generationrecipes","enableHeatGenerator", true).getBoolean();
