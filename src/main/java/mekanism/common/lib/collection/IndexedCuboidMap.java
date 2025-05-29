@@ -33,8 +33,9 @@ public class IndexedCuboidMap<VALUE> {
 
     /**
      * Add a value to the map with a fixed radius in all axes
-     * @param value value to store
-     * @param center the centre or controlling position
+     *
+     * @param value       value to store
+     * @param center      the centre or controlling position
      * @param blockRadius the fixed radius to add/subtract from the centre position (inclusive)
      */
     public void track(VALUE value, BlockPos center, int blockRadius) {
@@ -51,16 +52,17 @@ public class IndexedCuboidMap<VALUE> {
 
     /**
      * Adds a value to the map with an explicitly defined box
-     * @param value value to add to the map
+     *
+     * @param value  value to add to the map
      * @param center centre or controlling position. Must be within the defined box.
-     * @param minX minimum X pos of the box (inclusive)
-     * @param minY minimum Y pos of the box (inclusive)
-     * @param minZ minimum Z pos of the box (inclusive)
-     * @param maxX maximum X pos of the box (inclusive)
-     * @param maxY maximum Y pos of the box (inclusive)
-     * @param maxZ maximum Z pos of the box (inclusive)
+     * @param minX   minimum X pos of the box (inclusive)
+     * @param minY   minimum Y pos of the box (inclusive)
+     * @param minZ   minimum Z pos of the box (inclusive)
+     * @param maxX   maximum X pos of the box (inclusive)
+     * @param maxY   maximum Y pos of the box (inclusive)
+     * @param maxZ   maximum Z pos of the box (inclusive)
      */
-    public void track(VALUE value, BlockPos center, int minX, int minY, int minZ, int maxX, int maxY, int maxZ){
+    public void track(VALUE value, BlockPos center, int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
 
         CenteredBoundingBox box = new CenteredBoundingBox(center.asLong(), minX, minY, minZ, maxX, maxY, maxZ);
         if (!box.isInside(center)) {
@@ -85,6 +87,7 @@ public class IndexedCuboidMap<VALUE> {
 
     /**
      * Remove a value from the map
+     *
      * @param value value to remove
      */
     public void remove(VALUE value) {
@@ -127,7 +130,9 @@ public class IndexedCuboidMap<VALUE> {
 
     /**
      * Find values which have the position as inside the box (edge inclusive)
+     *
      * @param searchPos position to search
+     *
      * @return an iterator of matching values
      */
     public Iterator<VALUE> find(BlockPos searchPos) {
@@ -170,8 +175,10 @@ public class IndexedCuboidMap<VALUE> {
 
     /**
      * Find values with a centre in the specified chunk
+     *
      * @param chunkX the X pos of the chunk to check
      * @param chunkZ the Z pos of the chunk to check
+     *
      * @return an iterator of matching values
      */
     public Iterator<VALUE> allCenteredInChunk(int chunkX, int chunkZ) {
@@ -180,7 +187,9 @@ public class IndexedCuboidMap<VALUE> {
 
     /**
      * Find values with a centre in the specified chunk
+     *
      * @param chunkPos the packed chunk position
+     *
      * @return an iterator of matching values
      */
     public Iterator<VALUE> allCenteredInChunk(long chunkPos) {
@@ -247,6 +256,12 @@ public class IndexedCuboidMap<VALUE> {
                    && z <= this.maxZ
                    && y >= this.minY
                    && y <= this.maxY;
+        }
+
+        @Override
+        public String toString() {
+            return "CenteredBoundingBox{center=[" + BlockPos.getX(center) + ", " + BlockPos.getY(center) + ", " + BlockPos.getZ(center) +
+                   "], minX=" + minX + ", minY=" + minY + ", minZ=" + minZ + ", maxX=" + maxX + ", maxY=" + maxY + ", maxZ=" + maxZ + '}';
         }
     }
 }
