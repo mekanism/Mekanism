@@ -41,7 +41,7 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem
 			list.add(LangUtils.localize("tooltip.stored") + " " + gasStack.getGas().getLocalizedName() + ": " + gasStack.amount);
 		}
 
-        list.add(EnumColor.GREY + LangUtils.localize("tooltip.mode") + ": " + EnumColor.GREY + getMode(itemstack).getName());
+        list.add(EnumColor.GREY + LangUtils.localize("gui.mode") + ": " + EnumColor.GREY + getMode(itemstack).getName());
 	}
 	
 	@Override

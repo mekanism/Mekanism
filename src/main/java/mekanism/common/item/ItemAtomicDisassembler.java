@@ -52,7 +52,7 @@ public class ItemAtomicDisassembler extends ItemEnergizedTiered
 	{
 		super.addInformation(itemstack, entityplayer, list, flag);
 
-		list.add(LangUtils.localize("tooltip.mode") + ": " + EnumColor.INDIGO + getModeName(itemstack));
+		list.add(LangUtils.localize("gui.mode") + ": " + EnumColor.INDIGO + getModeName(itemstack));
 		list.add(LangUtils.localize("tooltip.efficiency") + ": " + EnumColor.INDIGO + getEfficiency(itemstack));
 	}
 
