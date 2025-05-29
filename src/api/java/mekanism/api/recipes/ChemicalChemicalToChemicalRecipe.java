@@ -71,4 +71,9 @@ public abstract class ChemicalChemicalToChemicalRecipe extends MekanismRecipe<Bi
         return getLeftInput().hasNoMatchingInstances() || getRightInput().hasNoMatchingInstances();
     }
 
+    @Override
+    public void logMissingTags() {
+        getLeftInput().logMissingTags();
+        getRightInput().logMissingTags();
+    }
 }

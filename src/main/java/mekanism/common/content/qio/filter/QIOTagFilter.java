@@ -49,7 +49,7 @@ public class QIOTagFilter extends QIOFilter<QIOTagFilter> implements ITagFilter<
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), tagName);
+        return 31 * super.hashCode() + tagName.hashCode();
     }
 
     @Override

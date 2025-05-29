@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.function.IntFunction;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
@@ -79,7 +78,7 @@ public record ModuleMagneticAttractionUnit(Range range) implements ICustomModule
         Vec3 motionNeeded = new Vec3(Math.min(diff.x, 1), Math.min(diff.y, 1), Math.min(diff.z, 1));
         Vec3 motionDiff = motionNeeded.subtract(player.getDeltaMovement());
         item.setDeltaMovement(motionDiff.scale(0.2));
-        PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new PacketLightningRender(LightningPreset.MAGNETIC_ATTRACTION, Objects.hash(player.getUUID(), item),
+        PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new PacketLightningRender(LightningPreset.MAGNETIC_ATTRACTION, 31 * player.getUUID().hashCode() + item.hashCode(),
               player.position().add(0, 0.2, 0), item.position(), (int) (diff.length() * 4)));
     }
 

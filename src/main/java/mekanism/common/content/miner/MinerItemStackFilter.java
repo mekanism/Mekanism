@@ -61,7 +61,7 @@ public class MinerItemStackFilter extends MinerFilter<MinerItemStackFilter> impl
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), itemType.getItem());
+        return 31 * super.hashCode() + itemType.getItem().hashCode();
     }
 
     @Override

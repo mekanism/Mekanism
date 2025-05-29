@@ -61,8 +61,8 @@ public record MekanismRecipeSerializer<RECIPE extends Recipe<?>>(MapCodec<RECIPE
 
     public static <RECIPE extends WrappedShapedRecipe> MekanismRecipeSerializer<RECIPE> wrapped(Function<ShapedRecipe, RECIPE> wrapper) {
         return new MekanismRecipeSerializer<>(
-              RecipeSerializer.SHAPED_RECIPE.codec().xmap(wrapper, WrappedShapedRecipe::getInternal),
-              RecipeSerializer.SHAPED_RECIPE.streamCodec().map(wrapper, WrappedShapedRecipe::getInternal)
+              SHAPED_RECIPE.codec().xmap(wrapper, WrappedShapedRecipe::getInternal),
+              SHAPED_RECIPE.streamCodec().map(wrapper, WrappedShapedRecipe::getInternal)
         );
     }
 

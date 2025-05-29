@@ -81,6 +81,11 @@ public class Capabilities {
     public static final ResourceLocation OWNER_OBJECT_NAME = Mekanism.rl("owner_object");
     public static final ResourceLocation SECURITY_OBJECT_NAME = Mekanism.rl("security_object");
 
+    public static void registerProxyableCapabilities(RegisterCapabilitiesEvent event) {
+        event.setProxyable(CHEMICAL.block());
+        event.setProxyable(STRICT_ENERGY.block());
+    }
+
     public static void registerCapabilities(RegisterCapabilitiesEvent event) {
         Mekanism.hooks.hookCapabilityRegistration(event);
 
@@ -105,8 +110,8 @@ public class Capabilities {
             TileEntityBoundingBlock.proxyCapability(event, capability);
         }
         //Note: Common caps we may eventually want to proxy but currently have no use for doing so
-        /*TileEntityBoundingBlock.proxyCapability(event, FluidHandler.BLOCK);
-        TileEntityBoundingBlock.proxyCapability(event, CHEMICAL_HANDLER.block());
-        TileEntityBoundingBlock.proxyCapability(event, HEAT_HANDLER.block());*/
+        TileEntityBoundingBlock.proxyCapability(event, FluidHandler.BLOCK);
+        TileEntityBoundingBlock.proxyCapability(event, CHEMICAL.block());
+        TileEntityBoundingBlock.proxyCapability(event, HEAT);
     }
 }

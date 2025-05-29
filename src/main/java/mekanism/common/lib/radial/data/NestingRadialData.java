@@ -54,6 +54,6 @@ public class NestingRadialData extends RadialData<NestedRadialMode> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), modes);
+        return 31 * super.hashCode() + modes.hashCode();
     }
 }

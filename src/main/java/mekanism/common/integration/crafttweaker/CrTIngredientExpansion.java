@@ -24,7 +24,7 @@ public class CrTIngredientExpansion {
         }
 
         /**
-         * Allows for casting {@link Many<KnownTag< Chemical >>}s to {@link ChemicalStackIngredient} without even needing to specify the cast.
+         * Allows for casting {@link Many}&lt;{@link KnownTag}&lt;{@link Chemical}&gt;&gt;s to {@link ChemicalStackIngredient} without even needing to specify the cast.
          */
         @ZenCodeType.Caster(implicit = true)
         public static ChemicalStackIngredient asChemicalStackIngredient(Many<KnownTag<Chemical>> _this) {

@@ -313,7 +313,7 @@ public class RenderTickHandler {
         } else {
             float f = p.getSwimAmount(partialTicks);
             if (p.isFallFlying()) {
-                float f1 = (float) p.getFallFlyingTicks() + partialTicks;
+                float f1 = p.getFallFlyingTicks() + partialTicks;
                 float f2 = Mth.clamp(f1 * f1 / 100.0F, 0.0F, 1.0F);
                 xRot = f2 * (-90.0F - p.getXRot());
             } else {
@@ -558,7 +558,7 @@ public class RenderTickHandler {
         return model;
     }
 
-    public static abstract class LazyRender {
+    public abstract static class LazyRender {
 
         public double distance;
 

@@ -211,7 +211,12 @@ public class ExtensionBakedModel<T> extends BakedModelWrapper<BakedModel> {
 
         @Override
         public int hashCode() {
-            return Objects.hash(state, side, layer, transformation, dataHash);
+            int result = Objects.hashCode(state);
+            result = 31 * result + Objects.hashCode(side);
+            result = 31 * result + Objects.hashCode(layer);
+            result = 31 * result + Objects.hashCode(transformation);
+            result = 31 * result + dataHash;
+            return result;
         }
 
         @Override

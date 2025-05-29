@@ -84,8 +84,6 @@ public interface IMekanismStrictEnergyHandler extends ISidedStrictEnergyHandler,
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @implNote Any overrides to this should also override {@link ISidedStrictEnergyHandler#insertEnergy(long, Direction, Action)} as it bypasses calling this method in
      * order to skip looking up the containers for every sub operation.
      */
@@ -96,8 +94,6 @@ public interface IMekanismStrictEnergyHandler extends ISidedStrictEnergyHandler,
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @implNote Any overrides to this should also override {@link ISidedStrictEnergyHandler#extractEnergy(long, Direction, Action)} as it bypasses calling this method in
      * order to skip looking up the containers for every sub operation.
      */

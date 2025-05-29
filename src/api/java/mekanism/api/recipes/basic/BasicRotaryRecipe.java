@@ -241,7 +241,12 @@ public class BasicRotaryRecipe extends RotaryRecipe {
 
     @Override
     public int hashCode() {
-        int hash = hasFluidToChemical ? Objects.hash(fluidInput, chemicalOutput) : 1;
+        int hash;
+        if (hasFluidToChemical) {
+            hash = 31 * fluidInput.hashCode() + chemicalOutput.hashCode();
+        } else {
+            hash = 1;
+        }
         if (hasChemicalToFluid) {
             hash = 31 * hash + chemicalInput.hashCode();
             hash = 31 * hash + FluidStack.hashFluidAndComponents(fluidOutput);

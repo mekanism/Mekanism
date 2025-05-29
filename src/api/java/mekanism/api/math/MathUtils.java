@@ -12,12 +12,14 @@ public class MathUtils {
     /**
      * Clamp a double to int without using{@link Math#min(double, double)} due to double representation issues. Primary use: power systems that use int, where Mek uses
      * doubles internally
-     * <p>
-     * <code>
-     * double d = 1e300; // way bigger than longs, so the long should always be what's returned by Math.min System.out.println((long)Math.min(123456781234567812L, d)); //
-     * result is 123456781234567808 - 4 less than what you'd expect System.out.println((long)Math.min(123456789012345678L, d)); // result is 123456789012345680 - 2 more
-     * than what you'd expect
-     * </code>
+     * <pre>{@code
+     * // way bigger than longs, so the long should always be what's returned by Math.min
+     * double d = 1e300;
+     * // result is 123456781234567808 - 4 less than what you'd expect
+     * System.out.println((long)Math.min(123456781234567812L, d));
+     * // result is 123456789012345680 - 2 more than what you'd expect
+     * System.out.println((long)Math.min(123456789012345678L, d));
+     * }</pre>
      *
      * @param d double to clamp
      *
@@ -112,7 +114,6 @@ public class MathUtils {
      * @return A double representing the value of dividing numerator by toDivide, or {@code 1} if the given toDivide is {@code 0}.
      *
      * @implNote This caps the returned value at {@code 1}
-     *
      * @since 10.6.6
      */
     public static double divideToLevel(double numerator, double toDivide) {

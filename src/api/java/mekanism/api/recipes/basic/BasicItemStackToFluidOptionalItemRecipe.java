@@ -67,6 +67,8 @@ public abstract class BasicItemStackToFluidOptionalItemRecipe extends ItemStackT
 
     @Override
     public int hashCode() {
-        return Objects.hash(input, output);
+        int result = input.hashCode();
+        result = 31 * result + output.hashCode();
+        return result;
     }
 }

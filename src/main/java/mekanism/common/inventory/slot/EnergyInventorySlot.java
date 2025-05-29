@@ -93,7 +93,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
             //Otherwise, if we can accept any energy that is currently stored in the container, then we allow inserting the item
             return itemEnergyHandler.insertEnergy(storedEnergy, Action.SIMULATE) < storedEnergy;
         };
-        return new EnergyInventorySlot(energyContainer, insertPredicate.negate(), insertPredicate, EnergyInventorySlot.DRAIN_VALIDATOR, listener, x, y);
+        return new EnergyInventorySlot(energyContainer, insertPredicate.negate(), insertPredicate, DRAIN_VALIDATOR, listener, x, y);
     }
 
     public static boolean fillInsertCheck(ItemStack stack) {

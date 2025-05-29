@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Objects;
 import mekanism.api.SerializationConstants;
 import mekanism.common.util.MekCodecs;
 
@@ -53,7 +52,11 @@ public record TableType(String description, String humanName, Map<String, FieldT
 
         @Override
         public int hashCode() {
-            return Objects.hash(javaType, description, type, Arrays.hashCode(javaExtra));
+            int result = description.hashCode();
+            result = 31 * result + javaType.hashCode();
+            result = 31 * result + type.hashCode();
+            result = 31 * result + Arrays.hashCode(javaExtra);
+            return result;
         }
     }
 

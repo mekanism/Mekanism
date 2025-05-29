@@ -38,11 +38,11 @@ public class CrTNSSResolverExpansion {
     }
 
     /**
-     * Create a {@link NormalizedSimpleStack} representing a given {@link KnownTag< Chemical >}.
+     * Create a {@link NormalizedSimpleStack} representing a given {@link KnownTag}&lt;{@link Chemical}&gt;.
      *
      * @param tag Chemical Tag to represent
      *
-     * @return A {@link NormalizedSimpleStack} representing a given {@link KnownTag< Chemical >}.
+     * @return A {@link NormalizedSimpleStack} representing a given {@link KnownTag}&lt;{@link Chemical}&gt;.
      */
     @ZenCodeType.StaticExpansionMethod
     public static NormalizedSimpleStack fromChemicalTag(KnownTag<Chemical> tag) {

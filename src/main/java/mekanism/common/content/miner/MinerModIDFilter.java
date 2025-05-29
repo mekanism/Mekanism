@@ -3,7 +3,6 @@ package mekanism.common.content.miner;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import java.util.Objects;
 import java.util.function.Function;
 import mekanism.api.SerializationConstants;
 import mekanism.common.base.TagCache;
@@ -60,7 +59,7 @@ public class MinerModIDFilter extends MinerFilter<MinerModIDFilter> implements I
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), modID);
+        return 31 * super.hashCode() + modID.hashCode();
     }
 
     @Override

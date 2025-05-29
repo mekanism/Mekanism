@@ -149,6 +149,6 @@ public abstract class RadialData<MODE extends IRadialMode> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(identifier);
+        return identifier.hashCode();
     }
 }

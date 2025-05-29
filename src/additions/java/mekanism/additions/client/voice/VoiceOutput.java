@@ -48,7 +48,7 @@ public class VoiceOutput extends Thread {
                             byteCount -= length;
                         }
                     } else {
-                        Thread.sleep(20);
+                        sleep(20);
                     }
                 } catch (EOFException eof) {
                     Mekanism.logger.error("VoiceServer: Unexpected input EOF Exception occurred.");

@@ -77,6 +77,8 @@ public abstract class BasicItemStackToChemicalRecipe extends ItemStackToChemical
 
     @Override
     public int hashCode() {
-        return Objects.hash(input, output);
+        int result = input.hashCode();
+        result = 31 * result + output.hashCode();
+        return result;
     }
 }

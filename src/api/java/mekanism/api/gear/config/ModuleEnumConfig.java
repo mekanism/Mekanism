@@ -230,6 +230,9 @@ public class ModuleEnumConfig<TYPE extends Enum<TYPE> & IHasTextComponent> exten
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), value, enumConstants.size());
+        int result = super.hashCode();
+        result = 31 * result + value.hashCode();
+        result = 31 * result + Integer.hashCode(enumConstants.size());
+        return result;
     }
 }

@@ -1,5 +1,6 @@
 package mekanism.api.recipes;
 
+import mekanism.api.MekanismAPI;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
@@ -22,6 +23,11 @@ public abstract class MekanismRecipe<INPUT extends RecipeInput> implements Recip
     //Force implementation of this method as our ingredients is always empty so the super implementation would have all ours as incomplete
     @Override
     public abstract boolean isIncomplete();
+
+    //todo 1.21.5 or 1.22: make this abstract
+    public void logMissingTags() {
+        MekanismAPI.logger.error("Please implement logMissingTags(): {}", this);
+    }
 
     @NotNull
     @Override

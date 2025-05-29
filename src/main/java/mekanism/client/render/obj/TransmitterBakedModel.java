@@ -177,7 +177,7 @@ public class TransmitterBakedModel extends BakedModelWrapper<BakedModel> {
         public TransmitterDataKey(TransmitterModelData data, boolean renderGlass) {
             this.data = data;
             this.renderGlass = renderGlass;
-            this.hash = Objects.hash(this.data.getConnectionsMap(), this.renderGlass);
+            this.hash = 31 * this.data.getConnectionsMap().hashCode() + Boolean.hashCode(this.renderGlass);
         }
 
         @Override

@@ -11,7 +11,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -270,7 +269,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
             // can be extracted at once so even if they somehow have an oversized stack it will be fine
             ItemStack slotItem = slot.getItem();
             if (InventoryUtils.areItemsStackable(lastStack, slotItem)) {
-                QIOItemViewerContainer.this.transferSuccess(slot, player, slotItem, freq.addItem(slotItem));
+                this.transferSuccess(slot, player, slotItem, freq.addItem(slotItem));
             }
         }
     }
@@ -297,16 +296,21 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     @Override
     public ItemStack quickMoveStack(@NotNull Player player, int slotID) {
         Slot currentSlot = slots.get(slotID);
-        if (currentSlot == null) {
-            return ItemStack.EMPTY;
-        }
-        if (currentSlot instanceof VirtualCraftingOutputSlot virtualSlot) {
-            //If we are clicking an output crafting slot, allow the slot itself to handle the transferring
-            return virtualSlot.shiftClickSlot(player, hotBarSlots, mainInventorySlots);
-        } else if (currentSlot instanceof InventoryContainerSlot) {
-            //Otherwise, if we are an inventory container slot (crafting input slots in this case)
-            // use our normal handling to attempt and transfer the contents to the player's inventory
-            return super.quickMoveStack(player, slotID);
+        switch (currentSlot) {
+            case null -> {
+                return ItemStack.EMPTY;
+            }
+            case VirtualCraftingOutputSlot virtualSlot -> {
+                //If we are clicking an output crafting slot, allow the slot itself to handle the transferring
+                return virtualSlot.shiftClickSlot(player, hotBarSlots, mainInventorySlots);
+            }
+            case InventoryContainerSlot inventoryContainerSlot -> {
+                //Otherwise, if we are an inventory container slot (crafting input slots in this case)
+                // use our normal handling to attempt and transfer the contents to the player's inventory
+                return super.quickMoveStack(player, slotID);
+            }
+            default -> {
+            }
         }
         // special handling for shift-clicking into GUI
         if (!player.level().isClientSide()) {
@@ -761,7 +765,9 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
 
         @Override
         public int hashCode() {
-            return Objects.hash(item, count);
+            int result = item.hashCode();
+            result = 31 * result + Long.hashCode(count);
+            return result;
         }
     }
 

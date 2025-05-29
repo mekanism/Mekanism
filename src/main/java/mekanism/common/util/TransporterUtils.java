@@ -67,7 +67,7 @@ public final class TransporterUtils {
     public static void drop(LogisticalTransporterBase transporter, TransporterStack stack) {
         BlockPos blockPos;
         if (stack.hasPath()) {
-            float[] pos = TransporterUtils.getStackPosition(transporter, stack, 0);
+            float[] pos = getStackPosition(transporter, stack, 0);
             blockPos = transporter.getBlockPos().offset(Mth.floor(pos[0]), Mth.floor(pos[1]), Mth.floor(pos[2]));
         } else {
             blockPos = transporter.getBlockPos();

@@ -13,7 +13,6 @@ import java.text.DecimalFormatSymbols;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Stream;
 
 //TODO: JavaDoc - contains client side methods to help convert models to VoxelShapes
@@ -136,7 +135,7 @@ public class ModelToVoxelShapeUtil {
 
         @Override
         public int hashCode() {
-            return Objects.hash(Arrays.hashCode(childElements), totalElements);
+            return 31 * Arrays.hashCode(childElements) + totalElements;
         }
     }
 }

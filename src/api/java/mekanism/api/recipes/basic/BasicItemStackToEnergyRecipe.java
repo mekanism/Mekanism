@@ -75,6 +75,8 @@ public class BasicItemStackToEnergyRecipe extends ItemStackToEnergyRecipe {
 
     @Override
     public int hashCode() {
-        return Objects.hash(input, output);
+        int result = input.hashCode();
+        result = 31 * result + Long.hashCode(output);
+        return result;
     }
 }

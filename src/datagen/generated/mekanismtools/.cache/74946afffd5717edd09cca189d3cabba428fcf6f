@@ -1,4 +1,4 @@
-// 1.21.1	2024-08-16T20:25:49.5393068	Tags: mekanismtools
+// 1.21.1	2025-05-26T17:06:37.1655394	Tags: mekanismtools
 13cf1fe06cf159d32d074144254a0d375f6b20e7 data/c/tags/block/mineable/paxel.json
 ed87013152d08e3cb23487f0ff0ae34466dec5d1 data/c/tags/item/tools.json
 7991f1aacd6aa069b2d8cea3b4c757c39fab6cea data/c/tags/item/tools/melee_weapon.json
@@ -11,7 +11,7 @@ b239e7b03736ed687b12fa515c9a1139f07cc1a8 data/mekanismtools/tags/block/incorrect
 f57a1c0d935679dbbcab3f2e8a06cae2238a6735 data/mekanismtools/tags/block/incorrect_for_refined_glowstone_tool.json
 edb717ba8ce70db0f1c3d09fbaab29aed6d4e5ff data/mekanismtools/tags/block/incorrect_for_refined_obsidian_tool.json
 f57a1c0d935679dbbcab3f2e8a06cae2238a6735 data/mekanismtools/tags/block/incorrect_for_steel_tool.json
-4027877538c5084db414743e0f49becd5c1c3a2b data/minecraft/tags/item/axes.json
+b40db251330dcd4da692dd4047bf54363ee0f379 data/minecraft/tags/item/axes.json
 ed87013152d08e3cb23487f0ff0ae34466dec5d1 data/minecraft/tags/item/breaks_decorated_pots.json
 cf56f9aea1d1e35302b87399545199f9945e4509 data/minecraft/tags/item/chest_armor.json
 e803e7c6cf8511602cd6292cf9a1d6c3bf0fa63c data/minecraft/tags/item/cluster_max_harvestables.json
@@ -25,7 +25,7 @@ ed87013152d08e3cb23487f0ff0ae34466dec5d1 data/minecraft/tags/item/enchantable/we
 1a7d9b6b6074ff3c9b5bcf285768e9fdeb843a27 data/minecraft/tags/item/head_armor.json
 e01d70e305d942a3815bfa2630c32f18c7b58537 data/minecraft/tags/item/hoes.json
 33c4fcf2117cb7b8b7b18f179bb867c552c06a21 data/minecraft/tags/item/leg_armor.json
-4ca334232b9ac06e77ab67d7e4f987d7cf61174c data/minecraft/tags/item/pickaxes.json
+9581467c567477a2c5ad115e3cee624633122eb1 data/minecraft/tags/item/pickaxes.json
 963dabde7436e2cfac6afb1312f24e0eea0b43d4 data/minecraft/tags/item/piglin_loved.json
-bef824ca84f695663461f1a65d4b105b1b7fc41f data/minecraft/tags/item/shovels.json
+ec0da4985a81ff417ae0567b6917e65b05047624 data/minecraft/tags/item/shovels.json
 17a4d9ee96b1da5b6913541a1e593e2444fb4882 data/minecraft/tags/item/swords.json

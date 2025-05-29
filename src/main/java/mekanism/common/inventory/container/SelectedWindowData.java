@@ -53,7 +53,7 @@ public class SelectedWindowData {
 
     @Override
     public int hashCode() {
-        return Objects.hash(type, extraData);
+        return 31 * type.hashCode() + extraData;
     }
 
     /**

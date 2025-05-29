@@ -168,7 +168,7 @@ public abstract class BaseComputerHelper {
             int count = SpecialConverters.getIntFromRaw(map.get(SerializationConstants.COUNT));
             String components = (String) map.get(SerializationConstants.COMPONENTS);
             if (components != null) {
-                DataComponentPatch dataComponents = SpecialConverters.unwrapComponents(components);;
+                DataComponentPatch dataComponents = SpecialConverters.unwrapComponents(components);
                 return new ItemStack(item.builtInRegistryHolder(), count, dataComponents);
             }
             return new ItemStack(item, count);

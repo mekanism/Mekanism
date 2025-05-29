@@ -83,8 +83,6 @@ public interface IMekanismChemicalHandler extends ISidedChemicalHandler, IConten
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @implNote Any overrides to this should also override {@link #insertChemical(ChemicalStack, Direction, Action)} as it bypasses calling this method in order to skip
      * looking up the containers for every sub operation.
      */
@@ -95,8 +93,6 @@ public interface IMekanismChemicalHandler extends ISidedChemicalHandler, IConten
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @implNote Any overrides to this should also override {@link #extractChemical(long, Direction, Action)} and
      * {@link #extractChemical(ChemicalStack, Direction, Action)} as they bypass calling this method in order to skip looking up the containers for every sub
      * operation.

@@ -46,7 +46,7 @@ public interface IMekanismDataMapTypes {
      * <p>
      * The location of this data map is {@code mekanism/data_maps/damage_type/mekasuit_absorption.json}, and the values are objects with 1 field:
      * <ul>
-     * <li>{@code radioactivity}, a float between zero and one inclusive - defines the ratio of the given damage type the MekaSuit can absorb</li>
+     * <li>{@code absorption}, a float between zero and one inclusive - defines the ratio of the given damage type the MekaSuit can absorb</li>
      * </ul>
      *
      * The use of a float as the value is also possible, though discouraged in case more options are added in the future.

@@ -485,7 +485,7 @@ public final class MekanismUtils {
                 tooltip.add(MekanismLang.FREQUENCY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, identity.key()));
                 UUID ownerUUID = frequencyAware.getOwner();
                 if (ownerUUID != null) {
-                    String owner = OwnerDisplay.getOwnerName(MekanismUtils.tryGetClientPlayer(), frequencyAware.getOwner(), null);
+                    String owner = OwnerDisplay.getOwnerName(tryGetClientPlayer(), frequencyAware.getOwner(), null);
                     if (owner != null) {
                         tooltip.add(MekanismLang.OWNER.translateColored(EnumColor.INDIGO, EnumColor.GRAY, owner));
                     }

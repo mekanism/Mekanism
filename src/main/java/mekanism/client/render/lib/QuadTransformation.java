@@ -200,7 +200,9 @@ public interface QuadTransformation {
 
         @Override
         public int hashCode() {
-            return Objects.hash(lightU, lightV);
+            int result = lightU;
+            result = 31 * result + lightV;
+            return result;
         }
     }
 
@@ -231,7 +233,7 @@ public interface QuadTransformation {
 
         @Override
         public int hashCode() {
-            return Objects.hash(ambientOcclusion, shade);
+            return 31 * Boolean.hashCode(ambientOcclusion) + Boolean.hashCode(shade);
         }
     }
 
@@ -338,7 +340,9 @@ public interface QuadTransformation {
 
         @Override
         public int hashCode() {
-            return Objects.hash(uShift, vShift);
+            int result = Float.hashCode(uShift);
+            result = 31 * result + Float.hashCode(vShift);
+            return result;
         }
     }
 
@@ -403,7 +407,9 @@ public interface QuadTransformation {
 
         @Override
         public int hashCode() {
-            return Objects.hash(original, verifier);
+            int result = Objects.hashCode(original);
+            result = 31 * result + Objects.hashCode(verifier);
+            return result;
         }
     }
 

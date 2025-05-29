@@ -56,7 +56,7 @@ public final class ModelRenderer {
             model = new Model3D()
                   .setTexture(data.getTexture())
                   .xBounds(0.01F, data.length - 0.02F)
-                  .yBounds(0.01F, data.height * (stage / (float) maxStages) - 0.02F)
+                  .yBounds(0.01F, Math.max(0.02F, data.height * (stage / (float) maxStages) - 0.02F))
                   .zBounds(0.01F, data.width - 0.02F);
             modelMap.put(stage, model);
         }

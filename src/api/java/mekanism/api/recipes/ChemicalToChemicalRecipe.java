@@ -64,4 +64,9 @@ public abstract class ChemicalToChemicalRecipe extends MekanismRecipe<SingleChem
     public boolean isIncomplete() {
         return getInput().hasNoMatchingInstances();
     }
+
+    @Override
+    public void logMissingTags() {
+        getInput().logMissingTags();
+    }
 }

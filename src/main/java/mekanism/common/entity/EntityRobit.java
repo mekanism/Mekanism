@@ -132,7 +132,7 @@ import org.jetbrains.annotations.Nullable;
 public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInventory, IMekanismStrictEnergyHandler, ItemRecipeLookupHandler<ItemStackToItemStackRecipe> {
 
     public static AttributeSupplier.Builder getDefaultAttributes() {
-        return Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 1.0D).add(Attributes.MOVEMENT_SPEED, 0.3F);
+        return createMobAttributes().add(Attributes.MAX_HEALTH, 1.0D).add(Attributes.MOVEMENT_SPEED, 0.3F);
     }
 
     public static final ModelProperty<ResourceLocation> SKIN_TEXTURE_PROPERTY = new ModelProperty<>();

@@ -168,7 +168,6 @@ public class Chemical implements IChemicalProvider, IChemicalAttributeContainer<
     @Deprecated(forRemoval = true, since = "10.7.11")
     private boolean isGaseous;
 
-    @SuppressWarnings("removal")
     public Chemical(ChemicalBuilder builder) {
         this.iconLocation = builder.getTexture();
         this.tint = builder.getTint();

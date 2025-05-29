@@ -44,6 +44,7 @@ import net.minecraft.data.recipes.SpecialRecipeBuilder;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
@@ -1322,7 +1323,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .pattern(BASIC_MODULE)
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_ELITE)
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
-              .key(Pattern.CONSTANT, MekanismItems.JETPACK)
+              .key(Pattern.CONSTANT, Ingredient.of(MekanismItems.JETPACK, MekanismItems.ARMORED_JETPACK))
               .key(Pattern.HDPE_CHAR, MekanismTags.Items.PELLETS_POLONIUM)
               .build(consumer);
         //Electrolytic Breathing Unit
@@ -1542,7 +1543,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ).key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_ELITE)
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.BLOCK, ItemTags.SOUL_FIRE_BASE_BLOCKS)
-              .key(Pattern.CONSTANT, MekanismItems.FREE_RUNNERS)
+              .key(Pattern.CONSTANT, Ingredient.of(MekanismItems.FREE_RUNNERS, MekanismItems.ARMORED_FREE_RUNNERS))
               .key(Pattern.HDPE_CHAR, MekanismTags.Items.PELLETS_POLONIUM)
               .build(consumer);
         //Locomotive Boosting Unit
@@ -1565,7 +1566,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.HDPE_CHAR, Pattern.HDPE_CHAR, Pattern.HDPE_CHAR))
               ).key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_ELITE)
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
-              .key(Pattern.CONSTANT, MekanismItems.FREE_RUNNERS)
+              .key(Pattern.CONSTANT, Ingredient.of(MekanismItems.FREE_RUNNERS, MekanismItems.ARMORED_FREE_RUNNERS))
               .key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
               .key(Pattern.HDPE_CHAR, MekanismTags.Items.PELLETS_POLONIUM)
               .build(consumer);

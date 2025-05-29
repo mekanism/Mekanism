@@ -620,7 +620,7 @@ public class WorldUtils {
 
     //TODO: Come up with a better method name, this is used for checking if a mob can spawn inside or if it is dangerous for mobs to say teleport inside of
     public static boolean isInsideFormedMultiblock(BlockGetter reader, BlockPos pos, @Nullable Mob mob) {
-        BlockEntity tile = WorldUtils.getTileEntity(reader, pos);
+        BlockEntity tile = getTileEntity(reader, pos);
         if (tile instanceof IMultiblock<?> multiblockTile) {
             if (reader instanceof LevelReader levelReader && levelReader.isClientSide() || mob != null && mob.level().isClientSide()) {
                 //If we are on the client just check if we are formed as we don't sync structure information

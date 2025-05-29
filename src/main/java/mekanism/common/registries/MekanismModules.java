@@ -2,6 +2,7 @@ package mekanism.common.registries;
 
 import java.util.function.UnaryOperator;
 import mekanism.api.gear.ModuleData.ExclusiveFlag;
+import mekanism.api.gear.ModuleData.ModuleDataBuilder;
 import mekanism.api.gear.config.ModuleBooleanConfig;
 import mekanism.api.gear.config.ModuleColorConfig;
 import mekanism.api.gear.config.ModuleEnumConfig;
@@ -137,13 +138,13 @@ public class MekanismModules {
           ModuleVisionEnhancementUnit::new, () -> MekanismItems.MODULE_VISION_ENHANCEMENT, builder -> builder.maxStackSize(4).handlesModeChange().rendersHUD()
                 .disabledByDefault());
     public static final ModuleRegistryObject<ModuleNutritionalInjectionUnit> NUTRITIONAL_INJECTION_UNIT = MODULES.registerInstanced("nutritional_injection_unit",
-          ModuleNutritionalInjectionUnit::new, () -> MekanismItems.MODULE_NUTRITIONAL_INJECTION, builder -> builder.rendersHUD());
+          ModuleNutritionalInjectionUnit::new, () -> MekanismItems.MODULE_NUTRITIONAL_INJECTION, ModuleDataBuilder::rendersHUD);
 
     //Chestplate
     public static final ModuleRegistryObject<ModuleDosimeterUnit> DOSIMETER_UNIT = MODULES.registerInstanced("dosimeter_unit",
-          ModuleDosimeterUnit::new, () -> MekanismItems.MODULE_DOSIMETER, builder -> builder.rendersHUD());
+          ModuleDosimeterUnit::new, () -> MekanismItems.MODULE_DOSIMETER, ModuleDataBuilder::rendersHUD);
     public static final ModuleRegistryObject<ModuleGeigerUnit> GEIGER_UNIT = MODULES.registerInstanced("geiger_unit",
-          ModuleGeigerUnit::new, () -> MekanismItems.MODULE_GEIGER, builder -> builder.rendersHUD());
+          ModuleGeigerUnit::new, () -> MekanismItems.MODULE_GEIGER, ModuleDataBuilder::rendersHUD);
     public static final ModuleRegistryObject<ModuleJetpackUnit> JETPACK_UNIT = MODULES.register("jetpack_unit",
           ModuleJetpackUnit::new, () -> MekanismItems.MODULE_JETPACK, builder -> builder.maxStackSize(4).handlesModeChange().rendersHUD()
                 .exclusive(ExclusiveFlag.OVERRIDE_JUMP)

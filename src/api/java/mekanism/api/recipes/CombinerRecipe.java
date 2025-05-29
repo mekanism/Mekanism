@@ -101,6 +101,12 @@ public abstract class CombinerRecipe extends MekanismRecipe<RecipeInput> impleme
     }
 
     @Override
+    public void logMissingTags() {
+        getMainInput().logMissingTags();
+        getExtraInput().logMissingTags();
+    }
+
+    @Override
     public final RecipeType<CombinerRecipe> getType() {
         return MekanismRecipeTypes.TYPE_COMBINING.value();
     }

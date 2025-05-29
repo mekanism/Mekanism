@@ -44,7 +44,6 @@ import mekanism.common.network.to_client.container.property.PropertyData;
 import mekanism.common.network.to_server.PacketWindowSelect;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.RegistryUtils;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.RegistryAccess;
@@ -247,8 +246,6 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @return The contents in this slot AFTER transferring items away.
      */
     @NotNull

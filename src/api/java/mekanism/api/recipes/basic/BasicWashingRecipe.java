@@ -109,6 +109,9 @@ public class BasicWashingRecipe extends FluidChemicalToChemicalRecipe {
 
     @Override
     public int hashCode() {
-        return Objects.hash(fluidInput, chemicalInput, output);
+        int result = fluidInput.hashCode();
+        result = 31 * result + chemicalInput.hashCode();
+        result = 31 * result + output.hashCode();
+        return result;
     }
 }

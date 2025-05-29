@@ -53,7 +53,7 @@ public class Pos3D extends Vec3 {
     }
 
     public static Pos3D create(Vec3i vec) {
-        return new Pos3D(Vec3.atLowerCornerOf(vec));
+        return new Pos3D(atLowerCornerOf(vec));
     }
 
     public static Pos3D translateMatrix(double[] matrix, Pos3D translation) {

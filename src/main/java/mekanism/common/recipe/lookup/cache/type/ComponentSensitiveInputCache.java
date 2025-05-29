@@ -35,8 +35,6 @@ public abstract class ComponentSensitiveInputCache<KEY, INPUT, INGREDIENT extend
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @implNote Checks the more specific Data Component based cache before checking the more generic base type.
      */
     @Override
@@ -45,8 +43,6 @@ public abstract class ComponentSensitiveInputCache<KEY, INPUT, INGREDIENT extend
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @implNote Checks the more specific Data Component based cache before checking the more generic base type.
      */
     @Override

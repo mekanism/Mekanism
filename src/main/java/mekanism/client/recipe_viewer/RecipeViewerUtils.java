@@ -1,6 +1,7 @@
 package mekanism.client.recipe_viewer;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -55,7 +56,7 @@ public class RecipeViewerUtils {
     public static IProgressInfoHandler progressHandler(int processTime) {
         int time = SharedConstants.MILLIS_PER_TICK * processTime;
         return () -> {
-            double subTime = System.currentTimeMillis() % (long) time;
+            double subTime = System.currentTimeMillis() % time;
             return subTime / time;
         };
     }
@@ -71,7 +72,7 @@ public class RecipeViewerUtils {
 
             @Override
             public double getLevel() {
-                double subTime = System.currentTimeMillis() % (long) time;
+                double subTime = System.currentTimeMillis() % time;
                 return subTime / time;
             }
         };
@@ -121,10 +122,10 @@ public class RecipeViewerUtils {
         }
         //See if there are any chemical to item mappings
         if (recipeType != null) {
-            for (RecipeHolder<? extends ItemStackToChemicalRecipe> recipeHolder : recipeType.getRecipes(null)) {
+            for (RecipeHolder<? extends ItemStackToChemicalRecipe> recipeHolder : recipeType.getRecipes()) {
                 ItemStackToChemicalRecipe recipe = recipeHolder.value();
                 for (ChemicalStack output : recipe.getOutputDefinition()) {
-                    if (supportedTypes.contains(output.getChemical())) {
+                    if (anyMatch(supportedTypes, output.getChemicalHolder())) {
                         stacks.addAll(recipe.getInput().getRepresentations());
                         break;
                     }
@@ -132,6 +133,16 @@ public class RecipeViewerUtils {
             }
         }
         return stacks;
+    }
+
+    private static <T> boolean anyMatch(Collection<Holder<T>> holders, Holder<T> holder) {
+        for (Holder<T> toCheck : holders) {
+            //noinspection deprecation
+            if (toCheck.is(holder)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static Map<ResourceLocation, BasicItemStackToFluidOptionalItemRecipe> getLiquificationRecipes() {
@@ -144,7 +155,7 @@ public class RecipeViewerUtils {
         for (Map.Entry<ResourceKey<Item>, Item> entry : BuiltInRegistries.ITEM.entrySet()) {
             BasicItemStackToFluidOptionalItemRecipe recipe = TileEntityNutritionalLiquifier.getRecipe(entry.getValue().getDefaultInstance());
             if (recipe != null) {
-                liquification.put(RecipeViewerUtils.synthetic(entry.getKey().location(), "liquification", Mekanism.MODID), recipe);
+                liquification.put(synthetic(entry.getKey().location(), "liquification", Mekanism.MODID), recipe);
             }
         }
         return liquification;

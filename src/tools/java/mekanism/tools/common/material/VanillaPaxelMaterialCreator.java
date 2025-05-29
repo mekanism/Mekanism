@@ -1,12 +1,15 @@
 package mekanism.tools.common.material;
 
+import java.util.List;
 import java.util.function.Supplier;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.config.IMekanismConfig;
 import mekanism.common.config.value.CachedFloatValue;
 import mekanism.common.config.value.CachedIntValue;
+import mekanism.tools.common.ToolsTags;
 import mekanism.tools.common.config.ToolsConfigTranslations.VanillaPaxelMaterialTranslations;
 import net.minecraft.world.item.Tiers;
+import net.minecraft.world.item.component.Tool;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 @NothingNullByDefault
@@ -104,5 +107,9 @@ public class VanillaPaxelMaterialCreator implements IPaxelMaterial {
     @Override
     public int getPaxelEnchantability() {
         return paxelEnchantability.get();
+    }
+
+    public Tool createToolProperties() {
+        return new Tool(List.of(Tool.Rule.deniesDrops(getVanillaTier().getIncorrectBlocksForDrops()), Tool.Rule.minesAndDrops(ToolsTags.Blocks.MINEABLE_WITH_PAXEL, getPaxelEfficiency())), 1.0F, 1);
     }
 }

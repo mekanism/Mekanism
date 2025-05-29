@@ -316,7 +316,7 @@ public class ClientRegistration {
         event.registerAbove(VanillaGuiLayers.ARMOR_LEVEL, Mekanism.rl("energy_level"), MekaSuitEnergyLevel.INSTANCE);
         //Render status overlay after item name rather than action bar (record_overlay) so that things like the sleep fade will render in front of our overlay
         event.registerAbove(VanillaGuiLayers.SELECTED_ITEM_NAME, Mekanism.rl("status_overlay"), MekanismStatusOverlay.INSTANCE);
-        event.registerAbove(VanillaGuiLayers.HOTBAR, Mekanism.rl("hud"), MekanismHUD.INSTANCE);
+        event.registerAbove(VanillaGuiLayers.SUBTITLE_OVERLAY, Mekanism.rl("hud"), MekanismHUD.INSTANCE);
     }
 
     @SubscribeEvent

@@ -103,9 +103,11 @@ public abstract class BasicItemStackChemicalToItemStackRecipe extends ItemStackC
 
     @Override
     public int hashCode() {
-        int hash = Objects.hash(itemInput, chemicalInput, perTickUsage);
-        hash = 31 * hash + ItemStack.hashItemAndComponents(output);
-        hash = 31 * hash + output.getCount();
-        return hash;
+        int result = itemInput.hashCode();
+        result = 31 * result + chemicalInput.hashCode();
+        result = 31 * result + Boolean.hashCode(perTickUsage);
+        result = 31 * result + ItemStack.hashItemAndComponents(output);
+        result = 31 * result + output.getCount();
+        return result;
     }
 }

@@ -3,7 +3,6 @@ package mekanism.common.content.gear.mekatool;
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.function.IntFunction;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
@@ -253,7 +252,7 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
                 if (particle != -1) {
                     world.levelEvent(null, particle, newPos, 0);
                 }
-                PacketUtils.sendToAllTracking(new PacketLightningRender(LightningPreset.TOOL_AOE, Objects.hash(pos, newPos),
+                PacketUtils.sendToAllTracking(new PacketLightningRender(LightningPreset.TOOL_AOE, 31 * pos.hashCode() + newPos.hashCode(),
                       toolAOEData.getLightningPos(pos), toolAOEData.getLightningPos(newPos), 10), world, pos);
             }
         }

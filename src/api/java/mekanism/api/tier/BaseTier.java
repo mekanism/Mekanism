@@ -80,8 +80,6 @@ public enum BaseTier implements StringRepresentable, SupportsColorMap {
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @apiNote Modifying the returned array will result in this color object changing the color it represents, and should not be done.
      */
     @Override
@@ -90,8 +88,6 @@ public enum BaseTier implements StringRepresentable, SupportsColorMap {
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @apiNote This method is mostly for <strong>INTERNAL</strong> usage.
      * @since 10.4.0
      */
@@ -119,8 +115,11 @@ public enum BaseTier implements StringRepresentable, SupportsColorMap {
 
     /**
      * Helper to lookup what base tier corresponds to the given integer value.
+     *
      * @param tier Ordinal of the tier level to get.
+     *
      * @return the corresponding Base Tier.
+     *
      * @since 10.7.11
      */
     @Nullable

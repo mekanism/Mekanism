@@ -9,6 +9,7 @@ import mekanism.OptimizePng
 import mekanism.OutputChangelog
 import net.darkhax.curseforgegradle.TaskPublishCurseForge
 import net.darkhax.curseforgegradle.UploadArtifact
+import org.gradle.buildconfiguration.tasks.UpdateDaemonJvm
 
 import java.util.function.Consumer
 
@@ -20,13 +21,17 @@ plugins {
     id('eclipse')
     id('idea')
     id('maven-publish')
-    id('net.neoforged.moddev') version('2.0.78')//https://projects.neoforged.net/neoforged/moddevgradle
+    id('net.neoforged.moddev') version('2.0.88')//https://projects.neoforged.net/neoforged/moddevgradle
 }
 
 tasks.named('wrapper', Wrapper) {
     //Define wrapper values here so as to not have to always do so when updating gradlew.properties
-    gradleVersion = '8.13'
+    gradleVersion = '8.14.1'
     distributionType = Wrapper.DistributionType.ALL
+}
+
+tasks.named('updateDaemonJvm', UpdateDaemonJvm) {
+    languageVersion = JavaLanguageVersion.of("${java_version}")
 }
 
 defaultTasks('build')
@@ -73,7 +78,7 @@ sourceSets {
     gameTest {
         compileClasspath += api.output
         resources {
-            srcDirs += ["src/gameTest/generated"]
+            srcDirs += ['src/gameTest/generated']
         }
     }
     // These source-sets only exist for the sake of assembling a dependency graph
@@ -535,7 +540,7 @@ def getManifestAttributes(String title) {
             'Implementation-Title'    : title,
             'Implementation-Version'  : "${project.mod_version}",
             'Implementation-Vendor'   : 'Mekanism',
-            'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+            'Implementation-Timestamp': new Date().format('yyyy-MM-dd\'T\'HH:mm:ssZ'),
             'Automatic-Module-Name'   : title.toLowerCase(Locale.ROOT)
     ]
 }

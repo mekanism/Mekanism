@@ -73,6 +73,7 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
     CLIENT_HUD_JITTER("client.hud.jitter", "Jitter", "Visual jitter of the MekaSuit HUD, seen when moving the player's head. Higher values increases the "
                                                      + "amount of jitter."),
     CLIENT_HUD_COMPASS("client.hud.compass", "Compass", "Display a fancy compass when the MekaSuit Helmet is worn."),
+    CLIENT_HUD_SUBTITLE_AVOID("client.hud.avoid_subtitles", "Avoid Subtitle Overlap", "Shift the HUD elements when sound subtitles are being displayed to avoid overlap"),
 
     CLIENT_QIO("client.qio", "QIO Settings", "Settings for configuring Mekanism's QIO", true),
     CLIENT_QIO_SORT_TYPE("client.qio.sort.type", "Sort Type", "Sorting strategy when viewing items in a QIO Dashboard."),

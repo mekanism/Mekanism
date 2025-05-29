@@ -355,8 +355,6 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @implNote This is slightly different from read and write as we don't bother syncing the ejecting status. We can skip syncing the ejecting status as the client only
      * needs that information when in the gui see {@link #getSpecificSyncableData()} for where we sync ejecting status while in GUIs.
      */

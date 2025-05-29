@@ -116,7 +116,12 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         if (isMaster() && multiblock.isFormed() && multiblock.recheckStructure) {
             multiblock.recheckStructure = false;
             getStructure().doImmediateUpdate(this, ticker % MekanismUtils.TICKS_PER_HALF_SECOND == 0);
-            multiblock = getMultiblock();
+            T newMultiblock = getMultiblock();
+            if (newMultiblock != multiblock && !newMultiblock.isFormed()) {
+                //force it to sync if it just unformed
+                getManager().handleDirtyMultiblock(multiblock);
+            }
+            multiblock = newMultiblock;
         }
         if (multiblock.isFormed()) {
             if (!prevStructure) {
@@ -134,7 +139,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
                     if (multiblock.tick(level)) {
                         needsPacket = true;
                     }
-                    getManager().handleDirtyMultiblock(multiblock);
+                    getManager().markTicked(multiblock);
                 }
             }
         } else {

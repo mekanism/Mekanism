@@ -910,7 +910,6 @@ public class QIOCraftingWindow implements IContentsListener {
                 }
             }
             int[] matches = RecipeMatcher.findMatches(inputs, ingredients);
-            //noinspection ConstantValue,UnreachableCode - It can return null values
             if (matches != null) {
                 for (int ingredientIndex = 0; ingredientIndex < matches.length; ingredientIndex++) {
                     int actualSlot = actualLookup.getOrDefault(matches[ingredientIndex], -1);

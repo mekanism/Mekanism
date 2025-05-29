@@ -282,4 +282,11 @@ public class SerializerHelper {
         };
         return otherField.dependent(dependentGetter, dependentCodec, primaryValue -> primaryValue.isPresent() ? dependentCodec : dependentRequired);
     }
+
+    public static <T> String stringify(Codec<T> codec, T value) {
+        return codec.encodeStart(JsonOps.INSTANCE, value)
+              .result()
+              .map(JsonElement::toString)
+              .orElse(value.toString());
+    }
 }

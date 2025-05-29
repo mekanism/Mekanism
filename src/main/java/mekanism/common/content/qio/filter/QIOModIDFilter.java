@@ -49,7 +49,7 @@ public class QIOModIDFilter extends QIOFilter<QIOModIDFilter> implements IModIDF
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), modID);
+        return 31 * super.hashCode() + modID.hashCode();
     }
 
     @Override

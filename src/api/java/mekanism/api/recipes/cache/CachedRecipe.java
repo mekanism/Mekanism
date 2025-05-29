@@ -670,23 +670,23 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?>> {
             /**
              * Common representation for when a recipe errors due to not having enough of the input.
              */
-            public static final RecipeError NOT_ENOUGH_INPUT = RecipeError.create();
+            public static final RecipeError NOT_ENOUGH_INPUT = create();
             /**
              * Common representation for when a recipe errors due to not having enough of the secondary input.
              */
-            public static final RecipeError NOT_ENOUGH_SECONDARY_INPUT = RecipeError.create();
+            public static final RecipeError NOT_ENOUGH_SECONDARY_INPUT = create();
             /**
              * Common representation for when a recipe errors due to not having enough of the left input.
              */
-            public static final RecipeError NOT_ENOUGH_LEFT_INPUT = RecipeError.create();
+            public static final RecipeError NOT_ENOUGH_LEFT_INPUT = create();
             /**
              * Common representation for when a recipe errors due to not having enough of the right input.
              */
-            public static final RecipeError NOT_ENOUGH_RIGHT_INPUT = RecipeError.create();
+            public static final RecipeError NOT_ENOUGH_RIGHT_INPUT = create();
             /**
              * Common representation for when a recipe errors due to not having enough space in the output.
              */
-            public static final RecipeError NOT_ENOUGH_OUTPUT_SPACE = RecipeError.create();
+            public static final RecipeError NOT_ENOUGH_OUTPUT_SPACE = create();
 
             /**
              * Creates a new marker for tracking an error.

@@ -46,6 +46,7 @@ public interface IIngredientCreator<TYPE, STACK, INGREDIENT extends InputIngredi
      * @since 10.6.0
      * @deprecated Use {@link #fromHolders(int, Holder[])} instead
      */
+    @SuppressWarnings("unchecked")
     @Deprecated(forRemoval = true, since = "10.7.11")
     INGREDIENT from(int amount, TYPE... items);
 
@@ -71,6 +72,7 @@ public interface IIngredientCreator<TYPE, STACK, INGREDIENT extends InputIngredi
      *
      * @since 10.7.11
      */
+    @SuppressWarnings("unchecked")
     default INGREDIENT fromHolders(int amount, Holder<TYPE>... holders) {
         //TODO - 1.22: Make this not be defaulted, we only default it on the off chance someone is implementing their own ingredient creator using this interface
         throw new UnsupportedOperationException("Not implemented yet");

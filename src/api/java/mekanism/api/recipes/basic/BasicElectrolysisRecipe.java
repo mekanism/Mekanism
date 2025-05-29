@@ -101,6 +101,10 @@ public class BasicElectrolysisRecipe extends ElectrolysisRecipe {
 
     @Override
     public int hashCode() {
-        return Objects.hash(input, leftChemicalOutput, rightChemicalOutput, energyMultiplier);
+        int result = input.hashCode();
+        result = 31 * result + leftChemicalOutput.hashCode();
+        result = 31 * result + rightChemicalOutput.hashCode();
+        result = 31 * result + Long.hashCode(energyMultiplier);
+        return result;
     }
 }

@@ -44,8 +44,6 @@ public class CapabilityHandlerManager<HOLDER extends IHolder, CONTAINER, HANDLER
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @apiNote Assumes that {@link #canHandle} has been called before this and that it was {@code true}.
      */
     @Nullable

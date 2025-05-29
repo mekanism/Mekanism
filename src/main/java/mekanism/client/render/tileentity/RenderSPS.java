@@ -3,7 +3,6 @@ package mekanism.client.render.tileentity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.lib.effect.BillboardingEffectRenderer;
@@ -75,7 +74,7 @@ public class RenderSPS extends MultiblockTileEntityRenderer<SPSMultiblockData, T
                       .size(0.01F * getBoundedScale(energyScale, 0.5F, 5))
                       .lifespan(8)
                       .spawn(SpawnFunction.NO_DELAY);
-                bolts.update(Objects.hash(side, endPos), bolt, partialTick);
+                bolts.update(31 * side.hashCode() + endPos.hashCode(), bolt, partialTick);
             }
             targetEffectCount = (int) getBoundedScale(energyScale, 10, 120);
         }

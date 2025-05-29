@@ -38,7 +38,7 @@ public class Chunk3D extends ChunkPos {
      * @since 10.3.2
      */
     public Chunk3D(ResourceKey<Level> dimension, long chunkPos) {
-        this(dimension, ChunkPos.getX(chunkPos), ChunkPos.getZ(chunkPos));
+        this(dimension, getX(chunkPos), getZ(chunkPos));
     }
 
     /**

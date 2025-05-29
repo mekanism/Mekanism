@@ -6,7 +6,7 @@ import mekanism.common.config.value.CachedIntValue;
 import net.neoforged.neoforge.fluids.FluidType;
 
 public enum FluidTankTier implements ITier {
-    BASIC(BaseTier.BASIC, 32 * FluidType.BUCKET_VOLUME, 1 * FluidType.BUCKET_VOLUME),
+    BASIC(BaseTier.BASIC, 32 * FluidType.BUCKET_VOLUME, FluidType.BUCKET_VOLUME),
     ADVANCED(BaseTier.ADVANCED, 64 * FluidType.BUCKET_VOLUME, 4 * FluidType.BUCKET_VOLUME),
     ELITE(BaseTier.ELITE, 128 * FluidType.BUCKET_VOLUME, 16 * FluidType.BUCKET_VOLUME),
     ULTIMATE(BaseTier.ULTIMATE, 256 * FluidType.BUCKET_VOLUME, 64 * FluidType.BUCKET_VOLUME),

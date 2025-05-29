@@ -10,7 +10,6 @@ import mekanism.api.security.ISecurityObject;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.security.PacketSyncSecurity;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.OwnerDisplay;
@@ -73,7 +72,7 @@ public class ItemSecurityUtils implements IItemSecurityUtils {
     public InteractionResultHolder<ItemStack> claimOrOpenGui(Level level, Player player, InteractionHand hand, TriConsumer<ServerPlayer, InteractionHand, ItemStack> openGui) {
         ItemStack stack = player.getItemInHand(hand);
         if (!tryClaimItem(level, player, stack)) {
-            if (!IItemSecurityUtils.INSTANCE.canAccessOrDisplayError(player, stack)) {
+            if (!INSTANCE.canAccessOrDisplayError(player, stack)) {
                 return InteractionResultHolder.fail(stack);
             } else if (stack.getCount() > 1) {
                 //If the item is currently stacked, don't allow opening the GUI

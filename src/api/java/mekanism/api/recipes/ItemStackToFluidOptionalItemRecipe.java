@@ -71,6 +71,11 @@ public abstract class ItemStackToFluidOptionalItemRecipe extends MekanismRecipe<
         return getInput().hasNoMatchingInstances();
     }
 
+    @Override
+    public void logMissingTags() {
+        getInput().logMissingTags();
+    }
+
     /**
      * @apiNote Fluid must be present, but the item may be empty.
      */

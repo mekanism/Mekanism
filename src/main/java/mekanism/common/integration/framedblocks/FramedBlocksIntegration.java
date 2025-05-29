@@ -66,7 +66,7 @@ public final class FramedBlocksIntegration {
         }
 
         private static void onRegisterParticleProviders(RegisterParticleProvidersEvent event) {
-            event.registerSpecial(FramedBlocksIntegration.CHEMICAL_PARTICLE.get(), new ChemicalSpriteParticle.Provider());
+            event.registerSpecial(CHEMICAL_PARTICLE.get(), new ChemicalSpriteParticle.Provider());
         }
     }
 }

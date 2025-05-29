@@ -71,6 +71,11 @@ public abstract class FluidToFluidRecipe extends MekanismRecipe<SingleFluidRecip
     }
 
     @Override
+    public void logMissingTags() {
+        getInput().logMissingTags();
+    }
+
+    @Override
     public final RecipeType<FluidToFluidRecipe> getType() {
         return MekanismRecipeTypes.TYPE_EVAPORATING.get();
     }

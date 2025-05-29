@@ -39,8 +39,6 @@ public final class ChemicalStackIngredient implements InputIngredient<ChemicalSt
      *     "amount": 250
      * }
      * }</pre>
-     *
-     * <p>
      * <p>
      * Compound chemical ingredients are always serialized using the map codec, i.e.
      *
@@ -164,6 +162,11 @@ public final class ChemicalStackIngredient implements InputIngredient<ChemicalSt
     }
 
     @Override
+    public void logMissingTags() {
+        ingredient.logMissingTags();
+    }
+
+    @Override
     public List<ChemicalStack> getRepresentations() {
         if (this.representations == null) {
             this.representations = ingredient.getChemicalHolders().stream()
@@ -204,7 +207,7 @@ public final class ChemicalStackIngredient implements InputIngredient<ChemicalSt
 
     @Override
     public int hashCode() {
-        return Objects.hash(ingredient, amount);
+        return 31 * ingredient.hashCode() + Long.hashCode(amount);
     }
 
     @Override

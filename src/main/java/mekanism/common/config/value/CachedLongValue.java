@@ -28,7 +28,7 @@ public class CachedLongValue extends CachedValue<Long> implements LongSupplier {
     }
 
     public static CachedLongValue define(IMekanismConfig config, Builder builder, IConfigTranslation comment, String path, long defaultValue, long min, long max) {
-        return CachedLongValue.wrap(config, comment.applyToBuilder(builder).defineInRange(path, defaultValue, min, max));
+        return wrap(config, comment.applyToBuilder(builder).defineInRange(path, defaultValue, min, max));
     }
 
     public long getOrDefault() {

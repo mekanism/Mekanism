@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.LongSupplier;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
@@ -349,6 +348,9 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
 
     @Override
     public int hashCode() {
-        return Objects.hash(configItems, getUntypedData(), installed);
+        int result = configItems.hashCode();
+        result = 31 * result + getUntypedData().hashCode();
+        result = 31 * result + installed;
+        return result;
     }
 }

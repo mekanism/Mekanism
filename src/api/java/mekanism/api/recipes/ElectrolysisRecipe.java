@@ -80,6 +80,11 @@ public abstract class ElectrolysisRecipe extends MekanismRecipe<SingleFluidRecip
     }
 
     @Override
+    public void logMissingTags() {
+        getInput().logMissingTags();
+    }
+
+    @Override
     public final RecipeType<ElectrolysisRecipe> getType() {
         return MekanismRecipeTypes.TYPE_SEPARATING.value();
     }

@@ -5,7 +5,6 @@ import java.util.UUID;
 import java.util.function.IntFunction;
 import mekanism.common.Mekanism;
 import mekanism.common.network.IMekanismPacket;
-import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.player_data.PacketPlayerData;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.codec.ByteBufCodecs;

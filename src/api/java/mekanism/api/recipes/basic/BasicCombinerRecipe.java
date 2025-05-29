@@ -89,7 +89,8 @@ public class BasicCombinerRecipe extends CombinerRecipe {
 
     @Override
     public int hashCode() {
-        int hash = Objects.hash(mainInput, extraInput);
+        int hash = mainInput.hashCode();
+        hash = 31 * hash + extraInput.hashCode();
         hash = 31 * hash + ItemStack.hashItemAndComponents(output);
         hash = 31 * hash + output.getCount();
         return hash;

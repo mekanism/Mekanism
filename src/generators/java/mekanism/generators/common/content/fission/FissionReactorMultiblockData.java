@@ -209,7 +209,12 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         radiateEntities(world);
 
         // update scales
-        float coolantScale = MekanismUtils.getScale(prevCoolantScale, coolantTank.getFluidTank());
+        float coolantScale;
+        if (coolantTank.getCurrentType() == CurrentType.CHEMICAL) {
+            coolantScale = MekanismUtils.getScale(prevCoolantScale, coolantTank.getChemicalTank());
+        } else {
+            coolantScale = MekanismUtils.getScale(prevCoolantScale, coolantTank.getFluidTank());
+        }
         float fuelScale = MekanismUtils.getScale(prevFuelScale, fuelTank);
         float steamScale = MekanismUtils.getScale(prevHeatedCoolantScale, heatedCoolantTank), wasteScale = MekanismUtils.getScale(prevWasteScale, wasteTank);
         if (MekanismUtils.scaleChanged(coolantScale, prevCoolantScale) || MekanismUtils.scaleChanged(fuelScale, prevFuelScale) ||
@@ -557,7 +562,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
             // just return that it can't boil
             return 0;
         }
-        double avgSurfaceArea = (double) surfaceArea / (double) fuelAssemblies;
+        double avgSurfaceArea = surfaceArea / (double) fuelAssemblies;
         return Math.min(1, avgSurfaceArea / MekanismGeneratorsConfig.generators.fissionSurfaceAreaTarget.get());
     }
 
@@ -568,7 +573,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
 
     @ComputerMethod
     public long getDamagePercent() {
-        return Math.round((reactorDamage / FissionReactorMultiblockData.MAX_DAMAGE) * 100);
+        return Math.round((reactorDamage / MAX_DAMAGE) * 100);
     }
 
     public void setAssemblies(int assemblies) {

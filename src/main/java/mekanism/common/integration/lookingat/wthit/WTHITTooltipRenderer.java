@@ -39,12 +39,12 @@ public class WTHITTooltipRenderer implements IBlockComponentProvider, IEntityCom
             Component lastText = null;
             //Copy the data we need and have from the server and pass it on to the tooltip rendering
             for (ILookingAtElement element : helper.elements) {
-                if (element instanceof TextElement textElement) {
+                if (element instanceof TextElement(Component text)) {
                     if (lastText != null) {
                         //Fallback to printing the last text
                         tooltip.addLine(lastText);
                     }
-                    lastText = textElement.text();
+                    lastText = text;
                     continue;
                 }
                 if (config.getBoolean(element.getID())) {

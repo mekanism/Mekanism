@@ -141,7 +141,7 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
         //If we have a nugget that means we also want to add recipes for smelting tools/armor into the nugget
         if (nugget != null) {
             String baseNuggetFrom = name + "/nugget_from_";
-            RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, BaseRecipeProvider.createIngredient(helmet, chestplate, leggings, boots, sword, pickaxe, axe, shovel, hoe, paxel),
+            RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, createIngredient(helmet, chestplate, leggings, boots, sword, pickaxe, axe, shovel, hoe, paxel),
                   nugget, 0.1F, 200, MekanismTools.rl(baseNuggetFrom + "blasting"), MekanismTools.rl(baseNuggetFrom + "smelting"));
         }
     }
@@ -166,7 +166,7 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
         //If we have a nugget that means we also want to add recipes for smelting tools/armor into the nugget
         if (nugget != null) {
             String baseNuggetFrom = RegistryUtils.getName(nugget, BuiltInRegistries.ITEM).getPath() + "_from_";
-            RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, BaseRecipeProvider.createIngredient(paxel), nugget, 0.1F, 200,
+            RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, createIngredient(paxel), nugget, 0.1F, 200,
                   MekanismTools.rl(baseNuggetFrom + "blasting"), MekanismTools.rl(baseNuggetFrom + "smelting"));
         }
     }

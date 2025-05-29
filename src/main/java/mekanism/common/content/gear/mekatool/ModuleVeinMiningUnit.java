@@ -165,7 +165,7 @@ public record ModuleVeinMiningUnit(boolean extended, ExcavationRange excavationR
                             frontier.put(nextPos.immutable(), nextState.get());
                             //Note: We do this for all blocks we find/attempt to mine, not just ones we do mine, as it is a bit simpler
                             // and also represents those blocks getting checked by the vein mining for potentially being able to be mined
-                            PacketUtils.sendToAllTracking(new PacketLightningRender(LightningPreset.TOOL_AOE, Objects.hash(blockPos, nextPos),
+                            PacketUtils.sendToAllTracking(new PacketLightningRender(LightningPreset.TOOL_AOE, 31 * blockPos.hashCode() + nextPos.hashCode(),
                                   blockPos.getCenter(), nextPos.getCenter(), 10), world, blockPos);
                         }
                     }

@@ -72,7 +72,7 @@ public class ResizableOreFeature extends Feature<ResizableOreFeatureConfig> {
             adouble[k4 + 1] = Mth.lerp(f, yMin, yMax);
             adouble[k4 + 2] = Mth.lerp(f, zMin, zMax);
             double d3 = random.nextDouble() * size / 16D;
-            adouble[k4 + 3] = ((double) (Mth.sin(Mth.PI * f) + 1) * d3 + 1) / 2D;
+            adouble[k4 + 3] = ((Mth.sin(Mth.PI * f) + 1) * d3 + 1) / 2D;
         }
         for (int i = 0; i < size - 1; ++i) {
             int i4 = i * 4;
@@ -112,15 +112,15 @@ public class ResizableOreFeature extends Feature<ResizableOreFeatureConfig> {
                     int yEnd = Math.max(Mth.floor(d3 + d1), yStart);
                     int zEnd = Math.max(Mth.floor(d4 + d1), zStart);
                     for (int x = xStart; x <= xEnd; ++x) {
-                        double d5 = ((double) x + 0.5D - d2) / d1;
+                        double d5 = (x + 0.5D - d2) / d1;
                         double d5_squared = d5 * d5;
                         if (d5_squared < 1) {
                             for (int y = yStart; y <= yEnd; ++y) {
-                                double d6 = ((double) y + 0.5D - d3) / d1;
+                                double d6 = (y + 0.5D - d3) / d1;
                                 double d6_squared = d6 * d6;
                                 if (d5_squared + d6_squared < 1) {
                                     for (int z = zStart; z <= zEnd; ++z) {
-                                        double d7 = ((double) z + 0.5D - d4) / d1;
+                                        double d7 = (z + 0.5D - d4) / d1;
                                         if (d5_squared + d6_squared + d7 * d7 < 1.0D && !world.isOutsideBuildHeight(y)) {
                                             int l2 = x - minXStart + (y - minYStart) * width + (z - minZStart) * width * height;
                                             if (!bitset.get(l2)) {

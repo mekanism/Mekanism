@@ -2,9 +2,14 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "item": "mekanism:jetpack"
-    },
+    "#": [
+      {
+        "item": "mekanism:jetpack"
+      },
+      {
+        "item": "mekanism:jetpack_armored"
+      }
+    ],
     "A": {
       "tag": "c:alloys/elite"
     },

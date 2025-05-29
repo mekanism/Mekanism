@@ -3,7 +3,6 @@ package mekanism.common.network.to_client.container.property;
 import io.netty.buffer.ByteBuf;
 import mekanism.common.inventory.container.MekanismContainer;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import org.jetbrains.annotations.Nullable;

@@ -54,7 +54,6 @@ public abstract class ChemicalAttribute implements IChemicalAttribute {
 
     @Internal
     @Override
-    @SuppressWarnings("removal")
     public final ChemicalAttribute toLegacyAttribute() {
         return this;
     }

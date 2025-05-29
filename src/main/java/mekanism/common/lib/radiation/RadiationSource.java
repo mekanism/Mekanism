@@ -1,6 +1,5 @@
 package mekanism.common.lib.radiation;
 
-import java.util.Objects;
 import java.util.Optional;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -67,7 +66,9 @@ public class RadiationSource implements IRadiationSource {
 
     @Override
     public int hashCode() {
-        return Objects.hash(pos, magnitude);
+        int result = pos.hashCode();
+        result = 31 * result + Double.hashCode(magnitude);
+        return result;
     }
 
     public CompoundTag serializeNBT() {

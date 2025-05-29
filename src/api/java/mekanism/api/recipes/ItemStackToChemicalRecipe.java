@@ -68,4 +68,8 @@ public abstract class ItemStackToChemicalRecipe extends MekanismRecipe<SingleRec
         return getInput().hasNoMatchingInstances();
     }
 
+    @Override
+    public void logMissingTags() {
+        getInput().logMissingTags();
+    }
 }

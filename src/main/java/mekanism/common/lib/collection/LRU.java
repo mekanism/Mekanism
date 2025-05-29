@@ -57,6 +57,7 @@ public class LRU<T> extends AbstractCollection<T> {
 
     @Override
     public boolean remove(Object element) {
+        //noinspection SuspiciousMethodCalls
         LRUEntry<T> entry = lookupMap.get(element);
         if (entry == null) {
             return false;
@@ -67,6 +68,7 @@ public class LRU<T> extends AbstractCollection<T> {
 
     @Override
     public boolean contains(Object element) {
+        //noinspection SuspiciousMethodCalls
         return lookupMap.containsKey(element);
     }
 

@@ -1,22 +1,30 @@
 package mekanism.common.lib.multiblock;
 
+import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Supplier;
 import mekanism.api.SerializationConstants;
+import mekanism.common.Mekanism;
 import mekanism.common.lib.MekanismSavedData;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+@EventBusSubscriber(modid = Mekanism.MODID)
 public class MultiblockManager<T extends MultiblockData> {
 
     private static final Set<MultiblockManager<?>> managers = new HashSet<>();
@@ -31,6 +39,8 @@ public class MultiblockManager<T extends MultiblockData> {
      * A map containing references to all multiblock inventory caches.
      */
     private final Map<UUID, MultiblockCache<T>> caches = new HashMap<>();
+
+    private final Queue<T> multiblocksTicked = new ArrayDeque<>();
 
     /**
      * Note: This can and will be null on the client side
@@ -124,6 +134,10 @@ public class MultiblockManager<T extends MultiblockData> {
         }
     }
 
+    public void markTicked(T multiblock) {
+        multiblocksTicked.add(multiblock);
+    }
+
     /**
      * Grabs a unique inventory ID for a multiblock.
      *
@@ -155,6 +169,28 @@ public class MultiblockManager<T extends MultiblockData> {
         if (dataHandler == null) {
             //Always associate the world with the overworld as we base it on a manager wide state
             dataHandler = MekanismSavedData.createSavedData(MultiblockCacheDataHandler::new, getNameLower());
+        }
+    }
+
+    /**
+     * Bit of a hack, really the multiblock system needs to not have a 'cache' middle-man.
+     * <p></p>
+     * Causes any multiblocks that became dirty after the master ticked to have their contents synced and thus saved (if one occurs after this tick)
+     */
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    static void endOfTickEvent(ServerTickEvent.Post event) {
+        for (MultiblockManager<?> manager : managers) {
+            manager.endOfTick();
+        }
+    }
+
+    /**
+     * syncs any multiblocks if they're dirty
+     */
+    private void endOfTick() {
+        T item;
+        while ((item = multiblocksTicked.poll()) != null) {
+            handleDirtyMultiblock(item);
         }
     }
 

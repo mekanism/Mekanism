@@ -3,6 +3,7 @@ package mekanism.common.recipe;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import mekanism.api.recipes.ChemicalChemicalToChemicalRecipe;
@@ -50,7 +51,9 @@ import mekanism.common.registration.impl.RecipeTypeDeferredRegister;
 import mekanism.common.registration.impl.RecipeTypeRegistryObject;
 import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -63,6 +66,7 @@ import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.Level;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.crafting.CompoundIngredient;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -144,6 +148,19 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
         }
     }
 
+    public static boolean checkIncompleteRecipes(MinecraftServer server) {
+        return checkIncompleteRecipes(server.getRecipeManager(), server.registryAccess());
+    }
+
+    public static boolean checkIncompleteRecipes(RecipeManager recipeManager, RegistryAccess registryAccess) {
+        boolean foundIncompleteRecipes = false;
+        for (DeferredHolder<RecipeType<?>, ? extends RecipeType<?>> holder : RECIPE_TYPES.getEntries()) {
+            MekanismRecipeType<?, ?, ?> recipeType = (MekanismRecipeType<?, ?, ?>) holder.value();
+            foundIncompleteRecipes |= recipeType.checkMyIncompleteRecipes(recipeManager, registryAccess);
+        }
+        return foundIncompleteRecipes;
+    }
+
     private List<RecipeHolder<RECIPE>> cachedRecipes = Collections.emptyList();
     private final ResourceLocation registryName;
     private final INPUT_CACHE inputCache;
@@ -179,60 +196,59 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
     }
 
     @Nullable
-    private Level getLevel(@Nullable Level level) {
-        if (level == null) {
-            //Try to get a fallback world if we are in a context that may not have one
-            //If we are on the client get the client's world, if we are on the server get the current server's world
-            if (FMLEnvironment.dist.isClient()) {
-                return MekanismClient.tryGetClientWorld();
-            }
-            return ServerLifecycleHooks.getCurrentServer().overworld();
+    private static RegistryAccess tryGetRegistryAccess() {
+        //Try to get a fallback world if we are in a context that may not have one
+        //If we are on the client get the client's world, if we are on the server get the current server's world
+        if (FMLEnvironment.dist.isClient()) {
+            Level clientWorld = MekanismClient.tryGetClientWorld();
+            return clientWorld != null ? clientWorld.registryAccess() : null;
         }
-        return level;
+        return Objects.requireNonNull(ServerLifecycleHooks.getCurrentServer(), "Server not running?").registryAccess();
     }
 
     @NotNull
     @Override
     public List<RecipeHolder<RECIPE>> getRecipes(@Nullable Level world) {
-        world = getLevel(world);
+        RecipeManager recipeManager = null;
+        RegistryAccess registryAccess = null;
         if (world == null) {
+            //Try to get a fallback world if we are in a context that may not have one
+            //If we are on the client get the client's world, if we are on the server get the current server's world
+            if (FMLEnvironment.dist.isClient()) {
+                Level clientWorld = MekanismClient.tryGetClientWorld();
+                if (clientWorld != null) {
+                    recipeManager = clientWorld.getRecipeManager();
+                    registryAccess = clientWorld.registryAccess();
+                }
+            } else {
+                MinecraftServer currentServer = ServerLifecycleHooks.getCurrentServer();
+                if (currentServer != null) {
+                    recipeManager = currentServer.getRecipeManager();
+                    registryAccess = currentServer.registryAccess();
+                }
+            }
+        } else {
+            recipeManager = world.getRecipeManager();
+            registryAccess = world.registryAccess();
+        }
+        if (recipeManager == null) {
             //If we failed, then return no recipes
             return Collections.emptyList();
         }
-        return getRecipes(world.getRecipeManager(), world);
+        return getRecipes(recipeManager, registryAccess);
+    }
+
+    @Override
+    public @NotNull List<RecipeHolder<RECIPE>> getRecipes(RecipeManager recipeManager) {
+        return getRecipes(recipeManager, tryGetRegistryAccess());
     }
 
     @NotNull
     @Override
-    public List<RecipeHolder<RECIPE>> getRecipes(RecipeManager recipeManager, @Nullable Level world) {
+    public List<RecipeHolder<RECIPE>> getRecipes(@NotNull RecipeManager recipeManager, @Nullable RegistryAccess registryAccess) {
         if (cachedRecipes.isEmpty()) {
             //Note: This is a fresh immutable list that gets returned
-            List<RecipeHolder<RECIPE>> recipes = recipeManager.getAllRecipesFor(this);
-            if (this == SMELTING.get()) {
-                world = getLevel(world);
-                if (world == null) {
-                    //If we failed, then only return the recipes that are for the base type
-                    return recipes.stream()
-                          .filter(recipe -> !recipe.value().isIncomplete())
-                          .toList();
-                }
-                //Ensure the recipes can be modified
-                recipes = new ArrayList<>(recipes);
-                for (RecipeHolder<SmeltingRecipe> smeltingRecipe : recipeManager.getAllRecipesFor(RecipeType.SMELTING)) {
-                    ItemStack recipeOutput = smeltingRecipe.value().getResultItem(world.registryAccess());
-                    if (!smeltingRecipe.value().isSpecial() && !smeltingRecipe.value().isIncomplete() && !recipeOutput.isEmpty()) {
-                        //TODO: Can Smelting recipes even be "special", if so can we add some sort of checker to make getOutput return the correct result
-                        NonNullList<Ingredient> ingredients = smeltingRecipe.value().getIngredients();
-                        if (ingredients.isEmpty()) {
-                            //Something went wrong
-                            continue;
-                        }
-                        ItemStackIngredient input = IngredientCreatorAccess.item().from(CompoundIngredient.of(ingredients.toArray(Ingredient[]::new)));
-                        recipes.add(new RecipeHolder<>(RecipeViewerUtils.synthetic(smeltingRecipe.id(), "mekanism_generated"),
-                              castRecipe(new BasicSmeltingRecipe(input, recipeOutput))));
-                    }
-                }
-            }
+            List<RecipeHolder<RECIPE>> recipes = getRecipesUncached(recipeManager, registryAccess);
             //Make the list of cached recipes immutable and filter out any incomplete recipes
             // as there is no reason to potentially look the partial complete piece up if
             // the other portion of the recipe is incomplete
@@ -243,12 +259,60 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
         return cachedRecipes;
     }
 
+    /**
+     * Get a list of recipes directly from the manager
+     *
+     * @param recipeManager  The manager to query
+     * @param registryAccess Registry access to use (for Smelting only). Call {@link #tryGetRegistryAccess()} if none directly available
+     */
+    @NotNull
+    private List<RecipeHolder<RECIPE>> getRecipesUncached(@NotNull RecipeManager recipeManager, @Nullable RegistryAccess registryAccess) {
+        //Note: This is a fresh mutable list that gets returned
+        List<RecipeHolder<RECIPE>> recipes = recipeManager.getAllRecipesFor(this);
+        if (this == SMELTING.get()) {
+            if (registryAccess == null) {
+                //If we failed, then only return the recipes that are for the base type
+                return recipes;
+            }
+            //Ensure the recipes can be modified
+            recipes = new ArrayList<>(recipes);
+            for (RecipeHolder<SmeltingRecipe> smeltingRecipe : recipeManager.getAllRecipesFor(RecipeType.SMELTING)) {
+                ItemStack recipeOutput = smeltingRecipe.value().getResultItem(registryAccess);
+                if (!smeltingRecipe.value().isSpecial() && !smeltingRecipe.value().isIncomplete() && !recipeOutput.isEmpty()) {
+                    //TODO: Can Smelting recipes even be "special", if so can we add some sort of checker to make getOutput return the correct result
+                    NonNullList<Ingredient> ingredients = smeltingRecipe.value().getIngredients();
+                    if (ingredients.isEmpty()) {
+                        //Something went wrong
+                        continue;
+                    }
+                    ItemStackIngredient input = IngredientCreatorAccess.item().from(CompoundIngredient.of(ingredients.toArray(Ingredient[]::new)));
+                    recipes.add(new RecipeHolder<>(RecipeViewerUtils.synthetic(smeltingRecipe.id(), "mekanism_generated"),
+                          castRecipe(new BasicSmeltingRecipe(input, recipeOutput))));
+                }
+            }
+        }
+        return recipes;
+    }
+
     @SuppressWarnings("unchecked")
     private RECIPE castRecipe(MekanismRecipe<?> o) {
         if (o.getType() != this) {
             throw new IllegalArgumentException("Wrong recipe type");
         }
         return (RECIPE) o;
+    }
+
+    private boolean checkMyIncompleteRecipes(RecipeManager recipeManager, RegistryAccess registryAccess) {
+        boolean incomplete = false;
+        for (RecipeHolder<RECIPE> holder : getRecipesUncached(recipeManager, registryAccess)) {
+            if (!holder.value().isIncomplete()) {
+                continue;
+            }
+            Mekanism.logger.error("Incomplete recipe detected: {}", holder.id());
+            incomplete = true;
+            holder.value().logMissingTags();
+        }
+        return incomplete;
     }
 
     /**

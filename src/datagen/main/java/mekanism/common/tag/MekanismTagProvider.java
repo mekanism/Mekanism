@@ -650,7 +650,8 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismChemicals.SULFUR_DIOXIDE,
               MekanismChemicals.SULFUR_TRIOXIDE,
               MekanismChemicals.HYDROGEN_CHLORIDE,
-              MekanismChemicals.ETHENE
+              MekanismChemicals.ETHENE,
+              MekanismChemicals.SUPERHEATED_SODIUM
         );
 
         getBuilder(MekanismAPITags.Chemicals.CARBON).add(MekanismChemicals.CARBON);

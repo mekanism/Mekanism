@@ -20,6 +20,7 @@ public enum MekanismLang implements ILangEntry {
     INVALID_PACKET("constants", "error.packet.invalid"),
     ALPHA_WARNING("constants", "alpha_warning"),
     ALPHA_WARNING_HERE("constants", "alpha_warning.here"),
+    RECIPE_WARNING("constants", "recipe_warning"),
     //Equipment
     HEAD("equipment", "head"),
     BODY("equipment", "body"),

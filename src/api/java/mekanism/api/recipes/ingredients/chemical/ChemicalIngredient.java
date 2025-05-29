@@ -67,7 +67,6 @@ public abstract sealed class ChemicalIngredient implements Predicate<Chemical> p
      * </ul>
      *
      * @return a stream of all chemicals this ingredient accepts.
-     * <p>
      *
      * @see ICustomIngredient#getItems()
      */
@@ -86,7 +85,6 @@ public abstract sealed class ChemicalIngredient implements Predicate<Chemical> p
      * </ul>
      *
      * @return a stream of all chemicals this ingredient accepts.
-     * <p>
      *
      * @see ICustomIngredient#getItems()
      *
@@ -146,6 +144,8 @@ public abstract sealed class ChemicalIngredient implements Predicate<Chemical> p
     public final boolean hasNoChemicals() {
         return getChemicalHolders().isEmpty();
     }
+
+    public abstract void logMissingTags();
 
     /**
      * {@return The type of this chemical ingredient.}
