@@ -1,5 +1,7 @@
 package mekanism.common.util;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.SectionPos;
 import net.minecraft.world.level.ChunkPos;
 
 public class ChunkUtils {
@@ -37,5 +39,16 @@ public class ChunkUtils {
         } while (i < arrSize);
 
         return positions;
+    }
+
+    /**
+     * {@link ChunkPos#asLong(BlockPos)} but with a packed Block pos
+     *
+     * @param packedBlock packed blockpos ({@link BlockPos#asLong()})
+     *
+     * @return a packed Chunk pos
+     */
+    public static long packedBlockToChunk(long packedBlock) {
+        return ChunkPos.asLong(SectionPos.blockToSectionCoord(BlockPos.getX(packedBlock)), SectionPos.blockToSectionCoord(BlockPos.getZ(packedBlock)));
     }
 }

@@ -62,7 +62,7 @@ public class IndexedCuboidMap<VALUE> {
      */
     public void track(VALUE value, BlockPos center, int minX, int minY, int minZ, int maxX, int maxY, int maxZ){
 
-        CenteredBoundingBox box = new CenteredBoundingBox(center, minX, minY, minZ, maxX, maxY, maxZ);
+        CenteredBoundingBox box = new CenteredBoundingBox(center.asLong(), minX, minY, minZ, maxX, maxY, maxZ);
         if (!box.isInside(center)) {
             throw new IllegalArgumentException("center must be within the box");
         }
@@ -111,9 +111,10 @@ public class IndexedCuboidMap<VALUE> {
         if (valueMap.isEmpty()) {
             return false;
         }
+        long centerAsLong = center.asLong();
         List<CenteredBoundingBox> toRemove = new ArrayList<>(valueMap.size());
         for (Entry<CenteredBoundingBox, VALUE> valueEntry : valueMap.entrySet()) {
-            if (valueEntry.getKey().center.equals(center)) {
+            if (valueEntry.getKey().center == centerAsLong) {
                 toRemove.add(valueEntry.getKey());
             }
         }
@@ -158,8 +159,9 @@ public class IndexedCuboidMap<VALUE> {
         if (values == null) {
             return null;
         }
+        long centerAsLong = centre.asLong();
         for (CenteredBoundingBox box : values) {
-            if (centre.equals(box.center)) {
+            if (centerAsLong == box.center) {
                 return Objects.requireNonNull(valueMap.get(box), "Box existed with no value??");
             }
         }
@@ -189,7 +191,7 @@ public class IndexedCuboidMap<VALUE> {
         return new FilterTransformIterator<>(values.iterator()) {
             @Override
             protected @Nullable VALUE filterTransform(CenteredBoundingBox box) {
-                if (ChunkPos.asLong(box.center) == chunkPos) {
+                if (ChunkUtils.packedBlockToChunk(box.center) == chunkPos) {
                     return valueMap.get(box);
                 }
                 return null;
@@ -230,13 +232,10 @@ public class IndexedCuboidMap<VALUE> {
     }
 
     /**
-     * Like BoundingBox, but with a centre/controlling position
+     * Like BoundingBox, but with a centre/controlling position stored as a long
      */
-    private record CenteredBoundingBox(BlockPos center, int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
+    private record CenteredBoundingBox(long center, int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
 
-        CenteredBoundingBox {
-            center = center.immutable();
-        }
         public boolean isInside(Vec3i vector) {
             return this.isInside(vector.getX(), vector.getY(), vector.getZ());
         }
