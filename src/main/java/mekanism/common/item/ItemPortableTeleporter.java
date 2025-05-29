@@ -18,13 +18,13 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
 
-public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem
+public class ItemPortableTeleporter extends ItemEnergizedTiered implements IOwnerItem
 {
 	static final int baseCost = MekanismConfig.mekce.teleporterBasePowerCost;
 
 	public ItemPortableTeleporter()
 	{
-		super(Tier.EquipmentTier.ELITE.energy);
+		super(Tier.EquipmentTier.ELITE);
 	}
 
 	@Override
