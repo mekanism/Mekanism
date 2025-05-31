@@ -24,4 +24,9 @@ public class ProxyHandler<HOLDER extends @Nullable IHolder> {
     protected boolean readOnlyExtract() {
         return readOnly || holder != null && !holder.canExtract(side);
     }
+
+    @Nullable
+    public HOLDER getHolder() {
+        return holder;
+    }
 }
