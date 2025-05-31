@@ -357,31 +357,36 @@ public class FusionReactorMultiblockData extends MultiblockData {
 
         //Transfer from casing to water if necessary
         double caseWaterHeat = MekanismGeneratorsConfig.generators.fusionWaterHeatingRatio.get() * (lastCaseTemperature - biomeAmbientTemp);
+        double lostToWater = 0;
         if (Math.abs(caseWaterHeat) > HeatAPI.EPSILON) {
-            int waterToVaporize = MathUtils.clampToInt(HeatUtils.getSteamEnergyEfficiency() * caseWaterHeat / HeatUtils.getWaterThermalEnthalpy());
+            int waterToVaporize = (int) (HeatUtils.getSteamEnergyEfficiency() * caseWaterHeat / HeatUtils.getWaterThermalEnthalpy());
             FluidResource water = waterTank.resource();
             if (!water.isEmpty()) {
                 try (Transaction transaction = Transaction.openRoot()) {
-                    int vaporized = waterTank.extract(water, Math.min(waterToVaporize, steamTank.getNeededAsInt(ChemicalResource.EMPTY)), transaction, AutomationType.INTERNAL);
+                    ChemicalResource steam = MekanismChemicals.STEAM.asResource();
+                    int vaporized = waterTank.extract(water, Math.min(waterToVaporize, steamTank.getNeededAsInt(steam)), transaction, AutomationType.INTERNAL);
                     if (vaporized > 0) {
                         //Note: We don't validate the full amount could be inserted as we allow venting the excess steam
-                        steamTank.insert(MekanismChemicals.STEAM.asResource(), vaporized, transaction, AutomationType.INTERNAL);
-                        caseWaterHeat = vaporized * HeatUtils.getWaterThermalEnthalpy() / HeatUtils.getSteamEnergyEfficiency();
-                        heatCapacitor.handleHeat(-caseWaterHeat);
+                        steamTank.insert(steam, vaporized, transaction, AutomationType.INTERNAL);
+                        lostToWater = vaporized * HeatUtils.getWaterThermalEnthalpy() / HeatUtils.getSteamEnergyEfficiency();
+                        heatCapacitor.handleHeat(-lostToWater);
                         transaction.commit();
                     }
                 }
             }
         }
 
-        HeatTransfer heatTransfer = simulate();
-        lastEnvironmentLoss = heatTransfer.environmentTransfer();
-        lastTransferLoss = heatTransfer.adjacentTransfer();
+        //HeatTransfer heatTransfer = simulate();
+        //lastEnvironmentLoss = heatTransfer.environmentTransfer();
+        //lastTransferLoss = heatTransfer.adjacentTransfer();
+        lastTransferLoss = simulateAdjacent() + lostToWater;
+        lastEnvironmentLoss = 0;
 
         //Passive energy generation
         double caseAirHeat = MekanismGeneratorsConfig.generators.fusionCasingThermalConductivity.get() * (lastCaseTemperature - biomeAmbientTemp);
         if (Math.abs(caseAirHeat) > HeatAPI.EPSILON) {
             heatCapacitor.handleHeat(-caseAirHeat);
+            lastEnvironmentLoss = caseAirHeat;
             try (Transaction transaction = Transaction.openRoot()) {
                 energyContainer.insert(MathUtils.clampToInt(caseAirHeat * MekanismGeneratorsConfig.generators.fusionThermocoupleEfficiency.get()), transaction, AutomationType.INTERNAL);
                 transaction.commit();
@@ -391,14 +396,16 @@ public class FusionReactorMultiblockData extends MultiblockData {
 
     @Override
     public HeatTransfer simulate() {
-        double environmentTransfer = 0;
+        throw new UnsupportedOperationException("I'm special");
+    }
+
+    @Override
+    public double simulateAdjacent() {
         double adjacentTransfer = 0;
         for (ITileHeatHandler source : heatHandlers) {
-            HeatTransfer heatTransfer = source.simulate();
-            adjacentTransfer += heatTransfer.adjacentTransfer();
-            environmentTransfer += heatTransfer.environmentTransfer();
+            adjacentTransfer += source.simulateAdjacent();
         }
-        return new HeatTransfer(adjacentTransfer, environmentTransfer);
+        return adjacentTransfer;
     }
 
     @ComputerMethod(nameOverride = "getPlasmaTemperature")
