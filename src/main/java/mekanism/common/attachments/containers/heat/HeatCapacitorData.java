@@ -28,7 +28,7 @@ public record HeatCapacitorData(OptionalDouble heat, double capacity) {
     );
 
     public HeatCapacitorData(double heat, double capacity) {
-        this(OptionalDouble.of(heat), capacity);
+        this(OptionalDouble.of(Math.max(0D, heat)), capacity);
     }
 
     public HeatCapacitorData(double capacity) {

@@ -56,7 +56,7 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
     private void initStoredHeat() {
         if (storedHeat == -1) {
             //If the stored heat hasn't been initialized yet, update the stored heat based on initial capacity
-            storedHeat = heatCapacity * getAmbientTemperature();
+            storedHeat = Math.max(0D, heatCapacity * getAmbientTemperature());
         }
     }
 
@@ -95,7 +95,7 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
     public void handleHeat(double transfer) {
         initStoredHeat();
         if (transfer != 0 && Math.abs(transfer) > HeatAPI.EPSILON) {
-            storedHeat += transfer;
+            storedHeat = Math.max(0D, storedHeat + transfer);
         }
     }
 
@@ -115,7 +115,7 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
 
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        NBTUtils.setDoubleIfPresent(nbt, SerializationConstants.STORED, heat -> storedHeat = heat);
+        NBTUtils.setDoubleIfPresent(nbt, SerializationConstants.STORED, heat -> storedHeat = Math.max(0D, heat));
         NBTUtils.setDoubleIfPresent(nbt, SerializationConstants.HEAT_CAPACITY, capacity -> setHeatCapacity(capacity, false));
     }
 
@@ -135,7 +135,7 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
     @Override
     public void setHeat(double heat) {
         if (getHeat() != heat) {
-            storedHeat = heat;
+            storedHeat = Math.max(0D, heat);
             onContentsChanged();
         }
     }

@@ -89,7 +89,7 @@ public class ComponentBackedHeatCapacitor extends ComponentBackedContainer<HeatC
     @Override
     public void setHeat(double heat) {
         AttachedHeat attachedHeat = getAttached();
-        setContents(attachedHeat, getContents(attachedHeat).withHeat(heat));
+        setContents(attachedHeat, getContents(attachedHeat).withHeat(Math.max(0D, heat)));
     }
 
     @Override//TODO - 1.21: Re-evaluate this override
@@ -103,7 +103,7 @@ public class ComponentBackedHeatCapacitor extends ComponentBackedContainer<HeatC
             AttachedHeat attachedHeat = getAttached();
             if (!attachedHeat.isEmpty()) {
                 HeatCapacitorData stored = getContents(attachedHeat);
-                setContents(attachedHeat, stored.withHeat(stored.heatOrAmbient() + transfer));
+                setContents(attachedHeat, stored.withHeat(Math.max(0D, stored.heatOrAmbient() + transfer)));
             }
         }
     }
