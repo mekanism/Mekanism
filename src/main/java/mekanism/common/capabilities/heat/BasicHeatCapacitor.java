@@ -25,7 +25,7 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
 
     // set to ambient * heat capacity by default
     private double storedHeat = -1;
-    private double heatToHandle;
+    private boolean heatChangedThisTick = false;
 
     public static BasicHeatCapacitor create(double heatCapacity, @Nullable DoubleSupplier ambientTempSupplier, @Nullable IContentsListener listener) {
         return create(heatCapacity, HeatAPI.DEFAULT_INVERSE_CONDUCTION, HeatAPI.DEFAULT_INVERSE_INSULATION, ambientTempSupplier, listener);
@@ -90,7 +90,10 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
 
     @Override
     public void handleHeat(double transfer) {
-        heatToHandle += transfer;
+        initStoredHeat();
+        if (transfer != 0 && Math.abs(transfer) > HeatAPI.EPSILON) {
+            storedHeat += transfer;
+        }
     }
 
     @Override
@@ -99,13 +102,14 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
     }
 
     public void update() {
-        if (heatToHandle != 0 && Math.abs(heatToHandle) > HeatAPI.EPSILON) {
+        //TODO - 26.1 (heat): (this is never set to true?)
+        if (heatChangedThisTick) {
+            //TODO - 26.1 (heat): Figure out what the original state should be for content listener
             double originalState = getHeat();
-            storedHeat += heatToHandle;
             //notify listeners
             onContentsChanged(originalState);
             // reset our handling heat
-            heatToHandle = 0;
+            heatChangedThisTick = false;
         }
     }
 

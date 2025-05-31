@@ -349,14 +349,14 @@ public class FusionReactorMultiblockData extends MultiblockData {
 
     private void transferHeat() {
         //Transfer from plasma to casing
-        double plasmaCaseHeat = plasmaCaseConductivity * (lastPlasmaTemperature - lastCaseTemperature);
+        double plasmaCaseHeat = plasmaCaseConductivity * (plasmaTemperature - heatCapacitor.getTemperature());
         if (Math.abs(plasmaCaseHeat) > HeatAPI.EPSILON) {
             setPlasmaTemp(getPlasmaTemp() - plasmaCaseHeat / plasmaHeatCapacity);
             heatCapacitor.handleHeat(plasmaCaseHeat);
         }
 
         //Transfer from casing to water if necessary
-        double caseWaterHeat = MekanismGeneratorsConfig.generators.fusionWaterHeatingRatio.get() * (lastCaseTemperature - biomeAmbientTemp);
+        double caseWaterHeat = MekanismGeneratorsConfig.generators.fusionWaterHeatingRatio.get() * (heatCapacitor.getTemperature() - biomeAmbientTemp);
         double lostToWater = 0;
         if (Math.abs(caseWaterHeat) > HeatAPI.EPSILON) {
             int waterToVaporize = (int) (HeatUtils.getSteamEnergyEfficiency() * caseWaterHeat / HeatUtils.getWaterThermalEnthalpy());
@@ -383,7 +383,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
         lastEnvironmentLoss = 0;
 
         //Passive energy generation
-        double caseAirHeat = MekanismGeneratorsConfig.generators.fusionCasingThermalConductivity.get() * (lastCaseTemperature - biomeAmbientTemp);
+        double caseAirHeat = MekanismGeneratorsConfig.generators.fusionCasingThermalConductivity.get() * (heatCapacitor.getTemperature() - biomeAmbientTemp);
         if (Math.abs(caseAirHeat) > HeatAPI.EPSILON) {
             heatCapacitor.handleHeat(-caseAirHeat);
             lastEnvironmentLoss = caseAirHeat;
