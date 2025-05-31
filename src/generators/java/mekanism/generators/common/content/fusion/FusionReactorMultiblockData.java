@@ -336,25 +336,29 @@ public class FusionReactorMultiblockData extends MultiblockData {
 
         //Transfer from casing to water if necessary
         double caseWaterHeat = MekanismGeneratorsConfig.generators.fusionWaterHeatingRatio.get() * (lastCaseTemperature - biomeAmbientTemp);
+        double lostToWater = 0;
         if (Math.abs(caseWaterHeat) > HeatAPI.EPSILON) {
             int waterToVaporize = (int) (HeatUtils.getSteamEnergyEfficiency() * caseWaterHeat / HeatUtils.getWaterThermalEnthalpy());
             waterToVaporize = Math.min(waterToVaporize, Math.min(waterTank.getFluidAmount(), MathUtils.clampToInt(steamTank.getNeeded())));
             if (waterToVaporize > 0) {
                 MekanismUtils.logMismatchedStackSize(waterTank.shrinkStack(waterToVaporize, Action.EXECUTE), waterToVaporize);
                 steamTank.insert(MekanismChemicals.STEAM.asStack(waterToVaporize), Action.EXECUTE, AutomationType.INTERNAL);
-                caseWaterHeat = waterToVaporize * HeatUtils.getWaterThermalEnthalpy() / HeatUtils.getSteamEnergyEfficiency();
-                heatCapacitor.handleHeat(-caseWaterHeat);
+                lostToWater = waterToVaporize * HeatUtils.getWaterThermalEnthalpy() / HeatUtils.getSteamEnergyEfficiency();
+                heatCapacitor.handleHeat(-lostToWater);
             }
         }
 
-        HeatTransfer heatTransfer = simulate();
-        lastEnvironmentLoss = heatTransfer.environmentTransfer();
-        lastTransferLoss = heatTransfer.adjacentTransfer();
+        //HeatTransfer heatTransfer = simulate();
+        //lastEnvironmentLoss = heatTransfer.environmentTransfer();
+        //lastTransferLoss = heatTransfer.adjacentTransfer();
+        lastTransferLoss = simulateAdjacent() + lostToWater;
+        lastEnvironmentLoss = 0;
 
         //Passive energy generation
         double caseAirHeat = MekanismGeneratorsConfig.generators.fusionCasingThermalConductivity.get() * (lastCaseTemperature - biomeAmbientTemp);
         if (Math.abs(caseAirHeat) > HeatAPI.EPSILON) {
             heatCapacitor.handleHeat(-caseAirHeat);
+            lastEnvironmentLoss = caseAirHeat;
             energyContainer.insert(MathUtils.clampToLong(caseAirHeat * MekanismGeneratorsConfig.generators.fusionThermocoupleEfficiency.get()), Action.EXECUTE, AutomationType.INTERNAL);
         }
     }
@@ -362,14 +366,16 @@ public class FusionReactorMultiblockData extends MultiblockData {
     @NotNull
     @Override
     public HeatTransfer simulate() {
-        double environmentTransfer = 0;
+        throw new UnsupportedOperationException("I'm special");
+    }
+
+    @Override
+    public double simulateAdjacent() {
         double adjacentTransfer = 0;
         for (ITileHeatHandler source : heatHandlers) {
-            HeatTransfer heatTransfer = source.simulate();
-            adjacentTransfer += heatTransfer.adjacentTransfer();
-            environmentTransfer += heatTransfer.environmentTransfer();
+            adjacentTransfer += source.simulateAdjacent();
         }
-        return new HeatTransfer(adjacentTransfer, environmentTransfer);
+        return adjacentTransfer;
     }
 
     public void setLastPlasmaTemp(double temp) {
