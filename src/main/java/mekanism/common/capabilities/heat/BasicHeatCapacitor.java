@@ -54,7 +54,7 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
     private void initStoredHeat() {
         if (storedHeat == -1) {
             //If the stored heat hasn't been initialized yet, update the stored heat based on initial capacity
-            storedHeat = heatCapacity * getAmbientTemperature();
+            storedHeat = Math.max(0D, heatCapacity * getAmbientTemperature());
         }
     }
 
@@ -92,7 +92,7 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
     public void handleHeat(double transfer) {
         initStoredHeat();
         if (transfer != 0 && Math.abs(transfer) > HeatAPI.EPSILON) {
-            storedHeat += transfer;
+            storedHeat = Math.max(0D, storedHeat + transfer);
         }
     }
 
@@ -115,7 +115,7 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
 
     @Override
     public void deserialize(ValueInput input) {
-        storedHeat = input.getDoubleOr(SerializationConstants.STORED, storedHeat);
+        storedHeat = Math.max(0D, input.getDoubleOr(SerializationConstants.STORED, storedHeat));
         setHeatCapacity(input.getDoubleOr(SerializationConstants.HEAT_CAPACITY, heatCapacity), false);
     }
 
@@ -133,6 +133,7 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
 
     @Override
     public void setHeat(double heat) {
+        heat = Math.max(0D, heat);
         double originalState = getHeat();
         if (!Mth.equal(heat, originalState)) {
             storedHeat = heat;
