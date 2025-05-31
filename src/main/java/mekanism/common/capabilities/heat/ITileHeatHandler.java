@@ -63,10 +63,7 @@ public interface ITileHeatHandler extends IMekanismHeatHandler {
                 double heatCapacity = getTotalHeatCapacity(side);
                 double invConduction = sink.getTotalInverseConduction() + getTotalInverseConductionCoefficient(side);
                 double tempToTransfer = (getTotalTemperature(side) - getAmbientTemperature(side)) / invConduction;
-                //TODO - 1.18: Try and figure out how to do this properly/I believe the below is correct
-                // but it seems to nerf the heat system quite a bit so needs more review than being able
-                // to be done just before a release is made
-                /*double temp = getTotalTemperature(side);
+                double temp = getTotalTemperature(side);
                 double sinkTemp = sink.getTotalTemperature();
                 if (temp <= sinkTemp) {
                     //If our temperature is lower than the sink, we skip calculating what the adjacent loss to the sink
@@ -78,7 +75,10 @@ public interface ITileHeatHandler extends IMekanismHeatHandler {
                     // past the following logic
                     continue;
                 }
-                double heatCapacity = getTotalHeatCapacity(side);
+                //TODO - 1.18: Try and figure out how to do this properly/I believe the below is correct
+                // but it seems to nerf the heat system quite a bit so needs more review than being able
+                // to be done just before a release is made
+                /*double heatCapacity = getTotalHeatCapacity(side);
                 double sinkHeatCapacity = sink.getTotalHeatCapacity();
                 //Calculate the target temperature using calorimetry
                 double finalTemp = (temp * heatCapacity + sinkTemp * sinkHeatCapacity) / (heatCapacity + sinkHeatCapacity);
