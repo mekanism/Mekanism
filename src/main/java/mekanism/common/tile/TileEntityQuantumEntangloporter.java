@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Supplier;
 import mekanism.api.IContentsListener;
@@ -19,11 +20,13 @@ import mekanism.api.security.SecurityMode;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.MultiTypeCapability;
 import mekanism.common.capabilities.heat.CachedAmbientTemperature;
+import mekanism.common.capabilities.holder.QEConfigHolder;
 import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.capabilities.holder.container.MekContainerHelper;
 import mekanism.common.capabilities.holder.container.QEContainerHolder;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.energy.QEEnergyHolder;
+import mekanism.common.capabilities.proxy.ProxyHandler;
 import mekanism.common.component.containers.type.IContainerType;
 import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.integration.computer.ComputerException;
@@ -185,10 +188,22 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         if (hasFrequency()) {
             ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.HEAT, side);
             if (slotInfo != null && slotInfo.canInput()) {
-                return getAdjacentUnchecked(side);
+                return rejectIfSameFreq(getAdjacentUnchecked(side));
             }
         }
         return null;
+    }
+
+    @Nullable
+    private <HANDLER> HANDLER rejectIfSameFreq(@Nullable HANDLER otherHandler) {
+        if (otherHandler instanceof ProxyHandler<?> proxy) {
+            if (proxy.getHolder() instanceof QEConfigHolder<?> entangloporterConfig) {
+                if (Objects.equals(getFreq(), entangloporterConfig.getFrequency())) {
+                    return null;
+                }
+            }
+        }
+        return otherHandler;
     }
 
     @Nullable
@@ -214,7 +229,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
                 caches.put(side, cache);
             }
         }
-        return cache == null ? null : (HANDLER) cache.getCapability();
+        return cache == null ? null : rejectIfSameFreq((HANDLER) cache.getCapability());
     }
 
     @Override
