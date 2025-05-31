@@ -19,6 +19,7 @@ import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.IMultiTypeCapability;
 import mekanism.common.capabilities.heat.CachedAmbientTemperature;
+import mekanism.common.capabilities.holder.QuantumEntangloporterConfigHolder;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.chemical.QuantumEntangloporterChemicalTankHolder;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
@@ -29,6 +30,7 @@ import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.capabilities.holder.heat.QuantumEntangloporterHeatCapacitorHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.QuantumEntangloporterInventorySlotHolder;
+import mekanism.common.capabilities.proxy.ProxyHandler;
 import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
@@ -182,10 +184,22 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         if (hasFrequency()) {
             ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.HEAT, side);
             if (slotInfo != null && slotInfo.canInput()) {
-                return getAdjacentUnchecked(side);
+                return rejectIfSameFreq(getAdjacentUnchecked(side));
             }
         }
         return null;
+    }
+
+    @Nullable
+    private <HANDLER> HANDLER rejectIfSameFreq(HANDLER otherHandler) {
+        if (otherHandler instanceof ProxyHandler proxy) {
+            if (proxy.getHolder() instanceof QuantumEntangloporterConfigHolder<?> entangloporterConfig) {
+                if (getFreq().equals(entangloporterConfig.getFrequency())) {
+                    return null;
+                }
+            }
+        }
+        return otherHandler;
     }
 
     @Nullable
@@ -199,7 +213,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
                 cache = BlockEnergyCapabilityCache.create((ServerLevel) level, worldPosition.relative(side), side.getOpposite());
                 adjacentEnergyCaps.put(side, cache);
             }
-            return (HANDLER) cache.getCapability();
+            return rejectIfSameFreq((HANDLER) cache.getCapability());
         } else if (transmissionType == TransmissionType.ITEM) {
             //Not currently handled
             return null;
@@ -217,7 +231,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
                 caches.put(side, cache);
             }
         }
-        return cache == null ? null : (HANDLER) cache.getCapability();
+        return cache == null ? null : rejectIfSameFreq((HANDLER) cache.getCapability());
     }
 
     @Override
