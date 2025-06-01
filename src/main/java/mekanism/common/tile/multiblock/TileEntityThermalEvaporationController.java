@@ -1,10 +1,15 @@
 package mekanism.common.tile.multiblock;
 
+import mekanism.api.IContentsListener;
+import mekanism.api.heat.IHeatCapacitor;
+import mekanism.common.capabilities.heat.CachedAmbientTemperature;
+import mekanism.common.capabilities.holder.container.IContainerHolder;
 import mekanism.common.content.evaporation.EvaporationMultiblockData;
 import mekanism.common.registries.MekanismBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jspecify.annotations.Nullable;
 
 public class TileEntityThermalEvaporationController extends TileEntityThermalEvaporationBlock {
 
@@ -18,6 +23,17 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         boolean needsPacket = super.onUpdateServer(level, multiblock);
         setActive(multiblock.isFormed());
         return needsPacket;
+    }
+
+    @Override
+    public double simulateAdjacent() {
+        return 0;//it's a screen, mostly
+    }
+
+    @Nullable
+    @Override
+    protected IContainerHolder<IHeatCapacitor> getInitialHeatCapacitors(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
+        return null;//it's a screen, mostly
     }
 
     @Override
