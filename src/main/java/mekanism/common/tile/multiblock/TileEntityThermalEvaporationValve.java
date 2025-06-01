@@ -2,10 +2,7 @@ package mekanism.common.tile.multiblock;
 
 import mekanism.api.Action;
 import mekanism.api.IContentsListener;
-import mekanism.common.attachments.containers.ContainerType;
-import mekanism.common.capabilities.heat.CachedAmbientTemperature;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
-import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.registries.MekanismBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -23,21 +20,6 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
     @Override
     protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener) {
         return side -> getMultiblock().getFluidTanks(side);
-    }
-
-    @NotNull
-    @Override
-    protected IHeatCapacitorHolder getInitialHeatCapacitors(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
-        return side -> getMultiblock().getHeatCapacitors(side);
-    }
-
-    @Override
-    public boolean persists(ContainerType<?, ?, ?> type) {
-        //But that we do not handle fluid when it comes to syncing it/saving this tile to disk
-        if (type == ContainerType.FLUID || type == ContainerType.HEAT) {
-            return false;
-        }
-        return super.persists(type);
     }
 
     @NotNull

@@ -1,7 +1,6 @@
 package mekanism.common.tile.multiblock;
 
 import mekanism.api.IContentsListener;
-import mekanism.api.heat.IHeatHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.heat.CachedAmbientTemperature;
@@ -11,12 +10,10 @@ import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class TileEntityBoilerCasing extends TileEntityMultiblock<BoilerMultiblockData> {
 
@@ -55,19 +52,11 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<BoilerMultibloc
     }
 
     @Override
-    protected boolean onUpdateServer() {
-        boolean packet = super.onUpdateServer();
-        simulateAdjacent();
-        return packet;
-    }
-
-    @Nullable
-    @Override
-    public IHeatHandler getAdjacent(@NotNull Direction side) {
-        BlockPos relativePos = getBlockPos().relative(side);
-        if (getMultiblock().locations.contains(relativePos)) {
-            return null;
+    protected boolean onUpdateServer(BoilerMultiblockData multiblock) {
+        boolean packet = super.onUpdateServer(multiblock);
+        if (multiblock.isFormed()) {
+            simulateAdjacent();
         }
-        return super.getAdjacent(side);
+        return packet;
     }
 }

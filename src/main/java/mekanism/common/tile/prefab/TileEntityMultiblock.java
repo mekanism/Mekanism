@@ -5,6 +5,7 @@ import java.util.UUID;
 import mekanism.api.IConfigurable;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
+import mekanism.api.heat.IHeatHandler;
 import mekanism.api.text.EnumColor;
 import mekanism.client.SparkleAnimation;
 import mekanism.common.MekanismLang;
@@ -381,6 +382,16 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     @Override
     public InteractionResult onSneakRightClick(Player player) {
         return InteractionResult.PASS;
+    }
+
+    @Nullable
+    @Override
+    public IHeatHandler getAdjacent(@NotNull Direction side) {
+        BlockPos relativePos = getBlockPos().relative(side);
+        if (getMultiblock().locations.contains(relativePos)) {
+            return null;
+        }
+        return super.getAdjacent(side);
     }
 
     //Methods relating to IComputerTile
