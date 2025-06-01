@@ -60,9 +60,9 @@ public interface ITileHeatHandler extends IMekanismHeatHandler {
         for (Direction side : EnumUtils.DIRECTIONS) {
             IHeatHandler sink = getAdjacent(side);
             if (sink != null) {
-                double heatCapacity = getTotalHeatCapacity(side);
-                double invConduction = sink.getTotalInverseConduction() + getTotalInverseConductionCoefficient(side);
-                double tempToTransfer = (getTotalTemperature(side) - getAmbientTemperature(side)) / invConduction;
+                //double heatCapacity = getTotalHeatCapacity(side);
+                //double invConduction = sink.getTotalInverseConduction() + getTotalInverseConductionCoefficient(side);
+                //double tempToTransfer = (getTotalTemperature(side) - getAmbientTemperature(side)) / invConduction;
                 double temp = getTotalTemperature(side);
                 double sinkTemp = sink.getTotalTemperature();
                 if (temp <= sinkTemp) {
@@ -78,15 +78,14 @@ public interface ITileHeatHandler extends IMekanismHeatHandler {
                 //TODO - 1.18: Try and figure out how to do this properly/I believe the below is correct
                 // but it seems to nerf the heat system quite a bit so needs more review than being able
                 // to be done just before a release is made
-                /*double heatCapacity = getTotalHeatCapacity(side);
+                double heatCapacity = getTotalHeatCapacity(side);
                 double sinkHeatCapacity = sink.getTotalHeatCapacity();
                 //Calculate the target temperature using calorimetry
                 double finalTemp = (temp * heatCapacity + sinkTemp * sinkHeatCapacity) / (heatCapacity + sinkHeatCapacity);
                 double invConduction = sink.getTotalInverseConduction() + getTotalInverseConductionCoefficient(side);
-                double tempToTransfer = (temp - finalTemp) / invConduction;*/
+                double tempToTransfer = (temp - finalTemp) / invConduction;
                 double heatToTransfer = tempToTransfer * heatCapacity;
                 handleHeat(-heatToTransfer, side);
-                //Note: Our sinks in mek are "lazy" but they will update the next tick if needed
                 sink.handleHeat(heatToTransfer);
                 adjacentTransfer = incrementAdjacentTransfer(adjacentTransfer, tempToTransfer, side);
             }
