@@ -23,20 +23,6 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
     }
 
     @Override
-    protected IContainerHolder<IHeatCapacitor> getInitialHeatCapacitors(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
-        return _ -> getMultiblock().getHeatCapacitors();
-    }
-
-    @Override
-    public boolean persists(IContainerType<?, ?> type) {
-        //But that we do not handle fluid when it comes to syncing it/saving this tile to disk
-        if (type == ContainerType.FLUID || type == ContainerType.HEAT) {
-            return false;
-        }
-        return super.persists(type);
-    }
-
-    @Override
     public int getRedstoneLevel() {
         return getMultiblock().getCurrentRedstoneLevel();
     }

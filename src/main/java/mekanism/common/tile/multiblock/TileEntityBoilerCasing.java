@@ -13,12 +13,10 @@ import mekanism.common.lib.multiblock.MultiblockType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jspecify.annotations.Nullable;
 
 public class TileEntityBoilerCasing extends TileEntityMultiblock<BoilerMultiblockData> {
 
@@ -57,17 +55,9 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<BoilerMultibloc
     @Override
     protected boolean onUpdateServer(ServerLevel level, BoilerMultiblockData multiblock) {
         boolean needsPacket = super.onUpdateServer(level, multiblock);
-        simulateAdjacent();
-        return needsPacket;
-    }
-
-    @Nullable
-    @Override
-    public IHeatHandler getAdjacent(Direction side) {
-        BlockPos relativePos = getBlockPos().relative(side);
-        if (getMultiblock().locations.contains(relativePos)) {
-            return null;
+        if (multiblock.isFormed()) {
+            simulateAdjacent();
         }
-        return super.getAdjacent(side);
+        return needsPacket;
     }
 }
