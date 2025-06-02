@@ -642,11 +642,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             sendUpdatePacket = true;
         }
         //TODO - 1.18: More generic "needs update" flag that we set that then means we don't end up sending an update packet more than once per tick
-        if (tile.canHandleHeat()) {
-            // update heat after server tick as we now have simulated changes
-            // we use persists, as only one reference should update
-            tile.updateHeatCapacitors(null);
-        }
+
         //Set that we received zero energy so if it is a different tick than we last had,
         // and we don't actually receive anything then we will properly update it to zero
         tile.lastEnergyTracker.received(level.getGameTime(), 0L);

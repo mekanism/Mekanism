@@ -244,7 +244,6 @@ public class FusionReactorMultiblockData extends MultiblockData {
 
         //Perform the heat transfer calculations
         transferHeat();
-        updateHeatCapacitors(null);
         updateTemperatures();
 
         if (!energyOutputTargets.isEmpty() && !energyContainer.isEmpty()) {

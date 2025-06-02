@@ -175,8 +175,6 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         hotMap.put(inventoryID, getTotalTemperature() >= HeatUtils.BASE_BOIL_TEMP - 0.01);
         // external heat dissipation
         lastEnvironmentLoss = simulateEnvironment();
-        // update temperature
-        updateHeatCapacitors(null);
         // handle coolant heat transfer
         if (!superheatedCoolantTank.isEmpty()) {
             HeatedCoolant coolantType = getHeatedCoolant();

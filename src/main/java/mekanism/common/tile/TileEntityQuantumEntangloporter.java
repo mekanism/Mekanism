@@ -149,7 +149,6 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         InventoryFrequency freq = getFreq();
         if (freq != null && freq.isValid() && !freq.isRemoved()) {
             freq.handleEject(level.getGameTime());
-            updateHeatCapacitors(null); // manually trigger heat capacitor update
             HeatTransfer loss = simulate();
             lastTransferLoss = loss.adjacentTransfer();
             lastEnvironmentLoss = loss.environmentTransfer();

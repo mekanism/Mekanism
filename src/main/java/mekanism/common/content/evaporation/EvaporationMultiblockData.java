@@ -152,9 +152,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
         boolean needsPacket = super.tick(world);
         // external heat dissipation
         lastEnvironmentLoss = simulateEnvironment();
-        // update temperature
-        updateHeatCapacitors(null);
-        //After we update the heat capacitors, update our temperature multiplier
+        // update our temperature multiplier
         // Note: We use the ambient temperature without taking our biome into account as we want to have a consistent multiplier
         tempMultiplier = (Math.min(MAX_MULTIPLIER_TEMP, getTemperature()) - HeatAPI.AMBIENT_TEMP) * MekanismConfig.general.evaporationTempMultiplier.get() *
                          ((double) height() / MAX_HEIGHT);
