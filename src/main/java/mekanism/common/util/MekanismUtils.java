@@ -276,7 +276,7 @@ public final class MekanismUtils {
     public static boolean scaleChanged(float scale, float prevScale) {
         if (Mth.equal(scale, prevScale)) {
             //If we max out our scale bounds, force an update regardless
-            return scale != prevScale && scale == 0 || scale == 1 || prevScale == 1 || prevScale == 0;
+            return scale != prevScale && (scale == 0 || scale == 1 || prevScale == 1 || prevScale == 0);
         }
         return true;
     }
