@@ -240,6 +240,22 @@ public class WorldUtils {
     }
 
     /**
+     * Gets a blockstate if the location is loaded by getting the chunk from the passed in cache of chunks rather than directly using the world. We then store our chunk
+     * we found back in the cache to more quickly be able to look up chunks if we are doing lots of lookups at once (For example multiblock structure validation)
+     *
+     * @param world    world
+     * @param chunkMap cached chunk map
+     * @param pos      position
+     *
+     * @return blockstate if found, null if not loaded
+     */
+    @Nullable
+    public static BlockState getBlockStateIfLoaded(@Nullable LevelAccessor world, @NotNull Long2ObjectMap<ChunkAccess> chunkMap, @NotNull BlockPos pos) {
+        //Get the blockstate using the chunk we found/had cached
+        return getBlockStateIfLoaded(getChunkForPos(world, chunkMap, pos), pos);
+    }
+
+    /**
      * Gets a blockstate if the location is loaded
      *
      * @param world world

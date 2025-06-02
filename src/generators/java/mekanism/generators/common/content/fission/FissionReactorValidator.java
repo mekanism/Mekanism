@@ -76,10 +76,11 @@ public class FissionReactorValidator extends CuboidStructureValidator<FissionRea
                 }
                 assemblyCount++;
                 // compute surface area
-                surfaceArea += 6;
-                for (Direction side : EnumUtils.DIRECTIONS) {
+                surfaceArea += 4;
+                for (Direction side : EnumUtils.HORIZONTAL_DIRECTIONS) {
                     mutable.setWithOffset(coord, side);
-                    if (fuelAssemblyCoords.contains(mutable)) {
+                    BlockState state = WorldUtils.getBlockStateIfLoaded(world, chunkMap, mutable);
+                    if (state == null || !state.isAir()) {
                         surfaceArea -= 2;
                     }
                 }
