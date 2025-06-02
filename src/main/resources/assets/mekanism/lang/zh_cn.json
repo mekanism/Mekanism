@@ -1,7 +1,7 @@
 {
   "_mekanism_force_utf8": "﻿",
   "advancements.mekanism.advanced_control_circuit.description": "合成一块高级控制电路",
-  "advancements.mekanism.advanced_control_circuit.title": "在这个阶段，它真的很高级",
+  "advancements.mekanism.advanced_control_circuit.title": "在这个年龄段里它真的很优秀",
   "advancements.mekanism.advanced_qio_drive.description": "提高你的QIO驱动器的存储带宽",
   "advancements.mekanism.advanced_qio_drive.title": "高密度储存",
   "advancements.mekanism.alarm.description": "闹钟本来就很响，更别提是工业类的",
@@ -1889,7 +1889,7 @@
   "configuration.mekanism.world.tin.top_level.button": "编辑锡设置",
   "configuration.mekanism.world.tin.top_level.tooltip": "锡矿石的生成设置。",
   "configuration.mekanism.world.uranium.buried.discard_chance": "弃置概率",
-  "configuration.mekanism.world.uranium.buried.discard_chance.tooltip": "方块会直接在空中暴露而并非隐藏在铀矿脉矿藏的几率",
+  "configuration.mekanism.world.uranium.buried.discard_chance.tooltip": "不隐藏在铀矿脉矿藏中，而直接与空气接触（即裸露）的方块，会被放弃生成的概率。",
   "configuration.mekanism.world.uranium.buried.generate": "是否生成",
   "configuration.mekanism.world.uranium.buried.generate.tooltip": "决定是否将铀矿脉矿藏添加到世界生成中。注：需要启用生成铀矿石功能。",
   "configuration.mekanism.world.uranium.buried.max": "最大锚点",
