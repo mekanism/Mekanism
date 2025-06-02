@@ -502,8 +502,7 @@ dependencies {
     compileOnly("dev.gigaherz.jsonthings:JsonThings-${minecraft_version}:${json_things_version}")
 
     //Mods we have dependencies on but don't bother loading into the dev environment
-    //compileOnly("curse.maven:projecte-api-226410:${projecte_api_id}")
-    compileOnly('moze_intel.projecte:ProjectE:1.0.1:api')
+    compileOnly("curse.maven:projecte-api-226410:${projecte_api_id}")
     compileOnly("curse.maven:flux-networks-248020:${flux_networks_id}")
     compileOnly("dev.technici4n:GrandPower:${grand_power_version}")
     compileOnly("top.theillusivec4.curios:curios-neoforge:${curios_version}:api")
@@ -524,9 +523,7 @@ dependencies {
     datagenMainRuntimeOnly("curse.maven:oh-the-trees-youll-grow-962544:${ohthetreesyoullgrow_id}")
     datagenMainImplementation("curse.maven:oh-the-biomes-weve-gone-1070751:${biomeswevegone_id}")
     datagenMainImplementation("curse.maven:farmers-delight-398521:${farmers_delight_id}")
-    //TODO - 1.21: Re-enable after projecte is updated
-    //datagenMainRuntimeOnly("curse.maven:projecte-226410:${projecte_id}")
-    datagenMainRuntimeOnly('moze_intel.projecte:ProjectE:1.0.1')
+    datagenMainRuntimeOnly("curse.maven:projecte-226410:${projecte_id}")
 
     //Note: Even though yaml ops defines a FMLModType we have to pretend FML doesn't know how to handle it due to a lib yaml ops bundles not defining it
     datagenNonMod("com.thiakil:yaml-ops:${yamlops_version}")

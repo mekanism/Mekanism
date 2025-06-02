@@ -3,7 +3,6 @@ package mekanism.client.render;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
 import mekanism.api.gear.IHUDElement;
@@ -25,7 +24,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.SubtitleOverlay;
-import net.minecraft.client.gui.components.SubtitleOverlay.Subtitle;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -49,6 +47,8 @@ public class HUDRenderer {
 
     private static final ResourceLocation COMPASS = MekanismUtils.getResource(ResourceType.GUI, "compass.png");
 
+    private int lastSubtitleGuiTick = -1;
+    private int lastSubtitleWidth = 0;
     private long lastTick = -1;
     private float prevRotationYaw;
     private float prevRotationPitch;
@@ -65,7 +65,7 @@ public class HUDRenderer {
         float yawJitter = -absSqrt(player.yHeadRot - prevRotationYaw);
         float pitchJitter = -absSqrt(player.getXRot() - prevRotationPitch);
         pose.translate(yawJitter, pitchJitter, 0);
-        int audibleSubtitlesWidth = MekanismConfig.client.hudAvoidSoundSubtitleOverlay.get() ? getAudibleSubtitlesWidth() : 0;
+        int audibleSubtitlesWidth = MekanismConfig.client.hudAvoidSoundSubtitleOverlay.get() ? getAudibleSubtitlesWidth(minecraft, font) : 0;
         if (MekanismConfig.client.hudCompassEnabled.get()) {
             renderCompass(player, font, guiGraphics, delayedDraws, delta, screenWidth, screenHeight, maxTextHeight, reverseHud, audibleSubtitlesWidth);
         }
@@ -148,23 +148,28 @@ public class HUDRenderer {
         }
     }
 
-    //todo mixin?
-    private int getAudibleSubtitlesWidth() {
-        Minecraft minecraft = Minecraft.getInstance();
-        Font font = minecraft.font;
-
-        // borrowed from net.minecraft.client.gui.components.SubtitleOverlay#render
-        Iterator<Subtitle> iterator = minecraft.gui.subtitleOverlay.audibleSubtitles.iterator();
-        int maxWidth = 0;
-        while (iterator.hasNext()) {
-            SubtitleOverlay.Subtitle subtitle = iterator.next();
-            //if (subtitle.isStillActive()) {
-            maxWidth = Math.max(maxWidth, font.width(subtitle.getText()));
-            //}
+    /**
+     * Based on how {@link SubtitleOverlay#render(GuiGraphics)} calculates the width
+     */
+    private int getAudibleSubtitlesWidth(Minecraft minecraft, Font font) {
+        if (!minecraft.options.showSubtitles().get() || minecraft.gui.subtitleOverlay.audibleSubtitles.isEmpty()) {
+            //Subtitles are disabled or none are currently showing, don't bother calculating a width
+            return 0;
         }
-        maxWidth += font.width("<") + font.width(" ") + font.width(">") + font.width(" ");
+        if (lastSubtitleGuiTick != minecraft.gui.getGuiTicks()) {
+            lastSubtitleGuiTick = minecraft.gui.getGuiTicks();
+            int maxWidth = 0;
+            for (SubtitleOverlay.Subtitle subtitle : minecraft.gui.subtitleOverlay.audibleSubtitles) {
+                //Note: We know all subtitles here are still active, so we can skip checking
+                maxWidth = Math.max(maxWidth, font.width(subtitle.getText()));
+            }
+            //Note: This mirrors vanilla having them as separate pieces for calculating the width instead of just doing font.width("< > ")
+            // Presumably this is because Font#width returns Math#ceil, so the below has a chance of being larger than doing it as a single calculation
+            maxWidth += font.width("<") + font.width(" ") + font.width(">") + font.width(" ");
 
-        return maxWidth;
+            lastSubtitleWidth = maxWidth;
+        }
+        return lastSubtitleWidth;
     }
 
     private void renderHUDElement(Font font, GuiGraphics guiGraphics, Matrix4f matrix, List<DelayedString> delayedDraws, int x, int y, IHUDElement element,
