@@ -55,6 +55,9 @@ public class EnumUtils {
      */
     public static final Direction[] HORIZONTAL_DIRECTIONS = {Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST};
 
+    /** Directions minus the up */
+    public static final Direction[] DIRECTIONS_NOT_UP = {Direction.DOWN, Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST};
+
     /**
      * Cached value of {@link RelativeSide#values()}. DO NOT MODIFY THIS LIST.
      */
