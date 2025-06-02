@@ -215,6 +215,7 @@ public final class SerializationConstants {
      * @since 10.7.0
      */
     public static final String CHEMICAL_STORED_ALT_2 = "chemical_2";
+    public static final String CHEMICAL_STORED_ALT_3 = "chemical_3";
     @Deprecated(forRemoval = true, since = "10.7.0")
     public static final String GAS_TANKS = "gas_tanks";
     public static final String GUI = "gui";

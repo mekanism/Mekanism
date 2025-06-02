@@ -265,6 +265,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         NBTUtils.setChemicalStackIfPresent(provider, tag, SerializationConstants.CHEMICAL, fuelTank::setStack);
         NBTUtils.setChemicalStackIfPresent(provider, tag, SerializationConstants.CHEMICAL_STORED_ALT, heatedCoolantTank::setStack);
         NBTUtils.setChemicalStackIfPresent(provider, tag, SerializationConstants.CHEMICAL_STORED_ALT_2, wasteTank::setStack);
+        NBTUtils.setChemicalStackIfPresent(provider, tag, SerializationConstants.CHEMICAL_STORED_ALT_3, coolantTank.getChemicalTank()::setStack);
         readValves(tag);
         assemblies.clear();
         if (tag.contains(SerializationConstants.ASSEMBLIES, Tag.TAG_LIST)) {
@@ -290,6 +291,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         tag.put(SerializationConstants.CHEMICAL, fuelTank.getStack().saveOptional(provider));
         tag.put(SerializationConstants.CHEMICAL_STORED_ALT, heatedCoolantTank.getStack().saveOptional(provider));
         tag.put(SerializationConstants.CHEMICAL_STORED_ALT_2, wasteTank.getStack().saveOptional(provider));
+        tag.put(SerializationConstants.CHEMICAL_STORED_ALT_3, coolantTank.getChemicalTank().getStack().saveOptional(provider));
         writeValves(tag);
         ListTag list = new ListTag();
         for (FormedAssembly assembly : assemblies) {
