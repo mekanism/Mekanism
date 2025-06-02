@@ -20,6 +20,7 @@ import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.recipes.vanilla_input.SingleFluidRecipeInput;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
+import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
@@ -111,7 +112,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     final OutputInventorySlot outputOutputSlot;
 
     public EvaporationMultiblockData(TileEntityThermalEvaporationBlock tile) {
-        super(tile);
+        super(tile, Mekanism.evaporationManager);
         recipeCacheLookupMonitor = new RecipeCacheLookupMonitor<>(this);
         recheckAllRecipeErrors = TileEntityRecipeMachine.shouldRecheckAllErrors(tile);
         //Default biome temp to the ambient temperature at the block we are at

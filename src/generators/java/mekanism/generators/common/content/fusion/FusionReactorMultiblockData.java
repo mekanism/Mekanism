@@ -40,6 +40,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.GeneratorTags;
+import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.item.ItemHohlraum;
 import mekanism.generators.common.registries.GeneratorsChemicals;
@@ -140,7 +141,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
     private AABB deathZone;
 
     public FusionReactorMultiblockData(TileEntityFusionReactorBlock tile) {
-        super(tile);
+        super(tile, MekanismGenerators.fusionReactorManager);
         //Default biome temp to the ambient temperature at the block we are at
         biomeAmbientTemp = HeatAPI.getAmbientTemp(tile.getLevel(), tile.getBlockPos());
         lastPlasmaTemperature = biomeAmbientTemp;

@@ -145,7 +145,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     private float prevWasteScale;
 
     public FissionReactorMultiblockData(TileEntityFissionReactorCasing tile) {
-        super(tile);
+        super(tile, MekanismGenerators.fissionReactorManager);
         //Default biome temp to the ambient temperature at the block we are at
         biomeAmbientTemp = HeatAPI.getAmbientTemp(tile.getLevel(), tile.getBlockPos());
         LongSupplier fuelCapacitySupplier = () -> fuelCapacity;

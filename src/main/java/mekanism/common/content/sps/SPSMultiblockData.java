@@ -13,6 +13,7 @@ import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.math.MathUtils;
+import mekanism.common.Mekanism;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
 import mekanism.common.config.MekanismConfig;
@@ -78,7 +79,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     private AABB deathZone, advancementArea;
 
     public SPSMultiblockData(TileEntitySPSCasing tile) {
-        super(tile);
+        super(tile, Mekanism.spsManager);
         chemicalTanks.add(inputTank = VariableCapacityChemicalTank.input(this, this::getMaxInputGas, chemical -> chemical.is(MekanismChemicals.POLONIUM),
               ChemicalAttributeValidator.ALWAYS_ALLOW, createSaveAndComparator()));
         chemicalTanks.add(outputTank = VariableCapacityChemicalTank.output(this, MekanismConfig.general.spsOutputTankCapacity,

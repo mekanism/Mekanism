@@ -30,6 +30,7 @@ import mekanism.common.util.FluidUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
+import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineValve;
@@ -100,7 +101,7 @@ public class TurbineMultiblockData extends MultiblockData {
     public float prevSteamScale;
 
     public TurbineMultiblockData(TileEntityTurbineCasing tile) {
-        super(tile);
+        super(tile, MekanismGenerators.turbineManager);
         chemicalTanks.add(chemicalTank = new TurbineChemicalTank(this, createSaveAndComparator()));
         fluidTanks.add(ventTank = VariableCapacityFluidTank.output(this, () -> isFormed() ? condensers * MekanismGeneratorsConfig.generators.condenserRate.get() : FluidType.BUCKET_VOLUME,
               fluid -> fluid.is(FluidTags.WATER), this));

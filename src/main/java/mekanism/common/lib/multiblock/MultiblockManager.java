@@ -1,11 +1,11 @@
 package mekanism.common.lib.multiblock;
 
-import java.util.ArrayDeque;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -40,7 +40,7 @@ public class MultiblockManager<T extends MultiblockData> {
      */
     private final Map<UUID, MultiblockCache<T>> caches = new HashMap<>();
 
-    private final Queue<T> multiblocksTicked = new ArrayDeque<>();
+    private final Set<T> multiblocksTicked = Collections.newSetFromMap(new IdentityHashMap<>());
 
     /**
      * Note: This can and will be null on the client side
@@ -188,9 +188,12 @@ public class MultiblockManager<T extends MultiblockData> {
      * syncs any multiblocks if they're dirty
      */
     private void endOfTick() {
-        T item;
-        while ((item = multiblocksTicked.poll()) != null) {
-            handleDirtyMultiblock(item);
+        //save to array for iteration as there is a small chance of ConcurrentModification (e.g. heat capacitor initialising its heat)
+        MultiblockData[] toSave = multiblocksTicked.toArray(new MultiblockData[0]);
+        multiblocksTicked.clear();
+        for (MultiblockData multiblock : toSave) {
+            //noinspection unchecked
+            handleDirtyMultiblock((T) multiblock);
         }
     }
 

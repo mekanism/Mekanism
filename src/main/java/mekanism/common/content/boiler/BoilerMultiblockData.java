@@ -18,6 +18,7 @@ import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.chemical.attribute.HeatedCoolant;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.math.MathUtils;
+import mekanism.common.Mekanism;
 import mekanism.common.block.attribute.AttributeStateBoilerValveMode.BoilerValveMode;
 import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
@@ -119,7 +120,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
     public float prevSteamScale;
 
     public BoilerMultiblockData(TileEntityBoilerCasing tile) {
-        super(tile);
+        super(tile, Mekanism.boilerManager);
         //Default biome temp to the ambient temperature at the block we are at
         biomeAmbientTemp = HeatAPI.getAmbientTemp(tile.getLevel(), tile.getBlockPos());
         superheatedCoolantTank = VariableCapacityChemicalTank.input(this, () -> superheatedCoolantCapacity, IS_HEATED_COOLANT, this);

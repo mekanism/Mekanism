@@ -2,6 +2,7 @@ package mekanism.common.content.matrix;
 
 import java.util.ArrayList;
 import java.util.List;
+import mekanism.common.Mekanism;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
@@ -57,7 +58,7 @@ public class MatrixMultiblockData extends MultiblockData {
     final EnergyInventorySlot energyOutputSlot;
 
     public MatrixMultiblockData(TileEntityInductionCasing tile) {
-        super(tile);
+        super(tile, Mekanism.matrixManager);
         energyContainers.add(energyContainer = new MatrixEnergyContainer(this));
         inventorySlots.add(energyInputSlot = EnergyInventorySlot.drain(energyContainer, this, 146, 21));
         inventorySlots.add(energyOutputSlot = EnergyInventorySlot.fillOrConvert(energyContainer, tile::getLevel, this, 146, 51));

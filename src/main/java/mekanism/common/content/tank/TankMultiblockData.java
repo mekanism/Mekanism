@@ -10,6 +10,7 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.common.Mekanism;
 import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.capabilities.merged.MergedTank;
@@ -50,7 +51,7 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
     public float prevScale;
 
     public TankMultiblockData(TileEntityDynamicTank tile) {
-        super(tile);
+        super(tile, Mekanism.tankManager);
         IContentsListener saveAndComparator = createSaveAndComparator();
         mergedTank = MergedTank.create(
               VariableCapacityFluidTank.create(this, this::getTankCapacity, ConstantPredicates.alwaysTrue(), saveAndComparator),

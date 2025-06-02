@@ -86,6 +86,8 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
 
     private final BooleanSupplier remoteSupplier;
     private final Supplier<Level> worldSupplier;
+    @Nullable//only when not a real multiblock (default data)
+    private final MultiblockManager<MultiblockData> manager;
 
     protected final List<IInventorySlot> inventorySlots = new ArrayList<>();
     protected final List<IExtendedFluidTank> fluidTanks = new ArrayList<>();
@@ -98,9 +100,11 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
 
     private boolean dirty;
 
-    public MultiblockData(BlockEntity tile) {
+    public MultiblockData(BlockEntity tile, @Nullable MultiblockManager<? extends MultiblockData> manager) {
         remoteSupplier = () -> tile.getLevel().isClientSide();
         worldSupplier = tile::getLevel;
+        //noinspection unchecked, rawtypes
+        this.manager = (MultiblockManager) manager;
     }
 
     @SuppressWarnings("unchecked")
@@ -136,6 +140,9 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
 
     public void markDirty() {
         dirty = true;
+        if (manager != null) {
+            manager.markTicked(this);
+        }
     }
 
     /**
