@@ -81,7 +81,7 @@ public class FissionReactorValidator extends CuboidStructureValidator<FissionRea
                     mutable.setWithOffset(coord, side);
                     BlockState state = WorldUtils.getBlockStateIfLoaded(world, chunkMap, mutable);
                     if (state == null || !state.isAir()) {
-                        surfaceArea -= 2;
+                        surfaceArea--;
                     }
                 }
                 fuelAssemblyCoords.add(coord);
