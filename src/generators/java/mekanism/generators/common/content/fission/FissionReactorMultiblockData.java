@@ -208,8 +208,6 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         }
         // external heat dissipation
         lastEnvironmentLoss = simulateEnvironment();
-        // update temperature
-        updateHeatCapacitors(null);
         handleDamage(world);
         radiateEntities(world);
 
