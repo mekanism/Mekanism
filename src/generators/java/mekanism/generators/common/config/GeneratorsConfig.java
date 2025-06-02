@@ -154,7 +154,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
               .defineInRange("maxFuelPerAssembly", 8L * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE / 4_096));
         int maxVolume = 18 * 18 * 18;
         fissionCooledCoolantPerTank = CachedIntValue.wrap(this, GeneratorsConfigTranslations.SERVER_FISSION_COOLED_COOLANT_CAPACITY.applyToBuilder(builder)
-              .defineInRange("cooledCoolantPerTank", 100 * FluidType.BUCKET_VOLUME, 1, Integer.MAX_VALUE / maxVolume));
+              .defineInRange("cooledCoolantPerTank", 70 * FluidType.BUCKET_VOLUME, 1, Integer.MAX_VALUE / maxVolume));
         fissionHeatedCoolantPerTank = CachedLongValue.wrap(this, GeneratorsConfigTranslations.SERVER_FISSION_HEATED_COOLANT_CAPACITY.applyToBuilder(builder)
               .defineInRange("heatedCoolantPerTank", 1_000L * FluidType.BUCKET_VOLUME, 1_000, Long.MAX_VALUE / maxVolume));
         fissionExcessWasteRatio = CachedDoubleValue.wrap(this, GeneratorsConfigTranslations.SERVER_FISSION_EXCESS_WASTE.applyToBuilder(builder)
