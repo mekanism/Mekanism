@@ -314,6 +314,9 @@ public class SoundHandler {
         @Override
         public void tick() {
             // Every configured interval, see if we need to adjust muffling
+            if (Minecraft.getInstance().level == null) {
+                 return;
+                }
             Level level = Minecraft.getInstance().level;
             if (!MekanismUtils.isTickingNormally(level)) {
                 //Mute it similar to how the minecart sound handling is
