@@ -82,7 +82,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         addOreProcessingGemRecipes(consumer, basePath + "lapis_lazuli/", Items.LAPIS_ORE, Items.DEEPSLATE_LAPIS_ORE, Tags.Items.ORES_LAPIS,
               MekanismItems.LAPIS_LAZULI_DUST, MekanismTags.Items.DUSTS_LAPIS, Items.LAPIS_LAZULI, Tags.Items.GEMS_LAPIS, 12, 27, Tags.Items.COBBLESTONES_NORMAL);
         addOreProcessingGemRecipes(consumer, basePath + "quartz/", Items.NETHER_QUARTZ_ORE, null, Tags.Items.ORES_QUARTZ, MekanismItems.QUARTZ_DUST,
-              MekanismTags.Items.DUSTS_QUARTZ, Items.QUARTZ, Tags.Items.GEMS_QUARTZ, 6, 14, IngredientCreatorAccess.item().from(Items.NETHERRACK));
+              MekanismTags.Items.DUSTS_QUARTZ, Items.QUARTZ, Tags.Items.GEMS_QUARTZ, 2, 14, IngredientCreatorAccess.item().from(Items.NETHERRACK));
         addRedstoneProcessingRecipes(consumer, basePath + "redstone/");
         addRefinedGlowstoneProcessingRecipes(consumer, basePath + "refined_glowstone/");
         addRefinedObsidianProcessingRecipes(consumer, basePath + "refined_obsidian/");
