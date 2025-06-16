@@ -8,7 +8,7 @@
   "type": "mekanism:enriching",
   "input": {
     "count": 1,
-    "item": "biomeswevegone:dacite_tile"
+    "item": "biomeswevegone:dacite_tiles"
   },
   "output": {
     "count": 1,
