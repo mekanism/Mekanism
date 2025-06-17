@@ -92,16 +92,16 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
         ICondition tagNotEmpty = new NotCondition(new TagEmptyCondition(makesDyeTag));
         ItemStackIngredient inputIngredient = IngredientCreatorAccess.item().from(makesDyeTag);
         ItemStackToItemStackRecipeBuilder.enriching(
-                inputIngredient,
-                new ItemStack(output, large ? 4 : 2)).addCondition(modLoaded)
+                        inputIngredient,
+                        new ItemStack(output, large ? 4 : 2)).addCondition(modLoaded)
                 .addCondition(tagNotEmpty)
                 .build(consumer, Mekanism.rl(basePath + "dye/" + name));
         // Flowers -> 4x dye output (See
         // PigmentExtractingRecipeProvider#addFlowerExtractionRecipes for note)
         long flowerRate = 3 * PigmentExtractingRecipeProvider.DYE_RATE;
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
-                inputIngredient,
-                MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(color).asStack(large ? 2 * flowerRate : flowerRate))
+                        inputIngredient,
+                        MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(color).asStack(large ? 2 * flowerRate : flowerRate))
                 .addCondition(modLoaded)
                 .addCondition(tagNotEmpty)
                 .build(consumer, Mekanism.rl(basePath + "pigment_extracting/" + name));
@@ -124,9 +124,9 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
         crushing(consumer, basePath, BWGBlocks.DACITE_BRICKS_SET, BWGBlocks.DACITE_SET);
         // Dacite Pillar -> Dacite
         ItemStackToItemStackRecipeBuilder.crushing(
-                IngredientCreatorAccess.item().from(BWGBlocks.DACITE_PILLAR.get()),
-                new ItemStack(BWGBlocks.DACITE_SET.getBase(), 2)).addCondition(modLoaded)
-                .build(consumer, Mekanism.rl(basePath + "from_pillar"));
+                        IngredientCreatorAccess.item().from(BWGBlocks.DACITE_PILLAR.get()),
+                        new ItemStack(BWGBlocks.DACITE_SET.getBase(), 2)).addCondition(modLoaded)
+                .build(consumer, Mekanism.rl(basePath + "from_dacite_pillar"));
     }
 
     private void addCrusherWhiteDaciteRecipes(RecipeOutput consumer, String basePath) {
@@ -139,9 +139,9 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
         // White Dacite Bricks -> White Dacite
         crushing(consumer, basePath, BWGBlocks.WHITE_DACITE_BRICKS_SET, BWGBlocks.WHITE_DACITE_SET);
         ItemStackToItemStackRecipeBuilder.crushing(
-                IngredientCreatorAccess.item().from(BWGBlocks.WHITE_DACITE_PILLAR.get()),
-                new ItemStack(BWGBlocks.WHITE_DACITE_SET.getBase(), 2)).addCondition(modLoaded)
-                .build(consumer, Mekanism.rl(basePath + "from_pillar"));
+                        IngredientCreatorAccess.item().from(BWGBlocks.WHITE_DACITE_PILLAR.get()),
+                        new ItemStack(BWGBlocks.WHITE_DACITE_SET.getBase(), 2)).addCondition(modLoaded)
+                .build(consumer, Mekanism.rl(basePath + "from_white_dacite_pillar"));
     }
 
     private void addCrusherRedRockRecipes(RecipeOutput consumer, String basePath) {
@@ -165,8 +165,8 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
 
     private void crushing(RecipeOutput consumer, ItemLike input, ItemLike output, String path) {
         ItemStackToItemStackRecipeBuilder.crushing(
-                IngredientCreatorAccess.item().from(input),
-                new ItemStack(output)).addCondition(modLoaded)
+                        IngredientCreatorAccess.item().from(input),
+                        new ItemStack(output)).addCondition(modLoaded)
                 .build(consumer, Mekanism.rl(path));
     }
 
@@ -232,8 +232,8 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
 
     private void enriching(RecipeOutput consumer, ItemLike input, ItemLike output, String path) {
         ItemStackToItemStackRecipeBuilder.enriching(
-                IngredientCreatorAccess.item().from(input),
-                new ItemStack(output)).addCondition(modLoaded)
+                        IngredientCreatorAccess.item().from(input),
+                        new ItemStack(output)).addCondition(modLoaded)
                 .build(consumer, Mekanism.rl(path));
     }
 
@@ -263,10 +263,10 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
 
     private void infuseMoss(RecipeOutput consumer, ItemLike input, ItemLike output, String path) {
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
-                IngredientCreatorAccess.item().from(input),
-                IngredientCreatorAccess.chemicalStack().from(MekanismAPITags.Chemicals.BIO, 10),
-                new ItemStack(output),
-                false).addCondition(modLoaded)
+                        IngredientCreatorAccess.item().from(input),
+                        IngredientCreatorAccess.chemicalStack().from(MekanismAPITags.Chemicals.BIO, 10),
+                        new ItemStack(output),
+                        false).addCondition(modLoaded)
                 .build(consumer, Mekanism.rl(path));
     }
 }
