@@ -19,13 +19,13 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class ItemNetworkReader extends ItemEnergized
+public class ItemNetworkReader extends ItemEnergizedTiered
 {
-	public final int ENERGY_PER_USE = (int) (MAX_ELECTRICITY/150);
+	public final int ENERGY_PER_USE = EquipmentTier.energy/150;
 
 	public ItemNetworkReader()
 	{
-		super(Tier.EquipmentTier.BASIC.energy);
+		super(Tier.EquipmentTier.BASIC);
 	}
 
 	@Override

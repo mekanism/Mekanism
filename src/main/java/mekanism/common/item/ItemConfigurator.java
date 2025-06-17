@@ -38,16 +38,16 @@ import java.util.Random;
 @InterfaceList({
 	@Interface(iface = "buildcraft.api.tools.IToolWrench", modid = "BuildCraft")
 })
-public class ItemConfigurator extends ItemEnergized implements IMekWrench, IToolWrench, IToolHammer
+public class ItemConfigurator extends ItemEnergizedTiered implements IMekWrench, IToolWrench, IToolHammer
 {
-	public final int ENERGY_PER_CONFIGURE = (int) (MAX_ELECTRICITY/150);
-	public final int ENERGY_PER_ITEM_DUMP = (int) (MAX_ELECTRICITY/500);
+	public final int ENERGY_PER_CONFIGURE = EquipmentTier.energy/150;
+	public final int ENERGY_PER_ITEM_DUMP = EquipmentTier.energy/500;
 
 	private Random random = new Random();
 
 	public ItemConfigurator()
 	{
-		super(Tier.EquipmentTier.BASIC.energy);
+		super(Tier.EquipmentTier.BASIC);
 	}
 
 	@Override

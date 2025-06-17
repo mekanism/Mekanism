@@ -5,17 +5,17 @@ package mekanism.api.util;
  */
 public class UnitDisplayUtils
 {
-	public static enum ElectricUnit
+	public enum ElectricUnit
 	{
 		JOULES("Joule", "J"),
 		REDSTONE_FLUX("Redstone Flux", "RF"),
 		MINECRAFT_JOULES("Minecraft Joule", "MJ"),
 		ELECTRICAL_UNITS("Electrical Unit", "EU");
 
-		public String name;
-		public String symbol;
+		public final String name;
+		public final String symbol;
 
-		private ElectricUnit(String s, String s1)
+		ElectricUnit(String s, String s1)
 		{
 			name = s;
 			symbol = s1;
@@ -27,20 +27,20 @@ public class UnitDisplayUtils
 		}
 	}
 
-	public static enum TemperatureUnit
+	public enum TemperatureUnit
 	{
 		KELVIN("Kelvin", "K", 0, 1),
-		CELSIUS("Celsius", "°C", 273.15, 1),
+		CELSIUS("Celsius", "C", 273.15, 1),
 		RANKINE("Rankine", "R", 0, 9D/5D),
-		FAHRENHEIT("Fahrenheit", "°F", 459.67, 9D/5D),
+		FAHRENHEIT("Fahrenheit", "F", 459.67, 9D/5D),
 		AMBIENT("Ambient", "+STP", 300, 1);
 
-		public String name;
-		public String symbol;
-		public double zeroOffset;
-		public double intervalSize;
+		public final String name;
+		public final String symbol;
+		public final double zeroOffset;
+		public final double intervalSize;
 
-		private TemperatureUnit(String s, String s1, double offset, double size)
+		TemperatureUnit(String s, String s1, double offset, double size)
 		{
 			name = s;
 			symbol = s1;
@@ -60,7 +60,7 @@ public class UnitDisplayUtils
 	}
 
 	/** Metric system of measurement. */
-	public static enum MeasurementUnit
+	public enum MeasurementUnit
 	{
 		FEMTO("Femto", "f", 0.000000000000001D),
 		PICO("Pico", "p", 0.000000000001D),
@@ -78,15 +78,15 @@ public class UnitDisplayUtils
 		YOTTA("Yotta", "Y", 1000000000000000000000000D);
 
 		/** long name for the unit */
-		public String name;
+		public final String name;
 
 		/** short unit version of the unit */
-		public String symbol;
+		public final String symbol;
 
-		/** Point by which a number is consider to be of this unit */
-		public double value;
+		/** Point by which a number is considered to be of this unit */
+		public final double value;
 
-		private MeasurementUnit(String s, String s1, double v)
+		MeasurementUnit(String s, String s1, double v)
 		{
 			name = s;
 			symbol = s1;
@@ -122,7 +122,7 @@ public class UnitDisplayUtils
 
 	/**
 	 * Displays the unit as text. Does handle negative numbers, and will place a negative sign in
-	 * front of the output string showing this. Use string.replace to remove the negative sign if
+	 * front of the output string showing this. Use "string.replace" to remove the negative sign if
 	 * unwanted
 	 */
 	public static String getDisplay(double value, ElectricUnit unit, int decimalPlaces, boolean isShort)
@@ -281,7 +281,7 @@ public class UnitDisplayUtils
 		return roundDecimals(d, 2);
 	}
 
-	public static enum EnergyType
+	public enum EnergyType
 	{
 		J,
 		RF,
@@ -289,7 +289,7 @@ public class UnitDisplayUtils
 		MJ
 	}
 
-	public static enum TempType
+	public enum TempType
 	{
 		K,
 		C,

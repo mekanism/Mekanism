@@ -730,7 +730,7 @@ public final class Tier
 		@Override
 		public void loadConfig()
 		{
-			energy = Mekanism.configuration.get("tier", getBaseTier().getName() + "Equipment", maxEnergy).getInt();
+			energy = Mekanism.configuration.get("tier", getBaseTier().getName() + "EquipmentMaxEnergy", maxEnergy).getInt();
 		}
 
 		@Override

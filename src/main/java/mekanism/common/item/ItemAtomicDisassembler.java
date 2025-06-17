@@ -29,13 +29,13 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.entity.player.UseHoeEvent;
 import cpw.mods.fml.common.eventhandler.Event.Result;
 
-public class ItemAtomicDisassembler extends ItemEnergized
+public class ItemAtomicDisassembler extends ItemEnergizedTiered
 {
 	public double HOE_USAGE = 10 * general.DISASSEMBLER_USAGE;
 
 	public ItemAtomicDisassembler()
 	{
-		super(Tier.EquipmentTier.ULTIMATE.energy);
+		super(Tier.EquipmentTier.ULTIMATE);
 	}
 
 	@Override
@@ -52,7 +52,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 	{
 		super.addInformation(itemstack, entityplayer, list, flag);
 
-		list.add(LangUtils.localize("tooltip.mode") + ": " + EnumColor.INDIGO + getModeName(itemstack));
+		list.add(LangUtils.localize("gui.mode") + ": " + EnumColor.INDIGO + getModeName(itemstack));
 		list.add(LangUtils.localize("tooltip.efficiency") + ": " + EnumColor.INDIGO + getEfficiency(itemstack));
 	}
 
