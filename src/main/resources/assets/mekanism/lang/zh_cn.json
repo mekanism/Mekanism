@@ -2064,7 +2064,7 @@
   "container.mekanism.ultimate_purifying_factory": "终极提纯工厂",
   "container.mekanism.ultimate_sawing_factory": "终极锯木工厂",
   "container.mekanism.ultimate_smelting_factory": "终极熔炼工厂",
-  "conversion.mekanism.chemical": "给化学品的物品",
+  "conversion.mekanism.chemical": "将物品转化为化学品",
   "conversion.mekanism.energy": "物品到能量",
   "crafting_formula.mekanism.encoded": "(已编码)",
   "crafting_formula.mekanism.ingredients": "原料：",
