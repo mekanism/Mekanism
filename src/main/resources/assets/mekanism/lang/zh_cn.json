@@ -2723,7 +2723,7 @@
   "module.mekanism.gravitational_modulating_unit": "重力调节单元",
   "module.mekanism.gravitational_modulation": "重力调节",
   "module.mekanism.gyroscopic_stabilization_unit": "陀螺稳定单元",
-  "module.mekanism.handle_mode_change": "处理模式按键",
+  "module.mekanism.handle_mode_change": "使用按键切换此模块模式",
   "module.mekanism.hydraulic_propulsion_unit": "液压推进单元",
   "module.mekanism.hydrostatic_repulsor_unit": "静水推进单元",
   "module.mekanism.inhalation_purification_unit": "吸入净化单元",
