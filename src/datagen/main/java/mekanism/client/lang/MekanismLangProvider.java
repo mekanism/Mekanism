@@ -1768,6 +1768,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         addModuleConfig(ModuleGravitationalModulatingUnit.SPEED_BOOST, "Speed Boost");
         add(MekanismLang.MODULE_VISION_ENHANCEMENT, "Vision Enhancement");
         addModuleConfig(ModuleElectrolyticBreathingUnit.FILL_HELD, "Fill Held");
+        addModuleConfig(ModuleElectrolyticBreathingUnit.FILL_HYDROGEN, "Fill Hydrogen");
+        addModuleConfig(ModuleElectrolyticBreathingUnit.FILL_OXYGEN, "Fill Oxygen & Isolate Player");
         addModuleConfig(ModuleInhalationPurificationUnit.BENEFICIAL_EFFECTS, "Remove Beneficial");
         addModuleConfig(ModuleInhalationPurificationUnit.NEUTRAL_EFFECTS, "Remove Neutral");
         addModuleConfig(ModuleInhalationPurificationUnit.HARMFUL_EFFECTS, "Remove Harmful");
