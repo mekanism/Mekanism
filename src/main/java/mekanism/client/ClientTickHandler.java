@@ -309,7 +309,7 @@ public class ClientTickHandler
 			return Mekanism.jetpackOn.contains(player.getCommandSenderName());
 		}
 
-		ItemStack stack = player.inventory.armorInventory[2];
+		ItemStack stack = player.getEquipmentInSlot(3);
 
 		if(stack != null && !player.capabilities.isCreativeMode)
 		{
