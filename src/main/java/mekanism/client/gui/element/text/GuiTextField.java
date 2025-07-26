@@ -209,7 +209,7 @@ public class GuiTextField extends GuiElement {
         backgroundType.render(this, guiGraphics);
         PoseStack pose = guiGraphics.pose();
         pose.pushPose();
-        //Translate to the top left before attempting to render the text field as vanilla render's widgets from the top left
+        //Translate to the top left before attempting to render the text field as vanilla renders widgets from the top left
         pose.translate(-getGuiLeft(), -getGuiTop(), 0);
         if (textScale == 1F) {
             textField.render(guiGraphics, mouseX, mouseY, partialTicks);
