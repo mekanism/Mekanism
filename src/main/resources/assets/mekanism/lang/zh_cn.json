@@ -3176,7 +3176,7 @@
   "tooltip.mekanism.hold_for_details": "按住 %1$s 可查看详情。",
   "tooltip.mekanism.hold_for_modules": "按住 %1$s 可查看已安装的模块。",
   "tooltip.mekanism.hold_for_supported_items": "按住 %1$s 可查看可用于升级的装备以及冲突的模块。",
-  "tooltip.mekanism.invalid": "(无效)",
+  "tooltip.mekanism.invalid": "（无效）",
   "tooltip.mekanism.inventory": "存有物品：%1$s",
   "tooltip.mekanism.item_amount": "物品数量：%1$s",
   "tooltip.mekanism.jei.amount.with.capacity": "%1$s / %2$smB",
