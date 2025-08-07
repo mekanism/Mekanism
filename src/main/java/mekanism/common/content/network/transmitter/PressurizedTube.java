@@ -306,7 +306,7 @@ public class PressurizedTube extends BufferedTransmitter<IChemicalHandler, Chemi
     }
 
     public IChemicalTank getChemicalTank() {
-        return chemicalTank;
+        return hasTransmitterNetwork() ? getTransmitterNetwork().chemicalTank : chemicalTank;
     }
 
 }
