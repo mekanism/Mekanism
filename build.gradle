@@ -16,17 +16,17 @@ import java.util.function.Consumer
 plugins {
     id('org.ajoberstar.grgit.service')//Version declared in buildSrc
     id('net.darkhax.curseforgegradle') version('1.1.26')
-    id('com.modrinth.minotaur') version('2.8.7')
+    id('com.modrinth.minotaur') version('2.8.8')
     id('java')
     id('eclipse')
     id('idea')
     id('maven-publish')
-    id('net.neoforged.moddev') version('2.0.88')//https://projects.neoforged.net/neoforged/moddevgradle
+    id('net.neoforged.moddev') version('2.0.107')//https://projects.neoforged.net/neoforged/moddevgradle
 }
 
 tasks.named('wrapper', Wrapper) {
     //Define wrapper values here so as to not have to always do so when updating gradlew.properties
-    gradleVersion = '8.14.1'
+    gradleVersion = '8.14.3'
     distributionType = Wrapper.DistributionType.ALL
 }
 
@@ -803,7 +803,6 @@ if (System.getenv('MODRINTH_TOKEN') != null || project.hasProperty('modrinthToke
         versionNumber = "${basicVersion}"
         versionType = "${release_type}"
         gameVersions.add("${minecraft_version}")
-        loaders.add('neoforge')
         failSilently = true
         changelog.value(outputChangelog.flatMap(c -> c.outputFile).map(file -> file.asFile.text))
         uploadFile = jar

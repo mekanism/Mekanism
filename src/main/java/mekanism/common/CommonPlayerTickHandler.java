@@ -206,6 +206,8 @@ public class CommonPlayerTickHandler {
             // Is that fine? Maybe it is better, or maybe it is worse from a balance standpoint
             float ratioAbsorbed = ItemMekaSuitArmor.getDamageAbsorbed(player, damageContainer.getSource(), damage);
             if (ratioAbsorbed > 0) {
+                //TODO - 1.21: What should we set this to, and how does it behave if we also cancel the event
+                //damageContainer.setPostAttackInvulnerabilityTicks();
                 float damageRemaining = damage * Math.max(0, 1 - ratioAbsorbed);
                 if (damageRemaining <= 0) {
                     event.setCanceled(true);
