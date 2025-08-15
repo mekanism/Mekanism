@@ -73,14 +73,14 @@ public class RadiationSource implements IRadiationSource {
 
     public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
-        tag.put("pos", NbtUtils.writeBlockPos(pos));
+        tag.put(SerializationConstants.POS, NbtUtils.writeBlockPos(pos));
         tag.putDouble(SerializationConstants.RADIATION, magnitude);
         return tag;
     }
 
     @Nullable
     public static RadiationSource deserializeNBT(CompoundTag nbt) {
-        Optional<BlockPos> blockPos = NbtUtils.readBlockPos(nbt, "pos");
+        Optional<BlockPos> blockPos = NbtUtils.readBlockPos(nbt, SerializationConstants.POS);
         if (blockPos.isEmpty()) {
             return null;
         }

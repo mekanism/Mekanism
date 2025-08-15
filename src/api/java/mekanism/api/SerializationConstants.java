@@ -279,6 +279,10 @@ public final class SerializationConstants {
     @Deprecated(forRemoval = true, since = "10.7.0")
     public static final String PIGMENT_TANKS = "pigment_tanks";
     public static final String PLASMA_TEMP = "plasma_temp";
+    /**
+     * @since 10.7.15
+     */
+    public static final String POS = "pos";
     public static final String POSITION = "position";
     public static final String PREVIOUS = "previous";
     public static final String PROCESSED = "processed";

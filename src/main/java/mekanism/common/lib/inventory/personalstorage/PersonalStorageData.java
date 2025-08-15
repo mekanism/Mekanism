@@ -75,7 +75,7 @@ class PersonalStorageData extends MekanismSavedData {
 
     @Override
     public CompoundTag save(CompoundTag compoundTag, @NotNull HolderLookup.Provider provider) {
-        ListTag entries = new ListTag();
+        ListTag entries = new ListTag(inventoriesById.size());
         for (Entry<UUID, PersonalStorageItemInventory> entry : inventoriesById.entrySet()) {
             CompoundTag nbtEntry = new CompoundTag();
             nbtEntry.putUUID(SerializationConstants.PERSONAL_STORAGE_ID, entry.getKey());

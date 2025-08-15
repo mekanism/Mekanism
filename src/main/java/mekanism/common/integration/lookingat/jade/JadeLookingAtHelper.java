@@ -23,7 +23,7 @@ public class JadeLookingAtHelper extends SimpleLookingAtHelper {
     public void finalizeData(CompoundTag data) {
         if (!elements.isEmpty()) {
             RegistryOps<Tag> registryOps = provider.createSerializationContext(NbtOps.INSTANCE);
-            ListTag list = new ListTag();
+            ListTag list = new ListTag(elements.size());
             for (ILookingAtElement element : elements) {
                 DataResult<Tag> encoded = JadeTooltipRenderer.ELEMENT_CODEC.encodeStart(registryOps, element);
                 encoded.ifSuccess(list::add);

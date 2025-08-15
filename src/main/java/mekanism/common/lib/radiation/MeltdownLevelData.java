@@ -71,7 +71,7 @@ public class MeltdownLevelData implements INBTSerializable<ListTag> {
             return null;
         }
 
-        ListTag list = new ListTag();
+        ListTag list = new ListTag(meltdowns.size());
         for (Meltdown meltdown : meltdowns) {
             list.add(meltdown.write());
         }

@@ -215,7 +215,7 @@ public class MultiblockManager<T extends MultiblockData> {
         @NotNull
         @Override
         public CompoundTag save(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
-            ListTag cachesNbt = new ListTag();
+            ListTag cachesNbt = new ListTag(caches.size());
             for (Map.Entry<UUID, MultiblockCache<T>> entry : caches.entrySet()) {
                 CompoundTag cacheTags = new CompoundTag();
                 //Note: We can just store the inventory id in the same compound tag as the rest of the cache data
