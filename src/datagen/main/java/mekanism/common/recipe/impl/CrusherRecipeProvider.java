@@ -226,20 +226,20 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
               new ItemStack(Items.TUFF_BRICKS)
         ).build(consumer, Mekanism.rl(basePath + "chiseled_to_brick"));
 
-        //Chiseled Tuff -> Tuff
+        //Tuff -> Chiseled Tuff
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(Items.TUFF),
               new ItemStack(Items.CHISELED_TUFF)
         ).build(consumer, Mekanism.rl(basePath + "to_chiseled"));
         //Tuff Stairs -> Tuff Brick Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.TUFF_BRICK_STAIRS),
-              new ItemStack(Items.TUFF_STAIRS)
+              IngredientCreatorAccess.item().from(Items.TUFF_STAIRS),
+              new ItemStack(Items.TUFF_BRICK_STAIRS)
         ).build(consumer, Mekanism.rl(basePath + "stairs_to_brick"));
         //Tuff Slabs -> Tuff Brick Slabs
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Items.TUFF_BRICK_SLAB),
-              new ItemStack(Items.TUFF_SLAB)
+              IngredientCreatorAccess.item().from(Items.TUFF_SLAB),
+              new ItemStack(Items.TUFF_BRICK_SLAB)
         ).build(consumer, Mekanism.rl(basePath + "slab_to_brick"));
         //Tuff Walls -> Tuff Brick Walls
         ItemStackToItemStackRecipeBuilder.crushing(

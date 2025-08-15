@@ -1,4 +1,4 @@
-// 1.21.1	2025-06-17T18:49:49.5573074	Recipes
+// 1.21.1	2025-08-15T14:34:21.3994782	Recipes
 0fc9e539372429b3e5df0dc0595978c4fc45d201 data/mekanism/recipe/antiprotonic_nucleosynthesizer.json
 6d20b08ca1cc993d4c39a761361dce522fe45a7a data/mekanism/recipe/atomic_disassembler.json
 00928ea6e8b57d257c773343c0dc0d337c9d4f5f data/mekanism/recipe/bin/advanced.json
@@ -873,9 +873,9 @@ cf42d98c399cc907836d3eb42df36db512523292 data/mekanism/recipe/crushing/tuff/bric
 a6aec0be3f3536b12d9563351b0b076888bdd867 data/mekanism/recipe/crushing/tuff/chiseled_to_brick.json
 62d67d0ff1b51a6d9eb9cc534e2d6b0a0e9a243d data/mekanism/recipe/crushing/tuff/from_polished.json
 3aa68912f633c8461de0f52bf6aad5c16ccd13d9 data/mekanism/recipe/crushing/tuff/slabs_from_polished.json
-3821bd33dfb2aa62466b5dc741f87e5d1f30f6f0 data/mekanism/recipe/crushing/tuff/slab_to_brick.json
+8279e20ccb77092c90755c1e4a49074bf0d7e034 data/mekanism/recipe/crushing/tuff/slab_to_brick.json
 fa3f14451420d9561695a76e6d3f38ebb418ee81 data/mekanism/recipe/crushing/tuff/stairs_from_polished.json
-17a69941176ba1b6dd193817df6aa97a6600565b data/mekanism/recipe/crushing/tuff/stairs_to_brick.json
+d946334fb9bcbbade31b7381a8355c84d276f7d2 data/mekanism/recipe/crushing/tuff/stairs_to_brick.json
 9def54e78731c55cbe37b3680fa7eecc05e1e8e3 data/mekanism/recipe/crushing/tuff/to_chiseled.json
 5d87ee985fe17c8857050ecd235a4e32ce1a10f4 data/mekanism/recipe/crushing/tuff/wall_from_polished.json
 a5e38b68f6db5ac0a1ce16f31ab7b38b1562181d data/mekanism/recipe/crushing/tuff/wall_to_brick.json
