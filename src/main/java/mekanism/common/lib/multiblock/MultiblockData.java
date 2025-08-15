@@ -48,6 +48,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.redstone.Redstone;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -82,7 +83,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
     private boolean formed;
     public boolean recheckStructure;
 
-    private int currentRedstoneLevel;
+    private int currentRedstoneLevel = Redstone.SIGNAL_NONE;
 
     private final BooleanSupplier remoteSupplier;
     private final Supplier<Level> worldSupplier;
@@ -478,7 +479,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
     }
 
     protected int getMultiblockRedstoneLevel() {
-        return 0;
+        return Redstone.SIGNAL_NONE;
     }
 
     public int getCurrentRedstoneLevel() {

@@ -45,6 +45,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.level.redstone.Redstone;
 import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
@@ -213,7 +214,7 @@ public abstract class BlockMekanism extends Block {
                 return comparatorTile.getCurrentRedstoneLevel();
             }
         }
-        return 0;
+        return Redstone.SIGNAL_NONE;
     }
 
     @Override

@@ -33,6 +33,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.level.redstone.Redstone;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -240,7 +241,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
                 return tile.getComparatorSignal();
             }
         }
-        return 0;
+        return Redstone.SIGNAL_NONE;
     }
 
     @Override

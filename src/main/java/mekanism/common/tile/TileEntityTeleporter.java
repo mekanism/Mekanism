@@ -74,6 +74,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.level.portal.DimensionTransition.PostDimensionTransition;
+import net.minecraft.world.level.redstone.Redstone;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.NeoForge;
@@ -627,7 +628,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
 
     @Override
     public int getRedstoneLevel() {
-        return shouldRender ? 15 : 0;
+        return shouldRender ? Redstone.SIGNAL_MAX : Redstone.SIGNAL_NONE;
     }
 
     @Override
