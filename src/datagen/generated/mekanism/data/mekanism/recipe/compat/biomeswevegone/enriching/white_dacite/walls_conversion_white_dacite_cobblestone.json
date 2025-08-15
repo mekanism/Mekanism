@@ -8,10 +8,10 @@
   "type": "mekanism:enriching",
   "input": {
     "count": 1,
-    "item": "biomeswevegone:dacite_tile"
+    "item": "biomeswevegone:white_dacite_cobblestone_wall"
   },
   "output": {
     "count": 1,
-    "id": "biomeswevegone:dacite_cobblestone"
+    "id": "biomeswevegone:white_dacite_wall"
   }
 }

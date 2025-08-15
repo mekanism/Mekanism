@@ -105,6 +105,7 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
 
     private void addCrushingRecipes(RecipeOutput consumer, String basePath) {
         addCrusherDaciteRecipes(consumer, basePath + "dacite/");
+        addCrusherWhiteDaciteRecipes(consumer, basePath + "white_dacite/");
         addCrusherRedRockRecipes(consumer, basePath + "red_rock/");
     }
 
@@ -112,9 +113,9 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
         //Dacite -> Dacite Cobblestone
         crushing(consumer, basePath, BWGBlocks.DACITE_SET, BWGBlocks.DACITE_COBBLESTONE_SET);
         //Dacite Cobblestone -> Dacite Tile
-        crushing(consumer, basePath, BWGBlocks.DACITE_COBBLESTONE_SET, BWGBlocks.DACITE_TILE_SET);
+        crushing(consumer, basePath, BWGBlocks.DACITE_COBBLESTONE_SET, BWGBlocks.DACITE_TILES_SET);
         //Dacite Tile -> Dacite Bricks
-        crushing(consumer, basePath, BWGBlocks.DACITE_TILE_SET, BWGBlocks.DACITE_BRICKS_SET);
+        crushing(consumer, basePath, BWGBlocks.DACITE_TILES_SET, BWGBlocks.DACITE_BRICKS_SET);
         //Dacite Bricks -> Dacite
         crushing(consumer, basePath, BWGBlocks.DACITE_BRICKS_SET, BWGBlocks.DACITE_SET);
         //Dacite Pillar -> Dacite
@@ -122,7 +123,23 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(BWGBlocks.DACITE_PILLAR.get()),
                     new ItemStack(BWGBlocks.DACITE_SET.getBase(), 2)
               ).addCondition(modLoaded)
-              .build(consumer, Mekanism.rl(basePath + "from_pillar"));
+              .build(consumer, Mekanism.rl(basePath + "from_dacite_pillar"));
+    }
+
+    private void addCrusherWhiteDaciteRecipes(RecipeOutput consumer, String basePath) {
+        //White Dacite -> White Dacite Cobblestone
+        crushing(consumer, basePath, BWGBlocks.WHITE_DACITE_SET, BWGBlocks.WHITE_DACITE_COBBLESTONE_SET);
+        //White Dacite Cobblestone -> White Dacite Tile
+        crushing(consumer, basePath, BWGBlocks.WHITE_DACITE_COBBLESTONE_SET, BWGBlocks.WHITE_DACITE_TILES_SET);
+        //White Dacite Tile -> White Dacite Bricks
+        crushing(consumer, basePath, BWGBlocks.WHITE_DACITE_TILES_SET, BWGBlocks.WHITE_DACITE_BRICKS_SET);
+        //White Dacite Bricks -> White Dacite
+        crushing(consumer, basePath, BWGBlocks.WHITE_DACITE_BRICKS_SET, BWGBlocks.WHITE_DACITE_SET);
+        ItemStackToItemStackRecipeBuilder.crushing(
+                    IngredientCreatorAccess.item().from(BWGBlocks.WHITE_DACITE_PILLAR.get()),
+                    new ItemStack(BWGBlocks.WHITE_DACITE_SET.getBase(), 2)
+              ).addCondition(modLoaded)
+              .build(consumer, Mekanism.rl(basePath + "from_white_dacite_pillar"));
     }
 
     private void addCrusherRedRockRecipes(RecipeOutput consumer, String basePath) {
@@ -155,6 +172,7 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
     private void addEnrichingRecipes(RecipeOutput consumer, String basePath) {
         addMossyStoneEnrichingRecipes(consumer, basePath + "mossy_stone/");
         addDaciteEnrichingRecipes(consumer, basePath + "dacite/");
+        addWhiteDaciteEnrichingRecipes(consumer, basePath + "white_dacite/");
         addRedRockEnrichingRecipes(consumer, basePath + "red_rock/");
     }
 
@@ -173,9 +191,20 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
         //Dacite -> Dacite Bricks
         enriching(consumer, basePath, BWGBlocks.DACITE_SET, BWGBlocks.DACITE_BRICKS_SET);
         //Dacite Bricks -> Dacite Tile
-        enriching(consumer, basePath, BWGBlocks.DACITE_BRICKS_SET, BWGBlocks.DACITE_TILE_SET);
+        enriching(consumer, basePath, BWGBlocks.DACITE_BRICKS_SET, BWGBlocks.DACITE_TILES_SET);
         //Dacite Tile -> Dacite Cobble
-        enriching(consumer, basePath, BWGBlocks.DACITE_TILE_SET, BWGBlocks.DACITE_COBBLESTONE_SET);
+        enriching(consumer, basePath, BWGBlocks.DACITE_TILES_SET, BWGBlocks.DACITE_COBBLESTONE_SET);
+    }
+
+    private void addWhiteDaciteEnrichingRecipes(RecipeOutput consumer, String basePath) {
+        //White Dacite Cobble -> White Dacite
+        enriching(consumer, basePath, BWGBlocks.WHITE_DACITE_COBBLESTONE_SET, BWGBlocks.WHITE_DACITE_SET);
+        //White Dacite -> White Dacite Bricks
+        enriching(consumer, basePath, BWGBlocks.WHITE_DACITE_SET, BWGBlocks.WHITE_DACITE_BRICKS_SET);
+        //White Dacite Bricks -> White Dacite Tile
+        enriching(consumer, basePath, BWGBlocks.WHITE_DACITE_BRICKS_SET, BWGBlocks.WHITE_DACITE_TILES_SET);
+        //White Dacite Tile -> White Dacite Cobble
+        enriching(consumer, basePath, BWGBlocks.WHITE_DACITE_TILES_SET, BWGBlocks.WHITE_DACITE_COBBLESTONE_SET);
     }
 
     private void addRedRockEnrichingRecipes(RecipeOutput consumer, String basePath) {
