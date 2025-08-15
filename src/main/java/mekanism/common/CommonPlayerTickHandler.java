@@ -62,7 +62,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class CommonPlayerTickHandler {
 
-    private static final Predicate<ItemStack> FREE_RUNNERS_PREDICATE = itemStack -> itemStack.getItem() instanceof ItemFreeRunners boots && boots.getMode(itemStack).preventsFallDamage();
+    private static final Predicate<ItemStack> FREE_RUNNERS_FALL_PREDICATE = itemStack -> itemStack.getItem() instanceof ItemFreeRunners boots && boots.getMode(itemStack).preventsFallDamage();
+    private static final Predicate<ItemStack> FREE_RUNNERS_STEP_PREDICATE = itemStack -> itemStack.getItem() instanceof ItemFreeRunners boots && boots.getMode(itemStack).providesStepBoost();
 
     public static boolean isOnGroundOrSleeping(Player player) {
         return player.onGround() || player.isSleeping() || player.getAbilities().flying;
@@ -81,11 +82,20 @@ public class CommonPlayerTickHandler {
         ItemStack stack = player.getItemBySlot(EquipmentSlot.FEET);
         if (stack.isEmpty()) {
             return 0;
-        } else if (stack.getItem() instanceof ItemFreeRunners freeRunners && freeRunners.getMode(stack).providesStepBoost()) {
+        } else if (FREE_RUNNERS_STEP_PREDICATE.test(stack)) {
             return 0.5F;
         }
         IModule<ModuleHydraulicPropulsionUnit> hydraulic = IModuleHelper.INSTANCE.getIfEnabled(stack, MekanismModules.HYDRAULIC_PROPULSION_UNIT);
-        return hydraulic != null ? hydraulic.getCustomInstance().getStepHeight() : 0F;
+        if (hydraulic != null) {
+            return hydraulic.getCustomInstance().getStepHeight();
+        }
+        if (Mekanism.hooks.curios.isLoaded()) {
+            ItemStack curio = CuriosIntegration.findFirstCurio(player, FREE_RUNNERS_STEP_PREDICATE);
+            if (!curio.isEmpty()) {
+                return 0.5F;
+            }
+        }
+        return 0;
     }
 
     @SubscribeEvent
@@ -298,7 +308,7 @@ public class CommonPlayerTickHandler {
     private FallEnergyInfo getFallAbsorptionEnergyInfo(LivingEntity base) {
         ItemStack feetStack = base.getItemBySlot(EquipmentSlot.FEET);
         if (!feetStack.isEmpty()) {
-            if (FREE_RUNNERS_PREDICATE.test(feetStack)) {
+            if (FREE_RUNNERS_FALL_PREDICATE.test(feetStack)) {
                 return freeRunnerFallInfo(feetStack);
             } else if (feetStack.getItem() instanceof ItemMekaSuitArmor) {
                 return new FallEnergyInfo(StorageUtils.getEnergyContainer(feetStack, 0), MekanismConfig.gear.mekaSuitFallDamageRatio,
@@ -306,7 +316,7 @@ public class CommonPlayerTickHandler {
             }
         }
         if (Mekanism.hooks.curios.isLoaded()) {
-            ItemStack curio = CuriosIntegration.findFirstCurio(base, FREE_RUNNERS_PREDICATE);
+            ItemStack curio = CuriosIntegration.findFirstCurio(base, FREE_RUNNERS_FALL_PREDICATE);
             if (!curio.isEmpty()) {
                 return freeRunnerFallInfo(curio);
             }
