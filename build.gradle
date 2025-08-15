@@ -15,18 +15,18 @@ import java.util.function.Consumer
 
 plugins {
     id('org.ajoberstar.grgit.service')//Version declared in buildSrc
-    id('net.darkhax.curseforgegradle') version('1.1.26')
-    id('com.modrinth.minotaur') version('2.8.8')
+    id('net.darkhax.curseforgegradle').version('1.1.26')
+    id('com.modrinth.minotaur').version('2.8.8')
     id('java')
     id('eclipse')
     id('idea')
     id('maven-publish')
-    id('net.neoforged.moddev') version('2.0.107')//https://projects.neoforged.net/neoforged/moddevgradle
+    id('net.neoforged.moddev').version('2.0.107')//https://projects.neoforged.net/neoforged/moddevgradle
 }
 
 tasks.named('wrapper', Wrapper) {
     //Define wrapper values here so as to not have to always do so when updating gradlew.properties
-    gradleVersion = '8.14.3'
+    gradleVersion = '9.0.0'
     distributionType = Wrapper.DistributionType.ALL
 }
 
@@ -596,7 +596,7 @@ def allJar = tasks.register('allJar', AllJar) {
     duplicatesStrategy = DuplicatesStrategy.FAIL
     archiveClassifier.set('all')
     manifest.attributes(getManifestAttributes('MekanismAll'))
-    pathsToExclude.set(mergeModuleResources.flatMap(m -> m.pathsToExclude))
+    pathsToExclude.set(mergeModuleResources.<RegularFile>flatMap(m -> m.pathsToExclude))
     apiOutput = sourceSets.api.output
     mainOutput = sourceSets.main.output
     for (String name : secondaryModules) {
@@ -704,6 +704,7 @@ outputChangelog.configure { OutputChangelog out ->
         return file.asFile.exists() ? file : null
     })
 }
+Provider<RegularFile> changelogFile = outputChangelog.<RegularFile>flatMap(c -> c.outputFile)
 
 if (System.getenv('CURSEFORGE_KEY') != null || project.hasProperty('curseforgeKey')) {
     logger.lifecycle('Enabling Curseforge config')
@@ -712,8 +713,7 @@ if (System.getenv('CURSEFORGE_KEY') != null || project.hasProperty('curseforgeKe
         setGroup('publishing')
         setDescription('Upload Mekanism to CurseForge')
 
-        def changelog = outputChangelog.flatMap(c -> c.outputFile)
-        inputs.file(changelog)
+        inputs.file(changelogFile)
         inputs.property('release_type', release_type)
         inputs.property('java_version', java_version)
         inputs.property('minecraft_version', minecraft_version)
@@ -723,7 +723,7 @@ if (System.getenv('CURSEFORGE_KEY') != null || project.hasProperty('curseforgeKe
 
         //Main Mekanism Project
         def mainCfUpload = task.upload(268560, jar) { main ->
-            setGenericCurseArtifactData(main, changelog)
+            setGenericCurseArtifactData(main, changelogFile)
             //Include the API jar as a secondary file to the main file
             withAdditionalFile(apiJar)
             //Add optional deps
@@ -745,9 +745,9 @@ if (System.getenv('CURSEFORGE_KEY') != null || project.hasProperty('curseforgeKe
         }
 
         //Secondary modules/projects
-        def additionsCfUpload = uploadSecondaryCurseProject(task, 345425, changelog, additionsJar)
-        def generatorsCfUpload = uploadSecondaryCurseProject(task, 268566, changelog, generatorsJar)
-        def toolsCfUpload = uploadSecondaryCurseProject(task, 268567, changelog, toolsJar)
+        def additionsCfUpload = uploadSecondaryCurseProject(task, 345425, changelogFile, additionsJar)
+        def generatorsCfUpload = uploadSecondaryCurseProject(task, 268566, changelogFile, generatorsJar)
+        def toolsCfUpload = uploadSecondaryCurseProject(task, 268567, changelogFile, toolsJar)
 
         doLast {
             //Note: Quiet is the level above warning but below error. We want these to show regardless of logging level
@@ -804,7 +804,7 @@ if (System.getenv('MODRINTH_TOKEN') != null || project.hasProperty('modrinthToke
         versionType = "${release_type}"
         gameVersions.add("${minecraft_version}")
         failSilently = true
-        changelog.value(outputChangelog.flatMap(c -> c.outputFile).map(file -> file.asFile.text))
+        changelog.value(changelogFile.map(file -> file.asFile.text))
         uploadFile = jar
 
         additionalFiles.value([apiJar.get()])
