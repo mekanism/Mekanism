@@ -254,7 +254,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements mekanis
 
         private static ConstructedConfigData create(List<ModuleConfig<?>> configs, List<Codec<? extends ModuleConfig<?>>> codecs,
               List<StreamCodec<? super RegistryFriendlyByteBuf, ? extends ModuleConfig<?>>> streamCodecs) {
-            return new ConstructedConfigData(configs, new ModuleConfigListCodec(codecs), new StreamCodec<>() {
+            return new ConstructedConfigData(configs, new ModuleConfigListCodec(codecs, configs), new StreamCodec<>() {
                 @Override
                 public List<ModuleConfig<?>> decode(RegistryFriendlyByteBuf buffer) {
                     List<ModuleConfig<?>> configs = new ArrayList<>(streamCodecs.size());
