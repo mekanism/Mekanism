@@ -1840,7 +1840,7 @@ fca16c13d7635b7d2e72300e41241e59fbddb5cd data/mekanism/recipe/processing/osmium/
 394f0360874de6dbff3a8eca3ae2b6f599714f4f data/mekanism/recipe/processing/osmium/slurry/dirty/from_raw_ore.json
 595241eec747aab04a0b8df59d9a65aa463aa94b data/mekanism/recipe/processing/osmium/storage_blocks/from_ingots.json
 c64e2cc7f2b02c8c5cbb84a7822f167394648d79 data/mekanism/recipe/processing/quartz/from_dust.json
-57cd218ed5169210ea4ee12617945cff386cd8d9 data/mekanism/recipe/processing/quartz/from_ore.json
+97022afe8210cfa4f5711608e0d9ca5263506e75 data/mekanism/recipe/processing/quartz/from_ore.json
 a7b83e18d23a4075c859607cf76d541bac3ef8db data/mekanism/recipe/processing/quartz/to_dust.json
 92598edd1395247d7601a388e35433ac0408c922 data/mekanism/recipe/processing/quartz/to_ore.json
 3b35a38ecbb864a65839627789d2bf496cab3ca7 data/mekanism/recipe/processing/redstone/from_ore.json
