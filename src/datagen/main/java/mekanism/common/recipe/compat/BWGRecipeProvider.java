@@ -55,8 +55,8 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
     private void addPrecisionSawmillRecipes(RecipeOutput consumer, String basePath) {
         for (BWGWoodSet woodType : BWGWoodSet.woodsets()) {
             RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, woodType.planks(), woodType.boatItem().get(),
-                    woodType.chestBoatItem().get(), woodType.door(), woodType.fenceGate(), woodType.logItemTag(), woodType.pressurePlate(),
-                    woodType.trapdoor(), woodType.hangingSignItem(), WOOD_SET_NAME.getValue(woodType), modLoaded);
+                  woodType.chestBoatItem().get(), woodType.door(), woodType.fenceGate(), woodType.logItemTag(), woodType.pressurePlate(),
+                  woodType.trapdoor(), woodType.hangingSignItem(), WOOD_SET_NAME.getValue(woodType), modLoaded);
         }
     }
 
@@ -93,8 +93,7 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
               ).addCondition(modLoaded)
               .addCondition(tagNotEmpty)
               .build(consumer, Mekanism.rl(basePath + "dye/" + name));
-        // Flowers -> 4x dye output (See
-        // PigmentExtractingRecipeProvider#addFlowerExtractionRecipes for note)
+        //Flowers -> 4x dye output (See PigmentExtractingRecipeProvider#addFlowerExtractionRecipes for note)
         long flowerRate = 3 * PigmentExtractingRecipeProvider.DYE_RATE;
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
                     inputIngredient,
@@ -121,9 +120,10 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
         crushing(consumer, basePath, BWGBlocks.DACITE_BRICKS_SET, BWGBlocks.DACITE_SET);
         //Dacite Pillar -> Dacite
         ItemStackToItemStackRecipeBuilder.crushing(
-                        IngredientCreatorAccess.item().from(BWGBlocks.DACITE_PILLAR.get()),
-                        new ItemStack(BWGBlocks.DACITE_SET.getBase(), 2)).addCondition(modLoaded)
-                .build(consumer, Mekanism.rl(basePath + "from_dacite_pillar"));
+                    IngredientCreatorAccess.item().from(BWGBlocks.DACITE_PILLAR.get()),
+                    new ItemStack(BWGBlocks.DACITE_SET.getBase(), 2)
+              ).addCondition(modLoaded)
+              .build(consumer, Mekanism.rl(basePath + "from_dacite_pillar"));
     }
 
     private void addCrusherWhiteDaciteRecipes(RecipeOutput consumer, String basePath) {
@@ -136,9 +136,10 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
         //White Dacite Bricks -> White Dacite
         crushing(consumer, basePath, BWGBlocks.WHITE_DACITE_BRICKS_SET, BWGBlocks.WHITE_DACITE_SET);
         ItemStackToItemStackRecipeBuilder.crushing(
-                        IngredientCreatorAccess.item().from(BWGBlocks.WHITE_DACITE_PILLAR.get()),
-                        new ItemStack(BWGBlocks.WHITE_DACITE_SET.getBase(), 2)).addCondition(modLoaded)
-                .build(consumer, Mekanism.rl(basePath + "from_white_dacite_pillar"));
+                    IngredientCreatorAccess.item().from(BWGBlocks.WHITE_DACITE_PILLAR.get()),
+                    new ItemStack(BWGBlocks.WHITE_DACITE_SET.getBase(), 2)
+              ).addCondition(modLoaded)
+              .build(consumer, Mekanism.rl(basePath + "from_white_dacite_pillar"));
     }
 
     private void addCrusherRedRockRecipes(RecipeOutput consumer, String basePath) {
@@ -162,9 +163,10 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
 
     private void crushing(RecipeOutput consumer, ItemLike input, ItemLike output, String path) {
         ItemStackToItemStackRecipeBuilder.crushing(
-                        IngredientCreatorAccess.item().from(input),
-                        new ItemStack(output)).addCondition(modLoaded)
-                .build(consumer, Mekanism.rl(path));
+                    IngredientCreatorAccess.item().from(input),
+                    new ItemStack(output)
+              ).addCondition(modLoaded)
+              .build(consumer, Mekanism.rl(path));
     }
 
     private void addEnrichingRecipes(RecipeOutput consumer, String basePath) {
