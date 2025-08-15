@@ -14,6 +14,7 @@ import mekanism.common.registration.impl.SlurryRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismDamageTypes;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismGameEvents;
@@ -85,6 +86,7 @@ public class MekanismTagProvider extends BaseTagProvider {
         addGems();
         addBiomes();
         addDamageTypes();
+        addDataComponents();
         addFluids();
         addGameEvents();
         addChemicalTags();
@@ -590,6 +592,65 @@ public class MekanismTagProvider extends BaseTagProvider {
               DamageTypes.DRAGON_BREATH, DamageTypes.DRY_OUT, DamageTypes.FALL, DamageTypes.FALLING_BLOCK, DamageTypes.FLY_INTO_WALL, DamageTypes.GENERIC,
               DamageTypes.HOT_FLOOR, DamageTypes.IN_FIRE, DamageTypes.IN_WALL, DamageTypes.LAVA, DamageTypes.LIGHTNING_BOLT, DamageTypes.ON_FIRE,
               DamageTypes.SWEET_BERRY_BUSH, DamageTypes.WITHER, DamageTypes.FREEZE, DamageTypes.FALLING_STALACTITE, DamageTypes.STALAGMITE, DamageTypes.SONIC_BOOM);
+    }
+
+    private void addDataComponents() {
+        //TODO: Evaluate supporting some of these in some sort of generic way in RecipeUpgradeType?
+        getBuilder(MekanismTags.DataComponents.CLEARABLE_CONFIG).add(
+              MekanismDataComponents.DISASSEMBLER_MODE,
+              MekanismDataComponents.CONFIGURATOR_MODE,
+              MekanismDataComponents.FLAMETHROWER_MODE,
+              MekanismDataComponents.FREE_RUNNER_MODE,
+              MekanismDataComponents.JETPACK_MODE,
+              MekanismDataComponents.EDIT_MODE,
+              MekanismDataComponents.DUMP_MODE,
+              MekanismDataComponents.SECONDARY_DUMP_MODE,
+              MekanismDataComponents.REDSTONE_CONTROL,
+              MekanismDataComponents.REDSTONE_OUTPUT,
+              MekanismDataComponents.SCUBA_TANK_MODE,
+              MekanismDataComponents.ELECTRIC_BOW_MODE,
+              MekanismDataComponents.BUCKET_MODE,
+              MekanismDataComponents.ROTARY_MODE,
+              MekanismDataComponents.AUTO,
+              MekanismDataComponents.SORTING,
+              MekanismDataComponents.EJECT,
+              MekanismDataComponents.PULL,
+              MekanismDataComponents.ROUND_ROBIN,
+              MekanismDataComponents.SINGLE_ITEM,
+              MekanismDataComponents.FUZZY,
+              MekanismDataComponents.SILK_TOUCH,
+              MekanismDataComponents.INVERSE,
+              MekanismDataComponents.INVERSE_REQUIRES_REPLACE,
+              MekanismDataComponents.FROM_RECIPE,
+              MekanismDataComponents.INSERT_INTO_FREQUENCY,
+              MekanismDataComponents.RADIUS,
+              MekanismDataComponents.MIN_Y,
+              MekanismDataComponents.MAX_Y,
+              MekanismDataComponents.REPLACE_STACK,
+              MekanismDataComponents.DELAY,
+              MekanismDataComponents.MIN_THRESHOLD,
+              MekanismDataComponents.MAX_THRESHOLD,
+              //This is the amount of energy per tick a resistive heater is set to
+              MekanismDataComponents.ENERGY_USAGE,
+              MekanismDataComponents.LONG_AMOUNT,
+              MekanismDataComponents.ITEM_TARGET,
+              MekanismDataComponents.STABILIZER_CHUNKS,
+              MekanismDataComponents.ROBIT_NAME,
+              //Note: We intentionally don't clear the DEFAULT_MANUALLY_SELECTED for robits, as we want to make sure that people have a way to make them stack if needed
+              MekanismDataComponents.ROBIT_SKIN,
+              MekanismDataComponents.FORMULA_HOLDER,
+              MekanismDataComponents.CONFIGURATION_DATA,
+              MekanismDataComponents.COLOR,
+              MekanismDataComponents.EJECTOR,
+              MekanismDataComponents.SIDE_CONFIG,
+              MekanismDataComponents.FILTER_AWARE,
+              MekanismDataComponents.TELEPORTER_FREQUENCY,
+              MekanismDataComponents.INVENTORY_FREQUENCY,
+              MekanismDataComponents.QIO_FREQUENCY,
+              //Note: We clear attached heat even though it isn't exactly a config, just because people may want their heat generators and the like to be able to stack
+              // and the heat value is based on the temperature it was in the world (that it is no longer in)
+              MekanismDataComponents.ATTACHED_HEAT
+        );
     }
 
     private void addFluids() {

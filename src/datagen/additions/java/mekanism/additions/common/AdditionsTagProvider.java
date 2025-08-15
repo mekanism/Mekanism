@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import mekanism.additions.common.registries.AdditionsBlocks;
+import mekanism.additions.common.registries.AdditionsDataComponents;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
 import mekanism.additions.common.registries.AdditionsItems;
 import mekanism.api.text.EnumColor;
@@ -44,6 +45,7 @@ public class AdditionsTagProvider extends BaseTagProvider {
     protected void registerTags(HolderLookup.Provider registries) {
         addEntities();
         addDamageTypes();
+        addDataComponents();
         addBalloons();
         addSlabs();
         addStairs();
@@ -94,6 +96,10 @@ public class AdditionsTagProvider extends BaseTagProvider {
               DamageTypes.DROWN,
               DamageTypes.FLY_INTO_WALL
         );
+    }
+
+    private void addDataComponents() {
+        getBuilder(MekanismTags.DataComponents.CLEARABLE_CONFIG).add(AdditionsDataComponents.WALKIE_DATA);
     }
 
     private void addBalloons() {

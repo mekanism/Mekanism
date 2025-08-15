@@ -1,4 +1,4 @@
-// 1.21.1	2025-03-12T12:16:51.4840964	Tags: mekanismadditions
+// 1.21.1	2025-08-15T17:45:14.182013	Tags: mekanismadditions
 56facda135aff10b73eb8fe66c50a57b81e2004f data/c/tags/block/dyed.json
 c0a3434189d007f164cd4c931b0a892a6837b5a1 data/c/tags/block/dyed/black.json
 64a804c0d747716198c47794e47fc07ff26cc005 data/c/tags/block/dyed/blue.json
@@ -83,6 +83,7 @@ dc8bc92147066211415451157f23629e42df3da3 data/mekanismadditions/tags/item/plasti
 c9004193eb0e4aa50fc6fbecbefbf257d580c5c0 data/mekanismadditions/tags/item/plastic_stairs/glow.json
 20c68f9f2dd3ab1e769854666edbfb4767da2b0d data/mekanismadditions/tags/item/plastic_stairs/normal.json
 6e03d50a4f81d832be0a76fbfa1e6e6172f9ddfc data/mekanismadditions/tags/item/plastic_stairs/transparent.json
+95741736d10448cf20ad66ed2e1acf23c0076c1d data/mekanism/tags/data_component_type/config/clearable.json
 49c90df09fb9803707e99d724517e2eb441dbe57 data/minecraft/tags/block/fences.json
 6c72a079835fe22d3553edb0f05d066ca238eebe data/minecraft/tags/block/fence_gates.json
 e45a8082f976d0bb7eab6c111551cd0a80c2e02b data/minecraft/tags/block/impermeable.json

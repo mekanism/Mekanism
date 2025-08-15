@@ -6,7 +6,6 @@ import mekanism.common.base.IModModule;
 import mekanism.common.command.builders.BuildCommand;
 import mekanism.common.lib.Version;
 import mekanism.common.lib.multiblock.MultiblockManager;
-import mekanism.common.recipe.ClearConfigurationRecipe;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.fission.FissionReactorCache;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
@@ -96,8 +95,6 @@ public class MekanismGenerators implements IModModule {
             BuildCommand.register("turbine", GeneratorsLang.TURBINE, new TurbineBuilder());
             BuildCommand.register("fission", GeneratorsLang.FISSION_REACTOR, new FissionReactorBuilder());
             BuildCommand.register("fusion", GeneratorsLang.FUSION_REACTOR, new FusionReactorBuilder());
-
-            ClearConfigurationRecipe.addAttachments(GeneratorsDataComponents.FISSION_LOGIC_TYPE, GeneratorsDataComponents.FUSION_LOGIC_TYPE, GeneratorsDataComponents.ACTIVE_COOLED);
         });
 
         //Finalization

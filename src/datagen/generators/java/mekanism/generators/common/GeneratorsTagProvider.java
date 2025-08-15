@@ -5,9 +5,11 @@ import java.util.concurrent.CompletableFuture;
 import mekanism.api.MekanismAPITags;
 import mekanism.common.content.gear.IModuleItem;
 import mekanism.common.tag.BaseTagProvider;
+import mekanism.common.tags.MekanismTags;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsChemicals;
 import mekanism.generators.common.registries.GeneratorsDamageTypes;
+import mekanism.generators.common.registries.GeneratorsDataComponents;
 import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.registries.GeneratorsItems;
 import net.minecraft.core.HolderLookup;
@@ -37,6 +39,7 @@ public class GeneratorsTagProvider extends BaseTagProvider {
     protected void registerTags(HolderLookup.Provider registries) {
         addBoxBlacklist();
         addEndermanBlacklist();
+        addDataComponents();
         addFluids();
         addGases();
         addDamageTypes();
@@ -101,6 +104,14 @@ public class GeneratorsTagProvider extends BaseTagProvider {
               GeneratorsBlocks.FUSION_REACTOR_LOGIC_ADAPTER,
               GeneratorsBlocks.LASER_FOCUS_MATRIX,
               GeneratorsBlocks.REACTOR_GLASS
+        );
+    }
+
+    private void addDataComponents() {
+        getBuilder(MekanismTags.DataComponents.CLEARABLE_CONFIG).add(
+              GeneratorsDataComponents.FISSION_LOGIC_TYPE,
+              GeneratorsDataComponents.FUSION_LOGIC_TYPE,
+              GeneratorsDataComponents.ACTIVE_COOLED
         );
     }
 
