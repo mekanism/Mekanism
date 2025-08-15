@@ -1,8 +1,9 @@
 {
   "neoforge:conditions": [
     {
-      "type": "neoforge:mod_loaded",
-      "modid": "biomeswevegone"
+      "type": "mekanism:mod_version_loaded",
+      "modid": "biomeswevegone",
+      "version": "2.4.0"
     }
   ],
   "type": "mekanism:crushing",
@@ -12,6 +13,6 @@
   },
   "output": {
     "count": 1,
-    "id": "biomeswevegone:red_rock_stairs"
+    "id": "biomeswevegone:polished_red_rock_stairs"
   }
 }

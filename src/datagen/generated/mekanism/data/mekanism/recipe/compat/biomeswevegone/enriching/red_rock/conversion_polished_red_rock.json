@@ -1,0 +1,18 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "mekanism:mod_version_loaded",
+      "modid": "biomeswevegone",
+      "version": "2.4.0"
+    }
+  ],
+  "type": "mekanism:enriching",
+  "input": {
+    "count": 1,
+    "item": "biomeswevegone:polished_red_rock"
+  },
+  "output": {
+    "count": 1,
+    "id": "biomeswevegone:cracked_red_rock_bricks"
+  }
+}
