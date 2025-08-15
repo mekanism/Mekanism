@@ -8,10 +8,10 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "item": "biomeswevegone:dacite_cobblestone"
+    "item": "biomeswevegone:white_dacite_brick_slab"
   },
   "output": {
     "count": 1,
-    "id": "biomeswevegone:dacite_tiles"
+    "id": "biomeswevegone:white_dacite_slab"
   }
 }
