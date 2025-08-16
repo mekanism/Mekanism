@@ -297,6 +297,7 @@ public final class SerializationConstants {
     public static final String RADIOACTIVITY = "radioactivity";
     public static final String RADIUS = "radius";
     public static final String REACTOR_DAMAGE = "reactor_damage";
+    @Deprecated(forRemoval = true, since = "10.7.15")
     public static final String RECEIVED_COORDS = "received_coords";
     public static final String RECURRING_NODES = "recurring_nodes";
     public static final String REDSTONE = "redstone";

@@ -45,6 +45,7 @@ import mekanism.common.attachments.containers.heat.HeatCapacitorData;
 import mekanism.common.attachments.containers.item.AttachedItems;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeGui;
+import mekanism.common.block.attribute.AttributeHasBounding;
 import mekanism.common.block.attribute.AttributeSound;
 import mekanism.common.block.attribute.AttributeStateActive;
 import mekanism.common.block.attribute.AttributeStateFacing;
@@ -176,6 +177,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     private boolean isDirectional;
     private boolean isActivatable;
     private AttributeStateActive activeAttribute;
+    private boolean hasBounding;
     private boolean hasSecurity;
     private boolean hasSound;
     private boolean hasGui;
@@ -186,6 +188,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     private Component customName;
     @Nullable
     private String containerDescription;
+
+    private boolean syncMasterToBounding;
 
     //Methods for implementing ITileDirectional
     @Nullable
@@ -342,6 +346,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         supportsRedstone = Attribute.has(block, AttributeRedstone.class);
         hasSound = Attribute.has(block, AttributeSound.class);
         hasGui = Attribute.has(block, AttributeGui.class);
+        hasBounding = Attribute.has(block, AttributeHasBounding.class);
         hasSecurity = Attribute.has(block, AttributeSecurity.class);
         activeAttribute = Attribute.get(block, AttributeStateActive.class);
         isActivatable = hasSound || activeAttribute != null;
@@ -622,6 +627,16 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     public static void tickServer(Level level, BlockPos pos, BlockState state, TileEntityMekanism tile) {
+        if (tile.hasBounding && tile.syncMasterToBounding) {
+            //TODO: Evaluate checking every x ticks to make sure we have bounding blocks (at least if we haven't already checked) in case we are missing them
+            // for example if someone set the main block by using a command
+            tile.syncMasterToBounding = false;
+            AttributeHasBounding hasBounding = Attribute.get(state, AttributeHasBounding.class);
+            if (hasBounding != null) {
+                //Note: In theory we only ever set syncMasterToBounding if we know this has bounding blocks, but validate it
+                hasBounding.syncMasterPosition(level, pos, state);
+            }
+        }
         tile.frequencyComponent.tickServer(level, pos);
         if (tile.supportsUpgrades()) {
             tile.upgradeComponent.tickServer();
@@ -714,6 +729,12 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
      */
     protected boolean onUpdateServer() {
         return false;
+    }
+
+    public void resyncMasterToBounding() {
+        if (hasBounding) {
+            syncMasterToBounding = true;
+        }
     }
 
     @Override

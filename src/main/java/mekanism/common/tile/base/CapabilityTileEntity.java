@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.function.BiFunction;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.heat.IHeatHandler;
+import mekanism.common.block.attribute.Attribute;
+import mekanism.common.block.attribute.AttributeHasBounding;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.CapabilityCache;
 import mekanism.common.capabilities.resolver.ICapabilityResolver;
@@ -82,6 +84,17 @@ public abstract class CapabilityTileEntity extends TileEntityUpdateable {
         // that way when queried from the invalidation listener we will ensure we can provide the up to date instance
         capabilityCache.invalidateAll();
         invalidateCapabilities();
+        if (level != null) {
+            BlockState state = getBlockState();
+            AttributeHasBounding attribute = Attribute.get(state, AttributeHasBounding.class);
+            if (attribute != null) {
+                //Mark all bounding positions as having invalid caps
+                attribute.handle(level, worldPosition, state, null, (world, pos, ignoredData) -> {
+                    world.invalidateCapabilities(pos);
+                    return true;
+                });
+            }
+        }
     }
 
     @Override

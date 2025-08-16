@@ -37,8 +37,8 @@ import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.lib.effect.BoltEffect;
 import mekanism.common.lib.math.Pos3D;
 import mekanism.common.lib.transmitter.TransmissionType;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismParticleTypes;
-import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.interfaces.ISideConfiguration;
@@ -418,10 +418,10 @@ public class RenderTickHandler {
             if (!blockState.isAir() && world.getWorldBorder().isWithinBounds(pos)) {
                 BlockPos actualPos = pos;
                 BlockState actualState = blockState;
-                if (blockState.getBlock() instanceof BlockBounding) {
-                    TileEntityBoundingBlock tile = WorldUtils.getTileEntity(TileEntityBoundingBlock.class, world, pos);
-                    if (tile != null && tile.hasReceivedCoords()) {
-                        actualPos = tile.getMainPos();
+                if (blockState.is(MekanismBlocks.BOUNDING_BLOCK)) {
+                    BlockPos mainPos = BlockBounding.getMainBlockPos(world, pos);
+                    if (mainPos != null) {
+                        actualPos = mainPos;
                         actualState = world.getBlockState(actualPos);
                     }
                 }

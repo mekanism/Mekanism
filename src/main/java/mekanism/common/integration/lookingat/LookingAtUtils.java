@@ -36,7 +36,6 @@ import mekanism.common.tile.base.TileEntityUpdateable;
 import mekanism.common.tile.qio.TileEntityQIORedstoneAdapter;
 import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
 import mekanism.common.tile.transmitter.TileEntityPressurizedTube;
-import mekanism.common.util.WorldUtils;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -91,16 +90,12 @@ public class LookingAtUtils {
     public static void addInfoOrRedirect(LookingAtHelper info, Level level, BlockPos pos, BlockState state, @Nullable BlockEntity tile, boolean displayTanks, boolean displayFluidTanks) {
         if (tile instanceof TileEntityBoundingBlock boundingBlock) {
             //If we are a bounding block that has a position set, redirect the check to the main location
-            if (!boundingBlock.hasReceivedCoords() || pos.equals(boundingBlock.getMainPos())) {
-                //If the coords haven't been received, exit
-                return;
-            }
-            pos = boundingBlock.getMainPos();
-            tile = WorldUtils.getTileEntity(level, pos);
+            tile = boundingBlock.getMainTile(pos);
             if (tile == null) {
                 //If there is no tile where the bounding block thinks the main tile is, exit
                 return;
             }
+            pos = tile.getBlockPos();
             state = tile.getBlockState();
         }
         addInfo(info, level, pos, state, tile, displayTanks, displayFluidTanks);
