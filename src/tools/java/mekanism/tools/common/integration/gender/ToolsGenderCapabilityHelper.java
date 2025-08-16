@@ -8,7 +8,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
-@EventBusSubscriber(modid = MekanismTools.MODID, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = MekanismTools.MODID)
 public class ToolsGenderCapabilityHelper {
 
     @SubscribeEvent

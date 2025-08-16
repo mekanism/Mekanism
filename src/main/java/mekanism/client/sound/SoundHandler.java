@@ -59,7 +59,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @apiNote Only used by client
  */
-@EventBusSubscriber(modid = Mekanism.MODID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = Mekanism.MODID, value = Dist.CLIENT)
 public class SoundHandler {
 
     private SoundHandler() {

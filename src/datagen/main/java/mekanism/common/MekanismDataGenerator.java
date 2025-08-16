@@ -52,7 +52,7 @@ import net.neoforged.fml.util.ObfuscationReflectionHelper;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
-@EventBusSubscriber(modid = Mekanism.MODID, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = Mekanism.MODID)
 public class MekanismDataGenerator {
 
     @SuppressWarnings("UnstableApiUsage")

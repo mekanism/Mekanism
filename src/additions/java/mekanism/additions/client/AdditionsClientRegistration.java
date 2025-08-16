@@ -35,7 +35,7 @@ import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 
-@EventBusSubscriber(modid = MekanismAdditions.MODID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = MekanismAdditions.MODID, value = Dist.CLIENT)
 public class AdditionsClientRegistration {
 
     private AdditionsClientRegistration() {

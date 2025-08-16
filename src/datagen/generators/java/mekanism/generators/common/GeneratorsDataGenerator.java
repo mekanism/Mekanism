@@ -20,7 +20,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
-@EventBusSubscriber(modid = MekanismGenerators.MODID, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = MekanismGenerators.MODID)
 public class GeneratorsDataGenerator {
 
     private GeneratorsDataGenerator() {

@@ -18,7 +18,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
-@EventBusSubscriber(modid = MekanismTools.MODID, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = MekanismTools.MODID)
 public class ToolsDataGenerator {
 
     private ToolsDataGenerator() {
