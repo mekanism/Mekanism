@@ -74,6 +74,8 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
                                                      + "amount of jitter."),
     CLIENT_HUD_COMPASS("client.hud.compass", "Compass", "Display a fancy compass when the MekaSuit Helmet is worn."),
     CLIENT_HUD_SUBTITLE_AVOID("client.hud.avoid_subtitles", "Avoid Subtitle Overlap", "Shift the HUD elements when sound subtitles are being displayed to avoid overlap"),
+    CLIENT_HUD_MEKASUIT_ENERGY_BAR("client.hud.mekasuit.energy_bar", "MekaSuit Energy Bar",
+          "Enables rendering an energy bar above the armor bar that displays the total energy of the currently equipped MekaSuit."),
 
     CLIENT_QIO("client.qio", "QIO Settings", "Settings for configuring Mekanism's QIO", true),
     CLIENT_QIO_SORT_TYPE("client.qio.sort.type", "Sort Type", "Sorting strategy when viewing items in a QIO Dashboard."),

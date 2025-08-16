@@ -752,6 +752,8 @@
   "configuration.mekanism.client.hud.enabled.tooltip": "Enable a HUD that displays information about equipped Mekanism items, and displays additional information when wearing a MekaSuit Helmet.",
   "configuration.mekanism.client.hud.jitter": "Jitter",
   "configuration.mekanism.client.hud.jitter.tooltip": "Visual jitter of the MekaSuit HUD, seen when moving the player's head. Higher values increases the amount of jitter.",
+  "configuration.mekanism.client.hud.mekasuit.energy_bar": "MekaSuit Energy Bar",
+  "configuration.mekanism.client.hud.mekasuit.energy_bar.tooltip": "Enables rendering an energy bar above the armor bar that displays the total energy of the currently equipped MekaSuit.",
   "configuration.mekanism.client.hud.opacity": "Opacity",
   "configuration.mekanism.client.hud.opacity.tooltip": "Opacity of HUD used by MekaSuit.",
   "configuration.mekanism.client.hud.reverse": "Reverse",

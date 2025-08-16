@@ -47,6 +47,7 @@ public class ClientConfig extends BaseMekanismConfig {
     public final CachedFloatValue hudJitter;
     public final CachedBooleanValue hudCompassEnabled;
     public final CachedBooleanValue hudAvoidSoundSubtitleOverlay;
+    public final CachedBooleanValue hudRenderMekaSuitEnergyBar;
 
     public final CachedEnumValue<ListSortType> qioItemViewerSortType;
     public final CachedEnumValue<SortDirection> qioItemViewerSortDirection;
@@ -122,6 +123,8 @@ public class ClientConfig extends BaseMekanismConfig {
               .define("mekaSuitHelmetCompass", true));
         hudAvoidSoundSubtitleOverlay = CachedBooleanValue.wrap(this, MekanismConfigTranslations.CLIENT_HUD_SUBTITLE_AVOID.applyToBuilder(builder)
               .define("avoidSoundSubtitleOverlap", true));
+        hudRenderMekaSuitEnergyBar = CachedBooleanValue.wrap(this, MekanismConfigTranslations.CLIENT_HUD_MEKASUIT_ENERGY_BAR.applyToBuilder(builder)
+              .define("renderMekaSuitEnergyBar", true));
         builder.pop();
 
         MekanismConfigTranslations.CLIENT_QIO.applyToBuilder(builder).push("qio");
