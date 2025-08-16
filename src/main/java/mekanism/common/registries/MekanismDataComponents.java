@@ -33,7 +33,7 @@ import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.item.gear.ItemAtomicDisassembler.DisassemblerMode;
 import mekanism.common.item.gear.ItemFlamethrower.FlamethrowerMode;
-import mekanism.common.item.gear.ItemFreeRunners.FreeRunnerMode;
+import mekanism.common.item.interfaces.IFreeRunnerItem.FreeRunnerMode;
 import mekanism.common.item.interfaces.IJetpackItem.JetpackMode;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.FrequencyType;
