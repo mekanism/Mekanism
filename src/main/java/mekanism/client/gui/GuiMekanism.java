@@ -123,7 +123,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     }
 
     protected void addWarningTab(IWarningTracker warningTracker) {
-        addRenderableWidget(new GuiWarningTab(this, warningTracker, 109));
+        addRenderableWidget(new GuiWarningTab(this, warningTracker, true));
     }
 
     /**

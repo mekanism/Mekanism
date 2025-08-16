@@ -7,8 +7,10 @@ import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiSideHolder;
 import mekanism.client.gui.element.bar.GuiChemicalBar;
 import mekanism.client.gui.element.button.GuiGasMode;
+import mekanism.client.gui.element.tab.GuiWarningTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
+import mekanism.common.inventory.warning.IWarningTracker;
 import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tile.TileEntityChemicalTank;
 import mekanism.common.util.text.TextUtils;
@@ -56,5 +58,11 @@ public class GuiChemicalTank extends GuiConfigurableTile<TileEntityChemicalTank,
         renderTitleText(guiGraphics);
         renderInventoryText(guiGraphics, 85);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
+    }
+
+    @Override
+    protected void addWarningTab(IWarningTracker warningTracker) {
+        //Move the tab to the right side of the gui so it doesn't overlap the equipped items
+        addRenderableWidget(new GuiWarningTab(this, warningTracker, false));
     }
 }

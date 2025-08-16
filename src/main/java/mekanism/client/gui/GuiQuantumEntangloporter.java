@@ -5,9 +5,11 @@ import mekanism.client.gui.element.custom.GuiFrequencySelector;
 import mekanism.client.gui.element.custom.GuiFrequencySelector.ITileGuiFrequencySelector;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.client.gui.element.tab.GuiHeatTab;
+import mekanism.client.gui.element.tab.GuiWarningTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
+import mekanism.common.inventory.warning.IWarningTracker;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.util.MekanismUtils;
@@ -56,5 +58,11 @@ public class GuiQuantumEntangloporter extends GuiConfigurableTile<TileEntityQuan
     @Override
     public FrequencyType<InventoryFrequency> getFrequencyType() {
         return FrequencyType.INVENTORY;
+    }
+
+    @Override
+    protected void addWarningTab(IWarningTracker warningTracker) {
+        //Move the tab to the right side of the gui so it doesn't intersect the heat tab
+        addRenderableWidget(new GuiWarningTab(this, warningTracker, false));
     }
 }

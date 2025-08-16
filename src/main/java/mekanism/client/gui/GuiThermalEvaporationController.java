@@ -79,8 +79,8 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
 
     @Override
     protected void addWarningTab(IWarningTracker warningTracker) {
-        //Put warning tab where the energy tab is as we don't have energy
-        addRenderableWidget(new GuiWarningTab(this, warningTracker, 137));
+        //Move the tab to the right side of the gui so it doesn't intersect the heat tab
+        addRenderableWidget(new GuiWarningTab(this, warningTracker, false));
     }
 
     @Override
