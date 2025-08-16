@@ -1,6 +1,7 @@
 package mekanism.common.item;
 
 import java.util.Optional;
+import mekanism.api.MekanismAPITags;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.Mekanism;
@@ -65,7 +66,7 @@ public class ItemTierInstaller extends Item {
     public InteractionResult useOn(UseOnContext context) {
         Player player = context.getPlayer();
         Level world = context.getLevel();
-        if (world.isClientSide || player == null) {
+        if (player == null) {
             return InteractionResult.PASS;
         }
         BlockPos pos = context.getClickedPos();
@@ -77,6 +78,11 @@ public class ItemTierInstaller extends Item {
                 pos = mainPos;
                 state = world.getBlockState(mainPos);
             }
+        }
+        if (state.is(MekanismAPITags.Blocks.BLACKLIST_INSTALLER_UPGRADEABLE)) {
+            return InteractionResult.FAIL;
+        } else if (world.isClientSide()) {
+            return InteractionResult.PASS;
         }
         Holder<Block> block = state.getBlockHolder();
         AttributeUpgradeable upgradeableBlock = Attribute.get(block, AttributeUpgradeable.class);
