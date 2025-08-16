@@ -397,7 +397,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
 
     public boolean craftSingle() {
         boolean canOperate = true;
-        if (!formula.matches(getLevel(), craftingGridSlots)) {
+        if (!formula.isEmpty() && !formula.matches(getLevel(), craftingGridSlots)) {
             canOperate = moveItemsToGrid();
         }
         return canOperate && doSingleCraft();
