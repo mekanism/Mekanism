@@ -2,6 +2,7 @@ package mekanism.common.item;
 
 import java.util.Optional;
 import mekanism.api.MekanismAPITags;
+import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.Mekanism;
@@ -79,7 +80,7 @@ public class ItemTierInstaller extends Item {
                 state = world.getBlockState(mainPos);
             }
         }
-        if (state.is(MekanismAPITags.Blocks.BLACKLIST_INSTALLER_UPGRADEABLE)) {
+        if (!IBlockSecurityUtils.INSTANCE.canAccessOrDisplayError(player, world, pos) || state.is(MekanismAPITags.Blocks.BLACKLIST_INSTALLER_UPGRADEABLE)) {
             return InteractionResult.FAIL;
         } else if (world.isClientSide()) {
             return InteractionResult.PASS;
