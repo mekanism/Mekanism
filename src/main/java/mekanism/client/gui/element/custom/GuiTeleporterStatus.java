@@ -1,12 +1,12 @@
 package mekanism.client.gui.element.custom;
 
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.function.BooleanSupplier;
-import mekanism.api.functions.ByteSupplier;
-import mekanism.api.text.EnumColor;
+import java.util.function.Supplier;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
-import mekanism.client.gui.tooltip.TooltipUtils;
-import mekanism.common.MekanismLang;
+import mekanism.common.tile.TileEntityTeleporter.TeleporterStatus;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphics;
@@ -19,18 +19,14 @@ public class GuiTeleporterStatus extends GuiTexturedElement {
     private static final ResourceLocation NEEDS_ENERGY = MekanismUtils.getResource(ResourceType.GUI, "teleporter_needs_energy.png");
     private static final ResourceLocation NO_FRAME = MekanismUtils.getResource(ResourceType.GUI, "teleporter_no_frame.png");
     private static final ResourceLocation NO_FREQUENCY = MekanismUtils.getResource(ResourceType.GUI, "teleporter_no_frequency.png");
-    private static final ResourceLocation NO_LINK = MekanismUtils.getResource(ResourceType.GUI, "teleporter_no_link.png");
+    private static final ResourceLocation NO_DESTINATION = MekanismUtils.getResource(ResourceType.GUI, "teleporter_no_link.png");
     private static final ResourceLocation READY = MekanismUtils.getResource(ResourceType.GUI, "teleporter_ready.png");
-    private static final Tooltip TELEPORTER_READY = TooltipUtils.create(MekanismLang.TELEPORTER_READY.translateColored(EnumColor.DARK_GREEN));
-    private static final Tooltip TELEPORTER_NO_FRAME = TooltipUtils.create(MekanismLang.TELEPORTER_NO_FRAME.translateColored(EnumColor.DARK_RED));
-    private static final Tooltip TELEPORTER_NEEDS_ENERGY = TooltipUtils.create(MekanismLang.TELEPORTER_NEEDS_ENERGY.translateColored(EnumColor.DARK_RED));
-    private static final Tooltip TELEPORTER_NO_LINK = TooltipUtils.create(MekanismLang.TELEPORTER_NO_LINK.translateColored(EnumColor.DARK_RED));
-    private static final Tooltip NO_FREQUENCY_TOOLTIP = TooltipUtils.create(MekanismLang.NO_FREQUENCY.translateColored(EnumColor.DARK_RED));
+    private static final Map<TeleporterStatus, Tooltip> CACHED_TOOLTIPS = new EnumMap<>(TeleporterStatus.class);
 
     private final BooleanSupplier hasFrequency;
-    private final ByteSupplier statusSupplier;
+    private final Supplier<TeleporterStatus> statusSupplier;
 
-    public GuiTeleporterStatus(IGuiWrapper gui, BooleanSupplier hasFrequency, ByteSupplier statusSupplier) {
+    public GuiTeleporterStatus(IGuiWrapper gui, BooleanSupplier hasFrequency, Supplier<TeleporterStatus> statusSupplier) {
         super(NO_FREQUENCY, gui, 6, 6, 18, 18);
         this.hasFrequency = hasFrequency;
         this.statusSupplier = statusSupplier;
@@ -45,11 +41,11 @@ public class GuiTeleporterStatus extends GuiTexturedElement {
     @Override
     protected ResourceLocation getResource() {
         if (hasFrequency.getAsBoolean()) {
-            return switch (statusSupplier.getAsByte()) {
-                case 1 -> READY;
-                case 2 -> NO_FRAME;
-                case 4 -> NEEDS_ENERGY;
-                default -> NO_LINK;
+            return switch (statusSupplier.get()) {
+                case READY -> READY;
+                case NO_FRAME -> NO_FRAME;
+                case NOT_ENOUGH_ENERGY -> NEEDS_ENERGY;
+                default -> NO_DESTINATION;
             };
         }
         return NO_FREQUENCY;
@@ -63,18 +59,8 @@ public class GuiTeleporterStatus extends GuiTexturedElement {
 
     @Override
     public void updateTooltip(int mouseX, int mouseY) {
-        setTooltip(getStatusDisplay());
-    }
-
-    private Tooltip getStatusDisplay() {
-        if (hasFrequency.getAsBoolean()) {
-            return switch (statusSupplier.getAsByte()) {
-                case 1 -> TELEPORTER_READY;
-                case 2 -> TELEPORTER_NO_FRAME;
-                case 4 -> TELEPORTER_NEEDS_ENERGY;
-                default -> TELEPORTER_NO_LINK;
-            };
-        }
-        return NO_FREQUENCY_TOOLTIP;
+        TeleporterStatus status = hasFrequency.getAsBoolean() ? statusSupplier.get() : TeleporterStatus.NO_FREQUENCY;
+        Tooltip statusDisplay = CACHED_TOOLTIPS.computeIfAbsent(status, s -> Tooltip.create(s.getTextComponent()));
+        setTooltip(statusDisplay);
     }
 }

@@ -5,10 +5,11 @@ import mekanism.api.AutomationType;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.inventory.container.IEmptyContainer;
-import mekanism.common.inventory.container.sync.SyncableByte;
+import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.tile.TileEntityTeleporter;
+import mekanism.common.tile.TileEntityTeleporter.TeleporterStatus;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.world.InteractionHand;
@@ -18,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class PortableTeleporterContainer extends FrequencyItemContainer<TeleporterFrequency> implements IEmptyContainer {
 
-    private byte status;
+    private TeleporterStatus status = TeleporterStatus.NO_FREQUENCY;
 
     public PortableTeleporterContainer(int id, Inventory inv, InteractionHand hand, ItemStack stack) {
         super(MekanismContainerTypes.PORTABLE_TELEPORTER, id, inv, hand, stack);
@@ -29,7 +30,7 @@ public class PortableTeleporterContainer extends FrequencyItemContainer<Teleport
         return StorageUtils.getEnergyContainer(stack, 0);
     }
 
-    public byte getStatus() {
+    public TeleporterStatus getStatus() {
         return status;
     }
 
@@ -44,31 +45,32 @@ public class PortableTeleporterContainer extends FrequencyItemContainer<Teleport
         //Relies on super being called first
         if (getLevel().isClientSide()) {
             //Client side sync handling
-            track(SyncableByte.create(() -> status, value -> status = value));
+            track(SyncableEnum.create(TeleporterStatus.BY_ID, TeleporterStatus.NO_FREQUENCY, this::getStatus, value -> status = value));
         } else {
             //Server side sync handling
             //Note: It is important these are in the same order as the client side trackers
-            track(SyncableByte.create(() -> {
-                byte status = 3;
+            track(SyncableEnum.create(TeleporterStatus.BY_ID, TeleporterStatus.NO_FREQUENCY, () -> {
                 TeleporterFrequency freq = getFrequencyFromStack();
-                if (freq != null && !freq.getActiveCoords().isEmpty()) {
-                    status = 1;
-                    if (!inv.player.isCreative()) {
-                        IEnergyContainer energyContainer = getEnergyContainer();
-                        if (energyContainer == null) {
-                            status = 4;
-                        } else {
-                            GlobalPos coords = freq.getClosestCoords(GlobalPos.of(getLevel().dimension(), inv.player.blockPosition()));
-                            if (coords != null) {
-                                long energyNeeded = TileEntityTeleporter.calculateEnergyCost(inv.player, coords);
-                                if (energyNeeded != -1 && energyContainer.extract(energyNeeded, Action.SIMULATE, AutomationType.MANUAL) < energyNeeded) {
-                                    status = 4;
-                                }
-                            }
+                if (freq == null) {
+                    return TeleporterStatus.NO_FREQUENCY;
+                }
+                if (freq.getActiveCoords().isEmpty()) {
+                    return TeleporterStatus.NO_DESTINATION;
+                }
+                if (!inv.player.isCreative()) {
+                    IEnergyContainer energyContainer = getEnergyContainer();
+                    if (energyContainer == null) {
+                        return TeleporterStatus.NOT_ENOUGH_ENERGY;
+                    }
+                    GlobalPos coords = freq.getClosestCoords(GlobalPos.of(getLevel().dimension(), inv.player.blockPosition()));
+                    if (coords != null) {
+                        long energyNeeded = TileEntityTeleporter.calculateEnergyCost(inv.player, coords);
+                        if (energyNeeded != -1 && energyContainer.extract(energyNeeded, Action.SIMULATE, AutomationType.MANUAL) < energyNeeded) {
+                            return TeleporterStatus.NOT_ENOUGH_ENERGY;
                         }
                     }
                 }
-                return status;
+                return TeleporterStatus.READY;
             }, value -> status = value));
         }
     }

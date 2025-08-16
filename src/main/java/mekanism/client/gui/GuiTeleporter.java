@@ -7,8 +7,10 @@ import mekanism.client.gui.element.custom.GuiFrequencySelector.ITileGuiFrequency
 import mekanism.client.gui.element.custom.GuiTeleporterStatus;
 import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
+import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.tile.TileEntityTeleporter;
+import mekanism.common.tile.TileEntityTeleporter.TeleporterStatus;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -31,7 +33,8 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
     protected void addGuiElements() {
         super.addGuiElements();
         status = addRenderableWidget(new GuiTeleporterStatus(this, () -> getFrequency() != null, () -> tile.status));
-        addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 158, 26));
+        addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 158, 26))
+              .warning(WarningType.NOT_ENOUGH_ENERGY, () -> tile.status == TeleporterStatus.NOT_ENOUGH_ENERGY);
         addRenderableWidget(new GuiFrequencySelector<>(this, 14));
     }
 

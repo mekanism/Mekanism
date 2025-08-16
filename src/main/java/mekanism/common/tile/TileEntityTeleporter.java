@@ -1,5 +1,7 @@
 package mekanism.common.tile;
 
+import com.mojang.serialization.Codec;
+import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.longs.Long2ObjectArrayMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
@@ -10,8 +12,10 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
@@ -21,6 +25,9 @@ import mekanism.api.event.MekanismTeleportEvent;
 import mekanism.api.math.MathUtils;
 import mekanism.api.security.SecurityMode;
 import mekanism.api.text.EnumColor;
+import mekanism.api.text.IHasTextComponent.IHasEnumNameTextComponent;
+import mekanism.api.text.ILangEntry;
+import mekanism.common.MekanismLang;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
@@ -35,7 +42,7 @@ import mekanism.common.integration.computer.SpecialComputerMethodWrapper.Compute
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.inventory.container.sync.SyncableByte;
+import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.lib.chunkloading.IChunkLoader;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
@@ -55,6 +62,9 @@ import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.game.ClientboundMoveVehiclePacket;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
 import net.minecraft.server.MinecraftServer;
@@ -63,7 +73,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.ByIdMap;
 import net.minecraft.util.Mth;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.animal.Fox;
 import net.minecraft.world.entity.monster.Shulker;
@@ -86,9 +98,9 @@ import org.jetbrains.annotations.Nullable;
 
 public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLoader {
 
-    private static final TeleportInfo NO_FRAME = new TeleportInfo((byte) 2, null, Collections.emptyList());
-    private static final TeleportInfo NO_LINK = new TeleportInfo((byte) 3, null, Collections.emptyList());
-    private static final TeleportInfo NOT_ENOUGH_ENERGY = new TeleportInfo((byte) 4, null, Collections.emptyList());
+    private static final TeleportInfo NO_FRAME = new TeleportInfo(TeleporterStatus.NO_FRAME, null, Collections.emptyList());
+    private static final TeleportInfo NO_DESTINATION = new TeleportInfo(TeleporterStatus.NO_DESTINATION, null, Collections.emptyList());
+    private static final TeleportInfo NOT_ENOUGH_ENERGY = new TeleportInfo(TeleporterStatus.NOT_ENOUGH_ENERGY, null, Collections.emptyList());
     private static final PostDimensionTransition AWARD_ADVANCEMENT = entity -> {
         if (entity instanceof ServerPlayer player) {
             MekanismCriteriaTriggers.TELEPORT.value().trigger(player);
@@ -108,7 +120,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     /**
      * This teleporter's current status.
      */
-    public byte status = 0;
+    public TeleporterStatus status = TeleporterStatus.NO_FREQUENCY;
 
     private final TileComponentChunkLoader<TileEntityTeleporter> chunkLoaderComponent;
 
@@ -183,7 +195,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         TeleporterFrequency freq = getFrequency(FrequencyType.TELEPORTER);
         TeleportInfo teleportInfo = canTeleport(freq);
         status = teleportInfo.status();
-        if (status == 1 && teleDelay == 0 && canFunction()) {
+        if (status.isReady() && teleDelay == 0 && canFunction()) {
             teleport(freq, teleportInfo);
         }
         if (teleDelay == 0 && teleportBounds != null && !didTeleport.isEmpty()) {
@@ -191,7 +203,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         }
 
         boolean prevShouldRender = shouldRender;
-        shouldRender = status == 1 || status > 4;
+        shouldRender = status.isReady();
         EnumColor prevColor = color;
         color = freq == null ? null : freq.getColor();
         if (shouldRender != prevShouldRender) {
@@ -252,7 +264,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         }
         GlobalPos closestCoords = getClosest(frequency);
         if (closestCoords == null || level == null) {
-            return NO_LINK;
+            return NO_DESTINATION;
         }
         boolean sameDimension = level.dimension() == closestCoords.dimension();
         Level targetWorld;
@@ -261,11 +273,11 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         } else {
             MinecraftServer server = level.getServer();
             if (server == null) {//Should not happen
-                return NO_LINK;
+                return NO_DESTINATION;
             }
             targetWorld = server.getLevel(closestCoords.dimension());
             if (targetWorld == null || !server.isLevelEnabled(targetWorld)) {//In theory should not happen
-                return NO_LINK;
+                return NO_DESTINATION;
             }
         }
         List<Entity> toTeleport = getToTeleport(sameDimension, targetWorld);
@@ -282,7 +294,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         if (energyContainer.extract(sum, Action.SIMULATE, AutomationType.INTERNAL) < sum) {
             return NOT_ENOUGH_ENERGY;
         }
-        return new TeleportInfo((byte) 1, closestCoords, toTeleport);
+        return new TeleportInfo(TeleporterStatus.READY, closestCoords, toTeleport);
     }
 
     public BlockPos getTeleporterTargetPos() {
@@ -657,7 +669,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableByte.create(() -> status, value -> status = value));
+        container.track(SyncableEnum.create(TeleporterStatus.BY_ID, TeleporterStatus.NO_FREQUENCY, () -> status, value -> status = value));
     }
 
     @NotNull
@@ -752,10 +764,11 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     @ComputerMethod
     String getStatus() {
         if (hasFrequency()) {
+            //TODO - 1.21.8: Evaluate making it so that these cases get handled automatically with it just being an enum?
             return switch (status) {
-                case 1 -> "ready";
-                case 2 -> "no frame";
-                case 4 -> "needs energy";
+                case READY -> "ready";
+                case NO_FRAME -> "no frame";
+                case NOT_ENOUGH_ENERGY -> "needs energy";
                 default -> "no link";
             };
         }
@@ -763,6 +776,45 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     }
     //End methods IComputerTile
 
-    private record TeleportInfo(byte status, @Nullable GlobalPos closest, List<Entity> toTeleport) {
+    private record TeleportInfo(TeleporterStatus status, @Nullable GlobalPos closest, List<Entity> toTeleport) {
+    }
+
+    public enum TeleporterStatus implements IHasEnumNameTextComponent, StringRepresentable {
+        NO_FREQUENCY(MekanismLang.NO_FREQUENCY, true),
+        NO_FRAME(MekanismLang.TELEPORTER_NO_FRAME, true),
+        NO_DESTINATION(MekanismLang.TELEPORTER_NO_DESTINATION, true),
+        NOT_ENOUGH_ENERGY(MekanismLang.TELEPORTER_NEEDS_ENERGY, true),
+        READY(MekanismLang.TELEPORTER_READY, false);
+
+        public static final Codec<TeleporterStatus> CODEC = StringRepresentable.fromEnum(TeleporterStatus::values);
+        public static final IntFunction<TeleporterStatus> BY_ID = ByIdMap.continuous(TeleporterStatus::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+        public static final StreamCodec<ByteBuf, TeleporterStatus> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, TeleporterStatus::ordinal);
+
+        private final String serializedName;
+        private final boolean isError;
+        private final Component name;
+
+
+        TeleporterStatus(ILangEntry langEntry, boolean isError) {
+            this.serializedName = name().toLowerCase(Locale.ROOT);
+            this.isError = isError;
+            this.name = this.isError ? langEntry.translateColored(EnumColor.DARK_RED) : langEntry.translate(EnumColor.DARK_GREEN);
+        }
+
+        public boolean isReady() {
+            return !isError;
+        }
+
+        @NotNull
+        @Override
+        public Component getTextComponent() {
+            return name;
+        }
+
+        @NotNull
+        @Override
+        public String getSerializedName() {
+            return serializedName;
+        }
     }
 }

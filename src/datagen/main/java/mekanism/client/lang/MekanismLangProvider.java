@@ -1466,7 +1466,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         //Teleporter
         add(MekanismLang.TELEPORTER_READY, "Ready");
         add(MekanismLang.TELEPORTER_NO_FRAME, "No frame");
-        add(MekanismLang.TELEPORTER_NO_LINK, "No link");
+        add(MekanismLang.TELEPORTER_NO_DESTINATION, "No destination");
         add(MekanismLang.TELEPORTER_NEEDS_ENERGY, "Needs energy");
         //Matrix
         add(MekanismLang.MATRIX, "Induction Matrix");

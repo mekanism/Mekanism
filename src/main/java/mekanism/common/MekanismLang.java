@@ -561,7 +561,7 @@ public enum MekanismLang implements ILangEntry {
     //Teleporter
     TELEPORTER_READY("teleporter", "ready"),
     TELEPORTER_NO_FRAME("teleporter", "no_frame"),
-    TELEPORTER_NO_LINK("teleporter", "no_link"),
+    TELEPORTER_NO_DESTINATION("teleporter", "no_destination"),
     TELEPORTER_NEEDS_ENERGY("teleporter", "needs_energy"),
     //Matrix
     MATRIX("matrix", "induction_matrix"),
