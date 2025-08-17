@@ -14,7 +14,6 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
-import mekanism.api.chemical.attribute.ChemicalAttributes;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.chemical.attribute.CooledCoolant;
 import mekanism.api.fluid.IExtendedFluidTank;
@@ -410,19 +409,8 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     }
 
     @Nullable
-    @SuppressWarnings("removal")
     private CooledCoolant getCooledCoolant(ChemicalStack stack) {
-        if (stack.isEmpty()) {
-            return null;
-        }
-        CooledCoolant coolant = stack.getData(IMekanismDataMapTypes.INSTANCE.cooledChemicalCoolant());
-        if (coolant == null) {//TODO - 1.22: Remove this handling of legacy data
-            ChemicalAttributes.CooledCoolant legacyCoolant = stack.getLegacy(ChemicalAttributes.CooledCoolant.class);
-            if (legacyCoolant != null) {
-                return legacyCoolant.asModern();
-            }
-        }
-        return coolant;
+        return stack.isEmpty() ? null : stack.getData(IMekanismDataMapTypes.INSTANCE.cooledChemicalCoolant());
     }
 
     private void handleCoolant() {

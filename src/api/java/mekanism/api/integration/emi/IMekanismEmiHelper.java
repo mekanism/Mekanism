@@ -24,17 +24,6 @@ public interface IMekanismEmiHelper {
     /**
      * Creates an EmiStack of the given size for the given chemical.
      *
-     * @deprecated Use {@link #createEmiStack(Holder, long)} instead
-     */
-    @SuppressWarnings("removal")
-    @Deprecated(forRemoval = true, since = "10.7.11")
-    default EmiStack createEmiStack(Chemical chemical, long size) {
-        return createEmiStack(chemical.getAsHolder(), size);
-    }
-
-    /**
-     * Creates an EmiStack of the given size for the given chemical.
-     *
      * @since 10.7.11
      */
     EmiStack createEmiStack(Holder<Chemical> chemical, long size);

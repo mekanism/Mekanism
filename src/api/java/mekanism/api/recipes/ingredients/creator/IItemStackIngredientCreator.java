@@ -69,6 +69,11 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
         return fromHolder(item, 1);
     }
 
+    @Override
+    default ItemStackIngredient fromHolder(Holder<Item> instance, int amount) {
+        return from(instance.value(), amount);
+    }
+
     /**
      * Creates an Item Stack Ingredient that matches a provided item.
      *
@@ -135,8 +140,6 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
      * @throws NullPointerException     if the given instance is null.
      * @throws IllegalArgumentException if the given instance is empty or an amount smaller than one.
      */
-    @Override
-    @SuppressWarnings("removal")
     default ItemStackIngredient from(Item item, int amount) {//TODO - 1.22: Ensure we don't end up removing this when we remove super
         return from(Ingredient.of(item), amount);
     }
@@ -153,9 +156,7 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
      * not desired, manually create the ingredient via {@link DataComponentIngredient} and call {@link #from(Ingredient)}.
      * @since 10.6.0
      */
-    @Override
-    @SuppressWarnings("removal")
-    default ItemStackIngredient from(int amount, Item... items) {//TODO - 1.22: Ensure we don't end up removing this when we remove super
+    default ItemStackIngredient from(int amount, Item... items) {
         if (items.length == 0) {
             throw new IllegalArgumentException("Attempted to create an ItemStackIngredient with no items.");
         }

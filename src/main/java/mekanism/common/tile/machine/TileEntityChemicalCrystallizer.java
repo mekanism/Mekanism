@@ -91,7 +91,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityProgressMachine<Ch
     @Override
     public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this);
-        builder.addTank(inputTank = BasicChemicalTank.inputModern(MAX_CHEMICAL, this::containsRecipe, recipeCacheListener));
+        builder.addTank(inputTank = BasicChemicalTank.input(MAX_CHEMICAL, this::containsRecipe, recipeCacheListener));
         return builder.build();
     }
 

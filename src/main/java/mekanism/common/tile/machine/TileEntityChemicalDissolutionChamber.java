@@ -1,6 +1,5 @@
 package mekanism.common.tile.machine;
 
-import java.util.Collections;
 import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
@@ -120,7 +119,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
     @Override
     public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this);
-        builder.addTank(injectTank = BasicChemicalTank.inputModern(MAX_CHEMICAL, gas -> containsRecipeBA(inputSlot.getStack(), gas), this::containsRecipeB, recipeCacheListener));
+        builder.addTank(injectTank = BasicChemicalTank.input(MAX_CHEMICAL, gas -> containsRecipeBA(inputSlot.getStack(), gas), this::containsRecipeB, recipeCacheListener));
         builder.addTank(outputTank = BasicChemicalTank.output(MAX_CHEMICAL, recipeCacheUnpauseListener));
         return builder.build();
     }
@@ -236,18 +235,4 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
         return outputTank;
     }
     //End methods IComputerTile
-
-    @Override
-    @SuppressWarnings("removal")
-    @Deprecated(forRemoval = true, since = "10.7.0")
-    public List<IChemicalTank> getLegacyGasTanks() {
-        return Collections.singletonList(injectTank);
-    }
-
-    @Override
-    @SuppressWarnings("removal")
-    @Deprecated(forRemoval = true, since = "10.7.0")
-    public List<IChemicalTank> getLegacySlurryTanks() {
-        return Collections.singletonList(outputTank);
-    }
 }

@@ -10,7 +10,6 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.attribute.ChemicalAttributes;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.chemical.attribute.HeatedCoolant;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
@@ -42,7 +41,6 @@ public record BoilerRecipeViewerRecipe(ResourceLocation id, @Nullable ChemicalSt
     ).apply(instance, (id, superHeatedCoolant, water, steam, cooledCoolant, temperature) ->
           new BoilerRecipeViewerRecipe(id, superHeatedCoolant.orElse(null), water, steam, cooledCoolant, temperature)));
 
-    @SuppressWarnings("removal")
     public static List<BoilerRecipeViewerRecipe> getBoilerRecipes() {
         //Note: The recipes below ignore thermal conductivity and temperature and rounds the amount of coolant
         double waterToSteamHeatNecessary = WATER_AMOUNT * HeatUtils.getWaterThermalEnthalpy() / HeatUtils.getSteamEnergyEfficiency();
@@ -68,21 +66,6 @@ public record BoilerRecipeViewerRecipe(ResourceLocation id, @Nullable ChemicalSt
                   steam, coolant.cool(coolantAmount),
                   HeatUtils.BASE_BOIL_TEMP
             ));
-        }
-        //TODO - 1.22: Remove this handling of legacy attributes
-        //Go through all gases and add each legacy coolant
-        for (Chemical gas : MekanismAPI.CHEMICAL_REGISTRY) {
-            ChemicalAttributes.HeatedCoolant heatedCoolant = gas.getLegacy(ChemicalAttributes.HeatedCoolant.class);
-            if (heatedCoolant != null) {
-                //If it is a cooled coolant add a recipe for it
-                long coolantAmount = Math.round(waterToSteamHeatNecessary / heatedCoolant.getThermalEnthalpy());
-                recipes.add(new BoilerRecipeViewerRecipe(
-                      RecipeViewerUtils.synthetic(gas.toString(), "boiler", Mekanism.MODID),
-                      IngredientCreatorAccess.chemicalStack().from(gas, coolantAmount), water,
-                      steam, heatedCoolant.getCooledChemical().getStack(coolantAmount),
-                      HeatUtils.BASE_BOIL_TEMP
-                ));
-            }
         }
         return recipes;
     }

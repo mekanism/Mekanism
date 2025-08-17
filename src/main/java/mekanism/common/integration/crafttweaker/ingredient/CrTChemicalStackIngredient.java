@@ -31,25 +31,6 @@ public class CrTChemicalStackIngredient {
     }
 
     /**
-     * Creates a {@link ChemicalStackIngredient} that matches a given chemical type and amount.
-     *
-     * @param chemical Chemical type to match
-     * @param amount   Amount needed
-     *
-     * @return A {@link ChemicalStackIngredient} that matches a given chemical and amount.
-     */
-    @SuppressWarnings("removal")
-    @ZenCodeType.StaticExpansionMethod
-    @Deprecated(forRemoval = true, since = "10.7.11")//TODO - 1.22: Replace with method that accepts holders once jared adds holder support in CrT
-    public static ChemicalStackIngredient from(Chemical chemical, long amount) {
-        assertValidAmount(amount);
-        if (chemical.isEmptyType()) {
-            throw new IllegalArgumentException("ChemicalStackIngredients cannot be created from an empty chemical.");
-        }
-        return IngredientCreatorAccess.chemicalStack().from(chemical, amount);
-    }
-
-    /**
      * Creates a {@link ChemicalStackIngredient} that matches a given chemical stack.
      *
      * @param instance Chemical stack to match
@@ -62,21 +43,6 @@ public class CrTChemicalStackIngredient {
             throw new IllegalArgumentException("ChemicalStackIngredients cannot be created from an empty stack.");
         }
         return IngredientCreatorAccess.chemicalStack().from(instance.getImmutableInternal());
-    }
-
-    /**
-     * Creates a {@link ChemicalStackIngredient} that matches the given chemicals and amount.
-     *
-     * @param amount    Amount needed
-     * @param chemicals Chemicals to match
-     *
-     * @return A {@link ChemicalStackIngredient} that matches the given chemicals and amount.
-     */
-    @SuppressWarnings("removal")
-    @ZenCodeType.StaticExpansionMethod
-    @Deprecated(forRemoval = true, since = "10.7.11")//TODO - 1.22: Replace with method that accepts holders once jared adds holder support in CrT
-    public static ChemicalStackIngredient from(long amount, Chemical... chemicals) {
-        return from(amount, Arrays.stream(chemicals).map(Chemical::getAsHolder));
     }
 
     /**
@@ -180,20 +146,6 @@ public class CrTChemicalStackIngredient {
     @ZenCodeType.Method
     public static boolean testType(ChemicalStackIngredient _this, ICrTChemicalStack type) {
         return _this.testType(type.getInternal());
-    }
-
-    /**
-     * Checks if a given chemical has a type match for this {@link ChemicalStackIngredient}. Type matches ignore stack size.
-     *
-     * @param chemical Type to check for a match
-     *
-     * @return {@code true} if the type is supported by this {@link ChemicalStackIngredient}.
-     */
-    @ZenCodeType.Method
-    @SuppressWarnings("removal")
-    @Deprecated(forRemoval = true, since = "10.7.11")//TODO - 1.22: Replace with method that accepts holders once jared adds holder support in CrT
-    public static boolean testType(ChemicalStackIngredient _this, Chemical chemical) {
-        return _this.testType(chemical);
     }
 
     /**

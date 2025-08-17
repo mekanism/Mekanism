@@ -7,7 +7,6 @@ import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.radiation.IRadiationSource;
 import mekanism.common.config.MekanismConfig;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.GlobalPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import org.jetbrains.annotations.NotNull;
@@ -29,12 +28,6 @@ public class RadiationSource implements IRadiationSource {
     @Override
     public BlockPos getPosition() {
         return pos;
-    }
-
-    @SuppressWarnings("removal")//backcompat
-    @Override
-    public GlobalPos getPos() {
-        throw new UnsupportedOperationException();
     }
 
     @Override

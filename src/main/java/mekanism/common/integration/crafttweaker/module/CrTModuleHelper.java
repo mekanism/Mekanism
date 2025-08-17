@@ -98,7 +98,7 @@ public class CrTModuleHelper {
         return IModuleHelper.INSTANCE.getAllTypes(stack);
     }
 
-    @Deprecated(forRemoval = true, since = "10.7.11")
+    //TODO - 1.22: Re-evaluate this, and if we can get CrT to just add native support for holders
     private static Holder<ModuleData<?>> asHolder(ModuleData<?> data) {
         return MekanismAPI.MODULE_REGISTRY.wrapAsHolder(data);
     }

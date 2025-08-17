@@ -19,8 +19,7 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class StackedWasteBarrel extends VariableCapacityChemicalTank {
 
-    @SuppressWarnings("removal")
-    private static final ChemicalAttributeValidator ATTRIBUTE_VALIDATOR = new mekanism.api.chemical.attribute.ChemicalAttributeValidator.ChemicalAttributeValidatorLegacyAdapter() {
+    private static final ChemicalAttributeValidator ATTRIBUTE_VALIDATOR = new ChemicalAttributeValidator() {
         @Override
         public boolean validate(IChemicalAttribute attr) {
             return attr instanceof ChemicalRadioactivity;

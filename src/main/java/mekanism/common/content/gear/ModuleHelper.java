@@ -9,7 +9,6 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import mekanism.api.MekanismIMC;
 import mekanism.api.MekanismIMC.ModuleContainerTarget;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -17,7 +16,6 @@ import mekanism.api.gear.IHUDElement;
 import mekanism.api.gear.IHUDElement.HUDColor;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData;
-import mekanism.api.providers.IModuleDataProvider;
 import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.armor.MekaSuitArmor;
 import mekanism.common.Mekanism;
@@ -89,7 +87,6 @@ public class ModuleHelper implements IModuleHelper {//TODO - 1.22: Evaluate movi
         return moduleContainers;
     }
 
-    @SuppressWarnings("removal")
     private void mapSupportedModules(InterModProcessEvent event, String imcMethod, Item moduleContainer,
           Map<ModuleData<?>, ImmutableSet.Builder<Item>> supportedContainersBuilderMap) {
         ImmutableSet.Builder<ModuleData<?>> supportedModulesBuilder = ImmutableSet.builder();
@@ -114,18 +111,6 @@ public class ModuleHelper implements IModuleHelper {//TODO - 1.22: Evaluate movi
                         break;
                     }
                 }
-            }
-            //TODO - 1.22: Remove these two deprecated branches
-            else if (body instanceof IModuleDataProvider<?> moduleDataProvider) {
-                ModuleData<?> moduleData = moduleDataProvider.getModuleData();
-                supportedModulesBuilder.add(moduleData);
-                logDebugReceivedIMC(imcMethod, message.senderModId(), moduleData);
-            } else if (body instanceof IModuleDataProvider<?>[] providers) {
-                for (IModuleDataProvider<?> moduleDataProvider : providers) {
-                    ModuleData<?> moduleData = moduleDataProvider.getModuleData();
-                    supportedModulesBuilder.add(moduleData);
-                    logDebugReceivedIMC(imcMethod, message.senderModId(), moduleData);
-                }
             } else {
                 Mekanism.logger.warn("Received IMC message for '{}' from mod '{}' with an invalid body.", imcMethod, message.senderModId());
             }
@@ -144,7 +129,7 @@ public class ModuleHelper implements IModuleHelper {//TODO - 1.22: Evaluate movi
     }
 
     @Override
-    public ItemModule createModuleItem(Supplier<Holder<ModuleData<?>>> moduleDataSupplier, Properties properties) {
+    public ItemModule createModuleItem(Holder<ModuleData<?>> moduleDataSupplier, Properties properties) {
         return new ItemModule(moduleDataSupplier, properties);
     }
 

@@ -157,7 +157,7 @@ public class MekanismJEI implements IModPlugin {
               .map(chemical -> new ChemicalStack(chemical, FluidType.BUCKET_VOLUME))
               .toList();
         CHEMICAL_STACK_HELPER.setColorHelper(registry.getColorHelper());
-        registry.register(TYPE_CHEMICAL, types, CHEMICAL_STACK_HELPER, new ChemicalStackRenderer(), Chemical.HOLDER_CODEC.xmap(
+        registry.register(TYPE_CHEMICAL, types, CHEMICAL_STACK_HELPER, new ChemicalStackRenderer(), Chemical.CODEC.xmap(
               chemical -> new ChemicalStack(chemical, FluidType.BUCKET_VOLUME),
               ChemicalStack::getChemicalHolder
         ));

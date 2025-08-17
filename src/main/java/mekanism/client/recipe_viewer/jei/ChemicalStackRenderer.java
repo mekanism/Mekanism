@@ -18,8 +18,6 @@ import mekanism.common.MekanismLang;
 import mekanism.common.util.text.TextUtils;
 import mezz.jei.api.gui.builder.ITooltipBuilder;
 import mezz.jei.api.ingredients.IIngredientRenderer;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
@@ -73,7 +71,7 @@ public class ChemicalStackRenderer implements IIngredientRenderer<ChemicalStack>
 
     @Override
     @SuppressWarnings("removal")
-    @Deprecated(forRemoval = true, since = "19.5.4")
+    @Deprecated(forRemoval = true, since = "JEI version 19.5.4")
     public List<Component> getTooltip(ChemicalStack stack, TooltipFlag tooltipFlag) {
         Holder<Chemical> chemical = stack.getChemicalHolder();
         if (chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {

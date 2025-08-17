@@ -12,11 +12,11 @@ import org.jetbrains.annotations.NotNull;
 
 record ChemicalParticleOptions(Holder<Chemical> chemical) implements ParticleOptions {
 
-    private static final MapCodec<ChemicalParticleOptions> CODEC = Chemical.HOLDER_CODEC.xmap(
+    private static final MapCodec<ChemicalParticleOptions> CODEC = Chemical.CODEC.xmap(
           ChemicalParticleOptions::new,
           ChemicalParticleOptions::chemical
     ).fieldOf(SerializationConstants.CHEMICAL);
-    private static final StreamCodec<RegistryFriendlyByteBuf, ChemicalParticleOptions> STREAM_CODEC = Chemical.HOLDER_STREAM_CODEC.map(
+    private static final StreamCodec<RegistryFriendlyByteBuf, ChemicalParticleOptions> STREAM_CODEC = Chemical.STREAM_CODEC.map(
           ChemicalParticleOptions::new,
           ChemicalParticleOptions::chemical
     );

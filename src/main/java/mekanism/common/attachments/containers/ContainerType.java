@@ -86,44 +86,7 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
 
     public static final ContainerType<IChemicalTank, AttachedChemicals, ComponentBackedChemicalHandler> CHEMICAL = new ContainerType<>(MekanismDataComponents.ATTACHED_CHEMICALS,
           SerializationConstants.CHEMICAL_TANKS, SerializationConstants.TANK, ComponentBackedChemicalHandler::new, Capabilities.CHEMICAL, AttachedChemicals.EMPTY,
-          TileEntityMekanism::getChemicalTanks, TileEntityMekanism::collectChemicalTanks, TileEntityMekanism::applyChemicalTanks, TileEntityMekanism::canHandleChemicals) {
-        @SuppressWarnings("removal")
-        @Override//TODO - 1.22: remove backcompat, incl getLegacyX methods
-        public void readFrom(HolderLookup.Provider provider, CompoundTag tag, TileEntityMekanism tile) {
-            if (tag.contains(getTag(), Tag.TAG_LIST)) {
-                //has already saved with new format
-                super.readFrom(provider, tag, getContainers(tile));
-            } else {
-                if (tag.contains(SerializationConstants.GAS_TANKS)) {
-                    read(provider, tile.getLegacyGasTanks(), tag.getList(SerializationConstants.GAS_TANKS, Tag.TAG_COMPOUND));
-                }
-                if (tag.contains(SerializationConstants.INFUSION_TANKS)) {
-                    read(provider, tile.getLegacyInfuseTanks(), tag.getList(SerializationConstants.INFUSION_TANKS, Tag.TAG_COMPOUND));
-                }
-                if (tag.contains(SerializationConstants.PIGMENT_TANKS)) {
-                    read(provider, tile.getLegacyPigmentTanks(), tag.getList(SerializationConstants.PIGMENT_TANKS, Tag.TAG_COMPOUND));
-                }
-                if (tag.contains(SerializationConstants.SLURRY_TANKS)) {
-                    read(provider, tile.getLegacySlurryTanks(), tag.getList(SerializationConstants.SLURRY_TANKS, Tag.TAG_COMPOUND));
-                }
-            }
-        }
-
-        @SuppressWarnings("removal")
-        @Override//TODO - 1.22: remove backcompat. this one only for NON TileEntityMekanism
-        public void readFrom(HolderLookup.Provider provider, CompoundTag tag, List<IChemicalTank> containers) {
-            if (tag.contains(getTag(), Tag.TAG_LIST)) {
-                //has already saved with new format
-                super.readFrom(provider, tag, containers);
-            } else {
-                //this should be safe, as only one of them should have data per type
-                read(provider, containers, tag.getList(SerializationConstants.GAS_TANKS, Tag.TAG_COMPOUND));
-                read(provider, containers, tag.getList(SerializationConstants.INFUSION_TANKS, Tag.TAG_COMPOUND));
-                read(provider, containers, tag.getList(SerializationConstants.PIGMENT_TANKS, Tag.TAG_COMPOUND));
-                read(provider, containers, tag.getList(SerializationConstants.SLURRY_TANKS, Tag.TAG_COMPOUND));
-            }
-        }
-    };
+          TileEntityMekanism::getChemicalTanks, TileEntityMekanism::collectChemicalTanks, TileEntityMekanism::applyChemicalTanks, TileEntityMekanism::canHandleChemicals);
 
     public static final ContainerType<IHeatCapacitor, AttachedHeat, ComponentBackedHeatHandler> HEAT = new ContainerType<>(MekanismDataComponents.ATTACHED_HEAT,
           SerializationConstants.HEAT_CAPACITORS, SerializationConstants.CONTAINER, ComponentBackedHeatHandler::new, null, AttachedHeat.EMPTY,

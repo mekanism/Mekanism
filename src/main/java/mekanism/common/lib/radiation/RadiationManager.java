@@ -121,36 +121,6 @@ public final class RadiationManager implements IRadiationManager {
         return getRadiationLevel(entity.level(), entity.blockPosition());
     }
 
-    @SuppressWarnings("removal")//backcompat
-    @Deprecated(forRemoval = true, since = "10.7.15")
-    @Override
-    public Table<Chunk3D, GlobalPos, IRadiationSource> getRadiationSources() {
-        HashBasedTable<Chunk3D, GlobalPos, IRadiationSource> table = HashBasedTable.create();
-
-        MinecraftServer currentServer = ServerLifecycleHooks.getCurrentServer();
-        if (currentServer == null) {
-            return table;
-        }
-
-        for (ServerLevel level : currentServer.getAllLevels()) {
-            RadiationLevelData radiationLevelData = getData(level);
-            if (radiationLevelData == null || radiationLevelData.isEmpty()) {
-                continue;
-            }
-            for (RadiationSource value : radiationLevelData.values()) {
-                GlobalPos globalPos = new GlobalPos(level.dimension(), value.getPosition());
-                table.put(new Chunk3D(globalPos), globalPos, new RadiationSource(value.getPosition(), value.getMagnitude()) {
-                    @Override
-                    public GlobalPos getPos() {
-                        return globalPos;
-                    }
-                });
-            }
-        }
-
-        return table;
-    }
-
     @Override
     public List<IRadiationSource> getRadiationSources(Level level, int chunkX, int chunkZ) {
         RadiationLevelData radiationLevelData = getData(level);

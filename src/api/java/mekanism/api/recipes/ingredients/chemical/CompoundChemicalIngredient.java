@@ -41,9 +41,9 @@ public non-sealed class CompoundChemicalIngredient extends ChemicalIngredient {
     }
 
     @Override
-    public final Stream<Holder<Chemical>> generateChemicalHolders() {
+    public final Stream<Holder<Chemical>> generateChemicals() {
         return children().stream()
-              .flatMap(ChemicalIngredient::generateChemicalHolders)
+              .flatMap(ChemicalIngredient::generateChemicals)
               .distinct();//Ensure we don't include the same chemical multiple times. Holder overrides #equals at least within same kind of holder
     }
 

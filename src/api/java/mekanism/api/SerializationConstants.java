@@ -216,8 +216,6 @@ public final class SerializationConstants {
      * @since 10.7.0
      */
     public static final String CHEMICAL_STORED_ALT_2 = "chemical_2";
-    @Deprecated(forRemoval = true, since = "10.7.0")
-    public static final String GAS_TANKS = "gas_tanks";
     public static final String GUI = "gui";
     public static final String HANDLE_SOUND = "handle_sound";
     public static final String HEAT_CAPACITORS = "heat_capacitors";
@@ -232,8 +230,6 @@ public final class SerializationConstants {
     public static final String IDENTITY = "identity";
     public static final String IDLE_DIR = "idle_dir";
     public static final String INDEX = "index";
-    @Deprecated(forRemoval = true, since = "10.7.0")
-    public static final String INFUSION_TANKS = "infusion_tanks";
     public static final String INJECTION_RATE = "injection_rate";
     public static final String INPUT_COLOR = "input_color";
     public static final String INSERT_INTO_FREQUENCY = "insert_into_frequency";
@@ -255,7 +251,6 @@ public final class SerializationConstants {
     public static final String MAX = "max";
     public static final String MAX_BURN_TIME = "max_burn_time";
     public static final String MEK_DATA = "mek_data";
-    public static final String MELTDOWNS = "meltdowns";
     public static final String METHOD_NAME = "methodName";
     public static final String METHODS = "methods";
     public static final String MIN = "min";
@@ -277,8 +272,6 @@ public final class SerializationConstants {
     public static final String PATH_TYPE = "path_type";
     public static final String PERSONAL_STORAGE_ID = "personal_storage_id";
     public static final String PICKUP_DROPS = "pickup_drops";
-    @Deprecated(forRemoval = true, since = "10.7.0")
-    public static final String PIGMENT_TANKS = "pigment_tanks";
     public static final String PLASMA_TEMP = "plasma_temp";
     /**
      * @since 10.7.15
@@ -291,15 +284,12 @@ public final class SerializationConstants {
     public static final String PULL = "pull";
     public static final String PULSE = "pulse";
     public static final String RADIATION = "radiation";
-    public static final String RADIATION_LIST = "radList";
     /**
      * @since 10.7.11
      */
     public static final String RADIOACTIVITY = "radioactivity";
     public static final String RADIUS = "radius";
     public static final String REACTOR_DAMAGE = "reactor_damage";
-    @Deprecated(forRemoval = true, since = "10.7.15")
-    public static final String RECEIVED_COORDS = "received_coords";
     public static final String RECURRING_NODES = "recurring_nodes";
     public static final String REDSTONE = "redstone";
     public static final String REPLACE_TARGET = "replace_target";
@@ -322,8 +312,6 @@ public final class SerializationConstants {
     public static final String SINGLE_ITEM = "single_item";
     public static final String SIZE = "size";
     public static final String SLOT = "slot";
-    @Deprecated(forRemoval = true, since = "10.7.0")
-    public static final String SLURRY_TANKS = "slurry_tanks";
     public static final String SORTING = "sorting";
     public static final String STABILIZER_CHUNKS_TO_LOAD = "stabilizer_chunks_to_load";
     public static final String STATE = "state";

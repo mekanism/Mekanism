@@ -3,6 +3,7 @@ package mekanism.common.registries;
 import java.util.EnumMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalBuilder;
 import mekanism.api.text.EnumColor;
@@ -21,6 +22,7 @@ public class MekanismChemicals {
 
     public static final ChemicalDeferredRegister CHEMICALS = new ChemicalDeferredRegister(Mekanism.MODID);
 
+    public static final DeferredChemical<Chemical> EMPTY = CHEMICALS.register(MekanismAPI.EMPTY_CHEMICAL_KEY.location().getPath(), () -> new Chemical(ChemicalBuilder.builder()));
     public static final DeferredChemical<Chemical> BIO = CHEMICALS.register("bio", Mekanism.rl("infuse_type/bio"), 0x5A4630);
     public static final DeferredChemical<Chemical> FUNGI = CHEMICALS.register("fungi", Mekanism.rl("infuse_type/fungi"), 0x74656A);
     public static final DeferredChemical<Chemical> TIN = CHEMICALS.registerInfuse("tin", 0xCCCCD9);

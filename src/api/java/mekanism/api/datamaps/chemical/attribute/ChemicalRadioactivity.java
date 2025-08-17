@@ -6,7 +6,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.List;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializationConstants;
-import mekanism.api.chemical.attribute.ChemicalAttributes;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
@@ -15,7 +14,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.TooltipFlag;
-import org.jetbrains.annotations.ApiStatus.Internal;
 
 /**
  * A {@link MekanismAPI#CHEMICAL_REGISTRY chemical} data map that allows defining radioactivity values for a chemical. If the radiation manager is enabled, this attribute
@@ -70,12 +68,5 @@ public record ChemicalRadioactivity(double radioactivity) implements IChemicalAt
     public boolean needsValidation() {
         //This attribute only actually needs validation if radiation is enabled
         return IRadiationManager.INSTANCE.isRadiationEnabled();
-    }
-
-    @Internal
-    @Override
-    @SuppressWarnings("removal")
-    public ChemicalAttributes.Radiation toLegacyAttribute() {
-        return new ChemicalAttributes.Radiation(this);
     }
 }

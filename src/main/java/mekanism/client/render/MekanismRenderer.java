@@ -233,12 +233,10 @@ public class MekanismRenderer {
         return chemical.value().getTint();
     }
 
-    @SuppressWarnings("removal")
     public static int getColorARGB(@NotNull Holder<Chemical> chemical, float scale) {
         if (chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
             return -1;
-        } else if (chemical.is(MekanismAPITags.Chemicals.GASEOUS) || chemical.value().isGaseousLegacy()) {
-            //TODO - 1.22: Remove the legacy gaseous check
+        } else if (chemical.is(MekanismAPITags.Chemicals.GASEOUS)) {
             return getColorARGB(getTint(chemical), Math.min(1, scale + 0.2F));
         }
         return FastColor.ARGB32.opaque(getTint(chemical));

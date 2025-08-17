@@ -258,7 +258,7 @@ public class ChemicalNetwork extends DynamicBufferedNetwork<IChemicalHandler, Ch
         if (!chemicalTank.isTypeEqual(lastChemical)) {
             //If the chemical type does not match update it, and mark that we need an update
             if (!chemicalTank.isEmpty()) {
-                lastChemical = chemicalTank.getTypeHolder();
+                lastChemical = chemicalTank.getType();
             }
             needsUpdate = true;
         }

@@ -10,7 +10,6 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.attribute.ChemicalAttributes;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.chemical.attribute.CooledCoolant;
 import mekanism.api.math.MathUtils;
@@ -46,7 +45,6 @@ public record FissionRecipeViewerRecipe(ResourceLocation id, @Nullable ChemicalS
         return IngredientCreatorAccess.fluid().from(FluidTags.WATER, MathUtils.clampToInt(outputCoolant().getAmount()));
     }
 
-    @SuppressWarnings("removal")
     public static List<FissionRecipeViewerRecipe> getFissionRecipes() {
         //Note: The recipes below ignore thermal conductivity and just take enthalpy into account and it rounds the amount of coolant
         //TODO: Eventually we may want to try and improve on that but for now this should be fine
@@ -70,22 +68,6 @@ public record FissionRecipeViewerRecipe(ResourceLocation id, @Nullable ChemicalS
                   IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.FISSILE_FUEL, 1),
                   coolant.heat(amount), MekanismChemicals.NUCLEAR_WASTE.asStack(1)
             ));
-        }
-        //TODO - 1.22: Remove this handling of legacy attributes
-        //Go through all gases and add each legacy coolant
-        for (Chemical chemical : MekanismAPI.CHEMICAL_REGISTRY) {
-            ChemicalAttributes.CooledCoolant cooledCoolant = chemical.getLegacy(ChemicalAttributes.CooledCoolant.class);
-            if (cooledCoolant != null) {
-                //If it is a cooled coolant add a recipe for it
-                Chemical heatedCoolant = cooledCoolant.getHeatedChemical();
-                long amount = Math.round(energyPerFuel / cooledCoolant.getThermalEnthalpy());
-                recipes.add(new FissionRecipeViewerRecipe(
-                      RecipeViewerUtils.synthetic(chemical.toString(), "fission", MekanismGenerators.MODID),
-                      IngredientCreatorAccess.chemicalStack().from(chemical, amount),
-                      IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.FISSILE_FUEL, 1),
-                      heatedCoolant.getStack(amount), MekanismChemicals.NUCLEAR_WASTE.asStack(1)
-                ));
-            }
         }
         return recipes;
     }

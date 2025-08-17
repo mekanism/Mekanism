@@ -128,7 +128,6 @@ import net.neoforged.neoforge.event.TagsUpdatedEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
-import net.neoforged.neoforge.registries.RegisterEvent;
 import net.neoforged.neoforge.registries.datamaps.DataMapsUpdatedEvent;
 import org.slf4j.Logger;
 
@@ -227,7 +226,6 @@ public class Mekanism {
     }
 
     private void addRegistrationListeners(IEventBus modEventBus) {
-        modEventBus.addListener(this::registerEventListener);
         modEventBus.addListener(this::registerRegistries);
 
         MekanismItems.ITEMS.register(modEventBus);
@@ -266,12 +264,6 @@ public class Mekanism {
         event.register(MekanismAPI.CHEMICAL_INGREDIENT_TYPES);
         event.register(MekanismAPI.MODULE_REGISTRY);
         event.register(MekanismAPI.ROBIT_SKIN_SERIALIZER_REGISTRY);
-    }
-
-    @SuppressWarnings("removal")
-    private void registerEventListener(RegisterEvent event) {
-        //Register the empty chemical
-        event.register(MekanismAPI.CHEMICAL_REGISTRY_NAME, MekanismAPI.EMPTY_CHEMICAL_KEY.location(), () -> MekanismAPI.EMPTY_CHEMICAL);
     }
 
     public static ResourceLocation rl(String path) {

@@ -32,10 +32,8 @@ public class ChemicalRenderData extends RenderData {
     }
 
     @Override
-    @SuppressWarnings("removal")
     public boolean isGaseous() {
-        //TODO - 1.22: Remove the legacy check
-        return chemical.is(MekanismAPITags.Chemicals.GASEOUS) || chemical.value().isGaseousLegacy();
+        return chemical.is(MekanismAPITags.Chemicals.GASEOUS);
     }
 
     @Override

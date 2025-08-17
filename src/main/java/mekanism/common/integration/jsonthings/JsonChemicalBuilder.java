@@ -53,26 +53,6 @@ public final class JsonChemicalBuilder extends BaseBuilder<Chemical, JsonChemica
     }
 
     /**
-     * Sets the tag that represents the ore that goes with this {@link Chemical}.
-     *
-     * @param oreTag {@link ResourceLocation} of the item tag representing the ore.
-     */
-    @SuppressWarnings("removal")
-    @Deprecated(forRemoval = true, since = "10.7.11")
-    public JsonChemicalBuilder ore(ResourceLocation oreTag) {
-        return baseData(builder -> builder.ore(oreTag));
-    }
-
-    /**
-     * Set this chemical should render as a gas. Omit to leave as fluid-like
-     */
-    @SuppressWarnings("removal")
-    @Deprecated(forRemoval = true, since = "10.7.11")
-    public JsonChemicalBuilder gaseous() {
-        return baseData(ChemicalBuilder::gaseous);
-    }
-
-    /**
      * Sets the tint to apply to this chemical when rendering.
      *
      * @param tint Color in RRGGBB format
@@ -90,15 +70,5 @@ public final class JsonChemicalBuilder extends BaseBuilder<Chemical, JsonChemica
     public JsonChemicalBuilder colorRepresentation(int color) {
         colorRepresentation = color;
         return this;
-    }
-
-    /**
-     * Adds a {@link mekanism.api.chemical.attribute.ChemicalAttribute} to the set of attributes this chemical has.
-     *
-     * @param attribute Attribute to add.
-     */
-    @SuppressWarnings("removal")
-    public JsonChemicalBuilder with(mekanism.api.chemical.attribute.ChemicalAttribute attribute) {
-        return baseData(builder -> builder.with(attribute));
     }
 }

@@ -29,11 +29,11 @@ import xfacthd.framedblocks.api.util.ConfigView;
 
 final class ChemicalCamoContainerFactory extends CamoContainerFactory<ChemicalCamoContainer> {
 
-    private static final MapCodec<ChemicalCamoContainer> CODEC = Chemical.HOLDER_CODEC.xmap(
+    private static final MapCodec<ChemicalCamoContainer> CODEC = Chemical.CODEC.xmap(
           ChemicalCamoContainer::new,
           ChemicalCamoContainer::getChemicalHolder
     ).fieldOf(SerializationConstants.CHEMICAL);
-    private static final StreamCodec<RegistryFriendlyByteBuf, ChemicalCamoContainer> STREAM_CODEC = Chemical.HOLDER_STREAM_CODEC.map(
+    private static final StreamCodec<RegistryFriendlyByteBuf, ChemicalCamoContainer> STREAM_CODEC = Chemical.STREAM_CODEC.map(
           ChemicalCamoContainer::new,
           ChemicalCamoContainer::getChemicalHolder
     );

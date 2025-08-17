@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.SequencedSet;
 import java.util.Set;
 import java.util.stream.Collectors;
-import mekanism.api.MekanismAPITags;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
@@ -36,7 +35,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Item.TooltipContext;
@@ -167,13 +165,6 @@ public class RecipeViewerUtils {
             ChemicalSolidTag tag = chemicalStack.getData(IMekanismDataMapTypes.INSTANCE.chemicalSolidTag());
             if (tag != null) {
                 tag.lookupTag().ifPresent(tags::add);
-            }
-            //TODO - 1.22: Remove this legacy branch
-            else if (!chemicalStack.is(MekanismAPITags.Chemicals.DIRTY)) {
-                @SuppressWarnings("removal") TagKey<Item> oreTag = chemicalStack.getChemical().getOreTag();
-                if (oreTag != null) {
-                    BuiltInRegistries.ITEM.getTag(oreTag).ifPresent(tags::add);
-                }
             }
         }
         if (tags.size() == 1) {

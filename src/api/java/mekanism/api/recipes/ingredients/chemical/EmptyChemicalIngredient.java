@@ -32,7 +32,7 @@ public final class EmptyChemicalIngredient extends ChemicalIngredient {
     }
 
     @Override
-    public Stream<Holder<Chemical>> generateChemicalHolders() {
+    public Stream<Holder<Chemical>> generateChemicals() {
         return Stream.empty();
     }
 

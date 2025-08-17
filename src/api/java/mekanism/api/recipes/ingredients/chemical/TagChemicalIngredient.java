@@ -44,7 +44,7 @@ public non-sealed class TagChemicalIngredient extends ChemicalIngredient {
     }
 
     @Override
-    public final Stream<Holder<Chemical>> generateChemicalHolders() {
+    public final Stream<Holder<Chemical>> generateChemicals() {
         return MekanismAPI.CHEMICAL_REGISTRY.getTag(tag())
               .stream()
               .flatMap(HolderSet::stream)

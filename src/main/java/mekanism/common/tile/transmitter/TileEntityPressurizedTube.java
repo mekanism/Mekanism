@@ -97,7 +97,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
         if (getTransmitter().hasTransmitterNetwork()) {
             ChemicalNetwork network = getTransmitter().getTransmitterNetwork();
             if (!network.lastChemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
-                DataResult<Tag> encoded = Chemical.HOLDER_CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), network.lastChemical);
+                DataResult<Tag> encoded = Chemical.CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), network.lastChemical);
                 if (encoded.isSuccess()) {
                     updateTag.put(SerializationConstants.CHEMICAL, encoded.getOrThrow());
                 } else {

@@ -7,7 +7,6 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.attribute.ChemicalAttributes;
 import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ITooltipHelper;
@@ -16,7 +15,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.TooltipFlag;
-import org.jetbrains.annotations.ApiStatus.Internal;
 
 /**
  * A {@link MekanismAPI#CHEMICAL_REGISTRY chemical} data map that allows defining fuel values for a chemical.
@@ -80,12 +78,5 @@ public record HeatedCoolant(Holder<Chemical> otherVariant, double thermalEnthalp
     public void collectTooltips(TooltipContext context, List<Component> tooltips, TooltipFlag tooltipFlag) {
         IChemicalCoolant.super.collectTooltips(context, tooltips, tooltipFlag);
         tooltips.add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_TEMPERATURE.translateColored(EnumColor.GRAY, EnumColor.INDIGO, ITooltipHelper.INSTANCE.getTemperatureDisplayShort(temperature)));
-    }
-
-    @Internal
-    @Override
-    @SuppressWarnings("removal")
-    public ChemicalAttributes.HeatedCoolant toLegacyAttribute() {
-        return new ChemicalAttributes.HeatedCoolant(this);
     }
 }

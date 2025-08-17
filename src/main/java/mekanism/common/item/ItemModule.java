@@ -2,7 +2,6 @@ package mekanism.common.item;
 
 import java.util.List;
 import java.util.Set;
-import java.util.function.Supplier;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.text.EnumColor;
@@ -20,21 +19,20 @@ import org.jetbrains.annotations.NotNull;
 
 public class ItemModule extends Item implements IModuleItem {
 
-    private final Supplier<Holder<ModuleData<?>>> moduleDataSupplier;
+    private final Holder<ModuleData<?>> moduleData;
 
-    public ItemModule(Supplier<Holder<ModuleData<?>>> moduleDataSupplier, Properties properties) {
+    public ItemModule(Holder<ModuleData<?>> moduleData, Properties properties) {
         super(properties);
-        this.moduleDataSupplier = moduleDataSupplier;
+        this.moduleData = moduleData;
     }
 
     @Override
     public Holder<ModuleData<?>> getModuleData() {
-        return moduleDataSupplier.get();
+        return moduleData;
     }
 
     @Override
     public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-        Holder<ModuleData<?>> moduleData = getModuleData();
         if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.detailsKey)) {
             tooltip.add(MekanismLang.MODULE_SUPPORTED.translateColored(EnumColor.BRIGHT_GREEN));
             for (Item item : IModuleHelper.INSTANCE.getSupportedItems(moduleData)) {
@@ -58,6 +56,6 @@ public class ItemModule extends Item implements IModuleItem {
     @NotNull
     @Override
     public String getDescriptionId() {
-        return getModuleData().value().getTranslationKey();
+        return moduleData.value().getTranslationKey();
     }
 }

@@ -1,7 +1,6 @@
 package mekanism.api.radiation;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.GlobalPos;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -16,17 +15,6 @@ public interface IRadiationSource {
      */
     @NotNull
     BlockPos getPosition();
-
-    /**
-     * Gets the location of this {@link IRadiationSource}.
-     * <p>
-     * Only available when retrieved via {@link IRadiationManager#getRadiationSources()}
-     *
-     * @throws UnsupportedOperationException when retrieved via non-deprecated methods
-     * @deprecated Replace with {@link #getPosition()}
-     */
-    @Deprecated(forRemoval = true, since = "10.7.15")
-    GlobalPos getPos();
 
     /**
      * Get the radiation level (in Sv/h) of this {@link IRadiationSource}.

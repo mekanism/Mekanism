@@ -6,7 +6,6 @@ import java.util.List;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializationConstants;
 import mekanism.api.SerializerHelper;
-import mekanism.api.chemical.attribute.ChemicalAttributes;
 import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ITooltipHelper;
@@ -15,7 +14,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.TooltipFlag;
-import org.jetbrains.annotations.ApiStatus.Internal;
 
 /**
  * A {@link MekanismAPI#CHEMICAL_REGISTRY chemical} data map that allows defining fuel values for a chemical.
@@ -69,12 +67,5 @@ public record ChemicalFuel(int maxBurnPerTick, long energyPerTick) implements IC
 
     public long getMaxJoulesPerTick() {
         return maxBurnPerTick() * energyPerTick();
-    }
-
-    @Internal
-    @Override
-    @SuppressWarnings("removal")
-    public ChemicalAttributes.Fuel toLegacyAttribute() {
-        return new ChemicalAttributes.Fuel(this);
     }
 }

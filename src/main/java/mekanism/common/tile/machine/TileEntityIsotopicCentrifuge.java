@@ -107,7 +107,7 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<Chemic
     public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this);
         //Allow extracting out of the input gas tank if it isn't external OR the output tank is empty AND the input is radioactive
-        builder.addTank(inputTank = BasicChemicalTank.createModern(MAX_GAS, ChemicalTankHelper.radioactiveInputTankPredicate(() -> outputTank),
+        builder.addTank(inputTank = BasicChemicalTank.create(MAX_GAS, ChemicalTankHelper.radioactiveInputTankPredicate(() -> outputTank),
               ConstantPredicates.alwaysTrueBi(), this::containsRecipe, ChemicalAttributeValidator.ALWAYS_ALLOW, recipeCacheListener));
         builder.addTank(outputTank = BasicChemicalTank.output(MAX_GAS, recipeCacheUnpauseListener));
         return builder.build();

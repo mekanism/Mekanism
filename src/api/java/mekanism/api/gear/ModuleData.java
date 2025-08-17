@@ -21,10 +21,13 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.gear.config.ModuleBooleanConfig;
 import mekanism.api.gear.config.ModuleConfig;
-import mekanism.api.providers.IItemProvider;
+import mekanism.api.text.IHasTextComponent;
+import mekanism.api.text.IHasTranslationKey;
+import mekanism.api.text.TextComponentUtil;
 import net.minecraft.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
@@ -34,14 +37,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-@SuppressWarnings("removal")
-public class ModuleData<MODULE extends ICustomModule<MODULE>> implements mekanism.api.providers.IModuleDataProvider<MODULE> {
+public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IHasTranslationKey, IHasTextComponent {
 
     private final Function<@NotNull IModule<MODULE>, @NotNull MODULE> constructor;
     private final Int2ObjectMap<ConstructedConfigData> configData;
-    @Deprecated(forRemoval = true, since = "10.7.11")
-    private final IItemProvider itemProvider;
-    @Nullable//TODO - 1.22: Make this nonnull
     private final Holder<Item> itemHolder;
     private final int maxStackSize;
     private final int exclusive;
@@ -57,7 +56,6 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements mekanis
     public ModuleData(ModuleDataBuilder<MODULE> builder) {
         this.constructor = builder.constructor;
         this.itemHolder = builder.itemHolder;
-        this.itemProvider = builder.itemProvider;
         this.maxStackSize = builder.maxStackSize;
         this.exclusive = builder.exclusive;
         this.noDisable = builder.noDisable;
@@ -82,23 +80,6 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements mekanis
         }
     }
 
-    @NotNull
-    @Override
-    public final ModuleData<MODULE> getModuleData() {
-        return this;
-    }
-
-    /**
-     * Gets the provider for the item that this module type corresponds to and is used in the Modification Station to install this module type.
-     *
-     * @deprecated Use {@link #getItemHolder()} instead
-     */
-    @NotNull
-    @Deprecated(forRemoval = true, since = "10.7.11")
-    public final IItemProvider getItemProvider() {
-        return itemProvider;
-    }
-
     /**
      * Gets the holder for the item that this module type corresponds to and is used in the Modification Station to install this module type.
      *
@@ -106,7 +87,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements mekanis
      */
     @NotNull
     public final Holder<Item> getItemHolder() {
-        return itemHolder == null ? itemProvider.asItem().builtInRegistryHolder() : itemHolder;
+        return itemHolder;
     }
 
     /**
@@ -234,6 +215,11 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements mekanis
         return translationKey;
     }
 
+    @Override
+    public Component getTextComponent() {
+        return TextComponentUtil.translate(getTranslationKey());
+    }
+
     /**
      * Gets the translation key for the description of this module type.
      */
@@ -320,21 +306,6 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements mekanis
          * Helper creator for creating a module that has no special implementation details and is only used mainly as a marker for if it is installed and how many are
          * installed.
          *
-         * @param itemProvider Provider for the item that this module corresponds to and is used in the Modification Station to install this module.
-         *
-         * @deprecated Use {@link #marker(Holder)} instead
-         */
-        @SuppressWarnings({"rawtypes", "unchecked"})
-        @Deprecated(forRemoval = true, since = "10.7.11")
-        public static ModuleDataBuilder<?> marker(IItemProvider itemProvider) {
-            //Note: We don't use customInstanced, so that we have the same instance between all our marker modules
-            return new ModuleDataBuilder(MARKER_MODULE_SUPPLIER, itemProvider, true);
-        }
-
-        /**
-         * Helper creator for creating a module that has no special implementation details and is only used mainly as a marker for if it is installed and how many are
-         * installed.
-         *
          * @param item Holder for the item that this module corresponds to and is used in the Modification Station to install this module.
          *
          * @since 10.7.11
@@ -343,24 +314,6 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements mekanis
         public static ModuleDataBuilder<?> marker(Holder<Item> item) {
             //Note: We don't use customInstanced, so that we have the same instance between all our marker modules
             return new ModuleDataBuilder(MARKER_MODULE_SUPPLIER, item, true);
-        }
-
-        /**
-         * Helper creator for creating a custom module. The given module supports no custom config options, and the returned instance should be immutable, and will be
-         * re-used for every instance of this module.
-         *
-         * @param customModule Constructor/factory for the custom module this data is for.
-         * @param itemProvider Provider for the item that this module corresponds to and is used in the Modification Station to install this module.
-         *
-         * @since 10.6.0
-         *
-         * @deprecated Use {@link #customInstanced(Supplier, Holder)} instead
-         */
-        @Deprecated(forRemoval = true, since = "10.7.11")
-        public static <MODULE extends ICustomModule<MODULE>> ModuleDataBuilder<MODULE> customInstanced(Supplier<@NotNull MODULE> customModule, IItemProvider itemProvider) {
-            MODULE customModuleInstance = customModule.get();
-            Function<IModule<MODULE>, MODULE> function = module -> customModuleInstance;
-            return new ModuleDataBuilder<>(function, itemProvider, true);
         }
 
         /**
@@ -385,25 +338,6 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements mekanis
          * the same module instance.
          *
          * @param customModule Constructor/factory for the custom module this data is for.
-         * @param itemProvider Provider for the item that this module corresponds to and is used in the Modification Station to install this module.
-         *
-         * @since 10.6.0
-         *
-         * @deprecated Use {@link #custom(Function, Holder)} instead
-         */
-        @Deprecated(forRemoval = true, since = "10.7.11")
-        public static <MODULE extends ICustomModule<MODULE>> ModuleDataBuilder<MODULE> custom(Function<IModule<MODULE>, @NotNull MODULE> customModule,
-              IItemProvider itemProvider) {
-            return new ModuleDataBuilder<>(customModule, itemProvider, false);
-        }
-
-        /**
-         * Helper creator for creating a custom module. The given module constructor should return an immutable instance for the custom module that is used to store any
-         * custom config options. It is safe to retrieve and locally store the config values in this instance, as the constructor will be called again if any config
-         * values change. If the module does not use any config values besides the builtin three (enabled, handles mode change, render hud), it is safe to always return
-         * the same module instance.
-         *
-         * @param customModule Constructor/factory for the custom module this data is for.
          * @param item         Holder for the item that this module corresponds to and is used in the Modification Station to install this module.
          *
          * @since 10.7.11
@@ -414,8 +348,6 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements mekanis
 
         private final Int2ObjectMap<ConfigData> configData = new Int2ObjectOpenHashMap<>();
         private final Function<@NotNull IModule<MODULE>, @NotNull MODULE> constructor;
-        private final IItemProvider itemProvider;
-        @Nullable//TODO - 1.22: Make this nonnull
         private final Holder<Item> itemHolder;
         private final boolean isInstanced;
         private int maxStackSize = 1;
@@ -429,14 +361,6 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements mekanis
         private ModuleDataBuilder(Function<@NotNull IModule<MODULE>, @NotNull MODULE> constructor, Holder<Item> item, boolean isInstanced) {
             this.constructor = Objects.requireNonNull(constructor, "Custom module constructor cannot be null.");
             this.itemHolder = Objects.requireNonNull(item, "Item holder cannot be null.");
-            this.itemProvider = this.itemHolder::value;
-            this.isInstanced = isInstanced;
-        }
-
-        private ModuleDataBuilder(Function<@NotNull IModule<MODULE>, @NotNull MODULE> constructor, IItemProvider itemProvider, boolean isInstanced) {
-            this.constructor = Objects.requireNonNull(constructor, "Custom module constructor cannot be null.");
-            this.itemProvider = Objects.requireNonNull(itemProvider, "Item provider cannot be null.");
-            this.itemHolder = null;
             this.isInstanced = isInstanced;
         }
 

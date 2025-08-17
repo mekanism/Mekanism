@@ -22,11 +22,9 @@ import net.neoforged.neoforge.common.crafting.ICustomIngredient;
  * @since 10.6.0
  */
 @NothingNullByDefault
-public abstract sealed class ChemicalIngredient implements Predicate<Chemical> permits CompoundChemicalIngredient, DifferenceChemicalIngredient,
+public abstract sealed class ChemicalIngredient implements Predicate<Holder<Chemical>> permits CompoundChemicalIngredient, DifferenceChemicalIngredient,
       EmptyChemicalIngredient, IntersectionChemicalIngredient, SingleChemicalIngredient, TagChemicalIngredient {
 
-    @Nullable
-    private List<Chemical> chemicals;
     @Nullable
     private List<Holder<Chemical>> chemicalHolders;
 
@@ -37,24 +35,9 @@ public abstract sealed class ChemicalIngredient implements Predicate<Chemical> p
      *
      * @return {@code true} if the chemical matches, {@code false} otherwise
      *
-     * @deprecated Use {@link #test(Holder)} instead
-     */
-    @Override
-    @SuppressWarnings("removal")
-    @Deprecated(forRemoval = true, since = "10.7.11")
-    public final boolean test(Chemical chemical) {//TODO - 1.22: Remove this method and make ChemicalIngredient be a predicate of Holder<Chemical>
-        return test(chemical.getAsHolder());
-    }
-
-    /**
-     * Checks if a given chemical matches this ingredient.
-     *
-     * @param chemical the chemical to test
-     *
-     * @return {@code true} if the chemical matches, {@code false} otherwise
-     *
      * @since 10.7.11
      */
+    @Override
     public abstract boolean test(Holder<Chemical> chemical);
 
     /**
@@ -69,43 +52,10 @@ public abstract sealed class ChemicalIngredient implements Predicate<Chemical> p
      * @return a stream of all chemicals this ingredient accepts.
      *
      * @see ICustomIngredient#getItems()
-     */
-    @Deprecated(forRemoval = true, since = "10.7.11")
-    public final Stream<Chemical> generateChemicals() {
-        return generateChemicalHolders().map(Holder::value);
-    }
-
-    /**
-     * Generates a stream of all chemicals this ingredient matches against.
-     * <p>
-     * Unlike fluid and item ingredients, as chemicals have no data components, this should be exhaustive and perfectly accurate.
-     * <ul>
-     * <li>It is important that the returned chemicals correspond exactly to all the accepted {@link Chemical}s.</li>
-     * <li>At least one chemical should always be returned, otherwise the ingredient may be considered {@linkplain #hasNoChemicals() accidentally empty}.</li>
-     * </ul>
-     *
-     * @return a stream of all chemicals this ingredient accepts.
-     *
-     * @see ICustomIngredient#getItems()
      *
      * @since 10.7.11
      */
-    public abstract Stream<Holder<Chemical>> generateChemicalHolders();//TODO - 1.22: Rename this to generateChemicals
-
-    /**
-     * {@return a list of chemicals this ingredient accepts}
-     *
-     * @see #generateChemicals()
-     *
-     * @deprecated Use {@link #getChemicalHolders()} instead
-     */
-    @Deprecated(forRemoval = true, since = "10.7.11")
-    public final List<Chemical> getChemicals() {
-        if (chemicals == null) {
-            chemicals = generateChemicals().toList();
-        }
-        return chemicals;
-    }
+    public abstract Stream<Holder<Chemical>> generateChemicals();
 
     /**
      * {@return a list of chemicals this ingredient accepts}
@@ -116,7 +66,7 @@ public abstract sealed class ChemicalIngredient implements Predicate<Chemical> p
      */
     public final List<Holder<Chemical>> getChemicalHolders() {
         if (chemicalHolders == null) {
-            chemicalHolders = generateChemicalHolders().toList();
+            chemicalHolders = generateChemicals().toList();
         }
         return chemicalHolders;
     }

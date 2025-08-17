@@ -42,18 +42,6 @@ public interface IEnergyConversion {
     }
 
     /**
-     * Helper that converts Joules to the energy of the type represented by this conversion and returns it as a long.
-     *
-     * @param joules Joules.
-     *
-     * @return Amount of energy clamped to a long. (Units matching this conversion)
-     */
-    @Deprecated(forRemoval = true, since = "10.6.6")
-    default long convertToAsLong(long joules) {
-        return convertTo(joules);
-    }
-
-    /**
      * Converts Joules to the energy of the type represented by this conversion.
      *
      * @param joules Joules.

@@ -1316,27 +1316,6 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
         return hasNonEmpty ? new AttachedChemicals(stacks) : null;
     }
-
-    //TODO - 1.22: remove backcompat
-    @Deprecated(forRemoval = true, since = "10.7.0")
-    public List<IChemicalTank> getLegacyGasTanks() {
-        return getChemicalTanks(null);
-    }
-
-    @Deprecated(forRemoval = true, since = "10.7.0")
-    public List<IChemicalTank> getLegacyInfuseTanks() {
-        return getChemicalTanks(null);
-    }
-
-    @Deprecated(forRemoval = true, since = "10.7.0")
-    public List<IChemicalTank> getLegacyPigmentTanks() {
-        return getChemicalTanks(null);
-    }
-
-    @Deprecated(forRemoval = true, since = "10.7.0")
-    public List<IChemicalTank> getLegacySlurryTanks() {
-        return getChemicalTanks(null);
-    }
     //End methods IMekanismChemicalHandler
 
     //Methods for implementing IMekanismFluidHandler

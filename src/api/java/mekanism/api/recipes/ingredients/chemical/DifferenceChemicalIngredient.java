@@ -39,10 +39,10 @@ public non-sealed class DifferenceChemicalIngredient extends ChemicalIngredient 
     }
 
     @Override
-    public final Stream<Holder<Chemical>> generateChemicalHolders() {
+    public final Stream<Holder<Chemical>> generateChemicals() {
         //return base().generateChemicalHolders().filter(subtracted().negate());
         //TODO - 1.22: Use the above
-        return base().generateChemicalHolders().filter(holder -> !subtracted().test(holder));
+        return base().generateChemicals().filter(holder -> !subtracted().test(holder));
     }
 
     @Override

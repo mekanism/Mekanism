@@ -4,7 +4,6 @@ import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.chemical.ChemicalIngredient;
 import net.minecraft.core.Holder;
@@ -20,67 +19,14 @@ public interface IChemicalStackIngredientCreator extends IIngredientCreator<Chem
     }
 
     @Override
-    @SuppressWarnings("removal")
-    @Deprecated(forRemoval = true, since = "10.7.11")
-    default ChemicalStackIngredient from(Chemical instance, int amount) {
-        return fromHolder(instance.getAsHolder(), amount);
-    }
-
-    @Override
     default ChemicalStackIngredient fromHolder(Holder<Chemical> instance, int amount) {
         return fromHolder(instance, (long) amount);
-    }
-
-    /**
-     * Creates a Chemical Stack Ingredient that matches a provided chemical and amount.
-     *
-     * @param provider Chemical provider that provides the chemical to match.
-     * @param amount   Amount needed.
-     *
-     * @throws NullPointerException     if the given provider is null.
-     * @throws IllegalArgumentException if the given provider is empty or an amount smaller than one.
-     *
-     * @deprecated Use {@link #fromHolder(Holder, long)} instead
-     */
-    @SuppressWarnings("removal")
-    @Deprecated(forRemoval = true, since = "10.7.11")
-    default ChemicalStackIngredient from(IChemicalProvider provider, long amount) {
-        Objects.requireNonNull(provider, "ChemicalStackIngredients cannot be created from a null chemical provider.");
-        return from(IngredientCreatorAccess.chemical().of(provider), amount);
-    }
-
-    @Override
-    @SuppressWarnings("removal")
-    @Deprecated(forRemoval = true, since = "10.7.11")
-    default ChemicalStackIngredient from(int amount, Chemical... chemicals) {
-        return from((long) amount, chemicals);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     default ChemicalStackIngredient fromHolders(int amount, Holder<Chemical>... holders) {
         return fromHolders((long) amount, holders);
-    }
-
-    /**
-     * Creates a Chemical Stack Ingredient that matches any of the provided chemicals.
-     *
-     * @param amount    Amount needed.
-     * @param chemicals Chemicals to match.
-     *
-     * @throws NullPointerException     if the given instance is null.
-     * @throws IllegalArgumentException if the given instance is empty or an amount smaller than one; or if no chemicals are passed.
-     * @since 10.6.0
-     *
-     * @deprecated Use {@link #fromHolders(long, Holder[])} instead
-     */
-    @SuppressWarnings("removal")
-    @Deprecated(forRemoval = true, since = "10.7.11")
-    default ChemicalStackIngredient from(long amount, IChemicalProvider... chemicals) {
-        if (chemicals.length == 0) {
-            throw new IllegalArgumentException("Attempted to create a ChemicalStackIngredient with no chemicals.");
-        }
-        return from(IngredientCreatorAccess.chemical().of(chemicals), amount);
     }
 
     /**
@@ -113,7 +59,7 @@ public interface IChemicalStackIngredientCreator extends IIngredientCreator<Chem
         if (chemicals.length == 0) {
             throw new IllegalArgumentException("Attempted to create a ChemicalStackIngredient with no chemicals.");
         }
-        return from(IngredientCreatorAccess.chemical().ofHolders(chemicals), amount);
+        return from(IngredientCreatorAccess.chemical().of(chemicals), amount);
     }
 
     @Override

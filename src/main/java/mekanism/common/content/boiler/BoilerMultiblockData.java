@@ -13,7 +13,6 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.attribute.ChemicalAttributes;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.chemical.attribute.HeatedCoolant;
 import mekanism.api.heat.HeatAPI;
@@ -52,13 +51,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class BoilerMultiblockData extends MultiblockData implements IValveHandler {
 
-    //TODO - 1.22: Replace the legacy checks for these predicates
-    @SuppressWarnings("removal")
-    public static final Predicate<ChemicalStack> IS_HEATED_COOLANT = chemical -> chemical.getData(IMekanismDataMapTypes.INSTANCE.heatedChemicalCoolant()) != null
-                                                                                    || chemical.hasLegacy(ChemicalAttributes.HeatedCoolant.class);
-    @SuppressWarnings("removal")
-    public static final Predicate<ChemicalStack> IS_COOLED_COOLANT = chemical -> chemical.getData(IMekanismDataMapTypes.INSTANCE.cooledChemicalCoolant()) != null
-                                                                                    || chemical.hasLegacy(ChemicalAttributes.CooledCoolant.class);
+    public static final Predicate<ChemicalStack> IS_HEATED_COOLANT = chemical -> chemical.getData(IMekanismDataMapTypes.INSTANCE.heatedChemicalCoolant()) != null;
+    public static final Predicate<ChemicalStack> IS_COOLED_COOLANT = chemical -> chemical.getData(IMekanismDataMapTypes.INSTANCE.cooledChemicalCoolant()) != null;
     public static final Object2BooleanMap<UUID> hotMap = new Object2BooleanOpenHashMap<>();
 
     public static final double CASING_HEAT_CAPACITY = 50;
@@ -152,20 +146,9 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
     }
 
     @Nullable
-    @SuppressWarnings("removal")
     private HeatedCoolant getHeatedCoolant() {
         ChemicalStack stack = superheatedCoolantTank.getStack();
-        if (stack.isEmpty()) {
-            return null;
-        }
-        HeatedCoolant coolant = stack.getData(IMekanismDataMapTypes.INSTANCE.heatedChemicalCoolant());
-        if (coolant == null) {//TODO - 1.22: Remove this handling of legacy data
-            ChemicalAttributes.HeatedCoolant legacyCoolant = stack.getLegacy(ChemicalAttributes.HeatedCoolant.class);
-            if (legacyCoolant != null) {
-                return legacyCoolant.asModern();
-            }
-        }
-        return coolant;
+        return stack.isEmpty() ? null : stack.getData(IMekanismDataMapTypes.INSTANCE.heatedChemicalCoolant());
     }
 
     @Override

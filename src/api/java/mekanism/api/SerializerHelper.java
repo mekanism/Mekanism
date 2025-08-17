@@ -8,7 +8,6 @@ import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.MapDecoder.Implementation;
 import com.mojang.serialization.MapLike;
-import com.mojang.serialization.codecs.PrimitiveCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -50,69 +49,6 @@ public class SerializerHelper {
         final Function<Long, DataResult<Long>> checker = Codec.checkRange(1L, Long.MAX_VALUE);
         return Codec.LONG.flatXmap(checker, checker);
     });
-
-    @Deprecated(forRemoval = true, since = "10.6.6")//TODO - 1.22: Remove
-    private static final Codec<Long> LEGACY_CODEC_FLOATING_LONG = new PrimitiveCodec<>() {
-        @Override
-        public <T> DataResult<Long> read(DynamicOps<T> ops, T input) {
-            return ops.getStringValue(input).flatMap(number -> {
-                try {
-                    long value;
-                    int index = number.indexOf('.');
-                    if (index == -1) {
-                        value = Long.parseUnsignedLong(number);
-                    } else {
-                        value = Long.parseUnsignedLong(number, 0, index, 10);
-                    }
-                    if (value < 0) {
-                        //Clamp unsigned to positive.
-                        value = Long.MAX_VALUE;
-                    }
-                    if (value == 0 && index != -1) {
-                        //If we are at zero, see if we should ceil the decimal
-                        if (Long.parseLong(number, index + 1, number.length(), 10) > 0) {
-                            return DataResult.success(1L);
-                        }
-                    }
-                    return DataResult.success(value);
-                } catch (NumberFormatException e) {
-                    return DataResult.error(e::getMessage);
-                }
-            });
-        }
-
-        @Override
-        public <T> T write(DynamicOps<T> ops, Long value) {
-            return ops.createLong(value);
-        }
-
-        @Override
-        public String toString() {
-            return "LegacyFloatingLong";
-        }
-    };
-
-    /**
-     * Long Codec which accepts a number >= 0
-     *
-     * @since 10.6.6
-     * @deprecated Use {@link #POSITIVE_LONG_CODEC} instead. This field just exists for people who want to be able to load legacy data that was stored as a FloatingLong.
-     */
-    @Deprecated(forRemoval = true, since = "10.6.6")//TODO - 1.22: Remove
-    //Note: We use vanilla's withAlternative instead of Neo's as we always want to encode with the non legacy codec
-    public static final Codec<Long> POSITIVE_LONG_CODEC_LEGACY = Codec.withAlternative(POSITIVE_LONG_CODEC, LEGACY_CODEC_FLOATING_LONG);
-
-    /**
-     * Long Codec which accepts a number > 0
-     *
-     * @since 10.6.6
-     * @deprecated Use {@link #POSITIVE_LONG_CODEC} instead. This field just exists for people who want to be able to load legacy data that was stored as a FloatingLong.
-     */
-    @Deprecated(forRemoval = true, since = "10.6.6")//TODO - 1.22: Remove
-    //Note: We use vanilla's withAlternative instead of Neo's as we always want to encode with the non legacy codec
-    public static final Codec<Long> POSITIVE_NONZERO_LONG_CODEC_LEGACY = Codec.withAlternative(POSITIVE_NONZERO_LONG_CODEC,
-          LEGACY_CODEC_FLOATING_LONG.validate(val -> val == 0 ? DataResult.error(() -> "Value must be greater than zero") : DataResult.success(val))
-    );
 
     private static final Consumer<String> ON_STACK_LOAD_ERROR = error -> MekanismAPI.logger.error("Tried to load invalid item: '{}'", error);
     /**

@@ -123,22 +123,6 @@ public final class ChemicalStackIngredient implements InputIngredient<ChemicalSt
      *
      * @return {@code true} if the input argument matches the predicate, otherwise {@code false}
      *
-     * @deprecated Use {@link #testType(Holder)} instead
-     */
-    @SuppressWarnings("removal")
-    @Deprecated(forRemoval = true, since = "10.7.11")
-    public boolean testType(Chemical chemical) {
-        Objects.requireNonNull(chemical);
-        return ingredient.test(chemical);
-    }
-
-    /**
-     * Evaluates this predicate on the given argument, ignoring any size data.
-     *
-     * @param chemical Input argument.
-     *
-     * @return {@code true} if the input argument matches the predicate, otherwise {@code false}
-     *
      * @since 10.7.11
      */
     public boolean testType(Holder<Chemical> chemical) {

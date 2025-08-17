@@ -283,18 +283,8 @@ public interface IChemicalTank extends INBTSerializable<CompoundTag>, IContentsL
      *
      * @since 10.7.11
      */
-    default Holder<Chemical> getTypeHolder() {
+    default Holder<Chemical> getType() {
         return getStack().getChemicalHolder();
-    }
-
-    /**
-     * Convenience method for getting the type of the {@link Chemical} stored in this tank.
-     *
-     * @return chemical type contained
-     */
-    @Deprecated(forRemoval = true, since = "10.7.11")
-    default Chemical getType() {
-        return getStack().getChemical();
     }
 
     /**
@@ -308,20 +298,6 @@ public interface IChemicalTank extends INBTSerializable<CompoundTag>, IContentsL
      */
     default boolean isTypeEqual(ChemicalStack other) {
         return ChemicalStack.isSameChemical(getStack(), other);
-    }
-
-    /**
-     * Convenience method for checking if this tank's contents are of an equal type to a given chemical's.
-     *
-     * @param other The chemical to compare to.
-     *
-     * @return True if the tank's contents are equal, false otherwise.
-     *
-     * @implNote If your implementation of {@link #getStack()} returns a copy, this should be overridden to directly check against the internal stack.
-     */
-    @Deprecated(forRemoval = true, since = "10.7.11")
-    default boolean isTypeEqual(Chemical other) {
-        return getStack().is(other);
     }
 
     /**

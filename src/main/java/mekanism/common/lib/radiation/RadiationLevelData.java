@@ -1,7 +1,6 @@
 package mekanism.common.lib.radiation;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.IntSupplier;
@@ -90,11 +89,6 @@ public class RadiationLevelData implements INBTSerializable<ListTag> {
 
     public void clearAll() {
         this.sources.clear();
-    }
-
-    @Deprecated(forRemoval = true, since = "10.7.15") //backcompat
-    public Collection<RadiationSource> values() {
-        return sources.values();
     }
 
     public Iterator<RadiationSource> getSources(int chunkX, int chunkZ) {

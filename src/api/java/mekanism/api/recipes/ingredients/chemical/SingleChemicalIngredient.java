@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public non-sealed class SingleChemicalIngredient extends ChemicalIngredient {
 
-    public static final MapCodec<SingleChemicalIngredient> CODEC = ChemicalStack.CHEMICAL_NON_EMPTY_HOLDER_CODEC.xmap(SingleChemicalIngredient::new, SingleChemicalIngredient::chemical)
+    public static final MapCodec<SingleChemicalIngredient> CODEC = ChemicalStack.CHEMICAL_NON_EMPTY_CODEC.xmap(SingleChemicalIngredient::new, SingleChemicalIngredient::chemical)
           .fieldOf(SerializationConstants.CHEMICAL);
 
     private final Holder<Chemical> chemical;
@@ -42,7 +42,7 @@ public non-sealed class SingleChemicalIngredient extends ChemicalIngredient {
     }
 
     @Override
-    public final Stream<Holder<Chemical>> generateChemicalHolders() {
+    public final Stream<Holder<Chemical>> generateChemicals() {
         return Stream.of(chemical);
     }
 

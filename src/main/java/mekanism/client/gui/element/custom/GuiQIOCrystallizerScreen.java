@@ -84,15 +84,6 @@ public class GuiQIOCrystallizerScreen extends GuiInnerScreen {
                                 }
                             }
                         }
-                        //TODO - 1.22: Remove this legacy branch
-                        else if (!prevSlurry.is(MekanismAPITags.Chemicals.DIRTY)) {
-                            @SuppressWarnings("removal") TagKey<Item> oreTag = prevSlurry.value().getOreTag();
-                            if (oreTag != null) {
-                                for (Holder<Item> ore : BuiltInRegistries.ITEM.getTagOrEmpty(oreTag)) {
-                                    iterStacks.add(new ItemStack(ore));
-                                }
-                            }
-                        }
                     }
                     slotDisplay.updateStackList();
                 }

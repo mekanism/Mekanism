@@ -4,12 +4,10 @@ import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.tag.type.KnownTag;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import com.blamejared.crafttweaker_annotations.annotations.TaggableElement;
-import java.util.Collection;
 import java.util.List;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.attribute.ChemicalAttribute;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import net.minecraft.resources.ResourceLocation;
@@ -20,20 +18,9 @@ import org.openzen.zencode.java.ZenCodeType;
 @NativeTypeRegistration(value = Chemical.class, zenCodeName = CrTConstants.CLASS_CHEMICAL)
 public class CrTChemical {
 
+    //TODO - 1.22: Rethink how we expose chemical attributes to CrT. We definitely don't want to deal with adding,
+    // but being able to query them might be useful? See if CrT has builtin support for data map stuff
     private CrTChemical() {
-    }
-
-    /**
-     * Gets whether this chemical is the empty instance.
-     *
-     * @return {@code true} if this chemical is the empty instance, {@code false} otherwise.
-     */
-    @ZenCodeType.Method
-    @ZenCodeType.Getter("empty")
-    @SuppressWarnings("removal")
-    @Deprecated(forRemoval = true, since = "10.7.11")
-    public static boolean isEmptyType(Chemical _this) {
-        return _this.isEmptyType();
     }
 
     /**
@@ -67,31 +54,6 @@ public class CrTChemical {
     @ZenCodeType.Getter("colorRepresentation")
     public static int getColorRepresentation(Chemical _this) {
         return _this.getColorRepresentation();
-    }
-
-    /**
-     * Gets all attribute instances associated with this chemical type.
-     *
-     * @return collection of attribute instances.
-     */
-    @ZenCodeType.Method
-    @SuppressWarnings("removal")
-    @ZenCodeType.Getter("attributes")
-    @Deprecated(forRemoval = true, since = "10.7.11")
-    public static Collection<ChemicalAttribute> getAttributes(Chemical _this) {
-        return _this.getAttributes();
-    }
-
-    /**
-     * Adds an attribute to this chemical's attribute map. Will overwrite any existing attribute with the same type.
-     *
-     * @param attribute attribute to add to this chemical
-     */
-    @ZenCodeType.Method
-    @SuppressWarnings("removal")
-    @Deprecated(forRemoval = true, since = "10.7.11")
-    public static void addAttribute(Chemical _this, ChemicalAttribute attribute) {
-        _this.addAttribute(attribute);
     }
 
     /**
