@@ -10,7 +10,6 @@ import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiSideHolder;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
-import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -41,7 +40,6 @@ public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator, M
             list.add(EnergyDisplay.of(tile.getEnergyContainer()).getTextComponent());
             long amount = tile.getCurrentGeneration();
             list.add(GeneratorsLang.POWER.translate(MekanismUtils.getEnergyDisplayShort(amount)));
-            list.add(GeneratorsLang.OUTPUT_RATE_SHORT.translate(EnergyDisplay.of(tile.getMaxOutput())));
             if (!tile.getActive()) {
                 ILangEntry reason = tile.isBlacklistDimension() ? GeneratorsLang.NO_WIND : GeneratorsLang.SKY_BLOCKED;
                 list.add(reason.translateColored(EnumColor.DARK_RED));
@@ -49,9 +47,8 @@ public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator, M
             return list;
         }));
         addRenderableWidget(new GuiEnergyTab(this, () -> List.of(
-              GeneratorsLang.PRODUCING_AMOUNT.translate(tile.getActive() ? EnergyDisplay.of(tile.getCurrentGeneration()) : EnergyDisplay.ZERO),
-              MekanismLang.MAX_OUTPUT.translate(EnergyDisplay.of(tile.getMaxOutput())))
-        ));
+              GeneratorsLang.PRODUCING_AMOUNT.translate(tile.getActive() ? EnergyDisplay.of(tile.getCurrentGeneration()) : EnergyDisplay.ZERO)
+        )));
         addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
         addRenderableWidget(new GuiStateTexture(this, 18, 35, tile::getActive, MekanismGenerators.rl(ResourceType.GUI.getPrefix() + "wind_on.png"),
               MekanismGenerators.rl(ResourceType.GUI.getPrefix() + "wind_off.png")));

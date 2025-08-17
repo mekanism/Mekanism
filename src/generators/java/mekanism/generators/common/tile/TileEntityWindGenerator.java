@@ -37,7 +37,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     EnergyInventorySlot energySlot;
 
     public TileEntityWindGenerator(BlockPos pos, BlockState state) {
-        super(GeneratorsBlocks.WIND_GENERATOR, pos, state, MekanismGeneratorsConfig.generators.windGenerationMax);
+        super(GeneratorsBlocks.WIND_GENERATOR, pos, state);
     }
 
     @NotNull

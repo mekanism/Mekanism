@@ -133,28 +133,27 @@ public class TurbineMultiblockData extends MultiblockData {
 
         lastSteamInput = newSteamInput;
         newSteamInput = 0;
-        long stored = chemicalTank.getStored();
-        double flowRate = 0;
+        long storedSteam = chemicalTank.getStored();
+        double flowRate = 0;//bad name, more like flow this tick divided by max rate
 
-        long energyNeeded = energyContainer.getNeeded();
-        if (stored > 0 && energyNeeded > 0L) {
-            double energyMultiplier = (MekanismConfig.general.maxEnergyPerSteam.get() / (double) TurbineValidator.MAX_BLADES)
-                                      * (Math.min(blades, coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get()));
-            if (energyMultiplier < Mth.EPSILON) {
-                clientFlow = 0;
-            } else {
-                double rate = lowerVolume * (getDispersers() * MekanismGeneratorsConfig.generators.turbineDisperserChemicalFlow.get());
-                rate = Math.min(rate, vents * MekanismGeneratorsConfig.generators.turbineVentChemicalFlow.get());
-                double proportion = stored / (double) getSteamCapacity();
-                double origRate = rate;
-                rate = Math.min(Math.min(stored, rate), (energyNeeded / energyMultiplier)) * proportion;
+        if (storedSteam > 0) {
+            double maxRate = getMaxFlowRateDouble();
+            double steamFilledPercent = storedSteam / (double) getSteamCapacity();
+            double rate = Math.min(storedSteam, maxRate) * steamFilledPercent;
+
+            if (rate > Mth.EPSILON) {
                 clientFlow = MathUtils.clampToLong(rate);
-                if (clientFlow > 0) {
-                    flowRate = rate / origRate;
-                    energyContainer.insert(MathUtils.clampToLong(energyMultiplier * rate), Action.EXECUTE, AutomationType.INTERNAL);
-                    chemicalTank.shrinkStack(clientFlow, Action.EXECUTE);
-                    ventTank.insert(new FluidStack(Fluids.WATER, Math.min(MathUtils.clampToInt(rate), condensers * MekanismGeneratorsConfig.generators.condenserRate.get())), Action.EXECUTE, AutomationType.INTERNAL);
+                flowRate = rate / maxRate;
+
+                long amountGenerated = getAmountGenerated(rate);
+                if (amountGenerated > 0) {
+                    energyContainer.insert(amountGenerated, Action.EXECUTE, AutomationType.INTERNAL);
                 }
+
+                chemicalTank.shrinkStack(clientFlow, Action.EXECUTE);
+                ventTank.insert(new FluidStack(Fluids.WATER, Math.min(MathUtils.clampToInt(rate), condensers * MekanismGeneratorsConfig.generators.condenserRate.get())), Action.EXECUTE, AutomationType.INTERNAL);
+            } else {
+                clientFlow = 0;
             }
         } else {
             clientFlow = 0;
@@ -163,7 +162,9 @@ public class TurbineMultiblockData extends MultiblockData {
             //Note: We know that the tank has whatever amount it has stored, we can the simulated extraction
             ventTank.extract(FluidUtils.emit(fluidOutputTargets, ventTank.getFluid()), Action.EXECUTE, AutomationType.INTERNAL);
         }
-        CableUtils.emit(energyOutputTargets, energyContainer);
+        if (!energyContainer.isEmpty()) {
+            CableUtils.emit(energyOutputTargets, energyContainer);
+        }
 
         if (dumpMode != GasMode.IDLE && !chemicalTank.isEmpty()) {
             long amount = chemicalTank.getStored();
@@ -192,6 +193,14 @@ public class TurbineMultiblockData extends MultiblockData {
         return needsPacket;
     }
 
+    private long getAmountGenerated(double rate) {
+        int bladesToUse = Math.min(blades, coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get());
+        double powerGenHandicap = Math.min(1D, bladesToUse / (double) TurbineValidator.MAX_BLADES);
+        double steamUnits = rate / MekanismGeneratorsConfig.generators.turbineSteamDivisor.getAsInt();
+        double maxGen = steamUnits >= 1 ? -654 + (165 * Math.log(steamUnits)) : 0;
+        return MathUtils.clampToLong(maxGen * powerGenHandicap);
+    }
+
     private long getDumpingAmount(long stored) {
         return Math.min(stored, Math.max(stored / 50, lastSteamInput * 2));
     }
@@ -199,6 +208,12 @@ public class TurbineMultiblockData extends MultiblockData {
     public void updateVentData(List<VentData> vents) {
         this.ventData = vents;
         this.vents = this.ventData.size();
+    }
+
+    private double getMaxFlowRateDouble() {
+        double rate = lowerVolume * (getDispersers() * MekanismGeneratorsConfig.generators.turbineDisperserChemicalFlow.get());
+        rate = Math.min(rate, vents * MekanismGeneratorsConfig.generators.turbineVentChemicalFlow.get());
+        return rate;
     }
 
     @Override
@@ -254,24 +269,17 @@ public class TurbineMultiblockData extends MultiblockData {
 
     @ComputerMethod
     public long getProductionRate() {
-        double energyMultiplier = ((double) MekanismConfig.general.maxEnergyPerSteam.get() / TurbineValidator.MAX_BLADES)
-                                  * (Math.min(blades, coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get()));
-        return MathUtils.clampToLong(energyMultiplier * clientFlow);
+        return getAmountGenerated(clientFlow);
     }
 
     @ComputerMethod
     public long getMaxProduction() {
-        double energyMultiplier = ((double) MekanismConfig.general.maxEnergyPerSteam.get() / TurbineValidator.MAX_BLADES)
-                                  * (Math.min(blades, coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get()));
-        double rate = lowerVolume * (getDispersers() * MekanismGeneratorsConfig.generators.turbineDisperserChemicalFlow.get());
-        rate = Math.min(rate, vents * MekanismGeneratorsConfig.generators.turbineVentChemicalFlow.get());
-        return MathUtils.clampToLong(energyMultiplier * rate);
+        return getAmountGenerated(getMaxFlowRateDouble());
     }
 
     @ComputerMethod
     public long getMaxFlowRate() {
-        double rate = lowerVolume * (getDispersers() * MekanismGeneratorsConfig.generators.turbineDisperserChemicalFlow.get());
-        rate = Math.min(rate, vents * MekanismGeneratorsConfig.generators.turbineVentChemicalFlow.get());
+        double rate = getMaxFlowRateDouble();
         return MathUtils.clampToLong(rate);
     }
 

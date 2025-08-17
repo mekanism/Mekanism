@@ -7,7 +7,6 @@ import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiSideHolder;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
-import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;
@@ -34,11 +33,9 @@ public class GuiSolarGenerator<TILE extends TileEntitySolarGenerator> extends Gu
         super.addGuiElements();
         addRenderableWidget(new GuiInnerScreen(this, 40, 23, 96, 40, () -> List.of(
               EnergyDisplay.of(tile.getEnergyContainer()).getTextComponent(),
-              GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getProductionRate())),
-              GeneratorsLang.OUTPUT_RATE_SHORT.translate(EnergyDisplay.of(tile.getMaxOutput()))
+              GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getProductionRate()))
         )));
-        addRenderableWidget(new GuiEnergyTab(this, () -> List.of(GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getProductionRate())),
-              MekanismLang.MAX_OUTPUT.translate(EnergyDisplay.of(tile.getMaxOutput())))));
+        addRenderableWidget(new GuiEnergyTab(this, () -> List.of(GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getProductionRate())))));
         addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
         addRenderableWidget(new GuiStateTexture(this, 18, 35, tile::canSeeSun, MekanismGenerators.rl(ResourceType.GUI.getPrefix() + "sees_sun.png"),
               MekanismGenerators.rl(ResourceType.GUI.getPrefix() + "no_sun.png")));

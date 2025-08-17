@@ -19,11 +19,11 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class ResistiveHeaterEnergyContainer extends MachineEnergyContainer<TileEntityResistiveHeater> {
 
-    public static final long USAGE_MULTIPLIER = 20 * SharedConstants.TICKS_PER_SECOND;
+    public static final long USAGE_MULTIPLIER = 4;
 
     public static ResistiveHeaterEnergyContainer input(TileEntityResistiveHeater tile, @Nullable IContentsListener listener) {
         AttributeEnergy electricBlock = validateBlock(tile);
-        return new ResistiveHeaterEnergyContainer(electricBlock.getStorage(), electricBlock.getUsage(), notExternal, ConstantPredicates.alwaysTrue(), tile, listener);
+        return new ResistiveHeaterEnergyContainer(electricBlock.getUsage() * USAGE_MULTIPLIER, electricBlock.getUsage(), notExternal, ConstantPredicates.alwaysTrue(), tile, listener);
     }
 
     private ResistiveHeaterEnergyContainer(long maxEnergy, long energyPerTick, Predicate<@NotNull AutomationType> canExtract,

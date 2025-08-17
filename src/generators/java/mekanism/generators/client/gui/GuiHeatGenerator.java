@@ -35,8 +35,9 @@ public class GuiHeatGenerator extends GuiMekanismTile<TileEntityHeatGenerator, M
         //Add the side holder before the slots, as it holds a couple of the slots
         addRenderableWidget(GuiSideHolder.create(this, -26, 6, 98, true, true, SpecialColors.TAB_ARMOR_SLOTS));
         super.addGuiElements();
-        addRenderableWidget(new GuiEnergyTab(this, () -> List.of(GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getProductionRate())),
-              MekanismLang.MAX_OUTPUT.translate(EnergyDisplay.of(tile.getMaxOutput())))));
+        addRenderableWidget(new GuiEnergyTab(this, () -> List.of(
+              GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getProductionRate()))
+        )));
         addRenderableWidget(new GuiFluidGauge(() -> tile.lavaTank, () -> tile.getFluidTanks(null), GaugeType.WIDE, this, 55, 18));
         addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
         addRenderableWidget(new GuiHeatTab(this, () -> {

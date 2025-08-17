@@ -120,6 +120,7 @@ public class GeneratorsBlockTypes {
     public static final Generator<TileEntityGasGenerator> GAS_BURNING_GENERATOR = GeneratorBuilder
           .createGenerator(() -> GeneratorsTileEntityTypes.GAS_BURNING_GENERATOR, GeneratorsLang.DESCRIPTION_GAS_BURNING_GENERATOR)
           .withGui(() -> GeneratorsContainerTypes.GAS_BURNING_GENERATOR)
+          //todo: re-implement the change here
           .withEnergyConfig(() -> MathUtils.multiplyClamped(1_000, ChemicalUtil.hydrogenEnergyDensity()))
           .withCustomShape(BlockShapes.GAS_BURNING_GENERATOR)
           .with(AttributeCustomSelectionBox.JSON)

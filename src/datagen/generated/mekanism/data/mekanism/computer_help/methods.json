@@ -3573,8 +3573,8 @@
     {
       "methodName": "getBurnRate",
       "returns": {
-        "type": "Number (double)",
-        "java_type": "double"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -3627,13 +3627,6 @@
     }
   ],
   "Generator": [
-    {
-      "methodName": "getMaxOutput",
-      "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
-      }
-    },
     {
       "description": "Get the amount of energy produced by this generator in the last tick.",
       "methodName": "getProductionRate",

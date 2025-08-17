@@ -29,26 +29,15 @@ public class CrTFuelAttribute {
     @ZenCodeType.StaticExpansionMethod
     @Deprecated(forRemoval = true, since = "10.7.11")
     public static ChemicalAttributes.Fuel create(int burnTicks, long energyDensity) {
-        //Note: We don't allow suppliers from CrT as there is no real reason to allow them to change at runtime from the
-        // context of CrT, the only real reason the values are suppliers is so that they can be adjusted via configs
-        return new ChemicalAttributes.Fuel(burnTicks, energyDensity);
+        throw new UnsupportedOperationException("Legacy fuel method no longer supported");
     }
 
     /**
-     * Gets the number of ticks this fuel burns for.
+     * Gets the max mb to burn per tick
      */
     @ZenCodeType.Method
     @ZenCodeType.Getter("burnTicks")
     public static int getBurnTicks(ChemicalAttributes.Fuel _this) {
-        return _this.getBurnTicks();
-    }
-
-    /**
-     * Gets the amount of energy produced per tick of this fuel.
-     */
-    @ZenCodeType.Method
-    @ZenCodeType.Getter("energyPerTick")
-    public static long getEnergyPerTick(ChemicalAttributes.Fuel _this) {
-        return _this.getEnergyPerTick();
+        return 1;
     }
 }

@@ -76,7 +76,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
     EnergyInventorySlot energySlot;
 
     public TileEntityHeatGenerator(BlockPos pos, BlockState state) {
-        super(GeneratorsBlocks.HEAT_GENERATOR, pos, state, MAX_PRODUCTION);
+        super(GeneratorsBlocks.HEAT_GENERATOR, pos, state);
     }
 
     @NotNull

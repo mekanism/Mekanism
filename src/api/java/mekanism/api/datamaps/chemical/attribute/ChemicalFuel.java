@@ -20,12 +20,12 @@ import org.jetbrains.annotations.ApiStatus.Internal;
 /**
  * A {@link MekanismAPI#CHEMICAL_REGISTRY chemical} data map that allows defining fuel values for a chemical.
  *
- * @param burnTicks     The number of ticks one mB of fuel can be burned for before being depleted; must be greater than zero.
- * @param energyPerTick The energy produced per tick from one mB of fuel; must be greater than zero.
+ * @param maxBurnPerTick how many mB per tick can be burnt (max amount burned when tank is full).
+ * @param energyPerTick  The energy produced per tick from one mB of fuel; must be greater than zero.
  *
  * @since 10.7.11
  */
-public record ChemicalFuel(int burnTicks, long energyPerTick) implements IChemicalAttribute {
+public record ChemicalFuel(int maxBurnPerTick, long energyPerTick) implements IChemicalAttribute {
 
     /**
      * The ID of the data map.
@@ -38,13 +38,13 @@ public record ChemicalFuel(int burnTicks, long energyPerTick) implements IChemic
      * Codec for serializing and deserializing chemical fuel.
      */
     public static final Codec<ChemicalFuel> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          ExtraCodecs.POSITIVE_INT.fieldOf(SerializationConstants.BURN_TIME).forGetter(ChemicalFuel::burnTicks),
+          ExtraCodecs.POSITIVE_INT.fieldOf(SerializationConstants.MAX_BURN_RATE).forGetter(ChemicalFuel::maxBurnPerTick),
           SerializerHelper.POSITIVE_NONZERO_LONG_CODEC.fieldOf(SerializationConstants.ENERGY).forGetter(ChemicalFuel::energyPerTick)
     ).apply(instance, ChemicalFuel::new));
 
     public ChemicalFuel {
-        if (burnTicks < 1) {
-            throw new IllegalArgumentException("Fuel attributes must burn for at least one tick! Burn Ticks: " + burnTicks);
+        if (maxBurnPerTick < 1) {
+            throw new IllegalArgumentException("Fuel attributes must be able to burn at least 1 per tick. maxBurnPerTick: " + maxBurnPerTick);
         } else if (energyPerTick < 1) {
             throw new IllegalArgumentException("Fuel attributes must have a per tick energy density greater than zero!");
         }
@@ -54,14 +54,21 @@ public record ChemicalFuel(int burnTicks, long energyPerTick) implements IChemic
      * The energy density in one mB of fuel.
      */
     public long energyDensity() {
-        return energyPerTick * burnTicks;
+        return energyPerTick;
     }
 
     @Override
     public void collectTooltips(TooltipContext context, List<Component> tooltips, TooltipFlag tooltipFlag) {
         ITooltipHelper tooltipHelper = ITooltipHelper.INSTANCE;
-        tooltips.add(APILang.CHEMICAL_ATTRIBUTE_FUEL_BURN_TICKS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, tooltipHelper.getFormattedNumber(burnTicks)));
-        tooltips.add(APILang.CHEMICAL_ATTRIBUTE_FUEL_ENERGY_DENSITY.translateColored(EnumColor.GRAY, EnumColor.INDIGO, tooltipHelper.getEnergyPerMBDisplayShort(energyDensity())));
+        tooltips.add(APILang.CHEMICAL_ATTRIBUTE_FUEL_MAX_BURN.translateColored(EnumColor.GRAY, EnumColor.INDIGO, tooltipHelper.getFluidDisplay(maxBurnPerTick(), true)));
+        tooltips.add(APILang.CHEMICAL_ATTRIBUTE_FUEL_ENERGY_DENSITY.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
+              tooltipHelper.getEnergyPerMBDisplayShort(energyDensity())));
+        tooltips.add(APILang.CHEMICAL_ATTRIBUTE_FUEL_ENERGY_MAX_TOTAL.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
+              tooltipHelper.getEnergyDisplay(getMaxJoulesPerTick(), true)));
+    }
+
+    public long getMaxJoulesPerTick() {
+        return maxBurnPerTick() * energyPerTick();
     }
 
     @Internal

@@ -192,7 +192,7 @@ public class GeneralConfig extends BaseMekanismConfig {
               .worldRestart()
               .define("blacklistForge", false));
         forgeConversionRate = CachedDoubleValue.wrap(this, MekanismConfigTranslations.GENERAL_ENERGY_CONVERSION_FE.applyToBuilder(builder)
-              .defineInRange("feConversionRate", 2.5, 0.0001, 10_000 /* Inverse of min positive value */));
+              .defineInRange("feConversionRate", 1, 0.0001, 10_000 /* Inverse of min positive value */));
         blacklistFluxNetworks = CachedBooleanValue.wrap(this, MekanismConfigTranslations.GENERAL_ENERGY_CONVERSION_BLACKLIST_FN.applyToBuilder(builder)
               .worldRestart()
               .define("blacklistFluxNetworks", false));

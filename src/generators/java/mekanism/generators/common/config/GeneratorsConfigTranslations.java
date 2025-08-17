@@ -20,6 +20,7 @@ public enum GeneratorsConfigTranslations implements IConfigTranslation {
 
     SERVER_GENERATOR_BIO("server.generator.bio", "Bio Generator", "Settings for configuring Bio Generators", true),
     SERVER_GENERATOR_BIO_GENERATION("server.generator.bio.gen", "Energy Generation", "Energy produced by the Bio Generator in Joules/t."),
+    SERVER_GENERATOR_BIO_FUEL_PER_ITEM("server.generator.bio.fuel_per_item", "Fluid Per Biofuel Item", "How many mB one item of Biofuel adds to the generator's tank. Effectively defines how many ticks an item burns for and the total energy output of the Biofuel item."),
     SERVER_GENERATOR_BIO_TANK_CAPACITY("server.generator.bio.tank_capacity", "Tank Capacity", "The capacity in mB of the fluid tank in the Bio Generator."),
 
     SERVER_GENERATOR_HEAT("server.generator.heat", "Heat Generator", "Settings for configuring Heat Generators", true),
@@ -55,6 +56,7 @@ public enum GeneratorsConfigTranslations implements IConfigTranslation {
           "Amount of energy in Joules that each block of the turbine contributes to the total energy capacity. Max = volume * energyCapacityPerVolume"),
     SERVER_TURBINE_CHEMICAL_CAPACITY("server.turbine.capacity.chemical", "Chemical Per Tank",
           "Amount of chemical (mB) that each block of the turbine's steam cavity contributes to the volume. Max = volume * chemicalPerTank"),
+    SERVER_TURBINE_STEAM_DIVISOR("server.turbine.energy_conversion.steam_divisor", "Steam Divisor", "Divisor for Steam rate to create a Steam unit. The Steam flow will be divided by this amount and then used for the generation logarithmic calculation."),
 
     SERVER_FISSION("server.fission", "Fission Reactor", "Settings for configuring Fission Reactors", "Edit Reactor Settings"),
     SERVER_FISSION_FUEL_ENERGY("server.fission.fuel_energy", "Energy Per Fissile Fuel",

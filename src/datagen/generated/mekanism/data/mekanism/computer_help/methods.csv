@@ -409,14 +409,13 @@ Fusion Reactor Multiblock (formed),isIgnited,,boolean,,false,Checks if a reactio
 Fusion Reactor Multiblock (formed),setInjectionRate,rate: Number (int),,,false,
 Fusion Reactor Port,getMode,,boolean,,false,"true -> output, false -> input"
 Fusion Reactor Port,setMode,output: boolean,,,false,"true -> output, false -> input"
-Gas Generator,getBurnRate,,Number (double),,false,
+Gas Generator,getBurnRate,,Number (long),,false,
 Gas Generator,getEnergyItem,,Table (ItemStack),,false,Get the contents of the energy item slot.
 Gas Generator,getFuel,,Table (ChemicalStack),,false,Get the contents of the fuel tank.
 Gas Generator,getFuelCapacity,,Number (long),,false,Get the capacity of the fuel tank.
 Gas Generator,getFuelFilledPercentage,,Number (double),,false,Get the filled percentage of the fuel tank.
 Gas Generator,getFuelItem,,Table (ItemStack),,false,Get the contents of the fuel item slot.
 Gas Generator,getFuelNeeded,,Number (long),,false,Get the amount needed to fill the fuel tank.
-Generator,getMaxOutput,,Number (long),,false,
 Generator,getProductionRate,,Number (long),,false,Get the amount of energy produced by this generator in the last tick.
 Generic Mekanism Machine,getComparatorLevel,,Number (int),COMPARATOR,false,
 Generic Mekanism Machine,getDirection,,String (Direction),DIRECTIONAL,false,

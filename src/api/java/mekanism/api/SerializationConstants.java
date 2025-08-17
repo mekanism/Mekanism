@@ -141,6 +141,7 @@ public final class SerializationConstants {
     public static final String BUILT_IN_TABLES = "built_in_tables";
     public static final String BURNING = "burning";
     public static final String BURN_TIME = "burn_time";
+    public static final String MAX_BURN_RATE = "maxBurnPerTick";
     public static final String CACHE = "cache";
     public static final String CHANCE = "chance";
     public static final String CHANNEL = "channel";

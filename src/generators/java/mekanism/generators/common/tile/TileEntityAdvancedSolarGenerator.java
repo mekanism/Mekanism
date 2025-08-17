@@ -19,7 +19,7 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
     private final SolarCheck[] solarChecks = new SolarCheck[8];
 
     public TileEntityAdvancedSolarGenerator(BlockPos pos, BlockState state) {
-        super(GeneratorsBlocks.ADVANCED_SOLAR_GENERATOR, pos, state, MekanismGeneratorsConfig.generators.advancedSolarGeneration);
+        super(GeneratorsBlocks.ADVANCED_SOLAR_GENERATOR, pos, state);
     }
 
     @Override
@@ -52,7 +52,6 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
             }
             totalPeak += solarChecks[i].getPeakMultiplier();
         }
-        updateMaxOutputRaw(MathUtils.clampToLong(getConfiguredMax() * (totalPeak / 9)));
     }
 
     @Override

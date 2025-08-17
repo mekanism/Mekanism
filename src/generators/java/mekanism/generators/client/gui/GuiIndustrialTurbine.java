@@ -15,7 +15,6 @@ import mekanism.client.gui.element.gauge.GuiChemicalGauge;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.common.MekanismLang;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextUtils;
@@ -24,7 +23,6 @@ import mekanism.generators.client.gui.element.GuiTurbineTab.TurbineTab;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.turbine.TurbineMultiblockData;
-import mekanism.generators.common.content.turbine.TurbineValidator;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -103,10 +101,7 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
             TurbineMultiblockData multiblock = tile.getMultiblock();
             if (multiblock.isFormed()) {
                 storing = EnergyDisplay.of(multiblock.energyContainer);
-                double steamPerBlade = MekanismConfig.general.maxEnergyPerSteam.get() / (double) TurbineValidator.MAX_BLADES;
-                int bladesSupported = multiblock.coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get();
-                int generationLimiter = Math.min(multiblock.blades, bladesSupported);
-                producing = EnergyDisplay.of(MathUtils.clampToLong(steamPerBlade * (multiblock.clientFlow * generationLimiter)));
+                producing = EnergyDisplay.of(multiblock.getProductionRate());
             } else {
                 storing = EnergyDisplay.ZERO;
                 producing = EnergyDisplay.ZERO;

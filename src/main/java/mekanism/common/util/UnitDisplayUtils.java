@@ -63,7 +63,7 @@ public class UnitDisplayUtils {
 
     private static Component getDisplayBase(double value, Unit unit, int decimalPlaces, boolean isShort, boolean spaceBetweenSymbol) {
         if (value == 0) {
-            return unit.appendTo(value, isShort, spaceBetweenSymbol, false);
+            return unit.appendTo("0", isShort, spaceBetweenSymbol, false);
         }
         boolean singular = Mth.equal(value, 1);
         boolean negative = value < 0;
@@ -383,8 +383,12 @@ public class UnitDisplayUtils {
             if (spaceBetweenSymbol || !isShort) {
                 name = " " + name;
             }
+            String roundedStr = Double.toString(rounded);
+            if (roundedStr.endsWith(".0")) {
+                roundedStr = roundedStr.substring(0, roundedStr.length() - 2);
+            }
             //Note: We handle the space between symbols above
-            return unit.appendTo(rounded + name, isShort, false, singular);
+            return unit.appendTo(roundedStr + name, isShort, false, singular);
         }
     }
 }

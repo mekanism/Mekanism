@@ -17,7 +17,7 @@ public class FixedUsageEnergyContainer<TILE extends TileEntityMekanism> extends 
     public static <TILE extends TileEntityMekanism> FixedUsageEnergyContainer<TILE> input(TILE tile, LongObjectToLongFunction<TILE> baseEnergyCalculator,
           @Nullable IContentsListener listener) {
         AttributeEnergy electricBlock = validateBlock(tile);
-        return new FixedUsageEnergyContainer<>(electricBlock.getStorage(), electricBlock.getUsage(), notExternal, ConstantPredicates.alwaysTrue(), tile, baseEnergyCalculator, listener);
+        return new FixedUsageEnergyContainer<>(electricBlock.getUsage() * 4, electricBlock.getUsage(), notExternal, ConstantPredicates.alwaysTrue(), tile, baseEnergyCalculator, listener);
     }
 
     private final LongObjectToLongFunction<TILE> baseEnergyCalculator;

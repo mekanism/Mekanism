@@ -124,7 +124,7 @@ public interface IEnergyContainer extends INBTSerializable<CompoundTag>, IConten
      */
     @Range(from = 0, to = Long.MAX_VALUE)
     default long getNeeded() {
-        return getMaxEnergy() - getEnergy();
+        return Math.max(0L, getMaxEnergy() - getEnergy());
     }
 
     @Override

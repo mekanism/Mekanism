@@ -1,6 +1,5 @@
 package mekanism.generators.common.tile;
 
-import java.util.function.LongSupplier;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
@@ -39,11 +38,11 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     protected SolarCheck solarCheck;
 
     public TileEntitySolarGenerator(BlockPos pos, BlockState state) {
-        this(GeneratorsBlocks.SOLAR_GENERATOR, pos, state, MekanismGeneratorsConfig.generators.solarGeneration);
+        this(GeneratorsBlocks.SOLAR_GENERATOR, pos, state);
     }
 
-    protected TileEntitySolarGenerator(Holder<Block> blockProvider, BlockPos pos, BlockState state, @NotNull LongSupplier maxOutput) {
-        super(blockProvider, pos, state, maxOutput);
+    protected TileEntitySolarGenerator(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
+        super(blockProvider, pos, state);
     }
 
     @NotNull
@@ -86,7 +85,6 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
             return;
         }
         solarCheck = new SolarCheck(level, worldPosition);
-        updateMaxOutputRaw(MathUtils.clampToLong(getConfiguredMax() * solarCheck.getPeakMultiplier()));
     }
 
     protected boolean checkCanSeeSun() {
@@ -132,7 +130,6 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
         container.track(SyncableBoolean.create(this::canSeeSun, value -> seesSun = value));
-        container.track(syncableMaxOutput());
         container.track(SyncableLong.create(this::getProductionRate, value -> lastProductionAmount = value));
     }
 

@@ -37,4 +37,16 @@ public class TooltipHelper implements ITooltipHelper {
     public Component getPercent(double ratio) {
         return TextUtils.getPercent(ratio);
     }
+
+    @Override
+    public Component getEnergyDisplay(long joules, boolean perTick) {
+        Component energyDisplay = MekanismUtils.getEnergyDisplayShort(joules);
+        return perTick ? MekanismLang.GENERIC_PER_TICK.translate(energyDisplay) : energyDisplay;
+    }
+
+    @Override
+    public Component getFluidDisplay(long mb, boolean perTick) {
+        Component formattedMb = Component.literal(getFormattedNumber(mb));
+        return perTick ? MekanismLang.GENERIC_PER_TICK.translate(formattedMb) : formattedMb;
+    }
 }

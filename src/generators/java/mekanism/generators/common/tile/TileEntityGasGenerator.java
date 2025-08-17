@@ -5,6 +5,7 @@ import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.attribute.ChemicalAttributes;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
@@ -23,16 +24,14 @@ import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.SlotOverlay;
-import mekanism.common.inventory.container.sync.SyncableDouble;
-import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.chemical.ChemicalInventorySlot;
-import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -41,7 +40,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
 
     @SuppressWarnings("removal")
     public static final Predicate<ChemicalStack> HAS_FUEL = chemical -> chemical.getData(IMekanismDataMapTypes.INSTANCE.chemicalFuel()) != null
-                                                                           || chemical.hasLegacy(ChemicalAttributes.Fuel.class);//TODO - 1.22 Remove this legacy check
+                                                                        || chemical.hasLegacy(ChemicalAttributes.Fuel.class);//TODO - 1.22 Remove this legacy check
 
     /**
      * The tank this block is storing fuel in.
@@ -49,10 +48,9 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getFuel", "getFuelCapacity", "getFuelNeeded",
                                                                                         "getFuelFilledPercentage"}, docPlaceholder = "fuel tank")
     public FuelTank fuelTank;
-    private long burnTicks;
-    private int maxBurnTicks;
-    private long generationRate = 0;
-    private double gasUsedLastTick;
+    @Nullable
+    private ChemicalFuel cachedFuel = null;
+    private long gasUsedLastTick;
 
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFuelItem", docPlaceholder = "fuel item slot")
     ChemicalInventorySlot fuelSlot;
@@ -60,7 +58,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
     EnergyInventorySlot energySlot;
 
     public TileEntityGasGenerator(BlockPos pos, BlockState state) {
-        super(GeneratorsBlocks.GAS_BURNING_GENERATOR, pos, state, ChemicalUtil::hydrogenEnergyPerTick);
+        super(GeneratorsBlocks.GAS_BURNING_GENERATOR, pos, state);
     }
 
     @NotNull
@@ -87,69 +85,37 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
         boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.drainContainer();
         fuelSlot.fillTank();
+        gasUsedLastTick = 0;
 
-        if (!fuelTank.isEmpty() && canFunction() && getEnergyContainer().insert(generationRate, Action.SIMULATE, AutomationType.INTERNAL) == 0L) {
-            setActive(true);
-            if (!fuelTank.isEmpty()) {
-                ChemicalFuel fuel = fuelTank.getFuel();
-                if (fuel != null) {
-                    //Ensure valid data
-                    maxBurnTicks = Math.max(1, fuel.burnTicks());
-                    generationRate = fuel.energyPerTick();
-                }
+        if (!fuelTank.isEmpty() && canFunction() && cachedFuel != null) {
+
+            //how full the tank is, poor-man's "pressure" measurement
+            double fullness = fuelTank.getStored() / (double) fuelTank.getCapacity();
+
+            //maximum amount that can be produced AND stored
+            long maxJoulesThisTick;
+            long energyDensity = cachedFuel.energyDensity();
+            maxJoulesThisTick = energyDensity * Math.min((long) Math.ceil(cachedFuel.maxBurnPerTick() * fullness), fuelTank.getStored());
+            if (maxJoulesThisTick > 0) {
+                maxJoulesThisTick -= getEnergyContainer().insert(maxJoulesThisTick, Action.SIMULATE, AutomationType.INTERNAL);
             }
 
-            long toUse = getToUse();
-            long toUseGeneration = MathUtils.multiplyClamped(generationRate, toUse);
-            updateMaxOutputRaw(Math.max(ChemicalUtil.hydrogenEnergyPerTick(), toUseGeneration));
-
-            long total = burnTicks + fuelTank.getStored() * maxBurnTicks;
-            total -= toUse;
-            getEnergyContainer().insert(toUseGeneration, Action.EXECUTE, AutomationType.INTERNAL);
-            if (!fuelTank.isEmpty()) {
-                //TODO: Improve this as it is sort of hacky
-                fuelTank.setStack(fuelTank.getStack().copyWithAmount(total / maxBurnTicks));
+            if (maxJoulesThisTick > 0) {
+                //calculate the mB for this amount of energy, rounded up
+                long mbThisTick = Math.ceilDiv(maxJoulesThisTick, energyDensity);
+                getEnergyContainer().insert(maxJoulesThisTick, Action.EXECUTE, AutomationType.INTERNAL);
+                fuelTank.extract(mbThisTick, Action.EXECUTE, AutomationType.INTERNAL);
+                gasUsedLastTick = mbThisTick;
             }
-            burnTicks = total % maxBurnTicks;
-            gasUsedLastTick = toUse / (double) maxBurnTicks;
-        } else {
-            if (fuelTank.isEmpty() && burnTicks == 0) {
-                reset();
-            }
-            gasUsedLastTick = 0;
-            setActive(false);
         }
+
+        setActive(gasUsedLastTick != 0);
         return sendUpdatePacket;
     }
 
-    private void reset() {
-        burnTicks = 0;
-        maxBurnTicks = 0;
-        generationRate = 0L;
-        updateMaxOutputRaw(ChemicalUtil.hydrogenEnergyPerTick());
-    }
-
-    private long getToUse() {
-        if (generationRate == 0L || fuelTank.isEmpty()) {
-            return 0;
-        }
-        long max = (long) Math.ceil(256 * (fuelTank.getStored() / (double) fuelTank.getCapacity()));
-        max = Math.min(maxBurnTicks * fuelTank.getStored() + burnTicks, max);
-        max = Math.min(MathUtils.clampToLong(getEnergyContainer().getNeeded() / (double) generationRate), max);
-        return max;
-    }
-
-    public long getGenerationRate() {
-        return generationRate;
-    }
-
     @ComputerMethod(nameOverride = "getBurnRate")
-    public double getUsed() {
-        return Math.round(gasUsedLastTick * 100) / 100D;
-    }
-
-    public int getMaxBurnTicks() {
-        return maxBurnTicks;
+    public long getUsed() {
+        return gasUsedLastTick;
     }
 
     @Override
@@ -165,21 +131,26 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableLong.create(this::getGenerationRate, value -> generationRate = value));
-        container.track(syncableMaxOutput());
-        container.track(SyncableDouble.create(this::getUsed, value -> gasUsedLastTick = value));
-        container.track(SyncableInt.create(this::getMaxBurnTicks, value -> maxBurnTicks = value));
+        container.track(SyncableLong.create(this::getUsed, value -> gasUsedLastTick = value));
+    }
+
+    @Nullable
+    public ChemicalFuel getCachedFuel() {
+        return this.cachedFuel;
     }
 
     //Methods relating to IComputerTile
     @Override
     long getProductionRate() {
-        return MathUtils.clampToLong(getGenerationRate() * getUsed() * getMaxBurnTicks());
+        if (cachedFuel == null) {
+            return 0;
+        }
+        return MathUtils.clampToLong(cachedFuel.energyDensity() * getUsed());
     }
     //End methods IComputerTile
 
-    //Implementation of gas tank that on no longer being empty updates the output rate of this generator
-    public class FuelTank extends VariableCapacityChemicalTank {
+    //Implementation of gas tank that on no longer being empty updates the cached fuel
+    private class FuelTank extends VariableCapacityChemicalTank {
 
         protected FuelTank(@Nullable IContentsListener listener) {
             super(MekanismGeneratorsConfig.generators.gbgTankCapacity, ConstantPredicates.notExternal(), ConstantPredicates.alwaysTrueBi(), HAS_FUEL, null, listener);
@@ -187,24 +158,21 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
 
         @Override
         public void setStack(@NotNull ChemicalStack stack) {
-            boolean wasEmpty = isEmpty();
+            Holder<Chemical> oldChemical = getTypeHolder();
             super.setStack(stack);
-            recheckOutput(stack, wasEmpty);
+            recheckOutput(stack, oldChemical);
         }
 
         @Override
         public void setStackUnchecked(@NotNull ChemicalStack stack) {
-            boolean wasEmpty = isEmpty();
+            Holder<Chemical> oldChemical = getTypeHolder();
             super.setStackUnchecked(stack);
-            recheckOutput(stack, wasEmpty);
+            recheckOutput(stack, oldChemical);
         }
 
-        private void recheckOutput(@NotNull ChemicalStack stack, boolean wasEmpty) {
-            if (wasEmpty && !stack.isEmpty()) {
-                ChemicalFuel fuel = getFuel();
-                if (fuel != null) {
-                    updateMaxOutputRaw(fuel.energyPerTick());
-                }
+        private void recheckOutput(@NotNull ChemicalStack stack, Holder<Chemical> oldChemical) {
+            if (!isTypeEqual(oldChemical) && !stack.isEmpty()) {
+                cachedFuel = getFuel();
             }
         }
 

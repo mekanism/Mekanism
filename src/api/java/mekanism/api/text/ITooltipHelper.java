@@ -22,4 +22,8 @@ public interface ITooltipHelper {
     String getFormattedNumber(long number);
 
     Component getPercent(double ratio);
+
+    Component getEnergyDisplay(long joules, boolean perTick);
+
+    Component getFluidDisplay(long joules, boolean perTick);
 }

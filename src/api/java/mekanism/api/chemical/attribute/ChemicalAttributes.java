@@ -353,7 +353,7 @@ public class ChemicalAttributes {
                 this.energyDensity = () -> energyDensity;
             } else {
                 this.modernRepresentation = new ChemicalFuel(burnTicks, energyPerTick);
-                this.burnTicks = modernRepresentation::burnTicks;
+                this.burnTicks = () -> 1;
                 this.energyDensity = modernRepresentation::energyDensity;
             }
         }
@@ -363,7 +363,7 @@ public class ChemicalAttributes {
          */
         public Fuel(ChemicalFuel modernRepresentation) {
             this.modernRepresentation = modernRepresentation;
-            this.burnTicks = modernRepresentation::burnTicks;
+            this.burnTicks = () -> 1;
             this.energyDensity = modernRepresentation::energyDensity;
         }
 
@@ -445,7 +445,7 @@ public class ChemicalAttributes {
         @Override
         public void collectTooltips(Consumer<Component> adder) {
             ITooltipHelper tooltipHelper = ITooltipHelper.INSTANCE;
-            adder.accept(APILang.CHEMICAL_ATTRIBUTE_FUEL_BURN_TICKS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, tooltipHelper.getFormattedNumber(getBurnTicks())));
+            //todo? not a thing anymore: adder.accept(APILang.CHEMICAL_ATTRIBUTE_FUEL_BURN_TICKS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, tooltipHelper.getFormattedNumber(getBurnTicks())));
             adder.accept(APILang.CHEMICAL_ATTRIBUTE_FUEL_ENERGY_DENSITY.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
                   tooltipHelper.getEnergyPerMBDisplayShort(energyDensity.getAsLong())));
         }

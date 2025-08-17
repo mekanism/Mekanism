@@ -2575,8 +2575,8 @@ methods:
   Gas Generator:
   - methodName: getBurnRate
     returns:
-      java_type: double
-      type: Number (double)
+      java_type: long
+      type: Number (long)
   - description: Get the contents of the energy item slot.
     methodName: getEnergyItem
     returns:
@@ -2608,10 +2608,6 @@ methods:
       java_type: long
       type: Number (long)
   Generator:
-  - methodName: getMaxOutput
-    returns:
-      java_type: long
-      type: Number (long)
   - description: Get the amount of energy produced by this generator in the last tick.
     methodName: getProductionRate
     returns:

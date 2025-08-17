@@ -11,6 +11,7 @@ import mekanism.api.functions.LongObjectToLongFunction;
 import mekanism.api.math.MathUtils;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.ElectrolysisRecipe.ElectrolysisRecipeOutput;
+import mekanism.api.recipes.basic.BasicElectrolysisRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.api.recipes.cache.OneInputCachedRecipe;
@@ -22,7 +23,7 @@ import mekanism.api.recipes.vanilla_input.SingleFluidRecipeInput;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.attachments.containers.ContainerType;
-import mekanism.common.capabilities.energy.FixedUsageEnergyContainer;
+import mekanism.common.capabilities.energy.ElectroSeparatorEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
@@ -54,6 +55,7 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.ISingleRecipeLookupHandler.FluidRecipeLookupHandler;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleFluid;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.TileEntityChemicalTank.GasMode;
 import mekanism.common.tile.component.TileComponentEjector;
@@ -120,13 +122,14 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     public GasMode dumpRight = GasMode.IDLE;
     private long clientEnergyUsed = 1L;
     private long recipeEnergyMultiplier = 1L;
+    private boolean isMakingHydrogen = false;
     private int baselineMaxOperations = 1;
     private long dumpRate = BASE_DUMP_RATE;
 
     private final IOutputHandler<@NotNull ElectrolysisRecipeOutput> outputHandler;
     private final IInputHandler<@NotNull FluidStack> inputHandler;
 
-    private FixedUsageEnergyContainer<TileEntityElectrolyticSeparator> energyContainer;
+    private ElectroSeparatorEnergyContainer energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem", docPlaceholder = "input item slot")
     FluidInventorySlot fluidSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getLeftOutputItem", docPlaceholder = "left output item slot")
@@ -193,7 +196,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this);
-        builder.addContainer(energyContainer = FixedUsageEnergyContainer.input(this, BASE_ENERGY_CALCULATOR, recipeCacheUnpauseListener));
+        builder.addContainer(energyContainer = ElectroSeparatorEnergyContainer.input(this, BASE_ENERGY_CALCULATOR, recipeCacheUnpauseListener));
         return builder.build();
     }
 
@@ -215,7 +218,22 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     public void onCachedRecipeChanged(@Nullable CachedRecipe<ElectrolysisRecipe> cachedRecipe, int cacheIndex) {
         super.onCachedRecipeChanged(cachedRecipe, cacheIndex);
         recipeEnergyMultiplier = cachedRecipe == null ? 1L : cachedRecipe.getRecipe().getEnergyMultiplier();
+        isMakingHydrogen = cachedRecipe != null && isHydrogenElectrolysis(cachedRecipe.getRecipe());
         energyContainer.updateEnergyPerTick();
+        energyContainer.updateMaxEnergy();
+    }
+
+    private static boolean isHydrogenElectrolysis(@NotNull ElectrolysisRecipe recipe) {
+        if (recipe instanceof BasicElectrolysisRecipe basicRecipe) {
+            return basicRecipe.getLeftChemicalOutput().is(MekanismChemicals.HYDROGEN) || basicRecipe.getRightChemicalOutput().is(MekanismChemicals.HYDROGEN);
+        }
+        //do it the slow way
+        for (ElectrolysisRecipeOutput electrolysisRecipeOutput : recipe.getOutputDefinition()) {
+            if (electrolysisRecipeOutput.left().is(MekanismChemicals.HYDROGEN) || electrolysisRecipeOutput.right().is(MekanismChemicals.HYDROGEN)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -299,6 +317,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
               .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(this::canFunction)
               .setActive(this::setActive)
+              .setOperationsCost(isHydrogenElectrolysis(recipe))
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
               .setBaselineMaxOperations(() -> baselineMaxOperations)
               .setOnFinish(this::markForSave);
@@ -314,7 +333,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
         }
     }
 
-    public FixedUsageEnergyContainer<TileEntityElectrolyticSeparator> getEnergyContainer() {
+    public ElectroSeparatorEnergyContainer getEnergyContainer() {
         return energyContainer;
     }
 
@@ -420,4 +439,12 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
         markForSave();
     }
     //End methods IComputerTile
+
+    public boolean isMakingHydrogen() {
+        return isMakingHydrogen;
+    }
+
+    public int getBaselineMaxOperations() {
+        return baselineMaxOperations;
+    }
 }

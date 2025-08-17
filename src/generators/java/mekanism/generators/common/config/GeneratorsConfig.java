@@ -21,6 +21,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
     public final CachedLongValue advancedSolarGeneration;
 
     public final CachedLongValue bioGeneration;
+    public final CachedIntValue bioFuelPerItem;
     public final CachedIntValue bioTankCapacity;
 
     public final CachedLongValue heatGeneration;
@@ -38,6 +39,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
     public final CachedLongValue turbineEnergyCapacityPerVolume;
     public final CachedLongValue turbineChemicalPerTank;
     public final CachedIntValue condenserRate;
+    public final CachedIntValue turbineSteamDivisor;
 
     public final CachedLongValue energyPerFusionFuel;
     public final CachedLongValue windGenerationMin;
@@ -82,39 +84,41 @@ public class GeneratorsConfig extends BaseMekanismConfig {
         builder.pop();
 
         GeneratorsConfigTranslations.SERVER_GENERATOR_SOLAR.applyToBuilder(builder).push("solar_generator");
-        solarGeneration = CachedLongValue.definePositive(this, builder, GeneratorsConfigTranslations.SERVER_SOLAR_GENERATION, "solarGeneration", 50L);
-        advancedSolarGeneration = CachedLongValue.definePositive(this, builder, GeneratorsConfigTranslations.SERVER_SOLAR_GENERATION_ADVANCED, "advancedSolarGeneration", 300L);
+        solarGeneration = CachedLongValue.definePositive(this, builder, GeneratorsConfigTranslations.SERVER_SOLAR_GENERATION, "solarGeneration", 2L);
+        advancedSolarGeneration = CachedLongValue.definePositive(this, builder, GeneratorsConfigTranslations.SERVER_SOLAR_GENERATION_ADVANCED, "advancedSolarGeneration", 12L);
         builder.pop();
 
         GeneratorsConfigTranslations.SERVER_GENERATOR_BIO.applyToBuilder(builder).push("bio_generator");
         bioGeneration = CachedLongValue.definePositive(this, builder, GeneratorsConfigTranslations.SERVER_GENERATOR_BIO_GENERATION,
-              "bioGeneration", 350L);
+              "bioGeneration", 25L);
+        bioFuelPerItem = CachedIntValue.wrap(this, GeneratorsConfigTranslations.SERVER_GENERATOR_BIO_GENERATION.applyToBuilder(builder).defineInRange(
+              "bioFuelPerItem", 64, 1, Integer.MAX_VALUE));
         bioTankCapacity = CachedIntValue.wrap(this, GeneratorsConfigTranslations.SERVER_GENERATOR_BIO_TANK_CAPACITY.applyToBuilder(builder)
-              .defineInRange("tankCapacity", 24 * FluidType.BUCKET_VOLUME, 1, Integer.MAX_VALUE));
+              .defineInRange("tankCapacity", 200, 1, Integer.MAX_VALUE));
         builder.pop();
 
         GeneratorsConfigTranslations.SERVER_GENERATOR_HEAT.applyToBuilder(builder).push("heat_generator");
         heatGeneration = CachedLongValue.definePositive(this, builder, GeneratorsConfigTranslations.SERVER_GENERATOR_HEAT_GENERATION,
-              "heatGeneration", 200L);
+              "heatGeneration", 100L);
         heatGenerationLava = CachedLongValue.define(this, builder, GeneratorsConfigTranslations.SERVER_GENERATOR_HEAT_GEN_LAVA,
-              "heatGenerationLava", 30L, 0, Long.MAX_VALUE / (EnumUtils.DIRECTIONS.length + 1));
+              "heatGenerationLava", 7L, 0, Long.MAX_VALUE / (EnumUtils.DIRECTIONS.length + 1));
         heatGenerationNether = CachedLongValue.definePositive(this, builder, GeneratorsConfigTranslations.SERVER_GENERATOR_HEAT_GEN_NETHER,
-              "heatGenerationNether", 100L);
+              "heatGenerationNether", 10L);
         heatTankCapacity = CachedIntValue.wrap(this, GeneratorsConfigTranslations.SERVER_GENERATOR_HEAT_TANK_CAPACITY.applyToBuilder(builder)
-              .defineInRange("tankCapacity", 24 * FluidType.BUCKET_VOLUME, 1, Integer.MAX_VALUE));
+              .defineInRange("tankCapacity", FluidType.BUCKET_VOLUME, 1, Integer.MAX_VALUE));
         heatGenerationFluidRate = CachedIntValue.wrap(this, GeneratorsConfigTranslations.SERVER_GENERATOR_HEAT_FLUID_RATE.applyToBuilder(builder)
-              .define("heatGenerationFluidRate", 10, value -> value instanceof Integer i && i > 0 && i <= heatTankCapacity.getOrDefault()));
+              .define("heatGenerationFluidRate", 100, value -> value instanceof Integer i && i > 0 && i <= heatTankCapacity.getOrDefault()));
         builder.pop();
 
         GeneratorsConfigTranslations.SERVER_GENERATOR_GAS.applyToBuilder(builder).push("gas_generator");
         gbgTankCapacity = CachedLongValue.wrap(this, GeneratorsConfigTranslations.SERVER_GENERATOR_GAS_TANK_CAPACITY.applyToBuilder(builder)
-              .defineInRange("tankCapacity", 18L * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE));
+              .defineInRange("tankCapacity", FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE));
         builder.pop();
 
         GeneratorsConfigTranslations.SERVER_GENERATOR_WIND.applyToBuilder(builder).push("wind_generator");
-        windGenerationMin = CachedLongValue.definePositive(this, builder, GeneratorsConfigTranslations.SERVER_GENERATOR_WIND_GEN_MIN, "generationMin", 60L);
+        windGenerationMin = CachedLongValue.definePositive(this, builder, GeneratorsConfigTranslations.SERVER_GENERATOR_WIND_GEN_MIN, "generationMin", 1L);
         //TODO: Should this be capped by the min generator?
-        windGenerationMax = CachedLongValue.definePositive(this, builder, GeneratorsConfigTranslations.SERVER_GENERATOR_WIND_GEN_MAX, "generationMax", 480L);
+        windGenerationMax = CachedLongValue.definePositive(this, builder, GeneratorsConfigTranslations.SERVER_GENERATOR_WIND_GEN_MAX, "generationMax", 5L);
         windGenerationMinY = CachedIntValue.wrap(this, GeneratorsConfigTranslations.SERVER_GENERATOR_WIND_GEN_MIN_Y.applyToBuilder(builder)
               .defineInRange("minY", 24, DimensionType.MIN_Y, DimensionType.MAX_Y - 1));
         //Note: We just require that the maxY is greater than the minY, nothing goes badly if it is set above the max y of the world though
@@ -133,11 +137,12 @@ public class GeneratorsConfig extends BaseMekanismConfig {
         condenserRate = CachedIntValue.wrap(this, GeneratorsConfigTranslations.SERVER_TURBINE_RATE_CONDENSER.applyToBuilder(builder)
               .defineInRange("condenserRate", 64 * FluidType.BUCKET_VOLUME, 1, 2_000 * FluidType.BUCKET_VOLUME));
         turbineEnergyCapacityPerVolume = CachedLongValue.define(this, builder, GeneratorsConfigTranslations.SERVER_TURBINE_ENERGY_CAPACITY,
-              "energyCapacityPerVolume", 16_000_000L, 1L, 1_000_000_000_000L);
+              "energyCapacityPerVolume", 100, 1L, 1_000_000_000_000L);
         //Note: We use maxVolume as it still is a large number, and we have no reason to go higher even if some things we technically could
         int maxTurbine = 17 * 17 * 18;
         turbineChemicalPerTank = CachedLongValue.wrap(this, GeneratorsConfigTranslations.SERVER_TURBINE_CHEMICAL_CAPACITY.applyToBuilder(builder)
               .defineInRange("chemicalPerTank", 64L * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE / maxTurbine));
+        turbineSteamDivisor = CachedIntValue.wrap(this, GeneratorsConfigTranslations.SERVER_TURBINE_STEAM_DIVISOR.applyToBuilder(builder).defineInRange("steamDivisor", 1000, 1, Integer.MAX_VALUE));
         builder.pop();
 
         GeneratorsConfigTranslations.SERVER_FISSION.applyToBuilder(builder).push("fission_reactor");

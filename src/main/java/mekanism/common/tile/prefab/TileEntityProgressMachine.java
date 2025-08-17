@@ -69,11 +69,11 @@ public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe<?>
 
     @Override
     public void recalculateUpgrades(Upgrade upgrade) {
-        super.recalculateUpgrades(upgrade);
         if (upgrade == Upgrade.SPEED) {
             ticksRequired = MekanismUtils.getTicks(this, baseTicksRequired);
             operationsPerTick = MekanismUtils.getOperationsPerTick(this, baseTicksRequired, 1);
         }
+        super.recalculateUpgrades(upgrade);
     }
 
     public int getOperationsPerTick() {

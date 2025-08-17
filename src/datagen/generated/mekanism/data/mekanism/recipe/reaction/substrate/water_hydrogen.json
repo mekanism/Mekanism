@@ -5,7 +5,7 @@
     "chemical": "mekanism:hydrogen"
   },
   "chemical_output": {
-    "amount": 100,
+    "amount": 300,
     "id": "mekanism:ethene"
   },
   "duration": 100,

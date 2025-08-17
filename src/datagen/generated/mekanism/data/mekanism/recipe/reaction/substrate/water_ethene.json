@@ -9,7 +9,7 @@
     "id": "mekanism:oxygen"
   },
   "duration": 400,
-  "energy_required": 200,
+  "energy_required": 2,
   "fluid_input": {
     "amount": 200,
     "tag": "minecraft:water"

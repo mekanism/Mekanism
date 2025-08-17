@@ -27,6 +27,7 @@ import mekanism.generators.common.slot.FluidFuelInventorySlot;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
@@ -42,7 +43,16 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
     private float lastFluidScale;
 
     public TileEntityBioGenerator(BlockPos pos, BlockState state) {
-        super(GeneratorsBlocks.BIO_GENERATOR, pos, state, MekanismGeneratorsConfig.generators.bioGeneration);
+        super(GeneratorsBlocks.BIO_GENERATOR, pos, state);
+    }
+
+    private static int biofuelFromItem(@NotNull ItemStack stack) {
+        if (stack.is(MekanismTags.Items.FUELS_BIO)) {
+            return MekanismGeneratorsConfig.generators.bioFuelPerItem.getAsInt();
+        } else if (stack.is(MekanismTags.Items.FUELS_BLOCK_BIO)) {
+            return 9 * MekanismGeneratorsConfig.generators.bioFuelPerItem.getAsInt();
+        }
+        return 0;
     }
 
     @NotNull
@@ -59,7 +69,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         InventorySlotHelper builder = InventorySlotHelper.forSide(facingSupplier);
-        builder.addSlot(fuelSlot = FluidFuelInventorySlot.forFuel(bioFuelTank, stack -> stack.is(MekanismTags.Items.FUELS_BIO) ? 200 : stack.is(MekanismTags.Items.FUELS_BLOCK_BIO) ? 200 * 9 : 0,
+        builder.addSlot(fuelSlot = FluidFuelInventorySlot.forFuel(bioFuelTank, TileEntityBioGenerator::biofuelFromItem,
                     GeneratorsFluids.BIOETHANOL::asStack, listener, 17, 35), RelativeSide.FRONT, RelativeSide.LEFT, RelativeSide.BACK, RelativeSide.TOP,
               RelativeSide.BOTTOM);
         builder.addSlot(energySlot = EnergyInventorySlot.drain(getEnergyContainer(), listener, 143, 35), RelativeSide.RIGHT);

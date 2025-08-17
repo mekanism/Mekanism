@@ -180,6 +180,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
         }
         //Ensure we take our recipe's energy per tick into account
         energyContainer.updateEnergyPerTick();
+        energyContainer.updateMaxEnergy();
     }
 
     @Override

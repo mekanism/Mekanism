@@ -128,6 +128,12 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?>> {
     };
 
     /**
+     * Whether multiple operations multiply the power usage.
+     * Currently only used for Hydrogen separating.
+     */
+    private boolean multipleOperationsCost = false;
+
+    /**
      * @param recipe           Recipe.
      * @param recheckAllErrors Returns {@code true} if processing should be continued even if an error is hit in order to gather all the errors. It is recommended to not
      *                         do this every tick or if there is no one viewing recipes.
@@ -253,6 +259,15 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?>> {
     }
 
     /**
+     * Sets whether the calculated operations increase the energy cost subtracted from the container.
+     * Currently only used for Hydrogen Separation.
+     */
+    public CachedRecipe<RECIPE> setOperationsCost(boolean value) {
+        this.multipleOperationsCost = value;
+        return this;
+    }
+
+    /**
      * Sets the callback that run when the set of known {@link RecipeError}s of this {@link CachedRecipe} changes.
      *
      * @param onErrorsChange Consumer to call with the set of {@link RecipeError}s this {@link CachedRecipe} when they change.
@@ -320,7 +335,7 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?>> {
                 postProcessOperations.accept(tracker);
                 //If we should continue checking try to cap the max at the max amount we have for energy that we didn't cap it at earlier
                 // Note: We don't have to always try and cap it as if we shouldn't continue checking that means we are already stopped.
-                if (tracker.shouldContinueChecking() && tracker.capAtMaxForEnergy()) {
+                if (tracker.shouldContinueChecking() && (multipleOperationsCost && tracker.capAtMaxForEnergy())) {
                     //If we lowered the maximum number of operations due to our available energy, then we add an error that we don't have
                     // enough energy to run at our maximum rate
                     tracker.addError(RecipeError.NOT_ENOUGH_ENERGY_REDUCED_RATE);
@@ -404,13 +419,10 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?>> {
      */
     protected void useEnergy(int operations) {
         long energy = perTickEnergy.getAsLong();
-        if (operations == 1) {
-            //While floating long will short circuit any calculations if multiplied by one given we require making a copy to ensure we don't
-            // modify the source value, if we do the check here manually as well, then we can skip creating unnecessary objects
-            useEnergy.accept(energy);
-        } else {
-            useEnergy.accept(energy * operations);
+        if (this.multipleOperationsCost) {
+            energy = energy * operations;
         }
+        useEnergy.accept(energy);
     }
 
     /**
