@@ -13,21 +13,29 @@ import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.registries.MekanismItems;
+import mekanism.common.tile.interfaces.ITileRadioactive;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MultipartUtils;
 import mekanism.common.util.MultipartUtils.AdvancedRayTraceResult;
 import mekanism.common.util.VoxelShapeUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
@@ -157,5 +165,18 @@ public abstract class BlockTransmitter<TILE extends TileEntityTransmitter> exten
             cachedShapes.put(packed, shape);
         }
         return shape;
+    }
+
+    @NotNull
+    @Override
+    protected ItemInteractionResult useItemOn(@NotNull ItemStack stack, @NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos,
+          @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
+        if (player.isShiftKeyDown() && MekanismUtils.canUseAsWrench(stack)) {
+            BlockEntity tile = WorldUtils.getTileEntity(world, pos);
+            if (tile instanceof ITileRadioactive tileRadioactive && tileRadioactive.getRadiationScale() > 0) {
+                return ItemInteractionResult.FAIL;
+            }
+        }
+        return super.useItemOn(stack, state, world, pos, player, hand, hit);
     }
 }
